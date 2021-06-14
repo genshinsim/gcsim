@@ -1,0 +1,8 @@
+*.log
+*.csv
+*.png
+*.pdf
+*.pprof
+.DS_Store
+/*.txt
+/build/*
