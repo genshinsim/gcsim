@@ -1,0 +1,60 @@
+package character
+
+import "github.com/genshinsim/gsim/pkg/def"
+
+func (c *Tmpl) CurrentEnergy() float64 {
+	return c.Energy
+}
+
+func (c *Tmpl) AddEnergy(e float64) {
+	c.Energy += e
+	if c.Energy > c.MaxEnergy {
+		c.Energy = c.MaxEnergy
+	}
+	c.Log.Debugw("adding energy", "frame", c.Sim.Frame(), "event", def.LogEnergyEvent, "rec'd", e, "next energy", c.Energy)
+}
+
+func (c *Tmpl) ReceiveParticle(p def.Particle, isActive bool, partyCount int) {
+	var amt, er, r float64
+	r = 1.0
+	if !isActive {
+		r = 1.0 - 0.1*float64(partyCount)
+	}
+	//recharge amount - particles: same = 3, non-ele = 2, diff = 1
+	//recharge amount - orbs: same = 9, non-ele = 6, diff = 3 (3x particles)
+	switch {
+	case p.Ele == c.Base.Element:
+		amt = 3
+	case p.Ele == def.NoElement:
+		amt = 2
+	default:
+		amt = 1
+	}
+	amt = amt * r //apply off field reduction
+	//apply energy regen stat
+	er = c.Stat(def.ER)
+	amt = amt * (1 + er) * float64(p.Num)
+
+	pre := c.Energy
+
+	c.Energy += amt
+	if c.Energy > c.MaxEnergy {
+		c.Energy = c.MaxEnergy
+	}
+
+	c.Log.Debugw(
+		"particle",
+		"frame", c.Sim.Frame(),
+		"event", def.LogEnergyEvent,
+		"char", c.Index,
+		"source", p.Source,
+		"count", p.Num,
+		"ele", p.Ele,
+		"ER", er,
+		"is_active", isActive,
+		"party_count", partyCount,
+		"pre_recovery", pre,
+		"amt", amt,
+		"post_recovery", c.Energy,
+	)
+}
