@@ -6,9 +6,9 @@ type Snapshot struct {
 	Actor      string //name of the character triggering the damage
 	ActorIndex int
 
-	DamageSrc    int //this is used for the purpose of calculating self harm
-	SelfHarm     bool
-	SingleTarget int //if TargetAll then not single target, resolve hitbox; other = target index
+	DamageSrc int //this is used for the purpose of calculating self harm
+	SelfHarm  bool
+	Targets   int //if TargetAll then not single target, resolve hitbox; other = target index
 
 	SourceFrame     int
 	AnimationFrames int //really only for amos bow...

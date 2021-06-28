@@ -16,6 +16,7 @@ const (
 	NoElement
 	ElementMaxCount
 	Physical
+	EC
 	UnknownElement
 )
 
@@ -35,6 +36,7 @@ var EleTypeString = [...]string{
 	"",
 	"delim",
 	"physical",
+	"ec",
 	"unknown",
 }
 

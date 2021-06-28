@@ -1,21 +1,27 @@
 package monster
 
-import "github.com/genshinsim/gsim/pkg/def"
+import (
+	"github.com/genshinsim/gsim/pkg/def"
+)
 
 func (t *Target) handleReaction(ds *def.Snapshot) {
-	didReact := false
-	//loop through existing array of auras
-	for _, a := range t.auras {
-		//skip if nil
-		if a == nil {
-			continue
-		}
 
+	// log.Println("existing aura", t.aura)
+
+	if t.aura == nil {
+		t.aura = NewAura(ds, t.sim.Frame())
+		// log.Println("new aura", t.aura)
+		return
 	}
-	//if no reaction then we can attach
-	if !didReact {
-		t.auras[ds.Element] = AttachAura(ds) // attach here
-	}
+
+	// log.Println("aura not nil, reacting")
+
+	aura, _ := t.aura.React(ds, t)
+
+	t.aura = aura
+
+	// log.Println("result aura", t.aura, a)
+
 }
 
 type reactionHooks struct {
@@ -50,17 +56,38 @@ func (t *Target) AddOnReactionHook(key string, fun func(ds *def.Snapshot)) {
 	t.onReactionOccured = a
 }
 
+func (t *Target) queueReaction(in *def.Snapshot, typ def.ReactionType, res def.Durability, delay int) {
+	ds := t.ReactionSnapshot(in, typ, res, true)
+
+	t.addTask(func(t *Target) {
+		t.sim.ApplyDamage(&ds)
+	}, delay)
+	//if swirl queue another
+	switch typ {
+	case def.SwirlCryo:
+	case def.SwirlElectro:
+	case def.SwirlHydro:
+	case def.SwirlPyro:
+	default:
+		return
+	}
+	ds2 := t.ReactionSnapshot(in, typ, res, false)
+	t.addTask(func(t *Target) {
+		t.sim.ApplyDamage(&ds2)
+	}, delay)
+}
+
 //calculate reaction extra damage here
-func (t *Target) ReactionSnapshot(in *def.Snapshot, typ def.ReactionType, res def.Durability) def.Snapshot {
+func (t *Target) ReactionSnapshot(in *def.Snapshot, typ def.ReactionType, res def.Durability, selfHarm bool) def.Snapshot {
 	ds := def.Snapshot{
-		CharLvl:          in.CharLvl,
-		ActorEle:         in.ActorEle,
-		Actor:            in.Actor,
-		ActorIndex:       in.ActorIndex,
-		DamageSrc:        t.index,
-		SourceFrame:      t.sim.Frame(),
-		Abil:             string(typ),
-		ImpulseLvl:       1,
+		CharLvl:     in.CharLvl,
+		ActorEle:    in.ActorEle,
+		Actor:       in.Actor,
+		ActorIndex:  in.ActorIndex,
+		SourceFrame: t.sim.Frame(),
+		Abil:        string(typ),
+		ImpulseLvl:  1,
+		//reaction related
 		Mult:             0,
 		Durability:       0,
 		StrikeType:       def.StrikeTypeDefault,
@@ -68,7 +95,14 @@ func (t *Target) ReactionSnapshot(in *def.Snapshot, typ def.ReactionType, res de
 		ICDTag:           def.ICDTagNone,
 		ICDGroup:         def.ICDGroupDefault,
 		IsReactionDamage: true,
+
+		//targetting info
+		Targets:   def.TargetAll,
+		DamageSrc: t.index,
+		SelfHarm:  selfHarm,
+
 		//no stats, should never get used
+		Stats: make([]float64, def.EndStatType),
 	}
 
 	var mult float64
@@ -99,45 +133,61 @@ func (t *Target) ReactionSnapshot(in *def.Snapshot, typ def.ReactionType, res de
 		ds.Element = def.Electro
 		ds.AttackTag = def.AttackTagSwirlElectro
 		ds.ICDTag = def.ICDTagSwirlElectro
+		ds.Targets = t.index
 		//calculate swirl'd aura durability
-		x := res
-		if res > 0.5*in.Durability {
-			x = in.Durability
+		if !selfHarm {
+			ds.Targets = def.TargetAll
+			x := res
+			if res > 0.5*in.Durability {
+				x = in.Durability
+			}
+			ds.Durability = 1.25*(x-1) + 25
 		}
-		ds.Durability = 1.25*(x-1) + 25
 	case def.SwirlCryo:
 		mult = 0.6
 		ds.Element = def.Cryo
 		ds.AttackTag = def.AttackTagSwirlCryo
 		ds.ICDTag = def.ICDTagSwirlCryo
+		ds.Targets = t.index
 		//calculate swirl'd aura durability
-		x := res
-		if res > 0.5*in.Durability {
-			x = in.Durability
+		if !selfHarm {
+			ds.Targets = def.TargetAll
+			x := res
+			if res > 0.5*in.Durability {
+				x = in.Durability
+			}
+			ds.Durability = 1.25*(x-1) + 25
 		}
-		ds.Durability = 1.25*(x-1) + 25
 	case def.SwirlHydro:
 		mult = 0.6
 		ds.Element = def.Hydro
 		ds.AttackTag = def.AttackTagSwirlHydro
 		ds.ICDTag = def.ICDTagSwirlHydro
+		ds.Targets = t.index
 		//calculate swirl'd aura durability
-		x := res
-		if res > 0.5*in.Durability {
-			x = in.Durability
+		if !selfHarm {
+			ds.Targets = def.TargetAll
+			x := res
+			if res > 0.5*in.Durability {
+				x = in.Durability
+			}
+			ds.Durability = 1.25*(x-1) + 25
 		}
-		ds.Durability = 1.25*(x-1) + 25
 	case def.SwirlPyro:
 		mult = 0.6
 		ds.Element = def.Pyro
 		ds.AttackTag = def.AttackTagSwirlPyro
 		ds.ICDTag = def.ICDTagSwirlPyro
+		ds.Targets = t.index
 		//calculate swirl'd aura durability
-		x := res
-		if res > 0.5*in.Durability {
-			x = in.Durability
+		if !selfHarm {
+			ds.Targets = def.TargetAll
+			x := res
+			if res > 0.5*in.Durability {
+				x = in.Durability
+			}
+			ds.Durability = 1.25*(x-1) + 25
 		}
-		ds.Durability = 1.25*(x-1) + 25
 	default:
 		//either not implemented or no dmg
 		return def.Snapshot{}
@@ -148,8 +198,15 @@ func (t *Target) ReactionSnapshot(in *def.Snapshot, typ def.ReactionType, res de
 	em := char.Stat(def.EM)
 
 	//extra dmg = mult * base dmg * lvl multiplier
+	lvl := in.CharLvl - 1
+	if lvl > 89 {
+		lvl = 89
+	}
+	if lvl < 0 {
+		lvl = 0
+	}
 
-	ds.FlatDmg = mult * (1 + ((16 * em) / (2000 + em)) + t.sim.ReactionBonus()) * reactionLvlBase[in.CharLvl]
+	ds.FlatDmg = mult * (1 + ((16 * em) / (2000 + em)) + t.sim.ReactionBonus()) * reactionLvlBase[lvl]
 
 	return ds
 }

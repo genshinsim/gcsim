@@ -1,9 +1,10 @@
 package monster
 
-import "github.com/genshinsim/gsim/pkg/def"
+import (
+	"github.com/genshinsim/gsim/pkg/def"
+)
 
 func (t *Target) ApplyReactionDamage(ds *def.Snapshot) float64 {
-
 	return 0
 }
 
@@ -44,20 +45,22 @@ func (t *Target) Attack(ds *def.Snapshot) float64 {
 	//this should be handled by each target individually
 	//sim will need to add it to every target whenever this changes
 	t.sim.OnAttackLanded(t)
-	return 0
+	t.onAttackLanded(ds)
+	return dmg.damage
 }
 
 func (t *Target) attackWillLand(ds *def.Snapshot) bool {
-	if ds.SingleTarget == def.TargetAll {
-		//check if attack came from self (this is for reactions if the reaction does not hurt self)
+	//if aoe
+	if ds.Targets == def.TargetAll {
+		//check if attack came from self (this is for aoe that centers on self but does not hit self)
 		if ds.DamageSrc == t.index && !ds.SelfHarm {
 			return false
 		}
 		//TODO: resolve hitbox here
 		return true
 	}
-
-	return false
+	//otherwise target = current index
+	return ds.Targets == t.index
 }
 
 type dmgResult struct {
@@ -225,5 +228,23 @@ func (t *Target) calcReactionDmg(ds *def.Snapshot) float64 {
 	} else if res > 0.75 {
 		resmod = 1 / (4*res + 1)
 	}
-	return ds.FlatDmg * resmod
+
+	damage := ds.FlatDmg * resmod
+
+	t.log.Debugw(
+		ds.Abil,
+		"frame", t.sim.Frame(),
+		"event", def.LogCalc,
+		"char", ds.ActorIndex,
+		"src_frame", ds.SourceFrame,
+		"damage", damage,
+		"abil", ds.Abil,
+		"flat_dmg", ds.FlatDmg,
+		"ele", ds.Element,
+		"res", res,
+		"res_mod", resmod,
+		"react bonus", ds.ReactBonus,
+	)
+
+	return damage
 }

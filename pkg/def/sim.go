@@ -26,6 +26,11 @@ type Sim interface {
 	//status
 	Status(key string) int //return how many more frames status will last
 
+	//shields
+	AddShield(shd Shield)
+	IsShielded() bool
+	GetShield(t ShieldType) Shield
+
 	//other
 	Rand() *rand.Rand
 }
@@ -38,3 +43,34 @@ type Flags struct {
 	// ReactionDamageTriggered bool
 	Custom map[string]int
 }
+
+type ShieldType int
+
+const (
+	ShieldCrystallize ShieldType = iota //lasts 15 seconds
+	ShieldNoelleSkill
+	ShieldNoelleA2
+	ShieldZhongliJadeShield
+	ShieldDionaSkill
+	ShieldBeidouThunderShield
+	ShieldXinyanSkill
+	ShieldXinyanC2
+	ShieldKaeyaC4
+	ShieldYanfeiC4
+)
+
+type Shield interface {
+	Key() int
+	Type() ShieldType
+	OnDamage(dmg float64, ele EleType, bonus float64) (float64, bool) //return dmg taken and shield stays
+	OnExpire()
+	OnOverwrite()
+	Expiry() int
+	CurrentHP() float64
+	Element() EleType
+	Desc() string
+}
+
+const (
+	MaxTeamPlayerCount int = 4
+)

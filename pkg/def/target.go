@@ -4,8 +4,11 @@ type Target interface {
 	SetIndex(ind int) //update the current index
 	MaxHP() float64
 	HP() float64
+	AuraTick() //tick this first to avoid messing with combat
 	Tick()
 	Attack(ds *Snapshot) float64
+	AddOnAttackLandedHook(fun func(ds *Snapshot), key string)
+	RemoveOnAttackLandedHook(key string)
 
 	Delete() //gracefully deference everything so that it can be gc'd
 }
