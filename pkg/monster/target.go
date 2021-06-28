@@ -4,7 +4,6 @@ import (
 	"math/rand"
 
 	"github.com/genshinsim/gsim/pkg/def"
-	"go.uber.org/zap"
 )
 
 type Target struct {
@@ -25,16 +24,19 @@ type Target struct {
 	icdDamageGroupOnTimer [][]bool
 	icdDamageGroupCounter [][]int
 
+	//damage related
+	onAttackLandedFuncs []attackLandedFunc
+
 	//reactions
-	auras             []Aura
+	aura              Aura
 	onReactionOccured []reactionHooks //reaction hooks
 
 	sim  def.Sim
 	rand *rand.Rand
-	log  *zap.SugaredLogger
+	log  def.Logger
 }
 
-func New(index int, s def.Sim, log *zap.SugaredLogger, p def.EnemyProfile) *Target {
+func New(index int, s def.Sim, log def.Logger, p def.EnemyProfile) *Target {
 	t := &Target{}
 
 	t.index = index
@@ -44,7 +46,10 @@ func New(index int, s def.Sim, log *zap.SugaredLogger, p def.EnemyProfile) *Targ
 	t.sim = s
 	t.rand = s.Rand()
 
-	t.auras = make([]Aura, def.ElementMaxCount)
+	t.icdGroupOnTimer = make([][]bool, def.MaxTeamPlayerCount)
+	t.icdTagCounter = make([][]int, def.MaxTeamPlayerCount)
+	t.icdDamageGroupCounter = make([][]int, def.MaxTeamPlayerCount)
+	t.icdDamageGroupOnTimer = make([][]bool, def.MaxTeamPlayerCount)
 
 	for i := 0; i < 4; i++ {
 		t.icdGroupOnTimer[i] = make([]bool, def.ICDGroupLength)
@@ -52,6 +57,10 @@ func New(index int, s def.Sim, log *zap.SugaredLogger, p def.EnemyProfile) *Targ
 		t.icdDamageGroupCounter[i] = make([]int, def.ICDGroupLength)
 		t.icdDamageGroupOnTimer[i] = make([]bool, def.ICDGroupLength)
 	}
+
+	t.tasks = make(map[int][]func(t *Target))
+
+	t.onAttackLandedFuncs = make([]attackLandedFunc, 0, 10)
 
 	return t
 }
@@ -69,6 +78,16 @@ func (t *Target) addTask(fun func(t *Target), delay int) {
 	t.tasks[f+delay] = append(t.tasks[f+delay], fun)
 }
 
+func (t *Target) AuraTick() {
+	//element stuff
+	if t.aura != nil {
+		done := t.aura.Tick()
+		if done {
+			t.aura = nil
+		}
+	}
+}
+
 func (t *Target) Tick() {
 	//check tasks
 	for _, f := range t.tasks[t.sim.Frame()] {
@@ -77,11 +96,49 @@ func (t *Target) Tick() {
 
 	delete(t.tasks, t.sim.Frame())
 
-	//element stuff
-	for _, a := range t.auras {
-		if a != nil {
-			a.Tick()
+}
+
+type attackLandedFunc struct {
+	f func(ds *def.Snapshot)
+	k string
+}
+
+func (t *Target) AddOnAttackLandedHook(fun func(ds *def.Snapshot), key string) {
+	ind := -1
+	for i, v := range t.onAttackLandedFuncs {
+		if v.k == key {
+			ind = i
 		}
+	}
+	if ind != -1 {
+		t.onAttackLandedFuncs[ind] = attackLandedFunc{
+			f: fun,
+			k: key,
+		}
+		return
+	}
+	t.onAttackLandedFuncs = append(t.onAttackLandedFuncs, attackLandedFunc{
+		f: fun,
+		k: key,
+	})
+}
+
+func (t *Target) RemoveOnAttackLandedHook(key string) {
+	ind := -1
+	for i, v := range t.onAttackLandedFuncs {
+		if v.k == key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		t.onAttackLandedFuncs[ind] = t.onAttackLandedFuncs[len(t.onAttackLandedFuncs)-1]
+		t.onAttackLandedFuncs = t.onAttackLandedFuncs[:len(t.onAttackLandedFuncs)-1]
+	}
+}
+
+func (t *Target) onAttackLanded(ds *def.Snapshot) {
+	for _, v := range t.onAttackLandedFuncs {
+		v.f(ds)
 	}
 }
 

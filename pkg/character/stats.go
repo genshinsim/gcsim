@@ -62,7 +62,7 @@ func (c *Tmpl) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDG
 	ds.Mult = mult
 	ds.ImpulseLvl = 1
 	ds.DamageSrc = def.TargetPlayer
-	ds.SingleTarget = def.TargetAll //by default assume no exclusion, therefore resolve hitbox
+	ds.Targets = def.TargetAll //by default assume no exclusion, therefore resolve hitbox
 
 	var logDetails []zap.Field = make([]zap.Field, 0, 11+2*len(def.StatTypeString)+len(c.Mods))
 
