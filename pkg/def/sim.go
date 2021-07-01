@@ -8,11 +8,14 @@ type Sim interface {
 	Stam() float64
 	Frame() int //current frame
 	Flags() Flags
+	SetCustomFlag(key string, val int)
 
 	//character related
 	CharByPos(ind int) (Character, bool)
 	CharByName(name string) (Character, bool)
 	DistributeParticle(p Particle)
+	ActiveCharIndex() int
+	Characters() []Character
 
 	//damage related
 	ApplyDamage(ds *Snapshot)
@@ -20,6 +23,7 @@ type Sim interface {
 	//target related
 	TargetHasDebuff(debuff string, param int) bool
 	TargetHasElement(ele EleType, param int) bool
+	Targets() []Target
 	AddOnAttackLanded(f func(t Target, ds *Snapshot), key string)
 	OnAttackLanded(t Target, ds *Snapshot) //basically after damage
 	ReactionBonus() float64
@@ -32,6 +36,13 @@ type Sim interface {
 	AddShield(shd Shield)
 	IsShielded() bool
 	GetShield(t ShieldType) Shield
+
+	//healing
+	HealActive(amt float64)
+	HealAll(amt float64)
+	AddIncHealBonus(f func() float64)
+
+	AddOnHurt(f func(s Sim))
 
 	//hooks
 	AddEventHook(f func(s Sim) bool, key string, hook EventHookType)

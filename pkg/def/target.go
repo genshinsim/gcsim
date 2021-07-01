@@ -1,6 +1,7 @@
 package def
 
 type Target interface {
+	Index() int
 	SetIndex(ind int) //update the current index
 	MaxHP() float64
 	HP() float64

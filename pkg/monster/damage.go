@@ -212,6 +212,7 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 		"flat_def", ds.Stats[def.DEF],
 		"def_per", ds.Stats[def.DEFP],
 		"flat_dmg", ds.FlatDmg,
+		"total_atk_def", a,
 		"base_dmg", base,
 		"ele", st,
 		"ele_per", ds.Stats[st],

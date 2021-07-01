@@ -13,7 +13,7 @@ type Sim struct {
 	OnShielded func(shd def.Shield)
 	OnParticle func(p def.Particle)
 	Chars      []def.Character
-	Targets    []def.Target
+	Targs      []def.Target
 	status     map[string]int
 
 	onAttackLanded []attackLandedHook
@@ -35,7 +35,7 @@ func (s *Sim) Skip(frames int) {
 	for i := 0; i < frames; i++ {
 		s.F++
 		//tick auras and shields firsts
-		for _, v := range s.Targets {
+		for _, v := range s.Targs {
 			v.AuraTick()
 		}
 
@@ -45,20 +45,28 @@ func (s *Sim) Skip(frames int) {
 		}
 
 		//then tick each target again
-		for _, v := range s.Targets {
+		for _, v := range s.Targs {
 			v.Tick()
 		}
 	}
 }
 
+func (s *Sim) ActiveCharIndex() int                             { return 0 }
 func (s *Sim) SwapCD() int                                      { return 0 }
 func (s *Sim) Stam() float64                                    { return 0 }
 func (s *Sim) Frame() int                                       { return s.F }
 func (s *Sim) Flags() def.Flags                                 { return def.Flags{} }
+func (s *Sim) SetCustomFlag(key string, val int)                {}
 func (s *Sim) CharByName(name string) (def.Character, bool)     { return nil, false }
 func (s *Sim) TargetHasDebuff(debuff string, param int) bool    { return false }
 func (s *Sim) TargetHasElement(ele def.EleType, param int) bool { return false }
+func (s *Sim) Targets() []def.Target                            { return s.Targs }
 func (s *Sim) ReactionBonus() float64                           { return 0 }
+func (s *Sim) HealActive(hp float64)                            {}
+func (s *Sim) HealAll(hp float64)                               {}
+func (s *Sim) HealIndex(index int, hp float64)                  {}
+func (s *Sim) AddIncHealBonus(f func() float64)                 {}
+func (s *Sim) AddOnHurt(f func(s def.Sim))                      {}
 
 func (s *Sim) IsShielded() bool                      { return false }
 func (s *Sim) GetShield(t def.ShieldType) def.Shield { return nil }
@@ -69,6 +77,10 @@ func (s *Sim) CharByPos(ind int) (def.Character, bool) {
 		return nil, false
 	}
 	return s.Chars[ind], true
+}
+
+func (s *Sim) Characters() []def.Character {
+	return s.Chars
 }
 
 func (s *Sim) ApplyDamage(ds *def.Snapshot) {

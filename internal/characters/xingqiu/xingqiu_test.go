@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/genshinsim/gsim/internal/artifacts/gladiator"
+	"github.com/genshinsim/gsim/internal/artifacts/noblesse"
 	"github.com/genshinsim/gsim/internal/dummy"
 	"github.com/genshinsim/gsim/pkg/def"
 	"github.com/genshinsim/gsim/pkg/monster"
@@ -21,10 +23,12 @@ var target def.Target
 var xq def.Character
 
 func TestMain(m *testing.M) {
+	os.Remove("./out.log")
 	// call flag.Parse() here if TestMain uses flags
 	config := zap.NewDevelopmentConfig()
-	config.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
+	config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 	config.EncoderConfig.TimeKey = ""
+	config.OutputPaths = []string{"out.log"}
 	log, _ := config.Build(zap.AddCallerSkip(1))
 	logger = log.Sugar()
 	//set up sim
@@ -40,31 +44,37 @@ func TestMain(m *testing.M) {
 	})
 
 	str := `
-	char+=xingqiu ele=hydro lvl=70 hp=8352 atk=165 def=619 cr=0.05 cd=0.50 atk%=.18 cons=6 talent=1,8,8;
-	weapon+=xingqiu label="sacrificial sword" atk=401 refine=3 er=.559;
+	char+=xingqiu ele=hydro lvl=80 hp=9514.469 atk=187.803 def=705.132 atk%=0.240 cr=.05 cd=0.5 cons=6 talent=1,8,10;
+	weapon+=xingqiu label="sacrificial sword" atk=454.363 er=0.613 refine=4;
 	art+=xingqiu label="gladiator's finale" count=2;
 	art+=xingqiu label="noblesse oblige" count=2;
 	stats+=xingqiu label=flower hp=4780 def=44 er=.065 cr=.097 cd=.124;
-	stats+=xingqiu label=feather atk=311 cd=.218 def=19 atk=.117 em=40;
+	stats+=xingqiu label=feather atk=311 cd=.218 def=19 atk%=.117 em=40;
 	stats+=xingqiu label=sands atk%=0.466 cd=.124 def%=.175 er=.045 hp=478;
-	stats+=xingqiu label=goblet hydro%=.466 cd=.202 atk=.14 hp=299 atk=39;
+	stats+=xingqiu label=goblet hydro%=.466 cd=.202 atk%=.14 hp=299 atk=39;
 	stats+=xingqiu label=circlet cr=.311 cd=0.062 atk%=.192 hp%=.082 atk=39;
 	`
 
 	p := parse.New("test", str)
 	cfg, err := p.Parse()
 	if err != nil {
+		fmt.Println(err)
 		fmt.Println("error parsing initial config")
 		return
 	}
 
 	xq, err = NewChar(sim, logger, cfg.Characters.Profile[0])
 	if err != nil {
+		fmt.Println(err)
 		fmt.Println("error parsing initial config")
 		return
 	}
 
 	sim.Chars = append(sim.Chars, xq)
+
+	//manually add 2 pc glad + 2pc no
+	gladiator.New(xq, sim, logger, 2)
+	noblesse.New(xq, sim, logger, 2)
 
 	os.Exit(m.Run())
 }
@@ -74,11 +84,14 @@ func TestXingqiuSkill(t *testing.T) {
 	param := make(map[string]int)
 	atkCounts := make(map[def.AttackTag]int)
 	particleCount := 0
+	var totalDmg float64
 	//on damage to track what's happening
 	sim.OnDamage = func(ds *def.Snapshot) {
+		ds.Stats[def.CR] = 1
 		atkCounts[ds.AttackTag]++
 		dmg, _ := target.Attack(ds)
-		logger.Debugw("attack", "abil", ds.Abil, "dmg", dmg)
+		logger.Infow("attack", "abil", ds.Abil, "dmg", dmg)
+		totalDmg += dmg
 	}
 	sim.OnParticle = func(p def.Particle) {
 		xq.ReceiveParticle(p, true, 4)
@@ -93,6 +106,12 @@ func TestXingqiuSkill(t *testing.T) {
 	}
 	if !expect("particle count", 5, particleCount) {
 		t.Error("invalid particle count")
+	}
+	//9859+11221
+
+	expect("total skill damage", 9859+11221, totalDmg)
+	if !floatApproxEqual(9859+11221, totalDmg, 10) {
+		t.Error("invalid total damage")
 	}
 
 }
@@ -109,26 +128,31 @@ func TestXingqiuAttack(t *testing.T) {
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
+	sim.Skip(delay)
 	e = xq.ActionFrames(def.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
+	sim.Skip(delay)
 	e = xq.ActionFrames(def.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
+	sim.Skip(delay)
 	e = xq.ActionFrames(def.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
+	sim.Skip(delay)
 	e = xq.ActionFrames(def.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
+	sim.Skip(delay + 100)
 
 }
 
@@ -148,6 +172,7 @@ func TestXingqiuBurst(t *testing.T) {
 		dmg, _ := target.Attack(ds)
 		logger.Debugw("attack", "abil", ds.Abil, "dmg", dmg)
 	}
+	xq.ResetNormalCounter()
 	//attack 3 times, should trigger 3 different waves of burst
 	fmt.Println("----xingqiu burst testing----")
 	fmt.Println("checking burst first wave")
@@ -210,7 +235,14 @@ func defaultResMap() map[def.EleType]float64 {
 	res[def.Hydro] = 0.1
 	res[def.Dendro] = 0.1
 	res[def.Geo] = 0.1
-	res[def.Physical] = 0.1
+	res[def.Physical] = 0.3
 
 	return res
+}
+
+func floatApproxEqual(expect, result, tol float64) bool {
+	if expect > result {
+		return expect-result < tol
+	}
+	return result-expect < tol
 }

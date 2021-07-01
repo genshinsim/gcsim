@@ -2,7 +2,7 @@ package combat
 
 import "github.com/genshinsim/gsim/pkg/def"
 
-func (s *Sim) AddOnHurt(f func(s *Sim)) {
+func (s *Sim) AddOnHurt(f func(s def.Sim)) {
 	s.onHurt = append(s.onHurt, f)
 }
 
