@@ -27,7 +27,7 @@ func TestMelt(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -139,7 +139,7 @@ func TestSuperconduct(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -249,7 +249,7 @@ func TestOverload(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -358,7 +358,7 @@ func TestVaporize(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -472,7 +472,7 @@ func TestCrystallize(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -674,7 +674,7 @@ func TestSwirl(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -878,11 +878,11 @@ func TestSwirlMultiTarget(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		targetA = New(0, s, logger, def.EnemyProfile{
+		targetA = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
-		targetB = New(1, s, logger, def.EnemyProfile{
+		targetB = New(1, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})

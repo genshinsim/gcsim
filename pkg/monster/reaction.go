@@ -16,7 +16,13 @@ func (t *Target) handleReaction(ds *def.Snapshot) {
 
 	// log.Println("aura not nil, reacting")
 
-	aura, _ := t.aura.React(ds, t)
+	aura, ok := t.aura.React(ds, t)
+
+	if ok {
+		for _, v := range t.onReactionOccured {
+			v.f(ds)
+		}
+	}
 
 	t.aura = aura
 

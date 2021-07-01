@@ -37,12 +37,14 @@ func (a *AuraCyro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		if a.CurrentDurability < 0 {
 			a = nil
 		}
+		ds.ReactionType = def.Freeze
 		//since cryo is applied, cryo aura is nil
 		return newFreeze(a, nil, red, t, ds, t.sim.Frame()), true
 	case def.Cryo:
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
+		return a, false
 	case def.Electro:
 		//superconduct
 		ds.ReactionType = def.Superconduct

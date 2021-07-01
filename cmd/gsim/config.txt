@@ -1,0 +1,18 @@
+char+=xingqiu ele=hydro lvl=70 hp=8352 atk=165 def=619 cr=0.05 cd=0.50 atk%=.18 cons=6 talent=1,8,8;
+weapon+=xingqiu label="sacrificial sword" atk=401 refine=3 er=.559;
+art+=xingqiu label="gladiator's finale" count=2;
+art+=xingqiu label="noblesse oblige" count=2;
+stats+=xingqiu label=flower hp=4780 def=44 er=.065 cr=.097 cd=.124;
+stats+=xingqiu label=feather atk=311 cd=.218 def=19 atk=.117 em=40;
+stats+=xingqiu label=sands atk%=0.466 cd=.124 def%=.175 er=.045 hp=478;
+stats+=xingqiu label=goblet hydro%=.466 cd=.202 atk=.14 hp=299 atk=39;
+stats+=xingqiu label=circlet cr=.311 cd=0.062 atk%=.192 hp%=.082 atk=39;
+
+target+="blazing axe mitachurl" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
+target+="blazing axe mitachurl" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
+active+=xingqiu;
+
+actions+=sequence_strict exec=skill,burst target=xingqiu;
+actions+=burst target=xingqiu;
+actions+=skill target=xingqiu;
+actions+=attack target=xingqiu;

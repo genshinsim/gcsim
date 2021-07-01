@@ -52,7 +52,7 @@ type Character interface {
 	AddEnergy(e float64)
 
 	//combat
-	Snapshot(name string, a AttackTag, icd ICDTag, g ICDGroup, st StrikeType, e EleType, d float64, mult float64) Snapshot
+	Snapshot(name string, a AttackTag, icd ICDTag, g ICDGroup, st StrikeType, e EleType, d Durability, mult float64) Snapshot
 	ResetNormalCounter()
 }
 

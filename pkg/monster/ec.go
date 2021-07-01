@@ -154,6 +154,7 @@ func (a *AuraEC) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//trigger tick and update tick timer
 		t.queueReaction(ds, def.ElectroCharged, 0, 1)
 		t.addTask(a.nextTick(t.sim.Frame()), 60)
+		ds.ReactionType = def.ElectroCharged
 	case def.Cryo:
 		//superconduct and if any left trigger freeze
 		ds.ReactionType = def.Superconduct
@@ -171,6 +172,7 @@ func (a *AuraEC) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//trigger tick and update tick timer
 		t.queueReaction(ds, def.ElectroCharged, 0, 1)
 		t.addTask(a.nextTick(t.sim.Frame()), 60)
+		ds.ReactionType = def.ElectroCharged
 	default:
 		return a, false
 	}

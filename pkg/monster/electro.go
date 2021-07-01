@@ -36,6 +36,7 @@ func (a *AuraElectro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		h.Element = &Element{}
 		h.T = def.Hydro
 		h.Attach(ds.Durability, t.sim.Frame())
+		ds.ReactionType = def.ElectroCharged
 		return newEC(a, h, t, ds, t.sim.Frame()), true
 	case def.Cryo:
 		//superconduct
@@ -47,6 +48,7 @@ func (a *AuraElectro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
+		return a, false
 	default:
 		return a, false
 	}

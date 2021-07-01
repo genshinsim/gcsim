@@ -36,7 +36,7 @@ func TestPyroAura(t *testing.T) {
 
 	})
 
-	target := New(0, sim, logger, def.EnemyProfile{
+	target := New(0, sim, logger, 0, def.EnemyProfile{
 		Level:  88,
 		Resist: defaultResMap(),
 	})
