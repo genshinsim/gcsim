@@ -133,7 +133,7 @@ func (c *char) c4() {
 	mod := make([]float64, def.EndStatType)
 	mod[def.DmgP] = .15
 
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
 		if ds.Actor != c.Base.Name {
 			return
 		}
@@ -280,7 +280,7 @@ func (c *char) Burst(p map[string]int) int {
 
 func (c *char) burstProc() {
 	icd := 0
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
 		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
 			return
 		}

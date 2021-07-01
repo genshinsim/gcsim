@@ -17,7 +17,7 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 	prob := 0.3 + float64(r)*0.1
 	cd := (34 - r*4) * 60
 	//add on crit effect
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot) {
+	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
 		if ds.Actor != c.Name() {
 			return
 		}
