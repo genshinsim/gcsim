@@ -214,7 +214,7 @@ function SingleModeResult({ data }: { data: SingleModeSummary }) {
 
         <Callout intent="primary">
           In total, the team did {Math.round(data.dps)} damage per second, over
-          the course of {data.sim_duration} seconds.
+          the course of {data.sim_duration / 60} seconds.
           <br />
           {index !== -1 ? (
             <span>

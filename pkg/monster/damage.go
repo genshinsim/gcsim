@@ -40,12 +40,16 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 
 	var dmg dmgResult
 
-	//check if we calc reaction dmg or normal dmg
-
-	if ds.IsReactionDamage {
-		dmg.damage = t.calcReactionDmg(ds)
-	} else {
-		dmg = t.calcDmg(ds)
+	//check if we can damage first
+	x := t.groupTagDamageMult(ds.ICDGroup, ds.ActorIndex)
+	if x != 0 {
+		//check if we calc reaction dmg or normal dmg
+		if ds.IsReactionDamage {
+			dmg.damage = t.calcReactionDmg(ds)
+		} else {
+			dmg = t.calcDmg(ds)
+		}
+		dmg.damage *= x
 	}
 
 	//this should be handled by each target individually

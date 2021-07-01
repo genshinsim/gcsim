@@ -341,6 +341,112 @@ func TestOverload(t *testing.T) {
 
 }
 
+func TestMultiOverload(t *testing.T) {
+
+	aCount := 0
+	bCount := 0
+	var targetA *Target
+	var targetB *Target
+
+	sim := dummy.NewSim(func(s *dummy.Sim) {
+
+		s.R = rand.New(rand.NewSource(time.Now().Unix()))
+
+		char := dummy.NewChar(func(c *dummy.Char) {
+			c.Stats = make([]float64, def.EndStatType)
+			c.Stats[def.EM] = 100
+		})
+
+		s.Chars = append(s.Chars, char)
+
+		targetA = New(0, s, logger, 0, def.EnemyProfile{
+			Level:  88,
+			Resist: defaultResMap(),
+		})
+
+		targetB = New(0, s, logger, 0, def.EnemyProfile{
+			Level:  88,
+			Resist: defaultResMap(),
+		})
+
+		s.OnDamage = func(ds *def.Snapshot) {
+			// log.Println(ds)
+			a, _ := targetA.Attack(ds)
+			if a > 0 {
+				aCount++
+			}
+			b, _ := targetB.Attack(ds)
+			if b > 0 {
+				bCount++
+			}
+
+		}
+
+	})
+
+	sim.Targs = append(sim.Targs, targetA)
+	sim.Targs = append(sim.Targs, targetB)
+
+	fmt.Println("----multi target overload testing----")
+
+	targetA.aura = nil
+	targetA.Attack(&def.Snapshot{
+		Durability: 100,
+		Element:    def.Electro,
+		ICDTag:     def.ICDTagNone,
+		ICDGroup:   def.ICDGroupDefault,
+		Stats:      make([]float64, def.EndStatType),
+		Targets:    def.TargetAll,
+		DamageSrc:  -1,
+	})
+	targetA.Attack(&def.Snapshot{
+		CharLvl:    90,
+		Durability: 25,
+		Element:    def.Pyro,
+		ICDTag:     def.ICDTagNone,
+		ICDGroup:   def.ICDGroupDefault,
+		Stats:      make([]float64, def.EndStatType),
+		Targets:    def.TargetAll,
+		DamageSrc:  -1,
+	})
+	//we should get 2 ticks of damage here one of each target
+	sim.Skip(2)
+
+	expect("expecting 2 overload ticks, one on each target", 2, aCount+bCount)
+	if aCount != 1 {
+		t.Errorf("overload test: expecting 1 tick of damage on target A, got %v", aCount)
+	}
+	if bCount != 1 {
+		t.Errorf("overload test: expecting 1 tick of damage on target A, got %v", bCount)
+	}
+	aCount = 0
+	bCount = 0
+
+	//there should be electro left still = 80-25-1 tick delay
+	//trigger overload again, should be no dmg this time
+	targetA.Attack(&def.Snapshot{
+		CharLvl:    90,
+		Durability: 25,
+		Element:    def.Pyro,
+		ICDTag:     def.ICDTagNone,
+		ICDGroup:   def.ICDGroupDefault,
+		Stats:      make([]float64, def.EndStatType),
+		Targets:    def.TargetAll,
+		DamageSrc:  -1,
+	})
+	sim.Skip(2)
+	expect("expecting 0 overload ticks, one on each target", 0, aCount+bCount)
+	if aCount != 0 {
+		t.Errorf("overload test: expecting 0 tick of damage on target A, got %v", aCount)
+	}
+	if bCount != 0 {
+		t.Errorf("overload test: expecting 0 tick of damage on target A, got %v", bCount)
+	}
+	aCount = 0
+	bCount = 0
+
+}
+
 func TestVaporize(t *testing.T) {
 
 	dmgCount := 0

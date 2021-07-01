@@ -28,7 +28,7 @@ func (s *Sim) Run() (SimStats, error) {
 	}
 
 	s.stats.DPS = s.stats.Damage * 60 / float64(s.f)
-	s.stats.SimDuration = s.f - 1
+	s.stats.SimDuration = s.f
 
 	return s.stats, nil
 }
