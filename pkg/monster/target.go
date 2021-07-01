@@ -36,7 +36,7 @@ type Target struct {
 	log  def.Logger
 }
 
-func New(index int, s def.Sim, log def.Logger, p def.EnemyProfile) *Target {
+func New(index int, s def.Sim, log def.Logger, hp float64, p def.EnemyProfile) *Target {
 	t := &Target{}
 
 	t.index = index
@@ -45,6 +45,8 @@ func New(index int, s def.Sim, log def.Logger, p def.EnemyProfile) *Target {
 	t.log = log
 	t.sim = s
 	t.rand = s.Rand()
+	t.maxHP = hp
+	t.hp = hp
 
 	t.icdGroupOnTimer = make([][]bool, def.MaxTeamPlayerCount)
 	t.icdTagCounter = make([][]int, def.MaxTeamPlayerCount)

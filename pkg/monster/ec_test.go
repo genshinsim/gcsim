@@ -28,7 +28,7 @@ func TestElectroOnHydro(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -148,7 +148,7 @@ func TestHydroOnElectro(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -264,7 +264,7 @@ func TestECChain(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -418,7 +418,7 @@ func TestECHydroChain(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -561,7 +561,7 @@ func TestECSwirl(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})

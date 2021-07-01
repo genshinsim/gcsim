@@ -61,7 +61,7 @@ func (c *Char) AddCDAdjustFunc(adj def.CDAdjust)                              {}
 func (c *Char) Tag(key string) int                                            { return 0 }
 func (c *Char) ReceiveParticle(p def.Particle, isActive bool, partyCount int) {}
 func (c *Char) AddEnergy(e float64)                                           {}
-func (c *Char) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d float64, mult float64) def.Snapshot {
+func (c *Char) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d def.Durability, mult float64) def.Snapshot {
 	return def.Snapshot{}
 }
 func (c *Char) ResetNormalCounter() {}

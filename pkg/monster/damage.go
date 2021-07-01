@@ -44,8 +44,16 @@ func (t *Target) Attack(ds *def.Snapshot) float64 {
 
 	//this should be handled by each target individually
 	//sim will need to add it to every target whenever this changes
-	t.sim.OnAttackLanded(t)
+	t.sim.OnAttackLanded(t, ds)
 	t.onAttackLanded(ds)
+	//execute callback on the snapshot
+	if ds.OnHitCallback != nil {
+		ds.OnHitCallback(t)
+	}
+
+	//record dmg
+	t.hp -= dmg.damage
+
 	return dmg.damage
 }
 
@@ -247,4 +255,67 @@ func (t *Target) calcReactionDmg(ds *def.Snapshot) float64 {
 	)
 
 	return damage
+}
+
+func (t *Target) AddDefMod(key int, val float64, dur int) {
+	m := def.DefMod{
+		Key:    key,
+		Value:  val,
+		Expiry: t.sim.Frame() + dur,
+	}
+	//find if exists, if exists override, else append
+	ind := -1
+	for i, v := range t.defMod {
+		if v.Key == key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "old", t.defMod[ind], "next", val)
+		// LogEnemyEvent
+		t.defMod[ind] = m
+		return
+	}
+	t.defMod = append(t.defMod, m)
+	t.log.Debugw("new def mod", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "next", val)
+	// e.mod[key] = val
+}
+
+func (t *Target) AddResMod(key string, val def.ResistMod) {
+	val.Expiry = t.sim.Frame() + val.Duration
+	val.Key = key
+	//find if exists, if exists override, else append
+	ind := -1
+	for i, v := range t.resMod {
+		if v.Key == key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.resMod), "old", t.resMod[ind], "next", val)
+		// LogEnemyEvent
+		t.resMod[ind] = val
+		return
+	}
+	t.resMod = append(t.resMod, val)
+	t.log.Debugw("new mod", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.resMod), "next", val)
+	// e.mod[key] = val
+}
+
+func (t *Target) DeactivateResMod(key string) {
+	for i, v := range t.resMod {
+		if v.Key == key {
+			t.resMod[i].Expiry = 0
+		}
+	}
+}
+
+func (t *Target) HasResMod(key string) bool {
+	ind := -1
+	for i, v := range t.resMod {
+		if v.Key == key {
+			ind = i
+		}
+	}
+	return ind != -1 && t.resMod[ind].Expiry > t.sim.Frame()
 }

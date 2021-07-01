@@ -27,7 +27,7 @@ func TestHydroAura(t *testing.T) {
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, def.EnemyProfile{
+		target = New(0, s, logger, 0, def.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})

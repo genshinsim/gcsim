@@ -36,12 +36,14 @@ func (a *AuraHydro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
+		return a, false
 	case def.Cryo:
 		//first reduce hydro durability by incoming cryo; capped at existing
 		red := a.Reduce(ds, 1)
 		if a.CurrentDurability < 0 {
 			a = nil
 		}
+		ds.ReactionType = def.Freeze
 		//since cryo is applied, cryo aura is nil
 		return newFreeze(nil, a, red, t, ds, t.sim.Frame()), true
 	case def.Electro:
@@ -50,6 +52,7 @@ func (a *AuraHydro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		e.Element = &Element{}
 		e.T = def.Electro
 		e.Attach(ds.Durability, t.sim.Frame())
+		ds.ReactionType = def.ElectroCharged
 		return newEC(e, a, t, ds, t.sim.Frame()), true
 	default:
 		return a, false

@@ -1,5 +1,31 @@
 package def
 
+type Config struct {
+	Label string
+	Mode  struct {
+		HPMode     bool
+		HP         float64
+		FrameLimit int
+	}
+	Targets    []EnemyProfile
+	Characters struct {
+		Initial string
+		Profile []CharacterProfile
+	}
+	Rotation []Action
+
+	Hurt      HurtEvent
+	FixedRand bool //if this is true then use the same seed
+	LogConfig LogConfig
+}
+
+type LogConfig struct {
+	LogLevel      string
+	LogFile       string
+	LogShowCaller bool
+	LogEvents     []bool
+}
+
 type CharacterProfile struct {
 	Base    CharacterBase
 	Weapon  WeaponProfile
@@ -9,21 +35,21 @@ type CharacterProfile struct {
 }
 
 type CharacterBase struct {
-	Name    string  `yaml:"Name"`
-	Element EleType `yaml:"Element"`
-	Level   int     `yaml:"Level"`
-	HP      float64 `yaml:"BaseHP"`
-	Atk     float64 `yaml:"BaseAtk"`
-	Def     float64 `yaml:"BaseDef"`
-	Cons    int     `yaml:"Constellation"`
+	Name    string
+	Element EleType
+	Level   int
+	HP      float64
+	Atk     float64
+	Def     float64
+	Cons    int
 	StartHP float64
 }
 
 type WeaponProfile struct {
-	Name   string      `yaml:"WeaponName"`
-	Class  WeaponClass `yaml:"WeaponClass"`
-	Refine int         `yaml:"WeaponRefinement"`
-	Atk    float64     `yaml:"WeaponBaseAtk"`
+	Name   string
+	Class  WeaponClass
+	Refine int
+	Atk    float64
 	Param  map[string]int
 }
 
@@ -34,6 +60,6 @@ type TalentProfile struct {
 }
 
 type EnemyProfile struct {
-	Level  int                 `yaml:"Level"`
-	Resist map[EleType]float64 `yaml:"Resist"`
+	Level  int
+	Resist map[EleType]float64
 }

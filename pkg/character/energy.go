@@ -2,6 +2,18 @@ package character
 
 import "github.com/genshinsim/gsim/pkg/def"
 
+func (c *Tmpl) QueueParticle(src string, num int, ele def.EleType, delay int) {
+	p := def.Particle{
+		Source: src,
+		Num:    num,
+		Ele:    ele,
+	}
+	c.AddTask(func() {
+		c.Sim.DistributeParticle(p)
+	}, "particle", delay)
+
+}
+
 func (c *Tmpl) CurrentEnergy() float64 {
 	return c.Energy
 }

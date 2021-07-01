@@ -31,6 +31,7 @@ func (a *AuraPyro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
+		return a, false
 	case def.Hydro:
 		//vaporize + reduce
 		ds.ReactionType = def.Vaporize

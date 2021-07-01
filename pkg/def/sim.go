@@ -20,16 +20,21 @@ type Sim interface {
 	//target related
 	TargetHasDebuff(debuff string, param int) bool
 	TargetHasElement(ele EleType, param int) bool
-	OnAttackLanded(t Target) //basically after damage
+	AddOnAttackLanded(f func(t Target, ds *Snapshot), key string)
+	OnAttackLanded(t Target, ds *Snapshot) //basically after damage
 	ReactionBonus() float64
 
 	//status
+	AddStatus(key string, dur int)
 	Status(key string) int //return how many more frames status will last
 
 	//shields
 	AddShield(shd Shield)
 	IsShielded() bool
 	GetShield(t ShieldType) Shield
+
+	//hooks
+	AddEventHook(f func(s Sim) bool, key string, hook EventHookType)
 
 	//other
 	Rand() *rand.Rand
@@ -57,6 +62,7 @@ const (
 	ShieldXinyanC2
 	ShieldKaeyaC4
 	ShieldYanfeiC4
+	EndShieldType
 )
 
 type Shield interface {
@@ -74,3 +80,37 @@ type Shield interface {
 const (
 	MaxTeamPlayerCount int = 4
 )
+
+type EventHookType int
+
+const (
+	PreSwapHook EventHookType = iota
+	PostSwapHook
+	PreBurstHook
+	PostBurstHook
+	PreSkillHook
+	PostSkillHook
+	PreAttackHook
+	PostAttackHook
+	PostShieldHook
+	PostParticleHook
+	//delim
+	EndEventHook
+)
+
+var eventHookTypeString = [...]string{
+	"PRE_SWAP",
+	"POST_SWAP",
+	"PRE_BURST",
+	"POST_BURST",
+	"PRE_SKILL",
+	"POST_SKILL",
+	"PRE_ATTACK",
+	"POST_ATTACK",
+	"POST_SHIELD",
+	"POST_PARTICLE",
+}
+
+func (e EventHookType) String() string {
+	return eventHookTypeString[e]
+}

@@ -43,6 +43,8 @@ type Snapshot struct {
 	ReactMult        float64 //reaction multiplier for melt/vape
 	ReactBonus       float64 //reaction bonus %+ such as witch; should be 0 and only affected by hooks
 
+	//callbacks
+	OnHitCallback func(t Target)
 }
 
 type Durability float64
