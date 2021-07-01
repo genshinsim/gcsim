@@ -50,7 +50,7 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 
 	//this should be handled by each target individually
 	//sim will need to add it to every target whenever this changes
-	t.sim.OnAttackLanded(t, ds)
+	t.sim.OnAttackLanded(t, ds, dmg.damage, dmg.isCrit)
 	t.onAttackLanded(ds)
 	//execute callback on the snapshot
 	if ds.OnHitCallback != nil {

@@ -112,7 +112,7 @@ function SingleModeResult({ data }: { data: SingleModeSummary }) {
     }
     //add up dmg per char?
     for (const [key, val] of Object.entries(data.damage_by_char[i])) {
-      let v = Math.round(val / data.sim_duration);
+      let v = Math.round((val * 60) / data.sim_duration);
       if (char === charSelected) {
         dmgDetail.push({
           name: key,

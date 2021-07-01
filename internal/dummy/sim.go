@@ -166,18 +166,18 @@ func (s *Sim) ExecuteEventHook(t def.EventHookType) {
 }
 
 type attackLandedHook struct {
-	f   func(t def.Target, ds *def.Snapshot)
+	f   func(t def.Target, ds *def.Snapshot, dmg float64, crit bool)
 	key string
 	src int
 }
 
-func (s *Sim) OnAttackLanded(t def.Target, ds *def.Snapshot) {
+func (s *Sim) OnAttackLanded(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
 	for _, v := range s.onAttackLanded {
-		v.f(t, ds)
+		v.f(t, ds, dmg, crit)
 	}
 }
 
-func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot), key string) {
+func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot, dmg float64, crit bool), key string) {
 
 	//check if override first
 	ind := -1

@@ -48,6 +48,7 @@ type Character interface {
 	Tag(key string) int
 
 	//energy
+	QueueParticle(src string, num int, ele EleType, delay int)
 	ReceiveParticle(p Particle, isActive bool, partyCount int)
 	AddEnergy(e float64)
 

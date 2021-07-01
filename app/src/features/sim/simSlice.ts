@@ -54,7 +54,7 @@ export function runSim(config: simConfig): AppThunk {
       console.log("sim/run received response");
       var data = JSON.parse(resp.payload);
       console.log(data);
-      dispatch(setResultData(data.summary));
+      // dispatch(setResultData(data.summary));
 
       dispatch(setResultData({ text: data.summary, data: data.details }));
 

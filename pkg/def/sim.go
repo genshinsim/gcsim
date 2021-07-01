@@ -24,8 +24,8 @@ type Sim interface {
 	TargetHasDebuff(debuff string, param int) bool
 	TargetHasElement(ele EleType, param int) bool
 	Targets() []Target
-	AddOnAttackLanded(f func(t Target, ds *Snapshot), key string)
-	OnAttackLanded(t Target, ds *Snapshot) //basically after damage
+	AddOnAttackLanded(f func(t Target, ds *Snapshot, dmg float64, crit bool), key string)
+	OnAttackLanded(t Target, ds *Snapshot, dmg float64, crit bool) //basically after damage
 	ReactionBonus() float64
 
 	//status

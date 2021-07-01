@@ -17,10 +17,20 @@ import (
 	"github.com/genshinsim/gsim/pkg/parse"
 
 	//characters
+	_ "github.com/genshinsim/gsim/internal/characters/beidou"
+	_ "github.com/genshinsim/gsim/internal/characters/bennett"
+	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
 
 	//weapons
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/favonius"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/favonius"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/favonius"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/sacrificial"
+
+	//artifacts
+	_ "github.com/genshinsim/gsim/internal/artifacts/gladiator"
+	_ "github.com/genshinsim/gsim/internal/artifacts/noblesse"
 )
 
 func main() {
