@@ -144,6 +144,10 @@ func (t *Target) onAttackLanded(ds *def.Snapshot) {
 	}
 }
 
+func (t *Target) Index() int {
+	return t.index
+}
+
 func (t *Target) SetIndex(ind int) {
 	t.index = ind
 }

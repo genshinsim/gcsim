@@ -18,9 +18,14 @@ func (s *Sim) CharByName(name string) (def.Character, bool) {
 	}
 	return s.chars[ind], true
 }
+func (s *Sim) ActiveCharIndex() int { return s.active }
 
 func (s *Sim) DistributeParticle(p def.Particle) {
 	for i, c := range s.chars {
 		c.ReceiveParticle(p, s.active == i, len(s.chars))
 	}
+}
+
+func (s *Sim) Characters() []def.Character {
+	return s.chars
 }

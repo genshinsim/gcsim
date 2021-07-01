@@ -35,6 +35,7 @@ const (
 
 type Sim struct {
 	f    int
+	skip int
 	cfg  def.Config
 	rand *rand.Rand
 	log  *zap.SugaredLogger
@@ -75,10 +76,13 @@ type Sim struct {
 	nextHurt    int
 	nextHurtAmt float64
 	hurt        def.HurtEvent
-	onHurt      []func(s *Sim)
+	onHurt      []func(s def.Sim)
 
 	//event hooks
 	eventHooks [][]eHook
+
+	//flags
+	flags def.Flags
 
 	//result
 	stats SimStats
@@ -217,7 +221,7 @@ func (s *Sim) initChars(cfg def.Config) error {
 		for key, count := range v.Sets {
 			f, ok := setMap[key]
 			if ok {
-				f(c, s, count)
+				f(c, s, s.log, count)
 			} else {
 				s.log.Warnf("character %v has unrecognized set %v", v.Base.Name, key)
 			}
@@ -237,6 +241,7 @@ func (s *Sim) initChars(cfg def.Config) error {
 
 func (s *Sim) initMaps() error {
 	s.eventHooks = make([][]eHook, def.EndEventHook)
+	s.flags.Custom = make(map[string]int)
 
 	s.status = make(map[string]int)
 	s.chars = make([]def.Character, 0, def.MaxTeamPlayerCount)
@@ -286,7 +291,6 @@ func (s *Sim) SwapCD() int                                      { return s.swapC
 func (s *Sim) Stam() float64                                    { return s.stam }
 func (s *Sim) Frame() int                                       { return s.f }
 func (s *Sim) Rand() *rand.Rand                                 { return s.rand }
-func (s *Sim) Flags() def.Flags                                 { return def.Flags{} }
 func (s *Sim) TargetHasDebuff(debuff string, param int) bool    { return false }
 func (s *Sim) TargetHasElement(ele def.EleType, param int) bool { return false }
 func (s *Sim) ReactionBonus() float64                           { return 0 }

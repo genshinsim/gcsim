@@ -15,7 +15,7 @@ var (
 )
 
 type NewCharacterFunc func(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error)
-type NewSetFunc func(c def.Character, s def.Sim, count int)
+type NewSetFunc func(c def.Character, s def.Sim, log def.Logger, count int)
 type NewWeaponFunc func(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int)
 
 func RegisterCharFunc(name string, f NewCharacterFunc) {
