@@ -8,17 +8,21 @@ func (t *Target) ApplyReactionDamage(ds *def.Snapshot) float64 {
 	return 0
 }
 
-func (t *Target) Attack(ds *def.Snapshot) float64 {
+func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 
 	//do nothing if attack is not going to land
 	if !t.attackWillLand(ds) {
-		return 0
+		return 0, false
 	}
 
 	//check tags
 	if ds.Durability > 0 && ds.Element != def.Physical {
 		//check for ICD first
 		if t.willApplyEle(ds.ICDTag, ds.ICDGroup, ds.ActorIndex) {
+			a := def.NoElement
+			if t.aura != nil {
+				a = t.aura.Type()
+			}
 			t.log.Debugw("application",
 				"frame", t.sim.Frame(),
 				"event", def.LogElementEvent,
@@ -27,6 +31,8 @@ func (t *Target) Attack(ds *def.Snapshot) float64 {
 				"applied_ele", ds.Element,
 				"dur", ds.Durability,
 				"abil", ds.Abil,
+				"target", t.index,
+				"existing_ele", a,
 			)
 			t.handleReaction(ds)
 		}
@@ -54,7 +60,7 @@ func (t *Target) Attack(ds *def.Snapshot) float64 {
 	//record dmg
 	t.hp -= dmg.damage
 
-	return dmg.damage
+	return dmg.damage, dmg.isCrit
 }
 
 func (t *Target) attackWillLand(ds *def.Snapshot) bool {
@@ -91,6 +97,7 @@ func (t *Target) resist(ele def.EleType, char int) float64 {
 				"amount", v.Value,
 				"from", v.Key,
 				"expiry", v.Expiry,
+				"target", t.index,
 			)
 			r += v.Value
 		}
@@ -111,6 +118,7 @@ func (t *Target) defAdj(char int) float64 {
 				"amount", v.Value,
 				"from", v.Key,
 				"expiry", v.Expiry,
+				"target", t.index,
 			)
 			r += v.Value
 		}
@@ -223,6 +231,7 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 		"em", em,
 		"em bonus", emBonus,
 		"react bonus", ds.ReactBonus,
+		"target", t.index,
 	)
 
 	return result
@@ -252,6 +261,7 @@ func (t *Target) calcReactionDmg(ds *def.Snapshot) float64 {
 		"res", res,
 		"res_mod", resmod,
 		"react bonus", ds.ReactBonus,
+		"target", t.index,
 	)
 
 	return damage
@@ -271,13 +281,13 @@ func (t *Target) AddDefMod(key int, val float64, dur int) {
 		}
 	}
 	if ind != -1 {
-		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "old", t.defMod[ind], "next", val)
+		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "old", t.defMod[ind], "next", val, "target", t.index)
 		// LogEnemyEvent
 		t.defMod[ind] = m
 		return
 	}
 	t.defMod = append(t.defMod, m)
-	t.log.Debugw("new def mod", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "next", val)
+	t.log.Debugw("new def mod", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "next", val, "target", t.index)
 	// e.mod[key] = val
 }
 

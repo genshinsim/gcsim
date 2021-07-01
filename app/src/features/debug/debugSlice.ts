@@ -58,6 +58,7 @@ export interface DataPoint {
   Amount: number;
   Intent: Intent;
   Icon: IconName;
+  Right: string;
 }
 
 const selectDebugLog = (state: RootState) => state.debug.logs;
@@ -145,6 +146,7 @@ export const selectLogs = createSelector(
         Intent: Intent.NONE,
         Icon: IconNames.CIRCLE,
         Amount: 0,
+        Right: "",
       };
 
       switch (x.Event) {
@@ -169,6 +171,7 @@ export const selectLogs = createSelector(
           x.Icon = IconNames.FLAME;
           x.Intent = Intent.PRIMARY;
           x.Amount = d.damage;
+          x.Right = d.target;
           break;
         case "action":
           if (d.M.includes("executed") && d.action === "swap") {
@@ -198,6 +201,7 @@ export const selectLogs = createSelector(
 
           x.Icon = IconNames.FLASH;
           x.Intent = Intent.WARNING;
+          x.Right = d.target;
           break;
         case "energy":
           if (x.M.includes("particle")) {
@@ -213,6 +217,7 @@ export const selectLogs = createSelector(
           break;
         case "calc":
           x.Icon = IconNames.CALCULATOR;
+          x.Right = d.target;
           break;
         case "character":
           x.Icon = IconNames.PERSON;

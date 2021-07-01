@@ -1,8 +1,6 @@
 package combat
 
 import (
-	"log"
-
 	"github.com/genshinsim/gsim/pkg/def"
 )
 
@@ -101,7 +99,7 @@ func (s *Sim) Run() (SimStats, error) {
 	// 	total = total * -1
 	// }
 
-	log.Println(s.f)
+	// log.Println(s.f)
 	s.stats.DPS = s.stats.Damage * 60 / float64(s.f)
 	s.stats.SimDuration = s.f - 1
 

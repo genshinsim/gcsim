@@ -568,7 +568,8 @@ func TestECSwirl(t *testing.T) {
 
 		s.OnDamage = func(ds *def.Snapshot) {
 			// log.Println(ds)
-			if target.Attack(ds) > 0 {
+			a, _ := target.Attack(ds)
+			if a > 0 {
 				dmgCount++
 			}
 		}

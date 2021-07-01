@@ -9,7 +9,7 @@ type Target interface {
 	Tick()
 	AddOnReactionHook(key string, fun func(ds *Snapshot))
 	//attacks
-	Attack(ds *Snapshot) float64
+	Attack(ds *Snapshot) (float64, bool)
 	AddOnAttackLandedHook(fun func(ds *Snapshot), key string)
 	RemoveOnAttackLandedHook(key string)
 	AddDefMod(key int, val float64, dur int)

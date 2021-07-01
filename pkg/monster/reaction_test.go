@@ -684,7 +684,7 @@ func TestSwirl(t *testing.T) {
 			// log.Println(target.attackWillLand(ds))
 			// log.Println(ds.Durability)
 			attackCount++
-			dmg := target.Attack(ds)
+			dmg, _ := target.Attack(ds)
 			if dmg > 0 {
 				dmgCount++
 			}
@@ -892,10 +892,12 @@ func TestSwirlMultiTarget(t *testing.T) {
 			// log.Println(target.attackWillLand(ds))
 			// log.Println(ds.Durability)
 			attackCount++
-			if targetA.Attack(ds) > 0 {
+			a, _ := targetA.Attack(ds)
+			b, _ := targetB.Attack(ds)
+			if a > 0 {
 				dmgACount++
 			}
-			if targetB.Attack(ds) > 0 {
+			if b > 0 {
 				dmgBCount++
 			}
 		}
