@@ -77,7 +77,7 @@ func TestXingqiuSkill(t *testing.T) {
 	//on damage to track what's happening
 	sim.OnDamage = func(ds *def.Snapshot) {
 		atkCounts[ds.AttackTag]++
-		dmg := target.Attack(ds)
+		dmg, _ := target.Attack(ds)
 		logger.Debugw("attack", "abil", ds.Abil, "dmg", dmg)
 	}
 	sim.OnParticle = func(p def.Particle) {
@@ -145,7 +145,7 @@ func TestXingqiuBurst(t *testing.T) {
 	//on damage to track what's happening
 	sim.OnDamage = func(ds *def.Snapshot) {
 		atkCounts[ds.AttackTag]++
-		dmg := target.Attack(ds)
+		dmg, _ := target.Attack(ds)
 		logger.Debugw("attack", "abil", ds.Abil, "dmg", dmg)
 	}
 	//attack 3 times, should trigger 3 different waves of burst

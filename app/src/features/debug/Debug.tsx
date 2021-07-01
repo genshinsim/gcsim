@@ -118,6 +118,7 @@ function Debug() {
                 multiline
                 intent={l.Intent}
                 fill
+                rightIcon={<span>{l.Right}</span>}
               >
                 {l.M}
               </Tag>
@@ -159,7 +160,7 @@ function Debug() {
       </th>
     );
   });
-  console.log(hist);
+  //console.log(hist);
 
   return (
     <div style={{ marginLeft: "20px", marginRight: "20px" }}>

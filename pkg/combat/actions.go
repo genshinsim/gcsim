@@ -9,7 +9,8 @@ import (
 func (s *Sim) ApplyDamage(ds *def.Snapshot) {
 	died := false
 	for i, v := range s.targets {
-		dmg := v.Attack(ds)
+		d := ds.Clone()
+		dmg, crit := v.Attack(&d)
 		s.stats.Damage += dmg
 		s.stats.DamageByChar[ds.ActorIndex][ds.Abil] += dmg
 		//check if target is dead
@@ -18,6 +19,19 @@ func (s *Sim) ApplyDamage(ds *def.Snapshot) {
 			s.targets[i] = nil
 			log.Println("target died", i, dmg)
 		}
+
+		s.log.Debugw(
+			ds.Abil,
+			"frame", s.f,
+			"event", def.LogDamageEvent,
+			"char", ds.ActorIndex,
+			"target", i,
+			"attack_tag", ds.AttackTag,
+			"damage", dmg,
+			"crit", crit,
+			"amp", ds.ReactMult,
+			"abil", ds.Abil,
+		)
 
 	}
 	if died {

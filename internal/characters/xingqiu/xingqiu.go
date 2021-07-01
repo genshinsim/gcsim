@@ -136,6 +136,7 @@ func (c *char) orbitalfunc(src int) func() {
 			25,
 			0,
 		)
+		d.Targets = def.TargetAll
 
 		c.QueueDmg(&d, 1)
 		c.Log.Debugw("orbital ticked", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "next expected tick", c.Sim.Frame()+150, "expiry", c.Sim.Status("xqorb"), "src", src)
@@ -178,6 +179,7 @@ func (c *char) Skill(p map[string]int) int {
 		25,
 		rainscreen[0][c.TalentLvlSkill()],
 	)
+	d.Targets = def.TargetAll
 	if c.Base.Cons >= 4 {
 		//check if ult is up, if so increase multiplier
 		if c.Sim.Status("xqburst") > 0 {
