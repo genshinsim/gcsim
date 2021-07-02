@@ -63,7 +63,9 @@ func (c *Char) ReceiveParticle(p def.Particle, isActive bool, partyCount int) {}
 func (c *Char) QueueParticle(src string, num int, ele def.EleType, delay int) {}
 func (c *Char) AddEnergy(e float64)                                           {}
 func (c *Char) AddTask(fun func(), name string, delay int)                    {}
+func (c *Char) ResetNormalCounter()                                           {}
+func (t *Char) QueueDmg(ds *def.Snapshot, delay int)                          {}
+
 func (c *Char) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d def.Durability, mult float64) def.Snapshot {
 	return def.Snapshot{}
 }
-func (c *Char) ResetNormalCounter() {}

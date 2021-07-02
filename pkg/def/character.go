@@ -19,6 +19,7 @@ type Character interface {
 	Stat(s StatType) float64
 
 	AddTask(fun func(), name string, delay int)
+	QueueDmg(ds *Snapshot, delay int)
 
 	//actions
 	Attack(p map[string]int) int
