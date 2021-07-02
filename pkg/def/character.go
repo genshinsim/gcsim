@@ -18,6 +18,8 @@ type Character interface {
 	ModifyHP(float64)
 	Stat(s StatType) float64
 
+	AddTask(fun func(), name string, delay int)
+
 	//actions
 	Attack(p map[string]int) int
 	Aimed(p map[string]int) int

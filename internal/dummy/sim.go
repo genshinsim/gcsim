@@ -75,6 +75,9 @@ func (s *Sim) IsShielded() bool                                                 
 func (s *Sim) GetShield(t def.ShieldType) def.Shield                                 { return nil }
 func (s *Sim) AddShieldBonus(f func() float64)                                       {}
 func (s *Sim) Rand() *rand.Rand                                                      { return s.R }
+func (s *Sim) AddInitHook(f func())                                                  {}
+func (s *Sim) OnTargetDefeated(t def.Target)                                         {}
+func (s *Sim) AddOnTargetDefeated(f func(t def.Target), key string)                  {}
 
 func (s *Sim) CharByPos(ind int) (def.Character, bool) {
 	if ind < 0 || ind >= len(s.Chars) {

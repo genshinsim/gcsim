@@ -63,6 +63,7 @@ type Sim struct {
 	onAttackLanded   []attackLandedHook
 	onAmpReaction    []reactionHook
 	onTransReaction  []reactionHook
+	onTargetDefeated []defeatHook
 
 	//shields
 	shields          []def.Shield
@@ -80,6 +81,9 @@ type Sim struct {
 	nextHurtAmt float64
 	hurt        def.HurtEvent
 	onHurt      []func(s def.Sim)
+
+	//initializing
+	initHooks []func()
 
 	//event hooks
 	eventHooks [][]eHook
@@ -254,6 +258,7 @@ func (s *Sim) initMaps() error {
 	s.onAttackWillLand = make([]attackWillLandHook, 0, 10)
 	s.onAmpReaction = make([]reactionHook, 0, 10)
 	s.onTransReaction = make([]reactionHook, 0, 10)
+	s.onTargetDefeated = make([]defeatHook, 0, 10)
 
 	//shield stuff
 	s.shields = make([]def.Shield, 0, def.EndShieldType)

@@ -29,17 +29,20 @@ type Sim interface {
 	OnAttackWillLand(t Target, ds *Snapshot)
 	AddOnAttackLanded(f func(t Target, ds *Snapshot, dmg float64, crit bool), key string)
 	OnAttackLanded(t Target, ds *Snapshot, dmg float64, crit bool) //basically after damage
-
 	//these are on reaction damage about to happen
 	AddOnAmpReaction(f func(t Target, ds *Snapshot), key string)
 	OnAmpReaction(t Target, ds *Snapshot)
 	AddOnTransReaction(f func(t Target, ds *Snapshot), key string)
 	OnTransReaction(t Target, ds *Snapshot)
-
 	// ReactionBonus(ds *Snapshot) float64
 	// AddReactionBonus(f func(ds *Snapshot) float64, key string)
 	// OnReaction(t Target, ds *Snapshot)
 	// AddOnReaction(f func(t Target, ds *Snapshot), key string)
+	OnTargetDefeated(t Target)
+	AddOnTargetDefeated(f func(t Target), key string)
+
+	//initial
+	AddInitHook(f func())
 
 	//status
 	AddStatus(key string, dur int)
