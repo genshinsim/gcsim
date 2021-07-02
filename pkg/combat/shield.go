@@ -2,8 +2,21 @@ package combat
 
 import "github.com/genshinsim/gsim/pkg/def"
 
-func (s *Sim) IsShielded() bool                      { return false }
-func (s *Sim) GetShield(t def.ShieldType) def.Shield { return nil }
+func (s *Sim) IsShielded() bool { return len(s.shields) > 0 }
+
+func (s *Sim) GetShield(t def.ShieldType) def.Shield {
+	for _, v := range s.shields {
+		if v.Type() == t {
+			return v
+		}
+	}
+	return nil
+}
+
+func (s *Sim) AddShieldBonus(f func() float64) {
+	s.ShieldBonusFunc = append(s.ShieldBonusFunc, f)
+}
+
 func (s *Sim) AddShield(shd def.Shield) {
 	//we always assume over write of the same type
 	ind := len(s.shields)

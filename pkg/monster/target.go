@@ -67,6 +67,13 @@ func New(index int, s def.Sim, log def.Logger, hp float64, p def.EnemyProfile) *
 	return t
 }
 
+func (t *Target) AuraType() def.EleType {
+	if t.aura == nil {
+		return def.NoElement
+	}
+	return t.aura.Type()
+}
+
 func (t *Target) HP() float64 {
 	return t.hp
 }

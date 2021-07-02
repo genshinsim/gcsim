@@ -52,6 +52,42 @@ func (s *Sim) executeEventHook(t def.EventHookType) {
 	s.eventHooks[t] = s.eventHooks[t][:n]
 }
 
+type attackWillLandHook struct {
+	f   func(t def.Target, ds *def.Snapshot)
+	key string
+	src int
+}
+
+func (s *Sim) AddOnAttackWillLand(f func(t def.Target, ds *def.Snapshot), key string) {
+	//check if override first
+	ind := -1
+	for i, v := range s.onAttackWillLand {
+		if v.key == key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.onAttackWillLand[ind] = attackWillLandHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		}
+	} else {
+		s.onAttackWillLand = append(s.onAttackWillLand, attackWillLandHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		})
+		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+	}
+}
+func (s *Sim) OnAttackWillLand(t def.Target, ds *def.Snapshot) {
+	for _, v := range s.onAttackWillLand {
+		v.f(t, ds)
+	}
+}
+
 type attackLandedHook struct {
 	f   func(t def.Target, ds *def.Snapshot, dmg float64, crit bool)
 	key string
@@ -65,7 +101,6 @@ func (s *Sim) OnAttackLanded(t def.Target, ds *def.Snapshot, dmg float64, crit b
 }
 
 func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot, dmg float64, crit bool), key string) {
-
 	//check if override first
 	ind := -1
 	for i, v := range s.onAttackLanded {
@@ -87,5 +122,73 @@ func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot, dmg float
 			src: s.f,
 		})
 		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+	}
+}
+
+type reactionHook struct {
+	f   func(t def.Target, ds *def.Snapshot)
+	key string
+	src int
+}
+
+func (s *Sim) AddOnAmpReaction(f func(t def.Target, ds *def.Snapshot), key string) {
+	//check if override first
+	ind := -1
+	for i, v := range s.onAmpReaction {
+		if v.key == key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.onAmpReaction[ind] = reactionHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		}
+	} else {
+		s.onAmpReaction = append(s.onAmpReaction, reactionHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		})
+		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+	}
+}
+
+func (s *Sim) OnAmpReaction(t def.Target, ds *def.Snapshot) {
+	for _, v := range s.onAmpReaction {
+		v.f(t, ds)
+	}
+}
+
+func (s *Sim) AddOnTransReaction(f func(t def.Target, ds *def.Snapshot), key string) {
+	//check if override first
+	ind := -1
+	for i, v := range s.onTransReaction {
+		if v.key == key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.onTransReaction[ind] = reactionHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		}
+	} else {
+		s.onTransReaction = append(s.onTransReaction, reactionHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		})
+		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+	}
+}
+
+func (s *Sim) OnTransReaction(t def.Target, ds *def.Snapshot) {
+	for _, v := range s.onTransReaction {
+		v.f(t, ds)
 	}
 }

@@ -59,7 +59,10 @@ type Sim struct {
 	targets []def.Target
 
 	//combat
-	onAttackLanded []attackLandedHook
+	onAttackWillLand []attackWillLandHook
+	onAttackLanded   []attackLandedHook
+	onAmpReaction    []reactionHook
+	onTransReaction  []reactionHook
 
 	//shields
 	shields          []def.Shield
@@ -161,7 +164,6 @@ func (s *Sim) initTargets(cfg def.Config) error {
 	s.targets = make([]def.Target, len(cfg.Targets))
 	for i := 0; i < len(cfg.Targets); i++ {
 		t := monster.New(i, s, s.log, cfg.Mode.HP, cfg.Targets[i])
-
 		t.AddOnReactionHook("stats", func(ds *def.Snapshot) {
 			s.stats.ReactionsTriggered[ds.ReactionType]++
 		})
@@ -249,6 +251,9 @@ func (s *Sim) initMaps() error {
 
 	//combat stuff
 	s.onAttackLanded = make([]attackLandedHook, 0, 10)
+	s.onAttackWillLand = make([]attackWillLandHook, 0, 10)
+	s.onAmpReaction = make([]reactionHook, 0, 10)
+	s.onTransReaction = make([]reactionHook, 0, 10)
 
 	//shield stuff
 	s.shields = make([]def.Shield, 0, def.EndShieldType)
@@ -293,4 +298,3 @@ func (s *Sim) Frame() int                                       { return s.f }
 func (s *Sim) Rand() *rand.Rand                                 { return s.rand }
 func (s *Sim) TargetHasDebuff(debuff string, param int) bool    { return false }
 func (s *Sim) TargetHasElement(ele def.EleType, param int) bool { return false }
-func (s *Sim) ReactionBonus() float64                           { return 0 }

@@ -31,11 +31,11 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 				return false
 			}
 
-			f := s.Flags()
+			nob, ok := s.GetCustomFlag("nob-4pc")
 			//only activate if none existing
-			if s.Status("nob-4pc") == 0 || f.Custom["nob-4c"] == c.CharIndex() {
+			if s.Status("nob-4pc") == 0 || (nob == c.CharIndex() && ok) {
 				s.AddStatus("nob-4pc", 720)
-				f.Custom["nob-4c"] = c.CharIndex()
+				s.SetCustomFlag("nob-4pc", c.CharIndex())
 			}
 
 			log.Debugw("noblesse 4pc proc", "frame", s.Frame(), "event", def.LogArtifactEvent, "expiry", s.Status("nob-4pc"))
