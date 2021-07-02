@@ -18,6 +18,8 @@ func (t *Target) handleReaction(ds *def.Snapshot) {
 
 	aura, ok := t.aura.React(ds, t)
 
+	t.sim.OnReaction(t, ds)
+
 	if ok {
 		for _, v := range t.onReactionOccured {
 			v.f(ds)

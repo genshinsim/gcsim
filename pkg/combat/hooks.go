@@ -125,7 +125,45 @@ func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot, dmg float
 	}
 }
 
-type reactionHook struct {
+type onReactionHook struct {
+	f   func(t def.Target, ds *def.Snapshot)
+	key string
+	src int
+}
+
+func (s *Sim) AddOnReaction(f func(t def.Target, ds *def.Snapshot), key string) {
+	//check if override first
+	ind := -1
+	for i, v := range s.onReaction {
+		if v.key == key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.onReaction[ind] = onReactionHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		}
+	} else {
+		s.onReaction = append(s.onReaction, onReactionHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		})
+		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+	}
+}
+
+func (s *Sim) OnReaction(t def.Target, ds *def.Snapshot) {
+	s.stats.ReactionsTriggered[ds.ReactionType]++
+	for _, v := range s.onReaction {
+		v.f(t, ds)
+	}
+}
+
+type onReactionDamageHook struct {
 	f   func(t def.Target, ds *def.Snapshot)
 	key string
 	src int
@@ -141,13 +179,13 @@ func (s *Sim) AddOnAmpReaction(f func(t def.Target, ds *def.Snapshot), key strin
 	}
 	if ind != -1 {
 		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
-		s.onAmpReaction[ind] = reactionHook{
+		s.onAmpReaction[ind] = onReactionDamageHook{
 			f:   f,
 			key: key,
 			src: s.f,
 		}
 	} else {
-		s.onAmpReaction = append(s.onAmpReaction, reactionHook{
+		s.onAmpReaction = append(s.onAmpReaction, onReactionDamageHook{
 			f:   f,
 			key: key,
 			src: s.f,
@@ -172,13 +210,13 @@ func (s *Sim) AddOnTransReaction(f func(t def.Target, ds *def.Snapshot), key str
 	}
 	if ind != -1 {
 		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
-		s.onTransReaction[ind] = reactionHook{
+		s.onTransReaction[ind] = onReactionDamageHook{
 			f:   f,
 			key: key,
 			src: s.f,
 		}
 	} else {
-		s.onTransReaction = append(s.onTransReaction, reactionHook{
+		s.onTransReaction = append(s.onTransReaction, onReactionDamageHook{
 			f:   f,
 			key: key,
 			src: s.f,

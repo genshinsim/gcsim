@@ -15,6 +15,9 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 	//max 10 stacks
 	w := weap{}
 	w.stacks = param["stack"]
+	if w.stacks > 10 {
+		w.stacks = 10
+	}
 	dmg := 0.015 + float64(r)*0.005
 
 	m := make([]float64, def.EndStatType)

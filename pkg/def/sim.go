@@ -36,8 +36,8 @@ type Sim interface {
 	OnTransReaction(t Target, ds *Snapshot)
 	// ReactionBonus(ds *Snapshot) float64
 	// AddReactionBonus(f func(ds *Snapshot) float64, key string)
-	// OnReaction(t Target, ds *Snapshot)
-	// AddOnReaction(f func(t Target, ds *Snapshot), key string)
+	OnReaction(t Target, ds *Snapshot)
+	AddOnReaction(f func(t Target, ds *Snapshot), key string)
 	OnTargetDefeated(t Target)
 	AddOnTargetDefeated(f func(t Target), key string)
 
@@ -57,6 +57,7 @@ type Sim interface {
 	//healing
 	HealActive(amt float64)
 	HealAll(amt float64)
+	HealAllPercent(percent float64)
 	AddIncHealBonus(f func() float64)
 
 	AddOnHurt(f func(s Sim))
