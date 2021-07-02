@@ -121,7 +121,7 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		if a.hydro != nil {
 			a.hydro.Refresh(ds.Durability)
 			ds.Durability = 0
-			return a, false
+			return a, true
 		}
 		//otherwise attach it
 		r := &AuraHydro{}
@@ -129,7 +129,6 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		r.T = def.Hydro
 		r.Attach(ds.Durability, t.sim.Frame())
 		a.hydro = r
-		return a, false
 	case def.Cryo:
 		//check if we need to refresh freeze
 		if a.hydro != nil {
@@ -149,7 +148,7 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		if a.cryo != nil {
 			a.cryo.Refresh(ds.Durability)
 			ds.Durability = 0
-			return a, false
+			return a, true
 		}
 		//otherwise attach it
 		r := &AuraCyro{}
@@ -157,7 +156,6 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		r.T = def.Cryo
 		r.Attach(ds.Durability, t.sim.Frame())
 		a.cryo = r
-		return a, false
 	case def.Electro:
 		//superconduct
 		ds.ReactionType = def.Superconduct
