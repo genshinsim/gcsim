@@ -61,8 +61,9 @@ type Sim struct {
 	//combat
 	onAttackWillLand []attackWillLandHook
 	onAttackLanded   []attackLandedHook
-	onAmpReaction    []reactionHook
-	onTransReaction  []reactionHook
+	onAmpReaction    []onReactionDamageHook
+	onTransReaction  []onReactionDamageHook
+	onReaction       []onReactionHook
 	onTargetDefeated []defeatHook
 
 	//shields
@@ -168,9 +169,9 @@ func (s *Sim) initTargets(cfg def.Config) error {
 	s.targets = make([]def.Target, len(cfg.Targets))
 	for i := 0; i < len(cfg.Targets); i++ {
 		t := monster.New(i, s, s.log, cfg.Mode.HP, cfg.Targets[i])
-		t.AddOnReactionHook("stats", func(ds *def.Snapshot) {
-			s.stats.ReactionsTriggered[ds.ReactionType]++
-		})
+		// t.AddOnReactionHook("stats", func(ds *def.Snapshot) {
+		// 	s.stats.ReactionsTriggered[ds.ReactionType]++
+		// })
 		s.targets[i] = t
 	}
 	return nil
@@ -256,8 +257,9 @@ func (s *Sim) initMaps() error {
 	//combat stuff
 	s.onAttackLanded = make([]attackLandedHook, 0, 10)
 	s.onAttackWillLand = make([]attackWillLandHook, 0, 10)
-	s.onAmpReaction = make([]reactionHook, 0, 10)
-	s.onTransReaction = make([]reactionHook, 0, 10)
+	s.onReaction = make([]onReactionHook, 0, 10)
+	s.onAmpReaction = make([]onReactionDamageHook, 0, 10)
+	s.onTransReaction = make([]onReactionDamageHook, 0, 10)
 	s.onTargetDefeated = make([]defeatHook, 0, 10)
 
 	//shield stuff

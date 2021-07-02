@@ -66,8 +66,11 @@ func (s *Sim) AddOnAmpReaction(f func(t def.Target, ds *def.Snapshot), key strin
 func (s *Sim) OnAmpReaction(t def.Target, ds *def.Snapshot)                          {}
 func (s *Sim) AddOnTransReaction(f func(t def.Target, ds *def.Snapshot), key string) {}
 func (s *Sim) OnTransReaction(t def.Target, ds *def.Snapshot)                        {}
+func (s *Sim) AddOnReaction(f func(t def.Target, ds *def.Snapshot), key string)      {}
+func (s *Sim) OnReaction(t def.Target, ds *def.Snapshot)                             {}
 func (s *Sim) HealActive(hp float64)                                                 {}
 func (s *Sim) HealAll(hp float64)                                                    {}
+func (s *Sim) HealAllPercent(percent float64)                                        {}
 func (s *Sim) HealIndex(index int, hp float64)                                       {}
 func (s *Sim) AddIncHealBonus(f func() float64)                                      {}
 func (s *Sim) AddOnHurt(f func(s def.Sim))                                           {}
