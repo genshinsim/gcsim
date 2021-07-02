@@ -23,7 +23,7 @@ function ArtifactBuilder({
   let msg = "";
 
   msg +=
-    "stats+=? label=main hp=4780 atk=311 " +
+    "stats+=undefined label=main hp=4780 atk=311 " +
     goblet +
     "=" +
     mainStats[statMap[goblet]] +
@@ -38,7 +38,7 @@ function ArtifactBuilder({
     ";\n";
 
   msg +=
-    "stats+=? label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;";
+    "stats+=undefined label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;";
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose} style={{ width: "50%" }}>

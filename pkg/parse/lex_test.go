@@ -53,7 +53,7 @@ actions+=skill target=ganyu;
 actions+=aim target=ganyu;
 `
 
-func testLex(t *testing.T) {
+func TestLex(t *testing.T) {
 	log.Println("testing lex")
 
 	l := lex("test", s)
