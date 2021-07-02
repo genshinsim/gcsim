@@ -63,7 +63,7 @@ func (t *Target) AddOnReactionHook(key string, fun func(ds *def.Snapshot)) {
 }
 
 func (t *Target) queueReaction(in *def.Snapshot, typ def.ReactionType, res def.Durability, delay int) {
-	ds := t.ReactionSnapshot(in, typ, res, true)
+	ds := t.TransReactionSnapshot(in, typ, res, true)
 
 	t.addTask(func(t *Target) {
 		t.sim.ApplyDamage(&ds)
@@ -77,14 +77,14 @@ func (t *Target) queueReaction(in *def.Snapshot, typ def.ReactionType, res def.D
 	default:
 		return
 	}
-	ds2 := t.ReactionSnapshot(in, typ, res, false)
+	ds2 := t.TransReactionSnapshot(in, typ, res, false)
 	t.addTask(func(t *Target) {
 		t.sim.ApplyDamage(&ds2)
 	}, delay)
 }
 
 //calculate reaction extra damage here
-func (t *Target) ReactionSnapshot(in *def.Snapshot, typ def.ReactionType, res def.Durability, selfHarm bool) def.Snapshot {
+func (t *Target) TransReactionSnapshot(in *def.Snapshot, typ def.ReactionType, res def.Durability, selfHarm bool) def.Snapshot {
 	ds := def.Snapshot{
 		CharLvl:     in.CharLvl,
 		ActorEle:    in.ActorEle,
@@ -201,18 +201,8 @@ func (t *Target) ReactionSnapshot(in *def.Snapshot, typ def.ReactionType, res de
 
 	//grab live EM
 	char, _ := t.sim.CharByPos(in.ActorIndex)
-	em := char.Stat(def.EM)
-
-	//extra dmg = mult * base dmg * lvl multiplier
-	lvl := in.CharLvl - 1
-	if lvl > 89 {
-		lvl = 89
-	}
-	if lvl < 0 {
-		lvl = 0
-	}
-
-	ds.FlatDmg = mult * (1 + ((16 * em) / (2000 + em)) + t.sim.ReactionBonus()) * reactionLvlBase[lvl]
+	ds.Stats[def.EM] = char.Stat(def.EM)
+	ds.Mult = mult
 
 	return ds
 }

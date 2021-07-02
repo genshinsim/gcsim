@@ -6,6 +6,7 @@ type Target interface {
 	MaxHP() float64
 	HP() float64
 	//aura/reactions
+	AuraType() EleType
 	AuraTick() //tick this first to avoid messing with combat
 	Tick()
 	AddOnReactionHook(key string, fun func(ds *Snapshot))

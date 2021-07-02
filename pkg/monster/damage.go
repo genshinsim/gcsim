@@ -45,8 +45,14 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 	if x != 0 {
 		//check if we calc reaction dmg or normal dmg
 		if ds.IsReactionDamage {
+			//call PreTransReaction hook
+			t.sim.OnTransReaction(t, ds)
 			dmg.damage = t.calcReactionDmg(ds)
 		} else {
+			//call PreAmpReaction hook if needed
+			if ds.IsMeltVape {
+				t.sim.OnAmpReaction(t, ds)
+			}
 			dmg = t.calcDmg(ds)
 		}
 		dmg.damage *= x
@@ -243,6 +249,16 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 }
 
 func (t *Target) calcReactionDmg(ds *def.Snapshot) float64 {
+	em := ds.Stats[def.EM]
+	lvl := ds.CharLvl - 1
+	if lvl > 89 {
+		lvl = 89
+	}
+	if lvl < 0 {
+		lvl = 0
+	}
+	ds.FlatDmg = ds.Mult * (1 + ((16 * em) / (2000 + em)) + ds.ReactBonus) * reactionLvlBase[lvl]
+
 	res := t.resist(ds.Element, ds.ActorIndex)
 	resmod := 1 - res/2
 	if res >= 0 && res < 0.75 {
