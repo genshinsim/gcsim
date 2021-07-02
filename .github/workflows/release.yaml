@@ -67,7 +67,7 @@ jobs:
         run: ls
 
       - name: archive release
-        run: zip -r dev-build-windows-amd64.zip COPYING README.md sample.png gisim.exe config
+        run: zip -r dev-build-windows-amd64.zip COPYING README.md sample.png gsim.exe config
 
       - name: upload build for next step
         uses: actions/upload-artifact@v2
@@ -107,7 +107,7 @@ jobs:
         run: ls
 
       - name: archive release
-        run: zip -r dev-build-mac-arm64.zip COPYING README.md sample.png gisim config
+        run: zip -r dev-build-mac-arm64.zip COPYING README.md sample.png gsim config
 
       - name: upload build for next step
         uses: actions/upload-artifact@v2
