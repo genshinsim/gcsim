@@ -1,7 +1,9 @@
 package parse
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"runtime"
 	"sort"
 	"strconv"
@@ -68,6 +70,9 @@ func (p *Parser) Parse() (def.Config, error) {
 	state := parseRows
 	for state != nil && err == nil {
 		state, err = state(p)
+		if err != nil {
+			return *p.result, err
+		}
 	}
 
 	if err != nil {
@@ -92,6 +97,9 @@ func parseRows(p *Parser) (parseFn, error) {
 
 	//consume the entire line
 	for n := p.l.nextItem(); n.typ != itemEOF; n = p.l.nextItem() {
+		if n.typ == itemError {
+			return nil, errors.New(n.val)
+		}
 		p.tokens = append(p.tokens, n)
 		if n.typ == itemTerminateLine {
 			break
@@ -159,6 +167,7 @@ func itemNumberToFloat64(i item) (float64, error) {
 
 func (p *Parser) consume(i ItemType) (item, error) {
 	n := p.next()
+	log.Println(n)
 	if n.typ != i {
 		_, file, no, _ := runtime.Caller(1)
 		return n, fmt.Errorf("(%s#%d) expecting %v, got token %v at line: %v", file, no, i, n, p.tokens)

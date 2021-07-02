@@ -3,6 +3,7 @@ package parse
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/genshinsim/gsim/pkg/def"
 )
@@ -19,6 +20,7 @@ func (p *Parser) newChar(name string) {
 //return a char name
 func (p *Parser) acceptChar() (*def.CharacterProfile, error) {
 	n, err := p.consume(itemIdentifier)
+	log.Println(n)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +171,6 @@ func parseStats(p *Parser) (parseFn, error) {
 			c.Stats[pos] += amt
 		default:
 			return nil, fmt.Errorf("<stats> bad token at line %v - %v: %v", n.line, n.pos, n)
-
 		}
 	}
 	return nil, errors.New("unexpected end of line while parsing stats")

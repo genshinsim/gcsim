@@ -185,12 +185,12 @@ function Import({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
        * Expected output
        *
        *    #feather
-       *    stats+=? label=feather hp=??; #setname
+       *    stats label=feather hp=??; #setname
        */
       data[k].forEach((art) => {
         // console.log(art);
 
-        let line = "stats+=? ";
+        let line = "stats+=undefined ";
         line += "label=" + k + " ";
         line += art.mainTag.name + "=" + art.mainTag.value.toFixed(3);
         art.normalTags.forEach((sub) => {
