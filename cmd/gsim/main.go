@@ -23,14 +23,33 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
 
 	//weapons
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/alley"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/amos"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/blackcliff"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/elegy"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/favonius"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/generic"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/favonius"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/favonius"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/favonius"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/sacrificial"
 
 	//artifacts
+	_ "github.com/genshinsim/gsim/internal/artifacts/archaic"
+	_ "github.com/genshinsim/gsim/internal/artifacts/blizzard"
+	_ "github.com/genshinsim/gsim/internal/artifacts/bloodstained"
+	_ "github.com/genshinsim/gsim/internal/artifacts/bolide"
+	_ "github.com/genshinsim/gsim/internal/artifacts/crimson"
 	_ "github.com/genshinsim/gsim/internal/artifacts/gladiator"
+	_ "github.com/genshinsim/gsim/internal/artifacts/heartofdepth"
+	_ "github.com/genshinsim/gsim/internal/artifacts/lavawalker"
+	_ "github.com/genshinsim/gsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gsim/internal/artifacts/noblesse"
+	_ "github.com/genshinsim/gsim/internal/artifacts/paleflame"
+	_ "github.com/genshinsim/gsim/internal/artifacts/tenacity"
+	_ "github.com/genshinsim/gsim/internal/artifacts/thunderingfury"
+	_ "github.com/genshinsim/gsim/internal/artifacts/viridescent"
+	_ "github.com/genshinsim/gsim/internal/artifacts/wanderer"
 )
 
 func main() {
