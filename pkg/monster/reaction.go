@@ -18,9 +18,8 @@ func (t *Target) handleReaction(ds *def.Snapshot) {
 
 	aura, ok := t.aura.React(ds, t)
 
-	t.sim.OnReaction(t, ds)
-
 	if ok {
+		t.sim.OnReaction(t, ds)
 		for _, v := range t.onReactionOccured {
 			v.f(ds)
 		}
@@ -101,7 +100,7 @@ func (t *Target) TransReactionSnapshot(in *def.Snapshot, typ def.ReactionType, r
 		StrikeType:       def.StrikeTypeDefault,
 		AttackTag:        def.AttackTagNone,
 		ICDTag:           def.ICDTagNone,
-		ICDGroup:         def.ICDGroupDefault,
+		ICDGroup:         def.ICDGroupReactionA,
 		IsReactionDamage: true,
 
 		//targetting info

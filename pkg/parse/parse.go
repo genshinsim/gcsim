@@ -3,7 +3,6 @@ package parse
 import (
 	"errors"
 	"fmt"
-	"log"
 	"runtime"
 	"sort"
 	"strconv"
@@ -167,7 +166,7 @@ func itemNumberToFloat64(i item) (float64, error) {
 
 func (p *Parser) consume(i ItemType) (item, error) {
 	n := p.next()
-	log.Println(n)
+	// log.Println(n)
 	if n.typ != i {
 		_, file, no, _ := runtime.Caller(1)
 		return n, fmt.Errorf("(%s#%d) expecting %v, got token %v at line: %v", file, no, i, n, p.tokens)

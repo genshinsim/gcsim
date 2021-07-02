@@ -15,6 +15,8 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 		return 0, false
 	}
 
+	t.sim.OnAttackWillLand(t, ds)
+
 	//check tags
 	if ds.Durability > 0 && ds.Element != def.Physical {
 		//check for ICD first
