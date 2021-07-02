@@ -192,3 +192,43 @@ func (s *Sim) OnTransReaction(t def.Target, ds *def.Snapshot) {
 		v.f(t, ds)
 	}
 }
+
+func (s *Sim) AddInitHook(f func()) {
+	s.initHooks = append(s.initHooks, f)
+}
+
+type defeatHook struct {
+	f   func(t def.Target)
+	key string
+	src int
+}
+
+func (s *Sim) OnTargetDefeated(t def.Target) {
+	for _, v := range s.onTargetDefeated {
+		v.f(t)
+	}
+}
+func (s *Sim) AddOnTargetDefeated(f func(t def.Target), key string) {
+	//check if override first
+	ind := -1
+	for i, v := range s.onTargetDefeated {
+		if v.key == key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.onTargetDefeated[ind] = defeatHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		}
+	} else {
+		s.onTargetDefeated = append(s.onTargetDefeated, defeatHook{
+			f:   f,
+			key: key,
+			src: s.f,
+		})
+		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+	}
+}

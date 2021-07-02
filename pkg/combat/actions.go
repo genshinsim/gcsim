@@ -16,6 +16,7 @@ func (s *Sim) ApplyDamage(ds *def.Snapshot) {
 		//check if target is dead
 		if s.cfg.Mode.HPMode && v.HP() <= 0 {
 			died = true
+			s.OnTargetDefeated(s.targets[i])
 			s.targets[i] = nil
 			log.Println("target died", i, dmg)
 		}

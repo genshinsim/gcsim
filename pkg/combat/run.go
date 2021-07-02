@@ -9,6 +9,10 @@ func (s *Sim) Run() (SimStats, error) {
 	for i, c := range s.chars {
 		c.Init(i)
 	}
+	//call rest of init hooks
+	for _, f := range s.initHooks {
+		f()
+	}
 
 	var err error
 	stop := false
