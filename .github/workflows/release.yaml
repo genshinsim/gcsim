@@ -1,0 +1,144 @@
+# .github/workflows/release.yaml
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_app:
+    runs-on: ubuntu-latest
+    name: run yarn build
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - uses: actions/setup-node@v2
+      - run: yarn
+        working-directory: ./app
+      - run: yarn buildprod
+        working-directory: ./app
+      - name: upload build for next step
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: ./app/build
+  win64:
+    name: release windows/amd64
+    needs: build_app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.16.2"
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download result from first job
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: ./build
+
+      - name: check files
+        run: ls
+
+      - run: env GOOS=windows GOARCH=amd64 go build
+
+      - name: check files
+        run: ls
+
+      - name: archive release
+        run: zip -r dev-build-windows-amd64.zip COPYING README.md sample.png gisim.exe config
+
+      - name: upload build for next step
+        uses: actions/upload-artifact@v2
+        with:
+          name: winrelease
+          path: dev-build-windows-amd64.zip
+
+  macm1:
+    name: release mac/arm64
+    needs: build_app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.16.2"
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download result from first job
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: ./build
+
+      - name: check files
+        run: ls
+
+      - run: env GOOS=darwin GOARCH=arm64 go build
+
+      - name: check files
+        run: ls
+
+      - name: archive release
+        run: zip -r dev-build-mac-arm64.zip COPYING README.md sample.png gisim config
+
+      - name: upload build for next step
+        uses: actions/upload-artifact@v2
+        with:
+          name: macarmrelease
+          path: dev-build-mac-arm64.zip
+
+  deploy:
+    name: deploy release
+    needs: [win64, macm1]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download windows release
+        uses: actions/download-artifact@v2
+        with:
+          name: winrelease
+
+      - name: Download mac release
+        uses: actions/download-artifact@v2
+        with:
+          name: macarmrelease
+
+      - name: check files
+        run: ls
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "dev"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            dev-build-windows-amd64.zip
+            dev-build-mac-arm64.zip
