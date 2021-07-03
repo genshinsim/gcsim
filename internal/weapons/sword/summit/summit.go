@@ -1,4 +1,4 @@
-package vortex
+package summit
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("vortex vanquisher", weapon)
+	combat.RegisterWeaponFunc("summit shaper", weapon)
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
@@ -39,13 +39,13 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		}
 		icd = s.Frame() + 18
 
-	}, fmt.Sprintf("vortex-%v", c.Name()))
+	}, fmt.Sprintf("summit-shaper-%v", c.Name()))
 
 	atk := 0.03 + 0.01*float64(r)
 
 	val := make([]float64, def.EndStatType)
 	c.AddMod(def.CharStatMod{
-		Key:    "vortex",
+		Key:    "summit",
 		Expiry: -1,
 		Amount: func(a def.AttackTag) ([]float64, bool) {
 			if duration > s.Frame() {

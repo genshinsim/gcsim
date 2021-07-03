@@ -1,4 +1,4 @@
-package elegy
+package freedom
 
 import (
 	"fmt"
@@ -8,14 +8,14 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("elegy of the end", weapon)
+	combat.RegisterWeaponFunc("freedom-sworn", weapon)
 }
 
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
 	m := make([]float64, def.EndStatType)
-	m[def.EM] = 45 + float64(r)*15
+	m[def.DmgP] = 0.075 + float64(r)*0.025
 	c.AddMod(def.CharStatMod{
-		Key: "eledgy-em",
+		Key: "freedom-dmg",
 		Amount: func(a def.AttackTag) ([]float64, bool) {
 			return m, true
 		},
@@ -24,13 +24,13 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 
 	val := make([]float64, def.EndStatType)
 	val[def.ATKP] = .15 + float64(r)*0.05
-	val[def.EM] = 75 + float64(r)*25
+	plunge := .12 + 0.4*float64(r)
 
 	icd := 0
 	stacks := 0
 	cooldown := 0
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnReaction(func(t def.Target, ds *def.Snapshot) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
@@ -43,23 +43,26 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		if icd > s.Frame() {
 			return
 		}
-		icd = s.Frame() + 12
+		icd = s.Frame() + 30
 		stacks++
-		if stacks == 4 {
+		if stacks == 2 {
 			stacks = 0
-			s.AddStatus("elegy", 720)
+			s.AddStatus("freedom", 720)
 			cooldown = s.Frame() + 1200
 			for _, char := range s.Characters() {
 				char.AddMod(def.CharStatMod{
-					Key: "eledgy-proc",
+					Key: "freedom-proc",
 					Amount: func(a def.AttackTag) ([]float64, bool) {
+						val[def.DmgP] = 0
+						if a == def.AttackTagNormal || a == def.AttackTagExtra || a == def.AttackTagPlunge {
+							val[def.DmgP] = plunge
+						}
 						return val, true
 					},
 					Expiry: s.Frame() + 720,
 				})
 			}
 		}
-
-	}, fmt.Sprintf("elegy-%v", c.Name()))
+	}, fmt.Sprintf("freedom-%v", c.Name()))
 
 }
