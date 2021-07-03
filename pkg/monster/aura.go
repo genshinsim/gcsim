@@ -11,6 +11,7 @@ type Aura interface {
 	Attach(dur def.Durability, f int)               //attach aura, refresh if existing
 	Source() int                                    //return the origination source of this aura, used to distinguish if diff
 	Type() def.EleType
+	AuraContains(e ...def.EleType) bool
 }
 
 func NewAura(ds *def.Snapshot, f int) Aura {
@@ -50,6 +51,15 @@ type Element struct {
 	CurrentDurability def.Durability
 	DecayRate         def.Durability //amount of durability decay per tick
 	Start             int
+}
+
+func (e *Element) AuraContains(ele ...def.EleType) bool {
+	for _, v := range ele {
+		if v == e.T {
+			return true
+		}
+	}
+	return false
 }
 
 func (e *Element) Type() def.EleType {

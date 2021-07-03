@@ -20,11 +20,7 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 			if ds.ActorIndex != c.CharIndex() {
 				return
 			}
-			switch t.AuraType() {
-			case def.Electro:
-				ds.Stats[def.DmgP] += .35
-				log.Debugw("thundersoother 4pc on electro", "frame", s.Frame(), "event", def.LogCalc, "char", c.CharIndex(), "new dmg", ds.Stats[def.DmgP])
-			case def.EC:
+			if t.AuraContains(def.Electro) {
 				ds.Stats[def.DmgP] += .35
 				log.Debugw("thundersoother 4pc on electro", "frame", s.Frame(), "event", def.LogCalc, "char", c.CharIndex(), "new dmg", ds.Stats[def.DmgP])
 			}

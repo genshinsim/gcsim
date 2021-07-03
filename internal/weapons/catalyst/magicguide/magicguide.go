@@ -15,14 +15,9 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 	dmg := 0.09 + float64(r)*0.03
 
 	s.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
-		switch t.AuraType() {
-		case def.Hydro:
-		case def.Electro:
-		case def.Cryo:
-		default:
-			return
+		if t.AuraContains(def.Hydro, def.Electro, def.Cryo) {
+			ds.Stats[def.DmgP] += dmg
+			log.Debugw("magic guide", "frame", s.Frame(), "event", def.LogCalc, "final dmg%", ds.Stats[def.DmgP])
 		}
-		ds.Stats[def.DmgP] += dmg
-		log.Debugw("magic guide", "frame", s.Frame(), "event", def.LogCalc, "final dmg%", ds.Stats[def.DmgP])
 	}, fmt.Sprintf("magic-guide-%v", c.Name()))
 }

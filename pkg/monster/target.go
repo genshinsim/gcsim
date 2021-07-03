@@ -74,6 +74,18 @@ func (t *Target) AuraType() def.EleType {
 	return t.aura.Type()
 }
 
+func (t *Target) AuraContains(ele ...def.EleType) bool {
+	if t.aura == nil {
+		for _, v := range ele {
+			if v == def.NoElement {
+				return true
+			}
+		}
+		return false
+	}
+	return t.AuraContains(ele...)
+}
+
 func (t *Target) HP() float64 {
 	return t.hp
 }

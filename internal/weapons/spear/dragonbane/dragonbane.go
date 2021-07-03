@@ -1,4 +1,4 @@
-package rainslasher
+package dragonbane
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("rainslasher", weapon)
+	combat.RegisterWeaponFunc("dragon's bane", weapon)
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
@@ -16,10 +16,10 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 	dmg := 0.16 + float64(r)*0.04
 
 	s.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
-		if t.AuraContains(def.Hydro, def.Electro) {
+		if t.AuraContains(def.Hydro, def.Pyro) {
 			ds.Stats[def.DmgP] += dmg
-			log.Debugw("rainslasher", "frame", s.Frame(), "event", def.LogCalc, "final dmg%", ds.Stats[def.DmgP])
+			log.Debugw("dragonbane", "frame", s.Frame(), "event", def.LogCalc, "final dmg%", ds.Stats[def.DmgP])
 		}
-	}, fmt.Sprintf("rainslasher-%v", c.Name()))
+	}, fmt.Sprintf("dragonbane-%v", c.Name()))
 
 }
