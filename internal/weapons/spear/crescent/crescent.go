@@ -1,4 +1,4 @@
-package blackcliff
+package crescent
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("blackcliff slasher", weapon)
+	combat.RegisterWeaponFunc("crescent pike", weapon)
 }
 
 //After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.

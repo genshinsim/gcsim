@@ -43,6 +43,7 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 			100,
 			dmg,
 		)
+		d.Targets = def.TargetAll
 		c.QueueDmg(&d, 1)
 
 		atk := d.BaseAtk*(1+d.Stats[def.ATKP]) + d.Stats[def.ATK]

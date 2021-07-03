@@ -42,6 +42,7 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 			100,
 			mult,
 		)
+		d.Targets = def.TargetAll
 		for i := 0; i <= 240; i += 30 {
 			x := d.Clone()
 			c.QueueDmg(&x, i)

@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("blackcliff slasher", weapon)
+	combat.RegisterWeaponFunc("blackcliff pole", weapon)
 }
 
 //After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.
@@ -41,5 +41,5 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		if index == 3 {
 			index = 0
 		}
-	}, fmt.Sprintf("blackcliff-slasher-%v", c.Name()))
+	}, fmt.Sprintf("blackcliff-pole-%v", c.Name()))
 }

@@ -52,6 +52,7 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 			100,
 			1.25,
 		)
+		d.Targets = def.TargetAll
 		c.QueueDmg(&d, 1)
 
 		//trigger cd

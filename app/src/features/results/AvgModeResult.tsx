@@ -190,7 +190,7 @@ function AverageModeResult({ data }: { data: AvgModeSummary }) {
           (on average, over {data.iter} iterations [min:{" "}
           {data.dps.min.toFixed(2)}, max: {data.dps.max.toFixed(2)}, std dev:{" "}
           {data.dps.sd?.toFixed(2)}]), over the course of{" "}
-          {(data.avg_duration / 60).toFixed(2)} seconds.
+          {data.avg_duration.toFixed(2)} seconds.
           <br />
           {index !== -1 ? (
             <span>
