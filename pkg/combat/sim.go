@@ -116,6 +116,7 @@ func NewSim(cfg def.Config) (*Sim, error) {
 	if err != nil {
 		return nil, err
 	}
+	s.flags.HPMode = cfg.Mode.HPMode
 	err = s.initTargets(cfg)
 	if err != nil {
 		return nil, err

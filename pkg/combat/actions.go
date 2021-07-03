@@ -135,6 +135,7 @@ func (s *Sim) execQueue() (int, error) {
 		s.active = ind
 		s.ResetAllNormalCounter()
 		s.executeEventHook(def.PostSwapHook)
+		//this duration reset needs to be after the hook for spine to behave properly
 		s.charActiveDuration = 0
 	case def.ActionCancellable:
 	case def.ActionDash:

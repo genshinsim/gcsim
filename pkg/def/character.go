@@ -9,6 +9,7 @@ type Character interface {
 	CharIndex() int
 	Ele() EleType
 	WeaponClass() WeaponClass
+	Zone() ZoneType
 	CurrentEnergy() float64 //current energy
 	TalentLvlSkill() int
 	TalentLvlAttack() int
@@ -59,6 +60,13 @@ type Character interface {
 	Snapshot(name string, a AttackTag, icd ICDTag, g ICDGroup, st StrikeType, e EleType, d Durability, mult float64) Snapshot
 	ResetNormalCounter()
 }
+
+type ZoneType int
+
+const (
+	ZoneMondstadt ZoneType = iota
+	ZoneLiyue
+)
 
 type CharStatMod struct {
 	Key    string

@@ -81,6 +81,7 @@ func (s *Sim) Rand() *rand.Rand                                                 
 func (s *Sim) AddInitHook(f func())                                                  {}
 func (s *Sim) OnTargetDefeated(t def.Target)                                         {}
 func (s *Sim) AddOnTargetDefeated(f func(t def.Target), key string)                  {}
+func (s *Sim) ActiveDuration() int                                                   { return 0 }
 
 func (s *Sim) CharByPos(ind int) (def.Character, bool) {
 	if ind < 0 || ind >= len(s.Chars) {

@@ -1,4 +1,4 @@
-package frostbearer
+package generic
 
 import (
 	"fmt"
@@ -8,14 +8,11 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("frostbearer", weapon)
+	combat.RegisterWeaponFunc("generic bow", weapon)
 }
 
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
-	atk := 0.65 + float64(r)*0.15
-	atkc := 1.6 + float64(r)*0.4
-	p := 0.5 + float64(r)*0.1
-
+	atk := 1.8 + float64(r)*0.6
 	icd := 0
 
 	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
@@ -28,10 +25,10 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
 			return
 		}
-		if s.Rand().Float64() < p {
-			icd = s.Frame() + 600
+		if s.Rand().Float64() < 0.5 {
+			icd = s.Frame() + 900 //15 sec icd
 			d := c.Snapshot(
-				"Frostbearer Proc",
+				"Prototype Archaic Proc",
 				def.AttackTagWeaponSkill,
 				def.ICDTagNone,
 				def.ICDGroupDefault,
@@ -41,11 +38,7 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 				atk,
 			)
 			d.Targets = def.TargetAll
-			if t.AuraType() == def.Cryo || t.AuraType() == def.Frozen {
-				d.Mult = atkc
-			}
 			c.QueueDmg(&d, 1)
-
 		}
 	}, fmt.Sprintf("forstbearer-%v", c.Name()))
 }
