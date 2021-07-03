@@ -48,6 +48,7 @@ type Sim interface {
 	//status
 	AddStatus(key string, dur int)
 	Status(key string) int //return how many more frames status will last
+	DeleteStatus(key string)
 
 	//shields
 	AddShield(shd Shield)

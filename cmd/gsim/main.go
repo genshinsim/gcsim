@@ -19,6 +19,9 @@ import (
 	//characters
 	_ "github.com/genshinsim/gsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gsim/internal/characters/bennett"
+	_ "github.com/genshinsim/gsim/internal/characters/fischl"
+	_ "github.com/genshinsim/gsim/internal/characters/ganyu"
+	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
 
@@ -29,10 +32,82 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/elegy"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/favonius"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/generic"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/prototype"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/royal"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/rust"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/sacrificial"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/sharpshooter"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/skyward"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/stringless"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/viridescent"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/windblume"
+
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/blackcliff"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/dodoco"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/favonius"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/frostbearer"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/magicguide"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/mappa"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/memory"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/perception"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/prayer"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/prototype"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/royal"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/sacrificial"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/skyward"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/solar"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/thrilling"
+	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/widsith"
+
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/bell"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/blackcliff"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/favonius"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/lithic"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/pines"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/prototype"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/rainslasher"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/royal"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/sacrificial"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/skyrider"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/skyward"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/spine"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/starsilver"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/unforged"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/whiteblind"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/wolf"
+
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/blackcliff"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/crescent"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/deathmatch"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonbane"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonspine"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/favonius"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/homa"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/lithic"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/primordial"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/prototype"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/royal"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/skyward"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/vortex"
+
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/alley"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/aquila"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/black"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/blackcliff"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/favonius"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/festering"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/freedom"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/generic"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/harbinger"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/ironsting"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/lion"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/primordial"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/prototype"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/royal"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/sacrificial"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/skyrider"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/skyward"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/summit"
 
 	//artifacts
 	_ "github.com/genshinsim/gsim/internal/artifacts/archaic"
@@ -302,6 +377,8 @@ func runDetailedIter(n, w int, src []byte, hp float64, dur int) sum {
 		data = append(data, v)
 
 		// log.Println(v)
+		//print out progress
+		// log.Printf("done %v\n", n-count)
 
 		if hp > 0 {
 			dd = float64(v.SimDuration) / 60.0
@@ -419,12 +496,28 @@ func detailedWorker(src []byte, hp float64, dur int, resp chan combat.SimStats, 
 			cfg.LogConfig.LogFile = ""
 			cfg.LogConfig.LogShowCaller = false
 
+			if hp > 0 {
+				cfg.Mode.HPMode = true
+				cfg.Mode.HP = hp
+			} else {
+				cfg.Mode.FrameLimit = dur * 60
+				cfg.Mode.HP = 0
+			}
+
 			s, err := combat.NewSim(cfg)
 			if err != nil {
 				log.Fatal(err)
 			}
 
+			// log.Println("starting new job")
+
 			stat, err := s.Run()
+
+			// log.Println("job done")
+
+			if err != nil {
+				log.Fatal(err)
+			}
 
 			resp <- stat
 		case <-done:
@@ -540,6 +633,14 @@ func worker(src []byte, hp float64, dur int, resp chan float64, req chan bool, d
 			cfg.LogConfig.LogLevel = "error"
 			cfg.LogConfig.LogFile = ""
 			cfg.LogConfig.LogShowCaller = false
+
+			if hp > 0 {
+				cfg.Mode.HPMode = true
+				cfg.Mode.HP = hp
+			} else {
+				cfg.Mode.FrameLimit = dur * 60
+				cfg.Mode.HP = 0
+			}
 
 			s, err := combat.NewSim(cfg)
 			if err != nil {

@@ -244,7 +244,108 @@ func (s *Sim) initChars(cfg def.Config) error {
 		s.stats.CharNames[i] = v.Base.Name
 
 	}
+
+	s.initResonance(res)
+
 	return nil
+}
+
+func (s *Sim) initResonance(count map[def.EleType]int) {
+	for k, v := range count {
+		if v >= 2 {
+			switch k {
+			case def.Pyro:
+				s.log.Debugw("adding pyro resonance", "frame", s.f, "event", def.LogSimEvent)
+				for _, c := range s.chars {
+					val := make([]float64, def.EndStatType)
+					val[def.ATKP] = 0.15
+					c.AddMod(def.CharStatMod{
+						Key: "pyro-res",
+						Amount: func(a def.AttackTag) ([]float64, bool) {
+							return val, true
+						},
+						Expiry: -1,
+					})
+				}
+			case def.Hydro:
+				//heal not implemented yet
+				s.log.Debugw("adding hydro resonance", "frame", s.f, "event", def.LogSimEvent)
+				s.log.Warnw("hydro resonance not implemented", "event", def.LogSimEvent)
+			case def.Cryo:
+				s.log.Debugw("adding cryo resonance", "frame", s.f, "event", def.LogSimEvent)
+				s.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
+					if t.AuraType() == def.Cryo {
+						ds.Stats[def.CR] += .15
+						s.log.Debugw("cryo resonance + 15% crit pre damage (cryo)", "frame", s.f, "event", def.LogCalc, "char", ds.ActorIndex, "next", ds.Stats[def.CR])
+					}
+					if t.AuraType() == def.Frozen {
+						ds.Stats[def.CR] += .15
+						s.log.Debugw("cryo resonance + 15% crit pre damage  (frozen)", "frame", s.f, "event", def.LogCalc, "char", ds.ActorIndex, "next", ds.Stats[def.CR])
+					}
+				}, "cryo res")
+			case def.Electro:
+				s.log.Debugw("adding electro resonance", "frame", s.f, "event", def.LogSimEvent)
+				last := 0
+				s.AddOnReaction(func(t def.Target, ds *def.Snapshot) {
+					switch ds.ReactionType {
+					case def.Melt:
+						return
+					case def.Vaporize:
+						return
+					}
+					if s.f-last < 300 && last != 0 { // every 5 seconds
+						return
+					}
+					s.DistributeParticle(def.Particle{
+						Source: "electro res",
+						Num:    1,
+						Ele:    def.Electro,
+					})
+					last = s.f
+				}, "electro res")
+			case def.Geo:
+				s.log.Debugw("adding geo resonance", "frame", s.f, "event", def.LogSimEvent)
+				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
+				//following special characteristics:
+				//	DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
+				s.AddShieldBonus(func() float64 {
+					return 0.15 //shield bonus always active
+				})
+				s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+					if !s.IsShielded() {
+						return
+					}
+					t.AddResMod("geo res", def.ResistMod{
+						Duration: 15 * 60,
+						Ele:      def.Geo,
+						Value:    -0.2,
+					})
+				}, "geo res")
+
+				for _, c := range s.chars {
+					val := make([]float64, def.EndStatType)
+					val[def.DmgP] = 0.15
+					c.AddMod(def.CharStatMod{
+						Key: "geo-res",
+						Amount: func(a def.AttackTag) ([]float64, bool) {
+							return val, s.IsShielded()
+						},
+						Expiry: -1,
+					})
+				}
+
+			case def.Anemo:
+				s.log.Debugw("adding anemo resonance", "frame", s.f, "event", def.LogSimEvent)
+				for _, c := range s.chars {
+					c.AddCDAdjustFunc(def.CDAdjust{
+						Key:    "anemo-res",
+						Amount: func(a def.ActionType) float64 { return -0.05 },
+						Expiry: -1,
+					})
+				}
+			}
+		}
+	}
 }
 
 func (s *Sim) initMaps() error {
