@@ -14,6 +14,21 @@ type AuraFrozen struct {
 	t        *Target
 }
 
+func (a *AuraFrozen) AuraContains(ele ...def.EleType) bool {
+	for _, v := range ele {
+		if v == def.Hydro && a.hydro != nil {
+			return true
+		}
+		if v == def.Cryo && a.cryo != nil {
+			return true
+		}
+		if v == def.Frozen {
+			return true
+		}
+	}
+	return false
+}
+
 func newFreeze(c *AuraCyro, h *AuraHydro, dur def.Durability, t *Target, ds *def.Snapshot, f int) Aura {
 	fz := AuraFrozen{}
 	fz.Element = &Element{}

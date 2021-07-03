@@ -76,7 +76,20 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/whiteblind"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/wolf"
 
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/blackcliff"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/crescent"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/deathmatch"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonbane"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonspine"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/favonius"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/homa"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/lithic"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/primordial"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/prototype"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/royal"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/skyward"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/vortex"
+
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/favonius"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/sacrificial"
 

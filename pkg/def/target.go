@@ -7,6 +7,7 @@ type Target interface {
 	HP() float64
 	//aura/reactions
 	AuraType() EleType
+	AuraContains(e ...EleType) bool
 	AuraTick() //tick this first to avoid messing with combat
 	Tick()
 	AddOnReactionHook(key string, fun func(ds *Snapshot))

@@ -11,7 +11,6 @@ func init() {
 	combat.RegisterWeaponFunc("the unforged", weapon)
 }
 
-//Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
 
 	shd := .15 + float64(r)*.05
@@ -42,12 +41,13 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 	}, fmt.Sprintf("memory-dust-%v", c.Name()))
 
 	val := make([]float64, def.EndStatType)
+	atk := 0.03 + 0.01*float64(r)
 	c.AddMod(def.CharStatMod{
 		Key:    "memory",
 		Expiry: -1,
 		Amount: func(a def.AttackTag) ([]float64, bool) {
 			if duration > s.Frame() {
-				val[def.ATKP] = 0.04 * float64(stacks)
+				val[def.ATKP] = atk * float64(stacks)
 				if s.IsShielded() {
 					val[def.ATKP] *= 2
 				}

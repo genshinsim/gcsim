@@ -17,6 +17,15 @@ type AuraEC struct {
 	snapshot def.Snapshot
 }
 
+func (a *AuraEC) AuraContains(ele ...def.EleType) bool {
+	for _, v := range ele {
+		if v == def.Electro || v == def.Hydro {
+			return true
+		}
+	}
+	return false
+}
+
 func newEC(e *AuraElectro, h *AuraHydro, t *Target, ds *def.Snapshot, f int) Aura {
 	ec := AuraEC{}
 	ec.Element = &Element{}

@@ -24,6 +24,7 @@ func (s *Sim) DistributeParticle(p def.Particle) {
 	for i, c := range s.chars {
 		c.ReceiveParticle(p, s.active == i, len(s.chars))
 	}
+	s.executeEventHook(def.PostParticleHook)
 }
 
 func (s *Sim) Characters() []def.Character {

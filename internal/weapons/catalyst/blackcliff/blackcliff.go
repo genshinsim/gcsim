@@ -13,7 +13,7 @@ func init() {
 
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
 
-	atk := 0.09 + float64(r)
+	atk := 0.09 + float64(r)*0.03
 	index := 0
 	stacks := []int{-1, -1, -1}
 
