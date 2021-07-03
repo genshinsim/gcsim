@@ -14,6 +14,10 @@ func (c *Tmpl) Name() string {
 	return c.Base.Name
 }
 
+func (c *Tmpl) Zone() def.ZoneType {
+	return c.CharZone
+}
+
 func (c *Tmpl) Ele() def.EleType {
 	return c.Base.Element
 }

@@ -16,6 +16,7 @@ type Sim interface {
 	CharByName(name string) (Character, bool)
 	DistributeParticle(p Particle)
 	ActiveCharIndex() int
+	ActiveDuration() int
 	Characters() []Character
 
 	//damage related
@@ -70,6 +71,7 @@ type Sim interface {
 }
 
 type Flags struct {
+	HPMode              bool
 	ChildeActive        bool
 	AmpReactionDidOccur bool
 	AmpReactionType     ReactionType
@@ -91,6 +93,7 @@ const (
 	ShieldXinyanC2
 	ShieldKaeyaC4
 	ShieldYanfeiC4
+	ShieldBell
 	EndShieldType
 )
 

@@ -29,3 +29,7 @@ func (s *Sim) DistributeParticle(p def.Particle) {
 func (s *Sim) Characters() []def.Character {
 	return s.chars
 }
+
+func (s *Sim) ActiveDuration() int {
+	return s.charActiveDuration
+}

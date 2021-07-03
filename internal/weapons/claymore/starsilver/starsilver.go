@@ -1,4 +1,4 @@
-package frostbearer
+package starsilver
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("frostbearer", weapon)
+	combat.RegisterWeaponFunc("snow-tombed starsilver", weapon)
 }
 
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
@@ -31,7 +31,7 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		if s.Rand().Float64() < p {
 			icd = s.Frame() + 600
 			d := c.Snapshot(
-				"Frostbearer Proc",
+				"Starsilver Proc",
 				def.AttackTagWeaponSkill,
 				def.ICDTagNone,
 				def.ICDGroupDefault,
@@ -47,5 +47,5 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 			c.QueueDmg(&d, 1)
 
 		}
-	}, fmt.Sprintf("forstbearer-%v", c.Name()))
+	}, fmt.Sprintf("starsilver-%v", c.Name()))
 }

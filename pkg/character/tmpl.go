@@ -27,6 +27,7 @@ type Tmpl struct {
 	Talents  def.TalentProfile
 	SkillCon int
 	BurstCon int
+	CharZone def.ZoneType
 
 	CDReductionFuncs []def.CDAdjust
 
