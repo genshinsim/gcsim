@@ -21,6 +21,7 @@ import (
 	//characters
 	_ "github.com/genshinsim/gsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gsim/internal/characters/bennett"
+	_ "github.com/genshinsim/gsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"

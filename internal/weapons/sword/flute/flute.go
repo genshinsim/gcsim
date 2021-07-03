@@ -52,6 +52,7 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 				100,
 				0.75+0.25*float64(r),
 			)
+			d.Targets = def.TargetAll
 			c.QueueDmg(&d, 1)
 
 		}

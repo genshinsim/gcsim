@@ -1,4 +1,4 @@
-package generic
+package prototype
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("generic bow", weapon)
+	combat.RegisterWeaponFunc("prototype archaic", weapon)
 }
 
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
