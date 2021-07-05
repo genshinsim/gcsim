@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"flag"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/genshinsim/gsim/pkg/combat"
@@ -133,10 +135,10 @@ func main() {
 
 	var err error
 
-	debug := flag.String("d", "warn", "output level: debug, info, warn")
+	debug := flag.String("d", "debug", "output level: debug, info, warn")
 	seconds := flag.Int("s", 90, "how many seconds to run the sim for")
 	cfgFile := flag.String("p", "config.txt", "which profile to use")
-	f := flag.String("o", "", "detailed log file")
+	f := flag.String("o", "debug.log", "detailed log file")
 	hp := flag.Float64("hp", 0, "hp mode: how much hp to deal damage to")
 	showCaller := flag.Bool("caller", false, "show caller in debug low")
 	fixedRand := flag.Bool("noseed", false, "use 0 for rand seed always - guarantee same results every time; only in single mode")
@@ -176,7 +178,6 @@ func main() {
 		cfg.FixedRand = *fixedRand
 
 		//make it all true for now
-
 		os.Remove(*f)
 		runSingle(cfg, *hp, *seconds)
 	}
@@ -184,6 +185,7 @@ func main() {
 }
 
 func runSingle(cfg def.Config, hp float64, dur int) {
+
 	if hp > 0 {
 		cfg.Mode.HPMode = true
 		cfg.Mode.HP = hp
@@ -255,6 +257,55 @@ func runSingle(cfg def.Config, hp float64, dur int) {
 	}
 	fmt.Println("------------------------------------------")
 	fmt.Printf("Running profile %v, total damage dealt: %.2f over %v seconds. DPS = %.2f. Sim took %s\n", cfg.Label, stats.Damage, dur, stats.DPS, elapsed)
+
+	if cfg.LogConfig.LogFile != "" {
+		//make excel log
+
+		//read the log file
+		file, err := os.Open(cfg.LogConfig.LogFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		var logs strings.Builder
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			logs.WriteString(scanner.Text())
+			logs.WriteString("\n")
+		}
+
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
+
+		file.Close()
+
+		t, err := template.ParseFiles("./log.tmpl")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		var tConfig struct {
+			Active string
+			Team   string
+			Log    string
+		}
+		tConfig.Active = cfg.Characters.Initial
+		tConfig.Team = fmt.Sprint(strings.Join(strings.Split(fmt.Sprintf("%+q", stats.CharNames), " "), ", "))
+		tConfig.Log = logs.String()
+
+		os.Remove("./debug.html")
+		f, err := os.Create("debug.html")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		err = t.Execute(f, tConfig)
+		if err != nil {
+			log.Fatal(err)
+		}
+		os.Remove(cfg.LogConfig.LogFile)
+	}
 
 }
 
