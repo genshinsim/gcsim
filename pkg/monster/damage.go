@@ -17,6 +17,11 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 
 	t.sim.OnAttackWillLand(t, ds)
 
+	//provide a way for the sim to cancel out an attack
+	if ds.Cancelled {
+		return 0, false
+	}
+
 	//check tags
 	if ds.Durability > 0 && ds.Element != def.Physical {
 		//check for ICD first

@@ -5,6 +5,8 @@ type Snapshot struct {
 	ActorEle   EleType
 	Actor      string //name of the character triggering the damage
 	ActorIndex int
+	ExtraIndex int  //this is currently purely for Kaeya icicle ICD
+	Cancelled  bool //set to true if this snap should be ignored
 
 	DamageSrc int //this is used for the purpose of calculating self harm
 	SelfHarm  bool
