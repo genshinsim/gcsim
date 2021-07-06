@@ -23,6 +23,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/bennett"
 	_ "github.com/genshinsim/gsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gsim/internal/characters/ganyu"
+	_ "github.com/genshinsim/gsim/internal/characters/kaeya"
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
