@@ -35,7 +35,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 
 	c.icicleICD = make([]int, 4)
 	c.a4()
-	c.burstICD()
+	// c.burstICD()
 
 	if c.Base.Cons > 0 {
 		c.c1()
@@ -169,6 +169,7 @@ func (c *char) Skill(p map[string]int) int {
 		50,
 		skill[c.TalentLvlSkill()],
 	)
+	d.Targets = def.TargetAll
 	c.a4count = 0
 
 	//2 or 3 1:1 ratio
@@ -218,11 +219,11 @@ func (c *char) Burst(p map[string]int) int {
 		//each icicle will start at i * offset (i.e. 0, 40, 80 OR 0, 30, 60, 90)
 		//assume each icicle will last for 8 seconds
 		//assume damage dealt every 120 (since only hitting at the front)
-
-		//note that this means each icicle is only going to hit 1 target since targets are
-		//stacked and there's an icd of 0.5 per icicle
+		//on icicle collision, it'll trigger an aoe dmg with radius 2
+		//in effect, every target gets hit every time icicles rotate around
 		for j := f + offset*i; j < f+480; j += 120 {
 			x := d.Clone()
+			x.Targets = def.TargetAll
 			x.ExtraIndex = i
 			c.QueueDmg(&x, j)
 		}
