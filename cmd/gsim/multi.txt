@@ -1,3 +1,6 @@
-../../config/ranking/4tf-benny.txt
-../../config/ranking/national.txt
-../../config/ranking/sucrose-ec.txt
+#../../config/ranking/4tf-benny.txt
+#../../config/ranking/national.txt
+#../../config/ranking/sucrose-ec.txt
+
+../../config/ganyu/solo-4rem.txt
+../../config/ganyu/solo-4bs.txt

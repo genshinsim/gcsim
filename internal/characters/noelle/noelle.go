@@ -87,7 +87,7 @@ func (c *char) a2() {
 		if c.Sim.Frame() < icd {
 			return
 		}
-		char := s.Characters()[s.ActiveCharIndex()]
+		char, _ := s.CharByPos(s.ActiveCharIndex())
 		if char.HP()/char.MaxHP() >= 0.3 {
 			return
 		}
