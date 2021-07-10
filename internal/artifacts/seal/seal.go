@@ -28,7 +28,7 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 			Amount: func(ds def.AttackTag) ([]float64, bool) {
 				if ds == def.AttackTagElementalBurst {
 					//calc er
-					er := c.Stat(def.ER)
+					er := c.Stat(def.ER) + 1
 					amt := 0.3 * er
 					if amt > 0.75 {
 						amt = 0.75
