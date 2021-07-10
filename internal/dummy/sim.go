@@ -82,6 +82,12 @@ func (s *Sim) AddInitHook(f func())                                             
 func (s *Sim) OnTargetDefeated(t def.Target)                                         {}
 func (s *Sim) AddOnTargetDefeated(f func(t def.Target), key string)                  {}
 func (s *Sim) ActiveDuration() int                                                   { return 0 }
+func (s *Sim) NewConstruct(c def.Construct, refresh bool)                            {}
+func (s *Sim) NewNoLimitCons(c def.Construct, refresh bool)                          {}
+func (s *Sim) ConstructCount() int                                                   { return 0 }
+func (s *Sim) ConstructCountType(t def.GeoConstructType) int                         { return 0 }
+func (s *Sim) HasConstruct(key int) bool                                             { return false }
+func (s *Sim) Destroy(key int) bool                                                  { return false }
 
 func (s *Sim) CharByPos(ind int) (def.Character, bool) {
 	if ind < 0 || ind >= len(s.Chars) {

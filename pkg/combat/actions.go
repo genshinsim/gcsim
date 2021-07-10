@@ -150,6 +150,7 @@ func (s *Sim) execQueue() (int, error) {
 			f = dashFrames
 			s.ResetAllNormalCounter()
 			s.lastStamUse = s.f
+			s.executeEventHook(def.PostDashHook)
 		}
 	case def.ActionJump:
 		f = jumpFrames
