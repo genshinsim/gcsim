@@ -62,6 +62,14 @@ type Sim interface {
 	HealAllPercent(percent float64)
 	AddIncHealBonus(f func() float64)
 
+	//constructs
+	NewConstruct(c Construct, refresh bool)
+	NewNoLimitCons(c Construct, refresh bool)
+	ConstructCount() int
+	ConstructCountType(t GeoConstructType) int
+	Destroy(key int) bool
+	HasConstruct(key int) bool
+
 	AddOnHurt(f func(s Sim))
 
 	//hooks
@@ -127,6 +135,7 @@ const (
 	PostAttackHook
 	PostShieldHook
 	PostParticleHook
+	PostDashHook
 	//delim
 	EndEventHook
 )
@@ -142,6 +151,7 @@ var eventHookTypeString = [...]string{
 	"POST_ATTACK",
 	"POST_SHIELD",
 	"POST_PARTICLE",
+	"POST_DASH",
 }
 
 func (e EventHookType) String() string {
