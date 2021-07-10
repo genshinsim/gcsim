@@ -126,6 +126,8 @@ import (
 	_ "github.com/genshinsim/gsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gsim/internal/artifacts/noblesse"
 	_ "github.com/genshinsim/gsim/internal/artifacts/paleflame"
+	_ "github.com/genshinsim/gsim/internal/artifacts/reminiscence"
+	_ "github.com/genshinsim/gsim/internal/artifacts/seal"
 	_ "github.com/genshinsim/gsim/internal/artifacts/tenacity"
 	_ "github.com/genshinsim/gsim/internal/artifacts/thunderingfury"
 	_ "github.com/genshinsim/gsim/internal/artifacts/viridescent"
