@@ -113,6 +113,8 @@ func (a *AuraEC) Tick() bool {
 	e := a.electro.Tick()
 	h := a.hydro.Tick()
 
+	//TODO: CHECK FOR JUMPING
+
 	a.cleanup(e, h)
 
 	//otherwise all is well

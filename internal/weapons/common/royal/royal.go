@@ -8,6 +8,10 @@ import (
 )
 
 func init() {
+	combat.RegisterWeaponFunc("royal bow", weapon)
+	combat.RegisterWeaponFunc("royal grimore", weapon)
+	combat.RegisterWeaponFunc("royal greatsword", weapon)
+	combat.RegisterWeaponFunc("royal spear", weapon)
 	combat.RegisterWeaponFunc("royal longsword", weapon)
 }
 
@@ -24,7 +28,7 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 				stacks = 5
 			}
 		}
-	}, fmt.Sprintf("royal-longsword-%v", c.Name()))
+	}, fmt.Sprintf("royal-%v", c.Name()))
 
 	rate := 0.06 + float64(r)*0.02
 	m := make([]float64, def.EndStatType)

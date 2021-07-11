@@ -8,9 +8,15 @@ import (
 )
 
 func init() {
+	combat.RegisterWeaponFunc("blackcliff warbow", weapon)
+	combat.RegisterWeaponFunc("blackcliff slasher", weapon)
 	combat.RegisterWeaponFunc("blackcliff agate", weapon)
+	combat.RegisterWeaponFunc("blackcliff pole", weapon)
+	combat.RegisterWeaponFunc("blackcliff longsword", weapon)
 }
 
+//After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.
+//This effect has a maximum of 3 stacks, and the duration of each stack is independent of the others.
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
 
 	atk := 0.09 + float64(r)*0.03
@@ -39,5 +45,5 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		if index == 3 {
 			index = 0
 		}
-	}, fmt.Sprintf("blackcliff-agate-%v", c.Name()))
+	}, fmt.Sprintf("blackcliff-%v", c.Name()))
 }

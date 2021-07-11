@@ -6,6 +6,7 @@ import (
 )
 
 func init() {
+	combat.RegisterWeaponFunc("lithic spear", weapon)
 	combat.RegisterWeaponFunc("lithic blade", weapon)
 }
 

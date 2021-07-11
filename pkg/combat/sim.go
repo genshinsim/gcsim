@@ -258,7 +258,7 @@ func (s *Sim) initResonance(count map[def.EleType]int) {
 				s.log.Debugw("adding pyro resonance", "frame", s.f, "event", def.LogSimEvent)
 				for _, c := range s.chars {
 					val := make([]float64, def.EndStatType)
-					val[def.ATKP] = 0.15
+					val[def.ATKP] = 0.25
 					c.AddMod(def.CharStatMod{
 						Key: "pyro-res",
 						Amount: func(a def.AttackTag) ([]float64, bool) {

@@ -8,7 +8,11 @@ import (
 )
 
 func init() {
+	combat.RegisterWeaponFunc("favonius warbow", weapon)
+	combat.RegisterWeaponFunc("favonius sword", weapon)
+	combat.RegisterWeaponFunc("favonius lance", weapon)
 	combat.RegisterWeaponFunc("favonius claymore", weapon)
+	combat.RegisterWeaponFunc("favonius codex", weapon)
 }
 
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
@@ -31,12 +35,12 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		if s.Rand().Float64() > p {
 			return
 		}
-		log.Debugw("favonius claymore proc'd", "frame", s.Frame(), "event", def.LogWeaponEvent)
+		log.Debugw("favonius proc'd", "frame", s.Frame(), "event", def.LogWeaponEvent, "char", c.CharIndex())
 
-		c.QueueParticle("favonius claymore", 3, def.NoElement, 150)
+		c.QueueParticle("favonius", 3, def.NoElement, 150)
 
 		icd = s.Frame() + cd
 
-	}, fmt.Sprintf("favo-claymore-%v", c.Name()))
+	}, fmt.Sprintf("favo-%v", c.Name()))
 
 }
