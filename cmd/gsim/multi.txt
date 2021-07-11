@@ -4,3 +4,5 @@
 
 ../../config/ganyu/solo-4rem.txt
 ../../config/ganyu/solo-4bs.txt
+../../config/ganyu/solo-4rem-3target.txt
+../../config/ganyu/solo-4bs-3target.txt
