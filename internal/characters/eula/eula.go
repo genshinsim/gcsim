@@ -14,8 +14,9 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	grimheartReset int
-	burstCounter   int
+	grimheartReset  int
+	burstCounter    int
+	burstCounterICD int
 }
 
 func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
@@ -35,35 +36,38 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.a4()
 	c.onExitField()
 
-	c.S.AddSnapshotHook(func(ds *def.Snapshot) bool {
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+
+	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
 		if c.Sim.Status("eulaq") == 0 {
-			return false
+			return
 		}
-		if ds.Actor != c.Base.Name {
-			return false
+		if ds.ActorIndex != c.Index {
+			return
 		}
-		if c.Sim.Status("Eula Burst ICD") > 0 {
-			return false
+		if c.burstCounterICD > c.Sim.Frame() {
+			return
 		}
 		switch ds.AttackTag {
 		case def.AttackTagElementalArt:
 		case def.AttackTagElementalBurst:
 		case def.AttackTagNormal:
 		default:
-			return false
+			return
 		}
 
 		//add to counter
 		c.burstCounter++
 		c.Log.Debugw("eula burst add stack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stack count", c.burstCounter)
 		//check for c6
-		if c.Base.Cons == 6 && c.S.Rand.Float64() < 0.5 {
+		if c.Base.Cons == 6 && c.Sim.Rand().Float64() < 0.5 {
 			c.burstCounter++
 			c.Log.Debugw("eula c6 add additional stack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stack count", c.burstCounter)
 		}
-		c.S.Status["Eula Burst ICD"] = c.Sim.Frame() + 6
-		return false
-	}, "Eula Burst", def.PostDamageHook)
+		c.burstCounterICD = c.Sim.Frame() + 6
+	}, "eula-burst-counter")
 
 	return &c, nil
 }
@@ -106,8 +110,8 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 }
 
 func (c *char) a4() {
-	c.S.AddEventHook(func(s *def.Sim) bool {
-		if s.ActiveChar != c.Base.Name {
+	c.Sim.AddEventHook(func(s def.Sim) bool {
+		if s.ActiveCharIndex() != c.Index {
 			return false
 		}
 		//reset CD, add 1 stack
@@ -121,6 +125,7 @@ func (c *char) a4() {
 		c.ResetActionCooldown(def.ActionSkill)
 
 		return false
+
 	}, "eula-a4", def.PostBurstHook)
 }
 
@@ -241,6 +246,23 @@ func (c *char) holdE() {
 		c.QueueDmg(&x, 90+i*7) //we're basically forcing it so we get 3 stacks
 	}
 
+	//shred
+	if v > 0 {
+		d.OnHitCallback = func(t def.Target) {
+			t.AddResMod("Icewhirl Cryo", def.ResistMod{
+				Ele:      def.Cryo,
+				Value:    -resRed[lvl],
+				Duration: 7 * v * 60,
+			})
+			t.AddResMod("Icewhirl Physical", def.ResistMod{
+				Ele:      def.Physical,
+				Value:    -resRed[lvl],
+				Duration: 7 * v * 60,
+			})
+
+		}
+	}
+
 	//A2
 	if v == 2 {
 		d := c.Snapshot(
@@ -263,38 +285,21 @@ func (c *char) holdE() {
 	}
 	c.QueueParticle("eula", n, def.Cryo, 100)
 
-	//add debuff per hit
-	c.S.Target.AddResMod("Icewhirl Cryo", def.ResistMod{
-		Ele:      def.Cryo,
-		Value:    -resRed[lvl],
-		Duration: 7 * v * 60,
-	})
-	c.S.Target.AddResMod("Icewhirl Physical", def.ResistMod{
-		Ele:      def.Physical,
-		Value:    -resRed[lvl],
-		Duration: 7 * v * 60,
-	})
-
 	//c1 add debuff
 	if c.Base.Cons >= 1 && v > 0 {
 		val := make([]float64, def.EndStatType)
 		val[def.PhyP] = 0.3
 		c.AddMod(def.CharStatMod{
-			Key:       "eula-c1",
-			Mod:       val,
-			Condition: func(ds def.Snapshot) bool { return true },
-			Expiry:    c.Sim.Frame() + (6*v+6)*60, //TODO: check if this is right
+			Key: "eula-c1",
+			Amount: func(a def.AttackTag) ([]float64, bool) {
+				return val, true
+			},
+			Expiry: c.Sim.Frame() + (6*v+6)*60, //TODO: check if this is right
 		})
 	}
 
 	c.Tags["grimheart"] = 0
 	c.SetCD(def.ActionSkill, 10*60+62)
-}
-
-func (c *char) skillResReduction() {
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
-
-	}, "eula-grimheart-debuff")
 }
 
 //ult 365 to 415, 60fps = 120
@@ -308,7 +313,7 @@ func (c *char) Burst(p map[string]int) int {
 		c.burstCounter = 5
 	}
 
-	c.Log.Debugw("eula burst started", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stacks", c.burstCounter, "expiry", c.S.Status["eulaq"])
+	c.Log.Debugw("eula burst started", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stacks", c.burstCounter, "expiry", c.Sim.Status("eulaq"))
 
 	lvl := c.TalentLvlBurst()
 	//add initial damage
@@ -326,13 +331,6 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.QueueDmg(&d, f-1)
 
-	//50% chance of 2 to 3 balls
-	count := 2
-	if c.S.Rand.Float64() < .5 {
-		count = 3
-	}
-	c.S.AddEnergyParticles("eula", count, def.Cryo, f+60) //guess
-
 	//add 1 stack to Grimheart
 	v := c.Tags["grimheart"]
 	if v < 2 {
@@ -341,7 +339,7 @@ func (c *char) Burst(p map[string]int) int {
 	c.Tags["grimheart"] = v
 	c.Log.Debugw("eula: grimheart stack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "current count", v)
 
-	c.S.AddTask(func(s *def.Sim) {
+	c.AddTask(func() {
 		//check to make sure it hasn't already exploded due to exiting field
 		if c.Sim.Status("eulaq") > 0 {
 			c.triggerBurst()
@@ -358,13 +356,32 @@ func (c *char) Burst(p map[string]int) int {
 }
 
 func (c *char) onExitField() {
-	c.S.AddEventHook(func(s *def.Sim) bool {
+	c.Sim.AddEventHook(func(s def.Sim) bool {
 		//trigger burst if burst is active
 		if c.Sim.Status("eulaq") > 0 {
 			c.triggerBurst()
 		}
 		return false
 	}, "eula-exit", def.PostSwapHook)
+}
+
+func (c *char) c4() {
+	c.Sim.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
+		if ds.ActorIndex != c.Index {
+			return
+		}
+		if ds.Abil != "Glacial Illumination (Lightfall)" {
+			return
+		}
+		if !c.Sim.Flags().HPMode {
+			return
+		}
+		if t.HP()/t.MaxHP() < 0.5 {
+			ds.Stats[def.DmgP] += 0.25
+			c.Log.Debugw("eula: c4 adding dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "final dmgp", ds.Stats[def.DmgP])
+		}
+
+	}, "eula-c4")
 }
 
 func (c *char) triggerBurst() {
@@ -385,17 +402,10 @@ func (c *char) triggerBurst() {
 		burstExplodeBase[c.TalentLvlBurst()]+burstExplodeStack[c.TalentLvlBurst()]*float64(stacks),
 	)
 
-	hp := c.S.Target.HP / c.S.Target.MaxHP
+	c.Log.Debugw("eula burst triggering", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stacks", stacks, "mult", d.Mult)
 
-	c.Log.Debugw("eula burst triggering", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stacks", stacks, "mult", d.Mult, "target hp%", hp)
-
-	//check target hp if < 25% and c4
-	if c.Base.Cons >= 4 && c.S.Target.HPMode && hp < 0.5 {
-		d.Stats[def.DmgP] += 0.25
-		c.Log.Debugw("eula: c4 adding dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "final dmgp", d.Stats[def.DmgP])
-	}
-	c.S.ApplyDamage(d)
-	c.S.DeleteStatus("eulaq")
+	c.Sim.ApplyDamage(&d)
+	c.Sim.DeleteStatus("eulaq")
 	c.burstCounter = 0
 }
 
