@@ -63,3 +63,13 @@ type EnemyProfile struct {
 	Level  int
 	Resist map[EleType]float64
 }
+
+type HurtEvent struct {
+	WillHurt bool
+	Once     bool //how often
+	Start    int  //
+	End      int
+	Min      float64
+	Max      float64
+	Ele      EleType
+}

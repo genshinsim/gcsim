@@ -110,13 +110,3 @@ func (c Condition) String() {
 	}
 	sb.WriteString(c.Op)
 }
-
-type HurtEvent struct {
-	WillHurt bool
-	Once     bool //how often
-	Start    int  //
-	End      int
-	Min      float64
-	Max      float64
-	Ele      EleType
-}

@@ -57,7 +57,7 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 			dmg.damage = t.calcReactionDmg(ds)
 		} else {
 			//call PreAmpReaction hook if needed
-			if ds.IsMeltVape {
+			if ds.ReactionType == def.Melt || ds.ReactionType == def.Vaporize {
 				t.sim.OnAmpReaction(t, ds)
 			}
 			dmg = t.calcDmg(ds)
@@ -244,6 +244,7 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 		"dmg_if_crit", precritdmg*(1+ds.Stats[def.CD]),
 		"is_crit", result.isCrit,
 		"pre_amp_dmg", preampdmg,
+		"reaction_type", ds.ReactionType,
 		"melt_vape", ds.IsMeltVape,
 		"react_mult", ds.ReactMult,
 		"em", em,

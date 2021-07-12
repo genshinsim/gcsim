@@ -32,7 +32,7 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 		m := make([]float64, def.EndStatType)
 		m[def.DmgP] = 0.35
 		c.AddMod(def.CharStatMod{
-			Key: "glad-4pc",
+			Key: "wt-4pc",
 			Amount: func(ds def.AttackTag) ([]float64, bool) {
 				if ds != def.AttackTagNormal && ds != def.AttackTagExtra {
 					return nil, false

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"errors"
 	"flag"
 	"fmt"
@@ -11,7 +10,6 @@ import (
 	"os"
 	"sort"
 	"strings"
-	"text/template"
 	"time"
 
 	"github.com/genshinsim/gsim/pkg/combat"
@@ -29,6 +27,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
+	"github.com/genshinsim/gsim/internal/logtohtml"
 
 	//weapons
 	_ "github.com/genshinsim/gsim/internal/weapons/common/blackcliff"
@@ -250,50 +249,55 @@ func runSingle(cfg def.Config, hp float64, dur int) {
 	if cfg.LogConfig.LogFile != "" {
 		//make excel log
 
-		//read the log file
-		file, err := os.Open(cfg.LogConfig.LogFile)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer file.Close()
-		var logs strings.Builder
-		scanner := bufio.NewScanner(file)
-		for scanner.Scan() {
-			logs.WriteString(scanner.Text())
-			logs.WriteString("\n")
-		}
-
-		if err := scanner.Err(); err != nil {
-			log.Fatal(err)
-		}
-
-		file.Close()
-
-		t, err := template.ParseFiles("./log.tmpl")
+		err = logtohtml.Write(cfg.LogConfig.LogFile, "./debug.html", cfg.Characters.Initial, stats.CharNames)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		var tConfig struct {
-			Active string
-			Team   string
-			Log    string
-		}
-		tConfig.Active = cfg.Characters.Initial
-		tConfig.Team = fmt.Sprint(strings.Join(strings.Split(fmt.Sprintf("%+q", stats.CharNames), " "), ", "))
-		tConfig.Log = logs.String()
+		// //read the log file
+		// file, err := os.Open(cfg.LogConfig.LogFile)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// defer file.Close()
+		// var logs strings.Builder
+		// scanner := bufio.NewScanner(file)
+		// for scanner.Scan() {
+		// 	logs.WriteString(scanner.Text())
+		// 	logs.WriteString("\n")
+		// }
 
-		os.Remove("./debug.html")
-		f, err := os.Create("debug.html")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
-		err = t.Execute(f, tConfig)
-		if err != nil {
-			log.Fatal(err)
-		}
-		os.Remove(cfg.LogConfig.LogFile)
+		// if err := scanner.Err(); err != nil {
+		// 	log.Fatal(err)
+		// }
+
+		// file.Close()
+
+		// t, err := template.ParseFiles("./log.tmpl")
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+
+		// var tConfig struct {
+		// 	Active string
+		// 	Team   string
+		// 	Log    string
+		// }
+		// tConfig.Active = cfg.Characters.Initial
+		// tConfig.Team = fmt.Sprint(strings.Join(strings.Split(fmt.Sprintf("%+q", stats.CharNames), " "), ", "))
+		// tConfig.Log = logs.String()
+
+		// os.Remove("./debug.html")
+		// f, err := os.Create("debug.html")
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// defer f.Close()
+		// err = t.Execute(f, tConfig)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// os.Remove(cfg.LogConfig.LogFile)
 	}
 
 }

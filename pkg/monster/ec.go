@@ -155,6 +155,7 @@ func (a *AuraEC) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		if ds.Durability > 0 {
 			ds.ReactionType = def.Vaporize
 			ds.ReactMult = 1.5
+			ds.IsMeltVape = true
 			a.hydro.Reduce(ds, 0.5)
 		}
 	case def.Hydro:
