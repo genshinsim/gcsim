@@ -12,7 +12,7 @@ func (s *Sim) ApplyDamage(ds *def.Snapshot) {
 		d := ds.Clone()
 		dmg, crit := v.Attack(&d)
 		s.stats.Damage += dmg
-		s.stats.DamageByChar[ds.ActorIndex][ds.Abil] += dmg
+		s.stats.DamageByChar[d.ActorIndex][d.Abil] += dmg
 		//check if target is dead
 		if s.cfg.Mode.HPMode && v.HP() <= 0 {
 			died = true
@@ -21,17 +21,22 @@ func (s *Sim) ApplyDamage(ds *def.Snapshot) {
 			log.Println("target died", i, dmg)
 		}
 
+		amp := ""
+		if d.IsMeltVape {
+			amp = string(d.ReactionType)
+		}
+
 		s.log.Debugw(
-			ds.Abil,
+			d.Abil,
 			"frame", s.f,
 			"event", def.LogDamageEvent,
-			"char", ds.ActorIndex,
+			"char", d.ActorIndex,
 			"target", i,
-			"attack_tag", ds.AttackTag,
+			"attack_tag", d.AttackTag,
 			"damage", dmg,
 			"crit", crit,
-			"amp", ds.ReactMult,
-			"abil", ds.Abil,
+			"amp", amp,
+			"abil", d.Abil,
 		)
 
 	}

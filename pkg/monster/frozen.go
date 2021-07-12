@@ -116,6 +116,7 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//melt, pyro into cryo = strong; should be melt only
 		ds.ReactionType = def.Melt
 		ds.ReactMult = 2
+		ds.IsMeltVape = true
 		a.Reduce(ds, 2)
 	case def.Hydro:
 		//check if we need to refresh freeze

@@ -157,7 +157,9 @@ func (s *Sim) AddOnReaction(f func(t def.Target, ds *def.Snapshot), key string) 
 }
 
 func (s *Sim) OnReaction(t def.Target, ds *def.Snapshot) {
-	s.stats.ReactionsTriggered[ds.ReactionType]++
+	if ds.ReactionType != def.NoReaction {
+		s.stats.ReactionsTriggered[ds.ReactionType]++
+	}
 	for _, v := range s.onReaction {
 		v.f(t, ds)
 	}

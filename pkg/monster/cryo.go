@@ -30,6 +30,7 @@ func (a *AuraCyro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//melt, pyro into cryo = strong
 		ds.ReactionType = def.Melt
 		ds.ReactMult = 2
+		ds.IsMeltVape = true
 		a.Reduce(ds, 2)
 	case def.Hydro:
 		//first reduce hydro durability by incoming cryo; capped at existing

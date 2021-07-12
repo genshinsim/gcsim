@@ -35,11 +35,13 @@ func (a *AuraPyro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//vaporize + reduce
 		ds.ReactionType = def.Vaporize
 		ds.ReactMult = 2
+		ds.IsMeltVape = true
 		a.Reduce(ds, 2)
 	case def.Cryo:
 		//melt + reduce
 		ds.ReactionType = def.Melt
 		ds.ReactMult = 1.5
+		ds.IsMeltVape = true
 		//vaporize + reduce
 		a.Reduce(ds, 0.5)
 	case def.Electro:

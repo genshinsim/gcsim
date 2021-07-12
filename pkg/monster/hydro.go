@@ -31,6 +31,7 @@ func (a *AuraHydro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//vaporize, pyro into hydro = weak
 		ds.ReactionType = def.Vaporize
 		ds.ReactMult = 1.5
+		ds.IsMeltVape = true
 		a.Reduce(ds, 0.5)
 	case def.Hydro:
 		//refresh

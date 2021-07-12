@@ -41,7 +41,7 @@ type Snapshot struct {
 	IsReactionDamage bool
 	IsReaction       bool
 	ReactionType     ReactionType
-	IsMeltVape       bool    //trigger melt/vape
+	IsMeltVape       bool
 	ReactMult        float64 //reaction multiplier for melt/vape
 	ReactBonus       float64 //reaction bonus %+ such as witch; should be 0 and only affected by hooks
 

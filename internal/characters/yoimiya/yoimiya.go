@@ -52,7 +52,7 @@ func (c *char) Attack(p map[string]int) int {
 		def.StrikeTypePierce,
 		def.Physical,
 		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
+		attack[c.NormalCounter][0][c.TalentLvlAttack()],
 	)
 
 	c.QueueDmg(&d, travel+f)
