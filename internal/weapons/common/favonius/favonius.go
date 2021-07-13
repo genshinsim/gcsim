@@ -11,7 +11,7 @@ func init() {
 	combat.RegisterWeaponFunc("favonius warbow", weapon)
 	combat.RegisterWeaponFunc("favonius sword", weapon)
 	combat.RegisterWeaponFunc("favonius lance", weapon)
-	combat.RegisterWeaponFunc("favonius claymore", weapon)
+	combat.RegisterWeaponFunc("favonius greatsword", weapon)
 	combat.RegisterWeaponFunc("favonius codex", weapon)
 }
 
