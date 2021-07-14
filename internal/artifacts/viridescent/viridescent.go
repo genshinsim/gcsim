@@ -11,7 +11,7 @@ func init() {
 	combat.RegisterSetFunc("viridescent venerer", New)
 }
 
-func New(c def.Character, s def.Sim, log def.Logger, count int) {
+func New(c def.Character, s def.Sim, logger def.Logger, count int) {
 	if count >= 2 {
 		m := make([]float64, def.EndStatType)
 		m[def.AnemoP] = 0.15
@@ -25,9 +25,12 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 	}
 	if count >= 4 {
 		s.AddOnTransReaction(func(t def.Target, ds *def.Snapshot) {
+			// log.Println(ds)
 			if ds.ActorIndex != c.CharIndex() {
 				return
 			}
+			// log.Println("ok")
+			// log.Println(ds.ReactionType)
 			switch ds.ReactionType {
 			case def.SwirlCryo:
 				t.AddResMod("vvcryo", def.ResistMod{
@@ -35,6 +38,7 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 					Ele:      def.Cryo,
 					Value:    -0.4,
 				})
+				// log.Println(t.HasResMod("vvcryo"))
 			case def.SwirlElectro:
 				t.AddResMod("vvelectro", def.ResistMod{
 					Duration: 600, //10 seconds
@@ -57,7 +61,7 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 				return
 			}
 			ds.ReactBonus += 0.6
-			log.Debugw("vv 4pc proc", "frame", s.Frame(), "event", def.LogArtifactEvent, "reaction", ds.ReactionType, "char", c.CharIndex())
+			logger.Debugw("vv 4pc proc", "frame", s.Frame(), "event", def.LogArtifactEvent, "reaction", ds.ReactionType, "char", c.CharIndex())
 
 		}, fmt.Sprintf("vv4-%v", c.Name()))
 
