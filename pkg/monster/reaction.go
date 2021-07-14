@@ -102,6 +102,7 @@ func (t *Target) TransReactionSnapshot(in *def.Snapshot, typ def.ReactionType, r
 		ICDTag:           def.ICDTagNone,
 		ICDGroup:         def.ICDGroupReactionA,
 		IsReactionDamage: true,
+		ReactionType:     typ,
 
 		//targetting info
 		Targets:   def.TargetAll,
