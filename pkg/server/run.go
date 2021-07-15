@@ -21,6 +21,8 @@ import (
 	//characters
 	_ "github.com/genshinsim/gsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gsim/internal/characters/bennett"
+	_ "github.com/genshinsim/gsim/internal/characters/diona"
+	_ "github.com/genshinsim/gsim/internal/characters/eula"
 	_ "github.com/genshinsim/gsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gsim/internal/characters/ganyu"
 	_ "github.com/genshinsim/gsim/internal/characters/kaeya"

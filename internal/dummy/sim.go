@@ -88,6 +88,7 @@ func (s *Sim) ConstructCount() int                                              
 func (s *Sim) ConstructCountType(t def.GeoConstructType) int                         { return 0 }
 func (s *Sim) HasConstruct(key int) bool                                             { return false }
 func (s *Sim) Destroy(key int) bool                                                  { return false }
+func (s *Sim) AddStamMod(f func(a def.ActionType) float64)                           {}
 
 func (s *Sim) CharByPos(ind int) (def.Character, bool) {
 	if ind < 0 || ind >= len(s.Chars) {

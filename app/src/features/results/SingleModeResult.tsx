@@ -221,7 +221,7 @@ function SingleModeResult({ data }: { data: SingleModeSummary }) {
               {charSelected +
                 " did " +
                 Math.round(dmg[index].value) +
-                " damage per second, represeting " +
+                " damage per second, representing " +
                 ((100 * dmg[index].value) / data.dps).toFixed(2) +
                 "% of the total team dps."}
             </span>
