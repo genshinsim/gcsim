@@ -148,6 +148,7 @@ func (c *char) Attack(p map[string]int) int {
 		25,
 		0,
 	)
+	d.Targets = def.TargetAll
 
 	for i, mult := range auto[c.NormalCounter] {
 		x := d.Clone()
@@ -328,6 +329,7 @@ func (c *char) Burst(p map[string]int) int {
 		50,
 		burstInitial[lvl],
 	)
+	d.Targets = def.TargetAll
 
 	c.QueueDmg(&d, f-1)
 
@@ -401,6 +403,7 @@ func (c *char) triggerBurst() {
 		50,
 		burstExplodeBase[c.TalentLvlBurst()]+burstExplodeStack[c.TalentLvlBurst()]*float64(stacks),
 	)
+	d.Targets = def.TargetAll
 
 	c.Log.Debugw("eula burst triggering", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stacks", stacks, "mult", d.Mult)
 

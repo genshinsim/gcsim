@@ -72,6 +72,9 @@ type Sim interface {
 
 	AddOnHurt(f func(s Sim))
 
+	//stam
+	AddStamMod(f func(a ActionType) float64)
+
 	//hooks
 	AddEventHook(f func(s Sim) bool, key string, hook EventHookType)
 

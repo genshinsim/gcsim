@@ -197,7 +197,7 @@ function AverageModeResult({ data }: { data: AvgModeSummary }) {
               {charSelected +
                 " did " +
                 Math.round(dmg[index].value) +
-                " damage per second, represeting " +
+                " damage per second, representing " +
                 ((100 * dmg[index].value) / data.dps.mean).toFixed(2) +
                 "% of the total team dps."}
             </span>
