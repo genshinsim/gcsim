@@ -31,6 +31,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
+	_ "github.com/genshinsim/gsim/internal/characters/yoimiya"
 
 	//weapons
 	_ "github.com/genshinsim/gsim/internal/weapons/common/blackcliff"
@@ -48,6 +49,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/sharpshooter"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/skyward"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/stringless"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/thundering"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/viridescent"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/windblume"
 

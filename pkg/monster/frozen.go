@@ -95,14 +95,17 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 	}
 	switch ds.Element {
 	case def.Anemo:
-		ds.ReactionType = def.SwirlCryo
-		//queue swirl dmg
-		t.queueReaction(ds, def.SwirlCryo, a.CurrentDurability, 1)
-		//reduce pyro by 0.5 of anemo
-		a.Reduce(ds, 0.5)
-		if ds.Durability > 0 && a.hydro != nil {
+		if a.hydro != nil {
 			next, _ := a.hydro.React(ds, t)
 			a.hydro = next.(*AuraHydro)
+			ds.ReactionType = def.SwirlHydro
+		}
+		if ds.Durability > 0 {
+			ds.ReactionType = def.SwirlCryo
+			//queue swirl dmg
+			t.queueReaction(ds, def.SwirlCryo, a.CurrentDurability, 1)
+			//reduce pyro by 0.5 of anemo
+			a.Reduce(ds, 0.5)
 		}
 	case def.Geo:
 		ds.ReactionType = def.CrystallizeCryo

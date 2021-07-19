@@ -73,6 +73,7 @@ func (c *Tmpl) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDG
 		zap.Any("event", def.LogSnapshotEvent),
 		zap.Int("char", c.Index),
 		zap.String("abil", name),
+		zap.Float64("mult", mult),
 		zap.Any("ele", e),
 		zap.Float64("durability", float64(d)),
 		zap.Any("attack_tag", a),

@@ -11,6 +11,7 @@ type Character interface {
 	WeaponClass() WeaponClass
 	Zone() ZoneType
 	CurrentEnergy() float64 //current energy
+	MaxEnergy() float64
 	TalentLvlSkill() int
 	TalentLvlAttack() int
 	TalentLvlBurst() int

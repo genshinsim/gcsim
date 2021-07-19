@@ -32,7 +32,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	}
 	c.Tmpl = t
 	c.Energy = 80
-	c.MaxEnergy = 80
+	c.EnergyMax = 80
 	c.Weapon.Class = def.WeaponClassCatalyst
 	c.NormalHitNum = 4
 

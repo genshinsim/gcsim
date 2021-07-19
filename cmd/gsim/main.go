@@ -30,6 +30,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
+	_ "github.com/genshinsim/gsim/internal/characters/yoimiya"
 
 	//weapons
 	_ "github.com/genshinsim/gsim/internal/weapons/common/blackcliff"
@@ -42,11 +43,13 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/alley"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/amos"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/elegy"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/hamayumi"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/prototype"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/rust"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/sharpshooter"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/skyward"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/stringless"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/thundering"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/viridescent"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/windblume"
 
@@ -136,6 +139,7 @@ func main() {
 	w := flag.Int("w", 24, "number of workers to run when running multiple iterations; default 24")
 	i := flag.Int("i", 5000, "number of iterations to run if we're running multiple")
 	multi := flag.String("comp", "", "comparison mode")
+	t := flag.Int("t", 1, "target multiplier")
 
 	flag.Parse()
 
@@ -152,9 +156,9 @@ func main() {
 		}
 		files := strings.Split(strings.ReplaceAll(string(content), "\r\n", "\n"), "\n")
 		// lines := strings.Split(string(content), `\n`)
-		runMulti(*i, *w, files, *hp, *seconds)
+		runMulti(*i, *w, files, *hp, *seconds, *t)
 	case *avgMode:
-		runAvg(*i, *w, source, *hp, *seconds)
+		runAvg(*i, *w, source, *hp, *seconds, *t)
 	default:
 		// defer profile.Start(profile.ProfilePath("./")).Stop()
 		parser := parse.New("single", string(source))
@@ -304,7 +308,7 @@ func runSingle(cfg def.Config, hp float64, dur int) {
 
 }
 
-func runAvg(n, w int, src []byte, hp float64, dur int) {
+func runAvg(n, w int, src []byte, hp float64, dur int, t int) {
 	start := time.Now()
 	stats := runDetailedIter(n, w, src, hp, dur)
 	elapsed := time.Since(start)
@@ -588,7 +592,7 @@ type resulti struct {
 	mean float64
 }
 
-func runMulti(n, w int, files []string, hp float64, dur int) {
+func runMulti(n, w int, files []string, hp float64, dur int, t int) {
 	fmt.Printf("Simulating %v seconds of combat over %v iterations\n", dur, n)
 	start := time.Now()
 	fmt.Print("Filename                                 |      Mean|       Min|       Max|   Std Dev|\n")
@@ -602,14 +606,14 @@ func runMulti(n, w int, files []string, hp float64, dur int) {
 			log.Fatal(err)
 		}
 		fmt.Printf("%40.40v |", f)
-		r := runIter(n, w, source, hp, dur)
+		r := runIter(n, w, source, hp, dur, t)
 		fmt.Printf("%10.2f|%10.2f|%10.2f|%10.2f|\n", r.mean, r.min, r.max, r.sd)
 	}
 	elapsed := time.Since(start)
 	fmt.Printf("Completed in %s\n", elapsed)
 }
 
-func runIter(n, w int, src []byte, hp float64, dur int) result {
+func runIter(n, w int, src []byte, hp float64, dur int, t int) result {
 	// var progress float64
 	var sum, ss, min, max float64
 	var data []float64
@@ -623,7 +627,7 @@ func runIter(n, w int, src []byte, hp float64, dur int) result {
 	done := make(chan bool)
 
 	for i := 0; i < w; i++ {
-		go worker(src, hp, dur, resp, req, done)
+		go worker(src, hp, dur, t, resp, req, done)
 	}
 
 	go func() {
@@ -666,7 +670,7 @@ func runIter(n, w int, src []byte, hp float64, dur int) result {
 	}
 }
 
-func worker(src []byte, hp float64, dur int, resp chan float64, req chan bool, done chan bool) {
+func worker(src []byte, hp float64, dur int, t int, resp chan float64, req chan bool, done chan bool) {
 
 	for {
 		select {
@@ -687,6 +691,16 @@ func worker(src []byte, hp float64, dur int, resp chan float64, req chan bool, d
 				cfg.Mode.FrameLimit = dur * 60
 				cfg.Mode.HP = 0
 			}
+
+			var additional []def.EnemyProfile
+
+			for i := 1; i < t; i++ {
+				for _, e := range cfg.Targets {
+					additional = append(additional, def.CloneEnemy(e))
+				}
+			}
+
+			cfg.Targets = append(cfg.Targets, additional...)
 
 			s, err := combat.NewSim(cfg)
 			if err != nil {
