@@ -10,8 +10,8 @@ const (
 	AttackTagElementalArt
 	AttackTagElementalBurst
 	AttackTagWeaponSkill
-	AttackTagTartagliaAttack
-	AttackTagGandalfrAttack
+	// AttackTagTartagliaAttack
+	// AttackTagGandalfrAttack
 	AttackTagElementalArtHold
 	AttackTagOverloadDamage
 	AttackTagSuperconductDamage

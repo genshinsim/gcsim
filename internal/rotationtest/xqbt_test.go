@@ -67,7 +67,7 @@ func TestC6XingqiuBennett(t *testing.T) {
 		return
 	}
 
-	bt, err = bennett.NewChar(sim, logger, cfg.Characters.Profile[2])
+	bt, err = bennett.NewChar(sim, logger, cfg.Characters.Profile[1])
 	if err != nil {
 		fmt.Println(err)
 		fmt.Println("error parsing initial config")
@@ -80,11 +80,20 @@ func TestC6XingqiuBennett(t *testing.T) {
 	delay := 0
 	param := make(map[string]int)
 	atkCounts := make(map[def.AttackTag]int)
+	forceCrit := false
+	setCrit := func(ds *def.Snapshot) {
+		if forceCrit {
+			ds.Stats[def.CR] = 1
+		} else {
+			ds.Stats[def.CR] = 0
+		}
+	}
 	particleCount := 0
 	var totalDmg float64
 	//on damage to track what's happening
 	sim.OnDamage = func(ds *def.Snapshot) {
 		atkCounts[ds.AttackTag]++
+		setCrit(ds)
 		dmg, _ := target.Attack(ds)
 		logger.Infow("attack", "abil", ds.Abil, "dmg", dmg)
 		totalDmg += dmg
@@ -94,11 +103,15 @@ func TestC6XingqiuBennett(t *testing.T) {
 		particleCount += p.Num
 	}
 
-	//cast e at frame 0
-
+	//cast e at frame 10
+	sim.Skip(10)
 	delay = bt.Skill(param)
-	//damage on frame 9?
+	forceCrit = false
+	//damage on frame 20
+	sim.Skip(10)
+	fmt.Println(totalDmg)
 	sim.Skip(delay)
+	//action available at frame 36
 
 }
 

@@ -32,7 +32,7 @@ type Tmpl struct {
 	CDReductionFuncs []def.CDAdjust
 
 	Energy    float64
-	MaxEnergy float64
+	EnergyMax float64
 
 	HPCurrent float64
 	HPMax     float64

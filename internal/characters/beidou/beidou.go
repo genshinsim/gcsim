@@ -28,7 +28,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	}
 	c.Tmpl = t
 	c.Energy = 80
-	c.MaxEnergy = 80
+	c.EnergyMax = 80
 	c.Weapon.Class = def.WeaponClassClaymore
 	c.NormalHitNum = 5
 
@@ -221,7 +221,7 @@ func (c *char) Skill(p map[string]int) int {
 }
 
 func (c *char) Burst(p map[string]int) int {
-	if c.Energy < c.MaxEnergy {
+	if c.Energy < c.EnergyMax {
 		c.Log.Debugw("burst insufficient energy; skipping", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "character", c.Base.Name)
 		return 0
 	}

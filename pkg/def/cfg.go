@@ -73,3 +73,14 @@ type HurtEvent struct {
 	Max      float64
 	Ele      EleType
 }
+
+func CloneEnemy(e EnemyProfile) EnemyProfile {
+	r := EnemyProfile{
+		Level:  e.Level,
+		Resist: make(map[EleType]float64),
+	}
+	for k, v := range e.Resist {
+		r.Resist[k] = v
+	}
+	return r
+}

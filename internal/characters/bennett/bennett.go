@@ -26,7 +26,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	}
 	c.Tmpl = t
 	c.Energy = 60
-	c.MaxEnergy = 60
+	c.EnergyMax = 60
 	c.Weapon.Class = def.WeaponClassSword
 	c.NormalHitNum = 5
 
@@ -153,7 +153,7 @@ func (c *char) skillPress() {
 		skill[c.TalentLvlSkill()],
 	)
 	d.Targets = def.TargetAll
-	c.QueueDmg(&d, 26)
+	c.QueueDmg(&d, 10)
 
 	//25 % chance of 3 orbs
 	count := 2

@@ -27,7 +27,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	}
 	c.Tmpl = t
 	c.Energy = 60
-	c.MaxEnergy = 60
+	c.EnergyMax = 60
 	c.Weapon.Class = def.WeaponClassBow
 	c.NormalHitNum = 5
 	c.BurstCon = 3
@@ -272,8 +272,8 @@ func (c *char) Burst(p map[string]int) int {
 		//15 energy after ends, flat not affected by ER
 		c.AddTask(func() {
 			c.Energy += 15
-			if c.Energy > c.MaxEnergy {
-				c.Energy = c.MaxEnergy
+			if c.Energy > c.EnergyMax {
+				c.Energy = c.EnergyMax
 			}
 			c.Log.Debugw("diona c1 regen 15 energy", "frame", c.Sim.Frame(), "event", def.LogEnergyEvent, "new energy", c.Energy)
 		}, "Diona C1", f+750)

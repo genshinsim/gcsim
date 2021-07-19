@@ -1,6 +1,8 @@
 package character
 
-import "github.com/genshinsim/gsim/pkg/def"
+import (
+	"github.com/genshinsim/gsim/pkg/def"
+)
 
 func (c *Tmpl) Attack(p map[string]int) int {
 	return 0
@@ -53,7 +55,8 @@ func (c *Tmpl) ActionFrames(a def.ActionType, p map[string]int) int {
 func (c *Tmpl) ActionReady(a def.ActionType, p map[string]int) bool {
 	switch a {
 	case def.ActionBurst:
-		if c.Energy != c.MaxEnergy {
+		if c.Energy != c.EnergyMax {
+			c.Log.Warnw("burst not enough energy")
 			return false
 		}
 		return c.ActionCD[a] <= c.Sim.Frame()

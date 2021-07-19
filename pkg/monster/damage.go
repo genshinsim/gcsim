@@ -248,8 +248,9 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 		"melt_vape", ds.IsMeltVape,
 		"react_mult", ds.ReactMult,
 		"em", em,
-		"em bonus", emBonus,
-		"react bonus", ds.ReactBonus,
+		"em_bonus", emBonus,
+		"react_bonus", ds.ReactBonus,
+		"amp_mult_total", (ds.ReactMult * (1 + emBonus + ds.ReactBonus)),
 		"target", t.index,
 	)
 
