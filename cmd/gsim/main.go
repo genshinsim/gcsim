@@ -84,6 +84,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonbane"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonspine"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/homa"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/kitain"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/primordial"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/prototype"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/skyward"
