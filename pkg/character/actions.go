@@ -44,7 +44,6 @@ func (c *Tmpl) ActionStam(a def.ActionType, p map[string]int) float64 {
 		c.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
 		return 0
 	}
-
 }
 
 func (c *Tmpl) ActionFrames(a def.ActionType, p map[string]int) int {
