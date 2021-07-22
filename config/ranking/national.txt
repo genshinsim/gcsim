@@ -1,5 +1,6 @@
 char+=xiangling ele=pyro lvl=80 hp=10121.775 atk=209.549 def=622.549 em=96.000 cr=.05 cd=0.5 cons=6 talent=6,8,8;
-weapon+=xiangling label="favonius lance" atk=564.784 er=0.306 refine=1;
+#weapon+=xiangling label="favonius lance" atk=564.784 er=0.306 refine=1;
+weapon+=xiangling label="kitain cross spear" atk=564.784 em=110 refine=1;
 art+=xiangling label="gladiator's finale" count=2;
 art+=xiangling label="noblesse oblige" count=2;
 stats+=xiangling label=main hp=4780 atk=311 pyro%=0.466 atk%=0.466 cr=0.311;
