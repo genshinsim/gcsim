@@ -27,6 +27,9 @@ func (c *Tmpl) AddEnergy(e float64) {
 	if c.Energy > c.EnergyMax {
 		c.Energy = c.EnergyMax
 	}
+	if c.Energy < 0 {
+		c.Energy = 0
+	}
 	c.Log.Debugw("adding energy", "frame", c.Sim.Frame(), "event", def.LogEnergyEvent, "rec'd", e, "next energy", c.Energy, "char", c.Index)
 }
 
