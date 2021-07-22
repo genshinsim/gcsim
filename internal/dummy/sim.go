@@ -53,6 +53,7 @@ func (s *Sim) Skip(frames int) {
 
 func (s *Sim) ActiveCharIndex() int                                                  { return 0 }
 func (s *Sim) SwapCD() int                                                           { return 0 }
+func (s *Sim) RestoreStam(v float64)                                                 {}
 func (s *Sim) Stam() float64                                                         { return 0 }
 func (s *Sim) Frame() int                                                            { return s.F }
 func (s *Sim) Flags() def.Flags                                                      { return def.Flags{} }

@@ -319,7 +319,8 @@ func (q *Queuer) evalStatus(c def.Condition) (bool, error) {
 	}
 	name := strings.TrimPrefix(c.Fields[1], ".")
 	status := q.s.Status(name)
-	return compInt(c.Op, c.Value, status), nil
+	q.log.Debugw("queue status check", "frame", q.s.Frame(), "event", def.LogQueueEvent, "status", name, "val", status, "expected", c.Value, "op", c.Op)
+	return compInt(c.Op, status, c.Value), nil
 
 }
 
