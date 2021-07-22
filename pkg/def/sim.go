@@ -5,6 +5,7 @@ import "math/rand"
 type Sim interface {
 	//sim controls
 	SwapCD() int
+	RestoreStam(v float64)
 	Stam() float64
 	Frame() int //current frame
 	Flags() Flags
