@@ -152,7 +152,7 @@ func (s *Sim) execQueue() (int, error) {
 			willWait = true
 		} else {
 			s.stam -= stam
-			f = dashFrames
+			f = c.Dash(n.Param)
 			s.ResetAllNormalCounter()
 			s.lastStamUse = s.f
 			s.executeEventHook(def.PostDashHook)

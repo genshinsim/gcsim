@@ -19,6 +19,7 @@ import (
 	"github.com/genshinsim/gsim/pkg/parse"
 
 	//characters
+	_ "github.com/genshinsim/gsim/internal/characters/ayaka"
 	_ "github.com/genshinsim/gsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gsim/internal/characters/bennett"
 	_ "github.com/genshinsim/gsim/internal/characters/diona"
@@ -31,6 +32,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
+	_ "github.com/genshinsim/gsim/internal/characters/yoimiya"
 
 	//weapons
 	_ "github.com/genshinsim/gsim/internal/weapons/common/blackcliff"
@@ -48,6 +50,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/sharpshooter"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/skyward"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/stringless"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/thundering"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/viridescent"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/windblume"
 
@@ -94,6 +97,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/harbinger"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/ironsting"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/lion"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/mistsplitter"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/primordial"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/prototype"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/skyrider"

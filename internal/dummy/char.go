@@ -12,7 +12,7 @@ type Char struct {
 	CDReductionFuncs []def.CDAdjust
 
 	Energy    float64
-	MaxEnergy float64
+	EnergyMax float64
 
 	HPCurrent float64
 	HPMax     float64
@@ -33,6 +33,7 @@ func (c *Char) CharIndex() int                                                { 
 func (c *Char) Ele() def.EleType                                              { return c.Base.Element }
 func (c *Char) WeaponClass() def.WeaponClass                                  { return c.Weapon.Class }
 func (c *Char) CurrentEnergy() float64                                        { return c.Energy }
+func (c *Char) MaxEnergy() float64                                            { return c.EnergyMax }
 func (c *Char) TalentLvlSkill() int                                           { return c.Talents.Skill }
 func (c *Char) TalentLvlAttack() int                                          { return c.Talents.Attack }
 func (c *Char) TalentLvlBurst() int                                           { return c.Talents.Burst }

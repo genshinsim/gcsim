@@ -25,11 +25,13 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 		m := make([]float64, def.EndStatType)
 		m[def.DmgP] = 0.50
 		s.AddEventHook(func(s def.Sim) bool {
-			char, _ := s.CharByPos(s.ActiveCharIndex())
-			if char.CurrentEnergy() > 15 {
+			if s.ActiveCharIndex() != c.CharIndex() {
+				return false
+			}
+			if c.CurrentEnergy() > 15 {
 				//consume 15 energy, increased normal/charge/plunge dmg by 50%
-				char.AddEnergy(-15)
-				char.AddMod(def.CharStatMod{
+				c.AddEnergy(-15)
+				c.AddMod(def.CharStatMod{
 					Key: "rem-4pc",
 					Amount: func(ds def.AttackTag) ([]float64, bool) {
 						if ds != def.AttackTagNormal && ds != def.AttackTagExtra && ds != def.AttackTagPlunge {
