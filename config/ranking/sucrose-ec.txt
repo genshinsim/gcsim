@@ -26,7 +26,6 @@ stats+=fischl  label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 
 
 ##ENEMY
 target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1;
-target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1;
 active+=xingqiu;
 ##ROTATION
 actions+=sequence_strict target=xingqiu exec=skill,burst lock=100;

@@ -1,8 +1,8 @@
-#../../config/ranking/4tf-benny.txt
-#../../config/ranking/national.txt
-#../../config/ranking/sucrose-ec.txt
+../../config/ranking/4tf-benny.txt
+../../config/ranking/national.txt
+../../config/ranking/sucrose-ec.txt
 
-#../../config/ganyu/solo-4rem.txt
+../../config/ganyu/solo-4rem.txt
 #../../config/ganyu/solo-4rem-3target.txt
 #../../config/ganyu/solo-4bs-3target.txt
 ../../config/ganyu/solo-4bs-amos.txt
@@ -18,10 +18,4 @@
 ../../config/ganyu/melt-wt-hamayumi-r1.txt
 ../../config/ganyu/melt-wt-proto-r5.txt
 ../../config/ganyu/melt-wt-hamayumi-r5.txt
-
-
-#../../config/ranking/national.txt
-#../../config/ganyu/solo-4bs-amos.txt
-#../../config/ganyu/solo-4bs-r5proto.txt
-#../../config/yoimiya/yoi-xq-bt.txt
-#../../config/ganyu/solo-4bs-thundering.txt
+../../config/yoimiya/yoi-xq-bt.txt
