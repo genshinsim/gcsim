@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	combat.RegisterWeaponFunc("rut", weapon)
+	combat.RegisterWeaponFunc("rust", weapon)
 }
 
 func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {

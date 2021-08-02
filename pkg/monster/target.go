@@ -83,7 +83,7 @@ func (t *Target) AuraContains(ele ...def.EleType) bool {
 		}
 		return false
 	}
-	return t.AuraContains(ele...)
+	return t.aura.AuraContains(ele...)
 }
 
 func (t *Target) HP() float64 {

@@ -31,14 +31,14 @@ target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0
 active+=xingqiu;
 ##ROTATION
 actions+=sequence_strict target=xingqiu exec=skill,burst lock=100;
-actions+=skill target=xingqiu if=.status.xingqiu.energy<80 lock=100;
+actions+=skill target=xingqiu if=.energy.xingqiu<80 lock=100;
 actions+=burst target=xingqiu;
 actions+=burst target=bennett;
 actions+=burst target=fischl if=.status.fischloz==0;
 actions+=skill target=fischl if=.status.fischloz==0;
 actions+=sequence_strict target=xiangling exec=skill,burst;
 actions+=skill target=xiangling active=xiangling;
-actions+=skill target=bennett if=.status.xiangling.energy<40 swap=xiangling;
+actions+=skill target=bennett if=.energy.xiangling<40 swap=xiangling;
 #actions+=skill target=bennett;
 actions+=attack target=xiangling;
 actions+=attack target=fischl active=fischl;

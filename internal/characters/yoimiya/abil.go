@@ -165,7 +165,7 @@ func (c *char) burstHook() {
 			def.ICDGroupDefault,
 			def.StrikeTypeDefault,
 			def.Pyro,
-			50,
+			25,
 			burstExplode[c.TalentLvlBurst()],
 		)
 		d.Targets = def.TargetAll

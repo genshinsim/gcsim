@@ -79,7 +79,7 @@ func NewTemplateChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) 
 	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
 		return nil, fmt.Errorf("invalid talent lvl: burst - %v", c.Talents.Burst)
 	}
-	c.Stats = make([]float64, len(def.StatTypeString))
+	c.Stats = make([]float64, def.EndStatType)
 	for i, v := range p.Stats {
 		c.Stats[i] = v
 	}

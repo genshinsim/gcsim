@@ -1,4 +1,4 @@
-package kitain
+package amenoma
 
 import (
 	"fmt"
@@ -40,6 +40,9 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 	}, fmt.Sprintf("amenoma-skill-%v", c.Name()), def.PostSkillHook)
 
 	s.AddEventHook(func(s def.Sim) bool {
+		if s.ActiveCharIndex() != c.CharIndex() {
+			return false
+		}
 		count := 0
 		for i, v := range seeds {
 			if v > s.Frame() {
