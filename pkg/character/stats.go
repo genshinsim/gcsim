@@ -27,6 +27,10 @@ func (c *Tmpl) AddMod(mod def.CharStatMod) {
 func (t *Tmpl) Stat(s def.StatType) float64 {
 	val := t.Stats[s]
 	for _, m := range t.Mods {
+		//ignore this mod if stat type doesnt match
+		if m.AffectedStat != def.NoStat && m.AffectedStat != s {
+			continue
+		}
 		amt, ok := m.Amount(def.AttackTagNone)
 		if ok {
 			val += amt[s]
@@ -41,7 +45,7 @@ func (c *Tmpl) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDG
 	var sb strings.Builder
 
 	ds := def.Snapshot{}
-	ds.Stats = make([]float64, len(c.Stats))
+	ds.Stats = make([]float64, def.EndStatType)
 	copy(ds.Stats, c.Stats)
 
 	ds.ActorIndex = c.Index

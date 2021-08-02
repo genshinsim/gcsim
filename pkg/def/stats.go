@@ -4,7 +4,8 @@ type StatType int
 
 //stat types
 const (
-	DEFP StatType = iota
+	NoStat StatType = iota
+	DEFP
 	DEF
 	HP
 	HPP
@@ -35,6 +36,7 @@ func (s StatType) String() string {
 }
 
 var StatTypeString = [...]string{
+	"n/a",
 	"def%",
 	"def",
 	"hp",

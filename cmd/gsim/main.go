@@ -28,6 +28,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/kaeya"
 	_ "github.com/genshinsim/gsim/internal/characters/ningguang"
 	_ "github.com/genshinsim/gsim/internal/characters/noelle"
+	_ "github.com/genshinsim/gsim/internal/characters/raiden"
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
@@ -83,6 +84,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/deathmatch"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonbane"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonspine"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/grasscutter"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/homa"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/kitain"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/primordial"
@@ -91,6 +93,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/vortex"
 
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/alley"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/amenoma"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/aquila"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/black"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/festering"
@@ -224,7 +227,7 @@ func runSingle(cfg def.Config, hp float64, dur int) {
 			total += v
 		}
 
-		fmt.Printf("%v total dps: %.2f; total percentage: %.0f%%\n", stats.CharNames[i], total/float64(stats.SimDuration), 100*total/dmg)
+		fmt.Printf("%v total dps: %.2f; total percentage: %.0f%%\n", stats.CharNames[i], 60*total/float64(stats.SimDuration), 100*total/dmg)
 	}
 	fmt.Println("------------------------------------------")
 	for i, t := range stats.AbilUsageCountByChar {
