@@ -5,7 +5,6 @@ import "C"
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"math"
 
 	"github.com/genshinsim/gsim/pkg/combat"
@@ -128,12 +127,9 @@ func main() {}
 //export Run
 func Run(config string) *C.char {
 
-	log.Println("hi")
-
 	parser := parse.New("single", config)
 	cfg, err := parser.Parse()
 	if err != nil {
-		log.Println(err)
 		return C.CString(errToString("error parsing config"))
 	}
 
@@ -143,7 +139,6 @@ func Run(config string) *C.char {
 	} else {
 		s, err := runSingle(cfg)
 		if err != nil {
-			log.Println(err)
 			return C.CString(errToString(err.Error()))
 		}
 		s.Mode = "single"
