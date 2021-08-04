@@ -3,6 +3,10 @@ package def
 type Config struct {
 	Label string
 	Mode  struct {
+		Average    bool
+		Duration   int
+		Iteration  int
+		Workers    int
 		HPMode     bool
 		HP         float64
 		FrameLimit int

@@ -66,6 +66,11 @@ func (p *Parser) Parse() (def.Config, error) {
 	p.result = &def.Config{}
 	p.chars = make(map[string]*def.CharacterProfile)
 
+	//default run options
+	p.result.Mode.Duration = 90
+	p.result.Mode.Iteration = 1000
+	p.result.Mode.Workers = 20
+
 	state := parseRows
 	for state != nil && err == nil {
 		state, err = state(p)
@@ -85,6 +90,10 @@ func (p *Parser) Parse() (def.Config, error) {
 	sort.Strings(keys)
 	for _, k := range keys {
 		p.result.Characters.Profile = append(p.result.Characters.Profile, *p.chars[k])
+	}
+
+	if p.result.Mode.HP > 0 {
+		p.result.Mode.HPMode = true
 	}
 
 	return *p.result, nil
@@ -110,6 +119,12 @@ func parseRows(p *Parser) (parseFn, error) {
 	}
 
 	n := p.next()
+
+	//check if we're parsing options
+	if n.typ == itemOptions {
+		return parseOptions, nil
+	}
+
 	x, err := p.consume(itemAddToList)
 	if err != nil {
 		return nil, fmt.Errorf("<parse row> expecting += but got %v; line %v", x, p.tokens)
@@ -139,6 +154,58 @@ func parseRows(p *Parser) (parseFn, error) {
 		return nil, fmt.Errorf("<parse row> invalid token at start of line: %v", p.tokens)
 	}
 
+}
+
+func parseOptions(p *Parser) (parseFn, error) {
+	var err error
+
+	//options mode=average iteration=5000 duration=90 simhp=0 workers=24;
+	for n := p.next(); n.typ != itemEOF; n = p.next() {
+		switch n.typ {
+		case itemMode:
+			//expect avg or single
+			_, err = p.consume(itemAssign)
+			if err != nil {
+				return nil, err
+			}
+			item := p.next()
+			switch item.typ {
+			case itemAverage:
+				p.result.Mode.Average = true
+			case itemSingle:
+				p.result.Mode.Average = false
+			default:
+				return nil, fmt.Errorf("bad token %v parsing options, expecting average or single. line %v", n.val, p.tokens)
+			}
+		case itemIterations:
+			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err == nil {
+				p.result.Mode.Iteration, err = itemNumberToInt(n)
+			}
+		case itemDuration:
+			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err == nil {
+				p.result.Mode.Duration, err = itemNumberToInt(n)
+			}
+		case itemSimHP:
+			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err == nil {
+				p.result.Mode.HP, err = itemNumberToFloat64(n)
+			}
+		case itemWorkers:
+			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err == nil {
+				p.result.Mode.Workers, err = itemNumberToInt(n)
+			}
+		case itemTerminateLine:
+			return parseRows, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return nil, errors.New("unexpected end of line while parsing options")
 }
 
 func parseLabel(p *Parser) (parseFn, error) {
