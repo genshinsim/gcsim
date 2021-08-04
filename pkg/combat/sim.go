@@ -14,6 +14,7 @@ import (
 
 type SimStats struct {
 	//these follow 4 are available in avg mode as well
+	Mode                 string                   `json:"mode"`
 	CharNames            []string                 `json:"char_names"`
 	DamageByChar         []map[string]float64     `json:"damage_by_char"`
 	CharActiveTime       []int                    `json:"char_active_time"`

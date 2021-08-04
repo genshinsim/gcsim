@@ -16,6 +16,7 @@ import (
 	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/def"
 	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/pkg/profile"
 
 	//characters
 	_ "github.com/genshinsim/gsim/internal/characters/ayaka"
@@ -153,6 +154,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer profile.Start(profile.ProfilePath("./")).Stop()
 
 	switch {
 	case *multi != "":
