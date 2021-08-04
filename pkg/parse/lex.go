@@ -103,6 +103,15 @@ const (
 	itemEvery      // every keyword
 	itemActionLock // actionlock keyword
 	itemStartHP    // starthp keyword
+	// these are configuration options
+	itemOptions    // option
+	itemMode       // mode
+	itemSingle     // single
+	itemAverage    // average
+	itemIterations // iteration
+	itemDuration   // duration
+	itemSimHP      // simhp
+	itemWorkers    // workers
 	// stat types after the rest
 	statKeyword  // delimit stats
 	statDEFP     // def%
@@ -138,6 +147,15 @@ const (
 
 var key = map[string]ItemType{
 	".": itemDot,
+	//config related
+	"options":   itemOptions,
+	"mode":      itemMode,
+	"single":    itemSingle,
+	"average":   itemAverage,
+	"iteration": itemIterations,
+	"duration":  itemDuration,
+	"simhp":     itemSimHP,
+	"workers":   itemWorkers,
 	//action related
 	"actions":    itemAction,
 	"char":       itemChar,

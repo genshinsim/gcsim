@@ -293,7 +293,7 @@ func (s *Server) runSingle(cfg runConfig, r wsRequest) {
 func (s *Server) runAvg(cfg runConfig, r wsRequest) {
 	w := runtime.NumCPU() * 3
 	start := time.Now()
-	stats, err := runDetailedIter(cfg.Iter, w, cfg.Config, cfg.HP, cfg.Seconds, r)
+	stats, err := runDetailedIter(cfg.Iter, w, cfg.Config, cfg.HP, cfg.Seconds)
 	if err != nil {
 		handleErr(r, http.StatusInternalServerError, err.Error())
 		return
@@ -365,7 +365,7 @@ func (s *Server) runAvg(cfg runConfig, r wsRequest) {
 	r.client.send <- msg
 }
 
-func runDetailedIter(n, w int, src string, hp float64, dur int, r wsRequest) (Summary, error) {
+func runDetailedIter(n, w int, src string, hp float64, dur int) (Summary, error) {
 	// var progress float64
 	var data []combat.SimStats
 	var s Summary
