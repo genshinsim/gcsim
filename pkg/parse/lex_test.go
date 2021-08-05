@@ -47,7 +47,7 @@ target+="blazing axe mitachurl" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1
 target+="primo geovishap" lvl=95 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.5 anemo=0.1 physical=.3;
 active+=ganyu;
 
-actions+=skill target=sucrose if=.element.cryo==1&&.debuff.vvcryo==0 label=vv;
+actions+=skill target=sucrose if=.element.cryo==1&&.debuff.res.vvcryo==0 label=vv;
 actions+=burst target=ganyu;
 actions+=skill target=ganyu;
 actions+=aim target=ganyu;

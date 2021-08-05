@@ -409,9 +409,27 @@ func (s *Sim) RestoreStam(v float64) {
 	}
 }
 
-func (s *Sim) SwapCD() int                                      { return s.swapCD }
-func (s *Sim) Stam() float64                                    { return s.stam }
-func (s *Sim) Frame() int                                       { return s.f }
-func (s *Sim) Rand() *rand.Rand                                 { return s.rand }
-func (s *Sim) TargetHasDebuff(debuff string, param int) bool    { return false }
-func (s *Sim) TargetHasElement(ele def.EleType, param int) bool { return false }
+func (s *Sim) SwapCD() int      { return s.swapCD }
+func (s *Sim) Stam() float64    { return s.stam }
+func (s *Sim) Frame() int       { return s.f }
+func (s *Sim) Rand() *rand.Rand { return s.rand }
+
+func (s *Sim) TargetHasResMod(key string, param int) bool {
+	if param >= len(s.targets) {
+		return false
+	}
+	return s.targets[param].HasResMod(key)
+}
+func (s *Sim) TargetHasDefMod(key string, param int) bool {
+	if param >= len(s.targets) {
+		return false
+	}
+	return s.targets[param].HasDefMod(key)
+}
+
+func (s *Sim) TargetHasElement(ele def.EleType, param int) bool {
+	if param >= len(s.targets) {
+		return false
+	}
+	return s.targets[param].AuraContains(ele)
+}

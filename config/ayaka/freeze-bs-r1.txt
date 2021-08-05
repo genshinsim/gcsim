@@ -28,7 +28,7 @@ actions+=sequence_strict target=xingqiu exec=skill,burst lock=100;
 actions+=skill target=xingqiu if=.energy.xingqiu<80 lock=100;
 actions+=burst target=xingqiu;
 
-actions+=skill target=sucrose if=.element.cryo==1&&.debuff.vvcryo==0;
+actions+=skill target=sucrose if=.element.cryo==1&&.debuff.res.vvcryo==0;
 
 actions+=skill target=ayaka lock=100;
 actions+=burst target=ayaka;

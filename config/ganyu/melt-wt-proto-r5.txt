@@ -39,7 +39,7 @@ stats+=ganyu cr=0.311 cd=0.194 def=21 atk%=.14 def%=.066;
 target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 active+=bennett;
 
-actions+=skill target=sucrose if=.element.cryo==1&&.debuff.vvcryo==0;
+actions+=skill target=sucrose if=.element.cryo==1&&.debuff.res.vvcryo==0;
 
 actions+=burst target=bennett;
 actions+=aim target=ganyu if=.status.xianglingburst==1||.status.xianglingguoba==1;

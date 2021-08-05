@@ -235,11 +235,11 @@ func (q *Queuer) evalStam(c def.Condition) (bool, error) {
 }
 
 func (q *Queuer) evalDebuff(c def.Condition) (bool, error) {
-	if len(c.Fields) < 2 {
-		return false, errors.New("eval debuff: unexpected short field, expected at least 2")
+	if len(c.Fields) < 3 {
+		return false, errors.New("eval debuff: unexpected short field, expected at least 3")
 	}
-	d := strings.TrimPrefix(c.Fields[1], ".")
-	//expecting the value to be either 0 or not 0; 0 for false
+	t := strings.TrimPrefix(c.Fields[1], ".")
+
 	val := c.Value
 	if val > 0 {
 		val = 1
@@ -247,9 +247,22 @@ func (q *Queuer) evalDebuff(c def.Condition) (bool, error) {
 		val = 0
 	}
 	active := 0
-	if q.s.TargetHasDebuff(d, 0) {
-		active = 1
+	d := strings.TrimPrefix(c.Fields[2], ".")
+	//expecting the value to be either 0 or not 0; 0 for false
+
+	switch t {
+	case "res":
+		if q.s.TargetHasResMod(d, 0) {
+			active = 1
+		}
+	case "def":
+		if q.s.TargetHasDefMod(d, 0) {
+			active = 1
+		}
+	default:
+		return false, nil
 	}
+
 	return compInt(c.Op, active, val), nil
 }
 

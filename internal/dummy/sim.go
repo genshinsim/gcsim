@@ -60,7 +60,8 @@ func (s *Sim) Flags() def.Flags                                                 
 func (s *Sim) SetCustomFlag(key string, val int)                                     {}
 func (s *Sim) GetCustomFlag(key string) (int, bool)                                  { return 0, false }
 func (s *Sim) CharByName(name string) (def.Character, bool)                          { return nil, false }
-func (s *Sim) TargetHasDebuff(debuff string, param int) bool                         { return false }
+func (s *Sim) TargetHasResMod(debuff string, param int) bool                         { return false }
+func (s *Sim) TargetHasDefMod(debuff string, param int) bool                         { return false }
 func (s *Sim) TargetHasElement(ele def.EleType, param int) bool                      { return false }
 func (s *Sim) Targets() []def.Target                                                 { return s.Targs }
 func (s *Sim) AddOnAmpReaction(f func(t def.Target, ds *def.Snapshot), key string)   {}

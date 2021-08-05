@@ -41,7 +41,7 @@ export const dilucvape: PremadeConfig = {
   actions+=burst[orbital=1] target=xingqiu;
   actions+=burst target=bennett;
   
-  actions+=skill target=sucrose if=.element.pyro==1&&.debuff.vvpyro==0 label=vv;
+  actions+=skill target=sucrose if=.element.pyro==1&&.debuff.res.vvpyro==0 label=vv;
   
   actions+=burst[dot=2,explode=0] target=diluc;
   actions+=sequence_strict target=diluc exec=attack,skill,attack,skill,attack,skill,attack if=.status.dilucq==1;
