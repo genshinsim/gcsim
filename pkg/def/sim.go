@@ -24,7 +24,8 @@ type Sim interface {
 	ApplyDamage(ds *Snapshot)
 
 	//target related
-	TargetHasDebuff(debuff string, param int) bool
+	TargetHasResMod(debuff string, param int) bool
+	TargetHasDefMod(debuff string, param int) bool
 	TargetHasElement(ele EleType, param int) bool
 	Targets() []Target
 	AddOnAttackWillLand(f func(t Target, ds *Snapshot), key string)

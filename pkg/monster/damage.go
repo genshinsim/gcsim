@@ -297,7 +297,7 @@ func (t *Target) calcReactionDmg(ds *def.Snapshot) float64 {
 	return damage
 }
 
-func (t *Target) AddDefMod(key int, val float64, dur int) {
+func (t *Target) AddDefMod(key string, val float64, dur int) {
 	m := def.DefMod{
 		Key:    key,
 		Value:  val,
@@ -319,6 +319,16 @@ func (t *Target) AddDefMod(key int, val float64, dur int) {
 	t.defMod = append(t.defMod, m)
 	t.log.Debugw("new def mod", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "next", val, "target", t.index)
 	// e.mod[key] = val
+}
+
+func (t *Target) HasDefMod(key string) bool {
+	ind := -1
+	for i, v := range t.defMod {
+		if v.Key == key {
+			ind = i
+		}
+	}
+	return ind != -1 && t.defMod[ind].Expiry > t.sim.Frame()
 }
 
 func (t *Target) AddResMod(key string, val def.ResistMod) {

@@ -92,7 +92,7 @@ func (c *char) c6() {
 			Key:    "xl-c6",
 			Expiry: -1,
 			Amount: func(a def.AttackTag) ([]float64, bool) {
-				return m, c.Sim.Status("xl-c6") > 0
+				return m, c.Sim.Status("xlc6") > 0
 			},
 		})
 	}
@@ -243,7 +243,7 @@ func (c *char) Burst(p map[string]int) int {
 	if c.Base.Cons >= 6 {
 		//wait 70 frames, add effect
 		c.AddTask(func() {
-			c.Sim.AddStatus("xl-c6", max)
+			c.Sim.AddStatus("xlc6", max)
 		}, "xl activate c6", 70)
 
 	}
