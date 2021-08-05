@@ -36,4 +36,7 @@ If you are looking to contribute, the following are some key areas that you can 
 - Most of the % data: https://genshin.honeyhunterworld.com/
 - Tons of discussions on KeqingMain (to be added up with ppl's discord tags at some point)
 - Most if not all the frame data came from https://library.keqingmains.com
-- All the folks at KQM that helped out with testing (to add)
+- All the folks at KQM that helped out with testing; special thanks to (in no particular order):
+  - Yukarix#6534
+  - Aluminum#5462
+  - Terrapin#8603
