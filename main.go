@@ -94,7 +94,7 @@ func checkOpen() {
 		break
 	}
 	log.Println("SERVER UP AND RUNNING!")
-	// open("http://localhost:8081")
+	open("http://localhost:8081")
 }
 
 // open opens the specified URL in the default browser of the user.
