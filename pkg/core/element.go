@@ -1,4 +1,4 @@
-package def
+package core
 
 //EleType is a string representing an element i.e. HYDRO/PYRO/etc...
 type EleType int

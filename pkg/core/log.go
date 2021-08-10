@@ -1,4 +1,4 @@
-package def
+package core
 
 type Logger interface {
 	Debugw(msg string, args ...interface{})

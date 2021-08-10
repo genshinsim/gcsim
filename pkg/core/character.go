@@ -1,4 +1,4 @@
-package def
+package core
 
 type Character interface {
 	Init(index int) //to be called when everything including weapon and artifacts has been loaded
