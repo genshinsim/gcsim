@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
@@ -13,33 +13,33 @@ func init() {
 
 //Normal Attack hits increase Elemental Skill and Elemental Burst DMG by 20/25/30/35/40% for 6s.
 //Likewise, Elemental Skill or Elmental Burst hits increase Normal Attack DMG by 20/25/30/35/40% for 6s.
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 	skill := 0
 	attack := 0
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag == def.AttackTagElementalArt || ds.AttackTag == def.AttackTagElementalBurst {
+		if ds.AttackTag == core.AttackTagElementalArt || ds.AttackTag == core.AttackTagElementalBurst {
 			skill = s.Frame() + 300
 			return
 		}
-		if ds.AttackTag == def.AttackTagNormal {
+		if ds.AttackTag == core.AttackTagNormal {
 			skill = s.Frame() + 300
 		}
 	}, fmt.Sprintf("solar-%v", c.Name()))
 
-	val := make([]float64, def.EndStatType)
-	val[def.DmgP] = 0.15 + float64(r)*0.05
-	c.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.15 + float64(r)*0.05
+	c.AddMod(core.CharStatMod{
 		Key:    "solar",
 		Expiry: -1,
-		Amount: func(a def.AttackTag) ([]float64, bool) {
-			if a == def.AttackTagElementalArt || a == def.AttackTagElementalBurst {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			if a == core.AttackTagElementalArt || a == core.AttackTagElementalBurst {
 				return val, attack > s.Frame()
 			}
-			if a == def.AttackTagNormal {
+			if a == core.AttackTagNormal {
 				return val, skill > s.Frame()
 			}
 			return nil, false

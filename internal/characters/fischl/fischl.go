@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 
 	"go.uber.org/zap"
 )
@@ -17,13 +17,13 @@ func init() {
 type char struct {
 	*character.Tmpl
 	//field use for calculating oz damage
-	ozSnapshot def.Snapshot
+	ozSnapshot core.Snapshot
 
 	ozSource      int //keep tracks of source of oz aka resets
 	ozActiveUntil int
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -32,7 +32,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 60
 	c.EnergyMax = 60
-	c.Weapon.Class = def.WeaponClassBow
+	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 5
 
 	c.ozSource = -1
@@ -77,14 +77,14 @@ func (c *char) Attack(p map[string]int) int {
 		travel = 20
 	}
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypePierce,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypePierce,
+		core.Physical,
 		25,
 		auto[c.NormalCounter][c.TalentLvlAttack()],
 	)
@@ -95,11 +95,11 @@ func (c *char) Attack(p map[string]int) int {
 	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Sim.Frame() {
 		d := c.Snapshot(
 			"Fischl C1",
-			def.AttackTagNormal,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypePierce,
-			def.Physical,
+			core.AttackTagNormal,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypePierce,
+			core.Physical,
 			100,
 			0.22,
 		)
@@ -119,16 +119,16 @@ func (c *char) queueOz(src string) {
 	c.ozSource = c.Sim.Frame()
 	c.ozSnapshot = c.Snapshot(
 		fmt.Sprintf("Oz (%v)", src),
-		def.AttackTagElementalArt,
-		def.ICDTagElementalArt,
-		def.ICDGroupFischl,
-		def.StrikeTypePierce,
-		def.Electro,
+		core.AttackTagElementalArt,
+		core.ICDTagElementalArt,
+		core.ICDGroupFischl,
+		core.StrikeTypePierce,
+		core.Electro,
 		25,
 		birdAtk[c.TalentLvlSkill()],
 	)
 	c.AddTask(c.ozTick(c.Sim.Frame()), "oz", 60)
-	c.Log.Debugw("Oz activated", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Sim.Frame()+60)
+	c.Log.Debugw("Oz activated", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Sim.Frame()+60)
 
 	c.Sim.AddStatus("fischloz", dur)
 
@@ -136,18 +136,18 @@ func (c *char) queueOz(src string) {
 
 func (c *char) ozTick(src int) func() {
 	return func() {
-		c.Log.Debugw("Oz checking for tick", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "src", src)
+		c.Log.Debugw("Oz checking for tick", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src)
 		//if src != ozSource then this is no longer the same oz, do nothing
 		if src != c.ozSource {
 			return
 		}
-		c.Log.Debugw("Oz ticked", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "next expected tick", c.Sim.Frame()+60, "active", c.ozActiveUntil, "src", src)
+		c.Log.Debugw("Oz ticked", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "next expected tick", c.Sim.Frame()+60, "active", c.ozActiveUntil, "src", src)
 		//trigger damage
 		d := c.ozSnapshot.Clone()
 		c.Sim.ApplyDamage(&d)
 		//check for orb
 		if c.Sim.Rand().Float64() < .67 {
-			c.QueueParticle("fischl", 1, def.Electro, 120)
+			c.QueueParticle("fischl", 1, core.Electro, 120)
 		}
 
 		//queue up next hit only if next hit oz is still active
@@ -158,19 +158,19 @@ func (c *char) ozTick(src int) func() {
 }
 
 func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	//always trigger electro no ICD on initial summon
 	d := c.Snapshot(
 		"Oz (Summon)",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupFischl,
-		def.StrikeTypePierce,
-		def.Electro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupFischl,
+		core.StrikeTypePierce,
+		core.Electro,
 		25,
 		birdSum[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	if c.Base.Cons >= 2 {
 		d.Mult += 2
@@ -182,13 +182,13 @@ func (c *char) Skill(p map[string]int) int {
 		c.queueOz("Skill")
 	}, "oz-skill", f-20)
 
-	c.SetCD(def.ActionSkill, 25*60)
+	c.SetCD(core.ActionSkill, 25*60)
 	//return animation cd
 	return f
 }
 
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 
 	//set on field oz to be this one
 	c.AddTask(func() {
@@ -198,26 +198,26 @@ func (c *char) Burst(p map[string]int) int {
 	//initial damage; part of the burst tag
 	d := c.Snapshot(
 		"Midnight Phantasmagoria",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupFischl,
-		def.StrikeTypeBlunt,
-		def.Electro,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupFischl,
+		core.StrikeTypeBlunt,
+		core.Electro,
 		25,
 		burst[c.TalentLvlBurst()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.QueueDmg(&d, 1)
 
 	//check for C4 damage
 	if c.Base.Cons >= 4 {
 		d := c.Snapshot(
 			"Midnight Phantasmagoria",
-			def.AttackTagElementalBurst,
-			def.ICDTagElementalBurst,
-			def.ICDGroupFischl,
-			def.StrikeTypePierce,
-			def.Electro,
+			core.AttackTagElementalBurst,
+			core.ICDTagElementalBurst,
+			core.ICDGroupFischl,
+			core.StrikeTypePierce,
+			core.Electro,
 			50,
 			2.22,
 		)
@@ -231,6 +231,6 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	c.Energy = 0
-	c.SetCD(def.ActionBurst, 15*60)
+	c.SetCD(core.ActionBurst, 15*60)
 	return f //this is if you cancel immediately
 }

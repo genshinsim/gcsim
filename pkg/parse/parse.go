@@ -7,37 +7,37 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
-var actionKeys = map[string]def.ActionType{
-	"sequence":        def.ActionSequence,
-	"sequence_strict": def.ActionSequenceStrict,
-	"reset_sequence":  def.ActionSequenceReset,
-	"skill":           def.ActionSkill,
-	"burst":           def.ActionBurst,
-	"attack":          def.ActionAttack,
-	"charge":          def.ActionCharge,
-	"high_plunge":     def.ActionHighPlunge,
-	"low_lunge":       def.ActionLowPlunge,
-	"aim":             def.ActionAim,
-	"dash":            def.ActionDash,
-	"jump":            def.ActionJump,
-	"swap":            def.ActionSwap,
+var actionKeys = map[string]core.ActionType{
+	"sequence":        core.ActionSequence,
+	"sequence_strict": core.ActionSequenceStrict,
+	"reset_sequence":  core.ActionSequenceReset,
+	"skill":           core.ActionSkill,
+	"burst":           core.ActionBurst,
+	"attack":          core.ActionAttack,
+	"charge":          core.ActionCharge,
+	"high_plunge":     core.ActionHighPlunge,
+	"low_lunge":       core.ActionLowPlunge,
+	"aim":             core.ActionAim,
+	"dash":            core.ActionDash,
+	"jump":            core.ActionJump,
+	"swap":            core.ActionSwap,
 }
 
-var eleKeys = map[string]def.EleType{
-	"pyro":            def.Pyro,
-	"hydro":           def.Hydro,
-	"cryo":            def.Cryo,
-	"electro":         def.Electro,
-	"geo":             def.Geo,
-	"anemo":           def.Anemo,
-	"dendro":          def.Dendro,
-	"physical":        def.Physical,
-	"frozen":          def.Frozen,
-	"electro-charged": def.EC,
-	"":                def.NoElement,
+var eleKeys = map[string]core.EleType{
+	"pyro":            core.Pyro,
+	"hydro":           core.Hydro,
+	"cryo":            core.Cryo,
+	"electro":         core.Electro,
+	"geo":             core.Geo,
+	"anemo":           core.Anemo,
+	"dendro":          core.Dendro,
+	"physical":        core.Physical,
+	"frozen":          core.Frozen,
+	"electro-charged": core.EC,
+	"":                core.NoElement,
 }
 
 type Parser struct {
@@ -46,8 +46,8 @@ type Parser struct {
 	pos    int //current position
 
 	//results
-	result *def.Config
-	chars  map[string]*def.CharacterProfile
+	result *core.Config
+	chars  map[string]*core.CharacterProfile
 }
 
 type parseFn func(*Parser) (parseFn, error)
@@ -59,12 +59,12 @@ func New(name, input string) *Parser {
 	return p
 }
 
-func (p *Parser) Parse() (def.Config, error) {
+func (p *Parser) Parse() (core.Config, error) {
 	//initialize
 	var err error
 
-	p.result = &def.Config{}
-	p.chars = make(map[string]*def.CharacterProfile)
+	p.result = &core.Config{}
+	p.chars = make(map[string]*core.CharacterProfile)
 
 	//default run options
 	p.result.Mode.Duration = 90

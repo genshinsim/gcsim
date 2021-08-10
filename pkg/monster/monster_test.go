@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func durApproxEqual(expect, result, tol def.Durability) bool {
+func durApproxEqual(expect, result, tol core.Durability) bool {
 	if expect > result {
 		return expect-result < tol
 	}
@@ -39,18 +39,18 @@ func expect(msg string, a interface{}, b interface{}) {
 	logger.Infow(msg, "expected", a, "got", b)
 }
 
-func defaultResMap() map[def.EleType]float64 {
-	res := make(map[def.EleType]float64)
+func defaultResMap() map[core.EleType]float64 {
+	res := make(map[core.EleType]float64)
 
-	res[def.Electro] = 0.1
-	res[def.Pyro] = 0.1
-	res[def.Anemo] = 0.1
-	res[def.Cryo] = 0.1
-	res[def.Frozen] = 0.1
-	res[def.Hydro] = 0.1
-	res[def.Dendro] = 0.1
-	res[def.Geo] = 0.1
-	res[def.Physical] = 0.1
+	res[core.Electro] = 0.1
+	res[core.Pyro] = 0.1
+	res[core.Anemo] = 0.1
+	res[core.Cryo] = 0.1
+	res[core.Frozen] = 0.1
+	res[core.Hydro] = 0.1
+	res[core.Dendro] = 0.1
+	res[core.Geo] = 0.1
+	res[core.Physical] = 0.1
 
 	return res
 }

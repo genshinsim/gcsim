@@ -3,7 +3,7 @@ package monster
 import (
 	"math/rand"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 type Target struct {
@@ -11,12 +11,12 @@ type Target struct {
 	level int
 	maxHP float64
 	hp    float64
-	res   map[def.EleType]float64
+	res   map[core.EleType]float64
 	tasks map[int][]func(t *Target)
 
 	//modifiers
-	resMod []def.ResistMod
-	defMod []def.DefMod
+	resMod []core.ResistMod
+	defMod []core.DefMod
 
 	//icd related
 	icdGroupOnTimer       [][]bool
@@ -31,12 +31,12 @@ type Target struct {
 	aura              Aura
 	onReactionOccured []reactionHooks //reaction hooks
 
-	sim  def.Sim
+	sim  core.Sim
 	rand *rand.Rand
-	log  def.Logger
+	log  core.Logger
 }
 
-func New(index int, s def.Sim, log def.Logger, hp float64, p def.EnemyProfile) *Target {
+func New(index int, s core.Sim, log core.Logger, hp float64, p core.EnemyProfile) *Target {
 	t := &Target{}
 
 	t.index = index
@@ -48,16 +48,16 @@ func New(index int, s def.Sim, log def.Logger, hp float64, p def.EnemyProfile) *
 	t.maxHP = hp
 	t.hp = hp
 
-	t.icdGroupOnTimer = make([][]bool, def.MaxTeamPlayerCount)
-	t.icdTagCounter = make([][]int, def.MaxTeamPlayerCount)
-	t.icdDamageGroupCounter = make([][]int, def.MaxTeamPlayerCount)
-	t.icdDamageGroupOnTimer = make([][]bool, def.MaxTeamPlayerCount)
+	t.icdGroupOnTimer = make([][]bool, core.MaxTeamPlayerCount)
+	t.icdTagCounter = make([][]int, core.MaxTeamPlayerCount)
+	t.icdDamageGroupCounter = make([][]int, core.MaxTeamPlayerCount)
+	t.icdDamageGroupOnTimer = make([][]bool, core.MaxTeamPlayerCount)
 
 	for i := 0; i < 4; i++ {
-		t.icdGroupOnTimer[i] = make([]bool, def.ICDGroupLength)
-		t.icdTagCounter[i] = make([]int, def.ICDTagLength)
-		t.icdDamageGroupCounter[i] = make([]int, def.ICDGroupLength)
-		t.icdDamageGroupOnTimer[i] = make([]bool, def.ICDGroupLength)
+		t.icdGroupOnTimer[i] = make([]bool, core.ICDGroupLength)
+		t.icdTagCounter[i] = make([]int, core.ICDTagLength)
+		t.icdDamageGroupCounter[i] = make([]int, core.ICDGroupLength)
+		t.icdDamageGroupOnTimer[i] = make([]bool, core.ICDGroupLength)
 	}
 
 	t.tasks = make(map[int][]func(t *Target))
@@ -67,17 +67,17 @@ func New(index int, s def.Sim, log def.Logger, hp float64, p def.EnemyProfile) *
 	return t
 }
 
-func (t *Target) AuraType() def.EleType {
+func (t *Target) AuraType() core.EleType {
 	if t.aura == nil {
-		return def.NoElement
+		return core.NoElement
 	}
 	return t.aura.Type()
 }
 
-func (t *Target) AuraContains(ele ...def.EleType) bool {
+func (t *Target) AuraContains(ele ...core.EleType) bool {
 	if t.aura == nil {
 		for _, v := range ele {
-			if v == def.NoElement {
+			if v == core.NoElement {
 				return true
 			}
 		}
@@ -120,11 +120,11 @@ func (t *Target) Tick() {
 }
 
 type attackLandedFunc struct {
-	f func(ds *def.Snapshot)
+	f func(ds *core.Snapshot)
 	k string
 }
 
-func (t *Target) AddOnAttackLandedHook(fun func(ds *def.Snapshot), key string) {
+func (t *Target) AddOnAttackLandedHook(fun func(ds *core.Snapshot), key string) {
 	ind := -1
 	for i, v := range t.onAttackLandedFuncs {
 		if v.k == key {
@@ -157,7 +157,7 @@ func (t *Target) RemoveOnAttackLandedHook(key string) {
 	}
 }
 
-func (t *Target) onAttackLanded(ds *def.Snapshot) {
+func (t *Target) onAttackLanded(ds *core.Snapshot) {
 	for _, v := range t.onAttackLandedFuncs {
 		v.f(ds)
 	}

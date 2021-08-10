@@ -1,10 +1,10 @@
 package ganyu
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -21,19 +21,19 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 5:
 			f = 190 - 153
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionAim:
+	case core.ActionAim:
 		//check for c6, if active then return 10, otherwise 115
 		if c.Sim.Status("ganyuc6") > 0 {
-			c.Log.Debugw("ganyu c6 proc used", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "char", c.Index)
+			c.Log.Debugw("ganyu c6 proc used", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index)
 			c.Sim.DeleteStatus("ganyuc6")
 			return 10
 		}
 		return 115 //frames from keqing lib
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 30 //ok
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 122 //ok
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)

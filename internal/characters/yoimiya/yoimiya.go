@@ -3,7 +3,7 @@ package yoimiya
 import (
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 
 	"go.uber.org/zap"
 )
@@ -18,7 +18,7 @@ type char struct {
 	lastPart int
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -27,7 +27,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 60
 	c.EnergyMax = 60
-	c.Weapon.Class = def.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
 	c.BurstCon = 5
 	c.SkillCon = 3
@@ -42,27 +42,27 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 }
 
 func (c *char) a2() {
-	val := make([]float64, def.EndStatType)
-	c.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	c.AddMod(core.CharStatMod{
 		Key:    "yoimiya-a2",
 		Expiry: -1,
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if c.Sim.Status("yoimiyaa2") > 0 {
-				val[def.Pyro] = float64(c.a2stack) * 0.02
+				val[core.Pyro] = float64(c.a2stack) * 0.02
 				return val, true
 			}
 			c.a2stack = 0
 			return nil, false
 		},
 	})
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
 		if c.Sim.Status("yoimiyaskill") == 0 {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal {
+		if ds.AttackTag != core.AttackTagNormal {
 			return
 		}
 		//here we can add stacks up to 10
@@ -74,14 +74,14 @@ func (c *char) a2() {
 	}, "yoimiya-a2")
 }
 
-func (c *char) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d def.Durability, mult float64) def.Snapshot {
+func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
 	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
 
 	//infusion to normal attack only
-	if c.Sim.Status("yoimiyaskill") > 0 && ds.AttackTag == def.AttackTagNormal {
-		ds.Element = def.Pyro
+	if c.Sim.Status("yoimiyaskill") > 0 && ds.AttackTag == core.AttackTagNormal {
+		ds.Element = core.Pyro
 		//multiplier
-		c.Log.Debugw("skill mult applied", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "prev", ds.Mult, "next", skill[c.TalentLvlSkill()]*ds.Mult, "char", c.Index)
+		c.Log.Debugw("skill mult applied", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "prev", ds.Mult, "next", skill[c.TalentLvlSkill()]*ds.Mult, "char", c.Index)
 		ds.Mult = skill[c.TalentLvlSkill()] * ds.Mult
 	}
 	return ds

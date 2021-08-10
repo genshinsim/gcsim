@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 
 	"go.uber.org/zap"
 )
@@ -18,7 +18,7 @@ type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -27,7 +27,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 60
 	c.EnergyMax = 60
-	c.Weapon.Class = def.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
 
 	if c.Base.Cons >= 2 {
@@ -40,21 +40,21 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 }
 
 func (c *char) c2() {
-	val := make([]float64, def.EndStatType)
-	val[def.ER] = .3
+	val := make([]float64, core.EndStatType)
+	val[core.ER] = .3
 
-	c.AddMod(def.CharStatMod{
+	c.AddMod(core.CharStatMod{
 		Key: "bennett-c2",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, c.HPCurrent/c.HPMax < 0.7
 		},
 		Expiry: -1,
 	})
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -69,11 +69,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 49
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 100 //frames from keqing lib
-	case def.ActionSkill:
+	case core.ActionSkill:
 		hold := p["hold"]
 		switch hold {
 		case 1:
@@ -83,7 +83,7 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		default:
 			return 52
 		}
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 51 //ok
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -93,18 +93,18 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 
 func (c *char) Attack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		attack[c.NormalCounter][c.TalentLvlAttack()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f-1)
 	c.AdvanceNormalIndex()
@@ -113,7 +113,7 @@ func (c *char) Attack(p map[string]int) int {
 }
 
 func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	var cd int
 
@@ -134,7 +134,7 @@ func (c *char) Skill(p map[string]int) int {
 		cd = cd / 2
 	}
 
-	c.SetCD(def.ActionSkill, cd)
+	c.SetCD(core.ActionSkill, cd)
 
 	return f
 
@@ -144,15 +144,15 @@ func (c *char) skillPress() {
 
 	d := c.Snapshot(
 		"Passion Overload (Press)",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Pyro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Pyro,
 		50,
 		skill[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.QueueDmg(&d, 10)
 
 	//25 % chance of 3 orbs
@@ -160,7 +160,7 @@ func (c *char) skillPress() {
 	if c.Sim.Rand().Float64() < .25 {
 		count++
 	}
-	c.QueueParticle("bennett", count, def.Pyro, 120)
+	c.QueueParticle("bennett", count, core.Pyro, 120)
 }
 
 func (c *char) skillHoldShort() {
@@ -169,15 +169,15 @@ func (c *char) skillHoldShort() {
 
 	d := c.Snapshot(
 		"Passion Overload (Hold)",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Pyro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Pyro,
 		25,
 		0,
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	for i, v := range skill1 {
 		x := d.Clone()
 		x.Mult = v[c.TalentLvlSkill()]
@@ -189,7 +189,7 @@ func (c *char) skillHoldShort() {
 	if c.Sim.Rand().Float64() < .25 {
 		count++
 	}
-	c.QueueParticle("bennett", count, def.Pyro, 215)
+	c.QueueParticle("bennett", count, core.Pyro, 215)
 }
 
 func (c *char) skillHoldLong() {
@@ -199,15 +199,15 @@ func (c *char) skillHoldLong() {
 
 	d := c.Snapshot(
 		"Passion Overload (Hold)",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Pyro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Pyro,
 		25,
 		0,
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	for i, v := range skill2 {
 		x := d.Clone()
 		x.Mult = v[c.TalentLvlSkill()]
@@ -216,15 +216,15 @@ func (c *char) skillHoldLong() {
 
 	d2 := c.Snapshot(
 		"Passion Overload (Explode)",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Pyro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Pyro,
 		25,
 		explosion[c.TalentLvlSkill()],
 	)
-	d2.Targets = def.TargetAll
+	d2.Targets = core.TargetAll
 	c.QueueDmg(&d2, 198)
 
 	//25 % chance of 3 orbs
@@ -232,7 +232,7 @@ func (c *char) skillHoldLong() {
 	if c.Sim.Rand().Float64() < .25 {
 		count++
 	}
-	c.QueueParticle("bennett", count, def.Pyro, 298)
+	c.QueueParticle("bennett", count, core.Pyro, 298)
 
 }
 
@@ -245,25 +245,25 @@ func (c *char) Burst(p map[string]int) int {
 	c.AddTask(func() {
 		d := c.Snapshot(
 			"Fantastic Voyage",
-			def.AttackTagElementalBurst,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Pyro,
+			core.AttackTagElementalBurst,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Pyro,
 			50,
 			burst[c.TalentLvlBurst()],
 		)
-		d.Targets = def.TargetAll
+		d.Targets = core.TargetAll
 		c.Sim.ApplyDamage(&d)
 	}, "bt-q", 43)
 
 	d := c.Snapshot(
 		"Fantastic Voyage (Heal)",
-		def.AttackTagNone,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.NoElement,
+		core.AttackTagNone,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.NoElement,
 		0,
 		0,
 	)
@@ -278,12 +278,12 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	c.Energy = 0
-	c.SetCD(def.ActionBurst, 900)
+	c.SetCD(core.ActionBurst, 900)
 	return 51 //todo fix field cast time
 }
 
-func (c *char) applyBennettField(d def.Snapshot) func() {
-	hpplus := d.Stats[def.Heal]
+func (c *char) applyBennettField(d core.Snapshot) func() {
+	hpplus := d.Stats[core.Heal]
 	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
 	pc := burstatk[c.TalentLvlBurst()]
 	if c.Base.Cons >= 1 {
@@ -291,7 +291,7 @@ func (c *char) applyBennettField(d def.Snapshot) func() {
 	}
 	atk := pc * float64(c.Base.Atk+c.Weapon.Atk)
 	return func() {
-		c.Log.Debugw("bennett field ticking", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent)
+		c.Log.Debugw("bennett field ticking", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
 
 		active, _ := c.Sim.CharByPos(c.Sim.ActiveCharIndex())
 		//heal if under 70%
@@ -306,28 +306,28 @@ func (c *char) applyBennettField(d def.Snapshot) func() {
 		}
 		if active.HP()/active.MaxHP() < threshold {
 			//add 2.1s = 126 frames
-			val := make([]float64, def.EndStatType)
-			val[def.ATK] = atk
-			active.AddMod(def.CharStatMod{
+			val := make([]float64, core.EndStatType)
+			val[core.ATK] = atk
+			active.AddMod(core.CharStatMod{
 				Key: "bennett-field",
-				Amount: func(a def.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Sim.Frame() + 126,
 			})
-			c.Log.Debugw("bennett field - adding attack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "threshold", threshold)
+			c.Log.Debugw("bennett field - adding attack", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "threshold", threshold)
 			//if c6 add weapon infusion and 15% pyro
 			if c.Base.Cons == 6 {
 				switch active.WeaponClass() {
-				case def.WeaponClassClaymore:
+				case core.WeaponClassClaymore:
 					fallthrough
-				case def.WeaponClassSpear:
+				case core.WeaponClassSpear:
 					fallthrough
-				case def.WeaponClassSword:
-					active.AddWeaponInfuse(def.WeaponInfusion{
+				case core.WeaponClassSword:
+					active.AddWeaponInfuse(core.WeaponInfusion{
 						Key:    "bennett-fire-weapon",
-						Ele:    def.Pyro,
-						Tags:   []def.AttackTag{def.AttackTagNormal, def.AttackTagExtra, def.AttackTagPlunge},
+						Ele:    core.Pyro,
+						Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 						Expiry: c.Sim.Frame() + 126,
 					})
 				}

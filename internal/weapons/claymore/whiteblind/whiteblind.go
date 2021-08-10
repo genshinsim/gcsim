@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
@@ -13,16 +13,16 @@ func init() {
 
 //On hit, Normal or Charged Attacks increase ATK and DEF by 6/7.5/9/10.5/12% for 6s.
 //Max 4 stacks (24/30/36/42/48% total). This effect can only occur once every 0.5s.
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 	stacks := 0
 	icd := 0
 	duration := 0
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return
 		}
 		if icd > s.Frame() {
@@ -41,17 +41,17 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 
 	amt := 0.045 + float64(r)*0.015
 
-	val := make([]float64, def.EndStatType)
-	c.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	c.AddMod(core.CharStatMod{
 		Key:    "whiteblind",
 		Expiry: -1,
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if duration < s.Frame() {
 				stacks = 0
 				return nil, false
 			}
-			val[def.ATKP] = amt * float64(stacks)
-			val[def.DEFP] = amt * float64(stacks)
+			val[core.ATKP] = amt * float64(stacks)
+			val[core.DEFP] = amt * float64(stacks)
 			return val, true
 		},
 	})

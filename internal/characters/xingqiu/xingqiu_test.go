@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gsim/internal/artifacts/gladiator"
 	"github.com/genshinsim/gsim/internal/artifacts/noblesse"
 	"github.com/genshinsim/gsim/internal/dummy"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/monster"
 	"github.com/genshinsim/gsim/pkg/parse"
 	"go.uber.org/zap"
@@ -19,8 +19,8 @@ import (
 
 var logger *zap.SugaredLogger
 var sim *dummy.Sim
-var target def.Target
-var xq def.Character
+var target core.Target
+var xq core.Character
 
 func TestMain(m *testing.M) {
 	os.Remove("./out.log")
@@ -36,7 +36,7 @@ func TestMain(m *testing.M) {
 
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
-		target = monster.New(0, s, logger, 0, def.EnemyProfile{
+		target = monster.New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -82,18 +82,18 @@ func TestMain(m *testing.M) {
 func TestXingqiuSkill(t *testing.T) {
 	delay := 0
 	param := make(map[string]int)
-	atkCounts := make(map[def.AttackTag]int)
+	atkCounts := make(map[core.AttackTag]int)
 	particleCount := 0
 	var totalDmg float64
 	//on damage to track what's happening
-	sim.OnDamage = func(ds *def.Snapshot) {
-		ds.Stats[def.CR] = 1
+	sim.OnDamage = func(ds *core.Snapshot) {
+		ds.Stats[core.CR] = 1
 		atkCounts[ds.AttackTag]++
 		dmg, _ := target.Attack(ds)
 		logger.Infow("attack", "abil", ds.Abil, "dmg", dmg)
 		totalDmg += dmg
 	}
-	sim.OnParticle = func(p def.Particle) {
+	sim.OnParticle = func(p core.Particle) {
 		xq.ReceiveParticle(p, true, 4)
 		particleCount += p.Num
 	}
@@ -101,7 +101,7 @@ func TestXingqiuSkill(t *testing.T) {
 	fmt.Println("----xingqiu skill testing----")
 	delay = xq.Skill(param)
 	sim.Skip(delay + 200)
-	if !expect("skill attack count", 2, atkCounts[def.AttackTagElementalArt]) {
+	if !expect("skill attack count", 2, atkCounts[core.AttackTagElementalArt]) {
 		t.Error("invalid attack count")
 	}
 	if !expect("particle count", 5, particleCount) {
@@ -123,31 +123,31 @@ func TestXingqiuAttack(t *testing.T) {
 	param := make(map[string]int)
 
 	xq.ResetNormalCounter()
-	e = xq.ActionFrames(def.ActionAttack, param)
+	e = xq.ActionFrames(core.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
 	sim.Skip(delay)
-	e = xq.ActionFrames(def.ActionAttack, param)
+	e = xq.ActionFrames(core.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
 	sim.Skip(delay)
-	e = xq.ActionFrames(def.ActionAttack, param)
+	e = xq.ActionFrames(core.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
 	sim.Skip(delay)
-	e = xq.ActionFrames(def.ActionAttack, param)
+	e = xq.ActionFrames(core.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
 	}
 	sim.Skip(delay)
-	e = xq.ActionFrames(def.ActionAttack, param)
+	e = xq.ActionFrames(core.ActionAttack, param)
 	delay = xq.Attack(param)
 	if !expect("normal attack delay", e, delay) {
 		t.Error("invalid normal attack delay")
@@ -165,9 +165,9 @@ func TestXingqiuBurst(t *testing.T) {
 
 	sim.Skip(delay)
 
-	atkCounts := make(map[def.AttackTag]int)
+	atkCounts := make(map[core.AttackTag]int)
 	//on damage to track what's happening
-	sim.OnDamage = func(ds *def.Snapshot) {
+	sim.OnDamage = func(ds *core.Snapshot) {
 		atkCounts[ds.AttackTag]++
 		dmg, _ := target.Attack(ds)
 		logger.Debugw("attack", "abil", ds.Abil, "dmg", dmg)
@@ -177,44 +177,44 @@ func TestXingqiuBurst(t *testing.T) {
 	fmt.Println("----xingqiu burst testing----")
 	fmt.Println("checking burst first wave")
 	xq.Attack(param)
-	sim.ExecuteEventHook(def.PostAttackHook)
+	sim.ExecuteEventHook(core.PostAttackHook)
 	sim.Skip(200)
-	if !expect("normal attack count", 1, atkCounts[def.AttackTagNormal]) {
+	if !expect("normal attack count", 1, atkCounts[core.AttackTagNormal]) {
 		t.Error("invalid attack count")
 	}
-	atkCounts[def.AttackTagNormal] = 0
-	if !expect("burst attack count", 2, atkCounts[def.AttackTagElementalBurst]) {
+	atkCounts[core.AttackTagNormal] = 0
+	if !expect("burst attack count", 2, atkCounts[core.AttackTagElementalBurst]) {
 		t.Error("invalid attack count")
 	}
-	atkCounts[def.AttackTagElementalBurst] = 0
+	atkCounts[core.AttackTagElementalBurst] = 0
 	xq.ResetNormalCounter()
 
 	fmt.Println("checking burst second wave")
 	xq.Attack(param)
-	sim.ExecuteEventHook(def.PostAttackHook)
+	sim.ExecuteEventHook(core.PostAttackHook)
 	sim.Skip(200)
-	if !expect("normal attack count", 1, atkCounts[def.AttackTagNormal]) {
+	if !expect("normal attack count", 1, atkCounts[core.AttackTagNormal]) {
 		t.Error("invalid attack count")
 	}
-	atkCounts[def.AttackTagNormal] = 0
-	if !expect("burst attack count", 3, atkCounts[def.AttackTagElementalBurst]) {
+	atkCounts[core.AttackTagNormal] = 0
+	if !expect("burst attack count", 3, atkCounts[core.AttackTagElementalBurst]) {
 		t.Error("invalid attack count")
 	}
-	atkCounts[def.AttackTagElementalBurst] = 0
+	atkCounts[core.AttackTagElementalBurst] = 0
 	xq.ResetNormalCounter()
 
 	fmt.Println("checking burst third wave")
 	xq.Attack(param)
-	sim.ExecuteEventHook(def.PostAttackHook)
+	sim.ExecuteEventHook(core.PostAttackHook)
 	sim.Skip(200)
-	if !expect("normal attack count", 1, atkCounts[def.AttackTagNormal]) {
+	if !expect("normal attack count", 1, atkCounts[core.AttackTagNormal]) {
 		t.Error("invalid attack count")
 	}
-	atkCounts[def.AttackTagNormal] = 0
-	if !expect("burst attack count", 5, atkCounts[def.AttackTagElementalBurst]) {
+	atkCounts[core.AttackTagNormal] = 0
+	if !expect("burst attack count", 5, atkCounts[core.AttackTagElementalBurst]) {
 		t.Error("invalid attack count")
 	}
-	atkCounts[def.AttackTagElementalBurst] = 0
+	atkCounts[core.AttackTagElementalBurst] = 0
 	xq.ResetNormalCounter()
 
 }
@@ -224,18 +224,18 @@ func expect(key string, a interface{}, b interface{}) bool {
 	return a == b
 }
 
-func defaultResMap() map[def.EleType]float64 {
-	res := make(map[def.EleType]float64)
+func defaultResMap() map[core.EleType]float64 {
+	res := make(map[core.EleType]float64)
 
-	res[def.Electro] = 0.1
-	res[def.Pyro] = 0.1
-	res[def.Anemo] = 0.1
-	res[def.Cryo] = 0.1
-	res[def.Frozen] = 0.1
-	res[def.Hydro] = 0.1
-	res[def.Dendro] = 0.1
-	res[def.Geo] = 0.1
-	res[def.Physical] = 0.3
+	res[core.Electro] = 0.1
+	res[core.Pyro] = 0.1
+	res[core.Anemo] = 0.1
+	res[core.Cryo] = 0.1
+	res[core.Frozen] = 0.1
+	res[core.Hydro] = 0.1
+	res[core.Dendro] = 0.1
+	res[core.Geo] = 0.1
+	res[core.Physical] = 0.3
 
 	return res
 }

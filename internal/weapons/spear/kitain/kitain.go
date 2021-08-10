@@ -4,42 +4,42 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("kitain cross spear", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
-	m := make([]float64, def.EndStatType)
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+	m := make([]float64, core.EndStatType)
 	base := 0.045 + float64(r)*0.015
 	regen := 2.5 + float64(r)*0.5
 
-	m[def.PyroP] = base
-	m[def.HydroP] = base
-	m[def.CryoP] = base
-	m[def.ElectroP] = base
-	m[def.AnemoP] = base
-	m[def.GeoP] = base
-	m[def.EleP] = base
-	m[def.PhyP] = base
-	m[def.DendroP] = base
+	m[core.PyroP] = base
+	m[core.HydroP] = base
+	m[core.CryoP] = base
+	m[core.ElectroP] = base
+	m[core.AnemoP] = base
+	m[core.GeoP] = base
+	m[core.EleP] = base
+	m[core.PhyP] = base
+	m[core.DendroP] = base
 
-	c.AddMod(def.CharStatMod{
+	c.AddMod(core.CharStatMod{
 		Expiry: -1,
 		Key:    "",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 	})
 
 	icd := 0
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagElementalArt {
+		if ds.AttackTag != core.AttackTagElementalArt {
 			return
 		}
 		if icd > s.Frame() {

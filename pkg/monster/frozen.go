@@ -1,7 +1,7 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 type AuraFrozen struct {
@@ -10,29 +10,29 @@ type AuraFrozen struct {
 	hydro    *AuraHydro
 	cryo     *AuraCyro
 	source   int
-	snapshot def.Snapshot
+	snapshot core.Snapshot
 	t        *Target
 }
 
-func (a *AuraFrozen) AuraContains(ele ...def.EleType) bool {
+func (a *AuraFrozen) AuraContains(ele ...core.EleType) bool {
 	for _, v := range ele {
-		if v == def.Hydro && a.hydro != nil {
+		if v == core.Hydro && a.hydro != nil {
 			return true
 		}
-		if v == def.Cryo && a.cryo != nil {
+		if v == core.Cryo && a.cryo != nil {
 			return true
 		}
-		if v == def.Frozen {
+		if v == core.Frozen {
 			return true
 		}
 	}
 	return false
 }
 
-func newFreeze(c *AuraCyro, h *AuraHydro, dur def.Durability, t *Target, ds *def.Snapshot, f int) Aura {
+func newFreeze(c *AuraCyro, h *AuraHydro, dur core.Durability, t *Target, ds *core.Snapshot, f int) Aura {
 	fz := AuraFrozen{}
 	fz.Element = &Element{}
-	fz.T = def.Frozen
+	fz.T = core.Frozen
 	//one of these 2 should be nil
 	fz.cryo = c
 	fz.hydro = h
@@ -89,39 +89,39 @@ func (a *AuraFrozen) Tick() bool {
 	return false
 }
 
-func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
+func (a *AuraFrozen) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	if ds.Durability == 0 {
 		return a, false
 	}
 	switch ds.Element {
-	case def.Anemo:
+	case core.Anemo:
 		if a.hydro != nil {
 			next, _ := a.hydro.React(ds, t)
 			a.hydro = next.(*AuraHydro)
-			ds.ReactionType = def.SwirlHydro
+			ds.ReactionType = core.SwirlHydro
 		}
 		if ds.Durability > 0 {
-			ds.ReactionType = def.SwirlCryo
+			ds.ReactionType = core.SwirlCryo
 			//queue swirl dmg
-			t.queueReaction(ds, def.SwirlCryo, a.CurrentDurability, 1)
+			t.queueReaction(ds, core.SwirlCryo, a.CurrentDurability, 1)
 			//reduce pyro by 0.5 of anemo
 			a.Reduce(ds, 0.5)
 		}
-	case def.Geo:
-		ds.ReactionType = def.CrystallizeCryo
+	case core.Geo:
+		ds.ReactionType = core.CrystallizeCryo
 		//crystallize adds shield
-		shd := NewCrystallizeShield(def.Cryo, t.sim.Frame(), ds.CharLvl, ds.Stats[def.EM], t.sim.Frame()+900)
+		shd := NewCrystallizeShield(core.Cryo, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
 		t.sim.AddShield(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
 		//not sure if we can proc second crystallize?
-	case def.Pyro:
+	case core.Pyro:
 		//melt, pyro into cryo = strong; should be melt only
-		ds.ReactionType = def.Melt
+		ds.ReactionType = core.Melt
 		ds.ReactMult = 2
 		ds.IsMeltVape = true
 		a.Reduce(ds, 2)
-	case def.Hydro:
+	case core.Hydro:
 		//check if we need to refresh freeze
 		if a.cryo != nil {
 			//top up to the original max durability
@@ -133,7 +133,7 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 			if a.CurrentDurability > a.MaxDurability {
 				a.CurrentDurability = a.MaxDurability
 			}
-			ds.ReactionType = def.Freeze
+			ds.ReactionType = core.Freeze
 			return a, true
 		}
 		//check if we're topping up hydro here
@@ -145,10 +145,10 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//otherwise attach it
 		r := &AuraHydro{}
 		r.Element = &Element{}
-		r.T = def.Hydro
+		r.T = core.Hydro
 		r.Attach(ds.Durability, t.sim.Frame())
 		a.hydro = r
-	case def.Cryo:
+	case core.Cryo:
 		//check if we need to refresh freeze
 		if a.hydro != nil {
 			//top up to the original max durability
@@ -160,7 +160,7 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 			if a.CurrentDurability > a.MaxDurability {
 				a.CurrentDurability = a.MaxDurability
 			}
-			ds.ReactionType = def.Freeze
+			ds.ReactionType = core.Freeze
 			return a, true
 		}
 		//check if we're topping up hydro here
@@ -172,13 +172,13 @@ func (a *AuraFrozen) React(ds *def.Snapshot, t *Target) (Aura, bool) {
 		//otherwise attach it
 		r := &AuraCyro{}
 		r.Element = &Element{}
-		r.T = def.Cryo
+		r.T = core.Cryo
 		r.Attach(ds.Durability, t.sim.Frame())
 		a.cryo = r
-	case def.Electro:
+	case core.Electro:
 		//superconduct
-		ds.ReactionType = def.Superconduct
-		t.queueReaction(ds, def.Superconduct, a.CurrentDurability, 1)
+		ds.ReactionType = core.Superconduct
+		t.queueReaction(ds, core.Superconduct, a.CurrentDurability, 1)
 		a.Reduce(ds, 1)
 		if ds.Durability > 0 && a.hydro != nil {
 			next, _ := a.hydro.React(ds, t)

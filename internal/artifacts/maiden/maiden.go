@@ -4,20 +4,20 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterSetFunc("maiden beloved", New)
 }
 
-func New(c def.Character, s def.Sim, log def.Logger, count int) {
+func New(c core.Character, s core.Sim, log core.Logger, count int) {
 	if count >= 2 {
-		m := make([]float64, def.EndStatType)
-		m[def.Heal] = 0.15
-		c.AddMod(def.CharStatMod{
+		m := make([]float64, core.EndStatType)
+		m[core.Heal] = 0.15
+		c.AddMod(core.CharStatMod{
 			Key: "maiden-2pc",
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -26,15 +26,15 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 	if count >= 4 {
 		dur := 0
 
-		s.AddEventHook(func(s def.Sim) bool {
+		s.AddEventHook(func(s core.Sim) bool {
 			// s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
 			if s.ActiveCharIndex() != c.CharIndex() {
 				return false
 			}
 			dur = s.Frame() + 600
-			log.Debugw("maiden 4pc proc", "frame", s.Frame(), "event", def.LogArtifactEvent, "char", c.CharIndex(), "expiry", dur)
+			log.Debugw("maiden 4pc proc", "frame", s.Frame(), "event", core.LogArtifactEvent, "char", c.CharIndex(), "expiry", dur)
 			return false
-		}, fmt.Sprintf("maid 4pc - %v", c.Name()), def.PostBurstHook)
+		}, fmt.Sprintf("maid 4pc - %v", c.Name()), core.PostBurstHook)
 
 		s.AddIncHealBonus(func() float64 {
 			if s.Frame() < dur {

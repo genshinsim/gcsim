@@ -1,6 +1,6 @@
 package character
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
 func (t *Tmpl) Tick() {
 
@@ -20,10 +20,10 @@ func (t *Tmpl) AddTask(fun func(), name string, delay int) {
 		Delay:       delay,
 		originFrame: f,
 	})
-	t.Log.Debugw("task added: "+name, "frame", f, "event", def.LogTaskEvent, "name", name, "delay", delay)
+	t.Log.Debugw("task added: "+name, "frame", f, "event", core.LogTaskEvent, "name", name, "delay", delay)
 }
 
-func (t *Tmpl) QueueDmg(ds *def.Snapshot, delay int) {
+func (t *Tmpl) QueueDmg(ds *core.Snapshot, delay int) {
 	t.AddTask(func() {
 		t.Sim.ApplyDamage(ds)
 	}, "dmg", delay)

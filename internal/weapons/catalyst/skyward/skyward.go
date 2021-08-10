@@ -4,24 +4,24 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("skyward atlas", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 	dmg := 0.09 + float64(r)*0.03
 	atk := 1.2 + float64(r)*0.4
 
 	icd := 0
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal {
+		if ds.AttackTag != core.AttackTagNormal {
 			return
 		}
 		if icd > s.Frame() {
@@ -32,11 +32,11 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		}
 		d := c.Snapshot(
 			"Skyward Atlas Proc",
-			def.AttackTagWeaponSkill,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Physical,
+			core.AttackTagWeaponSkill,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Physical,
 			100,
 			atk,
 		)
@@ -48,20 +48,20 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		icd = s.Frame() + 1800
 	}, fmt.Sprintf("skyward-atlast-%v", c.Name()))
 
-	m := make([]float64, def.EndStatType)
-	m[def.PyroP] = dmg
-	m[def.HydroP] = dmg
-	m[def.CryoP] = dmg
-	m[def.ElectroP] = dmg
-	m[def.AnemoP] = dmg
-	m[def.GeoP] = dmg
-	m[def.EleP] = dmg
-	m[def.PhyP] = dmg
-	m[def.DendroP] = dmg
-	c.AddMod(def.CharStatMod{
+	m := make([]float64, core.EndStatType)
+	m[core.PyroP] = dmg
+	m[core.HydroP] = dmg
+	m[core.CryoP] = dmg
+	m[core.ElectroP] = dmg
+	m[core.AnemoP] = dmg
+	m[core.GeoP] = dmg
+	m[core.EleP] = dmg
+	m[core.PhyP] = dmg
+	m[core.DendroP] = dmg
+	c.AddMod(core.CharStatMod{
 		Key:    "skyward-atlast",
 		Expiry: -1,
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 	})

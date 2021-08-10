@@ -1,8 +1,8 @@
 package combat
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (s *Sim) NewConstruct(c def.Construct, refresh bool) {
+func (s *Sim) NewConstruct(c core.Construct, refresh bool) {
 
 	//if refresh, we nil out the old one if any
 	ind := len(s.constructs)
@@ -14,7 +14,7 @@ func (s *Sim) NewConstruct(c def.Construct, refresh bool) {
 		}
 	}
 	if ind != 0 && ind != len(s.constructs) {
-		s.log.Debugw("construct replaced", "event", def.LogConstructEvent, "frame", s.f, "key", s.constructs[ind].Key(), "prev type", s.constructs[ind].Type(), "next type", c.Type())
+		s.log.Debugw("construct replaced", "event", core.LogConstructEvent, "frame", s.f, "key", s.constructs[ind].Key(), "prev type", s.constructs[ind].Type(), "next type", c.Type())
 		s.constructs[ind].OnDestruct()
 		s.constructs[ind] = c
 
@@ -26,7 +26,7 @@ func (s *Sim) NewConstruct(c def.Construct, refresh bool) {
 	//if length > 3, then destruct the beginning ones
 	for i := 0; i < len(s.constructs)-3; i++ {
 		s.constructs[i].OnDestruct()
-		s.log.Debugw("destroyed", "event", def.LogConstructEvent, "frame", s.f, "key", s.constructs[ind].Key(), "type", s.constructs[ind].Type())
+		s.log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.f, "key", s.constructs[ind].Key(), "type", s.constructs[ind].Type())
 		s.constructs[i] = nil
 	}
 
@@ -41,7 +41,7 @@ func (s *Sim) NewConstruct(c def.Construct, refresh bool) {
 	s.constructs = s.constructs[:n]
 }
 
-func (s *Sim) NewNoLimitCons(c def.Construct, refresh bool) {
+func (s *Sim) NewNoLimitCons(c core.Construct, refresh bool) {
 	if refresh {
 		ind := len(s.consNoLimit)
 		for i, v := range s.consNoLimit {
@@ -53,7 +53,7 @@ func (s *Sim) NewNoLimitCons(c def.Construct, refresh bool) {
 		if ind != 0 && ind != len(s.consNoLimit) {
 			//destroy the existing by setting expiry
 			s.consNoLimit[ind].OnDestruct()
-			s.log.Debugw("destroyed", "event", def.LogConstructEvent, "frame", s.f, "key", s.consNoLimit[ind].Key(), "type", s.consNoLimit[ind].Type())
+			s.log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.f, "key", s.consNoLimit[ind].Key(), "type", s.consNoLimit[ind].Type())
 			s.consNoLimit[ind] = nil
 
 		}
@@ -67,7 +67,7 @@ func (s *Sim) tickConstruct() {
 	for _, v := range s.constructs {
 		if v.Expiry() == s.f {
 			v.OnDestruct()
-			s.log.Debugw("destroyed", "event", def.LogConstructEvent, "frame", s.f, "key", v.Key(), "type", v.Type())
+			s.log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.f, "key", v.Key(), "type", v.Type())
 		} else {
 			s.constructs[n] = v
 			n++
@@ -78,7 +78,7 @@ func (s *Sim) tickConstruct() {
 	for i, v := range s.consNoLimit {
 		if v.Expiry() == s.f {
 			s.consNoLimit[i].OnDestruct()
-			s.log.Debugw("destroyed", "event", def.LogConstructEvent, "frame", s.f, "key", v.Key(), "type", v.Type())
+			s.log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.f, "key", v.Key(), "type", v.Type())
 		} else {
 			s.consNoLimit[n] = v
 			n++
@@ -100,7 +100,7 @@ func (s *Sim) ConstructCount() int {
 	return count
 }
 
-func (s *Sim) ConstructCountType(t def.GeoConstructType) int {
+func (s *Sim) ConstructCountType(t core.GeoConstructType) int {
 	count := 0
 	for _, v := range s.constructs {
 		if v.Type() == t {
@@ -138,7 +138,7 @@ func (s *Sim) Destroy(key int) bool {
 		if v.Key() == key {
 			v.OnDestruct()
 			ok = true
-			s.log.Debugw("destroyed", "event", def.LogConstructEvent, "frame", s.f, "key", v.Key(), "type", v.Type())
+			s.log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.f, "key", v.Key(), "type", v.Type())
 		} else {
 			s.constructs[n] = v
 			n++
@@ -153,7 +153,7 @@ func (s *Sim) Destroy(key int) bool {
 		if v.Key() == key {
 			s.consNoLimit[i].OnDestruct()
 			ok = true
-			s.log.Debugw("destroyed", "event", def.LogConstructEvent, "frame", s.f, "key", v.Key(), "type", v.Type())
+			s.log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.f, "key", v.Key(), "type", v.Type())
 		} else {
 			s.consNoLimit[n] = v
 			n++

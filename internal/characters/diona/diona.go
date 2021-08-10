@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/shield"
 
 	"go.uber.org/zap"
@@ -19,7 +19,7 @@ type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -28,7 +28,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 60
 	c.EnergyMax = 60
-	c.Weapon.Class = def.WeaponClassBow
+	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
@@ -42,9 +42,9 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -59,16 +59,16 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 152 - 101
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionAim:
+	case core.ActionAim:
 		if c.Base.Cons >= 4 && c.Sim.Status("dionaburst") > 0 {
 			return 34 //reduced by 60%
 		}
 		return 84 //kqm
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 21
-	case def.ActionSkill:
+	case core.ActionSkill:
 		switch p["hold"] {
 		case 1:
 			return 24
@@ -82,8 +82,8 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 }
 
 func (c *char) a2() {
-	c.Sim.AddStamMod(func(a def.ActionType) float64 {
-		if c.Sim.GetShield(def.ShieldDionaSkill) != nil {
+	c.Sim.AddStamMod(func(a core.ActionType) float64 {
+		if c.Sim.GetShield(core.ShieldDionaSkill) != nil {
 			return -0.1
 		}
 		return 0
@@ -97,7 +97,7 @@ func (c *char) c6() {
 		}
 		char, _ := c.Sim.CharByPos(c.Sim.ActiveCharIndex())
 		if char.HP()/char.MaxHP() <= 0.5 {
-			c.Log.Debugw("diona c6 activated", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent)
+			c.Log.Debugw("diona c6 activated", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
 			return 0.3
 		}
 		return 0
@@ -110,14 +110,14 @@ func (c *char) Attack(p map[string]int) int {
 		travel = 20
 	}
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypePierce,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypePierce,
+		core.Physical,
 		25,
 		auto[c.NormalCounter][c.TalentLvlAttack()],
 	)
@@ -135,15 +135,15 @@ func (c *char) Aimed(p map[string]int) int {
 		travel = 20
 	}
 
-	f := c.ActionFrames(def.ActionAim, p)
+	f := c.ActionFrames(core.ActionAim, p)
 
 	d := c.Snapshot(
 		"Aim (Charged)",
-		def.AttackTagExtra,
-		def.ICDTagExtraAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypePierce,
-		def.Cryo,
+		core.AttackTagExtra,
+		core.ICDTagExtraAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypePierce,
+		core.Cryo,
 		25,
 		aim[c.TalentLvlAttack()],
 	)
@@ -161,7 +161,7 @@ func (c *char) Skill(p map[string]int) int {
 	if !ok {
 		travel = 20
 	}
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	// 2 paws
 	var bonus float64 = 1
@@ -182,11 +182,11 @@ func (c *char) Skill(p map[string]int) int {
 
 	d := c.Snapshot(
 		"Icy Paw",
-		def.AttackTagElementalArt,
-		def.ICDTagElementalArt,
-		def.ICDGroupDefault,
-		def.StrikeTypePierce,
-		def.Cryo,
+		core.AttackTagElementalArt,
+		core.ICDTagElementalArt,
+		core.ICDGroupDefault,
+		core.StrikeTypePierce,
+		core.Cryo,
 		25,
 		paw[c.TalentLvlSkill()],
 	)
@@ -196,7 +196,7 @@ func (c *char) Skill(p map[string]int) int {
 	for i := 0; i < pawCount; i++ {
 		x := d.Clone()
 		if c.Base.Cons >= 2 {
-			d.Stats[def.DmgP] += 0.15
+			d.Stats[core.DmgP] += 0.15
 		}
 		c.QueueDmg(&x, travel+f-5+i)
 
@@ -206,35 +206,35 @@ func (c *char) Skill(p map[string]int) int {
 	}
 
 	//particles
-	c.QueueParticle("Diona", count, def.Cryo, 90) //90s travel time
+	c.QueueParticle("Diona", count, core.Cryo, 90) //90s travel time
 
 	//add shield
 	c.AddTask(func() {
 		c.Sim.AddShield(&shield.Tmpl{
 			Src:        c.Sim.Frame(),
-			ShieldType: def.ShieldDionaSkill,
+			ShieldType: core.ShieldDionaSkill,
 			HP:         shd,
-			Ele:        def.Cryo,
+			Ele:        core.Cryo,
 			Expires:    c.Sim.Frame() + pawDur[c.TalentLvlSkill()], //15 sec
 		})
 	}, "Diona-Paw-Shield", f)
 
-	c.SetCD(def.ActionSkill, cd)
+	c.SetCD(core.ActionSkill, cd)
 	return f
 }
 
 func (c *char) Burst(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 
 	//initial hit
 	d := c.Snapshot(
 		"Signature Mix (Initial)",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		25,
 		burst[c.TalentLvlBurst()],
 	)
@@ -242,15 +242,15 @@ func (c *char) Burst(p map[string]int) int {
 
 	d = c.Snapshot(
 		"Signature Mix (Tick)",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		25,
 		burstDot[c.TalentLvlBurst()],
 	)
-	hpplus := d.Stats[def.Heal]
+	hpplus := d.Stats[core.Heal]
 	maxhp := c.MaxHP()
 	heal := (burstHealPer[c.TalentLvlBurst()]*maxhp + burstHealFlat[c.TalentLvlBurst()]) * (1 + hpplus)
 
@@ -259,7 +259,7 @@ func (c *char) Burst(p map[string]int) int {
 		c.AddTask(func() {
 			x := d.Clone()
 			c.Sim.ApplyDamage(&x)
-			c.Log.Debugw("diona healing", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
+			c.Log.Debugw("diona healing", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
 			c.Sim.HealActive(heal)
 		}, "Diona Burst (DOT)", 60+i*120)
 	}
@@ -275,19 +275,19 @@ func (c *char) Burst(p map[string]int) int {
 			if c.Energy > c.EnergyMax {
 				c.Energy = c.EnergyMax
 			}
-			c.Log.Debugw("diona c1 regen 15 energy", "frame", c.Sim.Frame(), "event", def.LogEnergyEvent, "new energy", c.Energy)
+			c.Log.Debugw("diona c1 regen 15 energy", "frame", c.Sim.Frame(), "event", core.LogEnergyEvent, "new energy", c.Energy)
 		}, "Diona C1", f+750)
 	}
 
 	if c.Base.Cons == 6 {
 		c.AddTask(func() {
 			for _, char := range c.Sim.Characters() {
-				val := make([]float64, def.EndStatType)
-				val[def.EM] = 200
-				char.AddMod(def.CharStatMod{
+				val := make([]float64, core.EndStatType)
+				val[core.EM] = 200
+				char.AddMod(core.CharStatMod{
 					Key:    "diona-c6",
 					Expiry: 750,
-					Amount: func(a def.AttackTag) ([]float64, bool) {
+					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, char.HP()/char.MaxHP() > 0.5
 					},
 				})
@@ -295,7 +295,7 @@ func (c *char) Burst(p map[string]int) int {
 		}, "c6-em-share", f)
 	}
 
-	c.SetCD(def.ActionBurst, 1200+f)
+	c.SetCD(core.ActionBurst, 1200+f)
 	c.Energy = 0
 	return f
 }

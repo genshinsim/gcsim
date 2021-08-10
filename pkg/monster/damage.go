@@ -1,14 +1,14 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (t *Target) ApplyReactionDamage(ds *def.Snapshot) float64 {
+func (t *Target) ApplyReactionDamage(ds *core.Snapshot) float64 {
 	return 0
 }
 
-func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
+func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 
 	//do nothing if attack is not going to land
 	if !t.attackWillLand(ds) {
@@ -23,16 +23,16 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 	}
 
 	//check tags
-	if ds.Durability > 0 && ds.Element != def.Physical {
+	if ds.Durability > 0 && ds.Element != core.Physical {
 		//check for ICD first
 		if t.willApplyEle(ds.ICDTag, ds.ICDGroup, ds.ActorIndex) {
-			a := def.NoElement
+			a := core.NoElement
 			if t.aura != nil {
 				a = t.aura.Type()
 			}
 			t.log.Debugw("application",
 				"frame", t.sim.Frame(),
-				"event", def.LogElementEvent,
+				"event", core.LogElementEvent,
 				"char", ds.ActorIndex,
 				"attack_tag", ds.AttackTag,
 				"applied_ele", ds.Element,
@@ -57,7 +57,7 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 			dmg.damage = t.calcReactionDmg(ds)
 		} else {
 			//call PreAmpReaction hook if needed
-			if ds.ReactionType == def.Melt || ds.ReactionType == def.Vaporize {
+			if ds.ReactionType == core.Melt || ds.ReactionType == core.Vaporize {
 				t.sim.OnAmpReaction(t, ds)
 			}
 			dmg = t.calcDmg(ds)
@@ -80,9 +80,9 @@ func (t *Target) Attack(ds *def.Snapshot) (float64, bool) {
 	return dmg.damage, dmg.isCrit
 }
 
-func (t *Target) attackWillLand(ds *def.Snapshot) bool {
+func (t *Target) attackWillLand(ds *core.Snapshot) bool {
 	//if aoe
-	if ds.Targets == def.TargetAll {
+	if ds.Targets == core.TargetAll {
 		//check if attack came from self (this is for aoe that centers on self but does not hit self)
 		if ds.DamageSrc == t.index && !ds.SelfHarm {
 			return false
@@ -99,7 +99,7 @@ type dmgResult struct {
 	isCrit bool
 }
 
-func (t *Target) resist(ele def.EleType, char int) float64 {
+func (t *Target) resist(ele core.EleType, char int) float64 {
 	// log.Debugw("\t\t res calc", "res", e.res, "mods", e.mod)
 
 	r := t.res[ele]
@@ -108,7 +108,7 @@ func (t *Target) resist(ele def.EleType, char int) float64 {
 			t.log.Debugw(
 				"resist modified",
 				"frame", t.sim.Frame(),
-				"event", def.LogCalc,
+				"event", core.LogCalc,
 				"char", char,
 				"ele", v.Ele,
 				"amount", v.Value,
@@ -130,7 +130,7 @@ func (t *Target) defAdj(char int) float64 {
 			t.log.Debugw(
 				"def modified",
 				"frame", t.sim.Frame(),
-				"event", def.LogCalc,
+				"event", core.LogCalc,
 				"char", char,
 				"amount", v.Value,
 				"from", v.Key,
@@ -143,30 +143,30 @@ func (t *Target) defAdj(char int) float64 {
 	return r
 }
 
-func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
+func (t *Target) calcDmg(ds *core.Snapshot) dmgResult {
 
 	result := dmgResult{}
 
-	st := def.EleToDmgP(ds.Element)
-	dmgBonus := ds.Stats[st] + ds.Stats[def.DmgP]
+	st := core.EleToDmgP(ds.Element)
+	dmgBonus := ds.Stats[st] + ds.Stats[core.DmgP]
 
 	//calculate using attack or def
 	var a float64
 	if ds.UseDef {
-		a = ds.BaseDef*(1+ds.Stats[def.DEFP]) + ds.Stats[def.DEF]
+		a = ds.BaseDef*(1+ds.Stats[core.DEFP]) + ds.Stats[core.DEF]
 	} else {
-		a = ds.BaseAtk*(1+ds.Stats[def.ATKP]) + ds.Stats[def.ATK]
+		a = ds.BaseAtk*(1+ds.Stats[core.ATKP]) + ds.Stats[core.ATK]
 	}
 
 	base := ds.Mult*a + ds.FlatDmg
 	damage := base * (1 + dmgBonus)
 
 	//make sure 0 <= cr <= 1
-	if ds.Stats[def.CR] < 0 {
-		ds.Stats[def.CR] = 0
+	if ds.Stats[core.CR] < 0 {
+		ds.Stats[core.CR] = 0
 	}
-	if ds.Stats[def.CR] > 1 {
-		ds.Stats[def.CR] = 1
+	if ds.Stats[core.CR] > 1 {
+		ds.Stats[core.CR] = 1
 	}
 	res := t.resist(ds.Element, ds.ActorIndex)
 	defadj := t.defAdj(ds.ActorIndex)
@@ -187,15 +187,15 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 	precritdmg := damage
 
 	//check if crit
-	if t.rand.Float64() <= ds.Stats[def.CR] || ds.HitWeakPoint {
-		damage = damage * (1 + ds.Stats[def.CD])
+	if t.rand.Float64() <= ds.Stats[core.CR] || ds.HitWeakPoint {
+		damage = damage * (1 + ds.Stats[core.CD])
 		result.isCrit = true
 	}
 
 	preampdmg := damage
 
 	//calculate em bonus
-	em := ds.Stats[def.EM]
+	em := ds.Stats[core.EM]
 	emBonus := (2.78 * em) / (1400 + em)
 	//check melt/vape
 	if ds.IsMeltVape {
@@ -214,7 +214,7 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 	t.log.Debugw(
 		ds.Abil,
 		"frame", t.sim.Frame(),
-		"event", def.LogCalc,
+		"event", core.LogCalc,
 		"char", ds.ActorIndex,
 		"src_frame", ds.SourceFrame,
 		"damage_grp_mult", x,
@@ -222,12 +222,12 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 		"abil", ds.Abil,
 		"talent", ds.Mult,
 		"base_atk", ds.BaseAtk,
-		"flat_atk", ds.Stats[def.ATK],
-		"atk_per", ds.Stats[def.ATKP],
+		"flat_atk", ds.Stats[core.ATK],
+		"atk_per", ds.Stats[core.ATKP],
 		"use_def", ds.UseDef,
 		"base_def", ds.BaseDef,
-		"flat_def", ds.Stats[def.DEF],
-		"def_per", ds.Stats[def.DEFP],
+		"flat_def", ds.Stats[core.DEF],
+		"def_per", ds.Stats[core.DEFP],
 		"flat_dmg", ds.FlatDmg,
 		"total_atk_def", a,
 		"base_dmg", base,
@@ -238,10 +238,10 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 		"def_mod", defmod,
 		"res", res,
 		"res_mod", resmod,
-		"cr", ds.Stats[def.CR],
-		"cd", ds.Stats[def.CD],
+		"cr", ds.Stats[core.CR],
+		"cd", ds.Stats[core.CD],
 		"pre_crit_dmg", precritdmg,
-		"dmg_if_crit", precritdmg*(1+ds.Stats[def.CD]),
+		"dmg_if_crit", precritdmg*(1+ds.Stats[core.CD]),
 		"is_crit", result.isCrit,
 		"pre_amp_dmg", preampdmg,
 		"reaction_type", ds.ReactionType,
@@ -257,8 +257,8 @@ func (t *Target) calcDmg(ds *def.Snapshot) dmgResult {
 	return result
 }
 
-func (t *Target) calcReactionDmg(ds *def.Snapshot) float64 {
-	em := ds.Stats[def.EM]
+func (t *Target) calcReactionDmg(ds *core.Snapshot) float64 {
+	em := ds.Stats[core.EM]
 	lvl := ds.CharLvl - 1
 	if lvl > 89 {
 		lvl = 89
@@ -281,7 +281,7 @@ func (t *Target) calcReactionDmg(ds *def.Snapshot) float64 {
 	t.log.Debugw(
 		ds.Abil,
 		"frame", t.sim.Frame(),
-		"event", def.LogCalc,
+		"event", core.LogCalc,
 		"char", ds.ActorIndex,
 		"src_frame", ds.SourceFrame,
 		"damage", damage,
@@ -298,7 +298,7 @@ func (t *Target) calcReactionDmg(ds *def.Snapshot) float64 {
 }
 
 func (t *Target) AddDefMod(key string, val float64, dur int) {
-	m := def.DefMod{
+	m := core.DefMod{
 		Key:    key,
 		Value:  val,
 		Expiry: t.sim.Frame() + dur,
@@ -311,13 +311,13 @@ func (t *Target) AddDefMod(key string, val float64, dur int) {
 		}
 	}
 	if ind != -1 {
-		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "old", t.defMod[ind], "next", val, "target", t.index)
+		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", core.LogEnemyEvent, "count", len(t.defMod), "old", t.defMod[ind], "next", val, "target", t.index)
 		// LogEnemyEvent
 		t.defMod[ind] = m
 		return
 	}
 	t.defMod = append(t.defMod, m)
-	t.log.Debugw("new def mod", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.defMod), "next", val, "target", t.index)
+	t.log.Debugw("new def mod", "frame", t.sim.Frame(), "event", core.LogEnemyEvent, "count", len(t.defMod), "next", val, "target", t.index)
 	// e.mod[key] = val
 }
 
@@ -331,7 +331,7 @@ func (t *Target) HasDefMod(key string) bool {
 	return ind != -1 && t.defMod[ind].Expiry > t.sim.Frame()
 }
 
-func (t *Target) AddResMod(key string, val def.ResistMod) {
+func (t *Target) AddResMod(key string, val core.ResistMod) {
 	val.Expiry = t.sim.Frame() + val.Duration
 	val.Key = key
 	//find if exists, if exists override, else append
@@ -342,13 +342,13 @@ func (t *Target) AddResMod(key string, val def.ResistMod) {
 		}
 	}
 	if ind != -1 {
-		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.resMod), "old", t.resMod[ind], "next", val)
+		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", core.LogEnemyEvent, "count", len(t.resMod), "old", t.resMod[ind], "next", val)
 		// LogEnemyEvent
 		t.resMod[ind] = val
 		return
 	}
 	t.resMod = append(t.resMod, val)
-	t.log.Debugw("new mod", "frame", t.sim.Frame(), "event", def.LogEnemyEvent, "count", len(t.resMod), "next", val)
+	t.log.Debugw("new mod", "frame", t.sim.Frame(), "event", core.LogEnemyEvent, "count", len(t.resMod), "next", val)
 	// e.mod[key] = val
 }
 

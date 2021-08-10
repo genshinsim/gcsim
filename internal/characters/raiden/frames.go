@@ -1,10 +1,10 @@
 package raiden
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		if c.Sim.Status("raidenburst") == 0 {
 			switch c.NormalCounter {
@@ -35,14 +35,14 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 				f = 48
 			}
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionSkill:
-		return 68 //eye appears
-	case def.ActionBurst:
+	case core.ActionSkill:
+		return 54 //eye appears
+	case core.ActionBurst:
 		return 139
 	default:
-		c.Log.Warnw("unknown action", "event", def.LogActionEvent, "frame", c.Sim.Frame(), "action", a)
+		c.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Sim.Frame(), "action", a)
 		return 0
 	}
 }

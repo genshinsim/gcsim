@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
@@ -19,7 +19,7 @@ type char struct {
 	c2ICD       int
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -28,7 +28,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 40
 	c.EnergyMax = 40
-	c.Weapon.Class = def.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
@@ -46,9 +46,9 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 
 var delay = [][]int{{8}, {20}, {25}, {25, 35}, {34}}
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
 		case 0:
@@ -62,25 +62,25 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			return 133 - 97
 		}
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 52
-	case def.ActionSkill:
+	case core.ActionSkill:
 		if c.Tags["e"] == 1 {
 			return 84 //2nd part
 		}
 		return 34 //first part
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 125
 	}
 	c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 	return 0
 }
 
-func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
-	case def.ActionDash:
+	case core.ActionDash:
 		return 18
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 25
 	default:
 		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
@@ -89,25 +89,25 @@ func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) c4() {
-	c.Sim.AddOnTransReaction(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnTransReaction(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
 		switch ds.ReactionType {
-		case def.Overload:
+		case core.Overload:
 			fallthrough
-		case def.ElectroCharged:
+		case core.ElectroCharged:
 			fallthrough
-		case def.Superconduct:
+		case core.Superconduct:
 			fallthrough
-		case def.SwirlElectro:
+		case core.SwirlElectro:
 			fallthrough
-		case def.CrystallizeElectro:
-			val := make([]float64, def.EndStatType)
-			val[def.ATK] = 0.25
-			c.AddMod(def.CharStatMod{
+		case core.CrystallizeElectro:
+			val := make([]float64, core.EndStatType)
+			val[core.ATK] = 0.25
+			c.AddMod(core.CharStatMod{
 				Key:    "c4",
-				Amount: func(a def.AttackTag) ([]float64, bool) { return val, true },
+				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 				Expiry: c.Sim.Frame() + 600,
 			})
 		}
@@ -117,15 +117,15 @@ func (c *char) c4() {
 
 func (c *char) Attack(p map[string]int) int {
 	//apply attack speed
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		0,
 	)
@@ -146,19 +146,19 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) ChargeAttack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionCharge, p)
+	f := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge 1",
-		def.AttackTagExtra,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagExtra,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		0,
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	for i, mult := range charge {
 		x := d.Clone()
@@ -172,22 +172,22 @@ func (c *char) ChargeAttack(p map[string]int) int {
 		for i := 0; i < 2; i++ {
 			d := c.Snapshot(
 				"Stellar Restoration (Thunderclap)",
-				def.AttackTagElementalArt,
-				def.ICDTagElementalArt,
-				def.ICDGroupDefault,
-				def.StrikeTypeSlash,
-				def.Electro,
+				core.AttackTagElementalArt,
+				core.ICDTagElementalArt,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Electro,
 				50,
 				skillCA[c.TalentLvlSkill()],
 			)
-			d.Targets = def.TargetAll
+			d.Targets = core.TargetAll
 			c.QueueDmg(&d, f)
 		}
 
 		//place on cooldown
 		c.Tags["e"] = 0
 		// c.CD[def.SkillCD] = c.eStartFrame + 100
-		c.SetCD(def.ActionSkill, c.eStartFrame+450-c.Sim.Frame())
+		c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Sim.Frame())
 	}
 
 	if c.Base.Cons == 6 {
@@ -198,7 +198,7 @@ func (c *char) ChargeAttack(p map[string]int) int {
 }
 
 func (c *char) c2() {
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
@@ -207,8 +207,8 @@ func (c *char) c2() {
 		}
 		if c.Sim.Rand().Float64() < 0.5 {
 			c.c2ICD = c.Sim.Frame() + 300
-			c.QueueParticle("keqing", 1, def.Electro, 100)
-			c.Log.Debugw("keqing c2 proc'd", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "next ready", c.c2ICD)
+			c.QueueParticle("keqing", 1, core.Electro, 100)
+			c.Log.Debugw("keqing c2 proc'd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "next ready", c.c2ICD)
 		}
 
 	}, "keqingc2")
@@ -223,15 +223,15 @@ func (c *char) Skill(p map[string]int) int {
 
 func (c *char) skillFirst(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Stellar Restoration",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Electro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Electro,
 		25,
 		skill[c.TalentLvlSkill()],
 	)
@@ -247,7 +247,7 @@ func (c *char) skillFirst(p map[string]int) int {
 		if c.Tags["e"] == 1 {
 			c.Tags["e"] = 0
 			// c.CD[def.SkillCD] = c.eStartFrame + 100
-			c.SetCD(def.ActionSkill, c.eStartFrame+450-c.Sim.Frame()) //TODO: cooldown if not triggered, 7.5s
+			c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Sim.Frame()) //TODO: cooldown if not triggered, 7.5s
 		}
 	}, "keqing-skill-cd", c.Sim.Frame()+300) //TODO: check this
 
@@ -259,19 +259,19 @@ func (c *char) skillFirst(p map[string]int) int {
 }
 
 func (c *char) skillNext(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Stellar Restoration (Slashing)",
-		def.AttackTagElementalArt,
-		def.ICDTagElementalArt,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Electro,
+		core.AttackTagElementalArt,
+		core.ICDTagElementalArt,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Electro,
 		50,
 		skillPress[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f)
 
@@ -279,10 +279,10 @@ func (c *char) skillNext(p map[string]int) int {
 
 	c.Sim.AddStatus("keqinginfuse", 300)
 
-	c.AddWeaponInfuse(def.WeaponInfusion{
+	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "a2",
-		Ele:    def.Electro,
-		Tags:   []def.AttackTag{def.AttackTagNormal, def.AttackTagExtra, def.AttackTagPlunge},
+		Ele:    core.Electro,
+		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Sim.Frame() + 300,
 	})
 
@@ -294,11 +294,11 @@ func (c *char) skillNext(p map[string]int) int {
 		}
 		d := c.Snapshot(
 			"Stellar Restoration (Slashing)",
-			def.AttackTagElementalArtHold,
-			def.ICDTagElementalArt,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Electro,
+			core.AttackTagElementalArtHold,
+			core.ICDTagElementalArt,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Electro,
 			25,
 			0.5,
 		)
@@ -310,19 +310,19 @@ func (c *char) skillNext(p map[string]int) int {
 
 	//place on cooldown
 	c.Tags["e"] = 0
-	c.SetCD(def.ActionSkill, c.eStartFrame+450-c.Sim.Frame())
+	c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Sim.Frame())
 	return f
 }
 
 func (c *char) Burst(p map[string]int) int {
 
 	//a4 increase crit + ER
-	val := make([]float64, def.EndStatType)
-	val[def.CR] = 0.15
-	val[def.ER] = 0.15
-	c.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	val[core.CR] = 0.15
+	val[core.ER] = 0.15
+	c.AddMod(core.CharStatMod{
 		Key:    "a4",
-		Amount: func(a def.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 		Expiry: c.Sim.Frame() + 480,
 	})
 
@@ -334,30 +334,30 @@ func (c *char) Burst(p map[string]int) int {
 	//initial
 	initial := c.Snapshot(
 		"Starward Sword",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Electro,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Electro,
 		25,
 		burstInitial[c.TalentLvlBurst()],
 	)
-	initial.Targets = def.TargetAll
+	initial.Targets = core.TargetAll
 
 	c.QueueDmg(&initial, 70)
 
 	//8 hits
 	dot := c.Snapshot(
 		"Starward Sword (Tick)",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Electro,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Electro,
 		25,
 		burstDot[c.TalentLvlBurst()],
 	)
-	dot.Targets = def.TargetAll
+	dot.Targets = core.TargetAll
 	for i := 70; i < 170; i += 13 {
 		c.QueueDmg(&dot, i)
 	}
@@ -365,15 +365,15 @@ func (c *char) Burst(p map[string]int) int {
 	//final
 	final := c.Snapshot(
 		"Starward Sword (Tick)",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Electro,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Electro,
 		25,
 		burstFinal[c.TalentLvlBurst()],
 	)
-	final.Targets = def.TargetAll
+	final.Targets = core.TargetAll
 
 	c.QueueDmg(&final, 211)
 
@@ -383,16 +383,16 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Energy = 0
 	// c.CD[def.BurstCD] = c.Sim.Frame() + 720 //12s
-	c.SetCD(def.ActionBurst, 720)
-	return c.ActionFrames(def.ActionBurst, p)
+	c.SetCD(core.ActionBurst, 720)
+	return c.ActionFrames(core.ActionBurst, p)
 }
 
 func (c *char) activateC6(src string) {
-	val := make([]float64, def.EndStatType)
-	val[def.ElectroP] = 0.06
-	c.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	val[core.ElectroP] = 0.06
+	c.AddMod(core.CharStatMod{
 		Key:    src,
-		Amount: func(a def.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 		Expiry: c.Sim.Frame() + 480,
 	})
 }

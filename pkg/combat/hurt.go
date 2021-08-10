@@ -1,12 +1,12 @@
 package combat
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (s *Sim) AddOnHurt(f func(s def.Sim)) {
+func (s *Sim) AddOnHurt(f func(s core.Sim)) {
 	s.onHurt = append(s.onHurt, f)
 }
 
-func (s *Sim) DamageChar(dmg float64, ele def.EleType) {
+func (s *Sim) DamageChar(dmg float64, ele core.EleType) {
 	//reduce damage by damage reduction first, do so via a hook
 	var dr float64
 	for _, f := range s.DRFunc {
@@ -21,7 +21,7 @@ func (s *Sim) DamageChar(dmg float64, ele def.EleType) {
 	c := s.chars[s.active]
 	c.ModifyHP(-post)
 
-	s.log.Debugw("damage taken", "frame", s.f, "event", def.LogHurtEvent, "frame", s.f, "dmg", dmg, "taken", post, "shielded", dmg-post, "char_hp", c.HP(), "shield_count", len(s.shields))
+	s.log.Debugw("damage taken", "frame", s.f, "event", core.LogHurtEvent, "frame", s.f, "dmg", dmg, "taken", post, "shielded", dmg-post, "char_hp", c.HP(), "shield_count", len(s.shields))
 
 	if post > 0 {
 		for _, f := range s.onHurt {

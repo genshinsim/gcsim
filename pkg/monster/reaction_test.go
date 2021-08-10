@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/genshinsim/gsim/internal/dummy"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func TestMelt(t *testing.T) {
@@ -21,24 +21,24 @@ func TestMelt(t *testing.T) {
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, 0, def.EnemyProfile{
+		target = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			dmgCount++
 			target.Attack(ds)
 		}
 
-		s.OnShielded = func(shd def.Shield) {
+		s.OnShielded = func(shd core.Shield) {
 			// log.Println(shd.CurrentHP())
 			shdCount++
 		}
@@ -48,23 +48,23 @@ func TestMelt(t *testing.T) {
 	fmt.Println("----melt testing----")
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 50,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	ds := &def.Snapshot{
+	ds := &core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Cryo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Cryo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	}
 	target.Attack(ds)
@@ -74,8 +74,8 @@ func TestMelt(t *testing.T) {
 		t.FailNow()
 	}
 	//check our snapshot, should have been modified
-	expect("checking melt is set", def.Melt, ds.ReactionType)
-	if ds.ReactionType != def.Melt {
+	expect("checking melt is set", core.Melt, ds.ReactionType)
+	if ds.ReactionType != core.Melt {
 		t.Errorf("melt test: expecting melt flag set, got %v", ds.ReactionType)
 	}
 	expect("checking melt multiplier", 1.5, ds.ReactMult)
@@ -84,23 +84,23 @@ func TestMelt(t *testing.T) {
 	}
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 100,
-		Element:    def.Cryo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Cryo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	ds = &def.Snapshot{
+	ds = &core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	}
 	target.Attack(ds)
@@ -111,8 +111,8 @@ func TestMelt(t *testing.T) {
 		t.FailNow()
 	}
 	//check our snapshot, should have been modified
-	expect("checking melt is set", def.Melt, ds.ReactionType)
-	if ds.ReactionType != def.Melt {
+	expect("checking melt is set", core.Melt, ds.ReactionType)
+	if ds.ReactionType != core.Melt {
 		t.Errorf("melt test: expecting melt flag set, got %v", ds.ReactionType)
 	}
 	expect("checking melt multiplier", 2, ds.ReactMult)
@@ -133,24 +133,24 @@ func TestSuperconduct(t *testing.T) {
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, 0, def.EnemyProfile{
+		target = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			dmgCount++
 			target.Attack(ds)
 		}
 
-		s.OnShielded = func(shd def.Shield) {
+		s.OnShielded = func(shd core.Shield) {
 			// log.Println(shd.CurrentHP())
 			shdCount++
 		}
@@ -161,23 +161,23 @@ func TestSuperconduct(t *testing.T) {
 
 	//TEST SUPERCONDUCT
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 25,
-		Element:    def.Cryo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Cryo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Electro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Electro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 electro to 25 cryo (tolerance 0.01)", 0, target.aura.Durability())
@@ -196,23 +196,23 @@ func TestSuperconduct(t *testing.T) {
 	dmgCount = 0
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 25,
-		Element:    def.Electro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Electro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Cryo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Cryo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 cryo to 25 electro (tolerance 0.01)", 0, target.aura.Durability())
@@ -243,24 +243,24 @@ func TestOverload(t *testing.T) {
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, 0, def.EnemyProfile{
+		target = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			dmgCount++
 			target.Attack(ds)
 		}
 
-		s.OnShielded = func(shd def.Shield) {
+		s.OnShielded = func(shd core.Shield) {
 			// log.Println(shd.CurrentHP())
 			shdCount++
 		}
@@ -270,23 +270,23 @@ func TestOverload(t *testing.T) {
 	fmt.Println("----overload testing----")
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 25,
-		Element:    def.Electro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Electro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 pyro to 25 electro (tolerance 0.01)", 0, target.aura.Durability())
@@ -305,23 +305,23 @@ func TestOverload(t *testing.T) {
 	dmgCount = 0
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 25,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Electro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Electro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 electro to 25 pyro (tolerance 0.01)", 0, target.aura.Durability())
@@ -353,23 +353,23 @@ func TestMultiOverload(t *testing.T) {
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		targetA = New(0, s, logger, 0, def.EnemyProfile{
+		targetA = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		targetB = New(0, s, logger, 0, def.EnemyProfile{
+		targetB = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			a, _ := targetA.Attack(ds)
 			if a > 0 {
@@ -390,23 +390,23 @@ func TestMultiOverload(t *testing.T) {
 	fmt.Println("----multi target overload testing----")
 
 	targetA.aura = nil
-	targetA.Attack(&def.Snapshot{
+	targetA.Attack(&core.Snapshot{
 		Durability: 100,
-		Element:    def.Electro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Electro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	targetA.Attack(&def.Snapshot{
+	targetA.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	//we should get 2 ticks of damage here one of each target
@@ -424,14 +424,14 @@ func TestMultiOverload(t *testing.T) {
 
 	//there should be electro left still = 80-25-1 tick delay
 	//trigger overload again, should be no dmg this time
-	targetA.Attack(&def.Snapshot{
+	targetA.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	sim.Skip(2)
@@ -458,24 +458,24 @@ func TestVaporize(t *testing.T) {
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, 0, def.EnemyProfile{
+		target = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			dmgCount++
 			target.Attack(ds)
 		}
 
-		s.OnShielded = func(shd def.Shield) {
+		s.OnShielded = func(shd core.Shield) {
 			// log.Println(shd.CurrentHP())
 			shdCount++
 		}
@@ -485,23 +485,23 @@ func TestVaporize(t *testing.T) {
 	fmt.Println("----vaporize testing----")
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 100,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	ds := &def.Snapshot{
+	ds := &core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Hydro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Hydro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	}
 	target.Attack(ds)
@@ -511,8 +511,8 @@ func TestVaporize(t *testing.T) {
 		t.FailNow()
 	}
 	//check our snapshot, should have been modified
-	expect("checking vape is set", def.Vaporize, ds.ReactionType)
-	if ds.ReactionType != def.Vaporize {
+	expect("checking vape is set", core.Vaporize, ds.ReactionType)
+	if ds.ReactionType != core.Vaporize {
 
 		t.Errorf("vaporize test: expecting vaporize flag set, got %v", ds.ReactionType)
 	}
@@ -522,23 +522,23 @@ func TestVaporize(t *testing.T) {
 	}
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 50,
-		Element:    def.Hydro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Hydro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	ds = &def.Snapshot{
+	ds = &core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	}
 	target.Attack(ds)
@@ -548,8 +548,8 @@ func TestVaporize(t *testing.T) {
 		t.FailNow()
 	}
 	//check our snapshot, should have been modified
-	expect("checking vape is set", def.Vaporize, ds.ReactionType)
-	if ds.ReactionType != def.Vaporize {
+	expect("checking vape is set", core.Vaporize, ds.ReactionType)
+	if ds.ReactionType != core.Vaporize {
 		t.Errorf("vaporize test: expecting vaporize flag set, got %v", ds.ReactionType)
 	}
 	expect("checking vape multiplier", 1.5, ds.ReactMult)
@@ -565,31 +565,31 @@ func TestCrystallize(t *testing.T) {
 	shdCount := 0
 	var shdHP float64
 	var target *Target
-	var shdEle def.EleType
+	var shdEle core.EleType
 
 	dummy.NewSim(func(s *dummy.Sim) {
 
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, 0, def.EnemyProfile{
+		target = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			dmgCount++
 			target.Attack(ds)
 		}
 
-		s.OnShielded = func(shd def.Shield) {
+		s.OnShielded = func(shd core.Shield) {
 			// log.Println(shd.CurrentHP())
 			shdCount++
 			shdHP = shd.CurrentHP()
@@ -601,24 +601,24 @@ func TestCrystallize(t *testing.T) {
 	fmt.Println("----crystallize testing----")
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 50,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Geo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Geo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 geo to 50 pyro (tolerance 0.01)", 27.5, target.aura.Durability())
@@ -635,30 +635,30 @@ func TestCrystallize(t *testing.T) {
 	if !floatApproxEqual(1851.06030273438, shdHP, 0.0000001) {
 		t.Errorf("crystallize test: expecting shield hp = 1851.06030273438, got %v", shdHP)
 	}
-	expect("checking crystallize shield ele type", def.Pyro, shdEle)
-	if shdEle != def.Pyro {
+	expect("checking crystallize shield ele type", core.Pyro, shdEle)
+	if shdEle != core.Pyro {
 		t.Errorf("crystallize test: expecting pyro shield, got %v", shdEle)
 	}
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 50,
-		Element:    def.Hydro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Hydro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Geo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Geo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 geo to 50 hydro (tolerance 0.01)", 27.5, target.aura.Durability())
@@ -675,30 +675,30 @@ func TestCrystallize(t *testing.T) {
 	if !floatApproxEqual(1851.06030273438, shdHP, 0.0000001) {
 		t.Errorf("crystallize test: expecting shield hp = 1851.06030273438, got %v", shdHP)
 	}
-	expect("checking crystallize shield ele type", def.Hydro, shdEle)
-	if shdEle != def.Hydro {
+	expect("checking crystallize shield ele type", core.Hydro, shdEle)
+	if shdEle != core.Hydro {
 		t.Errorf("crystallize test: expecting hydro shield, got %v", shdEle)
 	}
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 50,
-		Element:    def.Cryo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Cryo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Geo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Geo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 geo to 50 cryo (tolerance 0.01)", 27.5, target.aura.Durability())
@@ -715,30 +715,30 @@ func TestCrystallize(t *testing.T) {
 	if !floatApproxEqual(1851.06030273438, shdHP, 0.0000001) {
 		t.Errorf("crystallize test: expecting shield hp = 1851.06030273438, got %v", shdHP)
 	}
-	expect("checking crystallize shield ele type", def.Cryo, shdEle)
-	if shdEle != def.Cryo {
+	expect("checking crystallize shield ele type", core.Cryo, shdEle)
+	if shdEle != core.Cryo {
 		t.Errorf("crystallize test: expecting cryo shield, got %v", shdEle)
 	}
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 50,
-		Element:    def.Electro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Electro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Geo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Geo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 geo to 50 electro (tolerance 0.01)", 27.5, target.aura.Durability())
@@ -755,8 +755,8 @@ func TestCrystallize(t *testing.T) {
 	if !floatApproxEqual(1851.06030273438, shdHP, 0.0000001) {
 		t.Errorf("crystallize test: expecting shield hp = 1851.06030273438, got %v", shdHP)
 	}
-	expect("checking crystallize shield ele type", def.Electro, shdEle)
-	if shdEle != def.Electro {
+	expect("checking crystallize shield ele type", core.Electro, shdEle)
+	if shdEle != core.Electro {
 		t.Errorf("crystallize test: expecting electro shield, got %v", shdEle)
 	}
 
@@ -774,18 +774,18 @@ func TestSwirl(t *testing.T) {
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, 0, def.EnemyProfile{
+		target = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			// log.Println(target.attackWillLand(ds))
 			// log.Println(ds.Durability)
@@ -796,7 +796,7 @@ func TestSwirl(t *testing.T) {
 			}
 		}
 
-		s.OnShielded = func(shd def.Shield) {
+		s.OnShielded = func(shd core.Shield) {
 			// log.Println(shd.CurrentHP())
 			shdCount++
 		}
@@ -806,23 +806,23 @@ func TestSwirl(t *testing.T) {
 	fmt.Println("----swirl testing----")
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 25,
-		Element:    def.Cryo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Cryo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Anemo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Anemo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 anemo to 25 cryo (tolerance 0.01)", 7.5, target.aura.Durability())
@@ -846,23 +846,23 @@ func TestSwirl(t *testing.T) {
 	dmgCount = 0
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 25,
-		Element:    def.Pyro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Pyro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Anemo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Anemo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 anemo to 25 pyro (tolerance 0.01)", 7.5, target.aura.Durability())
@@ -886,23 +886,23 @@ func TestSwirl(t *testing.T) {
 	dmgCount = 0
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 25,
-		Element:    def.Hydro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Hydro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Anemo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Anemo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 anemo to 25 hydro (tolerance 0.01)", 7.5, target.aura.Durability())
@@ -926,23 +926,23 @@ func TestSwirl(t *testing.T) {
 	dmgCount = 0
 
 	target.aura = nil
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 25,
-		Element:    def.Electro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Electro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Anemo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Anemo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 anemo to 25 electro (tolerance 0.01)", 7.5, target.aura.Durability())
@@ -978,22 +978,22 @@ func TestSwirlMultiTarget(t *testing.T) {
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		targetA = New(0, s, logger, 0, def.EnemyProfile{
+		targetA = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
-		targetB = New(1, s, logger, 0, def.EnemyProfile{
+		targetB = New(1, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			// log.Println(target.attackWillLand(ds))
 			// log.Println(ds.Durability)
@@ -1008,7 +1008,7 @@ func TestSwirlMultiTarget(t *testing.T) {
 			}
 		}
 
-		s.OnShielded = func(shd def.Shield) {
+		s.OnShielded = func(shd core.Shield) {
 			// log.Println(shd.CurrentHP())
 			shdCount++
 		}
@@ -1019,23 +1019,23 @@ func TestSwirlMultiTarget(t *testing.T) {
 
 	targetA.aura = nil
 	targetB.aura = nil
-	targetA.Attack(&def.Snapshot{
+	targetA.Attack(&core.Snapshot{
 		Durability: 50,
-		Element:    def.Cryo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Cryo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	targetA.Attack(&def.Snapshot{
+	targetA.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Anemo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Anemo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 anemo to 50 cryo on target 1 (tolerance 0.001)", 27.5, targetA.aura.Durability())
@@ -1079,13 +1079,13 @@ func TestSwirlMultiTarget(t *testing.T) {
 		targetA.Tick()
 		targetB.Tick()
 	}
-	expect("check target A cryo durability after 60 frames", (40.0*(1-def.Durability(61)/720.0))-12.5, targetA.aura.Durability())
-	if !durApproxEqual((40.0*(1-def.Durability(61)/720.0))-12.5, targetA.aura.Durability(), 0.001) {
+	expect("check target A cryo durability after 60 frames", (40.0*(1-core.Durability(61)/720.0))-12.5, targetA.aura.Durability())
+	if !durApproxEqual((40.0*(1-core.Durability(61)/720.0))-12.5, targetA.aura.Durability(), 0.001) {
 		t.Error("swirl test: invalid targetA cryo durability")
 		t.FailNow()
 	}
-	expect("check target B cryo durability after 60 frames", (0.8 * 55.0 * (1 - def.Durability(61)/(6*55+420))), targetB.aura.Durability())
-	if !durApproxEqual((0.8 * 55.0 * (1 - def.Durability(60)/(6*55+420))), targetB.aura.Durability(), 0.001) {
+	expect("check target B cryo durability after 60 frames", (0.8 * 55.0 * (1 - core.Durability(61)/(6*55+420))), targetB.aura.Durability())
+	if !durApproxEqual((0.8 * 55.0 * (1 - core.Durability(60)/(6*55+420))), targetB.aura.Durability(), 0.001) {
 		t.Error("swirl test: invalid targetB cryo durability")
 		t.FailNow()
 	}

@@ -4,37 +4,37 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("song of broken pines", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
-	m := make([]float64, def.EndStatType)
-	m[def.ATKP] = 0.12 + float64(r)*0.04
-	c.AddMod(def.CharStatMod{
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+	m := make([]float64, core.EndStatType)
+	m[core.ATKP] = 0.12 + float64(r)*0.04
+	c.AddMod(core.CharStatMod{
 		Key: "pines-atk",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
 	})
 
-	val := make([]float64, def.EndStatType)
-	val[def.ATKP] = 0.15 + 0.05*float64(r)
-	val[def.AtkSpd] = 0.09 + 0.03*float64(r)
+	val := make([]float64, core.EndStatType)
+	val[core.ATKP] = 0.15 + 0.05*float64(r)
+	val[core.AtkSpd] = 0.09 + 0.03*float64(r)
 
 	icd := 0
 	stacks := 0
 	cooldown := 0
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return
 		}
 		if cooldown > s.Frame() {
@@ -50,9 +50,9 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 			s.AddStatus("pines", 720)
 			cooldown = s.Frame() + 1200
 			for _, char := range s.Characters() {
-				char.AddMod(def.CharStatMod{
+				char.AddMod(core.CharStatMod{
 					Key: "pines-proc",
-					Amount: func(a def.AttackTag) ([]float64, bool) {
+					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, true
 					},
 					Expiry: s.Frame() + 720,

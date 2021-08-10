@@ -3,7 +3,7 @@ package eula
 import (
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 
 	"go.uber.org/zap"
 )
@@ -19,7 +19,7 @@ type char struct {
 	burstCounterICD int
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -28,7 +28,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 80
 	c.EnergyMax = 80
-	c.Weapon.Class = def.WeaponClassClaymore
+	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
@@ -40,7 +40,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 		c.c4()
 	}
 
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if c.Sim.Status("eulaq") == 0 {
 			return
 		}
@@ -51,20 +51,20 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 			return
 		}
 		switch ds.AttackTag {
-		case def.AttackTagElementalArt:
-		case def.AttackTagElementalBurst:
-		case def.AttackTagNormal:
+		case core.AttackTagElementalArt:
+		case core.AttackTagElementalBurst:
+		case core.AttackTagNormal:
 		default:
 			return
 		}
 
 		//add to counter
 		c.burstCounter++
-		c.Log.Debugw("eula burst add stack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stack count", c.burstCounter)
+		c.Log.Debugw("eula burst add stack", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "stack count", c.burstCounter)
 		//check for c6
 		if c.Base.Cons == 6 && c.Sim.Rand().Float64() < 0.5 {
 			c.burstCounter++
-			c.Log.Debugw("eula c6 add additional stack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stack count", c.burstCounter)
+			c.Log.Debugw("eula c6 add additional stack", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "stack count", c.burstCounter)
 		}
 		c.burstCounterICD = c.Sim.Frame() + 6
 	}, "eula-burst-counter")
@@ -72,9 +72,9 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -89,11 +89,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 88
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 35 //TODO: no idea
-	case def.ActionSkill:
+	case core.ActionSkill:
 		if p["hold"] == 0 {
 			return 34
 		}
@@ -101,7 +101,7 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 			return 34 //press and hold have same cd
 		}
 		return 80
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 116 //ok
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -110,7 +110,7 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 }
 
 func (c *char) a4() {
-	c.Sim.AddEventHook(func(s def.Sim) bool {
+	c.Sim.AddEventHook(func(s core.Sim) bool {
 		if s.ActiveCharIndex() != c.Index {
 			return false
 		}
@@ -121,12 +121,12 @@ func (c *char) a4() {
 		}
 		c.Tags["grimheart"] = v
 
-		c.Log.Debugw("eula a4 reset skill cd", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent)
-		c.ResetActionCooldown(def.ActionSkill)
+		c.Log.Debugw("eula a4 reset skill cd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
+		c.ResetActionCooldown(core.ActionSkill)
 
 		return false
 
-	}, "eula-a4", def.PostBurstHook)
+	}, "eula-a4", core.PostBurstHook)
 }
 
 var delay = [][]int{{11}, {25}, {36, 49}, {33}, {45, 63}}
@@ -135,25 +135,25 @@ func (c *char) Attack(p map[string]int) int {
 	//register action depending on number in chain
 	//3 and 4 need to be registered as multi action
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 
 	//apply attack speed
 	d := c.Snapshot(
 		"Normal",
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Physical,
 		25,
 		0,
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	for i, mult := range auto[c.NormalCounter] {
 		x := d.Clone()
 		x.Mult = mult[c.TalentLvlAttack()]
-		x.Targets = def.TargetAll
+		x.Targets = core.TargetAll
 		c.QueueDmg(&x, delay[c.NormalCounter][i])
 	}
 
@@ -165,7 +165,7 @@ func (c *char) Attack(p map[string]int) int {
 }
 
 func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	if p["hold"] == 0 {
 		c.pressE()
 		return f
@@ -179,15 +179,15 @@ func (c *char) pressE() {
 	//starts 343 cancel 378
 	d := c.Snapshot(
 		"Icetide Vortex",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Cryo,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Cryo,
 		25,
 		skillPress[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, 35)
 
@@ -195,7 +195,7 @@ func (c *char) pressE() {
 	if c.Sim.Rand().Float64() < .5 {
 		n = 2
 	}
-	c.QueueParticle("eula", n, def.Cryo, 100)
+	c.QueueParticle("eula", n, core.Cryo, 100)
 
 	//add 1 stack to Grimheart
 	v := c.Tags["grimheart"]
@@ -203,10 +203,10 @@ func (c *char) pressE() {
 		v++
 	}
 	c.Tags["grimheart"] = v
-	c.Log.Debugw("eula: grimheart stack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "current count", v)
+	c.Log.Debugw("eula: grimheart stack", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "current count", v)
 	c.grimheartReset = 18 * 60
 
-	c.SetCD(def.ActionSkill, 240)
+	c.SetCD(core.ActionSkill, 240)
 }
 
 func (c *char) holdE() {
@@ -216,15 +216,15 @@ func (c *char) holdE() {
 	lvl := c.TalentLvlSkill()
 	d := c.Snapshot(
 		"Icetide Vortex (Hold)",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Cryo,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Cryo,
 		25,
 		skillHold[lvl],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.QueueDmg(&d, 80)
 
 	//multiple brand hits
@@ -232,15 +232,15 @@ func (c *char) holdE() {
 
 	d = c.Snapshot(
 		"Icetide Vortex (Icewhirl)",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Cryo,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Cryo,
 		25,
 		icewhirl[lvl],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	for i := 0; i < v; i++ {
 		x := d.Clone()
@@ -249,14 +249,14 @@ func (c *char) holdE() {
 
 	//shred
 	if v > 0 {
-		d.OnHitCallback = func(t def.Target) {
-			t.AddResMod("Icewhirl Cryo", def.ResistMod{
-				Ele:      def.Cryo,
+		d.OnHitCallback = func(t core.Target) {
+			t.AddResMod("Icewhirl Cryo", core.ResistMod{
+				Ele:      core.Cryo,
 				Value:    -resRed[lvl],
 				Duration: 7 * v * 60,
 			})
-			t.AddResMod("Icewhirl Physical", def.ResistMod{
-				Ele:      def.Physical,
+			t.AddResMod("Icewhirl Physical", core.ResistMod{
+				Ele:      core.Physical,
 				Value:    -resRed[lvl],
 				Duration: 7 * v * 60,
 			})
@@ -268,15 +268,15 @@ func (c *char) holdE() {
 	if v == 2 {
 		d := c.Snapshot(
 			"Icetide (Lightfall)",
-			def.AttackTagElementalBurst,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeBlunt,
-			def.Physical,
+			core.AttackTagElementalBurst,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeBlunt,
+			core.Physical,
 			25,
 			burstExplodeBase[c.TalentLvlBurst()]*0.5,
 		)
-		d.Targets = def.TargetAll
+		d.Targets = core.TargetAll
 		c.QueueDmg(&d, 108) //we're basically forcing it so we get 3 stacks
 	}
 
@@ -284,15 +284,15 @@ func (c *char) holdE() {
 	if c.Sim.Rand().Float64() < .5 {
 		n = 3
 	}
-	c.QueueParticle("eula", n, def.Cryo, 100)
+	c.QueueParticle("eula", n, core.Cryo, 100)
 
 	//c1 add debuff
 	if c.Base.Cons >= 1 && v > 0 {
-		val := make([]float64, def.EndStatType)
-		val[def.PhyP] = 0.3
-		c.AddMod(def.CharStatMod{
+		val := make([]float64, core.EndStatType)
+		val[core.PhyP] = 0.3
+		c.AddMod(core.CharStatMod{
 			Key: "eula-c1",
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Sim.Frame() + (6*v+6)*60, //TODO: check if this is right
@@ -300,13 +300,13 @@ func (c *char) holdE() {
 	}
 
 	c.Tags["grimheart"] = 0
-	c.SetCD(def.ActionSkill, 10*60+62)
+	c.SetCD(core.ActionSkill, 10*60+62)
 }
 
 //ult 365 to 415, 60fps = 120
 //looks like ult charges for 8 seconds
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 	c.Sim.AddStatus("eulaq", 7*60+f+1)
 
 	c.burstCounter = 0
@@ -314,22 +314,22 @@ func (c *char) Burst(p map[string]int) int {
 		c.burstCounter = 5
 	}
 
-	c.Log.Debugw("eula burst started", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stacks", c.burstCounter, "expiry", c.Sim.Status("eulaq"))
+	c.Log.Debugw("eula burst started", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "stacks", c.burstCounter, "expiry", c.Sim.Status("eulaq"))
 
 	lvl := c.TalentLvlBurst()
 	//add initial damage
 
 	d := c.Snapshot(
 		"Glacial Illumination",
-		def.AttackTagElementalBurst,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Cryo,
+		core.AttackTagElementalBurst,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Cryo,
 		50,
 		burstInitial[lvl],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f-1)
 
@@ -339,7 +339,7 @@ func (c *char) Burst(p map[string]int) int {
 		v++
 	}
 	c.Tags["grimheart"] = v
-	c.Log.Debugw("eula: grimheart stack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "current count", v)
+	c.Log.Debugw("eula: grimheart stack", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "current count", v)
 
 	c.AddTask(func() {
 		//check to make sure it hasn't already exploded due to exiting field
@@ -348,7 +348,7 @@ func (c *char) Burst(p map[string]int) int {
 		}
 	}, "Eula-Burst-Lightfall", 7*60+f) //after 8 seconds
 
-	c.SetCD(def.ActionBurst, 20*60+f)
+	c.SetCD(core.ActionBurst, 20*60+f)
 	//energy does not deplete until after animation
 	c.AddTask(func() {
 		c.Energy = 0
@@ -358,17 +358,17 @@ func (c *char) Burst(p map[string]int) int {
 }
 
 func (c *char) onExitField() {
-	c.Sim.AddEventHook(func(s def.Sim) bool {
+	c.Sim.AddEventHook(func(s core.Sim) bool {
 		//trigger burst if burst is active
 		if c.Sim.Status("eulaq") > 0 {
 			c.triggerBurst()
 		}
 		return false
-	}, "eula-exit", def.PostSwapHook)
+	}, "eula-exit", core.PostSwapHook)
 }
 
 func (c *char) c4() {
-	c.Sim.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
@@ -379,8 +379,8 @@ func (c *char) c4() {
 			return
 		}
 		if t.HP()/t.MaxHP() < 0.5 {
-			ds.Stats[def.DmgP] += 0.25
-			c.Log.Debugw("eula: c4 adding dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "final dmgp", ds.Stats[def.DmgP])
+			ds.Stats[core.DmgP] += 0.25
+			c.Log.Debugw("eula: c4 adding dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "final dmgp", ds.Stats[core.DmgP])
 		}
 
 	}, "eula-c4")
@@ -395,17 +395,17 @@ func (c *char) triggerBurst() {
 
 	d := c.Snapshot(
 		"Glacial Illumination (Lightfall)",
-		def.AttackTagElementalBurst,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Physical,
+		core.AttackTagElementalBurst,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Physical,
 		50,
 		burstExplodeBase[c.TalentLvlBurst()]+burstExplodeStack[c.TalentLvlBurst()]*float64(stacks),
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
-	c.Log.Debugw("eula burst triggering", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "stacks", stacks, "mult", d.Mult)
+	c.Log.Debugw("eula burst triggering", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "stacks", stacks, "mult", d.Mult)
 
 	c.Sim.ApplyDamage(&d)
 	c.Sim.DeleteStatus("eulaq")

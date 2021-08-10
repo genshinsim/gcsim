@@ -4,17 +4,17 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("mappa mare", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 	stacks := 0
 	dur := 0
-	s.AddOnReaction(func(t def.Target, ds *def.Snapshot) {
+	s.AddOnReaction(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex == c.CharIndex() {
 			stacks++
 			if stacks > 2 {
@@ -26,21 +26,21 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 
 	dmg := 0.06 + float64(r)*0.02
 
-	m := make([]float64, def.EndStatType)
+	m := make([]float64, core.EndStatType)
 
-	m[def.PyroP] = dmg
-	m[def.HydroP] = dmg
-	m[def.CryoP] = dmg
-	m[def.ElectroP] = dmg
-	m[def.AnemoP] = dmg
-	m[def.GeoP] = dmg
-	m[def.EleP] = dmg
-	m[def.PhyP] = dmg
-	m[def.DendroP] = dmg
+	m[core.PyroP] = dmg
+	m[core.HydroP] = dmg
+	m[core.CryoP] = dmg
+	m[core.ElectroP] = dmg
+	m[core.AnemoP] = dmg
+	m[core.GeoP] = dmg
+	m[core.EleP] = dmg
+	m[core.PhyP] = dmg
+	m[core.DendroP] = dmg
 
-	c.AddMod(def.CharStatMod{
+	c.AddMod(core.CharStatMod{
 		Key: "mappa",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, dur > s.Frame()
 		},
 		Expiry: -1,

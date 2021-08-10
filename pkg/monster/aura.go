@@ -1,41 +1,41 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 type Aura interface {
-	React(ds *def.Snapshot, t *Target) (Aura, bool) //react and modify the slice of auras, return true if reacted
-	Tick() bool                                     //tick down the aura
-	Durability() def.Durability                     //return the current durability
-	Attach(dur def.Durability, f int)               //attach aura, refresh if existing
-	Source() int                                    //return the origination source of this aura, used to distinguish if diff
-	Type() def.EleType
-	AuraContains(e ...def.EleType) bool
+	React(ds *core.Snapshot, t *Target) (Aura, bool) //react and modify the slice of auras, return true if reacted
+	Tick() bool                                      //tick down the aura
+	Durability() core.Durability                     //return the current durability
+	Attach(dur core.Durability, f int)               //attach aura, refresh if existing
+	Source() int                                     //return the origination source of this aura, used to distinguish if diff
+	Type() core.EleType
+	AuraContains(e ...core.EleType) bool
 }
 
-func NewAura(ds *def.Snapshot, f int) Aura {
+func NewAura(ds *core.Snapshot, f int) Aura {
 	var a Aura
 	switch ds.Element {
-	case def.Pyro:
+	case core.Pyro:
 		r := &AuraPyro{}
 		r.Element = &Element{}
-		r.T = def.Pyro
+		r.T = core.Pyro
 		a = r
-	case def.Hydro:
+	case core.Hydro:
 		r := &AuraHydro{}
 		r.Element = &Element{}
-		r.T = def.Hydro
+		r.T = core.Hydro
 		a = r
-	case def.Cryo:
+	case core.Cryo:
 		r := &AuraCyro{}
 		r.Element = &Element{}
-		r.T = def.Cryo
+		r.T = core.Cryo
 		a = r
-	case def.Electro:
+	case core.Electro:
 		r := &AuraElectro{}
 		r.Element = &Element{}
-		r.T = def.Electro
+		r.T = core.Electro
 		a = r
 	default:
 		return nil
@@ -46,14 +46,14 @@ func NewAura(ds *def.Snapshot, f int) Aura {
 }
 
 type Element struct {
-	T                 def.EleType
-	MaxDurability     def.Durability
-	CurrentDurability def.Durability
-	DecayRate         def.Durability //amount of durability decay per tick
+	T                 core.EleType
+	MaxDurability     core.Durability
+	CurrentDurability core.Durability
+	DecayRate         core.Durability //amount of durability decay per tick
 	Start             int
 }
 
-func (e *Element) AuraContains(ele ...def.EleType) bool {
+func (e *Element) AuraContains(ele ...core.EleType) bool {
 	for _, v := range ele {
 		if v == e.T {
 			return true
@@ -62,7 +62,7 @@ func (e *Element) AuraContains(ele ...def.EleType) bool {
 	return false
 }
 
-func (e *Element) Type() def.EleType {
+func (e *Element) Type() core.EleType {
 	return e.T
 }
 
@@ -71,11 +71,11 @@ func (e *Element) Tick() bool {
 	return e.CurrentDurability < 0
 }
 
-func (e *Element) Durability() def.Durability {
+func (e *Element) Durability() core.Durability {
 	return e.CurrentDurability
 }
 
-func (e *Element) Attach(dur def.Durability, f int) {
+func (e *Element) Attach(dur core.Durability, f int) {
 	e.Start = f
 	e.MaxDurability = 0.8 * dur
 	e.CurrentDurability = 0.8 * dur
@@ -86,7 +86,7 @@ func (e *Element) Attach(dur def.Durability, f int) {
 	e.DecayRate = 0.8 * dur / (6*dur + 420)
 }
 
-func (e *Element) Refresh(dur def.Durability) {
+func (e *Element) Refresh(dur core.Durability) {
 	e.CurrentDurability += dur
 }
 
@@ -94,7 +94,7 @@ func (e *Element) Source() int {
 	return e.Start
 }
 
-func (e *Element) Reduce(ds *def.Snapshot, factor def.Durability) def.Durability {
+func (e *Element) Reduce(ds *core.Snapshot, factor core.Durability) core.Durability {
 	//reduce current by the lower of current and factor * ds.Dur
 	a := factor * ds.Durability
 	b := ds.Durability

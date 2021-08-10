@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/monster"
 	"github.com/genshinsim/gsim/pkg/queue"
 	"go.uber.org/zap"
@@ -18,9 +18,9 @@ type SimStats struct {
 	CharNames            []string                 `json:"char_names"`
 	DamageByChar         []map[string]float64     `json:"damage_by_char"`
 	CharActiveTime       []int                    `json:"char_active_time"`
-	AbilUsageCountByChar []map[string]int         `json:"abil_usage_count_by_char"`
-	ReactionsTriggered   map[def.ReactionType]int `json:"reactions_triggered"`
-	SimDuration          int                      `json:"sim_duration"`
+	AbilUsageCountByChar []map[string]int          `json:"abil_usage_count_by_char"`
+	ReactionsTriggered   map[core.ReactionType]int `json:"reactions_triggered"`
+	SimDuration          int                       `json:"sim_duration"`
 	//final result
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`
@@ -37,7 +37,7 @@ const (
 type Sim struct {
 	f    int
 	skip int
-	cfg  def.Config
+	cfg  core.Config
 	rand *rand.Rand
 	log  *zap.SugaredLogger
 
@@ -45,19 +45,19 @@ type Sim struct {
 	swapCD       int
 	lastStamUse  int
 	stam         float64
-	stamModifier []func(a def.ActionType) float64
-	querer       def.Querer
-	queue        []def.ActionItem
+	stamModifier []func(a core.ActionType) float64
+	querer       core.Querer
+	queue        []core.ActionItem
 
 	//characters
 	charPos            map[string]int
-	chars              []def.Character
+	chars              []core.Character
 	active             int
 	charActiveDuration int
 	status             map[string]int
 
 	//enemies
-	targets []def.Target
+	targets []core.Target
 
 	//combat
 	onAttackWillLand []attackWillLandHook
@@ -68,21 +68,21 @@ type Sim struct {
 	onTargetDefeated []defeatHook
 
 	//shields
-	shields          []def.Shield
+	shields          []core.Shield
 	DRFunc           []func() float64
 	ShieldBonusFunc  []func() float64
 	IncHealBonusFunc []func() float64 //% to add to amount healed
 
 	//constructs
-	constructs  []def.Construct
-	consNoLimit []def.Construct
+	constructs  []core.Construct
+	consNoLimit []core.Construct
 
 	//hurt event
 	lastHurt    int
 	nextHurt    int
 	nextHurtAmt float64
-	hurt        def.HurtEvent
-	onHurt      []func(s def.Sim)
+	hurt        core.HurtEvent
+	onHurt      []func(s core.Sim)
 
 	//initializing
 	initHooks []func()
@@ -91,13 +91,13 @@ type Sim struct {
 	eventHooks [][]eHook
 
 	//flags
-	flags def.Flags
+	flags core.Flags
 
 	//result
 	stats SimStats
 }
 
-func NewSim(cfg def.Config) (*Sim, error) {
+func NewSim(cfg core.Config) (*Sim, error) {
 	var err error
 	s := &Sim{}
 	if cfg.FixedRand {
@@ -134,7 +134,7 @@ func NewSim(cfg def.Config) (*Sim, error) {
 	return s, nil
 }
 
-func (s *Sim) initLogger(cfg def.LogConfig) error {
+func (s *Sim) initLogger(cfg core.LogConfig) error {
 	config := zap.NewDevelopmentConfig()
 	config.Encoding = "json"
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
@@ -167,8 +167,8 @@ func (s *Sim) initLogger(cfg def.LogConfig) error {
 	return nil
 }
 
-func (s *Sim) initTargets(cfg def.Config) error {
-	s.targets = make([]def.Target, len(cfg.Targets))
+func (s *Sim) initTargets(cfg core.Config) error {
+	s.targets = make([]core.Target, len(cfg.Targets))
 	for i := 0; i < len(cfg.Targets); i++ {
 		t := monster.New(i, s, s.log, cfg.Mode.HP, cfg.Targets[i])
 		// t.AddOnReactionHook("stats", func(ds *def.Snapshot) {
@@ -179,9 +179,9 @@ func (s *Sim) initTargets(cfg def.Config) error {
 	return nil
 }
 
-func (s *Sim) initChars(cfg def.Config) error {
+func (s *Sim) initChars(cfg core.Config) error {
 	dup := make(map[string]bool)
-	res := make(map[def.EleType]int)
+	res := make(map[core.EleType]int)
 
 	count := len(cfg.Characters.Profile)
 
@@ -251,96 +251,96 @@ func (s *Sim) initChars(cfg def.Config) error {
 	return nil
 }
 
-func (s *Sim) initResonance(count map[def.EleType]int) {
+func (s *Sim) initResonance(count map[core.EleType]int) {
 	for k, v := range count {
 		if v >= 2 {
 			switch k {
-			case def.Pyro:
-				s.log.Debugw("adding pyro resonance", "frame", s.f, "event", def.LogSimEvent)
+			case core.Pyro:
+				s.log.Debugw("adding pyro resonance", "frame", s.f, "event", core.LogSimEvent)
 				for _, c := range s.chars {
-					val := make([]float64, def.EndStatType)
-					val[def.ATKP] = 0.25
-					c.AddMod(def.CharStatMod{
+					val := make([]float64, core.EndStatType)
+					val[core.ATKP] = 0.25
+					c.AddMod(core.CharStatMod{
 						Key: "pyro-res",
-						Amount: func(a def.AttackTag) ([]float64, bool) {
+						Amount: func(a core.AttackTag) ([]float64, bool) {
 							return val, true
 						},
 						Expiry: -1,
 					})
 				}
-			case def.Hydro:
+			case core.Hydro:
 				//heal not implemented yet
-				s.log.Debugw("adding hydro resonance", "frame", s.f, "event", def.LogSimEvent)
-				s.log.Warnw("hydro resonance not implemented", "event", def.LogSimEvent)
-			case def.Cryo:
-				s.log.Debugw("adding cryo resonance", "frame", s.f, "event", def.LogSimEvent)
-				s.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
-					if t.AuraType() == def.Cryo {
-						ds.Stats[def.CR] += .15
-						s.log.Debugw("cryo resonance + 15% crit pre damage (cryo)", "frame", s.f, "event", def.LogCalc, "char", ds.ActorIndex, "next", ds.Stats[def.CR])
+				s.log.Debugw("adding hydro resonance", "frame", s.f, "event", core.LogSimEvent)
+				s.log.Warnw("hydro resonance not implemented", "event", core.LogSimEvent)
+			case core.Cryo:
+				s.log.Debugw("adding cryo resonance", "frame", s.f, "event", core.LogSimEvent)
+				s.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
+					if t.AuraType() == core.Cryo {
+						ds.Stats[core.CR] += .15
+						s.log.Debugw("cryo resonance + 15% crit pre damage (cryo)", "frame", s.f, "event", core.LogCalc, "char", ds.ActorIndex, "next", ds.Stats[core.CR])
 					}
-					if t.AuraType() == def.Frozen {
-						ds.Stats[def.CR] += .15
-						s.log.Debugw("cryo resonance + 15% crit pre damage  (frozen)", "frame", s.f, "event", def.LogCalc, "char", ds.ActorIndex, "next", ds.Stats[def.CR])
+					if t.AuraType() == core.Frozen {
+						ds.Stats[core.CR] += .15
+						s.log.Debugw("cryo resonance + 15% crit pre damage  (frozen)", "frame", s.f, "event", core.LogCalc, "char", ds.ActorIndex, "next", ds.Stats[core.CR])
 					}
 				}, "cryo res")
-			case def.Electro:
-				s.log.Debugw("adding electro resonance", "frame", s.f, "event", def.LogSimEvent)
+			case core.Electro:
+				s.log.Debugw("adding electro resonance", "frame", s.f, "event", core.LogSimEvent)
 				last := 0
-				s.AddOnReaction(func(t def.Target, ds *def.Snapshot) {
+				s.AddOnReaction(func(t core.Target, ds *core.Snapshot) {
 					switch ds.ReactionType {
-					case def.Melt:
+					case core.Melt:
 						return
-					case def.Vaporize:
+					case core.Vaporize:
 						return
 					}
 					if s.f-last < 300 && last != 0 { // every 5 seconds
 						return
 					}
-					s.DistributeParticle(def.Particle{
+					s.DistributeParticle(core.Particle{
 						Source: "electro res",
 						Num:    1,
-						Ele:    def.Electro,
+						Ele:    core.Electro,
 					})
 					last = s.f
 				}, "electro res")
-			case def.Geo:
-				s.log.Debugw("adding geo resonance", "frame", s.f, "event", def.LogSimEvent)
+			case core.Geo:
+				s.log.Debugw("adding geo resonance", "frame", s.f, "event", core.LogSimEvent)
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
 				//following special characteristics:
 				//	DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
 				s.AddShieldBonus(func() float64 {
 					return 0.15 //shield bonus always active
 				})
-				s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+				s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 					if !s.IsShielded() {
 						return
 					}
-					t.AddResMod("geo res", def.ResistMod{
+					t.AddResMod("geo res", core.ResistMod{
 						Duration: 15 * 60,
-						Ele:      def.Geo,
+						Ele:      core.Geo,
 						Value:    -0.2,
 					})
 				}, "geo res")
 
 				for _, c := range s.chars {
-					val := make([]float64, def.EndStatType)
-					val[def.DmgP] = 0.15
-					c.AddMod(def.CharStatMod{
+					val := make([]float64, core.EndStatType)
+					val[core.DmgP] = 0.15
+					c.AddMod(core.CharStatMod{
 						Key: "geo-res",
-						Amount: func(a def.AttackTag) ([]float64, bool) {
+						Amount: func(a core.AttackTag) ([]float64, bool) {
 							return val, s.IsShielded()
 						},
 						Expiry: -1,
 					})
 				}
 
-			case def.Anemo:
-				s.log.Debugw("adding anemo resonance", "frame", s.f, "event", def.LogSimEvent)
+			case core.Anemo:
+				s.log.Debugw("adding anemo resonance", "frame", s.f, "event", core.LogSimEvent)
 				for _, c := range s.chars {
-					c.AddCDAdjustFunc(def.CDAdjust{
+					c.AddCDAdjustFunc(core.CDAdjust{
 						Key:    "anemo-res",
-						Amount: func(a def.ActionType) float64 { return -0.05 },
+						Amount: func(a core.ActionType) float64 { return -0.05 },
 						Expiry: -1,
 					})
 				}
@@ -350,11 +350,11 @@ func (s *Sim) initResonance(count map[def.EleType]int) {
 }
 
 func (s *Sim) initMaps() error {
-	s.eventHooks = make([][]eHook, def.EndEventHook)
+	s.eventHooks = make([][]eHook, core.EndEventHook)
 	s.flags.Custom = make(map[string]int)
 
 	s.status = make(map[string]int)
-	s.chars = make([]def.Character, 0, def.MaxTeamPlayerCount)
+	s.chars = make([]core.Character, 0, core.MaxTeamPlayerCount)
 	s.charPos = make(map[string]int)
 
 	//combat stuff
@@ -366,20 +366,20 @@ func (s *Sim) initMaps() error {
 	s.onTargetDefeated = make([]defeatHook, 0, 10)
 
 	//shield stuff
-	s.shields = make([]def.Shield, 0, def.EndShieldType)
+	s.shields = make([]core.Shield, 0, core.EndShieldType)
 	s.DRFunc = make([]func() float64, 0, 5)
 	s.ShieldBonusFunc = make([]func() float64, 0, 5)
 
 	//log stuff
-	s.stats.ReactionsTriggered = make(map[def.ReactionType]int)
+	s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
 
 	//qeueu stuff
-	s.queue = make([]def.ActionItem, 0, 10)
+	s.queue = make([]core.ActionItem, 0, 10)
 
 	return nil
 }
 
-func (s *Sim) initQueuer(cfg def.Config) error {
+func (s *Sim) initQueuer(cfg core.Config) error {
 	cust := make(map[string]int)
 	for i, v := range cfg.Rotation {
 		if v.Name != "" {
@@ -427,7 +427,7 @@ func (s *Sim) TargetHasDefMod(key string, param int) bool {
 	return s.targets[param].HasDefMod(key)
 }
 
-func (s *Sim) TargetHasElement(ele def.EleType, param int) bool {
+func (s *Sim) TargetHasElement(ele core.EleType, param int) bool {
 	if param >= len(s.targets) {
 		return false
 	}

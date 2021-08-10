@@ -1,10 +1,10 @@
 package yoimiya
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -19,16 +19,16 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 29
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionAim:
+	case core.ActionAim:
 		return 94
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 19 //should be 82
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 129 //ok
 	default:
-		c.Log.Warnw("unknown action", "event", def.LogActionEvent, "frame", c.Sim.Frame(), "action", a)
+		c.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Sim.Frame(), "action", a)
 		return 0
 	}
 }

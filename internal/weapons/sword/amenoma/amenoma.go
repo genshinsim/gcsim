@@ -4,20 +4,20 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("amenoma kageuchi", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 
 	seeds := make([]int, 3) //keep track the seeds
 
 	icd := 0
 
-	s.AddEventHook(func(s def.Sim) bool {
+	s.AddEventHook(func(s core.Sim) bool {
 		// add 1 seed
 		if icd > s.Frame() {
 			return false
@@ -37,9 +37,9 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		icd = s.Frame() + 300 //5 seconds
 
 		return false
-	}, fmt.Sprintf("amenoma-skill-%v", c.Name()), def.PostSkillHook)
+	}, fmt.Sprintf("amenoma-skill-%v", c.Name()), core.PostSkillHook)
 
-	s.AddEventHook(func(s def.Sim) bool {
+	s.AddEventHook(func(s core.Sim) bool {
 		if s.ActiveCharIndex() != c.CharIndex() {
 			return false
 		}
@@ -59,6 +59,6 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		}, "amenoma-regen", 120+60) //added 1 extra sec for burst animation but who knows if this is true
 
 		return false
-	}, fmt.Sprintf("amenoma-burst-%v", c.Name()), def.PostBurstHook)
+	}, fmt.Sprintf("amenoma-burst-%v", c.Name()), core.PostBurstHook)
 
 }

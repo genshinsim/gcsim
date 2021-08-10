@@ -1,58 +1,58 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 type AuraHydro struct {
 	*Element
 }
 
-func (a *AuraHydro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
+func (a *AuraHydro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	if ds.Durability == 0 {
 		return a, false
 	}
 	switch ds.Element {
-	case def.Anemo:
+	case core.Anemo:
 		//this one doesn't do aoe damage for some reason
-		ds.ReactionType = def.SwirlHydro
+		ds.ReactionType = core.SwirlHydro
 		//queue swirl dmg
-		t.queueReaction(ds, def.SwirlHydro, a.CurrentDurability, 1)
+		t.queueReaction(ds, core.SwirlHydro, a.CurrentDurability, 1)
 		//reduce hydro by 0.5 of anemo
 		a.Reduce(ds, 0.5)
-	case def.Geo:
-		ds.ReactionType = def.CrystallizeHydro
+	case core.Geo:
+		ds.ReactionType = core.CrystallizeHydro
 		//crystallize adds shield
-		shd := NewCrystallizeShield(def.Hydro, t.sim.Frame(), ds.CharLvl, ds.Stats[def.EM], t.sim.Frame()+900)
+		shd := NewCrystallizeShield(core.Hydro, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
 		t.sim.AddShield(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
-	case def.Pyro:
+	case core.Pyro:
 		//vaporize, pyro into hydro = weak
-		ds.ReactionType = def.Vaporize
+		ds.ReactionType = core.Vaporize
 		ds.ReactMult = 1.5
 		ds.IsMeltVape = true
 		a.Reduce(ds, 0.5)
-	case def.Hydro:
+	case core.Hydro:
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
-	case def.Cryo:
+	case core.Cryo:
 		//first reduce hydro durability by incoming cryo; capped at existing
 		red := a.Reduce(ds, 1)
 		if a.CurrentDurability < 0 {
 			a = nil
 		}
-		ds.ReactionType = def.Freeze
+		ds.ReactionType = core.Freeze
 		//since cryo is applied, cryo aura is nil
 		return newFreeze(nil, a, red, t, ds, t.sim.Frame()), true
-	case def.Electro:
+	case core.Electro:
 		//ec
 		e := &AuraElectro{}
 		e.Element = &Element{}
-		e.T = def.Electro
+		e.T = core.Electro
 		e.Attach(ds.Durability, t.sim.Frame())
-		ds.ReactionType = def.ElectroCharged
+		ds.ReactionType = core.ElectroCharged
 		return newEC(e, a, t, ds, t.sim.Frame()), true
 	default:
 		return a, false

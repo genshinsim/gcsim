@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
@@ -22,7 +22,7 @@ type char struct {
 	eTickSrc     int
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -31,7 +31,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 40
 	c.EnergyMax = 40
-	c.Weapon.Class = def.WeaponClassBow
+	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
@@ -51,9 +51,9 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -68,13 +68,13 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 155 - 113
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionAim:
+	case core.ActionAim:
 		return 94 //kqm
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 74 //swap canceled
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 35 //no cancel
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -88,14 +88,14 @@ func (c *char) Attack(p map[string]int) int {
 		travel = 20
 	}
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypePierce,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypePierce,
+		core.Physical,
 		25,
 		attack[c.NormalCounter][c.TalentLvlAttack()],
 	)
@@ -121,15 +121,15 @@ func (c *char) Aimed(p map[string]int) int {
 
 	b := p["bunny"]
 
-	f := c.ActionFrames(def.ActionAim, p)
+	f := c.ActionFrames(core.ActionAim, p)
 
 	d := c.Snapshot(
 		"Aim (Charged)",
-		def.AttackTagExtra,
-		def.ICDTagExtraAttack,
-		def.ICDGroupAmber,
-		def.StrikeTypePierce,
-		def.Pyro,
+		core.AttackTagExtra,
+		core.ICDTagExtraAttack,
+		core.ICDGroupAmber,
+		core.StrikeTypePierce,
+		core.Pyro,
 		50,
 		aim[c.TalentLvlAttack()],
 	)
@@ -140,11 +140,11 @@ func (c *char) Aimed(p map[string]int) int {
 	//add 15% since 360noscope
 
 	c.AddTask(func() {
-		val := make([]float64, def.EndStatType)
-		val[def.ATKP] = 0.15
-		c.AddMod(def.CharStatMod{
+		val := make([]float64, core.EndStatType)
+		val[core.ATKP] = 0.15
+		c.AddMod(core.CharStatMod{
 			Key: "a2",
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Sim.Frame() + 600,
@@ -164,7 +164,7 @@ func (c *char) Aimed(p map[string]int) int {
 }
 
 func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	hold := p["hold"]
 
 	c.AddTask(func() {
@@ -174,18 +174,18 @@ func (c *char) Skill(p map[string]int) int {
 	c.overloadExplode()
 
 	if c.Base.Cons < 4 {
-		c.SetCD(def.ActionSkill, 900)
+		c.SetCD(core.ActionSkill, 900)
 		return f + hold
 	}
 
 	switch c.eCharge {
 	case c.eChargeMax:
-		c.Log.Debugw("amber bunny at max charge, queuing next recovery", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "recover at", c.Sim.Frame()+721)
+		c.Log.Debugw("amber bunny at max charge, queuing next recovery", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "recover at", c.Sim.Frame()+721)
 		c.eNextRecover = c.Sim.Frame() + 721
 		c.AddTask(c.recoverCharge(c.Sim.Frame()), "charge", 720)
 		c.eTickSrc = c.Sim.Frame()
 	case 1:
-		c.SetCD(def.ActionSkill, c.eNextRecover)
+		c.SetCD(core.ActionSkill, c.eNextRecover)
 	}
 	c.eCharge--
 
@@ -195,18 +195,18 @@ func (c *char) Skill(p map[string]int) int {
 func (c *char) recoverCharge(src int) func() {
 	return func() {
 		if c.eTickSrc != src {
-			c.Log.Debugw("amber bunny recovery function ignored, src diff", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
+			c.Log.Debugw("amber bunny recovery function ignored, src diff", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
 			return
 		}
 		c.eCharge++
-		c.Log.Debugw("amber bunny recovering a charge", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "src", src, "total charge", c.eCharge)
-		c.SetCD(def.ActionSkill, 0)
+		c.Log.Debugw("amber bunny recovering a charge", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
+		c.SetCD(core.ActionSkill, 0)
 		if c.eCharge >= c.eChargeMax {
 			//fully charged
 			return
 		}
 		//other wise restore another charge
-		c.Log.Debugw("amber bunny queuing next recovery", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "src", src, "recover at", c.Sim.Frame()+720)
+		c.Log.Debugw("amber bunny queuing next recovery", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "recover at", c.Sim.Frame()+720)
 		c.eNextRecover = c.Sim.Frame() + 721
 		c.AddTask(c.recoverCharge(src), "charge", 720)
 
@@ -214,7 +214,7 @@ func (c *char) recoverCharge(src int) func() {
 }
 
 type bunny struct {
-	ds  def.Snapshot
+	ds  core.Snapshot
 	src int
 }
 
@@ -223,15 +223,15 @@ func (c *char) makeBunny() {
 	b.src = c.Sim.Frame()
 	b.ds = c.Snapshot(
 		"Baron Bunny",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Pyro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Pyro,
 		50,
 		bunnyExplode[c.TalentLvlSkill()],
 	)
-	b.ds.Targets = def.TargetAll
+	b.ds.Targets = core.TargetAll
 
 	c.bunnies = append(c.bunnies, b)
 
@@ -244,13 +244,13 @@ func (c *char) makeBunny() {
 
 func (c *char) explode(src int) {
 	n := 0
-	c.Log.Debugw("amber exploding bunny", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "src", src)
+	c.Log.Debugw("amber exploding bunny", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src)
 	for _, v := range c.bunnies {
 		if v.src == src {
 
 			c.QueueDmg(&v.ds, 1)
 			//4 orbs
-			c.QueueParticle("amber", 4, def.Pyro, 100)
+			c.QueueParticle("amber", 4, core.Pyro, 100)
 		} else {
 			c.bunnies[n] = v
 			n++
@@ -265,14 +265,14 @@ func (c *char) manualExplode() {
 		ds := c.bunnies[0].ds
 		ds.Mult = ds.Mult + 2
 		c.QueueDmg(&ds, 1)
-		c.QueueParticle("amber", 4, def.Pyro, 100)
+		c.QueueParticle("amber", 4, core.Pyro, 100)
 	}
 	c.bunnies = c.bunnies[1:]
 }
 
 func (c *char) overloadExplode() {
 	//explode all bunnies on overload
-	c.Sim.AddOnTransReaction(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnTransReaction(func(t core.Target, ds *core.Snapshot) {
 		if len(c.bunnies) == 0 {
 			return
 		}
@@ -281,15 +281,15 @@ func (c *char) overloadExplode() {
 			return
 		}
 		//TODO: does it have to be charge shot trigger only??
-		if ds.AttackTag != def.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagExtra {
 			return
 		}
-		if ds.ReactionType == def.Overload {
+		if ds.ReactionType == core.Overload {
 			for _, v := range c.bunnies {
 				ds := v.ds
 				ds.Mult = ds.Mult + 2
 				c.QueueDmg(&ds, 1)
-				c.QueueParticle("amber", 4, def.Pyro, 100)
+				c.QueueParticle("amber", 4, core.Pyro, 100)
 			}
 			c.bunnies = make([]bunny, 0, 2)
 		}
@@ -297,24 +297,24 @@ func (c *char) overloadExplode() {
 }
 
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 
 	//2sec duration, tick every .4 sec in zone 1
 	//2sec duration, tick every .6 sec in zone 2
 	//2sec duration, tick every .2 sec in zone 3
 	d := c.Snapshot(
 		"Fiery Rain",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupAmber,
-		def.StrikeTypePierce,
-		def.Pyro,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupAmber,
+		core.StrikeTypePierce,
+		core.Pyro,
 		25,
 		burstTick[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
-	d.Stats[def.CR] += 0.1 // a2
+	d.Stats[core.CR] += 0.1 // a2
 
 	for i := f + 24; i < 120+f; i += 24 {
 		x := d.Clone()
@@ -333,18 +333,18 @@ func (c *char) Burst(p map[string]int) int {
 
 	if c.Base.Cons == 6 {
 		for _, active := range c.Sim.Characters() {
-			val := make([]float64, def.EndStatType)
-			val[def.ATKP] = 0.15
-			active.AddMod(def.CharStatMod{
+			val := make([]float64, core.EndStatType)
+			val[core.ATKP] = 0.15
+			active.AddMod(core.CharStatMod{
 				Key:    "amber-c6",
-				Amount: func(a def.AttackTag) ([]float64, bool) { return val, true },
+				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 				Expiry: c.Sim.Frame() + 900,
 			})
-			c.Log.Debugw("c6 - adding atk %", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "character", c.Name())
+			c.Log.Debugw("c6 - adding atk %", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "character", c.Name())
 		}
 	}
 
 	c.Energy = 0
-	c.SetCD(def.ActionBurst, 720)
+	c.SetCD(core.ActionBurst, 720)
 	return f
 }

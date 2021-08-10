@@ -4,20 +4,20 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("skyward pride", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 
-	m := make([]float64, def.EndStatType)
-	m[def.DmgP] = 0.06 + float64(r)*0.02
-	c.AddMod(def.CharStatMod{
+	m := make([]float64, core.EndStatType)
+	m[core.DmgP] = 0.06 + float64(r)*0.02
+	c.AddMod(core.CharStatMod{
 		Key: "skyward pride",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
@@ -26,22 +26,22 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 	counter := 0
 	dur := 0
 
-	s.AddEventHook(func(s def.Sim) bool {
+	s.AddEventHook(func(s core.Sim) bool {
 		if s.ActiveCharIndex() != c.CharIndex() {
 			return false
 		}
 		dur = s.Frame() + 1200
 		counter = 0
-		log.Debugw("Skyward Pride activated", "frame", s.Frame(), "event", def.LogWeaponEvent, "expiring ", dur)
+		log.Debugw("Skyward Pride activated", "frame", s.Frame(), "event", core.LogWeaponEvent, "expiring ", dur)
 		return false
-	}, fmt.Sprintf("skyward-pride-%v", c.Name()), def.PostBurstHook)
+	}, fmt.Sprintf("skyward-pride-%v", c.Name()), core.PostBurstHook)
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		//check if char is correct?
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return
 		}
 		//check if cd is up
@@ -55,11 +55,11 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		counter++
 		d := c.Snapshot(
 			"Skyward Pride Proc",
-			def.AttackTagWeaponSkill,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Physical,
+			core.AttackTagWeaponSkill,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Physical,
 			100,
 			dmg,
 		)

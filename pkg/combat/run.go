@@ -1,7 +1,7 @@
 package combat
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func (s *Sim) Run() (SimStats, error) {
@@ -94,7 +94,7 @@ func (s *Sim) handleHurt() {
 		s.nextHurt = s.f + f
 		amt := s.hurt.Min + s.rand.Float64()*(s.hurt.Max-s.hurt.Min)
 		s.nextHurtAmt = amt
-		s.log.Debugw("hurt queued", "frame", s.f, "event", def.LogSimEvent, "last", s.lastHurt, "event", s.hurt, "amt", amt, "hurt_frame", f)
+		s.log.Debugw("hurt queued", "frame", s.f, "event", core.LogSimEvent, "last", s.lastHurt, "event", s.hurt, "amt", amt, "hurt_frame", f)
 	}
 
 	if s.nextHurt == s.f {

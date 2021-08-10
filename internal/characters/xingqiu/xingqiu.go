@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 
 	"go.uber.org/zap"
 )
@@ -24,7 +24,7 @@ func init() {
 	combat.RegisterCharFunc("xingqiu", NewChar)
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -33,16 +33,16 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 80
 	c.EnergyMax = 80
-	c.Weapon.Class = def.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassSword
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
 
-	a4 := make([]float64, def.EndStatType)
-	a4[def.HydroP] = 0.2
-	c.AddMod(def.CharStatMod{
+	a4 := make([]float64, core.EndStatType)
+	a4[core.HydroP] = 0.2
+	c.AddMod(core.CharStatMod{
 		Key: "a4",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return a4, true
 		},
 		Expiry: -1,
@@ -59,9 +59,9 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 
 var delay = [][]int{{8}, {24}, {24, 43}, {36}, {43, 78}}
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -76,31 +76,31 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 79
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 63
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 77 //should be 82
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 39 //ok
 	default:
-		c.Log.Warnw("unknown action", "event", def.LogActionEvent, "frame", c.Sim.Frame(), "action", a)
+		c.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Sim.Frame(), "action", a)
 		return 0
 	}
 }
 
 func (c *char) Attack(p map[string]int) int {
 	//apply attack speed
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		0,
 	)
@@ -120,7 +120,7 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) orbitalfunc(src int) func() {
 	return func() {
-		c.Log.Debugw("orbital checking tick", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "expiry", c.Sim.Status("xqorb"), "src", src)
+		c.Log.Debugw("orbital checking tick", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "expiry", c.Sim.Status("xqorb"), "src", src)
 		if c.Sim.Status("xqorb") == 0 {
 			c.orbitalActive = false
 			return
@@ -128,18 +128,18 @@ func (c *char) orbitalfunc(src int) func() {
 		//queue up one damage instance
 		d := c.Snapshot(
 			"Xingqiu Skill (Orbital)",
-			def.AttackTagNone,
-			def.ICDTagNormalAttack,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Hydro,
+			core.AttackTagNone,
+			core.ICDTagNormalAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Hydro,
 			25,
 			0,
 		)
-		d.Targets = def.TargetAll
+		d.Targets = core.TargetAll
 
 		c.QueueDmg(&d, 1)
-		c.Log.Debugw("orbital ticked", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "next expected tick", c.Sim.Frame()+150, "expiry", c.Sim.Status("xqorb"), "src", src)
+		c.Log.Debugw("orbital ticked", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "next expected tick", c.Sim.Frame()+150, "expiry", c.Sim.Status("xqorb"), "src", src)
 		//queue up next instance
 		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 150)
 	}
@@ -147,17 +147,17 @@ func (c *char) orbitalfunc(src int) func() {
 
 func (c *char) applyOrbital() {
 	f := c.Sim.Frame()
-	c.Log.Debugw("Applying orbital", "frame", f, "event", def.LogCharacterEvent, "current status", c.Sim.Status("xqorb"))
+	c.Log.Debugw("Applying orbital", "frame", f, "event", core.LogCharacterEvent, "current status", c.Sim.Status("xqorb"))
 	//check if blood blossom already active, if active extend duration by 8 second
 	//other wise start first tick func
 	if !c.orbitalActive {
 		//TODO: does BB tick immediately on first application?
 		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 40)
 		c.orbitalActive = true
-		c.Log.Debugw("orbital applied", "frame", f, "event", def.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
+		c.Log.Debugw("orbital applied", "frame", f, "event", core.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
 	}
 	c.Sim.AddStatus("xqorb", 900)
-	c.Log.Debugw("orbital duration extended", "frame", f, "event", def.LogCharacterEvent, "new expiry", c.Sim.Status("xqorb"))
+	c.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Sim.Status("xqorb"))
 }
 
 func (c *char) Skill(p map[string]int) int {
@@ -167,19 +167,19 @@ func (c *char) Skill(p map[string]int) int {
 		c.applyOrbital()
 	}
 
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Guhua Sword: Fatal Rainscreen",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Hydro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Hydro,
 		25,
 		rainscreen[0][c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	if c.Base.Cons >= 4 {
 		//check if ult is up, if so increase multiplier
 		if c.Sim.Status("xqburst") > 0 {
@@ -192,15 +192,15 @@ func (c *char) Skill(p map[string]int) int {
 	c.QueueDmg(&d, 19)
 	c.QueueDmg(&d2, 39)
 
-	c.QueueParticle(c.Base.Name, 5, def.Hydro, 100)
+	c.QueueParticle(c.Base.Name, 5, core.Hydro, 100)
 
 	//should last 15s, cd 21s
-	c.SetCD(def.ActionSkill, 21*60)
+	c.SetCD(core.ActionSkill, 21*60)
 	return f
 }
 
 func (c *char) burstHook() {
-	c.Sim.AddEventHook(func(s def.Sim) bool {
+	c.Sim.AddEventHook(func(s core.Sim) bool {
 		//check if buff is up
 		if c.Sim.Status("xqburst") <= 0 {
 			return false
@@ -219,24 +219,24 @@ func (c *char) burstHook() {
 
 			d := c.Snapshot(
 				"Guhua Sword: Raincutter",
-				def.AttackTagElementalBurst,
-				def.ICDTagElementalBurst,
-				def.ICDGroupDefault,
-				def.StrikeTypePierce,
-				def.Hydro,
+				core.AttackTagElementalBurst,
+				core.ICDTagElementalBurst,
+				core.ICDGroupDefault,
+				core.StrikeTypePierce,
+				core.Hydro,
 				25,
 				burst[c.TalentLvlBurst()],
 			)
 			d.Targets = 0 //only hit main target
-			d.OnHitCallback = func(t def.Target) {
+			d.OnHitCallback = func(t core.Target) {
 				//check energy
 				if c.nextRegen && wave == 0 {
 					c.AddEnergy(3)
 				}
 				//check c2
 				if c.Base.Cons >= 2 {
-					t.AddResMod("xingqiu-c2", def.ResistMod{
-						Ele:      def.Hydro,
+					t.AddResMod("xingqiu-c2", core.ResistMod{
+						Ele:      core.Hydro,
 						Value:    -0.15,
 						Duration: 4 * 60,
 					})
@@ -270,11 +270,11 @@ func (c *char) burstHook() {
 		c.burstSwordICD = c.Sim.Frame() + 60
 
 		return false
-	}, "Xingqiu-Burst", def.PostAttackHook)
+	}, "Xingqiu-Burst", core.PostAttackHook)
 }
 
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 	//apply hydro every 3rd hit
 	//triggered on normal attack
 	//also applies hydro on cast if p=1
@@ -304,13 +304,13 @@ func (c *char) Burst(p map[string]int) int {
 	}
 	dur = dur * 60
 	c.Sim.AddStatus("xqburst", dur)
-	c.Log.Debugw("Xingqiu burst activated", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "expiry", c.Sim.Frame()+dur)
+	c.Log.Debugw("Xingqiu burst activated", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "expiry", c.Sim.Frame()+dur)
 
 	c.burstCounter = 0
 	c.numSwords = 2
 
 	// c.CD[combat.BurstCD] = c.S.F + 20*60
-	c.SetCD(def.ActionBurst, 20*60)
+	c.SetCD(core.ActionBurst, 20*60)
 	c.Energy = 0
 	return f
 }

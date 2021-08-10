@@ -1,54 +1,54 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 type AuraCyro struct {
 	*Element
 }
 
-func (a *AuraCyro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
+func (a *AuraCyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	if ds.Durability == 0 {
 		return a, false
 	}
 	switch ds.Element {
-	case def.Anemo:
-		ds.ReactionType = def.SwirlCryo
+	case core.Anemo:
+		ds.ReactionType = core.SwirlCryo
 		//queue swirl dmg
-		t.queueReaction(ds, def.SwirlCryo, a.CurrentDurability, 1)
+		t.queueReaction(ds, core.SwirlCryo, a.CurrentDurability, 1)
 		//reduce pyro by 0.5 of anemo
 		a.Reduce(ds, 0.5)
-	case def.Geo:
-		ds.ReactionType = def.CrystallizeCryo
+	case core.Geo:
+		ds.ReactionType = core.CrystallizeCryo
 		//crystallize adds shield
-		shd := NewCrystallizeShield(def.Cryo, t.sim.Frame(), ds.CharLvl, ds.Stats[def.EM], t.sim.Frame()+900)
+		shd := NewCrystallizeShield(core.Cryo, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
 		t.sim.AddShield(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
-	case def.Pyro:
+	case core.Pyro:
 		//melt, pyro into cryo = strong
-		ds.ReactionType = def.Melt
+		ds.ReactionType = core.Melt
 		ds.ReactMult = 2
 		ds.IsMeltVape = true
 		a.Reduce(ds, 2)
-	case def.Hydro:
+	case core.Hydro:
 		//first reduce hydro durability by incoming cryo; capped at existing
 		red := a.Reduce(ds, 1)
 		if a.CurrentDurability < 0 {
 			a = nil
 		}
-		ds.ReactionType = def.Freeze
+		ds.ReactionType = core.Freeze
 		//since cryo is applied, cryo aura is nil
 		return newFreeze(a, nil, red, t, ds, t.sim.Frame()), true
-	case def.Cryo:
+	case core.Cryo:
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
-	case def.Electro:
+	case core.Electro:
 		//superconduct
-		ds.ReactionType = def.Superconduct
-		t.queueReaction(ds, def.Superconduct, a.CurrentDurability, 1)
+		ds.ReactionType = core.Superconduct
+		t.queueReaction(ds, core.Superconduct, a.CurrentDurability, 1)
 		a.Reduce(ds, 1)
 	default:
 		return a, false

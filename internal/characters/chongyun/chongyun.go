@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
@@ -17,7 +17,7 @@ type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -26,7 +26,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 40
 	c.EnergyMax = 40
-	c.Weapon.Class = def.WeaponClassClaymore
+	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 	c.BurstCon = 3
 	c.SkillCon = 5
@@ -46,27 +46,27 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 
 func (c *char) c4() {
 	icd := 0
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
 		if c.Sim.Frame() < icd {
 			return
 		}
-		if !t.AuraContains(def.Cryo) {
+		if !t.AuraContains(core.Cryo) {
 			return
 		}
 
 		c.AddEnergy(2)
 
-		c.Log.Debugw("chongyun c4 recovering 2 energy", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "final energy", c.Energy)
+		c.Log.Debugw("chongyun c4 recovering 2 energy", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "final energy", c.Energy)
 		icd = c.Sim.Frame() + 120
 	}, "chongyun-c4")
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -79,13 +79,13 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 3:
 			f = 204 - 124
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 30 //frames from keqing lib
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 57
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 135 //ok
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -94,27 +94,27 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 }
 
 func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		attack[c.NormalCounter][c.TalentLvlAttack()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.QueueDmg(&d, f-1)
 	if c.NormalCounter == 3 && c.Base.Cons >= 1 {
 		d := c.Snapshot(
 			"Chongyun C1",
-			def.AttackTagNormal,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Cryo,
+			core.AttackTagNormal,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Cryo,
 			25,
 			.5,
 		)
@@ -131,44 +131,44 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) Skill(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Spirit Blade: Chonghua's Layered Frost",
-		def.AttackTagElementalArt,
-		def.ICDTagElementalArt,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Cryo,
+		core.AttackTagElementalArt,
+		core.ICDTagElementalArt,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Cryo,
 		50,
 		skill[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.QueueDmg(&d, f-1)
 
 	//TODO: energy count; lib says 3:4?
-	c.QueueParticle("Chongyun", 4, def.Cryo, 100)
+	c.QueueParticle("Chongyun", 4, core.Cryo, 100)
 
 	//a4 delayed damage + cryo resist shred
 	c.AddTask(func() {
 
 		d := c.Snapshot(
 			"Spirit Blade: Chonghua's Layered Frost (Ar)",
-			def.AttackTagElementalArt,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeBlunt,
-			def.Cryo,
+			core.AttackTagElementalArt,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeBlunt,
+			core.Cryo,
 			25,
 			skill[c.TalentLvlSkill()],
 		)
-		d.Targets = def.TargetAll
+		d.Targets = core.TargetAll
 
 		c.Sim.ApplyDamage(&d)
 		//add res mod after dmg
-		d.OnHitCallback = func(t def.Target) {
-			t.AddResMod("Chongyun A4", def.ResistMod{
+		d.OnHitCallback = func(t core.Target) {
+			t.AddResMod("Chongyun A4", core.ResistMod{
 				Duration: 480, //10 seconds
-				Ele:      def.Cryo,
+				Ele:      core.Cryo,
 				Value:    -0.10,
 			})
 		}
@@ -185,35 +185,35 @@ func (c *char) Skill(p map[string]int) int {
 		}, "chongyun-field", i)
 	}
 
-	c.SetCD(def.ActionSkill, 900)
+	c.SetCD(core.ActionSkill, 900)
 	return f
 }
 
 func (c *char) onSwapHook() {
-	c.Sim.AddEventHook(func(s def.Sim) bool {
+	c.Sim.AddEventHook(func(s core.Sim) bool {
 		if s.Status("chongyunfield") == 0 {
 			return false
 		}
 		//add infusion on swap
-		c.Log.Debugw("chongyun adding infusion on swap", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "expiry", c.Sim.Frame()+infuseDur[c.TalentLvlSkill()])
+		c.Log.Debugw("chongyun adding infusion on swap", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "expiry", c.Sim.Frame()+infuseDur[c.TalentLvlSkill()])
 		active, _ := c.Sim.CharByPos(c.Sim.ActiveCharIndex())
 		c.infuse(active)
 		return false
-	}, "chongyun-field", def.PostSwapHook)
+	}, "chongyun-field", core.PostSwapHook)
 }
 
-func (c *char) infuse(char def.Character) {
+func (c *char) infuse(char core.Character) {
 	switch char.WeaponClass() {
-	case def.WeaponClassClaymore:
+	case core.WeaponClassClaymore:
 		fallthrough
-	case def.WeaponClassSpear:
+	case core.WeaponClassSpear:
 		fallthrough
-	case def.WeaponClassSword:
-		c.Log.Debugw("chongyun adding infusion", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "expiry", c.Sim.Frame()+infuseDur[c.TalentLvlSkill()])
-		char.AddWeaponInfuse(def.WeaponInfusion{
+	case core.WeaponClassSword:
+		c.Log.Debugw("chongyun adding infusion", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "expiry", c.Sim.Frame()+infuseDur[c.TalentLvlSkill()])
+		char.AddWeaponInfuse(core.WeaponInfusion{
 			Key:    "chongyun-ice-weapon",
-			Ele:    def.Cryo,
-			Tags:   []def.AttackTag{def.AttackTagNormal, def.AttackTagExtra, def.AttackTagPlunge},
+			Ele:    core.Cryo,
+			Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 			Expiry: c.Sim.Frame() + infuseDur[c.TalentLvlSkill()],
 		})
 	default:
@@ -221,19 +221,19 @@ func (c *char) infuse(char def.Character) {
 	}
 
 	//a2 adds 8% atkspd for 2.1 seconds
-	val := make([]float64, def.EndStatType)
-	val[def.AtkSpd] = 0.08
-	char.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	val[core.AtkSpd] = 0.08
+	char.AddMod(core.CharStatMod{
 		Key:    "chongyun-field",
-		Amount: func(a def.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 		Expiry: c.Sim.Frame() + 126,
 	})
 	//c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
-		char.AddCDAdjustFunc(def.CDAdjust{
+		char.AddCDAdjustFunc(core.CDAdjust{
 			Key: "chongyun-c2",
-			Amount: func(a def.ActionType) float64 {
-				if a == def.ActionSkill || a == def.ActionBurst {
+			Amount: func(a core.ActionType) float64 {
+				if a == core.ActionSkill || a == core.ActionBurst {
 					return -0.15
 				}
 				return 0
@@ -244,19 +244,19 @@ func (c *char) infuse(char def.Character) {
 }
 
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Spirit Blade: Cloud-Parting Star",
-		def.AttackTagElementalBurst,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Cryo,
+		core.AttackTagElementalBurst,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Cryo,
 		25,
 		burst[c.TalentLvlBurst()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	count := 3
 	if c.Base.Cons == 6 {
@@ -269,13 +269,13 @@ func (c *char) Burst(p map[string]int) int {
 		c.QueueDmg(&x, f+10*i)
 	}
 
-	c.SetCD(def.ActionBurst, 720)
+	c.SetCD(core.ActionBurst, 720)
 	c.Energy = 0
 	return f //TODO: frames
 }
 
 func (c *char) c6() {
-	c.Sim.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
@@ -283,8 +283,8 @@ func (c *char) c6() {
 			return
 		}
 		if t.HP()/t.MaxHP() < c.HPCurrent/c.HPMax {
-			ds.Stats[def.DmgP] += 0.15
-			c.Log.Debugw("c6 add bonus dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "final", ds.Stats[def.DmgP])
+			ds.Stats[core.DmgP] += 0.15
+			c.Log.Debugw("c6 add bonus dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "final", ds.Stats[core.DmgP])
 		}
 	}, "chongyun-c6")
 }

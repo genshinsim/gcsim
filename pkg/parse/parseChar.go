@@ -4,20 +4,20 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func (p *Parser) newChar(name string) {
-	r := def.CharacterProfile{}
+	r := core.CharacterProfile{}
 	r.Base.Name = name
-	r.Stats = make([]float64, len(def.StatTypeString))
+	r.Stats = make([]float64, len(core.StatTypeString))
 	r.Sets = make(map[string]int)
 	r.Base.StartHP = -1
 	p.chars[name] = &r
 }
 
 //return a char name
-func (p *Parser) acceptChar() (*def.CharacterProfile, error) {
+func (p *Parser) acceptChar() (*core.CharacterProfile, error) {
 	n, err := p.consume(itemIdentifier)
 	// log.Println(n)
 	if err != nil {
@@ -124,7 +124,7 @@ func parseChar(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 
-				pos := def.StrToStatType(s)
+				pos := core.StrToStatType(s)
 				c.Stats[pos] += amt
 			} else {
 				return nil, fmt.Errorf("<char> bad token at line %v - %v: %v", n.line, n.pos, n)
@@ -166,7 +166,7 @@ func parseStats(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 
-			pos := def.StrToStatType(s)
+			pos := core.StrToStatType(s)
 			c.Stats[pos] += amt
 		default:
 			return nil, fmt.Errorf("<stats> bad token at line %v - %v: %v", n.line, n.pos, n)
@@ -229,7 +229,7 @@ func parseWeapon(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 
-				pos := def.StrToStatType(s)
+				pos := core.StrToStatType(s)
 				c.Stats[pos] += amt
 			} else {
 				return nil, fmt.Errorf("<weapon> bad token at line %v - %v: %v", n.line, n.pos, n)

@@ -14,7 +14,7 @@ import (
 
 	"github.com/genshinsim/gsim/internal/logtohtml"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/parse"
 	"github.com/pkg/profile"
 
@@ -81,6 +81,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/whiteblind"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/wolf"
 
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/catch"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/crescent"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/deathmatch"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonbane"
@@ -144,7 +145,7 @@ func main() {
 	fixedRand := flag.Bool("noseed", false, "use 0 for rand seed always - guarantee same results every time; only in single mode")
 	avgMode := flag.Bool("a", false, "run sim multiple times and calculate avg damage (smooth out randomness). default false. note that there is no debug log in this mode")
 	w := flag.Int("w", 24, "number of workers to run when running multiple iterations; default 24")
-	i := flag.Int("i", 5000, "number of iterations to run if we're running multiple")
+	i := flag.Int("i", 1000, "number of iterations to run if we're running multiple")
 	multi := flag.String("comp", "", "comparison mode")
 	t := flag.Int("t", 1, "target multiplier")
 
@@ -187,7 +188,7 @@ func main() {
 
 }
 
-func runSingle(cfg def.Config, hp float64, dur int) {
+func runSingle(cfg core.Config, hp float64, dur int) {
 
 	if hp > 0 {
 		cfg.Mode.HPMode = true
@@ -250,7 +251,7 @@ func runSingle(cfg def.Config, hp float64, dur int) {
 		fmt.Printf("%v active for %v (%v seconds - %.0f%%)\n", stats.CharNames[i], v, v/60, 100*float64(v)/float64(dur*60))
 	}
 	fmt.Println("------------------------------------------")
-	rk := make([]def.ReactionType, 0, len(stats.ReactionsTriggered))
+	rk := make([]core.ReactionType, 0, len(stats.ReactionsTriggered))
 	for k := range stats.ReactionsTriggered {
 		rk = append(rk, k)
 	}
@@ -356,7 +357,7 @@ func runAvg(n, w int, src []byte, hp float64, dur int, t int) {
 		fmt.Printf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", stats.CharNames[i], 100*v.mean/(stats.avgdur*60), float64(100*v.min)/(stats.avgdur*60), float64(100*v.max)/(stats.avgdur*60))
 	}
 	fmt.Println("------------------------------------------")
-	rk := make([]def.ReactionType, 0, len(stats.ReactionsTriggered))
+	rk := make([]core.ReactionType, 0, len(stats.ReactionsTriggered))
 	for k := range stats.ReactionsTriggered {
 		rk = append(rk, k)
 	}
@@ -393,7 +394,7 @@ func runDetailedIter(n, w int, src []byte, hp float64, dur int) sum {
 
 	summary.dps.min = math.MaxFloat64
 	summary.dps.max = -1
-	summary.ReactionsTriggered = make(map[def.ReactionType]resulti)
+	summary.ReactionsTriggered = make(map[core.ReactionType]resulti)
 	summary.CharNames = make([]string, charCount)
 	summary.AbilUsageCountByChar = make([]map[string]resulti, charCount)
 	summary.CharActiveTime = make([]resulti, charCount)
@@ -591,7 +592,7 @@ type sum struct {
 	DamageByChar         []map[string]result
 	CharActiveTime       []resulti
 	AbilUsageCountByChar []map[string]resulti
-	ReactionsTriggered   map[def.ReactionType]resulti
+	ReactionsTriggered   map[core.ReactionType]resulti
 	CharNames            []string
 }
 
@@ -701,11 +702,11 @@ func worker(src []byte, hp float64, dur int, t int, resp chan float64, req chan 
 				cfg.Mode.HP = 0
 			}
 
-			var additional []def.EnemyProfile
+			var additional []core.EnemyProfile
 
 			for i := 1; i < t; i++ {
 				for _, e := range cfg.Targets {
-					additional = append(additional, def.CloneEnemy(e))
+					additional = append(additional, core.CloneEnemy(e))
 				}
 			}
 

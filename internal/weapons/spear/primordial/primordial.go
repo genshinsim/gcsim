@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
@@ -13,23 +13,23 @@ func init() {
 
 //For every character in the party who hails from Liyue, the character who equips this
 //weapon gains 6/7/8/9//10% ATK increase and 2/3/4/5/6% CRIT Rate increase.
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 
 	last := 0
 	stacks := 0
 	active := 0
 
-	m := make([]float64, def.EndStatType)
+	m := make([]float64, core.EndStatType)
 
-	c.AddMod(def.CharStatMod{
+	c.AddMod(core.CharStatMod{
 		Key: "primordial",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, active > s.Frame()
 		},
 		Expiry: -1,
 	})
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		//check if char is correct?
 		if ds.ActorIndex != c.CharIndex() {
 			return
@@ -48,9 +48,9 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 
 		if stacks > 7 {
 			stacks = 7
-			m[def.DmgP] = 0.09 + float64(r)*0.03
+			m[core.DmgP] = 0.09 + float64(r)*0.03
 		}
-		m[def.ATK] = (float64(r)*0.007 + 0.025) * float64(stacks)
+		m[core.ATK] = (float64(r)*0.007 + 0.025) * float64(stacks)
 
 		//trigger cd
 		last = s.Frame()

@@ -1,6 +1,6 @@
 package character
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
 func (c *Tmpl) Tag(key string) int {
 	return c.Tags[key]
@@ -14,15 +14,15 @@ func (c *Tmpl) Name() string {
 	return c.Base.Name
 }
 
-func (c *Tmpl) Zone() def.ZoneType {
+func (c *Tmpl) Zone() core.ZoneType {
 	return c.CharZone
 }
 
-func (c *Tmpl) Ele() def.EleType {
+func (c *Tmpl) Ele() core.EleType {
 	return c.Base.Element
 }
 
-func (c *Tmpl) WeaponClass() def.WeaponClass {
+func (c *Tmpl) WeaponClass() core.WeaponClass {
 	return c.Weapon.Class
 }
 

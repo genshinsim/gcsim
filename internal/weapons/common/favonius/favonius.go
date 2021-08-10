@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
@@ -15,13 +15,13 @@ func init() {
 	combat.RegisterWeaponFunc("favonius codex", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 
 	p := 0.50 + float64(r)*0.1
 	cd := 810 - r*90
 	icd := 0
 	//add on crit effect
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.Actor != c.Name() {
 			return
 		}
@@ -35,9 +35,9 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		if s.Rand().Float64() > p {
 			return
 		}
-		log.Debugw("favonius proc'd", "frame", s.Frame(), "event", def.LogWeaponEvent, "char", c.CharIndex())
+		log.Debugw("favonius proc'd", "frame", s.Frame(), "event", core.LogWeaponEvent, "char", c.CharIndex())
 
-		c.QueueParticle("favonius", 3, def.NoElement, 150)
+		c.QueueParticle("favonius", 3, core.NoElement, 150)
 
 		icd = s.Frame() + cd
 

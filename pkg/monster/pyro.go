@@ -1,53 +1,53 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 type AuraPyro struct {
 	*Element
 }
 
-func (a *AuraPyro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
+func (a *AuraPyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	if ds.Durability == 0 {
 		return a, false
 	}
 
 	switch ds.Element {
-	case def.Anemo:
-		ds.ReactionType = def.SwirlPyro
+	case core.Anemo:
+		ds.ReactionType = core.SwirlPyro
 		//queue swirl dmg
-		t.queueReaction(ds, def.SwirlPyro, a.CurrentDurability, 1)
+		t.queueReaction(ds, core.SwirlPyro, a.CurrentDurability, 1)
 		//reduce pyro by 0.5 of anemo
 		a.Reduce(ds, 0.5)
-	case def.Geo:
-		ds.ReactionType = def.CrystallizePyro
+	case core.Geo:
+		ds.ReactionType = core.CrystallizePyro
 		//crystallize adds shield
-		shd := NewCrystallizeShield(def.Pyro, t.sim.Frame(), ds.CharLvl, ds.Stats[def.EM], t.sim.Frame()+900)
+		shd := NewCrystallizeShield(core.Pyro, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
 		t.sim.AddShield(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
-	case def.Pyro:
+	case core.Pyro:
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
-	case def.Hydro:
+	case core.Hydro:
 		//vaporize + reduce
-		ds.ReactionType = def.Vaporize
+		ds.ReactionType = core.Vaporize
 		ds.ReactMult = 2
 		ds.IsMeltVape = true
 		a.Reduce(ds, 2)
-	case def.Cryo:
+	case core.Cryo:
 		//melt + reduce
-		ds.ReactionType = def.Melt
+		ds.ReactionType = core.Melt
 		ds.ReactMult = 1.5
 		ds.IsMeltVape = true
 		//vaporize + reduce
 		a.Reduce(ds, 0.5)
-	case def.Electro:
+	case core.Electro:
 		//overload + reduce
-		ds.ReactionType = def.Overload
-		t.queueReaction(ds, def.Overload, a.CurrentDurability, 1)
+		ds.ReactionType = core.Overload
+		t.queueReaction(ds, core.Overload, a.CurrentDurability, 1)
 		a.Reduce(ds, 1)
 	default:
 		return a, false

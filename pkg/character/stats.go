@@ -3,11 +3,11 @@ package character
 import (
 	"strings"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
-func (c *Tmpl) AddMod(mod def.CharStatMod) {
+func (c *Tmpl) AddMod(mod core.CharStatMod) {
 	ind := len(c.Mods)
 	for i, v := range c.Mods {
 		if v.Key == mod.Key {
@@ -15,23 +15,23 @@ func (c *Tmpl) AddMod(mod def.CharStatMod) {
 		}
 	}
 	if ind != 0 && ind != len(c.Mods) {
-		c.Log.Debugw("char mod added", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Log.Debugw("char mod added", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
 		c.Mods[ind] = mod
 	} else {
 		c.Mods = append(c.Mods, mod)
-		c.Log.Debugw("char mod added", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Log.Debugw("char mod added", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
 	}
 
 }
 
-func (t *Tmpl) Stat(s def.StatType) float64 {
+func (t *Tmpl) Stat(s core.StatType) float64 {
 	val := t.Stats[s]
 	for _, m := range t.Mods {
 		//ignore this mod if stat type doesnt match
-		if m.AffectedStat != def.NoStat && m.AffectedStat != s {
+		if m.AffectedStat != core.NoStat && m.AffectedStat != s {
 			continue
 		}
-		amt, ok := m.Amount(def.AttackTagNone)
+		amt, ok := m.Amount(core.AttackTagNone)
 		if ok {
 			val += amt[s]
 		}
@@ -40,12 +40,12 @@ func (t *Tmpl) Stat(s def.StatType) float64 {
 	return val
 }
 
-func (c *Tmpl) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d def.Durability, mult float64) def.Snapshot {
+func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
 
 	var sb strings.Builder
 
-	ds := def.Snapshot{}
-	ds.Stats = make([]float64, def.EndStatType)
+	ds := core.Snapshot{}
+	ds.Stats = make([]float64, core.EndStatType)
 	copy(ds.Stats, c.Stats)
 
 	ds.ActorIndex = c.Index
@@ -66,15 +66,15 @@ func (c *Tmpl) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDG
 	ds.Mult = mult
 	ds.ImpulseLvl = 1
 	//by default assume we only hit target 0 (i.e. single target ability)
-	ds.DamageSrc = def.TargetPlayer
+	ds.DamageSrc = core.TargetPlayer
 	ds.Targets = 0
 	ds.SelfHarm = false
 
-	var logDetails []zap.Field = make([]zap.Field, 0, 11+2*len(def.StatTypeString)+len(c.Mods))
+	var logDetails []zap.Field = make([]zap.Field, 0, 11+2*len(core.StatTypeString)+len(c.Mods))
 
 	logDetails = append(logDetails,
 		zap.Int("frame", c.Sim.Frame()),
-		zap.Any("event", def.LogSnapshotEvent),
+		zap.Any("event", core.LogSnapshotEvent),
 		zap.Int("char", c.Index),
 		zap.String("abil", name),
 		zap.Float64("mult", mult),

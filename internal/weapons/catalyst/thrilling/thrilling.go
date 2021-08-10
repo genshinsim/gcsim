@@ -4,14 +4,14 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("thrilling tales of dragon slayers", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 	last := 0
 	isActive := false
 
@@ -19,10 +19,10 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		isActive = s.ActiveCharIndex() == c.CharIndex()
 	})
 
-	m := make([]float64, def.EndStatType)
-	m[def.ATKP] = .16 + float64(r)*0.06
+	m := make([]float64, core.EndStatType)
+	m[core.ATKP] = .16 + float64(r)*0.06
 
-	s.AddEventHook(func(s def.Sim) bool {
+	s.AddEventHook(func(s core.Sim) bool {
 		if !isActive && s.ActiveCharIndex() == c.CharIndex() {
 			//swapped to current char
 			isActive = true
@@ -43,17 +43,17 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 			expiry := s.Frame() + 600
 
 			active, _ := s.CharByPos(s.ActiveCharIndex())
-			active.AddMod(def.CharStatMod{
+			active.AddMod(core.CharStatMod{
 				Key: "thrilling tales",
-				Amount: func(a def.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return m, expiry > s.Frame()
 				},
 				Expiry: -1,
 			})
 
-			log.Debugw("ttds activated", "frame", s.Frame(), "event", def.LogWeaponEvent, "char", active.CharIndex(), "expiry", expiry)
+			log.Debugw("ttds activated", "frame", s.Frame(), "event", core.LogWeaponEvent, "char", active.CharIndex(), "expiry", expiry)
 		}
 
 		return false
-	}, fmt.Sprintf("thrilling-%v", c.Name()), def.PostSwapHook)
+	}, fmt.Sprintf("thrilling-%v", c.Name()), core.PostSwapHook)
 }

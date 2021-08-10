@@ -4,20 +4,20 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterSetFunc("pale flame", New)
 }
 
-func New(c def.Character, s def.Sim, log def.Logger, count int) {
+func New(c core.Character, s core.Sim, log core.Logger, count int) {
 	if count >= 2 {
-		m := make([]float64, def.EndStatType)
-		m[def.PhyP] = 0.25
-		c.AddMod(def.CharStatMod{
+		m := make([]float64, core.EndStatType)
+		m[core.PhyP] = 0.25
+		c.AddMod(core.CharStatMod{
 			Key: "maiden-2pc",
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -27,13 +27,13 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 		stacks := 0
 		icd := 0
 		dur := 0
-		m := make([]float64, def.EndStatType)
+		m := make([]float64, core.EndStatType)
 
-		s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+		s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 			if ds.ActorIndex != c.CharIndex() {
 				return
 			}
-			if ds.AttackTag != def.AttackTagElementalArt {
+			if ds.AttackTag != core.AttackTagElementalArt {
 				return
 			}
 			if icd > s.Frame() {
@@ -42,21 +42,21 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 			stacks++
 			if stacks > 2 {
 				stacks = 2
-				m[def.PhyP] = 0.25
+				m[core.PhyP] = 0.25
 			}
-			m[def.ATKP] = 0.09 * float64(stacks)
+			m[core.ATKP] = 0.09 * float64(stacks)
 
-			log.Debugw("pale flame 4pc proc", "frame", s.Frame(), "event", def.LogArtifactEvent, "stacks", stacks, "expiry", s.Frame()+420, "icd", s.Frame()+18)
+			log.Debugw("pale flame 4pc proc", "frame", s.Frame(), "event", core.LogArtifactEvent, "stacks", stacks, "expiry", s.Frame()+420, "icd", s.Frame()+18)
 			icd = s.Frame() + 18
 			dur = s.Frame() + 420
 		}, fmt.Sprintf("pf4-%v", c.Name()))
 
-		c.AddMod(def.CharStatMod{
+		c.AddMod(core.CharStatMod{
 			Key: "pf-4pc",
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				if dur < s.Frame() {
-					m[def.ATKP] = 0
-					m[def.PhyP] = 0
+					m[core.ATKP] = 0
+					m[core.PhyP] = 0
 					return nil, false
 				}
 

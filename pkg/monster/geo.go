@@ -1,7 +1,7 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/shield"
 )
 
@@ -10,7 +10,7 @@ type CrystallizeShield struct {
 	emBonus float64
 }
 
-func NewCrystallizeShield(typ def.EleType, src int, lvl int, em float64, expiry int) *CrystallizeShield {
+func NewCrystallizeShield(typ core.EleType, src int, lvl int, em float64, expiry int) *CrystallizeShield {
 	s := &CrystallizeShield{}
 	s.Tmpl = &shield.Tmpl{}
 
@@ -23,7 +23,7 @@ func NewCrystallizeShield(typ def.EleType, src int, lvl int, em float64, expiry 
 	}
 
 	s.Tmpl.Ele = typ
-	s.Tmpl.ShieldType = def.ShieldCrystallize
+	s.Tmpl.ShieldType = core.ShieldCrystallize
 	s.Tmpl.Src = src
 	s.Tmpl.HP = shieldBaseHP[lvl]
 	s.Tmpl.Expires = expiry
@@ -33,7 +33,7 @@ func NewCrystallizeShield(typ def.EleType, src int, lvl int, em float64, expiry 
 	return s
 }
 
-func (c *CrystallizeShield) OnDamage(dmg float64, ele def.EleType, bonus float64) (float64, bool) {
+func (c *CrystallizeShield) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, bool) {
 	bonus += c.emBonus
 	return c.Tmpl.OnDamage(dmg, ele, bonus)
 }

@@ -3,7 +3,7 @@ package ningguang
 import (
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 
 	"go.uber.org/zap"
 )
@@ -19,7 +19,7 @@ type char struct {
 	particleICD int
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -28,7 +28,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 40
 	c.EnergyMax = 40
-	c.Weapon.Class = def.WeaponClassCatalyst
+	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 1
 	c.BurstCon = 3
 	c.SkillCon = 5
@@ -38,16 +38,16 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 10 //TODO frames
-		return int(float64(f) / (1 + c.Stats[def.AtkSpd]))
-	case def.ActionCharge:
+		return int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+	case core.ActionCharge:
 		return 50 //TODO frames
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 60 //counted
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 97 //counted, this is when you can swap but prob not when you can attack again
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -55,11 +55,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 	}
 }
 
-func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
-	case def.ActionDash:
+	case core.ActionDash:
 		return 18
-	case def.ActionCharge:
+	case core.ActionCharge:
 		if c.Tags["jade"] > 0 {
 			return 0
 		}
@@ -72,7 +72,7 @@ func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -81,16 +81,16 @@ func (c *char) Attack(p map[string]int) int {
 
 	d := c.Snapshot(
 		"Normal",
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		25,
 		attack[c.TalentLvlAttack()],
 	)
 	if c.Base.Cons > 0 {
-		d.Targets = def.TargetAll
+		d.Targets = core.TargetAll
 	}
 
 	c.AddTask(func() {
@@ -113,7 +113,7 @@ func (c *char) Attack(p map[string]int) int {
 }
 
 func (c *char) ChargeAttack(p map[string]int) int {
-	f := c.ActionFrames(def.ActionCharge, p)
+	f := c.ActionFrames(core.ActionCharge, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -122,11 +122,11 @@ func (c *char) ChargeAttack(p map[string]int) int {
 
 	d := c.Snapshot(
 		"Charge",
-		def.AttackTagExtra,
-		def.ICDTagExtraAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagExtra,
+		core.ICDTagExtraAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		25,
 		charge[c.TalentLvlAttack()],
 	)
@@ -135,11 +135,11 @@ func (c *char) ChargeAttack(p map[string]int) int {
 
 	d = c.Snapshot(
 		"Charge (Gems)",
-		def.AttackTagExtra,
-		def.ICDTagExtraAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagExtra,
+		core.ICDTagExtraAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		50,
 		jade[c.TalentLvlAttack()],
 	)
@@ -154,24 +154,24 @@ func (c *char) ChargeAttack(p map[string]int) int {
 }
 
 func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Jade Screen",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		25,
 		skill[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f)
 
 	//put skill on cd first then check for construct/c2
-	c.SetCD(def.ActionSkill, 720)
+	c.SetCD(core.ActionSkill, 720)
 
 	//create a construct
 	c.Sim.NewConstruct(c.newScreen(1800), true) //30 seconds
@@ -186,7 +186,7 @@ func (c *char) Skill(p map[string]int) int {
 		if c.Sim.Rand().Float64() < .33 {
 			count = 4
 		}
-		c.QueueParticle("ningguang", count, def.Geo, f+100)
+		c.QueueParticle("ningguang", count, core.Geo, f+100)
 		c.particleICD = c.Sim.Frame() + 360
 	}
 
@@ -195,23 +195,23 @@ func (c *char) Skill(p map[string]int) int {
 
 func (c *char) a4() {
 	//activate a4 if screen is down and character uses dash
-	c.Sim.AddEventHook(func(s def.Sim) bool {
-		if c.Sim.ConstructCountType(def.GeoConstructNingSkill) > 0 {
-			val := make([]float64, def.EndStatType)
-			val[def.GeoP] = 0.12
-			c.AddMod(def.CharStatMod{
+	c.Sim.AddEventHook(func(s core.Sim) bool {
+		if c.Sim.ConstructCountType(core.GeoConstructNingSkill) > 0 {
+			val := make([]float64, core.EndStatType)
+			val[core.GeoP] = 0.12
+			c.AddMod(core.CharStatMod{
 				Key: "ning-screen",
-				Amount: func(a def.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Sim.Frame() + 600,
 			})
 		}
 		return false
-	}, "ningguang-a4", def.PostDashHook)
+	}, "ningguang-a4", core.PostDashHook)
 }
 
-func (c *char) newScreen(dur int) def.Construct {
+func (c *char) newScreen(dur int) core.Construct {
 	return &construct{
 		src:    c.Sim.Frame(),
 		expiry: c.Sim.Frame() + dur,
@@ -229,8 +229,8 @@ func (c *construct) Key() int {
 	return c.src
 }
 
-func (c *construct) Type() def.GeoConstructType {
-	return def.GeoConstructNingSkill
+func (c *construct) Type() core.GeoConstructType {
+	return core.GeoConstructNingSkill
 }
 
 func (c *construct) OnDestruct() {
@@ -238,7 +238,7 @@ func (c *construct) OnDestruct() {
 		//make sure last reset is more than 6 seconds ago
 		if c.char.c2reset <= c.char.Sim.Frame()-360 {
 			//reset cd
-			c.char.ResetActionCooldown(def.ActionSkill)
+			c.char.ResetActionCooldown(core.ActionSkill)
 			c.char.c2reset = c.char.Sim.Frame()
 		}
 	}
@@ -256,12 +256,12 @@ func (c *construct) Count() int {
 }
 
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 
 	//fires 6 normally, + 6 if jade screen is active
 	count := 6
 	if c.Sim.Destroy(c.lastScreen) {
-		c.Log.Debugw("12 jade on burst", "event", def.LogCharacterEvent, "frame", c.Sim.Frame(), "char", c.Index)
+		c.Log.Debugw("12 jade on burst", "event", core.LogCharacterEvent, "frame", c.Sim.Frame(), "char", c.Index)
 		count += 6
 	}
 
@@ -272,11 +272,11 @@ func (c *char) Burst(p map[string]int) int {
 
 	d := c.Snapshot(
 		"Starshatter",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		50,
 		burst[c.TalentLvlBurst()],
 	)
@@ -292,6 +292,6 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	c.Energy = 0
-	c.SetCD(def.ActionBurst, 720)
+	c.SetCD(core.ActionBurst, 720)
 	return f
 }

@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/shield"
 
 	"go.uber.org/zap"
@@ -17,10 +17,10 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	burstSnapshot def.Snapshot
+	burstSnapshot core.Snapshot
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -29,7 +29,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 80
 	c.EnergyMax = 80
-	c.Weapon.Class = def.WeaponClassClaymore
+	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 5
 
 	c.burstProc()
@@ -42,9 +42,9 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -59,23 +59,23 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 68
 		}
-		atkspd := c.Stats[def.AtkSpd]
+		atkspd := c.Stats[core.AtkSpd]
 		if c.Sim.Status("beidoua4") > 0 {
 			atkspd += 0.15
 		}
 		f = int(float64(f) / (1 + atkspd))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		f := 35 //frames from keqing lib
-		atkspd := c.Stats[def.AtkSpd]
+		atkspd := c.Stats[core.AtkSpd]
 		if c.Sim.Status("beidoua4") > 0 {
 			atkspd += 0.15
 		}
 		f = int(float64(f) / (1 + atkspd))
 		return f
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 41 //ok
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 45 //ok
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -106,14 +106,14 @@ During the duration of Stormbreaker, the Electro RES of surrounding opponents is
 **/
 
 func (c *char) a4() {
-	mod := make([]float64, def.EndStatType)
-	mod[def.DmgP] = .15
+	mod := make([]float64, core.EndStatType)
+	mod[core.DmgP] = .15
 
-	c.AddMod(def.CharStatMod{
+	c.AddMod(core.CharStatMod{
 		Key:    "beidou-a4",
 		Expiry: -1,
-		Amount: func(a def.AttackTag) ([]float64, bool) {
-			if a != def.AttackTagNormal && a != def.AttackTagExtra {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			if a != core.AttackTagNormal && a != core.AttackTagExtra {
 				return nil, false
 			}
 			if c.Sim.Status("beidoua4") == 0 {
@@ -125,33 +125,33 @@ func (c *char) a4() {
 }
 
 func (c *char) c4() {
-	c.Sim.AddOnHurt(func(s def.Sim) {
-		c.Log.Debugw("c4 triggered on damage", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "expiry", c.Sim.Frame()+600)
+	c.Sim.AddOnHurt(func(s core.Sim) {
+		c.Log.Debugw("c4 triggered on damage", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "expiry", c.Sim.Frame()+600)
 		c.Sim.AddStatus("beidouc4", 600)
 	})
 
-	mod := make([]float64, def.EndStatType)
-	mod[def.DmgP] = .15
+	mod := make([]float64, core.EndStatType)
+	mod[core.DmgP] = .15
 
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.Actor != c.Base.Name {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return
 		}
 		if c.Sim.Status("beidouc4") == 0 {
 			return
 		}
 
-		c.Log.Debugw("c4 proc'd on attack", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "char", c.Index)
+		c.Log.Debugw("c4 proc'd on attack", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index)
 		d := c.Snapshot(
 			"Beidou C4",
-			def.AttackTagNone,
-			def.ICDTagElementalBurst,
-			def.ICDGroupDefault,
-			def.StrikeTypeBlunt,
-			def.Electro,
+			core.AttackTagNone,
+			core.ICDTagElementalBurst,
+			core.ICDGroupDefault,
+			core.StrikeTypeBlunt,
+			core.Electro,
 			25,
 			0.2,
 		)
@@ -161,18 +161,18 @@ func (c *char) c4() {
 
 func (c *char) Attack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Physical,
 		25,
 		attack[c.NormalCounter][c.TalentLvlAttack()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.QueueDmg(&d, f-1)
 
 	c.AdvanceNormalIndex()
@@ -182,7 +182,7 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) Skill(p map[string]int) int {
 	counter := p["counter"]
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	//0 for base dmg, 1 for 1x bonus, 2 for max bonus
 	if counter >= 2 {
 		counter = 2
@@ -191,63 +191,63 @@ func (c *char) Skill(p map[string]int) int {
 
 	d := c.Snapshot(
 		"Tidecaller (E)",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Electro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Electro,
 		50,
 		skillbase[c.TalentLvlSkill()]+skillbonus[c.TalentLvlSkill()]*float64(counter),
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.QueueDmg(&d, f-1)
 
 	//2 if no hit, 3 if 1 hit, 4 if perfect
-	c.QueueParticle("beidou", 2+counter, def.Electro, 100)
+	c.QueueParticle("beidou", 2+counter, core.Electro, 100)
 
 	if counter > 0 {
 		//add shield
 		c.Sim.AddShield(&shield.Tmpl{
 			Src:        c.Sim.Frame(),
-			ShieldType: def.ShieldBeidouThunderShield,
+			ShieldType: core.ShieldBeidouThunderShield,
 			HP:         shieldPer[c.TalentLvlSkill()]*c.HPMax + shieldBase[c.TalentLvlSkill()],
-			Ele:        def.Electro,
+			Ele:        core.Electro,
 			Expires:    c.Sim.Frame() + 900, //15 sec
 		})
 	}
 
-	c.SetCD(def.ActionSkill, 450)
+	c.SetCD(core.ActionSkill, 450)
 	return f
 }
 
 func (c *char) Burst(p map[string]int) int {
 	if c.Energy < c.EnergyMax {
-		c.Log.Debugw("burst insufficient energy; skipping", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "character", c.Base.Name)
+		c.Log.Debugw("burst insufficient energy; skipping", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "character", c.Base.Name)
 		return 0
 	}
 
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Stormbreaker (Q)",
-		def.AttackTagElementalBurst,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Electro,
+		core.AttackTagElementalBurst,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Electro,
 		100,
 		burstonhit[c.TalentLvlBurst()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.QueueDmg(&d, f-1)
 
 	c.Sim.AddStatus("beidouburst", 900)
 	c.burstSnapshot = c.Snapshot(
 		"Stormbreaker Proc (Q)",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Electro,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Electro,
 		25,
 		burstproc[c.TalentLvlBurst()],
 	)
@@ -256,39 +256,39 @@ func (c *char) Burst(p map[string]int) int {
 		//create a shield
 		c.Sim.AddShield(&shield.Tmpl{
 			Src:        c.Sim.Frame(),
-			ShieldType: def.ShieldBeidouThunderShield,
+			ShieldType: core.ShieldBeidouThunderShield,
 			HP:         .16 * c.HPMax,
-			Ele:        def.Electro,
+			Ele:        core.Electro,
 			Expires:    c.Sim.Frame() + 900, //15 sec
 		})
 	}
 
 	if c.Base.Cons == 6 {
 		for _, t := range c.Sim.Targets() {
-			t.AddResMod("beidouc6", def.ResistMod{
+			t.AddResMod("beidouc6", core.ResistMod{
 				Duration: 900, //10 seconds
-				Ele:      def.Electro,
+				Ele:      core.Electro,
 				Value:    -0.1,
 			})
 		}
 	}
 
 	c.Energy = 0
-	c.SetCD(def.ActionBurst, 1200)
+	c.SetCD(core.ActionBurst, 1200)
 	return f
 }
 
 func (c *char) burstProc() {
 	icd := 0
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
-		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return
 		}
 		if c.Sim.Status("beidouburst") == 0 {
 			return
 		}
 		if icd > c.Sim.Frame() {
-			c.Log.Debugw("beidou Q (active) on icd", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent)
+			c.Log.Debugw("beidou Q (active) on icd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
 			return
 		}
 
@@ -296,7 +296,7 @@ func (c *char) burstProc() {
 		//on hit we have to chain
 		d.OnHitCallback = c.chainQ(t.Index(), c.Sim.Frame(), 1)
 
-		c.Log.Debugw("beidou Q proc'd", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "actor", ds.Actor, "attack tag", ds.AttackTag)
+		c.Log.Debugw("beidou Q proc'd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "actor", ds.Actor, "attack tag", ds.AttackTag)
 		c.QueueDmg(&d, 1)
 
 		icd = c.Sim.Frame() + 60 // once per second
@@ -304,7 +304,7 @@ func (c *char) burstProc() {
 	}, "beidou-burst")
 }
 
-func (c *char) chainQ(index int, src int, count int) func(t def.Target) {
+func (c *char) chainQ(index int, src int, count int) func(t core.Target) {
 	if c.Base.Cons > 1 && count == 5 {
 		return nil
 	}
@@ -324,7 +324,7 @@ func (c *char) chainQ(index int, src int, count int) func(t def.Target) {
 	}
 
 	//trigger dmg based on a clone of d
-	return func(next def.Target) {
+	return func(next core.Target) {
 		// log.Printf("hit target %v, frame %v, done proc %v, queuing next index: %v\n", next.Index(), c.Sim.Frame(), count, index)
 		d := c.burstSnapshot.Clone()
 		d.Targets = index
