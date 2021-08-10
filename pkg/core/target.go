@@ -1,4 +1,4 @@
-package def
+package core
 
 type Target interface {
 	Index() int

@@ -1,4 +1,4 @@
-package def
+package core
 
 import "math/rand"
 
