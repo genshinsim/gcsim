@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
@@ -21,7 +21,7 @@ type char struct {
 	eCounter    int
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -30,7 +30,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 40
 	c.EnergyMax = 40
-	c.Weapon.Class = def.WeaponClassClaymore
+	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 
 	if c.Base.Cons >= 1 && s.Flags().HPMode {
@@ -44,13 +44,13 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 }
 
 func (c *char) c1() {
-	c.Sim.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
 		if t.HP()/t.MaxHP() > .5 {
-			ds.Stats[def.DmgP] += 0.15
-			c.Log.Debugw("diluc c2 adding dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", ds.Stats[def.DmgP])
+			ds.Stats[core.DmgP] += 0.15
+			c.Log.Debugw("diluc c2 adding dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", ds.Stats[core.DmgP])
 		}
 	}, "diluc-c1")
 }
@@ -58,7 +58,7 @@ func (c *char) c1() {
 func (c *char) c2() {
 	stack := 0
 	last := 0
-	c.Sim.AddOnHurt(func(s def.Sim) {
+	c.Sim.AddOnHurt(func(s core.Sim) {
 		if last != 0 && c.Sim.Frame()-last < 90 {
 			return
 		}
@@ -70,21 +70,21 @@ func (c *char) c2() {
 		if stack > 3 {
 			stack = 3
 		}
-		val := make([]float64, def.EndStatType)
-		val[def.ATKP] = 0.1 * float64(stack)
-		val[def.AtkSpd] = 0.05 * float64(stack)
-		c.AddMod(def.CharStatMod{
+		val := make([]float64, core.EndStatType)
+		val[core.ATKP] = 0.1 * float64(stack)
+		val[core.AtkSpd] = 0.05 * float64(stack)
+		c.AddMod(core.CharStatMod{
 			Key:    "diluc-c2",
-			Amount: func(a def.AttackTag) ([]float64, bool) { return val, true },
+			Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 			Expiry: c.Sim.Frame() + 600,
 		})
 	})
 
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -97,11 +97,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 3:
 			f = 65
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 0
-	case def.ActionSkill:
+	case core.ActionSkill:
 		switch c.eCounter {
 		case 1:
 			return 52
@@ -110,7 +110,7 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		default:
 			return 45
 		}
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 65
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -120,18 +120,18 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 
 func (c *char) Attack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Physical,
 		25,
 		attack[c.NormalCounter][c.TalentLvlAttack()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f-1)
 	c.AdvanceNormalIndex()
@@ -141,7 +141,7 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) Skill(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	if c.eCounter == 0 {
 		c.eStarted = true
@@ -153,7 +153,7 @@ func (c *char) Skill(p map[string]int) int {
 	if c.Sim.Rand().Float64() < 0.33 {
 		orb = 2
 	}
-	c.QueueParticle("Diluc", orb, def.Pyro, f+60)
+	c.QueueParticle("Diluc", orb, core.Pyro, f+60)
 
 	//actual skill cd starts immediately on first cast
 	//times out after 4 seconds of not using
@@ -162,21 +162,21 @@ func (c *char) Skill(p map[string]int) int {
 
 	d := c.Snapshot(
 		"Searing Onslaught",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Pyro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Pyro,
 		25,
 		skill[c.eCounter][c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	//check for c4 dmg increase
 	if c.Base.Cons >= 4 {
 		if c.Sim.Status("dilucc4") > 0 {
-			d.Stats[def.DmgP] += 0.4
-			c.Log.Debugw("diluc c4 adding dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "final dmg", d.Stats[def.DmgP])
+			d.Stats[core.DmgP] += 0.4
+			c.Log.Debugw("diluc c4 adding dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "final dmg", d.Stats[core.DmgP])
 		}
 	}
 
@@ -193,8 +193,8 @@ func (c *char) Skill(p map[string]int) int {
 	if c.eCounter == 3 {
 		//ability can go on cd now
 		cd := 600 - (c.Sim.Frame() - c.eStartFrame)
-		c.Log.Debugw("diluc skill going on cd", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "duration", cd)
-		c.SetCD(def.ActionSkill, cd)
+		c.Log.Debugw("diluc skill going on cd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "duration", cd)
+		c.SetCD(core.ActionSkill, cd)
 		c.eStarted = false
 		c.eStartFrame = -1
 		c.eLastUse = -1
@@ -221,19 +221,19 @@ func (c *char) Burst(p map[string]int) int {
 
 	// c.S.Status["dilucq"] = c.Sim.Frame() + 12*60
 	c.Sim.AddStatus("dilucq", 720)
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Dawn (Strike)",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDiluc,
-		def.StrikeTypeBlunt,
-		def.Pyro,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDiluc,
+		core.StrikeTypeBlunt,
+		core.Pyro,
 		50,
 		burstInitial[c.TalentLvlBurst()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, 100)
 
@@ -255,24 +255,24 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	//enhance weapon for 10.2 seconds
-	c.AddWeaponInfuse(def.WeaponInfusion{
+	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "diluc-fire-weapon",
-		Ele:    def.Pyro,
-		Tags:   []def.AttackTag{def.AttackTagNormal, def.AttackTagExtra, def.AttackTagPlunge},
+		Ele:    core.Pyro,
+		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Sim.Frame() + 852, //with a4
 	})
 
 	// add 20% pyro damage
-	val := make([]float64, def.EndStatType)
-	val[def.PyroP] = 0.2
-	c.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	val[core.PyroP] = 0.2
+	c.AddMod(core.CharStatMod{
 		Key:    "diluc-fire-weapon",
-		Amount: func(a def.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 		Expiry: c.Sim.Frame() + 852,
 	})
 
 	c.Energy = 0
-	c.SetCD(def.ActionBurst, 900)
+	c.SetCD(core.ActionBurst, 900)
 	return f
 }
 
@@ -284,8 +284,8 @@ func (c *char) Tick() {
 		if c.Sim.Frame()-c.eLastUse >= 240 {
 			//if so, set ability to be on cd equal to 10s less started
 			cd := 600 - (c.Sim.Frame() - c.eStartFrame)
-			c.Log.Debugw("diluc skill going on cd", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "duration", cd, "last", c.eLastUse)
-			c.SetCD(def.ActionSkill, cd)
+			c.Log.Debugw("diluc skill going on cd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "duration", cd, "last", c.eLastUse)
+			c.SetCD(core.ActionSkill, cd)
 			//reset
 			c.eStarted = false
 			c.eStartFrame = -1
@@ -306,11 +306,11 @@ func (c *char) Tick() {
 // 	return ds
 // }
 
-func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
-	case def.ActionDash:
+	case core.ActionDash:
 		return 18
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 50
 	default:
 		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())

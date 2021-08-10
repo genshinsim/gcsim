@@ -1,19 +1,19 @@
 package fischl
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
 func (c *char) a4() {
 	last := 0
-	c.Sim.AddOnReaction(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnReaction(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex != c.Sim.ActiveCharIndex() {
 			return
 		}
 		//check reaction type, only care for overload, electro charge, superconduct
 		switch ds.ReactionType {
-		case def.Overload:
-		case def.ElectroCharged:
-		case def.Superconduct:
-		case def.SwirlElectro:
+		case core.Overload:
+		case core.ElectroCharged:
+		case core.Superconduct:
+		case core.SwirlElectro:
 		default:
 			return
 		}
@@ -28,11 +28,11 @@ func (c *char) a4() {
 
 		d := c.Snapshot(
 			"Fischl A4",
-			def.AttackTagElementalArt,
-			def.ICDTagNone,
-			def.ICDGroupFischl,
-			def.StrikeTypePierce,
-			def.Electro,
+			core.AttackTagElementalArt,
+			core.ICDTagNone,
+			core.ICDGroupFischl,
+			core.StrikeTypePierce,
+			core.Electro,
 			25,
 			0.8,
 		)

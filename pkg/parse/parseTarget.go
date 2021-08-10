@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func parseTarget(p *Parser) (parseFn, error) {
@@ -14,8 +14,8 @@ func parseTarget(p *Parser) (parseFn, error) {
 	if err != nil {
 		return nil, err
 	}
-	var r def.EnemyProfile
-	r.Resist = make(map[def.EleType]float64)
+	var r core.EnemyProfile
+	r.Resist = make(map[core.EleType]float64)
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch {
 		case n.typ == itemLvl:

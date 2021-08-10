@@ -1,10 +1,10 @@
 package fischl
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
 func (c *char) c6() {
 	//this is on attack animation state, not attack landed
-	c.Sim.AddEventHook(func(s def.Sim) bool {
+	c.Sim.AddEventHook(func(s core.Sim) bool {
 		//do nothing if oz not on field
 		if c.ozActiveUntil < c.Sim.Frame() {
 			return false
@@ -12,18 +12,18 @@ func (c *char) c6() {
 
 		d := c.Snapshot(
 			"Fischl C6",
-			def.AttackTagElementalArt,
-			def.ICDTagElementalArt,
-			def.ICDGroupFischl,
-			def.StrikeTypePierce,
-			def.Electro,
+			core.AttackTagElementalArt,
+			core.ICDTagElementalArt,
+			core.ICDGroupFischl,
+			core.StrikeTypePierce,
+			core.Electro,
 			25,
 			0.3,
 		)
 		d.Targets = 0
 		c.QueueDmg(&d, 1)
 		return false
-	}, "fischl c6", def.PostAttackHook)
+	}, "fischl c6", core.PostAttackHook)
 
 	// c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
 	// 	//do nothing if oz not on field

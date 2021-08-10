@@ -4,13 +4,13 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func parseAction(p *Parser) (parseFn, error) {
 	var err error
 	var item item
-	var r def.Action
+	var r core.Action
 	r.Raw = tokensToStringArray(p.tokens)
 	err = p.parseActionDetails(&r)
 	if err != nil {
@@ -71,7 +71,7 @@ loop:
 	return parseRows, nil
 }
 
-func (p *Parser) parseActionDetails(next *def.Action) error {
+func (p *Parser) parseActionDetails(next *core.Action) error {
 	//next should be a keyword
 	n, err := p.consume(itemIdentifier)
 	if err != nil {
@@ -82,15 +82,15 @@ func (p *Parser) parseActionDetails(next *def.Action) error {
 	if !ok {
 		return fmt.Errorf("<action> invalid identifier at line %v: %v", n.line, n)
 	}
-	a := def.ActionItem{}
+	a := core.ActionItem{}
 	a.Param = make(map[string]int)
 	switch {
-	case t == def.ActionSequence:
+	case t == core.ActionSequence:
 		next.IsSeq = true
-	case t == def.ActionSequenceStrict:
+	case t == core.ActionSequenceStrict:
 		next.IsSeq = true
 		next.IsStrict = true
-	case t > def.ActionDelimiter:
+	case t > core.ActionDelimiter:
 		a.Typ = t
 		//check for params
 		n = p.next()
@@ -114,7 +114,7 @@ func (p *Parser) parseActionDetails(next *def.Action) error {
 	return nil
 }
 
-func (p *Parser) parseActionItemParams(a *def.ActionItem) error {
+func (p *Parser) parseActionItemParams(a *core.ActionItem) error {
 	for {
 		//we're expecting ident = int
 		i, err := p.consume(itemIdentifier)
@@ -145,8 +145,8 @@ func (p *Parser) parseActionItemParams(a *def.ActionItem) error {
 	}
 }
 
-func (p *Parser) parseExec() ([]def.ActionItem, error) {
-	var r []def.ActionItem
+func (p *Parser) parseExec() ([]core.ActionItem, error) {
+	var r []core.ActionItem
 
 	_, err := p.consume(itemAssign)
 	if err != nil {
@@ -163,11 +163,11 @@ LOOP:
 		if !ok {
 			return nil, fmt.Errorf("<exec> bad token at line %v - %v: %v", n.line, n.pos, n)
 		}
-		if t <= def.ActionDelimiter {
+		if t <= core.ActionDelimiter {
 			return nil, fmt.Errorf("<exec> bad token at line %v - %v: %v", n.line, n.pos, n)
 		}
 
-		a := def.ActionItem{}
+		a := core.ActionItem{}
 		a.Typ = t
 		a.Param = make(map[string]int)
 		//check for params
@@ -194,17 +194,17 @@ LOOP:
 	return r, nil
 }
 
-func (p *Parser) parseIf() (*def.ExprTreeNode, error) {
+func (p *Parser) parseIf() (*core.ExprTreeNode, error) {
 	n, err := p.consume(itemAssign)
 	if err != nil {
 		return nil, err
 	}
 
 	parenDepth := 0
-	var queue []*def.ExprTreeNode
-	var stack []*def.ExprTreeNode
-	var x *def.ExprTreeNode
-	var root *def.ExprTreeNode
+	var queue []*core.ExprTreeNode
+	var stack []*core.ExprTreeNode
+	var x *core.ExprTreeNode
+	var root *core.ExprTreeNode
 
 	//operands are conditions
 	//operators are &&, ||, (, )
@@ -215,7 +215,7 @@ LOOP:
 		switch {
 		case n.typ == itemLeftParen:
 			parenDepth++
-			stack = append(stack, &def.ExprTreeNode{
+			stack = append(stack, &core.ExprTreeNode{
 				Op: "(",
 			})
 			//expecting a condition after a paren
@@ -223,7 +223,7 @@ LOOP:
 			if err != nil {
 				return nil, err
 			}
-			queue = append(queue, &def.ExprTreeNode{
+			queue = append(queue, &core.ExprTreeNode{
 				Expr:   c,
 				IsLeaf: true,
 			})
@@ -254,7 +254,7 @@ LOOP:
 			if err != nil {
 				return nil, err
 			}
-			queue = append(queue, &def.ExprTreeNode{
+			queue = append(queue, &core.ExprTreeNode{
 				Expr:   c,
 				IsLeaf: true,
 			})
@@ -271,7 +271,7 @@ LOOP:
 				queue = append(queue, x)
 			}
 			//append current operator to stack
-			stack = append(stack, &def.ExprTreeNode{
+			stack = append(stack, &core.ExprTreeNode{
 				Op: n.val,
 			})
 		case n.typ == itemRightParen:
@@ -290,7 +290,7 @@ LOOP:
 		queue = append(queue, stack[i])
 	}
 
-	var ts []*def.ExprTreeNode
+	var ts []*core.ExprTreeNode
 	//convert this into a tree
 	for _, v := range queue {
 		if v.Op != "" {
@@ -313,8 +313,8 @@ LOOP:
 	return root, nil
 }
 
-func (p *Parser) parseCondition() (def.Condition, error) {
-	var c def.Condition
+func (p *Parser) parseCondition() (core.Condition, error) {
+	var c core.Condition
 	var n item
 LOOP:
 	for {
@@ -347,8 +347,8 @@ LOOP:
 	return c, err
 }
 
-func (p *Parser) parsePostAction() (def.ActionType, error) {
-	var t def.ActionType
+func (p *Parser) parsePostAction() (core.ActionType, error) {
+	var t core.ActionType
 
 	n, err := p.acceptSeqReturnLast(itemAssign, itemIdentifier)
 	if err != nil {
@@ -359,7 +359,7 @@ func (p *Parser) parsePostAction() (def.ActionType, error) {
 	if !ok {
 		return t, fmt.Errorf("<post - val id> bad token at line %v - %v: %v", n.line, n.pos, n)
 	}
-	if t <= def.ActionCancellable {
+	if t <= core.ActionCancellable {
 		return t, fmt.Errorf("<post - cancel> invalid post action at line %v - %v: %v", n.line, n.pos, n)
 	}
 	return t, nil
@@ -378,7 +378,7 @@ func parseActiveChar(p *Parser) (parseFn, error) {
 	return parseRows, nil
 }
 
-func isActionValid(a def.Action) error {
+func isActionValid(a core.Action) error {
 	if a.Target == "" {
 		return errors.New("missing target")
 	}

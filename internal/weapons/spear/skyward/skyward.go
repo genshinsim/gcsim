@@ -4,22 +4,22 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("skyward spine", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 
-	m := make([]float64, def.EndStatType)
-	m[def.CR] = 0.06 + float64(r)*0.02
-	m[def.AtkSpd] = 0.12
+	m := make([]float64, core.EndStatType)
+	m[core.CR] = 0.06 + float64(r)*0.02
+	m[core.AtkSpd] = 0.12
 
-	c.AddMod(def.CharStatMod{
+	c.AddMod(core.CharStatMod{
 		Key: "skyward spine",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
@@ -28,12 +28,12 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 	icd := 0
 	atk := .25 + .15*float64(r)
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		//check if char is correct?
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return
 		}
 		//check if cd is up
@@ -47,11 +47,11 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		//add a new action that deals % dmg immediately
 		d := c.Snapshot(
 			"Skyward Spine Proc",
-			def.AttackTagWeaponSkill,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Physical,
+			core.AttackTagWeaponSkill,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Physical,
 			100,
 			atk,
 		)

@@ -1,9 +1,9 @@
 package combat
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (s *Sim) Targets() []def.Target {
+func (s *Sim) Targets() []core.Target {
 	return s.targets
 }

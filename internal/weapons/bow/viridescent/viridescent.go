@@ -4,20 +4,20 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("the viridescent hunt", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 
 	cd := 900 - r*60
 	icd := 0
 	mult := 0.3 + float64(r)*0.1
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		//check if char is correct?
 		if ds.ActorIndex != c.CharIndex() {
 			return
@@ -34,15 +34,15 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		//add a new action that deals % dmg immediately
 		d := c.Snapshot(
 			"Viridescent",
-			def.AttackTagWeaponSkill,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Physical,
+			core.AttackTagWeaponSkill,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Physical,
 			100,
 			mult,
 		)
-		d.Targets = def.TargetAll
+		d.Targets = core.TargetAll
 		for i := 0; i <= 240; i += 30 {
 			x := d.Clone()
 			c.QueueDmg(&x, i)

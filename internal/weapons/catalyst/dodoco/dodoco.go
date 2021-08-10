@@ -4,23 +4,23 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("dodoco tales", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 	atkExpiry := 0
 	dmgExpiry := 0
 
-	m := make([]float64, def.EndStatType)
-	m[def.DmgP] = .12 + float64(r)*.04
-	c.AddMod(def.CharStatMod{
+	m := make([]float64, core.EndStatType)
+	m[core.DmgP] = .12 + float64(r)*.04
+	c.AddMod(core.CharStatMod{
 		Key: "dodoco ca",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
-			if a != def.AttackTagExtra {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			if a != core.AttackTagExtra {
 				return nil, false
 			}
 			return m, dmgExpiry > s.Frame()
@@ -28,24 +28,24 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		Expiry: -1,
 	})
 
-	n := make([]float64, def.EndStatType)
-	n[def.ATKP] = .06 + float64(r)*0.02
-	c.AddMod(def.CharStatMod{
+	n := make([]float64, core.EndStatType)
+	n[core.ATKP] = .06 + float64(r)*0.02
+	c.AddMod(core.CharStatMod{
 		Key: "dodoco atk",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return n, atkExpiry > s.Frame()
 		},
 		Expiry: -1,
 	})
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
 		switch ds.AttackTag {
-		case def.AttackTagNormal:
+		case core.AttackTagNormal:
 			dmgExpiry = s.Frame() + 360
-		case def.AttackTagExtra:
+		case core.AttackTagExtra:
 			atkExpiry = s.Frame() + 360
 		}
 	}, fmt.Sprintf("dodoco-%v", c.Name()))

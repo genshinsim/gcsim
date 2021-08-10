@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 
 	"go.uber.org/zap"
 )
@@ -21,7 +21,7 @@ type char struct {
 	icicleICD []int
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -30,7 +30,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 60
 	c.EnergyMax = 60
-	c.Weapon.Class = def.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
 
 	c.icicleICD = make([]int, 4)
@@ -48,9 +48,9 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -65,13 +65,13 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 176 - 128
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 87
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 58 //could be 52 if going into Q
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 78
 	default:
 		c.Log.Warnf("%v: unknown action, frames invalid", a)
@@ -79,11 +79,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 	}
 }
 
-func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
-	case def.ActionDash:
+	case core.ActionDash:
 		return 18
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 25
 	default:
 		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
@@ -92,36 +92,36 @@ func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) a4() {
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return
 		}
-		if t.AuraType() != def.Frozen {
+		if t.AuraType() != core.Frozen {
 			return
 		}
 		if c.a4count == 2 {
 			return
 		}
 		c.a4count++
-		c.QueueParticle("kaeya", 1, def.Cryo, 100)
-		c.Log.Debugw("kaeya a4 proc", "event", def.LogEnergyEvent, "char", c.Index, "frame", c.Sim.Frame(), "final cr", ds.Stats[def.CR])
+		c.QueueParticle("kaeya", 1, core.Cryo, 100)
+		c.Log.Debugw("kaeya a4 proc", "event", core.LogEnergyEvent, "char", c.Index, "frame", c.Sim.Frame(), "final cr", ds.Stats[core.CR])
 	}, "kaeya-a4")
 
 }
 
 func (c *char) Attack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		auto[c.NormalCounter][c.TalentLvlAttack()],
 	)
@@ -135,15 +135,15 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) ChargeAttack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionCharge, p)
+	f := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge 1",
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		charge[0][c.TalentLvlAttack()],
 	)
@@ -158,18 +158,18 @@ func (c *char) ChargeAttack(p map[string]int) int {
 }
 
 func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Frostgnaw",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		50,
 		skill[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	c.a4count = 0
 
 	//2 or 3 1:1 ratio
@@ -177,29 +177,29 @@ func (c *char) Skill(p map[string]int) int {
 	if c.Sim.Rand().Float64() < 0.67 {
 		count = 3
 	}
-	c.QueueParticle("kaeya", count, def.Cryo, f+100)
+	c.QueueParticle("kaeya", count, core.Cryo, f+100)
 
 	//add a2
-	heal := .15 * (d.BaseAtk*(1+d.Stats[def.ATKP]) + d.Stats[def.ATK])
+	heal := .15 * (d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK])
 	c.AddTask(func() {
 		c.Sim.HealActive(heal)
 		//apply damage
 		c.Sim.ApplyDamage(&d)
 	}, "Kaeya-Skill", 28) //TODO: assumed same as when cd starts
 
-	c.SetCD(def.ActionSkill, 360+28) //+28 since cd starts 28 frames in
+	c.SetCD(core.ActionSkill, 360+28) //+28 since cd starts 28 frames in
 	return f
 }
 
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 	d := c.Snapshot(
 		"Glacial Waltz",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		25,
 		burst[c.TalentLvlBurst()],
 	)
@@ -223,7 +223,7 @@ func (c *char) Burst(p map[string]int) int {
 		//in effect, every target gets hit every time icicles rotate around
 		for j := f + offset*i; j < f+480; j += 120 {
 			x := d.Clone()
-			x.Targets = def.TargetAll
+			x.Targets = core.TargetAll
 			x.ExtraIndex = i
 			c.QueueDmg(&x, j)
 		}
@@ -237,12 +237,12 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	// c.CD[def.BurstCD] = c.Sim.F + 900
-	c.SetCD(def.ActionBurst, 900)
+	c.SetCD(core.ActionBurst, 900)
 	return f
 }
 
 func (c *char) burstICD() {
-	c.Sim.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
+	c.Sim.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex != c.Index {
 			return
 		}

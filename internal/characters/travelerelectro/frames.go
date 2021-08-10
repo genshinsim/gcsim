@@ -1,10 +1,10 @@
 package travelerelectro
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -19,13 +19,13 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 163 - 123
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 54 - 13
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 55 //could be 52 if going into Q
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 60 //1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
 	default:
 		c.Log.Warnf("%v: unknown action, frames invalid", a)
@@ -33,11 +33,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 	}
 }
 
-func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
-	case def.ActionDash:
+	case core.ActionDash:
 		return 18
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 25
 	default:
 		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())

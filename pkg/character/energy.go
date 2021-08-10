@@ -1,9 +1,9 @@
 package character
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *Tmpl) QueueParticle(src string, num int, ele def.EleType, delay int) {
-	p := def.Particle{
+func (c *Tmpl) QueueParticle(src string, num int, ele core.EleType, delay int) {
+	p := core.Particle{
 		Source: src,
 		Num:    num,
 		Ele:    ele,
@@ -36,10 +36,10 @@ func (c *Tmpl) AddEnergy(e float64) {
 	if c.Energy < 0 {
 		c.Energy = 0
 	}
-	c.Log.Debugw("adding energy", "frame", c.Sim.Frame(), "event", def.LogEnergyEvent, "rec'd", e, "next energy", c.Energy, "char", c.Index)
+	c.Log.Debugw("adding energy", "frame", c.Sim.Frame(), "event", core.LogEnergyEvent, "rec'd", e, "next energy", c.Energy, "char", c.Index)
 }
 
-func (c *Tmpl) ReceiveParticle(p def.Particle, isActive bool, partyCount int) {
+func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 	var amt, er, r float64
 	r = 1.0
 	if !isActive {
@@ -50,14 +50,14 @@ func (c *Tmpl) ReceiveParticle(p def.Particle, isActive bool, partyCount int) {
 	switch {
 	case p.Ele == c.Base.Element:
 		amt = 3
-	case p.Ele == def.NoElement:
+	case p.Ele == core.NoElement:
 		amt = 2
 	default:
 		amt = 1
 	}
 	amt = amt * r //apply off field reduction
 	//apply energy regen stat
-	er = c.Stat(def.ER)
+	er = c.Stat(core.ER)
 	amt = amt * (1 + er) * float64(p.Num)
 
 	pre := c.Energy
@@ -70,7 +70,7 @@ func (c *Tmpl) ReceiveParticle(p def.Particle, isActive bool, partyCount int) {
 	c.Log.Debugw(
 		"particle",
 		"frame", c.Sim.Frame(),
-		"event", def.LogEnergyEvent,
+		"event", core.LogEnergyEvent,
 		"char", c.Index,
 		"source", p.Source,
 		"count", p.Num,

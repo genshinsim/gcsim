@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
@@ -17,7 +17,7 @@ type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -27,7 +27,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 
 	c.Energy = 80
 	c.EnergyMax = 80
-	c.Weapon.Class = def.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
@@ -39,9 +39,9 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -56,11 +56,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 159 - 124
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 73
-	case def.ActionSkill:
+	case core.ActionSkill:
 
 		hold := p["hold"]
 		//hold for p up to 5 seconds
@@ -69,7 +69,7 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		}
 
 		return 23 + hold
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 88
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -79,14 +79,14 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 
 func (c *char) Attack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		auto[c.NormalCounter][c.TalentLvlAttack()],
 	)
@@ -95,7 +95,7 @@ func (c *char) Attack(p map[string]int) int {
 
 	//check for healing
 	if c.Sim.Rand().Float64() < 0.5 {
-		heal := 0.15 * (d.BaseAtk*(1+d.Stats[def.ATKP]) + d.Stats[def.ATK])
+		heal := 0.15 * (d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK])
 		c.AddTask(func() {
 			c.Sim.HealAll(heal)
 		}, "jean-heal", f-1)
@@ -108,22 +108,22 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) Skill(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Gale Blade",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Anemo,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Anemo,
 		50,
 		skill[c.TalentLvlSkill()],
 	)
 
 	if c.Base.Cons >= 1 && p["hold"] >= 60 {
 		//add 40% dmg
-		d.Stats[def.DmgP] += .4
-		c.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "final dmg%", d.Stats[def.DmgP])
+		d.Stats[core.DmgP] += .4
+		c.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "final dmg%", d.Stats[core.DmgP])
 	}
 
 	c.QueueDmg(&d, f-1)
@@ -132,9 +132,9 @@ func (c *char) Skill(p map[string]int) int {
 	if c.Sim.Rand().Float64() < .67 {
 		count++
 	}
-	c.QueueParticle("Jean", count, def.Anemo, f+100)
+	c.QueueParticle("Jean", count, core.Anemo, f+100)
 
-	c.SetCD(def.ActionSkill, 360)
+	c.SetCD(core.ActionSkill, 360)
 	return f //TODO: frames, + p for holding
 }
 
@@ -146,18 +146,18 @@ func (c *char) Burst(p map[string]int) int {
 		delay = 10
 	}
 
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 	d := c.Snapshot(
 		"Dandelion Breeze",
-		def.AttackTagElementalBurst,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Anemo,
+		core.AttackTagElementalBurst,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Anemo,
 		50,
 		burst[c.TalentLvlBurst()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f-10) //TODO: initial damage frames
 
@@ -174,17 +174,17 @@ func (c *char) Burst(p map[string]int) int {
 	if c.Base.Cons >= 4 {
 		//add debuff to all target for ??? duration
 		for _, t := range c.Sim.Targets() {
-			t.AddResMod("jeanc4", def.ResistMod{
+			t.AddResMod("jeanc4", core.ResistMod{
 				Duration: 600, //10 seconds
-				Ele:      def.Anemo,
+				Ele:      core.Anemo,
 				Value:    -0.4,
 			})
 		}
 	}
 
 	//heal on cast
-	hpplus := d.Stats[def.Heal]
-	atk := d.BaseAtk*(1+d.Stats[def.ATKP]) + d.Stats[def.ATK]
+	hpplus := d.Stats[core.Heal]
+	atk := d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK]
 	heal := (burstInitialHealFlat[c.TalentLvlBurst()] + atk*burstInitialHealPer[c.TalentLvlBurst()]) * (1 + hpplus)
 	healDot := (burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]) * (1 + hpplus)
 
@@ -195,12 +195,12 @@ func (c *char) Burst(p map[string]int) int {
 	//duration is 10.5s
 	for i := 60; i < 630; i++ {
 		c.AddTask(func() {
-			c.Log.Debugw("jean q healing", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "+heal", hpplus, "atk", atk, "heal amount", healDot)
+			c.Log.Debugw("jean q healing", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "+heal", hpplus, "atk", atk, "heal amount", healDot)
 			c.Sim.HealActive(heal)
 		}, "Jean Tick", i)
 	}
 
-	c.SetCD(def.ActionBurst, 1200)
+	c.SetCD(core.ActionBurst, 1200)
 	c.Energy = 16 //jean a4
 	return f      //TODO: frames, + p for holding
 }
@@ -213,10 +213,10 @@ func (c *char) c6() {
 	// 	}
 	// 	return 0
 	// })
-	c.Log.Warnw("jean c6 not implemented", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent)
+	c.Log.Warnw("jean c6 not implemented", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
 }
 
-func (c *char) ReceiveParticle(p def.Particle, isActive bool, partyCount int) {
+func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 	c.Tmpl.ReceiveParticle(p, isActive, partyCount)
 	if c.Base.Cons >= 2 {
 		//only pop this if jean is active
@@ -224,14 +224,14 @@ func (c *char) ReceiveParticle(p def.Particle, isActive bool, partyCount int) {
 			return
 		}
 		for _, active := range c.Sim.Characters() {
-			val := make([]float64, def.EndStatType)
-			val[def.AtkSpd] = 0.15
-			active.AddMod(def.CharStatMod{
+			val := make([]float64, core.EndStatType)
+			val[core.AtkSpd] = 0.15
+			active.AddMod(core.CharStatMod{
 				Key:    "jean-c2",
-				Amount: func(a def.AttackTag) ([]float64, bool) { return val, true },
+				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 				Expiry: c.Sim.Frame() + 900,
 			})
-			c.Log.Debugw("c2 - adding atk spd", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "character", c.Name())
+			c.Log.Debugw("c2 - adding atk spd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "character", c.Name())
 		}
 	}
 }

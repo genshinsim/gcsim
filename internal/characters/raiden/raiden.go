@@ -3,7 +3,7 @@ package raiden
 import (
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
@@ -14,13 +14,15 @@ type char struct {
 	stacks         float64
 	restoreICD     int
 	restoreCount   int
+	c6Count int
+	c6ICD int
 }
 
 func init() {
 	combat.RegisterCharFunc("raiden", NewChar)
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -29,10 +31,14 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 80
 	c.EnergyMax = 80
-	c.Weapon.Class = def.WeaponClassSpear
+	c.Weapon.Class = core.WeaponClassSpear
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
+
+	if c.Base.Cons == 6 {
+		c.c6()
+	}
 
 	c.eyeOnDamage()
 	c.onBurstStackCount()
@@ -45,43 +51,43 @@ func (c *char) Init(index int) {
 	mult := skillBurstBonus[c.TalentLvlSkill()]
 	//add E hook
 	for _, char := range c.Sim.Characters() {
-		char.AddMod(def.CharStatMod{
+		char.AddMod(core.CharStatMod{
 			Key:    "raiden-e",
 			Expiry: -1,
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				if c.Sim.Status("raidenskill") == 0 {
 					return nil, false
 				}
-				if a != def.AttackTagElementalBurst {
+				if a != core.AttackTagElementalBurst {
 					return nil, false
 				}
-				val := make([]float64, def.EndStatType)
-				val[def.DmgP] = mult * char.MaxEnergy()
+				val := make([]float64, core.EndStatType)
+				val[core.DmgP] = mult * char.MaxEnergy()
 				return val, true
 			},
 		})
 	}
 }
 
-func (c *char) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d def.Durability, mult float64) def.Snapshot {
+func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
 	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
 
 	//a2 add dmg based on ER%
-	excess := int(ds.Stats[def.ER] / 0.01)
+	excess := int(ds.Stats[core.ER] / 0.01)
 
-	ds.Stats[def.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Log.Debugw("a4 adding electro dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", ds.Stats[def.ElectroP])
-
-	//infusion to normal/plunge/charge
-	switch ds.AttackTag {
-	case def.AttackTagNormal:
-	case def.AttackTagExtra:
-	case def.AttackTagPlunge:
-	default:
-		return ds
-	}
-	if c.Sim.Status("raidenburst") > 0 {
-		ds.Element = def.Electro
-	}
+	ds.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
+	c.Log.Debugw("a4 adding electro dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", ds.Stats[core.ElectroP])
+	//
+	////infusion to normal/plunge/charge
+	//switch ds.AttackTag {
+	//case core.AttackTagNormal:
+	//case core.AttackTagExtra:
+	//case core.AttackTagPlunge:
+	//default:
+	//	return ds
+	//}
+	//if c.Sim.Status("raidenburst") > 0 {
+	//	ds.Element = core.Electro
+	//}
 	return ds
 }

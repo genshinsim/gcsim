@@ -4,37 +4,37 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("freedom-sworn", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
-	m := make([]float64, def.EndStatType)
-	m[def.DmgP] = 0.075 + float64(r)*0.025
-	c.AddMod(def.CharStatMod{
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+	m := make([]float64, core.EndStatType)
+	m[core.DmgP] = 0.075 + float64(r)*0.025
+	c.AddMod(core.CharStatMod{
 		Key: "freedom-dmg",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
 	})
 
-	val := make([]float64, def.EndStatType)
-	val[def.ATKP] = .15 + float64(r)*0.05
+	val := make([]float64, core.EndStatType)
+	val[core.ATKP] = .15 + float64(r)*0.05
 	plunge := .12 + 0.4*float64(r)
 
 	icd := 0
 	stacks := 0
 	cooldown := 0
 
-	s.AddOnReaction(func(t def.Target, ds *def.Snapshot) {
+	s.AddOnReaction(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagElementalArt && ds.AttackTag != def.AttackTagElementalBurst {
+		if ds.AttackTag != core.AttackTagElementalArt && ds.AttackTag != core.AttackTagElementalBurst {
 			return
 		}
 		if cooldown > s.Frame() {
@@ -50,12 +50,12 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 			s.AddStatus("freedom", 720)
 			cooldown = s.Frame() + 1200
 			for _, char := range s.Characters() {
-				char.AddMod(def.CharStatMod{
+				char.AddMod(core.CharStatMod{
 					Key: "freedom-proc",
-					Amount: func(a def.AttackTag) ([]float64, bool) {
-						val[def.DmgP] = 0
-						if a == def.AttackTagNormal || a == def.AttackTagExtra || a == def.AttackTagPlunge {
-							val[def.DmgP] = plunge
+					Amount: func(a core.AttackTag) ([]float64, bool) {
+						val[core.DmgP] = 0
+						if a == core.AttackTagNormal || a == core.AttackTagExtra || a == core.AttackTagPlunge {
+							val[core.DmgP] = plunge
 						}
 						return val, true
 					},

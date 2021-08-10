@@ -1,8 +1,8 @@
 package combat
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (s *Sim) Flags() def.Flags { return s.flags }
+func (s *Sim) Flags() core.Flags { return s.flags }
 
 func (s *Sim) SetCustomFlag(key string, val int) {
 	s.flags.Custom[key] = val

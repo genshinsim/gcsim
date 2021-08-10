@@ -4,27 +4,27 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterSetFunc("viridescent venerer", New)
 }
 
-func New(c def.Character, s def.Sim, logger def.Logger, count int) {
+func New(c core.Character, s core.Sim, logger core.Logger, count int) {
 	if count >= 2 {
-		m := make([]float64, def.EndStatType)
-		m[def.AnemoP] = 0.15
-		c.AddMod(def.CharStatMod{
+		m := make([]float64, core.EndStatType)
+		m[core.AnemoP] = 0.15
+		c.AddMod(core.CharStatMod{
 			Key: "vv-2pc",
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
 		})
 	}
 	if count >= 4 {
-		s.AddOnTransReaction(func(t def.Target, ds *def.Snapshot) {
+		s.AddOnTransReaction(func(t core.Target, ds *core.Snapshot) {
 			// log.Println(ds)
 			if ds.ActorIndex != c.CharIndex() {
 				return
@@ -32,36 +32,36 @@ func New(c def.Character, s def.Sim, logger def.Logger, count int) {
 			// log.Println("ok")
 			// log.Println(ds.ReactionType)
 			switch ds.ReactionType {
-			case def.SwirlCryo:
-				t.AddResMod("vvcryo", def.ResistMod{
+			case core.SwirlCryo:
+				t.AddResMod("vvcryo", core.ResistMod{
 					Duration: 600, //10 seconds
-					Ele:      def.Cryo,
+					Ele:      core.Cryo,
 					Value:    -0.4,
 				})
 				// log.Println(t.HasResMod("vvcryo"))
-			case def.SwirlElectro:
-				t.AddResMod("vvelectro", def.ResistMod{
+			case core.SwirlElectro:
+				t.AddResMod("vvelectro", core.ResistMod{
 					Duration: 600, //10 seconds
-					Ele:      def.Electro,
+					Ele:      core.Electro,
 					Value:    -0.4,
 				})
-			case def.SwirlPyro:
-				t.AddResMod("vvpyro", def.ResistMod{
+			case core.SwirlPyro:
+				t.AddResMod("vvpyro", core.ResistMod{
 					Duration: 600, //10 seconds
-					Ele:      def.Pyro,
+					Ele:      core.Pyro,
 					Value:    -0.4,
 				})
-			case def.SwirlHydro:
-				t.AddResMod("vvhydro", def.ResistMod{
+			case core.SwirlHydro:
+				t.AddResMod("vvhydro", core.ResistMod{
 					Duration: 600, //10 seconds
-					Ele:      def.Hydro,
+					Ele:      core.Hydro,
 					Value:    -0.4,
 				})
 			default:
 				return
 			}
 			ds.ReactBonus += 0.6
-			logger.Debugw("vv 4pc proc", "frame", s.Frame(), "event", def.LogArtifactEvent, "reaction", ds.ReactionType, "char", c.CharIndex())
+			logger.Debugw("vv 4pc proc", "frame", s.Frame(), "event", core.LogArtifactEvent, "reaction", ds.ReactionType, "char", c.CharIndex())
 
 		}, fmt.Sprintf("vv4-%v", c.Name()))
 

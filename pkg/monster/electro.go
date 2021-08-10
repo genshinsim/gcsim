@@ -1,49 +1,49 @@
 package monster
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
 type AuraElectro struct {
 	*Element
 }
 
-func (a *AuraElectro) React(ds *def.Snapshot, t *Target) (Aura, bool) {
+func (a *AuraElectro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	if ds.Durability == 0 {
 		return a, false
 	}
 	switch ds.Element {
-	case def.Anemo:
-		ds.ReactionType = def.SwirlElectro
+	case core.Anemo:
+		ds.ReactionType = core.SwirlElectro
 		//queue swirl dmg
-		t.queueReaction(ds, def.SwirlElectro, a.CurrentDurability, 1)
+		t.queueReaction(ds, core.SwirlElectro, a.CurrentDurability, 1)
 		//reduce pyro by 0.5 of anemo
 		a.Reduce(ds, 0.5)
-	case def.Geo:
-		ds.ReactionType = def.CrystallizeElectro
+	case core.Geo:
+		ds.ReactionType = core.CrystallizeElectro
 		//crystallize adds shield
-		shd := NewCrystallizeShield(def.Electro, t.sim.Frame(), ds.CharLvl, ds.Stats[def.EM], t.sim.Frame()+900)
+		shd := NewCrystallizeShield(core.Electro, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
 		t.sim.AddShield(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
-	case def.Pyro:
+	case core.Pyro:
 		//overload + reduce
-		ds.ReactionType = def.Overload
-		t.queueReaction(ds, def.Overload, a.CurrentDurability, 1)
+		ds.ReactionType = core.Overload
+		t.queueReaction(ds, core.Overload, a.CurrentDurability, 1)
 		a.Reduce(ds, 1)
-	case def.Hydro:
+	case core.Hydro:
 		//ec
 		//don't touch they hydro aura, instead, queue up ec ticks
 		h := &AuraHydro{}
 		h.Element = &Element{}
-		h.T = def.Hydro
+		h.T = core.Hydro
 		h.Attach(ds.Durability, t.sim.Frame())
-		ds.ReactionType = def.ElectroCharged
+		ds.ReactionType = core.ElectroCharged
 		return newEC(a, h, t, ds, t.sim.Frame()), true
-	case def.Cryo:
+	case core.Cryo:
 		//superconduct
-		ds.ReactionType = def.Superconduct
-		t.queueReaction(ds, def.Superconduct, a.CurrentDurability, 1)
+		ds.ReactionType = core.Superconduct
+		t.queueReaction(ds, core.Superconduct, a.CurrentDurability, 1)
 		a.Reduce(ds, 1)
-	case def.Electro:
+	case core.Electro:
 		//have to be careful here.. if there's also a hydro then we have to trigger a tick
 		//refresh
 		a.Refresh(ds.Durability)

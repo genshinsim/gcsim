@@ -2,20 +2,20 @@ package gladiator
 
 import (
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterSetFunc("gladiator's finale", New)
 }
 
-func New(c def.Character, s def.Sim, log def.Logger, count int) {
+func New(c core.Character, s core.Sim, log core.Logger, count int) {
 	if count >= 2 {
-		m := make([]float64, def.EndStatType)
-		m[def.ATKP] = 0.18
-		c.AddMod(def.CharStatMod{
+		m := make([]float64, core.EndStatType)
+		m[core.ATKP] = 0.18
+		c.AddMod(core.CharStatMod{
 			Key: "glad-2pc",
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -23,19 +23,19 @@ func New(c def.Character, s def.Sim, log def.Logger, count int) {
 	}
 	if count >= 4 {
 		switch c.WeaponClass() {
-		case def.WeaponClassSpear:
-		case def.WeaponClassSword:
-		case def.WeaponClassClaymore:
+		case core.WeaponClassSpear:
+		case core.WeaponClassSword:
+		case core.WeaponClassClaymore:
 		default:
 			//don't add this mod if wrong weapon class
 			return
 		}
-		m := make([]float64, def.EndStatType)
-		m[def.DmgP] = 0.35
-		c.AddMod(def.CharStatMod{
+		m := make([]float64, core.EndStatType)
+		m[core.DmgP] = 0.35
+		c.AddMod(core.CharStatMod{
 			Key: "glad-4pc",
-			Amount: func(ds def.AttackTag) ([]float64, bool) {
-				if ds != def.AttackTagNormal && ds != def.AttackTagExtra {
+			Amount: func(ds core.AttackTag) ([]float64, bool) {
+				if ds != core.AttackTagNormal && ds != core.AttackTagExtra {
 					return nil, false
 				}
 				return m, true

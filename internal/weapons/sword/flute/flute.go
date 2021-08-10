@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
@@ -14,17 +14,17 @@ func init() {
 //Normal or Charged Attacks grant a Harmonic on hits. Gaining 5 Harmonics triggers the
 //power of music and deals 100% ATK DMG to surrounding opponents. Harmonics last up to 30s,
 //and a maximum of 1 can be gained every 0.5s.
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 
 	expiry := 0
 	stacks := 0
 	icd := 0
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal && ds.AttackTag != def.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return
 		}
 		if icd > s.Frame() {
@@ -44,15 +44,15 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 
 			d := c.Snapshot(
 				"Flute Proc",
-				def.AttackTagWeaponSkill,
-				def.ICDTagNone,
-				def.ICDGroupDefault,
-				def.StrikeTypeDefault,
-				def.Physical,
+				core.AttackTagWeaponSkill,
+				core.ICDTagNone,
+				core.ICDGroupDefault,
+				core.StrikeTypeDefault,
+				core.Physical,
 				100,
 				0.75+0.25*float64(r),
 			)
-			d.Targets = def.TargetAll
+			d.Targets = core.TargetAll
 			c.QueueDmg(&d, 1)
 
 		}

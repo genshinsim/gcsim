@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gsim/internal/artifacts/gladiator"
 	"github.com/genshinsim/gsim/internal/artifacts/noblesse"
 	"github.com/genshinsim/gsim/internal/dummy"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/monster"
 	"github.com/genshinsim/gsim/pkg/parse"
 	"go.uber.org/zap"
@@ -19,9 +19,9 @@ import (
 
 var logger *zap.SugaredLogger
 var sim *dummy.Sim
-var targetA def.Target
-var targetB def.Target
-var bd def.Character
+var targetA core.Target
+var targetB core.Target
+var bd core.Character
 
 func TestMain(m *testing.M) {
 	os.Remove("./out.log")
@@ -37,11 +37,11 @@ func TestMain(m *testing.M) {
 
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
-		targetA = monster.New(0, s, logger, 0, def.EnemyProfile{
+		targetA = monster.New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
-		targetB = monster.New(1, s, logger, 0, def.EnemyProfile{
+		targetB = monster.New(1, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
@@ -86,7 +86,7 @@ func TestXingqiuSkill(t *testing.T) {
 	param := make(map[string]int)
 	var aCount, bCount int
 	//on damage to track what's happening
-	sim.OnDamage = func(ds *def.Snapshot) {
+	sim.OnDamage = func(ds *core.Snapshot) {
 
 		a, _ := targetA.Attack(ds)
 		if a > 0 {
@@ -125,18 +125,18 @@ func expect(key string, a interface{}, b interface{}) bool {
 	return a == b
 }
 
-func defaultResMap() map[def.EleType]float64 {
-	res := make(map[def.EleType]float64)
+func defaultResMap() map[core.EleType]float64 {
+	res := make(map[core.EleType]float64)
 
-	res[def.Electro] = 0.1
-	res[def.Pyro] = 0.1
-	res[def.Anemo] = 0.1
-	res[def.Cryo] = 0.1
-	res[def.Frozen] = 0.1
-	res[def.Hydro] = 0.1
-	res[def.Dendro] = 0.1
-	res[def.Geo] = 0.1
-	res[def.Physical] = 0.3
+	res[core.Electro] = 0.1
+	res[core.Pyro] = 0.1
+	res[core.Anemo] = 0.1
+	res[core.Cryo] = 0.1
+	res[core.Frozen] = 0.1
+	res[core.Hydro] = 0.1
+	res[core.Dendro] = 0.1
+	res[core.Geo] = 0.1
+	res[core.Physical] = 0.3
 
 	return res
 }

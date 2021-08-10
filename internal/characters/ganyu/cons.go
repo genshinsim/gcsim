@@ -1,11 +1,11 @@
 package ganyu
 
 import (
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func (c *char) c1() {
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if ds.ActorIndex != c.Index {
 			return
 		}
@@ -13,8 +13,8 @@ func (c *char) c1() {
 			return
 		}
 		c.AddEnergy(2)
-		t.AddResMod("ganyu-c1", def.ResistMod{
-			Ele:      def.Cryo,
+		t.AddResMod("ganyu-c1", core.ResistMod{
+			Ele:      core.Cryo,
 			Value:    -0.15,
 			Duration: 5 * 60,
 		})

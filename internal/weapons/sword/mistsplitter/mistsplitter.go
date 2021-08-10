@@ -4,58 +4,58 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
 	combat.RegisterWeaponFunc("mistsplitter reforged", weapon)
 }
 
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
-	m := make([]float64, def.EndStatType)
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+	m := make([]float64, core.EndStatType)
 	base := 0.09 + float64(r)*0.03
-	m[def.PyroP] = base
-	m[def.HydroP] = base
-	m[def.CryoP] = base
-	m[def.ElectroP] = base
-	m[def.AnemoP] = base
-	m[def.GeoP] = base
-	m[def.EleP] = base
-	m[def.PhyP] = base
-	m[def.DendroP] = base
+	m[core.PyroP] = base
+	m[core.HydroP] = base
+	m[core.CryoP] = base
+	m[core.ElectroP] = base
+	m[core.AnemoP] = base
+	m[core.GeoP] = base
+	m[core.EleP] = base
+	m[core.PhyP] = base
+	m[core.DendroP] = base
 	stack := 0.06 + float64(r)*0.02
 	max := 0.21 + float64(r)*0.07
-	bonus := def.EleToDmgP(c.Ele())
+	bonus := core.EleToDmgP(c.Ele())
 
 	normal := 0
 	skill := 0
 
-	s.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, base float64, crit bool) {
+	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, base float64, crit bool) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
-		if ds.AttackTag != def.AttackTagNormal {
+		if ds.AttackTag != core.AttackTagNormal {
 			return
 		}
-		if ds.Element == def.Physical {
+		if ds.Element == core.Physical {
 			return
 		}
 		normal = s.Frame() + 300 // lasts 5 seconds
 
 	}, fmt.Sprintf("mistsplitter-%v", c.Name()))
 
-	s.AddEventHook(func(s def.Sim) bool {
+	s.AddEventHook(func(s core.Sim) bool {
 		if s.ActiveCharIndex() != c.CharIndex() {
 			return false
 		}
 		skill = s.Frame() + 600
 		return false
 
-	}, fmt.Sprintf("mistsplitter-%v", c.Name()), def.PostBurstHook)
+	}, fmt.Sprintf("mistsplitter-%v", c.Name()), core.PostBurstHook)
 
-	c.AddMod(def.CharStatMod{
+	c.AddMod(core.CharStatMod{
 		Key: "mistsplitter",
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			count := 0
 			if c.CurrentEnergy() < c.MaxEnergy() {
 				count++

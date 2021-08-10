@@ -1,15 +1,15 @@
 package combat
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
 type eHook struct {
-	f   func(s def.Sim) bool
+	f   func(s core.Sim) bool
 	key string
 	src int
 }
 
 //AddHook adds a hook to sim. Hook will be called based on the type of hook
-func (s *Sim) AddEventHook(f func(s def.Sim) bool, key string, hook def.EventHookType) {
+func (s *Sim) AddEventHook(f func(s core.Sim) bool, key string, hook core.EventHookType) {
 
 	a := s.eventHooks[hook]
 
@@ -21,7 +21,7 @@ func (s *Sim) AddEventHook(f func(s def.Sim) bool, key string, hook def.EventHoo
 		}
 	}
 	if ind != 0 && ind != len(a) {
-		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key, "type", hook)
+		s.log.Debugw("hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key, "type", hook)
 		a[ind] = eHook{
 			f:   f,
 			key: key,
@@ -33,16 +33,16 @@ func (s *Sim) AddEventHook(f func(s def.Sim) bool, key string, hook def.EventHoo
 			key: key,
 			src: s.f,
 		})
-		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key, "type", hook)
+		s.log.Debugw("hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key, "type", hook)
 	}
 	s.eventHooks[hook] = a
 }
 
-func (s *Sim) executeEventHook(t def.EventHookType) {
+func (s *Sim) executeEventHook(t core.EventHookType) {
 	n := 0
 	for i, v := range s.eventHooks[t] {
 		if v.f(s) {
-			s.log.Debugw("event hook ended", "frame", s.f, "event", def.LogHookEvent, "key", i, "src", v.src)
+			s.log.Debugw("event hook ended", "frame", s.f, "event", core.LogHookEvent, "key", i, "src", v.src)
 
 		} else {
 			s.eventHooks[t][n] = v
@@ -53,12 +53,12 @@ func (s *Sim) executeEventHook(t def.EventHookType) {
 }
 
 type attackWillLandHook struct {
-	f   func(t def.Target, ds *def.Snapshot)
+	f   func(t core.Target, ds *core.Snapshot)
 	key string
 	src int
 }
 
-func (s *Sim) AddOnAttackWillLand(f func(t def.Target, ds *def.Snapshot), key string) {
+func (s *Sim) AddOnAttackWillLand(f func(t core.Target, ds *core.Snapshot), key string) {
 	//check if override first
 	ind := -1
 	for i, v := range s.onAttackWillLand {
@@ -67,7 +67,7 @@ func (s *Sim) AddOnAttackWillLand(f func(t def.Target, ds *def.Snapshot), key st
 		}
 	}
 	if ind != -1 {
-		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 		s.onAttackWillLand[ind] = attackWillLandHook{
 			f:   f,
 			key: key,
@@ -79,28 +79,28 @@ func (s *Sim) AddOnAttackWillLand(f func(t def.Target, ds *def.Snapshot), key st
 			key: key,
 			src: s.f,
 		})
-		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 	}
 }
-func (s *Sim) OnAttackWillLand(t def.Target, ds *def.Snapshot) {
+func (s *Sim) OnAttackWillLand(t core.Target, ds *core.Snapshot) {
 	for _, v := range s.onAttackWillLand {
 		v.f(t, ds)
 	}
 }
 
 type attackLandedHook struct {
-	f   func(t def.Target, ds *def.Snapshot, dmg float64, crit bool)
+	f   func(t core.Target, ds *core.Snapshot, dmg float64, crit bool)
 	key string
 	src int
 }
 
-func (s *Sim) OnAttackLanded(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+func (s *Sim) OnAttackLanded(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 	for _, v := range s.onAttackLanded {
 		v.f(t, ds, dmg, crit)
 	}
 }
 
-func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot, dmg float64, crit bool), key string) {
+func (s *Sim) AddOnAttackLanded(f func(t core.Target, ds *core.Snapshot, dmg float64, crit bool), key string) {
 	//check if override first
 	ind := -1
 	for i, v := range s.onAttackLanded {
@@ -109,7 +109,7 @@ func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot, dmg float
 		}
 	}
 	if ind != -1 {
-		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 		s.onAttackLanded[ind] = attackLandedHook{
 			f:   f,
 			key: key,
@@ -121,17 +121,17 @@ func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot, dmg float
 			key: key,
 			src: s.f,
 		})
-		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 	}
 }
 
 type onReactionHook struct {
-	f   func(t def.Target, ds *def.Snapshot)
+	f   func(t core.Target, ds *core.Snapshot)
 	key string
 	src int
 }
 
-func (s *Sim) AddOnReaction(f func(t def.Target, ds *def.Snapshot), key string) {
+func (s *Sim) AddOnReaction(f func(t core.Target, ds *core.Snapshot), key string) {
 	//check if override first
 	ind := -1
 	for i, v := range s.onReaction {
@@ -140,7 +140,7 @@ func (s *Sim) AddOnReaction(f func(t def.Target, ds *def.Snapshot), key string) 
 		}
 	}
 	if ind != -1 {
-		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 		s.onReaction[ind] = onReactionHook{
 			f:   f,
 			key: key,
@@ -152,12 +152,12 @@ func (s *Sim) AddOnReaction(f func(t def.Target, ds *def.Snapshot), key string) 
 			key: key,
 			src: s.f,
 		})
-		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 	}
 }
 
-func (s *Sim) OnReaction(t def.Target, ds *def.Snapshot) {
-	if ds.ReactionType != def.NoReaction {
+func (s *Sim) OnReaction(t core.Target, ds *core.Snapshot) {
+	if ds.ReactionType != core.NoReaction {
 		s.stats.ReactionsTriggered[ds.ReactionType]++
 	}
 	for _, v := range s.onReaction {
@@ -166,12 +166,12 @@ func (s *Sim) OnReaction(t def.Target, ds *def.Snapshot) {
 }
 
 type onReactionDamageHook struct {
-	f   func(t def.Target, ds *def.Snapshot)
+	f   func(t core.Target, ds *core.Snapshot)
 	key string
 	src int
 }
 
-func (s *Sim) AddOnAmpReaction(f func(t def.Target, ds *def.Snapshot), key string) {
+func (s *Sim) AddOnAmpReaction(f func(t core.Target, ds *core.Snapshot), key string) {
 	//check if override first
 	ind := -1
 	for i, v := range s.onAmpReaction {
@@ -180,7 +180,7 @@ func (s *Sim) AddOnAmpReaction(f func(t def.Target, ds *def.Snapshot), key strin
 		}
 	}
 	if ind != -1 {
-		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 		s.onAmpReaction[ind] = onReactionDamageHook{
 			f:   f,
 			key: key,
@@ -192,17 +192,17 @@ func (s *Sim) AddOnAmpReaction(f func(t def.Target, ds *def.Snapshot), key strin
 			key: key,
 			src: s.f,
 		})
-		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 	}
 }
 
-func (s *Sim) OnAmpReaction(t def.Target, ds *def.Snapshot) {
+func (s *Sim) OnAmpReaction(t core.Target, ds *core.Snapshot) {
 	for _, v := range s.onAmpReaction {
 		v.f(t, ds)
 	}
 }
 
-func (s *Sim) AddOnTransReaction(f func(t def.Target, ds *def.Snapshot), key string) {
+func (s *Sim) AddOnTransReaction(f func(t core.Target, ds *core.Snapshot), key string) {
 	//check if override first
 	ind := -1
 	for i, v := range s.onTransReaction {
@@ -211,7 +211,7 @@ func (s *Sim) AddOnTransReaction(f func(t def.Target, ds *def.Snapshot), key str
 		}
 	}
 	if ind != -1 {
-		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 		s.onTransReaction[ind] = onReactionDamageHook{
 			f:   f,
 			key: key,
@@ -223,11 +223,11 @@ func (s *Sim) AddOnTransReaction(f func(t def.Target, ds *def.Snapshot), key str
 			key: key,
 			src: s.f,
 		})
-		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 	}
 }
 
-func (s *Sim) OnTransReaction(t def.Target, ds *def.Snapshot) {
+func (s *Sim) OnTransReaction(t core.Target, ds *core.Snapshot) {
 	for _, v := range s.onTransReaction {
 		v.f(t, ds)
 	}
@@ -238,17 +238,17 @@ func (s *Sim) AddInitHook(f func()) {
 }
 
 type defeatHook struct {
-	f   func(t def.Target)
+	f   func(t core.Target)
 	key string
 	src int
 }
 
-func (s *Sim) OnTargetDefeated(t def.Target) {
+func (s *Sim) OnTargetDefeated(t core.Target) {
 	for _, v := range s.onTargetDefeated {
 		v.f(t)
 	}
 }
-func (s *Sim) AddOnTargetDefeated(f func(t def.Target), key string) {
+func (s *Sim) AddOnTargetDefeated(f func(t core.Target), key string) {
 	//check if override first
 	ind := -1
 	for i, v := range s.onTargetDefeated {
@@ -257,7 +257,7 @@ func (s *Sim) AddOnTargetDefeated(f func(t def.Target), key string) {
 		}
 	}
 	if ind != -1 {
-		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("on attack landed hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 		s.onTargetDefeated[ind] = defeatHook{
 			f:   f,
 			key: key,
@@ -269,6 +269,6 @@ func (s *Sim) AddOnTargetDefeated(f func(t def.Target), key string) {
 			key: key,
 			src: s.f,
 		})
-		s.log.Debugw("hook added", "frame", s.f, "event", def.LogHookEvent, "overwrite", true, "key", key)
+		s.log.Debugw("hook added", "frame", s.f, "event", core.LogHookEvent, "overwrite", true, "key", key)
 	}
 }

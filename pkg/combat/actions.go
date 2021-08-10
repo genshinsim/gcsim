@@ -3,10 +3,10 @@ package combat
 import (
 	"log"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (s *Sim) ApplyDamage(ds *def.Snapshot) {
+func (s *Sim) ApplyDamage(ds *core.Snapshot) {
 	died := false
 	for i, v := range s.targets {
 		d := ds.Clone()
@@ -29,7 +29,7 @@ func (s *Sim) ApplyDamage(ds *def.Snapshot) {
 		s.log.Debugw(
 			d.Abil,
 			"frame", s.f,
-			"event", def.LogDamageEvent,
+			"event", core.LogDamageEvent,
 			"char", d.ActorIndex,
 			"target", i,
 			"attack_tag", d.AttackTag,
@@ -77,7 +77,7 @@ func (s *Sim) execQueue() (int, error) {
 	s.log.Debugw(
 		"attempting to execute "+n.Typ.String(),
 		"frame", s.f,
-		"event", def.LogActionEvent,
+		"event", core.LogActionEvent,
 		"char", s.active,
 		"action", n.Typ.String(),
 		"target", n.Target,
@@ -92,24 +92,24 @@ func (s *Sim) execQueue() (int, error) {
 		return 0, nil
 	}
 	switch n.Typ {
-	case def.ActionSwapLock:
+	case core.ActionSwapLock:
 		s.swapCD += n.SwapLock
 		// return 0
-	case def.ActionSkill:
-		s.executeEventHook(def.PreSkillHook)
+	case core.ActionSkill:
+		s.executeEventHook(core.PreSkillHook)
 		f = c.Skill(n.Param)
-		s.executeEventHook(def.PostSkillHook)
+		s.executeEventHook(core.PostSkillHook)
 		s.ResetAllNormalCounter()
-	case def.ActionBurst:
-		s.executeEventHook(def.PreBurstHook)
+	case core.ActionBurst:
+		s.executeEventHook(core.PreBurstHook)
 		f = c.Burst(n.Param)
-		s.executeEventHook(def.PostBurstHook)
+		s.executeEventHook(core.PostBurstHook)
 		s.ResetAllNormalCounter()
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f = c.Attack(n.Param)
-		s.executeEventHook(def.PostAttackHook)
-	case def.ActionCharge:
-		req := s.StamPercentMod(def.ActionCharge) * c.ActionStam(def.ActionCharge, n.Param)
+		s.executeEventHook(core.PostAttackHook)
+	case core.ActionCharge:
+		req := s.StamPercentMod(core.ActionCharge) * c.ActionStam(core.ActionCharge, n.Param)
 		if s.stam <= req {
 			f = 90 - (s.f - s.lastStamUse)
 			s.log.Warnw("insufficient stam: charge attack", "have", s.stam, "last", s.lastStamUse, "recharge", f)
@@ -120,15 +120,15 @@ func (s *Sim) execQueue() (int, error) {
 			s.ResetAllNormalCounter()
 			s.lastStamUse = s.f
 		}
-	case def.ActionHighPlunge:
+	case core.ActionHighPlunge:
 		f = c.HighPlungeAttack(n.Param)
-	case def.ActionLowPlunge:
+	case core.ActionLowPlunge:
 		f = c.LowPlungeAttack(n.Param)
-	case def.ActionAim:
+	case core.ActionAim:
 		f = c.Aimed(n.Param)
 		s.ResetAllNormalCounter()
-	case def.ActionSwap:
-		s.executeEventHook(def.PreSwapHook)
+	case core.ActionSwap:
+		s.executeEventHook(core.PreSwapHook)
 		f = swapFrames
 		//if we're still in cd then forcefully wait up the cd
 		if s.swapCD > 0 {
@@ -139,13 +139,13 @@ func (s *Sim) execQueue() (int, error) {
 		ind := s.charPos[n.Target]
 		s.active = ind
 		s.ResetAllNormalCounter()
-		s.executeEventHook(def.PostSwapHook)
+		s.executeEventHook(core.PostSwapHook)
 		//this duration reset needs to be after the hook for spine to behave properly
 		s.charActiveDuration = 0
-	case def.ActionCancellable:
-	case def.ActionDash:
+	case core.ActionCancellable:
+	case core.ActionDash:
 		//check if enough stam
-		stam := s.StamPercentMod(def.ActionDash) * c.ActionStam(def.ActionDash, n.Param)
+		stam := s.StamPercentMod(core.ActionDash) * c.ActionStam(core.ActionDash, n.Param)
 		if s.stam <= stam {
 			f = 90 - (s.f - s.lastStamUse)
 			// s.Log.Warnw("insufficient stam: dash", "have", s.Stam, "last", s.LastStamUse, "recharge", f)
@@ -155,9 +155,9 @@ func (s *Sim) execQueue() (int, error) {
 			f = c.Dash(n.Param)
 			s.ResetAllNormalCounter()
 			s.lastStamUse = s.f
-			s.executeEventHook(def.PostDashHook)
+			s.executeEventHook(core.PostDashHook)
 		}
-	case def.ActionJump:
+	case core.ActionJump:
 		f = jumpFrames
 		s.ResetAllNormalCounter()
 	}
@@ -166,7 +166,7 @@ func (s *Sim) execQueue() (int, error) {
 		s.log.Debugw(
 			"execution will wait "+n.Typ.String(),
 			"frame", s.f,
-			"event", def.LogActionEvent,
+			"event", core.LogActionEvent,
 			"char", s.active,
 			"action", n.Typ.String(),
 			"target", n.Target,
@@ -184,7 +184,7 @@ func (s *Sim) execQueue() (int, error) {
 	s.log.Debugw(
 		"executed "+n.Typ.String(),
 		"frame", s.f,
-		"event", def.LogActionEvent,
+		"event", core.LogActionEvent,
 		"char", s.active,
 		"action", n.Typ.String(),
 		"target", n.Target,
@@ -196,7 +196,7 @@ func (s *Sim) execQueue() (int, error) {
 	return f, nil
 }
 
-func (s *Sim) StamPercentMod(a def.ActionType) float64 {
+func (s *Sim) StamPercentMod(a core.ActionType) float64 {
 	var m float64 = 1
 	for _, f := range s.stamModifier {
 		m += f(a)
@@ -204,7 +204,7 @@ func (s *Sim) StamPercentMod(a def.ActionType) float64 {
 	return m
 }
 
-func (s *Sim) AddStamMod(f func(a def.ActionType) float64) {
+func (s *Sim) AddStamMod(f func(a core.ActionType) float64) {
 	s.stamModifier = append(s.stamModifier, f)
 }
 

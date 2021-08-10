@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
@@ -16,10 +16,10 @@ func init() {
 type char struct {
 	*character.Tmpl
 	lastConstruct int
-	skillSnapshot def.Snapshot
+	skillSnapshot core.Snapshot
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -28,7 +28,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 40
 	c.EnergyMax = 40
-	c.Weapon.Class = def.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
 
 	c.skillHook()
@@ -44,11 +44,11 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	return &c, nil
 }
 
-func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
-	case def.ActionDash:
+	case core.ActionDash:
 		return 18
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 20
 	default:
 		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
@@ -74,14 +74,14 @@ c6: active protected by crystallize +17% dmg
 
 func (c *char) Attack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		attack[c.NormalCounter][c.TalentLvlAttack()],
 	)
@@ -94,15 +94,15 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) ChargeAttack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionCharge, p)
+	f := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge 1",
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		charge[0][c.TalentLvlAttack()],
 	)
@@ -116,7 +116,7 @@ func (c *char) ChargeAttack(p map[string]int) int {
 	return f
 }
 
-func (c *char) newConstruct(dur int) def.Construct {
+func (c *char) newConstruct(dur int) core.Construct {
 	return &construct{
 		src:    c.Sim.Frame(),
 		expiry: c.Sim.Frame() + dur,
@@ -134,8 +134,8 @@ func (c *construct) Key() int {
 	return c.src
 }
 
-func (c *construct) Type() def.GeoConstructType {
-	return def.GeoConstructAlbedoSkill
+func (c *construct) Type() core.GeoConstructType {
+	return core.GeoConstructAlbedoSkill
 }
 
 func (c *construct) OnDestruct() {
@@ -155,15 +155,15 @@ func (c *construct) Count() int {
 }
 
 func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Abiogenesis: Solar Isotoma",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		25,
 		skill[c.TalentLvlSkill()],
 	)
@@ -172,11 +172,11 @@ func (c *char) Skill(p map[string]int) int {
 
 	c.skillSnapshot = c.Snapshot(
 		"Abiogenesis: Solar Isotoma (Tick)",
-		def.AttackTagElementalArt,
-		def.ICDTagElementalArt,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagElementalArt,
+		core.ICDTagElementalArt,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		25,
 		skillTick[c.TalentLvlSkill()],
 	)
@@ -189,13 +189,13 @@ func (c *char) Skill(p map[string]int) int {
 
 	c.Tags["elevator"] = 1
 
-	c.SetCD(def.ActionSkill, 240)
+	c.SetCD(core.ActionSkill, 240)
 	return f
 }
 
 func (c *char) skillHook() {
 	icd := 0
-	c.Sim.AddOnAttackLanded(func(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 		if c.Tags["elevator"] == 0 {
 			return
 		}
@@ -207,21 +207,21 @@ func (c *char) skillHook() {
 		d := c.skillSnapshot.Clone()
 
 		if c.Sim.Flags().HPMode && t.HP()/t.MaxHP() < .5 {
-			d.Stats[def.DmgP] += 0.25
-			c.Log.Debugw("a2 proc'd, dealing extra dmg", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", d.Stats[def.DmgP])
+			d.Stats[core.DmgP] += 0.25
+			c.Log.Debugw("a2 proc'd, dealing extra dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", d.Stats[core.DmgP])
 		}
 
 		c.QueueDmg(&d, 1)
 
 		//67% chance to generate 1 geo orb
 		if c.Sim.Rand().Float64() < 0.67 {
-			c.QueueParticle("albedo", 1, def.Geo, 100)
+			c.QueueParticle("albedo", 1, core.Geo, 100)
 		}
 
 		//c1
 		if c.Base.Cons >= 1 {
 			c.AddEnergy(1.2)
-			c.Log.Debugw("c1 restoring energy", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent)
+			c.Log.Debugw("c1 restoring energy", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
 		}
 
 		//c2 add stacks
@@ -242,7 +242,7 @@ func (c *char) skillHook() {
 }
 
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	hits, ok := p["bloom"]
 	if !ok {
@@ -251,33 +251,33 @@ func (c *char) Burst(p map[string]int) int {
 
 	d := c.Snapshot(
 		"Rite of Progeniture: Tectonic Tide",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		25,
 		burst[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f)
 
 	d = c.Snapshot(
 		"Rite of Progeniture: Tectonic Tide (Bloom)",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeBlunt,
-		def.Geo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
 		25,
 		burstPerBloom[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	//check stacks
 	if c.Base.Cons >= 2 && c.Sim.Status("albedoc2") > 0 {
-		d.FlatDmg += (d.BaseDef*(1+d.Stats[def.DEFP]) + d.Stats[def.DEF]) * float64(c.Tags["c2"])
+		d.FlatDmg += (d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]) * float64(c.Tags["c2"])
 		c.Tags["c2"] = 0
 	}
 
@@ -288,30 +288,30 @@ func (c *char) Burst(p map[string]int) int {
 
 	//self buff EM
 	for _, char := range c.Sim.Characters() {
-		val := make([]float64, def.EndStatType)
-		val[def.EM] = 120
-		char.AddMod(def.CharStatMod{
+		val := make([]float64, core.EndStatType)
+		val[core.EM] = 120
+		char.AddMod(core.CharStatMod{
 			Key: "albedo-a4",
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Sim.Frame() + 600,
 		})
 	}
 
-	c.SetCD(def.ActionSkill, 720)
+	c.SetCD(core.ActionSkill, 720)
 	c.Energy = 0
 	return f
 }
 
 func (c *char) c4() {
-	val := make([]float64, def.EndStatType)
-	val[def.DmgP] = 0.3
-	c.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.3
+	c.AddMod(core.CharStatMod{
 		Key:    "albedo-c4",
 		Expiry: -1,
-		Amount: func(a def.AttackTag) ([]float64, bool) {
-			if a != def.AttackTagPlunge {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			if a != core.AttackTagPlunge {
 				return nil, false
 			}
 			if c.Tags["elevator"] != 1 {
@@ -323,16 +323,16 @@ func (c *char) c4() {
 }
 
 func (c *char) c6() {
-	val := make([]float64, def.EndStatType)
-	val[def.DmgP] = 0.17
-	c.AddMod(def.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.17
+	c.AddMod(core.CharStatMod{
 		Key:    "albedo-c6",
 		Expiry: -1,
-		Amount: func(a def.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if c.Tags["elevator"] != 1 {
 				return nil, false
 			}
-			if c.Sim.GetShield(def.ShieldCrystallize) == nil {
+			if c.Sim.GetShield(core.ShieldCrystallize) == nil {
 				return nil, false
 			}
 			return val, true

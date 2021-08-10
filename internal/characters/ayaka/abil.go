@@ -3,21 +3,21 @@ package ayaka
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func (c *char) Attack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 
 	for i, mult := range attack[c.NormalCounter] {
 		d := c.Snapshot(
 			fmt.Sprintf("Normal %v", c.NormalCounter),
-			def.AttackTagNormal,
-			def.ICDTagNormalAttack,
-			def.ICDGroupDefault,
-			def.StrikeTypeSlash,
-			def.Physical,
+			core.AttackTagNormal,
+			core.ICDTagNormalAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Physical,
 			25,
 			mult[c.TalentLvlAttack()],
 		)
@@ -31,19 +31,19 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) ChargeAttack(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionCharge, p)
+	f := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge",
-		def.AttackTagNormal,
-		def.ICDTagExtraAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSlash,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagExtraAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSlash,
+		core.Physical,
 		25,
 		ca[c.TalentLvlAttack()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	for i := 0; i < 3; i++ {
 		x := d.Clone()
@@ -61,11 +61,11 @@ func (c *char) Dash(p map[string]int) int {
 	//no dmg attack at end of dash
 	d := c.Snapshot(
 		"Dash",
-		def.AttackTagNone,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagNone,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		25,
 		0,
 	)
@@ -73,92 +73,92 @@ func (c *char) Dash(p map[string]int) int {
 	//since we always hit, just restore the stam and add bonus...
 	c.AddTask(func() {
 		c.Sim.RestoreStam(10)
-		val := make([]float64, def.EndStatType)
-		val[def.CryoP] = 0.18
+		val := make([]float64, core.EndStatType)
+		val[core.CryoP] = 0.18
 		//a2 increase normal + ca dmg by 30% for 6s
-		c.AddMod(def.CharStatMod{
+		c.AddMod(core.CharStatMod{
 			Key:    "ayaka-a4",
 			Expiry: c.Sim.Frame() + 600,
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 		})
 	}, "ayaka-dash", f+1)
 	//add cryo infuse
-	c.AddWeaponInfuse(def.WeaponInfusion{
+	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "ayaka-dash",
-		Ele:    def.Cryo,
-		Tags:   []def.AttackTag{def.AttackTagNormal, def.AttackTagExtra, def.AttackTagPlunge},
+		Ele:    core.Cryo,
+		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Sim.Frame() + 300,
 	})
 	return f
 }
 
 func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Hyouka",
-		def.AttackTagElementalArt,
-		def.ICDTagElementalArt,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalArt,
+		core.ICDTagElementalArt,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		50,
 		skill[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	//2 or 3 1:1 ratio
 	count := 4
 	if c.Sim.Rand().Float64() < 0.5 {
 		count = 5
 	}
-	c.QueueParticle("ayaka", count, def.Cryo, f+100)
+	c.QueueParticle("ayaka", count, core.Cryo, f+100)
 
-	val := make([]float64, def.EndStatType)
-	val[def.DmgP] = 0.3
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.3
 	//a2 increase normal + ca dmg by 30% for 6s
-	c.AddMod(def.CharStatMod{
+	c.AddMod(core.CharStatMod{
 		Key:    "ayaka-a2",
 		Expiry: c.Sim.Frame() + 360,
-		Amount: func(a def.AttackTag) ([]float64, bool) {
-			return val, a == def.AttackTagNormal || a == def.AttackTagExtra
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			return val, a == core.AttackTagNormal || a == core.AttackTagExtra
 		},
 	})
 
 	c.QueueDmg(&d, f)
 
-	c.SetCD(def.ActionSkill, 600)
+	c.SetCD(core.ActionSkill, 600)
 	return f
 
 }
 
 func (c *char) Burst(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Soumetsu",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		25,
 		burstCut[c.TalentLvlBurst()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 	db := c.Snapshot(
 		"Soumetsu",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		25,
 		burstBloom[c.TalentLvlBurst()],
 	)
-	db.Targets = def.TargetAll
+	db.Targets = core.TargetAll
 
 	//5 second, 20 ticks, so once every 15 frames, bloom after 5 seconds
 	c.QueueDmg(&db, f+300)
@@ -167,7 +167,7 @@ func (c *char) Burst(p map[string]int) int {
 		c.QueueDmg(&x, f+i)
 	}
 
-	c.SetCD(def.ActionBurst, 20*60)
+	c.SetCD(core.ActionBurst, 20*60)
 	c.Energy = 0
 
 	return f

@@ -3,17 +3,17 @@ package dummy
 import (
 	"math/rand"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 type Sim struct {
 	F          int
 	R          *rand.Rand
-	OnDamage   func(ds *def.Snapshot)
-	OnShielded func(shd def.Shield)
-	OnParticle func(p def.Particle)
-	Chars      []def.Character
-	Targs      []def.Target
+	OnDamage   func(ds *core.Snapshot)
+	OnShielded func(shd core.Shield)
+	OnParticle func(p core.Particle)
+	Chars      []core.Character
+	Targs      []core.Target
 	status     map[string]int
 
 	onAttackLanded []attackLandedHook
@@ -26,7 +26,7 @@ func NewSim(cfg ...func(*Sim)) *Sim {
 		f(s)
 	}
 	s.onAttackLanded = make([]attackLandedHook, 0, 10)
-	s.eventHooks = make([][]eHook, def.EndEventHook)
+	s.eventHooks = make([][]eHook, core.EndEventHook)
 	s.status = make(map[string]int)
 	return s
 }
@@ -55,67 +55,67 @@ func (s *Sim) ActiveCharIndex() int                                             
 func (s *Sim) SwapCD() int                                                           { return 0 }
 func (s *Sim) RestoreStam(v float64)                                                 {}
 func (s *Sim) Stam() float64                                                         { return 0 }
-func (s *Sim) Frame() int                                                            { return s.F }
-func (s *Sim) Flags() def.Flags                                                      { return def.Flags{} }
-func (s *Sim) SetCustomFlag(key string, val int)                                     {}
-func (s *Sim) GetCustomFlag(key string) (int, bool)                                  { return 0, false }
-func (s *Sim) CharByName(name string) (def.Character, bool)                          { return nil, false }
-func (s *Sim) TargetHasResMod(debuff string, param int) bool                         { return false }
-func (s *Sim) TargetHasDefMod(debuff string, param int) bool                         { return false }
-func (s *Sim) TargetHasElement(ele def.EleType, param int) bool                      { return false }
-func (s *Sim) Targets() []def.Target                                                 { return s.Targs }
-func (s *Sim) AddOnAmpReaction(f func(t def.Target, ds *def.Snapshot), key string)   {}
-func (s *Sim) OnAmpReaction(t def.Target, ds *def.Snapshot)                          {}
-func (s *Sim) AddOnTransReaction(f func(t def.Target, ds *def.Snapshot), key string) {}
-func (s *Sim) OnTransReaction(t def.Target, ds *def.Snapshot)                        {}
-func (s *Sim) AddOnReaction(f func(t def.Target, ds *def.Snapshot), key string)      {}
-func (s *Sim) OnReaction(t def.Target, ds *def.Snapshot)                             {}
-func (s *Sim) HealActive(hp float64)                                                 {}
+func (s *Sim) Frame() int                                                              { return s.F }
+func (s *Sim) Flags() core.Flags                                                       { return core.Flags{} }
+func (s *Sim) SetCustomFlag(key string, val int)                                       {}
+func (s *Sim) GetCustomFlag(key string) (int, bool)                                    { return 0, false }
+func (s *Sim) CharByName(name string) (core.Character, bool)                           { return nil, false }
+func (s *Sim) TargetHasResMod(debuff string, param int) bool                           { return false }
+func (s *Sim) TargetHasDefMod(debuff string, param int) bool                           { return false }
+func (s *Sim) TargetHasElement(ele core.EleType, param int) bool                       { return false }
+func (s *Sim) Targets() []core.Target                                                  { return s.Targs }
+func (s *Sim) AddOnAmpReaction(f func(t core.Target, ds *core.Snapshot), key string)   {}
+func (s *Sim) OnAmpReaction(t core.Target, ds *core.Snapshot)                          {}
+func (s *Sim) AddOnTransReaction(f func(t core.Target, ds *core.Snapshot), key string) {}
+func (s *Sim) OnTransReaction(t core.Target, ds *core.Snapshot)                        {}
+func (s *Sim) AddOnReaction(f func(t core.Target, ds *core.Snapshot), key string)      {}
+func (s *Sim) OnReaction(t core.Target, ds *core.Snapshot)                             {}
+func (s *Sim) HealActive(hp float64)                                                   {}
 func (s *Sim) HealAll(hp float64)                                                    {}
 func (s *Sim) HealAllPercent(percent float64)                                        {}
 func (s *Sim) HealIndex(index int, hp float64)                                       {}
-func (s *Sim) AddIncHealBonus(f func() float64)                                      {}
-func (s *Sim) AddOnHurt(f func(s def.Sim))                                           {}
-func (s *Sim) IsShielded() bool                                                      { return false }
-func (s *Sim) GetShield(t def.ShieldType) def.Shield                                 { return nil }
-func (s *Sim) AddShieldBonus(f func() float64)                                       {}
+func (s *Sim) AddIncHealBonus(f func() float64)                                        {}
+func (s *Sim) AddOnHurt(f func(s core.Sim))                                            {}
+func (s *Sim) IsShielded() bool                                                        { return false }
+func (s *Sim) GetShield(t core.ShieldType) core.Shield                                 { return nil }
+func (s *Sim) AddShieldBonus(f func() float64)                                         {}
 func (s *Sim) Rand() *rand.Rand                                                      { return s.R }
-func (s *Sim) AddInitHook(f func())                                                  {}
-func (s *Sim) OnTargetDefeated(t def.Target)                                         {}
-func (s *Sim) AddOnTargetDefeated(f func(t def.Target), key string)                  {}
-func (s *Sim) ActiveDuration() int                                                   { return 0 }
-func (s *Sim) NewConstruct(c def.Construct, refresh bool)                            {}
-func (s *Sim) NewNoLimitCons(c def.Construct, refresh bool)                          {}
-func (s *Sim) ConstructCount() int                                                   { return 0 }
-func (s *Sim) ConstructCountType(t def.GeoConstructType) int                         { return 0 }
-func (s *Sim) HasConstruct(key int) bool                                             { return false }
-func (s *Sim) Destroy(key int) bool                                                  { return false }
-func (s *Sim) AddStamMod(f func(a def.ActionType) float64)                           {}
+func (s *Sim) AddInitHook(f func())                                                    {}
+func (s *Sim) OnTargetDefeated(t core.Target)                                          {}
+func (s *Sim) AddOnTargetDefeated(f func(t core.Target), key string)                   {}
+func (s *Sim) ActiveDuration() int                                                     { return 0 }
+func (s *Sim) NewConstruct(c core.Construct, refresh bool)                             {}
+func (s *Sim) NewNoLimitCons(c core.Construct, refresh bool)                           {}
+func (s *Sim) ConstructCount() int                                                     { return 0 }
+func (s *Sim) ConstructCountType(t core.GeoConstructType) int                          { return 0 }
+func (s *Sim) HasConstruct(key int) bool                                               { return false }
+func (s *Sim) Destroy(key int) bool                                                    { return false }
+func (s *Sim) AddStamMod(f func(a core.ActionType) float64)                            {}
 
-func (s *Sim) CharByPos(ind int) (def.Character, bool) {
+func (s *Sim) CharByPos(ind int) (core.Character, bool) {
 	if ind < 0 || ind >= len(s.Chars) {
 		return nil, false
 	}
 	return s.Chars[ind], true
 }
 
-func (s *Sim) Characters() []def.Character {
+func (s *Sim) Characters() []core.Character {
 	return s.Chars
 }
 
-func (s *Sim) ApplyDamage(ds *def.Snapshot) {
+func (s *Sim) ApplyDamage(ds *core.Snapshot) {
 	if s.OnDamage != nil {
 		s.OnDamage(ds)
 	}
 }
 
-func (s *Sim) AddShield(shd def.Shield) {
+func (s *Sim) AddShield(shd core.Shield) {
 	if s.OnShielded != nil {
 		s.OnShielded(shd)
 	}
 }
 
-func (s *Sim) DistributeParticle(p def.Particle) {
+func (s *Sim) DistributeParticle(p core.Particle) {
 	if s.OnParticle != nil {
 		s.OnParticle(p)
 	}
@@ -141,13 +141,13 @@ func (s *Sim) Status(key string) int {
 }
 
 type eHook struct {
-	f   func(s def.Sim) bool
+	f   func(s core.Sim) bool
 	key string
 	src int
 }
 
 //AddHook adds a hook to sim. Hook will be called based on the type of hook
-func (s *Sim) AddEventHook(f func(s def.Sim) bool, key string, hook def.EventHookType) {
+func (s *Sim) AddEventHook(f func(s core.Sim) bool, key string, hook core.EventHookType) {
 
 	a := s.eventHooks[hook]
 
@@ -174,7 +174,7 @@ func (s *Sim) AddEventHook(f func(s def.Sim) bool, key string, hook def.EventHoo
 	s.eventHooks[hook] = a
 }
 
-func (s *Sim) ExecuteEventHook(t def.EventHookType) {
+func (s *Sim) ExecuteEventHook(t core.EventHookType) {
 	n := 0
 	for _, v := range s.eventHooks[t] {
 		if !v.f(s) {
@@ -185,22 +185,22 @@ func (s *Sim) ExecuteEventHook(t def.EventHookType) {
 	s.eventHooks[t] = s.eventHooks[t][:n]
 }
 
-func (s *Sim) AddOnAttackWillLand(f func(t def.Target, ds *def.Snapshot), key string) {}
-func (s *Sim) OnAttackWillLand(t def.Target, ds *def.Snapshot)                        {}
+func (s *Sim) AddOnAttackWillLand(f func(t core.Target, ds *core.Snapshot), key string) {}
+func (s *Sim) OnAttackWillLand(t core.Target, ds *core.Snapshot)                        {}
 
 type attackLandedHook struct {
-	f   func(t def.Target, ds *def.Snapshot, dmg float64, crit bool)
+	f   func(t core.Target, ds *core.Snapshot, dmg float64, crit bool)
 	key string
 	src int
 }
 
-func (s *Sim) OnAttackLanded(t def.Target, ds *def.Snapshot, dmg float64, crit bool) {
+func (s *Sim) OnAttackLanded(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
 	for _, v := range s.onAttackLanded {
 		v.f(t, ds, dmg, crit)
 	}
 }
 
-func (s *Sim) AddOnAttackLanded(f func(t def.Target, ds *def.Snapshot, dmg float64, crit bool), key string) {
+func (s *Sim) AddOnAttackLanded(f func(t core.Target, ds *core.Snapshot, dmg float64, crit bool), key string) {
 
 	//check if override first
 	ind := -1

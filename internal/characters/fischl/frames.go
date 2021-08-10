@@ -1,10 +1,10 @@
 package fischl
 
-import "github.com/genshinsim/gsim/pkg/def"
+import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -19,13 +19,13 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 131 - 102
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionAim:
+	case core.ActionAim:
 		return 95
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 40
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 21 //TODO: this is swap cancelling
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)

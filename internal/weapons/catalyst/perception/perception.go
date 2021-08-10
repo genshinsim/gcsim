@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
@@ -14,14 +14,14 @@ func init() {
 //Normal and Charged Attacks have a 50% chance to fire a Bolt of Perception,
 //dealing 240/270/300/330/360% ATK as DMG. This bolt can bounce between enemies a maximum of 4 times.
 //This effect can occur once every 12/11/10/9/8s.
-func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]int) {
+func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
 
 	dmg := 2.1 * float64(r) * 0.3
 	cd := (13 - r) * 60
 	icd := 0
 	var w weap
 
-	s.AddOnAttackWillLand(func(t def.Target, ds *def.Snapshot) {
+	s.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
 		if ds.ActorIndex != c.CharIndex() {
 			return
 		}
@@ -31,11 +31,11 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 		icd = s.Frame() + cd
 		w.snap = c.Snapshot(
 			"Eye of Perception Proc",
-			def.AttackTagWeaponSkill,
-			def.ICDTagNone,
-			def.ICDGroupDefault,
-			def.StrikeTypeDefault,
-			def.Physical,
+			core.AttackTagWeaponSkill,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Physical,
 			100,
 			dmg,
 		)
@@ -50,10 +50,10 @@ func weapon(c def.Character, s def.Sim, log def.Logger, r int, param map[string]
 }
 
 type weap struct {
-	snap def.Snapshot
+	snap core.Snapshot
 }
 
-func (w *weap) chainQ(index int, src int, count int, s def.Sim, c def.Character) func(t def.Target) {
+func (w *weap) chainQ(index int, src int, count int, s core.Sim, c core.Character) func(t core.Target) {
 	if count == 4 {
 		return nil
 	}
@@ -68,7 +68,7 @@ func (w *weap) chainQ(index int, src int, count int, s def.Sim, c def.Character)
 		index = 0
 	}
 	//trigger dmg based on a clone of d
-	return func(next def.Target) {
+	return func(next core.Target) {
 		// log.Printf("hit target %v, frame %v, done proc %v, queuing next index: %v\n", next.Index(), c.Sim.Frame(), count, index)
 		d := w.snap.Clone()
 		d.Targets = index

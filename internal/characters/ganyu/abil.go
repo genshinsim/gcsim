@@ -3,7 +3,7 @@ package ganyu
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func (c *char) Attack(p map[string]int) int {
@@ -12,14 +12,14 @@ func (c *char) Attack(p map[string]int) int {
 		travel = 20
 	}
 
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypePierce,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypePierce,
+		core.Physical,
 		25,
 		attack[c.NormalCounter][c.TalentLvlAttack()],
 	)
@@ -32,7 +32,7 @@ func (c *char) Attack(p map[string]int) int {
 }
 
 func (c *char) Aimed(p map[string]int) int {
-	f := c.ActionFrames(def.ActionAim, p)
+	f := c.ActionFrames(core.ActionAim, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -45,11 +45,11 @@ func (c *char) Aimed(p map[string]int) int {
 
 	d := c.Snapshot(
 		"Frost Flake Arrow",
-		def.AttackTagExtra,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypePierce,
-		def.Cryo,
+		core.AttackTagExtra,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypePierce,
+		core.Cryo,
 		25,
 		ffa[c.TalentLvlAttack()],
 	)
@@ -65,15 +65,15 @@ func (c *char) Aimed(p map[string]int) int {
 
 	d2 := c.Snapshot(
 		"Frost Flake Bloom",
-		def.AttackTagExtra,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypePierce,
-		def.Cryo,
+		core.AttackTagExtra,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypePierce,
+		core.Cryo,
 		25,
 		ffb[c.TalentLvlAttack()],
 	)
-	d2.Targets = def.TargetAll
+	d2.Targets = core.TargetAll
 
 	c.QueueDmg(&d2, travel+f+bloom)
 
@@ -84,25 +84,25 @@ func (c *char) Aimed(p map[string]int) int {
 
 func (c *char) Skill(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Ice Lotus",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		25,
 		lotus[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	//snap shot stats at cast time here
 	explode := d.Clone()
 
 	//we get the orbs right away
-	c.QueueParticle("ganyu", 2, def.Cryo, 90)
+	c.QueueParticle("ganyu", 2, core.Cryo, 90)
 	//flower damage immediately
 	c.AddTask(func() {
 		c.Sim.ApplyDamage(&d)
@@ -113,7 +113,7 @@ func (c *char) Skill(p map[string]int) int {
 		c.Sim.ApplyDamage(&explode)
 	}, "Ice Lotus", 360)
 
-	c.QueueParticle("ganyu", 2, def.Cryo, 360)
+	c.QueueParticle("ganyu", 2, core.Cryo, 360)
 
 	//add cooldown to sim
 	// c.CD[charge] = c.Sim.Frame() + 10*60
@@ -135,7 +135,7 @@ func (c *char) Skill(p map[string]int) int {
 			//then we move last up to when the first charge goes off CD\
 			// c.Log.Infof("\t Sucrose last diff %v", c.Sim.Frame()-last)
 			c.Tags["last"] = last + 600
-			c.SetCD(def.ActionSkill, last+600-c.Sim.Frame())
+			c.SetCD(core.ActionSkill, last+600-c.Sim.Frame())
 			// c.Log.Infof("\t Sucrose skill going on CD until %v, last = %v", last+900, c.Tags["last"])
 		} else {
 			//so if last is more than 15s in the past, then both charges must be up
@@ -144,7 +144,7 @@ func (c *char) Skill(p map[string]int) int {
 			// c.Log.Infof("\t Sucrose charge cd starts at %v", c.Sim.Frame())
 		}
 	} else {
-		c.SetCD(def.ActionSkill, 600)
+		c.SetCD(core.ActionSkill, 600)
 	}
 
 	return f
@@ -152,15 +152,15 @@ func (c *char) Skill(p map[string]int) int {
 
 func (c *char) Burst(p map[string]int) int {
 
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Celestial Shower",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeDefault,
-		def.Cryo,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeDefault,
+		core.Cryo,
 		25,
 		shower[c.TalentLvlBurst()],
 	)
@@ -173,7 +173,7 @@ func (c *char) Burst(p map[string]int) int {
 	r := 2.5 + float64(rad)
 	prob := r * r / 90.25
 
-	lastHit := make(map[def.Target]int)
+	lastHit := make(map[core.Target]int)
 	// ccc := 0
 	//tick every .3 sec, every fifth hit is targetted i.e. 1, 0, 0, 0, 0, 1
 	for delay := 0; delay < 900; delay += 18 {
@@ -196,7 +196,7 @@ func (c *char) Burst(p map[string]int) int {
 			}
 			//deal dmg
 			x := d.Clone()
-			x.Targets = def.TargetAll //eventually change this to target index and use hitbox
+			x.Targets = core.TargetAll //eventually change this to target index and use hitbox
 			// ccc++
 			c.Sim.ApplyDamage(&x)
 		}, "ganyu-q", delay+f)
@@ -212,17 +212,17 @@ func (c *char) Burst(p map[string]int) int {
 		t := i
 		c.AddTask(func() {
 			active, _ := c.Sim.CharByPos(c.Sim.ActiveCharIndex())
-			val := make([]float64, def.EndStatType)
-			val[def.CryoP] = 0.2
-			active.AddMod(def.CharStatMod{
+			val := make([]float64, core.EndStatType)
+			val[core.CryoP] = 0.2
+			active.AddMod(core.CharStatMod{
 				Key: "ganyu-field",
-				Amount: func(a def.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Sim.Frame() + 60,
 			})
 			if t >= 900-18 {
-				c.Log.Debugw("a4 last tick", "frame", c.Sim.Frame(), "event", def.LogCharacterEvent, "char", c.Index, "ends_on", c.Sim.Frame()+60)
+				c.Log.Debugw("a4 last tick", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Sim.Frame()+60)
 			}
 		}, "ganyu-a4", i)
 	}
@@ -231,36 +231,36 @@ func (c *char) Burst(p map[string]int) int {
 		//we just assume this lasts for the full duration since no one moves...
 		start := c.Sim.Frame()
 
-		val := make([]float64, def.EndStatType)
-		c.AddMod(def.CharStatMod{
+		val := make([]float64, core.EndStatType)
+		c.AddMod(core.CharStatMod{
 			Key:    "ganyu-c4",
 			Expiry: 1080,
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				elapsed := c.Sim.Frame() - start
 				stacks := int(elapsed / 180)
 				if stacks > 5 {
 					stacks = 5
 				}
-				val[def.DmgP] = float64(stacks) * 0.05
+				val[core.DmgP] = float64(stacks) * 0.05
 				return val, true
 			},
 		})
 	}
 
 	//add cooldown to sim
-	c.SetCD(def.ActionBurst, 15*60)
+	c.SetCD(core.ActionBurst, 15*60)
 	//use up energy
 	c.Energy = 0
 
 	return f
 }
 
-func (c *char) ResetActionCooldown(a def.ActionType) {
+func (c *char) ResetActionCooldown(a core.ActionType) {
 	//we're overriding this b/c of the c1 charges
 	switch a {
-	case def.ActionBurst:
+	case core.ActionBurst:
 		c.ActionCD[a] = 0
-	case def.ActionSkill:
+	case core.ActionSkill:
 		if c.Base.Cons < 2 {
 			c.ActionCD[a] = 0
 			return

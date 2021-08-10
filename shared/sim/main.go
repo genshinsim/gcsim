@@ -8,7 +8,7 @@ import (
 	"math"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/parse"
 
 	//characters
@@ -163,7 +163,7 @@ func errToString(s string) string {
 	return string(b)
 }
 
-func runSingle(cfg def.Config) (combat.SimStats, error) {
+func runSingle(cfg core.Config) (combat.SimStats, error) {
 
 	if !cfg.Mode.HPMode {
 		cfg.Mode.FrameLimit = cfg.Mode.Duration * 60
@@ -177,7 +177,7 @@ func runSingle(cfg def.Config) (combat.SimStats, error) {
 	return s.Run()
 }
 
-func runAvg(cfg def.Config, source string) string {
+func runAvg(cfg core.Config, source string) string {
 	stats, err := runDetailedIter(cfg, source)
 	if err != nil {
 		return errToString(err.Error())
@@ -214,12 +214,12 @@ type sum struct {
 	DPS                  result                       `json:"dps"`
 	DamageByChar         []map[string]result          `json:"damage_by_char"`
 	CharActiveTime       []resulti                    `json:"char_active_time"`
-	AbilUsageCountByChar []map[string]resulti         `json:"abil_usage_count_by_char"`
-	ReactionsTriggered   map[def.ReactionType]resulti `json:"reactions_triggered"`
-	CharNames            []string                     `json:"char_names"`
+	AbilUsageCountByChar []map[string]resulti          `json:"abil_usage_count_by_char"`
+	ReactionsTriggered   map[core.ReactionType]resulti `json:"reactions_triggered"`
+	CharNames            []string                      `json:"char_names"`
 }
 
-func runDetailedIter(cfg def.Config, source string) (sum, error) {
+func runDetailedIter(cfg core.Config, source string) (sum, error) {
 	// var progress float64
 	var data []combat.SimStats
 	var summary sum
@@ -232,7 +232,7 @@ func runDetailedIter(cfg def.Config, source string) (sum, error) {
 
 	summary.DPS.Min = math.MaxFloat64
 	summary.DPS.Max = -1
-	summary.ReactionsTriggered = make(map[def.ReactionType]resulti)
+	summary.ReactionsTriggered = make(map[core.ReactionType]resulti)
 	summary.CharNames = make([]string, charCount)
 	summary.AbilUsageCountByChar = make([]map[string]resulti, charCount)
 	summary.CharActiveTime = make([]resulti, charCount)

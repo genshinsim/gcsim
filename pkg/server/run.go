@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/parse"
 
 	//characters
@@ -91,6 +91,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/prototype"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/skyward"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/vortex"
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/catch"
 
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/alley"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/aquila"
@@ -256,7 +257,7 @@ func (s *Server) runSingle(cfg runConfig, r wsRequest) {
 		sb.WriteString(fmt.Sprintf("%v active for %v (%v seconds - %.0f%%)\n", stats.CharNames[i], v, v/60, 100*float64(v)/float64(dur*60)))
 	}
 	sb.WriteString("------------------------------------------\n")
-	rk := make([]def.ReactionType, 0, len(stats.ReactionsTriggered))
+	rk := make([]core.ReactionType, 0, len(stats.ReactionsTriggered))
 	for k := range stats.ReactionsTriggered {
 		rk = append(rk, k)
 	}
@@ -338,7 +339,7 @@ func (s *Server) runAvg(cfg runConfig, r wsRequest) {
 		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", stats.CharNames[i], 100*v.Mean/(stats.AvgDuration*60), float64(100*v.Min)/(stats.AvgDuration*60), float64(100*v.Max)/(stats.AvgDuration*60)))
 	}
 	sb.WriteString("------------------------------------------\n")
-	rk := make([]def.ReactionType, 0, len(stats.ReactionsTriggered))
+	rk := make([]core.ReactionType, 0, len(stats.ReactionsTriggered))
 	for k := range stats.ReactionsTriggered {
 		rk = append(rk, k)
 	}
@@ -385,7 +386,7 @@ func runDetailedIter(n, w int, src string, hp float64, dur int) (Summary, error)
 
 	s.DPS.Min = math.MaxFloat64
 	s.DPS.Max = -1
-	s.ReactionsTriggered = make(map[def.ReactionType]ResultInt)
+	s.ReactionsTriggered = make(map[core.ReactionType]ResultInt)
 	s.CharNames = make([]string, charCount)
 	s.AbilUsageCountByChar = make([]map[string]ResultInt, charCount)
 	s.CharActiveTime = make([]ResultInt, charCount)
@@ -594,9 +595,9 @@ type Summary struct {
 	DPS                  ResultFloat                    `json:"dps"`
 	DamageByChar         []map[string]ResultFloat       `json:"damage_by_char"`
 	CharActiveTime       []ResultInt                    `json:"char_active_time"`
-	AbilUsageCountByChar []map[string]ResultInt         `json:"abil_usage_count_by_char"`
-	ReactionsTriggered   map[def.ReactionType]ResultInt `json:"reactions_triggered"`
-	CharNames            []string                       `json:"char_names"`
+	AbilUsageCountByChar []map[string]ResultInt          `json:"abil_usage_count_by_char"`
+	ReactionsTriggered   map[core.ReactionType]ResultInt `json:"reactions_triggered"`
+	CharNames            []string                        `json:"char_names"`
 }
 
 type ResultFloat struct {

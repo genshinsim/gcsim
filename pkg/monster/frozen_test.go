@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/genshinsim/gsim/internal/dummy"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func TestFrozenDuration(t *testing.T) {
@@ -20,18 +20,18 @@ func TestFrozenDuration(t *testing.T) {
 		s.R = rand.New(rand.NewSource(time.Now().Unix()))
 
 		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, def.EndStatType)
-			c.Stats[def.EM] = 100
+			c.Stats = make([]float64, core.EndStatType)
+			c.Stats[core.EM] = 100
 		})
 
 		s.Chars = append(s.Chars, char)
 
-		target = New(0, s, logger, 0, def.EnemyProfile{
+		target = New(0, s, logger, 0, core.EnemyProfile{
 			Level:  88,
 			Resist: defaultResMap(),
 		})
 
-		s.OnDamage = func(ds *def.Snapshot) {
+		s.OnDamage = func(ds *core.Snapshot) {
 			// log.Println(ds)
 			dmgCount++
 			target.Attack(ds)
@@ -41,23 +41,23 @@ func TestFrozenDuration(t *testing.T) {
 
 	fmt.Println("----testing applying 25 cryo on 50 hydro (no delay)----")
 
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		Durability: 50,
-		Element:    def.Hydro,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Hydro,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&def.Snapshot{
+	target.Attack(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
-		Element:    def.Cryo,
-		ICDTag:     def.ICDTagNone,
-		ICDGroup:   def.ICDGroupDefault,
-		Stats:      make([]float64, def.EndStatType),
-		Targets:    def.TargetAll,
+		Element:    core.Cryo,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Stats:      make([]float64, core.EndStatType),
+		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
 
@@ -67,7 +67,7 @@ func TestFrozenDuration(t *testing.T) {
 		sim.F++
 
 		if target.aura != nil {
-			if target.aura.Type() == def.Frozen {
+			if target.aura.Type() == core.Frozen {
 				dur++
 			}
 			target.AuraTick()

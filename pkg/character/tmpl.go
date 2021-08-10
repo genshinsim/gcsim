@@ -5,31 +5,31 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
 )
 
 type Tmpl struct {
-	Sim   def.Sim
-	Rand  *rand.Rand
+	Sim  core.Sim
+	Rand *rand.Rand
 	Log   *zap.SugaredLogger
 	Index int
 	//this should describe the frame in which the abil becomes available
 	//if frame > current then it's available. no need to decrement this way
 	// CD        map[string]int
 	ActionCD []int
-	Mods     []def.CharStatMod
+	Mods     []core.CharStatMod
 	Tags     map[string]int
 	//Profile info
-	Base     def.CharacterBase
-	Weapon   def.WeaponProfile
+	Base     core.CharacterBase
+	Weapon   core.WeaponProfile
 	Stats    []float64
-	Talents  def.TalentProfile
+	Talents  core.TalentProfile
 	SkillCon int
 	BurstCon int
-	CharZone def.ZoneType
+	CharZone core.ZoneType
 
-	CDReductionFuncs []def.CDAdjust
+	CDReductionFuncs []core.CDAdjust
 
 	Energy    float64
 	EnergyMax float64
@@ -44,7 +44,7 @@ type Tmpl struct {
 	NormalCounter int
 
 	//infusion
-	Infusion def.WeaponInfusion //TODO currently just overides the old; disregarding any existing
+	Infusion core.WeaponInfusion //TODO currently just overides the old; disregarding any existing
 }
 
 type CharTask struct {
@@ -54,17 +54,17 @@ type CharTask struct {
 	originFrame int
 }
 
-func NewTemplateChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (*Tmpl, error) {
+func NewTemplateChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (*Tmpl, error) {
 	c := Tmpl{}
 	c.Sim = s
 	c.Log = log
 	c.Rand = s.Rand()
 
-	c.ActionCD = make([]int, def.EndActionType)
-	c.Mods = make([]def.CharStatMod, 0, 10)
+	c.ActionCD = make([]int, core.EndActionType)
+	c.Mods = make([]core.CharStatMod, 0, 10)
 	c.Tags = make(map[string]int)
 	c.Tasks = make(map[int][]CharTask)
-	c.CDReductionFuncs = make([]def.CDAdjust, 0, 5)
+	c.CDReductionFuncs = make([]core.CDAdjust, 0, 5)
 	c.Base = p.Base
 	c.Weapon = p.Weapon
 	c.Talents = p.Talents
@@ -79,12 +79,12 @@ func NewTemplateChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) 
 	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
 		return nil, fmt.Errorf("invalid talent lvl: burst - %v", c.Talents.Burst)
 	}
-	c.Stats = make([]float64, def.EndStatType)
+	c.Stats = make([]float64, core.EndStatType)
 	for i, v := range p.Stats {
 		c.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		c.Log.Debugw("setting starting hp", "frame", s.Frame(), "event", def.LogCharacterEvent, "character", p.Base.Name, "hp", p.Base.StartHP)
+		c.Log.Debugw("setting starting hp", "frame", s.Frame(), "event", core.LogCharacterEvent, "character", p.Base.Name, "hp", p.Base.StartHP)
 		c.HPCurrent = p.Base.StartHP
 	} else {
 		c.HPCurrent = math.MaxInt64
@@ -95,15 +95,15 @@ func NewTemplateChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) 
 
 func (t *Tmpl) Init(index int) {
 	t.Index = index
-	hpp := t.Stats[def.HPP]
-	hp := t.Stats[def.HP]
+	hpp := t.Stats[core.HPP]
+	hp := t.Stats[core.HP]
 
 	for _, m := range t.Mods {
 		if m.Expiry > t.Sim.Frame() || m.Expiry == -1 {
-			a, ok := m.Amount(def.AttackTagNone)
+			a, ok := m.Amount(core.AttackTagNone)
 			if ok {
-				hpp += a[def.HPP]
-				hp += a[def.HP]
+				hpp += a[core.HPP]
+				hp += a[core.HP]
 			}
 		}
 	}
@@ -115,6 +115,6 @@ func (t *Tmpl) Init(index int) {
 	}
 }
 
-func (c *Tmpl) AddWeaponInfuse(inf def.WeaponInfusion) {
+func (c *Tmpl) AddWeaponInfuse(inf core.WeaponInfusion) {
 	c.Infusion = inf
 }

@@ -27,7 +27,6 @@ type LogConfig struct {
 	LogLevel      string
 	LogFile       string
 	LogShowCaller bool
-	LogEvents     []bool
 }
 
 type CharacterProfile struct {

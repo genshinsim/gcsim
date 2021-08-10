@@ -5,7 +5,7 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/def"
+	"github.com/genshinsim/gsim/pkg/core"
 
 	"go.uber.org/zap"
 )
@@ -18,7 +18,7 @@ type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Character, error) {
+func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, log, p)
 	if err != nil {
@@ -27,7 +27,7 @@ func NewChar(s def.Sim, log *zap.SugaredLogger, p def.CharacterProfile) (def.Cha
 	c.Tmpl = t
 	c.Energy = 80
 	c.EnergyMax = 80
-	c.Weapon.Class = def.WeaponClassSpear
+	c.Weapon.Class = core.WeaponClassSpear
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
@@ -42,9 +42,9 @@ func (c *char) Init(index int) {
 	}
 }
 
-func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	switch a {
-	case def.ActionAttack:
+	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		case 0:
@@ -58,11 +58,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 		case 4:
 			f = 167 - 141
 		}
-		f = int(float64(f) / (1 + c.Stats[def.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
-	case def.ActionSkill:
+	case core.ActionSkill:
 		return 26
-	case def.ActionBurst:
+	case core.ActionBurst:
 		return 140
 	default:
 		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
@@ -70,11 +70,11 @@ func (c *char) ActionFrames(a def.ActionType, p map[string]int) int {
 	}
 }
 
-func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
-	case def.ActionDash:
+	case core.ActionDash:
 		return 18
-	case def.ActionCharge:
+	case core.ActionCharge:
 		return 25
 	default:
 		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
@@ -84,14 +84,14 @@ func (c *char) ActionStam(a def.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) c6() {
-	m := make([]float64, def.EndStatType)
-	m[def.PyroP] = 0.15
+	m := make([]float64, core.EndStatType)
+	m[core.PyroP] = 0.15
 
 	for _, char := range c.Sim.Characters() {
-		char.AddMod(def.CharStatMod{
+		char.AddMod(core.CharStatMod{
 			Key:    "xl-c6",
 			Expiry: -1,
-			Amount: func(a def.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, c.Sim.Status("xlc6") > 0
 			},
 		})
@@ -99,14 +99,14 @@ func (c *char) c6() {
 }
 
 func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(def.ActionAttack, p)
+	f := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
-		def.AttackTagNormal,
-		def.ICDTagNormalAttack,
-		def.ICDGroupDefault,
-		def.StrikeTypeSpear,
-		def.Physical,
+		core.AttackTagNormal,
+		core.ICDTagNormalAttack,
+		core.ICDGroupDefault,
+		core.StrikeTypeSpear,
+		core.Physical,
 		25,
 		0,
 	)
@@ -120,7 +120,7 @@ func (c *char) Attack(p map[string]int) int {
 	//if n = 5, add explosion for c2
 	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
 		d1 := d.Clone()
-		d1.Element = def.Pyro
+		d1.Element = core.Pyro
 		d1.Mult = 0.75
 		c.QueueDmg(&d1, 120)
 	}
@@ -132,14 +132,14 @@ func (c *char) Attack(p map[string]int) int {
 }
 
 func (c *char) ChargeAttack(p map[string]int) int {
-	f := c.ActionFrames(def.ActionCharge, p)
+	f := c.ActionFrames(core.ActionCharge, p)
 	d := c.Snapshot(
 		"Charge",
-		def.AttackTagExtra,
-		def.ICDTagExtraAttack,
-		def.ICDGroupPole,
-		def.StrikeTypeSpear,
-		def.Physical,
+		core.AttackTagExtra,
+		core.ICDTagExtraAttack,
+		core.ICDGroupPole,
+		core.StrikeTypeSpear,
+		core.Physical,
 		25,
 		nc[c.TalentLvlAttack()],
 	)
@@ -153,23 +153,23 @@ func (c *char) ChargeAttack(p map[string]int) int {
 func (c *char) Skill(p map[string]int) int {
 	//check if on cd first
 
-	f := c.ActionFrames(def.ActionSkill, p)
+	f := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Guoba",
-		def.AttackTagElementalArt,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeSpear,
-		def.Pyro,
+		core.AttackTagElementalArt,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeSpear,
+		core.Pyro,
 		25,
 		guoba[c.TalentLvlSkill()],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	if c.Base.Cons >= 1 {
-		d.OnHitCallback = func(t def.Target) {
-			t.AddResMod("xiangling-c1", def.ResistMod{
-				Ele:      def.Pyro,
+		d.OnHitCallback = func(t core.Target) {
+			t.AddResMod("xiangling-c1", core.ResistMod{
+				Ele:      core.Pyro,
 				Value:    -0.15,
 				Duration: 6 * 60,
 			})
@@ -183,24 +183,24 @@ func (c *char) Skill(p map[string]int) int {
 	for i := 0; i < 4; i++ {
 		x := d.Clone()
 		c.QueueDmg(&x, delay+i*86)
-		c.QueueParticle("xiangling", 1, def.Pyro, delay+i*95+90+60)
+		c.QueueParticle("xiangling", 1, core.Pyro, delay+i*95+90+60)
 	}
 
-	c.SetCD(def.ActionSkill, 12*60)
+	c.SetCD(core.ActionSkill, 12*60)
 	//return animation cd
 	return f
 }
 
 func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(def.ActionBurst, p)
+	f := c.ActionFrames(core.ActionBurst, p)
 	lvl := c.TalentLvlBurst()
 	d := c.Snapshot(
 		"Pyronado",
-		def.AttackTagElementalBurst,
-		def.ICDTagElementalBurst,
-		def.ICDGroupDefault,
-		def.StrikeTypeSpear,
-		def.Pyro,
+		core.AttackTagElementalBurst,
+		core.ICDTagElementalBurst,
+		core.ICDGroupDefault,
+		core.StrikeTypeSpear,
+		core.Pyro,
 		25,
 		0,
 	)
@@ -216,15 +216,15 @@ func (c *char) Burst(p map[string]int) int {
 	//spin to win; snapshot on cast
 	d = c.Snapshot(
 		"Pyronado",
-		def.AttackTagElementalBurst,
-		def.ICDTagNone,
-		def.ICDGroupDefault,
-		def.StrikeTypeSpear,
-		def.Pyro,
+		core.AttackTagElementalBurst,
+		core.ICDTagNone,
+		core.ICDGroupDefault,
+		core.StrikeTypeSpear,
+		core.Pyro,
 		25,
 		pyronadoSpin[lvl],
 	)
-	d.Targets = def.TargetAll
+	d.Targets = core.TargetAll
 
 	//ok for now we assume it's 80 (or 70??) frames per cycle, that gives us roughly 10s uptime
 	//max is either 10s or 14s
@@ -249,7 +249,7 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	//add cooldown to sim
-	c.SetCD(def.ActionBurst, 20*60)
+	c.SetCD(core.ActionBurst, 20*60)
 	//use up energy
 	c.Energy = 0
 
