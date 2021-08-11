@@ -5,6 +5,26 @@ import (
 	"math/rand"
 )
 
+type ShieldHandler interface {
+	AddShield(shd Shield)
+	IsShielded() bool
+	GetShield(t ShieldType) Shield
+	AddShieldBonus(f func() float64)
+}
+
+type ConstructHandler interface {
+	NewConstruct(c Construct, refresh bool)
+	NewNoLimitCons(c Construct, refresh bool)
+	ConstructCount() int
+	ConstructCountType(t GeoConstructType) int
+	Destroy(key int) bool
+	HasConstruct(key int) bool
+}
+
+type HPHandler interface {
+
+}
+
 type Controller struct {
 	//control
 	F int //frame
@@ -22,11 +42,10 @@ type Controller struct {
 	Targets []Target
 
 	//constructs
-	Constructs []Construct
-	ConstructsNoLimit []Construct
+	ConstructCtrl ConstructHandler
 
 	//shields
-	Shields []Shield
+	ShieldCtrl ShieldHandler
 }
 
 func New(cfg ...func(*Controller) error) (*Controller, error) {
