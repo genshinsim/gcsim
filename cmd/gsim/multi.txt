@@ -27,11 +27,11 @@
 ../../config/yoimiya/yoi-xq-bt-suc.txt
 #../../config/yoimiya/windblume-r5.txt
 #../../config/yoimiya/hunt-r1.txt
-#../../config/yoimiya/rust-r1.txt
+../../config/yoimiya/rust-r1.txt
 #../../config/yoimiya/blackcliff-r1.txt
-#../../config/yoimiya/4tf-bei-fish-xq.txt
+../../config/yoimiya/4tf-bei-fish-xq.txt
 #../../config/yoimiya/4tf-windblume-r5.txt
-#../../config/yoimiya/overload.txt
+../../config/yoimiya/overload.txt
 
 #../../config/raiden/xl-xq-benny-catch-r5.txt
 #../../config/raiden/xl-xq-benny-cutter-r1.txt
