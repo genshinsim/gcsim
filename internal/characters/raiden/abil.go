@@ -41,17 +41,8 @@ func (c *char) Attack(p map[string]int) int {
 func (c *char) swordAttack(f int) int {
 
 	for i, mult := range attackB[c.NormalCounter] {
-		d := c.Snapshot(
-			//fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
-			"Musou Isshin",
-			core.AttackTagElementalBurst,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Electro,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
+		d := c.QSnapshot.Clone()
+		d.Mult = mult[c.TalentLvlAttack()]
 		//adds to talent %
 		d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
 		c.AddTask(func() {
@@ -200,6 +191,20 @@ func (c *char) Burst(p map[string]int) int {
 			}
 		}, "c4", f+1)
 	}
+
+	c.AddTask(func() {
+		c.QSnapshot = c.Snapshot(
+			//fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
+			"Musou Isshin",
+			core.AttackTagElementalBurst,
+			core.ICDTagNormalAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Electro,
+			25,
+			0,
+		)
+	}, "q-snapshot", f-10)
 
 	c.SetCD(core.ActionBurst, 20*60) //20s cd
 	c.Energy = 0
