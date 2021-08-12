@@ -14,9 +14,8 @@ type char struct {
 	stacks         float64
 	restoreICD     int
 	restoreCount   int
-	c6Count        int
-	c6ICD          int
-	QSnapshot      core.Snapshot
+	c6Count int
+	c6ICD int
 }
 
 func init() {
