@@ -1,15 +1,13 @@
 package core
 
 type Config struct {
-	Label string
-	Mode  struct {
-		Average    bool
+	Label      string
+	RunOptions struct {
+		Debug      bool
 		Duration   int
 		Iteration  int
 		Workers    int
-		HPMode     bool
-		HP         float64
-		FrameLimit int
+		DamageMode bool
 	}
 	Targets    []EnemyProfile
 	Characters struct {
@@ -20,7 +18,6 @@ type Config struct {
 
 	Hurt      HurtEvent
 	FixedRand bool //if this is true then use the same seed
-	LogConfig LogConfig
 }
 
 type LogConfig struct {
@@ -64,6 +61,7 @@ type TalentProfile struct {
 
 type EnemyProfile struct {
 	Level  int
+	HP     float64
 	Resist map[EleType]float64
 }
 

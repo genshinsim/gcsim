@@ -181,11 +181,11 @@ func (s *Server) runSingle(cfg runConfig, r wsRequest) {
 	prof.FixedRand = cfg.NoSeed
 
 	if cfg.HP > 0 {
-		prof.Mode.HPMode = true
-		prof.Mode.HP = cfg.HP
+		prof.RunOptions.DamageMode = true
+		prof.RunOptions.HP = cfg.HP
 	} else {
-		prof.Mode.FrameLimit = cfg.Seconds * 60
-		prof.Mode.HP = 0
+		prof.RunOptions.FrameLimit = cfg.Seconds * 60
+		prof.RunOptions.HP = 0
 	}
 
 	sim, err := combat.NewSim(prof)
@@ -566,11 +566,11 @@ func detailedWorker(src string, hp float64, dur int, resp chan workerResp, req c
 			cfg.LogConfig.LogShowCaller = false
 
 			if hp > 0 {
-				cfg.Mode.HPMode = true
-				cfg.Mode.HP = hp
+				cfg.RunOptions.DamageMode = true
+				cfg.RunOptions.HP = hp
 			} else {
-				cfg.Mode.FrameLimit = dur * 60
-				cfg.Mode.HP = 0
+				cfg.RunOptions.FrameLimit = dur * 60
+				cfg.RunOptions.HP = 0
 			}
 
 			s, err := combat.NewSim(cfg)

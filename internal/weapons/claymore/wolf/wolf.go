@@ -34,7 +34,7 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 		if icd > s.Frame() {
 			return
 		}
-		if !s.Flags().HPMode {
+		if !s.Flags().DamageMode {
 			return //ignore as we not tracking HP
 		}
 		if t.HP()/t.MaxHP() > 0.3 {

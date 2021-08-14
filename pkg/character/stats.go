@@ -15,11 +15,11 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 		}
 	}
 	if ind != 0 && ind != len(c.Mods) {
-		c.Log.Debugw("char mod added", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Log.Debugw("char mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
 		c.Mods[ind] = mod
 	} else {
 		c.Mods = append(c.Mods, mod)
-		c.Log.Debugw("char mod added", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Log.Debugw("char mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
 	}
 
 }
@@ -55,7 +55,7 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	ds.AttackTag = a
 	ds.ICDTag = icd
 	ds.ICDGroup = g
-	ds.SourceFrame = c.Sim.Frame()
+	ds.SourceFrame = c.Core.F
 	ds.WeaponClass = c.Weapon.Class
 	ds.BaseAtk = c.Base.Atk + c.Weapon.Atk
 	ds.CharLvl = c.Base.Level
@@ -73,7 +73,7 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	var logDetails []zap.Field = make([]zap.Field, 0, 11+2*len(core.StatTypeString)+len(c.Mods))
 
 	logDetails = append(logDetails,
-		zap.Int("frame", c.Sim.Frame()),
+		zap.Int("frame", c.Core.F),
 		zap.Any("event", core.LogSnapshotEvent),
 		zap.Int("char", c.Index),
 		zap.String("abil", name),
@@ -94,7 +94,7 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 		logDetails = append(logDetails, zap.Int(sb.String(), m.Expiry))
 		sb.Reset()
 
-		if m.Expiry > c.Sim.Frame() || m.Expiry == -1 {
+		if m.Expiry > c.Core.F || m.Expiry == -1 {
 
 			amt, ok := m.Amount(a)
 
@@ -123,7 +123,7 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 			}
 		}
 		if ok {
-			if c.Infusion.Expiry > c.Sim.Frame() || c.Infusion.Expiry == -1 {
+			if c.Infusion.Expiry > c.Core.F || c.Infusion.Expiry == -1 {
 				ds.Element = c.Infusion.Ele
 				logDetails = append(
 					logDetails,

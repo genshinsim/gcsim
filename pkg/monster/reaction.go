@@ -9,7 +9,7 @@ func (t *Target) handleReaction(ds *core.Snapshot) {
 	// log.Println("existing aura", t.aura)
 
 	if t.aura == nil {
-		t.aura = NewAura(ds, t.sim.Frame())
+		t.aura = NewAura(ds, t.core.F)
 		// log.Println("new aura", t.aura)
 		return
 	}
@@ -19,10 +19,7 @@ func (t *Target) handleReaction(ds *core.Snapshot) {
 	aura, ok := t.aura.React(ds, t)
 
 	if ok {
-		t.sim.OnReaction(t, ds)
-		for _, v := range t.onReactionOccured {
-			v.f(ds)
-		}
+		t.core.Events.Emit(core.OnReactionOccured, t, ds)
 	}
 
 	t.aura = aura
@@ -31,44 +28,13 @@ func (t *Target) handleReaction(ds *core.Snapshot) {
 
 }
 
-type reactionHooks struct {
-	f   func(ds *core.Snapshot)
-	key string
-}
-
-func (t *Target) AddOnReactionHook(key string, fun func(ds *core.Snapshot)) {
-	a := t.onReactionOccured
-
-	ind := len(a)
-
-	for i, v := range a {
-		if v.key == key {
-			ind = i
-			break
-		}
-	}
-	if ind != 0 && ind != len(a) {
-		a[ind] = reactionHooks{
-			key: key,
-			f:   fun,
-		}
-		t.log.Debugw("reaction hook added", "frame", t.sim.Frame(), "event", core.LogHookEvent, "overwrite", true, "key", key, "hooks", a)
-	} else {
-		a = append(a, reactionHooks{
-			key: key,
-			f:   fun,
-		})
-		t.log.Debugw("reaction hook added", "frame", t.sim.Frame(), "event", core.LogHookEvent, "overwrite", true, "key", key, "hooks", a)
-	}
-	t.onReactionOccured = a
-}
-
 func (t *Target) queueReaction(in *core.Snapshot, typ core.ReactionType, res core.Durability, delay int) {
 	ds := t.TransReactionSnapshot(in, typ, res, true)
 
-	t.addTask(func(t *Target) {
-		t.sim.ApplyDamage(&ds)
+	t.core.Tasks.Add(func() {
+		t.core.Combat.ApplyDamage(&ds)
 	}, delay)
+
 	//if swirl queue another
 	switch typ {
 	case core.SwirlCryo:
@@ -79,8 +45,8 @@ func (t *Target) queueReaction(in *core.Snapshot, typ core.ReactionType, res cor
 		return
 	}
 	ds2 := t.TransReactionSnapshot(in, typ, res, false)
-	t.addTask(func(t *Target) {
-		t.sim.ApplyDamage(&ds2)
+	t.core.Tasks.Add(func() {
+		t.core.Combat.ApplyDamage(&ds2)
 	}, delay)
 }
 
@@ -91,7 +57,7 @@ func (t *Target) TransReactionSnapshot(in *core.Snapshot, typ core.ReactionType,
 		ActorEle:    in.ActorEle,
 		Actor:       in.Actor,
 		ActorIndex:  in.ActorIndex,
-		SourceFrame: t.sim.Frame(),
+		SourceFrame: t.core.F,
 		Abil:        string(typ),
 		ImpulseLvl:  1,
 		//reaction related
@@ -167,7 +133,7 @@ func (t *Target) TransReactionSnapshot(in *core.Snapshot, typ core.ReactionType,
 			ds.Durability = 1.25*(x-1) + 25
 		}
 	case core.SwirlHydro:
-		mult = 0.6
+		mult = 0
 		ds.Element = core.Hydro
 		ds.AttackTag = core.AttackTagSwirlHydro
 		ds.ICDTag = core.ICDTagSwirlHydro
@@ -202,8 +168,7 @@ func (t *Target) TransReactionSnapshot(in *core.Snapshot, typ core.ReactionType,
 	}
 
 	//grab live EM
-	char, _ := t.sim.CharByPos(in.ActorIndex)
-	ds.Stats[core.EM] = char.Stat(core.EM)
+	ds.Stats[core.EM] = t.core.Chars[in.ActorIndex].Stat(core.EM)
 	ds.Mult = mult
 
 	return ds

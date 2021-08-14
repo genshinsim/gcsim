@@ -37,7 +37,7 @@ func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.
 		c.c4()
 	}
 
-	if c.Base.Cons == 6 && s.Flags().HPMode {
+	if c.Base.Cons == 6 && s.Flags().DamageMode {
 		c.c6()
 	}
 

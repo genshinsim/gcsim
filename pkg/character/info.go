@@ -39,7 +39,7 @@ func (c *Tmpl) TalentLvlBurst() int {
 	return c.Talents.Burst - 1
 }
 func (c *Tmpl) TalentLvlAttack() int {
-	if c.Sim.Flags().ChildeActive {
+	if c.Core.Flags.ChildeActive {
 		return c.Talents.Attack
 	}
 	return c.Talents.Attack - 1
