@@ -172,7 +172,7 @@ func (c *char) burstHook() {
 		c.Sim.AddStatus("aurousicd", 120) //2 sec icd
 	}, "yoimiya-burst-check")
 
-	if c.Sim.Flags().HPMode {
+	if c.Sim.Flags().DamageMode {
 		//add check for if yoimiya dies
 		c.Sim.AddOnHurt(func(s core.Sim) {
 			if c.HPCurrent <= 0 {

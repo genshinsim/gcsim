@@ -206,7 +206,7 @@ func (c *char) skillHook() {
 
 		d := c.skillSnapshot.Clone()
 
-		if c.Sim.Flags().HPMode && t.HP()/t.MaxHP() < .5 {
+		if c.Sim.Flags().DamageMode && t.HP()/t.MaxHP() < .5 {
 			d.Stats[core.DmgP] += 0.25
 			c.Log.Debugw("a2 proc'd, dealing extra dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", d.Stats[core.DmgP])
 		}

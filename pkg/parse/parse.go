@@ -67,9 +67,9 @@ func (p *Parser) Parse() (core.Config, error) {
 	p.chars = make(map[string]*core.CharacterProfile)
 
 	//default run options
-	p.result.Mode.Duration = 90
-	p.result.Mode.Iteration = 1000
-	p.result.Mode.Workers = 20
+	p.result.RunOptions.Duration = 90
+	p.result.RunOptions.Iteration = 1000
+	p.result.RunOptions.Workers = 20
 
 	state := parseRows
 	for state != nil && err == nil {
@@ -92,8 +92,14 @@ func (p *Parser) Parse() (core.Config, error) {
 		p.result.Characters.Profile = append(p.result.Characters.Profile, *p.chars[k])
 	}
 
-	if p.result.Mode.HP > 0 {
-		p.result.Mode.HPMode = true
+	//check target hp
+
+	for i, v := range p.result.Targets {
+		if p.result.RunOptions.DamageMode && v.HP <= 0 {
+			p.result.Targets[i].HP = 1000000 //default 1 mil hp
+		} else if !p.result.RunOptions.DamageMode {
+			p.result.Targets[i].HP = 0 //make sure its 0 if not running hp mode
+		}
 	}
 
 	return *p.result, nil
@@ -159,7 +165,7 @@ func parseRows(p *Parser) (parseFn, error) {
 func parseOptions(p *Parser) (parseFn, error) {
 	var err error
 
-	//options mode=average iteration=5000 duration=90 simhp=0 workers=24;
+	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemMode:
@@ -170,32 +176,32 @@ func parseOptions(p *Parser) (parseFn, error) {
 			}
 			item := p.next()
 			switch item.typ {
-			case itemAverage:
-				p.result.Mode.Average = true
-			case itemSingle:
-				p.result.Mode.Average = false
+			case itemDamage:
+				p.result.RunOptions.DamageMode = true
+			case itemTime:
+				p.result.RunOptions.DamageMode = false
 			default:
 				return nil, fmt.Errorf("bad token %v parsing options, expecting average or single. line %v", n.val, p.tokens)
+			}
+		case itemDebug:
+			n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
+			if err == nil {
+				p.result.RunOptions.Debug = n.val == "true"
 			}
 		case itemIterations:
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
-				p.result.Mode.Iteration, err = itemNumberToInt(n)
+				p.result.RunOptions.Iteration, err = itemNumberToInt(n)
 			}
 		case itemDuration:
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
-				p.result.Mode.Duration, err = itemNumberToInt(n)
-			}
-		case itemSimHP:
-			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
-			if err == nil {
-				p.result.Mode.HP, err = itemNumberToFloat64(n)
+				p.result.RunOptions.Duration, err = itemNumberToInt(n)
 			}
 		case itemWorkers:
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
-				p.result.Mode.Workers, err = itemNumberToInt(n)
+				p.result.RunOptions.Workers, err = itemNumberToInt(n)
 			}
 		case itemTerminateLine:
 			return parseRows, nil

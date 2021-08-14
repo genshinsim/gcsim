@@ -200,13 +200,13 @@ func main() {
 func runSingle(cfg core.Config, hp float64, dur int) {
 
 	if hp > 0 {
-		cfg.Mode.HPMode = true
-		cfg.Mode.HP = hp
+		cfg.RunOptions.DamageMode = true
+		cfg.RunOptions.HP = hp
 	} else {
-		cfg.Mode.FrameLimit = dur * 60
-		cfg.Mode.HP = 0
+		cfg.RunOptions.FrameLimit = dur * 60
+		cfg.RunOptions.HP = 0
 	}
-	log.Println(cfg.Mode.FrameLimit)
+	log.Println(cfg.RunOptions.FrameLimit)
 
 	s, err := combat.NewSim(cfg)
 	if err != nil {
@@ -566,11 +566,11 @@ func detailedWorker(src []byte, hp float64, dur int, resp chan combat.SimStats, 
 			cfg.LogConfig.LogShowCaller = false
 
 			if hp > 0 {
-				cfg.Mode.HPMode = true
-				cfg.Mode.HP = hp
+				cfg.RunOptions.DamageMode = true
+				cfg.RunOptions.HP = hp
 			} else {
-				cfg.Mode.FrameLimit = dur * 60
-				cfg.Mode.HP = 0
+				cfg.RunOptions.FrameLimit = dur * 60
+				cfg.RunOptions.HP = 0
 			}
 
 			s, err := combat.NewSim(cfg)
@@ -704,11 +704,11 @@ func worker(src []byte, hp float64, dur int, t int, resp chan float64, req chan 
 			cfg.LogConfig.LogShowCaller = false
 
 			if hp > 0 {
-				cfg.Mode.HPMode = true
-				cfg.Mode.HP = hp
+				cfg.RunOptions.DamageMode = true
+				cfg.RunOptions.HP = hp
 			} else {
-				cfg.Mode.FrameLimit = dur * 60
-				cfg.Mode.HP = 0
+				cfg.RunOptions.FrameLimit = dur * 60
+				cfg.RunOptions.HP = 0
 			}
 
 			var additional []core.EnemyProfile

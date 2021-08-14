@@ -5,14 +5,6 @@ import (
 )
 
 func (s *Sim) Run() (SimStats, error) {
-	//initialize all characters
-	for i, c := range s.chars {
-		c.Init(i)
-	}
-	//call rest of init hooks
-	for _, f := range s.initHooks {
-		f()
-	}
 
 	var err error
 	stop := false
@@ -22,12 +14,12 @@ func (s *Sim) Run() (SimStats, error) {
 		if err != nil {
 			return s.stats, err
 		}
-		if s.cfg.Mode.HPMode {
+		if s.cfg.RunOptions.DamageMode {
 			//stop when last target dies
 			// log.Println(s.f, s.targets)
 			stop = len(s.targets) == 0
 		} else {
-			stop = s.f == s.cfg.Mode.FrameLimit-1
+			stop = s.f == s.cfg.RunOptions.FrameLimit-1
 		}
 	}
 

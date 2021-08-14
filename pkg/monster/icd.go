@@ -48,21 +48,21 @@ func (t *Target) groupTagDamageMult(grp core.ICDGroup, char int) float64 {
 }
 
 func (t *Target) resetDamageCounterAfterDelay(grp core.ICDGroup, char int) {
-	t.addTask(func(t *Target) {
+	t.core.Tasks.Add(func() {
 		//set the counter back to 0
 		t.icdDamageGroupCounter[char][grp] = 0
 		t.icdDamageGroupOnTimer[char][grp] = false
-		t.log.Debugw("damage counter reset", "frame", t.sim.Frame(), "event", core.LogICDEvent, "char", char)
+		t.core.Log.Debugw("damage counter reset", "frame", t.core.F, "event", core.LogICDEvent, "char", char)
 	}, core.ICDGroupResetTimer[grp]-1)
-	t.log.Debugw("damage reset timer set", "frame", t.sim.Frame(), "event", core.LogICDEvent, "char", char, "grp", grp, "reset", t.sim.Frame()+core.ICDGroupResetTimer[grp]-1)
+	t.core.Log.Debugw("damage reset timer set", "frame", t.core.F, "event", core.LogICDEvent, "char", char, "grp", grp, "reset", t.core.F+core.ICDGroupResetTimer[grp]-1)
 }
 
 func (t *Target) resetTagCounterAfterDelay(tag core.ICDTag, grp core.ICDGroup, char int) {
-	t.addTask(func(t *Target) {
+	t.core.Tasks.Add(func() {
 		//set the counter back to 0
 		t.icdTagCounter[char][tag] = 0
 		t.icdGroupOnTimer[char][grp] = false
-		t.log.Debugw("ele app counter reset", "frame", t.sim.Frame(), "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char)
+		t.core.Log.Debugw("ele app counter reset", "frame", t.core.F, "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char)
 	}, core.ICDGroupResetTimer[grp]-1)
-	t.log.Debugw("ele app reset timer set", "frame", t.sim.Frame(), "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char, "reset", t.sim.Frame()+core.ICDGroupResetTimer[grp]-1)
+	t.core.Log.Debugw("ele app reset timer set", "frame", t.core.F, "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char, "reset", t.core.F+core.ICDGroupResetTimer[grp]-1)
 }

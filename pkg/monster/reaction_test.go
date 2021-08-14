@@ -2,11 +2,10 @@ package monster
 
 import (
 	"fmt"
-	"math/rand"
+	"log"
 	"testing"
-	"time"
 
-	"github.com/genshinsim/gsim/internal/dummy"
+	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
@@ -14,41 +13,54 @@ func TestMelt(t *testing.T) {
 
 	dmgCount := 0
 	shdCount := 0
+	ampCount := 0
+	ampMult := 0.0
 	var target *Target
 
-	dummy.NewSim(func(s *dummy.Sim) {
-
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
-
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		target = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			dmgCount++
-			target.Attack(ds)
-		}
-
-		s.OnShielded = func(shd core.Shield) {
-			// log.Println(shd.CurrentHP())
-			shdCount++
-		}
-
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	target = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
 	})
+	c.Targets = append(c.Targets, target)
+
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		dmgCount++
+		return false
+	}, "atk-count")
+
+	c.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		shdCount++
+		return false
+	}, "shield-count")
+
+	c.Events.Subscribe(core.OnAmpReaction, func(args ...interface{}) bool {
+		snap := args[1].(*core.Snapshot)
+		if snap.ReactionType == core.Melt {
+			ampCount++
+			ampMult = snap.ReactMult
+		}
+		return false
+	}, "amp-count")
+
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	fmt.Println("----melt testing----")
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 50,
 		Element:    core.Pyro,
 		ICDTag:     core.ICDTagNone,
@@ -67,24 +79,26 @@ func TestMelt(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	}
-	target.Attack(ds)
+	c.Combat.ApplyDamage(ds)
 	expect("apply 25 cryo to 50 pyro (tolerance 0.01)", 27.5, target.aura.Durability())
 	if !durApproxEqual(27.5, target.aura.Durability(), 0.01) {
 		t.Error("melt test: invalid durability")
 		t.FailNow()
 	}
 	//check our snapshot, should have been modified
-	expect("checking melt is set", core.Melt, ds.ReactionType)
-	if ds.ReactionType != core.Melt {
-		t.Errorf("melt test: expecting melt flag set, got %v", ds.ReactionType)
+	expect("checking melt count", 1, ampCount)
+	if ampCount != 1 {
+		t.Errorf("melt test: expecting 1 melt, got %v", ampCount)
 	}
-	expect("checking melt multiplier", 1.5, ds.ReactMult)
-	if !floatApproxEqual(1.5, ds.ReactMult, 0.0000001) {
-		t.Errorf("melt test: expecting 1.5 multiplier, got %v", ds.ReactMult)
+	expect("checking melt multiplier", 1.5, ampMult)
+	if !floatApproxEqual(1.5, ampMult, 0.0000001) {
+		t.Errorf("melt test: expecting 1.5 multiplier, got %v", ampMult)
 	}
+	ampCount = 0
+	ampMult = 0
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 100,
 		Element:    core.Cryo,
 		ICDTag:     core.ICDTagNone,
@@ -103,7 +117,7 @@ func TestMelt(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	}
-	target.Attack(ds)
+	c.Combat.ApplyDamage(ds)
 
 	expect("apply 25 pyro to 100 cryo (tolerance 0.01)", 30, target.aura.Durability())
 	if !durApproxEqual(30, target.aura.Durability(), 0.01) {
@@ -111,13 +125,12 @@ func TestMelt(t *testing.T) {
 		t.FailNow()
 	}
 	//check our snapshot, should have been modified
-	expect("checking melt is set", core.Melt, ds.ReactionType)
-	if ds.ReactionType != core.Melt {
-		t.Errorf("melt test: expecting melt flag set, got %v", ds.ReactionType)
+	if ampCount != 1 {
+		t.Errorf("melt test: expecting 1 melt, got %v", ampCount)
 	}
-	expect("checking melt multiplier", 2, ds.ReactMult)
-	if !floatApproxEqual(2, ds.ReactMult, 0.0000001) {
-		t.Errorf("melt test: expecting 1.5 multiplier, got %v", ds.ReactMult)
+	expect("checking melt multiplier", 2, ampMult)
+	if !floatApproxEqual(2, ampMult, 0.0000001) {
+		t.Errorf("melt test: expecting 1.5 multiplier, got %v", ampMult)
 	}
 
 }
@@ -128,40 +141,45 @@ func TestSuperconduct(t *testing.T) {
 	shdCount := 0
 	var target *Target
 
-	sim := dummy.NewSim(func(s *dummy.Sim) {
-
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
-
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		target = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			dmgCount++
-			target.Attack(ds)
-		}
-
-		s.OnShielded = func(shd core.Shield) {
-			// log.Println(shd.CurrentHP())
-			shdCount++
-		}
-
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	target = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
 	})
+	c.Targets = append(c.Targets, target)
+
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		snap := args[1].(*core.Snapshot)
+		if snap.AttackTag == core.AttackTagSuperconductDamage {
+			dmgCount++
+		}
+		return false
+	}, "atk-count")
+
+	c.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		shdCount++
+		return false
+	}, "shield-count")
+
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	fmt.Println("----superconduct testing----")
 
 	//TEST SUPERCONDUCT
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Cryo,
 		ICDTag:     core.ICDTagNone,
@@ -170,7 +188,7 @@ func TestSuperconduct(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Electro,
@@ -186,9 +204,7 @@ func TestSuperconduct(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	target.AuraTick()
-	target.Tick()
+	c.Tick()
 	expect("checking superconduct dealt 1 dmg tick", 1, dmgCount)
 	if dmgCount != 1 {
 		t.Errorf("superconduct test: expecting 1 tick of damage, got %v", dmgCount)
@@ -196,7 +212,7 @@ func TestSuperconduct(t *testing.T) {
 	dmgCount = 0
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Electro,
 		ICDTag:     core.ICDTagNone,
@@ -205,7 +221,7 @@ func TestSuperconduct(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Cryo,
@@ -221,9 +237,7 @@ func TestSuperconduct(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	target.AuraTick()
-	target.Tick()
+	c.Tick()
 	expect("checking superconduct dealt 1 dmg tick", 1, dmgCount)
 	if dmgCount != 1 {
 		t.Errorf("superconduct test: expecting 1 tick of damage, got %v", dmgCount)
@@ -238,39 +252,44 @@ func TestOverload(t *testing.T) {
 	shdCount := 0
 	var target *Target
 
-	sim := dummy.NewSim(func(s *dummy.Sim) {
-
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
-
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		target = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			dmgCount++
-			target.Attack(ds)
-		}
-
-		s.OnShielded = func(shd core.Shield) {
-			// log.Println(shd.CurrentHP())
-			shdCount++
-		}
-
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	target = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
 	})
+	c.Targets = append(c.Targets, target)
+
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		snap := args[1].(*core.Snapshot)
+		if snap.AttackTag == core.AttackTagOverloadDamage {
+			dmgCount++
+		}
+		return false
+	}, "atk-count")
+
+	c.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		shdCount++
+		return false
+	}, "shield-count")
+
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	fmt.Println("----overload testing----")
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Electro,
 		ICDTag:     core.ICDTagNone,
@@ -279,7 +298,7 @@ func TestOverload(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Pyro,
@@ -295,9 +314,7 @@ func TestOverload(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	target.AuraTick()
-	target.Tick()
+	c.Tick()
 	expect("checking overload dealt 1 dmg tick", 1, dmgCount)
 	if dmgCount != 1 {
 		t.Errorf("overload test: expecting 1 tick of damage, got %v", dmgCount)
@@ -305,7 +322,7 @@ func TestOverload(t *testing.T) {
 	dmgCount = 0
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Pyro,
 		ICDTag:     core.ICDTagNone,
@@ -314,7 +331,7 @@ func TestOverload(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Electro,
@@ -330,9 +347,7 @@ func TestOverload(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	target.AuraTick()
-	target.Tick()
+	c.Tick()
 	expect("checking overload dealt 1 dmg tick", 1, dmgCount)
 	if dmgCount != 1 {
 		t.Errorf("overload test: expecting 1 tick of damage, got %v", dmgCount)
@@ -348,69 +363,75 @@ func TestMultiOverload(t *testing.T) {
 	var targetA *Target
 	var targetB *Target
 
-	sim := dummy.NewSim(func(s *dummy.Sim) {
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	targetA = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
+	})
+	c.Targets = append(c.Targets, targetA)
 
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
+	targetB = New(1, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
+	})
+	c.Targets = append(c.Targets, targetB)
 
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		targetA = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		targetB = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			a, _ := targetA.Attack(ds)
-			if a > 0 {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
+		snap := args[1].(*core.Snapshot)
+		dmg := args[2].(float64)
+		if snap.AttackTag == core.AttackTagOverloadDamage && dmg > 0 {
+			if t.Index() == 0 {
 				aCount++
-			}
-			b, _ := targetB.Attack(ds)
-			if b > 0 {
+			} else {
 				bCount++
 			}
-
 		}
 
-	})
+		return false
+	}, "atk-count")
 
-	sim.Targs = append(sim.Targs, targetA)
-	sim.Targs = append(sim.Targs, targetB)
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	fmt.Println("----multi target overload testing----")
 
 	targetA.aura = nil
-	targetA.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
+		ActorIndex: 0,
 		Durability: 100,
 		Element:    core.Electro,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Stats:      make([]float64, core.EndStatType),
-		Targets:    core.TargetAll,
+		Targets:    0,
 		DamageSrc:  -1,
 	})
-	targetA.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
+		ActorIndex: 0,
 		Durability: 25,
 		Element:    core.Pyro,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Stats:      make([]float64, core.EndStatType),
-		Targets:    core.TargetAll,
+		Targets:    0,
 		DamageSrc:  -1,
 	})
 	//we should get 2 ticks of damage here one of each target
-	sim.Skip(2)
+	c.Skip(2)
 
 	expect("expecting 2 overload ticks, one on each target", 2, aCount+bCount)
 	if aCount != 1 {
@@ -424,23 +445,24 @@ func TestMultiOverload(t *testing.T) {
 
 	//there should be electro left still = 80-25-1 tick delay
 	//trigger overload again, should be no dmg this time
-	targetA.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
+		ActorIndex: 0,
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Pyro,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Stats:      make([]float64, core.EndStatType),
-		Targets:    core.TargetAll,
+		Targets:    0,
 		DamageSrc:  -1,
 	})
-	sim.Skip(2)
+	c.Skip(2)
 	expect("expecting 0 overload ticks, one on each target", 0, aCount+bCount)
 	if aCount != 0 {
 		t.Errorf("overload test: expecting 0 tick of damage on target A, got %v", aCount)
 	}
 	if bCount != 0 {
-		t.Errorf("overload test: expecting 0 tick of damage on target A, got %v", bCount)
+		t.Errorf("overload test: expecting 0 tick of damage on target B, got %v", bCount)
 	}
 	aCount = 0
 	bCount = 0
@@ -452,40 +474,53 @@ func TestVaporize(t *testing.T) {
 	dmgCount := 0
 	shdCount := 0
 	var target *Target
+	ampCount := 0
+	ampMult := 0.0
 
-	dummy.NewSim(func(s *dummy.Sim) {
-
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
-
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		target = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			dmgCount++
-			target.Attack(ds)
-		}
-
-		s.OnShielded = func(shd core.Shield) {
-			// log.Println(shd.CurrentHP())
-			shdCount++
-		}
-
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	target = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
 	})
+	c.Targets = append(c.Targets, target)
+
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		dmgCount++
+		return false
+	}, "atk-count")
+
+	c.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		shdCount++
+		return false
+	}, "shield-count")
+
+	c.Events.Subscribe(core.OnAmpReaction, func(args ...interface{}) bool {
+		snap := args[1].(*core.Snapshot)
+		if snap.ReactionType == core.Vaporize {
+			ampCount++
+			ampMult = snap.ReactMult
+		}
+		return false
+	}, "amp-count")
+
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	fmt.Println("----vaporize testing----")
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 100,
 		Element:    core.Pyro,
 		ICDTag:     core.ICDTagNone,
@@ -504,25 +539,25 @@ func TestVaporize(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	}
-	target.Attack(ds)
+	c.Combat.ApplyDamage(ds)
 	expect("apply 25 hydro to 100 pyro (tolerance 0.01)", 30, target.aura.Durability())
 	if !durApproxEqual(30, target.aura.Durability(), 0.01) {
 		t.Error("vaporize test: invalid durability")
 		t.FailNow()
 	}
-	//check our snapshot, should have been modified
-	expect("checking vape is set", core.Vaporize, ds.ReactionType)
-	if ds.ReactionType != core.Vaporize {
-
-		t.Errorf("vaporize test: expecting vaporize flag set, got %v", ds.ReactionType)
+	expect("checking vape count", 1, ampCount)
+	if ampCount != 1 {
+		t.Errorf("vaporize test: expecting 1 vape, got %v", ampCount)
 	}
-	expect("checking vape multiplier", 2, ds.ReactMult)
-	if !floatApproxEqual(2, ds.ReactMult, 0.0000001) {
-		t.Errorf("vaporize test: expecting 2.0 multiplier, got %v", ds.ReactMult)
+	expect("checking melt multiplier", 2, ampMult)
+	if !floatApproxEqual(2, ampMult, 0.0000001) {
+		t.Errorf("vaporize test: expecting 2 multiplier, got %v", ampMult)
 	}
+	ampCount = 0
+	ampMult = 0
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 50,
 		Element:    core.Hydro,
 		ICDTag:     core.ICDTagNone,
@@ -541,21 +576,22 @@ func TestVaporize(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	}
-	target.Attack(ds)
+	c.Combat.ApplyDamage(ds)
 	expect("apply 25 pyro to 50 hydro (tolerance 0.01)", 27.5, target.aura.Durability())
 	if !durApproxEqual(27.5, target.aura.Durability(), 0.01) {
 		t.Error("vaporize test: invalid durability")
 		t.FailNow()
 	}
-	//check our snapshot, should have been modified
-	expect("checking vape is set", core.Vaporize, ds.ReactionType)
-	if ds.ReactionType != core.Vaporize {
-		t.Errorf("vaporize test: expecting vaporize flag set, got %v", ds.ReactionType)
+	expect("checking vape count", 1, ampCount)
+	if ampCount != 1 {
+		t.Errorf("vaporize test: expecting 1 vape, got %v", ampCount)
 	}
-	expect("checking vape multiplier", 1.5, ds.ReactMult)
-	if !floatApproxEqual(1.5, ds.ReactMult, 0.0000001) {
-		t.Errorf("vaporize test: expecting 2.0 multiplier, got %v", ds.ReactMult)
+	expect("checking melt multiplier", 1.5, ampMult)
+	if !floatApproxEqual(1.5, ampMult, 0.0000001) {
+		t.Errorf("vaporize test: expecting 2 multiplier, got %v", ampMult)
 	}
+	ampCount = 0
+	ampMult = 0
 
 }
 
@@ -563,45 +599,48 @@ func TestCrystallize(t *testing.T) {
 
 	dmgCount := 0
 	shdCount := 0
-	var shdHP float64
 	var target *Target
+	var shdHP float64
 	var shdEle core.EleType
 
-	dummy.NewSim(func(s *dummy.Sim) {
-
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
-
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		target = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			dmgCount++
-			target.Attack(ds)
-		}
-
-		s.OnShielded = func(shd core.Shield) {
-			// log.Println(shd.CurrentHP())
-			shdCount++
-			shdHP = shd.CurrentHP()
-			shdEle = shd.Element()
-		}
-
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	target = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
 	})
+	c.Targets = append(c.Targets, target)
+
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		dmgCount++
+		return false
+	}, "atk-count")
+
+	c.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		shd := args[0].(core.Shield)
+		shdHP = shd.CurrentHP()
+		shdEle = shd.Element()
+		shdCount++
+		return false
+	}, "shield-count")
+
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	fmt.Println("----crystallize testing----")
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 50,
 		Element:    core.Pyro,
 		ICDTag:     core.ICDTagNone,
@@ -611,7 +650,7 @@ func TestCrystallize(t *testing.T) {
 		DamageSrc:  -1,
 	})
 
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Geo,
@@ -641,7 +680,7 @@ func TestCrystallize(t *testing.T) {
 	}
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 50,
 		Element:    core.Hydro,
 		ICDTag:     core.ICDTagNone,
@@ -651,7 +690,7 @@ func TestCrystallize(t *testing.T) {
 		DamageSrc:  -1,
 	})
 
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Geo,
@@ -681,7 +720,7 @@ func TestCrystallize(t *testing.T) {
 	}
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 50,
 		Element:    core.Cryo,
 		ICDTag:     core.ICDTagNone,
@@ -691,7 +730,7 @@ func TestCrystallize(t *testing.T) {
 		DamageSrc:  -1,
 	})
 
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Geo,
@@ -721,7 +760,7 @@ func TestCrystallize(t *testing.T) {
 	}
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 50,
 		Element:    core.Electro,
 		ICDTag:     core.ICDTagNone,
@@ -731,7 +770,7 @@ func TestCrystallize(t *testing.T) {
 		DamageSrc:  -1,
 	})
 
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Geo,
@@ -764,49 +803,55 @@ func TestCrystallize(t *testing.T) {
 
 func TestSwirl(t *testing.T) {
 
-	dmgCount := 0
 	attackCount := 0
+	dmgCount := 0
 	shdCount := 0
 	var target *Target
 
-	sim := dummy.NewSim(func(s *dummy.Sim) {
-
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
-
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		target = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			// log.Println(target.attackWillLand(ds))
-			// log.Println(ds.Durability)
-			attackCount++
-			dmg, _ := target.Attack(ds)
-			if dmg > 0 {
-				dmgCount++
-			}
-		}
-
-		s.OnShielded = func(shd core.Shield) {
-			// log.Println(shd.CurrentHP())
-			shdCount++
-		}
-
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	target = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
 	})
+	c.Targets = append(c.Targets, target)
+
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		dmg := args[2].(float64)
+		snap := args[1].(*core.Snapshot)
+		if snap.AttackTag <= core.ReactionAttackDelim {
+			return false
+		}
+		log.Println(args)
+		attackCount++
+		if dmg > 0 {
+			dmgCount++
+		}
+		return false
+	}, "atk-count")
+
+	c.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		shdCount++
+		return false
+	}, "shield-count")
+
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	fmt.Println("----swirl testing----")
 
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Cryo,
 		ICDTag:     core.ICDTagNone,
@@ -815,7 +860,7 @@ func TestSwirl(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Anemo,
@@ -831,12 +876,10 @@ func TestSwirl(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	target.AuraTick()
-	target.Tick()
-	expect("checking swirl triggered 2 attacks", 2, attackCount)
-	if attackCount != 2 {
-		t.Errorf("swirl test: expecting 2 attacks, got %v", attackCount)
+	c.Tick()
+	expect("checking swirl triggered 1 attacks", 1, attackCount)
+	if attackCount != 1 {
+		t.Errorf("swirl test: expecting 1 attacks, got %v", attackCount)
 	}
 	attackCount = 0
 	expect("checking swirl dealt 1 dmg tick", 1, dmgCount)
@@ -845,8 +888,10 @@ func TestSwirl(t *testing.T) {
 	}
 	dmgCount = 0
 
+	c.Skip(120)
+
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Pyro,
 		ICDTag:     core.ICDTagNone,
@@ -855,7 +900,7 @@ func TestSwirl(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Anemo,
@@ -871,12 +916,10 @@ func TestSwirl(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	target.AuraTick()
-	target.Tick()
-	expect("checking swirl triggered 2 attacks", 2, attackCount)
-	if attackCount != 2 {
-		t.Errorf("swirl test: expecting 2 attacks, got %v", attackCount)
+	c.Tick()
+	expect("checking swirl triggered 1 attacks", 1, attackCount)
+	if attackCount != 1 {
+		t.Errorf("swirl test: expecting 1 attacks, got %v", attackCount)
 	}
 	attackCount = 0
 	expect("checking swirl dealt 1 dmg tick", 1, dmgCount)
@@ -885,8 +928,10 @@ func TestSwirl(t *testing.T) {
 	}
 	dmgCount = 0
 
+	c.Skip(120)
+
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Hydro,
 		ICDTag:     core.ICDTagNone,
@@ -895,7 +940,7 @@ func TestSwirl(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Anemo,
@@ -911,22 +956,22 @@ func TestSwirl(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	target.AuraTick()
-	target.Tick()
-	expect("checking swirl triggered 2 attacks", 2, attackCount)
-	if attackCount != 2 {
-		t.Errorf("swirl test: expecting 2 attacks, got %v", attackCount)
+	c.Tick()
+	expect("checking swirl triggered 1 attacks", 1, attackCount)
+	if attackCount != 1 {
+		t.Errorf("swirl test: expecting 1 attacks, got %v", attackCount)
 	}
 	attackCount = 0
-	expect("checking swirl dealt 1 dmg tick", 1, dmgCount)
-	if dmgCount != 1 {
-		t.Errorf("swirl test: expecting 1 tick of damage, got %v", dmgCount)
+	expect("checking swirl dealt 0 dmg tick", 0, dmgCount)
+	if dmgCount != 0 {
+		t.Errorf("swirl test: expecting 0 tick of damage, got %v", dmgCount)
 	}
 	dmgCount = 0
 
+	c.Skip(120)
+
 	target.aura = nil
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Electro,
 		ICDTag:     core.ICDTagNone,
@@ -935,7 +980,7 @@ func TestSwirl(t *testing.T) {
 		Targets:    core.TargetAll,
 		DamageSrc:  -1,
 	})
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Anemo,
@@ -951,12 +996,10 @@ func TestSwirl(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	target.AuraTick()
-	target.Tick()
-	expect("checking swirl triggered 2 attacks", 2, attackCount)
-	if attackCount != 2 {
-		t.Errorf("swirl test: expecting 2 attacks, got %v", attackCount)
+	c.Tick()
+	expect("checking swirl triggered 1 attacks", 1, attackCount)
+	if attackCount != 1 {
+		t.Errorf("swirl test: expecting 1 attacks, got %v", attackCount)
 	}
 	attackCount = 0
 	expect("checking swirl dealt 1 dmg tick", 1, dmgCount)
@@ -973,69 +1016,79 @@ func TestSwirlMultiTarget(t *testing.T) {
 	var targetA *Target
 	var targetB *Target
 
-	sim := dummy.NewSim(func(s *dummy.Sim) {
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	targetA = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
+	})
+	c.Targets = append(c.Targets, targetA)
 
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
+	targetB = New(1, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
+	})
+	c.Targets = append(c.Targets, targetB)
 
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		targetA = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-		targetB = New(1, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			// log.Println(target.attackWillLand(ds))
-			// log.Println(ds.Durability)
-			attackCount++
-			a, _ := targetA.Attack(ds)
-			b, _ := targetB.Attack(ds)
-			if a > 0 {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
+		dmg := args[2].(float64)
+		snap := args[1].(*core.Snapshot)
+		if snap.AttackTag <= core.ReactionAttackDelim {
+			return false
+		}
+		attackCount++
+		if dmg > 0 {
+			if t.Index() == 0 {
 				dmgACount++
-			}
-			if b > 0 {
+			} else {
 				dmgBCount++
 			}
-		}
 
-		s.OnShielded = func(shd core.Shield) {
-			// log.Println(shd.CurrentHP())
-			shdCount++
 		}
+		return false
+	}, "atk-count")
 
-	})
+	c.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		shdCount++
+		return false
+	}, "shield-count")
+
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	fmt.Println("----multitarget swirl testing----")
 
 	targetA.aura = nil
 	targetB.aura = nil
-	targetA.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 50,
 		Element:    core.Cryo,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Stats:      make([]float64, core.EndStatType),
-		Targets:    core.TargetAll,
+		Targets:    0,
 		DamageSrc:  -1,
 	})
-	targetA.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		CharLvl:    90,
 		Durability: 25,
 		Element:    core.Anemo,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Stats:      make([]float64, core.EndStatType),
-		Targets:    core.TargetAll,
+		Targets:    0,
 		DamageSrc:  -1,
 	})
 	expect("apply 25 anemo to 50 cryo on target 1 (tolerance 0.001)", 27.5, targetA.aura.Durability())
@@ -1044,11 +1097,7 @@ func TestSwirlMultiTarget(t *testing.T) {
 		t.FailNow()
 	}
 	//next tick should deal damage
-	sim.F++
-	targetA.AuraTick()
-	targetB.AuraTick()
-	targetA.Tick()
-	targetB.Tick()
+	c.Tick()
 	// targetB.Tick()
 	expect("checking swirl triggered 2 attacks", 2, attackCount)
 	if attackCount != 2 {
@@ -1071,14 +1120,7 @@ func TestSwirlMultiTarget(t *testing.T) {
 		t.Error("swirl test: invalid targetB cryo durability")
 		t.FailNow()
 	}
-	//tick some and then check decay
-	for i := 0; i < 60; i++ {
-		sim.F++
-		targetA.AuraTick()
-		targetB.AuraTick()
-		targetA.Tick()
-		targetB.Tick()
-	}
+	c.Skip(60)
 	expect("check target A cryo durability after 60 frames", (40.0*(1-core.Durability(61)/720.0))-12.5, targetA.aura.Durability())
 	if !durApproxEqual((40.0*(1-core.Durability(61)/720.0))-12.5, targetA.aura.Durability(), 0.001) {
 		t.Error("swirl test: invalid targetA cryo durability")
