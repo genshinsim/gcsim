@@ -19,14 +19,23 @@ import (
 	"github.com/genshinsim/gsim/pkg/parse"
 
 	//characters
+	_ "github.com/genshinsim/gsim/internal/characters/albedo"
+	_ "github.com/genshinsim/gsim/internal/characters/amber"
 	_ "github.com/genshinsim/gsim/internal/characters/ayaka"
 	_ "github.com/genshinsim/gsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gsim/internal/characters/bennett"
+	_ "github.com/genshinsim/gsim/internal/characters/chongyun"
+	_ "github.com/genshinsim/gsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gsim/internal/characters/diona"
 	_ "github.com/genshinsim/gsim/internal/characters/eula"
 	_ "github.com/genshinsim/gsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gsim/internal/characters/ganyu"
+	_ "github.com/genshinsim/gsim/internal/characters/hutao"
+	_ "github.com/genshinsim/gsim/internal/characters/jean"
 	_ "github.com/genshinsim/gsim/internal/characters/kaeya"
+	_ "github.com/genshinsim/gsim/internal/characters/keqing"
+	_ "github.com/genshinsim/gsim/internal/characters/klee"
+	_ "github.com/genshinsim/gsim/internal/characters/lisa"
 	_ "github.com/genshinsim/gsim/internal/characters/ningguang"
 	_ "github.com/genshinsim/gsim/internal/characters/noelle"
 	_ "github.com/genshinsim/gsim/internal/characters/raiden"
@@ -80,6 +89,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/whiteblind"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/wolf"
 
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/catch"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/crescent"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/deathmatch"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonbane"
@@ -91,7 +101,6 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/prototype"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/skyward"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/vortex"
-	_ "github.com/genshinsim/gsim/internal/weapons/spear/catch"
 
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/alley"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/aquila"
@@ -590,11 +599,11 @@ type workerResp struct {
 }
 
 type Summary struct {
-	Iter                 int                            `json:"iter"`
-	AvgDuration          float64                        `json:"avg_duration"`
-	DPS                  ResultFloat                    `json:"dps"`
-	DamageByChar         []map[string]ResultFloat       `json:"damage_by_char"`
-	CharActiveTime       []ResultInt                    `json:"char_active_time"`
+	Iter                 int                             `json:"iter"`
+	AvgDuration          float64                         `json:"avg_duration"`
+	DPS                  ResultFloat                     `json:"dps"`
+	DamageByChar         []map[string]ResultFloat        `json:"damage_by_char"`
+	CharActiveTime       []ResultInt                     `json:"char_active_time"`
 	AbilUsageCountByChar []map[string]ResultInt          `json:"abil_usage_count_by_char"`
 	ReactionsTriggered   map[core.ReactionType]ResultInt `json:"reactions_triggered"`
 	CharNames            []string                        `json:"char_names"`
