@@ -201,7 +201,7 @@ func (c *char) Burst(p map[string]int) int {
 		}, "c4", f+1)
 	}
 
-	c.SetCD(core.ActionBurst, 20*60) //20s cd
+	c.SetCD(core.ActionBurst, 18*60) //20s cd
 	c.Energy = 0
 	return f
 }
