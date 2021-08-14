@@ -23,8 +23,8 @@ func (a *AuraHydro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	case core.Geo:
 		ds.ReactionType = core.CrystallizeHydro
 		//crystallize adds shield
-		shd := NewCrystallizeShield(core.Hydro, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
-		t.sim.AddShield(shd)
+		shd := NewCrystallizeShield(core.Hydro, t.core.F, ds.CharLvl, ds.Stats[core.EM], t.core.F+900)
+		t.core.Shields.Add(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
 	case core.Pyro:
@@ -45,15 +45,15 @@ func (a *AuraHydro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		}
 		ds.ReactionType = core.Freeze
 		//since cryo is applied, cryo aura is nil
-		return newFreeze(nil, a, red, t, ds, t.sim.Frame()), true
+		return newFreeze(nil, a, red, t, ds, t.core.F), true
 	case core.Electro:
 		//ec
 		e := &AuraElectro{}
 		e.Element = &Element{}
 		e.T = core.Electro
-		e.Attach(ds.Durability, t.sim.Frame())
+		e.Attach(ds.Durability, t.core.F)
 		ds.ReactionType = core.ElectroCharged
-		return newEC(e, a, t, ds, t.sim.Frame()), true
+		return newEC(e, a, t, ds, t.core.F), true
 	default:
 		return a, false
 	}

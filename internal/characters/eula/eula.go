@@ -375,7 +375,7 @@ func (c *char) c4() {
 		if ds.Abil != "Glacial Illumination (Lightfall)" {
 			return
 		}
-		if !c.Sim.Flags().HPMode {
+		if !c.Sim.Flags().DamageMode {
 			return
 		}
 		if t.HP()/t.MaxHP() < 0.5 {

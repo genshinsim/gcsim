@@ -23,8 +23,12 @@ func parseTarget(p *Parser) (parseFn, error) {
 			if err == nil {
 				r.Level, err = itemNumberToInt(n)
 			}
+		case n.typ == statHP:
+			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err == nil {
+				r.HP, err = itemNumberToFloat64(n)
+			}
 		case n.typ > eleTypeKeyword:
-
 			s := n.val
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err != nil {

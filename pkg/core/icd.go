@@ -13,6 +13,7 @@ const (
 	// AttackTagTartagliaAttack
 	// AttackTagGandalfrAttack
 	AttackTagElementalArtHold
+	ReactionAttackDelim
 	AttackTagOverloadDamage
 	AttackTagSuperconductDamage
 	AttackTagECDamage

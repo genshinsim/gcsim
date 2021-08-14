@@ -80,6 +80,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/whiteblind"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/wolf"
 
+	_ "github.com/genshinsim/gsim/internal/weapons/spear/catch"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/crescent"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/deathmatch"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/dragonbane"
@@ -91,7 +92,6 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/prototype"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/skyward"
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/vortex"
-	_ "github.com/genshinsim/gsim/internal/weapons/spear/catch"
 
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/alley"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/aquila"
@@ -172,11 +172,11 @@ func (s *Server) runSingle(cfg runConfig, r wsRequest) {
 	prof.FixedRand = cfg.NoSeed
 
 	if cfg.HP > 0 {
-		prof.Mode.HPMode = true
-		prof.Mode.HP = cfg.HP
+		prof.RunOptions.DamageMode = true
+		prof.RunOptions.HP = cfg.HP
 	} else {
-		prof.Mode.FrameLimit = cfg.Seconds * 60
-		prof.Mode.HP = 0
+		prof.RunOptions.FrameLimit = cfg.Seconds * 60
+		prof.RunOptions.HP = 0
 	}
 
 	sim, err := combat.NewSim(prof)
@@ -557,11 +557,11 @@ func detailedWorker(src string, hp float64, dur int, resp chan workerResp, req c
 			cfg.LogConfig.LogShowCaller = false
 
 			if hp > 0 {
-				cfg.Mode.HPMode = true
-				cfg.Mode.HP = hp
+				cfg.RunOptions.DamageMode = true
+				cfg.RunOptions.HP = hp
 			} else {
-				cfg.Mode.FrameLimit = dur * 60
-				cfg.Mode.HP = 0
+				cfg.RunOptions.FrameLimit = dur * 60
+				cfg.RunOptions.HP = 0
 			}
 
 			s, err := combat.NewSim(cfg)
@@ -590,11 +590,11 @@ type workerResp struct {
 }
 
 type Summary struct {
-	Iter                 int                            `json:"iter"`
-	AvgDuration          float64                        `json:"avg_duration"`
-	DPS                  ResultFloat                    `json:"dps"`
-	DamageByChar         []map[string]ResultFloat       `json:"damage_by_char"`
-	CharActiveTime       []ResultInt                    `json:"char_active_time"`
+	Iter                 int                             `json:"iter"`
+	AvgDuration          float64                         `json:"avg_duration"`
+	DPS                  ResultFloat                     `json:"dps"`
+	DamageByChar         []map[string]ResultFloat        `json:"damage_by_char"`
+	CharActiveTime       []ResultInt                     `json:"char_active_time"`
 	AbilUsageCountByChar []map[string]ResultInt          `json:"abil_usage_count_by_char"`
 	ReactionsTriggered   map[core.ReactionType]ResultInt `json:"reactions_triggered"`
 	CharNames            []string                        `json:"char_names"`

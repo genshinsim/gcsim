@@ -134,7 +134,7 @@ func Run(config string) *C.char {
 	}
 
 	var gostring string
-	if cfg.Mode.Average {
+	if cfg.RunOptions.Average {
 		gostring = runAvg(cfg, config)
 	} else {
 		s, err := runSingle(cfg)
@@ -165,8 +165,8 @@ func errToString(s string) string {
 
 func runSingle(cfg core.Config) (combat.SimStats, error) {
 
-	if !cfg.Mode.HPMode {
-		cfg.Mode.FrameLimit = cfg.Mode.Duration * 60
+	if !cfg.RunOptions.DamageMode {
+		cfg.RunOptions.FrameLimit = cfg.RunOptions.Duration * 60
 	}
 
 	s, err := combat.NewSim(cfg)
@@ -209,11 +209,11 @@ type workerResp struct {
 }
 
 type sum struct {
-	Mode                 string                       `json:"mode"`
-	AvgDuration          float64                      `json:"duration"`
-	DPS                  result                       `json:"dps"`
-	DamageByChar         []map[string]result          `json:"damage_by_char"`
-	CharActiveTime       []resulti                    `json:"char_active_time"`
+	Mode                 string                        `json:"mode"`
+	AvgDuration          float64                       `json:"duration"`
+	DPS                  result                        `json:"dps"`
+	DamageByChar         []map[string]result           `json:"damage_by_char"`
+	CharActiveTime       []resulti                     `json:"char_active_time"`
 	AbilUsageCountByChar []map[string]resulti          `json:"abil_usage_count_by_char"`
 	ReactionsTriggered   map[core.ReactionType]resulti `json:"reactions_triggered"`
 	CharNames            []string                      `json:"char_names"`
@@ -246,10 +246,10 @@ func runDetailedIter(cfg core.Config, source string) (sum, error) {
 		summary.DamageByChar[i] = make(map[string]result)
 	}
 
-	count := cfg.Mode.Iteration
-	n := cfg.Mode.Iteration
+	count := cfg.RunOptions.Iteration
+	n := cfg.RunOptions.Iteration
 
-	w := cfg.Mode.Workers
+	w := cfg.RunOptions.Workers
 	if w <= 0 {
 		w = 10
 	}
@@ -270,8 +270,8 @@ func runDetailedIter(cfg core.Config, source string) (sum, error) {
 		}
 	}()
 
-	dd := float64(cfg.Mode.Duration)
-	if !cfg.Mode.HPMode {
+	dd := float64(cfg.RunOptions.Duration)
+	if !cfg.RunOptions.DamageMode {
 		summary.AvgDuration = dd
 	}
 
@@ -290,7 +290,7 @@ func runDetailedIter(cfg core.Config, source string) (sum, error) {
 		//print out progress
 		// log.Printf("done %v\n", n-count)
 
-		if cfg.Mode.HPMode {
+		if cfg.RunOptions.DamageMode {
 			dd = float64(v.SimDuration) / 60.0
 			summary.AvgDuration += dd / float64(n)
 		}
@@ -402,8 +402,8 @@ func detailedWorker(src string, resp chan workerResp, req chan bool, done chan b
 			cfg.LogConfig.LogFile = ""
 			cfg.LogConfig.LogShowCaller = false
 
-			if !cfg.Mode.HPMode {
-				cfg.Mode.FrameLimit = cfg.Mode.Duration * 60
+			if !cfg.RunOptions.DamageMode {
+				cfg.RunOptions.FrameLimit = cfg.RunOptions.Duration * 60
 			}
 
 			s, err := combat.NewSim(cfg)
