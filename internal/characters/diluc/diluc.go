@@ -33,7 +33,7 @@ func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 
-	if c.Base.Cons >= 1 && s.Flags().HPMode {
+	if c.Base.Cons >= 1 && s.Flags().DamageMode {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {

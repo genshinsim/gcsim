@@ -110,8 +110,8 @@ func (a *AuraFrozen) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	case core.Geo:
 		ds.ReactionType = core.CrystallizeCryo
 		//crystallize adds shield
-		shd := NewCrystallizeShield(core.Cryo, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
-		t.sim.AddShield(shd)
+		shd := NewCrystallizeShield(core.Cryo, t.core.F, ds.CharLvl, ds.Stats[core.EM], t.core.F+900)
+		t.core.Shields.Add(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
 		//not sure if we can proc second crystallize?
@@ -146,7 +146,7 @@ func (a *AuraFrozen) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		r := &AuraHydro{}
 		r.Element = &Element{}
 		r.T = core.Hydro
-		r.Attach(ds.Durability, t.sim.Frame())
+		r.Attach(ds.Durability, t.core.F)
 		a.hydro = r
 	case core.Cryo:
 		//check if we need to refresh freeze
@@ -173,7 +173,7 @@ func (a *AuraFrozen) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		r := &AuraCyro{}
 		r.Element = &Element{}
 		r.T = core.Cryo
-		r.Attach(ds.Durability, t.sim.Frame())
+		r.Attach(ds.Durability, t.core.F)
 		a.cryo = r
 	case core.Electro:
 		//superconduct

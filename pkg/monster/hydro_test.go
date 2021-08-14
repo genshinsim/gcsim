@@ -2,11 +2,9 @@ package monster
 
 import (
 	"fmt"
-	"math/rand"
 	"testing"
-	"time"
 
-	"github.com/genshinsim/gsim/internal/dummy"
+	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
@@ -16,40 +14,42 @@ func TestHydroAura(t *testing.T) {
 	shdCount := 0
 	var target *Target
 
-	sim := dummy.NewSim(func(s *dummy.Sim) {
-
-		s.R = rand.New(rand.NewSource(time.Now().Unix()))
-
-		char := dummy.NewChar(func(c *dummy.Char) {
-			c.Stats = make([]float64, core.EndStatType)
-			c.Stats[core.EM] = 100
-		})
-
-		s.Chars = append(s.Chars, char)
-
-		target = New(0, s, logger, 0, core.EnemyProfile{
-			Level:  88,
-			Resist: defaultResMap(),
-		})
-
-		s.OnDamage = func(ds *core.Snapshot) {
-			// log.Println(ds)
-			dmgCount++
-			target.Attack(ds)
-		}
-
-		s.OnShielded = func(shd core.Shield) {
-			// log.Println(shd.CurrentHP())
-			shdCount++
-		}
-
+	c, err := core.New()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	target = New(0, c, core.EnemyProfile{
+		Level:  88,
+		HP:     0,
+		Resist: defaultResMap(),
 	})
+	c.Targets = append(c.Targets, target)
+
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		dmgCount++
+		return false
+	}, "atk-count")
+
+	c.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		shdCount++
+		return false
+	}, "shield-count")
+
+	char, err := character.NewTemplateChar(c, testChar)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, char)
+
+	c.Init()
 
 	//TEST ATTACH
 
 	fmt.Println("----hydro testing----")
 
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 25,
 		Element:    core.Hydro,
 		ICDTag:     core.ICDTagNone,
@@ -65,14 +65,8 @@ func TestHydroAura(t *testing.T) {
 		t.FailNow()
 	}
 
-	tickCount := 0
 	//TEST DECAY
-	for i := 0; i < 285; i++ {
-		sim.F++
-		target.AuraTick()
-		target.Tick()
-		tickCount++
-	}
+	c.Skip(285)
 
 	expect("decay durability after 4.75 seconds (tolerance 0.01)", 10, target.aura.Durability())
 	if !durApproxEqual(10, target.aura.Durability(), 0.01) {
@@ -81,7 +75,7 @@ func TestHydroAura(t *testing.T) {
 	}
 
 	//TEST REFRESH
-	target.Attack(&core.Snapshot{
+	c.Combat.ApplyDamage(&core.Snapshot{
 		Durability: 50,
 		Element:    core.Hydro,
 		ICDTag:     core.ICDTagNone,

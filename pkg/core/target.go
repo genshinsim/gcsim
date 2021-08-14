@@ -8,16 +8,15 @@ type Target interface {
 	//aura/reactions
 	AuraType() EleType
 	AuraContains(e ...EleType) bool
-	AuraTick() //tick this first to avoid messing with combat
-	Tick()
-	AddOnReactionHook(key string, fun func(ds *Snapshot))
+	Tick() //this should happen first before task ticks
+
 	//attacks
 	Attack(ds *Snapshot) (float64, bool)
-	AddOnAttackLandedHook(fun func(ds *Snapshot), key string)
-	RemoveOnAttackLandedHook(key string)
+
 	AddDefMod(key string, val float64, dur int)
 	AddResMod(key string, val ResistMod)
-	DeactivateResMod(key string)
+	RemoveResMod(key string)
+	RemoveDefMod(key string)
 	HasDefMod(key string) bool
 	HasResMod(key string) bool
 

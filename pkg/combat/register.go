@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 var (
@@ -14,9 +13,9 @@ var (
 	weaponMap = make(map[string]NewWeaponFunc)
 )
 
-type NewCharacterFunc func(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error)
-type NewSetFunc func(c core.Character, s core.Sim, log core.Logger, count int)
-type NewWeaponFunc func(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int)
+type NewCharacterFunc func(core *core.Core, p core.CharacterProfile) (core.Character, error)
+type NewSetFunc func(c core.Character, core *core.Core, count int)
+type NewWeaponFunc func(c core.Character, core *core.Core, r int, param map[string]int)
 
 func RegisterCharFunc(name string, f NewCharacterFunc) {
 	mu.Lock()

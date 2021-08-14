@@ -22,8 +22,8 @@ func (a *AuraCyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	case core.Geo:
 		ds.ReactionType = core.CrystallizeCryo
 		//crystallize adds shield
-		shd := NewCrystallizeShield(core.Cryo, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
-		t.sim.AddShield(shd)
+		shd := NewCrystallizeShield(core.Cryo, t.core.F, ds.CharLvl, ds.Stats[core.EM], t.core.F+900)
+		t.core.Shields.Add(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
 	case core.Pyro:
@@ -40,7 +40,7 @@ func (a *AuraCyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		}
 		ds.ReactionType = core.Freeze
 		//since cryo is applied, cryo aura is nil
-		return newFreeze(a, nil, red, t, ds, t.sim.Frame()), true
+		return newFreeze(a, nil, red, t, ds, t.core.F), true
 	case core.Cryo:
 		//refresh
 		a.Refresh(ds.Durability)

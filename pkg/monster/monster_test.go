@@ -10,6 +10,7 @@ import (
 )
 
 var logger *zap.SugaredLogger
+var testChar core.CharacterProfile
 
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
@@ -18,6 +19,12 @@ func TestMain(m *testing.M) {
 	config.EncoderConfig.TimeKey = ""
 	log, _ := config.Build(zap.AddCallerSkip(1))
 	logger = log.Sugar()
+
+	testChar.Stats = make([]float64, core.EndStatType)
+	testChar.Talents.Attack = 1
+	testChar.Talents.Burst = 1
+	testChar.Talents.Skill = 1
+
 	os.Exit(m.Run())
 }
 

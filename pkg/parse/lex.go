@@ -106,11 +106,11 @@ const (
 	// these are configuration options
 	itemOptions    // option
 	itemMode       // mode
-	itemSingle     // single
-	itemAverage    // average
+	itemDamage     // damage
+	itemTime       // time
+	itemDebug      // debug
 	itemIterations // iteration
 	itemDuration   // duration
-	itemSimHP      // simhp
 	itemWorkers    // workers
 	// stat types after the rest
 	statKeyword  // delimit stats
@@ -150,11 +150,11 @@ var key = map[string]ItemType{
 	//config related
 	"options":   itemOptions,
 	"mode":      itemMode,
-	"single":    itemSingle,
-	"average":   itemAverage,
+	"damage":    itemDamage,
+	"time":      itemTime,
+	"debug":     itemDebug,
 	"iteration": itemIterations,
 	"duration":  itemDuration,
-	"simhp":     itemSimHP,
 	"workers":   itemWorkers,
 	//action related
 	"actions":    itemAction,
