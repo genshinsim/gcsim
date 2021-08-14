@@ -14,8 +14,8 @@ type char struct {
 	stacks         float64
 	restoreICD     int
 	restoreCount   int
-	c6Count int
-	c6ICD int
+	c6Count        int
+	c6ICD          int
 }
 
 func init() {
@@ -29,8 +29,8 @@ func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Energy = 80
-	c.EnergyMax = 80
+	c.Energy = 90
+	c.EnergyMax = 90
 	c.Weapon.Class = core.WeaponClassSpear
 	c.BurstCon = 3
 	c.SkillCon = 5
