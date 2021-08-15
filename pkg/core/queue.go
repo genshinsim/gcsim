@@ -6,7 +6,7 @@ import (
 )
 
 type QueueHandler interface {
-	Next(active string) ([]ActionItem, error)
+	Next() ([]ActionItem, error)
 	SetActionList(a []Action)
 }
 
@@ -25,9 +25,10 @@ func (q *QueueCtrl) SetActionList(a []Action) {
 	q.prio = a
 }
 
-func (q *QueueCtrl) Next(active string) ([]ActionItem, error) {
+func (q *QueueCtrl) Next() ([]ActionItem, error) {
 	var r []ActionItem
 	f := q.core.F
+	active := q.core.Chars[q.core.ActiveChar].Name()
 next:
 	for i, v := range q.prio {
 		char, ok := q.core.CharByName(v.Target)

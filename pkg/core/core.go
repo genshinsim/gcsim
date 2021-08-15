@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -43,6 +44,7 @@ type Core struct {
 	Chars          []Character
 	charPos        map[string]int
 	Targets        []Target
+	TotalDamage    float64
 
 	//handlers
 	Status     StatusHandler
@@ -133,6 +135,36 @@ func (c *Core) Init() {
 	}
 
 	c.Events.Emit(OnInitialize)
+}
+
+func (c *Core) AddChar(v CharacterProfile) error {
+	f, ok := charMap[v.Base.Name]
+	if !ok {
+		return fmt.Errorf("invalid character: %v", v.Base.Name)
+	}
+	char, err := f(c, v)
+	if err != nil {
+		return err
+	}
+	c.Chars = append(c.Chars, char)
+
+	wf, ok := weaponMap[v.Weapon.Name]
+	if !ok {
+		return fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Name)
+	}
+	wf(char, c, v.Weapon.Refine, v.Weapon.Param)
+
+	//add set bonus
+	for key, count := range v.Sets {
+		f, ok := setMap[key]
+		if ok {
+			f(char, c, count)
+		} else {
+			c.Log.Warnf("character %v has unrecognized set %v", v.Base.Name, key)
+		}
+	}
+
+	return nil
 }
 
 func (c *Core) CharByName(name string) (Character, bool) {
@@ -230,6 +262,12 @@ func (c *Core) Tick() {
 			c.Stam = MaxStam
 		}
 	}
+	//recover swap cd
+	if c.SwapCD > 0 {
+		c.SwapCD--
+	}
+	//update activeduration
+	c.ActiveDuration++
 }
 
 func NewDefaultLogger(debug bool, json bool) (*zap.SugaredLogger, error) {
@@ -248,6 +286,7 @@ func NewDefaultLogger(debug bool, json bool) (*zap.SugaredLogger, error) {
 	config.EncoderConfig.StacktraceKey = ""
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 	config.EncoderConfig.CallerKey = ""
+	config.OutputPaths = []string{"stdout"}
 
 	zaplog, err := config.Build()
 	if err != nil {

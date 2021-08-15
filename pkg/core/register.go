@@ -1,10 +1,6 @@
-package combat
+package core
 
-import (
-	"sync"
-
-	"github.com/genshinsim/gsim/pkg/core"
-)
+import "sync"
 
 var (
 	mu        sync.RWMutex
@@ -13,9 +9,9 @@ var (
 	weaponMap = make(map[string]NewWeaponFunc)
 )
 
-type NewCharacterFunc func(core *core.Core, p core.CharacterProfile) (core.Character, error)
-type NewSetFunc func(c core.Character, core *core.Core, count int)
-type NewWeaponFunc func(c core.Character, core *core.Core, r int, param map[string]int)
+type NewCharacterFunc func(core *Core, p CharacterProfile) (Character, error)
+type NewSetFunc func(c Character, core *Core, count int)
+type NewWeaponFunc func(c Character, core *Core, r int, param map[string]int)
 
 func RegisterCharFunc(name string, f NewCharacterFunc) {
 	mu.Lock()

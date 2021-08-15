@@ -194,7 +194,7 @@ func (s *Server) runSingle(cfg runConfig, r wsRequest) {
 		return
 	}
 
-	var stats combat.SimStats
+	var stats combat.Stats
 
 	stats, err = sim.Run()
 	if err != nil {
@@ -203,7 +203,7 @@ func (s *Server) runSingle(cfg runConfig, r wsRequest) {
 	}
 	var dur float64 = float64(cfg.Seconds)
 	if cfg.HP > 0 {
-		dur = float64(stats.SimDuration) / 60
+		dur = float64(stats.Duration) / 60
 	}
 
 	elapsed := time.Since(now)
@@ -278,10 +278,10 @@ func (s *Server) runSingle(cfg runConfig, r wsRequest) {
 	sb.WriteString(fmt.Sprintf("Running profile %v, total damage dealt: %.2f over %v seconds. DPS = %.2f. Sim took %s\n", prof.Label, stats.Damage, dur, stats.DPS, elapsed))
 
 	var result struct {
-		Names   []string        `json:"names"`
-		Summary string          `json:"summary"`
-		Log     string          `json:"log"`
-		Details combat.SimStats `json:"details"`
+		Names   []string     `json:"names"`
+		Summary string       `json:"summary"`
+		Log     string       `json:"log"`
+		Details combat.Stats `json:"details"`
 	}
 	result.Summary = sb.String()
 	result.Log = log.String()
@@ -377,7 +377,7 @@ func (s *Server) runAvg(cfg runConfig, r wsRequest) {
 
 func runDetailedIter(n, w int, src string, hp float64, dur int) (Summary, error) {
 	// var progress float64
-	var data []combat.SimStats
+	var data []combat.Stats
 	var s Summary
 
 	//parse the config just so we know how many chars there are; and also abort early if needed
@@ -448,7 +448,7 @@ func runDetailedIter(n, w int, src string, hp float64, dur int) (Summary, error)
 		// log.Println(v)
 
 		if hp > 0 {
-			dd = float64(v.SimDuration) / 60.0
+			dd = float64(v.Duration) / 60.0
 			s.AvgDuration += dd / float64(n)
 		}
 
@@ -558,7 +558,7 @@ func detailedWorker(src string, hp float64, dur int, resp chan workerResp, req c
 			parser := parse.New("single", src)
 			cfg, err := parser.Parse()
 			if err != nil {
-				resp <- workerResp{stats: combat.SimStats{}, err: err}
+				resp <- workerResp{stats: combat.Stats{}, err: err}
 				return
 			}
 			cfg.LogConfig.LogLevel = "error"
@@ -575,13 +575,13 @@ func detailedWorker(src string, hp float64, dur int, resp chan workerResp, req c
 
 			s, err := combat.NewSim(cfg)
 			if err != nil {
-				resp <- workerResp{stats: combat.SimStats{}, err: err}
+				resp <- workerResp{stats: combat.Stats{}, err: err}
 				return
 			}
 
 			stat, err := s.Run()
 			if err != nil {
-				resp <- workerResp{stats: combat.SimStats{}, err: err}
+				resp <- workerResp{stats: combat.Stats{}, err: err}
 				return
 			}
 
@@ -594,7 +594,7 @@ func detailedWorker(src string, hp float64, dur int, resp chan workerResp, req c
 }
 
 type workerResp struct {
-	stats combat.SimStats
+	stats combat.Stats
 	err   error
 }
 

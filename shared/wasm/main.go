@@ -190,7 +190,7 @@ func errToString(s string) string {
 	return string(b)
 }
 
-func runSingle(cfg core.Config) (combat.SimStats, error) {
+func runSingle(cfg core.Config) (combat.Stats, error) {
 
 	if !cfg.RunOptions.DamageMode {
 		cfg.RunOptions.FrameLimit = cfg.RunOptions.Duration * 60
@@ -198,7 +198,7 @@ func runSingle(cfg core.Config) (combat.SimStats, error) {
 
 	s, err := combat.NewSim(cfg)
 	if err != nil {
-		return combat.SimStats{}, err
+		return combat.Stats{}, err
 	}
 
 	return s.Run()
@@ -231,7 +231,7 @@ type resulti struct {
 }
 
 type workerResp struct {
-	stats combat.SimStats
+	stats combat.Stats
 	err   error
 }
 
@@ -248,7 +248,7 @@ type sum struct {
 
 func runDetailedIter(cfg core.Config, source string) (sum, error) {
 	// var progress float64
-	var data []combat.SimStats
+	var data []combat.Stats
 	var summary sum
 
 	charCount := len(cfg.Characters.Profile)
@@ -318,7 +318,7 @@ func runDetailedIter(cfg core.Config, source string) (sum, error) {
 		// log.Printf("done %v\n", n-count)
 
 		if cfg.RunOptions.DamageMode {
-			dd = float64(v.SimDuration) / 60.0
+			dd = float64(v.Duration) / 60.0
 			summary.AvgDuration += dd / float64(n)
 		}
 

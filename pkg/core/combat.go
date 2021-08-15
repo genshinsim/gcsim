@@ -64,6 +64,7 @@ func (c *CombatCtrl) ApplyDamage(ds *Snapshot) float64 {
 		}
 		c.core.Targets = c.core.Targets[:n]
 	}
+	c.core.TotalDamage += total
 	return total
 }
 
