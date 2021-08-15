@@ -26,7 +26,7 @@ func main() {
 	// debug := flag.String("d", "debug", "output level: debug, info, warn")
 	// seconds := flag.Int("s", 90, "how many seconds to run the sim for")
 	cfgFile := flag.String("c", "config.txt", "which profile to use")
-	detailed := flag.Bool("detail", true, "log combat details")
+	detailed := flag.Bool("d", true, "log combat details")
 	// f := flag.String("o", "debug.log", "detailed log file")
 	// hp := flag.Float64("hp", 0, "hp mode: how much hp to deal damage to")
 	// showCaller := flag.Bool("caller", false, "show caller in debug low")
@@ -34,7 +34,7 @@ func main() {
 	// avgMode := flag.Bool("a", false, "run sim multiple times and calculate avg damage (smooth out randomness). default false. note that there is no debug log in this mode")
 	// w := flag.Int("w", 24, "number of workers to run when running multiple iterations; default 24")
 	// i := flag.Int("i", 1000, "number of iterations to run if we're running multiple")
-	multi := flag.String("multi", "", "mutiple config mode")
+	multi := flag.String("m", "", "mutiple config mode")
 	// t := flag.Int("t", 1, "target multiplier")
 
 	flag.Parse()
@@ -117,8 +117,8 @@ func main() {
 }
 
 func runMulti(files []string) {
-	fmt.Print("Filename                                 |      Mean|       Min|       Max|   Std Dev|   HP Mode|     Iters|\n")
-	fmt.Print("----------------------------------------------------------------------------------------------------------\n")
+	fmt.Print("Filename                                                     |      Mean|       Min|       Max|   Std Dev|   HP Mode|     Iters|\n")
+	fmt.Print("--------------------------------------------------------------------------------------------------------------------------------\n")
 	for _, f := range files {
 		if f == "" || f[0] == '#' {
 			continue
@@ -127,11 +127,12 @@ func runMulti(files []string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%40.40v |", f)
+		fmt.Printf("%60.60v |", f)
 		r, err := combat.Run(string(source), false, false)
 		if err != nil {
 			log.Fatal(err)
 		}
+		// log.Println(r)
 		fmt.Printf("%10.2f|%10.2f|%10.2f|%10.2f|%10.10v|%10d|\n", r.DPS.Mean, r.DPS.Min, r.DPS.Max, r.DPS.SD, r.IsDamageMode, r.Iterations)
 	}
 }

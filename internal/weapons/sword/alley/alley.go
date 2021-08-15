@@ -1,29 +1,31 @@
 package alley
 
 import (
-	"github.com/genshinsim/gsim/pkg/combat"
+	"fmt"
+
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("the alley flash", weapon)
+	core.RegisterWeaponFunc("the alley flash", weapon)
 }
 
 //Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	lockout := -1
 
-	s.AddOnHurt(func(s core.Sim) {
-		lockout = s.Frame() + 300
-	})
+	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		lockout = c.F + 300
+		return false
+	}, fmt.Sprintf("alley-flash-%v", char.Name()))
 
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = 0.09 + 0.03*float64(r)
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "royal",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return m, lockout < s.Frame()
+			return m, lockout < c.F
 		},
 		Expiry: -1,
 	})

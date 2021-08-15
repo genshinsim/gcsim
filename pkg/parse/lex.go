@@ -94,6 +94,7 @@ const (
 	itemExec       // exec keyword
 	itemLock       // lock keyword
 	itemIf         // if keyword
+	itemWait       // wait keyword
 	itemSwap       // swap keyword
 	itemPost       // trail keyword
 	itemActive     // active keyword
@@ -175,6 +176,7 @@ var key = map[string]ItemType{
 	"exec":       itemExec,
 	"lock":       itemLock,
 	"if":         itemIf,
+	"wait":       itemWait,
 	"swap":       itemSwap,
 	"post":       itemPost,
 	"active":     itemActive,

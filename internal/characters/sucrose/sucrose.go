@@ -2,14 +2,11 @@ package sucrose
 
 import (
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("sucrose", NewChar)
+	core.RegisterCharFunc("sucrose", NewChar)
 }
 
 type char struct {
@@ -24,9 +21,9 @@ type char struct {
 	eTickSrc     int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +96,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 func (c *char) a2() {
 	val := make([]float64, core.EndStatType)
 	val[core.EM] = 50
-	for _, char := range c.Sim.Characters() {
+	for _, char := range c.Core.Chars {
 		if char.Ele() == core.Anemo || char.Ele() == core.Geo {
 			continue //nothing for geo/anemo char
 		}
@@ -122,36 +119,38 @@ func (c *char) a2() {
 				default:
 					return nil, false
 				}
-				return val, f > c.Sim.Frame() && ok
+				return val, f > c.Core.F && ok
 			},
 		})
 	}
 
-	c.Sim.AddOnReaction(func(t core.Target, ds *core.Snapshot) {
+	c.Core.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
 		switch ds.ReactionType {
 		case core.SwirlCryo:
-			c.Tags["a2-cryo"] = c.Sim.Frame() + 480
-			c.Log.Debugw("sucrose a2 triggered", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Sim.Frame()+480)
+			c.Tags["a2-cryo"] = c.Core.F + 480
+			c.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlElectro:
-			c.Tags["a2-electro"] = c.Sim.Frame() + 480
-			c.Log.Debugw("sucrose a2 triggered", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Sim.Frame()+480)
+			c.Tags["a2-electro"] = c.Core.F + 480
+			c.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlHydro:
-			c.Tags["a2-hydro"] = c.Sim.Frame() + 480
-			c.Log.Debugw("sucrose a2 triggered", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Sim.Frame()+480)
+			c.Tags["a2-hydro"] = c.Core.F + 480
+			c.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlPyro:
-			c.Tags["a2-pyro"] = c.Sim.Frame() + 480
-			c.Log.Debugw("sucrose a2 triggered", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Sim.Frame()+480)
+			c.Tags["a2-pyro"] = c.Core.F + 480
+			c.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		}
+		return false
 	}, "sucrose-a2-trigger")
 }
 
 func (c *char) a4() {
 	c.a4EM = make([]float64, core.EndStatType)
 
-	for i, char := range c.Sim.Characters() {
+	for i, char := range c.Core.Chars {
 		if i == c.Index {
 			continue //nothing for sucrose
 		}
@@ -159,7 +158,7 @@ func (c *char) a4() {
 			Key:    "sucrose-a4",
 			Expiry: -1,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if c.Sim.Status("sucrosea4") == 0 {
+				if c.Core.Status.Duration("sucrosea4") == 0 {
 					return nil, false
 				}
 				return c.a4EM, true
@@ -172,7 +171,7 @@ func (c *char) c6() {
 	c.AddMod(core.CharStatMod{
 		Key: "sucrose-c6",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if c.Sim.Status("sucrosec6") == 0 {
+			if c.Core.Status.Duration("sucrosec6") == 0 {
 				return nil, false
 			}
 			p := core.EleToDmgP(c.qInfused)
@@ -207,7 +206,7 @@ func (c *char) Attack(p map[string]int) int {
 		count++
 		if count == 7 {
 			if c.Cooldown(core.ActionSkill) > 0 {
-				n := c.Sim.Rand().Intn(7) + 1
+				n := c.Core.Rand.Intn(7) + 1
 				c.ReduceActionCooldown(core.ActionSkill, n*60)
 			}
 			count = 0
@@ -238,7 +237,7 @@ func (c *char) ChargeAttack(p map[string]int) int {
 		count++
 		if count == 7 {
 			if c.Cooldown(core.ActionSkill) > 0 {
-				n := c.Sim.Rand().Intn(7) + 1
+				n := c.Core.Rand.Intn(7) + 1
 				c.ReduceActionCooldown(core.ActionSkill, n*60)
 			}
 			count = 0
@@ -265,10 +264,10 @@ func (c *char) Skill(p map[string]int) int {
 	d.Targets = core.TargetAll
 
 	c.AddTask(func() {
-		c.Sim.AddStatus("sucrosea4", 480)
+		c.Core.Status.AddStatus("sucrosea4", 480)
 		c.a4EM[core.EM] = 0.2 * c.Stat(core.EM)
-		c.Log.Debugw("sucrose a4 triggered", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Sim.Frame()+480)
-		c.Sim.ApplyDamage(&d)
+		c.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
+		c.Core.Combat.ApplyDamage(&d)
 	}, "Sucrose - Skill", 41)
 
 	c.QueueParticle("sucrose", 4, core.Anemo, 150)
@@ -280,10 +279,10 @@ func (c *char) Skill(p map[string]int) int {
 
 	switch c.eCharge {
 	case c.eChargeMax:
-		c.Log.Debugw("sucrose e at max charge, queuing next recovery", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "recover at", c.Sim.Frame()+900)
-		c.eNextRecover = c.Sim.Frame() + 901
-		c.AddTask(c.recoverCharge(c.Sim.Frame()), "charge", 900)
-		c.eTickSrc = c.Sim.Frame()
+		c.Log.Debugw("sucrose e at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+900)
+		c.eNextRecover = c.Core.F + 901
+		c.AddTask(c.recoverCharge(c.Core.F), "charge", 900)
+		c.eTickSrc = c.Core.F
 	case 1:
 		c.SetCD(core.ActionSkill, c.eNextRecover)
 	}
@@ -295,19 +294,19 @@ func (c *char) Skill(p map[string]int) int {
 func (c *char) recoverCharge(src int) func() {
 	return func() {
 		if c.eTickSrc != src {
-			c.Log.Debugw("sucrose e recovery function ignored, src diff", "frame", c.Sim.Frame(), "char", c.Index, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
+			c.Log.Debugw("sucrose e recovery function ignored, src diff", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
 			return
 		}
 		c.eCharge++
-		c.Log.Debugw("sucrose e recovering a charge", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index, "src", src, "total charge", c.eCharge)
+		c.Log.Debugw("sucrose e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "total charge", c.eCharge)
 		c.SetCD(core.ActionSkill, 0)
 		if c.eCharge >= c.eChargeMax {
 			//fully charged
 			return
 		}
 		//other wise restore another charge
-		c.Log.Debugw("sucrose e queuing next recovery", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index, "src", src, "recover at", c.Sim.Frame()+720)
-		c.eNextRecover = c.Sim.Frame() + 901
+		c.Log.Debugw("sucrose e queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "recover at", c.Core.F+720)
+		c.eNextRecover = c.Core.F + 901
 		c.AddTask(c.recoverCharge(src), "charge", 900)
 
 	}
@@ -326,8 +325,8 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.qInfused = core.NoElement
 
-	// c.S.Status["sucroseburst"] = c.Sim.Frame() + count
-	c.Sim.AddStatus("sucroseburst", duration)
+	// c.S.Status["sucroseburst"] = c.Core.F + count
+	c.Core.Status.AddStatus("sucroseburst", duration)
 	d := c.Snapshot(
 		"Forbidden Creation-Isomer 75/Type II",
 		core.AttackTagElementalBurst,
@@ -344,11 +343,11 @@ func (c *char) Burst(p map[string]int) int {
 		x := d.Clone()
 
 		c.AddTask(func() {
-			c.Sim.AddStatus("sucrosea4", 480)
+			c.Core.Status.AddStatus("sucrosea4", 480)
 			c.a4EM[core.EM] = 0.2 * c.Stat(core.EM)
-			c.Log.Debugw("sucrose a4 triggered", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Sim.Frame()+480)
+			c.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
 
-			c.Sim.ApplyDamage(&x)
+			c.Core.Combat.ApplyDamage(&x)
 
 			if c.qInfused != core.NoElement {
 				d := c.Snapshot(
@@ -362,14 +361,14 @@ func (c *char) Burst(p map[string]int) int {
 					burstAbsorb[c.TalentLvlBurst()],
 				)
 				d.Targets = core.TargetAll
-				c.Sim.ApplyDamage(&d)
+				c.Core.Combat.ApplyDamage(&d)
 			}
 			//check if infused
 		}, "sucrose-burst-em", i)
 	}
 
 	//
-	c.AddTask(c.absorbCheck(c.Sim.Frame(), 0, int(duration/18)), "absorb-check", f)
+	c.AddTask(c.absorbCheck(c.Core.F, 0, int(duration/18)), "absorb-check", f)
 
 	c.SetCD(core.ActionBurst, 1200)
 	c.Energy = 0
@@ -389,7 +388,7 @@ func (c *char) absorbCheck(src int, count int, max int) func() {
 		ice := false
 
 		//scan through all targets, order is fire > water > electric > ice/frozen
-		for _, t := range c.Sim.Targets() {
+		for _, t := range c.Core.Targets {
 			switch t.AuraType() {
 			case core.Pyro:
 				fire = true
@@ -440,11 +439,11 @@ func (c *char) ResetActionCooldown(a core.ActionType) {
 
 		//otherwise reset tick src and add refresh if charges < max after ++
 		c.eCharge++
-		c.eTickSrc = c.Sim.Frame()
-		c.eNextRecover = c.Sim.Frame() + 901
+		c.eTickSrc = c.Core.F
+		c.eNextRecover = c.Core.F + 901
 		c.ActionCD[a] = 0
 		if c.eCharge < c.eChargeMax {
-			c.AddTask(c.recoverCharge(c.Sim.Frame()), "charge", 900)
+			c.AddTask(c.recoverCharge(c.Core.F), "charge", 900)
 		}
 	}
 }

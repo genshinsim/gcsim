@@ -3,34 +3,33 @@ package skyward
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("skyward blade", weapon)
+	core.RegisterWeaponFunc("skyward blade", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	dur := -1
-	s.AddEventHook(func(s core.Sim) bool {
-		if s.ActiveCharIndex() != c.CharIndex() {
+	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
-		dur = s.Frame() + 720
-		log.Debugw("Skyward Blade activated", "frame", s.Frame(), "event", core.LogWeaponEvent, "expiring ", dur)
+		dur = c.F + 720
+		c.Log.Debugw("Skyward Blade activated", "frame", c.F, "event", core.LogWeaponEvent, "expiring ", dur)
 		return false
-	}, fmt.Sprintf("skyward-blade-%v", c.Name()), core.PostBurstHook)
+	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
 
 	m := make([]float64, core.EndStatType)
 	m[core.CR] = 0.03 + float64(r)*0.01
 
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "skyward blade",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			m[core.AtkSpd] = 0
-			if dur > s.Frame() {
+			if dur > c.F {
 				m[core.AtkSpd] = 0.1 //if burst active
 			}
 			return m, true
@@ -41,21 +40,24 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	//damage procs
 	atk := .15 + .05*float64(r)
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+
+		ds := args[1].(*core.Snapshot)
+
 		//check if char is correct?
-		if ds.ActorIndex != c.CharIndex() {
-			return
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
-			return
+			return false
 		}
 		//check if buff up
-		if dur < s.Frame() {
-			return
+		if dur < c.F {
+			return false
 		}
 
 		//add a new action that deals % dmg immediately
-		d := c.Snapshot(
+		d := char.Snapshot(
 			"Skyward Blade Proc",
 			core.AttackTagWeaponSkill,
 			core.ICDTagNone,
@@ -65,8 +67,9 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			100,
 			atk,
 		)
-		c.QueueDmg(&d, 1)
+		char.QueueDmg(&d, 1)
+		return false
 
-	}, fmt.Sprintf("skyward-blade-%v", c.Name()))
+	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
 
 }

@@ -14,7 +14,7 @@ func (c *char) Attack(p map[string]int) int {
 
 	f := c.ActionFrames(core.ActionAttack, p)
 
-	if c.Sim.Status("raidenburst") > 0 {
+	if c.Core.Status.Duration("raidenburst") > 0 {
 		return c.swordAttack(f)
 	}
 
@@ -42,7 +42,7 @@ func (c *char) swordAttack(f int) int {
 
 	for i, mult := range attackB[c.NormalCounter] {
 		d := c.Snapshot(
-			//fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
+			// fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
 			"Musou Isshin",
 			core.AttackTagElementalBurst,
 			core.ICDTagNormalAttack,
@@ -50,22 +50,25 @@ func (c *char) swordAttack(f int) int {
 			core.StrikeTypeSlash,
 			core.Electro,
 			25,
-			mult[c.TalentLvlAttack()],
+			mult[c.TalentLvlBurst()],
 		)
 		//adds to talent %
 		d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
+		if c.Base.Cons >= 2 {
+			d.DefAdj = -0.6
+		}
 		c.AddTask(func() {
-			c.Sim.ApplyDamage(&d)
+			c.Core.Combat.ApplyDamage(&d)
 			//restore energy
-			if c.Sim.Frame() > c.restoreICD && c.restoreCount < 5 {
+			if c.Core.F > c.restoreICD && c.restoreCount < 5 {
 				c.restoreCount++
-				c.restoreICD = c.Sim.Frame() + 60 //once every 1 second
+				c.restoreICD = c.Core.F + 60 //once every 1 second
 				energy := burstRestore[c.TalentLvlBurst()]
 				//apply a4
 				excess := int(d.Stats[core.ER] / 0.01)
-				c.Log.Debugw("a4 energy restore stacks", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "increase", float64(excess)*0.006)
+				c.Log.Debugw("a4 energy restore stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "increase", float64(excess)*0.006)
 				energy = energy * (1 + float64(excess)*0.006)
-				for _, char := range c.Sim.Characters() {
+				for _, char := range c.Core.Chars {
 					char.AddEnergy(energy)
 				}
 
@@ -100,13 +103,13 @@ func (c *char) Skill(p map[string]int) int {
 	c.QueueDmg(&d, f)
 
 	count := 3
-	if c.Sim.Rand().Float64() < 0.5 {
+	if c.Core.Rand.Float64() < 0.5 {
 		count = 4
 	}
 	c.QueueParticle("raiden", count, core.Electro, f+100)
 
 	//activate eye
-	c.Sim.AddStatus("raidenskill", 1500+f)
+	c.Core.Status.AddStatus("raidenskill", 1500+f)
 
 	c.SetCD(core.ActionSkill, 600)
 	return f
@@ -117,14 +120,19 @@ When characters with this buff attack and hit opponents, the Eye will unleash a 
 The Eye can initiate one coordinated attack every 0.9s per party.
 **/
 func (c *char) eyeOnDamage() {
-	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		//ignore if eye on icd
-		if c.eyeICD > c.Sim.Frame() {
-			return
+		if c.eyeICD > c.Core.F {
+			return false
 		}
 		//ignore if eye not active
-		if c.Sim.Status("raidenskill") == 0 {
-			return
+		if c.Core.Status.Duration("raidenskill") == 0 {
+			return false
+		}
+		//ignore self dmg
+		if ds.Abil == "Eye of Stormy Judgement" {
+			return false
 		}
 		//trigger a strike
 		//does not snapshot, so this is fine
@@ -141,9 +149,10 @@ func (c *char) eyeOnDamage() {
 		d.Targets = core.TargetAll
 		//https://streamable.com/28at4f hit mark 857, eye land 862
 		c.QueueDmg(&d, 5)
-		c.eyeICD = c.Sim.Frame() + 54 //0.9 sec icd
-
+		c.eyeICD = c.Core.F + 54 //0.9 sec icd
+		return false
 	}, "raiden-eye")
+
 }
 
 func (c *char) Burst(p map[string]int) int {
@@ -153,7 +162,7 @@ func (c *char) Burst(p map[string]int) int {
 	//activate burst, reset stacks
 	c.stacksConsumed = c.stacks
 	c.stacks = 0
-	c.Sim.AddStatus("raidenburst", 420+f) //7 seconds
+	c.Core.Status.AddStatus("raidenburst", 420+f) //7 seconds
 	c.restoreCount = 0
 	c.restoreICD = 0
 	c.c6Count = 0
@@ -162,7 +171,7 @@ func (c *char) Burst(p map[string]int) int {
 	if c.Base.Cons >= 4 {
 		val := make([]float64, core.EndStatType)
 		val[core.ATKP] = 0.3
-		for i, char := range c.Sim.Characters() {
+		for i, char := range c.Core.Chars {
 			if i == c.Index {
 				continue
 			}
@@ -176,7 +185,7 @@ func (c *char) Burst(p map[string]int) int {
 		}
 	}
 
-	c.Log.Debugw("resolve stacks", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index, "stacks", c.stacksConsumed)
+	c.Log.Debugw("resolve stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", c.stacksConsumed)
 
 	d := c.Snapshot(
 		"Musou Shinsetsu",
@@ -191,15 +200,11 @@ func (c *char) Burst(p map[string]int) int {
 	d.Targets = core.TargetAll
 	d.Mult += resolveBaseBonus[c.TalentLvlBurst()] * c.stacksConsumed
 
-	c.QueueDmg(&d, f)
-
 	if c.Base.Cons >= 2 {
-		c.AddTask(func() {
-			for _, t := range c.Sim.Targets() {
-				t.AddDefMod("raiden-c4", -0.6, 420)
-			}
-		}, "c4", f+1)
+		d.DefAdj = -0.6
 	}
+
+	c.QueueDmg(&d, f)
 
 	c.SetCD(core.ActionBurst, 18*60) //20s cd
 	c.Energy = 0
@@ -207,11 +212,11 @@ func (c *char) Burst(p map[string]int) int {
 }
 
 func (c *char) onBurstStackCount() {
-	c.Sim.AddEventHook(func(s core.Sim) bool {
-		if s.ActiveCharIndex() == c.Index {
+	c.Core.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+		if c.Core.ActiveChar == c.Index {
 			return false
 		}
-		char, _ := s.CharByPos(s.ActiveCharIndex())
+		char := c.Core.Chars[c.Core.ActiveChar]
 		//add stacks based on char max energy
 		stacks := resolveStackGain[c.TalentLvlBurst()] * char.MaxEnergy()
 		if c.Base.Cons > 0 {
@@ -226,18 +231,19 @@ func (c *char) onBurstStackCount() {
 			c.stacks = 60
 		}
 		return false
-	}, "raiden-stacks", core.PostBurstHook)
+	}, "raiden-stacks")
+
 	//a4 stack gain
 	particleICD := 0
-	c.Sim.AddEventHook(func(s core.Sim) bool {
-		if particleICD > s.Frame() {
+	c.Core.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
+		if particleICD > c.Core.F {
 			return false
 		}
-		particleICD = s.Frame() + 180 // once every 3 seconds
+		particleICD = c.Core.F + 180 // once every 3 seconds
 		c.stacks += 2
 		if c.stacks > 60 {
 			c.stacks = 60
 		}
 		return false
-	}, "raiden-particle-stack", core.PostParticleHook)
+	}, "raiden-particle-stacks")
 }

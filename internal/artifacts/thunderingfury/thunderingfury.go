@@ -3,15 +3,14 @@ package thunderingfury
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("thundering fury", New)
+	core.RegisterSetFunc("thundering fury", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.ElectroP] = 0.15
@@ -26,27 +25,27 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 	if count >= 4 {
 		icd := 0
 
-		s.AddOnTransReaction(func(t core.Target, ds *core.Snapshot) {
+		s.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
+			ds := args[1].(*core.Snapshot)
 			if ds.ActorIndex != c.CharIndex() {
-				return
+				return false
 			}
-			if icd > s.Frame() {
-				return
+			if icd > s.F {
+				return false
 			}
 			switch ds.ReactionType {
 			case core.Overload:
 			case core.ElectroCharged:
 			case core.Superconduct:
 			default:
-				return
+				return false
 			}
 			ds.ReactBonus += 0.4
-			icd = s.Frame() + 48
+			icd = s.F + 48
 			c.ReduceActionCooldown(core.ActionSkill, 60)
-			log.Debugw("thunderfury 4pc proc", "frame", s.Frame(), "event", core.LogArtifactEvent, "reaction", ds.ReactionType, "new cd", c.Cooldown(core.ActionSkill))
-
+			s.Log.Debugw("thunderfury 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", ds.ReactionType, "new cd", c.Cooldown(core.ActionSkill))
+			return false
 		}, fmt.Sprintf("4tf-%v", c.Name()))
-
 	}
 	//add flat stat to char
 }

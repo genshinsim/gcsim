@@ -3,31 +3,31 @@ package prototype
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("prototype archaic", weapon)
+	core.RegisterWeaponFunc("prototype archaic", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	atk := 1.8 + float64(r)*0.6
 	icd := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
-		if s.Frame() > icd {
-			return
+		if c.F > icd {
+			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
-			return
+			return false
 		}
-		if s.Rand().Float64() < 0.5 {
-			icd = s.Frame() + 900 //15 sec icd
-			d := c.Snapshot(
+		if c.Rand.Float64() < 0.5 {
+			icd = c.F + 900 //15 sec icd
+			d := char.Snapshot(
 				"Prototype Archaic Proc",
 				core.AttackTagWeaponSkill,
 				core.ICDTagNone,
@@ -38,7 +38,9 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 				atk,
 			)
 			d.Targets = core.TargetAll
-			c.QueueDmg(&d, 1)
+			char.QueueDmg(&d, 1)
 		}
-	}, fmt.Sprintf("forstbearer-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("forstbearer-%v", char.Name()))
+
 }

@@ -29,11 +29,11 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	if c.Sim.Status("yoimiyaskill") > 0 {
-		if c.lastPart < c.Sim.Frame() || c.lastPart == 0 {
-			c.lastPart = c.Sim.Frame() + 300 //every 5 second
+	if c.Core.Status.Duration("yoimiyaskill") > 0 {
+		if c.lastPart < c.Core.F || c.lastPart == 0 {
+			c.lastPart = c.Core.F + 300 //every 5 second
 			count := 2
-			if c.Sim.Rand().Float64() < 0.5 {
+			if c.Core.Rand.Float64() < 0.5 {
 				count = 3
 			}
 			c.QueueParticle("yoimiya", count, core.Pyro, travel+f)
@@ -44,29 +44,25 @@ func (c *char) Attack(p map[string]int) int {
 }
 
 func (c *char) onExit() {
-	c.Sim.AddEventHook(func(s core.Sim) bool {
-		//do nothing if yoi becomes active
-		if s.ActiveCharIndex() == c.Index {
-			return false
+	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		prev := args[0].(int)
+		next := args[1].(int)
+		if prev == c.Index && next != c.Index {
+			if c.Core.Status.Duration("yoimiyaskill") > 0 {
+				c.Core.Status.DeleteStatus("yoimiyaskill")
+			}
 		}
-		//do nothing if skill not active
-		if s.Status("yoimiyaskill") == 0 {
-			return false
-		}
-		//so here we have active char != yoi and skill is still
-		//active; so we need to deactivate
-		s.DeleteStatus("yoimiyaskill")
 		return false
-	}, "yoimiya-off", core.PostSwapHook)
+	}, "yoimiya-exit")
 }
 
 func (c *char) Skill(p map[string]int) int {
 	f := c.ActionFrames(core.ActionSkill, p)
 
-	c.Sim.AddStatus("yoimiyaskill", 600) //activate for 10
-	// log.Println(c.Sim.Status("yoimiyaskill"))
+	c.Core.Status.AddStatus("yoimiyaskill", 600) //activate for 10
+	// log.Println(c.Core.Status.Duration("yoimiyaskill"))
 
-	if c.Sim.Status("yoimiyaa2") == 0 {
+	if c.Core.Status.Duration("yoimiyaa2") == 0 {
 		c.a2stack = 0
 	}
 
@@ -101,12 +97,12 @@ func (c *char) Burst(p map[string]int) int {
 		duration = 840
 	}
 	c.AddTask(func() {
-		c.Sim.AddStatus("aurous", duration)
+		c.Core.Status.AddStatus("aurous", duration)
 		//attack buff if stacks
-		if c.Sim.Status("yoimiyaa2") > 0 {
+		if c.Core.Status.Duration("yoimiyaa2") > 0 {
 			val := make([]float64, core.EndStatType)
 			val[core.ATKP] = 0.1 + float64(c.a2stack)*0.01
-			for i, char := range c.Sim.Characters() {
+			for i, char := range c.Core.Chars {
 				if i == c.Index {
 					continue
 				}
@@ -134,17 +130,18 @@ func (c *char) Burst(p map[string]int) int {
 func (c *char) burstHook() {
 	//check on attack landed for target 0
 	//if aurous active then trigger dmg if not on cd
-	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if c.Sim.Status("aurous") == 0 {
-			return
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if c.Core.Status.Duration("aurous") == 0 {
+			return false
 		}
 		if ds.ActorIndex == c.Index {
 			//ignore for self
-			return
+			return false
 		}
 		//ignore if on icd
-		if c.Sim.Status("aurousicd") > 0 {
-			return
+		if c.Core.Status.Duration("aurousicd") > 0 {
+			return false
 		}
 		//ignore if wrong tags
 		switch ds.AttackTag {
@@ -154,7 +151,7 @@ func (c *char) burstHook() {
 		case core.AttackTagElementalArt:
 		case core.AttackTagElementalBurst:
 		default:
-			return
+			return false
 		}
 		//do explosion, set icd
 		d := c.Snapshot(
@@ -169,15 +166,25 @@ func (c *char) burstHook() {
 		)
 		d.Targets = core.TargetAll
 		c.QueueDmg(&d, 1)
-		c.Sim.AddStatus("aurousicd", 120) //2 sec icd
+		c.Core.Status.AddStatus("aurousicd", 120) //2 sec icd
+
+		//check for c4
+
+		if c.Base.Cons >= 4 {
+			c.ReduceActionCooldown(core.ActionSkill, 72)
+		}
+
+		return false
+
 	}, "yoimiya-burst-check")
 
-	if c.Sim.Flags().DamageMode {
+	if c.Core.Flags.DamageMode {
 		//add check for if yoimiya dies
-		c.Sim.AddOnHurt(func(s core.Sim) {
+		c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
 			if c.HPCurrent <= 0 {
-				c.Sim.DeleteStatus("aurous")
+				c.Core.Status.DeleteStatus("aurous")
 			}
-		})
+			return false
+		}, "yoimiya-died")
 	}
 }

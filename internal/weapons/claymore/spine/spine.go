@@ -3,46 +3,47 @@ package spine
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("serpent spine", weapon)
+	core.RegisterWeaponFunc("serpent spine", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := param["stacks"]
 	buff := 0.05 + float64(r)*.01
 	active := false
 
-	s.AddInitHook(func() {
-		active = s.ActiveCharIndex() == c.CharIndex()
-	})
+	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+		active = c.ActiveChar == char.CharIndex()
+		return true
+	}, fmt.Sprintf("spine-%v", char.Name()))
 
-	s.AddEventHook(func(s core.Sim) bool {
-		if s.ActiveCharIndex() == c.CharIndex() {
+	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.ActiveChar == char.CharIndex() {
 			active = true
 		} else {
 			active = false
 			//update stacks; duration is not reset yet by sim
-			stacks = stacks + int(s.ActiveDuration()/240)
+			stacks = stacks + int(c.ActiveDuration/240)
 			if stacks > 5 {
 				stacks = 5
 			}
 		}
 		return false
-	}, fmt.Sprintf("spine-%v", c.Name()), core.PostSwapHook)
+	}, fmt.Sprintf("spine-%v", char.Name()))
 
-	s.AddOnHurt(func(s core.Sim) {
+	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
 		stacks--
 		if stacks < 0 {
 			stacks = 0
 		}
-	})
+		return false
+	}, fmt.Sprintf("spine-%v", char.Name()))
 
 	val := make([]float64, core.EndStatType)
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key:    "spine",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
@@ -50,7 +51,7 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			//other wise it's just number of stacks
 			x := stacks
 			if active {
-				x = stacks + int(s.ActiveDuration()/240)
+				x = stacks + int(c.ActiveDuration/240)
 			}
 			if x > 5 {
 				x = 5

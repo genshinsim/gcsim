@@ -3,41 +3,41 @@ package crescent
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("crescent pike", weapon)
+	core.RegisterWeaponFunc("crescent pike", weapon)
 }
 
 //After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.
 //This effect has a maximum of 3 stacks, and the duration of each stack is independent of the others.
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	atk := .15 + float64(r)*.05
 	active := 0
 
-	s.AddEventHook(func(s core.Sim) bool {
-		if s.ActiveCharIndex() != c.CharIndex() {
+	c.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
+		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
-		log.Debugw("crescent pike active", "event", core.LogWeaponEvent, "frame", s.Frame(), "char", c.CharIndex(), "expiry", s.Frame()+300)
-		active = s.Frame() + 300
+		c.Log.Debugw("crescent pike active", "event", core.LogWeaponEvent, "frame", c.F, "char", char.CharIndex(), "expiry", c.F+300)
+		active = c.F + 300
 
 		return false
-	}, fmt.Sprintf("cp-%v", c.Name()), core.PostParticleHook)
+	}, fmt.Sprintf("cp-%v", char.Name()))
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		//check if char is correct?
-		if ds.ActorIndex != c.CharIndex() {
-			return
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
-			return
+			return false
 		}
-		if s.Frame() < active {
+		if c.F < active {
 			//add a new action that deals % dmg immediately
-			d := c.Snapshot(
+			d := char.Snapshot(
 				"Crescent Pike Proc",
 				core.AttackTagWeaponSkill,
 				core.ICDTagNone,
@@ -47,8 +47,9 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 				100,
 				atk,
 			)
-			c.QueueDmg(&d, 1)
+			char.QueueDmg(&d, 1)
 		}
-	}, fmt.Sprintf("cpp-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("cpp-%v", char.Name()))
 
 }

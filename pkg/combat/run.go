@@ -17,19 +17,21 @@ func (s *Simulation) Run() (Stats, error) {
 		if err != nil {
 			return s.stats, err
 		}
+
 		//check if we should stop
-		if s.c.Flags.DamageMode {
+		if s.C.Flags.DamageMode {
 			//stop when last target dies
 			// log.Println(s.c.F, s.targets)
-			stop = len(s.c.Targets) == 0
+			stop = len(s.C.Targets) == 0
 		} else {
-			stop = s.c.F == f
+			stop = s.C.F == f
 		}
+
 	}
 
-	s.stats.Damage = s.c.TotalDamage
-	s.stats.DPS = s.stats.Damage * 60 / float64(s.c.F)
-	s.stats.Duration = s.c.F
+	s.stats.Damage = s.C.TotalDamage
+	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F)
+	s.stats.Duration = s.C.F
 
 	return s.stats, nil
 }
@@ -38,7 +40,7 @@ func (s *Simulation) AdvanceFrame() error {
 	var ok bool
 	var err error
 	//advance frame
-	s.c.Tick()
+	s.C.Tick()
 	//check for hurt dmg
 	s.handleHurt()
 
@@ -55,7 +57,7 @@ func (s *Simulation) AdvanceFrame() error {
 
 	//check if queue has item, if not, queue up, otherwise execute
 	if len(s.queue) == 0 {
-		next, err := s.c.Queue.Next()
+		next, err := s.C.Queue.Next()
 		if err != nil {
 			return err
 		}
@@ -64,18 +66,19 @@ func (s *Simulation) AdvanceFrame() error {
 			return nil
 		}
 		s.queue = append(s.queue, next...)
-	} else {
-		s.skip, ok, err = s.c.Action.Exec(s.queue[0])
+	}
+
+	if len(s.queue) > 0 {
+		s.skip, ok, err = s.C.Action.Exec(s.queue[0])
 		if err != nil {
 			return err
 		}
 		if ok {
 			if s.details {
-				s.stats.AbilUsageCountByChar[s.c.ActiveChar][s.queue[0].Typ.String()]++
+				s.stats.AbilUsageCountByChar[s.C.ActiveChar][s.queue[0].Typ.String()]++
 			}
 			//pop queue
 			s.queue = s.queue[1:]
-
 		}
 	}
 	return nil
@@ -83,26 +86,26 @@ func (s *Simulation) AdvanceFrame() error {
 
 func (s *Simulation) collectStats() {
 	//add char active time
-	s.stats.CharActiveTime[s.c.ActiveChar]++
+	s.stats.CharActiveTime[s.C.ActiveChar]++
 }
 
 func (s *Simulation) handleHurt() {
-	if s.cfg.Hurt.WillHurt && s.c.F-s.lastHurt > s.cfg.Hurt.Start {
+	if s.cfg.Hurt.WillHurt && s.C.F-s.lastHurt > s.cfg.Hurt.Start {
 		f := 0
 		if s.cfg.Hurt.Once {
 			s.cfg.Hurt.WillHurt = false
 		} else {
 			//pick a frame between start to end
-			f = s.c.Rand.Intn(s.cfg.Hurt.End)
+			f = s.C.Rand.Intn(s.cfg.Hurt.End)
 		}
-		s.nextHurt = s.c.F + f
-		amt := s.cfg.Hurt.Min + s.c.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
+		s.nextHurt = s.C.F + f
+		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
 		s.nextHurtAmt = amt
-		s.c.Log.Debugw("hurt queued", "frame", s.c.F, "event", core.LogSimEvent, "last", s.lastHurt, "event", s.cfg.Hurt, "amt", amt, "hurt_frame", f)
+		s.C.Log.Debugw("hurt queued", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastHurt, "event", s.cfg.Hurt, "amt", amt, "hurt_frame", f)
 	}
 
-	if s.nextHurt == s.c.F {
-		s.c.Health.HurtChar(s.nextHurtAmt, s.cfg.Hurt.Ele)
+	if s.nextHurt == s.C.F {
+		s.C.Health.HurtChar(s.nextHurtAmt, s.cfg.Hurt.Ele)
 		s.lastHurt = s.nextHurt
 		s.nextHurtAmt = 0
 	}

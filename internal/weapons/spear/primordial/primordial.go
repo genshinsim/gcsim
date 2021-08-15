@@ -3,17 +3,16 @@ package primordial
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("primordial jade winged-spear", weapon)
+	core.RegisterWeaponFunc("primordial jade winged-spear", weapon)
 }
 
 //For every character in the party who hails from Liyue, the character who equips this
 //weapon gains 6/7/8/9//10% ATK increase and 2/3/4/5/6% CRIT Rate increase.
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	last := 0
 	stacks := 0
@@ -21,30 +20,31 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 
 	m := make([]float64, core.EndStatType)
 
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "primordial",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return m, active > s.Frame()
+			return m, active > c.F
 		},
 		Expiry: -1,
 	})
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		//check if char is correct?
-		if ds.ActorIndex != c.CharIndex() {
-			return
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		//check if cd is up
-		if s.Frame()-last < 18 && last != 0 {
-			return
+		if c.F-last < 18 && last != 0 {
+			return false
 		}
 		//check if expired; reset stacks if so
-		if active < s.Frame() {
+		if active < c.F {
 			stacks = 0
 		}
 
 		stacks++
-		active = s.Frame() + 360
+		active = c.F + 360
 
 		if stacks > 7 {
 			stacks = 7
@@ -53,7 +53,8 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 		m[core.ATK] = (float64(r)*0.007 + 0.025) * float64(stacks)
 
 		//trigger cd
-		last = s.Frame()
-	}, fmt.Sprintf("primordial-%v", c.Name()))
+		last = c.F
+		return false
+	}, fmt.Sprintf("primordial-%v", char.Name()))
 
 }

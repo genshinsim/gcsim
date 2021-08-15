@@ -4,9 +4,11 @@ import "github.com/genshinsim/gsim/pkg/core"
 
 func (c *char) a4() {
 	last := 0
-	c.Sim.AddOnReaction(func(t core.Target, ds *core.Snapshot) {
-		if ds.ActorIndex != c.Sim.ActiveCharIndex() {
-			return
+	c.Core.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != c.Core.ActiveChar {
+			return false
 		}
 		//check reaction type, only care for overload, electro charge, superconduct
 		switch ds.ReactionType {
@@ -15,16 +17,16 @@ func (c *char) a4() {
 		case core.Superconduct:
 		case core.SwirlElectro:
 		default:
-			return
+			return false
 		}
 		//do nothing if oz not on field
-		if c.ozActiveUntil < c.Sim.Frame() {
-			return
+		if c.ozActiveUntil < c.Core.F {
+			return false
 		}
-		if c.Sim.Frame()-30 < last && last != 0 {
-			return
+		if c.Core.F-30 < last && last != 0 {
+			return false
 		}
-		last = c.Sim.Frame()
+		last = c.Core.F
 
 		d := c.Snapshot(
 			"Fischl A4",
@@ -39,5 +41,7 @@ func (c *char) a4() {
 		d.Targets = t.Index()
 		c.QueueDmg(&d, 1)
 
-	}, "fischl a4")
+		return false
+	}, "fischl-a4")
+
 }

@@ -3,15 +3,14 @@ package paleflame
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("pale flame", New)
+	core.RegisterSetFunc("pale flame", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.PhyP] = 0.25
@@ -29,15 +28,16 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 		dur := 0
 		m := make([]float64, core.EndStatType)
 
-		s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+			ds := args[1].(*core.Snapshot)
 			if ds.ActorIndex != c.CharIndex() {
-				return
+				return false
 			}
 			if ds.AttackTag != core.AttackTagElementalArt {
-				return
+				return false
 			}
-			if icd > s.Frame() {
-				return
+			if icd > s.F {
+				return false
 			}
 			stacks++
 			if stacks > 2 {
@@ -46,15 +46,16 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 			}
 			m[core.ATKP] = 0.09 * float64(stacks)
 
-			log.Debugw("pale flame 4pc proc", "frame", s.Frame(), "event", core.LogArtifactEvent, "stacks", stacks, "expiry", s.Frame()+420, "icd", s.Frame()+18)
-			icd = s.Frame() + 18
-			dur = s.Frame() + 420
+			s.Log.Debugw("pale flame 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "stacks", stacks, "expiry", s.F+420, "icd", s.F+18)
+			icd = s.F + 18
+			dur = s.F + 420
+			return false
 		}, fmt.Sprintf("pf4-%v", c.Name()))
 
 		c.AddMod(core.CharStatMod{
 			Key: "pf-4pc",
 			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if dur < s.Frame() {
+				if dur < s.F {
 					m[core.ATKP] = 0
 					m[core.PhyP] = 0
 					return nil, false

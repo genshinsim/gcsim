@@ -3,34 +3,35 @@ package dragonspine
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("dragonspine spear", weapon)
+	core.RegisterWeaponFunc("dragonspine spear", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	atk := 0.65 + float64(r)*0.15
 	atkc := 1.6 + float64(r)*0.4
 	p := 0.5 + float64(r)*0.1
 
 	icd := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
-		if s.Frame() > icd {
-			return
+		if c.F > icd {
+			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
-			return
+			return false
 		}
-		if s.Rand().Float64() < p {
-			icd = s.Frame() + 600
-			d := c.Snapshot(
+		if c.Rand.Float64() < p {
+			icd = c.F + 600
+			d := char.Snapshot(
 				"Starsilver Proc",
 				core.AttackTagWeaponSkill,
 				core.ICDTagNone,
@@ -44,8 +45,9 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			if t.AuraType() == core.Cryo || t.AuraType() == core.Frozen {
 				d.Mult = atkc
 			}
-			c.QueueDmg(&d, 1)
+			char.QueueDmg(&d, 1)
 
 		}
-	}, fmt.Sprintf("dragonspine-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("dragonspine-%v", char.Name()))
 }

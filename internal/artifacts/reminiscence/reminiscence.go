@@ -1,15 +1,16 @@
 package reminiscence
 
 import (
-	"github.com/genshinsim/gsim/pkg/combat"
+	"fmt"
+
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("reminiscence of shime", New)
+	core.RegisterSetFunc("reminiscence of shime", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.ATKP] = 0.18
@@ -24,8 +25,8 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 	if count >= 4 {
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.50
-		s.AddEventHook(func(s core.Sim) bool {
-			if s.ActiveCharIndex() != c.CharIndex() {
+		s.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
 			if c.CurrentEnergy() > 15 {
@@ -39,12 +40,11 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 						}
 						return m, true
 					},
-					Expiry: s.Frame() + 600,
+					Expiry: s.F + 600,
 				})
-
 			}
 			return false
-		}, "rem-4pc", core.PreSkillHook)
+		}, fmt.Sprintf("rem-4pc-%v", c.Name()))
 
 	}
 	//add flat stat to char

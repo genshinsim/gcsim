@@ -3,51 +3,52 @@ package dodoco
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("dodoco tales", weapon)
+	core.RegisterWeaponFunc("dodoco tales", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	atkExpiry := 0
 	dmgExpiry := 0
 
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = .12 + float64(r)*.04
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "dodoco ca",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if a != core.AttackTagExtra {
 				return nil, false
 			}
-			return m, dmgExpiry > s.Frame()
+			return m, dmgExpiry > c.F
 		},
 		Expiry: -1,
 	})
 
 	n := make([]float64, core.EndStatType)
 	n[core.ATKP] = .06 + float64(r)*0.02
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "dodoco atk",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return n, atkExpiry > s.Frame()
+			return n, atkExpiry > c.F
 		},
 		Expiry: -1,
 	})
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		switch ds.AttackTag {
 		case core.AttackTagNormal:
-			dmgExpiry = s.Frame() + 360
+			dmgExpiry = c.F + 360
 		case core.AttackTagExtra:
-			atkExpiry = s.Frame() + 360
+			atkExpiry = c.F + 360
 		}
-	}, fmt.Sprintf("dodoco-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("dodoco-%v", char.Name()))
 
 }

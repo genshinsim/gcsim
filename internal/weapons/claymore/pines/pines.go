@@ -3,18 +3,17 @@ package pines
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("song of broken pines", weapon)
+	core.RegisterWeaponFunc("song of broken pines", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.12 + float64(r)*0.04
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "pines-atk",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
@@ -30,35 +29,36 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	stacks := 0
 	cooldown := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
-			return
+			return false
 		}
-		if cooldown > s.Frame() {
-			return
+		if cooldown > c.F {
+			return false
 		}
-		if icd > s.Frame() {
-			return
+		if icd > c.F {
+			return false
 		}
-		icd = s.Frame() + 12
+		icd = c.F + 12
 		stacks++
 		if stacks == 4 {
 			stacks = 0
-			s.AddStatus("pines", 720)
-			cooldown = s.Frame() + 1200
-			for _, char := range s.Characters() {
+			c.Status.AddStatus("pines", 720)
+			cooldown = c.F + 1200
+			for _, char := range c.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "pines-proc",
 					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, true
 					},
-					Expiry: s.Frame() + 720,
+					Expiry: c.F + 720,
 				})
 			}
 		}
-
-	}, fmt.Sprintf("pines-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("pines-%v", char.Name()))
 }

@@ -3,34 +3,35 @@ package generic
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("prototype crescent", weapon)
+	core.RegisterWeaponFunc("prototype crescent", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	dur := 0
-	key := fmt.Sprintf("prototype-crescent-%v", c.Name())
+	key := fmt.Sprintf("prototype-crescent-%v", char.Name())
 	//add on hit effect
-	s.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		if ds.HitWeakPoint {
-			dur = s.Frame() + 600
+			dur = c.F + 600
 		}
+		return false
 	}, key)
 
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.27 + float64(r)*0.09
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "prototype-crescent",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if dur < s.Frame() {
+			if dur < c.F {
 				return nil, false
 			}
 			return m, true

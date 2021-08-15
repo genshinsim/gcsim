@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("albedo", NewChar)
+	core.RegisterCharFunc("albedo", NewChar)
 }
 
 type char struct {
@@ -19,9 +17,9 @@ type char struct {
 	skillSnapshot core.Snapshot
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -118,8 +116,8 @@ func (c *char) ChargeAttack(p map[string]int) int {
 
 func (c *char) newConstruct(dur int) core.Construct {
 	return &construct{
-		src:    c.Sim.Frame(),
-		expiry: c.Sim.Frame() + dur,
+		src:    c.Core.F,
+		expiry: c.Core.F + dur,
 		char:   c,
 	}
 }
@@ -183,9 +181,9 @@ func (c *char) Skill(p map[string]int) int {
 	c.skillSnapshot.UseDef = true
 
 	//create a construct
-	c.Sim.NewConstruct(c.newConstruct(2100), true) //35 seconds
+	c.Core.Constructs.NewConstruct(c.newConstruct(2100), true) //35 seconds
 
-	c.lastConstruct = c.Sim.Frame()
+	c.lastConstruct = c.Core.F
 
 	c.Tags["elevator"] = 1
 
@@ -195,48 +193,49 @@ func (c *char) Skill(p map[string]int) int {
 
 func (c *char) skillHook() {
 	icd := 0
-	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
 		if c.Tags["elevator"] == 0 {
-			return
+			return false
 		}
-		if c.Sim.Frame() < icd {
-			return
+		if c.Core.F < icd {
+			return false
 		}
-		icd = c.Sim.Frame() + 120 // every 2 seconds
+		icd = c.Core.F + 120 // every 2 seconds
 
 		d := c.skillSnapshot.Clone()
 
-		if c.Sim.Flags().DamageMode && t.HP()/t.MaxHP() < .5 {
+		if c.Core.Flags.DamageMode && t.HP()/t.MaxHP() < .5 {
 			d.Stats[core.DmgP] += 0.25
-			c.Log.Debugw("a2 proc'd, dealing extra dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", d.Stats[core.DmgP])
+			c.Log.Debugw("a2 proc'd, dealing extra dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", d.Stats[core.DmgP])
 		}
 
 		c.QueueDmg(&d, 1)
 
 		//67% chance to generate 1 geo orb
-		if c.Sim.Rand().Float64() < 0.67 {
+		if c.Core.Rand.Float64() < 0.67 {
 			c.QueueParticle("albedo", 1, core.Geo, 100)
 		}
 
 		//c1
 		if c.Base.Cons >= 1 {
 			c.AddEnergy(1.2)
-			c.Log.Debugw("c1 restoring energy", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
+			c.Log.Debugw("c1 restoring energy", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		}
 
 		//c2 add stacks
 		if c.Base.Cons >= 2 {
-			if c.Sim.Status("albedoc2") == 0 {
+			if c.Core.Status.Duration("albedoc2") == 0 {
 				c.Tags["c2"] = 0
 			}
-			c.Sim.AddStatus("albedoc2", 1800) //lasts 30 seconds
+			c.Core.Status.AddStatus("albedoc2", 1800) //lasts 30 seconds
 			c.Tags["c2"]++
 			if c.Tags["c2"] > 4 {
 				c.Tags["c2"] = 4
 			}
 		}
 
-		return
+		return false
 
 	}, "albedo-skill")
 }
@@ -276,7 +275,7 @@ func (c *char) Burst(p map[string]int) int {
 	d.Targets = core.TargetAll
 
 	//check stacks
-	if c.Base.Cons >= 2 && c.Sim.Status("albedoc2") > 0 {
+	if c.Base.Cons >= 2 && c.Core.Status.Duration("albedoc2") > 0 {
 		d.FlatDmg += (d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]) * float64(c.Tags["c2"])
 		c.Tags["c2"] = 0
 	}
@@ -287,7 +286,7 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	//self buff EM
-	for _, char := range c.Sim.Characters() {
+	for _, char := range c.Core.Chars {
 		val := make([]float64, core.EndStatType)
 		val[core.EM] = 120
 		char.AddMod(core.CharStatMod{
@@ -295,7 +294,7 @@ func (c *char) Burst(p map[string]int) int {
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
-			Expiry: c.Sim.Frame() + 600,
+			Expiry: c.Core.F + 600,
 		})
 	}
 
@@ -332,7 +331,7 @@ func (c *char) c6() {
 			if c.Tags["elevator"] != 1 {
 				return nil, false
 			}
-			if c.Sim.GetShield(core.ShieldCrystallize) == nil {
+			if c.Core.Shields.Get(core.ShieldCrystallize) == nil {
 				return nil, false
 			}
 			return val, true

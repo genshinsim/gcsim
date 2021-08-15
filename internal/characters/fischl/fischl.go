@@ -4,14 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("fischl", NewChar)
+	core.RegisterCharFunc("fischl", NewChar)
 }
 
 type char struct {
@@ -23,9 +20,9 @@ type char struct {
 	ozActiveUntil int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -55,14 +52,14 @@ func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.
 // 	if c.ozAttackCounter%4 == 0 {
 // 		//apply aura, add to timer
 // 		d.Durability = 25
-// 		c.ozICD = c.Sim.Frame() + 300 //add 300 second to skill ICD
+// 		c.ozICD = c.Core.F + 300 //add 300 second to skill ICD
 // 	}
 // 	//so oz is active and ready to shoot, we add damage
 // 	c.S.AddTask(func(s *def.Sim) {
 // 		s.ApplyDamage(d)
 // 	}, "Fischl Oz (Damage)", 1)
 // 	//put shoot on cd
-// 	c.ozNextShootReady = c.Sim.Frame() + 50
+// 	c.ozNextShootReady = c.Core.F + 50
 // 	//increment hit counter
 // 	c.ozAttackCounter++
 // 	//assume fischl has 60% chance of generating orb every attack;
@@ -92,7 +89,7 @@ func (c *char) Attack(p map[string]int) int {
 	c.AdvanceNormalIndex()
 
 	//check for c1
-	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Sim.Frame() {
+	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Core.F {
 		d := c.Snapshot(
 			"Fischl C1",
 			core.AttackTagNormal,
@@ -115,8 +112,8 @@ func (c *char) queueOz(src string) {
 	if c.Base.Cons == 6 {
 		dur += 120
 	}
-	c.ozActiveUntil = c.Sim.Frame() + dur
-	c.ozSource = c.Sim.Frame()
+	c.ozActiveUntil = c.Core.F + dur
+	c.ozSource = c.Core.F
 	c.ozSnapshot = c.Snapshot(
 		fmt.Sprintf("Oz (%v)", src),
 		core.AttackTagElementalArt,
@@ -127,31 +124,31 @@ func (c *char) queueOz(src string) {
 		25,
 		birdAtk[c.TalentLvlSkill()],
 	)
-	c.AddTask(c.ozTick(c.Sim.Frame()), "oz", 60)
-	c.Log.Debugw("Oz activated", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Sim.Frame()+60)
+	c.AddTask(c.ozTick(c.Core.F), "oz", 60)
+	c.Log.Debugw("Oz activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
 
-	c.Sim.AddStatus("fischloz", dur)
+	c.Core.Status.AddStatus("fischloz", dur)
 
 }
 
 func (c *char) ozTick(src int) func() {
 	return func() {
-		c.Log.Debugw("Oz checking for tick", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src)
+		c.Log.Debugw("Oz checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
 		//if src != ozSource then this is no longer the same oz, do nothing
 		if src != c.ozSource {
 			return
 		}
-		c.Log.Debugw("Oz ticked", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "next expected tick", c.Sim.Frame()+60, "active", c.ozActiveUntil, "src", src)
+		c.Log.Debugw("Oz ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
 		//trigger damage
 		d := c.ozSnapshot.Clone()
-		c.Sim.ApplyDamage(&d)
+		c.Core.Combat.ApplyDamage(&d)
 		//check for orb
-		if c.Sim.Rand().Float64() < .67 {
+		if c.Core.Rand.Float64() < .67 {
 			c.QueueParticle("fischl", 1, core.Electro, 120)
 		}
 
 		//queue up next hit only if next hit oz is still active
-		if c.Sim.Frame()+60 < c.ozActiveUntil {
+		if c.Core.F+60 < c.ozActiveUntil {
 			c.AddTask(c.ozTick(src), "oz", 60)
 		}
 	}
@@ -225,7 +222,7 @@ func (c *char) Burst(p map[string]int) int {
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.AddTask(func() {
-			c.Sim.HealActive(heal)
+			c.Core.Health.HealActive(heal)
 		}, "c4heal", f-1)
 
 	}

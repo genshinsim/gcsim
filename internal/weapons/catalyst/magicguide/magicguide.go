@@ -3,21 +3,24 @@ package magicguide
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("magic guide", weapon)
+	core.RegisterWeaponFunc("magic guide", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	dmg := 0.09 + float64(r)*0.03
 
-	s.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
+	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
+		ds := args[1].(*core.Snapshot)
+
 		if t.AuraContains(core.Hydro, core.Electro, core.Cryo) {
 			ds.Stats[core.DmgP] += dmg
-			log.Debugw("magic guide", "frame", s.Frame(), "event", core.LogCalc, "final dmg%", ds.Stats[core.DmgP])
+			c.Log.Debugw("magic guide", "frame", c.F, "event", core.LogCalc, "final dmg%", ds.Stats[core.DmgP])
 		}
-	}, fmt.Sprintf("magic-guide-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("magic-guide-%v", char.Name()))
 }

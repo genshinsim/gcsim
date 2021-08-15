@@ -160,7 +160,7 @@ func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 		ds.Stats[core.CR] = 1
 	}
 	res := t.resist(ds.Element, ds.ActorIndex)
-	defadj := t.defAdj(ds.ActorIndex)
+	defadj := t.defAdj(ds.ActorIndex) + ds.DefAdj
 
 	if defadj > 0.9 {
 		defadj = 0.9

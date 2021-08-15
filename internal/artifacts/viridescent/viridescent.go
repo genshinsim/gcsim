@@ -3,15 +3,14 @@ package thunderingfury
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("viridescent venerer", New)
+	core.RegisterSetFunc("viridescent venerer", New)
 }
 
-func New(c core.Character, s core.Sim, logger core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.AnemoP] = 0.15
@@ -24,13 +23,14 @@ func New(c core.Character, s core.Sim, logger core.Logger, count int) {
 		})
 	}
 	if count >= 4 {
-		s.AddOnTransReaction(func(t core.Target, ds *core.Snapshot) {
-			// log.Println(ds)
+		s.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+			ds := args[1].(*core.Snapshot)
+			t := args[0].(core.Target)
 			if ds.ActorIndex != c.CharIndex() {
-				return
+				return false
 			}
-			// log.Println("ok")
-			// log.Println(ds.ReactionType)
+			// s.Log.Println("ok")
+			// s.Log.Println(ds.ReactionType)
 			switch ds.ReactionType {
 			case core.SwirlCryo:
 				t.AddResMod("vvcryo", core.ResistMod{
@@ -38,7 +38,7 @@ func New(c core.Character, s core.Sim, logger core.Logger, count int) {
 					Ele:      core.Cryo,
 					Value:    -0.4,
 				})
-				// log.Println(t.HasResMod("vvcryo"))
+				// s.Log.Println(t.HasResMod("vvcryo"))
 			case core.SwirlElectro:
 				t.AddResMod("vvelectro", core.ResistMod{
 					Duration: 600, //10 seconds
@@ -58,11 +58,11 @@ func New(c core.Character, s core.Sim, logger core.Logger, count int) {
 					Value:    -0.4,
 				})
 			default:
-				return
+				return false
 			}
 			ds.ReactBonus += 0.6
-			logger.Debugw("vv 4pc proc", "frame", s.Frame(), "event", core.LogArtifactEvent, "reaction", ds.ReactionType, "char", c.CharIndex())
-
+			s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", ds.ReactionType, "char", c.CharIndex())
+			return false
 		}, fmt.Sprintf("vv4-%v", c.Name()))
 
 	}
