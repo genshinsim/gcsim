@@ -58,3 +58,31 @@ func Write(in string, out string, initial string, chars []string) error {
 	}
 	return nil
 }
+
+func WriteString(in string, out string, initial string, chars []string) error {
+	t, err := template.New("log").Parse(tmpl)
+	if err != nil {
+		return err
+	}
+
+	var tConfig struct {
+		Active string
+		Team   string
+		Log    string
+	}
+	tConfig.Active = initial
+	tConfig.Team = fmt.Sprint(strings.Join(strings.Split(fmt.Sprintf("%+q", chars), " "), ", "))
+	tConfig.Log = in
+
+	os.Remove(out)
+	f, err := os.Create(out)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	err = t.Execute(f, tConfig)
+	if err != nil {
+		return err
+	}
+	return nil
+}

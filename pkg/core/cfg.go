@@ -3,11 +3,11 @@ package core
 type Config struct {
 	Label      string
 	RunOptions struct {
-		Debug      bool
-		Duration   int
-		Iteration  int
-		Workers    int
 		DamageMode bool
+		Debug      bool
+		Iteration  int
+		Duration   int
+		Workers    int
 	}
 	Targets    []EnemyProfile
 	Characters struct {
@@ -18,12 +18,6 @@ type Config struct {
 
 	Hurt      HurtEvent
 	FixedRand bool //if this is true then use the same seed
-}
-
-type LogConfig struct {
-	LogLevel      string
-	LogFile       string
-	LogShowCaller bool
 }
 
 type CharacterProfile struct {
@@ -75,7 +69,7 @@ type HurtEvent struct {
 	Ele      EleType
 }
 
-func CloneEnemy(e EnemyProfile) EnemyProfile {
+func (e *EnemyProfile) Clone() EnemyProfile {
 	r := EnemyProfile{
 		Level:  e.Level,
 		Resist: make(map[EleType]float64),
@@ -83,5 +77,33 @@ func CloneEnemy(e EnemyProfile) EnemyProfile {
 	for k, v := range e.Resist {
 		r.Resist[k] = v
 	}
+	return r
+}
+
+func (c *CharacterProfile) Clone() CharacterProfile {
+	r := *c
+	r.Weapon.Param = make(map[string]int)
+	for k, v := range c.Weapon.Param {
+		r.Weapon.Param[k] = v
+	}
+	r.Stats = make([]float64, len(c.Stats))
+	copy(r.Stats, c.Stats)
+	r.Sets = make(map[string]int)
+	for k, v := range c.Sets {
+		r.Sets[k] = v
+	}
+
+	return r
+}
+
+func (c *Config) Clone() Config {
+	r := *c
+
+	r.Targets = make([]EnemyProfile, len(c.Targets))
+
+	for i, v := range c.Targets {
+		r.Targets[i] = v.Clone()
+	}
+
 	return r
 }
