@@ -4,10 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 type char struct {
@@ -21,12 +18,12 @@ type char struct {
 }
 
 func init() {
-	combat.RegisterCharFunc("xingqiu", NewChar)
+	core.RegisterCharFunc("xingqiu", NewChar)
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +82,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 39 //ok
 	default:
-		c.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Sim.Frame(), "action", a)
+		c.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
 		return 0
 	}
 }
@@ -120,8 +117,8 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) orbitalfunc(src int) func() {
 	return func() {
-		c.Log.Debugw("orbital checking tick", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "expiry", c.Sim.Status("xqorb"), "src", src)
-		if c.Sim.Status("xqorb") == 0 {
+		c.Log.Debugw("orbital checking tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+		if c.Core.Status.Duration("xqorb") == 0 {
 			c.orbitalActive = false
 			return
 		}
@@ -139,15 +136,15 @@ func (c *char) orbitalfunc(src int) func() {
 		d.Targets = core.TargetAll
 
 		c.QueueDmg(&d, 1)
-		c.Log.Debugw("orbital ticked", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "next expected tick", c.Sim.Frame()+150, "expiry", c.Sim.Status("xqorb"), "src", src)
+		c.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 		//queue up next instance
 		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 150)
 	}
 }
 
 func (c *char) applyOrbital() {
-	f := c.Sim.Frame()
-	c.Log.Debugw("Applying orbital", "frame", f, "event", core.LogCharacterEvent, "current status", c.Sim.Status("xqorb"))
+	f := c.Core.F
+	c.Log.Debugw("Applying orbital", "frame", f, "event", core.LogCharacterEvent, "current status", c.Core.Status.Duration("xqorb"))
 	//check if blood blossom already active, if active extend duration by 8 second
 	//other wise start first tick func
 	if !c.orbitalActive {
@@ -156,8 +153,8 @@ func (c *char) applyOrbital() {
 		c.orbitalActive = true
 		c.Log.Debugw("orbital applied", "frame", f, "event", core.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
 	}
-	c.Sim.AddStatus("xqorb", 900)
-	c.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Sim.Status("xqorb"))
+	c.Core.Status.AddStatus("xqorb", 900)
+	c.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("xqorb"))
 }
 
 func (c *char) Skill(p map[string]int) int {
@@ -182,7 +179,7 @@ func (c *char) Skill(p map[string]int) int {
 	d.Targets = core.TargetAll
 	if c.Base.Cons >= 4 {
 		//check if ult is up, if so increase multiplier
-		if c.Sim.Status("xqburst") > 0 {
+		if c.Core.Status.Duration("xqburst") > 0 {
 			d.Mult = d.Mult * 1.5
 		}
 	}
@@ -200,13 +197,13 @@ func (c *char) Skill(p map[string]int) int {
 }
 
 func (c *char) burstHook() {
-	c.Sim.AddEventHook(func(s core.Sim) bool {
+	c.Core.Events.Subscribe(core.PostAttack, func(args ...interface{}) bool {
 		//check if buff is up
-		if c.Sim.Status("xqburst") <= 0 {
+		if c.Core.Status.Duration("xqburst") <= 0 {
 			return false
 		}
 		//check if off ICD
-		if c.burstSwordICD > s.Frame() {
+		if c.burstSwordICD > c.Core.F {
 			return false
 		}
 
@@ -267,10 +264,10 @@ func (c *char) burstHook() {
 		}
 
 		//estimated 1 second ICD
-		c.burstSwordICD = c.Sim.Frame() + 60
+		c.burstSwordICD = c.Core.F + 60
 
 		return false
-	}, "Xingqiu-Burst", core.PostAttackHook)
+	}, "xq-burst")
 }
 
 func (c *char) Burst(p map[string]int) int {
@@ -303,8 +300,8 @@ func (c *char) Burst(p map[string]int) int {
 		dur += 3
 	}
 	dur = dur * 60
-	c.Sim.AddStatus("xqburst", dur)
-	c.Log.Debugw("Xingqiu burst activated", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "expiry", c.Sim.Frame()+dur)
+	c.Core.Status.AddStatus("xqburst", dur)
+	c.Log.Debugw("Xingqiu burst activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+dur)
 
 	c.burstCounter = 0
 	c.numSwords = 2

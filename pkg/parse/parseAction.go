@@ -44,6 +44,11 @@ loop:
 			}
 		case itemIf:
 			r.Conditions, err = p.parseIf()
+		case itemWait:
+			item, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err == nil {
+				r.Wait, err = itemNumberToInt(item)
+			}
 		case itemSwap:
 			item, err = p.acceptSeqReturnLast(itemAssign, itemIdentifier)
 			r.SwapTo = item.val

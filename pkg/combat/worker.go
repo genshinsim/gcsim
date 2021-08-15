@@ -11,12 +11,6 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/parse"
-
-	//characters
-	_ "github.com/genshinsim/gsim/internal/characters/amber"
-
-	//weapons
-	_ "github.com/genshinsim/gsim/internal/weapons/bow/alley"
 )
 
 type Stats struct {
@@ -65,22 +59,26 @@ type workerResp struct {
 	err   error
 }
 
-func Run(src string, details bool, debug bool) (AverageStats, error) {
+func Run(src string, details bool, debug bool, cust ...func(*Simulation) error) (AverageStats, error) {
 
 	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
 	var data []Stats
-	var result AverageStats
 
 	parser := parse.New("single", string(src))
 	cfg, err := parser.Parse()
 	if err != nil {
-		return result, err
+		return AverageStats{}, err
 	}
 
 	charCount := len(cfg.Characters.Profile)
 
 	if charCount > 4 {
-		return result, errors.New("cannot have more than 4 characters in a team")
+		return AverageStats{}, errors.New("cannot have more than 4 characters in a team")
+	}
+
+	chars := make([]string, len(cfg.Characters.Profile))
+	for i, v := range cfg.Characters.Profile {
+		chars[i] = v.Base.Name
 	}
 
 	//set defaults if nothing specified
@@ -89,7 +87,10 @@ func Run(src string, details bool, debug bool) (AverageStats, error) {
 		count = 1000
 	}
 	n := count
-	result.Iterations = count
+
+	if debug {
+		count--
+	}
 
 	// fmt.Printf("running %v iterations\n", count)
 
@@ -97,23 +98,8 @@ func Run(src string, details bool, debug bool) (AverageStats, error) {
 	if w <= 0 {
 		w = runtime.NumCPU()
 	}
-
-	result.DPS.Min = math.MaxFloat64
-	result.DPS.Max = -1
-	if details {
-		result.ReactionsTriggered = make(map[core.ReactionType]IntResult)
-		result.CharNames = make([]string, charCount)
-		result.AbilUsageCountByChar = make([]map[string]IntResult, charCount)
-		result.CharActiveTime = make([]IntResult, charCount)
-		result.DamageByChar = make([]map[string]FloatResult, charCount)
-
-		for i := range result.CharNames {
-			result.CharNames[i] = cfg.Characters.Profile[i].Base.Name
-			result.CharActiveTime[i].Min = math.MaxInt64
-			result.CharActiveTime[i].Max = -1
-			result.AbilUsageCountByChar[i] = make(map[string]IntResult)
-			result.DamageByChar[i] = make(map[string]FloatResult)
-		}
+	if w > n {
+		w = n
 	}
 
 	resp := make(chan workerResp, count)
@@ -121,7 +107,7 @@ func Run(src string, details bool, debug bool) (AverageStats, error) {
 	done := make(chan bool)
 
 	for i := 0; i < w; i++ {
-		go worker(src, details, resp, req, done)
+		go worker(src, details, resp, req, done, cust...)
 	}
 
 	go func() {
@@ -132,55 +118,71 @@ func Run(src string, details bool, debug bool) (AverageStats, error) {
 		}
 	}()
 
-	dd := float64(cfg.RunOptions.Duration)
-	if !cfg.RunOptions.DamageMode {
-		result.Duration.Mean = dd
-		result.Duration.Max = dd
-		result.Duration.Min = dd
-	}
-
 	defer close(done)
 
 	for count > 0 {
 		vv := <-resp
 		if vv.err != nil {
-			return result, vv.err
+			return AverageStats{}, vv.err
 		}
 		v := vv.stats
+		// log.Println(v)
 		count--
 		data = append(data, v)
-		collectResult(&v, &result, cfg.RunOptions.DamageMode, n, details)
 	}
-
-	for _, v := range data {
-		result.DPS.SD += (v.DPS - result.DPS.Mean) * (v.DPS - result.DPS.Mean)
-		if cfg.RunOptions.DamageMode {
-			result.Duration.SD += (float64(v.Duration) - result.Duration.Mean) * (float64(v.Duration) - result.Duration.Mean)
-		}
-	}
-
-	result.DPS.SD = math.Sqrt(result.DPS.SD / float64(n))
 
 	//if debug is true, run one more purely for debug do not add to stats
 	if debug {
-		s, err := NewSim(cfg, details)
+		s, err := NewSim(cfg, details, cust...)
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, err = s.Run()
+		v, err := s.Run()
 		if err != nil {
 			log.Fatal(err)
 		}
+		// log.Println(v)
+		data = append(data, v)
+	}
+
+	result := collectResult(data, cfg.RunOptions.DamageMode, chars, details)
+	result.Iterations = n
+	if !cfg.RunOptions.DamageMode {
+		result.Duration.Mean = float64(cfg.RunOptions.Duration)
+		result.Duration.Min = float64(cfg.RunOptions.Duration)
+		result.Duration.Max = float64(cfg.RunOptions.Duration)
 	}
 
 	return result, nil
 }
 
-func collectResult(v *Stats, result *AverageStats, mode bool, n int, detailed bool) {
+func collectResult(data []Stats, mode bool, chars []string, detailed bool) (result AverageStats) {
+
+	charCount := len(chars)
+	result.DPS.Min = math.MaxFloat64
+	result.DPS.Max = -1
+	if detailed {
+		result.ReactionsTriggered = make(map[core.ReactionType]IntResult)
+		result.CharNames = make([]string, charCount)
+		result.AbilUsageCountByChar = make([]map[string]IntResult, charCount)
+		result.CharActiveTime = make([]IntResult, charCount)
+		result.DamageByChar = make([]map[string]FloatResult, charCount)
+
+		for i := range result.CharNames {
+			result.CharNames[i] = chars[i]
+			result.CharActiveTime[i].Min = math.MaxInt64
+			result.CharActiveTime[i].Max = -1
+			result.AbilUsageCountByChar[i] = make(map[string]IntResult)
+			result.DamageByChar[i] = make(map[string]FloatResult)
+		}
+	}
+
+	n := len(data)
+
 	// var dd float64
 
-	dd := float64(v.Duration) / 60.0
-	if mode {
+	for _, v := range data {
+		dd := float64(v.Duration) / 60 //sim reports in frames
 		result.Duration.Mean += dd / float64(n)
 		if dd > result.Duration.Max {
 			result.Duration.Max = dd
@@ -188,58 +190,86 @@ func collectResult(v *Stats, result *AverageStats, mode bool, n int, detailed bo
 		if dd < result.Duration.Mean {
 			result.Duration.Max = dd
 		}
-	}
 
-	//dps
-	if result.DPS.Min > v.DPS {
-		result.DPS.Min = v.DPS
-	}
-	if result.DPS.Max < v.DPS {
-		result.DPS.Max = v.DPS
-	}
-	result.DPS.Mean += v.DPS / float64(n)
-
-	if !detailed {
-		return
-	}
-
-	//char active time
-	for i, amt := range v.CharActiveTime {
-
-		if result.CharActiveTime[i].Min > amt {
-			result.CharActiveTime[i].Min = amt
+		//dmg
+		if v.Damage < result.Damage.Min {
+			result.DPS.Min = v.Damage
 		}
-		if result.CharActiveTime[i].Max < amt {
-			result.CharActiveTime[i].Max = amt
+		if v.Damage > result.Damage.Max {
+			result.Damage.Max = v.Damage
 		}
-		result.CharActiveTime[i].Mean += float64(amt) / float64(n)
-	}
+		result.Damage.Mean += v.Damage / float64(n)
 
-	//dmg by char
-	for i, abil := range v.DamageByChar {
-		for k, amt := range abil {
-			x, ok := result.DamageByChar[i][k]
-			if !ok {
-				x.Min = math.MaxFloat64
-				x.Max = -1
-			}
-			amt = amt / float64(dd)
-			if x.Min > amt {
-				x.Min = amt
-			}
-			if x.Max < amt {
-				x.Max = amt
-			}
-			x.Mean += amt / float64(n)
-
-			result.DamageByChar[i][k] = x
+		//dps
+		if result.DPS.Min > v.DPS {
+			result.DPS.Min = v.DPS
 		}
-	}
+		if result.DPS.Max < v.DPS {
+			result.DPS.Max = v.DPS
+		}
+		result.DPS.Mean += v.DPS / float64(n)
 
-	//abil use
-	for c, abil := range v.AbilUsageCountByChar {
-		for k, amt := range abil {
-			x, ok := result.AbilUsageCountByChar[c][k]
+		if !detailed {
+			continue
+		}
+
+		//char active time
+		for i, amt := range v.CharActiveTime {
+
+			if result.CharActiveTime[i].Min > amt {
+				result.CharActiveTime[i].Min = amt
+			}
+			if result.CharActiveTime[i].Max < amt {
+				result.CharActiveTime[i].Max = amt
+			}
+			result.CharActiveTime[i].Mean += float64(amt) / float64(n)
+		}
+
+		//dmg by char
+		for i, abil := range v.DamageByChar {
+			for k, amt := range abil {
+				x, ok := result.DamageByChar[i][k]
+				if !ok {
+					x.Min = math.MaxFloat64
+					x.Max = -1
+				}
+				// log.Printf("dmg amount: %v\n", amt)
+				amt = amt / float64(dd)
+				if x.Min > amt {
+					x.Min = amt
+				}
+				if x.Max < amt {
+					x.Max = amt
+				}
+				x.Mean += amt / float64(n)
+
+				result.DamageByChar[i][k] = x
+			}
+		}
+
+		//abil use
+		for c, abil := range v.AbilUsageCountByChar {
+			for k, amt := range abil {
+				x, ok := result.AbilUsageCountByChar[c][k]
+				if !ok {
+					x.Min = math.MaxInt64
+					x.Max = -1
+				}
+				if x.Min > amt {
+					x.Min = amt
+				}
+				if x.Max < amt {
+					x.Max = amt
+				}
+				x.Mean += float64(amt) / float64(n)
+
+				result.AbilUsageCountByChar[c][k] = x
+			}
+		}
+
+		//reactions
+		for c, amt := range v.ReactionsTriggered {
+			x, ok := result.ReactionsTriggered[c]
 			if !ok {
 				x.Min = math.MaxInt64
 				x.Max = -1
@@ -252,30 +282,23 @@ func collectResult(v *Stats, result *AverageStats, mode bool, n int, detailed bo
 			}
 			x.Mean += float64(amt) / float64(n)
 
-			result.AbilUsageCountByChar[c][k] = x
+			result.ReactionsTriggered[c] = x
 		}
 	}
 
-	//reactions
-	for c, amt := range v.ReactionsTriggered {
-		x, ok := result.ReactionsTriggered[c]
-		if !ok {
-			x.Min = math.MaxInt64
-			x.Max = -1
+	for _, v := range data {
+		result.DPS.SD += (v.DPS - result.DPS.Mean) * (v.DPS - result.DPS.Mean)
+		if mode {
+			result.Duration.SD += (float64(v.Duration) - result.Duration.Mean) * (float64(v.Duration) - result.Duration.Mean)
 		}
-		if x.Min > amt {
-			x.Min = amt
-		}
-		if x.Max < amt {
-			x.Max = amt
-		}
-		x.Mean += float64(amt) / float64(n)
-
-		result.ReactionsTriggered[c] = x
 	}
+
+	result.DPS.SD = math.Sqrt(result.DPS.SD / float64(n))
+
+	return
 }
 
-func worker(src string, details bool, resp chan workerResp, req chan bool, done chan bool) {
+func worker(src string, details bool, resp chan workerResp, req chan bool, done chan bool, cust ...func(*Simulation) error) {
 
 	for {
 		select {
@@ -284,7 +307,7 @@ func worker(src string, details bool, resp chan workerResp, req chan bool, done 
 			cfg, _ := parser.Parse()
 			cfg.RunOptions.Debug = false
 
-			s, err := NewSim(cfg, details)
+			s, err := NewSim(cfg, details, cust...)
 			if err != nil {
 				resp <- workerResp{
 					err: err,
@@ -337,6 +360,7 @@ func (stats *AverageStats) PrettyPrint() string {
 	for i, t := range stats.AbilUsageCountByChar {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Character ability usage:\n")
 		}
 		sb.WriteString(fmt.Sprintf("%v used the following abilities:\n", stats.CharNames[i]))
 		keys := make([]string, 0, len(t))
@@ -352,6 +376,7 @@ func (stats *AverageStats) PrettyPrint() string {
 	for i, v := range stats.CharActiveTime {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Character field time:\n")
 		}
 		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", stats.CharNames[i], 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
 	}
@@ -362,11 +387,12 @@ func (stats *AverageStats) PrettyPrint() string {
 	for i, k := range rk {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Reactions:\n")
 		}
 		v := stats.ReactionsTriggered[k]
 		sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v max: %v]\n", k, v.Mean, v.Min, v.Max))
 	}
-	sb.WriteString(fmt.Sprintf("Average %.0f dps over %v seconds (min: %.2f max: %.2f std: %.2f) \n", stats.DPS.Mean, stats.Duration.Mean, stats.DPS.Min, stats.DPS.Max, stats.DPS.SD))
+	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", stats.Damage.Mean, stats.Duration.Mean, stats.DPS.Mean, stats.DPS.Min, stats.DPS.Max, stats.DPS.SD))
 
 	return sb.String()
 }

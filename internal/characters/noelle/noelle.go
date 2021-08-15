@@ -4,15 +4,12 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/shield"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("noelle", NewChar)
+	core.RegisterCharFunc("noelle", NewChar)
 }
 
 type char struct {
@@ -21,9 +18,9 @@ type char struct {
 	a4Counter   int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -83,15 +80,15 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 
 func (c *char) a2() {
 	icd := 0
-	c.Sim.AddOnHurt(func(s core.Sim) {
-		if c.Sim.Frame() < icd {
-			return
+	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.Core.F < icd {
+			return false
 		}
-		char, _ := s.CharByPos(s.ActiveCharIndex())
+		char := c.Core.Chars[c.Core.ActiveChar]
 		if char.HP()/char.MaxHP() >= 0.3 {
-			return
+			return false
 		}
-		icd = s.Frame() + 3600
+		icd = c.Core.F + 3600
 		d := c.Snapshot(
 			"A2 Shield",
 			core.AttackTagNone,
@@ -105,14 +102,15 @@ func (c *char) a2() {
 
 		//add shield
 		x := d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]
-		s.AddShield(&shield.Tmpl{
-			Src:        s.Frame(),
+		c.Core.Shields.Add(&shield.Tmpl{
+			Src:        c.Core.F,
 			ShieldType: core.ShieldNoelleA2,
 			HP:         4 * x,
 			Ele:        core.Cryo,
-			Expires:    c.Sim.Frame() + 1200, //20 sec
+			Expires:    c.Core.F + 1200, //20 sec
 		})
-	})
+		return false
+	}, "noelle-a2")
 }
 
 func (c *char) Attack(p map[string]int) int {
@@ -130,18 +128,18 @@ func (c *char) Attack(p map[string]int) int {
 	)
 	d.Targets = core.TargetAll
 	c.AddTask(func() {
-		c.Sim.ApplyDamage(&d)
+		c.Core.Combat.ApplyDamage(&d)
 		//check for healing
-		if c.Sim.GetShield(core.ShieldNoelleSkill) != nil {
+		if c.Core.Shields.Get(core.ShieldNoelleSkill) != nil {
 			prob := healChance[c.TalentLvlSkill()]
-			if c.Base.Cons >= 1 && c.Sim.Status("noelleq") > 0 {
+			if c.Base.Cons >= 1 && c.Core.Status.Duration("noelleq") > 0 {
 				prob = 1
 			}
-			if c.Sim.Rand().Float64() < prob {
+			if c.Core.Rand.Float64() < prob {
 				//heal target
 				x := d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]
 				heal := (shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]) * (1 + d.Stats[core.Heal])
-				c.Sim.HealAll(heal)
+				c.Core.Health.HealAll(heal)
 			}
 		}
 	}, "noelle auto", f-1)
@@ -181,10 +179,10 @@ func (n *noelleShield) OnDamage(dmg float64, ele core.EleType, bonus float64) (f
 func (c *char) newShield(base float64, t core.ShieldType, dur int) *noelleShield {
 	n := &noelleShield{}
 	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.Src = c.Sim.Frame()
+	n.Tmpl.Src = c.Core.F
 	n.Tmpl.ShieldType = t
 	n.Tmpl.HP = base
-	n.Tmpl.Expires = c.Sim.Frame() + dur
+	n.Tmpl.Expires = c.Core.F + dur
 	return n
 }
 
@@ -207,10 +205,10 @@ func (c *char) Skill(p map[string]int) int {
 	x := d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]
 	shield := shieldFlat[c.TalentLvlSkill()] + shieldDef[c.TalentLvlSkill()]*x
 
-	c.Sim.AddShield(c.newShield(shield, core.ShieldNoelleSkill, 720))
+	c.Core.Shields.Add(c.newShield(shield, core.ShieldNoelleSkill, 720))
 
 	//activate shield timer, on expiry explode
-	c.shieldTimer = c.Sim.Frame() + 720 //12 seconds
+	c.shieldTimer = c.Core.F + 720 //12 seconds
 
 	//deal dmg on cast
 	d = c.Snapshot(
@@ -231,7 +229,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	if c.Base.Cons >= 4 {
 		c.AddTask(func() {
-			if c.shieldTimer == c.Sim.Frame() {
+			if c.shieldTimer == c.Core.F {
 				//deal damage
 				c.explodeShield()
 			}
@@ -261,7 +259,7 @@ func (c *char) explodeShield() {
 func (c *char) Burst(p map[string]int) int {
 	f := c.ActionFrames(core.ActionSkill, p)
 
-	c.Sim.AddStatus("noelleq", 900)
+	c.Core.Status.AddStatus("noelleq", 900)
 
 	d := c.Snapshot(
 		"Sweeping Time (Burst)",
@@ -299,7 +297,7 @@ func (c *char) Burst(p map[string]int) int {
 func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
 	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
 
-	if c.Sim.Status("noelleq") > 0 {
+	if c.Core.Status.Duration("noelleq") > 0 {
 
 		x := c.Base.Def*(1+ds.Stats[core.DEFP]) + ds.Stats[core.DEF]
 		mult := defconv[c.TalentLvlBurst()]
@@ -307,7 +305,7 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 			mult += 0.5
 		}
 		fa := mult * x
-		c.Log.Debugw("noelle burst", "frame", c.Sim.Frame(), "event", core.LogSnapshotEvent, "total def", x, "atk added", fa, "mult", mult)
+		c.Log.Debugw("noelle burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", x, "atk added", fa, "mult", mult)
 
 		ds.Stats[core.ATK] += fa
 		//infusion to attacks only

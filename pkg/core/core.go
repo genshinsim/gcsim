@@ -130,7 +130,6 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 func (c *Core) Init() {
 
 	for i, char := range c.Chars {
-		c.charPos[char.Name()] = i
 		char.Init(i)
 	}
 
@@ -147,6 +146,7 @@ func (c *Core) AddChar(v CharacterProfile) error {
 		return err
 	}
 	c.Chars = append(c.Chars, char)
+	c.charPos[v.Base.Name] = len(c.Chars) - 1
 
 	wf, ok := weaponMap[v.Weapon.Name]
 	if !ok {

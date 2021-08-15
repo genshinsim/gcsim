@@ -3,34 +3,34 @@ package skyward
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("skyward atlas", weapon)
+	core.RegisterWeaponFunc("skyward atlas", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	dmg := 0.09 + float64(r)*0.03
 	atk := 1.2 + float64(r)*0.4
 
 	icd := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal {
-			return
+			return false
 		}
-		if icd > s.Frame() {
-			return
+		if icd > c.F {
+			return false
 		}
-		if s.Rand().Float64() < 0.5 {
-			return
+		if c.Rand.Float64() < 0.5 {
+			return false
 		}
-		d := c.Snapshot(
+		d := char.Snapshot(
 			"Skyward Atlas Proc",
 			core.AttackTagWeaponSkill,
 			core.ICDTagNone,
@@ -40,13 +40,14 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			100,
 			atk,
 		)
-		c.QueueDmg(&d, 1)
+		char.QueueDmg(&d, 1)
 		for i := 0; i < 6; i++ {
 			x := d.Clone()
-			c.QueueDmg(&x, i*150)
+			char.QueueDmg(&x, i*150)
 		}
-		icd = s.Frame() + 1800
-	}, fmt.Sprintf("skyward-atlast-%v", c.Name()))
+		icd = c.F + 1800
+		return false
+	}, fmt.Sprintf("skyward-atlast-%v", char.Name()))
 
 	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = dmg
@@ -58,7 +59,7 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	m[core.EleP] = dmg
 	m[core.PhyP] = dmg
 	m[core.DendroP] = dmg
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key:    "skyward-atlast",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {

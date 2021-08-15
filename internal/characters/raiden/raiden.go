@@ -2,9 +2,7 @@ package raiden
 
 import (
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 type char struct {
@@ -19,12 +17,12 @@ type char struct {
 }
 
 func init() {
-	combat.RegisterCharFunc("raiden", NewChar)
+	core.RegisterCharFunc("raiden", NewChar)
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -50,12 +48,12 @@ func (c *char) Init(index int) {
 	c.Tmpl.Init(index)
 	mult := skillBurstBonus[c.TalentLvlSkill()]
 	//add E hook
-	for _, char := range c.Sim.Characters() {
+	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
 			Key:    "raiden-e",
 			Expiry: -1,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if c.Sim.Status("raidenskill") == 0 {
+				if c.Core.Status.Duration("raidenskill") == 0 {
 					return nil, false
 				}
 				if a != core.AttackTagElementalBurst {
@@ -76,7 +74,7 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	excess := int(ds.Stats[core.ER] / 0.01)
 
 	ds.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Log.Debugw("a4 adding electro dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", ds.Stats[core.ElectroP])
+	c.Log.Debugw("a4 adding electro dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", ds.Stats[core.ElectroP])
 	//
 	////infusion to normal/plunge/charge
 	//switch ds.AttackTag {
@@ -86,7 +84,7 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	//default:
 	//	return ds
 	//}
-	//if c.Sim.Status("raidenburst") > 0 {
+	//if c.Core.Status.Duration("raidenburst") > 0 {
 	//	ds.Element = core.Electro
 	//}
 	return ds

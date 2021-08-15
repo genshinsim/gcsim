@@ -3,15 +3,14 @@ package widsith
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("the widsith", weapon)
+	core.RegisterWeaponFunc("the widsith", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	last := 0
 	expiry := 0
 
@@ -21,27 +20,28 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 
 	m := make([]float64, core.EndStatType)
 
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "widsith",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return m, expiry > s.Frame()
+			return m, expiry > c.F
 		},
 		Expiry: -1,
 	})
 
-	s.AddEventHook(func(s core.Sim) bool {
+	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		next := args[1].(int)
 		//ignore if char is not the active one
-		if s.ActiveCharIndex() != c.CharIndex() {
+		if next != char.CharIndex() {
 			return false
 		}
 		//if char is the active one then we just came on to field
-		if last != 0 && s.Frame()-last < 1800 { //30 sec icd
+		if last != 0 && c.F-last < 1800 { //30 sec icd
 			return false
 		}
-		last = s.Frame()
-		expiry = s.Frame() + 600 //10 sec duration
+		last = c.F
+		expiry = c.F + 600 //10 sec duration
 		//random 1 of 3
-		i := s.Rand().Intn(3)
+		i := c.Rand.Intn(3)
 
 		switch i {
 		case 0:
@@ -56,7 +56,7 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			m[core.PhyP] = 0
 			m[core.DendroP] = 0
 			m[core.ATKP] = 0
-			log.Debugw("widsith proc'd", "frame", s.Frame(), "event", core.LogWeaponEvent, "char", c.CharIndex(), "stat", "em", "expiring", expiry)
+			c.Log.Debugw("widsith proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "stat", "em", "expiring", expiry)
 		case 1:
 			m[core.EM] = 0
 			m[core.PyroP] = dmg
@@ -69,7 +69,7 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			m[core.PhyP] = dmg
 			m[core.DendroP] = dmg
 			m[core.ATKP] = 0
-			log.Debugw("widsith proc'd", "frame", s.Frame(), "event", core.LogWeaponEvent, "char", c.CharIndex(), "stat", "dmg%", "expiring", expiry)
+			c.Log.Debugw("widsith proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "stat", "dmg%", "expiring", expiry)
 		default:
 			m[core.EM] = 0
 			m[core.PyroP] = 0
@@ -82,9 +82,10 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			m[core.PhyP] = 0
 			m[core.DendroP] = 0
 			m[core.ATKP] = atk
-			log.Debugw("widsith proc'd", "frame", s.Frame(), "event", core.LogWeaponEvent, "char", c.CharIndex(), "stat", "atk%", "expiring", expiry)
+			c.Log.Debugw("widsith proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "stat", "atk%", "expiring", expiry)
 		}
 
 		return false
-	}, fmt.Sprintf("width-%v", c.Name()), core.PostSwapHook)
+	}, fmt.Sprintf("width-%v", char.Name()))
+
 }

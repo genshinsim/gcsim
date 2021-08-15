@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("lisa", NewChar)
+	core.RegisterCharFunc("lisa", NewChar)
 }
 
 type char struct {
@@ -18,9 +16,9 @@ type char struct {
 	c6icd int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -86,17 +84,17 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) c6() {
-	c.Sim.AddEventHook(func(s core.Sim) bool {
-		if c.Sim.Frame() < c.c6icd && c.c6icd != 0 {
+	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.Core.F < c.c6icd && c.c6icd != 0 {
 			return false
 		}
-		if c.Sim.ActiveCharIndex() == c.CharIndex() {
+		if c.Core.ActiveChar == c.CharIndex() {
 			//swapped to lisa
 			c.Tags["stack"] = 3
-			c.c6icd = c.Sim.Frame() + 300
+			c.c6icd = c.Core.F + 300
 		}
 		return false
-	}, "lisa-c6", core.PostSwapHook)
+	}, "lisa-c6")
 }
 
 func (c *char) Attack(p map[string]int) int {
@@ -186,7 +184,7 @@ func (c *char) skillPress(p map[string]int) int {
 	}
 	c.QueueDmg(&d, f-1)
 
-	if c.Sim.Rand().Float64() < 0.5 {
+	if c.Core.Rand.Float64() < 0.5 {
 		c.QueueParticle("Lisa", 1, core.Electro, f+100)
 	}
 
@@ -217,19 +215,19 @@ func (c *char) skillHold(p map[string]int) int {
 		c.AddMod(core.CharStatMod{
 			Key:    "lisa-c2",
 			Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-			Expiry: c.Sim.Frame() + 126,
+			Expiry: c.Core.F + 126,
 		})
 	}
 
 	//[8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
 	// count := 4
-	// if c.Sim.Rand().Float64() < 0.5 {
+	// if c.Core.Rand.Float64() < 0.5 {
 	// 	count = 5
 	// }
 	c.QueueParticle("Lisa", 5, core.Electro, f+100)
 
-	// c.CD[def.SkillCD] = c.Sim.Frame() + 960 //16seconds
+	// c.CD[def.SkillCD] = c.Core.F + 960 //16seconds
 	c.SetCD(core.ActionSkill, 960)
 	return f
 }
@@ -271,7 +269,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	//add a status for this just in case someone cares
 	c.AddTask(func() {
-		c.Sim.AddStatus("lisaburst", 900)
+		c.Core.Status.AddStatus("lisaburst", 900)
 	}, "lisa burst status", f)
 
 	//on lisa c4
@@ -283,7 +281,7 @@ func (c *char) Burst(p map[string]int) int {
 	//[8:12 PM] ArchedNosi | Lisa Unleashed: yeah single does nothing
 
 	c.Energy = 0
-	// c.CD[def.BurstCD] = c.Sim.Frame() + 1200
+	// c.CD[def.BurstCD] = c.Core.F + 1200
 	c.SetCD(core.ActionBurst, 1200)
 	return f //TODO: frames
 }

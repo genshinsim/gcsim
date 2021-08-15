@@ -43,12 +43,14 @@ func newEC(e *AuraElectro, h *AuraHydro, t *Target, ds *core.Snapshot, f int) Au
 		//target should be first, then snapshot
 		n := args[0].(core.Target)
 		snap := args[1].(*core.Snapshot)
-
+		if n.Index() != t.index {
+			return false
+		}
 		if snap.AttackTag != core.AttackTagECDamage {
 			return false
 		}
-		if n.Index() != t.index {
-			return false
+		if t.aura == nil {
+			return true
 		}
 		//check if ec still active
 		if t.aura.Type() != core.EC {

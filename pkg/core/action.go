@@ -21,6 +21,8 @@ type Action struct {
 	SwapLock   int
 	PostAction ActionType
 
+	Wait int //wait till this frame, only for calc
+
 	Conditions *ExprTreeNode //conditions to be met
 
 	Raw []string //raw action in string

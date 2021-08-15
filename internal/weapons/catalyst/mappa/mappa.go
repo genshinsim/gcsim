@@ -3,26 +3,27 @@ package mappa
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("mappa mare", weapon)
+	core.RegisterWeaponFunc("mappa mare", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 	dur := 0
-	s.AddOnReaction(func(t core.Target, ds *core.Snapshot) {
-		if ds.ActorIndex == c.CharIndex() {
+	c.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex == char.CharIndex() {
 			stacks++
 			if stacks > 2 {
 				stacks = 2
-				dur = s.Frame() + 600
+				dur = c.F + 600
 			}
 		}
-	}, fmt.Sprintf("mappa-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("mappa-%v", char.Name()))
 
 	dmg := 0.06 + float64(r)*0.02
 
@@ -38,10 +39,10 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	m[core.PhyP] = dmg
 	m[core.DendroP] = dmg
 
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "mappa",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return m, dur > s.Frame()
+			return m, dur > c.F
 		},
 		Expiry: -1,
 	})

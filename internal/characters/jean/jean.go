@@ -4,22 +4,20 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("jean", NewChar)
+	core.RegisterCharFunc("jean", NewChar)
 }
 
 type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -94,10 +92,10 @@ func (c *char) Attack(p map[string]int) int {
 	c.QueueDmg(&d, f-1)
 
 	//check for healing
-	if c.Sim.Rand().Float64() < 0.5 {
+	if c.Core.Rand.Float64() < 0.5 {
 		heal := 0.15 * (d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK])
 		c.AddTask(func() {
-			c.Sim.HealAll(heal)
+			c.Core.Health.HealAll(heal)
 		}, "jean-heal", f-1)
 	}
 
@@ -123,13 +121,13 @@ func (c *char) Skill(p map[string]int) int {
 	if c.Base.Cons >= 1 && p["hold"] >= 60 {
 		//add 40% dmg
 		d.Stats[core.DmgP] += .4
-		c.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "final dmg%", d.Stats[core.DmgP])
+		c.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg%", d.Stats[core.DmgP])
 	}
 
 	c.QueueDmg(&d, f-1)
 
 	count := 2
-	if c.Sim.Rand().Float64() < .67 {
+	if c.Core.Rand.Float64() < .67 {
 		count++
 	}
 	c.QueueParticle("Jean", count, core.Anemo, f+100)
@@ -169,11 +167,11 @@ func (c *char) Burst(p map[string]int) int {
 		c.QueueDmg(&x, f+i*delay)
 	}
 
-	c.Sim.AddStatus("jeanq", 630)
+	c.Core.Status.AddStatus("jeanq", 630)
 
 	if c.Base.Cons >= 4 {
 		//add debuff to all target for ??? duration
-		for _, t := range c.Sim.Targets() {
+		for _, t := range c.Core.Targets {
 			t.AddResMod("jeanc4", core.ResistMod{
 				Duration: 600, //10 seconds
 				Ele:      core.Anemo,
@@ -189,14 +187,14 @@ func (c *char) Burst(p map[string]int) int {
 	healDot := (burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]) * (1 + hpplus)
 
 	c.AddTask(func() {
-		c.Sim.HealAll(heal)
+		c.Core.Health.HealAll(heal)
 	}, "Jean Heal Initial", f)
 
 	//duration is 10.5s
 	for i := 60; i < 630; i++ {
 		c.AddTask(func() {
-			c.Log.Debugw("jean q healing", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "+heal", hpplus, "atk", atk, "heal amount", healDot)
-			c.Sim.HealActive(heal)
+			c.Log.Debugw("jean q healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "atk", atk, "heal amount", healDot)
+			c.Core.Health.HealActive(heal)
 		}, "Jean Tick", i)
 	}
 
@@ -213,7 +211,7 @@ func (c *char) c6() {
 	// 	}
 	// 	return 0
 	// })
-	c.Log.Warnw("jean c6 not implemented", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
+	c.Log.Warnw("jean c6 not implemented", "frame", c.Core.F, "event", core.LogCharacterEvent)
 }
 
 func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
@@ -223,15 +221,15 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 		if !isActive {
 			return
 		}
-		for _, active := range c.Sim.Characters() {
+		for _, active := range c.Core.Chars {
 			val := make([]float64, core.EndStatType)
 			val[core.AtkSpd] = 0.15
 			active.AddMod(core.CharStatMod{
 				Key:    "jean-c2",
 				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-				Expiry: c.Sim.Frame() + 900,
+				Expiry: c.Core.F + 900,
 			})
-			c.Log.Debugw("c2 - adding atk spd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "character", c.Name())
+			c.Log.Debugw("c2 - adding atk spd", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())
 		}
 	}
 }

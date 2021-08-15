@@ -1,15 +1,14 @@
 package archaic
 
 import (
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("archaic petra", New)
+	core.RegisterSetFunc("archaic petra", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.GeoP] = 0.15
@@ -23,26 +22,26 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 	}
 	if count >= 4 {
 
-		s.AddEventHook(func(s core.Sim) bool {
-			if s.ActiveCharIndex() != c.CharIndex() {
+		s.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
 			//check shield
-			shd := s.GetShield(core.ShieldCrystallize)
+			shd := s.Shields.Get(core.ShieldCrystallize)
 			if shd != nil {
 				//activate
-				s.AddStatus("archaic", 600)
+				s.Status.AddStatus("archaic", 600)
 				s.SetCustomFlag("archaic", int(shd.Element()))
-				log.Debugw("archaic petra proc'd", "frame", s.Frame(), "event", core.LogArtifactEvent, "char", c.CharIndex(), "ele", shd.Element())
+				s.Log.Debugw("archaic petra proc'd", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "ele", shd.Element())
 			}
 
 			return false
-		}, "archaic", core.PostShieldHook) //ok to overwrite any other char's
+		}, "archaic")
 
 		c.AddMod(core.CharStatMod{
 			Key: "archaic-4pc",
 			Amount: func(ds core.AttackTag) ([]float64, bool) {
-				if s.Status("archaic") == 0 {
+				if s.Status.Duration("archaic") == 0 {
 					return nil, false
 				}
 				ele, ok := s.GetCustomFlag("archaic")
@@ -53,7 +52,7 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 				bonus := core.EleToDmgP(core.EleType(ele))
 				m := make([]float64, core.EndStatType)
 				m[bonus] = 0.35
-				log.Debugw("archaic petra bonus", "frame", s.Frame(), "event", core.LogSnapshotEvent, "char", c.CharIndex(), "ele", bonus)
+				s.Log.Debugw("archaic petra bonus", "frame", s.F, "event", core.LogSnapshotEvent, "char", c.CharIndex(), "ele", bonus)
 				return m, true
 			},
 			Expiry: -1,

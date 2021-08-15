@@ -3,19 +3,18 @@ package vortex
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("vortex vanquisher", weapon)
+	core.RegisterWeaponFunc("vortex vanquisher", weapon)
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	shd := .15 + float64(r)*.05
-	s.AddShieldBonus(func() float64 {
+	c.Shields.AddBonus(func() float64 {
 		return shd
 	})
 
@@ -23,34 +22,36 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	icd := 0
 	duration := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
-		if icd > s.Frame() {
-			return
+		if icd > c.F {
+			return false
 		}
-		if duration < s.Frame() {
+		if duration < c.F {
 			stacks = 0
 		}
 		stacks++
 		if stacks > 5 {
 			stacks = 0
 		}
-		icd = s.Frame() + 18
+		icd = c.F + 18
+		return false
 
-	}, fmt.Sprintf("vortex-%v", c.Name()))
+	}, fmt.Sprintf("vortex-%v", char.Name()))
 
 	atk := 0.03 + 0.01*float64(r)
 
 	val := make([]float64, core.EndStatType)
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key:    "vortex",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if duration > s.Frame() {
+			if duration > c.F {
 				val[core.ATKP] = atk * float64(stacks)
-				if s.IsShielded() {
+				if c.Shields.IsShielded() {
 					val[core.ATKP] *= 2
 				}
 				return val, true
