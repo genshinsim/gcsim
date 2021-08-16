@@ -39,9 +39,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
+	// if c.Base.Cons == 6 {
+	// 	c.c6()
+	// }
 
 	//add effect for burst
 

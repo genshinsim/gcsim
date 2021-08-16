@@ -29,6 +29,23 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
+	if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
+		//trigger attack
+		d := c.Snapshot(
+			//fmt.Sprintf("Normal %v", c.NormalCounter),
+			"Kindling (C6)",
+			core.AttackTagNormal,
+			core.ICDTagNormalAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypePierce,
+			core.Pyro,
+			25,
+			aimExtra[c.TalentLvlAttack()],
+		)
+		c.QueueDmg(&d, travel+f+5)
+
+	}
+
 	if c.Core.Status.Duration("yoimiyaskill") > 0 {
 		if c.lastPart < c.Core.F || c.lastPart == 0 {
 			c.lastPart = c.Core.F + 300 //every 5 second

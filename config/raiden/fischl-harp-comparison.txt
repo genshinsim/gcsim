@@ -21,28 +21,29 @@ art+=bennett label="noblesse oblige" count=4;
 stats+=bennett  label=main hp=4780 atk=311 pyro%=0.466 er=0.518 cr=0.311;
 stats+=bennett label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;
 
-char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=0 talent=8,8,8;
-weapon+=raiden label="the catch" atk=510 er=.459 refine=5;
-art+=raiden label="seal of insulation" count=4;
-#stats+=raiden label=main hp=4780 atk=311 electro%=0.466 er=0.518 cr=0.311;
-stats+=raiden label=main hp=4780 atk=311 electro%=0.466 atk%=0.466 cr=0.311;
-stats+=raiden label=subs cr=0.363 cd=0.924;
+char+=fischl ele=electro lvl=80 hp=8552.900 atk=227.341 def=552.671 atk%=0.240 cr=.05 cd=0.5 cons=6 talent=6,8,8;
+weapon+=fischl label="skyward harp" atk=674 cr=.221 refine=1;
+art+=fischl label="gladiator's finale" count=2;
+art+=fischl label="thundering fury" count=2;
+stats+=fischl label=main hp=4780 atk=311 electro%=0.466 atk%=0.466 cr=0.311;
+stats+=fischl label=subs cr=0.363 cd=0.924;
 
 ##ENEMY
 target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
-active+=raiden;
+target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
+active+=xingqiu;
 
-actions+=skill target=raiden if=.status.raidenskill==0;
 actions+=sequence_strict target=xingqiu exec=skill,burst lock=100;
 actions+=skill target=xingqiu if=.energy.xingqiu<80 lock=100;
 actions+=burst target=xingqiu;
 actions+=burst target=bennett;
+actions+=burst target=fischl if=.status.fischloz==0;
+actions+=skill target=fischl if=.status.fischloz==0;
 actions+=sequence_strict target=xiangling exec=skill,burst;
-actions+=sequence_strict target=raiden exec=burst,attack,attack,attack,attack,attack,attack,attack,attack,attack;
 actions+=skill target=xiangling active=xiangling;
-actions+=skill target=bennett if=.energy.xiangling<70 swap=xiangling;
-actions+=skill target=raiden;
-actions+=attack target=xiangling active=xiangling;
-actions+=attack target=raiden active=raiden;
+actions+=skill target=bennett if=.energy.xiangling<40 swap=xiangling;
+#actions+=skill target=bennett;
+actions+=attack target=xiangling;
+actions+=attack target=fischl active=fischl;
 actions+=attack target=xingqiu active=xingqiu;
 actions+=attack target=bennett active=bennett;
