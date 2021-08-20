@@ -58,11 +58,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 		//add to counter
 		c.burstCounter++
-		c.Log.Debugw("eula burst add stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "stack count", c.burstCounter)
+		c.Core.Log.Debugw("eula burst add stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "stack count", c.burstCounter)
 		//check for c6
 		if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 			c.burstCounter++
-			c.Log.Debugw("eula c6 add additional stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "stack count", c.burstCounter)
+			c.Core.Log.Debugw("eula c6 add additional stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "stack count", c.burstCounter)
 		}
 		c.burstCounterICD = c.Core.F + 6
 		return false
@@ -102,7 +102,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 116 //ok
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -119,7 +119,7 @@ func (c *char) a4() {
 		}
 		c.Tags["grimheart"] = v
 
-		c.Log.Debugw("eula a4 reset skill cd", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.Debugw("eula a4 reset skill cd", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		c.ResetActionCooldown(core.ActionSkill)
 
 		return false
@@ -200,7 +200,7 @@ func (c *char) pressE() {
 		v++
 	}
 	c.Tags["grimheart"] = v
-	c.Log.Debugw("eula: grimheart stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "current count", v)
+	c.Core.Log.Debugw("eula: grimheart stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "current count", v)
 	c.grimheartReset = 18 * 60
 
 	c.SetCD(core.ActionSkill, 240)
@@ -311,7 +311,7 @@ func (c *char) Burst(p map[string]int) int {
 		c.burstCounter = 5
 	}
 
-	c.Log.Debugw("eula burst started", "frame", c.Core.F, "event", core.LogCharacterEvent, "stacks", c.burstCounter, "expiry", c.Core.Status.Duration("eulaq"))
+	c.Core.Log.Debugw("eula burst started", "frame", c.Core.F, "event", core.LogCharacterEvent, "stacks", c.burstCounter, "expiry", c.Core.Status.Duration("eulaq"))
 
 	lvl := c.TalentLvlBurst()
 	//add initial damage
@@ -336,7 +336,7 @@ func (c *char) Burst(p map[string]int) int {
 		v++
 	}
 	c.Tags["grimheart"] = v
-	c.Log.Debugw("eula: grimheart stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "current count", v)
+	c.Core.Log.Debugw("eula: grimheart stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "current count", v)
 
 	c.AddTask(func() {
 		//check to make sure it hasn't already exploded due to exiting field
@@ -378,7 +378,7 @@ func (c *char) c4() {
 		}
 		if t.HP()/t.MaxHP() < 0.5 {
 			ds.Stats[core.DmgP] += 0.25
-			c.Log.Debugw("eula: c4 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmgp", ds.Stats[core.DmgP])
+			c.Core.Log.Debugw("eula: c4 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmgp", ds.Stats[core.DmgP])
 		}
 		return false
 	}, "eula-c4")
@@ -403,7 +403,7 @@ func (c *char) triggerBurst() {
 	)
 	d.Targets = core.TargetAll
 
-	c.Log.Debugw("eula burst triggering", "frame", c.Core.F, "event", core.LogCharacterEvent, "stacks", stacks, "mult", d.Mult)
+	c.Core.Log.Debugw("eula burst triggering", "frame", c.Core.F, "event", core.LogCharacterEvent, "stacks", stacks, "mult", d.Mult)
 
 	c.Core.Combat.ApplyDamage(&d)
 	c.Core.Status.DeleteStatus("eulaq")

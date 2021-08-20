@@ -6,13 +6,11 @@ import (
 	"math/rand"
 
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 type Tmpl struct {
 	Core  *core.Core
 	Rand  *rand.Rand
-	Log   *zap.SugaredLogger
 	Index int
 	//this should describe the frame in which the abil becomes available
 	//if frame > current then it's available. no need to decrement this way
@@ -48,7 +46,6 @@ type Tmpl struct {
 func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 	c := Tmpl{}
 	c.Core = x
-	c.Log = x.Log
 	c.Rand = x.Rand
 
 	c.ActionCD = make([]int, core.EndActionType)
@@ -74,7 +71,7 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 		c.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		c.Log.Debugw("setting starting hp", "frame", x.F, "event", core.LogCharacterEvent, "character", p.Base.Name, "hp", p.Base.StartHP)
+		c.Core.Log.Debugw("setting starting hp", "frame", x.F, "event", core.LogCharacterEvent, "character", p.Base.Name, "hp", p.Base.StartHP)
 		c.HPCurrent = p.Base.StartHP
 	} else {
 		c.HPCurrent = math.MaxInt64

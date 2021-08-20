@@ -294,3 +294,28 @@ func NewDefaultLogger(debug bool, json bool) (*zap.SugaredLogger, error) {
 	}
 	return zaplog.Sugar(), nil
 }
+
+func NewDefaultLoggerWithPath(debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
+	config := zap.NewDevelopmentConfig()
+	if json {
+		config.Encoding = "json"
+	}
+	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	if debug {
+		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
+	} else {
+		config.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
+	}
+
+	config.EncoderConfig.TimeKey = ""
+	config.EncoderConfig.StacktraceKey = ""
+	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	config.EncoderConfig.CallerKey = ""
+	config.OutputPaths = paths
+
+	zaplog, err := config.Build()
+	if err != nil {
+		return nil, err
+	}
+	return zaplog.Sugar(), nil
+}

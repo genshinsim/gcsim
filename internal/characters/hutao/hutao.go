@@ -73,7 +73,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 130 // from kqm lib
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -88,7 +88,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 25
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 
@@ -230,23 +230,23 @@ func (c *char) ppParticles() {
 }
 
 func (c *char) applyBB() {
-	c.Log.Debugw("Applying Blood Blossom", "frame", c.Core.F, "event", core.LogCharacterEvent, "current dur", c.Core.Status.Duration("htbb"))
+	c.Core.Log.Debugw("Applying Blood Blossom", "frame", c.Core.F, "event", core.LogCharacterEvent, "current dur", c.Core.Status.Duration("htbb"))
 	//check if blood blossom already active, if active extend duration by 8 second
 	//other wise start first tick func
 	if !c.tickActive {
 		//TODO: does BB tick immediately on first application?
 		c.AddTask(c.bbtickfunc(c.Core.F), "bb", 240)
 		c.tickActive = true
-		c.Log.Debugw("Blood Blossom applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "expected end", c.Core.F+570, "next expected tick", c.Core.F+240)
+		c.Core.Log.Debugw("Blood Blossom applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "expected end", c.Core.F+570, "next expected tick", c.Core.F+240)
 	}
 	// c.CD["bb"] = c.Core.F + 570 //TODO: no idea how accurate this is, does this screw up the ticks?
 	c.Core.Status.AddStatus("htbb", 570)
-	c.Log.Debugw("Blood Blossom duration extended", "frame", c.Core.F, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("htbb"))
+	c.Core.Log.Debugw("Blood Blossom duration extended", "frame", c.Core.F, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("htbb"))
 }
 
 func (c *char) bbtickfunc(src int) func() {
 	return func() {
-		c.Log.Debugw("Blood Blossom checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "cd", c.Core.Status.Duration("htbb"), "src", src)
+		c.Core.Log.Debugw("Blood Blossom checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "cd", c.Core.Status.Duration("htbb"), "src", src)
 		if c.Core.Status.Duration("htbb") == 0 {
 			c.tickActive = false
 			return
@@ -268,7 +268,7 @@ func (c *char) bbtickfunc(src int) func() {
 			d.FlatDmg += c.HPMax * 0.1
 		}
 		c.Core.Combat.ApplyDamage(&d)
-		c.Log.Debugw("Blood Blossom ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+240, "dur", c.Core.Status.Duration("htbb"), "src", src)
+		c.Core.Log.Debugw("Blood Blossom ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+240, "dur", c.Core.Status.Duration("htbb"), "src", src)
 		//only queue if next tick buff will be active still
 		// if c.Core.F+240 > c.CD["bb"] {
 		// 	return
@@ -283,7 +283,7 @@ func (c *char) Skill(p map[string]int) int {
 	//increase based on hp at cast time
 	//drains hp
 	c.Core.Status.AddStatus("paramita", 520+20) //to account for animation
-	c.Log.Debugw("Paramita acivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+540+20)
+	c.Core.Log.Debugw("Paramita acivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+540+20)
 	//figure out atk buff
 	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.HPMax
 	max := (c.Base.Atk + c.Weapon.Atk) * 4

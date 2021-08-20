@@ -15,11 +15,11 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 		}
 	}
 	if ind != 0 && ind != len(c.Mods) {
-		c.Log.Debugw("char mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
 		c.Mods[ind] = mod
 	} else {
 		c.Mods = append(c.Mods, mod)
-		c.Log.Debugw("char mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
 	}
 
 }
@@ -136,7 +136,7 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 
 	}
 
-	c.Log.Desugar().Debug(name, logDetails...)
+	c.Core.Log.Desugar().Debug(name, logDetails...)
 
 	return ds
 }

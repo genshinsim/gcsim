@@ -125,7 +125,7 @@ func (c *char) queueOz(src string) {
 		birdAtk[c.TalentLvlSkill()],
 	)
 	c.AddTask(c.ozTick(c.Core.F), "oz", 60)
-	c.Log.Debugw("Oz activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
+	c.Core.Log.Debugw("Oz activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
 
 	c.Core.Status.AddStatus("fischloz", dur)
 
@@ -133,12 +133,12 @@ func (c *char) queueOz(src string) {
 
 func (c *char) ozTick(src int) func() {
 	return func() {
-		c.Log.Debugw("Oz checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
+		c.Core.Log.Debugw("Oz checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
 		//if src != ozSource then this is no longer the same oz, do nothing
 		if src != c.ozSource {
 			return
 		}
-		c.Log.Debugw("Oz ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
+		c.Core.Log.Debugw("Oz ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
 		//trigger damage
 		d := c.ozSnapshot.Clone()
 		c.Core.Combat.ApplyDamage(&d)

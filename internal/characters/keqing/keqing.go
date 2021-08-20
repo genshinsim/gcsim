@@ -70,7 +70,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 125
 	}
-	c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+	c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 	return 0
 }
 
@@ -81,7 +81,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 }
@@ -209,7 +209,7 @@ func (c *char) c2() {
 		if c.Core.Rand.Float64() < 0.5 {
 			c.c2ICD = c.Core.F + 300
 			c.QueueParticle("keqing", 1, core.Electro, 100)
-			c.Log.Debugw("keqing c2 proc'd", "frame", c.Core.F, "event", core.LogCharacterEvent, "next ready", c.c2ICD)
+			c.Core.Log.Debugw("keqing c2 proc'd", "frame", c.Core.F, "event", core.LogCharacterEvent, "next ready", c.c2ICD)
 		}
 		return false
 	}, "keqingc2")

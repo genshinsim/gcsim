@@ -49,7 +49,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 }
@@ -207,7 +207,7 @@ func (c *char) skillHook() {
 
 		if c.Core.Flags.DamageMode && t.HP()/t.MaxHP() < .5 {
 			d.Stats[core.DmgP] += 0.25
-			c.Log.Debugw("a2 proc'd, dealing extra dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", d.Stats[core.DmgP])
+			c.Core.Log.Debugw("a2 proc'd, dealing extra dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", d.Stats[core.DmgP])
 		}
 
 		c.QueueDmg(&d, 1)
@@ -220,7 +220,7 @@ func (c *char) skillHook() {
 		//c1
 		if c.Base.Cons >= 1 {
 			c.AddEnergy(1.2)
-			c.Log.Debugw("c1 restoring energy", "frame", c.Core.F, "event", core.LogCharacterEvent)
+			c.Core.Log.Debugw("c1 restoring energy", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		}
 
 		//c2 add stacks

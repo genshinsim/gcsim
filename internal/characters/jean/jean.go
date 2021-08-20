@@ -70,7 +70,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 88
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -121,7 +121,7 @@ func (c *char) Skill(p map[string]int) int {
 	if c.Base.Cons >= 1 && p["hold"] >= 60 {
 		//add 40% dmg
 		d.Stats[core.DmgP] += .4
-		c.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg%", d.Stats[core.DmgP])
+		c.Core.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg%", d.Stats[core.DmgP])
 	}
 
 	c.QueueDmg(&d, f-1)
@@ -193,7 +193,7 @@ func (c *char) Burst(p map[string]int) int {
 	//duration is 10.5s
 	for i := 60; i < 630; i++ {
 		c.AddTask(func() {
-			c.Log.Debugw("jean q healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "atk", atk, "heal amount", healDot)
+			c.Core.Log.Debugw("jean q healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "atk", atk, "heal amount", healDot)
 			c.Core.Health.HealActive(heal)
 		}, "Jean Tick", i)
 	}
@@ -211,7 +211,7 @@ func (c *char) c6() {
 	// 	}
 	// 	return 0
 	// })
-	c.Log.Warnw("jean c6 not implemented", "frame", c.Core.F, "event", core.LogCharacterEvent)
+	c.Core.Log.Warnw("jean c6 not implemented", "frame", c.Core.F, "event", core.LogCharacterEvent)
 }
 
 func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
@@ -229,7 +229,7 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 				Expiry: c.Core.F + 900,
 			})
-			c.Log.Debugw("c2 - adding atk spd", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())
+			c.Core.Log.Debugw("c2 - adding atk spd", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())
 		}
 	}
 }

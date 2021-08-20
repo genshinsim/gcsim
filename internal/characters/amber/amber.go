@@ -75,7 +75,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionSkill:
 		return 35 //no cancel
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -182,7 +182,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	switch c.eCharge {
 	case c.eChargeMax:
-		c.Log.Debugw("amber bunny at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+721)
+		c.Core.Log.Debugw("amber bunny at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+721)
 		c.eNextRecover = c.Core.F + 721
 		c.AddTask(c.recoverCharge(c.Core.F), "charge", 720)
 		c.eTickSrc = c.Core.F
@@ -197,18 +197,18 @@ func (c *char) Skill(p map[string]int) int {
 func (c *char) recoverCharge(src int) func() {
 	return func() {
 		if c.eTickSrc != src {
-			c.Log.Debugw("amber bunny recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
+			c.Core.Log.Debugw("amber bunny recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
 			return
 		}
 		c.eCharge++
-		c.Log.Debugw("amber bunny recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
+		c.Core.Log.Debugw("amber bunny recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
 		c.SetCD(core.ActionSkill, 0)
 		if c.eCharge >= c.eChargeMax {
 			//fully charged
 			return
 		}
 		//other wise restore another charge
-		c.Log.Debugw("amber bunny queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "recover at", c.Core.F+720)
+		c.Core.Log.Debugw("amber bunny queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "recover at", c.Core.F+720)
 		c.eNextRecover = c.Core.F + 721
 		c.AddTask(c.recoverCharge(src), "charge", 720)
 
@@ -246,7 +246,7 @@ func (c *char) makeBunny() {
 
 func (c *char) explode(src int) {
 	n := 0
-	c.Log.Debugw("amber exploding bunny", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
+	c.Core.Log.Debugw("amber exploding bunny", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
 	for _, v := range c.bunnies {
 		if v.src == src {
 
@@ -344,7 +344,7 @@ func (c *char) Burst(p map[string]int) int {
 				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 				Expiry: c.Core.F + 900,
 			})
-			c.Log.Debugw("c6 - adding atk %", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())
+			c.Core.Log.Debugw("c6 - adding atk %", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())
 		}
 	}
 

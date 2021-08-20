@@ -74,7 +74,7 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	excess := int(ds.Stats[core.ER] / 0.01)
 
 	ds.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Log.Debugw("a4 adding electro dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", ds.Stats[core.ElectroP])
+	c.Core.Log.Debugw("a4 adding electro dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", ds.Stats[core.ElectroP])
 	//
 	////infusion to normal/plunge/charge
 	//switch ds.AttackTag {

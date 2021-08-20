@@ -58,7 +58,7 @@ func (c *char) Aimed(p map[string]int) int {
 
 	// if c.a2expiry > c.Core.F {
 	// 	d.Stats[def.CR] += 0.2
-	// 	c.Log.Debugw("ganyu a2", "frame", c.Core.F, "event", def.LogCalc, "char", c.Index, "new crit %", d.Stats[def.CR])
+	// 	c.Core.Log.Debugw("ganyu a2", "frame", c.Core.F, "event", def.LogCalc, "char", c.Index, "new crit %", d.Stats[def.CR])
 	// }
 
 	c.QueueDmg(&d, travel+f)
@@ -129,19 +129,19 @@ func (c *char) Skill(p map[string]int) int {
 		//to right when the first charge is off cooldown
 		if last == -1 {
 			c.Tags["last"] = c.Core.F
-			// c.Log.Infof("\t Sucrose first time using skill, first charge cd up at %v", c.Core.F+900)
+			// c.Core.Log.Infof("\t Sucrose first time using skill, first charge cd up at %v", c.Core.F+900)
 		} else if c.Core.F-last < 600 {
 			//if last is less than 15s in the past, then 1 charge is up
 			//then we move last up to when the first charge goes off CD\
-			// c.Log.Infof("\t Sucrose last diff %v", c.Core.F-last)
+			// c.Core.Log.Infof("\t Sucrose last diff %v", c.Core.F-last)
 			c.Tags["last"] = last + 600
 			c.SetCD(core.ActionSkill, last+600-c.Core.F)
-			// c.Log.Infof("\t Sucrose skill going on CD until %v, last = %v", last+900, c.Tags["last"])
+			// c.Core.Log.Infof("\t Sucrose skill going on CD until %v, last = %v", last+900, c.Tags["last"])
 		} else {
 			//so if last is more than 15s in the past, then both charges must be up
 			//so then the charge restarts now
 			c.Tags["last"] = c.Core.F
-			// c.Log.Infof("\t Sucrose charge cd starts at %v", c.Core.F)
+			// c.Core.Log.Infof("\t Sucrose charge cd starts at %v", c.Core.F)
 		}
 	} else {
 		c.SetCD(core.ActionSkill, 600)
@@ -222,7 +222,7 @@ func (c *char) Burst(p map[string]int) int {
 				Expiry: c.Core.F + 60,
 			})
 			if t >= 900-18 {
-				c.Log.Debugw("a4 last tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+60)
+				c.Core.Log.Debugw("a4 last tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+60)
 			}
 		}, "ganyu-a4", i)
 	}

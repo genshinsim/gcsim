@@ -75,7 +75,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 45 //ok
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -127,7 +127,7 @@ func (c *char) c4() {
 			return false
 		}
 		c.Core.Status.AddStatus("beidouc4", 600)
-		c.Log.Debugw("c4 triggered on damage", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+600)
+		c.Core.Log.Debugw("c4 triggered on damage", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+600)
 		return false
 	}, "beidouc4")
 
@@ -146,7 +146,7 @@ func (c *char) c4() {
 			return false
 		}
 
-		c.Log.Debugw("c4 proc'd on attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+		c.Core.Log.Debugw("c4 proc'd on attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
 		d := c.Snapshot(
 			"Beidou C4",
 			core.AttackTagNone,
@@ -226,7 +226,7 @@ func (c *char) Skill(p map[string]int) int {
 
 func (c *char) Burst(p map[string]int) int {
 	if c.Energy < c.EnergyMax {
-		c.Log.Debugw("burst insufficient energy; skipping", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Base.Name)
+		c.Core.Log.Debugw("burst insufficient energy; skipping", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Base.Name)
 		return 0
 	}
 
@@ -294,7 +294,7 @@ func (c *char) burstProc() {
 			return false
 		}
 		if icd > c.Core.F {
-			c.Log.Debugw("beidou Q (active) on icd", "frame", c.Core.F, "event", core.LogCharacterEvent)
+			c.Core.Log.Debugw("beidou Q (active) on icd", "frame", c.Core.F, "event", core.LogCharacterEvent)
 			return false
 		}
 
@@ -302,7 +302,7 @@ func (c *char) burstProc() {
 		//on hit we have to chain
 		d.OnHitCallback = c.chainQ(t.Index(), c.Core.F, 1)
 
-		c.Log.Debugw("beidou Q proc'd", "frame", c.Core.F, "event", core.LogCharacterEvent, "actor", ds.Actor, "attack tag", ds.AttackTag)
+		c.Core.Log.Debugw("beidou Q proc'd", "frame", c.Core.F, "event", core.LogCharacterEvent, "actor", ds.Actor, "attack tag", ds.AttackTag)
 		c.QueueDmg(&d, 1)
 
 		icd = c.Core.F + 60 // once per second

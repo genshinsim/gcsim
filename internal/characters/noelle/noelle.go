@@ -73,7 +73,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 111 //ok
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -305,7 +305,7 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 			mult += 0.5
 		}
 		fa := mult * x
-		c.Log.Debugw("noelle burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", x, "atk added", fa, "mult", mult)
+		c.Core.Log.Debugw("noelle burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", x, "atk added", fa, "mult", mult)
 
 		ds.Stats[core.ATK] += fa
 		//infusion to attacks only

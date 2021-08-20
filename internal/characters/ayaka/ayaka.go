@@ -43,7 +43,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
 		return 0
 	}
 }
