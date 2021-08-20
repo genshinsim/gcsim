@@ -428,11 +428,11 @@ func (stats *AverageStats) PrettyPrint() string {
 		sb.WriteString(fmt.Sprintf("\tTarget #%v\n", i+1))
 		for j, ele := range core.EleTypeString {
 			v, ok := m[core.EleType(j)]
-			if ele == "" {
-				ele = "none"
-			}
 			if ok {
-				sb.WriteString(fmt.Sprintf("\t\t%v: avg %.2f%% [min: %.2f%% max: %2.f%%]\n", ele, 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
+				if ele == "" {
+					ele = "none"
+				}
+				sb.WriteString(fmt.Sprintf("\t\t%v: avg %.2f%% [min: %.2f%% max: %.2f%%]\n", ele, 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
 			}
 		}
 	}
