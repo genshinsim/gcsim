@@ -22,6 +22,10 @@ func New(c core.Character, s *core.Core, count int) {
 			Expiry: -1,
 		})
 	}
+	//11:51 AM] Episodde｜ShimenawaChildePeddler: Basically I found out that the fox set energy tax have around a 10 frame delay.
+	//so I was testing if you can evade the fox set 15 energy tax by casting burst within those 10 frame after using an elemental
+	//skill (not on hit). Turn out it work with childe :Childejoy:
+	//The finding is now in #energy-drain-effects-have-a-delay if you want to take a closer look
 	if count >= 4 {
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.50
@@ -31,7 +35,9 @@ func New(c core.Character, s *core.Core, count int) {
 			}
 			if c.CurrentEnergy() > 15 {
 				//consume 15 energy, increased normal/charge/plunge dmg by 50%
-				c.AddEnergy(-15)
+				s.Tasks.Add(func() {
+					c.AddEnergy(-15)
+				}, 10)
 				c.AddMod(core.CharStatMod{
 					Key: "rem-4pc",
 					Amount: func(ds core.AttackTag) ([]float64, bool) {

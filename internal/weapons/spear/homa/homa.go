@@ -22,7 +22,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			if char.HP()/char.MaxHP() <= 0.5 {
 				per += lowhp
 			}
-			m[core.ATKP] = per * char.MaxHP()
+			c.Log.Debugw("homa bonus atk%", "frame", c.F, "char", char.CharIndex(), "event", core.LogSnapshotEvent, "max-hp", char.MaxHP(), "percent", char.HP()/char.MaxHP(), "per", per)
+			m[core.ATK] = per * char.MaxHP()
 			return m, true
 		},
 		Expiry: -1,
