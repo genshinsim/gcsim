@@ -97,8 +97,14 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 
 func (s *Simulation) initTargets(cfg core.Config) error {
 	s.C.Targets = make([]core.Target, len(cfg.Targets))
+	if s.opts.LogDetails {
+		s.stats.ElementUptime = make([]map[core.EleType]int, len(cfg.Targets))
+	}
 	for i := 0; i < len(cfg.Targets); i++ {
 		s.C.Targets[i] = monster.New(i, s.C, cfg.Targets[i])
+		if s.opts.LogDetails {
+			s.stats.ElementUptime[i] = make(map[core.EleType]int)
+		}
 	}
 	return nil
 }

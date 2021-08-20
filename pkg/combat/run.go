@@ -87,6 +87,9 @@ func (s *Simulation) AdvanceFrame() error {
 func (s *Simulation) collectStats() {
 	//add char active time
 	s.stats.CharActiveTime[s.C.ActiveChar]++
+	for i, t := range s.C.Targets {
+		s.stats.ElementUptime[i][t.AuraType()]++
+	}
 }
 
 func (s *Simulation) handleHurt() {

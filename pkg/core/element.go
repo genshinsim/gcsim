@@ -18,6 +18,7 @@ const (
 	Physical
 	EC
 	UnknownElement
+	EndEleType
 )
 
 func (e EleType) String() string {
