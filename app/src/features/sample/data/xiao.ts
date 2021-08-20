@@ -6,65 +6,62 @@ export const xiaomango: PremadeConfig = {
   characters: ["xiao", "sucrose", "bennett", "fischl"],
   tags: ["xiao"],
   data: `
-##XIANGLING
-char+=xiangling ele=pyro lvl=80 hp=10122 atk=210 def=623 cr=0.05 cd=0.50 em=96 cons=6 talent=6,6,10;
-weapon+=xiangling label="skyward spine" atk=674 refine=1 er=0.368;
-#art+=xiangling label="gladiator's finale" count=2;
-#art+=xiangling label="noblesse oblige" count=2;
-art+=xiangling label="crimson witch of flames" count=4;
-stats+=xiangling label=flower hp=4780 hp%=.047 atk%=.152 em=21 cd=.264;
-stats+=xiangling label=feather atk=311 def=37 def%=.057 cr=.097 cd=.218;
-stats+=xiangling label=sands atk%=0.466 cd=.124 cr=.078 hp=209 atk=51;
-stats+=xiangling label=goblet pyro%=.466 cr=.089 er=0.052 atk%=.093 atk=43;
-stats+=xiangling label=circlet cr=.311 atk%=.087 hp%=0.058 cd=.132 def=76;
-##XINGQIU
-char+=xingqiu ele=hydro lvl=70 hp=8352 atk=165 def=619 cr=0.05 cd=0.50 atk%=.18 cons=6 talent=1,8,8;
-weapon+=xingqiu label="sacrificial sword" atk=401 refine=3 er=.559;
-art+=xingqiu label="gladiator's finale" count=2;
-art+=xingqiu label="noblesse oblige" count=2;
-stats+=xingqiu label=flower hp=4780 def=44 er=.065 cr=.097 cd=.124;
-stats+=xingqiu label=feather atk=311 cd=.218 def=19 atk=.117 em=40;
-stats+=xingqiu label=sands atk%=0.466 cd=.124 def%=.175 er=.045 hp=478;
-stats+=xingqiu label=goblet hydro%=.466 cd=.202 atk=.14 hp=299 atk=39;
-stats+=xingqiu label=circlet cr=.311 cd=0.062 atk%=.192 hp%=.082 atk=39;
-##BENNETT
-char+=bennett ele=pyro lvl=70 hp=10129 atk=156 def=630 cr=0.05 cd=0.50 er=.2 cons=2 talent=2,8,8;
-weapon+=bennett label="festering desire" atk=510 er=0.459 refine=5;
-art+=bennett label="noblesse oblige" count=4;
-stats+=bennett label=flower hp=3967 atk=45 cd=.148 def=39 atk%=.058;
-stats+=bennett label=feather atk=258 atk%=.117 def=16 er=.104 em=42;
-stats+=bennett label=sands er=.43 atk%=.163 hp%=.058 cd=.117 hp=209;
-stats+=bennett label=goblet pyro%=.387 hp=657 atk=19 cd=.14 cr=.035;
-stats+=bennett label=circlet cr=.232 cd=.056 atk=28 em=30 def%=.053;
-##FISCHL
-char+=fischl ele=electro lvl=70 hp=7508 atk=200 def=485 cr=0.05 cd=0.50 atk%=.18 cons=4 talent=4,8,2;
-weapon+=fischl label="favonius warbow" atk=401 refine=5;
-art+=fischl label="gladiator's finale" count=2;
-art+=fischl label="wanderer's troupe" count=2;
-stats+=fischl label=flower hp=4780 cd=.109 atk%=.087 cr=.109 atk=33;
-stats+=fischl label=feather atk=311 cd=.179 er=.091 atk%=.058 cr=.062;
-stats+=fischl label=sands atk%=0.387 em=35 cr=.039 atk=49 hp=508;
-stats+=fischl label=goblet electro%=.466 atk%=.105 em=61 cr=.027 er=.11;
-stats+=fischl label=circlet cr=.258 atk%=.041 atk=53 er=.058 hp=568;
-##ENEMY
-target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1;
-active+=xingqiu;
-##ROTATION
-actions+=sequence_strict target=xingqiu exec=skill,burst lock=100;
-actions+=skill target=xingqiu if=.status.xingqiu.energy<80 lock=100;
-actions+=burst target=xingqiu;
-actions+=burst target=bennett;
-actions+=sequence_strict target=xiangling exec=skill,burst;
-actions+=skill target=xiangling active=xiangling;
-actions+=burst target=fischl if=.status.xiangling.energy<70&&.tags.fischl.oz==0 swap=xiangling;
-actions+=skill target=fischl if=.status.xiangling.energy<70&&.tags.fischl.oz==0 swap=xiangling;
-actions+=burst target=fischl if=.tags.fischl.oz==0;
-actions+=skill target=fischl if=.tags.fischl.oz==0;
-actions+=skill target=bennett if=.status.xiangling.energy<40 swap=xiangling;
-#actions+=skill target=bennett;
-actions+=attack target=xiangling;
-actions+=attack target=xingqiu active=xingqiu;
-actions+=attack target=bennett active=bennett;
-actions+=attack target=fischl active=fischl; 
+  #XIAO
+  char+=xiao ele=anemo lvl=81 hp=11929.696 atk=327.099 def=748.709 cr=0.242 cd=0.5 cons=0 talent=8,8,8;
+  weapon+=xiao label="primordial jade winged-spear" atk=674.335 cr=0.221 refine=1;
+  art+=xiao label="gladiator's finale" count=2;
+  art+=xiao label="viridescent venerer" count=2;
+  stats+=xiao label=main hp=4780 atk=311 anemo%=0.466 atk%=0.466 cr=0.311;
+  stats+=xiao label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;
+  
+  #SUCROSE
+  char+=sucrose ele=anemo lvl=60 hp=6501.184 atk=119.505 def=494.426 anemo%=0.120 cr=.05 cd=0.5 cons=6 talent=1,1,1;
+  weapon+=sucrose label="sacrificial fragments" atk=454.363 em=220.512 refine=1;
+  art+=sucrose label="viridescent venerer" count=4;
+  stats+=sucrose label=main hp=4780 atk=311 em=187 em=187 em=187;
+  stats+=sucrose label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;
+  
+  #FISCHL
+  char+=fischl ele=electro lvl=70 hp=7508 atk=200 def=485 cr=0.05 cd=0.50 atk%=.18 cons=6 talent=6,8,8;
+  weapon+=fischl label="skyward harp" atk=674.335 cr=0.221 refine=1;
+  art+=fischl label="gladiator's finale" count=2;
+  art+=fischl label="thundering fury" count=2;
+  stats+=fischl label=main hp=4780 atk=311 electro%=0.466 atk%=0.466 cd=0.622;
+  stats+=fischl label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;
+  
+  #BENNETT
+  char+=bennett ele=pyro lvl=70 hp=10129 atk=156 def=630 cr=0.05 cd=0.50 er=.2 cons=2 talent=6,8,8;
+  weapon+=bennett label="festering desire" atk=510 er=0.459 refine=5;
+  art+=bennett label="noblesse oblige" count=4;
+  stats+=bennett label=main hp=4780 atk=311 pyro%=0.466 hp%=0.466 cd=0.622;
+  stats+=bennett label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;
+  
+    target+="dummy" lvl=90 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=0.1;
+    active+=bennett;
+  
+  #bennett E and Q
+  actions+=sequence_strict target=bennett exec=skill,burst if=.status.xiaoq==0;
+  
+  #fischl Q and E
+  actions+=burst target=fischl if=.status.xiaoq==0&&(.tags.fischl.oz==0);
+  actions+=skill target=fischl if=.status.xiaoq==0&&.tags.fischl.oz==0&&(.cd.fischl.burst<60);
+  
+  #sucrose battery
+  actions+=skill target=sucrose if=.status.xiaoq==0&&.status.xiao.energy<70 swap=xiao;
+  
+  actions+=skill target=bennett if=.status.xiaoq==0&&.status.bennett.energy<60 lock=120;
+  
+  #xiao
+  actions+=sequence_strict target=xiao exec=skill,skill,burst;
+  actions+=sequence_strict target=xiao exec=skill,burst;
+  actions+=burst target=xiao;
+  
+  actions+=high_plunge target=xiao if=.status.xiaoq==1;
+  actions+=skill target=xiao if=.status.xiaoq==0&&.status.xiao.energy<70 lock=90;
+  
+  actions+=sequence_strict target=xiao exec=attack,charge;
+  actions+=attack target=xiao;
+  
+  actions+=attack target=bennett active=bennett;
 `,
 };
