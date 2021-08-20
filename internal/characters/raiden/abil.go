@@ -66,7 +66,7 @@ func (c *char) swordAttack(f int) int {
 				energy := burstRestore[c.TalentLvlBurst()]
 				//apply a4
 				excess := int(d.Stats[core.ER] / 0.01)
-				c.Log.Debugw("a4 energy restore stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "increase", float64(excess)*0.006)
+				c.Core.Log.Debugw("a4 energy restore stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "increase", float64(excess)*0.006)
 				energy = energy * (1 + float64(excess)*0.006)
 				for _, char := range c.Core.Chars {
 					char.AddEnergy(energy)
@@ -185,7 +185,7 @@ func (c *char) Burst(p map[string]int) int {
 		}
 	}
 
-	c.Log.Debugw("resolve stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", c.stacksConsumed)
+	c.Core.Log.Debugw("resolve stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", c.stacksConsumed)
 
 	d := c.Snapshot(
 		"Musou Shinsetsu",

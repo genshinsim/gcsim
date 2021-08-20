@@ -90,7 +90,7 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	if c.Core.Status.Duration("yoimiyaskill") > 0 && ds.AttackTag == core.AttackTagNormal {
 		ds.Element = core.Pyro
 		//multiplier
-		c.Log.Debugw("skill mult applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "prev", ds.Mult, "next", skill[c.TalentLvlSkill()]*ds.Mult, "char", c.Index)
+		c.Core.Log.Debugw("skill mult applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "prev", ds.Mult, "next", skill[c.TalentLvlSkill()]*ds.Mult, "char", c.Index)
 		ds.Mult = skill[c.TalentLvlSkill()] * ds.Mult
 	}
 	return ds

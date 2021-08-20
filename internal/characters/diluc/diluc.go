@@ -47,7 +47,7 @@ func (c *char) c1() {
 		t := args[0].(core.Target)
 		if ds.ActorIndex == c.Index && t.HP()/t.MaxHP() > .5 {
 			ds.Stats[core.DmgP] += 0.15
-			c.Log.Debugw("diluc c2 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", ds.Stats[core.DmgP])
+			c.Core.Log.Debugw("diluc c2 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", ds.Stats[core.DmgP])
 		}
 		return false
 	}, "diluc-c1")
@@ -113,7 +113,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 65
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -176,7 +176,7 @@ func (c *char) Skill(p map[string]int) int {
 	if c.Base.Cons >= 4 {
 		if c.Core.Status.Duration("dilucc4") > 0 {
 			d.Stats[core.DmgP] += 0.4
-			c.Log.Debugw("diluc c4 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg", d.Stats[core.DmgP])
+			c.Core.Log.Debugw("diluc c4 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg", d.Stats[core.DmgP])
 		}
 	}
 
@@ -193,7 +193,7 @@ func (c *char) Skill(p map[string]int) int {
 	if c.eCounter == 3 {
 		//ability can go on cd now
 		cd := 600 - (c.Core.F - c.eStartFrame)
-		c.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd)
+		c.Core.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd)
 		c.SetCD(core.ActionSkill, cd)
 		c.eStarted = false
 		c.eStartFrame = -1
@@ -284,7 +284,7 @@ func (c *char) Tick() {
 		if c.Core.F-c.eLastUse >= 240 {
 			//if so, set ability to be on cd equal to 10s less started
 			cd := 600 - (c.Core.F - c.eStartFrame)
-			c.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd, "last", c.eLastUse)
+			c.Core.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd, "last", c.eLastUse)
 			c.SetCD(core.ActionSkill, cd)
 			//reset
 			c.eStarted = false
@@ -313,7 +313,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 50
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 

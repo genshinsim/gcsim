@@ -17,7 +17,7 @@ func (c *char) c1() {
 		}
 		if t.AuraContains(core.Cryo) {
 			ds.Stats[core.CR] += 0.15
-			c.Log.Debugw("kaeya c1 - adding crit", "event", core.LogCalc, "char", c.Index, "frame", c.Core.F, "final cr", ds.Stats[core.CR])
+			c.Core.Log.Debugw("kaeya c1 - adding crit", "event", core.LogCalc, "char", c.Index, "frame", c.Core.F, "final cr", ds.Stats[core.CR])
 		}
 		return false
 	}, "kaeya-c1")

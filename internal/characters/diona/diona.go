@@ -73,7 +73,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			return 15
 		}
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -94,7 +94,7 @@ func (c *char) c6() {
 		}
 		char := c.Core.Chars[c.Core.ActiveChar]
 		if char.HP()/char.MaxHP() <= 0.5 {
-			c.Log.Debugw("diona c6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent)
+			c.Core.Log.Debugw("diona c6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent)
 			return 0.3
 		}
 		return 0
@@ -256,7 +256,7 @@ func (c *char) Burst(p map[string]int) int {
 		c.AddTask(func() {
 			x := d.Clone()
 			c.Core.Combat.ApplyDamage(&x)
-			c.Log.Debugw("diona healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
+			c.Core.Log.Debugw("diona healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
 			c.Core.Health.HealActive(heal)
 		}, "Diona Burst (DOT)", 60+i*120)
 	}
@@ -272,7 +272,7 @@ func (c *char) Burst(p map[string]int) int {
 			if c.Energy > c.EnergyMax {
 				c.Energy = c.EnergyMax
 			}
-			c.Log.Debugw("diona c1 regen 15 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
+			c.Core.Log.Debugw("diona c1 regen 15 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
 		}, "Diona C1", f+750)
 	}
 

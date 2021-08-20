@@ -71,7 +71,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 78
 	default:
-		c.Log.Warnf("%v: unknown action, frames invalid", a)
+		c.Core.Log.Warnf("%v: unknown action, frames invalid", a)
 		return 0
 	}
 }
@@ -83,7 +83,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 }
@@ -106,7 +106,7 @@ func (c *char) a4() {
 		}
 		c.a4count++
 		c.QueueParticle("kaeya", 1, core.Cryo, 100)
-		c.Log.Debugw("kaeya a4 proc", "event", core.LogEnergyEvent, "char", c.Index, "frame", c.Core.F, "final cr", ds.Stats[core.CR])
+		c.Core.Log.Debugw("kaeya a4 proc", "event", core.LogEnergyEvent, "char", c.Index, "frame", c.Core.F, "final cr", ds.Stats[core.CR])
 		return false
 	}, "kaeya-a4")
 

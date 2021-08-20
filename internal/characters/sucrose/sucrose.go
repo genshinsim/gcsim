@@ -77,7 +77,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 46 //ok
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -132,16 +132,16 @@ func (c *char) a2() {
 		switch ds.ReactionType {
 		case core.SwirlCryo:
 			c.Tags["a2-cryo"] = c.Core.F + 480
-			c.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlElectro:
 			c.Tags["a2-electro"] = c.Core.F + 480
-			c.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlHydro:
 			c.Tags["a2-hydro"] = c.Core.F + 480
-			c.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlPyro:
 			c.Tags["a2-pyro"] = c.Core.F + 480
-			c.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		}
 		return false
 	}, "sucrose-a2-trigger")
@@ -266,7 +266,7 @@ func (c *char) Skill(p map[string]int) int {
 	c.AddTask(func() {
 		c.Core.Status.AddStatus("sucrosea4", 480)
 		c.a4EM[core.EM] = 0.2 * c.Stat(core.EM)
-		c.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
+		c.Core.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
 		c.Core.Combat.ApplyDamage(&d)
 	}, "Sucrose - Skill", 41)
 
@@ -279,7 +279,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	switch c.eCharge {
 	case c.eChargeMax:
-		c.Log.Debugw("sucrose e at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+900)
+		c.Core.Log.Debugw("sucrose e at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+900)
 		c.eNextRecover = c.Core.F + 901
 		c.AddTask(c.recoverCharge(c.Core.F), "charge", 900)
 		c.eTickSrc = c.Core.F
@@ -294,18 +294,18 @@ func (c *char) Skill(p map[string]int) int {
 func (c *char) recoverCharge(src int) func() {
 	return func() {
 		if c.eTickSrc != src {
-			c.Log.Debugw("sucrose e recovery function ignored, src diff", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
+			c.Core.Log.Debugw("sucrose e recovery function ignored, src diff", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
 			return
 		}
 		c.eCharge++
-		c.Log.Debugw("sucrose e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "total charge", c.eCharge)
+		c.Core.Log.Debugw("sucrose e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "total charge", c.eCharge)
 		c.SetCD(core.ActionSkill, 0)
 		if c.eCharge >= c.eChargeMax {
 			//fully charged
 			return
 		}
 		//other wise restore another charge
-		c.Log.Debugw("sucrose e queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "recover at", c.Core.F+720)
+		c.Core.Log.Debugw("sucrose e queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "recover at", c.Core.F+720)
 		c.eNextRecover = c.Core.F + 901
 		c.AddTask(c.recoverCharge(src), "charge", 900)
 
@@ -345,7 +345,7 @@ func (c *char) Burst(p map[string]int) int {
 		c.AddTask(func() {
 			c.Core.Status.AddStatus("sucrosea4", 480)
 			c.a4EM[core.EM] = 0.2 * c.Stat(core.EM)
-			c.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
 
 			c.Core.Combat.ApplyDamage(&x)
 

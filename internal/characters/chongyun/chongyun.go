@@ -59,7 +59,7 @@ func (c *char) c4() {
 
 		c.AddEnergy(2)
 
-		c.Log.Debugw("chongyun c4 recovering 2 energy", "frame", c.Core.F, "event", core.LogCharacterEvent, "final energy", c.Energy)
+		c.Core.Log.Debugw("chongyun c4 recovering 2 energy", "frame", c.Core.F, "event", core.LogCharacterEvent, "final energy", c.Energy)
 		icd = c.Core.F + 120
 
 		return false
@@ -91,7 +91,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 135 //ok
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -198,7 +198,7 @@ func (c *char) onSwapHook() {
 			return false
 		}
 		//add infusion on swap
-		c.Log.Debugw("chongyun adding infusion on swap", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		c.Core.Log.Debugw("chongyun adding infusion on swap", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
 		active := c.Core.Chars[c.Core.ActiveChar]
 		c.infuse(active)
 		return false
@@ -212,7 +212,7 @@ func (c *char) infuse(char core.Character) {
 	case core.WeaponClassSpear:
 		fallthrough
 	case core.WeaponClassSword:
-		c.Log.Debugw("chongyun adding infusion", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		c.Core.Log.Debugw("chongyun adding infusion", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
 		char.AddWeaponInfuse(core.WeaponInfusion{
 			Key:    "chongyun-ice-weapon",
 			Ele:    core.Cryo,
@@ -289,7 +289,7 @@ func (c *char) c6() {
 		}
 		if t.HP()/t.MaxHP() < c.HPCurrent/c.HPMax {
 			ds.Stats[core.DmgP] += 0.15
-			c.Log.Debugw("c6 add bonus dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final", ds.Stats[core.DmgP])
+			c.Core.Log.Debugw("c6 add bonus dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final", ds.Stats[core.DmgP])
 		}
 		return false
 	}, "chongyun-c6")

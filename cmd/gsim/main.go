@@ -23,8 +23,8 @@ func main() {
 
 	var err error
 
-	// debug := flag.String("d", "debug", "output level: debug, info, warn")
-	// seconds := flag.Int("s", 90, "how many seconds to run the sim for")
+	debug := flag.Bool("debug", false, "show debug?")
+	seconds := flag.Int("s", 90, "how many seconds to run the sim for")
 	cfgFile := flag.String("c", "config.txt", "which profile to use")
 	detailed := flag.Bool("d", true, "log combat details")
 	// f := flag.String("o", "debug.log", "detailed log file")
@@ -32,8 +32,8 @@ func main() {
 	// showCaller := flag.Bool("caller", false, "show caller in debug low")
 	// fixedRand := flag.Bool("noseed", false, "use 0 for rand seed always - guarantee same results every time; only in single mode")
 	// avgMode := flag.Bool("a", false, "run sim multiple times and calculate avg damage (smooth out randomness). default false. note that there is no debug log in this mode")
-	// w := flag.Int("w", 24, "number of workers to run when running multiple iterations; default 24")
-	// i := flag.Int("i", 1000, "number of iterations to run if we're running multiple")
+	w := flag.Int("w", 0, "number of workers to run when running multiple iterations; default 24")
+	i := flag.Int("i", 0, "number of iterations to run if we're running multiple")
 	multi := flag.String("m", "", "mutiple config mode")
 	// t := flag.Int("t", 1, "target multiplier")
 
@@ -46,7 +46,7 @@ func main() {
 		}
 		files := strings.Split(strings.ReplaceAll(string(content), "\r\n", "\n"), "\n")
 		// lines := strings.Split(string(content), `\n`)
-		runMulti(files)
+		runMulti(files, *w, *i)
 		return
 	}
 
@@ -61,11 +61,28 @@ func main() {
 		log.Fatal(err)
 	}
 
+	opts := cfg.RunOptions
+	if *i > 0 {
+		opts.Iteration = *i
+	}
+	if *w > 0 {
+		opts.Workers = *w
+	}
+	if *debug {
+		opts.Debug = true
+	}
+	if *seconds > 0 {
+		opts.Duration = *seconds
+	}
+	if *detailed {
+		opts.LogDetails = true
+	}
+
 	defer elapsed("simulation completed")()
 	defer profile.Start(profile.ProfilePath("./")).Stop()
 
 	//if debug we're going to capture the logs
-	if cfg.RunOptions.Debug {
+	if opts.Debug {
 
 		chars := make([]string, len(cfg.Characters.Profile))
 
@@ -88,7 +105,7 @@ func main() {
 			outC <- buf.String()
 		}()
 
-		result, err := combat.Run(string(src), *detailed, true)
+		result, err := combat.Run(string(src), opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -107,7 +124,7 @@ func main() {
 		// fmt.Print(out)
 
 	} else {
-		result, err := combat.Run(string(src), *detailed, false)
+		result, err := combat.Run(string(src), opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -116,7 +133,7 @@ func main() {
 
 }
 
-func runMulti(files []string) {
+func runMulti(files []string, w, i int) {
 	fmt.Print("Filename                                                     |      Mean|       Min|       Max|   Std Dev|   HP Mode|     Iters|\n")
 	fmt.Print("--------------------------------------------------------------------------------------------------------------------------------\n")
 	for _, f := range files {
@@ -127,8 +144,23 @@ func runMulti(files []string) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		parser := parse.New("single", string(source))
+		cfg, err := parser.Parse()
+		if err != nil {
+			log.Fatal(err)
+		}
+		opts := cfg.RunOptions
+		if w > 0 {
+			opts.Workers = w
+		}
+		if i > 0 {
+			opts.Iteration = i
+		}
+		opts.Debug = false
+		opts.LogDetails = false
+
 		fmt.Printf("%60.60v |", f)
-		r, err := combat.Run(string(source), false, false)
+		r, err := combat.Run(string(source), opts)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -83,7 +83,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 51 //ok
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -288,7 +288,7 @@ func (c *char) applyBennettField(d core.Snapshot) func() {
 	}
 	atk := pc * float64(c.Base.Atk+c.Weapon.Atk)
 	return func() {
-		c.Log.Debugw("bennett field ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.Debugw("bennett field ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
 
 		active := c.Core.Chars[c.Core.ActiveChar]
 		//heal if under 70%
@@ -312,7 +312,7 @@ func (c *char) applyBennettField(d core.Snapshot) func() {
 				},
 				Expiry: c.Core.F + 126,
 			})
-			c.Log.Debugw("bennett field - adding attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "threshold", threshold)
+			c.Core.Log.Debugw("bennett field - adding attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "threshold", threshold)
 			//if c6 add weapon infusion and 15% pyro
 			if c.Base.Cons == 6 {
 				switch active.WeaponClass() {

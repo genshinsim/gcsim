@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"github.com/genshinsim/gsim/internal/logtohtml"
+	"github.com/genshinsim/gsim/pkg/calcqueue"
 	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/parse"
@@ -77,7 +78,7 @@ func main() {
 
 }
 
-func createQueue(cfg core.Config, s *combat.Simulation) (*queue, error) {
+func createQueue(cfg core.Config, s *combat.Simulation) (core.QueueHandler, error) {
 	cust := make(map[string]int)
 	for i, v := range cfg.Rotation {
 		if v.Name != "" {
@@ -91,94 +92,8 @@ func createQueue(cfg core.Config, s *combat.Simulation) (*queue, error) {
 		}
 	}
 
-	return &queue{
-		prio: cfg.Rotation,
-		core: s.C,
-	}, nil
-}
+	r := calcqueue.New(s.C)
+	r.SetActionList(cfg.Rotation)
 
-type queue struct {
-	core *core.Core
-	prio []core.Action
-	ind  int
-}
-
-func (q *queue) SetActionList(a []core.Action) {
-	q.prio = a
-}
-
-func (q *queue) Next() ([]core.ActionItem, error) {
-
-	var r []core.ActionItem
-	active := q.core.Chars[q.core.ActiveChar].Name()
-	for {
-		if q.ind >= len(q.prio) {
-			q.core.Log.Debugw(
-				"no more actions",
-				"frame", q.core.F,
-				"event", core.LogQueueEvent,
-			)
-			return nil, nil
-		}
-		//we only accept action+=?? target=character wait=150
-		//also, go down the list 1 at a time
-		v := q.prio[q.ind]
-
-		if v.IsSeq {
-			//ignore and move on
-			q.ind++
-			continue
-		}
-
-		//check wait
-		if v.Wait > q.core.F {
-			q.core.Log.Debugw(
-				"item on wait",
-				"frame", q.core.F,
-				"event", core.LogQueueEvent,
-				"wait", v.Wait,
-				"index", q.ind,
-				"name", v.Name,
-				"target", v.Target,
-				"is seq", v.IsSeq,
-				"strict", v.IsStrict,
-				"exec", v.Exec,
-				"once", v.Once,
-				"post", v.PostAction.String(),
-				"swap_to", v.SwapTo,
-				"raw", v.Raw,
-			)
-			return nil, nil
-		}
-
-		//check if we need to swap
-		if active != v.Target {
-			r = append(r, core.ActionItem{
-				Target: v.Target,
-				Typ:    core.ActionSwap,
-			})
-		}
-
-		r = append(r, v.Exec[0])
-
-		q.core.Log.Debugw(
-			"item queued",
-			"frame", q.core.F,
-			"event", core.LogQueueEvent,
-			"index", q.ind,
-			"name", v.Name,
-			"target", v.Target,
-			"is seq", v.IsSeq,
-			"strict", v.IsStrict,
-			"exec", v.Exec,
-			"once", v.Once,
-			"post", v.PostAction.String(),
-			"swap_to", v.SwapTo,
-			"raw", v.Raw,
-		)
-
-		q.ind++
-		return r, nil
-	}
-
+	return r, nil
 }

@@ -41,13 +41,13 @@ func (c *Tmpl) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
 		return 0
 	}
 }
 
 func (c *Tmpl) ActionFrames(a core.ActionType, p map[string]int) int {
-	c.Log.Warnw("ActionFrames not implemented", "character", c.Base.Name)
+	c.Core.Log.Warnw("ActionFrames not implemented", "character", c.Base.Name)
 	return 0
 }
 
@@ -55,7 +55,7 @@ func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 	switch a {
 	case core.ActionBurst:
 		if c.Energy != c.EnergyMax {
-			c.Log.Warnw("burst not enough energy")
+			c.Core.Log.Warnw("burst not enough energy")
 			return false
 		}
 		return c.ActionCD[a] <= c.Core.F
@@ -88,7 +88,7 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 		//if not expired
 		if v.Expiry == -1 || v.Expiry > c.Core.F {
 			amt := v.Amount(a)
-			c.Log.Debugw("applying cooldown modifier", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
+			c.Core.Log.Debugw("applying cooldown modifier", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
 			cd += amt
 			c.CDReductionFuncs[n] = v
 			n++
@@ -97,7 +97,7 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 	c.CDReductionFuncs = c.CDReductionFuncs[:n]
 
 	c.ActionCD[a] = c.Core.F + int(float64(dur)*cd) //truncate to int
-	c.Log.Debugw("cooldown triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "type", a.String(), "expiry", c.Core.F+dur)
+	c.Core.Log.Debugw("cooldown triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "type", a.String(), "expiry", c.Core.F+dur)
 }
 
 func (c *Tmpl) Cooldown(a core.ActionType) int {

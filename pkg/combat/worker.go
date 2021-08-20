@@ -38,6 +38,7 @@ type AverageStats struct {
 	Damage     FloatResult `json:"damage"`
 	DPS        FloatResult `json:"dps"`
 	Iterations int
+	Debug      string `json:"debug"`
 }
 
 type IntResult struct {
@@ -59,7 +60,7 @@ type workerResp struct {
 	err   error
 }
 
-func Run(src string, details bool, debug bool, cust ...func(*Simulation) error) (AverageStats, error) {
+func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (AverageStats, error) {
 
 	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
 	var data []Stats
@@ -82,19 +83,19 @@ func Run(src string, details bool, debug bool, cust ...func(*Simulation) error) 
 	}
 
 	//set defaults if nothing specified
-	count := cfg.RunOptions.Iteration
+	count := opt.Iteration
 	if count == 0 {
 		count = 1000
 	}
 	n := count
 
-	if debug {
+	if opt.Debug {
 		count--
 	}
 
 	// fmt.Printf("running %v iterations\n", count)
 
-	w := cfg.RunOptions.Workers
+	w := opt.Workers
 	if w <= 0 {
 		w = runtime.NumCPU()
 	}
@@ -107,7 +108,7 @@ func Run(src string, details bool, debug bool, cust ...func(*Simulation) error) 
 	done := make(chan bool)
 
 	for i := 0; i < w; i++ {
-		go worker(src, details, resp, req, done, cust...)
+		go worker(src, opt, resp, req, done, cust...)
 	}
 
 	go func() {
@@ -132,8 +133,8 @@ func Run(src string, details bool, debug bool, cust ...func(*Simulation) error) 
 	}
 
 	//if debug is true, run one more purely for debug do not add to stats
-	if debug {
-		s, err := NewSim(cfg, details, cust...)
+	if opt.Debug {
+		s, err := NewSim(cfg, opt.LogDetails, cust...)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -145,12 +146,12 @@ func Run(src string, details bool, debug bool, cust ...func(*Simulation) error) 
 		data = append(data, v)
 	}
 
-	result := collectResult(data, cfg.RunOptions.DamageMode, chars, details)
+	result := collectResult(data, opt.DamageMode, chars, opt.LogDetails)
 	result.Iterations = n
-	if !cfg.RunOptions.DamageMode {
-		result.Duration.Mean = float64(cfg.RunOptions.Duration)
-		result.Duration.Min = float64(cfg.RunOptions.Duration)
-		result.Duration.Max = float64(cfg.RunOptions.Duration)
+	if !opt.DamageMode {
+		result.Duration.Mean = float64(opt.Duration)
+		result.Duration.Min = float64(opt.Duration)
+		result.Duration.Max = float64(opt.Duration)
 	}
 
 	return result, nil
@@ -298,16 +299,17 @@ func collectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 	return
 }
 
-func worker(src string, details bool, resp chan workerResp, req chan bool, done chan bool, cust ...func(*Simulation) error) {
+func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, done chan bool, cust ...func(*Simulation) error) {
 
 	for {
 		select {
 		case <-req:
 			parser := parse.New("single", src)
 			cfg, _ := parser.Parse()
+			cfg.RunOptions = opt
 			cfg.RunOptions.Debug = false
 
-			s, err := NewSim(cfg, details, cust...)
+			s, err := NewSim(cfg, opt.LogDetails, cust...)
 			if err != nil {
 				resp <- workerResp{
 					err: err,

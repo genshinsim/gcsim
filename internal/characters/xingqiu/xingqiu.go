@@ -82,7 +82,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 39 //ok
 	default:
-		c.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
+		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
 		return 0
 	}
 }
@@ -117,7 +117,7 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) orbitalfunc(src int) func() {
 	return func() {
-		c.Log.Debugw("orbital checking tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+		c.Core.Log.Debugw("orbital checking tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 		if c.Core.Status.Duration("xqorb") == 0 {
 			c.orbitalActive = false
 			return
@@ -136,7 +136,7 @@ func (c *char) orbitalfunc(src int) func() {
 		d.Targets = core.TargetAll
 
 		c.QueueDmg(&d, 1)
-		c.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+		c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 		//queue up next instance
 		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 150)
 	}
@@ -144,17 +144,17 @@ func (c *char) orbitalfunc(src int) func() {
 
 func (c *char) applyOrbital() {
 	f := c.Core.F
-	c.Log.Debugw("Applying orbital", "frame", f, "event", core.LogCharacterEvent, "current status", c.Core.Status.Duration("xqorb"))
+	c.Core.Log.Debugw("Applying orbital", "frame", f, "event", core.LogCharacterEvent, "current status", c.Core.Status.Duration("xqorb"))
 	//check if blood blossom already active, if active extend duration by 8 second
 	//other wise start first tick func
 	if !c.orbitalActive {
 		//TODO: does BB tick immediately on first application?
 		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 40)
 		c.orbitalActive = true
-		c.Log.Debugw("orbital applied", "frame", f, "event", core.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
+		c.Core.Log.Debugw("orbital applied", "frame", f, "event", core.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
 	}
 	c.Core.Status.AddStatus("xqorb", 900)
-	c.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("xqorb"))
+	c.Core.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("xqorb"))
 }
 
 func (c *char) Skill(p map[string]int) int {
@@ -301,7 +301,7 @@ func (c *char) Burst(p map[string]int) int {
 	}
 	dur = dur * 60
 	c.Core.Status.AddStatus("xqburst", dur)
-	c.Log.Debugw("Xingqiu burst activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+dur)
+	c.Core.Log.Debugw("Xingqiu burst activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+dur)
 
 	c.burstCounter = 0
 	c.numSwords = 2
