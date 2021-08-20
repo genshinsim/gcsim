@@ -11,7 +11,6 @@ import {
   FormGroup,
   Switch,
   NumericInput,
-  HTMLSelect,
   Divider,
 } from "@blueprintjs/core";
 import { RootState } from "app/store";
@@ -23,12 +22,6 @@ import SampleConfig from "features/sample/SampleConfig";
 import download from "downloadjs";
 import dayjs from "dayjs";
 
-var debugOpts = [
-  { label: "Debug", value: "debug" },
-  { label: "Info", value: "info" },
-  { label: "Warn", value: "warn" },
-];
-
 function Dash() {
   const dispatch = useDispatch();
   const { config } = useSelector((state: RootState) => {
@@ -39,7 +32,6 @@ function Dash() {
 
   const [logDebug, setLogDebug] = React.useState<boolean>(true);
   const [duration, setDuration] = React.useState<number>(90);
-  const [avgMode, setAvgMode] = React.useState<boolean>(false);
   const [iter, setIter] = React.useState<number>(1000);
   const [workers, setWorkers] = React.useState<number>(24);
 
