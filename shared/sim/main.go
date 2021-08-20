@@ -18,14 +18,14 @@ func main() {}
 func Run(config string) *C.char {
 
 	parser := parse.New("single", config)
-	cfg, err := parser.Parse()
+	_, opts, err := parser.Parse()
 	if err != nil {
 		return C.CString(errToString("error parsing config"))
 	}
 
 	var data combat.AverageStats
 
-	if cfg.RunOptions.Debug {
+	if opts.Debug {
 		old := os.Stdout
 		r, w, err := os.Pipe()
 		if err != nil {
@@ -43,14 +43,15 @@ func Run(config string) *C.char {
 			w.Close()
 			os.Stdout = old
 		}()
-		data, err = combat.Run(string(config), cfg.RunOptions)
+		opts.DebugPaths = []string{"stdout"}
+		data, err = combat.Run(string(config), opts)
 		if err != nil {
 			return C.CString(errToString(err.Error()))
 		}
 		out := <-outC
 		data.Debug = out
 	} else {
-		data, err = combat.Run(string(config), cfg.RunOptions)
+		data, err = combat.Run(string(config), opts)
 		if err != nil {
 			return C.CString(errToString(err.Error()))
 		}

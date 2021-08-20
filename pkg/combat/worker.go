@@ -21,6 +21,7 @@ type Stats struct {
 	AbilUsageCountByChar []map[string]int          `json:"abil_usage_count_by_char"`
 	ReactionsTriggered   map[core.ReactionType]int `json:"reactions_triggered"`
 	Duration             int                       `json:"sim_duration"`
+	ElementUptime        []map[core.EleType]int    `json:"ele_uptime"`
 	//final result
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`
@@ -34,6 +35,7 @@ type AverageStats struct {
 	AbilUsageCountByChar []map[string]IntResult          `json:"abil_usage_count_by_char"`
 	ReactionsTriggered   map[core.ReactionType]IntResult `json:"reactions_triggered"`
 	Duration             FloatResult                     `json:"sim_duration"`
+	ElementUptime        []map[core.EleType]IntResult    `json:"ele_uptime"`
 	//final result
 	Damage     FloatResult `json:"damage"`
 	DPS        FloatResult `json:"dps"`
@@ -285,6 +287,30 @@ func collectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 
 			result.ReactionsTriggered[c] = x
 		}
+
+		//ele up time
+		for t, m := range v.ElementUptime {
+			if len(result.ElementUptime) == t {
+				result.ElementUptime = append(result.ElementUptime, make(map[core.EleType]IntResult))
+			}
+			//go through m and add to our results
+			for ele, amt := range m {
+				x, ok := result.ElementUptime[t][ele]
+				if !ok {
+					x.Min = math.MaxInt64
+					x.Max = -1
+				}
+				if x.Min > amt {
+					x.Min = amt
+				}
+				if x.Max < amt {
+					x.Max = amt
+				}
+				x.Mean += float64(amt) / float64(n)
+
+				result.ElementUptime[t][ele] = x
+			}
+		}
 	}
 
 	for _, v := range data {
@@ -394,6 +420,23 @@ func (stats *AverageStats) PrettyPrint() string {
 		v := stats.ReactionsTriggered[k]
 		sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v max: %v]\n", k, v.Mean, v.Min, v.Max))
 	}
+	for i, m := range stats.ElementUptime {
+		if i == 0 {
+			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Element up time:\n")
+		}
+		sb.WriteString(fmt.Sprintf("\tTarget #%v\n", i+1))
+		for j, ele := range core.EleTypeString {
+			v, ok := m[core.EleType(j)]
+			if ele == "" {
+				ele = "none"
+			}
+			if ok {
+				sb.WriteString(fmt.Sprintf("\t\t%v: avg %.2f%% [min: %.2f%% max: %2.f%%]\n", ele, 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
+			}
+		}
+	}
+
 	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", stats.Damage.Mean, stats.Duration.Mean, stats.DPS.Mean, stats.DPS.Min, stats.DPS.Max, stats.DPS.SD))
 
 	return sb.String()
