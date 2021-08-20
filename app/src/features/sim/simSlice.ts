@@ -56,11 +56,11 @@ export function runSim(config: simConfig): AppThunk {
       console.log(data);
       // dispatch(setResultData(data.summary));
 
-      dispatch(setResultData({ text: data.summary, data: data.details }));
+      dispatch(setResultData(data));
 
-      if (data.log) {
-        dispatch(setLogs(data.log));
-        dispatch(setNames(data.names));
+      if (data.debug) {
+        dispatch(setLogs(data.debug));
+        dispatch(setNames(data.char_names));
       }
 
       dispatch(setMessage("Simulation finished. check results"));
@@ -71,7 +71,7 @@ export function runSim(config: simConfig): AppThunk {
       // });
     };
     dispatch(setLoading(true));
-    dispatch(setResultData({ text: "", data: null }));
+    dispatch(setResultData(null));
     dispatch(setLogs(""));
     dispatch(setNames([]));
     dispatch(setMessage(""));
@@ -88,13 +88,14 @@ export function runSim(config: simConfig): AppThunk {
 }
 
 export interface simConfig {
-  log: string;
-  seconds: number;
   config: string;
-  hp: number;
-  avg_mode: boolean;
-  iter: number;
-  noseed: boolean;
+  options: {
+    log_details: boolean;
+    debug: boolean;
+    iter: number;
+    workers: number;
+    duration: number;
+  };
 }
 
 interface SimState {

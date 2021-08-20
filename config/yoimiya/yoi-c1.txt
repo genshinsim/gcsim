@@ -1,4 +1,4 @@
-options mode=time debug=true iteration=3000 duration=90 workers=24;
+options debug=true iteration=3000 duration=90 workers=24;
 
 char+=xingqiu ele=hydro lvl=80 hp=9514.469 atk=187.803 def=705.132 atk%=0.240 cr=.05 cd=0.5 cons=6 talent=6,8,8;
 weapon+=xingqiu label="sacrificial sword" atk=454.363 er=0.613 refine=1;

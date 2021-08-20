@@ -1,4 +1,4 @@
-options mode=time debug=false iteration=3000 duration=90 workers=24;
+options debug=false iteration=3000 duration=90 workers=24;
 
 char+=xiangling ele=pyro lvl=80 hp=10121.775 atk=209.549 def=622.549 em=96.000 cr=.05 cd=0.5 cons=6 talent=6,8,8;
 weapon+=xiangling label="favonius lance" atk=564.784 er=0.306 refine=1;

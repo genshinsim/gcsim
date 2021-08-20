@@ -39,7 +39,7 @@ export function sendMessage(
     };
     console.log("socket - sending msg: ", packet);
     socket.send(JSON.stringify(packet));
-    // console.log("callbacks left: ", cbm);
+    console.log("callbacks left: ", cbm);
     //register a call back for id?
   };
 }

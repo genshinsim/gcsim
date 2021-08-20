@@ -1,4 +1,4 @@
-options mode=time debug=true iteration=1000 duration=14 workers=24;
+options debug=true iteration=1000 duration=14 workers=24;
 
 #char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=0 talent=8,8,8;
 char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cons=0 talent=1,10,10;

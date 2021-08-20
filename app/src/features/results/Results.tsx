@@ -3,7 +3,6 @@ import { RootState } from "app/store";
 import React from "react";
 import { useSelector } from "react-redux";
 import AvgModeResult from "./AvgModeResult";
-import SingleModeResult from "./SingleModeResult";
 
 function Results() {
   const { result, data } = useSelector((state: RootState) => {
@@ -22,12 +21,7 @@ function Results() {
       <div className="row">
         <div className="col-xs-10 col-xs-offset-1">
           <H4>Summary Result</H4>
-          {"sim_duration" in data ? (
-            <SingleModeResult data={data} />
-          ) : (
-            <AvgModeResult data={data} />
-          )}
-
+          <AvgModeResult data={data} />
           <Card style={{ margin: "5px" }} elevation={Elevation.TWO}>
             <H5>Text Summary</H5>
             <pre>{result}</pre>

@@ -16,7 +16,7 @@ func TestElectroOnHydro(t *testing.T) {
 	var target *Target
 
 	c, err := core.New(func(c *core.Core) error {
-		c.Log, _ = core.NewDefaultLogger(false, false)
+		c.Log, _ = core.NewDefaultLogger(false, false, nil)
 		return nil
 	})
 	if err != nil {

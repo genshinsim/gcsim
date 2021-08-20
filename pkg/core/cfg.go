@@ -2,7 +2,7 @@ package core
 
 type Config struct {
 	Label      string
-	RunOptions RunOpt
+	DamageMode bool
 	Targets    []EnemyProfile
 	Characters struct {
 		Initial string
@@ -16,11 +16,11 @@ type Config struct {
 
 type RunOpt struct {
 	LogDetails bool `json:"log_details"`
-	Debug      bool `json:"debug"`
 	Iteration  int  `json:"iter"`
 	Workers    int  `json:"workers"`
 	Duration   int  `json:"seconds"`
-	DamageMode bool `json:"dmg_mode"`
+	Debug      bool `json:"debug"`
+	DebugPaths []string
 }
 
 type CharacterProfile struct {

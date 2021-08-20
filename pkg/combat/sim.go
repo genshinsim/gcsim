@@ -9,10 +9,10 @@ import (
 
 type Simulation struct {
 	// f    int
-	skip    int
-	C       *core.Core
-	cfg     core.Config
-	details bool
+	skip int
+	C    *core.Core
+	cfg  core.Config
+	opts core.RunOpt
 	// queue
 	queue []core.ActionItem
 	//hurt event
@@ -23,11 +23,11 @@ type Simulation struct {
 	stats Stats
 }
 
-func NewSim(cfg core.Config, details bool, cust ...func(*Simulation) error) (*Simulation, error) {
+func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
-	s.details = details
 	s.cfg = cfg
+	s.opts = opts
 
 	c, err := core.New(
 		func(c *core.Core) error {
@@ -38,8 +38,8 @@ func NewSim(cfg core.Config, details bool, cust ...func(*Simulation) error) (*Si
 			// 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 			// }
 			c.F = -1
-			c.Flags.DamageMode = cfg.RunOptions.DamageMode
-			c.Log, err = core.NewDefaultLogger(cfg.RunOptions.Debug, true)
+			c.Flags.DamageMode = cfg.DamageMode
+			c.Log, err = core.NewDefaultLogger(opts.Debug, true, opts.DebugPaths)
 			if err != nil {
 				return err
 			}
@@ -60,9 +60,9 @@ func NewSim(cfg core.Config, details bool, cust ...func(*Simulation) error) (*Si
 	if err != nil {
 		return nil, err
 	}
-	s.stats.IsDamageMode = cfg.RunOptions.DamageMode
+	s.stats.IsDamageMode = cfg.DamageMode
 
-	if s.details {
+	if s.opts.LogDetails {
 		s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
 		//add call backs to track details
 		s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
@@ -113,7 +113,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		return fmt.Errorf("more than 4 characters in a team detected")
 	}
 
-	if s.details {
+	if s.opts.LogDetails {
 		s.stats.CharNames = make([]string, count)
 		s.stats.DamageByChar = make([]map[string]float64, count)
 		s.stats.CharActiveTime = make([]int, count)
@@ -141,7 +141,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		res[v.Base.Element]++
 
 		//setup maps
-		if s.details {
+		if s.opts.LogDetails {
 			s.stats.DamageByChar[i] = make(map[string]float64)
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 			s.stats.CharNames[i] = v.Base.Name

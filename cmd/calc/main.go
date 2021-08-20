@@ -25,7 +25,7 @@ func main() {
 	}
 
 	parser := parse.New("single", string(src))
-	cfg, err := parser.Parse()
+	cfg, opts, err := parser.Parse()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,7 +51,11 @@ func main() {
 		outC <- buf.String()
 	}()
 
-	result, err := combat.Run(string(src), true, true, func(s *combat.Simulation) error {
+	opts.LogDetails = true
+	opts.Debug = true
+	opts.DebugPaths = []string{"stdout"}
+
+	result, err := combat.Run(string(src), opts, func(s *combat.Simulation) error {
 		var err error
 		s.C.Queue, err = createQueue(cfg, s)
 		if err != nil {
