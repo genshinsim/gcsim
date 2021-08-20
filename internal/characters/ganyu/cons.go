@@ -5,12 +5,14 @@ import (
 )
 
 func (c *char) c1() {
-	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		t := args[0].(core.Target)
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
 		if ds.Abil != "Frost Flake Arrow" {
-			return
+			return false
 		}
 		c.AddEnergy(2)
 		t.AddResMod("ganyu-c1", core.ResistMod{
@@ -18,6 +20,7 @@ func (c *char) c1() {
 			Value:    -0.15,
 			Duration: 5 * 60,
 		})
-
+		return false
 	}, "ganyu-c1")
+
 }

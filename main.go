@@ -16,6 +16,8 @@ import (
 	"github.com/genshinsim/gsim/pkg/server"
 )
 
+var openWin bool
+
 //go:embed build/*
 var content embed.FS
 
@@ -37,7 +39,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	go checkOpen()
+	if openWin {
+		go checkOpen()
+	}
 
 	log.Println("Starting server...")
 	log.Fatal(http.ListenAndServe(":8081", s.Router))

@@ -1,17 +1,16 @@
 package bolide
 
 import (
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("retracing bolide", New)
+	core.RegisterSetFunc("retracing bolide", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		s.AddShieldBonus(func() float64 {
+		s.Shields.AddBonus(func() float64 {
 			return 0.35 //shield bonus always active
 		})
 	}
@@ -21,7 +20,7 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 		c.AddMod(core.CharStatMod{
 			Key: "bolide-2pc",
 			Amount: func(a core.AttackTag) ([]float64, bool) {
-				return m, s.IsShielded() && (a == core.AttackTagNormal || a == core.AttackTagExtra)
+				return m, s.Shields.IsShielded() && (a == core.AttackTagNormal || a == core.AttackTagExtra)
 			},
 			Expiry: -1,
 		})

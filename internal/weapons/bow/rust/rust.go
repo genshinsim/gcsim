@@ -1,18 +1,17 @@
 package generic
 
 import (
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("rust", weapon)
+	core.RegisterWeaponFunc("rust", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m := make([]float64, core.EndStatType)
 	inc := .3 + float64(r)*0.1
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "rust",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if a == core.AttackTagNormal {

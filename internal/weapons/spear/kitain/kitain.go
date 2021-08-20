@@ -3,15 +3,14 @@ package kitain
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("kitain cross spear", weapon)
+	core.RegisterWeaponFunc("kitain cross spear", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m := make([]float64, core.EndStatType)
 	base := 0.045 + float64(r)*0.015
 	regen := 2.5 + float64(r)*0.5
@@ -26,7 +25,7 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	m[core.PhyP] = base
 	m[core.DendroP] = base
 
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Expiry: -1,
 		Key:    "",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
@@ -35,23 +34,24 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	})
 
 	icd := 0
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		if ds.AttackTag != core.AttackTagElementalArt {
-			return
+			return false
 		}
-		if icd > s.Frame() {
-			return
+		if icd > c.F {
+			return false
 		}
-		icd = s.Frame() + 600 //once every 10 seconds
-		c.AddEnergy(-3)
+		icd = c.F + 600 //once every 10 seconds
+		char.AddEnergy(-3)
 		for i := 120; i <= 360; i += 120 {
-			c.AddTask(func() {
-				c.AddEnergy(regen)
+			char.AddTask(func() {
+				char.AddEnergy(regen)
 			}, "kitain-restore", i)
 		}
-
-	}, fmt.Sprintf("kitain-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("kitain-%v", char.Name()))
 }

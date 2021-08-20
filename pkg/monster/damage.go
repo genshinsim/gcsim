@@ -4,10 +4,6 @@ import (
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (t *Target) ApplyReactionDamage(ds *core.Snapshot) float64 {
-	return 0
-}
-
 func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 
 	//do nothing if attack is not going to land
@@ -15,7 +11,7 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 		return 0, false
 	}
 
-	t.sim.OnAttackWillLand(t, ds)
+	t.core.Events.Emit(core.OnAttackWillLand, t, ds)
 
 	//provide a way for the sim to cancel out an attack
 	if ds.Cancelled {
@@ -30,8 +26,8 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 			if t.aura != nil {
 				a = t.aura.Type()
 			}
-			t.log.Debugw("application",
-				"frame", t.sim.Frame(),
+			t.core.Log.Debugw("application",
+				"frame", t.core.F,
 				"event", core.LogElementEvent,
 				"char", ds.ActorIndex,
 				"attack_tag", ds.AttackTag,
@@ -45,7 +41,8 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 		}
 	}
 
-	var dmg dmgResult
+	var damage float64
+	var isCrit bool
 
 	//check if we can damage first
 	x := t.groupTagDamageMult(ds.ICDGroup, ds.ActorIndex)
@@ -53,31 +50,30 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 		//check if we calc reaction dmg or normal dmg
 		if ds.IsReactionDamage {
 			//call PreTransReaction hook
-			t.sim.OnTransReaction(t, ds)
-			dmg.damage = t.calcReactionDmg(ds)
+			t.core.Events.Emit(core.OnTransReaction, t, ds)
+			damage = t.calcReactionDmg(ds)
 		} else {
 			//call PreAmpReaction hook if needed
 			if ds.ReactionType == core.Melt || ds.ReactionType == core.Vaporize {
-				t.sim.OnAmpReaction(t, ds)
+				t.core.Events.Emit(core.OnAmpReaction, t, ds)
 			}
-			dmg = t.calcDmg(ds)
+			damage, isCrit = t.calcDmg(ds)
 		}
-		dmg.damage *= x
+		damage *= x
 	}
 
 	//this should be handled by each target individually
 	//sim will need to add it to every target whenever this changes
-	t.sim.OnAttackLanded(t, ds, dmg.damage, dmg.isCrit)
-	t.onAttackLanded(ds)
+	t.core.Events.Emit(core.OnDamage, t, ds, damage, isCrit)
 	//execute callback on the snapshot
 	if ds.OnHitCallback != nil {
 		ds.OnHitCallback(t)
 	}
 
 	//record dmg
-	t.hp -= dmg.damage
+	t.hp -= damage
 
-	return dmg.damage, dmg.isCrit
+	return damage, isCrit
 }
 
 func (t *Target) attackWillLand(ds *core.Snapshot) bool {
@@ -94,20 +90,15 @@ func (t *Target) attackWillLand(ds *core.Snapshot) bool {
 	return ds.Targets == t.index
 }
 
-type dmgResult struct {
-	damage float64
-	isCrit bool
-}
-
 func (t *Target) resist(ele core.EleType, char int) float64 {
 	// log.Debugw("\t\t res calc", "res", e.res, "mods", e.mod)
 
 	r := t.res[ele]
 	for _, v := range t.resMod {
-		if v.Expiry > t.sim.Frame() && v.Ele == ele {
-			t.log.Debugw(
+		if v.Expiry > t.core.F && v.Ele == ele {
+			t.core.Log.Debugw(
 				"resist modified",
-				"frame", t.sim.Frame(),
+				"frame", t.core.F,
 				"event", core.LogCalc,
 				"char", char,
 				"ele", v.Ele,
@@ -126,10 +117,10 @@ func (t *Target) defAdj(char int) float64 {
 	// log.Debugw("\t\t res calc", "res", e.res, "mods", e.mod)
 	var r float64
 	for _, v := range t.defMod {
-		if v.Expiry > t.sim.Frame() {
-			t.log.Debugw(
+		if v.Expiry > t.core.F {
+			t.core.Log.Debugw(
 				"def modified",
-				"frame", t.sim.Frame(),
+				"frame", t.core.F,
 				"event", core.LogCalc,
 				"char", char,
 				"amount", v.Value,
@@ -143,9 +134,9 @@ func (t *Target) defAdj(char int) float64 {
 	return r
 }
 
-func (t *Target) calcDmg(ds *core.Snapshot) dmgResult {
+func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 
-	result := dmgResult{}
+	var isCrit bool
 
 	st := core.EleToDmgP(ds.Element)
 	dmgBonus := ds.Stats[st] + ds.Stats[core.DmgP]
@@ -169,7 +160,11 @@ func (t *Target) calcDmg(ds *core.Snapshot) dmgResult {
 		ds.Stats[core.CR] = 1
 	}
 	res := t.resist(ds.Element, ds.ActorIndex)
-	defadj := t.defAdj(ds.ActorIndex)
+	defadj := t.defAdj(ds.ActorIndex) + ds.DefAdj
+
+	if defadj > 0.9 {
+		defadj = 0.9
+	}
 
 	defmod := float64(ds.CharLvl+100) / (float64(ds.CharLvl+100) + float64(t.level+100)*(1+defadj))
 	//apply def mod
@@ -187,9 +182,9 @@ func (t *Target) calcDmg(ds *core.Snapshot) dmgResult {
 	precritdmg := damage
 
 	//check if crit
-	if t.rand.Float64() <= ds.Stats[core.CR] || ds.HitWeakPoint {
+	if t.core.Rand.Float64() <= ds.Stats[core.CR] || ds.HitWeakPoint {
 		damage = damage * (1 + ds.Stats[core.CD])
-		result.isCrit = true
+		isCrit = true
 	}
 
 	preampdmg := damage
@@ -206,14 +201,12 @@ func (t *Target) calcDmg(ds *core.Snapshot) dmgResult {
 	x := t.groupTagDamageMult(ds.ICDGroup, ds.ActorIndex)
 	damage = damage * x
 	if damage == 0 {
-		result.isCrit = false
+		isCrit = false
 	}
 
-	result.damage = damage
-
-	t.log.Debugw(
+	t.core.Log.Debugw(
 		ds.Abil,
-		"frame", t.sim.Frame(),
+		"frame", t.core.F,
 		"event", core.LogCalc,
 		"char", ds.ActorIndex,
 		"src_frame", ds.SourceFrame,
@@ -242,7 +235,7 @@ func (t *Target) calcDmg(ds *core.Snapshot) dmgResult {
 		"cd", ds.Stats[core.CD],
 		"pre_crit_dmg", precritdmg,
 		"dmg_if_crit", precritdmg*(1+ds.Stats[core.CD]),
-		"is_crit", result.isCrit,
+		"is_crit", isCrit,
 		"pre_amp_dmg", preampdmg,
 		"reaction_type", ds.ReactionType,
 		"melt_vape", ds.IsMeltVape,
@@ -254,7 +247,7 @@ func (t *Target) calcDmg(ds *core.Snapshot) dmgResult {
 		"target", t.index,
 	)
 
-	return result
+	return damage, isCrit
 }
 
 func (t *Target) calcReactionDmg(ds *core.Snapshot) float64 {
@@ -278,9 +271,9 @@ func (t *Target) calcReactionDmg(ds *core.Snapshot) float64 {
 
 	damage := ds.FlatDmg * resmod
 
-	t.log.Debugw(
+	t.core.Log.Debugw(
 		ds.Abil,
-		"frame", t.sim.Frame(),
+		"frame", t.core.F,
 		"event", core.LogCalc,
 		"char", ds.ActorIndex,
 		"src_frame", ds.SourceFrame,
@@ -301,7 +294,7 @@ func (t *Target) AddDefMod(key string, val float64, dur int) {
 	m := core.DefMod{
 		Key:    key,
 		Value:  val,
-		Expiry: t.sim.Frame() + dur,
+		Expiry: t.core.F + dur,
 	}
 	//find if exists, if exists override, else append
 	ind := -1
@@ -311,13 +304,13 @@ func (t *Target) AddDefMod(key string, val float64, dur int) {
 		}
 	}
 	if ind != -1 {
-		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", core.LogEnemyEvent, "count", len(t.defMod), "old", t.defMod[ind], "next", val, "target", t.index)
+		t.core.Log.Debugw("mod overwritten", "frame", t.core.F, "event", core.LogEnemyEvent, "count", len(t.defMod), "old", t.defMod[ind], "next", val, "target", t.index)
 		// LogEnemyEvent
 		t.defMod[ind] = m
 		return
 	}
 	t.defMod = append(t.defMod, m)
-	t.log.Debugw("new def mod", "frame", t.sim.Frame(), "event", core.LogEnemyEvent, "count", len(t.defMod), "next", val, "target", t.index)
+	t.core.Log.Debugw("new def mod", "frame", t.core.F, "event", core.LogEnemyEvent, "count", len(t.defMod), "next", val, "target", t.index)
 	// e.mod[key] = val
 }
 
@@ -328,11 +321,11 @@ func (t *Target) HasDefMod(key string) bool {
 			ind = i
 		}
 	}
-	return ind != -1 && t.defMod[ind].Expiry > t.sim.Frame()
+	return ind != -1 && t.defMod[ind].Expiry > t.core.F
 }
 
 func (t *Target) AddResMod(key string, val core.ResistMod) {
-	val.Expiry = t.sim.Frame() + val.Duration
+	val.Expiry = t.core.F + val.Duration
 	val.Key = key
 	//find if exists, if exists override, else append
 	ind := -1
@@ -342,20 +335,28 @@ func (t *Target) AddResMod(key string, val core.ResistMod) {
 		}
 	}
 	if ind != -1 {
-		t.log.Debugw("mod overwritten", "frame", t.sim.Frame(), "event", core.LogEnemyEvent, "count", len(t.resMod), "old", t.resMod[ind], "next", val)
+		t.core.Log.Debugw("mod overwritten", "frame", t.core.F, "event", core.LogEnemyEvent, "count", len(t.resMod), "old", t.resMod[ind], "next", val)
 		// LogEnemyEvent
 		t.resMod[ind] = val
 		return
 	}
 	t.resMod = append(t.resMod, val)
-	t.log.Debugw("new mod", "frame", t.sim.Frame(), "event", core.LogEnemyEvent, "count", len(t.resMod), "next", val)
+	t.core.Log.Debugw("new mod", "frame", t.core.F, "event", core.LogEnemyEvent, "count", len(t.resMod), "next", val)
 	// e.mod[key] = val
 }
 
-func (t *Target) DeactivateResMod(key string) {
+func (t *Target) RemoveResMod(key string) {
 	for i, v := range t.resMod {
 		if v.Key == key {
 			t.resMod[i].Expiry = 0
+		}
+	}
+}
+
+func (t *Target) RemoveDefMod(key string) {
+	for i, v := range t.defMod {
+		if v.Key == key {
+			t.defMod[i].Expiry = 0
 		}
 	}
 }
@@ -367,5 +368,5 @@ func (t *Target) HasResMod(key string) bool {
 			ind = i
 		}
 	}
-	return ind != -1 && t.resMod[ind].Expiry > t.sim.Frame()
+	return ind != -1 && t.resMod[ind].Expiry > t.core.F
 }

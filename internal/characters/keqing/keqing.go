@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("keqing", NewChar)
+	core.RegisterCharFunc("keqing", NewChar)
 }
 
 type char struct {
@@ -19,9 +17,9 @@ type char struct {
 	c2ICD       int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +70,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 125
 	}
-	c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+	c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 	return 0
 }
 
@@ -83,15 +81,16 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 }
 
 func (c *char) c4() {
-	c.Sim.AddOnTransReaction(func(t core.Target, ds *core.Snapshot) {
+	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
 		switch ds.ReactionType {
 		case core.Overload:
@@ -108,11 +107,12 @@ func (c *char) c4() {
 			c.AddMod(core.CharStatMod{
 				Key:    "c4",
 				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-				Expiry: c.Sim.Frame() + 600,
+				Expiry: c.Core.F + 600,
 			})
 		}
-
+		return false
 	}, "keqingc4")
+
 }
 
 func (c *char) Attack(p map[string]int) int {
@@ -187,7 +187,7 @@ func (c *char) ChargeAttack(p map[string]int) int {
 		//place on cooldown
 		c.Tags["e"] = 0
 		// c.CD[def.SkillCD] = c.eStartFrame + 100
-		c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Sim.Frame())
+		c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
 	}
 
 	if c.Base.Cons == 6 {
@@ -198,19 +198,20 @@ func (c *char) ChargeAttack(p map[string]int) int {
 }
 
 func (c *char) c2() {
-	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
-		if c.Sim.Frame() < c.c2ICD {
-			return
+		if c.Core.F < c.c2ICD {
+			return false
 		}
-		if c.Sim.Rand().Float64() < 0.5 {
-			c.c2ICD = c.Sim.Frame() + 300
+		if c.Core.Rand.Float64() < 0.5 {
+			c.c2ICD = c.Core.F + 300
 			c.QueueParticle("keqing", 1, core.Electro, 100)
-			c.Log.Debugw("keqing c2 proc'd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "next ready", c.c2ICD)
+			c.Core.Log.Debugw("keqing c2 proc'd", "frame", c.Core.F, "event", core.LogCharacterEvent, "next ready", c.c2ICD)
 		}
-
+		return false
 	}, "keqingc2")
 }
 
@@ -239,7 +240,7 @@ func (c *char) skillFirst(p map[string]int) int {
 	c.QueueDmg(&d, f)
 
 	c.Tags["e"] = 1
-	c.eStartFrame = c.Sim.Frame()
+	c.eStartFrame = c.Core.F
 
 	//place on cd after certain frames if started is still true
 	//looks like the E thing lasts 5 seconds
@@ -247,9 +248,9 @@ func (c *char) skillFirst(p map[string]int) int {
 		if c.Tags["e"] == 1 {
 			c.Tags["e"] = 0
 			// c.CD[def.SkillCD] = c.eStartFrame + 100
-			c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Sim.Frame()) //TODO: cooldown if not triggered, 7.5s
+			c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F) //TODO: cooldown if not triggered, 7.5s
 		}
-	}, "keqing-skill-cd", c.Sim.Frame()+300) //TODO: check this
+	}, "keqing-skill-cd", c.Core.F+300) //TODO: check this
 
 	if c.Base.Cons == 6 {
 		c.activateC6("skill")
@@ -277,13 +278,13 @@ func (c *char) skillNext(p map[string]int) int {
 
 	//add electro infusion
 
-	c.Sim.AddStatus("keqinginfuse", 300)
+	c.Core.Status.AddStatus("keqinginfuse", 300)
 
 	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "a2",
 		Ele:    core.Electro,
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Sim.Frame() + 300,
+		Expiry: c.Core.F + 300,
 	})
 
 	if c.Base.Cons >= 1 {
@@ -310,7 +311,7 @@ func (c *char) skillNext(p map[string]int) int {
 
 	//place on cooldown
 	c.Tags["e"] = 0
-	c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Sim.Frame())
+	c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
 	return f
 }
 
@@ -323,7 +324,7 @@ func (c *char) Burst(p map[string]int) int {
 	c.AddMod(core.CharStatMod{
 		Key:    "a4",
 		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-		Expiry: c.Sim.Frame() + 480,
+		Expiry: c.Core.F + 480,
 	})
 
 	//first hit 70 frame
@@ -382,7 +383,7 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	c.Energy = 0
-	// c.CD[def.BurstCD] = c.Sim.Frame() + 720 //12s
+	// c.CD[def.BurstCD] = c.Core.F + 720 //12s
 	c.SetCD(core.ActionBurst, 720)
 	return c.ActionFrames(core.ActionBurst, p)
 }
@@ -393,6 +394,6 @@ func (c *char) activateC6(src string) {
 	c.AddMod(core.CharStatMod{
 		Key:    src,
 		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-		Expiry: c.Sim.Frame() + 480,
+		Expiry: c.Core.F + 480,
 	})
 }

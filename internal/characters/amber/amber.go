@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("amber", NewChar)
+	core.RegisterCharFunc("amber", NewChar)
 }
 
 type char struct {
@@ -22,9 +20,9 @@ type char struct {
 	eTickSrc     int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +75,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionSkill:
 		return 35 //no cancel
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -114,6 +112,8 @@ func (c *char) Attack(p map[string]int) int {
 }
 
 func (c *char) Aimed(p map[string]int) int {
+	f := c.ActionFrames(core.ActionAim, p)
+
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 20
@@ -121,7 +121,16 @@ func (c *char) Aimed(p map[string]int) int {
 
 	b := p["bunny"]
 
-	f := c.ActionFrames(core.ActionAim, p)
+	if c.Base.Cons >= 2 && b != 0 {
+		//explode the first bunny
+		c.AddTask(func() {
+			c.manualExplode()
+		}, "bunny", travel+f)
+
+		//also don't do any dmg since we're shooting at bunny
+
+		return f
+	}
 
 	d := c.Snapshot(
 		"Aim (Charged)",
@@ -147,16 +156,9 @@ func (c *char) Aimed(p map[string]int) int {
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
-			Expiry: c.Sim.Frame() + 600,
+			Expiry: c.Core.F + 600,
 		})
 	}, "aim", f+travel)
-
-	if c.Base.Cons >= 2 && b != 0 {
-		//explode the first bunny
-		c.AddTask(func() {
-			c.manualExplode()
-		}, "bunny", travel+f)
-	}
 
 	c.QueueDmg(&d, travel+f)
 
@@ -180,10 +182,10 @@ func (c *char) Skill(p map[string]int) int {
 
 	switch c.eCharge {
 	case c.eChargeMax:
-		c.Log.Debugw("amber bunny at max charge, queuing next recovery", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "recover at", c.Sim.Frame()+721)
-		c.eNextRecover = c.Sim.Frame() + 721
-		c.AddTask(c.recoverCharge(c.Sim.Frame()), "charge", 720)
-		c.eTickSrc = c.Sim.Frame()
+		c.Core.Log.Debugw("amber bunny at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+721)
+		c.eNextRecover = c.Core.F + 721
+		c.AddTask(c.recoverCharge(c.Core.F), "charge", 720)
+		c.eTickSrc = c.Core.F
 	case 1:
 		c.SetCD(core.ActionSkill, c.eNextRecover)
 	}
@@ -195,19 +197,19 @@ func (c *char) Skill(p map[string]int) int {
 func (c *char) recoverCharge(src int) func() {
 	return func() {
 		if c.eTickSrc != src {
-			c.Log.Debugw("amber bunny recovery function ignored, src diff", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
+			c.Core.Log.Debugw("amber bunny recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
 			return
 		}
 		c.eCharge++
-		c.Log.Debugw("amber bunny recovering a charge", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
+		c.Core.Log.Debugw("amber bunny recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
 		c.SetCD(core.ActionSkill, 0)
 		if c.eCharge >= c.eChargeMax {
 			//fully charged
 			return
 		}
 		//other wise restore another charge
-		c.Log.Debugw("amber bunny queuing next recovery", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "recover at", c.Sim.Frame()+720)
-		c.eNextRecover = c.Sim.Frame() + 721
+		c.Core.Log.Debugw("amber bunny queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "recover at", c.Core.F+720)
+		c.eNextRecover = c.Core.F + 721
 		c.AddTask(c.recoverCharge(src), "charge", 720)
 
 	}
@@ -220,7 +222,7 @@ type bunny struct {
 
 func (c *char) makeBunny() {
 	b := bunny{}
-	b.src = c.Sim.Frame()
+	b.src = c.Core.F
 	b.ds = c.Snapshot(
 		"Baron Bunny",
 		core.AttackTagElementalArt,
@@ -244,7 +246,7 @@ func (c *char) makeBunny() {
 
 func (c *char) explode(src int) {
 	n := 0
-	c.Log.Debugw("amber exploding bunny", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src)
+	c.Core.Log.Debugw("amber exploding bunny", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
 	for _, v := range c.bunnies {
 		if v.src == src {
 
@@ -272,17 +274,18 @@ func (c *char) manualExplode() {
 
 func (c *char) overloadExplode() {
 	//explode all bunnies on overload
-	c.Sim.AddOnTransReaction(func(t core.Target, ds *core.Snapshot) {
+	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		if len(c.bunnies) == 0 {
-			return
+			return false
 		}
 		//TODO: only amber trigger?
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
 		//TODO: does it have to be charge shot trigger only??
 		if ds.AttackTag != core.AttackTagExtra {
-			return
+			return false
 		}
 		if ds.ReactionType == core.Overload {
 			for _, v := range c.bunnies {
@@ -293,7 +296,8 @@ func (c *char) overloadExplode() {
 			}
 			c.bunnies = make([]bunny, 0, 2)
 		}
-	}, "bunny-overload")
+		return false
+	}, "bunnyer-overload")
 }
 
 func (c *char) Burst(p map[string]int) int {
@@ -332,15 +336,15 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	if c.Base.Cons == 6 {
-		for _, active := range c.Sim.Characters() {
+		for _, active := range c.Core.Chars {
 			val := make([]float64, core.EndStatType)
 			val[core.ATKP] = 0.15
 			active.AddMod(core.CharStatMod{
 				Key:    "amber-c6",
 				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-				Expiry: c.Sim.Frame() + 900,
+				Expiry: c.Core.F + 900,
 			})
-			c.Log.Debugw("c6 - adding atk %", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "character", c.Name())
+			c.Core.Log.Debugw("c6 - adding atk %", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())
 		}
 	}
 

@@ -4,14 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("kaeya", NewChar)
+	core.RegisterCharFunc("kaeya", NewChar)
 }
 
 type char struct {
@@ -21,9 +18,9 @@ type char struct {
 	icicleICD []int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +71,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 78
 	default:
-		c.Log.Warnf("%v: unknown action, frames invalid", a)
+		c.Core.Log.Warnf("%v: unknown action, frames invalid", a)
 		return 0
 	}
 }
@@ -86,28 +83,31 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 }
 
 func (c *char) a4() {
-	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		t := args[0].(core.Target)
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
-			return
+			return false
 		}
 		if t.AuraType() != core.Frozen {
-			return
+			return false
 		}
 		if c.a4count == 2 {
-			return
+			return false
 		}
 		c.a4count++
 		c.QueueParticle("kaeya", 1, core.Cryo, 100)
-		c.Log.Debugw("kaeya a4 proc", "event", core.LogEnergyEvent, "char", c.Index, "frame", c.Sim.Frame(), "final cr", ds.Stats[core.CR])
+		c.Core.Log.Debugw("kaeya a4 proc", "event", core.LogEnergyEvent, "char", c.Index, "frame", c.Core.F, "final cr", ds.Stats[core.CR])
+		return false
 	}, "kaeya-a4")
 
 }
@@ -174,7 +174,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	//2 or 3 1:1 ratio
 	count := 2
-	if c.Sim.Rand().Float64() < 0.67 {
+	if c.Core.Rand.Float64() < 0.67 {
 		count = 3
 	}
 	c.QueueParticle("kaeya", count, core.Cryo, f+100)
@@ -182,9 +182,9 @@ func (c *char) Skill(p map[string]int) int {
 	//add a2
 	heal := .15 * (d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK])
 	c.AddTask(func() {
-		c.Sim.HealActive(heal)
+		c.Core.Health.HealActive(heal)
 		//apply damage
-		c.Sim.ApplyDamage(&d)
+		c.Core.Combat.ApplyDamage(&d)
 	}, "Kaeya-Skill", 28) //TODO: assumed same as when cd starts
 
 	c.SetCD(core.ActionSkill, 360+28) //+28 since cd starts 28 frames in
@@ -242,19 +242,20 @@ func (c *char) Burst(p map[string]int) int {
 }
 
 func (c *char) burstICD() {
-	c.Sim.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
+	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
 		if ds.Abil != "Glacial Waltz" {
-			return
+			return false
 		}
 		//check icd
-		if c.icicleICD[ds.ExtraIndex] > c.Sim.Frame() {
+		if c.icicleICD[ds.ExtraIndex] > c.Core.F {
 			ds.Cancelled = true
-			return
+			return false
 		}
-		c.icicleICD[ds.ExtraIndex] = c.Sim.Frame() + 30
-
+		c.icicleICD[ds.ExtraIndex] = c.Core.F + 30
+		return false
 	}, "kaeya-burst-icd")
 }

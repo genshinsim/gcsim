@@ -4,24 +4,21 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/shield"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("diona", NewChar)
+	core.RegisterCharFunc("diona", NewChar)
 }
 
 type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +59,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
 	case core.ActionAim:
-		if c.Base.Cons >= 4 && c.Sim.Status("dionaburst") > 0 {
+		if c.Base.Cons >= 4 && c.Core.Status.Duration("dionaburst") > 0 {
 			return 34 //reduced by 60%
 		}
 		return 84 //kqm
@@ -76,28 +73,28 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			return 15
 		}
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
 
 func (c *char) a2() {
-	c.Sim.AddStamMod(func(a core.ActionType) float64 {
-		if c.Sim.GetShield(core.ShieldDionaSkill) != nil {
-			return -0.1
+	c.Core.AddStamMod(func(a core.ActionType) (float64, bool) {
+		if c.Core.Shields.Get(core.ShieldDionaSkill) != nil {
+			return -0.1, false
 		}
-		return 0
+		return 0, false
 	})
 }
 
 func (c *char) c6() {
-	c.Sim.AddIncHealBonus(func() float64 {
-		if c.Sim.Status("dionaburst") == 0 {
+	c.Core.Health.AddIncHealBonus(func() float64 {
+		if c.Core.Status.Duration("dionaburst") == 0 {
 			return 0
 		}
-		char, _ := c.Sim.CharByPos(c.Sim.ActiveCharIndex())
+		char := c.Core.Chars[c.Core.ActiveChar]
 		if char.HP()/char.MaxHP() <= 0.5 {
-			c.Log.Debugw("diona c6 activated", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
+			c.Core.Log.Debugw("diona c6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent)
 			return 0.3
 		}
 		return 0
@@ -200,7 +197,7 @@ func (c *char) Skill(p map[string]int) int {
 		}
 		c.QueueDmg(&x, travel+f-5+i)
 
-		if c.Sim.Rand().Float64() < 0.8 {
+		if c.Core.Rand.Float64() < 0.8 {
 			count++
 		}
 	}
@@ -210,12 +207,12 @@ func (c *char) Skill(p map[string]int) int {
 
 	//add shield
 	c.AddTask(func() {
-		c.Sim.AddShield(&shield.Tmpl{
-			Src:        c.Sim.Frame(),
+		c.Core.Shields.Add(&shield.Tmpl{
+			Src:        c.Core.F,
 			ShieldType: core.ShieldDionaSkill,
 			HP:         shd,
 			Ele:        core.Cryo,
-			Expires:    c.Sim.Frame() + pawDur[c.TalentLvlSkill()], //15 sec
+			Expires:    c.Core.F + pawDur[c.TalentLvlSkill()], //15 sec
 		})
 	}, "Diona-Paw-Shield", f)
 
@@ -258,14 +255,14 @@ func (c *char) Burst(p map[string]int) int {
 	for i := 0; i < 6; i++ {
 		c.AddTask(func() {
 			x := d.Clone()
-			c.Sim.ApplyDamage(&x)
-			c.Log.Debugw("diona healing", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
-			c.Sim.HealActive(heal)
+			c.Core.Combat.ApplyDamage(&x)
+			c.Core.Log.Debugw("diona healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
+			c.Core.Health.HealActive(heal)
 		}, "Diona Burst (DOT)", 60+i*120)
 	}
 
 	//apparently lasts for 12.5
-	c.Sim.AddStatus("dionaburst", f+750) //TODO not sure when field starts, is it at animation end? prob when it lands...
+	c.Core.Status.AddStatus("dionaburst", f+750) //TODO not sure when field starts, is it at animation end? prob when it lands...
 
 	//c1
 	if c.Base.Cons >= 1 {
@@ -275,13 +272,13 @@ func (c *char) Burst(p map[string]int) int {
 			if c.Energy > c.EnergyMax {
 				c.Energy = c.EnergyMax
 			}
-			c.Log.Debugw("diona c1 regen 15 energy", "frame", c.Sim.Frame(), "event", core.LogEnergyEvent, "new energy", c.Energy)
+			c.Core.Log.Debugw("diona c1 regen 15 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
 		}, "Diona C1", f+750)
 	}
 
 	if c.Base.Cons == 6 {
 		c.AddTask(func() {
-			for _, char := range c.Sim.Characters() {
+			for _, char := range c.Core.Chars {
 				val := make([]float64, core.EndStatType)
 				val[core.EM] = 200
 				char.AddMod(core.CharStatMod{

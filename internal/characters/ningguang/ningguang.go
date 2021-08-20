@@ -2,14 +2,11 @@ package ningguang
 
 import (
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("ningguang", NewChar)
+	core.RegisterCharFunc("ningguang", NewChar)
 }
 
 type char struct {
@@ -19,9 +16,9 @@ type char struct {
 	particleICD int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +47,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 97 //counted, this is when you can swap but prob not when you can attack again
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -65,7 +62,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 50
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 
@@ -105,8 +102,8 @@ func (c *char) Attack(p map[string]int) int {
 		//refresh cooldown of seal every hit regardless if we got more stacks
 		// c.CD["seal"] = s.F + 600
 		x := d.Clone()
-		c.Sim.ApplyDamage(&d)
-		c.Sim.ApplyDamage(&x)
+		c.Core.Combat.ApplyDamage(&d)
+		c.Core.Combat.ApplyDamage(&x)
 	}, "ningguang-attack", f+travel)
 
 	return f
@@ -174,20 +171,20 @@ func (c *char) Skill(p map[string]int) int {
 	c.SetCD(core.ActionSkill, 720)
 
 	//create a construct
-	c.Sim.NewConstruct(c.newScreen(1800), true) //30 seconds
+	c.Core.Constructs.NewConstruct(c.newScreen(1800), true) //30 seconds
 
-	c.lastScreen = c.Sim.Frame()
+	c.lastScreen = c.Core.F
 
 	//check if particles on icd
 
-	if c.Sim.Frame() > c.particleICD {
+	if c.Core.F > c.particleICD {
 		//3 balls, 33% chance of a fourth
 		count := 3
-		if c.Sim.Rand().Float64() < .33 {
+		if c.Core.Rand.Float64() < .33 {
 			count = 4
 		}
 		c.QueueParticle("ningguang", count, core.Geo, f+100)
-		c.particleICD = c.Sim.Frame() + 360
+		c.particleICD = c.Core.F + 360
 	}
 
 	return f
@@ -195,26 +192,27 @@ func (c *char) Skill(p map[string]int) int {
 
 func (c *char) a4() {
 	//activate a4 if screen is down and character uses dash
-	c.Sim.AddEventHook(func(s core.Sim) bool {
-		if c.Sim.ConstructCountType(core.GeoConstructNingSkill) > 0 {
+	c.Core.Events.Subscribe(core.OnDash, func(args ...interface{}) bool {
+		if c.Core.Constructs.ConstructCountType(core.GeoConstructNingSkill) > 0 {
 			val := make([]float64, core.EndStatType)
 			val[core.GeoP] = 0.12
-			c.AddMod(core.CharStatMod{
+			char := c.Core.Chars[c.Core.ActiveChar]
+			char.AddMod(core.CharStatMod{
 				Key: "ning-screen",
 				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
-				Expiry: c.Sim.Frame() + 600,
+				Expiry: c.Core.F + 600,
 			})
 		}
 		return false
-	}, "ningguang-a4", core.PostDashHook)
+	}, "ningguang-a4")
 }
 
 func (c *char) newScreen(dur int) core.Construct {
 	return &construct{
-		src:    c.Sim.Frame(),
-		expiry: c.Sim.Frame() + dur,
+		src:    c.Core.F,
+		expiry: c.Core.F + dur,
 		char:   c,
 	}
 }
@@ -236,10 +234,10 @@ func (c *construct) Type() core.GeoConstructType {
 func (c *construct) OnDestruct() {
 	if c.char.Base.Cons >= 2 {
 		//make sure last reset is more than 6 seconds ago
-		if c.char.c2reset <= c.char.Sim.Frame()-360 {
+		if c.char.c2reset <= c.char.Core.F-360 {
 			//reset cd
 			c.char.ResetActionCooldown(core.ActionSkill)
-			c.char.c2reset = c.char.Sim.Frame()
+			c.char.c2reset = c.char.Core.F
 		}
 	}
 }
@@ -260,8 +258,8 @@ func (c *char) Burst(p map[string]int) int {
 
 	//fires 6 normally, + 6 if jade screen is active
 	count := 6
-	if c.Sim.Destroy(c.lastScreen) {
-		c.Log.Debugw("12 jade on burst", "event", core.LogCharacterEvent, "frame", c.Sim.Frame(), "char", c.Index)
+	if c.Core.Constructs.Destroy(c.lastScreen) {
+		c.Core.Log.Debugw("12 jade on burst", "event", core.LogCharacterEvent, "frame", c.Core.F, "char", c.Index)
 		count += 6
 	}
 

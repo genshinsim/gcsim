@@ -74,7 +74,7 @@ func TestLex(t *testing.T) {
 
 func TestParse(t *testing.T) {
 	p := New("test", s)
-	a, err := p.Parse()
+	a, _, err := p.Parse()
 	fmt.Println("characters:")
 	for _, v := range a.Characters.Profile {
 		fmt.Println(v.Base.Name)

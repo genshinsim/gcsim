@@ -3,28 +3,31 @@ package thundersoother
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("thundersoother", New)
+	core.RegisterSetFunc("thundersoother", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		log.Warnw("thundersoother 2 pc not implemented", "event", core.LogArtifactEvent, "char", c.CharIndex(), "frame", s.Frame())
+		s.Log.Warnw("thundersoother 2 pc not implemented", "event", core.LogArtifactEvent, "char", c.CharIndex(), "frame", s.F)
 	}
 	if count >= 4 {
-		s.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
+		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+			ds := args[1].(*core.Snapshot)
+			t := args[0].(core.Target)
 			if ds.ActorIndex != c.CharIndex() {
-				return
+				return false
 			}
 			if t.AuraContains(core.Electro) {
 				ds.Stats[core.DmgP] += .35
-				log.Debugw("thundersoother 4pc on electro", "frame", s.Frame(), "event", core.LogCalc, "char", c.CharIndex(), "new dmg", ds.Stats[core.DmgP])
+				s.Log.Debugw("thundersoother 4pc on electro", "frame", s.F, "event", core.LogCalc, "char", c.CharIndex(), "new dmg", ds.Stats[core.DmgP])
 			}
+			return false
 		}, fmt.Sprintf("ts4-%v", c.Name()))
+
 	}
 	//add flat stat to char
 }

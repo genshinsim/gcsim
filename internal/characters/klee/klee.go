@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("klee", NewChar)
+	core.RegisterCharFunc("klee", NewChar)
 }
 
 type char struct {
@@ -22,9 +20,9 @@ type char struct {
 	eTickSrc     int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +65,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 101
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -82,27 +80,29 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 50
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 
 }
 
 func (c *char) a4() {
-	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		crit := args[3].(bool)
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
 		if ds.AttackTag != core.AttackTagExtra {
-			return
+			return false
 		}
 		if !crit {
-			return
+			return false
 		}
-		for _, x := range c.Sim.Characters() {
+		for _, x := range c.Core.Chars {
 			x.AddEnergy(2)
 		}
-
+		return false
 	}, "kleea2")
 }
 
@@ -111,7 +111,7 @@ func (c *char) c1(delay int) {
 		return
 	}
 	//0.1 base change, + 0.08 every failure
-	if c.Sim.Rand().Float64() > c.c1Chance {
+	if c.Core.Rand.Float64() > c.c1Chance {
 		//failed
 		c.c1Chance += 0.08
 		return
@@ -151,7 +151,7 @@ func (c *char) Attack(p map[string]int) int {
 	)
 
 	c.AddTask(func() {
-		c.Sim.ApplyDamage(&d)
+		c.Core.Combat.ApplyDamage(&d)
 		c.addSpark()
 	}, "klee normal", f+travel)
 
@@ -168,7 +168,7 @@ func (c *char) Attack(p map[string]int) int {
 }
 
 func (c *char) addSpark() {
-	if c.Sim.Rand().Float64() < 0.5 {
+	if c.Core.Rand.Float64() < 0.5 {
 		c.Tags["spark"] = 1
 	}
 }
@@ -232,7 +232,7 @@ func (c *char) Skill(p map[string]int) int {
 	for i := 0; i < bounce; i++ {
 		x := d.Clone()
 		c.AddTask(func() {
-			c.Sim.ApplyDamage(&x)
+			c.Core.Combat.ApplyDamage(&x)
 			c.addSpark()
 		}, "klee bomb", f+30+i*40)
 	}
@@ -267,7 +267,7 @@ func (c *char) Skill(p map[string]int) int {
 	for i := 0; i < minehits; i++ {
 		x := d.Clone()
 		c.AddTask(func() {
-			c.Sim.ApplyDamage(&x)
+			c.Core.Combat.ApplyDamage(&x)
 			c.addSpark()
 		}, "klee mine", f+160)
 
@@ -277,10 +277,10 @@ func (c *char) Skill(p map[string]int) int {
 
 	switch c.eCharge {
 	case c.eChargeMax:
-		c.Log.Debugw("klee at max charge, queuing next recovery", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "recover at", c.Sim.Frame()+721)
-		c.eNextRecover = c.Sim.Frame() + 1201
-		c.AddTask(c.recoverCharge(c.Sim.Frame()), "charge", 1200)
-		c.eTickSrc = c.Sim.Frame()
+		c.Core.Log.Debugw("klee at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+721)
+		c.eNextRecover = c.Core.F + 1201
+		c.AddTask(c.recoverCharge(c.Core.F), "charge", 1200)
+		c.eTickSrc = c.Core.F
 	case 1:
 		c.SetCD(core.ActionSkill, c.eNextRecover)
 	}
@@ -294,19 +294,19 @@ func (c *char) Skill(p map[string]int) int {
 func (c *char) recoverCharge(src int) func() {
 	return func() {
 		if c.eTickSrc != src {
-			c.Log.Debugw("klee mine recovery function ignored, src diff", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
+			c.Core.Log.Debugw("klee mine recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
 			return
 		}
 		c.eCharge++
-		c.Log.Debugw("klee mine recovering a charge", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
+		c.Core.Log.Debugw("klee mine recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
 		c.SetCD(core.ActionSkill, 0)
 		if c.eCharge >= c.eChargeMax {
 			//fully charged
 			return
 		}
 		//other wise restore another charge
-		c.Log.Debugw("klee mine queuing next recovery", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "src", src, "recover at", c.Sim.Frame()+720)
-		c.eNextRecover = c.Sim.Frame() + 1201
+		c.Core.Log.Debugw("klee mine queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "recover at", c.Core.F+720)
+		c.eNextRecover = c.Core.F + 1201
 		c.AddTask(c.recoverCharge(src), "charge", 1200)
 
 	}
@@ -335,53 +335,53 @@ func (c *char) Burst(p map[string]int) int {
 		x := d.Clone()
 		c.AddTask(func() {
 			//no more if klee is not on field
-			if c.Sim.ActiveCharIndex() != c.Index {
+			if c.Core.ActiveChar != c.Index {
 				return
 			}
-			c.Sim.ApplyDamage(&x)
+			c.Core.Combat.ApplyDamage(&x)
 		}, "klee-burst", i)
 		//wave 2 = 1 + 30% chance of 1
 		x = d.Clone()
 		c.AddTask(func() {
 			//no more if klee is not on field
-			if c.Sim.ActiveCharIndex() != c.Index {
+			if c.Core.ActiveChar != c.Index {
 				return
 			}
-			c.Sim.ApplyDamage(&x)
+			c.Core.Combat.ApplyDamage(&x)
 		}, "klee-burst", i+12)
-		if c.Sim.Rand().Float64() < 0.3 {
+		if c.Core.Rand.Float64() < 0.3 {
 			x = d.Clone()
 			c.AddTask(func() {
 				//no more if klee is not on field
-				if c.Sim.ActiveCharIndex() != c.Index {
+				if c.Core.ActiveChar != c.Index {
 					return
 				}
-				c.Sim.ApplyDamage(&x)
+				c.Core.Combat.ApplyDamage(&x)
 			}, "klee-burst", i+12)
 		}
 		//wave 3 = 1 + 50% chance of 1
 		x = d.Clone()
 		c.AddTask(func() {
 			//no more if klee is not on field
-			if c.Sim.ActiveCharIndex() != c.Index {
+			if c.Core.ActiveChar != c.Index {
 				return
 			}
-			c.Sim.ApplyDamage(&x)
+			c.Core.Combat.ApplyDamage(&x)
 		}, "klee-burst", i+24)
-		if c.Sim.Rand().Float64() < 0.5 {
+		if c.Core.Rand.Float64() < 0.5 {
 			x = d.Clone()
 			c.AddTask(func() {
 				//no more if klee is not on field
-				if c.Sim.ActiveCharIndex() != c.Index {
+				if c.Core.ActiveChar != c.Index {
 					return
 				}
-				c.Sim.ApplyDamage(&x)
+				c.Core.Combat.ApplyDamage(&x)
 			}, "klee-burst", i+24)
 		}
 	}
 
 	c.AddTask(func() {
-		c.Sim.AddStatus("kleeq", 600)
+		c.Core.Status.AddStatus("kleeq", 600)
 	}, "klee-burst-status", 132)
 
 	//every 3 seconds add energy if c6
@@ -389,29 +389,29 @@ func (c *char) Burst(p map[string]int) int {
 		for i := f + 180; i < f+600; i += 180 {
 			c.AddTask(func() {
 				//no more if klee is not on field
-				if c.Sim.ActiveCharIndex() != c.Index {
+				if c.Core.ActiveChar != c.Index {
 					return
 				}
 
-				for i, x := range c.Sim.Characters() {
+				for i, x := range c.Core.Chars {
 					if i == c.Index {
 						continue
 					}
 					x.AddEnergy(3)
-					c.Log.Debugw("klee c6 regen 3 energy", "frame", c.Sim.Frame(), "event", core.LogEnergyEvent, "char", x.CharIndex(), "new energy", x.CurrentEnergy())
+					c.Core.Log.Debugw("klee c6 regen 3 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "char", x.CharIndex(), "new energy", x.CurrentEnergy())
 				}
 
 			}, "klee-c6", i)
 		}
 
 		//add 25% buff
-		for _, x := range c.Sim.Characters() {
+		for _, x := range c.Core.Chars {
 			val := make([]float64, core.EndStatType)
 			val[core.PyroP] = .1
 			x.AddMod(core.CharStatMod{
 				Key:    "klee-c6",
 				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-				Expiry: c.Sim.Frame() + 1500,
+				Expiry: c.Core.F + 1500,
 			})
 		}
 	}
@@ -424,10 +424,10 @@ func (c *char) Burst(p map[string]int) int {
 }
 
 func (c *char) c4() {
-	c.Sim.AddEventHook(func(s core.Sim) bool {
+	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		//if burst is active and klee no longer active char
-		if c.Sim.ActiveCharIndex() != c.Index && s.Status("kleeq") > 0 {
-			s.DeleteStatus("kleeq")
+		if c.Core.ActiveChar != c.Index && c.Core.Status.Duration("kleeq") > 0 {
+			c.Core.Status.DeleteStatus("kleeq")
 			//blow up
 			d := c.Snapshot(
 				"Sparks'n'Splash c4",
@@ -439,8 +439,9 @@ func (c *char) c4() {
 				50,
 				5.55,
 			)
-			s.ApplyDamage(&d)
+			c.Core.Combat.ApplyDamage(&d)
 		}
 		return false
-	}, "klee-c4", core.PostSwapHook)
+
+	}, "klee-c4")
 }

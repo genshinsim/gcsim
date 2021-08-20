@@ -23,15 +23,15 @@ func parseHurtEvent(p *Parser) (parseFn, error) {
 func parseHurtOnce(p *Parser) (parseFn, error) {
 	//interval=300 amount=100,200 ele=pyro #once at frame 300 (or nearest)
 	var err error
-	p.result.Hurt.WillHurt = true
-	p.result.Hurt.Once = true
+	p.cfg.Hurt.WillHurt = true
+	p.cfg.Hurt.Once = true
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemInterval:
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
-				p.result.Hurt.Start, err = itemNumberToInt(n)
+				p.cfg.Hurt.Start, err = itemNumberToInt(n)
 			}
 		case itemAmount:
 			err = p.parseHurtAmount()
@@ -53,7 +53,7 @@ func parseHurtOnce(p *Parser) (parseFn, error) {
 func parseHurtEvery(p *Parser) (parseFn, error) {
 	//interval=300,600 amount=100,200 ele=physical #randomly 100 to 200 dmg every 300 to 600 frames
 	var err error
-	p.result.Hurt.WillHurt = true
+	p.cfg.Hurt.WillHurt = true
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
@@ -62,7 +62,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 			if err != nil {
 				return nil, err
 			}
-			p.result.Hurt.Start, err = itemNumberToInt(n)
+			p.cfg.Hurt.Start, err = itemNumberToInt(n)
 			if err != nil {
 				return nil, err
 			}
@@ -71,7 +71,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 			if err != nil {
 				return nil, err
 			}
-			p.result.Hurt.End, err = itemNumberToInt(n)
+			p.cfg.Hurt.End, err = itemNumberToInt(n)
 			if err != nil {
 				return nil, err
 			}
@@ -111,8 +111,8 @@ func (p *Parser) parseHurtAmount() error {
 		return err
 	}
 
-	p.result.Hurt.Min = min
-	p.result.Hurt.Max = max
+	p.cfg.Hurt.Min = min
+	p.cfg.Hurt.Max = max
 
 	return nil
 }
@@ -126,6 +126,6 @@ func (p *Parser) parseHurtEle() error {
 	if n.typ <= eleTypeKeyword {
 		return fmt.Errorf("<hurt> bad token at line %v - %v: %v", n.line, n.pos, n)
 	}
-	p.result.Hurt.Ele = eleKeys[n.val]
+	p.cfg.Hurt.Ele = eleKeys[n.val]
 	return nil
 }

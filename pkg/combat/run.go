@@ -4,72 +4,49 @@ import (
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (s *Sim) Run() (SimStats, error) {
-	//initialize all characters
-	for i, c := range s.chars {
-		c.Init(i)
-	}
-	//call rest of init hooks
-	for _, f := range s.initHooks {
-		f()
-	}
-
+func (s *Simulation) Run() (Stats, error) {
 	var err error
+	if !s.cfg.DamageMode && s.opts.Duration == 0 {
+		s.opts.Duration = 90
+	}
+	f := s.opts.Duration*60 - 1
 	stop := false
 	//60fps, 60s/min, 2min
-	for s.f = 0; !stop; s.f++ {
+	for !stop {
 		err = s.AdvanceFrame()
 		if err != nil {
 			return s.stats, err
 		}
-		if s.cfg.Mode.HPMode {
+
+		//check if we should stop
+		if s.C.Flags.DamageMode {
 			//stop when last target dies
-			// log.Println(s.f, s.targets)
-			stop = len(s.targets) == 0
+			// log.Println(s.c.F, s.targets)
+			stop = len(s.C.Targets) == 0
 		} else {
-			stop = s.f == s.cfg.Mode.FrameLimit-1
+			stop = s.C.F == f
 		}
+
 	}
 
-	s.stats.DPS = s.stats.Damage * 60 / float64(s.f)
-	s.stats.SimDuration = s.f
+	s.stats.Damage = s.C.TotalDamage
+	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F)
+	s.stats.Duration = s.C.F
 
 	return s.stats, nil
 }
 
-func (s *Sim) AdvanceFrame() error {
-	//check if we should trigger dmg
+func (s *Simulation) AdvanceFrame() error {
+	var ok bool
+	var err error
+	//advance frame
+	s.C.Tick()
+	//check for hurt dmg
 	s.handleHurt()
 
-	//tick auras and shields firsts
-	for _, v := range s.targets {
-		v.AuraTick()
-	}
-	s.tickShields()
-	s.tickConstruct()
-
-	//then tick each character
-	for _, c := range s.chars {
-		c.Tick()
-	}
-
-	//then tick each target again
-	for _, v := range s.targets {
-		v.Tick()
-	}
-	s.charActiveDuration++
-	s.collectStats()
-
-	if s.swapCD > 0 {
-		s.swapCD--
-	}
-
-	//recover stam
-	if s.stam < maxStam && s.f-s.lastStamUse > 90 {
-		s.stam += 25.0 / 60 //30 per second
-		if s.stam > maxStam {
-			s.stam = maxStam
-		}
+	//grab stats
+	if s.opts.LogDetails {
+		s.collectStats()
 	}
 
 	if s.skip > 0 {
@@ -77,34 +54,59 @@ func (s *Sim) AdvanceFrame() error {
 		s.skip--
 		return nil
 	}
-	var err error
-	s.skip, err = s.execQueue()
-	return err
-}
 
-func (s *Sim) handleHurt() {
-	if s.hurt.WillHurt && s.f-s.lastHurt > s.hurt.Start {
-		f := 0
-		if s.hurt.Once {
-			s.hurt.WillHurt = false
-		} else {
-			//pick a frame between start to end
-			f = s.rand.Intn(s.hurt.End)
+	//check if queue has item, if not, queue up, otherwise execute
+	if len(s.queue) == 0 {
+		next, err := s.C.Queue.Next()
+		if err != nil {
+			return err
 		}
-		s.nextHurt = s.f + f
-		amt := s.hurt.Min + s.rand.Float64()*(s.hurt.Max-s.hurt.Min)
-		s.nextHurtAmt = amt
-		s.log.Debugw("hurt queued", "frame", s.f, "event", core.LogSimEvent, "last", s.lastHurt, "event", s.hurt, "amt", amt, "hurt_frame", f)
+		//do nothing, skip this frame
+		if len(next) == 0 {
+			return nil
+		}
+		s.queue = append(s.queue, next...)
 	}
 
-	if s.nextHurt == s.f {
-		s.DamageChar(s.nextHurtAmt, s.hurt.Ele)
+	if len(s.queue) > 0 {
+		s.skip, ok, err = s.C.Action.Exec(s.queue[0])
+		if err != nil {
+			return err
+		}
+		if ok {
+			if s.opts.LogDetails {
+				s.stats.AbilUsageCountByChar[s.C.ActiveChar][s.queue[0].Typ.String()]++
+			}
+			//pop queue
+			s.queue = s.queue[1:]
+		}
+	}
+	return nil
+}
+
+func (s *Simulation) collectStats() {
+	//add char active time
+	s.stats.CharActiveTime[s.C.ActiveChar]++
+}
+
+func (s *Simulation) handleHurt() {
+	if s.cfg.Hurt.WillHurt && s.C.F-s.lastHurt > s.cfg.Hurt.Start {
+		f := 0
+		if s.cfg.Hurt.Once {
+			s.cfg.Hurt.WillHurt = false
+		} else {
+			//pick a frame between start to end
+			f = s.C.Rand.Intn(s.cfg.Hurt.End)
+		}
+		s.nextHurt = s.C.F + f
+		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
+		s.nextHurtAmt = amt
+		s.C.Log.Debugw("hurt queued", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastHurt, "event", s.cfg.Hurt, "amt", amt, "hurt_frame", f)
+	}
+
+	if s.nextHurt == s.C.F {
+		s.C.Health.HurtChar(s.nextHurtAmt, s.cfg.Hurt.Ele)
 		s.lastHurt = s.nextHurt
 		s.nextHurtAmt = 0
 	}
-}
-
-func (s *Sim) collectStats() {
-	//add char active time
-	s.stats.CharActiveTime[s.active]++
 }

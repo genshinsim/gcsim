@@ -1,65 +1,68 @@
-package queue
+package core
 
 import (
 	"errors"
 	"strings"
-
-	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
-type Queuer struct {
-	s    core.Sim
-	prio []core.Action
-	log  *zap.SugaredLogger
+type QueueHandler interface {
+	Next() ([]ActionItem, error)
+	SetActionList(a []Action)
 }
 
-func New(s core.Sim, prio []core.Action, log *zap.SugaredLogger) *Queuer {
-	q := &Queuer{
-		s:    s,
-		prio: prio,
-		log:  log,
+type QueueCtrl struct {
+	core *Core
+	prio []Action
+}
+
+func NewQueueCtr(c *Core) *QueueCtrl {
+	return &QueueCtrl{
+		core: c,
 	}
-	return q
 }
 
-func (q *Queuer) Next(active string) ([]core.ActionItem, error) {
-	var r []core.ActionItem
-	f := q.s.Frame()
+func (q *QueueCtrl) SetActionList(a []Action) {
+	q.prio = a
+}
+
+func (q *QueueCtrl) Next() ([]ActionItem, error) {
+	var r []ActionItem
+	f := q.core.F
+	active := q.core.Chars[q.core.ActiveChar].Name()
 next:
 	for i, v := range q.prio {
-		char, ok := q.s.CharByName(v.Target)
+		char, ok := q.core.CharByName(v.Target)
 		if !ok {
 			continue next
 		}
 		//check if disabled
 		if v.Disabled {
-			q.log.Debugw("queue not rdy; disabled", "frame", f, "event", core.LogQueueEvent, "raw", v.Raw)
+			q.core.Log.Debugw("queue not rdy; disabled", "frame", f, "event", LogQueueEvent, "raw", v.Raw)
 			continue next
 		}
 		//check if still locked
 		if v.ActionLock > f-v.Last && v.Last != -1 {
-			q.log.Debugw("queue not rdy; on action lock", "frame", f, "event", core.LogQueueEvent, "last", v.Last, "lock_for", v.ActionLock, "raw", v.Raw)
+			q.core.Log.Debugw("queue not rdy; on action lock", "frame", f, "event", LogQueueEvent, "last", v.Last, "lock_for", v.ActionLock, "raw", v.Raw)
 			continue next
 		}
 		//check active char
 		if v.ActiveCond != "" {
 			if v.ActiveCond != active {
-				q.log.Debugw("queue not rdy; char not active", "frame", f, "event", core.LogQueueEvent, "active", active, "cond", v.ActiveCond, "raw", v.Raw)
+				q.core.Log.Debugw("queue not rdy; char not active", "frame", f, "event", LogQueueEvent, "active", active, "cond", v.ActiveCond, "raw", v.Raw)
 				continue next
 			}
 		}
 		//check if char requested is even alive
 		//check if actor is alive first, if not return 0 and call it a day
 		if char.HP() <= 0 {
-			q.log.Debugw("queue not rdy; char dead", "frame", f, "event", core.LogQueueEvent, "character", v.Target, "hp", char.HP(), "raw", v.Raw)
+			q.core.Log.Debugw("queue not rdy; char dead", "frame", f, "event", LogQueueEvent, "character", v.Target, "hp", char.HP(), "raw", v.Raw)
 			continue next
 		}
 
 		//check if we need to swap for this, and if so is swapcd = 0
 		if v.Target != active {
-			if q.s.SwapCD() > 0 {
-				q.log.Debugw("queue not rdy; swap on cd", "frame", f, "event", core.LogQueueEvent, "swap_cd", q.s.SwapCD(), "raw", v.Raw)
+			if q.core.SwapCD > 0 {
+				q.core.Log.Debugw("queue not rdy; swap on cd", "frame", f, "event", LogQueueEvent, "swap_cd", q.core.SwapCD, "raw", v.Raw)
 				continue next
 			}
 		}
@@ -83,7 +86,7 @@ next:
 		}
 
 		if !ready {
-			q.log.Debugw("queue not rdy; actions not rdy", "frame", f, "event", core.LogQueueEvent, "raw", v.Raw)
+			q.core.Log.Debugw("queue not rdy; actions not rdy", "frame", f, "event", LogQueueEvent, "raw", v.Raw)
 			continue next
 		}
 
@@ -94,7 +97,7 @@ next:
 				return nil, err
 			}
 			if !ok {
-				q.log.Debugw("queue not rdy; conditions not met", "frame", f, "event", core.LogQueueEvent, "condition", v.Conditions, "raw", v.Raw)
+				q.core.Log.Debugw("queue not rdy; conditions not met", "frame", f, "event", LogQueueEvent, "condition", v.Conditions, "raw", v.Raw)
 				continue next
 			}
 		}
@@ -102,9 +105,9 @@ next:
 		//add this point ability is ready and we can queue
 		//if active char is not current, then add swap first to queue
 		if active != v.Target {
-			r = append(r, core.ActionItem{
+			r = append(r, ActionItem{
 				Target: v.Target,
-				Typ:    core.ActionSwap,
+				Typ:    ActionSwap,
 			})
 		}
 
@@ -117,8 +120,8 @@ next:
 
 		//queue up swap lock
 		if v.SwapLock > 0 {
-			r = append(r, core.ActionItem{
-				Typ:      core.ActionSwapLock,
+			r = append(r, ActionItem{
+				Typ:      ActionSwapLock,
 				SwapLock: v.SwapLock,
 			})
 		}
@@ -138,31 +141,31 @@ next:
 
 		//check for any cancel actions
 		switch v.PostAction {
-		case core.ActionDash:
-			r = append(r, core.ActionItem{
-				Typ: core.ActionDash,
+		case ActionDash:
+			r = append(r, ActionItem{
+				Typ: ActionDash,
 			})
 			l++
-		case core.ActionJump:
-			r = append(r, core.ActionItem{
-				Typ: core.ActionJump,
+		case ActionJump:
+			r = append(r, ActionItem{
+				Typ: ActionJump,
 			})
 			l++
 		}
 		//check for any force swaps at the end
 		if v.SwapTo != "" {
-			if _, ok := q.s.CharByName(v.SwapTo); ok {
-				r = append(r, core.ActionItem{
+			if _, ok := q.core.CharByName(v.SwapTo); ok {
+				r = append(r, ActionItem{
 					Target: v.SwapTo,
-					Typ:    core.ActionSwap,
+					Typ:    ActionSwap,
 				})
 				l++
 			}
 		}
-		q.log.Debugw(
+		q.core.Log.Debugw(
 			"item queued",
 			"frame", f,
-			"event", core.LogQueueEvent,
+			"event", LogQueueEvent,
 			"name", v.Name,
 			"target", v.Target,
 			"is seq", v.IsSeq,
@@ -179,7 +182,7 @@ next:
 	return nil, nil // no item to add
 }
 
-func (q *Queuer) evalTree(node *core.ExprTreeNode) (bool, error) {
+func (q *QueueCtrl) evalTree(node *ExprTreeNode) (bool, error) {
 	//recursively evaluate tree nodes
 	if node.IsLeaf {
 		r, err := q.evalCond(node.Expr)
@@ -209,7 +212,7 @@ func (q *Queuer) evalTree(node *core.ExprTreeNode) (bool, error) {
 
 }
 
-func (q *Queuer) evalCond(c core.Condition) (bool, error) {
+func (q *QueueCtrl) evalCond(c Condition) (bool, error) {
 
 	switch c.Fields[0] {
 	case ".debuff":
@@ -230,11 +233,11 @@ func (q *Queuer) evalCond(c core.Condition) (bool, error) {
 	return false, nil
 }
 
-func (q *Queuer) evalStam(c core.Condition) (bool, error) {
-	return compInt(c.Op, int(q.s.Stam()), c.Value), nil
+func (q *QueueCtrl) evalStam(c Condition) (bool, error) {
+	return compInt(c.Op, int(q.core.Stam), c.Value), nil
 }
 
-func (q *Queuer) evalDebuff(c core.Condition) (bool, error) {
+func (q *QueueCtrl) evalDebuff(c Condition) (bool, error) {
 	if len(c.Fields) < 3 {
 		return false, errors.New("eval debuff: unexpected short field, expected at least 3")
 	}
@@ -252,11 +255,11 @@ func (q *Queuer) evalDebuff(c core.Condition) (bool, error) {
 
 	switch t {
 	case "res":
-		if q.s.TargetHasResMod(d, 0) {
+		if q.core.Combat.TargetHasResMod(d, 0) {
 			active = 1
 		}
 	case "def":
-		if q.s.TargetHasDefMod(d, 0) {
+		if q.core.Combat.TargetHasDefMod(d, 0) {
 			active = 1
 		}
 	default:
@@ -266,7 +269,7 @@ func (q *Queuer) evalDebuff(c core.Condition) (bool, error) {
 	return compInt(c.Op, active, val), nil
 }
 
-func (q *Queuer) evalElement(c core.Condition) (bool, error) {
+func (q *QueueCtrl) evalElement(c Condition) (bool, error) {
 	if len(c.Fields) < 2 {
 		return false, errors.New("eval element: unexpected short field, expected at least 2")
 	}
@@ -279,33 +282,33 @@ func (q *Queuer) evalElement(c core.Condition) (bool, error) {
 		val = 0
 	}
 	active := 0
-	e := core.StringToEle(ele)
-	if e == core.UnknownElement {
+	e := StringToEle(ele)
+	if e == UnknownElement {
 		return false, nil
 	}
 
-	if q.s.TargetHasElement(e, 0) {
+	if q.core.Combat.TargetHasElement(e, 0) {
 		active = 1
 	}
 	return compInt(c.Op, active, val), nil
 }
 
-func (q *Queuer) evalCD(c core.Condition) (bool, error) {
+func (q *QueueCtrl) evalCD(c Condition) (bool, error) {
 	if len(c.Fields) < 3 {
 		return false, errors.New("eval cd: unexpected short field, expected at least 3")
 	}
 	//check target is valid
 	name := strings.TrimPrefix(c.Fields[1], ".")
-	char, ok := q.s.CharByName(name)
+	char, ok := q.core.CharByName(name)
 	if !ok {
 		return false, errors.New("eval cd: invalid char in condition")
 	}
 	var cd int
 	switch c.Fields[2] {
 	case ".skill":
-		cd = char.Cooldown(core.ActionSkill)
+		cd = char.Cooldown(ActionSkill)
 	case ".burst":
-		cd = char.Cooldown(core.ActionBurst)
+		cd = char.Cooldown(ActionBurst)
 	default:
 		return false, nil
 	}
@@ -313,12 +316,12 @@ func (q *Queuer) evalCD(c core.Condition) (bool, error) {
 	return compInt(c.Op, cd, c.Value), nil
 }
 
-func (q *Queuer) evalEnergy(c core.Condition) (bool, error) {
+func (q *QueueCtrl) evalEnergy(c Condition) (bool, error) {
 	if len(c.Fields) < 2 {
 		return false, errors.New("eval energy: unexpected short field, expected at least 2")
 	}
 	name := strings.TrimPrefix(c.Fields[1], ".")
-	char, ok := q.s.CharByName(name)
+	char, ok := q.core.CharByName(name)
 	if !ok {
 		return false, errors.New("eval energy: invalid char in condition")
 	}
@@ -326,29 +329,29 @@ func (q *Queuer) evalEnergy(c core.Condition) (bool, error) {
 	return compFloat(c.Op, e, float64(c.Value)), nil
 }
 
-func (q *Queuer) evalStatus(c core.Condition) (bool, error) {
+func (q *QueueCtrl) evalStatus(c Condition) (bool, error) {
 	if len(c.Fields) < 2 {
 		return false, errors.New("eval status: unexpected short field, expected at least 2")
 	}
 	name := strings.TrimPrefix(c.Fields[1], ".")
-	status := q.s.Status(name)
-	q.log.Debugw("queue status check", "frame", q.s.Frame(), "event", core.LogQueueEvent, "status", name, "val", status, "expected", c.Value, "op", c.Op)
+	status := q.core.Status.Duration(name)
+	q.core.Log.Debugw("queue status check", "frame", q.core.F, "event", LogQueueEvent, "status", name, "val", status, "expected", c.Value, "op", c.Op)
 	return compInt(c.Op, status, c.Value), nil
 
 }
 
-func (q *Queuer) evalTags(c core.Condition) (bool, error) {
+func (q *QueueCtrl) evalTags(c Condition) (bool, error) {
 	if len(c.Fields) < 3 {
 		return false, errors.New("eval tags: unexpected short field, expected at least 3")
 	}
 	name := strings.TrimPrefix(c.Fields[1], ".")
-	char, ok := q.s.CharByName(name)
+	char, ok := q.core.CharByName(name)
 	if !ok {
 		return false, errors.New("eval tags: invalid char in condition")
 	}
 	tag := strings.TrimPrefix(c.Fields[2], ".")
 	v := char.Tag(tag)
-	q.log.Debugw("evaluating tags", "frame", q.s.Frame(), "event", core.LogQueueEvent, "char", char.CharIndex(), "targ", tag, "val", v)
+	q.core.Log.Debugw("evaluating tags", "frame", q.core.F, "event", LogQueueEvent, "char", char.CharIndex(), "targ", tag, "val", v)
 	return compInt(c.Op, v, c.Value), nil
 }
 

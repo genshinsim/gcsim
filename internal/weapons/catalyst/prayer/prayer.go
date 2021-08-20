@@ -3,17 +3,16 @@ package prayer
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("lost prayer to the sacred winds", weapon)
+	core.RegisterWeaponFunc("lost prayer to the sacred winds", weapon)
 }
 
 //Increases Movement Speed SPD by 10%. When in battle, earn a 6/8/10/12/14% Elemental DMG Bonus every 4s.
 //Max 4 stacks. Lasts until the character falls or leaves combat.
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	//ignore movement speed
 	w := weap{}
 	w.stacks = param["stack"]
@@ -21,19 +20,19 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 		w.stacks = 4
 	}
 	//check every 4 sec, if active add 1 stack;
-	c.AddTask(w.stackCheck(c, s), "prayer-stack", 240)
+	char.AddTask(w.stackCheck(char, c), "prayer-stack", 240)
 
 	//remove stack on swap off
-	s.AddEventHook(func(s core.Sim) bool {
-		if s.ActiveCharIndex() != c.CharIndex() {
+	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.ActiveChar != char.CharIndex() {
 			w.stacks = 0
 		}
 		return false
-	}, fmt.Sprintf("lostprayer-%v", c.Name()), core.PostSwapHook)
+	}, fmt.Sprintf("lostprayer-%v", char.Name()))
 
 	dmg := 0.04 + float64(r)*0.02
 	m := make([]float64, core.EndStatType)
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key:    "lost-prayer",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
@@ -60,14 +59,14 @@ type weap struct {
 	stacks int
 }
 
-func (w *weap) stackCheck(c core.Character, s core.Sim) func() {
+func (w *weap) stackCheck(char core.Character, c *core.Core) func() {
 	return func() {
-		if s.ActiveCharIndex() == c.CharIndex() {
+		if c.ActiveChar == char.CharIndex() {
 			w.stacks++
 			if w.stacks > 4 {
 				w.stacks = 4
 			}
 		}
-		c.AddTask(w.stackCheck(c, s), "prayer-stack", 240)
+		char.AddTask(w.stackCheck(char, c), "prayer-stack", 240)
 	}
 }

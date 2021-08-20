@@ -72,13 +72,13 @@ func (c *char) Dash(p map[string]int) int {
 	c.QueueDmg(&d, f)
 	//since we always hit, just restore the stam and add bonus...
 	c.AddTask(func() {
-		c.Sim.RestoreStam(10)
+		c.Core.RestoreStam(10)
 		val := make([]float64, core.EndStatType)
 		val[core.CryoP] = 0.18
 		//a2 increase normal + ca dmg by 30% for 6s
 		c.AddMod(core.CharStatMod{
 			Key:    "ayaka-a4",
-			Expiry: c.Sim.Frame() + 600,
+			Expiry: c.Core.F + 600,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
@@ -89,7 +89,7 @@ func (c *char) Dash(p map[string]int) int {
 		Key:    "ayaka-dash",
 		Ele:    core.Cryo,
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Sim.Frame() + 300,
+		Expiry: c.Core.F + 300,
 	})
 	return f
 }
@@ -110,7 +110,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	//2 or 3 1:1 ratio
 	count := 4
-	if c.Sim.Rand().Float64() < 0.5 {
+	if c.Core.Rand.Float64() < 0.5 {
 		count = 5
 	}
 	c.QueueParticle("ayaka", count, core.Cryo, f+100)
@@ -120,7 +120,7 @@ func (c *char) Skill(p map[string]int) int {
 	//a2 increase normal + ca dmg by 30% for 6s
 	c.AddMod(core.CharStatMod{
 		Key:    "ayaka-a2",
-		Expiry: c.Sim.Frame() + 360,
+		Expiry: c.Core.F + 360,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, a == core.AttackTagNormal || a == core.AttackTagExtra
 		},

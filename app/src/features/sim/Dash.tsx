@@ -37,12 +37,11 @@ function Dash() {
     };
   });
 
-  const [logLvl, setLogLvl] = React.useState<string>("debug");
+  const [logDebug, setLogDebug] = React.useState<boolean>(true);
   const [duration, setDuration] = React.useState<number>(90);
-  const [hp, setHP] = React.useState<number>(0);
   const [avgMode, setAvgMode] = React.useState<boolean>(false);
-  const [iter, setIter] = React.useState<number>(5000);
-  const [noSeed, setNoSeed] = React.useState<boolean>(false);
+  const [iter, setIter] = React.useState<number>(1000);
+  const [workers, setWorkers] = React.useState<number>(24);
 
   const [openSample, setOpenSample] = React.useState<boolean>(false);
   const [openCharBuilder, setOpenCharBuilder] = React.useState<boolean>(false);
@@ -62,13 +61,14 @@ function Dash() {
   const handleRun = () => {
     dispatch(
       runSim({
-        log: logLvl,
-        seconds: Math.round(duration),
+        options: {
+          log_details: true,
+          duration: Math.round(duration),
+          iter: Math.round(iter),
+          debug: logDebug,
+          workers: workers,
+        },
         config: config,
-        hp: hp,
-        avg_mode: avgMode,
-        iter: Math.round(iter),
-        noseed: noSeed,
       })
     );
   };
@@ -175,67 +175,49 @@ function Dash() {
           <H4>Options</H4>
 
           <Card>
-            <FormGroup
-              label="Average mode"
-              helperText="this will run multiple iterations to calculate average dps"
-            >
-              <Switch
-                checked={avgMode}
-                onChange={(e) => setAvgMode(e.currentTarget.checked)}
-              />
-            </FormGroup>
+            <div>
+              <FormGroup
+                label="Iterations"
+                helperText="number of iterations to run"
+              >
+                <NumericInput
+                  value={iter}
+                  onValueChange={(v) => setIter(v)}
+                  min={1}
+                />
+              </FormGroup>
+            </div>
 
-            <FormGroup label="Duration" helperText="ignored if hp > 0">
+            <FormGroup
+              label="Duration"
+              helperText="ignored if in damage mode as specified in the config"
+            >
               <NumericInput
                 value={duration}
                 onValueChange={(v) => setDuration(v)}
-                disabled={hp > 0}
                 min={0}
               />
             </FormGroup>
 
             <FormGroup
-              label="HP"
-              helperText="if > 0, will use hp mode and ignore duration"
+              label="Workers"
+              helperText="number of workers (threads) to use"
             >
               <NumericInput
-                value={hp}
-                onValueChange={(v) => setHP(v)}
+                value={workers}
+                onValueChange={(v) => setWorkers(v)}
                 min={0}
               />
             </FormGroup>
-
-            {avgMode ? (
-              <div>
-                <FormGroup
-                  label="Iterations"
-                  helperText="number of iterations to run"
-                >
-                  <NumericInput
-                    value={iter}
-                    onValueChange={(v) => setIter(v)}
-                    min={1}
-                  />
-                </FormGroup>
-              </div>
-            ) : (
-              <div>
-                <FormGroup label="Log level">
-                  <HTMLSelect
-                    options={debugOpts}
-                    value={logLvl}
-                    onChange={(e) => setLogLvl(e.currentTarget.value)}
-                  />
-                </FormGroup>
-
-                <FormGroup label="No seed" helperText="">
-                  <Switch
-                    checked={noSeed}
-                    onChange={(e) => setNoSeed(e.currentTarget.checked)}
-                  />
-                </FormGroup>
-              </div>
-            )}
+            <FormGroup
+              label="Debug"
+              helperText="this option will capture the debug output of the last iteration"
+            >
+              <Switch
+                checked={logDebug}
+                onChange={(e) => setLogDebug(e.currentTarget.checked)}
+              />
+            </FormGroup>
           </Card>
         </div>
       </div>

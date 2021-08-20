@@ -1,18 +1,19 @@
 package aquila
 
 import (
-	"github.com/genshinsim/gsim/pkg/combat"
+	"fmt"
+
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("aquila favonia", weapon)
+	core.RegisterWeaponFunc("aquila favonia", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = .15 + .05*float64(r)
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "acquila favonia",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
@@ -25,15 +26,15 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 
 	last := -1
 
-	s.AddOnHurt(func(s core.Sim) {
-		if s.ActiveCharIndex() != c.CharIndex() {
-			return
+	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.ActiveChar != char.CharIndex() {
+			return false
 		}
-		if s.Frame()-last < 900 && last != -1 {
-			return
+		if c.F-last < 900 && last != -1 {
+			return false
 		}
-		last = s.Frame()
-		d := c.Snapshot(
+		last = c.F
+		d := char.Snapshot(
 			"Aquila Favonia",
 			core.AttackTagWeaponSkill,
 			core.ICDTagNone,
@@ -44,11 +45,12 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			dmg,
 		)
 		d.Targets = core.TargetAll
-		c.QueueDmg(&d, 1)
+		char.QueueDmg(&d, 1)
 
 		atk := d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK]
 
-		log.Debugw("acquila heal triggered", "frame", s.Frame(), "event", core.LogWeaponEvent, "atk", atk, "heal amount", atk*heal)
-		s.HealActive(atk * heal)
-	})
+		c.Log.Debugw("acquila heal triggered", "frame", c.F, "event", core.LogWeaponEvent, "atk", atk, "heal amount", atk*heal)
+		c.Health.HealActive(atk * heal)
+		return false
+	}, fmt.Sprintf("aquila-%v", char.Name()))
 }

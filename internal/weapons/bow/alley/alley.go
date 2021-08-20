@@ -3,15 +3,14 @@ package alley
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("alley hunter", weapon)
+	core.RegisterWeaponFunc("alley hunter", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	//max 10 stacks
 	w := weap{}
 	w.stacks = param["stack"]
@@ -21,7 +20,7 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	dmg := 0.015 + float64(r)*0.005
 
 	m := make([]float64, core.EndStatType)
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "alley-hunter",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			m[core.DmgP] = dmg * float64(w.stacks)
@@ -30,21 +29,24 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 		Expiry: -1,
 	})
 
-	s.AddInitHook(func() {
-		w.active = s.ActiveCharIndex() == c.CharIndex()
-	})
+	key := fmt.Sprintf("alley-hunter-%v", char.Name())
 
-	s.AddEventHook(func(s core.Sim) bool {
-		//if swapped in
-		if s.ActiveCharIndex() == c.CharIndex() {
+	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+		w.active = c.ActiveChar == char.CharIndex()
+		return true
+	}, key)
+
+	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		next := args[1].(int)
+		if next == char.CharIndex() {
 			w.active = true
-			c.AddTask(w.decStack(c), "alley-hunter", 240) //start losing every 1 sec at 4 sec
+			c.Tasks.Add(w.decStack(char), 240)
 		} else {
 			w.active = false
-			c.AddTask(w.incStack(c), "alley-hunter", 60)
+			c.Tasks.Add(w.incStack(char), 60)
 		}
 		return false
-	}, fmt.Sprintf("alley-hunter-%v", c.Name()), core.PostSwapHook)
+	}, key)
 
 }
 

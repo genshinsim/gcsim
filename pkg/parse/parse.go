@@ -46,8 +46,9 @@ type Parser struct {
 	pos    int //current position
 
 	//results
-	result *core.Config
-	chars  map[string]*core.CharacterProfile
+	cfg   *core.Config
+	opt   *core.RunOpt
+	chars map[string]*core.CharacterProfile
 }
 
 type parseFn func(*Parser) (parseFn, error)
@@ -59,28 +60,29 @@ func New(name, input string) *Parser {
 	return p
 }
 
-func (p *Parser) Parse() (core.Config, error) {
+func (p *Parser) Parse() (core.Config, core.RunOpt, error) {
 	//initialize
 	var err error
 
-	p.result = &core.Config{}
+	p.cfg = &core.Config{}
 	p.chars = make(map[string]*core.CharacterProfile)
+	p.opt = &core.RunOpt{}
 
 	//default run options
-	p.result.Mode.Duration = 90
-	p.result.Mode.Iteration = 1000
-	p.result.Mode.Workers = 20
+	p.opt.Duration = 90
+	p.opt.Iteration = 1000
+	p.opt.Workers = 20
 
 	state := parseRows
 	for state != nil && err == nil {
 		state, err = state(p)
 		if err != nil {
-			return *p.result, err
+			return *p.cfg, *p.opt, err
 		}
 	}
 
 	if err != nil {
-		return *p.result, err
+		return *p.cfg, *p.opt, err
 	}
 
 	keys := make([]string, 0, len(p.chars))
@@ -89,14 +91,21 @@ func (p *Parser) Parse() (core.Config, error) {
 	}
 	sort.Strings(keys)
 	for _, k := range keys {
-		p.result.Characters.Profile = append(p.result.Characters.Profile, *p.chars[k])
+		p.cfg.Characters.Profile = append(p.cfg.Characters.Profile, *p.chars[k])
 	}
 
-	if p.result.Mode.HP > 0 {
-		p.result.Mode.HPMode = true
+	//check target hp
+
+	for i, v := range p.cfg.Targets {
+		if p.cfg.DamageMode && v.HP <= 0 {
+			return *p.cfg, *p.opt, errors.New("if any one target has hp > 0, then all target must have hp > 0")
+		} else if !p.cfg.DamageMode {
+			//we should never actually get here
+			p.cfg.Targets[i].HP = 0 //make sure its 0 if not running hp mode
+		}
 	}
 
-	return *p.result, nil
+	return *p.cfg, *p.opt, nil
 }
 
 func parseRows(p *Parser) (parseFn, error) {
@@ -159,43 +168,28 @@ func parseRows(p *Parser) (parseFn, error) {
 func parseOptions(p *Parser) (parseFn, error) {
 	var err error
 
-	//options mode=average iteration=5000 duration=90 simhp=0 workers=24;
+	//options debug=true iteration=5000 duration=90 workers=24;
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
-		case itemMode:
-			//expect avg or single
-			_, err = p.consume(itemAssign)
-			if err != nil {
-				return nil, err
-			}
-			item := p.next()
-			switch item.typ {
-			case itemAverage:
-				p.result.Mode.Average = true
-			case itemSingle:
-				p.result.Mode.Average = false
-			default:
-				return nil, fmt.Errorf("bad token %v parsing options, expecting average or single. line %v", n.val, p.tokens)
+		case itemDebug:
+			n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
+			if err == nil {
+				p.opt.Debug = n.val == "true"
 			}
 		case itemIterations:
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
-				p.result.Mode.Iteration, err = itemNumberToInt(n)
+				p.opt.Iteration, err = itemNumberToInt(n)
 			}
 		case itemDuration:
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
-				p.result.Mode.Duration, err = itemNumberToInt(n)
-			}
-		case itemSimHP:
-			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
-			if err == nil {
-				p.result.Mode.HP, err = itemNumberToFloat64(n)
+				p.opt.Duration, err = itemNumberToInt(n)
 			}
 		case itemWorkers:
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
-				p.result.Mode.Workers, err = itemNumberToInt(n)
+				p.opt.Workers, err = itemNumberToInt(n)
 			}
 		case itemTerminateLine:
 			return parseRows, nil
@@ -213,7 +207,7 @@ func parseLabel(p *Parser) (parseFn, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.result.Label = ident.val
+	p.cfg.Label = ident.val
 	n, err := p.consume(itemTerminateLine)
 	if err != nil {
 		return nil, fmt.Errorf("bad token %v parsing label, expecting ;. line %v", n.val, p.tokens)

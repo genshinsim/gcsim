@@ -3,22 +3,21 @@ package skyward
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("skyward harp", weapon)
+	core.RegisterWeaponFunc("skyward harp", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	//add passive crit, atk speed not sure how to do right now??
 	//looks like jsut reduce the frames of normal attacks by 1 + 12%
 	m := make([]float64, core.EndStatType)
 	m[core.CD] = 0.15 + float64(r)*0.05
 	cd := 270 - 30*r
 	p := 0.5 + 0.1*float64(r)
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "skyward harp",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
@@ -28,21 +27,22 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 
 	icd := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		//check if char is correct?
-		if ds.ActorIndex != c.CharIndex() {
-			return
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		//check if cd is up
-		if icd > s.Frame() {
-			return
+		if icd > c.F {
+			return false
 		}
-		if s.Rand().Float64() > p {
-			return
+		if c.Rand.Float64() > p {
+			return false
 		}
 
 		//add a new action that deals % dmg immediately
-		d := c.Snapshot(
+		d := char.Snapshot(
 			"Skyward Harp Proc",
 			core.AttackTagWeaponSkill,
 			core.ICDTagNone,
@@ -53,11 +53,12 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 			1.25,
 		)
 		d.Targets = core.TargetAll
-		c.QueueDmg(&d, 1)
+		char.QueueDmg(&d, 1)
 
 		//trigger cd
-		icd = s.Frame() + cd
+		icd = c.F + cd
 
-	}, fmt.Sprintf("skyward-harp-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("skyward-harp-%v", char.Name()))
 
 }

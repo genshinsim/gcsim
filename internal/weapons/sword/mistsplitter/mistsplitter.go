@@ -3,15 +3,14 @@ package mistsplitter
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("mistsplitter reforged", weapon)
+	core.RegisterWeaponFunc("mistsplitter reforged", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m := make([]float64, core.EndStatType)
 	base := 0.09 + float64(r)*0.03
 	m[core.PyroP] = base
@@ -25,45 +24,48 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	m[core.DendroP] = base
 	stack := 0.06 + float64(r)*0.02
 	max := 0.21 + float64(r)*0.07
-	bonus := core.EleToDmgP(c.Ele())
+	bonus := core.EleToDmgP(char.Ele())
 
 	normal := 0
 	skill := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, base float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
-		}
-		if ds.AttackTag != core.AttackTagNormal {
-			return
-		}
-		if ds.Element == core.Physical {
-			return
-		}
-		normal = s.Frame() + 300 // lasts 5 seconds
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 
-	}, fmt.Sprintf("mistsplitter-%v", c.Name()))
+		ds := args[1].(*core.Snapshot)
 
-	s.AddEventHook(func(s core.Sim) bool {
-		if s.ActiveCharIndex() != c.CharIndex() {
+		if ds.ActorIndex != char.CharIndex() {
 			return false
 		}
-		skill = s.Frame() + 600
+		if ds.AttackTag != core.AttackTagNormal {
+			return false
+		}
+		if ds.Element == core.Physical {
+			return false
+		}
+		normal = c.F + 300 // lasts 5 seconds
+		return false
+	}, fmt.Sprintf("mistsplitter-%v", char.Name()))
+
+	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+		if c.ActiveChar != char.CharIndex() {
+			return false
+		}
+		skill = c.F + 600
 		return false
 
-	}, fmt.Sprintf("mistsplitter-%v", c.Name()), core.PostBurstHook)
+	}, fmt.Sprintf("mistsplitter-%v", char.Name()))
 
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "mistsplitter",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			count := 0
-			if c.CurrentEnergy() < c.MaxEnergy() {
+			if char.CurrentEnergy() < char.MaxEnergy() {
 				count++
 			}
-			if normal > s.Frame() {
+			if normal > c.F {
 				count++
 			}
-			if skill > s.Frame() {
+			if skill > c.F {
 				count++
 			}
 			dmg := float64(count) * stack

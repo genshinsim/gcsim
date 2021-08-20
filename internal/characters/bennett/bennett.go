@@ -4,23 +4,20 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("bennett", NewChar)
+	core.RegisterCharFunc("bennett", NewChar)
 }
 
 type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +83,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 51 //ok
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -130,7 +127,7 @@ func (c *char) Skill(p map[string]int) int {
 	}
 
 	//A4
-	if c.Sim.Status("btburst") > 0 {
+	if c.Core.Status.Duration("btburst") > 0 {
 		cd = cd / 2
 	}
 
@@ -157,7 +154,7 @@ func (c *char) skillPress() {
 
 	//25 % chance of 3 orbs
 	count := 2
-	if c.Sim.Rand().Float64() < .25 {
+	if c.Core.Rand.Float64() < .25 {
 		count++
 	}
 	c.QueueParticle("bennett", count, core.Pyro, 120)
@@ -186,7 +183,7 @@ func (c *char) skillHoldShort() {
 
 	//25 % chance of 3 orbs
 	count := 2
-	if c.Sim.Rand().Float64() < .25 {
+	if c.Core.Rand.Float64() < .25 {
 		count++
 	}
 	c.QueueParticle("bennett", count, core.Pyro, 215)
@@ -229,7 +226,7 @@ func (c *char) skillHoldLong() {
 
 	//25 % chance of 3 orbs
 	count := 2
-	if c.Sim.Rand().Float64() < .25 {
+	if c.Core.Rand.Float64() < .25 {
 		count++
 	}
 	c.QueueParticle("bennett", count, core.Pyro, 298)
@@ -239,7 +236,7 @@ func (c *char) skillHoldLong() {
 func (c *char) Burst(p map[string]int) int {
 
 	//add field effect timer
-	c.Sim.AddStatus("btburst", 720)
+	c.Core.Status.AddStatus("btburst", 720)
 	//hook for buffs; active right away after cast
 
 	c.AddTask(func() {
@@ -254,7 +251,7 @@ func (c *char) Burst(p map[string]int) int {
 			burst[c.TalentLvlBurst()],
 		)
 		d.Targets = core.TargetAll
-		c.Sim.ApplyDamage(&d)
+		c.Core.Combat.ApplyDamage(&d)
 	}, "bt-q", 43)
 
 	d := c.Snapshot(
@@ -291,12 +288,12 @@ func (c *char) applyBennettField(d core.Snapshot) func() {
 	}
 	atk := pc * float64(c.Base.Atk+c.Weapon.Atk)
 	return func() {
-		c.Log.Debugw("bennett field ticking", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent)
+		c.Core.Log.Debugw("bennett field ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
 
-		active, _ := c.Sim.CharByPos(c.Sim.ActiveCharIndex())
+		active := c.Core.Chars[c.Core.ActiveChar]
 		//heal if under 70%
 		if active.HP()/active.MaxHP() < .7 {
-			c.Sim.HealActive(heal)
+			c.Core.Health.HealActive(heal)
 		}
 
 		//add attack if over 70%
@@ -313,9 +310,9 @@ func (c *char) applyBennettField(d core.Snapshot) func() {
 				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
-				Expiry: c.Sim.Frame() + 126,
+				Expiry: c.Core.F + 126,
 			})
-			c.Log.Debugw("bennett field - adding attack", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "threshold", threshold)
+			c.Core.Log.Debugw("bennett field - adding attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "threshold", threshold)
 			//if c6 add weapon infusion and 15% pyro
 			if c.Base.Cons == 6 {
 				switch active.WeaponClass() {
@@ -328,7 +325,7 @@ func (c *char) applyBennettField(d core.Snapshot) func() {
 						Key:    "bennett-fire-weapon",
 						Ele:    core.Pyro,
 						Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-						Expiry: c.Sim.Frame() + 126,
+						Expiry: c.Core.F + 126,
 					})
 				}
 

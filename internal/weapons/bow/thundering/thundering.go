@@ -3,15 +3,14 @@ package thundering
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("thundering pulse", weapon)
+	core.RegisterWeaponFunc("thundering pulse", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.15 + float64(r)*0.05
 	stack := 0.09 + float64(r)*0.03
@@ -20,27 +19,29 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 	normal := 0
 	skill := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
-		if ds.ActorIndex != c.CharIndex() {
-			return
-		}
-		if ds.AttackTag != core.AttackTagNormal {
-			return
-		}
-		normal = s.Frame() + 300 // lasts 5 seconds
+	key := fmt.Sprintf("thundering-pulse-%v", char.Name())
 
-	}, fmt.Sprintf("thundering-pulse-%v", c.Name()))
-
-	s.AddEventHook(func(s core.Sim) bool {
-		if s.ActiveCharIndex() != c.CharIndex() {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
 			return false
 		}
-		skill = s.Frame() + 600
+		if ds.AttackTag != core.AttackTagNormal {
+			return false
+		}
+		normal = c.F + 300 // lasts 5 seconds
 		return false
+	}, key)
 
-	}, fmt.Sprintf("thundering-pulse-%v", c.Name()), core.PostSkillHook)
+	c.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
+		if c.ActiveChar != char.CharIndex() {
+			return false
+		}
+		skill = c.F + 600
+		return false
+	}, key)
 
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "thundering",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			m[core.DmgP] = 0
@@ -48,13 +49,13 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 				return m, true
 			}
 			count := 0
-			if c.CurrentEnergy() < c.MaxEnergy() {
+			if char.CurrentEnergy() < char.MaxEnergy() {
 				count++
 			}
-			if normal > s.Frame() {
+			if normal > c.F {
 				count++
 			}
-			if skill > s.Frame() {
+			if skill > c.F {
 				count++
 			}
 			dmg := float64(count) * stack

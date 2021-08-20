@@ -61,7 +61,7 @@ jobs:
       - name: check files
         run: ls
 
-      - run: env GOOS=windows GOARCH=amd64 go build
+      - run: env GOOS=windows GOARCH=amd64 go build -tags prod
 
       - name: check files
         run: ls
@@ -101,7 +101,7 @@ jobs:
       - name: check files
         run: ls
 
-      - run: env GOOS=darwin GOARCH=arm64 go build
+      - run: env GOOS=darwin GOARCH=arm64 go build -tags prod
 
       - name: check files
         run: ls
