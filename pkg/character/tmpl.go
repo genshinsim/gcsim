@@ -6,13 +6,11 @@ import (
 	"math/rand"
 
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 type Tmpl struct {
-	Sim  core.Sim
-	Rand *rand.Rand
-	Log   *zap.SugaredLogger
+	Core  *core.Core
+	Rand  *rand.Rand
 	Index int
 	//this should describe the frame in which the abil becomes available
 	//if frame > current then it's available. no need to decrement this way
@@ -37,8 +35,6 @@ type Tmpl struct {
 	HPCurrent float64
 	HPMax     float64
 
-	//Tasks specific to the character to be executed at set frames
-	Tasks map[int][]CharTask
 	//counters
 	NormalHitNum  int //how many hits in a normal combo
 	NormalCounter int
@@ -47,23 +43,14 @@ type Tmpl struct {
 	Infusion core.WeaponInfusion //TODO currently just overides the old; disregarding any existing
 }
 
-type CharTask struct {
-	Name        string
-	F           func()
-	Delay       int
-	originFrame int
-}
-
-func NewTemplateChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (*Tmpl, error) {
+func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 	c := Tmpl{}
-	c.Sim = s
-	c.Log = log
-	c.Rand = s.Rand()
+	c.Core = x
+	c.Rand = x.Rand
 
 	c.ActionCD = make([]int, core.EndActionType)
 	c.Mods = make([]core.CharStatMod, 0, 10)
 	c.Tags = make(map[string]int)
-	c.Tasks = make(map[int][]CharTask)
 	c.CDReductionFuncs = make([]core.CDAdjust, 0, 5)
 	c.Base = p.Base
 	c.Weapon = p.Weapon
@@ -84,7 +71,7 @@ func NewTemplateChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile
 		c.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		c.Log.Debugw("setting starting hp", "frame", s.Frame(), "event", core.LogCharacterEvent, "character", p.Base.Name, "hp", p.Base.StartHP)
+		c.Core.Log.Debugw("setting starting hp", "frame", x.F, "event", core.LogCharacterEvent, "character", p.Base.Name, "hp", p.Base.StartHP)
 		c.HPCurrent = p.Base.StartHP
 	} else {
 		c.HPCurrent = math.MaxInt64
@@ -99,7 +86,7 @@ func (t *Tmpl) Init(index int) {
 	hp := t.Stats[core.HP]
 
 	for _, m := range t.Mods {
-		if m.Expiry > t.Sim.Frame() || m.Expiry == -1 {
+		if m.Expiry > t.Core.F || m.Expiry == -1 {
 			a, ok := m.Amount(core.AttackTagNone)
 			if ok {
 				hpp += a[core.HPP]

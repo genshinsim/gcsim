@@ -1,6 +1,7 @@
 package monster
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/genshinsim/gsim/pkg/core"
@@ -38,34 +39,41 @@ func newEC(e *AuraElectro, h *AuraHydro, t *Target, ds *core.Snapshot, f int) Au
 	//on add, trigger tick immediately
 	t.queueReaction(ds, core.ElectroCharged, 0, 1) //residual durability doesn't matter for EC
 	//add handler to wane on dmg
-	t.AddOnAttackLandedHook(
-		func(ds *core.Snapshot) {
-			if ds.AttackTag != core.AttackTagECDamage {
-				return
-			}
-			//check if ec still active
-			if t.aura.Type() != core.EC {
-				return
-			}
-			v, ok := t.aura.(*AuraEC)
-			if !ok {
-				log.Panic("unexpected aura not type EC")
-			}
-			//wane in 0.1 seconds
-			t.addTask(func(t *Target) {
-				v.wane()
-			}, 6)
-		},
-		"ec",
-	)
+	t.core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		//target should be first, then snapshot
+		n := args[0].(core.Target)
+		snap := args[1].(*core.Snapshot)
+		if n.Index() != t.index {
+			return false
+		}
+		if snap.AttackTag != core.AttackTagECDamage {
+			return false
+		}
+		if t.aura == nil {
+			return true
+		}
+		//check if ec still active
+		if t.aura.Type() != core.EC {
+			return true
+		}
+		v, ok := t.aura.(*AuraEC)
+		if !ok {
+			log.Panic("unexpected aura not type EC")
+		}
+		//wane in 0.1 seconds
+		t.core.Tasks.Add(func() {
+			v.wane()
+		}, 6)
+		return false
+	}, fmt.Sprintf("ec-%v", t.index))
+	t.core.Tasks.Add(ec.nextTick(f), 60)
 	//add self repeating ticks
-	t.addTask(ec.nextTick(f), 60)
 
 	return &ec
 }
 
-func (a *AuraEC) nextTick(src int) func(t *Target) {
-	return func(t *Target) {
+func (a *AuraEC) nextTick(src int) func() {
+	return func() {
 		if a.source != src {
 			//source changed, do nothing
 			return
@@ -77,9 +85,9 @@ func (a *AuraEC) nextTick(src int) func(t *Target) {
 		}
 		//so ec is active, which means both aura must still have value > 0; so we can do dmg
 		ds := a.snapshot.Clone()
-		t.queueReaction(&ds, core.ElectroCharged, 0, 1)
+		a.t.queueReaction(&ds, core.ElectroCharged, 0, 1)
 		//queue up next tick
-		a.t.addTask(a.nextTick(src), 60)
+		a.t.core.Tasks.Add(a.nextTick(src), 60)
 	}
 }
 
@@ -94,7 +102,7 @@ func (a *AuraEC) cleanup(e, h bool) {
 			a.t.aura = a.electro
 		}
 		//cleanup
-		a.t.RemoveOnAttackLandedHook("ec")
+		a.t.core.Events.Unsubscribe(core.OnDamage, fmt.Sprintf("ec-%v", a.t.index))
 		a.source = -1
 	}
 }
@@ -142,8 +150,8 @@ func (a *AuraEC) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	case core.Geo:
 		//for now assuming only crystallize electro
 		ds.ReactionType = core.CrystallizeElectro
-		shd := NewCrystallizeShield(core.Electro, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
-		t.sim.AddShield(shd)
+		shd := NewCrystallizeShield(core.Electro, t.core.F, ds.CharLvl, ds.Stats[core.EM], t.core.F+900)
+		t.core.Shields.Add(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
 	case core.Pyro:
@@ -162,10 +170,10 @@ func (a *AuraEC) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		//refresh hydro, update snapshot, and trigger 1 tick
 		a.hydro.Refresh(ds.Durability)
 		a.snapshot = ds.Clone()
-		a.source = t.sim.Frame()
+		a.source = t.core.F
 		//trigger tick and update tick timer
 		t.queueReaction(ds, core.ElectroCharged, 0, 1)
-		t.addTask(a.nextTick(t.sim.Frame()), 60)
+		t.core.Tasks.Add(a.nextTick(t.core.F), 60)
 		ds.ReactionType = core.ElectroCharged
 	case core.Cryo:
 		//superconduct and if any left trigger freeze
@@ -180,10 +188,10 @@ func (a *AuraEC) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		//refresh electro, update snapshot, and trigger 1 tick
 		a.electro.Refresh(ds.Durability)
 		a.snapshot = ds.Clone()
-		a.source = t.sim.Frame()
+		a.source = t.core.F
 		//trigger tick and update tick timer
 		t.queueReaction(ds, core.ElectroCharged, 0, 1)
-		t.addTask(a.nextTick(t.sim.Frame()), 60)
+		t.core.Tasks.Add(a.nextTick(t.core.F), 60)
 		ds.ReactionType = core.ElectroCharged
 	default:
 		return a, false

@@ -3,15 +3,14 @@ package maiden
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("maiden beloved", New)
+	core.RegisterSetFunc("maiden beloved", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.Heal] = 0.15
@@ -26,18 +25,18 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 	if count >= 4 {
 		dur := 0
 
-		s.AddEventHook(func(s core.Sim) bool {
-			// s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
-			if s.ActiveCharIndex() != c.CharIndex() {
+		s.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
+			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
-			dur = s.Frame() + 600
-			log.Debugw("maiden 4pc proc", "frame", s.Frame(), "event", core.LogArtifactEvent, "char", c.CharIndex(), "expiry", dur)
+			dur = s.F + 600
+			s.Log.Debugw("maiden 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "expiry", dur)
 			return false
-		}, fmt.Sprintf("maid 4pc - %v", c.Name()), core.PostBurstHook)
+		}, fmt.Sprintf("maid 4pc - %v", c.Name()))
 
-		s.AddIncHealBonus(func() float64 {
-			if s.Frame() < dur {
+		s.Health.AddIncHealBonus(func() float64 {
+			if s.F < dur {
 				return 0.2
 			}
 			return 0

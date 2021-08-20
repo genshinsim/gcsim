@@ -3,15 +3,14 @@ package blizzard
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("blizzard strayer", New)
+	core.RegisterSetFunc("blizzard strayer", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.CryoP] = 0.15
@@ -24,19 +23,23 @@ func New(c core.Character, s core.Sim, log core.Logger, count int) {
 		})
 	}
 	if count >= 4 {
-		s.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
+		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+			t := args[0].(core.Target)
+			ds := args[1].(*core.Snapshot)
 			if ds.ActorIndex != c.CharIndex() {
-				return
+				return false
 			}
 			switch t.AuraType() {
 			case core.Cryo:
 				ds.Stats[core.CR] += .2
-				log.Debugw("blizzard strayer 4pc on cryo", "frame", s.Frame(), "event", core.LogCalc, "char", c.CharIndex(), "new crit", ds.Stats[core.CR])
+				s.Log.Debugw("blizzard strayer 4pc on cryo", "frame", s.F, "event", core.LogCalc, "char", c.CharIndex(), "new crit", ds.Stats[core.CR])
 			case core.Frozen:
 				ds.Stats[core.CR] += .4
-				log.Debugw("blizzard strayer 4pc on frozen", "frame", s.Frame(), "event", core.LogCalc, "char", c.CharIndex(), "new crit", ds.Stats[core.CR])
+				s.Log.Debugw("blizzard strayer 4pc on frozen", "frame", s.F, "event", core.LogCalc, "char", c.CharIndex(), "new crit", ds.Stats[core.CR])
 			}
+			return false
 		}, fmt.Sprintf("bs4-%v", c.Name()))
+
 	}
 	//add flat stat to char
 }

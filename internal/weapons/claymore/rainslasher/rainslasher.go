@@ -3,23 +3,25 @@ package rainslasher
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("rainslasher", weapon)
+	core.RegisterWeaponFunc("rainslasher", weapon)
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	dmg := 0.16 + float64(r)*0.04
 
-	s.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
+	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
+		ds := args[1].(*core.Snapshot)
 		if t.AuraContains(core.Hydro, core.Electro) {
 			ds.Stats[core.DmgP] += dmg
-			log.Debugw("rainslasher", "frame", s.Frame(), "event", core.LogCalc, "final dmg%", ds.Stats[core.DmgP])
+			c.Log.Debugw("rainslasher", "frame", c.F, "event", core.LogCalc, "final dmg%", ds.Stats[core.DmgP])
 		}
-	}, fmt.Sprintf("rainslasher-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("rainslasher-%v", char.Name()))
 
 }

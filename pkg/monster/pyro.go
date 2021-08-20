@@ -23,8 +23,8 @@ func (a *AuraPyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	case core.Geo:
 		ds.ReactionType = core.CrystallizePyro
 		//crystallize adds shield
-		shd := NewCrystallizeShield(core.Pyro, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
-		t.sim.AddShield(shd)
+		shd := NewCrystallizeShield(core.Pyro, t.core.F, ds.CharLvl, ds.Stats[core.EM], t.core.F+900)
+		t.core.Shields.Add(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
 	case core.Pyro:

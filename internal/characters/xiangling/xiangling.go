@@ -4,23 +4,20 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("xiangling", NewChar)
+	core.RegisterCharFunc("xiangling", NewChar)
 }
 
 type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +62,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 140
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -77,7 +74,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 
@@ -87,12 +84,12 @@ func (c *char) c6() {
 	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = 0.15
 
-	for _, char := range c.Sim.Characters() {
+	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
 			Key:    "xl-c6",
 			Expiry: -1,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
-				return m, c.Sim.Status("xlc6") > 0
+				return m, c.Core.Status.Duration("xlc6") > 0
 			},
 		})
 	}
@@ -177,7 +174,7 @@ func (c *char) Skill(p map[string]int) int {
 	}
 
 	delay := 120
-	c.Sim.AddStatus("xianglingguoba", 500)
+	c.Core.Status.AddStatus("xianglingguoba", 500)
 
 	//lasts 73 seconds, shoots every 1.6 seconds
 	for i := 0; i < 4; i++ {
@@ -233,7 +230,7 @@ func (c *char) Burst(p map[string]int) int {
 		max = 14 * 60
 	}
 
-	c.Sim.AddStatus("xianglingburst", max)
+	c.Core.Status.AddStatus("xianglingburst", max)
 
 	for delay := 70; delay <= max; delay += 70 {
 		c.QueueDmg(&d, delay)
@@ -243,7 +240,7 @@ func (c *char) Burst(p map[string]int) int {
 	if c.Base.Cons >= 6 {
 		//wait 70 frames, add effect
 		c.AddTask(func() {
-			c.Sim.AddStatus("xlc6", max)
+			c.Core.Status.AddStatus("xlc6", max)
 		}, "xl activate c6", 70)
 
 	}

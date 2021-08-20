@@ -94,6 +94,7 @@ const (
 	itemExec       // exec keyword
 	itemLock       // lock keyword
 	itemIf         // if keyword
+	itemWait       // wait keyword
 	itemSwap       // swap keyword
 	itemPost       // trail keyword
 	itemActive     // active keyword
@@ -106,11 +107,11 @@ const (
 	// these are configuration options
 	itemOptions    // option
 	itemMode       // mode
-	itemSingle     // single
-	itemAverage    // average
+	itemDamage     // damage
+	itemTime       // time
+	itemDebug      // debug
 	itemIterations // iteration
 	itemDuration   // duration
-	itemSimHP      // simhp
 	itemWorkers    // workers
 	// stat types after the rest
 	statKeyword  // delimit stats
@@ -150,11 +151,11 @@ var key = map[string]ItemType{
 	//config related
 	"options":   itemOptions,
 	"mode":      itemMode,
-	"single":    itemSingle,
-	"average":   itemAverage,
+	"damage":    itemDamage,
+	"time":      itemTime,
+	"debug":     itemDebug,
 	"iteration": itemIterations,
 	"duration":  itemDuration,
-	"simhp":     itemSimHP,
 	"workers":   itemWorkers,
 	//action related
 	"actions":    itemAction,
@@ -175,6 +176,7 @@ var key = map[string]ItemType{
 	"exec":       itemExec,
 	"lock":       itemLock,
 	"if":         itemIf,
+	"wait":       itemWait,
 	"swap":       itemSwap,
 	"post":       itemPost,
 	"active":     itemActive,

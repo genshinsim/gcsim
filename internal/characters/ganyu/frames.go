@@ -25,9 +25,9 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 		return f
 	case core.ActionAim:
 		//check for c6, if active then return 10, otherwise 115
-		if c.Sim.Status("ganyuc6") > 0 {
-			c.Log.Debugw("ganyu c6 proc used", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "char", c.Index)
-			c.Sim.DeleteStatus("ganyuc6")
+		if c.Core.Status.Duration("ganyuc6") > 0 {
+			c.Core.Log.Debugw("ganyu c6 proc used", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+			c.Core.Status.DeleteStatus("ganyuc6")
 			return 10
 		}
 		return 115 //frames from keqing lib
@@ -36,7 +36,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 122 //ok
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }

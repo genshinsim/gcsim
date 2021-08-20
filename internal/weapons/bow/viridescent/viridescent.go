@@ -3,36 +3,36 @@ package viridescent
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("the viridescent hunt", weapon)
+	core.RegisterWeaponFunc("the viridescent hunt", weapon)
 }
 
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	cd := 900 - r*60
 	icd := 0
 	mult := 0.3 + float64(r)*0.1
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		//check if char is correct?
-		if ds.ActorIndex != c.CharIndex() {
-			return
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != char.CharIndex() {
+			return false
 		}
 		//check if cd is up
-		if icd > s.Frame() {
-			return
+		if icd > c.F {
+			return false
 		}
 		//50% chance to proc
-		if s.Rand().Float64() > 0.5 {
-			return
+		if c.Rand.Float64() > 0.5 {
+			return false
 		}
 
 		//add a new action that deals % dmg immediately
-		d := c.Snapshot(
+		d := char.Snapshot(
 			"Viridescent",
 			core.AttackTagWeaponSkill,
 			core.ICDTagNone,
@@ -45,11 +45,13 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 		d.Targets = core.TargetAll
 		for i := 0; i <= 240; i += 30 {
 			x := d.Clone()
-			c.QueueDmg(&x, i)
+			char.QueueDmg(&x, i)
 		}
 
 		//trigger cd
-		icd = s.Frame() + cd
+		icd = c.F + cd
 
-	}, fmt.Sprintf("veridescent-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("veridescent-%v", char.Name()))
+
 }

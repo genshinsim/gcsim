@@ -2,14 +2,11 @@ package ganyu
 
 import (
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("ganyu", NewChar)
+	core.RegisterCharFunc("ganyu", NewChar)
 }
 
 type char struct {
@@ -17,9 +14,9 @@ type char struct {
 	a2expiry int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +34,7 @@ func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.
 	c.AddMod(core.CharStatMod{
 		Key: "ganyu-a2",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return val, c.a2expiry > c.Sim.Frame() && a == core.AttackTagExtra
+			return val, c.a2expiry > c.Core.F && a == core.AttackTagExtra
 		},
 		Expiry: -1,
 	})

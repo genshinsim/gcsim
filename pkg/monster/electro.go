@@ -20,8 +20,8 @@ func (a *AuraElectro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	case core.Geo:
 		ds.ReactionType = core.CrystallizeElectro
 		//crystallize adds shield
-		shd := NewCrystallizeShield(core.Electro, t.sim.Frame(), ds.CharLvl, ds.Stats[core.EM], t.sim.Frame()+900)
-		t.sim.AddShield(shd)
+		shd := NewCrystallizeShield(core.Electro, t.core.F, ds.CharLvl, ds.Stats[core.EM], t.core.F+900)
+		t.core.Shields.Add(shd)
 		//reduce by .05
 		a.Reduce(ds, 0.5)
 	case core.Pyro:
@@ -35,9 +35,9 @@ func (a *AuraElectro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		h := &AuraHydro{}
 		h.Element = &Element{}
 		h.T = core.Hydro
-		h.Attach(ds.Durability, t.sim.Frame())
+		h.Attach(ds.Durability, t.core.F)
 		ds.ReactionType = core.ElectroCharged
-		return newEC(a, h, t, ds, t.sim.Frame()), true
+		return newEC(a, h, t, ds, t.core.F), true
 	case core.Cryo:
 		//superconduct
 		ds.ReactionType = core.Superconduct

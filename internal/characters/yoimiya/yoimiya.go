@@ -2,14 +2,11 @@ package yoimiya
 
 import (
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("yoimiya", NewChar)
+	core.RegisterCharFunc("yoimiya", NewChar)
 }
 
 type char struct {
@@ -18,9 +15,9 @@ type char struct {
 	lastPart int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -36,6 +33,16 @@ func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.
 	c.onExit()
 	c.burstHook()
 
+	if c.Base.Cons > 0 {
+		c.c1()
+	}
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
+	// if c.Base.Cons == 6 {
+	// 	c.c6()
+	// }
+
 	//add effect for burst
 
 	return &c, nil
@@ -47,7 +54,7 @@ func (c *char) a2() {
 		Key:    "yoimiya-a2",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if c.Sim.Status("yoimiyaa2") > 0 {
+			if c.Core.Status.Duration("yoimiyaa2") > 0 {
 				val[core.Pyro] = float64(c.a2stack) * 0.02
 				return val, true
 			}
@@ -55,22 +62,24 @@ func (c *char) a2() {
 			return nil, false
 		},
 	})
-	c.Sim.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		if ds.ActorIndex != c.Index {
-			return
+			return false
 		}
-		if c.Sim.Status("yoimiyaskill") == 0 {
-			return
+		if c.Core.Status.Duration("yoimiyaskill") == 0 {
+			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal {
-			return
+			return false
 		}
 		//here we can add stacks up to 10
 		if c.a2stack < 10 {
 			c.a2stack++
 		}
-		c.Sim.AddStatus("yoimiyaa2", 180)
-		// c.a2expiry = c.Sim.Frame() + 180 // 3 seconds
+		c.Core.Status.AddStatus("yoimiyaa2", 180)
+		// c.a2expiry = c.Core.F + 180 // 3 seconds
+		return false
 	}, "yoimiya-a2")
 }
 
@@ -78,10 +87,10 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
 
 	//infusion to normal attack only
-	if c.Sim.Status("yoimiyaskill") > 0 && ds.AttackTag == core.AttackTagNormal {
+	if c.Core.Status.Duration("yoimiyaskill") > 0 && ds.AttackTag == core.AttackTagNormal {
 		ds.Element = core.Pyro
 		//multiplier
-		c.Log.Debugw("skill mult applied", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "prev", ds.Mult, "next", skill[c.TalentLvlSkill()]*ds.Mult, "char", c.Index)
+		c.Core.Log.Debugw("skill mult applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "prev", ds.Mult, "next", skill[c.TalentLvlSkill()]*ds.Mult, "char", c.Index)
 		ds.Mult = skill[c.TalentLvlSkill()] * ds.Mult
 	}
 	return ds

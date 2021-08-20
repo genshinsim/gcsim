@@ -1,11 +1,6 @@
-package combat
+package core
 
-import (
-	"sync"
-
-	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
-)
+import "sync"
 
 var (
 	mu        sync.RWMutex
@@ -14,9 +9,9 @@ var (
 	weaponMap = make(map[string]NewWeaponFunc)
 )
 
-type NewCharacterFunc func(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error)
-type NewSetFunc func(c core.Character, s core.Sim, log core.Logger, count int)
-type NewWeaponFunc func(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int)
+type NewCharacterFunc func(core *Core, p CharacterProfile) (Character, error)
+type NewSetFunc func(c Character, core *Core, count int)
+type NewWeaponFunc func(c Character, core *Core, r int, param map[string]int)
 
 func RegisterCharFunc(name string, f NewCharacterFunc) {
 	mu.Lock()

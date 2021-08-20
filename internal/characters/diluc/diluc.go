@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 func init() {
-	combat.RegisterCharFunc("diluc", NewChar)
+	core.RegisterCharFunc("diluc", NewChar)
 }
 
 type char struct {
@@ -21,9 +19,9 @@ type char struct {
 	eCounter    int
 }
 
-func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t, err := character.NewTemplateChar(s, log, p)
+	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +31,7 @@ func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 
-	if c.Base.Cons >= 1 && s.Flags().HPMode {
+	if c.Base.Cons >= 1 && c.Core.Flags.DamageMode {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {
@@ -44,26 +42,27 @@ func NewChar(s core.Sim, log *zap.SugaredLogger, p core.CharacterProfile) (core.
 }
 
 func (c *char) c1() {
-	c.Sim.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
-		if ds.ActorIndex != c.Index {
-			return
-		}
-		if t.HP()/t.MaxHP() > .5 {
+	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		t := args[0].(core.Target)
+		if ds.ActorIndex == c.Index && t.HP()/t.MaxHP() > .5 {
 			ds.Stats[core.DmgP] += 0.15
-			c.Log.Debugw("diluc c2 adding dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", ds.Stats[core.DmgP])
+			c.Core.Log.Debugw("diluc c2 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", ds.Stats[core.DmgP])
 		}
+		return false
 	}, "diluc-c1")
+
 }
 
 func (c *char) c2() {
 	stack := 0
 	last := 0
-	c.Sim.AddOnHurt(func(s core.Sim) {
-		if last != 0 && c.Sim.Frame()-last < 90 {
-			return
+	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if last != 0 && c.Core.F-last < 90 {
+			return false
 		}
 		//last time is more than 10 seconds ago, reset stacks back to 0
-		if c.Sim.Frame()-last > 600 {
+		if c.Core.F-last > 600 {
 			stack = 0
 		}
 		stack++
@@ -76,9 +75,10 @@ func (c *char) c2() {
 		c.AddMod(core.CharStatMod{
 			Key:    "diluc-c2",
 			Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-			Expiry: c.Sim.Frame() + 600,
+			Expiry: c.Core.F + 600,
 		})
-	})
+		return false
+	}, "diluc-c2")
 
 }
 
@@ -113,7 +113,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionBurst:
 		return 65
 	default:
-		c.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
 	}
 }
@@ -145,12 +145,12 @@ func (c *char) Skill(p map[string]int) int {
 
 	if c.eCounter == 0 {
 		c.eStarted = true
-		c.eStartFrame = c.Sim.Frame()
+		c.eStartFrame = c.Core.F
 	}
-	c.eLastUse = c.Sim.Frame()
+	c.eLastUse = c.Core.F
 
 	orb := 1
-	if c.Sim.Rand().Float64() < 0.33 {
+	if c.Core.Rand.Float64() < 0.33 {
 		orb = 2
 	}
 	c.QueueParticle("Diluc", orb, core.Pyro, f+60)
@@ -174,9 +174,9 @@ func (c *char) Skill(p map[string]int) int {
 
 	//check for c4 dmg increase
 	if c.Base.Cons >= 4 {
-		if c.Sim.Status("dilucc4") > 0 {
+		if c.Core.Status.Duration("dilucc4") > 0 {
 			d.Stats[core.DmgP] += 0.4
-			c.Log.Debugw("diluc c4 adding dmg", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "final dmg", d.Stats[core.DmgP])
+			c.Core.Log.Debugw("diluc c4 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg", d.Stats[core.DmgP])
 		}
 	}
 
@@ -185,15 +185,15 @@ func (c *char) Skill(p map[string]int) int {
 	//add a timer to activate c4
 	if c.Base.Cons >= 4 {
 		c.AddTask(func() {
-			c.Sim.AddStatus("dilucc4", 120) //effect lasts 2 seconds
+			c.Core.Status.AddStatus("dilucc4", 120) //effect lasts 2 seconds
 		}, "dilucc4", f+120) // 2seconds after cast
 	}
 
 	c.eCounter++
 	if c.eCounter == 3 {
 		//ability can go on cd now
-		cd := 600 - (c.Sim.Frame() - c.eStartFrame)
-		c.Log.Debugw("diluc skill going on cd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "duration", cd)
+		cd := 600 - (c.Core.F - c.eStartFrame)
+		c.Core.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd)
 		c.SetCD(core.ActionSkill, cd)
 		c.eStarted = false
 		c.eStartFrame = -1
@@ -219,8 +219,8 @@ func (c *char) Burst(p map[string]int) int {
 		explode = 0 //if explode hits
 	}
 
-	// c.S.Status["dilucq"] = c.Sim.Frame() + 12*60
-	c.Sim.AddStatus("dilucq", 720)
+	// c.S.Status["dilucq"] = c.Core.F + 12*60
+	c.Core.Status.AddStatus("dilucq", 720)
 	f := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
@@ -259,7 +259,7 @@ func (c *char) Burst(p map[string]int) int {
 		Key:    "diluc-fire-weapon",
 		Ele:    core.Pyro,
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Sim.Frame() + 852, //with a4
+		Expiry: c.Core.F + 852, //with a4
 	})
 
 	// add 20% pyro damage
@@ -268,7 +268,7 @@ func (c *char) Burst(p map[string]int) int {
 	c.AddMod(core.CharStatMod{
 		Key:    "diluc-fire-weapon",
 		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-		Expiry: c.Sim.Frame() + 852,
+		Expiry: c.Core.F + 852,
 	})
 
 	c.Energy = 0
@@ -281,10 +281,10 @@ func (c *char) Tick() {
 
 	if c.eStarted {
 		//check if 4 second has passed since last use
-		if c.Sim.Frame()-c.eLastUse >= 240 {
+		if c.Core.F-c.eLastUse >= 240 {
 			//if so, set ability to be on cd equal to 10s less started
-			cd := 600 - (c.Sim.Frame() - c.eStartFrame)
-			c.Log.Debugw("diluc skill going on cd", "frame", c.Sim.Frame(), "event", core.LogCharacterEvent, "duration", cd, "last", c.eLastUse)
+			cd := 600 - (c.Core.F - c.eStartFrame)
+			c.Core.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd, "last", c.eLastUse)
 			c.SetCD(core.ActionSkill, cd)
 			//reset
 			c.eStarted = false
@@ -313,7 +313,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 50
 	default:
-		c.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
 	}
 

@@ -3,28 +3,31 @@ package lavawalker
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterSetFunc("lavawalker", New)
+	core.RegisterSetFunc("lavawalker", New)
 }
 
-func New(c core.Character, s core.Sim, log core.Logger, count int) {
+func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		log.Warnw("lavawalker 2 pc not implemented", "event", core.LogArtifactEvent, "char", c.CharIndex(), "frame", s.Frame())
+		s.Log.Warnw("lavawalker 2 pc not implemented", "event", core.LogArtifactEvent, "char", c.CharIndex(), "frame", s.F)
 	}
 	if count >= 4 {
-		s.AddOnAttackWillLand(func(t core.Target, ds *core.Snapshot) {
+		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+			t := args[0].(core.Target)
+			ds := args[1].(*core.Snapshot)
 			if ds.ActorIndex != c.CharIndex() {
-				return
+				return false
 			}
 			if t.AuraContains(core.Pyro) {
 				ds.Stats[core.DmgP] += .35
-				log.Debugw("lavawalker 4pc on pyro", "frame", s.Frame(), "event", core.LogCalc, "char", c.CharIndex(), "new dmg", ds.Stats[core.DmgP])
+				s.Log.Debugw("lavawalker 4pc on pyro", "frame", s.F, "event", core.LogCalc, "char", c.CharIndex(), "new dmg", ds.Stats[core.DmgP])
 			}
+			return false
 		}, fmt.Sprintf("lw4-%v", c.Name()))
+
 	}
 	//add flat stat to char
 }

@@ -3,23 +3,23 @@ package royal
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
-	combat.RegisterWeaponFunc("royal bow", weapon)
-	combat.RegisterWeaponFunc("royal grimore", weapon)
-	combat.RegisterWeaponFunc("royal greatsword", weapon)
-	combat.RegisterWeaponFunc("royal spear", weapon)
-	combat.RegisterWeaponFunc("royal longsword", weapon)
+	core.RegisterWeaponFunc("royal bow", weapon)
+	core.RegisterWeaponFunc("royal grimore", weapon)
+	core.RegisterWeaponFunc("royal greatsword", weapon)
+	core.RegisterWeaponFunc("royal spear", weapon)
+	core.RegisterWeaponFunc("royal longsword", weapon)
 }
 
 //Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.
-func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 
-	s.AddOnAttackLanded(func(t core.Target, ds *core.Snapshot, dmg float64, crit bool) {
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		crit := args[3].(bool)
 		if crit {
 			stacks = 0
 		} else {
@@ -28,11 +28,12 @@ func weapon(c core.Character, s core.Sim, log core.Logger, r int, param map[stri
 				stacks = 5
 			}
 		}
-	}, fmt.Sprintf("royal-%v", c.Name()))
+		return false
+	}, fmt.Sprintf("royal-%v", char.Name()))
 
 	rate := 0.06 + float64(r)*0.02
 	m := make([]float64, core.EndStatType)
-	c.AddMod(core.CharStatMod{
+	char.AddMod(core.CharStatMod{
 		Key: "royal",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			m[core.CR] = float64(stacks) * rate

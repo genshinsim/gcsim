@@ -44,6 +44,11 @@ loop:
 			}
 		case itemIf:
 			r.Conditions, err = p.parseIf()
+		case itemWait:
+			item, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err == nil {
+				r.Wait, err = itemNumberToInt(item)
+			}
 		case itemSwap:
 			item, err = p.acceptSeqReturnLast(itemAssign, itemIdentifier)
 			r.SwapTo = item.val
@@ -66,7 +71,7 @@ loop:
 		return nil, fmt.Errorf("bad action: %v", err)
 	}
 
-	p.result.Rotation = append(p.result.Rotation, r)
+	p.cfg.Rotation = append(p.cfg.Rotation, r)
 
 	return parseRows, nil
 }
@@ -370,7 +375,7 @@ func parseActiveChar(p *Parser) (parseFn, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.result.Characters.Initial = n.val
+	p.cfg.Characters.Initial = n.val
 	_, err = p.consume(itemTerminateLine)
 	if err != nil {
 		return nil, err
