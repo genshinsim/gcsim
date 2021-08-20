@@ -12,7 +12,6 @@ import (
 
 	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/parse"
 )
 
 type runConfig struct {
@@ -21,6 +20,8 @@ type runConfig struct {
 }
 
 func (s *Server) handleRun(ctx context.Context, r wsRequest) {
+
+	s.Log.Debugw("handleRun: request to run received")
 
 	var cfg runConfig
 	err := json.Unmarshal([]byte(r.Payload), &cfg)
@@ -32,31 +33,23 @@ func (s *Server) handleRun(ctx context.Context, r wsRequest) {
 	}
 
 	if cfg.Options.Debug {
+		s.Log.Debugw("handleRun: running with debug")
 		s.runDebug(cfg, r)
 	} else {
+		s.Log.Debugw("handleRun: running without debug")
 		s.run(cfg, r)
 	}
 
 }
 
 func (s *Server) runDebug(cfg runConfig, r wsRequest) {
-	parser := parse.New("single", cfg.Config)
-	p, err := parser.Parse()
-	if err != nil {
-		handleErr(r, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	p.RunOptions = cfg.Options
 
 	now := time.Now()
 	logfile := fmt.Sprintf("./%v.txt", now.Format("2006-01-02-15-04-05"))
 
-	result, err := combat.Run(cfg.Config, cfg.Options, func(s *combat.Simulation) error {
-		var err error
-		s.C.Log, err = core.NewDefaultLoggerWithPath(true, true, []string{logfile})
-		return err
-	})
+	cfg.Options.DebugPaths = []string{logfile}
+
+	result, err := combat.Run(cfg.Config, cfg.Options)
 	if err != nil {
 		handleErr(r, http.StatusBadRequest, err.Error())
 		return
@@ -80,7 +73,14 @@ func (s *Server) runDebug(cfg runConfig, r wsRequest) {
 		return
 	}
 
-	file.Close()
+	err = file.Close()
+
+	if err != nil {
+		handleErr(r, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	s.Log.Debugw("run complete", "result", result)
 
 	result.Debug = log.String()
 
@@ -97,11 +97,14 @@ func (s *Server) runDebug(cfg runConfig, r wsRequest) {
 }
 
 func (s *Server) run(cfg runConfig, r wsRequest) {
+
 	result, err := combat.Run(cfg.Config, cfg.Options)
 	if err != nil {
 		handleErr(r, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	s.Log.Debugw("run complete", "result", result)
 
 	data, _ := json.Marshal(result)
 	e := wsResponse{

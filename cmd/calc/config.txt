@@ -1,4 +1,4 @@
-options mode=time debug=true iteration=1000 duration=14 workers=24;
+options debug=true iteration=1000 duration=14 workers=24;
 
 char+=hutao ele=pyro lvl=90 hp=15552 atk=106 def=876 cr=0.05 cd=0.884 cons=1 talent=10,10,10 starthp=1;
 weapon+=hutao label="staff of homa" atk=608 refine=1 cd=.662;

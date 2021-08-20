@@ -37,8 +37,8 @@ type AverageStats struct {
 	//final result
 	Damage     FloatResult `json:"damage"`
 	DPS        FloatResult `json:"dps"`
-	Iterations int
-	Debug      string `json:"debug"`
+	Iterations int         `json:"iter"`
+	Debug      string      `json:"debug"`
 }
 
 type IntResult struct {
@@ -66,7 +66,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (AverageS
 	var data []Stats
 
 	parser := parse.New("single", string(src))
-	cfg, err := parser.Parse()
+	cfg, _, err := parser.Parse()
 	if err != nil {
 		return AverageStats{}, err
 	}
@@ -134,7 +134,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (AverageS
 
 	//if debug is true, run one more purely for debug do not add to stats
 	if opt.Debug {
-		s, err := NewSim(cfg, opt.LogDetails, cust...)
+		s, err := NewSim(cfg, opt, cust...)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -146,9 +146,9 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (AverageS
 		data = append(data, v)
 	}
 
-	result := collectResult(data, opt.DamageMode, chars, opt.LogDetails)
+	result := collectResult(data, cfg.DamageMode, chars, opt.LogDetails)
 	result.Iterations = n
-	if !opt.DamageMode {
+	if !cfg.DamageMode {
 		result.Duration.Mean = float64(opt.Duration)
 		result.Duration.Min = float64(opt.Duration)
 		result.Duration.Max = float64(opt.Duration)
@@ -301,15 +301,15 @@ func collectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 
 func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, done chan bool, cust ...func(*Simulation) error) {
 
+	opt.Debug = false
+
 	for {
 		select {
 		case <-req:
 			parser := parse.New("single", src)
-			cfg, _ := parser.Parse()
-			cfg.RunOptions = opt
-			cfg.RunOptions.Debug = false
+			cfg, _, _ := parser.Parse()
 
-			s, err := NewSim(cfg, opt.LogDetails, cust...)
+			s, err := NewSim(cfg, opt, cust...)
 			if err != nil {
 				resp <- workerResp{
 					err: err,

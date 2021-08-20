@@ -82,7 +82,7 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	}
 
 	if c.Log == nil {
-		c.Log, err = NewDefaultLogger(false, false)
+		c.Log, err = NewDefaultLogger(false, false, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -270,7 +270,7 @@ func (c *Core) Tick() {
 	c.ActiveDuration++
 }
 
-func NewDefaultLogger(debug bool, json bool) (*zap.SugaredLogger, error) {
+func NewDefaultLogger(debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
 	config := zap.NewDevelopmentConfig()
 	if json {
 		config.Encoding = "json"
@@ -278,40 +278,18 @@ func NewDefaultLogger(debug bool, json bool) (*zap.SugaredLogger, error) {
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	if debug {
 		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
+		config.OutputPaths = paths
 	} else {
 		config.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
+		config.OutputPaths = []string{}
 	}
 
 	config.EncoderConfig.TimeKey = ""
 	config.EncoderConfig.StacktraceKey = ""
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 	config.EncoderConfig.CallerKey = ""
-	config.OutputPaths = []string{"stdout"}
 
-	zaplog, err := config.Build()
-	if err != nil {
-		return nil, err
-	}
-	return zaplog.Sugar(), nil
-}
-
-func NewDefaultLoggerWithPath(debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
-	config := zap.NewDevelopmentConfig()
-	if json {
-		config.Encoding = "json"
-	}
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	if debug {
-		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
-	} else {
-		config.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
-	}
-
-	config.EncoderConfig.TimeKey = ""
-	config.EncoderConfig.StacktraceKey = ""
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-	config.EncoderConfig.CallerKey = ""
-	config.OutputPaths = paths
+	// config.OutputPaths = []string{"stdout"}
 
 	zaplog, err := config.Build()
 	if err != nil {

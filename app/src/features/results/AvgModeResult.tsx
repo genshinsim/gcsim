@@ -86,13 +86,14 @@ function AverageModeResult({ data }: { data: AvgModeSummary }) {
     }
     //add up dmg per char?
     for (const [key, val] of Object.entries(data.damage_by_char[i])) {
+      let v = Math.round(val.mean * 100) / 100;
       if (char === charSelected) {
         dmgDetail.push({
           name: key,
-          value: val.mean,
+          value: v,
         });
       }
-      total += val.mean;
+      total += v;
     }
     dmg.push({
       name: char,
@@ -101,13 +102,14 @@ function AverageModeResult({ data }: { data: AvgModeSummary }) {
     //check abil usage
     total = 0;
     for (const [key, val] of Object.entries(data.abil_usage_count_by_char[i])) {
+      let v = Math.round(val.mean * 100) / 100;
       if (char === charSelected) {
         useCountDetails.push({
           name: key,
-          value: val.mean,
+          value: v,
         });
       }
-      total += val.mean;
+      total += v;
     }
     useCount.push({
       name: char,
@@ -116,14 +118,14 @@ function AverageModeResult({ data }: { data: AvgModeSummary }) {
     //check field time
     fieldTime.push({
       name: char,
-      value: data.char_active_time[i].mean / 60,
+      value: Math.round((100 * data.char_active_time[i].mean) / 60) / 100,
     });
   });
 
   for (const [key, val] of Object.entries(data.reactions_triggered)) {
     reactionCount.push({
       name: key,
-      value: val.mean,
+      value: Math.round(val.mean * 100) / 100,
     });
   }
 
@@ -190,7 +192,7 @@ function AverageModeResult({ data }: { data: AvgModeSummary }) {
           (on average, over {data.iter} iterations [min:{" "}
           {data.dps.min.toFixed(2)}, max: {data.dps.max.toFixed(2)}, std dev:{" "}
           {data.dps.sd?.toFixed(2)}]), over the course of{" "}
-          {data.avg_duration.toFixed(2)} seconds.
+          {data.sim_duration.mean.toFixed(2)} seconds.
           <br />
           {index !== -1 ? (
             <span>

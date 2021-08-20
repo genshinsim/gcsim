@@ -27,6 +27,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
 				r.HP, err = itemNumberToFloat64(n)
+				p.cfg.DamageMode = true
 			}
 		case n.typ > eleTypeKeyword:
 			s := n.val
@@ -41,7 +42,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 
 			r.Resist[eleKeys[s]] += amt
 		case n.typ == itemTerminateLine:
-			p.result.Targets = append(p.result.Targets, r)
+			p.cfg.Targets = append(p.cfg.Targets, r)
 			return parseRows, nil
 		default:
 			return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)

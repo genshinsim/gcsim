@@ -6,10 +6,10 @@ import (
 
 func (s *Simulation) Run() (Stats, error) {
 	var err error
-	if !s.cfg.RunOptions.DamageMode && s.cfg.RunOptions.Duration == 0 {
-		s.cfg.RunOptions.Duration = 90
+	if !s.cfg.DamageMode && s.opts.Duration == 0 {
+		s.opts.Duration = 90
 	}
-	f := s.cfg.RunOptions.Duration*60 - 1
+	f := s.opts.Duration*60 - 1
 	stop := false
 	//60fps, 60s/min, 2min
 	for !stop {
@@ -45,7 +45,7 @@ func (s *Simulation) AdvanceFrame() error {
 	s.handleHurt()
 
 	//grab stats
-	if s.details {
+	if s.opts.LogDetails {
 		s.collectStats()
 	}
 
@@ -74,7 +74,7 @@ func (s *Simulation) AdvanceFrame() error {
 			return err
 		}
 		if ok {
-			if s.details {
+			if s.opts.LogDetails {
 				s.stats.AbilUsageCountByChar[s.C.ActiveChar][s.queue[0].Typ.String()]++
 			}
 			//pop queue

@@ -56,12 +56,11 @@ func main() {
 	}
 
 	parser := parse.New("single", string(src))
-	cfg, err := parser.Parse()
+	cfg, opts, err := parser.Parse()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	opts := cfg.RunOptions
 	if *i > 0 {
 		opts.Iteration = *i
 	}
@@ -77,6 +76,8 @@ func main() {
 	if *detailed {
 		opts.LogDetails = true
 	}
+
+	log.Println(opts)
 
 	defer elapsed("simulation completed")()
 	defer profile.Start(profile.ProfilePath("./")).Stop()
@@ -104,6 +105,8 @@ func main() {
 			io.Copy(&buf, r)
 			outC <- buf.String()
 		}()
+
+		opts.DebugPaths = []string{"stdout"}
 
 		result, err := combat.Run(string(src), opts)
 		if err != nil {
@@ -145,11 +148,10 @@ func runMulti(files []string, w, i int) {
 			log.Fatal(err)
 		}
 		parser := parse.New("single", string(source))
-		cfg, err := parser.Parse()
+		_, opts, err := parser.Parse()
 		if err != nil {
 			log.Fatal(err)
 		}
-		opts := cfg.RunOptions
 		if w > 0 {
 			opts.Workers = w
 		}
