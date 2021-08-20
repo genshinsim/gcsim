@@ -1,4 +1,4 @@
-options debug=true iteration=5000 duration=90 workers=24;
+options debug=true iteration=1000 duration=90 workers=24;
 
 char+=ganyu ele=cryo lvl=90 hp=9796.729 atk=334.850 def=630.215 cd=0.884 cr=.05 cons=0 talent=8,8,8;
 weapon+=ganyu label="favonius warbow" atk=454.363 er=0.613 refine=1;
