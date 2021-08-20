@@ -23,10 +23,10 @@ func main() {
 
 	var err error
 
-	debug := flag.Bool("debug", false, "show debug?")
+	debug := flag.Bool("d", false, "show debug?")
 	seconds := flag.Int("s", 90, "how many seconds to run the sim for")
 	cfgFile := flag.String("c", "config.txt", "which profile to use")
-	detailed := flag.Bool("d", true, "log combat details")
+	detailed := flag.Bool("t", true, "log combat details")
 	// f := flag.String("o", "debug.log", "detailed log file")
 	// hp := flag.Float64("hp", 0, "hp mode: how much hp to deal damage to")
 	// showCaller := flag.Bool("caller", false, "show caller in debug low")
