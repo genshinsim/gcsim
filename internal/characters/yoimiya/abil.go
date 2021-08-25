@@ -175,6 +175,7 @@ func (c *char) burstHook() {
 			"Aurous Blaze (Explode)",
 			core.AttackTagElementalBurst,
 			core.ICDTagElementalBurst,
+			// core.ICDTagNone,
 			core.ICDGroupDefault,
 			core.StrikeTypeDefault,
 			core.Pyro,

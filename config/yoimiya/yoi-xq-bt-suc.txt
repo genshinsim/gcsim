@@ -13,7 +13,7 @@ stats+=bennett label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 
 
 char+=yoimiya ele=pyro lvl=90 hp=10164 atk=323 def=615 cr=.242 cd=.5 cons=0 talent=9,9,9;
 weapon+=yoimiya label="thundering pulse" atk=608 cd=.662 refine=1;
-art+=yoimiya label="reminiscence of shime" count=4;
+art+=yoimiya label="crimson witch of flames" count=4;
 stats+=yoimiya label=main hp=4780 atk=311 pyro%=0.466 atk%=0.466 cr=0.311;
 stats+=yoimiya label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;
 
