@@ -1,14 +1,16 @@
 options debug=false iteration=3000 duration=90 workers=24;
 
-char+=beidou ele=electro lvl=80 hp=8552.900 atk=227.341 def=552.671 atk%=0.240 cr=.05 cd=0.5 cons=6 talent=6,8,6;
-weapon+=beidou label="prototype archaic" atk=564.784 atk%=0.276 refine=1;
-art+=beidou label="noblesse oblige" count=2;
-art+=beidou label="thundering fury" count=2;
-#stats+=beidou label=main hp=4780 atk=311 electro%=0.466 atk%=0.466 cr=0.311;
-stats+=beidou label=main hp=4780 atk=311 electro%=0.466 er=0.518 cr=0.311;
-stats+=beidou label=subs cr=0.363 cd=0.924;
-#stats+=beidou label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;
-#stats+=beidou er=.2;
+char+=xiangling ele=pyro lvl=80 hp=10121.775 atk=209.549 def=622.549 em=96.000 cr=.05 cd=0.5 cons=6 talent=6,6,10;
+weapon+=xiangling label="the catch" atk=510 er=.459 refine=5;
+#weapon+=xiangling label="favonius lance" atk=564.784 er=0.306 refine=1;
+#weapon+=xiangling label="kitain cross spear" atk=564.784 em=110 refine=1;
+art+=xiangling label="gladiator's finale" count=2;
+art+=xiangling label="crimson witch of flames" count=2;
+stats+=xiangling hp=4780 hp%=0.047 atk%=.152 em=21 cd=.264;
+stats+=xiangling atk=311 def=37 def%=.051 cr=.097 cd=.218;
+stats+=xiangling atk%=.466 cd=.124 cr=.078 hp=209 atk=51;
+stats+=xiangling pyro%=.466 cr=.089 er=.052 atk%=.093 atk=43;
+stats+=xiangling cr=.311 atk%=.087 hp%=.058 cd=.132 def=76;
 
 char+=xingqiu ele=hydro lvl=80 hp=9514.469 atk=187.803 def=705.132 atk%=0.240 cr=.05 cd=0.5 cons=6 talent=1,9,10;
 weapon+=xingqiu label="sacrificial sword" atk=454.363 er=0.613 refine=1;
@@ -22,7 +24,7 @@ stats+=xingqiu cr=.311 cd=.062 atk=.192 hp=.082 atk=39;
 
 char+=bennett ele=pyro lvl=80 hp=11538.824 atk=177.919 def=717.837 er=0.267 cr=.05 cd=0.5 cons=1 talent=6,8,8;
 weapon+=bennett label="festering desire" atk=509.606 er=0.459 refine=5;
-art+=bennett label="thundering fury" count=4;
+art+=bennett label="noblesse oblige" count=4;
 stats+=bennett hp=4780 atk=45 cd=.148 def=60 atk%=.058;
 stats+=bennett atk=311 def=42 atk%=.157 er=.104 cr=.039;
 stats+=bennett er=.518 atk%=.222 hp%=.058 cd=.117 hp=209;
@@ -40,26 +42,30 @@ stats+=raiden cr=.311 def%=.131 atk%=.111 er=.117 hp%=.087;
 
 ##ENEMY
 target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
+target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 active+=raiden;
 
 actions+=sequence_strict target=raiden exec=attack,attack,attack,attack,attack,jump,attack,attack if=.status.raidenburst>0;
 actions+=skill target=raiden if=.status.raidenskill==0;
+
 
 actions+=sequence_strict target=xingqiu exec=skill,burst lock=100;
 actions+=skill target=xingqiu if=.energy.xingqiu<80 lock=90;
 actions+=burst target=xingqiu;
 actions+=sequence_strict target=bennett exec=skill,burst lock=100;
 actions+=burst target=bennett;
-actions+=sequence_strict target=beidou exec=skill,burst;
-actions+=burst target=beidou;
+actions+=sequence_strict target=xiangling exec=skill,burst;
+actions+=burst target=xiangling;
 actions+=burst target=raiden;
 
-#actions+=skill target=beidou if=.energy.beidou<80 lock=90;
-actions+=skill target=bennett;
+#actions+=skill target=xiangling active=xiangling;
+actions+=skill target=bennett if=.energy.xiangling<70 swap=xiangling;
+#actions+=sequence_strict target=bennett exec=skill,attack lock=100 if=.energy.xiangling<70 swap=xiangling;
+actions+=skill target=xiangling active=xiangling;
+actions+=skill target=raiden;
 
-#actions+=skill target=raiden;
-
-actions+=attack target=beidou active=beidou;
+#actions+=sequence_strict target=xiangling exec=attack,attack,attack active=xiangling;
+actions+=attack target=xiangling active=xiangling;
 actions+=attack target=raiden active=raiden;
 actions+=attack target=xingqiu active=xingqiu;
 actions+=attack target=bennett active=bennett;
