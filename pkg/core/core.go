@@ -197,7 +197,6 @@ func (c *Core) ResetAllNormalCounter() {
 }
 
 func (c *Core) SetCustomFlag(key string, val int) {
-
 	c.Flags.Custom[key] = val
 }
 
