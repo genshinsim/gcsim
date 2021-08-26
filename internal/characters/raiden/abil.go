@@ -102,12 +102,6 @@ func (c *char) Skill(p map[string]int) int {
 
 	c.QueueDmg(&d, f)
 
-	count := 3
-	if c.Core.Rand.Float64() < 0.5 {
-		count = 4
-	}
-	c.QueueParticle("raiden", count, core.Electro, f+100)
-
 	//activate eye
 	c.Core.Status.AddStatus("raidenskill", 1500+f)
 
@@ -147,6 +141,10 @@ func (c *char) eyeOnDamage() {
 			skillTick[c.TalentLvlSkill()],
 		)
 		d.Targets = core.TargetAll
+		if c.Core.Rand.Float64() < 0.5 {
+			c.QueueParticle("raiden", 1, core.Electro, 100)
+		}
+
 		//https://streamable.com/28at4f hit mark 857, eye land 862
 		c.QueueDmg(&d, 5)
 		c.eyeICD = c.Core.F + 54 //0.9 sec icd

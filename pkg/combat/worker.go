@@ -19,6 +19,7 @@ type Stats struct {
 	DamageByChar         []map[string]float64      `json:"damage_by_char"`
 	CharActiveTime       []int                     `json:"char_active_time"`
 	AbilUsageCountByChar []map[string]int          `json:"abil_usage_count_by_char"`
+	ParticleCount        map[string]int            `json:"particle_count"`
 	ReactionsTriggered   map[core.ReactionType]int `json:"reactions_triggered"`
 	Duration             int                       `json:"sim_duration"`
 	ElementUptime        []map[core.EleType]int    `json:"ele_uptime"`
@@ -33,6 +34,7 @@ type AverageStats struct {
 	DamageByChar         []map[string]FloatResult        `json:"damage_by_char"`
 	CharActiveTime       []IntResult                     `json:"char_active_time"`
 	AbilUsageCountByChar []map[string]IntResult          `json:"abil_usage_count_by_char"`
+	ParticleCount        map[string]IntResult            `json:"particle_count"`
 	ReactionsTriggered   map[core.ReactionType]IntResult `json:"reactions_triggered"`
 	Duration             FloatResult                     `json:"sim_duration"`
 	ElementUptime        []map[core.EleType]IntResult    `json:"ele_uptime"`
@@ -167,6 +169,7 @@ func collectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 	if detailed {
 		result.ReactionsTriggered = make(map[core.ReactionType]IntResult)
 		result.CharNames = make([]string, charCount)
+		result.ParticleCount = make(map[string]IntResult)
 		result.AbilUsageCountByChar = make([]map[string]IntResult, charCount)
 		result.CharActiveTime = make([]IntResult, charCount)
 		result.DamageByChar = make([]map[string]FloatResult, charCount)
@@ -268,6 +271,24 @@ func collectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 
 				result.AbilUsageCountByChar[c][k] = x
 			}
+		}
+
+		//particles
+		for c, amt := range v.ParticleCount {
+			x, ok := result.ParticleCount[c]
+			if !ok {
+				x.Min = math.MaxInt64
+				x.Max = -1
+			}
+			if x.Min > amt {
+				x.Min = amt
+			}
+			if x.Max < amt {
+				x.Max = amt
+			}
+			x.Mean += float64(amt) / float64(n)
+
+			result.ParticleCount[c] = x
 		}
 
 		//reactions
@@ -407,6 +428,19 @@ func (stats *AverageStats) PrettyPrint() string {
 			sb.WriteString("Character field time:\n")
 		}
 		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", stats.CharNames[i], 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
+	}
+	pk := make([]string, 0, len(stats.ParticleCount))
+	for k := range stats.ParticleCount {
+		pk = append(pk, k)
+	}
+	sort.Strings(pk)
+	for i, k := range pk {
+		if i == 0 {
+			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Particle count:\n")
+		}
+		v := stats.ParticleCount[k]
+		sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v max: %v]\n", k, v.Mean, v.Min, v.Max))
 	}
 	rk := make([]core.ReactionType, 0, len(stats.ReactionsTriggered))
 	for k := range stats.ReactionsTriggered {
