@@ -77,6 +77,12 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 			s.stats.ReactionsTriggered[ds.ReactionType]++
 			return false
 		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
+			p := args[0].(core.Particle)
+			s.stats.ParticleCount[p.Source] += p.Num
+			return false
+		}, "particles-log")
 	}
 	err = s.initQueuer(cfg)
 	if err != nil {
@@ -124,6 +130,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		s.stats.DamageByChar = make([]map[string]float64, count)
 		s.stats.CharActiveTime = make([]int, count)
 		s.stats.AbilUsageCountByChar = make([]map[string]int, count)
+		s.stats.ParticleCount = make(map[string]int)
 	}
 
 	s.C.ActiveChar = -1
