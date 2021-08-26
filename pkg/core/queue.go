@@ -229,12 +229,47 @@ func (q *QueueCtrl) evalCond(c Condition) (bool, error) {
 		return q.evalTags(c)
 	case ".stam":
 		return q.evalStam(c)
+	case ".ready":
+		return q.evalAbilReady(c)
 	}
 	return false, nil
 }
 
 func (q *QueueCtrl) evalStam(c Condition) (bool, error) {
 	return compInt(c.Op, int(q.core.Stam), c.Value), nil
+}
+
+func (q *QueueCtrl) evalAbilReady(c Condition) (bool, error) {
+	if len(c.Fields) < 3 {
+		return false, errors.New("eval abil: unexpected short field, expected at least 3")
+	}
+	cs := strings.TrimPrefix(c.Fields[2], ".")
+	char, ok := q.core.CharByName(cs)
+	if !ok {
+		return false, nil
+	}
+	a := strings.TrimPrefix(c.Fields[1], ".")
+	val := c.Value
+	if val > 0 {
+		val = 1
+	} else {
+		val = 0
+	}
+	ready := 0
+	switch a {
+	case "burst":
+		if char.ActionReady(ActionBurst, nil) {
+			ready = 1
+		}
+	case "skill":
+		if char.ActionReady(ActionSkill, nil) {
+			ready = 1
+		}
+	default:
+		return false, nil
+	}
+	return ready == val, nil
+
 }
 
 func (q *QueueCtrl) evalDebuff(c Condition) (bool, error) {

@@ -14,7 +14,7 @@ const (
 	StamCDFrames       = 90
 	JumpFrames         = 33
 	DashFrames         = 24
-	SwapFrames         = 20
+	SwapFrames         = 6
 	SwapCDFrames       = 60
 	MaxTeamPlayerCount = 4
 )
@@ -45,6 +45,7 @@ type Core struct {
 	charPos        map[string]int
 	Targets        []Target
 	TotalDamage    float64
+	LastAction     ActionItem
 
 	//handlers
 	Status     StatusHandler
