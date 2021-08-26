@@ -150,7 +150,7 @@ func (c *char) skillPress() {
 		skill[c.TalentLvlSkill()],
 	)
 	d.Targets = core.TargetAll
-	c.QueueDmg(&d, 10)
+	c.QueueDmg(&d, 8)
 
 	//25 % chance of 3 orbs
 	count := 2

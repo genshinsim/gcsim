@@ -36,7 +36,7 @@
 ../../config/raiden/c0-xl-xq-benny-catch-r5.txt
 ../../config/raiden/c0-xl-xq-benny-spine-r1.txt
 ../../config/raiden/c0-xl_fav-xq-bt-catch-r5.txt
-#../../config/raiden/c0-xl-xq-benny-cutter-r1.txt
+../../config/raiden/c0-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c1-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c2-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c3-xl-xq-benny-cutter-r1.txt
