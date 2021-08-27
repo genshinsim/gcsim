@@ -175,7 +175,7 @@ func (c *char) Burst(p map[string]int) int {
 					core.StrikeTypeDefault,
 					c.qInfuse,
 					25,
-					burstDot[c.TalentLvlBurst()],
+					burstEleDot[c.TalentLvlBurst()],
 				)
 				d.Targets = core.TargetAll
 				c.Core.Combat.ApplyDamage(&d)
