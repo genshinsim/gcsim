@@ -148,8 +148,7 @@ func (c *char) applyOrbital() {
 	//check if blood blossom already active, if active extend duration by 8 second
 	//other wise start first tick func
 	if !c.orbitalActive {
-		//TODO: does BB tick immediately on first application?
-		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 40)
+		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 17)
 		c.orbitalActive = true
 		c.Core.Log.Debugw("orbital applied", "frame", f, "event", core.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
 	}

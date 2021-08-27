@@ -33,8 +33,10 @@
 #../../config/yoimiya/4tf-windblume-r5.txt
 #../../config/yoimiya/overload.txt
 
-#../../config/raiden/c0-xl-xq-benny-catch-r5.txt
-#../../config/raiden/c0-xl-xq-benny-cutter-r1.txt
+../../config/raiden/c0-xl-xq-benny-catch-r5.txt
+../../config/raiden/c0-xl-xq-benny-spine-r1.txt
+../../config/raiden/c0-xl_fav-xq-bt-catch-r5.txt
+../../config/raiden/c0-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c1-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c2-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c3-xl-xq-benny-cutter-r1.txt
@@ -45,10 +47,10 @@
 #../../config/raiden/fischl-harp-comparison.txt
 
 
-../../config/yoimiya/yoi-c0.txt
-../../config/yoimiya/yoi-c1.txt
-../../config/yoimiya/yoi-c2.txt
-../../config/yoimiya/yoi-c3.txt
-../../config/yoimiya/yoi-c4.txt
-../../config/yoimiya/yoi-c5.txt
-../../config/yoimiya/yoi-c6.txt
+#../../config/yoimiya/yoi-c0.txt
+#../../config/yoimiya/yoi-c1.txt
+#../../config/yoimiya/yoi-c2.txt
+#../../config/yoimiya/yoi-c3.txt
+#../../config/yoimiya/yoi-c4.txt
+#../../config/yoimiya/yoi-c5.txt
+#../../config/yoimiya/yoi-c6.txt
