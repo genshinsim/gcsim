@@ -11,6 +11,9 @@ func init() {
 
 type char struct {
 	*character.Tmpl
+	a4Expiry int
+	a2Ele    core.EleType
+	qInfuse  core.EleType
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -27,6 +30,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.NormalHitNum = 5
 
+	c.a4()
+
 	return &c, nil
 }
 
@@ -40,3 +45,41 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 //Elemental Mastery for 8s.
 //
 //he still benefits from sucrose em but just cannot share it
+
+func (c *char) a4() {
+	val := make([]float64, core.EndStatType)
+	for _, char := range c.Core.Chars {
+		char.AddMod(core.CharStatMod{
+			Expiry: -1,
+			Key:    "kazuha-a2",
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				if c.a4Expiry < c.Core.F {
+					return nil, false
+				}
+				return val, true
+			},
+		})
+	}
+	c.Core.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		var typ core.EleType
+		switch ds.ReactionType {
+		case core.SwirlCryo:
+			typ = core.Cryo
+		case core.SwirlElectro:
+			typ = core.Electro
+		case core.SwirlHydro:
+			typ = core.Hydro
+		case core.SwirlPyro:
+			typ = core.Pyro
+		default:
+			return false
+		}
+		//update expiry
+		c.a4Expiry = c.Core.F + 480
+		//recalc em
+		em := c.Stat(core.EM)
+		val[core.EleToDmgP(typ)] = 0.0004 * em
+		return false
+	}, "kazuha-a2")
+}
