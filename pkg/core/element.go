@@ -93,3 +93,38 @@ const (
 	NoReaction         ReactionType = ""
 	FreezeExtend       ReactionType = "FreezeExtend"
 )
+
+func (c *Core) AbsorbCheck(prio ...EleType) EleType {
+
+	//map out all the elements currently present
+	ele := make([]bool, EndEleType)
+	//check all targets
+	for _, t := range c.Targets {
+		switch t.AuraType() {
+		case Pyro:
+			ele[Pyro] = true
+		case Hydro:
+			ele[Hydro] = true
+		case Electro:
+			ele[Electro] = true
+		case Cryo:
+			ele[Cryo] = true
+		case EC:
+			ele[Hydro] = true
+			ele[Electro] = true
+		case Frozen:
+			ele[Cryo] = true
+		}
+	}
+	//TODO: check active char?
+
+	//go through priority and find the first one with a match
+
+	for _, e := range prio {
+		if ele[e] {
+			return e
+		}
+	}
+
+	return NoElement
+}

@@ -227,5 +227,7 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 		"animation", f,
 	)
 
+	a.core.LastAction = n
+
 	return f, true, nil
 }

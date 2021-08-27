@@ -1,9 +1,8 @@
 options debug=false iteration=3000 duration=90 workers=24;
 
 char+=xiangling ele=pyro lvl=80 hp=10121.775 atk=209.549 def=622.549 em=96.000 cr=.05 cd=0.5 cons=6 talent=6,6,10;
-#weapon+=xiangling label="skyward spine" atk=674 er=.368 refine=1;
-#weapon+=xiangling label="the catch" atk=510 er=.459 refine=5;
-weapon+=xiangling label="favonius lance" atk=564.784 er=0.306 refine=1;
+weapon+=xiangling label="the catch" atk=510 er=.459 refine=5;
+#weapon+=xiangling label="favonius lance" atk=564.784 er=0.306 refine=1;
 #weapon+=xiangling label="kitain cross spear" atk=564.784 em=110 refine=1;
 art+=xiangling label="gladiator's finale" count=2;
 art+=xiangling label="crimson witch of flames" count=2;
@@ -33,8 +32,7 @@ stats+=bennett pyro%=.466 hp=956 atk=19 cd=.14 cr=.035;
 stats+=bennett cr=.311 hp=508 em=42 atk%=.105 atk=33;
 
 char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=0 talent=8,10,10;
-#weapon+=raiden label="skyward spine" atk=674 er=.368 refine=1;
-weapon+=raiden label="the catch" atk=510 er=.459 refine=5;
+weapon+=raiden label="skyward spine" atk=674 er=.368 refine=1;
 art+=raiden label="seal of insulation" count=4;
 stats+=raiden hp=4780 em=47 er=.11 def%=.139 cr=.105;
 stats+=raiden atk=311 def=16 cd=.148 em=56 hp%=.099;
