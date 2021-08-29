@@ -98,6 +98,23 @@ export interface simConfig {
   };
 }
 
+export interface ICharacter {
+  name: string;
+  ascension: number; // 0 to 6
+  level: number;
+  constellation: number; // 0 to 6
+  talents: {
+    auto: number,
+    skill: number,
+    burst: number,
+  } 
+  stats: number[];
+}
+
+export interface IArtifact {
+  stats: number[];
+}
+
 interface SimState {
   isLoading: boolean;
   config: string;
