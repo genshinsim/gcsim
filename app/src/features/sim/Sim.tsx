@@ -1,7 +1,6 @@
 import React from "react";
 
 import Dash from "features/sim/Dash";
-
 function Sim() {
   return (
     <div style={{ marginLeft: "20px", marginRight: "20px" }}>
@@ -13,5 +12,14 @@ function Sim() {
     </div>
   );
 }
+// import TeamBuilder from "./TeamBuilder";
+
+// function Sim() {
+//   return (
+//     <div style={{ marginLeft: "20px", marginRight: "20px" }}>
+//       <TeamBuilder />
+//     </div>
+//   );
+// }
 
 export default Sim;
