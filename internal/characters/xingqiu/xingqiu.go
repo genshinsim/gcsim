@@ -34,6 +34,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
+	c.CharZone = core.ZoneLiyue
 
 	a4 := make([]float64, core.EndStatType)
 	a4[core.HydroP] = 0.2
@@ -148,7 +149,7 @@ func (c *char) applyOrbital() {
 	//check if blood blossom already active, if active extend duration by 8 second
 	//other wise start first tick func
 	if !c.orbitalActive {
-		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 17)
+		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 14)
 		c.orbitalActive = true
 		c.Core.Log.Debugw("orbital applied", "frame", f, "event", core.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
 	}
@@ -186,7 +187,7 @@ func (c *char) Skill(p map[string]int) int {
 	d2.Mult = rainscreen[1][c.TalentLvlSkill()]
 
 	c.QueueDmg(&d, 19)
-	c.QueueDmg(&d2, 39)
+	c.QueueDmg(&d2, 35)
 
 	c.QueueParticle(c.Base.Name, 5, core.Hydro, 100)
 
@@ -206,7 +207,7 @@ func (c *char) burstHook() {
 			return false
 		}
 
-		const delay = 5 //wait 5 frames into attack animation
+		const delay = 0 //wait 5 frames into attack animation
 
 		//trigger swords, only first sword applies hydro
 		for i := 0; i < c.numSwords; i++ {
@@ -231,15 +232,18 @@ func (c *char) burstHook() {
 				}
 				//check c2
 				if c.Base.Cons >= 2 {
-					t.AddResMod("xingqiu-c2", core.ResistMod{
-						Ele:      core.Hydro,
-						Value:    -0.15,
-						Duration: 4 * 60,
-					})
+					c.AddTask(func() {
+						t.AddResMod("xingqiu-c2", core.ResistMod{
+							Ele:      core.Hydro,
+							Value:    -0.15,
+							Duration: 4 * 60,
+						})
+					}, "xq-sword-debuff", 1)
+
 				}
 			}
 
-			c.QueueDmg(&d, delay+20+i)
+			c.QueueDmg(&d, delay+20)
 
 			c.burstCounter++
 		}

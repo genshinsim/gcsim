@@ -1,6 +1,8 @@
 package yoimiya
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
@@ -12,10 +14,12 @@ func (c *char) Attack(p map[string]int) int {
 
 	f := c.ActionFrames(core.ActionAttack, p)
 
+	var totalMV float64
+
 	for i, mult := range attack[c.NormalCounter] {
 		d := c.Snapshot(
-			//fmt.Sprintf("Normal %v", c.NormalCounter),
-			"Normal",
+			fmt.Sprintf("Normal %v", c.NormalCounter+1),
+			// "Normal",
 			core.AttackTagNormal,
 			core.ICDTagNormalAttack,
 			core.ICDGroupDefault,
@@ -25,6 +29,7 @@ func (c *char) Attack(p map[string]int) int {
 			mult[c.TalentLvlAttack()],
 		)
 		c.QueueDmg(&d, travel+f-5+i)
+		totalMV += mult[c.TalentLvlAttack()]
 	}
 
 	c.AdvanceNormalIndex()
@@ -32,15 +37,15 @@ func (c *char) Attack(p map[string]int) int {
 	if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 		//trigger attack
 		d := c.Snapshot(
-			//fmt.Sprintf("Normal %v", c.NormalCounter),
-			"Kindling (C6)",
+			fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter+1),
+			// "Kindling (C6)",
 			core.AttackTagNormal,
 			core.ICDTagNormalAttack,
 			core.ICDGroupDefault,
 			core.StrikeTypePierce,
 			core.Pyro,
 			25,
-			aimExtra[c.TalentLvlAttack()],
+			totalMV,
 		)
 		c.QueueDmg(&d, travel+f+5)
 

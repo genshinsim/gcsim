@@ -28,6 +28,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
+	c.CharZone = core.ZoneLiyue
 
 	return &c, nil
 }
@@ -60,7 +61,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 	case core.ActionSkill:
 		return 26
 	case core.ActionBurst:
-		return 140
+		return 99
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0
@@ -179,7 +180,7 @@ func (c *char) Skill(p map[string]int) int {
 	//lasts 73 seconds, shoots every 1.6 seconds
 	for i := 0; i < 4; i++ {
 		x := d.Clone()
-		c.QueueDmg(&x, delay+i*86)
+		c.QueueDmg(&x, delay+i*90)
 		c.QueueParticle("xiangling", 1, core.Pyro, delay+i*95+90+60)
 	}
 
@@ -191,27 +192,29 @@ func (c *char) Skill(p map[string]int) int {
 func (c *char) Burst(p map[string]int) int {
 	f := c.ActionFrames(core.ActionBurst, p)
 	lvl := c.TalentLvlBurst()
-	d := c.Snapshot(
-		"Pyronado",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Pyro,
-		25,
-		0,
-	)
 
-	delay := []int{20, 50, 75}
+	delay := []int{34, 50, 75}
 	for i := 0; i < len(pyronadoInitial); i++ {
-		x := d.Clone()
-		x.Abil = fmt.Sprintf("Pyronado Hit %v", i+1)
-		x.Mult = pyronadoInitial[i][lvl]
-		c.QueueDmg(&x, delay[i])
+		j := i
+		c.AddTask(func() {
+			x := c.Snapshot(
+				fmt.Sprintf("Pyronado Hit %v", i+1),
+				core.AttackTagElementalBurst,
+				core.ICDTagElementalBurst,
+				core.ICDGroupDefault,
+				core.StrikeTypeSpear,
+				core.Pyro,
+				25,
+				pyronadoInitial[j][lvl],
+			)
+			c.Core.Combat.ApplyDamage(&x)
+		}, "pyronado initial", delay[i])
+
+		// c.QueueDmg(&x, delay[i])
 	}
 
 	//spin to win; snapshot on cast
-	d = c.Snapshot(
+	d := c.Snapshot(
 		"Pyronado",
 		core.AttackTagElementalBurst,
 		core.ICDTagNone,

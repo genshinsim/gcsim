@@ -91,7 +91,7 @@ func (c *char) Skill(p map[string]int) int {
 	d := c.Snapshot(
 		"Eye of Stormy Judgement",
 		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
+		core.ICDTagNone,
 		core.ICDGroupDefault,
 		core.StrikeTypeDefault,
 		core.Electro,
@@ -100,7 +100,7 @@ func (c *char) Skill(p map[string]int) int {
 	)
 	d.Targets = core.TargetAll
 
-	c.QueueDmg(&d, f)
+	c.QueueDmg(&d, f+19)
 
 	//activate eye
 	c.Core.Status.AddStatus("raidenskill", 1500+f)
@@ -116,6 +116,7 @@ The Eye can initiate one coordinated attack every 0.9s per party.
 func (c *char) eyeOnDamage() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
+		dmg := args[2].(float64)
 		//ignore if eye on icd
 		if c.eyeICD > c.Core.F {
 			return false
@@ -124,8 +125,16 @@ func (c *char) eyeOnDamage() {
 		if c.Core.Status.Duration("raidenskill") == 0 {
 			return false
 		}
+		//ignore reaction damage
+		if ds.IsReactionDamage {
+			return false
+		}
 		//ignore self dmg
 		if ds.Abil == "Eye of Stormy Judgement" {
+			return false
+		}
+		//ignore 0 damage
+		if dmg == 0 {
 			return false
 		}
 		//trigger a strike
@@ -146,6 +155,7 @@ func (c *char) eyeOnDamage() {
 		}
 
 		//https://streamable.com/28at4f hit mark 857, eye land 862
+		//electro appears to be applied right away
 		c.QueueDmg(&d, 5)
 		c.eyeICD = c.Core.F + 54 //0.9 sec icd
 		return false

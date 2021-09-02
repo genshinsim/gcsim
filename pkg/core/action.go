@@ -160,7 +160,9 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 		a.core.Events.Emit(PreBurst)
 		f = c.Burst(n.Param)
 		a.core.ResetAllNormalCounter()
-		a.core.Events.Emit(PostBurst)
+		a.core.Tasks.Add(func() {
+			a.core.Events.Emit(PostBurst)
+		}, f)
 	case ActionAttack:
 		a.core.Events.Emit(PreAttack)
 		f = c.Attack(n.Param)

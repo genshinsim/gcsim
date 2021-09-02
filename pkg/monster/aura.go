@@ -87,7 +87,11 @@ func (e *Element) Attach(dur core.Durability, f int) {
 }
 
 func (e *Element) Refresh(dur core.Durability) {
-	e.CurrentDurability += dur
+	//refresh should only add 80%, subject to max of current
+	e.CurrentDurability += 0.8 * dur
+	if e.CurrentDurability > 0.8*dur {
+		e.CurrentDurability = 0.8 * dur
+	}
 }
 
 func (e *Element) Source() int {

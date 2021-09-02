@@ -30,6 +30,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
+	c.CharZone = core.ZoneLiyue
 
 	if c.Base.Cons >= 2 {
 		c.c2()

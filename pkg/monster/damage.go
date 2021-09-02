@@ -23,8 +23,10 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 		//check for ICD first
 		if t.willApplyEle(ds.ICDTag, ds.ICDGroup, ds.ActorIndex) {
 			a := core.NoElement
+			var endingDur core.Durability
 			if t.aura != nil {
 				a = t.aura.Type()
+				endingDur = t.aura.Durability()
 			}
 			t.core.Log.Debugw("application",
 				"frame", t.core.F,
@@ -33,6 +35,7 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 				"attack_tag", ds.AttackTag,
 				"applied_ele", ds.Element,
 				"dur", ds.Durability,
+				"ending_dur", endingDur,
 				"abil", ds.Abil,
 				"target", t.index,
 				"existing_ele", a,

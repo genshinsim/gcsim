@@ -27,6 +27,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 6
 	c.BurstCon = 3
 	c.SkillCon = 5
+	c.CharZone = core.ZoneLiyue
 
 	//add a2
 	val := make([]float64, core.EndStatType)
