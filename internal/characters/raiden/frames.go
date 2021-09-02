@@ -38,7 +38,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
 	case core.ActionSkill:
-		return 40 //eye appears
+		return 35 // going by first swapable
 	case core.ActionBurst:
 		return 108
 	default:

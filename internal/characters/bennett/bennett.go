@@ -58,7 +58,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 		case 0:
 			f = 12 //frames from keqing lib
 		case 1:
-			f = 20
+			f = 20 + 5 //+5 i guess recovery from n1?
 		case 2:
 			f = 31
 		case 3:
@@ -150,7 +150,7 @@ func (c *char) skillPress() {
 		skill[c.TalentLvlSkill()],
 	)
 	d.Targets = core.TargetAll
-	c.QueueDmg(&d, 8)
+	c.QueueDmg(&d, 15)
 
 	//25 % chance of 3 orbs
 	count := 2
@@ -252,7 +252,7 @@ func (c *char) Burst(p map[string]int) int {
 		)
 		d.Targets = core.TargetAll
 		c.Core.Combat.ApplyDamage(&d)
-	}, "bt-q", 43)
+	}, "bt-q", 33)
 
 	d := c.Snapshot(
 		"Fantastic Voyage (Heal)",

@@ -16,6 +16,7 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	stacks := 0
+	val := make([]float64, core.EndStatType)
 
 	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 		for _, char := range c.Chars {
@@ -23,12 +24,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 				stacks++
 			}
 		}
+		val[core.CR] = (0.02 + float64(r)*0.01) * float64(stacks)
+		val[core.ATKP] = (0.06 + float64(r)*0.01) * float64(stacks)
 		return true
 	}, fmt.Sprintf("lithic-%v", char.Name()))
-
-	val := make([]float64, core.EndStatType)
-	val[core.CR] = (0.02 + float64(r)*0.01) * float64(stacks)
-	val[core.ATKP] = (0.06 + float64(r)*0.01) * float64(stacks)
 
 	char.AddMod(core.CharStatMod{
 		Key:    "lithic",

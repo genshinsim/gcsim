@@ -33,17 +33,17 @@ func New(c core.Character, s *core.Core, count int) {
 			Amount: func(ds core.AttackTag) ([]float64, bool) {
 				if ds == core.AttackTagElementalBurst {
 					//calc er
-					// er := c.Stat(core.ER) + 1
-					// amt := 0.25 * er
-					// if amt > 0.75 {
-					// 	amt = 0.75
-					// }
-					// m[core.DmgP] = amt
+					er := c.Stat(core.ER) + 1
+					amt := 0.25 * er
+					if amt > 0.75 {
+						amt = 0.75
+					}
+					m[core.DmgP] = amt
 					return m, true
 				}
 				return nil, false
 			},
-			Expiry: s.F + 600,
+			Expiry: -1,
 		})
 	}
 	//add flat stat to char

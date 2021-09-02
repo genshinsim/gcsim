@@ -28,6 +28,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 5
+	c.CharZone = core.ZoneLiyue
 
 	c.burstProc()
 	c.a4()

@@ -18,6 +18,8 @@
 #../../config/ganyu/melt-wt-hamayumi-r1.txt
 #../../config/ganyu/melt-wt-proto-r5.txt
 #../../config/ganyu/melt-wt-hamayumi-r5.txt
+#../../config/ganyu/ganyu-amos-r5-test.txt
+#../../config/ganyu/ganyu-iram-r5-test.txt
 
 #../../config/ayaka/freeze.txt
 #../../config/ayaka/freeze-bs-r1.txt
@@ -33,10 +35,11 @@
 #../../config/yoimiya/4tf-windblume-r5.txt
 #../../config/yoimiya/overload.txt
 
-../../config/raiden/c0-xl-xq-benny-catch-r5.txt
-../../config/raiden/c0-xl-xq-benny-spine-r1.txt
-../../config/raiden/c0-xl_fav-xq-bt-catch-r5.txt
-../../config/raiden/c0-xl-xq-benny-cutter-r1.txt
+#../../config/raiden/c0-xl-xq-benny-catch-r5.txt
+#../../config/raiden/c0-xl-xq-benny-spine-r1.txt
+#../../config/raiden/c0-xl_fav-xq-bt-catch-r5.txt
+#../../config/raiden/2glad2rem.txt
+#../../config/raiden/c0-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c1-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c2-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c3-xl-xq-benny-cutter-r1.txt
@@ -45,6 +48,11 @@
 #../../config/raiden/c6-xl-xq-benny-cutter-r1.txt
 #../../config/raiden/c6-xl-xq-benny-cutter-r5.txt
 #../../config/raiden/fischl-harp-comparison.txt
+
+../../config/raiden/national/c0-catch-r5.txt
+../../config/raiden/national/c0-catch-r5-2glad2rem.txt
+../../config/raiden/national/c0-spine-r1.txt
+../../config/raiden/national/c0-cutter-r1.txt
 
 
 #../../config/yoimiya/yoi-c0.txt
