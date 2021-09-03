@@ -10,6 +10,9 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			switch c.NormalCounter {
 			//TODO: need to add atkspd mod
 			case 0:
+				if c.Core.LastAction.Target == "raiden" && c.Core.LastAction.Typ == core.ActionAttack {
+					f += 21
+				}
 				f = 13
 			case 1:
 				f = 19
@@ -24,19 +27,28 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			switch c.NormalCounter {
 			//TODO: need to add atkspd mod
 			case 0:
-				f = 17
+				//add frames if last action is also attack
+				if c.Core.LastAction.Target == "raiden" && c.Core.LastAction.Typ == core.ActionAttack {
+					f += 32
+				}
+				f = 12
 			case 1:
-				f = 15
+				f = 32 - 12
 			case 2:
-				f = 22
+				f = 54 - 32
 			case 3:
-				f = 44
+				f = 95 - 54
 			case 4:
-				f = 42
+				f = 139
 			}
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
+	case core.ActionCharge:
+		if c.Core.Status.Duration("raidenburst") == 0 {
+			return 61 //30 if cancelled
+		}
+		return 79 //37 <- if cancelled
 	case core.ActionSkill:
 		return 35 // going by first swapable
 	case core.ActionBurst:

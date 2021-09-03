@@ -31,7 +31,8 @@ stats+=raiden label=subs cr=0.363 cd=0.924;
 target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 active+=raiden;
 
-actions+=sequence_strict target=raiden exec=attack,attack,attack,attack,attack,jump,attack,attack if=.status.raidenburst>0;
+actions+=sequence_strict target=raiden exec=attack,attack,attack,attack,attack,jump,attack,attack,attack if=.status.raidenburst>300;
+actions+=attack target=raiden if=.status.raidenburst>0;
 actions+=skill target=raiden if=.status.raidenskill==0;
 
 
