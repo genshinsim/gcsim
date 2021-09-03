@@ -67,6 +67,21 @@ func (c *char) Init(index int) {
 	}
 }
 
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+	switch a {
+	case core.ActionDash:
+		return 18
+	case core.ActionCharge:
+		if c.Core.Status.Duration("raidenburst") == 0 {
+			return 25
+		}
+		return 20
+	default:
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		return 0
+	}
+}
+
 func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
 	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
 

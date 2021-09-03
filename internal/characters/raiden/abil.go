@@ -10,6 +10,14 @@ style.innerHTML = '*{ user-select: auto !important; }';
 document.body.appendChild(style);
 **/
 
+var polearmDelayOffset = [][]int{
+	{1},
+	{1},
+	{1},
+	{14, 1},
+	{1},
+}
+
 func (c *char) Attack(p map[string]int) int {
 
 	f := c.ActionFrames(core.ActionAttack, p)
@@ -30,12 +38,20 @@ func (c *char) Attack(p map[string]int) int {
 			25,
 			mult[c.TalentLvlAttack()],
 		)
-		c.QueueDmg(&d, f-2+i)
+		c.QueueDmg(&d, f-polearmDelayOffset[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
 
 	return f
+}
+
+var swordDelayOffset = [][]int{
+	{1},
+	{1},
+	{1},
+	{14, 1},
+	{1},
 }
 
 func (c *char) swordAttack(f int) int {
@@ -73,10 +89,79 @@ func (c *char) swordAttack(f int) int {
 				}
 
 			}
-		}, "raiden-attack", f-2+i)
+		}, "raiden-attack", f-swordDelayOffset[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
+
+	return f
+}
+
+func (c *char) ChargeAttack(p map[string]int) int {
+
+	if c.Core.Status.Duration("raidenburst") == 0 {
+
+		f := c.ActionFrames(core.ActionCharge, p)
+
+		d := c.Snapshot(
+			"Charge 1",
+			core.AttackTagNormal,
+			core.ICDTagNormalAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Physical,
+			25,
+			charge[c.TalentLvlAttack()],
+		)
+
+		c.QueueDmg(&d, f-31) //TODO: damage frame
+
+		return f
+	}
+
+	return c.swordCharge(p)
+
+}
+
+func (c *char) swordCharge(p map[string]int) int {
+
+	f := c.ActionFrames(core.ActionCharge, p)
+
+	for _, mult := range chargeSword {
+		d := c.Snapshot(
+			// fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
+			"Musou Isshin",
+			core.AttackTagElementalBurst,
+			core.ICDTagNormalAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Electro,
+			25,
+			mult[c.TalentLvlBurst()],
+		)
+		//adds to talent %
+		d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
+		if c.Base.Cons >= 2 {
+			d.DefAdj = -0.6
+		}
+		c.AddTask(func() {
+			c.Core.Combat.ApplyDamage(&d)
+			//restore energy
+			if c.Core.F > c.restoreICD && c.restoreCount < 5 {
+				c.restoreCount++
+				c.restoreICD = c.Core.F + 60 //once every 1 second
+				energy := burstRestore[c.TalentLvlBurst()]
+				//apply a4
+				excess := int(d.Stats[core.ER] / 0.01)
+				c.Core.Log.Debugw("a4 energy restore stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "increase", float64(excess)*0.006)
+				energy = energy * (1 + float64(excess)*0.006)
+				for _, char := range c.Core.Chars {
+					char.AddEnergy(energy)
+				}
+
+			}
+		}, "raiden-charge-attack", f-42)
+	}
 
 	return f
 }

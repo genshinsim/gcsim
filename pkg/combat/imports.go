@@ -108,6 +108,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/spear/vortex"
 
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/alley"
+	_ "github.com/genshinsim/gsim/internal/weapons/sword/amenoma"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/aquila"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/black"
 	_ "github.com/genshinsim/gsim/internal/weapons/sword/festering"

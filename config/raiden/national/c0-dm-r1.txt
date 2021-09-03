@@ -22,7 +22,7 @@ stats+=bennett  label=main hp=4780 atk=311 pyro%=0.466 er=0.518 cr=0.311;
 stats+=bennett label=subs atk=50 atk%=.249 cr=.198 cd=.396 em=99 er=.257 hp=762 hp%=.149 def=59 def%=.186;
 
 char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=0 talent=8,8,8;
-weapon+=raiden label="skyward spine" atk=674 er=.368 refine=1;
+weapon+=raiden label="deathmatch" atk=454 cr=.368 refine=1;
 art+=raiden label="seal of insulation" count=4;
 stats+=raiden label=main hp=4780 atk=311 electro%=0.466 er=0.518 cr=0.311;
 stats+=raiden label=subs cr=0.363 cd=0.924;

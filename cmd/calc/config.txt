@@ -1,18 +1,34 @@
-#10: Bennett E cast
-#20: Bennett E hits -> pyro, dmg = 283
-#38: swap to XQ 
-#45: XQ cast q, self wet
-#54: target wet, vaporize
-#58: collect orb
+options debug=false iteration=3000 duration=36 workers=24;
 
-char+=xingqiu ele=hydro lvl=80 hp=9059.529 atk=178.823 def=671.415 atk%=0.180 cr=.05 cd=0.5 cons=6 talent=1,8,8;
-weapon+=xingqiu label="sacrificial sword" atk=454.363 er=0.613 refine=4;
+char+=xiangling ele=pyro lvl=80 hp=10121.775 atk=209.549 def=622.549 em=96.000 cr=.05 cd=0.5 cons=6 talent=6,6,10;
+weapon+=xiangling label="dragon's bane" atk=41 em=48 refine=4;
 
-char+=bennett ele=pyro lvl=90 hp=12397.403 atk=191.157 def=771.249 er=0.267 cr=.05 cd=0.5 cons=6 talent=7,10,10;
-weapon+=bennett label="generic sword" atk=23 refine=1;
 
-target+="primo geovishap" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
-active+=bennett;
+char+=xingqiu ele=hydro lvl=80 hp=9514.469 atk=187.803 def=705.132 atk%=0.240 cr=.05 cd=0.5 cons=6 talent=1,9,10;
+weapon+=xingqiu label="generic sword" atk=40 def%=0.064 refine=1;
 
-actions+=skill target=bennett wait=10;
-actions+=burst[orbital=1] target=xingqiu wait=57;
+
+char+=bennett ele=pyro lvl=70 hp=10129 atk=156 def=630 er=0.2 cr=.05 cd=0.5 cons=2 talent=6,8,8;
+weapon+=bennett label="skyrider sword" atk=38 er=0.113 refine=1;
+
+
+char+=raiden ele=electro lvl=80 hp=11388 atk=298 def=696 er=0.24 cr=.05 cd=0.5 cons=1 talent=6,6,8;
+weapon+=raiden label="lithic spear" atk=44 atk%=0.06 refine=1;
+
+##ENEMY
+target+="ruin guard" lvl=85 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.7 cryo=.1;
+active+=raiden;
+
+actions+=skill target=raiden;
+actions+=attack target=bennett;
+actions+=burst target=bennett;
+actions+=skill target=bennett;
+actions+=burst target=xingqiu;
+actions+=skill[orbital=1] target=xingqiu;
+actions+=attack target=bennett;
+actions+=attack target=bennett;
+actions+=skill target=xiangling;
+actions+=burst target=xiangling;
+actions+=attack target=xiangling;
+actions+=attack target=xiangling;
+actions+=burst target=raiden;
