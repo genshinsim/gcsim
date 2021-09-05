@@ -50,15 +50,17 @@
 #../../config/raiden/c6-xl-xq-benny-cutter-r5.txt
 #../../config/raiden/fischl-harp-comparison.txt
 
-../../config/raiden/national/c0-blackcliff-r1.txt
-../../config/raiden/national/c0-catch-r5.txt
+#../../config/raiden/national/c0-blackcliff-r1.txt
+#../../config/raiden/national/c0-catch-r5.txt
 #../../config/raiden/national/c0-catch-r5-2glad2rem.txt
-../../config/raiden/national/c0-cutter-r1.txt
-../../config/raiden/national/c0-dm-r1.txt
-../../config/raiden/national/c0-dragonbane-r1.txt
-../../config/raiden/national/c0-fav-r1.txt
-../../config/raiden/national/c0-kitain-r1.txt
-../../config/raiden/national/c0-spine-r1.txt
+#../../config/raiden/national/c0-cutter-r1.txt
+#../../config/raiden/national/c0-dm-r1.txt
+#../../config/raiden/national/c0-dragonbane-r1.txt
+#../../config/raiden/national/c0-fav-r1.txt
+#../../config/raiden/national/c0-kitain-r1.txt
+#../../config/raiden/national/c0-spine-r1.txt
+../../config/raiden/national/_base.txt
+../../config/raiden/national/_base-2.txt
 
 
 

@@ -43,7 +43,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		char.AddMod(core.CharStatMod{
 			Key:    "grasscutter-er",
-			Expiry: 720,
+			Expiry: c.F + 720,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return erval, true
 			},

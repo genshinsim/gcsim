@@ -127,7 +127,7 @@ function CharacterBuilder({
         stat.hp?.toFixed(3) +
         " atk=" +
         stat.attack?.toFixed(3) +
-        " core=" +
+        " def=" +
         stat.defense?.toFixed(3) +
         " " +
         ascStatMap[cname] +

@@ -270,7 +270,7 @@ func (c *char) Burst(p map[string]int) int {
 			}
 			char.AddMod(core.CharStatMod{
 				Key:    "raiden-c2",
-				Expiry: 600, //10s
+				Expiry: c.Core.F + 600, //10s
 				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
@@ -280,6 +280,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Core.Log.Debugw("resolve stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", c.stacksConsumed)
 
+	// c.AddTask(func() {
 	d := c.Snapshot(
 		"Musou Shinsetsu",
 		core.AttackTagElementalBurst,
@@ -298,6 +299,9 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	c.QueueDmg(&d, f)
+	// c.Core.Combat.ApplyDamage(&d)
+
+	// }, "raiden-burst", f)
 
 	c.SetCD(core.ActionBurst, 18*60) //20s cd
 	c.Energy = 0
