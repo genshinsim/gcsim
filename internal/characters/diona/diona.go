@@ -283,7 +283,7 @@ func (c *char) Burst(p map[string]int) int {
 				val[core.EM] = 200
 				char.AddMod(core.CharStatMod{
 					Key:    "diona-c6",
-					Expiry: 750,
+					Expiry: c.Core.F + 750,
 					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, char.HP()/char.MaxHP() > 0.5
 					},

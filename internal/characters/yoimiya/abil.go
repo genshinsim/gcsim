@@ -130,7 +130,7 @@ func (c *char) Burst(p map[string]int) int {
 				}
 				char.AddMod(core.CharStatMod{
 					Key:    "yoimiya-a4",
-					Expiry: 900, //15s
+					Expiry: c.Core.F + 900, //15s
 					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, true
 					},

@@ -234,7 +234,7 @@ func (c *char) Burst(p map[string]int) int {
 		val := make([]float64, core.EndStatType)
 		c.AddMod(core.CharStatMod{
 			Key:    "ganyu-c4",
-			Expiry: 1080,
+			Expiry: c.Core.F + 1080,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				elapsed := c.Core.F - start
 				stacks := int(elapsed / 180)

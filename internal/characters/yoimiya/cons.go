@@ -10,7 +10,7 @@ func (c *char) c1() {
 		if c.Core.Status.Duration("aurous") > 0 {
 			c.AddMod(core.CharStatMod{
 				Key:    "c1",
-				Expiry: 1200,
+				Expiry: c.Core.F + 1200,
 				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
@@ -29,7 +29,7 @@ func (c *char) c2() {
 		if ds.ActorIndex == c.Index && crit {
 			c.AddMod(core.CharStatMod{
 				Key:    "c2",
-				Expiry: 360,
+				Expiry: c.Core.F + 360,
 				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
