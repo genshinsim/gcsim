@@ -2,50 +2,63 @@ options debug=false iteration=3000 duration=90 workers=24;
 
 char+=xiangling ele=pyro lvl=80 hp=9637.797 atk=199.529 def=592.781 em=72.000 cr=.05 cd=0.5 cons=6 talent=8,8,8;
 weapon+=xiangling label="kitain cross spear" atk=564.784 em=110.256 refine=1;
-weapon+=xiangling label="dragon's bane" atk=454.363 em=220.512 refine=1;
-weapon+=xiangling label="staff of homa" atk=608.075 cd=0.662 refine=1;
-art+=xiangling label="gladiator's finale" count=2;
+#weapon+=xiangling label="dragon's bane" atk=454.363 em=220.512 refine=1;
+#weapon+=xiangling label="staff of homa" atk=608.075 cd=0.662 refine=1;
+art+=xiangling label="seal of insulation" count=4;
+#art+=xiangling label="crimson witch of flames" count=4;
+stats+=xiangling hp=4780 atk=311 atk%=.466 pyro%=.466 cr=0.311;
+stats+=xiangling er=0.66;
 
-
-
-char+=xingqiu ele=hydro lvl=80 hp=9514.469 atk=187.803 def=705.132 atk%=0.240 cr=.05 cd=0.5 cons=6 talent=6,8,8;
-weapon+=xingqiu label="sacrificial sword" atk=454.363 er=0.613 refine=4;
-art+=xingqiu label="gladiator's finale" count=2;
-art+=xingqiu label="noblesse oblige" count=2;
-
-
-char+=bennett ele=pyro lvl=70 hp=10128.510 atk=156.173 def=630.100 er=0.200 cr=.05 cd=0.5 cons=2 talent=6,8,8;
+char+=bennett ele=pyro lvl=80 hp=10987.089 atk=169.412 def=683.513 er=0.200 cr=.05 cd=0.5 cons=1 talent=8,8,8;
 weapon+=bennett label="prototype rancour" atk=564.784 phys%=0.345 refine=1;
-weapon+=bennett label="festering desire" atk=509.606 er=0.459 refine=5;
+#weapon+=bennett label="the alley flash" atk=620.033 em=55.128 refine=1;
+#weapon+=bennett label="aquila favonia" atk=674.335 undefined=0.413 refine=1;
 art+=bennett label="noblesse oblige" count=4;
+stats+=bennett hp=4780 atk=311 atk%=.466 pyro%=.466 cr=0.311;
 
+char+=xingqiu ele=hydro lvl=80 hp=9059.529 atk=178.823 def=671.415 atk%=0.180 cr=.05 cd=0.5 cons=6 talent=8,8,8;
+weapon+=xingqiu label="amenoma kageuchi" atk=454.363 atk%=0.551 refine=1;
+#weapon+=xingqiu label="sacrificial sword" atk=454.363 er=0.613 refine=1;
+#weapon+=xingqiu label="primordial jade cutter" atk=541.830 cr=0.441 refine=1;
+art+=xingqiu label="seal of insulation" count=4;
+#art+=xingqiu label="gladiator's finale" count=2;
+#art+=xingqiu label="noblesse oblige" count=2;
+stats+=xingqiu hp=4780 atk=311 atk%=.466 hydro%=.466 cr=0.311;
 
-char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=0 talent=8,8,8 starthp=1000;
-weapon+=raiden label="the catch" atk=510 er=.459 refine=5;
+char+=raiden ele=electro lvl=80 hp=11838 atk=298 def=696 er=0.24 cr=.05 cd=0.5 cons=0 talent=8,8,8 starthp=1000;
 art+=raiden label="seal of insulation" count=4;
+weapon+=raiden label="the catch" atk=510 er=.459 refine=5;
+stats+=raiden hp=4780 atk=311 er=0.518 electro%=.466 cr=0.311;
+stats+=raiden cr=0.363 cd=0.924 er=0;
 
+energy+=every interval=200,300 amount=1; #once at frame 300
 
 ##ENEMY
 target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 active+=raiden;
 
-actions+=sequence_strict target=raiden exec=attack,attack,attack,attack,attack,jump,attack,attack,attack if=.status.raidenburst>300;
 actions+=attack target=raiden if=.status.raidenburst>0;
 actions+=skill target=raiden if=.status.raidenskill==0;
 
+### prioritize battery for xl if xl Q is ready but not enough  energy
+actions+=sequence_strict target=bennett exec=skill,attack if=.energy.xiangling<80&&.cd.xiangling.burst==0&&.status.xqburst>0&&.status.xianglingburst==0 swap=xiangling;
+actions+=skill target=bennett if=.energy.xiangling<80&&.cd.xiangling.burst==0&&.status.xianglingburst==0 swap=xiangling;
 
-actions+=sequence_strict target=xingqiu exec=skill,burst lock=100;
+actions+=sequence_strict target=xingqiu exec=skill,attack,burst lock=100;
+actions+=sequence_strict target=xingqiu exec=skill,attack if=.energy.xingqiu<80&&.status.xqburst>0;
 actions+=skill target=xingqiu if=.energy.xingqiu<80 lock=90;
+
 actions+=burst target=xingqiu;
-actions+=sequence_strict target=bennett exec=skill,burst lock=100;
-actions+=burst target=bennett;
-actions+=sequence_strict target=xiangling exec=skill,burst;
-actions+=burst target=xiangling;
+
+actions+=sequence_strict target=bennett exec=burst,attack,skill if=.energy.xiangling==80&&.cd.xiangling.burst==0 swap=xiangling;
+actions+=sequence_strict target=xiangling exec=burst,attack,skill,attack;
+actions+=sequence_strict target=xiangling exec=burst,attack;
+
 actions+=burst target=raiden;
 
-#actions+=skill target=xiangling active=xiangling;
-actions+=skill target=bennett if=.energy.xiangling<70 swap=xiangling;
-#actions+=sequence_strict target=bennett exec=skill,attack lock=100 if=.energy.xiangling<70 swap=xiangling;
+actions+=sequence_strict target=bennett exec=skill,attack if=.energy.xiangling<80&&.status.xqburst>0 swap=xiangling;
+actions+=skill target=bennett if=.energy.xiangling<80 swap=xiangling;
+
 actions+=skill target=xiangling active=xiangling;
 actions+=skill target=raiden;
 
