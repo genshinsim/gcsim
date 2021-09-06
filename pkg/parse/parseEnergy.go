@@ -60,6 +60,7 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 	//energy+=every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	var err error
 	p.cfg.Energy.Active = true
+	p.cfg.Energy.Once = false
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
