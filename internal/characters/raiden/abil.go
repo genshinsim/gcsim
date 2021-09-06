@@ -311,6 +311,20 @@ func (c *char) Burst(p map[string]int) int {
 	return f
 }
 
+func (c *char) onSwapClearBurst() {
+	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.Core.Status.Duration("raidenburst") == 0 {
+			return false
+		}
+		//i prob don't need to check for who prev is here
+		prev := args[0].(int)
+		if prev == c.Index {
+			c.Core.Status.DeleteStatus("raidenburst")
+		}
+		return false
+	}, "raiden-burst-clear")
+}
+
 func (c *char) onBurstStackCount() {
 	c.Core.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
 		if c.Core.ActiveChar == c.Index {
