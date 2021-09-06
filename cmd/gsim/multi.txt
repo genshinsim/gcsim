@@ -62,19 +62,6 @@
 ../../config/raiden/national/_base.txt
 ../../config/raiden/national/_base-2.txt
 
-
-#../../config/raiden/national/weapons/catch-r5.txt
-#../../config/raiden/national/weapons/deathmatch.txt
-#../../config/raiden/national/weapons/engulfing.txt
-#../../config/raiden/national/weapons/favonius.txt
-#../../config/raiden/national/weapons/homa-sub50.txt
-#../../config/raiden/national/weapons/homa.txt
-#../../config/raiden/national/weapons/pjws.txt
-#../../config/raiden/national/weapons/spine.txt
-#../../config/raiden/national/weapons/vanquisher.txt
-
-
-
 #../../config/yoimiya/yoi-c0.txt
 #../../config/yoimiya/yoi-c1.txt
 #../../config/yoimiya/yoi-c2.txt
@@ -82,3 +69,18 @@
 #../../config/yoimiya/yoi-c4.txt
 #../../config/yoimiya/yoi-c5.txt
 #../../config/yoimiya/yoi-c6.txt
+
+### THE FOLLOWING IS FOR RAIDEN GUIDE
+
+#../../config/raiden/national/guide/4star/catch-r5.txt
+#../../config/raiden/national/guide/4star/deathmatch.txt
+#../../config/raiden/national/guide/4star/engulfing.txt
+#../../config/raiden/national/guide/4star/favonius.txt
+#../../config/raiden/national/guide/4star/homa-sub50.txt
+#../../config/raiden/national/guide/4star/homa.txt
+#../../config/raiden/national/guide/4star/pjws.txt
+#../../config/raiden/national/guide/4star/spine.txt
+#../../config/raiden/national/guide/4star/vanquisher.txt
+
+
+
