@@ -42,6 +42,7 @@ type AverageStats struct {
 	Damage     FloatResult `json:"damage"`
 	DPS        FloatResult `json:"dps"`
 	Iterations int         `json:"iter"`
+	Text       string      `json:"text"`
 	Debug      string      `json:"debug"`
 }
 

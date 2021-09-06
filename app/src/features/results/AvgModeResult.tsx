@@ -141,10 +141,10 @@ function AverageModeResult({ data }: { data: AvgModeSummary }) {
                   formatter={(value: number, name: string) => {
                     return [
                       "" +
-                        value.toFixed(2) +
-                        " (" +
-                        ((100 * value) / data.dps.mean).toFixed(2) +
-                        "%)",
+                      value.toFixed(2) +
+                      " (" +
+                      ((100 * value) / data.dps.mean).toFixed(2) +
+                      "%)",
                       name,
                     ];
                   }}
@@ -295,6 +295,10 @@ function AverageModeResult({ data }: { data: AvgModeSummary }) {
             </ResponsiveContainer>
           </div>
         </div>
+      </Card>
+      <Card style={{ margin: "5px" }} elevation={Elevation.TWO}>
+        <H5>Text Summary</H5>
+        <pre>{data.text}</pre>
       </Card>
     </div>
   );

@@ -22,10 +22,6 @@ function Results() {
         <div className="col-xs-10 col-xs-offset-1">
           <H4>Summary Result</H4>
           <AvgModeResult data={data} />
-          <Card style={{ margin: "5px" }} elevation={Elevation.TWO}>
-            <H5>Text Summary</H5>
-            <pre>{result}</pre>
-          </Card>
         </div>
       </div>
     </div>

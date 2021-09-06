@@ -235,6 +235,9 @@ func (c *char) eyeOnDamage() {
 			skillTick[c.TalentLvlSkill()],
 		)
 		d.Targets = core.TargetAll
+		if c.Base.Cons >= 2 && c.Core.Status.Duration("raidenburst") > 0 {
+			d.DefAdj = -0.6
+		}
 		if c.Core.Rand.Float64() < 0.5 {
 			c.QueueParticle("raiden", 1, core.Electro, 100)
 		}
