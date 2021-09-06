@@ -153,6 +153,8 @@ func parseRows(p *Parser) (parseFn, error) {
 		return parseWeapon, nil
 	case itemArt: //artifact sets
 		return parseArtifacts, nil
+	case itemEnergy:
+		return parseEnergyEvent, nil
 	case itemHurt: //hurt events
 		return parseHurtEvent, nil
 	case itemTarget: //enemy related

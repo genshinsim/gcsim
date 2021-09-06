@@ -82,6 +82,7 @@ const (
 	itemWeapon     // weapon
 	itemArt        // art
 	itemHurt       // hurt
+	itemEnergy     // energy
 	itemLvl        // lvl
 	itemCons       // cons
 	itemTalent     // talent
@@ -164,6 +165,7 @@ var key = map[string]ItemType{
 	"weapon":     itemWeapon,
 	"art":        itemArt,
 	"hurt":       itemHurt,
+	"energy":     itemEnergy,
 	"lvl":        itemLvl,
 	"cons":       itemCons,
 	"talent":     itemTalent,

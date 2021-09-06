@@ -23,7 +23,7 @@ func parseHurtEvent(p *Parser) (parseFn, error) {
 func parseHurtOnce(p *Parser) (parseFn, error) {
 	//interval=300 amount=100,200 ele=pyro #once at frame 300 (or nearest)
 	var err error
-	p.cfg.Hurt.WillHurt = true
+	p.cfg.Hurt.Active = true
 	p.cfg.Hurt.Once = true
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
@@ -53,7 +53,7 @@ func parseHurtOnce(p *Parser) (parseFn, error) {
 func parseHurtEvery(p *Parser) (parseFn, error) {
 	//interval=300,600 amount=100,200 ele=physical #randomly 100 to 200 dmg every 300 to 600 frames
 	var err error
-	p.cfg.Hurt.WillHurt = true
+	p.cfg.Hurt.Active = true
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
@@ -67,7 +67,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 
-			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			n, err = p.acceptSeqReturnLast(itemComma, itemNumber)
 			if err != nil {
 				return nil, err
 			}

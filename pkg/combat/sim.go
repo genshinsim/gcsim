@@ -16,9 +16,9 @@ type Simulation struct {
 	// queue
 	queue []core.ActionItem
 	//hurt event
-	lastHurt    int
-	nextHurt    int
-	nextHurtAmt float64
+	lastHurt int
+	//energy event
+	lastEnergyDrop int
 	//result
 	stats Stats
 }
@@ -97,6 +97,8 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 	}
 
 	c.Init()
+
+	// log.Println(s.cfg.Energy)
 
 	return s, nil
 }

@@ -63,6 +63,16 @@
 ../../config/raiden/national/_base-2.txt
 
 
+#../../config/raiden/national/weapons/catch-r5.txt
+#../../config/raiden/national/weapons/deathmatch.txt
+#../../config/raiden/national/weapons/engulfing.txt
+#../../config/raiden/national/weapons/favonius.txt
+#../../config/raiden/national/weapons/homa-sub50.txt
+#../../config/raiden/national/weapons/homa.txt
+#../../config/raiden/national/weapons/pjws.txt
+#../../config/raiden/national/weapons/spine.txt
+#../../config/raiden/national/weapons/vanquisher.txt
+
 
 
 #../../config/yoimiya/yoi-c0.txt
