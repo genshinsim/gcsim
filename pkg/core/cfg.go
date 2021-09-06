@@ -11,6 +11,7 @@ type Config struct {
 	Rotation []Action
 
 	Hurt      HurtEvent
+	Energy    EnergyEvent
 	FixedRand bool //if this is true then use the same seed
 }
 
@@ -62,14 +63,22 @@ type EnemyProfile struct {
 	Resist map[EleType]float64
 }
 
+type EnergyEvent struct {
+	Active    bool
+	Once      bool //how often
+	Start     int
+	End       int
+	Particles int
+}
+
 type HurtEvent struct {
-	WillHurt bool
-	Once     bool //how often
-	Start    int  //
-	End      int
-	Min      float64
-	Max      float64
-	Ele      EleType
+	Active bool
+	Once   bool //how often
+	Start  int  //
+	End    int
+	Min    float64
+	Max    float64
+	Ele    EleType
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {

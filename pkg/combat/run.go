@@ -11,6 +11,30 @@ func (s *Simulation) Run() (Stats, error) {
 	}
 	f := s.opts.Duration*60 - 1
 	stop := false
+
+	//check for once energy and hurt event
+	if s.cfg.Energy.Active && s.cfg.Energy.Once {
+		// log.Println("adding energy")
+		s.cfg.Energy.Active = false
+		s.C.Tasks.Add(func() {
+			s.C.Energy.DistributeParticle(core.Particle{
+				Source: "drop",
+				Num:    s.cfg.Energy.Particles,
+				Ele:    core.NoElement,
+			})
+		}, s.cfg.Energy.Start+1)
+		s.C.Log.Debugw("energy queued (once)", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.cfg.Energy.Start)
+	}
+
+	if s.cfg.Hurt.Active && s.cfg.Hurt.Once {
+		s.cfg.Hurt.Active = false
+		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
+		s.C.Tasks.Add(func() {
+			s.C.Health.HurtChar(amt, s.cfg.Hurt.Ele)
+		}, s.cfg.Hurt.Start+1)
+		s.C.Log.Debugw("hurt queued (once)", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.cfg.Hurt.Start)
+	}
+
 	//60fps, 60s/min, 2min
 	for !stop {
 		err = s.AdvanceFrame()
@@ -43,6 +67,7 @@ func (s *Simulation) AdvanceFrame() error {
 	s.C.Tick()
 	//check for hurt dmg
 	s.handleHurt()
+	s.handleEnergy()
 
 	//grab stats
 	if s.opts.LogDetails {
@@ -92,24 +117,29 @@ func (s *Simulation) collectStats() {
 	}
 }
 
-func (s *Simulation) handleHurt() {
-	if s.cfg.Hurt.WillHurt && s.C.F-s.lastHurt > s.cfg.Hurt.Start {
-		f := 0
-		if s.cfg.Hurt.Once {
-			s.cfg.Hurt.WillHurt = false
-		} else {
-			//pick a frame between start to end
-			f = s.C.Rand.Intn(s.cfg.Hurt.End)
-		}
-		s.nextHurt = s.C.F + f
-		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
-		s.nextHurtAmt = amt
-		s.C.Log.Debugw("hurt queued", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastHurt, "event", s.cfg.Hurt, "amt", amt, "hurt_frame", f)
+func (s *Simulation) handleEnergy() {
+	if s.cfg.Energy.Active && s.C.F-s.lastEnergyDrop >= s.cfg.Energy.Start {
+		f := s.C.Rand.Intn(s.cfg.Energy.End)
+		s.lastEnergyDrop = s.C.F + f
+		s.C.Tasks.Add(func() {
+			s.C.Energy.DistributeParticle(core.Particle{
+				Source: "drop",
+				Num:    s.cfg.Energy.Particles,
+				Ele:    core.NoElement,
+			})
+		}, f)
+		s.C.Log.Debugw("energy queued", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.C.F+f)
 	}
+}
 
-	if s.nextHurt == s.C.F {
-		s.C.Health.HurtChar(s.nextHurtAmt, s.cfg.Hurt.Ele)
-		s.lastHurt = s.nextHurt
-		s.nextHurtAmt = 0
+func (s *Simulation) handleHurt() {
+	if s.cfg.Hurt.Active && s.C.F-s.lastHurt >= s.cfg.Hurt.Start {
+		f := s.C.Rand.Intn(s.cfg.Hurt.End)
+		s.lastHurt = s.C.F + f
+		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
+		s.C.Tasks.Add(func() {
+			s.C.Health.HurtChar(amt, s.cfg.Hurt.Ele)
+		}, f)
+		s.C.Log.Debugw("hurt queued", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.C.F+f)
 	}
 }
