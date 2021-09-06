@@ -82,6 +82,7 @@ func (s *Server) runDebug(cfg runConfig, r wsRequest) {
 
 	s.Log.Debugw("run complete", "result", result)
 
+	result.Text = result.PrettyPrint()
 	result.Debug = log.String()
 
 	data, _ := json.Marshal(result)
@@ -103,6 +104,8 @@ func (s *Server) run(cfg runConfig, r wsRequest) {
 		handleErr(r, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	result.Text = result.PrettyPrint()
 
 	s.Log.Debugw("run complete", "result", result)
 

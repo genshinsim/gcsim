@@ -37,6 +37,7 @@ export interface AvgModeSummary {
   damage: ResultSummary;
   dps: ResultSummary;
   iter: number;
+  text: string;
   debug: string;
 }
 
