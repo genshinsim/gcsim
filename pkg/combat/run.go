@@ -119,7 +119,7 @@ func (s *Simulation) collectStats() {
 
 func (s *Simulation) handleEnergy() {
 	if s.cfg.Energy.Active && s.C.F-s.lastEnergyDrop >= s.cfg.Energy.Start {
-		f := s.C.Rand.Intn(s.cfg.Energy.End)
+		f := s.C.Rand.Intn(s.cfg.Energy.End - s.cfg.Energy.Start)
 		s.lastEnergyDrop = s.C.F + f
 		s.C.Tasks.Add(func() {
 			s.C.Energy.DistributeParticle(core.Particle{
@@ -134,7 +134,7 @@ func (s *Simulation) handleEnergy() {
 
 func (s *Simulation) handleHurt() {
 	if s.cfg.Hurt.Active && s.C.F-s.lastHurt >= s.cfg.Hurt.Start {
-		f := s.C.Rand.Intn(s.cfg.Hurt.End)
+		f := s.C.Rand.Intn(s.cfg.Hurt.End - s.cfg.Hurt.Start)
 		s.lastHurt = s.C.F + f
 		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
 		s.C.Tasks.Add(func() {

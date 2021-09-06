@@ -29,7 +29,7 @@ stats+=bennett er=.518 atk%=.222 hp%=.058 cd=.117 hp=209;
 stats+=bennett pyro%=.466 cr=.089 er=.052 atk%=.093 atk=43;
 stats+=bennett cr=.311 hp=508 em=42 atk%=.105 atk=33;
 
-char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=1 talent=8,8,8 starthp=1000;
+char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=0 talent=8,8,8;
 weapon+=raiden label="staff of homa" atk=608.075 cd=0.662 refine=1;
 art+=raiden label="seal of insulation" count=4;
 stats+=raiden hp=4780 em=47 er=.11 def%=.139 cr=.105;
@@ -39,12 +39,7 @@ stats+=raiden er=0.518 atk=14 cd=.202 em=70 hp=299;
 stats+=raiden electro%=0.466 cr=.117 atk=19 def=0.073 cd=.194;
 stats+=raiden cr=0.311 def%=.131 atk%=.111 er=.117 hp%=.087;
 
-energy+=every interval=200,300 amount=1; #once at frame 300
-#energy+=every interval=150,250 amount=1; #once at frame 300
-#energy+=every interval=100,200 amount=1; #once at frame 300
-
 ##ENEMY
-#target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 active+=raiden;
 
