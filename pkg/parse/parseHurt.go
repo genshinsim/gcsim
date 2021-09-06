@@ -54,6 +54,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 	//interval=300,600 amount=100,200 ele=physical #randomly 100 to 200 dmg every 300 to 600 frames
 	var err error
 	p.cfg.Hurt.Active = true
+	p.cfg.Hurt.Once = false
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
