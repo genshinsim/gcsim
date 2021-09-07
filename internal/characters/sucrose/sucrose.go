@@ -97,17 +97,19 @@ func (c *char) a2() {
 	val := make([]float64, core.EndStatType)
 	val[core.EM] = 50
 	for _, char := range c.Core.Chars {
-		if char.Ele() == core.Anemo || char.Ele() == core.Geo {
+		this := char
+		if this.Ele() == core.Anemo || this.Ele() == core.Geo {
 			continue //nothing for geo/anemo char
 		}
-		char.AddMod(core.CharStatMod{
-			Key:    "sucrose-a4",
+		this.AddMod(core.CharStatMod{
+			Key:    "sucrose-a2",
 			Expiry: -1,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				var f int
 				var ok bool
 
-				switch char.Ele() {
+				// c.Core.Log.Debugw("sucrose a2 check", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", this.CharIndex(), "ele", this.Ele())
+				switch this.Ele() {
 				case core.Pyro:
 					f, ok = c.Tags["a2-pyro"]
 				case core.Cryo:
@@ -119,6 +121,7 @@ func (c *char) a2() {
 				default:
 					return nil, false
 				}
+				c.Core.Log.Debugw("sucrose a2 adding", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", this.CharIndex(), "ele", this.Ele(), "expiry", f, "ok", ok)
 				return val, f > c.Core.F && ok
 			},
 		})
@@ -132,16 +135,16 @@ func (c *char) a2() {
 		switch ds.ReactionType {
 		case core.SwirlCryo:
 			c.Tags["a2-cryo"] = c.Core.F + 480
-			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlElectro:
 			c.Tags["a2-electro"] = c.Core.F + 480
-			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlHydro:
 			c.Tags["a2-hydro"] = c.Core.F + 480
-			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		case core.SwirlPyro:
 			c.Tags["a2-pyro"] = c.Core.F + 480
-			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
+			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "reaction", ds.ReactionType, "expiry", c.Core.F+480)
 		}
 		return false
 	}, "sucrose-a2-trigger")

@@ -49,6 +49,7 @@ func (c *char) Init(index int) {
 	mult := skillBurstBonus[c.TalentLvlSkill()]
 	//add E hook
 	for _, char := range c.Core.Chars {
+		this := char
 		char.AddMod(core.CharStatMod{
 			Key:    "raiden-e",
 			Expiry: -1,
@@ -60,7 +61,7 @@ func (c *char) Init(index int) {
 					return nil, false
 				}
 				val := make([]float64, core.EndStatType)
-				val[core.DmgP] = mult * char.MaxEnergy()
+				val[core.DmgP] = mult * this.MaxEnergy()
 				return val, true
 			},
 		})

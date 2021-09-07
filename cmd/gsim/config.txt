@@ -1,79 +1,62 @@
-options debug=false iteration=3000 duration=90 workers=24;
+options debug=false iteration=3000 duration=30 workers=24;
 
-char+=xiangling ele=pyro lvl=80 hp=10121.775 atk=209.549 def=622.549 em=96.000 cr=.05 cd=0.5 cons=6 talent=6,6,10;
-weapon+=xiangling label="skyward spine" atk=674 er=.368 refine=1;
-art+=xiangling label="gladiator's finale" count=2;
-art+=xiangling label="crimson witch of flames" count=2;
-stats+=xiangling hp=4780 hp%=0.047 atk%=.152 em=21 cd=.264;
-stats+=xiangling atk=311 def=37 def%=.051 cr=.097 cd=.218;
-stats+=xiangling atk%=.466 cd=.124 cr=.078 hp=209 atk=51;
-stats+=xiangling pyro%=.466 hp=956 atk=19 cd=.14 cr=.035;
-stats+=xiangling cr=.311 atk%=.087 hp%=.058 cd=.132 def=76;
+##Character Definitions
+char+=xiangling ele=pyro lvl=90 hp=10874.915 atk=225.141 def=668.871 em=96.000 cr=.05 cd=0.5 cons=4 talent=8,8,8;
+weapon+=xiangling label="deathmatch" atk=454.363 cr=0.368 refine=1;
+art+=xiangling label="seal of insulation" count=4;
+stats+=xiangling label=main hp=4780 atk=311 pyro%=0.466 atk%=.466 cd=0.622;
+stats+=xiangling label=subs atk%=.2 cr=.33 cd=.264 em=80 er=.220;
 
-char+=xingqiu ele=hydro lvl=80 hp=9514.469 atk=187.803 def=705.132 atk%=0.240 cr=.05 cd=0.5 cons=6 talent=1,9,10;
-weapon+=xingqiu label="sacrificial sword" atk=454.363 er=0.613 refine=4;
-art+=xingqiu label="gladiator's finale" count=2;
-art+=xingqiu label="noblesse oblige" count=2;
-stats+=xingqiu hp=4780 def=44 er=.065 cr=.097 cd=.124;
-stats+=xingqiu atk=311 cd=.218 def=19 atk%=.117 em=40;
-stats+=xingqiu atk%=.466 cd=.124 def%=.175 er=.045 hp=478;
-stats+=xingqiu hydro%=.466 cd=.202 atk%=.14 hp=299 atk=39;
-stats+=xingqiu cr=.311 cd=.062 atk=.192 hp=.082 atk=39;
+char+=xingqiu ele=hydro lvl=90 hp=10222.420 atk=201.777 def=757.599 atk%=0.240 cr=.05 cd=0.5 cons=4 talent=8,8,8;
+weapon+=xingqiu label="sacrificial sword" atk=454.363 er=0.613 refine=5;
+art+=xingqiu label="seal of insulation" count=4;
+stats+=xingqiu label=main hp=4780 atk=311 hydro%=0.466 atk%=0.466 cr=0.311;
+stats+=xingqiu label=subs atk%=.2 cr=.231 cd=.66 em=80;
 
-char+=bennett ele=pyro lvl=70 hp=10128.510 atk=156.173 def=630.100 er=0.200 cr=.05 cd=0.5 cons=2 talent=6,8,8;
-weapon+=bennett label="festering desire" atk=509.606 er=0.459 refine=5;
+char+=bennett ele=pyro lvl=90 hp=12397.403 atk=191.157 def=771.249 er=0.267 cr=.05 cd=0.5 cons=4 talent=8,8,8;
+weapon+=bennett label="blackcliff longsword" atk=564.784 cd=0.368 refine=1;
 art+=bennett label="noblesse oblige" count=4;
-stats+=bennett hp=4780 atk=45 cd=.148 def=60 atk%=.058;
-stats+=bennett atk=311 def=42 atk%=.157 er=.104 cr=.039;
-stats+=bennett er=.518 atk%=.222 hp%=.058 cd=.117 hp=209;
-stats+=bennett pyro%=.466 cr=.089 er=.052 atk%=.093 atk=43;
-stats+=bennett cr=.311 hp=508 em=42 atk%=.105 atk=33;
+stats+=bennett  label=main hp=4780 atk=311 pyro%=0.466 em=187 cr=0.311;
+stats+=bennett label=subs atk%=.2 cr=.33 cd=.462 em=80;
 
-char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=1 talent=6,8,8;
-weapon+=raiden label="grasscutter's light" atk=608 er=.551 refine=1;
-#weapon+=raiden label="the catch" atk=510 er=.459 refine=1;
-art+=raiden label="seal of insulation" count=4;
-stats+=raiden hp=4780 em=47 er=.11 def%=.139 cr=.105;
-stats+=raiden atk=311 def=35 cd=.14 em=35 cr=.07;
-stats+=raiden er=0.518 atk=14 cd=.202 em=70 hp=299;
-#stats+=raiden atk%=.466 def=23 em=37 cr=.031 er=.227;
-stats+=raiden electro%=0.466 cr=.117 atk=19 def=0.073 cd=.194;
-stats+=raiden cr=0.311 def%=.131 atk%=.111 er=.117 hp%=.087;
+char+=sucrose ele=anemo lvl=90 hp=9243.678 atk=169.918 def=702.997 anemo%=0.240 cr=.05 cd=0.5 cons=4 talent=8,8,8;
+weapon+=sucrose label="thrilling tales of dragon slayers" atk=401.294 hp%=0.352 refine=5;
+art+=sucrose label="viridescent venerer" count=4;
+stats+=sucrose label=main hp=4780 atk=311 em=559.5;
+stats+=sucrose label=subs em=90.5;
 
-#energy+=every interval=200,300 amount=1;
-#energy+=every interval=40,60 amount=1;
+##Default Enemy
+target+="dummy" lvl=90 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 
-##ENEMY
-target+="dummy" lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
-active+=raiden;
+##Actions List
+active+=bennett;
 
-actions+=attack target=raiden if=.status.raidenburst>0;
-actions+=skill target=raiden if=.status.raidenskill==0;
+# HP particle simulation. Per srl:
+# it adds 1 particle randomly, uniformly distributed between 200 to 300 frames after the last time an energy drops
+# so in the case above, it adds on avg one particle every 250 frames in effect
+# so over 90s of combat that's 90 * 60 / 250 = 21.6 on avg
+energy+=every interval=200,300 amount=1;
 
-### prioritize battery for xl if xl Q is ready but not enough  energy
-actions+=sequence_strict target=bennett exec=skill,attack if=.energy.xiangling<80&&.cd.xiangling.burst==0&&.status.xqburst>0&&.status.xianglingburst==0 swap=xiangling;
-actions+=skill target=bennett if=.energy.xiangling<80&&.cd.xiangling.burst==0&&.status.xianglingburst==0 swap=xiangling;
+actions+=sequence_strict target=bennett exec=burst,skill if=.status.xqburst==0;
+actions+=sequence_strict target=bennett exec=burst,attack,skill if=.status.xqburst>0;
+actions+=burst target=bennett;
 
-actions+=sequence_strict target=xingqiu exec=skill[orbital=1],attack,burst[orbital=1] lock=100;
-actions+=sequence_strict target=xingqiu exec=skill[orbital=1],attack if=.energy.xingqiu<80&&.status.xqburst>0;
-actions+=skill[orbital=1] target=xingqiu if=.energy.xingqiu<80 lock=90;
+actions+=skill target=sucrose if=.element.pyro==1&&.debuff.res.vvpyro==0;
+# actions+=skill target=sucrose if=.element.hydro==1&&.debuff.res.vvhydro==0;
+actions+=attack target=sucrose if=.element.pyro==1&&.debuff.res.vvpyro==0;
+# actions+=attack target=sucrose if=.element.hydro==1&&.debuff.res.vvhydro==0;
 
+actions+=sequence_strict target=xiangling exec=burst,attack,skill,attack if=.status.xqburst>0;
+actions+=sequence_strict target=xiangling exec=burst,skill if=.status.xqburst==0;
+
+actions+=sequence_strict target=xingqiu exec=burst[orbital=1],skill[orbital=1],dash lock=100;
 actions+=burst[orbital=1] target=xingqiu;
+actions+=skill[orbital=1] target=xingqiu;
 
-actions+=sequence_strict target=bennett exec=burst,attack,skill if=.energy.xiangling==80&&.cd.xiangling.burst==0 swap=xiangling;
-actions+=sequence_strict target=xiangling exec=burst,attack,skill,attack;
-actions+=sequence_strict target=xiangling exec=burst,attack;
-
-actions+=burst target=raiden;
-
-actions+=sequence_strict target=bennett exec=skill,attack if=.energy.xiangling<80&&.status.xqburst>0 swap=xiangling;
-actions+=skill target=bennett if=.energy.xiangling<80 swap=xiangling;
-
-actions+=skill target=xiangling active=xiangling;
-actions+=skill target=raiden;
-
-#actions+=sequence_strict target=xiangling exec=attack,attack,attack active=xiangling;
+actions+=skill target=xiangling;
+actions+=sequence_strict target=bennett exec=attack,skill,attack if=.status.xqburst>0&&.status.xianglingburst==0&&.energy.xiangling<80 swap=xiangling;
+# actions+=skill target=bennett if=.energy.xiangling<80&&.status.xianglingburst==0 swap=xiangling;
+actions+=sequence_strict target=xingqiu exec=attack,attack,attack,attack if=.status.xqburst>0;
+actions+=attack target=xingqiu;
 actions+=attack target=xiangling active=xiangling;
-actions+=attack target=raiden active=raiden;
-actions+=attack target=xingqiu active=xingqiu;
 actions+=attack target=bennett active=bennett;
