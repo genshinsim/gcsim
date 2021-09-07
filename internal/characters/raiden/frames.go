@@ -39,7 +39,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			case 3:
 				f = 95 - 54
 			case 4:
-				f = 139
+				f = 139 - 95
 			}
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))

@@ -1,13 +1,13 @@
-import { Card, Elevation, H4, H5 } from "@blueprintjs/core";
+import { H4 } from "@blueprintjs/core";
 import { RootState } from "app/store";
 import React from "react";
 import { useSelector } from "react-redux";
 import AvgModeResult from "./AvgModeResult";
 
 function Results() {
-  const { result, data } = useSelector((state: RootState) => {
+  const { data } = useSelector((state: RootState) => {
     return {
-      result: state.results.text,
+      // result: state.results.text,
       data: state.results.data,
     };
   });
