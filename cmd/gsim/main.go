@@ -55,6 +55,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	//check for imports
+
 	parser := parse.New("single", string(src))
 	cfg, opts, err := parser.Parse()
 	if err != nil {
