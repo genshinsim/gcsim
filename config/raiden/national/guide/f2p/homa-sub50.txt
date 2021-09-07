@@ -46,11 +46,11 @@ actions+=skill target=raiden if=.status.raidenskill==0;
 actions+=sequence_strict target=bennett exec=skill,attack if=.energy.xiangling<80&&.cd.xiangling.burst==0&&.status.xqburst>0&&.status.xianglingburst==0 swap=xiangling;
 actions+=skill target=bennett if=.energy.xiangling<80&&.cd.xiangling.burst==0&&.status.xianglingburst==0 swap=xiangling;
 
-actions+=sequence_strict target=xingqiu exec=skill,attack,burst lock=100;
-actions+=sequence_strict target=xingqiu exec=skill,attack if=.energy.xingqiu<80&&.status.xqburst>0;
-actions+=skill target=xingqiu if=.energy.xingqiu<80 lock=90;
+actions+=sequence_strict target=xingqiu exec=skill[orbital=1],attack,burst[orbital=1] lock=100;
+actions+=sequence_strict target=xingqiu exec=skill[orbital=1],attack if=.energy.xingqiu<80&&.status.xqburst>0;
+actions+=skill[orbital=1] target=xingqiu if=.energy.xingqiu<80 lock=90;
 
-actions+=burst target=xingqiu;
+actions+=burst[orbital=1] target=xingqiu;
 
 actions+=sequence_strict target=bennett exec=burst,attack,skill if=.energy.xiangling==80&&.cd.xiangling.burst==0 swap=xiangling;
 actions+=sequence_strict target=xiangling exec=burst,attack,skill,attack;

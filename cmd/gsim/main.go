@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
+	"regexp"
 	"strings"
 	"time"
 
@@ -56,8 +58,31 @@ func main() {
 	}
 
 	//check for imports
+	var data strings.Builder
+	var re = regexp.MustCompile(`(?m)^import "(.+)"$`)
 
-	parser := parse.New("single", string(src))
+	rows := strings.Split(strings.ReplaceAll(string(src), "\r\n", "\n"), "\n")
+	for _, row := range rows {
+		if re.MatchString(row) {
+			match := re.FindStringSubmatch(row)
+			//read import
+			p := path.Join(path.Dir(*cfgFile), match[1])
+			src, err = ioutil.ReadFile(p)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			data.WriteString(string(src))
+
+		} else {
+			data.WriteString(row)
+			data.WriteString("\n")
+		}
+	}
+
+	fmt.Println(data.String())
+
+	parser := parse.New("single", data.String())
 	cfg, opts, err := parser.Parse()
 	if err != nil {
 		log.Fatal(err)
@@ -110,7 +135,7 @@ func main() {
 
 		opts.DebugPaths = []string{"stdout"}
 
-		result, err := combat.Run(string(src), opts)
+		result, err := combat.Run(data.String(), opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -129,7 +154,7 @@ func main() {
 		// fmt.Print(out)
 
 	} else {
-		result, err := combat.Run(string(src), opts)
+		result, err := combat.Run(data.String(), opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -145,11 +170,34 @@ func runMulti(files []string, w, i int) {
 		if f == "" || f[0] == '#' {
 			continue
 		}
-		source, err := ioutil.ReadFile(f)
+		src, err := ioutil.ReadFile(f)
 		if err != nil {
 			log.Fatal(err)
 		}
-		parser := parse.New("single", string(source))
+
+		var data strings.Builder
+		var re = regexp.MustCompile(`(?m)^import "(.+)"$`)
+
+		rows := strings.Split(strings.ReplaceAll(string(src), "\r\n", "\n"), "\n")
+		for _, row := range rows {
+			if re.MatchString(row) {
+				match := re.FindStringSubmatch(row)
+				//read import
+				p := path.Join(path.Dir(f), match[1])
+				src, err = ioutil.ReadFile(p)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				data.WriteString(string(src))
+
+			} else {
+				data.WriteString(row)
+				data.WriteString("\n")
+			}
+		}
+
+		parser := parse.New("single", data.String())
 		_, opts, err := parser.Parse()
 		if err != nil {
 			log.Fatal(err)
@@ -164,7 +212,7 @@ func runMulti(files []string, w, i int) {
 		opts.LogDetails = false
 
 		fmt.Printf("%60.60v |", f)
-		r, err := combat.Run(string(source), opts)
+		r, err := combat.Run(data.String(), opts)
 		if err != nil {
 			log.Fatal(err)
 		}
