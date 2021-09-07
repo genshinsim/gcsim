@@ -44,16 +44,23 @@ func New(c core.Character, s *core.Core, count int) {
 
 		m := make([]float64, core.EndStatType)
 		m[core.ATKP] = 0.2
-		c.AddMod(core.CharStatMod{
-			Key: "nob-4pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if s.Status.Duration("nob-4pc") > 0 {
-					return m, true
-				}
-				return nil, false
-			},
-			Expiry: -1,
-		})
+
+		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+			for _, char := range s.Chars {
+				char.AddMod(core.CharStatMod{
+					Key: "nob-4pc",
+					Amount: func(a core.AttackTag) ([]float64, bool) {
+						if s.Status.Duration("nob-4pc") > 0 {
+							return m, true
+						}
+						return nil, false
+					},
+					Expiry: -1,
+				})
+			}
+			return true
+		}, "nob-4pc-init")
+
 	}
 	//add flat stat to char
 }
