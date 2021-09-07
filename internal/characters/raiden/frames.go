@@ -13,15 +13,15 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 				if c.Core.LastAction.Target == "raiden" && c.Core.LastAction.Typ == core.ActionAttack {
 					f += 21
 				}
-				f = 13
+				f = 14
 			case 1:
-				f = 19
+				f = 31 - 14
 			case 2:
-				f = 22
+				f = 56 - 31
 			case 3:
-				f = 44
+				f = 102 - 56
 			case 4:
-				f = 41
+				f = 151 - 102
 			}
 		} else {
 			switch c.NormalCounter {
