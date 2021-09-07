@@ -198,7 +198,7 @@ func (c *char) Burst(p map[string]int) int {
 		j := i
 		c.AddTask(func() {
 			x := c.Snapshot(
-				fmt.Sprintf("Pyronado Hit %v", i+1),
+				fmt.Sprintf("Pyronado Hit %v", j+1),
 				core.AttackTagElementalBurst,
 				core.ICDTagElementalBurst,
 				core.ICDGroupDefault,
@@ -213,25 +213,29 @@ func (c *char) Burst(p map[string]int) int {
 		// c.QueueDmg(&x, delay[i])
 	}
 
-	//spin to win; snapshot on cast
-	d := c.Snapshot(
-		"Pyronado",
-		core.AttackTagElementalBurst,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Pyro,
-		25,
-		pyronadoSpin[lvl],
-	)
-	d.Targets = core.TargetAll
-
 	//ok for now we assume it's 80 (or 70??) frames per cycle, that gives us roughly 10s uptime
 	//max is either 10s or 14s
 	max := 10 * 60
 	if c.Base.Cons >= 4 {
 		max = 14 * 60
 	}
+
+	var d core.Snapshot
+
+	c.AddTask(func() {
+		//spin to win; snapshot between 2nd and 3rd hit
+		d = c.Snapshot(
+			"Pyronado",
+			core.AttackTagElementalBurst,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeSpear,
+			core.Pyro,
+			25,
+			pyronadoSpin[lvl],
+		)
+		d.Targets = core.TargetAll
+	}, "pyronado-snap", 69)
 
 	c.Core.Status.AddStatus("xianglingburst", max)
 
