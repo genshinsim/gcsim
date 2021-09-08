@@ -1,5 +1,3 @@
-options debug=false iteration=3000 duration=90 workers=24;
-
 import "../base-char.txt"
 
 weapon+=xiangling label="kitain cross spear" atk=564.784 em=110.256 refine=1;
