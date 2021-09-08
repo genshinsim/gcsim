@@ -7,7 +7,8 @@ options debug=false iteration=3000 duration=90 workers=24;
 char+=xiangling ele=pyro lvl=80 hp=9637.797 atk=199.529 def=592.781 em=72.000 cr=.05 cd=0.5 cons=6 talent=8,8,8;
 art+=xiangling label="seal of insulation" count=4;
 #art+=xiangling label="crimson witch of flames" count=4;
-stats+=xiangling hp=4780 atk=311 atk%=.466 pyro%=.466 cr=0.311;
+#stats+=xiangling hp=4780 atk=311 atk%=.466 pyro%=.466 cr=0.311;
+stats+=xiangling hp=4780 atk=311 er=0.518 pyro%=.466 cr=0.311;
 
 
 char+=bennett ele=pyro lvl=80 hp=10987.089 atk=169.412 def=683.513 er=0.200 cr=.05 cd=0.5 cons=1 talent=8,8,8;

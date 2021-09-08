@@ -80,7 +80,7 @@ func main() {
 		}
 	}
 
-	fmt.Println(data.String())
+	// fmt.Println(data.String())
 
 	parser := parse.New("single", data.String())
 	cfg, opts, err := parser.Parse()
