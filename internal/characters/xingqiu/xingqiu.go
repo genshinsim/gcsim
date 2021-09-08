@@ -9,12 +9,12 @@ import (
 
 type char struct {
 	*character.Tmpl
-	numSwords          int
-	nextRegen          bool
-	burstCounter       int
-	burstICDResetTimer int //if c.S.F > this, then reset counter to = 0
-	orbitalActive      bool
-	burstSwordICD      int
+	numSwords    int
+	nextRegen    bool
+	burstCounter int
+	// burstICDResetTimer int //if c.S.F > this, then reset counter to = 0
+	orbitalActive bool
+	burstSwordICD int
 }
 
 func init() {
@@ -127,7 +127,7 @@ func (c *char) orbitalfunc(src int) func() {
 		d := c.Snapshot(
 			"Xingqiu Skill (Orbital)",
 			core.AttackTagNone,
-			core.ICDTagNormalAttack,
+			core.ICDTagNone,
 			core.ICDGroupDefault,
 			core.StrikeTypeDefault,
 			core.Hydro,
@@ -139,7 +139,7 @@ func (c *char) orbitalfunc(src int) func() {
 		c.QueueDmg(&d, 1)
 		c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 		//queue up next instance
-		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 150)
+		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
 	}
 }
 
@@ -202,12 +202,18 @@ func (c *char) burstHook() {
 		if c.Core.Status.Duration("xqburst") <= 0 {
 			return false
 		}
+		delay := 0 //wait 5 frames into attack animation
 		//check if off ICD
 		if c.burstSwordICD > c.Core.F {
-			return false
+			f := args[0].(int)
+			//if burst icd is between current frame and f (animation end frame)
+			//then we should queue up a sword anyways at when the icd comes up
+			if c.burstSwordICD <= c.Core.F+f {
+				delay = c.burstSwordICD - c.Core.F
+			} else {
+				return false
+			}
 		}
-
-		const delay = 0 //wait 5 frames into attack animation
 
 		//trigger swords, only first sword applies hydro
 		for i := 0; i < c.numSwords; i++ {
