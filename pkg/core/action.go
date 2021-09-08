@@ -155,18 +155,18 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 		a.core.Events.Emit(PreSkill)
 		f = c.Skill(n.Param)
 		a.core.ResetAllNormalCounter()
-		a.core.Events.Emit(PostSkill)
+		a.core.Events.Emit(PostSkill, f)
 	case ActionBurst:
 		a.core.Events.Emit(PreBurst)
 		f = c.Burst(n.Param)
 		a.core.ResetAllNormalCounter()
 		a.core.Tasks.Add(func() {
-			a.core.Events.Emit(PostBurst)
+			a.core.Events.Emit(PostBurst, f)
 		}, f)
 	case ActionAttack:
 		a.core.Events.Emit(PreAttack)
 		f = c.Attack(n.Param)
-		a.core.Events.Emit(PostAttack)
+		a.core.Events.Emit(PostAttack, f)
 	case ActionCharge:
 		req := a.core.StamPercentMod(ActionCharge) * c.ActionStam(ActionCharge, n.Param)
 		if a.core.Stam <= req {
@@ -177,24 +177,24 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 			a.core.Events.Emit(PreChargeAttack)
 			f += c.ChargeAttack(n.Param)
 			a.core.ResetAllNormalCounter()
-			a.core.Events.Emit(PostChargeAttack)
+			a.core.Events.Emit(PostChargeAttack, f)
 			a.core.Events.Emit(OnStamUse, ActionCharge)
 		}
 	case ActionHighPlunge:
 		a.core.Events.Emit(PrePlunge)
 		f = c.HighPlungeAttack(n.Param)
 		a.core.ResetAllNormalCounter()
-		a.core.Events.Emit(PostPlunge)
+		a.core.Events.Emit(PostPlunge, f)
 	case ActionLowPlunge:
 		a.core.Events.Emit(PrePlunge)
 		f = c.LowPlungeAttack(n.Param)
 		a.core.ResetAllNormalCounter()
-		a.core.Events.Emit(PostPlunge)
+		a.core.Events.Emit(PostPlunge, f)
 	case ActionAim:
 		a.core.Events.Emit(PreAimShoot)
 		f = c.Aimed(n.Param)
 		a.core.ResetAllNormalCounter()
-		a.core.Events.Emit(PostAimShoot)
+		a.core.Events.Emit(PostAimShoot, f)
 	case ActionSwap:
 		f = a.core.Swap(n.Target)
 	case ActionCancellable:

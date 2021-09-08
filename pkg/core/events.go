@@ -17,17 +17,17 @@ const (
 	OnCharacterHurt              //nil
 	//ability use
 	PreSkill         //nil
-	PostSkill        //nil
+	PostSkill        //nil, frames
 	PreBurst         //nil
-	PostBurst        //nil
+	PostBurst        //nil, frames
 	PreAttack        //nil
-	PostAttack       //nil
+	PostAttack       //nil, frames
 	PreChargeAttack  //nil
-	PostChargeAttack //nil
+	PostChargeAttack //nil, frames
 	PrePlunge        //nil
-	PostPlunge       //nil
+	PostPlunge       //nil, frames
 	PreAimShoot      //nil
-	PostAimShoot     //nil
+	PostAimShoot     //nil, frames
 	//sim stuff
 	OnInitialize  //nil
 	EndEventTypes //elim
