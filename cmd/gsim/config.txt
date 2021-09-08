@@ -5,7 +5,7 @@ char+=xiangling ele=pyro lvl=90 hp=10874.915 atk=225.141 def=668.871 em=96.000 c
 weapon+=xiangling label="deathmatch" atk=454.363 cr=0.368 refine=1;
 art+=xiangling label="crimson witch of flames" count=4;
 stats+=xiangling label=main hp=4780 atk=311 pyro%=0.466 em=187 cd=0.622;
-stats+=xiangling label=subs atk%=0 cr=.33 cd=.33 em=40 er=.220;
+stats+=xiangling label=subs atk%=0 cr=.33 cd=.33 em=40 er=.330;
 
 char+=xingqiu ele=hydro lvl=90 hp=10222.420 atk=201.777 def=757.599 atk%=0.240 cr=.05 cd=0.5 cons=4 talent=8,8,10;
 weapon+=xingqiu label="amenoma kageuchi" atk=454.363 atk%=0.551 refine=3;
@@ -40,33 +40,32 @@ energy+=every interval=200,300 amount=1;
 actions+=sequence_strict target=raiden exec=attack,attack,attack,attack,charge,attack,attack,attack,attack,charge,attack,charge if=.status.raidenburst>0;
 
 # Additional check to reset at the start of the next rotation
-actions+=skill target=raiden if=.status.xianglingburst==0&&.energy.xingqiu>70&&.energy.xiangling>70;
+actions+=skill target=raiden if=.status.xqburst==0&&.status.btburst==0&&.status.xianglingburst==0&&.energy.xingqiu==80;
 actions+=skill target=raiden if=.status.raidenskill==0;
 
 # Skill is required before burst to activate Kageuchi. Otherwise ER is barely not enough
-# For rotations #2 and beyond, need to ensure that Guoba is ready to go. Guoba timing is about 300 frames after XQ fires his skill
-actions+=sequence_strict target=xingqiu exec=skill[orbital=1],burst[orbital=1],attack if=.cd.xiangling.skill<300;
+actions+=sequence_strict target=xingqiu exec=skill[orbital=1],burst[orbital=1],attack lock=50;
 
 # Bennett burst goes after XQ burst for uptime alignment. Attack to proc swords
-actions+=sequence_strict target=bennett exec=burst,attack,skill if=.status.xqburst>0;
+actions+=sequence_strict target=bennett exec=burst,skill,attack if=.status.xqburst>0;
 
 # Only ever want to XL burst in Bennett buff and after XQ burst for uptime alignment
-actions+=sequence_strict target=xiangling exec=burst,attack,skill,attack,attack,attack if=.status.xqburst>0&&.status.btburst>0;
+actions+=sequence_strict target=xiangling exec=burst,attack,skill,attack if=.status.xqburst>0&&.status.btburst>0;
 # Second set of actions needed in case Guoba CD comes off while pyronado is spinning
 actions+=sequence_strict target=xiangling exec=burst,attack if=.status.xqburst>0&&.status.btburst>0;
-actions+=skill target=xiangling;
+actions+=skill target=xiangling if=.status.xianglingburst>0;
 
 # Raiden must burst after all others. Requires an attack to allow Bennett buff to apply
 actions+=sequence_strict target=raiden exec=burst if=.status.xqburst>0&&.status.xianglingburst>0&&.status.btburst>0;
 
 # Funnelling
-actions+=sequence_strict target=bennett exec=attack,skill if=.status.xqburst>0&&.energy.xiangling<70 swap=xiangling;
-actions+=skill target=bennett if=.energy.xiangling<70 swap=xiangling;
+actions+=sequence_strict target=bennett exec=attack,skill if=.status.xqburst>0 if=.energy.xiangling<75 swap=xiangling;
+actions+=skill target=bennett if=.energy.xiangling<75 swap=xiangling;
 actions+=skill target=bennett if=.energy.xingqiu<80 swap=xingqiu;
 actions+=sequence_strict target=bennett exec=attack,skill if=.status.xqburst>0 if=.energy.raiden<90 swap=raiden;
+actions+=skill target=xiangling;
 
 actions+=sequence_strict target=xingqiu exec=attack if=.status.xqburst>0;
+actions+=attack target=xingqiu active=xingqiu;
 actions+=attack target=xiangling active=xiangling;
 actions+=attack target=bennett active=bennett;
-actions+=attack target=xingqiu active=xingqiu;
-actions+=attack target=raiden active=raiden;
