@@ -73,7 +73,8 @@ func (c *char) Burst(p map[string]int) int {
 	c.QueueDmg(&d, f)
 
 	//1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
-	c.ConsumeEnergy(39)
+	//c.ConsumeEnergy(39) //original consume function use
+	c.ConsumeEnergy(0, 39)
 	c.SetCD(core.ActionBurst, 1200+37)
 	return f
 }

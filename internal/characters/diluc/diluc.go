@@ -271,7 +271,8 @@ func (c *char) Burst(p map[string]int) int {
 		Expiry: c.Core.F + 852,
 	})
 
-	c.Energy = 0
+	//c.Energy = 0  forcing every character to comsume energy after burts in the energy.go to make my life easier
+	c.ConsumeEnergy(0, 0) //at 0,0 value acts the same as c.Energy = 0
 	c.SetCD(core.ActionBurst, 900)
 	return f
 }

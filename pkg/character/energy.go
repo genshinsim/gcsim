@@ -14,10 +14,17 @@ func (c *Tmpl) QueueParticle(src string, num int, ele core.EleType, delay int) {
 
 }
 
-func (c *Tmpl) ConsumeEnergy(delay int) {
-	c.AddTask(func() {
-		c.Energy = 0
-	}, "consume-energy", delay)
+func (c *Tmpl) ConsumeEnergy(refund float64, delay int) {
+	c.ER_CalcValues()
+	if delay > 0 { //not sure how this task delay interacs whit the energy clear and ER calcs on a 0 delay, so forcing it to no interact
+		c.AddTask(func() {
+			c.Energy = refund
+			c.ER_ClearEnergy()
+		}, "consume-energy", delay)
+	} else {
+		c.Energy = refund
+		c.ER_ClearEnergy()
+	}
 }
 
 func (c *Tmpl) CurrentEnergy() float64 {
@@ -30,6 +37,7 @@ func (c *Tmpl) MaxEnergy() float64 {
 
 func (c *Tmpl) AddEnergy(e float64) {
 	c.Energy += e
+	c.ER_SaveFlatEnergy(e) //function call ER calcs, e is the energy added to a character
 	if c.Energy > c.EnergyMax {
 		c.Energy = c.EnergyMax
 	}
@@ -58,6 +66,9 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 	amt = amt * r //apply off field reduction
 	//apply energy regen stat
 	er = c.Stat(core.ER)
+
+	c.ER_SaveEnergy(amt, p) //function call ER calcs, amt must be pre char ER multiplication and after off field reduction, p is particle recived
+
 	amt = amt * (1 + er) * float64(p.Num)
 
 	pre := c.Energy
@@ -81,5 +92,37 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 		"pre_recovery", pre,
 		"amt", amt,
 		"post_recovery", c.Energy,
+		// addign ER text for debug and test before creating is own log category
+		"ER energy", c.ER_EnergyRecived,
+		"ER flat energy", c.ER_FlatEnergyRecived,
+		"ER need", c.ER_ERneeded-1, //-1 to be consistent with the rest of the log
 	)
+}
+
+func (c *Tmpl) ER_SaveEnergy(amt float64, p core.Particle) { //saves the particles recived in a char pre current ER multiplication, only for a one Burst
+	if !(c.Energy == c.EnergyMax && c.ER_EnergyRecived == 0 && c.ER_FlatEnergyRecived == 0) { //workaround, dont save when the burst is already full at beginning of simulation
+		c.ER_EnergyRecived += amt * float64(p.Num)
+	}
+}
+
+func (c *Tmpl) ER_SaveFlatEnergy(amt float64) { //saves the falt particles recived in a char (3 energy from c6 xq), only for a one Burst
+	c.ER_FlatEnergyRecived += amt
+}
+
+func (c *Tmpl) ER_ClearEnergy() { //Restart the ER especific values wen a burst is used
+	c.ER_EnergyRecived = 0
+	c.ER_FlatEnergyRecived = 0
+}
+
+func (c *Tmpl) ER_CalcValues() { //Temporary max ER value calcs and storage in a variable because dont know how to log and display as a individual category
+	var ERneed = (c.Energy - c.ER_FlatEnergyRecived) / c.ER_EnergyRecived
+	if c.ER_EnergyRecived > 0 { //workaround for using filling burst at start of simulation
+		if c.ER_ERneeded == 0 { //chechking for the highest value of ER and storing it while the log and display of functions are not finished
+			c.ER_ERneeded = ERneed
+		} else {
+			if c.ER_ERneeded < ERneed {
+				c.ER_ERneeded = ERneed
+			}
+		}
+	}
 }

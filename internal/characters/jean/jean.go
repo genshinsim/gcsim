@@ -199,8 +199,9 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	c.SetCD(core.ActionBurst, 1200)
-	c.Energy = 16 //jean a4
-	return f      //TODO: frames, + p for holding
+	//c.Energy = 16 //jean a4
+	c.ConsumeEnergy(16, 0) //at 0,0 value acts the same as c.Energy = 0
+	return f               //TODO: frames, + p for holding
 }
 
 func (c *char) c6() {

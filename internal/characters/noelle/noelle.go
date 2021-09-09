@@ -290,8 +290,9 @@ func (c *char) Burst(p map[string]int) int {
 	c.QueueDmg(&d, f-5)
 
 	c.SetCD(core.ActionBurst, 900)
-	c.Energy = 0
-	return f //TODO: frame count
+	//c.Energy = 0  forcing every character to comsume energy after burts in the energy.go to make my life easier
+	c.ConsumeEnergy(0, 0) //at 0,0 value acts the same as c.Energy = 0
+	return f              //TODO: frame count
 }
 
 func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {

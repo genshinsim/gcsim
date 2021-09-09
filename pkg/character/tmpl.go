@@ -35,6 +35,11 @@ type Tmpl struct {
 	HPCurrent float64
 	HPMax     float64
 
+	//ER calcs values
+	ER_ERneeded          float64
+	ER_EnergyRecived     float64
+	ER_FlatEnergyRecived float64
+
 	//counters
 	NormalHitNum  int //how many hits in a normal combo
 	NormalCounter int
@@ -57,6 +62,12 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 	c.Talents = p.Talents
 	c.SkillCon = 3
 	c.BurstCon = 5
+
+	//ER calcs
+	c.ER_ERneeded = 0
+	c.ER_EnergyRecived = 0
+	c.ER_FlatEnergyRecived = 0
+
 	if c.Talents.Attack < 1 || c.Talents.Attack > 15 {
 		return nil, fmt.Errorf("invalid talent lvl: attack - %v", c.Talents.Attack)
 	}

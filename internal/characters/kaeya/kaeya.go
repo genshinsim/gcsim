@@ -231,9 +231,11 @@ func (c *char) Burst(p map[string]int) int {
 	}
 
 	if c.Base.Cons == 6 {
-		c.Energy = 15
+		//c.Energy = 15
+		c.ConsumeEnergy(15, 0) //at 0,0 value acts the same as c.Energy = 0
 	} else {
-		c.Energy = 0
+		//c.Energy = 0  forcing every character to comsume energy after burts in the energy.go to make my life easier
+		c.ConsumeEnergy(0, 0) //at 0,0 value acts the same as c.Energy = 0
 	}
 
 	// c.CD[def.BurstCD] = c.Sim.F + 900

@@ -280,7 +280,8 @@ func (c *char) Burst(p map[string]int) int {
 	//[8:11 PM] gimmeabreak: i guess single target it does nothing then?
 	//[8:12 PM] ArchedNosi | Lisa Unleashed: yeah single does nothing
 
-	c.Energy = 0
+	//c.Energy = 0  forcing every character to comsume energy after burts in the energy.go to make my life easier
+	c.ConsumeEnergy(0, 0) //at 0,0 value acts the same as c.Energy = 0
 	// c.CD[def.BurstCD] = c.Core.F + 1200
 	c.SetCD(core.ActionBurst, 1200)
 	return f //TODO: frames
