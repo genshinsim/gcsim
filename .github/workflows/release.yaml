@@ -70,7 +70,10 @@ jobs:
         run: ls
 
       - name: archive release
-        run: zip -r dev-build-windows-amd64.zip ../../COPYING ../../README.md gsimui.exe ,,/,,/config
+        run: zip -r dev-build-windows-amd64.zip ../../COPYING ../../README.md gsimui.exe ../../config
+
+      - name: check files
+        run: ls
 
       - name: upload build for next step
         uses: actions/upload-artifact@v2
