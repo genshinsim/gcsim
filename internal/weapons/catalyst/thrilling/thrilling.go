@@ -20,7 +20,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	}, fmt.Sprintf("thrilling-%v", char.Name()))
 
 	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = .16 + float64(r)*0.06
+	m[core.ATKP] = .18 + float64(r)*0.06
 
 	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		if !isActive && c.ActiveChar == char.CharIndex() {

@@ -208,8 +208,9 @@ func (c *char) burstHook() {
 			f := args[0].(int)
 			//if burst icd is between current frame and f (animation end frame)
 			//then we should queue up a sword anyways at when the icd comes up
-			if c.burstSwordICD <= c.Core.F+f {
+			if c.burstSwordICD <= c.Core.F+f+10 {
 				delay = c.burstSwordICD - c.Core.F
+				c.Core.Log.Debugw("Xingqiu Q on animation delay", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "icd", c.burstSwordICD, "f", f, "check", c.Core.F+f+10)
 			} else {
 				return false
 			}
@@ -220,36 +221,75 @@ func (c *char) burstHook() {
 
 			wave := i
 
-			d := c.Snapshot(
-				"Guhua Sword: Raincutter",
-				core.AttackTagElementalBurst,
-				core.ICDTagElementalBurst,
-				core.ICDGroupDefault,
-				core.StrikeTypePierce,
-				core.Hydro,
-				25,
-				burst[c.TalentLvlBurst()],
-			)
-			d.Targets = 0 //only hit main target
-			d.OnHitCallback = func(t core.Target) {
-				//check energy
-				if c.nextRegen && wave == 0 {
-					c.AddEnergy(3)
-				}
-				//check c2
-				if c.Base.Cons >= 2 {
-					c.AddTask(func() {
-						t.AddResMod("xingqiu-c2", core.ResistMod{
-							Ele:      core.Hydro,
-							Value:    -0.15,
-							Duration: 4 * 60,
-						})
-					}, "xq-sword-debuff", 1)
+			if delay > 0 {
 
+				c.AddTask(func() {
+
+					d := c.Snapshot(
+						"Guhua Sword: Raincutter",
+						core.AttackTagElementalBurst,
+						core.ICDTagElementalBurst,
+						core.ICDGroupDefault,
+						core.StrikeTypePierce,
+						core.Hydro,
+						25,
+						burst[c.TalentLvlBurst()],
+					)
+					d.Targets = 0 //only hit main target
+					d.OnHitCallback = func(t core.Target) {
+						//check energy
+						if c.nextRegen && wave == 0 {
+							c.AddEnergy(3)
+						}
+						//check c2
+						if c.Base.Cons >= 2 {
+							c.AddTask(func() {
+								t.AddResMod("xingqiu-c2", core.ResistMod{
+									Ele:      core.Hydro,
+									Value:    -0.15,
+									Duration: 4 * 60,
+								})
+							}, "xq-sword-debuff", 1)
+
+						}
+					}
+
+					c.QueueDmg(&d, 20)
+
+				}, "sword-wave", delay)
+			} else {
+				d := c.Snapshot(
+					"Guhua Sword: Raincutter",
+					core.AttackTagElementalBurst,
+					core.ICDTagElementalBurst,
+					core.ICDGroupDefault,
+					core.StrikeTypePierce,
+					core.Hydro,
+					25,
+					burst[c.TalentLvlBurst()],
+				)
+				d.Targets = 0 //only hit main target
+				d.OnHitCallback = func(t core.Target) {
+					//check energy
+					if c.nextRegen && wave == 0 {
+						c.AddEnergy(3)
+					}
+					//check c2
+					if c.Base.Cons >= 2 {
+						c.AddTask(func() {
+							t.AddResMod("xingqiu-c2", core.ResistMod{
+								Ele:      core.Hydro,
+								Value:    -0.15,
+								Duration: 4 * 60,
+							})
+						}, "xq-sword-debuff", 1)
+
+					}
 				}
+
+				c.QueueDmg(&d, 20)
+
 			}
-
-			c.QueueDmg(&d, delay+20)
 
 			c.burstCounter++
 		}
@@ -273,7 +313,7 @@ func (c *char) burstHook() {
 		}
 
 		//estimated 1 second ICD
-		c.burstSwordICD = c.Core.F + 60
+		c.burstSwordICD = c.Core.F + 60 + delay
 
 		return false
 	}, "xq-burst")
