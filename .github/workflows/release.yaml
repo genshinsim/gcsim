@@ -39,11 +39,14 @@ jobs:
     name: release windows/amd64
     needs: build_app
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./cmd/gsimui
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: "^1.16.2"
+          go-version: "^1.17.1"
 
       - uses: actions/cache@v2
         with:
@@ -54,24 +57,20 @@ jobs:
 
       - name: Download result from first job
         uses: actions/download-artifact@v2
-        working-directory: ./cmd/gsimui
         with:
           name: build
           path: ./build
 
       - name: check files
-        working-directory: ./cmd/gsimui
         run: ls
 
       - run: env GOOS=windows GOARCH=amd64 go build -tags prod
-        working-directory: ./cmd/gsimui
 
       - name: check files
-        working-directory: ./cmd/gsimui
         run: ls
 
       - name: archive release
-        run: zip -r dev-build-windows-amd64.zip COPYING README.md sample.png ./cmd/gsimui.exe config
+        run: zip -r dev-build-windows-amd64.zip ../../COPYING ../../README.md gsimui.exe ,,/,,/config
 
       - name: upload build for next step
         uses: actions/upload-artifact@v2
