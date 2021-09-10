@@ -80,7 +80,7 @@ jobs:
 
   deploy:
     name: deploy release
-    needs: [win64, macm1]
+    needs: win64
     runs-on: ubuntu-latest
     steps:
       - name: Download windows release
