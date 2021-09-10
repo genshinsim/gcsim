@@ -18,9 +18,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		t := args[0].(core.Target)
 		ds := args[1].(*core.Snapshot)
 
-		if t.AuraContains(core.Electro, core.Pyro) {
+		if ds.ActorIndex != char.CharIndex() {
+			return false
+		}
+
+		if ds.IsReactionDamage {
+			return false
+		}
+
+		if t.AuraContains(core.Electro, core.Hydro) {
 			ds.Stats[core.DmgP] += dmg
-			c.Log.Debugw("lion's roar", "frame", c.F, "event", core.LogCalc, "final dmg%", ds.Stats[core.DmgP])
+			c.Log.Debugw("lion's roar", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "final dmg%", ds.Stats[core.DmgP])
 		}
 		return false
 	}, fmt.Sprintf("lion-%v", char.Name()))

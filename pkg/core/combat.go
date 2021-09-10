@@ -49,6 +49,7 @@ func (c *CombatCtrl) ApplyDamage(ds *Snapshot) float64 {
 			"crit", crit,
 			"amp", amp,
 			"abil", d.Abil,
+			"source", d.SourceFrame,
 		)
 
 	}
