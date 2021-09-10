@@ -1,4 +1,4 @@
-package combat
+package gsim
 
 import (
 	"github.com/genshinsim/gsim/pkg/core"

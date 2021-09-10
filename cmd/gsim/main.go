@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/genshinsim/gsim"
 	"github.com/genshinsim/gsim/internal/logtohtml"
-	"github.com/genshinsim/gsim/pkg/combat"
 	"github.com/genshinsim/gsim/pkg/parse"
 	"github.com/pkg/profile"
 )
@@ -135,7 +135,7 @@ func main() {
 
 		opts.DebugPaths = []string{"stdout"}
 
-		result, err := combat.Run(data.String(), opts)
+		result, err := gsim.Run(data.String(), opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -154,7 +154,7 @@ func main() {
 		// fmt.Print(out)
 
 	} else {
-		result, err := combat.Run(data.String(), opts)
+		result, err := gsim.Run(data.String(), opts)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -212,7 +212,7 @@ func runMulti(files []string, w, i int) {
 		opts.LogDetails = false
 
 		fmt.Printf("%60.60v |", f)
-		r, err := combat.Run(data.String(), opts)
+		r, err := gsim.Run(data.String(), opts)
 		if err != nil {
 			log.Fatal(err)
 		}
