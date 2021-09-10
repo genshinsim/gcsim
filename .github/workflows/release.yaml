@@ -70,7 +70,7 @@ jobs:
         run: ls
 
       - name: archive release
-        run: zip -r dev-build-windows-amd64.zip ../../COPYING ../../README.md gsimui.exe ../../config
+        run: zip -r dev-build-windows-amd64.zip ../../COPYING gsimui.exe ../../config
 
       - name: check files
         run: ls
@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: winrelease
-          path: dev-build-windows-amd64.zip
+          path: ./cmd/gsimui/dev-build-windows-amd64.zip
 
   deploy:
     name: deploy release
