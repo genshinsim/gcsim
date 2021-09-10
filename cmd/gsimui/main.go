@@ -1,3 +1,4 @@
+// Package gsim does something
 package main
 
 import (
