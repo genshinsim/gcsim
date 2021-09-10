@@ -10,6 +10,7 @@ func init() {
 	core.RegisterWeaponFunc("generic claymore", weapon)
 	core.RegisterWeaponFunc("generic sword", weapon)
 	core.RegisterWeaponFunc("generic spear", weapon)
+	core.RegisterWeaponFunc("generic", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
