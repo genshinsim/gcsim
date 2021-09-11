@@ -150,7 +150,15 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 	switch n.Typ {
 	case ActionSwapLock:
 		a.core.SwapCD += n.SwapLock
-		// return 0
+		a.core.Log.Debugw(
+			"locked swap",
+			"frame", a.core.F,
+			"event", LogActionEvent,
+			"char", a.core.ActiveChar,
+			"dur", n.SwapLock,
+			"cd", a.core.SwapCD,
+		)
+		return 0, true, nil
 	case ActionSkill:
 		a.core.Events.Emit(PreSkill)
 		f = c.Skill(n.Param)
@@ -196,6 +204,10 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 		a.core.ResetAllNormalCounter()
 		a.core.Events.Emit(PostAimShoot, f)
 	case ActionSwap:
+		if a.core.SwapCD > 0 {
+			a.core.Log.Warnw("swap on cd", "cd", a.core.SwapCD)
+			return 0, false, nil
+		}
 		f = a.core.Swap(n.Target)
 	case ActionCancellable:
 	case ActionDash:

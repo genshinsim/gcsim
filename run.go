@@ -94,6 +94,13 @@ func (s *Simulation) AdvanceFrame() error {
 	}
 
 	if len(s.queue) > 0 {
+		//check if the current action is executable right now; if not then delay
+		delay := s.C.AnimationCancelDelay(s.queue[0].Typ)
+		if delay > 0 {
+			s.skip = delay
+			return nil
+		}
+
 		s.skip, ok, err = s.C.Action.Exec(s.queue[0])
 		if err != nil {
 			return err

@@ -65,6 +65,10 @@ func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 	return true
 }
 
+func (c *Tmpl) ActionInterruptableDelay(next core.ActionType) int {
+	return 0
+}
+
 func (c *Tmpl) AddCDAdjustFunc(rd core.CDAdjust) {
 	ind := len(c.CDReductionFuncs)
 	for i, v := range c.CDReductionFuncs {
