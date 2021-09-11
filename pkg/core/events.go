@@ -30,6 +30,7 @@ const (
 	PostAimShoot     //nil, frames
 	//sim stuff
 	OnInitialize  //nil
+	OnStateChange //prev, next
 	EndEventTypes //elim
 )
 

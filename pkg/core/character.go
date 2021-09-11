@@ -12,9 +12,6 @@ type Character interface {
 	Zone() ZoneType
 	CurrentEnergy() float64 //current energy
 	MaxEnergy() float64
-	TalentLvlSkill() int
-	TalentLvlAttack() int
-	TalentLvlBurst() int
 	HP() float64
 	MaxHP() float64
 	ModifyHP(float64)
@@ -23,7 +20,8 @@ type Character interface {
 	AddTask(fun func(), name string, delay int)
 	QueueDmg(ds *Snapshot, delay int)
 
-	//actions
+	//actions; each action should return the earliest frame at which the
+	//next action may be queued.
 	Attack(p map[string]int) int
 	Aimed(p map[string]int) int
 	ChargeAttack(p map[string]int) int
@@ -37,6 +35,10 @@ type Character interface {
 	ActionReady(a ActionType, p map[string]int) bool
 	ActionFrames(a ActionType, p map[string]int) int
 	ActionStam(a ActionType, p map[string]int) float64
+
+	//return the number of frames the current action must wait before it can be
+	//executed;
+	ActionInterruptableDelay(next ActionType) int
 
 	//char stat mods
 	AddMod(mod CharStatMod)
