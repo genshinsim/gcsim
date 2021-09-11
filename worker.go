@@ -1,3 +1,4 @@
+//
 package gsim
 
 import (
@@ -13,7 +14,7 @@ import (
 	"github.com/genshinsim/gsim/pkg/parse"
 )
 
-type Stats struct {
+type stats struct {
 	IsDamageMode         bool                      `json:"is_damage_mode"`
 	CharNames            []string                  `json:"char_names"`
 	DamageByChar         []map[string]float64      `json:"damage_by_char"`
@@ -28,7 +29,7 @@ type Stats struct {
 	DPS    float64 `json:"dps"`
 }
 
-type AverageStats struct {
+type Result struct {
 	IsDamageMode         bool                            `json:"is_damage_mode"`
 	CharNames            []string                        `json:"char_names"`
 	DamageByChar         []map[string]FloatResult        `json:"damage_by_char"`
@@ -61,25 +62,25 @@ type FloatResult struct {
 }
 
 type workerResp struct {
-	stats Stats
+	stats stats
 	err   error
 }
 
-func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (AverageStats, error) {
+func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, error) {
 
 	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
-	var data []Stats
+	var data []stats
 
 	parser := parse.New("single", string(src))
 	cfg, _, err := parser.Parse()
 	if err != nil {
-		return AverageStats{}, err
+		return Result{}, err
 	}
 
 	charCount := len(cfg.Characters.Profile)
 
 	if charCount > 4 {
-		return AverageStats{}, errors.New("cannot have more than 4 characters in a team")
+		return Result{}, errors.New("cannot have more than 4 characters in a team")
 	}
 
 	chars := make([]string, len(cfg.Characters.Profile))
@@ -129,7 +130,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (AverageS
 	for count > 0 {
 		vv := <-resp
 		if vv.err != nil {
-			return AverageStats{}, vv.err
+			return Result{}, vv.err
 		}
 		v := vv.stats
 		// log.Println(v)
@@ -162,7 +163,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (AverageS
 	return result, nil
 }
 
-func collectResult(data []Stats, mode bool, chars []string, detailed bool) (result AverageStats) {
+func collectResult(data []stats, mode bool, chars []string, detailed bool) (result Result) {
 
 	charCount := len(chars)
 	result.DPS.Min = math.MaxFloat64
@@ -384,7 +385,7 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, do
 	}
 }
 
-func (stats *AverageStats) PrettyPrint() string {
+func (stats *Result) PrettyPrint() string {
 
 	var sb strings.Builder
 
