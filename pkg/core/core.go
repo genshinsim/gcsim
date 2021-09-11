@@ -37,15 +37,23 @@ type Core struct {
 	Log   *zap.SugaredLogger
 
 	//core data
-	Stam           float64
-	SwapCD         int
+	Stam   float64
+	SwapCD int
+
+	//track characters
 	ActiveChar     int
 	ActiveDuration int
 	Chars          []Character
 	charPos        map[string]int
 	Targets        []Target
 	TotalDamage    float64
-	LastAction     ActionItem
+
+	//last action taken by the sim
+	LastAction ActionItem
+
+	//tracks the current animation state
+	state       AnimationState
+	stateExpiry int
 
 	//handlers
 	Status     StatusHandler
@@ -179,16 +187,26 @@ func (c *Core) CharByName(name string) (Character, bool) {
 func (c *Core) Swap(next string) int {
 	prev := c.ActiveChar
 	c.ActiveChar = c.charPos[next]
-	f := SwapFrames
-	if c.SwapCD > 0 {
-		f += c.SwapCD
-	}
 	c.SwapCD = SwapCDFrames
 	c.ResetAllNormalCounter()
 	c.Events.Emit(OnCharacterSwap, prev, c.ActiveChar)
 	//this duration reset needs to be after the hook for spine to behave properly
 	c.ActiveDuration = 0
-	return f
+	return SwapFrames
+}
+
+func (c *Core) AnimationCancelDelay(next ActionType) int {
+	//if last action is jump, dash, swap,
+	switch c.LastAction.Typ {
+	case ActionSwap:
+		fallthrough
+	case ActionDash:
+		fallthrough
+	case ActionJump:
+		return 0
+	}
+	//other wise check with the current character
+	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next)
 }
 
 func (c *Core) ResetAllNormalCounter() {
