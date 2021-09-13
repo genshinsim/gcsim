@@ -43,39 +43,41 @@ func (c *char) Aimed(p map[string]int) int {
 		bloom = 20
 	}
 
-	d := c.Snapshot(
-		"Frost Flake Arrow",
-		core.AttackTagExtra,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Cryo,
-		25,
-		ffa[c.TalentLvlAttack()],
-	)
-	d.HitWeakPoint = true
-	d.AnimationFrames = f
+	c.AddTask(func() {
+		d := c.Snapshot(
+			"Frost Flake Arrow",
+			core.AttackTagExtra,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypePierce,
+			core.Cryo,
+			25,
+			ffa[c.TalentLvlAttack()],
+		)
+		d.HitWeakPoint = true
+		d.AnimationFrames = f
+
+		d2 := c.Snapshot(
+			"Frost Flake Bloom",
+			core.AttackTagExtra,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypePierce,
+			core.Cryo,
+			25,
+			ffb[c.TalentLvlAttack()],
+		)
+		d2.Targets = core.TargetAll
+
+		c.QueueDmg(&d, travel)
+		c.QueueDmg(&d2, travel+bloom)
+
+	}, "ganyu-aim-snap", f)
 
 	// if c.a2expiry > c.Core.F {
 	// 	d.Stats[def.CR] += 0.2
 	// 	c.Core.Log.Debugw("ganyu a2", "frame", c.Core.F, "event", def.LogCalc, "char", c.Index, "new crit %", d.Stats[def.CR])
 	// }
-
-	c.QueueDmg(&d, travel+f)
-
-	d2 := c.Snapshot(
-		"Frost Flake Bloom",
-		core.AttackTagExtra,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Cryo,
-		25,
-		ffb[c.TalentLvlAttack()],
-	)
-	d2.Targets = core.TargetAll
-
-	c.QueueDmg(&d2, travel+f+bloom)
 
 	c.a2expiry = c.Core.F + 5*60
 
