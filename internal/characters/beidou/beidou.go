@@ -273,7 +273,7 @@ func (c *char) Burst(p map[string]int) int {
 			t.AddResMod("beidouc6", core.ResistMod{
 				Duration: 900, //10 seconds
 				Ele:      core.Electro,
-				Value:    -0.1,
+				Value:    -0.15,
 			})
 		}
 	}
