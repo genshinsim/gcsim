@@ -14,13 +14,16 @@ import {
   Divider,
 } from "@blueprintjs/core";
 import { RootState } from "app/store";
-import { runSim, setConfig } from "./simSlice";
+import { runSim, setConfig, setMessage } from "./simSlice";
 import CharacterBuilder from "./CharacterBuilder";
 import Import from "features/import/Import";
 import ArtifactBuilder from "./ArtifactsBuilder";
 import SampleConfig from "features/sample/SampleConfig";
 import download from "downloadjs";
 import dayjs from "dayjs";
+import { setResultData } from "features/results/resultsSlice";
+import { setLogs, setNames } from "features/debug/debugSlice";
+
 
 function Dash() {
   const dispatch = useDispatch();
@@ -63,6 +66,7 @@ function Dash() {
         config: config,
       })
     );
+
   };
 
   const handleExport = () => {
