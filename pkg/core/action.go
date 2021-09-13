@@ -205,7 +205,7 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 		a.core.Events.Emit(PostAimShoot, f)
 	case ActionSwap:
 		if a.core.SwapCD > 0 {
-			a.core.Log.Warnw("swap on cd", "cd", a.core.SwapCD)
+			a.core.Log.Warnw("swap on cd", "cd", a.core.SwapCD, "frame", a.core.F, "event", LogActionEvent)
 			return 0, false, nil
 		}
 		f = a.core.Swap(n.Target)

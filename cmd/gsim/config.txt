@@ -1,4 +1,4 @@
-options debug=false iteration=3000 duration=30 workers=24;
+options debug=false iteration=3000 duration=90 workers=24;
 
 ##Character Definitions
 char+=xiangling ele=pyro lvl=90 hp=10874.915 atk=225.141 def=668.871 em=96.000 cr=.05 cd=0.5 cons=4 talent=8,8,10;

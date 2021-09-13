@@ -35,29 +35,20 @@ export function saveConfig(path: string, config: string): AppThunk {
   };
 }
 
-declare function sim(
-  content: string,
-  callback: (err: string, data: string) => void
-): void;
+
+
+const worker: Worker = new Worker()
 
 export function runSim(config: simConfig): AppThunk {
   return function (dispatch, getState) {
 
-    let worker: Worker = new Worker()
+    worker.onmessage = (e: { data: { err: string; data: string } }) => {
+      console.log(e.data.err)
+      console.log(e.data.data)
 
-    worker.current.onmessage = (e) => {
-
-    }
-
-    worker.current.postMessage(config)
-
-
-    const cb = (err: string, data: string) => {
-      console.log(err)
-      console.log(data)
       dispatch(setLoading(false));
-      if (err == null) {
-        let r = JSON.parse(data)
+      if (e.data.err == null) {
+        let r = JSON.parse(e.data.data)
         dispatch(setResultData(r));
         if (r.debug) {
           dispatch(setLogs(r.debug));
@@ -65,11 +56,13 @@ export function runSim(config: simConfig): AppThunk {
         }
         dispatch(setMessage("Simulation finished. check results"));
       } else {
-        dispatch(setMessage("Sim encountered error: " + err));
+        dispatch(setMessage("Sim encountered error: " + e.data.err));
         dispatch(setHasErr(true));
-        console.log("err: ", err)
+        console.log("err: ", e.data.err)
       }
+
     }
+
 
     dispatch(setLoading(true));
     dispatch(setResultData(null));
@@ -84,10 +77,9 @@ export function runSim(config: simConfig): AppThunk {
       dispatch(setActiveName(found[1]));
     }
 
-    sim(
-      JSON.stringify(config),
-      cb
-    )
+    worker.postMessage(config)
+
+
 
   };
 }

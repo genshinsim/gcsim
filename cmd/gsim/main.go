@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
 	"path"
 	"regexp"
@@ -17,6 +18,7 @@ import (
 	"github.com/genshinsim/gsim/internal/logtohtml"
 	"github.com/genshinsim/gsim/pkg/parse"
 	"github.com/pkg/profile"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -26,7 +28,7 @@ func main() {
 	var err error
 
 	debug := flag.Bool("d", false, "show debug?")
-	seconds := flag.Int("s", 90, "how many seconds to run the sim for")
+	seconds := flag.Int("s", 0, "how many seconds to run the sim for")
 	cfgFile := flag.String("c", "config.txt", "which profile to use")
 	detailed := flag.Bool("t", true, "log combat details")
 	// f := flag.String("o", "debug.log", "detailed log file")
@@ -118,12 +120,10 @@ func main() {
 			chars[i] = v.Base.Name
 		}
 
-		old := os.Stdout
 		r, w, err := os.Pipe()
 		if err != nil {
 			log.Fatal(err)
 		}
-		os.Stdout = w
 
 		outC := make(chan string)
 		// copy the output in a separate goroutine so printing can't block indefinitely
@@ -133,7 +133,11 @@ func main() {
 			outC <- buf.String()
 		}()
 
-		opts.DebugPaths = []string{"stdout"}
+		zap.RegisterSink("gsim", func(url *url.URL) (zap.Sink, error) {
+			return w, nil
+		})
+
+		opts.DebugPaths = []string{"gsim://"}
 
 		result, err := gsim.Run(data.String(), opts)
 		if err != nil {
@@ -141,13 +145,15 @@ func main() {
 		}
 
 		w.Close()
-		os.Stdout = old
+
 		out := <-outC
 
 		err = logtohtml.WriteString(out, "./debug.html", cfg.Characters.Initial, chars)
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		// sb.Reset()
 
 		fmt.Print(result.PrettyPrint())
 

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
-	"os"
+	"net/url"
 	"syscall/js"
 
 	"github.com/genshinsim/gsim"
 	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gsim/pkg/parse"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -29,70 +29,130 @@ type runConfig struct {
 	Config  string      `json:"config"`
 }
 
+type CustomSink struct {
+	WriteTo func(msg string)
+}
+
+func (*CustomSink) Sync() error  { return nil }
+func (*CustomSink) Close() error { return nil }
+
+func (c *CustomSink) Write(p []byte) (int, error) {
+	c.WriteTo(string(p))
+	return len(p), nil
+}
+
+var sink CustomSink
+
+func init() {
+	zap.RegisterSink("gsim", func(url *url.URL) (zap.Sink, error) {
+		return &sink, nil
+	})
+}
+
 func runSim(this js.Value, args []js.Value) interface{} {
 	in := args[0].String()
 	callback := args[1]
+	update := args[2]
+	debug := args[3]
 
-	var cfg runConfig
-	err := json.Unmarshal([]byte(in), &cfg)
+	var runCfg runConfig
+	err := json.Unmarshal([]byte(in), &runCfg)
 	if err != nil {
 		callback.Invoke(err.Error(), nil)
 		return js.Undefined()
 	}
 
-	cfg.Options.Iteration = 100
+	// runCfg.Options.Iteration = 100
+	// runCfg.Options.Debug = false
+	opt := runCfg.Options
 
-	cfg.Options.Debug = false
+	var data []gsim.Stats
 
-	if cfg.Options.Debug {
-
-		old := os.Stdout
-		r, w, err := os.Pipe()
-		if err != nil {
-			callback.Invoke(err.Error(), nil)
-			return js.Undefined()
-		}
-		os.Stdout = w
-
-		outC := make(chan string)
-		// copy the output in a separate goroutine so printing can't block indefinitely
-		go func() {
-			var buf bytes.Buffer
-			io.Copy(&buf, r)
-			outC <- buf.String()
-		}()
-
-		cfg.Options.DebugPaths = []string{"stdout"}
-
-		result, err := gsim.Run(cfg.Config, cfg.Options)
-		if err != nil {
-			callback.Invoke(err.Error(), nil)
-			return js.Undefined()
-		}
-
-		w.Close()
-		os.Stdout = old
-		out := <-outC
-
-		result.Text = result.PrettyPrint()
-		result.Debug = out
-
-		data, _ := json.Marshal(result)
-
-		callback.Invoke(nil, string(data))
-
-	} else {
-		result, err := gsim.Run(cfg.Config, cfg.Options)
-		if err != nil {
-			callback.Invoke(err.Error(), nil)
-			return js.Undefined()
-		}
-
-		result.Text = result.PrettyPrint()
-
-		data, _ := json.Marshal(result)
-		callback.Invoke(nil, string(data))
+	parser := parse.New("single", runCfg.Config)
+	cfg, _, err := parser.Parse()
+	if err != nil {
+		callback.Invoke(err.Error(), nil)
+		return js.Undefined()
 	}
+
+	charCount := len(cfg.Characters.Profile)
+
+	if charCount > 4 {
+		callback.Invoke("cannot have more than 4 characters in a team", nil)
+		return js.Undefined()
+	}
+
+	chars := make([]string, len(cfg.Characters.Profile))
+	for i, v := range cfg.Characters.Profile {
+		chars[i] = v.Base.Name
+	}
+
+	count := opt.Iteration
+	if count == 0 {
+		count = 1000
+	}
+
+	if opt.Debug {
+		count--
+	}
+
+	for i := 0; i < count; i++ {
+		s, err := gsim.NewSim(cfg, opt)
+		if err != nil {
+			callback.Invoke(err.Error(), nil)
+			return js.Undefined()
+		}
+		v, err := s.Run()
+		if err != nil {
+			callback.Invoke(err.Error(), nil)
+			return js.Undefined()
+		}
+		data = append(data, v)
+
+		update.Invoke(i + 1)
+	}
+
+	var out string
+	if opt.Debug {
+
+		// sink := CustomSink{}
+		sink.WriteTo = func(msg string) {
+			debug.Invoke(msg)
+		}
+
+		zap.RegisterSink("gsim", func(url *url.URL) (zap.Sink, error) {
+			return &sink, nil
+		})
+
+		opt.DebugPaths = []string{"gsim://"}
+
+		s, err := gsim.NewSim(cfg, opt)
+		if err != nil {
+			callback.Invoke(err.Error(), nil)
+			return js.Undefined()
+		}
+		v, err := s.Run()
+		if err != nil {
+			callback.Invoke(err.Error(), nil)
+			return js.Undefined()
+		}
+
+		// log.Println(v)
+		data = append(data, v)
+	}
+
+	result := gsim.CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
+	result.Iterations = opt.Iteration
+	if !cfg.DamageMode {
+		result.Duration.Mean = float64(opt.Duration)
+		result.Duration.Min = float64(opt.Duration)
+		result.Duration.Max = float64(opt.Duration)
+	}
+	result.Text = result.PrettyPrint()
+	result.Debug = out
+
+	resultj, _ := json.Marshal(result)
+	callback.Invoke(nil, string(resultj))
 
 	return js.Undefined()
 }

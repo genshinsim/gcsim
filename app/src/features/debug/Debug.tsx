@@ -51,7 +51,7 @@ function Debug() {
   ]);
 
   var toggleLogEvent = (val: string) => {
-    var next = [];
+    var next: string[] = [];
     var found = false;
     for (var i = 0; i < logEvents.length; i++) {
       if (logEvents[i] === val) {
