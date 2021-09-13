@@ -26,7 +26,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f
 	case core.ActionHighPlunge:
-		if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionAttack {
+		if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionSkill {
 			_, ok := c.Core.LastAction.Param["hold"]
 			if ok {
 				return 63
