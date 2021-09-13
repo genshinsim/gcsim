@@ -31,8 +31,8 @@ type Flags struct {
 
 type Core struct {
 	//control
-	F     int //frame
-	Flags Flags
+	F     int   // current frame
+	Flags Flags // global flags
 	Rand  *rand.Rand
 	Log   *zap.SugaredLogger
 
@@ -40,13 +40,20 @@ type Core struct {
 	Stam   float64
 	SwapCD int
 
+	//core stuff
+	queue        []ActionItem
+	stamModifier []func(a ActionType) (float64, bool)
+	lastStamUse  int
+
 	//track characters
-	ActiveChar     int
-	ActiveDuration int
-	Chars          []Character
-	charPos        map[string]int
-	Targets        []Target
-	TotalDamage    float64
+	ActiveChar     int            // index of currently active char
+	ActiveDuration int            // duration in frames that the current char has been on field for
+	Chars          []Character    // array holding all the characters on the team
+	charPos        map[string]int // map of character string name to their index (for quick lookup by name)
+
+	//track targets
+	Targets     []Target
+	TotalDamage float64 // keeps tracks of total damage dealt for the purpose of final results
 
 	//last action taken by the sim
 	LastAction ActionItem
@@ -66,11 +73,6 @@ type Core struct {
 	Shields    ShieldHandler
 	Health     HealthHandler
 	Events     EventHandler
-
-	//core stuff
-	queue        []ActionItem
-	stamModifier []func(a ActionType) (float64, bool)
-	lastStamUse  int
 }
 
 func New(cfg ...func(*Core) error) (*Core, error) {
