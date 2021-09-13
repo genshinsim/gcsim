@@ -20,7 +20,7 @@ type Simulation struct {
 	//energy event
 	lastEnergyDrop int
 	//result
-	stats stats
+	stats Stats
 }
 
 func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) (*Simulation, error) {

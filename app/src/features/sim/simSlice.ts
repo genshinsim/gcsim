@@ -4,6 +4,8 @@ import { sendMessage } from "app/appSlice";
 import { AppThunk } from "app/store";
 import { setActiveName, setLogs, setNames } from "features/debug/debugSlice";
 import { setResultData } from "features/results/resultsSlice";
+// eslint-disable-next-line
+import Worker from "worker-loader!./SimWorker";
 
 export function saveConfig(path: string, config: string): AppThunk {
   return function (dispatch) {
@@ -33,43 +35,35 @@ export function saveConfig(path: string, config: string): AppThunk {
   };
 }
 
+
+
+const worker: Worker = new Worker()
+
 export function runSim(config: simConfig): AppThunk {
   return function (dispatch, getState) {
-    const cb = (resp: any) => {
+
+    worker.onmessage = (e: { data: { err: string; data: string } }) => {
+      console.log(e.data.err)
+      console.log(e.data.data)
+
       dispatch(setLoading(false));
-      //check resp code
-      if (resp.status !== 200) {
-        //do something here
-        console.log("Error from server: ", resp.payload);
-        // Toaster.create({ position: Position.BOTTOM }).show({
-        //   message: "Error running sim: " + resp.payload,
-        //   intent: Intent.DANGER,
-        // });
-        dispatch(setMessage("Sim encountered error: " + resp.payload));
+      if (e.data.err == null) {
+        let r = JSON.parse(e.data.data)
+        dispatch(setResultData(r));
+        if (r.debug) {
+          dispatch(setLogs(r.debug));
+          dispatch(setNames(r.char_names));
+        }
+        dispatch(setMessage("Simulation finished. check results"));
+      } else {
+        dispatch(setMessage("Sim encountered error: " + e.data.err));
         dispatch(setHasErr(true));
-
-        return;
-      }
-      //update
-      console.log("sim/run received response");
-      var data = JSON.parse(resp.payload);
-      console.log(data);
-      // dispatch(setResultData(data.summary));
-
-      dispatch(setResultData(data));
-
-      if (data.debug) {
-        dispatch(setLogs(data.debug));
-        dispatch(setNames(data.char_names));
+        console.log("err: ", e.data.err)
       }
 
-      dispatch(setMessage("Simulation finished. check results"));
+    }
 
-      // Toaster.create({ position: Position.BOTTOM }).show({
-      //   message: "Simulation finished. check results",
-      //   intent: Intent.SUCCESS,
-      // });
-    };
+
     dispatch(setLoading(true));
     dispatch(setResultData(null));
     dispatch(setLogs(""));
@@ -83,7 +77,10 @@ export function runSim(config: simConfig): AppThunk {
       dispatch(setActiveName(found[1]));
     }
 
-    dispatch(sendMessage("run", "", JSON.stringify(config), cb));
+    worker.postMessage(config)
+
+
+
   };
 }
 
@@ -107,7 +104,7 @@ export interface ICharacter {
     auto: number,
     skill: number,
     burst: number,
-  } 
+  }
   stats: number[];
 }
 

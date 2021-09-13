@@ -22,6 +22,7 @@ import SampleConfig from "features/sample/SampleConfig";
 import download from "downloadjs";
 import dayjs from "dayjs";
 
+
 function Dash() {
   const dispatch = useDispatch();
   const { config } = useSelector((state: RootState) => {
@@ -63,6 +64,7 @@ function Dash() {
         config: config,
       })
     );
+
   };
 
   const handleExport = () => {

@@ -14,7 +14,7 @@ import (
 	"github.com/genshinsim/gsim/pkg/parse"
 )
 
-type stats struct {
+type Stats struct {
 	IsDamageMode         bool                      `json:"is_damage_mode"`
 	CharNames            []string                  `json:"char_names"`
 	DamageByChar         []map[string]float64      `json:"damage_by_char"`
@@ -62,14 +62,14 @@ type FloatResult struct {
 }
 
 type workerResp struct {
-	stats stats
+	stats Stats
 	err   error
 }
 
 func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, error) {
 
 	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
-	var data []stats
+	var data []Stats
 
 	parser := parse.New("single", string(src))
 	cfg, _, err := parser.Parse()
@@ -91,7 +91,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	//set defaults if nothing specified
 	count := opt.Iteration
 	if count == 0 {
-		count = 1000
+		count = 500
 	}
 	n := count
 
@@ -152,7 +152,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 		data = append(data, v)
 	}
 
-	result := collectResult(data, cfg.DamageMode, chars, opt.LogDetails)
+	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
 	result.Iterations = n
 	if !cfg.DamageMode {
 		result.Duration.Mean = float64(opt.Duration)
@@ -163,7 +163,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	return result, nil
 }
 
-func collectResult(data []stats, mode bool, chars []string, detailed bool) (result Result) {
+func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (result Result) {
 
 	charCount := len(chars)
 	result.DPS.Min = math.MaxFloat64
@@ -351,6 +351,7 @@ func collectResult(data []stats, mode bool, chars []string, detailed bool) (resu
 func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, done chan bool, cust ...func(*Simulation) error) {
 
 	opt.Debug = false
+	opt.DebugPaths = []string{}
 
 	for {
 		select {

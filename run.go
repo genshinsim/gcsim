@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (s *Simulation) Run() (stats, error) {
+func (s *Simulation) Run() (Stats, error) {
 	var err error
 	if !s.cfg.DamageMode && s.opts.Duration == 0 {
 		s.opts.Duration = 90
