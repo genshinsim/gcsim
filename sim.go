@@ -2,6 +2,7 @@ package gsim
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/monster"
@@ -62,13 +63,24 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 	}
 	s.stats.IsDamageMode = cfg.DamageMode
 
+	var sb strings.Builder
+
 	if s.opts.LogDetails {
 		s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
 		//add call backs to track details
 		s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 			dmg := args[2].(float64)
 			ds := args[1].(*core.Snapshot)
-			s.stats.DamageByChar[ds.ActorIndex][ds.Abil] += dmg
+			sb.Reset()
+			sb.WriteString(ds.Abil)
+			if ds.IsMeltVape {
+				if ds.ReactMult == 1.5 {
+					sb.WriteString(" [amp: 1.5]")
+				} else if ds.ReactMult == 2 {
+					sb.WriteString(" [amp: 2.0]")
+				}
+			}
+			s.stats.DamageByChar[ds.ActorIndex][sb.String()] += dmg
 			return false
 		}, "dmg-log")
 

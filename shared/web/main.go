@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	//GOOS=js GOARCH=wasm go build -o ../../app/public/sim.wasm
+	//GOOS=js GOARCH=wasm go build -o ../../../gsimweb/public/sim.wasm
 	done := make(chan struct{}, 0)
 
 	global := js.Global()
@@ -96,6 +96,9 @@ func runSim(this js.Value, args []js.Value) interface{} {
 		count--
 	}
 
+	t := opt.Debug
+	opt.Debug = false
+
 	for i := 0; i < count; i++ {
 		s, err := gsim.NewSim(cfg, opt)
 		if err != nil {
@@ -113,7 +116,9 @@ func runSim(this js.Value, args []js.Value) interface{} {
 	}
 
 	var out string
-	if opt.Debug {
+	if t {
+
+		opt.Debug = true
 
 		// sink := CustomSink{}
 		sink.WriteTo = func(msg string) {
