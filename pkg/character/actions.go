@@ -55,7 +55,7 @@ func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 	switch a {
 	case core.ActionBurst:
 		if c.Energy != c.EnergyMax {
-			c.Core.Log.Warnw("burst not enough energy", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index)
+			// c.Core.Log.Warnw("burst not enough energy", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index)
 			return false
 		}
 		return c.ActionCD[a] <= c.Core.F
