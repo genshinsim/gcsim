@@ -242,6 +242,7 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 	)
 
 	a.core.LastAction = n
+	a.core.LastAction.Target = c.Name()
 
 	return f, true, nil
 }

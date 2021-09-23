@@ -28,8 +28,8 @@ func (c *char) Attack(p map[string]int) int {
 
 func (c *char) HighPlungeAttack(p map[string]int) int {
 	f := c.ActionFrames(core.ActionHighPlunge, p)
-	ele := core.NoElement
-	if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionAttack {
+	ele := core.Physical
+	if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionSkill {
 		ele = core.Anemo
 	}
 
