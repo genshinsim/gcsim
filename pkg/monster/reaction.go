@@ -133,13 +133,14 @@ func (t *Target) TransReactionSnapshot(in *core.Snapshot, typ core.ReactionType,
 			ds.Durability = 1.25*(x-1) + 25
 		}
 	case core.SwirlHydro:
-		mult = 0
+		mult = 0.6
 		ds.Element = core.Hydro
 		ds.AttackTag = core.AttackTagSwirlHydro
 		ds.ICDTag = core.ICDTagSwirlHydro
 		ds.Targets = t.index
 		//calculate swirl'd aura durability
 		if !selfHarm {
+			mult = 0
 			ds.Targets = core.TargetAll
 			x := res
 			if res > 0.5*in.Durability {
