@@ -183,6 +183,7 @@ func (c *char) newShield(base float64, t core.ShieldType, dur int) *noelleShield
 	n.Tmpl.ShieldType = t
 	n.Tmpl.HP = base
 	n.Tmpl.Expires = c.Core.F + dur
+	n.c = c
 	return n
 }
 
