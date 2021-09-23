@@ -23,7 +23,7 @@ func New(c core.Character, s *core.Core, count int) {
 		})
 	}
 	if count >= 4 {
-		s.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+		s.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
 			ds := args[1].(*core.Snapshot)
 			t := args[0].(core.Target)
 			if ds.ActorIndex != c.CharIndex() {

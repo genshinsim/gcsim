@@ -60,8 +60,11 @@ func (c *char) a4() {
 			},
 		})
 	}
-	c.Core.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != c.Index {
+			return false
+		}
 		var typ core.EleType
 		switch ds.ReactionType {
 		case core.SwirlCryo:
