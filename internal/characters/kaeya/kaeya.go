@@ -89,13 +89,13 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) a4() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
 		t := args[0].(core.Target)
 		if ds.ActorIndex != c.Index {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagElementalArt {
 			return false
 		}
 		if t.AuraType() != core.Frozen {
