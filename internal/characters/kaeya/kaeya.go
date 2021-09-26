@@ -95,7 +95,7 @@ func (c *char) a4() {
 		if ds.ActorIndex != c.Index {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if ds.AttackTag != core.AttackTagElementalArt {
 			return false
 		}
 		if t.AuraType() != core.Frozen {
