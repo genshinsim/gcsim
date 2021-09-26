@@ -89,7 +89,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) a4() {
-	c.Core.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
 		t := args[0].(core.Target)
 		if ds.ActorIndex != c.Index {
