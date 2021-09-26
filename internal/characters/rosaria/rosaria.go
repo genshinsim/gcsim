@@ -73,6 +73,10 @@ func (c *char) c1() {
 // Adds event checker for C4 Painful Grace
 // Ravaging Confession's CRIT Hits regenerate 5 Energy for Rosaria. Can only be triggered once each time Ravaging Confession is cast.
 // Only applies when a crit hit is resolved, so can't be handled within skill code directly
+// TODO: Since this only is needed for her E, can change this so it spawns a subscription in her E code
+// Then it can return true, which kills the callback
+// However, would also need a timeout function as well since her E can not crit
+// Requires additional work and references - will leave implementation for later
 func (c *char) c4() {
 	icd := 0
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
