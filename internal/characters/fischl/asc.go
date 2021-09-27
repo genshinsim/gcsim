@@ -4,7 +4,7 @@ import "github.com/genshinsim/gsim/pkg/core"
 
 func (c *char) a4() {
 	last := 0
-	c.Core.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
 		t := args[0].(core.Target)
 		ds := args[1].(*core.Snapshot)
 		if ds.ActorIndex != c.Core.ActiveChar {
