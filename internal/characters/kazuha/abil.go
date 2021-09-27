@@ -70,7 +70,7 @@ func (c *char) HighPlungeAttack(p map[string]int) int {
 			core.ICDTagNone,
 			core.ICDGroupDefault,
 			core.StrikeTypeDefault,
-			ele,
+			c.a2Ele,
 			25,
 			2, //200%
 		)
