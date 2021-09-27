@@ -26,6 +26,11 @@ func New(c core.Character, s *core.Core, count int) {
 		s.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
 			ds := args[1].(*core.Snapshot)
 			t := args[0].(core.Target)
+			//ignore if character not on field
+			if s.ActiveChar != c.CharIndex() {
+				return false
+			}
+			//ignore if source not current char
 			if ds.ActorIndex != c.CharIndex() {
 				return false
 			}
