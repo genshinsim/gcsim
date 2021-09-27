@@ -199,7 +199,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 			return
 		}
 		//otherwise queue up
-		c.AddTask(c.absorbCheckA2(src, count+1, max), "kaz-a2-absorb-check", 18)
+		c.AddTask(c.absorbCheckQ(src, count+1, max), "kaz-a2-absorb-check", 18)
 	}
 }
 
