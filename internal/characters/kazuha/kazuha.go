@@ -30,9 +30,13 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.NormalHitNum = 5
 
+	return &c, nil
+}
+
+func (c *char) Init(index int) {
+	c.Tmpl.Init(index)
 	c.a4()
 
-	return &c, nil
 }
 
 //Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
@@ -51,7 +55,7 @@ func (c *char) a4() {
 	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
 			Expiry: -1,
-			Key:    "kazuha-a2",
+			Key:    "kazuha-a4",
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				if c.a4Expiry < c.Core.F {
 					return nil, false
@@ -84,5 +88,5 @@ func (c *char) a4() {
 		em := c.Stat(core.EM)
 		val[core.EleToDmgP(typ)] = 0.0004 * em
 		return false
-	}, "kazuha-a2")
+	}, "kazuha-a4")
 }
