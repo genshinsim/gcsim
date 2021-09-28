@@ -49,7 +49,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -67,26 +67,26 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 155 - 113
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionAim:
-		return 94 //kqm
+		return 94, 94 //kqm
 	case core.ActionBurst:
-		return 74 //swap canceled
+		return 74, 74 //swap canceled
 	case core.ActionSkill:
-		return 35 //no cancel
+		return 35, 35 //no cancel
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 20
 	}
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -108,11 +108,11 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Aimed(p map[string]int) int {
-	f := c.ActionFrames(core.ActionAim, p)
+func (c *char) Aimed(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAim, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -129,7 +129,7 @@ func (c *char) Aimed(p map[string]int) int {
 
 		//also don't do any dmg since we're shooting at bunny
 
-		return f
+		return f, a
 	}
 
 	d := c.Snapshot(
@@ -162,11 +162,11 @@ func (c *char) Aimed(p map[string]int) int {
 
 	c.QueueDmg(&d, travel+f)
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	hold := p["hold"]
 
 	c.AddTask(func() {
@@ -177,7 +177,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	if c.Base.Cons < 4 {
 		c.SetCD(core.ActionSkill, 900)
-		return f + hold
+		return f + hold, a + hold
 	}
 
 	switch c.eCharge {
@@ -191,7 +191,7 @@ func (c *char) Skill(p map[string]int) int {
 	}
 	c.eCharge--
 
-	return f + hold
+	return f + hold, a + hold
 }
 
 func (c *char) recoverCharge(src int) func() {
@@ -300,8 +300,8 @@ func (c *char) overloadExplode() {
 	}, "bunnyer-overload")
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//2sec duration, tick every .4 sec in zone 1
 	//2sec duration, tick every .6 sec in zone 2
@@ -350,5 +350,5 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Energy = 0
 	c.SetCD(core.ActionBurst, 720)
-	return f
+	return f, a
 }

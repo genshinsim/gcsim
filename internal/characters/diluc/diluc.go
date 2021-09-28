@@ -82,7 +82,7 @@ func (c *char) c2() {
 
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -98,29 +98,27 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 65
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
-	case core.ActionCharge:
-		return 0
+		return f, f
 	case core.ActionSkill:
 		switch c.eCounter {
 		case 1:
-			return 52
+			return 52, 52
 		case 2:
-			return 81
+			return 81, 81
 		default:
-			return 45
+			return 45, 45
 		}
 	case core.ActionBurst:
-		return 65
+		return 65, 65
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -136,12 +134,12 @@ func (c *char) Attack(p map[string]int) int {
 	c.QueueDmg(&d, f-1)
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	if c.eCounter == 0 {
 		c.eStarted = true
@@ -202,10 +200,10 @@ func (c *char) Skill(p map[string]int) int {
 	}
 	//return animation cd
 	//this also depends on which hit in the chain this is
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 
 	dot, ok := p["dot"]
 	if !ok {
@@ -221,7 +219,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	// c.S.Status["dilucq"] = c.Core.F + 12*60
 	c.Core.Status.AddStatus("dilucq", 720)
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Dawn (Strike)",
@@ -273,7 +271,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Energy = 0
 	c.SetCD(core.ActionBurst, 900)
-	return f
+	return f, a
 }
 
 func (c *char) Tick() {

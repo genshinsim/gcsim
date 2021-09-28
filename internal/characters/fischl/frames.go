@@ -2,7 +2,7 @@ package fischl
 
 import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -20,15 +20,15 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 131 - 102
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionAim:
-		return 95
+		return 95, 95
 	case core.ActionSkill:
-		return 40
+		return 40, 40
 	case core.ActionBurst:
-		return 21 //TODO: this is swap cancelling
+		return 21, 21 //TODO: this is swap cancelling
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }

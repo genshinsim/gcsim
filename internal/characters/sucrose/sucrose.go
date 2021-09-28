@@ -53,7 +53,7 @@ func (c *char) Init(index int) {
 
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -69,16 +69,16 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 101 - 70
 		}
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 53 //frames from keqing lib
+		return 53, 53 //frames from keqing lib
 	case core.ActionSkill:
-		return 55 //ok
+		return 55, 55 //ok
 	case core.ActionBurst:
-		return 46 //ok
+		return 46, 46 //ok
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -186,8 +186,8 @@ func (c *char) c6() {
 	})
 }
 
-func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionAttack, p)
+func (c *char) Attack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	d := c.Snapshot(
 		"Normal",
@@ -217,11 +217,11 @@ func (c *char) Attack(p map[string]int) int {
 		c.Tags["c4"] = count
 	}
 
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionCharge, p)
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionCharge, p)
 	d := c.Snapshot(
 		"Charge Attack",
 		core.AttackTagExtra,
@@ -248,11 +248,11 @@ func (c *char) ChargeAttack(p map[string]int) int {
 		c.Tags["c4"] = count
 	}
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	//41 frame delay
 	d := c.Snapshot(
 		"Astable Anemohypostasis Creation-6308",
@@ -277,7 +277,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	if c.Base.Cons < 1 {
 		c.SetCD(core.ActionSkill, 900)
-		return f
+		return f, a
 	}
 
 	switch c.eCharge {
@@ -291,7 +291,7 @@ func (c *char) Skill(p map[string]int) int {
 	}
 	c.eCharge--
 
-	return f
+	return f, a
 }
 
 func (c *char) recoverCharge(src int) func() {
@@ -315,8 +315,8 @@ func (c *char) recoverCharge(src int) func() {
 	}
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	//tag a4
 	//3 hits, 135, 249, 368; all 3 applied swirl; c2 i guess adds 2 second so one more hit
 	//let's just assume 120, 240, 360, 480
@@ -375,7 +375,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionBurst, 1200)
 	c.Energy = 0
-	return f
+	return f, a
 }
 
 func (c *char) absorbCheck(src int, count int, max int) func() {

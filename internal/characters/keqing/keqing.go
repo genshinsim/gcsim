@@ -45,34 +45,36 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 var delay = [][]int{{8}, {20}, {25}, {25, 35}, {34}}
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
+		f := 11
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
-		case 0:
-			return 11
 		case 1:
-			return 33 - 11
+			f = 33 - 11
 		case 2:
-			return 60 - 33
+			f = 60 - 33
 		case 3:
-			return 97 - 60
+			f = 97 - 60
 		case 4:
-			return 133 - 97
+			f = 133 - 97
 		}
+		return f, f
 	case core.ActionCharge:
-		return 52
+		return 52, 52
 	case core.ActionSkill:
 		if c.Tags["e"] == 1 {
-			return 84 //2nd part
+			//2nd part
+			return 84, 84
 		}
-		return 34 //first part
+		//first part
+		return 34, 34
 	case core.ActionBurst:
-		return 125
+		return 125, 125
 	}
 	c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-	return 0
+	return 0, 0
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -116,9 +118,9 @@ func (c *char) c4() {
 
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -142,12 +144,12 @@ func (c *char) Attack(p map[string]int) int {
 	}
 
 	c.AdvanceNormalIndex()
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionCharge, p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge 1",
@@ -195,7 +197,7 @@ func (c *char) ChargeAttack(p map[string]int) int {
 		c.activateC6("charge")
 	}
 
-	return f
+	return f, a
 }
 
 func (c *char) c2() {
@@ -216,16 +218,16 @@ func (c *char) c2() {
 	}, "keqingc2")
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 	if c.Tags["e"] == 1 {
 		return c.skillNext(p)
 	}
 	return c.skillFirst(p)
 }
 
-func (c *char) skillFirst(p map[string]int) int {
+func (c *char) skillFirst(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Stellar Restoration",
@@ -257,11 +259,11 @@ func (c *char) skillFirst(p map[string]int) int {
 		c.activateC6("skill")
 	}
 
-	return f
+	return f, a
 }
 
-func (c *char) skillNext(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) skillNext(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Stellar Restoration (Slashing)",
@@ -313,11 +315,11 @@ func (c *char) skillNext(p map[string]int) int {
 	//place on cooldown
 	c.Tags["e"] = 0
 	c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
-
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	//a4 increase crit + ER
 	val := make([]float64, core.EndStatType)
 	val[core.CR] = 0.15
@@ -386,7 +388,8 @@ func (c *char) Burst(p map[string]int) int {
 	c.Energy = 0
 	// c.CD[def.BurstCD] = c.Core.F + 720 //12s
 	c.SetCD(core.ActionBurst, 720)
-	return c.ActionFrames(core.ActionBurst, p)
+
+	return f, a
 }
 
 func (c *char) activateC6(src string) {

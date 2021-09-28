@@ -37,7 +37,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -55,9 +55,9 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 159 - 124
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 73
+		return 73, 73
 	case core.ActionSkill:
 
 		hold := p["hold"]
@@ -66,18 +66,18 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			hold = 300
 		}
 
-		return 23 + hold
+		return 23 + hold, 23 + hold
 	case core.ActionBurst:
-		return 88
+		return 88, 88
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -101,12 +101,12 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Gale Blade",
 		core.AttackTagElementalArt,
@@ -133,10 +133,10 @@ func (c *char) Skill(p map[string]int) int {
 	c.QueueParticle("Jean", count, core.Anemo, f+100)
 
 	c.SetCD(core.ActionSkill, 360)
-	return f //TODO: frames, + p for holding
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 	//p is the number of times enemy enters or exits the field
 	enter := p["enter"]
 	delay, ok := p["delay"]
@@ -144,7 +144,7 @@ func (c *char) Burst(p map[string]int) int {
 		delay = 10
 	}
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	d := c.Snapshot(
 		"Dandelion Breeze",
 		core.AttackTagElementalBurst,
@@ -200,7 +200,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionBurst, 1200)
 	c.Energy = 16 //jean a4
-	return f      //TODO: frames, + p for holding
+	return f, a
 }
 
 func (c *char) c6() {

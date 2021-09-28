@@ -40,7 +40,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -62,7 +62,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			atkspd += 0.15
 		}
 		f = int(float64(f) / (1 + atkspd))
-		return f
+		return f, f
 	case core.ActionCharge:
 		f := 35 //frames from keqing lib
 		atkspd := c.Stats[core.AtkSpd]
@@ -70,14 +70,14 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			atkspd += 0.15
 		}
 		f = int(float64(f) / (1 + atkspd))
-		return f
+		return f, f
 	case core.ActionSkill:
-		return 41 //ok
+		return 41, 41 //ok
 	case core.ActionBurst:
-		return 45 //ok
+		return 45, 45 //ok
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -164,9 +164,9 @@ func (c *char) c4() {
 
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -182,12 +182,12 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 	counter := p["counter"]
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	//0 for base dmg, 1 for 1x bonus, 2 for max bonus
 	if counter >= 2 {
 		counter = 2
@@ -222,16 +222,16 @@ func (c *char) Skill(p map[string]int) int {
 	}
 
 	c.SetCD(core.ActionSkill, 450)
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Energy < c.EnergyMax {
 		c.Core.Log.Debugw("burst insufficient energy; skipping", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Base.Name)
-		return 0
+		return 0, 0
 	}
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Stormbreaker (Q)",
 		core.AttackTagElementalBurst,
@@ -280,7 +280,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Energy = 0
 	c.SetCD(core.ActionBurst, 1200)
-	return f
+	return f, a
 }
 
 func (c *char) burstProc() {

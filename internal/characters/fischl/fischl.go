@@ -68,13 +68,13 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 // 	}
 // }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 20
 	}
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -103,7 +103,7 @@ func (c *char) Attack(p map[string]int) int {
 		c.QueueDmg(&d, travel+f+1)
 	}
 
-	return f
+	return f, a
 }
 
 func (c *char) queueOz(src string) {
@@ -154,8 +154,8 @@ func (c *char) ozTick(src int) func() {
 	}
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	//always trigger electro no ICD on initial summon
 	d := c.Snapshot(
 		"Oz (Summon)",
@@ -181,11 +181,11 @@ func (c *char) Skill(p map[string]int) int {
 
 	c.SetCD(core.ActionSkill, 25*60)
 	//return animation cd
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//set on field oz to be this one
 	c.AddTask(func() {
@@ -229,5 +229,5 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Energy = 0
 	c.SetCD(core.ActionBurst, 15*60)
-	return f //this is if you cancel immediately
+	return f, a
 }

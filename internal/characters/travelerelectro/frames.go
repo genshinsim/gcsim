@@ -2,7 +2,7 @@ package travelerelectro
 
 import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -20,16 +20,16 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 163 - 123
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 54 - 13
+		return 54 - 13, 53 - 13
 	case core.ActionSkill:
-		return 55 //could be 52 if going into Q
+		return 55, 55 //could be 52 if going into Q
 	case core.ActionBurst:
-		return 60 //1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
+		return 60, 60 //1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
 	default:
 		c.Core.Log.Warnf("%v: unknown action, frames invalid", a)
-		return 0
+		return 0, 0
 	}
 }
 

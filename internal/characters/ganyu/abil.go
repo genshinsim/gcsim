@@ -6,13 +6,13 @@ import (
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 20
 	}
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -28,11 +28,11 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Aimed(p map[string]int) int {
-	f := c.ActionFrames(core.ActionAim, p)
+func (c *char) Aimed(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAim, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -81,12 +81,12 @@ func (c *char) Aimed(p map[string]int) int {
 
 	c.a2expiry = c.Core.F + 5*60
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Ice Lotus",
@@ -149,12 +149,12 @@ func (c *char) Skill(p map[string]int) int {
 		c.SetCD(core.ActionSkill, 600)
 	}
 
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Celestial Shower",
@@ -254,7 +254,7 @@ func (c *char) Burst(p map[string]int) int {
 	//use up energy
 	c.Energy = 0
 
-	return f
+	return f, a
 }
 
 func (c *char) ResetActionCooldown(a core.ActionType) {

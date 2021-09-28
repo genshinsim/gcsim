@@ -45,7 +45,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -63,16 +63,16 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 176 - 128
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 87
+		return 87, 87
 	case core.ActionSkill:
-		return 58 //could be 52 if going into Q
+		return 58, 58 //could be 52 if going into Q
 	case core.ActionBurst:
-		return 78
+		return 78, 78
 	default:
 		c.Core.Log.Warnf("%v: unknown action, frames invalid", a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -112,9 +112,9 @@ func (c *char) a4() {
 
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -130,12 +130,12 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionCharge, p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge 1",
@@ -154,11 +154,11 @@ func (c *char) ChargeAttack(p map[string]int) int {
 	c.QueueDmg(&d, f-15) //TODO: damage frame
 	c.QueueDmg(&d2, f-5) //TODO: damage frame
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Frostgnaw",
 		core.AttackTagElementalArt,
@@ -188,11 +188,11 @@ func (c *char) Skill(p map[string]int) int {
 	}, "Kaeya-Skill", 28) //TODO: assumed same as when cd starts
 
 	c.SetCD(core.ActionSkill, 360+28) //+28 since cd starts 28 frames in
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	d := c.Snapshot(
 		"Glacial Waltz",
 		core.AttackTagElementalBurst,
@@ -238,7 +238,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	// c.CD[def.BurstCD] = c.Sim.F + 900
 	c.SetCD(core.ActionBurst, 900)
-	return f
+	return f, a
 }
 
 func (c *char) burstICD() {

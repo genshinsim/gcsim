@@ -70,9 +70,9 @@ c6: active protected by crystallize +17% dmg
 
 **/
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -87,12 +87,12 @@ func (c *char) Attack(p map[string]int) int {
 	c.QueueDmg(&d, f-1)
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionCharge, p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge 1",
@@ -111,7 +111,7 @@ func (c *char) ChargeAttack(p map[string]int) int {
 	c.QueueDmg(&d, f-15) //TODO: damage frame
 	c.QueueDmg(&d2, f-5) //TODO: damage frame
 
-	return f
+	return f, a
 }
 
 func (c *char) newConstruct(dur int) core.Construct {
@@ -152,8 +152,8 @@ func (c *construct) Count() int {
 	return 1
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Abiogenesis: Solar Isotoma",
@@ -188,7 +188,7 @@ func (c *char) Skill(p map[string]int) int {
 	c.Tags["elevator"] = 1
 
 	c.SetCD(core.ActionSkill, 240)
-	return f
+	return f, a
 }
 
 func (c *char) skillHook() {
@@ -240,8 +240,8 @@ func (c *char) skillHook() {
 	}, "albedo-skill")
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	hits, ok := p["bloom"]
 	if !ok {
@@ -300,7 +300,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionSkill, 720)
 	c.Energy = 0
-	return f
+	return f, a
 }
 
 func (c *char) c4() {

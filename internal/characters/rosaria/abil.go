@@ -8,9 +8,9 @@ import (
 
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other characters
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	for i, mult := range attack[c.NormalCounter] {
 		d := c.Snapshot(
@@ -29,14 +29,14 @@ func (c *char) Attack(p map[string]int) int {
 	c.AdvanceNormalIndex()
 
 	// return animation cd
-	return f
+	return f, a
 }
 
 // Charge attack damage queue generator
 // Very standard - consistent with other characters like Xiangling
-func (c *char) ChargeAttack(p map[string]int) int {
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionCharge, p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge",
@@ -52,15 +52,15 @@ func (c *char) ChargeAttack(p map[string]int) int {
 	c.QueueDmg(&d, f-1)
 
 	//return animation cd
-	return f
+	return f, a
 }
 
 // Skill attack damage queue generator
 // Includes optional argument "nobehind" for whether Rosaria appears behind her opponent or not (for her A1).
 // Default behavior is to appear behind enemy - set "nobehind=1" to diasble A1 proc
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	// No ICD to the 2 hits
 	d := c.Snapshot(
@@ -75,7 +75,7 @@ func (c *char) Skill(p map[string]int) int {
 	)
 
 	// First hit comes out 20 frames before second
-	c.QueueDmg(&d, f - 20)
+	c.QueueDmg(&d, f-20)
 
 	// A1 activation
 	// When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT RATE increases by 12% for 5s.
@@ -84,13 +84,13 @@ func (c *char) Skill(p map[string]int) int {
 		val := make([]float64, core.EndStatType)
 		val[core.CR] = 0.12
 		c.AddMod(core.CharStatMod{
-			Key: "rosaria-a1",
+			Key:    "rosaria-a1",
 			Expiry: c.Core.F + 300,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 		})
-		c.Core.Log.Debugw("Rosaria A1 activation", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F + 300)
+		c.Core.Log.Debugw("Rosaria A1 activation", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+300)
 	}
 
 	// Rosaria E is dynamic, so requires a second snapshot
@@ -108,20 +108,20 @@ func (c *char) Skill(p map[string]int) int {
 	c.QueueDmg(&d2, f-1)
 
 	// Particles are emitted after the second hit lands
-	c.QueueParticle("rosaria", 3, core.Cryo, f + 100)
+	c.QueueParticle("rosaria", 3, core.Cryo, f+100)
 
 	c.SetCD(core.ActionSkill, 360)
 
-	return f
+	return f, a
 }
 
 // Burst attack damage queue generator
 // Rosaria swings her weapon to slash surrounding opponents, then she summons a frigid Ice Lance that strikes the ground. Both actions deal Cryo DMG.
 // While active, the Ice Lance periodically releases a blast of cold air, dealing Cryo DMG to surrounding opponents.
 // Also includes the following effects: A4, C6
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	// Note - if a more advanced targeting system is added in the future
 	// hit 1 is technically only on surrounding enemies, hits 2 and dot are on the lance
@@ -200,7 +200,7 @@ func (c *char) Burst(p map[string]int) int {
 	}
 	val := make([]float64, core.EndStatType)
 	val[core.CR] = crit_share
-	c.Core.Log.Debugw("Rosaria A4 activation", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F + 600, "crit_share", crit_share)
+	c.Core.Log.Debugw("Rosaria A4 activation", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+600, "crit_share", crit_share)
 
 	for i, char := range c.Core.Chars {
 		// skip Rosaria
@@ -208,7 +208,7 @@ func (c *char) Burst(p map[string]int) int {
 			continue
 		}
 		char.AddMod(core.CharStatMod{
-			Key: "rosaria-a4",
+			Key:    "rosaria-a4",
 			Expiry: c.Core.F + 600,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
@@ -216,10 +216,10 @@ func (c *char) Burst(p map[string]int) int {
 		})
 	}
 
-	c.SetCD(core.ActionBurst, 15 * 60)
+	c.SetCD(core.ActionBurst, 15*60)
 	c.Energy = 0
 
-	return f
+	return f, a
 }
 
 // Applies C6 effect to enemies hit by it
@@ -230,8 +230,8 @@ func (c *char) applyC6(snap *core.Snapshot) {
 		// Functions similarly to Guoba
 		snap.OnHitCallback = func(t core.Target) {
 			t.AddResMod("rosaria-c6", core.ResistMod{
-				Ele: core.Physical,
-				Value: -0.2,
+				Ele:      core.Physical,
+				Value:    -0.2,
 				Duration: 600,
 			})
 		}

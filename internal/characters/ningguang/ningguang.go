@@ -36,20 +36,21 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 10 //TODO frames
-		return int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		return f, f
 	case core.ActionCharge:
-		return 50 //TODO frames
+		return 50, 50
 	case core.ActionSkill:
-		return 60 //counted
+		return 60, 60
 	case core.ActionBurst:
-		return 97 //counted, this is when you can swap but prob not when you can attack again
+		return 97, 97
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -69,8 +70,8 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 }
 
-func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionAttack, p)
+func (c *char) Attack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -107,11 +108,11 @@ func (c *char) Attack(p map[string]int) int {
 		c.Core.Combat.ApplyDamage(&x)
 	}, "ningguang-attack", f+travel)
 
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionCharge, p)
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -148,11 +149,11 @@ func (c *char) ChargeAttack(p map[string]int) int {
 	}
 	c.Tags["jade"] = 0
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Jade Screen",
@@ -188,7 +189,7 @@ func (c *char) Skill(p map[string]int) int {
 		c.particleICD = c.Core.F + 360
 	}
 
-	return f
+	return f, a
 }
 
 func (c *char) a4() {
@@ -254,8 +255,8 @@ func (c *construct) Count() int {
 	return 1
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//fires 6 normally, + 6 if jade screen is active
 	count := 6
@@ -292,5 +293,5 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Energy = 0
 	c.SetCD(core.ActionBurst, 720)
-	return f
+	return f, a
 }

@@ -4,36 +4,36 @@ import (
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (c *Tmpl) Attack(p map[string]int) int {
-	return 0
+func (c *Tmpl) Attack(p map[string]int) (int, int) {
+	return 0, 0
 }
 
-func (c *Tmpl) Aimed(p map[string]int) int {
-	return 0
+func (c *Tmpl) Aimed(p map[string]int) (int, int) {
+	return 0, 0
 }
 
-func (c *Tmpl) ChargeAttack(p map[string]int) int {
-	return 0
+func (c *Tmpl) ChargeAttack(p map[string]int) (int, int) {
+	return 0, 0
 }
 
-func (c *Tmpl) HighPlungeAttack(p map[string]int) int {
-	return 0
+func (c *Tmpl) HighPlungeAttack(p map[string]int) (int, int) {
+	return 0, 0
 }
 
-func (c *Tmpl) LowPlungeAttack(p map[string]int) int {
-	return 0
+func (c *Tmpl) LowPlungeAttack(p map[string]int) (int, int) {
+	return 0, 0
 }
 
-func (c *Tmpl) Skill(p map[string]int) int {
-	return 0
+func (c *Tmpl) Skill(p map[string]int) (int, int) {
+	return 0, 0
 }
 
-func (c *Tmpl) Burst(p map[string]int) int {
-	return 0
+func (c *Tmpl) Burst(p map[string]int) (int, int) {
+	return 0, 0
 }
 
-func (c *Tmpl) Dash(p map[string]int) int {
-	return 24
+func (c *Tmpl) Dash(p map[string]int) (int, int) {
+	return 24, 24
 }
 
 func (c *Tmpl) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -46,9 +46,9 @@ func (c *Tmpl) ActionStam(a core.ActionType, p map[string]int) float64 {
 	}
 }
 
-func (c *Tmpl) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *Tmpl) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	c.Core.Log.Warnw("ActionFrames not implemented", "character", c.Base.Name)
-	return 0
+	return 0, 0
 }
 
 func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {

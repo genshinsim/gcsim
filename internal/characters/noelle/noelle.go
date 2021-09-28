@@ -51,7 +51,7 @@ c6: sweeping time increase additional 50%; add 1s up to 10s everytime opponent k
 
 **/
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -67,14 +67,14 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 174 - 116
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionSkill:
-		return 41 //TODO: not ok
+		return 41, 41 //TODO: not ok
 	case core.ActionBurst:
-		return 111 //ok
+		return 111, 111 //ok
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -113,9 +113,9 @@ func (c *char) a2() {
 	}, "noelle-a2")
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -154,7 +154,7 @@ func (c *char) Attack(p map[string]int) int {
 		}
 	}
 
-	return f
+	return f, a
 }
 
 type noelleShield struct {
@@ -187,8 +187,8 @@ func (c *char) newShield(base float64, t core.ShieldType, dur int) *noelleShield
 	return n
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Breastplate (Shield)",
@@ -238,7 +238,7 @@ func (c *char) Skill(p map[string]int) int {
 	}
 
 	c.SetCD(core.ActionSkill, 24*60)
-	return f //TODO: frame count
+	return f, a
 }
 
 func (c *char) explodeShield() {
@@ -257,8 +257,8 @@ func (c *char) explodeShield() {
 	c.QueueDmg(&d, 1)
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	c.Core.Status.AddStatus("noelleq", 900)
 
@@ -292,7 +292,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionBurst, 900)
 	c.Energy = 0
-	return f //TODO: frame count
+	return f, a
 }
 
 func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {

@@ -49,7 +49,7 @@ func (c *char) c2() {
 	})
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -67,30 +67,30 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 49
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 100 //frames from keqing lib
+		return 100, 100 //frames from keqing lib
 	case core.ActionSkill:
 		hold := p["hold"]
 		switch hold {
 		case 1:
-			return 112
+			return 112, 112
 		case 2:
-			return 197
+			return 197, 197
 		default:
-			return 52
+			return 52, 52
 		}
 	case core.ActionBurst:
-		return 51 //ok
+		return 51, 51 //ok
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -106,11 +106,11 @@ func (c *char) Attack(p map[string]int) int {
 	c.QueueDmg(&d, f-1)
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	var cd int
 
@@ -133,7 +133,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	c.SetCD(core.ActionSkill, cd)
 
-	return f
+	return f, a
 
 }
 
@@ -233,7 +233,9 @@ func (c *char) skillHoldLong() {
 
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//add field effect timer
 	c.Core.Status.AddStatus("btburst", 720)
@@ -276,7 +278,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Energy = 0
 	c.SetCD(core.ActionBurst, 900)
-	return 51 //todo fix field cast time
+	return f, a //todo fix field cast time
 }
 
 func (c *char) applyBennettField(d core.Snapshot) func() {

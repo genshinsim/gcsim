@@ -68,7 +68,7 @@ func (c *char) c4() {
 
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -84,21 +84,21 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 204 - 124
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 30 //frames from keqing lib
+		return 30, 30 //frames from keqing lib
 	case core.ActionSkill:
-		return 57
+		return 57, 57
 	case core.ActionBurst:
-		return 135 //ok
+		return 135, 135 //ok
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
-func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionAttack, p)
+func (c *char) Attack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -130,12 +130,12 @@ func (c *char) Attack(p map[string]int) int {
 	}
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Spirit Blade: Chonghua's Layered Frost",
 		core.AttackTagElementalArt,
@@ -190,7 +190,7 @@ func (c *char) Skill(p map[string]int) int {
 	}
 
 	c.SetCD(core.ActionSkill, 900)
-	return f
+	return f, a
 }
 
 func (c *char) onSwapHook() {
@@ -247,8 +247,8 @@ func (c *char) infuse(char core.Character) {
 	}
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Spirit Blade: Cloud-Parting Star",
@@ -275,7 +275,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionBurst, 720)
 	c.Energy = 0
-	return f //TODO: frames
+	return f, a
 }
 
 func (c *char) c6() {

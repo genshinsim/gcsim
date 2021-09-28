@@ -43,7 +43,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -57,16 +57,16 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 60
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 84
+		return 84, 84
 	case core.ActionSkill:
-		return 67
+		return 67, 67
 	case core.ActionBurst:
-		return 101
+		return 101, 101
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -131,8 +131,8 @@ func (c *char) c1(delay int) {
 	c.QueueDmg(&d, delay)
 }
 
-func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionAttack, p)
+func (c *char) Attack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -164,7 +164,7 @@ func (c *char) Attack(p map[string]int) int {
 		c.ResetNormalCounter()
 	}
 
-	return f
+	return f, a
 }
 
 func (c *char) addSpark() {
@@ -173,8 +173,8 @@ func (c *char) addSpark() {
 	}
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionCharge, p)
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	travel, ok := p["travel"]
 	if !ok {
@@ -204,12 +204,12 @@ func (c *char) ChargeAttack(p map[string]int) int {
 
 	c.c1(f + travel)
 
-	return f
+	return f, a
 }
 
 //p is the number of mines that hit, up to ??
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	bounce, ok := p["bounce"]
 	if !ok {
@@ -288,7 +288,7 @@ func (c *char) Skill(p map[string]int) int {
 	c.eCharge--
 
 	// c.SetCD(def.ActionSkill, 20*60)
-	return f
+	return f, a
 }
 
 func (c *char) recoverCharge(src int) func() {
@@ -312,8 +312,8 @@ func (c *char) recoverCharge(src int) func() {
 	}
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Sparks'n'Splash",
@@ -420,7 +420,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionBurst, 15*60)
 	c.Energy = 0
-	return f
+	return f, a
 }
 
 func (c *char) c4() {

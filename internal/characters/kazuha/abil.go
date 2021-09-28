@@ -2,9 +2,9 @@ package kazuha
 
 import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	for i, mult := range attack[c.NormalCounter] {
 		d := c.Snapshot(
@@ -23,11 +23,11 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) HighPlungeAttack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionHighPlunge, p)
+func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionHighPlunge, p)
 	ele := core.Physical
 	if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionSkill {
 		ele = core.Anemo
@@ -79,10 +79,10 @@ func (c *char) HighPlungeAttack(p map[string]int) int {
 		c.a2Ele = core.NoElement
 	}
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 	hold := p["hold"]
 	c.a2Ele = core.NoElement
 	if hold == 0 {
@@ -91,8 +91,8 @@ func (c *char) Skill(p map[string]int) int {
 	return c.skillHold(p)
 }
 
-func (c *char) skillPress(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) skillPress(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Chihayaburu",
 		core.AttackTagElementalArt,
@@ -110,11 +110,11 @@ func (c *char) skillPress(p map[string]int) int {
 
 	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/18)), "kaz-a2-absorb-check", 1)
 	c.SetCD(core.ActionSkill, 360)
-	return f
+	return f, a
 }
 
-func (c *char) skillHold(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) skillHold(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Chihayaburu",
 		core.AttackTagElementalArt,
@@ -132,11 +132,11 @@ func (c *char) skillHold(p map[string]int) int {
 
 	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/18)), "kaz-a2-absorb-check", 1)
 	c.SetCD(core.ActionSkill, 540)
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	c.qInfuse = core.NoElement
 
@@ -186,7 +186,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionBurst, 15*60)
 	c.Energy = 0
-	return f
+	return f, a
 }
 
 func (c *char) absorbCheckQ(src, count, max int) func() {
