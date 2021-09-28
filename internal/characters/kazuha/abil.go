@@ -109,7 +109,16 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	c.QueueParticle("kazuha", 3, core.Anemo, 100)
 
 	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/18)), "kaz-a2-absorb-check", 1)
-	c.SetCD(core.ActionSkill, 360)
+
+	cd := 360
+	if c.Base.Cons > 0 {
+		cd = 324
+	}
+	if c.Base.Cons == 6 {
+		c.c6Active = c.Core.F + f + 300
+	}
+	c.SetCD(core.ActionSkill, cd)
+
 	return f, a
 }
 
@@ -131,7 +140,14 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	c.QueueParticle("kazuha", 4, core.Anemo, 100)
 
 	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/18)), "kaz-a2-absorb-check", 1)
-	c.SetCD(core.ActionSkill, 540)
+	cd := 540
+	if c.Base.Cons > 0 {
+		cd = 486
+	}
+	if c.Base.Cons == 6 {
+		c.c6Active = c.Core.F + f + 300
+	}
+	c.SetCD(core.ActionSkill, cd)
 	return f, a
 }
 
@@ -182,6 +198,34 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			}
 			c.Core.Combat.ApplyDamage(&x)
 		}, "kazuha-burst-tick", i)
+	}
+
+	//reset skill cd
+	if c.Base.Cons > 0 {
+		c.ResetActionCooldown(core.ActionSkill)
+	}
+
+	//add em to all char, but only activate if char is active
+	if c.Base.Cons >= 2 {
+		val := make([]float64, core.EndStatType)
+		val[core.EM] = 200
+		for _, char := range c.Core.Chars {
+			this := char
+			char.AddMod(core.CharStatMod{
+				Key:    "kazuha-c2",
+				Expiry: c.Core.F + 370,
+				Amount: func(a core.AttackTag) ([]float64, bool) {
+					if c.Core.ActiveChar != this.CharIndex() {
+						return nil, false
+					}
+					return val, true
+				},
+			})
+		}
+	}
+
+	if c.Base.Cons == 6 {
+		c.c6Active = c.Core.F + f + 300
 	}
 
 	c.SetCD(core.ActionBurst, 15*60)

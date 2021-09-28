@@ -14,6 +14,7 @@ type char struct {
 	a4Expiry int
 	a2Ele    core.EleType
 	qInfuse  core.EleType
+	c6Active int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -89,4 +90,33 @@ func (c *char) a4() {
 		val[core.EleToDmgP(typ)] = 0.0004 * em
 		return false
 	}, "kazuha-a4")
+}
+
+func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
+	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
+
+	if c.Base.Cons < 6 {
+		return ds
+	}
+
+	if c.c6Active <= c.Core.F {
+		return ds
+	}
+
+	//infusion to normal/plunge/charge
+	switch ds.AttackTag {
+	case core.AttackTagNormal:
+	case core.AttackTagExtra:
+	case core.AttackTagPlunge:
+	default:
+		return ds
+	}
+	ds.Element = core.Anemo
+
+	//add 0.2% dmg for every EM
+	ds.Stats[core.DmgP] += 0.002 * ds.Stats[core.EM]
+
+	c.Core.Log.Debugw("c6 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "em", ds.Stats[core.EM], "final", ds.Stats[core.DmgP])
+
+	return ds
 }
