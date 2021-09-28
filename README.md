@@ -4,13 +4,15 @@ GSim is a Monte Carlo simulation tool used to model team dps. It allows for the 
 
 # Getting started
 
+**IMPORTANT:** Releases are currently broken. Please use the web version if you need UI. Otherwise (for faster execution), please build/run from source.
+
 **NEW:** There is now a web version available at [https://genshinsim.github.io/gsimweb/](https://genshinsim.github.io/gsimweb/). This is basically just the program compiled into WASM and embedded into a webpage. Works the same as the release version but with the downside that it is much slower as it is only single threaded.
 
-Go to the [releases page](https://github.com/genshinsim/gsim/releases) and download the latest development release for your platform. Currently development releases are [automatically](https://github.com/genshinsim/gsim/blob/main/.github/workflows/release.yaml) built whenever a new commit is pushed to the main branch.
+~~Go to the [releases page](https://github.com/genshinsim/gsim/releases) and download the latest development release for your platform. Currently development releases are [automatically](https://github.com/genshinsim/gsim/blob/main/.github/workflows/release.yaml) built whenever a new commit is pushed to the main branch.~~
 
-The archive can be extracted to any folder. Once extracted, simply run the executable (gsim.exe). Doing so should open up your default browser to http://localhost:8081 (If it did not, you can simply browse to this address on a browser).
+~~The archive can be extracted to any folder. Once extracted, simply run the executable (gsim.exe). Doing so should open up your default browser to http://localhost:8081 (If it did not, you can simply browse to this address on a browser).~~
 
-**Note that Chrome may complain that the file is not commonly downloaded and may be dangerous. This is expected as the sim is not all that popular. You can always build the project from source if you wish**
+~~**Note that Chrome may complain that the file is not commonly downloaded and may be dangerous. This is expected as the sim is not all that popular. You can always build the project from source if you wish**~~
 
 For more information, please visit the [starter guide](https://github.com/genshinsim/gsim/wiki/Starter) on the wiki.
 
