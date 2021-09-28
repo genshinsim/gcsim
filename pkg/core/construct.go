@@ -21,12 +21,12 @@ type Construct interface {
 }
 
 type ConstructHandler interface {
-	NewConstruct(c Construct, refresh bool)
+	New(c Construct, refresh bool)
 	NewNoLimitCons(c Construct, refresh bool)
-	ConstructCount() int
-	ConstructCountType(t GeoConstructType) int
+	Count() int
+	CountByType(t GeoConstructType) int
 	Destroy(key int) bool
-	HasConstruct(key int) bool
+	Has(key int) bool
 	Tick()
 }
 
@@ -44,7 +44,7 @@ func NewConstructCtrl(c *Core) *ConstructCtrl {
 	}
 }
 
-func (s *ConstructCtrl) NewConstruct(c Construct, refresh bool) {
+func (s *ConstructCtrl) New(c Construct, refresh bool) {
 
 	//if refresh, we nil out the old one if any
 	ind := len(s.constructs)
@@ -131,7 +131,7 @@ func (s *ConstructCtrl) Tick() {
 }
 
 //how many of the given
-func (s *ConstructCtrl) ConstructCount() int {
+func (s *ConstructCtrl) Count() int {
 	count := 0
 	for _, v := range s.constructs {
 		count += v.Count()
@@ -142,7 +142,7 @@ func (s *ConstructCtrl) ConstructCount() int {
 	return count
 }
 
-func (s *ConstructCtrl) ConstructCountType(t GeoConstructType) int {
+func (s *ConstructCtrl) CountByType(t GeoConstructType) int {
 	count := 0
 	for _, v := range s.constructs {
 		if v.Type() == t {
@@ -157,7 +157,7 @@ func (s *ConstructCtrl) ConstructCountType(t GeoConstructType) int {
 	return count
 }
 
-func (s *ConstructCtrl) HasConstruct(key int) bool {
+func (s *ConstructCtrl) Has(key int) bool {
 	for _, v := range s.constructs {
 		if v.Key() == key {
 			return true

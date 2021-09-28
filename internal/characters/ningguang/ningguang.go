@@ -173,7 +173,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.SetCD(core.ActionSkill, 720)
 
 	//create a construct
-	c.Core.Constructs.NewConstruct(c.newScreen(1800), true) //30 seconds
+	c.Core.Constructs.New(c.newScreen(1800), true) //30 seconds
 
 	c.lastScreen = c.Core.F
 
@@ -195,7 +195,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) a4() {
 	//activate a4 if screen is down and character uses dash
 	c.Core.Events.Subscribe(core.OnDash, func(args ...interface{}) bool {
-		if c.Core.Constructs.ConstructCountType(core.GeoConstructNingSkill) > 0 {
+		if c.Core.Constructs.CountByType(core.GeoConstructNingSkill) > 0 {
 			val := make([]float64, core.EndStatType)
 			val[core.GeoP] = 0.12
 			char := c.Core.Chars[c.Core.ActiveChar]
