@@ -229,7 +229,7 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 				Expiry: c.Core.F + 900,
 			})
-			c.Core.Log.Debugw("c2 - adding atk spd", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())
+			c.Core.Log.Debugw("c2 - adding atk spd", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
 		}
 	}
 }
