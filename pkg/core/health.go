@@ -1,6 +1,7 @@
 package core
 
 type HealthHandler interface {
+	HealIndex(index int, amt float64)
 	HealActive(amt float64)
 	HealAll(amt float64)
 	HealAllPercent(percent float64)

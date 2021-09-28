@@ -30,6 +30,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
 	_ "github.com/genshinsim/gsim/internal/characters/yoimiya"
+	_ "github.com/genshinsim/gsim/internal/characters/zhongli"
 
 	//artifacts
 	_ "github.com/genshinsim/gsim/internal/artifacts/archaic"

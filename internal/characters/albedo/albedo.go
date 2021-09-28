@@ -181,7 +181,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.skillSnapshot.UseDef = true
 
 	//create a construct
-	c.Core.Constructs.NewConstruct(c.newConstruct(2100), true) //35 seconds
+	c.Core.Constructs.New(c.newConstruct(2100), true) //35 seconds
 
 	c.lastConstruct = c.Core.F
 
