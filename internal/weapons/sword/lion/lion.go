@@ -26,7 +26,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return false
 		}
 
-		if t.AuraContains(core.Electro, core.Hydro) {
+		if t.AuraContains(core.Electro, core.Pyro) {
 			ds.Stats[core.DmgP] += dmg
 			c.Log.Debugw("lion's roar", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "final dmg%", ds.Stats[core.DmgP])
 		}
