@@ -2,7 +2,7 @@ package rosaria
 
 import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -21,15 +21,15 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 		}
 		atkspd := c.Stats[core.AtkSpd]
 		f = int(float64(f) / (1 + atkspd))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 89 //frames from keqing libf
+		return 89, 89 //frames from keqing libf
 	case core.ActionSkill:
-		return 65 //ok
+		return 65, 65 //ok
 	case core.ActionBurst:
-		return 74 //ok
+		return 74, 74 //ok
 	default:
 		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
-		return 0
+		return 0, 0
 	}
 }

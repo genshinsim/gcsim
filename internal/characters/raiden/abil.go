@@ -18,12 +18,12 @@ var polearmDelayOffset = [][]int{
 	{1},
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	if c.Core.Status.Duration("raidenburst") > 0 {
-		return c.swordAttack(f)
+		return c.swordAttack(f, a)
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -43,7 +43,7 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
 var swordDelayOffset = [][]int{
@@ -54,7 +54,7 @@ var swordDelayOffset = [][]int{
 	{1},
 }
 
-func (c *char) swordAttack(f int) int {
+func (c *char) swordAttack(f int, a int) (int, int) {
 
 	for i, mult := range attackB[c.NormalCounter] {
 		d := c.Snapshot(
@@ -94,14 +94,14 @@ func (c *char) swordAttack(f int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	if c.Core.Status.Duration("raidenburst") == 0 {
 
-		f := c.ActionFrames(core.ActionCharge, p)
+		f, a := c.ActionFrames(core.ActionCharge, p)
 
 		d := c.Snapshot(
 			"Charge 1",
@@ -116,16 +116,16 @@ func (c *char) ChargeAttack(p map[string]int) int {
 
 		c.QueueDmg(&d, f-31) //TODO: damage frame
 
-		return f
+		return f, a
 	}
 
 	return c.swordCharge(p)
 
 }
 
-func (c *char) swordCharge(p map[string]int) int {
+func (c *char) swordCharge(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionCharge, p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	for _, mult := range chargeSword {
 		d := c.Snapshot(
@@ -163,7 +163,7 @@ func (c *char) swordCharge(p map[string]int) int {
 		}, "raiden-charge-attack", f-42)
 	}
 
-	return f
+	return f, a
 }
 
 /**
@@ -171,8 +171,8 @@ The Raiden Shogun unveils a shard of her Euthymia, dealing Electro DMG to nearby
 Eye of Stormy Judgment
 **/
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Eye of Stormy Judgement",
 		core.AttackTagElementalArt,
@@ -191,7 +191,7 @@ func (c *char) Skill(p map[string]int) int {
 	c.Core.Status.AddStatus("raidenskill", 1500+f)
 
 	c.SetCD(core.ActionSkill, 600)
-	return f
+	return f, a
 }
 
 /**
@@ -251,9 +251,9 @@ func (c *char) eyeOnDamage() {
 
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//activate burst, reset stacks
 	c.stacksConsumed = c.stacks
@@ -308,7 +308,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionBurst, 18*60) //20s cd
 	c.Energy = 0
-	return f
+	return f, a
 }
 
 func (c *char) onSwapClearBurst() {

@@ -2,7 +2,7 @@ package albedo
 
 import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -20,15 +20,15 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 152 - 98
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 54 //frames from keqing lib
+		return 54, 54 //frames from keqing lib
 	case core.ActionSkill:
-		return 32
+		return 32, 32
 	case core.ActionBurst:
-		return 96
+		return 96, 96
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }

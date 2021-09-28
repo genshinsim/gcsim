@@ -2,7 +2,7 @@ package ayaka
 
 import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -20,15 +20,15 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 37
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 53
+		return 53, 53
 	case core.ActionSkill:
-		return 56 //should be 82
+		return 56, 56 //should be 82
 	case core.ActionBurst:
-		return 95 //ok
+		return 95, 95 //ok
 	default:
 		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
-		return 0
+		return 0, 0
 	}
 }

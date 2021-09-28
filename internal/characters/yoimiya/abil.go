@@ -6,13 +6,13 @@ import (
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 20
 	}
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	var totalMV float64
 
@@ -62,7 +62,7 @@ func (c *char) Attack(p map[string]int) int {
 		}
 	}
 
-	return f
+	return f, a
 }
 
 func (c *char) onExit() {
@@ -78,8 +78,8 @@ func (c *char) onExit() {
 	}, "yoimiya-exit")
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	c.Core.Status.AddStatus("yoimiyaskill", 600) //activate for 10
 	// log.Println(c.Core.Status.Duration("yoimiyaskill"))
@@ -89,12 +89,12 @@ func (c *char) Skill(p map[string]int) int {
 	}
 
 	c.SetCD(core.ActionSkill, 1080)
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//assume it does skill dmg at end of it's animation
 	d := c.Snapshot(
@@ -146,7 +146,7 @@ func (c *char) Burst(p map[string]int) int {
 	//use up energy
 	c.Energy = 0
 
-	return f
+	return f, a
 }
 
 func (c *char) burstHook() {

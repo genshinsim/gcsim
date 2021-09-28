@@ -70,7 +70,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -88,22 +88,22 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 88
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 35 //TODO: no idea
+		return 35, 35 //TODO: no idea
 	case core.ActionSkill:
 		if p["hold"] == 0 {
-			return 34
+			return 34, 34
 		}
 		if c.Base.Cons >= 2 {
-			return 34 //press and hold have same cd
+			return 34, 34 //press and hold have same cd
 		}
-		return 80
+		return 80, 80
 	case core.ActionBurst:
-		return 116 //ok
+		return 116, 116 //ok
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -128,11 +128,11 @@ func (c *char) a4() {
 
 var delay = [][]int{{11}, {25}, {36, 49}, {33}, {45, 63}}
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 	//register action depending on number in chain
 	//3 and 4 need to be registered as multi action
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	//apply attack speed
 	d := c.Snapshot(
@@ -158,17 +158,17 @@ func (c *char) Attack(p map[string]int) int {
 
 	//return animation cd
 	//this also depends on which hit in the chain this is
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	if p["hold"] == 0 {
 		c.pressE()
-		return f
+		return f, a
 	}
 	c.holdE()
-	return f
+	return f, a
 }
 
 func (c *char) pressE() {
@@ -302,8 +302,8 @@ func (c *char) holdE() {
 
 //ult 365 to 415, 60fps = 120
 //looks like ult charges for 8 seconds
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	c.Core.Status.AddStatus("eulaq", 7*60+f+1)
 
 	c.burstCounter = 0
@@ -351,7 +351,7 @@ func (c *char) Burst(p map[string]int) int {
 		c.Energy = 0
 	}, "q", f)
 
-	return f
+	return f, a
 }
 
 func (c *char) onExitField() {

@@ -57,7 +57,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 var delay = [][]int{{8}, {24}, {24, 43}, {36}, {43, 78}}
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -75,22 +75,22 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 79
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 63
+		return 63, 63
 	case core.ActionSkill:
-		return 77 //should be 82
+		return 77, 77 //should be 82
 	case core.ActionBurst:
-		return 39 //ok
+		return 39, 39 //ok
 	default:
 		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
-		return 0
+		return 0, 0
 	}
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -113,7 +113,7 @@ func (c *char) Attack(p map[string]int) int {
 	c.AdvanceNormalIndex()
 	//return animation cd
 	//this also depends on which hit in the chain this is
-	return f
+	return f, a
 }
 
 func (c *char) orbitalfunc(src int) func() {
@@ -157,14 +157,14 @@ func (c *char) applyOrbital() {
 	c.Core.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("xqorb"))
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 	//applies wet to self 30 frame after cast, sword applies wet every 2.5seconds, so should be 7 seconds
 	orbital := p["orbital"]
 	if orbital == 1 {
 		c.applyOrbital()
 	}
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	d := c.Snapshot(
 		"Guhua Sword: Fatal Rainscreen",
@@ -193,7 +193,7 @@ func (c *char) Skill(p map[string]int) int {
 
 	//should last 15s, cd 21s
 	c.SetCD(core.ActionSkill, 21*60)
-	return f
+	return f, a
 }
 
 func (c *char) burstHook() {
@@ -319,8 +319,8 @@ func (c *char) burstHook() {
 	}, "xq-burst")
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	//apply hydro every 3rd hit
 	//triggered on normal attack
 	//also applies hydro on cast if p=1
@@ -358,5 +358,5 @@ func (c *char) Burst(p map[string]int) int {
 	// c.CD[combat.BurstCD] = c.S.F + 20*60
 	c.SetCD(core.ActionBurst, 20*60)
 	c.Energy = 0
-	return f
+	return f, a
 }

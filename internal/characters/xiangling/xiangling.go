@@ -40,7 +40,7 @@ func (c *char) Init(index int) {
 	}
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -57,14 +57,14 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 167 - 141
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionSkill:
-		return 26
+		return 26, 26
 	case core.ActionBurst:
-		return 99
+		return 99, 99
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -96,8 +96,8 @@ func (c *char) c6() {
 	}
 }
 
-func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionAttack, p)
+func (c *char) Attack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -126,11 +126,11 @@ func (c *char) Attack(p map[string]int) int {
 	c.AdvanceNormalIndex()
 	//return animation cd
 	//this also depends on which hit in the chain this is
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionCharge, p)
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionCharge, p)
 	d := c.Snapshot(
 		"Charge",
 		core.AttackTagExtra,
@@ -145,13 +145,13 @@ func (c *char) ChargeAttack(p map[string]int) int {
 	c.QueueDmg(&d, f-1)
 
 	//return animation cd
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 	//check if on cd first
 
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Guoba",
 		core.AttackTagElementalArt,
@@ -186,11 +186,11 @@ func (c *char) Skill(p map[string]int) int {
 
 	c.SetCD(core.ActionSkill, 12*60)
 	//return animation cd
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	lvl := c.TalentLvlBurst()
 
 	delay := []int{34, 50, 75}
@@ -258,5 +258,5 @@ func (c *char) Burst(p map[string]int) int {
 	c.Energy = 0
 
 	//return animation cd
-	return f
+	return f, a
 }

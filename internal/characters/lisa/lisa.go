@@ -37,7 +37,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -53,20 +53,21 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 114 - 70
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 95
+		return 95, 95
 	case core.ActionSkill:
 		hold := p["hold"]
 		if hold == 0 {
-			return 21 //no hold
+			return 21, 21 //no hold
 		}
-		return 116 //yes hold
+		//yes hold
+		return 116, 116
 	case core.ActionBurst:
-		return 30
+		return 30, 30
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -97,9 +98,9 @@ func (c *char) c6() {
 	}, "lisa-c6")
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -114,11 +115,11 @@ func (c *char) Attack(p map[string]int) int {
 	c.QueueDmg(&d, f-1)
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionCharge, p)
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	//TODO: assumes this applies every time per
 	//[7:53 PM] Hold ₼KLEE like others hold GME: CHarge is pyro every charge
@@ -153,11 +154,11 @@ func (c *char) ChargeAttack(p map[string]int) int {
 		c.AddEnergy(2 * float64(hits))
 	}
 
-	return c.ActionFrames(core.ActionCharge, p)
+	return f, a
 }
 
 //p = 0 for no hold, p = 1 for hold
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 	hold := p["hold"]
 	if hold == 1 {
 		return c.skillHold(p)
@@ -166,8 +167,8 @@ func (c *char) Skill(p map[string]int) int {
 }
 
 //TODO: how long do stacks last?
-func (c *char) skillPress(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) skillPress(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Violet Arc",
 		core.AttackTagElementalArt,
@@ -189,11 +190,11 @@ func (c *char) skillPress(p map[string]int) int {
 	}
 
 	c.SetCD(core.ActionSkill, 60)
-	return f
+	return f, a
 }
 
-func (c *char) skillHold(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) skillHold(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Violet Arc (Hold)",
 		core.AttackTagElementalArt,
@@ -229,12 +230,12 @@ func (c *char) skillHold(p map[string]int) int {
 
 	// c.CD[def.SkillCD] = c.Core.F + 960 //16seconds
 	c.SetCD(core.ActionSkill, 960)
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//first zap has no icd
 	d := c.Snapshot(
@@ -283,5 +284,5 @@ func (c *char) Burst(p map[string]int) int {
 	c.Energy = 0
 	// c.CD[def.BurstCD] = c.Core.F + 1200
 	c.SetCD(core.ActionBurst, 1200)
-	return f //TODO: frames
+	return f, a
 }

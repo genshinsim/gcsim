@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -24,11 +24,11 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Lightning Blade",
 		core.AttackTagElementalArt,
@@ -54,11 +54,11 @@ func (c *char) Skill(p map[string]int) int {
 	}
 
 	c.SetCD(core.ActionSkill, 810+21) //13.5s, starts 21 frames in
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
-	f := c.ActionFrames(core.ActionBurst, p)
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	d := c.Snapshot(
 		"Bellowing Thunder",
 		core.AttackTagElementalBurst,
@@ -75,5 +75,5 @@ func (c *char) Burst(p map[string]int) int {
 	//1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
 	c.ConsumeEnergy(39)
 	c.SetCD(core.ActionBurst, 1200+37)
-	return f
+	return f, a
 }

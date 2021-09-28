@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	for i, mult := range attack[c.NormalCounter] {
 		d := c.Snapshot(
@@ -26,12 +26,12 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionCharge, p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	d := c.Snapshot(
 		"Charge",
@@ -50,10 +50,10 @@ func (c *char) ChargeAttack(p map[string]int) int {
 		c.QueueDmg(&x, f-3+i)
 	}
 
-	return f
+	return f, a
 }
 
-func (c *char) Dash(p map[string]int) int {
+func (c *char) Dash(p map[string]int) (int, int) {
 	f, ok := p["f"]
 	if !ok {
 		f = 36
@@ -91,11 +91,11 @@ func (c *char) Dash(p map[string]int) int {
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Core.F + 300,
 	})
-	return f
+	return f, f
 }
 
-func (c *char) Skill(p map[string]int) int {
-	f := c.ActionFrames(core.ActionSkill, p)
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
 	d := c.Snapshot(
 		"Hyouka",
 		core.AttackTagElementalArt,
@@ -129,13 +129,13 @@ func (c *char) Skill(p map[string]int) int {
 	c.QueueDmg(&d, f)
 
 	c.SetCD(core.ActionSkill, 600)
-	return f
+	return f, a
 
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	d := c.Snapshot(
 		"Soumetsu",
@@ -170,5 +170,5 @@ func (c *char) Burst(p map[string]int) int {
 	c.SetCD(core.ActionBurst, 20*60)
 	c.Energy = 0
 
-	return f
+	return f, a
 }

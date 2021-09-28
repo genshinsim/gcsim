@@ -2,7 +2,7 @@ package raiden
 
 import "github.com/genshinsim/gsim/pkg/core"
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -43,18 +43,18 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			}
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
 		if c.Core.Status.Duration("raidenburst") == 0 {
-			return 61 //30 if cancelled
+			return 61, 61 //30 if cancelled
 		}
-		return 79 //37 <- if cancelled
+		return 79, 79 //37 <- if cancelled
 	case core.ActionSkill:
-		return 35 // going by first swapable
+		return 35, 35 // going by first swapable
 	case core.ActionBurst:
-		return 108
+		return 108, 108
 	default:
 		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
-		return 0
+		return 0, 0
 	}
 }

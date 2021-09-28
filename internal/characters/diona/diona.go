@@ -39,7 +39,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
@@ -57,24 +57,24 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
 			f = 152 - 101
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionAim:
 		if c.Base.Cons >= 4 && c.Core.Status.Duration("dionaburst") > 0 {
-			return 34 //reduced by 60%
+			return 34, 34 //reduced by 60%
 		}
-		return 84 //kqm
+		return 84, 84 //kqm
 	case core.ActionBurst:
-		return 21
+		return 21, 21
 	case core.ActionSkill:
 		switch p["hold"] {
 		case 1:
-			return 24
+			return 24, 24
 		default:
-			return 15
+			return 15, 15
 		}
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -101,13 +101,13 @@ func (c *char) c6() {
 	})
 }
 
-func (c *char) Attack(p map[string]int) int {
+func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 20
 	}
 
-	f := c.ActionFrames(core.ActionAttack, p)
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	d := c.Snapshot(
 		fmt.Sprintf("Normal %v", c.NormalCounter),
 		core.AttackTagNormal,
@@ -123,16 +123,16 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) Aimed(p map[string]int) int {
+func (c *char) Aimed(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 20
 	}
 
-	f := c.ActionFrames(core.ActionAim, p)
+	f, a := c.ActionFrames(core.ActionAim, p)
 
 	d := c.Snapshot(
 		"Aim (Charged)",
@@ -150,15 +150,15 @@ func (c *char) Aimed(p map[string]int) int {
 
 	c.QueueDmg(&d, travel+f)
 
-	return f
+	return f, a
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 20
 	}
-	f := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	// 2 paws
 	var bonus float64 = 1
@@ -217,12 +217,12 @@ func (c *char) Skill(p map[string]int) int {
 	}, "Diona-Paw-Shield", f)
 
 	c.SetCD(core.ActionSkill, cd)
-	return f
+	return f, a
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//initial hit
 	d := c.Snapshot(
@@ -295,5 +295,5 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.SetCD(core.ActionBurst, 1200+f)
 	c.Energy = 0
-	return f
+	return f, a
 }

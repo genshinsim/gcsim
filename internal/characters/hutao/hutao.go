@@ -61,21 +61,21 @@ var normalFrames = []int{10, 13, 22, 33, 41, 36} // from kqm lib, -3 for hit lag
 //var dmgFrame = [][]int{{13}, {16}, {25}, {36}, {26, 44}, {39}} // from kqm lib
 var dmgFrame = [][]int{{10}, {13}, {22}, {33}, {23, 41}, {36}} // from kqm lib - 3 for hit lag
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) int {
+func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := normalFrames[c.NormalCounter]
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f
+		return f, f
 	case core.ActionCharge:
-		return 9 //rough.. 11, -2 for hit lag
+		return 9, 9 //rough.. 11, -2 for hit lag
 	case core.ActionSkill:
-		return 42 // from kqm lib
+		return 42, 42 // from kqm lib
 	case core.ActionBurst:
-		return 130 // from kqm lib
+		return 130, 130 // from kqm lib
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0
+		return 0, 0
 	}
 }
 
@@ -147,8 +147,8 @@ func (c *char) checkc6() {
 	c.c6icd = c.Core.F + 3600
 }
 
-func (c *char) Attack(p map[string]int) int {
-	f := c.ActionFrames(core.ActionAttack, p)
+func (c *char) Attack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAttack, p)
 	hits := len(attack[c.NormalCounter])
 	//check for particles
 	c.ppParticles()
@@ -172,12 +172,12 @@ func (c *char) Attack(p map[string]int) int {
 
 	c.AdvanceNormalIndex()
 
-	return f
+	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) int {
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	f := c.ActionFrames(core.ActionCharge, p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	if c.Core.Status.Duration("paramita") > 0 {
 		//[3:56 PM] Isu: My theory is that since E changes attack animations, it was coded
@@ -214,7 +214,7 @@ func (c *char) ChargeAttack(p map[string]int) int {
 
 	c.QueueDmg(&d, f-5)
 
-	return f
+	return f, a
 }
 
 func (c *char) ppParticles() {
@@ -280,7 +280,7 @@ func (c *char) bbtickfunc(src int) func() {
 	}
 }
 
-func (c *char) Skill(p map[string]int) int {
+func (c *char) Skill(p map[string]int) (int, int) {
 	//increase based on hp at cast time
 	//drains hp
 	c.Core.Status.AddStatus("paramita", 520+20) //to account for animation
@@ -322,7 +322,7 @@ func (c *char) onExitField() {
 	}, "hutao-exit")
 }
 
-func (c *char) Burst(p map[string]int) int {
+func (c *char) Burst(p map[string]int) (int, int) {
 	low := (c.HPCurrent / c.HPMax) <= 0.5
 	mult := burst[c.TalentLvlBurst()]
 	regen := regen[c.TalentLvlBurst()]
@@ -341,7 +341,7 @@ func (c *char) Burst(p map[string]int) int {
 	}
 	c.HPCurrent += c.HPMax * float64(count) * regen
 
-	f := c.ActionFrames(core.ActionBurst, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//[2:28 PM] Aluminum | Harbinger of Jank: I think the idea is that PP won't fall off before dmg hits, but other buffs aren't snapshot
 	//[2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
@@ -371,7 +371,7 @@ func (c *char) Burst(p map[string]int) int {
 
 	c.Energy = 0
 	c.SetCD(core.ActionBurst, 900)
-	return f
+	return f, a
 }
 
 func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {

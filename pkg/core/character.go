@@ -20,22 +20,24 @@ type Character interface {
 	AddTask(fun func(), name string, delay int)
 	QueueDmg(ds *Snapshot, delay int)
 
-	//actions; each action should return the earliest frame at which the
-	//next action may be queued.
-	Attack(p map[string]int) int
-	Aimed(p map[string]int) int
-	ChargeAttack(p map[string]int) int
-	HighPlungeAttack(p map[string]int) int
-	LowPlungeAttack(p map[string]int) int
-	Skill(p map[string]int) int
-	Burst(p map[string]int) int
-	Dash(p map[string]int) int
+	//actions; each action should return 2 ints:
+	//	the earliest frame at which the next action may be queued, and;
+	// 	the total length of the animation state
+	Attack(p map[string]int) (int, int)
+	Aimed(p map[string]int) (int, int)
+	ChargeAttack(p map[string]int) (int, int)
+	HighPlungeAttack(p map[string]int) (int, int)
+	LowPlungeAttack(p map[string]int) (int, int)
+	Skill(p map[string]int) (int, int)
+	Burst(p map[string]int) (int, int)
+	Dash(p map[string]int) (int, int)
 
 	//info methods
 	ActionReady(a ActionType, p map[string]int) bool
-	ActionFrames(a ActionType, p map[string]int) int
 	ActionStam(a ActionType, p map[string]int) float64
 
+	//number of frames this action will take
+	// ActionFrames(a ActionType, p map[string]int) int
 	//return the number of frames the current action must wait before it can be
 	//executed;
 	ActionInterruptableDelay(next ActionType) int
