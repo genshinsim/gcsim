@@ -40,6 +40,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/artifacts/crimson"
 	_ "github.com/genshinsim/gsim/internal/artifacts/gladiator"
 	_ "github.com/genshinsim/gsim/internal/artifacts/heartofdepth"
+	_ "github.com/genshinsim/gsim/internal/artifacts/instructor"
 	_ "github.com/genshinsim/gsim/internal/artifacts/lavawalker"
 	_ "github.com/genshinsim/gsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gsim/internal/artifacts/noblesse"
