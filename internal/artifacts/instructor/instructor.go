@@ -25,6 +25,9 @@ func New(c core.Character, s *core.Core, count int) {
 		})
 	}
 	if count >= 4 {
+		m := make([]float64, core.EndStatType)
+		m[core.EM] = 120
+
 		s.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
 			ds := args[1].(*core.Snapshot)
 			// Character must be on field to proc bonus
@@ -37,9 +40,6 @@ func New(c core.Character, s *core.Core, count int) {
 			}
 
 			// Add 120 EM to all characters except the one with instructor
-			m := make([]float64, core.EndStatType)
-			m[core.EM] = 120
-
 			for i, char := range s.Chars {
 				// Skip the one with instructor
 				if i == c.CharIndex() {
