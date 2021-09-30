@@ -62,6 +62,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/alley"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/amos"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/elegy"
+	_ "github.com/genshinsim/gsim/internal/weapons/bow/hamayumi"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/iram"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/prototype"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/rust"
