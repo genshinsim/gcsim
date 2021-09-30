@@ -23,12 +23,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Energy = 90
-	c.EnergyMax = 90
+	c.Energy = 40
+	c.EnergyMax = 40
 	c.Weapon.Class = core.WeaponClassSpear
-	c.BurstCon = 3
-	c.SkillCon = 5
-	c.NormalHitNum = 5
+	c.BurstCon = 5
+	c.SkillCon = 3
+	c.NormalHitNum = 6
 
 	c.maxSteele = 1
 	if c.Base.Cons >= 1 {
