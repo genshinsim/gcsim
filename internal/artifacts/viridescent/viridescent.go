@@ -26,46 +26,42 @@ func New(c core.Character, s *core.Core, count int) {
 		s.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
 			ds := args[1].(*core.Snapshot)
 			t := args[0].(core.Target)
-			//ignore if character not on field
-			if s.ActiveChar != c.CharIndex() {
-				return false
-			}
 			//ignore if source not current char
 			if ds.ActorIndex != c.CharIndex() {
 				return false
 			}
-			// s.Log.Println("ok")
-			// s.Log.Println(ds.ReactionType)
+			ds.ReactBonus += 0.6
+
+			var ele core.EleType
+			var key string
 			switch ds.ReactionType {
 			case core.SwirlCryo:
-				t.AddResMod("vvcryo", core.ResistMod{
-					Duration: 600, //10 seconds
-					Ele:      core.Cryo,
-					Value:    -0.4,
-				})
-				// s.Log.Println(t.HasResMod("vvcryo"))
+				ele = core.Cryo
+				key = "vvcryo"
 			case core.SwirlElectro:
-				t.AddResMod("vvelectro", core.ResistMod{
-					Duration: 600, //10 seconds
-					Ele:      core.Electro,
-					Value:    -0.4,
-				})
+				ele = core.Electro
+				key = "vvelectro"
 			case core.SwirlPyro:
-				t.AddResMod("vvpyro", core.ResistMod{
-					Duration: 600, //10 seconds
-					Ele:      core.Pyro,
-					Value:    -0.4,
-				})
+				ele = core.Pyro
+				key = "vvpyro"
 			case core.SwirlHydro:
-				t.AddResMod("vvhydro", core.ResistMod{
-					Duration: 600, //10 seconds
-					Ele:      core.Hydro,
-					Value:    -0.4,
-				})
+				ele = core.Hydro
+				key = "vvhydro"
 			default:
 				return false
 			}
-			ds.ReactBonus += 0.6
+
+			//ignore if character not on field
+			if s.ActiveChar != c.CharIndex() {
+				return false
+			}
+
+			t.AddResMod(key, core.ResistMod{
+				Duration: 600, //10 seconds
+				Ele:      ele,
+				Value:    -0.4,
+			})
+
 			s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", ds.ReactionType, "char", c.CharIndex())
 			return false
 		}, fmt.Sprintf("vv4-%v", c.Name()))
