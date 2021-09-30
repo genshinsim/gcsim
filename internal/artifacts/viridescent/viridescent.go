@@ -30,7 +30,6 @@ func New(c core.Character, s *core.Core, count int) {
 			if ds.ActorIndex != c.CharIndex() {
 				return false
 			}
-			ds.ReactBonus += 0.6
 
 			var ele core.EleType
 			var key string
@@ -50,6 +49,8 @@ func New(c core.Character, s *core.Core, count int) {
 			default:
 				return false
 			}
+
+			ds.ReactBonus += 0.6
 
 			//ignore if character not on field
 			if s.ActiveChar != c.CharIndex() {
