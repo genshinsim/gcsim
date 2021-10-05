@@ -28,6 +28,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gsim/internal/characters/venti"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
+	_ "github.com/genshinsim/gsim/internal/characters/xiao"
 	_ "github.com/genshinsim/gsim/internal/characters/xingqiu"
 	_ "github.com/genshinsim/gsim/internal/characters/yoimiya"
 	_ "github.com/genshinsim/gsim/internal/characters/zhongli"
