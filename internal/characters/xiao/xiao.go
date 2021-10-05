@@ -18,8 +18,8 @@ type char struct {
 	eTickSrc     int
 	qStarted     int
 	a4Expiry     int
-	c6Check      []interface{} // int (source frame), string (snapshot ability name)
-	c6Activated  int
+	c6Src        int
+	c6Count      int
 }
 
 // Initializes character
@@ -47,7 +47,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.c2()
 	}
 	if c.Base.Cons >= 6 {
-		c.c6Check = append(c.c6Check, 0, "")
+		c.c6Count = 1
 		c.c6()
 	}
 
@@ -86,22 +86,26 @@ func (c *char) c6() {
 		if !((ds.Abil == "High Plunge") || (ds.Abil == "Low Plunge")) {
 			return false
 		}
-		// Prevents activation more than once per plunge damage instance
-		if (c.c6Activated == 1) && (c.c6Check[0].(int) == ds.SourceFrame) {
+		if c.Core.Status.Duration("xiaoburst") == 0 {
 			return false
 		}
-		if (c.c6Check[0].(int) == ds.SourceFrame) && (c.c6Check[1].(string) == ds.Abil) {
+		if c.c6Src != ds.SourceFrame {
+			c.c6Src = ds.SourceFrame
+			c.c6Count = 1
+			return false
+		}
+
+		c.c6Count++
+
+		// Prevents activation more than once in a single plunge attack
+		if c.c6Count == 2 {
 			c.recoverCharge(c.eTickSrc)
 			c.eTickSrc = c.Core.F
 
-			c.c6Activated = 1
 			c.Core.Status.AddStatus("xiaoc6", 60)
 			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.eCharge, "expiry", c.Core.F + 60)
 			return false
 		}
-		c.c6Check[0] = ds.SourceFrame
-		c.c6Check[1] = ds.Abil
-		c.c6Activated = 0
 		return false
 	}, "xiao-c6")
 }
