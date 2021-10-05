@@ -47,7 +47,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.c2()
 	}
 	if c.Base.Cons >= 6 {
-		c.c6Count = 1
+		c.c6Count = 0
 		c.c6()
 	}
 
@@ -89,9 +89,14 @@ func (c *char) c6() {
 		if c.Core.Status.Duration("xiaoburst") == 0 {
 			return false
 		}
+		// Stops after reaching 2 hits on a single plunge.
+		// Plunge frames are greater than duration of C6 so this will always refresh properly.
+		if c.Core.Status.Duration("xiaoc6") > 0 {
+			return false
+		}
 		if c.c6Src != ds.SourceFrame {
 			c.c6Src = ds.SourceFrame
-			c.c6Count = 1
+			c.c6Count = 0
 			return false
 		}
 
@@ -104,6 +109,8 @@ func (c *char) c6() {
 
 			c.Core.Status.AddStatus("xiaoc6", 60)
 			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.eCharge, "expiry", c.Core.F + 60)
+
+			c.c6Count = 0
 			return false
 		}
 		return false
