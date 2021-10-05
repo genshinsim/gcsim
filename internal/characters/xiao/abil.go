@@ -35,6 +35,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 // Charge attack damage queue generator
 // Very standard - consistent with other characters like Xiangling
 // Note that his CAs share an ICD with his NAs when he is under the effects of his burst
+// TODO: No information available on whether regular CAs follow a similar pattern
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
@@ -42,7 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	d := c.Snapshot(
 		"Charge",
 		core.AttackTagExtra,
-		core.ICDTagNormalAttack,
+		core.ICDTagExtraAttack,
 		core.ICDGroupDefault,
 		core.StrikeTypeSpear,
 		core.Physical,
@@ -79,7 +80,7 @@ func (c *char) PlungeAttack(delay int) (int, int) {
 
 // C6 implementation. Given current targeting system, check if the snapshot will target everything and apply if so
 // Will need to be changed if targeting system gets updated
-func (c *char) c6(d core.Snapshot, delay int) {
+func (c *char) c6(d *core.Snapshot, delay int) {
 	if c.Core.Status.Duration("xiaoburst") > 0 {
 		target_count := d.Targets
 		if target_count == core.TargetAll && len(c.Core.Targets) > 1 {
@@ -128,7 +129,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	c.QueueDmg(&d, f-1)
 
 	if c.Base.Cons == 6 {
-		c.c6(d, f-1)
+		c.c6(&d, f-1)
 	}
 
 	//return animation cd
@@ -168,7 +169,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 	c.QueueDmg(&d, f-1)
 
 	if c.Base.Cons == 6 {
-		c.c6(d, f-1)
+		c.c6(&d, f-1)
 	}
 
 	//return animation cd
@@ -311,9 +312,11 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 		c.Core.Log.Debugw("a1 adding dmg %", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F - c.qStarted)
 
 		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
+		// Also handle burst CA ICD change to share with Normal
 		switch ds.AttackTag {
 		case core.AttackTagNormal:
 		case core.AttackTagExtra:
+			ds.ICDTag = core.ICDTagNormalAttack
 		case core.AttackTagPlunge:
 		default:
 			return ds
