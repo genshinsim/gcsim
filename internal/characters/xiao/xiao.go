@@ -18,6 +18,8 @@ type char struct {
 	eTickSrc     int
 	qStarted     int
 	a4Expiry     int
+	c6Check      []interface{} // int (source frame), string (snapshot ability name)
+	c6Activated  int
 }
 
 // Initializes character
@@ -44,6 +46,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
+	if c.Base.Cons >= 6 {
+		c.c6Check = append(c.c6Check, 0, "")
+		c.c6()
+	}
 
 	c.eCharge = c.eChargeMax
 	c.onExitField()
@@ -66,6 +72,38 @@ func (c *char) c2() {
 			return nil, false
 		},
 	})
+}
+
+// Implements Xiao C6:
+// While under the effect of Bane of All Evil, hitting at least 2 opponents with Xiao's Plunge Attack will immediately grant him 1 charge of Lemniscatic Wind Cycling, and for the next 1s, he may use Lemniscatic Wind Cycling while ignoring its CD.
+// Adds an OnDamage event checker - if we record two or more instances of plunge damage, then activate C6
+func (c *char) c6() {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		if ds.ActorIndex != c.Index {
+			return false
+		}
+		if !((ds.Abil == "High Plunge") || (ds.Abil == "Low Plunge")) {
+			return false
+		}
+		// Prevents activation more than once per plunge damage instance
+		if (c.c6Activated == 1) && (c.c6Check[0].(int) == ds.SourceFrame) {
+			return false
+		}
+		if (c.c6Check[0].(int) == ds.SourceFrame) && (c.c6Check[1].(string) == ds.Abil) {
+			c.recoverCharge(c.eTickSrc)
+			c.eTickSrc = c.Core.F
+
+			c.c6Activated = 1
+			c.Core.Status.AddStatus("xiaoc6", 60)
+			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.eCharge, "expiry", c.Core.F + 60)
+			return false
+		}
+		c.c6Check[0] = ds.SourceFrame
+		c.c6Check[1] = ds.Abil
+		c.c6Activated = 0
+		return false
+	}, "xiao-c6")
 }
 
 // Hook to end Xiao's burst prematurely if he leaves the field

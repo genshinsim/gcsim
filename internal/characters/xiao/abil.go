@@ -78,24 +78,6 @@ func (c *char) PlungeAttack(delay int) (int, int) {
 	return delay, delay
 }
 
-// C6 implementation. Given current targeting system, check if the snapshot will target everything and apply if so
-// Will need to be changed if targeting system gets updated
-func (c *char) c6(d *core.Snapshot, delay int) {
-	if c.Core.Status.Duration("xiaoburst") > 0 {
-		target_count := d.Targets
-		if target_count == core.TargetAll && len(c.Core.Targets) > 1 {
-			// Believe that skill resets restarts the timer on when the next charge recovers
-			c.AddTask(func() {
-				c.recoverCharge(c.eTickSrc)
-				c.eTickSrc = c.Core.F
-
-				c.Core.Status.AddStatus("xiaoc6", 60)
-				c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.eCharge, "expiry", c.Core.F + 60)
-			}, "xiao-c6", delay)
-		}
-	}
-}
-
 // High Plunge attack damage queue generator
 // Use the "plunge_hits" optional argument to determine how many plunge falling hits you do on the way down
 // Default = 0
@@ -127,10 +109,6 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f-1)
-
-	if c.Base.Cons == 6 {
-		c.c6(&d, f-1)
-	}
 
 	//return animation cd
 	return f, a
@@ -167,10 +145,6 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f-1)
-
-	if c.Base.Cons == 6 {
-		c.c6(&d, f-1)
-	}
 
 	//return animation cd
 	return f, a
