@@ -85,6 +85,9 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 		c.QueueDmg(&d, f + travel + 90)
 
+		// Particles are emitted after the ambush thing hits
+		c.QueueParticle("sara", 3, core.Electro, f + travel + 90)
+
 		c.AttackBuff(f + travel + 90)
 		c.a4(f + travel + 90)
 		c.c1(f + travel + 90)
