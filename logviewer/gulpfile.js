@@ -13,5 +13,6 @@ gulp.task("default", () => {
         ignore: ["png"],
       })
     )
+    .pipe(replace('"{{.Log}}"', "`{{.Log}}`"))
     .pipe(gulp.dest("./build"));
 });

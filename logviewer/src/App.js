@@ -562,5 +562,6 @@ function App() {
 export default App;
 
 const active = "{{.Active}}";
-const names = ["bennett", "sucrose", "xiangling", "xingqiu"];
-const logs = "{{.Log}}";
+const nameString = `{{.Team}}`;
+const names = nameString.split(",");
+const logs = `{{.Log}}`;
