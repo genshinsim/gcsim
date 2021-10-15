@@ -1,6 +1,7 @@
 package character
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/genshinsim/gsim/pkg/core"
@@ -42,8 +43,6 @@ func (t *Tmpl) Stat(s core.StatType) float64 {
 
 func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
 
-	var sb strings.Builder
-
 	ds := core.Snapshot{}
 	ds.Stats = make([]float64, core.EndStatType)
 	copy(ds.Stats, c.Stats)
@@ -70,41 +69,65 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	ds.Targets = 0
 	ds.SelfHarm = false
 
-	var logDetails []zap.Field = make([]zap.Field, 0, 11+2*len(core.StatTypeString)+len(c.Mods))
+	var sb strings.Builder
+	var mod_sb strings.Builder
 
-	logDetails = append(logDetails,
-		zap.Int("frame", c.Core.F),
-		zap.Any("event", core.LogSnapshotEvent),
-		zap.Int("char", c.Index),
-		zap.String("abil", name),
-		zap.Float64("mult", mult),
-		zap.Any("ele", e),
-		zap.Float64("durability", float64(d)),
-		zap.Any("attack_tag", a),
-		zap.Any("icd_tag", icd),
-		zap.Any("icd_group", g),
-	)
+	var logDetails []zap.Field
+
+	// Check to see if we should capture logging information at all, since this is fairly expensive
+	capture_logs := c.Core.LogLevelDebug
+
+	if capture_logs {
+		logDetails = make([]zap.Field, 0, 11+2*len(core.StatTypeString)+len(c.Mods))
+
+		logDetails = append(logDetails,
+			zap.Int("frame", c.Core.F),
+			zap.Any("event", core.LogSnapshotEvent),
+			zap.Int("char", c.Index),
+			zap.String("abil", name),
+			zap.Float64("mult", mult),
+			zap.Any("ele", e),
+			zap.Float64("durability", float64(d)),
+			zap.Any("attack_tag", a),
+			zap.Any("icd_tag", icd),
+			zap.Any("icd_group", g),
+		)
+	}
 
 	//pre mod stats
 	// c.S.Log.Debugw("mods", "event", LogSimEvent, "frame", c.S.F, "char", c.Index, "mods", c.Mods)
 	n := 0
 	for _, m := range c.Mods {
-		sb.WriteString("mod_check_")
-		sb.WriteString(m.Key)
-		logDetails = append(logDetails, zap.Int(sb.String(), m.Expiry))
-		sb.Reset()
+		if capture_logs {
+			sb.WriteString("mod_check_")
+			sb.WriteString(m.Key)
+			logDetails = append(logDetails, zap.Int(sb.String(), m.Expiry))
+			sb.Reset()
+		}
 
 		if m.Expiry > c.Core.F || m.Expiry == -1 {
 
 			amt, ok := m.Amount(a)
 
 			if ok {
-				sb.WriteString("mod_added_")
-				sb.WriteString(m.Key)
-				logDetails = append(logDetails, zap.Any(sb.String(), amt))
-				sb.Reset()
 				for k, v := range amt {
 					ds.Stats[k] += v
+
+					if capture_logs && (v != 0) {
+						if mod_sb.String() != "" {
+							mod_sb.WriteString("; ")
+						}
+						mod_sb.WriteString(core.StatTypeString[k])
+						mod_sb.WriteString(": ")
+						mod_sb.WriteString(strconv.FormatFloat(v, 'f', 2, 32))
+					}
+				}
+				if capture_logs {
+					sb.WriteString("mod_added_")
+					sb.WriteString(m.Key)
+					logDetails = append(logDetails, zap.String(sb.String(), mod_sb.String()))
+					sb.Reset()
+					mod_sb.Reset()
 				}
 			}
 			c.Mods[n] = m
@@ -125,18 +148,23 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 		if ok {
 			if c.Infusion.Expiry > c.Core.F || c.Infusion.Expiry == -1 {
 				ds.Element = c.Infusion.Ele
-				logDetails = append(
-					logDetails,
-					zap.String("infusion_key", c.Infusion.Key),
-					zap.Any("infusion_next_ele", c.Infusion.Ele),
-				)
+
+				if capture_logs {
+					logDetails = append(
+						logDetails,
+						zap.String("infusion_key", c.Infusion.Key),
+						zap.Any("infusion_next_ele", c.Infusion.Ele),
+					)
+				}
 			}
 
 		}
 
 	}
 
-	c.Core.Log.Desugar().Debug(name, logDetails...)
+	if capture_logs {
+		c.Core.Log.Desugar().Debug(name, logDetails...)
+	}
 
 	return ds
 }

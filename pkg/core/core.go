@@ -35,6 +35,7 @@ type Core struct {
 	Flags Flags // global flags
 	Rand  *rand.Rand
 	Log   *zap.SugaredLogger
+	LogLevelDebug bool
 
 	//core data
 	Stam   float64
@@ -97,6 +98,11 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	c.LogLevelDebug = false
+	if c.Log.Desugar().Check(zap.DebugLevel, "debug") != nil {
+		c.LogLevelDebug = true
 	}
 
 	if c.Rand == nil {
