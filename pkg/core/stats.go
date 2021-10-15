@@ -1,5 +1,10 @@
 package core
 
+import (
+	"strconv"
+	"strings"
+)
+
 type StatType int
 
 //stat types
@@ -33,6 +38,20 @@ const (
 
 func (s StatType) String() string {
 	return StatTypeString[s]
+}
+
+func PrettyPrintStats(stats []float64) string {
+	var sb strings.Builder
+	for i, v := range stats {
+		if v > 0 {
+			sb.WriteString(StatTypeString[i])
+			sb.WriteString(": ")
+			sb.WriteString(strconv.FormatFloat(v, 'f', 2, 32))
+			sb.WriteString(" ")
+		}
+	}
+
+	return strings.Trim(sb.String(), " ")
 }
 
 var StatTypeString = [...]string{

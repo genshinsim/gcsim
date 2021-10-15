@@ -17,6 +17,7 @@ const (
 	LogReactionEvent
 	LogElementEvent
 	LogSnapshotEvent
+	LogSnapshotModsEvent
 	LogStatusEvent
 	LogActionEvent
 	LogQueueEvent
@@ -42,6 +43,7 @@ var LogSourceString = [...]string{
 	"reaction",
 	"element",
 	"snapshot",
+	"snapshot_mods",
 	"status",
 	"action",
 	"queue",

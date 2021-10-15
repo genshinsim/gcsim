@@ -21,6 +21,7 @@ const (
 
 type Flags struct {
 	DamageMode   bool
+	LogDebug     bool
 	ChildeActive bool
 	// AmpReactionDidOccur bool
 	// AmpReactionType     ReactionType
@@ -93,7 +94,7 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	}
 
 	if c.Log == nil {
-		c.Log, err = NewDefaultLogger(false, false, nil)
+		c.Log, err = NewDefaultLogger(c, false, false, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -290,7 +291,7 @@ func (c *Core) Tick() {
 	c.ActiveDuration++
 }
 
-func NewDefaultLogger(debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
+func NewDefaultLogger(c *Core, debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
 	config := zap.NewDevelopmentConfig()
 	if json {
 		config.Encoding = "json"
@@ -299,6 +300,7 @@ func NewDefaultLogger(debug bool, json bool, paths []string) (*zap.SugaredLogger
 	if debug {
 		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 		config.OutputPaths = paths
+		c.Flags.LogDebug = true
 	} else {
 		config.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
 		config.OutputPaths = []string{}
