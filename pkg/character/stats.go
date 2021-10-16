@@ -1,8 +1,8 @@
 package character
 
 import (
-	"strings"
 	"strconv"
+	"strings"
 
 	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
@@ -162,7 +162,7 @@ func (c *Tmpl) modCheck(stats []float64, name string, a core.AttackTag) {
 					modStatus = append(
 						modStatus,
 						"status: added",
-						"expiry_frame: " + strconv.FormatInt(int64(m.Expiry), 10),
+						"expiry_frame: "+strconv.Itoa(m.Expiry),
 					)
 					modStatus = append(
 						modStatus,

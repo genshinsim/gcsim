@@ -41,32 +41,32 @@ func (s StatType) String() string {
 }
 
 func PrettyPrintStats(stats []float64) string {
-		var sb strings.Builder
-		for i, v := range stats {
-			if v > 0 {
-				sb.WriteString(StatTypeString[i])
-				sb.WriteString(": ")
-				sb.WriteString(strconv.FormatFloat(v, 'f', 2, 32))
-				sb.WriteString(" ")
-			}
-		}
-		return strings.Trim(sb.String(), " ")
-	}
-
-func PrettyPrintStatsSlice(stats []float64) []string {
-	mod_stats := make([]string, 0)
 	var sb strings.Builder
 	for i, v := range stats {
 		if v > 0 {
 			sb.WriteString(StatTypeString[i])
 			sb.WriteString(": ")
 			sb.WriteString(strconv.FormatFloat(v, 'f', 2, 32))
-			mod_stats = append(mod_stats, sb.String())
+			sb.WriteString(" ")
+		}
+	}
+	return strings.Trim(sb.String(), " ")
+}
+
+func PrettyPrintStatsSlice(stats []float64) []string {
+	r := make([]string, 0)
+	var sb strings.Builder
+	for i, v := range stats {
+		if v > 0 {
+			sb.WriteString(StatTypeString[i])
+			sb.WriteString(": ")
+			sb.WriteString(strconv.FormatFloat(v, 'f', 2, 32))
+			r = append(r, sb.String())
 			sb.Reset()
 		}
 	}
 
-	return mod_stats
+	return r
 }
 
 var StatTypeString = [...]string{
