@@ -13,8 +13,8 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a4_last_proc int
-	c1_last_proc int
+	a4LastProc int
+	c1LastProc int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {

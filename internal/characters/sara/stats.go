@@ -93,7 +93,7 @@ var (
 			1.5525,
 		},
 	}
-	aim_charge_full = []float64{
+	aimChargeFull = []float64{
 		1.240,
 		1.333,
 		1.426,
@@ -127,7 +127,7 @@ var (
 		2.8296,
 		2.9868,
 	}
-	atk_buff = []float64{
+	atkBuff = []float64{
 		0.4296,
 		0.4618,
 		0.494,
@@ -144,7 +144,7 @@ var (
 		0.9666,
 		1.020,
 	}
-	burst_main = []float64{
+	burstMain = []float64{
 		4.096,
 		4.4032,
 		4.7104,
@@ -161,7 +161,7 @@ var (
 		9.216,
 		9.728,
 	}
-	burst_cluster = []float64{
+	burstCluster = []float64{
 		0.3412,
 		0.3668,
 		0.3924,

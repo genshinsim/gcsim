@@ -27,7 +27,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		25,
 		attack[c.NormalCounter][c.TalentLvlAttack()],
 	)
-	c.QueueDmg(&d, f + travel)
+	c.QueueDmg(&d, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -46,12 +46,11 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		travel = 20
 	}
-	weak_point, ok := p["weak_point"]
-	hit_weak_point := true
-	if weak_point == 0 {
-		hit_weak_point = false
+	weakPoint, ok := p["weak_point"]
+	hitWeakPoint := true
+	if weakPoint == 0 {
+		hitWeakPoint = false
 	}
-
 
 	d := c.Snapshot(
 		"Aim Charge Attack",
@@ -61,12 +60,12 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		core.StrikeTypePierce,
 		core.Electro,
 		25,
-		aim_charge_full[c.TalentLvlAttack()],
+		aimChargeFull[c.TalentLvlAttack()],
 	)
-	d.HitWeakPoint = hit_weak_point
+	d.HitWeakPoint = hitWeakPoint
 	d.AnimationFrames = f
 
-	c.QueueDmg(&d, travel + f)
+	c.QueueDmg(&d, travel+f)
 
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
 	if c.Core.Status.Duration("saracover") > 0 {
@@ -83,10 +82,10 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		)
 		d.Targets = core.TargetAll
 
-		c.QueueDmg(&d, f + travel + 90)
+		c.QueueDmg(&d, f+travel+90)
 
 		// Particles are emitted after the ambush thing hits
-		c.QueueParticle("sara", 3, core.Electro, f + travel + 90)
+		c.QueueParticle("sara", 3, core.Electro, f+travel+90)
 
 		c.AttackBuff(f + travel + 90)
 		c.a4(f + travel + 90)
@@ -108,7 +107,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	// Snapshot for all of the crowfeathers are taken upon cast
-	c.Core.Status.AddStatus("saracover", 18 * 60)
+	c.Core.Status.AddStatus("saracover", 18*60)
 
 	// C2 handling
 	if c.Base.Cons >= 2 {
@@ -142,16 +141,16 @@ func (c *char) Skill(p map[string]int) (int, int) {
 // it's more like for every 1% of ER, she grants 0.012 flat energy
 func (c *char) a4(delay int) {
 	c.AddTask(func() {
-		if (c.a4_last_proc + 180) >= c.Core.F {
+		if (c.a4LastProc + 180) >= c.Core.F {
 		} else {
-			energy_add_amt := 1.2 + 0.012 * c.Stats[core.ER]
+			energyAddAmt := 1.2 + 0.012*c.Stats[core.ER]
 
-			c.Core.Log.Debugw("Sara A4 adding energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "amount", energy_add_amt)
+			c.Core.Log.Debugw("Sara A4 adding energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "amount", energyAddAmt)
 			for _, char := range c.Core.Chars {
-				char.AddEnergy(energy_add_amt)
+				char.AddEnergy(energyAddAmt)
 			}
 
-			c.a4_last_proc = c.Core.F
+			c.a4LastProc = c.Core.F
 		}
 	}, "a4-proc", delay)
 }
@@ -160,10 +159,10 @@ func (c *char) a4(delay int) {
 // Triggers on her E and Q
 func (c *char) c1(delay int) {
 	c.AddTask(func() {
-		if (c.Base.Cons < 1) || ((c.c1_last_proc + 180) >= c.Core.F) {
+		if (c.Base.Cons < 1) || ((c.c1LastProc + 180) >= c.Core.F) {
 		} else {
 			c.ReduceActionCooldown(core.ActionSkill, 60)
-			c.c1_last_proc = c.Core.F
+			c.c1LastProc = c.Core.F
 			c.Core.Log.Debugw("sara c1 reducing E CD", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new_cooldown", c.Cooldown(core.ActionSkill))
 		}
 	}, "c1-proc", delay)
@@ -173,7 +172,7 @@ func (c *char) c1(delay int) {
 // Casts down Tengu Juurai: Titanbreaker, dealing AoE Electro DMG. Afterwards, Tengu Juurai: Titanbreaker spreads out into 4 consecutive bouts of Tengu Juurai: Stormcluster, dealing AoE Electro DMG.
 // Tengu Juurai: Titanbreaker and Tengu Juurai: Stormcluster can provide the active character within their AoE with the same ATK Bonus as given by the Elemental Skill, Tengu Stormcall. The ATK Bonus provided by various kinds of Tengu Juurai will not stack, and their effects and duration will be determined by the last Tengu Juurai to take effect.
 // Has parameters: "wave_cluster_hits", which controls how many of the mini-clusters in each wave hit an opponent.
-// Also has "wave_attack_procs", used to determine which waves proc the attack buff.
+// Also has "waveAttackProcs", used to determine which waves proc the attack buff.
 // Format for both is a digit of length 5 - rightmost value is the starting proc (titanbreaker hit), and it moves from right to left
 // For example, if you want waves 3 and 4 only to proc the attack buff, set attack_procs=11000
 // For "wave_cluster_hits", use numbers in each slot to control the # of hits. So for center hit, then 3 hits from each wave, set wave_cluster_hits=33331
@@ -182,16 +181,16 @@ func (c *char) c1(delay int) {
 // The number of Tengu Juurai: Stormcluster released by Subjugation: Koukou Sendou is increased to 6.
 func (c *char) Burst(p map[string]int) (int, int) {
 
-	wave_cluster_hits, ok := p["wave_cluster_hits"]
+	waveClusterHits, ok := p["wave_cluster_hits"]
 	if !ok {
-		wave_cluster_hits = 41
+		waveClusterHits = 41
 		if c.Base.Cons >= 2 {
-			wave_cluster_hits = 61
+			waveClusterHits = 61
 		}
 	}
-	wave_attack_procs, ok := p["wave_attack_procs"]
+	waveAttackProcs, ok := p["waveAttackProcs"]
 	if !ok {
-		wave_attack_procs = 11
+		waveAttackProcs = 11
 	}
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
@@ -201,7 +200,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.AddTask(func() {
 		// Flagged as no ICD since the stormclusters do not share ICD with the main hit
 		// No ICD should not functionally matter as this only hits once
-		d_titanbreaker := c.Snapshot(
+		dTitanbreaker := c.Snapshot(
 			"Tengu Juurai: Titanbreaker",
 			core.AttackTagElementalBurst,
 			core.ICDTagNone,
@@ -209,11 +208,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			core.StrikeTypeDefault,
 			core.Electro,
 			25,
-			burst_main[c.TalentLvlBurst()],
+			burstMain[c.TalentLvlBurst()],
 		)
-		d_titanbreaker.Targets = core.TargetAll
+		dTitanbreaker.Targets = core.TargetAll
 
-		d_stormcluster := c.Snapshot(
+		dStormcluster := c.Snapshot(
 			"Tengu Juurai: Stormcluster",
 			core.AttackTagElementalBurst,
 			core.ICDTagElementalBurst,
@@ -221,40 +220,40 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			core.StrikeTypeDefault,
 			core.Electro,
 			25,
-			burst_cluster[c.TalentLvlBurst()],
+			burstCluster[c.TalentLvlBurst()],
 		)
-		d_stormcluster.Targets = core.TargetAll
+		dStormcluster.Targets = core.TargetAll
 
-		if wave_cluster_hits % 10 == 1 {
+		if waveClusterHits%10 == 1 {
 			// Actual hit procs after the full cast duration, or 80 frames
-			c.QueueDmg(&d_titanbreaker, f + 20)
+			c.QueueDmg(&dTitanbreaker, f+20)
 			c.c1(f + 20)
 		}
-		if wave_attack_procs % 10 == 1 {
+		if waveAttackProcs%10 == 1 {
 			c.AttackBuff(f + 20)
 			c.c1(f + 20)
 		}
 
 		// Each cluster wave hits ~50 frames after titanbreaker and each preceding wave
 		// TODO: Replace with frame counts from KQM when those are available
-		for wave_n := 0; wave_n < 4; wave_n++ {
-			wave_hits := int((wave_cluster_hits % PowInt(10, wave_n + 2)) / PowInt(10, wave_n + 2 - 1))
-			wave_attack_proc := int((wave_attack_procs % PowInt(10, wave_n + 2)) / PowInt(10, wave_n + 2 - 1))
-			if wave_hits > 0 {
-				for j := 0; j < wave_hits; j++ {
-					x := d_stormcluster.Clone()
-					c.QueueDmg(&x, f + 20 + (50 * (wave_n + 1)))
-					c.c1(f + 20 + (50 * (wave_n + 1)))
+		for waveN := 0; waveN < 4; waveN++ {
+			waveHits := int((waveClusterHits % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
+			waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
+			if waveHits > 0 {
+				for j := 0; j < waveHits; j++ {
+					x := dStormcluster.Clone()
+					c.QueueDmg(&x, f+20+(50*(waveN+1)))
+					c.c1(f + 20 + (50 * (waveN + 1)))
 				}
 			}
-			if wave_attack_proc == 1 {
-				c.AttackBuff(f + 20 + (50 * (wave_n + 1)))
-				c.c1(f + 20 + (50 * (wave_n + 1)))
+			if waveAttackProc == 1 {
+				c.AttackBuff(f + 20 + (50 * (waveN + 1)))
+				c.c1(f + 20 + (50 * (waveN + 1)))
 			}
 		}
 	}, "sara-q-snapshot", f)
 
-	c.SetCD(core.ActionBurst, 20 * 60)
+	c.SetCD(core.ActionBurst, 20*60)
 	c.Energy = 0
 
 	return f, a
@@ -267,15 +266,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 // Uses event subscription as it can't get snapshotted
 func (c *char) AttackBuff(delay int) {
 	c.AddTask(func() {
-		atk_buff := atk_buff[c.TalentLvlSkill()] * float64(c.Base.Atk + c.Weapon.Atk)
+		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
 
 		active := c.Core.Chars[c.Core.ActiveChar]
 
 		c.Core.Status.AddStatus(fmt.Sprintf("sarabuff%v", active.Name()), 360)
-		c.Core.Log.Debugw("sara attack buff applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", active.CharIndex(), "buff", atk_buff, "expiry", c.Core.F + 360)
+		c.Core.Log.Debugw("sara attack buff applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", active.CharIndex(), "buff", buff, "expiry", c.Core.F+360)
 
 		val := make([]float64, core.EndStatType)
-		val[core.ATK] = atk_buff
+		val[core.ATK] = buff
 		// AddMod function already only takes the most recent version of this buff
 		active.AddMod(core.CharStatMod{
 			Key: "sara-attack-buff",
