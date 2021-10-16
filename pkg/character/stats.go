@@ -2,6 +2,7 @@ package character
 
 import (
 	"strings"
+	"strconv"
 
 	"github.com/genshinsim/gsim/pkg/core"
 	"go.uber.org/zap"
@@ -94,7 +95,7 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 			zap.Any("attack_tag", a),
 			zap.Any("icd_tag", icd),
 			zap.Any("icd_group", g),
-			zap.String("final_stats", core.PrettyPrintStats(ds.Stats)),
+			zap.Any("final_stats", core.PrettyPrintStatsSlice(ds.Stats)),
 		)
 
 		if inf != core.NoElement {
@@ -142,12 +143,6 @@ func (c *Tmpl) modCheck(stats []float64, name string, a core.AttackTag) {
 
 	n := 0
 	for _, m := range c.Mods {
-		if c.Core.Flags.LogDebug {
-			sb.WriteString(m.Key)
-			sb.WriteString("_expiry_frame")
-			logDetails = append(logDetails, zap.Int(sb.String(), m.Expiry))
-			sb.Reset()
-		}
 
 		if m.Expiry > c.Core.F || m.Expiry == -1 {
 
@@ -161,15 +156,28 @@ func (c *Tmpl) modCheck(stats []float64, name string, a core.AttackTag) {
 			n++
 
 			if c.Core.Flags.LogDebug {
+				modStatus := make([]string, 0)
 				if ok {
 					sb.WriteString(m.Key)
-					sb.WriteString("_added")
-					logDetails = append(logDetails, zap.String(sb.String(), core.PrettyPrintStats(amt)))
+					modStatus = append(
+						modStatus,
+						"status: added",
+						"expiry_frame: " + strconv.FormatInt(int64(m.Expiry), 10),
+					)
+					modStatus = append(
+						modStatus,
+						core.PrettyPrintStatsSlice(amt)...,
+					)
+					logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
 					sb.Reset()
 				} else {
 					sb.WriteString(m.Key)
-					sb.WriteString("_rejected")
-					logDetails = append(logDetails, zap.String(sb.String(), "mod not ok"))
+					modStatus = append(
+						modStatus,
+						"status: rejected",
+						"reason: conditions not met",
+					)
+					logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
 					sb.Reset()
 				}
 			}
