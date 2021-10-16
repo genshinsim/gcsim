@@ -91,19 +91,22 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Physical,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
-	d.Targets = core.TargetAll
 
-	c.QueueDmg(&d, f-1)
+	c.QueueDmgDynamic(func() *core.Snapshot {
+		d := c.Snapshot(
+			fmt.Sprintf("Normal %v", c.NormalCounter),
+			core.AttackTagNormal,
+			core.ICDTagNormalAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Physical,
+			25,
+			attack[c.NormalCounter][c.TalentLvlAttack()],
+		)
+		d.Targets = core.TargetAll
+
+		return &d
+	}, f-1)
 	c.AdvanceNormalIndex()
 
 	return f, a
@@ -139,18 +142,21 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 func (c *char) skillPress() {
 
-	d := c.Snapshot(
-		"Passion Overload (Press)",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Pyro,
-		50,
-		skill[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
-	c.QueueDmg(&d, 15)
+	c.QueueDmgDynamic(func() *core.Snapshot {
+		d := c.Snapshot(
+			"Passion Overload (Press)",
+			core.AttackTagElementalArt,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Pyro,
+			50,
+			skill[c.TalentLvlSkill()],
+		)
+		d.Targets = core.TargetAll
+
+		return &d
+	}, 15)
 
 	//25 % chance of 3 orbs
 	count := 2
@@ -164,21 +170,22 @@ func (c *char) skillHoldShort() {
 
 	delay := []int{89, 115}
 
-	d := c.Snapshot(
-		"Passion Overload (Hold)",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Pyro,
-		25,
-		0,
-	)
-	d.Targets = core.TargetAll
 	for i, v := range skill1 {
-		x := d.Clone()
-		x.Mult = v[c.TalentLvlSkill()]
-		c.QueueDmg(&x, delay[i])
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			d := c.Snapshot(
+				"Passion Overload (Hold)",
+				core.AttackTagElementalArt,
+				core.ICDTagNone,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Pyro,
+				25,
+				v[c.TalentLvlSkill()],
+			)
+			d.Targets = core.TargetAll
+
+			return &d
+		}, delay[i])
 	}
 
 	//25 % chance of 3 orbs
@@ -194,35 +201,39 @@ func (c *char) skillHoldLong() {
 
 	delay := []int{136, 154}
 
-	d := c.Snapshot(
-		"Passion Overload (Hold)",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Pyro,
-		25,
-		0,
-	)
-	d.Targets = core.TargetAll
 	for i, v := range skill2 {
-		x := d.Clone()
-		x.Mult = v[c.TalentLvlSkill()]
-		c.QueueDmg(&x, delay[i])
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			d := c.Snapshot(
+				"Passion Overload (Hold)",
+				core.AttackTagElementalArt,
+				core.ICDTagNone,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Pyro,
+				25,
+				v[c.TalentLvlSkill()],
+			)
+			d.Targets = core.TargetAll
+
+			return &d
+		}, delay[i])
 	}
 
-	d2 := c.Snapshot(
-		"Passion Overload (Explode)",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Pyro,
-		25,
-		explosion[c.TalentLvlSkill()],
-	)
-	d2.Targets = core.TargetAll
-	c.QueueDmg(&d2, 198)
+	c.QueueDmgDynamic(func() *core.Snapshot {
+		d2 := c.Snapshot(
+			"Passion Overload (Explode)",
+			core.AttackTagElementalArt,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Pyro,
+			25,
+			explosion[c.TalentLvlSkill()],
+		)
+		d2.Targets = core.TargetAll
+
+		return &d2
+	}, 198)
 
 	//25 % chance of 3 orbs
 	count := 2
