@@ -6,36 +6,37 @@ func (c *char) summonSwordWave() {
 	//trigger swords, only first sword applies hydro
 	for i := 0; i < c.numSwords; i++ {
 		wave := i
-		d := c.Snapshot(
-			"Guhua Sword: Raincutter",
-			core.AttackTagElementalBurst,
-			core.ICDTagElementalBurst,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Hydro,
-			25,
-			burst[c.TalentLvlBurst()],
-		)
-		d.Targets = 0 //only hit main target
-		d.OnHitCallback = func(t core.Target) {
-			//check energy
-			if c.nextRegen && wave == 0 {
-				c.AddEnergy(3)
-			}
-			//check c2
-			if c.Base.Cons >= 2 {
-				c.AddTask(func() {
-					t.AddResMod("xingqiu-c2", core.ResistMod{
-						Ele:      core.Hydro,
-						Value:    -0.15,
-						Duration: 4 * 60,
-					})
-				}, "xq-sword-debuff", 1)
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			d := c.Snapshot(
+				"Guhua Sword: Raincutter",
+				core.AttackTagElementalBurst,
+				core.ICDTagElementalBurst,
+				core.ICDGroupDefault,
+				core.StrikeTypePierce,
+				core.Hydro,
+				25,
+				burst[c.TalentLvlBurst()],
+			)
+			d.Targets = 0 //only hit main target
+			d.OnHitCallback = func(t core.Target) {
+				//check energy
+				if c.nextRegen && wave == 0 {
+					c.AddEnergy(3)
+				}
+				//check c2
+				if c.Base.Cons >= 2 {
+					c.AddTask(func() {
+						t.AddResMod("xingqiu-c2", core.ResistMod{
+							Ele:      core.Hydro,
+							Value:    -0.15,
+							Duration: 4 * 60,
+						})
+					}, "xq-sword-debuff", 1)
 
+				}
 			}
-		}
-
-		c.QueueDmg(&d, 20)
+			return &d
+		}, 20)
 
 		c.burstCounter++
 	}
