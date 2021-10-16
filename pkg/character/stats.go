@@ -42,8 +42,6 @@ func (t *Tmpl) Stat(s core.StatType) float64 {
 
 func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
 
-	var sb strings.Builder
-
 	ds := core.Snapshot{}
 	ds.Stats = make([]float64, core.EndStatType)
 	copy(ds.Stats, c.Stats)
@@ -70,50 +68,46 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	ds.Targets = 0
 	ds.SelfHarm = false
 
-	var logDetails []zap.Field = make([]zap.Field, 0, 11+2*len(core.StatTypeString)+len(c.Mods))
-
-	logDetails = append(logDetails,
-		zap.Int("frame", c.Core.F),
-		zap.Any("event", core.LogSnapshotEvent),
-		zap.Int("char", c.Index),
-		zap.String("abil", name),
-		zap.Float64("mult", mult),
-		zap.Any("ele", e),
-		zap.Float64("durability", float64(d)),
-		zap.Any("attack_tag", a),
-		zap.Any("icd_tag", icd),
-		zap.Any("icd_group", g),
-	)
-
 	//pre mod stats
 	// c.S.Log.Debugw("mods", "event", LogSimEvent, "frame", c.S.F, "char", c.Index, "mods", c.Mods)
-	n := 0
-	for _, m := range c.Mods {
-		sb.WriteString("mod_check_")
-		sb.WriteString(m.Key)
-		logDetails = append(logDetails, zap.Int(sb.String(), m.Expiry))
-		sb.Reset()
-
-		if m.Expiry > c.Core.F || m.Expiry == -1 {
-
-			amt, ok := m.Amount(a)
-
-			if ok {
-				sb.WriteString("mod_added_")
-				sb.WriteString(m.Key)
-				logDetails = append(logDetails, zap.Any(sb.String(), amt))
-				sb.Reset()
-				for k, v := range amt {
-					ds.Stats[k] += v
-				}
-			}
-			c.Mods[n] = m
-			n++
-		}
-	}
-	c.Mods = c.Mods[:n]
+	c.modCheck(ds.Stats, name, a)
 
 	//check infusion
+	inf := c.infusionCheck(a)
+	if inf != core.NoElement {
+		ds.Element = inf
+	}
+
+	//check if we need to log
+	if c.Core.Flags.LogDebug {
+
+		var logDetails []zap.Field = make([]zap.Field, 0, 12+2*len(core.StatTypeString)+len(c.Mods))
+
+		logDetails = append(logDetails,
+			zap.Int("frame", c.Core.F),
+			zap.Any("event", core.LogSnapshotEvent),
+			zap.Int("char", c.Index),
+			zap.String("abil", name),
+			zap.Float64("mult", mult),
+			zap.Any("ele", e),
+			zap.Float64("durability", float64(d)),
+			zap.Any("attack_tag", a),
+			zap.Any("icd_tag", icd),
+			zap.Any("icd_group", g),
+			zap.String("final_stats", core.PrettyPrintStats(ds.Stats)),
+		)
+
+		if inf != core.NoElement {
+			logDetails = append(logDetails, zap.String("infused_ele", inf.String()))
+		}
+
+		c.Core.Log.Desugar().Debug(name, logDetails...)
+	}
+
+	return ds
+}
+
+func (c *Tmpl) infusionCheck(a core.AttackTag) core.EleType {
 	if c.Infusion.Key != "" {
 		ok := false
 		for _, v := range c.Infusion.Tags {
@@ -124,21 +118,67 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 		}
 		if ok {
 			if c.Infusion.Expiry > c.Core.F || c.Infusion.Expiry == -1 {
-				ds.Element = c.Infusion.Ele
-				logDetails = append(
-					logDetails,
-					zap.String("infusion_key", c.Infusion.Key),
-					zap.Any("infusion_next_ele", c.Infusion.Ele),
-				)
+				return c.Infusion.Ele
 			}
-
 		}
+	}
+	return core.NoElement
+}
 
+func (c *Tmpl) modCheck(stats []float64, name string, a core.AttackTag) {
+	var sb strings.Builder
+	var logDetails []zap.Field
+
+	if c.Core.Flags.LogDebug {
+		logDetails = make([]zap.Field, 0, 5+3*len(c.Mods))
+		logDetails = append(logDetails,
+			zap.Int("frame", c.Core.F),
+			zap.Any("event", core.LogSnapshotModsEvent),
+			zap.Int("char", c.Index),
+			zap.String("abil", name),
+			zap.Any("attack_tag", a),
+		)
 	}
 
-	c.Core.Log.Desugar().Debug(name, logDetails...)
+	n := 0
+	for _, m := range c.Mods {
+		if c.Core.Flags.LogDebug {
+			sb.WriteString(m.Key)
+			sb.WriteString("_expiry_frame")
+			logDetails = append(logDetails, zap.Int(sb.String(), m.Expiry))
+			sb.Reset()
+		}
 
-	return ds
+		if m.Expiry > c.Core.F || m.Expiry == -1 {
+
+			amt, ok := m.Amount(a)
+			if ok {
+				for k, v := range amt {
+					stats[k] += v
+				}
+			}
+			c.Mods[n] = m
+			n++
+
+			if c.Core.Flags.LogDebug {
+				if ok {
+					sb.WriteString(m.Key)
+					sb.WriteString("_added")
+					logDetails = append(logDetails, zap.String(sb.String(), core.PrettyPrintStats(amt)))
+					sb.Reset()
+				} else {
+					sb.WriteString(m.Key)
+					sb.WriteString("_rejected")
+					logDetails = append(logDetails, zap.String(sb.String(), "mod not ok"))
+					sb.Reset()
+				}
+			}
+		}
+	}
+	c.Mods = c.Mods[:n]
+	if c.Core.Flags.LogDebug {
+		c.Core.Log.Desugar().Debug(name, logDetails...)
+	}
 }
 
 func (c *Tmpl) HP() float64 {

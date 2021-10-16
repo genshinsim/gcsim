@@ -31,6 +31,14 @@ func (s *StatusCtrl) Duration(key string) int {
 
 func (s *StatusCtrl) AddStatus(key string, dur int) {
 	s.status[key] = s.core.F + dur
+	if s.core.Flags.LogDebug {
+		s.core.Log.Debugw(
+			"Added Status "+key,
+			"event", LogStatusEvent,
+			"frame", s.core.F,
+			"expiration", s.core.F+dur,
+		)
+	}
 }
 
 func (s *StatusCtrl) DeleteStatus(key string) {

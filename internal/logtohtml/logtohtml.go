@@ -71,7 +71,12 @@ func WriteString(in string, out string, initial string, chars []string) error {
 		Log    string
 	}
 	tConfig.Active = initial
-	tConfig.Team = fmt.Sprint(strings.Join(strings.Split(fmt.Sprintf("%+q", chars), " "), ", "))
+	var sb strings.Builder
+	for _, v := range chars {
+		sb.WriteString(v)
+		sb.WriteString(",")
+	}
+	tConfig.Team = strings.Trim(sb.String(), ",")
 	tConfig.Log = in
 
 	os.Remove(out)

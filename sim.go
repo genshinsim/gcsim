@@ -40,7 +40,7 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 			// }
 			c.F = -1
 			c.Flags.DamageMode = cfg.DamageMode
-			c.Log, err = core.NewDefaultLogger(opts.Debug, true, opts.DebugPaths)
+			c.Log, err = core.NewDefaultLogger(c, opts.Debug, true, opts.DebugPaths)
 			if err != nil {
 				return err
 			}
