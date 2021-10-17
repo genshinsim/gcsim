@@ -27,6 +27,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/rosaria"
 	_ "github.com/genshinsim/gsim/internal/characters/sara"
 	_ "github.com/genshinsim/gsim/internal/characters/sucrose"
+	_ "github.com/genshinsim/gsim/internal/characters/tartaglia"
 	_ "github.com/genshinsim/gsim/internal/characters/venti"
 	_ "github.com/genshinsim/gsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gsim/internal/characters/xiao"

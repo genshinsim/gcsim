@@ -32,6 +32,7 @@ const (
 	ICDTagExtraAttack
 	ICDTagElementalArt
 	ICDTagElementalBurst
+	ICDTagTartagliaRiptideFlash
 	ICDTagLisaElectro
 	ICDTagYanfeiFire
 	ICDTagVentiBurstAnemo
