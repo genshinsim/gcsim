@@ -44,9 +44,8 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 				s.C.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
 					ds := args[1].(*core.Snapshot)
 					switch ds.ReactionType {
-					case core.Melt:
-						return false
-					case core.Vaporize:
+					case core.Overload, core.Superconduct, core.ElectroCharged:
+					default:
 						return false
 					}
 					if s.C.F-last < 300 && last != 0 { // every 5 seconds
