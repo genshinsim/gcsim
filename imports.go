@@ -8,6 +8,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/characters/ayaka"
 	_ "github.com/genshinsim/gsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gsim/internal/characters/bennett"
+	_ "github.com/genshinsim/gsim/internal/characters/childe"
 	_ "github.com/genshinsim/gsim/internal/characters/chongyun"
 	_ "github.com/genshinsim/gsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gsim/internal/characters/diona"
