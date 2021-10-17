@@ -239,6 +239,13 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 			return
 		}
 		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+
+		// Special handling for Bennett field self-infusion while waiting for something comprehensive
+		// Interaction is crucial to making many teams work correctly
+		if c.Core.Status.Duration("btburst") > 0 {
+			c.qInfuse = core.Pyro
+		}
+
 		if c.qInfuse != core.NoElement {
 			return
 		}
@@ -253,6 +260,13 @@ func (c *char) absorbCheckA2(src, count, max int) func() {
 			return
 		}
 		c.a2Ele = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+
+		// Special handling for Bennett field self-infusion while waiting for something comprehensive
+		// Interaction is crucial to making many teams work correctly
+		if c.Core.Status.Duration("btburst") > 0 {
+			c.a2Ele = core.Pyro
+		}
+
 		if c.a2Ele != core.NoElement {
 			return
 		}
