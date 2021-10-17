@@ -42,10 +42,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) c6() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
-		if c.Core.Status.Duration(fmt.Sprintf("sarabuff%v", ds.Actor)) <= 0 {
+		if ds.Element != core.Electro {
 			return false
 		}
-		if ds.Element != core.Electro {
+		if c.Core.Status.Duration("sarabuff"+ds.Actor) <= 0 {
 			return false
 		}
 		ds.Stats[core.CD] += .6

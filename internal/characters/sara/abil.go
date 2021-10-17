@@ -87,7 +87,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		// Particles are emitted after the ambush thing hits
 		c.QueueParticle("sara", 3, core.Electro, f+travel+90)
 
-		c.AttackBuff(f + travel + 90)
+		c.attackBuff(f + travel + 90)
 		c.a4(f + travel + 90)
 		c.c1(f + travel + 90)
 
@@ -126,7 +126,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 		c.QueueDmg(&d, 90)
 
-		c.AttackBuff(90)
+		c.attackBuff(90)
 		c.a4(90)
 		c.c1(90)
 	}
@@ -230,13 +230,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			c.c1(f + 20)
 		}
 		if waveAttackProcs%10 == 1 {
-			c.AttackBuff(f + 20)
+			c.attackBuff(f + 20)
 			c.c1(f + 20)
 		}
 
 		// Each cluster wave hits ~50 frames after titanbreaker and each preceding wave
 		// TODO: Replace with frame counts from KQM when those are available
 		for waveN := 0; waveN < 4; waveN++ {
+			// Handles the potential manual user override through the input tags
+			// For each wave, get the corresponding digit from the numeric sequence (e.g. for 4441, wave 2 = 4)
 			waveHits := int((waveClusterHits % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
 			waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
 			if waveHits > 0 {
@@ -247,7 +249,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				}
 			}
 			if waveAttackProc == 1 {
-				c.AttackBuff(f + 20 + (50 * (waveN + 1)))
+				c.attackBuff(f + 20 + (50 * (waveN + 1)))
 				c.c1(f + 20 + (50 * (waveN + 1)))
 			}
 		}
@@ -264,7 +266,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 // Also handles Sara C6
 // The Electro DMG of characters who have had their ATK increased by Tengu Juurai has its Crit DMG increased by 60%.
 // Uses event subscription as it can't get snapshotted
-func (c *char) AttackBuff(delay int) {
+func (c *char) attackBuff(delay int) {
 	c.AddTask(func() {
 		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
 
