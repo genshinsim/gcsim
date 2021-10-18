@@ -300,15 +300,7 @@ func (c *char) rtHook() {
 				// A4:Sword of TorrentsWhen Tartaglia is in Foul Legacy: Raging Tide’s Melee Stance,
 				// on dealing a CRIT hit, Normal and Charged Attacks apply the Riptide status effect to opponents.
 				if crit {
-					if c.rtExpiry[t.Index()] < c.Core.F {
-						c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
-					}
-					c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
-
-					if c.Base.Cons >= 4 && !c.funcC4[t.Index()] {
-						c.funcC4[t.Index()] = true
-						c.AddTask(c.c4TickFunc(t.Index()), "childe-c4-tick", 240) //tick procs every 4 sec
-					}
+					c.applyRT(t.Index())
 				}
 			}
 		case core.AttackTagExtra:
@@ -342,15 +334,7 @@ func (c *char) rtHook() {
 				// A4:Sword of TorrentsWhen Tartaglia is in Foul Legacy: Raging Tide’s Melee Stance,
 				// on dealing a CRIT hit, Normal and Charged Attacks apply the Riptide status effect to opponents.
 				if crit {
-					if c.rtExpiry[t.Index()] < c.Core.F {
-						c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
-					}
-					c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
-
-					if c.Base.Cons >= 4 && !c.funcC4[t.Index()] {
-						c.funcC4[t.Index()] = true
-						c.AddTask(c.c4TickFunc(t.Index()), "childe-c4-tick", 240) //tick procs every 4 sec
-					}
+					c.applyRT(t.Index())
 				}
 			} else {
 				// aim mode
@@ -383,16 +367,7 @@ func (c *char) rtHook() {
 					}
 				}
 
-				// apply riptide status
-				if c.rtExpiry[t.Index()] < c.Core.F {
-					c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
-				}
-				c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
-
-				if c.Base.Cons >= 4 && !c.funcC4[t.Index()] {
-					c.funcC4[t.Index()] = true
-					c.AddTask(c.c4TickFunc(t.Index()), "childe-c4-tick", 240) //tick procs every 4 sec
-				}
+				c.applyRT(t.Index())
 			}
 		case core.AttackTagElementalBurst:
 			if c.Core.Status.Duration("childemelee") > 0 {
@@ -430,16 +405,7 @@ func (c *char) rtHook() {
 					}
 				}
 			} else {
-				//apply riptide status to enemies hit
-				if c.rtExpiry[t.Index()] < c.Core.F {
-					c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
-				}
-				c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
-
-				if c.Base.Cons >= 4 && !c.funcC4[t.Index()] {
-					c.funcC4[t.Index()] = true
-					c.AddTask(c.c4TickFunc(t.Index()), "childe-c4-tick", 240) //tick procs every 4 sec
-				}
+				c.applyRT(t.Index())
 			}
 		default:
 		}
@@ -530,5 +496,18 @@ func (c *char) c4TickFunc(t int) func() {
 				c.QueueDmg(&x, i)
 			}
 		}
+	}
+}
+
+func (c *char) applyRT(t int) {
+	//apply riptide status to enemies hit
+	if c.rtExpiry[t] < c.Core.F {
+		c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t, "Expiry", c.Core.F+c.rtA1)
+	}
+	c.rtExpiry[t] = c.Core.F + c.rtA1
+
+	if c.Base.Cons >= 4 && !c.funcC4[t] {
+		c.funcC4[t] = true
+		c.AddTask(c.c4TickFunc(t), "childe-c4-tick", 6) //tick procs every 4 sec
 	}
 }
