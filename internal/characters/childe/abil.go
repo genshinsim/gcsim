@@ -13,22 +13,11 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	if !ok {
 		travel = 20
 	}
-	hitWeakPoint, ok := p["hitWeakPoint"]
-	if !ok {
-		hitWeakPoint = 0
-	}
-	hits, ok := p["hits"]
-	if !ok {
-		hits = 1
-	}
-	if hits > len(c.Core.Targets) {
-		hits = len(c.Core.Targets)
-	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	if c.Core.Status.Duration("childemelee") > 0 {
-		return c.meleeAttack(f, a, hitWeakPoint, hits)
+		return c.meleeAttack(f, a)
 	}
 
 	d := c.Snapshot(
@@ -61,9 +50,7 @@ var meleeDelayOffset = [][]int{
 
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
-// hitWeakPoint: childe can proc Prototype Cresent's Passive on Geovishap's weakspots.
-// hits: up to n enemies get hit.
-func (c *char) meleeAttack(f, a, hitWeakPoint, hits int) (int, int) {
+func (c *char) meleeAttack(f, a int) (int, int) {
 	for i, mult := range eAttack[c.NormalCounter] {
 		d := c.Snapshot(
 			fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -76,16 +63,9 @@ func (c *char) meleeAttack(f, a, hitWeakPoint, hits int) (int, int) {
 			25,
 			mult[c.TalentLvlSkill()],
 		)
-		if hitWeakPoint != 0 {
-			d.HitWeakPoint = true
-		}
 
 		c.AddTask(func() {
-			for j := 0; j < hits; j++ {
-				x := d.Clone()
-				x.Targets = c.Core.Targets[j].Index()
-				c.Core.Combat.ApplyDamage(&x)
-			}
+			c.Core.Combat.ApplyDamage(&d)
 		}, "childe-attack", f-meleeDelayOffset[c.NormalCounter][i])
 
 	}
@@ -124,24 +104,17 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 //Charged Attack: Consume 20 Stamina to unleash a cross slash, dealing Hydro DMG.
 // hitWeakPoint: childe can proc Prototype Cresent's Passive on Geovishap's weakspots.
-// hits: up to n enemies get hit.
+// Evidence: https://youtu.be/oOfeu5pW0oE
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	if c.Core.Status.Duration("childemelee") == 0 {
-		return 0, 0
+		return f, a
 	}
 
 	hitWeakPoint, ok := p["hitWeakPoint"]
 	if !ok {
 		hitWeakPoint = 0
-	}
-	hits, ok := p["hits"]
-	if !ok {
-		hits = 1
-	}
-	if hits > len(c.Core.Targets) {
-		hits = len(c.Core.Targets)
 	}
 
 	for i, mult := range eCharge {
@@ -160,11 +133,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		}
 
 		c.AddTask(func() {
-			for j := 0; j < hits; j++ {
-				x := d.Clone()
-				x.Targets = c.Core.Targets[j].Index()
-				c.Core.Combat.ApplyDamage(&x)
-			}
+			c.Core.Combat.ApplyDamage(&d)
 		}, "childe-charge-attack", f-5)
 	}
 	return f, a
@@ -174,6 +143,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 //Melee Stance: Converts Tartaglia’s Normal and Charged Attacks into Hydro DMG.Cannot be overridden by any other elemental infusion.
 func (c *char) Skill(p map[string]int) (int, int) {
 	if c.Core.Status.Duration("childemelee") > 0 {
+		f, a := c.ActionFrames(core.ActionSkill, p)
 		c.Core.Status.DeleteStatus("childemelee")
 		newCD := float64(c.Core.F - c.eCast + 6*60)
 		//Foul Legacy: Tide Withholder. Decreases the CD of Foul Legacy: Raging Tide by 20%
@@ -187,8 +157,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Log.Debugw("Childe leaving melee stance", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
 			c.Core.Status.Duration("childemelee"))
 		c.SetCD(core.ActionSkill, int(newCD))
-		//20 frames i guess???
-		return 20, 20
+
+		c.ResetNormalCounter()
+		return f, a
 	}
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
@@ -211,6 +182,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//If the skill ended automatically after 30s, the CD is even longer. (45s cd)
 	c.AddTask(func() {
+		//if he's already out melee, do nothing
+		if c.Core.Status.Duration("childemelee") == 0 {
+			return
+		}
+
 		c.Core.Status.DeleteStatus("childemelee")
 		newCD := float64(45 * 60) // cd 45s
 		//Foul Legacy: Tide Withholder. Decreases the CD of Foul Legacy: Raging Tide by 20%
@@ -236,11 +212,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
-	//childe's melee burst "probably" can extend his melee stance's duration
-	if f > c.Core.Status.Duration("childemelee") && c.Core.Status.Duration("childemelee") > 0 {
-		c.Core.Status.AddStatus("childemelee", f) //extend this to barely cover the burst
-	}
-
 	skillName := "Ranged Stance: Flash of Havoc"
 	if c.Core.Status.Duration("childemelee") > 0 {
 		skillName = "Melee Stance: Light of Obliteration"
@@ -248,7 +219,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.AddTask(func() {
-		// does he snapshot at cast??
 		d := c.Snapshot(
 			skillName,
 			core.AttackTagElementalBurst,
@@ -283,9 +253,11 @@ func (c *char) rtHook() {
 		ds := args[1].(*core.Snapshot)
 		t := args[0].(core.Target)
 		crit := args[3].(bool)
+		//childe is active
 		if ds.ActorIndex != c.CharIndex() {
 			return false
 		}
+		//source is hydro
 		if ds.Element != core.Hydro {
 			return false
 		}
@@ -299,6 +271,7 @@ func (c *char) rtHook() {
 		switch ds.AttackTag {
 		case core.AttackTagNormal:
 			if c.Core.Status.Duration("childemelee") > 0 {
+				// melee normal
 				if c.rtExpiry[t.Index()] > c.Core.F {
 					// c.Core.Log.Debugw("Riptide Slash checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
 					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
@@ -340,6 +313,7 @@ func (c *char) rtHook() {
 			}
 		case core.AttackTagExtra:
 			if c.Core.Status.Duration("childemelee") > 0 {
+				// melee charge
 				if c.rtExpiry[t.Index()] > c.Core.F {
 					// c.Core.Log.Debugw("Riptide Slash checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
 					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
@@ -452,7 +426,7 @@ func (c *char) rtHook() {
 
 					if c.Base.Cons >= 4 {
 						c.funcC4[t.Index()] = false
-						//TODO: Remove c4 ticking tasks
+						c.mlBurstUsed = true
 					}
 				}
 			} else {
@@ -512,6 +486,13 @@ func (c *char) c4TickFunc(t int) func() {
 			c.funcC4[t] = false
 			return
 		}
+		if c.Base.Cons >= 4 {
+			if c.mlBurstUsed {
+				c.mlBurstUsed = false
+				return
+			}
+		}
+
 		//All of Riptide effects triggered by C4 are considered Normal Attack DMG.
 		if c.Core.Status.Duration("childemelee") > 0 {
 			c.Core.Log.Debugw(fmt.Sprintf("C4 %v ticking", "Riptide Slash"), "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",

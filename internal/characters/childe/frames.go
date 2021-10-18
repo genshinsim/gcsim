@@ -54,6 +54,11 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionAim:
 		return 84, 84
 	case core.ActionSkill:
+		if c.Core.Status.Duration("childemelee") > 0 {
+			// 20 frames i guess?
+			//TODO: need exact frames
+			return 20, 20
+		}
 		return 28, 28
 	case core.ActionBurst:
 		if c.Core.Status.Duration("childemelee") == 0 {

@@ -20,6 +20,7 @@ type char struct {
 	rtExpiry      []int // riptide expired frames
 	rtA1          int   // riptide duration lasts 18 sec
 	funcC4        []bool
+	mlBurstUsed   bool // used for c4. After clearing riptide, remove c4 tickers
 	c6            bool // if true reset E cd; otherwise not
 }
 
@@ -40,6 +41,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.eCast = 0
 	c.caFrame = 73
 	c.rtA1 = 18 * 60
+	if c.Base.Cons >= 4 {
+		c.mlBurstUsed = false
+	}
 	if c.Base.Cons >= 6 {
 		c.c6 = false
 	}
@@ -81,6 +85,7 @@ func (c *char) onExitField() {
 		if ds.ActorIndex != c.CharIndex() {
 			return false
 		}
+
 		if c.Core.Status.Duration("childemelee") > 0 {
 			c.Core.Status.DeleteStatus("childemelee")
 			//TODO: preemptive cd doesnt seem fixed at 6s
@@ -128,6 +133,7 @@ func (c *char) onDefeatTargets() {
 			c.Core.Log.Debugw("Riptide Burst ticked", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		}, "Riptide Burst", 5)
 		//TODO: re-index riptide expired frame list
+
 		if c.Base.Cons >= 2 {
 			c.AddEnergy(4)
 			c.Core.Log.Debugw("Childe C2 restoring 4 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
