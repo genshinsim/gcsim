@@ -15,12 +15,12 @@ type char struct {
 	eCast         int // the frame childe cast E to enter melee stance
 	caFrame       int // Idkw on kqm lib, childe has 2 different charged attack frames
 	rtParticleICD int
-	rtflashICD    []int  // procs by aiming (the enemy must have riptide status)
-	rtslashICD    []int  // rt slash procs on normal, charge in melee form (the enemy must have riptide status)
-	rtExpiry      []int  // riptide expired frames
-	rtA1          int    // riptide duration lasts 18 sec
-	funcC4        []bool // c4 doesnt work rn
-	c6            bool   // if true reset E cd; otherwise not
+	rtflashICD    []int // procs by aiming (the enemy must have riptide status)
+	rtslashICD    []int // rt slash procs on normal, charge in melee form (the enemy must have riptide status)
+	rtExpiry      []int // riptide expired frames
+	rtA1          int   // riptide duration lasts 18 sec
+	funcC4        []bool
+	c6            bool // if true reset E cd; otherwise not
 }
 
 // Initializes character
@@ -39,13 +39,13 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 6
 	c.eCast = 0
 	c.caFrame = 73
-	c.initRTICD()
 	c.rtA1 = 18 * 60
 	if c.Base.Cons >= 6 {
 		c.c6 = false
 	}
 
 	c.Core.Flags.ChildeActive = true
+	c.initRTICD()
 	c.onExitField()
 	c.onDefeatTargets()
 	c.rtParticleGen()
@@ -58,6 +58,7 @@ func (c *char) initRTICD() {
 	c.rtflashICD = make([]int, len(c.Core.Targets))
 	c.rtslashICD = make([]int, len(c.Core.Targets))
 	c.rtExpiry = make([]int, len(c.Core.Targets))
+
 	if c.Base.Cons >= 4 {
 		c.funcC4 = make([]bool, len(c.Core.Targets))
 	}
@@ -74,7 +75,6 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 // Hook to end Childe's melee stance prematurely if he leaves the field
-// TODO: force childe to out of melee if on-field time longer than 30s (45s cd)
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
@@ -103,9 +103,31 @@ func (c *char) onExitField() {
 
 func (c *char) onDefeatTargets() {
 	c.Core.Events.Subscribe(core.OnTargetDied, func(args ...interface{}) bool {
-		c.rtFunc("Riptide Burst", 0)
-		//TODO: check if target had riptide state
-		//TODO: re-index riptide frame lists
+		c.AddTask(func() {
+			d := c.Snapshot(
+				"Riptide Burst",
+				core.AttackTagNormal,
+				core.ICDTagNone,
+				core.ICDGroupDefault,
+				core.StrikeTypeDefault,
+				core.Hydro,
+				50,
+				rtBurst[c.TalentLvlAttack()],
+			)
+			d.Targets = core.TargetAll
+
+			c.Core.Combat.ApplyDamage(&d)
+
+			// apply riptide status
+			for _, t := range c.Core.Targets {
+				if c.rtExpiry[t.Index()] < c.Core.F {
+					c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
+				}
+				c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
+			}
+			c.Core.Log.Debugw("Riptide Burst ticked", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		}, "Riptide Burst", 5)
+		//TODO: re-index riptide expired frame list
 		if c.Base.Cons >= 2 {
 			c.AddEnergy(4)
 			c.Core.Log.Debugw("Childe C2 restoring 4 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)

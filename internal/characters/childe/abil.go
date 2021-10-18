@@ -84,7 +84,7 @@ func (c *char) meleeAttack(f, a, hitWeakPoint, hits int) (int, int) {
 			for j := 0; j < hits; j++ {
 				x := d.Clone()
 				x.Targets = c.Core.Targets[j].Index()
-				_, x.CritHits = c.Core.Combat.ApplyDamage2(&x)
+				c.Core.Combat.ApplyDamage(&x)
 			}
 		}, "childe-attack", f-meleeDelayOffset[c.NormalCounter][i])
 
@@ -163,7 +163,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			for j := 0; j < hits; j++ {
 				x := d.Clone()
 				x.Targets = c.Core.Targets[j].Index()
-				_, x.CritHits = c.Core.Combat.ApplyDamage2(&x)
+				c.Core.Combat.ApplyDamage(&x)
 			}
 		}, "childe-charge-attack", f-5)
 	}
@@ -172,7 +172,6 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 //Unleashes a set of weaponry made of pure water, dealing Hydro DMG to surrounding opponents and entering Melee Stance.
 //Melee Stance: Converts Tartaglia’s Normal and Charged Attacks into Hydro DMG.Cannot be overridden by any other elemental infusion.
-//TODO: Handle childe stay on-field for longer than 30s
 func (c *char) Skill(p map[string]int) (int, int) {
 	if c.Core.Status.Duration("childemelee") > 0 {
 		c.Core.Status.DeleteStatus("childemelee")
@@ -232,7 +231,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 //Performs a different attack depending on the stance in which it is cast.
 //Ranged Stance: Flash of Havoc (Fire a Hydro-imbued magic arrow, dealing AoE Hydro DMG. Apply Riptide status to enemies hit. Returns 20 Energy after use.)
 //Melee Stance: Light of Obliteration (Performs a slash with a large AoE, dealing massive Hydro DMG. Triggers Riptide Blast)
-//Riptide Blast: Clears Riptide status. Triggers a Hydro explosion that deals AoE Hydro DMG. DMG Dealt is considered Elemental Burst Damage. Riptide Blast does not snapshot
 func (c *char) Burst(p map[string]int) (int, int) {
 	mult := burst[c.TalentLvlBurst()]
 
@@ -270,7 +268,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.AddEnergy(20)
 		c.Core.Log.Debugw("Childe ranged burst restoring 20 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
 	} else {
-		//Havoc: AnnihilationWhen Havoc: Obliteration is cast in Melee Stance, the CD of Foul Legacy: Raging Tide is reset.
+		// C6 AnnihilationWhen Havoc: Obliteration is cast in Melee Stance, the CD of Foul Legacy: Raging Tide is reset.
 		// This effect will only take place once Tartaglia returns to his Ranged Stance.
 		if c.Base.Cons >= 6 {
 			c.c6 = true
@@ -284,154 +282,195 @@ func (c *char) rtHook() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
 		t := args[0].(core.Target)
+		crit := args[3].(bool)
 		if ds.ActorIndex != c.CharIndex() {
 			return false
 		}
 		if ds.Element != core.Hydro {
 			return false
 		}
+		// dont proc if src from riptides
+		if ds.Abil == "Riptide Flash" || ds.Abil == "Riptide Slash" ||
+			ds.Abil == "Riptide Blast" || ds.Abil == "Riptide Burst" ||
+			ds.Abil == "C4 Riptide Flash" || ds.Abil == "C4 Riptide Slash" {
+			return false
+		}
+
 		switch ds.AttackTag {
 		case core.AttackTagNormal:
 			if c.Core.Status.Duration("childemelee") > 0 {
 				if c.rtExpiry[t.Index()] > c.Core.F {
-					c.rtFunc("Riptide Slash", t.Index())
+					// c.Core.Log.Debugw("Riptide Slash checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
+					if c.rtslashICD[t.Index()] < c.Core.F {
+						c.AddTask(func() {
+							d := c.Snapshot(
+								"Riptide Slash",
+								core.AttackTagElementalArt,
+								core.ICDTagNone,
+								core.ICDGroupDefault,
+								core.StrikeTypeDefault,
+								core.Hydro,
+								25,
+								rtSlash[c.TalentLvlSkill()],
+							)
+							d.Targets = core.TargetAll
+
+							c.Core.Combat.ApplyDamage(&d)
+							c.Core.Log.Debugw("Riptide Slash ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtflashICD[t.Index()], "sl", c.rtslashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
+						}, "Riptide Slash", 5)
+						c.rtslashICD[t.Index()] = c.Core.F + 90 //1.5s icd
+					}
 				}
 
-				if len(ds.CritHits) > 0 {
-					fmt.Println(len(ds.CritHits))
-				}
 				// A4:Sword of TorrentsWhen Tartaglia is in Foul Legacy: Raging Tide’s Melee Stance,
 				// on dealing a CRIT hit, Normal and Charged Attacks apply the Riptide status effect to opponents.
-				// if ds.CritHits[t.Index()] {
-				// 	c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
-				// }
+				if crit {
+					if c.rtExpiry[t.Index()] < c.Core.F {
+						c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
+					}
+					c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
+
+					if c.Base.Cons >= 4 && !c.funcC4[t.Index()] {
+						c.funcC4[t.Index()] = true
+						c.AddTask(c.c4TickFunc(t.Index()), "childe-c4-tick", 240) //tick procs every 4 sec
+					}
+				}
 			}
 		case core.AttackTagExtra:
 			if c.Core.Status.Duration("childemelee") > 0 {
 				if c.rtExpiry[t.Index()] > c.Core.F {
-					c.rtFunc("Riptide Slash", t.Index())
+					// c.Core.Log.Debugw("Riptide Slash checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
+					if c.rtslashICD[t.Index()] < c.Core.F {
+						c.AddTask(func() {
+							d := c.Snapshot(
+								"Riptide Slash",
+								core.AttackTagElementalArt,
+								core.ICDTagNone,
+								core.ICDGroupDefault,
+								core.StrikeTypeDefault,
+								core.Hydro,
+								25,
+								rtSlash[c.TalentLvlSkill()],
+							)
+							d.Targets = core.TargetAll
+
+							c.Core.Combat.ApplyDamage(&d)
+							c.Core.Log.Debugw("Riptide Slash ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtflashICD[t.Index()], "sl", c.rtslashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
+						}, "Riptide Slash", 5)
+						c.rtslashICD[t.Index()] = c.Core.F + 90 //1.5s icd
+					}
 				}
 
 				// A4:Sword of TorrentsWhen Tartaglia is in Foul Legacy: Raging Tide’s Melee Stance,
 				// on dealing a CRIT hit, Normal and Charged Attacks apply the Riptide status effect to opponents.
-				// if ds.CritHits[t.Index()] {
-				// 	c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
-				// }
+				if crit {
+					if c.rtExpiry[t.Index()] < c.Core.F {
+						c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
+					}
+					c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
+
+					if c.Base.Cons >= 4 && !c.funcC4[t.Index()] {
+						c.funcC4[t.Index()] = true
+						c.AddTask(c.c4TickFunc(t.Index()), "childe-c4-tick", 240) //tick procs every 4 sec
+					}
+				}
 			} else {
 				// aim mode
 				if c.rtExpiry[t.Index()] > c.Core.F {
-					c.rtFunc("Riptide Flash", t.Index())
+					// c.Core.Log.Debugw("Riptide Flash checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
+					if c.rtflashICD[t.Index()] < c.Core.F {
+						c.AddTask(func() {
+							d := c.Snapshot(
+								"Riptide Flash",
+								core.AttackTagNormal,
+								core.ICDTagTartagliaRiptideFlash,
+								core.ICDGroupDefault,
+								core.StrikeTypeDefault,
+								core.Hydro,
+								25,
+								rtFlash[0][c.TalentLvlAttack()],
+							)
+							d.Targets = core.TargetAll
+
+							//proc 3 hits
+							for i := 1; i <= 3; i++ {
+								x := d.Clone()
+								c.QueueDmg(&x, i)
+							}
+							c.Core.Log.Debugw("Riptide Flash ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtflashICD[t.Index()], "sl", c.rtslashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
+						}, "Riptide Flash", 5)
+						c.rtflashICD[t.Index()] = c.Core.F + 42 //0.7s icd
+					}
 				}
 
 				// apply riptide status
+				if c.rtExpiry[t.Index()] < c.Core.F {
+					c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
+				}
 				c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
 
-				// c4 doesnt work rn
-				if c.Base.Cons >= 4 {
+				if c.Base.Cons >= 4 && !c.funcC4[t.Index()] {
 					c.funcC4[t.Index()] = true
-					c.AddTask(func() {
-						c.c4TickFunc(t.Index())
-					}, "childe-c4-tick", 240) //tick procs every 4 sec
+					c.AddTask(c.c4TickFunc(t.Index()), "childe-c4-tick", 240) //tick procs every 4 sec
 				}
 			}
 		case core.AttackTagElementalBurst:
 			if c.Core.Status.Duration("childemelee") > 0 {
+				//Riptide Blast: Clears Riptide status. DMG Dealt is considered Elemental Burst Damage.
 				//clear riptide status
 				if c.rtExpiry[t.Index()] > c.Core.F {
-					c.rtFunc("Riptide Blast", t.Index())
+					// c.Core.Log.Debugw(fmt.Sprintf("%v checking for tick", sname), "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
+					c.AddTask(func() {
+						d := c.Snapshot(
+							"Riptide Blast",
+							core.AttackTagElementalBurst,
+							core.ICDTagNone,
+							core.ICDGroupDefault,
+							core.StrikeTypeDefault,
+							core.Hydro,
+							50,
+							rtBlast[c.TalentLvlBurst()],
+						)
+						d.Targets = core.TargetAll
+
+						c.Core.Combat.ApplyDamage(&d)
+						c.Core.Log.Debugw("Riptide Blast ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+							c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtflashICD[t.Index()], "sl", c.rtslashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
+					}, "Riptide Blast", 5)
+
 					c.rtExpiry[t.Index()] = 0
+
+					c.Core.Log.Debugw("Childe cleared riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
+						c.Core.Status.Duration("childemelee"), "target", t.Index(), "Expiry", c.rtExpiry[t.Index()])
+
+					if c.Base.Cons >= 4 {
+						c.funcC4[t.Index()] = false
+						//TODO: Remove c4 ticking tasks
+					}
 				}
 			} else {
 				//apply riptide status to enemies hit
+				if c.rtExpiry[t.Index()] < c.Core.F {
+					c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
+				}
 				c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
-				c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-					c.Core.Status.Duration("childemelee"), "target", t, "Expiry", c.rtExpiry[t.Index()])
+
+				if c.Base.Cons >= 4 && !c.funcC4[t.Index()] {
+					c.funcC4[t.Index()] = true
+					c.AddTask(c.c4TickFunc(t.Index()), "childe-c4-tick", 240) //tick procs every 4 sec
+				}
 			}
 		default:
 		}
 		return false
 	}, "childe-riptide")
-}
-
-func (c *char) rtFunc(sname string, t int) {
-	c.Core.Log.Debugw(fmt.Sprintf("%v checking for tick", sname), "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-		c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
-	var rtICD, talent int
-	var gu core.Durability
-	var mult []float64
-	var atkTag core.AttackTag
-	var icdTag core.ICDTag
-	switch sname {
-	case "Riptide Flash":
-		atkTag = core.AttackTagNormal
-		icdTag = core.ICDTagTartagliaRiptideFlash
-		rtICD = c.rtflashICD[t]
-		mult = rtFlash[0] //proc 3 times
-		talent = c.TalentLvlAttack()
-		gu = 25
-	case "Riptide Slash":
-		rtICD = c.rtslashICD[t]
-		atkTag = core.AttackTagElementalArt
-		icdTag = core.ICDTagNone
-		mult = rtSlash
-		talent = c.TalentLvlSkill()
-		gu = 25
-	case "Riptide Blast":
-		atkTag = core.AttackTagElementalBurst
-		icdTag = core.ICDTagNone
-		mult = rtBlast
-		talent = c.TalentLvlBurst()
-		gu = 50
-		rtICD = -1 //no icd
-	case "Riptide Burst":
-		atkTag = core.AttackTagNormal
-		icdTag = core.ICDTagNone
-		mult = rtBurst
-		talent = c.TalentLvlAttack()
-		gu = 50
-		rtICD = -1 //no icd
-	default:
-	}
-	if rtICD < c.Core.F {
-		c.AddTask(func() {
-			d := c.Snapshot(
-				sname,
-				atkTag,
-				icdTag,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Hydro,
-				gu,
-				mult[talent],
-			)
-			d.Targets = core.TargetAll
-
-			switch sname {
-			case "Riptide Flash":
-				//proc 3 hits in a row. This's the first 2 hits
-				for i := 1; i < 3; i++ {
-					x := d.Clone()
-					c.QueueDmg(&x, i)
-				}
-			case "Riptide Blast":
-				for i := 1; i < len(c.Core.Targets); i++ {
-					if c.rtExpiry[i] > c.Core.F {
-						x := d.Clone()
-						c.QueueDmg(&x, i)
-					}
-				}
-			}
-			c.Core.Combat.ApplyDamage(&d)
-			c.Core.Log.Debugw(fmt.Sprintf("%v ticked", sname), "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-				c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
-		}, sname, 5)
-		switch sname {
-		case "Riptide Flash":
-			c.rtflashICD[t] = c.Core.F + 42 //0.7s icd
-		case "Riptide Slash":
-			c.rtslashICD[t] = c.Core.F + 90 //1.5s icd
-		}
-	}
 }
 
 //Q: does all type of childe's riptide share the same icd of particle?
@@ -444,36 +483,42 @@ func (c *char) rtParticleGen() {
 		if ds.ActorIndex != c.CharIndex() {
 			return false
 		}
-		if ds.Abil != "Riptide Flash" && ds.Abil != "Riptide Slash" {
+		if ds.Abil != "Riptide Flash" && ds.Abil != "Riptide Slash" &&
+			ds.Abil != "C4 Riptide Flash" && ds.Abil != "C4 Riptide Slash" {
 			return false
 		}
 		if c.rtParticleICD > c.Core.F {
-			c.Core.Log.Debugw("childe particle gen on icd", "frame", c.Core.F, "event", core.LogCharacterEvent)
+			// c.Core.Log.Debugw("childe particle gen on icd", "frame", c.Core.F, "event", core.LogCharacterEvent, "icd", c.rtParticleICD)
 			return false
 		}
 		if c.rtParticleICD < c.Core.F {
-			c.rtParticleICD = c.Core.F + 180 //3 seconds
+			c.Core.Log.Debugw("childe gen a hydro particle", "frame", c.Core.F, "event", core.LogCharacterEvent, "icd", c.rtParticleICD)
+			c.rtParticleICD = c.Core.F + 180 //3 sec
 			c.QueueParticle("tartaglia", 1, core.Hydro, 100)
 		}
 		return false
 	}, "childe-particle-gen")
 }
 
-//c4 doesnt work rn
 func (c *char) c4TickFunc(t int) func() {
 	return func() {
-		c.Core.Log.Debugw("C4 checking", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-			c.Core.Status.Duration("childemelee"), "state", c.rtExpiry[t], "target", t, "isFuncC4", c.funcC4[t], "")
 		if !c.funcC4[t] {
+			return
+		}
+		if c.rtExpiry[t] > c.Core.F {
+			c.AddTask(c.c4TickFunc(t), "childe-c4-ticker", 240) //check every 4 sec
+		} else {
+			//riptide expired
+			c.funcC4[t] = false
 			return
 		}
 		//All of Riptide effects triggered by C4 are considered Normal Attack DMG.
 		if c.Core.Status.Duration("childemelee") > 0 {
 			c.Core.Log.Debugw(fmt.Sprintf("C4 %v ticking", "Riptide Slash"), "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-				c.Core.Status.Duration("childemelee"), "state", c.rtExpiry[t], "target", t, "isFuncC4", c.funcC4[t], "")
+				c.Core.Status.Duration("childemelee"), "rt", c.rtExpiry[t], "target", t, "c4", c.funcC4[t])
 			//riptide slash
 			d := c.Snapshot(
-				"Riptide Slash",
+				"C4 Riptide Slash",
 				core.AttackTagNormal,
 				core.ICDTagNone,
 				core.ICDGroupDefault,
@@ -482,13 +527,14 @@ func (c *char) c4TickFunc(t int) func() {
 				25,
 				rtSlash[c.TalentLvlSkill()],
 			)
-			c.QueueDmg(&d, 0)
+			d.Targets = core.TargetAll
+			c.QueueDmg(&d, 1)
 		} else {
 			//riptide flash
 			c.Core.Log.Debugw(fmt.Sprintf("C4 %v ticking", "Riptide Flash"), "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-				c.Core.Status.Duration("childemelee"), "state", c.rtExpiry[t], "target", t, "isFuncC4", c.funcC4[t], "")
+				c.Core.Status.Duration("childemelee"), "rt", c.rtExpiry[t], "target", t, "c4", c.funcC4[t])
 			d := c.Snapshot(
-				"Riptide Flash",
+				"C4 Riptide Flash",
 				core.AttackTagNormal,
 				core.ICDTagTartagliaRiptideFlash,
 				core.ICDGroupDefault,
@@ -497,17 +543,11 @@ func (c *char) c4TickFunc(t int) func() {
 				25,
 				rtFlash[0][c.TalentLvlAttack()],
 			)
-			for i := 0; i < 3; i++ {
+			d.Targets = core.TargetAll
+			for i := 1; i <= 3; i++ {
 				x := d.Clone()
 				c.QueueDmg(&x, i)
 			}
-		}
-
-		if c.rtExpiry[t] > c.Core.F {
-			c.AddTask(c.c4TickFunc(t), "childe-c4-ticker", 240) //check every 4 sec
-		} else {
-			//riptide expired
-			c.funcC4[t] = false
 		}
 	}
 }

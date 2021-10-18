@@ -22,7 +22,6 @@ type Snapshot struct {
 	ICDGroup    ICDGroup
 	ImpulseLvl  int
 
-	CritHits     []bool
 	HitWeakPoint bool
 	Mult         float64 //ability multiplier. could set to 0 from initial Mona dmg
 	StrikeType   StrikeType
