@@ -69,6 +69,7 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 		s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
 		//add call backs to track details
 		s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+			t := args[0].(core.Target)
 			dmg := args[2].(float64)
 			ds := args[1].(*core.Snapshot)
 			sb.Reset()
@@ -81,6 +82,7 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 				}
 			}
 			s.stats.DamageByChar[ds.ActorIndex][sb.String()] += dmg
+			s.stats.DamageByCharByTargets[ds.ActorIndex][t.Index()] += dmg
 			return false
 		}, "dmg-log")
 
@@ -142,6 +144,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 	if s.opts.LogDetails {
 		s.stats.CharNames = make([]string, count)
 		s.stats.DamageByChar = make([]map[string]float64, count)
+		s.stats.DamageByCharByTargets = make([][]float64, count)
 		s.stats.CharActiveTime = make([]int, count)
 		s.stats.AbilUsageCountByChar = make([]map[string]int, count)
 		s.stats.ParticleCount = make(map[string]int)
@@ -170,6 +173,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		//setup maps
 		if s.opts.LogDetails {
 			s.stats.DamageByChar[i] = make(map[string]float64)
+			s.stats.DamageByCharByTargets[i] = make([]float64, len(s.C.Targets))
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 			s.stats.CharNames[i] = v.Base.Name
 		}
