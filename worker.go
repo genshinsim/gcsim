@@ -15,30 +15,32 @@ import (
 )
 
 type Stats struct {
-	IsDamageMode         bool                      `json:"is_damage_mode"`
-	CharNames            []string                  `json:"char_names"`
-	DamageByChar         []map[string]float64      `json:"damage_by_char"`
-	CharActiveTime       []int                     `json:"char_active_time"`
-	AbilUsageCountByChar []map[string]int          `json:"abil_usage_count_by_char"`
-	ParticleCount        map[string]int            `json:"particle_count"`
-	ReactionsTriggered   map[core.ReactionType]int `json:"reactions_triggered"`
-	Duration             int                       `json:"sim_duration"`
-	ElementUptime        []map[core.EleType]int    `json:"ele_uptime"`
+	IsDamageMode          bool                      `json:"is_damage_mode"`
+	CharNames             []string                  `json:"char_names"`
+	DamageByChar          []map[string]float64      `json:"damage_by_char"`
+	DamageByCharByTargets [][]float64               `json:"damage_by_char_by_targets"`
+	CharActiveTime        []int                     `json:"char_active_time"`
+	AbilUsageCountByChar  []map[string]int          `json:"abil_usage_count_by_char"`
+	ParticleCount         map[string]int            `json:"particle_count"`
+	ReactionsTriggered    map[core.ReactionType]int `json:"reactions_triggered"`
+	Duration              int                       `json:"sim_duration"`
+	ElementUptime         []map[core.EleType]int    `json:"ele_uptime"`
 	//final result
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`
 }
 
 type Result struct {
-	IsDamageMode         bool                            `json:"is_damage_mode"`
-	CharNames            []string                        `json:"char_names"`
-	DamageByChar         []map[string]FloatResult        `json:"damage_by_char"`
-	CharActiveTime       []IntResult                     `json:"char_active_time"`
-	AbilUsageCountByChar []map[string]IntResult          `json:"abil_usage_count_by_char"`
-	ParticleCount        map[string]IntResult            `json:"particle_count"`
-	ReactionsTriggered   map[core.ReactionType]IntResult `json:"reactions_triggered"`
-	Duration             FloatResult                     `json:"sim_duration"`
-	ElementUptime        []map[core.EleType]IntResult    `json:"ele_uptime"`
+	IsDamageMode          bool                            `json:"is_damage_mode"`
+	CharNames             []string                        `json:"char_names"`
+	DamageByChar          []map[string]FloatResult        `json:"damage_by_char"`
+	DamageByCharByTargets []map[int]FloatResult           `json:"damage_by_char_by_targets"`
+	CharActiveTime        []IntResult                     `json:"char_active_time"`
+	AbilUsageCountByChar  []map[string]IntResult          `json:"abil_usage_count_by_char"`
+	ParticleCount         map[string]IntResult            `json:"particle_count"`
+	ReactionsTriggered    map[core.ReactionType]IntResult `json:"reactions_triggered"`
+	Duration              FloatResult                     `json:"sim_duration"`
+	ElementUptime         []map[core.EleType]IntResult    `json:"ele_uptime"`
 	//final result
 	Damage     FloatResult `json:"damage"`
 	DPS        FloatResult `json:"dps"`
@@ -175,6 +177,8 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		result.AbilUsageCountByChar = make([]map[string]IntResult, charCount)
 		result.CharActiveTime = make([]IntResult, charCount)
 		result.DamageByChar = make([]map[string]FloatResult, charCount)
+		// Defined as a slice of int maps to make code similar to DamageByChar handling
+		result.DamageByCharByTargets = make([]map[int]FloatResult, charCount)
 
 		for i := range result.CharNames {
 			result.CharNames[i] = chars[i]
@@ -182,6 +186,7 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 			result.CharActiveTime[i].Max = -1
 			result.AbilUsageCountByChar[i] = make(map[string]IntResult)
 			result.DamageByChar[i] = make(map[string]FloatResult)
+			result.DamageByCharByTargets[i] = make(map[int]FloatResult)
 		}
 	}
 
@@ -252,6 +257,28 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 				x.Mean += amt / float64(n)
 
 				result.DamageByChar[i][k] = x
+			}
+		}
+
+		//dmg by char by target
+		for i, target := range v.DamageByCharByTargets {
+			for k, amt := range target {
+				x, ok := result.DamageByCharByTargets[i][k]
+				if !ok {
+					x.Min = math.MaxFloat64
+					x.Max = -1
+				}
+				// log.Printf("dmg amount: %v\n", amt)
+				amt = amt / float64(dd)
+				if x.Min > amt {
+					x.Min = amt
+				}
+				if x.Max < amt {
+					x.Max = amt
+				}
+				x.Mean += amt / float64(n)
+
+				result.DamageByCharByTargets[i][k] = x
 			}
 		}
 
@@ -473,7 +500,43 @@ func (stats *Result) PrettyPrint() string {
 			}
 		}
 	}
+	totalDamageTargets := make([]float64, len(stats.DamageByCharByTargets[0]))
+	flagDamageByTargets := true
+	for i, t := range stats.DamageByCharByTargets {
+		// Save some space if there is only one target - redundant information
+		if len(t) == 1 {
+			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Damage by Target Omitted (Only 1 Target)\n")
+			flagDamageByTargets = false
+			break
+		}
+		if i == 0 {
+			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Damage by Target:\n")
+		}
+		sb.WriteString(fmt.Sprintf("%v contributed the following dps:\n", stats.CharNames[i]))
+		keys := make([]int, 0, len(t))
+		for k := range t {
+			keys = append(keys, k)
+		}
+		sort.Ints(keys)
+		var total float64
+		for j, k := range keys {
+			v := t[k]
+			sb.WriteString(fmt.Sprintf("\t%v (%.2f%% of total): avg %.2f [min: %.2f | max: %.2f] \n", k, 100*v.Mean/stats.DPS.Mean, v.Mean, v.Min, v.Max))
+			total += v.Mean
+			totalDamageTargets[j] += v.Mean
+		}
 
+		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", stats.CharNames[i], total, 100*total/stats.DPS.Mean))
+	}
+	if flagDamageByTargets {
+		for i, targetDmg := range totalDamageTargets {
+			sb.WriteString(fmt.Sprintf("%v (%.2f%% of total): Average %.2f DPS over %.2f seconds\n", i, 100*targetDmg/stats.DPS.Mean, targetDmg, stats.Duration.Mean))
+		}
+	}
+
+	sb.WriteString("------------------------------------------\n")
 	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", stats.Damage.Mean, stats.Duration.Mean, stats.DPS.Mean, stats.DPS.Min, stats.DPS.Max, stats.DPS.SD))
 
 	return sb.String()
