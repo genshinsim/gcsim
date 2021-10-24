@@ -81,8 +81,8 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 // Hook to end Childe's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.CharIndex() {
+		prev := args[0].(int)
+		if prev != c.CharIndex() {
 			return false
 		}
 
