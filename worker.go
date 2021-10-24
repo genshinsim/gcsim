@@ -32,6 +32,7 @@ type Stats struct {
 
 type Result struct {
 	IsDamageMode          bool                            `json:"is_damage_mode"`
+	ActiveChar            string                          `json:"active_char"`
 	CharNames             []string                        `json:"char_names"`
 	DamageByChar          []map[string]FloatResult        `json:"damage_by_char"`
 	DamageByCharByTargets []map[int]FloatResult           `json:"damage_by_char_by_targets"`
@@ -156,6 +157,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 
 	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
 	result.Iterations = n
+	result.ActiveChar = cfg.Characters.Initial
 	if !cfg.DamageMode {
 		result.Duration.Mean = float64(opt.Duration)
 		result.Duration.Min = float64(opt.Duration)
