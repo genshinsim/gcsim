@@ -8,7 +8,6 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("whiteblind", weapon)
-	core.RegisterWeaponFunc("whiteblind", weapon)
 }
 
 //On hit, Normal or Charged Attacks increase ATK and DEF by 6/7.5/9/10.5/12% for 6s.

@@ -8,7 +8,6 @@ import (
 
 func init() {
 	core.RegisterSetFunc("lavawalker", New)
-	core.RegisterSetFunc("lavawalker", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

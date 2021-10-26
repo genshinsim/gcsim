@@ -6,7 +6,6 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("hamayumi", weapon)
-	core.RegisterWeaponFunc("hamayumi", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {

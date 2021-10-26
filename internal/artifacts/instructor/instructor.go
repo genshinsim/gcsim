@@ -8,7 +8,6 @@ import (
 
 func init() {
 	core.RegisterSetFunc("instructor", New)
-	core.RegisterSetFunc("instructor", New)
 }
 
 // Implements Instructor artifact set:
