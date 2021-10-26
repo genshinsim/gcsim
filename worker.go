@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/parse"
@@ -43,11 +44,12 @@ type Result struct {
 	Duration              FloatResult                     `json:"sim_duration"`
 	ElementUptime         []map[core.EleType]IntResult    `json:"ele_uptime"`
 	//final result
-	Damage     FloatResult `json:"damage"`
-	DPS        FloatResult `json:"dps"`
-	Iterations int         `json:"iter"`
-	Text       string      `json:"text"`
-	Debug      string      `json:"debug"`
+	Damage     FloatResult   `json:"damage"`
+	DPS        FloatResult   `json:"dps"`
+	Iterations int           `json:"iter"`
+	Text       string        `json:"text"`
+	Debug      string        `json:"debug"`
+	Runtime    time.Duration `json:"runtime"`
 }
 
 type IntResult struct {
@@ -70,6 +72,7 @@ type workerResp struct {
 }
 
 func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, error) {
+	start := time.Now()
 
 	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
 	var data []Stats
@@ -163,6 +166,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 		result.Duration.Min = float64(opt.Duration)
 		result.Duration.Max = float64(opt.Duration)
 	}
+	result.Runtime = time.Since(start)
 
 	return result, nil
 }
@@ -415,15 +419,15 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, do
 	}
 }
 
-func (stats *Result) PrettyPrint() string {
+func (r *Result) PrettyPrint() string {
 
 	var sb strings.Builder
 
-	for i, t := range stats.DamageByChar {
+	for i, t := range r.DamageByChar {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
 		}
-		sb.WriteString(fmt.Sprintf("%v contributed the following dps:\n", stats.CharNames[i]))
+		sb.WriteString(fmt.Sprintf("%v contributed the following dps:\n", r.CharNames[i]))
 		keys := make([]string, 0, len(t))
 		for k := range t {
 			keys = append(keys, k)
@@ -432,18 +436,18 @@ func (stats *Result) PrettyPrint() string {
 		var total float64
 		for _, k := range keys {
 			v := t[k]
-			sb.WriteString(fmt.Sprintf("\t%v (%.2f%% of total): avg %.2f [min: %.2f | max: %.2f] \n", k, 100*v.Mean/stats.DPS.Mean, v.Mean, v.Min, v.Max))
+			sb.WriteString(fmt.Sprintf("\t%v (%.2f%% of total): avg %.2f [min: %.2f | max: %.2f] \n", k, 100*v.Mean/r.DPS.Mean, v.Mean, v.Min, v.Max))
 			total += v.Mean
 		}
 
-		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", stats.CharNames[i], total, 100*total/stats.DPS.Mean))
+		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", r.CharNames[i], total, 100*total/r.DPS.Mean))
 	}
-	for i, t := range stats.AbilUsageCountByChar {
+	for i, t := range r.AbilUsageCountByChar {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Character ability usage:\n")
 		}
-		sb.WriteString(fmt.Sprintf("%v used the following abilities:\n", stats.CharNames[i]))
+		sb.WriteString(fmt.Sprintf("%v used the following abilities:\n", r.CharNames[i]))
 		keys := make([]string, 0, len(t))
 		for k := range t {
 			keys = append(keys, k)
@@ -454,15 +458,15 @@ func (stats *Result) PrettyPrint() string {
 			sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v | max: %v]\n", k, v.Mean, v.Min, v.Max))
 		}
 	}
-	for i, v := range stats.CharActiveTime {
+	for i, v := range r.CharActiveTime {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Character field time:\n")
 		}
-		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", stats.CharNames[i], 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
+		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", r.CharNames[i], 100*v.Mean/(r.Duration.Mean*60), float64(100*v.Min)/(r.Duration.Mean*60), float64(100*v.Max)/(r.Duration.Mean*60)))
 	}
-	pk := make([]string, 0, len(stats.ParticleCount))
-	for k := range stats.ParticleCount {
+	pk := make([]string, 0, len(r.ParticleCount))
+	for k := range r.ParticleCount {
 		pk = append(pk, k)
 	}
 	sort.Strings(pk)
@@ -471,11 +475,11 @@ func (stats *Result) PrettyPrint() string {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Particle count:\n")
 		}
-		v := stats.ParticleCount[k]
+		v := r.ParticleCount[k]
 		sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v max: %v]\n", k, v.Mean, v.Min, v.Max))
 	}
-	rk := make([]core.ReactionType, 0, len(stats.ReactionsTriggered))
-	for k := range stats.ReactionsTriggered {
+	rk := make([]core.ReactionType, 0, len(r.ReactionsTriggered))
+	for k := range r.ReactionsTriggered {
 		rk = append(rk, k)
 	}
 	for i, k := range rk {
@@ -483,10 +487,10 @@ func (stats *Result) PrettyPrint() string {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Reactions:\n")
 		}
-		v := stats.ReactionsTriggered[k]
+		v := r.ReactionsTriggered[k]
 		sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v max: %v]\n", k, v.Mean, v.Min, v.Max))
 	}
-	for i, m := range stats.ElementUptime {
+	for i, m := range r.ElementUptime {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Element up time:\n")
@@ -498,13 +502,13 @@ func (stats *Result) PrettyPrint() string {
 				if ele == "" {
 					ele = "none"
 				}
-				sb.WriteString(fmt.Sprintf("\t\t%v: avg %.2f%% [min: %.2f%% max: %.2f%%]\n", ele, 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
+				sb.WriteString(fmt.Sprintf("\t\t%v: avg %.2f%% [min: %.2f%% max: %.2f%%]\n", ele, 100*v.Mean/(r.Duration.Mean*60), float64(100*v.Min)/(r.Duration.Mean*60), float64(100*v.Max)/(r.Duration.Mean*60)))
 			}
 		}
 	}
-	totalDamageTargets := make([]float64, len(stats.DamageByCharByTargets[0]))
+	totalDamageTargets := make([]float64, len(r.DamageByCharByTargets[0]))
 	flagDamageByTargets := true
-	for i, t := range stats.DamageByCharByTargets {
+	for i, t := range r.DamageByCharByTargets {
 		// Save some space if there is only one target - redundant information
 		if len(t) == 1 {
 			sb.WriteString("------------------------------------------\n")
@@ -516,7 +520,7 @@ func (stats *Result) PrettyPrint() string {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Damage by Target:\n")
 		}
-		sb.WriteString(fmt.Sprintf("%v contributed the following dps:\n", stats.CharNames[i]))
+		sb.WriteString(fmt.Sprintf("%v contributed the following dps:\n", r.CharNames[i]))
 		keys := make([]int, 0, len(t))
 		for k := range t {
 			keys = append(keys, k)
@@ -525,21 +529,22 @@ func (stats *Result) PrettyPrint() string {
 		var total float64
 		for j, k := range keys {
 			v := t[k]
-			sb.WriteString(fmt.Sprintf("\t%v (%.2f%% of total): avg %.2f [min: %.2f | max: %.2f] \n", k, 100*v.Mean/stats.DPS.Mean, v.Mean, v.Min, v.Max))
+			sb.WriteString(fmt.Sprintf("\t%v (%.2f%% of total): avg %.2f [min: %.2f | max: %.2f] \n", k, 100*v.Mean/r.DPS.Mean, v.Mean, v.Min, v.Max))
 			total += v.Mean
 			totalDamageTargets[j] += v.Mean
 		}
 
-		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", stats.CharNames[i], total, 100*total/stats.DPS.Mean))
+		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", r.CharNames[i], total, 100*total/r.DPS.Mean))
 	}
 	if flagDamageByTargets {
 		for i, targetDmg := range totalDamageTargets {
-			sb.WriteString(fmt.Sprintf("%v (%.2f%% of total): Average %.2f DPS over %.2f seconds\n", i, 100*targetDmg/stats.DPS.Mean, targetDmg, stats.Duration.Mean))
+			sb.WriteString(fmt.Sprintf("%v (%.2f%% of total): Average %.2f DPS over %.2f seconds\n", i, 100*targetDmg/r.DPS.Mean, targetDmg, r.Duration.Mean))
 		}
 	}
 
 	sb.WriteString("------------------------------------------\n")
-	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", stats.Damage.Mean, stats.Duration.Mean, stats.DPS.Mean, stats.DPS.Min, stats.DPS.Max, stats.DPS.SD))
+	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", r.Damage.Mean, r.Duration.Mean, r.DPS.Mean, r.DPS.Min, r.DPS.Max, r.DPS.SD))
+	sb.WriteString(fmt.Sprintf("Simulation completed in %v\n", r.Runtime))
 
 	return sb.String()
 }

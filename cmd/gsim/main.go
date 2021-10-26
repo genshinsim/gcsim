@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -12,12 +13,10 @@ import (
 	"path"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/genshinsim/gsim"
 	"github.com/genshinsim/gsim/internal/logtohtml"
 	"github.com/genshinsim/gsim/pkg/parse"
-	"github.com/pkg/profile"
 	"go.uber.org/zap"
 )
 
@@ -27,7 +26,10 @@ func main() {
 
 	var err error
 
-	debug := flag.Bool("d", false, "show debug?")
+	pr := flag.Bool("print", true, "print output to screen? default true")
+	jsonFile := flag.String("js", "", "output result to json? supply file path (otherwise empty string for disabled). default disabled")
+	debug := flag.Bool("d", false, "show debug? default false")
+	debugHTML := flag.Bool("dh", true, "output debug html? default true (but only matters if debug is enabled)")
 	seconds := flag.Int("s", 0, "how many seconds to run the sim for")
 	cfgFile := flag.String("c", "config.txt", "which profile to use")
 	detailed := flag.Bool("t", true, "log combat details")
@@ -42,21 +44,28 @@ func main() {
 	// t := flag.Int("t", 1, "target multiplier")
 
 	flag.Parse()
+	log.Println(*debugHTML)
 
 	if *multi != "" {
 		content, err := ioutil.ReadFile(*multi)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			os.Exit(1)
 		}
 		files := strings.Split(strings.ReplaceAll(string(content), "\r\n", "\n"), "\n")
 		// lines := strings.Split(string(content), `\n`)
-		runMulti(files, *w, *i)
+		err = runMulti(files, *w, *i)
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
 		return
 	}
 
 	src, err = ioutil.ReadFile(*cfgFile)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		os.Exit(1)
 	}
 
 	//check for imports
@@ -71,7 +80,8 @@ func main() {
 			p := path.Join(path.Dir(*cfgFile), match[1])
 			src, err = ioutil.ReadFile(p)
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				os.Exit(1)
 			}
 
 			data.WriteString(string(src))
@@ -87,7 +97,8 @@ func main() {
 	parser := parse.New("single", data.String())
 	cfg, opts, err := parser.Parse()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		os.Exit(1)
 	}
 
 	if *i > 0 {
@@ -106,23 +117,16 @@ func main() {
 		opts.LogDetails = true
 	}
 
-	log.Println(opts)
+	// log.Println(opts)
+	// defer profile.Start(profile.ProfilePath("./")).Stop()
 
-	defer elapsed("simulation completed")()
-	defer profile.Start(profile.ProfilePath("./")).Stop()
-
+	var result gsim.Result
 	//if debug we're going to capture the logs
 	if opts.Debug {
-
-		chars := make([]string, len(cfg.Characters.Profile))
-
-		for i, v := range cfg.Characters.Profile {
-			chars[i] = v.Base.Name
-		}
-
 		r, w, err := os.Pipe()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			os.Exit(1)
 		}
 
 		outC := make(chan string)
@@ -139,37 +143,55 @@ func main() {
 
 		opts.DebugPaths = []string{"gsim://"}
 
-		result, err := gsim.Run(data.String(), opts)
+		result, err = gsim.Run(data.String(), opts)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			os.Exit(1)
 		}
 
 		w.Close()
 
 		out := <-outC
 
-		err = logtohtml.WriteString(out, "./debug.html", cfg.Characters.Initial, chars)
-		if err != nil {
-			log.Fatal(err)
+		if *debugHTML {
+			chars := make([]string, len(cfg.Characters.Profile))
+			for i, v := range cfg.Characters.Profile {
+				chars[i] = v.Base.Name
+			}
+			err = logtohtml.WriteString(out, "./debug.html", cfg.Characters.Initial, chars)
+			if err != nil {
+				log.Println(err)
+				os.Exit(1)
+			}
 		}
 
-		// sb.Reset()
-
-		fmt.Print(result.PrettyPrint())
-
-		// fmt.Print(out)
+		result.Debug = out
 
 	} else {
-		result, err := gsim.Run(data.String(), opts)
+		result, err = gsim.Run(data.String(), opts)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			os.Exit(1)
 		}
+	}
+
+	if *pr {
 		fmt.Print(result.PrettyPrint())
+	}
+
+	if *jsonFile != "" {
+		//try creating file to write to
+		result.Text = result.PrettyPrint()
+		data, _ := json.Marshal(result)
+		err := os.WriteFile(*jsonFile, data, 0644)
+		if err != nil {
+			log.Panic(err)
+		}
 	}
 
 }
 
-func runMulti(files []string, w, i int) {
+func runMulti(files []string, w, i int) error {
 	fmt.Print("Filename                                                     |      Mean|       Min|       Max|   Std Dev|   HP Mode|     Iters|\n")
 	fmt.Print("--------------------------------------------------------------------------------------------------------------------------------\n")
 	for _, f := range files {
@@ -178,7 +200,7 @@ func runMulti(files []string, w, i int) {
 		}
 		src, err := ioutil.ReadFile(f)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		var data strings.Builder
@@ -206,7 +228,7 @@ func runMulti(files []string, w, i int) {
 		parser := parse.New("single", data.String())
 		_, opts, err := parser.Parse()
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		if w > 0 {
 			opts.Workers = w
@@ -225,11 +247,5 @@ func runMulti(files []string, w, i int) {
 		// log.Println(r)
 		fmt.Printf("%10.2f|%10.2f|%10.2f|%10.2f|%10.10v|%10d|\n", r.DPS.Mean, r.DPS.Min, r.DPS.Max, r.DPS.SD, r.IsDamageMode, r.Iterations)
 	}
-}
-
-func elapsed(what string) func() {
-	start := time.Now()
-	return func() {
-		fmt.Printf("%s took %v\n", what, time.Since(start))
-	}
+	return nil
 }
