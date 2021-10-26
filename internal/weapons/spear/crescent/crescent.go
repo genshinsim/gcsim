@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("crescent pike", weapon)
+	core.RegisterWeaponFunc("crescentpike", weapon)
 }
 
 //After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.

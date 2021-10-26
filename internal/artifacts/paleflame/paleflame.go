@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("pale flame", New)
+	core.RegisterSetFunc("paleflame", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

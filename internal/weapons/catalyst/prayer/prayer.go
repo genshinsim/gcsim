@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("lost prayer to the sacred winds", weapon)
+	core.RegisterWeaponFunc("lostprayertothesacredwinds", weapon)
 }
 
 //Increases Movement Speed SPD by 10%. When in battle, earn a 6/8/10/12/14% Elemental DMG Bonus every 4s.

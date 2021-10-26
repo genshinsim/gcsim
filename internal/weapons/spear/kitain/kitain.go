@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("kitain cross spear", weapon)
+	core.RegisterWeaponFunc("kitaincrossspear", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {

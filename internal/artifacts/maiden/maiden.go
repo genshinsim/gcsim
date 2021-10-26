@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("maiden beloved", New)
+	core.RegisterSetFunc("maidenbeloved", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

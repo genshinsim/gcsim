@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("summit shaper", weapon)
+	core.RegisterWeaponFunc("summitshaper", weapon)
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.

@@ -6,6 +6,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("retracing bolide", New)
+	core.RegisterSetFunc("retracingbolide", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

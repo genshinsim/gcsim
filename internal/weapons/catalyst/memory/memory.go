@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("memory of dust", weapon)
+	core.RegisterWeaponFunc("memoryofdust", weapon)
 }
 
 //Increases Shield Strength by 20/25/30/35/40%. Scoring hits on opponents increases ATK by 4/5/6/7/8% for 8s. Max 5 stacks.

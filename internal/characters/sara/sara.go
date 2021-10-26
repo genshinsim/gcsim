@@ -9,6 +9,7 @@ import (
 
 func init() {
 	core.RegisterCharFunc("sara", NewChar)
+	core.RegisterCharFunc("kujousara", NewChar)
 }
 
 type char struct {

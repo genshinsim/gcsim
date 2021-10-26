@@ -6,6 +6,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("wanderer's troupe", New)
+	core.RegisterSetFunc("wandererstroupe", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

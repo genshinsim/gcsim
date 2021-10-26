@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("the black sword", weapon)
+	core.RegisterWeaponFunc("theblacksword", weapon)
 }
 
 //Increases DMG dealt by Normal and Charged Attacks by 20%. Additionally,

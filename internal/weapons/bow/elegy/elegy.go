@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("elegy of the end", weapon)
+	core.RegisterWeaponFunc("elegyfortheend", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {

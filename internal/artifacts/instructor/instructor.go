@@ -2,10 +2,12 @@ package instructor
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gsim/pkg/core"
 )
 
 func init() {
+	core.RegisterSetFunc("instructor", New)
 	core.RegisterSetFunc("instructor", New)
 }
 

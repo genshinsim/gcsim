@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("dragon's bane", weapon)
+	core.RegisterWeaponFunc("dragonsbane", weapon)
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.

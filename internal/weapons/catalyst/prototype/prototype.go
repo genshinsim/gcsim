@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("prototype amber", weapon)
+	core.RegisterWeaponFunc("prototypeamber", weapon)
 }
 
 //Using an Elemental Burst regenerates 4/4.5/5/5.5/6 Energy every 2s for 6s. All party members

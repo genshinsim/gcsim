@@ -9,6 +9,8 @@ import (
 func init() {
 	core.RegisterWeaponFunc("lithic spear", weapon)
 	core.RegisterWeaponFunc("lithic blade", weapon)
+	core.RegisterWeaponFunc("lithicblade", weapon)
+	core.RegisterWeaponFunc("lithicspear", weapon)
 }
 
 //For every character in the party who hails from Liyue, the character who equips this

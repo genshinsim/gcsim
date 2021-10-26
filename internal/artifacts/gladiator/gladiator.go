@@ -6,6 +6,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("gladiator's finale", New)
+	core.RegisterSetFunc("gladiatorsfinale", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

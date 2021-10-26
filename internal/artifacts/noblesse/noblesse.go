@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("noblesse oblige", New)
+	core.RegisterSetFunc("noblesseoblige", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

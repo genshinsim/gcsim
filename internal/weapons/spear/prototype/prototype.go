@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("prototype starglitter", weapon)
+	core.RegisterWeaponFunc("prototypestarglitter", weapon)
 }
 
 //After using an Elemental Skill, increases Normal and Charged Attack DMG by 8% for 12s. Max 2 stacks.

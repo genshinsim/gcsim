@@ -9,6 +9,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("the bell", weapon)
+	core.RegisterWeaponFunc("thebell", weapon)
 }
 
 //Taking DMG generates a shield which absorbs DMG up to 20/23/26/29/32% of Max HP.

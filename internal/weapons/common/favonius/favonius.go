@@ -12,6 +12,11 @@ func init() {
 	core.RegisterWeaponFunc("favonius lance", weapon)
 	core.RegisterWeaponFunc("favonius greatsword", weapon)
 	core.RegisterWeaponFunc("favonius codex", weapon)
+	core.RegisterWeaponFunc("favoniuscodex", weapon)
+	core.RegisterWeaponFunc("favoniusgreatsword", weapon)
+	core.RegisterWeaponFunc("favoniuslance", weapon)
+	core.RegisterWeaponFunc("favoniussword", weapon)
+	core.RegisterWeaponFunc("favoniuswarbow", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {

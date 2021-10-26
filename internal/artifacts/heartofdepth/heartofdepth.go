@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("heart of depth", New)
+	core.RegisterSetFunc("heartofdepth", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

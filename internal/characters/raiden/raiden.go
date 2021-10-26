@@ -18,6 +18,7 @@ type char struct {
 
 func init() {
 	core.RegisterCharFunc("raiden", NewChar)
+	core.RegisterCharFunc("raidenshogun", NewChar)
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {

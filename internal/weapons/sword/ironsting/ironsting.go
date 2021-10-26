@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("iron sting", weapon)
+	core.RegisterWeaponFunc("ironsting", weapon)
 }
 
 //After using an Elemental Skill, increases Normal and Charged Attack DMG by 8% for 12s. Max 2 stacks.

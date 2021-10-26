@@ -6,6 +6,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("bloodstained chivalry", New)
+	core.RegisterSetFunc("bloodstainedchivalry", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

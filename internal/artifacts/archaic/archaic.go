@@ -6,6 +6,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("archaic petra", New)
+	core.RegisterSetFunc("archaicpetra", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("eye of perception", weapon)
+	core.RegisterWeaponFunc("eyeofperception", weapon)
 }
 
 //Normal and Charged Attacks have a 50% chance to fire a Bolt of Perception,
