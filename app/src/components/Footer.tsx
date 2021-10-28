@@ -4,7 +4,11 @@ import GithubLogo from "../github-icon.svg";
 
 export default function Footer() {
   return (
-    <div className="flex flex-row w-full justify-end gap-2 lg:mb-10 md:m-3 sm:m-1">
+    <div className="flex flex-row w-full justify-end gap-2 lg:mb-10 md:m-3 sm:m-1 items-end">
+      <div className="mr-auto text-xs">
+        © All rights reserved by miHoYo. Other properties belong to their
+        respective owners.
+      </div>
       <div className=" hover:bg-gray-600 p-2 rounded-md h-12">
         <a href="https://github.com/genshinsim/gsim" target="_blank">
           <img
