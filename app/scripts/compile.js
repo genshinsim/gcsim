@@ -4,7 +4,7 @@ const toml = require("toml");
 const Fuse = require("fuse.js");
 const genshindb = require("genshin-db");
 
-const dir = "./gsimactions";
+const dir = "./temp";
 
 const getFiles = (path) => {
   const files = [];

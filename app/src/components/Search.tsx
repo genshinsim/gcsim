@@ -14,7 +14,7 @@ export default function Search() {
   const elements = data.map((r: any, i) => {
     return (
       <div
-        className="flex flex-row m-2 p-2 rounded-md bg-gray-600 gap-1 items-center"
+        className="m-2 p-2 rounded-md bg-gray-600 gap-1 items-center grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1"
         key={i}
       >
         <div className="flex flex-row">
@@ -29,30 +29,32 @@ export default function Search() {
             );
           })}
         </div>
-        <div className="flex-grow">
-          <div className="font-bold text-lg">{r.item.title}</div>
-          <div>
-            <strong>Author: </strong>
-            {r.item.author}
+        <div className="flex-grow flex flex-row items-center lg:col-span-3 md:col-span-2">
+          <div className="flex-grow">
+            <div className="font-bold text-lg">{r.item.title}</div>
+            <div>
+              <strong>Author: </strong>
+              {r.item.author}
+            </div>
+            <div>
+              <strong>Version: </strong>
+              {r.item.version}
+            </div>
+            <div>
+              <strong>Description: </strong>
+              {r.item.description}
+            </div>
           </div>
           <div>
-            <strong>Version: </strong>
-            {r.item.version}
+            <img
+              src={CopyIcon}
+              alt="copy"
+              className="p-1 rounded-md hover:bg-gray-500"
+              onClick={() => {
+                navigator.clipboard.writeText(r.item.config);
+              }}
+            />
           </div>
-          <div>
-            <strong>Description: </strong>
-            {r.item.description}
-          </div>
-        </div>
-        <div>
-          <img
-            src={CopyIcon}
-            alt="copy"
-            className="p-1 rounded-md hover:bg-gray-500"
-            onClick={() => {
-              navigator.clipboard.writeText(r.item.config);
-            }}
-          />
         </div>
       </div>
     );

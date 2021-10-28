@@ -15,7 +15,7 @@ import Fuse from "fuse.js";
 const index = Fuse.parseIndex(fuseIndex);
 export const fuse = new Fuse(
   data,
-  { keys: ["title", "author", "description", "characters"] },
+  { keys: ["title", "author", "description", "characters"], threshold: 0.4 },
   index
 );
 
