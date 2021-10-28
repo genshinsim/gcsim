@@ -4,17 +4,9 @@ GSim is a Monte Carlo simulation tool used to model team dps. It allows for the 
 
 # Getting started
 
-**IMPORTANT:** Releases are currently broken. Please use the web version if you need UI. Otherwise (for faster execution), please build/run from source.
+GSim now has a graphical desktop application available (previous web version discontinued due to performance issues). You can find the repo [here](https://github.com/genshinsim/gsimui) or download the latest [release](https://github.com/genshinsim/gsimui/releases).
 
-**NEW:** There is now a web version available at [https://genshinsim.github.io/gsimweb/](https://genshinsim.github.io/gsimweb/). This is basically just the program compiled into WASM and embedded into a webpage. Works the same as the release version but with the downside that it is much slower as it is only single threaded.
-
-~~Go to the [releases page](https://github.com/genshinsim/gsim/releases) and download the latest development release for your platform. Currently development releases are [automatically](https://github.com/genshinsim/gsim/blob/main/.github/workflows/release.yaml) built whenever a new commit is pushed to the main branch.~~
-
-~~The archive can be extracted to any folder. Once extracted, simply run the executable (gsim.exe). Doing so should open up your default browser to http://localhost:8081 (If it did not, you can simply browse to this address on a browser).~~
-
-~~**Note that Chrome may complain that the file is not commonly downloaded and may be dangerous. This is expected as the sim is not all that popular. You can always build the project from source if you wish**~~
-
-For more information, please visit the [starter guide](https://github.com/genshinsim/gsim/wiki/Starter) on the wiki.
+In addition, you can visit the gsim's website at [https://www.gcsim.app/](https://www.gcsim.app/). On there you will find pre-written action list to use with your teams (so you do not have to build your own if you do not wish to). This is still a work in progress and will grow over time.
 
 ## Project status
 
@@ -35,12 +27,3 @@ If you are looking to contribute, the following are some key areas that you can 
 - Further testing of in game reactions, primarily EC and chain freeze duration.
 - Just in general using the sim for calculations/weapon comparisons/day 1 testing etc...
 
-## Credits
-
-- Most of the % data: https://genshin.honeyhunterworld.com/
-- Tons of discussions on KeqingMain (to be added up with ppl's discord tags at some point)
-- Most if not all the frame data came from https://library.keqingmains.com
-- All the folks at KQM that helped out with testing; special thanks to (in no particular order):
-  - Yukarix#6534
-  - Aluminum#5462
-  - Terrapin#8603
