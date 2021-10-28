@@ -3,10 +3,13 @@ on:
   push:
     branches:
       - main
+  repository_dispatch:
+    types: [backend_automation]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed') || github.event_name == 'repository_dispatch'
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
