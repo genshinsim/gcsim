@@ -13,14 +13,17 @@ export default function Search() {
 
   const elements = data.map((r: any, i) => {
     return (
-      <div className="flex flex-row m-2 p-2 rounded-md bg-gray-600" key={i}>
+      <div
+        className="flex flex-row m-2 p-2 rounded-md bg-gray-600 gap-1 items-center"
+        key={i}
+      >
         <div className="flex flex-row">
           {r.item.characters.map((c: string) => {
             console.log(c);
             // @ts-ignore: Unreachable code error
             let image = charData[c];
             return (
-              <div key={c} className="h-32">
+              <div key={c} className="h-24">
                 <img src={image} alt={c} className="object-contain h-full" />
               </div>
             );

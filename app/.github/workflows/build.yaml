@@ -1,0 +1,31 @@
+name: "build"
+on:
+  push:
+    branches: -main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout other repo
+        uses: actions/checkout@v2
+        with:
+          repository: genshinsim/gsimactions
+          path: gsimactions
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: dependencies
+        run: yarn
+      - name: run script
+        run: node ./scripts/compile.js
+      - name: commit changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          message: Update data json
+          add: "*.json"

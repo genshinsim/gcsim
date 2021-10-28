@@ -1,11 +1,19 @@
 import React from "react";
 import { Link } from "wouter";
+import { AppContext } from "../Store";
 
 export default function Nav() {
+  const { dispatch } = React.useContext(AppContext);
+
   return (
     <header className="text-xl">
       <div className="mx-auto flex flex-wrap p-2 flex-col md:flex-row mb-1 items-center">
-        <Link href="/">
+        <Link
+          href="/"
+          onClick={() => {
+            dispatch({ type: "set", str: "" });
+          }}
+        >
           <a className="flex title-font font-bond items-center mb-4 md:mb-0">
             <span className="ml-3 text-xl border-b-2 border-transparent">
               gcsim
