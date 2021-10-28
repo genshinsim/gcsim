@@ -7,9 +7,11 @@ import Store from "./Store";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import About from "./components/About";
-import SearchBar from "./components/SearchBar";
+import Home from "./components/Home";
 import Browse from "./components/Browse";
-import Search from "./components/Search";
+import SearchResults from "./components/SearchResults";
+import ActionDB from "./components/ActionDB";
+import GetStarted from "./components/GetStarted";
 
 import fuseIndex from "./data/fuse-index.json";
 import data from "./data/configs.json";
@@ -36,19 +38,12 @@ function App() {
       <div className="container mx-auto flex flex-col h-full">
         <Nav />
         <Switch>
-          <Route path="/">
-            <div className="flex-grow flex flex-col items-center justify-center">
-              <SearchBar />
-              <div className="p-2">
-                <Link href="/browse">
-                  <a href="/browse">Browse All</a>
-                </Link>
-              </div>
-            </div>
-          </Route>
+          <Route path="/" component={Home} />
+          <Route path="/getting-started" component={GetStarted} />
           <Route path="/browse" component={Browse} />
           <Route path="/about" component={About} />
-          <Route path="/search" component={Search} />
+          <Route path="/db" component={ActionDB} />
+          <Route path="/db/results" component={SearchResults} />
         </Switch>
         <Footer />
       </div>

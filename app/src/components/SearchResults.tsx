@@ -6,7 +6,7 @@ import TeamRow from "./TeamRow";
 import charData from "../data/character_images.json";
 import CopyIcon from "../content_copy_white_24dp.svg";
 
-export default function Search() {
+export default function SearchResults() {
   const { state } = React.useContext(AppContext);
 
   let data = fuse.search(state);

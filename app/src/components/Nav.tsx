@@ -25,29 +25,16 @@ export default function Nav() {
         </Link>
         <div className="flex-grow justify-end flex flex-row">
           <nav className="md:ml-auto md:mr-1 md:py-1 md:pl-4">
-            <a
-              className="mr-5"
-              href="https://github.com/genshinsim/gsimui/releases"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Get Started
-            </a>
+            <Link href="/getting-started">
+              <a className="mr-5" href="/getting-started">
+                Get Started
+              </a>
+            </Link>
           </nav>
           <nav className="md:ml-1 md:mr-1 md:py-1 md:pl-4 ">
-            <a
-              className="mr-5"
-              href="https://github.com/genshinsim/gsim/wiki"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Docs
-            </a>
-          </nav>
-          <nav className="md:ml-1 md:mr-1 md:py-1 md:pl-4  ">
-            <Link href="/about">
-              <a className="mr-5" href="/about">
-                About
+            <Link href="/db">
+              <a className="mr-5" href="/db">
+                Action Lists
               </a>
             </Link>
           </nav>

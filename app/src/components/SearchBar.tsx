@@ -34,13 +34,13 @@ export default function SearchBar() {
           padding: "0.5rem",
         }}
         onClick={() => {
-          setLocation("/search");
+          setLocation("/db/results");
         }}
       />
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          setLocation("/search");
+          setLocation("/db/results");
         }}
       >
         <input
