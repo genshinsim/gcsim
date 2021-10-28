@@ -8,13 +8,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
       - name: checkout other repo
         uses: actions/checkout@v2
         with:
           repository: genshinsim/gsimactions
           path: ./gsimactions
-      - name: Checkout repo
-        uses: actions/checkout@v2
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
