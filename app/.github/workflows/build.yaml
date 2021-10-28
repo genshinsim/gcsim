@@ -12,13 +12,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: genshinsim/gsimactions
-          path: gsimactions
+          path: ./gsimactions
       - name: Checkout repo
         uses: actions/checkout@v2
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
+      - name: check files
+        run: ls
       - name: dependencies
         run: yarn
       - name: run script
