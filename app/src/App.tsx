@@ -1,16 +1,18 @@
 import React from "react";
-import { Route, Switch } from "wouter";
+import { Link, Route, Switch } from "wouter";
+import Fuse from "fuse.js";
+
+import "./App.css";
+import Store from "./Store";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import About from "./components/About";
 import SearchBar from "./components/SearchBar";
+import Browse from "./components/Browse";
 import Search from "./components/Search";
-import Store from "./Store";
-import "./App.css";
 
 import fuseIndex from "./data/fuse-index.json";
 import data from "./data/configs.json";
-import Fuse from "fuse.js";
 
 const index = Fuse.parseIndex(fuseIndex);
 export const fuse = new Fuse(
@@ -30,16 +32,21 @@ export default function AppWrapper(): JSX.Element {
 
 function App() {
   return (
-    <div className=" h-screen w-screen parent-bg">
-      <div className="cover-image" />
+    <div className="h-screen">
       <div className="container mx-auto flex flex-col h-full">
         <Nav />
         <Switch>
           <Route path="/">
-            <div className="flex-grow flex items-center justify-center">
+            <div className="flex-grow flex flex-col items-center justify-center">
               <SearchBar />
+              <div className="p-2">
+                <Link href="/browse">
+                  <a href="/browse">Browse All</a>
+                </Link>
+              </div>
             </div>
           </Route>
+          <Route path="/browse" component={Browse} />
           <Route path="/about" component={About} />
           <Route path="/search" component={Search} />
         </Switch>

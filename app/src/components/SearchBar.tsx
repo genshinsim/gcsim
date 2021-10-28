@@ -20,6 +20,23 @@ export default function SearchBar() {
       className="md:w-1/2 lg:w-2/3 sm:w-full bg-gray-500 rounded-lg p-3 m-1 h-auto"
       style={{ position: "relative" }}
     >
+      <img
+        src={SearchButton}
+        alt="search"
+        className="rounded-md hover:bg-gray-400"
+        style={{
+          objectFit: "contain",
+          position: "absolute",
+          right: 0,
+          top: 0,
+          height: "100%",
+          maxHeight: "60px",
+          padding: "0.5rem",
+        }}
+        onClick={() => {
+          setLocation("/search");
+        }}
+      />
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -34,20 +51,6 @@ export default function SearchBar() {
           onChange={handleChange}
         />
       </form>
-      <img
-        src={SearchButton}
-        alt="search"
-        className="rounded-md hover:bg-gray-400"
-        style={{
-          objectFit: "contain",
-          position: "absolute",
-          right: 0,
-          top: 0,
-          height: "100%",
-          maxHeight: "60px",
-          padding: "0.5rem",
-        }}
-      />
     </div>
   );
 }

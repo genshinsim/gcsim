@@ -1,17 +1,17 @@
 .cover-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("./overlay.jpg");
-    background-size: cover;
-    mix-blend-mode: overlay;
-    background-position: center;
-    opacity: 0.4;
-    z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("./overlay.jpg");
+  background-size: cover;
+  mix-blend-mode: overlay;
+  background-position: center;
+  opacity: 0.4;
+  z-index: -1;
 }
 .parent-bg {
-    position: relative;
-    z-index: 0;
+  position: relative;
+  z-index: 0;
 }

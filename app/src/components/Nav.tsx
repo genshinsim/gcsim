@@ -14,29 +14,41 @@ export default function Nav() {
             dispatch({ type: "set", str: "" });
           }}
         >
-          <a className="flex title-font font-bond items-center mb-4 md:mb-0">
-            <span className="ml-3 text-xl border-b-2 border-transparent">
+          <a
+            className="flex title-font font-bond items-center mb-4 md:mb-0"
+            href="/"
+          >
+            <span className="ml-3 text-3xl border-b-2 border-transparent">
               gcsim
             </span>
           </a>
         </Link>
         <div className="flex-grow justify-end flex flex-row">
-          <nav className="md:ml-auto md:mr-1 md:py-1 md:pl-4   ">
+          <nav className="md:ml-auto md:mr-1 md:py-1 md:pl-4">
             <a
               className="mr-5"
               href="https://github.com/genshinsim/gsimui/releases"
+              target="_blank"
+              rel="noreferrer"
             >
-              Install
+              Get Started
             </a>
           </nav>
           <nav className="md:ml-1 md:mr-1 md:py-1 md:pl-4 ">
-            <a className="mr-5" href="https://github.com/genshinsim/gsim/wiki">
+            <a
+              className="mr-5"
+              href="https://github.com/genshinsim/gsim/wiki"
+              target="_blank"
+              rel="noreferrer"
+            >
               Docs
             </a>
           </nav>
           <nav className="md:ml-1 md:mr-1 md:py-1 md:pl-4  ">
             <Link href="/about">
-              <a className="mr-5">About</a>
+              <a className="mr-5" href="/about">
+                About
+              </a>
             </Link>
           </nav>
         </div>
