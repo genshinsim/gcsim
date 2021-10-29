@@ -3,8 +3,7 @@ import MainImage from "../images/main.png";
 import DebuggerImage from "../images/debugger.png";
 import ImporterImage from "../images/importer.png";
 import BuilderImage from "../images/builder.png";
-import LeftArrow from "../arrow_back_ios_white_48dp.svg";
-import RightArrow from "../arrow_forward_ios_white_48dp.svg";
+import TutorialImage from "../images/tutorial.gif";
 import { Link } from "wouter";
 
 export default function GetStarted() {
@@ -50,6 +49,18 @@ export default function GetStarted() {
       >
         Download Here
       </a>
+      <p className="lg:text-4xl md:text-3xl sm:text-xl font-bold mb-2 mt-4">
+        Just show me how to use this thing!!!
+      </p>
+      <div className="p-6">
+        <img
+          src={TutorialImage}
+          alt="tutorial"
+          style={{
+            width: "50vw",
+          }}
+        />
+      </div>
       <p className="lg:text-4xl md:text-3xl sm:text-xl font-bold mb-2  mt-4">
         How does it work
       </p>
