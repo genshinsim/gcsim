@@ -35,7 +35,7 @@ export default function AppWrapper(): JSX.Element {
 function App() {
   return (
     <div className="h-screen">
-      <div className="container mx-auto flex flex-col h-full">
+      <div className="md:container mx-auto flex flex-col h-full">
         <Nav />
         <Switch>
           <Route path="/" component={Home} />

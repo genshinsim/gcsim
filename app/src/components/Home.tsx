@@ -74,7 +74,7 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-2 w-3/4 mt-4">
+      <div className="grid md:grid-cols-2 gap-2 md:w-3/4 sm:grid-cols-1 sm:w-full mt-4">
         <div
           className="p-4 rounded-md bg-blue-800 hover:bg-blue-700 cursor-pointer"
           onClick={() => {

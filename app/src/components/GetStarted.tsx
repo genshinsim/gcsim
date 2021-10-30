@@ -34,7 +34,7 @@ export default function GetStarted() {
   };
 
   return (
-    <div className="flex-grow flex flex-col p-10 w-2/3 mx-auto">
+    <div className="flex-grow flex flex-col p-10 md:w-2/3 sm:w-full md:mx-auto">
       <p className="lg:text-4xl md:text-3xl sm:text-xl font-bold mb-2">
         Introduction
       </p>
