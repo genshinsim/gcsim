@@ -2,14 +2,21 @@ import React from "react";
 import MainImage from "../images/main.png";
 import DebuggerImage from "../images/debugger.png";
 import ImporterImage from "../images/importer.png";
-import BuilderImage from "../images/builder.png";
+import ActionImage from "../images/actions.png";
+import ResultsImage from "../images/results.png";
 import TutorialImage from "../images/tutorial.gif";
 import { Link } from "wouter";
 
 export default function GetStarted() {
   const [pos, setPos] = React.useState<number>(0);
 
-  const images = [MainImage, BuilderImage, ImporterImage, DebuggerImage];
+  const images = [
+    ActionImage,
+    MainImage,
+    ImporterImage,
+    ResultsImage,
+    DebuggerImage,
+  ];
 
   const handleLeft = () => {
     let next = pos - 1;
@@ -71,30 +78,25 @@ export default function GetStarted() {
       </p>
       <div className="p-6">
         <img
-          src={images[0]}
+          src={ActionImage}
           alt="image"
           style={{
             width: "50vw",
           }}
         />
       </div>
-      <p className="p-2">
-        You can see the two parts of the configuration file on the main screen
-        of the app.
-      </p>
       <p className="lg:text-4xl md:text-3xl sm:text-xl font-bold mb-2 mt-4">
         Team configuration
       </p>
       <p className="p-2">
-        The team configuration tells the simulator the character, level,
-        constellation, talent, weapons, artifacts, and overall stats to use in
-        your team. To make life easier, the app has a built in team
-        configuration that let you pick which character you wish to use as well
-        as their weapons, artifacts etc...
+        To make life easier, the app has a built in team configuration that let
+        you pick which character you wish to use as well as their weapons,
+        artifacts etc... This is combined with the action list to form the
+        config file used by the simulator's core engine
       </p>
       <div className="p-6">
         <img
-          src={images[1]}
+          src={MainImage}
           alt="image"
           style={{
             width: "50vw",
@@ -130,7 +132,7 @@ export default function GetStarted() {
       </p>
       <div className="p-6">
         <img
-          src={images[2]}
+          src={ImporterImage}
           alt="image"
           style={{
             width: "50vw",
@@ -186,8 +188,22 @@ export default function GetStarted() {
         sure that your team of characters matches first!
       </p>
       <p className="lg:text-4xl md:text-3xl sm:text-xl font-bold mb-2 mt-4">
-        Debugging
+        Results and Debugging
       </p>
+      <p className="p-2">
+        Simulation results are displayed with detailed break down of the team's
+        damage composition, along with other statistic to help you analyze the
+        team's performance
+      </p>
+      <div className="p-6">
+        <img
+          src={ResultsImage}
+          alt="image"
+          style={{
+            width: "50vw",
+          }}
+        />
+      </div>
       <p className="p-2">
         The simulator also has built in debugging tool to help you see the
         actions executed by the sim and all related calculations. Make sure the{" "}
@@ -196,7 +212,7 @@ export default function GetStarted() {
       </p>
       <div className="p-6">
         <img
-          src={images[3]}
+          src={DebuggerImage}
           alt="image"
           style={{
             width: "50vw",

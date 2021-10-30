@@ -2,7 +2,8 @@ import React from "react";
 import MainImage from "../images/main.png";
 import DebuggerImage from "../images/debugger.png";
 import ImporterImage from "../images/importer.png";
-import BuilderImage from "../images/builder.png";
+import ActionImage from "../images/actions.png";
+import ResultsImage from "../images/results.png";
 import LeftArrow from "../arrow_back_ios_white_48dp.svg";
 import RightArrow from "../arrow_forward_ios_white_48dp.svg";
 import { useLocation } from "wouter";
@@ -11,7 +12,13 @@ export default function Home() {
   const [pos, setPos] = React.useState<number>(0);
   const [_, setLocation] = useLocation();
 
-  const images = [MainImage, BuilderImage, ImporterImage, DebuggerImage];
+  const images = [
+    MainImage,
+    ActionImage,
+    ImporterImage,
+    ResultsImage,
+    DebuggerImage,
+  ];
 
   const handleLeft = () => {
     let next = pos - 1;
@@ -29,8 +36,9 @@ export default function Home() {
   };
   const titleString = [
     "gcsim is a Monte Carlo combat simulator for Genshin Impact.",
-    "It features a character builder to help you put together your favorite team",
+    "It runs on a fully configurable action list",
     "It can import from Genshin Optimizer to save you time",
+    "Results are shown with detailed breakdowns",
     "The debugger can show you exactly what the sim is doing",
   ];
 
