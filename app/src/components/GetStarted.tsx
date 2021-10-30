@@ -59,7 +59,7 @@ export default function GetStarted() {
       <p className="lg:text-4xl md:text-3xl sm:text-xl font-bold mb-2 mt-4">
         Just show me how to use this thing!!!
       </p>
-      <div className="p-6">
+      <div className="p-6 mx-auto">
         <img
           src={TutorialImage}
           alt="tutorial"
@@ -76,7 +76,7 @@ export default function GetStarted() {
         SimC). The config file can be broken down into two parts: the team
         configuration and the actions configuration.
       </p>
-      <div className="p-6">
+      <div className="p-6 mx-auto">
         <img
           src={ActionImage}
           alt="image"
@@ -94,7 +94,7 @@ export default function GetStarted() {
         artifacts etc... This is combined with the action list to form the
         config file used by the simulator's core engine
       </p>
-      <div className="p-6">
+      <div className="p-6 mx-auto">
         <img
           src={MainImage}
           alt="image"
@@ -130,7 +130,7 @@ export default function GetStarted() {
         </a>
         ).
       </p>
-      <div className="p-6">
+      <div className="p-6 mx-auto">
         <img
           src={ImporterImage}
           alt="image"
@@ -195,7 +195,7 @@ export default function GetStarted() {
         damage composition, along with other statistic to help you analyze the
         team's performance
       </p>
-      <div className="p-6">
+      <div className="p-6 mx-auto">
         <img
           src={ResultsImage}
           alt="image"
@@ -210,7 +210,7 @@ export default function GetStarted() {
         <strong>debug</strong> option is selected in the sim options and
         checkout the Debug tab after you have ran a simulation.
       </p>
-      <div className="p-6">
+      <div className="p-6 mx-auto">
         <img
           src={DebuggerImage}
           alt="image"
