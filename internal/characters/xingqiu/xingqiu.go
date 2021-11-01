@@ -94,21 +94,20 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Physical,
-		25,
-		0,
-	)
-
 	for i, mult := range attack[c.NormalCounter] {
-		x := d.Clone()
-		x.Mult = mult[c.TalentLvlAttack()]
-		c.QueueDmg(&x, delay[c.NormalCounter][i])
+		c.QueueDmgDynamic(func () *core.Snapshot {
+			d := c.Snapshot(
+				fmt.Sprintf("Normal %v", c.NormalCounter),
+				core.AttackTagNormal,
+				core.ICDTagNormalAttack,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Physical,
+				25,
+				mult[c.TalentLvlAttack()],
+			)
+			return &d
+		}, delay[c.NormalCounter][i])
 	}
 
 	//add a 75 frame attackcounter reset
@@ -125,23 +124,28 @@ func (c *char) orbitalfunc(src int) func() {
 			c.orbitalActive = false
 			return
 		}
-		//queue up one damage instance
-		d := c.Snapshot(
-			"Xingqiu Skill (Orbital)",
-			core.AttackTagNone,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Hydro,
-			25,
-			0,
-		)
-		d.Targets = core.TargetAll
 
-		c.QueueDmg(&d, 1)
-		c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
-		//queue up next instance
-		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
+		c.QueueDmgDynamic(func () *core.Snapshot {
+			//queue up one damage instance
+			d := c.Snapshot(
+				"Xingqiu Skill (Orbital)",
+				core.AttackTagNone,
+				core.ICDTagNone,
+				core.ICDGroupDefault,
+				core.StrikeTypeDefault,
+				core.Hydro,
+				25,
+				0,
+			)
+			d.Targets = core.TargetAll
+
+			c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+
+			//queue up next instance
+			c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
+
+			return &d
+		}, 1)
 	}
 }
 
@@ -168,28 +172,29 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	d := c.Snapshot(
-		"Guhua Sword: Fatal Rainscreen",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Hydro,
-		25,
-		rainscreen[0][c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
-	if c.Base.Cons >= 4 {
-		//check if ult is up, if so increase multiplier
-		if c.Core.Status.Duration("xqburst") > 0 {
-			d.Mult = d.Mult * 1.5
+	skillCreateSnapshot := func(hitNumber int) *core.Snapshot {
+		d := c.Snapshot(
+			"Guhua Sword: Fatal Rainscreen",
+			core.AttackTagElementalArt,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Hydro,
+			25,
+			rainscreen[hitNumber][c.TalentLvlSkill()],
+		)
+		d.Targets = core.TargetAll
+		if c.Base.Cons >= 4 {
+			//check if ult is up, if so increase multiplier
+			if c.Core.Status.Duration("xqburst") > 0 {
+				d.Mult = d.Mult * 1.5
+			}
 		}
+		return &d
 	}
-	d2 := d.Clone()
-	d2.Mult = rainscreen[1][c.TalentLvlSkill()]
 
-	c.QueueDmg(&d, 19)
-	c.QueueDmg(&d2, 35)
+	c.QueueDmgDynamic(func () *core.Snapshot {return skillCreateSnapshot(0)}, 19)
+	c.QueueDmgDynamic(func () *core.Snapshot {return skillCreateSnapshot(1)}, 35)
 
 	c.QueueParticle(c.Base.Name, 5, core.Hydro, 100)
 
