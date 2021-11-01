@@ -163,13 +163,13 @@ func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 		ds.Stats[core.CR] = 1
 	}
 	res := t.resist(ds.Element, ds.ActorIndex)
-	defadj := t.defAdj(ds.ActorIndex) + ds.DefAdj
+	defadj := t.defAdj(ds.ActorIndex)
 
 	if defadj > 0.9 {
 		defadj = 0.9
 	}
 
-	defmod := float64(ds.CharLvl+100) / (float64(ds.CharLvl+100) + float64(t.level+100)*(1+defadj))
+	defmod := float64(ds.CharLvl+100) / (float64(ds.CharLvl+100) + float64(t.level+100)*(1+defadj)*ds.RaidenDefAdj)
 	//apply def mod
 	damage = damage * defmod
 	//apply resist mod

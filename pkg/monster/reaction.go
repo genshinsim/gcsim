@@ -45,6 +45,7 @@ func (t *Target) queueReaction(in *core.Snapshot, typ core.ReactionType, res cor
 		return
 	}
 	ds2 := t.TransReactionSnapshot(in, typ, res, false)
+	ds2.Abil = ds2.Abil + " (aoe)"
 	t.core.Tasks.Add(func() {
 		t.core.Combat.ApplyDamage(&ds2)
 	}, delay)

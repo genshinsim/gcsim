@@ -121,7 +121,7 @@ func (c *char) a2() {
 				default:
 					return nil, false
 				}
-				c.Core.Log.Debugw("sucrose a2 adding", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", this.CharIndex(), "ele", this.Ele(), "expiry", f, "ok", ok)
+				// c.Core.Log.Debugw("sucrose a2 adding", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", this.CharIndex(), "ele", this.Ele(), "expiry", f, "ok", ok)
 				return val, f > c.Core.F && ok
 			},
 		})

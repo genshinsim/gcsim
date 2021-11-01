@@ -75,7 +75,7 @@ func (c *char) swordAttack(f int, a int) (int, int) {
 			//adds to talent %
 			d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
 			if c.Base.Cons >= 2 {
-				d.DefAdj = -0.6
+				d.RaidenDefAdj = 0.4
 			}
 			c.Core.Combat.ApplyDamage(&d)
 			//restore energy
@@ -147,7 +147,7 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 			//adds to talent %
 			d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
 			if c.Base.Cons >= 2 {
-				d.DefAdj = -0.6
+				d.RaidenDefAdj = 0.4
 			}
 			c.Core.Combat.ApplyDamage(&d)
 			//restore energy
@@ -249,7 +249,7 @@ func (c *char) eyeOnDamage() {
 			)
 			d.Targets = core.TargetAll
 			if c.Base.Cons >= 2 && c.Core.Status.Duration("raidenburst") > 0 {
-				d.DefAdj = -0.6
+				d.RaidenDefAdj = 0.4
 			}
 			return &d
 		}, 5)
@@ -280,7 +280,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				continue
 			}
 			char.AddMod(core.CharStatMod{
-				Key:    "raiden-c2",
+				Key:    "raiden-c4",
 				Expiry: c.Core.F + 600, //10s
 				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
@@ -306,7 +306,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		d.Mult += resolveBaseBonus[c.TalentLvlBurst()] * c.stacksConsumed
 
 		if c.Base.Cons >= 2 {
-			d.DefAdj = -0.6
+			d.RaidenDefAdj = 0.4
 		}
 		return &d
 	}, f)
