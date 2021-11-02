@@ -24,7 +24,12 @@ func (t *Target) willApplyEle(tag core.ICDTag, grp core.ICDGroup, char int) bool
 	}
 
 	//true if group seq is 1
-	return core.ICDGroupEleApplicationSequence[grp][val] == 1
+	if core.ICDGroupEleApplicationSequence[grp][val] != 1 {
+		t.core.Log.Debugw("ele app on icd", "frame", t.core.F, "event", core.LogICDEvent, "char", char, "target", t.index)
+		return false
+	}
+
+	return true
 }
 
 func (t *Target) groupTagDamageMult(grp core.ICDGroup, char int) float64 {
@@ -44,6 +49,10 @@ func (t *Target) groupTagDamageMult(grp core.ICDGroup, char int) float64 {
 	}
 
 	//true if group seq is 1
+	if core.ICDGroupDamageSequence[grp][val] == 0 {
+		t.core.Log.Debugw("dmg on icd", "frame", t.core.F, "event", core.LogICDEvent, "char", char, "target", t.index)
+		return 0
+	}
 	return core.ICDGroupDamageSequence[grp][val]
 }
 

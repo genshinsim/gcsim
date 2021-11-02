@@ -18,6 +18,12 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 		return 0, false
 	}
 
+	//check if we can damage first
+	x := t.groupTagDamageMult(ds.ICDGroup, ds.ActorIndex)
+	if x == 0 {
+		return 0, false //cancel the attack?
+	}
+
 	//check tags
 	if ds.Durability > 0 && ds.Element != core.Physical {
 		//check for ICD first
@@ -47,23 +53,19 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 	var damage float64
 	var isCrit bool
 
-	//check if we can damage first
-	x := t.groupTagDamageMult(ds.ICDGroup, ds.ActorIndex)
-	if x != 0 {
-		//check if we calc reaction dmg or normal dmg
-		if ds.IsReactionDamage {
-			//call PreTransReaction hook
-			t.core.Events.Emit(core.OnTransReaction, t, ds)
-			damage = t.calcReactionDmg(ds)
-		} else {
-			//call PreAmpReaction hook if needed
-			if ds.ReactionType == core.Melt || ds.ReactionType == core.Vaporize {
-				t.core.Events.Emit(core.OnAmpReaction, t, ds)
-			}
-			damage, isCrit = t.calcDmg(ds)
+	//check if we calc reaction dmg or normal dmg
+	if ds.IsReactionDamage {
+		//call PreTransReaction hook
+		t.core.Events.Emit(core.OnTransReaction, t, ds)
+		damage = t.calcReactionDmg(ds)
+	} else {
+		//call PreAmpReaction hook if needed
+		if ds.ReactionType == core.Melt || ds.ReactionType == core.Vaporize {
+			t.core.Events.Emit(core.OnAmpReaction, t, ds)
 		}
-		damage *= x
+		damage, isCrit = t.calcDmg(ds)
 	}
+	damage *= x
 
 	//this should be handled by each target individually
 	//sim will need to add it to every target whenever this changes
