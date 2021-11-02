@@ -111,24 +111,7 @@ export default function GetStarted() {
           className="text-blue-600 hover:underline"
         >
           Genshin Optimizer
-        </a>{" "}
-        as well as any inventory scanner that supports the{" "}
-        <a
-          href="https://frzyc.github.io/genshin-optimizer/#/doc"
-          className="text-blue-600 hover:underline"
-          target="_blank"
-        >
-          GOOD
-        </a>{" "}
-        format (Currently to the best of our knowledge, just{" "}
-        <a
-          href="https://github.com/Andrewthe13th/Genshin_Scanner/releases"
-          className="text-blue-600 hover:underline"
-          target="_blank"
-        >
-          this one
         </a>
-        ).
       </p>
       <div className="p-6 mx-auto">
         <img
