@@ -63,6 +63,7 @@ export default function TeamRow({
           className="p-1 rounded-md hover:bg-gray-500"
           onClick={() => {
             navigator.clipboard.writeText(config);
+            alert("Configuration copied! Paste it in gcsim to run.");
           }}
           style={{
             position: "absolute",

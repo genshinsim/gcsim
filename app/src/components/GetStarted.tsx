@@ -73,8 +73,12 @@ export default function GetStarted() {
       </p>
       <p className="p-2">
         The simulator runs on a text based config file (very similar to WoW
-        SimC). The config file can be broken down into two parts: the team
-        configuration and the actions configuration.
+        SimC). The config file is basically a text file consisting of
+        instructions to the simulator telling it which action it should execute.
+        For example, should it use skill then burst here, or should it add in a
+        couple normal attacks and then use burst. The config file can be broken
+        down into two parts: the team configuration and the actions
+        configuration.
       </p>
       <div className="p-6 mx-auto">
         <img

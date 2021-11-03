@@ -68,7 +68,7 @@ export default function Home() {
         <div className="mr-auto p-2">
           <img
             src={RightArrow}
-            alt="prev"
+            alt="next"
             className="p-2 rounded-md hover:bg-gray-600"
             onClick={handleRight}
           />
