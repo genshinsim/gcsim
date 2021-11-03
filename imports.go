@@ -61,6 +61,7 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/common/lithic"
 	_ "github.com/genshinsim/gsim/internal/weapons/common/royal"
 	_ "github.com/genshinsim/gsim/internal/weapons/common/sacrificial"
+	_ "github.com/genshinsim/gsim/internal/weapons/common/wavebreaker"
 
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/alley"
 	_ "github.com/genshinsim/gsim/internal/weapons/bow/amos"
