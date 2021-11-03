@@ -54,7 +54,8 @@ func (s *Simulation) Run() (Stats, error) {
 	}
 
 	s.stats.Damage = s.C.TotalDamage
-	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F)
+	// Sim starts at frame 0, so need to add 1 to get accurate DPS
+	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F+1)
 	s.stats.Duration = s.C.F
 
 	return s.stats, nil

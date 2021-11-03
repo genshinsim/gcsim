@@ -290,7 +290,8 @@ func (c *char) attackBuff(delay int) {
 		if c.Base.Cons == 6 {
 			c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 				ds := args[1].(*core.Snapshot)
-				if c.Core.Status.Duration(fmt.Sprintf("sarabuff%v", ds.Actor)) <= 0 {
+				// No need to keep event hook if sara attack buff is not active
+				if c.Core.Status.Duration("sarabuff"+ds.Actor) <= 0 {
 					return true
 				}
 				if ds.Element != core.Electro {
@@ -298,7 +299,7 @@ func (c *char) attackBuff(delay int) {
 				}
 				ds.Stats[core.CD] += .6
 				return false
-			}, fmt.Sprintf("sara-c6"))
+			}, "sara-c6")
 		}
 	}, "sara-attack-buff", delay)
 }

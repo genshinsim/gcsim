@@ -1,8 +1,6 @@
 package sara
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gsim/pkg/character"
 	"github.com/genshinsim/gsim/pkg/core"
 )
@@ -32,26 +30,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
-
 	return &c, nil
-}
-
-// Handles Sara c6
-func (c *char) c6() {
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.Element != core.Electro {
-			return false
-		}
-		if c.Core.Status.Duration("sarabuff"+ds.Actor) <= 0 {
-			return false
-		}
-		ds.Stats[core.CD] += .6
-		return false
-	}, fmt.Sprintf("sara-c6"))
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
