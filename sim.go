@@ -34,7 +34,6 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 
 	c, err := core.New(
 		func(c *core.Core) error {
-
 			if seed > 0 {
 				c.Rand = rand.New(rand.NewSource(seed))
 			} else {

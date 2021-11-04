@@ -2,10 +2,13 @@
 package gsim
 
 import (
+	crypto_rand "crypto/rand"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"log"
 	"math"
+
 	"runtime"
 	"sort"
 	"strings"
@@ -121,8 +124,10 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	}
 
 	resp := make(chan workerResp, count)
-	req := make(chan bool)
+	req := make(chan int64)
 	done := make(chan bool)
+
+	var b [8]byte
 
 	for i := 0; i < w; i++ {
 		go worker(src, opt, resp, req, done, cust...)
@@ -131,7 +136,12 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	go func() {
 		var wip int
 		for wip < n {
-			req <- true
+			_, err = crypto_rand.Read(b[:])
+			if err != nil {
+				log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
+			}
+			seed := int64(binary.LittleEndian.Uint64(b[:]))
+			req <- seed
 			wip++
 		}
 	}()
@@ -151,7 +161,15 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 
 	//if debug is true, run one more purely for debug do not add to stats
 	if opt.Debug {
-		seed := time.Now().UnixNano()
+		_, err = crypto_rand.Read(b[:])
+		if err != nil {
+			log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
+		}
+		_, err = crypto_rand.Read(b[:])
+		if err != nil {
+			log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
+		}
+		seed := int64(binary.LittleEndian.Uint64(b[:]))
 		s, err := NewSim(cfg, seed, opt, cust...)
 		if err != nil {
 			log.Fatal(err)
@@ -390,18 +408,17 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 	return
 }
 
-func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, done chan bool, cust ...func(*Simulation) error) {
+func worker(src string, opt core.RunOpt, resp chan workerResp, req chan int64, done chan bool, cust ...func(*Simulation) error) {
 
 	opt.Debug = false
 	opt.DebugPaths = []string{}
 
 	for {
 		select {
-		case <-req:
+		case seed := <-req:
 			parser := parse.New("single", src)
 			cfg, _, _ := parser.Parse()
 
-			seed := time.Now().UnixNano()
 			s, err := NewSim(cfg, seed, opt, cust...)
 			if err != nil {
 				resp <- workerResp{
