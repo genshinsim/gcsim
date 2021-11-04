@@ -29,6 +29,8 @@ type Stats struct {
 	//final result
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`
+	//for tracking min/max run
+	seed int64
 }
 
 type Result struct {
@@ -50,6 +52,9 @@ type Result struct {
 	Text       string        `json:"text"`
 	Debug      string        `json:"debug"`
 	Runtime    time.Duration `json:"runtime"`
+	//for tracking min/max run
+	MinSeed int64 `json:"-"`
+	MaxSeed int64 `json:"-"`
 }
 
 type IntResult struct {
@@ -146,7 +151,8 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 
 	//if debug is true, run one more purely for debug do not add to stats
 	if opt.Debug {
-		s, err := NewSim(cfg, opt, cust...)
+		seed := time.Now().UnixNano()
+		s, err := NewSim(cfg, seed, opt, cust...)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -213,6 +219,7 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		//dmg
 		if v.Damage < result.Damage.Min {
 			result.DPS.Min = v.Damage
+
 		}
 		if v.Damage > result.Damage.Max {
 			result.Damage.Max = v.Damage
@@ -222,9 +229,11 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		//dps
 		if result.DPS.Min > v.DPS {
 			result.DPS.Min = v.DPS
+			result.MinSeed = v.seed
 		}
 		if result.DPS.Max < v.DPS {
 			result.DPS.Max = v.DPS
+			result.MaxSeed = v.seed
 		}
 		result.DPS.Mean += v.DPS / float64(n)
 
@@ -392,7 +401,8 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, do
 			parser := parse.New("single", src)
 			cfg, _, _ := parser.Parse()
 
-			s, err := NewSim(cfg, opt, cust...)
+			seed := time.Now().UnixNano()
+			s, err := NewSim(cfg, seed, opt, cust...)
 			if err != nil {
 				resp <- workerResp{
 					err: err,
@@ -401,6 +411,7 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, do
 			}
 
 			stat, err := s.Run()
+			stat.seed = seed
 
 			if err != nil {
 				resp <- workerResp{

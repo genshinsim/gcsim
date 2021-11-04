@@ -2,7 +2,9 @@ package gsim
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
+	"time"
 
 	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/monster"
@@ -24,7 +26,7 @@ type Simulation struct {
 	stats Stats
 }
 
-func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) (*Simulation, error) {
+func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulation) error) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
 	s.cfg = cfg
@@ -33,11 +35,11 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 	c, err := core.New(
 		func(c *core.Core) error {
 
-			// if cfg.FixedRand {
-			// 	c.Rand = rand.New(rand.NewSource(0))
-			// } else {
-			// 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-			// }
+			if seed > 0 {
+				c.Rand = rand.New(rand.NewSource(seed))
+			} else {
+				c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+			}
 			c.F = -1
 			c.Flags.DamageMode = cfg.DamageMode
 			c.Log, err = core.NewDefaultLogger(c, opts.Debug, true, opts.DebugPaths)

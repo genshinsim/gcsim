@@ -28,6 +28,7 @@ const (
 	AnemoP
 	GeoP
 	PhyP
+	EleP
 	DendroP
 	AtkSpd
 	DmgP

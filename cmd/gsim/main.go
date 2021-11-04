@@ -16,6 +16,7 @@ import (
 
 	"github.com/genshinsim/gsim"
 	"github.com/genshinsim/gsim/internal/logtohtml"
+	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/parse"
 	"go.uber.org/zap"
 )
@@ -41,6 +42,7 @@ func main() {
 	w := flag.Int("w", 0, "number of workers to run when running multiple iterations; default 24")
 	i := flag.Int("i", 0, "number of iterations to run if we're running multiple")
 	multi := flag.String("m", "", "mutiple config mode")
+	mmMode := flag.Bool("minmax", true, "track the min/max run seed and rerun those (single mode with debug only)")
 	// t := flag.Int("t", 1, "target multiplier")
 
 	flag.Parse()
@@ -179,6 +181,21 @@ func main() {
 		fmt.Print(result.PrettyPrint())
 	}
 
+	if *mmMode && *debug {
+
+		minResult, err := runSeeded(data.String(), result.MinSeed, opts, "minDebug")
+		if err != nil {
+			log.Panic(err)
+		}
+		maxResult, err := runSeeded(data.String(), result.MaxSeed, opts, "maxDebug")
+		if err != nil {
+			log.Panic(err)
+		}
+
+		fmt.Printf("Min seed: %v | DPS: %v\n", result.MinSeed, minResult.DPS)
+		fmt.Printf("Min seed: %v | DPS: %v\n", result.MaxSeed, maxResult.DPS)
+	}
+
 	if *jsonFile != "" {
 		//try creating file to write to
 		result.Text = result.PrettyPrint()
@@ -189,6 +206,60 @@ func main() {
 		}
 	}
 
+}
+
+func runSeeded(data string, seed int64, opts core.RunOpt, file string) (gsim.Stats, error) {
+	r, w, err := os.Pipe()
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	outC := make(chan string)
+	// copy the output in a separate goroutine so printing can't block indefinitely
+	go func() {
+		var buf bytes.Buffer
+		io.Copy(&buf, r)
+		outC <- buf.String()
+	}()
+
+	zap.RegisterSink(file, func(url *url.URL) (zap.Sink, error) {
+		return w, nil
+	})
+
+	opts.DebugPaths = []string{fmt.Sprintf("%v://", file)}
+
+	parser := parse.New("single", data)
+	cfg, _, _ := parser.Parse()
+
+	sim, err := gsim.NewSim(cfg, seed, opts)
+	if err != nil {
+		return gsim.Stats{}, err
+	}
+
+	v, err := sim.Run()
+	if err != nil {
+		return gsim.Stats{}, err
+	}
+
+	w.Close()
+
+	out := <-outC
+
+	if file != "" {
+
+		chars := make([]string, len(cfg.Characters.Profile))
+		for i, v := range cfg.Characters.Profile {
+			chars[i] = v.Base.Name
+		}
+		err = logtohtml.WriteString(out, fmt.Sprintf("./%v.html", file), cfg.Characters.Initial, chars)
+		if err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
+	}
+
+	return v, nil
 }
 
 func runMulti(files []string, w, i int) error {
