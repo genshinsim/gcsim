@@ -42,7 +42,7 @@ func main() {
 	w := flag.Int("w", 0, "number of workers to run when running multiple iterations; default 24")
 	i := flag.Int("i", 0, "number of iterations to run if we're running multiple")
 	multi := flag.String("m", "", "mutiple config mode")
-	mmMode := flag.Bool("minmax", true, "track the min/max run seed and rerun those (single mode with debug only)")
+	mmMode := flag.Bool("minmax", false, "track the min/max run seed and rerun those (single mode with debug only)")
 	// t := flag.Int("t", 1, "target multiplier")
 
 	flag.Parse()
