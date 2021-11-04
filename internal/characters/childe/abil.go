@@ -139,30 +139,17 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	return f, a
 }
 
-//Unleashes a set of weaponry made of pure water, dealing Hydro DMG to surrounding opponents and entering Melee Stance.
-//Melee Stance: Converts Tartaglia’s Normal and Charged Attacks into Hydro DMG.Cannot be overridden by any other elemental infusion.
+//Cast: AoE strong hydro damage
+//Melee Stance: infuse NA/CA to hydro damage
 func (c *char) Skill(p map[string]int) (int, int) {
-	if c.Core.Status.Duration("childemelee") > 0 {
-		f, a := c.ActionFrames(core.ActionSkill, p)
-		c.Core.Status.DeleteStatus("childemelee")
-		newCD := float64(c.Core.F - c.eCast + 6*60)
-		//Foul Legacy: Tide Withholder. Decreases the CD of Foul Legacy: Raging Tide by 20%
-		if c.Base.Cons >= 1 {
-			newCD *= 0.8
-		}
-		if c.Base.Cons >= 6 && c.c6 {
-			newCD = 0
-			c.c6 = false
-		}
-		c.Core.Log.Debugw("Childe leaving melee stance", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-			c.Core.Status.Duration("childemelee"))
-		c.SetCD(core.ActionSkill, int(newCD))
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
+	if c.Core.Status.Duration("childemelee") > 0 {
+		c.onExitMeleeStance()
 		c.ResetNormalCounter()
 		return f, a
 	}
 
-	f, a := c.ActionFrames(core.ActionSkill, p)
 	c.eCast = c.Core.F
 	c.Core.Status.AddStatus("childemelee", 30*60)
 	c.Core.Log.Debugw("Foul Legacy acivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+30*60)
@@ -180,28 +167,44 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	d.Targets = core.TargetAll
 	c.QueueDmg(&d, f)
 
-	//If the skill ended automatically after 30s, the CD is even longer. (45s cd)
-	c.AddTask(func() {
-		//if he's already out melee, do nothing
-		if c.Core.Status.Duration("childemelee") == 0 {
-			return
-		}
-
-		c.Core.Status.DeleteStatus("childemelee")
-		newCD := float64(45 * 60) // cd 45s
-		//Foul Legacy: Tide Withholder. Decreases the CD of Foul Legacy: Raging Tide by 20%
-		if c.Base.Cons >= 1 {
-			newCD *= 0.8
-		}
-		if c.Base.Cons >= 6 && c.c6 {
-			newCD = 0
-			c.c6 = false
-		}
-		c.SetCD(core.ActionSkill, int(newCD))
-	}, "childe-exit-melee", 30*60)
-
 	c.SetCD(core.ActionSkill, 60)
 	return f, a
+}
+
+func (c *char) onExitMeleeStance() {
+	// Precise skill CD from Risuke:
+	// Aligns with separate table on wiki except the 4 second duration one
+	// https://discord.com/channels/763583452762734592/851428030094114847/899416824117084210
+	// https://media.discordapp.net/attachments/778615842916663357/781978094495727646/unknown-20.png
+
+	skillCD := 0
+
+	switch timeInMeleeStance := c.Core.F - c.eCast; {
+	case timeInMeleeStance < 2*60:
+		skillCD = 7 * 60
+	case 2*60 <= timeInMeleeStance && timeInMeleeStance < 4*60:
+		skillCD = 8 * 60
+	case 4*60 <= timeInMeleeStance && timeInMeleeStance < 5*60:
+		skillCD = 9 * 60
+	case 5*60 <= timeInMeleeStance && timeInMeleeStance < 8*60:
+		skillCD = (5 + timeInMeleeStance) * 60
+	case 8*60 <= timeInMeleeStance && timeInMeleeStance < 30*60:
+		skillCD = (6 + timeInMeleeStance) * 60
+	case timeInMeleeStance >= 30*60:
+		skillCD = 45 * 60
+	}
+
+	if c.Base.Cons >= 1 {
+		skillCD = int(float64(skillCD) * 0.8)
+	}
+
+	if c.c6 {
+		c.SetCD(core.ActionSkill, 0)
+		c.c6 = false
+	} else {
+		c.SetCD(core.ActionSkill, skillCD)
+	}
+	c.Core.Status.DeleteStatus("tartagliamelee")
 }
 
 //Performs a different attack depending on the stance in which it is cast.
@@ -274,8 +277,8 @@ func (c *char) rtHook() {
 				// melee normal
 				if c.rtExpiry[t.Index()] > c.Core.F {
 					// c.Core.Log.Debugw("Riptide Slash checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
-					if c.rtslashICD[t.Index()] < c.Core.F {
+					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtFlashICD[t], "sl", c.rtSlashICD[t], "rtExpiry", c.rtExpiry[t])
+					if c.rtSlashICD[t.Index()] < c.Core.F {
 						c.AddTask(func() {
 							d := c.Snapshot(
 								"Riptide Slash",
@@ -291,9 +294,9 @@ func (c *char) rtHook() {
 
 							c.Core.Combat.ApplyDamage(&d)
 							c.Core.Log.Debugw("Riptide Slash ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtflashICD[t.Index()], "sl", c.rtslashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
+								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtFlashICD[t.Index()], "sl", c.rtSlashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
 						}, "Riptide Slash", 5)
-						c.rtslashICD[t.Index()] = c.Core.F + 90 //1.5s icd
+						c.rtSlashICD[t.Index()] = c.Core.F + 90 //1.5s icd
 					}
 				}
 
@@ -308,8 +311,8 @@ func (c *char) rtHook() {
 				// melee charge
 				if c.rtExpiry[t.Index()] > c.Core.F {
 					// c.Core.Log.Debugw("Riptide Slash checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
-					if c.rtslashICD[t.Index()] < c.Core.F {
+					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtFlashICD[t], "sl", c.rtSlashICD[t], "rtExpiry", c.rtExpiry[t])
+					if c.rtSlashICD[t.Index()] < c.Core.F {
 						c.AddTask(func() {
 							d := c.Snapshot(
 								"Riptide Slash",
@@ -325,9 +328,9 @@ func (c *char) rtHook() {
 
 							c.Core.Combat.ApplyDamage(&d)
 							c.Core.Log.Debugw("Riptide Slash ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtflashICD[t.Index()], "sl", c.rtslashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
+								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtFlashICD[t.Index()], "sl", c.rtSlashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
 						}, "Riptide Slash", 5)
-						c.rtslashICD[t.Index()] = c.Core.F + 90 //1.5s icd
+						c.rtSlashICD[t.Index()] = c.Core.F + 90 //1.5s icd
 					}
 				}
 
@@ -340,8 +343,8 @@ func (c *char) rtHook() {
 				// aim mode
 				if c.rtExpiry[t.Index()] > c.Core.F {
 					// c.Core.Log.Debugw("Riptide Flash checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
-					if c.rtflashICD[t.Index()] < c.Core.F {
+					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtFlashICD[t], "sl", c.rtSlashICD[t], "rtExpiry", c.rtExpiry[t])
+					if c.rtFlashICD[t.Index()] < c.Core.F {
 						c.AddTask(func() {
 							d := c.Snapshot(
 								"Riptide Flash",
@@ -361,9 +364,9 @@ func (c *char) rtHook() {
 								c.QueueDmg(&x, i)
 							}
 							c.Core.Log.Debugw("Riptide Flash ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtflashICD[t.Index()], "sl", c.rtslashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
+								c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtFlashICD[t.Index()], "sl", c.rtSlashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
 						}, "Riptide Flash", 5)
-						c.rtflashICD[t.Index()] = c.Core.F + 42 //0.7s icd
+						c.rtFlashICD[t.Index()] = c.Core.F + 42 //0.7s icd
 					}
 				}
 
@@ -375,7 +378,7 @@ func (c *char) rtHook() {
 				//clear riptide status
 				if c.rtExpiry[t.Index()] > c.Core.F {
 					// c.Core.Log.Debugw(fmt.Sprintf("%v checking for tick", sname), "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtflashICD[t], "sl", c.rtslashICD[t], "rtExpiry", c.rtExpiry[t])
+					// 	c.Core.Status.Duration("childemelee"), "target", t, "fl", c.rtFlashICD[t], "sl", c.rtSlashICD[t], "rtExpiry", c.rtExpiry[t])
 					c.AddTask(func() {
 						d := c.Snapshot(
 							"Riptide Blast",
@@ -391,7 +394,7 @@ func (c *char) rtHook() {
 
 						c.Core.Combat.ApplyDamage(&d)
 						c.Core.Log.Debugw("Riptide Blast ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-							c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtflashICD[t.Index()], "sl", c.rtslashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
+							c.Core.Status.Duration("childemelee"), "target", t.Index(), "fl", c.rtFlashICD[t.Index()], "sl", c.rtSlashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
 					}, "Riptide Blast", 5)
 
 					c.rtExpiry[t.Index()] = 0
