@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
-	"time"
 
 	"github.com/genshinsim/gsim/pkg/core"
 	"github.com/genshinsim/gsim/pkg/monster"
@@ -34,11 +33,12 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 
 	c, err := core.New(
 		func(c *core.Core) error {
-			if seed > 0 {
-				c.Rand = rand.New(rand.NewSource(seed))
-			} else {
-				c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-			}
+			c.Rand = rand.New(rand.NewSource(seed))
+			// if seed > 0 {
+			// 	c.Rand = rand.New(rand.NewSource(seed))
+			// } else {
+			// 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+			// }
 			c.F = -1
 			c.Flags.DamageMode = cfg.DamageMode
 			c.Log, err = core.NewDefaultLogger(c, opts.Debug, true, opts.DebugPaths)
