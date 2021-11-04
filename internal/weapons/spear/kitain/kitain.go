@@ -22,8 +22,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m[core.ElectroP] = base
 	m[core.AnemoP] = base
 	m[core.GeoP] = base
-	m[core.EleP] = base
-	m[core.PhyP] = base
 	m[core.DendroP] = base
 
 	char.AddMod(core.CharStatMod{

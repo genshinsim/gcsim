@@ -57,8 +57,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m[core.ElectroP] = dmg
 	m[core.AnemoP] = dmg
 	m[core.GeoP] = dmg
-	m[core.EleP] = dmg
-	m[core.PhyP] = dmg
 	m[core.DendroP] = dmg
 	char.AddMod(core.CharStatMod{
 		Key:    "skyward-atlast",
