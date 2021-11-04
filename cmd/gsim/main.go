@@ -183,11 +183,11 @@ func main() {
 
 	if *mmMode && *debug {
 
-		minResult, err := runSeeded(data.String(), result.MinSeed, opts, "minDebug")
+		minResult, err := runSeeded(data.String(), result.MinSeed, opts, "debugmin")
 		if err != nil {
 			log.Panic(err)
 		}
-		maxResult, err := runSeeded(data.String(), result.MaxSeed, opts, "maxDebug")
+		maxResult, err := runSeeded(data.String(), result.MaxSeed, opts, "debugmax")
 		if err != nil {
 			log.Panic(err)
 		}
