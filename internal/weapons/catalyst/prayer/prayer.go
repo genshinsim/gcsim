@@ -47,8 +47,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			m[core.ElectroP] = p
 			m[core.AnemoP] = p
 			m[core.GeoP] = p
-			m[core.EleP] = p
-			m[core.PhyP] = p
 			m[core.DendroP] = p
 			return m, true
 		},

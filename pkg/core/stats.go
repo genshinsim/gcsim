@@ -27,7 +27,6 @@ const (
 	ElectroP
 	AnemoP
 	GeoP
-	EleP
 	PhyP
 	DendroP
 	AtkSpd
