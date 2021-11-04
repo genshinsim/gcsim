@@ -9,16 +9,16 @@ func init() {
 	core.RegisterCharFunc("tartaglia", NewChar)
 }
 
+const rtA1 = 18 * 60 // riptide duration lasts 18 sec
+
 // childe specific character implementation
 type char struct {
 	*character.Tmpl
 	eCast         int // the frame childe cast E to enter melee stance
-	caFrame       int // Idkw on kqm lib, childe has 2 different charged attack frames
 	rtParticleICD int
 	rtflashICD    []int // procs by aiming (the enemy must have riptide status)
 	rtslashICD    []int // rt slash procs on normal, charge in melee form (the enemy must have riptide status)
 	rtExpiry      []int // riptide expired frames
-	rtA1          int   // riptide duration lasts 18 sec
 	funcC4        []bool
 	mlBurstUsed   bool // used for c4. After clearing riptide, remove c4 tickers
 	c6            bool // if true reset E cd; otherwise not
@@ -39,8 +39,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.NormalHitNum = 6
 	c.eCast = 0
-	c.caFrame = 73
-	c.rtA1 = 18 * 60
 	if c.Base.Cons >= 4 {
 		c.mlBurstUsed = false
 	}
@@ -81,11 +79,6 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 // Hook to end Childe's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		prev := args[0].(int)
-		if prev != c.CharIndex() {
-			return false
-		}
-
 		if c.Core.Status.Duration("childemelee") > 0 {
 			c.Core.Status.DeleteStatus("childemelee")
 			//TODO: preemptive cd doesnt seem fixed at 6s
@@ -124,15 +117,15 @@ func (c *char) onDefeatTargets() {
 			c.Core.Combat.ApplyDamage(&d)
 
 			// apply riptide status
-			for _, t := range c.Core.Targets {
-				if c.rtExpiry[t.Index()] < c.Core.F {
-					c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "Expiry", c.Core.F+c.rtA1)
+			for i := 0; i < len(c.Core.Targets); i++ {
+				if c.rtExpiry[i] < c.Core.F {
+					c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", i, "Expiry", c.Core.F+rtA1)
 				}
-				c.rtExpiry[t.Index()] = c.Core.F + c.rtA1
+				c.rtExpiry[i] = c.Core.F + rtA1
 			}
 			c.Core.Log.Debugw("Riptide Burst ticked", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		}, "Riptide Burst", 5)
-		//TODO: re-index riptide expired frame list
+		//re-index riptide expiry frame array
 
 		if c.Base.Cons >= 2 {
 			c.AddEnergy(4)

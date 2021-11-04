@@ -499,12 +499,12 @@ func (c *char) c4TickFunc(t int) func() {
 	}
 }
 
+//apply riptide status to enemy hit
 func (c *char) applyRT(t int) {
-	//apply riptide status to enemies hit
 	if c.rtExpiry[t] < c.Core.F {
-		c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t, "Expiry", c.Core.F+c.rtA1)
+		c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t, "Expiry", c.Core.F+rtA1)
 	}
-	c.rtExpiry[t] = c.Core.F + c.rtA1
+	c.rtExpiry[t] = c.Core.F + rtA1
 
 	if c.Base.Cons >= 4 && !c.funcC4[t] {
 		c.funcC4[t] = true
