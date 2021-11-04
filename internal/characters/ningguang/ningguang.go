@@ -132,7 +132,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	c.QueueDmg(&d, f+travel)
 
-	d = c.Snapshot(
+	d1 := c.Snapshot(
 		"Charge (Gems)",
 		core.AttackTagExtra,
 		core.ICDTagExtraAttack,
@@ -144,7 +144,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	)
 	j := c.Tags["jade"]
 	for i := 0; i < j; i++ {
-		x := d.Clone()
+		x := d1.Clone()
 		c.QueueDmg(&x, f+travel)
 	}
 	c.Tags["jade"] = 0
