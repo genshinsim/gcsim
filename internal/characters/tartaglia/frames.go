@@ -1,4 +1,4 @@
-package childe
+package tartaglia
 
 import "github.com/genshinsim/gsim/pkg/core"
 
@@ -6,7 +6,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
-		if c.Core.Status.Duration("childemelee") > 0 {
+		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			switch c.NormalCounter {
 			case 0:
 				f = 7 //frames from keqing lib
@@ -42,7 +42,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		f = int(float64(f) / (1 + atkspd))
 		return f, f
 	case core.ActionCharge:
-		if c.Core.Status.Duration("childemelee") > 0 {
+		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			return 73, 73
 		}
 		c.Core.Log.Warnw("Charge called when not in melee stance", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
@@ -50,13 +50,13 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionAim:
 		return 84, 84
 	case core.ActionSkill:
-		if c.Core.Status.Duration("childemelee") > 0 {
+		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			return 20, 20
 		}
-		//TODO: need exact frames
+		//TODO: need exact frame
 		return 28, 28
 	case core.ActionBurst:
-		if c.Core.Status.Duration("childemelee") > 0 {
+		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			return 97, 97
 		}
 		return 52, 52

@@ -1,4 +1,4 @@
-package childe
+package tartaglia
 
 import (
 	"github.com/genshinsim/gsim/pkg/character"
@@ -11,17 +11,16 @@ func init() {
 
 const rtA1 = 18 * 60 // riptide duration lasts 18 sec
 
-// childe specific character implementation
+// tartaglia specific character implementation
 type char struct {
 	*character.Tmpl
-	eCast         int // the frame childe cast E to enter melee stance
+	eCast         int // the frame tartaglia casts E to enter melee stance
 	rtParticleICD int
 	rtFlashICD    []int
 	rtSlashICD    []int
 	rtExpiry      []int
 	funcC4        []bool
-	mlBurstUsed   bool // used for c4. After clearing riptide, remove c4 tickers
-	c6            bool // if true reset E cd; otherwise not
+	mlBurstUsed   bool // used for c6
 }
 
 // Initializes character
@@ -43,9 +42,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.mlBurstUsed = false
 		c.funcC4 = make([]bool, len(c.Core.Targets))
 	}
-	if c.Base.Cons >= 6 {
-		c.c6 = false
-	}
 
 	c.rtParticleICD = 0
 	c.rtFlashICD = make([]int, len(c.Core.Targets))
@@ -55,8 +51,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Core.Flags.ChildeActive = true
 	c.onExitField()
 	c.onDefeatTargets()
-	c.rtParticleGen()
-	c.rtHook()
+	c.applyRT()
 	return &c, nil
 }
 
@@ -64,20 +59,22 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
 	case core.ActionCharge:
 		return 20
+	case core.ActionDash:
+		return 18
 	default:
 		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
 		return 0
 	}
 }
 
-// Hook to end Childe's melee stance prematurely if he leaves the field
+// Hook to end Tartaglia's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.Status.Duration("childemelee") > 0 {
+		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			c.onExitMeleeStance()
 		}
 		return false
-	}, "childe-exit")
+	}, "tartaglia-exit")
 }
 
 func (c *char) onDefeatTargets() {
@@ -100,18 +97,18 @@ func (c *char) onDefeatTargets() {
 			// apply riptide status
 			for i := 0; i < len(c.Core.Targets); i++ {
 				if c.rtExpiry[i] < c.Core.F {
-					c.Core.Log.Debugw("Childe applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", i, "Expiry", c.Core.F+rtA1)
+					c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", i, "Expiry", c.Core.F+rtA1)
 				}
 				c.rtExpiry[i] = c.Core.F + rtA1
 			}
 			c.Core.Log.Debugw("Riptide Burst ticked", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		}, "Riptide Burst", 5)
-		//re-index riptide expiry frame array if needed
+		//TODO: re-index riptide expiry frame array if needed
 
 		if c.Base.Cons >= 2 {
 			c.AddEnergy(4)
-			c.Core.Log.Debugw("Childe C2 restoring 4 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
+			c.Core.Log.Debugw("Tartaglia C2 restoring 4 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
 		}
 		return false
-	}, "childe-riptide-burst")
+	}, "tartaglia-riptide-burst")
 }

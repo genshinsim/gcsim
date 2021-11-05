@@ -1,4 +1,4 @@
-package childe
+package tartaglia
 
 var (
 	attack = [][]float64{
