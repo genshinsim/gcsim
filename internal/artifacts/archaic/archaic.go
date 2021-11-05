@@ -24,6 +24,7 @@ func New(c core.Character, s *core.Core, count int) {
 	if count >= 4 {
 
 		s.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+			// Character that picks it up must be the petra set holder
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
@@ -32,32 +33,27 @@ func New(c core.Character, s *core.Core, count int) {
 			if shd != nil {
 				//activate
 				s.Status.AddStatus("archaic", 600)
-				s.SetCustomFlag("archaic", int(shd.Element()))
 				s.Log.Debugw("archaic petra proc'd", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "ele", shd.Element())
+
+				// Apply mod to all characters
+				for _, char := range s.Chars {
+					char.AddMod(core.CharStatMod{
+						Key: "archaic-4pc",
+						Amount: func(ds core.AttackTag) ([]float64, bool) {
+							if s.Status.Duration("archaic") == 0 {
+								return nil, false
+							}
+
+							bonus := core.EleToDmgP(core.EleType(shd.Element()))
+							m := make([]float64, core.EndStatType)
+							m[bonus] = 0.35
+							return m, true
+						},
+						Expiry: s.F + 600,
+					})
+				}
 			}
-
 			return false
-		}, "archaic")
-
-		c.AddMod(core.CharStatMod{
-			Key: "archaic-4pc",
-			Amount: func(ds core.AttackTag) ([]float64, bool) {
-				if s.Status.Duration("archaic") == 0 {
-					return nil, false
-				}
-				ele, ok := s.GetCustomFlag("archaic")
-				if !ok {
-					return nil, false
-				}
-
-				bonus := core.EleToDmgP(core.EleType(ele))
-				m := make([]float64, core.EndStatType)
-				m[bonus] = 0.35
-				s.Log.Debugw("archaic petra bonus", "frame", s.F, "event", core.LogSnapshotEvent, "char", c.CharIndex(), "ele", bonus)
-				return m, true
-			},
-			Expiry: -1,
-		})
+		}, "archaic"+c.Name())
 	}
-	//add flat stat to char
 }

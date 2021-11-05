@@ -91,11 +91,11 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 0:
 			f = 24 //frames from keqing lib
 		case 1:
-			f = 53
+			f = 77 - 24
 		case 2:
-			f = 38
+			f = 115 - 77
 		case 3:
-			f = 65
+			f = 181 - 115
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f, f
@@ -109,7 +109,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			return 45, 45
 		}
 	case core.ActionBurst:
-		return 65, 65
+		return 145, 145
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
 		return 0, 0
@@ -119,19 +119,21 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Physical,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
-	d.Targets = core.TargetAll
 
-	c.QueueDmg(&d, f-1)
+	c.QueueDmgDynamic(func() *core.Snapshot {
+		d := c.Snapshot(
+			fmt.Sprintf("Normal %v", c.NormalCounter),
+			core.AttackTagNormal,
+			core.ICDTagNormalAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypeBlunt,
+			core.Physical,
+			25,
+			attack[c.NormalCounter][c.TalentLvlAttack()],
+		)
+		d.Targets = core.TargetAll
+		return &d
+	}, f-1)
 	c.AdvanceNormalIndex()
 
 	return f, a
@@ -158,27 +160,28 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//every hit applies pyro
 	//apply attack speed
 
-	d := c.Snapshot(
-		"Searing Onslaught",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Pyro,
-		25,
-		skill[c.eCounter][c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
+	c.QueueDmgDynamic(func() *core.Snapshot {
+		d := c.Snapshot(
+			"Searing Onslaught",
+			core.AttackTagElementalArt,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeBlunt,
+			core.Pyro,
+			25,
+			skill[c.eCounter][c.TalentLvlSkill()],
+		)
+		d.Targets = core.TargetAll
 
-	//check for c4 dmg increase
-	if c.Base.Cons >= 4 {
-		if c.Core.Status.Duration("dilucc4") > 0 {
-			d.Stats[core.DmgP] += 0.4
-			c.Core.Log.Debugw("diluc c4 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg", d.Stats[core.DmgP])
+		//check for c4 dmg increase
+		if c.Base.Cons >= 4 {
+			if c.Core.Status.Duration("dilucc4") > 0 {
+				d.Stats[core.DmgP] += 0.4
+				c.Core.Log.Debugw("diluc c4 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg", d.Stats[core.DmgP])
+			}
 		}
-	}
-
-	c.QueueDmg(&d, f-5)
+		return &d
+	}, f-5)
 
 	//add a timer to activate c4
 	if c.Base.Cons >= 4 {
@@ -217,47 +220,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		explode = 0 //if explode hits
 	}
 
-	// c.S.Status["dilucq"] = c.Core.F + 12*60
 	c.Core.Status.AddStatus("dilucq", 720)
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
-	d := c.Snapshot(
-		"Dawn (Strike)",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDiluc,
-		core.StrikeTypeBlunt,
-		core.Pyro,
-		50,
-		burstInitial[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-
-	c.QueueDmg(&d, 100)
-
-	//dot does damage every .2 seconds for 7 hits? so every 12 frames
-	//dot does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
-	//first tick did 50 dur as well?
-	for i := 1; i <= dot; i++ {
-		x := d.Clone()
-		x.Abil = "Dawn (Tick)"
-		x.Mult = burstDOT[c.TalentLvlBurst()]
-		c.QueueDmg(&x, 100+i+12)
-	}
-
-	if explode > 0 {
-		x := d.Clone()
-		x.Abil = "Dawn (Explode)"
-		x.Mult = burstExplode[c.TalentLvlBurst()]
-		c.QueueDmg(&x, 210)
-	}
-
-	//enhance weapon for 10.2 seconds
+	//enhance weapon for 12 seconds
+	// Infusion starts when burst starts and ends when burst comes off CD - check any diluc video
 	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "diluc-fire-weapon",
 		Ele:    core.Pyro,
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Core.F + 852, //with a4
+		Expiry: c.Core.F + 720, //with a4
 	})
 
 	// add 20% pyro damage
@@ -266,11 +238,46 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.AddMod(core.CharStatMod{
 		Key:    "diluc-fire-weapon",
 		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
-		Expiry: c.Core.F + 852,
+		Expiry: c.Core.F + 720,
 	})
 
+	// Snapshot occurs late in the animation when it is released from the claymore
+	// For our purposes, snapshot upon damage proc
+	c.AddTask(func() {
+		d := c.Snapshot(
+			"Dawn (Strike)",
+			core.AttackTagElementalBurst,
+			core.ICDTagElementalBurst,
+			core.ICDGroupDiluc,
+			core.StrikeTypeBlunt,
+			core.Pyro,
+			50,
+			burstInitial[c.TalentLvlBurst()],
+		)
+		d.Targets = core.TargetAll
+
+		c.QueueDmg(&d, 1)
+
+		//dot does damage every .2 seconds for 7 hits? so every 12 frames
+		//dot does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
+		//first tick did 50 dur as well?
+		for i := 1; i <= dot; i++ {
+			x := d.Clone()
+			x.Abil = "Dawn (Tick)"
+			x.Mult = burstDOT[c.TalentLvlBurst()]
+			c.QueueDmg(&x, i+12)
+		}
+
+		if explode > 0 {
+			x := d.Clone()
+			x.Abil = "Dawn (Explode)"
+			x.Mult = burstExplode[c.TalentLvlBurst()]
+			c.QueueDmg(&x, 110)
+		}
+	}, "diluc-burst", 100)
+
 	c.Energy = 0
-	c.SetCD(core.ActionBurst, 900)
+	c.SetCD(core.ActionBurst, 720)
 	return f, a
 }
 
@@ -309,7 +316,8 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	case core.ActionCharge:
-		return 50
+		// With A1
+		return 20
 	default:
 		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
 		return 0
