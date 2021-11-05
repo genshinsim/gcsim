@@ -23,6 +23,9 @@ func New(c core.Character, s *core.Core, count int) {
 	}
 	if count >= 4 {
 
+		var ele core.StatType
+		m := make([]float64, core.EndStatType)
+
 		s.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
 			// Character that picks it up must be the petra set holder
 			if s.ActiveChar != c.CharIndex() {
@@ -34,6 +37,15 @@ func New(c core.Character, s *core.Core, count int) {
 				//activate
 				s.Status.AddStatus("archaic", 600)
 				s.Log.Debugw("archaic petra proc'd", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "ele", shd.Element())
+				m[core.PyroP] = 0
+				m[core.HydroP] = 0
+				m[core.CryoP] = 0
+				m[core.ElectroP] = 0
+				m[core.AnemoP] = 0
+				m[core.GeoP] = 0
+				m[core.DendroP] = 0
+				ele = core.EleToDmgP(core.EleType(shd.Element()))
+				m[ele] = 0.35
 
 				// Apply mod to all characters
 				for _, char := range s.Chars {
@@ -43,10 +55,6 @@ func New(c core.Character, s *core.Core, count int) {
 							if s.Status.Duration("archaic") == 0 {
 								return nil, false
 							}
-
-							bonus := core.EleToDmgP(core.EleType(shd.Element()))
-							m := make([]float64, core.EndStatType)
-							m[bonus] = 0.35
 							return m, true
 						},
 						Expiry: s.F + 600,
