@@ -44,6 +44,12 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 		}
 	}
 
+	// Emit a transformative reaction event for crystallize, which does not do damage
+	switch ds.ReactionType {
+	case core.CrystallizeCryo, core.CrystallizeElectro, core.CrystallizeHydro, core.CrystallizePyro:
+		t.core.Events.Emit(core.OnTransReaction, t, ds)
+	}
+
 	var damage float64
 	var isCrit bool
 
