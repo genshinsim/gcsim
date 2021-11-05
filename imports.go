@@ -91,9 +91,11 @@ import (
 	_ "github.com/genshinsim/gsim/internal/weapons/catalyst/widsith"
 
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/bell"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/nagamasa"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/pines"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/prototype"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/rainslasher"
+	_ "github.com/genshinsim/gsim/internal/weapons/claymore/sealord"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/skyrider"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/skyward"
 	_ "github.com/genshinsim/gsim/internal/weapons/claymore/spine"
