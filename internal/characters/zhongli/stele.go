@@ -20,10 +20,10 @@ func (c *char) newSteele(f, dur, max int) {
 	// d.Targets = core.TargetAll
 
 	//create a construct
-	con := &construct{
+	con := &stoneStele{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
-		char:   c,
+		c:      c,
 	}
 
 	num := c.Core.Constructs.CountByType(core.GeoConstructZhongliSkill)
