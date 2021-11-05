@@ -30,6 +30,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
+	// Initialize at some very low value so reset happens correctly at start of sim
+	c.c2reset = -9999
 
 	c.a4()
 
@@ -178,6 +180,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.lastScreen = c.Core.F
 
 	//check if particles on icd
+
+	c.Core.Status.AddStatus("ningguangskillparticleICD", 360)
 
 	if c.Core.F > c.particleICD {
 		//3 balls, 33% chance of a fourth
