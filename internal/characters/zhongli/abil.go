@@ -116,7 +116,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		core.StrikeTypeBlunt,
 		core.Geo,
 		100,
-		skill[c.TalentLvlBurst()],
+		burst[c.TalentLvlBurst()],
 	)
 	d.Targets = core.TargetAll
 	d.FlatDmg = 0.33 * c.HPMax
