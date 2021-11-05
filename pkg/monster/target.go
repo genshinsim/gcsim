@@ -88,7 +88,7 @@ func (t *Target) Tick() {
 	if t.aura != nil {
 		done := t.aura.Tick()
 		if done {
-			t.core.Log.Debugw("expired",
+			t.core.Log.Debugw(t.aura.Type().String()+" expired",
 				"frame", t.core.F,
 				"event", core.LogElementEvent,
 				"aura", t.aura.Type(),

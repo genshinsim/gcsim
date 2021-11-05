@@ -143,12 +143,13 @@ func (c *char) ozTick(src int) func() {
 		d := c.ozSnapshot.Clone()
 		c.Core.Combat.ApplyDamage(&d)
 		//check for orb
+		//Particle check is 67% for particle, from datamine
 		if c.Core.Rand.Float64() < .67 {
 			c.QueueParticle("fischl", 1, core.Electro, 120)
 		}
 
 		//queue up next hit only if next hit oz is still active
-		if c.Core.F+60 < c.ozActiveUntil {
+		if c.Core.F+60 <= c.ozActiveUntil {
 			c.AddTask(c.ozTick(src), "oz", 60)
 		}
 	}
