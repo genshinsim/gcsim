@@ -20,6 +20,9 @@ type Target interface {
 	HasDefMod(key string) bool
 	HasResMod(key string) bool
 
+	// Expose TransReactionSnapshot for Guoba swirl
+	TransReactionSnapshot(in *Snapshot, typ ReactionType, res Durability, selfHarm bool) Snapshot
+
 	Delete() //gracefully deference everything so that it can be gc'd
 }
 

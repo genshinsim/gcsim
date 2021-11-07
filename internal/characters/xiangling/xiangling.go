@@ -182,6 +182,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		x := d.Clone()
 		c.QueueDmg(&x, delay+i*90)
 		c.QueueParticle("xiangling", 1, core.Pyro, delay+i*95+90+60)
+		// Timing for guoba pyro aura is active roughly while the exclamation point shows up through hitmark
+		// TODO: No idea what the actual frame counts are, but 1 second seems about safe
+		c.AddTask(func() {
+			c.Core.Status.AddStatus("xianglingguoba_auraactive", 60)
+		}, "xiangling-guoba-pyro-aura-status", delay+i*90-45)
 	}
 
 	c.SetCD(core.ActionSkill, 12*60)

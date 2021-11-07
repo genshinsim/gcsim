@@ -132,6 +132,9 @@ func (c *char) a2() {
 		if ds.ActorIndex != c.Index {
 			return false
 		}
+		if ds.Abil == "Sucrose E (Guoba Swirl Source)" {
+			return false
+		}
 		switch ds.ReactionType {
 		case core.SwirlCryo:
 			c.Tags["a2-cryo"] = c.Core.F + 480
@@ -274,6 +277,36 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}, "Sucrose - Skill", 41)
 
 	c.QueueParticle("sucrose", 4, core.Anemo, 150)
+
+	// Manual addition for guoba swirl
+	// Check occurs at Sucrose E damage hit
+	c.AddTask(func() {
+		_, ok := p["guoba_swirl"]
+		if ok && c.Core.Status.Duration("xianglingguoba_auraactive") > 0 {
+			// Required to avoid A2 proc
+			x := d.Clone()
+			x.Abil = "Sucrose E (Guoba Swirl Source)"
+			// Queue up a "fake" reaction snapshot for each target
+			for _, target := range c.Core.Targets {
+				// Set ICD Group to default as this is not coming from Sucrose, so should get multiple swirl procs off
+				// Does not interfere with VV since that checks on the snapshot character index
+				c.QueueDmgDynamic(func() *core.Snapshot {
+					ds := target.TransReactionSnapshot(&x, core.SwirlPyro, 25, true)
+					ds.Abil = "swirl-pyro (Guoba)"
+					ds.ICDGroup = core.ICDGroupDefault
+
+					return &ds
+				}, 1)
+				c.QueueDmgDynamic(func() *core.Snapshot {
+					ds := target.TransReactionSnapshot(&x, core.SwirlPyro, 25, false)
+					ds.Abil = "swirl-pyro (Guoba)"
+					ds.ICDGroup = core.ICDGroupDefault
+
+					return &ds
+				}, 1)
+			}
+		}
+	}, "sucrose-e-guoba-swirl", 41)
 
 	if c.Base.Cons < 1 {
 		c.SetCD(core.ActionSkill, 900)

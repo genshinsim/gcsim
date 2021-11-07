@@ -96,9 +96,9 @@ var ICDGroupEleApplicationSequence = [][]int{
 	//xiao dash
 	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//reaction a
-	{1.0, 1.0},
+	{1.0, 1.0, 1.0, 1.0, 1.0},
 	//reaction b
-	{1.0, 1.0},
+	{1.0, 1.0, 1.0, 1.0, 1.0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
