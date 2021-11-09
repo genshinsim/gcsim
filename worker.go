@@ -1,5 +1,5 @@
 //
-package gsim
+package gcsim
 
 import (
 	crypto_rand "crypto/rand"
@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/parse"
 )
 
 type Stats struct {

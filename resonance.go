@@ -1,6 +1,6 @@
-package gsim
+package gcsim
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (s *Simulation) initResonance(count map[core.EleType]int) {
 	for k, v := range count {

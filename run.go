@@ -1,7 +1,7 @@
-package gsim
+package gcsim
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func (s *Simulation) Run() (Stats, error) {

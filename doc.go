@@ -20,4 +20,4 @@ The simulator is made up of various packages.
 
 **/
 
-package gsim
+package gcsim

@@ -1,6 +1,6 @@
 package xingqiu
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) summonSwordWave() {
 	//trigger swords, only first sword applies hydro

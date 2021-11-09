@@ -1,6 +1,6 @@
 package fischl
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) a4() {
 	last := 0

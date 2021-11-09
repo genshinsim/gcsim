@@ -3,8 +3,8 @@ package monster
 import (
 	"testing"
 
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func TestPyroAura(t *testing.T) {

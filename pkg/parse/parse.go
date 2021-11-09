@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 var actionKeys = map[string]core.ActionType{

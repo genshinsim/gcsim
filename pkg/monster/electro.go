@@ -1,6 +1,6 @@
 package monster
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 type AuraElectro struct {
 	*Element

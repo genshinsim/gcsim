@@ -1,6 +1,6 @@
 package fischl
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) c6() {
 	//this is on attack animation state, not attack landed

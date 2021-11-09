@@ -1,6 +1,6 @@
 package monster
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (t *Target) willApplyEle(tag core.ICDTag, grp core.ICDGroup, char int) bool {
 

@@ -1,7 +1,7 @@
 package zhongli
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func (c *char) newSteele(f, dur, max int) {

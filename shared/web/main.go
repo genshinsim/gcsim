@@ -5,9 +5,8 @@ import (
 	"net/url"
 	"syscall/js"
 
-	"github.com/genshinsim/gsim"
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/parse"
 	"go.uber.org/zap"
 )
 

@@ -1,6 +1,6 @@
 package shield
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 type Tmpl struct {
 	Name       string

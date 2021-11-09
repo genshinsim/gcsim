@@ -1,6 +1,6 @@
 package kazuha
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) Attack(p map[string]int) (int, int) {
 

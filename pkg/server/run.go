@@ -10,8 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/genshinsim/gsim"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 type runConfig struct {

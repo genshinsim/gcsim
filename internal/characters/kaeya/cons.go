@@ -1,8 +1,8 @@
 package kaeya
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/shield"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func (c *char) c1() {

@@ -1,6 +1,6 @@
 package fischl
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {

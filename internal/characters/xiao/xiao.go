@@ -1,8 +1,8 @@
 package xiao
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -63,7 +63,7 @@ func (c *char) c2() {
 	stat_mod := make([]float64, core.EndStatType)
 	stat_mod[core.ER] = 0.25
 	c.AddMod(core.CharStatMod{
-		Key: "xiao-c2",
+		Key:    "xiao-c2",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if c.Core.ActiveChar != c.Index {
@@ -108,7 +108,7 @@ func (c *char) c6() {
 			c.eTickSrc = c.Core.F
 
 			c.Core.Status.AddStatus("xiaoc6", 60)
-			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.eCharge, "expiry", c.Core.F + 60)
+			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.eCharge, "expiry", c.Core.F+60)
 
 			c.c6Count = 0
 			return false

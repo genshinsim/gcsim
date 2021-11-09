@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 	"go.uber.org/zap"
 )
 

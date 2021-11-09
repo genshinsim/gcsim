@@ -9,8 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/genshinsim/gsim"
-	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/genshinsim/gcsim/pkg/parse"
 )
 
 func main() {}

@@ -1,12 +1,12 @@
-package gsim
+package gcsim
 
 import (
 	"fmt"
 	"math/rand"
 	"strings"
 
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/monster"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/monster"
 )
 
 type Simulation struct {

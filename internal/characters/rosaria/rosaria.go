@@ -1,8 +1,8 @@
 package rosaria
 
 import (
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 type char struct {
@@ -57,7 +57,7 @@ func (c *char) c1() {
 		val[core.AtkSpd] = 0.1
 		val[core.DmgP] = 0.1
 		c.AddMod(core.CharStatMod{
-			Key: "rosaria-c1",
+			Key:    "rosaria-c1",
 			Expiry: c.Core.F + 240,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				if a != core.AttackTagNormal {
@@ -99,7 +99,6 @@ func (c *char) c4() {
 		return false
 	}, "rosaria-c4")
 }
-
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {

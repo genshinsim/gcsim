@@ -3,7 +3,7 @@ package yoimiya
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {

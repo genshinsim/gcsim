@@ -14,10 +14,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/genshinsim/gsim"
-	"github.com/genshinsim/gsim/internal/logtohtml"
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/genshinsim/gcsim"
+	"github.com/genshinsim/gcsim/internal/logtohtml"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/parse"
 	"go.uber.org/zap"
 )
 
@@ -122,7 +122,7 @@ func main() {
 	// log.Println(opts)
 	// defer profile.Start(profile.ProfilePath("./")).Stop()
 
-	var result gsim.Result
+	var result gcsim.Result
 	//if debug we're going to capture the logs
 	if opts.Debug {
 		r, w, err := os.Pipe()
@@ -145,7 +145,7 @@ func main() {
 
 		opts.DebugPaths = []string{"gsim://"}
 
-		result, err = gsim.Run(data.String(), opts)
+		result, err = gcsim.Run(data.String(), opts)
 		if err != nil {
 			log.Println(err)
 			os.Exit(1)
@@ -170,7 +170,7 @@ func main() {
 		result.Debug = out
 
 	} else {
-		result, err = gsim.Run(data.String(), opts)
+		result, err = gcsim.Run(data.String(), opts)
 		if err != nil {
 			log.Println(err)
 			os.Exit(1)
@@ -208,7 +208,7 @@ func main() {
 
 }
 
-func runSeeded(data string, seed int64, opts core.RunOpt, file string) (gsim.Stats, error) {
+func runSeeded(data string, seed int64, opts core.RunOpt, file string) (gcsim.Stats, error) {
 	r, w, err := os.Pipe()
 	if err != nil {
 		log.Println(err)
@@ -232,14 +232,14 @@ func runSeeded(data string, seed int64, opts core.RunOpt, file string) (gsim.Sta
 	parser := parse.New("single", data)
 	cfg, _, _ := parser.Parse()
 
-	sim, err := gsim.NewSim(cfg, seed, opts)
+	sim, err := gcsim.NewSim(cfg, seed, opts)
 	if err != nil {
-		return gsim.Stats{}, err
+		return gcsim.Stats{}, err
 	}
 
 	v, err := sim.Run()
 	if err != nil {
-		return gsim.Stats{}, err
+		return gcsim.Stats{}, err
 	}
 
 	w.Close()
@@ -311,7 +311,7 @@ func runMulti(files []string, w, i int) error {
 		opts.LogDetails = false
 
 		fmt.Printf("%60.60v |", f)
-		r, err := gsim.Run(data.String(), opts)
+		r, err := gcsim.Run(data.String(), opts)
 		if err != nil {
 			log.Fatal(err)
 		}

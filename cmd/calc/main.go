@@ -9,11 +9,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/genshinsim/gsim"
-	"github.com/genshinsim/gsim/internal/logtohtml"
-	"github.com/genshinsim/gsim/pkg/calcqueue"
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/genshinsim/gcsim/internal/logtohtml"
+	"github.com/genshinsim/gcsim/pkg/calcqueue"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/parse"
 )
 
 func main() {
