@@ -4,6 +4,8 @@ GSim is a Monte Carlo simulation tool used to model team dps. It allows for the 
 
 # Getting started
 
+**IMPORTANT NOTE: Due to changing the repo name, auto update function unfortunately broke. If you have a version prior to v0.2.14 (last updated any time before Nov 8, 2021), please uninstall the app and redownload it again. Sorry for the inconvenience**
+
 GSim now has a graphical desktop application available (previous web version discontinued due to performance issues). You can find the repo [here](https://github.com/genshinsim/gcsimui) or download the latest [release](https://github.com/genshinsim/gcsimui/releases).
 
 In addition, you can visit the gsim's website at [https://www.gcsim.app/](https://www.gcsim.app/). On there you will find pre-written action list to use with your teams (so you do not have to build your own if you do not wish to). This is still a work in progress and will grow over time.
