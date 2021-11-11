@@ -15,10 +15,11 @@ type char struct {
 	// a4snap   core.Snapshot
 	qInfused core.EleType
 	//charges
-	eCharge      int
-	eChargeMax   int
-	eNextRecover int
-	eTickSrc     int
+	eChargeMax          int
+	c4Count             int
+	eChargeLastRecovery int
+	eLastUsed           int
+	eChargeNextRecovery int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -37,7 +38,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 1 {
 		c.eChargeMax = 2
 	}
-	c.eCharge = c.eChargeMax
+	c.Tags["eCharge"] = c.eChargeMax
+	c.eChargeLastRecovery = 0
+	c.eLastUsed = 0
 
 	return &c, nil
 }
@@ -204,18 +207,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	c.AdvanceNormalIndex()
 
-	if c.Base.Cons >= 4 {
-		count := c.Tags["c4"]
-		count++
-		if count == 7 {
-			if c.Cooldown(core.ActionSkill) > 0 {
-				n := c.Core.Rand.Intn(7) + 1
-				c.ReduceActionCooldown(core.ActionSkill, n*60)
-			}
-			count = 0
-		}
-		c.Tags["c4"] = count
-	}
+	c.c4()
 
 	return f, a
 }
@@ -235,20 +227,36 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	c.QueueDmg(&d, f-1)
 
-	if c.Base.Cons >= 4 {
-		count := c.Tags["c4"]
-		count++
-		if count == 7 {
-			if c.Cooldown(core.ActionSkill) > 0 {
-				n := c.Core.Rand.Intn(7) + 1
-				c.ReduceActionCooldown(core.ActionSkill, n*60)
-			}
-			count = 0
-		}
-		c.Tags["c4"] = count
-	}
+	c.c4()
 
 	return f, a
+}
+
+// Handles C4: Every 7 Normal and Charged Attacks, Sucrose will reduce the CD of Astable Anemohypostasis Creation-6308 by 1-7s
+func (c *char) c4() {
+	if c.Base.Cons < 4 {
+		return
+	}
+
+	c.c4Count++
+	if c.c4Count < 7 {
+		return
+	}
+	c.c4Count = 0
+
+	// Change can be in float. See this Terrapin video for example
+	// https://youtu.be/jB3x5BTYWIA?t=20
+	cdReduction := 60 * int(c.Core.Rand.Float64()*6+1)
+
+	c.eChargeNextRecovery -= cdReduction
+
+	c.Core.Log.Debugw("sucrose c4 reducing E CD", "frame", c.Core.F, "event", core.LogCharacterEvent, "cd_reduction", cdReduction, "next_recovery", c.eChargeNextRecovery)
+	if c.Core.F >= c.eChargeNextRecovery {
+		c.recoverCharge()
+		return
+	}
+
+	c.AddTask(c.recoverChargeWithCheck(c.Core.F), "sucrose-charge-recovery", c.eChargeNextRecovery-c.Core.F)
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
@@ -280,38 +288,41 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		return f, a
 	}
 
-	switch c.eCharge {
-	case c.eChargeMax:
-		c.Core.Log.Debugw("sucrose e at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+900)
-		c.eNextRecover = c.Core.F + 901
-		c.AddTask(c.recoverCharge(c.Core.F), "charge", 900)
-		c.eTickSrc = c.Core.F
+	// Check
+	switch c.Tags["eCharge"] {
+	case 2:
+		c.eChargeNextRecovery = c.Core.F + 900
 	case 1:
-		c.SetCD(core.ActionSkill, c.eNextRecover)
+		// When going from 1 to 0 charge, in game maintains the current CD of the skill
+		// Need to add 1 to avoid same frame collision issues
+		c.SetCD(core.ActionSkill, c.eChargeNextRecovery-c.Core.F+1)
 	}
-	c.eCharge--
+	c.eLastUsed = c.Core.F
+	c.AddTask(c.recoverChargeWithCheck(c.Core.F), "sucrose-charge", c.eChargeNextRecovery-c.Core.F)
+	c.Tags["eCharge"]--
 
 	return f, a
 }
 
-func (c *char) recoverCharge(src int) func() {
-	return func() {
-		if c.eTickSrc != src {
-			c.Core.Log.Debugw("sucrose e recovery function ignored, src diff", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
-			return
-		}
-		c.eCharge++
-		c.Core.Log.Debugw("sucrose e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "total charge", c.eCharge)
-		c.SetCD(core.ActionSkill, 0)
-		if c.eCharge >= c.eChargeMax {
-			//fully charged
-			return
-		}
-		//other wise restore another charge
-		c.Core.Log.Debugw("sucrose e queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "recover at", c.Core.F+720)
-		c.eNextRecover = c.Core.F + 901
-		c.AddTask(c.recoverCharge(src), "charge", 900)
+func (c *char) recoverCharge() {
+	c.Tags["eCharge"]++
+	c.eChargeLastRecovery = c.Core.F
+	c.eChargeNextRecovery = c.Core.F + 15*60
+	c.ResetActionCooldown(core.ActionSkill)
+	c.Core.Log.Debugw("sucrose recovered E charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "charges", c.Tags["eCharge"], "nextRecovery", c.eChargeNextRecovery)
+}
 
+func (c *char) recoverChargeWithCheck(src int) func() {
+	return func() {
+		c.Core.Log.Debugw("sucrose E charge recovery check", "frame", c.Core.F, "event", core.LogCharacterEvent, "charges", c.Tags["eCharge"], "nextRecovery", c.eChargeNextRecovery, "src", src, "lastrecov", c.eChargeLastRecovery, "lastused", c.eLastUsed)
+		if c.Core.F < c.eChargeNextRecovery {
+			return
+		}
+		// Ensure that if C4 CD reduction procs, you don't recover multiple times
+		if !((src >= c.eChargeLastRecovery) && (src >= c.eLastUsed)) {
+			return
+		}
+		c.recoverCharge()
 	}
 }
 
@@ -420,33 +431,6 @@ func (c *char) absorbCheck(src int, count int, max int) func() {
 		default:
 			//nothing found, queue next
 			c.AddTask(c.absorbCheck(src, count+1, max), "absorb-detect", 18) //every 0.3 seconds
-		}
-	}
-}
-
-func (c *char) ResetActionCooldown(a core.ActionType) {
-	//we're overriding this b/c of the c1 charges
-	switch a {
-	case core.ActionBurst:
-		c.ActionCD[a] = 0
-	case core.ActionSkill:
-		if c.Base.Cons == 0 {
-			c.ActionCD[a] = 0
-			return
-		}
-		//if full charge do nothing; should never happen though since it takes 1 charge to proc it
-		if c.eCharge == c.eChargeMax {
-			c.ActionCD[a] = 0
-			return
-		}
-
-		//otherwise reset tick src and add refresh if charges < max after ++
-		c.eCharge++
-		c.eTickSrc = c.Core.F
-		c.eNextRecover = c.Core.F + 901
-		c.ActionCD[a] = 0
-		if c.eCharge < c.eChargeMax {
-			c.AddTask(c.recoverCharge(c.Core.F), "charge", 900)
 		}
 	}
 }
