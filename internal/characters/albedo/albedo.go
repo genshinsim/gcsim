@@ -165,6 +165,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		25,
 		skill[c.TalentLvlSkill()],
 	)
+	d.Targets = core.TargetAll
 
 	c.QueueDmg(&d, f)
 
@@ -178,6 +179,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		25,
 		skillTick[c.TalentLvlSkill()],
 	)
+	d.Targets = core.TargetAll
 	c.skillSnapshot.UseDef = true
 
 	//create a construct

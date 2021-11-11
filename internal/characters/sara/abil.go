@@ -73,7 +73,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		d := c.Snapshot(
 			"Tengu Juurai: Ambush",
 			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
+			core.ICDTagNone,
 			core.ICDGroupDefault,
 			core.StrikeTypePierce,
 			core.Electro,
@@ -114,7 +114,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		d := c.Snapshot(
 			"Tengu Juurai: Ambush C2",
 			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
+			core.ICDTagNone,
 			core.ICDGroupDefault,
 			core.StrikeTypePierce,
 			core.Electro,
