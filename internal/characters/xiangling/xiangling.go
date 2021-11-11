@@ -117,10 +117,21 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	//if n = 5, add explosion for c2
 	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
-		d1 := d.Clone()
-		d1.Element = core.Pyro
-		d1.Mult = 0.75
-		c.QueueDmg(&d1, 120)
+		// According to TCL, does not snapshot and has no ability type scaling tags
+		// TODO: Does not mention ICD or pyro aura strength?
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			d1 := c.Snapshot(
+				"Oil Meets Fire (C2)",
+				core.AttackTagNone,
+				core.ICDTagNormalAttack,
+				core.ICDGroupDefault,
+				core.StrikeTypeDefault,
+				core.Pyro,
+				25,
+				0.75,
+			)
+			return &d1
+		}, 120)
 	}
 	//add a 75 frame attackcounter reset
 	c.AdvanceNormalIndex()
