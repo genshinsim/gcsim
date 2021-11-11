@@ -244,6 +244,7 @@ func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 		"cd", ds.Stats[core.CD],
 		"pre_crit_dmg", precritdmg,
 		"dmg_if_crit", precritdmg*(1+ds.Stats[core.CD]),
+		"avg_crit_dmg", (1-ds.Stats[core.CR])*precritdmg+ds.Stats[core.CR]*precritdmg*(1+ds.Stats[core.CD]),
 		"is_crit", isCrit,
 		"pre_amp_dmg", preampdmg,
 		"reaction_type", ds.ReactionType,
@@ -253,6 +254,9 @@ func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 		"em_bonus", emBonus,
 		"react_bonus", ds.ReactBonus,
 		"amp_mult_total", (ds.ReactMult * (1 + emBonus + ds.ReactBonus)),
+		"pre_crit_dmg_react", precritdmg*(ds.ReactMult*(1+emBonus+ds.ReactBonus)),
+		"dmg_if_crit_react", precritdmg*(1+ds.Stats[core.CD])*(ds.ReactMult*(1+emBonus+ds.ReactBonus)),
+		"avg_crit_dmg_react", ((1-ds.Stats[core.CR])*precritdmg+ds.Stats[core.CR]*precritdmg*(1+ds.Stats[core.CD]))*(ds.ReactMult*(1+emBonus+ds.ReactBonus)),
 		"target", t.index,
 	)
 
@@ -292,6 +296,7 @@ func (t *Target) calcReactionDmg(ds *core.Snapshot) float64 {
 		"ele", ds.Element,
 		"res", res,
 		"res_mod", resmod,
+		"em", em,
 		"react bonus", ds.ReactBonus,
 		"target", t.index,
 	)

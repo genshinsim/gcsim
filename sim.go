@@ -83,6 +83,9 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 				}
 			}
 			s.stats.DamageByChar[ds.ActorIndex][sb.String()] += dmg
+			if dmg > 0 {
+				s.stats.DamageInstancesByChar[ds.ActorIndex][sb.String()] += 1
+			}
 			s.stats.DamageByCharByTargets[ds.ActorIndex][t.Index()] += dmg
 			return false
 		}, "dmg-log")
@@ -145,6 +148,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 	if s.opts.LogDetails {
 		s.stats.CharNames = make([]string, count)
 		s.stats.DamageByChar = make([]map[string]float64, count)
+		s.stats.DamageInstancesByChar = make([]map[string]int, count)
 		s.stats.DamageByCharByTargets = make([][]float64, count)
 		s.stats.CharActiveTime = make([]int, count)
 		s.stats.AbilUsageCountByChar = make([]map[string]int, count)
@@ -174,6 +178,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		//setup maps
 		if s.opts.LogDetails {
 			s.stats.DamageByChar[i] = make(map[string]float64)
+			s.stats.DamageInstancesByChar[i] = make(map[string]int)
 			s.stats.DamageByCharByTargets[i] = make([]float64, len(s.C.Targets))
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 			s.stats.CharNames[i] = v.Base.Name
