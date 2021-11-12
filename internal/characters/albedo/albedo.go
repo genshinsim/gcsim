@@ -15,6 +15,7 @@ type char struct {
 	*character.Tmpl
 	lastConstruct int
 	skillSnapshot core.Snapshot
+	icdSkill      int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -28,6 +29,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 40
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
+	c.icdSkill = 0
 
 	c.skillHook()
 
@@ -182,8 +184,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	d.Targets = core.TargetAll
 	c.skillSnapshot.UseDef = true
 
+	// Reset ICD
+	c.icdSkill = c.Core.F - 1
+
 	//create a construct
-	c.Core.Constructs.New(c.newConstruct(2100), true) //35 seconds
+	c.Core.Constructs.New(c.newConstruct(1800), true)
 
 	c.lastConstruct = c.Core.F
 
@@ -194,16 +199,20 @@ func (c *char) Skill(p map[string]int) (int, int) {
 }
 
 func (c *char) skillHook() {
-	icd := 0
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
 		t := args[0].(core.Target)
 		if c.Tags["elevator"] == 0 {
 			return false
 		}
-		if c.Core.F < icd {
+		if c.Core.F < c.icdSkill {
 			return false
 		}
-		icd = c.Core.F + 120 // every 2 seconds
+		// Can't be triggered by itself when refreshing
+		if ds.Abil == "Abiogenesis: Solar Isotoma" {
+			return false
+		}
+		c.icdSkill = c.Core.F + 120 // every 2 seconds
 
 		d := c.skillSnapshot.Clone()
 
