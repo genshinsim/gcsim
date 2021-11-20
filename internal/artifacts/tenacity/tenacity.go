@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("tenacity of millelith", New)
+	core.RegisterSetFunc("tenacity of the millelith", New)
 	core.RegisterSetFunc("tenacityofthemillelith", New)
 }
 
@@ -42,20 +43,22 @@ func New(c core.Character, s *core.Core, count int) {
 			s.Status.AddStatus("tom-proc", 180)
 			icd = s.F + 30 //.5 second icd
 
+			for _, char := range s.Chars {
+				char.AddMod(core.CharStatMod{
+					Key: "tom-4pc",
+					Amount: func(a core.AttackTag) ([]float64, bool) {
+						if s.Status.Duration("tom-proc") == 0 {
+							return nil, false
+						}
+						return m, true
+					},
+					Expiry: s.F + 180,
+				})
+
+			}
 			s.Log.Debugw("tom 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "expiry", s.F+180, "icd", s.F+30)
 			return false
-		}, fmt.Sprintf("pf4-%v", c.Name()))
-
-		c.AddMod(core.CharStatMod{
-			Key: "pf-4pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if s.Status.Duration("tom-proc") == 0 {
-					return nil, false
-				}
-				return m, true
-			},
-			Expiry: -1,
-		})
+		}, fmt.Sprintf("tom4-%v", c.Name()))
 
 	}
 	//add flat stat to char
