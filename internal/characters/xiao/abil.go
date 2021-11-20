@@ -208,7 +208,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	// Handle E charges
-	if c.eCharge == 1 {
+	if c.Tags["eCharge"] == 1 {
 		c.SetCD(core.ActionSkill, c.eNextRecover)
 	} else {
 		c.eNextRecover = c.Core.F + 601
@@ -216,7 +216,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.AddTask(c.recoverCharge(c.Core.F), "charge", 600)
 		c.eTickSrc = c.Core.F
 	}
-	c.eCharge--
+	c.Tags["eCharge"]--
 
 	return f, a
 }
@@ -229,10 +229,10 @@ func (c *char) recoverCharge(src int) func() {
 			c.Core.Log.Debugw("xiao e recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "new src", c.eTickSrc)
 			return
 		}
-		c.eCharge++
-		c.Core.Log.Debugw("xiao e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "skill last used at", src, "total charges", c.eCharge)
+		c.Tags["eCharge"]++
+		c.Core.Log.Debugw("xiao e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "skill last used at", src, "total charges", c.Tags["eCharge"])
 		c.SetCD(core.ActionSkill, 0)
-		if c.eCharge >= c.eChargeMax {
+		if c.Tags["eCharge"] >= c.eChargeMax {
 			return
 		}
 
