@@ -31,6 +31,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiao"
 	_ "github.com/genshinsim/gcsim/internal/characters/xingqiu"
+	_ "github.com/genshinsim/gcsim/internal/characters/yanfei"
 	_ "github.com/genshinsim/gcsim/internal/characters/yoimiya"
 	_ "github.com/genshinsim/gcsim/internal/characters/zhongli"
 
