@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/genshinsim/gcsim"
 	"github.com/genshinsim/gcsim/internal/logtohtml"
 	"github.com/genshinsim/gcsim/pkg/calcqueue"
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -54,7 +55,7 @@ func main() {
 	opts.Debug = true
 	opts.DebugPaths = []string{"stdout"}
 
-	result, err := gsim.Run(string(src), opts, func(s *gsim.Simulation) error {
+	result, err := gcsim.Run(string(src), opts, func(s *gcsim.Simulation) error {
 		var err error
 		s.C.Queue, err = createQueue(cfg, s)
 		if err != nil {
@@ -81,7 +82,7 @@ func main() {
 
 }
 
-func createQueue(cfg core.Config, s *gsim.Simulation) (core.QueueHandler, error) {
+func createQueue(cfg core.Config, s *gcsim.Simulation) (core.QueueHandler, error) {
 	cust := make(map[string]int)
 	for i, v := range cfg.Rotation {
 		if v.Name != "" {

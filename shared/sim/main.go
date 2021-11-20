@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/genshinsim/gcsim"
 	"github.com/genshinsim/gcsim/pkg/parse"
 )
 
@@ -25,7 +26,7 @@ func Run(config string) *C.char {
 
 	opts.LogDetails = true
 
-	var data gsim.Result
+	var data gcsim.Result
 
 	if opts.Debug {
 		//make a log file, write to it, read it back and store as string
@@ -51,7 +52,7 @@ func Run(config string) *C.char {
 		file := "./" + strconv.FormatInt(now, 10) + ".log"
 		opts.DebugPaths = []string{file}
 
-		data, err = gsim.Run(string(config), opts)
+		data, err = gcsim.Run(string(config), opts)
 		if err != nil {
 			return C.CString(errToString(err.Error()))
 		}
@@ -66,7 +67,7 @@ func Run(config string) *C.char {
 		//remove the file
 		os.Remove(file)
 	} else {
-		data, err = gsim.Run(string(config), opts)
+		data, err = gcsim.Run(string(config), opts)
 		if err != nil {
 			return C.CString(errToString(err.Error()))
 		}
