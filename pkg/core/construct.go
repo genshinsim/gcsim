@@ -55,7 +55,7 @@ func (s *ConstructCtrl) New(c Construct, refresh bool) {
 			}
 		}
 	}
-	if ind != 0 && ind != len(s.constructs) {
+	if ind != len(s.constructs) {
 		s.core.Log.Debugw("construct replaced", "event", LogConstructEvent, "frame", s.core.F, "key", s.constructs[ind].Key(), "prev type", s.constructs[ind].Type(), "next type", c.Type())
 		s.constructs[ind].OnDestruct()
 		s.constructs[ind] = c

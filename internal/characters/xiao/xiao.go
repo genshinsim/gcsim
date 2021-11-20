@@ -51,7 +51,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.c6()
 	}
 
-	c.eCharge = c.eChargeMax
+	c.Tags["eCharge"] = c.eChargeMax
 	c.onExitField()
 
 	return &c, nil
@@ -108,7 +108,7 @@ func (c *char) c6() {
 			c.eTickSrc = c.Core.F
 
 			c.Core.Status.AddStatus("xiaoc6", 60)
-			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.eCharge, "expiry", c.Core.F+60)
+			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.F+60)
 
 			c.c6Count = 0
 			return false
