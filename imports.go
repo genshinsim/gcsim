@@ -20,6 +20,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/kazuha"
 	_ "github.com/genshinsim/gcsim/internal/characters/keqing"
 	_ "github.com/genshinsim/gcsim/internal/characters/klee"
+	_ "github.com/genshinsim/gcsim/internal/characters/kokomi"
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
 	_ "github.com/genshinsim/gcsim/internal/characters/ningguang"
 	_ "github.com/genshinsim/gcsim/internal/characters/noelle"
