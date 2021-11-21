@@ -306,7 +306,7 @@ func (c *char) applyBennettField(d core.Snapshot) func() {
 		active := c.Core.Chars[c.Core.ActiveChar]
 		//heal if under 70%
 		if active.HP()/active.MaxHP() < .7 {
-			c.Core.Health.HealActive(heal)
+			c.Core.Health.HealActive(c.Index, heal)
 		}
 
 		//add attack if over 70%

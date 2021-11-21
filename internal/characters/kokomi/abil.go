@@ -136,7 +136,7 @@ func (c *char) skillTick(d *core.Snapshot) {
 	x := d.Clone()
 	c.Core.Combat.ApplyDamage(&x)
 
-	c.Core.Health.HealActive(skillHealPct[c.TalentLvlSkill()]*c.HPMax + skillHealFlat[c.TalentLvlSkill()])
+	c.Core.Health.HealActive(c.Index, skillHealPct[c.TalentLvlSkill()]*c.HPMax+skillHealFlat[c.TalentLvlSkill()])
 
 	// Particles are 0~1 (1:2) on every damage instance
 	if c.Core.Rand.Float64() < .6667 {
@@ -151,7 +151,7 @@ func (c *char) skillTick(d *core.Snapshot) {
 	if c.Base.Cons >= 2 {
 		active := c.Core.Chars[c.Core.ActiveChar]
 		if active.HP()/active.MaxHP() <= .5 {
-			c.Core.Health.HealActive(0.045 * c.HPMax)
+			c.Core.Health.HealActive(c.Index, 0.045*c.HPMax)
 		}
 	}
 }

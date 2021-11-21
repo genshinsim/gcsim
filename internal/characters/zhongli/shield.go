@@ -80,7 +80,7 @@ func (s *shd) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, b
 			if heal > 0.08*c.MaxHP() {
 				heal = 0.08 * c.MaxHP()
 			}
-			s.c.Core.Health.HealIndex(i, heal)
+			s.c.Core.Health.HealIndex(s.c.Index, i, heal)
 			s.c.Core.Log.Debugw("zhongli c6 healing char", "frame", s.c.Core.F, "event", core.LogHurtEvent, "char", c.CharIndex(), "amount", heal, "final", c.HP())
 		}
 	}

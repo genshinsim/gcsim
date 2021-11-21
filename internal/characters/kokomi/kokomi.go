@@ -71,7 +71,7 @@ func (c *char) burstActiveHook() {
 			return false
 		}
 
-		c.Core.Health.HealAll(burstHealPct[c.TalentLvlBurst()]*c.HPMax + burstHealFlat[c.TalentLvlBurst()])
+		c.Core.Health.HealAll(c.Index, burstHealPct[c.TalentLvlBurst()]*c.HPMax+burstHealFlat[c.TalentLvlBurst()])
 
 		// C2 handling
 		// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
@@ -81,7 +81,7 @@ func (c *char) burstActiveHook() {
 				if char.HP()/char.MaxHP() > .5 {
 					continue
 				}
-				c.Core.Health.HealIndex(i, 0.006*c.HPMax)
+				c.Core.Health.HealIndex(c.Index, i, 0.006*c.HPMax)
 			}
 		}
 

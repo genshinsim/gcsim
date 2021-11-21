@@ -139,7 +139,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 				//heal target
 				x := d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]
 				heal := (shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]) * (1 + d.Stats[core.Heal])
-				c.Core.Health.HealAll(heal)
+				c.Core.Health.HealAll(c.Index, heal)
 			}
 		}
 	}, "noelle auto", f-1)

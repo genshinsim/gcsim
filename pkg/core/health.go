@@ -1,10 +1,10 @@
 package core
 
 type HealthHandler interface {
-	HealIndex(index int, amt float64)
-	HealActive(amt float64)
-	HealAll(amt float64)
-	HealAllPercent(percent float64)
+	HealIndex(caller int, index int, amt float64)
+	HealActive(caller int, amt float64)
+	HealAll(caller int, amt float64)
+	HealAllPercent(caller int, percent float64)
 	AddIncHealBonus(f func() float64)
 
 	AddDamageReduction(f func() (float64, bool))
@@ -25,28 +25,36 @@ func NewHealthCtrl(c *Core) *HealthCtrl {
 	}
 }
 
-func (h *HealthCtrl) HealActive(hp float64) {
-	h.core.Chars[h.core.ActiveChar].ModifyHP(h.healBonusMult() * hp)
+func (h *HealthCtrl) HealActive(caller int, hp float64) {
+	heal := h.healBonusMult() * hp
+	h.core.Chars[h.core.ActiveChar].ModifyHP(heal)
+	h.core.Events.Emit(OnHeal, caller, h.core.ActiveChar, heal)
 	h.core.Log.Debugw("healing", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", h.core.ActiveChar, "amount", hp, "bonus", h.healBonusMult(), "final", h.core.Chars[h.core.ActiveChar].HP())
 }
 
-func (h *HealthCtrl) HealAll(hp float64) {
+func (h *HealthCtrl) HealAll(caller int, hp float64) {
 	for i, c := range h.core.Chars {
-		c.ModifyHP(h.healBonusMult() * hp)
+		heal := h.healBonusMult() * hp
+		c.ModifyHP(heal)
+		h.core.Events.Emit(OnHeal, caller, i, heal)
 		h.core.Log.Debugw("healing (all)", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", i, "amount", hp, "bonus", h.healBonusMult(), "final", h.core.Chars[h.core.ActiveChar].HP())
 	}
 }
 
-func (h *HealthCtrl) HealAllPercent(percent float64) {
+func (h *HealthCtrl) HealAllPercent(caller int, percent float64) {
 	for i, c := range h.core.Chars {
 		hp := c.MaxHP() * percent
-		c.ModifyHP(h.healBonusMult() * hp)
+		heal := h.healBonusMult() * hp
+		c.ModifyHP(heal)
+		h.core.Events.Emit(OnHeal, caller, i, heal)
 		h.core.Log.Debugw("healing (all)", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", i, "amount", hp, "bonus", h.healBonusMult(), "final", h.core.Chars[h.core.ActiveChar].HP())
 	}
 }
 
-func (h *HealthCtrl) HealIndex(index int, hp float64) {
-	h.core.Chars[index].ModifyHP(h.healBonusMult() * hp)
+func (h *HealthCtrl) HealIndex(caller int, index int, hp float64) {
+	heal := h.healBonusMult() * hp
+	h.core.Chars[index].ModifyHP(heal)
+	h.core.Events.Emit(OnHeal, caller, index, heal)
 	h.core.Log.Debugw("healing", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", index, "amount", hp, "bonus", h.healBonusMult(), "final", h.core.Chars[h.core.ActiveChar].HP())
 }
 

@@ -223,7 +223,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.AddTask(func() {
-			c.Core.Health.HealActive(heal)
+			c.Core.Health.HealActive(c.Index, heal)
 		}, "c4heal", f-1)
 
 	}

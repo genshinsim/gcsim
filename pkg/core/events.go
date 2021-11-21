@@ -15,6 +15,7 @@ const (
 	OnParticleReceived           //particle
 	OnTargetDied                 //target
 	OnCharacterHurt              //nil
+	OnHeal                       //src char, target character, amount
 	//ability use
 	PreSkill         //nil
 	PostSkill        //nil, frames

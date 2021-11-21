@@ -257,7 +257,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			x := d.Clone()
 			c.Core.Combat.ApplyDamage(&x)
 			c.Core.Log.Debugw("diona healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
-			c.Core.Health.HealActive(heal)
+			c.Core.Health.HealActive(c.Index, heal)
 		}, "Diona Burst (DOT)", 60+i*120)
 	}
 

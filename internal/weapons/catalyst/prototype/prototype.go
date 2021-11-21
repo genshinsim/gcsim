@@ -22,7 +22,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		for i := 120; i <= 360; i += 120 {
 			char.AddTask(func() {
 				char.AddEnergy(e)
-				c.Health.HealAllPercent(e / 100.0)
+				c.Health.HealAllPercent(char.CharIndex(), e/100.0)
 			}, "recharge", i)
 		}
 
