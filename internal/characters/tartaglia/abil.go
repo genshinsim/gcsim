@@ -126,8 +126,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		hitWeakPoint = 0
 	}
 
-	// simply set 2 instances of CA to be snapshotted
-	for i, mult := range eCharge {
+	//tried a for loop but it yielded out that the first CA instance dmg used multiplier of the second one
+	c.AddTask(func() {
 		d := c.Snapshot(
 			"Charged Attack",
 			core.AttackTagExtra,
@@ -136,18 +136,34 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			core.StrikeTypeSlash,
 			core.Hydro,
 			25,
-			mult[c.TalentLvlSkill()],
+			eCharge[0][c.TalentLvlSkill()],
 		)
 		if hitWeakPoint != 0 {
 			d.HitWeakPoint = true
 		}
 		d.Targets = core.TargetAll
 		d.OnHitCallback = c.rtSlashCallback
-		c.QueueDmg(&d, f-meleeChargeDelayOffset[i])
-		// c.AddTask(func() {
-		// 	c.Core.Combat.ApplyDamage(&d)
-		// }, "tartaglia-charge-attack", f-meleeChargeDelayOffset[i])
-	}
+		c.Core.Combat.ApplyDamage(&d)
+	}, "tartaglia-charge-attack", f-meleeChargeDelayOffset[0])
+
+	c.AddTask(func() {
+		d := c.Snapshot(
+			"Charged Attack",
+			core.AttackTagExtra,
+			core.ICDTagExtraAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Hydro,
+			25,
+			eCharge[1][c.TalentLvlSkill()],
+		)
+		if hitWeakPoint != 0 {
+			d.HitWeakPoint = true
+		}
+		d.Targets = core.TargetAll
+		d.OnHitCallback = c.rtSlashCallback
+		c.Core.Combat.ApplyDamage(&d)
+	}, "tartaglia-charge-attack", f-meleeChargeDelayOffset[1])
 	return f, a
 }
 
@@ -201,9 +217,9 @@ func (c *char) onExitMeleeStance() {
 	case 4*60 <= timeInMeleeStance && timeInMeleeStance < 5*60:
 		skillCD = 9 * 60
 	case 5*60 <= timeInMeleeStance && timeInMeleeStance < 8*60:
-		skillCD = (5 + timeInMeleeStance) * 60
+		skillCD = 5*60 + timeInMeleeStance
 	case 8*60 <= timeInMeleeStance && timeInMeleeStance < 30*60:
-		skillCD = (6 + timeInMeleeStance) * 60
+		skillCD = 6*60 + timeInMeleeStance
 	case timeInMeleeStance >= 30*60:
 		skillCD = 45 * 60
 	}
@@ -252,7 +268,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 		c.Core.Combat.ApplyDamage(&d)
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
-			if c.Base.Cons >= 4 {
+			if c.Base.Cons >= 6 {
 				c.mlBurstUsed = true
 			}
 		} else {
@@ -298,7 +314,7 @@ func (c *char) rtFlashCallback(t core.Target) {
 				c.QueueParticle("tartaglia", 1, core.Hydro, 100)
 			}
 			c.rtFlashICD[t.Index()] = c.Core.F + 42 //0.7s icd
-		}, "Riptide Flash", 5)
+		}, "Riptide Flash", 1)
 	}
 }
 
@@ -329,7 +345,7 @@ func (c *char) rtSlashCallback(t core.Target) {
 				c.rtParticleICD = c.Core.F + 180 //3 sec
 				c.QueueParticle("tartaglia", 1, core.Hydro, 100)
 			}
-		}, "Riptide Slash", 5)
+		}, "Riptide Slash", 1)
 		c.rtSlashICD[t.Index()] = c.Core.F + 90 //1.5s icd
 	}
 }
@@ -358,54 +374,6 @@ func (c *char) rtBlastCallback(t core.Target) {
 			c.rtExpiry[t.Index()] = 0
 			c.Core.Log.Debugw("Riptide Blast ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
 				c.Core.Status.Duration("tartagliamelee"), "target", t.Index(), "rtExpiry", c.rtExpiry[t.Index()])
-		}, "Riptide Blast", 5)
+		}, "Riptide Blast", 1)
 	}
-}
-
-//apply riptide status to enemy hit
-func (c *char) applyRT() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		t := args[0].(core.Target)
-		crit := args[3].(bool)
-
-		if ds.AttackTag == core.AttackTagNormal || ds.AttackTag == core.AttackTagExtra {
-			if c.Core.Status.Duration("tartagliamelee") > 0 {
-				if !crit {
-					return false
-				}
-
-				//dont log if it just refreshes riptide status
-				if c.rtExpiry[t.Index()] <= c.Core.F {
-					c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "rtExpiry", c.Core.F+rtA1)
-				}
-
-				c.rtExpiry[t.Index()] = c.Core.F + rtA1
-			} else {
-				if ds.AttackTag == core.AttackTagNormal {
-					return false
-				}
-				//aim mode
-				//dont log if it just refreshes riptide status
-				if c.rtExpiry[t.Index()] <= c.Core.F {
-					c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "rtExpiry", c.Core.F+rtA1)
-				}
-
-				c.rtExpiry[t.Index()] = c.Core.F + rtA1
-			}
-		}
-
-		if ds.AttackTag == core.AttackTagElementalBurst {
-			if c.Core.Status.Duration("tartagliamelee") == 0 {
-				//ranged burst
-				//dont log if it just refreshes riptide status
-				if c.rtExpiry[t.Index()] <= c.Core.F {
-					c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "rtExpiry", c.Core.F+rtA1)
-				}
-
-				c.rtExpiry[t.Index()] = c.Core.F + rtA1
-			}
-		}
-		return false
-	}, "tartaglia-apply-riptide")
 }

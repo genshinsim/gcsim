@@ -19,7 +19,6 @@ type char struct {
 	rtFlashICD    []int
 	rtSlashICD    []int
 	rtExpiry      []int
-	funcC4        []bool
 	mlBurstUsed   bool // used for c6
 }
 
@@ -38,9 +37,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.NormalHitNum = 6
 	c.eCast = 0
-	if c.Base.Cons >= 4 {
+	if c.Base.Cons >= 6 {
 		c.mlBurstUsed = false
-		c.funcC4 = make([]bool, len(c.Core.Targets))
 	}
 
 	c.rtParticleICD = 0
@@ -77,6 +75,7 @@ func (c *char) onExitField() {
 	}, "tartaglia-exit")
 }
 
+// Handles Childe riptide burst and C2 on death effects
 func (c *char) onDefeatTargets() {
 	c.Core.Events.Subscribe(core.OnTargetDied, func(args ...interface{}) bool {
 		c.AddTask(func() {
@@ -94,13 +93,6 @@ func (c *char) onDefeatTargets() {
 
 			c.Core.Combat.ApplyDamage(&d)
 
-			// apply riptide status
-			for i := 0; i < len(c.Core.Targets); i++ {
-				if c.rtExpiry[i] < c.Core.F {
-					c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", i, "Expiry", c.Core.F+rtA1)
-				}
-				c.rtExpiry[i] = c.Core.F + rtA1
-			}
 			c.Core.Log.Debugw("Riptide Burst ticked", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		}, "Riptide Burst", 5)
 		//TODO: re-index riptide expiry frame array if needed
@@ -110,5 +102,42 @@ func (c *char) onDefeatTargets() {
 			c.Core.Log.Debugw("Tartaglia C2 restoring 4 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
 		}
 		return false
-	}, "tartaglia-riptide-burst")
+	}, "tartaglia-on-enemy-death")
+}
+
+//apply riptide status to enemy hit
+func (c *char) applyRT() {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ds := args[1].(*core.Snapshot)
+		t := args[0].(core.Target)
+		crit := args[3].(bool)
+
+		if c.Core.Status.Duration("tartagliamelee") > 0 {
+			if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+				return false
+			}
+			if !crit {
+				return false
+			}
+
+			//dont log if it just refreshes riptide status
+			if c.rtExpiry[t.Index()] <= c.Core.F {
+				c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "rtExpiry", c.Core.F+rtA1)
+			}
+			c.rtExpiry[t.Index()] = c.Core.F + rtA1
+		} else {
+			if ds.AttackTag != core.AttackTagElementalBurst && ds.AttackTag != core.AttackTagExtra {
+				return false
+			}
+
+			//ranged burst or aim mode
+			//dont log if it just refreshes riptide status
+			if c.rtExpiry[t.Index()] <= c.Core.F {
+				c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "rtExpiry", c.Core.F+rtA1)
+			}
+			c.rtExpiry[t.Index()] = c.Core.F + rtA1
+		}
+
+		return false
+	}, "tartaglia-apply-riptide")
 }
