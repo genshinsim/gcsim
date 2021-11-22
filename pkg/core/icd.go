@@ -42,6 +42,7 @@ const (
 	ICDTagMonaWaterDamage
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
+	ICDTagTartagliaRiptideFlash
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
 	ICDTagECDamage
