@@ -3,11 +3,12 @@ package prototype
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("prototype amber", weapon)
+	core.RegisterWeaponFunc("prototypeamber", weapon)
 }
 
 //Using an Elemental Burst regenerates 4/4.5/5/5.5/6 Energy every 2s for 6s. All party members
@@ -20,10 +21,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 		for i := 120; i <= 360; i += 120 {
 			char.AddTask(func() {
-				for _, char := range c.Chars {
-					char.AddEnergy(e)
-				}
-				c.Health.HealAllPercent(e / 100.0)
+				char.AddEnergy(e)
+				c.Health.HealAllPercent(char.CharIndex(), e/100.0)
 			}, "recharge", i)
 		}
 

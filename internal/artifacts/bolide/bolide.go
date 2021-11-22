@@ -1,11 +1,12 @@
 package bolide
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("retracing bolide", New)
+	core.RegisterSetFunc("retracingbolide", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

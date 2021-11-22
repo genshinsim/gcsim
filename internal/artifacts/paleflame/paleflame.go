@@ -3,11 +3,12 @@ package paleflame
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("pale flame", New)
+	core.RegisterSetFunc("paleflame", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

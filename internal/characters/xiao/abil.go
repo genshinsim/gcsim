@@ -3,7 +3,7 @@ package xiao
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 // Normal attack damage queue generator
@@ -93,7 +93,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	for i := 0; i < plunge_hits; i++ {
 		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
 		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
-		c.PlungeAttack(f-i-1)
+		c.PlungeAttack(f - i - 1)
 	}
 
 	d := c.Snapshot(
@@ -129,7 +129,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 	for i := 0; i < plunge_hits; i++ {
 		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
 		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
-		c.PlungeAttack(f-i-1)
+		c.PlungeAttack(f - i - 1)
 	}
 
 	d := c.Snapshot(
@@ -208,7 +208,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	// Handle E charges
-	if c.eCharge == 1 {
+	if c.Tags["eCharge"] == 1 {
 		c.SetCD(core.ActionSkill, c.eNextRecover)
 	} else {
 		c.eNextRecover = c.Core.F + 601
@@ -216,7 +216,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.AddTask(c.recoverCharge(c.Core.F), "charge", 600)
 		c.eTickSrc = c.Core.F
 	}
-	c.eCharge--
+	c.Tags["eCharge"]--
 
 	return f, a
 }
@@ -229,10 +229,10 @@ func (c *char) recoverCharge(src int) func() {
 			c.Core.Log.Debugw("xiao e recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "new src", c.eTickSrc)
 			return
 		}
-		c.eCharge++
-		c.Core.Log.Debugw("xiao e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "skill last used at", src, "total charges", c.eCharge)
+		c.Tags["eCharge"]++
+		c.Core.Log.Debugw("xiao e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "skill last used at", src, "total charges", c.Tags["eCharge"])
 		c.SetCD(core.ActionSkill, 0)
-		if c.eCharge >= c.eChargeMax {
+		if c.Tags["eCharge"] >= c.eChargeMax {
 			return
 		}
 
@@ -248,12 +248,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// Per previous code, believe that the burst duration starts ticking down from after the animation is done
 	// TODO: No indication of that in library though
-	c.Core.Status.AddStatus("xiaoburst", 900 + f)
+	c.Core.Status.AddStatus("xiaoburst", 900+f)
 	c.qStarted = c.Core.F
 
 	// HP Drain - removes HP every 1 second tick after burst is activated
 	// Per gameplay video, HP ticks start after animation is finished
-	for i := f + 60; i < 900 + f; i++ {
+	for i := f + 60; i < 900+f; i++ {
 		c.AddTask(func() {
 			if c.Core.Status.Duration("xiaoburst") > 0 {
 				c.HPCurrent = c.HPCurrent * (1 - burstDrain[c.TalentLvlBurst()])
@@ -278,12 +278,12 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	if c.Core.Status.Duration("xiaoburst") > 0 {
 		// Calculate and add A1 damage bonus - applies to all damage
 		// Fraction dropped in int conversion in go - acts like floor
-		stacks := 1 + int((c.Core.F - c.qStarted) / 180)
+		stacks := 1 + int((c.Core.F-c.qStarted)/180)
 		if stacks > 5 {
 			stacks = 5
 		}
 		ds.Stats[core.DmgP] += float64(stacks) * 0.05
-		c.Core.Log.Debugw("a1 adding dmg %", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F - c.qStarted)
+		c.Core.Log.Debugw("a1 adding dmg %", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F-c.qStarted)
 
 		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
 		// Also handle burst CA ICD change to share with Normal

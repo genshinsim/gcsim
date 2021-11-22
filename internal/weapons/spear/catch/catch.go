@@ -1,11 +1,12 @@
 package catch
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("the catch", weapon)
+	core.RegisterWeaponFunc("thecatch", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {

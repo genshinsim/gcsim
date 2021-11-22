@@ -5,9 +5,9 @@ import (
 	"net/url"
 	"syscall/js"
 
-	"github.com/genshinsim/gsim"
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/genshinsim/gcsim"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/parse"
 	"go.uber.org/zap"
 )
 
@@ -66,7 +66,7 @@ func runSim(this js.Value, args []js.Value) interface{} {
 	// runCfg.Options.Debug = false
 	opt := runCfg.Options
 
-	var data []gsim.Stats
+	var data []gcsim.Stats
 
 	parser := parse.New("single", runCfg.Config)
 	cfg, _, err := parser.Parse()
@@ -100,7 +100,7 @@ func runSim(this js.Value, args []js.Value) interface{} {
 	opt.Debug = false
 
 	for i := 0; i < count; i++ {
-		s, err := gsim.NewSim(cfg, opt)
+		s, err := gcsim.NewSim(cfg, opt)
 		if err != nil {
 			callback.Invoke(err.Error(), nil)
 			return js.Undefined()
@@ -131,7 +131,7 @@ func runSim(this js.Value, args []js.Value) interface{} {
 
 		opt.DebugPaths = []string{"gsim://"}
 
-		s, err := gsim.NewSim(cfg, opt)
+		s, err := gcsim.NewSim(cfg, opt)
 		if err != nil {
 			callback.Invoke(err.Error(), nil)
 			return js.Undefined()
@@ -146,7 +146,7 @@ func runSim(this js.Value, args []js.Value) interface{} {
 		data = append(data, v)
 	}
 
-	result := gsim.CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
+	result := gcsim.CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
 	result.Iterations = opt.Iteration
 	if !cfg.DamageMode {
 		result.Duration.Mean = float64(opt.Duration)

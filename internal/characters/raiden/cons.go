@@ -1,6 +1,6 @@
 package raiden
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) c6() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {

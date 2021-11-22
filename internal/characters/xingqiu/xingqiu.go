@@ -3,8 +3,8 @@ package xingqiu
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 type char struct {
@@ -94,21 +94,20 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Physical,
-		25,
-		0,
-	)
-
 	for i, mult := range attack[c.NormalCounter] {
-		x := d.Clone()
-		x.Mult = mult[c.TalentLvlAttack()]
-		c.QueueDmg(&x, delay[c.NormalCounter][i])
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			d := c.Snapshot(
+				fmt.Sprintf("Normal %v", c.NormalCounter),
+				core.AttackTagNormal,
+				core.ICDTagNormalAttack,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Physical,
+				25,
+				mult[c.TalentLvlAttack()],
+			)
+			return &d
+		}, delay[c.NormalCounter][i])
 	}
 
 	//add a 75 frame attackcounter reset
@@ -125,71 +124,83 @@ func (c *char) orbitalfunc(src int) func() {
 			c.orbitalActive = false
 			return
 		}
-		//queue up one damage instance
-		d := c.Snapshot(
-			"Xingqiu Skill (Orbital)",
-			core.AttackTagNone,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Hydro,
-			25,
-			0,
-		)
-		d.Targets = core.TargetAll
 
-		c.QueueDmg(&d, 1)
-		c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
-		//queue up next instance
-		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			//queue up one damage instance
+			d := c.Snapshot(
+				"Xingqiu Skill (Orbital)",
+				core.AttackTagNone,
+				core.ICDTagNone,
+				core.ICDGroupDefault,
+				core.StrikeTypeDefault,
+				core.Hydro,
+				25,
+				0,
+			)
+			d.Targets = core.TargetAll
+
+			c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+
+			//queue up next instance
+			c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
+
+			return &d
+		}, 1)
 	}
 }
 
-func (c *char) applyOrbital() {
+func (c *char) applyOrbital(duration int) {
 	f := c.Core.F
 	c.Core.Log.Debugw("Applying orbital", "frame", f, "event", core.LogCharacterEvent, "current status", c.Core.Status.Duration("xqorb"))
-	//check if blood blossom already active, if active extend duration by 8 second
+	//check if orbitals already active, if active extend duration
 	//other wise start first tick func
 	if !c.orbitalActive {
 		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 14)
 		c.orbitalActive = true
 		c.Core.Log.Debugw("orbital applied", "frame", f, "event", core.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
 	}
-	c.Core.Status.AddStatus("xqorb", 900)
+
+	c.Core.Status.AddStatus("xqorb", duration)
 	c.Core.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("xqorb"))
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	//applies wet to self 30 frame after cast, sword applies wet every 2.5seconds, so should be 7 seconds
-	orbital := p["orbital"]
-	if orbital == 1 {
-		c.applyOrbital()
-	}
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	d := c.Snapshot(
-		"Guhua Sword: Fatal Rainscreen",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Hydro,
-		25,
-		rainscreen[0][c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
-	if c.Base.Cons >= 4 {
-		//check if ult is up, if so increase multiplier
-		if c.Core.Status.Duration("xqburst") > 0 {
-			d.Mult = d.Mult * 1.5
+	skillCreateSnapshot := func(hitNumber int) *core.Snapshot {
+		d := c.Snapshot(
+			"Guhua Sword: Fatal Rainscreen",
+			core.AttackTagElementalArt,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeSlash,
+			core.Hydro,
+			25,
+			rainscreen[hitNumber][c.TalentLvlSkill()],
+		)
+		d.Targets = core.TargetAll
+		if c.Base.Cons >= 4 {
+			//check if ult is up, if so increase multiplier
+			if c.Core.Status.Duration("xqburst") > 0 {
+				d.Mult = d.Mult * 1.5
+			}
 		}
+		return &d
 	}
-	d2 := d.Clone()
-	d2.Mult = rainscreen[1][c.TalentLvlSkill()]
 
-	c.QueueDmg(&d, 19)
-	c.QueueDmg(&d2, 35)
+	c.QueueDmgDynamic(func() *core.Snapshot { return skillCreateSnapshot(0) }, 19)
+
+	// Orbitals spawn in 1 frame before the second hit connects going by the "Wet" text
+	c.AddTask(func() {
+		orbital := p["orbital"]
+		if orbital == 1 {
+			c.applyOrbital(15 * 60)
+		}
+	}, "xingqiu-spawn-orbitals", 34)
+
+	c.QueueDmgDynamic(func() *core.Snapshot { return skillCreateSnapshot(1) }, 35)
 
 	c.QueueParticle(c.Base.Name, 5, core.Hydro, 100)
 
@@ -203,11 +214,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//apply hydro every 3rd hit
 	//triggered on normal attack
 	//also applies hydro on cast if p=1
-	orbital := p["orbital"]
 
-	if orbital == 1 {
-		c.applyOrbital()
-	}
 	//how we doing that?? trigger 0 dmg?
 
 	/**
@@ -230,6 +237,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	dur = dur * 60
 	c.Core.Status.AddStatus("xqburst", dur)
 	c.Core.Log.Debugw("Xingqiu burst activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+dur)
+
+	orbital := p["orbital"]
+
+	if orbital == 1 {
+		c.applyOrbital(dur)
+	}
 
 	c.burstCounter = 0
 	c.numSwords = 2

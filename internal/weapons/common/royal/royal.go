@@ -3,7 +3,7 @@ package royal
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -12,6 +12,11 @@ func init() {
 	core.RegisterWeaponFunc("royal greatsword", weapon)
 	core.RegisterWeaponFunc("royal spear", weapon)
 	core.RegisterWeaponFunc("royal longsword", weapon)
+	core.RegisterWeaponFunc("royalbow", weapon)
+	core.RegisterWeaponFunc("royalgreatsword", weapon)
+	core.RegisterWeaponFunc("royalgrimoire", weapon)
+	core.RegisterWeaponFunc("royallongsword", weapon)
+	core.RegisterWeaponFunc("royalspear", weapon)
 }
 
 //Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.

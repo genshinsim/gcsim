@@ -1,6 +1,6 @@
 package character
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *Tmpl) Tag(key string) int {
 	return c.Tags[key]

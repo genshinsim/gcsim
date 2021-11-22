@@ -1,11 +1,12 @@
 package gladiator
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("gladiator's finale", New)
+	core.RegisterSetFunc("gladiatorsfinale", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

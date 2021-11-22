@@ -1,11 +1,12 @@
 package seal
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("seal of insulation", New)
+	core.RegisterSetFunc("emblemofseveredfate", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

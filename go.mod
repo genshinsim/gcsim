@@ -1,4 +1,4 @@
-module github.com/genshinsim/gsim
+module github.com/genshinsim/gcsim
 
 go 1.16
 

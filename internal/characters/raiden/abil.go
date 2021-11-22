@@ -1,7 +1,7 @@
 package raiden
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 /**
@@ -27,18 +27,20 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		d := c.Snapshot(
-			//fmt.Sprintf("Normal %v", c.NormalCounter),
-			"Normal",
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Physical,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, f-polearmDelayOffset[c.NormalCounter][i])
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			d := c.Snapshot(
+				//fmt.Sprintf("Normal %v", c.NormalCounter),
+				"Normal",
+				core.AttackTagNormal,
+				core.ICDTagNormalAttack,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Physical,
+				25,
+				mult[c.TalentLvlAttack()],
+			)
+			return &d
+		}, f-polearmDelayOffset[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -57,23 +59,24 @@ var swordDelayOffset = [][]int{
 func (c *char) swordAttack(f int, a int) (int, int) {
 
 	for i, mult := range attackB[c.NormalCounter] {
-		d := c.Snapshot(
-			// fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
-			"Musou Isshin",
-			core.AttackTagElementalBurst,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Electro,
-			25,
-			mult[c.TalentLvlBurst()],
-		)
-		//adds to talent %
-		d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
-		if c.Base.Cons >= 2 {
-			d.DefAdj = -0.6
-		}
+		// Sword hits are dynamic - group snapshots with damage proc
 		c.AddTask(func() {
+			d := c.Snapshot(
+				// fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
+				"Musou Isshin",
+				core.AttackTagElementalBurst,
+				core.ICDTagNormalAttack,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Electro,
+				25,
+				mult[c.TalentLvlBurst()],
+			)
+			//adds to talent %
+			d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
+			if c.Base.Cons >= 2 {
+				d.RaidenDefAdj = 0.4
+			}
 			c.Core.Combat.ApplyDamage(&d)
 			//restore energy
 			if c.Core.F > c.restoreICD && c.restoreCount < 5 {
@@ -103,18 +106,19 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 		f, a := c.ActionFrames(core.ActionCharge, p)
 
-		d := c.Snapshot(
-			"Charge 1",
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Physical,
-			25,
-			charge[c.TalentLvlAttack()],
-		)
-
-		c.QueueDmg(&d, f-31) //TODO: damage frame
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			d := c.Snapshot(
+				"Charge 1",
+				core.AttackTagNormal,
+				core.ICDTagNormalAttack,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Physical,
+				25,
+				charge[c.TalentLvlAttack()],
+			)
+			return &d
+		}, f-31) //TODO: damage frame
 
 		return f, a
 	}
@@ -128,23 +132,23 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	for _, mult := range chargeSword {
-		d := c.Snapshot(
-			// fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
-			"Musou Isshin",
-			core.AttackTagElementalBurst,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Electro,
-			25,
-			mult[c.TalentLvlBurst()],
-		)
-		//adds to talent %
-		d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
-		if c.Base.Cons >= 2 {
-			d.DefAdj = -0.6
-		}
 		c.AddTask(func() {
+			d := c.Snapshot(
+				// fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
+				"Musou Isshin",
+				core.AttackTagElementalBurst,
+				core.ICDTagNormalAttack,
+				core.ICDGroupDefault,
+				core.StrikeTypeSlash,
+				core.Electro,
+				25,
+				mult[c.TalentLvlBurst()],
+			)
+			//adds to talent %
+			d.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
+			if c.Base.Cons >= 2 {
+				d.RaidenDefAdj = 0.4
+			}
 			c.Core.Combat.ApplyDamage(&d)
 			//restore energy
 			if c.Core.F > c.restoreICD && c.restoreCount < 5 {
@@ -173,19 +177,21 @@ Eye of Stormy Judgment
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	d := c.Snapshot(
-		"Eye of Stormy Judgement",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Electro,
-		25,
-		skill[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
 
-	c.QueueDmg(&d, f+19)
+	c.QueueDmgDynamic(func() *core.Snapshot {
+		d := c.Snapshot(
+			"Eye of Stormy Judgement",
+			core.AttackTagElementalArt,
+			core.ICDTagNone,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Electro,
+			25,
+			skill[c.TalentLvlSkill()],
+		)
+		d.Targets = core.TargetAll
+		return &d
+	}, f+19)
 
 	//activate eye
 	c.Core.Status.AddStatus("raidenskill", 1500+f)
@@ -222,29 +228,31 @@ func (c *char) eyeOnDamage() {
 		if dmg == 0 {
 			return false
 		}
-		//trigger a strike
-		//does not snapshot, so this is fine
-		d := c.Snapshot(
-			"Eye of Stormy Judgement (Strike)",
-			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Electro,
-			25,
-			skillTick[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
-		if c.Base.Cons >= 2 && c.Core.Status.Duration("raidenburst") > 0 {
-			d.DefAdj = -0.6
-		}
 		if c.Core.Rand.Float64() < 0.5 {
 			c.QueueParticle("raiden", 1, core.Electro, 100)
 		}
 
 		//https://streamable.com/28at4f hit mark 857, eye land 862
 		//electro appears to be applied right away
-		c.QueueDmg(&d, 5)
+		c.QueueDmgDynamic(func() *core.Snapshot {
+			//trigger a strike
+			//does not snapshot, so this is fine
+			d := c.Snapshot(
+				"Eye of Stormy Judgement (Strike)",
+				core.AttackTagElementalArt,
+				core.ICDTagElementalArt,
+				core.ICDGroupDefault,
+				core.StrikeTypeDefault,
+				core.Electro,
+				25,
+				skillTick[c.TalentLvlSkill()],
+			)
+			d.Targets = core.TargetAll
+			if c.Base.Cons >= 2 && c.Core.Status.Duration("raidenburst") > 0 {
+				d.RaidenDefAdj = 0.4
+			}
+			return &d
+		}, 5)
 		c.eyeICD = c.Core.F + 54 //0.9 sec icd
 		return false
 	}, "raiden-eye")
@@ -272,7 +280,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				continue
 			}
 			char.AddMod(core.CharStatMod{
-				Key:    "raiden-c2",
+				Key:    "raiden-c4",
 				Expiry: c.Core.F + 600, //10s
 				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
@@ -283,28 +291,25 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.Core.Log.Debugw("resolve stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", c.stacksConsumed)
 
-	// c.AddTask(func() {
-	d := c.Snapshot(
-		"Musou Shinsetsu",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Electro,
-		50,
-		burstBase[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-	d.Mult += resolveBaseBonus[c.TalentLvlBurst()] * c.stacksConsumed
+	c.QueueDmgDynamic(func() *core.Snapshot {
+		d := c.Snapshot(
+			"Musou Shinsetsu",
+			core.AttackTagElementalBurst,
+			core.ICDTagElementalBurst,
+			core.ICDGroupDefault,
+			core.StrikeTypeDefault,
+			core.Electro,
+			50,
+			burstBase[c.TalentLvlBurst()],
+		)
+		d.Targets = core.TargetAll
+		d.Mult += resolveBaseBonus[c.TalentLvlBurst()] * c.stacksConsumed
 
-	if c.Base.Cons >= 2 {
-		d.DefAdj = -0.6
-	}
-
-	c.QueueDmg(&d, f)
-	// c.Core.Combat.ApplyDamage(&d)
-
-	// }, "raiden-burst", f)
+		if c.Base.Cons >= 2 {
+			d.RaidenDefAdj = 0.4
+		}
+		return &d
+	}, f)
 
 	c.SetCD(core.ActionBurst, 18*60) //20s cd
 	c.Energy = 0

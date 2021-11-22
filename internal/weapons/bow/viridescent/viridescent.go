@@ -3,11 +3,12 @@ package viridescent
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("the viridescent hunt", weapon)
+	core.RegisterWeaponFunc("theviridescenthunt", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
@@ -20,6 +21,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		//check if char is correct?
 		ds := args[1].(*core.Snapshot)
 		if ds.ActorIndex != char.CharIndex() {
+			return false
+		}
+		// Vhunt passive only applies for NAs and CAs
+		// For Tartaglia this also includes melee NAs/CAs
+		// See https://youtu.be/EBtOiFhrs94?t=221, Test 4 and 5
+		if !((ds.AttackTag == core.AttackTagNormal) || (ds.AttackTag == core.AttackTagExtra)) {
 			return false
 		}
 		//check if cd is up

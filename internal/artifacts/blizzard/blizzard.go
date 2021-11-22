@@ -3,11 +3,12 @@ package blizzard
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("blizzard strayer", New)
+	core.RegisterSetFunc("blizzardstrayer", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

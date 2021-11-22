@@ -1,11 +1,12 @@
 package festering
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("festering desire", weapon)
+	core.RegisterWeaponFunc("festeringdesire", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {

@@ -2,7 +2,8 @@ package instructor
 
 import (
 	"fmt"
-	"github.com/genshinsim/gsim/pkg/core"
+
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -51,7 +52,7 @@ func New(c core.Character, s *core.Core, count int) {
 					Amount: func(ds core.AttackTag) ([]float64, bool) {
 						return m, true
 					},
-					Expiry: 480,
+					Expiry: s.F + 480,
 				})
 			}
 			return false

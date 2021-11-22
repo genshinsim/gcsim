@@ -3,8 +3,8 @@ package zhongli
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/shield"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func (c *char) addJadeShield() {
@@ -80,7 +80,7 @@ func (s *shd) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, b
 			if heal > 0.08*c.MaxHP() {
 				heal = 0.08 * c.MaxHP()
 			}
-			s.c.Core.Health.HealIndex(i, heal)
+			s.c.Core.Health.HealIndex(s.c.Index, i, heal)
 			s.c.Core.Log.Debugw("zhongli c6 healing char", "frame", s.c.Core.F, "event", core.LogHurtEvent, "char", c.CharIndex(), "amount", heal, "final", c.HP())
 		}
 	}

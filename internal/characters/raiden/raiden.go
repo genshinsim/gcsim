@@ -1,8 +1,8 @@
 package raiden
 
 import (
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 type char struct {
@@ -18,6 +18,7 @@ type char struct {
 
 func init() {
 	core.RegisterCharFunc("raiden", NewChar)
+	core.RegisterCharFunc("raidenshogun", NewChar)
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {

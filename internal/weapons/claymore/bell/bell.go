@@ -3,12 +3,13 @@ package bell
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/shield"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func init() {
 	core.RegisterWeaponFunc("the bell", weapon)
+	core.RegisterWeaponFunc("thebell", weapon)
 }
 
 //Taking DMG generates a shield which absorbs DMG up to 20/23/26/29/32% of Max HP.

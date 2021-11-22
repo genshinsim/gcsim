@@ -1,7 +1,7 @@
 package character
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func (c *Tmpl) Attack(p map[string]int) (int, int) {

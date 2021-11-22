@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/genshinsim/gsim"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 type runConfig struct {
@@ -49,7 +49,7 @@ func (s *Server) runDebug(cfg runConfig, r wsRequest) {
 
 	cfg.Options.DebugPaths = []string{logfile}
 
-	result, err := gsim.Run(cfg.Config, cfg.Options)
+	result, err := gcsim.Run(cfg.Config, cfg.Options)
 	if err != nil {
 		handleErr(r, http.StatusBadRequest, err.Error())
 		return
@@ -99,7 +99,7 @@ func (s *Server) runDebug(cfg runConfig, r wsRequest) {
 
 func (s *Server) run(cfg runConfig, r wsRequest) {
 
-	result, err := gsim.Run(cfg.Config, cfg.Options)
+	result, err := gcsim.Run(cfg.Config, cfg.Options)
 	if err != nil {
 		handleErr(r, http.StatusBadRequest, err.Error())
 		return

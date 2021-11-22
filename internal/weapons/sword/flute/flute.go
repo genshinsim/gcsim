@@ -3,11 +3,12 @@ package flute
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("the flute", weapon)
+	core.RegisterWeaponFunc("theflute", weapon)
 }
 
 //Normal or Charged Attacks grant a Harmonic on hits. Gaining 5 Harmonics triggers the

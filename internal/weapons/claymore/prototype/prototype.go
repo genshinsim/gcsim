@@ -3,30 +3,32 @@ package prototype
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("prototype archaic", weapon)
+	core.RegisterWeaponFunc("prototypearchaic", weapon)
 }
 
+// On hit, Normal or Charged Attacks have a 50% chance to deal an additional 240~480% ATK DMG to opponents within a small AoE. Can only occur once every 15s.
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	atk := 1.8 + float64(r)*0.6
-	icd := 0
+	effectLastProc := -9999
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
 		if ds.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if c.F > icd {
+		if c.F < effectLastProc+15*60 {
 			return false
 		}
 		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < 0.5 {
-			icd = c.F + 900 //15 sec icd
+			effectLastProc = c.F
 			d := char.Snapshot(
 				"Prototype Archaic Proc",
 				core.AttackTagWeaponSkill,

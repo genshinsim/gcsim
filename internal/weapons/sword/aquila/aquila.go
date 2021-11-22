@@ -3,11 +3,12 @@ package aquila
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("aquila favonia", weapon)
+	core.RegisterWeaponFunc("aquilafavonia", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
@@ -50,7 +51,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		atk := d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK]
 
 		c.Log.Debugw("acquila heal triggered", "frame", c.F, "event", core.LogWeaponEvent, "atk", atk, "heal amount", atk*heal)
-		c.Health.HealActive(atk * heal)
+		c.Health.HealActive(char.CharIndex(), atk*heal)
 		return false
 	}, fmt.Sprintf("aquila-%v", char.Name()))
 }

@@ -3,11 +3,12 @@ package kitain
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("kitain cross spear", weapon)
+	core.RegisterWeaponFunc("kitaincrossspear", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
@@ -15,21 +16,16 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	base := 0.045 + float64(r)*0.015
 	regen := 2.5 + float64(r)*0.5
 
-	m[core.PyroP] = base
-	m[core.HydroP] = base
-	m[core.CryoP] = base
-	m[core.ElectroP] = base
-	m[core.AnemoP] = base
-	m[core.GeoP] = base
-	m[core.EleP] = base
-	m[core.PhyP] = base
-	m[core.DendroP] = base
+	m[core.DmgP] = base
 
 	char.AddMod(core.CharStatMod{
 		Expiry: -1,
-		Key:    "",
+		Key:    "kitain-skill-dmg-buff",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return m, true
+			if a == core.AttackTagElementalArt || a == core.AttackTagElementalArtHold {
+				return m, true
+			}
+			return nil, false
 		},
 	})
 

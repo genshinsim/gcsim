@@ -3,11 +3,12 @@ package thunderingfury
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("viridescent venerer", New)
+	core.RegisterSetFunc("viridescentvenerer", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

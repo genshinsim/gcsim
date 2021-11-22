@@ -3,11 +3,12 @@ package prototype
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("prototype rancour", weapon)
+	core.RegisterWeaponFunc("prototyperancour", weapon)
 }
 
 //After using an Elemental Skill, increases Normal and Charged Attack DMG by 8% for 12s. Max 2 stacks.

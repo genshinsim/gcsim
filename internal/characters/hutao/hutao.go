@@ -3,8 +3,8 @@ package hutao
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -283,7 +283,7 @@ func (c *char) bbtickfunc(src int) func() {
 func (c *char) Skill(p map[string]int) (int, int) {
 	//increase based on hp at cast time
 	//drains hp
-	c.Core.Status.AddStatus("paramita", 520+20) //to account for animation
+	c.Core.Status.AddStatus("paramita", 540+20) //to account for animation
 	c.Core.Log.Debugw("Paramita acivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+540+20)
 	//figure out atk buff
 	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.HPMax
@@ -347,6 +347,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//[2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
 	if f > c.Core.Status.Duration("paramita") && c.Core.Status.Duration("paramita") > 0 {
 		c.Core.Status.AddStatus("paramita", f) //extend this to barely cover the burst
+		c.Core.Log.Debugw("Paramita status extension for burst", "frame", c.Core.F, "event", core.LogCharacterEvent, "new_duration", c.Core.Status.Duration("paramita"))
 	}
 
 	if c.Core.Status.Duration("paramita") > 0 && c.Base.Cons >= 2 {

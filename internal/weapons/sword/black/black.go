@@ -3,11 +3,12 @@ package black
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("the black sword", weapon)
+	core.RegisterWeaponFunc("theblacksword", weapon)
 }
 
 //Increases DMG dealt by Normal and Charged Attacks by 20%. Additionally,
@@ -41,7 +42,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return false
 		}
 		if crit {
-			c.Health.HealActive(heal * (ds.BaseAtk*(1+ds.Stats[core.ATKP]) + ds.Stats[core.ATK]))
+			c.Health.HealActive(char.CharIndex(), heal*(ds.BaseAtk*(1+ds.Stats[core.ATKP])+ds.Stats[core.ATK]))
 		}
 		return false
 	}, fmt.Sprintf("black-sword-%v", char.Name()))

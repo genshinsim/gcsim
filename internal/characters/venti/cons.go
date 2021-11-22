@@ -1,6 +1,6 @@
 package venti
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) applyC2(ds *core.Snapshot) {
 	ds.OnHitCallback = func(t core.Target) {

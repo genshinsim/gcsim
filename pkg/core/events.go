@@ -15,6 +15,7 @@ const (
 	OnParticleReceived           //particle
 	OnTargetDied                 //target
 	OnCharacterHurt              //nil
+	OnHeal                       //src char, target character, amount
 	//ability use
 	PreSkill         //nil
 	PostSkill        //nil, frames
@@ -94,7 +95,14 @@ func (h *EventCtrl) Subscribe(e EventType, f EventHook, key string) {
 }
 
 func (h *EventCtrl) Unsubscribe(e EventType, key string) {
-
+	n := 0
+	for _, v := range h.events[e] {
+		if v.key != key {
+			h.events[e][n] = v
+			n++
+		}
+	}
+	h.events[e] = h.events[e][:n]
 }
 
 func (h *EventCtrl) Emit(e EventType, args ...interface{}) {

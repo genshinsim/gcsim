@@ -3,9 +3,9 @@ package beidou
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/shield"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func init() {

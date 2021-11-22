@@ -3,11 +3,12 @@ package mistsplitter
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("mistsplitter reforged", weapon)
+	core.RegisterWeaponFunc("mistsplitterreforged", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
@@ -19,8 +20,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	m[core.ElectroP] = base
 	m[core.AnemoP] = base
 	m[core.GeoP] = base
-	m[core.EleP] = base
-	m[core.PhyP] = base
 	m[core.DendroP] = base
 	stack := 0.06 + float64(r)*0.02
 	max := 0.21 + float64(r)*0.07

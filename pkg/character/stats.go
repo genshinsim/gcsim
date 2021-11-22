@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 	"go.uber.org/zap"
 )
 
@@ -64,6 +64,7 @@ func (c *Tmpl) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	ds.StrikeType = st
 	ds.Mult = mult
 	ds.ImpulseLvl = 1
+	ds.RaidenDefAdj = 1
 	//by default assume we only hit target 0 (i.e. single target ability)
 	ds.DamageSrc = core.TargetPlayer
 	ds.Targets = 0

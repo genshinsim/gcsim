@@ -3,11 +3,12 @@ package primordial
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("primordial jade winged-spear", weapon)
+	core.RegisterWeaponFunc("primordialjadewingedspear", weapon)
 }
 
 //For every character in the party who hails from Liyue, the character who equips this

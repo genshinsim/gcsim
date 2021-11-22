@@ -1,7 +1,7 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func (t *Target) handleReaction(ds *core.Snapshot) {
@@ -45,6 +45,7 @@ func (t *Target) queueReaction(in *core.Snapshot, typ core.ReactionType, res cor
 		return
 	}
 	ds2 := t.TransReactionSnapshot(in, typ, res, false)
+	ds2.Abil = ds2.Abil + " (aoe)"
 	t.core.Tasks.Add(func() {
 		t.core.Combat.ApplyDamage(&ds2)
 	}, delay)
@@ -93,6 +94,7 @@ func (t *Target) TransReactionSnapshot(in *core.Snapshot, typ core.ReactionType,
 		ds.Element = core.Cryo
 		ds.AttackTag = core.AttackTagSuperconductDamage
 		ds.ICDTag = core.ICDTagSuperconductDamage
+		ds.OnHitCallback = superconductPhysShred
 	case core.ElectroCharged:
 		mult = 1.2
 		ds.Element = core.Electro
@@ -173,6 +175,14 @@ func (t *Target) TransReactionSnapshot(in *core.Snapshot, typ core.ReactionType,
 	ds.Mult = mult
 
 	return ds
+}
+
+func superconductPhysShred(tar core.Target) {
+	tar.AddResMod("superconductphysshred", core.ResistMod{
+		Duration: 12 * 60,
+		Ele:      core.Physical,
+		Value:    -0.4,
+	})
 }
 
 var reactionLvlBase = []float64{

@@ -3,8 +3,8 @@ package fischl
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -143,12 +143,13 @@ func (c *char) ozTick(src int) func() {
 		d := c.ozSnapshot.Clone()
 		c.Core.Combat.ApplyDamage(&d)
 		//check for orb
+		//Particle check is 67% for particle, from datamine
 		if c.Core.Rand.Float64() < .67 {
 			c.QueueParticle("fischl", 1, core.Electro, 120)
 		}
 
 		//queue up next hit only if next hit oz is still active
-		if c.Core.F+60 < c.ozActiveUntil {
+		if c.Core.F+60 <= c.ozActiveUntil {
 			c.AddTask(c.ozTick(src), "oz", 60)
 		}
 	}
@@ -222,7 +223,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.AddTask(func() {
-			c.Core.Health.HealActive(heal)
+			c.Core.Health.HealActive(c.Index, heal)
 		}, "c4heal", f-1)
 
 	}

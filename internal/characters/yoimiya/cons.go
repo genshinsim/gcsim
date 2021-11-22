@@ -1,6 +1,6 @@
 package yoimiya
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) c1() {
 	val := make([]float64, core.EndStatType)

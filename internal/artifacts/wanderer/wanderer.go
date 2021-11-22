@@ -1,11 +1,12 @@
 package wanderer
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("wanderer's troupe", New)
+	core.RegisterSetFunc("wandererstroupe", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

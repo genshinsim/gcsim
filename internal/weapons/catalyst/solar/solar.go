@@ -3,11 +3,12 @@ package solar
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("solar pearl", weapon)
+	core.RegisterWeaponFunc("solarpearl", weapon)
 }
 
 //Normal Attack hits increase Elemental Skill and Elemental Burst DMG by 20/25/30/35/40% for 6s.

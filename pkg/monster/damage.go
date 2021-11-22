@@ -1,7 +1,7 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
@@ -42,6 +42,12 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 			)
 			t.handleReaction(ds)
 		}
+	}
+
+	// Emit a transformative reaction event for crystallize, which does not do damage
+	switch ds.ReactionType {
+	case core.CrystallizeCryo, core.CrystallizeElectro, core.CrystallizeHydro, core.CrystallizePyro:
+		t.core.Events.Emit(core.OnTransReaction, t, ds)
 	}
 
 	var damage float64
@@ -163,13 +169,13 @@ func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 		ds.Stats[core.CR] = 1
 	}
 	res := t.resist(ds.Element, ds.ActorIndex)
-	defadj := t.defAdj(ds.ActorIndex) + ds.DefAdj
+	defadj := t.defAdj(ds.ActorIndex)
 
 	if defadj > 0.9 {
 		defadj = 0.9
 	}
 
-	defmod := float64(ds.CharLvl+100) / (float64(ds.CharLvl+100) + float64(t.level+100)*(1+defadj))
+	defmod := float64(ds.CharLvl+100) / (float64(ds.CharLvl+100) + float64(t.level+100)*(1+defadj)*ds.RaidenDefAdj)
 	//apply def mod
 	damage = damage * defmod
 	//apply resist mod
@@ -238,6 +244,7 @@ func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 		"cd", ds.Stats[core.CD],
 		"pre_crit_dmg", precritdmg,
 		"dmg_if_crit", precritdmg*(1+ds.Stats[core.CD]),
+		"avg_crit_dmg", (1-ds.Stats[core.CR])*precritdmg+ds.Stats[core.CR]*precritdmg*(1+ds.Stats[core.CD]),
 		"is_crit", isCrit,
 		"pre_amp_dmg", preampdmg,
 		"reaction_type", ds.ReactionType,
@@ -247,6 +254,9 @@ func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 		"em_bonus", emBonus,
 		"react_bonus", ds.ReactBonus,
 		"amp_mult_total", (ds.ReactMult * (1 + emBonus + ds.ReactBonus)),
+		"pre_crit_dmg_react", precritdmg*(ds.ReactMult*(1+emBonus+ds.ReactBonus)),
+		"dmg_if_crit_react", precritdmg*(1+ds.Stats[core.CD])*(ds.ReactMult*(1+emBonus+ds.ReactBonus)),
+		"avg_crit_dmg_react", ((1-ds.Stats[core.CR])*precritdmg+ds.Stats[core.CR]*precritdmg*(1+ds.Stats[core.CD]))*(ds.ReactMult*(1+emBonus+ds.ReactBonus)),
 		"target", t.index,
 	)
 
@@ -286,6 +296,7 @@ func (t *Target) calcReactionDmg(ds *core.Snapshot) float64 {
 		"ele", ds.Element,
 		"res", res,
 		"res_mod", resmod,
+		"em", em,
 		"react bonus", ds.ReactBonus,
 		"target", t.index,
 	)

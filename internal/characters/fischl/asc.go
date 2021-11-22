@@ -1,6 +1,6 @@
 package fischl
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) a4() {
 	last := 0
@@ -10,12 +10,13 @@ func (c *char) a4() {
 		if ds.ActorIndex != c.Core.ActiveChar {
 			return false
 		}
-		//check reaction type, only care for overload, electro charge, superconduct
+		//check reaction type, only care for electro related reactions
 		switch ds.ReactionType {
 		case core.Overload:
 		case core.ElectroCharged:
 		case core.Superconduct:
 		case core.SwirlElectro:
+		case core.CrystallizeElectro:
 		default:
 			return false
 		}

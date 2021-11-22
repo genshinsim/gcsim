@@ -3,7 +3,7 @@ package rosaria
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 // Normal attack damage queue generator

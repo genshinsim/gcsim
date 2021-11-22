@@ -1,6 +1,6 @@
 package calcqueue
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 type Queuer struct {
 	core *core.Core

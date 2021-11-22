@@ -7,12 +7,12 @@ package beidou
 // 	"testing"
 // 	"time"
 
-// 	"github.com/genshinsim/gsim/internal/artifacts/gladiator"
-// 	"github.com/genshinsim/gsim/internal/artifacts/noblesse"
-// 	"github.com/genshinsim/gsim/internal/dummy"
-// 	"github.com/genshinsim/gsim/pkg/core"
-// 	"github.com/genshinsim/gsim/pkg/monster"
-// 	"github.com/genshinsim/gsim/pkg/parse"
+// 	"github.com/genshinsim/gcsim/internal/artifacts/gladiator"
+// 	"github.com/genshinsim/gcsim/internal/artifacts/noblesse"
+// 	"github.com/genshinsim/gcsim/internal/dummy"
+// 	"github.com/genshinsim/gcsim/pkg/core"
+// 	"github.com/genshinsim/gcsim/pkg/monster"
+// 	"github.com/genshinsim/gcsim/pkg/parse"
 // 	"go.uber.org/zap"
 // 	"go.uber.org/zap/zapcore"
 // )

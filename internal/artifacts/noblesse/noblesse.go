@@ -3,11 +3,12 @@ package noblesse
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("noblesse oblige", New)
+	core.RegisterSetFunc("noblesseoblige", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

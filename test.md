@@ -2,12 +2,12 @@
 
 - [Sim structure](#sim-structure)
 - [Core](#core)
-  * [Shields and Constructs](#shields-and-constructs)
+  - [Shields and Constructs](#shields-and-constructs)
 - [Monster](#monster)
-  * [Hitbox](#hitbox)
-  * [Damage](#damage)
-  * [Auras](#auras)
-  * [Reactions](#reactions)
+  - [Hitbox](#hitbox)
+  - [Damage](#damage)
+  - [Auras](#auras)
+  - [Reactions](#reactions)
 - [Characters](#characters)
 - [Weapons](#weapons)
 - [Artifacts](#artifacts)
@@ -70,10 +70,9 @@ type Target interface {
 
 The purpose for designing it this way is so that each individual component can be overwritten with a custom implementation. While realistically, there's no need for multiple implementation to run the sim (in fact there is a default implementation for each component), the reason why it's designed like this is so that for testing purposes, you may need to overwrite certain component implementation. For example, if you are testing a character, you may wish to overwrite the shield component in order to collect additional information that is not tracked directly by the sim.
 
-
 # Core
 
-The `core` [package](https://github.com/genshinsim/gsim/tree/main/pkg/core) contains a `Core` structure which is the hub in the hub and spoke structure described above.
+The `core` [package](https://github.com/genshinsim/gcsim/tree/main/pkg/core) contains a `Core` structure which is the hub in the hub and spoke structure described above.
 
 ```go
 type Core struct {
@@ -127,16 +126,16 @@ In addition to linking together all the component (or the handlers in the struct
 
 The core also contains default implementation for the following components:
 
-- [status](https://github.com/genshinsim/gsim/blob/main/pkg/core/status.go)
-- [energy](https://github.com/genshinsim/gsim/blob/main/pkg/core/energy.go)
-- [action](https://github.com/genshinsim/gsim/blob/main/pkg/core/action.go)
-- [queue](https://github.com/genshinsim/gsim/blob/main/pkg/core/queue.go)
-- [combat](https://github.com/genshinsim/gsim/blob/main/pkg/core/combat.go)
-- [tasks](https://github.com/genshinsim/gsim/blob/main/pkg/core/tasks.go)
-- [constructs](https://github.com/genshinsim/gsim/blob/main/pkg/core/construct.go)
-- [shields](https://github.com/genshinsim/gsim/blob/main/pkg/core/shield.go)
-- [health](https://github.com/genshinsim/gsim/blob/main/pkg/core/health.go)
-- [events](https://github.com/genshinsim/gsim/blob/main/pkg/core/events.go)
+- [status](https://github.com/genshinsim/gcsim/blob/main/pkg/core/status.go)
+- [energy](https://github.com/genshinsim/gcsim/blob/main/pkg/core/energy.go)
+- [action](https://github.com/genshinsim/gcsim/blob/main/pkg/core/action.go)
+- [queue](https://github.com/genshinsim/gcsim/blob/main/pkg/core/queue.go)
+- [combat](https://github.com/genshinsim/gcsim/blob/main/pkg/core/combat.go)
+- [tasks](https://github.com/genshinsim/gcsim/blob/main/pkg/core/tasks.go)
+- [constructs](https://github.com/genshinsim/gcsim/blob/main/pkg/core/construct.go)
+- [shields](https://github.com/genshinsim/gcsim/blob/main/pkg/core/shield.go)
+- [health](https://github.com/genshinsim/gcsim/blob/main/pkg/core/health.go)
+- [events](https://github.com/genshinsim/gcsim/blob/main/pkg/core/events.go)
 
 `Target` and `Character` are a little bit special and are handled in their own packages (which will be covered in a later section). Ideally these default implementation should probably be split off into their own packages instead of being all in the `core` package...
 
@@ -169,8 +168,6 @@ type Construct interface {
 
 This is so that each character can implement their own logic for shields and constructs as some of them may have special effects (i.e. Noelle's shield doing damage on expiry, or Geo MC's rock doing damage on expiry)
 
-
-
 # Monster
 
 The `monster` package handles all the logic relating to:
@@ -185,7 +182,7 @@ All of this is implemented in a `Target` struct, which implements the `core.Targ
 
 ## Hitbox
 
-When an attack is generated, whether or not a target will be hit/damaged is resolved by each target independently. Each of the attack [snapshot](https://github.com/genshinsim/gsim/blob/main/pkg/core/snapshot.go) contains the information necessary for the target to determine if it will be hit or not.
+When an attack is generated, whether or not a target will be hit/damaged is resolved by each target independently. Each of the attack [snapshot](https://github.com/genshinsim/gcsim/blob/main/pkg/core/snapshot.go) contains the information necessary for the target to determine if it will be hit or not.
 
 For now the implementation is relatively simple. There is a `Targets` field in each snapshot. If this field is equal to the index of the current target or if this field is equal to -1 (representing all targets), then the current target will take damage.
 
@@ -193,27 +190,19 @@ In the future, this implementation can be changed to include 2D geometry.
 
 ## Damage
 
-
-
 ## Auras
 
 ## Reactions
 
-
 # Characters
-
-
-
 
 # Weapons
 
-
 # Artifacts
-
 
 # Parse
 
-The parse [package](https://github.com/genshinsim/gsim/tree/main/pkg/parse) contains the necessary code to lex/parse the custom config file syntax into the config data structure that's used by the core. The core logic is based on Rob Pike's [talk](https://talks.golang.org/2011/lex.slide#1) as well as go's template parsing [implementation](https://cs.opensource.google/go/go/+/refs/tags/go1.17:src/text/template/parse/)
+The parse [package](https://github.com/genshinsim/gcsim/tree/main/pkg/parse) contains the necessary code to lex/parse the custom config file syntax into the config data structure that's used by the core. The core logic is based on Rob Pike's [talk](https://talks.golang.org/2011/lex.slide#1) as well as go's template parsing [implementation](https://cs.opensource.google/go/go/+/refs/tags/go1.17:src/text/template/parse/)
 
 # Implementing New Character
 

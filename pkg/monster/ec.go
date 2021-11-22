@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 type AuraEC struct {

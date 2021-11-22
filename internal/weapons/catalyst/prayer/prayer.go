@@ -3,11 +3,12 @@ package prayer
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("lost prayer to the sacred winds", weapon)
+	core.RegisterWeaponFunc("lostprayertothesacredwinds", weapon)
 }
 
 //Increases Movement Speed SPD by 10%. When in battle, earn a 6/8/10/12/14% Elemental DMG Bonus every 4s.
@@ -46,8 +47,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			m[core.ElectroP] = p
 			m[core.AnemoP] = p
 			m[core.GeoP] = p
-			m[core.EleP] = p
-			m[core.PhyP] = p
 			m[core.DendroP] = p
 			return m, true
 		},

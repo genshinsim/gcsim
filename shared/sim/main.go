@@ -3,13 +3,14 @@ package main
 import "C"
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
+	"io/ioutil"
 	"os"
+	"strconv"
+	"time"
 
-	"github.com/genshinsim/gsim/pkg/combat"
-	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/genshinsim/gcsim"
+	"github.com/genshinsim/gcsim/pkg/parse"
 )
 
 func main() {}
@@ -23,39 +24,56 @@ func Run(config string) *C.char {
 		return C.CString(errToString("error parsing config"))
 	}
 
-	var data combat.AverageStats
+	opts.LogDetails = true
+
+	var data gcsim.Result
 
 	if opts.Debug {
-		old := os.Stdout
-		r, w, err := os.Pipe()
+		//make a log file, write to it, read it back and store as string
+		now := time.Now().Unix()
+
+		// r, w, err := os.Pipe()
+		// if err != nil {
+		// 	return C.CString(errToString(err.Error()))
+		// }
+		// defer w.Close()
+		// defer r.Close()
+
+		// outC := make(chan string)
+		// // copy the output in a separate goroutine so printing can't block indefinitely
+		// go func() {
+		// 	var buf bytes.Buffer
+		// 	io.Copy(&buf, r)
+		// 	outC <- buf.String()
+		// }()
+		// zap.RegisterSink("gsim", func(url *url.URL) (zap.Sink, error) {
+		// 	return w, nil
+		// })
+		file := "./" + strconv.FormatInt(now, 10) + ".log"
+		opts.DebugPaths = []string{file}
+
+		data, err = gcsim.Run(string(config), opts)
 		if err != nil {
 			return C.CString(errToString(err.Error()))
 		}
-		os.Stdout = w
-		outC := make(chan string)
-		// copy the output in a separate goroutine so printing can't block indefinitely
-		go func() {
-			var buf bytes.Buffer
-			io.Copy(&buf, r)
-			outC <- buf.String()
-		}()
-		defer func() {
-			w.Close()
-			os.Stdout = old
-		}()
-		opts.DebugPaths = []string{"stdout"}
-		data, err = combat.Run(string(config), opts)
+
+		l, err := ioutil.ReadFile(file)
 		if err != nil {
 			return C.CString(errToString(err.Error()))
 		}
-		out := <-outC
-		data.Debug = out
+
+		data.Debug = string(l)
+
+		//remove the file
+		os.Remove(file)
 	} else {
-		data, err = combat.Run(string(config), opts)
+		data, err = gcsim.Run(string(config), opts)
 		if err != nil {
 			return C.CString(errToString(err.Error()))
 		}
 	}
+
+	data.Text = data.PrettyPrint()
 
 	result, _ := json.Marshal(data)
 	return C.CString(string(result))

@@ -25,6 +25,35 @@ func (q *QueueCtrl) SetActionList(a []Action) {
 	q.prio = a
 }
 
+func (q *QueueCtrl) logSkipped(a Action, reason string, keysAndValue ...interface{}) {
+	if q.core.Flags.LogDebug {
+		//build exec str
+		var sb strings.Builder
+		for _, v := range a.Exec {
+			sb.WriteString(v.Typ.String())
+			sb.WriteString(",")
+		}
+		str := sb.String()
+		if len(str) > 0 {
+			str = str[:len(str)-1]
+		}
+		items := []interface{}{
+			"frame", q.core.F,
+			"event", LogQueueEvent,
+			"failed", true,
+			"reason", reason,
+			"target", a.Target,
+			"exec", str,
+			"raw", a.Raw,
+		}
+		items = append(items, keysAndValue...)
+		q.core.Log.Debugw(
+			"skip",
+			items...,
+		)
+	}
+}
+
 func (q *QueueCtrl) Next() ([]ActionItem, error) {
 	var r []ActionItem
 	f := q.core.F
@@ -37,32 +66,37 @@ next:
 		}
 		//check if disabled
 		if v.Disabled {
-			q.core.Log.Debugw("queue not rdy; disabled", "frame", f, "event", LogQueueEvent, "raw", v.Raw)
+			// q.core.Log.Debugw("queue not rdy; disabled", "frame", f, "event", LogQueueEvent, "raw", v.Raw)
+			q.logSkipped(v, "disabled")
 			continue next
 		}
 		//check if still locked
 		if v.ActionLock > f-v.Last && v.Last != -1 {
-			q.core.Log.Debugw("queue not rdy; on action lock", "frame", f, "event", LogQueueEvent, "last", v.Last, "lock_for", v.ActionLock, "raw", v.Raw)
+			// q.core.Log.Debugw("queue not rdy; on action lock", "frame", f, "event", LogQueueEvent, "raw", v.Raw)
+			q.logSkipped(v, "locked", "last", v.Last, "lock_for", v.ActionLock)
 			continue next
 		}
 		//check active char
 		if v.ActiveCond != "" {
 			if v.ActiveCond != active {
-				q.core.Log.Debugw("queue not rdy; char not active", "frame", f, "event", LogQueueEvent, "active", active, "cond", v.ActiveCond, "raw", v.Raw)
+				// q.core.Log.Debugw("queue not rdy; char not active", "frame", f, "event", LogQueueEvent, "active", active, "cond", v.ActiveCond, "raw", v.Raw)
+				q.logSkipped(v, "inactive", "active", active, "cond", v.ActiveCond)
 				continue next
 			}
 		}
 		//check if char requested is even alive
 		//check if actor is alive first, if not return 0 and call it a day
 		if char.HP() <= 0 {
-			q.core.Log.Debugw("queue not rdy; char dead", "frame", f, "event", LogQueueEvent, "character", v.Target, "hp", char.HP(), "raw", v.Raw)
+			// q.core.Log.Debugw("queue not rdy; char dead", "frame", f, "event", LogQueueEvent, "character", v.Target, "hp", char.HP(), "raw", v.Raw)
+			q.logSkipped(v, "dead", "hp", char.HP())
 			continue next
 		}
 
 		//check if we need to swap for this, and if so is swapcd = 0
 		if v.Target != active {
 			if q.core.SwapCD > 0 {
-				q.core.Log.Debugw("queue not rdy; swap on cd", "frame", f, "event", LogQueueEvent, "swap_cd", q.core.SwapCD, "raw", v.Raw)
+				// q.core.Log.Debugw("queue not rdy; swap on cd", "frame", f, "event", LogQueueEvent, "swap_cd", q.core.SwapCD, "raw", v.Raw)
+				q.logSkipped(v, "swap cd", "swap_cd", q.core.SwapCD)
 				continue next
 			}
 		}
@@ -86,7 +120,8 @@ next:
 		}
 
 		if !ready {
-			q.core.Log.Debugw("queue not rdy; actions not rdy", "frame", f, "event", LogQueueEvent, "raw", v.Raw)
+			// q.core.Log.Debugw("queue not rdy; actions not rdy", "frame", f, "event", LogQueueEvent, "raw", v.Raw)
+			q.logSkipped(v, "not rdy")
 			continue next
 		}
 
@@ -97,7 +132,8 @@ next:
 				return nil, err
 			}
 			if !ok {
-				q.core.Log.Debugw("queue not rdy; conditions not met", "frame", f, "event", LogQueueEvent, "condition", v.Conditions, "raw", v.Raw)
+				// q.core.Log.Debugw("queue not rdy; conditions not met", "frame", f, "event", LogQueueEvent, "condition", v.Conditions, "raw", v.Raw)
+				q.logSkipped(v, "cond failed", "condition", v.Conditions)
 				continue next
 			}
 		}
@@ -370,7 +406,7 @@ func (q *QueueCtrl) evalStatus(c Condition) (bool, error) {
 	}
 	name := strings.TrimPrefix(c.Fields[1], ".")
 	status := q.core.Status.Duration(name)
-	q.core.Log.Debugw("queue status check", "frame", q.core.F, "event", LogQueueEvent, "status", name, "val", status, "expected", c.Value, "op", c.Op)
+	// q.core.Log.Debugw("queue status check", "frame", q.core.F, "event", LogQueueEvent, "status", name, "val", status, "expected", c.Value, "op", c.Op)
 	return compInt(c.Op, status, c.Value), nil
 
 }

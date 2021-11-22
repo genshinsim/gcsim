@@ -3,8 +3,8 @@ package jean
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -95,7 +95,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	if c.Core.Rand.Float64() < 0.5 {
 		heal := 0.15 * (d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK])
 		c.AddTask(func() {
-			c.Core.Health.HealAll(heal)
+			c.Core.Health.HealAll(c.Index, heal)
 		}, "jean-heal", f-1)
 	}
 
@@ -187,14 +187,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	healDot := (burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]) * (1 + hpplus)
 
 	c.AddTask(func() {
-		c.Core.Health.HealAll(heal)
+		c.Core.Health.HealAll(c.Index, heal)
 	}, "Jean Heal Initial", f)
 
 	//duration is 10.5s
 	for i := 60; i < 630; i++ {
 		c.AddTask(func() {
 			c.Core.Log.Debugw("jean q healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "atk", atk, "heal amount", healDot)
-			c.Core.Health.HealActive(heal)
+			c.Core.Health.HealActive(c.Index, heal)
 		}, "Jean Tick", i)
 	}
 

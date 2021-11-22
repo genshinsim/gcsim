@@ -3,7 +3,7 @@ package sacrificial
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -11,6 +11,10 @@ func init() {
 	core.RegisterWeaponFunc("sacrificial fragments", weapon)
 	core.RegisterWeaponFunc("sacrificial greatsword", weapon)
 	core.RegisterWeaponFunc("sacrificial sword", weapon)
+	core.RegisterWeaponFunc("sacrificialbow", weapon)
+	core.RegisterWeaponFunc("sacrificialfragments", weapon)
+	core.RegisterWeaponFunc("sacrificialgreatsword", weapon)
+	core.RegisterWeaponFunc("sacrificialsword", weapon)
 }
 
 //After damaging an opponent with an Elemental Skill, the skill has a 40/50/60/70/80%

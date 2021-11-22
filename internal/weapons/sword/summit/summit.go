@@ -3,11 +3,12 @@ package summit
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("summit shaper", weapon)
+	core.RegisterWeaponFunc("summitshaper", weapon)
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.

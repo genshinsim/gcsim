@@ -4,17 +4,11 @@ GSim is a Monte Carlo simulation tool used to model team dps. It allows for the 
 
 # Getting started
 
-**IMPORTANT:** Releases are currently broken. Please use the web version if you need UI. Otherwise (for faster execution), please build/run from source.
+**IMPORTANT NOTE: Due to changing the repo name, auto update function unfortunately broke. If you have a version prior to v0.2.14 (last updated any time before Nov 8, 2021), please uninstall the app and redownload it again. Sorry for the inconvenience**
 
-**NEW:** There is now a web version available at [https://genshinsim.github.io/gsimweb/](https://genshinsim.github.io/gsimweb/). This is basically just the program compiled into WASM and embedded into a webpage. Works the same as the release version but with the downside that it is much slower as it is only single threaded.
+GSim now has a graphical desktop application available (previous web version discontinued due to performance issues). You can find the repo [here](https://github.com/genshinsim/gcsimui) or download the latest [release](https://github.com/genshinsim/gcsimui/releases).
 
-~~Go to the [releases page](https://github.com/genshinsim/gsim/releases) and download the latest development release for your platform. Currently development releases are [automatically](https://github.com/genshinsim/gsim/blob/main/.github/workflows/release.yaml) built whenever a new commit is pushed to the main branch.~~
-
-~~The archive can be extracted to any folder. Once extracted, simply run the executable (gsim.exe). Doing so should open up your default browser to http://localhost:8081 (If it did not, you can simply browse to this address on a browser).~~
-
-~~**Note that Chrome may complain that the file is not commonly downloaded and may be dangerous. This is expected as the sim is not all that popular. You can always build the project from source if you wish**~~
-
-For more information, please visit the [starter guide](https://github.com/genshinsim/gsim/wiki/Starter) on the wiki.
+In addition, you can visit the gsim's website at [https://www.gcsim.app/](https://www.gcsim.app/). On there you will find pre-written action list to use with your teams (so you do not have to build your own if you do not wish to). This is still a work in progress and will grow over time.
 
 ## Project status
 
@@ -25,22 +19,12 @@ The project is still currently under heavy development. Not every character/weap
 If you are looking to contribute, the following are some key areas that you can help out with. If you're interested, please don't hesistate to reach out on the sim's [discord](https://discord.gg/m7jvjdxx7q)
 
 - Comprehensive frame counts of every character's abilities, including but not limited to:
-    - Hit mark frame (not just animation frame, which is currently in the KQM library)
-    - Cooldown start frame
-    - Energy drain frame
-    - Particle proc frame (relative to hit mark)
+  - Hit mark frame (not just animation frame, which is currently in the KQM library)
+  - Cooldown start frame
+  - Energy drain frame
+  - Particle proc frame (relative to hit mark)
 - Team comp damage validation between actual game play and sim. This is done by recording videos of actual gameplay footage, and then reproducing the same team/artifact/items/targets in the simulator and comparing results frame by frame. This means both comparing the damage output as well as the reactions. The simulator should be able to reproduce actual gameplay faithfully.
 - Building action list for various common team comps and comparing/validating the result vs actual in game gameplay
 - Helping with documenting the sim in the wiki
 - Further testing of in game reactions, primarily EC and chain freeze duration.
 - Just in general using the sim for calculations/weapon comparisons/day 1 testing etc...
-
-## Credits
-
-- Most of the % data: https://genshin.honeyhunterworld.com/
-- Tons of discussions on KeqingMain (to be added up with ppl's discord tags at some point)
-- Most if not all the frame data came from https://library.keqingmains.com
-- All the folks at KQM that helped out with testing; special thanks to (in no particular order):
-  - Yukarix#6534
-  - Aluminum#5462
-  - Terrapin#8603

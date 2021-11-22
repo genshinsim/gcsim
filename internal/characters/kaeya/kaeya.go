@@ -3,8 +3,8 @@ package kaeya
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -182,7 +182,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//add a2
 	heal := .15 * (d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK])
 	c.AddTask(func() {
-		c.Core.Health.HealActive(heal)
+		c.Core.Health.HealActive(c.Index, heal)
 		//apply damage
 		c.Core.Combat.ApplyDamage(&d)
 	}, "Kaeya-Skill", 28) //TODO: assumed same as when cd starts

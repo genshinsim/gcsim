@@ -1,8 +1,8 @@
 package ningguang
 
 import (
-	"github.com/genshinsim/gsim/pkg/character"
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -30,6 +30,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
+	// Initialize at some very low value so reset happens correctly at start of sim
+	c.c2reset = -9999
 
 	c.a4()
 
@@ -132,7 +134,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	c.QueueDmg(&d, f+travel)
 
-	d = c.Snapshot(
+	d1 := c.Snapshot(
 		"Charge (Gems)",
 		core.AttackTagExtra,
 		core.ICDTagExtraAttack,
@@ -144,7 +146,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	)
 	j := c.Tags["jade"]
 	for i := 0; i < j; i++ {
-		x := d.Clone()
+		x := d1.Clone()
 		c.QueueDmg(&x, f+travel)
 	}
 	c.Tags["jade"] = 0
@@ -178,6 +180,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.lastScreen = c.Core.F
 
 	//check if particles on icd
+
+	c.Core.Status.AddStatus("ningguangskillparticleICD", 360)
 
 	if c.Core.F > c.particleICD {
 		//3 balls, 33% chance of a fourth

@@ -36,7 +36,7 @@ type Snapshot struct {
 	BaseAtk float64 //base attack used in calc
 	BaseDef float64 //base def used in calc
 	//DmgBonus float64   //total damage bonus, including appropriate ele%, etc..
-	DefAdj float64 //attack specific def shred (raiden c2)
+	RaidenDefAdj float64 //attack specific def shred (raiden c2)
 
 	//reaction flags
 	IsReactionDamage bool

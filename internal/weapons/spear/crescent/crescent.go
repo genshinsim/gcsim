@@ -3,11 +3,12 @@ package crescent
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("crescent pike", weapon)
+	core.RegisterWeaponFunc("crescentpike", weapon)
 }
 
 //After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.

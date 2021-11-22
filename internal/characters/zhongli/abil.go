@@ -3,7 +3,7 @@ package zhongli
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -60,7 +60,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//press does no dmg
 	if p["hold"] == 1 {
-		c.skillHold(f, max)
+		c.skillHold(f, max, true)
+		cd = 720
+	} else if p["hold_nosteele"] == 1 {
+		c.skillHold(f, max, false)
 		cd = 720
 	} else {
 		c.skillPress(f, max)
@@ -75,7 +78,7 @@ func (c *char) skillPress(f, max int) {
 	c.newSteele(f, 1860, max)
 }
 
-func (c *char) skillHold(f, max int) {
+func (c *char) skillHold(f, max int, createSteele bool) {
 	//hold does dmg
 	d := c.Snapshot(
 		"Stone Stele (Hold)",
@@ -92,8 +95,8 @@ func (c *char) skillHold(f, max int) {
 
 	c.QueueDmg(&d, f-1)
 
-	//create a steele if none exists
-	if c.steeleCount == 0 {
+	//create a steele if none exists and desired by player
+	if (c.steeleCount == 0) && createSteele {
 		c.newSteele(f, 1860, max) //31 seconds
 	}
 
@@ -113,7 +116,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		core.StrikeTypeBlunt,
 		core.Geo,
 		100,
-		skill[c.TalentLvlBurst()],
+		burst[c.TalentLvlBurst()],
 	)
 	d.Targets = core.TargetAll
 	d.FlatDmg = 0.33 * c.HPMax

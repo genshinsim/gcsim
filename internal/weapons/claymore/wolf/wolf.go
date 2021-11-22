@@ -3,11 +3,12 @@ package generic
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("wolf's gravestone", weapon)
+	core.RegisterWeaponFunc("wolfsgravestone", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {

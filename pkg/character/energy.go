@@ -1,6 +1,6 @@
 package character
 
-import "github.com/genshinsim/gsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *Tmpl) QueueParticle(src string, num int, ele core.EleType, delay int) {
 	p := core.Particle{

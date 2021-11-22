@@ -14,7 +14,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/genshinsim/gsim/pkg/server"
+	"github.com/genshinsim/gcsim/pkg/server"
 )
 
 var openWin bool

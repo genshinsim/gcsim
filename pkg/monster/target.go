@@ -1,7 +1,7 @@
 package monster
 
 import (
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 type Target struct {
@@ -88,13 +88,15 @@ func (t *Target) Tick() {
 	if t.aura != nil {
 		done := t.aura.Tick()
 		if done {
-			t.core.Log.Debugw("expired",
-				"frame", t.core.F,
-				"event", core.LogElementEvent,
-				"aura", t.aura.Type(),
-				"source", t.aura.Source(),
-				"target", t.index,
-			)
+			if t.core.Flags.LogDebug {
+				t.core.Log.Debugw(t.aura.Type().String()+" expired",
+					"frame", t.core.F,
+					"event", core.LogElementEvent,
+					"aura", t.aura.Type(),
+					"source", t.aura.Source(),
+					"target", t.index,
+				)
+			}
 			t.aura = nil
 		}
 	}

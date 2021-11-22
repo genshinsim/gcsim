@@ -3,7 +3,7 @@ package blackcliff
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
@@ -12,6 +12,12 @@ func init() {
 	core.RegisterWeaponFunc("blackcliff agate", weapon)
 	core.RegisterWeaponFunc("blackcliff pole", weapon)
 	core.RegisterWeaponFunc("blackcliff longsword", weapon)
+	core.RegisterWeaponFunc("blackcliffagate", weapon)
+	core.RegisterWeaponFunc("blackclifflongsword", weapon)
+	core.RegisterWeaponFunc("blackcliffpole", weapon)
+	core.RegisterWeaponFunc("blackcliffslasher", weapon)
+	core.RegisterWeaponFunc("blackcliffwarbow", weapon)
+
 }
 
 //After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.

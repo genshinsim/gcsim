@@ -1,50 +1,66 @@
 //
-package gsim
+package gcsim
 
 import (
+	crypto_rand "crypto/rand"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"log"
 	"math"
+
 	"runtime"
 	"sort"
 	"strings"
+	"time"
 
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/parse"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/parse"
 )
 
 type Stats struct {
-	IsDamageMode         bool                      `json:"is_damage_mode"`
-	CharNames            []string                  `json:"char_names"`
-	DamageByChar         []map[string]float64      `json:"damage_by_char"`
-	CharActiveTime       []int                     `json:"char_active_time"`
-	AbilUsageCountByChar []map[string]int          `json:"abil_usage_count_by_char"`
-	ParticleCount        map[string]int            `json:"particle_count"`
-	ReactionsTriggered   map[core.ReactionType]int `json:"reactions_triggered"`
-	Duration             int                       `json:"sim_duration"`
-	ElementUptime        []map[core.EleType]int    `json:"ele_uptime"`
+	IsDamageMode          bool                      `json:"is_damage_mode"`
+	CharNames             []string                  `json:"char_names"`
+	DamageByChar          []map[string]float64      `json:"damage_by_char"`
+	DamageInstancesByChar []map[string]int          `json:"damage_instances_by_char"`
+	DamageByCharByTargets [][]float64               `json:"damage_by_char_by_targets"`
+	CharActiveTime        []int                     `json:"char_active_time"`
+	AbilUsageCountByChar  []map[string]int          `json:"abil_usage_count_by_char"`
+	ParticleCount         map[string]int            `json:"particle_count"`
+	ReactionsTriggered    map[core.ReactionType]int `json:"reactions_triggered"`
+	Duration              int                       `json:"sim_duration"`
+	ElementUptime         []map[core.EleType]int    `json:"ele_uptime"`
 	//final result
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`
+	//for tracking min/max run
+	seed int64
 }
 
 type Result struct {
-	IsDamageMode         bool                            `json:"is_damage_mode"`
-	CharNames            []string                        `json:"char_names"`
-	DamageByChar         []map[string]FloatResult        `json:"damage_by_char"`
-	CharActiveTime       []IntResult                     `json:"char_active_time"`
-	AbilUsageCountByChar []map[string]IntResult          `json:"abil_usage_count_by_char"`
-	ParticleCount        map[string]IntResult            `json:"particle_count"`
-	ReactionsTriggered   map[core.ReactionType]IntResult `json:"reactions_triggered"`
-	Duration             FloatResult                     `json:"sim_duration"`
-	ElementUptime        []map[core.EleType]IntResult    `json:"ele_uptime"`
+	IsDamageMode          bool                            `json:"is_damage_mode"`
+	ActiveChar            string                          `json:"active_char"`
+	CharNames             []string                        `json:"char_names"`
+	DamageByChar          []map[string]FloatResult        `json:"damage_by_char"`
+	DamageInstancesByChar []map[string]IntResult          `json:"damage_instances_by_char"`
+	DamageByCharByTargets []map[int]FloatResult           `json:"damage_by_char_by_targets"`
+	CharActiveTime        []IntResult                     `json:"char_active_time"`
+	AbilUsageCountByChar  []map[string]IntResult          `json:"abil_usage_count_by_char"`
+	ParticleCount         map[string]IntResult            `json:"particle_count"`
+	ReactionsTriggered    map[core.ReactionType]IntResult `json:"reactions_triggered"`
+	Duration              FloatResult                     `json:"sim_duration"`
+	ElementUptime         []map[core.EleType]IntResult    `json:"ele_uptime"`
 	//final result
-	Damage     FloatResult `json:"damage"`
-	DPS        FloatResult `json:"dps"`
-	Iterations int         `json:"iter"`
-	Text       string      `json:"text"`
-	Debug      string      `json:"debug"`
+	Damage      FloatResult         `json:"damage"`
+	DPS         FloatResult         `json:"dps"`
+	DPSByTarget map[int]FloatResult `json:"dps_by_target"`
+	Iterations  int                 `json:"iter"`
+	Text        string              `json:"text"`
+	Debug       string              `json:"debug"`
+	Runtime     time.Duration       `json:"runtime"`
+	//for tracking min/max run
+	MinSeed int64 `json:"-"`
+	MaxSeed int64 `json:"-"`
 }
 
 type IntResult struct {
@@ -67,6 +83,7 @@ type workerResp struct {
 }
 
 func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, error) {
+	start := time.Now()
 
 	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
 	var data []Stats
@@ -110,8 +127,10 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	}
 
 	resp := make(chan workerResp, count)
-	req := make(chan bool)
+	req := make(chan int64)
 	done := make(chan bool)
+
+	var b [8]byte
 
 	for i := 0; i < w; i++ {
 		go worker(src, opt, resp, req, done, cust...)
@@ -120,7 +139,12 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	go func() {
 		var wip int
 		for wip < n {
-			req <- true
+			_, err = crypto_rand.Read(b[:])
+			if err != nil {
+				log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
+			}
+			seed := int64(binary.LittleEndian.Uint64(b[:]))
+			req <- seed
 			wip++
 		}
 	}()
@@ -140,7 +164,16 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 
 	//if debug is true, run one more purely for debug do not add to stats
 	if opt.Debug {
-		s, err := NewSim(cfg, opt, cust...)
+		_, err = crypto_rand.Read(b[:])
+		if err != nil {
+			log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
+		}
+		_, err = crypto_rand.Read(b[:])
+		if err != nil {
+			log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
+		}
+		seed := int64(binary.LittleEndian.Uint64(b[:]))
+		s, err := NewSim(cfg, seed, opt, cust...)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -154,20 +187,25 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 
 	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
 	result.Iterations = n
+	result.ActiveChar = cfg.Characters.Initial
 	if !cfg.DamageMode {
 		result.Duration.Mean = float64(opt.Duration)
 		result.Duration.Min = float64(opt.Duration)
 		result.Duration.Max = float64(opt.Duration)
 	}
+	result.Runtime = time.Since(start)
 
 	return result, nil
 }
 
 func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (result Result) {
 
+	// TODO: Kind of brittle - maybe track something separate for this?
+	targetCount := len(data[0].DamageByCharByTargets[0])
 	charCount := len(chars)
 	result.DPS.Min = math.MaxFloat64
 	result.DPS.Max = -1
+	result.DPSByTarget = make(map[int]FloatResult, targetCount)
 	if detailed {
 		result.ReactionsTriggered = make(map[core.ReactionType]IntResult)
 		result.CharNames = make([]string, charCount)
@@ -175,6 +213,9 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		result.AbilUsageCountByChar = make([]map[string]IntResult, charCount)
 		result.CharActiveTime = make([]IntResult, charCount)
 		result.DamageByChar = make([]map[string]FloatResult, charCount)
+		result.DamageInstancesByChar = make([]map[string]IntResult, charCount)
+		// Defined as a slice of int maps to make code similar to DamageByChar handling
+		result.DamageByCharByTargets = make([]map[int]FloatResult, charCount)
 
 		for i := range result.CharNames {
 			result.CharNames[i] = chars[i]
@@ -182,6 +223,8 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 			result.CharActiveTime[i].Max = -1
 			result.AbilUsageCountByChar[i] = make(map[string]IntResult)
 			result.DamageByChar[i] = make(map[string]FloatResult)
+			result.DamageInstancesByChar[i] = make(map[string]IntResult)
+			result.DamageByCharByTargets[i] = make(map[int]FloatResult)
 		}
 	}
 
@@ -202,6 +245,7 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		//dmg
 		if v.Damage < result.Damage.Min {
 			result.DPS.Min = v.Damage
+
 		}
 		if v.Damage > result.Damage.Max {
 			result.Damage.Max = v.Damage
@@ -211,9 +255,11 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		//dps
 		if result.DPS.Min > v.DPS {
 			result.DPS.Min = v.DPS
+			result.MinSeed = v.seed
 		}
 		if result.DPS.Max < v.DPS {
 			result.DPS.Max = v.DPS
+			result.MaxSeed = v.seed
 		}
 		result.DPS.Mean += v.DPS / float64(n)
 
@@ -252,6 +298,48 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 				x.Mean += amt / float64(n)
 
 				result.DamageByChar[i][k] = x
+			}
+		}
+
+		//dmg instances by char
+		for i, abil := range v.DamageInstancesByChar {
+			for k, amt := range abil {
+				x, ok := result.DamageInstancesByChar[i][k]
+				if !ok {
+					x.Min = math.MaxInt64
+					x.Max = -1
+				}
+				if x.Min > amt {
+					x.Min = amt
+				}
+				if x.Max < amt {
+					x.Max = amt
+				}
+				x.Mean += float64(amt) / float64(n)
+
+				result.DamageInstancesByChar[i][k] = x
+			}
+		}
+
+		//dmg by char by target - saved in DPS terms already
+		for i, target := range v.DamageByCharByTargets {
+			for k, amt := range target {
+				x, ok := result.DamageByCharByTargets[i][k]
+				if !ok {
+					x.Min = math.MaxFloat64
+					x.Max = -1
+				}
+				// log.Printf("dmg amount: %v\n", amt)
+				amt = amt / float64(dd)
+				if x.Min > amt {
+					x.Min = amt
+				}
+				if x.Max < amt {
+					x.Max = amt
+				}
+				x.Mean += amt / float64(n)
+
+				result.DamageByCharByTargets[i][k] = x
 			}
 		}
 
@@ -336,30 +424,59 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		}
 	}
 
+	// Get total DPS by Target stats here
+	for i := 0; i < targetCount; i++ {
+		for _, char := range result.DamageByCharByTargets {
+			dpsResult := result.DPSByTarget[i]
+			dpsResult.Mean += char[i].Mean
+			result.DPSByTarget[i] = dpsResult
+		}
+	}
+
+	targetDamage := make(map[int]float64, targetCount)
 	for _, v := range data {
 		result.DPS.SD += (v.DPS - result.DPS.Mean) * (v.DPS - result.DPS.Mean)
+
+		dd := float64(v.Duration) / 60 //sim reports in frames
+		// Reset array
+		for j := 0; j < targetCount; j++ {
+			for _, charTargetDmg := range v.DamageByCharByTargets {
+				targetDamage[j] += charTargetDmg[j] / float64(dd)
+			}
+			dpsTarget := result.DPSByTarget[j]
+			dpsTarget.SD += (targetDamage[j] - dpsTarget.Mean) * (targetDamage[j] - dpsTarget.Mean)
+			result.DPSByTarget[j] = dpsTarget
+
+			// Reset
+			targetDamage[j] = 0
+		}
 		if mode {
 			result.Duration.SD += (float64(v.Duration) - result.Duration.Mean) * (float64(v.Duration) - result.Duration.Mean)
 		}
 	}
 
 	result.DPS.SD = math.Sqrt(result.DPS.SD / float64(n))
+	for j := 0; j < targetCount; j++ {
+		dpsTargetRollup := result.DPSByTarget[j]
+		dpsTargetRollup.SD = math.Sqrt(dpsTargetRollup.SD / float64(n))
+		result.DPSByTarget[j] = dpsTargetRollup
+	}
 
 	return
 }
 
-func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, done chan bool, cust ...func(*Simulation) error) {
+func worker(src string, opt core.RunOpt, resp chan workerResp, req chan int64, done chan bool, cust ...func(*Simulation) error) {
 
 	opt.Debug = false
 	opt.DebugPaths = []string{}
 
 	for {
 		select {
-		case <-req:
+		case seed := <-req:
 			parser := parse.New("single", src)
 			cfg, _, _ := parser.Parse()
 
-			s, err := NewSim(cfg, opt, cust...)
+			s, err := NewSim(cfg, seed, opt, cust...)
 			if err != nil {
 				resp <- workerResp{
 					err: err,
@@ -368,6 +485,7 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, do
 			}
 
 			stat, err := s.Run()
+			stat.seed = seed
 
 			if err != nil {
 				resp <- workerResp{
@@ -386,15 +504,15 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan bool, do
 	}
 }
 
-func (stats *Result) PrettyPrint() string {
+func (r *Result) PrettyPrint() string {
 
 	var sb strings.Builder
 
-	for i, t := range stats.DamageByChar {
+	for i, t := range r.DamageByChar {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
 		}
-		sb.WriteString(fmt.Sprintf("%v contributed the following dps:\n", stats.CharNames[i]))
+		sb.WriteString(fmt.Sprintf("%v contributed the following dps:\n", r.CharNames[i]))
 		keys := make([]string, 0, len(t))
 		for k := range t {
 			keys = append(keys, k)
@@ -403,18 +521,19 @@ func (stats *Result) PrettyPrint() string {
 		var total float64
 		for _, k := range keys {
 			v := t[k]
-			sb.WriteString(fmt.Sprintf("\t%v (%.2f%% of total): avg %.2f [min: %.2f | max: %.2f] \n", k, 100*v.Mean/stats.DPS.Mean, v.Mean, v.Min, v.Max))
+			damageInstances := r.DamageInstancesByChar[i][k]
+			sb.WriteString(fmt.Sprintf("\t%v (%.2f%% of total, %.2f average damage procs): avg %.2f [min: %.2f | max: %.2f] \n", k, 100*v.Mean/r.DPS.Mean, damageInstances.Mean, v.Mean, v.Min, v.Max))
 			total += v.Mean
 		}
 
-		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", stats.CharNames[i], total, 100*total/stats.DPS.Mean))
+		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", r.CharNames[i], total, 100*total/r.DPS.Mean))
 	}
-	for i, t := range stats.AbilUsageCountByChar {
+	for i, t := range r.AbilUsageCountByChar {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Character ability usage:\n")
 		}
-		sb.WriteString(fmt.Sprintf("%v used the following abilities:\n", stats.CharNames[i]))
+		sb.WriteString(fmt.Sprintf("%v used the following abilities:\n", r.CharNames[i]))
 		keys := make([]string, 0, len(t))
 		for k := range t {
 			keys = append(keys, k)
@@ -425,15 +544,15 @@ func (stats *Result) PrettyPrint() string {
 			sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v | max: %v]\n", k, v.Mean, v.Min, v.Max))
 		}
 	}
-	for i, v := range stats.CharActiveTime {
+	for i, v := range r.CharActiveTime {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Character field time:\n")
 		}
-		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", stats.CharNames[i], 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
+		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", r.CharNames[i], 100*v.Mean/(r.Duration.Mean*60), float64(100*v.Min)/(r.Duration.Mean*60), float64(100*v.Max)/(r.Duration.Mean*60)))
 	}
-	pk := make([]string, 0, len(stats.ParticleCount))
-	for k := range stats.ParticleCount {
+	pk := make([]string, 0, len(r.ParticleCount))
+	for k := range r.ParticleCount {
 		pk = append(pk, k)
 	}
 	sort.Strings(pk)
@@ -442,11 +561,11 @@ func (stats *Result) PrettyPrint() string {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Particle count:\n")
 		}
-		v := stats.ParticleCount[k]
+		v := r.ParticleCount[k]
 		sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v max: %v]\n", k, v.Mean, v.Min, v.Max))
 	}
-	rk := make([]core.ReactionType, 0, len(stats.ReactionsTriggered))
-	for k := range stats.ReactionsTriggered {
+	rk := make([]core.ReactionType, 0, len(r.ReactionsTriggered))
+	for k := range r.ReactionsTriggered {
 		rk = append(rk, k)
 	}
 	for i, k := range rk {
@@ -454,10 +573,10 @@ func (stats *Result) PrettyPrint() string {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Reactions:\n")
 		}
-		v := stats.ReactionsTriggered[k]
+		v := r.ReactionsTriggered[k]
 		sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v max: %v]\n", k, v.Mean, v.Min, v.Max))
 	}
-	for i, m := range stats.ElementUptime {
+	for i, m := range r.ElementUptime {
 		if i == 0 {
 			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Element up time:\n")
@@ -469,12 +588,47 @@ func (stats *Result) PrettyPrint() string {
 				if ele == "" {
 					ele = "none"
 				}
-				sb.WriteString(fmt.Sprintf("\t\t%v: avg %.2f%% [min: %.2f%% max: %.2f%%]\n", ele, 100*v.Mean/(stats.Duration.Mean*60), float64(100*v.Min)/(stats.Duration.Mean*60), float64(100*v.Max)/(stats.Duration.Mean*60)))
+				sb.WriteString(fmt.Sprintf("\t\t%v: avg %.2f%% [min: %.2f%% max: %.2f%%]\n", ele, 100*v.Mean/(r.Duration.Mean*60), float64(100*v.Min)/(r.Duration.Mean*60), float64(100*v.Max)/(r.Duration.Mean*60)))
 			}
 		}
 	}
+	flagDamageByTargets := true
+	for i, t := range r.DamageByCharByTargets {
+		// Save some space if there is only one target - redundant information
+		if len(t) == 1 {
+			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Damage by Target Omitted (Only 1 Target)\n")
+			flagDamageByTargets = false
+			break
+		}
+		if i == 0 {
+			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("Damage by Target:\n")
+		}
+		sb.WriteString(fmt.Sprintf("%v contributed the following dps:\n", r.CharNames[i]))
+		keys := make([]int, 0, len(t))
+		for k := range t {
+			keys = append(keys, k)
+		}
+		sort.Ints(keys)
+		var total float64
+		for _, k := range keys {
+			v := t[k]
+			sb.WriteString(fmt.Sprintf("\t%v (%.2f%% of total): avg %.2f [min: %.2f | max: %.2f] \n", k, 100*v.Mean/r.DPS.Mean, v.Mean, v.Min, v.Max))
+			total += v.Mean
+		}
 
-	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", stats.Damage.Mean, stats.Duration.Mean, stats.DPS.Mean, stats.DPS.Min, stats.DPS.Max, stats.DPS.SD))
+		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", r.CharNames[i], total, 100*total/r.DPS.Mean))
+	}
+	if flagDamageByTargets {
+		for i := range r.DPSByTarget {
+			sb.WriteString(fmt.Sprintf("%v (%.2f%% of total): Average %.2f DPS over %.2f seconds (std: %.2f)\n", i, 100*r.DPSByTarget[i].Mean/r.DPS.Mean, r.DPSByTarget[i].Mean, r.Duration.Mean, r.DPSByTarget[i].SD))
+		}
+	}
+
+	sb.WriteString("------------------------------------------\n")
+	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", r.Damage.Mean, r.Duration.Mean, r.DPS.Mean, r.DPS.Min, r.DPS.Max, r.DPS.SD))
+	sb.WriteString(fmt.Sprintf("Simulation completed %v iterations in %v\n", r.Iterations, r.Runtime))
 
 	return sb.String()
 }

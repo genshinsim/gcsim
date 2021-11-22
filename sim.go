@@ -1,11 +1,12 @@
-package gsim
+package gcsim
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
 
-	"github.com/genshinsim/gsim/pkg/core"
-	"github.com/genshinsim/gsim/pkg/monster"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/monster"
 )
 
 type Simulation struct {
@@ -24,7 +25,7 @@ type Simulation struct {
 	stats Stats
 }
 
-func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) (*Simulation, error) {
+func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulation) error) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
 	s.cfg = cfg
@@ -32,9 +33,9 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 
 	c, err := core.New(
 		func(c *core.Core) error {
-
-			// if cfg.FixedRand {
-			// 	c.Rand = rand.New(rand.NewSource(0))
+			c.Rand = rand.New(rand.NewSource(seed))
+			// if seed > 0 {
+			// 	c.Rand = rand.New(rand.NewSource(seed))
 			// } else {
 			// 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 			// }
@@ -69,6 +70,7 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 		s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
 		//add call backs to track details
 		s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+			t := args[0].(core.Target)
 			dmg := args[2].(float64)
 			ds := args[1].(*core.Snapshot)
 			sb.Reset()
@@ -81,6 +83,10 @@ func NewSim(cfg core.Config, opts core.RunOpt, cust ...func(*Simulation) error) 
 				}
 			}
 			s.stats.DamageByChar[ds.ActorIndex][sb.String()] += dmg
+			if dmg > 0 {
+				s.stats.DamageInstancesByChar[ds.ActorIndex][sb.String()] += 1
+			}
+			s.stats.DamageByCharByTargets[ds.ActorIndex][t.Index()] += dmg
 			return false
 		}, "dmg-log")
 
@@ -142,6 +148,8 @@ func (s *Simulation) initChars(cfg core.Config) error {
 	if s.opts.LogDetails {
 		s.stats.CharNames = make([]string, count)
 		s.stats.DamageByChar = make([]map[string]float64, count)
+		s.stats.DamageInstancesByChar = make([]map[string]int, count)
+		s.stats.DamageByCharByTargets = make([][]float64, count)
 		s.stats.CharActiveTime = make([]int, count)
 		s.stats.AbilUsageCountByChar = make([]map[string]int, count)
 		s.stats.ParticleCount = make(map[string]int)
@@ -170,6 +178,8 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		//setup maps
 		if s.opts.LogDetails {
 			s.stats.DamageByChar[i] = make(map[string]float64)
+			s.stats.DamageInstancesByChar[i] = make(map[string]int)
+			s.stats.DamageByCharByTargets[i] = make([]float64, len(s.C.Targets))
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 			s.stats.CharNames[i] = v.Base.Name
 		}

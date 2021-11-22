@@ -3,11 +3,12 @@ package maiden
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterSetFunc("maiden beloved", New)
+	core.RegisterSetFunc("maidenbeloved", New)
 }
 
 func New(c core.Character, s *core.Core, count int) {

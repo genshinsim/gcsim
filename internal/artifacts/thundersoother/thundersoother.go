@@ -3,10 +3,11 @@ package thundersoother
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
+	core.RegisterSetFunc("thundersoother", New)
 	core.RegisterSetFunc("thundersoother", New)
 }
 

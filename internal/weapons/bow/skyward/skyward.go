@@ -3,11 +3,12 @@ package skyward
 import (
 	"fmt"
 
-	"github.com/genshinsim/gsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func init() {
 	core.RegisterWeaponFunc("skyward harp", weapon)
+	core.RegisterWeaponFunc("skywardharp", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
