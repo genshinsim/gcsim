@@ -16,47 +16,62 @@ import (
 
 	"github.com/genshinsim/gcsim"
 	"github.com/genshinsim/gcsim/internal/logtohtml"
+	"github.com/genshinsim/gcsim/pkg/calcqueue"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/parse"
 	"go.uber.org/zap"
 )
 
+type opts struct {
+	print     bool
+	js        string
+	debug     bool
+	debugHTML bool
+	seconds   int
+	config    string
+	detailed  bool
+	w         int
+	i         int
+	multi     string
+	minmax    bool
+	calc      bool
+}
+
 func main() {
 
-	var src []byte
+	var opt opts
 
-	var err error
-
-	pr := flag.Bool("print", true, "print output to screen? default true")
-	jsonFile := flag.String("js", "", "output result to json? supply file path (otherwise empty string for disabled). default disabled")
-	debug := flag.Bool("d", false, "show debug? default false")
-	debugHTML := flag.Bool("dh", true, "output debug html? default true (but only matters if debug is enabled)")
-	seconds := flag.Int("s", 0, "how many seconds to run the sim for")
-	cfgFile := flag.String("c", "config.txt", "which profile to use")
-	detailed := flag.Bool("t", true, "log combat details")
+	flag.BoolVar(&opt.print, "print", true, "print output to screen? default true")
+	flag.StringVar(&opt.js, "js", "", "output result to json? supply file path (otherwise empty string for disabled). default disabled")
+	flag.BoolVar(&opt.debug, "d", false, "show debug? default false")
+	flag.BoolVar(&opt.debugHTML, "dh", true, "output debug html? default true (but only matters if debug is enabled)")
+	flag.IntVar(&opt.seconds, "s", 0, "how many seconds to run the sim for")
+	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use")
+	flag.BoolVar(&opt.detailed, "t", true, "log combat details")
 	// f := flag.String("o", "debug.log", "detailed log file")
 	// hp := flag.Float64("hp", 0, "hp mode: how much hp to deal damage to")
 	// showCaller := flag.Bool("caller", false, "show caller in debug low")
 	// fixedRand := flag.Bool("noseed", false, "use 0 for rand seed always - guarantee same results every time; only in single mode")
 	// avgMode := flag.Bool("a", false, "run sim multiple times and calculate avg damage (smooth out randomness). default false. note that there is no debug log in this mode")
-	w := flag.Int("w", 0, "number of workers to run when running multiple iterations; default 24")
-	i := flag.Int("i", 0, "number of iterations to run if we're running multiple")
-	multi := flag.String("m", "", "mutiple config mode")
-	mmMode := flag.Bool("minmax", false, "track the min/max run seed and rerun those (single mode with debug only)")
+	flag.IntVar(&opt.w, "w", 0, "number of workers to run when running multiple iterations; default 24")
+	flag.IntVar(&opt.i, "i", 0, "number of iterations to run if we're running multiple")
+	flag.StringVar(&opt.multi, "m", "", "mutiple config mode")
+	flag.BoolVar(&opt.minmax, "minmax", false, "track the min/max run seed and rerun those (single mode with debug only)")
+	flag.BoolVar(&opt.calc, "calc", false, "run sim in calc mode")
+
 	// t := flag.Int("t", 1, "target multiplier")
 
 	flag.Parse()
-	log.Println(*debugHTML)
 
-	if *multi != "" {
-		content, err := ioutil.ReadFile(*multi)
+	if opt.multi != "" {
+		content, err := ioutil.ReadFile(opt.multi)
 		if err != nil {
 			log.Println(err)
 			os.Exit(1)
 		}
 		files := strings.Split(strings.ReplaceAll(string(content), "\r\n", "\n"), "\n")
 		// lines := strings.Split(string(content), `\n`)
-		err = runMulti(files, *w, *i)
+		err = runMulti(files, opt.w, opt.i)
 		if err != nil {
 			log.Println(err)
 			os.Exit(1)
@@ -64,7 +79,13 @@ func main() {
 		return
 	}
 
-	src, err = ioutil.ReadFile(*cfgFile)
+	runSingle(opt)
+
+}
+
+func runSingle(o opts) {
+
+	src, err := ioutil.ReadFile(o.config)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
@@ -79,7 +100,7 @@ func main() {
 		if re.MatchString(row) {
 			match := re.FindStringSubmatch(row)
 			//read import
-			p := path.Join(path.Dir(*cfgFile), match[1])
+			p := path.Join(path.Dir(o.config), match[1])
 			src, err = ioutil.ReadFile(p)
 			if err != nil {
 				log.Println(err)
@@ -103,19 +124,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	if *i > 0 {
-		opts.Iteration = *i
+	if o.i > 0 {
+		opts.Iteration = o.i
 	}
-	if *w > 0 {
-		opts.Workers = *w
+	if o.w > 0 {
+		opts.Workers = o.w
 	}
-	if *debug {
-		opts.Debug = true
+	if o.debug {
+		opts.Debug = o.debug
 	}
-	if *seconds > 0 {
-		opts.Duration = *seconds
+	if o.seconds > 0 {
+		opts.Duration = o.seconds
 	}
-	if *detailed {
+	if o.detailed {
 		opts.LogDetails = true
 	}
 
@@ -145,7 +166,17 @@ func main() {
 
 		opts.DebugPaths = []string{"gsim://"}
 
-		result, err = gcsim.Run(data.String(), opts)
+		result, err = gcsim.Run(data.String(), opts, func(s *gcsim.Simulation) error {
+			if !o.calc {
+				return nil
+			}
+			var err error
+			s.C.Queue, err = createQueue(cfg, s)
+			if err != nil {
+				return err
+			}
+			return nil
+		})
 		if err != nil {
 			log.Println(err)
 			os.Exit(1)
@@ -155,7 +186,7 @@ func main() {
 
 		out := <-outC
 
-		if *debugHTML {
+		if o.debugHTML {
 			chars := make([]string, len(cfg.Characters.Profile))
 			for i, v := range cfg.Characters.Profile {
 				chars[i] = v.Base.Name
@@ -170,24 +201,34 @@ func main() {
 		result.Debug = out
 
 	} else {
-		result, err = gcsim.Run(data.String(), opts)
+		result, err = gcsim.Run(data.String(), opts, func(s *gcsim.Simulation) error {
+			if !o.calc {
+				return nil
+			}
+			var err error
+			s.C.Queue, err = createQueue(cfg, s)
+			if err != nil {
+				return err
+			}
+			return nil
+		})
 		if err != nil {
 			log.Println(err)
 			os.Exit(1)
 		}
 	}
 
-	if *pr {
+	if o.print {
 		fmt.Print(result.PrettyPrint())
 	}
 
-	if *mmMode && *debug {
+	if o.minmax && o.debug {
 
-		minResult, err := runSeeded(data.String(), result.MinSeed, opts, "debugmin")
+		minResult, err := runSeeded(data.String(), result.MinSeed, opts, o, "debugmin")
 		if err != nil {
 			log.Panic(err)
 		}
-		maxResult, err := runSeeded(data.String(), result.MaxSeed, opts, "debugmax")
+		maxResult, err := runSeeded(data.String(), result.MaxSeed, opts, o, "debugmax")
 		if err != nil {
 			log.Panic(err)
 		}
@@ -196,19 +237,18 @@ func main() {
 		fmt.Printf("Min seed: %v | DPS: %v\n", result.MaxSeed, maxResult.DPS)
 	}
 
-	if *jsonFile != "" {
+	if o.js != "" {
 		//try creating file to write to
 		result.Text = result.PrettyPrint()
 		data, _ := json.Marshal(result)
-		err := os.WriteFile(*jsonFile, data, 0644)
+		err := os.WriteFile(o.js, data, 0644)
 		if err != nil {
 			log.Panic(err)
 		}
 	}
-
 }
 
-func runSeeded(data string, seed int64, opts core.RunOpt, file string) (gcsim.Stats, error) {
+func runSeeded(data string, seed int64, opts core.RunOpt, o opts, file string) (gcsim.Stats, error) {
 	r, w, err := os.Pipe()
 	if err != nil {
 		log.Println(err)
@@ -232,7 +272,17 @@ func runSeeded(data string, seed int64, opts core.RunOpt, file string) (gcsim.St
 	parser := parse.New("single", data)
 	cfg, _, _ := parser.Parse()
 
-	sim, err := gcsim.NewSim(cfg, seed, opts)
+	sim, err := gcsim.NewSim(cfg, seed, opts, func(s *gcsim.Simulation) error {
+		if !o.calc {
+			return nil
+		}
+		var err error
+		s.C.Queue, err = createQueue(cfg, s)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
 		return gcsim.Stats{}, err
 	}
@@ -319,4 +369,24 @@ func runMulti(files []string, w, i int) error {
 		fmt.Printf("%10.2f|%10.2f|%10.2f|%10.2f|%10.10v|%10d|\n", r.DPS.Mean, r.DPS.Min, r.DPS.Max, r.DPS.SD, r.IsDamageMode, r.Iterations)
 	}
 	return nil
+}
+
+func createQueue(cfg core.Config, s *gcsim.Simulation) (core.QueueHandler, error) {
+	cust := make(map[string]int)
+	for i, v := range cfg.Rotation {
+		if v.Name != "" {
+			cust[v.Name] = i
+		}
+		// log.Println(v.Conditions)
+	}
+	for _, v := range cfg.Rotation {
+		if _, ok := s.C.CharByName(v.Target); !ok {
+			return nil, fmt.Errorf("invalid char in rotation %v", v.Target)
+		}
+	}
+
+	r := calcqueue.New(s.C)
+	r.SetActionList(cfg.Rotation)
+
+	return r, nil
 }
