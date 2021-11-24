@@ -144,7 +144,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	)
 
 	d.HitWeakPoint = true
-	d.AnimationFrames = f
+	// d.AnimationFrames = f
 
 	//add 15% since 360noscope
 

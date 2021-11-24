@@ -55,7 +55,6 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 			ffa[c.TalentLvlAttack()],
 		)
 		d.HitWeakPoint = true
-		d.AnimationFrames = f
 
 		d2 := c.Snapshot(
 			"Frost Flake Bloom",

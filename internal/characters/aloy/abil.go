@@ -36,7 +36,38 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	return f, a
 }
 
-// Skill
+// Standard aimed attack
+func (c *char) Aimed(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAim, p)
+
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 20
+	}
+
+	c.QueueDmgDynamicSnapshotDelay(func() *core.Snapshot {
+		d := c.Snapshot(
+			"Charge Shot",
+			core.AttackTagExtra,
+			// TODO: Not sure about CA ICD
+			core.ICDTagExtraAttack,
+			core.ICDGroupDefault,
+			core.StrikeTypePierce,
+			core.Cryo,
+			25,
+			aim[c.TalentLvlAttack()],
+		)
+		return &d
+	}, f, travel)
+
+	return f, a
+}
+
+// Skill - Handles main damage, bomblet, and coil effects
+// Has 3 parameters, "bomblets" = Number of bomblets that hit
+// "bomblet_coil_stacks" = Number of coil stacks gained
+// "delay" - Delay in frames before bomblets go off and coil stacks get added
+// Too many potential bomblet hit variations to keep syntax short, so we simplify how they can be handled here
 func (c *char) Skill(p map[string]int) (int, int) {
 
 	bomblets, ok := p["bomblets"]
