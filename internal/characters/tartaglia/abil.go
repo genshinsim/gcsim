@@ -99,7 +99,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if hitWeakPoint != 0 {
 		d.HitWeakPoint = true
 	}
-	d.AnimationFrames = f
+	// d.AnimationFrames = f
 	d.OnHitCallback = c.rtFlashCallback
 
 	c.QueueDmg(&d, travel+f)

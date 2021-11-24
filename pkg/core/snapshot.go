@@ -12,8 +12,7 @@ type Snapshot struct {
 	SelfHarm  bool
 	Targets   int //if TargetAll then not single target, resolve hitbox; other = target index
 
-	SourceFrame     int
-	AnimationFrames int //really only for amos bow...
+	SourceFrame int
 
 	Abil        string      //name of ability triggering the damage
 	WeaponClass WeaponClass //b.c. Gladiators...

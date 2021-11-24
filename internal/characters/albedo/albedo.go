@@ -181,7 +181,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		25,
 		skillTick[c.TalentLvlSkill()],
 	)
-	d.Targets = core.TargetAll
+	c.skillSnapshot.Targets = core.TargetAll
 	c.skillSnapshot.UseDef = true
 
 	// Reset ICD
@@ -202,6 +202,7 @@ func (c *char) skillHook() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		ds := args[1].(*core.Snapshot)
 		t := args[0].(core.Target)
+		dTrigger := args[1].(*core.Snapshot)
 		if c.Tags["elevator"] == 0 {
 			return false
 		}
@@ -210,6 +211,9 @@ func (c *char) skillHook() {
 		}
 		// Can't be triggered by itself when refreshing
 		if ds.Abil == "Abiogenesis: Solar Isotoma" {
+			return false
+		}
+		if dTrigger.Abil == "Abiogenesis: Solar Isotoma" {
 			return false
 		}
 		c.icdSkill = c.Core.F + 120 // every 2 seconds
@@ -273,7 +277,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.QueueDmg(&d, f)
 
-	d = c.Snapshot(
+	dBloom := c.Snapshot(
 		"Rite of Progeniture: Tectonic Tide (Bloom)",
 		core.AttackTagElementalBurst,
 		core.ICDTagElementalBurst,
@@ -283,7 +287,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		25,
 		burstPerBloom[c.TalentLvlSkill()],
 	)
-	d.Targets = core.TargetAll
+	dBloom.Targets = core.TargetAll
 
 	//check stacks
 	if c.Base.Cons >= 2 && c.Core.Status.Duration("albedoc2") > 0 {
@@ -291,12 +295,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Tags["c2"] = 0
 	}
 
+	// Blooms are generated on a slight delay from initial hit
+	// TODO: No precise frame data, guessing correct delay
 	for i := 0; i < hits; i++ {
-		x := d.Clone()
-		c.QueueDmg(&x, f)
+		x := dBloom.Clone()
+		c.QueueDmg(&x, f+30+i*5)
 	}
 
-	//self buff EM
+	//Party wide EM buff
 	for _, char := range c.Core.Chars {
 		val := make([]float64, core.EndStatType)
 		val[core.EM] = 120

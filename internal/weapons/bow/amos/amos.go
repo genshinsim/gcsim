@@ -34,13 +34,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return false
 		}
 		//calculate travel time
-		travel := float64(c.F-ds.SourceFrame-ds.AnimationFrames) / 60
+		travel := float64(c.F-ds.SourceFrame) / 60
 		stacks := int(travel / 0.1)
 		if stacks > 5 {
 			stacks = 5
 		}
 		ds.Stats[core.DmgP] += dmgpers * float64(stacks)
-		c.Log.Debugw("amos bow", "frame", c.F, "event", core.LogCalc, "stacks", stacks, "final dmg%", ds.Stats[core.DmgP])
+		c.Log.Debugw("amos bow", "frame", c.F, "event", core.LogCalc, "stacks", stacks, "final dmg%", ds.Stats[core.DmgP], "source_frame", ds.SourceFrame)
 		return false
 	}, fmt.Sprintf("amos-%v", char.Name()))
 

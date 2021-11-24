@@ -146,7 +146,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	)
 
 	d.HitWeakPoint = true
-	d.AnimationFrames = f
+	// d.AnimationFrames = f
 
 	c.QueueDmg(&d, travel+f)
 

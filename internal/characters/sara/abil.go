@@ -63,7 +63,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		aimChargeFull[c.TalentLvlAttack()],
 	)
 	d.HitWeakPoint = hitWeakPoint
-	d.AnimationFrames = f
+	// d.AnimationFrames = f
 
 	c.QueueDmg(&d, travel+f)
 
