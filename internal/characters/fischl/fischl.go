@@ -33,6 +33,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 
 	c.ozSource = -1
+	c.ozActiveUntil = -1
 
 	//register A4
 	c.a4()
