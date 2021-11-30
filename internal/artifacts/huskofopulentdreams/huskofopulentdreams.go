@@ -70,9 +70,12 @@ func New(c core.Character, s *core.Core, count int) {
 		}
 
 		// Initiate off-field stacking if off-field at start of the sim
-		if s.ActiveChar != c.CharIndex() {
-			c.AddTask(gainStackOfffield(s.F), "husk-4pc-off-field-gain", 1)
-		}
+		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+			if s.ActiveChar != c.CharIndex() {
+				c.AddTask(gainStackOfffield(s.F), "husk-4pc-off-field-gain", 1)
+			}
+			return true
+		}, "husk-4pc-off-field-stack-init")
 
 		s.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 			prev := args[0].(int)
