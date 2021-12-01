@@ -95,9 +95,6 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		if p["hold"] == 0 {
 			return 34, 34
 		}
-		if c.Base.Cons >= 2 {
-			return 34, 34 //press and hold have same cd
-		}
 		return 80, 80
 	case core.ActionBurst:
 		return 116, 116 //ok
@@ -297,7 +294,11 @@ func (c *char) holdE() {
 	}
 
 	c.Tags["grimheart"] = 0
-	c.SetCD(core.ActionSkill, 10*60+62)
+	cd := 10
+	if c.Base.Cons >= 2 {
+		cd = 4 //press and hold have same cd TODO: check if this is right
+	}
+	c.SetCD(core.ActionSkill, cd*60+62)
 }
 
 //ult 365 to 415, 60fps = 120
