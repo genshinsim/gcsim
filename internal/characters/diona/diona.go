@@ -88,11 +88,14 @@ func (c *char) a2() {
 }
 
 func (c *char) c6() {
-	c.Core.Health.AddIncHealBonus(func() float64 {
+	c.Core.Health.AddIncHealBonus(func(healedCharIndex int) float64 {
 		if c.Core.Status.Duration("dionaburst") == 0 {
 			return 0
 		}
 		char := c.Core.Chars[c.Core.ActiveChar]
+		if healedCharIndex != char.CharIndex() {
+			return 0
+		}
 		if char.HP()/char.MaxHP() <= 0.5 {
 			c.Core.Log.Debugw("diona c6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent)
 			return 0.3
