@@ -60,7 +60,9 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 		if ds.IsReactionDamage {
 			//call PreTransReaction hook
 			t.core.Events.Emit(core.OnTransReaction, t, ds)
-			damage = t.calcReactionDmg(ds)
+			damage = t.calcReactionDmg(ds, false)
+		} else if ds.IsOHCDamage {
+			damage = t.calcReactionDmg(ds, true)
 		} else {
 			//call PreAmpReaction hook if needed
 			if ds.ReactionType == core.Melt || ds.ReactionType == core.Vaporize {
@@ -263,7 +265,7 @@ func (t *Target) calcDmg(ds *core.Snapshot) (float64, bool) {
 	return damage, isCrit
 }
 
-func (t *Target) calcReactionDmg(ds *core.Snapshot) float64 {
+func (t *Target) calcReactionDmg(ds *core.Snapshot, isOHC bool) float64 {
 	em := ds.Stats[core.EM]
 	lvl := ds.CharLvl - 1
 	if lvl > 89 {
@@ -272,7 +274,11 @@ func (t *Target) calcReactionDmg(ds *core.Snapshot) float64 {
 	if lvl < 0 {
 		lvl = 0
 	}
-	ds.FlatDmg = ds.Mult * (1 + ((16 * em) / (2000 + em)) + ds.ReactBonus) * reactionLvlBase[lvl]
+
+	// If OHC, then the OHC code will already have FlatDmg included on the snapshot
+	if !isOHC {
+		ds.FlatDmg = ds.Mult * (1 + ((16 * em) / (2000 + em)) + ds.ReactBonus) * reactionLvlBase[lvl]
+	}
 
 	res := t.resist(ds.Element, ds.ActorIndex)
 	resmod := 1 - res/2

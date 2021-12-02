@@ -20,9 +20,10 @@ const (
 )
 
 type Flags struct {
-	DamageMode   bool
-	LogDebug     bool
-	ChildeActive bool
+	DamageMode    bool
+	LogDebug      bool // Used to determine logging level
+	ChildeActive  bool // Used for Childe +1 NA talent passive
+	OHCActiveChar int  // Shows which character currently has an active OHC proc. -1 = Non-active
 	// AmpReactionDidOccur bool
 	// AmpReactionType     ReactionType
 	// NextAttackMVMult    float64 // melt vape multiplier
