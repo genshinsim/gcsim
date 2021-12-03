@@ -13,6 +13,7 @@ func (a *AuraPyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		return a, false
 	}
 
+	reactionTriggered := true
 	switch ds.Element {
 	case core.Anemo:
 		ds.ReactionType = core.SwirlPyro
@@ -31,6 +32,7 @@ func (a *AuraPyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
+		reactionTriggered = false
 	case core.Hydro:
 		//vaporize + reduce
 		ds.ReactionType = core.Vaporize
@@ -53,7 +55,7 @@ func (a *AuraPyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		return a, false
 	}
 	if a.CurrentDurability < 0 {
-		return nil, true
+		return nil, reactionTriggered
 	}
-	return a, true
+	return a, reactionTriggered
 }

@@ -12,6 +12,8 @@ func (a *AuraCyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	if ds.Durability == 0 {
 		return a, false
 	}
+
+	reactionTriggered := true
 	switch ds.Element {
 	case core.Anemo:
 		ds.ReactionType = core.SwirlCryo
@@ -45,6 +47,7 @@ func (a *AuraCyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
+		reactionTriggered = false
 	case core.Electro:
 		//superconduct
 		ds.ReactionType = core.Superconduct
@@ -54,7 +57,7 @@ func (a *AuraCyro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		return a, false
 	}
 	if a.CurrentDurability < 0 {
-		return nil, true
+		return nil, reactionTriggered
 	}
-	return a, true
+	return a, reactionTriggered
 }

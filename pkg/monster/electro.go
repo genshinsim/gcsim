@@ -10,6 +10,8 @@ func (a *AuraElectro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	if ds.Durability == 0 {
 		return a, false
 	}
+
+	reactionTriggered := true
 	switch ds.Element {
 	case core.Anemo:
 		ds.ReactionType = core.SwirlElectro
@@ -48,13 +50,14 @@ func (a *AuraElectro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
+		reactionTriggered = false
 	default:
 		return a, false
 	}
 	if a.CurrentDurability < 0 {
-		return nil, true
+		return nil, reactionTriggered
 	}
-	return a, true
+	return a, reactionTriggered
 }
 
 /**

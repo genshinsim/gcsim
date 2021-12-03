@@ -12,6 +12,8 @@ func (a *AuraHydro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 	if ds.Durability == 0 {
 		return a, false
 	}
+
+	reactionTriggered := true
 	switch ds.Element {
 	case core.Anemo:
 		//this one doesn't do aoe damage for some reason
@@ -37,6 +39,7 @@ func (a *AuraHydro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		//refresh
 		a.Refresh(ds.Durability)
 		ds.Durability = 0
+		reactionTriggered = false
 	case core.Cryo:
 		//first reduce hydro durability by incoming cryo; capped at existing
 		red := a.Reduce(ds, 1)
@@ -58,7 +61,7 @@ func (a *AuraHydro) React(ds *core.Snapshot, t *Target) (Aura, bool) {
 		return a, false
 	}
 	if a.CurrentDurability < 0 {
-		return nil, true
+		return nil, reactionTriggered
 	}
-	return a, true
+	return a, reactionTriggered
 }

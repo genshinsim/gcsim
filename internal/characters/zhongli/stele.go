@@ -4,20 +4,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
-func (c *char) newSteele(f, dur, max int) {
+func (c *char) newStele(dur int, max int) {
 	//deal damage when created
-	// d := c.Snapshot(
-	// 	"Stone Stele (Initial)",
-	// 	core.AttackTagElementalArt,
-	// 	core.ICDTagElementalArt,
-	// 	core.ICDGroupDefault,
-	// 	core.StrikeTypeBlunt,
-	// 	core.Geo,
-	// 	50,
-	// 	skill[c.TalentLvlSkill()],
-	// )
-	// d.FlatDmg = 0.019 * c.HPMax
-	// d.Targets = core.TargetAll
+	d := c.Snapshot(
+		"Stone Stele (Initial)",
+		core.AttackTagElementalArt,
+		core.ICDTagElementalArt,
+		core.ICDGroupDefault,
+		core.StrikeTypeBlunt,
+		core.Geo,
+		50,
+		skill[c.TalentLvlSkill()],
+	)
+	d.FlatDmg = 0.019 * c.HPMax
+	d.Targets = core.TargetAll
+	// Damage proc is near instant upon creation
+	c.QueueDmg(&d, 0)
 
 	//create a construct
 	con := &stoneStele{
@@ -28,9 +30,9 @@ func (c *char) newSteele(f, dur, max int) {
 
 	num := c.Core.Constructs.CountByType(core.GeoConstructZhongliSkill)
 
-	c.Core.Constructs.New(con, num == c.maxSteele)
+	c.Core.Constructs.New(con, num == c.maxStele)
 
-	c.steeleCount = c.Core.Constructs.CountByType(core.GeoConstructZhongliSkill)
+	c.steleCount = c.Core.Constructs.CountByType(core.GeoConstructZhongliSkill)
 
 	c.Core.Log.Debugw(
 		"Stele added",
@@ -38,7 +40,7 @@ func (c *char) newSteele(f, dur, max int) {
 		"event", core.LogCharacterEvent,
 		"char", c.Index,
 		"orig_count", num,
-		"cur_count", c.steeleCount,
+		"cur_count", c.steleCount,
 		"max_hit", max,
 		"next_tick", c.Core.F+120,
 	)

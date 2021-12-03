@@ -207,7 +207,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	return f, a
 }
 
-//p is the number of mines that hit, up to ??
+// Has two parameters, "bounce" determines the number of bounces that hit
+// "mine" determines the number of mines that hit the enemy
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
@@ -231,6 +232,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	for i := 0; i < bounce; i++ {
 		x := d.Clone()
+
+		// 3rd bounce is 2B
+		if i == 2 {
+			x.Durability = 50
+		}
 		c.AddTask(func() {
 			c.Core.Combat.ApplyDamage(&x)
 			c.addSpark()
@@ -248,7 +254,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//8 mines.. no idea how many normally hits
 	d = c.Snapshot(
-		"Jumpy Dumpty",
+		"Jumpy Dumpty Mine Hit",
 		core.AttackTagElementalArt,
 		core.ICDTagKleeFireDamage,
 		core.ICDGroupDefault,
