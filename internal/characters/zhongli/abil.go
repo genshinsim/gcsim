@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if p["hold"] == 1 {
 		c.skillHold(f, max, true)
 		cd = 720
-	} else if p["hold_nosteele"] == 1 {
+	} else if p["hold_nostele"] == 1 {
 		c.skillHold(f, max, false)
 		cd = 720
 	} else {
@@ -75,10 +75,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 }
 
 func (c *char) skillPress(f, max int) {
-	c.newSteele(f, 1860, max)
+	c.AddTask(func() {
+		c.newStele(1860, max)
+	}, "zhongli-create-stele", f)
 }
 
-func (c *char) skillHold(f, max int, createSteele bool) {
+func (c *char) skillHold(f, max int, createStele bool) {
 	//hold does dmg
 	d := c.Snapshot(
 		"Stone Stele (Hold)",
@@ -95,13 +97,17 @@ func (c *char) skillHold(f, max int, createSteele bool) {
 
 	c.QueueDmg(&d, f-1)
 
-	//create a steele if none exists and desired by player
-	if (c.steeleCount == 0) && createSteele {
-		c.newSteele(f, 1860, max) //31 seconds
+	//create a stele if none exists and desired by player
+	if (c.steleCount == 0) && createStele {
+		c.AddTask(func() {
+			c.newStele(1860, max) //31 seconds
+		}, "zhongli-create-stele", f)
 	}
 
-	//make a shield
-	c.addJadeShield()
+	//make a shield - enemy debuff arrows appear 3-5 frames after the damage number shows up in game
+	c.AddTask(func() {
+		c.addJadeShield()
+	}, "zhongli-create-shield", f+3)
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {

@@ -17,8 +17,8 @@ func (s *stoneStele) Type() core.GeoConstructType {
 }
 
 func (s *stoneStele) OnDestruct() {
-	if s.c.steeleCount > 0 {
-		s.c.steeleCount--
+	if s.c.steleCount > 0 {
+		s.c.steleCount--
 	}
 }
 

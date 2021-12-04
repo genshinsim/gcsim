@@ -7,9 +7,9 @@ import (
 
 type char struct {
 	*character.Tmpl
-	maxSteele   int
-	steeleCount int
-	energyICD   int
+	maxStele   int
+	steleCount int
+	energyICD  int
 }
 
 func init() {
@@ -30,9 +30,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.NormalHitNum = 6
 
-	c.maxSteele = 1
+	c.maxStele = 1
 	if c.Base.Cons >= 1 {
-		c.maxSteele = 2
+		c.maxStele = 2
 	}
 
 	c.a2()
