@@ -69,7 +69,8 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 				})
 				s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 					t := args[0].(core.Target)
-					if s.C.Shields.IsShielded() {
+					ds := args[1].(*core.Snapshot)
+					if s.C.Shields.IsShielded() && s.C.ActiveChar == ds.ActorIndex {
 						t.AddResMod("geo res", core.ResistMod{
 							Duration: 15 * 60,
 							Ele:      core.Geo,
@@ -79,17 +80,14 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 					return false
 				}, "geo res")
 
-				for _, c := range s.C.Chars {
-					val := make([]float64, core.EndStatType)
-					val[core.DmgP] = 0.15
-					c.AddMod(core.CharStatMod{
-						Key: "geo-res",
-						Amount: func(a core.AttackTag) ([]float64, bool) {
-							return val, s.C.Shields.IsShielded()
-						},
-						Expiry: -1,
-					})
-				}
+				s.C.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+					ds := args[1].(*core.Snapshot)
+					if s.C.Shields.IsShielded() && s.C.ActiveChar == ds.ActorIndex {
+						ds.Stats[core.DmgP] += .15
+						s.C.Log.Debugw("geo resonance + 15% DMG pre damage  (shielded)", "frame", s.C.F, "event", core.LogCalc, "char", ds.ActorIndex, "next", ds.Stats[core.DmgP])
+					}
+					return false
+				}, "geo res")
 
 			case core.Anemo:
 				s.C.Log.Debugw("adding anemo resonance", "frame", s.C.F, "event", core.LogSimEvent)
