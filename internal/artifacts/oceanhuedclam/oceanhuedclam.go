@@ -35,7 +35,8 @@ func New(c core.Character, s *core.Core, count int) {
 		bubbleICDExpiry := 0
 
 		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
-			s.Flags.OHCActiveChar = -1
+			// Shows which character currently has an active OHC proc. -1 = Non-active
+			s.Flags.Custom["OHCActiveChar"] = -1
 			return true
 		}, "OHC-init")
 
@@ -47,8 +48,9 @@ func New(c core.Character, s *core.Core, count int) {
 			if src != c.CharIndex() {
 				return false
 			}
+
 			// OHC must either be inactive or this equipped character has to have an OHC bubble active
-			if !((s.Flags.OHCActiveChar == -1) || (s.Flags.OHCActiveChar == c.CharIndex())) {
+			if !((s.Flags.Custom["OHCActiveChar"] == -1) || (s.Flags.Custom["OHCActiveChar"] == c.CharIndex())) {
 				return false
 			}
 
@@ -62,7 +64,7 @@ func New(c core.Character, s *core.Core, count int) {
 				bubbleDurationExpiry = s.F + 3*60
 				bubbleICDExpiry = s.F + 3.5*60
 
-				s.Flags.OHCActiveChar = c.CharIndex()
+				s.Flags.Custom["OHCActiveChar"] = c.CharIndex()
 
 				// Bubble pop task
 				c.AddTask(func() {
@@ -83,7 +85,7 @@ func New(c core.Character, s *core.Core, count int) {
 					c.QueueDmg(&d, 0)
 
 					// Reset
-					s.Flags.OHCActiveChar = -1
+					s.Flags.Custom["OHCActiveChar"] = -1
 					bubbleHealStacks = 0
 				}, "ohc-bubble-pop", 3*60)
 
