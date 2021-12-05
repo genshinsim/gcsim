@@ -66,7 +66,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	src := c.Core.F
 
 	// Initial damage
-	c.QueueDmgDynamic(func() *core.Snapshot {
+	// Both healing and damage are snapshot
+	c.AddTask(func() {
 		d := c.Snapshot(
 			"Herald of Frost: Initial Damage",
 			core.AttackTagElementalArt,
@@ -80,26 +81,35 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		d.Targets = core.TargetAll
 
 		// One healing proc happens immediately on cast
-		c.Core.Health.HealActive(c.Index, c.heal(&d, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()))
+		c.Core.Health.HealActive(c.Index, c.healSnapshot(&d, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()))
 
-		return &d
-	}, f)
+		// Healing and damage instances are snapshot
+		// Separately cloned snapshots are fed into each function to ensure nothing interferes with each other
 
-	// Queue up continuous healing instances
-	// No exact frame data on when the healing ticks happen. Just roughly guessing here
-	// Healing ticks happen 3 additional times during the skill - assume ticks are roughly 4.5s apart
-	// so in sec (0 = skill cast), 1, 5.5, 10, 14.5
-	c.AddTask(c.skillHealTickTask(src), "qiqi-skill-heal-tick", f+4.5*60)
+		// Queue up continuous healing instances
+		// No exact frame data on when the healing ticks happen. Just roughly guessing here
+		// Healing ticks happen 3 additional times during the skill - assume ticks are roughly 4.5s apart
+		// so in sec (0 = skill cast), 1, 5.5, 10, 14.5
+		c.skillHealSnapshot = d.Clone()
+		c.AddTask(c.skillHealTickTask(src), "qiqi-skill-heal-tick", 4.5*60)
 
-	// Queue up damage swipe instances.
-	// No exact frame data on when the damage ticks happen. Just roughly guessing here
-	// Occurs 9 times over the course of the skill
-	// Once shortly after initial cast, then 8 additional procs over the rest of the duration
-	// Each proc occurs in "pairs" of two swipes each spaced around 2.25s apart
-	// The time between each swipe in a pair is about 1s
-	// No exact frame data available plus the skill duration is affected by hitlag
-	// Damage procs occur (in sec 0 = skill cast): 1.5, 3.75, 4.75, 7, 8, 10.25, 11.25, 13.5, 14.5
-	c.AddTask(c.skillDmgTickTask(src, 60), "qiqi-skill-dmg-tick", f+30)
+		// Queue up damage swipe instances.
+		// No exact frame data on when the damage ticks happen. Just roughly guessing here
+		// Occurs 9 times over the course of the skill
+		// Once shortly after initial cast, then 8 additional procs over the rest of the duration
+		// Each proc occurs in "pairs" of two swipes each spaced around 2.25s apart
+		// The time between each swipe in a pair is about 1s
+		// No exact frame data available plus the skill duration is affected by hitlag
+		// Damage procs occur (in sec 0 = skill cast): 1.5, 3.75, 4.75, 7, 8, 10.25, 11.25, 13.5, 14.5
+		dDmgTicks := d.Clone()
+		dDmgTicks.Abil = "Herald of Frost: Skill Damage"
+		dDmgTicks.Mult = skillDmgCont[c.TalentLvlSkill()]
+		dDmgTicks.Targets = core.TargetAll
+		c.AddTask(c.skillDmgTickTask(src, &dDmgTicks, 60), "qiqi-skill-dmg-tick", 30)
+
+		// Apply damage needs to take place after above takes place to ensure stats are handled correctly
+		c.QueueDmg(&d, 0)
+	}, "qiqi-skill-activation", f)
 
 	c.SetCD(core.ActionSkill, 30*60)
 
@@ -109,7 +119,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 // Handles skill damage swipe instances
 // Also handles C1:
 // When the Herald of Frost hits an opponent marked by a Fortune-Preserving Talisman, Qiqi regenerates 2 Energy.
-func (c *char) skillDmgTickTask(src int, lastTickDuration int) func() {
+func (c *char) skillDmgTickTask(src int, d *core.Snapshot, lastTickDuration int) func() {
 	return func() {
 		if c.Core.Status.Duration("qiqiskill") == 0 {
 			return
@@ -120,29 +130,20 @@ func (c *char) skillDmgTickTask(src int, lastTickDuration int) func() {
 			return
 		}
 
-		d := c.Snapshot(
-			"Herald of Frost: Skill Damage",
-			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			25,
-			skillDmgCont[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
+		// Clones initial snapshot
+		dmgSnapshot := d.Clone()
 
 		if c.Base.Cons >= 1 {
-			d.OnHitCallback = c.c1
+			dmgSnapshot.OnHitCallback = c.c1
 		}
 
-		c.Core.Combat.ApplyDamage(&d)
+		c.Core.Combat.ApplyDamage(&dmgSnapshot)
 
 		nextTick := 60
 		if lastTickDuration == 60 {
 			nextTick = 135
 		}
-		c.AddTask(c.skillDmgTickTask(src, nextTick), "qiqi-skill-dmg-tick", nextTick)
+		c.AddTask(c.skillDmgTickTask(src, d, nextTick), "qiqi-skill-dmg-tick", nextTick)
 	}
 }
 
@@ -167,25 +168,14 @@ func (c *char) skillHealTickTask(src int) func() {
 			return
 		}
 
-		// Create a temporary snapshot to get the atk mods included
-		d := c.Snapshot(
-			"Herald of Frost: Continuous Heal Proc",
-			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			25,
-			0,
-		)
-		c.Core.Health.HealActive(c.Index, c.heal(&d, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()))
+		c.Core.Health.HealActive(c.Index, c.healSnapshot(&c.skillHealSnapshot, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()))
 
 		// Queue next instance
 		c.AddTask(c.skillHealTickTask(src), "qiqi-skill-heal-tick", 4.5*60)
 	}
 }
 
-// Implements burst and applies Talisman. Main Talisman functions are handled elsewhere
+// Only applies burst damage. Main Talisman functions are handled in qiqi.go
 func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
@@ -211,8 +201,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	return f, a
 }
 
-// Helper function to calculate healing amount from a snapshot instance, which has all mods applied
-func (c *char) heal(d *core.Snapshot, healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
+// Helper function to calculate healing amount dynamically using current character stats, which has all mods applied
+func (c *char) healDynamic(healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
+	atk := c.Base.Atk + c.Weapon.Atk*(1+c.Stat(core.ATKP)) + c.Stat(core.ATK)
+	heal := (healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]) * (1 + c.Stat(core.Heal))
+	return heal
+}
+
+// Helper function to calculate healing amount from a snapshot instance
+func (c *char) healSnapshot(d *core.Snapshot, healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
 	atk := d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK]
 	heal := (healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]) * (1 + d.Stats[core.Heal])
 	return heal

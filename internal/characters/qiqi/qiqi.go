@@ -15,6 +15,7 @@ type char struct {
 	talismanICDExpiry []int
 	c4ICDExpiry       int
 	skillLastUsed     int
+	skillHealSnapshot core.Snapshot // Required as both on hit procs and continuous healing need to use this
 }
 
 // TODO: Not implemented - C6 (revival mechanic, not suitable for sim)
@@ -33,8 +34,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.talismanExpiry = make([]int, len(c.Core.Targets))
-	c.talismanICDExpiry = make([]int, len(c.Core.Targets))
 	c.skillLastUsed = 0
 
 	c.talismanHealHook()
@@ -42,6 +41,14 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.a1()
 
 	return &c, nil
+}
+
+// Ensures the set of targets are initialized properly
+func (c *char) Init(index int) {
+	c.Tmpl.Init(index)
+
+	c.talismanExpiry = make([]int, len(c.Core.Targets))
+	c.talismanICDExpiry = make([]int, len(c.Core.Targets))
 }
 
 func (c *char) talismanHealHook() {
@@ -56,18 +63,7 @@ func (c *char) talismanHealHook() {
 			return false
 		}
 
-		// Talisman healing is dynamic, so need to create a new snapshot instance for it
-		dsHeal := c.Snapshot(
-			"Qiqi Talisman Healing",
-			core.AttackTagElementalBurst,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			0,
-			0,
-		)
-		healAmt := c.heal(&dsHeal, burstHealPer, burstHealFlat, c.TalentLvlBurst())
+		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
 		c.Core.Health.HealIndex(c.Index, ds.ActorIndex, healAmt)
 		c.talismanICDExpiry[t.Index()] = c.Core.F + 60
 
@@ -119,9 +115,8 @@ func (c *char) onNACAHitHook() {
 		}
 
 		// Qiqi NA/CA healing proc in skill duration
-		// TODO: Unclear if this is snapshot or not - KQM library doesn't specify. Currently assume it doesn't
 		if c.Core.Status.Duration("qiqiskill") > 0 {
-			c.Core.Health.HealAll(c.Index, c.heal(ds, skillHealOnHitPer, skillHealOnHitFlat, c.TalentLvlSkill()))
+			c.Core.Health.HealAll(c.Index, c.healSnapshot(&c.skillHealSnapshot, skillHealOnHitPer, skillHealOnHitFlat, c.TalentLvlSkill()))
 		}
 
 		return false
