@@ -11,6 +11,8 @@ func init() {
 	core.RegisterSetFunc("maidenbeloved", New)
 }
 
+// 2 piece: Character Healing Effectiveness +15%
+// 4 piece: Using an Elemental Skill or Burst increases healing received by all party members by 20% for 10s.
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
@@ -36,7 +38,8 @@ func New(c core.Character, s *core.Core, count int) {
 			return false
 		}, fmt.Sprintf("maid 4pc - %v", c.Name()))
 
-		s.Health.AddIncHealBonus(func() float64 {
+		// Applies to all characters, so no filters needed
+		s.Health.AddIncHealBonus(func(healedCharIndex int) float64 {
 			if s.F < dur {
 				return 0.2
 			}

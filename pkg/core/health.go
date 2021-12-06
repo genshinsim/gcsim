@@ -5,68 +5,68 @@ type HealthHandler interface {
 	HealActive(caller int, amt float64)
 	HealAll(caller int, amt float64)
 	HealAllPercent(caller int, percent float64)
-	AddIncHealBonus(f func() float64)
+	AddIncHealBonus(f func(healedCharIndex int) float64)
 
 	AddDamageReduction(f func() (float64, bool))
 	HurtChar(dmg float64, ele EleType)
 }
 
 type HealthCtrl struct {
-	healBonus []func() float64
+	healBonus []func(healedCharIndex int) float64 // Array that holds functions calculating incoming healing bonus
 	dr        []func() (float64, bool)
 	core      *Core
 }
 
 func NewHealthCtrl(c *Core) *HealthCtrl {
 	return &HealthCtrl{
-		healBonus: make([]func() float64, 0, 10),
-		dr:        make([]func() (float64, bool), 0, 10),
+		healBonus: make([]func(healedCharIndex int) float64, 0, 20),
+		dr:        make([]func() (float64, bool), 0, 20),
 		core:      c,
 	}
 }
 
 func (h *HealthCtrl) HealActive(caller int, hp float64) {
-	heal := h.healBonusMult() * hp
+	heal := h.healBonusMult(h.core.ActiveChar) * hp
 	h.core.Chars[h.core.ActiveChar].ModifyHP(heal)
 	h.core.Events.Emit(OnHeal, caller, h.core.ActiveChar, heal)
-	h.core.Log.Debugw("healing", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", h.core.ActiveChar, "amount", hp, "bonus", h.healBonusMult(), "final", h.core.Chars[h.core.ActiveChar].HP())
+	h.core.Log.Debugw("healing", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", h.core.ActiveChar, "amount", hp, "bonus", h.healBonusMult(h.core.ActiveChar), "final", h.core.Chars[h.core.ActiveChar].HP())
 }
 
 func (h *HealthCtrl) HealAll(caller int, hp float64) {
 	for i, c := range h.core.Chars {
-		heal := h.healBonusMult() * hp
+		heal := h.healBonusMult(i) * hp
 		c.ModifyHP(heal)
 		h.core.Events.Emit(OnHeal, caller, i, heal)
-		h.core.Log.Debugw("healing (all)", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", i, "amount", hp, "bonus", h.healBonusMult(), "final", h.core.Chars[h.core.ActiveChar].HP())
+		h.core.Log.Debugw("healing (all)", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", i, "amount", hp, "bonus", h.healBonusMult(i), "final", h.core.Chars[h.core.ActiveChar].HP())
 	}
 }
 
 func (h *HealthCtrl) HealAllPercent(caller int, percent float64) {
 	for i, c := range h.core.Chars {
 		hp := c.MaxHP() * percent
-		heal := h.healBonusMult() * hp
+		heal := h.healBonusMult(i) * hp
 		c.ModifyHP(heal)
 		h.core.Events.Emit(OnHeal, caller, i, heal)
-		h.core.Log.Debugw("healing (all)", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", i, "amount", hp, "bonus", h.healBonusMult(), "final", h.core.Chars[h.core.ActiveChar].HP())
+		h.core.Log.Debugw("healing (all)", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", i, "amount", hp, "bonus", h.healBonusMult(i), "final", h.core.Chars[h.core.ActiveChar].HP())
 	}
 }
 
 func (h *HealthCtrl) HealIndex(caller int, index int, hp float64) {
-	heal := h.healBonusMult() * hp
+	heal := h.healBonusMult(index) * hp
 	h.core.Chars[index].ModifyHP(heal)
 	h.core.Events.Emit(OnHeal, caller, index, heal)
-	h.core.Log.Debugw("healing", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", index, "amount", hp, "bonus", h.healBonusMult(), "final", h.core.Chars[h.core.ActiveChar].HP())
+	h.core.Log.Debugw("healing", "frame", h.core.F, "event", LogHealEvent, "frame", h.core.F, "char", index, "amount", hp, "bonus", h.healBonusMult(index), "final", h.core.Chars[h.core.ActiveChar].HP())
 }
 
-func (h *HealthCtrl) healBonusMult() float64 {
+func (h *HealthCtrl) healBonusMult(healedCharIndex int) float64 {
 	var sum float64 = 1
 	for _, f := range h.healBonus {
-		sum += f()
+		sum += f(healedCharIndex)
 	}
 	return sum
 }
 
-func (h *HealthCtrl) AddIncHealBonus(f func() float64) {
+func (h *HealthCtrl) AddIncHealBonus(f func(healedCharIndex int) float64) {
 	h.healBonus = append(h.healBonus, f)
 }
 
