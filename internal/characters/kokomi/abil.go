@@ -145,14 +145,7 @@ func (c *char) skillTick(d *core.Snapshot) {
 
 	c.skillLastTick = c.Core.F
 
-	// Particles are 0~1 (1:2) on every damage instance
-	if c.Core.Rand.Float64() < .6667 {
-		c.QueueParticle("kokomi", 1, core.Hydro, 100)
-	}
-
-	c.skillLastTick = c.Core.F
-
-	// C2 handling
+	// C2 handling - believe this is an additional instance of flat healing
 	// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
 	// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
 	if c.Base.Cons >= 2 {

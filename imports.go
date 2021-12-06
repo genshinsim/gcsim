@@ -52,6 +52,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/lavawalker"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/noblesse"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/oceanhuedclam"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/paleflame"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/reminiscence"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/seal"
