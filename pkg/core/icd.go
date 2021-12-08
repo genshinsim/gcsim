@@ -17,6 +17,7 @@ const (
 	AttackTagOverloadDamage
 	AttackTagSuperconductDamage
 	AttackTagECDamage
+	AttackTagShatter
 	AttackTagSwirlPyro
 	AttackTagSwirlHydro
 	AttackTagSwirlCryo
@@ -47,6 +48,7 @@ const (
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
 	ICDTagECDamage
+	ICDTagShatter
 	ICDTagSwirlPyro
 	ICDTagSwirlHydro
 	ICDTagSwirlCryo
