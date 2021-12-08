@@ -16,27 +16,30 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		travel = 20
 	}
 
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Pyro,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
-
-	c.AddTask(func() {
-		// Technically seals are earned on hitting the enemy, but we just keep it here instead of an event
+	done := false
+	addSeal := func(t core.Target, ae *core.AttackEvent) {
+		if done {
+			return
+		}
 		if c.Tags["seal"] < c.maxTags {
 			c.Tags["seal"]++
 		}
 		c.sealExpiry = c.Core.F + 600
 		c.Core.Log.Debugw("yanfei gained a seal from normal attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		done = true
+	}
 
-		c.Core.Combat.ApplyDamage(&d)
-	}, "yanfei-attack", f+travel)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 25,
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f+travel, addSeal)
 
 	c.AdvanceNormalIndex()
 
@@ -68,20 +71,19 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
-	d := c.Snapshot(
-		"Charge Attack",
-		core.AttackTagExtra,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Pyro,
-		25,
-		charge[stacks][c.TalentLvlAttack()],
-	)
-	d.Targets = core.TargetAll
-
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge Attack",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Pyro,
+		Durability: 25,
+		Mult:       charge[stacks][c.TalentLvlAttack()],
+	}
 	// TODO: Not sure of snapshot timing
-	c.QueueDmg(&d, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
 
 	c.Core.Log.Debugw("yanfei charge attack consumed seals", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
 
@@ -100,30 +102,33 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	c.AddTask(func() {
-		d := c.Snapshot(
-			"Signed Edict",
-			core.AttackTagElementalArt,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeBlunt,
-			core.Pyro,
-			25,
-			skill[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
-
+	done := false
+	addSeal := func(t core.Target, ae *core.AttackEvent) {
+		if done {
+			return
+		}
 		// Create max seals on hit
 		if c.Tags["seal"] < c.maxTags {
 			c.Tags["seal"] = c.maxTags
 		}
 		c.sealExpiry = c.Core.F + 600
-
 		c.Core.Log.Debugw("yanfei gained max seals", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		done = true
+	}
 
-		c.Core.Combat.ApplyDamage(&d)
-
-	}, "yanfei-skill", f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Signed Edict",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Pyro,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+	// TODO: Not sure of snapshot timing
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, addSeal)
 
 	c.QueueParticle("yanfei", 3, core.Pyro, f+100)
 
@@ -148,34 +153,38 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			if a == core.AttackTagExtra {
 				return m, true
 			}
-			return nil, false
+			return m, false
 		},
 		Expiry: c.Core.F + 15*60,
 	})
 
-	c.AddTask(func() {
-		d := c.Snapshot(
-			"Done Deal",
-			core.AttackTagElementalBurst,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeBlunt,
-			core.Pyro,
-			50,
-			burst[c.TalentLvlBurst()],
-		)
-		d.Targets = core.TargetAll
-
+	done := false
+	addSeal := func(t core.Target, ae *core.AttackEvent) {
+		if done {
+			return
+		}
 		// Create max seals on hit
 		if c.Tags["seal"] < c.maxTags {
 			c.Tags["seal"] = c.maxTags
 		}
 		c.sealExpiry = c.Core.F + 600
-
 		c.Core.Log.Debugw("yanfei gained max seals", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		done = true
+	}
 
-		c.Core.Combat.ApplyDamage(&d)
-	}, "yanfei-burst", f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Signed Edict",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Pyro,
+		Durability: 50,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, addSeal)
 
 	c.AddTask(c.burstAddSealHook(), "burst-add-seals-task", 60)
 
