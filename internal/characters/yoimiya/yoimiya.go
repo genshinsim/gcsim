@@ -49,7 +49,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) a2() {
-
 	c.AddMod(core.CharStatMod{
 		Key:    "yoimiya-a2",
 		Expiry: -1,
