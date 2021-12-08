@@ -68,6 +68,29 @@ func min(a, b core.Durability) core.Durability {
 	return a
 }
 
+func (r *Reactable) ShatterCheck(a *core.AttackEvent) {
+	if a.Info.StrikeType != core.StrikeTypeBlunt || r.Durability[core.Frozen] < zeroDur {
+		return
+	}
+	//remove 200 freeze gauge if availabe
+	r.Durability[core.Frozen] -= 200
+	r.checkFreeze()
+	//trigger shatter attack
+	ai := core.AttackInfo{
+		ActorIndex:       a.Info.ActorIndex,
+		DamageSrc:        r.self.Index(),
+		Abil:             string(core.Shatter),
+		AttackTag:        core.AttackTagShatter,
+		ICDTag:           core.ICDTagShatter,
+		ICDGroup:         core.ICDGroupReactionA,
+		Element:          core.Physical,
+		IgnoreDefPercent: 1,
+	}
+	ai.FlatDmg = 1.5 * r.calcReactionDmg(ai)
+	r.core.Combat.QueueAttack(ai, core.AttackPattern{SelfHarm: true}, -1, 1, superconductPhysShred)
+
+}
+
 //add to freeze durability and return amount of durability consumed
 func (r *Reactable) triggerFreeze(a, b core.Durability) core.Durability {
 	d := min(a, b)
