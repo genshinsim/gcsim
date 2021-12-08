@@ -44,6 +44,7 @@ func (r *Reactable) ActiveAuraString() []string {
 }
 
 func (r *Reactable) React(a *core.AttackEvent) {
+	//before all else, check for shatter first
 	switch count := r.auraCount(); count {
 	case 0:
 		r.tryAttach(a.Info.Element, &a.Info.Durability)
@@ -78,9 +79,13 @@ func (r *Reactable) React(a *core.AttackEvent) {
 			r.tryVaporize(a)
 			r.tryFreeze(a)
 		case core.Anemo:
-			//try swirlEle
+			r.trySwirlElectro(a)
+			r.trySwirlHydro(a)
+			r.trySwirlCryo(a)
+			r.trySwirlPyro(a)
+			r.trySwirlFrozen(a)
 		case core.Geo:
-			//try crystallize
+			r.tryCrystallize(a)
 		case core.Dendro:
 			//nothing yet
 
@@ -169,50 +174,6 @@ func (r *Reactable) calcReactionDmg(atk core.AttackInfo) float64 {
 	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl]
 }
 
-// func (r *Reactable) snapshotFrom(
-// 	charIndex int,
-// 	name string,
-// 	a core.AttackTag,
-// 	icd core.ICDTag,
-// 	g core.ICDGroup,
-// 	st core.StrikeType,
-// 	e core.EleType,
-// 	d core.Durability,
-// 	mult float64,
-// ) core.Snapshot {
-// 	//grab char from core
-
-// 	ds := core.Snapshot{
-// 		Abil:        name,
-// 		ActorEle:    char.Ele(),
-// 		Actor:       char.Name(),
-// 		ActorIndex:  charIndex,
-// 		CharLvl:     char.Level(),
-// 		SourceFrame: r.core.F,
-// 		ImpulseLvl:  1,
-// 		//attack related
-// 		AttackTag:  a,
-// 		ICDTag:     icd,
-// 		ICDGroup:   g,
-// 		Durability: d,
-// 		StrikeType: st,
-// 		Element:    e,
-
-// 		//targetting info
-// 		Targets:   core.TargetAll,
-// 		DamageSrc: r.self.Source(),
-
-// 		//no stats, should never get used
-// 		Stats: make([]float64, core.EndStatType),
-// 	}
-
-// 	//allow artifact/weapon etc... to change the snapshot as needed
-// 	r.core.Events.Emit(core.OnCreateReactionSnapshot, &ds)
-// 	ds.FlatDmg = mult * (1 + ((16 * em) / (2000 + em)) + ds.ReactBonus) * reactionLvlBase[lvl]
-
-// 	return ds
-// }
-
 func (r *Reactable) attach(e core.EleType, dur core.Durability, m core.Durability) {
 	//calculate duration based on dur
 	r.DecayRate[e] = m * dur / (6*dur + 420)
@@ -275,11 +236,7 @@ func (r *Reactable) Tick() {
 		r.DecayRate[core.Frozen] += frzDelta
 		r.Durability[core.Frozen] -= r.DecayRate[core.Frozen]
 
-		//unfreeze
-		if r.Durability[core.Frozen] <= zeroDur {
-			r.Durability[core.Frozen] = 0
-			r.core.Events.Emit(core.OnAuraDurabilityDepleted, core.Frozen)
-		}
+		r.checkFreeze()
 	} else if r.DecayRate[core.Frozen] > frzDecayCap { //otherwise ramp down decay rate
 		r.DecayRate[core.Frozen] -= frzDelta * 2
 

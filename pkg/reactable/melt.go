@@ -3,6 +3,9 @@ package reactable
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (r *Reactable) tryMelt(a *core.AttackEvent) {
+	if a.Info.Durability < zeroDur {
+		return
+	}
 	if r.Durability[core.Frozen] > zeroDur {
 		return
 	}
@@ -31,6 +34,9 @@ func (r *Reactable) tryMelt(a *core.AttackEvent) {
 }
 
 func (r *Reactable) tryMeltFrozen(a *core.AttackEvent) {
+	if a.Info.Durability < zeroDur {
+		return
+	}
 	if r.Durability[core.Frozen] < zeroDur {
 		return
 	}
