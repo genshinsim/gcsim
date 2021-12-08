@@ -1,8 +1,6 @@
 package dragonbane
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -15,23 +13,20 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	dmg := 0.16 + float64(r)*0.04
 
-	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		t := args[0].(core.Target)
-		atk := args[1].(*core.AttackEvent)
-
-		if atk.Info.ActorIndex != char.CharIndex() {
-			return false
-		}
-
-		if ds.IsReactionDamage {
-			return false
-		}
-
-		if t.AuraContains(core.Electro, core.Pyro) {
-			ds.Stats[core.DmgP] += dmg
-			c.Log.Debugw("lion's roar", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "final dmg%", ds.Stats[core.DmgP])
-		}
-		return false
-	}, fmt.Sprintf("lion-%v", char.Name()))
+	char.AddPreDamageMod(core.PreDamageMod{
+		Key:    "lionsroar",
+		Expiry: -1,
+		Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
+			var m [core.EndStatType]float64
+			if atk.Info.AttackTag > core.ReactionAttackDelim {
+				return m, false
+			}
+			if t.AuraContains(core.Electro, core.Pyro) {
+				m[core.DmgP] = dmg
+				return m, true
+			}
+			return m, false
+		},
+	})
 
 }
