@@ -21,9 +21,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if ds.Element == core.Physical {
@@ -44,11 +44,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("ironsting-%v", char.Name()))
 
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	char.AddMod(core.CharStatMod{
 		Key:    "ironsting",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if expiry < c.F {
 				stacks = 0
 				return nil, false

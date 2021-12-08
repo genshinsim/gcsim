@@ -6,18 +6,6 @@ import (
 
 func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 
-	//do nothing if attack is not going to land
-	if !t.attackWillLand(ds) {
-		return 0, false
-	}
-
-	t.core.Events.Emit(core.OnAttackWillLand, t, ds)
-
-	//provide a way for the sim to cancel out an attack
-	if ds.Cancelled {
-		return 0, false
-	}
-
 	//check tags
 	if ds.Durability > 0 && ds.Element != core.Physical {
 		//check for ICD first
@@ -73,32 +61,10 @@ func (t *Target) Attack(ds *core.Snapshot) (float64, bool) {
 		damage *= x
 	}
 
-	//this should be handled by each target individually
-	//sim will need to add it to every target whenever this changes
-	t.core.Events.Emit(core.OnDamage, t, ds, damage, isCrit)
-	//execute callback on the snapshot
-	if ds.OnHitCallback != nil {
-		ds.OnHitCallback(t)
-	}
-
 	//record dmg
 	t.hp -= damage
 
 	return damage, isCrit
-}
-
-func (t *Target) attackWillLand(ds *core.Snapshot) bool {
-	//if aoe
-	if ds.Targets == core.TargetAll {
-		//check if attack came from self (this is for aoe that centers on self but does not hit self)
-		if ds.DamageSrc == t.index && !ds.SelfHarm {
-			return false
-		}
-		//TODO: resolve hitbox here
-		return true
-	}
-	//otherwise target = current index
-	return ds.Targets == t.index
 }
 
 func (t *Target) resist(ele core.EleType, char int) float64 {

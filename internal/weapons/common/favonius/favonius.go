@@ -26,12 +26,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	icd := 0
 	//add on crit effect
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
 		if !crit {
 			return false
 		}
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if c.ActiveChar != char.CharIndex() {

@@ -43,6 +43,7 @@ const (
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
+	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
 	ICDTagECDamage

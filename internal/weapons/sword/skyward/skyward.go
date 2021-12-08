@@ -23,12 +23,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.CR] = 0.03 + float64(r)*0.01
 
 	char.AddMod(core.CharStatMod{
 		Key: "skyward blade",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			m[core.AtkSpd] = 0
 			if dur > c.F {
 				m[core.AtkSpd] = 0.1 //if burst active
@@ -43,13 +43,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
 		//check if char is correct?
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		//check if buff up

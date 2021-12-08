@@ -54,7 +54,7 @@ func (c *char) Init(index int) {
 func (c *char) talismanHealHook() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		t := args[0].(core.Target)
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
 		if c.talismanExpiry[t.Index()] < c.Core.F {
 			return false
@@ -64,10 +64,10 @@ func (c *char) talismanHealHook() {
 		}
 
 		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
-		c.Core.Health.HealIndex(c.Index, ds.ActorIndex, healAmt)
+		c.Core.Health.HealIndex(c.Index, atk.Info.ActorIndex, healAmt)
 		c.talismanICDExpiry[t.Index()] = c.Core.F + 60
 
-		c.Core.Log.Debugw("Qiqi Talisman Healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "target", t.Index(), "healed_char", ds.ActorIndex, "talisman_expiry", c.talismanExpiry[t.Index()], "talisman_healing_icd", c.talismanICDExpiry[t.Index()], "healed_amt", healAmt)
+		c.Core.Log.Debugw("Qiqi Talisman Healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "target", t.Index(), "healed_char", atk.Info.ActorIndex, "talisman_expiry", c.talismanExpiry[t.Index()], "talisman_healing_icd", c.talismanICDExpiry[t.Index()], "healed_amt", healAmt)
 
 		return false
 	}, "talisman-heal-hook")
@@ -78,9 +78,9 @@ func (c *char) talismanHealHook() {
 func (c *char) onNACAHitHook() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		t := args[0].(core.Target)
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 
@@ -90,7 +90,7 @@ func (c *char) onNACAHitHook() {
 		}
 
 		// All of the below only occur on Qiqi NA/CA hits
-		if !((ds.AttackTag == core.AttackTagNormal) || (ds.AttackTag == core.AttackTagExtra)) {
+		if !((atk.Info.AttackTag == core.AttackTagNormal) || (atk.Info.AttackTag == core.AttackTagExtra)) {
 			return false
 		}
 
@@ -143,10 +143,10 @@ func (c *char) a1() {
 		if c.Core.Status.Duration("qiqiskill") == 0 {
 			return false
 		}
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
 		// Active char is the only one under the effects of Qiqi skill
-		if ds.ActorIndex != c.Core.ActiveChar {
+		if atk.Info.ActorIndex != c.Core.ActiveChar {
 			return false
 		}
 

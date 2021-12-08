@@ -37,10 +37,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	}, fmt.Sprintf("royal-%v", char.Name()))
 
 	rate := 0.06 + float64(r)*0.02
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	char.AddMod(core.CharStatMod{
 		Key: "royal",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			m[core.CR] = float64(stacks) * rate
 			return m, true
 		},

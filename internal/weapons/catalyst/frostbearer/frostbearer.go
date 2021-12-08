@@ -18,34 +18,36 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	icd := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		ae := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex != char.CharIndex() {
+		if ae.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if c.F > icd {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < p {
 			icd = c.F + 600
-			d := char.Snapshot(
-				"Frostbearer Proc",
-				core.AttackTagWeaponSkill,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Physical,
-				100,
-				atk,
-			)
-			d.Targets = core.TargetAll
-			if t.AuraType() == core.Cryo || t.AuraType() == core.Frozen {
-				d.Mult = atkc
+
+			ai := core.AttackInfo{
+				ActorIndex: char.CharIndex(),
+				Abil:       "Frostbearer Proc",
+				AttackTag:  core.AttackTagWeaponSkill,
+				ICDTag:     core.ICDTagNone,
+				ICDGroup:   core.ICDGroupDefault,
+				Element:    core.Physical,
+				Durability: 100,
+				Mult:       atk,
 			}
-			char.QueueDmg(&d, 1)
+
+			if t.AuraContains(core.Cryo) || t.AuraContains(core.Frozen) {
+				ai.Mult = atkc
+			}
+
+			c.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 1)
 
 		}
 		return false

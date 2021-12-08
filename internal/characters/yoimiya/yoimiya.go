@@ -49,11 +49,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) a2() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	c.AddMod(core.CharStatMod{
 		Key:    "yoimiya-a2",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if c.Core.Status.Duration("yoimiyaa2") > 0 {
 				val[core.Pyro] = float64(c.a2stack) * 0.02
 				return val, true
@@ -63,14 +63,14 @@ func (c *char) a2() {
 		},
 	})
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if c.Core.Status.Duration("yoimiyaskill") == 0 {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != core.AttackTagNormal {
 			return false
 		}
 		//here we can add stacks up to 10
@@ -87,7 +87,7 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
 
 	//infusion to normal attack only
-	if c.Core.Status.Duration("yoimiyaskill") > 0 && ds.AttackTag == core.AttackTagNormal {
+	if c.Core.Status.Duration("yoimiyaskill") > 0 && atk.Info.AttackTag == core.AttackTagNormal {
 		ds.Element = core.Pyro
 		// ds.ICDTag = core.ICDTagNone
 		//multiplier

@@ -213,11 +213,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		t := i
 		c.AddTask(func() {
 			active := c.Core.Chars[c.Core.ActiveChar]
-			val := make([]float64, core.EndStatType)
+			var val [core.EndStatType]float64
 			val[core.CryoP] = 0.2
 			active.AddMod(core.CharStatMod{
 				Key: "ganyu-field",
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Core.F + 60,
@@ -232,11 +232,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//we just assume this lasts for the full duration since no one moves...
 		start := c.Core.F
 
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		c.AddMod(core.CharStatMod{
 			Key:    "ganyu-c4",
 			Expiry: c.Core.F + 1080,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				elapsed := c.Core.F - start
 				stacks := int(elapsed / 180)
 				if stacks > 5 {

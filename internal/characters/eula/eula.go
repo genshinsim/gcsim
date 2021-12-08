@@ -38,17 +38,17 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 
 	s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		if c.Core.Status.Duration("eulaq") == 0 {
 			return false
 		}
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if c.burstCounterICD > c.Core.F {
 			return false
 		}
-		switch ds.AttackTag {
+		switch atk.Info.AttackTag {
 		case core.AttackTagElementalArt:
 		case core.AttackTagElementalBurst:
 		case core.AttackTagNormal:
@@ -282,11 +282,11 @@ func (c *char) holdE() {
 
 	//c1 add debuff
 	if c.Base.Cons >= 1 && v > 0 {
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		val[core.PhyP] = 0.3
 		c.AddMod(core.CharStatMod{
 			Key: "eula-c1",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + (6*v+6)*60, //TODO: check if this is right
@@ -367,8 +367,8 @@ func (c *char) onExitField() {
 func (c *char) c4() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		t := args[0].(core.Target)
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if ds.Abil != "Glacial Illumination (Lightfall)" {

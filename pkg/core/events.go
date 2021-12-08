@@ -3,19 +3,41 @@ package core
 type EventType int
 
 const (
-	OnAttackWillLand   EventType = iota
-	OnDamage                     //target, snapshot, amount, crit
-	OnReactionOccured            //target, snapshot
-	OnTransReaction              //target, snapshot
-	OnAmpReaction                //target, snapshot
-	OnStamUse                    //abil
-	OnShielded                   //shield
-	OnCharacterSwap              //prev, next
-	OnDash                       //nil
-	OnParticleReceived           //particle
-	OnTargetDied                 //target
-	OnCharacterHurt              //nil
-	OnHeal                       //src char, target character, amount
+	OnAttackWillLand EventType = iota //target, AttackEvent
+	OnDamage                          //target, AttackEvent, amount, crit
+	//reaction related
+	// OnReactionOccured //target, AttackEvent
+	// OnTransReaction   //target, AttackEvent
+	// OnAmpReaction     //target, AttackEvent
+
+	OnAuraDurabilityAdded    //target, ele, durability
+	OnAuraDurabilityDepleted //target, ele
+	// OnReaction               //target, AttackEvent, ReactionType
+	ReactionEventStartDelim
+	OnOverload       //target, AttackEvent
+	OnSuperconduct   //target, AttackEvent
+	OnMelt           //target, AttackEvent
+	OnVaporize       //target, AttackEvent
+	OnFrozen         //target, AttackEvent
+	OnElectroCharged //target, AttackEvent
+	OnSwirlHydro
+	OnSwirlCryo
+	OnSwirlElectro
+	OnSwirlPyro
+	OnCrystallizeHydro
+	OnCrystallizeCryo
+	OnCrystallizeElectro
+	OnCrystallizePyro
+	ReactionEventEndDelim
+	//other stuff
+	OnStamUse          //abil
+	OnShielded         //shield
+	OnCharacterSwap    //prev, next
+	OnDash             //nil
+	OnParticleReceived //particle
+	OnTargetDied       //target
+	OnCharacterHurt    //nil
+	OnHeal             //src char, target character, amount
 	//ability use
 	PreSkill         //nil
 	PostSkill        //nil, frames

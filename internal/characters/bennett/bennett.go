@@ -37,12 +37,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) c2() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.ER] = .3
 
 	c.AddMod(core.CharStatMod{
 		Key: "bennett-c2",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return val, c.HPCurrent/c.HPMax < 0.7
 		},
 		Expiry: -1,
@@ -92,21 +92,18 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
-	c.QueueDmgDynamic(func() *core.Snapshot {
-		d := c.Snapshot(
-			fmt.Sprintf("Normal %v", c.NormalCounter),
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Physical,
-			25,
-			attack[c.NormalCounter][c.TalentLvlAttack()],
-		)
-		d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
 
-		return &d
-	}, f-1)
 	c.AdvanceNormalIndex()
 
 	return f, a
@@ -142,21 +139,17 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 func (c *char) skillPress() {
 
-	c.QueueDmgDynamic(func() *core.Snapshot {
-		d := c.Snapshot(
-			"Passion Overload (Press)",
-			core.AttackTagElementalArt,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Pyro,
-			50,
-			skill[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
-
-		return &d
-	}, 15)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Passion Overload (Press)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 50,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 15, 15)
 
 	//25 % chance of 3 orbs
 	count := 2
@@ -170,22 +163,19 @@ func (c *char) skillHoldShort() {
 
 	delay := []int{89, 115}
 
-	for i, v := range skill1 {
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				"Passion Overload (Hold)",
-				core.AttackTagElementalArt,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeSlash,
-				core.Pyro,
-				25,
-				v[c.TalentLvlSkill()],
-			)
-			d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Passion Overload (Hold)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 25,
+	}
 
-			return &d
-		}, delay[i])
+	for i, v := range skill1 {
+		ai.Mult = v[c.TalentLvlSkill()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[i], delay[i])
 	}
 
 	//25 % chance of 3 orbs
@@ -201,39 +191,23 @@ func (c *char) skillHoldLong() {
 
 	delay := []int{136, 154}
 
-	for i, v := range skill2 {
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				"Passion Overload (Hold)",
-				core.AttackTagElementalArt,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeSlash,
-				core.Pyro,
-				25,
-				v[c.TalentLvlSkill()],
-			)
-			d.Targets = core.TargetAll
-
-			return &d
-		}, delay[i])
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Passion Overload (Hold)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 25,
 	}
 
-	c.QueueDmgDynamic(func() *core.Snapshot {
-		d2 := c.Snapshot(
-			"Passion Overload (Explode)",
-			core.AttackTagElementalArt,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Pyro,
-			25,
-			explosion[c.TalentLvlSkill()],
-		)
-		d2.Targets = core.TargetAll
+	for i, v := range skill2 {
+		ai.Mult = v[c.TalentLvlSkill()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[i], delay[i])
+	}
 
-		return &d2
-	}, 198)
+	ai.Mult = explosion[c.TalentLvlSkill()]
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 198, 198)
 
 	//25 % chance of 3 orbs
 	count := 2
@@ -252,39 +226,28 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("btburst", 720)
 	//hook for buffs; active right away after cast
 
-	c.AddTask(func() {
-		d := c.Snapshot(
-			"Fantastic Voyage",
-			core.AttackTagElementalBurst,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Pyro,
-			50,
-			burst[c.TalentLvlBurst()],
-		)
-		d.Targets = core.TargetAll
-		c.Core.Combat.ApplyDamage(&d)
-	}, "bt-q", 33)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Fantastic Voyage",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 50,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	//TODO: review bennett AOE size
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 33, 33)
 
-	d := c.Snapshot(
-		"Fantastic Voyage (Heal)",
-		core.AttackTagNone,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.NoElement,
-		0,
-		0,
-	)
+	stats := c.SnapshotStats("Fantastic Voyage (Heal)", core.AttackTagNone)
 
 	//apply right away
-	c.applyBennettField(d)()
+	c.applyBennettField(stats)()
 
 	//add 12 ticks starting at t = 1 to t= 12
 	//TODO confirm if starts at t=1 or after animation
 	for i := 0; i <= 720; i += 60 {
-		c.AddTask(c.applyBennettField(d), "bennett-field", i)
+		c.AddTask(c.applyBennettField(stats), "bennett-field", i)
 	}
 
 	c.Energy = 0
@@ -292,8 +255,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	return f, a //todo fix field cast time
 }
 
-func (c *char) applyBennettField(d core.Snapshot) func() {
-	hpplus := d.Stats[core.Heal]
+func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
+	hpplus := stats[core.Heal]
 	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
 	pc := burstatk[c.TalentLvlBurst()]
 	if c.Base.Cons >= 1 {
@@ -316,11 +279,11 @@ func (c *char) applyBennettField(d core.Snapshot) func() {
 		}
 		if active.HP()/active.MaxHP() < threshold {
 			//add 2.1s = 126 frames
-			val := make([]float64, core.EndStatType)
+			var val [core.EndStatType]float64
 			val[core.ATK] = atk
 			active.AddMod(core.CharStatMod{
 				Key: "bennett-field",
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Core.F + 126,

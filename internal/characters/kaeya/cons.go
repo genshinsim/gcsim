@@ -7,12 +7,12 @@ import (
 
 func (c *char) c1() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if t.AuraContains(core.Cryo) {

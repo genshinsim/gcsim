@@ -110,7 +110,7 @@ func (c *char) a4() {
 	c.AddMod(core.CharStatMod{
 		Key:    "beidou-a4",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if a != core.AttackTagNormal && a != core.AttackTagExtra {
 				return nil, false
 			}
@@ -136,11 +136,11 @@ func (c *char) c4() {
 	mod[core.DmgP] = .15
 
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		if ds.Actor != c.Base.Name {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if c.Core.Status.Duration("beidouc4") == 0 {
@@ -286,9 +286,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 func (c *char) burstProc() {
 	icd := 0
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if c.Core.Status.Duration("beidouburst") == 0 {

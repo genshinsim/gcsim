@@ -13,11 +13,11 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.ATKP] = 0.18
 		c.AddMod(core.CharStatMod{
 			Key: "rem-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -28,7 +28,7 @@ func New(c core.Character, s *core.Core, count int) {
 	//skill (not on hit). Turn out it work with childe :Childejoy:
 	//The finding is now in #energy-drain-effects-have-a-delay if you want to take a closer look
 	if count >= 4 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.DmgP] = 0.50
 		s.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
 			if s.ActiveChar != c.CharIndex() {
@@ -41,9 +41,9 @@ func New(c core.Character, s *core.Core, count int) {
 				}, 10)
 				c.AddMod(core.CharStatMod{
 					Key: "rem-4pc",
-					Amount: func(ds core.AttackTag) ([]float64, bool) {
+					Amount: func(ds core.AttackTag) ([core.EndStatType]float64, bool) {
 						if ds != core.AttackTagNormal && ds != core.AttackTagExtra && ds != core.AttackTagPlunge {
-							return nil, false
+							return m, false
 						}
 						return m, true
 					},

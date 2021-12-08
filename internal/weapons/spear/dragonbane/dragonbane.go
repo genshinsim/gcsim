@@ -16,9 +16,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	dmg := 0.16 + float64(r)*0.04
 
 	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		// if t.AuraType() == def.Hydro {

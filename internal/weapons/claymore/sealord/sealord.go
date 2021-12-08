@@ -18,12 +18,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	tunaDmg := .75 + float64(r)*0.25
 	effectLastProc := -9999
 
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.DmgP] = burstDmgIncrease
 	char.AddMod(core.CharStatMod{
 		Expiry: -1,
 		Key:    "luxurious-sea-lord",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if a == core.AttackTagElementalBurst {
 				return val, true
 			}
@@ -32,14 +32,14 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	})
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if c.F < effectLastProc+15*60 {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagElementalBurst {
+		if atk.Info.AttackTag != core.AttackTagElementalBurst {
 			return false
 		}
 		effectLastProc = c.F

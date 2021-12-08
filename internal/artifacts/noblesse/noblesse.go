@@ -13,11 +13,11 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.DmgP] = 0.2
 		c.AddMod(core.CharStatMod{
 			Key: "nob-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, a == core.AttackTagElementalBurst
 			},
 			Expiry: -1,
@@ -43,18 +43,18 @@ func New(c core.Character, s *core.Core, count int) {
 
 		}, fmt.Sprintf("no 4pc - %v", c.Name()))
 
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.ATKP] = 0.2
 
 		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 			for _, char := range s.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "nob-4pc",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 						if s.Status.Duration("nob-4pc") > 0 {
 							return m, true
 						}
-						return nil, false
+						return m, false
 					},
 					Expiry: -1,
 				})

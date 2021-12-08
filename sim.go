@@ -6,7 +6,8 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/monster"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/player"
 )
 
 type Simulation struct {
@@ -72,27 +73,51 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 		s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 			t := args[0].(core.Target)
 			dmg := args[2].(float64)
-			ds := args[1].(*core.Snapshot)
+			atk := args[1].(*core.AttackEvent)
 			sb.Reset()
-			sb.WriteString(ds.Abil)
-			if ds.IsMeltVape {
-				if ds.ReactMult == 1.5 {
+			sb.WriteString(atk.Info.Abil)
+			if atk.Info.Amped {
+				if atk.Info.AmpMult == 1.5 {
 					sb.WriteString(" [amp: 1.5]")
-				} else if ds.ReactMult == 2 {
+				} else if atk.Info.AmpMult == 2 {
 					sb.WriteString(" [amp: 2.0]")
 				}
 			}
-			s.stats.DamageByChar[ds.ActorIndex][sb.String()] += dmg
+			s.stats.DamageByChar[atk.Info.ActorIndex][sb.String()] += dmg
 			if dmg > 0 {
-				s.stats.DamageInstancesByChar[ds.ActorIndex][sb.String()] += 1
+				s.stats.DamageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
 			}
-			s.stats.DamageByCharByTargets[ds.ActorIndex][t.Index()] += dmg
+			s.stats.DamageByCharByTargets[atk.Info.ActorIndex][t.Index()] += dmg
 			return false
 		}, "dmg-log")
 
-		s.C.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
-			s.stats.ReactionsTriggered[ds.ReactionType]++
+		s.C.Events.Subscribe(core.OnOverload, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.Overload]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnSuperconduct, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.Superconduct]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnMelt, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.Melt]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnVaporize, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.Vaporize]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnFrozen, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.Freeze]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnElectroCharged, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.ElectroCharged]++
 			return false
 		}, "reaction-log")
 
@@ -122,14 +147,22 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 }
 
 func (s *Simulation) initTargets(cfg core.Config) error {
-	s.C.Targets = make([]core.Target, len(cfg.Targets))
+	s.C.Targets = make([]core.Target, len(cfg.Targets)+1)
 	if s.opts.LogDetails {
-		s.stats.ElementUptime = make([]map[core.EleType]int, len(cfg.Targets))
+		s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	}
+	s.C.Targets[0] = player.New(0, s.C)
+	s.stats.ElementUptime[0] = make(map[core.EleType]int)
+	//first target is the player
 	for i := 0; i < len(cfg.Targets); i++ {
-		s.C.Targets[i] = monster.New(i, s.C, cfg.Targets[i])
+		cfg.Targets[i].Size = 0.5
+		if i > 0 {
+			cfg.Targets[i].CoordX = 0.6
+			cfg.Targets[i].CoordY = 0
+		}
+		s.C.Targets[i+1] = enemy.New(i+1, s.C, cfg.Targets[i])
 		if s.opts.LogDetails {
-			s.stats.ElementUptime[i] = make(map[core.EleType]int)
+			s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
 		}
 	}
 	return nil

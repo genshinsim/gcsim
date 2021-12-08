@@ -40,13 +40,13 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 // Passive 2 - permanently modify stats for +25% healing bonus and -100% CR
 func (c *char) passive() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.Heal] = .25
 	val[core.CR] = -1
 	c.AddMod(core.CharStatMod{
 		Key:    "kokomi-passive",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return val, true
 		},
 	})
@@ -56,8 +56,8 @@ func (c *char) passive() {
 // Also checks constellations
 func (c *char) burstActiveHook() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 
@@ -65,7 +65,7 @@ func (c *char) burstActiveHook() {
 			return false
 		}
 
-		switch ds.AttackTag {
+		switch atk.Info.AttackTag {
 		case core.AttackTagNormal, core.AttackTagExtra:
 		default:
 			return false
@@ -101,11 +101,11 @@ func (c *char) burstActiveHook() {
 				if char.HP()/char.MaxHP() < .8 {
 					continue
 				}
-				val := make([]float64, core.EndStatType)
+				var val [core.EndStatType]float64
 				val[core.HydroP] = .4
 				c.AddMod(core.CharStatMod{
 					Key: "kokomi-c6",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 						return val, true
 					},
 					Expiry: c.Core.F + 480,

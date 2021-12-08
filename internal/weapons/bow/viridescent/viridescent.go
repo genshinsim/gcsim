@@ -19,14 +19,14 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		//check if char is correct?
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		// Vhunt passive only applies for NAs and CAs
 		// For Tartaglia this also includes melee NAs/CAs
 		// See https://youtu.be/EBtOiFhrs94?t=221, Test 4 and 5
-		if !((ds.AttackTag == core.AttackTagNormal) || (ds.AttackTag == core.AttackTagExtra)) {
+		if !((atk.Info.AttackTag == core.AttackTagNormal) || (atk.Info.AttackTag == core.AttackTagExtra)) {
 			return false
 		}
 		//check if cd is up
@@ -39,20 +39,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 
 		//add a new action that deals % dmg immediately
-		d := char.Snapshot(
-			"Viridescent",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			mult,
-		)
-		d.Targets = core.TargetAll
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Viridescent",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       mult,
+		}
+
 		for i := 0; i <= 240; i += 30 {
-			x := d.Clone()
-			char.QueueDmg(&x, i)
+			c.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, i+1)
 		}
 
 		//trigger cd

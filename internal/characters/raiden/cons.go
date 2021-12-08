@@ -4,14 +4,14 @@ import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) c6() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		if c.Core.Status.Duration("raidenburst") == 0 {
 			return false
 		}
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if ds.Abil != "Musou Isshin" {
+		if atk.Info.Abil != "Musou Isshin" {
 			return false
 		}
 		if c.c6ICD > c.Core.F {

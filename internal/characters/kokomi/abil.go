@@ -218,11 +218,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// C4 attack speed buff
 	if c.Base.Cons >= 4 {
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		val[core.AtkSpd] = 0.1
 		c.AddMod(core.CharStatMod{
 			Key: "kokomi-c4",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				if c.Core.Status.Duration("kokomiburst") > 0 {
 					return val, true
 				}

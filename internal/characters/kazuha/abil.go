@@ -207,14 +207,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//add em to all char, but only activate if char is active
 	if c.Base.Cons >= 2 {
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		val[core.EM] = 200
 		for _, char := range c.Core.Chars {
 			this := char
 			char.AddMod(core.CharStatMod{
 				Key:    "kazuha-c2",
 				Expiry: c.Core.F + 370,
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 					if c.Core.ActiveChar != this.CharIndex() {
 						return nil, false
 					}

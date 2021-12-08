@@ -14,11 +14,11 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.HPP] = 0.2
 		c.AddMod(core.CharStatMod{
 			Key: "tom-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -26,15 +26,13 @@ func New(c core.Character, s *core.Core, count int) {
 	}
 	if count >= 4 {
 		icd := 0
-		m := make([]float64, core.EndStatType)
-		m[core.ATKP] = 0.2
 
 		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
-			if ds.ActorIndex != c.CharIndex() {
+			atk := args[1].(*core.AttackEvent)
+			if atk.Info.ActorIndex != c.CharIndex() {
 				return false
 			}
-			if ds.AttackTag != core.AttackTagElementalArt {
+			if atk.Info.AttackTag != core.AttackTagElementalArt {
 				return false
 			}
 			if icd > s.F {
@@ -46,9 +44,11 @@ func New(c core.Character, s *core.Core, count int) {
 			for _, char := range s.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "tom-4pc",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+						var m [core.EndStatType]float64
+						m[core.ATKP] = 0.2
 						if s.Status.Duration("tom-proc") == 0 {
-							return nil, false
+							return m, false
 						}
 						return m, true
 					},

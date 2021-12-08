@@ -91,8 +91,8 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 func (c *char) c4() {
 	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		switch ds.ReactionType {
@@ -105,11 +105,11 @@ func (c *char) c4() {
 		case core.SwirlElectro:
 			fallthrough
 		case core.CrystallizeElectro:
-			val := make([]float64, core.EndStatType)
+			var val [core.EndStatType]float64
 			val[core.ATK] = 0.25
 			c.AddMod(core.CharStatMod{
 				Key:    "c4",
-				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 				Expiry: c.Core.F + 600,
 			})
 		}
@@ -202,8 +202,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 func (c *char) c2() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if c.Core.F < c.c2ICD {
@@ -292,7 +292,7 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 
 	if c.Base.Cons >= 1 {
 		//2 tick dmg at start to end
-		hits, ok := p["c2"]
+		hits, ok := p["c1"]
 		if !ok {
 			hits = 1 //default 1 hit
 		}
@@ -321,12 +321,12 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 	//a4 increase crit + ER
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.CR] = 0.15
 	val[core.ER] = 0.15
 	c.AddMod(core.CharStatMod{
 		Key:    "a4",
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 		Expiry: c.Core.F + 480,
 	})
 
@@ -393,11 +393,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 func (c *char) activateC6(src string) {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.ElectroP] = 0.06
 	c.AddMod(core.CharStatMod{
 		Key:    src,
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 		Expiry: c.Core.F + 480,
 	})
 }

@@ -12,7 +12,7 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.ATKP] = 0.15 + float64(r)*0.05
 	stack := 0.09 + float64(r)*0.03
 	max := 0.3 + float64(r)*0.1
@@ -23,11 +23,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	key := fmt.Sprintf("thundering-pulse-%v", char.Name())
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != core.AttackTagNormal {
 			return false
 		}
 		normal = c.F + 300 // lasts 5 seconds
@@ -44,7 +44,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	char.AddMod(core.CharStatMod{
 		Key: "thundering",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			m[core.DmgP] = 0
 			if a != core.AttackTagNormal {
 				return m, true

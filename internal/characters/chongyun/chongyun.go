@@ -46,9 +46,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) c4() {
 	icd := 0
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if c.Core.F < icd {
@@ -225,11 +225,11 @@ func (c *char) infuse(char core.Character) {
 	}
 
 	//a2 adds 8% atkspd for 2.1 seconds
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.AtkSpd] = 0.08
 	char.AddMod(core.CharStatMod{
 		Key:    "chongyun-field",
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 		Expiry: c.Core.F + 126,
 	})
 	//c2 reduces CD by 15%
@@ -280,9 +280,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 func (c *char) c6() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if ds.Abil != "Spirit Blade: Cloud-Parting Star" {

@@ -39,12 +39,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			amt = max
 		}
 		c.Log.Debugw("wavebreaker dmg calc", "frame", -1, "event", core.LogWeaponEvent, "total", energy, "per", per, "max", max, "amt", amt)
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.DmgP] = amt
 		char.AddMod(core.CharStatMod{
 			Expiry: -1,
 			Key:    "wavebreaker",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				if a == core.AttackTagElementalBurst {
 					return m, true
 				}

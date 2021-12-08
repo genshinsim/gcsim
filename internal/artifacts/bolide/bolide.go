@@ -16,11 +16,11 @@ func New(c core.Character, s *core.Core, count int) {
 		})
 	}
 	if count >= 4 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.DmgP] = 0.4
 		c.AddMod(core.CharStatMod{
 			Key: "bolide-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, s.Shields.IsShielded() && (a == core.AttackTagNormal || a == core.AttackTagExtra)
 			},
 			Expiry: -1,

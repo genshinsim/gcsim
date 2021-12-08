@@ -90,12 +90,12 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 func (c *char) a4() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagElementalArt {
+		if atk.Info.AttackTag != core.AttackTagElementalArt {
 			return false
 		}
 		if t.AuraType() != core.Frozen {
@@ -243,8 +243,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 func (c *char) burstICD() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if ds.Abil != "Glacial Waltz" {

@@ -88,12 +88,12 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 func (c *char) a4() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if !crit {
@@ -412,11 +412,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 		//add 25% buff
 		for _, x := range c.Core.Chars {
-			val := make([]float64, core.EndStatType)
+			var val [core.EndStatType]float64
 			val[core.PyroP] = .1
 			x.AddMod(core.CharStatMod{
 				Key:    "klee-c6",
-				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 				Expiry: c.Core.F + 1500,
 			})
 		}

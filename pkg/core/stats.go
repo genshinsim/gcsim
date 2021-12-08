@@ -53,7 +53,7 @@ func PrettyPrintStats(stats []float64) string {
 	return strings.Trim(sb.String(), " ")
 }
 
-func PrettyPrintStatsSlice(stats []float64) []string {
+func PrettyPrintStatsSlice(stats [EndStatType]float64) []string {
 	r := make([]string, 0)
 	var sb strings.Builder
 	for i, v := range stats {

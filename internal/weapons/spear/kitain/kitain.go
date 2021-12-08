@@ -12,7 +12,7 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	base := 0.045 + float64(r)*0.015
 	regen := 2.5 + float64(r)*0.5
 
@@ -21,7 +21,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Expiry: -1,
 		Key:    "kitain-skill-dmg-buff",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if a == core.AttackTagElementalArt || a == core.AttackTagElementalArtHold {
 				return m, true
 			}
@@ -31,11 +31,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	icd := 0
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagElementalArt {
+		if atk.Info.AttackTag != core.AttackTagElementalArt {
 			return false
 		}
 		if icd > c.F {

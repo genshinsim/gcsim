@@ -1,18 +1,25 @@
 package core
 
 type Target interface {
-	Index() int
-	SetIndex(ind int) //update the current index
+	//basic info
+	Type() TargettableType //type of target
+	Index() int            //should correspond to index
+	SetIndex(ind int)      //update the current index
 	MaxHP() float64
 	HP() float64
-	//aura/reactions
-	AuraType() EleType
-	AuraContains(e ...EleType) bool
-	Tick() //this should happen first before task ticks
+
+	//collision detection
+	Shape() Shape
 
 	//attacks
-	Attack(ds *Snapshot) (float64, bool)
+	Attack(*AttackEvent) (float64, bool)
 
+	//reaction/aura stuff
+	Tick()
+	AuraContains(...EleType) bool
+	AuraType() EleType
+
+	//target mods
 	AddDefMod(key string, val float64, dur int)
 	AddResMod(key string, val ResistMod)
 	RemoveResMod(key string)
@@ -20,8 +27,41 @@ type Target interface {
 	HasDefMod(key string) bool
 	HasResMod(key string) bool
 
-	Delete() //gracefully deference everything so that it can be gc'd
+	//getting rid of
+	Kill()
 }
+
+type TargettableType int
+
+const (
+	TargettableEnemy TargettableType = iota
+	TargettablePlayer
+	TargettableObject
+	TargettableTypeCount
+)
+
+// type TargetEnemy interface {
+// 	Index() int
+// 	SetIndex(ind int) //update the current index
+// 	MaxHP() float64
+// 	HP() float64
+// 	//aura/reactions
+// 	AuraType() EleType
+// 	AuraContains(e ...EleType) bool
+// 	Tick() //this should happen first before task ticks
+
+// 	//attacks
+// 	Attack(ds *Snapshot) (float64, bool)
+
+// 	AddDefMod(key string, val float64, dur int)
+// 	AddResMod(key string, val ResistMod)
+// 	RemoveResMod(key string)
+// 	RemoveDefMod(key string)
+// 	HasDefMod(key string) bool
+// 	HasResMod(key string) bool
+
+// 	Delete() //gracefully deference everything so that it can be gc'd
+// }
 
 type ResistMod struct {
 	Key      string
@@ -37,7 +77,15 @@ type DefMod struct {
 	Expiry int
 }
 
-type ReactionBonusMod struct {
-	Key    string
-	Amount func(ds *Snapshot) float64
+func (c *Core) ReindexTargets() {
+	//wipe out nil entries
+	n := 0
+	for _, v := range c.Targets {
+		if v != nil {
+			c.Targets[n] = v
+			c.Targets[n].SetIndex(n)
+			n++
+		}
+	}
+	c.Targets = c.Targets[:n]
 }
