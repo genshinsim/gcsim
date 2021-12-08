@@ -34,7 +34,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 	})
 
-	ervar val [core.EndStatType]float64
+	var erval [core.EndStatType]float64
 	erval[core.ER] = .25 + .05*float64(r)
 
 	//Gain 30% Energy Recharge for 12s after using an Elemental Burst.

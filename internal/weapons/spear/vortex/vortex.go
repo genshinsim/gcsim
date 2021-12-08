@@ -45,11 +45,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	atk := 0.03 + 0.01*float64(r)
 
-	var val [core.EndStatType]float64
 	char.AddMod(core.CharStatMod{
 		Key:    "vortex",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			var val [core.EndStatType]float64
 			if duration > c.F {
 				val[core.ATKP] = atk * float64(stacks)
 				if c.Shields.IsShielded() {
@@ -58,7 +58,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 				return val, true
 			}
 			stacks = 0
-			return nil, false
+			return val, false
 		},
 	})
 
