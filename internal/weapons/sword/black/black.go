@@ -42,7 +42,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return false
 		}
 		if crit {
-			c.Health.HealActive(char.CharIndex(), heal*(ds.BaseAtk*(1+ds.Stats[core.ATKP])+ds.Stats[core.ATK]))
+			c.Health.HealActive(char.CharIndex(), heal*(atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP])+atk.Snapshot.Stats[core.ATK]))
 		}
 		return false
 	}, fmt.Sprintf("black-sword-%v", char.Name()))

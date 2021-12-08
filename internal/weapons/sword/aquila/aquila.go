@@ -35,20 +35,20 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return false
 		}
 		last = c.F
-		d := char.Snapshot(
-			"Aquila Favonia",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			dmg,
-		)
-		d.Targets = core.TargetAll
-		char.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Aquila Favonia",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       dmg,
+		}
+		snap := char.Snapshot(&ai)
+		c.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 1)
 
-		atk := d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK]
+		atk := snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]
 
 		c.Log.Debugw("acquila heal triggered", "frame", c.F, "event", core.LogWeaponEvent, "atk", atk, "heal amount", atk*heal)
 		c.Health.HealActive(char.CharIndex(), atk*heal)
