@@ -25,7 +25,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			if a == core.AttackTagElementalArt || a == core.AttackTagElementalArtHold {
 				return m, true
 			}
-			return nil, false
+			return m, false
 		},
 	})
 
