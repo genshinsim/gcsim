@@ -38,7 +38,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		if atk.Info.AttackTag != core.AttackTagNormal {
 			return false
 		}
-		if ds.Element == core.Physical {
+		if atk.Info.Element == core.Physical {
 			return false
 		}
 		normal = c.F + 300 // lasts 5 seconds

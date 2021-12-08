@@ -1,8 +1,6 @@
 package freedom
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -30,7 +28,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 	cooldown := 0
 
-	c.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
+	stackFunc := func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 
 		if atk.Info.ActorIndex != char.CharIndex() {
@@ -66,6 +64,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			}
 		}
 		return false
-	}, fmt.Sprintf("freedom-%v", char.Name()))
+	}
+
+	for i := core.ReactionEventStartDelim + 1; i < core.ReactionEventEndDelim; i++ {
+		c.Events.Subscribe(i, stackFunc, "freedom-"+char.Name())
+	}
 
 }
