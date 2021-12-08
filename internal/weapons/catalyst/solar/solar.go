@@ -44,7 +44,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			if a == core.AttackTagNormal {
 				return val, skill > c.F
 			}
-			return nil, false
+			return val, false
 		},
 	})
 }
