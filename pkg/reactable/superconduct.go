@@ -3,6 +3,9 @@ package reactable
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (r *Reactable) trySuperconduct(a *core.AttackEvent) {
+	if a.Info.Durability < zeroDur {
+		return
+	}
 	//this is for non frozen one
 	if r.Durability[core.Frozen] >= zeroDur {
 		return
@@ -35,6 +38,9 @@ func (r *Reactable) trySuperconduct(a *core.AttackEvent) {
 }
 
 func (r *Reactable) tryFrozenSuperconduct(a *core.AttackEvent) {
+	if a.Info.Durability < zeroDur {
+		return
+	}
 	//this is for frozen
 	if r.Durability[core.Frozen] < zeroDur {
 		return

@@ -5,6 +5,9 @@ import (
 )
 
 func (r *Reactable) tryOverload(a *core.AttackEvent) {
+	if a.Info.Durability < zeroDur {
+		return
+	}
 	switch a.Info.Element {
 	case core.Electro:
 		//must have pyro; pyro cant coexist (for now) so ok to ignore count?

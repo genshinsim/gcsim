@@ -7,6 +7,9 @@ import (
 )
 
 func (r *Reactable) tryAddEC(a *core.AttackEvent) {
+	if a.Info.Durability < zeroDur {
+		return
+	}
 
 	//adding ec or hydro just adds to durability
 	switch a.Info.Element {
@@ -117,6 +120,10 @@ func (r *Reactable) waneEC() {
 		"electro", r.Durability[core.Electro],
 	)
 	//ec is gone
+	r.checkEC()
+}
+
+func (r *Reactable) checkEC() {
 	if r.Durability[core.Electro] < zeroDur || r.Durability[core.Hydro] < zeroDur {
 		r.ecTickSrc = -1
 		r.core.Events.Unsubscribe(core.OnDamage, fmt.Sprintf("ec-%v", r.self.Index()))

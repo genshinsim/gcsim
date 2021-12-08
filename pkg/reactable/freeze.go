@@ -3,6 +3,9 @@ package reactable
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (r *Reactable) tryFreeze(a *core.AttackEvent) {
+	if a.Info.Durability < zeroDur {
+		return
+	}
 	//so if already frozen there are 2 cases:
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
@@ -71,4 +74,11 @@ func (r *Reactable) triggerFreeze(a, b core.Durability) core.Durability {
 	//trigger freeze should only addDurability and should not touch decay rate
 	r.addDurability(core.Frozen, 2*d)
 	return d
+}
+
+func (r *Reactable) checkFreeze() {
+	if r.Durability[core.Frozen] <= zeroDur {
+		r.Durability[core.Frozen] = 0
+		r.core.Events.Emit(core.OnAuraDurabilityDepleted, core.Frozen)
+	}
 }
