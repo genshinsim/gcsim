@@ -18,11 +18,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	icd := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != core.AttackTagNormal {
 			return false
 		}
 		if icd > c.F {
@@ -50,7 +50,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("skyward-atlast-%v", char.Name()))
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.PyroP] = dmg
 	m[core.HydroP] = dmg
 	m[core.CryoP] = dmg
@@ -61,7 +61,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Key:    "skyward-atlast",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return m, true
 		},
 	})

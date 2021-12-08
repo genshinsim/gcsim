@@ -43,9 +43,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) c1() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex == c.Index && t.HP()/t.MaxHP() > .5 {
+		if atk.Info.ActorIndex == c.Index && t.HP()/t.MaxHP() > .5 {
 			ds.Stats[core.DmgP] += 0.15
 			c.Core.Log.Debugw("diluc c2 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "hp %", t.HP()/t.MaxHP(), "final dmg", ds.Stats[core.DmgP])
 		}
@@ -69,12 +69,12 @@ func (c *char) c2() {
 		if stack > 3 {
 			stack = 3
 		}
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		val[core.ATKP] = 0.1 * float64(stack)
 		val[core.AtkSpd] = 0.05 * float64(stack)
 		c.AddMod(core.CharStatMod{
 			Key:    "diluc-c2",
-			Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 			Expiry: c.Core.F + 600,
 		})
 		return false
@@ -233,11 +233,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	})
 
 	// add 20% pyro damage
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.PyroP] = 0.2
 	c.AddMod(core.CharStatMod{
 		Key:    "diluc-fire-weapon",
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 		Expiry: c.Core.F + 720,
 	})
 
@@ -303,7 +303,7 @@ func (c *char) Tick() {
 // func (c *char) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d float64, mult float64) def.Snapshot {
 // 	ds := c.CharacterTemplate.Snapshot(name, a, icd, g, st, e, d, mult)
 // 	if c.S.StatusActive("dilucq") {
-// 		if ds.AttackTag == def.AttackTagNormal || ds.AttackTag == def.AttackTagExtra {
+// 		if atk.Info.AttackTag == def.AttackTagNormal || atk.Info.AttackTag == def.AttackTagExtra {
 // 			ds.Element = def.Pyro
 // 			ds.Stats[def.PyroP] += .2
 // 		}

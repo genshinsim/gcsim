@@ -21,11 +21,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("alley-flash-%v", char.Name()))
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.DmgP] = 0.09 + 0.03*float64(r)
 	char.AddMod(core.CharStatMod{
 		Key: "royal",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return m, lockout < c.F
 		},
 		Expiry: -1,

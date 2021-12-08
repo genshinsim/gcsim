@@ -31,8 +31,8 @@ func TestElectroOnHydro(t *testing.T) {
 	c.Targets = append(c.Targets, target)
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.AttackTag != core.AttackTagECDamage {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.AttackTag != core.AttackTagECDamage {
 			return false
 		}
 		dmgCount++
@@ -148,8 +148,8 @@ func TestHydroOnElectro(t *testing.T) {
 	c.Targets = append(c.Targets, target)
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.AttackTag != core.AttackTagECDamage {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.AttackTag != core.AttackTagECDamage {
 			return false
 		}
 		dmgCount++
@@ -262,8 +262,8 @@ func TestECChain(t *testing.T) {
 	c.Targets = append(c.Targets, target)
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.AttackTag != core.AttackTagECDamage {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.AttackTag != core.AttackTagECDamage {
 			return false
 		}
 		dmgCount++
@@ -411,8 +411,8 @@ func TestECHydroChain(t *testing.T) {
 	c.Targets = append(c.Targets, target)
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.AttackTag != core.AttackTagECDamage {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.AttackTag != core.AttackTagECDamage {
 			return false
 		}
 		dmgCount++
@@ -553,7 +553,7 @@ func TestECSwirl(t *testing.T) {
 	c.Targets = append(c.Targets, target)
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		if ds.AttackTag == core.AttackTagECDamage || ds.AttackTag == core.AttackTagSwirlElectro || ds.AttackTag == core.AttackTagSwirlHydro {
 			dmgCount++
 		}

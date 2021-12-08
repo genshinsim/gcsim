@@ -8,6 +8,7 @@ type Character interface {
 	Name() string
 	CharIndex() int
 	Ele() EleType
+	Level() int
 	WeaponClass() WeaponClass
 	Zone() ZoneType
 	CurrentEnergy() float64 //current energy
@@ -18,7 +19,6 @@ type Character interface {
 	Stat(s StatType) float64
 
 	AddTask(fun func(), name string, delay int)
-	QueueDmg(ds *Snapshot, delay int)
 
 	//actions; each action should return 2 ints:
 	//	the earliest frame at which the next action may be queued, and;
@@ -44,7 +44,10 @@ type Character interface {
 
 	//char stat mods
 	AddMod(mod CharStatMod)
+	AddPreDamageMod(mod PreDamageMod)
 	AddWeaponInfuse(inf WeaponInfusion)
+	AddReactBonusMod(mod ReactionBonusMod)
+	ReactBonus(AttackInfo) float64
 
 	//cooldown stuff
 	SetCD(a ActionType, dur int)
@@ -62,7 +65,8 @@ type Character interface {
 	AddEnergy(e float64)
 
 	//combat
-	Snapshot(name string, a AttackTag, icd ICDTag, g ICDGroup, st StrikeType, e EleType, d Durability, mult float64) Snapshot
+	Snapshot(a *AttackInfo) Snapshot
+	PreDamageSnapshotAdjust(*AttackEvent, Target) [EndStatType]float64
 	ResetNormalCounter()
 }
 
@@ -76,8 +80,14 @@ const (
 type CharStatMod struct {
 	Key          string
 	AffectedStat StatType
-	Amount       func(a AttackTag) ([]float64, bool)
+	Amount       func(a AttackTag) ([EndStatType]float64, bool)
 	Expiry       int
+}
+
+type PreDamageMod struct {
+	Key    string
+	Amount func(atk *AttackEvent, t Target) ([EndStatType]float64, bool)
+	Expiry int
 }
 
 type WeaponInfusion struct {
@@ -97,4 +107,10 @@ type Particle struct {
 	Source string
 	Num    int
 	Ele    EleType
+}
+
+type ReactionBonusMod struct {
+	Key    string
+	Amount func(AttackInfo) (float64, bool)
+	Expiry int
 }

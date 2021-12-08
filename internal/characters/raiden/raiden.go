@@ -41,6 +41,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.eyeOnDamage()
 	c.onBurstStackCount()
+	c.onSwapClearBurst()
 
 	return &c, nil
 }
@@ -54,14 +55,15 @@ func (c *char) Init(index int) {
 		char.AddMod(core.CharStatMod{
 			Key:    "raiden-e",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+				var val [core.EndStatType]float64
 				if c.Core.Status.Duration("raidenskill") == 0 {
-					return nil, false
+					return val, false
 				}
 				if a != core.AttackTagElementalBurst {
-					return nil, false
+					return val, false
 				}
-				val := make([]float64, core.EndStatType)
+
 				val[core.DmgP] = mult * this.MaxEnergy()
 				return val, true
 			},
@@ -84,14 +86,14 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	}
 }
 
-func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
-	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
+func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
+	s := c.Tmpl.Snapshot(a)
 
 	//a2 add dmg based on ER%
-	excess := int(ds.Stats[core.ER] / 0.01)
+	excess := int(s.Stats[core.ER] / 0.01)
 
-	ds.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Core.Log.Debugw("a4 adding electro dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", ds.Stats[core.ElectroP])
+	s.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
+	c.Core.Log.Debugw("a4 adding electro dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", s.Stats[core.ElectroP])
 	//
 	////infusion to normal/plunge/charge
 	//switch ds.AttackTag {
@@ -104,5 +106,6 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	//if c.Core.Status.Duration("raidenburst") > 0 {
 	//	ds.Element = core.Electro
 	//}
-	return ds
+
+	return s
 }

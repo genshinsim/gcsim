@@ -53,12 +53,12 @@ func (c *char) Init(index int) {
 //he still benefits from sucrose em but just cannot share it
 
 func (c *char) a4() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
 			Expiry: -1,
 			Key:    "kazuha-a4",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				if c.a4Expiry < c.Core.F {
 					return nil, false
 				}
@@ -67,8 +67,8 @@ func (c *char) a4() {
 		})
 	}
 	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		var typ core.EleType

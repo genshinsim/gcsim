@@ -19,11 +19,11 @@ func init() {
 // 	This effect can still be triggered even when the character who is using this artifact set is not on the field.
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.Heal] = 0.15
 		c.AddMod(core.CharStatMod{
 			Key: "ohc-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,

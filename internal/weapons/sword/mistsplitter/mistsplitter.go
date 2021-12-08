@@ -12,7 +12,7 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	base := 0.09 + float64(r)*0.03
 	m[core.PyroP] = base
 	m[core.HydroP] = base
@@ -30,12 +30,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != core.AttackTagNormal {
 			return false
 		}
 		if ds.Element == core.Physical {
@@ -56,7 +56,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	char.AddMod(core.CharStatMod{
 		Key: "mistsplitter",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			count := 0
 			if char.CurrentEnergy() < char.MaxEnergy() {
 				count++

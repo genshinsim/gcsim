@@ -14,6 +14,10 @@ func (c *Tmpl) Name() string {
 	return c.Base.Name
 }
 
+func (c *Tmpl) Level() int {
+	return c.Base.Level
+}
+
 func (c *Tmpl) Zone() core.ZoneType {
 	return c.CharZone
 }

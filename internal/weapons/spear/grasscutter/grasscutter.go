@@ -15,14 +15,14 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	atk := .21 + .07*float64(r)
 	max := 0.7 + 0.1*float64(r)
 
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 
 	//ATK increased by 28% of Energy Recharge over the base 100%. You can gain a maximum bonus of 80% ATK.
 	char.AddMod(core.CharStatMod{
 		Key:          "grasscutter",
 		Expiry:       -1,
 		AffectedStat: core.ATKP, //this to prevent infinite loop when we ask to calculate ER
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			er := char.Stat(core.ER)
 			c.Log.Debugw("cutter snapshot", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "er", er)
 			bonus := atk * er
@@ -34,7 +34,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 	})
 
-	erval := make([]float64, core.EndStatType)
+	ervar val [core.EndStatType]float64
 	erval[core.ER] = .25 + .05*float64(r)
 
 	//Gain 30% Energy Recharge for 12s after using an Elemental Burst.
@@ -45,7 +45,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		char.AddMod(core.CharStatMod{
 			Key:    "grasscutter-er",
 			Expiry: c.F + 720,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return erval, true
 			},
 		})

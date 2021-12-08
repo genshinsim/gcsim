@@ -12,17 +12,17 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.ATKP] = 0.12 + float64(r)*0.04
 	char.AddMod(core.CharStatMod{
 		Key: "pines-atk",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
 	})
 
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.ATKP] = 0.15 + 0.05*float64(r)
 	val[core.AtkSpd] = 0.09 + 0.03*float64(r)
 
@@ -31,11 +31,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	cooldown := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if cooldown > c.F {
@@ -53,7 +53,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			for _, char := range c.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "pines-proc",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 						return val, true
 					},
 					Expiry: c.F + 720,

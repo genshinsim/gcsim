@@ -16,7 +16,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		t := args[0].(core.Target)
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		if t.AuraContains(core.Hydro, core.Electro) {
 			ds.Stats[core.DmgP] += dmg
 			c.Log.Debugw("rainslasher", "frame", c.F, "event", core.LogCalc, "final dmg%", ds.Stats[core.DmgP])

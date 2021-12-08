@@ -122,7 +122,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Core.Status.AddStatus("aurous", duration)
 		//attack buff if stacks
 		if c.Core.Status.Duration("yoimiyaa2") > 0 {
-			val := make([]float64, core.EndStatType)
+			var val [core.EndStatType]float64
 			val[core.ATKP] = 0.1 + float64(c.a2stack)*0.01
 			for i, char := range c.Core.Chars {
 				if i == c.Index {
@@ -131,7 +131,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				char.AddMod(core.CharStatMod{
 					Key:    "yoimiya-a4",
 					Expiry: c.Core.F + 900, //15s
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 						return val, true
 					},
 				})
@@ -153,11 +153,11 @@ func (c *char) burstHook() {
 	//check on attack landed for target 0
 	//if aurous active then trigger dmg if not on cd
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		if c.Core.Status.Duration("aurous") == 0 {
 			return false
 		}
-		if ds.ActorIndex == c.Index {
+		if atk.Info.ActorIndex == c.Index {
 			//ignore for self
 			return false
 		}

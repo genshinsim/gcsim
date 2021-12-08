@@ -275,12 +275,12 @@ func (c *char) attackBuff(delay int) {
 		c.Core.Status.AddStatus(fmt.Sprintf("sarabuff%v", active.Name()), 360)
 		c.Core.Log.Debugw("sara attack buff applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", active.CharIndex(), "buff", buff, "expiry", c.Core.F+360)
 
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		val[core.ATK] = buff
 		// AddMod function already only takes the most recent version of this buff
 		active.AddMod(core.CharStatMod{
 			Key: "sara-attack-buff",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + 360,
@@ -289,7 +289,7 @@ func (c *char) attackBuff(delay int) {
 		// Apply on damage check hook for C6
 		if c.Base.Cons == 6 {
 			c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-				ds := args[1].(*core.Snapshot)
+				atk := args[1].(*core.AttackEvent)
 				// No need to keep event hook if sara attack buff is not active
 				if c.Core.Status.Duration("sarabuff"+ds.Actor) <= 0 {
 					return true

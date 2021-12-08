@@ -3,7 +3,7 @@ package yoimiya
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) c1() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.ATKP] = 0.2
 	c.Core.Events.Subscribe(core.OnTargetDied, func(args ...interface{}) bool {
 		//we assume target is affected if it's active
@@ -11,7 +11,7 @@ func (c *char) c1() {
 			c.AddMod(core.CharStatMod{
 				Key:    "c1",
 				Expiry: c.Core.F + 1200,
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 					return val, true
 				},
 			})
@@ -21,16 +21,16 @@ func (c *char) c1() {
 }
 
 func (c *char) c2() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.PyroP] = 0.25
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
-		if ds.ActorIndex == c.Index && crit {
+		if atk.Info.ActorIndex == c.Index && crit {
 			c.AddMod(core.CharStatMod{
 				Key:    "c2",
 				Expiry: c.Core.F + 360,
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 					return val, true
 				},
 			})

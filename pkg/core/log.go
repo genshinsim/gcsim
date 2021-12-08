@@ -11,6 +11,7 @@ type LogSource int
 const (
 	LogProcs LogSource = iota
 	LogDamageEvent
+	LogPreDamageMod
 	LogHurtEvent
 	LogHealEvent
 	LogCalc
@@ -37,6 +38,7 @@ const (
 var LogSourceString = [...]string{
 	"procs",
 	"damage",
+	"pre_damage_mods",
 	"hurt",
 	"heal",
 	"calc",

@@ -56,11 +56,11 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	//a1
 	// When Yan Fei's Charged Attack consumes Scarlet Seals, each Scarlet Seal consumed will increase her Pyro DMG by 5% for 6 seconds. When this effect is repeatedly triggered it will overwrite the oldest bonus first.
 	// The Pyro DMG bonus from Proviso is applied before charged attack damage is calculated.
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.PyroP] = float64(stacks) * 0.05
 	c.AddMod(core.CharStatMod{
 		Key: "yanfei-a1",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return m, true
 		},
 		Expiry: c.Core.F + 360,
@@ -140,11 +140,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// TODO: Not 100% sure whether this adds a seal at the exact moment the burst ends or not
 	c.Core.Status.AddStatus("yanfeiburst", 15*60+1)
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.DmgP] = burstBonus[c.TalentLvlBurst()]
 	c.AddMod(core.CharStatMod{
 		Key: "yanfei-burst",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if a == core.AttackTagExtra {
 				return m, true
 			}

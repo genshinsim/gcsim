@@ -149,11 +149,11 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	//add 15% since 360noscope
 
 	c.AddTask(func() {
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		val[core.ATKP] = 0.15
 		c.AddMod(core.CharStatMod{
 			Key: "a2",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + 600,
@@ -275,16 +275,16 @@ func (c *char) manualExplode() {
 func (c *char) overloadExplode() {
 	//explode all bunnies on overload
 	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		if len(c.bunnies) == 0 {
 			return false
 		}
 		//TODO: only amber trigger?
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		//TODO: does it have to be charge shot trigger only??
-		if ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if ds.ReactionType == core.Overload {
@@ -337,11 +337,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	if c.Base.Cons == 6 {
 		for _, active := range c.Core.Chars {
-			val := make([]float64, core.EndStatType)
+			var val [core.EndStatType]float64
 			val[core.ATKP] = 0.15
 			active.AddMod(core.CharStatMod{
 				Key:    "amber-c6",
-				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 				Expiry: c.Core.F + 900,
 			})
 			c.Core.Log.Debugw("c6 - adding atk %", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())

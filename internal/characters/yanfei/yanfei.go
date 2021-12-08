@@ -61,12 +61,12 @@ func (c *char) onExitField() {
 // Increases Yan Fei's Charged Attack CRIT Rate by 20% against enemies below 50% HP.
 func (c *char) c2() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		target := args[0].(core.Target)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if target.HP()/target.MaxHP() >= .5 {
@@ -84,15 +84,15 @@ func (c *char) c2() {
 // When Yan Fei's Charged Attacks deal CRIT Hits, she will deal an additional instance of AoE Pyo DMG equal to 80% of her ATK. This DMG counts as Charged Attack DMG.
 func (c *char) a4() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if ds.Abil == "Blazing Eye (A4)" {
 			return false
 		}
-		if !((ds.AttackTag == core.AttackTagExtra) && crit) {
+		if !((atk.Info.AttackTag == core.AttackTagExtra) && crit) {
 			return false
 		}
 

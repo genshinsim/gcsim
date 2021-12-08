@@ -15,11 +15,11 @@ func init() {
 // 4 piece: Using an Elemental Skill or Burst increases healing received by all party members by 20% for 10s.
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.Heal] = 0.15
 		c.AddMod(core.CharStatMod{
 			Key: "maiden-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,

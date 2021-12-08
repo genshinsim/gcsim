@@ -97,7 +97,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) a2() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.EM] = 50
 	for _, char := range c.Core.Chars {
 		this := char
@@ -107,7 +107,7 @@ func (c *char) a2() {
 		this.AddMod(core.CharStatMod{
 			Key:    "sucrose-a2",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				var f int
 				var ok bool
 
@@ -131,8 +131,8 @@ func (c *char) a2() {
 	}
 
 	c.Core.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		switch ds.ReactionType {
@@ -163,7 +163,7 @@ func (c *char) a4() {
 		char.AddMod(core.CharStatMod{
 			Key:    "sucrose-a4",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				if c.Core.Status.Duration("sucrosea4") == 0 {
 					return nil, false
 				}
@@ -176,12 +176,12 @@ func (c *char) a4() {
 func (c *char) c6() {
 	c.AddMod(core.CharStatMod{
 		Key: "sucrose-c6",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if c.Core.Status.Duration("sucrosec6") == 0 {
 				return nil, false
 			}
 			p := core.EleToDmgP(c.qInfused)
-			val := make([]float64, core.EndStatType)
+			var val [core.EndStatType]float64
 			val[p] = 0.2
 			return val, true
 		},
