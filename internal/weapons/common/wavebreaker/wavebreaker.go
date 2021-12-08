@@ -48,7 +48,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 				if a == core.AttackTagElementalBurst {
 					return m, true
 				}
-				return nil, false
+				return m, false
 			},
 		})
 		return true

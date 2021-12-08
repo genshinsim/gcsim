@@ -33,17 +33,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("prototype-starglitter-%v", char.Name()))
 
-	var val [core.EndStatType]float64
 	char.AddMod(core.CharStatMod{
 		Key:    "prototype",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			var val [core.EndStatType]float64
 			if a != core.AttackTagNormal && a != core.AttackTagExtra {
-				return nil, false
+				return val, false
 			}
 			if expiry < c.F {
 				stacks = 0
-				return nil, false
+				return val, false
 			}
 			val[core.ATKP] = atk * float64(stacks)
 			return val, true
