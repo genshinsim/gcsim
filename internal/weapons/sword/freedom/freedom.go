@@ -12,17 +12,17 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.DmgP] = 0.075 + float64(r)*0.025
 	char.AddMod(core.CharStatMod{
 		Key: "freedom-dmg",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
 	})
 
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.ATKP] = .15 + float64(r)*0.05
 	plunge := .12 + 0.4*float64(r)
 
@@ -31,12 +31,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	cooldown := 0
 
 	c.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagElementalArt && ds.AttackTag != core.AttackTagElementalBurst {
+		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalBurst {
 			return false
 		}
 		if cooldown > c.F {
@@ -54,7 +54,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			for _, char := range c.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "freedom-proc",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 						val[core.DmgP] = 0
 						if a == core.AttackTagNormal || a == core.AttackTagExtra || a == core.AttackTagPlunge {
 							val[core.DmgP] = plunge

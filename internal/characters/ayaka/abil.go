@@ -73,13 +73,13 @@ func (c *char) Dash(p map[string]int) (int, int) {
 	//since we always hit, just restore the stam and add bonus...
 	c.AddTask(func() {
 		c.Core.RestoreStam(10)
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		val[core.CryoP] = 0.18
 		//a2 increase normal + ca dmg by 30% for 6s
 		c.AddMod(core.CharStatMod{
 			Key:    "ayaka-a4",
 			Expiry: c.Core.F + 600,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return val, true
 			},
 		})
@@ -115,13 +115,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	c.QueueParticle("ayaka", count, core.Cryo, f+100)
 
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.DmgP] = 0.3
 	//a2 increase normal + ca dmg by 30% for 6s
 	c.AddMod(core.CharStatMod{
 		Key:    "ayaka-a2",
 		Expiry: c.Core.F + 360,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return val, a == core.AttackTagNormal || a == core.AttackTagExtra
 		},
 	})

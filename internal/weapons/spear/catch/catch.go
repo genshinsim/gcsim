@@ -11,18 +11,18 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.DmgP] = 0.12 + 0.04*float64(r)
 	val[core.CR] = 0.045 + 0.015*float64(r)
 
 	char.AddMod(core.CharStatMod{
 		Key:    "the-catch",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if a == core.AttackTagElementalBurst {
 				return val, true
 			}
-			return nil, false
+			return val, false
 		},
 	})
 }

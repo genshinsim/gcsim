@@ -1,8 +1,6 @@
 package instructor
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -15,28 +13,28 @@ func init() {
 // 4-Piece Bonus: Upon triggering an Elemental Reaction, increases all party members' Elemental Mastery by 120 for 8s.
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.EM] = 80
 		c.AddMod(core.CharStatMod{
 			Key: "instructor-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
 		})
 	}
 	if count >= 4 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.EM] = 120
 
-		s.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
+		add := func(args ...interface{}) bool {
+			atk := args[1].(*core.AttackEvent)
 			// Character must be on field to proc bonus
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
 			// Source of elemental reaction must be the character with instructor
-			if ds.ActorIndex != c.CharIndex() {
+			if atk.Info.ActorIndex != c.CharIndex() {
 				return false
 			}
 
@@ -49,13 +47,17 @@ func New(c core.Character, s *core.Core, count int) {
 
 				char.AddMod(core.CharStatMod{
 					Key: "instructor-4pc",
-					Amount: func(ds core.AttackTag) ([]float64, bool) {
+					Amount: func(ds core.AttackTag) ([core.EndStatType]float64, bool) {
 						return m, true
 					},
 					Expiry: s.F + 480,
 				})
 			}
 			return false
-		}, fmt.Sprintf("instructor4-%v", c.Name()))
+		}
+
+		for i := core.EventType(core.ReactionEventStartDelim + 1); i < core.ReactionEventEndDelim; i++ {
+			s.Events.Subscribe(i, add, "4ins"+c.Name())
+		}
 	}
 }

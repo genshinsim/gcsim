@@ -19,20 +19,20 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 	active := 0
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 
 	char.AddMod(core.CharStatMod{
 		Key: "primordial",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return m, active > c.F
 		},
 		Expiry: -1,
 	})
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		//check if char is correct?
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		//check if cd is up

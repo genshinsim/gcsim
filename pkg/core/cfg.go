@@ -58,9 +58,11 @@ type TalentProfile struct {
 }
 
 type EnemyProfile struct {
-	Level  int
-	HP     float64
-	Resist map[EleType]float64
+	Level          int
+	HP             float64
+	Resist         map[EleType]float64
+	Size           float64
+	CoordX, CoordY float64
 }
 
 type EnergyEvent struct {

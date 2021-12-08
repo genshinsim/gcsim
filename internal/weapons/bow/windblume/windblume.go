@@ -20,13 +20,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("windblume-%v", char.Name()))
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.ATKP] = 0.12 + float64(r)*0.04
 	char.AddMod(core.CharStatMod{
 		Key: "windblume",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if dur < c.F {
-				return nil, false
+				return m, false
 			}
 			return m, true
 		},

@@ -20,10 +20,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	}
 	dmg := 0.015 + float64(r)*0.005
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	char.AddMod(core.CharStatMod{
 		Key: "alley-hunter",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			m[core.DmgP] = dmg * float64(w.stacks)
 			return m, true
 		},

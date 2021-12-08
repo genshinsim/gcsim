@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 
@@ -264,6 +265,10 @@ func (c *Core) Tick() {
 	c.F++
 	//tick auras
 	for _, t := range c.Targets {
+		if t == nil {
+			log.Print("unexpected nil target?")
+			log.Println(c.Targets)
+		}
 		t.Tick()
 	}
 	//tick shields

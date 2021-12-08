@@ -108,12 +108,12 @@ func (c *char) onDefeatTargets() {
 //apply riptide status to enemy hit
 func (c *char) applyRT() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
 		crit := args[3].(bool)
 
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
-			if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 				return false
 			}
 			if !crit {
@@ -126,7 +126,7 @@ func (c *char) applyRT() {
 			}
 			c.rtExpiry[t.Index()] = c.Core.F + rtA1
 		} else {
-			if ds.AttackTag != core.AttackTagElementalBurst && ds.AttackTag != core.AttackTagExtra {
+			if atk.Info.AttackTag != core.AttackTagElementalBurst && atk.Info.AttackTag != core.AttackTagExtra {
 				return false
 			}
 

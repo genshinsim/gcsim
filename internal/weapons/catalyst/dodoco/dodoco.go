@@ -15,35 +15,35 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	atkExpiry := 0
 	dmgExpiry := 0
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.DmgP] = .12 + float64(r)*.04
 	char.AddMod(core.CharStatMod{
 		Key: "dodoco ca",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if a != core.AttackTagExtra {
-				return nil, false
+				return m, false
 			}
 			return m, dmgExpiry > c.F
 		},
 		Expiry: -1,
 	})
 
-	n := make([]float64, core.EndStatType)
+	var n [core.EndStatType]float64
 	n[core.ATKP] = .06 + float64(r)*0.02
 	char.AddMod(core.CharStatMod{
 		Key: "dodoco atk",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return n, atkExpiry > c.F
 		},
 		Expiry: -1,
 	})
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		switch ds.AttackTag {
+		switch atk.Info.AttackTag {
 		case core.AttackTagNormal:
 			dmgExpiry = c.F + 360
 		case core.AttackTagExtra:

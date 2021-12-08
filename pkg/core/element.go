@@ -7,14 +7,14 @@ type EleType int
 const (
 	Electro EleType = iota
 	Pyro
-	Anemo
 	Cryo
-	Frozen
 	Hydro
+	Frozen
+	ElementDelimAttachable
+	Anemo
 	Dendro
 	Geo
 	NoElement
-	ElementMaxCount
 	Physical
 	EC
 	UnknownElement
@@ -28,14 +28,14 @@ func (e EleType) String() string {
 var EleTypeString = [...]string{
 	"electro",
 	"pyro",
-	"anemo",
 	"cryo",
-	"frozen",
 	"hydro",
+	"frozen",
+	"delim",
+	"anemo",
 	"dendro",
 	"geo",
 	"",
-	"delim",
 	"physical",
 	"ec",
 	"unknown",
@@ -96,35 +96,12 @@ const (
 
 func (c *Core) AbsorbCheck(prio ...EleType) EleType {
 
-	//map out all the elements currently present
-	ele := make([]bool, EndEleType)
-	//check all targets
-	for _, t := range c.Targets {
-		switch t.AuraType() {
-		case Pyro:
-			ele[Pyro] = true
-		case Hydro:
-			ele[Hydro] = true
-		case Electro:
-			ele[Electro] = true
-		case Cryo:
-			ele[Cryo] = true
-		case EC:
-			ele[Hydro] = true
-			ele[Electro] = true
-		case Frozen:
-			ele[Cryo] = true
-		}
-	}
-	//TODO: check active char?
-
-	//go through priority and find the first one with a match
-
 	for _, e := range prio {
-		if ele[e] {
-			return e
+		for _, t := range c.Targets {
+			if t.AuraContains(e) {
+				return e
+			}
 		}
 	}
-
 	return NoElement
 }

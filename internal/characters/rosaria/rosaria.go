@@ -44,22 +44,22 @@ func (c *char) c1() {
 	// Add hook that monitors for crit hits. Mirrors existing favonius code
 	// No log value saved as stat mod already shows up in debug view
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
 		if !crit {
 			return false
 		}
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 
-		val := make([]float64, core.EndStatType)
+		var val [core.EndStatType]float64
 		val[core.AtkSpd] = 0.1
 		val[core.DmgP] = 0.1
 		c.AddMod(core.CharStatMod{
 			Key:    "rosaria-c1",
 			Expiry: c.Core.F + 240,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				if a != core.AttackTagNormal {
 					return nil, false
 				}
@@ -80,12 +80,12 @@ func (c *char) c1() {
 func (c *char) c4() {
 	icd := 0
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if !(crit && (ds.AttackTag == core.AttackTagElementalArt)) {
+		if !(crit && (atk.Info.AttackTag == core.AttackTagElementalArt)) {
 			return false
 		}
 		// Use an icd to make it only once per skill cast. Use 30 frames as two hits occur 20 frames apart

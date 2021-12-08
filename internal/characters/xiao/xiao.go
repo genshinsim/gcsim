@@ -65,7 +65,7 @@ func (c *char) c2() {
 	c.AddMod(core.CharStatMod{
 		Key:    "xiao-c2",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if c.Core.ActiveChar != c.Index {
 				return stat_mod, true
 			}
@@ -79,8 +79,8 @@ func (c *char) c2() {
 // Adds an OnDamage event checker - if we record two or more instances of plunge damage, then activate C6
 func (c *char) c6() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if !((ds.Abil == "High Plunge") || (ds.Abil == "Low Plunge")) {

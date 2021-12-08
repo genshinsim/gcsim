@@ -13,12 +13,12 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.ATKP] = 0.15 + 0.05*float64(r)
 	char.AddMod(core.CharStatMod{
 		Key:    "wolf-flat",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return val, true
 		},
 	})
@@ -32,9 +32,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return false //ignore as we not tracking HP
 		}
 
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if icd > c.F {
@@ -50,7 +50,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			char.AddMod(core.CharStatMod{
 				Key:    "wolf-proc",
 				Expiry: c.F + 720,
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 					return bonus, true
 				},
 			})

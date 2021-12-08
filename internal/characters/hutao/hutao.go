@@ -96,12 +96,12 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) a4() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.PyroP] = 0.33
 	c.AddMod(core.CharStatMod{
 		Key:    "hutao-a4",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if c.Core.Status.Duration("paramita") == 0 {
 				return nil, false
 			}
@@ -136,11 +136,11 @@ func (c *char) checkc6() {
 		c.HPCurrent = 1
 	}
 	//increase crit rate to 100%
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	val[core.CR] = 1
 	c.AddMod(core.CharStatMod{
 		Key:    "hutao-c6",
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
 		Expiry: c.Core.F + 600,
 	})
 
@@ -301,11 +301,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 }
 
 func (c *char) ppHook() {
-	val := make([]float64, core.EndStatType)
+	var val [core.EndStatType]float64
 	c.AddMod(core.CharStatMod{
 		Key:    "hutao-paramita",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if c.Core.Status.Duration("paramita") == 0 {
 				return nil, false
 			}

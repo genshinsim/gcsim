@@ -19,11 +19,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	em := 180 + float64(r)*60
 	dmg := .36 + float64(r)*.12
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 
 	char.AddMod(core.CharStatMod{
 		Key: "widsith",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return m, expiry > c.F
 		},
 		Expiry: -1,

@@ -2,6 +2,7 @@ package huskofopulentdreams
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -12,18 +13,18 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		m[core.DEFP] = 0.30
 		c.AddMod(core.CharStatMod{
 			Key: "husk-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
 		})
 	}
 	if count >= 4 {
-		m := make([]float64, core.EndStatType)
+		var m [core.EndStatType]float64
 		stacks := 0
 		stackGainICDExpiry := 0
 		// Required to check for stack loss
@@ -88,12 +89,12 @@ func New(c core.Character, s *core.Core, count int) {
 		}, "husk-4pc-off-field-gain")
 
 		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
+			atk := args[1].(*core.AttackEvent)
 			// Only triggers when onfield
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
-			if ds.ActorIndex != c.CharIndex() {
+			if atk.Info.ActorIndex != c.CharIndex() {
 				return false
 			}
 			if stackGainICDExpiry > s.F {
@@ -118,7 +119,7 @@ func New(c core.Character, s *core.Core, count int) {
 
 		c.AddMod(core.CharStatMod{
 			Key: "husk-4pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				m[core.DEFP] = 0.06 * float64(stacks)
 				m[core.GeoP] = 0.06 * float64(stacks)
 

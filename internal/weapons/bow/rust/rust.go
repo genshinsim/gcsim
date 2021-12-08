@@ -9,11 +9,11 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	inc := .3 + float64(r)*0.1
 	char.AddMod(core.CharStatMod{
 		Key: "rust",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if a == core.AttackTagNormal {
 				m[core.DmgP] = inc
 				return m, true
@@ -22,7 +22,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 				m[core.DmgP] = -0.1
 				return m, true
 			}
-			return nil, false
+			return m, false
 		},
 		Expiry: -1,
 	})

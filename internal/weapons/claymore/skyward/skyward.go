@@ -13,11 +13,11 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.DmgP] = 0.06 + float64(r)*0.02
 	char.AddMod(core.CharStatMod{
 		Key: "skyward pride",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
@@ -39,12 +39,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		//check if char is correct?
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		//check if cd is up

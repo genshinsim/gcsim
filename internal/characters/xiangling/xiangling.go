@@ -82,14 +82,14 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) c6() {
-	m := make([]float64, core.EndStatType)
+	var m [core.EndStatType]float64
 	m[core.PyroP] = 0.15
 
 	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
 			Key:    "xl-c6",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return m, c.Core.Status.Duration("xlc6") > 0
 			},
 		})
@@ -98,40 +98,41 @@ func (c *char) c6() {
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Physical,
-		25,
-		0,
-	)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Normal",
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		x := d.Clone()
-		x.Mult = mult[c.TalentLvlAttack()]
-		c.QueueDmg(&x, f-i)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(
+			ai,
+			core.NewDefCircHit(0.5, false, core.TargettableEnemy),
+			f-i,
+			f-i,
+		)
 	}
 
 	//if n = 5, add explosion for c2
 	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
 		// According to TCL, does not snapshot and has no ability type scaling tags
 		// TODO: Does not mention ICD or pyro aura strength?
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d1 := c.Snapshot(
-				"Oil Meets Fire (C2)",
-				core.AttackTagNone,
-				core.ICDTagNormalAttack,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Pyro,
-				25,
-				0.75,
-			)
-			return &d1
-		}, 120)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Oil Meets Fire (C2)",
+			AttackTag:  core.AttackTagNone,
+			ICDTag:     core.ICDTagNormalAttack,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Pyro,
+			Durability: 25,
+			Mult:       .75,
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 120, 120)
 	}
 	//add a 75 frame attackcounter reset
 	c.AdvanceNormalIndex()
@@ -142,47 +143,42 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionCharge, p)
-	d := c.Snapshot(
-		"Charge",
-		core.AttackTagExtra,
-		core.ICDTagExtraAttack,
-		core.ICDGroupPole,
-		core.StrikeTypeSpear,
-		core.Physical,
-		25,
-		nc[c.TalentLvlAttack()],
-	)
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupPole,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       nc[c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
 
 	//return animation cd
 	return f, a
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
-	//check if on cd first
-
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	d := c.Snapshot(
-		"Guoba",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Pyro,
-		25,
-		guoba[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
 
-	if c.Base.Cons >= 1 {
-		d.OnHitCallback = func(t core.Target) {
-			t.AddResMod("xiangling-c1", core.ResistMod{
-				Ele:      core.Pyro,
-				Value:    -0.15,
-				Duration: 6 * 60,
-			})
-		}
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Guoba",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 25,
+		Mult:       guoba[c.TalentLvlSkill()],
+	}
+
+	cb := func(t core.Target, ae *core.AttackEvent) {
+		t.AddResMod("xiangling-c1", core.ResistMod{
+			Ele:      core.Pyro,
+			Value:    -0.15,
+			Duration: 6 * 60,
+		})
 	}
 
 	delay := 120
@@ -190,8 +186,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//lasts 73 seconds, shoots every 1.6 seconds
 	for i := 0; i < 4; i++ {
-		x := d.Clone()
-		c.QueueDmg(&x, delay+i*90)
+		if c.Base.Cons >= 1 {
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, delay+i*90, cb)
+		} else {
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, delay+i*90)
+		}
 		c.QueueParticle("xiangling", 1, core.Pyro, delay+i*95+90+60)
 	}
 
@@ -205,23 +204,19 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	lvl := c.TalentLvlBurst()
 
 	delay := []int{34, 50, 75}
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 25,
+		Mult:       guoba[c.TalentLvlSkill()],
+	}
 	for i := 0; i < len(pyronadoInitial); i++ {
-		j := i
-		c.AddTask(func() {
-			x := c.Snapshot(
-				fmt.Sprintf("Pyronado Hit %v", j+1),
-				core.AttackTagElementalBurst,
-				core.ICDTagElementalBurst,
-				core.ICDGroupDefault,
-				core.StrikeTypeSpear,
-				core.Pyro,
-				25,
-				pyronadoInitial[j][lvl],
-			)
-			c.Core.Combat.ApplyDamage(&x)
-		}, "pyronado initial", delay[i])
-
-		// c.QueueDmg(&x, delay[i])
+		ai.Abil = fmt.Sprintf("Pyronado Hit %v", i+1)
+		ai.Mult = pyronadoInitial[i][lvl]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), delay[i], delay[i])
 	}
 
 	//ok for now we assume it's 80 (or 70??) frames per cycle, that gives us roughly 10s uptime
@@ -231,27 +226,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		max = 14 * 60
 	}
 
-	var d core.Snapshot
-
-	c.AddTask(func() {
-		//spin to win; snapshot between 2nd and 3rd hit
-		d = c.Snapshot(
-			"Pyronado",
-			core.AttackTagElementalBurst,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeSpear,
-			core.Pyro,
-			25,
-			pyronadoSpin[lvl],
-		)
-		d.Targets = core.TargetAll
-	}, "pyronado-snap", 69)
+	ai = core.AttackInfo{
+		Abil:       "Pyronado",
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 25,
+		Mult:       pyronadoSpin[lvl],
+	}
 
 	c.Core.Status.AddStatus("xianglingburst", max)
 
 	for delay := 70; delay <= max; delay += 70 {
-		c.QueueDmg(&d, delay)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2.5, false, core.TargettableEnemy), 69, delay)
 	}
 
 	//add an effect starting at frame 70 to end of duration to increase pyro dmg by 15% if c6
