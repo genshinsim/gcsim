@@ -49,17 +49,18 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) a2() {
-	var val [core.EndStatType]float64
+
 	c.AddMod(core.CharStatMod{
 		Key:    "yoimiya-a2",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			var val [core.EndStatType]float64
 			if c.Core.Status.Duration("yoimiyaa2") > 0 {
 				val[core.Pyro] = float64(c.a2stack) * 0.02
 				return val, true
 			}
 			c.a2stack = 0
-			return nil, false
+			return val, false
 		},
 	})
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
@@ -83,16 +84,16 @@ func (c *char) a2() {
 	}, "yoimiya-a2")
 }
 
-func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
-	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
+func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
+	ds := c.Tmpl.Snapshot(ai)
 
 	//infusion to normal attack only
-	if c.Core.Status.Duration("yoimiyaskill") > 0 && atk.Info.AttackTag == core.AttackTagNormal {
-		ds.Element = core.Pyro
+	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == core.AttackTagNormal {
+		ai.Element = core.Pyro
 		// ds.ICDTag = core.ICDTagNone
 		//multiplier
-		c.Core.Log.Debugw("skill mult applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "prev", ds.Mult, "next", skill[c.TalentLvlSkill()]*ds.Mult, "char", c.Index)
-		ds.Mult = skill[c.TalentLvlSkill()] * ds.Mult
+		c.Core.Log.Debugw("skill mult applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
+		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
 	}
 	return ds
 }
