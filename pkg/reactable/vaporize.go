@@ -3,6 +3,9 @@ package reactable
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (r *Reactable) tryVaporize(a *core.AttackEvent) {
+	if a.Info.Durability < zeroDur {
+		return
+	}
 	switch a.Info.Element {
 	case core.Pyro:
 		//make sure there's hydro
