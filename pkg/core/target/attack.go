@@ -3,6 +3,9 @@ package target
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (t *Tmpl) Attack(atk *core.AttackEvent) (float64, bool) {
+	//check shatter first
+	t.ShatterCheck(atk)
+
 	//check tags
 	if atk.Info.Durability > 0 && atk.Info.Element != core.Physical {
 		//check for ICD first
