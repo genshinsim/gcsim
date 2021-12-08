@@ -12,18 +12,19 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
-		d := c.Snapshot(
-			fmt.Sprintf("Normal %v", c.NormalCounter),
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSpear,
-			core.Physical,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, f-5+i)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -40,19 +41,17 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
-	d := c.Snapshot(
-		"Charge",
-		core.AttackTagExtra,
-		core.ICDTagExtraAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Physical,
-		25,
-		charge[c.TalentLvlAttack()],
-	)
-	// Kind of hits multiple, but radius not terribly big. Coded as single target for now
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1)
 
 	//return animation cd
 	return f, a
@@ -61,18 +60,17 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) PlungeAttack(delay int) (int, int) {
-	d := c.Snapshot(
-		"Plunge (Normal)",
-		core.AttackTagPlunge,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Physical,
-		25,
-		plunge[c.TalentLvlAttack()],
-	)
-
-	c.QueueDmg(&d, delay)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Plunge (Normal)",
+		AttackTag:  core.AttackTagPlunge,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       plunge[c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, delay)
 
 	//return animation cd
 	return delay, delay
@@ -85,30 +83,29 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionHighPlunge, p)
 
-	plunge_hits, ok := p["plunge_hits"]
+	plungeHits, ok := p["plunge_hits"]
 	if !ok {
-		plunge_hits = 0 // Number of normal plunge hits
+		plungeHits = 0 // Number of normal plunge hits
 	}
 
-	for i := 0; i < plunge_hits; i++ {
+	for i := 0; i < plungeHits; i++ {
 		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
 		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
 		c.PlungeAttack(f - i - 1)
 	}
 
-	d := c.Snapshot(
-		"High Plunge",
-		core.AttackTagPlunge,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Physical,
-		25,
-		highplunge[c.TalentLvlAttack()],
-	)
-	d.Targets = core.TargetAll
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "High Plunge",
+		AttackTag:  core.AttackTagPlunge,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       highplunge[c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f-1)
 
 	//return animation cd
 	return f, a
@@ -121,30 +118,29 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionLowPlunge, p)
 
-	plunge_hits, ok := p["plunge_hits"]
+	plungeHits, ok := p["plunge_hits"]
 	if !ok {
-		plunge_hits = 0 // Number of normal plunge hits
+		plungeHits = 0 // Number of normal plunge hits
 	}
 
-	for i := 0; i < plunge_hits; i++ {
+	for i := 0; i < plungeHits; i++ {
 		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
 		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
 		c.PlungeAttack(f - i - 1)
 	}
 
-	d := c.Snapshot(
-		"Low Plunge",
-		core.AttackTagPlunge,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Physical,
-		25,
-		lowplunge[c.TalentLvlAttack()],
-	)
-	d.Targets = core.TargetAll
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Low Plunge",
+		AttackTag:  core.AttackTagPlunge,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       lowplunge[c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f-1)
 
 	//return animation cd
 	return f, a
@@ -164,25 +160,23 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		a = 60 - a
 	}
 
-	d := c.Snapshot(
-		"Lemniscatic Wind Cycling",
-		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Anemo,
-		25,
-		skill[c.TalentLvlSkill()],
-	)
-	// Pierces enemies, so I guess it targets all?
-	d.Targets = core.TargetAll
-
 	// Add damage based on A4
 	if c.a4Expiry <= c.Core.F {
 		c.Tags["a4"] = 0
 	}
-	stacks := c.Tags["a4"]
-	d.Stats[core.DmgP] += float64(stacks) * 0.15
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Lemniscatic Wind Cycling",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+	snap := c.Snapshot(&ai)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), f)
 
 	// Text is not explicit, but assume that gaining a stack while at max still refreshes duration
 	c.Tags["a4"]++
@@ -190,9 +184,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if c.Tags["a4"] > 3 {
 		c.Tags["a4"] = 3
 	}
-	c.Core.Log.Debugw("Xiao A4 adding damage", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", stacks, "expiry", c.a4Expiry)
-
-	c.QueueDmg(&d, f)
 
 	// Cannot create energy during burst uptime
 	if c.Core.Status.Duration("xiaoburst") > 0 {
@@ -266,39 +257,4 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Energy = 0
 
 	return f, a
-}
-
-// Xiao specific Snapshot implementation for his burst bonuses. Similar to Hu Tao
-// Implements burst anemo attack damage conversion and DMG bonus
-// Also implements A1:
-// While under the effects of Bane of All Evil, all DMG dealt by Xiao is increased by 5%. DMG is increased by an additional 5% for every 3s the ability persists. The maximum DMG Bonus is 25%
-func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
-	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
-
-	if c.Core.Status.Duration("xiaoburst") > 0 {
-		// Calculate and add A1 damage bonus - applies to all damage
-		// Fraction dropped in int conversion in go - acts like floor
-		stacks := 1 + int((c.Core.F-c.qStarted)/180)
-		if stacks > 5 {
-			stacks = 5
-		}
-		ds.Stats[core.DmgP] += float64(stacks) * 0.05
-		c.Core.Log.Debugw("a1 adding dmg %", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F-c.qStarted)
-
-		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
-		// Also handle burst CA ICD change to share with Normal
-		switch ds.AttackTag {
-		case core.AttackTagNormal:
-		case core.AttackTagExtra:
-			ds.ICDTag = core.ICDTagNormalAttack
-		case core.AttackTagPlunge:
-		default:
-			return ds
-		}
-		ds.Element = core.Anemo
-		bonus := burstBonus[c.TalentLvlBurst()]
-		ds.Stats[core.DmgP] += bonus
-		c.Core.Log.Debugw("xiao burst damage bonus", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "bonus", bonus, "final", ds.Stats[core.DmgP])
-	}
-	return ds
 }
