@@ -149,8 +149,11 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 			continue
 		}
 
+		//make a copy first
+		cpy := *a
+
 		//at this point attack will land
-		c.core.Events.Emit(OnAttackWillLand, t, a)
+		c.core.Events.Emit(OnAttackWillLand, t, &cpy)
 
 		//check to make sure it's not cancelled for w/e reason
 		if a.Cancelled {
@@ -169,8 +172,9 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 		// 	)
 		// }
 
-		//make a copy first
-		cpy := *a
+		char := c.core.Chars[cpy.Info.ActorIndex]
+		char.PreDamageSnapshotAdjust(&cpy, t)
+
 		dmg, crit := t.Attack(&cpy)
 		total += dmg
 
