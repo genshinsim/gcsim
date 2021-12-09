@@ -43,6 +43,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 				x := ae.Snapshot.BaseDef*(1+ae.Snapshot.Stats[core.DEFP]) + ae.Snapshot.Stats[core.DEF]
 				heal := (shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]) * (1 + ae.Snapshot.Stats[core.Heal])
 				c.Core.Health.HealAll(c.Index, heal)
+				done = true
 			}
 		}
 
