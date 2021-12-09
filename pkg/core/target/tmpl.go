@@ -15,6 +15,7 @@ type Tmpl struct {
 	Hitbox      core.Circle
 	Res         map[core.EleType]float64
 	Level       int
+	Tags        map[string]int
 
 	//mods
 	ResMod []core.ResistMod
@@ -37,4 +38,17 @@ func (t *Tmpl) Kill()                      {} // do nothing
 
 func (t *Tmpl) Init(x, y, size float64) {
 	t.Hitbox = *core.NewCircle(x, y, size)
+	t.Tags = make(map[string]int)
+}
+
+func (t *Tmpl) SetTag(key string, val int) {
+	t.Tags[key] = val
+}
+
+func (t *Tmpl) GetTag(key string) int {
+	return t.Tags[key]
+}
+
+func (t *Tmpl) RemoveTag(key string) {
+	delete(t.Tags, key)
 }
