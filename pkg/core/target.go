@@ -19,6 +19,11 @@ type Target interface {
 	AuraContains(...EleType) bool
 	AuraType() EleType
 
+	//tags
+	SetTag(key string, val int)
+	GetTag(key string) int
+	RemoveTag(key string)
+
 	//target mods
 	AddDefMod(key string, val float64, dur int)
 	AddResMod(key string, val ResistMod)
