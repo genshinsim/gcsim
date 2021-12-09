@@ -30,6 +30,9 @@ func (t *testTarget) HasResMod(key string) bool                  { return false 
 func (t *testTarget) AddReactBonusMod(mod core.ReactionBonusMod) {}
 func (t *testTarget) ReactBonus(atk core.AttackInfo) float64     { return 0 }
 func (t *testTarget) Kill()                                      {}
+func (t *testTarget) SetTag(key string, val int)                 {}
+func (t *testTarget) GetTag(key string) int                      { return 0 }
+func (t *testTarget) RemoveTag(key string)                       {}
 
 type combatTestCtrl struct {
 	core *core.Core
