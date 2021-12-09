@@ -36,5 +36,5 @@ func (t *Tmpl) Shape() core.Shape          { return &t.Hitbox }
 func (t *Tmpl) Kill()                      {} // do nothing
 
 func (t *Tmpl) Init(x, y, size float64) {
-	t.Hitbox = *core.NewCircleHitbox(x, y, size)
+	t.Hitbox = *core.NewCircle(x, y, size)
 }

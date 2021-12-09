@@ -20,7 +20,7 @@ func (t *testTarget) Index() int                                 { return 0 }
 func (t *testTarget) SetIndex(ind int)                           {}
 func (t *testTarget) MaxHP() float64                             { return 1 }
 func (t *testTarget) HP() float64                                { return 1 }
-func (t *testTarget) Shape() core.Shape                          { return core.NewCircleHitbox(0, 0, 1) }
+func (t *testTarget) Shape() core.Shape                          { return core.NewCircle(0, 0, 1) }
 func (t *testTarget) AddDefMod(key string, val float64, dur int) {}
 func (t *testTarget) AddResMod(key string, val core.ResistMod)   {}
 func (t *testTarget) RemoveResMod(key string)                    {}

@@ -5,6 +5,7 @@ import "math"
 type Shape interface {
 	IntersectCircle(c Circle) bool
 	IntersectRectangle(r Rectangle) bool
+	Pos() (x, y float64)
 }
 
 //this is for attack that only hits self
@@ -54,7 +55,27 @@ func NewDefBoxHit(w, h float64, self bool, targets ...TargettableType) AttackPat
 	}
 }
 
-func NewCircleHitbox(x, y, r float64) *Circle {
+func NewCircleHit(x, y, r float64, self bool, targets ...TargettableType) AttackPattern {
+	var arr [TargettableTypeCount]bool
+
+	for _, v := range targets {
+		if v < TargettableTypeCount {
+			arr[v] = true
+		}
+	}
+
+	return AttackPattern{
+		Shape: &Circle{
+			x: x,
+			y: y,
+			r: r,
+		},
+		Targets:  arr,
+		SelfHarm: self,
+	}
+}
+
+func NewCircle(x, y, r float64) *Circle {
 	return &Circle{
 		x: x,
 		y: y,
@@ -110,6 +131,10 @@ func (c *Circle) IntersectRectangle(r Rectangle) bool {
 	return sq <= math.Pow(c.r, 2)
 }
 
+func (c *Circle) Pos() (float64, float64) {
+	return c.x, c.y
+}
+
 type Rectangle struct {
 	x, y, w, h float64
 }
@@ -143,4 +168,8 @@ func (r *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 		r.x-halfr1w <= r2.x+halfr2w && //left side <= r2 right side
 		r.y+halfr1h >= r2.y-halfr2h && //top side  >= r2 bot side
 		r.y-halfr1h <= r2.y+halfr2h //bot side >= r2 topside
+}
+
+func (r *Rectangle) Pos() (float64, float64) {
+	return r.x, r.y
 }
