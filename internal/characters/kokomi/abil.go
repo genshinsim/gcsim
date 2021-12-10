@@ -124,11 +124,13 @@ func (c *char) createSkillSnapshot() *core.AttackEvent {
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
+	snap := c.Snapshot(&ai)
 
 	return (&core.AttackEvent{
 		Info:        ai,
 		Pattern:     core.NewDefCircHit(5, false, core.TargettableEnemy),
 		SourceFrame: c.Core.F,
+		Snapshot:    snap,
 	})
 
 }
