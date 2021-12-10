@@ -66,7 +66,7 @@ func (r *Reactable) tryAddEC(a *core.AttackEvent) {
 
 		r.core.Combat.QueueAttack(
 			r.ecSnapshot,
-			core.AttackPattern{SelfHarm: true},
+			core.NewDefSingleTarget(r.self.Index(), r.self.Type()),
 			-1,
 			10,
 		)
@@ -153,8 +153,8 @@ func (r *Reactable) nextTick(src int) func() {
 		//so ec is active, which means both aura must still have value > 0; so we can do dmg
 		r.core.Combat.QueueAttack(
 			r.ecSnapshot,
-			core.AttackPattern{SelfHarm: true},
-			-1,
+			core.NewDefSingleTarget(r.self.Index(), r.self.Type()),
+			0,
 			0,
 		)
 

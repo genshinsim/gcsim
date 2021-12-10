@@ -8,6 +8,14 @@ type Shape interface {
 	Pos() (x, y float64)
 }
 
+type SingleTarget struct {
+	Target int
+}
+
+func (s *SingleTarget) IntersectCircle(in Circle) bool       { return false }
+func (s *SingleTarget) IntersectRectangle(in Rectangle) bool { return false }
+func (s *SingleTarget) Pos() (float64, float64)              { return 0, 0 }
+
 //this is for attack that only hits self
 type SelfDamage struct{}
 
@@ -16,6 +24,16 @@ func (c *SelfDamage) IntersectRectangle(in Rectangle) bool { return false }
 
 type Circle struct {
 	x, y, r float64
+}
+
+func NewDefSingleTarget(ind int, typ TargettableType) AttackPattern {
+	var arr [TargettableTypeCount]bool
+	arr[typ] = true
+	return AttackPattern{
+		Shape:    &SingleTarget{Target: ind},
+		SelfHarm: true,
+		Targets:  arr,
+	}
 }
 
 func NewDefCircHit(r float64, self bool, targets ...TargettableType) AttackPattern {

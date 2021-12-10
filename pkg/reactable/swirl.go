@@ -26,7 +26,7 @@ func (r *Reactable) queueSwirl(rt core.ReactionType, ele core.EleType, tag core.
 	//first attack is self no hitbox
 	r.core.Combat.QueueAttack(
 		ai,
-		core.AttackPattern{SelfHarm: true},
+		core.NewDefSingleTarget(r.self.Index(), r.self.Type()),
 		-1,
 		1,
 	)

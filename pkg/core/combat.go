@@ -6,6 +6,7 @@ type CombatHandler interface {
 	ApplyDamage(*AttackEvent) float64
 	QueueAttack(a AttackInfo, p AttackPattern, snapshotDelay int, dmgDelay int, callbacks ...func(t Target, ae *AttackEvent))
 	QueueAttackWithSnap(a AttackInfo, s Snapshot, p AttackPattern, dmgDelay int, callbacks ...func(t Target, ae *AttackEvent))
+	QueueAttackEvent(ae *AttackEvent, dmgDelay int)
 	TargetHasResMod(debuff string, param int) bool
 	TargetHasDefMod(debuff string, param int) bool
 	TargetHasElement(ele EleType, param int) bool
@@ -42,6 +43,10 @@ func (c *CombatCtrl) QueueAttackWithSnap(a AttackInfo, s Snapshot, p AttackPatte
 		}
 	}
 	c.queueDmg(&ae, dmgDelay)
+}
+
+func (c *CombatCtrl) QueueAttackEvent(ae *AttackEvent, dmgDelay int) {
+	c.queueDmg(ae, dmgDelay)
 }
 
 func (c *CombatCtrl) QueueAttack(a AttackInfo, p AttackPattern, snapshotDelay int, dmgDelay int, callbacks ...func(t Target, ae *AttackEvent)) {
@@ -104,26 +109,28 @@ func (c *CombatCtrl) queueDmg(a *AttackEvent, delay int) {
 }
 
 func willAttackLand(a *AttackEvent, t Target, index int) bool {
-	//check nil shape first
+	//shape shouldn't be nil; panic here
 	if a.Pattern.Shape == nil {
-		return a.Pattern.SelfHarm && a.Info.DamageSrc == index
+		panic("unexpected nil shape")
 	}
 	//shape can't be nil now, check if type matches
 	if !a.Pattern.Targets[t.Type()] {
-
 		return false
 	}
 	//skip if self harm is false and dmg src == i
 	if !a.Pattern.SelfHarm && a.Info.DamageSrc == index {
-
 		return false
 	}
 	//check if shape matches
 	s := t.Shape()
 	switch v := s.(type) {
 	case *Circle:
-
 		return a.Pattern.Shape.IntersectCircle(*v)
+	case *Rectangle:
+		return a.Pattern.Shape.IntersectRectangle(*v)
+	case *SingleTarget:
+		//only true if
+		return v.Target == index
 	default:
 		return false
 	}
