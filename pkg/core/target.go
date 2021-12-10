@@ -1,5 +1,10 @@
 package core
 
+import (
+	"math"
+	"sort"
+)
+
 type Target interface {
 	//basic info
 	Type() TargettableType //type of target
@@ -93,4 +98,111 @@ func (c *Core) ReindexTargets() {
 		}
 	}
 	c.Targets = c.Targets[:n]
+}
+
+//EnemeyByDistance returns an array of indices of the enemies sorted by distance
+func (c *Core) EnemyByDistance(x, y float64, excl int) []int {
+	//we dont actually need to know the exact distance. just find the lowest
+	//of x^2 + y^2 to avoid sqrt
+
+	var tuples []struct {
+		ind  int
+		dist float64
+	}
+
+	for i, v := range c.Targets {
+		if v.Type() != TargettableEnemy {
+			continue
+		}
+		if i == excl {
+			continue
+		}
+		vx, vy := v.Shape().Pos()
+		dist := math.Pow(x-vx, 2) + math.Pow(y-vy, 2)
+		tuples = append(tuples, struct {
+			ind  int
+			dist float64
+		}{ind: i, dist: dist})
+	}
+
+	sort.Slice(tuples, func(i, j int) bool {
+		return tuples[i].dist < tuples[j].dist
+	})
+
+	result := make([]int, 0, len(tuples))
+
+	for _, v := range tuples {
+		result = append(result, v.ind)
+	}
+
+	return result
+}
+
+//EnemyExcl returns array of indices of enemies, excluding self
+func (c *Core) EnemyExcl(self int) []int {
+	result := make([]int, 0, len(c.Targets))
+
+	for i, v := range c.Targets {
+		if v.Type() != TargettableEnemy {
+			continue
+		}
+		if i == self {
+			continue
+		}
+
+		result = append(result, i)
+	}
+
+	return result
+}
+
+func (c *Core) RandomEnemyTarget() int {
+
+	count := 0
+	for _, v := range c.Targets {
+		if v.Type() == TargettableEnemy {
+			count++
+		}
+	}
+	if count == 0 {
+		//this will basically cause that attack to hit nothing
+		return -1
+	}
+	n := c.Rand.Intn(count)
+	count = 0
+	for i, v := range c.Targets {
+		if v.Type() == TargettableEnemy {
+			if n == count {
+				return i
+			}
+			count++
+		}
+	}
+	panic("no random target found?? should not happen")
+	return -1
+}
+
+func (c *Core) RandomTargetIndex(typ TargettableType) int {
+	count := 0
+	for _, v := range c.Targets {
+		if v.Type() == typ {
+			count++
+		}
+	}
+	if count == 0 {
+		//this will basically cause that attack to hit nothing
+		return -1
+	}
+	n := c.Rand.Intn(count)
+	count = 0
+	for i, v := range c.Targets {
+		if v.Type() == typ {
+			if n == count {
+				return i
+			}
+			count++
+		}
+	}
+	panic("no random target found?? should not happen")
+	return -1
 }
