@@ -186,6 +186,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.SetCD(core.ActionBurst, 1200+f)
+<<<<<<< HEAD
 	c.ConsumeEnergy(0)
+=======
+	c.Energy = 0
+>>>>>>> bd064d8 (diona)
 	return f, a
 }
