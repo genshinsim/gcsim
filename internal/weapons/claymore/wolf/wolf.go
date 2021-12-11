@@ -23,7 +23,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 	})
 
-	bonus := make([]float64, core.EndStatType)
+	var bonus [core.EndStatType]float64
 	bonus[core.ATKP] = 0.3 + 0.1*float64(r)
 	icd := 0
 

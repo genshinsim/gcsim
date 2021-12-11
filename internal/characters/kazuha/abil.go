@@ -29,7 +29,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionHighPlunge, p)
 	ele := core.Physical
-	if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionSkill {
+	if c.Core.LastAction.Target == "kaedeharakazuha" && c.Core.LastAction.Typ == core.ActionSkill {
 		ele = core.Anemo
 	}
 
@@ -229,7 +229,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.SetCD(core.ActionBurst, 15*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }
 

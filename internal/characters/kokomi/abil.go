@@ -236,7 +236,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// Cannot be prefed particles
 	c.AddTask(func() {
-		c.Energy = 0
+		c.ConsumeEnergy(0)
 	}, "kokomi-q-energy-drain", f)
 
 	c.SetCD(core.ActionBurst, 18*60)

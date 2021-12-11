@@ -49,7 +49,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 			if duration < c.F {
 				stacks = 0
-				return nil, false
+				return val, false
 			}
 			val[core.ATKP] = amt * float64(stacks)
 			val[core.DEFP] = amt * float64(stacks)
