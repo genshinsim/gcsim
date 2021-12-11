@@ -51,7 +51,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 				return val, true
 			}
 			stacks = 0
-			return nil, false
+			return val, false
 		},
 	})
 

@@ -255,7 +255,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//add cooldown to sim
 	c.SetCD(core.ActionBurst, 20*60)
 	//use up energy
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	//return animation cd
 	return f, a

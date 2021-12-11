@@ -370,7 +370,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Core.Combat.ApplyDamage(&d)
 	}, "Hutao Burst", f-5) //random 5 frame
 
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	c.SetCD(core.ActionBurst, 900)
 	return f, a
 }

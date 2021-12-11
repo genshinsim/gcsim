@@ -240,6 +240,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// c.CD[combat.BurstCD] = c.S.F + 20*60
 	c.SetCD(core.ActionBurst, 20*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }
