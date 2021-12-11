@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"github.com/montanaflynn/stats"
 	"log"
 	"math"
 
@@ -16,6 +17,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/parse"
+	_ "github.com/montanaflynn/stats"
 )
 
 type Stats struct {
@@ -51,6 +53,7 @@ type Result struct {
 	ReactionsTriggered    map[core.ReactionType]IntResult `json:"reactions_triggered"`
 	Duration              FloatResult                     `json:"sim_duration"`
 	ElementUptime         []map[core.EleType]IntResult    `json:"ele_uptime"`
+	RequiredER            []float64                       `json:"required_er"`
 	//final result
 	Damage      FloatResult         `json:"damage"`
 	DPS         FloatResult         `json:"dps"`
@@ -186,7 +189,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 		data = append(data, v)
 	}
 
-	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
+	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails, opt.ERCalcMode)
 	result.Iterations = n
 	result.ActiveChar = cfg.Characters.Initial
 	if !cfg.DamageMode {
@@ -199,7 +202,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	return result, nil
 }
 
-func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (result Result) {
+func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCalcMode bool) (result Result) {
 
 	// TODO: Kind of brittle - maybe track something separate for this?
 	targetCount := len(data[0].DamageByCharByTargets[0])
@@ -461,6 +464,38 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		dpsTargetRollup := result.DPSByTarget[j]
 		dpsTargetRollup.SD = math.Sqrt(dpsTargetRollup.SD / float64(n))
 		result.DPSByTarget[j] = dpsTargetRollup
+	}
+
+	// required ER
+
+	if erCalcMode {
+
+		accEnergy := make([][]float64, charCount)
+
+		for i := 0; i < charCount; i++ {
+			accEnergy[i] = make([]float64, 0, len(data))
+		}
+
+		for i := 0; i < len(data); i++ {
+
+			for j := 0; j < charCount; j++ {
+				current, _ := stats.Min(data[i].EnergyWhenBurst[j])
+
+				current = data[i].EnergyWhenBurst[j][0] / current
+
+				accEnergy[j] = append(accEnergy[j], current)
+
+			}
+
+		}
+
+		result.RequiredER = make([]float64, charCount)
+
+		for i := 0; i < charCount; i++ {
+			modes, _ := stats.Mode(accEnergy[i])
+			result.RequiredER[i] = modes[0]
+		}
+
 	}
 
 	return
