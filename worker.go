@@ -198,7 +198,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 		data = append(data, v)
 	}
 
-	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails, opt.ERCalcMode)
+	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
 	result.Iterations = n
 	result.ActiveChar = cfg.Characters.Initial
 	if !cfg.DamageMode {
@@ -211,7 +211,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	return result, nil
 }
 
-func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCalcMode bool) (result Result) {
+func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (result Result) {
 
 	n := len(data)
 
