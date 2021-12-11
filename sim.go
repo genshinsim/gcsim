@@ -154,6 +154,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		s.stats.CharActiveTime = make([]int, count)
 		s.stats.AbilUsageCountByChar = make([]map[string]int, count)
 		s.stats.ParticleCount = make(map[string]int)
+		s.stats.EnergyWhenBurst = make([][]float64, count)
 	}
 
 	s.C.ActiveChar = -1
@@ -183,6 +184,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 			s.stats.DamageByCharByTargets[i] = make([]float64, len(s.C.Targets))
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 			s.stats.CharNames[i] = v.Base.Name
+			s.stats.EnergyWhenBurst[i] = make([]float64, 0, s.opts.Duration/12+2)
 		}
 
 	}

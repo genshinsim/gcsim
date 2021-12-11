@@ -30,6 +30,7 @@ type Stats struct {
 	ReactionsTriggered    map[core.ReactionType]int `json:"reactions_triggered"`
 	Duration              int                       `json:"sim_duration"`
 	ElementUptime         []map[core.EleType]int    `json:"ele_uptime"`
+	EnergyWhenBurst       [][]float64               `json:"energy_when_burst"`
 	//final result
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`

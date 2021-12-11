@@ -96,10 +96,16 @@ func (s *Simulation) AdvanceFrame() error {
 
 	if len(s.queue) > 0 {
 		//check if the current action is executable right now; if not then delay
-		delay := s.C.AnimationCancelDelay(s.queue[0].Typ)
+		actionType := s.queue[0].Typ
+		delay := s.C.AnimationCancelDelay(actionType)
 		if delay > 0 {
 			s.skip = delay
 			return nil
+		}
+
+		if s.C.Flags.EnergyCalcMode && actionType == core.ActionBurst {
+			activeChar := s.C.Chars[s.C.ActiveChar]
+			s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
 		}
 
 		s.skip, ok, err = s.C.Action.Exec(s.queue[0])

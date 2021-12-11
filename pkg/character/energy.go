@@ -57,7 +57,17 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 	}
 	amt = amt * r //apply off field reduction
 	//apply energy regen stat
+
+	if c.Core.Flags.EnergyCalcMode {
+		c.Energy += amt
+		if c.Energy > c.EnergyMax {
+			c.Energy = c.EnergyMax
+		}
+		return
+	}
+
 	er = c.Stat(core.ER)
+
 	amt = amt * (1 + er) * float64(p.Num)
 
 	pre := c.Energy
