@@ -41,6 +41,7 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 			// }
 			c.F = -1
 			c.Flags.DamageMode = cfg.DamageMode
+			c.Flags.EnergyCalcMode = opts.ERCalcMode
 			c.Log, err = core.NewDefaultLogger(c, opts.Debug, true, opts.DebugPaths)
 			if err != nil {
 				return err
