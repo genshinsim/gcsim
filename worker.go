@@ -628,6 +628,18 @@ func (r *Result) PrettyPrint() string {
 			}
 		}
 	}
+
+	// Recommended ER, only in ER calc mode
+	if r.RequiredER[0] != 0 {
+		sb.WriteString("------------------------------------------\n")
+		sb.WriteString("Recommended Total Energy Recharge:\n")
+
+		for i, t := range r.RequiredER {
+			sb.WriteString(fmt.Sprintf("\t%v: %.0f%% \n", r.CharNames[i], t*100))
+		}
+
+	}
+
 	flagDamageByTargets := true
 	for i, t := range r.DamageByCharByTargets {
 		// Save some space if there is only one target - redundant information
