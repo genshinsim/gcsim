@@ -11,6 +11,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
+	fieldSrc int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
