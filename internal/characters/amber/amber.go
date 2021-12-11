@@ -41,7 +41,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 2 {
 		c.overloadExplode()
 	}
-
+	c.a2()
 	c.bunnies = make([]bunny, 0, 2)
 
 	return &c, nil
