@@ -9,19 +9,18 @@ func (c *char) c6() {
 		if c.ozActiveUntil < c.Core.F {
 			return false
 		}
-
-		d := c.Snapshot(
-			"Fischl C6",
-			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
-			core.ICDGroupFischl,
-			core.StrikeTypePierce,
-			core.Electro,
-			25,
-			0.3,
-		)
-		d.Targets = 0
-		c.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Fischl C6",
+			AttackTag:  core.AttackTagElementalArt,
+			ICDTag:     core.ICDTagElementalArt,
+			ICDGroup:   core.ICDGroupFischl,
+			StrikeType: core.StrikeTypePierce,
+			Element:    core.Electro,
+			Durability: 25,
+			Mult:       0.3,
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 1)
 		return false
 	}, "fischl-c6")
 }
