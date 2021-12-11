@@ -43,6 +43,12 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) Skill(p map[string]int) (int, int) {
 
+	//if fieldSrc is < duration then this is prob a sac proc
+	//we need to stop the old field from ticking (by changing fieldSrc)
+	//and also trigger a4 delayed damage
+
+	src := c.Core.F
+
 	f, a := c.ActionFrames(core.ActionSkill, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -60,30 +66,41 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//TODO: energy count; lib says 3:4?
 	c.QueueParticle("Chongyun", 4, core.Cryo, 100)
 
+	ai = core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Spirit Blade: Chonghua's Layered Frost (Ar)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+	cb := func(t core.Target, ae *core.AttackEvent) {
+
+		t.AddResMod("Chongyun A4", core.ResistMod{
+			Duration: 480, //10 seconds
+			Ele:      core.Cryo,
+			Value:    -0.10,
+		})
+	}
+	snap := c.Snapshot(&ai)
+
+	if src-c.fieldSrc < 600 {
+		//we're overriding previous field so trigger a4 here
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 1, cb)
+	}
+	c.fieldSrc = src
+
 	//a4 delayed damage + cryo resist shred
 	c.AddTask(func() {
-		ai := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Spirit Blade: Chonghua's Layered Frost (Ar)",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			StrikeType: core.StrikeTypeBlunt,
-			Element:    core.Cryo,
-			Durability: 25,
-			Mult:       skill[c.TalentLvlSkill()],
+		//if src changed then that means the field changed already
+		if src != c.fieldSrc {
+			return
 		}
-		cb := func(t core.Target, ae *core.AttackEvent) {
-
-			t.AddResMod("Chongyun A4", core.ResistMod{
-				Duration: 480, //10 seconds
-				Ele:      core.Cryo,
-				Value:    -0.10,
-			})
-		}
-
 		//TODO: this needs to be fixed still for sac gs
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 0, cb)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, cb)
 
 	}, "Chongyun-Skill", f+600)
 
@@ -92,6 +109,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//TODO: delay between when frost field start ticking?
 	for i := 60; i <= 600; i += 60 {
 		c.AddTask(func() {
+			if src != c.fieldSrc {
+				return
+			}
 			active := c.Core.Chars[c.Core.ActiveChar]
 			c.infuse(active)
 		}, "chongyun-field", i)
