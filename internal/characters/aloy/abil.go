@@ -230,7 +230,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.SetCD(core.ActionBurst, 12*60)
 	// TODO: Not sure when energy drain happens
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }

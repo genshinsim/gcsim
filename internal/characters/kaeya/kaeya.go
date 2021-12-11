@@ -233,7 +233,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Base.Cons == 6 {
 		c.Energy = 15
 	} else {
-		c.Energy = 0
+		c.ConsumeEnergy(0)
 	}
 
 	// c.CD[def.BurstCD] = c.Sim.F + 900
