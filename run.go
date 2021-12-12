@@ -103,11 +103,6 @@ func (s *Simulation) AdvanceFrame() error {
 			return nil
 		}
 
-		if s.C.Flags.EnergyCalcMode && actionType == core.ActionBurst {
-			activeChar := s.C.Chars[s.C.ActiveChar]
-			s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
-		}
-
 		s.skip, ok, err = s.C.Action.Exec(s.queue[0])
 		if err != nil {
 			return err
