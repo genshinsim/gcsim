@@ -17,7 +17,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/parse"
-	_ "github.com/montanaflynn/stats"
 )
 
 type Stats struct {
