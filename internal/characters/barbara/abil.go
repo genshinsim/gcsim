@@ -38,15 +38,15 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	//a1
 	// When Yan Fei's Charged Attack consumes Scarlet Seals, each Scarlet Seal consumed will increase her Pyro DMG by 5% for 6 seconds. When this effect is repeatedly triggered it will overwrite the oldest bonus first.
-	// The Pyro DMG bonus from Proviso is applied before charged attack damage is calculated.
-	var m [core.EndStatType]float64
-	c.AddMod(core.CharStatMod{
-		Key: "barbara-a1",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			return m, true
-		},
-		Expiry: c.Core.F + 360,
-	})
+	// // The Pyro DMG bonus from Proviso is applied before charged attack damage is calculated.
+	// var m [core.EndStatType]float64
+	// c.AddMod(core.CharStatMod{
+	// 	Key: "barbara-a1",
+	// 	Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+	// 		return m, true
+	// 	},
+	// 	Expiry: c.Core.F + 360,
+	// })
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
@@ -57,111 +57,78 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Pyro,
+		Element:    core.Hydro,
 		Durability: 25,
 	}
 	// TODO: Not sure of snapshot timing
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
 
-	c.Core.Log.Debugw("barbara charge attack consumed seals", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry")
-
-	// Clear the seals next frame just in case for some reason we call stam check late
-	c.AddTask(func() {
-		c.Tags["seal"] = 0
-	}, "clear-seals", 1)
-
 	return f, a
 }
 
-// barbara skill - Straightforward as it has little interactions with the rest of her kit
-// Summons flames that deal AoE Pyro DMG. Opponents hit by the flames will grant barbara the maximum number of Scarlet Seals.
+// barbara skill - copied from bennett burst
+
 func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	done := false
-	addSeal := func(t core.Target, ae *core.AttackEvent) {
-		if done {
-			return
-		}
-		// Create max seals on hit
-		c.Core.Log.Debugw("barbara gained max seals", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
-		done = true
-	}
+	//add field effect timer
+	//assumes a4
+	c.Core.Status.AddStatus("barbskill", 20)
+	//hook for buffs; active right away after cast
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Signed Edict",
-		AttackTag:  core.AttackTagElementalArt,
-		ICDTag:     core.ICDTagNone,
-		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Pyro,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
-	}
-	// TODO: Not sure of snapshot timing
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, addSeal)
-
-	c.QueueParticle("barbara", 3, core.Pyro, f+100)
-
-	c.SetCD(core.ActionSkill, 540)
-
-	return f, a
-}
-
-// Burst - Deals burst damage and adds status for charge attack bonus
-func (c *char) Burst(p map[string]int) (int, int) {
-	f, a := c.ActionFrames(core.ActionBurst, p)
-
-	// +1 is to make sure the scarlet seal grant works correctly on the last frame
-	// TODO: Not 100% sure whether this adds a seal at the exact moment the burst ends or not
-	c.Core.Status.AddStatus("barbaraburst", 15*60+1)
-
-	var m [core.EndStatType]float64
-	m[core.DmgP] = burstBonus[c.TalentLvlBurst()]
-	c.AddMod(core.CharStatMod{
-		Key: "barbara-burst",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			if a == core.AttackTagExtra {
-				return m, true
-			}
-			return m, false
-		},
-		Expiry: c.Core.F + 15*60,
-	})
-
-	ai := core.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Signed Edict",
+		Abil:       "Let the Show Begin♪",
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Pyro,
-		Durability: 50,
+		Element:    core.Hydro,
+		Durability: 50, //TODO: what is 1A GU?
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	//TODO: review barbara AOE size?
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 5)
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
+	stats := c.SnapshotStats("Let the Show Begin♪ (Heal)", core.AttackTagNone)
 
-	c.AddTask(c.burstAddSealHook(), "burst-add-seals-task", 60)
+	//apply right away
+	c.applyBarbaraField(stats)()
 
-	c.SetCD(core.ActionBurst, 20*60)
+	//add 1 tick each 5s
+	//first tick starts at 0
+	for i := 0; i <= 1200; i += 300 {
+		c.AddTask(c.applyBarbaraField(stats), "barbara-field", i)
+	}
+
 	c.Energy = 0
-
-	return f, a
+	c.SetCD(core.ActionBurst, 900)
+	return f, a //todo fix field cast time
 }
 
-// Recurring task to add seals every second while burst is up
-func (c *char) burstAddSealHook() func() {
+func (c *char) applyBarbaraField(stats [core.EndStatType]float64) func() {
+	hpplus := stats[core.Heal]
+	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
+	var val [core.EndStatType]float64
+	val[core.HydroP] = 0.0
+	if c.Base.Cons >= 2 {
+		val[core.HydroP] += 0.2
+	}
 	return func() {
-		if c.Core.Status.Duration("barbaraburst") == 0 {
-			return
-		}
+		c.Core.Log.Debugw("barbara field ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
 
-		c.Core.Log.Debugw("barbara gained seal from burst", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+		active := c.Core.Chars[c.Core.ActiveChar]
+		c.Core.Health.HealActive(c.Index, heal)
 
-		c.AddTask(c.burstAddSealHook(), "burst-add-seals", 60)
+		active.AddMod(core.CharStatMod{
+			Key: "barbara-field",
+			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+				return val, true
+			},
+			Expiry: c.Core.F + 15*60,
+		})
+		// Additional per-character status for config conditionals
+		c.Core.Status.AddStatus(fmt.Sprintf("barbarabuff%v", active.Name()), 15*60)
+		// missing wet self-reaction
 	}
 }

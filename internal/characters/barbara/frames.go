@@ -3,27 +3,32 @@ package barbara
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
+	/*
+		Source: https://library.keqingmains.com/characters/hydro/barbara
+	*/
 	switch a {
 	case core.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
 		case 0:
-			f = 13 //frames from keqing lib
+			f = 7 //frames from keqing lib
 		case 1:
-			f = 41 - 13
+			f = 25 - 7
 		case 2:
-			f = 90 - 41
+			f = 45 - 25 - 7
+		case 3:
+			f = 92 - 45 - 25 - 7
 		}
 		atkspd := c.Stats[core.AtkSpd]
 		f = int(float64(f) / (1 + atkspd))
 		return f, f
 	case core.ActionCharge:
-		return 107 - 41, 107 - 41 // Use N2C for now
+		return 90, 90
 	case core.ActionSkill:
-		return 46, 46
+		return 52, 52
 	case core.ActionBurst:
-		return 65, 65
+		return 110, 110
 	default:
 		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
 		return 0, 0
