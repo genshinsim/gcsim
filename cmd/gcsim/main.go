@@ -246,10 +246,7 @@ func runSingle(o opts) {
 	if o.js != "" {
 		//try creating file to write to
 		result.Text = result.PrettyPrint()
-		data, jsonErr := json.Marshal(result)
-		if jsonErr != nil {
-			log.Panic(jsonErr)
-		}
+		data, _ := json.Marshal(result)
 		err := os.WriteFile(o.js, data, 0644)
 		if err != nil {
 			log.Panic(err)
