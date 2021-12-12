@@ -469,6 +469,14 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 
 	if erCalcMode {
 
+		/*
+				initialize a two dimensional array, the first index representing the character
+				every characters array is supposed to be a list of the minimum amount of "current energy during burst"
+			    (read: the maximum amount of needed ER) of each iteration
+				afterwards it is possible to use most statistical summary methods on those arrays, in this case we are
+				using the mode to determine how much ER is needed in most cases
+		*/
+
 		accEnergy := make([][]float64, charCount)
 
 		for i := 0; i < charCount; i++ {
@@ -480,6 +488,7 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 			for j := 0; j < charCount; j++ {
 				current, _ := stats.Min(data[i].EnergyWhenBurst[j])
 
+				// for simplcity we are already converting the current energies to the amount of ER needed in that case
 				current = data[i].EnergyWhenBurst[j][0] / current
 
 				accEnergy[j] = append(accEnergy[j], current)
