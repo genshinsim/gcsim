@@ -103,6 +103,13 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 			return false
 		}, "particles-log")
 	}
+
+	s.C.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
+		activeChar := s.C.Chars[s.C.ActiveChar]
+		s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
+		return false
+	}, "energy-calc-log")
+
 	err = s.initQueuer(cfg)
 	if err != nil {
 		return nil, err
