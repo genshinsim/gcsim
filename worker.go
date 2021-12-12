@@ -24,6 +24,7 @@ type Stats struct {
 	DamageByChar          []map[string]float64      `json:"damage_by_char"`
 	DamageInstancesByChar []map[string]int          `json:"damage_instances_by_char"`
 	DamageByCharByTargets [][]float64               `json:"damage_by_char_by_targets"`
+	DamageDetailByTime    map[DamageDetails]float64 `json:"damage_detail_by_time"`
 	CharActiveTime        []int                     `json:"char_active_time"`
 	AbilUsageCountByChar  []map[string]int          `json:"abil_usage_count_by_char"`
 	ParticleCount         map[string]int            `json:"particle_count"`
@@ -35,6 +36,14 @@ type Stats struct {
 	DPS    float64 `json:"dps"`
 	//for tracking min/max run
 	seed int64
+}
+
+// Used to track all damage instances for use in damage over time charts
+// Currently only the FrameBucket results are exported, but per Char/Target views are likely also going to be useful
+type DamageDetails struct {
+	FrameBucket int
+	Char        int
+	Target      int
 }
 
 type Result struct {
@@ -51,13 +60,14 @@ type Result struct {
 	Duration              FloatResult                     `json:"sim_duration"`
 	ElementUptime         []map[core.EleType]IntResult    `json:"ele_uptime"`
 	//final result
-	Damage      FloatResult         `json:"damage"`
-	DPS         FloatResult         `json:"dps"`
-	DPSByTarget map[int]FloatResult `json:"dps_by_target"`
-	Iterations  int                 `json:"iter"`
-	Text        string              `json:"text"`
-	Debug       string              `json:"debug"`
-	Runtime     time.Duration       `json:"runtime"`
+	Damage         FloatResult            `json:"damage"`
+	DPS            FloatResult            `json:"dps"`
+	DPSByTarget    map[int]FloatResult    `json:"dps_by_target"`
+	DamageOverTime map[string]FloatResult `json:"damage_over_time"`
+	Iterations     int                    `json:"iter"`
+	Text           string                 `json:"text"`
+	Debug          string                 `json:"debug"`
+	Runtime        time.Duration          `json:"runtime"`
 	//for tracking min/max run
 	MinSeed int64 `json:"-"`
 	MaxSeed int64 `json:"-"`
@@ -200,12 +210,15 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 
 func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (result Result) {
 
+	n := len(data)
+
 	// TODO: Kind of brittle - maybe track something separate for this?
 	targetCount := len(data[0].DamageByCharByTargets[0])
 	charCount := len(chars)
 	result.DPS.Min = math.MaxFloat64
 	result.DPS.Max = -1
 	result.DPSByTarget = make(map[int]FloatResult, targetCount)
+	result.DamageOverTime = make(map[string]FloatResult)
 	if detailed {
 		result.ReactionsTriggered = make(map[core.ReactionType]IntResult)
 		result.CharNames = make([]string, charCount)
@@ -227,12 +240,13 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 			result.DamageByCharByTargets[i] = make(map[int]FloatResult)
 		}
 	}
-
-	n := len(data)
+	// Used to aggregate individual damage instances across buckets first
+	damageOverTimeByRun := make([]map[float64]float64, n)
 
 	// var dd float64
 
-	for _, v := range data {
+	// Loop through each iteration to build overall statistics
+	for iteration, v := range data {
 		dd := float64(v.Duration) / 60 //sim reports in frames
 		result.Duration.Mean += dd / float64(n)
 		if dd > result.Duration.Max {
@@ -265,6 +279,15 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 
 		if !detailed {
 			continue
+		}
+
+		damageOverTimeByRun[iteration] = make(map[float64]float64)
+		// Damage Over Time - get data for all iterations first and summarized later
+		for damageDetails, damage := range v.DamageDetailByTime {
+			// Convert frame bucket value into seconds
+			secBucket := float64(damageDetails.FrameBucket) / 60.0
+
+			damageOverTimeByRun[iteration][secBucket] += damage
 		}
 
 		//char active time
@@ -433,6 +456,31 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		}
 	}
 
+	// Get global mean for each time interval first
+	for _, damageData := range damageOverTimeByRun {
+		for bucket, dmgTotal := range damageData {
+			bucketStr := fmt.Sprintf("%.2f", bucket)
+			temp := result.DamageOverTime[bucketStr]
+			temp.Mean += dmgTotal / float64(n)
+			result.DamageOverTime[bucketStr] = temp
+		}
+	}
+
+	// Build SD
+	for _, damageData := range damageOverTimeByRun {
+		for bucket, dmgTotal := range damageData {
+			bucketStr := fmt.Sprintf("%.2f", bucket)
+			temp := result.DamageOverTime[bucketStr]
+			temp.SD += (dmgTotal - temp.Mean) * (dmgTotal - temp.Mean)
+			result.DamageOverTime[bucketStr] = temp
+		}
+	}
+	for bucket, resultData := range result.DamageOverTime {
+		resultData.SD = math.Sqrt(resultData.SD / float64(n))
+		result.DamageOverTime[bucket] = resultData
+	}
+
+	// Get standard deviations for statistics
 	targetDamage := make(map[int]float64, targetCount)
 	for _, v := range data {
 		result.DPS.SD += (v.DPS - result.DPS.Mean) * (v.DPS - result.DPS.Mean)
@@ -546,7 +594,7 @@ func (r *Result) PrettyPrint() string {
 	}
 	for i, v := range r.CharActiveTime {
 		if i == 0 {
-			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("------------------------------------------\n")
 			sb.WriteString("Character field time:\n")
 		}
 		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", r.CharNames[i], 100*v.Mean/(r.Duration.Mean*60), float64(100*v.Min)/(r.Duration.Mean*60), float64(100*v.Max)/(r.Duration.Mean*60)))

@@ -87,6 +87,16 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 				s.stats.DamageInstancesByChar[ds.ActorIndex][sb.String()] += 1
 			}
 			s.stats.DamageByCharByTargets[ds.ActorIndex][t.Index()] += dmg
+
+			// Want to capture information in 0.25s intervals - allows more flexibility in bucketizing
+			frameBucket := int(s.C.F/15) * 15
+			details := DamageDetails{
+				FrameBucket: frameBucket,
+				Char:        ds.ActorIndex,
+				Target:      t.Index(),
+			}
+			// Go defaults to 0 for map values that don't exist
+			s.stats.DamageDetailByTime[details] += dmg
 			return false
 		}, "dmg-log")
 
@@ -150,6 +160,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		s.stats.DamageByChar = make([]map[string]float64, count)
 		s.stats.DamageInstancesByChar = make([]map[string]int, count)
 		s.stats.DamageByCharByTargets = make([][]float64, count)
+		s.stats.DamageDetailByTime = make(map[DamageDetails]float64)
 		s.stats.CharActiveTime = make([]int, count)
 		s.stats.AbilUsageCountByChar = make([]map[string]int, count)
 		s.stats.ParticleCount = make(map[string]int)
