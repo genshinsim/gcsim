@@ -629,7 +629,7 @@ func (r *Result) PrettyPrint() string {
 	}
 
 	// Recommended ER, only in ER calc mode
-	if r.RequiredER[0] != 0 {
+	if r.RequiredER != nil {
 		sb.WriteString("------------------------------------------\n")
 		sb.WriteString("Recommended Total Energy Recharge:\n")
 
