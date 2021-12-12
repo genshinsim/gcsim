@@ -20,9 +20,10 @@ const (
 )
 
 type Flags struct {
-	DamageMode   bool
-	LogDebug     bool // Used to determine logging level
-	ChildeActive bool // Used for Childe +1 NA talent passive
+	DamageMode     bool
+	EnergyCalcMode bool // Allows Burst Action when not at full Energy, logs current Energy when using Burst
+	LogDebug       bool // Used to determine logging level
+	ChildeActive   bool // Used for Childe +1 NA talent passive
 	// AmpReactionDidOccur bool
 	// AmpReactionType     ReactionType
 	// NextAttackMVMult    float64 // melt vape multiplier

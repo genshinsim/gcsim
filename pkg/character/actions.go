@@ -54,7 +54,7 @@ func (c *Tmpl) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 	switch a {
 	case core.ActionBurst:
-		if c.Energy != c.EnergyMax {
+		if (c.Energy != c.EnergyMax) && !c.Core.Flags.EnergyCalcMode {
 			// c.Core.Log.Warnw("burst not enough energy", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index)
 			return false
 		}

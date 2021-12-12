@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"github.com/montanaflynn/stats"
 	"log"
 	"math"
 
@@ -31,6 +32,7 @@ type Stats struct {
 	ReactionsTriggered    map[core.ReactionType]int `json:"reactions_triggered"`
 	Duration              int                       `json:"sim_duration"`
 	ElementUptime         []map[core.EleType]int    `json:"ele_uptime"`
+	EnergyWhenBurst       [][]float64               `json:"energy_when_burst"`
 	//final result
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`
@@ -59,6 +61,7 @@ type Result struct {
 	ReactionsTriggered    map[core.ReactionType]IntResult `json:"reactions_triggered"`
 	Duration              FloatResult                     `json:"sim_duration"`
 	ElementUptime         []map[core.EleType]IntResult    `json:"ele_uptime"`
+	RequiredER            []float64                       `json:"required_er"`
 	//final result
 	Damage         FloatResult            `json:"damage"`
 	DPS            FloatResult            `json:"dps"`
@@ -195,7 +198,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 		data = append(data, v)
 	}
 
-	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails)
+	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails, opt.ERCalcMode)
 	result.Iterations = n
 	result.ActiveChar = cfg.Characters.Initial
 	if !cfg.DamageMode {
@@ -208,7 +211,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	return result, nil
 }
 
-func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (result Result) {
+func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCalcMode bool) (result Result) {
 
 	n := len(data)
 
@@ -510,6 +513,47 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool) (resu
 		result.DPSByTarget[j] = dpsTargetRollup
 	}
 
+	// required ER
+
+	if erCalcMode {
+
+		/*
+				initialize a two dimensional array, the first index representing the character
+				every characters array is supposed to be a list of the minimum amount of "current energy during burst"
+			    (read: the maximum amount of needed ER) of each iteration
+				afterwards it is possible to use most statistical summary methods on those arrays, in this case we are
+				using the mode to determine how much ER is needed in most cases
+		*/
+
+		accEnergy := make([][]float64, charCount)
+
+		for i := 0; i < charCount; i++ {
+			accEnergy[i] = make([]float64, 0, len(data))
+		}
+
+		for i := 0; i < len(data); i++ {
+
+			for j := 0; j < charCount; j++ {
+				current, _ := stats.Min(data[i].EnergyWhenBurst[j])
+
+				// for simplcity we are already converting the current energies to the amount of ER needed in that case
+				current = data[i].EnergyWhenBurst[j][0] / current
+
+				accEnergy[j] = append(accEnergy[j], current)
+
+			}
+
+		}
+
+		result.RequiredER = make([]float64, charCount)
+
+		for i := 0; i < charCount; i++ {
+			modes, _ := stats.Mode(accEnergy[i])
+			result.RequiredER[i] = modes[0]
+		}
+
+	}
+
 	return
 }
 
@@ -594,7 +638,8 @@ func (r *Result) PrettyPrint() string {
 	}
 	for i, v := range r.CharActiveTime {
 		if i == 0 {
-			sb.WriteString("------------------------------------------\n")
+			sb.WriteString("------------------------------------------\n")
+
 			sb.WriteString("Character field time:\n")
 		}
 		sb.WriteString(fmt.Sprintf("%v on average active for %.0f%% [min: %.0f%% | max: %.0f%%]\n", r.CharNames[i], 100*v.Mean/(r.Duration.Mean*60), float64(100*v.Min)/(r.Duration.Mean*60), float64(100*v.Max)/(r.Duration.Mean*60)))
@@ -640,6 +685,18 @@ func (r *Result) PrettyPrint() string {
 			}
 		}
 	}
+
+	// Recommended ER, only in ER calc mode
+	if r.RequiredER != nil {
+		sb.WriteString("------------------------------------------\n")
+		sb.WriteString("Recommended Total Energy Recharge:\n")
+
+		for i, t := range r.RequiredER {
+			sb.WriteString(fmt.Sprintf("\t%v: %.0f%% \n", r.CharNames[i], t*100))
+		}
+
+	}
+
 	flagDamageByTargets := true
 	for i, t := range r.DamageByCharByTargets {
 		// Save some space if there is only one target - redundant information
