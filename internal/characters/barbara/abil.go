@@ -47,6 +47,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Hydro,
 		Durability: 25,
+		Mult:       charge[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	// TODO: Not sure of snapshot timing
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
