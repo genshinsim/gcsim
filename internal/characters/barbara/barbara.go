@@ -28,7 +28,17 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.NormalHitNum = 4
 
+	c.a1()
 	return &c, nil
+}
+
+func (c *char) a1() {
+	c.Core.AddStamMod(func(a core.ActionType) (float64, bool) {
+		if c.Core.Status.Duration("barbara-field") >= 0 {
+			return -0.12, false
+		}
+		return 0, false
+	})
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

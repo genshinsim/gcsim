@@ -36,18 +36,6 @@ func (c *char) Attack(p map[string]int) (int, int) {
 // Charge attack function - handles seal use
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	//a1
-	// When Yan Fei's Charged Attack consumes Scarlet Seals, each Scarlet Seal consumed will increase her Pyro DMG by 5% for 6 seconds. When this effect is repeatedly triggered it will overwrite the oldest bonus first.
-	// // The Pyro DMG bonus from Proviso is applied before charged attack damage is calculated.
-	// var m [core.EndStatType]float64
-	// c.AddMod(core.CharStatMod{
-	// 	Key: "barbara-a1",
-	// 	Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-	// 		return m, true
-	// 	},
-	// 	Expiry: c.Core.F + 360,
-	// })
-
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
 	ai := core.AttackInfo{
@@ -80,12 +68,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Let the Show Begin♪",
-		AttackTag:  core.AttackTagElementalBurst,
+		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Hydro,
-		Durability: 50, //TODO: what is 1A GU?
-		Mult:       burst[c.TalentLvlBurst()],
+		Durability: 25, //TODO: what is 1A GU?
+		Mult:       skill[c.TalentLvlSkill()],
 	}
 	//TODO: review barbara AOE size?
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 5)
@@ -102,13 +90,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	c.Energy = 0
-	c.SetCD(core.ActionBurst, 900)
+	c.SetCD(core.ActionSkill, 32*60)
 	return f, a //todo fix field cast time
 }
 
 func (c *char) applyBarbaraField(stats [core.EndStatType]float64) func() {
 	hpplus := stats[core.Heal]
-	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
+	heal := (skillhp[c.TalentLvlBurst()] + skillhpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
 	var val [core.EndStatType]float64
 	val[core.HydroP] = 0.0
 	if c.Base.Cons >= 2 {
@@ -125,10 +113,26 @@ func (c *char) applyBarbaraField(stats [core.EndStatType]float64) func() {
 			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
 				return val, true
 			},
-			Expiry: c.Core.F + 15*60,
+			Expiry: c.Core.F + 5*60, // this is for each application of the field.. is this correct @srliao
 		})
 		// Additional per-character status for config conditionals
-		c.Core.Status.AddStatus(fmt.Sprintf("barbarabuff%v", active.Name()), 15*60)
+		c.Core.Status.AddStatus(fmt.Sprintf("barbarabuff%v", active.Name()), 5*60)
 		// missing wet self-reaction
 	}
+}
+
+func (c *char) Burst(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionBurst, p)
+	//hook for buffs; active right away after cast
+
+	stats := c.SnapshotStats("Shining Miracle♪ (Heal)", core.AttackTagNone)
+
+	hpplus := stats[core.Heal]
+	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
+	c.Core.Health.HealAll(c.Index, heal)
+
+	c.Energy = 0
+	c.SetCD(core.ActionBurst, 20*60)
+	return f, a //todo fix field cast time
 }
