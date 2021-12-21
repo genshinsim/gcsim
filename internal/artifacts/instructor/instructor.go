@@ -13,18 +13,18 @@ func init() {
 // 4-Piece Bonus: Upon triggering an Elemental Reaction, increases all party members' Elemental Mastery by 120 for 8s.
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		m[core.EM] = 80
 		c.AddMod(core.CharStatMod{
 			Key: "instructor-2pc",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
 		})
 	}
 	if count >= 4 {
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		m[core.EM] = 120
 
 		add := func(args ...interface{}) bool {
@@ -47,7 +47,7 @@ func New(c core.Character, s *core.Core, count int) {
 
 				char.AddMod(core.CharStatMod{
 					Key: "instructor-4pc",
-					Amount: func(ds core.AttackTag) ([core.EndStatType]float64, bool) {
+					Amount: func(ds core.AttackTag) ([]float64, bool) {
 						return m, true
 					},
 					Expiry: s.F + 480,

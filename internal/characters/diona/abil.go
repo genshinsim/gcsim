@@ -172,12 +172,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.AddTask(func() {
 			for _, char := range c.Core.Chars {
 				this := char
-				var val [core.EndStatType]float64
+				val := make([]float64, core.EndStatType)
 				val[core.EM] = 200
 				this.AddMod(core.CharStatMod{
 					Key:    "diona-c6",
 					Expiry: c.Core.F + 750,
-					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, this.HP()/this.MaxHP() > 0.5
 					},
 				})

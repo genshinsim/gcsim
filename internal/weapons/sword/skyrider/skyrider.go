@@ -15,12 +15,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	expiry := 0
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.ATKP] = 0.09 + 0.03*float64(r)
 	char.AddMod(core.CharStatMod{
 		Key:    "skyrider",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, expiry > c.F
 		},
 	})

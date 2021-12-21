@@ -52,14 +52,14 @@ func (c *char) a2() {
 	c.AddMod(core.CharStatMod{
 		Key:    "yoimiya-a2",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			if c.Core.Status.Duration("yoimiyaa2") > 0 {
 				val[core.Pyro] = float64(c.a2stack) * 0.02
 				return val, true
 			}
 			c.a2stack = 0
-			return val, false
+			return nil, false
 		},
 	})
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {

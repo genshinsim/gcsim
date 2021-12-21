@@ -11,11 +11,11 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		m[core.ElectroP] = 0.15
 		c.AddMod(core.CharStatMod{
 			Key: "tf-2pc",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,

@@ -23,12 +23,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.CR] = 0.03 + float64(r)*0.01
 
 	char.AddMod(core.CharStatMod{
 		Key: "skyward blade",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			m[core.AtkSpd] = 0
 			if dur > c.F {
 				m[core.AtkSpd] = 0.1 //if burst active

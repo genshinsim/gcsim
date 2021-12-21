@@ -66,9 +66,9 @@ func (c *char) c4() {
 
 		c.AddMod(core.CharStatMod{
 			Key: "c4",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 
-				var val [core.EndStatType]float64
+				val := make([]float64, core.EndStatType)
 				val[core.ATK] = 0.25
 				return val, true
 			},
@@ -103,11 +103,11 @@ func (c *char) c2() {
 }
 
 func (c *char) activateC6(src string) {
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.ElectroP] = 0.06
 	c.AddMod(core.CharStatMod{
 		Key:    src,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 480,
 	})
 }

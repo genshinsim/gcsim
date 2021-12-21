@@ -43,11 +43,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("spine-%v", char.Name()))
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key:    "spine",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			//if active, then stacks = stacks + active dur
 			//other wise it's just number of stacks
 			x := stacks

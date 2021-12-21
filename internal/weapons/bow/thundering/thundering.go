@@ -12,7 +12,7 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.15 + float64(r)*0.05
 	stack := 0.09 + float64(r)*0.03
 	max := 0.3 + float64(r)*0.1
@@ -44,7 +44,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	char.AddMod(core.CharStatMod{
 		Key: "thundering",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			m[core.DmgP] = 0
 			if a != core.AttackTagNormal {
 				return m, true

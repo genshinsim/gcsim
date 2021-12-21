@@ -44,14 +44,14 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("ironsting-%v", char.Name()))
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key:    "ironsting",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if expiry < c.F {
 				stacks = 0
-				return val, false
+				return nil, false
 			}
 			val[core.DmgP] = atk * float64(stacks)
 			return val, true

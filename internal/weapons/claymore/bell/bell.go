@@ -19,7 +19,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	hp := 0.17 + float64(r)*0.03
 	icd := 0
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.09 + float64(r)*0.03
 
 	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
@@ -41,7 +41,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Key:    "bell",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, c.Shields.Get(core.ShieldBell) != nil
 		},
 	})

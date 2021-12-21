@@ -45,13 +45,13 @@ func (c *char) coilMod() {
 	c.AddMod(core.CharStatMod{
 		Key:    "aloy-coil-stacks",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			if a == core.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
 				val[core.DmgP] = skillCoilNABonus[c.Tags["coil_stacks"]-1][c.TalentLvlSkill()]
 				return val, true
 			}
-			return val, false
+			return nil, false
 		},
 	})
 }

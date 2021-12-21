@@ -13,11 +13,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	dmgpers := 0.06 + 0.02*float64(r)
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = 0.09 + 0.03*float64(r)
 	char.AddMod(core.CharStatMod{
 		Key: "amos",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, a == core.AttackTagNormal || a == core.AttackTagExtra
 		},
 		Expiry: -1,
@@ -25,8 +25,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	char.AddPreDamageMod(core.PreDamageMod{
 		Key: "amos",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
-			var v [core.EndStatType]float64
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			v := make([]float64, core.EndStatType)
 			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 				return v, false
 			}

@@ -51,8 +51,8 @@ func (c *char) a2() {
 	c.AddMod(core.CharStatMod{
 		Key:    "amber-a2",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var v [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			v := make([]float64, core.EndStatType)
 			v[core.CR] = .1
 			return v, a == core.AttackTagElementalBurst
 		},

@@ -14,7 +14,6 @@ func init() {
 type char struct {
 	*character.Tmpl
 	c4icd     int
-	a4count   int
 	icicleICD []int
 }
 
@@ -31,7 +30,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 
 	c.icicleICD = make([]int, 4)
-	c.a4()
 	// c.burstICD()
 
 	if c.Base.Cons > 0 {
@@ -43,37 +41,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 
 	return &c, nil
-}
-
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	switch a {
-	case core.ActionAttack:
-		f := 0
-		switch c.NormalCounter {
-		//TODO: need to add atkspd mod
-		case 0:
-			f = 14 //frames from keqing lib
-		case 1:
-			f = 41 - 14
-		case 2:
-			f = 72 - 41
-		case 3:
-			f = 128 - 72
-		case 4:
-			f = 176 - 128
-		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f, f
-	case core.ActionCharge:
-		return 87, 87
-	case core.ActionSkill:
-		return 58, 58 //could be 52 if going into Q
-	case core.ActionBurst:
-		return 78, 78
-	default:
-		c.Core.Log.Warnf("%v: unknown action, frames invalid", a)
-		return 0, 0
-	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -88,45 +55,21 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	}
 }
 
-func (c *char) a4() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		t := args[0].(core.Target)
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if atk.Info.AttackTag != core.AttackTagElementalArt {
-			return false
-		}
-		if t.AuraType() != core.Frozen {
-			return false
-		}
-		if c.a4count == 2 {
-			return false
-		}
-		c.a4count++
-		c.QueueParticle("kaeya", 1, core.Cryo, 100)
-		c.Core.Log.Debugw("kaeya a4 proc", "event", core.LogEnergyEvent, "char", c.Index, "frame", c.Core.F, "final cr", ds.Stats[core.CR])
-		return false
-	}, "kaeya-a4")
-
-}
-
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Physical,
-		25,
-		auto[c.NormalCounter][c.TalentLvlAttack()],
-	)
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.3, false, core.TargettableEnemy), 0, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -136,41 +79,54 @@ func (c *char) Attack(p map[string]int) (int, int) {
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
-
-	d := c.Snapshot(
-		"Charge 1",
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Physical,
-		25,
-		charge[0][c.TalentLvlAttack()],
-	)
-	d2 := d.Clone()
-	d2.Abil = "Charge 2"
-	d2.Mult = charge[1][c.TalentLvlAttack()]
-
-	c.QueueDmg(&d, f-15) //TODO: damage frame
-	c.QueueDmg(&d2, f-5) //TODO: damage frame
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge 1",
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       charge[0][c.TalentLvlAttack()],
+	}
+	//TODO: damage frame
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, f-15)
+	ai.Abil = "Charge 2"
+	ai.Mult = charge[1][c.TalentLvlAttack()]
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, f-5)
 
 	return f, a
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	d := c.Snapshot(
-		"Frostgnaw",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		50,
-		skill[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
-	c.a4count = 0
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Frostgnaw",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Cryo,
+		Durability: 50,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+	a4count := 0
+	cb := func(t core.Target, ae *core.AttackEvent) {
+		heal := .15 * (ae.Snapshot.BaseAtk*(1+ae.Snapshot.Stats[core.ATKP]) + ae.Snapshot.Stats[core.ATK])
+		c.Core.Health.HealActive(c.Index, heal)
+		//if target is frozen after hit then drop additional energy;
+		if a4count == 2 {
+			return
+		}
+		if t.AuraContains(core.Frozen) {
+			a4count++
+			c.QueueParticle("kaeya", 1, core.Cryo, 100)
+			c.Core.Log.Debugw("kaeya a4 proc", "event", core.LogEnergyEvent, "char", c.Index, "frame", c.Core.F)
+		}
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 28, cb)
 
 	//2 or 3 1:1 ratio
 	count := 2
@@ -179,31 +135,24 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	c.QueueParticle("kaeya", count, core.Cryo, f+100)
 
-	//add a2
-	heal := .15 * (d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK])
-	c.AddTask(func() {
-		c.Core.Health.HealActive(c.Index, heal)
-		//apply damage
-		c.Core.Combat.ApplyDamage(&d)
-	}, "Kaeya-Skill", 28) //TODO: assumed same as when cd starts
-
 	c.SetCD(core.ActionSkill, 360+28) //+28 since cd starts 28 frames in
 	return f, a
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
-	d := c.Snapshot(
-		"Glacial Waltz",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		burst[c.TalentLvlBurst()],
-	)
-
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Glacial Waltz",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
 	//duration starts counting 49 frames in per kqm lib
 	//hits around 13 times
 
@@ -222,12 +171,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//on icicle collision, it'll trigger an aoe dmg with radius 2
 		//in effect, every target gets hit every time icicles rotate around
 		for j := f + offset*i; j < f+480; j += 120 {
-			x := d.Clone()
-			x.Targets = core.TargetAll
-			x.ExtraIndex = i
-			c.QueueDmg(&x, j)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), j)
 		}
-
 	}
 
 	if c.Base.Cons == 6 {
@@ -241,21 +186,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	return f, a
 }
 
-func (c *char) burstICD() {
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if ds.Abil != "Glacial Waltz" {
-			return false
-		}
-		//check icd
-		if c.icicleICD[ds.ExtraIndex] > c.Core.F {
-			ds.Cancelled = true
-			return false
-		}
-		c.icicleICD[ds.ExtraIndex] = c.Core.F + 30
-		return false
-	}, "kaeya-burst-icd")
-}
+// func (c *char) burstICD() {
+// 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+// 		atk := args[1].(*core.AttackEvent)
+// 		if atk.Info.ActorIndex != c.Index {
+// 			return false
+// 		}
+// 		if ds.Abil != "Glacial Waltz" {
+// 			return false
+// 		}
+// 		//check icd
+// 		if c.icicleICD[ds.ExtraIndex] > c.Core.F {
+// 			ds.Cancelled = true
+// 			return false
+// 		}
+// 		c.icicleICD[ds.ExtraIndex] = c.Core.F + 30
+// 		return false
+// 	}, "kaeya-burst-icd")
+// }

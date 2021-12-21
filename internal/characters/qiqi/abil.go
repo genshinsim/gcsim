@@ -11,20 +11,19 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+	}
 	for _, mult := range attack[c.NormalCounter] {
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				fmt.Sprintf("Normal %v", c.NormalCounter),
-				core.AttackTagNormal,
-				core.ICDTagNormalAttack,
-				core.ICDGroupDefault,
-				core.StrikeTypeSlash,
-				core.Physical,
-				25,
-				mult[c.TalentLvlAttack()],
-			)
-			return &d
-		}, f)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, f)
 	}
 
 	c.AdvanceNormalIndex()
@@ -37,20 +36,20 @@ func (c *char) Charge(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+	}
 	for _, mult := range charge {
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				"Charge",
-				core.AttackTagExtra,
-				core.ICDTagExtraAttack,
-				core.ICDGroupDefault,
-				core.StrikeTypeSlash,
-				core.Physical,
-				25,
-				mult[c.TalentLvlAttack()],
-			)
-			return &d
-		}, f)
+		ai.Mult = mult[c.TalentLvlAttack()]
+
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, f)
 	}
 
 	return f, a
@@ -68,16 +67,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// Initial damage
 	// Both healing and damage are snapshot
 	c.AddTask(func() {
-		d := c.Snapshot(
-			"Herald of Frost: Initial Damage",
-			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			25,
-			skillInitialDmg[c.TalentLvlSkill()],
-		)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Herald of Frost: Initial Damage",
+			AttackTag:  core.AttackTagElementalArt,
+			ICDTag:     core.ICDTagElementalArt,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    core.Cryo,
+			Durability: 25,
+			Mult:       skillInitialDmg[c.TalentLvlSkill()],
+		}
+
 		d.Targets = core.TargetAll
 
 		// One healing proc happens immediately on cast
@@ -180,21 +181,19 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
-	c.QueueDmgDynamic(func() *core.Snapshot {
-		d := c.Snapshot(
-			"Fortune-Preserving Talisman",
-			core.AttackTagElementalBurst,
-			core.ICDTagElementalBurst,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			50,
-			burstDmg[c.TalentLvlBurst()],
-		)
-		d.Targets = core.TargetAll
-		return &d
-	}, f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Fortune-Preserving Talisman",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Cryo,
+		Durability: 50,
+		Mult:       burstDmg[c.TalentLvlBurst()],
+	}
 
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
 	c.SetCD(core.ActionBurst, 20*60)
 	c.ConsumeEnergy(0)
 

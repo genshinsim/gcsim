@@ -77,12 +77,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT RATE increases by 12% for 5s.
 	// We always assume that it procs on hit 1 to simplify
 	if p["nobehind"] != 1 {
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		val[core.CR] = 0.12
 		c.AddMod(core.CharStatMod{
 			Key:    "rosaria-a1",
 			Expiry: c.Core.F + 300,
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 		})
@@ -181,7 +181,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if crit_share > 0.15 {
 		crit_share = 0.15
 	}
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.CR] = crit_share
 	c.Core.Log.Debugw("Rosaria A4 activation", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+600, "crit_share", crit_share)
 
@@ -193,7 +193,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		char.AddMod(core.CharStatMod{
 			Key:    "rosaria-a4",
 			Expiry: c.Core.F + 600,
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 		})

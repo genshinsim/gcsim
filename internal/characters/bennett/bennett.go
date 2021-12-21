@@ -37,12 +37,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) c2() {
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.ER] = .3
 
 	c.AddMod(core.CharStatMod{
 		Key: "bennett-c2",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, c.HPCurrent/c.HPMax < 0.7
 		},
 		Expiry: -1,
@@ -279,11 +279,11 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 		}
 		if active.HP()/active.MaxHP() < threshold {
 			//add 2.1s = 126 frames
-			var val [core.EndStatType]float64
+			val := make([]float64, core.EndStatType)
 			val[core.ATK] = atk
 			active.AddMod(core.CharStatMod{
 				Key: "bennett-field",
-				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Core.F + 126,

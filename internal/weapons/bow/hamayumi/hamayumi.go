@@ -16,8 +16,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Key:    "hamayumi",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			if a == core.AttackTagNormal {
 				val[core.DmgP] = nm
 				if char.CurrentEnergy() == char.MaxEnergy() {
@@ -33,7 +33,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 				}
 				return val, true
 			}
-			return val, false
+			return nil, false
 		},
 	})
 }

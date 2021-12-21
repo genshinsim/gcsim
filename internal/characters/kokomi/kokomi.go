@@ -40,13 +40,13 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 // Passive 2 - permanently modify stats for +25% healing bonus and -100% CR
 func (c *char) passive() {
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.Heal] = .25
 	val[core.CR] = -1
 	c.AddMod(core.CharStatMod{
 		Key:    "kokomi-passive",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, true
 		},
 	})
@@ -101,11 +101,11 @@ func (c *char) burstActiveHook() {
 				if char.HP()/char.MaxHP() < .8 {
 					continue
 				}
-				var val [core.EndStatType]float64
+				val := make([]float64, core.EndStatType)
 				val[core.HydroP] = .4
 				c.AddMod(core.CharStatMod{
 					Key: "kokomi-c6",
-					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, true
 					},
 					Expiry: c.Core.F + 480,

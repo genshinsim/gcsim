@@ -147,7 +147,7 @@ func (c *char) coilStacks() {
 	// A1
 	// When Aloy receives the Coil effect from Frozen Wilds, her ATK is increased by 16%, while nearby party members' ATK is increased by 8%. This effect lasts 10s.
 	for _, char := range c.Core.Chars {
-		var valA1 [core.EndStatType]float64
+		valA1 := make([]float64, core.EndStatType)
 		valA1[core.ATKP] = .08
 		if char.CharIndex() == c.Index {
 			valA1[core.ATKP] = .16
@@ -155,7 +155,7 @@ func (c *char) coilStacks() {
 		char.AddMod(core.CharStatMod{
 			Key:    "aloy-a1",
 			Expiry: c.Core.F + 600,
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return valA1, true
 			},
 		})
@@ -178,26 +178,26 @@ func (c *char) rushingIce() {
 	})
 
 	// Rushing ice NA bonus
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddMod(core.CharStatMod{
 		Key:    "aloy-rushing-ice",
 		Expiry: c.Core.F + 600,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if a == core.AttackTagNormal {
 				return val, true
 			}
-			return val, false
+			return nil, false
 		},
 	})
 
 	// A4 cryo damage increase
-	var valA4 [core.EndStatType]float64
+	valA4 := make([]float64, core.EndStatType)
 	stacks := 1
 	c.AddMod(core.CharStatMod{
 		Key:    "aloy-strong-strike",
 		Expiry: c.Core.F + 600,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if stacks > 10 {
 				stacks = 10
 			}

@@ -15,10 +15,10 @@ func New(c core.Character, s *core.Core, count int) {
 	stacks := 0
 	key := fmt.Sprintf("%v-cw-4pc", c.Name())
 	if count >= 2 {
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		c.AddMod(core.CharStatMod{
 			Key: "crimson-2pc",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				if s.Status.Duration(key) == 0 {
 					stacks = 0
 				}

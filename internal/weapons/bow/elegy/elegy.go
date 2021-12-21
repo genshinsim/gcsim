@@ -12,17 +12,17 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.EM] = 45 + float64(r)*15
 	char.AddMod(core.CharStatMod{
 		Key: "elegy-em",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
 	})
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.ATKP] = .15 + float64(r)*0.05
 	val[core.EM] = 75 + float64(r)*25
 
@@ -54,7 +54,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			for _, char := range c.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "elegy-proc",
-					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, true
 					},
 					Expiry: c.F + 720,

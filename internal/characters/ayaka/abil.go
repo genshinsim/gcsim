@@ -76,13 +76,13 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		}
 
 		c.Core.RestoreStam(10)
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		val[core.CryoP] = 0.18
 		//a2 increase normal + ca dmg by 30% for 6s
 		c.AddMod(core.CharStatMod{
 			Key:    "ayaka-a4",
 			Expiry: c.Core.F + 600,
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 		})
@@ -123,9 +123,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.AddMod(core.CharStatMod{
 		Key:    "ayaka-a2",
 		Expiry: c.Core.F + 360,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 
-			var val [core.EndStatType]float64
+			val := make([]float64, core.EndStatType)
 			val[core.DmgP] = 0.3
 			return val, a == core.AttackTagNormal || a == core.AttackTagExtra
 		},

@@ -257,11 +257,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 		//add 25% buff
 		for _, x := range c.Core.Chars {
-			var val [core.EndStatType]float64
+			val := make([]float64, core.EndStatType)
 			val[core.PyroP] = .1
 			x.AddMod(core.CharStatMod{
 				Key:    "klee-c6",
-				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
+				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 				Expiry: c.Core.F + 1500,
 			})
 		}

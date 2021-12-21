@@ -16,14 +16,14 @@ func New(c core.Character, s *core.Core, count int) {
 		c.AddPreDamageMod(core.PreDamageMod{
 			Key:    "4lw",
 			Expiry: -1,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
-				var m [core.EndStatType]float64
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				m := make([]float64, core.EndStatType)
 				//frozen check first so we don't mistaken coexisting cryo
 				if t.AuraContains(core.Pyro) {
 					m[core.DmgP] = .35
 					return m, true
 				}
-				return m, false
+				return nil, false
 			},
 		})
 	}

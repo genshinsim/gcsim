@@ -15,10 +15,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddPreDamageMod(core.PreDamageMod{
 		Key:    "rainslasher",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
-			var m [core.EndStatType]float64
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			m := make([]float64, core.EndStatType)
 			if !t.AuraContains(core.Hydro, core.Electro) {
-				return m, false
+				return nil, false
 			}
 			m[core.DmgP] = dmg
 			return m, true

@@ -13,11 +13,11 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		m[core.HydroP] = 0.15
 		c.AddMod(core.CharStatMod{
 			Key: "hod-2pc",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -33,14 +33,14 @@ func New(c core.Character, s *core.Core, count int) {
 
 		c.AddMod(core.CharStatMod{
 			Key: "hod-4pc",
-			Amount: func(ds core.AttackTag) ([core.EndStatType]float64, bool) {
-				var m [core.EndStatType]float64
+			Amount: func(ds core.AttackTag) ([]float64, bool) {
+				m := make([]float64, core.EndStatType)
 				m[core.DmgP] = 0.3
 				if s.Status.Duration(key) == 0 {
-					return m, false
+					return nil, false
 				}
 				if ds != core.AttackTagNormal && ds != core.AttackTagExtra {
-					return m, false
+					return nil, false
 				}
 				return m, true
 			},

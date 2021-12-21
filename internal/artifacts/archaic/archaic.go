@@ -11,11 +11,11 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		m[core.GeoP] = 0.15
 		c.AddMod(core.CharStatMod{
 			Key: "archaic-2pc",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -24,7 +24,7 @@ func New(c core.Character, s *core.Core, count int) {
 	if count >= 4 {
 
 		var ele core.StatType
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 
 		s.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
 			// Character that picks it up must be the petra set holder
@@ -51,9 +51,9 @@ func New(c core.Character, s *core.Core, count int) {
 				for _, char := range s.Chars {
 					char.AddMod(core.CharStatMod{
 						Key: "archaic-4pc",
-						Amount: func(ds core.AttackTag) ([core.EndStatType]float64, bool) {
+						Amount: func(ds core.AttackTag) ([]float64, bool) {
 							if s.Status.Duration("archaic") == 0 {
-								return m, false
+								return nil, false
 							}
 							return m, true
 						},

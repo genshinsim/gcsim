@@ -41,17 +41,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("skyrider-greatsword-%v", char.Name()))
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key:    "skyrider",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if duration > c.F {
 				val[core.ATKP] = atk * float64(stacks)
 				return val, true
 			}
 			stacks = 0
-			return val, false
+			return nil, false
 		},
 	})
 

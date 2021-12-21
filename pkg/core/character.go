@@ -66,7 +66,7 @@ type Character interface {
 
 	//combat
 	Snapshot(a *AttackInfo) Snapshot
-	PreDamageSnapshotAdjust(*AttackEvent, Target) [EndStatType]float64
+	PreDamageSnapshotAdjust(*AttackEvent, Target)
 	ResetNormalCounter()
 }
 
@@ -80,13 +80,13 @@ const (
 type CharStatMod struct {
 	Key          string
 	AffectedStat StatType
-	Amount       func(a AttackTag) ([EndStatType]float64, bool)
+	Amount       func(a AttackTag) ([]float64, bool)
 	Expiry       int
 }
 
 type PreDamageMod struct {
 	Key    string
-	Amount func(atk *AttackEvent, t Target) ([EndStatType]float64, bool)
+	Amount func(atk *AttackEvent, t Target) ([]float64, bool)
 	Expiry int
 }
 

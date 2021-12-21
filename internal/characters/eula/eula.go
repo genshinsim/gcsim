@@ -103,17 +103,17 @@ func (c *char) c4() {
 	c.AddPreDamageMod(core.PreDamageMod{
 		Expiry: -1,
 		Key:    "eula-c4",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 
 			if atk.Info.Abil != "Glacial Illumination (Lightfall)" {
-				return val, false
+				return nil, false
 			}
 			if !c.Core.Flags.DamageMode {
-				return val, false
+				return nil, false
 			}
 			if t.HP()/t.MaxHP() >= 0.5 {
-				return val, false
+				return nil, false
 			}
 			val[core.DmgP] += 0.25
 			return val, true

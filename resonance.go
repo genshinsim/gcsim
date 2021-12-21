@@ -9,11 +9,11 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 			case core.Pyro:
 				s.C.Log.Debugw("adding pyro resonance", "frame", s.C.F, "event", core.LogSimEvent)
 				for _, c := range s.C.Chars {
-					var val [core.EndStatType]float64
+					val := make([]float64, core.EndStatType)
 					val[core.ATKP] = 0.25
 					c.AddMod(core.CharStatMod{
 						Key: "pyro-res",
-						Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+						Amount: func(a core.AttackTag) ([]float64, bool) {
 							return val, true
 						},
 						Expiry: -1,
@@ -25,16 +25,16 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 				s.C.Log.Warnw("hydro resonance not implemented", "event", core.LogSimEvent)
 			case core.Cryo:
 				s.C.Log.Debugw("adding cryo resonance", "frame", s.C.F, "event", core.LogSimEvent)
+				val := make([]float64, core.EndStatType)
+				val[core.CR] = .15
 				for _, c := range s.C.Chars {
 					c.AddPreDamageMod(core.PreDamageMod{
 						Key: "cryo-res",
-						Amount: func(ae *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
-							var val [core.EndStatType]float64
-							val[core.CR] = .15
+						Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
 							if t.AuraContains(core.Cryo) || t.AuraContains(core.Frozen) {
 								return val, true
 							}
-							return val, false
+							return nil, false
 						},
 						Expiry: -1,
 					})
@@ -80,16 +80,16 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 					return false
 				}, "geo res")
 
+				val := make([]float64, core.EndStatType)
+				val[core.DmgP] = .15
 				for _, c := range s.C.Chars {
 					c.AddPreDamageMod(core.PreDamageMod{
 						Key: "geo-res",
-						Amount: func(ae *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
-							var val [core.EndStatType]float64
-							val[core.DmgP] = .15
+						Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
 							if s.C.Shields.IsShielded() && s.C.ActiveChar == ae.Info.ActorIndex {
 								return val, true
 							}
-							return val, false
+							return nil, false
 						},
 						Expiry: -1,
 					})

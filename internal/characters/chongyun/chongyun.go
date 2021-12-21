@@ -12,6 +12,7 @@ func init() {
 type char struct {
 	*character.Tmpl
 	fieldSrc int
+	a4Snap   *core.AttackEvent
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -99,11 +100,11 @@ func (c *char) infuse(char core.Character) {
 	}
 
 	//a2 adds 8% atkspd for 2.1 seconds
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.AtkSpd] = 0.08
 	char.AddMod(core.CharStatMod{
 		Key:    "chongyun-field",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 126,
 	})
 	//c2 reduces CD by 15%
@@ -125,17 +126,17 @@ func (c *char) c6() {
 	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "chongyun-c6",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 
-			var val [core.EndStatType]float64
+			val := make([]float64, core.EndStatType)
 			if atk.Info.Abil != "Spirit Blade: Cloud-Parting Star" {
-				return val, false
+				return nil, false
 			}
 			if t.HP()/t.MaxHP() < c.HPCurrent/c.HPMax {
 				val[core.DmgP] += 0.15
 				return val, true
 			}
-			return val, false
+			return nil, false
 		},
 	})
 }

@@ -27,13 +27,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, key)
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.27 + float64(r)*0.09
 	char.AddMod(core.CharStatMod{
 		Key: "prototype-crescent",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if dur < c.F {
-				return m, false
+				return nil, false
 			}
 			return m, true
 		},

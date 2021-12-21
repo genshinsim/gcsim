@@ -82,14 +82,14 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) c6() {
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = 0.15
 
 	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
 			Key:    "xl-c6",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, c.Core.Status.Duration("xlc6") > 0
 			},
 		})

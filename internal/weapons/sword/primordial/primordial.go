@@ -11,13 +11,13 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	//add on hit effect to sim?
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.HPP] = 0.15 + float64(r)*0.05
 	atkp := 0.009 + float64(r)*0.003
 
 	char.AddMod(core.CharStatMod{
 		Key: "cutter hp bonus",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			m[core.ATK] = atkp * char.MaxHP()
 			return m, true
 		},

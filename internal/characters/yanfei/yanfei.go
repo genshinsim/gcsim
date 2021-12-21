@@ -67,13 +67,13 @@ func (c *char) c2() {
 	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "yanfei-c2",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
-			var m [core.EndStatType]float64
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			m := make([]float64, core.EndStatType)
 			if atk.Info.AttackTag != core.AttackTagExtra {
-				return m, false
+				return nil, false
 			}
 			if t.HP()/t.MaxHP() >= .5 {
-				return m, false
+				return nil, false
 			}
 			m[core.CR] = 0.20
 			return m, true

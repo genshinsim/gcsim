@@ -275,12 +275,12 @@ func (c *char) attackBuff(delay int) {
 		c.Core.Status.AddStatus(fmt.Sprintf("sarabuff%v", active.Name()), 360)
 		c.Core.Log.Debugw("sara attack buff applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", active.CharIndex(), "buff", buff, "expiry", c.Core.F+360)
 
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		val[core.ATK] = buff
 		// AddMod function already only takes the most recent version of this buff
 		active.AddMod(core.CharStatMod{
 			Key: "sara-attack-buff",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + 360,

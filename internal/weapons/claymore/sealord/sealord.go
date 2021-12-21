@@ -18,16 +18,16 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	tunaDmg := .75 + float64(r)*0.25
 	effectLastProc := -9999
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = burstDmgIncrease
 	char.AddMod(core.CharStatMod{
 		Expiry: -1,
 		Key:    "luxurious-sea-lord",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if a == core.AttackTagElementalBurst {
 				return val, true
 			}
-			return val, false
+			return nil, false
 		},
 	})
 

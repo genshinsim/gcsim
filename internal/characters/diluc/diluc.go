@@ -47,13 +47,13 @@ func (c *char) c1() {
 	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "diluc-c1",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			if t.HP()/t.MaxHP() > 0.5 {
 				val[core.DmgP] = 0.15
 				return val, true
 			}
-			return val, false
+			return nil, false
 		},
 	})
 }
@@ -73,12 +73,12 @@ func (c *char) c2() {
 		if stack > 3 {
 			stack = 3
 		}
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		val[core.ATKP] = 0.1 * float64(stack)
 		val[core.AtkSpd] = 0.05 * float64(stack)
 		c.AddMod(core.CharStatMod{
 			Key:    "diluc-c2",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
+			Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 			Expiry: c.Core.F + 600,
 		})
 		return false
@@ -90,13 +90,13 @@ func (c *char) c4() {
 	c.AddMod(core.CharStatMod{
 		Key:    "diluc-c4",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			if c.Core.Status.Duration("dilucc4") > 0 {
 				val[core.DmgP] = 0.4
 				return val, true
 			}
-			return val, false
+			return nil, false
 		},
 	})
 }

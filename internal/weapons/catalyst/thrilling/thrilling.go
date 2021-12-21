@@ -20,7 +20,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return true
 	}, fmt.Sprintf("thrilling-%v", char.Name()))
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = .18 + float64(r)*0.06
 
 	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
@@ -46,7 +46,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			active := c.Chars[c.ActiveChar]
 			active.AddMod(core.CharStatMod{
 				Key: "thrilling tales",
-				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return m, expiry > c.F
 				},
 				Expiry: -1,

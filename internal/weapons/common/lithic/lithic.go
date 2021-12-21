@@ -18,7 +18,7 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	stacks := 0
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 
 	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 		for _, char := range c.Chars {
@@ -34,7 +34,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Key:    "lithic",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, true
 		},
 	})
