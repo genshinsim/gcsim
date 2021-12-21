@@ -157,3 +157,15 @@ func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 	t.ReactMod = append(t.ReactMod, mod)
 	t.Core.Log.Debugw("react bonus mod added", "frame", t.Core.F, "event", core.LogEnemyEvent, "count", len(t.ReactMod), "char", t.Index)
 }
+
+func (c *Tmpl) Tag(key string) int {
+	return c.Tags[key]
+}
+
+func (c *Tmpl) AddTag(key string, val int) {
+	c.Tags[key] = val
+}
+
+func (c *Tmpl) RemoveTag(key string) {
+	delete(c.Tags, key)
+}

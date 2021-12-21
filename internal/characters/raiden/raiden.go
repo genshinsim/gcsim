@@ -50,13 +50,13 @@ func (c *char) Init(index int) {
 	c.Tmpl.Init(index)
 	mult := skillBurstBonus[c.TalentLvlSkill()]
 	//add E hook
+	val := make([]float64, core.EndStatType)
 	for _, char := range c.Core.Chars {
 		this := char
 		char.AddMod(core.CharStatMod{
 			Key:    "raiden-e",
 			Expiry: -1,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
-				val := make([]float64, core.EndStatType)
 				if c.Core.Status.Duration("raidenskill") == 0 {
 					return nil, false
 				}

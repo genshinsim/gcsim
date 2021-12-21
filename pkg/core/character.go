@@ -57,6 +57,8 @@ type Character interface {
 	AddCDAdjustFunc(adj CDAdjust)
 
 	//status stuff
+	AddTag(key string, val int)
+	RemoveTag(key string)
 	Tag(key string) int
 
 	//energy

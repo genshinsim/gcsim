@@ -57,6 +57,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	return f, a
 }
 
+/**
+[12:01 PM] pai: never tried to measure it but emc burst looks like it has roughly 1~1.5 abyss tile of range, skill goes a bit further i think
+[12:01 PM] pai: the 3 hits from the skill also like split out and kind of auto target if that's useful information
+**/
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 	d := c.Snapshot(
