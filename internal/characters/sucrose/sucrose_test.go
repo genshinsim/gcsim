@@ -121,4 +121,25 @@ func TestSkillCDWithC4(t *testing.T) {
 		t.FailNow()
 	}
 
+	//use skill and then trigger flat cd reduction
+	x.Skill(p)
+	if x.ActionReady(core.ActionSkill, p) {
+		t.Errorf("expected skill to be on cd at frame: %v", c.F)
+		t.FailNow()
+	}
+	//next charge should be ready by 900 - flat cd reduction
+	x.ReduceActionCooldown(core.ActionSkill, 100)
+	for i := 0; i < 800-1; i++ {
+		c.Tick()
+		if x.ActionReady(core.ActionSkill, p) {
+			t.Errorf("expected skill to be on cd at frame: %v", c.F)
+			t.FailNow()
+		}
+	}
+	c.Tick()
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Errorf("expected one charge of skill to be ready now. At frame %v; CD left: %v", c.F, x.Cooldown(core.ActionSkill))
+		t.FailNow()
+	}
+
 }
