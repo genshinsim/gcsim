@@ -60,6 +60,14 @@ func (c *char) ReduceActionCooldown(a core.ActionType, v int) {
 
 }
 
+func (c *char) Cooldown(a core.ActionType) int {
+	if a != core.ActionSkill {
+		return c.Tmpl.Cooldown(a)
+	}
+
+	return c.ActionCD[a]
+}
+
 func (c *char) calcSkillCD(dur int) int {
 	//here we reduce dur by cd reduction
 	var cd float64 = 1
