@@ -74,8 +74,22 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		}
 
 	}
+	var cbenergy func(t core.Target, ae *core.AttackEvent) = nil
+	energyCount := 0
+	if c.Base.Cons >= 4 {
+		cbenergy = func(t core.Target, ae *core.AttackEvent) {
+			//check for healing
+			if c.Core.Status.Duration("barbskill") > 0 && energyCount < 5 {
+				//regen energy
+				c.AddEnergy(1)
+				energyCount++
+			}
+
+		}
+	}
+
 	// TODO: Not sure of snapshot timing
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, cb, cbenergy)
 
 	return f, a
 }
@@ -117,7 +131,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	c.Energy = 0
-	c.SetCD(core.ActionSkill, 32*60)
+	if c.Base.Cons >= 2 {
+		c.SetCD(core.ActionSkill, 32*60*0.85)
+	} else {
+		c.SetCD(core.ActionSkill, 32*60)
+	}
 	return f, a //todo fix field cast time
 }
 
