@@ -3,6 +3,12 @@ package target
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (t *Tmpl) Attack(atk *core.AttackEvent) (float64, bool) {
+	//if target is frozen prior to attack landing, set impulse to 0
+	//let the break freeze attack to trigger actual impulse
+	if t.AuraType() == core.Frozen {
+		atk.Info.NoImpulse = true
+	}
+
 	//check shatter first
 	t.ShatterCheck(atk)
 

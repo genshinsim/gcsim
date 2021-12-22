@@ -205,6 +205,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Element:    core.Pyro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
+		NoImpulse:  true,
 	}
 	//lasts 10 seconds, starts after 2.2 seconds maybe?
 

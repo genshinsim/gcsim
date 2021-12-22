@@ -10,6 +10,7 @@ const (
 	AttackTagElementalArt
 	AttackTagElementalBurst
 	AttackTagWeaponSkill
+	AttackTagMonaBubbleBreak
 	// AttackTagTartagliaAttack
 	// AttackTagGandalfrAttack
 	AttackTagElementalArtHold

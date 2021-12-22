@@ -102,6 +102,18 @@ func (r *Reactable) triggerFreeze(a, b core.Durability) core.Durability {
 func (r *Reactable) checkFreeze() {
 	if r.Durability[core.Frozen] <= zeroDur {
 		r.Durability[core.Frozen] = 0
-		r.core.Events.Emit(core.OnAuraDurabilityDepleted, core.Frozen)
+		r.core.Events.Emit(core.OnAuraDurabilityDepleted, r.self, core.Frozen)
+		//trigger another attack here, purely for the purpose of breaking bubbles >.>
+		ai := core.AttackInfo{
+			ActorIndex: r.self.Index(),
+			DamageSrc:  r.self.Index(),
+			Abil:       "Freeze Broken",
+			AttackTag:  core.AttackTagNone,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.NoElement,
+		}
+		//TODO: delay attack by 1 frame ok?
+		r.core.Combat.QueueAttack(ai, core.NewDefSingleTarget(r.self.Index(), r.self.Type()), -1, 1)
 	}
 }

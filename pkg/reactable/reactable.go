@@ -224,7 +224,7 @@ func (r *Reactable) Tick() {
 			if r.Durability[i] <= zeroDur {
 				r.Durability[i] = 0
 				r.DecayRate[i] = 0
-				r.core.Events.Emit(core.OnAuraDurabilityDepleted, core.EleType(i))
+				r.core.Events.Emit(core.OnAuraDurabilityDepleted, r.self, core.EleType(i))
 			}
 		}
 	}

@@ -39,7 +39,7 @@ type AttackInfo struct {
 	ICDGroup         ICDGroup
 	Element          EleType    //element of ability
 	Durability       Durability //durability of aura, 0 if nothing applied
-	ImpulseLvl       int
+	NoImpulse        bool
 	HitWeakPoint     bool
 	Mult             float64 //ability multiplier. could set to 0 from initial Mona dmg
 	StrikeType       StrikeType
