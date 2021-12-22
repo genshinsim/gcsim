@@ -88,9 +88,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//add field effect timer
 	//assumes a4
-	c.Core.Status.AddStatus("barbskill", 20)
+	c.Core.Status.AddStatus("barbskill", 15*60)
 	//hook for buffs; active right away after cast
 
+	c.stacks = 0
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Let the Show Begin♪",
@@ -111,7 +112,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//add 1 tick each 5s
 	//first tick starts at 0
-	for i := 0; i <= 1200; i += 300 {
+	for i := 0; i <= 1200; i += 5 * 60 {
 		c.AddTask(c.applyBarbaraField(stats), "barbara-field", i)
 	}
 
@@ -161,4 +162,17 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Energy = 0
 	c.SetCD(core.ActionBurst, 20*60)
 	return f, a //todo fix field cast time
+}
+
+//taken from raiden
+func (c *char) onSkillStackCount() {
+	particleICD := 0
+	c.Core.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
+		if particleICD > c.Core.F {
+			return false
+		}
+		particleICD = c.Core.F + 180 // once every 3 seconds
+		//this doesn't do anything yet
+		return false
+	}, "barbara-skill-extend")
 }
