@@ -3,6 +3,8 @@ package core
 import (
 	"errors"
 	"strings"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type QueueHandler interface {
@@ -57,7 +59,7 @@ func (q *QueueCtrl) logSkipped(a Action, reason string, keysAndValue ...interfac
 func (q *QueueCtrl) Next() ([]ActionItem, error) {
 	var r []ActionItem
 	f := q.core.F
-	active := q.core.Chars[q.core.ActiveChar].Name()
+	active := q.core.Chars[q.core.ActiveChar].Key()
 next:
 	for i, v := range q.prio {
 		char, ok := q.core.CharByName(v.Target)
@@ -77,7 +79,7 @@ next:
 			continue next
 		}
 		//check active char
-		if v.ActiveCond != "" {
+		if v.ActiveCond != 0 {
 			if v.ActiveCond != active {
 				// q.core.Log.Debugw("queue not rdy; char not active", "frame", f, "event", LogQueueEvent, "active", active, "cond", v.ActiveCond, "raw", v.Raw)
 				q.logSkipped(v, "inactive", "active", active, "cond", v.ActiveCond)
@@ -189,7 +191,7 @@ next:
 			l++
 		}
 		//check for any force swaps at the end
-		if v.SwapTo != "" {
+		if v.SwapTo != 0 {
 			if _, ok := q.core.CharByName(v.SwapTo); ok {
 				r = append(r, ActionItem{
 					Target: v.SwapTo,
@@ -280,7 +282,8 @@ func (q *QueueCtrl) evalAbilReady(c Condition) (bool, error) {
 		return false, errors.New("eval abil: unexpected short field, expected at least 3")
 	}
 	cs := strings.TrimPrefix(c.Fields[2], ".")
-	char, ok := q.core.CharByName(cs)
+	key := keys.CharNameToKey[cs]
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, nil
 	}
@@ -370,7 +373,8 @@ func (q *QueueCtrl) evalCD(c Condition) (bool, error) {
 	}
 	//check target is valid
 	name := strings.TrimPrefix(c.Fields[1], ".")
-	char, ok := q.core.CharByName(name)
+	key := keys.CharNameToKey[name]
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, errors.New("eval cd: invalid char in condition")
 	}
@@ -392,7 +396,8 @@ func (q *QueueCtrl) evalEnergy(c Condition) (bool, error) {
 		return false, errors.New("eval energy: unexpected short field, expected at least 2")
 	}
 	name := strings.TrimPrefix(c.Fields[1], ".")
-	char, ok := q.core.CharByName(name)
+	key := keys.CharNameToKey[name]
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, errors.New("eval energy: invalid char in condition")
 	}
@@ -416,7 +421,8 @@ func (q *QueueCtrl) evalTags(c Condition) (bool, error) {
 		return false, errors.New("eval tags: unexpected short field, expected at least 3")
 	}
 	name := strings.TrimPrefix(c.Fields[1], ".")
-	char, ok := q.core.CharByName(name)
+	key := keys.CharNameToKey[name]
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, errors.New("eval tags: invalid char in condition")
 	}

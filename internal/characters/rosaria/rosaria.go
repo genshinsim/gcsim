@@ -3,6 +3,7 @@ package rosaria
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type char struct {
@@ -10,7 +11,7 @@ type char struct {
 }
 
 func init() {
-	core.RegisterCharFunc("rosaria", NewChar)
+	core.RegisterCharFunc(keys.Rosaria, NewChar)
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -107,7 +108,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
 }

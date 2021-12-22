@@ -72,7 +72,7 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 		c.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		c.Core.Log.Debugw("setting starting hp", "frame", x.F, "event", core.LogCharacterEvent, "character", p.Base.Name, "hp", p.Base.StartHP)
+		c.Core.Log.Debugw("setting starting hp", "frame", x.F, "event", core.LogCharacterEvent, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
 		c.HPCurrent = p.Base.StartHP
 	} else {
 		c.HPCurrent = math.MaxInt64

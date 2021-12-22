@@ -3,10 +3,11 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("yanfei", NewChar)
+	core.RegisterCharFunc(keys.Yanfei, NewChar)
 }
 
 type char struct {
@@ -125,7 +126,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		stacks := c.Tags["seal"]
 		return 50 * (1 - c.sealStamReduction*float64(stacks))
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
 }

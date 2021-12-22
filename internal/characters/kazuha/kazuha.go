@@ -3,11 +3,11 @@ package kazuha
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("kazuha", NewChar)
-	core.RegisterCharFunc("kaedeharakazuha", NewChar)
+	core.RegisterCharFunc(keys.Kazuha, NewChar)
 }
 
 type char struct {

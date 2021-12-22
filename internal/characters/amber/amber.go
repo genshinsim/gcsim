@@ -3,10 +3,11 @@ package amber
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("amber", NewChar)
+	core.RegisterCharFunc(keys.Amber, NewChar)
 }
 
 type char struct {

@@ -3,10 +3,11 @@ package diluc
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("diluc", NewChar)
+	core.RegisterCharFunc(keys.Diluc, NewChar)
 }
 
 type char struct {
@@ -138,7 +139,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		// With A1
 		return 20
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Name, a.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
 		return 0
 	}
 

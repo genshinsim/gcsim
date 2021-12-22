@@ -1,11 +1,14 @@
 package tests
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+)
 
-func CharProfile(name string, ele core.EleType, cons int) core.CharacterProfile {
+func CharProfile(key keys.Char, ele core.EleType, cons int) core.CharacterProfile {
 	r := core.CharacterProfile{}
 	r.Base.Element = ele
-	r.Base.Name = name
+	r.Base.Key = key
 	r.Base.Cons = cons
 	r.Talents.Attack = 8
 	r.Talents.Burst = 8

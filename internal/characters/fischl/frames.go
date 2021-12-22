@@ -28,7 +28,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 21, 21 //TODO: this is swap cancelling
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
 		return 0, 0
 	}
 }

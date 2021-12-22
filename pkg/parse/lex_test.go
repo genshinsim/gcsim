@@ -77,7 +77,7 @@ func TestParse(t *testing.T) {
 	a, _, err := p.Parse()
 	fmt.Println("characters:")
 	for _, v := range a.Characters.Profile {
-		fmt.Println(v.Base.Name)
+		fmt.Println(v.Base.Key.String())
 		//basic stats:
 		fmt.Println("\t basics", v.Base)
 		fmt.Println("\t weapons", v.Weapon)

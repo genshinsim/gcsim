@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 // Normal attack damage queue generator
@@ -155,7 +156,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// According to KQM library, double E is only 60 frames long whereas single cast is 36
 	// No idea how this works, but add a special case to reduce the frames of the 2nd cast
 	// TODO: No data listed on how 3 casts work - this might be too few frames compared to actual 3x usage
-	if c.Core.LastAction.Target == "xiao" && c.Core.LastAction.Typ == core.ActionSkill {
+	if c.Core.LastAction.Target == keys.Xiao && c.Core.LastAction.Typ == core.ActionSkill {
 		f = 60 - f
 		a = 60 - a
 	}

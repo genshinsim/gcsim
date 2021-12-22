@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/player"
 )
@@ -187,7 +188,7 @@ func (s *Simulation) initTargets(cfg core.Config) error {
 }
 
 func (s *Simulation) initChars(cfg core.Config) error {
-	dup := make(map[string]bool)
+	dup := make(map[keys.Char]bool)
 	res := make(map[core.EleType]int)
 
 	count := len(cfg.Characters.Profile)
@@ -216,14 +217,14 @@ func (s *Simulation) initChars(cfg core.Config) error {
 			return err
 		}
 
-		if v.Base.Name == cfg.Characters.Initial {
+		if v.Base.Key == cfg.Characters.Initial {
 			s.C.ActiveChar = i
 		}
 
-		if _, ok := dup[v.Base.Name]; ok {
-			return fmt.Errorf("duplicated character %v", v.Base.Name)
+		if _, ok := dup[v.Base.Key]; ok {
+			return fmt.Errorf("duplicated character %v", v.Base.Key)
 		}
-		dup[v.Base.Name] = true
+		dup[v.Base.Key] = true
 
 		//track resonance
 		res[v.Base.Element]++
@@ -234,7 +235,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 			s.stats.DamageInstancesByChar[i] = make(map[string]int)
 			s.stats.DamageByCharByTargets[i] = make([]float64, len(s.C.Targets))
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
-			s.stats.CharNames[i] = v.Base.Name
+			s.stats.CharNames[i] = v.Base.Key.String()
 			s.stats.EnergyWhenBurst[i] = make([]float64, 0, s.opts.Duration/12+2)
 		}
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type char struct {
@@ -19,7 +20,7 @@ type char struct {
 }
 
 func init() {
-	core.RegisterCharFunc("xingqiu", NewChar)
+	core.RegisterCharFunc(keys.Xingqiu, NewChar)
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -193,7 +194,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}
 	}, "xingqiu-spawn-orbitals", 34)
 
-	c.QueueParticle(c.Base.Name, 5, core.Hydro, 100)
+	c.QueueParticle(c.Base.Key.String(), 5, core.Hydro, 100)
 
 	//should last 15s, cd 21s
 	c.SetCD(core.ActionSkill, 21*60)

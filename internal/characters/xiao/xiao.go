@@ -3,10 +3,11 @@ package xiao
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("xiao", NewChar)
+	core.RegisterCharFunc(keys.Xiao, NewChar)
 }
 
 // Xiao specific character implementation
@@ -149,7 +150,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
 }

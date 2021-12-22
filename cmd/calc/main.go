@@ -33,7 +33,7 @@ func main() {
 	chars := make([]string, len(cfg.Characters.Profile))
 
 	for i, v := range cfg.Characters.Profile {
-		chars[i] = v.Base.Name
+		chars[i] = v.Base.Key.String()
 	}
 
 	old := os.Stdout
@@ -71,7 +71,7 @@ func main() {
 	os.Stdout = old
 	out := <-outC
 
-	err = logtohtml.WriteString(out, "./debug.html", cfg.Characters.Initial, chars)
+	err = logtohtml.WriteString(out, "./debug.html", cfg.Characters.Initial.String(), chars)
 	if err != nil {
 		log.Fatal(err)
 	}

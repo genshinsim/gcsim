@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func parseAction(p *Parser) (parseFn, error) {
@@ -34,7 +35,11 @@ loop:
 			}
 		case itemTarget:
 			item, err = p.acceptSeqReturnLast(itemAssign, itemIdentifier)
-			r.Target = item.val
+			key, ok := keys.CharNameToKey[item.val]
+			if !ok {
+				err = fmt.Errorf("bad token at line %v - %v: %v; invalid char name", n.line, n.pos, n)
+			}
+			r.Target = key
 		case itemExec:
 			r.Exec, err = p.parseExec()
 		case itemLock:
@@ -51,12 +56,20 @@ loop:
 			}
 		case itemSwap:
 			item, err = p.acceptSeqReturnLast(itemAssign, itemIdentifier)
-			r.SwapTo = item.val
+			key, ok := keys.CharNameToKey[item.val]
+			if !ok {
+				err = fmt.Errorf("bad token at line %v - %v: %v; invalid char name", n.line, n.pos, n)
+			}
+			r.SwapTo = key
 		case itemPost:
 			r.PostAction, err = p.parsePostAction()
 		case itemActive:
 			item, err = p.acceptSeqReturnLast(itemAssign, itemIdentifier)
-			r.ActiveCond = item.val
+			key, ok := keys.CharNameToKey[item.val]
+			if !ok {
+				err = fmt.Errorf("bad token at line %v - %v: %v; invalid char name", n.line, n.pos, n)
+			}
+			r.ActiveCond = key
 		case itemTerminateLine:
 			break loop
 		default:
@@ -375,7 +388,11 @@ func parseActiveChar(p *Parser) (parseFn, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.cfg.Characters.Initial = n.val
+	key, ok := keys.CharNameToKey[n.val]
+	if !ok {
+		return nil, fmt.Errorf("bad token at line %v - %v: %v; invalid char name", n.line, n.pos, n)
+	}
+	p.cfg.Characters.Initial = key
 	_, err = p.consume(itemTerminateLine)
 	if err != nil {
 		return nil, err
@@ -384,7 +401,7 @@ func parseActiveChar(p *Parser) (parseFn, error) {
 }
 
 func isActionValid(a core.Action) error {
-	if a.Target == "" {
+	if a.Target == keys.NoChar {
 		return errors.New("missing target")
 	}
 	if len(a.Exec) == 0 {

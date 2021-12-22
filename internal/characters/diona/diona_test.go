@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tests"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/player"
 	"go.uber.org/zap"
@@ -33,7 +34,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile("diona", core.Cryo, 6)
+	prof := tests.CharProfile(keys.Diona, core.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -42,7 +43,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.FailNow()
 	}
 	c.Chars = append(c.Chars, x)
-	c.CharPos[prof.Base.Name] = 0
+	c.CharPos[prof.Base.Key] = 0
 	//add targets to test with
 	eProf := tests.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))

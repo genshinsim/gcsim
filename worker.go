@@ -6,9 +6,10 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/montanaflynn/stats"
 	"log"
 	"math"
+
+	"github.com/montanaflynn/stats"
 
 	"runtime"
 	"sort"
@@ -115,7 +116,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 
 	chars := make([]string, len(cfg.Characters.Profile))
 	for i, v := range cfg.Characters.Profile {
-		chars[i] = v.Base.Name
+		chars[i] = v.Base.Key.String()
 	}
 
 	//set defaults if nothing specified
@@ -200,7 +201,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 
 	result := CollectResult(data, cfg.DamageMode, chars, opt.LogDetails, opt.ERCalcMode)
 	result.Iterations = n
-	result.ActiveChar = cfg.Characters.Initial
+	result.ActiveChar = cfg.Characters.Initial.String()
 	if !cfg.DamageMode {
 		result.Duration.Mean = float64(opt.Duration)
 		result.Duration.Min = float64(opt.Duration)

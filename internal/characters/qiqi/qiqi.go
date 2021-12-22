@@ -3,10 +3,11 @@ package qiqi
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("qiqi", NewChar)
+	core.RegisterCharFunc(keys.Qiqi, NewChar)
 }
 
 type char struct {
@@ -210,7 +211,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
 }

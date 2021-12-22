@@ -5,10 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("bennett", NewChar)
+	core.RegisterCharFunc(keys.Bennett, NewChar)
 }
 
 type char struct {
@@ -83,7 +84,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 51, 51 //ok
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
 		return 0, 0
 	}
 }

@@ -3,10 +3,11 @@ package eula
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("eula", NewChar)
+	core.RegisterCharFunc(keys.Eula, NewChar)
 }
 
 type char struct {

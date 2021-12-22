@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -49,10 +50,10 @@ type Core struct {
 	lastStamUse  int
 
 	//track characters
-	ActiveChar     int            // index of currently active char
-	ActiveDuration int            // duration in frames that the current char has been on field for
-	Chars          []Character    // array holding all the characters on the team
-	CharPos        map[string]int // map of character string name to their index (for quick lookup by name)
+	ActiveChar     int               // index of currently active char
+	ActiveDuration int               // duration in frames that the current char has been on field for
+	Chars          []Character       // array holding all the characters on the team
+	CharPos        map[keys.Char]int // map of character string name to their index (for quick lookup by name)
 
 	//track targets
 	Targets     []Target
@@ -82,7 +83,7 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	var err error
 	c := &Core{}
 
-	c.CharPos = make(map[string]int)
+	c.CharPos = make(map[keys.Char]int)
 	c.Flags.Custom = make(map[string]int)
 	c.Stam = MaxStam
 	c.stamModifier = make([]func(a ActionType) (float64, bool), 0, 10)
@@ -151,20 +152,20 @@ func (c *Core) Init() {
 }
 
 func (c *Core) AddChar(v CharacterProfile) error {
-	f, ok := charMap[v.Base.Name]
+	f, ok := charMap[v.Base.Key]
 	if !ok {
-		return fmt.Errorf("invalid character: %v", v.Base.Name)
+		return fmt.Errorf("invalid character: %v", v.Base.Key.String())
 	}
 	char, err := f(c, v)
 	if err != nil {
 		return err
 	}
 	c.Chars = append(c.Chars, char)
-	c.CharPos[v.Base.Name] = len(c.Chars) - 1
+	c.CharPos[v.Base.Key] = len(c.Chars) - 1
 
 	wf, ok := weaponMap[v.Weapon.Name]
 	if !ok {
-		return fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Name)
+		return fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Key.String())
 	}
 	wf(char, c, v.Weapon.Refine, v.Weapon.Param)
 
@@ -174,22 +175,22 @@ func (c *Core) AddChar(v CharacterProfile) error {
 		if ok {
 			f(char, c, count)
 		} else {
-			c.Log.Warnf("character %v has unrecognized set %v", v.Base.Name, key)
+			c.Log.Warnf("character %v has unrecognized set %v", v.Base.Key.String(), key)
 		}
 	}
 
 	return nil
 }
 
-func (c *Core) CharByName(name string) (Character, bool) {
-	pos, ok := c.CharPos[name]
+func (c *Core) CharByName(key keys.Char) (Character, bool) {
+	pos, ok := c.CharPos[key]
 	if !ok {
 		return nil, false
 	}
 	return c.Chars[pos], true
 }
 
-func (c *Core) Swap(next string) int {
+func (c *Core) Swap(next keys.Char) int {
 	prev := c.ActiveChar
 	c.ActiveChar = c.CharPos[next]
 	c.SwapCD = SwapCDFrames

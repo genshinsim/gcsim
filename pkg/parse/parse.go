@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 var actionKeys = map[string]core.ActionType{
@@ -48,7 +49,7 @@ type Parser struct {
 	//results
 	cfg   *core.Config
 	opt   *core.RunOpt
-	chars map[string]*core.CharacterProfile
+	chars map[keys.Char]*core.CharacterProfile
 }
 
 type parseFn func(*Parser) (parseFn, error)
@@ -65,7 +66,7 @@ func (p *Parser) Parse() (core.Config, core.RunOpt, error) {
 	var err error
 
 	p.cfg = &core.Config{}
-	p.chars = make(map[string]*core.CharacterProfile)
+	p.chars = make(map[keys.Char]*core.CharacterProfile)
 	p.opt = &core.RunOpt{}
 
 	//default run options
@@ -85,12 +86,13 @@ func (p *Parser) Parse() (core.Config, core.RunOpt, error) {
 		return *p.cfg, *p.opt, err
 	}
 
-	keys := make([]string, 0, len(p.chars))
+	sk := make([]string, 0, len(p.chars))
 	for k := range p.chars {
-		keys = append(keys, k)
+		sk = append(sk, k.String())
 	}
-	sort.Strings(keys)
-	for _, k := range keys {
+	sort.Strings(sk)
+	for _, v := range sk {
+		k := keys.CharNameToKey[v]
 		p.cfg.Characters.Profile = append(p.cfg.Characters.Profile, *p.chars[k])
 	}
 

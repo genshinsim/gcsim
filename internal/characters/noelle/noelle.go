@@ -3,11 +3,12 @@ package noelle
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func init() {
-	core.RegisterCharFunc("noelle", NewChar)
+	core.RegisterCharFunc(keys.Noelle, NewChar)
 }
 
 type char struct {

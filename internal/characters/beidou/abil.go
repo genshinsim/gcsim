@@ -69,7 +69,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Energy < c.EnergyMax {
-		c.Core.Log.Debugw("burst insufficient energy; skipping", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Base.Name)
+		c.Core.Log.Debugw("burst insufficient energy; skipping", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Base.Key.String())
 		return 0, 0
 	}
 
