@@ -124,6 +124,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//apply right away
 	c.applyBarbaraField(stats)()
 
+	c.onSkillStackCount(stats)
 	//add 1 tick each 5s
 	//first tick starts at 0
 	for i := 0; i <= 1200; i += 5 * 60 {
@@ -182,14 +183,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	return f, a //todo fix field cast time
 }
 
-//taken from raiden
-func (c *char) onSkillStackCount() {
-	particleICD := 0
+//inspired from raiden
+func (c *char) onSkillStackCount(stats [core.EndStatType]float64) {
+	particleStack := 0
+	done := false // this is some copium implementation for adding a tick but will think about improving it later
 	c.Core.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
-		if particleICD > c.Core.F {
+		if c.Core.Status.Duration("barbskill") > 0 && particleStack < 5 {
+			particleStack++
+			// add a second per particle
+			c.Core.Status.ExtendStatus("barbskill", 60)
 			return false
 		}
-		particleICD = c.Core.F + 180 // once every 3 seconds
+		if particleStack == 5 && !done {
+			c.AddTask(c.applyBarbaraField(stats), "barbara-field", c.Core.Status.Duration("barbskill")+c.Core.F)
+			done = true
+		}
 		//this doesn't do anything yet
 		return false
 	}, "barbara-skill-extend")

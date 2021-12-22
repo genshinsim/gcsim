@@ -35,7 +35,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 1 {
 		c.c1(1)
 	}
-	c.onSkillStackCount() //doesnt' do anything yet
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
@@ -44,7 +43,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) a1() {
 	c.Core.AddStamMod(func(a core.ActionType) (float64, bool) { // @srl does this activate for the active char?
-		if c.Core.Status.Duration("barbara-field") >= 0 {
+		if c.Core.Status.Duration("barbskill") >= 0 {
 			return -0.12, false
 		}
 		return 0, false

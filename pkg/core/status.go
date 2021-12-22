@@ -3,6 +3,7 @@ package core
 type StatusHandler interface {
 	Duration(key string) int
 	AddStatus(key string, dur int)
+	ExtendStatus(key string, dur int)
 	DeleteStatus(key string)
 }
 
@@ -38,6 +39,13 @@ func (s *StatusCtrl) AddStatus(key string, dur int) {
 			"frame", s.core.F,
 			"expiration", s.core.F+dur,
 		)
+	}
+}
+
+func (s *StatusCtrl) ExtendStatus(key string, dur int) {
+	if s.status[key] > s.core.F {
+		// safe extension, only extends if current duration is +ve
+		s.status[key] += dur
 	}
 }
 
