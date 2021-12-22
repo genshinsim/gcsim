@@ -4,8 +4,8 @@ import "log"
 
 type CombatHandler interface {
 	ApplyDamage(*AttackEvent) float64
-	QueueAttack(a AttackInfo, p AttackPattern, snapshotDelay int, dmgDelay int, callbacks ...func(t Target, ae *AttackEvent))
-	QueueAttackWithSnap(a AttackInfo, s Snapshot, p AttackPattern, dmgDelay int, callbacks ...func(t Target, ae *AttackEvent))
+	QueueAttack(a AttackInfo, p AttackPattern, snapshotDelay int, dmgDelay int, callbacks ...AttackCBFunc)
+	QueueAttackWithSnap(a AttackInfo, s Snapshot, p AttackPattern, dmgDelay int, callbacks ...AttackCBFunc)
 	QueueAttackEvent(ae *AttackEvent, dmgDelay int)
 	TargetHasResMod(debuff string, param int) bool
 	TargetHasDefMod(debuff string, param int) bool
@@ -22,7 +22,7 @@ func NewCombatCtrl(c *Core) *CombatCtrl {
 	}
 }
 
-func (c *CombatCtrl) QueueAttackWithSnap(a AttackInfo, s Snapshot, p AttackPattern, dmgDelay int, callbacks ...func(t Target, ae *AttackEvent)) {
+func (c *CombatCtrl) QueueAttackWithSnap(a AttackInfo, s Snapshot, p AttackPattern, dmgDelay int, callbacks ...AttackCBFunc) {
 	if dmgDelay < 0 {
 		panic("dmgDelay cannot be less than 0")
 	}
@@ -49,7 +49,7 @@ func (c *CombatCtrl) QueueAttackEvent(ae *AttackEvent, dmgDelay int) {
 	c.queueDmg(ae, dmgDelay)
 }
 
-func (c *CombatCtrl) QueueAttack(a AttackInfo, p AttackPattern, snapshotDelay int, dmgDelay int, callbacks ...func(t Target, ae *AttackEvent)) {
+func (c *CombatCtrl) QueueAttack(a AttackInfo, p AttackPattern, snapshotDelay int, dmgDelay int, callbacks ...AttackCBFunc) {
 	//panic if dmgDelay > snapshotDelay; this should not happen. if it happens then there's something wrong with the
 	//character's code
 	if dmgDelay < snapshotDelay {
@@ -188,8 +188,14 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 		c.core.Events.Emit(OnDamage, t, &cpy, dmg, crit)
 
 		//callbacks
+		cb := AttackCB{
+			Target:      t,
+			AttackEvent: &cpy,
+			Damage:      dmg,
+			IsCrit:      crit,
+		}
 		for _, f := range cpy.Callbacks {
-			f(t, &cpy)
+			f(cb)
 		}
 
 		//check if target is dead; skip this for i = 0 since we don't want to

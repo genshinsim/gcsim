@@ -87,7 +87,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ai.Mult = skillHold[c.TalentLvlSkill()]
 	}
 
-	var cb func(core.Target, *core.AttackEvent)
+	var cb core.AttackCBFunc
 
 	if c.Base.Cons >= 2 {
 		cb = c2cb
@@ -119,7 +119,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 
-	var cb func(core.Target, *core.AttackEvent)
+	var cb core.AttackCBFunc
 	if c.Base.Cons == 6 {
 		cb = c6cb(core.Anemo)
 	}
@@ -163,7 +163,7 @@ func (c *char) burstInfusedTicks() {
 		Mult:       burstAbsorbDot[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-	var cb func(core.Target, *core.AttackEvent)
+	var cb core.AttackCBFunc
 	if c.Base.Cons == 6 {
 		cb = c6cb(c.qInfuse)
 	}

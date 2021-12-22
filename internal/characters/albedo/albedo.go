@@ -247,7 +247,7 @@ func (c *char) skillHook() {
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
-	f, a := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	hits, ok := p["bloom"]
 	if !ok {

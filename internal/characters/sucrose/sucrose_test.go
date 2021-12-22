@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/tests"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/player"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -44,8 +45,8 @@ func TestSkillCDWithC4(t *testing.T) {
 	c.CharPos[prof.Base.Name] = 0
 	//add targets to test with
 	eProf := tests.EnemeyProfile()
-	target := enemy.New(0, c, eProf)
-	c.Targets = append(c.Targets, target)
+	c.Targets = append(c.Targets, player.New(0, c))
+	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 
 	//check skill is ready
 	p := make(map[string]int)

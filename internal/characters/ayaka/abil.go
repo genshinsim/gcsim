@@ -70,7 +70,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 
 	//restore on hit, once per attack
 	once := false
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if once {
 			return
 		}

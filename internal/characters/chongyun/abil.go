@@ -77,8 +77,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	cb := func(t core.Target, ae *core.AttackEvent) {
-		t.AddResMod("Chongyun A4", core.ResistMod{
+	cb := func(a core.AttackCB) {
+		a.Target.AddResMod("Chongyun A4", core.ResistMod{
 			Duration: 480, //10 seconds
 			Ele:      core.Cryo,
 			Value:    -0.10,
@@ -86,6 +86,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 
+	//if field is overwriting last
 	if src-c.fieldSrc < 600 {
 		//we're overriding previous field so trigger a4 here
 		atk := c.a4Snap

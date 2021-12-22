@@ -69,16 +69,16 @@ type weap struct {
 
 const bounceKey = "eye-of-preception-bounce"
 
-func (w *weap) chain(count int, c *core.Core, char core.Character) func(t core.Target, ae *core.AttackEvent) {
+func (w *weap) chain(count int, c *core.Core, char core.Character) func(a core.AttackCB) {
 	if count == 4 {
 		return nil
 	}
-	return func(t core.Target, ae *core.AttackEvent) {
+	return func(a core.AttackCB) {
 		//mark the current target, then grab nearest target not marked
 		//and trigger another attack while count < 4
-		t.SetTag(bounceKey, c.F+36) //lock out for 0.6s
-		x, y := t.Shape().Pos()
-		trgs := c.EnemyByDistance(x, y, t.Index())
+		a.Target.SetTag(bounceKey, c.F+36) //lock out for 0.6s
+		x, y := a.Target.Shape().Pos()
+		trgs := c.EnemyByDistance(x, y, a.Target.Index())
 		next := -1
 		for _, v := range trgs {
 			trg := c.Targets[v]

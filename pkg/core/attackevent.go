@@ -7,8 +7,17 @@ type AttackEvent struct {
 	Cancelled   bool //provide a way to cancel an attack event
 	Snapshot    Snapshot
 	SourceFrame int //source frame
-	Callbacks   []func(Target, *AttackEvent)
+	Callbacks   []AttackCBFunc
 }
+
+type AttackCB struct {
+	Target      Target
+	AttackEvent *AttackEvent
+	Damage      float64
+	IsCrit      bool
+}
+
+type AttackCBFunc func(AttackCB)
 
 // type AttackTiming struct {
 // 	SnapshotDelay int

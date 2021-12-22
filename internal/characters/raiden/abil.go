@@ -90,13 +90,13 @@ var swordDelayOffset = [][]int{
 	{1},
 }
 
-func (c *char) burstRestoreFunc(t core.Target, ae *core.AttackEvent) {
+func (c *char) burstRestorefunc(a core.AttackCB) {
 	if c.Core.F > c.restoreICD && c.restoreCount < 5 {
 		c.restoreCount++
 		c.restoreICD = c.Core.F + 60 //once every 1 second
 		energy := burstRestore[c.TalentLvlBurst()]
 		//apply a4
-		excess := int(ae.Snapshot.Stats[core.ER] / 0.01)
+		excess := int(a.AttackEvent.Snapshot.Stats[core.ER] / 0.01)
 		c.Core.Log.Debugw("a4 energy restore stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "increase", float64(excess)*0.006)
 		energy = energy * (1 + float64(excess)*0.006)
 		for _, char := range c.Core.Chars {
@@ -128,7 +128,7 @@ func (c *char) swordAttack(f int, a int) (int, int) {
 			core.NewDefCircHit(2, false, core.TargettableEnemy),
 			f-swordDelayOffset[c.NormalCounter][i],
 			f-swordDelayOffset[c.NormalCounter][i],
-			c.burstRestoreFunc,
+			c.burstRestorefunc,
 		)
 	}
 
@@ -163,7 +163,7 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 			core.NewDefCircHit(2, false, core.TargettableEnemy),
 			f-42,
 			f-42,
-			c.burstRestoreFunc,
+			c.burstRestorefunc,
 		)
 	}
 
@@ -193,7 +193,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		core.NewDefCircHit(2, false, core.TargettableEnemy),
 		f+19,
 		f+19,
-		c.burstRestoreFunc,
+		c.burstRestorefunc,
 	)
 
 	//activate eye

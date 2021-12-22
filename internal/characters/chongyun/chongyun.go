@@ -29,6 +29,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
+	c.fieldSrc = -601
 
 	c.onSwapHook()
 

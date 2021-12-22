@@ -15,16 +15,16 @@ func (c *char) summonSwordWave() {
 	}
 
 	//only if c.nextRegen is true and first sword
-	var c2cb, c6cb func(t core.Target, ae *core.AttackEvent)
+	var c2cb, c6cb func(a core.AttackCB)
 	if c.nextRegen {
-		c6cb = func(t core.Target, ae *core.AttackEvent) {
+		c6cb = func(a core.AttackCB) {
 			c.AddEnergy(3)
 		}
 	}
 	if c.Base.Cons >= 2 {
-		c2cb = func(t core.Target, ae *core.AttackEvent) {
+		c2cb = func(a core.AttackCB) {
 			c.AddTask(func() {
-				t.AddResMod("xingqiu-c2", core.ResistMod{
+				a.Target.AddResMod("xingqiu-c2", core.ResistMod{
 					Ele:      core.Hydro,
 					Value:    -0.15,
 					Duration: 4 * 60,

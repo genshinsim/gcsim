@@ -64,7 +64,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	done := false
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if done {
 			return
 		}
@@ -127,7 +127,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	snapAbs := c.Snapshot(&aiAbs)
 
 	lockout := 0
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if lockout > c.Core.F {
 			return
 		}
