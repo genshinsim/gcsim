@@ -10,23 +10,32 @@ import (
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
-	travel, ok := p["travel"]
-	if !ok {
-		travel = 20
-	}
-
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Pyro,
+		Element:    core.Hydro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f+travel)
+	done := false
+	// Taken from Noelle code
+	cb := func(t core.Target, ae *core.AttackEvent) {
+		if done { //why do we need this @srl
+			return
+		}
+		//check for healing
+		if c.Core.Status.Duration("barbskill") > 0 {
+			//heal target
+			heal := (prochpp[c.TalentLvlSkill()] + prochp[c.TalentLvlSkill()])
+			c.Core.Health.HealAll(c.Index, heal)
+			done = true
+		}
 
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f, cb)
 	c.AdvanceNormalIndex()
 
 	// return animation cd
@@ -49,8 +58,24 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charge[c.NormalCounter][c.TalentLvlAttack()],
 	}
+
+	done := false
+	// Taken from Noelle code
+	cb := func(t core.Target, ae *core.AttackEvent) {
+		if done { //why do we need this @srl
+			return
+		}
+		//check for healing
+		if c.Core.Status.Duration("barbskill") > 0 {
+			//heal target
+			heal := (prochpp[c.TalentLvlSkill()] + prochp[c.TalentLvlSkill()])
+			c.Core.Health.HealAll(c.Index, 4*heal)
+			done = true
+		}
+
+	}
 	// TODO: Not sure of snapshot timing
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, cb)
 
 	return f, a
 }
@@ -98,7 +123,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) applyBarbaraField(stats [core.EndStatType]float64) func() {
 	hpplus := stats[core.Heal]
 	heal := (skillhp[c.TalentLvlBurst()] + skillhpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.HydroP] = 0.0
 	if c.Base.Cons >= 2 {
 		val[core.HydroP] += 0.2
@@ -111,8 +136,8 @@ func (c *char) applyBarbaraField(stats [core.EndStatType]float64) func() {
 
 		active.AddMod(core.CharStatMod{
 			Key: "barbara-field",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-				return val, true
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				return val, true // @srl what does this boolean mean?
 			},
 			Expiry: c.Core.F + 5*60, // this is for each application of the field.. is this correct @srliao
 		})
