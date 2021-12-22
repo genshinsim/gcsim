@@ -11,20 +11,19 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+	}
 	for _, mult := range attack[c.NormalCounter] {
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				fmt.Sprintf("Normal %v", c.NormalCounter),
-				core.AttackTagNormal,
-				core.ICDTagNormalAttack,
-				core.ICDGroupDefault,
-				core.StrikeTypeSlash,
-				core.Physical,
-				25,
-				mult[c.TalentLvlAttack()],
-			)
-			return &d
-		}, f)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, f)
 	}
 
 	c.AdvanceNormalIndex()
@@ -37,20 +36,20 @@ func (c *char) Charge(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+	}
 	for _, mult := range charge {
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				"Charge",
-				core.AttackTagExtra,
-				core.ICDTagExtraAttack,
-				core.ICDGroupDefault,
-				core.StrikeTypeSlash,
-				core.Physical,
-				25,
-				mult[c.TalentLvlAttack()],
-			)
-			return &d
-		}, f)
+		ai.Mult = mult[c.TalentLvlAttack()]
+
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, f)
 	}
 
 	return f, a
@@ -68,20 +67,21 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// Initial damage
 	// Both healing and damage are snapshot
 	c.AddTask(func() {
-		d := c.Snapshot(
-			"Herald of Frost: Initial Damage",
-			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			25,
-			skillInitialDmg[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Herald of Frost: Initial Damage",
+			AttackTag:  core.AttackTagElementalArt,
+			ICDTag:     core.ICDTagElementalArt,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    core.Cryo,
+			Durability: 25,
+			Mult:       skillInitialDmg[c.TalentLvlSkill()],
+		}
+		snap := c.Snapshot(&ai)
 
 		// One healing proc happens immediately on cast
-		c.Core.Health.HealActive(c.Index, c.healSnapshot(&d, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()))
+		c.Core.Health.HealActive(c.Index, c.healSnapshot(&snap, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()))
 
 		// Healing and damage instances are snapshot
 		// Separately cloned snapshots are fed into each function to ensure nothing interferes with each other
@@ -90,7 +90,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		// No exact frame data on when the healing ticks happen. Just roughly guessing here
 		// Healing ticks happen 3 additional times during the skill - assume ticks are roughly 4.5s apart
 		// so in sec (0 = skill cast), 1, 5.5, 10, 14.5
-		c.skillHealSnapshot = d.Clone()
+		c.skillHealSnapshot = snap
 		c.AddTask(c.skillHealTickTask(src), "qiqi-skill-heal-tick", 4.5*60)
 
 		// Queue up damage swipe instances.
@@ -101,14 +101,22 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		// The time between each swipe in a pair is about 1s
 		// No exact frame data available plus the skill duration is affected by hitlag
 		// Damage procs occur (in sec 0 = skill cast): 1.5, 3.75, 4.75, 7, 8, 10.25, 11.25, 13.5, 14.5
-		dDmgTicks := d.Clone()
-		dDmgTicks.Abil = "Herald of Frost: Skill Damage"
-		dDmgTicks.Mult = skillDmgCont[c.TalentLvlSkill()]
-		dDmgTicks.Targets = core.TargetAll
-		c.AddTask(c.skillDmgTickTask(src, &dDmgTicks, 60), "qiqi-skill-dmg-tick", 30)
+
+		aiTick := ai
+		aiTick.Abil = "Herald of Frost: Skill Damage"
+		aiTick.Mult = skillDmgCont[c.TalentLvlSkill()]
+		snapTick := c.Snapshot(&aiTick)
+		tickAE := &core.AttackEvent{
+			Info:        aiTick,
+			Snapshot:    snapTick,
+			Pattern:     core.NewDefCircHit(2, false, core.TargettableEnemy),
+			SourceFrame: c.Core.F,
+		}
+
+		c.AddTask(c.skillDmgTickTask(src, tickAE, 60), "qiqi-skill-dmg-tick", 30)
 
 		// Apply damage needs to take place after above takes place to ensure stats are handled correctly
-		c.QueueDmg(&d, 0)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 0)
 	}, "qiqi-skill-activation", f)
 
 	c.SetCD(core.ActionSkill, 30*60)
@@ -119,7 +127,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 // Handles skill damage swipe instances
 // Also handles C1:
 // When the Herald of Frost hits an opponent marked by a Fortune-Preserving Talisman, Qiqi regenerates 2 Energy.
-func (c *char) skillDmgTickTask(src int, d *core.Snapshot, lastTickDuration int) func() {
+func (c *char) skillDmgTickTask(src int, ae *core.AttackEvent, lastTickDuration int) func() {
 	return func() {
 		if c.Core.Status.Duration("qiqiskill") == 0 {
 			return
@@ -131,23 +139,23 @@ func (c *char) skillDmgTickTask(src int, d *core.Snapshot, lastTickDuration int)
 		}
 
 		// Clones initial snapshot
-		dmgSnapshot := d.Clone()
+		tick := *ae //deference the pointer here
 
 		if c.Base.Cons >= 1 {
-			dmgSnapshot.OnHitCallback = c.c1
+			tick.Callbacks = append(tick.Callbacks, c.c1)
 		}
 
-		c.Core.Combat.ApplyDamage(&dmgSnapshot)
+		c.Core.Combat.QueueAttackEvent(&tick, 0)
 
 		nextTick := 60
 		if lastTickDuration == 60 {
 			nextTick = 135
 		}
-		c.AddTask(c.skillDmgTickTask(src, d, nextTick), "qiqi-skill-dmg-tick", nextTick)
+		c.AddTask(c.skillDmgTickTask(src, ae, nextTick), "qiqi-skill-dmg-tick", nextTick)
 	}
 }
 
-func (c *char) c1(t core.Target) {
+func (c *char) c1(t core.Target, ae *core.AttackEvent) {
 	if c.talismanExpiry[t.Index()] < c.Core.F {
 		return
 	}
@@ -180,23 +188,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
-	c.QueueDmgDynamic(func() *core.Snapshot {
-		d := c.Snapshot(
-			"Fortune-Preserving Talisman",
-			core.AttackTagElementalBurst,
-			core.ICDTagElementalBurst,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			50,
-			burstDmg[c.TalentLvlBurst()],
-		)
-		d.Targets = core.TargetAll
-		return &d
-	}, f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Fortune-Preserving Talisman",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Cryo,
+		Durability: 50,
+		Mult:       burstDmg[c.TalentLvlBurst()],
+	}
 
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
 	c.SetCD(core.ActionBurst, 20*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }

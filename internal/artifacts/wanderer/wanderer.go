@@ -11,11 +11,11 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		m[core.EM] = 80
 		c.AddMod(core.CharStatMod{
 			Key: "wt-2pc",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -29,13 +29,13 @@ func New(c core.Character, s *core.Core, count int) {
 			//don't add this mod if wrong weapon class
 			return
 		}
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.35
 		c.AddMod(core.CharStatMod{
 			Key: "wt-4pc",
-			Amount: func(ds core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(ds core.AttackTag) ([]float64, bool) {
 				if ds != core.AttackTagNormal && ds != core.AttackTagExtra {
-					return m, false
+					return nil, false
 				}
 				return m, true
 			},

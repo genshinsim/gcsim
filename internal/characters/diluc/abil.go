@@ -113,11 +113,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	})
 
 	// add 20% pyro damage
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.PyroP] = 0.2
 	c.AddMod(core.CharStatMod{
 		Key:    "diluc-fire-weapon",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 720,
 	})
 
@@ -154,7 +154,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}, "diluc-burst", 100)
 
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	c.SetCD(core.ActionBurst, 720)
 	return f, a
 }

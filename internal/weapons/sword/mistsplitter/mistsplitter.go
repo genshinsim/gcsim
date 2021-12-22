@@ -12,7 +12,7 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	base := 0.09 + float64(r)*0.03
 	m[core.PyroP] = base
 	m[core.HydroP] = base
@@ -56,7 +56,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	char.AddMod(core.CharStatMod{
 		Key: "mistsplitter",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			count := 0
 			if char.CurrentEnergy() < char.MaxEnergy() {
 				count++

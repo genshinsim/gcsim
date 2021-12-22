@@ -56,12 +56,12 @@ func (c *char) c1() {
 		c.AddMod(core.CharStatMod{
 			Key:    "rosaria-c1",
 			Expiry: c.Core.F + 240,
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-				var val [core.EndStatType]float64
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				val := make([]float64, core.EndStatType)
 				val[core.AtkSpd] = 0.1
 				val[core.DmgP] = 0.1
 				if a != core.AttackTagNormal {
-					return val, false
+					return nil, false
 				}
 				return val, true
 			},

@@ -19,11 +19,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 	active := 0
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 
 	char.AddMod(core.CharStatMod{
 		Key: "primordial",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, active > c.F
 		},
 		Expiry: -1,

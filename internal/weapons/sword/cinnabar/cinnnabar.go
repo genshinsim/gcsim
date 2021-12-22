@@ -46,15 +46,15 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	// char.AddPreDamageMod(core.PreDamageMod{
 	// 	Key:    "cinnabar",
 	// 	Expiry: -1,
-	// 	Amount: func(atk *core.AttackEvent, t core.Target) ([core.EndStatType]float64, bool) {
+	// 	Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 
-	// 		var m [core.EndStatType]float64
+	// 		m := make([]float64, core.EndStatType)
 
 	// 		if atk.Info.AttackTag != core.AttackTagElementalArt {
-	// 			return m, false
+	// 			return nil, false
 	// 		}
 	// 		if effectDurationExpiry < c.F && c.F <= effectICDExpiry {
-	// 			return m, false
+	// 			return nil, false
 	// 		}
 	// 		atk.Info.FlatDmg += atk.Snapshot.BaseDef*atk.Snapshot.Stats[core.DEFP] + atk.Snapshot.Stats[core.DEF]
 	// 		c.Log.Debugw("Cinnabar Spindle proc dmg add", "frame", c.F, "event", core.LogCalc, "char", char.CharIndex(), "lastproc", effectLastProc, "effect_ends_at", effectDurationExpiry, "effect_icd_ends_at", effectICDExpiry)

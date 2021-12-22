@@ -286,11 +286,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//Party wide EM buff
 	for _, char := range c.Core.Chars {
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		val[core.EM] = 120
 		char.AddMod(core.CharStatMod{
 			Key: "albedo-a4",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + 600,
@@ -298,7 +298,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.SetCD(core.ActionSkill, 720)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }
 
@@ -306,14 +306,14 @@ func (c *char) c4() {
 	c.AddMod(core.CharStatMod{
 		Key:    "albedo-c4",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			val[core.DmgP] = 0.3
 			if a != core.AttackTagPlunge {
-				return val, false
+				return nil, false
 			}
 			if c.Tags["elevator"] != 1 {
-				return val, false
+				return nil, false
 			}
 			return val, true
 		},
@@ -325,14 +325,14 @@ func (c *char) c6() {
 	c.AddMod(core.CharStatMod{
 		Key:    "albedo-c6",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			val[core.DmgP] = 0.17
 			if c.Tags["elevator"] != 1 {
-				return val, false
+				return nil, false
 			}
 			if c.Core.Shields.Get(core.ShieldCrystallize) == nil {
-				return val, false
+				return nil, false
 			}
 			return val, true
 		},

@@ -155,11 +155,11 @@ func (c *char) holdE() {
 
 	//c1 add debuff
 	if c.Base.Cons >= 1 && v > 0 {
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		val[core.PhyP] = 0.3
 		c.AddMod(core.CharStatMod{
 			Key: "eula-c1",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + (6*v+6)*60, //TODO: check if this is right

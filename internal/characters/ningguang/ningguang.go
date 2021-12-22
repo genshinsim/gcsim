@@ -58,12 +58,12 @@ func (c *char) a4() {
 	//activate a4 if screen is down and character uses dash
 	c.Core.Events.Subscribe(core.OnDash, func(args ...interface{}) bool {
 		if c.Core.Constructs.CountByType(core.GeoConstructNingSkill) > 0 {
-			var val [core.EndStatType]float64
+			val := make([]float64, core.EndStatType)
 			val[core.GeoP] = 0.12
 			char := c.Core.Chars[c.Core.ActiveChar]
 			char.AddMod(core.CharStatMod{
 				Key: "ning-screen",
-				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Core.F + 600,

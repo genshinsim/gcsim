@@ -119,7 +119,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Core.Status.AddStatus("aurous", duration)
 		//attack buff if stacks
 		if c.Core.Status.Duration("yoimiyaa2") > 0 {
-			var val [core.EndStatType]float64
+			val := make([]float64, core.EndStatType)
 			val[core.ATKP] = 0.1 + float64(c.a2stack)*0.01
 			for i, char := range c.Core.Chars {
 				if i == c.Index {
@@ -128,7 +128,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				char.AddMod(core.CharStatMod{
 					Key:    "yoimiya-a4",
 					Expiry: c.Core.F + 900, //15s
-					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+					Amount: func(a core.AttackTag) ([]float64, bool) {
 						return val, true
 					},
 				})
@@ -141,7 +141,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//add cooldown to sim
 	c.SetCD(core.ActionBurst, 15*60)
 	//use up energy
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }

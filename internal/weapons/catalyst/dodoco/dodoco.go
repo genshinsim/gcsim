@@ -15,24 +15,24 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	atkExpiry := 0
 	dmgExpiry := 0
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = .12 + float64(r)*.04
 	char.AddMod(core.CharStatMod{
 		Key: "dodoco ca",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if a != core.AttackTagExtra {
-				return m, false
+				return nil, false
 			}
 			return m, dmgExpiry > c.F
 		},
 		Expiry: -1,
 	})
 
-	var n [core.EndStatType]float64
+	n := make([]float64, core.EndStatType)
 	n[core.ATKP] = .06 + float64(r)*0.02
 	char.AddMod(core.CharStatMod{
 		Key: "dodoco atk",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return n, atkExpiry > c.F
 		},
 		Expiry: -1,

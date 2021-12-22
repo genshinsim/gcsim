@@ -35,10 +35,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Key:    "lost-prayer",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var m [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			m := make([]float64, core.EndStatType)
 			if w.stacks == 0 {
-				return m, false
+				return nil, false
 			}
 			p := dmg * float64(w.stacks)
 			m[core.PyroP] = p

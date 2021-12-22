@@ -12,7 +12,7 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	base := 0.045 + float64(r)*0.015
 	regen := 2.5 + float64(r)*0.5
 
@@ -21,11 +21,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Expiry: -1,
 		Key:    "kitain-skill-dmg-buff",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if a == core.AttackTagElementalArt || a == core.AttackTagElementalArtHold {
 				return m, true
 			}
-			return m, false
+			return nil, false
 		},
 	})
 

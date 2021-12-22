@@ -254,7 +254,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// Checked gameplay - burst starts ticking down from activation. CD is 16.6 seconds after animation is done
 	c.SetCD(core.ActionBurst, 18*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }

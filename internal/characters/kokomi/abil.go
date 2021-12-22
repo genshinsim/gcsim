@@ -222,13 +222,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Base.Cons >= 4 {
 		c.AddMod(core.CharStatMod{
 			Key: "kokomi-c4",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-				var val [core.EndStatType]float64
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				val := make([]float64, core.EndStatType)
 				val[core.AtkSpd] = 0.1
 				if c.Core.Status.Duration("kokomiburst") > 0 {
 					return val, true
 				}
-				return val, false
+				return nil, false
 			},
 			Expiry: c.Core.F + 10*60,
 		})
@@ -236,7 +236,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// Cannot be prefed particles
 	c.AddTask(func() {
-		c.Energy = 0
+		c.ConsumeEnergy(0)
 	}, "kokomi-q-energy-drain", f)
 
 	c.SetCD(core.ActionBurst, 18*60)

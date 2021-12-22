@@ -21,6 +21,7 @@ type RunOpt struct {
 	Workers    int  `json:"workers"`
 	Duration   int  `json:"seconds"`
 	Debug      bool `json:"debug"`
+	ERCalcMode bool `json:"er_calc_mode"`
 	DebugPaths []string
 }
 

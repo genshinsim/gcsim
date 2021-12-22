@@ -12,8 +12,8 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
-	atk := 0.65 + float64(r)*0.15
-	atkc := 1.6 + float64(r)*0.4
+	m := 0.65 + float64(r)*0.15
+	mc := 1.6 + float64(r)*0.4
 	p := 0.5 + float64(r)*0.1
 
 	icd := 0
@@ -32,21 +32,22 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		if c.Rand.Float64() < p {
 			icd = c.F + 600
-			d := char.Snapshot(
-				"Starsilver Proc",
-				core.AttackTagWeaponSkill,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Physical,
-				100,
-				atk,
-			)
-			d.Targets = core.TargetAll
-			if t.AuraType() == core.Cryo || t.AuraType() == core.Frozen {
-				d.Mult = atkc
+			ai := core.AttackInfo{
+				ActorIndex: char.CharIndex(),
+				Abil:       "Starsilver Proc",
+				AttackTag:  core.AttackTagWeaponSkill,
+				ICDTag:     core.ICDTagNone,
+				ICDGroup:   core.ICDGroupDefault,
+				StrikeType: core.StrikeTypeDefault,
+				Element:    core.Physical,
+				Durability: 100,
+				Mult:       m,
 			}
-			char.QueueDmg(&d, 1)
+
+			if t.AuraType() == core.Cryo || t.AuraType() == core.Frozen {
+				ai.Mult = mc
+			}
+			c.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
 
 		}
 		return false

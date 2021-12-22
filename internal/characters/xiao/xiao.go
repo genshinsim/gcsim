@@ -61,11 +61,11 @@ func (c *char) a4() {
 	c.AddMod(core.CharStatMod{
 		Key:    "xiao-a4",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var m [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			m := make([]float64, core.EndStatType)
 			stacks := c.Tags["a4"]
 			if stacks == 0 {
-				return m, false
+				return nil, false
 			}
 			m[core.DmgP] += float64(stacks) * 0.15
 			return m, true
@@ -79,13 +79,13 @@ func (c *char) c2() {
 	c.AddMod(core.CharStatMod{
 		Key:    "xiao-c2",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var m [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			m := make([]float64, core.EndStatType)
 			m[core.ER] = 0.25
 			if c.Core.ActiveChar != c.Index {
 				return m, true
 			}
-			return m, false
+			return nil, false
 		},
 	})
 }

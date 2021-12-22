@@ -32,19 +32,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("solar-%v", char.Name()))
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.15 + float64(r)*0.05
 	char.AddMod(core.CharStatMod{
 		Key:    "solar",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if a == core.AttackTagElementalArt || a == core.AttackTagElementalBurst {
 				return val, attack > c.F
 			}
 			if a == core.AttackTagNormal {
 				return val, skill > c.F
 			}
-			return val, false
+			return nil, false
 		},
 	})
 }

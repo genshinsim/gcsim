@@ -39,8 +39,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.AddMod(core.CharStatMod{
 		Key: "a4",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var a4 [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			a4 := make([]float64, core.EndStatType)
 			a4[core.HydroP] = 0.2
 			return a4, true
 		},
@@ -240,6 +240,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// c.CD[combat.BurstCD] = c.S.F + 20*60
 	c.SetCD(core.ActionBurst, 20*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }

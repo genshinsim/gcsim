@@ -53,48 +53,55 @@ func (c *char) Init(index int) {
 //he still benefits from sucrose em but just cannot share it
 
 func (c *char) a4() {
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
+	expiry := make([]int, core.EndStatType)
 	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
 			Expiry: -1,
 			Key:    "kazuha-a4",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-				if c.a4Expiry < c.Core.F {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				m := make([]float64, core.EndStatType)
+				ok := false
+				for i, exp := range expiry {
+					if exp > c.Core.F {
+						m[i] = val[i]
+						ok = true
+					}
+				}
+				if !ok {
 					return nil, false
 				}
-				return val, true
+				return m, true
 			},
 		})
 	}
-	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
+
+	swirlfunc := func(ele core.StatType) func(args ...interface{}) bool {
+		return func(args ...interface{}) bool {
+			atk := args[1].(*core.AttackEvent)
+			if atk.Info.ActorIndex != c.Index {
+				return false
+			}
+			//update expiry
+			expiry[ele] = c.Core.F + 480
+			// c.a4Expiry = c.Core.F + 480
+			//recalc em
+			em := c.Stat(core.EM)
+			val[ele] = 0.0004 * em
+			c.Core.Log.Debugw("kazuah a4 proc", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ele.String(), "char", c.CharIndex())
+
 			return false
 		}
-		var typ core.EleType
-		switch ds.ReactionType {
-		case core.SwirlCryo:
-			typ = core.Cryo
-		case core.SwirlElectro:
-			typ = core.Electro
-		case core.SwirlHydro:
-			typ = core.Hydro
-		case core.SwirlPyro:
-			typ = core.Pyro
-		default:
-			return false
-		}
-		//update expiry
-		c.a4Expiry = c.Core.F + 480
-		//recalc em
-		em := c.Stat(core.EM)
-		val[core.EleToDmgP(typ)] = 0.0004 * em
-		return false
-	}, "kazuha-a4")
+	}
+
+	c.Core.Events.Subscribe(core.OnSwirlCryo, swirlfunc(core.CryoP), "kazuha-a4-cryo")
+	c.Core.Events.Subscribe(core.OnSwirlElectro, swirlfunc(core.ElectroP), "kazuha-a4-electro")
+	c.Core.Events.Subscribe(core.OnSwirlHydro, swirlfunc(core.HydroP), "kazuha-a4-hydro")
+	c.Core.Events.Subscribe(core.OnSwirlPyro, swirlfunc(core.PyroP), "kazuha-a4-pyro")
 }
 
-func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
-	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
+func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
+	ds := c.Tmpl.Snapshot(ai)
 
 	if c.Base.Cons < 6 {
 		return ds
@@ -105,14 +112,14 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 	}
 
 	//infusion to normal/plunge/charge
-	switch ds.AttackTag {
+	switch ai.AttackTag {
 	case core.AttackTagNormal:
 	case core.AttackTagExtra:
 	case core.AttackTagPlunge:
 	default:
 		return ds
 	}
-	ds.Element = core.Anemo
+	ai.Element = core.Anemo
 
 	//add 0.2% dmg for every EM
 	ds.Stats[core.DmgP] += 0.002 * ds.Stats[core.EM]

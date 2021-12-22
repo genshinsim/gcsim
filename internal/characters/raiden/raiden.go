@@ -55,13 +55,13 @@ func (c *char) Init(index int) {
 		char.AddMod(core.CharStatMod{
 			Key:    "raiden-e",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-				var val [core.EndStatType]float64
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				val := make([]float64, core.EndStatType)
 				if c.Core.Status.Duration("raidenskill") == 0 {
-					return val, false
+					return nil, false
 				}
 				if a != core.AttackTagElementalBurst {
-					return val, false
+					return nil, false
 				}
 
 				val[core.DmgP] = mult * this.MaxEnergy()

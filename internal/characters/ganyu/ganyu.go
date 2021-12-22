@@ -30,11 +30,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.CharZone = core.ZoneLiyue
 
 	//add a2
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.CR] = 0.2
 	c.AddMod(core.CharStatMod{
 		Key: "ganyu-a2",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, c.a2expiry > c.Core.F && a == core.AttackTagExtra
 		},
 		Expiry: -1,

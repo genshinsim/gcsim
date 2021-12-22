@@ -49,7 +49,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("skyward-atlast-%v", char.Name()))
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = dmg
 	m[core.HydroP] = dmg
 	m[core.CryoP] = dmg
@@ -60,7 +60,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Key:    "skyward-atlast",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 	})

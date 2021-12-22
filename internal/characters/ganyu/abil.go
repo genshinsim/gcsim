@@ -13,18 +13,19 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Physical,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypePierce,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+	}
 
-	c.QueueDmg(&d, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, travel+f)
 
 	c.AdvanceNormalIndex()
 
@@ -43,35 +44,26 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		bloom = 20
 	}
 
-	c.AddTask(func() {
-		d := c.Snapshot(
-			"Frost Flake Arrow",
-			core.AttackTagExtra,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Cryo,
-			25,
-			ffa[c.TalentLvlAttack()],
-		)
-		d.HitWeakPoint = true
+	ai := core.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Frost Flake Arrow",
+		AttackTag:    core.AttackTagExtra,
+		ICDTag:       core.ICDTagNone,
+		ICDGroup:     core.ICDGroupDefault,
+		StrikeType:   core.StrikeTypePierce,
+		Element:      core.Cryo,
+		Durability:   25,
+		Mult:         ffa[c.TalentLvlAttack()],
+		HitWeakPoint: true,
+	}
 
-		d2 := c.Snapshot(
-			"Frost Flake Bloom",
-			core.AttackTagExtra,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Cryo,
-			25,
-			ffb[c.TalentLvlAttack()],
-		)
-		d2.Targets = core.TargetAll
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
 
-		c.QueueDmg(&d, travel)
-		c.QueueDmg(&d2, travel+bloom)
+	ai.Abil = "Frost Flake Bloom"
+	ai.Mult = ffb[c.TalentLvlAttack()]
+	ai.HitWeakPoint = false
 
-	}, "ganyu-aim-snap", f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, bloom+f)
 
 	// if c.a2expiry > c.Core.F {
 	// 	d.Stats[def.CR] += 0.2
@@ -86,34 +78,26 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Ice Lotus",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       lotus[c.TalentLvlSkill()],
+	}
 
-	d := c.Snapshot(
-		"Ice Lotus",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		lotus[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
-
-	//snap shot stats at cast time here
-	explode := d.Clone()
-
+	snap := c.Snapshot(&ai)
+	//flower damage immediately
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 30)
 	//we get the orbs right away
 	c.QueueParticle("ganyu", 2, core.Cryo, 90)
-	//flower damage immediately
-	c.AddTask(func() {
-		c.Core.Combat.ApplyDamage(&d)
-	}, "Ice Lotus", 30)
 
 	//flower damage is after 6 seconds
-	c.AddTask(func() {
-		c.Core.Combat.ApplyDamage(&explode)
-	}, "Ice Lotus", 360)
-
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 360)
 	c.QueueParticle("ganyu", 2, core.Cryo, 360)
 
 	//add cooldown to sim
@@ -154,17 +138,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
-
-	d := c.Snapshot(
-		"Celestial Shower",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		shower[c.TalentLvlBurst()],
-	)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Celestial Shower",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       shower[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
 
 	rad, ok := p["radius"]
 	if !ok {
@@ -196,10 +181,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				return
 			}
 			//deal dmg
-			x := d.Clone()
-			x.Targets = core.TargetAll //eventually change this to target index and use hitbox
-			// ccc++
-			c.Core.Combat.ApplyDamage(&x)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(9, false, core.TargettableEnemy), 0)
 		}, "ganyu-q", delay+f)
 
 	}
@@ -213,11 +195,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		t := i
 		c.AddTask(func() {
 			active := c.Core.Chars[c.Core.ActiveChar]
-			var val [core.EndStatType]float64
+			val := make([]float64, core.EndStatType)
 			val[core.CryoP] = 0.2
 			active.AddMod(core.CharStatMod{
 				Key: "ganyu-field",
-				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Core.F + 60,
@@ -232,11 +214,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//we just assume this lasts for the full duration since no one moves...
 		start := c.Core.F
 
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		c.AddMod(core.CharStatMod{
 			Key:    "ganyu-c4",
 			Expiry: c.Core.F + 1080,
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				elapsed := c.Core.F - start
 				stacks := int(elapsed / 180)
 				if stacks > 5 {
@@ -251,7 +233,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//add cooldown to sim
 	c.SetCD(core.ActionBurst, 15*60)
 	//use up energy
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }

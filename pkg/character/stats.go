@@ -58,7 +58,7 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 			zap.Any("attack_tag", a.AttackTag),
 			zap.Any("icd_tag", a.ICDTag),
 			zap.Any("icd_group", a.ICDGroup),
-			zap.Any("final_stats", core.PrettyPrintStatsSlice(s.Stats)),
+			zap.Any("final_stats", core.PrettyPrintStatsSlice(s.Stats[:])),
 		)
 
 		if inf != core.NoElement {
@@ -93,7 +93,8 @@ func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]fl
 	var logDetails []zap.Field
 
 	//grab char stats
-	stats := c.Stats
+	var stats [core.EndStatType]float64
+	copy(stats[:], c.Stats[:core.EndStatType])
 
 	if c.Core.Flags.LogDebug {
 		logDetails = make([]zap.Field, 0, 5+3*len(c.Mods))
@@ -156,12 +157,9 @@ func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]fl
 	return stats
 }
 
-func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) [core.EndStatType]float64 {
+func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 	var sb strings.Builder
 	var logDetails []zap.Field
-
-	//grab char stats
-	stats := a.Snapshot.Stats
 
 	if c.Core.Flags.LogDebug {
 		logDetails = make([]zap.Field, 0, 5+3*len(c.PreDamageMods))
@@ -182,7 +180,7 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) [core
 			amt, ok := m.Amount(a, t)
 			if ok {
 				for k, v := range amt {
-					stats[k] += v
+					a.Snapshot.Stats[k] += v
 				}
 			}
 			c.PreDamageMods[n] = m
@@ -221,9 +219,6 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) [core
 		c.Core.Log.Desugar().Debug(a.Info.Abil, logDetails...)
 	}
 
-	a.Snapshot.Stats = stats
-
-	return stats
 }
 
 func (t *Tmpl) ReactBonus(atk core.AttackInfo) (amt float64) {

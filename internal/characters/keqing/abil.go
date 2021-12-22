@@ -180,12 +180,12 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 	//a4 increase crit + ER
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.CR] = 0.15
 	val[core.ER] = 0.15
 	c.AddMod(core.CharStatMod{
 		Key:    "a4",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) { return val, true },
+		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 480,
 	})
 
@@ -225,7 +225,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.activateC6("burst")
 	}
 
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	// c.CD[def.BurstCD] = c.Core.F + 720 //12s
 	c.SetCD(core.ActionBurst, 720)
 

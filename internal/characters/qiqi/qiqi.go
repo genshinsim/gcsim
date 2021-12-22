@@ -85,7 +85,7 @@ func (c *char) onNACAHitHook() {
 		}
 
 		// Talisman is applied before the damage is dealt
-		if ds.Abil == "Fortune-Preserving Talisman" {
+		if atk.Info.Abil == "Fortune-Preserving Talisman" {
 			c.talismanExpiry[t.Index()] = c.Core.F + 15*60
 		}
 
@@ -97,7 +97,7 @@ func (c *char) onNACAHitHook() {
 		// C2
 		// Qiqi’s Normal and Charge Attack DMG against opponents affected by Cryo is increased by 15%.
 		if (c.Base.Cons >= 2) && (t.AuraContains(core.Cryo)) {
-			ds.Stats[core.DmgP] += .15
+			atk.Snapshot.Stats[core.DmgP] += .15
 		}
 
 		// A4
@@ -154,8 +154,11 @@ func (c *char) a1() {
 
 		return false
 	}
-	c.Core.Events.Subscribe(core.OnTransReaction, a1Hook, "qiqi-a1")
-	c.Core.Events.Subscribe(core.OnAmpReaction, a1Hook, "qiqi-a1")
+	for i := core.EventType(core.ReactionEventStartDelim + 1); i < core.ReactionEventEndDelim; i++ {
+		c.Core.Events.Subscribe(i, a1Hook, "qiqi-a1")
+	}
+	// c.Core.Events.Subscribe(core.OnTransReaction, a1Hook, "qiqi-a1")
+	// c.Core.Events.Subscribe(core.OnAmpReaction, a1Hook, "qiqi-a1")
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

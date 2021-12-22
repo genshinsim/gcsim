@@ -47,11 +47,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Key:    "prototype",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			if expiry < c.F {
 				stacks = 0
-				return val, false
+				return nil, false
 			}
 			val[core.ATKP] = per * float64(stacks)
 			val[core.DEFP] = per * float64(stacks)

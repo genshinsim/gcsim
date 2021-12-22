@@ -15,13 +15,13 @@ func init() {
 //regenerates 60% of ATK as HP when Normal and Charged Attacks score a CRIT Hit. This effect can occur once every 5s.
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.ATKP] = 0.15 + 0.05*float64(r)
 
 	char.AddMod(core.CharStatMod{
 		Key:    "black sword",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return val, true
 		},
 	})

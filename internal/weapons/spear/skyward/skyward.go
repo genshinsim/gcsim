@@ -13,13 +13,13 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	m[core.CR] = 0.06 + float64(r)*0.02
 	m[core.AtkSpd] = 0.12
 
 	char.AddMod(core.CharStatMod{
 		Key: "skyward spine",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,

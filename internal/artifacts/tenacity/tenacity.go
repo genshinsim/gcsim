@@ -14,11 +14,11 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
-		var m [core.EndStatType]float64
+		m := make([]float64, core.EndStatType)
 		m[core.HPP] = 0.2
 		c.AddMod(core.CharStatMod{
 			Key: "tom-2pc",
-			Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -44,11 +44,11 @@ func New(c core.Character, s *core.Core, count int) {
 			for _, char := range s.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "tom-4pc",
-					Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-						var m [core.EndStatType]float64
+					Amount: func(a core.AttackTag) ([]float64, bool) {
+						m := make([]float64, core.EndStatType)
 						m[core.ATKP] = 0.2
 						if s.Status.Duration("tom-proc") == 0 {
-							return m, false
+							return nil, false
 						}
 						return m, true
 					},

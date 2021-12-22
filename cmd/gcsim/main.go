@@ -35,6 +35,7 @@ type opts struct {
 	multi     string
 	minmax    bool
 	calc      bool
+	ercalc    bool
 }
 
 func main() {
@@ -58,6 +59,7 @@ func main() {
 	flag.StringVar(&opt.multi, "m", "", "mutiple config mode")
 	flag.BoolVar(&opt.minmax, "minmax", false, "track the min/max run seed and rerun those (single mode with debug only)")
 	flag.BoolVar(&opt.calc, "calc", false, "run sim in calc mode")
+	flag.BoolVar(&opt.ercalc, "ercalc", false, "run sim in ER calc mode")
 
 	// t := flag.Int("t", 1, "target multiplier")
 
@@ -119,6 +121,9 @@ func runSingle(o opts) {
 
 	parser := parse.New("single", data.String())
 	cfg, opts, err := parser.Parse()
+
+	opts.ERCalcMode = o.ercalc
+
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
@@ -240,7 +245,10 @@ func runSingle(o opts) {
 	if o.js != "" {
 		//try creating file to write to
 		result.Text = result.PrettyPrint()
-		data, _ := json.Marshal(result)
+		data, jsonErr := json.Marshal(result)
+		if jsonErr != nil {
+			log.Panic(jsonErr)
+		}
 		err := os.WriteFile(o.js, data, 0644)
 		if err != nil {
 			log.Panic(err)

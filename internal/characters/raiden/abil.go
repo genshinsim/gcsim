@@ -272,7 +272,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.c6ICD = 0
 
 	if c.Base.Cons >= 4 {
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		val[core.ATKP] = 0.3
 		for i, char := range c.Core.Chars {
 			if i == c.Index {
@@ -281,7 +281,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			char.AddMod(core.CharStatMod{
 				Key:    "raiden-c4",
 				Expiry: c.Core.F + 600, //10s
-				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					return val, true
 				},
 			})
@@ -307,7 +307,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 
 	c.SetCD(core.ActionBurst, 18*60) //20s cd
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }
 

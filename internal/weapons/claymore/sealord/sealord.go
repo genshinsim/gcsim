@@ -18,12 +18,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	tunaDmg := .75 + float64(r)*0.25
 	effectLastProc := -9999
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = burstDmgIncrease
 	char.AddMod(core.CharStatMod{
 		Expiry: -1,
 		Key:    "luxurious-sea-lord",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if a == core.AttackTagElementalBurst {
 				return val, true
 			}
@@ -43,18 +43,18 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return false
 		}
 		effectLastProc = c.F
-		d := char.Snapshot(
-			"Luxurious Sea-Lord Proc",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			tunaDmg,
-		)
-		d.Targets = core.TargetAll
-		char.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Luxurious Sea-Lord Proc",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       tunaDmg,
+		}
+		c.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
 
 		return false
 	}, fmt.Sprintf("sealord-%v", char.Name()))

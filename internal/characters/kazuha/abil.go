@@ -6,19 +6,20 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Normal",
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+	snap := c.Snapshot(&ai)
 	for i, mult := range attack[c.NormalCounter] {
-		d := c.Snapshot(
-			//fmt.Sprintf("Normal %v", c.NormalCounter),
-			"Normal",
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Physical,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, f-2+i)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-2+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -29,53 +30,56 @@ func (c *char) Attack(p map[string]int) (int, int) {
 func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionHighPlunge, p)
 	ele := core.Physical
-	if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionSkill {
+	if c.Core.LastAction.Target == "kaedeharakazuha" && c.Core.LastAction.Typ == core.ActionSkill {
 		ele = core.Anemo
 	}
 
 	_, ok := p["collide"]
 	if ok {
-		d := c.Snapshot(
-			"Plunge",
-			core.AttackTagPlunge,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			ele,
-			25,
-			plunge[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, f-10)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Plunge",
+			AttackTag:  core.AttackTagPlunge,
+			ICDTag:     core.ICDTagNormalAttack,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeSlash,
+			Element:    ele,
+			Durability: 25,
+			Mult:       plunge[c.TalentLvlAttack()],
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-10)
 	}
 
 	//aoe dmg
-	d := c.Snapshot(
-		"Plunge",
-		core.AttackTagPlunge,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		ele,
-		25,
-		highPlunge[c.TalentLvlAttack()],
-	)
-	d.Targets = core.TargetAll
-	c.QueueDmg(&d, f-8)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Plunge",
+		AttackTag:  core.AttackTagPlunge,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    ele,
+		Durability: 25,
+		Mult:       highPlunge[c.TalentLvlAttack()],
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-8)
 
 	// a2 if applies
 	if c.a2Ele != core.NoElement {
-		d := c.Snapshot(
-			"Kazuha A2",
-			core.AttackTagPlunge,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			c.a2Ele,
-			25,
-			2, //200%
-		)
-		d.Targets = core.TargetAll
-		c.QueueDmg(&d, 10)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Kazuha A2",
+			AttackTag:  core.AttackTagPlunge,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    c.a2Ele,
+			Durability: 25,
+			Mult:       2,
+		}
+
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 10)
 		c.a2Ele = core.NoElement
 	}
 
@@ -93,18 +97,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 func (c *char) skillPress(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	d := c.Snapshot(
-		"Chihayaburu",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Anemo,
-		25,
-		skill[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
-	c.QueueDmg(&d, f-10)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Chihayaburu",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-10)
 
 	c.QueueParticle("kazuha", 3, core.Anemo, 100)
 
@@ -124,18 +128,19 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 
 func (c *char) skillHold(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	d := c.Snapshot(
-		"Chihayaburu",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Anemo,
-		50,
-		skillHold[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
-	c.QueueDmg(&d, f-10)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Chihayaburu",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Anemo,
+		Durability: 50,
+		Mult:       skillHold[c.TalentLvlSkill()],
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-10)
 
 	c.QueueParticle("kazuha", 4, core.Anemo, 100)
 
@@ -155,48 +160,48 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	c.qInfuse = core.NoElement
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Kazuha Slash",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Anemo,
+		Durability: 50,
+		Mult:       burstSlash[c.TalentLvlBurst()],
+	}
 
-	d := c.Snapshot(
-		"Kazuha Slash",
-		core.AttackTagElementalBurst,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Anemo,
-		50,
-		burstSlash[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-	c.QueueDmg(&d, f-10)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-10)
 
 	//apply dot and check for absorb
-	d1 := d.Clone()
-	d1.Abil = "Kazuha Slash (Dot)"
-	d1.Mult = burstDot[c.TalentLvlBurst()]
-	d1.Durability = 25
+	ai.Abil = "Kazuha Slash (Dot)"
+	ai.Mult = burstDot[c.TalentLvlBurst()]
+	ai.Durability = 25
+	snap := c.Snapshot(&ai)
 
 	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(310/18)), "kaz-absorb-check", 10)
 
 	//424 start
 	//493 first tick, 553, 612, 670, 729 <- so tick every second starting at 70 frames in
 	for i := 70; i < 70+60*5; i += 60 {
-		x := d1.Clone()
 		c.AddTask(func() {
 			if c.qInfuse != core.NoElement {
-				d := c.Snapshot(
-					"Kazuha Slash (Absorb Dot)",
-					core.AttackTagElementalBurst,
-					core.ICDTagNone,
-					core.ICDGroupDefault,
-					core.StrikeTypeDefault,
-					c.qInfuse,
-					25,
-					burstEleDot[c.TalentLvlBurst()],
-				)
-				d.Targets = core.TargetAll
-				c.Core.Combat.ApplyDamage(&d)
+				//TODO: does absorb dot tick snapshot?
+				absorb := core.AttackInfo{
+					ActorIndex: c.Index,
+					Abil:       "Kazuha Slash (Absorb Dot)",
+					AttackTag:  core.AttackTagElementalBurst,
+					ICDTag:     core.ICDTagNone,
+					ICDGroup:   core.ICDGroupDefault,
+					StrikeType: core.StrikeTypeDefault,
+					Element:    c.qInfuse,
+					Durability: 25,
+					Mult:       burstEleDot[c.TalentLvlBurst()],
+				}
+				c.Core.Combat.QueueAttack(absorb, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0)
 			}
-			c.Core.Combat.ApplyDamage(&x)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
 		}, "kazuha-burst-tick", i)
 	}
 
@@ -207,14 +212,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//add em to all char, but only activate if char is active
 	if c.Base.Cons >= 2 {
-		var val [core.EndStatType]float64
+		val := make([]float64, core.EndStatType)
 		val[core.EM] = 200
 		for _, char := range c.Core.Chars {
 			this := char
 			char.AddMod(core.CharStatMod{
 				Key:    "kazuha-c2",
 				Expiry: c.Core.F + 370,
-				Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+				Amount: func(a core.AttackTag) ([]float64, bool) {
 					if c.Core.ActiveChar != this.CharIndex() {
 						return nil, false
 					}
@@ -229,7 +234,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.SetCD(core.ActionBurst, 15*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }
 
@@ -263,6 +268,7 @@ func (c *char) absorbCheckA2(src, count, max int) func() {
 
 		// Special handling for Bennett field self-infusion while waiting for something comprehensive
 		// Interaction is crucial to making many teams work correctly
+		// TODO: get rid of this once we add in self app
 		if c.Core.Status.Duration("btburst") > 0 {
 			c.a2Ele = core.Pyro
 		}

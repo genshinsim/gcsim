@@ -57,8 +57,15 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 	}
 	amt = amt * r //apply off field reduction
 	//apply energy regen stat
+
+	energyCalcModeBit := int8(0)
+	if c.Core.Flags.EnergyCalcMode {
+		energyCalcModeBit = 1
+	}
+
 	er = c.Stat(core.ER)
-	amt = amt * (1 + er) * float64(p.Num)
+
+	amt = amt * (1 + er*(1-float64(energyCalcModeBit))) * float64(p.Num)
 
 	pre := c.Energy
 

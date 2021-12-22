@@ -53,8 +53,8 @@ func (c *char) c2() {
 	c.AddMod(core.CharStatMod{
 		Key:    "diona-c2",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
-			var val [core.EndStatType]float64
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			val[core.DmgP] = .15
 			return val, a == core.AttackTagElementalArt
 		},

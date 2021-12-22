@@ -42,11 +42,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	amt := 0.045 + float64(r)*0.015
 
-	var val [core.EndStatType]float64
+	val := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key:    "whiteblind",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			if duration < c.F {
 				stacks = 0
 				return nil, false

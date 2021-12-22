@@ -28,10 +28,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	index := 0
 	stacks := []int{-1, -1, -1}
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key: "blackcliff",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			count := 0
 			for _, v := range stacks {
 				if v > c.F {

@@ -31,7 +31,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	dmg := 0.06 + float64(r)*0.02
 
-	var m [core.EndStatType]float64
+	m := make([]float64, core.EndStatType)
 
 	m[core.PyroP] = dmg
 	m[core.HydroP] = dmg
@@ -43,7 +43,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	char.AddMod(core.CharStatMod{
 		Key: "mappa",
-		Amount: func(a core.AttackTag) ([core.EndStatType]float64, bool) {
+		Amount: func(a core.AttackTag) ([]float64, bool) {
 			return m, dur > c.F
 		},
 		Expiry: -1,

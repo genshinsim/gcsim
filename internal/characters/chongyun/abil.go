@@ -78,7 +78,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	cb := func(t core.Target, ae *core.AttackEvent) {
-
 		t.AddResMod("Chongyun A4", core.ResistMod{
 			Duration: 480, //10 seconds
 			Ele:      core.Cryo,
@@ -89,9 +88,17 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	if src-c.fieldSrc < 600 {
 		//we're overriding previous field so trigger a4 here
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 1, cb)
+		atk := c.a4Snap
+		c.Core.Combat.QueueAttackEvent(atk, 1)
 	}
 	c.fieldSrc = src
+	//override previous snap
+	c.a4Snap = &core.AttackEvent{
+		Info:     ai,
+		Snapshot: snap,
+		Pattern:  core.NewDefCircHit(3, false, core.TargettableEnemy),
+	}
+	c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, cb)
 
 	//a4 delayed damage + cryo resist shred
 	c.AddTask(func() {
@@ -100,8 +107,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			return
 		}
 		//TODO: this needs to be fixed still for sac gs
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, cb)
-
+		c.Core.Combat.QueueAttackEvent(c.a4Snap, 0)
 	}, "Chongyun-Skill", f+600)
 
 	c.Core.Status.AddStatus("chongyunfield", 600)
@@ -146,6 +152,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.SetCD(core.ActionBurst, 720)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }

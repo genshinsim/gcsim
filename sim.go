@@ -42,6 +42,7 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 			// }
 			c.F = -1
 			c.Flags.DamageMode = cfg.DamageMode
+			c.Flags.EnergyCalcMode = opts.ERCalcMode
 			c.Log, err = core.NewDefaultLogger(c, opts.Debug, true, opts.DebugPaths)
 			if err != nil {
 				return err
@@ -88,6 +89,16 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 				s.stats.DamageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
 			}
 			s.stats.DamageByCharByTargets[atk.Info.ActorIndex][t.Index()] += dmg
+
+			// Want to capture information in 0.25s intervals - allows more flexibility in bucketizing
+			frameBucket := int(s.C.F/15) * 15
+			details := DamageDetails{
+				FrameBucket: frameBucket,
+				Char:        atk.Info.ActorIndex,
+				Target:      t.Index(),
+			}
+			// Go defaults to 0 for map values that don't exist
+			s.stats.DamageDetailByTime[details] += dmg
 			return false
 		}, "dmg-log")
 
@@ -127,6 +138,13 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 			return false
 		}, "particles-log")
 	}
+
+	s.C.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
+		activeChar := s.C.Chars[s.C.ActiveChar]
+		s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
+		return false
+	}, "energy-calc-log")
+
 	err = s.initQueuer(cfg)
 	if err != nil {
 		return nil, err
@@ -183,9 +201,11 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		s.stats.DamageByChar = make([]map[string]float64, count)
 		s.stats.DamageInstancesByChar = make([]map[string]int, count)
 		s.stats.DamageByCharByTargets = make([][]float64, count)
+		s.stats.DamageDetailByTime = make(map[DamageDetails]float64)
 		s.stats.CharActiveTime = make([]int, count)
 		s.stats.AbilUsageCountByChar = make([]map[string]int, count)
 		s.stats.ParticleCount = make(map[string]int)
+		s.stats.EnergyWhenBurst = make([][]float64, count)
 	}
 
 	s.C.ActiveChar = -1
@@ -215,6 +235,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 			s.stats.DamageByCharByTargets[i] = make([]float64, len(s.C.Targets))
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 			s.stats.CharNames[i] = v.Base.Name
+			s.stats.EnergyWhenBurst[i] = make([]float64, 0, s.opts.Duration/12+2)
 		}
 
 	}
