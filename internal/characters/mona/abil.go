@@ -152,7 +152,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagMonaBubbleBreak,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.NoElement,
+		Element:    core.Physical,
 		Durability: 0,
 		Mult:       0,
 	}

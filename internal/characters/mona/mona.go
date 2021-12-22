@@ -11,8 +11,8 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	c2icd   int
-	c6bonus float64
+	c2icd int
+	// c6bonus float64
 }
 
 const (
