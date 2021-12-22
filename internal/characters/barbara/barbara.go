@@ -30,6 +30,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 4
 
 	c.a1()
+
+	if c.Base.Cons >= 1 {
+		c.c1(1)
+	}
 	c.onSkillStackCount() //doesnt' do anything yet
 	return &c, nil
 }
@@ -56,4 +60,10 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
 		return 0
 	}
+}
+func (c *char) c1(delay int) {
+	c.AddTask(func() {
+		c.AddEnergy(1)
+		c.c1(0)
+	}, "barbara-c1", delay+10*60)
 }
