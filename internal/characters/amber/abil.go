@@ -68,8 +68,8 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	// d.AnimationFrames = f
 
 	//add 15% since 360noscope
-	cb := func(t core.Target, ae *core.AttackEvent) {
-		if ae.Info.HitWeakPoint {
+	cb := func(a core.AttackCB) {
+		if a.AttackEvent.Info.HitWeakPoint {
 			c.AddMod(core.CharStatMod{
 				Key: "a2",
 				Amount: func(a core.AttackTag) ([]float64, bool) {

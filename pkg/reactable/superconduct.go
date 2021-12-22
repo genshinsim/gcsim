@@ -80,8 +80,8 @@ func (r *Reactable) queueSuperconduct(a *core.AttackEvent) {
 	r.core.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, core.TargettableEnemy), -1, 1, superconductPhysShred)
 }
 
-func superconductPhysShred(tar core.Target, ae *core.AttackEvent) {
-	tar.AddResMod("superconductphysshred", core.ResistMod{
+func superconductPhysShred(a core.AttackCB) {
+	a.Target.AddResMod("superconductphysshred", core.ResistMod{
 		Duration: 12 * 60,
 		Ele:      core.Physical,
 		Value:    -0.4,

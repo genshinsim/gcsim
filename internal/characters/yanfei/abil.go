@@ -17,7 +17,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	done := false
-	addSeal := func(t core.Target, ae *core.AttackEvent) {
+	addSeal := func(a core.AttackCB) {
 		if done {
 			return
 		}
@@ -103,7 +103,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	done := false
-	addSeal := func(t core.Target, ae *core.AttackEvent) {
+	addSeal := func(a core.AttackCB) {
 		if done {
 			return
 		}
@@ -159,7 +159,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	})
 
 	done := false
-	addSeal := func(t core.Target, ae *core.AttackEvent) {
+	addSeal := func(a core.AttackCB) {
 		if done {
 			return
 		}

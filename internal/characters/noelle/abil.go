@@ -26,7 +26,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		r = 2
 	}
 	done := false
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if done {
 			return
 		}
@@ -40,8 +40,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			}
 			if c.Core.Rand.Float64() < prob {
 				//heal target
-				x := ae.Snapshot.BaseDef*(1+ae.Snapshot.Stats[core.DEFP]) + ae.Snapshot.Stats[core.DEF]
-				heal := (shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]) * (1 + ae.Snapshot.Stats[core.Heal])
+				x := a.AttackEvent.Snapshot.BaseDef*(1+a.AttackEvent.Snapshot.Stats[core.DEFP]) + a.AttackEvent.Snapshot.Stats[core.DEF]
+				heal := (shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]) * (1 + a.AttackEvent.Snapshot.Stats[core.Heal])
 				c.Core.Health.HealAll(c.Index, heal)
 				done = true
 			}

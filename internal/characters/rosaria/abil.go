@@ -133,7 +133,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
 	x, y := c.Core.Targets[0].Shape().Pos()
-	var cb func(core.Target, *core.AttackEvent)
+	var cb core.AttackCBFunc
 	if c.Base.Cons == 6 {
 		cb = c6cb
 	}
@@ -208,8 +208,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 // Applies C6 effect to enemies hit by it
 // Rites of Termination's attack decreases opponent's Physical RES by 20% for 10s.
 // Takes in a snapshot definition, and returns the same snapshot with an on hit callback added to apply the debuff
-func c6cb(t core.Target, ae *core.AttackEvent) {
-	t.AddResMod("rosaria-c6", core.ResistMod{
+func c6cb(a core.AttackCB) {
+	a.Target.AddResMod("rosaria-c6", core.ResistMod{
 		Ele:      core.Physical,
 		Value:    -0.2,
 		Duration: 600,

@@ -58,7 +58,7 @@ func (c *char) pressE() {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 	//add 1 to grim heart if not capped by icd
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if c.Core.F < c.grimheartICD {
 			return
 		}
@@ -105,20 +105,20 @@ func (c *char) holdE() {
 
 	v := c.Tags["grimheart"]
 
-	var shredCB func(core.Target, *core.AttackEvent)
+	var shredCB core.AttackCBFunc
 	//shred
 	if v > 0 {
 		done := false
-		shredCB = func(t core.Target, ae *core.AttackEvent) {
+		shredCB = func(a core.AttackCB) {
 			if done {
 				return
 			}
-			t.AddResMod("Icewhirl Cryo", core.ResistMod{
+			a.Target.AddResMod("Icewhirl Cryo", core.ResistMod{
 				Ele:      core.Cryo,
 				Value:    -resRed[lvl],
 				Duration: 7 * v * 60,
 			})
-			t.AddResMod("Icewhirl Physical", core.ResistMod{
+			a.Target.AddResMod("Icewhirl Physical", core.ResistMod{
 				Ele:      core.Physical,
 				Value:    -resRed[lvl],
 				Duration: 7 * v * 60,

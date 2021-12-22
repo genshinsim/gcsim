@@ -24,7 +24,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if c.Core.Rand.Float64() < 0.5 {
 			c.Tags["spark"] = 1
 		}
@@ -93,7 +93,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//mine lives for 5 seconds
 	//3 bounces, roughly 30, 70, 110 hits
 
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if c.Core.Rand.Float64() < 0.5 {
 			c.Tags["spark"] = 1
 		}
@@ -141,11 +141,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       mine[c.TalentLvlSkill()],
 	}
 
-	var c2cb func(t core.Target, ae *core.AttackEvent)
+	var c2cb func(a core.AttackCB)
 
 	if c.Base.Cons >= 2 {
-		c2cb = func(t core.Target, ae *core.AttackEvent) {
-			t.AddDefMod("kleec2", -.233, 600)
+		c2cb = func(a core.AttackCB) {
+			a.Target.AddDefMod("kleec2", -.233, 600)
 		}
 	}
 

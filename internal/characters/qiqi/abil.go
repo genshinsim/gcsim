@@ -155,13 +155,13 @@ func (c *char) skillDmgTickTask(src int, ae *core.AttackEvent, lastTickDuration 
 	}
 }
 
-func (c *char) c1(t core.Target, ae *core.AttackEvent) {
-	if c.talismanExpiry[t.Index()] < c.Core.F {
+func (c *char) c1(a core.AttackCB) {
+	if c.talismanExpiry[a.Target.Index()] < c.Core.F {
 		return
 	}
 	c.AddEnergy(2)
 
-	c.Core.Log.Debugw("Qiqi C1 Activation - Adding 2 energy", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "target", t.Index())
+	c.Core.Log.Debugw("Qiqi C1 Activation - Adding 2 energy", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "target", a.Target.Index())
 }
 
 // Handles skill auto healing ticks

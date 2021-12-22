@@ -23,7 +23,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	done := false
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if !done {
 			return
 		}

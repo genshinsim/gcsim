@@ -164,7 +164,7 @@ func (c *char) burstProc() {
 	}, "beidou-burst")
 }
 
-func (c *char) chain(src int, count int) func(core.Target, *core.AttackEvent) {
+func (c *char) chain(src int, count int) core.AttackCBFunc {
 
 	if c.Base.Cons > 1 && count == 5 {
 		return nil
@@ -172,9 +172,9 @@ func (c *char) chain(src int, count int) func(core.Target, *core.AttackEvent) {
 	if c.Base.Cons < 2 && count == 3 {
 		return nil
 	}
-	return func(t core.Target, ae *core.AttackEvent) {
+	return func(a core.AttackCB) {
 		//on hit figure out the next target
-		trgs := c.Core.EnemyExcl(t.Index())
+		trgs := c.Core.EnemyExcl(a.Target.Index())
 		if len(trgs) == 0 {
 			//do nothing if no other target other than this one
 			return

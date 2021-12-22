@@ -173,8 +173,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       guoba[c.TalentLvlSkill()],
 	}
 
-	cb := func(t core.Target, ae *core.AttackEvent) {
-		t.AddResMod("xiangling-c1", core.ResistMod{
+	cb := func(a core.AttackCB) {
+		a.Target.AddResMod("xiangling-c1", core.ResistMod{
 			Ele:      core.Pyro,
 			Value:    -0.15,
 			Duration: 6 * 60,

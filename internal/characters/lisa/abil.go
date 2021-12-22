@@ -46,21 +46,21 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	}
 
 	done := false
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if done {
 			return
 		}
-		count := t.GetTag(a4tag)
+		count := a.Target.GetTag(a4tag)
 		if count < 3 {
-			t.SetTag(a4tag, count+1)
+			a.Target.SetTag(a4tag, count+1)
 		}
 		done = true
 	}
 
 	count := 0
-	var c1cb func(t core.Target, ae *core.AttackEvent)
+	var c1cb func(a core.AttackCB)
 	if c.Base.Cons > 0 {
-		c1cb = func(t core.Target, ae *core.AttackEvent) {
+		c1cb = func(a core.AttackCB) {
 			if count == 5 {
 				return
 			}
@@ -98,13 +98,13 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	}
 
 	done := false
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if done {
 			return
 		}
-		count := t.GetTag(a4tag)
+		count := a.Target.GetTag(a4tag)
 		if count < 3 {
-			t.SetTag(a4tag, count+1)
+			a.Target.SetTag(a4tag, count+1)
 		}
 		done = true
 	}
@@ -195,11 +195,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	for i := 30; i <= 900; i += 30 {
 
-		var cb func(core.Target, *core.AttackEvent)
+		var cb core.AttackCBFunc
 		if c.Base.Cons >= 4 {
 			//random 1 to 3 jumps
 			count := c.Rand.Intn(3) + 1
-			cb = func(t core.Target, ae *core.AttackEvent) {
+			cb = func(a core.AttackCB) {
 				if count == 0 {
 					return
 				}
