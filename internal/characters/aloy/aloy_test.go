@@ -1,4 +1,4 @@
-package xingqiu
+package aloy
 
 import (
 	"os"
@@ -33,7 +33,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile("xingqiu", core.Hydro, 6)
+	prof := tests.CharProfile("aloy", core.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -67,7 +67,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		}
 	}
 	//charge attack
-	f, _ = x.ChargeAttack(p)
+	f, _ = x.Aimed(p)
 	for i := 0; i < f; i++ {
 		c.Tick()
 	}

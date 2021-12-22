@@ -16,10 +16,10 @@ type char struct {
 	*character.Tmpl
 	eCast         int // the frame tartaglia casts E to enter melee stance
 	rtParticleICD int
-	rtFlashICD    []int
-	rtSlashICD    []int
-	rtExpiry      []int
-	mlBurstUsed   bool // used for c6
+	// rtFlashICD    []int
+	// rtSlashICD    []int
+	// rtExpiry      []int
+	mlBurstUsed bool // used for c6
 }
 
 //constants for tags
@@ -49,9 +49,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 
 	c.rtParticleICD = 0
-	c.rtFlashICD = make([]int, len(c.Core.Targets))
-	c.rtSlashICD = make([]int, len(c.Core.Targets))
-	c.rtExpiry = make([]int, len(c.Core.Targets))
+	// c.rtFlashICD = make([]int, len(c.Core.Targets))
+	// c.rtSlashICD = make([]int, len(c.Core.Targets))
+	// c.rtExpiry = make([]int, len(c.Core.Targets))
 
 	c.Core.Flags.ChildeActive = true
 	c.onExitField()

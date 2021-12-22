@@ -1,4 +1,4 @@
-package xingqiu
+package ningguang
 
 import (
 	"os"
@@ -33,7 +33,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile("xingqiu", core.Hydro, 6)
+	prof := tests.CharProfile("ningguang", core.Geo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)

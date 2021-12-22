@@ -86,6 +86,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 
+	//if field is overwriting last
 	if src-c.fieldSrc < 600 {
 		//we're overriding previous field so trigger a4 here
 		atk := c.a4Snap

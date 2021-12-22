@@ -22,10 +22,11 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       0,
 	}
+	snap := c.Snapshot(&ai)
 
 	for i, mult := range auto[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), delay[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()

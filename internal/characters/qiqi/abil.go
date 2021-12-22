@@ -156,7 +156,7 @@ func (c *char) skillDmgTickTask(src int, ae *core.AttackEvent, lastTickDuration 
 }
 
 func (c *char) c1(a core.AttackCB) {
-	if c.talismanExpiry[a.Target.Index()] < c.Core.F {
+	if a.Target.GetTag(talismanKey) < c.Core.F {
 		return
 	}
 	c.AddEnergy(2)

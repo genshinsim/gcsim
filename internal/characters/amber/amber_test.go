@@ -1,4 +1,4 @@
-package xingqiu
+package amber
 
 import (
 	"os"
@@ -33,7 +33,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile("xingqiu", core.Hydro, 6)
+	prof := tests.CharProfile("amber", core.Pyro, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -55,6 +55,16 @@ func TestBasicAbilUsage(t *testing.T) {
 	for i := 0; i < f; i++ {
 		c.Tick()
 	}
+	p["bunny"] = 1
+	f, _ = x.Aimed(p)
+	for i := 0; i < f; i++ {
+		c.Tick()
+	}
+	p["bunny"] = 0
+	f, _ = x.Skill(p)
+	for i := 0; i < f; i++ {
+		c.Tick()
+	}
 	f, _ = x.Burst(p)
 	for i := 0; i < f; i++ {
 		c.Tick()
@@ -67,7 +77,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		}
 	}
 	//charge attack
-	f, _ = x.ChargeAttack(p)
+	f, _ = x.Aimed(p)
 	for i := 0; i < f; i++ {
 		c.Tick()
 	}

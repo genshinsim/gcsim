@@ -1,4 +1,4 @@
-package xingqiu
+package albedo
 
 import (
 	"os"
@@ -17,7 +17,7 @@ var logger *zap.SugaredLogger
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
 	config := zap.NewDevelopmentConfig()
-	config.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
+	config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 	config.EncoderConfig.TimeKey = ""
 	log, _ := config.Build(zap.AddCallerSkip(1))
 	logger = log.Sugar()
@@ -33,7 +33,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile("xingqiu", core.Hydro, 6)
+	prof := tests.CharProfile("albedo", core.Geo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
