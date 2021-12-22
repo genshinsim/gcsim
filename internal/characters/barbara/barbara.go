@@ -12,6 +12,7 @@ func init() {
 type char struct {
 	*character.Tmpl
 	stacks int
+	c6icd  int
 	// burstBuffExpiry   int
 }
 
@@ -35,6 +36,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.c1(1)
 	}
 	c.onSkillStackCount() //doesnt' do anything yet
+	if c.Base.Cons >= 6 {
+		c.c6()
+	}
 	return &c, nil
 }
 
@@ -66,4 +70,29 @@ func (c *char) c1(delay int) {
 		c.AddEnergy(1)
 		c.c1(0)
 	}, "barbara-c1", delay+10*60)
+}
+
+// inspired from hutao c6
+func (c *char) c6() {
+	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.Core.ActiveChar != c.Index { //trigger only when not barbara
+			c.checkc6()
+		}
+		return false
+	}, "barbara-c6")
+}
+
+func (c *char) checkc6() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	if c.Core.F < c.c6icd && c.c6icd != 0 {
+		return
+	}
+	//if dead, revive back to 1 hp
+	if c.HPCurrent < 0 {
+		c.HPCurrent = c.HPMax
+	}
+
+	c.c6icd = c.Core.F + 60*60*15
 }
