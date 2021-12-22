@@ -24,9 +24,9 @@ func (c *char) c2() {
 	val := make([]float64, core.EndStatType)
 	val[core.PyroP] = 0.25
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
-		if ds.ActorIndex == c.Index && crit {
+		if atk.Info.ActorIndex == c.Index && crit {
 			c.AddMod(core.CharStatMod{
 				Key:    "c2",
 				Expiry: c.Core.F + 360,

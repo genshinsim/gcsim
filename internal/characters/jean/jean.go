@@ -5,10 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("jean", NewChar)
+	core.RegisterCharFunc(keys.Jean, NewChar)
 }
 
 type char struct {
@@ -70,7 +71,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 88, 88
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
 		return 0, 0
 	}
 }
@@ -78,22 +79,23 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Physical,
-		25,
-		auto[c.NormalCounter][c.TalentLvlAttack()],
-	)
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
+	}
+	snap := c.Snapshot(&ai)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.4, false, core.TargettableEnemy), f-1)
 
 	//check for healing
 	if c.Core.Rand.Float64() < 0.5 {
-		heal := 0.15 * (d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK])
+		heal := 0.15 * (snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK])
 		c.AddTask(func() {
 			c.Core.Health.HealAll(c.Index, heal)
 		}, "jean-heal", f-1)
@@ -107,24 +109,25 @@ func (c *char) Attack(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	d := c.Snapshot(
-		"Gale Blade",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Anemo,
-		50,
-		skill[c.TalentLvlSkill()],
-	)
-
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Gale Blade",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Anemo,
+		Durability: 50,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+	snap := c.Snapshot(&ai)
 	if c.Base.Cons >= 1 && p["hold"] >= 60 {
 		//add 40% dmg
-		d.Stats[core.DmgP] += .4
-		c.Core.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg%", d.Stats[core.DmgP])
+		snap.Stats[core.DmgP] += .4
+		c.Core.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg%", snap.Stats[core.DmgP])
 	}
 
-	c.QueueDmg(&d, f-1)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1)
 
 	count := 2
 	if c.Core.Rand.Float64() < .67 {
@@ -145,26 +148,25 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
-	d := c.Snapshot(
-		"Dandelion Breeze",
-		core.AttackTagElementalBurst,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Anemo,
-		50,
-		burst[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Dandelion Breeze",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Anemo,
+		Durability: 50,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
 
-	c.QueueDmg(&d, f-10) //TODO: initial damage frames
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f-10)
 
+	ai.Abil = "Dandelion Breeze (In/Out)"
+	ai.Mult = burstEnter[c.TalentLvlBurst()]
 	for i := 0; i < enter; i++ {
-		x := d.Clone()
-		x.Abil = "Dandelion Breeze (In/Out)"
-		x.Mult = burstEnter[c.TalentLvlBurst()]
-
-		c.QueueDmg(&x, f+i*delay)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f+i*delay)
 	}
 
 	c.Core.Status.AddStatus("jeanq", 630)
@@ -181,8 +183,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	//heal on cast
-	hpplus := d.Stats[core.Heal]
-	atk := d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK]
+	hpplus := snap.Stats[core.Heal]
+	atk := snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]
 	heal := (burstInitialHealFlat[c.TalentLvlBurst()] + atk*burstInitialHealPer[c.TalentLvlBurst()]) * (1 + hpplus)
 	healDot := (burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]) * (1 + hpplus)
 

@@ -17,30 +17,30 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	effectLastProc := -9999
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		ae := args[1].(*core.AttackEvent)
+		if ae.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if c.F < effectLastProc+15*60 {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < 0.5 {
 			effectLastProc = c.F
-			d := char.Snapshot(
-				"Prototype Archaic Proc",
-				core.AttackTagWeaponSkill,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Physical,
-				100,
-				atk,
-			)
-			d.Targets = core.TargetAll
-			char.QueueDmg(&d, 1)
+			ai := core.AttackInfo{
+				ActorIndex: char.CharIndex(),
+				Abil:       "Prototype Archaic Proc",
+				AttackTag:  core.AttackTagWeaponSkill,
+				ICDTag:     core.ICDTagNone,
+				ICDGroup:   core.ICDGroupDefault,
+				StrikeType: core.StrikeTypeDefault,
+				Element:    core.Physical,
+				Durability: 100,
+				Mult:       atk,
+			}
+			c.Combat.QueueAttack(ai, core.NewDefCircHit(.6, false, core.TargettableEnemy), 0, 1)
 		}
 		return false
 	}, fmt.Sprintf("forstbearer-%v", char.Name()))

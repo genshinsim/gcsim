@@ -10,18 +10,19 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
+	ai := core.AttackInfo{
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
-		d := c.Snapshot(
-			fmt.Sprintf("Normal %v", c.NormalCounter),
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Physical,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, f-5+i)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -33,21 +34,19 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
-	d := c.Snapshot(
-		"Charge",
-		core.AttackTagNormal,
-		core.ICDTagExtraAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSlash,
-		core.Physical,
-		25,
-		ca[c.TalentLvlAttack()],
-	)
-	d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		Abil:       "Charge",
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       ca[c.TalentLvlAttack()],
+	}
 
 	for i := 0; i < 3; i++ {
-		x := d.Clone()
-		c.QueueDmg(&x, f-3+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f-3+i)
 	}
 
 	return f, a
@@ -59,19 +58,23 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		f = 36
 	}
 	//no dmg attack at end of dash
-	d := c.Snapshot(
-		"Dash",
-		core.AttackTagNone,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		0,
-	)
-	c.QueueDmg(&d, f)
-	//since we always hit, just restore the stam and add bonus...
-	c.AddTask(func() {
+	ai := core.AttackInfo{
+		Abil:       "Dash",
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagNone,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+	}
+
+	//restore on hit, once per attack
+	once := false
+	cb := func(a core.AttackCB) {
+		if once {
+			return
+		}
+
 		c.Core.RestoreStam(10)
 		val := make([]float64, core.EndStatType)
 		val[core.CryoP] = 0.18
@@ -83,7 +86,9 @@ func (c *char) Dash(p map[string]int) (int, int) {
 				return val, true
 			},
 		})
-	}, "ayaka-dash", f+1)
+		once = true
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, cb)
 	//add cryo infuse
 	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "ayaka-dash",
@@ -96,17 +101,16 @@ func (c *char) Dash(p map[string]int) (int, int) {
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	d := c.Snapshot(
-		"Hyouka",
-		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		50,
-		skill[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		Abil:       "Hyouka",
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 50,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
 
 	//2 or 3 1:1 ratio
 	count := 4
@@ -115,18 +119,19 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	c.QueueParticle("ayaka", count, core.Cryo, f+100)
 
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.3
 	//a2 increase normal + ca dmg by 30% for 6s
 	c.AddMod(core.CharStatMod{
 		Key:    "ayaka-a2",
 		Expiry: c.Core.F + 360,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
+
+			val := make([]float64, core.EndStatType)
+			val[core.DmgP] = 0.3
 			return val, a == core.AttackTagNormal || a == core.AttackTagExtra
 		},
 	})
 
-	c.QueueDmg(&d, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f)
 
 	c.SetCD(core.ActionSkill, 600)
 	return f, a
@@ -137,38 +142,27 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
-	d := c.Snapshot(
-		"Soumetsu",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		burstCut[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-	db := c.Snapshot(
-		"Soumetsu",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		burstBloom[c.TalentLvlBurst()],
-	)
-	db.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		Abil:       "Soumetsu",
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+	}
 
 	//5 second, 20 ticks, so once every 15 frames, bloom after 5 seconds
-	c.QueueDmg(&db, f+300)
+	ai.Mult = burstBloom[c.TalentLvlBurst()]
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+300)
+
+	ai.Mult = burstCut[c.TalentLvlBurst()]
 	for i := 0; i < 300; i += 15 {
-		x := d.Clone()
-		c.QueueDmg(&x, f+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+i)
 	}
 
 	c.SetCD(core.ActionBurst, 20*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }

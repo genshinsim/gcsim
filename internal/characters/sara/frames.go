@@ -38,7 +38,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		// In line with most other cases in sim, assume that you swap cancel this instead of the full 80 frames
 		return 60, 60
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
+		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
 		return 0, 0
 	}
 }

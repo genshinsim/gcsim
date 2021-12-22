@@ -2,6 +2,7 @@ package huskofopulentdreams
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -10,6 +11,14 @@ func init() {
 	core.RegisterSetFunc("husk of opulent dreams", New)
 }
 
+/**
+A character equipped with this Artifact set will obtain the Curiosity effect in the following conditions:
+When on the field, the character gains 1 stack after hitting an opponent with a Geo attack,
+triggering a maximum of once every 0.3s. When off the field, the character gains 1 stack every 3s.
+
+Curiosity can stack up to 4 times, each providing 6% DEF and a 6% Geo DMG Bonus. When 6 seconds pass
+without gaining a Curiosity stack, 1 stack is lost.
+**/
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
@@ -88,18 +97,18 @@ func New(c core.Character, s *core.Core, count int) {
 		}, "husk-4pc-off-field-gain")
 
 		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
+			atk := args[1].(*core.AttackEvent)
 			// Only triggers when onfield
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
-			if ds.ActorIndex != c.CharIndex() {
+			if atk.Info.ActorIndex != c.CharIndex() {
 				return false
 			}
 			if stackGainICDExpiry > s.F {
 				return false
 			}
-			if ds.Element != core.Geo {
+			if atk.Info.Element != core.Geo {
 				return false
 			}
 

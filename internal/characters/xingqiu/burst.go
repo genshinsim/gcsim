@@ -3,41 +3,39 @@ package xingqiu
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) summonSwordWave() {
-	//trigger swords, only first sword applies hydro
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Guhua Sword: Raincutter",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Hydro,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+
+	//only if c.nextRegen is true and first sword
+	var c2cb, c6cb func(a core.AttackCB)
+	if c.nextRegen {
+		c6cb = func(a core.AttackCB) {
+			c.AddEnergy(3)
+		}
+	}
+	if c.Base.Cons >= 2 {
+		c2cb = func(a core.AttackCB) {
+			c.AddTask(func() {
+				a.Target.AddResMod("xingqiu-c2", core.ResistMod{
+					Ele:      core.Hydro,
+					Value:    -0.15,
+					Duration: 4 * 60,
+				})
+			}, "xq-sword-debuff", 1)
+		}
+	}
+
 	for i := 0; i < c.numSwords; i++ {
-		wave := i
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				"Guhua Sword: Raincutter",
-				core.AttackTagElementalBurst,
-				core.ICDTagElementalBurst,
-				core.ICDGroupDefault,
-				core.StrikeTypePierce,
-				core.Hydro,
-				25,
-				burst[c.TalentLvlBurst()],
-			)
-			d.Targets = 0 //only hit main target
-			d.OnHitCallback = func(t core.Target) {
-				//check energy
-				if c.nextRegen && wave == 0 {
-					c.AddEnergy(3)
-				}
-				//check c2
-				if c.Base.Cons >= 2 {
-					c.AddTask(func() {
-						t.AddResMod("xingqiu-c2", core.ResistMod{
-							Ele:      core.Hydro,
-							Value:    -0.15,
-							Duration: 4 * 60,
-						})
-					}, "xq-sword-debuff", 1)
-
-				}
-			}
-			return &d
-		}, 20)
-
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 20, 20, c2cb, c6cb)
+		c6cb = nil
 		c.burstCounter++
 	}
 

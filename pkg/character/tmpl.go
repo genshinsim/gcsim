@@ -15,13 +15,15 @@ type Tmpl struct {
 	//this should describe the frame in which the abil becomes available
 	//if frame > current then it's available. no need to decrement this way
 	// CD        map[string]int
-	ActionCD []int
-	Mods     []core.CharStatMod
-	Tags     map[string]int
+	ActionCD      []int
+	Mods          []core.CharStatMod
+	PreDamageMods []core.PreDamageMod
+	ReactMod      []core.ReactionBonusMod
+	Tags          map[string]int
 	//Profile info
 	Base     core.CharacterBase
 	Weapon   core.WeaponProfile
-	Stats    []float64
+	Stats    [core.EndStatType]float64
 	Talents  core.TalentProfile
 	SkillCon int
 	BurstCon int
@@ -66,12 +68,11 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
 		return nil, fmt.Errorf("invalid talent lvl: burst - %v", c.Talents.Burst)
 	}
-	c.Stats = make([]float64, core.EndStatType)
 	for i, v := range p.Stats {
 		c.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		c.Core.Log.Debugw("setting starting hp", "frame", x.F, "event", core.LogCharacterEvent, "character", p.Base.Name, "hp", p.Base.StartHP)
+		c.Core.Log.Debugw("setting starting hp", "frame", x.F, "event", core.LogCharacterEvent, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
 		c.HPCurrent = p.Base.StartHP
 	} else {
 		c.HPCurrent = math.MaxInt64
@@ -104,4 +105,67 @@ func (t *Tmpl) Init(index int) {
 
 func (c *Tmpl) AddWeaponInfuse(inf core.WeaponInfusion) {
 	c.Infusion = inf
+}
+
+func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
+	ind := len(c.PreDamageMods)
+	for i, v := range c.PreDamageMods {
+		if v.Key == mod.Key {
+			ind = i
+		}
+	}
+	if ind != 0 && ind != len(c.PreDamageMods) {
+		c.Core.Log.Debugw("char pre damage mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.PreDamageMods[ind] = mod
+	} else {
+		c.PreDamageMods = append(c.PreDamageMods, mod)
+		c.Core.Log.Debugw("char pre damage mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+	}
+
+}
+
+func (c *Tmpl) AddMod(mod core.CharStatMod) {
+	ind := len(c.Mods)
+	for i, v := range c.Mods {
+		if v.Key == mod.Key {
+			ind = i
+		}
+	}
+	if ind != 0 && ind != len(c.Mods) {
+		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Mods[ind] = mod
+	} else {
+		c.Mods = append(c.Mods, mod)
+		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+	}
+
+}
+
+func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
+	ind := -1
+	for i, v := range t.ReactMod {
+		if v.Key == mod.Key {
+			ind = i
+		}
+	}
+	if ind != -1 {
+		t.Core.Log.Debugw("react bonus mod overwritten", "frame", t.Core.F, "event", core.LogEnemyEvent, "count", len(t.ReactMod), "char", t.Index)
+		// LogEnemyEvent
+		t.ReactMod[ind] = mod
+		return
+	}
+	t.ReactMod = append(t.ReactMod, mod)
+	t.Core.Log.Debugw("react bonus mod added", "frame", t.Core.F, "event", core.LogEnemyEvent, "count", len(t.ReactMod), "char", t.Index)
+}
+
+func (c *Tmpl) Tag(key string) int {
+	return c.Tags[key]
+}
+
+func (c *Tmpl) AddTag(key string, val int) {
+	c.Tags[key] = val
+}
+
+func (c *Tmpl) RemoveTag(key string) {
+	delete(c.Tags, key)
 }

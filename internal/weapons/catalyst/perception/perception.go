@@ -22,59 +22,83 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	var w weap
 
 	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		ae := args[1].(*core.AttackEvent)
+		if ae.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if icd > c.F {
 			return false
 		}
 		icd = c.F + cd
-		w.snap = char.Snapshot(
-			"Eye of Perception Proc",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			dmg,
-		)
-		w.snap.OnHitCallback = w.chainQ(0, c.F, 1, c, char)
-		char.QueueDmg(&w.snap, 1)
+
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Eye of Preception Proc",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       dmg,
+		}
+		w.atk = &core.AttackEvent{
+			Info:     ai,
+			Snapshot: char.Snapshot(&ai),
+		}
+		atk := *w.atk
+		atk.SourceFrame = c.F
+		atk.Pattern = core.NewDefSingleTarget(0, core.TargettableEnemy)
+		cb := w.chain(0, c, char)
+		if cb != nil {
+			atk.Callbacks = append(atk.Callbacks, cb)
+		}
+		c.Combat.QueueAttackEvent(&atk, 10) //TODO: no idea actual travel time
 		return false
 	}, fmt.Sprintf("perception-%v", char.Name()))
 
 	//bounce...
 	//d.OnHitCallback = char.chainQ(t.Index(), char.Sim.Frame(), 1)
 
+	//on hit find next target not marked. marks lasts 60 seconds
+
 }
 
 type weap struct {
-	snap core.Snapshot
+	atk *core.AttackEvent
 }
 
-func (w *weap) chainQ(index int, src int, count int, c *core.Core, char core.Character) func(t core.Target) {
+const bounceKey = "eye-of-preception-bounce"
+
+func (w *weap) chain(count int, c *core.Core, char core.Character) func(a core.AttackCB) {
 	if count == 4 {
 		return nil
 	}
-	//check number of targets, if target < 2 then no bouncing
-	//figure out the next target
-	l := len(c.Targets)
-	if l < 2 {
-		return nil
-	}
-	index++
-	if index >= l {
-		index = 0
-	}
-	//trigger dmg based on a clone of d
-	return func(next core.Target) {
-		// c.Log.Printf("hit target %v, frame %v, done proc %v, queuing next index: %v\n", next.Index(), char.Sim.Frame(), count, index)
-		d := w.snap.Clone()
-		d.Targets = index
-		d.SourceFrame = c.F
-		d.OnHitCallback = w.chainQ(index, src, count+1, c, char)
-		char.QueueDmg(&d, 1)
+	return func(a core.AttackCB) {
+		//mark the current target, then grab nearest target not marked
+		//and trigger another attack while count < 4
+		a.Target.SetTag(bounceKey, c.F+36) //lock out for 0.6s
+		x, y := a.Target.Shape().Pos()
+		trgs := c.EnemyByDistance(x, y, a.Target.Index())
+		next := -1
+		for _, v := range trgs {
+			trg := c.Targets[v]
+			if trg.GetTag(bounceKey) < c.F {
+				next = v
+				break
+			}
+		}
+		//do nothing if no targets found
+		if next == -1 {
+			return
+		}
+		//we have a target so trigger an atk
+		atk := *w.atk
+		atk.SourceFrame = c.F
+		atk.Pattern = core.NewDefSingleTarget(next, core.TargettableEnemy)
+		cb := w.chain(count+1, c, char)
+		if cb != nil {
+			atk.Callbacks = append(atk.Callbacks, cb)
+		}
+		c.Combat.QueueAttackEvent(&atk, 10) //TODO: no idea actual travel time
 	}
 }

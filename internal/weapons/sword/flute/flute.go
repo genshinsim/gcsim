@@ -22,12 +22,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if icd > c.F {
@@ -45,21 +45,20 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			stacks = 0
 			expiry = 0
 
-			d := char.Snapshot(
-				"Flute Proc",
-				core.AttackTagWeaponSkill,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Physical,
-				100,
-				0.75+0.25*float64(r),
-			)
-			d.Targets = core.TargetAll
-			char.QueueDmg(&d, 1)
+			ai := core.AttackInfo{
+				ActorIndex: char.CharIndex(),
+				Abil:       "Flute Proc",
+				AttackTag:  core.AttackTagWeaponSkill,
+				ICDTag:     core.ICDTagNone,
+				ICDGroup:   core.ICDGroupDefault,
+				Element:    core.Physical,
+				Durability: 100,
+				Mult:       0.75 + 0.25*float64(r),
+			}
+			c.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 1)
 
 		}
 		return false
-	}, fmt.Sprintf("prototype-rancour-%v", char.Name()))
+	}, fmt.Sprintf("flute-%v", char.Name()))
 
 }

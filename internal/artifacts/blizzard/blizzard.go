@@ -1,8 +1,6 @@
 package blizzard
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -24,22 +22,23 @@ func New(c core.Character, s *core.Core, count int) {
 		})
 	}
 	if count >= 4 {
-		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-			t := args[0].(core.Target)
-			ds := args[1].(*core.Snapshot)
-			if ds.ActorIndex != c.CharIndex() {
-				return false
-			}
-			switch t.AuraType() {
-			case core.Cryo:
-				ds.Stats[core.CR] += .2
-				s.Log.Debugw("blizzard strayer 4pc on cryo", "frame", s.F, "event", core.LogCalc, "char", c.CharIndex(), "new crit", ds.Stats[core.CR])
-			case core.Frozen:
-				ds.Stats[core.CR] += .4
-				s.Log.Debugw("blizzard strayer 4pc on frozen", "frame", s.F, "event", core.LogCalc, "char", c.CharIndex(), "new crit", ds.Stats[core.CR])
-			}
-			return false
-		}, fmt.Sprintf("bs4-%v", c.Name()))
+		c.AddPreDamageMod(core.PreDamageMod{
+			Key:    "4bs",
+			Expiry: -1,
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				m := make([]float64, core.EndStatType)
+				//frozen check first so we don't mistaken coexisting cryo
+				if t.AuraContains(core.Frozen) {
+					m[core.CR] = 0.4
+					return m, true
+				}
+				if t.AuraContains(core.Cryo) {
+					m[core.CR] = 0.2
+					return m, true
+				}
+				return nil, false
+			},
+		})
 
 	}
 	//add flat stat to char

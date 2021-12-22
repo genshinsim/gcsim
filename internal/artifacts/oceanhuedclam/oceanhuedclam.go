@@ -13,9 +13,15 @@ func init() {
 }
 
 // 2-Piece Bonus: Healing Bonus +15%
-// 4-Piece Bonus: When the character equipping this artifact set heals a character in the party, a Sea-Dyed Foam will appear for 3 seconds, accumulating the amount of HP recovered from healing (including overflow healing). At the end of the duration, the Sea-Dyed Foam will explode, dealing DMG to nearby opponents based on 90% of the accumulated healing.
-// (This DMG is calculated similarly to Reactions such as Electro-Charged, and Superconduct, but it is not affected by Elemental Mastery, Character Levels, or Reaction DMG Bonuses).
-// 	Only one Sea-Dyed Foam can be produced every 3.5 seconds. Each Sea-Dyed Foam can accumulate up to 30,000 HP (including overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
+// 4-Piece Bonus: When the character equipping this artifact set heals a character in the party,
+// a Sea-Dyed Foam will appear for 3 seconds, accumulating the amount of HP recovered from healing (including overflow healing).
+// At the end of the duration, the Sea-Dyed Foam will explode, dealing DMG to nearby opponents based on 90% of the accumulated
+//healing.
+
+// (This DMG is calculated similarly to Reactions such as Electro-Charged, and Superconduct, but it is not affected by
+// Elemental Mastery, Character Levels, or Reaction DMG Bonuses).
+// 	Only one Sea-Dyed Foam can be produced every 3.5 seconds. Each Sea-Dyed Foam can accumulate up to 30,000 HP (including
+//  overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
 // 	This effect can still be triggered even when the character who is using this artifact set is not on the field.
 func New(c core.Character, s *core.Core, count int) {
 	if count >= 2 {
@@ -69,20 +75,34 @@ func New(c core.Character, s *core.Core, count int) {
 				// Bubble pop task
 				c.AddTask(func() {
 					// Bubble is physical damage. This is handled in the reaction damage function, so it is not affected by physical dmg bonus/enemy defense
-					d := c.Snapshot(
-						"OHC Damage",
-						core.AttackTagNone,
-						core.ICDTagNone,
-						core.ICDGroupDefault,
-						core.StrikeTypeDefault,
-						core.Physical,
-						0,
-						0,
-					)
-					d.Targets = core.TargetAll
-					d.IsOHCDamage = true
-					d.FlatDmg = bubbleHealStacks * .9
-					c.QueueDmg(&d, 0)
+					// d := c.Snapshot(
+					// 	"OHC Damage",
+					// 	core.AttackTagNone,
+					// 	core.ICDTagNone,
+					// 	core.ICDGroupDefault,
+					// 	core.StrikeTypeDefault,
+					// 	core.Physical,
+					// 	0,
+					// 	0,
+					// )
+					// d.Targets = core.TargetAll
+					// d.IsOHCDamage = true
+					// d.FlatDmg = bubbleHealStacks * .9
+					// c.QueueDmg(&d, 0)
+
+					atk := core.AttackInfo{
+						ActorIndex:       c.CharIndex(),
+						DamageSrc:        0, //from player
+						Abil:             "OHC Damage",
+						AttackTag:        core.AttackTagNone,
+						ICDTag:           core.ICDTagNone,
+						ICDGroup:         core.ICDGroupDefault,
+						Element:          core.Physical,
+						IgnoreDefPercent: 1,
+						FlatDmg:          bubbleHealStacks * .9,
+					}
+					//snapshot -1 since we don't need stats
+					s.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, core.TargettableEnemy), -1, 1)
 
 					// Reset
 					s.Flags.Custom["OHCActiveChar"] = -1
@@ -95,6 +115,6 @@ func New(c core.Character, s *core.Core, count int) {
 			s.Log.Debugw("ohc bubble accumulation", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "bubble_total", bubbleHealStacks)
 
 			return false
-		}, fmt.Sprintf("ohc-4pc-heal-accumulation"))
+		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", c.Name()))
 	}
 }

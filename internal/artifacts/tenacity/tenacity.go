@@ -26,15 +26,13 @@ func New(c core.Character, s *core.Core, count int) {
 	}
 	if count >= 4 {
 		icd := 0
-		m := make([]float64, core.EndStatType)
-		m[core.ATKP] = 0.2
 
 		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
-			if ds.ActorIndex != c.CharIndex() {
+			atk := args[1].(*core.AttackEvent)
+			if atk.Info.ActorIndex != c.CharIndex() {
 				return false
 			}
-			if ds.AttackTag != core.AttackTagElementalArt {
+			if atk.Info.AttackTag != core.AttackTagElementalArt {
 				return false
 			}
 			if icd > s.F {
@@ -47,6 +45,8 @@ func New(c core.Character, s *core.Core, count int) {
 				char.AddMod(core.CharStatMod{
 					Key: "tom-4pc",
 					Amount: func(a core.AttackTag) ([]float64, bool) {
+						m := make([]float64, core.EndStatType)
+						m[core.ATKP] = 0.2
 						if s.Status.Duration("tom-proc") == 0 {
 							return nil, false
 						}

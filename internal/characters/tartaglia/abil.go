@@ -19,19 +19,18 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	if c.Core.Status.Duration("tartagliamelee") > 0 {
 		return c.meleeAttack(f, a)
 	}
-
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Physical,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
-
-	c.QueueDmg(&d, f+travel)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypePierce,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -51,21 +50,28 @@ var meleeDelayOffset = [][]int{
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
 func (c *char) meleeAttack(f, a int) (int, int) {
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Hydro,
+		Durability: 25,
+	}
 	for i, mult := range eAttack[c.NormalCounter] {
-		c.AddTask(func() {
-			d := c.Snapshot(
-				fmt.Sprintf("Normal %v", c.NormalCounter),
-				core.AttackTagNormal,
-				core.ICDTagNormalAttack,
-				core.ICDGroupDefault,
-				core.StrikeTypeSlash,
-				core.Hydro,
-				25,
-				mult[c.TalentLvlSkill()],
-			)
-			d.OnHitCallback = c.rtSlashCallback
-			c.Core.Combat.ApplyDamage(&d)
-		}, "tartaglia-attack", f-meleeDelayOffset[c.NormalCounter][i])
+		ai.Mult = mult[c.TalentLvlSkill()]
+		delay := f - meleeDelayOffset[c.NormalCounter][i]
+		c.Core.Combat.QueueAttack(
+			ai,
+			core.NewDefCircHit(.5, false, core.TargettableEnemy),
+			delay,
+			delay,
+			//TODO: what's the ordering on these 2 callbacks?
+			c.rtSlashCallback,   //call back for triggering slash
+			c.meleeApplyRiptide, //call back for applying riptide
+		)
 	}
 
 	c.AdvanceNormalIndex()
@@ -84,25 +90,28 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		hitWeakPoint = 0
 	}
-
-	d := c.Snapshot(
-		"Aim (Charged)",
-		core.AttackTagExtra,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Hydro,
-		25,
-		aim[c.TalentLvlAttack()],
-	)
-
-	if hitWeakPoint != 0 {
-		d.HitWeakPoint = true
+	ai := core.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Aim (Charged)",
+		AttackTag:    core.AttackTagExtra,
+		ICDTag:       core.ICDTagNone,
+		ICDGroup:     core.ICDGroupDefault,
+		StrikeType:   core.StrikeTypePierce,
+		Element:      core.Hydro,
+		Durability:   25,
+		Mult:         aim[c.TalentLvlAttack()],
+		HitWeakPoint: hitWeakPoint != 0,
 	}
-	// d.AnimationFrames = f
-	d.OnHitCallback = c.rtFlashCallback
 
-	c.QueueDmg(&d, travel+f)
+	c.Core.Combat.QueueAttack(
+		ai,
+		core.NewDefSingleTarget(1, core.TargettableEnemy),
+		f,
+		f+travel,
+		//TODO: what's the ordering on these 2 callbacks?
+		c.rtFlashCallback,   //call back for triggering slash
+		c.aimedApplyRiptide, //call back for applying riptide
+	)
 
 	return f, a
 }
@@ -126,44 +135,29 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		hitWeakPoint = 0
 	}
 
-	//tried a for loop but it yielded out that the first CA instance dmg used multiplier of the second one
-	c.AddTask(func() {
-		d := c.Snapshot(
-			"Charged Attack",
-			core.AttackTagExtra,
-			core.ICDTagExtraAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Hydro,
-			25,
-			eCharge[0][c.TalentLvlSkill()],
+	ai := core.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Charged Attack",
+		AttackTag:    core.AttackTagExtra,
+		ICDTag:       core.ICDTagExtraAttack,
+		ICDGroup:     core.ICDGroupDefault,
+		StrikeType:   core.StrikeTypeSlash,
+		Element:      core.Hydro,
+		Durability:   25,
+		HitWeakPoint: hitWeakPoint != 0,
+	}
+	for i, mult := range eCharge {
+		ai.Mult = mult[c.TalentLvlSkill()]
+		c.Core.Combat.QueueAttack(
+			ai,
+			core.NewDefCircHit(1, false, core.TargettableEnemy),
+			f-meleeChargeDelayOffset[i],
+			f-meleeChargeDelayOffset[i],
+			//TODO: what's the ordering on these 2 callbacks?
+			c.rtSlashCallback,   //call back for triggering slash
+			c.meleeApplyRiptide, //call back for applying riptide
 		)
-		if hitWeakPoint != 0 {
-			d.HitWeakPoint = true
-		}
-		d.Targets = core.TargetAll
-		d.OnHitCallback = c.rtSlashCallback
-		c.Core.Combat.ApplyDamage(&d)
-	}, "tartaglia-charge-attack", f-meleeChargeDelayOffset[0])
-
-	c.AddTask(func() {
-		d := c.Snapshot(
-			"Charged Attack",
-			core.AttackTagExtra,
-			core.ICDTagExtraAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Hydro,
-			25,
-			eCharge[1][c.TalentLvlSkill()],
-		)
-		if hitWeakPoint != 0 {
-			d.HitWeakPoint = true
-		}
-		d.Targets = core.TargetAll
-		d.OnHitCallback = c.rtSlashCallback
-		c.Core.Combat.ApplyDamage(&d)
-	}, "tartaglia-charge-attack", f-meleeChargeDelayOffset[1])
+	}
 	return f, a
 }
 
@@ -182,20 +176,19 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("tartagliamelee", 30*60)
 	c.Core.Log.Debugw("Foul Legacy acivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "rtexpiry", c.Core.F+30*60)
 
-	c.AddTask(func() {
-		d := c.Snapshot(
-			"Foul Legacy: Raging Tide",
-			core.AttackTagElementalArt,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Hydro,
-			50,
-			skill[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
-		c.Core.Combat.ApplyDamage(&d)
-	}, "tartaglia-skill", f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Foul Legacy: Raging Tide",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Hydro,
+		Durability: 50,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
 	c.SetCD(core.ActionSkill, 60)
 	return f, a
@@ -252,21 +245,23 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.AddTask(func() {
-		d := c.Snapshot(
-			skillName,
-			core.AttackTagElementalBurst,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Hydro,
-			50,
-			mult,
-		)
-		d.Targets = core.TargetAll
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
-			d.OnHitCallback = c.rtBlastCallback
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       skillName,
+			AttackTag:  core.AttackTagElementalBurst,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    core.Hydro,
+			Durability: 50,
+			Mult:       mult,
 		}
-		c.Core.Combat.ApplyDamage(&d)
+		var cb core.AttackCBFunc
+		if c.Core.Status.Duration("tartagliamelee") > 0 {
+			cb = c.rtBlastCallback
+		}
+
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0, cb)
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			if c.Base.Cons >= 6 {
 				c.mlBurstUsed = true
@@ -277,103 +272,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}, "tartaglia-burst-clear", f-5) //random 5 frame
 
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	c.SetCD(core.ActionBurst, 900)
 	return f, a
-}
-
-func (c *char) rtFlashCallback(t core.Target) {
-	if c.rtExpiry[t.Index()] > c.Core.F {
-		if c.rtFlashICD[t.Index()] > c.Core.F {
-			return
-		}
-
-		c.AddTask(func() {
-			d := c.Snapshot(
-				"Riptide Flash",
-				core.AttackTagNormal,
-				core.ICDTagTartagliaRiptideFlash,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Hydro,
-				25,
-				rtFlash[0][c.TalentLvlAttack()],
-			)
-			d.Targets = core.TargetAll
-
-			//proc 3 hits
-			for i := 1; i <= 3; i++ {
-				x := d.Clone()
-				c.QueueDmg(&x, i)
-			}
-			c.Core.Log.Debugw("Riptide Flash ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-				c.Core.Status.Duration("tartagliamelee"), "target", t.Index(), "flashICD", c.rtFlashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
-
-			if c.rtParticleICD < c.Core.F {
-				c.rtParticleICD = c.Core.F + 180 //3 sec
-				c.QueueParticle("tartaglia", 1, core.Hydro, 100)
-			}
-			c.rtFlashICD[t.Index()] = c.Core.F + 42 //0.7s icd
-		}, "Riptide Flash", 1)
-	}
-}
-
-func (c *char) rtSlashCallback(t core.Target) {
-	if c.rtExpiry[t.Index()] > c.Core.F {
-		if c.rtSlashICD[t.Index()] > c.Core.F {
-			return
-		}
-
-		c.AddTask(func() {
-			d := c.Snapshot(
-				"Riptide Slash",
-				core.AttackTagElementalArt,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Hydro,
-				25,
-				rtSlash[c.TalentLvlSkill()],
-			)
-			d.Targets = core.TargetAll
-
-			c.Core.Combat.ApplyDamage(&d)
-			c.Core.Log.Debugw("Riptide Slash ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-				c.Core.Status.Duration("tartagliamelee"), "target", t.Index(), "slashICD", c.rtSlashICD[t.Index()], "rtExpiry", c.rtExpiry[t.Index()])
-
-			if c.rtParticleICD < c.Core.F {
-				c.rtParticleICD = c.Core.F + 180 //3 sec
-				c.QueueParticle("tartaglia", 1, core.Hydro, 100)
-			}
-		}, "Riptide Slash", 1)
-		c.rtSlashICD[t.Index()] = c.Core.F + 90 //1.5s icd
-	}
-}
-
-func (c *char) rtBlastCallback(t core.Target) {
-	if c.rtExpiry[t.Index()] > c.Core.F {
-		if c.rtSlashICD[t.Index()] > c.Core.F {
-			return
-		}
-
-		c.AddTask(func() {
-			d := c.Snapshot(
-				"Riptide Blast",
-				core.AttackTagElementalBurst,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Hydro,
-				50,
-				rtBlast[c.TalentLvlBurst()],
-			)
-			d.Targets = core.TargetAll
-
-			c.Core.Combat.ApplyDamage(&d)
-			// triggering riptide blast will clear riptide status
-			c.rtExpiry[t.Index()] = 0
-			c.Core.Log.Debugw("Riptide Blast ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "dur",
-				c.Core.Status.Duration("tartagliamelee"), "target", t.Index(), "rtExpiry", c.rtExpiry[t.Index()])
-		}, "Riptide Blast", 1)
-	}
 }

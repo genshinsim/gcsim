@@ -1,17 +1,24 @@
 package character
 
-import "github.com/genshinsim/gcsim/pkg/core"
-
-func (c *Tmpl) Tag(key string) int {
-	return c.Tags[key]
-}
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+)
 
 func (c *Tmpl) CharIndex() int {
 	return c.Index
 }
 
+func (c *Tmpl) Key() keys.Char {
+	return c.Base.Key
+}
+
 func (c *Tmpl) Name() string {
-	return c.Base.Name
+	return c.Base.Key.String()
+}
+
+func (c *Tmpl) Level() int {
+	return c.Base.Level
 }
 
 func (c *Tmpl) Zone() core.ZoneType {

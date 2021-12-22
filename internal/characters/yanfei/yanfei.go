@@ -3,10 +3,11 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("yanfei", NewChar)
+	core.RegisterCharFunc(keys.Yanfei, NewChar)
 }
 
 type char struct {
@@ -14,7 +15,7 @@ type char struct {
 	maxTags           int
 	sealStamReduction float64
 	sealExpiry        int
-	burstBuffExpiry   int
+	// burstBuffExpiry   int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -39,6 +40,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.maxTags = 4
 	}
 
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
+
 	c.sealStamReduction = 0.15
 	if c.Base.Cons > 0 {
 		c.sealStamReduction = 0.25
@@ -60,55 +65,51 @@ func (c *char) onExitField() {
 // Hook for C2:
 // Increases Yan Fei's Charged Attack CRIT Rate by 20% against enemies below 50% HP.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		target := args[0].(core.Target)
-		if ds.ActorIndex != c.Index {
-			return false
-		}
-		if ds.AttackTag != core.AttackTagExtra {
-			return false
-		}
-		if target.HP()/target.MaxHP() >= .5 {
-			return false
-		}
-		ds.Stats[core.CR] += 0.20
-
-		c.Core.Log.Debugw("yanfei c2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "target", target.Index(), "target_hp_percent", target.HP()/target.MaxHP())
-
-		return false
-	}, "yanfei-c2")
+	c.AddPreDamageMod(core.PreDamageMod{
+		Key:    "yanfei-c2",
+		Expiry: -1,
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			m := make([]float64, core.EndStatType)
+			if atk.Info.AttackTag != core.AttackTagExtra {
+				return nil, false
+			}
+			if t.HP()/t.MaxHP() >= .5 {
+				return nil, false
+			}
+			m[core.CR] = 0.20
+			return m, true
+		},
+	})
 }
 
 // A4 Hook
 // When Yan Fei's Charged Attacks deal CRIT Hits, she will deal an additional instance of AoE Pyo DMG equal to 80% of her ATK. This DMG counts as Charged Attack DMG.
 func (c *char) a4() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if ds.Abil == "Blazing Eye (A4)" {
+		if atk.Info.Abil == "Blazing Eye (A4)" {
 			return false
 		}
-		if !((ds.AttackTag == core.AttackTagExtra) && crit) {
+		if !((atk.Info.AttackTag == core.AttackTagExtra) && crit) {
 			return false
 		}
 
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				"Blazing Eye (A4)",
-				core.AttackTagExtra,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeBlunt,
-				core.Pyro,
-				25,
-				.8,
-			)
-			return &d
-		}, 1)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Blazing Eye (A4)",
+			AttackTag:  core.AttackTagExtra,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeBlunt,
+			Element:    core.Pyro,
+			Durability: 25,
+			Mult:       0.8,
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 1, 1)
 
 		return false
 	}, "yanfei-a4")
@@ -125,7 +126,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		stacks := c.Tags["seal"]
 		return 50 * (1 - c.sealStamReduction*float64(stacks))
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
 }

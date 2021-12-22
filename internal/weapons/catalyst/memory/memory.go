@@ -25,8 +25,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	duration := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if icd > c.F {
@@ -42,12 +42,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("memory-dust-%v", char.Name()))
 
-	val := make([]float64, core.EndStatType)
-	atk := 0.03 + 0.01*float64(r)
 	char.AddMod(core.CharStatMod{
 		Key:    "memory",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
+			atk := 0.03 + 0.01*float64(r)
 			if duration > c.F {
 				val[core.ATKP] = atk * float64(stacks)
 				if c.Shields.IsShielded() {

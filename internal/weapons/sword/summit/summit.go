@@ -25,9 +25,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if icd > c.F {
@@ -46,11 +46,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	atk := 0.03 + 0.01*float64(r)
 
-	val := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key:    "summit",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			if duration > c.F {
 				val[core.ATKP] = atk * float64(stacks)
 				if c.Shields.IsShielded() {

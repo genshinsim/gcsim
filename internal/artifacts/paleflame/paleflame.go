@@ -30,11 +30,11 @@ func New(c core.Character, s *core.Core, count int) {
 		m := make([]float64, core.EndStatType)
 
 		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
-			if ds.ActorIndex != c.CharIndex() {
+			atk := args[1].(*core.AttackEvent)
+			if atk.Info.ActorIndex != c.CharIndex() {
 				return false
 			}
-			if ds.AttackTag != core.AttackTagElementalArt {
+			if atk.Info.AttackTag != core.AttackTagElementalArt {
 				return false
 			}
 			if icd > s.F {

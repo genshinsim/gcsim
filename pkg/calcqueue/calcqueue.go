@@ -21,7 +21,7 @@ func (q *Queuer) SetActionList(a []core.Action) {
 func (q *Queuer) Next() ([]core.ActionItem, error) {
 
 	var r []core.ActionItem
-	active := q.core.Chars[q.core.ActiveChar].Name()
+	active := q.core.Chars[q.core.ActiveChar].Key()
 	for {
 		if q.ind >= len(q.prio) {
 			q.core.Log.Debugw(

@@ -1,11 +1,13 @@
 package core
 
+import "github.com/genshinsim/gcsim/pkg/core/keys"
+
 type Config struct {
 	Label      string
 	DamageMode bool
 	Targets    []EnemyProfile
 	Characters struct {
-		Initial string
+		Initial keys.Char
 		Profile []CharacterProfile
 	}
 	Rotation []Action
@@ -34,7 +36,7 @@ type CharacterProfile struct {
 }
 
 type CharacterBase struct {
-	Name    string
+	Key     keys.Char
 	Element EleType
 	Level   int
 	HP      float64
@@ -59,9 +61,11 @@ type TalentProfile struct {
 }
 
 type EnemyProfile struct {
-	Level  int
-	HP     float64
-	Resist map[EleType]float64
+	Level          int
+	HP             float64
+	Resist         map[EleType]float64
+	Size           float64
+	CoordX, CoordY float64
 }
 
 type EnergyEvent struct {

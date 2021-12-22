@@ -1,8 +1,6 @@
 package amos
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -25,23 +23,22 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		Expiry: -1,
 	})
 
-	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if char.CharIndex() != ds.ActorIndex {
-			return false
-		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
-			return false
-		}
-		//calculate travel time
-		travel := float64(c.F-ds.SourceFrame) / 60
-		stacks := int(travel / 0.1)
-		if stacks > 5 {
-			stacks = 5
-		}
-		ds.Stats[core.DmgP] += dmgpers * float64(stacks)
-		c.Log.Debugw("amos bow", "frame", c.F, "event", core.LogCalc, "stacks", stacks, "final dmg%", ds.Stats[core.DmgP], "source_frame", ds.SourceFrame)
-		return false
-	}, fmt.Sprintf("amos-%v", char.Name()))
+	char.AddPreDamageMod(core.PreDamageMod{
+		Key: "amos",
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			v := make([]float64, core.EndStatType)
+			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+				return v, false
+			}
+			travel := float64(c.F-atk.SourceFrame) / 60
+			stacks := int(travel / 0.1)
+			if stacks > 5 {
+				stacks = 5
+			}
+			v[core.DmgP] = dmgpers * float64(stacks)
+			return v, true
+		},
+		Expiry: -1,
+	})
 
 }

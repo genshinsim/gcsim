@@ -43,13 +43,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 
-		ds := args[1].(*core.Snapshot)
+		ae := args[1].(*core.AttackEvent)
 
 		//check if char is correct?
-		if ds.ActorIndex != char.CharIndex() {
+		if ae.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		//check if buff up
@@ -58,17 +58,18 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 
 		//add a new action that deals % dmg immediately
-		d := char.Snapshot(
-			"Skyward Blade Proc",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			atk,
-		)
-		char.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Skyward Blade Proc",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       atk,
+		}
+		c.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, 1)
+
 		return false
 
 	}, fmt.Sprintf("skyward-blade-%v", char.Name()))

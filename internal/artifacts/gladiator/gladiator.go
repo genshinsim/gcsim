@@ -30,11 +30,12 @@ func New(c core.Character, s *core.Core, count int) {
 			//don't add this mod if wrong weapon class
 			return
 		}
-		m := make([]float64, core.EndStatType)
-		m[core.DmgP] = 0.35
+
 		c.AddMod(core.CharStatMod{
 			Key: "glad-4pc",
 			Amount: func(ds core.AttackTag) ([]float64, bool) {
+				m := make([]float64, core.EndStatType)
+				m[core.DmgP] = 0.35
 				if ds != core.AttackTagNormal && ds != core.AttackTagExtra {
 					return nil, false
 				}

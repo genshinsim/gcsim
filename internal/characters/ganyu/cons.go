@@ -6,12 +6,12 @@ import (
 
 func (c *char) c1() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		t := args[0].(core.Target)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if ds.Abil != "Frost Flake Arrow" {
+		if atk.Info.Abil != "Frost Flake Arrow" {
 			return false
 		}
 		c.AddEnergy(2)

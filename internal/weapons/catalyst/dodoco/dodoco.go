@@ -39,11 +39,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	})
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		switch ds.AttackTag {
+		switch atk.Info.AttackTag {
 		case core.AttackTagNormal:
 			dmgExpiry = c.F + 360
 		case core.AttackTagExtra:

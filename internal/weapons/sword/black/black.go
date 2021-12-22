@@ -30,19 +30,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
 		if crit {
-			c.Health.HealActive(char.CharIndex(), heal*(ds.BaseAtk*(1+ds.Stats[core.ATKP])+ds.Stats[core.ATK]))
+			c.Health.HealActive(char.CharIndex(), heal*(atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP])+atk.Snapshot.Stats[core.ATK]))
 		}
 		return false
 	}, fmt.Sprintf("black-sword-%v", char.Name()))

@@ -52,31 +52,20 @@ func New(c core.Character, s *core.Core, count int) {
 			return false
 		}, fmt.Sprintf("cw4s-%v", c.Name()))
 
-		s.Events.Subscribe(core.OnAmpReaction, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
-			if ds.ActorIndex != c.CharIndex() {
-				return false
-			}
-			switch ds.ReactionType {
-			case core.Melt:
-				ds.ReactBonus += 0.15
-			case core.Vaporize:
-				ds.ReactBonus += 0.15
-			}
-			return false
-		}, key)
-
-		s.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
-			if ds.ActorIndex != c.CharIndex() {
-				return false
-			}
-			switch ds.ReactionType {
-			case core.Overload:
-				ds.ReactBonus += 0.4
-			}
-			return false
-		}, key)
+		c.AddReactBonusMod(core.ReactionBonusMod{
+			Key:    "4cw",
+			Expiry: -1,
+			Amount: func(ai core.AttackInfo) (float64, bool) {
+				//overload dmg can't melt or vape so it's fine
+				if ai.AttackTag == core.AttackTagOverloadDamage {
+					return 0.4, false
+				}
+				if ai.Amped {
+					return 0.15, false
+				}
+				return 0, false
+			},
+		})
 
 	}
 }

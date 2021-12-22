@@ -31,11 +31,11 @@ func New(c core.Character, s *core.Core, count int) {
 			return false
 		}, fmt.Sprintf("hod4-%v", c.Name()))
 
-		m := make([]float64, core.EndStatType)
-		m[core.DmgP] = 0.3
 		c.AddMod(core.CharStatMod{
 			Key: "hod-4pc",
 			Amount: func(ds core.AttackTag) ([]float64, bool) {
+				m := make([]float64, core.EndStatType)
+				m[core.DmgP] = 0.3
 				if s.Status.Duration(key) == 0 {
 					return nil, false
 				}

@@ -1,6 +1,9 @@
 package kazuha
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+)
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
@@ -10,7 +13,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		//TODO: need to add atkspd mod
 		case 0:
 			//add frames if last action is also attack
-			if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionAttack {
+			if c.Core.LastAction.Target == keys.Kazuha && c.Core.LastAction.Typ == core.ActionAttack {
 				f += 60
 			}
 			f = 14
@@ -27,7 +30,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		return f, f
 	case core.ActionHighPlunge:
 		c.Core.Log.Debugw("plunge skill check", "event", core.LogCharacterEvent, "frame", c.Core.F, "previous", c.Core.LastAction)
-		if c.Core.LastAction.Target == "kazuha" && c.Core.LastAction.Typ == core.ActionSkill {
+		if c.Core.LastAction.Target == keys.Kazuha && c.Core.LastAction.Typ == core.ActionSkill {
 			_, ok := c.Core.LastAction.Param["hold"]
 			if ok {
 				return 63, 63

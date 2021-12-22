@@ -10,6 +10,7 @@ const (
 	AttackTagElementalArt
 	AttackTagElementalBurst
 	AttackTagWeaponSkill
+	AttackTagMonaBubbleBreak
 	// AttackTagTartagliaAttack
 	// AttackTagGandalfrAttack
 	AttackTagElementalArtHold
@@ -17,6 +18,7 @@ const (
 	AttackTagOverloadDamage
 	AttackTagSuperconductDamage
 	AttackTagECDamage
+	AttackTagShatter
 	AttackTagSwirlPyro
 	AttackTagSwirlHydro
 	AttackTagSwirlCryo
@@ -43,9 +45,11 @@ const (
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
+	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
 	ICDTagECDamage
+	ICDTagShatter
 	ICDTagSwirlPyro
 	ICDTagSwirlHydro
 	ICDTagSwirlCryo

@@ -18,15 +18,15 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	attack := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag == core.AttackTagElementalArt || ds.AttackTag == core.AttackTagElementalBurst {
+		if atk.Info.AttackTag == core.AttackTagElementalArt || atk.Info.AttackTag == core.AttackTagElementalBurst {
 			skill = c.F + 300
 			return false
 		}
-		if ds.AttackTag == core.AttackTagNormal {
+		if atk.Info.AttackTag == core.AttackTagNormal {
 			skill = c.F + 300
 		}
 		return false

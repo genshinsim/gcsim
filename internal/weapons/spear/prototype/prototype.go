@@ -33,11 +33,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("prototype-starglitter-%v", char.Name()))
 
-	val := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key:    "prototype",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
 			if a != core.AttackTagNormal && a != core.AttackTagExtra {
 				return nil, false
 			}

@@ -3,10 +3,11 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("kokomi", NewChar)
+	core.RegisterCharFunc(keys.Kokomi, NewChar)
 }
 
 type char struct {
@@ -56,8 +57,8 @@ func (c *char) passive() {
 // Also checks constellations
 func (c *char) burstActiveHook() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 
@@ -65,7 +66,7 @@ func (c *char) burstActiveHook() {
 			return false
 		}
 
-		switch ds.AttackTag {
+		switch atk.Info.AttackTag {
 		case core.AttackTagNormal, core.AttackTagExtra:
 		default:
 			return false
@@ -134,7 +135,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
 }

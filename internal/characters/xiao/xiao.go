@@ -3,10 +3,11 @@ package xiao
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("xiao", NewChar)
+	core.RegisterCharFunc(keys.Xiao, NewChar)
 }
 
 // Xiao specific character implementation
@@ -57,17 +58,33 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
+func (c *char) a4() {
+	c.AddMod(core.CharStatMod{
+		Key:    "xiao-a4",
+		Expiry: -1,
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			m := make([]float64, core.EndStatType)
+			stacks := c.Tags["a4"]
+			if stacks == 0 {
+				return nil, false
+			}
+			m[core.DmgP] += float64(stacks) * 0.15
+			return m, true
+		},
+	})
+}
+
 // Implements Xiao C2:
 // When in the party and not on the field, Xiao's Energy Recharge is increased by 25%
 func (c *char) c2() {
-	stat_mod := make([]float64, core.EndStatType)
-	stat_mod[core.ER] = 0.25
 	c.AddMod(core.CharStatMod{
 		Key:    "xiao-c2",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
+			m := make([]float64, core.EndStatType)
+			m[core.ER] = 0.25
 			if c.Core.ActiveChar != c.Index {
-				return stat_mod, true
+				return m, true
 			}
 			return nil, false
 		},
@@ -79,11 +96,11 @@ func (c *char) c2() {
 // Adds an OnDamage event checker - if we record two or more instances of plunge damage, then activate C6
 func (c *char) c6() {
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Index {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if !((ds.Abil == "High Plunge") || (ds.Abil == "Low Plunge")) {
+		if !((atk.Info.Abil == "High Plunge") || (atk.Info.Abil == "Low Plunge")) {
 			return false
 		}
 		if c.Core.Status.Duration("xiaoburst") == 0 {
@@ -94,8 +111,8 @@ func (c *char) c6() {
 		if c.Core.Status.Duration("xiaoc6") > 0 {
 			return false
 		}
-		if c.c6Src != ds.SourceFrame {
-			c.c6Src = ds.SourceFrame
+		if c.c6Src != atk.SourceFrame {
+			c.c6Src = atk.SourceFrame
 			c.c6Count = 0
 			return false
 		}
@@ -133,7 +150,42 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
+}
+
+// Xiao specific Snapshot implementation for his burst bonuses. Similar to Hu Tao
+// Implements burst anemo attack damage conversion and DMG bonus
+// Also implements A1:
+// While under the effects of Bane of All Evil, all DMG dealt by Xiao is increased by 5%. DMG is increased by an additional 5% for every 3s the ability persists. The maximum DMG Bonus is 25%
+func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
+	ds := c.Tmpl.Snapshot(a)
+
+	if c.Core.Status.Duration("xiaoburst") > 0 {
+		// Calculate and add A1 damage bonus - applies to all damage
+		// Fraction dropped in int conversion in go - acts like floor
+		stacks := 1 + int((c.Core.F-c.qStarted)/180)
+		if stacks > 5 {
+			stacks = 5
+		}
+		ds.Stats[core.DmgP] += float64(stacks) * 0.05
+		c.Core.Log.Debugw("a1 adding dmg %", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F-c.qStarted)
+
+		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
+		// Also handle burst CA ICD change to share with Normal
+		switch a.AttackTag {
+		case core.AttackTagNormal:
+		case core.AttackTagExtra:
+			a.ICDTag = core.ICDTagNormalAttack
+		case core.AttackTagPlunge:
+		default:
+			return ds
+		}
+		a.Element = core.Anemo
+		bonus := burstBonus[c.TalentLvlBurst()]
+		ds.Stats[core.DmgP] += bonus
+		c.Core.Log.Debugw("xiao burst damage bonus", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "bonus", bonus, "final", ds.Stats[core.DmgP])
+	}
+	return ds
 }

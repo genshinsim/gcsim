@@ -1,8 +1,6 @@
 package mappa
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -14,9 +12,10 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 	dur := 0
-	c.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex == char.CharIndex() {
+
+	addStack := func(args ...interface{}) bool {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex == char.CharIndex() {
 			stacks++
 			if stacks > 2 {
 				stacks = 2
@@ -24,7 +23,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			}
 		}
 		return false
-	}, fmt.Sprintf("mappa-%v", char.Name()))
+	}
+
+	for i := core.EventType(core.ReactionEventStartDelim + 1); i < core.ReactionEventEndDelim; i++ {
+		c.Events.Subscribe(i, addStack, "mappa"+char.Name())
+	}
 
 	dmg := 0.06 + float64(r)*0.02
 

@@ -47,11 +47,13 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/crimson"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/gladiator"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/heartofdepth"
+
 	_ "github.com/genshinsim/gcsim/internal/artifacts/huskofopulentdreams"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/instructor"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/lavawalker"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/noblesse"
+
 	_ "github.com/genshinsim/gcsim/internal/artifacts/oceanhuedclam"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/paleflame"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/reminiscence"

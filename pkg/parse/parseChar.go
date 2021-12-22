@@ -5,15 +5,16 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
-func (p *Parser) newChar(name string) {
+func (p *Parser) newChar(key keys.Char) {
 	r := core.CharacterProfile{}
-	r.Base.Name = name
+	r.Base.Key = key
 	r.Stats = make([]float64, len(core.StatTypeString))
 	r.Sets = make(map[string]int)
 	r.Base.StartHP = -1
-	p.chars[name] = &r
+	p.chars[key] = &r
 }
 
 //return a char name
@@ -23,11 +24,14 @@ func (p *Parser) acceptChar() (*core.CharacterProfile, error) {
 	if err != nil {
 		return nil, err
 	}
-	name := n.val
-	if _, ok := p.chars[name]; !ok {
-		p.newChar(name)
+	key, ok := keys.CharNameToKey[n.val]
+	if !ok {
+		return nil, fmt.Errorf("bad token at line %v - %v: %v; invalid char name", n.line, n.pos, n)
 	}
-	return p.chars[name], nil
+	if _, ok := p.chars[key]; !ok {
+		p.newChar(key)
+	}
+	return p.chars[key], nil
 }
 
 func parseChar(p *Parser) (parseFn, error) {

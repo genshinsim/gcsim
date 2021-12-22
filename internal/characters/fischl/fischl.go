@@ -5,16 +5,17 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc("fischl", NewChar)
+	core.RegisterCharFunc(keys.Fischl, NewChar)
 }
 
 type char struct {
 	*character.Tmpl
 	//field use for calculating oz damage
-	ozSnapshot core.Snapshot
+	ozSnapshot core.AttackEvent
 
 	ozSource      int //keep tracks of source of oz aka resets
 	ozActiveUntil int
@@ -76,32 +77,34 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Physical,
-		25,
-		auto[c.NormalCounter][c.TalentLvlAttack()],
-	)
-	c.QueueDmg(&d, travel+f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypePierce,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
 	c.AdvanceNormalIndex()
 
 	//check for c1
 	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Core.F {
-		d := c.Snapshot(
-			"Fischl C1",
-			core.AttackTagNormal,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Physical,
-			100,
-			0.22,
-		)
-		c.QueueDmg(&d, travel+f+1)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Fischl C1",
+			AttackTag:  core.AttackTagNormal,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypePierce,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       0.22,
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
 	}
 
 	return f, a
@@ -115,16 +118,24 @@ func (c *char) queueOz(src string) {
 	}
 	c.ozActiveUntil = c.Core.F + dur
 	c.ozSource = c.Core.F
-	c.ozSnapshot = c.Snapshot(
-		fmt.Sprintf("Oz (%v)", src),
-		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
-		core.ICDGroupFischl,
-		core.StrikeTypePierce,
-		core.Electro,
-		25,
-		birdAtk[c.TalentLvlSkill()],
-	)
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Oz (%v)", src),
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupFischl,
+		Element:    core.Electro,
+		Durability: 25,
+		Mult:       birdAtk[c.TalentLvlSkill()],
+	}
+	snap := c.Snapshot(&ai)
+	c.ozSnapshot = core.AttackEvent{
+		Info:        ai,
+		Snapshot:    snap,
+		Pattern:     core.NewDefSingleTarget(1, core.TargettableEnemy),
+		SourceFrame: c.Core.F,
+	}
 	c.AddTask(c.ozTick(c.Core.F), "oz", 60)
 	c.Core.Log.Debugw("Oz activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
 
@@ -141,8 +152,8 @@ func (c *char) ozTick(src int) func() {
 		}
 		c.Core.Log.Debugw("Oz ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
 		//trigger damage
-		d := c.ozSnapshot.Clone()
-		c.Core.Combat.ApplyDamage(&d)
+		ae := c.ozSnapshot
+		c.Core.Combat.QueueAttackEvent(&ae, 0)
 		//check for orb
 		//Particle check is 67% for particle, from datamine
 		if c.Core.Rand.Float64() < .67 {
@@ -159,22 +170,22 @@ func (c *char) ozTick(src int) func() {
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 	//always trigger electro no ICD on initial summon
-	d := c.Snapshot(
-		"Oz (Summon)",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupFischl,
-		core.StrikeTypePierce,
-		core.Electro,
-		25,
-		birdSum[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Oz (Summon)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupFischl,
+		StrikeType: core.StrikeTypePierce,
+		Element:    core.Electro,
+		Durability: 25,
+		Mult:       birdSum[c.TalentLvlSkill()],
+	}
 
 	if c.Base.Cons >= 2 {
-		d.Mult += 2
+		ai.Mult += 2
 	}
-	c.QueueDmg(&d, 1) //queue initial damage
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
 
 	//set on field oz to be this one
 	c.AddTask(func() {
@@ -195,32 +206,33 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}, "oz-skill", f-10)
 
 	//initial damage; part of the burst tag
-	d := c.Snapshot(
-		"Midnight Phantasmagoria",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupFischl,
-		core.StrikeTypeBlunt,
-		core.Electro,
-		25,
-		burst[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-	c.QueueDmg(&d, 1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Midnight Phantasmagoria",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupFischl,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Electro,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
 
 	//check for C4 damage
 	if c.Base.Cons >= 4 {
-		d := c.Snapshot(
-			"Midnight Phantasmagoria",
-			core.AttackTagElementalBurst,
-			core.ICDTagElementalBurst,
-			core.ICDGroupFischl,
-			core.StrikeTypePierce,
-			core.Electro,
-			50,
-			2.22,
-		)
-		c.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Midnight Phantasmagoria",
+			AttackTag:  core.AttackTagElementalBurst,
+			ICDTag:     core.ICDTagElementalBurst,
+			ICDGroup:   core.ICDGroupFischl,
+			StrikeType: core.StrikeTypePierce,
+			Element:    core.Electro,
+			Durability: 50,
+			Mult:       2.22,
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.AddTask(func() {
@@ -229,7 +241,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	}
 
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	c.SetCD(core.ActionBurst, 15*60)
 	return f, a
 }

@@ -194,9 +194,9 @@ func runSingle(o opts) {
 		if o.debugHTML {
 			chars := make([]string, len(cfg.Characters.Profile))
 			for i, v := range cfg.Characters.Profile {
-				chars[i] = v.Base.Name
+				chars[i] = v.Base.Key.String()
 			}
-			err = logtohtml.WriteString(out, "./debug.html", cfg.Characters.Initial, chars)
+			err = logtohtml.WriteString(out, "./debug.html", cfg.Characters.Initial.String(), chars)
 			if err != nil {
 				log.Println(err)
 				os.Exit(1)
@@ -308,9 +308,9 @@ func runSeeded(data string, seed int64, opts core.RunOpt, o opts, file string) (
 
 		chars := make([]string, len(cfg.Characters.Profile))
 		for i, v := range cfg.Characters.Profile {
-			chars[i] = v.Base.Name
+			chars[i] = v.Base.Key.String()
 		}
-		err = logtohtml.WriteString(out, fmt.Sprintf("./%v.html", file), cfg.Characters.Initial, chars)
+		err = logtohtml.WriteString(out, fmt.Sprintf("./%v.html", file), cfg.Characters.Initial.String(), chars)
 		if err != nil {
 			log.Println(err)
 			os.Exit(1)

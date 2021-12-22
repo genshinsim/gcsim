@@ -6,20 +6,19 @@ import (
 
 func (c *char) newStele(dur int, max int) {
 	//deal damage when created
-	d := c.Snapshot(
-		"Stone Stele (Initial)",
-		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Geo,
-		50,
-		skill[c.TalentLvlSkill()],
-	)
-	d.FlatDmg = 0.019 * c.HPMax
-	d.Targets = core.TargetAll
-	// Damage proc is near instant upon creation
-	c.QueueDmg(&d, 0)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Stone Stele (Initial)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Geo,
+		Durability: 50,
+		Mult:       skill[c.TalentLvlSkill()],
+		FlatDmg:    0.019 * c.HPMax,
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
 
 	//create a construct
 	con := &stoneStele{
@@ -55,18 +54,19 @@ func (c *char) resonance(src, max int) func() {
 			return
 		}
 		c.Core.Log.Debugw("Stele ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected", c.Core.F+120, "src", src, "char", c.Index)
-		d := c.Snapshot(
-			"Stone Stele (Tick)",
-			core.AttackTagElementalArt,
-			core.ICDTagElementalArt,
-			core.ICDGroupDefault,
-			core.StrikeTypeBlunt,
-			core.Geo,
-			25,
-			skillTick[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
-		d.FlatDmg = 0.019 * c.HPMax
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Stone Stele (Tick)",
+			AttackTag:  core.AttackTagElementalArt,
+			ICDTag:     core.ICDTagElementalArt,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeBlunt,
+			Element:    core.Geo,
+			Durability: 25,
+			Mult:       skillTick[c.TalentLvlSkill()],
+			FlatDmg:    0.019 * c.HPMax,
+		}
+
 		//check how many times to hit
 		count := c.Core.Constructs.Count()
 		if count > max {
@@ -74,8 +74,7 @@ func (c *char) resonance(src, max int) func() {
 		}
 		orb := false
 		for i := 0; i < count; i++ {
-			x := d.Clone()
-			c.Core.Combat.ApplyDamage(&x)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
 			if c.energyICD < c.Core.F && !orb && c.Core.Rand.Float64() < .5 {
 				orb = true
 			}

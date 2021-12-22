@@ -1,6 +1,9 @@
 package raiden
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+)
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
@@ -10,7 +13,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			switch c.NormalCounter {
 			//TODO: need to add atkspd mod
 			case 0:
-				if c.Core.LastAction.Target == "raiden" && c.Core.LastAction.Typ == core.ActionAttack {
+				if c.Core.LastAction.Target == keys.Raiden && c.Core.LastAction.Typ == core.ActionAttack {
 					f += 21
 				}
 				f = 14
@@ -28,7 +31,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			//TODO: need to add atkspd mod
 			case 0:
 				//add frames if last action is also attack
-				if c.Core.LastAction.Target == "raiden" && c.Core.LastAction.Typ == core.ActionAttack {
+				if c.Core.LastAction.Target == keys.Raiden && c.Core.LastAction.Typ == core.ActionAttack {
 					f += 32
 				}
 				f = 12

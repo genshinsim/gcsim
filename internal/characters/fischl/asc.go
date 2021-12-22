@@ -4,20 +4,12 @@ import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) a4() {
 	last := 0
-	c.Core.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
+	cb := func(args ...interface{}) bool {
+
 		t := args[0].(core.Target)
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != c.Core.ActiveChar {
-			return false
-		}
-		//check reaction type, only care for electro related reactions
-		switch ds.ReactionType {
-		case core.Overload:
-		case core.ElectroCharged:
-		case core.Superconduct:
-		case core.SwirlElectro:
-		case core.CrystallizeElectro:
-		default:
+		ae := args[1].(*core.AttackEvent)
+
+		if ae.Info.ActorIndex != c.Core.ActiveChar {
 			return false
 		}
 		//do nothing if oz not on field
@@ -28,21 +20,24 @@ func (c *char) a4() {
 			return false
 		}
 		last = c.Core.F
-
-		d := c.Snapshot(
-			"Fischl A4",
-			core.AttackTagElementalArt,
-			core.ICDTagNone,
-			core.ICDGroupFischl,
-			core.StrikeTypePierce,
-			core.Electro,
-			25,
-			0.8,
-		)
-		d.Targets = t.Index()
-		c.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Fischl A4",
+			AttackTag:  core.AttackTagElementalArt,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupFischl,
+			StrikeType: core.StrikeTypePierce,
+			Element:    core.Electro,
+			Durability: 25,
+			Mult:       0.8,
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(t.Index(), core.TargettableEnemy), 0, 1)
 
 		return false
-	}, "fischl-a4")
-
+	}
+	c.Core.Events.Subscribe(core.OnOverload, cb, "fischl-a4")
+	c.Core.Events.Subscribe(core.OnElectroCharged, cb, "fischl-a4")
+	c.Core.Events.Subscribe(core.OnSuperconduct, cb, "fischl-a4")
+	c.Core.Events.Subscribe(core.OnSwirlElectro, cb, "fischl-a4")
+	c.Core.Events.Subscribe(core.OnCrystallizeElectro, cb, "fischl-a4")
 }

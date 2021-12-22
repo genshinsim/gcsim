@@ -16,18 +16,18 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
-
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Physical,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
-	c.QueueDmg(&d, f+travel)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypePierce,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -51,38 +51,38 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if weakPoint == 0 {
 		hitWeakPoint = false
 	}
-
-	d := c.Snapshot(
-		"Aim Charge Attack",
-		core.AttackTagExtra,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Electro,
-		25,
-		aimChargeFull[c.TalentLvlAttack()],
-	)
-	d.HitWeakPoint = hitWeakPoint
+	ai := core.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Aim Charge Attack",
+		AttackTag:    core.AttackTagExtra,
+		ICDTag:       core.ICDTagNone,
+		ICDGroup:     core.ICDGroupDefault,
+		StrikeType:   core.StrikeTypePierce,
+		Element:      core.Electro,
+		Durability:   25,
+		Mult:         aimChargeFull[c.TalentLvlAttack()],
+		HitWeakPoint: hitWeakPoint,
+	}
 	// d.AnimationFrames = f
-
-	c.QueueDmg(&d, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
 
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
 	if c.Core.Status.Duration("saracover") > 0 {
 		// Not sure what kind of strike type this is
-		d := c.Snapshot(
-			"Tengu Juurai: Ambush",
-			core.AttackTagElementalArt,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Electro,
-			25,
-			skill[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Tengu Juurai: Ambush",
+			AttackTag:  core.AttackTagElementalArt,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypePierce,
+			Element:    core.Electro,
+			Durability: 25,
+			Mult:       skill[c.TalentLvlSkill()],
+		}
 
-		c.QueueDmg(&d, f+travel+90)
+		//TODO: snapshot?
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+travel+90)
 
 		// Particles are emitted after the ambush thing hits
 		c.QueueParticle("sara", 3, core.Electro, f+travel+90)
@@ -111,20 +111,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	// C2 handling
 	if c.Base.Cons >= 2 {
-		d := c.Snapshot(
-			"Tengu Juurai: Ambush C2",
-			core.AttackTagElementalArt,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Electro,
-			25,
-			skill[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
-		d.Mult = .3 * d.Mult
-
-		c.QueueDmg(&d, 90)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Tengu Juurai: Ambush C2",
+			AttackTag:  core.AttackTagElementalArt,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypePierce,
+			Element:    core.Electro,
+			Durability: 25,
+			Mult:       0.3 * skill[c.TalentLvlSkill()],
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, 90)
 
 		c.attackBuff(90)
 		c.a4(90)
@@ -200,33 +198,40 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.AddTask(func() {
 		// Flagged as no ICD since the stormclusters do not share ICD with the main hit
 		// No ICD should not functionally matter as this only hits once
-		dTitanbreaker := c.Snapshot(
-			"Tengu Juurai: Titanbreaker",
-			core.AttackTagElementalBurst,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Electro,
-			25,
-			burstMain[c.TalentLvlBurst()],
-		)
-		dTitanbreaker.Targets = core.TargetAll
 
-		dStormcluster := c.Snapshot(
-			"Tengu Juurai: Stormcluster",
-			core.AttackTagElementalBurst,
-			core.ICDTagElementalBurst,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Electro,
-			25,
-			burstCluster[c.TalentLvlBurst()],
-		)
-		dStormcluster.Targets = core.TargetAll
+		//titan breaker
+		aiTitanbreaker := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Tengu Juurai: Titanbreaker",
+			AttackTag:  core.AttackTagElementalBurst,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    core.Electro,
+			Durability: 25,
+			Mult:       burstMain[c.TalentLvlBurst()],
+		}
+		// dTitanbreaker.Targets = core.TargetAll
+
+		//stormcluster
+		aiStormcluster := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Tengu Juurai: Stormcluster",
+			AttackTag:  core.AttackTagElementalBurst,
+			ICDTag:     core.ICDTagElementalBurst,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    core.Electro,
+			Durability: 25,
+			Mult:       burstCluster[c.TalentLvlBurst()],
+		}
+		snapStormcluster := c.Snapshot(&aiStormcluster)
+		// dStormcluster.Targets = core.TargetAll
 
 		if waveClusterHits%10 == 1 {
 			// Actual hit procs after the full cast duration, or 80 frames
-			c.QueueDmg(&dTitanbreaker, f+20)
+			c.Core.Combat.QueueAttack(aiTitanbreaker, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, f+20)
+			// c.QueueDmg(&dTitanbreaker, f+20)
 			c.c1(f + 20)
 		}
 		if waveAttackProcs%10 == 1 {
@@ -243,8 +248,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
 			if waveHits > 0 {
 				for j := 0; j < waveHits; j++ {
-					x := dStormcluster.Clone()
-					c.QueueDmg(&x, f+20+(50*(waveN+1)))
+					c.Core.Combat.QueueAttackWithSnap(aiStormcluster, snapStormcluster, core.NewDefCircHit(5, false, core.TargettableEnemy), f+20+(50*(waveN+1)))
+					// x := dStormcluster.Clone()
+					// c.QueueDmg(&x, f+20+(50*(waveN+1)))
 					c.c1(f + 20 + (50 * (waveN + 1)))
 				}
 			}
@@ -256,7 +262,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}, "sara-q-snapshot", f)
 
 	c.SetCD(core.ActionBurst, 20*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }
@@ -272,7 +278,8 @@ func (c *char) attackBuff(delay int) {
 
 		active := c.Core.Chars[c.Core.ActiveChar]
 
-		c.Core.Status.AddStatus(fmt.Sprintf("sarabuff%v", active.Name()), 360)
+		active.AddTag("sarabuff", c.Core.F+360)
+		// c.Core.Status.AddStatus(fmt.Sprintf("sarabuff%v", active.Name()), 360)
 		c.Core.Log.Debugw("sara attack buff applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", active.CharIndex(), "buff", buff, "expiry", c.Core.F+360)
 
 		val := make([]float64, core.EndStatType)
@@ -286,21 +293,6 @@ func (c *char) attackBuff(delay int) {
 			Expiry: c.Core.F + 360,
 		})
 
-		// Apply on damage check hook for C6
-		if c.Base.Cons == 6 {
-			c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-				ds := args[1].(*core.Snapshot)
-				// No need to keep event hook if sara attack buff is not active
-				if c.Core.Status.Duration("sarabuff"+ds.Actor) <= 0 {
-					return true
-				}
-				if ds.Element != core.Electro {
-					return false
-				}
-				ds.Stats[core.CD] += .6
-				return false
-			}, "sara-c6")
-		}
 	}, "sara-attack-buff", delay)
 }
 

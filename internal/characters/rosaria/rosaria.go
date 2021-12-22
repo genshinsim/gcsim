@@ -3,6 +3,7 @@ package rosaria
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type char struct {
@@ -10,7 +11,7 @@ type char struct {
 }
 
 func init() {
-	core.RegisterCharFunc("rosaria", NewChar)
+	core.RegisterCharFunc(keys.Rosaria, NewChar)
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -44,22 +45,22 @@ func (c *char) c1() {
 	// Add hook that monitors for crit hits. Mirrors existing favonius code
 	// No log value saved as stat mod already shows up in debug view
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
 		if !crit {
 			return false
 		}
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 
-		val := make([]float64, core.EndStatType)
-		val[core.AtkSpd] = 0.1
-		val[core.DmgP] = 0.1
 		c.AddMod(core.CharStatMod{
 			Key:    "rosaria-c1",
 			Expiry: c.Core.F + 240,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
+				val := make([]float64, core.EndStatType)
+				val[core.AtkSpd] = 0.1
+				val[core.DmgP] = 0.1
 				if a != core.AttackTagNormal {
 					return nil, false
 				}
@@ -80,12 +81,12 @@ func (c *char) c1() {
 func (c *char) c4() {
 	icd := 0
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
-		if ds.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if !(crit && (ds.AttackTag == core.AttackTagElementalArt)) {
+		if !(crit && (atk.Info.AttackTag == core.AttackTagElementalArt)) {
 			return false
 		}
 		// Use an icd to make it only once per skill cast. Use 30 frames as two hits occur 20 frames apart
@@ -107,7 +108,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
 }

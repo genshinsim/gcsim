@@ -16,38 +16,37 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	var totalMV float64
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter+1),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
-		d := c.Snapshot(
-			fmt.Sprintf("Normal %v", c.NormalCounter+1),
-			// "Normal",
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Physical,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, travel+f-5+i)
+		ai.Mult = mult[c.TalentLvlAttack()]
 		totalMV += mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, travel+f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
 
 	if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 		//trigger attack
-		d := c.Snapshot(
-			fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter+1),
-			// "Kindling (C6)",
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Pyro,
-			25,
-			totalMV,
-		)
-		c.QueueDmg(&d, travel+f+5)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter+1),
+			AttackTag:  core.AttackTagNormal,
+			ICDTag:     core.ICDTagNormalAttack,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Pyro,
+			Durability: 25,
+			Mult:       totalMV,
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, travel+f+5)
 
 	}
 
@@ -97,19 +96,17 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//assume it does skill dmg at end of it's animation
-	d := c.Snapshot(
-		"Aurous Blaze",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Pyro,
-		50,
-		burst[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-
-	c.QueueDmg(&d, f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Aurous Blaze",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Pyro,
+		Durability: 50,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, f)
 
 	//marker an opponent after first hit
 	//ignore the bouncing around for now (just assume it's always target 0)
@@ -144,7 +141,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//add cooldown to sim
 	c.SetCD(core.ActionBurst, 15*60)
 	//use up energy
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }
@@ -153,11 +150,11 @@ func (c *char) burstHook() {
 	//check on attack landed for target 0
 	//if aurous active then trigger dmg if not on cd
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		ae := args[1].(*core.AttackEvent)
 		if c.Core.Status.Duration("aurous") == 0 {
 			return false
 		}
-		if ds.ActorIndex == c.Index {
+		if ae.Info.ActorIndex == c.Index {
 			//ignore for self
 			return false
 		}
@@ -166,7 +163,7 @@ func (c *char) burstHook() {
 			return false
 		}
 		//ignore if wrong tags
-		switch ds.AttackTag {
+		switch ae.Info.AttackTag {
 		case core.AttackTagNormal:
 		case core.AttackTagExtra:
 		case core.AttackTagPlunge:
@@ -176,19 +173,18 @@ func (c *char) burstHook() {
 			return false
 		}
 		//do explosion, set icd
-		d := c.Snapshot(
-			"Aurous Blaze (Explode)",
-			core.AttackTagElementalBurst,
-			core.ICDTagElementalBurst,
-			// core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Pyro,
-			25,
-			burstExplode[c.TalentLvlBurst()],
-		)
-		d.Targets = core.TargetAll
-		c.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Aurous Blaze (Explode)",
+			AttackTag:  core.AttackTagElementalBurst,
+			ICDTag:     core.ICDTagElementalBurst,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Pyro,
+			Durability: 25,
+			Mult:       burstExplode[c.TalentLvlBurst()],
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 1)
+
 		c.Core.Status.AddStatus("aurousicd", 120) //2 sec icd
 
 		//check for c4

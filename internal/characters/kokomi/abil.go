@@ -16,19 +16,20 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Hydro,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
-	d.FlatDmg = c.burstDmgBonus(d.AttackTag)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Hydro,
+		Durability: 25,
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+	}
+	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+travel)
 	// TODO: Assume that this is not dynamic (snapshot on projectile release)
-	c.QueueDmg(&d, f+travel)
 
 	if c.NormalCounter == c.NormalHitNum-1 {
 		c.c1(f)
@@ -48,21 +49,21 @@ func (c *char) c1(f int) {
 	}
 
 	// TODO: Assume that these are 1A (not specified in library)
-	d := c.Snapshot(
-		"Swimming Fish (C1)",
-		core.AttackTagNone,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Hydro,
-		25,
-		0,
-	)
-	d.FlatDmg = .3 * c.HPMax
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNone,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Hydro,
+		Durability: 25,
+		Mult:       0,
+	}
+	ai.FlatDmg = 0.3 * c.HPMax
 
 	// TODO: Frames not in library - Think it's 7 frames based on a rough count
 	// TODO: Is this snapshotted/dynamic?
-	c.QueueDmg(&d, f+7)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+7)
 }
 
 // Standard charge attack
@@ -71,23 +72,19 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	// CA has no travel time
 
-	c.QueueDmgDynamic(func() *core.Snapshot {
-		d := c.Snapshot(
-			"Charge",
-			core.AttackTagExtra,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Hydro,
-			25,
-			charge[c.TalentLvlAttack()],
-		)
-		d.Targets = core.TargetAll
-		d.FlatDmg = c.burstDmgBonus(d.AttackTag)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Hydro,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+	}
+	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
 
-		return &d
-	}, f)
-
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 	return f, a
 }
 
@@ -114,28 +111,34 @@ func (c *char) Skill(p map[string]int) (int, int) {
 }
 
 // Helper function since this needs to be created both on skill use and burst use
-func (c *char) createSkillSnapshot() *core.Snapshot {
-	d := c.Snapshot(
-		"Bake-Kurage",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Hydro,
-		25,
-		skillDmg[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
-	d.FlatDmg = c.burstDmgBonus(d.AttackTag)
-	return &d
+func (c *char) createSkillSnapshot() *core.AttackEvent {
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Bake-Kurage",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Hydro,
+		Durability: 25,
+		Mult:       skillDmg[c.TalentLvlSkill()],
+	}
+	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
+	snap := c.Snapshot(&ai)
+
+	return (&core.AttackEvent{
+		Info:        ai,
+		Pattern:     core.NewDefCircHit(5, false, core.TargettableEnemy),
+		SourceFrame: c.Core.F,
+		Snapshot:    snap,
+	})
+
 }
 
 // Helper function that handles damage, healing, and particle components of every tick of her E
-func (c *char) skillTick(d *core.Snapshot) {
+func (c *char) skillTick(d *core.AttackEvent) {
 
-	x := d.Clone()
-	c.Core.Combat.ApplyDamage(&x)
-
+	c.Core.Combat.QueueAttackEvent(d, 0)
 	c.Core.Health.HealActive(c.Index, skillHealPct[c.TalentLvlSkill()]*c.HPMax+skillHealFlat[c.TalentLvlSkill()])
 
 	// Particles are 0~1 (1:2) on every damage instance
@@ -158,7 +161,7 @@ func (c *char) skillTick(d *core.Snapshot) {
 
 // Handles repeating skill damage ticks. Split into a separate function as you can only have 1 jellyfish on field at once
 // Skill snapshots, so inputs into the function are the originating snapshot
-func (c *char) skillTickTask(originalSnapshot *core.Snapshot, src int) func() {
+func (c *char) skillTickTask(originalSnapshot *core.AttackEvent, src int) func() {
 	return func() {
 		c.Core.Log.Debugw("Skill Tick Debug", "frame", c.Core.F, "event", core.LogCharacterEvent, "current dur", c.Core.Status.Duration("kokomiskill"), "skilllastused", c.skillLastUsed, "src", src)
 		if c.Core.Status.Duration("kokomiskill") == 0 {
@@ -167,6 +170,7 @@ func (c *char) skillTickTask(originalSnapshot *core.Snapshot, src int) func() {
 
 		// Basically stops "old" casts of E from working, and also stops further ticks from that source
 		if c.skillLastUsed > src {
+
 			return
 		}
 
@@ -187,21 +191,19 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	// TODO: Snapshot timing is not yet known. Assume it's dynamic for now
-	c.QueueDmgDynamic(func() *core.Snapshot {
-		d := c.Snapshot(
-			"Nereid's Ascension",
-			core.AttackTagElementalBurst,
-			core.ICDTagElementalBurst,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Hydro,
-			50,
-			0,
-		)
-		d.Targets = core.TargetAll
-		d.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.HPMax
-		return &d
-	}, f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Nereid's Ascension",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Hydro,
+		Durability: 50,
+		Mult:       0,
+	}
+	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.HPMax
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
 
 	c.Core.Status.AddStatus("kokomiburst", 10*60)
 
@@ -218,11 +220,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// C4 attack speed buff
 	if c.Base.Cons >= 4 {
-		val := make([]float64, core.EndStatType)
-		val[core.AtkSpd] = 0.1
 		c.AddMod(core.CharStatMod{
 			Key: "kokomi-c4",
 			Amount: func(a core.AttackTag) ([]float64, bool) {
+				val := make([]float64, core.EndStatType)
+				val[core.AtkSpd] = 0.1
 				if c.Core.Status.Duration("kokomiburst") > 0 {
 					return val, true
 				}
@@ -234,7 +236,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// Cannot be prefed particles
 	c.AddTask(func() {
-		c.Energy = 0
+		c.ConsumeEnergy(0)
 	}, "kokomi-q-energy-drain", f)
 
 	c.SetCD(core.ActionBurst, 18*60)

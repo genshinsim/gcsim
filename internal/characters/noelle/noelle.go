@@ -1,15 +1,14 @@
 package noelle
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func init() {
-	core.RegisterCharFunc("noelle", NewChar)
+	core.RegisterCharFunc(keys.Noelle, NewChar)
 }
 
 type char struct {
@@ -51,33 +50,6 @@ c6: sweeping time increase additional 50%; add 1s up to 10s everytime opponent k
 
 **/
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	switch a {
-	case core.ActionAttack:
-		f := 0
-		switch c.NormalCounter {
-		//TODO: need to add atkspd mod
-		case 0:
-			f = 28 //frames from keqing lib
-		case 1:
-			f = 70 - 28
-		case 2:
-			f = 116 - 70
-		case 3:
-			f = 174 - 116
-		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f, f
-	case core.ActionSkill:
-		return 41, 41 //TODO: not ok
-	case core.ActionBurst:
-		return 111, 111 //ok
-	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Name, a)
-		return 0, 0
-	}
-}
-
 func (c *char) a2() {
 	icd := 0
 	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
@@ -89,19 +61,15 @@ func (c *char) a2() {
 			return false
 		}
 		icd = c.Core.F + 3600
-		d := c.Snapshot(
-			"A2 Shield",
-			core.AttackTagNone,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.NoElement,
-			0,
-			0,
-		)
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "A2 Shield",
+			AttackTag:  core.AttackTagNone,
+		}
+		snap := c.Snapshot(&ai)
 
 		//add shield
-		x := d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]
+		x := snap.BaseDef*(1+snap.Stats[core.DEFP]) + snap.Stats[core.DEF]
 		c.Core.Shields.Add(&shield.Tmpl{
 			Src:        c.Core.F,
 			ShieldType: core.ShieldNoelleA2,
@@ -113,190 +81,8 @@ func (c *char) a2() {
 	}, "noelle-a2")
 }
 
-func (c *char) Attack(p map[string]int) (int, int) {
-
-	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Physical,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
-	d.Targets = core.TargetAll
-	c.AddTask(func() {
-		c.Core.Combat.ApplyDamage(&d)
-		//check for healing
-		if c.Core.Shields.Get(core.ShieldNoelleSkill) != nil {
-			prob := healChance[c.TalentLvlSkill()]
-			if c.Base.Cons >= 1 && c.Core.Status.Duration("noelleq") > 0 {
-				prob = 1
-			}
-			if c.Core.Rand.Float64() < prob {
-				//heal target
-				x := d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]
-				heal := (shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]) * (1 + d.Stats[core.Heal])
-				c.Core.Health.HealAll(c.Index, heal)
-			}
-		}
-	}, "noelle auto", f-1)
-
-	c.AdvanceNormalIndex()
-
-	c.a4Counter++
-	if c.a4Counter == 4 {
-		c.a4Counter = 0
-		if c.Cooldown(core.ActionSkill) > 0 {
-			c.ReduceActionCooldown(core.ActionSkill, 60)
-		}
-	}
-
-	return f, a
-}
-
-type noelleShield struct {
-	*shield.Tmpl
-	c *char
-}
-
-func (n *noelleShield) OnExpire() {
-	if n.c.Base.Cons >= 4 {
-		n.c.explodeShield()
-	}
-}
-
-func (n *noelleShield) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, bool) {
-	taken, ok := n.Tmpl.OnDamage(dmg, ele, bonus)
-	if !ok && n.c.Base.Cons >= 4 {
-		n.c.explodeShield()
-	}
-	return taken, ok
-}
-
-func (c *char) newShield(base float64, t core.ShieldType, dur int) *noelleShield {
-	n := &noelleShield{}
-	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.Src = c.Core.F
-	n.Tmpl.ShieldType = t
-	n.Tmpl.HP = base
-	n.Tmpl.Expires = c.Core.F + dur
-	n.c = c
-	return n
-}
-
-func (c *char) Skill(p map[string]int) (int, int) {
-	f, a := c.ActionFrames(core.ActionSkill, p)
-
-	d := c.Snapshot(
-		"Breastplate (Shield)",
-		core.AttackTagNone,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.NoElement,
-		0,
-		0,
-	)
-	d.Targets = core.TargetAll
-
-	//add shield first
-	x := d.BaseDef*(1+d.Stats[core.DEFP]) + d.Stats[core.DEF]
-	shield := shieldFlat[c.TalentLvlSkill()] + shieldDef[c.TalentLvlSkill()]*x
-
-	c.Core.Shields.Add(c.newShield(shield, core.ShieldNoelleSkill, 720))
-
-	//activate shield timer, on expiry explode
-	c.shieldTimer = c.Core.F + 720 //12 seconds
-
-	//deal dmg on cast
-	d = c.Snapshot(
-		"Breastplate",
-		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Geo,
-		50,
-		shieldDmg[c.TalentLvlSkill()],
-	)
-	d.UseDef = true //TODO: test if this is working ok
-
-	c.a4Counter = 0
-
-	c.QueueDmg(&d, f+1)
-
-	if c.Base.Cons >= 4 {
-		c.AddTask(func() {
-			if c.shieldTimer == c.Core.F {
-				//deal damage
-				c.explodeShield()
-			}
-		}, "noelle shield", 720)
-	}
-
-	c.SetCD(core.ActionSkill, 24*60)
-	return f, a
-}
-
-func (c *char) explodeShield() {
-	c.shieldTimer = 0
-	d := c.Snapshot(
-		"Breastplate",
-		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Geo,
-		50,
-		4,
-	)
-	d.Targets = core.TargetAll
-	c.QueueDmg(&d, 1)
-}
-
-func (c *char) Burst(p map[string]int) (int, int) {
-	f, a := c.ActionFrames(core.ActionSkill, p)
-
-	c.Core.Status.AddStatus("noelleq", 900)
-
-	d := c.Snapshot(
-		"Sweeping Time (Burst)",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Geo,
-		25,
-		burst[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-
-	c.QueueDmg(&d, f-10)
-
-	d = c.Snapshot(
-		"Sweeping Time (Skill)",
-		core.AttackTagElementalBurst,
-		core.ICDTagElementalBurst,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Geo,
-		25,
-		burstskill[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-
-	c.QueueDmg(&d, f-5)
-
-	c.SetCD(core.ActionBurst, 900)
-	c.Energy = 0
-	return f, a
-}
-
-func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.ICDGroup, st core.StrikeType, e core.EleType, d core.Durability, mult float64) core.Snapshot {
-	ds := c.Tmpl.Snapshot(name, a, icd, g, st, e, d, mult)
+func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
+	ds := c.Tmpl.Snapshot(ai)
 
 	if c.Core.Status.Duration("noelleq") > 0 {
 
@@ -310,15 +96,14 @@ func (c *char) Snapshot(name string, a core.AttackTag, icd core.ICDTag, g core.I
 
 		ds.Stats[core.ATK] += fa
 		//infusion to attacks only
-		switch ds.AttackTag {
+		switch ai.AttackTag {
 		case core.AttackTagNormal:
 		case core.AttackTagPlunge:
 		case core.AttackTagExtra:
 		default:
 			return ds
 		}
-		ds.Element = core.Geo
-		ds.Targets = core.TargetAll
+		ai.Element = core.Geo
 	}
 	return ds
 }

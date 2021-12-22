@@ -18,11 +18,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	icd := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		ae := args[1].(*core.AttackEvent)
+		if ae.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal {
+		if ae.Info.AttackTag != core.AttackTagNormal {
 			return false
 		}
 		if icd > c.F {
@@ -31,20 +31,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		if c.Rand.Float64() < 0.5 {
 			return false
 		}
-		d := char.Snapshot(
-			"Skyward Atlas Proc",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			atk,
-		)
-		char.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Skyward Atlas Proc",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       atk,
+		}
+		snap := char.Snapshot(&ai)
 		for i := 0; i < 6; i++ {
-			x := d.Clone()
-			char.QueueDmg(&x, i*150)
+			c.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.1, false, core.TargettableEnemy), i*150)
 		}
 		icd = c.F + 1800
 		return false

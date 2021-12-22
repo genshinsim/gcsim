@@ -6,21 +6,21 @@ import (
 )
 
 func (c *char) c1() {
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		t := args[0].(core.Target)
-		if ds.ActorIndex != c.Index {
-			return false
-		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
-			return false
-		}
-		if t.AuraContains(core.Cryo) {
-			ds.Stats[core.CR] += 0.15
-			c.Core.Log.Debugw("kaeya c1 - adding crit", "event", core.LogCalc, "char", c.Index, "frame", c.Core.F, "final cr", ds.Stats[core.CR])
-		}
-		return false
-	}, "kaeya-c1")
+	c.AddPreDamageMod(core.PreDamageMod{
+		Key:    "kaeya-c1",
+		Expiry: -1,
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
+			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+				return nil, false
+			}
+			if !t.AuraContains(core.Cryo, core.Frozen) {
+				return nil, false
+			}
+			val[core.CR] = 0.15
+			return val, true
+		},
+	})
 }
 
 func (c *char) c4() {

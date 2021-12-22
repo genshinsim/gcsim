@@ -23,11 +23,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	key := fmt.Sprintf("thundering-pulse-%v", char.Name())
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != core.AttackTagNormal {
 			return false
 		}
 		normal = c.F + 300 // lasts 5 seconds

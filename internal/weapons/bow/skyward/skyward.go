@@ -29,9 +29,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	icd := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		//check if char is correct?
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		//check if cd is up
@@ -43,18 +43,18 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 
 		//add a new action that deals % dmg immediately
-		d := char.Snapshot(
-			"Skyward Harp Proc",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			1.25,
-		)
-		d.Targets = core.TargetAll
-		char.QueueDmg(&d, 1)
+		//superconduct attack
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Skyward Harp Proc",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       1.25,
+		}
+		c.Combat.QueueAttack(ai, core.NewDefCircHit(2, true, core.TargettableEnemy), 0, 1)
 
 		//trigger cd
 		icd = c.F + cd

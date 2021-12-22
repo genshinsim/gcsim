@@ -32,29 +32,29 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	})
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if c.F < effectLastProc+15*60 {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagElementalBurst {
+		if atk.Info.AttackTag != core.AttackTagElementalBurst {
 			return false
 		}
 		effectLastProc = c.F
-		d := char.Snapshot(
-			"Luxurious Sea-Lord Proc",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			tunaDmg,
-		)
-		d.Targets = core.TargetAll
-		char.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Luxurious Sea-Lord Proc",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       tunaDmg,
+		}
+		c.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
 
 		return false
 	}, fmt.Sprintf("sealord-%v", char.Name()))

@@ -16,18 +16,19 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
-		d := c.Snapshot(
-			fmt.Sprintf("Normal %v", c.NormalCounter),
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, f+i+travel)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f+i+travel)
 	}
 
 	c.AdvanceNormalIndex()
@@ -45,20 +46,18 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		travel = 20
 	}
 
-	c.QueueDmgDynamicSnapshotDelay(func() *core.Snapshot {
-		d := c.Snapshot(
-			"Charge Shot",
-			core.AttackTagExtra,
-			// TODO: Not sure about CA ICD
-			core.ICDTagExtraAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypePierce,
-			core.Cryo,
-			25,
-			aim[c.TalentLvlAttack()],
-		)
-		return &d
-	}, f, travel)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge Shot",
+		// TODO: Not sure about CA ICD
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       aim[c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f+travel)
 
 	return f, a
 }
@@ -87,43 +86,37 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	// Initial damage
-	c.QueueDmgDynamic(func() *core.Snapshot {
+	c.Core.Tasks.Add(func() {
 		// TODO: Not 100% sure about ICD
-		d := c.Snapshot(
-			"Freeze Bomb",
-			core.AttackTagElementalArt,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			25,
-			skillMain[c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
-
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Freeze Bomb",
+			AttackTag:  core.AttackTagElementalArt,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Cryo,
+			Durability: 25,
+			Mult:       skillMain[c.TalentLvlSkill()],
+		}
 		c.coilStacks()
-
-		return &d
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 0)
 	}, f)
 
 	// Bomblets snapshot on cast
-	dBomblets := c.Snapshot(
-		"Chillwater Bomblets",
-		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		skillBomblets[c.TalentLvlSkill()],
-	)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Chillwater Bomblets",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       skillBomblets[c.TalentLvlSkill()],
+	}
 
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
-		x := dBomblets.Clone()
-
-		c.QueueDmg(&x, f+delay+((i+1)*6))
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f+delay+((i+1)*6))
 	}
 
 	// Queue up bomblet coil stacks
@@ -153,13 +146,12 @@ func (c *char) coilStacks() {
 
 	// A1
 	// When Aloy receives the Coil effect from Frozen Wilds, her ATK is increased by 16%, while nearby party members' ATK is increased by 8%. This effect lasts 10s.
-	valA1 := make([]float64, core.EndStatType)
 	for _, char := range c.Core.Chars {
+		valA1 := make([]float64, core.EndStatType)
 		valA1[core.ATKP] = .08
 		if char.CharIndex() == c.Index {
 			valA1[core.ATKP] = .16
 		}
-
 		char.AddMod(core.CharStatMod{
 			Key:    "aloy-a1",
 			Expiry: c.Core.F + 600,
@@ -224,24 +216,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	// TODO: Assuming dynamic
-	c.QueueDmgDynamic(func() *core.Snapshot {
-		d := c.Snapshot(
-			"Prophecies of Dawn",
-			core.AttackTagElementalBurst,
-			core.ICDTagElementalBurst,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			50,
-			burst[c.TalentLvlBurst()],
-		)
-		d.Targets = core.TargetAll
-		return &d
-	}, f)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Prophecies of Dawn",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 50,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), f, f)
 
 	c.SetCD(core.ActionBurst, 12*60)
 	// TODO: Not sure when energy drain happens
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }

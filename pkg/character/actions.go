@@ -41,13 +41,13 @@ func (c *Tmpl) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Name)
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
 		return 0
 	}
 }
 
 func (c *Tmpl) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	c.Core.Log.Warnw("ActionFrames not implemented", "character", c.Base.Name)
+	c.Core.Log.Warnw("ActionFrames not implemented", "character", c.Base.Key.String())
 	return 0, 0
 }
 

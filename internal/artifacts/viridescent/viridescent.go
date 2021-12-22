@@ -1,8 +1,6 @@
 package thunderingfury
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -24,49 +22,52 @@ func New(c core.Character, s *core.Core, count int) {
 		})
 	}
 	if count >= 4 {
-		s.Events.Subscribe(core.OnTransReaction, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
-			t := args[0].(core.Target)
-			//ignore if source not current char
-			if ds.ActorIndex != c.CharIndex() {
+		//add +0.4 reaction damage
+		c.AddReactBonusMod(core.ReactionBonusMod{
+			Key:    "4tf",
+			Expiry: -1,
+			Amount: func(ai core.AttackInfo) (float64, bool) {
+				//overload dmg can't melt or vape so it's fine
+				switch ai.AttackTag {
+				case core.AttackTagSwirlCryo:
+				case core.AttackTagSwirlElectro:
+				case core.AttackTagSwirlHydro:
+				case core.AttackTagSwirlPyro:
+				default:
+					return 0, false
+				}
+				return 0.6, false
+			},
+		})
+
+		vvfunc := func(ele core.EleType, key string) func(args ...interface{}) bool {
+			return func(args ...interface{}) bool {
+				atk := args[1].(*core.AttackEvent)
+				t := args[0].(core.Target)
+				if atk.Info.ActorIndex != c.CharIndex() {
+					return false
+				}
+
+				//ignore if character not on field
+				if s.ActiveChar != c.CharIndex() {
+					return false
+				}
+
+				t.AddResMod(key, core.ResistMod{
+					Duration: 600, //10 seconds
+					Ele:      ele,
+					Value:    -0.4,
+				})
+
+				s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", key, "char", c.CharIndex())
+
 				return false
 			}
-
-			var ele core.EleType
-			var key string
-			switch ds.ReactionType {
-			case core.SwirlCryo:
-				ele = core.Cryo
-				key = "vvcryo"
-			case core.SwirlElectro:
-				ele = core.Electro
-				key = "vvelectro"
-			case core.SwirlPyro:
-				ele = core.Pyro
-				key = "vvpyro"
-			case core.SwirlHydro:
-				ele = core.Hydro
-				key = "vvhydro"
-			default:
-				return false
-			}
-
-			ds.ReactBonus += 0.6
-
-			//ignore if character not on field
-			if s.ActiveChar != c.CharIndex() {
-				return false
-			}
-
-			t.AddResMod(key, core.ResistMod{
-				Duration: 600, //10 seconds
-				Ele:      ele,
-				Value:    -0.4,
-			})
-
-			s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", ds.ReactionType, "char", c.CharIndex())
-			return false
-		}, fmt.Sprintf("vv4-%v", c.Name()))
+		}
+		s.Events.Subscribe(core.OnSwirlCryo, vvfunc(core.Cryo, "vvcryo"), "vv4pc-"+c.Name())
+		s.Events.Subscribe(core.OnSwirlElectro, vvfunc(core.Electro, "vvelectro"), "vv4pc-"+c.Name())
+		s.Events.Subscribe(core.OnSwirlHydro, vvfunc(core.Hydro, "vvhydro"), "vv4pc-"+c.Name())
+		s.Events.Subscribe(core.OnSwirlPyro, vvfunc(core.Pyro, "vvpyro"), "vv4pc-"+c.Name())
 
 	}
 	//add flat stat to char

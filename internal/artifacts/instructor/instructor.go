@@ -1,8 +1,6 @@
 package instructor
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -29,14 +27,14 @@ func New(c core.Character, s *core.Core, count int) {
 		m := make([]float64, core.EndStatType)
 		m[core.EM] = 120
 
-		s.Events.Subscribe(core.OnReactionOccured, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
+		add := func(args ...interface{}) bool {
+			atk := args[1].(*core.AttackEvent)
 			// Character must be on field to proc bonus
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
 			// Source of elemental reaction must be the character with instructor
-			if ds.ActorIndex != c.CharIndex() {
+			if atk.Info.ActorIndex != c.CharIndex() {
 				return false
 			}
 
@@ -56,6 +54,10 @@ func New(c core.Character, s *core.Core, count int) {
 				})
 			}
 			return false
-		}, fmt.Sprintf("instructor4-%v", c.Name()))
+		}
+
+		for i := core.EventType(core.ReactionEventStartDelim + 1); i < core.ReactionEventEndDelim; i++ {
+			s.Events.Subscribe(i, add, "4ins"+c.Name())
+		}
 	}
 }

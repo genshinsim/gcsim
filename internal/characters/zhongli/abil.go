@@ -8,21 +8,21 @@ import (
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	d := c.Snapshot(
-		fmt.Sprintf("Normal %v", c.NormalCounter),
-		core.AttackTagNormal,
-		core.ICDTagNormalAttack,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Physical,
-		25,
-		attack[c.NormalCounter][c.TalentLvlAttack()],
-	)
-	d.FlatDmg = 0.0139 * c.HPMax
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+		FlatDmg:    0.0139 * c.HPMax,
+	}
+	snap := c.Snapshot(&ai)
 
 	for i := 0; i < hits[c.NormalCounter]; i++ {
-		x := d.Clone()
-		c.QueueDmg(&x, f-i)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -31,19 +31,18 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionCharge, p)
-	d := c.Snapshot(
-		"Charge",
-		core.AttackTagExtra,
-		core.ICDTagExtraAttack,
-		core.ICDGroupPole,
-		core.StrikeTypeSpear,
-		core.Physical,
-		25,
-		charge[c.TalentLvlAttack()],
-	)
-	d.FlatDmg = 0.0139 * c.HPMax
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupPole,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+		FlatDmg:    0.0139 * c.HPMax,
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1)
 
 	return f, a
 }
@@ -82,21 +81,19 @@ func (c *char) skillPress(f, max int) {
 
 func (c *char) skillHold(f, max int, createStele bool) {
 	//hold does dmg
-	d := c.Snapshot(
-		"Stone Stele (Hold)",
-		core.AttackTagElementalArt,
-		core.ICDTagElementalArt,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Geo,
-		25,
-		skillHold[c.TalentLvlSkill()],
-	)
-	d.FlatDmg = 0.019 * c.HPMax
-	d.Targets = core.TargetAll
-
-	c.QueueDmg(&d, f-1)
-
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Stone Stele (Hold)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Geo,
+		Durability: 25,
+		Mult:       skillHold[c.TalentLvlSkill()],
+		FlatDmg:    0.019 * c.HPMax,
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f-1)
 	//create a stele if none exists and desired by player
 	if (c.steleCount == 0) && createStele {
 		c.AddTask(func() {
@@ -114,26 +111,25 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//deal damage when created
-	d := c.Snapshot(
-		"Planet Befall",
-		core.AttackTagElementalBurst,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeBlunt,
-		core.Geo,
-		100,
-		burst[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-	d.FlatDmg = 0.33 * c.HPMax
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Planet Befall",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Geo,
+		Durability: 100,
+		Mult:       burst[c.TalentLvlBurst()],
+		FlatDmg:    0.33 * c.HPMax,
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f-1, f-1)
 
 	if c.Base.Cons >= 2 {
 		c.addJadeShield()
 	}
 
 	c.SetCD(core.ActionBurst, 720)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }

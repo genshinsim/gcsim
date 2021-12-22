@@ -13,19 +13,19 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		travel = 20
 	}
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Normal",
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
-		d := c.Snapshot(
-			//fmt.Sprintf("Normal %v", c.NormalCounter),
-			"Normal",
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Physical,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, f+travel+i)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f+travel+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -41,30 +41,25 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		travel = 20
 	}
 
-	d := c.Snapshot(
-		"Aim (Charged)",
-		core.AttackTagExtra,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Anemo,
-		25,
-		aim[c.TalentLvlAttack()],
-	)
+	ai := core.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Aim (Charged)",
+		AttackTag:    core.AttackTagExtra,
+		ICDTag:       core.ICDTagNone,
+		ICDGroup:     core.ICDGroupDefault,
+		Element:      core.Anemo,
+		Durability:   25,
+		Mult:         aim[c.TalentLvlAttack()],
+		HitWeakPoint: true,
+	}
 
-	d.HitWeakPoint = true
-	// d.AnimationFrames = f
-
-	c.QueueDmg(&d, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, core.TargettableEnemy), f, travel+f)
 
 	if c.Base.Cons >= 1 {
-		d1 := d.Clone()
-		d1.Mult = d.Mult / 3.0
-		d1.Abil = "Aim (Charged) C1"
-		d2 := d1.Clone()
-
-		c.QueueDmg(&d1, travel+f)
-		c.QueueDmg(&d2, travel+f)
+		ai.Abil = "Aim (Charged) C1"
+		ai.Mult = ai.Mult / 3.0
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, core.TargettableEnemy), f, travel+f)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, core.TargettableEnemy), f, travel+f)
 	}
 
 	return f, a
@@ -75,27 +70,30 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	cd := 360
-	d := c.Snapshot(
-		"Skyward Sonnett",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypePierce,
-		core.Anemo,
-		50,
-		skillPress[c.TalentLvlSkill()],
-	)
-	d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Skyward Sonnett",
+		AttackTag:    core.AttackTagElementalArt,
+		ICDTag:       core.ICDTagNone,
+		ICDGroup:     core.ICDGroupDefault,
+		Element:      core.Anemo,
+		Durability:   50,
+		Mult:         skillPress[c.TalentLvlSkill()],
+		HitWeakPoint: true,
+	}
+
 	if p["hold"] == 1 {
 		cd = 900
-		d.Mult = skillHold[c.TalentLvlSkill()]
+		ai.Mult = skillHold[c.TalentLvlSkill()]
 	}
+
+	var cb core.AttackCBFunc
 
 	if c.Base.Cons >= 2 {
-		c.applyC2(&d)
+		cb = c2cb
 	}
 
-	c.QueueDmg(&d, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f-1, cb)
 
 	c.QueueParticle("venti", 4, core.Anemo, f+100)
 
@@ -109,25 +107,25 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.qInfuse = core.NoElement
 
 	//8 second duration, tick every .4 second
-	d := c.Snapshot(
-		"Wind's Grand Ode",
-		core.AttackTagElementalBurst,
-		core.ICDTagVentiBurstAnemo,
-		core.ICDGroupVenti,
-		core.StrikeTypeDefault,
-		core.Anemo,
-		25,
-		burstDot[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Wind's Grand Ode",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagVentiBurstAnemo,
+		ICDGroup:   core.ICDGroupVenti,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       burstDot[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
 
+	var cb core.AttackCBFunc
 	if c.Base.Cons == 6 {
-		c.applyC6(&d, core.Anemo)
+		cb = c6cb(core.Anemo)
 	}
 
 	for i := 24; i <= 480; i += 24 {
-		x := d.Clone()
-		c.QueueDmg(&x, i)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
 	}
 
 	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(480/18)), "venti-absorb-check", 10)
@@ -137,7 +135,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}, "venti-a4-restore", 480+f)
 
 	c.SetCD(core.ActionBurst, 15*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }
 
@@ -154,25 +152,24 @@ func (c *char) a4Restore() {
 }
 
 func (c *char) burstInfusedTicks() {
-	d := c.Snapshot(
-		"Wind's Grand Ode (Infused)",
-		core.AttackTagElementalBurst,
-		core.ICDTagVentiBurstAnemo,
-		core.ICDGroupVenti,
-		core.StrikeTypeDefault,
-		c.qInfuse,
-		25,
-		burstAbsorbDot[c.TalentLvlBurst()],
-	)
-	d.Targets = core.TargetAll
-
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Wind's Grand Ode (Infused)",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagVentiBurstAnemo,
+		ICDGroup:   core.ICDGroupVenti,
+		Element:    c.qInfuse,
+		Durability: 25,
+		Mult:       burstAbsorbDot[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
+	var cb core.AttackCBFunc
 	if c.Base.Cons == 6 {
-		c.applyC6(&d, c.qInfuse)
+		cb = c6cb(c.qInfuse)
 	}
 
 	for i := 24; i <= 360; i += 24 {
-		x := d.Clone()
-		c.QueueDmg(&x, i)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
 	}
 }
 

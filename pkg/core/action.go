@@ -1,10 +1,14 @@
 package core
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+)
 
 type Action struct {
 	Name   string
-	Target string //either character or a sequence name
+	Target keys.Char //either character or a sequence name
 
 	Exec     []ActionItem //if len > 1 then it's a sequence
 	IsSeq    bool         // is this a sequence
@@ -16,8 +20,8 @@ type Action struct {
 	Last       int //last time this was executed (frame)
 	ActionLock int //how many frames this action is locked from executing again
 
-	ActiveCond string
-	SwapTo     string
+	ActiveCond keys.Char
+	SwapTo     keys.Char
 	SwapLock   int
 	PostAction ActionType
 
@@ -31,7 +35,7 @@ type Action struct {
 type ActionItem struct {
 	Typ            ActionType
 	Param          map[string]int
-	Target         string
+	Target         keys.Char
 	SwapLock       int  //used for swaplock
 	FramesOverride bool //true if using custom frames
 	Frames         int  //frames if overridden
@@ -145,7 +149,7 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 
 	//do one last ready check
 	if !c.ActionReady(n.Typ, n.Param) {
-		a.core.Log.Warnw("queued action is not ready, should not happen; skipping frame")
+		a.core.Log.Warnw("frame", a.core.F, "event", LogSimEvent, "queued action is not ready, should not happen; skipping frame")
 		return 0, false, nil
 	}
 	switch n.Typ {
@@ -254,7 +258,7 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 	)
 
 	a.core.LastAction = n
-	a.core.LastAction.Target = c.Name()
+	a.core.LastAction.Target = c.Key()
 
 	return f, true, nil
 }

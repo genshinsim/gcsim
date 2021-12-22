@@ -17,11 +17,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	key := fmt.Sprintf("prototype-crescent-%v", char.Name())
 	//add on hit effect
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.HitWeakPoint {
+		if atk.Info.HitWeakPoint {
 			dur = c.F + 600
 		}
 		return false

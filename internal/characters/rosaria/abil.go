@@ -1,8 +1,6 @@
 package rosaria
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -11,19 +9,19 @@ import (
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Normal",
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		d := c.Snapshot(
-			fmt.Sprintf("Normal %v", c.NormalCounter),
-			core.AttackTagNormal,
-			core.ICDTagNormalAttack,
-			core.ICDGroupDefault,
-			core.StrikeTypeSpear,
-			core.Physical,
-			25,
-			mult[c.TalentLvlAttack()],
-		)
-		c.QueueDmg(&d, f-5+i)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -38,18 +36,17 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
-	d := c.Snapshot(
-		"Charge",
-		core.AttackTagExtra,
-		core.ICDTagExtraAttack,
-		core.ICDGroupPole,
-		core.StrikeTypeSpear,
-		core.Physical,
-		25,
-		nc[c.TalentLvlAttack()],
-	)
-
-	c.QueueDmg(&d, f-1)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupPole,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       nc[c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1)
 
 	//return animation cd
 	return f, a
@@ -63,19 +60,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	// No ICD to the 2 hits
-	d := c.Snapshot(
-		"Ravaging Confession (Hit 1)",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Cryo,
-		25,
-		skill[0][c.TalentLvlSkill()],
-	)
-
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Ravaging Confession (Hit 1)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       skill[0][c.TalentLvlSkill()],
+	}
 	// First hit comes out 20 frames before second
-	c.QueueDmg(&d, f-20)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-20, f-20)
 
 	// A1 activation
 	// When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT RATE increases by 12% for 5s.
@@ -94,18 +90,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	// Rosaria E is dynamic, so requires a second snapshot
-	d2 := c.Snapshot(
-		"Ravaging Confession (Hit 2)",
-		core.AttackTagElementalArt,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeSpear,
-		core.Cryo,
-		25,
-		skill[1][c.TalentLvlSkill()],
-	)
-
-	c.QueueDmg(&d2, f-1)
+	//TODO: check snapshot timing here
+	ai = core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Ravaging Confession (Hit 2)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       skill[1][c.TalentLvlSkill()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
 
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("rosaria", 3, core.Cryo, f+100)
@@ -126,37 +122,29 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// Note - if a more advanced targeting system is added in the future
 	// hit 1 is technically only on surrounding enemies, hits 2 and dot are on the lance
 	// For now assume that everything hits all targets
-	hit1 := c.Snapshot(
-		"Rites of Termination (Hit 1)",
-		core.AttackTagElementalBurst,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		burst[0][c.TalentLvlBurst()],
-	)
-	hit1.Targets = core.TargetAll
-	c.applyC6(&hit1)
-
-	hit2 := c.Snapshot(
-		"Rites of Termination (Hit 2)",
-		core.AttackTagElementalBurst,
-		core.ICDTagNone,
-		core.ICDGroupDefault,
-		core.StrikeTypeDefault,
-		core.Cryo,
-		25,
-		burst[1][c.TalentLvlBurst()],
-	)
-	hit2.Targets = core.TargetAll
-	c.applyC6(&hit2)
-
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Rites of Termination (Hit 1)",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       burst[0][c.TalentLvlBurst()],
+	}
+	x, y := c.Core.Targets[0].Shape().Pos()
+	var cb core.AttackCBFunc
+	if c.Base.Cons == 6 {
+		cb = c6cb
+	}
 	// Hit 1 comes out on frame 10
 	// 2nd hit comes after lance drop animation finishes
-	c.QueueDmg(&hit1, 10)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 1, false, core.TargettableEnemy), 10, 10, cb)
+
+	ai.Abil = "Rites of Termination (Hit 2)"
+	ai.Mult = burst[1][c.TalentLvlBurst()]
 	// Note old code set the hit 10 frames before the recorded one - not sure why
-	c.QueueDmg(&hit2, f-10)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), f-10, f-10, cb)
 
 	//duration is 8 second (extended by c2 by 4s), + 0.5
 	dur := 510
@@ -165,26 +153,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	// Burst is snapshot when the lance lands (when the 2nd damage proc hits)
-	var dot core.Snapshot
+	ai = core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Rites of Termination (DoT)",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Cryo,
+		Durability: 25,
+		Mult:       burst[0][c.TalentLvlBurst()],
+	}
 
 	c.AddTask(func() {
-		dot = c.Snapshot(
-			"Rites of Termination (DoT)",
-			core.AttackTagElementalBurst,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Cryo,
-			25,
-			burstDot[c.TalentLvlBurst()],
-		)
-		c.applyC6(&dot)
-		dot.Targets = core.TargetAll
-
 		// dot every 2 second after lance lands
 		for i := 120; i < dur; i += 120 {
-			x := dot.Clone()
-			c.QueueDmg(&x, 10+i)
+			c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), 0, i+10, cb)
 		}
 	}, "rosaria-snapshot", f-10)
 
@@ -217,7 +200,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.SetCD(core.ActionBurst, 15*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 
 	return f, a
 }
@@ -225,15 +208,23 @@ func (c *char) Burst(p map[string]int) (int, int) {
 // Applies C6 effect to enemies hit by it
 // Rites of Termination's attack decreases opponent's Physical RES by 20% for 10s.
 // Takes in a snapshot definition, and returns the same snapshot with an on hit callback added to apply the debuff
-func (c *char) applyC6(snap *core.Snapshot) {
-	if c.Base.Cons == 6 {
-		// Functions similarly to Guoba
-		snap.OnHitCallback = func(t core.Target) {
-			t.AddResMod("rosaria-c6", core.ResistMod{
-				Ele:      core.Physical,
-				Value:    -0.2,
-				Duration: 600,
-			})
-		}
-	}
+func c6cb(a core.AttackCB) {
+	a.Target.AddResMod("rosaria-c6", core.ResistMod{
+		Ele:      core.Physical,
+		Value:    -0.2,
+		Duration: 600,
+	})
 }
+
+// func (c *char) applyC6(snap *core.Snapshot) {
+// 	if c.Base.Cons == 6 {
+// 		// Functions similarly to Guoba
+// 		snap.OnHitCallback = func(t core.Target) {
+// 			t.AddResMod("rosaria-c6", core.ResistMod{
+// 				Ele:      core.Physical,
+// 				Value:    -0.2,
+// 				Duration: 600,
+// 			})
+// 		}
+// 	}
+// }

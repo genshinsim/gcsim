@@ -39,12 +39,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
+		atk := args[1].(*core.AttackEvent)
 		//check if char is correct?
-		if ds.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if ds.AttackTag != core.AttackTagNormal && ds.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
 		//check if cd is up
@@ -56,17 +56,18 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 
 		counter++
-		d := char.Snapshot(
-			"Skyward Pride Proc",
-			core.AttackTagWeaponSkill,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeDefault,
-			core.Physical,
-			100,
-			dmg,
-		)
-		char.QueueDmg(&d, 1)
+		ai := core.AttackInfo{
+			ActorIndex: char.CharIndex(),
+			Abil:       "Skyward Pride Proc",
+			AttackTag:  core.AttackTagWeaponSkill,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			StrikeType: core.StrikeTypeDefault,
+			Element:    core.Physical,
+			Durability: 100,
+			Mult:       dmg,
+		}
+		c.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
 		return false
 	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
 

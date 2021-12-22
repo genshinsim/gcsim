@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type char struct {
@@ -19,7 +20,7 @@ type char struct {
 }
 
 func init() {
-	core.RegisterCharFunc("xingqiu", NewChar)
+	core.RegisterCharFunc(keys.Xingqiu, NewChar)
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -37,11 +38,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneLiyue
 
-	a4 := make([]float64, core.EndStatType)
-	a4[core.HydroP] = 0.2
 	c.AddMod(core.CharStatMod{
 		Key: "a4",
 		Amount: func(a core.AttackTag) ([]float64, bool) {
+			a4 := make([]float64, core.EndStatType)
+			a4[core.HydroP] = 0.2
 			return a4, true
 		},
 		Expiry: -1,
@@ -94,20 +95,19 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			d := c.Snapshot(
-				fmt.Sprintf("Normal %v", c.NormalCounter),
-				core.AttackTagNormal,
-				core.ICDTagNormalAttack,
-				core.ICDGroupDefault,
-				core.StrikeTypeSlash,
-				core.Physical,
-				25,
-				mult[c.TalentLvlAttack()],
-			)
-			return &d
-		}, delay[c.NormalCounter][i])
+		ai.Abil = fmt.Sprintf("Normal %v", c.NormalCounter)
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
 	}
 
 	//add a 75 frame attackcounter reset
@@ -125,27 +125,21 @@ func (c *char) orbitalfunc(src int) func() {
 			return
 		}
 
-		c.QueueDmgDynamic(func() *core.Snapshot {
-			//queue up one damage instance
-			d := c.Snapshot(
-				"Xingqiu Skill (Orbital)",
-				core.AttackTagNone,
-				core.ICDTagNone,
-				core.ICDGroupDefault,
-				core.StrikeTypeDefault,
-				core.Hydro,
-				25,
-				0,
-			)
-			d.Targets = core.TargetAll
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Xingqiu Skill (Orbital)",
+			AttackTag:  core.AttackTagNone,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Hydro,
+			Durability: 25,
+		}
+		c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 
-			c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+		//queue up next instance
+		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
 
-			//queue up next instance
-			c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
-
-			return &d
-		}, 1)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 1)
 	}
 }
 
@@ -164,33 +158,33 @@ func (c *char) applyOrbital(duration int) {
 	c.Core.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("xqorb"))
 }
 
+var rainscreenDelay = [2]int{19, 35}
+
 func (c *char) Skill(p map[string]int) (int, int) {
 	//applies wet to self 30 frame after cast, sword applies wet every 2.5seconds, so should be 7 seconds
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	skillCreateSnapshot := func(hitNumber int) *core.Snapshot {
-		d := c.Snapshot(
-			"Guhua Sword: Fatal Rainscreen",
-			core.AttackTagElementalArt,
-			core.ICDTagNone,
-			core.ICDGroupDefault,
-			core.StrikeTypeSlash,
-			core.Hydro,
-			25,
-			rainscreen[hitNumber][c.TalentLvlSkill()],
-		)
-		d.Targets = core.TargetAll
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Guhua Sword: Fatal Rainscreen",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Hydro,
+		Durability: 25,
+	}
+
+	for i, v := range rainscreen {
+		ai.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {
 			//check if ult is up, if so increase multiplier
 			if c.Core.Status.Duration("xqburst") > 0 {
-				d.Mult = d.Mult * 1.5
+				ai.Mult = ai.Mult * 1.5
 			}
 		}
-		return &d
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), rainscreenDelay[i], rainscreenDelay[i])
 	}
-
-	c.QueueDmgDynamic(func() *core.Snapshot { return skillCreateSnapshot(0) }, 19)
 
 	// Orbitals spawn in 1 frame before the second hit connects going by the "Wet" text
 	c.AddTask(func() {
@@ -200,9 +194,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}
 	}, "xingqiu-spawn-orbitals", 34)
 
-	c.QueueDmgDynamic(func() *core.Snapshot { return skillCreateSnapshot(1) }, 35)
-
-	c.QueueParticle(c.Base.Name, 5, core.Hydro, 100)
+	c.QueueParticle(c.Base.Key.String(), 5, core.Hydro, 100)
 
 	//should last 15s, cd 21s
 	c.SetCD(core.ActionSkill, 21*60)
@@ -249,6 +241,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// c.CD[combat.BurstCD] = c.S.F + 20*60
 	c.SetCD(core.ActionBurst, 20*60)
-	c.Energy = 0
+	c.ConsumeEnergy(0)
 	return f, a
 }

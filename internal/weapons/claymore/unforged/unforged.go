@@ -23,8 +23,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	duration := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ds := args[1].(*core.Snapshot)
-		if ds.ActorIndex != char.CharIndex() {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
 		if icd > c.F {

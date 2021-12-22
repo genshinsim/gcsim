@@ -1,8 +1,6 @@
 package thundersoother
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -16,19 +14,19 @@ func New(c core.Character, s *core.Core, count int) {
 		s.Log.Warnw("thundersoother 2 pc not implemented", "event", core.LogArtifactEvent, "char", c.CharIndex(), "frame", s.F)
 	}
 	if count >= 4 {
-		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-			ds := args[1].(*core.Snapshot)
-			t := args[0].(core.Target)
-			if ds.ActorIndex != c.CharIndex() {
-				return false
-			}
-			if t.AuraContains(core.Electro) {
-				ds.Stats[core.DmgP] += .35
-				s.Log.Debugw("thundersoother 4pc on electro", "frame", s.F, "event", core.LogCalc, "char", c.CharIndex(), "new dmg", ds.Stats[core.DmgP])
-			}
-			return false
-		}, fmt.Sprintf("ts4-%v", c.Name()))
-
+		c.AddPreDamageMod(core.PreDamageMod{
+			Key:    "4ts",
+			Expiry: -1,
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				m := make([]float64, core.EndStatType)
+				//frozen check first so we don't mistaken coexisting cryo
+				if t.AuraContains(core.Electro) {
+					m[core.DmgP] = .35
+					return m, true
+				}
+				return nil, false
+			},
+		})
 	}
 	//add flat stat to char
 }
