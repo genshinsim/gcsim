@@ -22,7 +22,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 	done := false
 	// Taken from Noelle code
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if done { //why do we need this @srl
 			return
 		}
@@ -61,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	done := false
 	// Taken from Noelle code
-	cb := func(t core.Target, ae *core.AttackEvent) {
+	cb := func(a core.AttackCB) {
 		if done { //why do we need this @srl
 			return
 		}
@@ -74,10 +74,10 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		}
 
 	}
-	var cbenergy func(t core.Target, ae *core.AttackEvent) = nil
+	var cbenergy func(a core.AttackCB) = nil
 	energyCount := 0
 	if c.Base.Cons >= 4 {
-		cbenergy = func(t core.Target, ae *core.AttackEvent) {
+		cbenergy = func(a core.AttackCB) {
 			//check for healing
 			if c.Core.Status.Duration("barbskill") > 0 && energyCount < 5 {
 				//regen energy
