@@ -133,6 +133,46 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 			return false
 		}, "reaction-log")
 
+		s.C.Events.Subscribe(core.OnSwirlHydro, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.SwirlHydro]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnSwirlCryo, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.SwirlCryo]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnSwirlElectro, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.SwirlElectro]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnSwirlPyro, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.SwirlPyro]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnCrystallizeCryo, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.CrystallizeCryo]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnCrystallizeElectro, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.CrystallizeElectro]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnCrystallizeHydro, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.CrystallizeHydro]++
+			return false
+		}, "reaction-log")
+
+		s.C.Events.Subscribe(core.OnCrystallizePyro, func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[core.CrystallizePyro]++
+			return false
+		}, "reaction-log")
+
 		s.C.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
 			p := args[0].(core.Particle)
 			s.stats.ParticleCount[p.Source] += p.Num
