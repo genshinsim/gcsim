@@ -52,6 +52,7 @@ const (
 	Yanfei
 	Yoimiya
 	Zhongli
+	Gorou
 )
 
 func (c Char) String() string {
@@ -118,6 +119,7 @@ var CharNameToKey = map[string]Char{
 	"yanfei":             Yanfei,
 	"yoimiya":            Yoimiya,
 	"zhongli":            Zhongli,
+	"gorou":              Gorou,
 }
 
 var charNames = []string{
@@ -170,4 +172,5 @@ var charNames = []string{
 	"yanfei",
 	"yoimiya",
 	"zhongli",
+	"gorou",
 }

@@ -1,4 +1,4 @@
-package ayaka
+package gorou
 
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
@@ -6,12 +6,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
-type char struct {
-	*character.Tmpl
+func init() {
+	core.RegisterCharFunc(keys.Gorou, NewChar)
 }
 
-func init() {
-	core.RegisterCharFunc(keys.Ayaka, NewChar)
+type char struct {
+	*character.Tmpl
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -23,11 +23,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Tmpl = t
 	c.Energy = 80
 	c.EnergyMax = 80
-	c.Weapon.Class = core.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassBow
+	c.NormalHitNum = 4
+	c.BurstCon = 5
+	c.SkillCon = 3
 	c.CharZone = core.ZoneInazuma
-	c.BurstCon = 3
-	c.SkillCon = 5
-	c.NormalHitNum = 5
 
 	return &c, nil
 }
@@ -35,17 +35,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
 	case core.ActionDash:
-		f, ok := p["f"]
-		if !ok {
-			return 10 //tap = 36 frames, so under 1 second
-		}
-		//for every 1 second passed, consume extra 15
-		extra := f / 60
-		return float64(10 + 15*extra)
+		return 18
 	case core.ActionCharge:
-		return 20
+		return 25
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
 		return 0
 	}
 }

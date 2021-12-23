@@ -31,6 +31,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.c4ICDExpiry = 0
+	c.CharZone = core.ZoneInazuma
 
 	c.passive()
 	c.onExitField()
