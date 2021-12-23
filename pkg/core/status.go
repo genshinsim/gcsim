@@ -41,6 +41,12 @@ func (s *StatusCtrl) AddStatus(key string, dur int) {
 	}
 }
 
+func (s *StatusCtrl) ExtendStatus(key string, dur int) {
+	if s.status[key] > s.core.F {
+		s.status[key] += dur
+	}
+}
+
 func (s *StatusCtrl) DeleteStatus(key string) {
 	delete(s.status, key)
 }
