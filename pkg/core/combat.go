@@ -1,6 +1,8 @@
 package core
 
-import "log"
+import (
+	"log"
+)
 
 type CombatHandler interface {
 	ApplyDamage(*AttackEvent) float64
@@ -108,31 +110,31 @@ func (c *CombatCtrl) queueDmg(a *AttackEvent, delay int) {
 	}, delay)
 }
 
-func willAttackLand(a *AttackEvent, t Target, index int) bool {
+func willAttackLand(a *AttackEvent, t Target, index int) (bool, string) {
 	//shape shouldn't be nil; panic here
 	if a.Pattern.Shape == nil {
 		panic("unexpected nil shape")
 	}
 	//shape can't be nil now, check if type matches
 	if !a.Pattern.Targets[t.Type()] {
-		return false
+		return false, "wrong type"
 	}
 	//skip if self harm is false and dmg src == i
 	if !a.Pattern.SelfHarm && a.Info.DamageSrc == index {
-		return false
+		return false, "no self harm"
 	}
+
 	//check if shape matches
-	s := t.Shape()
-	switch v := s.(type) {
+	switch v := a.Pattern.Shape.(type) {
 	case *Circle:
-		return a.Pattern.Shape.IntersectCircle(*v)
+		return t.Shape().IntersectCircle(*v), "intersect circle"
 	case *Rectangle:
-		return a.Pattern.Shape.IntersectRectangle(*v)
+		return t.Shape().IntersectRectangle(*v), "intersect rectangle"
 	case *SingleTarget:
 		//only true if
-		return v.Target == index
+		return v.Target == index, "target"
 	default:
-		return false
+		return false, "unknown shape"
 	}
 }
 
@@ -141,9 +143,10 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 	var total float64
 	for i, t := range c.core.Targets {
 
-		if !willAttackLand(a, t, i) {
+		willHit, reason := willAttackLand(a, t, i)
+		if !willHit {
 			if c.core.Flags.LogDebug {
-				c.core.Log.Debugw("skipped "+a.Info.Abil,
+				c.core.Log.Debugw("skipped "+a.Info.Abil+" "+reason,
 					"frame", c.core.F,
 					"event", LogElementEvent,
 					"char", a.Info.ActorIndex,
@@ -151,6 +154,8 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 					"applied_ele", a.Info.Element,
 					"dur", a.Info.Durability,
 					"target", i,
+					"shape", a.Pattern.Shape.String(),
+					// "type", fmt.Sprintf("%T", a.Pattern.Shape),
 				)
 			}
 			continue

@@ -1,29 +1,15 @@
 package core
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type Shape interface {
 	IntersectCircle(c Circle) bool
 	IntersectRectangle(r Rectangle) bool
 	Pos() (x, y float64)
-}
-
-type SingleTarget struct {
-	Target int
-}
-
-func (s *SingleTarget) IntersectCircle(in Circle) bool       { return false }
-func (s *SingleTarget) IntersectRectangle(in Rectangle) bool { return false }
-func (s *SingleTarget) Pos() (float64, float64)              { return 0, 0 }
-
-//this is for attack that only hits self
-type SelfDamage struct{}
-
-func (c *SelfDamage) IntersectCircle(in Circle) bool       { return false }
-func (c *SelfDamage) IntersectRectangle(in Rectangle) bool { return false }
-
-type Circle struct {
-	x, y, r float64
+	String() string
 }
 
 func NewDefSingleTarget(ind int, typ TargettableType) AttackPattern {
@@ -101,6 +87,29 @@ func NewCircle(x, y, r float64) *Circle {
 	}
 }
 
+type SingleTarget struct {
+	Target int
+}
+
+func (s *SingleTarget) IntersectCircle(in Circle) bool       { return false }
+func (s *SingleTarget) IntersectRectangle(in Rectangle) bool { return false }
+func (s *SingleTarget) Pos() (float64, float64)              { return 0, 0 }
+func (s *SingleTarget) String() string                       { return fmt.Sprintf("single target: %v", s.Target) }
+
+//this is for attack that only hits self
+type SelfDamage struct{}
+
+func (c *SelfDamage) IntersectCircle(in Circle) bool       { return false }
+func (c *SelfDamage) IntersectRectangle(in Rectangle) bool { return false }
+
+type Circle struct {
+	x, y, r float64
+}
+
+func (c *Circle) String() string {
+	return fmt.Sprintf("r: %v x: %v y: %v", c.r, c.x, c.y)
+}
+
 func (c *Circle) IntersectCircle(c2 Circle) bool {
 	//(R0 - R1)^2 <= (x0 - x1)^2 + (y0 - y1)^2 <= (R0 + R1)^2
 	// lower := math.Pow(c.r-in.r, 2)
@@ -155,6 +164,10 @@ func (c *Circle) Pos() (float64, float64) {
 
 type Rectangle struct {
 	x, y, w, h float64
+}
+
+func (r *Rectangle) String() string {
+	return fmt.Sprintf("w: %v h: %v x: %v y: %v", r.w, r.h, r.x, r.y)
 }
 
 func (r *Rectangle) IntersectCircle(c Circle) bool {
