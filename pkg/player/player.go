@@ -16,7 +16,7 @@ func New(index int, c *core.Core) *Player {
 	p.Reactable = &reactable.Reactable{}
 	p.TargetIndex = index
 	p.Reactable.Init(p, p.Core)
-	p.Tmpl.Init(0, 0, -0.5)
+	p.Tmpl.Init(0, 0, 0.5)
 	p.Core = c
 	return p
 }

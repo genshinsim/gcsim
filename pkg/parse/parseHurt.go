@@ -103,7 +103,7 @@ func (p *Parser) parseHurtAmount() error {
 		return err
 	}
 
-	item, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+	item, err = p.acceptSeqReturnLast(itemComma, itemNumber)
 	if err != nil {
 		return err
 	}
