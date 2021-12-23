@@ -1,35 +1,37 @@
-options debug=false iteration=3000 duration=90 workers=24;
+options debug=true iteration=3000 duration=41 workers=24;
 
 ##Character Definitions
-char+=xiangling ele=pyro lvl=90 hp=10874.915 atk=225.141 def=668.871 em=96.000 cr=.05 cd=0.5 cons=4 talent=8,8,10;
-weapon+=xiangling label="deathmatch" atk=454.363 cr=0.368 refine=1;
+char+=xiangling ele=pyro lvl=80 hp=1 atk=210 def=668.871 em=96.000 cr=.05 cd=0.5 cons=4 talent=6,9,9;
+weapon+=xiangling label="the catch" atk=454.363 er=0.459 refine=5;
 art+=xiangling label="seal of insulation" count=4;
-stats+=xiangling label=main hp=4780 atk=311 pyro%=0.466 em=187 cd=0.622;
-stats+=xiangling label=subs atk%=0 cr=.33 cd=.33 em=40 er=.220;
+stats+=xiangling label=main hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
+stats+=xiangling label=subs atk%=.0992 cr=.1655 cd=.7282 em=39.64 er=.5510 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
 
-char+=xingqiu ele=hydro lvl=90 hp=10222.420 atk=201.777 def=757.599 atk%=0.240 cr=.05 cd=0.5 cons=4 talent=8,8,10;
-weapon+=xingqiu label="amenoma kageuchi" atk=454.363 atk%=0.551 refine=3;
-art+=xingqiu label="seal of insulation" count=4;
-stats+=xingqiu label=main hp=4780 atk=311 hydro%=0.466 atk%=0.466 cr=0.311;
-stats+=xingqiu label=subs atk%=.1 cr=.231 cd=.66 er=.330;
+char+=zhongli ele=geo lvl=80 hp=1 atk=233 def=1 geo%=.288 cr=.05 cd=0.5 cons=0 talent=6,9,9;
+weapon+=zhongli label="favonius lance" atk=564.784 er=0.306 refine=3;
+art+=zhongli label="instructor" count=4;
+stats+=zhongli label=main hp=4780 atk=311 hp%=1 cr=0.311;
+stats+=zhongli label=subs atk%=.0992 cr=.2648 cd=.1324 em=39.64 er=.1102 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
 
-char+=bennett ele=pyro lvl=90 hp=12397.403 atk=191.157 def=771.249 er=0.267 cr=.05 cd=0.5 cons=4 talent=8,8,10;
-weapon+=bennett label="blackcliff longsword" atk=564.784 cd=0.368 refine=1;
+char+=bennett ele=pyro lvl=80 hp=1 atk=178 def=1 er=0.267 cr=.05 cd=0.5 cons=4 talent=6,9,9;
+weapon+=bennett label="festering desire" atk=510 er=0.459 refine=5;
 art+=bennett label="noblesse oblige" count=4;
-stats+=bennett  label=main hp=4780 atk=311 pyro%=0.466 em=187 cr=0.311;
-stats+=bennett label=subs atk%=.2 cr=.33 cd=.462 em=80;
+stats+=bennett label=main hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
+stats+=bennett label=subs atk%=.0992 cr=.0662 cd=.1324 em=39.64 er=.5510 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
 
-char+=raiden ele=electro lvl=90 hp=12907 atk=337 def=789 er=0.32 cr=.05 cd=0.5 cons=0 talent=8,8,10;
-weapon+=raiden label="the catch" atk=510 er=.459 refine=5;
-art+=raiden label="seal of insulation" count=4;
-stats+=raiden label=main hp=4780 atk=311 electro%=0.466 atk%=0.466 cr=0.311;
-stats+=raiden label=subs atk%=.30 cr=.198 cd=.858;
+char+=ganyu ele=cryo lvl=90 hp=9796.729 atk=334.850 def=630.215 cr=.05 cd=0.884 cons=0 talent=9,9,9;
+# Note - Prototype crescent is considered better in the guide, but that doesn't consider Bennett buff I don't think
+# Hamayumi works better in Bennett buff
+weapon+=ganyu label="hamayumi" atk=454 atk%=0.551 refine=3;
+art+=ganyu label="reminiscence of shime" count=4;
+stats+=ganyu label=main hp=4780 atk=311 em=187 cryo%=0.466 cr=0.311;
+stats+=ganyu label=subs atk%=.1984 cr=.2317 cd=.7282 em=118.92 er=.1102 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
 
 ##Default Enemy
-target+="dummy" lvl=90 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
+target+="dummy" lvl=100 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 
 ##Actions List
-active+=raiden;
+active+=bennett;
 
 # HP particle simulation. Per srl:
 # it adds 1 particle randomly, uniformly distributed between 200 to 300 frames after the last time an energy drops
@@ -37,36 +39,24 @@ active+=raiden;
 # so over 90s of combat that's 90 * 60 / 250 = 21.6 on avg
 energy+=every interval=200,300 amount=1;
 
-actions+=sequence_strict target=raiden exec=attack,attack,attack,attack,charge,attack,attack,attack,attack,charge,attack,charge if=.status.raidenburst>0;
+actions+=sequence_strict exec=skill target=bennett if=.element.pyro==0&&.element.cryo==0;
 
-# Additional check to reset at the start of the next rotation
-actions+=skill target=raiden if=.status.xianglingburst==0&&.energy.xingqiu>70&&.energy.xiangling>70;
-actions+=skill target=raiden if=.status.raidenskill==0;
+# Attacks are to create the shield right before swapping
+actions+=sequence_strict exec=attack,attack,skill[hold_nosteele=1] target=zhongli if=.energy.xiangling>70&&.cd.bennett.burst<60;
 
-# Skill is required before burst to activate Kageuchi. Otherwise ER is barely not enough
-# For rotations #2 and beyond, need to ensure that Guoba is ready to go. Guoba timing is about 300 frames after XQ fires his skill
-actions+=sequence_strict target=xingqiu exec=skill[orbital=1],burst[orbital=1],attack if=.cd.xiangling.skill<300;
+actions+=sequence_strict exec=burst,skill target=bennett if=.cd.xiangling.skill<120&&.cd.xiangling.burst<120;
+actions+=sequence_strict exec=burst target=bennett if=.cd.xiangling.skill<50&&.cd.xiangling.burst<50;
 
-# Bennett burst goes after XQ burst for uptime alignment. Attack to proc swords
-actions+=sequence_strict target=bennett exec=burst,attack,skill if=.status.xqburst>0;
+actions+=sequence_strict exec=burst,skill target=xiangling if=.status.xianglingguoba==0&&.status.btburst>0;
 
-# Only ever want to XL burst in Bennett buff and after XQ burst for uptime alignment
-actions+=sequence_strict target=xiangling exec=burst,attack,skill,attack,attack if=.status.xqburst>0&&.status.btburst>0;
-# Second set of actions needed in case Guoba CD comes off while pyronado is spinning
-actions+=sequence_strict target=xiangling exec=burst,attack if=.status.xqburst>0&&.status.btburst>0;
-actions+=skill target=xiangling;
+# Added lock to slow down shots to align with calcs
+# Apparently you can only fit 6 CA in. Sim appears to do a lot better than that, so we artificially constrain it to 6 to be realistic
+# Also need to lock her in place as well
+actions+=sequence_strict exec=skill,aim,aim,dash,aim,dash,aim,aim,aim target=ganyu if=.status.xianglingburst>0 actionlock=800 lock=700;
 
-# Raiden must burst after all others. Requires an attack to allow Bennett buff to apply
-actions+=sequence_strict target=raiden exec=burst if=.status.xqburst>0&&.status.xianglingburst>0&&.status.btburst>0;
+actions+=sequence_strict exec=skill,attack target=bennett swap=xiangling if=.energy.xiangling<65;
+actions+=skill target=bennett if=.energy.xiangling<75;
 
-# Funnelling
-actions+=sequence_strict target=bennett exec=attack,skill if=.status.xqburst>0&&.energy.xiangling<70 swap=xiangling;
-actions+=skill target=bennett if=.energy.xiangling<70 swap=xiangling;
-actions+=skill target=bennett if=.energy.xingqiu<80 swap=xingqiu;
-actions+=sequence_strict target=bennett exec=attack,skill if=.status.xqburst>0 if=.energy.raiden<90 swap=raiden;
-
-actions+=sequence_strict target=xingqiu exec=attack if=.status.xqburst>0;
+actions+=attack target=zhongli;
 actions+=attack target=xiangling active=xiangling;
-actions+=attack target=bennett active=bennett;
-actions+=attack target=xingqiu active=xingqiu;
-actions+=attack target=raiden active=raiden;
+
