@@ -184,7 +184,7 @@ func (c *char) chain(src int, count int) core.AttackCBFunc {
 		//queue an attack vs next target
 		atk := *c.burstAtk
 		atk.SourceFrame = src
-		atk.Pattern = core.NewDefSingleTarget(next, core.TargettableEnemy)
+		atk.Pattern = core.NewDefSingleTarget(trgs[next], core.TargettableEnemy)
 		cb := c.chain(src, count+1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
