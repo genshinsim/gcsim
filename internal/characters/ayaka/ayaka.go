@@ -24,6 +24,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Energy = 80
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSword
+	c.CharZone = core.ZoneInazuma
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5

@@ -31,6 +31,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = 5
+	c.CharZone = core.ZoneInazuma
 
 	return &c, nil
 }

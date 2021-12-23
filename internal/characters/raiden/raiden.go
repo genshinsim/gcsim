@@ -34,6 +34,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
+	c.CharZone = core.ZoneInazuma
 
 	if c.Base.Cons == 6 {
 		c.c6()

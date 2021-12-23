@@ -80,6 +80,7 @@ type ZoneType int
 const (
 	ZoneMondstadt ZoneType = iota
 	ZoneLiyue
+	ZoneInazuma
 )
 
 type CharStatMod struct {

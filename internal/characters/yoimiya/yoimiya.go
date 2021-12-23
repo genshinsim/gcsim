@@ -29,6 +29,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.BurstCon = 5
 	c.SkillCon = 3
+	c.CharZone = core.ZoneInazuma
 
 	c.a2()
 	c.onExit()
