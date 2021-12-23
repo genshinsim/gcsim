@@ -3,6 +3,7 @@ package core
 type StatusHandler interface {
 	Duration(key string) int
 	AddStatus(key string, dur int)
+	ExtendStatus(key string, dur int)
 	DeleteStatus(key string)
 }
 
