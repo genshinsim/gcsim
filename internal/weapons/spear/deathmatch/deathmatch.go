@@ -23,7 +23,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		Key:    "deathmatch",
 		Expiry: -1,
 		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if len(c.Targets) > 1 {
+			//layer counts as 1 target
+			if len(c.Targets) > 2 {
 				return multiple, true
 			}
 			return single, true
