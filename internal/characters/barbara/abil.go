@@ -29,7 +29,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		//check for healing
 		if c.Core.Status.Duration("barbskill") > 0 {
 			//heal target
-			heal := (prochpp[c.TalentLvlSkill()] + prochp[c.TalentLvlSkill()])
+			heal := (prochpp[c.TalentLvlSkill()]*c.MaxHP() + prochp[c.TalentLvlSkill()])
 			c.Core.Health.HealAll(c.Index, heal)
 			done = true
 		}
@@ -68,13 +68,13 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		//check for healing
 		if c.Core.Status.Duration("barbskill") > 0 {
 			//heal target
-			heal := (prochpp[c.TalentLvlSkill()] + prochp[c.TalentLvlSkill()])
+			heal := (prochpp[c.TalentLvlSkill()]*c.MaxHP() + prochp[c.TalentLvlSkill()])
 			c.Core.Health.HealAll(c.Index, 4*heal)
 			done = true
 		}
 
 	}
-	var cbenergy func(a core.AttackCB) = nil
+	var cbenergy func(a core.AttackCB)
 	energyCount := 0
 	if c.Base.Cons >= 4 {
 		cbenergy = func(a core.AttackCB) {
@@ -105,7 +105,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("barbskill", 15*60)
 	//hook for buffs; active right away after cast
 
-	c.stacks = 0
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Let the Show Begin♪",
@@ -126,8 +125,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//apply right away
 
 	c.Core.Health.HealActive(c.Index, heal)
-
-	c.onSkillStackCount(stats, c.Core.F)
+	c.skillInitF = c.Core.F
+	c.onSkillStackCount(c.Core.F)
 	//add 1 tick each 5s
 	//first tick starts at 0
 	c.barbaraHealTick(heal, c.Core.F)
@@ -154,7 +153,7 @@ func (c *char) barbaraHealTick(healAmt float64, skillInitF int) func() {
 		c.Core.Log.Debugw("barbara field ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		c.Core.Health.HealActive(c.Index, healAmt)
 
-		// tick per second
+		// tick per 5 seconds
 		c.AddTask(c.barbaraHealTick(healAmt, skillInitF), "barbara-heal-tick", 5*60)
 	}
 }
@@ -176,7 +175,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 //inspired from raiden
-func (c *char) onSkillStackCount(stats [core.EndStatType]float64, skillInitF int) {
+func (c *char) onSkillStackCount(skillInitF int) {
 	particleStack := 0
 	c.Core.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
 		if c.skillInitF != skillInitF {

@@ -12,7 +12,6 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	stacks     int
 	c6icd      int
 	skillInitF int
 	// burstBuffExpiry   int
@@ -56,19 +55,24 @@ func (c *char) a1() {
 }
 
 func (c *char) c2() {
-	c.AddMod(core.CharStatMod{
-		Key:    "barbara-c2",
-		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-			if c.Core.Status.Duration("barbskill") >= 0 {
-				val[core.HydroP] = 0.15
-			} else {
-				val[core.HydroP] = 0
-			}
-			return val, true
-		},
-	})
+	val := make([]float64, core.EndStatType)
+	val[core.HydroP] = 0.15
+	for i, char := range c.Core.Chars {
+		if i == c.Index {
+			continue
+		}
+		char.AddMod(core.CharStatMod{
+			Key:    "barbara-c2",
+			Expiry: -1,
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				if c.Core.Status.Duration("barbskill") >= 0 {
+					return val, true
+				} else {
+					return nil, false
+				}
+			},
+		})
+	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
