@@ -118,6 +118,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	//TODO: review barbara AOE size?
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 35) // need to confirm timing of this
 
 	stats := c.SnapshotStats("Let the Show Begin♪ (Heal)", core.AttackTagNone)
 	hpplus := stats[core.Heal]
