@@ -15,6 +15,10 @@ func (c *Tmpl) QueueParticle(src string, num int, ele core.EleType, delay int) {
 }
 
 func (c *Tmpl) ConsumeEnergy(delay int) {
+	if delay == 0 {
+		c.Energy = 0
+		return
+	}
 	c.AddTask(func() {
 		c.Energy = 0
 	}, "consume-energy", delay)
