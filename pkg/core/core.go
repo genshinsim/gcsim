@@ -19,6 +19,7 @@ const (
 	SwapFrames         = 1
 	SwapCDFrames       = 60
 	MaxTeamPlayerCount = 4
+	DefaultTargetIndex = 1
 )
 
 type Flags struct {

@@ -329,11 +329,11 @@ func (q *QueueCtrl) evalDebuff(c Condition) (bool, error) {
 
 	switch t {
 	case "res":
-		if q.core.Combat.TargetHasResMod(d, 1) {
+		if q.core.Combat.TargetHasResMod(d, DefaultTargetIndex) {
 			active = 1
 		}
 	case "def":
-		if q.core.Combat.TargetHasDefMod(d, 1) {
+		if q.core.Combat.TargetHasDefMod(d, DefaultTargetIndex) {
 			active = 1
 		}
 	default:
