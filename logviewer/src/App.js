@@ -424,9 +424,19 @@ function App() {
                   onChange={(e) => toggleLogEvent("damage")}
                 />
                 <Checkbox
+                  checked={logEvents.includes("pre_damage_mods")}
+                  label="pre_damage_mods"
+                  onChange={(e) => toggleLogEvent("pre_damage_mods")}
+                />
+                <Checkbox
                   checked={logEvents.includes("hurt")}
                   label="hurt"
                   onChange={(e) => toggleLogEvent("hurt")}
+                />
+                <Checkbox
+                  checked={logEvents.includes("heal")}
+                  label="heal"
+                  onChange={(e) => toggleLogEvent("heal")}
                 />
                 <Checkbox
                   checked={logEvents.includes("calc")}
@@ -492,6 +502,11 @@ function App() {
                   checked={logEvents.includes("sim")}
                   label="sim"
                   onChange={(e) => toggleLogEvent("sim")}
+                />
+                <Checkbox
+                  checked={logEvents.includes("task")}
+                  label="task"
+                  onChange={(e) => toggleLogEvent("task")}
                 />
                 <Checkbox
                   checked={logEvents.includes("artifact")}
