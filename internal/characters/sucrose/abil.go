@@ -154,7 +154,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.AddTask(c.absorbCheck(c.Core.F, 0, int(duration/18)), "absorb-check", f)
 
 	c.SetCD(core.ActionBurst, 1200)
-	c.ConsumeEnergy(0)
+	c.ConsumeEnergy(26)
 	return f, a
 }
 
