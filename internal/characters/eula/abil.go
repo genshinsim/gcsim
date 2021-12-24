@@ -220,7 +220,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.SetCD(core.ActionBurst, 20*60+f)
 	//energy does not deplete until after animation
-	c.ConsumeEnergy(f)
+	c.ConsumeEnergy(107)
 
 	return f, a
 }
