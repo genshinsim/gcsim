@@ -135,7 +135,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}, "venti-a4-restore", 480+f)
 
 	c.SetCD(core.ActionBurst, 15*60)
-	c.ConsumeEnergy(0)
+	c.ConsumeEnergy(90)
 	return f, a
 }
 
