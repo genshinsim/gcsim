@@ -307,7 +307,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 
 	c.SetCD(core.ActionBurst, 18*60) //20s cd
-	c.ConsumeEnergy(0)
+	c.ConsumeEnergy(12)
 	return f, a
 }
 
