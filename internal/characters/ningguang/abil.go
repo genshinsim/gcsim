@@ -167,7 +167,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Tags["jade"] = 7
 	}
 
-	c.ConsumeEnergy(0)
+	c.ConsumeEnergy(8)
 	c.SetCD(core.ActionBurst, 720)
 	return f, a
 }
