@@ -51,12 +51,11 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  core.AttackTagExtra,
-		ICDTag:     core.ICDTagNone,
+		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Hydro,
 		Durability: 25,
-		Mult:       charge[c.NormalCounter][c.TalentLvlAttack()],
+		Mult:       charge[c.TalentLvlAttack()],
 	}
 
 	done := false
