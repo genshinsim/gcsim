@@ -18,7 +18,12 @@ var logger *zap.SugaredLogger
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
 	config := zap.NewDevelopmentConfig()
-	config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
+	debug := os.Getenv("GCSIM_VERBOSE_TEST")
+	level := zapcore.InfoLevel
+	if debug != "" {
+		level = zapcore.DebugLevel
+	}
+	config.Level = zap.NewAtomicLevelAt(level)
 	config.EncoderConfig.TimeKey = ""
 	log, _ := config.Build(zap.AddCallerSkip(1))
 	logger = log.Sugar()
