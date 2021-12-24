@@ -255,7 +255,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.c2Extension = 0
 
 	c.SetCD(core.ActionBurst, 18*60) //20s cd
-	c.ConsumeEnergy(0)
+	c.ConsumeEnergy(8)
 	return f, a
 }
 
