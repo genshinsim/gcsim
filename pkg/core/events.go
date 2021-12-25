@@ -51,6 +51,8 @@ const (
 	PostPlunge       //nil, frames
 	PreAimShoot      //nil
 	PostAimShoot     //nil, frames
+	PreDash
+	PostDash
 	//sim stuff
 	OnInitialize  //nil
 	OnStateChange //prev, next

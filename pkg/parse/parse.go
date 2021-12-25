@@ -14,7 +14,6 @@ import (
 var actionKeys = map[string]core.ActionType{
 	"sequence":        core.ActionSequence,
 	"sequence_strict": core.ActionSequenceStrict,
-	"reset_sequence":  core.ActionSequenceReset,
 	"skill":           core.ActionSkill,
 	"burst":           core.ActionBurst,
 	"attack":          core.ActionAttack,

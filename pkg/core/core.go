@@ -46,7 +46,7 @@ type Core struct {
 	SwapCD int
 
 	//core stuff
-	queue        []ActionItem
+	// queue        []Command
 	stamModifier []func(a ActionType) (float64, bool)
 	lastStamUse  int
 
@@ -70,7 +70,7 @@ type Core struct {
 	//handlers
 	Status     StatusHandler
 	Energy     EnergyHandler
-	Action     ActionHandler
+	Action     CommandHandler
 	Queue      QueueHandler
 	Combat     CombatHandler
 	Tasks      TaskHandler
@@ -88,7 +88,7 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	c.Flags.Custom = make(map[string]int)
 	c.Stam = MaxStam
 	c.stamModifier = make([]func(a ActionType) (float64, bool), 0, 10)
-	c.queue = make([]ActionItem, 0, 20)
+	// c.queue = make([]Command, 0, 20)
 
 	for _, f := range cfg {
 		err := f(c)
@@ -118,7 +118,7 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 		c.Action = NewActionCtrl(c)
 	}
 	if c.Queue == nil {
-		c.Queue = NewQueueCtr(c)
+		c.Queue = NewQueuer(c)
 	}
 	if c.Combat == nil {
 		c.Combat = NewCombatCtrl(c)

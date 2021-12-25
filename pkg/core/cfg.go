@@ -10,7 +10,7 @@ type Config struct {
 		Initial keys.Char
 		Profile []CharacterProfile
 	}
-	Rotation []Action
+	Rotation []ActionBlock
 
 	Hurt      HurtEvent
 	Energy    EnergyEvent

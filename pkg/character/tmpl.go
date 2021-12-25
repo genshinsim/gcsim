@@ -141,6 +141,20 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 
 }
 
+func (c *Tmpl) ModIsActive(key string) bool {
+	ind := -1
+	for i, v := range c.Mods {
+		if v.Key == key {
+			ind = i
+		}
+	}
+	if ind == -1 {
+		return false
+	}
+	_, ok := c.Mods[ind].Amount(core.AttackTagNone)
+	return ok
+}
+
 func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 	ind := -1
 	for i, v := range t.ReactMod {

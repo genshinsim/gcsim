@@ -47,6 +47,7 @@ type Character interface {
 
 	//char stat mods
 	AddMod(mod CharStatMod)
+	ModIsActive(key string) bool
 	AddPreDamageMod(mod PreDamageMod)
 	AddWeaponInfuse(inf WeaponInfusion)
 	AddReactBonusMod(mod ReactionBonusMod)
