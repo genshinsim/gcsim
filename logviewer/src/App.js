@@ -218,6 +218,33 @@ function parseLogs() {
   return data;
 }
 
+const debugOpts = [
+  "procs",
+  "damage",
+  "pre_damage_mods",
+  "hurt",
+  "heal",
+  "calc",
+  "reaction",
+  "element",
+  "snapshot",
+  "snapshot_mods",
+  "status",
+  "action",
+  "queue",
+  "energy",
+  "character",
+  "enemy",
+  "hook",
+  "sim",
+  "task",
+  "artifact",
+  "weapon",
+  "shield",
+  "construct",
+  "icd",
+];
+
 function App() {
   const [bin, setBin] = React.useState(60);
   const [cumul, setCumul] = React.useState(false);
@@ -342,6 +369,22 @@ function App() {
     );
   });
 
+  let optrows = debugOpts.map((e, i) => {
+    return (
+      <div className="col-xs" key={i}>
+        <Checkbox
+          checked={logEvents.includes(e)}
+          label={e}
+          onChange={() => toggleLogEvent({ e })}
+        />
+      </div>
+    );
+  });
+
+  for (let i = 0; i < debugOpts.length; i++) {
+    optrows.push();
+  }
+
   return (
     <div className="App">
       <div style={{ marginLeft: "20px", marginRight: "20px" }}>
@@ -413,146 +456,7 @@ function App() {
               </Switch>
               <H4>Log Options</H4>
               <FormGroup helperText="which logs should be shown">
-                <div className="row">
-                  <div className="col-xs">
-                    <Checkbox
-                      checked={logEvents.includes("procs")}
-                      label="procs"
-                      onChange={(e) => toggleLogEvent("procs")}
-                    />
-                  </div>
-                  <div className="col-xs">
-                    <Checkbox
-                      checked={logEvents.includes("damage")}
-                      label="damage"
-                      onChange={(e) => toggleLogEvent("damage")}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-xs">
-                    <Checkbox
-                      checked={logEvents.includes("pre_damage_mods")}
-                      label="pre_damage_mods"
-                      onChange={(e) => toggleLogEvent("pre_damage_mods")}
-                    />
-                  </div>
-                  <div className="col-xs">
-                    <Checkbox
-                      checked={logEvents.includes("hurt")}
-                      label="hurt"
-                      onChange={(e) => toggleLogEvent("hurt")}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-xs">
-                    <Checkbox
-                      checked={logEvents.includes("heal")}
-                      label="heal"
-                      onChange={(e) => toggleLogEvent("heal")}
-                    />
-                  </div>
-                  <div className="col-xs">
-                    <Checkbox
-                      checked={logEvents.includes("calc")}
-                      label="calc"
-                      onChange={(e) => toggleLogEvent("calc")}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <Checkbox
-                    checked={logEvents.includes("reaction")}
-                    label="reaction"
-                    onChange={(e) => toggleLogEvent("reaction")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("element")}
-                    label="element"
-                    onChange={(e) => toggleLogEvent("element")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("snapshot")}
-                    label="snapshot"
-                    onChange={(e) => toggleLogEvent("snapshot")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("snapshot_mods")}
-                    label="mods (snapshot)"
-                    onChange={(e) => toggleLogEvent("snapshot_mods")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("status")}
-                    label="status"
-                    onChange={(e) => toggleLogEvent("status")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("action")}
-                    label="action"
-                    onChange={(e) => toggleLogEvent("action")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("queue")}
-                    label="queue"
-                    onChange={(e) => toggleLogEvent("queue")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("energy")}
-                    label="energy"
-                    onChange={(e) => toggleLogEvent("energy")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("character")}
-                    label="character"
-                    onChange={(e) => toggleLogEvent("character")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("enemy")}
-                    label="enemy"
-                    onChange={(e) => toggleLogEvent("enemy")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("hook")}
-                    label="hook"
-                    onChange={(e) => toggleLogEvent("hook")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("sim")}
-                    label="sim"
-                    onChange={(e) => toggleLogEvent("sim")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("task")}
-                    label="task"
-                    onChange={(e) => toggleLogEvent("task")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("artifact")}
-                    label="artifact"
-                    onChange={(e) => toggleLogEvent("artifact")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("weapon")}
-                    label="weapon"
-                    onChange={(e) => toggleLogEvent("weapon")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("shield")}
-                    label="shield"
-                    onChange={(e) => toggleLogEvent("shield")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("construct")}
-                    label="construct"
-                    onChange={(e) => toggleLogEvent("construct")}
-                  />
-                  <Checkbox
-                    checked={logEvents.includes("icd")}
-                    label="icd"
-                    onChange={(e) => toggleLogEvent("icd")}
-                  />
-                </div>
+                <div className="row">{optrows}</div>
               </FormGroup>
               <ButtonGroup vertical fill>
                 <Button intent="danger" onClick={() => setLogEvents([])}>
