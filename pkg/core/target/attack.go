@@ -1,6 +1,8 @@
 package target
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 func (t *Tmpl) Attack(atk *core.AttackEvent) (float64, bool) {
 	//if target is frozen prior to attack landing, set impulse to 0
@@ -49,7 +51,14 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	var isCrit bool
 
 	st := core.EleToDmgP(atk.Info.Element)
-	dmgBonus := atk.Snapshot.Stats[st] + atk.Snapshot.Stats[core.DmgP]
+	// if st < 0 {
+	// 	log.Println(atk)
+	// }
+	elePer := 0.0
+	if st > -1 {
+		elePer = atk.Snapshot.Stats[st]
+	}
+	dmgBonus := elePer + atk.Snapshot.Stats[core.DmgP]
 
 	//calculate using attack or def
 	var a float64
@@ -142,7 +151,7 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 			"total_atk_def", a,
 			"base_dmg", base,
 			"ele", st,
-			"ele_per", atk.Snapshot.Stats[st],
+			"ele_per", elePer,
 			"bonus_dmg", dmgBonus,
 			"def_adj", defadj,
 			"def_mod", defmod,

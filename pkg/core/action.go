@@ -149,7 +149,7 @@ func (a *ActionCtrl) Exec(n ActionItem) (int, bool, error) {
 
 	//do one last ready check
 	if !c.ActionReady(n.Typ, n.Param) {
-		a.core.Log.Warnw("frame", a.core.F, "event", LogSimEvent, "queued action is not ready, should not happen; skipping frame")
+		a.core.Log.Warnw("queued action is not ready, should not happen; skipping frame", "frame", a.core.F, "event", LogSimEvent)
 		return 0, false, nil
 	}
 	switch n.Typ {
