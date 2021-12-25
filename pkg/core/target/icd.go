@@ -10,8 +10,9 @@ func (t *Tmpl) WillApplyEle(tag core.ICDTag, grp core.ICDGroup, char int) bool {
 	}
 
 	//check if we need to start timer
-	if !t.icdGroupOnTimer[char][grp] {
-		t.icdGroupOnTimer[char][grp] = true
+	x := t.icdTagOnTimer[char][tag]
+	if !t.icdTagOnTimer[char][tag] {
+		t.icdTagOnTimer[char][tag] = true
 		t.ResetTagCounterAfterDelay(tag, grp, char)
 	}
 
@@ -23,6 +24,7 @@ func (t *Tmpl) WillApplyEle(tag core.ICDTag, grp core.ICDGroup, char int) bool {
 		t.icdTagCounter[char][tag] = 0
 	}
 
+	t.Core.Log.Debugw("ele icd check", "frame", t.Core.F, "event", core.LogICDEvent, "char", char, "grp", grp, "target", t.TargetIndex, "tag", tag, "counter", val, "val", core.ICDGroupEleApplicationSequence[grp][val], "group on timer", x)
 	//true if group seq is 1
 	return core.ICDGroupEleApplicationSequence[grp][val] == 1
 }
@@ -61,7 +63,7 @@ func (t *Tmpl) ResetTagCounterAfterDelay(tag core.ICDTag, grp core.ICDGroup, cha
 	t.Core.Tasks.Add(func() {
 		//set the counter back to 0
 		t.icdTagCounter[char][tag] = 0
-		t.icdGroupOnTimer[char][grp] = false
+		t.icdTagOnTimer[char][tag] = false
 		t.Core.Log.Debugw("ele app counter reset", "frame", t.Core.F, "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char)
 	}, core.ICDGroupResetTimer[grp]-1)
 	t.Core.Log.Debugw("ele app reset timer set", "frame", t.Core.F, "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char, "reset", t.Core.F+core.ICDGroupResetTimer[grp]-1)

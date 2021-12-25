@@ -22,7 +22,7 @@ type Tmpl struct {
 	DefMod []core.DefMod
 
 	//icd related
-	icdGroupOnTimer       [core.MaxTeamPlayerCount][core.ICDGroupLength]bool
+	icdTagOnTimer         [core.MaxTeamPlayerCount][core.ICDTagLength]bool
 	icdTagCounter         [core.MaxTeamPlayerCount][core.ICDTagLength]int
 	icdDamageGroupOnTimer [core.MaxTeamPlayerCount][core.ICDGroupLength]bool
 	icdDamageGroupCounter [core.MaxTeamPlayerCount][core.ICDGroupLength]int
