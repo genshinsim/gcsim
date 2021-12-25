@@ -147,7 +147,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//ticks every 2s, first tick at t=1s, then t=3,5,7,9,11, lasts for 12.5
 	for i := 0; i < 6; i++ {
 		c.AddTask(func() {
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 60+i*120)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
 			c.Core.Log.Debugw("diona healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
 			c.Core.Health.HealActive(c.Index, heal)
 		}, "Diona Burst (DOT)", 60+i*120)

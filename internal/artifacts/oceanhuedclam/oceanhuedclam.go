@@ -94,7 +94,7 @@ func New(c core.Character, s *core.Core, count int) {
 						ActorIndex:       c.CharIndex(),
 						DamageSrc:        0, //from player
 						Abil:             "OHC Damage",
-						AttackTag:        core.AttackTagNone,
+						AttackTag:        core.AttackTagNoneStat,
 						ICDTag:           core.ICDTagNone,
 						ICDGroup:         core.ICDGroupDefault,
 						Element:          core.Physical,
