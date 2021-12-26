@@ -157,8 +157,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+300)
 
 	ai.Mult = burstCut[c.TalentLvlBurst()]
-	for i := 0; i < 300; i += 15 {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+i)
+	for i := 0; i < 19; i++ {
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+i*15)
 	}
 
 	c.SetCD(core.ActionBurst, 20*60)
