@@ -1,6 +1,7 @@
 import React from "react";
 import DiscordLogo from "../discord-icon.svg";
 import GithubLogo from "../github-icon.svg";
+import KofiLogo from "../ko-fi-icon.svg";
 
 export default function Footer() {
   return (
@@ -8,6 +9,15 @@ export default function Footer() {
       <div className="mr-auto text-xs">
         gcsim is not affiliated with miHoYo. Genshin Impact, game content and
         materials are trademarks and copyrights of miHoYo.
+      </div>
+      <div className=" hover:bg-gray-600 p-2 rounded-md h-12">
+        <a href="https://ko-fi.com/srliao" target="_blank">
+          <img
+            src={KofiLogo}
+            alt="Ko-Fi Logo"
+            className="object-contain h-full"
+          />
+        </a>
       </div>
       <div className=" hover:bg-gray-600 p-2 rounded-md h-12">
         <a href="https://github.com/genshinsim/gsim" target="_blank">

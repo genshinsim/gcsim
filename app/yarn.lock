@@ -5389,6 +5389,11 @@ fuzzysort@^1.1.4:
   resolved "https://registry.yarnpkg.com/fuzzysort/-/fuzzysort-1.1.4.tgz#a0510206ed44532cbb52cf797bf5a3cb12acd4ba"
   integrity sha512-JzK/lHjVZ6joAg3OnCjylwYXYVjRiwTY6Yb25LvfpJHK8bjisfnZJ5bY8aVWwTwCXgxPNgLAtmHL+Hs5q1ddLQ==
 
+ga-4-react@^0.1.281:
+  version "0.1.281"
+  resolved "https://registry.yarnpkg.com/ga-4-react/-/ga-4-react-0.1.281.tgz#aaacb5f42b7b302a39fa5c63c39103407655e9ac"
+  integrity sha512-LBvn8digT3gS8Iw8/XN3Z60c/JlFjMreLrZEneeQr+N/3+Ymv8yOsuK6qFAX2VPS6TscLbSlgtb/mriJ2P17Ow==
+
 genshin-db@^3.11.2:
   version "3.11.2"
   resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-3.11.2.tgz#a2e2d9f72aacc9e46f0e5fbce7c763e209a5c034"
