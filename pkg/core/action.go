@@ -86,8 +86,8 @@ type ActionBlock struct {
 	TryDropIfNotReady bool      //if false will keep trying next action; other wise drop sequence. Only if Try is set to true
 
 	//tracking
-	NumQueued int //number of times this action block has been queued
-	LastUsed  int //last time this action block was queued
+	NumQueued  int //number of times this action block has been queued
+	LastQueued int //last time this action block was queued
 
 	//options related to wait
 	Wait     CmdWait
@@ -204,7 +204,6 @@ func (a *ActionCtrl) execNoSwap(n *CmdNoSwap) (int, bool, error) {
 func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 	c := a.core.Chars[a.core.ActiveChar]
 	f := 0
-	done := true
 	a.core.Log.Debugw(
 		"attempting to execute "+n.Typ.String(),
 		"frame", a.core.F,
@@ -223,11 +222,11 @@ func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 	}
 	switch n.Typ {
 	case ActionSkill:
-		f, done = a.execActionItem(n, PreSkill, PostSkill, SkillState, true, c.Skill)
+		f = a.execActionItem(n, PreSkill, PostSkill, SkillState, true, c.Skill)
 	case ActionBurst:
-		f, done = a.execActionItem(n, PreBurst, PostBurst, BurstState, true, c.Burst)
+		f = a.execActionItem(n, PreBurst, PostBurst, BurstState, true, c.Burst)
 	case ActionAttack:
-		f, done = a.execActionItem(n, PreAttack, PostAttack, NormalAttackState, false, c.Attack)
+		f = a.execActionItem(n, PreAttack, PostAttack, NormalAttackState, false, c.Attack)
 	case ActionCharge:
 		req := a.core.StamPercentMod(ActionCharge) * c.ActionStam(ActionCharge, n.Param)
 		if a.core.Stam <= req {
@@ -235,14 +234,14 @@ func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 			return 0, false, nil
 		}
 		a.core.Stam -= req
-		f, done = a.execActionItem(n, PreChargeAttack, PostChargeAttack, ChargeAttackState, true, c.ChargeAttack)
+		f = a.execActionItem(n, PreChargeAttack, PostChargeAttack, ChargeAttackState, true, c.ChargeAttack)
 		a.core.Events.Emit(OnStamUse, ActionCharge)
 	case ActionHighPlunge:
-		f, done = a.execActionItem(n, PrePlunge, PostPlunge, PlungeAttackState, true, c.HighPlungeAttack)
+		f = a.execActionItem(n, PrePlunge, PostPlunge, PlungeAttackState, true, c.HighPlungeAttack)
 	case ActionLowPlunge:
-		f, done = a.execActionItem(n, PrePlunge, PostPlunge, PlungeAttackState, true, c.LowPlungeAttack)
+		f = a.execActionItem(n, PrePlunge, PostPlunge, PlungeAttackState, true, c.LowPlungeAttack)
 	case ActionAim:
-		f, done = a.execActionItem(n, PreAimShoot, PostAimShoot, AimState, true, c.Aimed)
+		f = a.execActionItem(n, PreAimShoot, PostAimShoot, AimState, true, c.Aimed)
 	case ActionDash:
 		req := a.core.StamPercentMod(ActionDash) * c.ActionStam(ActionDash, n.Param)
 		if a.core.Stam <= req {
@@ -250,7 +249,7 @@ func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 			return 0, false, nil
 		}
 		a.core.Stam -= req
-		f, done = a.execActionItem(n, PreDash, PostDash, DashState, true, c.Aimed)
+		f = a.execActionItem(n, PreDash, PostDash, DashState, true, c.Aimed)
 		a.core.Events.Emit(OnStamUse, ActionDash)
 	case ActionJump:
 		f = JumpFrames
@@ -278,7 +277,7 @@ func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 
 	a.core.LastAction = *n
 
-	return f, done, nil
+	return f, true, nil
 }
 
 func (a *ActionCtrl) execActionItem(
@@ -287,7 +286,7 @@ func (a *ActionCtrl) execActionItem(
 	state AnimationState,
 	reset bool,
 	abil func(map[string]int) (int, int),
-) (int, bool) {
+) int {
 	a.core.Events.Emit(pre)
 	f, l := abil(n.Param)
 	a.core.SetState(state, l)
@@ -297,5 +296,5 @@ func (a *ActionCtrl) execActionItem(
 	a.core.Tasks.Add(func() {
 		a.core.Events.Emit(post, f)
 	}, f)
-	return f, true
+	return f
 }

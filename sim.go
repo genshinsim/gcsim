@@ -18,7 +18,7 @@ type Simulation struct {
 	cfg  core.Config
 	opts core.RunOpt
 	// queue
-	queue []core.ActionItem
+	queue []core.Command
 	//hurt event
 	lastHurt int
 	//energy event
@@ -287,18 +287,19 @@ func (s *Simulation) initChars(cfg core.Config) error {
 }
 
 func (s *Simulation) initQueuer(cfg core.Config) error {
-	cust := make(map[string]int)
+	s.queue = make([]core.Command, 0, 20)
+	// cust := make(map[string]int)
+	// for i, v := range cfg.Rotation {
+	// 	if v.Label != "" {
+	// 		cust[v.Name] = i
+	// 	}
+	// 	// log.Println(v.Conditions)
+	// }
 	for i, v := range cfg.Rotation {
-		if v.Name != "" {
-			cust[v.Name] = i
+		if _, ok := s.C.CharByName(v.SequenceChar); !ok {
+			return fmt.Errorf("invalid char in rotation %v", v.SequenceChar)
 		}
-		// log.Println(v.Conditions)
-	}
-	for i, v := range cfg.Rotation {
-		if _, ok := s.C.CharByName(v.Target); !ok {
-			return fmt.Errorf("invalid char in rotation %v", v.Target)
-		}
-		cfg.Rotation[i].Last = -1
+		cfg.Rotation[i].LastQueued = -1
 	}
 
 	s.C.Queue.SetActionList(cfg.Rotation)

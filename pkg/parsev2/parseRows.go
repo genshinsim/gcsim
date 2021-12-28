@@ -40,6 +40,12 @@ func parseRows(p *Parser) (parseFn, error) {
 	n := p.next()
 
 	switch n.typ {
+	case itemTarget:
+		return parseTarget, nil
+	case itemEnergy:
+		return parseEnergyEvent, nil
+	case itemHurt:
+		return parseHurtEvent, nil
 	case itemCharacterKey:
 		//after character name it shoudl be one of the following:
 		//- char

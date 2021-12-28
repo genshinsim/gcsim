@@ -74,7 +74,8 @@ const (
 	itemResetLimit // reset_limit
 	itemHurt       // hurt
 	itemEnergy     // energy
-	itemActive     // active keyword
+	itemActive     // active
+	itemTarget     // target
 	// these are options related keywords
 	itemDebug      // debug
 	itemIterations // iter
@@ -117,6 +118,11 @@ const (
 	itemAmount   // amount
 	itemOnce     // once
 	itemEvery    // every
+
+	// these are hurt related flags
+
+	itemEle //ele
+
 	// stat types after the rest
 
 	itemKeys

@@ -10,6 +10,7 @@ var key = map[string]ItemType{
 	"wait":        itemWait,
 	"reset_limit": itemResetLimit,
 	"hurt":        itemHurt,
+	"target":      itemTarget,
 	"energy":      itemEnergy,
 	"active":      itemActive,
 	"options":     itemOptions,
@@ -51,6 +52,7 @@ var key = map[string]ItemType{
 	"amount":   itemAmount,
 	"once":     itemOnce,
 	"every":    itemEvery,
+	"ele":      itemEle,
 }
 
 var statKeys = map[string]core.StatType{

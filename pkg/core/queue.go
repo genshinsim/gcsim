@@ -12,7 +12,7 @@ import (
 type QueueHandler interface {
 	//returns a sequence of 1 or more commands to execute,
 	//whether or not to drop sequence if any is not ready, and any error
-	Next() ([]Command, bool, error)
+	Next() (queue []Command, dropIfFailed bool, err error)
 	SetActionList(pq []ActionBlock) error
 }
 
@@ -71,7 +71,7 @@ func (c *Queuer) Next() (next []Command, dropIfNotReady bool, err error) {
 func (c *Queuer) createQueueFromBlock(a ActionBlock) []Command {
 	//set tracking info
 	a.NumQueued++
-	a.LastUsed = c.core.F
+	a.LastQueued = c.core.F
 
 	var res []Command
 
@@ -210,7 +210,7 @@ func (c *Queuer) sequenceUseable(a ActionBlock) (bool, error) {
 		return false, nil
 	}
 	//can't be timed out
-	if c.core.F-a.LastUsed < a.Timeout {
+	if c.core.F-a.LastQueued < a.Timeout {
 		return false, nil
 	}
 	//check needs

@@ -12,6 +12,12 @@ xiangling add set="seal of insulation" count=4;
 xiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
 xiangling add stats atk%=.0992 cr=.1655 cd=.7282 em=39.64 er=.5510 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
 
+target lvl=80 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
+target lvl=80 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
+
+energy once interval=300 amount=1; #once at frame 300
+hurt every interval=300,600 amount=100,200 ele=pyro; #randomly 100 to 200 dmg every 300 to 600 frames
+
 # macros
 a:xiangling skill;
 b:wait_for particles value=xiangling max=100;
@@ -69,9 +75,14 @@ func TestParse(t *testing.T) {
 	for _, v := range a.Rotation {
 		fmt.Println(v)
 	}
-	fmt.Println(a.Targets)
+	fmt.Println("targets:")
+	fmt.Println("\t", a.Targets)
 	if err != nil {
 		t.Error(err)
 	}
+	fmt.Println("hurt event:")
+	fmt.Println("\t", a.Hurt)
+	fmt.Println("energy:")
+	fmt.Println("\t", a.Energy)
 
 }
