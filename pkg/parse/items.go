@@ -95,7 +95,7 @@ const (
 	itemTalent  // talent
 	itemStartHP // start_hp
 	itemCount   // count
-	itemParam   // param
+	itemParams  // params
 	itemLabel   // label
 	itemUntil   // until
 	// these are flags

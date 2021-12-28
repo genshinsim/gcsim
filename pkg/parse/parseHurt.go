@@ -6,8 +6,8 @@ import (
 )
 
 func parseHurtEvent(p *Parser) (parseFn, error) {
-	//hurt+=once interval=300 amount=100,200 ele=pyro #once at frame 300 (or nearest)
-	//hurt+=every interval=300,600 amount=100,200 ele=physical #randomly 100 to 200 dmg every 300 to 600 frames
+	//hurt once interval=300 amount=100,200 ele=pyro #once at frame 300 (or nearest)
+	//hurt every interval=300,600 amount=100,200 ele=physical #randomly 100 to 200 dmg every 300 to 600 frames
 	n := p.next()
 	switch n.typ {
 	case itemOnce:
@@ -29,7 +29,7 @@ func parseHurtOnce(p *Parser) (parseFn, error) {
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemInterval:
-			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err == nil {
 				p.cfg.Hurt.Start, err = itemNumberToInt(n)
 			}
@@ -59,7 +59,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemInterval:
-			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err != nil {
 				return nil, err
 			}
@@ -94,7 +94,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 }
 
 func (p *Parser) parseHurtAmount() error {
-	item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+	item, err := p.acceptSeqReturnLast(itemEqual, itemNumber)
 	if err != nil {
 		return err
 	}
@@ -119,12 +119,12 @@ func (p *Parser) parseHurtAmount() error {
 }
 
 func (p *Parser) parseHurtEle() error {
-	_, err := p.consume(itemAssign)
+	_, err := p.consume(itemEqual)
 	if err != nil {
 		return err
 	}
 	n := p.next()
-	if n.typ <= eleTypeKeyword {
+	if n.typ != itemElementKey {
 		return fmt.Errorf("<hurt> bad token at line %v - %v: %v", n.line, n.pos, n)
 	}
 	p.cfg.Hurt.Ele = eleKeys[n.val]

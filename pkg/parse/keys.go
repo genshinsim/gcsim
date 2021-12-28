@@ -32,7 +32,7 @@ var key = map[string]ItemType{
 	"talent":   itemTalent,
 	"start_hp": itemStartHP,
 	"count":    itemCount,
-	"param":    itemParam,
+	"params":   itemParams,
 	"label":    itemLabel,
 	"until":    itemUntil,
 	//flags

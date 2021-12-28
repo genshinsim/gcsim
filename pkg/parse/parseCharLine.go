@@ -27,7 +27,10 @@ func (p *Parser) newChar(key keys.Char) {
 	r := core.CharacterProfile{}
 	r.Base.Key = key
 	r.Stats = make([]float64, len(core.StatTypeString))
+	r.Params = make(map[string]int)
 	r.Sets = make(map[string]int)
+	r.SetParams = make(map[string]map[string]int)
+	r.Weapon.Params = make(map[string]int)
 	r.Base.StartHP = -1
 	p.chars[key] = &r
 }
@@ -79,6 +82,15 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			if err == nil {
 				c.Base.StartHP, err = itemNumberToFloat64(x)
 			}
+		case itemParams:
+			//expecting =[
+			_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
+			if err != nil {
+				return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+			}
+			p.backup()
+			//overriding here if it already exists
+			c.Params, err = p.acceptOptionalParamReturnMap()
 		case itemTerminateLine:
 			return parseRows, nil
 		}
@@ -130,6 +142,15 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 			if err == nil {
 				count, err = itemNumberToInt(x)
 			}
+		case itemParams:
+			//expecting =[
+			_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
+			if err != nil {
+				return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+			}
+			p.backup()
+			//overriding here if it already exists
+			c.SetParams[label], err = p.acceptOptionalParamReturnMap()
 		case itemTerminateLine:
 			c.Sets[label] = count
 			return parseRows, nil
@@ -168,8 +189,15 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 			if err == nil {
 				c.Weapon.Refine, err = itemNumberToInt(x)
 			}
-		case itemWeapon:
-
+		case itemParams:
+			//expecting =[
+			_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
+			if err != nil {
+				return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+			}
+			p.backup()
+			//overriding here if it already exists
+			c.Weapon.Params, err = p.acceptOptionalParamReturnMap()
 		case itemTerminateLine:
 			return parseRows, nil
 		}

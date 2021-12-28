@@ -28,11 +28,13 @@ type RunOpt struct {
 }
 
 type CharacterProfile struct {
-	Base    CharacterBase
-	Weapon  WeaponProfile
-	Talents TalentProfile
-	Stats   []float64
-	Sets    map[string]int
+	Base      CharacterBase
+	Weapon    WeaponProfile
+	Talents   TalentProfile
+	Stats     []float64
+	Sets      map[string]int
+	SetParams map[string]map[string]int
+	Params    map[string]int
 }
 
 type CharacterBase struct {
@@ -54,7 +56,7 @@ type WeaponProfile struct {
 	Level    int
 	MaxLevel int
 	Atk      float64
-	Param    map[string]int
+	Params   map[string]int
 }
 
 type TalentProfile struct {
@@ -102,9 +104,9 @@ func (e *EnemyProfile) Clone() EnemyProfile {
 
 func (c *CharacterProfile) Clone() CharacterProfile {
 	r := *c
-	r.Weapon.Param = make(map[string]int)
-	for k, v := range c.Weapon.Param {
-		r.Weapon.Param[k] = v
+	r.Weapon.Params = make(map[string]int)
+	for k, v := range c.Weapon.Params {
+		r.Weapon.Params[k] = v
 	}
 	r.Stats = make([]float64, len(c.Stats))
 	copy(r.Stats, c.Stats)

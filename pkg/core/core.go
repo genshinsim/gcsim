@@ -168,7 +168,7 @@ func (c *Core) AddChar(v CharacterProfile) error {
 	if !ok {
 		return fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Key.String())
 	}
-	wf(char, c, v.Weapon.Refine, v.Weapon.Param)
+	wf(char, c, v.Weapon.Refine, v.Weapon.Params)
 
 	//add set bonus
 	for key, count := range v.Sets {
