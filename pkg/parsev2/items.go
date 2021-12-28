@@ -49,6 +49,7 @@ const (
 	itemLeftSquareParen  // '['
 	itemRightSquareParen // ']'
 	itemColon            // ':'
+	itemPlus             // '+'
 	itemString           // string, including quotes
 	// following is logic operator
 	itemLogicOP // used only to delimit logical operation
@@ -93,15 +94,17 @@ const (
 	itemStartHP // start_hp
 	itemCount   // count
 	itemParam   // param
+	itemLabel   // label
 	// these are flags
 
 	itemSwapLock // swap_lock
 	itemIf       // if
-	itemSwap     // swap
-	itemOnField  // onfield
+	itemSwap     // swap_to
+	itemOnField  // is_onfield
 	itemLimit    // limit
 	itemTry      // try
 	itemTimeout  // timeout
+	itemNeeds    // needs
 	// these are wait specific key words
 
 	itemValue // value
@@ -115,8 +118,8 @@ const (
 	// stat types after the rest
 
 	itemKeys
-	itemStatKey      // represent a stat: def%, def, etc..
-	itemElementKey   // represent a element: pyro, hydro, etc..
-	itemCharacterKey // represent a character
-	itemActionKey    // represents diff type of actions
+	itemStatKey      // stats: def%, def, etc..
+	itemElementKey   // elements: pyro, hydro, etc..
+	itemCharacterKey // characters: albedo, amber, etc..
+	itemActionKey    // actions: skill, burst, attack, charge, etc...
 )

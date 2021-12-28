@@ -9,7 +9,6 @@ import (
 )
 
 func parseChar(p *Parser) (parseFn, error) {
-
 	n := p.next()
 	switch n.typ {
 	case itemChar:
@@ -17,6 +16,7 @@ func parseChar(p *Parser) (parseFn, error) {
 	case itemAdd:
 		return parseCharAdd, nil
 	case itemActionKey:
+		p.backup()
 		return parseCharActions, nil
 	default:
 		return nil, fmt.Errorf("unexpected token after <character>: %v at line %v", n, p.tokens)
@@ -97,46 +97,6 @@ func parseCharAdd(p *Parser) (parseFn, error) {
 	default:
 		return nil, fmt.Errorf("unexpected token after <character> add: %v at line %v", n, p.tokens)
 	}
-}
-
-func (p *Parser) acceptLevelReturnBaseMax() (base, max int, err error) {
-	//expect =xx/yy
-	var x item
-	x, err = p.consume(itemEqual)
-	if err != nil {
-		err = fmt.Errorf("unexpected token after lvl. expecting = got %v at line %v", x, p.tokens)
-		return
-	}
-	x, err = p.consume(itemNumber)
-	if err != nil {
-		err = fmt.Errorf("expecting a number for base lvl, got %v at line %v", x, p.tokens)
-		return
-	}
-	base, err = itemNumberToInt(x)
-	if err != nil {
-		err = fmt.Errorf("unexpected token for base lvl. got %v at line %v", x, p.tokens)
-		return
-	}
-	x, err = p.consume(itemForwardSlash)
-	if err != nil {
-		err = fmt.Errorf("expecting / separator for lvl, got %v at line %v", x, p.tokens)
-		return
-	}
-	x, err = p.consume(itemNumber)
-	if err != nil {
-		err = fmt.Errorf("expecting a number for max lvl, got %v at line %v", x, p.tokens)
-		return
-	}
-	max, err = itemNumberToInt(x)
-	if err != nil {
-		err = fmt.Errorf("unexpected token for lvl. got %v at line %v", x, p.tokens)
-		return
-	}
-	if max < base {
-		err = fmt.Errorf("max level %v cannot be less than base level %v at line %v", max, base, p.tokens)
-		return
-	}
-	return
 }
 
 func parseCharAddSet(p *Parser) (parseFn, error) {
