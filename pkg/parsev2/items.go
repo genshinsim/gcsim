@@ -68,7 +68,7 @@ const (
 	// these are command keywords
 	itemOptions    // options
 	itemChain      // chain
-	itemWait       // wait
+	itemWaitFor    // wait_for
 	itemResetLimit // reset_limit
 	itemHurt       // hurt
 	itemEnergy     // energy
@@ -80,6 +80,7 @@ const (
 	itemWorkers    // workers
 	itemERCalc     // er_calc
 	// these are special char related keywords
+
 	itemAdd     // add
 	itemChar    // char
 	itemStats   // stats
@@ -93,6 +94,7 @@ const (
 	itemCount   // count
 	itemParam   // param
 	// these are flags
+
 	itemSwapLock // swap_lock
 	itemIf       // if
 	itemSwap     // swap
@@ -100,15 +102,18 @@ const (
 	itemLimit    // limit
 	itemTry      // try
 	itemTimeout  // timeout
-	itemCharMod  // char_mod
-	itemParticle // particle
-	itemMax      // max
+	// these are wait specific key words
+
+	itemValue // value
+	itemMax   // max
 	// these are energy related flags
+
 	itemInterval // interval
 	itemAmount   // amount
 	itemOnce     // once
 	itemEvery    // every
 	// stat types after the rest
+
 	itemKeys
 	itemStatKey      // represent a stat: def%, def, etc..
 	itemElementKey   // represent a element: pyro, hydro, etc..

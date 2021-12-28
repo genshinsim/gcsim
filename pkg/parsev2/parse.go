@@ -12,9 +12,10 @@ import (
 )
 
 type Parser struct {
-	l      *lexer
-	tokens []item
-	pos    int //current position
+	l              *lexer
+	tokens         []item
+	pos            int       //current position
+	currentCharKey keys.Char //current character being parsed
 
 	//results
 	cfg   *core.Config

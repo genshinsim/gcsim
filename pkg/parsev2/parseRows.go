@@ -3,6 +3,8 @@ package parse
 import (
 	"errors"
 	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func parseRows(p *Parser) (parseFn, error) {
@@ -24,8 +26,6 @@ func parseRows(p *Parser) (parseFn, error) {
 		return nil, nil //at end of the file
 	}
 
-	n := p.next()
-
 	/**
 	beginning of the line we're expecting one of the following:
 		- <character name>
@@ -37,12 +37,30 @@ func parseRows(p *Parser) (parseFn, error) {
 		-
 	**/
 
+	n := p.next()
+
 	switch n.typ {
 	case itemCharacterKey:
+		//after character name it shoudl be one of the following:
+		//- char
+		//- add
+		//abilities
+
+		//lex should have checked this already
+		key, ok := keys.CharNameToKey[n.val]
+		if !ok {
+			return nil, fmt.Errorf("unexpected error, should be a recognized character key: %v", n)
+		}
+		if _, ok := p.chars[key]; !ok {
+			p.newChar(key)
+		}
+		p.currentCharKey = key
+
+		return parseChar, nil
 	case itemOptions:
 		return parseOptions, nil
 	case itemChain:
-	case itemWait:
+	case itemWaitFor:
 		return parseWait, nil
 	case itemResetLimit:
 	case itemIdentifier:

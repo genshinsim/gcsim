@@ -6,7 +6,7 @@ var key = map[string]ItemType{
 	".": itemDot,
 	//commands
 	"chain":       itemChain,
-	"wait":        itemWait,
+	"wait_for":    itemWaitFor,
 	"reset_limit": itemResetLimit,
 	"hurt":        itemHurt,
 	"energy":      itemEnergy,
@@ -39,8 +39,7 @@ var key = map[string]ItemType{
 	"limit":     itemLimit,
 	"try":       itemTry,
 	"timeout":   itemTimeout,
-	"char_mod":  itemCharMod,
-	"particle":  itemParticle,
+	"value":     itemValue,
 	"max":       itemMax,
 	//energy/hurt event related
 	"interval": itemInterval,

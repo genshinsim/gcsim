@@ -36,22 +36,25 @@ type CharacterProfile struct {
 }
 
 type CharacterBase struct {
-	Key     keys.Char
-	Element EleType
-	Level   int
-	HP      float64
-	Atk     float64
-	Def     float64
-	Cons    int
-	StartHP float64
+	Key      keys.Char
+	Element  EleType
+	Level    int
+	MaxLevel int
+	HP       float64
+	Atk      float64
+	Def      float64
+	Cons     int
+	StartHP  float64
 }
 
 type WeaponProfile struct {
-	Name   string
-	Class  WeaponClass
-	Refine int
-	Atk    float64
-	Param  map[string]int
+	Name     string
+	Class    WeaponClass
+	Refine   int
+	Level    int
+	MaxLevel int
+	Atk      float64
+	Param    map[string]int
 }
 
 type TalentProfile struct {

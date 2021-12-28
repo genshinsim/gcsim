@@ -27,16 +27,17 @@ type Command interface {
 type CmdWaitType int
 
 const (
-	CmdWaitTypeTimed CmdWaitType = iota
+	CmdWaitTypeInvalid CmdWaitType = iota
+	CmdWaitTypeTimed
 	CmdWaitTypeParticle
+	CmdWaitTypeMods
 )
 
 type CmdWait struct {
-	For    CmdWaitType
-	Max    int //cannot be 0 if type is timed
-	Fields string
-	Val    int
-	Op     string
+	For        CmdWaitType
+	Max        int //cannot be 0 if type is timed
+	Source     string
+	Conditions Condition
 }
 
 func (c *CmdWait) Type() CommandType { return CommandTypeWait }
