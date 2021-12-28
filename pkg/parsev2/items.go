@@ -70,6 +70,7 @@ const (
 	itemOptions    // options
 	itemChain      // chain
 	itemWaitFor    // wait_for
+	itemWait       // wait (calc mode only)
 	itemResetLimit // reset_limit
 	itemHurt       // hurt
 	itemEnergy     // energy
@@ -95,6 +96,7 @@ const (
 	itemCount   // count
 	itemParam   // param
 	itemLabel   // label
+	itemUntil   // until
 	// these are flags
 
 	itemSwapLock // swap_lock

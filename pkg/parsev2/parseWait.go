@@ -7,6 +7,44 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+func parseCalcModeWait(p *Parser) (parseFn, error) {
+	//wait 10
+	//wait until 600
+	block := core.ActionBlock{
+		Type: core.ActionBlockTypeCalcWait,
+	}
+	n := p.next()
+	switch n.typ {
+	case itemNumber:
+		val, err := itemNumberToInt(n)
+		if err != nil {
+			return nil, err
+		}
+		block.CalcWait.Val = val
+	case itemUntil:
+		//should be number next
+		n = p.next()
+		if n.typ != itemNumber {
+			return nil, fmt.Errorf("unexpected token after wait, expecting a number got %v line %v", n, p.tokens)
+		}
+		val, err := itemNumberToInt(n)
+		if err != nil {
+			return nil, err
+		}
+		block.CalcWait.Frames = true
+		block.CalcWait.Val = val
+	default:
+		return nil, fmt.Errorf("unexpected token after wait, got %v line %v", n, p.tokens)
+	}
+	//expect end of line
+	n = p.next()
+	if n.typ != itemTerminateLine {
+		return nil, fmt.Errorf("wait expecting ; got %v at line %v", n, p.tokens)
+	}
+	p.cfg.Rotation = append(p.cfg.Rotation, block)
+	return parseRows, nil
+}
+
 func parseWait(p *Parser) (parseFn, error) {
 	block, err := p.acceptWait()
 	if err != nil {

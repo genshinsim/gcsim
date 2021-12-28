@@ -6,7 +6,7 @@ import (
 )
 
 var pteststring = `
-xiangling char lvl=80/90 cons=4 talent=6,9,9;
+xiangling char lvl=80/90 cons=4 talent=6,9,9 start_hp=100;
 xiangling add weapon="staff of homa" lvl=80/90 refine=3;
 xiangling add set="seal of insulation" count=4;
 xiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
@@ -17,7 +17,7 @@ a:xiangling skill;
 b:wait_for particles value=xiangling max=100;
 c:reset_limit;
 
-# chain
+# chain; macros have to be defined first
 chain a,b,c +if=.field1.field2.field3>1 +swap_to=xiangling +limit=1 +try=1;
 
 # reset
@@ -45,6 +45,10 @@ xiangling attack +timeout=100;
 xiangling attack +try;
 xiangling attack +try=1;
 xiangling attack +try=0;
+
+# calc mode wait
+wait 10;
+wait until 1000;
 `
 
 func TestParse(t *testing.T) {

@@ -72,6 +72,8 @@ func parseRows(p *Parser) (parseFn, error) {
 			return nil, fmt.Errorf("<parse row expecting : after an identifier but got %v; line %v", x, p.tokens)
 		}
 		return parseMacro, nil
+	case itemWait: //THIS IS FOR CALC MODE ONLY
+		return parseCalcModeWait, nil
 	}
 
 	return nil, fmt.Errorf("<parse row> invalid token at start of line: %v", p.tokens)

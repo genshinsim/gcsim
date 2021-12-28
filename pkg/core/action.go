@@ -40,6 +40,11 @@ type CmdWait struct {
 	Conditions Condition
 }
 
+type CmdCalcWait struct {
+	Frames bool
+	Val    int
+}
+
 func (c *CmdWait) Type() CommandType { return CommandTypeWait }
 
 type CmdNoSwap struct {
@@ -55,6 +60,7 @@ const (
 	ActionBlockTypeWait
 	ActionBlockTypeChain
 	ActionBlockTypeResetLimit
+	ActionBlockTypeCalcWait
 )
 
 type ActionBlock struct {
@@ -84,7 +90,8 @@ type ActionBlock struct {
 	LastUsed  int //last time this action block was queued
 
 	//options related to wait
-	Wait CmdWait
+	Wait     CmdWait
+	CalcWait CmdCalcWait
 }
 
 type ActionItem struct {

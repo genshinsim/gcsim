@@ -7,6 +7,7 @@ var key = map[string]ItemType{
 	//commands
 	"chain":       itemChain,
 	"wait_for":    itemWaitFor,
+	"wait":        itemWait,
 	"reset_limit": itemResetLimit,
 	"hurt":        itemHurt,
 	"energy":      itemEnergy,
@@ -31,12 +32,13 @@ var key = map[string]ItemType{
 	"start_hp": itemStartHP,
 	"count":    itemCount,
 	"param":    itemParam,
+	"label":    itemLabel,
+	"until":    itemUntil,
 	//flags
 	"if":         itemIf,
 	"swap_to":    itemSwap,
 	"swap_lock":  itemSwapLock,
 	"is_onfield": itemOnField,
-	"label":      itemLabel,
 	"needs":      itemNeeds,
 	"limit":      itemLimit,
 	"timeout":    itemTimeout,

@@ -74,6 +74,11 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			if err != nil {
 				return nil, err
 			}
+		case itemStartHP:
+			x, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+			if err == nil {
+				c.Base.StartHP, err = itemNumberToFloat64(x)
+			}
 		case itemTerminateLine:
 			return parseRows, nil
 		}
