@@ -8,15 +8,29 @@ import (
 )
 
 func parseWait(p *Parser) (parseFn, error) {
+	block, err := p.acceptWait()
+	if err != nil {
+		return nil, err
+	}
+	p.cfg.Rotation = append(p.cfg.Rotation, block)
+
+	return parseRows, nil
+}
+
+func (p *Parser) acceptWait() (core.ActionBlock, error) {
 	// wait_for particles value=xingqiu max=100
 	// wait_for mods value=.xiangling.bennettbuff==1 max=-1
 	// wait_for time max=100
-	w := core.ActionBlock{}
+	w := core.ActionBlock{
+		Type: core.ActionBlockTypeWait,
+	}
 	w.Wait.Max = -2
+
+	condOk := false
 
 	n, err := p.consume(itemIdentifier)
 	if err != nil {
-		return nil, fmt.Errorf("<parse wait> invalid tokens after wait_for (expecting identifier) at line %v", p.tokens)
+		return w, fmt.Errorf("<parse wait> invalid tokens after wait_for (expecting identifier) at line %v", p.tokens)
 	}
 	switch n.val {
 	case "particles":
@@ -25,11 +39,10 @@ func parseWait(p *Parser) (parseFn, error) {
 		w.Wait.For = core.CmdWaitTypeMods
 	case "time":
 		w.Wait.For = core.CmdWaitTypeTimed
+		condOk = true
 	default:
-		return nil, fmt.Errorf("<parse wait> invalid option %v after wait_for at line %v", n.val, p.tokens)
+		return w, fmt.Errorf("<parse wait> invalid option %v after wait_for at line %v", n.val, p.tokens)
 	}
-
-	condOk := false
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 
@@ -39,63 +52,64 @@ func parseWait(p *Parser) (parseFn, error) {
 			//if mods expect fields, if particles expect string
 			n, err = p.consume(itemEqual)
 			if err != nil {
-				return nil, fmt.Errorf("<parse wait> expected = after value, got %v. line %v", n, p.tokens)
+				return w, fmt.Errorf("<parse wait> expected = after value, got %v. line %v", n, p.tokens)
 			}
 
 			//next should be either an identifier or a field
 			n := p.next()
 
 			switch n.typ {
-			case itemIdentifier:
+			case itemIdentifier, itemCharacterKey:
 				//only valid if particles
 				if w.Wait.For != core.CmdWaitTypeParticle {
-					return nil, fmt.Errorf("<parse wait> invalid value %v, line %v", n, p.tokens)
+					return w, fmt.Errorf("<parse wait> invalid value %v, line %v", n, p.tokens)
 				}
 				w.Wait.Source = n.val
+				condOk = true
 			case itemField:
 				//only valid if mods
 				if w.Wait.For != core.CmdWaitTypeMods {
-					return nil, fmt.Errorf("<parse wait> invalid value %v, line %v", n, p.tokens)
+					return w, fmt.Errorf("<parse wait> invalid value %v, line %v", n, p.tokens)
 				}
 				//backup and parse condition
 				p.backup()
 				//scan for fields
 				c, err := p.parseCondition()
 				if err != nil {
-					return nil, err
+					return w, err
 				}
 				w.Wait.Conditions = c
 				condOk = true
 			default:
-				return nil, fmt.Errorf("<parse wait> invalid value %v, line %v", n, p.tokens)
+				return w, fmt.Errorf("<parse wait> invalid value %v, line %v", n, p.tokens)
 			}
 		case itemMax:
 			//this has to be after for
 			if w.Wait.For == core.CmdWaitTypeInvalid {
-				return nil, fmt.Errorf("<parse wait> missing for. val must be after for. line %v", p.tokens)
+				return w, fmt.Errorf("<parse wait> missing for. val must be after for. line %v", p.tokens)
 			}
-			n, err = p.acceptSeqReturnLast(itemEqual, itemIdentifier)
+			n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err == nil {
 				w.Wait.Max, err = itemNumberToInt(n)
 			}
 		case itemTerminateLine:
 			//make sure mandatory fields are present
 			if w.Wait.Max == -2 {
-				return nil, fmt.Errorf("<parse wait> missing max")
+				return w, fmt.Errorf("<parse wait> missing max, line %v", p.tokens)
 			}
 			if !condOk {
-				return nil, fmt.Errorf("<parse wait> missing condition")
+				return w, fmt.Errorf("<parse wait> missing condition, line %v", p.tokens)
 			}
-			return parseRows, nil
+			return w, nil
 		default:
 			err = fmt.Errorf("<parse wait> unrecognized token %v at line %v", n, p.tokens)
 		}
 		if err != nil {
-			return nil, err
+			return w, err
 		}
 	}
 
-	return nil, errors.New("unexpected end of line while parsing wait commmand")
+	return w, errors.New("unexpected end of line while parsing wait commmand")
 
 }
 

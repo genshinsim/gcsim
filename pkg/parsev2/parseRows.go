@@ -60,15 +60,18 @@ func parseRows(p *Parser) (parseFn, error) {
 	case itemOptions:
 		return parseOptions, nil
 	case itemChain:
+		return parseChain, nil
 	case itemWaitFor:
 		return parseWait, nil
 	case itemResetLimit:
+		return parseResetLimit, nil
 	case itemIdentifier:
 		//this is for macros. next has to be a colon
 		x, err := p.consume(itemColon)
 		if err != nil {
 			return nil, fmt.Errorf("<parse row expecting : after an identifier but got %v; line %v", x, p.tokens)
 		}
+		return parseMacro, nil
 	}
 
 	return nil, fmt.Errorf("<parse row> invalid token at start of line: %v", p.tokens)

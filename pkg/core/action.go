@@ -54,6 +54,7 @@ const (
 	ActionBlockTypeSequence ActionBlockType = iota
 	ActionBlockTypeWait
 	ActionBlockTypeChain
+	ActionBlockTypeResetLimit
 )
 
 type ActionBlock struct {

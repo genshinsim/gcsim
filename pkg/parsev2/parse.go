@@ -18,9 +18,10 @@ type Parser struct {
 	currentCharKey keys.Char //current character being parsed
 
 	//results
-	cfg   *core.Config
-	opt   *core.RunOpt
-	chars map[keys.Char]*core.CharacterProfile
+	cfg    *core.Config
+	opt    *core.RunOpt
+	chars  map[keys.Char]*core.CharacterProfile
+	macros map[string]core.ActionBlock
 }
 
 type parseFn func(*Parser) (parseFn, error)
@@ -38,6 +39,7 @@ func (p *Parser) Parse() (core.Config, core.RunOpt, error) {
 
 	p.cfg = &core.Config{}
 	p.chars = make(map[keys.Char]*core.CharacterProfile)
+	p.macros = make(map[string]core.ActionBlock)
 	p.opt = &core.RunOpt{}
 
 	//default run options
