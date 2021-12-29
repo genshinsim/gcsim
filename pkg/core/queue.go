@@ -134,9 +134,12 @@ func (c *Queuer) createQueueFromSequence(a ActionBlock) []Command {
 	}
 
 	//add abilities to the res
-	for _, v := range a.Sequence {
-		res = append(res, &v)
+	for i := 0; i < len(a.Sequence); i++ {
+		res = append(res, &a.Sequence[i])
 	}
+	// for _, v := range a.Sequence {
+	// 	res = append(res, &v)
+	// }
 
 	//if swapto, add to end of sequence
 	if a.SwapTo > keys.NoChar {

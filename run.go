@@ -62,7 +62,7 @@ func (s *Simulation) Run() (Stats, error) {
 }
 
 func (s *Simulation) AdvanceFrame() error {
-	var ok bool
+	var done bool
 	var err error
 	var dropIfFailed bool
 	//advance frame
@@ -110,17 +110,30 @@ func (s *Simulation) AdvanceFrame() error {
 			return nil
 		}
 
-		s.skip, ok, err = s.C.Action.Exec(s.queue[0])
+		s.C.Log.Debugw("queue check - before exec",
+			"frame", s.C.F,
+			"event", core.LogQueueEvent,
+			"remaining queue", s.queue,
+		)
+
+		s.skip, done, err = s.C.Action.Exec(s.queue[0])
 		if err != nil {
 			return err
 		}
 
-		if ok {
+		if done {
 			if s.opts.LogDetails && isAction {
 				s.stats.AbilUsageCountByChar[s.C.ActiveChar][act.Typ.String()]++
 			}
 			//pop queue
 			s.queue = s.queue[1:]
+			s.C.Log.Debugw("queue check - after exec",
+				"frame", s.C.F,
+				"event", core.LogQueueEvent,
+				"remaining queue", s.queue,
+				"skip", s.skip,
+				"done", done,
+			)
 		} else {
 			if dropIfFailed {
 				//drop rest of the queue

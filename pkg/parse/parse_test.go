@@ -6,6 +6,8 @@ import (
 )
 
 var pteststring = `
+options debug=true iteration=3000 duration=41 workers=24;
+
 xiangling char lvl=80/90 cons=4 talent=6,9,9 start_hp=100 params=[a=1,b=2];
 xiangling add weapon="staff of homa" lvl=80/90 refine=3 params=[a=1,b=2];
 xiangling add set="seal of insulation" count=4 params=[a=1,b=2];

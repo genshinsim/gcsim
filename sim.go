@@ -1,6 +1,7 @@
 package gcsim
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -281,6 +282,10 @@ func (s *Simulation) initChars(cfg core.Config) error {
 
 	}
 
+	if s.C.ActiveChar == -1 {
+		return errors.New("no active char set")
+	}
+
 	s.initResonance(res)
 
 	return nil
@@ -296,8 +301,8 @@ func (s *Simulation) initQueuer(cfg core.Config) error {
 	// 	// log.Println(v.Conditions)
 	// }
 	for i, v := range cfg.Rotation {
-		if _, ok := s.C.CharByName(v.SequenceChar); !ok {
-			return fmt.Errorf("invalid char in rotation %v", v.SequenceChar)
+		if _, ok := s.C.CharByName(v.SequenceChar); v.Type == core.ActionBlockTypeSequence && !ok {
+			return fmt.Errorf("invalid char in rotation %v; %v", v.SequenceChar, v)
 		}
 		cfg.Rotation[i].LastQueued = -1
 	}

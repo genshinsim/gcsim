@@ -71,6 +71,8 @@ func parseRows(p *Parser) (parseFn, error) {
 		return parseWait, nil
 	case itemResetLimit:
 		return parseResetLimit, nil
+	case itemActive:
+		return parseActiveChar, nil
 	case itemIdentifier:
 		//this is for macros. next has to be a colon
 		x, err := p.consume(itemColon)

@@ -115,7 +115,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.Core.Combat.QueueAttack(
 			ai,
-			core.NewDefCircHit(0.5, false, core.TargettableEnemy),
+			core.NewDefCircHit(0.1, false, core.TargettableEnemy),
 			f-i,
 			f-i,
 		)

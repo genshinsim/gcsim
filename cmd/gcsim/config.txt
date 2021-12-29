@@ -1,62 +1,29 @@
 options debug=true iteration=3000 duration=41 workers=24;
 
-##Character Definitions
-char+=xiangling ele=pyro lvl=80 hp=1 atk=210 def=668.871 em=96.000 cr=.05 cd=0.5 cons=4 talent=6,9,9;
-weapon+=xiangling label="the catch" atk=454.363 er=0.459 refine=5;
-art+=xiangling label="seal of insulation" count=4;
-stats+=xiangling label=main hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
-stats+=xiangling label=subs atk%=.0992 cr=.1655 cd=.7282 em=39.64 er=.5510 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
+xiangling char lvl=80/90 cons=4 talent=6,9,9 start_hp=100 params=[a=1,b=2];
+xiangling add weapon="staff of homa" lvl=80/90 refine=3 params=[a=1,b=2];
+xiangling add set="seal of insulation" count=4 params=[a=1,b=2];
+xiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
+xiangling add stats atk%=.0992 cr=.1655 cd=.7282 em=39.64 er=.5510 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
 
-char+=zhongli ele=geo lvl=80 hp=1 atk=233 def=1 geo%=.288 cr=.05 cd=0.5 cons=0 talent=6,9,9;
-weapon+=zhongli label="favonius lance" atk=564.784 er=0.306 refine=3;
-art+=zhongli label="instructor" count=4;
-stats+=zhongli label=main hp=4780 atk=311 hp%=1 cr=0.311;
-stats+=zhongli label=subs atk%=.0992 cr=.2648 cd=.1324 em=39.64 er=.1102 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
+target lvl=80 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
+target lvl=80 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
 
-char+=bennett ele=pyro lvl=80 hp=1 atk=178 def=1 er=0.267 cr=.05 cd=0.5 cons=4 talent=6,9,9;
-weapon+=bennett label="festering desire" atk=510 er=0.459 refine=5;
-art+=bennett label="noblesse oblige" count=4;
-stats+=bennett label=main hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
-stats+=bennett label=subs atk%=.0992 cr=.0662 cd=.1324 em=39.64 er=.5510 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
+active xiangling;
 
-char+=ganyu ele=cryo lvl=90 hp=9796.729 atk=334.850 def=630.215 cr=.05 cd=0.884 cons=0 talent=9,9,9;
-# Note - Prototype crescent is considered better in the guide, but that doesn't consider Bennett buff I don't think
-# Hamayumi works better in Bennett buff
-weapon+=ganyu label="hamayumi" atk=454 atk%=0.551 refine=3;
-art+=ganyu label="reminiscence of shime" count=4;
-stats+=ganyu label=main hp=4780 atk=311 em=187 cryo%=0.466 cr=0.311;
-stats+=ganyu label=subs atk%=.1984 cr=.2317 cd=.7282 em=118.92 er=.1102 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
+energy once interval=300 amount=1; #once at frame 300
+#hurt every interval=300,600 amount=100,200 ele=pyro; #randomly 100 to 200 dmg every 300 to 600 frames
 
-##Default Enemy
-target+="dummy" lvl=100 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
+# macros
+a:xiangling skill;
+b:wait_for particles value=xiangling max=100;
 
-##Actions List
-active+=bennett;
+# chain; macros have to be defined first
+chain a,b +try=1;
 
-# HP particle simulation. Per srl:
-# it adds 1 particle randomly, uniformly distributed between 200 to 300 frames after the last time an energy drops
-# so in the case above, it adds on avg one particle every 250 frames in effect
-# so over 90s of combat that's 90 * 60 / 250 = 21.6 on avg
-energy+=every interval=200,300 amount=1;
+# repeater
+xiangling attack:4;
 
-actions+=sequence_strict exec=skill target=bennett if=.element.pyro==0&&.element.cryo==0;
+wait 10;
 
-# Attacks are to create the shield right before swapping
-actions+=sequence_strict exec=attack,attack,skill[hold_nosteele=1] target=zhongli if=.energy.xiangling>70&&.cd.bennett.burst<60;
-
-actions+=sequence_strict exec=burst,skill target=bennett if=.cd.xiangling.skill<120&&.cd.xiangling.burst<120;
-actions+=sequence_strict exec=burst target=bennett if=.cd.xiangling.skill<50&&.cd.xiangling.burst<50;
-
-actions+=sequence_strict exec=burst,skill target=xiangling if=.status.xianglingguoba==0&&.status.btburst>0;
-
-# Added lock to slow down shots to align with calcs
-# Apparently you can only fit 6 CA in. Sim appears to do a lot better than that, so we artificially constrain it to 6 to be realistic
-# Also need to lock her in place as well
-actions+=sequence_strict exec=skill,aim,aim,dash,aim,dash,aim,aim,aim target=ganyu if=.status.xianglingburst>0 actionlock=800 lock=700;
-
-actions+=sequence_strict exec=skill,attack target=bennett swap=xiangling if=.energy.xiangling<65;
-actions+=skill target=bennett if=.energy.xiangling<75;
-
-actions+=attack target=zhongli;
-actions+=attack target=xiangling active=xiangling;
-
+xiangling burst,skill;

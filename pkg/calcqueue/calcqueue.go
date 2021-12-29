@@ -18,6 +18,12 @@ func New(c *core.Core) *Queuer {
 
 func (q *Queuer) SetActionList(a []core.ActionBlock) error {
 	q.pq = a
+	q.core.Log.Debugw(
+		"priority queued received",
+		"frame", q.core.F,
+		"event", core.LogQueueEvent,
+		"pq", a,
+	)
 	return nil
 }
 
@@ -44,9 +50,10 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 				"queuer on wait",
 				"frame", q.core.F,
 				"event", core.LogQueueEvent,
-				"wait", v.Wait,
+				"wait", q.wait,
 				"index", q.ind,
 			)
+			return nil, false, nil
 		}
 
 		switch v.Type {
@@ -66,12 +73,22 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 				})
 			}
 			//add the rest
-			for _, v := range v.Sequence {
-				r = append(r, &v)
+			for i := 0; i < len(v.Sequence); i++ {
+				r = append(r, &v.Sequence[i])
 			}
+			// for _, v := range v.Sequence {
+			// 	r = append(r, &v)
+			// }
 		default:
 			//ignore and move on
 			q.ind++
+			q.core.Log.Debugw(
+				"queuer skipping non sequence options",
+				"frame", q.core.F,
+				"event", core.LogQueueEvent,
+				"index", q.ind,
+				"type", v.Type,
+			)
 			continue
 		}
 
