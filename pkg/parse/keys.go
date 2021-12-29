@@ -45,8 +45,9 @@ var key = map[string]ItemType{
 	"timeout":    itemTimeout,
 	"try":        itemTry,
 	// ??
-	"value": itemValue,
-	"max":   itemMax,
+	"value":  itemValue,
+	"max":    itemMax,
+	"filler": itemFiller,
 	//energy/hurt event related
 	"interval": itemInterval,
 	"amount":   itemAmount,

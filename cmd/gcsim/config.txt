@@ -15,7 +15,7 @@ hurt every interval=300,600 amount=100,200 ele=pyro; #randomly 100 to 200 dmg ev
 
 # macros
 a:xiangling skill +label=a;
-b:wait_for particles value=xiangling max=500;
+b:wait_for particles value=xiangling max=500 +filler=attack;
 
 
 # list

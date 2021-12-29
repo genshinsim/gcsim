@@ -110,8 +110,9 @@ const (
 	itemNeeds    // needs
 	// these are wait specific key words
 
-	itemValue // value
-	itemMax   // max
+	itemValue  // value
+	itemMax    // max
+	itemFiller // filler
 	// these are energy related flags
 
 	itemInterval // interval

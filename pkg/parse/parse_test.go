@@ -36,6 +36,7 @@ reset_limit;
 # wait
 wait_for mods value=.xiangling.bennettbuff==1 max=10;
 wait_for time max=10;
+wait_for time max=100 +filler=attack[param=1];
 
 # basic char abil
 xiangling burst,skill;
@@ -90,8 +91,8 @@ chain a,b +label=xlcollect;
 xiangling attack +is_onfield +label=fill;`
 
 func TestParse(t *testing.T) {
-	// p := New("test", pteststring)
-	p := New("test", s2)
+	p := New("test", pteststring)
+	// p := New("test", s2)
 	a, _, err := p.Parse()
 	fmt.Println("characters:")
 	for _, v := range a.Characters.Profile {

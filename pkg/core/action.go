@@ -44,6 +44,7 @@ type CmdWait struct {
 	Max        int //cannot be 0 if type is timed
 	Source     string
 	Conditions Condition
+	FillAction ActionItem
 }
 
 type CmdCalcWait struct {
@@ -225,19 +226,29 @@ func (a *ActionCtrl) execWait(n *CmdWait) (int, bool, error) {
 		return 0, true, nil
 	}
 	//otherwise check conditions
+	ok := false
 	switch n.For {
 	case CmdWaitTypeParticle:
 		//need particles received after waitStarted
-		ok := a.lastParticle > a.waitStarted && a.lastParticleSource == n.Source
-		return 0, ok, nil
+		ok = a.lastParticle > a.waitStarted && a.lastParticleSource == n.Source
 	case CmdWaitTypeMods:
-		ok := a.checkMod(n.Conditions)
-		return 0, ok, nil
+		ok = a.checkMod(n.Conditions)
 	default:
-		//don't need to check for CmdWaitTypeTimed
-		return 0, false, nil
+	}
+	if ok {
+		return 0, true, nil
+	}
+	//if not done, queue up filler action if any
+	if n.FillAction.Typ != InvalidAction {
+		//make a copy
+		cpy := n.FillAction
+		cpy.Target = a.core.Chars[a.core.ActiveChar].Key()
+		a.core.Log.Debugw("executing filler while waiting", "frame", a.core.F, "event", LogActionEvent, "action", cpy)
+		wait, _, err := a.execAction(&cpy)
+		return wait, false, err
 	}
 
+	return 0, false, nil
 }
 
 func (a *ActionCtrl) checkMod(c Condition) bool {

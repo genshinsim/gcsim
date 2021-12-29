@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func parseCalcModeWait(p *Parser) (parseFn, error) {
@@ -139,6 +140,30 @@ func (p *Parser) acceptWait() (core.ActionBlock, error) {
 				return w, fmt.Errorf("<parse wait> missing condition, line %v", p.tokens)
 			}
 			return w, nil
+		case itemPlus:
+			//+filler=skill[param=1]
+			n = p.next()
+			switch n.typ {
+			case itemFiller:
+				//consume an equal sign
+				n, err = p.acceptSeqReturnLast(itemEqual, itemActionKey)
+				if err != nil {
+					return w, fmt.Errorf("<parse wait> unrecognized token after filler at line %v", p.tokens)
+				}
+				//expecting a
+				act := core.ActionItem{
+					Typ:    actionKeys[n.val],
+					Target: keys.NoChar, //since it's active char only
+				}
+				//optional params
+				act.Param, err = p.acceptOptionalParamReturnMap()
+				if err != nil {
+					return w, err
+				}
+				w.Wait.FillAction = act
+			default:
+				return w, fmt.Errorf("<parse wait> unrecognized token %v after + at line %v", n, p.tokens)
+			}
 		default:
 			err = fmt.Errorf("<parse wait> unrecognized token %v at line %v", n, p.tokens)
 		}
