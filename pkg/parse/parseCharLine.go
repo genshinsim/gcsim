@@ -180,14 +180,19 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 	}
 	c.Weapon.Name = s
 
+	lvlOk := false
+	refineOk := false
+
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemLvl:
 			c.Weapon.Level, c.Weapon.MaxLevel, err = p.acceptLevelReturnBaseMax()
+			lvlOk = true
 		case itemRefine:
 			x, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err == nil {
 				c.Weapon.Refine, err = itemNumberToInt(x)
+				refineOk = true
 			}
 		case itemParams:
 			//expecting =[
@@ -199,6 +204,12 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 			//overriding here if it already exists
 			c.Weapon.Params, err = p.acceptOptionalParamReturnMap()
 		case itemTerminateLine:
+			if !lvlOk {
+				return nil, fmt.Errorf("weapon %v missing lvl", s)
+			}
+			if !refineOk {
+				return nil, fmt.Errorf("weapon %v missing refine", s)
+			}
 			return parseRows, nil
 		}
 		if err != nil {
