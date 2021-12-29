@@ -243,6 +243,41 @@ func (q *Queuer) chainUseable(a ActionBlock) (bool, error) {
 		q.logSkipped(a, "invalid chain - length 0")
 		return false, nil
 	}
+	//check easy stuff first
+	//can't exceed limit
+	if a.Limit > 0 && a.NumQueued >= a.Limit {
+		q.logSkipped(a, "over limit", "limit", a.Limit, "count", a.NumQueued)
+		return false, nil
+	}
+	//can't be timed out
+	if a.Timeout > 0 && q.core.F-a.LastQueued < a.Timeout {
+		q.logSkipped(a, "still in timeout", "timeout", a.Timeout)
+		return false, nil
+	}
+	//check needs
+	if a.Needs != "" {
+		needs, ok := q.labels[a.Needs]
+		if !ok {
+			q.logSkipped(a, "need does not exist", "needs", a.Needs)
+			return false, nil
+		}
+		if needs != q.prevQueued {
+			q.logSkipped(a, "needs not last executed", "needs", a.Needs, "needs_index", needs, "prev_index", q.prevQueued)
+			return false, nil
+		}
+	}
+	//check the tree
+	if a.Conditions != nil {
+		ok, err := q.evalTree(a.Conditions)
+		if err != nil {
+			return false, err
+		}
+		if !ok {
+			q.logSkipped(a, "conditions not med")
+			return false, nil
+		}
+	}
+
 	// if try is set, only check the first action of the first sequence
 	if a.Try {
 		return q.sequenceUseable(a.ChainSequences[0])
@@ -265,6 +300,7 @@ func (q *Queuer) chainUseable(a ActionBlock) (bool, error) {
 		}
 
 	}
+	//check conditions
 
 	return true, nil
 }

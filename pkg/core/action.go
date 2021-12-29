@@ -332,6 +332,10 @@ func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 		f = JumpFrames
 		a.core.ResetAllNormalCounter()
 	case ActionSwap:
+		//check if already on this char; if so ignore
+		if c.Key() == n.Target {
+			break
+		}
 		if a.core.SwapCD > 0 {
 			a.core.Log.Warnw("swap on cd", "cd", a.core.SwapCD, "frame", a.core.F, "event", LogActionEvent)
 			return 0, false, nil
