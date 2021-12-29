@@ -102,6 +102,8 @@ var CharNameToKey = map[string]Char{
 	"keqing":             Keqing,
 	"klee":               Klee,
 	"kujousara":          Sara,
+	"kujosara":           Sara,
+	"sara":               Sara,
 	"lisa":               Lisa,
 	"mona":               Mona,
 	"ningguang":          Ningguang,

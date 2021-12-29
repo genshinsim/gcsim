@@ -78,7 +78,7 @@ const (
 	itemTarget     // target
 	// these are options related keywords
 	itemDebug      // debug
-	itemIterations // iter
+	itemIterations // iteration
 	itemDuration   // duration
 	itemWorkers    // workers
 	itemERCalc     // er_calc

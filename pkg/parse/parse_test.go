@@ -47,7 +47,52 @@ func TestParse(t *testing.T) {
 		t.Error(err)
 	}
 
+	p = New("test", check)
+	_, _, err = p.Parse()
+	if err != nil {
+		t.Error(err)
+	}
+
 }
+
+var check = `
+target lvl=100 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
+target lvl=100 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
+
+##Actions List
+active bennett;
+
+# HP particle simulation. Per srl:
+# it adds 1 particle randomly, uniformly distributed between 200 to 300 frames after the last time an energy drops
+# so in the case above, it adds on avg one particle every 250 frames in effect
+# so over 90s of combat that's 90 * 60 / 250 = 21.6 on avg
+# From elijam assumptions: https://discord.com/channels/763583452762734592/851428030094114847/884832120650993805
+energy every interval=200,300 amount=1;
+
+# xiao attack,charge,high_plunge[plunge_hits=1]  +if=.status.xiaoburst>60;
+xiao high_plunge[plunge_hits=1]  +if=.status.xiaoburst>60;
+
+zhongli skill[hold_nostele=1] +limit=1;
+zhongli skill[hold_nostele=1] +if=.cd.xiao.burst<500;
+
+bennett skill,burst  +swap_lock=100;
+bennett skill  +if=.energy.bennett>40 +swap_lock=100;
+bennett burst; 
+
+sucrose skill,skill +swap_to=xiao +if=.cd.xiao.burst==0&&.energy.xiao<60;
+sucrose skill +swap_to=xiao +if=.cd.xiao.burst==0;
+
+# xiao skill,skill,burst  +if=.tags.xiao.eCharge>1;
+xiao skill,skill,burst; 
+# xiao skill,burst; 
+# xiao skill  +if=.energy.xiao>60&&.cd.xiao.burst<120 +swap_lock=120;
+
+# Funneling
+sucrose skill +swap_to=xiao +if=.cd.xiao.burst==0;
+
+xiao attack  +swap_lock=100;
+zhongli attack  +is_onfield;
+`
 
 var pteststring = `
 options debug=true iteration=3000 duration=41 workers=24;

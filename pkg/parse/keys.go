@@ -15,11 +15,11 @@ var key = map[string]ItemType{
 	"active":      itemActive,
 	"options":     itemOptions,
 	//options
-	"debug":    itemDebug,
-	"iter":     itemIterations,
-	"duration": itemDuration,
-	"workers":  itemWorkers,
-	"er_calc":  itemERCalc,
+	"debug":     itemDebug,
+	"iteration": itemIterations,
+	"duration":  itemDuration,
+	"workers":   itemWorkers,
+	"er_calc":   itemERCalc,
 	//team keywords
 	"add":      itemAdd,
 	"char":     itemChar,
