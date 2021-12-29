@@ -1,0 +1,26 @@
+options debug=true iteration=3000 duration=41 workers=24;
+
+xiangling char lvl=80/90 cons=4 talent=6,9,9;
+xiangling add weapon="staff of homa" lvl=90/90 refine=1;
+
+bennett char lvl=80/90 cons=1 talent=6,6,6;
+bennett add weapon="favoniussword" lvl=90/90 refine=5;
+
+target lvl=80 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
+
+active xiangling;
+
+energy once interval=300 amount=1; #once at frame 300
+hurt every interval=300,600 amount=100,200 ele=pyro; #randomly 100 to 200 dmg every 300 to 600 frames
+
+# macros
+a:xiangling skill +label=a;
+b:wait_for particles value=xiangling max=500 +filler=attack;
+
+
+# list
+
+bennett skill +swap_to=xiangling +label=battery;
+chain a,b +label=xlcollect;
+
+xiangling attack +is_onfield +label=fill;

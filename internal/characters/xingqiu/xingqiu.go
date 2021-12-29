@@ -30,6 +30,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		return nil, err
 	}
 	c.Tmpl = t
+	c.Base.Element = core.Hydro
 	c.Energy = 80
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSword
