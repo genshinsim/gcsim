@@ -221,6 +221,16 @@ func (a *ActionCtrl) execWait(n *CmdWait) (int, bool, error) {
 		a.waitStarted = a.core.F
 	} else if a.waitUntil > -1 && a.waitUntil <= a.core.F {
 		//otherwise check if we hit max already; if so we are done
+		a.core.Log.Debugw(
+			"wait finished due to time out",
+			"frame", a.core.F,
+			"event", LogActionEvent,
+			"wait_until", a.waitUntil,
+			"wait_src", a.waitStarted,
+			"last_particle_frame", a.lastParticle,
+			"last_particle_source", a.lastParticleSource,
+			"full", n,
+		)
 		a.waitUntil = 0
 		a.waitStarted = -1
 		return 0, true, nil
@@ -236,6 +246,18 @@ func (a *ActionCtrl) execWait(n *CmdWait) (int, bool, error) {
 	default:
 	}
 	if ok {
+		a.core.Log.Debugw(
+			"wait finished",
+			"frame", a.core.F,
+			"event", LogActionEvent,
+			"wait_until", a.waitUntil,
+			"wait_src", a.waitStarted,
+			"last_particle_frame", a.lastParticle,
+			"last_particle_source", a.lastParticleSource,
+			"full", n,
+		)
+		a.waitUntil = 0
+		a.waitStarted = -1
 		return 0, true, nil
 	}
 	//if not done, queue up filler action if any
