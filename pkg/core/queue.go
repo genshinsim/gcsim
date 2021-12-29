@@ -30,29 +30,46 @@ func NewQueuer(c *Core) *Queuer {
 	}
 }
 
-func (c *Queuer) SetActionList(a []ActionBlock) error {
+func (q *Queuer) SetActionList(a []ActionBlock) error {
 	//set labels
 	for i, v := range a {
-		if _, ok := c.labels[v.Label]; ok {
+		if v.Label == "" {
+			continue
+		}
+		if _, ok := q.labels[v.Label]; ok {
 			return fmt.Errorf("duplicated label in action list: %v", v.Label)
 		}
-		c.labels[v.Label] = i
+		q.labels[v.Label] = i
 	}
-	c.pq = a
+	q.pq = a
+	q.core.Log.Debugw(
+		"priority queued set",
+		"frame", q.core.F,
+		"event", LogQueueEvent,
+		"pq", q.pq,
+	)
 	return nil
 }
 
-func (c *Queuer) Next() (next []Command, dropIfNotReady bool, err error) {
+func (q *Queuer) Next() (next []Command, dropIfNotReady bool, err error) {
 	// from the action block we need to build the command list
 	var ok bool
-	for _, v := range c.pq {
+	for _, v := range q.pq {
 		//find the first item on prior queue that's useable
-		ok, err = c.blockUseable(v)
+		ok, err = q.blockUseable(v)
 		if err != nil {
 			return
 		}
 		if ok {
-			next = c.createQueueFromBlock(v)
+			next = q.createQueueFromBlock(v)
+			q.core.Log.Debugw(
+				"item queued",
+				"frame", q.core.F,
+				"event", LogQueueEvent,
+				"full", v,
+				"queued", next,
+			)
+
 			if v.Type == ActionBlockTypeWait {
 				return
 			}
@@ -68,27 +85,27 @@ func (c *Queuer) Next() (next []Command, dropIfNotReady bool, err error) {
 	return
 }
 
-func (c *Queuer) createQueueFromBlock(a ActionBlock) []Command {
+func (q *Queuer) createQueueFromBlock(a ActionBlock) []Command {
 	//set tracking info
 	a.NumQueued++
-	a.LastQueued = c.core.F
+	a.LastQueued = q.core.F
 
 	var res []Command
 
 	switch a.Type {
 	case ActionBlockTypeWait:
-		return c.createWaitCommand(a)
+		return q.createWaitCommand(a)
 	case ActionBlockTypeChain:
-		return c.createQueueFromChain(a)
+		return q.createQueueFromChain(a)
 	case ActionBlockTypeSequence:
 		//check first if we need to swap char for this sequence
-		if c.core.Chars[c.core.ActiveChar].Key() != a.SequenceChar {
+		if q.core.Chars[q.core.ActiveChar].Key() != a.SequenceChar {
 			res = append(res, &ActionItem{
 				Typ:    ActionSwap,
 				Target: a.SequenceChar,
 			})
 		}
-		return append(res, c.createQueueFromSequence(a)...)
+		return append(res, q.createQueueFromSequence(a)...)
 	default:
 		//unknown type
 		return nil
@@ -103,27 +120,35 @@ func (c *Queuer) createWaitCommand(a ActionBlock) []Command {
 	}
 }
 
-func (c *Queuer) createQueueFromChain(a ActionBlock) []Command {
+func (q *Queuer) createQueueFromChain(a ActionBlock) []Command {
 	var res []Command
 
-	active := c.core.Chars[c.core.ActiveChar].Key()
+	active := q.core.Chars[q.core.ActiveChar].Key()
 	//add up sequences for each subchain
-	for _, v := range a.ChainSequences {
-		//swap to this char if not currently active
-		if active != v.SequenceChar {
+	for i := 0; i < len(a.ChainSequences); i++ {
+		//swap to this char if not currently active; only if v is a sequence command
+		if a.ChainSequences[i].Type == ActionBlockTypeSequence && active != a.ChainSequences[i].SequenceChar {
+			q.core.Log.Debugw(
+				"adding swap before sequence",
+				"frame", q.core.F,
+				"event", LogQueueEvent,
+				"active", active,
+				"next", a.ChainSequences[i].SequenceChar,
+				"full", a.ChainSequences[i],
+			)
 			res = append(res, &ActionItem{
 				Typ:    ActionSwap,
-				Target: v.SequenceChar,
+				Target: a.ChainSequences[i].SequenceChar,
 			})
 		}
 		//append
-		res = append(res, c.createQueueFromSequence(a)...)
+		res = append(res, q.createQueueFromSequence(a.ChainSequences[i])...)
 	}
 
 	return res
 }
 
-func (c *Queuer) createQueueFromSequence(a ActionBlock) []Command {
+func (q *Queuer) createQueueFromSequence(a ActionBlock) []Command {
 	var res []Command
 
 	//add lock out if any
@@ -133,13 +158,18 @@ func (c *Queuer) createQueueFromSequence(a ActionBlock) []Command {
 		})
 	}
 
-	//add abilities to the res
-	for i := 0; i < len(a.Sequence); i++ {
-		res = append(res, &a.Sequence[i])
+	//check type of queue
+	switch a.Type {
+	case ActionBlockTypeSequence:
+		//add abilities to the res
+		for i := 0; i < len(a.Sequence); i++ {
+			res = append(res, &a.Sequence[i])
+		}
+	case ActionBlockTypeWait:
+		res = append(res, &a.Wait)
+	case ActionBlockTypeResetLimit:
+		res = append(res, CmdResetLimit{})
 	}
-	// for _, v := range a.Sequence {
-	// 	res = append(res, &v)
-	// }
 
 	//if swapto, add to end of sequence
 	if a.SwapTo > keys.NoChar {
@@ -152,7 +182,7 @@ func (c *Queuer) createQueueFromSequence(a ActionBlock) []Command {
 	return res
 }
 
-func (c *Queuer) blockUseable(a ActionBlock) (bool, error) {
+func (q *Queuer) blockUseable(a ActionBlock) (bool, error) {
 	// wait blocks are always useable
 	// chain blocks are useable if every sequence is useable
 	// sequence useable if conditions are met + all abil are ready
@@ -160,39 +190,86 @@ func (c *Queuer) blockUseable(a ActionBlock) (bool, error) {
 	case ActionBlockTypeWait:
 		return true, nil
 	case ActionBlockTypeChain:
-		return c.chainUseable(a)
+		return q.chainUseable(a)
 	case ActionBlockTypeSequence:
-		return c.sequenceUseable(a)
+		return q.sequenceUseable(a)
+	case ActionBlockTypeResetLimit:
+		return true, nil
 	default:
 		//unknown type
 		return false, errors.New("unknown action block type")
 	}
 }
 
-func (c *Queuer) chainUseable(a ActionBlock) (bool, error) {
+func (q *Queuer) logSkipped(a ActionBlock, reason string, keysAndValue ...interface{}) {
+	if q.core.Flags.LogDebug {
+		//build exec str
+		var sb strings.Builder
+		switch a.Type {
+		case ActionBlockTypeSequence:
+			for _, v := range a.Sequence {
+				sb.WriteString(v.Typ.String())
+				sb.WriteString(",")
+			}
+		case ActionBlockTypeChain:
+			sb.WriteString("chain,")
+		case ActionBlockTypeWait:
+			sb.WriteString("wait,")
+		}
+
+		str := sb.String()
+		if len(str) > 0 {
+			str = str[:len(str)-1]
+		}
+		items := []interface{}{
+			"frame", q.core.F,
+			"event", LogQueueEvent,
+			"failed", true,
+			"reason", reason,
+			"exec", str,
+			"raw", a,
+		}
+		items = append(items, keysAndValue...)
+		q.core.Log.Debugw(
+			"skip",
+			items...,
+		)
+	}
+}
+
+func (q *Queuer) chainUseable(a ActionBlock) (bool, error) {
 	// a chain is useable if by all sequences in it are useable
 	if len(a.ChainSequences) == 0 {
+		q.logSkipped(a, "invalid chain - length 0")
 		return false, nil
 	}
 	// if try is set, only check the first action of the first sequence
 	if a.Try {
-		return c.sequenceUseable(a.ChainSequences[0])
+		return q.sequenceUseable(a.ChainSequences[0])
 	}
 	//otherwise check every sequence
 	for _, v := range a.ChainSequences {
-		ok, err := c.sequenceUseable(v)
-		if err != nil {
-			return false, err
+		//check type, either sequence or wait or reset
+		//no nested chains!!
+		switch v.Type {
+		case ActionBlockTypeSequence:
+			ok, err := q.sequenceUseable(v)
+			if err != nil {
+				return false, err
+			}
+			if !ok {
+				return false, nil
+			}
+		case ActionBlockTypeChain:
+			return false, errors.New("invalid nested chain in chain")
 		}
-		if !ok {
-			return ok, nil
-		}
+
 	}
 
 	return true, nil
 }
 
-func (c *Queuer) sequenceUseable(a ActionBlock) (bool, error) {
+func (q *Queuer) sequenceUseable(a ActionBlock) (bool, error) {
 	/**
 	for a sequence to be useable we need to check
 		- active char
@@ -205,57 +282,68 @@ func (c *Queuer) sequenceUseable(a ActionBlock) (bool, error) {
 	**/
 	//forget it if sequence is blank for whatever reason
 	if len(a.Sequence) == 0 {
+		q.logSkipped(a, "invalid sequence - length 0")
 		return false, nil
 	}
 	//check easy stuff first
 	//can't exceed limit
-	if a.NumQueued >= a.Limit {
+	if a.Limit > 0 && a.NumQueued >= a.Limit {
+		q.logSkipped(a, "over limit", "limit", a.Limit, "count", a.NumQueued)
 		return false, nil
 	}
 	//can't be timed out
-	if c.core.F-a.LastQueued < a.Timeout {
+	if a.Timeout > 0 && q.core.F-a.LastQueued < a.Timeout {
+		q.logSkipped(a, "still in timeout", "timeout", a.Timeout)
 		return false, nil
 	}
 	//check needs
-	needs, ok := c.labels[a.Label]
-	if !ok {
-		return false, nil
-	}
-	if needs != c.prevQueued {
-		return false, nil
+	if a.Needs != "" {
+		needs, ok := q.labels[a.Needs]
+		if !ok {
+			q.logSkipped(a, "need does not exist", "needs", a.Needs)
+			return false, nil
+		}
+		if needs != q.prevQueued {
+			q.logSkipped(a, "needs not last executed", "needs", a.Needs, "needs_index", needs, "prev_index", q.prevQueued)
+			return false, nil
+		}
 	}
 
 	//make sure sequence refers to valid char just in case
-	charPos, ok := c.core.CharPos[a.SequenceChar]
+	charPos, ok := q.core.CharPos[a.SequenceChar]
 	if !ok {
 		return false, errors.New("invalid character in action list " + a.SequenceChar.String())
 	}
 	//check if swap required, and if so check to make sure swapcd ==0
-	if c.core.ActiveChar != charPos {
+	if q.core.ActiveChar != charPos {
 		//if we need to be on field then forget it
 		if a.OnField {
+			q.logSkipped(a, "not on field")
 			return false, nil
 		}
 		//other wise check swap
-		if c.core.SwapCD > 0 {
+		if q.core.SwapCD > 0 {
+			q.logSkipped(a, "swap on cd", "active", q.core.ActiveChar, "charPos", charPos)
 			return false, nil
 		}
 
 	}
 
-	char := c.core.Chars[charPos]
+	char := q.core.Chars[charPos]
 	//make sure char is alive
 	if char.HP() <= 0 {
+		q.logSkipped(a, "char is dead")
 		return false, nil
 	}
 
 	//check the tree
 	if a.Conditions != nil {
-		ok, err := c.evalTree(a.Conditions)
+		ok, err := q.evalTree(a.Conditions)
 		if err != nil {
 			return false, err
 		}
 		if !ok {
+			q.logSkipped(a, "conditions not med")
 			return false, nil
 		}
 	}
@@ -263,12 +351,17 @@ func (c *Queuer) sequenceUseable(a ActionBlock) (bool, error) {
 	//finally check if abilities are ready
 	//if try is set the only the first ability has to be useable
 	if a.Try {
-		return char.ActionReady(a.Sequence[0].Typ, a.Sequence[0].Param), nil
+		rdy := char.ActionReady(a.Sequence[0].Typ, a.Sequence[0].Param)
+		if !rdy {
+			q.logSkipped(a, "first action not ready in try")
+		}
+		return rdy, nil
 	}
 
 	//check each ability now
 	for _, s := range a.Sequence {
 		if !char.ActionReady(s.Typ, s.Param) {
+			q.logSkipped(a, "action not ready", "failed_at", s.Typ.String())
 			return false, nil
 		}
 	}
@@ -277,20 +370,20 @@ func (c *Queuer) sequenceUseable(a ActionBlock) (bool, error) {
 	return true, nil
 }
 
-func (c *Queuer) evalTree(node *ExprTreeNode) (bool, error) {
+func (q *Queuer) evalTree(node *ExprTreeNode) (bool, error) {
 	//recursively evaluate tree nodes
 	if node.IsLeaf {
-		r, err := c.evalCond(node.Expr)
+		r, err := q.evalCond(node.Expr)
 		// s.Log.Debugw("evaluating leaf node", "frame", s.F, "event", LogQueueEvent, "result", r, "node", node)
 		return r, err
 	}
 	//so this is a node, then we want to evalute the left and right
 	//and then apply operator on both and return that
-	left, err := c.evalTree(node.Left)
+	left, err := q.evalTree(node.Left)
 	if err != nil {
 		return false, err
 	}
-	right, err := c.evalTree(node.Right)
+	right, err := q.evalTree(node.Right)
 	if err != nil {
 		return false, err
 	}
@@ -307,42 +400,42 @@ func (c *Queuer) evalTree(node *ExprTreeNode) (bool, error) {
 
 }
 
-func (c *Queuer) evalCond(cond Condition) (bool, error) {
+func (q *Queuer) evalCond(cond Condition) (bool, error) {
 
 	switch cond.Fields[0] {
 	case ".debuff":
-		return c.evalDebuff(cond)
+		return q.evalDebuff(cond)
 	case ".element":
-		return c.evalElement(cond)
+		return q.evalElement(cond)
 	case ".cd":
-		return c.evalCD(cond)
+		return q.evalCD(cond)
 	case ".energy":
-		return c.evalEnergy(cond)
+		return q.evalEnergy(cond)
 	case ".status":
-		return c.evalStatus(cond)
+		return q.evalStatus(cond)
 	case ".tags":
-		return c.evalTags(cond)
+		return q.evalTags(cond)
 	case ".stam":
-		return c.evalStam(cond)
+		return q.evalStam(cond)
 	case ".ready":
-		return c.evalAbilReady(cond)
+		return q.evalAbilReady(cond)
 	case ".mods":
-		return c.evalCharMods(cond)
+		return q.evalCharMods(cond)
 	}
 	return false, nil
 }
 
-func (c *Queuer) evalStam(cond Condition) (bool, error) {
-	return compInt(cond.Op, int(c.core.Stam), cond.Value), nil
+func (q *Queuer) evalStam(cond Condition) (bool, error) {
+	return compInt(cond.Op, int(q.core.Stam), cond.Value), nil
 }
 
-func (c *Queuer) evalAbilReady(cond Condition) (bool, error) {
+func (q *Queuer) evalAbilReady(cond Condition) (bool, error) {
 	if len(cond.Fields) < 3 {
 		return false, errors.New("eval abil: unexpected short field, expected at least 3")
 	}
 	cs := strings.TrimPrefix(cond.Fields[2], ".")
 	key := keys.CharNameToKey[cs]
-	char, ok := c.core.CharByName(key)
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, nil
 	}
@@ -370,7 +463,7 @@ func (c *Queuer) evalAbilReady(cond Condition) (bool, error) {
 
 }
 
-func (c *Queuer) evalDebuff(cond Condition) (bool, error) {
+func (q *Queuer) evalDebuff(cond Condition) (bool, error) {
 	//.debuff.res.1.name
 	if len(cond.Fields) < 4 {
 		return false, errors.New("eval debuff: unexpected short field, expected at least 3")
@@ -396,11 +489,11 @@ func (c *Queuer) evalDebuff(cond Condition) (bool, error) {
 
 	switch typ {
 	case "res":
-		if c.core.Combat.TargetHasResMod(d, int(tid)) {
+		if q.core.Combat.TargetHasResMod(d, int(tid)) {
 			active = 1
 		}
 	case "def":
-		if c.core.Combat.TargetHasDefMod(d, int(tid)) {
+		if q.core.Combat.TargetHasDefMod(d, int(tid)) {
 			active = 1
 		}
 	default:
@@ -410,7 +503,7 @@ func (c *Queuer) evalDebuff(cond Condition) (bool, error) {
 	return compInt(cond.Op, active, val), nil
 }
 
-func (c *Queuer) evalElement(cond Condition) (bool, error) {
+func (q *Queuer) evalElement(cond Condition) (bool, error) {
 	//.element.1.pyro
 	if len(cond.Fields) < 3 {
 		return false, errors.New("eval element: unexpected short field, expected at least 2")
@@ -437,20 +530,20 @@ func (c *Queuer) evalElement(cond Condition) (bool, error) {
 		return false, nil
 	}
 
-	if c.core.Combat.TargetHasElement(e, int(tid)) {
+	if q.core.Combat.TargetHasElement(e, int(tid)) {
 		active = 1
 	}
 	return compInt(cond.Op, active, val), nil
 }
 
-func (c *Queuer) evalCD(cond Condition) (bool, error) {
+func (q *Queuer) evalCD(cond Condition) (bool, error) {
 	if len(cond.Fields) < 3 {
 		return false, errors.New("eval cd: unexpected short field, expected at least 3")
 	}
 	//check target is valid
 	name := strings.TrimPrefix(cond.Fields[1], ".")
 	key := keys.CharNameToKey[name]
-	char, ok := c.core.CharByName(key)
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, errors.New("eval cd: invalid char in condition")
 	}
@@ -467,13 +560,13 @@ func (c *Queuer) evalCD(cond Condition) (bool, error) {
 	return compInt(cond.Op, cd, cond.Value), nil
 }
 
-func (c *Queuer) evalEnergy(cond Condition) (bool, error) {
+func (q *Queuer) evalEnergy(cond Condition) (bool, error) {
 	if len(cond.Fields) < 2 {
 		return false, errors.New("eval energy: unexpected short field, expected at least 2")
 	}
 	name := strings.TrimPrefix(cond.Fields[1], ".")
 	key := keys.CharNameToKey[name]
-	char, ok := c.core.CharByName(key)
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, errors.New("eval energy: invalid char in condition")
 	}
@@ -481,41 +574,41 @@ func (c *Queuer) evalEnergy(cond Condition) (bool, error) {
 	return compFloat(cond.Op, e, float64(cond.Value)), nil
 }
 
-func (c *Queuer) evalStatus(cond Condition) (bool, error) {
+func (q *Queuer) evalStatus(cond Condition) (bool, error) {
 	if len(cond.Fields) < 2 {
 		return false, errors.New("eval status: unexpected short field, expected at least 2")
 	}
 	name := strings.TrimPrefix(cond.Fields[1], ".")
-	status := c.core.Status.Duration(name)
+	status := q.core.Status.Duration(name)
 	// q.core.Log.Debugw("queue status check", "frame", q.core.F, "event", LogQueueEvent, "status", name, "val", status, "expected", c.Value, "op", c.Op)
 	return compInt(cond.Op, status, cond.Value), nil
 
 }
 
-func (c *Queuer) evalTags(cond Condition) (bool, error) {
+func (q *Queuer) evalTags(cond Condition) (bool, error) {
 	if len(cond.Fields) < 3 {
 		return false, errors.New("eval tags: unexpected short field, expected at least 3")
 	}
 	name := strings.TrimPrefix(cond.Fields[1], ".")
 	key := keys.CharNameToKey[name]
-	char, ok := c.core.CharByName(key)
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, errors.New("eval tags: invalid char in condition")
 	}
 	tag := strings.TrimPrefix(cond.Fields[2], ".")
 	v := char.Tag(tag)
-	c.core.Log.Debugw("evaluating tags", "frame", c.core.F, "event", LogQueueEvent, "char", char.CharIndex(), "targ", tag, "val", v)
+	q.core.Log.Debugw("evaluating tags", "frame", q.core.F, "event", LogQueueEvent, "char", char.CharIndex(), "targ", tag, "val", v)
 	return compInt(cond.Op, v, cond.Value), nil
 }
 
-func (c *Queuer) evalCharMods(cond Condition) (bool, error) {
+func (q *Queuer) evalCharMods(cond Condition) (bool, error) {
 	//.mods.bennett.buff==1
 	if len(cond.Fields) < 3 {
 		return false, errors.New("eval tags: unexpected short field, expected at least 3")
 	}
 	name := strings.TrimPrefix(cond.Fields[1], ".")
 	key := keys.CharNameToKey[name]
-	char, ok := c.core.CharByName(key)
+	char, ok := q.core.CharByName(key)
 	if !ok {
 		return false, errors.New("eval tags: invalid char in condition")
 	}
@@ -526,7 +619,7 @@ func (c *Queuer) evalCharMods(cond Condition) (bool, error) {
 	} else {
 		val = 0
 	}
-	c.core.Log.Debugw("evaluating mods", "frame", c.core.F, "event", LogQueueEvent, "char", char.CharIndex(), "mod", tag)
+	q.core.Log.Debugw("evaluating mods", "frame", q.core.F, "event", LogQueueEvent, "char", char.CharIndex(), "mod", tag)
 	return char.ModIsActive(tag) == (val == 1), nil
 }
 

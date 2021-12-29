@@ -253,7 +253,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 	s.C.ActiveChar = -1
 	for i, v := range cfg.Characters.Profile {
 		//call new char function
-		err := s.C.AddChar(v)
+		char, err := s.C.AddChar(v)
 		if err != nil {
 			return err
 		}
@@ -268,7 +268,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		dup[v.Base.Key] = true
 
 		//track resonance
-		res[v.Base.Element]++
+		res[char.Ele()]++
 
 		//setup maps
 		if s.opts.LogDetails {
@@ -306,7 +306,13 @@ func (s *Simulation) initQueuer(cfg core.Config) error {
 		}
 		cfg.Rotation[i].LastQueued = -1
 	}
+	s.C.Log.Debugw(
+		"setting queue",
+		"frame", s.C.F,
+		"event", core.LogSimEvent,
+		"pq", cfg.Rotation,
+	)
 
-	s.C.Queue.SetActionList(cfg.Rotation)
-	return nil
+	err := s.C.Queue.SetActionList(cfg.Rotation)
+	return err
 }

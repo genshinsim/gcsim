@@ -1,29 +1,26 @@
 options debug=true iteration=3000 duration=41 workers=24;
 
-xiangling char lvl=80/90 cons=4 talent=6,9,9 start_hp=100 params=[a=1,b=2];
-xiangling add weapon="staff of homa" lvl=80/90 refine=3 params=[a=1,b=2];
-xiangling add set="seal of insulation" count=4 params=[a=1,b=2];
-xiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
-xiangling add stats atk%=.0992 cr=.1655 cd=.7282 em=39.64 er=.5510 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
+xiangling char lvl=80/90 cons=4 talent=6,9,9;
+xiangling add weapon="staff of homa" lvl=90/90 refine=1;
 
-target lvl=80 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
+bennett char lvl=80/90 cons=1 talent=6,6,6;
+bennett add weapon="favoniussword" lvl=90/90 refine=5;
+
 target lvl=80 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.3;
 
 active xiangling;
 
 energy once interval=300 amount=1; #once at frame 300
-#hurt every interval=300,600 amount=100,200 ele=pyro; #randomly 100 to 200 dmg every 300 to 600 frames
+hurt every interval=300,600 amount=100,200 ele=pyro; #randomly 100 to 200 dmg every 300 to 600 frames
 
 # macros
-a:xiangling skill;
-b:wait_for particles value=xiangling max=100;
+a:xiangling skill +label=a;
+b:wait_for particles value=xiangling max=500;
 
-# chain; macros have to be defined first
-chain a,b +try=1;
 
-# repeater
-xiangling attack:4;
+# list
 
-wait 10;
+bennett skill +swap_to=xiangling +label=battery;
+chain a,b +label=xlcollect;
 
-xiangling burst,skill;
+xiangling attack +is_onfield +label=fill;

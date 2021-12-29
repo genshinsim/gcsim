@@ -107,18 +107,14 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	if c.Rand == nil {
 		c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 	}
-
+	if c.Events == nil {
+		c.Events = NewEventCtrl(c)
+	}
 	if c.Status == nil {
 		c.Status = NewStatusCtrl(c)
 	}
 	if c.Energy == nil {
 		c.Energy = NewEnergyCtrl(c)
-	}
-	if c.Action == nil {
-		c.Action = NewActionCtrl(c)
-	}
-	if c.Queue == nil {
-		c.Queue = NewQueuer(c)
 	}
 	if c.Combat == nil {
 		c.Combat = NewCombatCtrl(c)
@@ -135,8 +131,11 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	if c.Health == nil {
 		c.Health = NewHealthCtrl(c)
 	}
-	if c.Events == nil {
-		c.Events = NewEventCtrl(c)
+	if c.Action == nil {
+		c.Action = NewActionCtrl(c)
+	}
+	if c.Queue == nil {
+		c.Queue = NewQueuer(c)
 	}
 
 	//check handlers
@@ -152,21 +151,21 @@ func (c *Core) Init() {
 	c.Events.Emit(OnInitialize)
 }
 
-func (c *Core) AddChar(v CharacterProfile) error {
+func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 	f, ok := charMap[v.Base.Key]
 	if !ok {
-		return fmt.Errorf("invalid character: %v", v.Base.Key.String())
+		return nil, fmt.Errorf("invalid character: %v", v.Base.Key.String())
 	}
 	char, err := f(c, v)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	c.Chars = append(c.Chars, char)
 	c.CharPos[v.Base.Key] = len(c.Chars) - 1
 
 	wf, ok := weaponMap[v.Weapon.Name]
 	if !ok {
-		return fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Key.String())
+		return nil, fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Key.String())
 	}
 	wk := wf(char, c, v.Weapon.Refine, v.Weapon.Params)
 	char.SetWeaponKey(wk)
@@ -183,7 +182,7 @@ func (c *Core) AddChar(v CharacterProfile) error {
 
 	err = char.CalcBaseStats()
 
-	return err
+	return char, err
 }
 
 func (c *Core) CharByName(key keys.Char) (Character, bool) {

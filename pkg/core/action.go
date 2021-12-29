@@ -17,12 +17,18 @@ const (
 	CommandTypeAction CommandType = iota
 	CommandTypeWait
 	CommandTypeNoSwap
+	CommandTypeResetLimit
 )
 
 //Command is what gets executed by the sim.
 type Command interface {
 	Type() CommandType
 }
+
+type CmdResetLimit struct {
+}
+
+func (c CmdResetLimit) Type() CommandType { return CommandTypeResetLimit }
 
 type CmdWaitType int
 
@@ -132,6 +138,7 @@ var astr = []string{
 	"",
 	"dash",
 	"jump",
+	"swap",
 }
 
 func (a ActionType) String() string {
@@ -161,13 +168,24 @@ func (c Condition) String() {
 }
 
 type ActionCtrl struct {
-	core *Core
+	core               *Core
+	waitUntil          int
+	waitStarted        int
+	lastParticle       int
+	lastParticleSource string
 }
 
 func NewActionCtrl(c *Core) *ActionCtrl {
-	return &ActionCtrl{
+	a := &ActionCtrl{
 		core: c,
 	}
+	c.Events.Subscribe(OnParticleReceived, func(args ...interface{}) bool {
+		p := args[0].(Particle)
+		a.lastParticle = a.core.F
+		a.lastParticleSource = p.Source
+		return false
+	}, "action-list-particle-check")
+	return a
 }
 
 func (a *ActionCtrl) Exec(n Command) (int, bool, error) {
@@ -178,14 +196,62 @@ func (a *ActionCtrl) Exec(n Command) (int, bool, error) {
 		return a.execWait(v)
 	case *CmdNoSwap:
 		return a.execNoSwap(v)
+	case *CmdResetLimit:
+		//TODO: queue needs to expose method for this
 	}
 	return 0, false, errors.New("unrecognized command")
 }
 
 func (a *ActionCtrl) execWait(n *CmdWait) (int, bool, error) {
-	//if condition not met, skip this frame
+	//if a.waitUntil == 0 then first time we're executing this
+	if a.waitUntil == 0 {
+		switch n.Max {
+		case 0:
+			//if for whatever reason max is 0 then stop
+			//this will only happen if the user set it to be 0
+			return 0, true, nil
+		case -1:
+			//no stop
+			a.waitUntil = -1
+		default:
+			//otherwise current frame + max
+			a.waitUntil = a.core.F + n.Max
+		}
+		a.waitStarted = a.core.F
+	} else if a.waitUntil > -1 && a.waitUntil <= a.core.F {
+		//otherwise check if we hit max already; if so we are done
+		a.waitUntil = 0
+		a.waitStarted = -1
+		return 0, true, nil
+	}
+	//otherwise check conditions
+	switch n.For {
+	case CmdWaitTypeParticle:
+		//need particles received after waitStarted
+		ok := a.lastParticle > a.waitStarted && a.lastParticleSource == n.Source
+		return 0, ok, nil
+	case CmdWaitTypeMods:
+		ok := a.checkMod(n.Conditions)
+		return 0, ok, nil
+	default:
+		//don't need to check for CmdWaitTypeTimed
+		return 0, false, nil
+	}
 
-	return 0, true, nil
+}
+
+func (a *ActionCtrl) checkMod(c Condition) bool {
+	//.<character>.modname
+	name := strings.TrimPrefix(c.Fields[0], ".")
+	m := strings.TrimPrefix(c.Fields[1], ".")
+	ck, ok := keys.CharNameToKey[name]
+	if !ok {
+		a.core.Log.Debugw("invalid char for mod condition", "frame", a.core.F, "event", LogActionEvent, "character", name)
+		return false
+	}
+	char := a.core.Chars[a.core.CharPos[ck]]
+	//now check for mod
+	return char.ModIsActive(m)
 }
 
 func (a *ActionCtrl) execNoSwap(n *CmdNoSwap) (int, bool, error) {

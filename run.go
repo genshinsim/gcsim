@@ -46,7 +46,7 @@ func (s *Simulation) Run() (Stats, error) {
 		if s.C.Flags.DamageMode {
 			//stop when last target dies
 			// log.Println(s.c.F, s.targets)
-			stop = len(s.C.Targets) == 0
+			stop = len(s.C.Targets) == 1
 		} else {
 			stop = s.C.F == f
 		}
@@ -86,6 +86,15 @@ func (s *Simulation) AdvanceFrame() error {
 	if len(s.queue) == 0 {
 		next, drop, err := s.C.Queue.Next()
 		dropIfFailed = drop
+
+		// s.C.Log.Debugw("queue check - next queued",
+		// 	"frame", s.C.F,
+		// 	"event", core.LogQueueEvent,
+		// 	"remaining queue", s.queue,
+		// 	"next", next,
+		// 	"drop", drop,
+		// )
+
 		if err != nil {
 			return err
 		}
@@ -110,11 +119,11 @@ func (s *Simulation) AdvanceFrame() error {
 			return nil
 		}
 
-		s.C.Log.Debugw("queue check - before exec",
-			"frame", s.C.F,
-			"event", core.LogQueueEvent,
-			"remaining queue", s.queue,
-		)
+		// s.C.Log.Debugw("queue check - before exec",
+		// 	"frame", s.C.F,
+		// 	"event", core.LogQueueEvent,
+		// 	"remaining queue", s.queue,
+		// )
 
 		s.skip, done, err = s.C.Action.Exec(s.queue[0])
 		if err != nil {
@@ -127,13 +136,13 @@ func (s *Simulation) AdvanceFrame() error {
 			}
 			//pop queue
 			s.queue = s.queue[1:]
-			s.C.Log.Debugw("queue check - after exec",
-				"frame", s.C.F,
-				"event", core.LogQueueEvent,
-				"remaining queue", s.queue,
-				"skip", s.skip,
-				"done", done,
-			)
+			// s.C.Log.Debugw("queue check - after exec",
+			// 	"frame", s.C.F,
+			// 	"event", core.LogQueueEvent,
+			// 	"remaining queue", s.queue,
+			// 	"skip", s.skip,
+			// 	"done", done,
+			// )
 		} else {
 			if dropIfFailed {
 				//drop rest of the queue
