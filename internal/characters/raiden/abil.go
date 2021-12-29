@@ -193,7 +193,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		core.NewDefCircHit(2, false, core.TargettableEnemy),
 		f+19,
 		f+19,
-		c.burstRestorefunc,
 	)
 
 	//activate eye
