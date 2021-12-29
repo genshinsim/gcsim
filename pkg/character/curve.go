@@ -35,21 +35,25 @@ func (t *Tmpl) CalcBaseStats() error {
 	t.Stats[core.CD] = 0.5
 	t.Stats[core.CR] = 0.05
 	//calculate promotion bonus
-	for _, v := range b.PromotionBonus {
+	ind := -1
+	for i, v := range b.PromotionBonus {
 		if t.Base.MaxLevel >= v.MaxLevel {
-			//add hp/atk/bonus
-			t.Base.HP += v.HP
-			t.Base.Atk += v.Atk
-			t.Base.Def += v.Def
-			//add specialized
-			t.Stats[b.Specialized] += v.Special
+			ind = i
 		}
+	}
+	if ind > -1 {
+		//add hp/atk/bonus
+		t.Base.HP += b.PromotionBonus[ind].HP
+		t.Base.Atk += b.PromotionBonus[ind].Atk
+		t.Base.Def += b.PromotionBonus[ind].Def
+		//add specialized
+		t.Stats[b.Specialized] += b.PromotionBonus[ind].Special
 	}
 
 	//calculate weapon base stats
 	bw, ok := curves.WeaponBaseMap[t.Weapon.Key]
 	if !ok {
-		return fmt.Errorf("error calculating weapon stat; unrecognized key %v", ck)
+		return fmt.Errorf("error calculating weapon stat; unrecognized key %v", t.Weapon.Key)
 		// return
 	}
 	lvl = t.Weapon.Level - 1
@@ -63,10 +67,14 @@ func (t *Tmpl) CalcBaseStats() error {
 	//add weapon special stat
 	t.Stats[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
 	//calculate promotion bonus
-	for _, v := range bw.PromotionBonus {
+	ind = -1
+	for i, v := range bw.PromotionBonus {
 		if t.Weapon.MaxLevel >= v.MaxLevel {
-			t.Weapon.Atk += v.Atk //atk
+			ind = i
 		}
+	}
+	if ind > -1 {
+		t.Weapon.Atk += bw.PromotionBonus[ind].Atk //atk
 	}
 
 	return nil
