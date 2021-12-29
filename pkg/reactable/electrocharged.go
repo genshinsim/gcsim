@@ -154,7 +154,7 @@ func (r *Reactable) nextTick(src int) func() {
 		r.core.Combat.QueueAttack(
 			r.ecSnapshot,
 			core.NewDefSingleTarget(r.self.Index(), r.self.Type()),
-			0,
+			-1,
 			0,
 		)
 
