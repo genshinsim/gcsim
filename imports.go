@@ -2,6 +2,27 @@ package gcsim
 
 import (
 	//artifacts
+	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/blizzard"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/bloodstained"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/bolide"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/crimson"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/gladiator"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/heartofdepth"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/huskofopulentdreams"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/instructor"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/lavawalker"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/maiden"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/noblesse"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/oceanhuedclam"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/paleflame"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/reminiscence"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/seal"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/tenacity"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/thunderingfury"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/thundersoother"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/viridescent"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/wanderer"
 
 	//char
 	_ "github.com/genshinsim/gcsim/internal/characters/albedo"

@@ -176,7 +176,7 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 		if ok {
 			f(char, c, count, v.SetParams[key])
 		} else {
-			c.Log.Warnf("character %v has unrecognized set %v", v.Base.Key.String(), key)
+			c.Log.Warnw(fmt.Sprintf("character %v has unrecognized set %v", v.Base.Key, key), "frame", -1, "event", LogArtifactEvent)
 		}
 	}
 

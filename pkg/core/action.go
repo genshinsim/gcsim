@@ -326,7 +326,7 @@ func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 			return 0, false, nil
 		}
 		a.core.Stam -= req
-		f = a.execActionItem(n, PreDash, PostDash, DashState, true, c.Aimed)
+		f = a.execActionItem(n, PreDash, PostDash, DashState, true, c.Dash)
 		a.core.Events.Emit(OnStamUse, ActionDash)
 	case ActionJump:
 		f = JumpFrames

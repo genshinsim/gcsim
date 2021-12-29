@@ -5,6 +5,50 @@ import (
 	"testing"
 )
 
+func TestParse(t *testing.T) {
+	p := New("test", pteststring)
+	a, _, err := p.Parse()
+	fmt.Println("characters:")
+	for _, v := range a.Characters.Profile {
+		fmt.Println(v.Base.Key.String())
+		//basic stats:
+		fmt.Println("\t basics", v.Base)
+		fmt.Println("\t char params", v.Params)
+		fmt.Println("\t weapons", v.Weapon)
+		fmt.Println("\t talents", v.Talents)
+		fmt.Println("\t sets", v.Sets)
+		fmt.Println("\t set params", v.SetParams)
+		//pretty print stats
+		fmt.Println("\t stats", v.Stats)
+	}
+	fmt.Println("rotations:")
+	for _, v := range a.Rotation {
+		fmt.Println(v)
+	}
+	fmt.Println("targets:")
+	fmt.Println("\t", a.Targets)
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println("hurt event:")
+	fmt.Println("\t", a.Hurt)
+	fmt.Println("energy:")
+	fmt.Println("\t", a.Energy)
+
+	p = New("test", raiden)
+	_, _, err = p.Parse()
+	if err != nil {
+		t.Error(err)
+	}
+
+	p = New("test", s2)
+	_, _, err = p.Parse()
+	if err != nil {
+		t.Error(err)
+	}
+
+}
+
 var pteststring = `
 options debug=true iteration=3000 duration=41 workers=24;
 
@@ -90,35 +134,81 @@ chain a,b +label=xlcollect;
 
 xiangling attack +is_onfield +label=fill;`
 
-func TestParse(t *testing.T) {
-	p := New("test", pteststring)
-	// p := New("test", s2)
-	a, _, err := p.Parse()
-	fmt.Println("characters:")
-	for _, v := range a.Characters.Profile {
-		fmt.Println(v.Base.Key.String())
-		//basic stats:
-		fmt.Println("\t basics", v.Base)
-		fmt.Println("\t char params", v.Params)
-		fmt.Println("\t weapons", v.Weapon)
-		fmt.Println("\t talents", v.Talents)
-		fmt.Println("\t sets", v.Sets)
-		fmt.Println("\t set params", v.SetParams)
-		//pretty print stats
-		fmt.Println("\t stats", v.Stats)
-	}
-	fmt.Println("rotations:")
-	for _, v := range a.Rotation {
-		fmt.Println(v)
-	}
-	fmt.Println("targets:")
-	fmt.Println("\t", a.Targets)
-	if err != nil {
-		t.Error(err)
-	}
-	fmt.Println("hurt event:")
-	fmt.Println("\t", a.Hurt)
-	fmt.Println("energy:")
-	fmt.Println("\t", a.Energy)
+var raiden = `
+options debug=true iteration=300 duration=60 workers=24;
 
-}
+bennett char lvl=70/80 cons=2 talent=6,8,8;
+bennett add weapon="favoniussword" lvl=90/90 refine=1;
+bennett add set="noblesseoblige" count=4;
+bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 ;
+bennett add stats hp=717 hp%=0.057999999999999996 atk=78 atk%=0.663 def=118 em=42 er=0.221 cr=0.039 cd=0.475 ;
+
+raiden char lvl=90/90 cons=1 talent=10,10,10;
+raiden add weapon="engulfinglightning" lvl=90/90 refine=1;
+raiden add set="emblemofseveredfate" count=4;
+raiden add stats hp=4780 atk=311 er=0.518 electro%=0.466 cr=0.311 ;
+raiden add stats hp=538 hp%=0.040999999999999995 atk=68 atk%=0.134 def%=0.073 em=89 er=0.057999999999999996 cr=0.32699999999999996 cd=0.948 ;
+
+xiangling char lvl=80/90 cons=6 talent=6,9,10;
+xiangling add weapon="staffofhoma" refine=1 lvl=90/90;
+xiangling add set="crimsonwitchofflames" count=2;
+xiangling add set="gladiatorsfinale" count=2;
+xiangling add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 ;
+xiangling add stats hp=478 hp%=0.047 atk=65 atk%=0.152 def=76 def%=0.051 em=63 er=0.16199999999999998 cr=0.264 cd=0.9940000000000001 ;
+
+xingqiu char lvl=80/90 cons=6 talent=1,9,10;
+xingqiu add weapon="sacrificialsword" refine=5 lvl=90/90;
+xingqiu add set="noblesseoblige" count=2;
+xingqiu add set="heartofdepth" count=2;
+xingqiu add stats hp=4780 atk=311 atk%=0.466 hydro%=0.466 cr=0.311 ;
+xingqiu add stats hp=598 atk=58 atk%=0.391 def=113 em=23 er=0.279 cr=0.23299999999999998 cd=0.575 ;
+
+
+##Default Enemy
+target lvl=100 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
+# target lvl=100 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
+
+##Actions List
+active raidenshogun;
+
+# HP particle simulation. Per srl:
+# it adds 1 particle randomly, uniformly distributed between 200 to 300 frames after the last time an energy drops
+# so in the case above, it adds on avg one particle every 250 frames in effect
+# so over 90s of combat that's 90 * 60 / 250 = 21.6 on avg
+energy every interval=200,300 amount=1;
+
+raidenshogun attack:4,dash,attack:4,dash,attack:4,dash,attack:2,charge +if=.status.raidenburst>0;
+
+# Additional check to reset at the start of the next rotation
+raidenshogun skill +if=.status.xianglingburst==0&&.energy.xingqiu>70&&.energy.xiangling>70;
+raidenshogun skill +if=.status.raidenskill==0;
+
+# Skill is required before burst to activate Kageuchi. Otherwise ER is barely not enough
+# For rotations #2 and beyond, need to ensure that Guoba is ready to go. Guoba timing is about 300 frames after XQ fires his skill
+xingqiu skill[orbital=1],burst[orbital=1],attack +if=.cd.xiangling.skill<300;
+
+# Bennett burst goes after XQ burst for uptime alignment. Attack to proc swords
+bennett burst,attack,skill +if=.status.xqburst>0&&.cd.xiangling.burst<180;
+
+# Only ever want to XL burst in Bennett buff and after XQ burst for uptime alignment
+xiangling burst,attack,skill,attack,attack +if=.status.xqburst>0&&.status.btburst>0;
+# Second set of actions needed in case Guoba CD comes off while pyronado is spinning
+xiangling burst,attack +if=.status.xqburst>0&&.status.btburst>0;
+xiangling skill ;
+
+# Raiden must burst after all others. Requires an attack to allow Bennett buff to apply
+raidenshogun burst +if=.status.xqburst>0&&.status.xianglingburst>0&&.status.btburst>0;
+
+# Funnelling
+bennett attack,skill +if=.status.xqburst>0&&.energy.xiangling<70 +swap_to=xiangling;
+bennett skill +if=.energy.xiangling<70 +swap_to=xiangling;
+bennett skill +if=.energy.xingqiu<80 +swap_to=xingqiu;
+bennett attack,skill +if=.status.xqburst>0 +if=.energy.raidenshogun<90 +swap_to=raidenshogun;
+
+xingqiu attack +if=.status.xqburst>0;
+xiangling attack +is_onfield;
+bennett attack +is_onfield;
+xingqiu attack +is_onfield;
+raidenshogun attack +is_onfield;
+
+`

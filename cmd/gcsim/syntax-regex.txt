@@ -5,10 +5,10 @@ art\+=(\w+) label=("\w+") (.+);
 $1 add set=$2 $3;
 
 weapon\+=(\w+) label=("\w+").+refine=(\d+).+;
-$1 add weapon=$2 refine=$3 level=/;
+$1 add weapon=$2 refine=$3 lvl=/;
 
 char\+=(\w+).+lvl=(\d+).+cons=(.\d+).+talent=(\d+,\d+,\d+);
-$1 add weapon=$2 refine=$3 level=;
+$1 add weapon=$2 refine=$3 lvl=;
 
 char\+=(\w+).+lvl=(\d+).+cons=(\d+).+talent=(\d+,\d+,\d+).*;
 $1 char lvl=$2/ cons=$3 talent=$4;

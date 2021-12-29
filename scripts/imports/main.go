@@ -51,7 +51,7 @@ func walk(path string) []string {
 				return nil
 			case strings.Contains(path, "/common"):
 				return nil
-			case strings.Contains(path, "/artifacts"):
+			case strings.HasSuffix(path, "/artifacts"):
 				return nil
 			case strings.HasSuffix(path, "/characters"):
 				return nil
