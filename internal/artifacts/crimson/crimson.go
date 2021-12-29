@@ -11,7 +11,7 @@ func init() {
 	core.RegisterSetFunc("crimsonwitchofflames", New)
 }
 
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	stacks := 0
 	key := fmt.Sprintf("%v-cw-4pc", c.Name())
 	if count >= 2 {

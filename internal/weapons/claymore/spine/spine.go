@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("serpentspine", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	stacks := param["stacks"]
 	buff := 0.05 + float64(r)*.01
 	active := false
@@ -61,4 +61,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return val, true
 		},
 	})
+	return "serpentspine"
 }

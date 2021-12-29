@@ -9,7 +9,7 @@ func init() {
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	dmg := 0.16 + float64(r)*0.04
 
 	char.AddPreDamageMod(core.PreDamageMod{
@@ -24,4 +24,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return m, true
 		},
 	})
+	return "rainslasher"
 }

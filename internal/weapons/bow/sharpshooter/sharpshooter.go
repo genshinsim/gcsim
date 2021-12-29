@@ -9,7 +9,7 @@ func init() {
 	core.RegisterWeaponFunc("sharpshootersoath", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	dmg := 0.18 + float64(r)*0.06
 
 	char.AddPreDamageMod(core.PreDamageMod{
@@ -25,4 +25,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 	})
 
+	return "sharpshootersoath"
 }

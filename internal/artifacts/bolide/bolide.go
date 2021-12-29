@@ -9,7 +9,7 @@ func init() {
 	core.RegisterSetFunc("retracingbolide", New)
 }
 
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		s.Shields.AddBonus(func() float64 {
 			return 0.35 //shield bonus always active

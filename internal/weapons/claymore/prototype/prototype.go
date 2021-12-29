@@ -12,7 +12,7 @@ func init() {
 }
 
 // On hit, Normal or Charged Attacks have a 50% chance to deal an additional 240~480% ATK DMG to opponents within a small AoE. Can only occur once every 15s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	atk := 1.8 + float64(r)*0.6
 	effectLastProc := -9999
 
@@ -44,5 +44,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		return false
 	}, fmt.Sprintf("forstbearer-%v", char.Name()))
-
+	return "prototypearchaic"
 }

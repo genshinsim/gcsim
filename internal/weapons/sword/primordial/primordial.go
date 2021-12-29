@@ -9,7 +9,7 @@ func init() {
 	core.RegisterWeaponFunc("primordialjadecutter", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	//add on hit effect to sim?
 	m := make([]float64, core.EndStatType)
 	m[core.HPP] = 0.15 + float64(r)*0.05
@@ -23,5 +23,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 		Expiry: -1,
 	})
-
+	return "primordialjadecutter"
 }

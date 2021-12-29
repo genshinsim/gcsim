@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("windblumeode", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	dur := 0
 	//add on hit effect
@@ -32,4 +32,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 		Expiry: -1,
 	})
+
+	return "windblumeode"
 }

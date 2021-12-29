@@ -12,7 +12,7 @@ func init() {
 }
 
 //Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	lockout := -1
 
@@ -30,5 +30,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 		Expiry: -1,
 	})
-
+	return "thealleyflash"
 }

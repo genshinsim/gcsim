@@ -13,7 +13,7 @@ func init() {
 
 //After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.
 //This effect has a maximum of 3 stacks, and the duration of each stack is independent of the others.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	atk := .15 + float64(r)*.05
 	active := 0
 
@@ -53,5 +53,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		return false
 	}, fmt.Sprintf("cpp-%v", char.Name()))
-
+	return "crescentpike"
 }

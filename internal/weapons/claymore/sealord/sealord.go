@@ -13,7 +13,7 @@ func init() {
 }
 
 // Increases Elemental Burst DMG by 12~24%. When Elemental Burst hits opponents, there is a 100% chance of summoning a huge onrush of tuna that charges and deals 100~200% ATK as AoE DMG. This effect can occur once every 15s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	burstDmgIncrease := .09 + float64(r)*0.03
 	tunaDmg := .75 + float64(r)*0.25
 	effectLastProc := -9999
@@ -58,4 +58,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 		return false
 	}, fmt.Sprintf("sealord-%v", char.Name()))
+	return "rainslasher"
 }

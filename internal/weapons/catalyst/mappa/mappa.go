@@ -9,7 +9,7 @@ func init() {
 	core.RegisterWeaponFunc("mappamare", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	stacks := 0
 	dur := 0
 
@@ -49,4 +49,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		Expiry: -1,
 	})
 
+	return "mappamare"
 }

@@ -14,7 +14,7 @@ func init() {
 //Normal or Charged Attacks grant a Harmonic on hits. Gaining 5 Harmonics triggers the
 //power of music and deals 100% ATK DMG to surrounding opponents. Harmonics last up to 30s,
 //and a maximum of 1 can be gained every 0.5s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	expiry := 0
 	stacks := 0
@@ -60,5 +60,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		return false
 	}, fmt.Sprintf("flute-%v", char.Name()))
-
+	return "theflute"
 }

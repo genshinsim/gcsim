@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("prototypecrescent", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	dur := 0
 	key := fmt.Sprintf("prototype-crescent-%v", char.Name())
@@ -39,4 +39,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 		Expiry: -1,
 	})
+
+	return "prototypecrescent"
 }

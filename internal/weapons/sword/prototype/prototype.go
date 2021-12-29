@@ -12,7 +12,7 @@ func init() {
 }
 
 //After using an Elemental Skill, increases Normal and Charged Attack DMG by 8% for 12s. Max 2 stacks.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	expiry := 0
 	per := 0.03 + 0.01*float64(r)
@@ -58,5 +58,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return val, true
 		},
 	})
+
+	return "prototyperancour"
 
 }

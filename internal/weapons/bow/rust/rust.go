@@ -8,7 +8,7 @@ func init() {
 	core.RegisterWeaponFunc("rust", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	inc := .3 + float64(r)*0.1
 	char.AddMod(core.CharStatMod{
@@ -26,4 +26,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 		Expiry: -1,
 	})
+
+	return "rust"
 }

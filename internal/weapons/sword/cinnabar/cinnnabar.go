@@ -10,7 +10,7 @@ func init() {
 }
 
 // Elemental Skill DMG is increased by 40% of DEF. The effect will be triggered no more than once every 1.5s and will be cleared 0.1s after the Elemental Skill deals DMG.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	effectICDExpiry := 0
 	effectDurationExpiry := 0
@@ -42,6 +42,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 		return false
 	}, "cinnabar-spindle")
+	return "cinnabarspindle"
 
 	// char.AddPreDamageMod(core.PreDamageMod{
 	// 	Key:    "cinnabar",

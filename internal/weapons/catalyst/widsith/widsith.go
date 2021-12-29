@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("thewidsith", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	last := 0
 	expiry := 0
 
@@ -82,5 +82,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 		return false
 	}, fmt.Sprintf("width-%v", char.Name()))
+
+	return "thewidsith"
 
 }

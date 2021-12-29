@@ -168,19 +168,22 @@ func (c *Core) AddChar(v CharacterProfile) error {
 	if !ok {
 		return fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Key.String())
 	}
-	wf(char, c, v.Weapon.Refine, v.Weapon.Params)
+	wk := wf(char, c, v.Weapon.Refine, v.Weapon.Params)
+	char.SetWeaponKey(wk)
 
 	//add set bonus
 	for key, count := range v.Sets {
 		f, ok := setMap[key]
 		if ok {
-			f(char, c, count)
+			f(char, c, count, v.SetParams[key])
 		} else {
 			c.Log.Warnf("character %v has unrecognized set %v", v.Base.Key.String(), key)
 		}
 	}
 
-	return nil
+	err = char.CalcBaseStats()
+
+	return err
 }
 
 func (c *Core) CharByName(key keys.Char) (Character, bool) {

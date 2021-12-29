@@ -13,6 +13,7 @@ type Character interface {
 	Ele() EleType
 	Level() int
 	WeaponClass() WeaponClass
+	SetWeaponKey(k string)
 	Zone() ZoneType
 	CurrentEnergy() float64 //current energy
 	MaxEnergy() float64
@@ -20,6 +21,8 @@ type Character interface {
 	MaxHP() float64
 	ModifyHP(float64)
 	Stat(s StatType) float64
+
+	CalcBaseStats() error
 
 	AddTask(fun func(), name string, delay int)
 

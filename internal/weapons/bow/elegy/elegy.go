@@ -7,11 +7,11 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc("elegy of the end", weapon)
+	core.RegisterWeaponFunc("elegy for the end", weapon)
 	core.RegisterWeaponFunc("elegyfortheend", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.EM] = 45 + float64(r)*15
 	char.AddMod(core.CharStatMod{
@@ -64,4 +64,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("elegy-%v", char.Name()))
 
+	return "elegyfortheend"
 }

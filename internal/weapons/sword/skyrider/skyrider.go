@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("skyridersword", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	expiry := 0
 
@@ -33,4 +33,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("skyrider-sword-%v", char.Name()))
 
+	return "skyridersword"
 }

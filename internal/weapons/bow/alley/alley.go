@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("alleyhunter", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	//max 10 stacks
 	w := weap{}
 	w.stacks = param["stack"]
@@ -49,6 +49,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, key)
 
+	return "alleyhunter"
 }
 
 type weap struct {

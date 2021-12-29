@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("dragonspinespear", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	atk := 0.65 + float64(r)*0.15
 	atkc := 1.6 + float64(r)*0.4
 	p := 0.5 + float64(r)*0.1
@@ -50,4 +50,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		return false
 	}, fmt.Sprintf("dragonspine-%v", char.Name()))
+	return "dragonspinespear"
 }

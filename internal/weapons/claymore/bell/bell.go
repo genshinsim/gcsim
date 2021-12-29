@@ -15,7 +15,7 @@ func init() {
 //Taking DMG generates a shield which absorbs DMG up to 20/23/26/29/32% of Max HP.
 //This shield lasts for 10s or until broken, and can only be triggered once every 45/45/45/45/45s.
 //While protected by the shield, the character gains 12/15/18/21/24% increased DMG.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	hp := 0.17 + float64(r)*0.03
 	icd := 0
@@ -45,4 +45,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return val, c.Shields.Get(core.ShieldBell) != nil
 		},
 	})
+	return "thebell"
 }

@@ -51,6 +51,7 @@ type CharacterBase struct {
 
 type WeaponProfile struct {
 	Name     string
+	Key      string //use this to match with weapon curve mapping
 	Class    WeaponClass
 	Refine   int
 	Level    int

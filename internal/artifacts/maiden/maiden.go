@@ -13,7 +13,7 @@ func init() {
 
 // 2 piece: Character Healing Effectiveness +15%
 // 4 piece: Using an Elemental Skill or Burst increases healing received by all party members by 20% for 10s.
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.Heal] = 0.15

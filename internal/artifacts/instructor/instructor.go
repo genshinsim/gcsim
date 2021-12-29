@@ -11,7 +11,7 @@ func init() {
 // Implements Instructor artifact set:
 // 2-Piece Bonus: Increases Elemental Mastery by 80.
 // 4-Piece Bonus: Upon triggering an Elemental Reaction, increases all party members' Elemental Mastery by 120 for 8s.
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.EM] = 80

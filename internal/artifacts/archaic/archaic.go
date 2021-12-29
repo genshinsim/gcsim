@@ -9,7 +9,7 @@ func init() {
 	core.RegisterSetFunc("archaicpetra", New)
 }
 
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.GeoP] = 0.15

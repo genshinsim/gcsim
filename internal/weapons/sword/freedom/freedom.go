@@ -9,7 +9,7 @@ func init() {
 	core.RegisterWeaponFunc("freedomsworn", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = 0.075 + float64(r)*0.025
 	char.AddMod(core.CharStatMod{
@@ -70,4 +70,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		c.Events.Subscribe(i, stackFunc, "freedom-"+char.Name())
 	}
 
+	return "freedomsworn"
 }

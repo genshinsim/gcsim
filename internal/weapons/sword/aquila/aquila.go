@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("aquilafavonia", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = .15 + .05*float64(r)
 	char.AddMod(core.CharStatMod{
@@ -54,4 +54,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		c.Health.HealActive(char.CharIndex(), atk*heal)
 		return false
 	}, fmt.Sprintf("aquila-%v", char.Name()))
+	return "aquilafavonia"
 }

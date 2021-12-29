@@ -23,7 +23,7 @@ func init() {
 // 	Only one Sea-Dyed Foam can be produced every 3.5 seconds. Each Sea-Dyed Foam can accumulate up to 30,000 HP (including
 //  overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
 // 	This effect can still be triggered even when the character who is using this artifact set is not on the field.
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.Heal] = 0.15
