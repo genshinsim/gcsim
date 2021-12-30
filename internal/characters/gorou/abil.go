@@ -142,8 +142,8 @@ func (c *char) gorouSkillBuffField(src int) func() {
 		if c.eFieldSrc != src {
 			return
 		}
-		//do nothing if field expired
-		if c.Core.Status.Duration(generalWarBannerKey) == 0 {
+		//do nothing if both field expired
+		if c.Core.Status.Duration(generalWarBannerKey) == 0 && c.Core.Status.Duration(generalGloryKey) == 0 {
 			return
 		}
 		//do nothing if expired
@@ -152,7 +152,7 @@ func (c *char) gorouSkillBuffField(src int) func() {
 		active := c.Core.Chars[c.Core.ActiveChar]
 		active.AddMod(core.CharStatMod{
 			Key:    defenseBuffKey,
-			Expiry: 126, //2.1s
+			Expiry: c.Core.F + 126, //2.1s
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return c.gorouBuff, true
 			},
@@ -240,7 +240,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
 			Key:    heedlessKey,
-			Expiry: 720, //12s
+			Expiry: c.Core.F + 720, //12s
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				return val, true
 			},
