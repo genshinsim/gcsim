@@ -97,9 +97,9 @@ zhongli attack  +is_onfield;
 var pteststring = `
 options debug=true iteration=3000 duration=41 workers=24;
 
-xiangling char lvl=80/90 cons=4 talent=6,9,9 start_hp=100 params=[a=1,b=2];
-xiangling add weapon="staff of homa" lvl=80/90 refine=3 params=[a=1,b=2];
-xiangling add set="seal of insulation" count=4 params=[a=1,b=2];
+xiangling char lvl=80/90 cons=4 talent=6,9,9 start_hp=100 +params=[a=1,b=2];
+xiangling add weapon="staff of homa" lvl=80/90 refine=3 +params=[a=1,b=2];
+xiangling add set="seal of insulation" count=4 +params=[a=1,b=2];
 xiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
 xiangling add stats atk%=.0992 cr=.1655 cd=.7282 em=39.64 er=.5510 hp%=.0992 hp=507.88 atk=33.08 def%=.124 def=39.36;
 

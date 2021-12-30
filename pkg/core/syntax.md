@@ -140,44 +140,6 @@ These are additional key words that can be added after the list of abilities tha
 - `/particle`: flag specific to wait command
 - `/max`: flag specific to wait command
 
-## conditionals
-
-These section relates to valid `/if` syntax
-
-In general, `/if` follows the following structure
-
-`/if=.field1.field2.field3<operator><int value>`
-
-For example
-
-`/if=.tags.albedo.elevator==1`
-
-```
-	case ".debuff":
-		return q.evalDebuff(c)
-	case ".element":
-		return q.evalElement(c)
-	case ".cd":
-		return q.evalCD(c)
-	case ".energy":
-		return q.evalEnergy(c)
-	case ".status":
-		return q.evalStatus(c)
-	case ".tags":
-		return q.evalTags(c)
-	case ".stam":
-		return q.evalStam(c)
-	case ".ready":
-		return q.evalAbilReady(c)
-
-```
-
-The following are valid values for fields
-
-- `.debuff.<type>.<num>.<string>` where `<type>` is either `res` or `def`, `<num>` is target number
-- `.element.<num>.<type>` where `<num>` is target number
-- `.stam`
-
 ## CALC MODE
 
 This syntax is for calc mode which is super simplified as there are no conditionals and is just a list of actions to execute (just like a calculator)

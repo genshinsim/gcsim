@@ -28,6 +28,27 @@ func parseTarget(p *Parser) (parseFn, error) {
 				r.HP, err = itemNumberToFloat64(n)
 				p.cfg.DamageMode = true
 			}
+		case itemResist:
+			//this sets all resistance
+			item, err := p.acceptSeqReturnLast(itemEqual, itemNumber)
+			if err != nil {
+				return nil, err
+			}
+			amt, err := itemNumberToFloat64(item)
+			if err != nil {
+				return nil, err
+			}
+
+			//TODO: make this more elegant...
+			r.Resist[core.Electro] += amt
+			r.Resist[core.Cryo] += amt
+			r.Resist[core.Hydro] += amt
+			r.Resist[core.Physical] += amt
+			r.Resist[core.Pyro] += amt
+			r.Resist[core.Geo] += amt
+			r.Resist[core.Dendro] += amt
+			r.Resist[core.Anemo] += amt
+
 		case itemElementKey:
 			s := n.val
 			item, err := p.acceptSeqReturnLast(itemEqual, itemNumber)

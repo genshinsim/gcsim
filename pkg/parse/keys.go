@@ -54,6 +54,8 @@ var key = map[string]ItemType{
 	"once":     itemOnce,
 	"every":    itemEvery,
 	"ele":      itemEle,
+	// target related
+	"resist": itemResist,
 }
 
 var statKeys = map[string]core.StatType{

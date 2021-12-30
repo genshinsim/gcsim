@@ -505,7 +505,7 @@ func (q *Queuer) evalDebuff(cond Condition) (bool, error) {
 		return false, errors.New("eval debuff: unexpected short field, expected at least 3")
 	}
 	typ := strings.TrimPrefix(cond.Fields[1], ".")
-	trg := strings.TrimPrefix(cond.Fields[2], ".")
+	trg := strings.TrimPrefix(cond.Fields[2], ".t")
 	//trg should be an int
 	tid, err := strconv.ParseInt(trg, 10, 64)
 	if err != nil {
@@ -544,7 +544,7 @@ func (q *Queuer) evalElement(cond Condition) (bool, error) {
 	if len(cond.Fields) < 3 {
 		return false, errors.New("eval element: unexpected short field, expected at least 2")
 	}
-	trg := strings.TrimPrefix(cond.Fields[1], ".")
+	trg := strings.TrimPrefix(cond.Fields[1], ".t")
 	//trg should be an int
 	tid, err := strconv.ParseInt(trg, 10, 64)
 	if err != nil {

@@ -124,6 +124,10 @@ const (
 
 	itemEle //ele
 
+	// these are related to target setting
+
+	itemResist
+
 	// stat types after the rest
 
 	itemKeys

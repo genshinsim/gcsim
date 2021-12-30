@@ -82,15 +82,21 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			if err == nil {
 				c.Base.StartHP, err = itemNumberToFloat64(x)
 			}
-		case itemParams:
-			//expecting =[
-			_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
-			if err != nil {
-				return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+		case itemPlus: //optional flags
+			n = p.next()
+			switch n.typ {
+			case itemParams:
+				//expecting =[
+				_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
+				if err != nil {
+					return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+				}
+				p.backup()
+				//overriding here if it already exists
+				c.Params, err = p.acceptOptionalParamReturnMap()
+			default:
+				err = fmt.Errorf("unexpected token after +: %v at line %v", n, p.tokens)
 			}
-			p.backup()
-			//overriding here if it already exists
-			c.Params, err = p.acceptOptionalParamReturnMap()
 		case itemTerminateLine:
 			return parseRows, nil
 		}
@@ -142,15 +148,21 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 			if err == nil {
 				count, err = itemNumberToInt(x)
 			}
-		case itemParams:
-			//expecting =[
-			_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
-			if err != nil {
-				return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+		case itemPlus: //optional flags
+			n = p.next()
+			switch n.typ {
+			case itemParams:
+				//expecting =[
+				_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
+				if err != nil {
+					return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+				}
+				p.backup()
+				//overriding here if it already exists
+				c.SetParams[label], err = p.acceptOptionalParamReturnMap()
+			default:
+				err = fmt.Errorf("unexpected token after +: %v at line %v", n, p.tokens)
 			}
-			p.backup()
-			//overriding here if it already exists
-			c.SetParams[label], err = p.acceptOptionalParamReturnMap()
 		case itemTerminateLine:
 			c.Sets[label] = count
 			return parseRows, nil
@@ -194,15 +206,21 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 				c.Weapon.Refine, err = itemNumberToInt(x)
 				refineOk = true
 			}
-		case itemParams:
-			//expecting =[
-			_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
-			if err != nil {
-				return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+		case itemPlus: //optional flags
+			n = p.next()
+			switch n.typ {
+			case itemParams:
+				//expecting =[
+				_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
+				if err != nil {
+					return nil, fmt.Errorf("invalid token after param; line %v", p.tokens)
+				}
+				p.backup()
+				//overriding here if it already exists
+				c.Weapon.Params, err = p.acceptOptionalParamReturnMap()
+			default:
+				err = fmt.Errorf("unexpected token after +: %v at line %v", n, p.tokens)
 			}
-			p.backup()
-			//overriding here if it already exists
-			c.Weapon.Params, err = p.acceptOptionalParamReturnMap()
 		case itemTerminateLine:
 			if !lvlOk {
 				return nil, fmt.Errorf("weapon %v missing lvl", s)
