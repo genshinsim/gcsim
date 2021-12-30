@@ -11,10 +11,10 @@ func init() {
 
 // Elemental Skill DMG is increased by 40% of DEF. The effect will be triggered no more than once every 1.5s and will be cleared 0.1s after the Elemental Skill deals DMG.
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-
 	effectICDExpiry := 0
 	effectDurationExpiry := 0
 	effectLastProc := 0
+	defPer := .3 + float64(r)*.1
 	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 
@@ -27,7 +27,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if effectDurationExpiry < c.F && c.F <= effectICDExpiry {
 			return false
 		}
-		atk.Info.FlatDmg += atk.Snapshot.BaseDef*atk.Snapshot.Stats[core.DEFP] + atk.Snapshot.Stats[core.DEF]
+		atk.Info.FlatDmg += (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[core.DEFP]) + atk.Snapshot.Stats[core.DEF]) * defPer
 
 		c.Log.Debugw("Cinnabar Spindle proc dmg add", "frame", c.F, "event", core.LogCalc, "char", char.CharIndex(), "lastproc", effectLastProc, "effect_ends_at", effectDurationExpiry, "effect_icd_ends_at", effectICDExpiry)
 
