@@ -14,6 +14,7 @@ func CharProfile(key keys.Char, ele core.EleType, cons int) core.CharacterProfil
 	r.Talents.Burst = 8
 	r.Talents.Skill = 8
 	r.Base.Level = 90
+	r.Base.MaxLevel = 90
 	r.Stats = make([]float64, core.EndStatType)
 	r.Stats[core.ATK] = 50
 	r.Stats[core.ATKP] = .249

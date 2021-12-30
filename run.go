@@ -46,7 +46,7 @@ func (s *Simulation) Run() (Stats, error) {
 		if s.C.Flags.DamageMode {
 			//stop when last target dies
 			// log.Println(s.c.F, s.targets)
-			stop = len(s.C.Targets) == 0
+			stop = len(s.C.Targets) == 1
 		} else {
 			stop = s.C.F == f
 		}
@@ -62,8 +62,9 @@ func (s *Simulation) Run() (Stats, error) {
 }
 
 func (s *Simulation) AdvanceFrame() error {
-	var ok bool
+	var done bool
 	var err error
+	var dropIfFailed bool
 	//advance frame
 	s.C.Tick()
 	//check for hurt dmg
@@ -83,7 +84,17 @@ func (s *Simulation) AdvanceFrame() error {
 
 	//check if queue has item, if not, queue up, otherwise execute
 	if len(s.queue) == 0 {
-		next, err := s.C.Queue.Next()
+		next, drop, err := s.C.Queue.Next()
+		dropIfFailed = drop
+
+		// s.C.Log.Debugw("queue check - next queued",
+		// 	"frame", s.C.F,
+		// 	"event", core.LogQueueEvent,
+		// 	"remaining queue", s.queue,
+		// 	"next", next,
+		// 	"drop", drop,
+		// )
+
 		if err != nil {
 			return err
 		}
@@ -95,24 +106,48 @@ func (s *Simulation) AdvanceFrame() error {
 	}
 
 	if len(s.queue) > 0 {
+
+		var delay int
 		//check if the current action is executable right now; if not then delay
-		actionType := s.queue[0].Typ
-		delay := s.C.AnimationCancelDelay(actionType)
+		act, isAction := s.queue[0].(*core.ActionItem)
+		if isAction {
+			delay = s.C.AnimationCancelDelay(act.Typ)
+		}
+
 		if delay > 0 {
 			s.skip = delay
 			return nil
 		}
 
-		s.skip, ok, err = s.C.Action.Exec(s.queue[0])
+		// s.C.Log.Debugw("queue check - before exec",
+		// 	"frame", s.C.F,
+		// 	"event", core.LogQueueEvent,
+		// 	"remaining queue", s.queue,
+		// )
+
+		s.skip, done, err = s.C.Action.Exec(s.queue[0])
 		if err != nil {
 			return err
 		}
-		if ok {
-			if s.opts.LogDetails {
-				s.stats.AbilUsageCountByChar[s.C.ActiveChar][s.queue[0].Typ.String()]++
+
+		if done {
+			if s.opts.LogDetails && isAction {
+				s.stats.AbilUsageCountByChar[s.C.ActiveChar][act.Typ.String()]++
 			}
 			//pop queue
 			s.queue = s.queue[1:]
+			// s.C.Log.Debugw("queue check - after exec",
+			// 	"frame", s.C.F,
+			// 	"event", core.LogQueueEvent,
+			// 	"remaining queue", s.queue,
+			// 	"skip", s.skip,
+			// 	"done", done,
+			// )
+		} else {
+			if dropIfFailed {
+				//drop rest of the queue
+				s.queue = s.queue[:0]
+			}
 		}
 	}
 	return nil

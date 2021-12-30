@@ -11,6 +11,9 @@ const (
 	TravelerCryo
 	TravelerPyro
 	TravelerDendro
+	TravelerMale
+	TravelerFemale
+	TravelerDelim // delim
 	Albedo
 	Aloy
 	Amber
@@ -53,6 +56,9 @@ const (
 	Yoimiya
 	Zhongli
 	Gorou
+	Itto
+	Shenhe
+	Yunjin
 )
 
 func (c Char) String() string {
@@ -96,6 +102,8 @@ var CharNameToKey = map[string]Char{
 	"keqing":             Keqing,
 	"klee":               Klee,
 	"kujousara":          Sara,
+	"kujosara":           Sara,
+	"sara":               Sara,
 	"lisa":               Lisa,
 	"mona":               Mona,
 	"ningguang":          Ningguang,
@@ -120,6 +128,7 @@ var CharNameToKey = map[string]Char{
 	"yoimiya":            Yoimiya,
 	"zhongli":            Zhongli,
 	"gorou":              Gorou,
+	"aratakiitto":        Itto,
 }
 
 var charNames = []string{
@@ -131,6 +140,9 @@ var charNames = []string{
 	"traveler (cryo)",
 	"traveler (pyro)",
 	"traveler (dendro)",
+	"aether",
+	"lumine",
+	"", //delim for traveler
 	"albedo",
 	"aloy",
 	"amber",
@@ -173,4 +185,7 @@ var charNames = []string{
 	"yoimiya",
 	"zhongli",
 	"gorou",
+	"itto",
+	"shenhe",
+	"yunjin",
 }

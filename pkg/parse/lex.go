@@ -5,218 +5,14 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
-)
 
-// item represents a token or text string returned from the scanner.
-type item struct {
-	typ  ItemType // The type of this item.
-	pos  Pos      // The starting position, in bytes, of this item in the input string.
-	val  string   // The value of this item.
-	line int      // The line number at the start of this item.
-}
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+)
 
 type Pos int
 
 func (p Pos) Position() Pos {
 	return p
-}
-
-func (i item) String() string {
-	switch {
-	case i.typ == itemEOF:
-		return "EOF"
-	case i.typ == itemError:
-		return i.val
-	case i.typ == itemTerminateLine:
-		return "End Line"
-	case i.typ > itemCompareOp && i.typ < itemKeyword:
-		return i.val
-	case i.typ > itemKeyword:
-		return fmt.Sprintf("<%s>", i.val)
-		// case len(i.val) > 10:
-		// 	return fmt.Sprintf("%.10q...", i.val)
-	}
-	return fmt.Sprintf("%q", i.val)
-}
-
-// ItemType identifies the type of lex items.
-type ItemType int
-
-const (
-	itemError ItemType = iota // error occurred; value is text of error
-	itemBool                  // boolean constant
-
-	itemAssign        // equals ('=') introducing an assignment
-	itemDeclare       // colon-equals (':=') introducing a declaration
-	itemAddToList     // plus-equals ('+=') introducing add to list
-	itemComma         // coma (,) used to break up list of ident
-	itemTerminateLine // \n to denote end of a line
-	itemEOF
-	itemField            // alphanumeric identifier starting with '.'
-	itemIdentifier       // alphanumeric identifier not starting with '.'
-	itemVariable         // variable starting with '$', such as '$' or  '$1' or '$hello'
-	itemNumber           // simple number
-	itemLeftParen        // '('
-	itemRightParen       // ')'
-	itemLeftSquareParen  // '['
-	itemRightSquareParen // ']'
-	itemString           // string, including quotes
-	// following is logic operator
-	itemLogicOP // used only to delimit logical operation
-	LogicAnd    // && keyword
-	LogicOr     // || keyword
-	// following is comparison operator
-	itemCompareOp        // used only to delimi comparison operators
-	OpEqual              // == keyword
-	OpNotEqual           // != keyword
-	OpGreaterThan        // > keyword
-	OpGreaterThanOrEqual // >= keyword
-	OpLessThan           // < keyword
-	OpLessThanOrEqual    // <= keyword
-	// Keywords appear after all the rest.
-	itemKeyword    // used only to delimit the keywords
-	itemDot        // the cursor, spelled '.'
-	itemAction     // action keyword
-	itemChar       // char
-	itemStats      // stats
-	itemWeapon     // weapon
-	itemArt        // art
-	itemHurt       // hurt
-	itemEnergy     // energy
-	itemLvl        // lvl
-	itemCons       // cons
-	itemTalent     // talent
-	itemRefine     // refine
-	itemParam      // param
-	itemLabel      // label
-	itemCount      // count
-	itemEle        // ele
-	itemTarget     // char keyword
-	itemExec       // exec keyword
-	itemLock       // lock keyword
-	itemIf         // if keyword
-	itemWait       // wait keyword
-	itemSwap       // swap keyword
-	itemPost       // trail keyword
-	itemActive     // active keyword
-	itemInterval   // interval keyword
-	itemAmount     // amount keyword
-	itemOnce       // once keyword
-	itemEvery      // every keyword
-	itemActionLock // actionlock keyword
-	itemStartHP    // starthp keyword
-	// these are configuration options
-	itemOptions    // option
-	itemMode       // mode
-	itemDamage     // damage
-	itemTime       // time
-	itemDebug      // debug
-	itemIterations // iteration
-	itemDuration   // duration
-	itemWorkers    // workers
-	// stat types after the rest
-	statKeyword  // delimit stats
-	statDEFP     // def%
-	statDEF      // def
-	statHP       // hp
-	statHPP      // hp%
-	statATK      // atk
-	statATKP     // atk%
-	statER       // er
-	statEM       // em
-	statCR       // cr
-	statCD       // cd
-	statHeal     // heal
-	statPyroP    // pyro%
-	statHydroP   // hydro%
-	statCryoP    // cryo%
-	statElectroP // electro%
-	statAnemoP   // anemo%
-	statGeoP     // geo%
-	statPhyP     // phys%
-	statDendroP  // dendro%
-	eleTypeKeyword
-	elePyro     // pyro
-	eleHydro    // hydro
-	eleCryo     // cryo
-	eleElectro  // electro
-	eleGeo      // geo
-	eleAnemo    // anemo
-	eleDendro   // dendro
-	elePhysical // physical
-
-)
-
-var key = map[string]ItemType{
-	".": itemDot,
-	//config related
-	"options":   itemOptions,
-	"mode":      itemMode,
-	"damage":    itemDamage,
-	"time":      itemTime,
-	"debug":     itemDebug,
-	"iteration": itemIterations,
-	"duration":  itemDuration,
-	"workers":   itemWorkers,
-	//action related
-	"actions":    itemAction,
-	"char":       itemChar,
-	"stats":      itemStats,
-	"weapon":     itemWeapon,
-	"art":        itemArt,
-	"hurt":       itemHurt,
-	"energy":     itemEnergy,
-	"lvl":        itemLvl,
-	"cons":       itemCons,
-	"talent":     itemTalent,
-	"refine":     itemRefine,
-	"param":      itemParam,
-	"label":      itemLabel,
-	"count":      itemCount,
-	"ele":        itemEle,
-	"target":     itemTarget,
-	"exec":       itemExec,
-	"lock":       itemLock,
-	"if":         itemIf,
-	"wait":       itemWait,
-	"swap":       itemSwap,
-	"post":       itemPost,
-	"active":     itemActive,
-	"interval":   itemInterval,
-	"amount":     itemAmount,
-	"once":       itemOnce,
-	"every":      itemEvery,
-	"actionlock": itemActionLock,
-	"starthp":    itemStartHP,
-	//stats
-	"def%":     statDEFP,
-	"def":      statDEF,
-	"hp":       statHP,
-	"hp%":      statHPP,
-	"atk":      statATK,
-	"atk%":     statATKP,
-	"er":       statER,
-	"em":       statEM,
-	"cr":       statCR,
-	"cd":       statCD,
-	"heal":     statHeal,
-	"pyro%":    statPyroP,
-	"hydro%":   statHydroP,
-	"cryo%":    statCryoP,
-	"electro%": statElectroP,
-	"anemo%":   statAnemoP,
-	"geo%":     statGeoP,
-	"phys%":    statPhyP,
-	"dendro%":  statDendroP,
-	//element types
-	"pyro":     elePyro,
-	"hydro":    eleHydro,
-	"cryo":     eleCryo,
-	"electro":  eleElectro,
-	"geo":      eleGeo,
-	"anemo":    eleAnemo,
-	"dendro":   eleDendro,
-	"physical": elePhysical,
 }
 
 const eof = -1
@@ -271,7 +67,12 @@ func (l *lexer) backup() {
 
 // emit passes an item back to the client.
 func (l *lexer) emit(t ItemType) {
-	l.items <- item{t, l.start, l.input[l.start:l.pos], l.startLine}
+	l.items <- item{
+		typ:  t,
+		pos:  l.start,
+		val:  l.input[l.start:l.pos],
+		line: l.startLine,
+	}
 	l.start = l.pos
 	l.startLine = l.line
 }
@@ -353,6 +154,8 @@ func lexText(l *lexer) stateFn {
 		return nil
 	case r == ';':
 		l.emit(itemTerminateLine)
+	case r == ':':
+		l.emit(itemColon)
 	case isSpace(r):
 		l.ignore()
 	case r == '#':
@@ -363,23 +166,23 @@ func lexText(l *lexer) stateFn {
 			l.emit(OpEqual)
 		} else {
 			l.backup()
-			l.emit(itemAssign)
+			l.emit(itemEqual)
 		}
-	case r == ':':
-		if l.next() != '=' {
-			return l.errorf("expected :=")
-		}
-		l.emit(itemDeclare)
 	case r == ',':
 		l.emit(itemComma)
 	case r == '+':
+		//check if next item is a number or not; if number lexNumber
+		//otherwise it's a + sign
 		n := l.next()
-		if n == '=' {
-			l.emit(itemAddToList)
-		} else {
+		if isNumeric(n) {
+			//back up twice
+			l.backup()
 			l.backup()
 			return lexNumber
 		}
+		//otherwise it's a plus sign
+		l.backup()
+		l.emit(itemPlus)
 	case r == '.':
 		// special look-ahead for ".field" so we don't break l.backup().
 		if l.pos < Pos(len(l.input)) {
@@ -441,6 +244,8 @@ func lexText(l *lexer) stateFn {
 		if l.sqParenDepth < 0 {
 			return l.errorf("unexpected right sq paren %#U", r)
 		}
+	case r == '/':
+		l.emit(itemForwardSlash)
 	case isAlphaNumeric(r):
 		l.backup()
 		return lexIdentifier
@@ -545,12 +350,28 @@ Loop:
 			case word == "true", word == "false":
 				l.emit(itemBool)
 			default:
-				l.emit(itemIdentifier)
+				l.emit(checkIdentifier(word))
 			}
 			break Loop
 		}
 	}
 	return lexText
+}
+
+func checkIdentifier(word string) ItemType {
+	if _, ok := statKeys[word]; ok {
+		return itemStatKey
+	}
+	if _, ok := eleKeys[word]; ok {
+		return itemElementKey
+	}
+	if _, ok := keys.CharNameToKey[word]; ok {
+		return itemCharacterKey
+	}
+	if _, ok := actionKeys[word]; ok {
+		return itemActionKey
+	}
+	return itemIdentifier
 }
 
 func lexNumber(l *lexer) stateFn {
@@ -575,7 +396,12 @@ func isSpace(r rune) bool {
 
 // isAlphaNumeric reports whether r is an alphabetic, digit, or underscore.
 func isAlphaNumeric(r rune) bool {
-	return r == '_' || unicode.IsLetter(r) || unicode.IsDigit(r) || r == '%'
+	return r == '_' || r == '-' || unicode.IsLetter(r) || unicode.IsDigit(r) || r == '%'
+}
+
+// is Numeric reports whether r is a digit
+func isNumeric(r rune) bool {
+	return unicode.IsDigit(r)
 }
 
 // atTerminator reports whether the input is at valid termination character to

@@ -6,8 +6,8 @@ import (
 )
 
 func parseEnergyEvent(p *Parser) (parseFn, error) {
-	//energy+=once interval=300 amount=1 #once at frame 300
-	//energy+=every interval=300,600 amount=1 #randomly every 300 to 600 frames
+	//energy once interval=300 amount=1 #once at frame 300
+	//energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	n := p.next()
 	switch n.typ {
 	case itemOnce:
@@ -21,7 +21,7 @@ func parseEnergyEvent(p *Parser) (parseFn, error) {
 }
 
 func parseEnergyOnce(p *Parser) (parseFn, error) {
-	//energy+=once interval=300 amount=1 #once at frame 300
+	//energy once interval=300 amount=1 #once at frame 300
 	var err error
 	p.cfg.Energy.Active = true
 	p.cfg.Energy.Once = true
@@ -29,12 +29,12 @@ func parseEnergyOnce(p *Parser) (parseFn, error) {
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemInterval:
-			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err == nil {
 				p.cfg.Energy.Start, err = itemNumberToInt(n)
 			}
 		case itemAmount:
-			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+			item, err := p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err != nil {
 				return nil, err
 			}
@@ -57,7 +57,7 @@ func parseEnergyOnce(p *Parser) (parseFn, error) {
 }
 
 func parseEnergyEvery(p *Parser) (parseFn, error) {
-	//energy+=every interval=300,600 amount=1 #randomly every 300 to 600 frames
+	//energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	var err error
 	p.cfg.Energy.Active = true
 	p.cfg.Energy.Once = false
@@ -65,7 +65,7 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemInterval:
-			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err != nil {
 				return nil, err
 			}
@@ -83,7 +83,7 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 		case itemAmount:
-			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+			item, err := p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err != nil {
 				return nil, err
 			}

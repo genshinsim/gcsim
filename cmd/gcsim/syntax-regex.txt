@@ -1,0 +1,45 @@
+stats\+=(\w+) label=\w+ (.+);
+$1 add stats $2;
+
+art\+=(\w+) label="(.+)" (.+);
+art\+=(\w+) label=(".+") (.+);
+$1 add set=$2 $3;
+
+weapon\+=(\w+) label=(".+").+refine=(\d+).*;
+$1 add weapon=$2 refine=$3 lvl=/;
+
+char\+=(\w+).+lvl=(\d+).+cons=(.\d+).+talent=(\d+,\d+,\d+);
+$1 add weapon=$2 refine=$3 lvl=;
+
+char\+=(\w+).+lvl=(\d+).+cons=(\d+).+talent=(\d+,\d+,\d+).*;
+$1 char lvl=$2/ cons=$3 talent=$4;
+
+target\+=".+" (.+)
+target $1
+
+active\+=(.+)
+active $1
+
+energy\+=(\w+) (.+)
+energy $1 $2
+
+actions\+=sequence_strict target=(\w+) exec=(\S+)(.*)
+$1 $2 $3
+
+actions\+=sequence_strict exec=(\S+) target=(\w+)(.*)
+$2 $1$3
+
+actions\+=(\w+) target=(\w+)(.*)
+$2 $1 $3
+
+ if=
+ +if=
+
+ active=\w+
+ +is_onfield
+
+swap=(\w+)
++swap_to=$1
+
+lock=(\d+)
++swap_lock=$1

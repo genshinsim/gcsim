@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("skyridergreatsword", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	atk := 0.05 + float64(r)*0.01
 	stacks := 0
@@ -54,5 +54,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return nil, false
 		},
 	})
-
+	return "skyridergreatsword"
 }

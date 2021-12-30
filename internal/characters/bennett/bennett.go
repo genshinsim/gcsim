@@ -27,6 +27,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
+	c.Base.Element = core.Pyro
 
 	if c.Base.Cons >= 2 {
 		c.c2()

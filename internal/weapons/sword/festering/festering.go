@@ -9,7 +9,7 @@ func init() {
 	core.RegisterWeaponFunc("festeringdesire", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	m := make([]float64, core.EndStatType)
 	m[core.CR] = .045 + .015*float64(r)
@@ -21,5 +21,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return m, a == core.AttackTagElementalArt
 		},
 	})
-
+	return "festeringdesire"
 }

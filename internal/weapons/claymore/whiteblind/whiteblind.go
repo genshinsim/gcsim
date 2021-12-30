@@ -12,7 +12,7 @@ func init() {
 
 //On hit, Normal or Charged Attacks increase ATK and DEF by 6/7.5/9/10.5/12% for 6s.
 //Max 4 stacks (24/30/36/42/48% total). This effect can only occur once every 0.5s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	stacks := 0
 	icd := 0
 	duration := 0
@@ -56,4 +56,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return val, true
 		},
 	})
+	return "whiteblind"
 }

@@ -14,7 +14,7 @@ func init() {
 //Normal and Charged Attacks have a 50% chance to fire a Bolt of Perception,
 //dealing 240/270/300/330/360% ATK as DMG. This bolt can bounce between enemies a maximum of 4 times.
 //This effect can occur once every 12/11/10/9/8s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	dmg := 2.1 * float64(r) * 0.3
 	cd := (13 - r) * 60
@@ -60,7 +60,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 	//d.OnHitCallback = char.chainQ(t.Index(), char.Sim.Frame(), 1)
 
 	//on hit find next target not marked. marks lasts 60 seconds
-
+	return "eyeofperception"
 }
 
 type weap struct {

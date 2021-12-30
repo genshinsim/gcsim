@@ -19,7 +19,7 @@ triggering a maximum of once every 0.3s. When off the field, the character gains
 Curiosity can stack up to 4 times, each providing 6% DEF and a 6% Geo DMG Bonus. When 6 seconds pass
 without gaining a Curiosity stack, 1 stack is lost.
 **/
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.DEFP] = 0.30

@@ -30,6 +30,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
+	c.Base.Element = core.Pyro
 
 	return &c, nil
 }
@@ -115,7 +116,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.Core.Combat.QueueAttack(
 			ai,
-			core.NewDefCircHit(0.5, false, core.TargettableEnemy),
+			core.NewDefCircHit(0.1, false, core.TargettableEnemy),
 			f-i,
 			f-i,
 		)
@@ -194,6 +195,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		} else {
 			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, delay+i*90)
 		}
+		//TODO: check guoba fire delay
 		c.QueueParticle("xiangling", 1, core.Pyro, delay+i*95+90+60)
 	}
 

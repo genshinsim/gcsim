@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("wolfsgravestone", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	val := make([]float64, core.EndStatType)
 	val[core.ATKP] = 0.15 + 0.05*float64(r)
@@ -57,4 +57,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		return false
 	}, fmt.Sprintf("wolf-%v", char.Name()))
+	return "wolfsgravestone"
 }

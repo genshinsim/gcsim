@@ -13,7 +13,7 @@ func init() {
 
 //Using an Elemental Burst regenerates 4/4.5/5/5.5/6 Energy every 2s for 6s. All party members
 //will regenerate 4/4.5/5/5.5/6% HP every 2s for this duration.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	e := 3.5 + float64(r)*0.5
 
@@ -29,4 +29,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("prototype-amber-%v", char.Name()))
 
+	return "prototypeamber"
 }

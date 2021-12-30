@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("mistsplitterreforged", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	base := 0.09 + float64(r)*0.03
 	m[core.PyroP] = base
@@ -78,4 +78,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 		Expiry: -1,
 	})
+	return "mistsplitterreforged"
 }

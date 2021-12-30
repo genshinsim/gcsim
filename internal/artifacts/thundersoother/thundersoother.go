@@ -6,10 +6,9 @@ import (
 
 func init() {
 	core.RegisterSetFunc("thundersoother", New)
-	core.RegisterSetFunc("thundersoother", New)
 }
 
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		s.Log.Warnw("thundersoother 2 pc not implemented", "event", core.LogArtifactEvent, "char", c.CharIndex(), "frame", s.F)
 	}

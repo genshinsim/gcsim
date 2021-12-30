@@ -8,7 +8,7 @@ func init() {
 	core.RegisterSetFunc("lavawalker", New)
 }
 
-func New(c core.Character, s *core.Core, count int) {
+func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		s.Log.Warnw("lavawalker 2 pc not implemented", "event", core.LogArtifactEvent, "char", c.CharIndex(), "frame", s.F)
 	}

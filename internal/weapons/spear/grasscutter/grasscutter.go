@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("engulfinglightning", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	atk := .21 + .07*float64(r)
 	max := 0.7 + 0.1*float64(r)
 
@@ -52,4 +52,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 		return false
 	}, fmt.Sprintf("grasscutter-%v", char.Name()))
+	return "engulfinglightning"
 }

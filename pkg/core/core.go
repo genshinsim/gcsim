@@ -46,7 +46,7 @@ type Core struct {
 	SwapCD int
 
 	//core stuff
-	queue        []ActionItem
+	// queue        []Command
 	stamModifier []func(a ActionType) (float64, bool)
 	lastStamUse  int
 
@@ -70,7 +70,7 @@ type Core struct {
 	//handlers
 	Status     StatusHandler
 	Energy     EnergyHandler
-	Action     ActionHandler
+	Action     CommandHandler
 	Queue      QueueHandler
 	Combat     CombatHandler
 	Tasks      TaskHandler
@@ -88,7 +88,7 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	c.Flags.Custom = make(map[string]int)
 	c.Stam = MaxStam
 	c.stamModifier = make([]func(a ActionType) (float64, bool), 0, 10)
-	c.queue = make([]ActionItem, 0, 20)
+	// c.queue = make([]Command, 0, 20)
 
 	for _, f := range cfg {
 		err := f(c)
@@ -107,18 +107,14 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	if c.Rand == nil {
 		c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 	}
-
+	if c.Events == nil {
+		c.Events = NewEventCtrl(c)
+	}
 	if c.Status == nil {
 		c.Status = NewStatusCtrl(c)
 	}
 	if c.Energy == nil {
 		c.Energy = NewEnergyCtrl(c)
-	}
-	if c.Action == nil {
-		c.Action = NewActionCtrl(c)
-	}
-	if c.Queue == nil {
-		c.Queue = NewQueueCtr(c)
 	}
 	if c.Combat == nil {
 		c.Combat = NewCombatCtrl(c)
@@ -135,8 +131,11 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	if c.Health == nil {
 		c.Health = NewHealthCtrl(c)
 	}
-	if c.Events == nil {
-		c.Events = NewEventCtrl(c)
+	if c.Action == nil {
+		c.Action = NewActionCtrl(c)
+	}
+	if c.Queue == nil {
+		c.Queue = NewQueuer(c)
 	}
 
 	//check handlers
@@ -152,35 +151,38 @@ func (c *Core) Init() {
 	c.Events.Emit(OnInitialize)
 }
 
-func (c *Core) AddChar(v CharacterProfile) error {
+func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 	f, ok := charMap[v.Base.Key]
 	if !ok {
-		return fmt.Errorf("invalid character: %v", v.Base.Key.String())
+		return nil, fmt.Errorf("invalid character: %v", v.Base.Key.String())
 	}
 	char, err := f(c, v)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	c.Chars = append(c.Chars, char)
 	c.CharPos[v.Base.Key] = len(c.Chars) - 1
 
 	wf, ok := weaponMap[v.Weapon.Name]
 	if !ok {
-		return fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Key.String())
+		return nil, fmt.Errorf("unrecognized weapon %v for character %v", v.Weapon.Name, v.Base.Key.String())
 	}
-	wf(char, c, v.Weapon.Refine, v.Weapon.Param)
+	wk := wf(char, c, v.Weapon.Refine, v.Weapon.Params)
+	char.SetWeaponKey(wk)
 
 	//add set bonus
 	for key, count := range v.Sets {
 		f, ok := setMap[key]
 		if ok {
-			f(char, c, count)
+			f(char, c, count, v.SetParams[key])
 		} else {
-			c.Log.Warnf("character %v has unrecognized set %v", v.Base.Key.String(), key)
+			c.Log.Warnw(fmt.Sprintf("character %v has unrecognized set %v", v.Base.Key, key), "frame", -1, "event", LogArtifactEvent)
 		}
 	}
 
-	return nil
+	err = char.CalcBaseStats()
+
+	return char, err
 }
 
 func (c *Core) CharByName(key keys.Char) (Character, bool) {

@@ -14,8 +14,8 @@ var (
 )
 
 type NewCharacterFunc func(core *Core, p CharacterProfile) (Character, error)
-type NewSetFunc func(c Character, core *Core, count int)
-type NewWeaponFunc func(c Character, core *Core, r int, param map[string]int)
+type NewSetFunc func(c Character, core *Core, count int, param map[string]int)
+type NewWeaponFunc func(c Character, core *Core, r int, param map[string]int) string
 
 func RegisterCharFunc(char keys.Char, f NewCharacterFunc) {
 	mu.Lock()

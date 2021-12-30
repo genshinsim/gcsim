@@ -9,7 +9,7 @@ func init() {
 	core.RegisterWeaponFunc("harbingerofdawn", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	m := make([]float64, core.EndStatType)
 	m[core.CR] = .105 + .035*float64(r)
@@ -20,5 +20,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return m, char.HP()/char.MaxHP() >= 0.9
 		},
 	})
-
+	return "harbingerofdawn"
 }

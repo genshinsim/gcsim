@@ -103,6 +103,10 @@ func (t *Tmpl) Init(index int) {
 	}
 }
 
+func (c *Tmpl) SetWeaponKey(k string) {
+	c.Weapon.Key = k
+}
+
 func (c *Tmpl) AddWeaponInfuse(inf core.WeaponInfusion) {
 	c.Infusion = inf
 }
@@ -139,6 +143,25 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
 	}
 
+}
+
+func (c *Tmpl) ModIsActive(key string) bool {
+	ind := -1
+	for i, v := range c.Mods {
+		if v.Key == key {
+			ind = i
+		}
+	}
+	//mod doesnt exist
+	if ind == -1 {
+		return false
+	}
+	//check expiry
+	if c.Mods[ind].Expiry < c.Core.F && c.Mods[ind].Expiry > -1 {
+		return false
+	}
+	_, ok := c.Mods[ind].Amount(core.AttackTagNone)
+	return ok
 }
 
 func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {

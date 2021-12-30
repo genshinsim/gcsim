@@ -380,16 +380,9 @@ func runMulti(files []string, w, i int) error {
 }
 
 func createQueue(cfg core.Config, s *gcsim.Simulation) (core.QueueHandler, error) {
-	cust := make(map[string]int)
-	for i, v := range cfg.Rotation {
-		if v.Name != "" {
-			cust[v.Name] = i
-		}
-		// log.Println(v.Conditions)
-	}
 	for _, v := range cfg.Rotation {
-		if _, ok := s.C.CharByName(v.Target); !ok {
-			return nil, fmt.Errorf("invalid char in rotation %v", v.Target)
+		if _, ok := s.C.CharByName(v.SequenceChar); v.Type == core.ActionBlockTypeSequence && !ok {
+			return nil, fmt.Errorf("invalid char in rotation %v; %v", v.SequenceChar, v)
 		}
 	}
 

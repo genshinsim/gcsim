@@ -13,7 +13,7 @@ func init() {
 
 //Increases DMG dealt by Normal and Charged Attacks by 20%. Additionally,
 //regenerates 60% of ATK as HP when Normal and Charged Attacks score a CRIT Hit. This effect can occur once every 5s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	val := make([]float64, core.EndStatType)
 	val[core.ATKP] = 0.15 + 0.05*float64(r)
@@ -46,4 +46,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		return false
 	}, fmt.Sprintf("black-sword-%v", char.Name()))
+	return "theblacksword"
 }

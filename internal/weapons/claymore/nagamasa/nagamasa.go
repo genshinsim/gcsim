@@ -13,7 +13,7 @@ func init() {
 
 // Increases Elemental Skill DMG by 6~12%. After Elemental Skill hits an opponent, the character loses 3 Energy but regenerates 3~5 Energy every 2s for the next 6s. This effect can occur once every 10s. Can be triggered even when the character is not on the field.
 // Same effect as kitain - code largely copied
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	base := 0.045 + float64(r)*0.015
 	regen := 2.5 + float64(r)*0.5
@@ -52,4 +52,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		return false
 	}, fmt.Sprintf("nagamasa-%v", char.Name()))
+
+	return "katsuragikirinagamasa"
 }

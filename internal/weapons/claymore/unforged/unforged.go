@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("theunforged", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	shd := .15 + float64(r)*.05
 	c.Shields.AddBonus(func() float64 {
@@ -58,5 +58,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return nil, false
 		},
 	})
-
+	return "theunforged"
 }

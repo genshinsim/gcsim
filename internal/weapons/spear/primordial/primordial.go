@@ -13,7 +13,7 @@ func init() {
 
 //For every character in the party who hails from Liyue, the character who equips this
 //weapon gains 6/7/8/9//10% ATK increase and 2/3/4/5/6% CRIT Rate increase.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	last := 0
 	stacks := 0
@@ -57,5 +57,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		last = c.F
 		return false
 	}, fmt.Sprintf("primordial-%v", char.Name()))
-
+	return "primordialjadewingedspear"
 }

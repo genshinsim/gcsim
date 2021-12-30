@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("dodocotales", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	atkExpiry := 0
 	dmgExpiry := 0
 
@@ -52,4 +52,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("dodoco-%v", char.Name()))
 
+	return "dodocotales"
 }

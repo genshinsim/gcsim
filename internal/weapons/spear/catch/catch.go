@@ -9,7 +9,7 @@ func init() {
 	core.RegisterWeaponFunc("thecatch", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.12 + 0.04*float64(r)
@@ -25,4 +25,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return nil, false
 		},
 	})
+	return "thecatch"
 }

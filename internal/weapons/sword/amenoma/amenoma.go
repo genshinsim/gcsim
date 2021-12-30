@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("amenomakageuchi", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	seeds := make([]int, 3) //keep track the seeds
 	refund := 4.5 + 1.5*float64(r)
@@ -66,5 +66,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 		return false
 	}, fmt.Sprintf("amenoma-burst-%v", char.Name()))
-
+	return "amenomakageuchi"
 }

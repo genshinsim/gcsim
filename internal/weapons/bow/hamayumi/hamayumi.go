@@ -8,7 +8,7 @@ func init() {
 	core.RegisterWeaponFunc("hamayumi", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	nm := .12 + .04*float64(r)
 	ca := .09 + .03*float64(r)
@@ -36,4 +36,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 			return nil, false
 		},
 	})
+
+	return "hamayumi"
 }

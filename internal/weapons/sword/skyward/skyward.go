@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("skywardblade", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	dur := -1
 	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
@@ -74,4 +74,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
 
+	return "skywardblade"
 }

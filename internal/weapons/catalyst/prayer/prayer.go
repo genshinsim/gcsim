@@ -13,7 +13,7 @@ func init() {
 
 //Increases Movement Speed SPD by 10%. When in battle, earn a 6/8/10/12/14% Elemental DMG Bonus every 4s.
 //Max 4 stacks. Lasts until the character falls or leaves combat.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	//ignore movement speed
 	w := weap{}
 	w.stacks = param["stack"]
@@ -52,6 +52,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 	})
 
+	return "lostprayertothesacredwinds"
 }
 
 type weap struct {

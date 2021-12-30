@@ -10,7 +10,7 @@ type Config struct {
 		Initial keys.Char
 		Profile []CharacterProfile
 	}
-	Rotation []Action
+	Rotation []ActionBlock
 
 	Hurt      HurtEvent
 	Energy    EnergyEvent
@@ -28,30 +28,36 @@ type RunOpt struct {
 }
 
 type CharacterProfile struct {
-	Base    CharacterBase
-	Weapon  WeaponProfile
-	Talents TalentProfile
-	Stats   []float64
-	Sets    map[string]int
+	Base      CharacterBase
+	Weapon    WeaponProfile
+	Talents   TalentProfile
+	Stats     []float64
+	Sets      map[string]int
+	SetParams map[string]map[string]int
+	Params    map[string]int
 }
 
 type CharacterBase struct {
-	Key     keys.Char
-	Element EleType
-	Level   int
-	HP      float64
-	Atk     float64
-	Def     float64
-	Cons    int
-	StartHP float64
+	Key      keys.Char
+	Element  EleType
+	Level    int
+	MaxLevel int
+	HP       float64
+	Atk      float64
+	Def      float64
+	Cons     int
+	StartHP  float64
 }
 
 type WeaponProfile struct {
-	Name   string
-	Class  WeaponClass
-	Refine int
-	Atk    float64
-	Param  map[string]int
+	Name     string
+	Key      string //use this to match with weapon curve mapping
+	Class    WeaponClass
+	Refine   int
+	Level    int
+	MaxLevel int
+	Atk      float64
+	Params   map[string]int
 }
 
 type TalentProfile struct {
@@ -99,9 +105,9 @@ func (e *EnemyProfile) Clone() EnemyProfile {
 
 func (c *CharacterProfile) Clone() CharacterProfile {
 	r := *c
-	r.Weapon.Param = make(map[string]int)
-	for k, v := range c.Weapon.Param {
-		r.Weapon.Param[k] = v
+	r.Weapon.Params = make(map[string]int)
+	for k, v := range c.Weapon.Params {
+		r.Weapon.Params[k] = v
 	}
 	r.Stats = make([]float64, len(c.Stats))
 	copy(r.Stats, c.Stats)

@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("songofbrokenpines", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.12 + float64(r)*0.04
 	char.AddMod(core.CharStatMod{
@@ -62,4 +62,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		return false
 	}, fmt.Sprintf("pines-%v", char.Name()))
+
+	return "songofbrokenpines"
 }

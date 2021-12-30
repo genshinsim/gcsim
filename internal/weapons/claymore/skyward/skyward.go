@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("skywardpride", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = 0.06 + float64(r)*0.02
@@ -70,5 +70,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		c.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
 		return false
 	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
-
+	return "skywardpride"
 }

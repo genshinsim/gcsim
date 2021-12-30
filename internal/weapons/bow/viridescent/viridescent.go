@@ -11,7 +11,7 @@ func init() {
 	core.RegisterWeaponFunc("theviridescenthunt", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	cd := 900 - r*60
 	icd := 0
@@ -60,4 +60,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		return false
 	}, fmt.Sprintf("veridescent-%v", char.Name()))
 
+	return "theviridescenthunt"
 }

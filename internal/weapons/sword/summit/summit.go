@@ -12,7 +12,7 @@ func init() {
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
+func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	shd := .15 + float64(r)*.05
 	c.Shields.AddBonus(func() float64 {
@@ -63,4 +63,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) {
 		},
 	})
 
+	return "summitshaper"
 }
