@@ -158,6 +158,11 @@ func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]fl
 }
 
 func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
+	//skip if this is reaction damage
+	if a.Info.AttackTag >= core.AttackTagNoneStat {
+		return
+	}
+
 	var sb strings.Builder
 	var logDetails []zap.Field
 

@@ -97,7 +97,7 @@ func (r *Reactable) trySwirlCryo(a *core.AttackEvent) {
 	if a.Info.Durability < zeroDur {
 		return
 	}
-	if r.Durability[core.Hydro] < zeroDur {
+	if r.Durability[core.Cryo] < zeroDur {
 		return
 	}
 	rd := r.reduce(core.Cryo, a.Info.Durability, 0.5)

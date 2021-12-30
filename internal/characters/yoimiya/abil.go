@@ -141,7 +141,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//add cooldown to sim
 	c.SetCD(core.ActionBurst, 15*60)
 	//use up energy
-	c.ConsumeEnergy(0)
+	c.ConsumeEnergy(5)
 
 	return f, a
 }

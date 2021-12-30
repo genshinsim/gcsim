@@ -201,7 +201,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.SetCD(core.ActionBurst, 1200)
-	c.Energy = 16 //jean a4
+	c.AddTask(func() {
+		c.Energy = 16 //jean a4
+	}, "jean-burst-energy-consume", 46)
+
 	return f, a
 }
 

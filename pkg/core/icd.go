@@ -8,12 +8,11 @@ const (
 	AttackTagExtra
 	AttackTagPlunge
 	AttackTagElementalArt
+	AttackTagElementalArtHold
 	AttackTagElementalBurst
 	AttackTagWeaponSkill
 	AttackTagMonaBubbleBreak
-	// AttackTagTartagliaAttack
-	// AttackTagGandalfrAttack
-	AttackTagElementalArtHold
+	AttackTagNoneStat
 	ReactionAttackDelim
 	AttackTagOverloadDamage
 	AttackTagSuperconductDamage

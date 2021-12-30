@@ -272,7 +272,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}, "tartaglia-burst-clear", f-5) //random 5 frame
 
-	c.ConsumeEnergy(0)
+	if c.Core.Status.Duration("tartagliamelee") > 0 {
+		c.ConsumeEnergy(8)
+	} else {
+		c.ConsumeEnergy(75)
+	}
+
 	c.SetCD(core.ActionBurst, 900)
 	return f, a
 }

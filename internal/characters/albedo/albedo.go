@@ -300,7 +300,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.SetCD(core.ActionSkill, 720)
-	c.ConsumeEnergy(0)
+	c.ConsumeEnergy(80)
 	return f, a
 }
 
