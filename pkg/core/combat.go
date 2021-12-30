@@ -145,7 +145,8 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 
 		willHit, reason := willAttackLand(a, t, i)
 		if !willHit {
-			if c.core.Flags.LogDebug {
+			//don't log this for target 0
+			if c.core.Flags.LogDebug && i > 0 {
 				c.core.Log.Debugw("skipped "+a.Info.Abil+" "+reason,
 					"frame", c.core.F,
 					"event", LogElementEvent,
