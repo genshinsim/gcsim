@@ -273,7 +273,7 @@ func (q *Queuer) chainUseable(a ActionBlock) (bool, error) {
 			return false, err
 		}
 		if !ok {
-			q.logSkipped(a, "conditions not med")
+			q.logSkipped(a, "conditions not met")
 			return false, nil
 		}
 	}
@@ -379,7 +379,7 @@ func (q *Queuer) sequenceUseable(a ActionBlock) (bool, error) {
 			return false, err
 		}
 		if !ok {
-			q.logSkipped(a, "conditions not med")
+			q.logSkipped(a, "conditions not met")
 			return false, nil
 		}
 	}

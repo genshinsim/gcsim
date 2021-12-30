@@ -6,8 +6,8 @@ type AttackEvent struct {
 	// Timing        AttackTiming
 	Cancelled   bool //provide a way to cancel an attack event
 	Snapshot    Snapshot
-	SourceFrame int //source frame
-	Callbacks   []AttackCBFunc
+	SourceFrame int            //source frame
+	Callbacks   []AttackCBFunc `json:"-"`
 }
 
 type AttackCB struct {

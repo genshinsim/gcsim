@@ -173,7 +173,6 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 			zap.Any("event", core.LogPreDamageMod),
 			zap.Int("char", c.Index),
 			zap.String("abil", a.Info.Abil),
-			zap.Any("attack_tag", a),
 		)
 	}
 
@@ -221,6 +220,9 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 	}
 	c.PreDamageMods = c.PreDamageMods[:n]
 	if c.Core.Flags.LogDebug {
+		logDetails = append(logDetails,
+			zap.Any("attack_tag", a),
+		)
 		c.Core.Log.Desugar().Debug(a.Info.Abil, logDetails...)
 	}
 
