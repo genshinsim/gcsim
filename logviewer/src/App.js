@@ -139,10 +139,16 @@ function parseLogs() {
             x.M = d.old_ele + " expired";
             break;
           case "application":
+            // x.M =
+            //   d.applied_ele +
+            //   " applied" +
+            //   (d.existing_ele === "" ? "" : " to " + d.existing_ele);
             x.M =
               d.applied_ele +
               " applied" +
-              (d.existing_ele === "" ? "" : " to " + d.existing_ele);
+              (d.existing.length > 0
+                ? " to " + d.existing[0].replace(/: (.+)/, " ($1)")
+                : "");
             break;
           case "refreshed":
             x.M = d.ele + " refreshed";
@@ -262,21 +268,24 @@ function App() {
   ]);
 
   var toggleLogEvent = (val) => {
-    var next = [];
-    var found = false;
-    for (var i = 0; i < logEvents.length; i++) {
-      if (logEvents[i] === val) {
-        found = true;
-        continue;
+    return () => {
+      console.log("toggling: ", val);
+      var next = [];
+      var found = false;
+      for (var i = 0; i < logEvents.length; i++) {
+        if (logEvents[i] === val) {
+          found = true;
+          continue;
+        }
+        next.push(logEvents[i]);
       }
-      next.push(logEvents[i]);
-    }
 
-    if (!found) {
-      next.push(val);
-    }
+      if (!found) {
+        next.push(val);
+      }
 
-    setLogEvents(next);
+      setLogEvents(next);
+    };
   };
 
   const data = parseLogs();
@@ -375,7 +384,7 @@ function App() {
         <Checkbox
           checked={logEvents.includes(e)}
           label={e}
-          onChange={() => toggleLogEvent({ e })}
+          onChange={toggleLogEvent(e)}
         />
       </div>
     );

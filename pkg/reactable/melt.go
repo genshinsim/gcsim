@@ -3,21 +3,21 @@ package reactable
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (r *Reactable) tryMelt(a *core.AttackEvent) {
-	if a.Info.Durability < zeroDur {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
-	if r.Durability[core.Frozen] > zeroDur {
+	if r.Durability[core.Frozen] > ZeroDur {
 		return
 	}
 	switch a.Info.Element {
 	case core.Pyro:
-		if r.Durability[core.Cryo] < zeroDur {
+		if r.Durability[core.Cryo] < ZeroDur {
 			return
 		}
 		r.reduce(core.Cryo, a.Info.Durability, 2)
 		a.Info.AmpMult = 2.0
 	case core.Cryo:
-		if r.Durability[core.Pyro] < zeroDur {
+		if r.Durability[core.Pyro] < ZeroDur {
 			return
 		}
 		r.reduce(core.Pyro, a.Info.Durability, 0.5)
@@ -34,10 +34,10 @@ func (r *Reactable) tryMelt(a *core.AttackEvent) {
 }
 
 func (r *Reactable) tryMeltFrozen(a *core.AttackEvent) {
-	if a.Info.Durability < zeroDur {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
-	if r.Durability[core.Frozen] < zeroDur {
+	if r.Durability[core.Frozen] < ZeroDur {
 		return
 	}
 	switch a.Info.Element {

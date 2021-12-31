@@ -7,7 +7,7 @@ import (
 )
 
 func (r *Reactable) tryAddEC(a *core.AttackEvent) {
-	if a.Info.Durability < zeroDur {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
 
@@ -15,10 +15,10 @@ func (r *Reactable) tryAddEC(a *core.AttackEvent) {
 	switch a.Info.Element {
 	case core.Hydro:
 		//if there's no existing hydro or electro then do nothing
-		if r.Durability[core.Electro] < zeroDur {
+		if r.Durability[core.Electro] < ZeroDur {
 			return
 		}
-		if r.Durability[core.Hydro] < zeroDur {
+		if r.Durability[core.Hydro] < ZeroDur {
 			//attach
 			r.tryAttach(core.Hydro, &a.Info.Durability)
 		} else {
@@ -27,11 +27,11 @@ func (r *Reactable) tryAddEC(a *core.AttackEvent) {
 		//add to hydro durability
 	case core.Electro:
 		//if there's no existing hydro or electro then do nothing
-		if r.Durability[core.Hydro] < zeroDur {
+		if r.Durability[core.Hydro] < ZeroDur {
 			return
 		}
 		//add to electro durability
-		if r.Durability[core.Electro] < zeroDur {
+		if r.Durability[core.Electro] < ZeroDur {
 			//attach
 			r.tryAttach(core.Electro, &a.Info.Durability)
 		} else {
@@ -90,7 +90,7 @@ func (r *Reactable) tryAddEC(a *core.AttackEvent) {
 				return false
 			}
 			//ignore if we no longer have both electro and hydro
-			if r.Durability[core.Electro] < zeroDur || r.Durability[core.Hydro] < zeroDur {
+			if r.Durability[core.Electro] < ZeroDur || r.Durability[core.Hydro] < ZeroDur {
 				return true
 			}
 
@@ -124,7 +124,7 @@ func (r *Reactable) waneEC() {
 }
 
 func (r *Reactable) checkEC() {
-	if r.Durability[core.Electro] < zeroDur || r.Durability[core.Hydro] < zeroDur {
+	if r.Durability[core.Electro] < ZeroDur || r.Durability[core.Hydro] < ZeroDur {
 		r.ecTickSrc = -1
 		r.core.Events.Unsubscribe(core.OnDamage, fmt.Sprintf("ec-%v", r.self.Index()))
 		r.core.Log.Debugw("ec expired",
@@ -146,7 +146,7 @@ func (r *Reactable) nextTick(src int) func() {
 		}
 		//ec SHOULD be active still, since if not we would have
 		//called cleanup and set source to -1
-		if r.Durability[core.Electro] < zeroDur || r.Durability[core.Hydro] < zeroDur {
+		if r.Durability[core.Electro] < ZeroDur || r.Durability[core.Hydro] < ZeroDur {
 			return
 		}
 

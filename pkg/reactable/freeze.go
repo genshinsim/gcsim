@@ -3,7 +3,7 @@ package reactable
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (r *Reactable) tryFreeze(a *core.AttackEvent) {
-	if a.Info.Durability < zeroDur {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
 	//so if already frozen there are 2 cases:
@@ -12,7 +12,7 @@ func (r *Reactable) tryFreeze(a *core.AttackEvent) {
 	switch a.Info.Element {
 	case core.Hydro:
 		//if cryo exists we'll trigger freeze regardless if frozen already coexists
-		if r.Durability[core.Cryo] > zeroDur {
+		if r.Durability[core.Cryo] > ZeroDur {
 			consumed := r.triggerFreeze(r.Durability[core.Cryo], a.Info.Durability)
 			r.Durability[core.Cryo] -= consumed
 			r.Durability[core.Cryo] = max(r.Durability[core.Cryo], 0)
@@ -23,7 +23,7 @@ func (r *Reactable) tryFreeze(a *core.AttackEvent) {
 			return
 		}
 		//otherwise attach hydro only if frozen exists
-		if r.Durability[core.Frozen] < zeroDur {
+		if r.Durability[core.Frozen] < ZeroDur {
 			return
 		}
 		//try refill first - this will use up all durability if ok
@@ -31,7 +31,7 @@ func (r *Reactable) tryFreeze(a *core.AttackEvent) {
 		//otherwise attach
 		r.tryAttach(core.Hydro, &a.Info.Durability)
 	case core.Cryo:
-		if r.Durability[core.Hydro] > zeroDur {
+		if r.Durability[core.Hydro] > ZeroDur {
 			consumed := r.triggerFreeze(r.Durability[core.Hydro], a.Info.Durability)
 			r.Durability[core.Hydro] -= consumed
 			r.Durability[core.Hydro] = max(r.Durability[core.Hydro], 0)
@@ -40,7 +40,7 @@ func (r *Reactable) tryFreeze(a *core.AttackEvent) {
 			return
 		}
 		//otherwise attach cryo only if frozen exists
-		if r.Durability[core.Frozen] < zeroDur {
+		if r.Durability[core.Frozen] < ZeroDur {
 			return
 		}
 		//try refill first - this will use up all durability if ok
@@ -69,7 +69,7 @@ func min(a, b core.Durability) core.Durability {
 }
 
 func (r *Reactable) ShatterCheck(a *core.AttackEvent) {
-	if a.Info.StrikeType != core.StrikeTypeBlunt || r.Durability[core.Frozen] < zeroDur {
+	if a.Info.StrikeType != core.StrikeTypeBlunt || r.Durability[core.Frozen] < ZeroDur {
 		return
 	}
 	//remove 200 freeze gauge if availabe
@@ -100,7 +100,7 @@ func (r *Reactable) triggerFreeze(a, b core.Durability) core.Durability {
 }
 
 func (r *Reactable) checkFreeze() {
-	if r.Durability[core.Frozen] <= zeroDur {
+	if r.Durability[core.Frozen] <= ZeroDur {
 		r.Durability[core.Frozen] = 0
 		r.core.Events.Emit(core.OnAuraDurabilityDepleted, r.self, core.Frozen)
 		//trigger another attack here, purely for the purpose of breaking bubbles >.>

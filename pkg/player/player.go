@@ -15,7 +15,7 @@ func New(index int, c *core.Core) *Player {
 	p.Tmpl = &target.Tmpl{}
 	p.Reactable = &reactable.Reactable{}
 	p.TargetIndex = index
-	p.Reactable.Init(p, p.Core)
+	p.Reactable.Init(p, c)
 	p.Tmpl.Init(0, 0, 0.5)
 	p.Core = c
 	return p
@@ -39,3 +39,20 @@ func (p *Player) HasResMod(key string) bool                  { return false }
 func (p *Player) AddReactBonusMod(mod core.ReactionBonusMod) {}
 func (p *Player) ReactBonus(atk core.AttackInfo) float64     { return 0 }
 func (p *Player) Kill()                                      {}
+
+func (p *Player) ApplySelfInfusion(ele core.EleType, dur core.Durability, f int) {
+	//we're assuming self infusion isn't subject to 0.8x multiplier
+	//also no real sanity check
+	if ele == core.Frozen {
+		return
+	}
+
+	//we're assuming refill maintains the same decay rate?
+	if p.Durability[ele] > reactable.ZeroDur {
+		p.Durability[ele] += dur
+		return
+	}
+	//otherwise calculate decay based on specified f (in frames)
+	p.Durability[ele] = dur
+	p.DecayRate[ele] = dur / core.Durability(f)
+}

@@ -3,28 +3,28 @@ package reactable
 import "github.com/genshinsim/gcsim/pkg/core"
 
 func (r *Reactable) trySuperconduct(a *core.AttackEvent) {
-	if a.Info.Durability < zeroDur {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
 	//this is for non frozen one
-	if r.Durability[core.Frozen] >= zeroDur {
+	if r.Durability[core.Frozen] >= ZeroDur {
 		return
 	}
 	switch a.Info.Element {
 	case core.Electro:
-		if r.Durability[core.Cryo] < zeroDur {
+		if r.Durability[core.Cryo] < ZeroDur {
 			return
 		}
 		r.reduce(core.Cryo, a.Info.Durability, 1)
 		a.Info.Durability = 0
 	case core.Cryo:
 		//could be ec potentially
-		if r.Durability[core.Electro] < zeroDur {
+		if r.Durability[core.Electro] < ZeroDur {
 			return
 		}
 		rd := r.reduce(core.Electro, a.Info.Durability, 1)
 		//if there's hydro as well then don't consume all the durability
-		if r.Durability[core.Hydro] > zeroDur {
+		if r.Durability[core.Hydro] > ZeroDur {
 			a.Info.Durability -= rd
 		} else {
 			a.Info.Durability = 0
@@ -38,11 +38,11 @@ func (r *Reactable) trySuperconduct(a *core.AttackEvent) {
 }
 
 func (r *Reactable) tryFrozenSuperconduct(a *core.AttackEvent) {
-	if a.Info.Durability < zeroDur {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
 	//this is for frozen
-	if r.Durability[core.Frozen] < zeroDur {
+	if r.Durability[core.Frozen] < ZeroDur {
 		return
 	}
 	//

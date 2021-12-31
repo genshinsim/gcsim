@@ -23,10 +23,10 @@ func (r *Reactable) tryCrystallize(a *core.AttackEvent) {
 }
 
 func (r *Reactable) tryCrystallizeWithEle(a *core.AttackEvent, ele core.EleType, rt core.ReactionType, evt core.EventType) {
-	if a.Info.Durability < zeroDur {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
-	if r.Durability[ele] < zeroDur {
+	if r.Durability[ele] < ZeroDur {
 		return
 	}
 	//grab current snapshot for shield
@@ -46,7 +46,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *core.AttackEvent, ele core.EleType,
 	r.core.Events.Emit(evt, r.self, a)
 	//check freeze + ec
 	switch {
-	case ele == core.Electro && r.Durability[core.Hydro] > zeroDur:
+	case ele == core.Electro && r.Durability[core.Hydro] > ZeroDur:
 		r.checkEC()
 	case ele == core.Frozen:
 		r.checkFreeze()

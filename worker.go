@@ -4,7 +4,6 @@ package gcsim
 import (
 	crypto_rand "crypto/rand"
 	"encoding/binary"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -109,9 +108,9 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 		return Result{}, err
 	}
 	//pretty print
-	pretty, _ := json.MarshalIndent(cfg.Characters, "", "\t")
-	log.Println(string(pretty))
-	log.Println(opt)
+	// pretty, _ := json.MarshalIndent(cfg.Characters, "", "\t")
+	// log.Println(string(pretty))
+	// log.Println(opt)
 
 	charCount := len(cfg.Characters.Profile)
 

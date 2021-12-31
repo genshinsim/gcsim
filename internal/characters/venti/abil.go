@@ -182,7 +182,6 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if c.qInfuse != core.NoElement {
 			//trigger dmg ticks here
 			c.burstInfusedTicks()
-
 			return
 		}
 		//otherwise queue up

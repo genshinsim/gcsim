@@ -5,13 +5,13 @@ import (
 )
 
 func (r *Reactable) tryOverload(a *core.AttackEvent) {
-	if a.Info.Durability < zeroDur {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
 	switch a.Info.Element {
 	case core.Electro:
 		//must have pyro; pyro cant coexist (for now) so ok to ignore count?
-		if r.Durability[core.Pyro] < zeroDur {
+		if r.Durability[core.Pyro] < ZeroDur {
 			return
 		}
 		//reduce; either gone or left; don't care how much actually reacted
@@ -20,12 +20,12 @@ func (r *Reactable) tryOverload(a *core.AttackEvent) {
 		a.Info.Durability = 0
 	case core.Pyro:
 		//must have electro; gotta be careful with ec?
-		if r.Durability[core.Electro] < zeroDur {
+		if r.Durability[core.Electro] < ZeroDur {
 			return
 		}
 		rd := r.reduce(core.Electro, a.Info.Durability, 1)
 		//if there's hydro as well then don't consume all the durability
-		if r.Durability[core.Hydro] > zeroDur {
+		if r.Durability[core.Hydro] > ZeroDur {
 			a.Info.Durability -= rd
 		} else {
 			a.Info.Durability = 0

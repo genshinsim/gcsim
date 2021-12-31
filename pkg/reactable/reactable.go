@@ -20,7 +20,7 @@ type Reactable struct {
 const frzDelta core.Durability = 2.5 / (60 * 60) // 2 * 1.25
 const frzDecayCap core.Durability = 10.0 / 60.0
 
-const zeroDur core.Durability = 0.00000000001
+const ZeroDur core.Durability = 0.00000000001
 
 func (r *Reactable) Init(self core.Target, c *core.Core) *Reactable {
 	r.self = self
@@ -35,7 +35,7 @@ func (r *Reactable) Init(self core.Target, c *core.Core) *Reactable {
 func (r *Reactable) ActiveAuraString() []string {
 	var result []string
 	for i, v := range r.Durability {
-		if v > zeroDur {
+		if v > ZeroDur {
 			result = append(result, core.EleTypeString[i]+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
 		}
 	}
@@ -51,7 +51,7 @@ func (r *Reactable) React(a *core.AttackEvent) {
 	case 1:
 		r.tryRefill(a.Info.Element, &a.Info.Durability)
 		//check if refilled ok; return if so
-		if a.Info.Durability < zeroDur {
+		if a.Info.Durability < ZeroDur {
 			return
 		}
 		fallthrough
@@ -99,7 +99,7 @@ func (r *Reactable) React(a *core.AttackEvent) {
 
 func (r *Reactable) AuraContains(e ...core.EleType) bool {
 	for _, v := range e {
-		if r.Durability[v] > zeroDur {
+		if r.Durability[v] > ZeroDur {
 			return true
 		}
 	}
@@ -107,10 +107,10 @@ func (r *Reactable) AuraContains(e ...core.EleType) bool {
 }
 
 func (r *Reactable) AuraType() core.EleType {
-	if r.Durability[core.Frozen] > zeroDur {
+	if r.Durability[core.Frozen] > ZeroDur {
 		return core.Frozen
 	}
-	if r.Durability[core.Electro] > zeroDur && r.Durability[core.Hydro] > zeroDur {
+	if r.Durability[core.Electro] > ZeroDur && r.Durability[core.Hydro] > ZeroDur {
 		return core.EC
 	}
 
@@ -126,7 +126,7 @@ func (r *Reactable) AuraType() core.EleType {
 func (r *Reactable) auraCount() int {
 	count := 0
 	for _, v := range r.Durability {
-		if v > zeroDur {
+		if v > ZeroDur {
 			count++
 		}
 	}
@@ -138,7 +138,7 @@ func (r *Reactable) tryAttach(ele core.EleType, dur *core.Durability) {
 	if ele >= core.Frozen {
 		return
 	}
-	if *dur < zeroDur {
+	if *dur < ZeroDur {
 		return
 	}
 	r.attach(ele, *dur, 0.8)
@@ -150,11 +150,11 @@ func (r *Reactable) tryRefill(ele core.EleType, dur *core.Durability) {
 	if ele >= core.Frozen {
 		return
 	}
-	if *dur < zeroDur {
+	if *dur < ZeroDur {
 		return
 	}
 	//must already have existing element
-	if r.Durability[ele] < zeroDur {
+	if r.Durability[ele] < ZeroDur {
 		return
 	}
 	r.refill(ele, *dur, 0.8)
@@ -219,11 +219,15 @@ func (r *Reactable) Tick() {
 	//per frame then we have decay * (1 + 0.25 * (x/60))
 
 	for i := core.EleType(0); i < core.Frozen; i += 1 {
-		if r.Durability[i] > zeroDur {
+		if r.Durability[i] > ZeroDur {
 			r.Durability[i] -= r.DecayRate[i]
-			if r.Durability[i] <= zeroDur {
+			if r.Durability[i] <= ZeroDur {
 				r.Durability[i] = 0
 				r.DecayRate[i] = 0
+				// log.Println(r.self)
+				// log.Println("ele", core.EleType(i).String())
+				// log.Println("core", r.core)
+				// log.Println("frame", r.core.F)
 				r.core.Events.Emit(core.OnAuraDurabilityDepleted, r.self, core.EleType(i))
 			}
 		}
@@ -231,7 +235,7 @@ func (r *Reactable) Tick() {
 
 	//for freeze, durability can be calculated as:
 	//d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
-	if r.Durability[core.Frozen] > zeroDur {
+	if r.Durability[core.Frozen] > ZeroDur {
 		//ramp up decay rate first
 		r.DecayRate[core.Frozen] += frzDelta
 		r.Durability[core.Frozen] -= r.DecayRate[core.Frozen]
@@ -248,7 +252,7 @@ func (r *Reactable) Tick() {
 
 	//for ec we need to reset src if ec is gone
 	if r.ecTickSrc > -1 {
-		if r.Durability[core.Electro] < zeroDur || r.Durability[core.Hydro] < zeroDur {
+		if r.Durability[core.Electro] < ZeroDur || r.Durability[core.Hydro] < ZeroDur {
 			r.ecTickSrc = -1
 		}
 	}
