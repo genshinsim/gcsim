@@ -47,7 +47,7 @@ type Core struct {
 
 	//core stuff
 	// queue        []Command
-	stamModifier []func(a ActionType) (float64, bool)
+	stamModifier []stamMod
 	lastStamUse  int
 
 	//track characters
@@ -87,7 +87,7 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	c.CharPos = make(map[keys.Char]int)
 	c.Flags.Custom = make(map[string]int)
 	c.Stam = MaxStam
-	c.stamModifier = make([]func(a ActionType) (float64, bool), 0, 10)
+	c.stamModifier = make([]stamMod, 0, 10)
 	// c.queue = make([]Command, 0, 20)
 
 	for _, f := range cfg {
@@ -231,32 +231,6 @@ func (c *Core) SetCustomFlag(key string, val int) {
 func (c *Core) GetCustomFlag(key string) (int, bool) {
 	val, ok := c.Flags.Custom[key]
 	return val, ok
-}
-
-func (c *Core) AddStamMod(f func(a ActionType) (float64, bool)) {
-	c.stamModifier = append(c.stamModifier, f)
-}
-
-func (c *Core) StamPercentMod(a ActionType) float64 {
-	var m float64 = 1
-	n := 0
-	for _, f := range c.stamModifier {
-		v, done := f(a)
-		if !done {
-			c.stamModifier[n] = f
-			n++
-		}
-		m += v
-	}
-	c.stamModifier = c.stamModifier[:n]
-	return m
-}
-
-func (c *Core) RestoreStam(v float64) {
-	c.Stam += v
-	if c.Stam > MaxStam {
-		c.Stam = MaxStam
-	}
 }
 
 func (c *Core) Skip(n int) {
