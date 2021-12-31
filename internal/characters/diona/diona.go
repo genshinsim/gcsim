@@ -48,7 +48,7 @@ func (c *char) a2() {
 			return -0.1, false
 		}
 		return 0, false
-	})
+	}, "diona")
 }
 
 func (c *char) c2() {
