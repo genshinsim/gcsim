@@ -119,11 +119,11 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 		}
 	}
 	if ind != 0 && ind != len(c.PreDamageMods) {
-		c.Core.Log.Debugw("char pre damage mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Core.Log.Debugw("char pre damage mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		c.PreDamageMods[ind] = mod
 	} else {
 		c.PreDamageMods = append(c.PreDamageMods, mod)
-		c.Core.Log.Debugw("char pre damage mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Core.Log.Debugw("char pre damage mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 	}
 
 }
@@ -136,11 +136,11 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 		}
 	}
 	if ind != 0 && ind != len(c.Mods) {
-		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		c.Mods[ind] = mod
 	} else {
 		c.Mods = append(c.Mods, mod)
-		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key)
+		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 	}
 
 }

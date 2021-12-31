@@ -33,7 +33,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	}
 	if count >= 4 {
 		m := make([]float64, core.EndStatType)
-		stacks := 0
+		stacks := params["stacks"]
 		stackGainICDExpiry := 0
 		// Required to check for stack loss
 		lastStackGain := 0
