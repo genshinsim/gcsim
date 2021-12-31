@@ -1,11 +1,24 @@
 package core
 
-type WeaponClass string
+type WeaponClass int
 
 const (
-	WeaponClassSword    WeaponClass = "sword"
-	WeaponClassClaymore WeaponClass = "claymore"
-	WeaponClassSpear    WeaponClass = "spear"
-	WeaponClassBow      WeaponClass = "bow"
-	WeaponClassCatalyst WeaponClass = "catalyst"
+	WeaponClassSword WeaponClass = iota
+	WeaponClassClaymore
+	WeaponClassSpear
+	WeaponClassBow
+	WeaponClassCatalyst
+	EndWeaponClass
 )
+
+var weaponName = []string{
+	"sword",
+	"claymore",
+	"polearm",
+	"bow",
+	"catalyst",
+}
+
+func (w WeaponClass) String() string {
+	return weaponName[w]
+}
