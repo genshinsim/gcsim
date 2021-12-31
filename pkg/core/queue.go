@@ -54,19 +54,21 @@ func (q *Queuer) SetActionList(a []ActionBlock) error {
 func (q *Queuer) Next() (next []Command, dropIfNotReady bool, err error) {
 	// from the action block we need to build the command list
 	var ok bool
-	for _, v := range q.pq {
+	for i, v := range q.pq {
 		//find the first item on prior queue that's useable
 		ok, err = q.blockUseable(v)
 		if err != nil {
 			return
 		}
 		if ok {
+			q.pq[i].NumQueued++
+			q.pq[i].LastQueued = q.core.F
 			next = q.createQueueFromBlock(v)
 			q.core.Log.Debugw(
 				"item queued",
 				"frame", q.core.F,
 				"event", LogQueueEvent,
-				"full", v,
+				"full", q.pq[i],
 				"queued", next,
 			)
 
@@ -87,8 +89,8 @@ func (q *Queuer) Next() (next []Command, dropIfNotReady bool, err error) {
 
 func (q *Queuer) createQueueFromBlock(a ActionBlock) []Command {
 	//set tracking info
-	a.NumQueued++
-	a.LastQueued = q.core.F
+	// a.NumQueued++
+	// a.LastQueued = q.core.F
 
 	var res []Command
 
@@ -194,6 +196,11 @@ func (q *Queuer) blockUseable(a ActionBlock) (bool, error) {
 	case ActionBlockTypeSequence:
 		return q.sequenceUseable(a)
 	case ActionBlockTypeResetLimit:
+		for i := range q.pq {
+			if q.pq[i].Limit > 0 {
+				q.pq[i].NumQueued = 0
+			}
+		}
 		return true, nil
 	default:
 		//unknown type
