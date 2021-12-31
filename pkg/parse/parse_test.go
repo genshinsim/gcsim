@@ -92,6 +92,8 @@ sucrose skill +swap_to=xiao +if=.cd.xiao.burst==0;
 
 xiao attack  +swap_lock=100;
 zhongli attack  +is_onfield;
+
+restart;
 `
 
 var pteststring = `

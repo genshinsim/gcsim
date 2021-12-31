@@ -71,6 +71,7 @@ const (
 	itemChain      // chain
 	itemWaitFor    // wait_for
 	itemWait       // wait (calc mode only)
+	itemRestart    // restart (calc mode only)
 	itemResetLimit // reset_limit
 	itemHurt       // hurt
 	itemEnergy     // energy

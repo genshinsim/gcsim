@@ -8,6 +8,7 @@ var key = map[string]ItemType{
 	"chain":       itemChain,
 	"wait_for":    itemWaitFor,
 	"wait":        itemWait,
+	"restart":     itemRestart,
 	"reset_limit": itemResetLimit,
 	"hurt":        itemHurt,
 	"target":      itemTarget,

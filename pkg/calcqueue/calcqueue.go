@@ -57,6 +57,9 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 		}
 
 		switch v.Type {
+		case core.ActionBlockTypeCalcRestart:
+			q.ind = 0
+			return nil, false, nil
 		case core.ActionBlockTypeCalcWait:
 			//depending on the type of wait here
 			if v.CalcWait.Frames {

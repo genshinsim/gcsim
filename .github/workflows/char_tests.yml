@@ -19,3 +19,6 @@ jobs:
 
       - name: Test
         run: go test -v ./internal/characters/...
+
+      - name: Test parser
+        run: go test -v ./pkg/parse/

@@ -68,6 +68,7 @@ const (
 	ActionBlockTypeChain
 	ActionBlockTypeResetLimit
 	ActionBlockTypeCalcWait
+	ActionBlockTypeCalcRestart
 )
 
 type ActionBlock struct {
