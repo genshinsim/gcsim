@@ -72,6 +72,14 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 
 	if s.opts.LogDetails {
 		s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
+		//add new targets
+		s.C.Events.Subscribe(core.OnTargetAdded, func(args ...interface{}) bool {
+			for i := range s.stats.DamageByCharByTargets {
+				s.stats.DamageByCharByTargets[i] = append(s.stats.DamageByCharByTargets[i], 0)
+			}
+			s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[core.EleType]int))
+			return false
+		}, "sim-new-target-stats")
 		//add call backs to track details
 		s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 			t := args[0].(core.Target)

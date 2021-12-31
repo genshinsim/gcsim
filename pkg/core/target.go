@@ -87,17 +87,33 @@ type DefMod struct {
 	Expiry int
 }
 
-func (c *Core) ReindexTargets() {
-	//wipe out nil entries
-	n := 0
-	for _, v := range c.Targets {
-		if v != nil {
-			c.Targets[n] = v
-			c.Targets[n].SetIndex(n)
-			n++
-		}
+// func (c *Core) ReindexTargets() {
+// 	//wipe out nil entries
+// 	n := 0
+// 	for _, v := range c.Targets {
+// 		if v != nil {
+// 			c.Targets[n] = v
+// 			c.Targets[n].SetIndex(n)
+// 			n++
+// 		}
+// 	}
+// 	c.Targets = c.Targets[:n]
+// }
+
+func (c *Core) AddTarget(t Target) {
+	c.Targets = append(c.Targets, t)
+	t.SetIndex(len(c.Targets) - 1)
+	c.Events.Emit(OnTargetAdded, t)
+}
+
+func (c *Core) RemoveTarget(i int) {
+	//can't remove player
+	if i <= 0 || i >= len(c.Targets) {
+		return
 	}
-	c.Targets = c.Targets[:n]
+	c.Targets[i] = nil
+	// c.Targets = c.Targets[:len(c.Targets)-1]
+	// c.ReindexTargets()
 }
 
 //EnemeyByDistance returns an array of indices of the enemies sorted by distance

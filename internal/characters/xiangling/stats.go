@@ -171,7 +171,7 @@ var (
 			},
 		},
 	}
-	guoba = []float64{
+	guobaTick = []float64{
 		1.1128,
 		1.1963,
 		1.2797,
