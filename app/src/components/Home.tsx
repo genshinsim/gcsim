@@ -35,7 +35,7 @@ export default function Home() {
     setPos(next);
   };
   const titleString = [
-    "gcsim is a Monte Carlo combat simulator for Genshin Impact.",
+    "gcsim is a team dps simulator simulator for Genshin Impact.",
     "It runs on a fully configurable action list",
     "It can import from Genshin Optimizer to save you time",
     "Results are shown with detailed breakdowns",
