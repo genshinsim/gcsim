@@ -126,11 +126,11 @@ var CharNameToKey = map[string]Char{
 	"xinyan":             Xinyan,
 	"yanfei":             Yanfei,
 	"yoimiya":            Yoimiya,
+	"yunjin":             Yunjin,
 	"zhongli":            Zhongli,
 	"gorou":              Gorou,
 	"aratakiitto":        Itto,
 	"shenhe":             Shenhe,
-	"yunjin":             Yunjin,
 }
 
 var charNames = []string{

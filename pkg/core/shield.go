@@ -14,6 +14,7 @@ const (
 	ShieldKaeyaC4
 	ShieldYanfeiC4
 	ShieldBell
+	ShieldYunjinSkill
 	EndShieldType
 )
 
