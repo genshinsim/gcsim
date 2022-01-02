@@ -25,7 +25,7 @@ type Stats struct {
 	CharNames             []string                  `json:"char_names"`
 	DamageByChar          []map[string]float64      `json:"damage_by_char"`
 	DamageInstancesByChar []map[string]int          `json:"damage_instances_by_char"`
-	DamageByCharByTargets [][]float64               `json:"damage_by_char_by_targets"`
+	DamageByCharByTargets []map[int]float64         `json:"damage_by_char_by_targets"`
 	DamageDetailByTime    map[DamageDetails]float64 `json:"damage_detail_by_time"`
 	CharActiveTime        []int                     `json:"char_active_time"`
 	AbilUsageCountByChar  []map[string]int          `json:"abil_usage_count_by_char"`
@@ -578,7 +578,7 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan int64, d
 				resp <- workerResp{
 					err: err,
 				}
-				return
+				return
 			}
 
 			stat, err := s.Run()
@@ -731,7 +731,12 @@ func (r *Result) PrettyPrint() string {
 		sb.WriteString(fmt.Sprintf("%v total avg dps: %.2f; total percentage: %.0f%%\n", r.CharNames[i], total, 100*total/r.DPS.Mean))
 	}
 	if flagDamageByTargets {
-		for i := range r.DPSByTarget {
+		keys := make([]int, 0, len(r.DPSByTarget))
+		for k := range r.DPSByTarget {
+			keys = append(keys, k)
+		}
+		sort.Ints(keys)
+		for i := range keys {
 			sb.WriteString(fmt.Sprintf("%v (%.2f%% of total): Average %.2f DPS over %.2f seconds (std: %.2f)\n", i, 100*r.DPSByTarget[i].Mean/r.DPS.Mean, r.DPSByTarget[i].Mean, r.Duration.Mean, r.DPSByTarget[i].SD))
 		}
 	}

@@ -23,7 +23,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 	for i := 0; i < hits; i++ {
 		ai.Mult = attack[c.NormalCounter][i][c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, dmgFrame[c.NormalCounter][i])
+		finalFrame := dmgFrame[c.NormalCounter][i]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), finalFrame, finalFrame)
 	}
 
 	c.AdvanceNormalIndex()
@@ -67,7 +68,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-5, f-5)
 
 	return f, a
 }
