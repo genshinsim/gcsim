@@ -15,11 +15,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	val[core.DmgP] = 0.12 + 0.04*float64(r)
 	val[core.CR] = 0.045 + 0.015*float64(r)
 
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Key:    "the-catch",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a == core.AttackTagElementalBurst {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagElementalBurst {
 				return val, true
 			}
 			return nil, false

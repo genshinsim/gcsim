@@ -18,7 +18,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	char.AddMod(core.CharStatMod{
 		Key:    "wolf-flat",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})
@@ -50,7 +50,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			char.AddMod(core.CharStatMod{
 				Key:    "wolf-proc",
 				Expiry: c.F + 720,
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func() ([]float64, bool) {
 					return bonus, true
 				},
 			})

@@ -45,7 +45,7 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 		val[core.AnemoP] = 0.25
 		c.AddMod(core.CharStatMod{
 			Key:    "venti-c4",
-			Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+			Amount: func() ([]float64, bool) { return val, true },
 			Expiry: c.Core.F + 600,
 		})
 		c.Core.Log.Debugw("c4 - adding anemo bonus", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)

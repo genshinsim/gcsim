@@ -46,7 +46,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	char.AddMod(core.CharStatMod{
 		Key:    "whiteblind",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			if duration < c.F {
 				stacks = 0
 				return nil, false

@@ -183,7 +183,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.AddMod(core.CharStatMod{
 		Key:    "noelle-burst",
 		Expiry: c.Core.F + 900 + f,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})

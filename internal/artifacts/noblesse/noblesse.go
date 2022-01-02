@@ -15,10 +15,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.2
-		c.AddMod(core.CharStatMod{
+		c.AddPreDamageMod(core.PreDamageMod{
 			Key: "nob-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				return m, a == core.AttackTagElementalBurst
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				return m, atk.Info.AttackTag == core.AttackTagElementalBurst
 			},
 			Expiry: -1,
 		})
@@ -50,7 +50,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			for _, char := range s.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "nob-4pc",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func() ([]float64, bool) {
 						if s.Status.Duration("nob-4pc") > 0 {
 							return m, true
 						}

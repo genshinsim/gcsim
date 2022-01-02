@@ -578,7 +578,8 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan int64, d
 				resp <- workerResp{
 					err: err,
 				}
-				return
+				return
+
 			}
 
 			stat, err := s.Run()

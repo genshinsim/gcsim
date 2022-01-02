@@ -15,7 +15,7 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	expiry := 0
-	atk := 0.06 + 0.02*float64(r)
+	atkbonus := 0.06 + 0.02*float64(r)
 	stacks := 0
 	//add on crit effect
 	c.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
@@ -33,19 +33,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		return false
 	}, fmt.Sprintf("prototype-starglitter-%v", char.Name()))
 
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Key:    "prototype",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
-			if a != core.AttackTagNormal && a != core.AttackTagExtra {
+			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 				return nil, false
 			}
 			if expiry < c.F {
 				stacks = 0
 				return nil, false
 			}
-			val[core.ATKP] = atk * float64(stacks)
+			val[core.ATKP] = atkbonus * float64(stacks)
 			return val, true
 		},
 	})

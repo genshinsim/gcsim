@@ -17,7 +17,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m[core.EM] = 80
 		c.AddMod(core.CharStatMod{
 			Key: "instructor-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -47,7 +47,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 				char.AddMod(core.CharStatMod{
 					Key: "instructor-4pc",
-					Amount: func(ds core.AttackTag) ([]float64, bool) {
+					Amount: func() ([]float64, bool) {
 						return m, true
 					},
 					Expiry: s.F + 480,

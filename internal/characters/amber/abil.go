@@ -72,7 +72,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		if a.AttackEvent.Info.HitWeakPoint {
 			c.AddMod(core.CharStatMod{
 				Key: "a2",
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func() ([]float64, bool) {
 					val := make([]float64, core.EndStatType)
 					val[core.ATKP] = 0.15
 					return val, true
@@ -181,7 +181,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			val[core.ATKP] = 0.15
 			active.AddMod(core.CharStatMod{
 				Key:    "amber-c6",
-				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+				Amount: func() ([]float64, bool) { return val, true },
 				Expiry: c.Core.F + 900,
 			})
 			c.Core.Log.Debugw("c6 - adding atk %", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())

@@ -117,7 +117,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	val[core.PyroP] = 0.2
 	c.AddMod(core.CharStatMod{
 		Key:    "diluc-fire-weapon",
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func() ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 720,
 	})
 

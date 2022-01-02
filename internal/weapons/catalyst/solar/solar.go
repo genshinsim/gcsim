@@ -34,14 +34,14 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.15 + float64(r)*0.05
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Key:    "solar",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a == core.AttackTagElementalArt || a == core.AttackTagElementalBurst {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagElementalArt || atk.Info.AttackTag == core.AttackTagElementalBurst {
 				return val, attack > c.F
 			}
-			if a == core.AttackTagNormal {
+			if atk.Info.AttackTag == core.AttackTagNormal {
 				return val, skill > c.F
 			}
 			return nil, false

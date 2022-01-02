@@ -46,7 +46,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			active := c.Chars[c.ActiveChar]
 			active.AddMod(core.CharStatMod{
 				Key: "thrilling tales",
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func() ([]float64, bool) {
 					return m, expiry > c.F
 				},
 				Expiry: -1,

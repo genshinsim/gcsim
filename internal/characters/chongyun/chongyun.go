@@ -107,7 +107,7 @@ func (c *char) infuse(char core.Character) {
 	val[core.AtkSpd] = 0.08
 	char.AddMod(core.CharStatMod{
 		Key:    "chongyun-field",
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func() ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 126,
 	})
 	//c2 reduces CD by 15%

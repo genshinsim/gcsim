@@ -295,7 +295,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		val[core.EM] = 120
 		char.AddMod(core.CharStatMod{
 			Key: "albedo-a4",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + 600,
@@ -308,21 +308,28 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 func (c *char) c4() {
-	c.AddMod(core.CharStatMod{
-		Key:    "albedo-c4",
-		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-			val[core.DmgP] = 0.3
-			if a != core.AttackTagPlunge {
-				return nil, false
-			}
-			if c.Tags["elevator"] != 1 {
-				return nil, false
-			}
-			return val, true
-		},
-	})
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.3
+	for _, char := range c.Core.Chars {
+		this := char
+		char.AddPreDamageMod(core.PreDamageMod{
+			Key:    "albedo-c4",
+			Expiry: -1,
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				if c.Core.ActiveChar != this.CharIndex() {
+					return nil, false
+				}
+				if atk.Info.AttackTag != core.AttackTagPlunge {
+					return nil, false
+				}
+				if c.Tags["elevator"] != 1 {
+					return nil, false
+				}
+				return val, true
+			},
+		})
+	}
+
 }
 
 func (c *char) c6() {
@@ -330,7 +337,7 @@ func (c *char) c6() {
 	c.AddMod(core.CharStatMod{
 		Key:    "albedo-c6",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 			val[core.DmgP] = 0.17
 			if c.Tags["elevator"] != 1 {

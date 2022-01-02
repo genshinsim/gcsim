@@ -34,10 +34,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	//add a2
 	val := make([]float64, core.EndStatType)
 	val[core.CR] = 0.2
-	c.AddMod(core.CharStatMod{
+	c.AddPreDamageMod(core.PreDamageMod{
 		Key: "ganyu-a2",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return val, c.a2expiry > c.Core.F && a == core.AttackTagExtra
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			return val, c.a2expiry > c.Core.F && atk.Info.AttackTag == core.AttackTagExtra
 		},
 		Expiry: -1,
 	})

@@ -62,7 +62,7 @@ func (c *char) c6() {
 		char.AddMod(core.CharStatMod{
 			Key:    c6key,
 			Expiry: c.Core.F + 720, //12s
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return c.c6buff, true
 			},
 		})

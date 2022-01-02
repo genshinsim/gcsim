@@ -14,11 +14,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m := make([]float64, core.EndStatType)
 	m[core.CR] = .045 + .015*float64(r)
 	m[core.DmgP] = .12 + 0.04*float64(r)
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Key:    "festering",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			return m, a == core.AttackTagElementalArt
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			return m, atk.Info.AttackTag == core.AttackTagElementalArt
 		},
 	})
 	return "festeringdesire"

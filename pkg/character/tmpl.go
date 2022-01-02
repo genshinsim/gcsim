@@ -88,7 +88,7 @@ func (t *Tmpl) Init(index int) {
 
 	for _, m := range t.Mods {
 		if m.Expiry > t.Core.F || m.Expiry == -1 {
-			a, ok := m.Amount(core.AttackTagNone)
+			a, ok := m.Amount()
 			if ok {
 				hpp += a[core.HPP]
 				hp += a[core.HP]
@@ -160,7 +160,7 @@ func (c *Tmpl) ModIsActive(key string) bool {
 	if c.Mods[ind].Expiry < c.Core.F && c.Mods[ind].Expiry > -1 {
 		return false
 	}
-	_, ok := c.Mods[ind].Amount(core.AttackTagNone)
+	_, ok := c.Mods[ind].Amount()
 	return ok
 }
 

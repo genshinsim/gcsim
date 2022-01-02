@@ -52,13 +52,13 @@ func (c *char) a2() {
 }
 
 func (c *char) c2() {
-	c.AddMod(core.CharStatMod{
+	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "diona-c2",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 			val[core.DmgP] = .15
-			return val, a == core.AttackTagElementalArt
+			return val, atk.Info.AttackTag == core.AttackTagElementalArt
 		},
 	})
 }

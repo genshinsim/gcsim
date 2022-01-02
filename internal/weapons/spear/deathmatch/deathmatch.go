@@ -22,7 +22,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	char.AddMod(core.CharStatMod{
 		Key:    "deathmatch",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			//layer counts as 1 target
 			if len(c.Targets) > 2 {
 				return multiple, true

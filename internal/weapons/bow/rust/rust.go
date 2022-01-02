@@ -11,14 +11,14 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	inc := .3 + float64(r)*0.1
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Key: "rust",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a == core.AttackTagNormal {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagNormal {
 				m[core.DmgP] = inc
 				return m, true
 			}
-			if a == core.AttackTagExtra {
+			if atk.Info.AttackTag == core.AttackTagExtra {
 				m[core.DmgP] = -0.1
 				return m, true
 			}
