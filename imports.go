@@ -29,6 +29,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/aloy"
 	_ "github.com/genshinsim/gcsim/internal/characters/amber"
 	_ "github.com/genshinsim/gcsim/internal/characters/ayaka"
+	_ "github.com/genshinsim/gcsim/internal/characters/barbara"
 	_ "github.com/genshinsim/gcsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gcsim/internal/characters/bennett"
 	_ "github.com/genshinsim/gcsim/internal/characters/chongyun"
