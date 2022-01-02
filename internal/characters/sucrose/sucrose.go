@@ -80,7 +80,7 @@ func (c *char) a2() {
 		this.AddMod(core.CharStatMod{
 			Key:    "sucrose-a2",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				var f int
 				var ok bool
 
@@ -132,7 +132,7 @@ func (c *char) a4() {
 		char.AddMod(core.CharStatMod{
 			Key:    "sucrose-a4",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				if c.Core.Status.Duration("sucrosea4") == 0 {
 					return nil, false
 				}
@@ -164,7 +164,7 @@ func (c *char) c4() {
 func (c *char) c6() {
 	c.AddMod(core.CharStatMod{
 		Key: "sucrose-c6",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			if c.Core.Status.Duration("sucrosec6") == 0 {
 				return nil, false
 			}

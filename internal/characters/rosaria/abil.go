@@ -82,7 +82,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.AddMod(core.CharStatMod{
 			Key:    "rosaria-a1",
 			Expiry: c.Core.F + 300,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 		})
@@ -193,7 +193,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		char.AddMod(core.CharStatMod{
 			Key:    "rosaria-a4",
 			Expiry: c.Core.F + 600,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 		})

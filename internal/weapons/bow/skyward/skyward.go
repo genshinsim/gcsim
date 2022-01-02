@@ -20,7 +20,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	p := 0.5 + 0.1*float64(r)
 	char.AddMod(core.CharStatMod{
 		Key: "skyward harp",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,

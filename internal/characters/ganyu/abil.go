@@ -199,7 +199,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			val[core.CryoP] = 0.2
 			active.AddMod(core.CharStatMod{
 				Key: "ganyu-field",
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func() ([]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Core.F + 60,
@@ -218,7 +218,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.AddMod(core.CharStatMod{
 			Key:    "ganyu-c4",
 			Expiry: c.Core.F + 1080,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				elapsed := c.Core.F - start
 				stacks := int(elapsed / 180)
 				if stacks > 5 {

@@ -56,7 +56,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	char.AddMod(core.CharStatMod{
 		Key: "mistsplitter",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			count := 0
 			if char.CurrentEnergy() < char.MaxEnergy() {
 				count++

@@ -64,14 +64,14 @@ During the duration of Stormbreaker, the Electro RES of surrounding opponents is
 **/
 
 func (c *char) a4() {
-	c.AddMod(core.CharStatMod{
+	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "beidou-a4",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 			mod := make([]float64, core.EndStatType)
 			mod[core.DmgP] = .15
 
-			if a != core.AttackTagNormal && a != core.AttackTagExtra {
+			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
 				return mod, false
 			}
 			if c.Core.Status.Duration("beidoua4") == 0 {

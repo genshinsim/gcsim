@@ -16,7 +16,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	char.AddMod(core.CharStatMod{
 		Key:    "harbinger",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return m, char.HP()/char.MaxHP() >= 0.9
 		},
 	})

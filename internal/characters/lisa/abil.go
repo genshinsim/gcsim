@@ -141,7 +141,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		val[core.DEFP] = 0.25
 		c.AddMod(core.CharStatMod{
 			Key:    "lisa-c2",
-			Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+			Amount: func() ([]float64, bool) { return val, true },
 			Expiry: c.Core.F + 126,
 		})
 	}

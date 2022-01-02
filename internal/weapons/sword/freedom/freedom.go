@@ -14,7 +14,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m[core.DmgP] = 0.075 + float64(r)*0.025
 	char.AddMod(core.CharStatMod{
 		Key: "freedom-dmg",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
@@ -50,11 +50,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			c.Status.AddStatus("freedom", 720)
 			cooldown = c.F + 1200
 			for _, char := range c.Chars {
-				char.AddMod(core.CharStatMod{
+				char.AddPreDamageMod(core.PreDamageMod{
 					Key: "freedom-proc",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 						val[core.DmgP] = 0
-						if a == core.AttackTagNormal || a == core.AttackTagExtra || a == core.AttackTagPlunge {
+						if atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra || atk.Info.AttackTag == core.AttackTagPlunge {
 							val[core.DmgP] = plunge
 						}
 						return val, true

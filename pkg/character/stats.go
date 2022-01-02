@@ -15,7 +15,7 @@ func (t *Tmpl) Stat(s core.StatType) float64 {
 		if m.AffectedStat != core.NoStat && m.AffectedStat != s {
 			continue
 		}
-		amt, ok := m.Amount(core.AttackTagNone)
+		amt, ok := m.Amount()
 		if ok {
 			val += amt[s]
 		}
@@ -112,7 +112,7 @@ func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]fl
 
 		if m.Expiry > c.Core.F || m.Expiry == -1 {
 
-			amt, ok := m.Amount(a)
+			amt, ok := m.Amount()
 			if ok {
 				for k, v := range amt {
 					stats[k] += v

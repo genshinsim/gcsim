@@ -12,7 +12,8 @@ func init() {
 	core.RegisterWeaponFunc("luxurioussealord", weapon)
 }
 
-// Increases Elemental Burst DMG by 12~24%. When Elemental Burst hits opponents, there is a 100% chance of summoning a huge onrush of tuna that charges and deals 100~200% ATK as AoE DMG. This effect can occur once every 15s.
+// Increases Elemental Burst DMG by 12~24%. When Elemental Burst hits opponents, there is a 100% chance of summoning a huge onrush of tuna that
+// charges and deals 100~200% ATK as AoE DMG. This effect can occur once every 15s.
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	burstDmgIncrease := .09 + float64(r)*0.03
 	tunaDmg := .75 + float64(r)*0.25
@@ -20,11 +21,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = burstDmgIncrease
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Expiry: -1,
 		Key:    "luxurious-sea-lord",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a == core.AttackTagElementalBurst {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagElementalBurst {
 				return val, true
 			}
 			return nil, false

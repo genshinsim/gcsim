@@ -287,7 +287,7 @@ func (c *char) attackBuff(delay int) {
 		// AddMod function already only takes the most recent version of this buff
 		active.AddMod(core.CharStatMod{
 			Key: "sara-attack-buff",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + 360,

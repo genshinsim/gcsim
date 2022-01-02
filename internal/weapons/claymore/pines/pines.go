@@ -16,7 +16,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m[core.ATKP] = 0.12 + float64(r)*0.04
 	char.AddMod(core.CharStatMod{
 		Key: "pines-atk",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return m, true
 		},
 		Expiry: -1,
@@ -53,7 +53,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			for _, char := range c.Chars {
 				char.AddMod(core.CharStatMod{
 					Key: "pines-proc",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func() ([]float64, bool) {
 						return val, true
 					},
 					Expiry: c.F + 720,

@@ -55,14 +55,14 @@ func (c *char) Init(index int) {
 	val := make([]float64, core.EndStatType)
 	for _, char := range c.Core.Chars {
 		this := char
-		char.AddMod(core.CharStatMod{
+		char.AddPreDamageMod(core.PreDamageMod{
 			Key:    "raiden-e",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 				if c.Core.Status.Duration("raidenskill") == 0 {
 					return nil, false
 				}
-				if a != core.AttackTagElementalBurst {
+				if atk.Info.AttackTag != core.AttackTagElementalBurst {
 					return nil, false
 				}
 

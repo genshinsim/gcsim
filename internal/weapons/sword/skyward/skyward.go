@@ -28,7 +28,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	char.AddMod(core.CharStatMod{
 		Key: "skyward blade",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			m[core.AtkSpd] = 0
 			if dur > c.F {
 				m[core.AtkSpd] = 0.1 //if burst active

@@ -20,7 +20,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	char.AddMod(core.CharStatMod{
 		Key:    "skyrider",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return val, expiry > c.F
 		},
 	})

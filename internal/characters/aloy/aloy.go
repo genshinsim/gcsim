@@ -43,13 +43,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 // Add coil mod at the beginning of the sim
 // Can't be made dynamic easily as coils last until 30s after when Aloy swaps off field
 func (c *char) coilMod() {
-
-	c.AddMod(core.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "aloy-coil-stacks",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-			if a == core.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
 				val[core.DmgP] = skillCoilNABonus[c.Tags["coil_stacks"]-1][c.TalentLvlSkill()]
 				return val, true
 			}

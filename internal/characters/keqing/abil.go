@@ -185,7 +185,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	val[core.ER] = 0.15
 	c.AddMod(core.CharStatMod{
 		Key:    "a4",
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func() ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 480,
 	})
 

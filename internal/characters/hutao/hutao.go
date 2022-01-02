@@ -65,7 +65,7 @@ func (c *char) a4() {
 	c.AddMod(core.CharStatMod{
 		Key:    "hutao-a4",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 			val[core.PyroP] = 0.33
 			if c.Core.Status.Duration("paramita") == 0 {
@@ -106,7 +106,7 @@ func (c *char) checkc6() {
 	val[core.CR] = 1
 	c.AddMod(core.CharStatMod{
 		Key:    "hutao-c6",
-		Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+		Amount: func() ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 600,
 	})
 

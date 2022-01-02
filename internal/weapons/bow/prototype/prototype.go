@@ -31,7 +31,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m[core.ATKP] = 0.27 + float64(r)*0.09
 	char.AddMod(core.CharStatMod{
 		Key: "prototype-crescent",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			if dur < c.F {
 				return nil, false
 			}

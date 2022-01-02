@@ -63,7 +63,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	m[core.PyroP] = float64(stacks) * 0.05
 	c.AddMod(core.CharStatMod{
 		Key: "yanfei-a1",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return m, true
 		},
 		Expiry: c.Core.F + 360,
@@ -77,7 +77,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagExtra,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeBlunt,
+		// StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Pyro,
 		Durability: 25,
 		Mult:       charge[stacks][c.TalentLvlAttack()],
@@ -122,7 +122,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeBlunt,
+		// StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Pyro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -147,10 +147,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = burstBonus[c.TalentLvlBurst()]
-	c.AddMod(core.CharStatMod{
+	c.AddPreDamageMod(core.PreDamageMod{
 		Key: "yanfei-burst",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a == core.AttackTagExtra {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagExtra {
 				return m, true
 			}
 			return nil, false
@@ -174,11 +174,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Signed Edict",
+		Abil:       "Done Deal",
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeBlunt,
+		// StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Pyro,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],

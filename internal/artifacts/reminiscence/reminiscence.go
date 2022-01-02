@@ -16,8 +16,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m := make([]float64, core.EndStatType)
 		m[core.ATKP] = 0.18
 		c.AddMod(core.CharStatMod{
-			Key: "rem-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Key: "shim-2pc",
+			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -39,19 +39,16 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				s.Tasks.Add(func() {
 					c.AddEnergy(-15)
 				}, 10)
-				c.AddMod(core.CharStatMod{
-					Key: "rem-4pc",
-					Amount: func(ds core.AttackTag) ([]float64, bool) {
-						if ds != core.AttackTagNormal && ds != core.AttackTagExtra && ds != core.AttackTagPlunge {
-							return nil, false
-						}
-						return m, true
+				c.AddPreDamageMod(core.PreDamageMod{
+					Key: "shim-4pc",
+					Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+						return m, atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra || atk.Info.AttackTag == core.AttackTagPlunge
 					},
 					Expiry: s.F + 600,
 				})
 			}
 			return false
-		}, fmt.Sprintf("rem-4pc-%v", c.Name()))
+		}, fmt.Sprintf("shim-4pc-%v", c.Name()))
 
 	}
 	//add flat stat to char
