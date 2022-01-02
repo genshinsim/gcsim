@@ -51,7 +51,7 @@ func (c *char) a1() {
 			return -0.12, false
 		}
 		return 0, false
-	})
+	}, "barb-a1-stam")
 }
 
 func (c *char) c2() {

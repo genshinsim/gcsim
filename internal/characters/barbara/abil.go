@@ -129,7 +129,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//add 1 tick each 5s
 	//first tick starts at 0
 	c.barbaraHealTick(heal, c.Core.F)
-
+	ai.Abil = "Let the Show Begin♪ Wet Tick"
+	ai.Mult = 0
+	c.barbaraWet(ai, c.Core.F)
 	c.Energy = 0
 	if c.Base.Cons >= 2 {
 		c.SetCD(core.ActionSkill, 32*60*0.85)
@@ -149,7 +151,7 @@ func (c *char) barbaraHealTick(healAmt float64, skillInitF int) func() {
 		if c.Core.Status.Duration("barbskill") == 0 {
 			return
 		}
-		c.Core.Log.Debugw("barbara field ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.Debugw("barbara heal ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		c.Core.Health.HealActive(c.Index, healAmt)
 
 		// tick per 5 seconds
@@ -157,6 +159,24 @@ func (c *char) barbaraHealTick(healAmt float64, skillInitF int) func() {
 	}
 }
 
+func (c *char) barbaraWet(ai core.AttackInfo, skillInitF int) func() {
+	return func() {
+		//make sure it's not overwritten
+		if c.skillInitF != skillInitF {
+			return
+		}
+		//do nothing if buff expired
+		if c.Core.Status.Duration("barbskill") == 0 {
+			return
+		}
+		c.Core.Log.Debugw("barbara wet ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
+
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 5)
+
+		// tick per 5 seconds
+		c.AddTask(c.barbaraWet(ai, skillInitF), "barbara-wet", 90)
+	}
+}
 func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
