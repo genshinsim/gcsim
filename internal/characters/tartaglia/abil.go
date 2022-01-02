@@ -267,12 +267,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				c.mlBurstUsed = true
 			}
 		} else {
-			c.AddEnergy(20)
+			c.AddTask(func() {
+				c.AddEnergy(20)
+			}, "tartaglia-ranged-burst-energy-refund", 9)
 			c.Core.Log.Debugw("Tartaglia ranged burst restoring 20 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
 		}
 	}, "tartaglia-burst-clear", f-5) //random 5 frame
 
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.Core.Status.Duration("tartagliamelee") == 0 {
 		c.ConsumeEnergy(8)
 	} else {
 		c.ConsumeEnergy(75)

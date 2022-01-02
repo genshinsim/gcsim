@@ -82,20 +82,11 @@ func (c *char) a2() {
 	}, "noelle-a2")
 }
 
+// Noelle Geo infusion can't be overridden, so it must be a snapshot modification rather than a weapon infuse
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	ds := c.Tmpl.Snapshot(ai)
 
 	if c.Core.Status.Duration("noelleq") > 0 {
-
-		x := c.Base.Def*(1+ds.Stats[core.DEFP]) + ds.Stats[core.DEF]
-		mult := defconv[c.TalentLvlBurst()]
-		if c.Base.Cons == 6 {
-			mult += 0.5
-		}
-		fa := mult * x
-		c.Core.Log.Debugw("noelle burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", x, "atk added", fa, "mult", mult)
-
-		ds.Stats[core.ATK] += fa
 		//infusion to attacks only
 		switch ai.AttackTag {
 		case core.AttackTagNormal:

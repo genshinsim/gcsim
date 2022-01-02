@@ -149,11 +149,14 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 
 		willHit, reason := willAttackLand(a, t, i)
 		if !willHit {
+			// Move target logs into the "Sim" event log to avoid cluttering main display for stuff like Guoba
+			// And obvious things like "Fischl A4 is single target so it didn't hit targets 2-4"
+			// TODO: Maybe want to add a separate set of log events for this?
 			//don't log this for target 0
 			if c.core.Flags.LogDebug && i > 0 {
 				c.core.Log.Debugw("skipped "+a.Info.Abil+" "+reason,
 					"frame", c.core.F,
-					"event", LogElementEvent,
+					"event", LogSimEvent,
 					"char", a.Info.ActorIndex,
 					"attack_tag", a.Info.AttackTag,
 					"applied_ele", a.Info.Element,

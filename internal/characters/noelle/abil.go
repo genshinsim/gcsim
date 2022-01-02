@@ -49,7 +49,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f, cb)
 
 	c.AdvanceNormalIndex()
 
@@ -158,7 +158,36 @@ func (c *char) explodeShield() {
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
-	f, a := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
+
+	// Add mod for def to attack burst conversion
+	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
+	val := make([]float64, core.EndStatType)
+
+	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
+	aiSnapshot := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Sweeping Time (Stat Snapshot)",
+	}
+	snapshot := c.Snapshot(&aiSnapshot)
+	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[core.DEFP]) + snapshot.Stats[core.DEF]
+	// burstDefSnapshot := c.Base.Def*(1+c.Stats[core.DEFP]) + c.Stats[core.DEF]
+	mult := defconv[c.TalentLvlBurst()]
+	if c.Base.Cons == 6 {
+		mult += 0.5
+	}
+	fa := mult * burstDefSnapshot
+	val[core.ATK] = fa
+
+	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
+	c.AddMod(core.CharStatMod{
+		Key:    "noelle-burst",
+		Expiry: c.Core.F + 900 + f,
+		Amount: func(a core.AttackTag) ([]float64, bool) {
+			return val, true
+		},
+	})
+	c.Core.Log.Debugw("noelle burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
 
 	c.Core.Status.AddStatus("noelleq", 900+f)
 
@@ -173,7 +202,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(6.5, false, core.TargettableEnemy), f-10, f-10)
+	// TODO: Not sure of the exact frames
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(6.5, false, core.TargettableEnemy), f-30, f-30)
 
 	ai = core.AttackInfo{
 		ActorIndex: c.Index,
@@ -186,6 +216,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burstskill[c.TalentLvlBurst()],
 	}
+	// TODO: Not sure of the exact frames
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4.5, false, core.TargettableEnemy), f-10, f-10)
 
 	c.SetCD(core.ActionBurst, 900)

@@ -74,15 +74,23 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 		s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
 		//add new targets
 		s.C.Events.Subscribe(core.OnTargetAdded, func(args ...interface{}) bool {
-			for i := range s.stats.DamageByCharByTargets {
-				s.stats.DamageByCharByTargets[i] = append(s.stats.DamageByCharByTargets[i], 0)
-			}
+			t := args[0].(core.Target)
+
+			s.C.Log.Debugw("Target Added", "frame", s.C.F, "event", core.LogSimEvent, "target_type", t.Type())
+
 			s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[core.EleType]int))
+
 			return false
 		}, "sim-new-target-stats")
 		//add call backs to track details
 		s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 			t := args[0].(core.Target)
+
+			// No need to pull damage stats for non-enemies
+			if t.Type() != core.TargettableEnemy {
+				return false
+			}
+
 			dmg := args[2].(float64)
 			atk := args[1].(*core.AttackEvent)
 			sb.Reset()
@@ -305,7 +313,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		s.stats.CharNames = make([]string, count)
 		s.stats.DamageByChar = make([]map[string]float64, count)
 		s.stats.DamageInstancesByChar = make([]map[string]int, count)
-		s.stats.DamageByCharByTargets = make([][]float64, count)
+		s.stats.DamageByCharByTargets = make([]map[int]float64, count)
 		s.stats.DamageDetailByTime = make(map[DamageDetails]float64)
 		s.stats.CharActiveTime = make([]int, count)
 		s.stats.AbilUsageCountByChar = make([]map[string]int, count)
@@ -337,7 +345,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 		if s.opts.LogDetails {
 			s.stats.DamageByChar[i] = make(map[string]float64)
 			s.stats.DamageInstancesByChar[i] = make(map[string]int)
-			s.stats.DamageByCharByTargets[i] = make([]float64, len(s.C.Targets))
+			s.stats.DamageByCharByTargets[i] = make(map[int]float64)
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 			s.stats.CharNames[i] = v.Base.Key.String()
 			s.stats.EnergyWhenBurst[i] = make([]float64, 0, s.opts.Duration/12+2)
