@@ -13,7 +13,7 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 					val[core.ATKP] = 0.25
 					c.AddMod(core.CharStatMod{
 						Key: "pyro-res",
-						Amount: func(a core.AttackTag) ([]float64, bool) {
+						Amount: func() ([]float64, bool) {
 							return val, true
 						},
 						Expiry: -1,

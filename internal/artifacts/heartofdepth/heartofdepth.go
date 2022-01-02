@@ -17,7 +17,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m[core.HydroP] = 0.15
 		c.AddMod(core.CharStatMod{
 			Key: "hod-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -31,21 +31,17 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			return false
 		}, fmt.Sprintf("hod4-%v", c.Name()))
 
-		c.AddMod(core.CharStatMod{
+		m := make([]float64, core.EndStatType)
+		m[core.DmgP] = 0.3
+
+		c.AddPreDamageMod(core.PreDamageMod{
 			Key: "hod-4pc",
-			Amount: func(ds core.AttackTag) ([]float64, bool) {
-				m := make([]float64, core.EndStatType)
-				m[core.DmgP] = 0.3
-				if s.Status.Duration(key) == 0 {
-					return nil, false
-				}
-				if ds != core.AttackTagNormal && ds != core.AttackTagExtra {
-					return nil, false
-				}
-				return m, true
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				return m, (atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra)
 			},
 			Expiry: -1,
 		})
+
 	}
 	//add flat stat to char
 }

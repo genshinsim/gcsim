@@ -50,7 +50,7 @@ func (c *char) c1() {
 		char.AddMod(core.CharStatMod{
 			Key:    "geo-traveler-c1",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				if c.Core.Constructs.CountByType(core.GeoConstructTravellerBurst) == 0 {
 					return nil, false
 				}

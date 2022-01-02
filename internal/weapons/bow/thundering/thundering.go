@@ -42,11 +42,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		return false
 	}, key)
 
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Key: "thundering",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 			m[core.DmgP] = 0
-			if a != core.AttackTagNormal {
+			if atk.Info.AttackTag != core.AttackTagNormal {
 				return m, true
 			}
 			count := 0

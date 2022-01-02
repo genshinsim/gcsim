@@ -98,7 +98,7 @@ func (c *char) c6() {
 		char.AddMod(core.CharStatMod{
 			Key:    "xl-c6",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return m, c.Core.Status.Duration("xlc6") > 0
 			},
 		})

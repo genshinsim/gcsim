@@ -160,7 +160,7 @@ func (c *char) holdE() {
 		val[core.PhyP] = 0.3
 		c.AddMod(core.CharStatMod{
 			Key: "eula-c1",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 			Expiry: c.Core.F + (6*v+6)*60, //TODO: check if this is right

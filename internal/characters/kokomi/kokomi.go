@@ -49,7 +49,7 @@ func (c *char) passive() {
 	c.AddMod(core.CharStatMod{
 		Key:    "kokomi-passive",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})
@@ -108,7 +108,7 @@ func (c *char) burstActiveHook() {
 				val[core.HydroP] = .4
 				c.AddMod(core.CharStatMod{
 					Key: "kokomi-c6",
-					Amount: func(a core.AttackTag) ([]float64, bool) {
+					Amount: func() ([]float64, bool) {
 						return val, true
 					},
 					Expiry: c.Core.F + 480,

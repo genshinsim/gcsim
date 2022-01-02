@@ -61,7 +61,7 @@ func (c *char) a4() {
 		char.AddMod(core.CharStatMod{
 			Expiry: -1,
 			Key:    "kazuha-a4",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				m := make([]float64, core.EndStatType)
 				ok := false
 				for i, exp := range expiry {

@@ -22,7 +22,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		Key:          "grasscutter",
 		Expiry:       -1,
 		AffectedStat: core.ATKP, //this to prevent infinite loop when we ask to calculate ER
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			er := char.Stat(core.ER)
 			c.Log.Debugw("cutter snapshot", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "er", er)
 			bonus := atk * er
@@ -45,7 +45,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		char.AddMod(core.CharStatMod{
 			Key:    "grasscutter-er",
 			Expiry: c.F + 720,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return erval, true
 			},
 		})

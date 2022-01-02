@@ -222,7 +222,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Base.Cons >= 4 {
 		c.AddMod(core.CharStatMod{
 			Key: "kokomi-c4",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				val := make([]float64, core.EndStatType)
 				val[core.AtkSpd] = 0.1
 				if c.Core.Status.Duration("kokomiburst") > 0 {

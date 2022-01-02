@@ -18,11 +18,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	m[core.DmgP] = base
 
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Expiry: -1,
 		Key:    "kitain-skill-dmg-buff",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a == core.AttackTagElementalArt || a == core.AttackTagElementalArtHold {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagElementalArt || atk.Info.AttackTag == core.AttackTagElementalArtHold {
 				return m, true
 			}
 			return nil, false

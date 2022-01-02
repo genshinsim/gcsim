@@ -262,7 +262,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			val[core.PyroP] = .1
 			x.AddMod(core.CharStatMod{
 				Key:    "klee-c6",
-				Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+				Amount: func() ([]float64, bool) { return val, true },
 				Expiry: c.Core.F + 1500,
 			})
 		}

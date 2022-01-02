@@ -17,7 +17,7 @@ func Blackcliff(char core.Character, c *core.Core, r int, param map[string]int) 
 	m := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key: "blackcliff",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			count := 0
 			for _, v := range stacks {
 				if v > c.F {
@@ -96,7 +96,7 @@ func Lithic(char core.Character, c *core.Core, r int, param map[string]int) {
 	char.AddMod(core.CharStatMod{
 		Key:    "lithic",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})
@@ -122,7 +122,7 @@ func Royal(char core.Character, c *core.Core, r int, param map[string]int) {
 	m := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
 		Key: "royal",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			m[core.CR] = float64(stacks) * rate
 			return m, true
 		},
@@ -192,11 +192,11 @@ func Wavebreaker(char core.Character, c *core.Core, r int, param map[string]int)
 		c.Log.Debugw("wavebreaker dmg calc", "frame", -1, "event", core.LogWeaponEvent, "total", energy, "per", per, "max", max, "amt", amt)
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = amt
-		char.AddMod(core.CharStatMod{
+		char.AddPreDamageMod(core.PreDamageMod{
 			Expiry: -1,
 			Key:    "wavebreaker",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if a == core.AttackTagElementalBurst {
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				if atk.Info.AttackTag == core.AttackTagElementalBurst {
 					return m, true
 				}
 				return nil, false

@@ -18,10 +18,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 4 {
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.4
-		c.AddMod(core.CharStatMod{
+		c.AddPreDamageMod(core.PreDamageMod{
 			Key: "bolide-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				return m, s.Shields.IsShielded() && (a == core.AttackTagNormal || a == core.AttackTagExtra)
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				return m, s.Shields.IsShielded() && (atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra)
 			},
 			Expiry: -1,
 		})

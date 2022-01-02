@@ -153,7 +153,7 @@ func (c *char) gorouSkillBuffField(src int) func() {
 		active.AddMod(core.CharStatMod{
 			Key:    defenseBuffKey,
 			Expiry: c.Core.F + 126, //2.1s
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return c.gorouBuff, true
 			},
 		})
@@ -241,7 +241,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		char.AddMod(core.CharStatMod{
 			Key:    heedlessKey,
 			Expiry: c.Core.F + 720, //12s
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 		})

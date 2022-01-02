@@ -160,7 +160,7 @@ func (c *char) ppHook() {
 	c.AddMod(core.CharStatMod{
 		Key:    "hutao-paramita",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 			if c.Core.Status.Duration("paramita") == 0 {
 				return nil, false

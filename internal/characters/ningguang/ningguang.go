@@ -65,7 +65,7 @@ func (c *char) a4() {
 			char := c.Core.Chars[c.Core.ActiveChar]
 			char.AddMod(core.CharStatMod{
 				Key: "ning-screen",
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func() ([]float64, bool) {
 					return val, true
 				},
 				Expiry: c.Core.F + 600,

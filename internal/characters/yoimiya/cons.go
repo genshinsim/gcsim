@@ -11,7 +11,7 @@ func (c *char) c1() {
 			c.AddMod(core.CharStatMod{
 				Key:    "c1",
 				Expiry: c.Core.F + 1200,
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func() ([]float64, bool) {
 					return val, true
 				},
 			})
@@ -30,7 +30,7 @@ func (c *char) c2() {
 			c.AddMod(core.CharStatMod{
 				Key:    "c2",
 				Expiry: c.Core.F + 360,
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func() ([]float64, bool) {
 					return val, true
 				},
 			})

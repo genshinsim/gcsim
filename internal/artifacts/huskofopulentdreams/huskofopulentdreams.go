@@ -25,7 +25,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m[core.DEFP] = 0.30
 		c.AddMod(core.CharStatMod{
 			Key: "husk-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -127,7 +127,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 		c.AddMod(core.CharStatMod{
 			Key: "husk-4pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				m[core.DEFP] = 0.06 * float64(stacks)
 				m[core.GeoP] = 0.06 * float64(stacks)
 

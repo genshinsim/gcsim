@@ -11,7 +11,8 @@ func init() {
 	core.RegisterWeaponFunc("katsuragikirinagamasa", weapon)
 }
 
-// Increases Elemental Skill DMG by 6~12%. After Elemental Skill hits an opponent, the character loses 3 Energy but regenerates 3~5 Energy every 2s for the next 6s. This effect can occur once every 10s. Can be triggered even when the character is not on the field.
+// Increases Elemental Skill DMG by 6~12%. After Elemental Skill hits an opponent, the character loses 3 Energy but regenerates 3~5 Energy every 2s for the next 6s.
+// This effect can occur once every 10s. Can be triggered even when the character is not on the field.
 // Same effect as kitain - code largely copied
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
@@ -20,11 +21,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	m[core.DmgP] = base
 
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Expiry: -1,
 		Key:    "nagamasa-skill-dmg-buff",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a == core.AttackTagElementalArt || a == core.AttackTagElementalArtHold {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagElementalArt || atk.Info.AttackTag == core.AttackTagElementalArtHold {
 				return m, true
 			}
 			return nil, false

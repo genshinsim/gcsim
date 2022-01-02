@@ -17,10 +17,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = .12 + float64(r)*.04
-	char.AddMod(core.CharStatMod{
-		Key: "dodoco ca",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a != core.AttackTagExtra {
+	char.AddPreDamageMod(core.PreDamageMod{
+		Key: "dodoco-ca",
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != core.AttackTagExtra {
 				return nil, false
 			}
 			return m, dmgExpiry > c.F
@@ -32,7 +32,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	n[core.ATKP] = .06 + float64(r)*0.02
 	char.AddMod(core.CharStatMod{
 		Key: "dodoco atk",
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			return n, atkExpiry > c.F
 		},
 		Expiry: -1,

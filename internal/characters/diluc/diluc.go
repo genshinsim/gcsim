@@ -80,7 +80,7 @@ func (c *char) c2() {
 		val[core.AtkSpd] = 0.05 * float64(stack)
 		c.AddMod(core.CharStatMod{
 			Key:    "diluc-c2",
-			Amount: func(a core.AttackTag) ([]float64, bool) { return val, true },
+			Amount: func() ([]float64, bool) { return val, true },
 			Expiry: c.Core.F + 600,
 		})
 		return false
@@ -92,7 +92,7 @@ func (c *char) c4() {
 	c.AddMod(core.CharStatMod{
 		Key:    "diluc-c4",
 		Expiry: -1,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 			if c.Core.Status.Duration("dilucc4") > 0 {
 				val[core.DmgP] = 0.4

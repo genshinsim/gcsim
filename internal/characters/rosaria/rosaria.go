@@ -54,15 +54,14 @@ func (c *char) c1() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-
-		c.AddMod(core.CharStatMod{
+		val := make([]float64, core.EndStatType)
+		val[core.AtkSpd] = 0.1
+		val[core.DmgP] = 0.1
+		c.AddPreDamageMod(core.PreDamageMod{
 			Key:    "rosaria-c1",
 			Expiry: c.Core.F + 240,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				val := make([]float64, core.EndStatType)
-				val[core.AtkSpd] = 0.1
-				val[core.DmgP] = 0.1
-				if a != core.AttackTagNormal {
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != core.AttackTagNormal {
 					return nil, false
 				}
 				return val, true

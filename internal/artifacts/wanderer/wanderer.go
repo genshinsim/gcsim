@@ -15,7 +15,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m[core.EM] = 80
 		c.AddMod(core.CharStatMod{
 			Key: "wt-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 			Expiry: -1,
@@ -31,13 +31,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		}
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.35
-		c.AddMod(core.CharStatMod{
+		c.AddPreDamageMod(core.PreDamageMod{
 			Key: "wt-4pc",
-			Amount: func(ds core.AttackTag) ([]float64, bool) {
-				if ds != core.AttackTagNormal && ds != core.AttackTagExtra {
-					return nil, false
-				}
-				return m, true
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				return m, atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra
 			},
 			Expiry: -1,
 		})

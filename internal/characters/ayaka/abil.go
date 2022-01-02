@@ -82,7 +82,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		c.AddMod(core.CharStatMod{
 			Key:    "ayaka-a4",
 			Expiry: c.Core.F + 600,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 		})
@@ -120,14 +120,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.QueueParticle("ayaka", count, core.Cryo, f+100)
 
 	//a2 increase normal + ca dmg by 30% for 6s
-	c.AddMod(core.CharStatMod{
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.3
+	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "ayaka-a2",
 		Expiry: c.Core.F + 360,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-
-			val := make([]float64, core.EndStatType)
-			val[core.DmgP] = 0.3
-			return val, a == core.AttackTagNormal || a == core.AttackTagExtra
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			return val, atk.Info.AttackTag == core.AttackTagNormal || ai.AttackTag == core.AttackTagExtra
 		},
 	})
 

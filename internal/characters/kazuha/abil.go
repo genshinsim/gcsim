@@ -222,7 +222,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			char.AddMod(core.CharStatMod{
 				Key:    "kazuha-c2",
 				Expiry: c.Core.F + 370,
-				Amount: func(a core.AttackTag) ([]float64, bool) {
+				Amount: func() ([]float64, bool) {
 					if c.Core.ActiveChar != this.CharIndex() {
 						return nil, false
 					}

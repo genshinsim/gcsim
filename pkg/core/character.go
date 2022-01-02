@@ -88,10 +88,11 @@ const (
 )
 
 type CharStatMod struct {
-	Key          string
-	AffectedStat StatType
-	Amount       func(a AttackTag) ([]float64, bool)
-	Expiry       int
+	Key           string
+	AffectedStat  StatType
+	Amount        func() ([]float64, bool)
+	ConditionTags []AttackTag
+	Expiry        int
 }
 
 type PreDamageMod struct {

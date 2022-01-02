@@ -18,7 +18,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m := make([]float64, core.EndStatType)
 		c.AddMod(core.CharStatMod{
 			Key: "crimson-2pc",
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				if s.Status.Duration(key) == 0 {
 					stacks = 0
 				}

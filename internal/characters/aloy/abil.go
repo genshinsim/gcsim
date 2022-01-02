@@ -155,7 +155,7 @@ func (c *char) coilStacks() {
 		char.AddMod(core.CharStatMod{
 			Key:    "aloy-a1",
 			Expiry: c.Core.F + 600,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				return valA1, true
 			},
 		})
@@ -180,11 +180,11 @@ func (c *char) rushingIce() {
 	// Rushing ice NA bonus
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
-	c.AddMod(core.CharStatMod{
+	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "aloy-rushing-ice",
 		Expiry: c.Core.F + 600,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
-			if a == core.AttackTagNormal {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == core.AttackTagNormal {
 				return val, true
 			}
 			return nil, false
@@ -197,7 +197,7 @@ func (c *char) rushingIce() {
 	c.AddMod(core.CharStatMod{
 		Key:    "aloy-strong-strike",
 		Expiry: c.Core.F + 600,
-		Amount: func(a core.AttackTag) ([]float64, bool) {
+		Amount: func() ([]float64, bool) {
 			if stacks > 10 {
 				stacks = 10
 			}
