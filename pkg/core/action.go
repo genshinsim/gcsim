@@ -220,6 +220,17 @@ func (a *ActionCtrl) execWait(n *CmdWait) (int, bool, error) {
 			a.waitUntil = a.core.F + n.Max
 		}
 		a.waitStarted = a.core.F
+		a.core.Log.Debugw(
+			"wait started",
+			"frame", a.core.F,
+			"event", LogActionEvent,
+			"wait_until", a.waitUntil,
+			"wait_src", a.waitStarted,
+			"last_particle_frame", a.lastParticle,
+			"last_particle_source", a.lastParticleSource,
+			"full", n,
+		)
+
 	} else if a.waitUntil > -1 && a.waitUntil <= a.core.F {
 		//otherwise check if we hit max already; if so we are done
 		a.core.Log.Debugw(

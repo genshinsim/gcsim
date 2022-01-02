@@ -125,6 +125,13 @@ func (c *Queuer) createWaitCommand(a ActionBlock) []Command {
 func (q *Queuer) createQueueFromChain(a ActionBlock) []Command {
 	var res []Command
 
+	//add lock out if any
+	if a.SwapLock > 0 {
+		res = append(res, &CmdNoSwap{
+			Val: a.SwapLock,
+		})
+	}
+
 	active := q.core.Chars[q.core.ActiveChar].Key()
 	//add up sequences for each subchain
 	for i := 0; i < len(a.ChainSequences); i++ {
@@ -145,6 +152,14 @@ func (q *Queuer) createQueueFromChain(a ActionBlock) []Command {
 		}
 		//append
 		res = append(res, q.createQueueFromSequence(a.ChainSequences[i])...)
+	}
+
+	//if swapto, add to end of sequence
+	if a.SwapTo > keys.NoChar {
+		res = append(res, &ActionItem{
+			Typ:    ActionSwap,
+			Target: a.SwapTo,
+		})
 	}
 
 	return res
