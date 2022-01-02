@@ -139,9 +139,13 @@ func willAttackLand(a *AttackEvent, t Target, index int) (bool, string) {
 }
 
 func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
-	died := false
+	// died := false
 	var total float64
 	for i, t := range c.core.Targets {
+		//skip nil targets; we don't want to reindex...
+		if t == nil {
+			continue
+		}
 
 		willHit, reason := willAttackLand(a, t, i)
 		if !willHit {
@@ -208,7 +212,7 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 		//delete the player by accident
 		if c.core.Flags.DamageMode && t.HP() <= 0 {
 			log.Println("died")
-			died = true
+			// died = true
 			t.Kill()
 			c.core.Events.Emit(OnTargetDied, t, cpy)
 			//this should be ok for stuff like guoba since they won't take damage
@@ -236,9 +240,9 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 		)
 
 	}
-	if died {
-		c.core.ReindexTargets()
-	}
+	// if died {
+	// 	c.core.ReindexTargets()
+	// }
 	c.core.TotalDamage += total
 	return total
 }

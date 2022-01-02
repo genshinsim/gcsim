@@ -14,6 +14,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
+	guoba *panda
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -40,6 +41,10 @@ func (c *char) Init(index int) {
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
+	//add in a guoba
+	c.guoba = newGuoba(c.Core)
+	c.Core.AddTarget(c.guoba)
+
 }
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
@@ -174,15 +179,19 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Pyro,
 		Durability: 25,
-		Mult:       guoba[c.TalentLvlSkill()],
+		Mult:       guobaTick[c.TalentLvlSkill()],
 	}
 
-	cb := func(a core.AttackCB) {
-		a.Target.AddResMod("xiangling-c1", core.ResistMod{
-			Ele:      core.Pyro,
-			Value:    -0.15,
-			Duration: 6 * 60,
-		})
+	var cb core.AttackCBFunc
+	if c.Base.Cons > 1 {
+		cb = func(a core.AttackCB) {
+			a.Target.AddResMod("xiangling-c1", core.ResistMod{
+				Ele:      core.Pyro,
+				Value:    -0.15,
+				Duration: 6 * 60,
+			})
+		}
+
 	}
 
 	delay := 120
@@ -190,11 +199,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//lasts 73 seconds, shoots every 1.6 seconds
 	for i := 0; i < 4; i++ {
-		if c.Base.Cons >= 1 {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, delay+i*90, cb)
-		} else {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, delay+i*90)
-		}
+		c.AddTask(func() {
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, 10, cb)
+			c.guoba.pyroWindowStart = c.Core.F
+			c.guoba.pyroWindowEnd = c.Core.F + 20
+		}, "guoba-shoot", delay+i*90-10) //10 frame window to swirl
 		//TODO: check guoba fire delay
 		c.QueueParticle("xiangling", 1, core.Pyro, delay+i*95+90+60)
 	}
@@ -216,7 +225,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Pyro,
 		Durability: 25,
-		Mult:       guoba[c.TalentLvlSkill()],
+		Mult:       guobaTick[c.TalentLvlSkill()],
 	}
 	for i := 0; i < len(pyronadoInitial); i++ {
 		ai.Abil = fmt.Sprintf("Pyronado Hit %v", i+1)

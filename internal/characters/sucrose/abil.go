@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		done = true
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 41, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 41, cb)
 
 	c.QueueParticle("sucrose", 4, core.Anemo, 150)
 
