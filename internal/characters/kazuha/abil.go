@@ -175,7 +175,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstSlash[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-10)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 82)
 
 	//apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
@@ -185,9 +185,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(310/18)), "kaz-absorb-check", 10)
 
-	//424 start
-	//493 first tick, 553, 612, 670, 729 <- so tick every second starting at 70 frames in
-	for i := 70; i < 70+60*5; i += 60 {
+	//from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
+	for i := 0; i < 5; i++ {
 		c.AddTask(func() {
 			if c.qInfuse != core.NoElement {
 				//TODO: does absorb dot tick snapshot?
@@ -205,7 +204,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				c.Core.Combat.QueueAttack(absorb, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0)
 			}
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
-		}, "kazuha-burst-tick", i)
+		}, "kazuha-burst-tick", 147+117*i)
 	}
 
 	//reset skill cd

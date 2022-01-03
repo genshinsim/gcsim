@@ -229,6 +229,8 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 				return nil, fmt.Errorf("weapon %v missing refine", s)
 			}
 			return parseRows, nil
+		default:
+			return nil, fmt.Errorf("unrecognized token parsing add weapon: %v at line %v", n, p.tokens)
 		}
 		if err != nil {
 			return nil, err
