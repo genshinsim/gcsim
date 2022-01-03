@@ -113,7 +113,7 @@ var SpecKeyToStat = map[string]string{
 	"FIGHT_PROP_CHARGE_EFFICIENCY": "core.ER",
 	"FIGHT_PROP_CRITICAL":          "core.CR",
 	"FIGHT_PROP_PHYSICAL_ADD_HURT": "core.PhyP",
-	"FIGHT_PROP_ELEC_ADD_HURT":     "core.EleP",
+	"FIGHT_PROP_ELEC_ADD_HURT":     "core.ElectroP",
 	"FIGHT_PROP_ROCK_ADD_HURT":     "core.GeoP",
 	"FIGHT_PROP_FIRE_ADD_HURT":     "core.PyroP",
 	"FIGHT_PROP_WATER_ADD_HURT":    "core.HydroP",

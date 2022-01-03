@@ -78,10 +78,10 @@ var statKeys = map[string]core.StatType{
 	"anemo%":   core.AnemoP,
 	"geo%":     core.GeoP,
 	"phys%":    core.PhyP,
-	"ele%":     core.EleP,
-	"dendro%":  core.DendroP,
-	"atkspd%":  core.AtkSpd,
-	"dmg%":     core.DmgP,
+	// "ele%":     core.ElementalP,
+	"dendro%": core.DendroP,
+	"atkspd%": core.AtkSpd,
+	"dmg%":    core.DmgP,
 }
 
 var eleKeys = map[string]core.EleType{

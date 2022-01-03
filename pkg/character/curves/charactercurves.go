@@ -373,7 +373,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 		BaseHP:      1094.149169921875,
 		BaseAtk:     18.876480102539062,
 		BaseDef:     54.36375045776367,
-		Specialized: core.EleP,
+		Specialized: core.ElectroP,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,

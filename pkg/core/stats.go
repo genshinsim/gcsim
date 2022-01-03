@@ -28,7 +28,7 @@ const (
 	AnemoP
 	GeoP
 	PhyP
-	EleP
+	// ElementalP
 	DendroP
 	AtkSpd
 	DmgP
@@ -89,7 +89,7 @@ var StatTypeString = [...]string{
 	"anemo%",
 	"geo%",
 	"phys%",
-	"ele%",
+	// "ele%",
 	"dendro%",
 	"atkspd%",
 	"dmg%",

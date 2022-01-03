@@ -13,6 +13,13 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	stacks := param["stacks"]
+	c.Log.Debugw(
+		"serpent spine stack check",
+		"event", core.LogWeaponEvent,
+		"frame", c.F,
+		"char", char.CharIndex(),
+		"params", param,
+	)
 	buff := 0.05 + float64(r)*.01
 	active := false
 
