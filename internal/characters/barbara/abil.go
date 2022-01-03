@@ -128,7 +128,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.onSkillStackCount(c.Core.F)
 	//add 1 tick each 5s
 	//first tick starts at 0
-	c.barbaraHealTick(heal, c.Core.F)
+	c.barbaraHealTick(heal, c.Core.F)()
 	ai.Abil = "Let the Show Begin♪ Wet Tick"
 	ai.Mult = 0
 	c.barbaraWet(ai, c.Core.F)
