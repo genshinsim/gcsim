@@ -37,6 +37,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		travel = 20
 	}
+	weakspot, ok := p["weakspot"]
 
 	f, a := c.ActionFrames(core.ActionAim, p)
 	ai := core.AttackInfo{
@@ -49,7 +50,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		Element:      core.Cryo,
 		Durability:   25,
 		Mult:         aim[c.TalentLvlAttack()],
-		HitWeakPoint: true,
+		HitWeakPoint: weakspot == 1,
 	}
 	// d.AnimationFrames = f
 

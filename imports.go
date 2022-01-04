@@ -109,6 +109,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/pines"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/rainslasher"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/redhorn"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/royal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/sacrifical"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/sealord"
