@@ -64,7 +64,7 @@ func (c *char) c2() {
 		char.AddMod(core.CharStatMod{
 			Key:    "barbara-c2",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				if c.Core.Status.Duration("barbskill") >= 0 {
 					return val, true
 				} else {
