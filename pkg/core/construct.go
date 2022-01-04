@@ -8,6 +8,7 @@ const (
 	GeoConstructTravellerSkill
 	GeoConstructTravellerBurst
 	GeoConstructAlbedoSkill
+	GeoConstructIttoSkill
 	EndGeoConstructType
 )
 
