@@ -171,7 +171,7 @@ func (c *char) barbaraWet(ai core.AttackInfo, skillInitF int) func() {
 		}
 		c.Core.Log.Debugw("barbara wet ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 5)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 5)
 
 		// tick per 5 seconds
 		c.AddTask(c.barbaraWet(ai, skillInitF), "barbara-wet", 90)
