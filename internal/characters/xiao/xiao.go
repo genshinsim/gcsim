@@ -38,7 +38,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassSpear
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.NormalHitNum = 5
+	c.NormalHitNum = 6
 
 	c.eChargeMax = 2
 	if c.Base.Cons >= 1 {

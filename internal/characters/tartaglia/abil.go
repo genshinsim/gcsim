@@ -86,10 +86,8 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		travel = 20
 	}
-	hitWeakPoint, ok := p["hitWeakPoint"]
-	if !ok {
-		hitWeakPoint = 0
-	}
+	weakspot, ok := p["weakspot"]
+
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim (Charged)",
@@ -100,7 +98,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		Element:      core.Hydro,
 		Durability:   25,
 		Mult:         aim[c.TalentLvlAttack()],
-		HitWeakPoint: hitWeakPoint != 0,
+		HitWeakPoint: weakspot == 1,
 	}
 
 	c.Core.Combat.QueueAttack(

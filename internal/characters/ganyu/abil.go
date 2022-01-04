@@ -43,6 +43,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		bloom = 20
 	}
+	weakspot, ok := p["weakspot"]
 
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
@@ -54,7 +55,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		Element:      core.Cryo,
 		Durability:   25,
 		Mult:         ffa[c.TalentLvlAttack()],
-		HitWeakPoint: true,
+		HitWeakPoint: weakspot == 1,
 	}
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)

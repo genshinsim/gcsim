@@ -39,6 +39,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		travel = 20
 	}
+	weakspot, ok := p["weakspot"]
 
 	b := p["bunny"]
 
@@ -62,7 +63,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		Element:      core.Pyro,
 		Durability:   50,
 		Mult:         aim[c.TalentLvlAttack()],
-		HitWeakPoint: true,
+		HitWeakPoint: weakspot == 1,
 	}
 
 	// d.AnimationFrames = f

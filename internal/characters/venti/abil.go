@@ -40,6 +40,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		travel = 20
 	}
+	weakspot, ok := p["weakspot"]
 
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
@@ -50,7 +51,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		Element:      core.Anemo,
 		Durability:   25,
 		Mult:         aim[c.TalentLvlAttack()],
-		HitWeakPoint: true,
+		HitWeakPoint: weakspot == 1,
 	}
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, core.TargettableEnemy), f, travel+f)
