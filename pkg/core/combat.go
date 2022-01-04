@@ -192,8 +192,13 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 		// 	)
 		// }
 
-		char := c.core.Chars[cpy.Info.ActorIndex]
-		char.PreDamageSnapshotAdjust(&cpy, t)
+		if !cpy.Info.SourceIsSim {
+			if cpy.Info.ActorIndex < 0 {
+				log.Println(cpy)
+			}
+			char := c.core.Chars[cpy.Info.ActorIndex]
+			char.PreDamageSnapshotAdjust(&cpy, t)
+		}
 
 		dmg, crit := t.Attack(&cpy)
 		total += dmg

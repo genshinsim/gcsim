@@ -90,9 +90,14 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 			if t.Type() != core.TargettableEnemy {
 				return false
 			}
+			atk := args[1].(*core.AttackEvent)
+
+			//skip if do not log
+			if atk.Info.DoNotLog {
+				return false
+			}
 
 			dmg := args[2].(float64)
-			atk := args[1].(*core.AttackEvent)
 			sb.Reset()
 			sb.WriteString(atk.Info.Abil)
 			if atk.Info.Amped {

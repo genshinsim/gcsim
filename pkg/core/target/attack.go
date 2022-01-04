@@ -135,8 +135,12 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	}
 
 	//reduce damage by damage group
-	x := t.GroupTagDamageMult(atk.Info.ICDGroup, atk.Info.ActorIndex)
-	damage = damage * x
+	x := 1.0
+	if !atk.Info.SourceIsSim {
+		x = t.GroupTagDamageMult(atk.Info.ICDGroup, atk.Info.ActorIndex)
+		damage = damage * x
+	}
+
 	if damage == 0 {
 		isCrit = false
 	}
