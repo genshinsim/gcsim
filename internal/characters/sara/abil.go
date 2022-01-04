@@ -46,11 +46,8 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		travel = 20
 	}
-	weakPoint, ok := p["weak_point"]
-	hitWeakPoint := true
-	if weakPoint == 0 {
-		hitWeakPoint = false
-	}
+	weakspot, ok := p["weakspot"]
+
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim Charge Attack",
@@ -61,7 +58,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		Element:      core.Electro,
 		Durability:   25,
 		Mult:         aimChargeFull[c.TalentLvlAttack()],
-		HitWeakPoint: hitWeakPoint,
+		HitWeakPoint: weakspot == 1,
 	}
 	// d.AnimationFrames = f
 	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)

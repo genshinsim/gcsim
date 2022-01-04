@@ -45,17 +45,19 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	if !ok {
 		travel = 20
 	}
+	weakspot, ok := p["weakspot"]
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Shot",
 		// TODO: Not sure about CA ICD
-		AttackTag:  core.AttackTagExtra,
-		ICDTag:     core.ICDTagExtraAttack,
-		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
-		Durability: 25,
-		Mult:       aim[c.TalentLvlAttack()],
+		AttackTag:    core.AttackTagExtra,
+		ICDTag:       core.ICDTagExtraAttack,
+		ICDGroup:     core.ICDGroupDefault,
+		Element:      core.Cryo,
+		Durability:   25,
+		Mult:         aim[c.TalentLvlAttack()],
+		HitWeakPoint: weakspot == 1,
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f+travel)
 

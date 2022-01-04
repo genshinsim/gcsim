@@ -220,9 +220,10 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 	}
 	c.PreDamageMods = c.PreDamageMods[:n]
 	if c.Core.Flags.LogDebug {
-		logDetails = append(logDetails,
-			zap.Any("attack_tag", a),
-		)
+		// Not required for most users, but useful for debug
+		// logDetails = append(logDetails,
+		// 	zap.Any("attack_tag", a),
+		// )
 		c.Core.Log.Desugar().Debug(a.Info.Abil, logDetails...)
 	}
 

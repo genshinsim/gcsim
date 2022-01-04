@@ -57,18 +57,19 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	elePer := 0.0
 	if st > -1 {
 		elePer = atk.Snapshot.Stats[st]
-		t.Core.Log.Debugw("ele lookup ok",
-			"frame", t.Core.F,
-			"event", core.LogCalc,
-			"char", atk.Info.ActorIndex,
-			"attack_tag", atk.Info.AttackTag,
-			"ele", atk.Info.Element,
-			"st", st,
-			"percent", atk.Snapshot.Stats[st],
-			"abil", atk.Info.Abil,
-			"stats", atk.Snapshot.Stats,
-			"target", t.TargetIndex,
-		)
+		// Generally not needed except for sim issues
+		// t.Core.Log.Debugw("ele lookup ok",
+		// 	"frame", t.Core.F,
+		// 	"event", core.LogCalc,
+		// 	"char", atk.Info.ActorIndex,
+		// 	"attack_tag", atk.Info.AttackTag,
+		// 	"ele", atk.Info.Element,
+		// 	"st", st,
+		// 	"percent", atk.Snapshot.Stats[st],
+		// 	"abil", atk.Info.Abil,
+		// 	"stats", atk.Snapshot.Stats,
+		// 	"target", t.TargetIndex,
+		// )
 	}
 	dmgBonus := elePer + atk.Snapshot.Stats[core.DmgP]
 

@@ -221,11 +221,10 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 	n := len(data)
 
 	// TODO: Kind of brittle - maybe track something separate for this?
-	targetCount := len(data[0].DamageByCharByTargets[0])
 	charCount := len(chars)
 	result.DPS.Min = math.MaxFloat64
 	result.DPS.Max = -1
-	result.DPSByTarget = make(map[int]FloatResult, targetCount)
+	result.DPSByTarget = make(map[int]FloatResult)
 	result.DamageOverTime = make(map[string]FloatResult)
 	if detailed {
 		result.ReactionsTriggered = make(map[core.ReactionType]IntResult)
@@ -456,11 +455,11 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 	}
 
 	// Get total DPS by Target stats here
-	for i := 0; i < targetCount; i++ {
-		for _, char := range result.DamageByCharByTargets {
-			dpsResult := result.DPSByTarget[i]
-			dpsResult.Mean += char[i].Mean
-			result.DPSByTarget[i] = dpsResult
+	for _, char := range result.DamageByCharByTargets {
+		for idxTarget, dpsFigure := range char {
+			dpsResult := result.DPSByTarget[idxTarget]
+			dpsResult.Mean += dpsFigure.Mean
+			result.DPSByTarget[idxTarget] = dpsResult
 		}
 	}
 
@@ -489,22 +488,23 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 	}
 
 	// Get standard deviations for statistics
-	targetDamage := make(map[int]float64, targetCount)
+	targetDamage := make(map[int]float64)
 	for _, v := range data {
 		result.DPS.SD += (v.DPS - result.DPS.Mean) * (v.DPS - result.DPS.Mean)
 
 		dd := float64(v.Duration) / 60 //sim reports in frames
-		// Reset array
-		for j := 0; j < targetCount; j++ {
-			for _, charTargetDmg := range v.DamageByCharByTargets {
-				targetDamage[j] += charTargetDmg[j] / float64(dd)
+		for _, charDmg := range v.DamageByCharByTargets {
+			for idxTarget, dmg := range charDmg {
+				targetDamage[idxTarget] += dmg / float64(dd)
 			}
-			dpsTarget := result.DPSByTarget[j]
-			dpsTarget.SD += (targetDamage[j] - dpsTarget.Mean) * (targetDamage[j] - dpsTarget.Mean)
-			result.DPSByTarget[j] = dpsTarget
+		}
+		for idxTarget, dmg := range targetDamage {
+			dpsTarget := result.DPSByTarget[idxTarget]
+			dpsTarget.SD += (dmg - dpsTarget.Mean) * (dmg - dpsTarget.Mean)
+			result.DPSByTarget[idxTarget] = dpsTarget
 
 			// Reset
-			targetDamage[j] = 0
+			targetDamage[idxTarget] = 0
 		}
 		if mode {
 			result.Duration.SD += (float64(v.Duration) - result.Duration.Mean) * (float64(v.Duration) - result.Duration.Mean)
@@ -512,10 +512,11 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 	}
 
 	result.DPS.SD = math.Sqrt(result.DPS.SD / float64(n))
-	for j := 0; j < targetCount; j++ {
-		dpsTargetRollup := result.DPSByTarget[j]
+
+	for idxTarget := range result.DPSByTarget {
+		dpsTargetRollup := result.DPSByTarget[idxTarget]
 		dpsTargetRollup.SD = math.Sqrt(dpsTargetRollup.SD / float64(n))
-		result.DPSByTarget[j] = dpsTargetRollup
+		result.DPSByTarget[idxTarget] = dpsTargetRollup
 	}
 
 	// required ER
@@ -737,7 +738,7 @@ func (r *Result) PrettyPrint() string {
 			keys = append(keys, k)
 		}
 		sort.Ints(keys)
-		for i := range keys {
+		for _, i := range keys {
 			sb.WriteString(fmt.Sprintf("%v (%.2f%% of total): Average %.2f DPS over %.2f seconds (std: %.2f)\n", i, 100*r.DPSByTarget[i].Mean/r.DPS.Mean, r.DPSByTarget[i].Mean, r.Duration.Mean, r.DPSByTarget[i].SD))
 		}
 	}
