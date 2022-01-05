@@ -129,6 +129,8 @@ var CharNameToKey = map[string]Char{
 	"zhongli":            Zhongli,
 	"gorou":              Gorou,
 	"aratakiitto":        Itto,
+	"shenhe":             Shenhe,
+	"yunjin":             Yunjin,
 }
 
 var charNames = []string{

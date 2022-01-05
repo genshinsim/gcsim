@@ -282,7 +282,15 @@ func (c *char) quillDamageMod() {
 			if consumeStack { //c6
 				c.quillcount[c.Core.ActiveChar]--
 			}
-			c.Core.Log.Debugw("Shenhe Quill proc dmg add", "frame", c.Core.F, "event", core.LogCalc, "char", c.Core.Chars[c.Core.ActiveChar].Name(), "lastproc", atk.Info.FlatDmg, "effect_ends_at", c.Core.Status.Duration("shenheQuill"), "quills left")
+			c.Core.Log.Debugw(
+				"Shenhe Quill proc dmg add",
+				"frame", c.Core.F,
+				"event", core.LogCalc,
+				"char", c.Core.ActiveChar,
+				"lastproc", atk.Info.FlatDmg,
+				"effect_ends_at", c.Core.Status.Duration("shenheQuill"),
+				"quills left", c.quillcount[c.Core.ActiveChar],
+			)
 			if c.Base.Cons >= 4 {
 				if c.c4count < 50 {
 					c.c4count++

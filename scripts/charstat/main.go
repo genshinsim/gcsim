@@ -172,4 +172,6 @@ var CharNameToKey = map[string]string{
 	"aratakiitto":       "Itto",
 	"aether":            "TravelerMale",
 	"lumine":            "TravelerFemale",
+	"shenhe":            "Shenhe",
+	"yunjin":            "Yunjin",
 }

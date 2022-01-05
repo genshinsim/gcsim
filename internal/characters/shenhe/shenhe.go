@@ -53,6 +53,7 @@ func (c *char) Init(index int) {
 	// 	c.c6()
 	// }
 	c.a2()
+	c.quillcount = make([]int, len(c.Core.Chars))
 }
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
