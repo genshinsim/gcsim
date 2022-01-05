@@ -84,6 +84,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 3, core.Cryo, f+100)
 
+	c.skillPressBuff()
 	c.SetCD(core.ActionSkill, 10*60)
 
 	return f, a
@@ -110,6 +111,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 4, core.Cryo, f+100)
 
+	c.skillHoldBuff()
 	c.SetCD(core.ActionSkill, 15*60)
 
 	return f, a
@@ -199,4 +201,44 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.ConsumeEnergy(12)
 
 	return f, a
+}
+
+func (c *char) skillPressBuff() {
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.15
+	for i, char := range c.Core.Chars {
+		if i == c.Index {
+			continue
+		}
+		char.AddMod(core.CharStatMod{
+			Key:    "shenhe-a2",
+			Expiry: c.Core.F + 10*60,
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				if a != core.AttackTagElementalBurst && a != core.AttackTagElementalArt && a != core.AttackTagElementalArtHold {
+					return nil, false
+				}
+				return val, true
+			},
+		})
+	}
+}
+
+func (c *char) skillHoldBuff() {
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.15
+	for i, char := range c.Core.Chars {
+		if i == c.Index {
+			continue
+		}
+		char.AddMod(core.CharStatMod{
+			Key:    "shenhe-a2",
+			Expiry: c.Core.F + 15*60,
+			Amount: func(a core.AttackTag) ([]float64, bool) {
+				if a != core.AttackTagNormal && a != core.AttackTagExtra && a != core.AttackTagPlunge {
+					return nil, false
+				}
+				return val, true
+			},
+		})
+	}
 }

@@ -12,6 +12,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
+	c4count int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -28,17 +29,17 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.CharZone = core.ZoneLiyue
+	c.c4count = 0
 
 	return &c, nil
 }
 
 func (c *char) Init(index int) {
 	c.Tmpl.Init(index)
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
+	// if c.Base.Cons >= 6 {
+	// 	c.c6()
+	// }
 	c.a2()
-	c.a4()
 }
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
@@ -85,10 +86,13 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 // inspired from barbara c2
-// technically always assumes you are inside shenhe burst
+// TODO: technically always assumes you are inside shenhe burst
 func (c *char) a2() {
 	val := make([]float64, core.EndStatType)
 	val[core.CryoP] = 0.15
+	if c.Base.Cons >= 2 {
+		val[core.CryoP] += 0.15
+	}
 	for i, char := range c.Core.Chars {
 		if i == c.Index {
 			continue
@@ -102,58 +106,6 @@ func (c *char) a2() {
 				} else {
 					return nil, false
 				}
-			},
-		})
-	}
-}
-
-func (c *char) a4() {
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.15
-	for i, char := range c.Core.Chars {
-		if i == c.Index {
-			continue
-		}
-		char.AddMod(core.CharStatMod{
-			Key: "shenhe-a2",
-			Expiry: func() int {
-				if c.Core.Status.Duration("shenheskillpress") >= 0 {
-					return c.Core.F + c.Core.Status.Duration("shenheskillpress")
-				} else if c.Core.Status.Duration("shenheskillhold") >= 0 {
-					return c.Core.F + c.Core.Status.Duration("shenheskillhold")
-				} else {
-					return 0
-				}
-			}(),
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if c.Core.Status.Duration("shenheskillpress") >= 0 {
-					if a != core.AttackTagElementalBurst && a != core.AttackTagElementalArt && a != core.AttackTagElementalArtHold {
-						return nil, false
-					}
-					return val, true
-				} else if c.Core.Status.Duration("shenheskillhold") >= 0 {
-					if a != core.AttackTagNormal && a != core.AttackTagExtra && a != core.AttackTagPlunge {
-						return nil, false
-					}
-					return val, true
-				} else {
-					return nil, false
-				}
-			},
-		})
-	}
-}
-
-func (c *char) c6() {
-	m := make([]float64, core.EndStatType)
-	m[core.PyroP] = 0.15
-
-	for _, char := range c.Core.Chars {
-		char.AddMod(core.CharStatMod{
-			Key:    "xl-c6",
-			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				return m, c.Core.Status.Duration("xlc6") > 0
 			},
 		})
 	}

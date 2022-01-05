@@ -39,7 +39,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Xiangling, core.Pyro, 6)
+	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
