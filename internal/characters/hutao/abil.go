@@ -124,7 +124,7 @@ func (c *char) bbtickfunc(src int) func() {
 		if c.Base.Cons >= 2 {
 			ai.FlatDmg += c.HPMax * 0.1
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(0, core.TargettableEnemy), 0, 0)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 0)
 		c.Core.Log.Debugw("Blood Blossom ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+240, "dur", c.Core.Status.Duration("htbb"), "src", src)
 		//only queue if next tick buff will be active still
 		// if c.Core.F+240 > c.CD["bb"] {

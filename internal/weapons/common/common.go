@@ -138,6 +138,10 @@ func Sacrificial(char core.Character, c *core.Core, r int, param map[string]int)
 	last := 0
 	prob := 0.3 + float64(r)*0.1
 	cd := (34 - r*4) * 60
+
+	if r >= 4 {
+		cd = (19 - (r-4)*3) * 60
+	}
 	//add on crit effect
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
@@ -155,7 +159,7 @@ func Sacrificial(char core.Character, c *core.Core, r int, param map[string]int)
 		}
 		if c.Rand.Float64() < prob {
 			char.ResetActionCooldown(core.ActionSkill)
-			last = c.F + cd
+			last = c.F
 			c.Log.Debugw("sacrificial proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex())
 		}
 		return false

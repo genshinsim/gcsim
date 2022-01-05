@@ -291,6 +291,12 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 			//add 2.1s = 126 frames
 			val := make([]float64, core.EndStatType)
 			val[core.ATK] = atk
+
+			// 15% Pyro damage percent bonus applies to all characters in the field, regardless of weapon type
+			if c.Base.Cons == 6 {
+				val[core.PyroP] = 0.15
+			}
+
 			active.AddMod(core.CharStatMod{
 				Key: "bennett-field",
 				Amount: func() ([]float64, bool) {

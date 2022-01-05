@@ -179,6 +179,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	fa := mult * burstDefSnapshot
 	val[core.ATK] = fa
 
+	// Not sure if something else in the code can modify this - to be safe, copy this for the burst extension
+	valCopy := make([]float64, core.EndStatType)
+	copy(valCopy, val)
+
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
 	c.AddMod(core.CharStatMod{
 		Key:    "noelle-burst",
@@ -190,6 +194,27 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Log.Debugw("noelle burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
 
 	c.Core.Status.AddStatus("noelleq", 900+f)
+
+	// Queue up task for Noelle burst extension
+	// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
+	if c.Base.Cons >= 6 {
+		c.AddTask(func() {
+			if c.Core.ActiveChar == c.Index {
+				return
+			}
+			c.Core.Log.Debugw("noelle max burst extension activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new_expiry", c.Core.F+600)
+
+			// Adding the mod again with the same key replaces it
+			c.AddMod(core.CharStatMod{
+				Key:    "noelle-burst",
+				Expiry: c.Core.F + 600,
+				Amount: func() ([]float64, bool) {
+					return valCopy, true
+				},
+			})
+			c.Core.Status.AddStatus("noelleq", 600)
+		}, "noelle-c6-burst-extension", 900+f)
+	}
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
