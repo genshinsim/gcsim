@@ -65,10 +65,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			val[core.PhyP] = 0.12 + 0.03*mod
 			val[core.DendroP] = 0.12 + 0.03*mod
 			if c.ActiveChar == char.CharIndex() {
-				val[core.ATKP] = 0.032 * 2.0 * float64(stacks)
+				val[core.ATKP] = (0.032 + mod*0.008) * 2.0 * float64(stacks)
 
 			} else {
-				val[core.ATKP] = 0.032 * float64(stacks)
+				val[core.ATKP] = (0.032 + mod*0.008) * float64(stacks)
 			}
 			return val, true
 		},
