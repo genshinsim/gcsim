@@ -122,7 +122,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 4, core.Cryo, f+100)
 
-	c.AddTask(c.skillPressBuff, "shenhe (hold) quill start", f+1)
+	c.AddTask(c.skillHoldBuff, "shenhe (hold) quill start", f+1)
 	c.Core.Status.AddStatus(quillKey, 15*60)
 	c.SetCD(core.ActionSkill, 15*60)
 
