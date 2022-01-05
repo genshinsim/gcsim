@@ -79,7 +79,8 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.AddTask(c.skillPressBuff, "shenhe (press) quill start", f+1)
+	// c.AddTask(c.skillPressBuff, "shenhe (press) quill start", f-1)
+	c.skillPressBuff()
 	c.Core.Status.AddStatus(quillKey, 10*60)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
@@ -119,7 +120,8 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	}
 
 	// First hit comes out 20 frames before second
-	c.AddTask(c.skillHoldBuff, "shenhe (hold) quill start", f+1)
+	// c.AddTask(c.skillHoldBuff, "shenhe (hold) quill start", f-1)
+	c.skillHoldBuff()
 	c.Core.Status.AddStatus(quillKey, 15*60)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
 
