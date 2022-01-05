@@ -207,6 +207,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.AddTask(func() {
 		snap := c.Snapshot(&ai)
+		c.Core.Status.AddStatus("shenheburst", dur)
 		//TODO: check this accuracy? Siri's sheet has 137 per
 		// dot every 2 second, double tick shortly after another
 		for i := 0; i < count; i++ {
@@ -215,10 +216,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}, "shenhe-snapshot", f)
 
-	c.Core.Status.AddStatus("shenheburst", dur)
-
 	c.SetCD(core.ActionBurst, 20*60)
-	c.ConsumeEnergy(1)
+	c.ConsumeEnergy(0)
 
 	return f, a
 }

@@ -19,7 +19,8 @@ type Simulation struct {
 	cfg  core.Config
 	opts core.RunOpt
 	// queue
-	queue []core.Command
+	queue             []core.Command
+	dropQueueIfFailed bool
 	//hurt event
 	lastHurt int
 	//energy event

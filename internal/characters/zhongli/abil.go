@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	cd := 240
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	max, ok := p["max"]
+	max, ok := p["res_count"]
 	if !ok {
 		max = 3
 	}
@@ -104,7 +104,7 @@ func (c *char) skillHold(f, max int, createStele bool) {
 	//make a shield - enemy debuff arrows appear 3-5 frames after the damage number shows up in game
 	c.AddTask(func() {
 		c.addJadeShield()
-	}, "zhongli-create-shield", f+3)
+	}, "zhongli-create-shield", f-1)
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {

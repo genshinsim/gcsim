@@ -68,8 +68,8 @@ func (q *Queuer) Next() (next []Command, dropIfNotReady bool, err error) {
 				"item queued",
 				"frame", q.core.F,
 				"event", LogQueueEvent,
-				"full", q.pq[i],
 				"queued", next,
+				"full", q.pq[i],
 			)
 
 			if v.Type == ActionBlockTypeWait {

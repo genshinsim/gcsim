@@ -123,13 +123,15 @@ func (p *Parser) acceptActionBlockFlags(a *core.ActionBlock) error {
 			p.backup()
 			break
 		}
-		x, err = p.consume(itemNumber)
-		if err == nil {
-			var val int
-			val, err = itemNumberToInt(x)
-			if val == 0 {
-				a.TryDropIfNotReady = true
-			}
+		//next should be try or drop
+		n = p.next()
+		switch n.typ {
+		case itemDrop:
+			a.TryDropIfNotReady = true
+		case itemWait:
+			a.TryDropIfNotReady = false
+		default:
+			err = fmt.Errorf("unexpected token after try=, expecting drop or wait, got %v at line %v", n, p.tokens)
 		}
 	}
 	return err

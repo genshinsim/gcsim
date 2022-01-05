@@ -18,7 +18,7 @@ func (s *Simulation) Run() (Stats, error) {
 		s.cfg.Energy.Active = false
 		s.C.Tasks.Add(func() {
 			s.C.Energy.DistributeParticle(core.Particle{
-				Source: "drop",
+				Source: "enemy",
 				Num:    s.cfg.Energy.Particles,
 				Ele:    core.NoElement,
 			})
@@ -64,7 +64,6 @@ func (s *Simulation) Run() (Stats, error) {
 func (s *Simulation) AdvanceFrame() error {
 	var done bool
 	var err error
-	var dropIfFailed bool
 	//advance frame
 	s.C.Tick()
 	//check for hurt dmg
@@ -85,7 +84,7 @@ func (s *Simulation) AdvanceFrame() error {
 	//check if queue has item, if not, queue up, otherwise execute
 	if len(s.queue) == 0 {
 		next, drop, err := s.C.Queue.Next()
-		dropIfFailed = drop
+		s.dropQueueIfFailed = drop
 
 		// s.C.Log.Debugw("queue check - next queued",
 		// 	"frame", s.C.F,
@@ -136,19 +135,22 @@ func (s *Simulation) AdvanceFrame() error {
 			}
 			//pop queue
 			s.queue = s.queue[1:]
-			// s.C.Log.Debugw("queue check - after exec",
-			// 	"frame", s.C.F,
-			// 	"event", core.LogQueueEvent,
-			// 	"remaining queue", s.queue,
-			// 	"skip", s.skip,
-			// 	"done", done,
-			// )
 		} else {
-			if dropIfFailed {
+			if s.dropQueueIfFailed {
 				//drop rest of the queue
 				s.queue = s.queue[:0]
+				//reset
+				s.dropQueueIfFailed = false
 			}
 		}
+		// s.C.Log.Debugw("queue check - after exec",
+		// 	"frame", s.C.F,
+		// 	"event", core.LogQueueEvent,
+		// 	"remaining queue", s.queue,
+		// 	"skip", s.skip,
+		// 	"done", done,
+		// 	"dropIfFailed", s.dropQueueIfFailed,
+		// )
 	}
 	return nil
 }

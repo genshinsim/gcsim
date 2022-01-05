@@ -45,6 +45,7 @@ var key = map[string]ItemType{
 	"limit":      itemLimit,
 	"timeout":    itemTimeout,
 	"try":        itemTry,
+	"drop":       itemDrop,
 	// ??
 	"value":  itemValue,
 	"max":    itemMax,

@@ -109,6 +109,7 @@ const (
 	itemTry      // try
 	itemTimeout  // timeout
 	itemNeeds    // needs
+	itemDrop     // drop
 	// these are wait specific key words
 
 	itemValue  // value
