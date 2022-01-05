@@ -49,6 +49,7 @@ func TestBasicAbilUsage(t *testing.T) {
 	}
 	c.Chars = append(c.Chars, x)
 	c.CharPos[prof.Base.Key] = 0
+	c.Init()
 	//add targets to test with
 	eProf := tests.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
