@@ -78,12 +78,6 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
-
-	if c.Base.Cons >= 4 && c.Core.F < c.c4expiry { // TODO: Not sure about this
-		ai.Mult = ai.Mult * (1 + float64(c.c4count)*0.05)
-		c.c4count = 0
-		c.c4expiry = c.Core.F
-	}
 	// First hit comes out 20 frames before second
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-20, f-20)
 
@@ -123,11 +117,6 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	if c.Base.Cons >= 4 && c.Core.F < c.c4expiry { // TODO: Not sure about this
-		ai.Mult = ai.Mult * (1 + float64(c.c4count)*0.05)
-		c.c4count = 0
-		c.c4expiry = c.Core.F
-	}
 	// First hit comes out 20 frames before second
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-20, f-20)
 
@@ -265,14 +254,16 @@ func (c *char) quillDamageMod() {
 
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
-		at := atk.Info.AttackTag
+		consumeStack := true
 		if atk.Info.Element == core.Cryo {
-			switch at {
+			switch atk.Info.AttackTag {
 			case core.AttackTagElementalBurst:
 			case core.AttackTagElementalArt:
 			case core.AttackTagElementalArtHold:
 			case core.AttackTagNormal:
+				consumeStack = c.Base.Cons < 6
 			case core.AttackTagExtra:
+				consumeStack = c.Base.Cons < 6
 			case core.AttackTagPlunge:
 			default:
 				return false
@@ -286,8 +277,9 @@ func (c *char) quillDamageMod() {
 		}
 
 		if c.quillcount[c.Core.ActiveChar] > 0 {
-			atk.Info.FlatDmg += skillpp[c.TalentLvlSkill()] * c.Stats[core.ATK]               //TODO: unsure of snapshotting atm
-			if c.Base.Cons < 6 || (at != core.AttackTagNormal && at != core.AttackTagExtra) { //c6
+			stats := c.SnapshotStats("Quills", core.AttackTagNone)
+			atk.Info.FlatDmg += skillpp[c.TalentLvlSkill()] * (c.Base.Atk*stats[core.ATKP] + stats[core.ATK])
+			if consumeStack { //c6
 				c.quillcount[c.Core.ActiveChar]--
 			}
 			c.Core.Log.Debugw("Shenhe Quill proc dmg add", "frame", c.Core.F, "event", core.LogCalc, "char", c.Core.Chars[c.Core.ActiveChar].Name(), "lastproc", atk.Info.FlatDmg, "effect_ends_at", c.Core.Status.Duration("shenheQuill"), "quills left")

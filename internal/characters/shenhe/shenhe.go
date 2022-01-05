@@ -40,6 +40,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 1 {
 		c.eChargeMax = 2
 	}
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
 
 	return &c, nil
 }
@@ -119,4 +122,25 @@ func (c *char) a2() {
 			},
 		})
 	}
+}
+
+func (c *char) c4() {
+	c.AddPreDamageMod(core.PreDamageMod{
+		Expiry: -1,
+		Key:    "shenhe-c4",
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			val := make([]float64, core.EndStatType)
+
+			if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
+				return nil, false
+			}
+			if c.Core.F >= c.c4expiry {
+				return nil, false
+			}
+			val[core.DmgP] += 0.05 * float64(c.c4count)
+			c.c4count = 0
+			c.c4expiry = 0
+			return val, true
+		},
+	})
 }
