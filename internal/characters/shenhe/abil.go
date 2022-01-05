@@ -79,14 +79,16 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
+	c.AddTask(c.skillPressBuff, "shenhe (press) quill start", f+1)
+	c.Core.Status.AddStatus(quillKey, 10*60)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
 	// Particles are emitted after the second hit lands
-	c.QueueParticle("shenhe", 2, core.Cryo, f+100)
-	c.AddTask(c.skillPressBuff, "shenhe (press) quill start", f+1)
+	c.QueueParticle("shenhe", 3, core.Cryo, f+20)
 
-	c.Core.Status.AddStatus(quillKey, 10*60)
-	c.SetCD(core.ActionSkill, 10*60)
+	if c.eChargeMax == 1 {
+		c.eNextRecover = 15 * 60
+	}
 	// Handle E charges
 	if c.Tags["eCharge"] == 1 {
 		c.SetCD(core.ActionSkill, c.eNextRecover)
@@ -112,21 +114,23 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Cryo,
-		Durability: 25,
+		Durability: 50,
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
 	// First hit comes out 20 frames before second
+	c.AddTask(c.skillHoldBuff, "shenhe (hold) quill start", f+1)
+	c.Core.Status.AddStatus(quillKey, 15*60)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
 
 	// Particles are emitted after the second hit lands
-	c.QueueParticle("shenhe", 3, core.Cryo, f+100)
-
-	c.AddTask(c.skillHoldBuff, "shenhe (hold) quill start", f+1)
-	c.Core.Status.AddStatus(quillKey, 15*60)
-	c.SetCD(core.ActionSkill, 15*60)
+	c.QueueParticle("shenhe", 4, core.Cryo, f+40)
 
 	// Handle E charges
+
+	if c.eChargeMax == 1 {
+		c.eNextRecover = 15 * 60
+	}
 	if c.Tags["eCharge"] == 1 {
 		c.SetCD(core.ActionSkill, c.eNextRecover)
 	} else {
@@ -185,7 +189,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			Value:    -burstrespp[c.TalentLvlBurst()],
 		})
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 0, 10, cb, cb2)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 0, 15, cb, cb2)
 
 	// Burst is snapshot when the lance lands (when the 2nd damage proc hits)
 	ai = core.AttackInfo{
@@ -204,15 +208,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//TODO: check this accuracy? Siri's sheet has 137 per
 		// dot every 2 second, double tick shortly after another
 		for i := 0; i < count; i++ {
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+7)
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+18)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+50)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+80)
 		}
 	}, "shenhe-snapshot", f)
 
 	c.Core.Status.AddStatus("shenheburst", dur)
 
 	c.SetCD(core.ActionBurst, 20*60)
-	c.ConsumeEnergy(12)
+	c.ConsumeEnergy(1)
 
 	return f, a
 }
