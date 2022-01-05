@@ -47,6 +47,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
+	if c.Base.Cons >= 6 {
+		c.c6()
+	}
 
 	c.quillDamageMod()
 
@@ -80,9 +83,6 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 func (c *char) a2() {
 	val := make([]float64, core.EndStatType)
 	val[core.CryoP] = 0.15
-	if c.Base.Cons >= 2 {
-		val[core.CryoP] += 0.15
-	}
 	for i, char := range c.Core.Chars {
 		if i == c.Index {
 			continue
@@ -91,11 +91,32 @@ func (c *char) a2() {
 			Key:    "shenhe-a2",
 			Expiry: -1,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if c.Core.Status.Duration("shenheburst") >= 0 {
+				if c.Core.Status.Duration("shenheburst") > 0 {
 					return val, true
 				} else {
 					return nil, false
 				}
+			},
+		})
+	}
+}
+
+func (c *char) c6() {
+	val := make([]float64, core.EndStatType)
+	val[core.CD] = 0.15
+	for _, char := range c.Core.Chars {
+		char.AddPreDamageMod(core.PreDamageMod{
+			Key:    "shenhe-c2",
+			Expiry: -1,
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				//check if tags active
+				if c.Core.Status.Duration("shenheburst") <= 0 {
+					return nil, false
+				}
+				if atk.Info.Element != core.Cryo {
+					return nil, false
+				}
+				return val, true
 			},
 		})
 	}

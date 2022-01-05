@@ -82,7 +82,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
 	// Particles are emitted after the second hit lands
-	c.QueueParticle("shenhe", 3, core.Cryo, f+100)
+	c.QueueParticle("shenhe", 2, core.Cryo, f+100)
 	c.AddTask(c.skillPressBuff, "shenhe (press) quill start", f+1)
 
 	c.Core.Status.AddStatus(quillKey, 10*60)
@@ -120,7 +120,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
 
 	// Particles are emitted after the second hit lands
-	c.QueueParticle("shenhe", 4, core.Cryo, f+100)
+	c.QueueParticle("shenhe", 3, core.Cryo, f+100)
 
 	c.AddTask(c.skillHoldBuff, "shenhe (hold) quill start", f+1)
 	c.Core.Status.AddStatus(quillKey, 15*60)
@@ -207,7 +207,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+7)
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+18)
 		}
-	}, "shenhe-snapshot", f-10)
+	}, "shenhe-snapshot", f)
 
 	c.Core.Status.AddStatus("shenheburst", dur)
 
