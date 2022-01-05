@@ -7,6 +7,7 @@ import (
 func init() {
 	core.RegisterSetFunc("seal of insulation", New)
 	core.RegisterSetFunc("emblemofseveredfate", New)
+	core.RegisterSetFunc("esr", New)
 }
 
 func New(c core.Character, s *core.Core, count int, params map[string]int) {

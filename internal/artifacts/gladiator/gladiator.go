@@ -7,6 +7,7 @@ import (
 func init() {
 	core.RegisterSetFunc("gladiator's finale", New)
 	core.RegisterSetFunc("gladiatorsfinale", New)
+	core.RegisterSetFunc("gladiators", New)
 }
 
 func New(c core.Character, s *core.Core, count int, params map[string]int) {
