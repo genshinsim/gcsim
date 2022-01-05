@@ -174,15 +174,29 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	x, y := c.Core.Targets[0].Shape().Pos()
-	// Hit 1 comes out on frame 10
-	// 2nd hit comes after lance drop animation finishes
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 0, 10)
 
 	//duration is 12 second (extended by c2 by 6s)
 	dur := 12 * 60
 	if c.Base.Cons >= 2 {
 		dur += 6 * 60
 	}
+	// Hit 1 comes out on frame 10
+	// 2nd hit comes after lance drop animation finishes
+	cb := func(a core.AttackCB) {
+		a.Target.AddResMod("Shenhe Burst Shred (Cryo)", core.ResistMod{
+			Duration: dur,
+			Ele:      core.Cryo,
+			Value:    -burstrespp[c.TalentLvlBurst()],
+		})
+	}
+	cb2 := func(a core.AttackCB) {
+		a.Target.AddResMod("Shenhe Burst Shred (Phys)", core.ResistMod{
+			Duration: dur,
+			Ele:      core.Physical,
+			Value:    -burstrespp[c.TalentLvlBurst()],
+		})
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 0, 10, cb, cb2)
 
 	// Burst is snapshot when the lance lands (when the 2nd damage proc hits)
 	ai = core.AttackInfo{
