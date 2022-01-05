@@ -78,13 +78,13 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
-	// First hit comes out 20 frames before second
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-20, f-20)
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 3, core.Cryo, f+100)
+	c.AddTask(c.skillPressBuff, "shenhe (press) quill start", f+1)
 
-	c.skillPressBuff()
 	c.Core.Status.AddStatus(quillKey, 10*60)
 	c.SetCD(core.ActionSkill, 10*60)
 	// Handle E charges
@@ -117,12 +117,12 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	}
 
 	// First hit comes out 20 frames before second
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-20, f-20)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
 
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 4, core.Cryo, f+100)
 
-	c.skillHoldBuff()
+	c.AddTask(c.skillPressBuff, "shenhe (hold) quill start", f+1)
 	c.Core.Status.AddStatus(quillKey, 15*60)
 	c.SetCD(core.ActionSkill, 15*60)
 
