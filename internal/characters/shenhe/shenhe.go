@@ -62,36 +62,6 @@ func (c *char) Init(index int) {
 	c.quillcount = make([]int, len(c.Core.Chars))
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	switch a {
-	case core.ActionAttack:
-		f := 0
-		switch c.NormalCounter {
-		case 0:
-			f = 12
-		case 1:
-			f = 38 - 12
-		case 2:
-			f = 72 - 38
-		case 3:
-			f = 141 - 72
-		case 4:
-			f = 167 - 141
-		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f, f
-	case core.ActionSkill:
-		return 26, 26
-	case core.ActionBurst:
-		return 99, 99
-	case core.ActionCharge:
-		return 78, 78
-	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
-		return 0, 0
-	}
-}
-
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
 	case core.ActionDash:

@@ -164,8 +164,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//duration is 12 second (extended by c2 by 6s)
 	dur := 12 * 60
+	count := 5
 	if c.Base.Cons >= 2 {
 		dur += 6 * 60
+		count = 6
 	}
 	// Hit 1 comes out on frame 10
 	// 2nd hit comes after lance drop animation finishes
@@ -197,13 +199,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstdot[c.TalentLvlBurst()],
 	}
 
-	snap := c.Snapshot(&ai)
-
 	c.AddTask(func() {
+		snap := c.Snapshot(&ai)
+		//TODO: check this accuracy? Siri's sheet has 137 per
 		// dot every 2 second, double tick shortly after another
-		for i := 0; i < dur; i += 120 {
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), i+10)
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), i+30)
+		for i := 0; i < count; i++ {
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+7)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+18)
 		}
 	}, "shenhe-snapshot", f-10)
 
