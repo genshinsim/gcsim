@@ -85,8 +85,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	c.QueueParticle("shenhe", 3, core.Cryo, f+100)
 
 	c.skillPressBuff()
-	c.Core.Status.AddStatus("shenheQuill", 10*60)
-	c.quillDamageMod()
+	c.Core.Status.AddStatus(quillKey, 10*60)
 	c.SetCD(core.ActionSkill, 10*60)
 	// Handle E charges
 	if c.Tags["eCharge"] == 1 {
@@ -124,8 +123,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	c.QueueParticle("shenhe", 4, core.Cryo, f+100)
 
 	c.skillHoldBuff()
-	c.Core.Status.AddStatus("shenheQuill", 15*60)
-	c.quillDamageMod()
+	c.Core.Status.AddStatus(quillKey, 15*60)
 	c.SetCD(core.ActionSkill, 15*60)
 
 	// Handle E charges
@@ -199,11 +197,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstdot[c.TalentLvlBurst()],
 	}
 
+	snap := c.Snapshot(&ai)
+
 	c.AddTask(func() {
 		// dot every 2 second, double tick shortly after another
 		for i := 0; i < dur; i += 120 {
-			c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), 0, i+10)
-			c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), 0, i+30)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), i+10)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), i+30)
 		}
 	}, "shenhe-snapshot", f-10)
 
@@ -250,47 +250,50 @@ func (c *char) skillHoldBuff() {
 		})
 	}
 }
+
 func (c *char) quillDamageMod() {
 
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 		consumeStack := true
-		if atk.Info.Element == core.Cryo {
-			switch atk.Info.AttackTag {
-			case core.AttackTagElementalBurst:
-			case core.AttackTagElementalArt:
-			case core.AttackTagElementalArtHold:
-			case core.AttackTagNormal:
-				consumeStack = c.Base.Cons < 6
-			case core.AttackTagExtra:
-				consumeStack = c.Base.Cons < 6
-			case core.AttackTagPlunge:
-			default:
-				return false
-			}
-		} else {
+		if atk.Info.Element != core.Cryo {
 			return false
 		}
 
-		if c.Core.F < c.Core.Status.Duration("shenheQuill") {
+		switch atk.Info.AttackTag {
+		case core.AttackTagElementalBurst:
+		case core.AttackTagElementalArt:
+		case core.AttackTagElementalArtHold:
+		case core.AttackTagNormal:
+			consumeStack = c.Base.Cons < 6
+		case core.AttackTagExtra:
+			consumeStack = c.Base.Cons < 6
+		case core.AttackTagPlunge:
+		default:
 			return false
 		}
 
-		if c.quillcount[c.Core.ActiveChar] > 0 {
+		if c.Core.Status.Duration(quillKey) == 0 {
+			return false
+		}
+
+		if c.quillcount[atk.Info.ActorIndex] > 0 {
 			stats := c.SnapshotStats("Quills", core.AttackTagNone)
-			atk.Info.FlatDmg += skillpp[c.TalentLvlSkill()] * (c.Base.Atk*stats[core.ATKP] + stats[core.ATK])
+			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.Atk)*(1+stats[core.ATKP]) + stats[core.ATK])
 			if consumeStack { //c6
-				c.quillcount[c.Core.ActiveChar]--
+				c.quillcount[atk.Info.ActorIndex]--
 			}
 			c.Core.Log.Debugw(
 				"Shenhe Quill proc dmg add",
 				"frame", c.Core.F,
-				"event", core.LogCalc,
-				"char", c.Core.ActiveChar,
-				"lastproc", atk.Info.FlatDmg,
-				"effect_ends_at", c.Core.Status.Duration("shenheQuill"),
-				"quills left", c.quillcount[c.Core.ActiveChar],
+				"event", core.LogPreDamageMod,
+				"char", atk.Info.ActorIndex,
+				"before", atk.Info.FlatDmg,
+				"addition", amt,
+				"effect_ends_at", c.Core.Status.Duration(quillKey),
+				"quills left", c.quillcount[atk.Info.ActorIndex],
 			)
+			atk.Info.FlatDmg += amt
 			if c.Base.Cons >= 4 {
 				if c.c4count < 50 {
 					c.c4count++

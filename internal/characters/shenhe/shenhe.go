@@ -20,6 +20,10 @@ type char struct {
 	eChargeMax   int
 }
 
+const (
+	quillKey = "shenhequill"
+)
+
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
@@ -43,6 +47,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
+
+	c.quillDamageMod()
 
 	return &c, nil
 }
