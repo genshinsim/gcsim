@@ -26,6 +26,7 @@ type opts struct {
 	print     bool
 	js        string
 	debug     bool
+	debugPath string
 	debugHTML bool
 	seconds   int
 	config    string
@@ -45,6 +46,7 @@ func main() {
 	flag.BoolVar(&opt.print, "print", true, "print output to screen? default true")
 	flag.StringVar(&opt.js, "js", "", "output result to json? supply file path (otherwise empty string for disabled). default disabled")
 	flag.BoolVar(&opt.debug, "d", false, "show debug? default false")
+	flag.StringVar(&opt.debugPath, "do", "debug.html", "file name for debug file")
 	flag.BoolVar(&opt.debugHTML, "dh", true, "output debug html? default true (but only matters if debug is enabled)")
 	flag.IntVar(&opt.seconds, "s", 0, "how many seconds to run the sim for")
 	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use")
@@ -196,7 +198,7 @@ func runSingle(o opts) {
 			for i, v := range cfg.Characters.Profile {
 				chars[i] = v.Base.Key.String()
 			}
-			err = logtohtml.WriteString(out, "./debug.html", cfg.Characters.Initial.String(), chars)
+			err = logtohtml.WriteString(out, o.debugPath, cfg.Characters.Initial.String(), chars)
 			if err != nil {
 				log.Println(err)
 				os.Exit(1)
