@@ -78,6 +78,12 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
+
+	if c.Base.Cons >= 4 && c.Core.F < c.c4expiry { // TODO: Not sure about this
+		ai.Mult = ai.Mult * (1 + float64(c.c4count)*0.05)
+		c.c4count = 0
+		c.c4expiry = c.Core.F
+	}
 	// First hit comes out 20 frames before second
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-20, f-20)
 
@@ -85,8 +91,19 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	c.QueueParticle("shenhe", 3, core.Cryo, f+100)
 
 	c.skillPressBuff()
+	c.Core.Status.AddStatus("shenheQuill", 10*60)
+	c.quillDamageMod()
 	c.SetCD(core.ActionSkill, 10*60)
-
+	// Handle E charges
+	if c.Tags["eCharge"] == 1 {
+		c.SetCD(core.ActionSkill, c.eNextRecover)
+	} else {
+		c.eNextRecover = c.Core.F + 10*60
+		c.Core.Log.Debugw("shenhe e (press) charge used, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.eNextRecover)
+		c.AddTask(c.recoverCharge(c.Core.F, 10*60), "charge", 10*60)
+		c.eTickSrc = c.Core.F
+	}
+	c.Tags["eCharge"]--
 	return f, a
 }
 
@@ -98,22 +115,40 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spring Spirit Summoning (Hold)",
-		AttackTag:  core.AttackTagElementalArt,
+		AttackTag:  core.AttackTagElementalArtHold,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Cryo,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
+
+	if c.Base.Cons >= 4 && c.Core.F < c.c4expiry { // TODO: Not sure about this
+		ai.Mult = ai.Mult * (1 + float64(c.c4count)*0.05)
+		c.c4count = 0
+		c.c4expiry = c.Core.F
+	}
 	// First hit comes out 20 frames before second
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-20, f-20)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-20, f-20)
 
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 4, core.Cryo, f+100)
 
 	c.skillHoldBuff()
+	c.Core.Status.AddStatus("shenheQuill", 15*60)
+	c.quillDamageMod()
 	c.SetCD(core.ActionSkill, 15*60)
 
+	// Handle E charges
+	if c.Tags["eCharge"] == 1 {
+		c.SetCD(core.ActionSkill, c.eNextRecover)
+	} else {
+		c.eNextRecover = c.Core.F + 15*60
+		c.Core.Log.Debugw("shenhe e (hold) charge used, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.eNextRecover)
+		c.AddTask(c.recoverCharge(c.Core.F, 15*60), "charge", 15*60)
+		c.eTickSrc = c.Core.F
+	}
+	c.Tags["eCharge"]--
 	return f, a
 }
 
@@ -139,10 +174,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	x, y := c.Core.Targets[0].Shape().Pos()
-	var cb core.AttackCBFunc
 	// Hit 1 comes out on frame 10
 	// 2nd hit comes after lance drop animation finishes
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 1, false, core.TargettableEnemy), 10, 10, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 0, 10)
 
 	//duration is 12 second (extended by c2 by 6s)
 	dur := 12 * 60
@@ -163,9 +197,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.AddTask(func() {
-		// dot every 2 second after lance lands
-		for i := 120; i < dur; i += 120 {
-			c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), 0, i+10, cb)
+		// dot every 2 second, double tick shortly after another
+		for i := 0; i < dur; i += 120 {
+			c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), 0, i+10)
+			c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), 0, i+30)
 		}
 	}, "shenhe-snapshot", f-10)
 
@@ -181,11 +216,9 @@ func (c *char) skillPressBuff() {
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.15
 	for i, char := range c.Core.Chars {
-		if i == c.Index {
-			continue
-		}
+		c.quillcount[i] = 5
 		char.AddMod(core.CharStatMod{
-			Key:    "shenhe-a2",
+			Key:    "shenhe-a2-press",
 			Expiry: c.Core.F + 10*60,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				if a != core.AttackTagElementalBurst && a != core.AttackTagElementalArt && a != core.AttackTagElementalArtHold {
@@ -201,11 +234,9 @@ func (c *char) skillHoldBuff() {
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.15
 	for i, char := range c.Core.Chars {
-		if i == c.Index {
-			continue
-		}
+		c.quillcount[i] = 7
 		char.AddMod(core.CharStatMod{
-			Key:    "shenhe-a2",
+			Key:    "shenhe-a2-hold",
 			Expiry: c.Core.F + 15*60,
 			Amount: func(a core.AttackTag) ([]float64, bool) {
 				if a != core.AttackTagNormal && a != core.AttackTagExtra && a != core.AttackTagPlunge {
@@ -214,5 +245,67 @@ func (c *char) skillHoldBuff() {
 				return val, true
 			},
 		})
+	}
+}
+func (c *char) quillDamageMod() {
+
+	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*core.AttackEvent)
+		at := atk.Info.AttackTag
+		if atk.Info.Element == core.Cryo {
+			switch at {
+			case core.AttackTagElementalBurst:
+			case core.AttackTagElementalArt:
+			case core.AttackTagElementalArtHold:
+			case core.AttackTagNormal:
+			case core.AttackTagExtra:
+			case core.AttackTagPlunge:
+			default:
+				return false
+			}
+		} else {
+			return false
+		}
+
+		if c.Core.F < c.Core.Status.Duration("shenheQuill") {
+			return false
+		}
+
+		if c.quillcount[c.Core.ActiveChar] > 0 {
+			atk.Info.FlatDmg += skillpp[c.TalentLvlSkill()] * c.Stats[core.ATK]               //TODO: unsure of snapshotting atm
+			if c.Base.Cons < 6 || (at != core.AttackTagNormal && at != core.AttackTagExtra) { //c6
+				c.quillcount[c.Core.ActiveChar]--
+			}
+			c.Core.Log.Debugw("Shenhe Quill proc dmg add", "frame", c.Core.F, "event", core.LogCalc, "char", c.Core.Chars[c.Core.ActiveChar].Name(), "lastproc", atk.Info.FlatDmg, "effect_ends_at", c.Core.Status.Duration("shenheQuill"), "quills left")
+			if c.Base.Cons >= 4 {
+				if c.c4count < 50 {
+					c.c4count++
+				}
+				c.c4expiry = c.Core.F + 60*60
+			}
+		}
+
+		return false //not sure of correctness here
+	}, "shenhe-quill")
+}
+
+// Helper function that queues up shenhe e charge recovery - similar to other charge recovery functions
+func (c *char) recoverCharge(src int, cd int) func() {
+	return func() {
+		// Required stopper for recursion
+		if c.eTickSrc != src {
+			c.Core.Log.Debugw("shenhe e recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "new src", c.eTickSrc)
+			return
+		}
+		c.Tags["eCharge"]++
+		c.Core.Log.Debugw("shenhe e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "skill last used at", src, "total charges", c.Tags["eCharge"])
+		c.SetCD(core.ActionSkill, 0)
+		if c.Tags["eCharge"] >= c.eChargeMax {
+			return
+		}
+
+		c.eNextRecover = c.Core.F + cd
+		c.Core.Log.Debugw("shenhe e charge queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "recover at", c.eNextRecover)
+		c.AddTask(c.recoverCharge(src, cd), "charge", cd)
 	}
 }

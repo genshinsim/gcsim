@@ -12,7 +12,12 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	c4count int
+	quillcount   []int
+	c4count      int
+	c4expiry     int
+	eNextRecover int
+	eTickSrc     int
+	eChargeMax   int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -30,6 +35,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.CharZone = core.ZoneLiyue
 	c.c4count = 0
+	c.c4expiry = 0
+	c.eChargeMax = 1
+	if c.Base.Cons >= 1 {
+		c.eChargeMax = 2
+	}
 
 	return &c, nil
 }
