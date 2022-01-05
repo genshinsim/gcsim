@@ -222,11 +222,11 @@ func (c *char) skillPressBuff() {
 	val[core.DmgP] = 0.15
 	for i, char := range c.Core.Chars {
 		c.quillcount[i] = 5
-		char.AddMod(core.CharStatMod{
+		char.AddPreDamageMod(core.PreDamageMod{
 			Key:    "shenhe-a2-press",
 			Expiry: c.Core.F + 10*60,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if a != core.AttackTagElementalBurst && a != core.AttackTagElementalArt && a != core.AttackTagElementalArtHold {
+			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+				if a.Info.AttackTag != core.AttackTagElementalBurst && a.Info.AttackTag != core.AttackTagElementalArt && a.Info.AttackTag != core.AttackTagElementalArtHold {
 					return nil, false
 				}
 				return val, true
@@ -240,11 +240,11 @@ func (c *char) skillHoldBuff() {
 	val[core.DmgP] = 0.15
 	for i, char := range c.Core.Chars {
 		c.quillcount[i] = 7
-		char.AddMod(core.CharStatMod{
+		char.AddPreDamageMod(core.PreDamageMod{
 			Key:    "shenhe-a2-hold",
 			Expiry: c.Core.F + 15*60,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
-				if a != core.AttackTagNormal && a != core.AttackTagExtra && a != core.AttackTagPlunge {
+			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+				if a.Info.AttackTag != core.AttackTagNormal && a.Info.AttackTag != core.AttackTagExtra && a.Info.AttackTag != core.AttackTagPlunge {
 					return nil, false
 				}
 				return val, true

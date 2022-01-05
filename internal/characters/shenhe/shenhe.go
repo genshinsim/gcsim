@@ -90,7 +90,7 @@ func (c *char) a2() {
 		char.AddMod(core.CharStatMod{
 			Key:    "shenhe-a2",
 			Expiry: -1,
-			Amount: func(a core.AttackTag) ([]float64, bool) {
+			Amount: func() ([]float64, bool) {
 				if c.Core.Status.Duration("shenheburst") > 0 {
 					return val, true
 				} else {
