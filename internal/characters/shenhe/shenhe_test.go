@@ -23,6 +23,7 @@ func TestMain(m *testing.M) {
 	if debug != "" {
 		level = zapcore.DebugLevel
 	}
+	// level = zapcore.DebugLevel
 	config.Level = zap.NewAtomicLevelAt(level)
 	config.EncoderConfig.TimeKey = ""
 	log, _ := config.Build(zap.AddCallerSkip(1))
@@ -83,4 +84,698 @@ func TestBasicAbilUsage(t *testing.T) {
 		c.Tick()
 	}
 
+}
+
+func TestSkillCDCon0(t *testing.T) {
+	c, err := core.New(func(c *core.Core) error {
+		c.Log = logger
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof.Base.Cons = 0
+	x, err := NewChar(c, prof)
+	//cast it to *char so we can access private members
+	// this := x.(*char)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, x)
+	c.CharPos[prof.Base.Key] = 0
+	c.Init()
+	//add targets to test with
+	eProf := tests.EnemeyProfile()
+	c.Targets = append(c.Targets, player.New(0, c))
+	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
+	p := make(map[string]int)
+
+	sh := x.(*char)
+
+	var f int
+
+	f, _ = x.Skill(p)
+	for i := 0; i < f; i++ {
+		c.Tick()
+	}
+	//expecting skill to come up in f+10*60
+	for c.F < 599 {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//check action ready
+	if x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill shouldn't be ready yet")
+	}
+	//cooldown should be 1
+	if x.Cooldown(core.ActionSkill) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+
+	//use skill hold
+	p["hold"] = 1
+	x.Skill(p)
+	for i := 0; i < 15*60-1; i++ {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//check action ready
+	if x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill shouldn't be ready yet")
+	}
+	//cooldown should be 1
+	if x.Cooldown(core.ActionSkill) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+
+}
+
+func TestBurstCDBasic(t *testing.T) {
+	c, err := core.New(func(c *core.Core) error {
+		c.Log = logger
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	x, err := NewChar(c, prof)
+	//cast it to *char so we can access private members
+	// this := x.(*char)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, x)
+	c.CharPos[prof.Base.Key] = 0
+	c.Init()
+	//add targets to test with
+	eProf := tests.EnemeyProfile()
+	c.Targets = append(c.Targets, player.New(0, c))
+	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
+	p := make(map[string]int)
+
+	sh := x.(*char)
+
+	var f int
+
+	f, _ = x.Burst(p)
+	for i := 0; i < f; i++ {
+		c.Tick()
+	}
+	//expecting skill to come up in f+10*60
+	for c.F < 1200-1 {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionBurst] > 0 {
+		t.Errorf("expecting 0 burst stacks got %v", sh.availableCDCharge[core.ActionBurst])
+	}
+	//check action ready
+	if x.ActionReady(core.ActionBurst, p) {
+		t.Error("burst shouldn't be ready yet")
+	}
+	//cooldown should be 1
+	if x.Cooldown(core.ActionBurst) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionBurst))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionBurst] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", sh.availableCDCharge[core.ActionBurst])
+	}
+	//cooldown should be 0 since at least one avail?
+	if x.Cooldown(core.ActionBurst) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionBurst))
+	}
+	//action not ready since no energy
+	if x.ActionReady(core.ActionBurst, p) {
+		t.Error("burst should be ready since no energy")
+	}
+	sh.Energy = sh.MaxEnergy()
+	//action should be ready now
+	if !x.ActionReady(core.ActionBurst, p) {
+		t.Error("burst should be ready since stack >1")
+	}
+}
+
+func TestSkillCDCon1(t *testing.T) {
+	c, err := core.New(func(c *core.Core) error {
+		c.Log = logger
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof.Base.Cons = 1
+	x, err := NewChar(c, prof)
+	//cast it to *char so we can access private members
+	// this := x.(*char)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, x)
+	c.CharPos[prof.Base.Key] = 0
+	c.Init()
+	//add targets to test with
+	eProf := tests.EnemeyProfile()
+	c.Targets = append(c.Targets, player.New(0, c))
+	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
+	p := make(map[string]int)
+
+	sh := x.(*char)
+
+	var f int
+
+	f, _ = x.Skill(p)
+	for i := 0; i < f; i++ {
+		c.Tick()
+	}
+	//expecting skill to come up in f+10*60
+	for c.F < 599 {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+
+	//use skill hold
+	p["hold"] = 1
+	x.Skill(p)
+	for i := 0; i < 15*60-1; i++ {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//check action ready
+	if x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill shouldn't be ready yet")
+	}
+	//cooldown should be 1
+	if x.Cooldown(core.ActionSkill) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+
+	//use hold then press
+	p["hold"] = 1
+	x.Skill(p)
+	p["hold"] = 0
+	x.Skill(p)
+	//expecting 1 stack to be ready in +15, and another to be ready in +10
+	for i := 0; i < 15*60-1; i++ {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//check action ready
+	if x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill shouldn't be ready yet")
+	}
+	//cooldown should be 1
+	if x.Cooldown(core.ActionSkill) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	for i := 0; i < 10*60-1; i++ {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//action should be ready since we have 1 stack
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	//cooldown should be 0 since at least one avail?
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+
+	//use press then hold
+	p["hold"] = 0
+	x.Skill(p)
+	p["hold"] = 1
+	x.Skill(p)
+	//expecting 1 stack to be ready in +15, and another to be ready in +10
+	for i := 0; i < 10*60-1; i++ {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//check action ready
+	if x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill shouldn't be ready yet")
+	}
+	//cooldown should be 1
+	if x.Cooldown(core.ActionSkill) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	for i := 0; i < 15*60-1; i++ {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//action should be ready since we have 1 stack
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	//cooldown should be 0 since at least one avail?
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+
+}
+
+func TestFlatCDReduction(t *testing.T) {
+	c, err := core.New(func(c *core.Core) error {
+		c.Log = logger
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof.Base.Cons = 0
+	x, err := NewChar(c, prof)
+	//cast it to *char so we can access private members
+	// this := x.(*char)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, x)
+	c.CharPos[prof.Base.Key] = 0
+	c.Init()
+	//add targets to test with
+	eProf := tests.EnemeyProfile()
+	c.Targets = append(c.Targets, player.New(0, c))
+	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
+	p := make(map[string]int)
+
+	sh := x.(*char)
+
+	x.Skill(p)
+	//reduce cd by 10 frames, should come up at 590
+	x.ReduceActionCooldown(core.ActionSkill, 10)
+	for c.F < 589 {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if x.Cooldown(core.ActionSkill) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+
+	x.Skill(p)
+	for i := 0; i < 100; i++ {
+		c.Tick()
+	}
+	//at this point there shoudl be 500 frames left
+	//we're going to reduce by 1000 and make sure stacks and everything are correct
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if x.Cooldown(core.ActionSkill) != 500 {
+		t.Errorf("expecting cooldown to be 500, got %v", x.Cooldown(core.ActionSkill))
+	}
+	x.ReduceActionCooldown(core.ActionSkill, 1000)
+	//check now
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//and then keep looping for a while to make sure it doesn't get weird
+	for i := 0; i < 5000; i++ {
+		c.Tick()
+	}
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+
+}
+
+func TestFlatCDReductionCon1(t *testing.T) {
+	c, err := core.New(func(c *core.Core) error {
+		c.Log = logger
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof.Base.Cons = 1
+	x, err := NewChar(c, prof)
+	//cast it to *char so we can access private members
+	// this := x.(*char)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, x)
+	c.CharPos[prof.Base.Key] = 0
+	c.Init()
+	//add targets to test with
+	eProf := tests.EnemeyProfile()
+	c.Targets = append(c.Targets, player.New(0, c))
+	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
+	p := make(map[string]int)
+
+	sh := x.(*char)
+
+	// var f int
+
+	x.Skill(p)
+	p["hold"] = 1
+	x.Skill(p)
+	//reduce cd by 10 frames, should come up at 590
+	x.ReduceActionCooldown(core.ActionSkill, 10)
+	for c.F < 589 {
+		c.Tick()
+	}
+	//stack shouldn't be ready yet
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if x.Cooldown(core.ActionSkill) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+
+	//next one should be ready at 590 + 900
+	for c.F < 590+900-1 {
+		c.Tick()
+	}
+	//should be at 1 only
+	if sh.availableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 skill stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+}
+
+func TestResetSkillCD(t *testing.T) {
+	c, err := core.New(func(c *core.Core) error {
+		c.Log = logger
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof.Base.Cons = 1
+	x, err := NewChar(c, prof)
+	//cast it to *char so we can access private members
+	// this := x.(*char)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, x)
+	c.CharPos[prof.Base.Key] = 0
+	c.Init()
+	//add targets to test with
+	eProf := tests.EnemeyProfile()
+	c.Targets = append(c.Targets, player.New(0, c))
+	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
+	p := make(map[string]int)
+
+	sh := x.(*char)
+
+	x.Skill(p)
+	p["hold"] = 1
+	x.Skill(p)
+
+	for i := 0; i < 100; i++ {
+		c.Tick()
+	}
+	//first charge is 500 from recharging
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if x.Cooldown(core.ActionSkill) != 500 {
+		t.Errorf("expecting cooldown to be 500, got %v", x.Cooldown(core.ActionSkill))
+	}
+	x.ResetActionCooldown(core.ActionSkill)
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//next should be ready in 900 more frames
+	for i := 0; i < 899; i++ {
+		c.Tick()
+	}
+	//should be at 1 only
+	if sh.availableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 skill stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//and then keep looping for a while to make sure it doesn't get weird
+	for i := 0; i < 5000; i++ {
+		c.Tick()
+	}
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 1 burst stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+}
+
+func TestResetSkillCooldownReduction(t *testing.T) {
+	c, err := core.New(func(c *core.Core) error {
+		c.Log = logger
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof.Base.Cons = 1
+	x, err := NewChar(c, prof)
+	//cast it to *char so we can access private members
+	// this := x.(*char)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	c.Chars = append(c.Chars, x)
+	c.CharPos[prof.Base.Key] = 0
+	c.Init()
+	//add targets to test with
+	eProf := tests.EnemeyProfile()
+	c.Targets = append(c.Targets, player.New(0, c))
+	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
+	p := make(map[string]int)
+
+	sh := x.(*char)
+
+	x.Skill(p)
+	p["hold"] = 1
+	x.Skill(p)
+
+	for i := 0; i < 100; i++ {
+		c.Tick()
+	}
+	//first charge is 500 from recharging
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if x.Cooldown(core.ActionSkill) != 500 {
+		t.Errorf("expecting cooldown to be 500, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//add cooldown reduction here
+	//this shouldn't affect first charge duration
+	x.AddCDAdjustFunc(core.CDAdjust{
+		Key: "test",
+		Amount: func(a core.ActionType) float64 {
+			return -0.1
+		},
+		Expiry: -1,
+	})
+	for i := 0; i < 499; i++ {
+		c.Tick()
+	}
+	if sh.availableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if x.Cooldown(core.ActionSkill) != 1 {
+		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+
+	//next should be ready in 810 more frames (900 less 10%)
+	for i := 0; i < 809; i++ {
+		c.Tick()
+	}
+	//should be at 1 only
+	if sh.availableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	//1 more tick to be ready
+	c.Tick()
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 skill stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack == 2")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
+	//and then keep looping for a while to make sure it doesn't get weird
+	for i := 0; i < 5000; i++ {
+		c.Tick()
+	}
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 1 skill stacks got %v", sh.availableCDCharge[core.ActionSkill])
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Error("skill should be ready since stack >1")
+	}
+	if x.Cooldown(core.ActionSkill) != 0 {
+		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
+	}
 }

@@ -201,13 +201,14 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 			s.stats.ParticleCount[p.Source] += p.Num
 			return false
 		}, "particles-log")
-	}
 
-	s.C.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-		activeChar := s.C.Chars[s.C.ActiveChar]
-		s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
-		return false
-	}, "energy-calc-log")
+		s.C.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
+			activeChar := s.C.Chars[s.C.ActiveChar]
+			s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
+			return false
+		}, "energy-calc-log")
+
+	}
 
 	err = s.initQueuer(cfg)
 	if err != nil {
@@ -287,9 +288,10 @@ func (s *Simulation) initTargets(cfg core.Config) error {
 	s.C.Targets = make([]core.Target, len(cfg.Targets)+1)
 	if s.opts.LogDetails {
 		s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
+		s.stats.ElementUptime[0] = make(map[core.EleType]int)
 	}
 	s.C.Targets[0] = player.New(0, s.C)
-	s.stats.ElementUptime[0] = make(map[core.EleType]int)
+
 	//first target is the player
 	for i := 0; i < len(cfg.Targets); i++ {
 		cfg.Targets[i].Size = 0.5
