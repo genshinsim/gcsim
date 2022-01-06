@@ -117,24 +117,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	c.AddTask(func() {
 		c.Core.Status.AddStatus("aurous", duration)
-		//attack buff if stacks
-		if c.Core.Status.Duration("yoimiyaa2") > 0 {
-			val := make([]float64, core.EndStatType)
-			val[core.ATKP] = 0.1 + float64(c.a2stack)*0.01
-			for i, char := range c.Core.Chars {
-				if i == c.Index {
-					continue
-				}
-				char.AddMod(core.CharStatMod{
-					Key:    "yoimiya-a4",
-					Expiry: c.Core.F + 900, //15s
-					Amount: func() ([]float64, bool) {
-						return val, true
-					},
-				})
+		val := make([]float64, core.EndStatType)
+		//attack buff
+		val[core.ATKP] = 0.1 + float64(c.a2stack)*0.01
+		for i, char := range c.Core.Chars {
+			if i == c.Index {
+				continue
 			}
-		} else {
-			c.a2stack = 0
+			char.AddMod(core.CharStatMod{
+				Key:    "yoimiya-a4",
+				Expiry: c.Core.F + 900, //15s
+				Amount: func() ([]float64, bool) {
+					return val, true
+				},
+			})
 		}
 	}, "start-blaze", f)
 

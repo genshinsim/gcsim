@@ -69,6 +69,7 @@ func NewCrystallizeShield(typ core.EleType, src int, lvl int, em float64, expiry
 
 	s.Tmpl.Ele = typ
 	s.Tmpl.ShieldType = core.ShieldCrystallize
+	s.Tmpl.Name = "Crystallize " + typ.String()
 	s.Tmpl.Src = src
 	s.Tmpl.HP = shieldBaseHP[lvl]
 	s.Tmpl.Expires = expiry

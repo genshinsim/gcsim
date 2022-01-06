@@ -31,6 +31,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		c.Shields.Add(&shield.Tmpl{
 			Src:        c.F,
 			ShieldType: core.ShieldBell,
+			Name:       "Bell",
 			HP:         hp * char.MaxHP(),
 			Ele:        core.NoElement,
 			Expires:    c.F + 600, //10 sec

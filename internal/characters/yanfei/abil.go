@@ -205,6 +205,7 @@ func (c *char) c4() {
 		c.Core.Shields.Add(&shield.Tmpl{
 			Src:        c.Core.F,
 			ShieldType: core.ShieldYanfeiC4,
+			Name:       "Yanfei C4",
 			HP:         c.HPMax * .45,
 			Ele:        core.Pyro,
 			Expires:    c.Core.F + 15*60,

@@ -70,17 +70,17 @@ func (c *Tmpl) ActionInterruptableDelay(next core.ActionType) int {
 }
 
 func (c *Tmpl) AddCDAdjustFunc(rd core.CDAdjust) {
-	ind := len(c.CDReductionFuncs)
+	ind := -1
 	for i, v := range c.CDReductionFuncs {
 		//if expired already, set to nil and ignore
 		if v.Key == rd.Key {
 			ind = i
 		}
 	}
-	if ind == len(c.CDReductionFuncs) {
-		c.CDReductionFuncs = append(c.CDReductionFuncs, rd)
-	} else {
+	if ind > -1 {
 		c.CDReductionFuncs[ind] = rd
+	} else {
+		c.CDReductionFuncs = append(c.CDReductionFuncs, rd)
 	}
 }
 

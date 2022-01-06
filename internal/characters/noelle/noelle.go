@@ -74,6 +74,7 @@ func (c *char) a2() {
 		c.Core.Shields.Add(&shield.Tmpl{
 			Src:        c.Core.F,
 			ShieldType: core.ShieldNoelleA2,
+			Name:       "Noelle A2",
 			HP:         4 * x,
 			Ele:        core.Cryo,
 			Expires:    c.Core.F + 1200, //20 sec

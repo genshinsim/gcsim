@@ -53,7 +53,9 @@ func (c *char) newShield(base float64, dur int) *shd {
 	n.Tmpl = &shield.Tmpl{}
 	n.Tmpl.Src = c.Core.F
 	n.Tmpl.ShieldType = core.ShieldZhongliJadeShield
+	n.Tmpl.Ele = core.Geo
 	n.Tmpl.HP = base
+	n.Tmpl.Name = "Zhongli Skill"
 	n.Tmpl.Expires = c.Core.F + dur
 	n.c = c
 	return n

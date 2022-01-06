@@ -110,6 +110,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Shields.Add(&shield.Tmpl{
 			Src:        c.Core.F,
 			ShieldType: core.ShieldDionaSkill,
+			Name:       "Diona Skill",
 			HP:         shd,
 			Ele:        core.Cryo,
 			Expires:    c.Core.F + pawDur[c.TalentLvlSkill()], //15 sec

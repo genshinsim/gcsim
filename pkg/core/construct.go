@@ -47,7 +47,7 @@ func NewConstructCtrl(c *Core) *ConstructCtrl {
 func (s *ConstructCtrl) New(c Construct, refresh bool) {
 
 	//if refresh, we nil out the old one if any
-	ind := len(s.constructs)
+	ind := -1
 	if refresh {
 		for i, v := range s.constructs {
 			if v.Type() == c.Type() {
@@ -55,7 +55,7 @@ func (s *ConstructCtrl) New(c Construct, refresh bool) {
 			}
 		}
 	}
-	if ind != len(s.constructs) {
+	if ind > -1 {
 		s.core.Log.Debugw("construct replaced", "event", LogConstructEvent, "frame", s.core.F, "key", s.constructs[ind].Key(), "prev type", s.constructs[ind].Type(), "next type", c.Type())
 		s.constructs[ind].OnDestruct()
 		s.constructs[ind] = c
@@ -85,14 +85,14 @@ func (s *ConstructCtrl) New(c Construct, refresh bool) {
 
 func (s *ConstructCtrl) NewNoLimitCons(c Construct, refresh bool) {
 	if refresh {
-		ind := len(s.consNoLimit)
+		ind := -1
 		for i, v := range s.consNoLimit {
 			//if expired already, set to nil and ignore
 			if v.Key() == c.Key() {
 				ind = i
 			}
 		}
-		if ind != 0 && ind != len(s.consNoLimit) {
+		if ind > -1 {
 			//destroy the existing by setting expiry
 			s.consNoLimit[ind].OnDestruct()
 			s.core.Log.Debugw("destroyed", "event", LogConstructEvent, "frame", s.core.F, "key", s.consNoLimit[ind].Key(), "type", s.consNoLimit[ind].Type())
