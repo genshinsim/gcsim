@@ -279,12 +279,12 @@ func TestSkillCDCon1(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if sh.availableCDCharge[core.ActionSkill] > 0 {
+	if sh.availableCDCharge[core.ActionSkill] > 1 {
 		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if sh.availableCDCharge[core.ActionSkill] != 1 {
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
 		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
 	}
 
@@ -295,20 +295,20 @@ func TestSkillCDCon1(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if sh.availableCDCharge[core.ActionSkill] > 0 {
+	if sh.availableCDCharge[core.ActionSkill] > 1 {
 		t.Errorf("expecting 0 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
 	}
-	//check action ready
-	if x.ActionReady(core.ActionSkill, p) {
+	//check action ready (we have another stack)
+	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill shouldn't be ready yet")
 	}
-	//cooldown should be 1
-	if x.Cooldown(core.ActionSkill) != 1 {
+	//cooldown should be 0
+	if x.Cooldown(core.ActionSkill) != 0 {
 		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if sh.availableCDCharge[core.ActionSkill] != 1 {
+	if sh.availableCDCharge[core.ActionSkill] != 2 {
 		t.Errorf("expecting 1 e stacks got %v", sh.availableCDCharge[core.ActionSkill])
 	}
 

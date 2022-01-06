@@ -62,6 +62,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	if c.Base.Cons >= 1 {
 		c.additionalCDCharge[core.ActionSkill] = 1
+		c.availableCDCharge[core.ActionSkill]++
 	}
 
 	if c.Base.Cons >= 4 {
