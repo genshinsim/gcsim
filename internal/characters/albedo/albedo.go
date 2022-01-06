@@ -292,7 +292,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//Party wide EM buff
 	for _, char := range c.Core.Chars {
 		val := make([]float64, core.EndStatType)
-		val[core.EM] = 120
+		val[core.EM] = 125
 		char.AddMod(core.CharStatMod{
 			Key: "albedo-a4",
 			Amount: func() ([]float64, bool) {

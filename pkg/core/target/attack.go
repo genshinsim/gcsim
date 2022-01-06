@@ -131,7 +131,8 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	//check melt/vape
 	if atk.Info.Amped {
 		char := t.Core.Chars[atk.Info.ActorIndex]
-		reactBonus := char.ReactBonus(atk.Info)
+		reactBonus = char.ReactBonus(atk.Info)
+		// t.Core.Log.Debugw("debug", "frame", t.Core.F, "event", core.LogPreDamageMod, "char", t.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
 		damage = damage * (atk.Info.AmpMult * (1 + emBonus + reactBonus))
 	}
 

@@ -58,7 +58,7 @@ func (c *char) a2() {
 		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 			if c.Core.Status.Duration("yoimiyaa2") > 0 {
-				val[core.Pyro] = float64(c.a2stack) * 0.02
+				val[core.PyroP] = float64(c.a2stack) * 0.02
 				return val, true
 			}
 			c.a2stack = 0
