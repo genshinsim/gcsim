@@ -57,10 +57,21 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 // Default behavior is to appear behind enemy - set "nobehind=1" to diasble A1 proc
 func (c *char) Skill(p map[string]int) (int, int) {
 	hold := p["hold"]
+	var f, a, cd int
 	if hold == 1 {
-		return c.skillHold(p)
+		f, a = c.skillHold(p)
+		cd = 15 * 60
+	} else {
+		f, a = c.skillPress(p)
+		cd = 10 * 60
 	}
-	return c.skillPress(p)
+	//press, hold -> 10s, 15s
+	//hold, press -> 15s, 10s
+	//press, press -> 10s, 10s
+	//hold, hold -> 15s, 15s
+
+	c.SetCD(core.ActionSkill, cd)
+	return f, a
 }
 
 func (c *char) skillPress(p map[string]int) (int, int) {
@@ -87,19 +98,6 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 3, core.Cryo, f+20)
 
-	if c.eChargeMax == 1 {
-		c.eNextRecover = 15 * 60
-	}
-	// Handle E charges
-	if c.Tags["eCharge"] == 1 {
-		c.SetCD(core.ActionSkill, c.eNextRecover)
-	} else {
-		c.eNextRecover = c.Core.F + 10*60
-		c.Core.Log.Debugw("shenhe e (press) charge used, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.eNextRecover)
-		c.AddTask(c.recoverCharge(c.Core.F, 10*60), "charge", 10*60)
-		c.eTickSrc = c.Core.F
-	}
-	c.Tags["eCharge"]--
 	return f, a
 }
 
@@ -128,20 +126,6 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 4, core.Cryo, f+40)
 
-	// Handle E charges
-
-	if c.eChargeMax == 1 {
-		c.eNextRecover = 15 * 60
-	}
-	if c.Tags["eCharge"] == 1 {
-		c.SetCD(core.ActionSkill, c.eNextRecover)
-	} else {
-		c.eNextRecover = c.Core.F + 15*60
-		c.Core.Log.Debugw("shenhe e (hold) charge used, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.eNextRecover)
-		c.AddTask(c.recoverCharge(c.Core.F, 15*60), "charge", 15*60)
-		c.eTickSrc = c.Core.F
-	}
-	c.Tags["eCharge"]--
 	return f, a
 }
 
@@ -311,25 +295,4 @@ func (c *char) quillDamageMod() {
 
 		return false //not sure of correctness here
 	}, "shenhe-quill")
-}
-
-// Helper function that queues up shenhe e charge recovery - similar to other charge recovery functions
-func (c *char) recoverCharge(src int, cd int) func() {
-	return func() {
-		// Required stopper for recursion
-		if c.eTickSrc != src {
-			c.Core.Log.Debugw("shenhe e recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "new src", c.eTickSrc)
-			return
-		}
-		c.Tags["eCharge"]++
-		c.Core.Log.Debugw("shenhe e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "skill last used at", src, "total charges", c.Tags["eCharge"])
-		c.SetCD(core.ActionSkill, 0)
-		if c.Tags["eCharge"] >= c.eChargeMax {
-			return
-		}
-
-		c.eNextRecover = c.Core.F + cd
-		c.Core.Log.Debugw("shenhe e charge queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "recover at", c.eNextRecover)
-		c.AddTask(c.recoverCharge(src, cd), "charge", cd)
-	}
 }

@@ -119,7 +119,7 @@ c:reset_limit;
 bennett skill;
 
 # chain; macros have to be defined first
-chain a,b,c +if=.field1.field2.field3>1 +swap_to=xiangling +limit=1 +try=1;
+chain a,b,c +if=.field1.field2.field3>1 +swap_to=xiangling +limit=1 +try=wait;
 
 # reset
 reset_limit;
@@ -145,8 +145,8 @@ xiangling attack +needs=hi;
 xiangling attack +limit=2;
 xiangling attack +timeout=100;
 xiangling attack +try;
-xiangling attack +try=1;
-xiangling attack +try=0;
+xiangling attack +try=wait;
+xiangling attack +try=drop;
 
 # calc mode wait
 wait 10;
