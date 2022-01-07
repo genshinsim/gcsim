@@ -72,6 +72,9 @@ type Result struct {
 	Text           string                 `json:"text"`
 	Debug          string                 `json:"debug"`
 	Runtime        time.Duration          `json:"runtime"`
+	//other info
+	Config     string `json:"config_file"`
+	NumTargets int    `json:"num_targets"`
 	//for tracking min/max run
 	MinSeed int64 `json:"-"`
 	MaxSeed int64 `json:"-"`
@@ -212,6 +215,8 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 		result.Duration.Max = float64(opt.Duration)
 	}
 	result.Runtime = time.Since(start)
+	result.Config = src
+	result.NumTargets = len(cfg.Targets)
 
 	return result, nil
 }

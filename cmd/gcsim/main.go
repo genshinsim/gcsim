@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -37,6 +39,7 @@ type opts struct {
 	minmax    bool
 	calc      bool
 	ercalc    bool
+	gz        bool
 }
 
 func main() {
@@ -51,6 +54,7 @@ func main() {
 	flag.IntVar(&opt.seconds, "s", 0, "how many seconds to run the sim for")
 	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use")
 	flag.BoolVar(&opt.detailed, "t", true, "log combat details")
+	flag.BoolVar(&opt.gz, "gz", false, "gzip json results; require js flag")
 	// f := flag.String("o", "debug.log", "detailed log file")
 	// hp := flag.Float64("hp", 0, "hp mode: how much hp to deal damage to")
 	// showCaller := flag.Bool("caller", false, "show caller in debug low")
@@ -251,10 +255,28 @@ func runSingle(o opts) {
 		if jsonErr != nil {
 			log.Panic(jsonErr)
 		}
-		err := os.WriteFile(o.js, data, 0644)
-		if err != nil {
-			log.Panic(err)
+
+		if o.gz {
+			path := strings.TrimSuffix(o.js, filepath.Ext(o.js)) + ".gcsresult"
+			f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+			if err != nil {
+				log.Panic(err)
+			}
+			defer f.Close()
+			zw := gzip.NewWriter(f)
+			zw.Write(data)
+			err = zw.Close()
+			if err != nil {
+				log.Panic(err)
+			}
+		} else {
+			err := os.WriteFile(o.js, data, 0644)
+			if err != nil {
+				log.Panic(err)
+			}
+
 		}
+
 	}
 }
 
