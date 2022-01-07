@@ -65,6 +65,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/xingqiu"
 	_ "github.com/genshinsim/gcsim/internal/characters/yanfei"
 	_ "github.com/genshinsim/gcsim/internal/characters/yoimiya"
+	_ "github.com/genshinsim/gcsim/internal/characters/yunjin"
 	_ "github.com/genshinsim/gcsim/internal/characters/zhongli"
 
 	//weapons
