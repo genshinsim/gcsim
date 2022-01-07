@@ -88,6 +88,7 @@ func (c *char) newShield(base float64, t core.ShieldType, dur int) *noelleShield
 	n.Tmpl = &shield.Tmpl{}
 	n.Tmpl.Src = c.Core.F
 	n.Tmpl.ShieldType = t
+	n.Tmpl.Name = "Noelle Skill"
 	n.Tmpl.HP = base
 	n.Tmpl.Expires = c.Core.F + dur
 	n.c = c

@@ -95,13 +95,13 @@ func (h *EventCtrl) Subscribe(e EventType, f EventHook, key string) {
 	a := h.events[e]
 
 	//check if override first
-	ind := len(a)
+	ind := -1
 	for i, v := range a {
 		if v.key == key {
 			ind = i
 		}
 	}
-	if ind != 0 && ind != len(a) {
+	if ind > -1 {
 		h.c.Log.Debugw("hook added", "frame", h.c.F, "event", LogHookEvent, "overwrite", true, "key", key, "type", e)
 		a[ind] = ehook{
 			f:   f,

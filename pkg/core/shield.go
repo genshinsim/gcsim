@@ -72,14 +72,14 @@ func (s *ShieldCtrl) AddBonus(f func() float64) {
 
 func (s *ShieldCtrl) Add(shd Shield) {
 	//we always assume over write of the same type
-	ind := len(s.shields)
+	ind := -1
 	for i, v := range s.shields {
 		if v.Type() == shd.Type() {
 			ind = i
 		}
 	}
-	if ind != 0 && ind != len(s.shields) {
-		s.core.Log.Debugw("shield added", "frame", s.core.F, "event", LogShieldEvent, "frame", s.core.F, "overwrite", true, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
+	if ind > -1 {
+		s.core.Log.Debugw("shield overridden", "frame", s.core.F, "event", LogShieldEvent, "frame", s.core.F, "overwrite", true, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
 		s.shields[ind].OnOverwrite()
 		s.shields[ind] = shd
 	} else {

@@ -57,6 +57,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Shields.Add(&shield.Tmpl{
 			Src:        c.Core.F,
 			ShieldType: core.ShieldBeidouThunderShield,
+			Name:       "Beidou Skill",
 			HP:         shieldPer[c.TalentLvlSkill()]*c.HPMax + shieldBase[c.TalentLvlSkill()],
 			Ele:        core.Electro,
 			Expires:    c.Core.F + 900, //15 sec
@@ -110,6 +111,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Core.Shields.Add(&shield.Tmpl{
 			Src:        c.Core.F,
 			ShieldType: core.ShieldBeidouThunderShield,
+			Name:       "Beidou C1",
 			HP:         .16 * c.HPMax,
 			Ele:        core.Electro,
 			Expires:    c.Core.F + 900, //15 sec

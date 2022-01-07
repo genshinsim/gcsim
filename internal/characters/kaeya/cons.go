@@ -33,6 +33,7 @@ func (c *char) c4() {
 			c.Core.Shields.Add(&shield.Tmpl{
 				Src:        c.Core.F,
 				ShieldType: core.ShieldKaeyaC4,
+				Name:       "Kaeya C4",
 				HP:         .3 * c.HPMax,
 				Ele:        core.Cryo,
 				Expires:    c.Core.F + 1200,

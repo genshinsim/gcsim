@@ -47,13 +47,13 @@ func (t *Tmpl) AddResMod(key string, val core.ResistMod) {
 		}
 	}
 	if ind != -1 {
-		t.Core.Log.Debugw("mod overwritten", "frame", t.Core.F, "event", core.LogEnemyEvent, "count", len(t.ResMod), "old", t.ResMod[ind], "next", val)
+		t.Core.Log.Debugw("mod overwritten", "frame", t.Core.F, "event", core.LogEnemyEvent, "target", t.TargetIndex, "count", len(t.ResMod), "old", t.ResMod[ind], "next", val)
 		// LogEnemyEvent
 		t.ResMod[ind] = val
 		return
 	}
 	t.ResMod = append(t.ResMod, val)
-	t.Core.Log.Debugw("new mod", "frame", t.Core.F, "event", core.LogEnemyEvent, "count", len(t.ResMod), "next", val)
+	t.Core.Log.Debugw("new mod", "frame", t.Core.F, "event", core.LogEnemyEvent, "target", t.TargetIndex, "count", len(t.ResMod), "next", val)
 	// e.mod[key] = val
 }
 

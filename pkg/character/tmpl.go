@@ -112,14 +112,14 @@ func (c *Tmpl) AddWeaponInfuse(inf core.WeaponInfusion) {
 }
 
 func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
-	ind := len(c.PreDamageMods)
+	ind := -1
 	for i, v := range c.PreDamageMods {
 		if v.Key == mod.Key {
 			ind = i
 		}
 	}
-	if ind != 0 && ind != len(c.PreDamageMods) {
-		c.Core.Log.Debugw("char pre damage mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+	if ind > -1 {
+		c.Core.Log.Debugw("char pre damage mod replaced", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		c.PreDamageMods[ind] = mod
 	} else {
 		c.PreDamageMods = append(c.PreDamageMods, mod)
@@ -129,14 +129,14 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 }
 
 func (c *Tmpl) AddMod(mod core.CharStatMod) {
-	ind := len(c.Mods)
+	ind := -1
 	for i, v := range c.Mods {
 		if v.Key == mod.Key {
 			ind = i
 		}
 	}
-	if ind != 0 && ind != len(c.Mods) {
-		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+	if ind > -1 {
+		c.Core.Log.Debugw("char mod replaced", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		c.Mods[ind] = mod
 	} else {
 		c.Mods = append(c.Mods, mod)

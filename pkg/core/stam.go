@@ -12,16 +12,16 @@ func (c *Core) AddStamMod(f func(a ActionType) (float64, bool), key string) {
 			ind = i
 		}
 	}
-	if ind == -1 {
+	if ind > -1 {
+		c.Log.Debugw("char stam mod replaced", "frame", c.F, "event", LogCharacterEvent, "overwrite", true, "key", key)
+		c.stamModifier[ind].f = f
+		c.stamModifier[ind].key = key
+	} else {
 		c.Log.Debugw("char stam mod added", "frame", c.F, "event", LogCharacterEvent, "overwrite", false, "key", key)
 		c.stamModifier = append(c.stamModifier, stamMod{
 			f:   f,
 			key: key,
 		})
-	} else {
-		c.Log.Debugw("char stam mod added", "frame", c.F, "event", LogCharacterEvent, "overwrite", true, "key", key)
-		c.stamModifier[ind].f = f
-		c.stamModifier[ind].key = key
 	}
 }
 
