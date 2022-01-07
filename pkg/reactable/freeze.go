@@ -87,7 +87,13 @@ func (r *Reactable) ShatterCheck(a *core.AttackEvent) {
 		IgnoreDefPercent: 1,
 	}
 	ai.FlatDmg = 1.5 * r.calcReactionDmg(ai)
-	r.core.Combat.QueueAttack(ai, core.AttackPattern{SelfHarm: true}, -1, 1, superconductPhysShred)
+	//shatter is a self attack
+	r.core.Combat.QueueAttack(
+		ai,
+		core.NewDefSingleTarget(r.self.Index(), r.self.Type()),
+		-1,
+		1,
+	)
 
 }
 
