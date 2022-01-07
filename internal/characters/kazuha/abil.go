@@ -40,30 +40,30 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	_, ok := p["collide"]
 	if ok {
 		ai := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Plunge",
-			AttackTag:  core.AttackTagPlunge,
-			ICDTag:     core.ICDTagNormalAttack,
-			ICDGroup:   core.ICDGroupDefault,
-			StrikeType: core.StrikeTypeSlash,
-			Element:    ele,
-			Durability: 25,
-			Mult:       plunge[c.TalentLvlAttack()],
+			ActorIndex:     c.Index,
+			Abil:           "Plunge (Collide)",
+			AttackTag:      core.AttackTagPlunge,
+			ICDTag:         core.ICDTagNormalAttack,
+			ICDGroup:       core.ICDGroupDefault,
+			Element:        ele,
+			Durability:     25,
+			Mult:           plunge[c.TalentLvlAttack()],
+			IgnoreInfusion: true,
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-10)
 	}
 
 	//aoe dmg
 	ai := core.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Plunge",
-		AttackTag:  core.AttackTagPlunge,
-		ICDTag:     core.ICDTagNormalAttack,
-		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeSlash,
-		Element:    ele,
-		Durability: 25,
-		Mult:       highPlunge[c.TalentLvlAttack()],
+		ActorIndex:     c.Index,
+		Abil:           "Plunge",
+		AttackTag:      core.AttackTagPlunge,
+		ICDTag:         core.ICDTagNormalAttack,
+		ICDGroup:       core.ICDGroupDefault,
+		Element:        ele,
+		Durability:     25,
+		Mult:           highPlunge[c.TalentLvlAttack()],
+		IgnoreInfusion: true,
 	}
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-8)
@@ -71,15 +71,16 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	// a2 if applies
 	if c.a2Ele != core.NoElement {
 		ai := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Kazuha A2",
-			AttackTag:  core.AttackTagPlunge,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			StrikeType: core.StrikeTypeDefault,
-			Element:    c.a2Ele,
-			Durability: 25,
-			Mult:       2,
+			ActorIndex:     c.Index,
+			Abil:           "Kazuha A2",
+			AttackTag:      core.AttackTagPlunge,
+			ICDTag:         core.ICDTagNone,
+			ICDGroup:       core.ICDGroupDefault,
+			StrikeType:     core.StrikeTypeDefault,
+			Element:        c.a2Ele,
+			Durability:     25,
+			Mult:           2,
+			IgnoreInfusion: true,
 		}
 
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 10)
@@ -111,7 +112,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-10)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 13)
 
 	c.QueueParticle("kazuha", 3, core.Anemo, 100)
 
@@ -143,7 +144,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-10)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 34)
 
 	c.QueueParticle("kazuha", 4, core.Anemo, 100)
 
@@ -249,9 +250,9 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 
 		// Special handling for Bennett field self-infusion while waiting for something comprehensive
 		// Interaction is crucial to making many teams work correctly
-		if c.Core.Status.Duration("btburst") > 0 {
-			c.qInfuse = core.Pyro
-		}
+		// if c.Core.Status.Duration("btburst") > 0 {
+		// 	c.qInfuse = core.Pyro
+		// }
 
 		if c.qInfuse != core.NoElement {
 			return
@@ -271,11 +272,17 @@ func (c *char) absorbCheckA2(src, count, max int) func() {
 		// Special handling for Bennett field self-infusion while waiting for something comprehensive
 		// Interaction is crucial to making many teams work correctly
 		// TODO: get rid of this once we add in self app
-		if c.Core.Status.Duration("btburst") > 0 {
-			c.a2Ele = core.Pyro
-		}
+		// if c.Core.Status.Duration("btburst") > 0 {
+		// 	c.a2Ele = core.Pyro
+		// }
 
 		if c.a2Ele != core.NoElement {
+			c.Core.Log.Debugw(
+				"kazuha a2 infused "+c.a2Ele.String(),
+				"frame", c.Core.F,
+				"event", core.LogCharacterEvent,
+				"char", c.Index,
+			)
 			return
 		}
 		//otherwise queue up

@@ -33,20 +33,20 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		if c.Core.LastAction.Target == keys.Kazuha && c.Core.LastAction.Typ == core.ActionSkill {
 			_, ok := c.Core.LastAction.Param["hold"]
 			if ok {
-				return 63, 63
+				return 41, 41
 			}
-			return 55, 55
+			return 36, 36
 		}
 		c.Core.Log.Warnw("invalid plunge", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
 		return 0, 0
 	case core.ActionSkill:
 		_, ok := p["hold"]
 		if ok {
-			return 69, 69
+			return 58, 58
 		}
-		return 36, 36
+		return 27, 27
 	case core.ActionBurst:
-		return 93, 93
+		return 95, 95
 	default:
 		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
 		return 0, 0

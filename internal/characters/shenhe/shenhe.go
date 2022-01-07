@@ -104,10 +104,10 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 func (c *char) a2() {
 	val := make([]float64, core.EndStatType)
 	val[core.CryoP] = 0.15
-	for i, char := range c.Core.Chars {
-		if i == c.Index {
-			continue
-		}
+	for _, char := range c.Core.Chars {
+		// if i == c.Index {
+		// 	continue
+		// }
 		char.AddMod(core.CharStatMod{
 			Key:    "shenhe-a2",
 			Expiry: -1,

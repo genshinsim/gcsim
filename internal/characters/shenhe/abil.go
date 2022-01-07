@@ -198,7 +198,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+50)
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+80)
 		}
-	}, "shenhe-snapshot", f)
+	}, "shenhe-snapshot", f+2)
 
 	c.SetCD(core.ActionBurst, 20*60)
 	c.ConsumeEnergy(0)
