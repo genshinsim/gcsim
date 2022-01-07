@@ -37,9 +37,12 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 	s.Stats = c.SnapshotStats(a.Abil, a.AttackTag)
 
 	//check infusion
-	inf := c.infusionCheck(a.AttackTag)
-	if inf != core.NoElement {
-		a.Element = inf
+	var inf core.EleType
+	if !a.IgnoreInfusion {
+		inf = c.infusionCheck(a.AttackTag)
+		if inf != core.NoElement {
+			a.Element = inf
+		}
 	}
 
 	//check if we need to log
