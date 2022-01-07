@@ -53,8 +53,6 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 }
 
 // Skill attack damage queue generator
-// Includes optional argument "nobehind" for whether Rosaria appears behind her opponent or not (for her A1).
-// Default behavior is to appear behind enemy - set "nobehind=1" to diasble A1 proc
 func (c *char) Skill(p map[string]int) (int, int) {
 	hold := p["hold"]
 	var f, a, cd int
@@ -78,7 +76,6 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	// No ICD to the 2 hits
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spring Spirit Summoning (Press)",
@@ -95,7 +92,6 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus(quillKey, 10*60)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
-	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 3, core.Cryo, f+20)
 
 	return f, a
@@ -105,7 +101,6 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	// No ICD to the 2 hits
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spring Spirit Summoning (Hold)",
@@ -117,34 +112,27 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	// First hit comes out 20 frames before second
 	// c.AddTask(c.skillHoldBuff, "shenhe (hold) quill start", f-1)
 	c.skillHoldBuff()
 	c.Core.Status.AddStatus(quillKey, 15*60)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
 
-	// Particles are emitted after the second hit lands
 	c.QueueParticle("shenhe", 4, core.Cryo, f+40)
 
 	return f, a
 }
 
 // Burst attack damage queue generator
-// Rosaria swings her weapon to slash surrounding opponents, then she summons a frigid Ice Lance that strikes the ground. Both actions deal Cryo DMG.
-// While active, the Ice Lance periodically releases a blast of cold air, dealing Cryo DMG to surrounding opponents.
-// Also includes the following effects: A4, C6
 func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
-	// Note - if a more advanced targeting system is added in the future
-	// hit 1 is technically only on surrounding enemies, hits 2 and dot are on the lance
-	// For now assume that everything hits all targets
+	// TODO: Not 100% sure if this shares ICD with the DoT, currently coded that it does
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Divine Maiden's Deliverance (Hit 1)",
 		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagNone,
+		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Cryo,
 		Durability: 25,
@@ -159,8 +147,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		dur += 6 * 60
 		count = 6
 	}
-	// Hit 1 comes out on frame 10
-	// 2nd hit comes after lance drop animation finishes
 	cb := func(a core.AttackCB) {
 		a.Target.AddResMod("Shenhe Burst Shred (Cryo)", core.ResistMod{
 			Duration: dur,
@@ -177,12 +163,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 0, 15, cb, cb2)
 
-	// Burst is snapshot when the lance lands (when the 2nd damage proc hits)
 	ai = core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Divine Maiden's Deliverance (DoT)",
 		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagNone,
+		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Cryo,
 		Durability: 25,
@@ -211,6 +196,7 @@ func (c *char) skillPressBuff() {
 	val[core.DmgP] = 0.15
 	for i, char := range c.Core.Chars {
 		c.quillcount[i] = 5
+		c.updateBuffTags()
 		char.AddPreDamageMod(core.PreDamageMod{
 			Key:    "shenhe-a2-press",
 			Expiry: c.Core.F + 10*60,
@@ -229,6 +215,7 @@ func (c *char) skillHoldBuff() {
 	val[core.DmgP] = 0.15
 	for i, char := range c.Core.Chars {
 		c.quillcount[i] = 7
+		c.updateBuffTags()
 		char.AddPreDamageMod(core.PreDamageMod{
 			Key:    "shenhe-a2-hold",
 			Expiry: c.Core.F + 15*60,
@@ -273,6 +260,7 @@ func (c *char) quillDamageMod() {
 			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.Atk)*(1+stats[core.ATKP]) + stats[core.ATK])
 			if consumeStack { //c6
 				c.quillcount[atk.Info.ActorIndex]--
+				c.updateBuffTags()
 			}
 			c.Core.Log.Debugw(
 				"Shenhe Quill proc dmg add",
