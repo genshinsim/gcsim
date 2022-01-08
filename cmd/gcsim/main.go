@@ -257,7 +257,7 @@ func runSingle(o opts) {
 		}
 
 		if o.gz {
-			path := strings.TrimSuffix(o.js, filepath.Ext(o.js)) + ".gcsresult"
+			path := strings.TrimSuffix(o.js, filepath.Ext(o.js)) + ".json.gz"
 			f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 			if err != nil {
 				log.Panic(err)
