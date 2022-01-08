@@ -1,6 +1,7 @@
 package yunjin
 
 import (
+	"fmt"
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -13,7 +14,6 @@ func init() {
 type char struct {
 	*character.Tmpl
 
-	// TODO: Revisit once known how stacks work
 	burstTriggers       [4]int
 	partyElementalTypes int
 }
@@ -52,6 +52,15 @@ func (c *char) Init(index int) {
 
 	c.partyElementalTypes = 0
 	c.getPartyElementalTypeCounts()
+}
+
+// Helper function to update tags that can be used in configs
+// Should be run whenever c.burstTriggers is updated
+func (c *char) updateBuffTags() {
+	for _, char := range c.Core.Chars {
+		c.Tags["burststacks_"+char.Name()] = c.burstTriggers[char.CharIndex()]
+		c.Tags[fmt.Sprintf("burststacks_%v", char.CharIndex())] = c.burstTriggers[char.CharIndex()]
+	}
 }
 
 // Adds event to get the number of elemental types in the party for Yunjin A4

@@ -54,14 +54,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 // Skill - modelled after Beidou E
 // Has two parameters:
-// a2 = 1 if you are doing a perfect counter
+// a1 = 1 if you are doing a perfect counter
 // hold = 1 or 2 for regular charging up to level 1 or 2
 func (c *char) Skill(p map[string]int) (int, int) {
 	// Hold parameter gets used in action frames to get earliest possible release frame
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	chargeLevel := 0
-	if p["a2"] == 1 {
+	if p["a1"] == 1 {
 		chargeLevel = 2
 	} else {
 		chargeLevel = p["hold"]
@@ -80,26 +80,28 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	ai.UseDef = true
-	// TODO: Fix once known
+
+	// TODO: Fix hit frames when known
+	// Particle should spawn after hit
+	hitDelay := f
 	switch chargeLevel {
 	case 0:
-		c.QueueParticle("yunjin", 2, core.Geo, 100)
+		c.QueueParticle("yunjin", 2, core.Geo, 100+hitDelay)
 	case 1:
-		// TODO: Some kind of random factor, still not yet known
-		if c.Core.Rand.Float64() < .5 {
-			c.QueueParticle("yunjin", 2, core.Geo, 100)
+		// Currently believed to be 2-3 particles with the ratio 3:2
+		if c.Core.Rand.Float64() < .6 {
+			c.QueueParticle("yunjin", 2, core.Geo, 100+hitDelay)
 		} else {
-			c.QueueParticle("yunjin", 3, core.Geo, 100)
+			c.QueueParticle("yunjin", 3, core.Geo, 100+hitDelay)
 		}
 		ai.Abil = "Opening Flourish Level 1 (E)"
 	case 2:
-		c.QueueParticle("yunjin", 3, core.Geo, 100)
+		c.QueueParticle("yunjin", 3, core.Geo, 100+hitDelay)
 		ai.Durability = 100
 		ai.Abil = "Opening Flourish Level 2 (E)"
 	}
 
-	// TODO: Fix hit frames when known
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), hitDelay, hitDelay)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Shields.Add(&shield.Tmpl{
@@ -143,6 +145,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// Reset number of burst triggers to 30
 	for i := range c.burstTriggers {
 		c.burstTriggers[i] = 30
+		c.updateBuffTags()
 	}
 
 	// TODO: Need to obtain exact timing of the 12s. Currently assume that it starts when burst is used
@@ -210,6 +213,7 @@ func (c *char) burstProc() {
 		ae.Info.FlatDmg += dmgAdded
 
 		c.burstTriggers[ae.Info.ActorIndex]--
+		c.updateBuffTags()
 
 		c.Core.Log.Debugw("yunjin burst adding damage", "frame", c.Core.F, "event", core.LogCalc, "char", ae.Info.ActorIndex, "damage_added", dmgAdded, "stacks_remaining_for_char", c.burstTriggers[ae.Info.ActorIndex], "burst_def_pct", finalBurstBuff)
 

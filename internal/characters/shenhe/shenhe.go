@@ -1,6 +1,7 @@
 package shenhe
 
 import (
+	"fmt"
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -84,6 +85,15 @@ func (c *char) Init(index int) {
 	// }
 	c.a2()
 	c.quillcount = make([]int, len(c.Core.Chars))
+}
+
+// Helper function to update tags that can be used in configs
+// Should be run whenever c.quillcount is updated
+func (c *char) updateBuffTags() {
+	for _, char := range c.Core.Chars {
+		c.Tags["quills_"+char.Name()] = c.quillcount[char.CharIndex()]
+		c.Tags[fmt.Sprintf("quills_%v", char.CharIndex())] = c.quillcount[char.CharIndex()]
+	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
