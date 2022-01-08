@@ -168,6 +168,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			//check if this hits first
 			target := -1
 			for i, t := range c.Core.Targets {
+				//skip for target 0 aka player
+				if i == 0 {
+					continue
+				}
 				if lastHit[t] < c.Core.F {
 					target = i
 					lastHit[t] = c.Core.F + 87 //cannot be targetted again for 1.45s
