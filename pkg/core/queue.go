@@ -149,6 +149,7 @@ func (q *Queuer) createQueueFromChain(a ActionBlock) []Command {
 				Typ:    ActionSwap,
 				Target: a.ChainSequences[i].SequenceChar,
 			})
+			active = a.ChainSequences[i].SequenceChar
 		}
 		//append
 		res = append(res, q.createQueueFromSequence(a.ChainSequences[i])...)
