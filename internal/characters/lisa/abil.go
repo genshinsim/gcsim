@@ -27,7 +27,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	return f, a
 }
 
-const a4tag = "lisa-a4"
+const conductiveTag = "lisa-conductive-stacks"
 
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionCharge, p)
@@ -50,9 +50,9 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		if done {
 			return
 		}
-		count := a.Target.GetTag(a4tag)
+		count := a.Target.GetTag(conductiveTag)
 		if count < 3 {
-			a.Target.SetTag(a4tag, count+1)
+			a.Target.SetTag(conductiveTag, count+1)
 		}
 		done = true
 	}
@@ -102,9 +102,9 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		if done {
 			return
 		}
-		count := a.Target.GetTag(a4tag)
+		count := a.Target.GetTag(conductiveTag)
 		if count < 3 {
-			a.Target.SetTag(a4tag, count+1)
+			a.Target.SetTag(conductiveTag, count+1)
 		}
 		done = true
 	}
@@ -177,7 +177,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       0.1,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(targ, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(targ, core.TargettableEnemy), f, f, a4cb)
 
 	//duration is 15 seconds, tick every .5 sec
 	//30 zaps once every 30 frame, starting at f
@@ -211,7 +211,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 			}
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-1, f+i, cb)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-1, f+i, cb, a4cb)
 	}
 
 	//add a status for this just in case someone cares
@@ -231,4 +231,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// c.CD[def.BurstCD] = c.Core.F + 1200
 	c.SetCD(core.ActionBurst, 1200)
 	return f, a
+}
+
+func a4cb(a core.AttackCB) {
+	a.Target.AddDefMod("lisa-a4", -0.15, 600)
 }

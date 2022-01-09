@@ -59,7 +59,25 @@ func (c *char) c6() {
 		}
 		if c.Core.ActiveChar == c.CharIndex() {
 			//swapped to lisa
-			c.Tags["stack"] = 3
+
+			// Create a "fake attack" to apply conductive stacks to all nearby opponents
+			// Needed to ensure hitboxes are properly accounted for
+			// Similar to current "Freeze Breaking" solution
+			ai := core.AttackInfo{
+				ActorIndex: c.Index,
+				Abil:       "Lisa C6 Conductive Status Application",
+				AttackTag:  core.AttackTagNone,
+				ICDTag:     core.ICDTagNone,
+				ICDGroup:   core.ICDGroupDefault,
+				Element:    core.NoElement,
+				DoNotLog:   true,
+			}
+			cb := func(a core.AttackCB) {
+				a.Target.SetTag(conductiveTag, 3)
+			}
+			// TODO: No idea what the exact radius of this is
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 0, cb)
+
 			c.c6icd = c.Core.F + 300
 		}
 		return false
@@ -73,12 +91,12 @@ func (c *char) skillHoldMult() {
 		if atk.Info.Abil != "Violet Arc (Hold)" {
 			return false
 		}
-		stacks := t.GetTag(a4tag)
+		stacks := t.GetTag(conductiveTag)
 
 		atk.Info.Mult = skillHold[stacks][c.TalentLvlSkill()]
 
 		//consume the stacks
-		t.SetTag(a4tag, 0)
+		t.SetTag(conductiveTag, 0)
 
 		return false
 	}, "lisa-skill-hold-mul")
