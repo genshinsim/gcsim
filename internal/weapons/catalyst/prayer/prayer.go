@@ -16,7 +16,7 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	//ignore movement speed
 	w := weap{}
-	w.stacks = param["stack"]
+	w.stacks = param["stacks"]
 	if w.stacks > 4 {
 		w.stacks = 4
 	}

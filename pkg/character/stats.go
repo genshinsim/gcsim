@@ -246,7 +246,6 @@ func (t *Tmpl) ReactBonus(atk core.AttackInfo) (amt float64) {
 		}
 	}
 	t.ReactMod = t.ReactMod[:n]
-	t.Core.Log.Debugw("React Mod Added", "frame", t.Core.F, "event", core.LogPreDamageMod, "char", t.Index, "return", amt)
 	return amt
 }
 
