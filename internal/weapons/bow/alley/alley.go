@@ -14,37 +14,40 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 	//max 10 stacks
 	w := weap{}
-	w.stacks = param["stack"]
+	w.stacks = param["stacks"]
 	if w.stacks > 10 {
 		w.stacks = 10
 	}
 	dmg := 0.015 + float64(r)*0.005
 
 	m := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
-		Key: "alley-hunter",
-		Amount: func() ([]float64, bool) {
+	char.AddPreDamageMod(core.PreDamageMod{
+		Key:    "alley-hunter",
+		Expiry: -1,
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 			m[core.DmgP] = dmg * float64(w.stacks)
 			return m, true
 		},
-		Expiry: -1,
 	})
 
 	key := fmt.Sprintf("alley-hunter-%v", char.Name())
 
 	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 		w.active = c.ActiveChar == char.CharIndex()
+		w.lastActiveChange = c.F
 		return true
 	}, key)
 
 	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		prev := args[0].(int)
 		next := args[1].(int)
+		w.lastActiveChange = c.F
 		if next == char.CharIndex() {
 			w.active = true
-			c.Tasks.Add(w.decStack(char), 240)
-		} else {
+			c.Tasks.Add(w.decStack(char, c.F), 240)
+		} else if prev == char.CharIndex() {
 			w.active = false
-			c.Tasks.Add(w.incStack(char), 60)
+			c.Tasks.Add(w.incStack(char, c.F), 60)
 		}
 		return false
 	}, key)
@@ -53,27 +56,28 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 }
 
 type weap struct {
-	stacks int
-	active bool
+	stacks           int
+	active           bool
+	lastActiveChange int
 }
 
-func (w *weap) decStack(c core.Character) func() {
+func (w *weap) decStack(c core.Character, src int) func() {
 	return func() {
-		if w.active && w.stacks > 0 {
+		if w.active && w.stacks > 0 && src == w.lastActiveChange {
 			w.stacks -= 2
 			if w.stacks < 0 {
 				w.stacks = 0
 			}
-			c.AddTask(w.decStack(c), "alley-hunter", 60)
+			c.AddTask(w.decStack(c, src), "alley-hunter", 60)
 		}
 	}
 }
 
-func (w *weap) incStack(c core.Character) func() {
+func (w *weap) incStack(c core.Character, src int) func() {
 	return func() {
-		if !w.active && w.stacks < 10 {
+		if !w.active && w.stacks < 10 && src == w.lastActiveChange {
 			w.stacks++
-			c.AddTask(w.incStack(c), "alley-hunter", 60)
+			c.AddTask(w.incStack(c, src), "alley-hunter", 60)
 		}
 	}
 }
