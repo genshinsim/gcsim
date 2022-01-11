@@ -186,7 +186,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if c.Base.Cons >= 2 {
 		ai.Mult += 2
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
+	// Should be aligned with Oz's skill snapshot timing
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-20, f-20)
 
 	//set on field oz to be this one
 	c.AddTask(func() {
@@ -202,9 +203,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//set on field oz to be this one
+	// According to snapshot timings sheet, Oz snapshots after swapping out during ult animation
 	c.AddTask(func() {
 		c.queueOz("Burst")
-	}, "oz-skill", f-10)
+	}, "oz-skill", f)
 
 	//initial damage; part of the burst tag
 	ai := core.AttackInfo{
@@ -218,7 +220,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 2, 2)
 
 	//check for C4 damage
 	if c.Base.Cons >= 4 {
@@ -233,7 +235,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			Durability: 50,
 			Mult:       2.22,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
+		// C4 damage always occurs before burst damage according to TCL.
+		// TODO: No frames given, assumed to just be a 1 frame difference
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 1, 1)
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.AddTask(func() {
