@@ -2,6 +2,10 @@ package target
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"go.uber.org/zap"
+
+	"strconv"
+	"strings"
 )
 
 func (t *Tmpl) Attack(atk *core.AttackEvent) (float64, bool) {
@@ -201,48 +205,84 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 
 func (t *Tmpl) Resist(ele core.EleType, char int) float64 {
 	// log.Debugw("\t\t res calc", "res", e.res, "mods", e.mod)
+	var logDetails []zap.Field
+	var sb strings.Builder
+
+	if t.Core.Flags.LogDebug {
+		logDetails = make([]zap.Field, 0, 4+5*len(t.ResMod))
+		logDetails = append(logDetails,
+			zap.Int("frame", t.Core.F),
+			zap.Any("event", core.LogPreDamageMod),
+			zap.Int("char", char),
+			zap.Int("target", t.TargetIndex),
+		)
+	}
 
 	r := t.Res[ele]
 	for _, v := range t.ResMod {
 		if v.Expiry > t.Core.F && v.Ele == ele {
 			if t.Core.Flags.LogDebug {
-				t.Core.Log.Debugw(
-					"resist modified",
-					"frame", t.Core.F,
-					"event", core.LogCalc,
-					"char", char,
-					"ele", v.Ele,
-					"amount", v.Value,
-					"from", v.Key,
-					"expiry", v.Expiry,
-					"target", t.TargetIndex,
+				modStatus := make([]string, 0)
+
+				sb.WriteString(v.Key)
+				modStatus = append(modStatus,
+					"status: added",
+					"expiry_frame: "+strconv.Itoa(v.Expiry),
+					"ele: "+v.Ele.String(),
+					"amount: "+strconv.FormatFloat(v.Value, 'f', -1, 64),
 				)
+				logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
+				sb.Reset()
 			}
 			r += v.Value
 		}
 	}
+
+	// No need to output if resist was not modified
+	if t.Core.Flags.LogDebug && len(logDetails) > 4 {
+		t.Core.Log.Desugar().Debug("resist modified", logDetails...)
+	}
+
 	return r
 }
 
 func (t *Tmpl) DefAdj(char int) float64 {
-	// log.Debugw("\t\t res calc", "res", e.res, "mods", e.mod)
+	var logDetails []zap.Field
+	var sb strings.Builder
+
+	if t.Core.Flags.LogDebug {
+		logDetails = make([]zap.Field, 0, 4+5*len(t.ResMod))
+		logDetails = append(logDetails,
+			zap.Int("frame", t.Core.F),
+			zap.Any("event", core.LogPreDamageMod),
+			zap.Int("char", char),
+			zap.Int("target", t.TargetIndex),
+		)
+	}
+
 	var r float64
 	for _, v := range t.DefMod {
 		if v.Expiry > t.Core.F {
 			if t.Core.Flags.LogDebug {
-				t.Core.Log.Debugw(
-					"def modified",
-					"frame", t.Core.F,
-					"event", core.LogCalc,
-					"char", char,
-					"amount", v.Value,
-					"from", v.Key,
-					"expiry", v.Expiry,
-					"target", t.TargetIndex,
+				modStatus := make([]string, 0)
+
+				sb.WriteString(v.Key)
+				modStatus = append(modStatus,
+					"status: added",
+					"expiry_frame: "+strconv.Itoa(v.Expiry),
+					"amount: "+strconv.FormatFloat(v.Value, 'f', -1, 64),
 				)
+				logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
+				sb.Reset()
 			}
 			r += v.Value
 		}
 	}
+
+	// No need to output if resist was not modified
+	if t.Core.Flags.LogDebug && len(logDetails) > 4 {
+		t.Core.Log.Desugar().Debug("resist modified", logDetails...)
+	}
+
 	return r
 }
