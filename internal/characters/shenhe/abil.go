@@ -256,7 +256,11 @@ func (c *char) quillDamageMod() {
 		}
 
 		if c.quillcount[atk.Info.ActorIndex] > 0 {
-			stats := c.SnapshotStats("Quills", core.AttackTagNone)
+			ai := core.AttackInfo{
+				Abil:      "Quills",
+				AttackTag: core.AttackTagNone,
+			}
+			stats := c.SnapshotStats(&ai)
 			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.Atk)*(1+stats[core.ATKP]) + stats[core.ATK])
 			if consumeStack { //c6
 				c.quillcount[atk.Info.ActorIndex]--

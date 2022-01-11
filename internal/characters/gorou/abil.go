@@ -122,7 +122,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 		if c.Base.Cons >= 4 && c.geoCharCount > 1 {
 			//TODO: not sure if this actually snapshots stats
-			stats := c.SnapshotStats("Inuzaka All-Round Defense C4", core.AttackTagNone)
+			ai := core.AttackInfo{
+				Abil:      "Inuzaka All-Round Defense C4",
+				AttackTag: core.AttackTagNone,
+			}
+			stats := c.SnapshotStats(&ai)
 			c.Core.Tasks.Add(c.gorouSkillHealField(c.Core.F, stats[:]), 90)
 		}
 	}

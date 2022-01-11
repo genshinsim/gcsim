@@ -118,7 +118,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 5)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 35) // need to confirm timing of this
 
-	stats := c.SnapshotStats("Let the Show Begin♪ (Heal)", core.AttackTagNone)
+	aiHeal := core.AttackInfo{
+		Abil:      "Let the Show Begin♪ (Heal)",
+		AttackTag: core.AttackTagNone,
+	}
+	stats := c.SnapshotStats(&aiHeal)
 	hpplus := stats[core.Heal]
 	heal := (skillhp[c.TalentLvlBurst()] + skillhpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
 	//apply right away
@@ -182,7 +186,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 	//hook for buffs; active right away after cast
 
-	stats := c.SnapshotStats("Shining Miracle♪ (Heal)", core.AttackTagNone)
+	ai := core.AttackInfo{
+		Abil:      "Shining Miracle♪ (Heal)",
+		AttackTag: core.AttackTagNone,
+	}
+	stats := c.SnapshotStats(&ai)
 
 	hpplus := stats[core.Heal]
 	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)

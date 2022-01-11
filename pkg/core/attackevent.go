@@ -1,5 +1,9 @@
 package core
 
+import (
+	"go.uber.org/zap"
+)
+
 type AttackEvent struct {
 	Info    AttackInfo
 	Pattern AttackPattern
@@ -54,6 +58,8 @@ type AttackInfo struct {
 	//special flag for sim generated attack
 	SourceIsSim bool
 	DoNotLog    bool
+
+	ModsLog []zap.Field
 }
 
 type Snapshot struct {

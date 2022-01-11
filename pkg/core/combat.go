@@ -2,6 +2,7 @@ package core
 
 import (
 	// "fmt"
+	"go.uber.org/zap"
 	"log"
 )
 
@@ -45,6 +46,9 @@ func (c *CombatCtrl) QueueAttackWithSnap(a AttackInfo, s Snapshot, p AttackPatte
 			ae.Callbacks = append(ae.Callbacks, f)
 		}
 	}
+	if c.core.Flags.LogDebug {
+		ae.Info.ModsLog = make([]zap.Field, 0, 3)
+	}
 	c.queueDmg(&ae, dmgDelay)
 }
 
@@ -76,6 +80,9 @@ func (c *CombatCtrl) QueueAttack(a AttackInfo, p AttackPattern, snapshotDelay in
 		if f != nil {
 			ae.Callbacks = append(ae.Callbacks, f)
 		}
+	}
+	if c.core.Flags.LogDebug {
+		ae.Info.ModsLog = make([]zap.Field, 0, 3)
 	}
 	// log.Println(ae)
 
@@ -234,19 +241,23 @@ func (c *CombatCtrl) ApplyDamage(a *AttackEvent) float64 {
 			amp = string(cpy.Info.AmpType)
 		}
 
-		c.core.Log.Debugw(
-			cpy.Info.Abil,
-			"frame", c.core.F,
-			"event", LogDamageEvent,
-			"char", cpy.Info.ActorIndex,
-			"target", i,
-			"attack_tag", cpy.Info.AttackTag,
-			"damage", dmg,
-			"crit", crit,
-			"amp", amp,
-			"abil", cpy.Info.Abil,
-			"source", cpy.SourceFrame,
-		)
+		if c.core.Flags.LogDebug {
+			logCombatFull := make([]zap.Field, 0, 10+3)
+			logCombatFull = append(logCombatFull,
+				zap.Int("frame", c.core.F),
+				zap.Any("event", LogDamageEvent),
+				zap.Any("char", cpy.Info.ActorIndex),
+				zap.Any("target", i),
+				zap.Any("attack_tag", cpy.Info.AttackTag),
+				zap.Any("damage", dmg),
+				zap.Any("crit", crit),
+				zap.Any("amp", amp),
+				zap.Any("abil", cpy.Info.Abil),
+				zap.Any("source_frame", cpy.SourceFrame),
+			)
+			logCombatFull = append(logCombatFull, cpy.Info.ModsLog...)
+			c.core.Log.Desugar().Debug(cpy.Info.Abil, logCombatFull...)
+		}
 
 	}
 	// if died {

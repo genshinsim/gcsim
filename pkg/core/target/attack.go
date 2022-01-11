@@ -95,8 +95,8 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	if atk.Snapshot.Stats[core.CR] > 1 {
 		atk.Snapshot.Stats[core.CR] = 1
 	}
-	res := t.Resist(atk.Info.Element, atk.Info.ActorIndex)
-	defadj := t.DefAdj(atk.Info.ActorIndex)
+	res := t.Resist(&atk.Info)
+	defadj := t.DefAdj(&atk.Info)
 
 	if defadj > 0.9 {
 		defadj = 0.9
@@ -203,24 +203,26 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	return damage, isCrit
 }
 
-func (t *Tmpl) Resist(ele core.EleType, char int) float64 {
+func (t *Tmpl) Resist(ai *core.AttackInfo) float64 {
 	// log.Debugw("\t\t res calc", "res", e.res, "mods", e.mod)
 	var logDetails []zap.Field
 	var sb strings.Builder
+	var detailsMods map[string][]string
 
 	if t.Core.Flags.LogDebug {
 		logDetails = make([]zap.Field, 0, 4+5*len(t.ResMod))
 		logDetails = append(logDetails,
 			zap.Int("frame", t.Core.F),
 			zap.Any("event", core.LogPreDamageMod),
-			zap.Int("char", char),
+			zap.Int("char", ai.ActorIndex),
 			zap.Int("target", t.TargetIndex),
 		)
+		detailsMods = make(map[string][]string)
 	}
 
-	r := t.Res[ele]
+	r := t.Res[ai.Element]
 	for _, v := range t.ResMod {
-		if v.Expiry > t.Core.F && v.Ele == ele {
+		if v.Expiry > t.Core.F && v.Ele == ai.Element {
 			if t.Core.Flags.LogDebug {
 				modStatus := make([]string, 0)
 
@@ -232,6 +234,7 @@ func (t *Tmpl) Resist(ele core.EleType, char int) float64 {
 					"amount: "+strconv.FormatFloat(v.Value, 'f', -1, 64),
 				)
 				logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
+				detailsMods[sb.String()] = modStatus
 				sb.Reset()
 			}
 			r += v.Value
@@ -240,24 +243,29 @@ func (t *Tmpl) Resist(ele core.EleType, char int) float64 {
 
 	// No need to output if resist was not modified
 	if t.Core.Flags.LogDebug && len(logDetails) > 4 {
-		t.Core.Log.Desugar().Debug("resist modified", logDetails...)
+		// Disable as it is in the damage log
+		// t.Core.Log.Desugar().Debug("resist modified", logDetails...)
+		ai.ModsLog = append(ai.ModsLog,
+			zap.Any("resist_mods", detailsMods))
 	}
 
 	return r
 }
 
-func (t *Tmpl) DefAdj(char int) float64 {
+func (t *Tmpl) DefAdj(ai *core.AttackInfo) float64 {
 	var logDetails []zap.Field
 	var sb strings.Builder
+	var detailsMods map[string][]string
 
 	if t.Core.Flags.LogDebug {
 		logDetails = make([]zap.Field, 0, 4+5*len(t.ResMod))
 		logDetails = append(logDetails,
 			zap.Int("frame", t.Core.F),
 			zap.Any("event", core.LogPreDamageMod),
-			zap.Int("char", char),
+			zap.Int("char", ai.ActorIndex),
 			zap.Int("target", t.TargetIndex),
 		)
+		detailsMods = make(map[string][]string)
 	}
 
 	var r float64
@@ -273,15 +281,19 @@ func (t *Tmpl) DefAdj(char int) float64 {
 					"amount: "+strconv.FormatFloat(v.Value, 'f', -1, 64),
 				)
 				logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
+				detailsMods[sb.String()] = modStatus
 				sb.Reset()
 			}
 			r += v.Value
 		}
 	}
 
-	// No need to output if resist was not modified
+	// No need to output if def was not modified
 	if t.Core.Flags.LogDebug && len(logDetails) > 4 {
-		t.Core.Log.Desugar().Debug("resist modified", logDetails...)
+		// Disable as it is in the damage log
+		// t.Core.Log.Desugar().Debug("def modified", logDetails...)
+		ai.ModsLog = append(ai.ModsLog,
+			zap.Any("def_mods", detailsMods))
 	}
 
 	return r

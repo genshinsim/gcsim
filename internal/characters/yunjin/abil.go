@@ -209,7 +209,11 @@ func (c *char) burstProc() {
 			finalBurstBuff += 0.025 * float64(c.partyElementalTypes)
 		}
 
-		stats := c.SnapshotStats("Yunjin Burst Buff", core.AttackTagNone)
+		ai := core.AttackInfo{
+			Abil:      "Yunjin Burst Buff",
+			AttackTag: core.AttackTagNone,
+		}
+		stats := c.SnapshotStats(&ai)
 		dmgAdded := (c.Base.Def*(1+stats[core.DEFP]) + stats[core.DEF]) * finalBurstBuff
 		ae.Info.FlatDmg += dmgAdded
 
