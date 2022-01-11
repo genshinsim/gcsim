@@ -62,7 +62,7 @@ func main() {
 	// avgMode := flag.Bool("a", false, "run sim multiple times and calculate avg damage (smooth out randomness). default false. note that there is no debug log in this mode")
 	flag.IntVar(&opt.w, "w", 0, "number of workers to run when running multiple iterations; default 24")
 	flag.IntVar(&opt.i, "i", 0, "number of iterations to run if we're running multiple")
-	flag.StringVar(&opt.multi, "m", "", "mutiple config mode")
+	flag.StringVar(&opt.multi, "m", "", "mutiple config mode. Takes in a file with a line feed separated list of paths to config files (priority mode only) and outputs an abbreviated result")
 	flag.BoolVar(&opt.minmax, "minmax", false, "track the min/max run seed and rerun those (single mode with debug only)")
 	flag.BoolVar(&opt.calc, "calc", false, "run sim in calc mode")
 	flag.BoolVar(&opt.ercalc, "ercalc", false, "run sim in ER calc mode")
