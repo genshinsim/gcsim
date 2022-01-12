@@ -23,7 +23,7 @@ import (
 type Stats struct {
 	IsDamageMode          bool                      `json:"is_damage_mode"`
 	CharNames             []string                  `json:"char_names"`
-	CharDetails           []CharDetail              `json:"char_detail"`
+	CharDetails           []CharDetail              `json:"char_details"`
 	DamageByChar          []map[string]float64      `json:"damage_by_char"`
 	DamageInstancesByChar []map[string]int          `json:"damage_instances_by_char"`
 	DamageByCharByTargets []map[int]float64         `json:"damage_by_char_by_targets"`
@@ -43,21 +43,23 @@ type Stats struct {
 }
 
 type CharDetail struct {
-	Name     string         `json:"name"`
-	Element  string         `json:"element"`
-	Level    int            `json:"level"`
-	MaxLevel int            `json:"max_level"`
-	Cons     int            `json:"cons"`
-	Weapon   WeaponDetail   `json:"weapon"`
-	Talents  TalentDetail   `json:"talents"`
-	Sets     map[string]int `json:"sets"`
-	Stats    []float64      `json"stats"`
+	Name          string         `json:"name"`
+	Element       string         `json:"element"`
+	Level         int            `json:"level"`
+	MaxLevel      int            `json:"max_level"`
+	Cons          int            `json:"cons"`
+	Weapon        WeaponDetail   `json:"weapon"`
+	Talents       TalentDetail   `json:"talents"`
+	Sets          map[string]int `json:"sets"`
+	Stats         []float64      `json:"stats"`
+	SnapshotStats []float64      `json:"snapshot"`
 }
 
 type WeaponDetail struct {
-	Refine   int `json:"refine"`
-	Level    int `json:"level"`
-	MaxLevel int `json:"max_level"`
+	Name     string `json:"name"`
+	Refine   int    `json:"refine"`
+	Level    int    `json:"level"`
+	MaxLevel int    `json:"max_level"`
 }
 
 type TalentDetail struct {
@@ -96,9 +98,9 @@ type Result struct {
 	Iterations     int                    `json:"iter"`
 	Runtime        time.Duration          `json:"runtime"`
 	//other info
-	NumTargets    int                     `json:"num_targets"` //TODO: to deprecate this
-	CharDetails   []core.CharacterProfile `json:"char_details"`
-	TargetDetails []core.EnemyProfile     `json:"target_details"`
+	NumTargets    int                 `json:"num_targets"` //TODO: to deprecate this
+	CharDetails   []CharDetail        `json:"char_details"`
+	TargetDetails []core.EnemyProfile `json:"target_details"`
 	//for tracking min/max run
 	MinSeed int64 `json:"-"`
 	MaxSeed int64 `json:"-"`
@@ -245,10 +247,9 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	result.Runtime = time.Since(start)
 	result.Config = src
 	result.NumTargets = len(cfg.Targets)
-	result.CharDetails = cfg.Characters.Profile
+	result.CharDetails = data[0].CharDetails
 	for i := range result.CharDetails {
-		result.CharDetails[i].Base.Name = result.CharDetails[i].Base.Key.String()
-		result.CharDetails[i].Base.Element = core.CharKeyToEle[result.CharDetails[i].Base.Key]
+		result.CharDetails[i].Stats = cfg.Characters.Profile[i].Stats
 	}
 	result.TargetDetails = cfg.Targets
 

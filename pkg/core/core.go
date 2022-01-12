@@ -170,13 +170,18 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 	char.SetWeaponKey(wk)
 
 	//add set bonus
+	total := 0
 	for key, count := range v.Sets {
+		total += count
 		f, ok := setMap[key]
 		if ok {
 			f(char, c, count, v.SetParams[key])
 		} else {
 			c.Log.Warnw(fmt.Sprintf("character %v has unrecognized set %v", v.Base.Key, key), "frame", -1, "event", LogArtifactEvent)
 		}
+	}
+	if total > 5 {
+		return nil, fmt.Errorf("total set count cannot exceed 5, got %v", total)
 	}
 
 	err = char.CalcBaseStats()

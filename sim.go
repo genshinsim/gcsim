@@ -89,7 +89,16 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 	c.Init()
 
 	if s.opts.LogDetails {
-
+		//grab a snapshot for each char
+		for i, c := range s.C.Chars {
+			stats := c.Snapshot(&core.AttackInfo{
+				Abil:      "stats-check",
+				AttackTag: core.AttackTagNone,
+			})
+			s.stats.CharDetails[i].SnapshotStats = stats.Stats[:]
+			s.stats.CharDetails[i].Element = c.Ele().String()
+			s.stats.CharDetails[i].Weapon.Name = c.WeaponKey()
+		}
 	}
 
 	// log.Println(s.cfg.Energy)
@@ -228,7 +237,6 @@ func (s *Simulation) initChars(cfg core.Config) error {
 			//log the character data
 			s.stats.CharDetails = append(s.stats.CharDetails, CharDetail{
 				Name:     v.Base.Key.String(),
-				Element:  v.Base.Element.String(),
 				Level:    v.Base.Level,
 				MaxLevel: v.Base.Level,
 				Cons:     v.Base.Cons,
