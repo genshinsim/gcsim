@@ -242,7 +242,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//TODO: review bennett AOE size
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 33, 33)
 
-	stats := c.SnapshotStats("Fantastic Voyage (Heal)", core.AttackTagNone)
+	aiHeal := core.AttackInfo{
+		Abil:      "Fantastic Voyage (Heal)",
+		AttackTag: core.AttackTagNone,
+	}
+	stats := c.SnapshotStats(&aiHeal)
 
 	//apply right away
 	c.applyBennettField(stats)()

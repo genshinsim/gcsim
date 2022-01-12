@@ -34,7 +34,7 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 	}
 
 	//snapshot the stats
-	s.Stats = c.SnapshotStats(a.Abil, a.AttackTag)
+	s.Stats = c.SnapshotStats(a)
 
 	//check infusion
 	var inf core.EleType
@@ -91,9 +91,10 @@ func (c *Tmpl) infusionCheck(a core.AttackTag) core.EleType {
 	return core.NoElement
 }
 
-func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]float64 {
+func (c *Tmpl) SnapshotStats(a *core.AttackInfo) [core.EndStatType]float64 {
 	var sb strings.Builder
 	var logDetails []zap.Field
+	var detailsMods map[string][]string
 
 	//grab char stats
 	var stats [core.EndStatType]float64
@@ -105,9 +106,10 @@ func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]fl
 			zap.Int("frame", c.Core.F),
 			zap.Any("event", core.LogSnapshotModsEvent),
 			zap.Int("char", c.Index),
-			zap.String("abil", abil),
-			zap.Any("attack_tag", a),
+			zap.String("abil", a.Abil),
+			zap.Any("attack_tag", a.AttackTag),
 		)
+		detailsMods = make(map[string][]string)
 	}
 
 	n := 0
@@ -138,6 +140,7 @@ func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]fl
 						core.PrettyPrintStatsSlice(amt)...,
 					)
 					logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
+					detailsMods[sb.String()] = modStatus
 					sb.Reset()
 				} else {
 					sb.WriteString(m.Key)
@@ -147,6 +150,7 @@ func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]fl
 						"reason: conditions not met",
 					)
 					logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
+					detailsMods[sb.String()] = modStatus
 					sb.Reset()
 				}
 			}
@@ -154,7 +158,10 @@ func (c *Tmpl) SnapshotStats(abil string, a core.AttackTag) [core.EndStatType]fl
 	}
 	c.Mods = c.Mods[:n]
 	if c.Core.Flags.LogDebug {
-		c.Core.Log.Desugar().Debug(abil, logDetails...)
+		c.Core.Log.Desugar().Debug(a.Abil, logDetails...)
+		a.ModsLog = append(a.ModsLog,
+			zap.Any("snapshot_mods_frame", c.Core.F),
+			zap.Any("snapshot_mods", detailsMods))
 	}
 
 	return stats
@@ -168,6 +175,7 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 
 	var sb strings.Builder
 	var logDetails []zap.Field
+	var detailsMods map[string][]string
 
 	if c.Core.Flags.LogDebug {
 		logDetails = make([]zap.Field, 0, 5+3*len(c.PreDamageMods))
@@ -177,6 +185,7 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 			zap.Int("char", c.Index),
 			zap.String("abil", a.Info.Abil),
 		)
+		detailsMods = make(map[string][]string)
 	}
 
 	n := 0
@@ -207,6 +216,7 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 						core.PrettyPrintStatsSlice(amt)...,
 					)
 					logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
+					detailsMods[sb.String()] = modStatus
 					sb.Reset()
 				} else {
 					sb.WriteString(m.Key)
@@ -216,6 +226,7 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 						"reason: conditions not met",
 					)
 					logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
+					detailsMods[sb.String()] = modStatus
 					sb.Reset()
 				}
 			}
@@ -227,9 +238,13 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) {
 		// logDetails = append(logDetails,
 		// 	zap.Any("attack_tag", a),
 		// )
-		c.Core.Log.Desugar().Debug(a.Info.Abil, logDetails...)
-	}
 
+		// Temporarily disable this as it's already provided in ModsLog, but want to still show cinnabar, etc
+		// c.Core.Log.Desugar().Debug(a.Info.Abil, logDetails...)
+
+		a.Info.ModsLog = append(a.Info.ModsLog,
+			zap.Any("pre_damage_mods", detailsMods))
+	}
 }
 
 func (t *Tmpl) ReactBonus(atk core.AttackInfo) (amt float64) {

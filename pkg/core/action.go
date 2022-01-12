@@ -315,16 +315,16 @@ func (a *ActionCtrl) execNoSwap(n *CmdNoSwap) (int, bool, error) {
 func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 	c := a.core.Chars[a.core.ActiveChar]
 	f := 0
-	a.core.Log.Debugw(
-		"attempting to execute "+n.Typ.String(),
-		"frame", a.core.F,
-		"event", LogActionEvent,
-		"char", a.core.ActiveChar,
-		"action", n.Typ.String(),
-		"target", n.Target,
-		"swap_cd_pre", a.core.SwapCD,
-		"stam_pre", a.core.Stam,
-	)
+	// a.core.Log.Debugw(
+	// 	"attempting to execute "+n.Typ.String(),
+	// 	"frame", a.core.F,
+	// 	"event", LogActionEvent,
+	// 	"char", a.core.ActiveChar,
+	// 	"action", n.Typ.String(),
+	// 	"target", n.Target,
+	// 	"swap_cd_pre", a.core.SwapCD,
+	// 	"stam_pre", a.core.Stam,
+	// )
 
 	//do one last ready check
 	if !c.ActionReady(n.Typ, n.Param) {
@@ -371,7 +371,7 @@ func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 			break
 		}
 		if a.core.SwapCD > 0 {
-			a.core.Log.Warnw("swap on cd", "cd", a.core.SwapCD, "frame", a.core.F, "event", LogActionEvent)
+			a.core.Log.Warnw("could not execute swap - on cd", "cd", a.core.SwapCD, "frame", a.core.F, "event", LogActionEvent, "char", c.CharIndex())
 			return 0, false, nil
 		}
 		f = a.core.Swap(n.Target)
