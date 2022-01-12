@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func parseCharActions(p *Parser) (parseFn, error) {
@@ -87,7 +86,7 @@ func (p *Parser) acceptActionBlockFlags(a *core.ActionBlock) error {
 		a.Conditions, err = p.parseIf()
 	case itemSwap:
 		x, err = p.acceptSeqReturnLast(itemEqual, itemCharacterKey)
-		key, ok := keys.CharNameToKey[x.val]
+		key, ok := core.CharNameToKey[x.val]
 		if !ok {
 			err = fmt.Errorf("bad token at line %v - %v: %v; invalid char name; line: %v", x.line, x.pos, x, p.tokens)
 		}

@@ -6,7 +6,6 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tests"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/player"
 	"go.uber.org/zap"
@@ -39,7 +38,7 @@ func TestSkillCDWithC4(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Sucrose, core.Anemo, 6)
+	prof := tests.CharProfile(core.Sucrose, core.Anemo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	sucrose := x.(*char)

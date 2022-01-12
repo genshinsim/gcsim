@@ -270,7 +270,7 @@ package core
 // 		return false, errors.New("eval abil: unexpected short field, expected at least 3")
 // 	}
 // 	cs := strings.TrimPrefix(c.Fields[2], ".")
-// 	key := keys.CharNameToKey[cs]
+// 	key := core.CharNameToKey[cs]
 // 	char, ok := q.core.CharByName(key)
 // 	if !ok {
 // 		return false, nil
@@ -361,7 +361,7 @@ package core
 // 	}
 // 	//check target is valid
 // 	name := strings.TrimPrefix(c.Fields[1], ".")
-// 	key := keys.CharNameToKey[name]
+// 	key := core.CharNameToKey[name]
 // 	char, ok := q.core.CharByName(key)
 // 	if !ok {
 // 		return false, errors.New("eval cd: invalid char in condition")
@@ -384,7 +384,7 @@ package core
 // 		return false, errors.New("eval energy: unexpected short field, expected at least 2")
 // 	}
 // 	name := strings.TrimPrefix(c.Fields[1], ".")
-// 	key := keys.CharNameToKey[name]
+// 	key := core.CharNameToKey[name]
 // 	char, ok := q.core.CharByName(key)
 // 	if !ok {
 // 		return false, errors.New("eval energy: invalid char in condition")
@@ -409,7 +409,7 @@ package core
 // 		return false, errors.New("eval tags: unexpected short field, expected at least 3")
 // 	}
 // 	name := strings.TrimPrefix(c.Fields[1], ".")
-// 	key := keys.CharNameToKey[name]
+// 	key := core.CharNameToKey[name]
 // 	char, ok := q.core.CharByName(key)
 // 	if !ok {
 // 		return false, errors.New("eval tags: invalid char in condition")

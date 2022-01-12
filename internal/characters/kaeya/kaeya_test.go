@@ -6,7 +6,6 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tests"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/player"
 	"go.uber.org/zap"
@@ -39,7 +38,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Kaeya, core.Cryo, 6)
+	prof := tests.CharProfile(core.Kaeya, core.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)

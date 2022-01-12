@@ -5,15 +5,14 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/character/curves"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func (t *Tmpl) CalcBaseStats() error {
 	//calculate char base t.Stats
 	ck := t.Base.Key
 	//TODO: do something about traveler :(
-	if ck < keys.TravelerDelim {
-		ck = keys.TravelerMale
+	if ck < core.TravelerDelim {
+		ck = core.TravelerMale
 	}
 	b, ok := curves.CharBaseMap[ck]
 	if !ok {

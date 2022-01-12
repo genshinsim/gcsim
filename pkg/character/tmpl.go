@@ -108,6 +108,10 @@ func (c *Tmpl) SetWeaponKey(k string) {
 	c.Weapon.Key = k
 }
 
+func (c *Tmpl) WeaponKey() string {
+	return c.Weapon.Key
+}
+
 func (c *Tmpl) AddWeaponInfuse(inf core.WeaponInfusion) {
 	c.Infusion = inf
 }

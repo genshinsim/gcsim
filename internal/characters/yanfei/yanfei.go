@@ -3,11 +3,10 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Yanfei, NewChar)
+	core.RegisterCharFunc(core.Yanfei, NewChar)
 }
 
 type char struct {

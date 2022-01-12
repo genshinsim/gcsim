@@ -3,11 +3,10 @@ package tartaglia
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Tartaglia, NewChar)
+	core.RegisterCharFunc(core.Tartaglia, NewChar)
 }
 
 const riptideDuration = 18 * 60 // riptide duration lasts 18 sec

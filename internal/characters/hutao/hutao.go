@@ -3,11 +3,10 @@ package hutao
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Hutao, NewChar)
+	core.RegisterCharFunc(core.Hutao, NewChar)
 }
 
 type char struct {

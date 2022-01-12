@@ -2,11 +2,10 @@ package curves
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
-var CharBaseMap = map[keys.Char]CharBase{
-	keys.TravelerMale: {
+var CharBaseMap = map[core.CharKey]CharBase{
+	core.TravelerMale: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -66,7 +65,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Albedo: {
+	core.Albedo: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -126,7 +125,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Aloy: {
+	core.Aloy: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -186,7 +185,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Amber: {
+	core.Amber: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -246,7 +245,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Itto: {
+	core.Itto: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -306,7 +305,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Barbara: {
+	core.Barbara: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -366,7 +365,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Beidou: {
+	core.Beidou: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -426,7 +425,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Bennett: {
+	core.Bennett: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -486,7 +485,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Chongyun: {
+	core.Chongyun: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -546,7 +545,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Diluc: {
+	core.Diluc: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -606,7 +605,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Diona: {
+	core.Diona: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -666,7 +665,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Eula: {
+	core.Eula: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -726,7 +725,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Fischl: {
+	core.Fischl: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -786,7 +785,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Ganyu: {
+	core.Ganyu: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -846,7 +845,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Gorou: {
+	core.Gorou: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -906,7 +905,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Hutao: {
+	core.Hutao: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -966,7 +965,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Jean: {
+	core.Jean: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1026,7 +1025,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Kazuha: {
+	core.Kazuha: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1086,7 +1085,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Kaeya: {
+	core.Kaeya: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -1146,7 +1145,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Ayaka: {
+	core.Ayaka: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1206,7 +1205,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Keqing: {
+	core.Keqing: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1266,7 +1265,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Klee: {
+	core.Klee: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1326,7 +1325,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Sara: {
+	core.Sara: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -1386,7 +1385,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Lisa: {
+	core.Lisa: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -1446,7 +1445,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.TravelerFemale: {
+	core.TravelerFemale: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -1506,7 +1505,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Mona: {
+	core.Mona: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1566,7 +1565,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Ningguang: {
+	core.Ningguang: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -1626,7 +1625,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Noelle: {
+	core.Noelle: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -1686,7 +1685,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Qiqi: {
+	core.Qiqi: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1746,7 +1745,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Raiden: {
+	core.Raiden: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1806,7 +1805,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Razor: {
+	core.Razor: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -1866,7 +1865,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Rosaria: {
+	core.Rosaria: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -1926,7 +1925,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Kokomi: {
+	core.Kokomi: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -1986,7 +1985,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Sayu: {
+	core.Sayu: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -2046,7 +2045,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Shenhe: {
+	core.Shenhe: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -2106,7 +2105,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Sucrose: {
+	core.Sucrose: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -2166,7 +2165,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Tartaglia: {
+	core.Tartaglia: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -2226,7 +2225,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Thoma: {
+	core.Thoma: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -2286,7 +2285,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Venti: {
+	core.Venti: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -2346,7 +2345,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Xiangling: {
+	core.Xiangling: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -2406,7 +2405,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Xiao: {
+	core.Xiao: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -2466,7 +2465,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Xingqiu: {
+	core.Xingqiu: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -2526,7 +2525,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Xinyan: {
+	core.Xinyan: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -2586,7 +2585,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Yanfei: {
+	core.Yanfei: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -2646,7 +2645,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Yoimiya: {
+	core.Yoimiya: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
@@ -2706,7 +2705,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Yunjin: {
+	core.Yunjin: {
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,
@@ -2766,7 +2765,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.Zhongli: {
+	core.Zhongli: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,

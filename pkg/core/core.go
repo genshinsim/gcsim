@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -51,10 +50,10 @@ type Core struct {
 	lastStamUse  int
 
 	//track characters
-	ActiveChar     int               // index of currently active char
-	ActiveDuration int               // duration in frames that the current char has been on field for
-	Chars          []Character       // array holding all the characters on the team
-	CharPos        map[keys.Char]int // map of character string name to their index (for quick lookup by name)
+	ActiveChar     int             // index of currently active char
+	ActiveDuration int             // duration in frames that the current char has been on field for
+	Chars          []Character     // array holding all the characters on the team
+	CharPos        map[CharKey]int // map of character string name to their index (for quick lookup by name)
 
 	//track targets
 	Targets     []Target
@@ -84,7 +83,7 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	var err error
 	c := &Core{}
 
-	c.CharPos = make(map[keys.Char]int)
+	c.CharPos = make(map[CharKey]int)
 	c.Flags.Custom = make(map[string]int)
 	c.Stam = MaxStam
 	c.stamModifier = make([]stamMod, 0, 10)
@@ -171,7 +170,9 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 	char.SetWeaponKey(wk)
 
 	//add set bonus
+	total := 0
 	for key, count := range v.Sets {
+		total += count
 		f, ok := setMap[key]
 		if ok {
 			f(char, c, count, v.SetParams[key])
@@ -179,13 +180,16 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 			c.Log.Warnw(fmt.Sprintf("character %v has unrecognized set %v", v.Base.Key, key), "frame", -1, "event", LogArtifactEvent)
 		}
 	}
+	if total > 5 {
+		return nil, fmt.Errorf("total set count cannot exceed 5, got %v", total)
+	}
 
 	err = char.CalcBaseStats()
 
 	return char, err
 }
 
-func (c *Core) CharByName(key keys.Char) (Character, bool) {
+func (c *Core) CharByName(key CharKey) (Character, bool) {
 	pos, ok := c.CharPos[key]
 	if !ok {
 		return nil, false
@@ -193,7 +197,7 @@ func (c *Core) CharByName(key keys.Char) (Character, bool) {
 	return c.Chars[pos], true
 }
 
-func (c *Core) Swap(next keys.Char) int {
+func (c *Core) Swap(next CharKey) int {
 	prev := c.ActiveChar
 	c.ActiveChar = c.CharPos[next]
 	c.SwapCD = SwapCDFrames

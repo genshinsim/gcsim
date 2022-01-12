@@ -2,7 +2,7 @@ package core
 
 // type Action struct {
 // 	Name   string
-// 	Target keys.Char //either character or a sequence name
+// 	Target core.Char //either character or a sequence name
 
 // 	Exec     []ActionItem //if len > 1 then it's a sequence
 // 	IsSeq    bool         // is this a sequence
@@ -14,8 +14,8 @@ package core
 // 	Last       int //last time this was executed (frame)
 // 	ActionLock int //how many frames this action is locked from executing again
 
-// 	ActiveCond keys.Char
-// 	SwapTo     keys.Char
+// 	ActiveCond core.Char
+// 	SwapTo     core.Char
 // 	SwapLock   int
 // 	PostAction ActionType
 
