@@ -23,6 +23,7 @@ import (
 type Stats struct {
 	IsDamageMode          bool                      `json:"is_damage_mode"`
 	CharNames             []string                  `json:"char_names"`
+	CharDetails           []CharDetail              `json:"char_detail"`
 	DamageByChar          []map[string]float64      `json:"damage_by_char"`
 	DamageInstancesByChar []map[string]int          `json:"damage_instances_by_char"`
 	DamageByCharByTargets []map[int]float64         `json:"damage_by_char_by_targets"`
@@ -39,6 +40,30 @@ type Stats struct {
 	DPS    float64 `json:"dps"`
 	//for tracking min/max run
 	seed int64
+}
+
+type CharDetail struct {
+	Name     string         `json:"name"`
+	Element  string         `json:"element"`
+	Level    int            `json:"level"`
+	MaxLevel int            `json:"max_level"`
+	Cons     int            `json:"cons"`
+	Weapon   WeaponDetail   `json:"weapon"`
+	Talents  TalentDetail   `json:"talents"`
+	Sets     map[string]int `json:"sets"`
+	Stats    []float64      `json"stats"`
+}
+
+type WeaponDetail struct {
+	Refine   int `json:"refine"`
+	Level    int `json:"level"`
+	MaxLevel int `json:"max_level"`
+}
+
+type TalentDetail struct {
+	Attack int `json:"attack"`
+	Skill  int `json:"skill"`
+	Burst  int `json:"burst"`
 }
 
 // Used to track all damage instances for use in damage over time charts
@@ -69,15 +94,18 @@ type Result struct {
 	DPSByTarget    map[int]FloatResult    `json:"dps_by_target"`
 	DamageOverTime map[string]FloatResult `json:"damage_over_time"`
 	Iterations     int                    `json:"iter"`
-	Text           string                 `json:"text"`
-	Debug          string                 `json:"debug"`
 	Runtime        time.Duration          `json:"runtime"`
 	//other info
-	Config     string `json:"config_file"`
-	NumTargets int    `json:"num_targets"`
+	NumTargets    int                     `json:"num_targets"` //TODO: to deprecate this
+	CharDetails   []core.CharacterProfile `json:"char_details"`
+	TargetDetails []core.EnemyProfile     `json:"target_details"`
 	//for tracking min/max run
 	MinSeed int64 `json:"-"`
 	MaxSeed int64 `json:"-"`
+	//put these last so result is kinda readable by human
+	Config string `json:"config_file"`
+	Text   string `json:"text"`
+	Debug  string `json:"debug"`
 }
 
 type IntResult struct {
@@ -217,6 +245,12 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	result.Runtime = time.Since(start)
 	result.Config = src
 	result.NumTargets = len(cfg.Targets)
+	result.CharDetails = cfg.Characters.Profile
+	for i := range result.CharDetails {
+		result.CharDetails[i].Base.Name = result.CharDetails[i].Base.Key.String()
+		result.CharDetails[i].Base.Element = core.CharKeyToEle[result.CharDetails[i].Base.Key]
+	}
+	result.TargetDetails = cfg.Targets
 
 	return result, nil
 }

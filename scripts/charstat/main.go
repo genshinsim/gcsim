@@ -77,9 +77,9 @@ import (
 )
 
 
-var CharBaseMap = map[keys.Char]CharBase{
+var CharBaseMap = map[core.Char]CharBase{
 	{{- range $key, $value := . }}
-	keys.{{$value.Key}}: {
+	core.{{$value.Key}}: {
 		HPCurve: {{$value.Curve.HP}},
 		AtkCurve: {{$value.Curve.Atk}},
 		DefCurve: {{$value.Curve.Def}},

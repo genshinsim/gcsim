@@ -3,11 +3,10 @@ package gorou
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Gorou, NewChar)
+	core.RegisterCharFunc(core.Gorou, NewChar)
 }
 
 type char struct {

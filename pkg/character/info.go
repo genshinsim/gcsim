@@ -2,14 +2,13 @@ package character
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func (c *Tmpl) CharIndex() int {
 	return c.Index
 }
 
-func (c *Tmpl) Key() keys.Char {
+func (c *Tmpl) Key() core.CharKey {
 	return c.Base.Key
 }
 

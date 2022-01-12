@@ -8,19 +8,18 @@ import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type Parser struct {
 	l              *lexer
 	tokens         []item
-	pos            int       //current position
-	currentCharKey keys.Char //current character being parsed
+	pos            int          //current position
+	currentCharKey core.CharKey //current character being parsed
 
 	//results
 	cfg    *core.Config
 	opt    *core.RunOpt
-	chars  map[keys.Char]*core.CharacterProfile
+	chars  map[core.CharKey]*core.CharacterProfile
 	macros map[string]core.ActionBlock
 }
 
@@ -38,7 +37,7 @@ func (p *Parser) Parse() (core.Config, core.RunOpt, error) {
 	var err error
 
 	p.cfg = &core.Config{}
-	p.chars = make(map[keys.Char]*core.CharacterProfile)
+	p.chars = make(map[core.CharKey]*core.CharacterProfile)
 	p.macros = make(map[string]core.ActionBlock)
 	p.opt = &core.RunOpt{}
 
@@ -65,7 +64,7 @@ func (p *Parser) Parse() (core.Config, core.RunOpt, error) {
 	}
 	sort.Strings(sk)
 	for _, v := range sk {
-		k := keys.CharNameToKey[v]
+		k := core.CharNameToKey[v]
 		p.cfg.Characters.Profile = append(p.cfg.Characters.Profile, *p.chars[k])
 	}
 

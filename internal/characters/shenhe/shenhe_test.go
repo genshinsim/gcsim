@@ -6,7 +6,6 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tests"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/player"
 	"go.uber.org/zap"
@@ -40,7 +39,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -95,7 +94,7 @@ func TestSkillCDCon0(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 0
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -178,7 +177,7 @@ func TestBurstCDBasic(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -248,7 +247,7 @@ func TestSkillCDCon1(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -417,7 +416,7 @@ func TestFlatCDReduction(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 0
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -510,7 +509,7 @@ func TestFlatCDReductionCon1(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -592,7 +591,7 @@ func TestResetSkillCD(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -682,7 +681,7 @@ func TestResetSkillCooldownReduction(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	prof := tests.CharProfile(keys.Shenhe, core.Cryo, 6)
+	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members

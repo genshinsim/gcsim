@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/player"
 )
@@ -69,145 +68,8 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 	}
 	s.stats.IsDamageMode = cfg.DamageMode
 
-	var sb strings.Builder
-
 	if s.opts.LogDetails {
-		s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
-		//add new targets
-		s.C.Events.Subscribe(core.OnTargetAdded, func(args ...interface{}) bool {
-			t := args[0].(core.Target)
-
-			s.C.Log.Debugw("Target Added", "frame", s.C.F, "event", core.LogSimEvent, "target_type", t.Type())
-
-			s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[core.EleType]int))
-
-			return false
-		}, "sim-new-target-stats")
-		//add call backs to track details
-		s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			t := args[0].(core.Target)
-
-			// No need to pull damage stats for non-enemies
-			if t.Type() != core.TargettableEnemy {
-				return false
-			}
-			atk := args[1].(*core.AttackEvent)
-
-			//skip if do not log
-			if atk.Info.DoNotLog {
-				return false
-			}
-
-			dmg := args[2].(float64)
-			sb.Reset()
-			sb.WriteString(atk.Info.Abil)
-			if atk.Info.Amped {
-				if atk.Info.AmpMult == 1.5 {
-					sb.WriteString(" [amp: 1.5]")
-				} else if atk.Info.AmpMult == 2 {
-					sb.WriteString(" [amp: 2.0]")
-				}
-			}
-			s.stats.DamageByChar[atk.Info.ActorIndex][sb.String()] += dmg
-			if dmg > 0 {
-				s.stats.DamageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
-			}
-			s.stats.DamageByCharByTargets[atk.Info.ActorIndex][t.Index()] += dmg
-
-			// Want to capture information in 0.25s intervals - allows more flexibility in bucketizing
-			frameBucket := int(s.C.F/15) * 15
-			details := DamageDetails{
-				FrameBucket: frameBucket,
-				Char:        atk.Info.ActorIndex,
-				Target:      t.Index(),
-			}
-			// Go defaults to 0 for map values that don't exist
-			s.stats.DamageDetailByTime[details] += dmg
-			return false
-		}, "dmg-log")
-
-		s.C.Events.Subscribe(core.OnOverload, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.Overload]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnSuperconduct, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.Superconduct]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnMelt, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.Melt]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnVaporize, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.Vaporize]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnFrozen, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.Freeze]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnElectroCharged, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.ElectroCharged]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnSwirlHydro, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.SwirlHydro]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnSwirlCryo, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.SwirlCryo]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnSwirlElectro, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.SwirlElectro]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnSwirlPyro, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.SwirlPyro]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnCrystallizeCryo, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.CrystallizeCryo]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnCrystallizeElectro, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.CrystallizeElectro]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnCrystallizeHydro, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.CrystallizeHydro]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnCrystallizePyro, func(args ...interface{}) bool {
-			s.stats.ReactionsTriggered[core.CrystallizePyro]++
-			return false
-		}, "reaction-log")
-
-		s.C.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
-			p := args[0].(core.Particle)
-			s.stats.ParticleCount[p.Source] += p.Num
-			return false
-		}, "particles-log")
-
-		s.C.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-			activeChar := s.C.Chars[s.C.ActiveChar]
-			s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
-			return false
-		}, "energy-calc-log")
-
+		s.initDetailLog()
 	}
 
 	err = s.initQueuer(cfg)
@@ -225,6 +87,10 @@ func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulat
 	}
 
 	c.Init()
+
+	if s.opts.LogDetails {
+
+	}
 
 	// log.Println(s.cfg.Energy)
 
@@ -308,7 +174,7 @@ func (s *Simulation) initTargets(cfg core.Config) error {
 }
 
 func (s *Simulation) initChars(cfg core.Config) error {
-	dup := make(map[keys.Char]bool)
+	dup := make(map[core.CharKey]bool)
 	res := make(map[core.EleType]int)
 
 	count := len(cfg.Characters.Profile)
@@ -319,6 +185,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 
 	if s.opts.LogDetails {
 		s.stats.CharNames = make([]string, count)
+		s.stats.CharDetails = make([]CharDetail, 0, count)
 		s.stats.DamageByChar = make([]map[string]float64, count)
 		s.stats.DamageInstancesByChar = make([]map[string]int, count)
 		s.stats.DamageByCharByTargets = make([]map[int]float64, count)
@@ -357,6 +224,27 @@ func (s *Simulation) initChars(cfg core.Config) error {
 			s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 			s.stats.CharNames[i] = v.Base.Key.String()
 			s.stats.EnergyWhenBurst[i] = make([]float64, 0, s.opts.Duration/12+2)
+
+			//log the character data
+			s.stats.CharDetails = append(s.stats.CharDetails, CharDetail{
+				Name:     v.Base.Key.String(),
+				Element:  v.Base.Element.String(),
+				Level:    v.Base.Level,
+				MaxLevel: v.Base.Level,
+				Cons:     v.Base.Cons,
+				Weapon: WeaponDetail{
+					Refine:   v.Weapon.Refine,
+					Level:    v.Weapon.Level,
+					MaxLevel: v.Weapon.MaxLevel,
+				},
+				Talents: TalentDetail{
+					Attack: v.Talents.Attack,
+					Skill:  v.Talents.Skill,
+					Burst:  v.Talents.Burst,
+				},
+				Sets: v.Sets,
+			})
+
 		}
 
 	}
@@ -394,4 +282,144 @@ func (s *Simulation) initQueuer(cfg core.Config) error {
 
 	err := s.C.Queue.SetActionList(cfg.Rotation)
 	return err
+}
+
+func (s *Simulation) initDetailLog() {
+	var sb strings.Builder
+	s.stats.ReactionsTriggered = make(map[core.ReactionType]int)
+	//add new targets
+	s.C.Events.Subscribe(core.OnTargetAdded, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
+
+		s.C.Log.Debugw("Target Added", "frame", s.C.F, "event", core.LogSimEvent, "target_type", t.Type())
+
+		s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[core.EleType]int))
+
+		return false
+	}, "sim-new-target-stats")
+	//add call backs to track details
+	s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		t := args[0].(core.Target)
+
+		// No need to pull damage stats for non-enemies
+		if t.Type() != core.TargettableEnemy {
+			return false
+		}
+		atk := args[1].(*core.AttackEvent)
+
+		//skip if do not log
+		if atk.Info.DoNotLog {
+			return false
+		}
+
+		dmg := args[2].(float64)
+		sb.Reset()
+		sb.WriteString(atk.Info.Abil)
+		if atk.Info.Amped {
+			if atk.Info.AmpMult == 1.5 {
+				sb.WriteString(" [amp: 1.5]")
+			} else if atk.Info.AmpMult == 2 {
+				sb.WriteString(" [amp: 2.0]")
+			}
+		}
+		s.stats.DamageByChar[atk.Info.ActorIndex][sb.String()] += dmg
+		if dmg > 0 {
+			s.stats.DamageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
+		}
+		s.stats.DamageByCharByTargets[atk.Info.ActorIndex][t.Index()] += dmg
+
+		// Want to capture information in 0.25s intervals - allows more flexibility in bucketizing
+		frameBucket := int(s.C.F/15) * 15
+		details := DamageDetails{
+			FrameBucket: frameBucket,
+			Char:        atk.Info.ActorIndex,
+			Target:      t.Index(),
+		}
+		// Go defaults to 0 for map values that don't exist
+		s.stats.DamageDetailByTime[details] += dmg
+		return false
+	}, "dmg-log")
+
+	s.C.Events.Subscribe(core.OnOverload, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.Overload]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnSuperconduct, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.Superconduct]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnMelt, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.Melt]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnVaporize, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.Vaporize]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnFrozen, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.Freeze]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnElectroCharged, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.ElectroCharged]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnSwirlHydro, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.SwirlHydro]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnSwirlCryo, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.SwirlCryo]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnSwirlElectro, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.SwirlElectro]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnSwirlPyro, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.SwirlPyro]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnCrystallizeCryo, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.CrystallizeCryo]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnCrystallizeElectro, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.CrystallizeElectro]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnCrystallizeHydro, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.CrystallizeHydro]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnCrystallizePyro, func(args ...interface{}) bool {
+		s.stats.ReactionsTriggered[core.CrystallizePyro]++
+		return false
+	}, "reaction-log")
+
+	s.C.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
+		p := args[0].(core.Particle)
+		s.stats.ParticleCount[p.Source] += p.Num
+		return false
+	}, "particles-log")
+
+	s.C.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
+		activeChar := s.C.Chars[s.C.ActiveChar]
+		s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
+		return false
+	}, "energy-calc-log")
+
 }

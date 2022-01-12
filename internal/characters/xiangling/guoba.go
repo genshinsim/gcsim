@@ -2,7 +2,6 @@ package xiangling
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/target"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -25,7 +24,7 @@ func newGuoba(c *core.Core) *panda {
 
 func (p *panda) Attack(atk *core.AttackEvent) (float64, bool) {
 	//don't take damage, trigger swirl reaction only on sucrose E
-	if p.Core.Chars[atk.Info.ActorIndex].Key() != keys.Sucrose {
+	if p.Core.Chars[atk.Info.ActorIndex].Key() != core.Sucrose {
 		return 0, false
 	}
 	if atk.Info.AttackTag != core.AttackTagElementalArt {

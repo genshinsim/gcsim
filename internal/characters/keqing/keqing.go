@@ -3,11 +3,10 @@ package keqing
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Keqing, NewChar)
+	core.RegisterCharFunc(core.Keqing, NewChar)
 }
 
 type char struct {

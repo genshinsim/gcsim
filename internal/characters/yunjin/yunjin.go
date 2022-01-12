@@ -2,13 +2,13 @@ package yunjin
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Yunjin, NewChar)
+	core.RegisterCharFunc(core.Yunjin, NewChar)
 }
 
 type char struct {

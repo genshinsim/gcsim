@@ -3,11 +3,10 @@ package lisa
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Lisa, NewChar)
+	core.RegisterCharFunc(core.Lisa, NewChar)
 }
 
 type char struct {

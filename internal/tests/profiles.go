@@ -2,10 +2,9 @@ package tests
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
-func CharProfile(key keys.Char, ele core.EleType, cons int) core.CharacterProfile {
+func CharProfile(key core.CharKey, ele core.EleType, cons int) core.CharacterProfile {
 	r := core.CharacterProfile{}
 	r.Base.Element = ele
 	r.Base.Key = key

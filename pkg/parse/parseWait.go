@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func parseCalcModeWait(p *Parser) (parseFn, error) {
@@ -153,7 +152,7 @@ func (p *Parser) acceptWait() (core.ActionBlock, error) {
 				//expecting a
 				act := core.ActionItem{
 					Typ:    actionKeys[n.val],
-					Target: keys.NoChar, //since it's active char only
+					Target: core.NoChar, //since it's active char only
 				}
 				//optional params
 				act.Param, err = p.acceptOptionalParamReturnMap()

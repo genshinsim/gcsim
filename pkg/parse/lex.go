@@ -6,7 +6,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 type Pos int
@@ -365,7 +365,7 @@ func checkIdentifier(word string) ItemType {
 	if _, ok := eleKeys[word]; ok {
 		return itemElementKey
 	}
-	if _, ok := keys.CharNameToKey[word]; ok {
+	if _, ok := core.CharNameToKey[word]; ok {
 		return itemCharacterKey
 	}
 	if _, ok := actionKeys[word]; ok {

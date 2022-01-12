@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func TestBasicAbilUsage(t *testing.T) {
@@ -15,7 +14,7 @@ func TestBasicAbilUsage(t *testing.T) {
 	}
 	prof := core.CharacterProfile{}
 	prof.Base.Element = core.Pyro
-	prof.Base.Key = keys.Xiangling
+	prof.Base.Key = core.Xiangling
 	prof.Stats = make([]float64, core.EndStatType)
 	prof.Base.Level = 80
 	prof.Base.MaxLevel = 90

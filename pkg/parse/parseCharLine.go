@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func parseChar(p *Parser) (parseFn, error) {
@@ -23,7 +22,7 @@ func parseChar(p *Parser) (parseFn, error) {
 	}
 }
 
-func (p *Parser) newChar(key keys.Char) {
+func (p *Parser) newChar(key core.CharKey) {
 	r := core.CharacterProfile{}
 	r.Base.Key = key
 	r.Stats = make([]float64, len(core.StatTypeString))

@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type char struct {
@@ -20,7 +19,7 @@ type char struct {
 }
 
 func init() {
-	core.RegisterCharFunc(keys.Xingqiu, NewChar)
+	core.RegisterCharFunc(core.Xingqiu, NewChar)
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {

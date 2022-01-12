@@ -1,19 +1,18 @@
 package core
 
-import "github.com/genshinsim/gcsim/pkg/core/keys"
-
 type Character interface {
 	Init(index int) //to be called when everything including weapon and artifacts has been loaded
 	Tick()          //function to be called every frame
 
 	//information functions
-	Key() keys.Char
+	Key() CharKey
 	Name() string
 	CharIndex() int
 	Ele() EleType
 	Level() int
 	WeaponClass() WeaponClass
 	SetWeaponKey(k string)
+	WeaponKey() string
 	Zone() ZoneType
 	CurrentEnergy() float64 //current energy
 	MaxEnergy() float64

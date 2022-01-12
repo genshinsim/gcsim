@@ -3,11 +3,10 @@ package beidou
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Beidou, NewChar)
+	core.RegisterCharFunc(core.Beidou, NewChar)
 }
 
 type char struct {

@@ -5,12 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/player"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Bennett, NewChar)
+	core.RegisterCharFunc(core.Bennett, NewChar)
 }
 
 type char struct {

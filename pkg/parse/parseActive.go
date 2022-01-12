@@ -3,7 +3,7 @@ package parse
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func parseActiveChar(p *Parser) (parseFn, error) {
@@ -11,7 +11,7 @@ func parseActiveChar(p *Parser) (parseFn, error) {
 	if n.typ != itemCharacterKey {
 		return nil, fmt.Errorf("active char expecting char key got %v at line %v", n, p.tokens)
 	}
-	p.cfg.Characters.Initial = keys.CharNameToKey[n.val]
+	p.cfg.Characters.Initial = core.CharNameToKey[n.val]
 	n = p.next()
 	if n.typ != itemTerminateLine {
 		return nil, fmt.Errorf("active char expecting ; got %v at line %v", n, p.tokens)

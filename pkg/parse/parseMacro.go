@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func parseMacro(p *Parser) (parseFn, error) {
@@ -17,7 +16,7 @@ func parseMacro(p *Parser) (parseFn, error) {
 	switch n.typ {
 	case itemCharacterKey:
 		//lex should have checked this already
-		key, ok := keys.CharNameToKey[n.val]
+		key, ok := core.CharNameToKey[n.val]
 		if !ok {
 			return nil, fmt.Errorf("unexpected error, should be a recognized character key: %v", n)
 		}

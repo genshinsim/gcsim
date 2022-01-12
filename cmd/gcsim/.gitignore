@@ -1,4 +1,9 @@
-gsim.exe
+*.exe
 gsim
 *.html
 tests
+*.gz
+*.txt
+gcsim
+*.json
+*.zip

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func parseRows(p *Parser) (parseFn, error) {
@@ -53,7 +53,7 @@ func parseRows(p *Parser) (parseFn, error) {
 		//abilities
 
 		//lex should have checked this already
-		key, ok := keys.CharNameToKey[n.val]
+		key, ok := core.CharNameToKey[n.val]
 		if !ok {
 			return nil, fmt.Errorf("unexpected error, should be a recognized character key: %v", n)
 		}

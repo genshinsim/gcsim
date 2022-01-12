@@ -1,9 +1,9 @@
-package keys
+package core
 
-type Char int
+type CharKey int
 
 const (
-	NoChar Char = iota
+	NoChar CharKey = iota
 	TravelerElectro
 	TravelerAnemo
 	TravelerGeo
@@ -61,11 +61,11 @@ const (
 	Yunjin
 )
 
-func (c Char) String() string {
+func (c CharKey) String() string {
 	return charNames[c]
 }
 
-var CharNameToKey = map[string]Char{
+var CharNameToKey = map[string]CharKey{
 	"travelerelectro":    TravelerElectro,
 	"traveleranemo":      TravelerAnemo,
 	"travelergeo":        TravelerGeo,
@@ -190,4 +190,59 @@ var charNames = []string{
 	"itto",
 	"shenhe",
 	"yunjin",
+}
+
+var CharKeyToEle = map[CharKey]EleType{
+	TravelerElectro: Electro,
+	TravelerAnemo:   Anemo,
+	TravelerGeo:     Geo,
+	TravelerHydro:   Hydro,
+	TravelerCryo:    Cryo,
+	TravelerPyro:    Pyro,
+	TravelerDendro:  Dendro,
+	Albedo:          Geo,
+	Aloy:            Cryo,
+	Amber:           Pyro,
+	Barbara:         Hydro,
+	Beidou:          Electro,
+	Bennett:         Pyro,
+	Chongyun:        Cryo,
+	Diluc:           Pyro,
+	Diona:           Cryo,
+	Eula:            Cryo,
+	Fischl:          Electro,
+	Ganyu:           Cryo,
+	Hutao:           Pyro,
+	Jean:            Anemo,
+	Kazuha:          Anemo,
+	Kaeya:           Cryo,
+	Ayaka:           Cryo,
+	Keqing:          Electro,
+	Klee:            Pyro,
+	Sara:            Electro,
+	Lisa:            Electro,
+	Mona:            Hydro,
+	Ningguang:       Geo,
+	Noelle:          Geo,
+	Qiqi:            Cryo,
+	Raiden:          Electro,
+	Razor:           Electro,
+	Rosaria:         Cryo,
+	Kokomi:          Hydro,
+	Sayu:            Anemo,
+	Sucrose:         Anemo,
+	Tartaglia:       Hydro,
+	Thoma:           Pyro,
+	Venti:           Anemo,
+	Xiangling:       Pyro,
+	Xiao:            Anemo,
+	Xingqiu:         Hydro,
+	Xinyan:          Pyro,
+	Yanfei:          Pyro,
+	Yoimiya:         Pyro,
+	Zhongli:         Geo,
+	Gorou:           Geo,
+	Itto:            Geo,
+	Shenhe:          Cryo,
+	Yunjin:          Geo,
 }

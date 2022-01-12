@@ -3,8 +3,6 @@ package core
 import (
 	"errors"
 	"strings"
-
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type CommandHandler interface {
@@ -76,7 +74,7 @@ type ActionBlock struct {
 	Type  ActionBlockType
 	//sequence is only relevant to ActionBlockTypeSequence
 	Sequence     []ActionItem
-	SequenceChar keys.Char
+	SequenceChar CharKey
 
 	ChainSequences []ActionBlock
 
@@ -88,10 +86,10 @@ type ActionBlock struct {
 	Timeout    int           //the action block cannot be used again for x frames
 
 	//options
-	SwapTo            keys.Char //character to swap to after this block
-	SwapLock          int       //must stay on current char for x frames
-	Try               bool      //if true then drop rest of queue if any action is not ready
-	TryDropIfNotReady bool      //if false will keep trying next action; other wise drop sequence. Only if Try is set to true
+	SwapTo            CharKey //character to swap to after this block
+	SwapLock          int     //must stay on current char for x frames
+	Try               bool    //if true then drop rest of queue if any action is not ready
+	TryDropIfNotReady bool    //if false will keep trying next action; other wise drop sequence. Only if Try is set to true
 
 	//tracking
 	NumQueued  int //number of times this action block has been queued
@@ -105,7 +103,7 @@ type ActionBlock struct {
 type ActionItem struct {
 	Typ    ActionType
 	Param  map[string]int
-	Target keys.Char
+	Target CharKey
 }
 
 func (a *ActionItem) Type() CommandType { return CommandTypeAction }
@@ -289,7 +287,7 @@ func (a *ActionCtrl) checkMod(c Condition) bool {
 	//.<character>.modname
 	name := strings.TrimPrefix(c.Fields[0], ".")
 	m := strings.TrimPrefix(c.Fields[1], ".")
-	ck, ok := keys.CharNameToKey[name]
+	ck, ok := CharNameToKey[name]
 	if !ok {
 		a.core.Log.Debugw("invalid char for mod condition", "frame", a.core.F, "event", LogActionEvent, "character", name)
 		return false

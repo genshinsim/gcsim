@@ -3,11 +3,10 @@ package sucrose
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Sucrose, NewChar)
+	core.RegisterCharFunc(core.Sucrose, NewChar)
 }
 
 type char struct {

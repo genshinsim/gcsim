@@ -2,7 +2,6 @@ package kazuha
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -33,7 +32,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionHighPlunge, p)
 	ele := core.Physical
-	if c.Core.LastAction.Target == keys.Kazuha && c.Core.LastAction.Typ == core.ActionSkill {
+	if c.Core.LastAction.Target == core.Kazuha && c.Core.LastAction.Typ == core.ActionSkill {
 		ele = core.Anemo
 	}
 

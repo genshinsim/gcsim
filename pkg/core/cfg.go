@@ -1,13 +1,11 @@
 package core
 
-import "github.com/genshinsim/gcsim/pkg/core/keys"
-
 type Config struct {
 	Label      string
 	DamageMode bool
 	Targets    []EnemyProfile
 	Characters struct {
-		Initial keys.Char
+		Initial CharKey
 		Profile []CharacterProfile
 	}
 	Rotation []ActionBlock
@@ -28,50 +26,51 @@ type RunOpt struct {
 }
 
 type CharacterProfile struct {
-	Base      CharacterBase
-	Weapon    WeaponProfile
-	Talents   TalentProfile
-	Stats     []float64
-	Sets      map[string]int
-	SetParams map[string]map[string]int
-	Params    map[string]int
+	Base      CharacterBase             `json:"base"`
+	Weapon    WeaponProfile             `json:"weapon"`
+	Talents   TalentProfile             `json:"talents"`
+	Stats     []float64                 `json:"stats"`
+	Sets      map[string]int            `json:"sets"`
+	SetParams map[string]map[string]int `json:"-"`
+	Params    map[string]int            `json:"-"`
 }
 
 type CharacterBase struct {
-	Key      keys.Char
-	Element  EleType
-	Level    int
-	MaxLevel int
-	HP       float64
-	Atk      float64
-	Def      float64
-	Cons     int
-	StartHP  float64
+	Key      CharKey `json:"-"`
+	Name     string  `json:"name"`
+	Element  EleType `json:"element"`
+	Level    int     `json:"level"`
+	MaxLevel int     `json:"max_level"`
+	HP       float64 `json:"-"`
+	Atk      float64 `json:"-"`
+	Def      float64 `json:"-"`
+	Cons     int     `json:"cons"`
+	StartHP  float64 `json:"-"`
 }
 
 type WeaponProfile struct {
-	Name     string
-	Key      string //use this to match with weapon curve mapping
-	Class    WeaponClass
-	Refine   int
-	Level    int
-	MaxLevel int
-	Atk      float64
-	Params   map[string]int
+	Name     string         `json:"name"`
+	Key      string         `json:""` //use this to match with weapon curve mapping
+	Class    WeaponClass    `json:"-"`
+	Refine   int            `json:"refine"`
+	Level    int            `json:"level"`
+	MaxLevel int            `json:"max_level"`
+	Atk      float64        `json:"-"`
+	Params   map[string]int `json:"-"`
 }
 
 type TalentProfile struct {
-	Attack int
-	Skill  int
-	Burst  int
+	Attack int `json:"attack"`
+	Skill  int `json:"skill"`
+	Burst  int `json:"burst"`
 }
 
 type EnemyProfile struct {
-	Level          int
-	HP             float64
-	Resist         map[EleType]float64
-	Size           float64
-	CoordX, CoordY float64
+	Level          int                 `json:"level"`
+	HP             float64             `json:"-"`
+	Resist         map[EleType]float64 `json:"-"`
+	Size           float64             `json:"-"`
+	CoordX, CoordY float64             `json:"-"`
 }
 
 type EnergyEvent struct {
