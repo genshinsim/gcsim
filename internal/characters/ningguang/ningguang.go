@@ -31,8 +31,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
-	// Initialize at some very low value so reset happens correctly at start of sim
+	// Initialize at some very low value so these happen correctly at start of sim
 	c.c2reset = -9999
+	c.particleICD = -9999
 
 	c.a4()
 
