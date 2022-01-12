@@ -12,26 +12,20 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-
-	dur := 0
-	//add on hit effect
-	c.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
-		dur = c.F + 360
-		return false
-	}, fmt.Sprintf("windblume-%v", char.Name()))
-
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.12 + float64(r)*0.04
-	char.AddMod(core.CharStatMod{
-		Key: "windblume",
-		Amount: func() ([]float64, bool) {
-			if dur < c.F {
-				return nil, false
-			}
-			return m, true
-		},
-		Expiry: -1,
-	})
+
+	// Effect should always apply BEFORE the skill hits
+	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+		char.AddMod(core.CharStatMod{
+			Key: "windblume",
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+			Expiry: c.F + 360,
+		})
+		return false
+	}, fmt.Sprintf("windblume-%v", char.Name()))
 
 	return "windblumeode"
 }
