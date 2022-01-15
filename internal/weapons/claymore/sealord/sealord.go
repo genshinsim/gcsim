@@ -59,5 +59,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 		return false
 	}, fmt.Sprintf("sealord-%v", char.Name()))
-	return "rainslasher"
+	return "luxurioussealord"
 }

@@ -46,9 +46,6 @@ func (c *CombatCtrl) QueueAttackWithSnap(a AttackInfo, s Snapshot, p AttackPatte
 			ae.Callbacks = append(ae.Callbacks, f)
 		}
 	}
-	if c.core.Flags.LogDebug {
-		ae.Info.ModsLog = make([]zap.Field, 0, 3)
-	}
 	c.queueDmg(&ae, dmgDelay)
 }
 

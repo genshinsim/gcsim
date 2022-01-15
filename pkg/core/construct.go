@@ -11,6 +11,18 @@ const (
 	EndGeoConstructType
 )
 
+var ConstructString = [...]string{
+	"NingSkill",
+	"ZhongliSkill",
+	"TravellerSkill",
+	"TravellerBurst",
+	"AlbedoSkill",
+}
+
+func (c GeoConstructType) String() string {
+	return ConstructString[c]
+}
+
 type Construct interface {
 	OnDestruct()
 	Key() int
@@ -56,19 +68,20 @@ func (s *ConstructCtrl) New(c Construct, refresh bool) {
 		}
 	}
 	if ind > -1 {
-		s.core.Log.Debugw("construct replaced", "event", LogConstructEvent, "frame", s.core.F, "key", s.constructs[ind].Key(), "prev type", s.constructs[ind].Type(), "next type", c.Type())
+		s.core.Log.Debugw("construct replaced - New: "+c.Type().String(), "event", LogConstructEvent, "frame", s.core.F, "key", s.constructs[ind].Key(), "prev type", s.constructs[ind].Type(), "next type", c.Type())
 		s.constructs[ind].OnDestruct()
 		s.constructs[ind] = c
 
 	} else {
 		//add this one to the end
 		s.constructs = append(s.constructs, c)
+		s.core.Log.Debugw("construct created: "+c.Type().String(), "event", LogConstructEvent, "frame", s.core.F, "key", c.Key(), "type", c.Type())
 	}
 
 	//if length > 3, then destruct the beginning ones
 	for i := 0; i < len(s.constructs)-3; i++ {
 		s.constructs[i].OnDestruct()
-		s.core.Log.Debugw("destroyed", "event", LogConstructEvent, "frame", s.core.F, "key", s.constructs[ind].Key(), "type", s.constructs[ind].Type())
+		s.core.Log.Debugw("construct destroyed: "+s.constructs[i].Type().String(), "event", LogConstructEvent, "frame", s.core.F, "key", s.constructs[i].Key(), "type", s.constructs[i].Type())
 		s.constructs[i] = nil
 	}
 

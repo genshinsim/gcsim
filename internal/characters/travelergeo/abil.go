@@ -105,15 +105,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//The shockwave triggered by Wake of Earth regenerates 5 Energy for every opponent hit.
 	// A maximum of 25 Energy can be regenerated in this manner at any one time.
-	count := 0
 	var cb core.AttackCBFunc
+	src := c.Core.F
 
 	if c.Base.Cons >= 4 {
 		cb = func(a core.AttackCB) {
-			if count == 5 {
+			if a.Target.GetTag("traveler-c4-src") == src {
 				return
 			}
-			count++
+			a.Target.SetTag("traveler-c4-src", src)
 			c.AddEnergy(5)
 		}
 	}
