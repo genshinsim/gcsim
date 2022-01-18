@@ -142,14 +142,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	count := 3
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 50, 50)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 57, 57)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 65, 65)
+
 	if c.Base.Cons == 6 {
-		count = 4
-
-	}
-
-	for i := 0; i < count; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, f+10*i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 76, 76)
 	}
 
 	c.SetCD(core.ActionBurst, 720)

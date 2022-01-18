@@ -24,7 +24,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionSkill:
 		return 57, 57
 	case core.ActionBurst:
-		return 135, 135 //ok
+		return 79, 79 //ok
 	default:
 		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
 		return 0, 0
