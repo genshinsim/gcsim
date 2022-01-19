@@ -129,7 +129,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
 	}
 
-	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(480/18)), "venti-absorb-check", 10)
+	// Infusion usually occurs after 4 ticks of anemo according to KQM library
+	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(480/18)-24*4), "venti-absorb-check", 24*4)
 
 	c.AddTask(func() {
 		c.a4Restore()
