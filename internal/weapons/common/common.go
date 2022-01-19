@@ -68,7 +68,7 @@ func Favonius(char core.Character, c *core.Core, r int, param map[string]int) {
 		}
 		c.Log.Debugw("favonius proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex())
 
-		char.QueueParticle("favonius", 3, core.NoElement, 150)
+		char.QueueParticle("favonius", 3, core.NoElement, 80)
 
 		icd = c.F + cd
 

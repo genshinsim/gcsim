@@ -21,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       skillbase[c.TalentLvlSkill()] + skillbonus[c.TalentLvlSkill()]*float64(counter),
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
 
 	//2 if no hit, 3 if 1 hit, 4 if perfect
 	c.QueueParticle("beidou", 2+counter, core.Electro, 100)
@@ -86,7 +86,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 100,
 		Mult:       burstonhit[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
 
 	c.Core.Status.AddStatus("beidouburst", 900)
 
@@ -100,7 +100,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burstproc[c.TalentLvlBurst()],
 	}
-	snap := c.Snapshot(&ai)
+	snap := c.Snapshot(&procAI)
 	c.burstAtk = &core.AttackEvent{
 		Info:     procAI,
 		Snapshot: snap,
