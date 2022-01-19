@@ -16,16 +16,20 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	val := make([]float64, core.EndStatType)
-	val[core.ATKP] = 0.15 + 0.05*float64(r)
+	val[core.DmgP] = 0.15 + 0.05*float64(r)
 
-	char.AddMod(core.CharStatMod{
+	char.AddPreDamageMod(core.PreDamageMod{
 		Key:    "black sword",
 		Expiry: -1,
-		Amount: func() ([]float64, bool) {
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+				return nil, false
+			}
 			return val, true
 		},
 	})
 
+	last := 0
 	heal := 0.5 + .1*float64(r)
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
@@ -41,8 +45,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
-		if crit {
+		if crit && (c.F-last >= 300 || last == 0) {
 			c.Health.HealActive(char.CharIndex(), heal*(atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP])+atk.Snapshot.Stats[core.ATK]))
+			//trigger cd
+			last = c.F
 		}
 		return false
 	}, fmt.Sprintf("black-sword-%v", char.Name()))

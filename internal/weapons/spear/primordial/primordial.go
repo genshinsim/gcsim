@@ -47,11 +47,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		stacks++
 		active = c.F + 360
 
-		if stacks > 7 {
+		if stacks >= 7 {
 			stacks = 7
 			m[core.DmgP] = 0.09 + float64(r)*0.03
 		}
-		m[core.ATK] = (float64(r)*0.007 + 0.025) * float64(stacks)
+		m[core.ATKP] = (float64(r)*0.007 + 0.025) * float64(stacks)
 
 		//trigger cd
 		last = c.F
