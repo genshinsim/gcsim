@@ -20,6 +20,7 @@ func (c *char) a4() {
 			return false
 		}
 		last = c.Core.F
+
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl A4",
@@ -31,7 +32,11 @@ func (c *char) a4() {
 			Durability: 25,
 			Mult:       0.8,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(t.Index(), core.TargettableEnemy), 0, 1)
+		// TODO: Ugly hack needed to maintain snapshot logs...
+		// Technically should have a separate snapshot for each attack info?
+		ai.ModsLog = c.ozSnapshot.Info.ModsLog
+		// A4 uses Oz Snapshot
+		c.Core.Combat.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, core.NewDefSingleTarget(t.Index(), core.TargettableEnemy), 0)
 
 		return false
 	}
