@@ -30,6 +30,9 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m[core.DmgP] = 0.3
 
 		s.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
+			if s.ActiveChar != c.CharIndex() {
+				return false
+			}
 			s.Status.AddStatus(key, 900) //activate for 15 seoncds
 			//add stat mod here
 			c.AddPreDamageMod(core.PreDamageMod{
