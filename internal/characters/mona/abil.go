@@ -58,7 +58,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		Abil:       "Dash",
 		ActorIndex: c.Index,
 		AttackTag:  core.AttackTagNone,
-		ICDTag:     core.ICDTagNone,
+		ICDTag:     core.ICDTagDash,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Hydro,
 		Durability: 25,
@@ -158,7 +158,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	c.Core.Combat.QueueAttack(aiBreak, core.NewDefCircHit(4, false, core.TargettableEnemy), -1, 102+480)
 
-	c.SetCD(core.ActionBurst, 15*60)
+	c.SetCDWithDelay(core.ActionBurst, 15*60, 13)
 	c.ConsumeEnergy(13)
 	return f, a
 }

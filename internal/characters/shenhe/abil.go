@@ -185,8 +185,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}, "shenhe-snapshot", f+2)
 
-	c.SetCD(core.ActionBurst, 20*60)
-	c.ConsumeEnergy(0)
+	c.SetCDWithDelay(core.ActionBurst, 20*60, 11)
+	c.ConsumeEnergy(11)
 
 	return f, a
 }

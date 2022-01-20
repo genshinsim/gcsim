@@ -218,7 +218,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}, "Eula-Burst-Lightfall", 7*60+f) //after 8 seconds
 
-	c.SetCD(core.ActionBurst, 20*60+f)
+	c.SetCDWithDelay(core.ActionBurst, 20*60, 107)
 	//energy does not deplete until after animation
 	c.ConsumeEnergy(107)
 

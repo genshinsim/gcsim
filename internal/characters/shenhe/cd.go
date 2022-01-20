@@ -34,6 +34,14 @@ func (c *char) SetCD(a core.ActionType, dur int) {
 	)
 }
 
+func (c *char) SetCDWithDelay(a core.ActionType, dur int, delay int) {
+	if delay == 0 {
+		c.SetCD(a, dur)
+		return
+	}
+	c.AddTask(func() { c.SetCD(a, dur) }, "set-cd", delay)
+}
+
 func (c *char) Cooldown(a core.ActionType) int {
 	//remaining cooldown is src + first item in queue - current frame
 	if c.availableCDCharge[a] > 0 {

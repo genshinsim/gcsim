@@ -196,14 +196,9 @@ func TestBurstCDBasic(t *testing.T) {
 
 	sh := x.(*char)
 
-	var f int
-
-	f, _ = x.Burst(p)
-	for i := 0; i < f; i++ {
-		c.Tick()
-	}
-	//expecting skill to come up in f+10*60
-	for c.F < 1200-1 {
+	_, _ = x.Burst(p)
+	// Burst should be ready at 1200+11 frames after usage
+	for i := 0; i < 1200+11-1; i++ {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet

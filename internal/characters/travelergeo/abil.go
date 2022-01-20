@@ -140,6 +140,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}, "geomc-wall", f)
 
 	c.ConsumeEnergy(43)
-	c.SetCD(core.ActionBurst, 900)
+	c.SetCDWithDelay(core.ActionBurst, 900, 43)
 	return f, a
 }

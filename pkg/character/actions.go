@@ -104,6 +104,16 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 	c.Core.Log.Debugw("cooldown triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "type", a.String(), "expiry", c.Core.F+dur)
 }
 
+// Thin wrapper around SetCD to allow for setting CD after some delay frames
+// Useful for bursts that consume energy and start CD at some point into their animation
+func (c *Tmpl) SetCDWithDelay(a core.ActionType, dur int, delay int) {
+	if delay == 0 {
+		c.SetCD(a, dur)
+		return
+	}
+	c.AddTask(func() { c.SetCD(a, dur) }, "set-cd", delay)
+}
+
 func (c *Tmpl) Cooldown(a core.ActionType) int {
 	cd := c.ActionCD[a] - c.Core.F
 	if cd < 0 {
