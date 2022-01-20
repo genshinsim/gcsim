@@ -58,7 +58,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		Abil:       "Dash",
 		ActorIndex: c.Index,
 		AttackTag:  core.AttackTagNone,
-		ICDTag:     core.ICDTagNone,
+		ICDTag:     core.ICDTagDash,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Hydro,
 		Durability: 25,
