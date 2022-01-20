@@ -301,7 +301,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		})
 	}
 
-	c.SetCD(core.ActionSkill, 720)
+	c.SetCDWithDelay(core.ActionSkill, 720, 80)
 	c.ConsumeEnergy(80)
 	return f, a
 }

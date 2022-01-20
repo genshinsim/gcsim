@@ -274,10 +274,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	if c.Core.Status.Duration("tartagliamelee") == 0 {
 		c.ConsumeEnergy(8)
+		c.SetCDWithDelay(core.ActionBurst, 900, 8)
 	} else {
 		c.ConsumeEnergy(75)
+		c.SetCDWithDelay(core.ActionBurst, 900, 75)
 	}
 
-	c.SetCD(core.ActionBurst, 900)
 	return f, a
 }

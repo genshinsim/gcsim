@@ -129,7 +129,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.addJadeShield()
 	}
 
-	c.SetCD(core.ActionBurst, 720)
+	c.SetCDWithDelay(core.ActionBurst, 720, 6)
 	c.ConsumeEnergy(6)
 	return f, a
 }

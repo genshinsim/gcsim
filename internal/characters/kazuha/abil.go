@@ -235,7 +235,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.c6Active = c.Core.F + f + 300
 	}
 
-	c.SetCD(core.ActionBurst, 15*60)
+	c.SetCDWithDelay(core.ActionBurst, 15*60, 7)
 	c.ConsumeEnergy(7)
 	return f, a
 }

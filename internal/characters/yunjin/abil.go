@@ -183,9 +183,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}
 
-	// TODO: Revisit once known burst energy consumption timing
-	c.ConsumeEnergy(0)
-	c.SetCD(core.ActionBurst, 15*60)
+	c.ConsumeEnergy(8)
+	c.SetCDWithDelay(core.ActionBurst, 15*60, 8)
 
 	return f, a
 }

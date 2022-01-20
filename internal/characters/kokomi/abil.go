@@ -235,11 +235,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	// Cannot be prefed particles
-	c.AddTask(func() {
-		c.ConsumeEnergy(57)
-	}, "kokomi-q-energy-drain", f)
-
-	c.SetCD(core.ActionBurst, 18*60)
+	c.ConsumeEnergy(57)
+	c.SetCDWithDelay(core.ActionBurst, 18*60, 57)
 	return f, a
 }
 

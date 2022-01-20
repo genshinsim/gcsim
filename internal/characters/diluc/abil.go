@@ -155,6 +155,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}, "diluc-burst", 100)
 
 	c.ConsumeEnergy(24)
-	c.SetCD(core.ActionBurst, 720)
+	c.SetCDWithDelay(core.ActionBurst, 720, 24)
 	return f, a
 }

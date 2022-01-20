@@ -257,7 +257,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.ConsumeEnergy(42)
-	c.SetCD(core.ActionBurst, 900)
+	c.SetCDWithDelay(core.ActionBurst, 900, 42)
 	return f, a //todo fix field cast time
 }
 

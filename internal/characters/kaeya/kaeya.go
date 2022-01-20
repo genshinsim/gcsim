@@ -176,14 +176,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}
 
+	c.ConsumeEnergy(55)
 	if c.Base.Cons == 6 {
-		c.Energy = 15
-	} else {
-		c.ConsumeEnergy(55)
+		c.AddTask(func() { c.AddEnergy(15) }, "kaeya-c6", 56)
 	}
 
-	// c.CD[def.BurstCD] = c.Sim.F + 900
-	c.SetCD(core.ActionBurst, 900)
+	c.SetCDWithDelay(core.ActionBurst, 900, 55)
 	return f, a
 }
 
