@@ -101,7 +101,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//add field effect timer
 	//assumes a4
-	c.Core.Status.AddStatus("barbskill", 15*60)
+	c.Core.Status.AddStatus("barbskill", 15*60+1)
 	//hook for buffs; active right away after cast
 
 	ai := core.AttackInfo{
@@ -124,10 +124,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	stats := c.SnapshotStats(&aiHeal)
 	hpplus := stats[core.Heal]
-	heal := (skillhp[c.TalentLvlBurst()] + skillhpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
+	heal := (skillhp[c.TalentLvlSkill()] + skillhpp[c.TalentLvlSkill()]*c.MaxHP()) * (1 + hpplus)
 	//apply right away
 
-	c.Core.Health.HealActive(c.Index, heal)
 	c.skillInitF = c.Core.F
 	c.onSkillStackCount(c.Core.F)
 	//add 1 tick each 5s
@@ -135,7 +134,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.barbaraHealTick(heal, c.Core.F)()
 	ai.Abil = "Let the Show Begin♪ Wet Tick"
 	ai.Mult = 0
-	c.barbaraWet(ai, c.Core.F)
+	c.barbaraWet(ai, c.Core.F)()
 	c.Energy = 0
 	if c.Base.Cons >= 2 {
 		c.SetCD(core.ActionSkill, 32*60*0.85)
@@ -178,7 +177,7 @@ func (c *char) barbaraWet(ai core.AttackInfo, skillInitF int) func() {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 5)
 
 		// tick per 5 seconds
-		c.AddTask(c.barbaraWet(ai, skillInitF), "barbara-wet", 90)
+		c.AddTask(c.barbaraWet(ai, skillInitF), "barbara-wet", 5*60)
 	}
 }
 func (c *char) Burst(p map[string]int) (int, int) {
