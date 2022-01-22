@@ -161,7 +161,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Cryo,
 		Durability: 25,
-		Mult:       burst[0][c.TalentLvlBurst()],
+		Mult:       burstDot[c.TalentLvlBurst()],
 	}
 
 	c.AddTask(func() {
