@@ -27,7 +27,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		}
 		return 84, 84 //kqm
 	case core.ActionBurst:
-		return 21, 21
+		return 49, 49 //from kqm
 	case core.ActionSkill:
 		switch p["hold"] {
 		case 1:
