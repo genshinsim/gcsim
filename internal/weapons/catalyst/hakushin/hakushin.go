@@ -15,13 +15,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	e := 10 + float64(r-1)*2.5
 	e = e / 100
-	m := make([]float64, core.EndStatType)
-	m[core.ElectroP] = e
 	hrfunc := func(ele core.EleType, key string) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
 			if c.ActiveChar != char.CharIndex() {
 				return false
 			}
+			m := make([]float64, core.EndStatType)
+			m[core.ElectroP] = e
 			m[ele] = e
 
 			for _, char := range c.Chars {
