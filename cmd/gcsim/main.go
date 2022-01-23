@@ -43,6 +43,7 @@ type opts struct {
 	substatOptim bool
 	verbose      bool
 	out          string
+	options      string
 }
 
 func main() {
@@ -72,6 +73,13 @@ func main() {
 	flag.BoolVar(&opt.substatOptim, "substatOptim", false, "optimize substats according to KQM standards. Set the out flag to output config with optimal substats inserted to a given file path")
 	flag.BoolVar(&opt.verbose, "v", false, "Verbose output log (currently only for substat optimization)")
 	flag.StringVar(&opt.out, "out", "", "output result to file? supply file path (otherwise empty string for disabled). default disabled")
+	flag.StringVar(&opt.options, "options", "", `Additional options for substat optimization mode. Currently supports the following flags, set in a semi-colon delimited list (e.g. -options="total_liquid_substats=15;indiv_liquid_cap=8"):
+- total_liquid_substats (default = 20): Total liquid substats available to be assigned across all substats
+- indiv_liquid_cap (default = 10): Total liquid substats that can be assigned to a single substat
+- fixed_substats_count (default = 2): Amount of fixed substats that are assigned to all substats
+- sim_iter (default = 350): RECOMMENDED TO NOT TOUCH. Number of iterations used when optimizing. Only change (increase) this if you are working with a team with extremely high standard deviation (>25% of mean)
+- tol_mean (default = 0.015): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS mean used in ER optimization
+- tol_sd (default = 0.33): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS SD used in ER optimization`)
 
 	// t := flag.Int("t", 1, "target multiplier")
 
