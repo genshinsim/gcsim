@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc("hakushinring", weapon)
+	core.RegisterWeaponFunc("hakushin ring", weapon)
 	core.RegisterWeaponFunc("hakushin", weapon)
 }
 
@@ -21,8 +22,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				return false
 			}
 			m := make([]float64, core.EndStatType)
-			m[core.ElectroP] = e
-			m[ele] = e
+			if char.Ele() == core.Electro {
+				m[core.ElectroP] = e
+			}
+			if char.Ele() == ele {
+				m[ele] = e
+			}
 
 			for _, char := range c.Chars {
 				char.AddMod(core.CharStatMod{
