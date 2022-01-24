@@ -197,9 +197,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("xianglingguoba", 500)
 
 	//lasts 73 seconds, shoots every 1.6 seconds
+	snap := c.Snapshot(&ai)
 	for i := 0; i < 4; i++ {
 		c.AddTask(func() {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, 10, cb)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 10, cb)
 			c.guoba.pyroWindowStart = c.Core.F
 			c.guoba.pyroWindowEnd = c.Core.F + 20
 		}, "guoba-shoot", delay+i*90-10) //10 frame window to swirl
