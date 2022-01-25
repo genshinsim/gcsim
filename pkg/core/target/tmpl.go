@@ -22,10 +22,10 @@ type Tmpl struct {
 	DefMod []core.DefMod
 
 	//icd related
-	icdTagOnTimer         [core.MaxTeamPlayerCount][core.ICDTagLength]bool
-	icdTagCounter         [core.MaxTeamPlayerCount][core.ICDTagLength]int
-	icdDamageGroupOnTimer [core.MaxTeamPlayerCount][core.ICDGroupLength]bool
-	icdDamageGroupCounter [core.MaxTeamPlayerCount][core.ICDGroupLength]int
+	icdTagOnTimer       [core.MaxTeamPlayerCount][core.ICDTagLength]bool
+	icdTagCounter       [core.MaxTeamPlayerCount][core.ICDTagLength]int
+	icdDamageTagOnTimer [core.MaxTeamPlayerCount][core.ICDTagLength]bool
+	icdDamageTagCounter [core.MaxTeamPlayerCount][core.ICDTagLength]int
 }
 
 func (t *Tmpl) Type() core.TargettableType { return t.TargetType }
