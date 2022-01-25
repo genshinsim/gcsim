@@ -49,27 +49,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init(index int) {
 	c.Tmpl.Init(index)
-	mult := skillBurstBonus[c.TalentLvlSkill()]
-	//add E hook
-	val := make([]float64, core.EndStatType)
-	for _, char := range c.Core.Chars {
-		this := char
-		char.AddPreDamageMod(core.PreDamageMod{
-			Key:    "raiden-e",
-			Expiry: -1,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				if c.Core.Status.Duration("raidenskill") == 0 {
-					return nil, false
-				}
-				if atk.Info.AttackTag != core.AttackTagElementalBurst {
-					return nil, false
-				}
-
-				val[core.DmgP] = mult * this.MaxEnergy()
-				return val, true
-			},
-		})
-	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

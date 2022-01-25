@@ -198,6 +198,25 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//activate eye
 	c.Core.Status.AddStatus("raidenskill", 1500+f)
 
+	// Add pre-damage mod
+	mult := skillBurstBonus[c.TalentLvlSkill()]
+	val := make([]float64, core.EndStatType)
+	for _, char := range c.Core.Chars {
+		this := char
+		char.AddPreDamageMod(core.PreDamageMod{
+			Key:    "raiden-e",
+			Expiry: c.Core.F + 1500 + f,
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != core.AttackTagElementalBurst {
+					return nil, false
+				}
+
+				val[core.DmgP] = mult * this.MaxEnergy()
+				return val, true
+			},
+		})
+	}
+
 	c.SetCD(core.ActionSkill, 600)
 	return f, a
 }

@@ -290,7 +290,26 @@ func (c *char) attackBuff(delay int) {
 			Expiry: c.Core.F + 360,
 		})
 
+		if c.Base.Cons >= 6 {
+			c.c6(active)
+		}
+
 	}, "sara-attack-buff", delay)
+}
+
+func (c *char) c6(char core.Character) {
+	val := make([]float64, core.EndStatType)
+	val[core.CD] = 0.6
+	char.AddPreDamageMod(core.PreDamageMod{
+		Key:    "sara-c6",
+		Expiry: c.Core.F + 360,
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.Element != core.Electro {
+				return nil, false
+			}
+			return val, true
+		},
+	})
 }
 
 // Get integer power - required for burst
