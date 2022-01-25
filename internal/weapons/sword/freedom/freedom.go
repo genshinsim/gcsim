@@ -20,9 +20,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		Expiry: -1,
 	})
 
-	val := make([]float64, core.EndStatType)
-	val[core.ATKP] = .15 + float64(r)*0.05
-	plunge := .12 + 0.4*float64(r)
+	atkBuff := make([]float64, core.EndStatType)
+	atkBuff[core.ATKP] = .15 + float64(r)*0.05
+
+	buffNACAPlunge := make([]float64, core.EndStatType)
+	buffNACAPlunge[core.DmgP] = .12 + 0.4*float64(r)
 
 	icd := 0
 	stacks := 0
@@ -50,14 +52,23 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			c.Status.AddStatus("freedom", 720)
 			cooldown = c.F + 1200
 			for _, char := range c.Chars {
+				// Attack buff snapshots so it needs to be in a separate mod
+				char.AddMod(core.CharStatMod{
+					Key: "freedom-proc",
+					Amount: func() ([]float64, bool) {
+						return atkBuff, true
+					},
+					Expiry: c.F + 12*60,
+				})
+
 				char.AddPreDamageMod(core.PreDamageMod{
 					Key: "freedom-proc",
 					Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-						val[core.DmgP] = 0
-						if atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra || atk.Info.AttackTag == core.AttackTagPlunge {
-							val[core.DmgP] = plunge
+						switch atk.Info.AttackTag {
+						case core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge:
+							return buffNACAPlunge, true
 						}
-						return val, true
+						return nil, false
 					},
 					Expiry: c.F + 720,
 				})

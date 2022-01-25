@@ -66,7 +66,7 @@ func (c *char) pressE() {
 		c.grimheartICD = c.Core.F + 18
 
 		if c.Tags["grimheart"] < 2 {
-			c.Tags["grimeart"]++
+			c.Tags["grimheart"]++
 			c.Core.Log.Debugw("eula: grimheart stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "current count", c.Tags["grimheart"])
 		}
 		c.grimheartReset = 18 * 60

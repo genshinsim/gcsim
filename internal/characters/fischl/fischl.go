@@ -186,12 +186,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ai.Mult += 2
 	}
 	// Should be aligned with Oz's skill snapshot timing
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-20, f-20)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-21, f-20)
 
 	//set on field oz to be this one
 	c.AddTask(func() {
 		c.queueOz("Skill")
-	}, "oz-skill", f-20)
+	}, "oz-skill", f-21)
 
 	c.SetCD(core.ActionSkill, 25*60)
 	//return animation cd
