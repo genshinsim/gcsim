@@ -1,0 +1,212 @@
+package itto
+
+import (
+	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core"
+)
+
+func (c *char) Attack(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionAttack, p)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+	}
+
+	// Check burst status
+	r := 1.0
+	if c.Core.Status.Duration("ittoq") > 0 {
+		r = 2
+		// Burst can expire during normals
+		// If burst lasts to hitlag, extend burst
+		if f < c.Core.Status.Duration("ittoq") {
+			c.Core.Status.ExtendStatus("ittoq", a-f)
+		}
+	}
+
+	done := false
+	cb := func(a core.AttackCB) {
+		if done {
+			return
+		}
+		if c.Core.Status.Duration("ittoq") > 0 {
+			c.stacks++
+		} else if c.NormalCounter == 2 {
+			c.stacks++
+		} else if c.NormalCounter ==4 {
+			c.stacks += 2
+		}
+		if c.stacks > 5 {
+			c.stacks = 5
+		}
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, a, cb)
+
+	c.sCACount = 0
+	c.dasshuUsed = false
+	c.AdvanceNormalIndex()
+
+	return f, a
+}
+
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionCharge, p)
+
+	// Check burst status
+	r := 1.0
+	if c.Core.Status.Duration("ittoq") > 0 {
+		// Unsure of range, it's huge though
+		r = 3
+		// If burst will expire, extend for the CA
+		if f > c.Core.Status.Duration("ittoq") {
+			c.Core.Status.ExtendStatus("ittoq", f)
+		} else {
+			// Extend burst by hitlag value
+			c.Core.Status.ExtendStatus("ittoq", a-f)
+		}
+	}
+	
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Charged %v", c.sCACount),
+		AttackTag:  core.AttackTagNormal,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       akCombo[c.TalentLvlAttack()],
+		FlatDmg:	0.35 * c.Base.Def * (1 + c.Stats[core.DEFP]) + c.Stats[core.DEF],
+	}
+	if c.stacks == 0 {
+		ai.Mult = saichiSlash[c.TalentLvlAttack()]
+		ai.FlatDmg = 0
+	} else if c.stacks == 1 {
+		ai.Mult = akFinal[c.TalentLvlAttack()]
+	}
+	
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f)
+
+	c.sCACount++
+	c.stacks--
+	if c.stacks <= 0 {
+		c.sCACount = 0
+		c.stacks = 0
+	}
+
+	return f, a
+}
+
+func (c *char) Skill(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionSkill, p)
+
+	// Added "travel" parameter, since Ushi is thrown and takes 12 frames to hit the ground from a press E
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 12
+	}
+	
+	//deal damage when created
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Ushi Throw",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Geo,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
+
+	// Ushi callback to create construct
+	done := false
+	cb := func(a core.AttackCB) {
+		if done {
+			return
+		}
+		// Assumes that Ushi always hits for a stack
+		c.stacks++
+		if c.stacks > 5 {
+			c.stacks = 5
+		}
+		c.Core.Constructs.New(c.newUshi(360), true)	// 6 seconds from hit/land
+		done = true
+	}
+
+	// Check if used as Dasshu
+	if c.NormalCounter > 0 {
+		c.dasshuUsed = true
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f+travel, cb)
+	c.sCACount = 0
+
+	return f, a
+}
+
+// Adapted from Noelle
+func (c *char) Burst(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionBurst, p)
+
+	// Add mod for def to attack burst conversion
+	val := make([]float64, core.EndStatType)
+
+	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
+	aiSnapshot := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Royal Descent: Behold, Itto the Evil! (Stat Snapshot)",
+	}
+	snapshot := c.Snapshot(&aiSnapshot)
+	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[core.DEFP]) + snapshot.Stats[core.DEF]
+	// burstDefSnapshot := c.Base.Def*(1+c.Stats[core.DEFP]) + c.Stats[core.DEF]
+	mult := defconv[c.TalentLvlBurst()]
+	fa := mult * burstDefSnapshot
+	val[core.ATK] = fa
+
+	// Not sure if something else in the code can modify this - to be safe, copy this for the burst extension
+	valCopy := make([]float64, core.EndStatType)
+	copy(valCopy, val)
+
+	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
+	// Buff lasts 11.55s after anim
+	c.AddMod(core.CharStatMod{
+		Key:    "itto-burst",
+		Expiry: c.Core.F + 633 + f,
+		Amount: func() ([]float64, bool) {
+			return val, true
+		},
+	})
+	c.Core.Log.Debugw("itto burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
+
+	c.Core.Status.AddStatus("ittoq", 633+f) // 11.55 seconds
+
+	c.SetCDWithDelay(core.ActionBurst, 1080, 8)
+	c.ConsumeEnergy(8)
+	return f, a
+}
+
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		c.Core.Status.DeleteStatus("ittoq")
+		// Re-add mod with 0 time to remove
+		c.AddMod(core.CharStatMod {
+			Key:	"itto-burst",
+			Expiry:	c.Core.F,
+			Amount:	func() ([]float64, bool) {
+				return make([]float64, core.EndStatType), true
+			},
+		})
+		return false
+	}, "itto-exit")
+}

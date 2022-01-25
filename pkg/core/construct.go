@@ -8,6 +8,7 @@ const (
 	GeoConstructTravellerSkill
 	GeoConstructTravellerBurst
 	GeoConstructAlbedoSkill
+	GeoConstructIttoSkill
 	EndGeoConstructType
 )
 
@@ -17,6 +18,7 @@ var ConstructString = [...]string{
 	"TravellerSkill",
 	"TravellerBurst",
 	"AlbedoSkill",
+	"IttoSkill",
 }
 
 func (c GeoConstructType) String() string {
