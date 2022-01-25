@@ -114,7 +114,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("chongyunfield", 600)
 
 	//TODO: delay between when frost field start ticking?
-	for i := 60; i <= 600; i += 60 {
+	for i := f - 1; i <= 600; i += 60 {
 		c.AddTask(func() {
 			if src != c.fieldSrc {
 				return

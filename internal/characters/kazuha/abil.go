@@ -59,6 +59,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 		AttackTag:      core.AttackTagPlunge,
 		ICDTag:         core.ICDTagNormalAttack,
 		ICDGroup:       core.ICDGroupDefault,
+		StrikeType:     core.StrikeTypeBlunt,
 		Element:        ele,
 		Durability:     25,
 		Mult:           highPlunge[c.TalentLvlAttack()],

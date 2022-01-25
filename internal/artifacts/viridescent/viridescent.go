@@ -1,4 +1,4 @@
-package thunderingfury
+package viridescent
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -24,7 +24,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 4 {
 		//add +0.4 reaction damage
 		c.AddReactBonusMod(core.ReactionBonusMod{
-			Key:    "4tf",
+			Key:    "vv",
 			Expiry: -1,
 			Amount: func(ai core.AttackInfo) (float64, bool) {
 				//overload dmg can't melt or vape so it's fine
@@ -68,6 +68,43 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		s.Events.Subscribe(core.OnSwirlElectro, vvfunc(core.Electro, "vvelectro"), "vv4pc-"+c.Name())
 		s.Events.Subscribe(core.OnSwirlHydro, vvfunc(core.Hydro, "vvhydro"), "vv4pc-"+c.Name())
 		s.Events.Subscribe(core.OnSwirlPyro, vvfunc(core.Pyro, "vvpyro"), "vv4pc-"+c.Name())
+
+		// Additional event for on damage proc on secondary targets
+		// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
+		// Possibly closure related? Not sure
+		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+			atk := args[1].(*core.AttackEvent)
+			t := args[0].(core.Target)
+			if atk.Info.ActorIndex != c.CharIndex() {
+				return false
+			}
+
+			//ignore if character not on field
+			if s.ActiveChar != c.CharIndex() {
+				return false
+			}
+
+			ele := atk.Info.Element
+			key := "vv" + ele.String()
+			switch atk.Info.AttackTag {
+			case core.AttackTagSwirlCryo:
+			case core.AttackTagSwirlElectro:
+			case core.AttackTagSwirlHydro:
+			case core.AttackTagSwirlPyro:
+			default:
+				return false
+			}
+
+			t.AddResMod(key, core.ResistMod{
+				Duration: 600, //10 seconds
+				Ele:      ele,
+				Value:    -0.4,
+			})
+
+			s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", key, "char", c.CharIndex())
+
+			return false
+		}, "vv4pc-secondary")
 
 	}
 	//add flat stat to char
