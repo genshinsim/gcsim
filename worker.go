@@ -17,7 +17,6 @@ import (
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/parse"
 )
 
 type Stats struct {
@@ -129,17 +128,14 @@ type workerResp struct {
 	err   error
 }
 
-func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, error) {
+// src is the raw config data, whereas cfg is the parsed configuration file
+func Run(src string, cfg core.Config, opt core.RunOpt, cust ...func(*Simulation) error) (Result, error) {
 	start := time.Now()
 
 	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
 	var data []Stats
 
-	parser := parse.New("single", string(src))
-	cfg, _, err := parser.Parse()
-	if err != nil {
-		return Result{}, err
-	}
+	var err error
 	//pretty print
 	// pretty, _ := json.MarshalIndent(cfg.Characters, "", "\t")
 	// log.Println(string(pretty))
@@ -184,7 +180,7 @@ func Run(src string, opt core.RunOpt, cust ...func(*Simulation) error) (Result, 
 	var b [8]byte
 
 	for i := 0; i < w; i++ {
-		go worker(src, opt, resp, req, done, cust...)
+		go worker(src, cfg, opt, resp, req, done, cust...)
 	}
 
 	go func() {
@@ -603,7 +599,7 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 	return
 }
 
-func worker(src string, opt core.RunOpt, resp chan workerResp, req chan int64, done chan bool, cust ...func(*Simulation) error) {
+func worker(src string, cfg core.Config, opt core.RunOpt, resp chan workerResp, req chan int64, done chan bool, cust ...func(*Simulation) error) {
 
 	opt.Debug = false
 	opt.DebugPaths = []string{}
@@ -611,9 +607,6 @@ func worker(src string, opt core.RunOpt, resp chan workerResp, req chan int64, d
 	for {
 		select {
 		case seed := <-req:
-			parser := parse.New("single", src)
-			cfg, _, _ := parser.Parse()
-
 			s, err := NewSim(cfg, seed, opt, cust...)
 			if err != nil {
 				resp <- workerResp{

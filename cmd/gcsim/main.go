@@ -25,21 +25,25 @@ import (
 )
 
 type opts struct {
-	print     bool
-	js        string
-	debug     bool
-	debugPath string
-	debugHTML bool
-	seconds   int
-	config    string
-	detailed  bool
-	w         int
-	i         int
-	multi     string
-	minmax    bool
-	calc      bool
-	ercalc    bool
-	gz        bool
+	print        bool
+	js           string
+	debug        bool
+	debugPath    string
+	debugHTML    bool
+	seconds      int
+	config       string
+	detailed     bool
+	w            int
+	i            int
+	multi        string
+	minmax       bool
+	calc         bool
+	ercalc       bool
+	gz           bool
+	substatOptim bool
+	verbose      bool
+	out          string
+	options      string
 }
 
 func main() {
@@ -47,7 +51,7 @@ func main() {
 	var opt opts
 
 	flag.BoolVar(&opt.print, "print", true, "print output to screen? default true")
-	flag.StringVar(&opt.js, "js", "", "output result to json? supply file path (otherwise empty string for disabled). default disabled")
+	flag.StringVar(&opt.js, "js", "", "alias for 'out' flag")
 	flag.BoolVar(&opt.debug, "d", false, "show debug? default false")
 	flag.StringVar(&opt.debugPath, "do", "debug.html", "file name for debug file")
 	flag.BoolVar(&opt.debugHTML, "dh", true, "output debug html? default true (but only matters if debug is enabled)")
@@ -66,10 +70,25 @@ func main() {
 	flag.BoolVar(&opt.minmax, "minmax", false, "track the min/max run seed and rerun those (single mode with debug only)")
 	flag.BoolVar(&opt.calc, "calc", false, "run sim in calc mode")
 	flag.BoolVar(&opt.ercalc, "ercalc", false, "run sim in ER calc mode")
+	flag.BoolVar(&opt.substatOptim, "substatOptim", false, "optimize substats according to KQM standards. Set the out flag to output config with optimal substats inserted to a given file path")
+	flag.BoolVar(&opt.verbose, "v", false, "Verbose output log (currently only for substat optimization)")
+	flag.StringVar(&opt.out, "out", "", "output result to file? supply file path (otherwise empty string for disabled). default disabled")
+	flag.StringVar(&opt.options, "options", "", `Additional options for substat optimization mode. Currently supports the following flags, set in a semi-colon delimited list (e.g. -options="total_liquid_substats=15;indiv_liquid_cap=8"):
+- total_liquid_substats (default = 20): Total liquid substats available to be assigned across all substats
+- indiv_liquid_cap (default = 10): Total liquid substats that can be assigned to a single substat
+- fixed_substats_count (default = 2): Amount of fixed substats that are assigned to all substats
+- sim_iter (default = 350): RECOMMENDED TO NOT TOUCH. Number of iterations used when optimizing. Only change (increase) this if you are working with a team with extremely high standard deviation (>25% of mean)
+- tol_mean (default = 0.015): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS mean used in ER optimization
+- tol_sd (default = 0.33): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS SD used in ER optimization`)
 
 	// t := flag.Int("t", 1, "target multiplier")
 
 	flag.Parse()
+
+	// Keep js for backwards compatibility
+	if opt.js != "" && opt.out == "" {
+		opt.out = opt.js
+	}
 
 	if opt.multi != "" {
 		content, err := ioutil.ReadFile(opt.multi)
@@ -87,8 +106,12 @@ func main() {
 		return
 	}
 
-	runSingle(opt)
+	if opt.substatOptim {
+		runSubstatOptim(opt)
+		return
+	}
 
+	runSingle(opt)
 }
 
 func runSingle(o opts) {
@@ -177,7 +200,7 @@ func runSingle(o opts) {
 
 		opts.DebugPaths = []string{"gsim://"}
 
-		result, err = gcsim.Run(data.String(), opts, func(s *gcsim.Simulation) error {
+		result, err = gcsim.Run(data.String(), cfg, opts, func(s *gcsim.Simulation) error {
 			if !o.calc {
 				return nil
 			}
@@ -212,7 +235,7 @@ func runSingle(o opts) {
 		result.Debug = out
 
 	} else {
-		result, err = gcsim.Run(data.String(), opts, func(s *gcsim.Simulation) error {
+		result, err = gcsim.Run(data.String(), cfg, opts, func(s *gcsim.Simulation) error {
 			if !o.calc {
 				return nil
 			}
@@ -248,7 +271,7 @@ func runSingle(o opts) {
 		fmt.Printf("Min seed: %v | DPS: %v\n", result.MaxSeed, maxResult.DPS)
 	}
 
-	if o.js != "" {
+	if o.out != "" {
 		//try creating file to write to
 		result.Text = result.PrettyPrint()
 		data, jsonErr := json.Marshal(result)
@@ -257,7 +280,7 @@ func runSingle(o opts) {
 		}
 
 		if o.gz {
-			path := strings.TrimSuffix(o.js, filepath.Ext(o.js)) + ".json.gz"
+			path := strings.TrimSuffix(o.out, filepath.Ext(o.out)) + ".json.gz"
 			f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 			if err != nil {
 				log.Panic(err)
@@ -270,7 +293,7 @@ func runSingle(o opts) {
 				log.Panic(err)
 			}
 		} else {
-			err := os.WriteFile(o.js, data, 0644)
+			err := os.WriteFile(o.out, data, 0644)
 			if err != nil {
 				log.Panic(err)
 			}
@@ -379,7 +402,7 @@ func runMulti(files []string, w, i int) error {
 		}
 
 		parser := parse.New("single", data.String())
-		_, opts, err := parser.Parse()
+		cfg, opts, err := parser.Parse()
 		if err != nil {
 			return err
 		}
@@ -393,7 +416,7 @@ func runMulti(files []string, w, i int) error {
 		opts.LogDetails = false
 
 		fmt.Printf("%60.60v |", f)
-		r, err := gcsim.Run(data.String(), opts)
+		r, err := gcsim.Run(data.String(), cfg, opts)
 		if err != nil {
 			log.Fatal(err)
 		}
