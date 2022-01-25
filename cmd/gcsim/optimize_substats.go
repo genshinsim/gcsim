@@ -103,7 +103,7 @@ func runSubstatOptim(o opts) {
 
 	// Regex to identify main stats based on flower. Check that characters all have one that we can recognize
 	var reMainstats = regexp.MustCompile(`(?m)^[A-z]+ add stats.* hp=(4780|3571).*\n`)
-	var reNumChars = regexp.MustCompile(`(?m)^{A-z]+ char.*\n`)
+	var reNumChars = regexp.MustCompile(`(?m)^[A-z]+ char.*\n`)
 	if len(reMainstats.FindAll(src, -1)) != len(reNumChars.FindAll(src, -1)) {
 		sugarLog.Error("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.")
 		sugarLog.Error("5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
