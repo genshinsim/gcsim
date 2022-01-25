@@ -37,11 +37,11 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		if done {
 			return
 		}
-		if c.Core.Status.Duration("ittoq") > 0 {
+		if c.Core.Status.Duration("ittoq") > 0 && c.NormalCounter < 3 {
 			c.stacks++
-		} else if c.NormalCounter == 2 {
+		} else if c.NormalCounter == 1 {
 			c.stacks++
-		} else if c.NormalCounter ==4 {
+		} else if c.NormalCounter == 3 {
 			c.stacks += 2
 		}
 		if c.stacks > 5 {
@@ -75,7 +75,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			c.Core.Status.ExtendStatus("ittoq", a-f)
 		}
 	}
-	
+
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Charged %v", c.sCACount),
@@ -86,7 +86,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       akCombo[c.TalentLvlAttack()],
-		FlatDmg:	0.35 * c.Base.Def * (1 + c.Stats[core.DEFP]) + c.Stats[core.DEF],
+		FlatDmg:    0.35*c.Base.Def*(1+c.Stats[core.DEFP]) + c.Stats[core.DEF],
 	}
 	if c.stacks == 0 {
 		ai.Mult = saichiSlash[c.TalentLvlAttack()]
@@ -94,7 +94,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	} else if c.stacks == 1 {
 		ai.Mult = akFinal[c.TalentLvlAttack()]
 	}
-	
+
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f)
 
 	c.sCACount++
@@ -115,7 +115,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if !ok {
 		travel = 12
 	}
-	
+
 	//deal damage when created
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -140,7 +140,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		if c.stacks > 5 {
 			c.stacks = 5
 		}
-		c.Core.Constructs.New(c.newUshi(360), true)	// 6 seconds from hit/land
+		c.Core.Constructs.New(c.newUshi(360), true) // 6 seconds from hit/land
 		done = true
 	}
 
@@ -200,10 +200,10 @@ func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		c.Core.Status.DeleteStatus("ittoq")
 		// Re-add mod with 0 time to remove
-		c.AddMod(core.CharStatMod {
-			Key:	"itto-burst",
-			Expiry:	c.Core.F,
-			Amount:	func() ([]float64, bool) {
+		c.AddMod(core.CharStatMod{
+			Key:    "itto-burst",
+			Expiry: c.Core.F,
+			Amount: func() ([]float64, bool) {
 				return make([]float64, core.EndStatType), true
 			},
 		})
