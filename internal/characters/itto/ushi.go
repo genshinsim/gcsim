@@ -4,9 +4,9 @@ import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) newUshi(dur int) core.Construct {
 	return &construct{
-		src:	c.Core.F,
-		expiry:	c.Core.F + dur,
-		char:	c,
+		src:    c.Core.F,
+		expiry: c.Core.F + dur,
+		char:   c,
 	}
 }
 
@@ -25,7 +25,10 @@ func (c *construct) Type() core.GeoConstructType {
 }
 
 func (c *construct) OnDestruct() {
-	c.char.stacks += 1
+	c.char.Tags["strStack"] += 1
+	if c.char.Tags["strStack"] > 5 {
+		c.char.Tags["strStack"] = 5
+	}
 }
 func (c *construct) Expiry() int {
 	return c.expiry

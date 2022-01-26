@@ -8,6 +8,10 @@ import (
 
 func (c *char) Attack(p map[string]int) (int, int) {
 
+	if c.dasshuUsed {
+		c.NormalCounter = c.dasshuCount
+	}
+
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -28,28 +32,23 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		// Burst can expire during normals
 		// If burst lasts to hitlag, extend burst
 		if f < c.Core.Status.Duration("ittoq") {
-			c.Core.Status.ExtendStatus("ittoq", a-f)
+			c.Core.Status.ExtendStatus("ittoq", 1)
 		}
 	}
 
-	done := false
-	cb := func(a core.AttackCB) {
-		if done {
-			return
-		}
-		if c.Core.Status.Duration("ittoq") > 0 && c.NormalCounter < 3 {
-			c.stacks++
-		} else if c.NormalCounter == 1 {
-			c.stacks++
-		} else if c.NormalCounter == 3 {
-			c.stacks += 2
-		}
-		if c.stacks > 5 {
-			c.stacks = 5
-		}
+	// Add superlative strength stacks on damage
+	if c.Core.Status.Duration("ittoq") > 0 && c.NormalCounter < 3 {
+		c.Tags["strStack"]++
+	} else if c.NormalCounter == 1 {
+		c.Tags["strStack"]++
+	} else if c.NormalCounter == 3 {
+		c.Tags["strStack"] += 2
+	}
+	if c.Tags["strStack"] > 5 {
+		c.Tags["strStack"] = 5
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, a, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, a)
 
 	c.sCACount = 0
 	c.dasshuUsed = false
@@ -72,13 +71,13 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			c.Core.Status.ExtendStatus("ittoq", f)
 		} else {
 			// Extend burst by hitlag value
-			c.Core.Status.ExtendStatus("ittoq", a-f)
+			c.Core.Status.ExtendStatus("ittoq", 1)
 		}
 	}
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Charged %v", c.sCACount),
+		Abil:       fmt.Sprintf("Charged %v Stacks %v", c.sCACount, c.Tags["strStack"]),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -88,20 +87,20 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       akCombo[c.TalentLvlAttack()],
 		FlatDmg:    0.35*c.Base.Def*(1+c.Stats[core.DEFP]) + c.Stats[core.DEF],
 	}
-	if c.stacks == 0 {
+	if c.Tags["strStack"] == 0 {
 		ai.Mult = saichiSlash[c.TalentLvlAttack()]
 		ai.FlatDmg = 0
-	} else if c.stacks == 1 {
+	} else if c.Tags["strStack"] == 1 {
 		ai.Mult = akFinal[c.TalentLvlAttack()]
 	}
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f)
 
+	c.Tags["strStack"]--
 	c.sCACount++
-	c.stacks--
-	if c.stacks <= 0 {
+	if c.Tags["strStack"] <= 0 {
 		c.sCACount = 0
-		c.stacks = 0
+		c.Tags["strStack"] = 0
 	}
 
 	return f, a
@@ -110,10 +109,10 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	// Added "travel" parameter, since Ushi is thrown and takes 12 frames to hit the ground from a press E
+	// Added "travel" parameter for future, since Ushi is thrown and takes 12 frames to hit the ground from a press E
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 12
+		travel = 3
 	}
 
 	//deal damage when created
@@ -135,18 +134,26 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		if done {
 			return
 		}
-		// Assumes that Ushi always hits for a stack
-		c.stacks++
-		if c.stacks > 5 {
-			c.stacks = 5
-		}
 		c.Core.Constructs.New(c.newUshi(360), true) // 6 seconds from hit/land
 		done = true
 	}
 
+	// Assume that Ushi always hits for a stack
+	c.Tags["strStack"]++
+	if c.Tags["strStack"] > 5 {
+		c.Tags["strStack"] = 5
+	}
+
+	count := 3
+	if c.Core.Rand.Float64() < 0.33 {
+		count = 4
+	}
+	c.QueueParticle(c.Name(), count, core.Geo, f+100)
+
 	// Check if used as Dasshu
 	if c.NormalCounter > 0 {
 		c.dasshuUsed = true
+		c.dasshuCount = c.NormalCounter
 	}
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f+travel, cb)
@@ -179,17 +186,17 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	copy(valCopy, val)
 
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
-	// Buff lasts 11.55s after anim
+	// Buff lasts 11.55s after anim, padded to cover basic combo
 	c.AddMod(core.CharStatMod{
 		Key:    "itto-burst",
-		Expiry: c.Core.F + 633 + f,
+		Expiry: c.Core.F + 693 + f,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})
 	c.Core.Log.Debugw("itto burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
 
-	c.Core.Status.AddStatus("ittoq", 633+f) // 11.55 seconds
+	c.Core.Status.AddStatus("ittoq", 693+f) // inflated from 11.55 seconds to cover basic combo
 
 	c.SetCDWithDelay(core.ActionBurst, 1080, 8)
 	c.ConsumeEnergy(8)

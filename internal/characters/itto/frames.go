@@ -69,11 +69,11 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		}
 		c.dasshuUsed = false
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f, f+hl
+		return f, f + (hl * 0)
 	case core.ActionCharge:
 		f := 40
 		hl := 0
-		switch c.stacks {
+		switch c.Tags["strStack"] {
 		case 0:
 			return 180, 180 // No idea, but it's forever
 		case 1:
@@ -109,9 +109,10 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			}
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
-		return f, f+hl
+		return f, f + (hl * 0)
 	case core.ActionSkill:
-		return 17, 32
+		// Ushi is 17, 32, but endlag isn't being handled?
+		return 32, 32
 	case core.ActionBurst:
 		return 91, 91
 	default:

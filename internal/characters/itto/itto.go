@@ -11,9 +11,9 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	dasshuUsed bool
-	stacks int
-	sCACount int
+	dasshuUsed  bool
+	dasshuCount int
+	sCACount    int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -28,6 +28,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 70
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
+	c.dasshuUsed = false
+	c.dasshuCount = 0
+	c.Tags["strStack"] = 0
+	c.sCACount = 0
 
 	c.onExitField()
 
@@ -39,7 +43,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	case core.ActionCharge:
-		if c.stacks > 0 {
+		if c.Tags["strStack"] > 0 {
 			return 0
 		}
 		return 20
