@@ -288,9 +288,10 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 		//add attack if over 70%
 		threshold := .7
 		if c.Base.Cons >= 1 {
-			threshold = 1.1
+			threshold = 0
 		}
-		if active.HP()/active.MaxHP() < threshold {
+		// Activate attack buff
+		if active.HP()/active.MaxHP() > threshold {
 			//add 2.1s = 126 frames
 			val := make([]float64, core.EndStatType)
 			val[core.ATK] = atk

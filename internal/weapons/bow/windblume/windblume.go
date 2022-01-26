@@ -17,6 +17,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	// Effect should always apply BEFORE the skill hits
 	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+
+		// Character must be onfield
+		if char.CharIndex() != c.ActiveChar {
+			return false
+		}
+
 		char.AddMod(core.CharStatMod{
 			Key: "windblume",
 			Amount: func() ([]float64, bool) {
