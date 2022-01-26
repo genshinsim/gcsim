@@ -76,7 +76,7 @@ func (c *char) calcSkillCD(dur int) int {
 		//if not expired
 		if v.Expiry == -1 || v.Expiry > c.Core.F {
 			amt := v.Amount(core.ActionSkill)
-			c.Core.Log.Debugw("applying cooldown modifier", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
+			c.Core.Log.Debugw("applying cooldown modifier", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
 			cd += amt
 			c.CDReductionFuncs[n] = v
 			n++
@@ -102,5 +102,5 @@ func (c *char) SetCD(a core.ActionType, dur int) {
 		c.ActionCD[a] = c.calcSkillCD(dur)
 	}
 
-	c.Core.Log.Debugw("cooldown triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "type", a.String(), "expiry", c.Core.F+dur)
+	c.Core.Log.Debugw("cooldown triggered", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index, "type", a.String(), "expiry", c.Core.F+dur)
 }
