@@ -35,31 +35,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init(index int) {
 	c.Tmpl.Init(index)
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
-}
-
-func (c *char) c6() {
-	val := make([]float64, core.EndStatType)
-	val[core.CD] = 0.6
-	for _, char := range c.Core.Chars {
-		this := char
-		char.AddPreDamageMod(core.PreDamageMod{
-			Key:    "sara-c6",
-			Expiry: -1,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				//check if tags active
-				if this.Tag("sarabuff") < c.Core.F {
-					return nil, false
-				}
-				if atk.Info.Element != core.Electro {
-					return nil, false
-				}
-				return val, true
-			},
-		})
-	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

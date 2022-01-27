@@ -84,6 +84,7 @@ func (c *Tmpl) AddCDAdjustFunc(rd core.CDAdjust) {
 	}
 }
 
+// Sets cooldown for a given action, applying any modifications
 func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 	//here we reduce dur by cd reduction
 	var cd float64 = 1
@@ -92,7 +93,7 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 		//if not expired
 		if v.Expiry == -1 || v.Expiry > c.Core.F {
 			amt := v.Amount(a)
-			c.Core.Log.Debugw("applying cooldown modifier", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
+			c.Core.Log.Debugw("applying cooldown modifier", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
 			cd += amt
 			c.CDReductionFuncs[n] = v
 			n++
@@ -101,7 +102,8 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 	c.CDReductionFuncs = c.CDReductionFuncs[:n]
 
 	c.ActionCD[a] = c.Core.F + int(float64(dur)*cd) //truncate to int
-	c.Core.Log.Debugw("cooldown triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "type", a.String(), "expiry", c.Core.F+dur)
+	// Log to actions for the purpose of visibility since CDs are decently important
+	c.Core.Log.Debugw("cooldown triggered", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index, "type", a.String(), "expiry", c.Core.F+dur)
 }
 
 // Thin wrapper around SetCD to allow for setting CD after some delay frames

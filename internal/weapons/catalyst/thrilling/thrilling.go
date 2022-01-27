@@ -47,9 +47,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			active.AddMod(core.CharStatMod{
 				Key: "thrilling tales",
 				Amount: func() ([]float64, bool) {
-					return m, expiry > c.F
+					return m, true
 				},
-				Expiry: -1,
+				Expiry: expiry,
 			})
 
 			c.Log.Debugw("ttds activated", "frame", c.F, "event", core.LogWeaponEvent, "char", active.CharIndex(), "expiry", expiry)

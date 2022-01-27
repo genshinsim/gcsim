@@ -307,8 +307,6 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 				},
 				Expiry: c.Core.F + 126,
 			})
-			// Additional per-character status for config conditionals
-			c.Core.Status.AddStatus(fmt.Sprintf("bennettbuff%v", active.Name()), 126)
 			c.Core.Log.Debugw("bennett field - adding attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "threshold", threshold)
 			//if c6 add weapon infusion and 15% pyro
 			if c.Base.Cons == 6 {
