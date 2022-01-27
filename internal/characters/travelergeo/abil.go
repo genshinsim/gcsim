@@ -110,7 +110,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	if c.Base.Cons >= 4 {
 		cb = func(a core.AttackCB) {
-			if a.Target.GetTag("traveler-c4-src") == src {
+			// TODO: A bit of a cludge to deal with frame 0 casts. Will have to think about this behavior a bit more
+			if a.Target.GetTag("traveler-c4-src") == src && src > 0 {
 				return
 			}
 			a.Target.SetTag("traveler-c4-src", src)

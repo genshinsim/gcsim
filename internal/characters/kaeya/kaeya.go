@@ -83,8 +83,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge 1",
-		AttackTag:  core.AttackTagNormal,
-		ICDTag:     core.ICDTagNormalAttack,
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
 		Element:    core.Physical,

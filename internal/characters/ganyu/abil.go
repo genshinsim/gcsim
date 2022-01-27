@@ -99,7 +99,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//flower damage is after 6 seconds
 	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 360)
-	c.QueueParticle("ganyu", 2, core.Cryo, 360)
+	// TODO: Particle flight time is 60s?
+	c.QueueParticle("ganyu", 2, core.Cryo, 420)
 
 	//add cooldown to sim
 	// c.CD[charge] = c.Core.F + 10*60
