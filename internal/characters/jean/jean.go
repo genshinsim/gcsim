@@ -89,18 +89,39 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	snap := c.Snapshot(&ai)
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.4, false, core.TargettableEnemy), f-1)
 
-	//check for healing
-	if c.Core.Rand.Float64() < 0.5 {
-		heal := 0.15 * (snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK])
-		c.AddTask(func() {
+	c.AddTask(func() {
+		snap := c.Snapshot(&ai)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.4, false, core.TargettableEnemy), 0)
+
+		//check for healing
+		if c.Core.Rand.Float64() < 0.5 {
+			heal := 0.15 * (snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK])
 			c.Core.Health.HealAll(c.Index, heal)
-		}, "jean-heal", f-1)
-	}
+		}
+	}, "jean-na", f-1)
 
 	c.AdvanceNormalIndex()
+
+	return f, a
+}
+
+// CA has no special interaction with her kit
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionCharge, p)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.4, false, core.TargettableEnemy), f-1, f-1)
 
 	return f, a
 }

@@ -57,19 +57,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		done = true
 	}
 
-	count := 0
-	var c1cb func(a core.AttackCB)
-	if c.Base.Cons > 0 {
-		c1cb = func(a core.AttackCB) {
-			if count == 5 {
-				return
-			}
-			count++
-			c.AddEnergy(2)
-		}
-	}
-
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1, cb, c1cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1, cb)
 
 	return f, a
 }
@@ -146,9 +134,21 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		})
 	}
 
+	count := 0
+	var c1cb func(a core.AttackCB)
+	if c.Base.Cons > 0 {
+		c1cb = func(a core.AttackCB) {
+			if count == 5 {
+				return
+			}
+			count++
+			c.AddEnergy(2)
+		}
+	}
+
 	//[8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f, c1cb)
 
 	// count := 4
 	// if c.Core.Rand.Float64() < 0.5 {
