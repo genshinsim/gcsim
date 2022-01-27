@@ -30,7 +30,10 @@ func (r *Reactable) queueSwirl(rt core.ReactionType, ele core.EleType, tag core.
 		-1,
 		1,
 	)
-	//next is aoe
+	//next is aoe - hydro swirls never do AoE damage, as they only spread the element
+	if ele == core.Hydro {
+		ai.FlatDmg = 0
+	}
 	ai.Durability = dur
 	ai.Abil = string(rt) + " (aoe)"
 	r.core.Combat.QueueAttack(

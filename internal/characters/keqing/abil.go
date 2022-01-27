@@ -206,20 +206,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 70)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 70, 70)
 	//8 hits
 
 	ai.Abil = "Starward Sword (Tick)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	for i := 70; i < 170; i += 13 {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), i, i)
 	}
 
 	//final
 
 	ai.Abil = "Starward Sword (Tick)"
 	ai.Mult = burstFinal[c.TalentLvlBurst()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 211)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 211, 211)
 
 	if c.Base.Cons == 6 {
 		c.activateC6("burst")
