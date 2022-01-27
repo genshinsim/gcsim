@@ -89,7 +89,7 @@ const (
 type CharStatMod struct {
 	Key           string
 	AffectedStat  StatType
-	Amount        func() ([]float64, bool)
+	Amount        func() ([]float64, bool) // Returns an array containing the stats boost and whether mod applies
 	ConditionTags []AttackTag
 	Expiry        int
 }

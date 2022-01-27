@@ -124,13 +124,22 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 		}
 	}
 	if ind > -1 {
-		c.Core.Log.Debugw("char pre damage mod replaced", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		c.Core.Log.Debugw("mod refreshed", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		c.PreDamageMods[ind] = mod
 	} else {
 		c.PreDamageMods = append(c.PreDamageMods, mod)
-		c.Core.Log.Debugw("char pre damage mod added", "frame", c.Core.F, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		c.Core.Log.Debugw("mod added", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 	}
 
+	// Add task to check for mod expiry in debug instances
+	if c.Core.Flags.LogDebug && mod.Expiry > -1 {
+		c.AddTask(func() {
+			if c.PreDamageModIsActive(mod.Key) {
+				return
+			}
+			c.Core.Log.Debugw("mod expired", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		}, "check-mod-expiry", mod.Expiry+1-c.Core.F)
+	}
 }
 
 func (c *Tmpl) AddMod(mod core.CharStatMod) {
@@ -141,13 +150,22 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 		}
 	}
 	if ind > -1 {
-		c.Core.Log.Debugw("char mod replaced", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		c.Core.Log.Debugw("mod refreshed", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		c.Mods[ind] = mod
 	} else {
 		c.Mods = append(c.Mods, mod)
-		c.Core.Log.Debugw("char mod added", "frame", c.Core.F, "char", c.Index, "event", core.LogCharacterEvent, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		c.Core.Log.Debugw("mod added", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 	}
 
+	// Add task to check for mod expiry in debug instances
+	if c.Core.Flags.LogDebug && mod.Expiry > -1 {
+		c.AddTask(func() {
+			if c.ModIsActive(mod.Key) {
+				return
+			}
+			c.Core.Log.Debugw("mod expired", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		}, "check-mod-expiry", mod.Expiry+1-c.Core.F)
+	}
 }
 
 func (c *Tmpl) ModIsActive(key string) bool {
@@ -169,6 +187,44 @@ func (c *Tmpl) ModIsActive(key string) bool {
 	return ok
 }
 
+// TODO: This design pattern feels wrong... I think we should have mods be their own separate interface
+// Each mod would then have an "IsActive" function that we pass a character to?
+func (c *Tmpl) PreDamageModIsActive(key string) bool {
+	ind := -1
+	for i, v := range c.PreDamageMods {
+		if v.Key == key {
+			ind = i
+		}
+	}
+	//mod doesnt exist
+	if ind == -1 {
+		return false
+	}
+	//check expiry
+	if c.PreDamageMods[ind].Expiry < c.Core.F && c.PreDamageMods[ind].Expiry > -1 {
+		return false
+	}
+	return true
+}
+
+func (c *Tmpl) ReactBonusModIsActive(key string) bool {
+	ind := -1
+	for i, v := range c.ReactMod {
+		if v.Key == key {
+			ind = i
+		}
+	}
+	//mod doesnt exist
+	if ind == -1 {
+		return false
+	}
+	//check expiry
+	if c.ReactMod[ind].Expiry < c.Core.F && c.ReactMod[ind].Expiry > -1 {
+		return false
+	}
+	return true
+}
+
 func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 	ind := -1
 	for i, v := range t.ReactMod {
@@ -177,13 +233,22 @@ func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 		}
 	}
 	if ind != -1 {
-		t.Core.Log.Debugw("react bonus mod overwritten", "frame", t.Core.F, "event", core.LogEnemyEvent, "count", len(t.ReactMod), "char", t.Index)
-		// LogEnemyEvent
 		t.ReactMod[ind] = mod
+		t.Core.Log.Debugw("mod refreshed", "frame", t.Core.F, "char", t.Index, "event", core.LogStatusEvent, "char", t.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		return
 	}
 	t.ReactMod = append(t.ReactMod, mod)
-	t.Core.Log.Debugw("react bonus mod added", "frame", t.Core.F, "event", core.LogEnemyEvent, "count", len(t.ReactMod), "char", t.Index)
+	t.Core.Log.Debugw("mod added", "frame", t.Core.F, "char", t.Index, "event", core.LogStatusEvent, "char", t.Index, "key", mod.Key, "expiry", mod.Expiry)
+
+	// Add task to check for mod expiry in debug instances
+	if t.Core.Flags.LogDebug && mod.Expiry > -1 {
+		t.AddTask(func() {
+			if t.ReactBonusModIsActive(mod.Key) {
+				return
+			}
+			t.Core.Log.Debugw("mod expired", "frame", t.Core.F, "char", t.Index, "event", core.LogStatusEvent, "char", t.Index, "key", mod.Key, "expiry", mod.Expiry)
+		}, "check-mod-expiry", mod.Expiry+1-t.Core.F)
+	}
 }
 
 func (c *Tmpl) Tag(key string) int {

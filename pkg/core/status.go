@@ -34,11 +34,20 @@ func (s *StatusCtrl) AddStatus(key string, dur int) {
 	s.status[key] = s.core.F + dur
 	if s.core.Flags.LogDebug {
 		s.core.Log.Debugw(
-			"Added Status "+key,
+			"status added",
 			"event", LogStatusEvent,
 			"frame", s.core.F,
-			"expiration", s.core.F+dur,
+			"key", key,
+			"expiry", s.core.F+dur,
 		)
+
+		// Check for expiry
+		s.core.Tasks.Add(func() {
+			if s.Duration(key) > 0 {
+				return
+			}
+			s.core.Log.Debugw("status expired", "frame", s.core.F, "event", LogStatusEvent, "key", key, "expiry", s.core.F+dur)
+		}, dur+1)
 	}
 }
 
