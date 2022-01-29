@@ -1,9 +1,9 @@
 package xiangling
 
 import (
+	"github.com/genshinsim/gcsim/internal/reactable"
+	"github.com/genshinsim/gcsim/internal/tmpl/target"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/target"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type panda struct {
