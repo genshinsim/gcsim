@@ -3,7 +3,7 @@ package character
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character/curves"
+	"github.com/genshinsim/gcsim/internal/tmpl/character/curves"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 

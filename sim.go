@@ -6,9 +6,9 @@ import (
 	"math/rand"
 	"strings"
 
+	"github.com/genshinsim/gcsim/internal/tmpl/enemy"
+	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/player"
 )
 
 type Simulation struct {
