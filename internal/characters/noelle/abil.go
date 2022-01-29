@@ -3,8 +3,8 @@ package noelle
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {

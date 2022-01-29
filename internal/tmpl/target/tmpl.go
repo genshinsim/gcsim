@@ -1,8 +1,8 @@
 package target
 
 import (
+	"github.com/genshinsim/gcsim/internal/reactable"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type Tmpl struct {
