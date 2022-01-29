@@ -348,75 +348,33 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "dmg-log")
 
-	s.C.Events.Subscribe(core.OnOverload, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.Overload]++
-		return false
-	}, "reaction-log")
+	eventSubFunc := func(t core.ReactionType) func(args ...interface{}) bool {
+		return func(args ...interface{}) bool {
+			s.stats.ReactionsTriggered[t]++
+			return false
+		}
+	}
 
-	s.C.Events.Subscribe(core.OnSuperconduct, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.Superconduct]++
-		return false
-	}, "reaction-log")
+	var reactions = map[core.EventType]core.ReactionType{
+		core.OnOverload:           core.Overload,
+		core.OnSuperconduct:       core.Superconduct,
+		core.OnMelt:               core.Melt,
+		core.OnVaporize:           core.Vaporize,
+		core.OnFrozen:             core.Freeze,
+		core.OnElectroCharged:     core.ElectroCharged,
+		core.OnSwirlHydro:         core.SwirlHydro,
+		core.OnSwirlCryo:          core.SwirlCryo,
+		core.OnSwirlElectro:       core.SwirlElectro,
+		core.OnSwirlPyro:          core.SwirlPyro,
+		core.OnCrystallizeCryo:    core.CrystallizeCryo,
+		core.OnCrystallizeElectro: core.CrystallizeElectro,
+		core.OnCrystallizeHydro:   core.CrystallizeHydro,
+		core.OnCrystallizePyro:    core.CrystallizePyro,
+	}
 
-	s.C.Events.Subscribe(core.OnMelt, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.Melt]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnVaporize, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.Vaporize]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnFrozen, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.Freeze]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnElectroCharged, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.ElectroCharged]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnSwirlHydro, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.SwirlHydro]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnSwirlCryo, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.SwirlCryo]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnSwirlElectro, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.SwirlElectro]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnSwirlPyro, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.SwirlPyro]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnCrystallizeCryo, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.CrystallizeCryo]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnCrystallizeElectro, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.CrystallizeElectro]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnCrystallizeHydro, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.CrystallizeHydro]++
-		return false
-	}, "reaction-log")
-
-	s.C.Events.Subscribe(core.OnCrystallizePyro, func(args ...interface{}) bool {
-		s.stats.ReactionsTriggered[core.CrystallizePyro]++
-		return false
-	}, "reaction-log")
+	for k, v := range reactions {
+		s.C.Events.Subscribe(k, eventSubFunc(v), "reaction-log")
+	}
 
 	s.C.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
 		p := args[0].(core.Particle)

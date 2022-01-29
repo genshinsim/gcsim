@@ -38,7 +38,7 @@ type Stats struct {
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`
 	//for tracking min/max run
-	seed int64
+	Seed int64
 }
 
 type CharDetail struct {
@@ -312,11 +312,11 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 		//dps
 		if result.DPS.Min > v.DPS {
 			result.DPS.Min = v.DPS
-			result.MinSeed = v.seed
+			result.MinSeed = v.Seed
 		}
 		if result.DPS.Max < v.DPS {
 			result.DPS.Max = v.DPS
-			result.MaxSeed = v.seed
+			result.MaxSeed = v.Seed
 		}
 		result.DPS.Mean += v.DPS / float64(n)
 
@@ -617,7 +617,7 @@ func worker(src string, cfg core.Config, opt core.RunOpt, resp chan workerResp, 
 			}
 
 			stat, err := s.Run()
-			stat.seed = seed
+			stat.Seed = seed
 
 			if err != nil {
 				resp <- workerResp{
