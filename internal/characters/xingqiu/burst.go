@@ -87,6 +87,10 @@ func (c *char) burstStateHook() {
 
 func (c *char) burstTickerFunc(src int) func() {
 	return func() {
+		//check if buff is up
+		if c.Core.Status.Duration("xqburst") <= 0 {
+			return
+		}
 		if c.burstTickSrc != src {
 			c.Core.Log.Debugw("xq burst tick check ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "new src", c.burstTickSrc)
 			return
