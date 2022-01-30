@@ -61,6 +61,8 @@ func (s *Simulation) Run() (Stats, error) {
 	return s.stats, nil
 }
 
+// Advances simulation frame, handling any events and queueing up the next action
+// Primary method that interacts with queueing system, including queue delays
 func (s *Simulation) AdvanceFrame() error {
 	var done bool
 	var err error
@@ -130,6 +132,10 @@ func (s *Simulation) AdvanceFrame() error {
 		}
 
 		if done {
+			if s.queue[0].(*core.ActionItem).Typ == core.ActionSwap {
+				s.skip = s.cfg.Settings.SwapDelay
+			}
+
 			if s.opts.LogDetails && isAction {
 				s.stats.AbilUsageCountByChar[s.C.ActiveChar][act.Typ.String()]++
 			}

@@ -65,6 +65,8 @@ func parseRows(p *Parser) (parseFn, error) {
 		return parseChar, nil
 	case itemOptions:
 		return parseOptions, nil
+	case itemDefaults:
+		return parseDefaults, nil
 	case itemChain:
 		return parseChain, nil
 	case itemWaitFor:

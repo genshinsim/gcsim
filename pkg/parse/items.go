@@ -77,6 +77,7 @@ const (
 	itemEnergy     // energy
 	itemActive     // active
 	itemTarget     // target
+	itemDefaults   // defaults
 	// these are options related keywords
 	itemDebug      // debug
 	itemIterations // iteration
@@ -129,6 +130,9 @@ const (
 	// these are related to target setting
 
 	itemResist
+
+	// Related to defaults
+	itemSwapDelay
 
 	// stat types after the rest
 

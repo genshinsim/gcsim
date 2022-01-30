@@ -15,6 +15,7 @@ var key = map[string]ItemType{
 	"energy":      itemEnergy,
 	"active":      itemActive,
 	"options":     itemOptions,
+	"defaults":    itemDefaults,
 	//options
 	"debug":     itemDebug,
 	"iteration": itemIterations,
@@ -58,6 +59,8 @@ var key = map[string]ItemType{
 	"ele":      itemEle,
 	// target related
 	"resist": itemResist,
+	// defaults related
+	"swap_delay": itemSwapDelay,
 }
 
 var statKeys = map[string]core.StatType{

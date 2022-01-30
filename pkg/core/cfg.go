@@ -10,9 +10,16 @@ type Config struct {
 	}
 	Rotation []ActionBlock
 
+	Settings DefaultSetting
+
 	Hurt      HurtEvent
 	Energy    EnergyEvent
 	FixedRand bool //if this is true then use the same seed
+}
+
+type DefaultSetting struct {
+	SwapDelay int
+	FrameType string // Placeholder for when we want to implement perfect vs. "human" frames
 }
 
 type RunOpt struct {
