@@ -393,6 +393,11 @@ func (a *ActionCtrl) execAction(n *ActionItem) (int, bool, error) {
 	return f, true, nil
 }
 
+// Each "abil" function returns two frames:
+// First int is the total animation frame, or the number of frames the ability should last.
+// Second int is the first frame after using an ability that the sim can start looking to queue the next action.
+// Supports user config overriding the total animation frames (second number)
+// TODO: Second int is basically completely unimplemented
 func (a *ActionCtrl) execActionItem(
 	n *ActionItem,
 	pre, post EventType,
@@ -403,6 +408,10 @@ func (a *ActionCtrl) execActionItem(
 	a.core.Events.Emit(pre)
 	f, l := abil(n.Param)
 	a.core.SetState(state, l)
+
+	if n.Param["delay"] > 0 {
+		f = f + n.Param["delay"]
+	}
 	if reset {
 		a.core.ResetAllNormalCounter()
 	}
