@@ -21,7 +21,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagElementalArt {
+		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
 			return false
 		}
 		if effectDurationExpiry < c.F && c.F <= effectICDExpiry {
