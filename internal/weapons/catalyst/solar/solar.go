@@ -23,7 +23,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 		switch atk.Info.AttackTag {
-		case core.AttackTagElementalArt, core.AttackTagElementalBurst:
+		case core.AttackTagElementalArt, core.AttackTagElementalArtHold, core.AttackTagElementalBurst:
 			char.AddPreDamageMod(core.PreDamageMod{
 				Key:    "solar-na-buff",
 				Expiry: c.F + 6*60,
@@ -41,7 +41,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				Expiry: c.F + 6*60,
 				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
-					case core.AttackTagElementalArt, core.AttackTagElementalBurst:
+					case core.AttackTagElementalArt, core.AttackTagElementalArtHold, core.AttackTagElementalBurst:
 						return val, true
 					}
 					return nil, false

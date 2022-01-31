@@ -18,7 +18,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		Key:    "festering",
 		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return m, atk.Info.AttackTag == core.AttackTagElementalArt
+			switch atk.Info.AttackTag {
+			case core.AttackTagElementalArt, core.AttackTagElementalArtHold:
+				return m, true
+			}
+			return nil, false
 		},
 	})
 	return "festeringdesire"

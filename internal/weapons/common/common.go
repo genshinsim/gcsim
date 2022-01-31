@@ -148,7 +148,10 @@ func Sacrificial(char core.Character, c *core.Core, r int, param map[string]int)
 		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagElementalArt {
+		if c.ActiveChar != char.CharIndex() {
+			return false
+		}
+		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
 			return false
 		}
 		if last != 0 && c.F-last < cd {

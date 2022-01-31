@@ -70,7 +70,7 @@ func (c *char) c4() {
 			Amount: func() ([]float64, bool) {
 
 				val := make([]float64, core.EndStatType)
-				val[core.ATK] = 0.25
+				val[core.ATKP] = 0.25
 				return val, true
 			},
 			Expiry: c.Core.F + 600,

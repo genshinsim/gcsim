@@ -35,7 +35,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalBurst {
+		switch atk.Info.AttackTag {
+		case core.AttackTagElementalArt:
+		case core.AttackTagElementalArtHold:
+		case core.AttackTagElementalBurst:
+		default:
 			return false
 		}
 		if cooldown > c.F {
