@@ -49,6 +49,7 @@ type barrier struct {
 	src    int
 	expiry int
 	char   *char
+	count  int
 }
 
 func (b *barrier) Key() int {
@@ -74,5 +75,5 @@ func (b *barrier) IsLimited() bool {
 }
 
 func (b *barrier) Count() int {
-	return 3
+	return b.count
 }
