@@ -90,6 +90,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		hits = 2
 	}
 
+	maxConstructCount, ok := p["construct_limit"]
+	if !ok {
+		maxConstructCount = 1
+	}
+
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wake of Earth",
@@ -133,6 +138,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			src:    c.Core.F,
 			expiry: c.Core.F + dur,
 			char:   c,
+			count:  maxConstructCount,
 		}
 		c.Core.Constructs.NewNoLimitCons(con, true)
 		if c.Base.Cons >= 1 {
