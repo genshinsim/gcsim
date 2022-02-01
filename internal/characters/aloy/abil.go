@@ -164,6 +164,7 @@ func (c *char) coilStacks() {
 	}
 
 	if c.Tags["coil_stacks"] == 4 {
+		c.Tags["coil_stacks"] = 0
 		c.rushingIce()
 	}
 }

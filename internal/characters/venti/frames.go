@@ -31,7 +31,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		}
 		return 65, 65
 	case core.ActionBurst:
-		return 74, 74
+		return 94, 94
 	default:
 		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
 		return 0, 0
