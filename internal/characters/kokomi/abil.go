@@ -138,8 +138,10 @@ func (c *char) createSkillSnapshot() *core.AttackEvent {
 // Helper function that handles damage, healing, and particle components of every tick of her E
 func (c *char) skillTick(d *core.AttackEvent) {
 
+	hpplus := 1 + c.Stat(core.Heal)
+
 	c.Core.Combat.QueueAttackEvent(d, 0)
-	c.Core.Health.HealActive(c.Index, skillHealPct[c.TalentLvlSkill()]*c.HPMax+skillHealFlat[c.TalentLvlSkill()])
+	c.Core.Health.HealActive(c.Index, (skillHealPct[c.TalentLvlSkill()]*c.HPMax+skillHealFlat[c.TalentLvlSkill()])*hpplus)
 
 	// Particles are 0~1 (1:2) on every damage instance
 	if c.Core.Rand.Float64() < .6667 {
@@ -154,7 +156,7 @@ func (c *char) skillTick(d *core.AttackEvent) {
 	if c.Base.Cons >= 2 {
 		active := c.Core.Chars[c.Core.ActiveChar]
 		if active.HP()/active.MaxHP() <= .5 {
-			c.Core.Health.HealActive(c.Index, 0.045*c.HPMax)
+			c.Core.Health.HealActive(c.Index, 0.045*c.HPMax*hpplus)
 		}
 	}
 }
@@ -246,7 +248,7 @@ func (c *char) burstDmgBonus(a core.AttackTag) float64 {
 	if c.Core.Status.Duration("kokomiburst") == 0 {
 		return 0
 	}
-	a4Bonus := c.Stats[core.Heal] * 0.15
+	a4Bonus := c.Stat(core.Heal) * 0.15
 	switch a {
 	case core.AttackTagNormal:
 		return (burstBonusNormal[c.TalentLvlBurst()] + a4Bonus) * c.HPMax
