@@ -129,7 +129,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	//A4
-	if c.Core.Status.Duration("btburst") > 0 {
+	if c.ModIsActive("bennett-field") {
 		cd = cd / 2
 	}
 
@@ -222,10 +222,11 @@ func (c *char) skillHoldLong() {
 
 func (c *char) Burst(p map[string]int) (int, int) {
 
+	burstStartFrame := 31
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//add field effect timer
-	c.Core.Status.AddStatus("btburst", 720)
+	c.Core.Status.AddStatus("btburst", 720+burstStartFrame)
 	//hook for buffs; active right away after cast
 
 	ai := core.AttackInfo{
@@ -251,8 +252,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.applyBennettField(stats)()
 
 	//add 12 ticks starting at t = 1 to t= 12
-	//TODO confirm if starts at t=1 or after animation
-	for i := 0; i <= 720; i += 60 {
+	// Buff appears to start ticking right before hit
+	// https://discord.com/channels/845087716541595668/869210750596554772/936507730779308032
+	for i := burstStartFrame; i <= 720+burstStartFrame; i += 60 {
 		c.AddTask(c.applyBennettField(stats), "bennett-field", i)
 	}
 
