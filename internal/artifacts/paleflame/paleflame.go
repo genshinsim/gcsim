@@ -16,7 +16,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m := make([]float64, core.EndStatType)
 		m[core.PhyP] = 0.25
 		c.AddMod(core.CharStatMod{
-			Key: "maiden-2pc",
+			Key: "pf-2pc",
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
