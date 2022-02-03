@@ -59,10 +59,13 @@ func (c *char) c2() {
 
 func (c *char) c6() {
 	for _, char := range c.Core.Chars {
-		char.AddMod(core.CharStatMod{
+		char.AddPreDamageMod(core.PreDamageMod{
 			Key:    c6key,
 			Expiry: c.Core.F + 720, //12s
-			Amount: func() ([]float64, bool) {
+			Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
+				if ae.Info.Element != core.Geo {
+					return nil, false
+				}
 				return c.c6buff, true
 			},
 		})

@@ -92,5 +92,6 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 		"pre_recovery", pre,
 		"amt", amt,
 		"post_recovery", c.Energy,
+		"max_energy", c.MaxEnergy(),
 	)
 }
