@@ -127,6 +127,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/wolf"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/blacktassel"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/calamity"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/catch"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/crescent"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/deathmatch"

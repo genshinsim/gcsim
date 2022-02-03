@@ -11,66 +11,56 @@ func init() {
 	core.RegisterWeaponFunc("calamityqueller", weapon)
 }
 
+// Gain 12/15/18/21/24% All Elemental DMG Bonus.
+// Obtain Consummation for 20s after using an Elemental Skill, causing ATK to increase by 3.2/4/4.8/5.6/6.4% per second.
+// This ATK increase has a maximum of 6 stacks.
+// When the character equipped with this weapon is not on the field, Consummation's ATK increase is doubled.
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	stacks := 0
-	var ctick func(core.Character, *core.Core, int) func()
-	ctick = func(char core.Character, c *core.Core, skillInitF int) func() {
-		return func() {
-			if c.F != skillInitF {
-				return
-			}
-			if c.Status.Duration("consummation-"+char.Name()) <= 0 {
-				stacks = 0
-				return
-			}
-			if stacks < 6 {
-				stacks++
-			}
-			c.Log.Debugw("consummation-"+char.Name()+" buff ticking", "frame", c.F, "event", core.LogCharacterEvent, "stacks", stacks)
-			if stacks == 6 {
-				char.AddTask(ctick(char, c, skillInitF), "consummation-"+char.Name()+"-tick", c.Status.Duration("consummation-"+char.Name()))
-			} else {
-				char.AddTask(ctick(char, c, skillInitF), "consummation-"+char.Name()+"-tick", 60)
-			}
-		}
-	}
 
-	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
-			return false
+	m := make([]float64, core.EndStatType)
+	dmg := .09 + float64(r)*.03
+	atkbonus := .024 + float64(r)*.008
+	m[core.PyroP] = dmg
+	m[core.HydroP] = dmg
+	m[core.CryoP] = dmg
+	m[core.ElectroP] = dmg
+	m[core.AnemoP] = dmg
+	m[core.GeoP] = dmg
+	m[core.DendroP] = dmg
+
+	expiry := -1
+	skillInitF := 0
+
+	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+
+		if expiry < c.F {
+			skillInitF = c.F
 		}
-		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
-			return false
-		}
-		c.Status.AddStatus("consummation-"+char.Name(), 20*60)
-		ctick(char, c, c.F)()
+		expiry = c.F + 60*20
+
 		return false
-
-	}, fmt.Sprintf("consummation-%v", char.Name()))
-
-	val := make([]float64, core.EndStatType)
-	mod := float64(r - 1)
+	}, fmt.Sprintf("calamity-queller-%v", char.Name()))
 
 	char.AddMod(core.CharStatMod{
-		Key:    "calamityqueller",
+		Key:    "calamity-queller",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
-			val[core.PyroP] = 0.12 + 0.03*mod
-			val[core.HydroP] = 0.12 + 0.03*mod
-			val[core.CryoP] = 0.12 + 0.03*mod
-			val[core.ElectroP] = 0.12 + 0.03*mod
-			val[core.AnemoP] = 0.12 + 0.03*mod
-			val[core.GeoP] = 0.12 + 0.03*mod
-			val[core.PhyP] = 0.12 + 0.03*mod
-			val[core.DendroP] = 0.12 + 0.03*mod
-			if c.ActiveChar == char.CharIndex() {
-				val[core.ATKP] = (0.032 + mod*0.008) * 2.0 * float64(stacks)
 
-			} else {
-				val[core.ATKP] = (0.032 + mod*0.008) * float64(stacks)
+			stacks := 0
+			if expiry > c.F {
+				stacks = (c.F - skillInitF) / 60
 			}
-			return val, true
+			if stacks > 6 {
+				stacks = 6
+			}
+
+			atk := atkbonus * float64(stacks)
+			if c.ActiveChar != char.CharIndex() {
+				atk *= 2
+			}
+			m[core.ATKP] = atk
+
+			return m, true
 		},
 	})
 
