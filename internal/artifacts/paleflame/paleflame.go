@@ -34,7 +34,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if atk.Info.ActorIndex != c.CharIndex() {
 				return false
 			}
-			if atk.Info.AttackTag != core.AttackTagElementalArt {
+			if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
 				return false
 			}
 			if icd > s.F {

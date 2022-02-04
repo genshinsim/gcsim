@@ -245,7 +245,7 @@ func (c *char) triggerBurst() {
 
 	c.Core.Log.Debugw("eula burst triggering", "frame", c.Core.F, "event", core.LogCharacterEvent, "stacks", stacks, "mult", ai.Mult)
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 23, 23)
 	c.Core.Status.DeleteStatus("eulaq")
 	c.burstCounter = 0
 }
