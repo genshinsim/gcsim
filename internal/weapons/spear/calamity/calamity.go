@@ -23,6 +23,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	skillInitF := -1
 
 	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+		if c.ActiveChar != char.CharIndex() {
+			return false
+		}
 
 		// update init frame on first cast or after 20s from last cast
 		dur := 60 * 20
