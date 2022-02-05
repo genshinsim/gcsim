@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -79,8 +78,8 @@ type Core struct {
 	Events     EventHandler
 }
 
-func New(cfg ...func(*Core) error) (*Core, error) {
-	var err error
+func New() *Core {
+	// var err error
 	c := &Core{}
 
 	c.CharPos = make(map[CharKey]int)
@@ -89,56 +88,53 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	c.stamModifier = make([]stamMod, 0, 10)
 	// c.queue = make([]Command, 0, 20)
 
-	for _, f := range cfg {
-		err := f(c)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if c.Log == nil {
-		c.Log, err = NewDefaultLogger(c, false, false, nil)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if c.Rand == nil {
-		c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	}
-	if c.Events == nil {
-		c.Events = NewEventCtrl(c)
-	}
-	if c.Status == nil {
-		c.Status = NewStatusCtrl(c)
-	}
-	if c.Energy == nil {
-		c.Energy = NewEnergyCtrl(c)
-	}
-	if c.Combat == nil {
-		c.Combat = NewCombatCtrl(c)
-	}
-	if c.Tasks == nil {
-		c.Tasks = NewTaskCtrl(&c.F)
-	}
-	if c.Constructs == nil {
-		c.Constructs = NewConstructCtrl(c)
-	}
-	if c.Shields == nil {
-		c.Shields = NewShieldCtrl(c)
-	}
-	if c.Health == nil {
-		c.Health = NewHealthCtrl(c)
-	}
-	// if c.Action == nil {
-	// 	c.Action = NewActionCtrl(c)
+	// for _, f := range cfg {
+	// 	err := f(c)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
 	// }
-	if c.Queue == nil {
-		c.Queue = NewQueuer(c)
-	}
+
+	// if c.Log == nil {
+	// 	c.Log, err = NewDefaultLogger(c, false, false, nil)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// }
+
+	// if c.Rand == nil {
+	// 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+	// }
+	// if c.Events == nil {
+	// 	c.Events = NewEventCtrl(c)
+	// }
+	// if c.Status == nil {
+	// 	c.Status = NewStatusCtrl(c)
+	// }
+	// if c.Energy == nil {
+	// 	c.Energy = NewEnergyCtrl(c)
+	// }
+	// if c.Combat == nil {
+	// 	c.Combat = NewCombatCtrl(c)
+	// }
+	// if c.Tasks == nil {
+	// 	c.Tasks = NewTaskCtrl(&c.F)
+	// }
+	// if c.Constructs == nil {
+	// 	c.Constructs = NewConstructCtrl(c)
+	// }
+	// if c.Shields == nil {
+	// 	c.Shields = NewShieldCtrl(c)
+	// }
+	// if c.Health == nil {
+	// 	c.Health = NewHealthCtrl(c)
+	// }
+	// if c.Queue == nil {
+	// 	c.Queue = NewQueuer(c)
+	// }
 
 	//check handlers
-	return c, nil
+	return c
 }
 
 func (c *Core) Init() {
@@ -279,7 +275,7 @@ func (c *Core) Tick() {
 	c.ActiveDuration++
 }
 
-func NewDefaultLogger(c *Core, debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
+func NewDefaultLogger(debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
 	config := zap.NewDevelopmentConfig()
 	if json {
 		config.Encoding = "json"
@@ -288,7 +284,6 @@ func NewDefaultLogger(c *Core, debug bool, json bool, paths []string) (*zap.Suga
 	if debug {
 		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 		config.OutputPaths = paths
-		c.Flags.LogDebug = true
 	} else {
 		config.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
 		config.OutputPaths = []string{}
