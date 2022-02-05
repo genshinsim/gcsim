@@ -89,6 +89,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/thundering"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/viridescent"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/windblume"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/alley"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/apprentice"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/dodoco"
