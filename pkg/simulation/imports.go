@@ -1,4 +1,4 @@
-package gcsim
+package simulation
 
 import (
 	//artifacts

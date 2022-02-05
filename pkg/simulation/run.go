@@ -1,15 +1,15 @@
-package gcsim
+package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
-func (s *Simulation) Run() (Stats, error) {
+func (s *Simulation) Run() (Result, error) {
 	var err error
-	if !s.cfg.DamageMode && s.opts.Duration == 0 {
-		s.opts.Duration = 90
+	if !s.cfg.DamageMode && s.cfg.Settings.Duration == 0 {
+		s.cfg.Settings.Duration = 90
 	}
-	f := s.opts.Duration*60 - 1
+	f := s.cfg.Settings.Duration*60 - 1
 	stop := false
 
 	//check for once energy and hurt event
@@ -71,9 +71,9 @@ func (s *Simulation) AdvanceFrame() error {
 	s.handleEnergy()
 
 	//grab stats
-	if s.opts.LogDetails {
-		s.collectStats()
-	}
+	// if s.opts.LogDetails {
+	s.collectStats()
+	// }
 
 	if s.skip > 0 {
 		//if in cooldown, do nothing
@@ -130,7 +130,8 @@ func (s *Simulation) AdvanceFrame() error {
 		}
 
 		if done {
-			if s.opts.LogDetails && isAction {
+			// if s.opts.LogDetails && isAction {
+			if isAction {
 				s.stats.AbilUsageCountByChar[s.C.ActiveChar][act.Typ.String()]++
 			}
 			//pop queue
@@ -160,21 +161,6 @@ func (s *Simulation) collectStats() {
 	s.stats.CharActiveTime[s.C.ActiveChar]++
 	for i, t := range s.C.Targets {
 		s.stats.ElementUptime[i][t.AuraType()]++
-	}
-}
-
-func (s *Simulation) handleEnergy() {
-	if s.cfg.Energy.Active && s.C.F-s.lastEnergyDrop >= s.cfg.Energy.Start {
-		f := s.C.Rand.Intn(s.cfg.Energy.End - s.cfg.Energy.Start)
-		s.lastEnergyDrop = s.C.F + f
-		s.C.Tasks.Add(func() {
-			s.C.Energy.DistributeParticle(core.Particle{
-				Source: "drop",
-				Num:    s.cfg.Energy.Particles,
-				Ele:    core.NoElement,
-			})
-		}, f)
-		s.C.Log.Debugw("energy queued", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.C.F+f)
 	}
 }
 
