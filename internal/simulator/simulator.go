@@ -1,4 +1,4 @@
-//bin provides the methods required to run simulations; the cmd line tools should be a wrapper
+//simhelper provides the methods required to run simulations; the cmd line tools should be a wrapper
 //around this
 package simulator
 
@@ -7,18 +7,35 @@ import (
 	"crypto/rand"
 	"encoding/binary"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
+	"path"
+	"regexp"
+	"strings"
+	"time"
 
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/parse"
+	"github.com/genshinsim/gcsim/pkg/result"
+	"github.com/genshinsim/gcsim/pkg/simulation"
+	"github.com/genshinsim/gcsim/pkg/worker"
 	"go.uber.org/zap"
 )
 
+//Options sets out the settings to run the sim by (such as debug mode, etc..)
+type Options struct {
+	PrintResultSummaryToScreen bool   // print summary output to screen?
+	ResultSaveToPath           string // file name (excluding ext) to save the result file; if "" then nothing is saved to file
+	GZIPResult                 bool   // should the result file be gzipped; only if ResultSaveToPath is not ""
+	ConfigPath                 string // path to the config file to read
+}
+
 //GenerateDebugLogWithSeed will run one simulation with debug enabled using the given seed and output
 //the debug log. Used for generating debug for min/max runs
-func GenerateDebugLogWithSeed(cfg string, seed int64) (string, error) {
+func GenerateDebugLogWithSeed(cfg core.SimulationConfig, seed int64) (string, error) {
 	//parse the config
-
 	r, w, err := os.Pipe()
 	if err != nil {
 		log.Println(err)
@@ -34,26 +51,165 @@ func GenerateDebugLogWithSeed(cfg string, seed int64) (string, error) {
 	zap.RegisterSink("gsim", func(url *url.URL) (zap.Sink, error) {
 		return w, nil
 	})
-
+	//set up core to use logger with custom path in order to capture debug
+	logger, err := core.NewDefaultLogger(true, true, []string{"gsim://"})
+	if err != nil {
+		return "", err
+	}
+	c := simulation.NewDefaultCoreWithCustomLogger(seed, logger)
+	c.Flags.LogDebug = true
+	//create a new simulation and run
+	s, err := simulation.New(cfg, c)
+	if err != nil {
+		return "", err
+	}
+	_, err = s.Run()
+	if err != nil {
+		return "", err
+	}
+	//capture the log
+	out := <-outC
+	return out, nil
 }
 
 //GenerateDebugLog will run one simulation with debug enabled using a random seed
-func GenerateDebugLog(cfg string) (string, error) {
+func GenerateDebugLog(cfg core.SimulationConfig) (string, error) {
+	return GenerateDebugLogWithSeed(cfg, cryptoRandSeed())
+}
+
+//Run will run the simulation given number of times
+func Run(opts Options) (result.Summary, error) {
+	start := time.Now()
+
+	cfg, err := readConfig(opts.ConfigPath)
+	if err != nil {
+		return result.Summary{}, err
+	}
+	parser := parse.New("single", cfg)
+	simcfg, err := parser.Parse()
+	if err != nil {
+		return result.Summary{}, err
+	}
+
+	//set up a pool
+	respCh := make(chan simulation.Result)
+	errCh := make(chan error)
+	pool := worker.New(simcfg.Settings.NumberOfWorkers, respCh, errCh)
+
+	//spin off a go func that will queue jobs for as long as the total queued < iter
+	//this should block as queue gets full
+	go func() {
+		wip := 0
+		for wip < simcfg.Settings.Iterations {
+			pool.QueueCh <- worker.Job{
+				Cfg:  simcfg.Clone(),
+				Seed: cryptoRandSeed(),
+			}
+			wip++
+		}
+	}()
+
+	defer close(pool.StopCh)
+
+	var results []simulation.Result
+
+	//start reading respCh, queueing a new job until wip == number of iterations
+	count := simcfg.Settings.Iterations
+	for count > 0 {
+		select {
+		case r := <-respCh:
+			results = append(results, r)
+			count--
+		case err := <-errCh:
+			//error encountered
+			return result.Summary{}, err
+		}
+
+	}
+
+	//run one debug
+	// debugOut, err := GenerateDebugLog(simcfg.Clone())
+	// if err != nil {
+	// 	return result.Summary{}, err
+	// }
+
+	//aggregate results
+	chars := make([]string, len(simcfg.Characters.Profile))
+	for i, v := range simcfg.Characters.Profile {
+		chars[i] = v.Base.Key.String()
+	}
+
+	//TODO: clean up this code
+	r := result.CollectResult(
+		results,
+		simcfg.DamageMode,
+		chars,
+		true,
+		false,
+	)
+	// r.Debug = debugOut
+	r.Iterations = simcfg.Settings.Iterations
+	r.ActiveChar = simcfg.Characters.Initial.String()
+	if simcfg.DamageMode {
+		r.Duration.Mean = float64(simcfg.Settings.Duration)
+		r.Duration.Min = float64(simcfg.Settings.Duration)
+		r.Duration.Max = float64(simcfg.Settings.Duration)
+	}
+	r.Runtime = time.Since(start)
+	r.Config = cfg
+	r.NumTargets = len(simcfg.Targets)
+	r.CharDetails = results[0].CharDetails
+	for i := range r.CharDetails {
+		r.CharDetails[i].Stats = simcfg.Characters.Profile[i].Stats
+	}
+	r.TargetDetails = simcfg.Targets
+
+	//all done
+	return r, nil
+}
+
+//cryptoRandSeed generates a random seed using crypo rand
+func cryptoRandSeed() int64 {
 	var b [8]byte
 	_, err := rand.Read(b[:])
 	if err != nil {
 		log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
 	}
-	seed := int64(binary.LittleEndian.Uint64(b[:]))
-	return GenerateDebugLogWithSeed(cfg, seed)
+	return int64(binary.LittleEndian.Uint64(b[:]))
 }
 
-//RunOnce provide convenience wrapper around Run
-func RunOnce() {
+var reImport = regexp.MustCompile(`(?m)^import "(.+)"$`)
 
-}
+//readConfig will load and read the config at specified path. Will resolve any import statements
+//as well
+func readConfig(fpath string) (string, error) {
 
-//Run will run the simulation given number of times
-func Run(opts SimulatorOptions) {
+	src, err := ioutil.ReadFile(fpath)
+	if err != nil {
+		return "", err
+	}
 
+	//check for imports
+	var data strings.Builder
+
+	rows := strings.Split(strings.ReplaceAll(string(src), "\r\n", "\n"), "\n")
+	for _, row := range rows {
+		match := reImport.FindStringSubmatch(row)
+		if match != nil {
+			//read import
+			p := path.Join(path.Dir(fpath), match[1])
+			src, err = ioutil.ReadFile(p)
+			if err != nil {
+				return "", err
+			}
+
+			data.WriteString(string(src))
+
+		} else {
+			data.WriteString(row)
+			data.WriteString("\n")
+		}
+	}
+
+	return data.String(), nil
 }
