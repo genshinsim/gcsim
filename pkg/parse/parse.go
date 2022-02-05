@@ -17,8 +17,7 @@ type Parser struct {
 	currentCharKey core.CharKey //current character being parsed
 
 	//results
-	cfg    *core.Config
-	opt    *core.RunOpt
+	cfg    *core.SimulationConfig
 	chars  map[core.CharKey]*core.CharacterProfile
 	macros map[string]core.ActionBlock
 }
@@ -32,30 +31,29 @@ func New(name, input string) *Parser {
 	return p
 }
 
-func (p *Parser) Parse() (core.Config, core.RunOpt, error) {
+func (p *Parser) Parse() (core.SimulationConfig, error) {
 	//initialize
 	var err error
 
-	p.cfg = &core.Config{}
+	p.cfg = &core.SimulationConfig{}
 	p.chars = make(map[core.CharKey]*core.CharacterProfile)
 	p.macros = make(map[string]core.ActionBlock)
-	p.opt = &core.RunOpt{}
 
 	//default run options
-	p.opt.Duration = 90
-	p.opt.Iteration = 1000
-	p.opt.Workers = 20
+	p.cfg.Duration = 90
+	p.cfg.Options.Iteration = 1000
+	p.cfg.Options.Workers = 20
 
 	state := parseRows
 	for state != nil && err == nil {
 		state, err = state(p)
 		if err != nil {
-			return *p.cfg, *p.opt, err
+			return *p.cfg, err
 		}
 	}
 
 	if err != nil {
-		return *p.cfg, *p.opt, err
+		return *p.cfg, err
 	}
 
 	sk := make([]string, 0, len(p.chars))
@@ -72,14 +70,14 @@ func (p *Parser) Parse() (core.Config, core.RunOpt, error) {
 
 	for i, v := range p.cfg.Targets {
 		if p.cfg.DamageMode && v.HP <= 0 {
-			return *p.cfg, *p.opt, errors.New("if any one target has hp > 0, then all target must have hp > 0")
+			return *p.cfg, errors.New("if any one target has hp > 0, then all target must have hp > 0")
 		} else if !p.cfg.DamageMode {
 			//we should never actually get here
 			p.cfg.Targets[i].HP = 0 //make sure its 0 if not running hp mode
 		}
 	}
 
-	return *p.cfg, *p.opt, nil
+	return *p.cfg, nil
 }
 
 func (p *Parser) acceptSeqReturnLast(items ...ItemType) (item, error) {

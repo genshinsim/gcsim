@@ -1,7 +1,8 @@
 package core
 
-type Config struct {
-	Label      string
+//SimulationConfig describes the required settings to run an simulation
+type SimulationConfig struct {
+	//these settings relate to each simulation iteration
 	DamageMode bool
 	Targets    []EnemyProfile
 	Characters struct {
@@ -9,20 +10,39 @@ type Config struct {
 		Profile []CharacterProfile
 	}
 	Rotation []ActionBlock
+	Hurt     HurtEvent
+	Energy   EnergyEvent
+	Duration int //duration of the simulation in seconds; only if DamageMode is false
 
-	Hurt      HurtEvent
-	Energy    EnergyEvent
-	FixedRand bool //if this is true then use the same seed
+	Options SimulationOption
 }
 
-type RunOpt struct {
-	LogDetails bool `json:"log_details"`
-	Iteration  int  `json:"iter"`
-	Workers    int  `json:"workers"`
-	Duration   int  `json:"seconds"`
-	Debug      bool `json:"debug"`
-	ERCalcMode bool `json:"er_calc_mode"`
-	DebugPaths []string
+func (c *SimulationConfig) Clone() SimulationConfig {
+	r := *c
+
+	//clone targets
+	r.Targets = make([]EnemyProfile, len(c.Targets))
+
+	for i, v := range c.Targets {
+		r.Targets[i] = v.Clone()
+	}
+
+	//clone characters
+	r.Characters.Profile = make([]CharacterProfile, len(c.Characters.Profile))
+	for i, v := range c.Characters.Profile {
+		r.Characters.Profile[i] = v.Clone()
+	}
+
+	return r
+}
+
+//SimulationOption contains options such as number of iteration, number of workers, etc..
+type SimulationOption struct {
+	Iteration     int  `json:"iter"`
+	Workers       int  `json:"workers"`
+	GenerateDebug bool `json:"debug"`
+	LogDetails    bool `json:"log_details"`
+	ERCalcMode    bool `json:"er_calc_mode"`
 }
 
 type CharacterProfile struct {
@@ -33,6 +53,22 @@ type CharacterProfile struct {
 	Sets      map[string]int            `json:"sets"`
 	SetParams map[string]map[string]int `json:"-"`
 	Params    map[string]int            `json:"-"`
+}
+
+func (c *CharacterProfile) Clone() CharacterProfile {
+	r := *c
+	r.Weapon.Params = make(map[string]int)
+	for k, v := range c.Weapon.Params {
+		r.Weapon.Params[k] = v
+	}
+	r.Stats = make([]float64, len(c.Stats))
+	copy(r.Stats, c.Stats)
+	r.Sets = make(map[string]int)
+	for k, v := range c.Sets {
+		r.Sets[k] = v
+	}
+
+	return r
 }
 
 type CharacterBase struct {
@@ -73,6 +109,17 @@ type EnemyProfile struct {
 	CoordX, CoordY float64             `json:"-"`
 }
 
+func (e *EnemyProfile) Clone() EnemyProfile {
+	r := EnemyProfile{
+		Level:  e.Level,
+		Resist: make(map[EleType]float64),
+	}
+	for k, v := range e.Resist {
+		r.Resist[k] = v
+	}
+	return r
+}
+
 type EnergyEvent struct {
 	Active    bool
 	Once      bool //how often
@@ -89,43 +136,4 @@ type HurtEvent struct {
 	Min    float64
 	Max    float64
 	Ele    EleType
-}
-
-func (e *EnemyProfile) Clone() EnemyProfile {
-	r := EnemyProfile{
-		Level:  e.Level,
-		Resist: make(map[EleType]float64),
-	}
-	for k, v := range e.Resist {
-		r.Resist[k] = v
-	}
-	return r
-}
-
-func (c *CharacterProfile) Clone() CharacterProfile {
-	r := *c
-	r.Weapon.Params = make(map[string]int)
-	for k, v := range c.Weapon.Params {
-		r.Weapon.Params[k] = v
-	}
-	r.Stats = make([]float64, len(c.Stats))
-	copy(r.Stats, c.Stats)
-	r.Sets = make(map[string]int)
-	for k, v := range c.Sets {
-		r.Sets[k] = v
-	}
-
-	return r
-}
-
-func (c *Config) Clone() Config {
-	r := *c
-
-	r.Targets = make([]EnemyProfile, len(c.Targets))
-
-	for i, v := range c.Targets {
-		r.Targets[i] = v.Clone()
-	}
-
-	return r
 }

@@ -14,7 +14,7 @@ type Pool struct {
 }
 
 type Job struct {
-	Cfg  core.Config
+	Cfg  core.SimulationConfig
 	Opt  core.RunOpt
 	Seed int64
 	Cust []func(*gcsim.Simulation) error
@@ -65,7 +65,7 @@ func (p *Pool) run() {
 
 func (p *Pool) worker(job Job, done chan bool) {
 	//do stuff
-	s, err := gcsim.NewSim(job.Cfg, job.Seed, job.Opt, job.Cust...)
+	s, err := gcsim.New(job.Cfg, job.Seed, job.Opt, job.Cust...)
 
 	//make sure we're not supposed to stop
 	select {

@@ -327,7 +327,7 @@ func runSeeded(data string, seed int64, opts core.RunOpt, o opts, file string) (
 	parser := parse.New("single", data)
 	cfg, _, _ := parser.Parse()
 
-	sim, err := gcsim.NewSim(cfg, seed, opts, func(s *gcsim.Simulation) error {
+	sim, err := gcsim.New(cfg, seed, opts, func(s *gcsim.Simulation) error {
 		if !o.calc {
 			return nil
 		}
@@ -426,7 +426,7 @@ func runMulti(files []string, w, i int) error {
 	return nil
 }
 
-func createQueue(cfg core.Config, s *gcsim.Simulation) (core.QueueHandler, error) {
+func createQueue(cfg core.SimulationConfig, s *gcsim.Simulation) (core.QueueHandler, error) {
 	for _, v := range cfg.Rotation {
 		if _, ok := s.C.CharByName(v.SequenceChar); v.Type == core.ActionBlockTypeSequence && !ok {
 			return nil, fmt.Errorf("invalid char in rotation %v; %v", v.SequenceChar, v)

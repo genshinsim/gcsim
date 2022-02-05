@@ -15,8 +15,7 @@ type Simulation struct {
 	// f    int
 	skip int
 	C    *core.Core
-	cfg  core.Config
-	opts core.RunOpt
+	cfg  *core.SimulationConfig
 	// queue
 	queue             []core.Command
 	dropQueueIfFailed bool
@@ -28,11 +27,10 @@ type Simulation struct {
 	stats Stats
 }
 
-func NewSim(cfg core.Config, seed int64, opts core.RunOpt, cust ...func(*Simulation) error) (*Simulation, error) {
+func New(cfg *core.SimulationConfig, seed int64, cust ...func(*Simulation) error) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
 	s.cfg = cfg
-	s.opts = opts
 
 	c, err := core.New(
 		func(c *core.Core) error {
@@ -159,8 +157,8 @@ func (s *Simulation) randomOnHitEnergy() {
 	}, "random-energy-restore-on-hit-swap")
 }
 
-func (s *Simulation) initTargets(cfg core.Config) error {
-	s.C.Targets = make([]core.Target, len(cfg.Targets)+1)
+func (s *Simulation) initTargets() error {
+	s.C.Targets = make([]core.Target, len(s.cfg.Targets)+1)
 	if s.opts.LogDetails {
 		s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 		s.stats.ElementUptime[0] = make(map[core.EleType]int)
@@ -168,8 +166,8 @@ func (s *Simulation) initTargets(cfg core.Config) error {
 	s.C.Targets[0] = player.New(0, s.C)
 
 	//first target is the player
-	for i := 0; i < len(cfg.Targets); i++ {
-		cfg.Targets[i].Size = 0.5
+	for i := 0; i < len(s.cfg.Targets); i++ {
+		s.cfg.Targets[i].Size = 0.5
 		if i > 0 {
 			cfg.Targets[i].CoordX = 0.6
 			cfg.Targets[i].CoordY = 0
@@ -182,7 +180,7 @@ func (s *Simulation) initTargets(cfg core.Config) error {
 	return nil
 }
 
-func (s *Simulation) initChars(cfg core.Config) error {
+func (s *Simulation) initChars(cfg core.SimulationConfig) error {
 	dup := make(map[core.CharKey]bool)
 	res := make(map[core.EleType]int)
 
@@ -266,7 +264,7 @@ func (s *Simulation) initChars(cfg core.Config) error {
 	return nil
 }
 
-func (s *Simulation) initQueuer(cfg core.Config) error {
+func (s *Simulation) initQueuer(cfg core.SimulationConfig) error {
 	s.queue = make([]core.Command, 0, 20)
 	// cust := make(map[string]int)
 	// for i, v := range cfg.Rotation {
