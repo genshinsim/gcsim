@@ -40,9 +40,9 @@ func (p *Parser) Parse() (core.SimulationConfig, error) {
 	p.macros = make(map[string]core.ActionBlock)
 
 	//default run options
-	p.cfg.Duration = 90
-	p.cfg.Options.Iteration = 1000
-	p.cfg.Options.Workers = 20
+	p.cfg.Settings.Duration = 90
+	p.cfg.Settings.Iterations = 1000
+	p.cfg.Settings.NumberOfWorkers = 20
 
 	state := parseRows
 	for state != nil && err == nil {

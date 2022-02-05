@@ -7,11 +7,7 @@ import (
 )
 
 func TestBasicAbilUsage(t *testing.T) {
-	c, err := core.New()
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
+	c := core.New()
 	prof := core.CharacterProfile{}
 	prof.Base.Element = core.Pyro
 	prof.Base.Key = core.Xiangling

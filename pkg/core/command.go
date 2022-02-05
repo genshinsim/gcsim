@@ -1,9 +1,5 @@
 package core
 
-type CommandHandler interface {
-	Exec(n Command) (frames int, done bool, err error) //return frames, if executed, any errors
-}
-
 type CommandType int
 
 const (

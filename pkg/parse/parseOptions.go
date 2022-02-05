@@ -13,22 +13,22 @@ func parseOptions(p *Parser) (parseFn, error) {
 		case itemDebug:
 			n, err = p.acceptSeqReturnLast(itemEqual, itemBool)
 			if err == nil {
-				p.cfg.Options.GenerateDebug = n.val == "true"
+				p.cfg.Settings.DebugRun = n.val == "true"
 			}
 		case itemIterations:
 			n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err == nil {
-				p.cfg.Options.Iteration, err = itemNumberToInt(n)
+				p.cfg.Settings.Iterations, err = itemNumberToInt(n)
 			}
 		case itemDuration:
 			n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err == nil {
-				p.cfg.Duration, err = itemNumberToInt(n)
+				p.cfg.Settings.Duration, err = itemNumberToInt(n)
 			}
 		case itemWorkers:
 			n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 			if err == nil {
-				p.cfg.Options.Workers, err = itemNumberToInt(n)
+				p.cfg.Settings.NumberOfWorkers, err = itemNumberToInt(n)
 			}
 		case itemTerminateLine:
 			return parseRows, nil

@@ -61,7 +61,7 @@ func TestParse(t *testing.T) {
 
 func TestConfigClone(t *testing.T) {
 	parser := New("test", pteststring)
-	c, _, err := parser.Parse()
+	c, err := parser.Parse()
 	if err != nil {
 		t.Error(err)
 	}
@@ -86,7 +86,7 @@ func BenchmarkParse(b *testing.B) {
 
 func BenchmarkClone(b *testing.B) {
 	parser := New("test", raiden)
-	c, _, err := parser.Parse()
+	c, err := parser.Parse()
 	if err != nil {
 		b.Error(err)
 	}
@@ -98,13 +98,13 @@ func BenchmarkClone(b *testing.B) {
 
 func BenchmarkSerialization(b *testing.B) {
 	parser := New("test", raiden)
-	c, _, err := parser.Parse()
+	c, err := parser.Parse()
 	if err != nil {
 		b.Error(err)
 	}
 	j, _ := json.Marshal(c)
 	for n := 0; n < b.N; n++ {
-		var out core.Config
+		var out core.SimulationConfig
 		json.Unmarshal(j, &out)
 	}
 }
