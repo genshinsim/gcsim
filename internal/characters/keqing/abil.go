@@ -196,7 +196,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//initial
 	ai := core.AttackInfo{
-		Abil:       "Stellar Restoration (Slashing)",
+		Abil:       "Starward Sword (Initial)",
 		ActorIndex: c.Index,
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagElementalBurst,
