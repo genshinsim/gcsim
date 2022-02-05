@@ -39,7 +39,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	})
 
 	icd, dur := -1, -1
-	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
