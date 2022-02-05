@@ -26,6 +26,35 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	skill := 0
 	burst := 0
 
+	mATK := make([]float64, core.EndStatType)
+	char.AddMod(core.CharStatMod{
+		Key:    "polar-star",
+		Expiry: -1,
+		Amount: func() ([]float64, bool) {
+			count := 0
+			if normal > c.F {
+				count++
+			}
+			if charged > c.F {
+				count++
+			}
+			if skill > c.F {
+				count++
+			}
+			if burst > c.F {
+				count++
+			}
+
+			atkbonus := stack * float64(count)
+			if count >= 4 {
+				atkbonus += max
+			}
+			mATK[core.ATKP] = atkbonus
+
+			return mATK, true
+		},
+	})
+
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 		if atk.Info.ActorIndex != char.CharIndex() {
@@ -50,38 +79,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		return false
 	}, fmt.Sprintf("polar-star-%v", char.Name()))
 
+	mDmg := make([]float64, core.EndStatType)
+	mDmg[core.DmgP] = dmg
 	char.AddPreDamageMod(core.PreDamageMod{
 		Key:    "polar-star",
 		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			m := make([]float64, core.EndStatType)
-
-			count := 0
-			if normal > c.F {
-				count++
-			}
-			if charged > c.F {
-				count++
-			}
-			if skill > c.F {
-				count++
-			}
-			if burst > c.F {
-				count++
-			}
-
-			atkbonus := stack * float64(count)
-			if count >= 4 {
-				atkbonus += max
-			}
-			m[core.ATKP] = atkbonus
-
 			switch atk.Info.AttackTag {
 			case core.AttackTagElementalArt, core.AttackTagElementalArtHold, core.AttackTagElementalBurst:
-				m[core.DmgP] = dmg
+				return mDmg, true
 			}
-
-			return m, true
+			return nil, false
 		},
 	})
 
