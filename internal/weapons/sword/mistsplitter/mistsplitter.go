@@ -22,7 +22,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m[core.GeoP] = base
 	m[core.DendroP] = base
 	stack := 0.06 + float64(r)*0.02
-	max := 0.21 + float64(r)*0.07
+	max := 0.03 + float64(r)*0.01
 	bonus := core.EleToDmgP(char.Ele())
 
 	normal := 0
@@ -45,7 +45,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		return false
 	}, fmt.Sprintf("mistsplitter-%v", char.Name()))
 
-	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
@@ -68,9 +68,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				count++
 			}
 			dmg := float64(count) * stack
-			if count > 3 {
-				count = 3 // should never happen
-				dmg = max
+			if count >= 3 {
+				dmg += max
 			}
 			//bonus for current char
 			m[bonus] = base + dmg
