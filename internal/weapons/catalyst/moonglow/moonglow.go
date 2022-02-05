@@ -23,12 +23,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		Expiry: -1,
 	})
 
+	nabuff := 0.0005 + float64(r)*0.0005
 	matk := make([]float64, core.EndStatType)
-	matk[core.ATK] = (0.0005 + float64(r)*0.0005) * char.MaxHP()
 	char.AddPreDamageMod(core.PreDamageMod{
 		Key: "moonglow-na-bonus",
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return matk, (atk.Info.AttackTag == core.AttackTagNormal)
+			if atk.Info.AttackTag != core.AttackTagNormal {
+				return nil, false
+			}
+
+			matk[core.ATK] = nabuff * char.MaxHP()
+			return matk, true
 		},
 		Expiry: -1,
 	})
