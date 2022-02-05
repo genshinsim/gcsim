@@ -129,7 +129,7 @@ type workerResp struct {
 }
 
 // src is the raw config data, whereas cfg is the parsed configuration file
-func Run(src string, cfg core.Config, opt core.RunOpt, cust ...func(*Simulation) error) (Result, error) {
+func Run(src string, cfg core.SimulationConfig, opt core.RunOpt, cust ...func(*Simulation) error) (Result, error) {
 	start := time.Now()
 
 	//options mode=damage debug=true iteration=5000 duration=90 workers=24;
@@ -220,7 +220,7 @@ func Run(src string, cfg core.Config, opt core.RunOpt, cust ...func(*Simulation)
 			log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
 		}
 		seed := int64(binary.LittleEndian.Uint64(b[:]))
-		s, err := NewSim(cfg, seed, opt, cust...)
+		s, err := New(cfg, seed, opt, cust...)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -599,7 +599,7 @@ func CollectResult(data []Stats, mode bool, chars []string, detailed bool, erCal
 	return
 }
 
-func worker(src string, cfg core.Config, opt core.RunOpt, resp chan workerResp, req chan int64, done chan bool, cust ...func(*Simulation) error) {
+func worker(src string, cfg core.SimulationConfig, opt core.RunOpt, resp chan workerResp, req chan int64, done chan bool, cust ...func(*Simulation) error) {
 
 	opt.Debug = false
 	opt.DebugPaths = []string{}
@@ -607,7 +607,7 @@ func worker(src string, cfg core.Config, opt core.RunOpt, resp chan workerResp, 
 	for {
 		select {
 		case seed := <-req:
-			s, err := NewSim(cfg, seed, opt, cust...)
+			s, err := New(cfg, seed, opt, cust...)
 			if err != nil {
 				resp <- workerResp{
 					err: err,

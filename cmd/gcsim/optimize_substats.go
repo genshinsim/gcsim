@@ -593,7 +593,7 @@ func runSubstatOptim(o opts) {
 }
 
 // Just runs the sim with specified settings
-func runSimWithConfig(data string, cfg core.Config, opts core.RunOpt, o opts) gcsim.Result {
+func runSimWithConfig(data string, cfg core.SimulationConfig, opts core.RunOpt, o opts) gcsim.Result {
 	result, err := gcsim.Run(data, cfg, opts, gsimCustomFuncConfig(cfg, o))
 	if err != nil {
 		log.Println(err)
@@ -603,7 +603,7 @@ func runSimWithConfig(data string, cfg core.Config, opts core.RunOpt, o opts) gc
 }
 
 // Custom function for what I assume is related to adding the priority list
-func gsimCustomFuncConfig(cfg core.Config, o opts) func(s *gcsim.Simulation) error {
+func gsimCustomFuncConfig(cfg core.SimulationConfig, o opts) func(s *gcsim.Simulation) error {
 	return func(s *gcsim.Simulation) error {
 		if !o.calc {
 			return nil

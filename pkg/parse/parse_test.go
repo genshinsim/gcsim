@@ -7,7 +7,7 @@ import (
 
 func TestParse(t *testing.T) {
 	p := New("test", pteststring)
-	a, _, err := p.Parse()
+	a, err := p.Parse()
 	fmt.Println("characters:")
 	for _, v := range a.Characters.Profile {
 		fmt.Println(v.Base.Key.String())
@@ -36,19 +36,19 @@ func TestParse(t *testing.T) {
 	fmt.Println("\t", a.Energy)
 
 	p = New("test", raiden)
-	_, _, err = p.Parse()
+	_, err = p.Parse()
 	if err != nil {
 		t.Error(err)
 	}
 
 	p = New("test", s2)
-	_, _, err = p.Parse()
+	_, err = p.Parse()
 	if err != nil {
 		t.Error(err)
 	}
 
 	p = New("test", check)
-	_, _, err = p.Parse()
+	_, err = p.Parse()
 	if err != nil {
 		t.Error(err)
 	}
