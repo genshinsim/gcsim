@@ -1,8 +1,12 @@
 package parse
 
 import (
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"testing"
+
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func TestParse(t *testing.T) {
@@ -53,6 +57,56 @@ func TestParse(t *testing.T) {
 		t.Error(err)
 	}
 
+}
+
+func TestConfigClone(t *testing.T) {
+	parser := New("test", pteststring)
+	c, _, err := parser.Parse()
+	if err != nil {
+		t.Error(err)
+	}
+	next := c.Clone()
+	// cjson, _ := json.Marshal(c)
+	// fmt.Println(string(cjson))
+	// fmt.Println("")
+	// njson, _ := json.Marshal(next)
+	// fmt.Println(string(njson))
+	if !reflect.DeepEqual(c, next) {
+		t.Fail()
+	}
+
+}
+
+func BenchmarkParse(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		parser := New("test", raiden)
+		parser.Parse()
+	}
+}
+
+func BenchmarkClone(b *testing.B) {
+	parser := New("test", raiden)
+	c, _, err := parser.Parse()
+	if err != nil {
+		b.Error(err)
+	}
+	// run clone b.N times
+	for n := 0; n < b.N; n++ {
+		c.Clone()
+	}
+}
+
+func BenchmarkSerialization(b *testing.B) {
+	parser := New("test", raiden)
+	c, _, err := parser.Parse()
+	if err != nil {
+		b.Error(err)
+	}
+	j, _ := json.Marshal(c)
+	for n := 0; n < b.N; n++ {
+		var out core.Config
+		json.Unmarshal(j, &out)
+	}
 }
 
 var check = `

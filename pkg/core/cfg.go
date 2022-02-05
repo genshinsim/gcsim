@@ -12,38 +12,53 @@ type SimulationConfig struct {
 	Rotation []ActionBlock
 	Hurt     HurtEvent
 	Energy   EnergyEvent
-	Duration int //duration of the simulation in seconds; only if DamageMode is false
-
-	Options SimulationOption
+	Settings SimulatorSettings
 }
 
 func (c *SimulationConfig) Clone() SimulationConfig {
 	r := *c
 
-	//clone targets
 	r.Targets = make([]EnemyProfile, len(c.Targets))
-
 	for i, v := range c.Targets {
 		r.Targets[i] = v.Clone()
 	}
 
-	//clone characters
 	r.Characters.Profile = make([]CharacterProfile, len(c.Characters.Profile))
 	for i, v := range c.Characters.Profile {
 		r.Characters.Profile[i] = v.Clone()
 	}
 
+	r.Rotation = make([]ActionBlock, len(c.Rotation))
+	for i, v := range c.Rotation {
+		r.Rotation[i] = v.Clone()
+	}
+
 	return r
 }
 
-//SimulationOption contains options such as number of iteration, number of workers, etc..
-type SimulationOption struct {
-	Iteration     int  `json:"iter"`
-	Workers       int  `json:"workers"`
-	GenerateDebug bool `json:"debug"`
-	LogDetails    bool `json:"log_details"`
-	ERCalcMode    bool `json:"er_calc_mode"`
+type SimulatorSettings struct {
+	Duration   int
+	DamageMode bool
+
+	//modes
+	CalcMode   bool
+	ERCalcMode bool
+
+	//other stuff
+	NumberOfWorkers int  // how many workers to run the simulation
+	DebugRun        bool // run one extra run and generate debug?
+	Iterations      int  // how many iterations to run
 }
+
+// type RunOpt struct {
+// 	LogDetails bool `json:"log_details"`
+// 	Iteration  int  `json:"iter"`
+// 	Workers    int  `json:"workers"`
+// 	Duration   int  `json:"seconds"`
+// 	Debug      bool `json:"debug"`
+// 	ERCalcMode bool `json:"er_calc_mode"`
+// 	DebugPaths []string
+// }
 
 type CharacterProfile struct {
 	Base      CharacterBase             `json:"base"`

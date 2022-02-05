@@ -130,9 +130,9 @@ func New(cfg ...func(*Core) error) (*Core, error) {
 	if c.Health == nil {
 		c.Health = NewHealthCtrl(c)
 	}
-	if c.Action == nil {
-		c.Action = NewActionCtrl(c)
-	}
+	// if c.Action == nil {
+	// 	c.Action = NewActionCtrl(c)
+	// }
 	if c.Queue == nil {
 		c.Queue = NewQueuer(c)
 	}
