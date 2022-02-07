@@ -18,7 +18,7 @@ import (
 
 	"github.com/genshinsim/gcsim"
 	"github.com/genshinsim/gcsim/internal/logtohtml"
-	"github.com/genshinsim/gcsim/pkg/calcqueue"
+	"github.com/genshinsim/gcsim/internal/tmpl/calcqueue"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/parse"
 	"go.uber.org/zap"
