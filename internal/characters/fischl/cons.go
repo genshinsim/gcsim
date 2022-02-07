@@ -22,7 +22,7 @@ func (c *char) c6() {
 		}
 		// TODO: Ugly hack needed to maintain snapshot logs...
 		// Technically should have a separate snapshot for each attack info?
-		ai.ModsLog = c.ozSnapshot.Info.ModsLog
+		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// C4 uses Oz Snapshot
 		c.Core.Combat.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, core.NewDefSingleTarget(1, core.TargettableEnemy), 0)
 		return false

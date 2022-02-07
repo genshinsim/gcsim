@@ -126,7 +126,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		stacks := c.Tags["seal"]
 		return 50 * (1 - c.sealStamReduction*float64(stacks))
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

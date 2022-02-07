@@ -66,7 +66,7 @@ func Favonius(char core.Character, c *core.Core, r int, param map[string]int) {
 		if c.Rand.Float64() > p {
 			return false
 		}
-		c.Log.Debugw("favonius proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex())
+		c.Log.NewEvent("favonius proc'd", core.LogWeaponEvent, char.CharIndex())
 
 		char.QueueParticle("favonius", 3, core.NoElement, 80)
 
@@ -163,7 +163,7 @@ func Sacrificial(char core.Character, c *core.Core, r int, param map[string]int)
 		if c.Rand.Float64() < prob {
 			char.ResetActionCooldown(core.ActionSkill)
 			last = c.F
-			c.Log.Debugw("sacrificial proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex())
+			c.Log.NewEvent("sacrificial proc'd", core.LogWeaponEvent, char.CharIndex())
 		}
 		return false
 	}, fmt.Sprintf("sac-%v", char.Name()))
@@ -196,7 +196,7 @@ func Wavebreaker(char core.Character, c *core.Core, r int, param map[string]int)
 		if amt > max {
 			amt = max
 		}
-		c.Log.Debugw("wavebreaker dmg calc", "frame", -1, "event", core.LogWeaponEvent, "total", energy, "per", per, "max", max, "amt", amt)
+		c.Log.NewEvent("wavebreaker dmg calc", core.LogWeaponEvent, char.CharIndex(), "total", energy, "per", per, "max", max, "amt", amt)
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = amt
 		char.AddPreDamageMod(core.PreDamageMod{

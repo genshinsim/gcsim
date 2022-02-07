@@ -47,8 +47,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				return
 			}
 			stacks--
-
-			s.Log.Debugw("Husk lost stack", "frame", s.F, "event", core.LogArtifactEvent, "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
+			s.Log.NewEvent("Husk lost stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
 
 		}
 
@@ -56,7 +55,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 		gainStackOfffield = func(src int) func() {
 			return func() {
-				s.Log.Debugw("Husk check for off-field stack", "frame", s.F, "event", core.LogArtifactEvent, "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain, "source", src)
+				s.Log.NewEvent("Husk check for off-field stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain, "source", src)
 				if s.ActiveChar == c.CharIndex() {
 					return
 				}
@@ -69,7 +68,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					stacks++
 				}
 
-				s.Log.Debugw("Husk gained off-field stack", "frame", s.F, "event", core.LogArtifactEvent, "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
+				s.Log.NewEvent("Husk gained off-field stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
 
 				lastStackGain = s.F
 
@@ -116,7 +115,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				stacks++
 			}
 
-			s.Log.Debugw("Husk gained on-field stack", "frame", s.F, "event", core.LogArtifactEvent, "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
+			s.Log.NewEvent("Husk gained on-field stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
 
 			lastStackGain = s.F
 			stackGainICDExpiry = s.F + 18

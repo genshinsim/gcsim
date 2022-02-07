@@ -36,7 +36,7 @@ func (h *Ctrl) Subscribe(e core.EventType, f core.EventHook, key string) {
 		}
 	}
 	if ind > -1 {
-		h.c.Log.Debugw("hook added", "frame", h.c.F, "event", core.LogHookEvent, "overwrite", true, "key", key, "type", e)
+		h.c.Log.NewEvent("hook added", core.LogHookEvent, -1, "overwrite", true, "key", key, "type", e)
 		a[ind] = ehook{
 			f:   f,
 			key: key,
@@ -48,7 +48,7 @@ func (h *Ctrl) Subscribe(e core.EventType, f core.EventHook, key string) {
 			key: key,
 			src: h.c.F,
 		})
-		h.c.Log.Debugw("hook added", "frame", h.c.F, "event", core.LogHookEvent, "overwrite", true, "key", key, "type", e)
+		h.c.Log.NewEvent("hook added", core.LogHookEvent, -1, "overwrite", true, "key", key, "type", e)
 	}
 	h.events[e] = a
 }
@@ -68,7 +68,7 @@ func (h *Ctrl) Emit(e core.EventType, args ...interface{}) {
 	n := 0
 	for i, v := range h.events[e] {
 		if v.f(args...) {
-			h.c.Log.Debugw("event hook ended", "frame", h.c.F, "event", core.LogHookEvent, "key", i, "src", v.src)
+			h.c.Log.NewEvent("event hook ended", core.LogHookEvent, -1, "key", i, "src", v.src)
 		} else {
 			h.events[e][n] = v
 			n++

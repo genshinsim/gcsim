@@ -2,8 +2,10 @@ package evtlog
 
 import (
 	"log"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	easyjson "github.com/mailru/easyjson"
 )
 
 //Debugw
@@ -11,7 +13,7 @@ import (
 
 //easyjson:json
 type keyVal struct {
-	Key string      `json:"key"`
+	Key string      `json:"key,nocopy"`
 	Val interface{} `json:"val"`
 }
 
@@ -21,7 +23,7 @@ type Event struct {
 	F       int            `json:"frame"`
 	Ended   int            `json:"ended"`
 	SrcChar int            `json:"char_index"`
-	Msg     string         `json:"msg"`
+	Msg     string         `json:"msg,nocopy"`
 	Logs    []keyVal       `json:"logs"`
 }
 
@@ -49,36 +51,63 @@ func (e *Event) Write(keysAndValues ...interface{}) {
 	}
 }
 
-func (e *Event) SetEnded(end int) {
-	e.Ended = end
-}
+func (e *Event) SetEnded(end int)          { e.Ended = end }
+func (e *Event) LogSource() core.LogSource { return e.Typ }
+func (e *Event) StartFrame() int           { return e.F }
+func (e *Event) Src() int                  { return e.SrcChar }
 
 type Ctrl struct {
 	//keep it in an array so we can keep track order it occured
-	events []*Event
+	// events []*Event
+	events map[int]*Event
+	count  int
 	core   *core.Core
 }
 
-func (c *Ctrl) NewEvent(msg string, typ core.LogSource, srcChar int) *Event {
+func NewCtrl(c *core.Core, size int) core.LogCtrl {
+	ctrl := &Ctrl{
+		events: make(map[int]*Event),
+		core:   c,
+	}
+	return ctrl
+}
+
+func (c *Ctrl) Dump() ([]byte, error) {
+	var r EventArr = make(EventArr, 0, c.count)
+	for i := 0; i < c.count; i++ {
+		v, ok := c.events[i]
+		if ok {
+			r = append(r, v)
+		}
+	}
+	return easyjson.Marshal(r)
+}
+
+func (c *Ctrl) NewEventBuildMsg(typ core.LogSource, srcChar int, msg ...string) core.LogEvent {
+	if len(msg) == 0 {
+		panic("no msg provided")
+	}
+	var sb strings.Builder
+	for _, v := range msg {
+		sb.WriteString(v)
+	}
+	return c.NewEvent(sb.String(), typ, srcChar)
+}
+
+func (c *Ctrl) NewEvent(msg string, typ core.LogSource, srcChar int, keysAndValues ...interface{}) core.LogEvent {
 	e := &Event{
 		Msg:     msg,
 		F:       c.core.F,
 		Ended:   c.core.F,
 		Typ:     typ,
 		SrcChar: srcChar,
-		Logs:    make([]keyVal, 0, 10),
+		Logs:    make([]keyVal, 0, len(keysAndValues)+5), //+5 from default just in case we need to add in more keys
 	}
-	c.events = append(c.events, e)
+	// c.events = append(c.events, e)
+	c.events[c.count] = e
+	c.count++
+	if keysAndValues != nil {
+		e.Write(keysAndValues...)
+	}
 	return e
-}
-
-func (c *Ctrl) NewEventWithFields(msg string, typ core.LogSource, srcChar int, keysAndValues ...interface{}) *Event {
-	e := c.NewEvent(msg, typ, srcChar)
-	e.Write(keysAndValues...)
-	return e
-}
-
-//temporary work around
-func (c *Ctrl) Debugw(msg string, keysAndValues ...interface{}) {
-	c.NewEventWithFields(msg, core.LogSimEvent, 0, keysAndValues...)
 }

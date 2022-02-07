@@ -34,7 +34,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 		dur = c.F + 1200
 		counter = 0
-		c.Log.Debugw("Skyward Pride activated", "frame", c.F, "event", core.LogWeaponEvent, "expiring ", dur)
+		c.Log.NewEvent("Skyward Pride activated", core.LogWeaponEvent, char.CharIndex(), "expiring ", dur)
 		return false
 	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
 

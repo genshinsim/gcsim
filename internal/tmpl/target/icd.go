@@ -24,7 +24,7 @@ func (t *Tmpl) WillApplyEle(tag core.ICDTag, grp core.ICDGroup, char int) bool {
 		t.icdTagCounter[char][tag] = 0
 	}
 
-	t.Core.Log.Debugw("ele icd check", "frame", t.Core.F, "event", core.LogICDEvent, "char", char, "grp", grp, "target", t.TargetIndex, "tag", tag, "counter", val, "val", core.ICDGroupEleApplicationSequence[grp][val], "group on timer", x)
+	t.Core.Log.NewEvent("ele icd check", core.LogICDEvent, char, "grp", grp, "target", t.TargetIndex, "tag", tag, "counter", val, "val", core.ICDGroupEleApplicationSequence[grp][val], "group on timer", x)
 	//true if group seq is 1
 	return core.ICDGroupEleApplicationSequence[grp][val] == 1
 }
@@ -54,9 +54,9 @@ func (t *Tmpl) ResetDamageCounterAfterDelay(tag core.ICDTag, grp core.ICDGroup, 
 		//set the counter back to 0
 		t.icdDamageTagCounter[char][tag] = 0
 		t.icdDamageTagOnTimer[char][tag] = false
-		t.Core.Log.Debugw("damage counter reset", "frame", t.Core.F, "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char)
+		t.Core.Log.NewEvent("damage counter reset", core.LogICDEvent, char, "tag", tag, "grp", grp)
 	}, core.ICDGroupResetTimer[grp]-1)
-	t.Core.Log.Debugw("damage reset timer set", "frame", t.Core.F, "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char, "reset", t.Core.F+core.ICDGroupResetTimer[grp]-1)
+	t.Core.Log.NewEvent("damage reset timer set", core.LogICDEvent, char, "tag", tag, "grp", grp, "reset", t.Core.F+core.ICDGroupResetTimer[grp]-1)
 }
 
 func (t *Tmpl) ResetTagCounterAfterDelay(tag core.ICDTag, grp core.ICDGroup, char int) {
@@ -64,7 +64,7 @@ func (t *Tmpl) ResetTagCounterAfterDelay(tag core.ICDTag, grp core.ICDGroup, cha
 		//set the counter back to 0
 		t.icdTagCounter[char][tag] = 0
 		t.icdTagOnTimer[char][tag] = false
-		t.Core.Log.Debugw("ele app counter reset", "frame", t.Core.F, "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char)
+		t.Core.Log.NewEvent("ele app counter reset", core.LogICDEvent, char, "tag", tag, "grp", grp)
 	}, core.ICDGroupResetTimer[grp]-1)
-	t.Core.Log.Debugw("ele app reset timer set", "frame", t.Core.F, "event", core.LogICDEvent, "tag", tag, "grp", grp, "char", char, "reset", t.Core.F+core.ICDGroupResetTimer[grp]-1)
+	t.Core.Log.NewEvent("ele app reset timer set", core.LogICDEvent, char, "tag", tag, "grp", grp, "reset", t.Core.F+core.ICDGroupResetTimer[grp]-1)
 }

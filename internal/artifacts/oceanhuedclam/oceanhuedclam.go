@@ -109,10 +109,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					bubbleHealStacks = 0
 				}, "ohc-bubble-pop", 3*60)
 
-				s.Log.Debugw("ohc bubble activated", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "ohc_icd_expiry", bubbleICDExpiry)
+				s.Log.NewEvent("ohc bubble activated", core.LogArtifactEvent, c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "ohc_icd_expiry", bubbleICDExpiry)
 			}
 
-			s.Log.Debugw("ohc bubble accumulation", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "bubble_total", bubbleHealStacks)
+			s.Log.NewEvent("ohc bubble accumulation", core.LogArtifactEvent, c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "bubble_total", bubbleHealStacks)
 
 			return false
 		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", c.Name()))

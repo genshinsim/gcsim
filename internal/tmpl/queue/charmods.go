@@ -25,6 +25,6 @@ func (q *Queuer) evalCharMods(cond core.Condition) (bool, error) {
 	} else {
 		val = 0
 	}
-	q.core.Log.Debugw("evaluating mods", "frame", q.core.F, "event", core.LogQueueEvent, "char", char.CharIndex(), "mod", tag)
+	q.core.Log.NewEvent("evaluating mods", core.LogQueueEvent, char.CharIndex(), "mod", tag)
 	return char.ModIsActive(tag) == (val == 1), nil
 }

@@ -85,7 +85,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 51, 51 //ok
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -241,12 +241,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	//TODO: review bennett AOE size
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 33, 33)
-
-	aiHeal := core.AttackInfo{
-		Abil:      "Fantastic Voyage (Heal)",
-		AttackTag: core.AttackTagNone,
-	}
-	stats := c.SnapshotStats(&aiHeal)
+	stats, _ := c.SnapshotStats()
 
 	//apply right away
 	c.applyBennettField(stats)()
@@ -272,7 +267,7 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 	}
 	atk := pc * float64(c.Base.Atk+c.Weapon.Atk)
 	return func() {
-		c.Core.Log.Debugw("bennett field ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.NewEvent("bennett field ticking", core.LogCharacterEvent, -1)
 
 		//self infuse
 		player, ok := c.Core.Targets[0].(*player.Player)
@@ -310,7 +305,7 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 				},
 				Expiry: c.Core.F + 126,
 			})
-			c.Core.Log.Debugw("bennett field - adding attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "threshold", threshold)
+			c.Core.Log.NewEvent("bennett field - adding attack", core.LogCharacterEvent, c.Index, "threshold", threshold)
 			//if c6 add weapon infusion and 15% pyro
 			if c.Base.Cons == 6 {
 				switch active.WeaponClass() {

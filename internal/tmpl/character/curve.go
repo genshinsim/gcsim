@@ -82,10 +82,9 @@ func (t *Tmpl) CalcBaseStats() error {
 	}
 
 	//log stats
-	t.Core.Log.Debugw(
+	t.Core.Log.NewEvent(
 		"stat calc done for "+t.Name(),
-		"frame", t.Core.F,
-		"event", core.LogCharacterEvent,
+		core.LogCharacterEvent, t.Index,
 		"char_base", t.Base,
 		"weap_base", t.Weapon,
 		"spec_char", spec,

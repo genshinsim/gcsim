@@ -11,7 +11,7 @@ func (q *Queuer) evalTree(node *core.ExprTreeNode) (bool, error) {
 	//recursively evaluate tree nodes
 	if node.IsLeaf {
 		r, err := q.evalCond(node.Expr)
-		// s.Log.Debugw("evaluating leaf node", "frame", s.F, "event", LogQueueEvent, "result", r, "node", node)
+		// s.Log.Debugw("evaluating leaf node", LogQueueEvent, "result", r, "node", node)
 		return r, err
 	}
 	//so this is a node, then we want to evalute the left and right
@@ -24,7 +24,7 @@ func (q *Queuer) evalTree(node *core.ExprTreeNode) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	// s.Log.Debugw("evaluating tree node", "frame", s.F, "event", LogQueueEvent, "left val", left, "right val", right, "node", node)
+	// s.Log.Debugw("evaluating tree node", LogQueueEvent, "left val", left, "right val", right, "node", node)
 	switch node.Op {
 	case "||":
 		return left || right, nil

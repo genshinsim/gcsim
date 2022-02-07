@@ -72,7 +72,7 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 		c.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		c.Core.Log.Debugw("setting starting hp", "frame", x.F, "event", core.LogCharacterEvent, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
+		c.Core.Log.NewEvent("setting starting hp", core.LogCharacterEvent, c.Index, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
 		c.HPCurrent = p.Base.StartHP
 	} else {
 		c.HPCurrent = math.MaxInt64
@@ -124,11 +124,11 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 		}
 	}
 	if ind > -1 {
-		c.Core.Log.Debugw("mod refreshed", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		c.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		c.PreDamageMods[ind] = mod
 	} else {
 		c.PreDamageMods = append(c.PreDamageMods, mod)
-		c.Core.Log.Debugw("mod added", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 	}
 
 	// Add task to check for mod expiry in debug instances
@@ -137,7 +137,7 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 			if c.PreDamageModIsActive(mod.Key) {
 				return
 			}
-			c.Core.Log.Debugw("mod expired", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+			c.Core.Log.NewEvent("mod expired", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 		}, "check-mod-expiry", mod.Expiry+1-c.Core.F)
 	}
 }
@@ -150,11 +150,11 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 		}
 	}
 	if ind > -1 {
-		c.Core.Log.Debugw("mod refreshed", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		c.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		c.Mods[ind] = mod
 	} else {
 		c.Mods = append(c.Mods, mod)
-		c.Core.Log.Debugw("mod added", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 	}
 
 	// Add task to check for mod expiry in debug instances
@@ -163,7 +163,7 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 			if c.ModIsActive(mod.Key) {
 				return
 			}
-			c.Core.Log.Debugw("mod expired", "frame", c.Core.F, "event", core.LogStatusEvent, "char", c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+			c.Core.Log.NewEvent("mod expired", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 		}, "check-mod-expiry", mod.Expiry+1-c.Core.F)
 	}
 }
@@ -234,11 +234,11 @@ func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 	}
 	if ind != -1 {
 		t.ReactMod[ind] = mod
-		t.Core.Log.Debugw("mod refreshed", "frame", t.Core.F, "char", t.Index, "event", core.LogStatusEvent, "char", t.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		t.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, t.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		return
 	}
 	t.ReactMod = append(t.ReactMod, mod)
-	t.Core.Log.Debugw("mod added", "frame", t.Core.F, "char", t.Index, "event", core.LogStatusEvent, "char", t.Index, "key", mod.Key, "expiry", mod.Expiry)
+	t.Core.Log.NewEvent("mod added", core.LogStatusEvent, t.Index, "key", mod.Key, "expiry", mod.Expiry)
 
 	// Add task to check for mod expiry in debug instances
 	if t.Core.Flags.LogDebug && mod.Expiry > -1 {
@@ -246,7 +246,7 @@ func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 			if t.ReactBonusModIsActive(mod.Key) {
 				return
 			}
-			t.Core.Log.Debugw("mod expired", "frame", t.Core.F, "char", t.Index, "event", core.LogStatusEvent, "char", t.Index, "key", mod.Key, "expiry", mod.Expiry)
+			t.Core.Log.NewEvent("mod expired", core.LogStatusEvent, t.Index, "key", mod.Key, "expiry", mod.Expiry)
 		}, "check-mod-expiry", mod.Expiry+1-t.Core.F)
 	}
 }

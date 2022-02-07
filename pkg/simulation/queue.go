@@ -21,10 +21,10 @@ func (s *Simulation) initQueuer() error {
 		}
 		s.cfg.Rotation[i].LastQueued = -1
 	}
-	s.C.Log.Debugw(
+	s.C.Log.NewEvent(
 		"setting queue",
-		"frame", s.C.F,
-		"event", core.LogSimEvent,
+		core.LogSimEvent,
+		-1,
 		"pq", s.cfg.Rotation,
 	)
 

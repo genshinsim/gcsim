@@ -12,3 +12,4 @@ out.json
 debug.html
 internal/characters/replace.txt
 .idea
+*.wasm

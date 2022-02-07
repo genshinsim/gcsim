@@ -20,7 +20,7 @@ func (h *HealthCtrl) HealActive(caller int, hp float64) {
 	heal := h.healBonusMult(h.core.ActiveChar) * hp
 	h.core.Chars[h.core.ActiveChar].ModifyHP(heal)
 	h.core.Events.Emit(core.OnHeal, caller, h.core.ActiveChar, heal)
-	h.core.Log.Debugw("healing", "frame", h.core.F, "event", core.LogHealEvent, "frame", h.core.F, "char", h.core.ActiveChar, "amount", hp, "bonus", h.healBonusMult(h.core.ActiveChar), "final", h.core.Chars[h.core.ActiveChar].HP())
+	h.core.Log.NewEvent("healing", core.LogHealEvent, h.core.ActiveChar, "amount", hp, "bonus", h.healBonusMult(h.core.ActiveChar), "final", h.core.Chars[h.core.ActiveChar].HP())
 }
 
 func (h *HealthCtrl) HealAll(caller int, hp float64) {
@@ -28,7 +28,7 @@ func (h *HealthCtrl) HealAll(caller int, hp float64) {
 		heal := h.healBonusMult(i) * hp
 		c.ModifyHP(heal)
 		h.core.Events.Emit(core.OnHeal, caller, i, heal)
-		h.core.Log.Debugw("healing (all)", "frame", h.core.F, "event", core.LogHealEvent, "frame", h.core.F, "char", i, "amount", hp, "bonus", h.healBonusMult(i), "final", h.core.Chars[h.core.ActiveChar].HP())
+		h.core.Log.NewEvent("healing (all)", core.LogHealEvent, i, "amount", hp, "bonus", h.healBonusMult(i), "final", h.core.Chars[h.core.ActiveChar].HP())
 	}
 }
 
@@ -38,7 +38,7 @@ func (h *HealthCtrl) HealAllPercent(caller int, percent float64) {
 		heal := h.healBonusMult(i) * hp
 		c.ModifyHP(heal)
 		h.core.Events.Emit(core.OnHeal, caller, i, heal)
-		h.core.Log.Debugw("healing (all)", "frame", h.core.F, "event", core.LogHealEvent, "frame", h.core.F, "char", i, "amount", hp, "bonus", h.healBonusMult(i), "final", h.core.Chars[h.core.ActiveChar].HP())
+		h.core.Log.NewEvent("healing (all)", core.LogHealEvent, i, "amount", hp, "bonus", h.healBonusMult(i), "final", h.core.Chars[h.core.ActiveChar].HP())
 	}
 }
 
@@ -46,7 +46,7 @@ func (h *HealthCtrl) HealIndex(caller int, index int, hp float64) {
 	heal := h.healBonusMult(index) * hp
 	h.core.Chars[index].ModifyHP(heal)
 	h.core.Events.Emit(core.OnHeal, caller, index, heal)
-	h.core.Log.Debugw("healing", "frame", h.core.F, "event", core.LogHealEvent, "frame", h.core.F, "char", index, "amount", hp, "bonus", h.healBonusMult(index), "final", h.core.Chars[h.core.ActiveChar].HP())
+	h.core.Log.NewEvent("healing", core.LogHealEvent, index, "amount", hp, "bonus", h.healBonusMult(index), "final", h.core.Chars[h.core.ActiveChar].HP())
 }
 
 func (h *HealthCtrl) healBonusMult(healedCharIndex int) float64 {
@@ -87,7 +87,7 @@ func (h *HealthCtrl) HurtChar(dmg float64, ele core.EleType) {
 	c := h.core.Chars[h.core.ActiveChar]
 	c.ModifyHP(-post)
 
-	h.core.Log.Debugw("damage taken", "frame", h.core.F, "event", core.LogHurtEvent, "frame", h.core.F, "dmg", dmg, "taken", post, "shielded", dmg-post, "char_hp", c.HP(), "shield_count", h.core.Shields.Count())
+	h.core.Log.NewEvent("damage taken", core.LogHurtEvent, h.core.ActiveChar, "dmg", dmg, "taken", post, "shielded", dmg-post, "char_hp", c.HP(), "shield_count", h.core.Shields.Count())
 
 	if post > 0 {
 		h.core.Events.Emit(core.OnCharacterHurt, post)

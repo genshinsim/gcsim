@@ -22,7 +22,7 @@ func newGuoba(c *core.Core) *panda {
 	return p
 }
 
-func (p *panda) Attack(atk *core.AttackEvent) (float64, bool) {
+func (p *panda) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
 	//don't take damage, trigger swirl reaction only on sucrose E
 	if p.Core.Chars[atk.Info.ActorIndex].Key() != core.Sucrose {
 		return 0, false

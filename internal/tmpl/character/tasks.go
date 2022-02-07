@@ -7,7 +7,7 @@ func (t *Tmpl) Tick() {
 
 func (t *Tmpl) AddTask(fun func(), name string, delay int) {
 	t.Core.Tasks.Add(fun, delay)
-	t.Core.Log.Debugw("task added: "+name, "frame", t.Core.F, "event", core.LogTaskEvent, "name", name, "delay", delay)
+	t.Core.Log.NewEvent("task added: "+name, core.LogTaskEvent, t.Index, "name", name, "delay", delay)
 }
 
 // Main function used to deal damage. In the case of 0 delay, immediately procs damage on the same frame

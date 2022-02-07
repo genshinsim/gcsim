@@ -40,7 +40,7 @@ func (c *Tmpl) AddEnergy(e float64) {
 	if c.Energy < 0 {
 		c.Energy = 0
 	}
-	c.Core.Log.Debugw("adding energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "rec'd", e, "next energy", c.Energy, "char", c.Index)
+	c.Core.Log.NewEvent("adding energy", core.LogEnergyEvent, c.Index, "rec'd", e, "next energy", c.Energy, "char", c.Index)
 }
 
 func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
@@ -78,11 +78,11 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 		c.Energy = c.EnergyMax
 	}
 
-	c.Core.Log.Debugw(
+	c.Core.Log.NewEvent(
 		"particle",
-		"frame", c.Core.F,
-		"event", core.LogEnergyEvent,
-		"char", c.Index,
+		core.LogEnergyEvent,
+		c.Index,
+
 		"source", p.Source,
 		"count", p.Num,
 		"ele", p.Ele,
@@ -92,6 +92,6 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 		"pre_recovery", pre,
 		"amt", amt,
 		"post_recovery", c.Energy,
-		"max_energy", c.MaxEnergy(),
+		"max_energy", c.EnergyMax,
 	)
 }

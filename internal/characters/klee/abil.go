@@ -158,7 +158,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	switch c.eCharge {
 	case c.eChargeMax:
-		c.Core.Log.Debugw("klee at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+721)
+		c.Core.Log.NewEvent("klee at max charge, queuing next recovery", core.LogCharacterEvent, c.Index, "recover at", c.Core.F+721)
 		c.eNextRecover = c.Core.F + 1201
 		c.AddTask(c.recoverCharge(c.Core.F), "charge", 1200)
 		c.eTickSrc = c.Core.F
@@ -175,18 +175,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) recoverCharge(src int) func() {
 	return func() {
 		if c.eTickSrc != src {
-			c.Core.Log.Debugw("klee mine recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
+			c.Core.Log.NewEvent("klee mine recovery function ignored, src diff", core.LogCharacterEvent, c.Index, "src", src, "new src", c.eTickSrc)
 			return
 		}
 		c.eCharge++
-		c.Core.Log.Debugw("klee mine recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
+		c.Core.Log.NewEvent("klee mine recovering a charge", core.LogCharacterEvent, c.Index, "src", src, "total charge", c.eCharge)
 		c.SetCD(core.ActionSkill, 0)
 		if c.eCharge >= c.eChargeMax {
 			//fully charged
 			return
 		}
 		//other wise restore another charge
-		c.Core.Log.Debugw("klee mine queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "recover at", c.Core.F+720)
+		c.Core.Log.NewEvent("klee mine queuing next recovery", core.LogCharacterEvent, c.Index, "src", src, "recover at", c.Core.F+720)
 		c.eNextRecover = c.Core.F + 1201
 		c.AddTask(c.recoverCharge(src), "charge", 1200)
 
@@ -250,7 +250,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 						continue
 					}
 					x.AddEnergy(3)
-					c.Core.Log.Debugw("klee c6 regen 3 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "char", x.CharIndex(), "new energy", x.CurrentEnergy())
+					c.Core.Log.NewEvent("klee c6 regen 3 energy", core.LogEnergyEvent, c.Index, "char", x.CharIndex(), "new energy", x.CurrentEnergy())
 				}
 
 			}, "klee-c6", i)

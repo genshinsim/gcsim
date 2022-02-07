@@ -19,6 +19,6 @@ func (q *Queuer) evalTags(cond core.Condition) (bool, error) {
 	}
 	tag := strings.TrimPrefix(cond.Fields[2], ".")
 	v := char.Tag(tag)
-	q.core.Log.Debugw("evaluating tags", "frame", q.core.F, "event", core.LogQueueEvent, "char", char.CharIndex(), "targ", tag, "val", v)
+	q.core.Log.NewEvent("evaluating tags", core.LogQueueEvent, char.CharIndex(), "targ", tag, "val", v)
 	return compInt(cond.Op, v, cond.Value), nil
 }

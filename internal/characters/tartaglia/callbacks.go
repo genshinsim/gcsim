@@ -6,11 +6,10 @@ import "github.com/genshinsim/gcsim/pkg/core"
 //A arrow fully charged with the torrent will deal Hydro DMG and apply the Riptide status.
 func (c *char) aimedApplyRiptide(a core.AttackCB) {
 	a.Target.SetTag(riptideKey, c.Core.F+riptideDuration)
-	c.Core.Log.Debugw(
+	c.Core.Log.NewEvent(
 		"riptide applied (CA)",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
-		"char", c.Index,
+		core.LogCharacterEvent,
+		c.Index,
 		"target", a.Target.Index(),
 		"expiry", c.Core.F+riptideDuration,
 	)
@@ -22,11 +21,10 @@ func (c *char) meleeApplyRiptide(a core.AttackCB) {
 	//only applies if is crit
 	if a.IsCrit {
 		a.Target.SetTag(riptideKey, c.Core.F+riptideDuration)
-		c.Core.Log.Debugw(
+		c.Core.Log.NewEvent(
 			"riptide applied (melee)",
-			"frame", c.Core.F,
-			"event", core.LogCharacterEvent,
-			"char", c.Index,
+			core.LogCharacterEvent,
+			c.Index,
 			"target", a.Target.Index(),
 			"expiry", c.Core.F+riptideDuration,
 		)
@@ -63,10 +61,10 @@ func (c *char) rtFlashCallback(a core.AttackCB) {
 	for i := 1; i <= 3; i++ {
 		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 1)
 	}
-	c.Core.Log.Debugw(
+	c.Core.Log.NewEvent(
 		"riptide flash triggered",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
+		core.LogCharacterEvent,
+		c.Index,
 		"dur", c.Core.Status.Duration("tartagliamelee"),
 		"target", a.Target.Index(),
 		"riptide_flash_icd", a.Target.GetTag(riptideFlashICDKey),
@@ -109,10 +107,10 @@ func (c *char) rtSlashCallback(a core.AttackCB) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
 
-	c.Core.Log.Debugw(
+	c.Core.Log.NewEvent(
 		"Riptide Slash ticked",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
+		core.LogCharacterEvent,
+		c.Index,
 		"dur", c.Core.Status.Duration("tartagliamelee"),
 		"target", a.Target.Index(),
 		"riptide_slash_icd", a.Target.GetTag(riptideSlashICDKey),
@@ -152,10 +150,10 @@ func (c *char) rtBlastCallback(a core.AttackCB) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 1)
 
-	c.Core.Log.Debugw(
+	c.Core.Log.NewEvent(
 		"riptide blast triggered",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
+		core.LogCharacterEvent,
+		c.Index,
 		"dur", c.Core.Status.Duration("tartagliamelee"),
 		"target", a.Target.Index(),
 		"rtExpiry", a.Target.GetTag(riptideKey),

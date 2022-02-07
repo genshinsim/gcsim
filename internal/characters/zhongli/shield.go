@@ -30,7 +30,7 @@ func (c *char) addJadeShield() {
 		}
 	}
 
-	c.Core.Log.Debugw("zhongli res shred active", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+1200, "char", c.Index)
+	c.Core.Log.NewEvent("zhongli res shred active", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+1200, "char", c.Index)
 }
 
 func (c *char) removeJadeShield() {
@@ -45,7 +45,7 @@ func (c *char) removeJadeShield() {
 			t.RemoveResMod(key)
 		}
 	}
-	c.Core.Log.Debugw("zhongli res shred deactivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+	c.Core.Log.NewEvent("zhongli res shred deactivated", core.LogCharacterEvent, c.Index, "char", c.Index)
 }
 
 func (c *char) newShield(base float64, dur int) *shd {
@@ -83,7 +83,7 @@ func (s *shd) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, b
 				heal = 0.08 * c.MaxHP()
 			}
 			s.c.Core.Health.HealIndex(s.c.Index, i, heal)
-			s.c.Core.Log.Debugw("zhongli c6 healing char", "frame", s.c.Core.F, "event", core.LogHurtEvent, "char", c.CharIndex(), "amount", heal, "final", c.HP())
+			s.c.Core.Log.NewEvent("zhongli c6 healing char", core.LogHurtEvent, c.CharIndex(), "amount", heal, "final", c.HP())
 		}
 	}
 	if !ok {

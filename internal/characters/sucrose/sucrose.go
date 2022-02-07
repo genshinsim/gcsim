@@ -83,7 +83,7 @@ func (c *char) a2() {
 				var f int
 				var ok bool
 
-				// c.Core.Log.Debugw("sucrose a2 check", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", this.CharIndex(), "ele", this.Ele())
+				// c.Core.Log.NewEvent("sucrose a2 check", core.LogCharacterEvent, c.Index, "char", this.CharIndex(), "ele", this.Ele())
 				switch this.Ele() {
 				case core.Pyro:
 					f, ok = c.Tags["a2-pyro"]
@@ -96,7 +96,7 @@ func (c *char) a2() {
 				default:
 					return nil, false
 				}
-				// c.Core.Log.Debugw("sucrose a2 adding", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", this.CharIndex(), "ele", this.Ele(), "expiry", f, "ok", ok)
+				// c.Core.Log.NewEvent("sucrose a2 adding", core.LogCharacterEvent, c.Index, "char", this.CharIndex(), "ele", this.Ele(), "expiry", f, "ok", ok)
 				return val, f > c.Core.F && ok
 			},
 		})
@@ -110,7 +110,7 @@ func (c *char) a2() {
 			}
 			//TODO: not sure if sucrose needs to be active
 			c.Tags[tag] = c.Core.F + 480
-			c.Core.Log.Debugw("sucrose a2 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "reaction", tag, "expiry", c.Core.F+480)
+			c.Core.Log.NewEvent("sucrose a2 triggered", core.LogCharacterEvent, c.Index, "reaction", tag, "expiry", c.Core.F+480)
 			return false
 		}
 	}
@@ -157,7 +157,7 @@ func (c *char) c4() {
 	//we simply reduce the action cd
 	c.ReduceActionCooldown(core.ActionSkill, cdReduction)
 
-	c.Core.Log.Debugw("sucrose c4 reducing E CD", "frame", c.Core.F, "event", core.LogCharacterEvent, "cd_reduction", cdReduction)
+	c.Core.Log.NewEvent("sucrose c4 reducing E CD", core.LogCharacterEvent, c.Index, "cd_reduction", cdReduction)
 }
 
 func (c *char) c6() {

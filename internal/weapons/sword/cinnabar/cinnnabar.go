@@ -30,7 +30,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		damageAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[core.DEFP]) + atk.Snapshot.Stats[core.DEF]) * defPer
 		atk.Info.FlatDmg += damageAdd
 
-		c.Log.Debugw("Cinnabar Spindle proc dmg add", "frame", c.F, "event", core.LogPreDamageMod, "char", char.CharIndex(), "damage_added", damageAdd, "lastproc", effectLastProc, "effect_ends_at", effectDurationExpiry, "effect_icd_ends_at", effectICDExpiry)
+		c.Log.NewEvent("Cinnabar Spindle proc dmg add", core.LogPreDamageMod, char.CharIndex(), "damage_added", damageAdd, "lastproc", effectLastProc, "effect_ends_at", effectDurationExpiry, "effect_icd_ends_at", effectICDExpiry)
 
 		// TODO: Assumes that the ICD starts after the last duration ends
 		effectICDExpiry = c.F + 6 + 90
@@ -59,7 +59,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	// 			return nil, false
 	// 		}
 	// 		atk.Info.FlatDmg += atk.Snapshot.BaseDef*atk.Snapshot.Stats[core.DEFP] + atk.Snapshot.Stats[core.DEF]
-	// 		c.Log.Debugw("Cinnabar Spindle proc dmg add", "frame", c.F, "event", core.LogCalc, "char", char.CharIndex(), "lastproc", effectLastProc, "effect_ends_at", effectDurationExpiry, "effect_icd_ends_at", effectICDExpiry)
+	// 		c.Log.Debugw("Cinnabar Spindle proc dmg add",core.LogCalc, char.CharIndex(), "lastproc", effectLastProc, "effect_ends_at", effectDurationExpiry, "effect_icd_ends_at", effectICDExpiry)
 
 	// 		// TODO: Assumes that the ICD starts after the last duration ends
 	// 		effectICDExpiry = c.F + 6 + 90

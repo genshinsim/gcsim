@@ -7,7 +7,7 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 		if v >= 2 {
 			switch k {
 			case core.Pyro:
-				s.C.Log.Debugw("adding pyro resonance", "frame", s.C.F, "event", core.LogSimEvent)
+				s.C.Log.NewEvent("adding pyro resonance", core.LogSimEvent, -1)
 				for _, c := range s.C.Chars {
 					val := make([]float64, core.EndStatType)
 					val[core.ATKP] = 0.25
@@ -21,10 +21,9 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 				}
 			case core.Hydro:
 				//heal not implemented yet
-				s.C.Log.Debugw("adding hydro resonance", "frame", s.C.F, "event", core.LogSimEvent)
-				s.C.Log.Warnw("hydro resonance not implemented", "event", core.LogSimEvent)
+				s.C.Log.NewEvent("adding hydro resonance (NO IMPLEMENTED)", core.LogSimEvent, -1)
 			case core.Cryo:
-				s.C.Log.Debugw("adding cryo resonance", "frame", s.C.F, "event", core.LogSimEvent)
+				s.C.Log.NewEvent("adding cryo resonance", core.LogSimEvent, -1)
 				val := make([]float64, core.EndStatType)
 				val[core.CR] = .15
 				for _, c := range s.C.Chars {
@@ -40,7 +39,7 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 					})
 				}
 			case core.Electro:
-				s.C.Log.Debugw("adding electro resonance", "frame", s.C.F, "event", core.LogSimEvent)
+				s.C.Log.NewEvent("adding electro resonance", core.LogSimEvent, -1)
 				last := 0
 				recover := func(args ...interface{}) bool {
 					if s.C.F-last < 300 && last != 0 { // every 5 seconds
@@ -59,7 +58,7 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 				s.C.Events.Subscribe(core.OnElectroCharged, recover, "electro-res")
 
 			case core.Geo:
-				s.C.Log.Debugw("adding geo resonance", "frame", s.C.F, "event", core.LogSimEvent)
+				s.C.Log.NewEvent("adding geo resonance", core.LogSimEvent, -1)
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
 				//following special characteristics:
 				//	DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
@@ -96,7 +95,7 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 				}
 
 			case core.Anemo:
-				s.C.Log.Debugw("adding anemo resonance", "frame", s.C.F, "event", core.LogSimEvent)
+				s.C.Log.NewEvent("adding anemo resonance", core.LogSimEvent, -1)
 				for _, c := range s.C.Chars {
 					c.AddCDAdjustFunc(core.CDAdjust{
 						Key:    "anemo-res",

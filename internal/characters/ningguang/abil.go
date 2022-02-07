@@ -137,7 +137,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//fires 6 normally, + 6 if jade screen is active
 	count := 6
 	if c.Core.Constructs.Destroy(c.lastScreen) {
-		c.Core.Log.Debugw("12 jade on burst", "event", core.LogCharacterEvent, "frame", c.Core.F, "char", c.Index)
+		c.Core.Log.NewEvent("12 jade on burst", core.LogCharacterEvent, c.Index)
 		count += 6
 	}
 

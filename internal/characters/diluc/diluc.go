@@ -109,7 +109,7 @@ func (c *char) Tick() {
 		if c.Core.F-c.eLastUse >= 240 {
 			//if so, set ability to be on cd equal to 10s less started
 			cd := 600 - (c.Core.F - c.eStartFrame)
-			c.Core.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd, "last", c.eLastUse)
+			c.Core.Log.NewEvent("diluc skill going on cd", core.LogCharacterEvent, c.Index, "duration", cd, "last", c.eLastUse)
 			c.SetCD(core.ActionSkill, cd)
 			//reset
 			c.eStarted = false
@@ -139,7 +139,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		// With A1
 		return 20
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 

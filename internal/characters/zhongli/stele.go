@@ -33,11 +33,10 @@ func (c *char) newStele(dur int, max int) {
 
 	c.steleCount = c.Core.Constructs.CountByType(core.GeoConstructZhongliSkill)
 
-	c.Core.Log.Debugw(
+	c.Core.Log.NewEvent(
 		"Stele added",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
-		"char", c.Index,
+		core.LogCharacterEvent,
+		c.Index,
 		"orig_count", num,
 		"cur_count", c.steleCount,
 		"max_hit", max,
@@ -49,11 +48,11 @@ func (c *char) newStele(dur int, max int) {
 
 func (c *char) resonance(src, max int) func() {
 	return func() {
-		c.Core.Log.Debugw("Stele checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "char", c.Index)
+		c.Core.Log.NewEvent("Stele checking for tick", core.LogCharacterEvent, c.Index, "src", src, "char", c.Index)
 		if !c.Core.Constructs.Has(src) {
 			return
 		}
-		c.Core.Log.Debugw("Stele ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected", c.Core.F+120, "src", src, "char", c.Index)
+		c.Core.Log.NewEvent("Stele ticked", core.LogCharacterEvent, c.Index, "next expected", c.Core.F+120, "src", src, "char", c.Index)
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Stone Stele (Tick)",

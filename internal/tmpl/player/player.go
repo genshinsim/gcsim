@@ -21,7 +21,7 @@ func New(index int, c *core.Core) *Player {
 	return p
 }
 
-func (p *Player) Attack(atk *core.AttackEvent) (float64, bool) {
+func (p *Player) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
 	//ignore attacks we don't get hit
 	return 0, false
 }

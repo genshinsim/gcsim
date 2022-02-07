@@ -1,67 +1,74 @@
-options debug=true iteration=1000 duration=90 workers=24;
+options debug=true iteration=20000 duration=90 workers=24;
+bennett char lvl=70/80 cons=2 talent=6,8,8; 
+bennett add weapon="favoniussword" refine=1 lvl=90/90;
+bennett add set="noblesseoblige" count=4;
+bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 ; #main
+bennett add stats hp=926 hp%=0.21 atk=121 atk%=0.47800000000000004 def=60 em=42 er=0.052000000000000005 cr=0.186 cd=0.327 ; #subs
 
-noelle char lvl=90/90 cons=6 talent=9,9,9; 
-noelle add weapon="redhornstonethresher" refine=1 lvl=90/90;
-noelle add set="huskofopulentdreams" count=5
-     +params=[stacks=4];
-noelle add stats hp=4780 atk=311 def%=0.583 geo%=0.466 cr=0.311 ; #main
-noelle add stats hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 def=39.36 def%=0.124 em=39.64 er=0.22039999999999998 cr=0.331 cd=0.7944 ; #subs
+raidenshogun char lvl=90/90 cons=1 talent=10,10,10; 
+raidenshogun add weapon="engulfinglightning" refine=1 lvl=90/90;
+raidenshogun add set="emblemofseveredfate" count=4;
+raidenshogun add stats hp=4780 atk=311 er=0.518 electro%=0.466 cr=0.311 ; #main
+raidenshogun add stats hp=299 hp%=0.053 atk=101 atk%=0.192 def%=0.073 em=42 er=0.148 cr=0.261 cd=1.119 ; #subs
 
-albedo char lvl=90/90 cons=0 talent=9,9,9; 
-albedo add weapon="cinnabarspindle" refine=5 lvl=90/90;
-albedo add set="huskofopulentdreams" count=5
-     +params=[stacks=4];
-albedo add stats hp=4780 atk=311 def%=0.583 geo%=0.466 cr=0.311 ; #main
-albedo add stats hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 def=39.36 def%=0.248 em=39.64 er=0.11019999999999999 cr=0.331 cd=0.7944 ; #subs
+xiangling char lvl=80/90 cons=6 talent=6,9,10; 
+xiangling add weapon="staffofhoma" refine=1 lvl=90/90;
+xiangling add set="crimsonwitchofflames" count=2;
+xiangling add set="gladiatorsfinale" count=2;
+xiangling add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 ; #main
+xiangling add stats hp=478 hp%=0.047 atk=65 atk%=0.152 def=76 def%=0.051 em=63 er=0.16199999999999998 cr=0.264 cd=0.9960000000000001 ; #subs
 
-gorou char lvl=90/90 cons=6 talent=9,9,9; 
-gorou add weapon="favoniuswarbow" refine=5 lvl=90/90;
-gorou add set="emblemofseveredfate" count=2;
-gorou add stats hp=4780 atk=311 er=0.518 def%=0.583 cr=0.311 ; #main
-gorou add stats hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 def=39.36 def%=0.37200000000000005 em=39.64 er=0.3306 cr=0.331 cd=0.3972 ; #subs
+xingqiu char lvl=80/90 cons=6 talent=1,9,10; 
+xingqiu add weapon="sacrificialsword" refine=5 lvl=90/90;
+xingqiu add set="noblesseoblige" count=2;
+xingqiu add set="gladiatorsfinale" count=2;
+xingqiu add stats hp=4780 atk=311 atk%=0.466 hydro%=0.466 cr=0.311 ; #main
+xingqiu add stats hp=299 hp%=0.08199999999999999 atk=78 atk%=0.449 def=63 def%=0.073 em=94 er=0.065 cr=0.15899999999999997 cd=0.831 ; #subs
 
-zhongli char lvl=90/90 cons=0 talent=9,9,9; 
-zhongli add weapon="deathmatch" refine=1 lvl=90/90;
-zhongli add set="noblesseoblige" count=5;
-zhongli add stats hp=4780 atk=311 hp%=0.466 geo%=0.466 cd=0.622 ; #main
-zhongli add stats hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 def=39.36 def%=0.124 em=39.64 er=0.11019999999999999 cr=0.3972 cd=0.662 ; #subs
 
 ##Default Enemy
-target lvl=100 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
-energy every interval=480,720 amount=1;
+target lvl=100 resist=.1;
+# target lvl=100 resist=.1;
 
-active zhongli;
+##Actions List
+active raidenshogun;
 
-# Ideally you're Zhongli bursting on CD since Noelle's high DEF allows the shield to be much stronger even when running Damage-oriented artifacts, and the damage is very much warranted here.
+# HP particle simulation. Per srl:
+# it adds 1 particle randomly, uniformly distributed between 200 to 300 frames after the last time an energy drops
+# so in the case above, it adds on avg one particle every 250 frames in effect
+# so over 90s of combat that's 90 * 60 / 250 = 21.6 on avg
+energy every interval=200,300 amount=1;
 
-noelle burst
-     +if=.tags.zhongli.shielded==1
-     && .status.generalglory > 150;
-noelle burst
-     +if=.tags.zhongli.shielded==1
-     && .status.generalwarbanner > 150;
- 
-zhongli skill[hold=1],burst +try=drop
-     +if=.tags.zhongli.shielded==0;
-zhongli burst
-     +if=.tags.zhongli.shielded==1;
+raidenshogun attack,attack,attack,attack,dash,attack,attack,attack,attack,dash,attack,attack,attack,attack,dash,attack,attack,charge  +if=.status.raidenburst>0;
 
-albedo skill
-     +if=.status.generalwarbanner > 120
-     && .tags.albedo.elevator==0;
-albedo skill
-     +if=.status.generalglory > 120
-     && .tags.albedo.elevator==0;
+# Additional check to reset at the start of the next rotation
+raidenshogun skill  +if=.status.xianglingburst==0&&.energy.xingqiu>70&&.energy.xiangling>70;
+raidenshogun skill  +if=.status.raidenskill==0;
 
-# Gorou buffing, skill always wants to be funneled. Fav is hard to get funnelled into Noelle on inital cast (start of first rotation) since it removes multiple potential albedo skill procs so it's omitted.
+# Skill is required before burst to activate Kageuchi. Otherwise ER is barely not enough
+# For rotations #2 and beyond, need to ensure that Guoba is ready to go. Guoba timing is about 300 frames after XQ fires his skill
+xingqiu skill[orbital=1],burst[orbital=1],attack  +if=.cd.xiangling.skill<300;
 
-gorou burst;
-gorou attack,skill
-     +swap_to=noelle
-     +if=.energy.noelle < 60;
-gorou attack,skill;
+# Bennett burst goes after XQ burst for uptime alignment. Attack to proc swords
+bennett burst,attack,skill  +if=.status.xqburst>0&&.cd.xiangling.burst<180;
 
-noelle skill;
-noelle attack:3,dash,
-       attack:3,dash
-     +if=.status.noelleq > 120;
+# Only ever want to XL burst in Bennett buff and after XQ burst for uptime alignment
+xiangling burst,attack,skill,attack,attack  +if=.status.xqburst>0&&.status.btburst>0;
+# Second set of actions needed in case Guoba CD comes off while pyronado is spinning
+xiangling burst,attack  +if=.status.xqburst>0&&.status.btburst>0;
+xiangling skill ;
+
+# Raiden must burst after all others. Requires an attack to allow Bennett buff to apply
+raidenshogun burst  +if=.status.xqburst>0&&.status.xianglingburst>0&&.status.btburst>0;
+
+# Funnelling
+bennett attack,skill  +if=.status.xqburst>0&&.energy.xiangling<70 +swap_to=xiangling;
+bennett skill  +if=.energy.xiangling<70 +swap_to=xiangling;
+bennett skill  +if=.energy.xingqiu<80 +swap_to=xingqiu;
+bennett attack,skill  +if=.status.xqburst>0 +if=.energy.raidenshogun<90 +swap_to=raidenshogun;
+
+xingqiu attack  +if=.status.xqburst>0;
+xiangling attack  +is_onfield;
+bennett attack  +is_onfield;
+xingqiu attack  +is_onfield;
+raidenshogun attack  +is_onfield;

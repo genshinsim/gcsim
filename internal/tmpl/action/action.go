@@ -58,10 +58,10 @@ func (a *Ctrl) execWait(n *core.CmdWait) (int, bool, error) {
 			a.waitUntil = a.core.F + n.Max
 		}
 		a.waitStarted = a.core.F
-		a.core.Log.Debugw(
+		a.core.Log.NewEvent(
 			"wait started",
-			"frame", a.core.F,
-			"event", core.LogActionEvent,
+			core.LogActionEvent,
+			-1,
 			"wait_until", a.waitUntil,
 			"wait_src", a.waitStarted,
 			"last_particle_frame", a.lastParticle,
@@ -71,10 +71,10 @@ func (a *Ctrl) execWait(n *core.CmdWait) (int, bool, error) {
 
 	} else if a.waitUntil > -1 && a.waitUntil <= a.core.F {
 		//otherwise check if we hit max already; if so we are done
-		a.core.Log.Debugw(
+		a.core.Log.NewEvent(
 			"wait finished due to time out",
-			"frame", a.core.F,
-			"event", core.LogActionEvent,
+			core.LogActionEvent,
+			-1,
 			"wait_until", a.waitUntil,
 			"wait_src", a.waitStarted,
 			"last_particle_frame", a.lastParticle,
@@ -96,10 +96,10 @@ func (a *Ctrl) execWait(n *core.CmdWait) (int, bool, error) {
 	default:
 	}
 	if ok {
-		a.core.Log.Debugw(
+		a.core.Log.NewEvent(
 			"wait finished",
-			"frame", a.core.F,
-			"event", core.LogActionEvent,
+			core.LogActionEvent,
+			-1,
 			"wait_until", a.waitUntil,
 			"wait_src", a.waitStarted,
 			"last_particle_frame", a.lastParticle,
@@ -115,7 +115,7 @@ func (a *Ctrl) execWait(n *core.CmdWait) (int, bool, error) {
 		//make a copy
 		cpy := n.FillAction
 		cpy.Target = a.core.Chars[a.core.ActiveChar].Key()
-		a.core.Log.Debugw("executing filler while waiting", "frame", a.core.F, "event", core.LogActionEvent, "action", cpy)
+		a.core.Log.NewEvent("executing filler while waiting", core.LogActionEvent, -1, "action", cpy)
 		wait, _, err := a.execAction(&cpy)
 		return wait, false, err
 	}
@@ -129,7 +129,7 @@ func (a *Ctrl) checkMod(c core.Condition) bool {
 	m := strings.TrimPrefix(c.Fields[1], ".")
 	ck, ok := core.CharNameToKey[name]
 	if !ok {
-		a.core.Log.Debugw("invalid char for mod condition", "frame", a.core.F, "event", core.LogActionEvent, "character", name)
+		a.core.Log.NewEvent("invalid char for mod condition", core.LogActionEvent, -1, "character", name)
 		return false
 	}
 	char := a.core.Chars[a.core.CharPos[ck]]
@@ -139,11 +139,10 @@ func (a *Ctrl) checkMod(c core.Condition) bool {
 
 func (a *Ctrl) execNoSwap(n *core.CmdNoSwap) (int, bool, error) {
 	a.core.SwapCD += n.Val
-	a.core.Log.Debugw(
+	a.core.Log.NewEvent(
 		"locked swap",
-		"frame", a.core.F,
-		"event", core.LogActionEvent,
-		"char", a.core.ActiveChar,
+		core.LogActionEvent,
+		a.core.ActiveChar,
 		"dur", n.Val,
 		"cd", a.core.SwapCD,
 	)
@@ -153,9 +152,9 @@ func (a *Ctrl) execNoSwap(n *core.CmdNoSwap) (int, bool, error) {
 func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 	c := a.core.Chars[a.core.ActiveChar]
 	f := 0
-	// a.core.Log.Debugw(
+	// a.core.Log.NewEvent(
 	// 	"attempting to execute "+n.Typ.String(),
-	// 	"frame", a.core.F,
+	//
 	// 	"event", LogActionEvent,
 	// 	"char", a.core.ActiveChar,
 	// 	"action", n.Typ.String(),
@@ -166,7 +165,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 
 	//do one last ready check
 	if !c.ActionReady(n.Typ, n.Param) {
-		a.core.Log.Warnw("queued action is not ready, should not happen; skipping frame", "frame", a.core.F, "event", core.LogSimEvent)
+		a.core.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
 		return 0, false, nil
 	}
 	switch n.Typ {
@@ -179,7 +178,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 	case core.ActionCharge:
 		req := a.core.StamPercentMod(core.ActionCharge) * c.ActionStam(core.ActionCharge, n.Param)
 		if a.core.Stam <= req {
-			a.core.Log.Warnw("insufficient stam: charge attack", "have", a.core.Stam)
+			a.core.Log.NewEvent("insufficient stam: charge attack", core.LogSimEvent, -1, "have", a.core.Stam)
 			return 0, false, nil
 		}
 		a.core.Stam -= req
@@ -194,7 +193,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 	case core.ActionDash:
 		req := a.core.StamPercentMod(core.ActionDash) * c.ActionStam(core.ActionDash, n.Param)
 		if a.core.Stam <= req {
-			a.core.Log.Warnw("insufficient stam: dash", "have", a.core.Stam)
+			a.core.Log.NewEvent("insufficient stam: dash", core.LogSimEvent, -1, "have", a.core.Stam)
 			return 0, false, nil
 		}
 		a.core.Stam -= req
@@ -209,18 +208,17 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 			break
 		}
 		if a.core.SwapCD > 0 {
-			a.core.Log.Warnw("could not execute swap - on cd", "cd", a.core.SwapCD, "frame", a.core.F, "event", core.LogActionEvent, "char", c.CharIndex())
+			a.core.Log.NewEvent("could not execute swap - on cd", core.LogActionEvent, c.CharIndex(), "cd", a.core.SwapCD)
 			return 0, false, nil
 		}
 		f = a.core.Swap(n.Target)
 		a.core.ClearState()
 	}
 
-	a.core.Log.Debugw(
+	a.core.Log.NewEvent(
 		"executed "+n.Typ.String(),
-		"frame", a.core.F,
-		"event", core.LogActionEvent,
-		"char", a.core.ActiveChar,
+		core.LogActionEvent,
+		a.core.ActiveChar,
 		"action", n.Typ.String(),
 		"target", n.Target,
 		"swap_cd_post", a.core.SwapCD,
