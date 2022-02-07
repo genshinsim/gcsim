@@ -36,26 +36,18 @@ func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	return c
 }
 
-func NewDefaultCoreWithCalcQueue(seed int64) *core.Core {
-	c := newCoreNoQueue(seed, false)
-	c.Queue = calcqueue.New(c)
-	return c
-}
+func NewCore(seed int64, debug bool, cfg core.SimulatorSettings) *core.Core {
+	c := newCoreNoQueue(seed, debug)
+	switch cfg.QueueMode {
+	case core.ActionPriorityList:
+		c.Queue = queue.NewQueuer(c)
+	case core.SequentialList:
+		c.Queue = calcqueue.New(c)
+	}
 
-func NewDefaultCore(seed int64) *core.Core {
-	c := newCoreNoQueue(seed, false)
-	c.Queue = queue.NewQueuer(c)
-	return c
-}
+	if cfg.SwapDelay > 0 {
+		c.Flags.SwapFrames = cfg.SwapDelay
+	}
 
-func NewDefaultCoreWithDebug(seed int64) *core.Core {
-	c := newCoreNoQueue(seed, true)
-	c.Queue = queue.NewQueuer(c)
-	return c
-}
-
-func NewDefaultCoreWithDebugCalcQueue(seed int64) *core.Core {
-	c := newCoreNoQueue(seed, true)
-	c.Queue = calcqueue.New(c)
 	return c
 }

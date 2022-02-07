@@ -13,7 +13,8 @@ func (s *Summary) Save(fpath string, gz bool) error {
 		return err
 	}
 	if gz {
-		f, err := os.OpenFile(fpath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+		//add .gz to end of file
+		f, err := os.OpenFile(fpath+".gz", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 		if err != nil {
 			return err
 		}

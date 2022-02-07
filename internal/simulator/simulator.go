@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/parse"
 	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/simulation"
@@ -17,10 +18,9 @@ import (
 
 //Options sets out the settings to run the sim by (such as debug mode, etc..)
 type Options struct {
-	PrintResultSummaryToScreen bool   // print summary output to screen?
-	ResultSaveToPath           string // file name (excluding ext) to save the result file; if "" then nothing is saved to file
-	GZIPResult                 bool   // should the result file be gzipped; only if ResultSaveToPath is not ""
-	ConfigPath                 string // path to the config file to read
+	ResultSaveToPath string // file name (excluding ext) to save the result file; if "" then nothing is saved to file
+	GZIPResult       bool   // should the result file be gzipped; only if ResultSaveToPath is not ""
+	ConfigPath       string // path to the config file to read
 }
 
 //Run will run the simulation given number of times
@@ -74,42 +74,17 @@ func Run(opts Options) (result.Summary, error) {
 
 	}
 
+	r := aggregateResults(results, simcfg)
+
 	//run one debug
 	debugOut, err := GenerateDebugLog(simcfg.Clone())
 	if err != nil {
-		return result.Summary{}, err
+		return r, err
 	}
-
-	//aggregate results
-	chars := make([]string, len(simcfg.Characters.Profile))
-	for i, v := range simcfg.Characters.Profile {
-		chars[i] = v.Base.Key.String()
-	}
-
-	//TODO: clean up this code
-	r := result.CollectResult(
-		results,
-		simcfg.DamageMode,
-		chars,
-		true,
-		false,
-	)
 	r.Debug = debugOut
-	r.Iterations = simcfg.Settings.Iterations
-	r.ActiveChar = simcfg.Characters.Initial.String()
-	if simcfg.DamageMode {
-		r.Duration.Mean = float64(simcfg.Settings.Duration)
-		r.Duration.Min = float64(simcfg.Settings.Duration)
-		r.Duration.Max = float64(simcfg.Settings.Duration)
-	}
 	r.Runtime = time.Since(start)
 	r.Config = cfg
-	r.NumTargets = len(simcfg.Targets)
-	r.CharDetails = results[0].CharDetails
-	for i := range r.CharDetails {
-		r.CharDetails[i].Stats = simcfg.Characters.Profile[i].Stats
-	}
-	r.TargetDetails = simcfg.Targets
+	//TODO: clean up this code
 
 	if opts.ResultSaveToPath != "" {
 		r.Save(opts.ResultSaveToPath, opts.GZIPResult)
@@ -117,6 +92,39 @@ func Run(opts Options) (result.Summary, error) {
 
 	//all done
 	return r, nil
+}
+
+func aggregateResults(in []simulation.Result, cfg core.SimulationConfig) result.Summary {
+	//aggregate results
+	chars := make([]string, len(cfg.Characters.Profile))
+	for i, v := range cfg.Characters.Profile {
+		chars[i] = v.Base.Key.String()
+	}
+
+	r := result.CollectResult(
+		in,
+		cfg.DamageMode,
+		chars,
+		true,
+		false,
+	)
+
+	r.Iterations = cfg.Settings.Iterations
+	r.ActiveChar = cfg.Characters.Initial.String()
+	if cfg.DamageMode {
+		r.Duration.Mean = float64(cfg.Settings.Duration)
+		r.Duration.Min = float64(cfg.Settings.Duration)
+		r.Duration.Max = float64(cfg.Settings.Duration)
+	}
+
+	r.NumTargets = len(cfg.Targets)
+	r.CharDetails = in[0].CharDetails
+	for i := range r.CharDetails {
+		r.CharDetails[i].Stats = cfg.Characters.Profile[i].Stats
+	}
+	r.TargetDetails = cfg.Targets
+
+	return r
 }
 
 //cryptoRandSeed generates a random seed using crypo rand
