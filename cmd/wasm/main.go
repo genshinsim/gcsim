@@ -59,7 +59,7 @@ func setConfig(this js.Value, args []js.Value) interface{} {
 func run(this js.Value, args []js.Value) interface{} {
 	//seed this with now
 	seed := time.Now().Nanosecond()
-	c := simulation.NewDefaultCore(int64(seed))
+	c := simulation.NewCore(int64(seed))
 	s, err := simulation.New(cfg, c)
 	if err != nil {
 		return marshalErr(err)

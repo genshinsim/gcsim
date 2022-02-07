@@ -208,7 +208,7 @@ wait until 1000;
 `
 
 var s2 = `
-options debug=true iteration=3000 duration=41 workers=24;
+options debug=true iteration=3000 duration=41 workers=24 mode=apl;
 
 xiangling char lvl=80/90 cons=4 talent=6,9,9;
 xiangling add weapon="staff of homa" lvl=90/90 refine=1;

@@ -39,16 +39,23 @@ func (c *SimulationConfig) Clone() SimulationConfig {
 type SimulatorSettings struct {
 	Duration   int
 	DamageMode bool
+	SwapDelay  int
 
 	//modes
-	CalcMode   bool
+	QueueMode  SimulationQueueMode
 	ERCalcMode bool
 
 	//other stuff
-	NumberOfWorkers int  // how many workers to run the simulation
-	DebugRun        bool // run one extra run and generate debug?
-	Iterations      int  // how many iterations to run
+	NumberOfWorkers int // how many workers to run the simulation
+	Iterations      int // how many iterations to run
 }
+
+type SimulationQueueMode int
+
+const (
+	ActionPriorityList SimulationQueueMode = iota
+	SequentialList
+)
 
 // type RunOpt struct {
 // 	LogDetails bool `json:"log_details"`

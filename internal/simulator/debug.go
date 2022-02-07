@@ -11,7 +11,7 @@ import (
 //the debug log. Used for generating debug for min/max runs
 func GenerateDebugLogWithSeed(cfg core.SimulationConfig, seed int64) (string, error) {
 
-	c := simulation.NewDefaultCoreWithDebug(seed)
+	c := simulation.NewCore(seed, true, cfg.Settings)
 	c.Flags.LogDebug = true
 	//create a new simulation and run
 	s, err := simulation.New(cfg, c)

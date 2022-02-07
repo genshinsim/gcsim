@@ -25,6 +25,7 @@ type Flags struct {
 	EnergyCalcMode bool // Allows Burst Action when not at full Energy, logs current Energy when using Burst
 	LogDebug       bool // Used to determine logging level
 	ChildeActive   bool // Used for Childe +1 NA talent passive
+	SwapFrames     int
 	// AmpReactionDidOccur bool
 	// AmpReactionType     ReactionType
 	// NextAttackMVMult    float64 // melt vape multiplier
@@ -88,6 +89,7 @@ func New() *Core {
 	c.stamModifier = make([]stamMod, 0, 10)
 	//make a default nil writer
 	c.Log = &NilLogger{}
+	c.Flags.SwapFrames = SwapFrames
 	// c.queue = make([]Command, 0, 20)
 
 	// for _, f := range cfg {
@@ -203,7 +205,7 @@ func (c *Core) Swap(next CharKey) int {
 	c.Events.Emit(OnCharacterSwap, prev, c.ActiveChar)
 	//this duration reset needs to be after the hook for spine to behave properly
 	c.ActiveDuration = 0
-	return SwapFrames
+	return c.Flags.SwapFrames
 }
 
 func (c *Core) AnimationCancelDelay(next ActionType) int {
