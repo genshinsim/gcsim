@@ -1,4 +1,4 @@
-package kazuha
+package yunjin
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ import (
 
 func TestBasicAbilUsage(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Kazuha, core.Anemo, 6)
+	prof := testhelper.CharProfile(core.Yunjin, core.Geo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -17,5 +17,5 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	testhelper.TestSwordCharacter(c, x)
+	testhelper.TestPolearmCharacter(c, x)
 }
