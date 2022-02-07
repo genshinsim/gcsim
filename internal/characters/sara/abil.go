@@ -140,7 +140,7 @@ func (c *char) a4(delay int) {
 		} else {
 			energyAddAmt := 1.2 * (1 + c.Stat(core.ER))
 
-			c.Core.Log.Debugw("Sara A4 adding energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "amount", energyAddAmt)
+			c.Core.Log.NewEvent("Sara A4 adding energy", core.LogEnergyEvent, c.Index, "amount", energyAddAmt)
 			for _, char := range c.Core.Chars {
 				char.AddEnergy(energyAddAmt)
 			}
@@ -158,7 +158,7 @@ func (c *char) c1(delay int) {
 		} else {
 			c.ReduceActionCooldown(core.ActionSkill, 60)
 			c.c1LastProc = c.Core.F
-			c.Core.Log.Debugw("sara c1 reducing E CD", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new_cooldown", c.Cooldown(core.ActionSkill))
+			c.Core.Log.NewEvent("sara c1 reducing E CD", core.LogCharacterEvent, c.Index, "new_cooldown", c.Cooldown(core.ActionSkill))
 		}
 	}, "c1-proc", delay)
 }
@@ -277,7 +277,7 @@ func (c *char) attackBuff(delay int) {
 
 		active.AddTag("sarabuff", c.Core.F+360)
 		// c.Core.Status.AddStatus(fmt.Sprintf("sarabuff%v", active.Name()), 360)
-		c.Core.Log.Debugw("sara attack buff applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", active.CharIndex(), "buff", buff, "expiry", c.Core.F+360)
+		c.Core.Log.NewEvent("sara attack buff applied", core.LogCharacterEvent, c.Index, "char", active.CharIndex(), "buff", buff, "expiry", c.Core.F+360)
 
 		val := make([]float64, core.EndStatType)
 		val[core.ATK] = buff

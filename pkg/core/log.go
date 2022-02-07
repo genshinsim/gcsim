@@ -1,9 +1,35 @@
 package core
 
-type Logger interface {
-	Debugw(msg string, args ...interface{})
-	Infow(msg string, args ...interface{})
-	Warnw(msg string, args ...interface{})
+type LogEvent interface {
+	LogSource() LogSource           //returns the type of this log event i.e. character, sim, damage, etc...
+	StartFrame() int                //returns the frame on which this event was started
+	Src() int                       //returns the index of the character that triggered this event. -1 if it's not a character
+	Write(keyAndVal ...interface{}) //write additional keyAndVal pairs to the event
+	SetEnded(f int)
+}
+
+type LogCtrl interface {
+	NewEvent(msg string, typ LogSource, srcChar int, keysAndValues ...interface{}) LogEvent
+	NewEventBuildMsg(typ LogSource, srcChar int, msg ...string) LogEvent
+	Dump() ([]byte, error) //print out all the logged events in array of JSON strings in the ordered they were added
+}
+
+type NilLogEvent struct{}
+
+func (n *NilLogEvent) LogSource() LogSource           { return LogSimEvent }
+func (n *NilLogEvent) StartFrame() int                { return -1 }
+func (n *NilLogEvent) Src() int                       { return 0 }
+func (n *NilLogEvent) Write(keyAndVal ...interface{}) {}
+func (n *NilLogEvent) SetEnded(f int)                 {}
+
+type NilLogger struct{}
+
+func (n *NilLogger) Dump() ([]byte, error) { return []byte{}, nil }
+func (n *NilLogger) NewEventBuildMsg(typ LogSource, srcChar int, msg ...string) LogEvent {
+	return &NilLogEvent{}
+}
+func (n *NilLogger) NewEvent(msg string, typ LogSource, srcChar int, keysAndValues ...interface{}) LogEvent {
+	return &NilLogEvent{}
 }
 
 type LogSource int

@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"go.uber.org/zap"
 )
 
 type Ctrl struct {
@@ -22,12 +21,8 @@ func (c *Ctrl) QueueAttackWithSnap(a core.AttackInfo, s core.Snapshot, p core.At
 		panic("dmgDelay cannot be less than 0")
 	}
 	ae := core.AttackEvent{
-		Info:    a,
-		Pattern: p,
-		// Timing: AttackTiming{
-		// 	SnapshotDelay: snapshotDelay,
-		// 	DamageDelay:   dmgDelay,
-		// },
+		Info:        a,
+		Pattern:     p,
 		Snapshot:    s,
 		SourceFrame: c.core.F,
 	}
@@ -55,12 +50,8 @@ func (c *Ctrl) QueueAttack(a core.AttackInfo, p core.AttackPattern, snapshotDela
 	}
 	//create attackevent
 	ae := core.AttackEvent{
-		Info:    a,
-		Pattern: p,
-		// Timing: AttackTiming{
-		// 	SnapshotDelay: snapshotDelay,
-		// 	DamageDelay:   dmgDelay,
-		// },
+		Info:        a,
+		Pattern:     p,
 		SourceFrame: c.core.F,
 	}
 	//add callbacks only if not nil
@@ -69,10 +60,6 @@ func (c *Ctrl) QueueAttack(a core.AttackInfo, p core.AttackPattern, snapshotDela
 			ae.Callbacks = append(ae.Callbacks, f)
 		}
 	}
-	if c.core.Flags.LogDebug {
-		ae.Info.ModsLog = make([]zap.Field, 0, 3)
-	}
-	// log.Println(ae)
 
 	switch {
 	case snapshotDelay < 0:
@@ -150,10 +137,10 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 			// TODO: Maybe want to add a separate set of log events for this?
 			//don't log this for target 0
 			if c.core.Flags.LogDebug && i > 0 {
-				c.core.Log.Debugw("skipped "+a.Info.Abil+" "+reason,
-					"frame", c.core.F,
-					"event", core.LogSimEvent,
-					"char", a.Info.ActorIndex,
+				c.core.Log.NewEvent(
+					"skipped "+a.Info.Abil+" "+reason,
+					core.LogSimEvent,
+					a.Info.ActorIndex,
 					"attack_tag", a.Info.AttackTag,
 					"applied_ele", a.Info.Element,
 					"dur", a.Info.Durability,
@@ -176,27 +163,39 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 			continue
 		}
 
-		// if c.core.Flags.LogDebug {
-		// 	c.core.Log.Debugw(a.Info.Abil+" will land",
-		// 		"frame", c.core.F,
-		// 		"event", LogElementEvent,
-		// 		"char", a.Info.ActorIndex,
-		// 		"attack_tag", a.Info.AttackTag,
-		// 		"applied_ele", a.Info.Element,
-		// 		"dur", a.Info.Durability,
-		// 		"target", i,
-		// 	)
-		// }
+		var evt core.LogEvent = nil
+		var amp string
+		var dmg float64
+		var crit bool
+
+		if c.core.Flags.LogDebug {
+			evt = c.core.Log.NewEvent(
+				cpy.Info.Abil,
+				core.LogDamageEvent,
+				cpy.Info.ActorIndex,
+				"target", i,
+				"attack-tag", cpy.Info.AttackTag,
+				"damage", &dmg,
+				"crit", &crit,
+				"amp", &amp,
+				"abil", cpy.Info.Abil,
+				"source_frame", cpy.SourceFrame,
+			)
+			evt.Write(cpy.Snapshot.Logs...)
+		}
 
 		if !cpy.Info.SourceIsSim {
 			if cpy.Info.ActorIndex < 0 {
 				log.Println(cpy)
 			}
 			char := c.core.Chars[cpy.Info.ActorIndex]
-			char.PreDamageSnapshotAdjust(&cpy, t)
+			preDmgModDebug := char.PreDamageSnapshotAdjust(&cpy, t)
+			if c.core.Flags.LogDebug {
+				evt.Write("pre_damage_mods", preDmgModDebug)
+			}
 		}
 
-		dmg, crit := t.Attack(&cpy)
+		dmg, crit = t.Attack(&cpy, evt)
 		total += dmg
 
 		c.core.Events.Emit(core.OnDamage, t, &cpy, dmg, crit)
@@ -224,27 +223,11 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 			// log.Println("target died", i, dmg)
 		}
 
-		amp := ""
+		// this works because string in golang is a slice underneath, so the &amp points to the slice info
+		// that's why when the underlying string in amp changes (has to be reallocated) the pointer doesn't
+		// change since it's just pointing to the slice "header"
 		if cpy.Info.Amped {
 			amp = string(cpy.Info.AmpType)
-		}
-
-		if c.core.Flags.LogDebug {
-			logCombatFull := make([]zap.Field, 0, 10+3)
-			logCombatFull = append(logCombatFull,
-				zap.Int("frame", c.core.F),
-				zap.Any("event", core.LogDamageEvent),
-				zap.Any("char", cpy.Info.ActorIndex),
-				zap.Any("target", i),
-				zap.Any("attack_tag", cpy.Info.AttackTag),
-				zap.Any("damage", dmg),
-				zap.Any("crit", crit),
-				zap.Any("amp", amp),
-				zap.Any("abil", cpy.Info.Abil),
-				zap.Any("source_frame", cpy.SourceFrame),
-			)
-			logCombatFull = append(logCombatFull, cpy.Info.ModsLog...)
-			c.core.Log.Desugar().Debug(cpy.Info.Abil, logCombatFull...)
 		}
 
 	}

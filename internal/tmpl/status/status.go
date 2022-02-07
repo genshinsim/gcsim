@@ -2,56 +2,86 @@ package status
 
 import "github.com/genshinsim/gcsim/pkg/core"
 
+type status struct {
+	expiry int
+	evt    core.LogEvent
+}
+
 type StatusCtrl struct {
-	status map[string]int
+	status map[string]status
 	core   *core.Core
 }
 
 func NewCtrl(c *core.Core) *StatusCtrl {
 	return &StatusCtrl{
-		status: make(map[string]int),
+		status: make(map[string]status),
 		core:   c,
 	}
 }
 
 func (s *StatusCtrl) Duration(key string) int {
-	f, ok := s.status[key]
+	a, ok := s.status[key]
 	if !ok {
 		return 0
 	}
-	if f > s.core.F {
-		return f - s.core.F
+	if a.expiry > s.core.F {
+		return a.expiry - s.core.F
 	}
 	return 0
 }
 
 func (s *StatusCtrl) AddStatus(key string, dur int) {
-	s.status[key] = s.core.F + dur
-	if s.core.Flags.LogDebug {
-		s.core.Log.Debugw(
-			"status added",
-			"event", core.LogStatusEvent,
-			"frame", s.core.F,
-			"key", key,
-			"expiry", s.core.F+dur,
-		)
+	//check if exists
+	a, ok := s.status[key]
 
-		// Check for expiry
-		s.core.Tasks.Add(func() {
-			if s.Duration(key) > 0 {
-				return
-			}
-			s.core.Log.Debugw("status expired", "frame", s.core.F, "event", core.LogStatusEvent, "key", key, "expiry", s.core.F+dur)
-		}, dur+1)
+	//if ok we want to reuse the old evt
+	if ok && a.expiry > s.core.F {
+		//just reuse the old and update expiry + evt.Ended
+		a.expiry = s.core.F + dur
+		a.evt.SetEnded(a.expiry)
+		s.status[key] = a
+		//log an entry for refreshing
+		//TODO: this line may not be needed
+		if s.core.Flags.LogDebug {
+			s.core.Log.NewEvent("status refreshed: "+key, core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur)
+		}
+		return
 	}
+
+	//otherwise create a new event
+	a.evt = s.core.Log.NewEvent("status added: "+key, core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur)
+	a.expiry = s.core.F + dur
+
+	s.status[key] = a
 }
 
 func (s *StatusCtrl) ExtendStatus(key string, dur int) {
-	if s.status[key] > s.core.F {
-		s.status[key] += dur
+	a, ok := s.status[key]
+
+	//do nothing if status doesn't exist
+	if !ok || a.expiry <= s.core.F {
+		return
+	}
+
+	a.expiry += dur
+	a.evt.SetEnded(a.expiry)
+	s.status[key] = a
+
+	//TODO: this line may not be needed
+	if s.core.Flags.LogDebug {
+		s.core.Log.NewEvent("status extended: "+key, core.LogStatusEvent, -1, "key", key, "expiry", a.expiry)
 	}
 }
 
 func (s *StatusCtrl) DeleteStatus(key string) {
+	//check if it exists first
+	a, ok := s.status[key]
+	if ok && a.expiry > s.core.F {
+		a.evt.SetEnded(s.core.F)
+		//TODO: this line may not be needed
+		if s.core.Flags.LogDebug {
+			s.core.Log.NewEvent("status deleted: "+key, core.LogStatusEvent, -1, "key", key)
+		}
+	}
 	delete(s.status, key)
 }

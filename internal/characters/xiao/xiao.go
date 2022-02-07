@@ -125,7 +125,7 @@ func (c *char) c6() {
 			c.eTickSrc = c.Core.F
 
 			c.Core.Status.AddStatus("xiaoc6", 60)
-			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.F+60)
+			c.Core.Log.NewEvent("Xiao C6 activated", core.LogCharacterEvent, c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.F+60)
 
 			c.c6Count = 0
 			return false
@@ -150,7 +150,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -170,7 +170,7 @@ func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 			stacks = 5
 		}
 		ds.Stats[core.DmgP] += float64(stacks) * 0.05
-		c.Core.Log.Debugw("a1 adding dmg %", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F-c.qStarted)
+		c.Core.Log.NewEvent("a1 adding dmg %", core.LogCharacterEvent, c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F-c.qStarted)
 
 		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
 		// Also handle burst CA ICD change to share with Normal
@@ -185,7 +185,7 @@ func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 		a.Element = core.Anemo
 		bonus := burstBonus[c.TalentLvlBurst()]
 		ds.Stats[core.DmgP] += bonus
-		c.Core.Log.Debugw("xiao burst damage bonus", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "bonus", bonus, "final", ds.Stats[core.DmgP])
+		c.Core.Log.NewEvent("xiao burst damage bonus", core.LogCharacterEvent, c.Index, "bonus", bonus, "final", ds.Stats[core.DmgP])
 	}
 	return ds
 }

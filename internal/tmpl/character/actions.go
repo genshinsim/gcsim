@@ -41,13 +41,13 @@ func (c *Tmpl) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index)
 		return 0
 	}
 }
 
 func (c *Tmpl) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	c.Core.Log.Warnw("ActionFrames not implemented", "character", c.Base.Key.String())
+	c.Core.Log.NewEvent("ActionFrames not implemented", core.LogActionEvent, c.Index)
 	return 0, 0
 }
 
@@ -55,7 +55,7 @@ func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 	switch a {
 	case core.ActionBurst:
 		if (c.Energy != c.EnergyMax) && !c.Core.Flags.EnergyCalcMode {
-			// c.Core.Log.Warnw("burst not enough energy", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index)
+			// c.Core.Log.Warnw("burst not enough energy",  core.LogActionEvent, "char", c.Index)
 			return false
 		}
 		return c.ActionCD[a] <= c.Core.F
@@ -93,7 +93,7 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 		//if not expired
 		if v.Expiry == -1 || v.Expiry > c.Core.F {
 			amt := v.Amount(a)
-			c.Core.Log.Debugw("applying cooldown modifier", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
+			c.Core.Log.NewEvent("applying cooldown modifier", core.LogActionEvent, c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
 			cd += amt
 			c.CDReductionFuncs[n] = v
 			n++
@@ -103,7 +103,7 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 
 	c.ActionCD[a] = c.Core.F + int(float64(dur)*cd) //truncate to int
 	// Log to actions for the purpose of visibility since CDs are decently important
-	c.Core.Log.Debugw("cooldown triggered", "frame", c.Core.F, "event", core.LogActionEvent, "char", c.Index, "type", a.String(), "expiry", c.Core.F+dur)
+	c.Core.Log.NewEvent("cooldown triggered", core.LogActionEvent, c.Index, "type", a.String(), "expiry", c.Core.F+dur)
 }
 
 // Thin wrapper around SetCD to allow for setting CD after some delay frames

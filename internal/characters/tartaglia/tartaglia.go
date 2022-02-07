@@ -68,7 +68,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -111,7 +111,7 @@ func (c *char) onDefeatTargets() {
 
 		if c.Base.Cons >= 2 {
 			c.AddEnergy(4)
-			c.Core.Log.Debugw("Tartaglia C2 restoring 4 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
+			c.Core.Log.NewEvent("Tartaglia C2 restoring 4 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}
 		return false
 	}, "tartaglia-on-enemy-death")
@@ -134,7 +134,7 @@ func (c *char) onDefeatTargets() {
 
 // 			//dont log if it just refreshes riptide status
 // 			if c.rtExpiry[t.Index()] <= c.Core.F {
-// 				c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "rtExpiry", c.Core.F+riptideDuration)
+// 				c.Core.Log.NewEvent("Tartaglia applied riptide", core.LogCharacterEvent, c.Index, "target", t.Index(), "rtExpiry", c.Core.F+riptideDuration)
 // 			}
 // 			c.rtExpiry[t.Index()] = c.Core.F + riptideDuration
 // 		} else {
@@ -145,7 +145,7 @@ func (c *char) onDefeatTargets() {
 // 			//ranged burst or aim mode
 // 			//dont log if it just refreshes riptide status
 // 			if c.rtExpiry[t.Index()] <= c.Core.F {
-// 				c.Core.Log.Debugw("Tartaglia applied riptide", "frame", c.Core.F, "event", core.LogCharacterEvent, "target", t.Index(), "rtExpiry", c.Core.F+riptideDuration)
+// 				c.Core.Log.NewEvent("Tartaglia applied riptide", core.LogCharacterEvent, c.Index, "target", t.Index(), "rtExpiry", c.Core.F+riptideDuration)
 // 			}
 // 			c.rtExpiry[t.Index()] = c.Core.F + riptideDuration
 // 		}

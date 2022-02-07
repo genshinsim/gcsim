@@ -256,21 +256,20 @@ func (c *char) quillDamageMod() {
 		}
 
 		if c.quillcount[atk.Info.ActorIndex] > 0 {
-			ai := core.AttackInfo{
-				Abil:      "Quills",
-				AttackTag: core.AttackTagNone,
-			}
-			stats := c.SnapshotStats(&ai)
+			// ai := core.AttackInfo{
+			// 	Abil:      "Quills",
+			// 	AttackTag: core.AttackTagNone,
+			// }
+			stats, _ := c.SnapshotStats()
 			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.Atk)*(1+stats[core.ATKP]) + stats[core.ATK])
 			if consumeStack { //c6
 				c.quillcount[atk.Info.ActorIndex]--
 				c.updateBuffTags()
 			}
-			c.Core.Log.Debugw(
+			c.Core.Log.NewEvent(
 				"Shenhe Quill proc dmg add",
-				"frame", c.Core.F,
-				"event", core.LogPreDamageMod,
-				"char", atk.Info.ActorIndex,
+				core.LogPreDamageMod,
+				atk.Info.ActorIndex,
 				"before", atk.Info.FlatDmg,
 				"addition", amt,
 				"effect_ends_at", c.Core.Status.Duration(quillKey),

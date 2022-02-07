@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}
 		c.Core.Status.AddStatus("sucrosea4", 480)
 		c.a4EM[core.EM] = 0.2 * c.Stat(core.EM)
-		c.Core.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
+		c.Core.Log.NewEvent("sucrose a4 triggered", core.LogCharacterEvent, c.Index, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
 		done = true
 	}
 
@@ -136,7 +136,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 		c.Core.Status.AddStatus("sucrosea4", 480)
 		c.a4EM[core.EM] = 0.2 * c.Stat(core.EM)
-		c.Core.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
+		c.Core.Log.NewEvent("sucrose a4 triggered", core.LogCharacterEvent, c.Index, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
 		//lockout for 1 frame to prevent triggering multiple times on one attack
 		lockout = c.Core.F + 1
 	}

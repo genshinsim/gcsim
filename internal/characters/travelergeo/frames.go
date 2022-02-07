@@ -28,7 +28,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 38, 38
 	default:
-		c.Core.Log.Warnf("%v: unknown action, frames invalid", a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -40,7 +40,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

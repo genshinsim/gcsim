@@ -111,9 +111,9 @@ func (r *Reactable) waneEC() {
 	r.Durability[core.Electro] = max(0, r.Durability[core.Electro])
 	r.Durability[core.Hydro] -= 10
 	r.Durability[core.Hydro] = max(0, r.Durability[core.Hydro])
-	r.core.Log.Debugw("ec wane",
-		"frame", r.core.F,
-		"event", core.LogElementEvent,
+	r.core.Log.NewEvent("ec wane",
+		core.LogElementEvent,
+		-1,
 		"aura", "ec",
 		"target", r.self.Index(),
 		"hydro", r.Durability[core.Hydro],
@@ -127,9 +127,9 @@ func (r *Reactable) checkEC() {
 	if r.Durability[core.Electro] < ZeroDur || r.Durability[core.Hydro] < ZeroDur {
 		r.ecTickSrc = -1
 		r.core.Events.Unsubscribe(core.OnDamage, fmt.Sprintf("ec-%v", r.self.Index()))
-		r.core.Log.Debugw("ec expired",
-			"frame", r.core.F,
-			"event", core.LogElementEvent,
+		r.core.Log.NewEvent("ec expired",
+			core.LogElementEvent,
+			-1,
 			"aura", "ec",
 			"target", r.self.Index(),
 			"hydro", r.Durability[core.Hydro],

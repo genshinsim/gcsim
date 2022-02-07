@@ -42,12 +42,12 @@ func (s *ShieldCtrl) Add(shd core.Shield) {
 		}
 	}
 	if ind > -1 {
-		s.core.Log.Debugw("shield overridden", "frame", s.core.F, "event", core.LogShieldEvent, "frame", s.core.F, "overwrite", true, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
+		s.core.Log.NewEvent("shield overridden", core.LogShieldEvent, -1, "overwrite", true, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
 		s.shields[ind].OnOverwrite()
 		s.shields[ind] = shd
 	} else {
 		s.shields = append(s.shields, shd)
-		s.core.Log.Debugw("shield added", "frame", s.core.F, "event", core.LogShieldEvent, "frame", s.core.F, "overwrite", false, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
+		s.core.Log.NewEvent("shield added", core.LogShieldEvent, -1, "overwrite", false, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
 	}
 	s.core.Events.Emit(core.OnShielded, shd)
 }
@@ -79,7 +79,7 @@ func (s *ShieldCtrl) Tick() {
 	for _, v := range s.shields {
 		if v.Expiry() == s.core.F {
 			v.OnExpire()
-			s.core.Log.Debugw("shield expired", "frame", s.core.F, "event", core.LogShieldEvent, "frame", s.core.F, "name", v.Desc(), "hp", v.CurrentHP())
+			s.core.Log.NewEvent("shield expired", core.LogShieldEvent, -1, "name", v.Desc(), "hp", v.CurrentHP())
 		} else {
 			s.shields[n] = v
 			n++

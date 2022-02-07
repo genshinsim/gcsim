@@ -28,20 +28,28 @@ func (s *ConstructCtrl) New(c core.Construct, refresh bool) {
 		}
 	}
 	if ind > -1 {
-		s.core.Log.Debugw("construct replaced - New: "+c.Type().String(), "event", core.LogConstructEvent, "frame", s.core.F, "key", s.constructs[ind].Key(), "prev type", s.constructs[ind].Type(), "next type", c.Type())
+		s.core.Log.NewEventBuildMsg(
+			core.LogConstructEvent,
+			-1,
+			"construct replaced - new: ", c.Type().String(),
+		).Write(
+			"key", s.constructs[ind].Key(),
+			"prev type", s.constructs[ind].Type(),
+			"next type", c.Type(),
+		)
 		s.constructs[ind].OnDestruct()
 		s.constructs[ind] = c
 
 	} else {
 		//add this one to the end
 		s.constructs = append(s.constructs, c)
-		s.core.Log.Debugw("construct created: "+c.Type().String(), "event", core.LogConstructEvent, "frame", s.core.F, "key", c.Key(), "type", c.Type())
+		s.core.Log.NewEventBuildMsg(core.LogConstructEvent, -1, "construct created: ", c.Type().String()).Write("key", c.Key(), "type", c.Type())
 	}
 
 	//if length > 3, then destruct the beginning ones
 	for i := 0; i < len(s.constructs)-3; i++ {
 		s.constructs[i].OnDestruct()
-		s.core.Log.Debugw("construct destroyed: "+s.constructs[i].Type().String(), "event", core.LogConstructEvent, "frame", s.core.F, "key", s.constructs[i].Key(), "type", s.constructs[i].Type())
+		s.core.Log.NewEventBuildMsg(core.LogConstructEvent, -1, "construct destroyed: "+s.constructs[i].Type().String()).Write("key", s.constructs[i].Key(), "type", s.constructs[i].Type())
 		s.constructs[i] = nil
 	}
 
@@ -68,7 +76,13 @@ func (s *ConstructCtrl) NewNoLimitCons(c core.Construct, refresh bool) {
 		if ind > -1 {
 			//destroy the existing by setting expiry
 			s.consNoLimit[ind].OnDestruct()
-			s.core.Log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.core.F, "key", s.consNoLimit[ind].Key(), "type", s.consNoLimit[ind].Type())
+			s.core.Log.NewEventBuildMsg(
+				core.LogConstructEvent, -1,
+				"construct destroyed: "+s.consNoLimit[ind].Type().String(),
+			).Write(
+				"key", s.consNoLimit[ind].Key(),
+				"type", s.consNoLimit[ind].Type(),
+			)
 			s.consNoLimit[ind] = nil
 
 		}
@@ -82,7 +96,13 @@ func (s *ConstructCtrl) Tick() {
 	for _, v := range s.constructs {
 		if v.Expiry() == s.core.F {
 			v.OnDestruct()
-			s.core.Log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.core.F, "key", v.Key(), "type", v.Type())
+			s.core.Log.NewEventBuildMsg(
+				core.LogConstructEvent, -1,
+				"construct destroyed: "+v.Type().String(),
+			).Write(
+				"key", v.Key(),
+				"type", v.Type(),
+			)
 		} else {
 			s.constructs[n] = v
 			n++
@@ -93,7 +113,13 @@ func (s *ConstructCtrl) Tick() {
 	for i, v := range s.consNoLimit {
 		if v.Expiry() == s.core.F {
 			s.consNoLimit[i].OnDestruct()
-			s.core.Log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.core.F, "key", v.Key(), "type", v.Type())
+			s.core.Log.NewEventBuildMsg(
+				core.LogConstructEvent, -1,
+				"construct destroyed: "+v.Type().String(),
+			).Write(
+				"key", v.Key(),
+				"type", v.Type(),
+			)
 		} else {
 			s.consNoLimit[n] = v
 			n++
@@ -153,7 +179,13 @@ func (s *ConstructCtrl) Destroy(key int) bool {
 		if v.Key() == key {
 			v.OnDestruct()
 			ok = true
-			s.core.Log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.core.F, "key", v.Key(), "type", v.Type())
+			s.core.Log.NewEventBuildMsg(
+				core.LogConstructEvent, -1,
+				"construct destroyed: "+v.Type().String(),
+			).Write(
+				"key", v.Key(),
+				"type", v.Type(),
+			)
 		} else {
 			s.constructs[n] = v
 			n++
@@ -168,7 +200,13 @@ func (s *ConstructCtrl) Destroy(key int) bool {
 		if v.Key() == key {
 			s.consNoLimit[i].OnDestruct()
 			ok = true
-			s.core.Log.Debugw("destroyed", "event", core.LogConstructEvent, "frame", s.core.F, "key", v.Key(), "type", v.Type())
+			s.core.Log.NewEventBuildMsg(
+				core.LogConstructEvent, -1,
+				"construct destroyed: "+v.Type().String(),
+			).Write(
+				"key", v.Key(),
+				"type", v.Type(),
+			)
 		} else {
 			s.consNoLimit[n] = v
 			n++

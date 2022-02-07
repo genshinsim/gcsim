@@ -47,7 +47,7 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 			Amount: func() ([]float64, bool) { return val, true },
 			Expiry: c.Core.F + 600,
 		})
-		c.Core.Log.Debugw("c4 - adding anemo bonus", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+		c.Core.Log.NewEvent("c4 - adding anemo bonus", core.LogCharacterEvent, c.Index, "char", c.Index)
 
 	}
 }

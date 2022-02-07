@@ -41,7 +41,7 @@ func (c *char) makeBunny() {
 
 func (c *char) explode(src int) {
 	n := 0
-	c.Core.Log.Debugw("amber exploding bunny", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
+	c.Core.Log.NewEvent("amber exploding bunny", core.LogCharacterEvent, c.Index, "src", src)
 	for _, v := range c.bunnies {
 		if v.src == src {
 			c.Core.Combat.QueueAttackEvent(&v.ae, 1)

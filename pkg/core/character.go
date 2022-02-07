@@ -74,7 +74,7 @@ type Character interface {
 
 	//combat
 	Snapshot(a *AttackInfo) Snapshot
-	PreDamageSnapshotAdjust(*AttackEvent, Target)
+	PreDamageSnapshotAdjust(*AttackEvent, Target) []interface{}
 	ResetNormalCounter()
 }
 

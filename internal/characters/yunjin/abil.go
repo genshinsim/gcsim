@@ -208,18 +208,18 @@ func (c *char) burstProc() {
 			finalBurstBuff += 0.025 * float64(c.partyElementalTypes)
 		}
 
-		ai := core.AttackInfo{
-			Abil:      "Yunjin Burst Buff",
-			AttackTag: core.AttackTagNone,
-		}
-		stats := c.SnapshotStats(&ai)
+		// ai := core.AttackInfo{
+		// 	Abil:      "Yunjin Burst Buff",
+		// 	AttackTag: core.AttackTagNone,
+		// }
+		stats, _ := c.SnapshotStats()
 		dmgAdded := (c.Base.Def*(1+stats[core.DEFP]) + stats[core.DEF]) * finalBurstBuff
 		ae.Info.FlatDmg += dmgAdded
 
 		c.burstTriggers[ae.Info.ActorIndex]--
 		c.updateBuffTags()
 
-		c.Core.Log.Debugw("yunjin burst adding damage", "frame", c.Core.F, "event", core.LogPreDamageMod, "char", ae.Info.ActorIndex, "damage_added", dmgAdded, "stacks_remaining_for_char", c.burstTriggers[ae.Info.ActorIndex], "burst_def_pct", finalBurstBuff)
+		c.Core.Log.NewEvent("yunjin burst adding damage", core.LogPreDamageMod, ae.Info.ActorIndex, "damage_added", dmgAdded, "stacks_remaining_for_char", c.burstTriggers[ae.Info.ActorIndex], "burst_def_pct", finalBurstBuff)
 
 		return false
 	}, "yunjin-burst")

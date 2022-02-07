@@ -13,7 +13,8 @@ func (s *Simulation) initDetailLog() {
 	s.C.Events.Subscribe(core.OnTargetAdded, func(args ...interface{}) bool {
 		t := args[0].(core.Target)
 
-		s.C.Log.Debugw("Target Added", "frame", s.C.F, "event", core.LogSimEvent, "target_type", t.Type())
+		s.C.Log.NewEvent("Target Added", core.LogSimEvent, -1, "target_type", t.Type())
+		// s.C.Log.Debugw("Target Added", "frame", s.C.F, core.LogSimEvent, "target_type", t.Type())
 
 		s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[core.EleType]int))
 

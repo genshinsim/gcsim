@@ -71,7 +71,7 @@ func (c *char) c6() {
 			return 0
 		}
 		if char.HP()/char.MaxHP() <= 0.5 {
-			c.Core.Log.Debugw("diona c6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent)
+			c.Core.Log.NewEvent("diona c6 activated", core.LogCharacterEvent, c.Index)
 			return 0.3
 		}
 		return 0

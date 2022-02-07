@@ -38,7 +38,7 @@ func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog(in *jlexer.Lex
 		}
 		switch key {
 		case "key":
-			out.Key = string(in.String())
+			out.Key = string(in.UnsafeString())
 		case "val":
 			if m, ok := out.Val.(easyjson.Unmarshaler); ok {
 				m.UnmarshalEasyJSON(in)
@@ -209,7 +209,7 @@ func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog2(in *jlexer.Le
 		case "char_index":
 			out.SrcChar = int(in.Int())
 		case "msg":
-			out.Msg = string(in.String())
+			out.Msg = string(in.UnsafeString())
 		case "logs":
 			if in.IsNull() {
 				in.Skip()

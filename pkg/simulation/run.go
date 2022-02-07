@@ -23,7 +23,8 @@ func (s *Simulation) Run() (Result, error) {
 				Ele:    core.NoElement,
 			})
 		}, s.cfg.Energy.Start+1)
-		s.C.Log.Debugw("energy queued (once)", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.cfg.Energy.Start)
+		s.C.Log.NewEvent("energy queued (once)", core.LogSimEvent, -1, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.cfg.Energy.Start)
+		// s.C.Log.Debugw("energy queued (once)", "frame", s.C.F, core.LogSimEvent, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.cfg.Energy.Start)
 	}
 
 	if s.cfg.Hurt.Active && s.cfg.Hurt.Once {
@@ -32,7 +33,8 @@ func (s *Simulation) Run() (Result, error) {
 		s.C.Tasks.Add(func() {
 			s.C.Health.HurtChar(amt, s.cfg.Hurt.Ele)
 		}, s.cfg.Hurt.Start+1)
-		s.C.Log.Debugw("hurt queued (once)", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.cfg.Hurt.Start)
+		s.C.Log.NewEvent("hurt queued (once)", core.LogSimEvent, -1, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.cfg.Hurt.Start)
+		// s.C.Log.Debugw("hurt queued (once)", "frame", s.C.F, core.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.cfg.Hurt.Start)
 	}
 
 	//60fps, 60s/min, 2min
@@ -88,7 +90,7 @@ func (s *Simulation) AdvanceFrame() error {
 
 		// s.C.Log.Debugw("queue check - next queued",
 		// 	"frame", s.C.F,
-		// 	"event", core.LogQueueEvent,
+		// 	core.LogQueueEvent,
 		// 	"remaining queue", s.queue,
 		// 	"next", next,
 		// 	"drop", drop,
@@ -120,7 +122,7 @@ func (s *Simulation) AdvanceFrame() error {
 
 		// s.C.Log.Debugw("queue check - before exec",
 		// 	"frame", s.C.F,
-		// 	"event", core.LogQueueEvent,
+		// 	core.LogQueueEvent,
 		// 	"remaining queue", s.queue,
 		// )
 
@@ -146,7 +148,7 @@ func (s *Simulation) AdvanceFrame() error {
 		}
 		// s.C.Log.Debugw("queue check - after exec",
 		// 	"frame", s.C.F,
-		// 	"event", core.LogQueueEvent,
+		// 	core.LogQueueEvent,
 		// 	"remaining queue", s.queue,
 		// 	"skip", s.skip,
 		// 	"done", done,
@@ -172,6 +174,7 @@ func (s *Simulation) handleHurt() {
 		s.C.Tasks.Add(func() {
 			s.C.Health.HurtChar(amt, s.cfg.Hurt.Ele)
 		}, f)
-		s.C.Log.Debugw("hurt queued", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.C.F+f)
+		s.C.Log.NewEvent("hurt queued", core.LogSimEvent, -1, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.C.F+f)
+		// s.C.Log.Debugw("hurt queued", "frame", s.C.F, core.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.C.F+f)
 	}
 }

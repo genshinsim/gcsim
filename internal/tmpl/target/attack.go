@@ -2,13 +2,12 @@ package target
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"go.uber.org/zap"
 
 	"strconv"
 	"strings"
 )
 
-func (t *Tmpl) Attack(atk *core.AttackEvent) (float64, bool) {
+func (t *Tmpl) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
 	//if target is frozen prior to attack landing, set impulse to 0
 	//let the break freeze attack to trigger actual impulse
 	if t.AuraType() == core.Frozen {
@@ -26,10 +25,10 @@ func (t *Tmpl) Attack(atk *core.AttackEvent) (float64, bool) {
 			applied := atk.Info.Durability
 			t.React(atk)
 			if t.Core.Flags.LogDebug {
-				t.Core.Log.Debugw("application",
-					"frame", t.Core.F,
-					"event", core.LogElementEvent,
-					"char", atk.Info.ActorIndex,
+				t.Core.Log.NewEvent(
+					"application",
+					core.LogElementEvent,
+					atk.Info.ActorIndex,
 					"attack_tag", atk.Info.AttackTag,
 					"applied_ele", atk.Info.Element,
 					"dur", applied,
@@ -42,7 +41,7 @@ func (t *Tmpl) Attack(atk *core.AttackEvent) (float64, bool) {
 		}
 	}
 
-	damage, isCrit := t.calcDmg(atk)
+	damage, isCrit := t.calcDmg(atk, evt)
 
 	//record dmg
 	t.HPCurrent -= damage
@@ -50,7 +49,7 @@ func (t *Tmpl) Attack(atk *core.AttackEvent) (float64, bool) {
 	return damage, isCrit
 }
 
-func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
+func (t *Tmpl) calcDmg(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
 
 	var isCrit bool
 
@@ -64,7 +63,7 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 		// Generally not needed except for sim issues
 		// t.Core.Log.Debugw("ele lookup ok",
 		// 	"frame", t.Core.F,
-		// 	"event", core.LogCalc,
+		// 	core.LogCalc,
 		// 	"char", atk.Info.ActorIndex,
 		// 	"attack_tag", atk.Info.AttackTag,
 		// 	"ele", atk.Info.Element,
@@ -95,8 +94,8 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	if atk.Snapshot.Stats[core.CR] > 1 {
 		atk.Snapshot.Stats[core.CR] = 1
 	}
-	res := t.Resist(&atk.Info)
-	defadj := t.DefAdj(&atk.Info)
+	res := t.Resist(&atk.Info, evt)
+	defadj := t.DefAdj(&atk.Info, evt)
 
 	if defadj > 0.9 {
 		defadj = 0.9
@@ -136,7 +135,7 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	if atk.Info.Amped {
 		char := t.Core.Chars[atk.Info.ActorIndex]
 		reactBonus = char.ReactBonus(atk.Info)
-		// t.Core.Log.Debugw("debug", "frame", t.Core.F, "event", core.LogPreDamageMod, "char", t.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
+		// t.Core.Log.Debugw("debug", "frame", t.Core.F, core.LogPreDamageMod, "char", t.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
 		damage = damage * (atk.Info.AmpMult * (1 + emBonus + reactBonus))
 	}
 
@@ -152,11 +151,10 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	}
 
 	if t.Core.Flags.LogDebug {
-		t.Core.Log.Debugw(
+		t.Core.Log.NewEvent(
 			atk.Info.Abil,
-			"frame", t.Core.F,
-			"event", core.LogCalc,
-			"char", atk.Info.ActorIndex,
+			core.LogCalc,
+			atk.Info.ActorIndex,
 			"src_frame", atk.SourceFrame,
 			"damage_grp_mult", x,
 			"damage", damage,
@@ -203,38 +201,26 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent) (float64, bool) {
 	return damage, isCrit
 }
 
-func (t *Tmpl) Resist(ai *core.AttackInfo) float64 {
+func (t *Tmpl) Resist(ai *core.AttackInfo, evt core.LogEvent) float64 {
 	// log.Debugw("\t\t res calc", "res", e.res, "mods", e.mod)
-	var logDetails []zap.Field
+	var logDetails []interface{}
 	var sb strings.Builder
-	var detailsMods map[string][]string
 
 	if t.Core.Flags.LogDebug {
-		logDetails = make([]zap.Field, 0, 4+5*len(t.ResMod))
-		logDetails = append(logDetails,
-			zap.Int("frame", t.Core.F),
-			zap.Any("event", core.LogPreDamageMod),
-			zap.Int("char", ai.ActorIndex),
-			zap.Int("target", t.TargetIndex),
-		)
-		detailsMods = make(map[string][]string)
+		logDetails = make([]interface{}, 0, 5*len(t.ResMod))
 	}
 
 	r := t.Res[ai.Element]
 	for _, v := range t.ResMod {
 		if v.Expiry > t.Core.F && v.Ele == ai.Element {
 			if t.Core.Flags.LogDebug {
-				modStatus := make([]string, 0)
-
 				sb.WriteString(v.Key)
-				modStatus = append(modStatus,
+				logDetails = append(logDetails, sb.String(), []string{
 					"status: added",
-					"expiry_frame: "+strconv.Itoa(v.Expiry),
-					"ele: "+v.Ele.String(),
-					"amount: "+strconv.FormatFloat(v.Value, 'f', -1, 64),
-				)
-				logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
-				detailsMods[sb.String()] = modStatus
+					"expiry_frame: " + strconv.Itoa(v.Expiry),
+					"ele: " + v.Ele.String(),
+					"amount: " + strconv.FormatFloat(v.Value, 'f', -1, 64),
+				})
 				sb.Reset()
 			}
 			r += v.Value
@@ -242,46 +228,31 @@ func (t *Tmpl) Resist(ai *core.AttackInfo) float64 {
 	}
 
 	// No need to output if resist was not modified
-	if t.Core.Flags.LogDebug && len(logDetails) > 4 {
-		// Disable as it is in the damage log
-		// t.Core.Log.Desugar().Debug("resist modified", logDetails...)
-		ai.ModsLog = append(ai.ModsLog,
-			zap.Any("resist_mods", detailsMods))
+	if t.Core.Flags.LogDebug && len(logDetails) > 1 {
+		evt.Write("resist_mods", logDetails)
 	}
 
 	return r
 }
 
-func (t *Tmpl) DefAdj(ai *core.AttackInfo) float64 {
-	var logDetails []zap.Field
+func (t *Tmpl) DefAdj(ai *core.AttackInfo, evt core.LogEvent) float64 {
+	var logDetails []interface{}
 	var sb strings.Builder
-	var detailsMods map[string][]string
 
 	if t.Core.Flags.LogDebug {
-		logDetails = make([]zap.Field, 0, 4+5*len(t.ResMod))
-		logDetails = append(logDetails,
-			zap.Int("frame", t.Core.F),
-			zap.Any("event", core.LogPreDamageMod),
-			zap.Int("char", ai.ActorIndex),
-			zap.Int("target", t.TargetIndex),
-		)
-		detailsMods = make(map[string][]string)
+		logDetails = make([]interface{}, 0, 3*len(t.ResMod))
 	}
 
 	var r float64
 	for _, v := range t.DefMod {
 		if v.Expiry > t.Core.F {
 			if t.Core.Flags.LogDebug {
-				modStatus := make([]string, 0)
-
 				sb.WriteString(v.Key)
-				modStatus = append(modStatus,
+				logDetails = append(logDetails, sb.String(), []string{
 					"status: added",
-					"expiry_frame: "+strconv.Itoa(v.Expiry),
-					"amount: "+strconv.FormatFloat(v.Value, 'f', -1, 64),
-				)
-				logDetails = append(logDetails, zap.Any(sb.String(), modStatus))
-				detailsMods[sb.String()] = modStatus
+					"expiry_frame: " + strconv.Itoa(v.Expiry),
+					"amount: " + strconv.FormatFloat(v.Value, 'f', -1, 64),
+				})
 				sb.Reset()
 			}
 			r += v.Value
@@ -289,11 +260,8 @@ func (t *Tmpl) DefAdj(ai *core.AttackInfo) float64 {
 	}
 
 	// No need to output if def was not modified
-	if t.Core.Flags.LogDebug && len(logDetails) > 4 {
-		// Disable as it is in the damage log
-		// t.Core.Log.Desugar().Debug("def modified", logDetails...)
-		ai.ModsLog = append(ai.ModsLog,
-			zap.Any("def_mods", detailsMods))
+	if t.Core.Flags.LogDebug && len(logDetails) > 1 {
+		evt.Write("def_mods", logDetails)
 	}
 
 	return r

@@ -70,7 +70,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Energy < c.EnergyMax {
-		c.Core.Log.Debugw("burst insufficient energy; skipping", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("burst insufficient energy; skipping", core.LogCharacterEvent, c.Index, "character", c.Base.Key.String())
 		return 0, 0
 	}
 
@@ -147,7 +147,7 @@ func (c *char) burstProc() {
 			return false
 		}
 		if icd > c.Core.F {
-			c.Core.Log.Debugw("beidou Q (active) on icd", "frame", c.Core.F, "event", core.LogCharacterEvent)
+			c.Core.Log.NewEvent("beidou Q (active) on icd", core.LogCharacterEvent, c.Index)
 			return false
 		}
 
@@ -161,7 +161,7 @@ func (c *char) burstProc() {
 		}
 		c.Core.Combat.QueueAttackEvent(&atk, 1)
 
-		c.Core.Log.Debugw("beidou Q proc'd", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
+		c.Core.Log.NewEvent("beidou Q proc'd", core.LogCharacterEvent, c.Index, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
 
 		icd = c.Core.F + 60 // once per second
 		return false

@@ -26,7 +26,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionAim:
 		//check for c6, if active then return 10, otherwise 115
 		if c.Core.Status.Duration("ganyuc6") > 0 {
-			c.Core.Log.Debugw("ganyu c6 proc used", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+			c.Core.Log.NewEvent("ganyu c6 proc used", core.LogCharacterEvent, c.Index, "char", c.Index)
 			c.Core.Status.DeleteStatus("ganyuc6")
 			return 10, 10
 		}
@@ -36,7 +36,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 122, 122 //ok
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

@@ -1,10 +1,11 @@
 package simulation
 
 import (
-	"log"
 	"math/rand"
 
+	"github.com/genshinsim/gcsim/internal/evtlog"
 	"github.com/genshinsim/gcsim/internal/tmpl/action"
+	"github.com/genshinsim/gcsim/internal/tmpl/calcqueue"
 	"github.com/genshinsim/gcsim/internal/tmpl/combat"
 	"github.com/genshinsim/gcsim/internal/tmpl/construct"
 	"github.com/genshinsim/gcsim/internal/tmpl/energy"
@@ -15,12 +16,13 @@ import (
 	"github.com/genshinsim/gcsim/internal/tmpl/status"
 	"github.com/genshinsim/gcsim/internal/tmpl/task"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"go.uber.org/zap"
 )
 
-func newCore(seed int64, logger *zap.SugaredLogger) *core.Core {
+func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	c := core.New()
-	c.Log = logger
+	if debug {
+		c.Log = evtlog.NewCtrl(c, 500)
+	}
 	c.Rand = rand.New(rand.NewSource(seed))
 	c.Tasks = task.NewCtrl(&c.F)
 	c.Events = event.NewCtrl(c)
@@ -31,20 +33,29 @@ func newCore(seed int64, logger *zap.SugaredLogger) *core.Core {
 	c.Shields = shield.NewCtrl(c)
 	c.Health = health.NewCtrl(c)
 	c.Action = action.NewCtrl(c)
+	return c
+}
+
+func NewDefaultCoreWithCalcQueue(seed int64) *core.Core {
+	c := newCoreNoQueue(seed, false)
+	c.Queue = calcqueue.New(c)
+	return c
+}
+
+func NewDefaultCore(seed int64) *core.Core {
+	c := newCoreNoQueue(seed, false)
 	c.Queue = queue.NewQueuer(c)
 	return c
 }
 
-func NewDefaultCoreWithDefaultLogger(seed int64) *core.Core {
-	logger, err := core.NewDefaultLogger(false, false, nil)
-	if err != nil {
-		log.Panicf("error building default logger, shouldn't happen: %v\n", err)
-	}
-	c := newCore(seed, logger)
-
+func NewDefaultCoreWithDebug(seed int64) *core.Core {
+	c := newCoreNoQueue(seed, true)
+	c.Queue = queue.NewQueuer(c)
 	return c
 }
 
-func NewDefaultCoreWithCustomLogger(seed int64, logger *zap.SugaredLogger) *core.Core {
-	return newCore(seed, logger)
+func NewDefaultCoreWithDebugCalcQueue(seed int64) *core.Core {
+	c := newCoreNoQueue(seed, true)
+	c.Queue = calcqueue.New(c)
+	return c
 }

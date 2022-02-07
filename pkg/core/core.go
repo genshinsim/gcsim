@@ -37,7 +37,7 @@ type Core struct {
 	F     int   // current frame
 	Flags Flags // global flags
 	Rand  *rand.Rand
-	Log   *zap.SugaredLogger
+	Log   LogCtrl
 
 	//core data
 	Stam   float64
@@ -86,6 +86,8 @@ func New() *Core {
 	c.Flags.Custom = make(map[string]int)
 	c.Stam = MaxStam
 	c.stamModifier = make([]stamMod, 0, 10)
+	//make a default nil writer
+	c.Log = &NilLogger{}
 	// c.queue = make([]Command, 0, 20)
 
 	// for _, f := range cfg {
@@ -173,7 +175,7 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 		if ok {
 			f(char, c, count, v.SetParams[key])
 		} else {
-			c.Log.Warnw(fmt.Sprintf("character %v has unrecognized set %v", v.Base.Key, key), "frame", -1, "event", LogArtifactEvent)
+			c.Log.NewEvent(fmt.Sprintf("character %v has unrecognized set %v", v.Base.Key, key), LogArtifactEvent, -1)
 		}
 	}
 	if total > 5 {

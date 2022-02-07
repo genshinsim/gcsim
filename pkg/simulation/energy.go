@@ -13,7 +13,7 @@ func (s *Simulation) handleEnergy() {
 				Ele:    core.NoElement,
 			})
 		}, f)
-		s.C.Log.Debugw("energy queued", "frame", s.C.F, "event", core.LogSimEvent, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.C.F+f)
+		s.C.Log.NewEvent("energy queued", core.LogSimEvent, -1, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.C.F+f)
 	}
 }
 
@@ -55,7 +55,8 @@ func (s *Simulation) randomOnHitEnergy() {
 		}
 		//add energy
 		char.AddEnergy(1)
-		s.C.Log.Debugw("random energy on normal", "frame", s.C.F, "event", core.LogEnergyEvent, "char", atk.Info.ActorIndex, "chance", current[w])
+		s.C.Log.NewEvent("random energy on normal", core.LogEnergyEvent, -1, "char", atk.Info.ActorIndex, "chance", current[w])
+		// s.C.Log.Debugw("random energy on normal", "frame", s.C.F, core.LogEnergyEvent, "char", atk.Info.ActorIndex, "chance", current[w])
 		//set icd
 		icd = s.C.F + 12
 		current[w] = 0
