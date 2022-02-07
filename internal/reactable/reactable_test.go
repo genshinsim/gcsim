@@ -1,13 +1,40 @@
 package reactable
 
 import (
+	"math/rand"
 	"os"
 	"testing"
+	"time"
 
+	"github.com/genshinsim/gcsim/internal/tmpl/action"
+	"github.com/genshinsim/gcsim/internal/tmpl/combat"
+	"github.com/genshinsim/gcsim/internal/tmpl/construct"
+	"github.com/genshinsim/gcsim/internal/tmpl/energy"
+	"github.com/genshinsim/gcsim/internal/tmpl/event"
+	"github.com/genshinsim/gcsim/internal/tmpl/health"
+	"github.com/genshinsim/gcsim/internal/tmpl/queue"
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
+	"github.com/genshinsim/gcsim/internal/tmpl/status"
+	"github.com/genshinsim/gcsim/internal/tmpl/task"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
+
+//make our own core because otherwise we run into problems with circular import
+func testCore() *core.Core {
+	c := core.New()
+	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+	c.Tasks = task.NewCtrl(&c.F)
+	c.Events = event.NewCtrl(c)
+	c.Status = status.NewCtrl(c)
+	c.Energy = energy.NewCtrl(c)
+	c.Combat = combat.NewCtrl(c)
+	c.Constructs = construct.NewCtrl(c)
+	c.Shields = shield.NewCtrl(c)
+	c.Health = health.NewCtrl(c)
+	c.Action = action.NewCtrl(c)
+	c.Queue = queue.NewQueuer(c)
+	return c
+}
 
 type testTarget struct {
 	*Reactable
@@ -34,39 +61,16 @@ func (t *testTarget) SetTag(key string, val int)                 {}
 func (t *testTarget) GetTag(key string) int                      { return 0 }
 func (t *testTarget) RemoveTag(key string)                       {}
 
-type combatTestCtrl struct {
-	core *core.Core
-	*core.CombatCtrl
-}
-
-func (t *testTarget) Attack(atk *core.AttackEvent) (float64, bool) {
+func (t *testTarget) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
 	if t.onDmgCallBack != nil {
 		return t.onDmgCallBack(atk)
 	}
 	return 0, false
 }
 
-func (c *combatTestCtrl) Init(x *core.Core) {
-	c.CombatCtrl = core.NewCombatCtrl(x)
-}
-
-var logger *zap.SugaredLogger
-
 var testChar core.CharacterProfile
 
 func TestMain(m *testing.M) {
-	// call flag.Parse() here if TestMain uses flags
-	config := zap.NewDevelopmentConfig()
-	debug := os.Getenv("GCSIM_VERBOSE_TEST")
-	level := zapcore.InfoLevel
-	if debug != "" {
-		level = zapcore.DebugLevel
-	}
-	config.Level = zap.NewAtomicLevelAt(level)
-	config.EncoderConfig.TimeKey = ""
-	log, _ := config.Build(zap.AddCallerSkip(1))
-	logger = log.Sugar()
-
 	testChar.Stats = make([]float64, core.EndStatType)
 	testChar.Talents.Attack = 1
 	testChar.Talents.Burst = 1
@@ -89,11 +93,7 @@ func TestReduce(t *testing.T) {
 }
 
 func TestTick(t *testing.T) {
-	c, err := core.New()
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
+	c := testCore()
 
 	trg := &testTarget{src: 1}
 	trg.Reactable = &Reactable{}

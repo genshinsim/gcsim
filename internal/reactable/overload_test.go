@@ -9,18 +9,8 @@ import (
 )
 
 func TestOverload(t *testing.T) {
-	ctrl := &combatTestCtrl{}
-	c, err := core.New(func(c *core.Core) error {
-		ctrl.core = c
-		c.Combat = ctrl
-		c.Log = logger
-		ctrl.Init(c)
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
+
+	c := testCore()
 
 	char, err := character.NewTemplateChar(c, testChar)
 	if err != nil {

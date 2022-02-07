@@ -57,6 +57,10 @@ func (c *char) explode(src int) {
 }
 
 func (c *char) manualExplode() {
+	//do nothing if there are no bunnies
+	if len(c.bunnies) == 0 {
+		return
+	}
 	//only explode the first bunny
 	if len(c.bunnies) > 0 {
 		c.bunnies[0].ae.Info.Mult += 2

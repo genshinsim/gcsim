@@ -1,45 +1,17 @@
 package shenhe
 
 import (
-	"os"
 	"testing"
 
-	"github.com/genshinsim/gcsim/internal/tests"
+	"github.com/genshinsim/gcsim/internal/testhelper"
 	"github.com/genshinsim/gcsim/internal/tmpl/enemy"
 	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
-var logger *zap.SugaredLogger
-
-func TestMain(m *testing.M) {
-	// call flag.Parse() here if TestMain uses flags
-	config := zap.NewDevelopmentConfig()
-	debug := os.Getenv("GCSIM_VERBOSE_TEST")
-	level := zapcore.InfoLevel
-	if debug != "" {
-		level = zapcore.DebugLevel
-	}
-	// level = zapcore.DebugLevel
-	config.Level = zap.NewAtomicLevelAt(level)
-	config.EncoderConfig.TimeKey = ""
-	log, _ := config.Build(zap.AddCallerSkip(1))
-	logger = log.Sugar()
-	os.Exit(m.Run())
-}
-
 func TestBasicAbilUsage(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -51,7 +23,7 @@ func TestBasicAbilUsage(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 	p := make(map[string]int)
@@ -86,15 +58,8 @@ func TestBasicAbilUsage(t *testing.T) {
 }
 
 func TestSkillCDCon0(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 0
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -107,7 +72,7 @@ func TestSkillCDCon0(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 	p := make(map[string]int)
@@ -169,15 +134,8 @@ func TestSkillCDCon0(t *testing.T) {
 }
 
 func TestBurstCDBasic(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -189,7 +147,7 @@ func TestBurstCDBasic(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 	p := make(map[string]int)
@@ -234,15 +192,8 @@ func TestBurstCDBasic(t *testing.T) {
 }
 
 func TestSkillCDCon1(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -255,7 +206,7 @@ func TestSkillCDCon1(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 	p := make(map[string]int)
@@ -403,15 +354,8 @@ func TestSkillCDCon1(t *testing.T) {
 }
 
 func TestFlatCDReduction(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 0
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -424,7 +368,7 @@ func TestFlatCDReduction(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 	p := make(map[string]int)
@@ -496,15 +440,8 @@ func TestFlatCDReduction(t *testing.T) {
 }
 
 func TestFlatCDReductionCon1(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -517,7 +454,7 @@ func TestFlatCDReductionCon1(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 	p := make(map[string]int)
@@ -578,15 +515,8 @@ func TestFlatCDReductionCon1(t *testing.T) {
 }
 
 func TestResetSkillCD(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -599,7 +529,7 @@ func TestResetSkillCD(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 	p := make(map[string]int)
@@ -668,15 +598,8 @@ func TestResetSkillCD(t *testing.T) {
 }
 
 func TestResetSkillCooldownReduction(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Shenhe, core.Cryo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -689,7 +612,7 @@ func TestResetSkillCooldownReduction(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 	p := make(map[string]int)

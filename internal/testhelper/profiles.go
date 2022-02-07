@@ -1,4 +1,4 @@
-package tests
+package testhelper
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"

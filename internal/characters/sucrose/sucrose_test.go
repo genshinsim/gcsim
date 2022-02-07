@@ -1,44 +1,17 @@
 package sucrose
 
 import (
-	"os"
 	"testing"
 
-	"github.com/genshinsim/gcsim/internal/tests"
+	"github.com/genshinsim/gcsim/internal/testhelper"
 	"github.com/genshinsim/gcsim/internal/tmpl/enemy"
 	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
-var logger *zap.SugaredLogger
-
-func TestMain(m *testing.M) {
-	// call flag.Parse() here if TestMain uses flags
-	config := zap.NewDevelopmentConfig()
-	debug := os.Getenv("GCSIM_VERBOSE_TEST")
-	level := zapcore.InfoLevel
-	if debug != "" {
-		level = zapcore.DebugLevel
-	}
-	config.Level = zap.NewAtomicLevelAt(level)
-	config.EncoderConfig.TimeKey = ""
-	log, _ := config.Build(zap.AddCallerSkip(1))
-	logger = log.Sugar()
-	os.Exit(m.Run())
-}
-
 func TestSkillCDWithC4(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.Sucrose, core.Anemo, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Sucrose, core.Anemo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	sucrose := x.(*char)
@@ -49,7 +22,7 @@ func TestSkillCDWithC4(t *testing.T) {
 	c.Chars = append(c.Chars, x)
 	c.CharPos[prof.Base.Key] = 0
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 
