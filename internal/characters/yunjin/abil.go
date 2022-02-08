@@ -54,14 +54,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 // Skill - modelled after Beidou E
 // Has two parameters:
-// a1 = 1 if you are doing a perfect counter
+// perfect = 1 if you are doing a perfect counter
 // hold = 1 or 2 for regular charging up to level 1 or 2
 func (c *char) Skill(p map[string]int) (int, int) {
 	// Hold parameter gets used in action frames to get earliest possible release frame
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	chargeLevel := 0
-	if p["a1"] == 1 {
+	if p["perfect"] == 1 {
 		chargeLevel = 2
 	} else {
 		chargeLevel = p["hold"]
