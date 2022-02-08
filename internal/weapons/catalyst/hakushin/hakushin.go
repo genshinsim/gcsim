@@ -14,22 +14,29 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
-	e := 10 + float64(r-1)*2.5
-	e = e / 100
+	dmg := .075 + float64(r)*.025
+
 	hrfunc := func(ele core.EleType, key string) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
+			ae := args[1].(*core.AttackEvent)
+
 			if c.ActiveChar != char.CharIndex() {
 				return false
 			}
-			m := make([]float64, core.EndStatType)
-			if char.Ele() == core.Electro {
-				m[core.ElectroP] = e
-			}
-			if char.Ele() == ele {
-				m[ele] = e
+			if ae.Info.ActorIndex != char.CharIndex() {
+				return false
 			}
 
 			for _, char := range c.Chars {
+				m := make([]float64, core.EndStatType)
+
+				switch charEle := char.Ele(); charEle {
+				case core.Electro, ele:
+					m[core.EleToDmgP(charEle)] = dmg
+				default:
+					continue
+				}
+
 				char.AddMod(core.CharStatMod{
 					Key: "hakushin-passive-" + key,
 					Amount: func() ([]float64, bool) {
@@ -46,6 +53,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	c.Events.Subscribe(core.OnSwirlElectro, hrfunc(core.Anemo, "hr-swirl"), fmt.Sprintf("hakushin-ring-%v", char.Name()))
 	c.Events.Subscribe(core.OnElectroCharged, hrfunc(core.Hydro, "hr-ec"), fmt.Sprintf("hakushin-ring-%v", char.Name()))
 	c.Events.Subscribe(core.OnOverload, hrfunc(core.Pyro, "hr-ol"), fmt.Sprintf("hakushin-ring-%v", char.Name()))
+	c.Events.Subscribe(core.OnSuperconduct, hrfunc(core.Cryo, "hr-sc"), fmt.Sprintf("hakushin-ring-%v", char.Name()))
 
 	return "hakushinring"
 }
