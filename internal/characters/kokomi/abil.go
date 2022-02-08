@@ -243,17 +243,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 // Helper function for determining whether burst damage bonus should apply
-// TODO: Technically A4 cannot be snapshotted so it has to be pulled out into an event subscription...
 func (c *char) burstDmgBonus(a core.AttackTag) float64 {
 	if c.Core.Status.Duration("kokomiburst") == 0 {
 		return 0
 	}
-	a4Bonus := c.Stat(core.Heal) * 0.15
 	switch a {
 	case core.AttackTagNormal:
-		return (burstBonusNormal[c.TalentLvlBurst()] + a4Bonus) * c.HPMax
+		return burstBonusNormal[c.TalentLvlBurst()] * c.HPMax
 	case core.AttackTagExtra:
-		return (burstBonusCharge[c.TalentLvlBurst()] + a4Bonus) * c.HPMax
+		return burstBonusCharge[c.TalentLvlBurst()] * c.HPMax
 	case core.AttackTagElementalArt:
 		return burstBonusSkill[c.TalentLvlBurst()] * c.HPMax
 	default:
