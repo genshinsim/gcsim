@@ -189,14 +189,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// Buff lasts 11.55s after anim, padded to cover basic combo
 	c.AddMod(core.CharStatMod{
 		Key:    "itto-burst",
-		Expiry: c.Core.F + 693 + f,
+		Expiry: c.Core.F + 960 + f,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})
 	c.Core.Log.Debugw("itto burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
 
-	c.Core.Status.AddStatus("ittoq", 693+f) // inflated from 11.55 seconds to cover basic combo
+	c.Core.Status.AddStatus("ittoq", 960+f) // inflated from 11.55 seconds to cover basic combo
 
 	c.SetCDWithDelay(core.ActionBurst, 1080, 8)
 	c.ConsumeEnergy(8)
