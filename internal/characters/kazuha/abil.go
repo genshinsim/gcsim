@@ -213,6 +213,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.ResetActionCooldown(core.ActionSkill)
 	}
 
+	//add em to kazuha even if off-field
 	//add em to all char, but only activate if char is active
 	if c.Base.Cons >= 2 {
 		val := make([]float64, core.EndStatType)
@@ -223,10 +224,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				Key:    "kazuha-c2",
 				Expiry: c.Core.F + 370,
 				Amount: func() ([]float64, bool) {
-					if c.Core.ActiveChar != this.CharIndex() {
-						return nil, false
+					switch this.CharIndex() {
+					case c.Core.ActiveChar, c.CharIndex():
+						return val, true
 					}
-					return val, true
+					return nil, false
 				},
 			})
 		}
