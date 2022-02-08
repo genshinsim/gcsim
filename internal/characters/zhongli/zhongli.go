@@ -7,6 +7,10 @@ import (
 
 type char struct {
 	*character.Tmpl
+
+	//field use for calculating stele damage
+	steleSnapshot core.AttackEvent
+
 	maxStele   int
 	steleCount int
 	energyICD  int

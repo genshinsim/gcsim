@@ -43,6 +43,26 @@ func (c *char) newStele(dur int, max int) {
 		"max_hit", max,
 		"next_tick", c.Core.F+120,
 	)
+	// Snapshot buffs for resonance ticks
+	aiSnap := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Stone Stele (Tick)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
+		Element:    core.Geo,
+		Durability: 25,
+		Mult:       skillTick[c.TalentLvlSkill()],
+		FlatDmg:    0.019 * c.HPMax,
+	}
+	snap := c.Snapshot(&aiSnap)
+	c.steleSnapshot = core.AttackEvent{
+		Info:        aiSnap,
+		Snapshot:    snap,
+		Pattern:     core.NewDefCircHit(1, false, core.TargettableEnemy),
+		SourceFrame: c.Core.F,
+	}
 
 	c.AddTask(c.resonance(c.Core.F, max), "stele", 120)
 }
@@ -54,18 +74,9 @@ func (c *char) resonance(src, max int) func() {
 			return
 		}
 		c.Core.Log.Debugw("Stele ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected", c.Core.F+120, "src", src, "char", c.Index)
-		ai := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Stone Stele (Tick)",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagElementalArt,
-			ICDGroup:   core.ICDGroupDefault,
-			StrikeType: core.StrikeTypeBlunt,
-			Element:    core.Geo,
-			Durability: 25,
-			Mult:       skillTick[c.TalentLvlSkill()],
-			FlatDmg:    0.019 * c.HPMax,
-		}
+
+		// Use snapshot for damage
+		ae := c.steleSnapshot
 
 		//check how many times to hit
 		count := c.Core.Constructs.Count()
@@ -74,7 +85,7 @@ func (c *char) resonance(src, max int) func() {
 		}
 		orb := false
 		for i := 0; i < count; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
+			c.Core.Combat.QueueAttackEvent(&ae, 0)
 			if c.energyICD < c.Core.F && !orb && c.Core.Rand.Float64() < .5 {
 				orb = true
 			}
