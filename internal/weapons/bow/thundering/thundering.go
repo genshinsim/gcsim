@@ -34,7 +34,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		return false
 	}, key)
 
-	c.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
@@ -60,9 +60,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				count++
 			}
 			dmg := float64(count) * stack
-			if count > 3 {
-				count = 3 // should never happen
-				dmg = max
+			if count >= 3 {
+				dmg += max
 			}
 			m[core.DmgP] = dmg
 			return m, true
