@@ -28,7 +28,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionSkill:
 		chargeLevel := p["hold"]
 		// If perfect timing, assume press frames
-		if p["a2"] == 1 {
+		if p["perfect"] == 1 {
 			chargeLevel = 0
 		}
 		switch chargeLevel {
