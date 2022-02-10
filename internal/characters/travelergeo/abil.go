@@ -28,7 +28,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A2",
-			AttackTag:  core.AttackTagNone,
+			AttackTag:  core.AttackTagNormal,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
 			StrikeType: core.StrikeTypeBlunt,

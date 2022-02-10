@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		hits = 1
 	}
 
-	c.QueueParticle("travelerelectro", 1, core.Cryo, f+100)
+	c.QueueParticle(c.Name(), 1, core.Electro, f+100)
 
 	for i := 0; i < hits; i++ {
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f)
