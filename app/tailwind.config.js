@@ -1,11 +1,17 @@
 module.exports = {
-  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  darkMode: false, // or 'media' or 'class'
+  mode: "jit",
+  future: {
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
+  },
+  content: ["./src/*.html", "./src/**/*.tsx"],
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        '704': '44rem',
+      }
+    },
   },
-  variants: {
-    extend: {},
-  },
+  variants: {},
   plugins: [],
-}
+};
