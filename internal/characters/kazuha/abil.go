@@ -1,6 +1,8 @@
 package kazuha
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -25,6 +27,29 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	c.AdvanceNormalIndex()
+
+	return f, a
+}
+
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionCharge, p)
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
+	for i, mult := range charge {
+		ai.Mult = mult[c.TalentLvlAttack()]
+		ai.Abil = fmt.Sprintf("Charge %v", i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-len(charge)+i, f-len(charge)+i)
+	}
 
 	return f, a
 }

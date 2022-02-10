@@ -42,6 +42,18 @@ func (c *char) Init(index int) {
 
 }
 
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+	switch a {
+	case core.ActionDash:
+		return 18
+	case core.ActionCharge:
+		return 20
+	default:
+		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		return 0
+	}
+}
+
 //Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
 //Elemental DMG Bonus to the element absorbed by Swirl for every point of Elemental Mastery
 //he has for 8s. Bonuses for different elements obtained through this method can co-exist.

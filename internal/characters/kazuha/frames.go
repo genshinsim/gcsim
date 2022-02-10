@@ -27,6 +27,8 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		}
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f, f
+	case core.ActionCharge:
+		return 44, 44 // kqm lib
 	case core.ActionHighPlunge:
 		c.Core.Log.Debugw("plunge skill check", "event", core.LogCharacterEvent, "frame", c.Core.F, "previous", c.Core.LastAction)
 		if c.Core.LastAction.Target == core.Kazuha && c.Core.LastAction.Typ == core.ActionSkill {
