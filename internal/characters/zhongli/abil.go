@@ -19,10 +19,9 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 		FlatDmg:    0.0139 * c.HPMax,
 	}
-	snap := c.Snapshot(&ai)
 
 	for i := 0; i < hits[c.NormalCounter]; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-i, f-i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -42,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[c.TalentLvlAttack()],
 		FlatDmg:    0.0139 * c.HPMax,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
 
 	return f, a
 }
