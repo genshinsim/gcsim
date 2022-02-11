@@ -90,7 +90,6 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 // Skill handling - Handles primary damage instance
 // Deals Hydro DMG to surrounding opponents and heal nearby active characters once every 2s. This healing is based on Kokomi's Max HP.
-// TODO: Have not handled the fact that you can snapshot burst bonus onto skill if you switch immediately after casting burst
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
@@ -123,7 +122,6 @@ func (c *char) createSkillSnapshot() *core.AttackEvent {
 		Durability: 25,
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
-	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
 	snap := c.Snapshot(&ai)
 
 	return (&core.AttackEvent{
@@ -140,6 +138,14 @@ func (c *char) skillTick(d *core.AttackEvent) {
 
 	hpplus := 1 + c.Stat(core.Heal)
 
+	// check if skill has burst bonus snapshot
+	// max swap frame should be 40 frame before 2nd tick
+	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < (c.skillLastUsed+120-40) {
+		d.Info.FlatDmg = burstBonusSkill[c.TalentLvlBurst()] * c.HPMax
+	} else {
+		d.Info.FlatDmg = c.burstDmgBonus(d.Info.AttackTag)
+	}
+
 	c.Core.Combat.QueueAttackEvent(d, 0)
 	c.Core.Health.HealActive(c.Index, (skillHealPct[c.TalentLvlSkill()]*c.HPMax+skillHealFlat[c.TalentLvlSkill()])*hpplus)
 
@@ -147,8 +153,6 @@ func (c *char) skillTick(d *core.AttackEvent) {
 	if c.Core.Rand.Float64() < .6667 {
 		c.QueueParticle("kokomi", 1, core.Hydro, 100)
 	}
-
-	c.skillLastTick = c.Core.F
 
 	// C2 handling - believe this is an additional instance of flat healing
 	// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
@@ -172,7 +176,6 @@ func (c *char) skillTickTask(originalSnapshot *core.AttackEvent, src int) func()
 
 		// Basically stops "old" casts of E from working, and also stops further ticks from that source
 		if c.skillLastUsed > src {
-
 			return
 		}
 
@@ -214,10 +217,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Core.Status.Duration("kokomiskill") > 0 {
 		// +1 to avoid same frame expiry issues with skill tick
 		c.Core.Status.AddStatus("kokomiskill", 12*60+1)
-		c.skillLastUsed = c.Core.F - 1
-		d := c.createSkillSnapshot()
-		// Tick intervals stay the same if duration is refreshed
-		c.AddTask(c.skillTickTask(d, c.Core.F), "kokomi-e-ticks", 120-(c.Core.F-c.skillLastTick))
 	}
 
 	// C4 attack speed buff

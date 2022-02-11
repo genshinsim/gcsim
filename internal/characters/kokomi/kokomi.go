@@ -12,7 +12,7 @@ func init() {
 type char struct {
 	*character.Tmpl
 	skillLastUsed int
-	skillLastTick int
+	swapEarlyF    int
 	c4ICDExpiry   int
 }
 
@@ -30,8 +30,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 3
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.c4ICDExpiry = 0
 	c.CharZone = core.ZoneInazuma
+
+	c.skillLastUsed = 0
+	c.swapEarlyF = 0
+	c.c4ICDExpiry = 0
 
 	c.passive()
 	c.onExitField()
@@ -146,6 +149,9 @@ func (c *char) burstActiveHook() {
 // Clears Kokomi burst when she leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.Core.Status.Duration("kokomiburst") > 0 {
+			c.swapEarlyF = c.Core.F
+		}
 		c.Core.Status.DeleteStatus("kokomiburst")
 		return false
 	}, "kokomi-exit")
