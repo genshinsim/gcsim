@@ -20,6 +20,7 @@ A rough guideline for your comment is as follows:
 - [ ] A1
 - [ ] A2 
 - [ ] A4
+- [ ] Sanity Test Cases
 - [ ] C1
 - [ ] C2
 - [ ] C3
@@ -41,3 +42,10 @@ To rebase your branch you will need to run the command
 git push -f
 ```
 Where new parent is the commitment hash of the newest commit on the main branch and old parent is the commitment hash of the oldest common commitment between your feature branch and the main branch.
+
+# Local Testing/Building
+0. Create a Config file
+1. Navigate to ```./gcsim/cmd/gcsim```
+2a. Run ```go build``` to build the executable and then feed your config file in e.g. ```./gcsim.exe -c="config.txt" -js="out.gz" -gz --calc```
+2b. Run ```go run . -c="config.txt" -js="out.gz" -gz --calc``` 
+3. Upload to the [viewer](https://viewer.gcsim.app) to view the output file to confirm everything is working accordingly, and optionally share the viewer in discord for debugging help.
