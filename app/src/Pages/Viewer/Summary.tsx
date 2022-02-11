@@ -114,7 +114,7 @@ export default function Summary({ data }: { data: SimResults }) {
       count: 0,
       t: "%",
     },
-    pyro: { name: "pryo%", flat: -1, per: PyroP, val: [], count: 0, t: "%" },
+    pyro: { name: "pyro%", flat: -1, per: PyroP, val: [], count: 0, t: "%" },
     cryo: { name: "cryo%", flat: -1, per: CryoP, val: [], count: 0, t: "%" },
     hydro: { name: "hydro%", flat: -1, per: HydroP, val: [], count: 0, t: "%" },
     geo: { name: "geo%", flat: -1, per: GeoP, val: [], count: 0, t: "%" },

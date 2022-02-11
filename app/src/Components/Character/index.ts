@@ -2,6 +2,9 @@ import { WeaponDetail } from "/src/Components/Weapon";
 
 export * from "./CharacterCard";
 export * from "./Stats";
+export * from "./CharacterEdit";
+export * from "./CharacterEditStats";
+export * from "./CharacterEditWeapon";
 
 export interface CharDetail {
   name: string;

@@ -180,7 +180,7 @@ type Props = {
   onChange: (index: number, value: number) => void;
 };
 
-export function CharacterStats({ char, onChange }: Props) {
+export function CharacterEditStats({ char, onChange }: Props) {
   return (
     <div className="flex flex-col">
       <div className="font-bold text-lg">Stats</div>

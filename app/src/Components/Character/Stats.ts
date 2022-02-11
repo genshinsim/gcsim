@@ -116,7 +116,7 @@ export function ConsolidateCharStats(chars: CharDetail[]): {
       t: "%",
     },
     pyro: {
-      name: "pryo%",
+      name: "pyro%",
       flatIndex: -1,
       percentIndex: StatToIndexMap["PyroP"],
       val: {},
@@ -226,7 +226,7 @@ export function ConsolidateCharStats(chars: CharDetail[]): {
     }
   }
 
-  console.log(stats);
+  // console.log(stats);
 
   return { stats: stats, maxRows: maxRowCount };
 }

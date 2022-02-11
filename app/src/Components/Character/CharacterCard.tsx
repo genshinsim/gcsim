@@ -8,7 +8,7 @@ import {
   IconEM,
   IconER,
   IconHP,
-} from "~src/Pages/Sim/Components/Icons";
+} from "~src/Components/Character/Icons";
 import { WeaponCard } from "~src/Components/Weapon";
 import { CharDetail, CharStatBlock } from "/src/Components/Character";
 
@@ -17,6 +17,10 @@ type Props = {
   stats: CharStatBlock[];
   statsRows: number;
   className?: string;
+  showDelete?: boolean;
+  showEdit?: boolean;
+  handleDelete?: () => void;
+  toggleEdit?: () => void;
 };
 
 function statKeyToIcon(key: string): JSX.Element {
@@ -62,6 +66,10 @@ export function CharacterCard({
   char,
   stats,
   statsRows,
+  showDelete = false,
+  showEdit = false,
+  toggleEdit,
+  handleDelete,
   className = "",
 }: Props) {
   const arts: JSX.Element[] = [];
@@ -136,7 +144,7 @@ export function CharacterCard({
 
   for (; count < statsRows; count++) {
     rows.push(
-      <tr key={count}>
+      <tr key={count + 1}>
         <td>
           <br />
         </td>
@@ -155,8 +163,8 @@ export function CharacterCard({
             charBG(char.element)
           }
         >
-          <div className="absolute top-1 right-1">
-            <Button icon="cross" intent="danger" small />
+          <div className={showDelete ? "absolute top-1 right-1" : "hidden"}>
+            <Button icon="cross" intent="danger" small onClick={handleDelete} />
           </div>
           <div className="character-header rounded-t-md" />
           <div className="character-name font-medium m-4 capitalize">
@@ -178,7 +186,7 @@ export function CharacterCard({
             <img
               src={"/images/avatar/" + char.name + ".png"}
               alt={char.name}
-              className="ml-auto h-32 lg:h-auto "
+              className="ml-auto h-32 wide:h-auto "
             />
           </div>
         </div>
@@ -194,9 +202,14 @@ export function CharacterCard({
           </div>
         </div>
 
-        <div className="ml-auto p-2 flex flex-row gap-4">
-          <Button icon="edit" />
+        <div
+          className={
+            showEdit ? "ml-auto pl-2 pt-2 pr-2 flex flex-row gap-4" : "hidden"
+          }
+        >
+          <Button icon="edit" onClick={toggleEdit} />
         </div>
+        <div className="mb-2" />
       </div>
     </div>
   );
