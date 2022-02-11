@@ -1,6 +1,10 @@
 {
     "compilerOptions": {
-      "baseUrl": "src",
+      "baseUrl": ".",
+      "paths": {
+        "~*": ["./*"],
+        "/*": ["./*"]
+      },
       "target": "es5",
       "lib": [
         "dom",
@@ -22,6 +26,7 @@
       "jsx": "react-jsx"
     },
     "include": [
-      "src"
+      "src",
+      "src/**/*.ts"
     ]
   }

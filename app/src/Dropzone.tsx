@@ -1,7 +1,7 @@
 import pako from "pako";
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import { Viewer } from "./Viewer/Viewer";
+import { Viewer } from "/src/Pages/Viewer/Viewer";
 
 export default function Dropzone() {
   const [data, setData] = React.useState<string>("");

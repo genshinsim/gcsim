@@ -1,5 +1,5 @@
 import React from "react";
-import { Viewer } from "./Viewer/Viewer";
+import { Viewer } from "/src/Pages/Viewer/Viewer";
 import { useLocation } from "wouter";
 import axios from "axios";
 import pako from "pako";

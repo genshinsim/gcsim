@@ -113,7 +113,7 @@ weapons.forEach((e) => {
 });
 
 fs.writeFileSync(
-  "./src/Viewer/weaponNames.json",
+  "./src/Pages/Viewer/weaponNames.json",
   JSON.stringify(weap),
   "utf-8"
 );

@@ -7,16 +7,31 @@
     @apply h-28 basis-full p-2 sm:basis-1/2;
   }
   .main-page-button {
-    @apply  bg-gray-700 hover:bg-gray-600 hover:cursor-pointer rounded-md h-full w-full flex justify-center items-center;
+    @apply bg-gray-700 hover:bg-gray-600 hover:cursor-pointer rounded-md h-full w-full flex justify-center items-center;
   }
+  .main-page-card {
+    @apply rounded-md h-full w-full flex justify-center items-center;
+  }
+
   .main-page-row {
-    @apply grid sm:grid-cols-1 md:grid-cols-2 sm:gap-1 md:gap-4
+    @apply grid sm:grid-cols-1 md:grid-cols-2 sm:gap-1 md:gap-4;
   }
 }
 
-
 body {
   background-color: #293742;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 div.debug-header {

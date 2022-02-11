@@ -38,7 +38,7 @@ function charBG(element: string) {
   switch (element) {
     case "cryo":
       return "bg-gradient-to-r from-gray-700 to-blue-300";
-    case "hyro":
+    case "hydro":
       return "bg-gradient-to-r from-gray-700 to-blue-500";
     case "pyro":
       return "bg-gradient-to-r from-gray-700 to-red-400";

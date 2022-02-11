@@ -1,16 +1,24 @@
 import { Route, Switch } from "wouter";
-import Dash from "./Dash";
-import Shared from "./Shared";
+import Footer from "/src/Components/Footer/Footer";
+import Nav from "/src/Components/Nav/Nav";
+import { Dash } from "/src/Pages/Dash";
+import Shared from "/src/Shared";
+import { Simple } from "/src/Pages/Sim";
 
 export default function App() {
   return (
-    <div className=".bp3-dark mx-auto h-full">
+    <div className=".bp3-dark h-screen flex flex-col">
+      <Nav />
       <Switch>
         <Route path="/" component={Dash} />
+        <Route path="/simple" component={Simple} />
         <Route path="/share/:id">
           {(params) => <Shared path={params.id} />}
         </Route>
       </Switch>
+      <div className="w-full pt-4 pb-4 md:pl-4">
+        <Footer />
+      </div>
     </div>
   );
 }

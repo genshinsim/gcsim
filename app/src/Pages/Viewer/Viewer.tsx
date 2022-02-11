@@ -46,7 +46,14 @@ const opts = [
   "icd",
 ];
 
-const defOpts = ["damage", "element", "action", "energy", "pre_damage_mods", "status"];
+const defOpts = [
+  "damage",
+  "element",
+  "action",
+  "energy",
+  "pre_damage_mods",
+  "status",
+];
 
 type ViewProps = {
   classes?: string;
