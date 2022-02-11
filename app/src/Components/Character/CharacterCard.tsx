@@ -176,9 +176,9 @@ export function CharacterCard({
                 Lvl {char.level}/{char.max_level}
               </div>
               <div>
-                {char.talents.attack}/{char.talents.skill}/{char.talents.burst}
+                Talents {char.talents.attack}/{char.talents.skill}/
+                {char.talents.burst}
               </div>
-              <div></div>
               <div className="mt-1 mr-2 grid grid-cols-5">{arts}</div>
             </div>
           </div>
