@@ -38,7 +38,8 @@ If you have committed code, but upon finishing your feature, the main branch has
 Please reach out for help if you are not sure how to do this step, the following steps can be dangerous and you can lose your work if not done correctly.
 
 To rebase your branch you will need to run the command
-```git rebase --onto <newparent> <oldparent>
+```
+git rebase --onto <newparent> <oldparent>
 git push -f
 ```
 Where new parent is the commitment hash of the newest commit on the main branch and old parent is the commitment hash of the oldest common commitment between your feature branch and the main branch.
