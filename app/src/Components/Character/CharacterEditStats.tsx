@@ -169,8 +169,8 @@ function StatRows(props: StatRowsProp) {
 
   return (
     <div className="flex flex-row flex-wrap">
-      <div className="basis-full lg:basis-1/2 pl-2 pr-2 ">{rows}</div>
-      <div className="basis-full lg:basis-1/2 pl-2 pr-2">{eleRows}</div>
+      <div className="basis-full wide:basis-1/2 pl-2 pr-2 ">{rows}</div>
+      <div className="basis-full wide:basis-1/2 pl-2 pr-2">{eleRows}</div>
     </div>
   );
 }
@@ -183,7 +183,6 @@ type Props = {
 export function CharacterEditStats({ char, onChange }: Props) {
   return (
     <div className="flex flex-col">
-      <div className="font-bold text-lg">Stats</div>
       <StatRows stats={char.stats} onChange={onChange} />
     </div>
   );

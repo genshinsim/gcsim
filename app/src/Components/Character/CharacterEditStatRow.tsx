@@ -17,7 +17,7 @@ export function StatRow({
         <div className="w-5 fill-gray-100">{sub.icon}</div>
         <div className="ml-1">{sub.label}</div>
       </div>
-      <div className="grid grid-cols-1 gap-y-1 pt-1 pb-1 sm:grid-cols-2 sm:gap-1 sm:gap-y-0  ">
+      <div className="grid grid-cols-1 gap-y-1 pt-1 pb-1 md:grid-cols-2 md:gap-1 md:gap-y-0  ">
         {sub.stat ? (
           <div className="rounded-md flex flex-row  ">
             <input

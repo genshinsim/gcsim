@@ -1,5 +1,6 @@
 import { Tab, Tabs } from "@blueprintjs/core";
 import { CharacterEditStats, CharacterEditWeapon, CharDetail } from ".";
+import { SectionDivider } from "../SectionDivider";
 
 type Props = {
   char: CharDetail;
@@ -12,23 +13,18 @@ export function CharacterEdit({ char, onChange }: Props) {
     onChange(char);
   };
   return (
-    <div>
-      <Tabs>
-        <Tab
-          id="stats"
-          title="Stats"
-          panel={
-            <CharacterEditStats char={char} onChange={handleOnStatChange} />
-          }
-        />
-        <Tab
-          id="character"
-          title="Character"
-          panel={<CharacterEditWeapon />}
-        ></Tab>
-        <Tab id="weapon" title="Weapon" panel={<CharacterEditWeapon />}></Tab>
-        <Tab id="sets" title="Sets" panel={<CharacterEditWeapon />}></Tab>
-      </Tabs>
+    <div className="flex flex-col gap-2">
+      <SectionDivider fontClass="font-bold text-md">Character</SectionDivider>
+      <SectionDivider fontClass="font-bold text-md">Weapons</SectionDivider>
+      <CharacterEditWeapon />
+      <SectionDivider fontClass="font-bold text-md">
+        Artifact Sets
+      </SectionDivider>
+      <div className="p-2"></div>
+      <SectionDivider fontClass="font-bold text-md">Stats</SectionDivider>
+      <div className="p-2">
+        <CharacterEditStats char={char} onChange={handleOnStatChange} />
+      </div>
     </div>
   );
 }

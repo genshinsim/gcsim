@@ -8,13 +8,9 @@ import {
   TextArea,
 } from "@blueprintjs/core";
 import React from "react";
+import { SectionDivider } from "~src/Components/SectionDivider";
 import { charTestConfig } from "..";
-import {
-  Main,
-  SectionDivider,
-  ActionList,
-  CharacterCardView,
-} from "../Components";
+import { Main, ActionList } from "../Components";
 import { Team } from "./Team";
 
 export function Simple() {
