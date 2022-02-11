@@ -28,3 +28,4 @@ If you are looking to contribute, the following are some key areas that you can 
 - Helping with documenting the sim in the wiki
 - Further testing of in game reactions, primarily EC and chain freeze duration.
 - Just in general using the sim for calculations/weapon comparisons/day 1 testing etc...
+- If you would like to contribute code please take a look at the [contributing guidelines](CONTRIBUTING.md)
