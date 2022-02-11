@@ -69,8 +69,8 @@ func (c *char) meleeAttack(f, a int) (int, int) {
 			delay,
 			delay,
 			//TODO: what's the ordering on these 2 callbacks?
-			c.rtSlashCallback,   //call back for triggering slash
 			c.meleeApplyRiptide, //call back for applying riptide
+			c.rtSlashCallback,   //call back for triggering slash
 		)
 	}
 
@@ -152,8 +152,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			f-meleeChargeDelayOffset[i],
 			f-meleeChargeDelayOffset[i],
 			//TODO: what's the ordering on these 2 callbacks?
-			c.rtSlashCallback,   //call back for triggering slash
 			c.meleeApplyRiptide, //call back for applying riptide
+			c.rtSlashCallback,   //call back for triggering slash
 		)
 	}
 	return f, a
