@@ -33,6 +33,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	char.AddMod(core.CharStatMod{
 		Key: "compoundbow",
 		Amount: func() ([]float64, bool) {
+			m[core.ATKP] = incAtk * float64(stacks)
+			m[core.AtkSpd] = incSpd * float64(stacks)
 			return m, true
 		},
 		Expiry: -1,
@@ -69,9 +71,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		// trigger cd
 		icd = float64(c.F) + cd
 		stackExpiry = float64(c.F) + stackDuration
-
-		m[core.ATKP] = incAtk * float64(stacks)
-		m[core.AtkSpd] = incSpd * float64(stacks)
 
 		return false
 	}, fmt.Sprintf("compoundbow-%v", char.Name()))
