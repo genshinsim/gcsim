@@ -159,6 +159,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f+travel, cb)
 	c.sCACount = 0
 
+	c.SetCD(core.ActionSkill, 10*60)
 	return f, a
 }
 
@@ -198,6 +199,18 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.Core.Status.AddStatus("ittoq", 960+f) // inflated from 11.55 seconds to cover basic combo
 
+	if c.Base.Cons >= 1 {
+		if c.Tags["strStack"] <= 3 {
+			c.Tags["strStack"] += 2
+		}
+		for frame := 60; frame < 60*1.5; frame += 30 {
+			c.AddTask(func() {
+				if c.Tags["strStack"] <= 4 {
+					c.Tags["strStack"]++
+				}
+			}, "c1-itto", frame)
+		}
+	}
 	c.SetCDWithDelay(core.ActionBurst, 1080, 8)
 	c.ConsumeEnergy(8)
 	return f, a
