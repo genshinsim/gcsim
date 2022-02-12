@@ -18,7 +18,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	atkbonus := 0.06 + 0.02*float64(r)
 	stacks := 0
 	//add on crit effect
-	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
