@@ -1,4 +1,4 @@
-import { weaponNames } from ".";
+import { weaponKeyToName } from ".";
 import { Weapon } from "~src/types";
 
 export function WeaponCard({ weapon }: { weapon: Weapon }) {
@@ -14,7 +14,7 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
         </div>
         <div className="flex-grow text-sm pl-2 flex flex-col justify-center">
           <div className="font-medium text-left">
-            {weaponNames[weapon.name] + " R" + weapon.refine}
+            {weaponKeyToName[weapon.name] + " R" + weapon.refine}
           </div>
           <div className="justify-center items-center rounded-md">
             Lvl {weapon.level}/{weapon.max_level}

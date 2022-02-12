@@ -11,7 +11,9 @@
     "build": "parcel build src/index.html"
   },
   "devDependencies": {
+    "@parcel/packager-raw-url": "2.3.1",
     "@parcel/transformer-svg-react": "^2.3.1",
+    "@parcel/transformer-webmanifest": "2.3.1",
     "@types/pako": "^1.0.3",
     "@types/react": "^17.0.34",
     "@types/react-dom": "^17.0.11",
@@ -31,6 +33,7 @@
   "dependencies": {
     "@blueprintjs/core": "^3.51.3",
     "@blueprintjs/popover2": "^0.12.9",
+    "@blueprintjs/select": "^3.18.12",
     "@reduxjs/toolkit": "^1.6.2",
     "ajv": "^8.8.2",
     "axios": "^0.24.0",

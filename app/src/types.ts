@@ -5,14 +5,26 @@ export interface Character {
   max_level: number;
   cons: number;
   weapon: Weapon;
-  talents: {
-    attack: number;
-    skill: number;
-    burst: number;
-  };
+  talents: Talent;
   stats: number[];
   snapshot: number[];
-  sets: { [key: string]: number };
+  sets: Set;
+}
+
+export const defaultStats = [
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+];
+
+export const maxStatLength = defaultStats.length;
+
+export interface Talent {
+  attack: number;
+  skill: number;
+  burst: number;
+}
+
+export interface Set {
+  [key: string]: number;
 }
 
 export interface Weapon {

@@ -1,7 +1,7 @@
 import { StatToIndexMap } from "~src/Components/Character";
-import { subDisplayLine } from ".";
+import { IconPercent } from "~src/Components/Icons";
+import { subDisplayLine } from "./CharacterEditStats";
 
-import { IconPercent } from "./Icons";
 const regDec = new RegExp(/^(\d+)?(\.)?\d+$/);
 
 export function StatRow({
@@ -27,14 +27,17 @@ export function StatRow({
               className="p-2 rounded-l-md bg-gray-800 text-right focus:outline-none invalid:text-red-500"
               value={sub.val}
               onChange={(e) => {
-                const val = e.target.value;
+                let val: number;
                 //first we need to sanitize the value
-                if (regDec.test(val)) {
-                  e.target.setCustomValidity("");
-                  onChange(StatToIndexMap[sub.stat!], parseFloat(val));
-                  return;
+                if (regDec.test(e.target.value)) {
+                  // e.target.setCustomValidity("");
+                  val = parseFloat(e.target.value);
+                } else {
+                  val = 0;
                 }
-                e.target.setCustomValidity("invalid input");
+                // e.target.setCustomValidity("invalid input");
+
+                onChange(StatToIndexMap[sub.stat!], val);
               }}
             />
             <div className="p-1 pr-3 w-6 rounded-r-md bg-gray-800 items-center flex" />
@@ -52,14 +55,17 @@ export function StatRow({
               className="p-2 rounded-l-md bg-gray-800 text-right focus:outline-none invalid:text-red-500"
               value={sub.val_}
               onChange={(e) => {
-                const val = e.target.value;
+                let val: number;
                 //first we need to sanitize the value
-                if (regDec.test(val)) {
-                  e.target.setCustomValidity("");
-                  onChange(StatToIndexMap[sub.stat_!], parseFloat(val));
-                  return;
+                if (regDec.test(e.target.value)) {
+                  // e.target.setCustomValidity("");
+                  val = parseFloat(e.target.value);
+                } else {
+                  val = 0;
                 }
-                e.target.setCustomValidity("invalid input");
+                // e.target.setCustomValidity("invalid input");
+
+                onChange(StatToIndexMap[sub.stat_!], val / 100);
               }}
             />
             <div className="p-1 pr-3 w-6 rounded-r-md bg-gray-800 items-center flex">

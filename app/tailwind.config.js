@@ -15,10 +15,12 @@ module.exports = {
       md: "768px",
       // => @media (min-width: 768px) { ... }
 
-      wide: "1160px",
+      hd: "1000px",
 
       lg: "1024px",
       // => @media (min-width: 1024px) { ... }
+
+      wide: "1160px",
 
       xl: "1280px",
       // => @media (min-width: 1280px) { ... }
@@ -27,7 +29,7 @@ module.exports = {
       // => @media (min-width: 1536px) { ... }
     },
     extend: {
-      spacing: { 320: "320px" },
+      spacing: { 320: "320px", 280: "280" },
       colors: {
         "bp-header-color": "#394b59",
         "bp-card-color": "#30404d",

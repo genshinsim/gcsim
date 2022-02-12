@@ -204,7 +204,7 @@
   resolved "https://registry.yarnpkg.com/@blueprintjs/colors/-/colors-4.0.0-alpha.2.tgz#ce8e7450ae542fcddb72b372b49669adf13c0173"
   integrity sha512-B8NX2oKVTPGVJd7ZCbm9FMPoEdQiLKceo0/UxsJ+gwqNiuo45RzdmrXACI6oFO4hGHL2WiLU0oysLNj2zpHDkA==
 
-"@blueprintjs/core@^3.51.3", "@blueprintjs/core@^3.52.0":
+"@blueprintjs/core@^3.51.3", "@blueprintjs/core@^3.52.0", "@blueprintjs/core@^3.53.0":
   version "3.53.0"
   resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.53.0.tgz#ad9ac906107baf07a3a84f2c705e70032a053fb5"
   integrity sha512-cvoJJtnPrBgaVvWhfHoFi/zH+Bk4VPDqbG4DdBl+BPK5MyvvkcBP/oX/iVG1qgwdvQ9FqUsHpuCLLgF6j8bItA==
@@ -241,6 +241,15 @@
     dom4 "^2.1.5"
     react-popper "^2.2.4"
     resize-observer-polyfill "^1.5.1"
+    tslib "~1.13.0"
+
+"@blueprintjs/select@^3.18.12":
+  version "3.18.12"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-3.18.12.tgz#efa377c5f31544fec9e577f29ae5b199c8ed93a7"
+  integrity sha512-tqRDKXZxmkUO8TtNFrcMeSNe26LbnGEk/X/OgT6c+Oh3RYQe87YSi92GNtfNn1gpoQkUpnuk1gA68iuX3fYGug==
+  dependencies:
+    "@blueprintjs/core" "^3.53.0"
+    classnames "^2.2"
     tslib "~1.13.0"
 
 "@hypnosphi/create-react-context@^0.3.1":
@@ -572,6 +581,14 @@
     globals "^13.2.0"
     nullthrows "^1.1.1"
 
+"@parcel/packager-raw-url@2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@parcel/packager-raw-url/-/packager-raw-url-2.3.1.tgz#e34312313035c57f19ab94c09829c7edb0a5d93b"
+  integrity sha512-KSdLKSSGEfsh9RArIGk5LcNB99q4sw4QBQ/QalTdz1cU0r32dLv0cjiKtQ9xbdhUEr2OAnccVJhik+jh+PJ26w==
+  dependencies:
+    "@parcel/plugin" "2.3.1"
+    "@parcel/utils" "2.3.1"
+
 "@parcel/packager-raw@2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@parcel/packager-raw/-/packager-raw-2.3.1.tgz#b8672852c8b70688ba99adfc04f0b110ade72a8a"
@@ -813,6 +830,16 @@
     posthtml-parser "^0.10.1"
     posthtml-render "^3.0.0"
     semver "^5.7.1"
+
+"@parcel/transformer-webmanifest@2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@parcel/transformer-webmanifest/-/transformer-webmanifest-2.3.1.tgz#effef26b4e0864d52fd3b3f12edd06d6a1649ec6"
+  integrity sha512-7AiFq1Hm7g7Q79INxSuDzRBAHijBlatusiPB39XMvpUEySP530EuaVA60+oMYbIW8K+tnuusMZtmtmHPixVhBQ==
+  dependencies:
+    "@parcel/diagnostic" "2.3.1"
+    "@parcel/plugin" "2.3.1"
+    "@parcel/utils" "2.3.1"
+    json-source-map "^0.6.1"
 
 "@parcel/types@2.3.1", "@parcel/types@^2.3.0":
   version "2.3.1"

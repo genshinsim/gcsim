@@ -16,7 +16,7 @@ import {
   IconHydro,
   IconPhysical,
   IconPyro,
-} from "~src/Components/Character/Icons";
+} from "~src/Components/Icons";
 import { WeaponCard } from "~src/Components/Weapon";
 import { CharStatBlock } from "/src/Components/Character";
 import { Character } from "~src/types";

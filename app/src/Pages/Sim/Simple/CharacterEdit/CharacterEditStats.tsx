@@ -19,7 +19,9 @@ import {
   IconHydro,
   IconPhysical,
   IconPyro,
-} from "./Icons";
+} from "~src/Components/Icons";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
+import { simActions } from "~src/Pages/Sim";
 
 export type subDisplayLine = {
   stat?: string;
@@ -179,21 +181,27 @@ function StatRows(props: StatRowsProp) {
 
   return (
     <div className="flex flex-row flex-wrap">
-      <div className="basis-full wide:basis-1/2 pl-2 pr-2 ">{rows}</div>
-      <div className="basis-full wide:basis-1/2 pl-2 pr-2">{eleRows}</div>
+      <div className="basis-full hd:basis-1/2 pl-2 pr-2 ">{rows}</div>
+      <div className="basis-full hd:basis-1/2 pl-2 pr-2">{eleRows}</div>
     </div>
   );
 }
 
-type Props = {
-  char: Character;
-  onChange: (index: number, value: number) => void;
-};
+export function CharacterEditStats() {
+  const { char } = useAppSelector((state: RootState) => {
+    return {
+      char: state.sim.team[state.sim.edit_index],
+    };
+  });
+  const dispatch = useAppDispatch();
 
-export function CharacterEditStats({ char, onChange }: Props) {
+  const handleChangeStat = (index: number, value: number) => {
+    dispatch(simActions.setCharacterStats({ index: index, val: value }));
+  };
+
   return (
     <div className="flex flex-col">
-      <StatRows stats={char.stats} onChange={onChange} />
+      <StatRows stats={char.stats} onChange={handleChangeStat} />
     </div>
   );
 }

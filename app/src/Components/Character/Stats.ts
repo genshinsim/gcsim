@@ -175,7 +175,7 @@ export function ConsolidateCharStats(chars: Character[]): {
 
   let maxRowCount = 0;
 
-  chars.forEach((char, i) => {
+  chars.forEach((char) => {
     let rowCount = 0;
     for (const key in totalStats) {
       let s = totalStats[key];
@@ -207,14 +207,15 @@ export function ConsolidateCharStats(chars: Character[]): {
 
   let stats: { [key in string]: CharStatBlock[] } = {};
 
+  //make a block for all the chars first
+  chars.forEach((c) => {
+    stats[c.name] = [];
+  });
+
   for (const key in totalStats) {
     if (totalStats[key].count > 0) {
       //loop through chars
       for (const char in totalStats[key].val) {
-        if (!(char in stats)) {
-          stats[char] = [];
-        }
-
         stats[char].push({
           key: key,
           name: totalStats[key].name,

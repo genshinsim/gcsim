@@ -2,6 +2,8 @@ type Props = {
   label: string;
   onChange?: (val: number) => void;
   value: number;
+  min?: number;
+  max?: number;
   stepSize?: number;
   integerOnly?: boolean;
 };
@@ -13,6 +15,8 @@ export function NumberInput({
   label,
   onChange = (val: number) => {},
   value,
+  min = 0,
+  max = 100,
   stepSize = 1,
   integerOnly = true,
 }: Props) {
@@ -35,18 +39,31 @@ export function NumberInput({
           value={value}
           onChange={(e) => {
             const val = e.target.value;
-            if (check.test(val)) {
-              e.target.setCustomValidity("");
-              onChange(parse(val));
+            if (!check.test(val)) {
+              // e.target.setCustomValidity("invalid input");
+              onChange(min);
               return;
             }
-            e.target.setCustomValidity("invalid input");
+            const v = parse(val);
+            if (v < min || v > max) {
+              return;
+            }
+
+            e.target.setCustomValidity("");
+            onChange(v);
           }}
         />
         <div className="rounded-r-md flex flex-col">
           <button
             className="bg-gray-800 w-12 rounded-tr-md focus:outline-none hover:bg-gray-900"
-            onClick={() => onChange(value + stepSize)}
+            disabled={value === max}
+            onClick={() => {
+              const v = value + stepSize;
+              if (v < min || v > max) {
+                return;
+              }
+              onChange(v);
+            }}
           >
             <span aria-hidden="true" className="bp3-icon bp3-icon-chevron-up">
               <svg
@@ -64,7 +81,14 @@ export function NumberInput({
           </button>
           <button
             className="bg-gray-800 w-12 rounded-br-md focus:outline-none hover:bg-gray-900"
-            onClick={() => onChange(value - stepSize)}
+            disabled={value === min}
+            onClick={() => {
+              const v = value - stepSize;
+              if (v < min || v > max) {
+                return;
+              }
+              onChange(v);
+            }}
           >
             <span aria-hidden="true" className="bp3-icon bp3-icon-chevron-down">
               <svg
