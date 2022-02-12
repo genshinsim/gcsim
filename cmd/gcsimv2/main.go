@@ -25,6 +25,8 @@ func main() {
 	flag.BoolVar(&opt.gz, "gz", false, "gzip json results; require out flag")
 	flag.BoolVar(&opt.prof, "p", false, "run cpu profile; default false")
 
+	flag.Parse()
+
 	if opt.prof {
 		defer profile.Start(profile.ProfilePath("./"), profile.CPUProfile).Stop()
 	}
