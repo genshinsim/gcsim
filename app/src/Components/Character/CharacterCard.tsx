@@ -18,10 +18,11 @@ import {
   IconPyro,
 } from "~src/Components/Character/Icons";
 import { WeaponCard } from "~src/Components/Weapon";
-import { CharDetail, CharStatBlock } from "/src/Components/Character";
+import { CharStatBlock } from "/src/Components/Character";
+import { Character } from "~src/types";
 
 type Props = {
-  char: CharDetail;
+  char: Character;
   stats: CharStatBlock[];
   statsRows: number;
   className?: string;

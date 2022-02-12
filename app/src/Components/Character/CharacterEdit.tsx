@@ -1,25 +1,12 @@
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  ControlGroup,
-  FormGroup,
-  HTMLSelect,
-  Label,
-  NumericInput,
-  Slider,
-  Tab,
-  Tabs,
-} from "@blueprintjs/core";
-import React from "react";
-import { CharacterEditStats, CharacterEditWeapon, CharDetail } from ".";
+import { Character } from "~src/types";
+import { CharacterEditStats, CharacterEditWeapon } from ".";
 import { SectionDivider } from "../SectionDivider";
 import { CharacterEditArtifactSets } from "./CharacterEditArtifactSets";
 import { CharacterEditDetails } from "./CharacterEditDetails";
 
 type Props = {
-  char: CharDetail;
-  onChange: (char: CharDetail) => void;
+  char: Character;
+  onChange: (char: Character) => void;
 };
 
 function maxLvlToAsc(lvl: number): number {
@@ -43,7 +30,11 @@ function maxLvlToAsc(lvl: number): number {
 
 export function CharacterEdit({ char, onChange }: Props) {
   const handleOnStatChange = (index: number, value: number) => {
+    console.log("before: ", char.stats);
     char.stats[index] = value;
+    console.log("changing: ", index, value);
+    console.log("after: ", char.stats);
+
     onChange(char);
   };
   return (

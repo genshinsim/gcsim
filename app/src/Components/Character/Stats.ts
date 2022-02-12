@@ -1,4 +1,4 @@
-import { CharDetail } from ".";
+import { Character } from "~src/types";
 
 type CharViewableStats = {
   [key in string]: {
@@ -46,7 +46,7 @@ export const StatToIndexMap: { [key in string]: number } = {
   DendroP: 19,
 };
 
-export function ConsolidateCharStats(chars: CharDetail[]): {
+export function ConsolidateCharStats(chars: Character[]): {
   stats: { [key in string]: CharStatBlock[] };
   maxRows: number;
 } {

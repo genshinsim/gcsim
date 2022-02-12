@@ -31,7 +31,7 @@ export function StatRow({
                 //first we need to sanitize the value
                 if (regDec.test(val)) {
                   e.target.setCustomValidity("");
-                  onChange(StatToIndexMap[sub.stat!], parseFloat(val) / 100);
+                  onChange(StatToIndexMap[sub.stat!], parseFloat(val));
                   return;
                 }
                 e.target.setCustomValidity("invalid input");

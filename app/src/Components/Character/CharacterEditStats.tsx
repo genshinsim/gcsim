@@ -1,5 +1,6 @@
 import { Button, FormGroup, Switch } from "@blueprintjs/core";
-import { CharDetail, StatToIndexMap } from "~src/Components/Character";
+import { StatToIndexMap } from "~src/Components/Character";
+import { Character } from "~/src/types";
 import { StatRow } from "./CharacterEditStatRow";
 
 import {
@@ -185,7 +186,7 @@ function StatRows(props: StatRowsProp) {
 }
 
 type Props = {
-  char: CharDetail;
+  char: Character;
   onChange: (index: number, value: number) => void;
 };
 

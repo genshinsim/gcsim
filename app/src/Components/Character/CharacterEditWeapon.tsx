@@ -1,11 +1,11 @@
 import { Button } from "@blueprintjs/core";
 import React from "react";
-import { CharDetail } from ".";
+import { Character } from "~src/types";
 import { NumberInput } from "../NumberInput";
 
 type Props = {
-  char: CharDetail;
-  onChange: (char: CharDetail) => void;
+  char: Character;
+  onChange: (char: Character) => void;
 };
 
 export function CharacterEditWeapon({ char, onChange }: Props) {

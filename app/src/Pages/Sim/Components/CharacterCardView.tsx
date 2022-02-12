@@ -1,15 +1,16 @@
-import {
-  CharDetail,
-  ConsolidateCharStats,
-  CharacterCard,
-} from "~src/Components/Character";
+import { ConsolidateCharStats, CharacterCard } from "~src/Components/Character";
+import { Character } from "~src/types";
 
 type Props = {
-  chars: CharDetail[];
+  chars: Character[];
   handleEdit: (index: number) => () => void;
 };
 
 export function CharacterCardView(props: Props) {
+  if (!props.chars) {
+    return <div>No characters</div>;
+  }
+
   const teamStats = ConsolidateCharStats(props.chars);
 
   const rows = props.chars.map((c, index) => {

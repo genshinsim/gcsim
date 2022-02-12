@@ -1,31 +1,50 @@
-import { Callout, Intent, Button, Card, Tabs, Tab } from "@blueprintjs/core";
+import { Callout, Intent, Button, Card } from "@blueprintjs/core";
 import React from "react";
-import { CharacterEdit, CharDetail } from "~src/Components/Character";
+import {
+  CharacterCard,
+  CharacterEdit,
+  ConsolidateCharStats,
+} from "~src/Components/Character";
 import { SectionDivider } from "~src/Components/SectionDivider";
-import { charTestConfig } from "..";
 import { CharacterCardView } from "../Components";
+import { useAppDispatch, useAppSelector } from "~src/store";
+import { RootState } from "~src/store";
+import { simActions } from "~src/Pages/Sim/simSlice";
+import { Character } from "~src/types";
 
-type Props = {
-  chars: CharDetail[];
-};
+type Props = {};
 
 export function Team(props: Props) {
-  const [showTeamEdit, setShowTeamEdit] = React.useState<boolean>(false);
-  const [edit, setEdit] = React.useState<number>(-1);
+  const { team, edit_index } = useAppSelector((state: RootState) => {
+    return {
+      team: state.sim.team,
+      edit_index: state.sim.edit_index,
+    };
+  });
+  const dispatch = useAppDispatch();
   const myRef = React.useRef<HTMLSpanElement>(null);
-
   React.useEffect(() => {
-    if (showTeamEdit) {
-      executeScroll();
-    }
-  }, [showTeamEdit]);
+    executeScroll();
+  }, [edit_index]);
 
   const handleEdit = (index: number) => {
     return () => {
-      if (index > -1 && index < props.chars.length) {
-        setEdit(index);
-        setShowTeamEdit(true);
-        console.log("editing: " + index);
+      if (index > -1 && index < team.length) {
+        dispatch(simActions.editCharacter({ index: index }));
+      }
+    };
+  };
+  const handleDelete = (index: number) => {
+    return () => {
+      if (index > -1 && index < team.length) {
+        dispatch(simActions.deleteCharacter({ index: index }));
+      }
+    };
+  };
+  const handleChange = (index: number) => {
+    return (char: Character) => {
+      if (index > -1 && index < team.length) {
+        dispatch(simActions.setCharacter({ char: char, index: index }));
       }
     };
   };
@@ -34,6 +53,24 @@ export function Team(props: Props) {
       myRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const teamStats = ConsolidateCharStats(team);
+
+  const cards = team.map((c, index) => {
+    return (
+      <CharacterCard
+        key={c.name}
+        char={c}
+        stats={teamStats.stats[c.name]}
+        statsRows={teamStats.maxRows}
+        showDelete
+        showEdit
+        toggleEdit={handleEdit(index)}
+        handleDelete={handleDelete(index)}
+        className="basis-full md:basis-1/2 wide:basis-1/4 pt-2 pr-2 pb-2"
+      />
+    );
+  });
 
   return (
     <div className="flex flex-col">
@@ -48,31 +85,25 @@ export function Team(props: Props) {
         </Callout>
       </div>
       <span ref={myRef} />
-      <div className={showTeamEdit ? "hidden" : "mt-2"}>
-        <CharacterCardView chars={charTestConfig} handleEdit={handleEdit} />
+      <div className={edit_index > -1 ? "hidden" : "mt-2"}>
+        <div className="flex flex-row flex-wrap pl-2">{cards}</div>
       </div>
-      {showTeamEdit ? (
+      {edit_index > -1 ? (
         <Card className="m-2">
           <CharacterEdit
-            char={props.chars[edit]}
-            onChange={(char) => console.log("editing " + char.name)}
+            char={team[edit_index]}
+            onChange={handleChange(edit_index)}
           />
           <Button
             fill
             intent="primary"
             icon="edit"
             onClick={() => {
-              setShowTeamEdit(false);
+              dispatch(simActions.editCharacter({ index: -1 }));
             }}
           >
             Done
           </Button>
-          {/* <div className="w-full mt-1 flex flex-row flex-wrap">
-            <div className="basis-full sm:basis-1/2">
-              <Button fill>TC Tools</Button>
-            </div>
-            <div className="basis-full sm:basis-1/2"></div>
-          </div> */}
         </Card>
       ) : null}
     </div>

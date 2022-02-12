@@ -1,9 +1,9 @@
 import { Button, Checkbox, Switch } from "@blueprintjs/core";
-import { CharDetail } from ".";
+import { Character } from "~/src/types";
 
 type Props = {
-  char: CharDetail;
-  onChange: (char: CharDetail) => void;
+  char: Character;
+  onChange: (char: Character) => void;
 };
 
 export function CharacterEditArtifactSets(props: Props) {

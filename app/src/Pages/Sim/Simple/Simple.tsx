@@ -1,15 +1,8 @@
-import {
-  Button,
-  Callout,
-  Card,
-  Collapse,
-  Icon,
-  Intent,
-  TextArea,
-} from "@blueprintjs/core";
+import { Button, Callout, Card, Collapse, Intent } from "@blueprintjs/core";
 import React from "react";
 import { SectionDivider } from "~src/Components/SectionDivider";
-import { charTestConfig } from "..";
+import { useAppSelector } from "~src/store";
+import { RootState } from "~src/store";
 import { Main, ActionList } from "../Components";
 import { Team } from "./Team";
 
@@ -19,7 +12,7 @@ export function Simple() {
   return (
     <Main className="flex flex-col gap-2">
       <div className="flex flex-col">
-        <Team chars={charTestConfig} />
+        <Team />
         <SectionDivider>Action List</SectionDivider>
         <div className="ml-auto mr-2">
           <Button
