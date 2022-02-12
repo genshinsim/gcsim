@@ -57,18 +57,22 @@ export function Team(props: Props) {
             char={props.chars[edit]}
             onChange={(char) => console.log("editing " + char.name)}
           />
-          <div className="w-full mt-1 ">
-            <Button
-              fill
-              intent="primary"
-              icon="edit"
-              onClick={() => {
-                setShowTeamEdit(false);
-              }}
-            >
-              Done
-            </Button>
-          </div>
+          <Button
+            fill
+            intent="primary"
+            icon="edit"
+            onClick={() => {
+              setShowTeamEdit(false);
+            }}
+          >
+            Done
+          </Button>
+          {/* <div className="w-full mt-1 flex flex-row flex-wrap">
+            <div className="basis-full sm:basis-1/2">
+              <Button fill>TC Tools</Button>
+            </div>
+            <div className="basis-full sm:basis-1/2"></div>
+          </div> */}
         </Card>
       ) : null}
     </div>

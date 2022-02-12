@@ -6,8 +6,8 @@ export const charTestConfig: CharDetail[] = [
   {
     name: "bennett",
     element: "pyro",
-    level: 90,
-    max_level: 90,
+    level: 70,
+    max_level: 80,
     cons: 6,
     weapon: {
       name: "aquilafavonia",

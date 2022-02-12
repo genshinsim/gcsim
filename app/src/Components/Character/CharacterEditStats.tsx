@@ -1,14 +1,23 @@
+import { Button, FormGroup, Switch } from "@blueprintjs/core";
 import { CharDetail, StatToIndexMap } from "~src/Components/Character";
 import { StatRow } from "./CharacterEditStatRow";
 
 import {
+  IconAnemo,
   IconAtk,
   IconCD,
   IconCR,
+  IconCryo,
   IconDef,
+  IconElectro,
   IconEM,
   IconER,
+  IconGeo,
+  IconHeal,
   IconHP,
+  IconHydro,
+  IconPhysical,
+  IconPyro,
 } from "./Icons";
 
 export type subDisplayLine = {
@@ -87,64 +96,64 @@ function StatRows(props: StatRowsProp) {
       label: "Heal%",
       val_: 0,
       val: 0,
-      icon: <IconHP className="fill-gray-100" />,
+      icon: <IconHeal className="fill-gray-100" />,
     },
     {
       stat_: "PyroP",
       label: "Pyro%",
       val_: 0,
       val: 0,
-      icon: <IconHP className="fill-gray-100" />,
+      icon: <IconPyro className="fill-gray-100" />,
     },
     {
       stat_: "HydroP",
       label: "Hydro%",
       val_: 0,
       val: 0,
-      icon: <IconHP className="fill-gray-100" />,
+      icon: <IconHydro className="fill-gray-100" />,
     },
     {
       stat_: "CryoP",
       label: "Cryo%",
       val_: 0,
       val: 0,
-      icon: <IconHP className="fill-gray-100" />,
+      icon: <IconCryo className="fill-gray-100" />,
     },
     {
       stat_: "ElectroP",
       label: "Electro%",
       val_: 0,
       val: 0,
-      icon: <IconHP className="fill-gray-100" />,
+      icon: <IconElectro className="fill-gray-100" />,
     },
     {
       stat_: "AnemoP",
       label: "Anemo%",
       val_: 0,
       val: 0,
-      icon: <IconHP className="fill-gray-100" />,
+      icon: <IconAnemo className="fill-gray-100" />,
     },
     {
       stat_: "GeoP",
       label: "Geo%",
       val_: 0,
       val: 0,
-      icon: <IconHP className="fill-gray-100" />,
+      icon: <IconGeo className="fill-gray-100" />,
     },
     {
       stat_: "PhyP",
       label: "Phy%",
       val_: 0,
       val: 0,
-      icon: <IconHP className="fill-gray-100" />,
+      icon: <IconPhysical className="fill-gray-100" />,
     },
-    {
-      stat_: "DendroP",
-      label: "Dendro%",
-      val_: 0,
-      val: 0,
-      icon: <IconHP className="fill-gray-100" />,
-    },
+    // {
+    //   stat_: "DendroP",
+    //   label: "Dendro%",
+    //   val_: 0,
+    //   val: 0,
+    //   icon: <IconHP className="fill-gray-100" />,
+    // },
   ];
 
   const rows = subs.map((sub, index) => {

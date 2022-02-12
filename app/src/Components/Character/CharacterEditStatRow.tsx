@@ -14,7 +14,7 @@ export function StatRow({
   return (
     <div className="flex flex-row place-items-center ">
       <div className="flex-grow flex flex-row items-center mr-auto pt-1 pb-1">
-        <div className="w-5 fill-gray-100">{sub.icon}</div>
+        <div className="w-4 fill-gray-100">{sub.icon}</div>
         <div className="ml-1">{sub.label}</div>
       </div>
       <div className="grid grid-cols-1 gap-y-1 pt-1 pb-1 md:grid-cols-2 md:gap-1 md:gap-y-0  ">

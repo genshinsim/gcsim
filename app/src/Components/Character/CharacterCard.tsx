@@ -1,13 +1,21 @@
 import { Button } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import {
+  IconAnemo,
   IconAtk,
   IconCD,
   IconCR,
+  IconCryo,
   IconDef,
+  IconElectro,
   IconEM,
   IconER,
+  IconGeo,
+  IconHeal,
   IconHP,
+  IconHydro,
+  IconPhysical,
+  IconPyro,
 } from "~src/Components/Character/Icons";
 import { WeaponCard } from "~src/Components/Weapon";
 import { CharDetail, CharStatBlock } from "/src/Components/Character";
@@ -39,8 +47,24 @@ function statKeyToIcon(key: string): JSX.Element {
       return <IconCR />;
     case "cd":
       return <IconCD />;
+    case "electro":
+      return <IconElectro />;
+    case "pyro":
+      return <IconPyro />;
+    case "cryo":
+      return <IconCryo />;
+    case "hydro":
+      return <IconHydro />;
+    case "geo":
+      return <IconGeo />;
+    case "anemo":
+      return <IconAnemo />;
+    case "phys":
+      return <IconPhysical />;
+    case "heal":
+      return <IconHeal />;
     default:
-      return <IconHP />;
+      return <span />;
   }
 }
 
@@ -134,7 +158,7 @@ export function CharacterCard({
     rows.push(
       <tr key={count}>
         <td className="flex flex-row place-items-center">
-          <div className="w-2 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>{" "}
+          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>{" "}
           {s.name}
         </td>
         {val}
