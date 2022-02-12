@@ -14,6 +14,7 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
+	m := make([]float64, core.EndStatType)
 	dmg := .075 + float64(r)*.025
 
 	hrfunc := func(ele core.EleType, key string) func(args ...interface{}) bool {
@@ -27,24 +28,25 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				return false
 			}
 
-			electroBuff := make([]float64, core.EndStatType)
-			electroBuff[core.EleToDmgP(core.Electro)] = dmg
-			otherBuff := make([]float64, core.EndStatType)
-			otherBuff[core.EleToDmgP(ele)] = dmg
-
 			for _, char := range c.Chars {
-
 				if char.Ele() != core.Electro && char.Ele() != ele {
 					continue
 				}
+				this := char
 				char.AddMod(core.CharStatMod{
 					Key: "hakushin-passive",
 					Amount: func() ([]float64, bool) {
-						if char.Ele() == core.Electro {
-							return electroBuff, true
-						} else {
-							return otherBuff, true
-						}
+
+						m[core.PyroP] = 0
+						m[core.HydroP] = 0
+						m[core.CryoP] = 0
+						m[core.ElectroP] = 0
+						m[core.AnemoP] = 0
+						m[core.GeoP] = 0
+						m[core.DendroP] = 0
+						m[core.EleToDmgP(this.Ele())] = dmg
+
+						return m, true
 					},
 					Expiry: c.F + 6*60,
 				})
