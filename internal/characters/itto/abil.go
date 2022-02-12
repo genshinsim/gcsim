@@ -199,6 +199,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.Core.Status.AddStatus("ittoq", 960+f) // inflated from 11.55 seconds to cover basic combo
 
+	if c.Base.Cons >= 4 {
+		val := make([]float64, core.EndStatType)
+		val[core.ATKP] = 0.2
+		val[core.DEFP] = 0.2
+		c.c4cb(960+f, val)
+	}
+
 	if c.Base.Cons >= 1 {
 		if c.Tags["strStack"] <= 3 {
 			c.Tags["strStack"] += 2
@@ -210,6 +217,24 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				}
 			}, "c1-itto", frame)
 		}
+	}
+	if c.Base.Cons >= 2 {
+		c.AddTask(func() {
+			count := 0
+			for _, char := range c.Core.Chars {
+				if char.Ele() == core.Geo {
+					count++
+				}
+			}
+			if count > 3 {
+				c.AddEnergy(3 * 6)
+				c.ReduceActionCooldown(core.ActionBurst, 3*1.5*60)
+			} else {
+				c.AddEnergy(float64(count) * 6)
+				c.ReduceActionCooldown(core.ActionBurst, count*(1.5*60))
+			}
+		}, "c2-itto", 9)
+
 	}
 	c.SetCDWithDelay(core.ActionBurst, 1080, 8)
 	c.ConsumeEnergy(8)
@@ -229,4 +254,24 @@ func (c *char) onExitField() {
 		})
 		return false
 	}, "itto-exit")
+}
+
+func (c *char) c4cb(delay int, buff []float64) func() {
+	return func() {
+		c.AddTask(func() {
+			if c.Core.Status.Duration("ittoq") > 0 {
+				c.c4cb(c.Core.Status.Duration("ittoq"), buff)
+			} else {
+				for _, char := range c.Core.Chars {
+					char.AddMod(core.CharStatMod{
+						Key:    "itto-c4",
+						Expiry: c.Core.F + 10*60,
+						Amount: func() ([]float64, bool) {
+							return buff, true
+						},
+					})
+				}
+			}
+		}, "ittoqend", delay)
+	}
 }

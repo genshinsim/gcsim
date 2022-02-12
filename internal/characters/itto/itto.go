@@ -32,8 +32,13 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.dasshuCount = 0
 	c.Tags["strStack"] = 0
 	c.sCACount = 0
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	c.onExitField()
+	if c.Base.Cons == 6 {
+		c.c6()
+	}
 
 	return &c, nil
 }
@@ -70,4 +75,19 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 		ai.Element = core.Geo
 	}
 	return ds
+}
+
+func (c *char) c6() {
+	val := make([]float64, core.EndStatType)
+	val[core.CD] = 0.7
+	c.AddPreDamageMod(core.PreDamageMod{
+		Key:    "itto-c6",
+		Expiry: -1,
+		Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if a.Info.AttackTag != core.AttackTagExtra {
+				return nil, false
+			}
+			return val, true
+		},
+	})
 }
