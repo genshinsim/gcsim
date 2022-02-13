@@ -28,6 +28,26 @@ A rough guideline for your comment is as follows:
 - [ ] C5
 - [ ] C6
 
+<details><summary>Click to expand copy-paste friendly version</summary>
+  
+```
+- [ ] Frames
+- [ ] Talents
+- [ ] C0 Normals
+- [ ] C0 Skill
+- [ ] C0 Burst
+- [ ] A1
+- [ ] A2 
+- [ ] A4
+- [ ] Sanity Test Cases
+- [ ] C1
+- [ ] C2
+- [ ] C3
+- [ ] C4
+- [ ] C5
+- [ ] C6
+```
+</details>
 Items may be omitted when irrelevant as is the case for many ascension passives.
 
 # Git/Github Quick Reference Guide
