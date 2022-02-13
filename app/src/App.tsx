@@ -4,6 +4,7 @@ import Nav from "/src/Components/Nav/Nav";
 import { Dash } from "/src/Pages/Dash";
 import Shared from "/src/Shared";
 import { Simple } from "/src/Pages/Sim";
+import { SimWrapper } from "./Pages/Sim/SimWrapper";
 
 export default function App() {
   return (
@@ -11,7 +12,11 @@ export default function App() {
       <Nav />
       <Switch>
         <Route path="/" component={Dash} />
-        <Route path="/simple" component={Simple} />
+        <Route path="/simple">
+          <SimWrapper>
+            <Simple />
+          </SimWrapper>
+        </Route>
         <Route path="/share/:id">
           {(params) => <Shared path={params.id} />}
         </Route>

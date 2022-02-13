@@ -12,8 +12,6 @@ import { RootState } from "~src/store";
 import { simActions } from "~src/Pages/Sim/simSlice";
 import { CharacterEdit } from "./CharacterEdit";
 
-type Props = {};
-
 export function Team() {
   const { team, edit_index } = useAppSelector((state: RootState) => {
     return {
