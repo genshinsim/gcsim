@@ -30,26 +30,16 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	cd := 18 // frames = 0.3s * 60fps
 	icd := 0
 
-	char.AddMod(core.CharStatMod{
-		Key: "compoundbow",
-		Amount: func() ([]float64, bool) {
-			// Assuming all stacks fall off after 6s
-			if c.F > stackExpiry {
-				stacks = 0
-			}
-
-			m[core.ATKP] = incAtk * float64(stacks)
-			m[core.AtkSpd] = incSpd * float64(stacks)
-			return m, true
-		},
-		Expiry: -1,
-	})
-
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 
-		// Check if char is correct?
+		// Attack belongs to the equipped character
 		if atk.Info.ActorIndex != char.CharIndex() {
+			return false
+		}
+
+		// Active character has weapon equipped
+		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
 
@@ -63,6 +53,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 
+		// Checks done, proc weapon passive
 		// Increment stack count
 		if stacks < maxStacks {
 			stacks++
@@ -71,6 +62,20 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		// trigger cd
 		icd = c.F + cd
 		stackExpiry = c.F + stackDuration
+
+		char.AddMod(core.CharStatMod{
+			Key: "compoundbow",
+			Amount: func() ([]float64, bool) {
+				if c.F > stackExpiry {
+					stacks = 0
+				}
+
+				m[core.ATKP] = incAtk * float64(stacks)
+				m[core.AtkSpd] = incSpd * float64(stacks)
+				return m, true
+			},
+			Expiry: stackExpiry,
+		})
 
 		return false
 	}, fmt.Sprintf("compoundbow-%v", char.Name()))
