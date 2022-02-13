@@ -24,15 +24,20 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	stacks := 0
 	maxStacks := 4
-	stackExpiry := 0.0
-	stackDuration := 60.0 * 6.0 // frames = 6s * 60 fps
+	stackExpiry := 0
+	stackDuration := 360 // frames = 6s * 60 fps
 
-	cd := .3 * 60 // frames = 0.3s * 60fps
-	icd := 0.0
+	cd := 18 // frames = 0.3s * 60fps
+	icd := 0
 
 	char.AddMod(core.CharStatMod{
 		Key: "compoundbow",
 		Amount: func() ([]float64, bool) {
+			// Assuming all stacks fall off after 6s
+			if c.F > stackExpiry {
+				stacks = 0
+			}
+
 			m[core.ATKP] = incAtk * float64(stacks)
 			m[core.AtkSpd] = incSpd * float64(stacks)
 			return m, true
@@ -54,13 +59,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		// Check if cd is up
-		if icd > float64(c.F) {
+		if icd > c.F {
 			return false
-		}
-
-		// Assuming all stacks fall off after 6s
-		if float64(c.F) > stackExpiry {
-			stacks = 0
 		}
 
 		// Increment stack count
@@ -69,8 +69,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		// trigger cd
-		icd = float64(c.F) + cd
-		stackExpiry = float64(c.F) + stackDuration
+		icd = c.F + cd
+		stackExpiry = c.F + stackDuration
 
 		return false
 	}, fmt.Sprintf("compoundbow-%v", char.Name()))
