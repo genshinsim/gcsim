@@ -33,3 +33,22 @@ export interface Weapon {
   level: number;
   max_level: number;
 }
+
+export interface Result {
+  is_damage_mode: boolean;
+  char_names: string[];
+  char_details: Character[];
+  damage_by_char: { [key in string]: number }[];
+  damage_instances_by_char: { [key in string]: number }[];
+  damage_by_char_by_targets: { [key in number]: number }[];
+  char_active_time: number[];
+  abil_usage_count_by_char: { [key in string]: number }[];
+  particle_count: { [key in string]: number };
+  reactions_triggered: { [key in string]: number };
+  sim_duration: number;
+  ele_uptime: { [key in number]: number }[];
+  energy_when_burst: number[][];
+  damage: number;
+  dps: number;
+  seed: number;
+}

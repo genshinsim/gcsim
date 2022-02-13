@@ -42,7 +42,7 @@ function StatRows(props: StatRowsProp) {
     {
       stat: "HP",
       stat_: "HPP",
-      label: "HP%/HP",
+      label: "HP/HP%",
       val_: 0,
       val: 0,
       icon: <IconHP className="fill-gray-100" />,
@@ -50,7 +50,7 @@ function StatRows(props: StatRowsProp) {
     {
       stat: "ATK",
       stat_: "ATKP",
-      label: "Atk%/Atk",
+      label: "Atk/Atk%",
       val: 0,
       val_: 0,
       icon: <IconAtk className="fill-gray-100" />,
@@ -58,7 +58,7 @@ function StatRows(props: StatRowsProp) {
     {
       stat: "DEF",
       stat_: "DEFP",
-      label: "Def%/Def",
+      label: "Def/Def%",
       val_: 0,
       val: 0,
       icon: <IconDef className="fill-gray-100" />,

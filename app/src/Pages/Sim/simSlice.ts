@@ -6,7 +6,7 @@ import { ascLvlMin, maxLvlToAsc } from "~src/util";
 import { WorkerPool } from "~src/WorkerPool";
 import { charToCfg } from "./helper";
 
-let pool: WorkerPool = new WorkerPool();
+export let pool: WorkerPool = new WorkerPool();
 
 type RunStats = {
   progress: number;
@@ -190,129 +190,9 @@ export function loadWorkers(): AppThunk {
   };
 }
 
-const iterRegex = /iteration=(\d+)/;
 const optionsRegex = /^options.+;/;
 const charBlockRegEx =
   /####----GENERATED CHARACTER BLOCK DO NOT EDIT----####[^]+####----END GENERATED CHARACTER BLOCK DO NOT EDIT----####/;
-
-export function runSim(): AppThunk {
-  return function (dispatch, getState) {
-    let cfg = getState().sim.cfg;
-    //do processing here
-    // console.log(cfg);
-    // console.log(pool);
-
-    //extract the number of iterations from the config file
-    let iters = 1;
-    let m = iterRegex.exec(cfg);
-    console.log(m);
-
-    if (m) {
-      iters = parseInt(m[1]);
-
-      if (isNaN(iters)) {
-        console.warn("no iteration found in settings: ", m);
-        iters = 1000;
-      }
-    } else {
-      console.log(cfg);
-      console.log("regex failed");
-    }
-    console.log("parsed iters: " + iters);
-
-    //run the sim
-    dispatch(
-      simActions.setRunStats({
-        progress: 0,
-        result: -1,
-        time: -1,
-      })
-    );
-    let queued = 0;
-    let done = 0;
-    let avg = 0;
-    let progress = 0;
-    const startTime = window.performance.now();
-    console.time("sim");
-    pool.setCfg(cfg);
-
-    const cbFunc = (val: any) => {
-      //parse the result
-      const res = JSON.parse(val);
-      // console.log(
-      //   "finish a run, result: " + res.dps,
-      //   "done",
-      //   done,
-      //   "queue",
-      //   queued,
-      //   "iters",
-      //   iters
-      // );
-      avg += res.dps;
-
-      done++;
-
-      if (done === iters) {
-        //done now
-        console.log("done running");
-        console.timeEnd("sim");
-        const end = window.performance.now();
-        // setRuntime(end - startTime);
-        avg = avg / iters;
-
-        dispatch(
-          simActions.setRunStats({
-            progress: -1,
-            result: avg,
-            time: end - startTime,
-          })
-        );
-        return;
-      }
-
-      //check progress
-      const per = Math.floor((20 * done) / iters);
-      if (per > progress) {
-        dispatch(
-          simActions.setRunStats({
-            progress: per,
-            result: -1,
-            time: -1,
-          })
-        );
-        progress = per;
-        // console.log(per);
-      }
-
-      //otherwise check if we need to queue more
-      if (queued < iters) {
-        //queue another worker
-        queued++;
-        pool.queue({ cmd: "run", cb: cbFunc });
-      }
-      //otherwise do nothing
-    };
-    const debugCB = (val: any) => {
-      const res = JSON.parse(val);
-      if (res.err) {
-        console.error(res.err);
-        return;
-      }
-      console.log("finish debug run: ", res);
-    };
-
-    pool.queue({ cmd: "debug", cb: debugCB });
-
-    //queue up 20 out of iters
-    let count = 20;
-    if (count > iters) {
-      count = iters;
-    }
-    for (; queued < count; queued++) {
-      pool.queue({ cmd: "run", cb: cbFunc });
-    }
-  };
-}
 
 export const simSlice = createSlice({
   name: "sim",

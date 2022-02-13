@@ -12,7 +12,7 @@ export function ActionList() {
   return (
     <div className="p-1 md:p-2">
       <TextArea
-        rows={10}
+        rows={30}
         fill
         value={cfg}
         onChange={(e) => {

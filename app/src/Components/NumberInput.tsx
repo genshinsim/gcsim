@@ -44,9 +44,12 @@ export function NumberInput({
               onChange(min);
               return;
             }
-            const v = parse(val);
-            if (v < min || v > max) {
-              return;
+            let v = parse(val);
+            if (v > max) {
+              v = max;
+            }
+            if (v < min) {
+              v = min;
             }
 
             e.target.setCustomValidity("");

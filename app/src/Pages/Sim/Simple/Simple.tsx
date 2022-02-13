@@ -3,9 +3,10 @@ import React from "react";
 import { NumberInput } from "~src/Components/NumberInput";
 import { SectionDivider } from "~src/Components/SectionDivider";
 import { RootState, useAppDispatch, useAppSelector } from "~src/store";
-import { runSim, simActions } from "..";
+import { simActions } from "..";
 import { Main, ActionList } from "../Components";
 import { SimProgress } from "../Components/SimProgress";
+import { runSim } from "../exec";
 import { Team } from "./Team";
 
 export function Simple() {
@@ -67,7 +68,7 @@ export function Simple() {
           <Card className="m-2">
             <div className="w-full wide:basis-0 flex-grow p-2 text-center">
               <NumberInput
-                label={`Workers (available: ${ready})`}
+                label={`Workers (max available: ${ready})`}
                 onChange={(v) => dispatch(simActions.setWorkers(v))}
                 value={workers}
                 min={1}

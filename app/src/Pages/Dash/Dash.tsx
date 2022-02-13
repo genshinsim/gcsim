@@ -35,8 +35,15 @@ export function Dash() {
       <div className="flex flex-row flex-initial flex-wrap w-full lg:w-[60rem] mt-4">
         <DashCard onClick={() => setLocation("/simple")}>
           <span className="font-bold text-xl">
-            <Icon icon="flame" className="mr-2" size={25} />
+            <Icon icon="calculator" className="mr-2" size={25} />
             Simulator
+          </span>
+        </DashCard>
+
+        <DashCard onClick={() => setLocation("/simple")}>
+          <span className="font-bold text-xl">
+            <Icon icon="rocket-slant" className="mr-2" size={25} />
+            Advanced Mode
           </span>
         </DashCard>
 
@@ -63,7 +70,7 @@ export function Dash() {
           }
         >
           <span className="font-bold text-xl">
-            <Icon icon="calculator" className="mr-2" size={25} />
+            <Icon icon="download" className="mr-2" size={25} />
             Desktop Tool
           </span>
         </DashCard>
