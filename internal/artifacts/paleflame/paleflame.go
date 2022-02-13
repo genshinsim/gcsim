@@ -40,8 +40,12 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if icd > s.F {
 				return false
 			}
+			// reset stacks if expired
+			if dur < s.F {
+				stacks = 0
+			}
 			stacks++
-			if stacks > 2 {
+			if stacks >= 2 {
 				stacks = 2
 				m[core.PhyP] = 0.25
 			}
