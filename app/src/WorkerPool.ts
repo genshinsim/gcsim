@@ -21,17 +21,24 @@ export class WorkerPool {
   }
 
   load(count: number, readycb: (count: number) => void) {
-    this._workers = [];
-    this._avail = [];
-    this._queue = [];
+    if (count === 0) {
+      return;
+    }
+
     //load one first, once first is ready, then load the rest
+    console.log("start loading workers");
+    let start = this._workers.length;
+    let i = start;
+
     const loading = new Promise((resolve) => {
       const w = new Worker(new URL("worker.ts", import.meta.url));
       this._workers.push(w);
       this._avail.push(false);
+
+      let x = i;
       w.onmessage = (ev) => {
         if (ev.data === "ready") {
-          this._avail[0] = true;
+          this._avail[x] = true;
           this._loaded++;
           // console.log("worker 0 is now ready");
           //we're technically ready to work as long as just one worker is ready
@@ -42,13 +49,15 @@ export class WorkerPool {
       };
     });
     loading.then(() => {
-      for (let i = 1; i < count; i++) {
+      for (; i < count + start; i++) {
         const w = new Worker(new URL("worker.ts", import.meta.url));
         this._workers.push(w);
         this._avail.push(false);
+
+        let x = i;
         w.onmessage = (ev) => {
           if (ev.data === "ready") {
-            this._avail[i] = true;
+            this._avail[x] = true;
             this._loaded++;
             readycb(this._loaded);
             // console.log("worker " + i + " is now ready");

@@ -24,7 +24,7 @@ WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject)
   .then((result) => {
     inst = result.instance;
     go.run(inst);
-    // console.log("worker loaded ok");
+    console.log("worker loaded ok");
     postMessage("ready");
   })
   .catch((err) => {
