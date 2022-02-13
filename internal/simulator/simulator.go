@@ -23,11 +23,13 @@ type Options struct {
 	ConfigPath       string // path to the config file to read
 }
 
+var start time.Time
+
 //Run will run the simulation given number of times
 func Run(opts Options) (result.Summary, error) {
-	start := time.Now()
+	start = time.Now()
 
-	cfg, err := readConfig(opts.ConfigPath)
+	cfg, err := ReadConfig(opts.ConfigPath)
 	if err != nil {
 		return result.Summary{}, err
 	}
@@ -36,7 +38,11 @@ func Run(opts Options) (result.Summary, error) {
 	if err != nil {
 		return result.Summary{}, err
 	}
+	return RunWithConfig(cfg, simcfg, opts)
+}
 
+// Runs the simulation with a given parsed config
+func RunWithConfig(cfg string, simcfg core.SimulationConfig, opts Options) (result.Summary, error) {
 	//set up a pool
 	respCh := make(chan simulation.Result)
 	errCh := make(chan error)
@@ -141,7 +147,7 @@ var reImport = regexp.MustCompile(`(?m)^import "(.+)"$`)
 
 //readConfig will load and read the config at specified path. Will resolve any import statements
 //as well
-func readConfig(fpath string) (string, error) {
+func ReadConfig(fpath string) (string, error) {
 
 	src, err := ioutil.ReadFile(fpath)
 	if err != nil {
