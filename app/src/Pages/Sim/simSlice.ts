@@ -1,9 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 import { Character, maxStatLength, Talent, Weapon } from "~/src/types";
 import { characterKeyToICharacter } from "~src/Components/Character";
 import { AppThunk } from "~src/store";
 import { ascLvlMin, maxLvlToAsc } from "~src/util";
 import { WorkerPool } from "~src/WorkerPool";
+import { charToCfg } from "./helper";
 
 let pool: WorkerPool = new WorkerPool();
 
@@ -28,6 +29,8 @@ const initialState: Sim = {
   ready: 0,
   workers: 8,
   cfg: `options debug=true iteration=100 duration=90 workers=24;
+
+####----GENERATED CHARACTER BLOCK DO NOT EDIT----####
 bennett char lvl=70/80 cons=2 talent=6,8,8; 
 bennett add weapon="favoniussword" refine=1 lvl=90/90;
 bennett add set="noblesseoblige" count=4;
@@ -53,7 +56,7 @@ xingqiu add set="noblesseoblige" count=2;
 xingqiu add set="gladiatorsfinale" count=2;
 xingqiu add stats hp=4780 atk=311 atk%=0.466 hydro%=0.466 cr=0.311 ; #main
 xingqiu add stats hp=299 hp%=0.08199999999999999 atk=78 atk%=0.449 def=63 def%=0.073 em=94 er=0.065 cr=0.15899999999999997 cd=0.831 ; #subs
-
+####----END GENERATED CHARACTER BLOCK DO NOT EDIT----####
 
 ##Default Enemy
 target lvl=100 resist=.1;
@@ -101,7 +104,6 @@ xiangling attack  +is_onfield;
 bennett attack  +is_onfield;
 xingqiu attack  +is_onfield;
 raidenshogun attack  +is_onfield;
-
   `,
   run: {
     progress: -1,
@@ -146,6 +148,34 @@ const newChar = (name: string): Character => {
   };
 };
 
+const updateConfig = (team: Character[], cfg: string): string => {
+  let next: string = "####----GENERATED CHARACTER BLOCK DO NOT EDIT----####\n";
+  //generate new
+  team.forEach((c) => {
+    next += charToCfg(c) + "\n";
+  });
+  next += "####----END GENERATED CHARACTER BLOCK DO NOT EDIT----####";
+  // console.log(next);
+  //try finding block,
+  let m = charBlockRegEx.exec(cfg);
+  if (m) {
+    cfg = cfg.replace(charBlockRegEx, next);
+    return cfg;
+  }
+  // console.log("existing block not found, looking for option row");
+  //if not found insert after options block
+  m = optionsRegex.exec(cfg);
+  if (m) {
+    cfg = cfg.replace(optionsRegex, "$1\n\n" + next);
+    return cfg;
+  }
+  // console.log("option row not found, adding at beginning");
+  //if options block not found, insert at beginning
+  cfg = next + "\n" + cfg;
+
+  return cfg;
+};
+
 export function loadWorkers(): AppThunk {
   return function (dispatch, getState) {
     //do nothing if ready
@@ -160,7 +190,10 @@ export function loadWorkers(): AppThunk {
   };
 }
 
-const regex = /iteration=(\d+)/;
+const iterRegex = /iteration=(\d+)/;
+const optionsRegex = /^options.+;/;
+const charBlockRegEx =
+  /####----GENERATED CHARACTER BLOCK DO NOT EDIT----####[^]+####----END GENERATED CHARACTER BLOCK DO NOT EDIT----####/;
 
 export function runSim(): AppThunk {
   return function (dispatch, getState) {
@@ -171,7 +204,7 @@ export function runSim(): AppThunk {
 
     //extract the number of iterations from the config file
     let iters = 1;
-    let m = regex.exec(cfg);
+    let m = iterRegex.exec(cfg);
     console.log(m);
 
     if (m) {
@@ -308,10 +341,14 @@ export const simSlice = createSlice({
     ) => {
       state.team[state.edit_index].name = action.payload.name;
       state.team[state.edit_index].element = action.payload.ele;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     setCharacterLvl: (state, action: PayloadAction<{ val: number }>) => {
       state.team[state.edit_index].level = action.payload.val;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     setCharacterMaxLvl: (state, action: PayloadAction<{ val: number }>) => {
@@ -326,10 +363,14 @@ export const simSlice = createSlice({
 
       state.team[state.edit_index].max_level = m;
       state.team[state.edit_index].level = l;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     setCharacterCon: (state, action: PayloadAction<{ val: number }>) => {
       state.team[state.edit_index].cons = action.payload.val;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     setCharacterSetBonus: (
@@ -338,14 +379,20 @@ export const simSlice = createSlice({
     ) => {
       state.team[state.edit_index].sets[action.payload.set] =
         action.payload.val;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     addCharacterSet: (state, action: PayloadAction<{ set: string }>) => {
       state.team[state.edit_index].sets[action.payload.set] = 0;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     deleteCharacterSet: (state, action: PayloadAction<{ set: string }>) => {
       delete state.team[state.edit_index].sets[action.payload.set];
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     setCharacterWeapon: (state, action: PayloadAction<{ val: Weapon }>) => {
@@ -357,10 +404,14 @@ export const simSlice = createSlice({
         w.level = ascLvlMin(asc);
       }
       state.team[state.edit_index].weapon = w;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     setCharacterTalent: (state, action: PayloadAction<{ val: Talent }>) => {
       state.team[state.edit_index].talents = action.payload.val;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     setCharacterStats: (
@@ -372,11 +423,16 @@ export const simSlice = createSlice({
       }
       state.team[state.edit_index].stats[action.payload.index] =
         action.payload.val;
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     addCharacter: (state, action: PayloadAction<{ name: string }>) => {
       if (state.team.length >= 4) return state;
       state.team.push(newChar(action.payload.name));
+
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     deleteCharacter: (state, action: PayloadAction<{ index: number }>) => {
@@ -387,6 +443,8 @@ export const simSlice = createSlice({
         return state;
       }
       state.team.splice(action.payload.index, 1);
+      let cfg = updateConfig(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     editCharacter: (state, action: PayloadAction<{ index: number }>) => {

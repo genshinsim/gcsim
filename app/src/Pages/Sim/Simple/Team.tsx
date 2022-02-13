@@ -71,8 +71,8 @@ export function Team() {
   if (team.length > 0) {
     const teamStats = ConsolidateCharStats(team);
 
-    console.log(team);
-    console.log(teamStats);
+    // console.log(team);
+    // console.log(teamStats);
 
     disabled = team.map((c) => c.name);
 

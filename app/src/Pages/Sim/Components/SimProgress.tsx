@@ -1,4 +1,5 @@
-import { Button, Dialog, ProgressBar } from "@blueprintjs/core";
+import { Button, Classes, Dialog, ProgressBar } from "@blueprintjs/core";
+import { Tooltip2 } from "@blueprintjs/popover2";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
 
 type Props = {
@@ -25,24 +26,35 @@ export function SimProgress(props: Props) {
       canOutsideClickClose={done}
       onClose={props.onClose}
     >
-      <div className="p-2">
-        {!done ? (
-          <div className="flex flex-col gap-1">
-            <div>Running sim with {workers} workers</div>
-            <ProgressBar animate intent="primary" value={run.progress / 20} />
-          </div>
-        ) : (
-          <div className="flex flex-col gap-1">
-            <div>
-              {" "}
-              Simulation completed in {run.time}ms with average dps:{" "}
-              {run.result}{" "}
+      <div className="flex flex-col rounded-md">
+        <div className="text-left text-lg bg-gray-600  rounded-t-md mb-4 pl-2 pb-2 pt-2">
+          Running Simulation:
+        </div>
+        <div className="p-4 flex-grow">
+          {!done ? (
+            <div className="flex flex-col gap-1">
+              <div>Running sim with {workers} workers</div>
+              <ProgressBar animate intent="primary" value={run.progress / 20} />
             </div>
-            <Button fill onClick={props.onClose}>
-              done
+          ) : (
+            <div className="flex flex-col gap-1">
+              <div>
+                Simulation completed in {run.time.toFixed(0)}ms with average
+                dps: {run.result.toFixed(0)}{" "}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className={Classes.DIALOG_FOOTER}>
+          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+            <Button onClick={props.onClose} disabled={!done} intent="success">
+              See Results in Viewer
+            </Button>
+            <Button onClick={props.onClose} disabled={!done} intent="danger">
+              Close
             </Button>
           </div>
-        )}
+        </div>
       </div>
     </Dialog>
   );
