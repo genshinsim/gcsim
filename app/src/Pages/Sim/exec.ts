@@ -159,7 +159,6 @@ export function runSim(): AppThunk {
               reject(res.err);
             } else {
               console.log(res);
-              dispatch(simActions.setSimResults(val));
               resolve(res);
             }
           },
@@ -203,9 +202,10 @@ export function runSim(): AppThunk {
         //@ts-ignore
         console.log(summary.dps);
         //@ts-ignore
-        summary.debug = debug;
-
+        // summary.debug = debug;
+        
         //summary can now be passed to viewer
+        dispatch(simActions.setSimResults(JSON.stringify(summary)));
       })
       .catch((res) => {
         console.log(res);
