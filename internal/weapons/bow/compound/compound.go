@@ -53,6 +53,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 
+		// Reset stacks if they've expired
+		if c.F > stackExpiry {
+			stacks = 0
+		}
+
 		// Checks done, proc weapon passive
 		// Increment stack count
 		if stacks < maxStacks {
@@ -66,6 +71,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		char.AddMod(core.CharStatMod{
 			Key: "compoundbow",
 			Amount: func() ([]float64, bool) {
+				// Reset stacks if they've expired
 				if c.F > stackExpiry {
 					stacks = 0
 				}
