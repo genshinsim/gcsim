@@ -159,6 +159,7 @@ export function runSim(): AppThunk {
               reject(res.err);
             } else {
               console.log(res);
+              dispatch(simActions.setSimResults(val));
               resolve(res);
             }
           },

@@ -10,6 +10,7 @@ import Summary from "./Summary";
 import Ajv from "ajv";
 import schema from "./DataType.schema.json";
 import Share, { ShareProps } from "./Share";
+import { RootState, useAppSelector } from "~src/store";
 
 const ajv = new Ajv();
 
@@ -155,8 +156,16 @@ function ViewOnly(props: ViewProps) {
 
 export function Viewer(props: ViewerProps) {
   const [selected, setSelected] = React.useState<string[]>(defOpts);
+  const { simResults } = useAppSelector((state: RootState) => {
+    return {
+      simResults: state.sim.simResults,
+    };
+  });
 
-  let data: SimResults = JSON.parse(props.data);
+  //string
+  console.log(simResults);
+
+  let data: SimResults = JSON.parse(props.data != '{}' ? props.data : simResults);
   const validate = ajv.compile(schema.definitions["*"]);
   const valid = validate(data);
   console.log("checking if data is valid: " + valid);
