@@ -24,7 +24,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if c.F > icd {
+		if c.F < icd {
 			return false
 		}
 		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
