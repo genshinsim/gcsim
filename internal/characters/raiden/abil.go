@@ -1,14 +1,9 @@
 package raiden
 
 import (
+	"fmt"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
-
-/**
-let style = document.createElement('style');
-style.innerHTML = '*{ user-select: auto !important; }';
-document.body.appendChild(style);
-**/
 
 var polearmDelayOffset = [][]int{
 	{1},
@@ -28,7 +23,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -108,7 +103,7 @@ func (c *char) burstRestorefunc(a core.AttackCB) {
 func (c *char) swordAttack(f int, a int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Musou Isshin",
+		Abil:       fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -143,7 +138,7 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Musou Isshin",
+		Abil:       "Musou Isshin (Charge Attack)",
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,

@@ -138,7 +138,7 @@ func (c *char) a4(delay int) {
 	c.AddTask(func() {
 		if (c.a4LastProc + 180) >= c.Core.F {
 		} else {
-			energyAddAmt := 1.2 + 0.012*c.Stats[core.ER]
+			energyAddAmt := 1.2 * (1 + c.Stat(core.ER))
 
 			c.Core.Log.Debugw("Sara A4 adding energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "amount", energyAddAmt)
 			for _, char := range c.Core.Chars {

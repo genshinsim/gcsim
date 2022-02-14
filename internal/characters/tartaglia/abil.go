@@ -257,6 +257,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		var cb core.AttackCBFunc
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			cb = c.rtBlastCallback
+		} else {
+			cb = c.rangedBurstApplyRiptide
 		}
 
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0, cb)

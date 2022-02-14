@@ -93,6 +93,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/dodoco"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/frostbearer"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/hakushin"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/magicguide"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/mappa"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/memory"

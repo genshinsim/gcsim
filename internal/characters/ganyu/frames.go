@@ -21,7 +21,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 5:
 			f = 190 - 153
 		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionAim:
 		//check for c6, if active then return 10, otherwise 115

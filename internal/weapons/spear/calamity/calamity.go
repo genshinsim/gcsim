@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc("calamity queller", weapon)
+	core.RegisterWeaponFunc("calamity", weapon)
 	core.RegisterWeaponFunc("calamityqueller", weapon)
 }
 

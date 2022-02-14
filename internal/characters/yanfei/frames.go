@@ -15,7 +15,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 2:
 			f = 90 - 41
 		}
-		atkspd := c.Stats[core.AtkSpd]
+		atkspd := c.Stat(core.AtkSpd)
 		f = int(float64(f) / (1 + atkspd))
 		return f, f
 	case core.ActionCharge:

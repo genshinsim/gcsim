@@ -62,7 +62,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 4:
 			f = 167 - 141
 		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionSkill:
 		return 26, 26
@@ -108,7 +108,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,

@@ -1,6 +1,9 @@
 package eula
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 var delay = [][]int{{11}, {25}, {36, 49}, {33}, {45, 63}}
 
@@ -13,7 +16,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,

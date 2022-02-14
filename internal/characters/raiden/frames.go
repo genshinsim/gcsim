@@ -44,7 +44,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 				f = 139 - 95
 			}
 		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionCharge:
 		if c.Core.Status.Duration("raidenburst") == 0 {
