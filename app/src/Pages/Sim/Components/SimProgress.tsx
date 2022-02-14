@@ -10,10 +10,11 @@ type Props = {
 
 export function SimProgress(props: Props) {
   const [_, setLocation] = useLocation();
-  const { run, workers } = useAppSelector((state: RootState) => {
+  const { run, workers, simResults } = useAppSelector((state: RootState) => {
     return {
       run: state.sim.run,
       workers: state.sim.workers,
+      simResults: state.sim.simResults,
     };
   });
   const dispatch = useAppDispatch();
