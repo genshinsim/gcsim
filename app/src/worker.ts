@@ -14,9 +14,8 @@ if (!WebAssembly.instantiateStreaming) {
 const go = new Go(); // Defined in wasm_exec.js. Don't forget to add this in your index.html.
 
 declare function sim(): string;
-declare function simcalc(): string;
 declare function debug(): string;
-declare function debugcalc(): string;
+declare function collect(data: string): string;
 declare function setcfg(content: string): string;
 
 let inst: WebAssembly.Instance;
@@ -33,26 +32,23 @@ WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject)
 
 onmessage = async (ev) => {
   // console.log(ev.data);
-  switch (ev.data) {
+  switch (ev.data.cmd) {
     case "run":
       // console.log("running...");
       const simres = sim();
       postMessage(simres);
       break;
-    case "runcalc":
-      const calcres = simcalc();
-      postMessage(calcres);
-      break;
-    case "debugcalc":
-      const dc = debugcalc();
-      postMessage(dc);
+    case "collect":
+      const res = collect(ev.data.payload);
+      postMessage(res);
       break;
     case "debug":
       const d = debug();
       postMessage(d);
       break;
-    default:
-      const ok = setcfg(ev.data);
+    case "cfg":
+      const ok = setcfg(ev.data.payload);
       console.log("done setting config: " + ok);
+      break;
   }
 };

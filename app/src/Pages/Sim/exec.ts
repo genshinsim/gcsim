@@ -1,14 +1,21 @@
 import { AppThunk } from "~src/store";
 import { pool, simActions } from ".";
-import * as dfd from "danfojs";
 import { Result } from "~src/types";
 
 const iterRegex = /iteration=(\d+)/;
 
 function aggregateResults(results: Result[]) {
   console.log(results[0]);
-  let s = new dfd.DataFrame(results[0]);
-  s.print();
+  let s = JSON.stringify(results);
+  pool.queue({
+    cmd: "collect",
+    payload: s,
+    cb: (val) => {
+      //convert it back
+      const res = JSON.parse(val);
+      console.log(res);
+    },
+  });
 }
 
 function extractItersFromConfig(cfg: string): number {
@@ -67,11 +74,10 @@ export function runSim(): AppThunk {
 
       if (done === iters) {
         console.timeEnd("sim");
-        const end = window.performance.now();
         // setRuntime(end - startTime);
         avg = avg / iters;
-
         aggregateResults(results);
+        const end = window.performance.now();
 
         dispatch(
           simActions.setRunStats({

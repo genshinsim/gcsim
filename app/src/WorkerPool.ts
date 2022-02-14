@@ -1,5 +1,6 @@
 export type Task = {
   cmd: string;
+  payload?: string;
   cb: (value: any) => void;
 };
 
@@ -69,7 +70,10 @@ export class WorkerPool {
 
   setCfg(cfg: string) {
     for (let i = 0; i < this._workers.length; i++) {
-      this._workers[i].postMessage(cfg);
+      this._workers[i].postMessage({
+        cmd: "cfg",
+        payload: cfg,
+      });
     }
   }
 
@@ -122,7 +126,10 @@ export class WorkerPool {
   private run(workerIndex: number, task: Task) {
     this._avail[workerIndex] = false;
     let w = this._workers[workerIndex];
-    w.postMessage(task.cmd);
+    w.postMessage({
+      cmd: task.cmd,
+      payload: task.payload ? task.payload : "",
+    });
     this._active++;
     w.onmessage = (ev) => {
       task.cb(ev.data);
