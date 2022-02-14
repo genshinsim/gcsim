@@ -74,7 +74,7 @@ func (c *char) rtFlashCallback(a core.AttackCB) {
 
 	//proc 3 hits
 	for i := 1; i <= 3; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 1)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 1, 1)
 	}
 	c.Core.Log.Debugw(
 		"riptide flash triggered",
@@ -120,7 +120,7 @@ func (c *char) rtSlashCallback(a core.AttackCB) {
 		Mult:       rtSlash[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 1, 1)
 
 	c.Core.Log.Debugw(
 		"Riptide Slash ticked",

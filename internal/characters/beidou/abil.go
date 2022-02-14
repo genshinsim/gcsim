@@ -119,13 +119,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	if c.Base.Cons == 6 {
-		for _, t := range c.Core.Targets {
-			t.AddResMod("beidouc6", core.ResistMod{
-				Duration: 900, //10 seconds
-				Ele:      core.Electro,
-				Value:    -0.15,
-			})
-		}
+		c.AddTask(func() {
+			for _, t := range c.Core.Targets {
+				t.AddResMod("beidouc6", core.ResistMod{
+					Duration: 900 - f, //15 seconds
+					Ele:      core.Electro,
+					Value:    -0.15,
+				})
+			}
+		}, "beidou-c6", f)
 	}
 
 	c.ConsumeEnergy(11)

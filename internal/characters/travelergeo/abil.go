@@ -21,14 +21,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-1, f-1)
 
 	if c.NormalCounter == c.NormalHitNum-1 {
 		//add 60% as geo dmg
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A2",
-			AttackTag:  core.AttackTagNone,
+			AttackTag:  core.AttackTagNormal,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
 			StrikeType: core.StrikeTypeBlunt,
@@ -36,7 +36,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			Durability: 25,
 			Mult:       0.6,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-1)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-1, f-1)
 	}
 
 	c.AdvanceNormalIndex()

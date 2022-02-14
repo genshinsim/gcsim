@@ -18,7 +18,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
 	if c.Base.Cons >= 1 && c.NormalCounter == 3 {
 		ai := core.AttackInfo{
@@ -33,7 +33,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		}
 		//3 blades
 		for i := 0; i < 3; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, f+i*5)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f+i*5, f+i*5)
 		}
 	}
 	c.AdvanceNormalIndex()

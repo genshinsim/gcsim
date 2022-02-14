@@ -1,5 +1,6 @@
 *.log
 *.csv
+*.exe
 *.png
 *.pdf
 *.pprof

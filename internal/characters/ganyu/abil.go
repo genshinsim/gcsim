@@ -64,7 +64,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai.Mult = ffb[c.TalentLvlAttack()]
 	ai.HitWeakPoint = false
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, bloom+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, travel+bloom+f)
 
 	// if c.a2expiry > c.Core.F {
 	// 	d.Stats[def.CR] += 0.2

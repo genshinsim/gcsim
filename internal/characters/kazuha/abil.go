@@ -19,13 +19,36 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Element:    core.Physical,
 		Durability: 25,
 	}
-	snap := c.Snapshot(&ai)
+
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-2+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-2+i, f-2+i)
 	}
 
 	c.AdvanceNormalIndex()
+
+	return f, a
+}
+
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionCharge, p)
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeSlash,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
+	for i, mult := range charge {
+		ai.Mult = mult[c.TalentLvlAttack()]
+		ai.Abil = fmt.Sprintf("Charge %v", i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-len(charge)+i, f-len(charge)+i)
+	}
 
 	return f, a
 }
@@ -50,7 +73,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-10)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-10, f-10)
 	}
 
 	//aoe dmg
@@ -67,7 +90,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 		IgnoreInfusion: true,
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-8)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), f-8, f-8)
 
 	// a2 if applies
 	if c.a2Ele != core.NoElement {
@@ -84,7 +107,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 			IgnoreInfusion: true,
 		}
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 10)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 10, 10)
 		c.a2Ele = core.NoElement
 	}
 
