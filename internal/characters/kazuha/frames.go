@@ -25,7 +25,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 4:
 			f = 140 - 97
 		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionHighPlunge:
 		c.Core.Log.Debugw("plunge skill check", "event", core.LogCharacterEvent, "frame", c.Core.F, "previous", c.Core.LastAction)
