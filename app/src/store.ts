@@ -1,10 +1,12 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { simSlice } from "/src/Pages/Sim/simSlice";
+import { viewerSlice } from "./Pages/ViewerDashboard/viewerSlice";
 
 const store = configureStore({
   reducer: {
     [simSlice.name]: simSlice.reducer,
+    [viewerSlice.name]: viewerSlice.reducer,
   },
 });
 

@@ -196,24 +196,8 @@ export default function Summary({ data }: { data: SimResults }) {
   return (
     <div>
       <TeamView team={data.char_details} />
-      <div className="m-2 grid grid-cols-2 gap-2">
-        <div className="rounded-md p-2 bg-gray-600">
-          <span className="font-bold">
-            Character Stats From Artifacts (Main + Subs Only)
-          </span>
-          <div className="m-4">
-            <table className="w-full p-4">
-              <thead className="border-b-2">
-                <tr>
-                  <th className="w-24"></th>
-                  {header}
-                </tr>
-              </thead>
-              <tbody>{rows}</tbody>
-            </table>
-          </div>
-        </div>
-        <div className="rounded-md bg-gray-600 flex flex-col gap-1 p-4">
+      <div className="m-2 flex flex-row">
+        <div className="rounded-md bg-gray-600 basis-full flex flex-col gap-1 p-4">
           <div className="w-full">
             <span>
               Simulated{" "}

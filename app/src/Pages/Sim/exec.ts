@@ -1,22 +1,9 @@
 import { AppThunk } from "~src/store";
 import { pool, simActions } from ".";
 import { Result, ResultsSummary } from "~src/types";
+import { viewerActions } from "../ViewerDashboard/viewerSlice";
 
 const iterRegex = /iteration=(\d+)/;
-
-function aggregateResults(results: Result[]) {
-  console.log(results[0]);
-  let s = JSON.stringify(results);
-  pool.queue({
-    cmd: "collect",
-    payload: s,
-    cb: (val) => {
-      //convert it back
-      const res = JSON.parse(val);
-      console.log(res);
-    },
-  });
-}
 
 function extractItersFromConfig(cfg: string): number {
   let iters = 1;
@@ -73,10 +60,12 @@ export function runSim(): AppThunk {
           console.timeEnd("debug");
           if (res.err) {
             reject(res.err);
-          } else {
-            debug = res;
-            resolve(null);
+            return;
           }
+          //it's a string otherwise
+          console.log(res);
+          debug = val;
+          resolve(null);
           console.log("finish debug run: ", res);
         };
         pool.queue({ cmd: "debug", cb: debugCB });
@@ -202,10 +191,18 @@ export function runSim(): AppThunk {
         //@ts-ignore
         console.log(summary.dps);
         //@ts-ignore
-        // summary.debug = debug;
-        
+        summary.debug = debug;
+        //@ts-ignore
+        summary.v2 = true;
+
         //summary can now be passed to viewer
-        dispatch(simActions.setSimResults(JSON.stringify(summary)));
+        dispatch(
+          viewerActions.addViewerData({
+            key: "Simulation run on: " + new Date().toLocaleString(),
+            //@ts-ignore
+            data: summary,
+          })
+        );
       })
       .catch((res) => {
         console.log(res);

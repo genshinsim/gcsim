@@ -1,8 +1,8 @@
 import { Callout, Spinner } from "@blueprintjs/core";
 import React from "react";
+import { Viewport } from "~src/Components/Viewport";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
 import { loadWorkers } from ".";
-import { Main } from "./Components";
 
 export function SimWrapper({ children }: { children: React.ReactNode }) {
   const { ready } = useAppSelector((state: RootState) => {
@@ -18,11 +18,11 @@ export function SimWrapper({ children }: { children: React.ReactNode }) {
 
   if (ready === 0) {
     return (
-      <Main>
+      <Viewport>
         <Callout intent="primary" title="Loading simulator. Please wait">
           <Spinner />
         </Callout>
-      </Main>
+      </Viewport>
     );
   }
   return <div>{children}</div>;

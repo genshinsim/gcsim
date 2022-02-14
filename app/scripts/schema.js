@@ -2,7 +2,7 @@ const tsj = require("ts-json-schema-generator");
 const fs = require("fs");
 
 const config = {
-  path: "./src/Pages/Viewer/DataType.ts",
+  path: "./src/types.ts",
   tsconfig: "./tsconfig.json",
   type: "*", // Or <type-name> if you want to generate schema for that one type only
   expose: "none",

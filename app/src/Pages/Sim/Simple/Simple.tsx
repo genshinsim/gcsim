@@ -2,9 +2,10 @@ import { Button, Callout, Card, Collapse, Intent } from "@blueprintjs/core";
 import React from "react";
 import { NumberInput } from "~src/Components/NumberInput";
 import { SectionDivider } from "~src/Components/SectionDivider";
+import { Viewport } from "~src/Components/Viewport";
 import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "..";
-import { Main, ActionList } from "../Components";
+import { ActionList } from "../Components";
 import { SimProgress } from "../Components/SimProgress";
 import { runSim } from "../exec";
 import { Team } from "./Team";
@@ -26,7 +27,7 @@ export function Simple() {
     setOpen(true);
   };
   return (
-    <Main className="flex flex-col gap-2">
+    <Viewport className="flex flex-col gap-2">
       <div className="flex flex-col">
         <Team />
         <SectionDivider>Action List</SectionDivider>
@@ -93,6 +94,6 @@ export function Simple() {
         </div>
       </div>
       <SimProgress isOpen={open} onClose={() => setOpen(false)} />
-    </Main>
+    </Viewport>
   );
 }

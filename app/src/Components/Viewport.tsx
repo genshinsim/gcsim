@@ -3,7 +3,7 @@ type Props = {
   className?: string;
 };
 
-export function Main(props: Props) {
+export function Viewport(props: Props) {
   return (
     <main
       className={

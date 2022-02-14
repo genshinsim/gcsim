@@ -1,4 +1,4 @@
-import { Button, Tab, Tabs } from "@blueprintjs/core";
+import { Button, ButtonGroup, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
 import { Config } from "./Config";
 import { SimResults } from "./DataType";
@@ -7,18 +7,8 @@ import { Details } from "./Details";
 import { Options, OptionsProp } from "./Options";
 import { DebugRow, parseLog } from "./parse";
 import Summary from "./Summary";
-import Ajv from "ajv";
-import schema from "./DataType.schema.json";
 import Share, { ShareProps } from "./Share";
-import { RootState, useAppSelector } from "~src/store";
-
-const ajv = new Ajv();
-
-type ViewerProps = {
-  data: string;
-  names?: string;
-  handleClose: () => void;
-};
+import { parseLogV2 } from "./parsev2";
 
 const opts = [
   "procs",
@@ -71,14 +61,6 @@ function ViewOnly(props: ViewProps) {
   const [shareOpen, setShareOpen] = React.useState<boolean>(false);
 
   const handleTabChange = (next: string) => {
-    if (next === "settings") {
-      setOptOpen(true);
-      return;
-    }
-    if (next == "share") {
-      setShareOpen(true);
-      return;
-    }
     setTabID(next);
   };
 
@@ -129,13 +111,11 @@ function ViewOnly(props: ViewProps) {
           <Tab id="details" title="Details" className="focus:outline-none" />
           <Tab id="config" title="Config" className="focus:outline-none" />
           <Tab id="debug" title="Debug" className="focus:outline-none" />
-          <Tab id="settings" title="Settings" className="focus:outline-none" />
-          <Tab id="share" title="Share" className="focus:outline-none" />
           <Tabs.Expander />
           <Button icon="cross" intent="danger" onClick={props.handleClose} />
         </Tabs>
       </div>
-      <div className="mt-2 grow">
+      <div className="mt-2 grow mb-4">
         {
           {
             result: <Summary data={props.data} />,
@@ -147,6 +127,26 @@ function ViewOnly(props: ViewProps) {
           }[tabID]
         }
       </div>
+      {tabID === "debug" ? (
+        <div className="w-full pl-2 pr-2">
+          <ButtonGroup fill>
+            <Button
+              onClick={() => setOptOpen(true)}
+              icon="cog"
+              intent="primary"
+            >
+              Debug Settings
+            </Button>
+            <Button
+              onClick={() => setShareOpen(true)}
+              icon="share"
+              intent="success"
+            >
+              Share
+            </Button>
+          </ButtonGroup>
+        </div>
+      ) : null}
 
       <Options {...optProps} />
       <Share {...shareProps} />
@@ -154,72 +154,82 @@ function ViewOnly(props: ViewProps) {
   );
 }
 
+type ViewerProps = {
+  data: SimResults;
+  className?: string;
+  handleClose: () => void;
+};
+
 export function Viewer(props: ViewerProps) {
   const [selected, setSelected] = React.useState<string[]>(defOpts);
-  const { simResults } = useAppSelector((state: RootState) => {
-    return {
-      simResults: state.sim.simResults,
-    };
-  });
 
   //string
-  console.log(simResults);
+  console.log(props.data);
 
-  let data: SimResults = JSON.parse(props.data != '{}' ? props.data : simResults);
-  const validate = ajv.compile(schema.definitions["*"]);
-  const valid = validate(data);
-  console.log("checking if data is valid: " + valid);
+  // if (!valid) {
+  //   console.log(validate.errors);
+  //   return (
+  //     <div
+  //       className={
+  //         props.className +
+  //         " p-4 rounded-lg bg-gray-800 flex flex-col w-full place-content-center items-center"
+  //       }
+  //     >
+  //       <div className="mb-4 text-center">
+  //         The data you have provided is not a valid format.{" "}
+  //         <span className="font-bold">
+  //           Please make sure you are using gcsim version 0.4.25 or higher.
+  //         </span>
+  //         <br />
+  //         <br />
+  //         Please click the close button and upload a valid file.
+  //       </div>
+  //       <div>
+  //         <Button intent="danger" icon="cross" onClick={props.handleClose}>
+  //           Click Here To Close
+  //         </Button>
+  //       </div>
+  //       <div className="mt-8 rounded-md p-4 bg-gray-600">
+  //         <p>
+  //           If you think this error is invalid, please show the following
+  //           message to the developers
+  //         </p>
+  //         <pre>{JSON.stringify(validate.errors, null, 2)}</pre>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (!valid) {
-    console.log(validate.errors);
-    return (
-      <div
-        className={
-          props.names +
-          " p-4 rounded-lg bg-gray-800 flex flex-col w-full place-content-center items-center"
-        }
-      >
-        <div className="mb-4 text-center">
-          The data you have provided is not a valid format.{" "}
-          <span className="font-bold">
-            Please make sure you are using gcsim version 0.4.25 or higher.
-          </span>
-          <br />
-          <br />
-          Please click the close button and upload a valid file.
-        </div>
-        <div>
-          <Button intent="danger" icon="cross" onClick={props.handleClose}>
-            Click Here To Close
-          </Button>
-        </div>
-        <div className="mt-8 rounded-md p-4 bg-gray-600">
-          <p>
-            If you think this error is invalid, please show the following
-            message to the developers
-          </p>
-          <pre>{JSON.stringify(validate.errors, null, 2)}</pre>
-        </div>
-      </div>
+  let parsed: DebugRow[];
+  if (props.data.v2) {
+    console.log("parsing as v2: " + props.data.debug);
+    parsed = parseLogV2(
+      props.data.active_char,
+      props.data.char_names,
+      props.data.debug,
+      selected
+    );
+  } else {
+    console.log("parsing as v1: " + props.data.debug);
+    parsed = parseLog(
+      props.data.active_char,
+      props.data.char_names,
+      props.data.debug,
+      selected
     );
   }
 
-  const parsed = parseLog(
-    data.active_char,
-    data.char_names,
-    data.debug,
-    selected
-  );
+  console.log(parsed);
 
   const handleSetSelected = (next: string[]) => {
     setSelected(next);
   };
 
   let viewProps = {
-    classes: props.names,
+    classes: props.className,
     selected: selected,
     handleSetSelected: handleSetSelected,
-    data: data,
+    data: props.data,
     parsed: parsed,
     handleClose: props.handleClose,
   };

@@ -23,7 +23,9 @@ export function Team() {
   const [open, setOpen] = React.useState<boolean>(false);
   const myRef = React.useRef<HTMLSpanElement>(null);
   React.useEffect(() => {
-    executeScroll();
+    if (edit_index > -1) {
+      executeScroll();
+    }
   }, [edit_index]);
 
   const hotkeys = React.useMemo(

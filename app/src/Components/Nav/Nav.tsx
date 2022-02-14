@@ -12,26 +12,54 @@ import {
 import { useLocation } from "wouter";
 
 export default function Nav() {
-  const [_, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   return (
     <Navbar>
       <NavbarGroup align={Alignment.LEFT}>
-        <NavbarHeading>gcsim web (beta)</NavbarHeading>
-      </NavbarGroup>
-      <NavbarGroup align={Alignment.RIGHT}>
-        <Button
-          className={Classes.MINIMAL}
-          icon="home"
-          text="Home"
+        <NavbarHeading
           onClick={() => setLocation("/")}
-        />
-        <Button
-          className={Classes.MINIMAL}
-          icon="lightbulb"
-          text="About"
-          onClick={() => setLocation("/about")}
-        />
+          className="hover:cursor-pointer"
+        >
+          gcsim web (beta)
+        </NavbarHeading>
+
+        {location !== "/" ? (
+          <>
+            <NavbarDivider />
+            <Button
+              className={Classes.MINIMAL}
+              icon="calculator"
+              text="Simulator"
+              onClick={() => setLocation("/simple")}
+            />
+            <Button
+              className={Classes.MINIMAL}
+              icon="rocket-slant"
+              text="Advanced"
+              onClick={() => setLocation("/simple")}
+            />
+            <Button
+              className={Classes.MINIMAL}
+              icon="chart"
+              text="Viewer"
+              onClick={() => setLocation("/viewer")}
+            />
+            <Button
+              className={Classes.MINIMAL}
+              icon="database"
+              text="Action List DB"
+              onClick={() => setLocation("/db")}
+            />
+            <Button
+              className={Classes.MINIMAL}
+              icon="lightbulb"
+              text="About"
+              onClick={() => setLocation("/about")}
+            />
+          </>
+        ) : null}
       </NavbarGroup>
+      <NavbarGroup align={Alignment.RIGHT}></NavbarGroup>
     </Navbar>
   );
 }

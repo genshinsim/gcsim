@@ -1,4 +1,5 @@
 export interface SimResults {
+  v2?: boolean;
   is_damage_mode: boolean;
   active_char: string;
   char_names: string[];

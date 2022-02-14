@@ -2,10 +2,9 @@ import { Route, Switch } from "wouter";
 import Footer from "/src/Components/Footer/Footer";
 import Nav from "/src/Components/Nav/Nav";
 import { Dash } from "/src/Pages/Dash";
-import Shared from "/src/Shared";
 import { Simple } from "/src/Pages/Sim";
 import { SimWrapper } from "./Pages/Sim/SimWrapper";
-import { Viewer } from "./Pages/Viewer/Viewer";
+import { ViewerDash } from "./Pages/ViewerDashboard";
 
 export default function App() {
   return (
@@ -18,11 +17,11 @@ export default function App() {
             <Simple />
           </SimWrapper>
         </Route>
-        <Route path="/share/:id">
-          {(params) => <Shared path={params.id} />}
+        <Route path="/viewer/share/:id">
+          {(params) => <ViewerDash path={params.id} version="v1" />}
         </Route>
         <Route path="/viewer">
-          <Viewer data="{}" handleClose={() => { return false }} />
+          <ViewerDash path="/" />
         </Route>
       </Switch>
       <div className="w-full pt-4 pb-4 md:pl-4">

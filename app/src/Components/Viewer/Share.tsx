@@ -17,6 +17,8 @@ export interface ShareProps {
   data: SimResults;
 }
 
+const disabled = true;
+
 export default function Share(props: ShareProps) {
   const [loading, setIsLoading] = React.useState<boolean>(false);
   const [errMsg, setErrMsg] = React.useState<string>("");
@@ -85,6 +87,9 @@ export default function Share(props: ShareProps) {
     >
       <div className="p-2">
         <div className={Classes.DIALOG_BODY}>
+          {disabled ? (
+            <div className="font-bold"> Sharing is currently disabled </div>
+          ) : null}
           {loading ? <Spinner size={SpinnerSize.LARGE} /> : null}
           {errMsg === "" ? (
             url !== "" ? (
@@ -119,7 +124,11 @@ export default function Share(props: ShareProps) {
             >
               Copy
             </Button>
-            <Button intent="primary" onClick={handleUpload} disabled={loading}>
+            <Button
+              intent="primary"
+              onClick={handleUpload}
+              disabled={loading || disabled}
+            >
               Upload
             </Button>
           </div>
