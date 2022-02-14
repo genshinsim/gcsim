@@ -1,6 +1,7 @@
 import { Button, Classes, Dialog, ProgressBar } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+import { useLocation } from "wouter";
 
 type Props = {
   isOpen: boolean;
@@ -8,10 +9,12 @@ type Props = {
 };
 
 export function SimProgress(props: Props) {
-  const { run, workers } = useAppSelector((state: RootState) => {
+  const [_, setLocation] = useLocation();
+  const { run, workers, simResults } = useAppSelector((state: RootState) => {
     return {
       run: state.sim.run,
       workers: state.sim.workers,
+      simResults: state.sim.simResults,
     };
   });
   const dispatch = useAppDispatch();
@@ -47,7 +50,7 @@ export function SimProgress(props: Props) {
         </div>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button onClick={props.onClose} disabled={!done} intent="success">
+            <Button onClick={() => setLocation('/viewer')} disabled={!done} intent="success">
               See Results in Viewer
             </Button>
             <Button onClick={props.onClose} disabled={!done} intent="danger">
