@@ -1,3 +1,5 @@
+import { pool } from "./Pages/Sim";
+
 export type Task = {
   cmd: string;
   payload?: string;
@@ -68,9 +70,21 @@ export class WorkerPool {
     });
   }
 
-  setCfg(cfg: string) {
-    for (let i = 0; i < this._workers.length; i++) {
-      this._workers[i].postMessage({
+  setCfg(cfg: string, cb: (val: string) => void) {
+    let count = 0;
+    const max = this._workers.length;
+    for (let i = 0; i < max; i++) {
+      const t = i;
+      this._workers[t].onmessage = (ev) => {
+        count++;
+        // we need to count how many are ok...
+        if (count === max) {
+          console.log("all configs loaded");
+          console.log(pool);
+          cb(ev.data);
+        }
+      };
+      this._workers[t].postMessage({
         cmd: "cfg",
         payload: cfg,
       });
@@ -82,8 +96,10 @@ export class WorkerPool {
   }
 
   queue(t: Task) {
+    // console.log("got a task: ", t);
     //add it to queue
     this._queue.push(t);
+
     //try popping
     this.pop();
   }
@@ -126,11 +142,6 @@ export class WorkerPool {
   private run(workerIndex: number, task: Task) {
     this._avail[workerIndex] = false;
     let w = this._workers[workerIndex];
-    w.postMessage({
-      cmd: task.cmd,
-      payload: task.payload ? task.payload : "",
-    });
-    this._active++;
     w.onmessage = (ev) => {
       task.cb(ev.data);
       this._avail[workerIndex] = true;
@@ -143,5 +154,10 @@ export class WorkerPool {
       //try popping maybe there's more
       this.pop();
     };
+    w.postMessage({
+      cmd: task.cmd,
+      payload: task.payload ? task.payload : "",
+    });
+    this._active++;
   }
 }
