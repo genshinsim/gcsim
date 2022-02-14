@@ -36,11 +36,6 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	c.AdvanceNormalIndex()
 
-	if _, ok := p["walk"]; ok {
-		//reset normal counter here
-		c.ResetNormalCounter()
-	}
-
 	return f, a
 }
 
