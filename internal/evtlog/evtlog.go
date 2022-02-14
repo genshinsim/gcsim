@@ -19,7 +19,7 @@ type keyVal struct {
 
 //easyjson:json
 type Event struct {
-	Typ     core.LogSource `json:"type"`
+	Typ     core.LogSource `json:"event"`
 	F       int            `json:"frame"`
 	Ended   int            `json:"ended"`
 	SrcChar int            `json:"char_index"`

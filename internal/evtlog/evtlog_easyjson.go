@@ -200,8 +200,8 @@ func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog2(in *jlexer.Le
 			continue
 		}
 		switch key {
-		case "type":
-			out.Typ = core.LogSource(in.Int())
+		case "event":
+			out.Typ = core.LogSourceFromString[in.String()]
 		case "frame":
 			out.F = int(in.Int())
 		case "ended":
@@ -248,9 +248,9 @@ func easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog2(out *jwriter.
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"type\":"
+		const prefix string = ",\"event\":"
 		out.RawString(prefix[1:])
-		out.Int(int(in.Typ))
+		out.String(in.Typ.String())
 	}
 	{
 		const prefix string = ",\"frame\":"

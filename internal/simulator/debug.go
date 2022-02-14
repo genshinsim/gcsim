@@ -1,8 +1,6 @@
 package simulator
 
 import (
-	"time"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 )
@@ -12,7 +10,6 @@ import (
 func GenerateDebugLogWithSeed(cfg core.SimulationConfig, seed int64) (string, error) {
 
 	c := simulation.NewCore(seed, true, cfg.Settings)
-	c.Flags.LogDebug = true
 	//create a new simulation and run
 	s, err := simulation.New(cfg, c)
 	if err != nil {
@@ -29,5 +26,5 @@ func GenerateDebugLogWithSeed(cfg core.SimulationConfig, seed int64) (string, er
 
 //GenerateDebugLog will run one simulation with debug enabled using a random seed
 func GenerateDebugLog(cfg core.SimulationConfig) (string, error) {
-	return GenerateDebugLogWithSeed(cfg, time.Now().UnixNano())
+	return GenerateDebugLogWithSeed(cfg, cryptoRandSeed())
 }

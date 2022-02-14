@@ -222,6 +222,10 @@ func (c *Core) AnimationCancelDelay(next ActionType) int {
 	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next)
 }
 
+func (c *Core) UserCustomDelay() int {
+	return c.LastAction.Param["delay"]
+}
+
 func (c *Core) ResetAllNormalCounter() {
 	for _, char := range c.Chars {
 		char.ResetNormalCounter()

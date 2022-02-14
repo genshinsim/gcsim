@@ -21,7 +21,7 @@ type Result struct {
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`
 	//for tracking min/max run
-	Seed int64
+	Seed int64 `json:"seed"`
 }
 
 type CharDetail struct {

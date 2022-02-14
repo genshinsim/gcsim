@@ -3,7 +3,10 @@
 package simulator
 
 import (
+	"crypto/rand"
+	"encoding/binary"
 	"io/ioutil"
+	"log"
 	"path"
 	"regexp"
 	"strings"
@@ -50,7 +53,7 @@ func Run(opts Options) (result.Summary, error) {
 		for wip < simcfg.Settings.Iterations {
 			pool.QueueCh <- worker.Job{
 				Cfg:  simcfg.Clone(),
-				Seed: time.Now().UnixNano(),
+				Seed: cryptoRandSeed(),
 			}
 			wip++
 		}
@@ -128,14 +131,14 @@ func aggregateResults(in []simulation.Result, cfg core.SimulationConfig) result.
 }
 
 //cryptoRandSeed generates a random seed using crypo rand
-// func cryptoRandSeed() int64 {
-// 	var b [8]byte
-// 	_, err := rand.Read(b[:])
-// 	if err != nil {
-// 		log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
-// 	}
-// 	return int64(binary.LittleEndian.Uint64(b[:]))
-// }
+func cryptoRandSeed() int64 {
+	var b [8]byte
+	_, err := rand.Read(b[:])
+	if err != nil {
+		log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
+	}
+	return int64(binary.LittleEndian.Uint64(b[:]))
+}
 
 var reImport = regexp.MustCompile(`(?m)^import "(.+)"$`)
 

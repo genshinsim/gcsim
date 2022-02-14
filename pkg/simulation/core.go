@@ -22,6 +22,7 @@ func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	c := core.New()
 	if debug {
 		c.Log = evtlog.NewCtrl(c, 500)
+		c.Flags.LogDebug = true
 	}
 	c.Rand = rand.New(rand.NewSource(seed))
 	c.Tasks = task.NewCtrl(&c.F)

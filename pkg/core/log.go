@@ -61,6 +61,33 @@ const (
 	LogICDEvent
 )
 
+var LogSourceFromString = map[string]LogSource{
+	"procs":           LogProcs,
+	"damage":          LogDamageEvent,
+	"pre_damage_mods": LogPreDamageMod,
+	"hurt":            LogHurtEvent,
+	"heal":            LogHealEvent,
+	"calc":            LogCalc,
+	"reaction":        LogReactionEvent,
+	"element":         LogElementEvent,
+	"snapshot":        LogSnapshotEvent,
+	"snapshot_mods":   LogSnapshotModsEvent,
+	"status":          LogStatusEvent,
+	"action":          LogActionEvent,
+	"queue":           LogQueueEvent,
+	"energy":          LogEnergyEvent,
+	"character":       LogCharacterEvent,
+	"enemy":           LogEnemyEvent,
+	"hook":            LogHookEvent,
+	"sim":             LogSimEvent,
+	"task":            LogTaskEvent,
+	"artifact":        LogArtifactEvent,
+	"weapon":          LogWeaponEvent,
+	"shield":          LogShieldEvent,
+	"construct":       LogConstructEvent,
+	"icd":             LogICDEvent,
+}
+
 var LogSourceString = [...]string{
 	"procs",
 	"damage",

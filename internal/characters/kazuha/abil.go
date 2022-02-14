@@ -2,6 +2,7 @@ package kazuha
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
