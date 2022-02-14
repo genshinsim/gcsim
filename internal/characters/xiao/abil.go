@@ -91,7 +91,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	for i := 0; i < plungeHits; i++ {
 		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
 		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
-		c.PlungeAttack(f - i - 1)
+		c.PlungeAttack(f - i - 2)
 	}
 
 	ai := core.AttackInfo{
@@ -126,7 +126,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 	for i := 0; i < plungeHits; i++ {
 		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
 		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
-		c.PlungeAttack(f - i - 1)
+		c.PlungeAttack(f - i - 2)
 	}
 
 	ai := core.AttackInfo{

@@ -172,7 +172,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	snapshot := c.Snapshot(&aiSnapshot)
 	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[core.DEFP]) + snapshot.Stats[core.DEF]
-	// burstDefSnapshot := c.Base.Def*(1+c.Stats[core.DEFP]) + c.Stats[core.DEF]
 	mult := defconv[c.TalentLvlBurst()]
 	if c.Base.Cons == 6 {
 		mult += 0.5
