@@ -217,13 +217,17 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//add em to kazuha even if off-field
 	//add em to all char, but only activate if char is active
 	if c.Base.Cons >= 2 {
+		// TODO: Lasts while Q field is on stage is ambiguous.
+		// Does it apply to Kazuha's initial hit?
+		// Not sure when it lasts from and until
+		// For consistency with how it was previously done, assume that it lasts from button press to the last tick
 		val := make([]float64, core.EndStatType)
 		val[core.EM] = 200
 		for _, char := range c.Core.Chars {
 			this := char
 			char.AddMod(core.CharStatMod{
 				Key:    "kazuha-c2",
-				Expiry: c.Core.F + 370,
+				Expiry: c.Core.F + 147 + 117*5,
 				Amount: func() ([]float64, bool) {
 					switch this.CharIndex() {
 					case c.Core.ActiveChar, c.CharIndex():
@@ -251,12 +255,6 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		}
 		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
 
-		// Special handling for Bennett field self-infusion while waiting for something comprehensive
-		// Interaction is crucial to making many teams work correctly
-		// if c.Core.Status.Duration("btburst") > 0 {
-		// 	c.qInfuse = core.Pyro
-		// }
-
 		if c.qInfuse != core.NoElement {
 			return
 		}
@@ -271,13 +269,6 @@ func (c *char) absorbCheckA2(src, count, max int) func() {
 			return
 		}
 		c.a2Ele = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
-
-		// Special handling for Bennett field self-infusion while waiting for something comprehensive
-		// Interaction is crucial to making many teams work correctly
-		// TODO: get rid of this once we add in self app
-		// if c.Core.Status.Duration("btburst") > 0 {
-		// 	c.a2Ele = core.Pyro
-		// }
 
 		if c.a2Ele != core.NoElement {
 			c.Core.Log.Debugw(
