@@ -1,4 +1,4 @@
-package alley
+package wine
 
 import (
 	"fmt"
