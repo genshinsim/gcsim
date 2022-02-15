@@ -249,7 +249,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 					if i == c.Index {
 						continue
 					}
-					x.AddEnergy(3)
+					x.AddEnergy("klee-c6", 3)
 					c.Core.Log.NewEvent("klee c6 regen 3 energy", core.LogEnergyEvent, c.Index, "char", x.CharIndex(), "new energy", x.CurrentEnergy())
 				}
 

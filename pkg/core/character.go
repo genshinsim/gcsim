@@ -70,7 +70,7 @@ type Character interface {
 	//energy
 	QueueParticle(src string, num int, ele EleType, delay int)
 	ReceiveParticle(p Particle, isActive bool, partyCount int)
-	AddEnergy(e float64)
+	AddEnergy(src string, e float64)
 
 	//combat
 	Snapshot(a *AttackInfo) Snapshot

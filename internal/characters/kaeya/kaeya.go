@@ -178,7 +178,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.ConsumeEnergy(55)
 	if c.Base.Cons == 6 {
-		c.AddTask(func() { c.AddEnergy(15) }, "kaeya-c6", 56)
+		c.AddTask(func() { c.AddEnergy("kaeya-c6", 15) }, "kaeya-c6", 56)
 	}
 
 	c.SetCDWithDelay(core.ActionBurst, 900, 55)

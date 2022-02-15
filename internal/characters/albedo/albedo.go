@@ -229,7 +229,7 @@ func (c *char) skillHook() {
 
 		//c1
 		if c.Base.Cons >= 1 {
-			c.AddEnergy(1.2)
+			c.AddEnergy("albedo-c1", 1.2)
 			c.Core.Log.NewEvent("c1 restoring energy", core.LogCharacterEvent, c.Index)
 		}
 

@@ -61,7 +61,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 		//regen energy after 2 seconds
 		char.AddTask(func() {
-			char.AddEnergy(refund * float64(count))
+			char.AddEnergy("amenoma", refund*float64(count))
 		}, "amenoma-regen", 120+60) //added 1 extra sec for burst animation but who knows if this is true
 
 		return false

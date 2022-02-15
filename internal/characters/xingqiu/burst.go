@@ -18,7 +18,7 @@ func (c *char) summonSwordWave() {
 	var c2cb, c6cb func(a core.AttackCB)
 	if c.nextRegen {
 		c6cb = func(a core.AttackCB) {
-			c.AddEnergy(3)
+			c.AddEnergy("xingqiu-c6", 3)
 		}
 	}
 	if c.Base.Cons >= 2 {

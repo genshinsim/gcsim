@@ -142,7 +142,7 @@ func (c *char) a4(delay int) {
 
 			c.Core.Log.NewEvent("Sara A4 adding energy", core.LogEnergyEvent, c.Index, "amount", energyAddAmt)
 			for _, char := range c.Core.Chars {
-				char.AddEnergy(energyAddAmt)
+				char.AddEnergy("sara-a4", energyAddAmt)
 			}
 
 			c.a4LastProc = c.Core.F

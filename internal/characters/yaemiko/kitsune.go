@@ -83,7 +83,7 @@ func (c *char) kitsuneBurst(ai core.AttackInfo) {
 		c.Core.Combat.QueueAttackEvent(&c.kitsunes[i].ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
 		if c.Base.Cons >= 1 {
 			c.AddTask(func() {
-				c.AddEnergy(8)
+				c.AddEnergy("yae-c1", 8)
 			}, "energy from sky kitsune", 94+54+i*24)
 		}
 		c.ResetActionCooldown(core.ActionSkill)

@@ -80,7 +80,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			//check for healing
 			if c.Core.Status.Duration("barbskill") > 0 && energyCount < 5 {
 				//regen energy
-				c.AddEnergy(1)
+				c.AddEnergy("barbara-c4", 1)
 				energyCount++
 			}
 
