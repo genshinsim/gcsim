@@ -3,7 +3,7 @@
   "source": "src/index.html",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html"
+    "build": "parcel build src/index.html --dist-dir build"
   },
   "devDependencies": {
     "@parcel/packager-raw-url": "2.3.1",
