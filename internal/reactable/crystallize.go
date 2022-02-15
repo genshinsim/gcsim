@@ -37,7 +37,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *core.AttackEvent, ele core.EleType,
 		Abil:       string(rt),
 	}
 	snap := char.Snapshot(&ai)
-	shd := NewCrystallizeShield(core.Electro, r.core.F, snap.CharLvl, snap.Stats[core.EM], r.core.F+900)
+	shd := NewCrystallizeShield(ele, r.core.F, snap.CharLvl, snap.Stats[core.EM], r.core.F+900)
 	r.core.Shields.Add(shd)
 	//reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
