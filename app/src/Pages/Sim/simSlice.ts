@@ -99,7 +99,7 @@ const updateConfig = (team: Character[], cfg: string): string => {
   m = optionsRegex.exec(cfg);
   if (m) {
     // let rpl = "$1\n\n" + next;
-    cfg = cfg.replace(optionsRegex, "$1\n\n" + next);
+    cfg = cfg.replace(optionsRegex, next + "\n\n$1");
     return cfg;
   }
   // console.log("option row not found, adding at beginning");
