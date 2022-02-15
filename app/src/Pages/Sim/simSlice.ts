@@ -21,7 +21,6 @@ export interface Sim {
   workers: number;
   cfg: string;
   run: RunStats;
-  simResults: string;
 }
 
 const initialState: Sim = {
@@ -111,7 +110,6 @@ raidenshogun attack  +is_onfield;
     result: -1,
     time: -1,
   },
-  simResults: '{}',
 };
 
 const defWep: { [key in string]: string } = {
@@ -200,10 +198,6 @@ export const simSlice = createSlice({
   name: "sim",
   initialState: initialState,
   reducers: {
-    setSimResults: (state, action: PayloadAction<string>) => {
-      state.simResults = action.payload;
-      return state;
-    },
     setRunStats: (state, action: PayloadAction<RunStats>) => {
       state.run = action.payload;
       return state;

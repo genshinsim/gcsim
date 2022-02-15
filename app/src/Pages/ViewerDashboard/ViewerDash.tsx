@@ -60,7 +60,7 @@ export function ViewerDash({ path }: Props) {
       <div className="font-bold">Upload a file</div>
       <Dropzone />
       <div className="font-bold mb-2">
-        Or select from the following previously opened files:
+        Or select from the following previously opened files (limit 15):
       </div>
       {rows}
     </Viewport>

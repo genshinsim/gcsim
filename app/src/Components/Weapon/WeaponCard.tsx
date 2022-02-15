@@ -14,7 +14,9 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
         </div>
         <div className="flex-grow text-sm pl-2 flex flex-col justify-center">
           <div className="font-medium text-left">
-            {weaponKeyToName[weapon.name] + " R" + weapon.refine}
+            {weaponKeyToName[weapon.name].replace(/(.{20})..+/, "$1…") +
+              " R" +
+              weapon.refine}
           </div>
           <div className="justify-center items-center rounded-md">
             Lvl {weapon.level}/{weapon.max_level}
