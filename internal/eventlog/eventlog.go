@@ -1,4 +1,4 @@
-package evtlog
+package eventlog
 
 import (
 	"log"
@@ -11,7 +11,6 @@ import (
 //Debugw
 //Warnw
 
-//easyjson:json
 type keyVal struct {
 	Key string      `json:"key,nocopy"`
 	Val interface{} `json:"val"`
@@ -19,12 +18,12 @@ type keyVal struct {
 
 //easyjson:json
 type Event struct {
-	Typ     core.LogSource `json:"event"`
-	F       int            `json:"frame"`
-	Ended   int            `json:"ended"`
-	SrcChar int            `json:"char_index"`
-	Msg     string         `json:"msg,nocopy"`
-	Logs    []keyVal       `json:"logs"`
+	Typ     core.LogSource         `json:"event"`
+	F       int                    `json:"frame"`
+	Ended   int                    `json:"ended"`
+	SrcChar int                    `json:"char_index"`
+	Msg     string                 `json:"msg,nocopy"`
+	Logs    map[string]interface{} `json:"logs"`
 }
 
 //easyjson:json
@@ -44,10 +43,11 @@ func (e *Event) Write(keysAndValues ...interface{}) {
 		if i == len(keysAndValues) {
 			log.Panicf("expected an associated value after key %v, got nothing", key)
 		}
-		e.Logs = append(e.Logs, keyVal{
-			Key: key,
-			Val: keysAndValues[i],
-		})
+		// e.Logs = append(e.Logs, keyVal{
+		// 	Key: key,
+		// 	Val: keysAndValues[i],
+		// })
+		e.Logs[key] = keysAndValues[i]
 	}
 }
 
@@ -101,7 +101,7 @@ func (c *Ctrl) NewEvent(msg string, typ core.LogSource, srcChar int, keysAndValu
 		Ended:   c.core.F,
 		Typ:     typ,
 		SrcChar: srcChar,
-		Logs:    make([]keyVal, 0, len(keysAndValues)+5), //+5 from default just in case we need to add in more keys
+		Logs:    make(map[string]interface{}), //+5 from default just in case we need to add in more keys
 	}
 	// c.events = append(c.events, e)
 	c.events[c.count] = e

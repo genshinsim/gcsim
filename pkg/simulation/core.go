@@ -3,7 +3,6 @@ package simulation
 import (
 	"math/rand"
 
-	"github.com/genshinsim/gcsim/internal/evtlog"
 	"github.com/genshinsim/gcsim/internal/tmpl/action"
 	"github.com/genshinsim/gcsim/internal/tmpl/calcqueue"
 	"github.com/genshinsim/gcsim/internal/tmpl/combat"
@@ -21,7 +20,7 @@ import (
 func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	c := core.New()
 	if debug {
-		c.Log = evtlog.NewCtrl(c, 500)
+		c.Log = eventlog.NewCtrl(c, 500)
 		c.Flags.LogDebug = true
 	}
 	c.Rand = rand.New(rand.NewSource(seed))

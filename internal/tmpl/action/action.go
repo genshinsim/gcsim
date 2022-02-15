@@ -220,7 +220,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 		core.LogActionEvent,
 		a.core.ActiveChar,
 		"action", n.Typ.String(),
-		"target", n.Target,
+		"target", n.Target.String(),
 		"swap_cd_post", a.core.SwapCD,
 		"stam_post", a.core.Stam,
 		"animation", f,

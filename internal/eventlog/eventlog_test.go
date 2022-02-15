@@ -1,4 +1,4 @@
-package evtlog
+package eventlog
 
 import (
 	"testing"
@@ -13,7 +13,7 @@ func TestEventWriteKeyOnlyPanic(t *testing.T) {
 		F:       1,
 		Typ:     core.LogCharacterEvent,
 		SrcChar: 0,
-		Logs:    make([]keyVal, 0, 10),
+		Logs:    map[string]interface{}{},
 	}
 	//test writing
 	defer func() {
@@ -33,7 +33,7 @@ func TestEventWriteNonStringKeyPanic(t *testing.T) {
 		F:       1,
 		Typ:     core.LogCharacterEvent,
 		SrcChar: 0,
-		Logs:    make([]keyVal, 0, 10),
+		Logs:    map[string]interface{}{},
 	}
 	//test writing
 	defer func() {
@@ -53,7 +53,7 @@ func TestEventWriteKeyVal(t *testing.T) {
 		F:       1,
 		Typ:     core.LogCharacterEvent,
 		SrcChar: 0,
-		Logs:    make([]keyVal, 0, 10),
+		Logs:    map[string]interface{}{},
 	}
 
 	//this should be ok no panic
@@ -74,7 +74,7 @@ func BenchmarkEasyJSONSerialization(b *testing.B) {
 			F:       1,
 			Typ:     core.LogCharacterEvent,
 			SrcChar: 0,
-			Logs:    make([]keyVal, 0, 10),
+			Logs:    map[string]interface{}{},
 		}
 		e.Write("a", 1, "b", true, "c", "stuff", "e", 123, "f", "boo", "g", 111)
 		testdata = append(testdata, e)

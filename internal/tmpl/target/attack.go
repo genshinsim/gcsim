@@ -30,7 +30,7 @@ func (t *Tmpl) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) 
 					core.LogElementEvent,
 					atk.Info.ActorIndex,
 					"attack_tag", atk.Info.AttackTag,
-					"applied_ele", atk.Info.Element,
+					"applied_ele", atk.Info.Element.String(),
 					"dur", applied,
 					"abil", atk.Info.Abil,
 					"target", t.TargetIndex,
