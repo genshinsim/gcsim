@@ -96,7 +96,7 @@ type CharStatMod struct {
 
 type PreDamageMod struct {
 	Key    string
-	Amount func(atk *AttackEvent, t Target) ([]float64, bool)
+	Amount func(atk *AttackEvent, t Target) ([]float64, bool) // Returns an array containing the stats boost and whether mod applies
 	Expiry int
 }
 
