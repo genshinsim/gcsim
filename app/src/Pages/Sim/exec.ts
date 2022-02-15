@@ -26,9 +26,8 @@ function extractItersFromConfig(cfg: string): number {
   return iters;
 }
 
-export function runSim(): AppThunk {
-  return function (dispatch, getState) {
-    let cfg = getState().sim.cfg;
+export function runSim(cfg: string): AppThunk {
+  return function (dispatch) {
     const startTime = window.performance.now();
     console.time("runSim");
     let debug: string;
@@ -59,7 +58,7 @@ export function runSim(): AppThunk {
           const res = JSON.parse(val);
           console.timeEnd("debug");
           if (res.err) {
-            reject(res.err);
+            reject(res);
             return;
           }
           //it's a string otherwise
@@ -111,6 +110,7 @@ export function runSim(): AppThunk {
                 progress: per,
                 result: -1,
                 time: -1,
+                err: "",
               })
             );
             progress = per;
@@ -160,6 +160,7 @@ export function runSim(): AppThunk {
         progress: 0,
         result: -1,
         time: -1,
+        err: "",
       })
     );
 
@@ -185,6 +186,7 @@ export function runSim(): AppThunk {
             progress: -1,
             result: avg / iters,
             time: end - startTime,
+            err: "",
           })
         );
         //add debug to the summary
@@ -205,13 +207,14 @@ export function runSim(): AppThunk {
         );
       })
       .catch((res) => {
-        console.log(res);
+        console.warn(res);
         const end = window.performance.now();
         dispatch(
           simActions.setRunStats({
             progress: -1,
             result: 0,
             time: end - startTime,
+            err: res.err,
           })
         );
       });

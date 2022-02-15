@@ -105,9 +105,11 @@ export default function Shared({ path, version = "v2" }: Props) {
 
   if (data !== null) {
     return (
-      <Viewport className="flex-grow">
-        <Viewer data={data} className="h-full" handleClose={handleClose} />
-      </Viewport>
+      <Viewer
+        data={data}
+        className="h-full flex-grow"
+        handleClose={handleClose}
+      />
     );
   }
 

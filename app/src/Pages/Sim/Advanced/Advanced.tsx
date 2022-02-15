@@ -1,11 +1,4 @@
-import {
-  Button,
-  Callout,
-  Card,
-  Collapse,
-  Intent,
-  useHotkeys,
-} from "@blueprintjs/core";
+import { Button, Callout, Card, Collapse, Intent } from "@blueprintjs/core";
 import React from "react";
 import { NumberInput } from "~src/Components/NumberInput";
 import { SectionDivider } from "~src/Components/SectionDivider";
@@ -15,75 +8,39 @@ import { simActions } from "..";
 import { ActionList } from "../Components";
 import { SimProgress } from "../Components/SimProgress";
 import { runSim } from "../exec";
-import { Team } from "./Team";
 
-export function Simple() {
+export function Advanced() {
   const { ready, workers, cfg, runState } = useAppSelector(
     (state: RootState) => {
       return {
         ready: state.sim.ready,
         workers: state.sim.workers,
-        cfg: state.sim.cfg,
+        cfg: state.sim.advanced_cfg,
         runState: state.sim.run,
       };
     }
   );
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState<boolean>(false);
-  const [showActionList, setShowActionList] = React.useState<boolean>(true);
   const [showOptions, setShowOptions] = React.useState<boolean>(false);
-
-  const hotkeys = React.useMemo(
-    () => [
-      {
-        combo: "Esc",
-        global: true,
-        label: "Exit edit",
-        onKeyDown: () => {
-          dispatch(simActions.editCharacter({ index: -1 }));
-        },
-      },
-    ],
-    []
-  );
-  useHotkeys(hotkeys);
 
   const run = () => {
     dispatch(runSim(cfg));
     setOpen(true);
   };
+
   return (
     <Viewport className="flex flex-col gap-2">
       <div className="flex flex-col">
-        <Team />
         <SectionDivider>Action List</SectionDivider>
-        <div className="ml-auto mr-2">
-          <Button
-            icon="edit"
-            onClick={() => setShowActionList(!showActionList)}
-          >
-            {showActionList ? "Hide" : "Show"}
-          </Button>
+        <ActionList
+          cfg={cfg}
+          onChange={(v) => dispatch(simActions.setAdvCfg(v))}
+        />
+        <SectionDivider>Helpers</SectionDivider>
+        <div className="p-2">
+          <Button disabled>Substat Helper</Button>
         </div>
-        <div className="pl-2 pr-2 pt-2">
-          <Callout intent={Intent.PRIMARY} className="flex flex-col">
-            Enter action list here. For more detailed on action list, see ??
-            <br />
-            <div className="ml-auto">
-              <Button small>Hide all tips</Button>
-            </div>
-          </Callout>
-        </div>
-        <Collapse
-          isOpen={showActionList}
-          keepChildrenMounted
-          className="basis-full flex flex-col"
-        >
-          <ActionList
-            cfg={cfg}
-            onChange={(v) => dispatch(simActions.setCfg(v))}
-          />
-        </Collapse>
         <SectionDivider>Sim Options</SectionDivider>
         <div className="ml-auto mr-2">
           <Button icon="edit" onClick={() => setShowOptions(!showOptions)}>

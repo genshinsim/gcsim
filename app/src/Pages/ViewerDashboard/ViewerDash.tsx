@@ -26,7 +26,7 @@ export function ViewerDash({ path }: Props) {
   //show viewer if selected != -1
   if (selected !== "") {
     return (
-      <Viewport className="flex-grow">
+      <div className="flex-grow">
         <Viewer
           data={data[selected]}
           className="h-full"
@@ -34,7 +34,7 @@ export function ViewerDash({ path }: Props) {
             dispatch(viewerActions.setSelected(""));
           }}
         />
-      </Viewport>
+      </div>
     );
   }
 
@@ -60,7 +60,8 @@ export function ViewerDash({ path }: Props) {
       <div className="font-bold">Upload a file</div>
       <Dropzone />
       <div className="font-bold mb-2">
-        Or select from the following previously opened files (limit 15):
+        Or select from the following previously opened files (deleted when page
+        reloads):
       </div>
       {rows}
     </Viewport>

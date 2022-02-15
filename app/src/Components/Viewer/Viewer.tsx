@@ -9,6 +9,7 @@ import { DebugRow, parseLog } from "./parse";
 import Summary from "./Summary";
 import Share, { ShareProps } from "./Share";
 import { parseLogV2 } from "./parsev2";
+import { Viewport } from "../Viewport";
 
 const opts = [
   "procs",
@@ -118,7 +119,13 @@ function ViewOnly(props: ViewProps) {
       <div className="mt-2 grow mb-4">
         {
           {
-            result: <Summary data={props.data} />,
+            result: (
+              // <div className="bg-gray-600 rounded-md m-2 p-2">
+              //   <div className=" m-2 w-full xs:w-[300px] sm:w-[640px] hd:w-full wide:w-[1160px] ml-auto mr-auto ">
+              <Summary data={props.data} />
+              //   </div>
+              // </div>
+            ),
             config: <Config data={props.data} />,
             debug: (
               <Debugger data={props.parsed} team={props.data.char_names} />

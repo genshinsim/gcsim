@@ -1,4 +1,4 @@
-import { Callout, Intent, Button, Card, useHotkeys } from "@blueprintjs/core";
+import { Callout, Intent, Button, Card } from "@blueprintjs/core";
 import React from "react";
 import {
   CharacterCard,
@@ -27,21 +27,6 @@ export function Team() {
       executeScroll();
     }
   }, [edit_index]);
-
-  const hotkeys = React.useMemo(
-    () => [
-      {
-        combo: "Esc",
-        global: true,
-        label: "Exit edit",
-        onKeyDown: () => {
-          dispatch(simActions.editCharacter({ index: -1 }));
-        },
-      },
-    ],
-    []
-  );
-  useHotkeys(hotkeys);
 
   const handleEdit = (index: number) => {
     return () => {

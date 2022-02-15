@@ -36,7 +36,7 @@ export default function Nav() {
               className={Classes.MINIMAL}
               icon="rocket-slant"
               text="Advanced"
-              onClick={() => setLocation("/simple")}
+              onClick={() => setLocation("/advanced")}
             />
             <Button
               className={Classes.MINIMAL}
@@ -52,7 +52,7 @@ export default function Nav() {
             />
             <Button
               className={Classes.MINIMAL}
-              icon="lightbulb"
+              icon="info-sign"
               text="About"
               onClick={() => setLocation("/about")}
             />

@@ -1,23 +1,17 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import { simSlice } from "/src/Pages/Sim/simSlice";
-import {
-  viewerInitialState,
-  viewerSlice,
-} from "./Pages/ViewerDashboard/viewerSlice";
+import { defaultRunStat, simSlice } from "/src/Pages/Sim/simSlice";
+import { viewerSlice } from "./Pages/ViewerDashboard/viewerSlice";
 
 let persistedState = {};
-if (localStorage.getItem("gcsim_redux")) {
-  let s = JSON.parse(localStorage.getItem("gcsim_redux")!);
+if (localStorage.getItem("redux_sim")) {
+  let s = JSON.parse(localStorage.getItem("redux_sim")!);
   //reset some defaults
   s.edit_index = -1;
   s.ready = 0;
-  s.run = {
-    progress: -1,
-    result: -1,
-    time: -1,
-  };
-  persistedState = s;
+  s.run = defaultRunStat;
+  persistedState = { sim: s };
+  console.log("loaded sim store from localStorage: ", persistedState);
 }
 
 const store = configureStore({
@@ -29,9 +23,7 @@ const store = configureStore({
 });
 
 store.subscribe(() => {
-  let s = store.getState();
-  s.viewer = viewerInitialState;
-  localStorage.setItem("gcsim_redux", JSON.stringify(s));
+  localStorage.setItem("redux_sim", JSON.stringify(store.getState().sim));
 });
 
 export { store };

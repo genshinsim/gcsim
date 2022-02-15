@@ -10,11 +10,10 @@ type Props = {
 
 export function SimProgress(props: Props) {
   const [_, setLocation] = useLocation();
-  const { run, workers, simResults } = useAppSelector((state: RootState) => {
+  const { run, workers } = useAppSelector((state: RootState) => {
     return {
       run: state.sim.run,
       workers: state.sim.workers,
-      simResults: state.sim.simResults,
     };
   });
   const dispatch = useAppDispatch();
@@ -41,16 +40,29 @@ export function SimProgress(props: Props) {
             </div>
           ) : (
             <div className="flex flex-col gap-1">
-              <div>
-                Simulation completed in {run.time.toFixed(0)}ms with average
-                dps: {run.result.toFixed(0)}{" "}
-              </div>
+              {run.err === "" ? (
+                <div>
+                  Simulation completed in {run.time.toFixed(0)}ms with average
+                  dps: {run.result.toFixed(0)}
+                </div>
+              ) : (
+                <div>
+                  Simulation exited with error:
+                  <pre className="p-2 mt-2 whitespace-pre-wrap bg-gray-600 rounded-md">
+                    {run.err}
+                  </pre>
+                </div>
+              )}
             </div>
           )}
         </div>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button onClick={() => setLocation('/viewer')} disabled={!done} intent="success">
+            <Button
+              onClick={() => setLocation("/viewer")}
+              disabled={!done}
+              intent="success"
+            >
               See Results in Viewer
             </Button>
             <Button onClick={props.onClose} disabled={!done} intent="danger">

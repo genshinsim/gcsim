@@ -63,6 +63,7 @@ typings/
 # Parcel related files
 dist/
 build/
+parcel-bundle-reports/
 .cache/
 .parcel-cache/
 

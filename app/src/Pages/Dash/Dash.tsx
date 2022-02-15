@@ -40,7 +40,7 @@ export function Dash() {
           </span>
         </DashCard>
 
-        <DashCard onClick={() => setLocation("/simple")}>
+        <DashCard onClick={() => setLocation("/advanced")}>
           <span className="font-bold text-xl">
             <Icon icon="rocket-slant" className="mr-2" size={25} />
             Advanced Mode
@@ -90,6 +90,13 @@ export function Dash() {
           <span className="font-bold text-xl">
             <Icon icon="git-branch" className="mr-2" size={25} />
             Contribute
+          </span>
+        </DashCard>
+
+        <DashCard onClick={() => setLocation("/about")}>
+          <span className="font-bold text-xl">
+            <Icon icon="info-sign" className="mr-2" size={25} />
+            About
           </span>
         </DashCard>
       </div>
