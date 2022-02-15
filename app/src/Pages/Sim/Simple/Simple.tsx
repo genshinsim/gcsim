@@ -18,13 +18,14 @@ import { runSim } from "../exec";
 import { Team } from "./Team";
 
 export function Simple() {
-  const { ready, workers, cfg, runState } = useAppSelector(
+  const { ready, workers, cfg, runState, showTips } = useAppSelector(
     (state: RootState) => {
       return {
         ready: state.sim.ready,
         workers: state.sim.workers,
         cfg: state.sim.cfg,
         runState: state.sim.run,
+        showTips: state.sim.showTips,
       };
     }
   );
@@ -52,9 +53,22 @@ export function Simple() {
     dispatch(runSim(cfg));
     setOpen(true);
   };
+
+  const toggleTips = () => {
+    dispatch(simActions.setShowTips(!showTips));
+  };
+
   return (
     <Viewport className="flex flex-col gap-2">
       <div className="flex flex-col">
+        {!showTips ? (
+          <div className="ml-auto mr-2">
+            <Button icon="help" onClick={toggleTips}>
+              Give me back my tooltips!
+            </Button>
+          </div>
+        ) : null}
+
         <Team />
         <SectionDivider>Action List</SectionDivider>
         <div className="ml-auto mr-2">
@@ -65,15 +79,19 @@ export function Simple() {
             {showActionList ? "Hide" : "Show"}
           </Button>
         </div>
-        <div className="pl-2 pr-2 pt-2">
-          <Callout intent={Intent.PRIMARY} className="flex flex-col">
-            Enter action list here. For more detailed on action list, see ??
-            <br />
-            <div className="ml-auto">
-              <Button small>Hide all tips</Button>
-            </div>
-          </Callout>
-        </div>
+        {showTips ? (
+          <div className="pl-2 pr-2 pt-2">
+            <Callout intent={Intent.PRIMARY} className="flex flex-col">
+              Enter action list here. For more detailed on action list, see ??
+              <br />
+              <div className="ml-auto">
+                <Button small onClick={toggleTips}>
+                  Hide all tips
+                </Button>
+              </div>
+            </Callout>
+          </div>
+        ) : null}
         <Collapse
           isOpen={showActionList}
           keepChildrenMounted

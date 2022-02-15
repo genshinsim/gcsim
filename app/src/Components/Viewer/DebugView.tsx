@@ -67,7 +67,7 @@ export function Debugger({ data, team }: { data: DebugRow[]; team: string[] }) {
   });
 
   return (
-    <div className="h-full m-2 p-2 rounded-md bg-gray-600 text-xs flex flex-col">
+    <div className="h-full m-2 p-2 rounded-md bg-gray-600 text-xs flex flex-col min-w-[60rem] min-h-[20rem]">
       <AutoSizer defaultHeight={100}>
         {({ height, width }) => (
           <div

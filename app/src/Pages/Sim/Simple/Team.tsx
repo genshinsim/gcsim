@@ -13,10 +13,11 @@ import { simActions } from "~src/Pages/Sim/simSlice";
 import { CharacterEdit } from "./CharacterEdit";
 
 export function Team() {
-  const { team, edit_index } = useAppSelector((state: RootState) => {
+  const { team, edit_index, showTips } = useAppSelector((state: RootState) => {
     return {
       team: state.sim.team,
       edit_index: state.sim.edit_index,
+      showTips: state.sim.showTips,
     };
   });
   const dispatch = useAppDispatch();
@@ -52,6 +53,10 @@ export function Team() {
     dispatch(simActions.addCharacter({ name: w.key }));
   };
 
+  const hideTips = () => {
+    dispatch(simActions.setShowTips(false));
+  };
+
   let disabled: string[] = [];
   let cards: JSX.Element[] = [];
 
@@ -84,15 +89,19 @@ export function Team() {
     <div className="flex flex-col">
       <span ref={myRef} />
       <SectionDivider>Team</SectionDivider>
-      <div className="pl-2 pr-2">
-        <Callout intent={Intent.PRIMARY} className="flex flex-col">
-          Enter your team information in this section
-          <br />
-          <div className="ml-auto">
-            <Button small>Hide all tips</Button>
-          </div>
-        </Callout>
-      </div>
+      {showTips ? (
+        <div className="pl-2 pr-2">
+          <Callout intent={Intent.PRIMARY} className="flex flex-col">
+            Enter your team information in this section
+            <br />
+            <div className="ml-auto">
+              <Button small onClick={hideTips}>
+                Hide all tips
+              </Button>
+            </div>
+          </Callout>
+        </div>
+      ) : null}
       {team.length == 0 ? (
         <div className="p-4 bg-gray-700 rounded-md mt-2 ml-2 mr-2 text-center font-bold">
           Start by adding some team members

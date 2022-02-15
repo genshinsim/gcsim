@@ -137,155 +137,175 @@ export default function Graphs({ data }: { data: SimResults }) {
       <div className="bg-gray-600 relative rounded-md p-2 pt-10">
         <DPSOverTime data={data} />
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="rounded-md p-2 pt-10 bg-gray-600 relative">
-          <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-            Average DPS By Character
-          </span>
-          <ResponsiveContainer width="95%" height={288}>
-            <PieChart margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
-              <Tooltip
-                formatter={(value: number, name: string) => {
-                  return [
-                    "" +
-                      value.toFixed(2) +
-                      " (" +
-                      ((100 * value) / data.dps.mean).toFixed(2) +
-                      "%)",
-                    name,
-                  ];
-                }}
-              />
-              <Legend
-                verticalAlign="middle"
-                align="right"
-                layout="vertical"
-                height={36}
-                formatter={renderCustomizedLegend}
-              />
-              <Pie
-                isAnimationActive={false}
-                data={dmg}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius="90%"
-                labelLine={false}
-                label={renderCustomizedLabel}
-                onClick={(e: any) => setCharSelected(e.name)}
-              >
-                {dmg.map((entry, index) => (
-                  <Cell
-                    key={index}
-                    fill={CHAR_COLORS[index % CHAR_COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+      <div className="flex flex-row flex-wrap gap-y-2">
+        <div className="basis-full md:basis-1/2">
+          <div className="rounded-md p-2 md:mr-1 pt-10 bg-gray-600 relative">
+            <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
+              Average DPS By Character
+            </span>
+            <ResponsiveContainer width="95%" height={288}>
+              <PieChart margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
+                <Tooltip
+                  formatter={(value: number, name: string) => {
+                    return [
+                      "" +
+                        value.toFixed(2) +
+                        " (" +
+                        ((100 * value) / data.dps.mean).toFixed(2) +
+                        "%)",
+                      name,
+                    ];
+                  }}
+                />
+                <Legend
+                  verticalAlign="middle"
+                  align="right"
+                  layout="vertical"
+                  height={36}
+                  formatter={renderCustomizedLegend}
+                />
+                <Pie
+                  isAnimationActive={false}
+                  data={dmg}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius="90%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  onClick={(e: any) => setCharSelected(e.name)}
+                >
+                  {dmg.map((entry, index) => (
+                    <Cell
+                      key={index}
+                      fill={CHAR_COLORS[index % CHAR_COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-        <div className="rounded-md p-2 pt-10 bg-gray-600 relative">
-          <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-            Average Character Field Time
-          </span>
-          <ResponsiveContainer width="95%" height={288}>
-            <PieChart>
-              <Tooltip />
-              <Legend
-                verticalAlign="middle"
-                align="right"
-                layout="vertical"
-                height={36}
-                formatter={renderCustomizedLegend}
-              />
-              <Pie
-                isAnimationActive={false}
-                data={fieldTime}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius="90%"
-                labelLine={false}
-                label={renderCustomizedLabel}
-                onClick={(e: any) => setCharSelected(e.name)}
-              >
-                {useCount.map((entry, index) => (
-                  <Cell
-                    key={index}
-                    fill={CHAR_COLORS[index % CHAR_COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="basis-full md:basis-1/2">
+          <div className="rounded-md p-2 pt-10 bg-gray-600 relative md:ml-1">
+            <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
+              Average Character Field Time
+            </span>
+            <ResponsiveContainer width="95%" height={288}>
+              <PieChart>
+                <Tooltip />
+                <Legend
+                  verticalAlign="middle"
+                  align="right"
+                  layout="vertical"
+                  height={36}
+                  formatter={renderCustomizedLegend}
+                />
+                <Pie
+                  isAnimationActive={false}
+                  data={fieldTime}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius="90%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  onClick={(e: any) => setCharSelected(e.name)}
+                >
+                  {useCount.map((entry, index) => (
+                    <Cell
+                      key={index}
+                      fill={CHAR_COLORS[index % CHAR_COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
       {charSelected === "" ? null : (
-        <div className="grid grid-cols-2 gap-2">
-          <div className="rounded-md p-2 pt-10 bg-gray-600 relative">
-            <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-              {charSelected + " - DPS by Ability (Average)"}
-            </span>
-            <ResponsiveContainer width="95%" height={288}>
-              <BarChart data={dmgDetail}>
-                <Tooltip />
-                <YAxis type="number" dataKey="value" tick={{ fill: "white" }} />
-                <XAxis
-                  type="category"
-                  dataKey="name"
-                  tick={{ fill: "white" }}
-                />
-                <Bar
-                  dataKey="value"
-                  cx="50%"
-                  cy="50%"
-                  isAnimationActive={false}
-                >
-                  {dmgDetail.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+        <div className="flex flex-row flex-wrap gap-y-2">
+          <div className="basis-full md:basis-1/2">
+            <div className="rounded-md p-2 pt-10 bg-gray-600 relative md:mr-1">
+              <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
+                {charSelected + " - DPS by Ability (Average)"}
+              </span>
+              <ResponsiveContainer width="95%" height={288}>
+                <BarChart data={dmgDetail}>
+                  <Tooltip />
+                  <YAxis
+                    type="number"
+                    dataKey="value"
+                    tick={{ fill: "white" }}
+                  />
+                  <XAxis
+                    type="category"
+                    dataKey="name"
+                    tick={{ fill: "white" }}
+                  />
+                  <Bar
+                    dataKey="value"
+                    cx="50%"
+                    cy="50%"
+                    isAnimationActive={false}
+                  >
+                    {dmgDetail.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
-          <div className="rounded-md p-2 pt-10 bg-gray-600 relative">
-            <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-              {charSelected + " - Ability Usage Count (Average)"}
-            </span>
-            <ResponsiveContainer width="95%" height={288}>
-              <BarChart data={useCountDetails}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip />
-                <XAxis
-                  type="category"
-                  dataKey="name"
-                  tick={{ fill: "white" }}
-                />
-                <YAxis type="number" dataKey="value" tick={{ fill: "white" }} />
-                <Bar
-                  dataKey="value"
-                  cx="50%"
-                  cy="50%"
-                  isAnimationActive={false}
-                >
-                  {useCountDetails.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="basis-full md:basis-1/2">
+            <div className="rounded-md p-2 pt-10 bg-gray-600 relative md:ml-1">
+              <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
+                {charSelected + " - Ability Usage Count (Average)"}
+              </span>
+              <ResponsiveContainer width="95%" height={288}>
+                <BarChart data={useCountDetails}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <Tooltip />
+                  <XAxis
+                    type="category"
+                    dataKey="name"
+                    tick={{ fill: "white" }}
+                  />
+                  <YAxis
+                    type="number"
+                    dataKey="value"
+                    tick={{ fill: "white" }}
+                  />
+                  <Bar
+                    dataKey="value"
+                    cx="50%"
+                    cy="50%"
+                    isAnimationActive={false}
+                  >
+                    {useCountDetails.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       )}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="rounded-md p-2 pt-10 bg-gray-600 relative">
-          <ReactionsTriggered data={data} />
+      <div className="flex flex-row flex-wrap gap-y-2">
+        <div className="basis-full md:basis-1/2">
+          <div className="rounded-md p-2 pt-10 bg-gray-600 relative md:mr-1">
+            <ReactionsTriggered data={data} />
+          </div>
         </div>
-        <div className="rounded-md p-2 pt-10 bg-gray-600 relative">
-          <ParticlesCount data={data} />
+        <div className="basis-full md:basis-1/2">
+          <div className="rounded-md p-2 pt-10 bg-gray-600 relative md:ml-1">
+            <ParticlesCount data={data} />
+          </div>
         </div>
       </div>
     </div>

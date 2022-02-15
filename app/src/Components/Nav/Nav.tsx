@@ -29,33 +29,38 @@ export default function Nav() {
             <Button
               className={Classes.MINIMAL}
               icon="calculator"
-              text="Simulator"
               onClick={() => setLocation("/simple")}
-            />
+            >
+              <span className="xs:hidden md:block">Simulator</span>
+            </Button>
             <Button
               className={Classes.MINIMAL}
               icon="rocket-slant"
-              text="Advanced"
               onClick={() => setLocation("/advanced")}
-            />
+            >
+              <span className="xs:hidden md:block">Advanced</span>
+            </Button>
             <Button
               className={Classes.MINIMAL}
               icon="chart"
-              text="Viewer"
               onClick={() => setLocation("/viewer")}
-            />
+            >
+              <span className="xs:hidden md:block">Viewer</span>
+            </Button>
             <Button
               className={Classes.MINIMAL}
               icon="database"
-              text="Action List DB"
               onClick={() => setLocation("/db")}
-            />
+            >
+              <span className="xs:hidden md:block">Action List DB</span>
+            </Button>
             <Button
               className={Classes.MINIMAL}
               icon="info-sign"
-              text="About"
               onClick={() => setLocation("/about")}
-            />
+            >
+              <span className="xs:hidden md:block">About</span>
+            </Button>
           </>
         ) : null}
       </NavbarGroup>

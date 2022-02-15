@@ -1,3 +1,4 @@
+import { useLocation } from "wouter";
 import { Viewer } from "~src/Components/Viewer";
 import { Viewport } from "~src/Components/Viewport";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export function ViewerDash({ path }: Props) {
+  const [_, setLocation] = useLocation();
   const { data, selected } = useAppSelector((state: RootState) => {
     return {
       data: state.viewer.data,
@@ -21,7 +23,15 @@ export function ViewerDash({ path }: Props) {
   //if path is not "/" then load the shared view
   if (path !== "/") {
     //need a check here to make sure this doesn't already exists
-    return <Shared path={path} />;
+    return (
+      <Shared
+        path={path}
+        handleClose={() => {
+          dispatch(viewerActions.setSelected(""));
+          setLocation("/viewer");
+        }}
+      />
+    );
   }
   //show viewer if selected != -1
   if (selected !== "") {

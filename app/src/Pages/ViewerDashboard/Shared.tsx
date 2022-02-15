@@ -1,5 +1,4 @@
 import React from "react";
-import { useLocation } from "wouter";
 import axios from "axios";
 import { Viewer } from "~src/Components/Viewer";
 import {
@@ -7,21 +6,20 @@ import {
   parseAndValidate,
   Uint8ArrayFromBase64,
 } from "./parse";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+import { useAppDispatch } from "~src/store";
 import { viewerActions } from "./viewerSlice";
 import { ResultsSummary } from "~src/types";
-import { Viewport } from "~src/Components/Viewport";
 
 axios.defaults.headers.get["Access-Control-Allow-Origin"] = "*";
 
 type Props = {
   path: string;
   version?: string;
+  handleClose: () => void;
 };
 
-export default function Shared({ path, version = "v2" }: Props) {
+export default function Shared({ path, version = "v2", handleClose }: Props) {
   const dispatch = useAppDispatch();
-  const [location, setLocation] = useLocation();
   const [msg, setMsg] = React.useState<string>("");
   const [data, setData] = React.useState<ResultsSummary | null>(null);
 
@@ -99,17 +97,15 @@ export default function Shared({ path, version = "v2" }: Props) {
     );
   }
 
-  const handleClose = () => {
-    setLocation("/viewer");
-  };
-
   if (data !== null) {
     return (
-      <Viewer
-        data={data}
-        className="h-full flex-grow"
-        handleClose={handleClose}
-      />
+      <div className="flex-grow">
+        <Viewer
+          data={data}
+          className="h-full flex-grow"
+          handleClose={handleClose}
+        />
+      </div>
     );
   }
 
