@@ -92,10 +92,11 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 		}
 		c.Core.Log.Debugw("sky kitsune tick", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		// no snapshot
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), -1, 49)
-		if c.Core.F >= c.totemLastParticleF+60*2.5 {
-			c.QueueParticle("kitsune-tick particle", 1, core.Electro, 30)
-			c.totemLastParticleF = c.Core.F
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 49)
+		if c.Core.F+49 >= c.totemLastParticleF+60*2.5 {
+			c.Core.Log.Debugw("sky kitsune particle", "frame", c.Core.F, "event", core.LogCharacterEvent, "lastParticleF", c.totemLastParticleF)
+			c.QueueParticle("kitsune-tick particle", 1, core.Electro, 49+30)
+			c.totemLastParticleF = c.Core.F + 49
 		}
 		// tick per 2.5 seconds
 		c.AddTask(c.kitsuneTick(totem), "kitsune-tick", 177)
