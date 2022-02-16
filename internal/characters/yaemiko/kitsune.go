@@ -32,7 +32,7 @@ func (c *char) makeKitsune() {
 		Pattern: core.NewDefCircHit(5, false, core.TargettableEnemy),
 	}
 	//start ticking
-	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 30)
+	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 22)
 	//add task to delete this one if times out (and not deleted by anything else)
 	c.AddTask(func() {
 		//i think we can just check for .deleted here
@@ -41,7 +41,7 @@ func (c *char) makeKitsune() {
 		}
 		//ok now we can delete this
 		c.popOldestKitsune()
-	}, "kitsune-expiry", 14*60)
+	}, "kitsune-expiry", 22+866) // e ani + duration
 
 	//pop oldest first
 	if len(c.kitsunes) == 3 {
@@ -63,7 +63,7 @@ func (c *char) popOldestKitsune() {
 
 	//here check for status
 	if len(c.kitsunes) > 0 {
-		dur := c.Core.F - c.kitsunes[0].src + 14*60
+		dur := c.Core.F - c.kitsunes[0].src + 866
 		if dur < 0 {
 			log.Panicf("oldest totem should have expired already? dur: %v totem: %v", dur, *c.kitsunes[0])
 		}
@@ -123,7 +123,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		c.Core.Log.Debugw("sky kitsune tick", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		// no snapshot
 		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 49)
-		if c.Core.F+49 >= c.totemLastParticleF+60*2.5 {
+		if c.Core.F+49 >= c.totemLastParticleF+60*3 {
 			c.Core.Log.Debugw("sky kitsune particle", "frame", c.Core.F, "event", core.LogCharacterEvent, "lastParticleF", c.totemLastParticleF)
 			c.QueueParticle("kitsune-tick particle", 1, core.Electro, 49+30)
 			c.totemLastParticleF = c.Core.F + 49
