@@ -35,14 +35,12 @@ func (c *char) makeKitsune() {
 	}
 }
 
-func (c *char) kitsuneBurst(ai core.AttackInfo) {
+func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
 	snap := c.Snapshot(&ai)
-	for i, v := range c.kitsunes {
-		if c.Core.F <= v.src+9*60 {
-			v.ae.Snapshot = snap
-			c.Core.Combat.QueueAttackEvent(&v.ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
-			c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", v.src, "delay", 94+54+i*24)
-		}
+	for i := 0; i < sakuraLevel; i++ {
+		c.kitsunes[i].ae.Snapshot = snap
+		c.Core.Combat.QueueAttackEvent(&c.kitsunes[i].ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
+		c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
 
 	c.kitsunes = c.kitsunes[:0]
