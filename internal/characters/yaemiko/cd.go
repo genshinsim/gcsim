@@ -122,9 +122,9 @@ func (c *char) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 		}
 		//check to make sure queue is not 0
 		if len(c.cdQueue[a]) == 0 {
-			//this should never happen
-			panic("charges > max??")
-			// return
+			//this happens when CD reaches zero before the full CD duration
+			// panic("charges > max??")
+			return
 		}
 		//otherwise add a stack and pop first item in queue
 		c.availableCDCharge[a]++
