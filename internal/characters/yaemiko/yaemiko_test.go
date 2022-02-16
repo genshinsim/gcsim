@@ -1,33 +1,13 @@
 package yaemiko
 
 import (
-	"os"
 	"testing"
 
 	"github.com/genshinsim/gcsim/internal/testhelper"
 	"github.com/genshinsim/gcsim/internal/tmpl/enemy"
 	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
-
-var logger *zap.SugaredLogger
-
-func TestMain(m *testing.M) {
-	// call flag.Parse() here if TestMain uses flags
-	config := zap.NewDevelopmentConfig()
-	debug := os.Getenv("GCSIM_VERBOSE_TEST")
-	level := zapcore.InfoLevel
-	if debug != "" {
-		level = zapcore.DebugLevel
-	}
-	config.Level = zap.NewAtomicLevelAt(level)
-	config.EncoderConfig.TimeKey = ""
-	log, _ := config.Build(zap.AddCallerSkip(1))
-	logger = log.Sugar()
-	os.Exit(m.Run())
-}
 
 func TestBasicAbilUsage(t *testing.T) {
 	c := testhelper.NewTestCore()
