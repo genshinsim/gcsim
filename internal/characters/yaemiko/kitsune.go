@@ -34,7 +34,9 @@ func (c *char) makeKitsune() {
 		//FIFO pop, popped kitsunes handled in kitsuneTick fn
 		c.kitsunes = append(c.kitsunes[1:], k)
 	}
-	c.Core.Status.AddStatus("oldestTotemExpiry", c.kitsunes[0].src)
+	if len(c.kitsunes) == 0 {
+		c.Core.Status.AddStatus("oldestTotemExpiry", 14*60)
+	}
 }
 
 func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
@@ -47,6 +49,7 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
 	c.AddTask(func() {
 		c.kitsunes = c.kitsunes[:0]
 		c.Tags["totems"] = 0
+		c.Core.Status.DeleteStatus("oldestTotemExpiry")
 	}, "delay despawn for kitsunes", 78)
 
 }
@@ -71,6 +74,12 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 		//do nothing if totem expired
 		if c.Core.F > totem.src+14*60 {
 			c.Tags["totems"]--
+			// c.kitsunes = c.kitsunes[1:]
+			// if len(c.kitsunes) > 0 {
+			// 	if c.kitsunes[0].src+14*60-c.Core.F > 0 {
+			// 		c.Core.Status.AddStatus("oldestTotemExpiry", c.cdQueue[core.ActionSkill][0])
+			// 	}
+			// }
 			return
 		}
 
