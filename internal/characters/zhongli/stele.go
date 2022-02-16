@@ -72,7 +72,7 @@ func (c *char) resonance(src, max int) func() {
 		if !c.Core.Constructs.Has(src) {
 			return
 		}
-		c.Core.Log.Debugw("Stele ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected", c.Core.F+120, "src", src, "char", c.Index)
+		c.Core.Log.NewEvent("Stele ticked", core.LogCharacterEvent, c.Index, "next expected", c.Core.F+120, "src", src, "char", c.Index)
 
 		// Use snapshot for damage
 		ae := c.steleSnapshot

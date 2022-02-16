@@ -3,6 +3,7 @@ package simulation
 import (
 	"math/rand"
 
+	"github.com/genshinsim/gcsim/internal/eventlog"
 	"github.com/genshinsim/gcsim/internal/tmpl/action"
 	"github.com/genshinsim/gcsim/internal/tmpl/calcqueue"
 	"github.com/genshinsim/gcsim/internal/tmpl/combat"

@@ -18,11 +18,10 @@ func (c *char) aimedApplyRiptide(a core.AttackCB) {
 //Swiftly fires a Hydro-imbued magic arrow, dealing AoE Hydro DMG and applying the Riptide status.
 func (c *char) rangedBurstApplyRiptide(a core.AttackCB) {
 	a.Target.SetTag(riptideKey, c.Core.F+riptideDuration)
-	c.Core.Log.Debugw(
+	c.Core.Log.NewEvent(
 		"riptide applied (ranged burst)",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
-		"char", c.Index,
+		core.LogCharacterEvent,
+		c.Index,
 		"target", a.Target.Index(),
 		"expiry", c.Core.F+riptideDuration,
 	)
