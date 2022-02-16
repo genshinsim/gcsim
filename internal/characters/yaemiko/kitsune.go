@@ -43,6 +43,9 @@ func (c *char) makeKitsune() {
 		c.popOldestKitsune()
 	}, "kitsune-expiry", 866) // e ani + duration
 
+	if len(c.kitsunes) == 0 {
+		c.Core.Status.AddStatus(yaeTotemStatus, 866)
+	}
 	//pop oldest first
 	if len(c.kitsunes) == 3 {
 		c.popOldestKitsune()
