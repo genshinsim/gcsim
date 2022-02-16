@@ -1,6 +1,10 @@
 package yaemiko
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"log"
+
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 type kitsune struct {
 	ae      core.AttackEvent
@@ -9,7 +13,7 @@ type kitsune struct {
 }
 
 func (c *char) makeKitsune() {
-	k := kitsune{}
+	k := &kitsune{}
 	k.src = c.Core.F
 	k.deleted = false
 	ai := core.AttackInfo{
@@ -27,23 +31,52 @@ func (c *char) makeKitsune() {
 		Info:    ai,
 		Pattern: core.NewDefCircHit(5, false, core.TargettableEnemy),
 	}
-	c.AddTask(c.kitsuneTick(k), "start kitsune-tick", 30)
-	if len(c.kitsunes) < 3 {
-		//FIFO
-		c.kitsunes = append(c.kitsunes, k)
-		c.Tags["totems"]++
-	} else {
-		//FIFO pop, popped kitsunes handled in kitsuneTick fn
-		c.kitsunes = append(c.kitsunes[1:], k)
+	//start ticking
+	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 30)
+	//add task to delete this one if times out (and not deleted by anything else)
+	c.AddTask(func() {
+		//i think we can just check for .deleted here
+		if k.deleted {
+			return
+		}
+		//ok now we can delete this
+		c.popOldestKitsune()
+	}, "kitsune-expiry", 14*60)
+
+	//pop oldest first
+	if len(c.kitsunes) == 3 {
+		c.popOldestKitsune()
 	}
-	if len(c.kitsunes) == 0 {
-		c.Core.Status.AddStatus("oldestTotemExpiry", 14*60)
-	}
+	c.kitsunes = append(c.kitsunes, k)
+
 }
 
-func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
+func (c *char) popOldestKitsune() {
+	if len(c.kitsunes) == 0 {
+		//nothing to pop??
+		return
+	}
+
+	c.kitsunes[0].deleted = true
+	c.kitsunes = c.kitsunes[1:]
+
+	//here check for status
+	if len(c.kitsunes) > 0 {
+		dur := c.Core.F - c.kitsunes[0].src + 14*60
+		if dur < 0 {
+			log.Panicf("oldest totem should have expired already? dur: %v totem: %v", dur, *c.kitsunes[0])
+		}
+		c.Core.Status.AddStatus(yaeTotemStatus, dur)
+	} else {
+		c.Core.Status.DeleteStatus(yaeTotemStatus)
+	}
+
+	c.AddTag(yaeTotemCount, len(c.kitsunes))
+}
+
+func (c *char) kitsuneBurst(ai core.AttackInfo) {
 	snap := c.Snapshot(&ai)
-	for i := 0; i < sakuraLevel; i++ {
+	for i := 0; i < c.sakuraLevelCheck(); i++ {
 		c.kitsunes[i].ae.Snapshot = snap
 		c.Core.Combat.QueueAttackEvent(&c.kitsunes[i].ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
 		if c.Base.Cons >= 1 {
@@ -55,36 +88,21 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
 		c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
 	c.AddTask(func() {
-		c.kitsunes = c.kitsunes[:0]
-		c.Tags["totems"] = 0
-		c.Core.Status.DeleteStatus("oldestTotemExpiry")
+		//pop all?
+		for range c.kitsunes {
+			c.popOldestKitsune()
+		}
 	}, "delay despawn for kitsunes", 78)
 
 }
 
-func (c *char) kitsuneTick(totem kitsune) func() {
+func (c *char) kitsuneTick(totem *kitsune) func() {
 
 	return func() {
-		//make sure it's not overwritten
-		flag := false
-		for _, v := range c.kitsunes {
-			if v.src == totem.src {
-				if flag {
-					panic("two kitsune's found created at the same time")
-				}
-				flag = true
-			}
-		}
-		if !flag {
-			// don't perform kitsune tick if kitsune does not exist
+		//if deleted do nothing
+		if totem.deleted {
 			return
 		}
-		//do nothing if totem expired
-		if c.Core.F > totem.src+14*60 {
-			c.Tags["totems"]--
-			return
-		}
-
 		// c6
 		// Sesshou Sakura start at Level 2 when created. Max level increased to 4, and their attacks will ignore 45% of the opponents' DEF.
 		ai := core.AttackInfo{
@@ -115,15 +133,19 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 }
 
 func (c *char) sakuraLevelCheck() int {
-	sakuraLevels := 0
-	for _, v := range c.kitsunes {
-		if c.Core.F < v.src+14*60 {
-			sakuraLevels++
-		}
+
+	count := len(c.kitsunes) - 1
+
+	if count < 0 {
+		//this is for the base case when there are no totems (other wise we'll end up with 1 if C6)
+		return 0
 	}
-	if sakuraLevels > 3 {
-		panic("wtf more than 3 kitsunes")
-	} else {
-		return sakuraLevels
+	if count > 3 {
+		panic("wtf more than 3 totems")
 	}
+	if c.Base.Cons == 6 {
+		count++
+	}
+
+	return count
 }

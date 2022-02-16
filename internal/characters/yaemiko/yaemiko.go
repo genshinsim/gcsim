@@ -12,7 +12,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	kitsunes               []kitsune
+	kitsunes               []*kitsune
 	cdQueueWorkerStartedAt []int
 	cdQueue                [][]int
 	availableCDCharge      []int
@@ -22,6 +22,11 @@ type char struct {
 	turretBonus            int
 	totemLastParticleF     int
 }
+
+const (
+	yaeTotemStatus = "yaetotem"
+	yaeTotemCount  = "totem"
+)
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
@@ -43,7 +48,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.cdQueue = make([][]int, core.EndActionType)
 	c.additionalCDCharge = make([]int, core.EndActionType)
 	c.availableCDCharge = make([]int, core.EndActionType)
-	c.kitsunes = make([]kitsune, 0, 3)
+	c.kitsunes = make([]*kitsune, 0, 5)
 	c.totemLastParticleF = 0
 
 	for i := 0; i < len(c.cdQueue); i++ {
