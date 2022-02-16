@@ -30,7 +30,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestSkillCDWithC4(t *testing.T) {
+func TestBasicAbilUsage(t *testing.T) {
 	c, err := core.New(func(c *core.Core) error {
 		c.Log = logger
 		return nil
@@ -61,7 +61,7 @@ func TestSkillCDWithC4(t *testing.T) {
 		t.FailNow()
 	}
 
-	//use skill, wait out animation, and check if ready for another use (2 stacks at c4)
+	//use skill, wait out animation, and check if ready for another use (3 stacks at c0)
 	a, _ := x.Skill(p)
 	for i := 0; i < a; i++ {
 		c.Tick()
@@ -71,9 +71,18 @@ func TestSkillCDWithC4(t *testing.T) {
 		t.FailNow()
 	}
 
-	//use second charge, next charge should be ready at 900-a
+	//use skill, wait out animation, and check if ready for another use (3 stacks at c0)
+	a, _ = x.Skill(p)
+	for i := 0; i < a; i++ {
+		c.Tick()
+	}
+	if !x.ActionReady(core.ActionSkill, p) {
+		t.Errorf("expected third skill charge to be ready at start. At frame %v", c.F)
+		t.FailNow()
+	}
+	//use third charge, next charge should be ready at 9*60*0.8-a-1
 	x.Skill(p)
-	for i := 0; i < 900-a-1; i++ {
+	for i := 0; i < 9*60*0.8-2*a-1; i++ {
 		c.Tick()
 		if x.ActionReady(core.ActionSkill, p) {
 			t.Errorf("expected skill to be on cd at frame: %v", c.F)
@@ -81,21 +90,21 @@ func TestSkillCDWithC4(t *testing.T) {
 		}
 	}
 
-	//tick once to get to 900-a
+	//tick once to get to 9*60*0.8-a
 	c.Tick()
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Errorf("expected one charge of skill to be ready now. At frame %v; CD left: %v; charges: %v", c.F, x.Cooldown(core.ActionSkill), yaemiko.availableCDCharge)
 		t.FailNow()
 	}
 
-	//next charge should be ready at 900 from now
+	//next charge should be ready at 9*60*0.8-a-1 from now
 	x.Skill(p)
 	if x.ActionReady(core.ActionSkill, p) {
 		t.Errorf("expected skill to be on cd at frame: %v", c.F)
 		t.FailNow()
 	}
 
-	for i := 0; i < 900-1; i++ {
+	for i := 0; i < 9*60*0.8-1; i++ {
 		c.Tick()
 		if x.ActionReady(core.ActionSkill, p) {
 			t.Errorf("expected skill to be on cd at frame: %v", c.F)
@@ -115,7 +124,7 @@ func TestSkillCDWithC4(t *testing.T) {
 		t.FailNow()
 	}
 
-	for i := 0; i < 900-1; i++ {
+	for i := 0; i < 9*60*0.8-1; i++ {
 		c.Tick()
 		if x.ActionReady(core.ActionSkill, p) {
 			t.Errorf("expected skill to be on cd at frame: %v", c.F)
@@ -136,7 +145,7 @@ func TestSkillCDWithC4(t *testing.T) {
 	}
 	//next charge should be ready by 900 - flat cd reduction
 	x.ReduceActionCooldown(core.ActionSkill, 100)
-	for i := 0; i < 800-1; i++ {
+	for i := 0; i < 9*60*0.8-101; i++ {
 		c.Tick()
 		if x.ActionReady(core.ActionSkill, p) {
 			t.Errorf("expected skill to be on cd at frame: %v", c.F)
