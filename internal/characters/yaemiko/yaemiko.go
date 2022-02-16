@@ -70,7 +70,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init(index int) {
 	c.Tmpl.Init(index)
-	c.a2()
+	// c.a2()
 	c.a4()
 	if c.Base.Cons >= 4 {
 		c.c4()
@@ -93,46 +93,46 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	}
 }
 
-func (c *char) a2() {
-	//Other nearby party members can decrease the CD of Yae Miko's Yakan Evocation: Sesshou Sakura:
-	// • Hitting opponents with Elemental Skill DMG decreases it by 1s and can occur once every 1.8s.
-	// • Hitting opponents with Elemental Burst DMG decreases it by 1s and can occur once every 1.8s.
+// func (c *char) a2() {
+// 	//Other nearby party members can decrease the CD of Yae Miko's Yakan Evocation: Sesshou Sakura:
+// 	// • Hitting opponents with Elemental Skill DMG decreases it by 1s and can occur once every 1.8s.
+// 	// • Hitting opponents with Elemental Burst DMG decreases it by 1s and can occur once every 1.8s.
 
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if c.Index == atk.Info.ActorIndex {
-			// do not trigger for yae attacks
-			return false
-		}
-		switch atk.Info.AttackTag {
-		case core.AttackTagElementalBurst:
-			if c.Core.F < c.a2burstTimer+1.8*60 {
-				return false
-			} else {
-				c.ReduceActionCooldown(core.ActionSkill, 60)
-				c.a2burstTimer = c.Core.F
-			}
-		case core.AttackTagElementalArt:
-			if c.Core.F < c.a2skillTimer+1.8*60 {
-				return false
-			} else {
-				c.ReduceActionCooldown(core.ActionSkill, 60)
-				c.a2skillTimer = c.Core.F
-			}
-		case core.AttackTagElementalArtHold:
-			if c.Core.F < c.a2skillTimer+1.8*60 {
-				return false
-			} else {
-				c.ReduceActionCooldown(core.ActionSkill, 60)
-				c.a2skillTimer = c.Core.F
-			}
-		default:
-			return false
-		}
-		return false
-	}, "yaemiko-a2")
+// 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+// 		atk := args[1].(*core.AttackEvent)
+// 		if c.Index == atk.Info.ActorIndex {
+// 			// do not trigger for yae attacks
+// 			return false
+// 		}
+// 		switch atk.Info.AttackTag {
+// 		case core.AttackTagElementalBurst:
+// 			if c.Core.F < c.a2burstTimer+1.8*60 {
+// 				return false
+// 			} else {
+// 				c.ReduceActionCooldown(core.ActionSkill, 60)
+// 				c.a2burstTimer = c.Core.F
+// 			}
+// 		case core.AttackTagElementalArt:
+// 			if c.Core.F < c.a2skillTimer+1.8*60 {
+// 				return false
+// 			} else {
+// 				c.ReduceActionCooldown(core.ActionSkill, 60)
+// 				c.a2skillTimer = c.Core.F
+// 			}
+// 		case core.AttackTagElementalArtHold:
+// 			if c.Core.F < c.a2skillTimer+1.8*60 {
+// 				return false
+// 			} else {
+// 				c.ReduceActionCooldown(core.ActionSkill, 60)
+// 				c.a2skillTimer = c.Core.F
+// 			}
+// 		default:
+// 			return false
+// 		}
+// 		return false
+// 	}, "yaemiko-a2")
 
-}
+// }
 
 func (c *char) a4() {
 	c.AddPreDamageMod(core.PreDamageMod{
