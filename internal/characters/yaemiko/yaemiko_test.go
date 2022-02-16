@@ -53,9 +53,9 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Errorf("expected third skill charge to be ready at start. At frame %v", c.F)
 		t.FailNow()
 	}
-	//use third charge, next charge should be ready at 9*60*0.8-a-1
+	//use third charge, next charge should be ready at 9*60-a-1
 	x.Skill(p)
-	for i := 0; i < 9*60*0.8-2*a-1; i++ {
+	for i := 0; i < 4*60-2*a-1; i++ {
 		c.Tick()
 		if x.ActionReady(core.ActionSkill, p) {
 			t.Errorf("expected skill to be on cd at frame: %v", c.F)
@@ -63,21 +63,21 @@ func TestBasicAbilUsage(t *testing.T) {
 		}
 	}
 
-	//tick once to get to 9*60*0.8-a
+	//tick once to get to 9*60-a
 	c.Tick()
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Errorf("expected one charge of skill to be ready now. At frame %v; CD left: %v; charges: %v", c.F, x.Cooldown(core.ActionSkill), yaemiko.availableCDCharge)
 		t.FailNow()
 	}
 
-	//next charge should be ready at 9*60*0.8-a-1 from now
+	//next charge should be ready at 9*60-a-1 from now
 	x.Skill(p)
 	if x.ActionReady(core.ActionSkill, p) {
 		t.Errorf("expected skill to be on cd at frame: %v", c.F)
 		t.FailNow()
 	}
 
-	for i := 0; i < 9*60*0.8-1; i++ {
+	for i := 0; i < 4*60-1; i++ {
 		c.Tick()
 		if x.ActionReady(core.ActionSkill, p) {
 			t.Errorf("expected skill to be on cd at frame: %v", c.F)
@@ -97,7 +97,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.FailNow()
 	}
 
-	for i := 0; i < 9*60*0.8-1; i++ {
+	for i := 0; i < 4*60-1; i++ {
 		c.Tick()
 		if x.ActionReady(core.ActionSkill, p) {
 			t.Errorf("expected skill to be on cd at frame: %v", c.F)
@@ -118,7 +118,7 @@ func TestBasicAbilUsage(t *testing.T) {
 	}
 	//next charge should be ready by 900 - flat cd reduction
 	x.ReduceActionCooldown(core.ActionSkill, 100)
-	for i := 0; i < 9*60*0.8-101; i++ {
+	for i := 0; i < 4*60-101; i++ {
 		c.Tick()
 		if x.ActionReady(core.ActionSkill, p) {
 			t.Errorf("expected skill to be on cd at frame: %v", c.F)
