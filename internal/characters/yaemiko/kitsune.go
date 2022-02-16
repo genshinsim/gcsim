@@ -123,7 +123,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		c.Core.Log.Debugw("sky kitsune tick", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		// no snapshot
 		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 51)
-		if c.Core.F+51 >= c.totemLastParticleF+60*3 {
+		if c.Core.F+51 >= c.totemLastParticleF+176 { // 176 frame ICD until we are sure about ICD
 			c.Core.Log.Debugw("sky kitsune particle", "frame", c.Core.F, "event", core.LogCharacterEvent, "lastParticleF", c.totemLastParticleF)
 			c.QueueParticle("kitsune-tick particle", 1, core.Electro, 51+30)
 			c.totemLastParticleF = c.Core.F + 51
