@@ -3,11 +3,10 @@ package yaemiko
 import (
 	"github.com/genshinsim/gcsim/pkg/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.YaeMiko, NewChar)
+	core.RegisterCharFunc(core.YaeMiko, NewChar)
 }
 
 type char struct {
@@ -55,10 +54,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.cdQueue[i] = make([]int, 0, 4)
 		c.availableCDCharge[i] = 1
 	}
-	c.turretBonus = 0
-	if c.Base.Cons >= 2 {
-		c.turretBonus = 1
-	}
 
 	c.additionalCDCharge[core.ActionSkill] = 2
 	c.availableCDCharge[core.ActionSkill] += 2
@@ -75,9 +70,9 @@ func (c *char) Init(index int) {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-	c.c6int = 0
-	if c.Base.Cons == 6 {
-		c.c6int = 1
+	c.turretBonus = 0
+	if c.Base.Cons >= 2 {
+		c.turretBonus = 1
 	}
 
 }

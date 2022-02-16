@@ -2825,7 +2825,7 @@ var CharBaseMap = map[core.CharKey]CharBase{
 			},
 		},
 	},
-	keys.YaeMiko: {
+	core.YaeMiko: {
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
