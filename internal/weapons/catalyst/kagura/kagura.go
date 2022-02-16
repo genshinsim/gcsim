@@ -35,7 +35,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	}, fmt.Sprintf("kaguradance-%v", char.Name()))
 
-	val := make([]float64, core.EndStatType)
 	mod := float64(r - 1)
 
 	char.AddPreDamageMod(core.PreDamageMod{
@@ -44,6 +43,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			if atk.Info.ActorIndex != char.CharIndex() {
 				return nil, false
 			}
+			val := make([]float64, core.EndStatType)
 			if stacks == 3 {
 				val[core.PyroP] = 0.12 + 0.03*mod
 				val[core.HydroP] = 0.12 + 0.03*mod
