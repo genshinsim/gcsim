@@ -79,7 +79,7 @@ func walk(path string) []string {
 	return r
 }
 
-var tmpl = `package gcsim
+var tmpl = `package simulation
 
 import (
 	//artifacts

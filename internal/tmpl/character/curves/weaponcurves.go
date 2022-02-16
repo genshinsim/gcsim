@@ -79,43 +79,6 @@ var WeaponBaseMap = map[string]WeaponBase{
 			},
 		},
 	},
-	"amberbead": {
-		AtkCurve:         GROW_CURVE_ATTACK_101,
-		SpecializedCurve: GROW_CURVE_CRITICAL_101,
-		BaseAtk:          38.74129867553711,
-		BaseSpecialized:  30.600000381469727,
-		Specialized:      core.EM,
-		PromotionBonus: []PromoData{
-			{
-				MaxLevel: 20,
-				Atk:      0,
-			},
-			{
-				MaxLevel: 40,
-				Atk:      19.5,
-			},
-			{
-				MaxLevel: 50,
-				Atk:      38.900001525878906,
-			},
-			{
-				MaxLevel: 60,
-				Atk:      58.400001525878906,
-			},
-			{
-				MaxLevel: 70,
-				Atk:      77.80000305175781,
-			},
-			{
-				MaxLevel: 80,
-				Atk:      97.30000305175781,
-			},
-			{
-				MaxLevel: 90,
-				Atk:      116.69999694824219,
-			},
-		},
-	},
 	"amenomakageuchi": {
 		AtkCurve:         GROW_CURVE_ATTACK_204,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
@@ -980,43 +943,6 @@ var WeaponBaseMap = map[string]WeaponBase{
 			},
 		},
 	},
-	"ebonybow": {
-		AtkCurve:         GROW_CURVE_ATTACK_101,
-		SpecializedCurve: GROW_CURVE_CRITICAL_101,
-		BaseAtk:          38.74129867553711,
-		BaseSpecialized:  0.07660000026226044,
-		Specialized:      core.ATKP,
-		PromotionBonus: []PromoData{
-			{
-				MaxLevel: 20,
-				Atk:      0,
-			},
-			{
-				MaxLevel: 40,
-				Atk:      19.5,
-			},
-			{
-				MaxLevel: 50,
-				Atk:      38.900001525878906,
-			},
-			{
-				MaxLevel: 60,
-				Atk:      58.400001525878906,
-			},
-			{
-				MaxLevel: 70,
-				Atk:      77.80000305175781,
-			},
-			{
-				MaxLevel: 80,
-				Atk:      97.30000305175781,
-			},
-			{
-				MaxLevel: 90,
-				Atk:      116.69999694824219,
-			},
-		},
-	},
 	"elegyfortheend": {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
@@ -1815,6 +1741,43 @@ var WeaponBaseMap = map[string]WeaponBase{
 			},
 		},
 	},
+	"kagurasverity": {
+		AtkCurve:         GROW_CURVE_ATTACK_301,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          45.9364013671875,
+		BaseSpecialized:  0.14399999380111694,
+		Specialized:      core.CD,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
 	"katsuragikirinagamasa": {
 		AtkCurve:         GROW_CURVE_ATTACK_201,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
@@ -2333,6 +2296,43 @@ var WeaponBaseMap = map[string]WeaponBase{
 			},
 		},
 	},
+	"oathsworneye": {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      core.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	"oldmercspal": {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
@@ -2758,43 +2758,6 @@ var WeaponBaseMap = map[string]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      155.60000610351562,
-			},
-		},
-	},
-	"quartz": {
-		AtkCurve:         GROW_CURVE_ATTACK_101,
-		SpecializedCurve: GROW_CURVE_CRITICAL_101,
-		BaseAtk:          38.74129867553711,
-		BaseSpecialized:  30.600000381469727,
-		Specialized:      core.EM,
-		PromotionBonus: []PromoData{
-			{
-				MaxLevel: 20,
-				Atk:      0,
-			},
-			{
-				MaxLevel: 40,
-				Atk:      19.5,
-			},
-			{
-				MaxLevel: 50,
-				Atk:      38.900001525878906,
-			},
-			{
-				MaxLevel: 60,
-				Atk:      58.400001525878906,
-			},
-			{
-				MaxLevel: 70,
-				Atk:      77.80000305175781,
-			},
-			{
-				MaxLevel: 80,
-				Atk:      97.30000305175781,
-			},
-			{
-				MaxLevel: 90,
-				Atk:      116.69999694824219,
 			},
 		},
 	},
@@ -4114,43 +4077,6 @@ var WeaponBaseMap = map[string]WeaponBase{
 			},
 		},
 	},
-	"theflagstaff": {
-		AtkCurve:         GROW_CURVE_ATTACK_101,
-		SpecializedCurve: GROW_CURVE_CRITICAL_101,
-		BaseAtk:          9.899999618530273,
-		BaseSpecialized:  0,
-		Specialized:      core.NoStat,
-		PromotionBonus: []PromoData{
-			{
-				MaxLevel: 20,
-				Atk:      0,
-			},
-			{
-				MaxLevel: 40,
-				Atk:      19.5,
-			},
-			{
-				MaxLevel: 50,
-				Atk:      38.900001525878906,
-			},
-			{
-				MaxLevel: 60,
-				Atk:      58.400001525878906,
-			},
-			{
-				MaxLevel: 70,
-				Atk:      77.80000305175781,
-			},
-			{
-				MaxLevel: 80,
-				Atk:      97.30000305175781,
-			},
-			{
-				MaxLevel: 90,
-				Atk:      116.69999694824219,
-			},
-		},
-	},
 	"theflute": {
 		AtkCurve:         GROW_CURVE_ATTACK_201,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
@@ -4806,80 +4732,6 @@ var WeaponBaseMap = map[string]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      186.6999969482422,
-			},
-		},
-	},
-	"kagurasverity": {
-		AtkCurve:         GROW_CURVE_ATTACK_301,
-		SpecializedCurve: GROW_CURVE_CRITICAL_301,
-		BaseAtk:          45.9364013671875,
-		BaseSpecialized:  0.14399999380111694,
-		Specialized:      core.CD,
-		PromotionBonus: []PromoData{
-			{
-				MaxLevel: 20,
-				Atk:      0,
-			},
-			{
-				MaxLevel: 40,
-				Atk:      31.100000381469727,
-			},
-			{
-				MaxLevel: 50,
-				Atk:      62.20000076293945,
-			},
-			{
-				MaxLevel: 60,
-				Atk:      93.4000015258789,
-			},
-			{
-				MaxLevel: 70,
-				Atk:      124.5,
-			},
-			{
-				MaxLevel: 80,
-				Atk:      155.60000610351562,
-			},
-			{
-				MaxLevel: 90,
-				Atk:      186.6999969482422,
-			},
-		},
-	},
-	"oathsworneye": {
-		AtkCurve:         GROW_CURVE_ATTACK_202,
-		SpecializedCurve: GROW_CURVE_CRITICAL_201,
-		BaseAtk:          43.734901428222656,
-		BaseSpecialized:  0.05999999865889549,
-		Specialized:      core.ATKP,
-		PromotionBonus: []PromoData{
-			{
-				MaxLevel: 20,
-				Atk:      0,
-			},
-			{
-				MaxLevel: 40,
-				Atk:      25.899999618530273,
-			},
-			{
-				MaxLevel: 50,
-				Atk:      51.900001525878906,
-			},
-			{
-				MaxLevel: 60,
-				Atk:      77.80000305175781,
-			},
-			{
-				MaxLevel: 70,
-				Atk:      103.69999694824219,
-			},
-			{
-				MaxLevel: 80,
-				Atk:      129.6999969482422,
-			},
-			{
-				MaxLevel: 90,
-				Atk:      155.60000610351562,
 			},
 		},
 	},
