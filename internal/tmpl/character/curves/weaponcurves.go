@@ -4809,4 +4809,41 @@ var WeaponBaseMap = map[string]WeaponBase{
 			},
 		},
 	},
+	"kagurasverity": {
+		AtkCurve:         GROW_CURVE_ATTACK_301,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          45.9364013671875,
+		BaseSpecialized:  0.14399999380111694,
+		Specialized:      core.CD,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
 }
