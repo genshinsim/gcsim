@@ -24,8 +24,8 @@ type char struct {
 }
 
 const (
-	yaeTotemStatus = "yaetotem"
-	yaeTotemCount  = "totem"
+	yaeTotemStatus = "oldestTotemTime"
+	yaeTotemCount  = "totems"
 )
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -65,7 +65,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.a2burstTimer = 0
 	c.a2skillTimer = 0
 	c.Tags["eCharge"] = c.availableCDCharge[core.ActionSkill]
-	c.Tags["totems"] = 0
 	return &c, nil
 }
 
