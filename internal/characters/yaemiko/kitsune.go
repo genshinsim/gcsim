@@ -42,8 +42,8 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
 		c.Core.Combat.QueueAttackEvent(&c.kitsunes[i].ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
 		c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
+	c.AddTask(func() { c.kitsunes = c.kitsunes[:0] }, "delay despawn for kitsunes", 78)
 
-	c.kitsunes = c.kitsunes[:0]
 }
 
 func (c *char) kitsuneTick(totem kitsune) func() {
