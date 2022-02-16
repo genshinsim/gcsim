@@ -103,7 +103,13 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 }
 
 func (c *char) sakuraLevelCheck() int {
-	if len(c.kitsunes) > 3 {
+	sakuraLevels := 0
+	for _, v := range c.kitsunes {
+		if c.Core.F < v.src+14*60 {
+			sakuraLevels++
+		}
+	}
+	if sakuraLevels > 3 {
 		panic("wtf more than 3 kitsunes")
 	} else {
 		return len(c.kitsunes)
