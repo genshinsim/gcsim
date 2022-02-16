@@ -59,6 +59,7 @@ const (
 	Itto
 	Shenhe
 	Yunjin
+	YaeMiko
 )
 
 func (c CharKey) String() string {
