@@ -90,7 +90,8 @@ func (a *Ctrl) execWait(n *core.CmdWait) (int, bool, error) {
 	switch n.For {
 	case core.CmdWaitTypeParticle:
 		//need particles received after waitStarted
-		ok = a.lastParticle > a.waitStarted && a.lastParticleSource == n.Source
+		// Do a prefix check to account for favonius having character names at the end
+		ok = a.lastParticle > a.waitStarted && strings.HasPrefix(a.lastParticleSource, n.Source)
 	case core.CmdWaitTypeMods:
 		ok = a.checkMod(n.Conditions)
 	default:
