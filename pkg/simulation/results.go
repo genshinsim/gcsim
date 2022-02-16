@@ -16,7 +16,10 @@ type Result struct {
 	ReactionsTriggered    map[core.ReactionType]int `json:"reactions_triggered"`
 	Duration              int                       `json:"sim_duration"`
 	ElementUptime         []map[core.EleType]int    `json:"ele_uptime"`
-	EnergyWhenBurst       [][]float64               `json:"energy_when_burst"`
+	// Tracks, for each character, energy source,
+	// [total energy added on-field, total energy added off-field, total energy wasted on-field, total energy wasted off-field]
+	EnergyDetail    []map[string][4]float64 `json:"energy_detail"`
+	EnergyWhenBurst [][]float64             `json:"energy_when_burst"`
 	//final result
 	Damage float64 `json:"damage"`
 	DPS    float64 `json:"dps"`

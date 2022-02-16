@@ -54,7 +54,7 @@ func (s *Simulation) randomOnHitEnergy() {
 			return false
 		}
 		//add energy
-		char.AddEnergy("NA/CA on-hit", 1)
+		char.AddEnergy("na-ca-on-hit", 1)
 		s.C.Log.NewEvent("random energy on normal", core.LogEnergyEvent, -1, "char", atk.Info.ActorIndex, "chance", current[w])
 		// s.C.Log.Debugw("random energy on normal", "frame", s.C.F, core.LogEnergyEvent, "char", atk.Info.ActorIndex, "chance", current[w])
 		//set icd

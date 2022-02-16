@@ -97,6 +97,29 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "particles-log")
 
+	s.C.Events.Subscribe(core.OnEnergyChange, func(args ...interface{}) bool {
+		char := args[0].(core.Character)
+		preEnergy := args[1].(float64)
+		amt := args[2].(float64)
+		src := args[3].(string)
+
+		temp, ok := s.stats.EnergyDetail[char.CharIndex()][src]
+		if !ok {
+			temp = [4]float64{0, 0, 0, 0}
+		}
+
+		idxToAdd := 0
+		if s.C.ActiveChar != char.CharIndex() {
+			idxToAdd = 1
+		}
+		// Total energy gained either on/off-field
+		temp[idxToAdd] += char.CurrentEnergy() - preEnergy
+		// Total energy wasted (changed into a positive number)
+		temp[2+idxToAdd] += -(char.CurrentEnergy() - preEnergy - amt)
+		s.stats.EnergyDetail[char.CharIndex()][src] = temp
+		return false
+	}, "energy-change-log")
+
 	s.C.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
 		activeChar := s.C.Chars[s.C.ActiveChar]
 		s.stats.EnergyWhenBurst[s.C.ActiveChar] = append(s.stats.EnergyWhenBurst[s.C.ActiveChar], activeChar.CurrentEnergy())
