@@ -32,7 +32,7 @@ func (c *char) makeKitsune() {
 		Pattern: core.NewDefCircHit(5, false, core.TargettableEnemy),
 	}
 	//start ticking
-	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 51)
+	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 45)
 	//add task to delete this one if times out (and not deleted by anything else)
 	c.AddTask(func() {
 		//i think we can just check for .deleted here
