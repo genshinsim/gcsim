@@ -62,7 +62,7 @@ export class WorkerPool {
           if (ev.data === "ready") {
             this._avail[x] = true;
             this._loaded++;
-            console.log("worker " + i + " is now ready");
+            console.log("worker " + x + " is now ready");
             //we're technically ready to work as long as just one worker is ready
             readycb(this._loaded);
             //start the chain

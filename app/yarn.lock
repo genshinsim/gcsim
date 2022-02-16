@@ -1805,10 +1805,10 @@ fuzzysort@^1.1.4:
   resolved "https://registry.yarnpkg.com/fuzzysort/-/fuzzysort-1.1.4.tgz#a0510206ed44532cbb52cf797bf5a3cb12acd4ba"
   integrity sha512-JzK/lHjVZ6joAg3OnCjylwYXYVjRiwTY6Yb25LvfpJHK8bjisfnZJ5bY8aVWwTwCXgxPNgLAtmHL+Hs5q1ddLQ==
 
-genshin-db@^3.13.1:
-  version "3.13.1"
-  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-3.13.1.tgz#4096f0ba75d95b1b12d13d7a03493372a60872b4"
-  integrity sha512-LwzyKXW4yfj/u/v0sp3o3RsZpIptH2wXCXh1sydIHLp62jrPIrNIVZ5l+tBHzllosZxo9BskjqWLpwmjVPhClA==
+genshin-db@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.1.0.tgz#3ca7582dd858c3d680fbad28b1786720746c4203"
+  integrity sha512-QItUIv6MYgJckvr8dYnoffBpVkMy0SEnbPviKw7arjKq1AnKwWWg0M/74ThQtl/Gv2lHAd4bfwPi+QoJSNXcSg==
   dependencies:
     fuzzysort "^1.1.4"
     pako "^2.0.4"

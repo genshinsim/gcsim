@@ -2,6 +2,7 @@ import { weaponKeyToName } from ".";
 import { Weapon } from "~src/types";
 
 export function WeaponCard({ weapon }: { weapon: Weapon }) {
+  console.log(weapon.name);
   return (
     <div className="weapon-parent ml-2 mr-2 p-2 bg-gray-800 rounded-md">
       <div className="flex flex-row">
