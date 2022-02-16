@@ -62,6 +62,9 @@ function ViewOnly(props: ViewProps) {
   const [shareOpen, setShareOpen] = React.useState<boolean>(false);
 
   const handleTabChange = (next: string) => {
+    if (next === "share") {
+      setShareOpen(true);
+    }
     setTabID(next);
   };
 
@@ -112,6 +115,7 @@ function ViewOnly(props: ViewProps) {
           <Tab id="details" title="Details" className="focus:outline-none" />
           <Tab id="config" title="Config" className="focus:outline-none" />
           <Tab id="debug" title="Debug" className="focus:outline-none" />
+          <Tab id="share" title="Share" className="focus:outline-none" />
           <Tabs.Expander />
           <Button icon="cross" intent="danger" onClick={props.handleClose} />
         </Tabs>
@@ -143,13 +147,6 @@ function ViewOnly(props: ViewProps) {
               intent="primary"
             >
               Debug Settings
-            </Button>
-            <Button
-              onClick={() => setShareOpen(true)}
-              icon="share"
-              intent="success"
-            >
-              Share
             </Button>
           </ButtonGroup>
         </div>

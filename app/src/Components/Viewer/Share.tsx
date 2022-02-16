@@ -17,7 +17,7 @@ export interface ShareProps {
   data: SimResults;
 }
 
-const disabled = true;
+const disabled = false;
 
 export default function Share(props: ShareProps) {
   const [loading, setIsLoading] = React.useState<boolean>(false);
@@ -96,7 +96,7 @@ export default function Share(props: ShareProps) {
               <div>
                 Upload ok. View results at:
                 <div>
-                  <pre>{`https://viewer.gcsim.app/share/${url}`}</pre>
+                  <pre>{`https://beta.gcsim.app/viewer/share/${url}`}</pre>
                 </div>
               </div>
             ) : null
@@ -110,7 +110,7 @@ export default function Share(props: ShareProps) {
               intent="none"
               onClick={() => {
                 navigator.clipboard
-                  .writeText(`https://viewer.gcsim.app/share/${url}`)
+                  .writeText(`https://beta.gcsim.app/viewer/share/${url}`)
                   .then(
                     () => {
                       alert("URL copied ok");
