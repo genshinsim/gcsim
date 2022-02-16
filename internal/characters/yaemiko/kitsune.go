@@ -25,7 +25,7 @@ func (c *char) makeKitsune() {
 		Info:    ai,
 		Pattern: core.NewDefCircHit(2, false, core.TargettableEnemy),
 	}
-	c.AddTask(c.kitsuneTick(k), "start kitsune-tick", 60)
+	c.AddTask(c.kitsuneTick(k), "start kitsune-tick", 30)
 	if len(c.kitsunes) < 3 {
 		//FIFO
 		c.kitsunes = append(c.kitsunes, k)
@@ -42,7 +42,7 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, src int) {
 	for i, v := range c.kitsunes {
 		if v.src == src {
 			v.ae.Snapshot = snap
-			c.Core.Combat.QueueAttackEvent(&v.ae, 30+i*30)
+			c.Core.Combat.QueueAttackEvent(&v.ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
 		} else {
 			c.kitsunes[n] = v
 			n++
@@ -91,11 +91,14 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 			ai.IgnoreDefPercent = 0.45
 		}
 		c.Core.Log.Debugw("sky kitsune tick", "frame", c.Core.F, "event", core.LogCharacterEvent)
-
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), -1, 5)
-
+		// no snapshot
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), -1, 49)
+		if c.Core.F >= c.totemLastParticleF+60*2.5 {
+			c.QueueParticle("kitsune-tick particle", 1, core.Electro, 30)
+			c.totemLastParticleF = c.Core.F
+		}
 		// tick per 2.5 seconds
-		c.AddTask(c.kitsuneTick(totem), "kitsune-tick", 150)
+		c.AddTask(c.kitsuneTick(totem), "kitsune-tick", 177)
 	}
 }
 

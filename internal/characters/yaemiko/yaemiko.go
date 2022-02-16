@@ -20,6 +20,7 @@ type char struct {
 	a2skillTimer           int
 	a2burstTimer           int
 	c6int                  int
+	totemLastParticleF     int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -43,6 +44,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.additionalCDCharge = make([]int, core.EndActionType)
 	c.availableCDCharge = make([]int, core.EndActionType)
 	c.kitsunes = make([]kitsune, 0, 3)
+	c.totemLastParticleF = 0
 
 	for i := 0; i < len(c.cdQueue); i++ {
 		c.cdQueue[i] = make([]int, 0, 4)

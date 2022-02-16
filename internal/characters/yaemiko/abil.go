@@ -75,7 +75,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 41)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 94)
 	c.kitsuneBurst(ai, c.Core.F)
 	c.SetCD(core.ActionBurst, 22*60)
 	c.ConsumeEnergy(1) // TODO: not final
