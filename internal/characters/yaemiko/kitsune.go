@@ -85,7 +85,7 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 			StrikeType: core.StrikeTypeDefault,
 			Element:    core.Electro,
 			Durability: 25,
-			Mult:       skill[c.sakuraLevelCheck()+c.c6int][c.TalentLvlSkill()],
+			Mult:       skill[c.sakuraLevelCheck()+c.c6int-1][c.TalentLvlSkill()],
 		}
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.45
@@ -112,6 +112,6 @@ func (c *char) sakuraLevelCheck() int {
 	if sakuraLevels > 3 {
 		panic("wtf more than 3 kitsunes")
 	} else {
-		return len(c.kitsunes)
+		return sakuraLevels
 	}
 }

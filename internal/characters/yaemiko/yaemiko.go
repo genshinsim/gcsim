@@ -48,10 +48,15 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	for i := 0; i < len(c.cdQueue); i++ {
 		c.cdQueue[i] = make([]int, 0, 4)
-		c.availableCDCharge[i] = 3
+		c.availableCDCharge[i] = 1
+	}
+	c.c6int = 0
+	if c.Base.Cons == 6 {
+		c.c6int = 1
 	}
 
 	c.additionalCDCharge[core.ActionSkill] = 2
+	c.availableCDCharge[core.ActionSkill] += 2
 	c.a2burstTimer = 0
 	c.a2skillTimer = 0
 	return &c, nil
