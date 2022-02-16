@@ -19,7 +19,7 @@ type char struct {
 	additionalCDCharge     []int
 	a2skillTimer           int
 	a2burstTimer           int
-	c6int                  int
+	turretBonus            int
 	totemLastParticleF     int
 }
 
@@ -50,9 +50,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.cdQueue[i] = make([]int, 0, 4)
 		c.availableCDCharge[i] = 1
 	}
-	c.c6int = 0
-	if c.Base.Cons == 6 {
-		c.c6int = 1
+	c.turretBonus = 0
+	if c.Base.Cons >= 2 {
+		c.turretBonus = 1
 	}
 
 	c.additionalCDCharge[core.ActionSkill] = 2

@@ -3,13 +3,15 @@ package yaemiko
 import "github.com/genshinsim/gcsim/pkg/core"
 
 type kitsune struct {
-	ae  core.AttackEvent
-	src int
+	ae      core.AttackEvent
+	src     int
+	deleted bool
 }
 
 func (c *char) makeKitsune() {
 	k := kitsune{}
 	k.src = c.Core.F
+	k.deleted = false
 	ai := core.AttackInfo{
 		Abil:       "Sky Kitsune Thunderbolt",
 		ActorIndex: c.Index,
@@ -44,6 +46,12 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
 	for i := 0; i < sakuraLevel; i++ {
 		c.kitsunes[i].ae.Snapshot = snap
 		c.Core.Combat.QueueAttackEvent(&c.kitsunes[i].ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
+		if c.Base.Cons >= 1 {
+			c.AddTask(func() {
+				c.AddEnergy(8)
+			}, "energy from sky kitsune", 94+54+i*24)
+		}
+		c.ResetActionCooldown(core.ActionSkill)
 		c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
 	c.AddTask(func() {
@@ -74,12 +82,6 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 		//do nothing if totem expired
 		if c.Core.F > totem.src+14*60 {
 			c.Tags["totems"]--
-			// c.kitsunes = c.kitsunes[1:]
-			// if len(c.kitsunes) > 0 {
-			// 	if c.kitsunes[0].src+14*60-c.Core.F > 0 {
-			// 		c.Core.Status.AddStatus("oldestTotemExpiry", c.cdQueue[core.ActionSkill][0])
-			// 	}
-			// }
 			return
 		}
 
@@ -94,10 +96,10 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 			StrikeType: core.StrikeTypeDefault,
 			Element:    core.Electro,
 			Durability: 25,
-			Mult:       skill[c.sakuraLevelCheck()+c.c6int-1][c.TalentLvlSkill()],
+			Mult:       skill[c.sakuraLevelCheck()+c.turretBonus-1][c.TalentLvlSkill()],
 		}
 		if c.Base.Cons >= 6 {
-			ai.IgnoreDefPercent = 0.45
+			ai.IgnoreDefPercent = 0.60
 		}
 		c.Core.Log.Debugw("sky kitsune tick", "frame", c.Core.F, "event", core.LogCharacterEvent)
 		// no snapshot

@@ -46,10 +46,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 	// c2
 	// Yakan Evocation: Sesshou Sakura's CD is decreased by 20%
-	cd := 9 * 60
-	if c.Base.Cons >= 2 {
-		cd = 9 * 60 * .8
-	}
+	cd := 4 * 60
 
 	c.AddTask(func() {
 		c.makeKitsune()
@@ -75,12 +72,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
 
+	c.ConsumeEnergy(1) // TODO: not final
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 94)
 	c.kitsuneBurst(ai, c.sakuraLevelCheck())
 	c.SetCD(core.ActionBurst, 22*60)
-	c.ConsumeEnergy(1) // TODO: not final
-	if c.Base.Cons >= 1 {
-		c.AddEnergy(21)
-	}
 	return f, a
 }
