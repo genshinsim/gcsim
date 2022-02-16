@@ -79,5 +79,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.kitsuneBurst(ai, c.sakuraLevelCheck())
 	c.SetCD(core.ActionBurst, 22*60)
 	c.ConsumeEnergy(1) // TODO: not final
+	if c.Base.Cons >= 1 {
+		c.AddEnergy(21)
+	}
 	return f, a
 }
