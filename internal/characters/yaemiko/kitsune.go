@@ -29,10 +29,12 @@ func (c *char) makeKitsune() {
 	if len(c.kitsunes) < 3 {
 		//FIFO
 		c.kitsunes = append(c.kitsunes, k)
+		c.Tags["totems"]++
 	} else {
 		//FIFO pop, popped kitsunes handled in kitsuneTick fn
 		c.kitsunes = append(c.kitsunes[1:], k)
 	}
+	c.Core.Status.AddStatus("oldestTotemExpiry", c.kitsunes[0].src)
 }
 
 func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
@@ -42,7 +44,10 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, sakuraLevel int) {
 		c.Core.Combat.QueueAttackEvent(&c.kitsunes[i].ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
 		c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
-	c.AddTask(func() { c.kitsunes = c.kitsunes[:0] }, "delay despawn for kitsunes", 78)
+	c.AddTask(func() {
+		c.kitsunes = c.kitsunes[:0]
+		c.Tags["totems"] = 0
+	}, "delay despawn for kitsunes", 78)
 
 }
 
@@ -65,6 +70,7 @@ func (c *char) kitsuneTick(totem kitsune) func() {
 		}
 		//do nothing if totem expired
 		if c.Core.F > totem.src+14*60 {
+			c.Tags["totems"]--
 			return
 		}
 
