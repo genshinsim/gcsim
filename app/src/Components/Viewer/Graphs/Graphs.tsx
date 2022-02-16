@@ -134,9 +134,6 @@ export default function Graphs({ data }: { data: SimResults }) {
 
   return (
     <div className="m-2 flex flex-col gap-2">
-      <div className="bg-gray-600 relative rounded-md p-2 pt-10">
-        <DPSOverTime data={data} />
-      </div>
       <div className="flex flex-row flex-wrap gap-y-2">
         <div className="basis-full md:basis-1/2">
           <div className="rounded-md p-2 md:mr-1 pt-10 bg-gray-600 relative">
