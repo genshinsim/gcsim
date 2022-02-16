@@ -20,6 +20,7 @@ func (c *char) SetCD(a core.ActionType, dur int) {
 	}
 	//make sure to remove one from stack count
 	c.availableCDCharge[a]--
+	c.Tags["eCharge"]--
 	if c.availableCDCharge[a] < 0 {
 		panic("unexpected charges less than 0")
 	}
@@ -53,6 +54,7 @@ func (c *char) ResetActionCooldown(a core.ActionType) {
 	}
 	//otherwise add a stack && pop queue
 	c.availableCDCharge[a]++
+	c.Tags["eCharge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
@@ -126,6 +128,7 @@ func (c *char) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 		}
 		//otherwise add a stack and pop first item in queue
 		c.availableCDCharge[a]++
+		c.Tags["eCharge"]++
 		c.cdQueue[a] = c.cdQueue[a][1:]
 
 		// c.Core.Log.Debugw("stack restored", "frame", c.Core.F, "avail", c.availableCDCharge[a], "queue", c.cdQueue)

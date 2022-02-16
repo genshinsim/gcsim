@@ -59,6 +59,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.availableCDCharge[core.ActionSkill] += 2
 	c.a2burstTimer = 0
 	c.a2skillTimer = 0
+	c.Tags["eCharge"] = c.availableCDCharge[core.ActionSkill]
 	return &c, nil
 }
 
