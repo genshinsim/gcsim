@@ -24,11 +24,11 @@ func (c *char) SetCD(a core.ActionType, dur int) {
 	if c.availableCDCharge[a] < 0 {
 		panic("unexpected charges less than 0")
 	}
-	c.Core.Log.Debugw(
-		a.String()+" cooldown triggered",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
-		"char", c.Index,
+	c.Core.Log.NewEventBuildMsg(
+		core.LogCharacterEvent,
+		c.Index,
+		a.String(), " cooldown triggered",
+	).Write(
 		"type", a.String(),
 		"charges_remain", c.availableCDCharge,
 		"cooldown_queue", c.cdQueue,
@@ -58,11 +58,11 @@ func (c *char) ResetActionCooldown(a core.ActionType) {
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
-	c.Core.Log.Debugw(
-		a.String()+" cooldown forcefully reset",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
-		"char", c.Index,
+	c.Core.Log.NewEventBuildMsg(
+		core.LogCharacterEvent,
+		c.Index,
+		a.String(), " cooldown forcefully reset",
+	).Write(
 		"type", a.String(),
 		"charges_remain", c.availableCDCharge,
 		"cooldown_queue", c.cdQueue,
@@ -86,11 +86,11 @@ func (c *char) ReduceActionCooldown(a core.ActionType, v int) {
 	}
 	//otherwise reduce remain and restart queue
 	c.cdQueue[a][0] = remain - v
-	c.Core.Log.Debugw(
-		a.String()+" cooldown forcefully reduced",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
-		"char", c.Index,
+	c.Core.Log.NewEventBuildMsg(
+		core.LogCharacterEvent,
+		c.Index,
+		a.String(), " cooldown forcefully reset",
+	).Write(
 		"type", a.String(),
 		"charges_remain", c.availableCDCharge,
 		"cooldown_queue", c.cdQueue,
@@ -140,11 +140,11 @@ func (c *char) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 			// return
 		}
 
-		c.Core.Log.Debugw(
-			a.String()+" cooldown ready",
-			"frame", c.Core.F,
-			"event", core.LogCharacterEvent,
-			"char", c.Index,
+		c.Core.Log.NewEventBuildMsg(
+			core.LogCharacterEvent,
+			c.Index,
+			a.String(), " cooldown ready",
+		).Write(
 			"type", a.String(),
 			"charges_remain", c.availableCDCharge,
 			"cooldown_queue", c.cdQueue,
@@ -165,7 +165,7 @@ func (c *char) cdReduction(a core.ActionType, dur int) int {
 		//if not expired
 		if v.Expiry == -1 || v.Expiry > c.Core.F {
 			amt := v.Amount(a)
-			c.Core.Log.Debugw("applying cooldown modifier", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
+			c.Core.Log.NewEvent("applying cooldown modifier", core.LogCharacterEvent, c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
 			cd += amt
 			c.CDReductionFuncs[n] = v
 			n++

@@ -4,10 +4,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/genshinsim/gcsim/internal/tests"
+	"github.com/genshinsim/gcsim/internal/testhelper"
+	"github.com/genshinsim/gcsim/internal/tmpl/enemy"
+	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/player"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -30,15 +30,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestBasicAbilUsage(t *testing.T) {
-	c, err := core.New(func(c *core.Core) error {
-		c.Log = logger
-		return nil
-	})
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	prof := tests.CharProfile(core.YaeMiko, core.Electro, 6)
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.YaeMiko, core.Electro, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	yaemiko := x.(*char)
@@ -48,8 +41,9 @@ func TestBasicAbilUsage(t *testing.T) {
 	}
 	c.Chars = append(c.Chars, x)
 	c.CharPos[prof.Base.Key] = 0
+	c.Init()
 	//add targets to test with
-	eProf := tests.EnemeyProfile()
+	eProf := testhelper.EnemeyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 

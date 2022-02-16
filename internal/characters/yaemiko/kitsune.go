@@ -89,7 +89,7 @@ func (c *char) kitsuneBurst(ai core.AttackInfo) {
 			}, "energy from sky kitsune", 94+54+i*24)
 		}
 		c.ResetActionCooldown(core.ActionSkill)
-		c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
+		c.Core.Log.NewEvent("sky kitsune thunderbolt", core.LogCharacterEvent, c.Index, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
 	c.AddTask(func() {
 		//pop all?
@@ -123,11 +123,11 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
 		}
-		c.Core.Log.Debugw("sky kitsune tick", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.NewEvent("sky kitsune tick", core.LogCharacterEvent, c.Index)
 		// no snapshot
 		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 51)
 		if c.Core.F+51 >= c.totemLastParticleF+176 { // 176 frame ICD until we are sure about ICD
-			c.Core.Log.Debugw("sky kitsune particle", "frame", c.Core.F, "event", core.LogCharacterEvent, "lastParticleF", c.totemLastParticleF)
+			c.Core.Log.NewEvent("sky kitsune particle", core.LogCharacterEvent, c.Index, "lastParticleF", c.totemLastParticleF)
 			c.QueueParticle("kitsune-tick particle", 1, core.Electro, 51+30)
 			c.totemLastParticleF = c.Core.F + 51
 		}
