@@ -135,7 +135,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 
 func (c *char) sakuraLevelCheck() int {
 
-	count := len(c.kitsunes) - 1
+	count := len(c.kitsunes)
 
 	if count < 0 {
 		//this is for the base case when there are no totems (other wise we'll end up with 1 if C6)
@@ -144,9 +144,5 @@ func (c *char) sakuraLevelCheck() int {
 	if count > 3 {
 		panic("wtf more than 3 totems")
 	}
-	if c.Base.Cons == 6 {
-		count++
-	}
-
 	return count
 }
