@@ -44,23 +44,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			if atk.Info.ActorIndex != char.CharIndex() {
 				return nil, false
 			}
-			if atk.Info.AttackTag == core.AttackTagElementalBurst {
-				if stacks == 3 {
-					val[core.PyroP] = 0.12 + 0.03*mod
-					val[core.HydroP] = 0.12 + 0.03*mod
-					val[core.CryoP] = 0.12 + 0.03*mod
-					val[core.ElectroP] = 0.12 + 0.03*mod
-					val[core.AnemoP] = 0.12 + 0.03*mod
-					val[core.GeoP] = 0.12 + 0.03*mod
-					val[core.PhyP] = 0.12 + 0.03*mod
-					val[core.DendroP] = 0.12 + 0.03*mod
-				}
-				return val, true
+			if stacks == 3 {
+				val[core.PyroP] = 0.12 + 0.03*mod
+				val[core.HydroP] = 0.12 + 0.03*mod
+				val[core.CryoP] = 0.12 + 0.03*mod
+				val[core.ElectroP] = 0.12 + 0.03*mod
+				val[core.AnemoP] = 0.12 + 0.03*mod
+				val[core.GeoP] = 0.12 + 0.03*mod
+				val[core.PhyP] = 0.12 + 0.03*mod
+				val[core.DendroP] = 0.12 + 0.03*mod
 			}
-			if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
-				return nil, false
+			if atk.Info.AttackTag == core.AttackTagElementalArt || atk.Info.AttackTag == core.AttackTagElementalArtHold {
+				val[core.DmgP] = float64(stacks) * (0.12 + mod*0.03)
 			}
-			val[core.DmgP] = float64(stacks) * (0.12 + mod*0.03)
 
 			return val, true
 		},
