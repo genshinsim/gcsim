@@ -23,7 +23,7 @@ func (c *char) makeKitsune() {
 	}
 	k.ae = core.AttackEvent{
 		Info:    ai,
-		Pattern: core.NewDefCircHit(2, false, core.TargettableEnemy),
+		Pattern: core.NewDefCircHit(5, false, core.TargettableEnemy),
 	}
 	c.AddTask(c.kitsuneTick(k), "start kitsune-tick", 30)
 	if len(c.kitsunes) < 3 {
@@ -35,21 +35,17 @@ func (c *char) makeKitsune() {
 	}
 }
 
-func (c *char) kitsuneBurst(ai core.AttackInfo, src int) {
-	n := 0
-	c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
+func (c *char) kitsuneBurst(ai core.AttackInfo) {
 	snap := c.Snapshot(&ai)
 	for i, v := range c.kitsunes {
-		if v.src == src {
+		if c.Core.F <= v.src+9*60 {
 			v.ae.Snapshot = snap
 			c.Core.Combat.QueueAttackEvent(&v.ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
-		} else {
-			c.kitsunes[n] = v
-			n++
+			c.Core.Log.Debugw("sky kitsune thunderbolt", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", v.src, "delay", 94+54+i*24)
 		}
 	}
 
-	c.kitsunes = c.kitsunes[:n]
+	c.kitsunes = c.kitsunes[:0]
 }
 
 func (c *char) kitsuneTick(totem kitsune) func() {
