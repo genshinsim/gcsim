@@ -1,7 +1,8 @@
 import Graphs from "./Graphs/Graphs";
 import { SimResults } from "./DataType";
 import TeamView from "./Team/TeamView";
-import { HTMLTable } from "@blueprintjs/core";
+import { Button, HTMLTable } from "@blueprintjs/core";
+import DPSOverTime from "./Graphs/DPSOverTime";
 
 const DEFP = 1;
 const DEF = 2;
@@ -74,10 +75,55 @@ export default function Summary({ data }: { data: SimResults }) {
   }
 
   return (
-    <div>
+    <div className="wide:w-[70rem] ml-auto mr-auto">
       <TeamView team={data.char_details} />
-      <div className="m-2 flex flex-row">
-        <div className="rounded-md bg-gray-600 basis-full flex flex-col gap-1 p-4">
+      <div className="bg-gray-600 relative rounded-md p-2 m-2 pt-10">
+        <div className="w-full text-center">
+          Simulated{" "}
+          {data.sim_duration.mean.toLocaleString(undefined, {
+            maximumFractionDigits: 2,
+          })}{" "}
+          sec of combat ({data.iter} iterations took{" "}
+          {(data.runtime / 1000000000).toFixed(3)} seconds to run)
+        </div>
+        <div className=" pl-4 pt-2 flex flex-row place-content-center ">
+          <div className="max-w-4xl w-full flex flex-col gap-1">
+            <div className="flex flex-row border-solid border-b-2 font-bold">
+              <span className="w-24">Target</span>
+              <div className="grid grid-cols-4 grow">
+                <span className="text-right">Level</span>
+                <span className="text-right">Avg DPS</span>
+                <span className="text-right">%</span>
+                <span className="text-right">Std. Dev.</span>
+              </div>
+            </div>
+            {trgs}
+            <div className="w-full flex flex-row border-solid border-t-2 font-bold">
+              <span className="w-24">Combined</span>
+              <div className="grid grid-cols-4 grow">
+                <span className="text-right"></span>
+                <span className="text-right">
+                  {" "}
+                  {data.dps.mean.toLocaleString(undefined, {
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+                <span className="text-right"></span>
+                <span className="text-right">
+                  {data.dps.sd?.toLocaleString(undefined, {
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <DPSOverTime data={data} />
+      </div>
+      <div className="m-2 flex flex-row rounded-md bg-gray-600">
+        <div className=" basis-full flex flex-col gap-1 p-4">
           <div className="w-full text-center">
             Simulated{" "}
             {data.sim_duration.mean.toLocaleString(undefined, {
@@ -121,7 +167,12 @@ export default function Summary({ data }: { data: SimResults }) {
             </div>
           </div>
         </div>
+        <div>
+          <Button icon="share">Share</Button>
+          <Button icon="cog">Manage</Button>
+        </div>
       </div>
+
       <Graphs data={data} />
     </div>
   );

@@ -11,20 +11,37 @@ export class WorkerPool {
   _avail: boolean[];
   _queue: Task[];
   _loaded: number;
-  _max: number;
   _active: number;
 
   constructor() {
     this._workers = [];
     this._avail = [];
     this._queue = [];
-    this._max = 5; //default 5 workers
     this._active = 0; //no active worker
     this._loaded = 0;
   }
 
-  load(count: number, readycb: (count: number) => void) {
-    if (count === 0) {
+  count(): number {
+    return this._workers.length;
+  }
+
+  setWorkerCount(count: number, readycb: (count: number) => void) {
+    console.log("loading workers", count, this);
+    const extras = count - this._workers.length;
+
+    if (extras === 0) {
+      //do nothing
+      return;
+    }
+    if (extras < 0) {
+      //truncate extra workers
+
+      this._workers.splice(extras);
+      this._avail.splice(extras);
+      this._loaded = count;
+
+      console.log(pool);
+      readycb(count);
       return;
     }
 
@@ -33,26 +50,28 @@ export class WorkerPool {
     let start = this._workers.length;
     let i = start;
 
-    const loading = new Promise((resolve) => {
-      const w = new Worker(new URL("worker.ts", import.meta.url));
-      this._workers.push(w);
-      this._avail.push(false);
+    const loading = () =>
+      new Promise((resolve) => {
+        const w = new Worker(new URL("worker.ts", import.meta.url));
+        this._workers.push(w);
+        this._avail.push(false);
 
-      let x = i;
-      w.onmessage = (ev) => {
-        if (ev.data === "ready") {
-          this._avail[x] = true;
-          this._loaded++;
-          // console.log("worker 0 is now ready");
-          //we're technically ready to work as long as just one worker is ready
-          readycb(this._loaded);
-          //start the chain
-          resolve("ok");
-        }
-      };
-    });
-    loading.then(() => {
-      for (; i < count + start; i++) {
+        const x = i;
+        i++;
+        w.onmessage = (ev) => {
+          if (ev.data === "ready") {
+            this._avail[x] = true;
+            this._loaded++;
+            console.log("worker " + i + " is now ready");
+            //we're technically ready to work as long as just one worker is ready
+            readycb(this._loaded);
+            //start the chain
+            resolve("ok");
+          }
+        };
+      });
+    loading().then(() => {
+      for (; i < count; i++) {
         const w = new Worker(new URL("worker.ts", import.meta.url));
         this._workers.push(w);
         this._avail.push(false);
@@ -63,7 +82,7 @@ export class WorkerPool {
             this._avail[x] = true;
             this._loaded++;
             readycb(this._loaded);
-            // console.log("worker " + i + " is now ready");
+            console.log("worker " + x + " is now ready");
           }
         };
       }
@@ -91,10 +110,6 @@ export class WorkerPool {
     }
   }
 
-  setMaxWorker(count: number) {
-    this._max = count; //if you set count to more than loaded nothing will happen
-  }
-
   queue(t: Task) {
     // console.log("got a task: ", t);
     //add it to queue
@@ -107,16 +122,6 @@ export class WorkerPool {
   private pop() {
     // console.log("looking for worker to do work: ", this);
     if (this._queue.length == 0) {
-      return;
-    }
-    // check to make sure active does not exceed max
-    if (this._active === this._max) {
-      // console.log(
-      //   "max worker count reached, active: " +
-      //     this._active +
-      //     " max: " +
-      //     this._max
-      // );
       return;
     }
     //find free worker

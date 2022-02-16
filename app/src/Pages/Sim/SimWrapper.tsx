@@ -2,18 +2,19 @@ import { Callout, Spinner } from "@blueprintjs/core";
 import React from "react";
 import { Viewport } from "~src/Components/Viewport";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
-import { loadWorkers } from ".";
+import { setTotalWorkers } from ".";
 
 export function SimWrapper({ children }: { children: React.ReactNode }) {
-  const { ready } = useAppSelector((state: RootState) => {
+  const { ready, workers } = useAppSelector((state: RootState) => {
     return {
       ready: state.sim.ready,
+      workers: state.sim.workers,
     };
   });
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
-    dispatch(loadWorkers());
+    dispatch(setTotalWorkers(workers));
   }, []);
 
   if (ready === 0) {

@@ -37,7 +37,7 @@ const initialState: Sim = {
   team: [],
   edit_index: -1,
   ready: 0,
-  workers: 8,
+  workers: 3,
   cfg: "",
   advanced_cfg: "",
   run: defaultRunStat,
@@ -109,17 +109,14 @@ const updateConfig = (team: Character[], cfg: string): string => {
   return cfg;
 };
 
-export function loadWorkers(): AppThunk {
+export function setTotalWorkers(count: number): AppThunk {
   return function (dispatch, getState) {
     //do nothing if ready
-    const state = getState();
-    if (!state.sim.ready) {
-      pool.load(24, (count: number) => {
-        //call back for ready
-        dispatch(simActions.setWorkerReady(count));
-      });
-      pool.setMaxWorker(state.sim.workers);
-    }
+    pool.setWorkerCount(count, (x: number) => {
+      //call back for ready
+      dispatch(simActions.setWorkerReady(x));
+    });
+    dispatch(simActions.setWorkers(count));
   };
 }
 
@@ -139,7 +136,6 @@ export const simSlice = createSlice({
       return state;
     },
     setWorkers: (state, action: PayloadAction<number>) => {
-      pool.setMaxWorker(action.payload);
       state.workers = action.payload;
       return state;
     },

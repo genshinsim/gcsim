@@ -3,14 +3,17 @@ import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { defaultRunStat, simSlice } from "/src/Pages/Sim/simSlice";
 import { viewerSlice } from "./Pages/ViewerDashboard/viewerSlice";
 
+const storageKey = "redux-sim-v0.0.2";
+
 let persistedState = {};
-if (localStorage.getItem("redux_sim")) {
-  let s = JSON.parse(localStorage.getItem("redux_sim")!);
+if (localStorage.getItem(storageKey)) {
+  let s = JSON.parse(localStorage.getItem(storageKey)!);
   //reset some defaults
   s.edit_index = -1;
   s.ready = 0;
   s.run = defaultRunStat;
   persistedState = { sim: s };
+  localStorage.clear();
   console.log("loaded sim store from localStorage: ", persistedState);
 }
 
@@ -23,7 +26,7 @@ const store = configureStore({
 });
 
 store.subscribe(() => {
-  localStorage.setItem("redux_sim", JSON.stringify(store.getState().sim));
+  localStorage.setItem(storageKey, JSON.stringify(store.getState().sim));
 });
 
 export { store };

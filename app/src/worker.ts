@@ -44,12 +44,12 @@ onmessage = async (ev) => {
       break;
     case "debug":
       const d = debug();
-      console.log("debug run done");
+      // console.log("debug run done");
       postMessage(d);
       break;
     case "cfg":
       const ok = setcfg(ev.data.payload);
-      console.log("configs set: " + ok);
+      // console.log("configs set: " + ok);
       postMessage(ok);
       break;
   }

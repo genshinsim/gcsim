@@ -8,7 +8,7 @@ const iterRegex = /iteration=(\d+)/;
 function extractItersFromConfig(cfg: string): number {
   let iters = 1;
   let m = iterRegex.exec(cfg);
-  console.log(m);
+  // console.log(m);
 
   if (m) {
     iters = parseInt(m[1]);
@@ -62,10 +62,10 @@ export function runSim(cfg: string): AppThunk {
             return;
           }
           //it's a string otherwise
-          console.log(res);
+          // console.log(res);
           debug = val;
           resolve(null);
-          console.log("finish debug run: ", res);
+          // console.log("finish debug run: ", res);
         };
         pool.queue({ cmd: "debug", cb: debugCB });
       });
@@ -137,6 +137,7 @@ export function runSim(cfg: string): AppThunk {
     const aggregateResults = () =>
       new Promise((resolve, reject) => {
         let s = JSON.stringify(results);
+        console.log(new Blob([s]).size);
         pool.queue({
           cmd: "collect",
           payload: s,
@@ -147,7 +148,7 @@ export function runSim(cfg: string): AppThunk {
             if (res.err) {
               reject(res.err);
             } else {
-              console.log(res);
+              // console.log(res);
               resolve(res);
             }
           },
@@ -175,11 +176,12 @@ export function runSim(cfg: string): AppThunk {
       // })
       .then(() => {
         console.log("all iters done, collecting results");
+        console.time("aggregate results");
         //aggregate the result here
         return aggregateResults();
       })
       .then((summary) => {
-        console.log("do something with results here");
+        // console.log("do something with results here");
         const end = window.performance.now();
         dispatch(
           simActions.setRunStats({
@@ -191,12 +193,13 @@ export function runSim(cfg: string): AppThunk {
         );
         //add debug to the summary
         //@ts-ignore
-        console.log(summary.dps);
+        // console.log(summary.dps);
         //@ts-ignore
         summary.debug = debug;
         //@ts-ignore
         summary.v2 = true;
 
+        console.timeEnd("aggregate results");
         //summary can now be passed to viewer
         dispatch(
           viewerActions.addViewerData({

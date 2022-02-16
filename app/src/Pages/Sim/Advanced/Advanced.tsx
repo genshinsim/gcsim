@@ -1,11 +1,10 @@
-import { Button, Callout, Card, Collapse, Intent } from "@blueprintjs/core";
+import { Button, Collapse } from "@blueprintjs/core";
 import React from "react";
-import { NumberInput } from "~src/Components/NumberInput";
 import { SectionDivider } from "~src/Components/SectionDivider";
 import { Viewport } from "~src/Components/Viewport";
 import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "..";
-import { ActionList } from "../Components";
+import { ActionList, SimOptions } from "../Components";
 import { SimProgress } from "../Components/SimProgress";
 import { runSim } from "../exec";
 
@@ -52,18 +51,7 @@ export function Advanced() {
           keepChildrenMounted
           className="basis-full flex flex-col"
         >
-          <Card className="m-2">
-            <div className="w-full wide:basis-0 flex-grow p-2 text-center">
-              <NumberInput
-                label={`Workers (max available: ${ready})`}
-                onChange={(v) => dispatch(simActions.setWorkers(v))}
-                value={workers}
-                min={1}
-                max={ready}
-                integerOnly
-              />
-            </div>
-          </Card>
+          <SimOptions />
         </Collapse>
       </div>
       <div className="sticky bottom-0 bg-bp-bg p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
