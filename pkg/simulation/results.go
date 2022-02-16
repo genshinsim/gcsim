@@ -9,7 +9,7 @@ type Result struct {
 	DamageByChar          []map[string]float64      `json:"damage_by_char"`
 	DamageInstancesByChar []map[string]int          `json:"damage_instances_by_char"`
 	DamageByCharByTargets []map[int]float64         `json:"damage_by_char_by_targets"`
-	DamageDetailByTime    map[DamageDetails]float64 `json:"-"`
+	DamageDetailByTime    map[int]float64           `json:"damage_detail_by_time"`
 	CharActiveTime        []int                     `json:"char_active_time"`
 	AbilUsageCountByChar  []map[string]int          `json:"abil_usage_count_by_char"`
 	ParticleCount         map[string]int            `json:"particle_count"`
@@ -38,9 +38,10 @@ type CharDetail struct {
 }
 
 type DamageDetails struct {
-	FrameBucket int
-	Char        int
-	Target      int
+	FrameBucket int     `json:"frame_bucket"`
+	Char        int     `json:"char_index"`
+	Target      int     `json:"target_index"`
+	Damage      float64 `json:"damage"`
 }
 
 type WeaponDetail struct {

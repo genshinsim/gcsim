@@ -53,13 +53,13 @@ func (s *Simulation) initDetailLog() {
 
 		// Want to capture information in 0.25s intervals - allows more flexibility in bucketizing
 		frameBucket := int(s.C.F/15) * 15
-		details := DamageDetails{
-			FrameBucket: frameBucket,
-			Char:        atk.Info.ActorIndex,
-			Target:      t.Index(),
-		}
+		// details := DamageDetails{
+		// 	FrameBucket: frameBucket,
+		// 	Char:        atk.Info.ActorIndex,
+		// 	Target:      t.Index(),
+		// }
 		// Go defaults to 0 for map values that don't exist
-		s.stats.DamageDetailByTime[details] += dmg
+		s.stats.DamageDetailByTime[frameBucket] += dmg
 		return false
 	}, "dmg-log")
 

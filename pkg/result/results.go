@@ -134,9 +134,9 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 
 		damageOverTimeByRun[iteration] = make(map[float64]float64)
 		// Damage Over Time - get data for all iterations first and summarized later
-		for damageDetails, damage := range v.DamageDetailByTime {
+		for frameBucket, damage := range v.DamageDetailByTime {
 			// Convert frame bucket value into seconds
-			secBucket := float64(damageDetails.FrameBucket) / 60.0
+			secBucket := float64(frameBucket) / 60.0
 
 			damageOverTimeByRun[iteration][secBucket] += damage
 		}
