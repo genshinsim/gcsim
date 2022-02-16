@@ -26,11 +26,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
-		c.Status.AddStatus("kaguradance-"+char.Name(), 12*60)
+		c.Status.AddStatus("kaguradance-"+char.Name(), 16*60)
 		if stacks < 3 {
 			stacks++
 		}
-		char.AddTask(ctick(char, c), "kaguraexpiry", 12*60)
+		char.AddTask(ctick(char, c), "kaguraexpiry", 16*60)
 		return false
 
 	}, fmt.Sprintf("kaguradance-%v", char.Name()))
