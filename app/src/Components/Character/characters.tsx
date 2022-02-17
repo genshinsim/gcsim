@@ -187,6 +187,12 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: "pyro",
     weapon_type: "claymore",
   },
+  yaemiko: {
+    key: "yaemiko",
+    name: "Yae Miko",
+    element: "electro",
+    weapon_type: "catalyst",
+  },
   yanfei: {
     key: "yanfei",
     name: "Yanfei",
