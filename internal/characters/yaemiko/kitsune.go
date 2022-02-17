@@ -79,9 +79,7 @@ func (c *char) popOldestKitsune() {
 }
 
 func (c *char) kitsuneBurst(ai core.AttackInfo) {
-	snap := c.Snapshot(&ai)
 	for i := 0; i < c.sakuraLevelCheck(); i++ {
-		c.kitsunes[i].ae.Snapshot = snap
 		c.Core.Combat.QueueAttackEvent(&c.kitsunes[i].ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
 		if c.Base.Cons >= 1 {
 			c.AddTask(func() {
