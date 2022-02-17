@@ -68,7 +68,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
 		Element:    core.Electro,
-		Durability: 50,
+		Durability: 25,
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
 
