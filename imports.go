@@ -84,6 +84,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/sacrificial"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/sharpshooter"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/skyward"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/slingshot"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/stringless"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/thundering"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/viridescent"
