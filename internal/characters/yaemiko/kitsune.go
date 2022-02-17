@@ -24,7 +24,7 @@ func (c *char) makeKitsune() {
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
 		Element:    core.Electro,
-		Durability: 50,
+		Durability: 25,
 		Mult:       burst[1][c.TalentLvlSkill()],
 	}
 	k.ae = core.AttackEvent{
