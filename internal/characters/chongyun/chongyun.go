@@ -1,7 +1,7 @@
 package chongyun
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -62,7 +62,7 @@ func (c *char) c4() {
 
 		c.AddEnergy(2)
 
-		c.Core.Log.Debugw("chongyun c4 recovering 2 energy", "frame", c.Core.F, "event", core.LogCharacterEvent, "final energy", c.Energy)
+		c.Core.Log.NewEvent("chongyun c4 recovering 2 energy", core.LogCharacterEvent, c.Index, "final energy", c.Energy)
 		icd = c.Core.F + 120
 
 		return false
@@ -76,7 +76,7 @@ func (c *char) onSwapHook() {
 			return false
 		}
 		//add infusion on swap
-		c.Core.Log.Debugw("chongyun adding infusion on swap", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		c.Core.Log.NewEvent("chongyun adding infusion on swap", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
 		active := c.Core.Chars[c.Core.ActiveChar]
 		c.infuse(active)
 		return false
@@ -90,7 +90,7 @@ func (c *char) infuse(char core.Character) {
 	case core.WeaponClassSpear:
 		fallthrough
 	case core.WeaponClassSword:
-		c.Core.Log.Debugw("chongyun adding infusion", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		c.Core.Log.NewEvent("chongyun adding infusion", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
 		char.AddWeaponInfuse(core.WeaponInfusion{
 			Key:    "chongyun-ice-weapon",
 			Ele:    core.Cryo,

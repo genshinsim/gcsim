@@ -25,7 +25,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				mult := 0.5*float64(stacks) + 1
 				m[core.PyroP] = 0.15 * mult
 				if mult > 1 {
-					s.Log.Debugw("crimson witch 4pc", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "mult", mult)
+					s.Log.NewEvent("crimson witch 4pc", core.LogArtifactEvent, c.CharIndex(), "mult", mult)
 				}
 				return m, true
 			},
@@ -47,7 +47,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if stacks > 3 {
 				stacks = 3
 			}
-			s.Log.Debugw("crimson witch 4pc adding stack", "frame", s.F, "event", core.LogArtifactEvent, "current stacks", stacks)
+			s.Log.NewEvent("crimson witch 4pc adding stack", core.LogArtifactEvent, c.CharIndex(), "current stacks", stacks)
 			s.Status.AddStatus(key, 600)
 			return false
 		}, fmt.Sprintf("cw4s-%v", c.Name()))

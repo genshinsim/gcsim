@@ -30,7 +30,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 44, 44 // kqm lib
 	case core.ActionHighPlunge:
-		c.Core.Log.Debugw("plunge skill check", "event", core.LogCharacterEvent, "frame", c.Core.F, "previous", c.Core.LastAction)
+		c.Core.Log.NewEvent("plunge skill check", core.LogCharacterEvent, c.Index, "previous", c.Core.LastAction)
 		if c.Core.LastAction.Target == core.Kazuha && c.Core.LastAction.Typ == core.ActionSkill {
 			_, ok := c.Core.LastAction.Param["hold"]
 			if ok {
@@ -38,7 +38,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			}
 			return 36, 36
 		}
-		c.Core.Log.Warnw("invalid plunge", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
+		c.Core.Log.NewEvent("invalid plunge (missing skill use)", core.LogActionEvent, c.Index, "action", a)
 		return 0, 0
 	case core.ActionSkill:
 		_, ok := p["hold"]
@@ -49,7 +49,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 95, 95
 	default:
-		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

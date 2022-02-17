@@ -3,7 +3,7 @@ package yunjin
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -74,7 +74,7 @@ func (c *char) getPartyElementalTypeCounts() {
 		// Is there a more elegant way to get go to not complain about variable not used?
 		i += 0
 	}
-	c.Core.Log.Debugw("Yun Jin Party Elemental Types (A4)", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "party_elements", c.partyElementalTypes)
+	c.Core.Log.NewEvent("Yun Jin Party Elemental Types (A4)", core.LogCharacterEvent, c.Index, "party_elements", c.partyElementalTypes)
 }
 
 // When Yun Jin triggers the Crystallize Reaction, her DEF is increased by 20% for 12s.
@@ -108,7 +108,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

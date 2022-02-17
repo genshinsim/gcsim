@@ -118,11 +118,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 5)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 5, 35) // need to confirm timing of this
 
-	aiHeal := core.AttackInfo{
-		Abil:      "Let the Show Begin♪ (Heal)",
-		AttackTag: core.AttackTagNone,
-	}
-	stats := c.SnapshotStats(&aiHeal)
+	stats, _ := c.SnapshotStats()
 	hpplus := stats[core.Heal]
 	heal := (skillhp[c.TalentLvlSkill()] + skillhpp[c.TalentLvlSkill()]*c.MaxHP()) * (1 + hpplus)
 	//apply right away
@@ -154,7 +150,7 @@ func (c *char) barbaraHealTick(healAmt float64, skillInitF int) func() {
 		if c.Core.Status.Duration("barbskill") == 0 {
 			return
 		}
-		c.Core.Log.Debugw("barbara heal ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.NewEvent("barbara heal ticking", core.LogCharacterEvent, c.Index)
 		c.Core.Health.HealActive(c.Index, healAmt)
 
 		// tick per 5 seconds
@@ -172,7 +168,7 @@ func (c *char) barbaraWet(ai core.AttackInfo, skillInitF int) func() {
 		if c.Core.Status.Duration("barbskill") == 0 {
 			return
 		}
-		c.Core.Log.Debugw("barbara wet ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.NewEvent("barbara wet ticking", core.LogCharacterEvent, c.Index)
 
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 5)
 
@@ -185,11 +181,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 	//hook for buffs; active right away after cast
 
-	ai := core.AttackInfo{
-		Abil:      "Shining Miracle♪ (Heal)",
-		AttackTag: core.AttackTagNone,
-	}
-	stats := c.SnapshotStats(&ai)
+	stats, _ := c.SnapshotStats()
 
 	hpplus := stats[core.Heal]
 	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)

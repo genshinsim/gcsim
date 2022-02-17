@@ -15,12 +15,6 @@ var key = map[string]ItemType{
 	"energy":      itemEnergy,
 	"active":      itemActive,
 	"options":     itemOptions,
-	//options
-	"debug":     itemDebug,
-	"iteration": itemIterations,
-	"duration":  itemDuration,
-	"workers":   itemWorkers,
-	"er_calc":   itemERCalc,
 	//team keywords
 	"add":      itemAdd,
 	"char":     itemChar,
@@ -58,6 +52,11 @@ var key = map[string]ItemType{
 	"ele":      itemEle,
 	// target related
 	"resist": itemResist,
+}
+
+var queueModeKeys = map[string]core.SimulationQueueMode{
+	"apl": core.ActionPriorityList,
+	"sl":  core.SequentialList,
 }
 
 var statKeys = map[string]core.StatType{

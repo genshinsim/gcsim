@@ -52,7 +52,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				})
 			}
 
-			c.Log.Debugw("hakushin proc'd", "frame", c.F, "event", core.LogWeaponEvent, "trigger", key, "expiring", c.F+6*60)
+			c.Log.NewEvent("hakushin proc'd", core.LogWeaponEvent, char.CharIndex(), "trigger", key, "expiring", c.F+6*60)
 
 			return false
 		}

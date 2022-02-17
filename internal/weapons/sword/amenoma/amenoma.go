@@ -38,7 +38,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 		seeds[index] = c.F + 30*60
 
-		c.Log.Debugw("amenoma proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "index", index, "seeds", seeds)
+		c.Log.NewEvent("amenoma proc'd", core.LogWeaponEvent, char.CharIndex(), "index", index, "seeds", seeds)
 
 		icd = c.F + 300 //5 seconds
 

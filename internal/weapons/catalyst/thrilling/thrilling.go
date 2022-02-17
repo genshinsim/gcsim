@@ -52,7 +52,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				Expiry: expiry,
 			})
 
-			c.Log.Debugw("ttds activated", "frame", c.F, "event", core.LogWeaponEvent, "char", active.CharIndex(), "expiry", expiry)
+			c.Log.NewEvent("ttds activated", core.LogWeaponEvent, active.CharIndex(), "expiry", expiry)
 		}
 
 		return false

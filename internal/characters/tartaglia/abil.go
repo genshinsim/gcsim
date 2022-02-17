@@ -172,7 +172,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.eCast = c.Core.F
 	c.Core.Status.AddStatus("tartagliamelee", 30*60)
-	c.Core.Log.Debugw("Foul Legacy acivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "rtexpiry", c.Core.F+30*60)
+	c.Core.Log.NewEvent("Foul Legacy acivated", core.LogCharacterEvent, c.Index, "rtexpiry", c.Core.F+30*60)
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -270,7 +270,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			c.AddTask(func() {
 				c.AddEnergy(20)
 			}, "tartaglia-ranged-burst-energy-refund", 9)
-			c.Core.Log.Debugw("Tartaglia ranged burst restoring 20 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
+			c.Core.Log.NewEvent("Tartaglia ranged burst restoring 20 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}
 	}, "tartaglia-burst-clear", f-5) //random 5 frame
 

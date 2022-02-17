@@ -1,7 +1,7 @@
 package raiden
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -61,7 +61,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 20
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -73,7 +73,7 @@ func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 	excess := int(s.Stats[core.ER] / 0.01)
 
 	s.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Core.Log.Debugw("a4 adding electro dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", s.Stats[core.ElectroP])
+	c.Core.Log.NewEvent("a4 adding electro dmg", core.LogCharacterEvent, c.Index, "stacks", excess, "final", s.Stats[core.ElectroP])
 	//
 	////infusion to normal/plunge/charge
 	//switch ds.AttackTag {

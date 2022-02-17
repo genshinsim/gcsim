@@ -56,7 +56,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				})
 
 			}
-			s.Log.Debugw("tom 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "expiry", s.F+180, "icd", s.F+30)
+			s.Log.NewEvent("tom 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", s.F+180, "icd", s.F+30)
 			return false
 		}, fmt.Sprintf("tom4-%v", c.Name()))
 
