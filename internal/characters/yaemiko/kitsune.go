@@ -7,7 +7,6 @@ import (
 )
 
 type kitsune struct {
-	ae      core.AttackEvent
 	src     int
 	deleted bool
 }
@@ -16,21 +15,6 @@ func (c *char) makeKitsune() {
 	k := &kitsune{}
 	k.src = c.Core.F
 	k.deleted = false
-	ai := core.AttackInfo{
-		Abil:       "Sky Kitsune Thunderbolt",
-		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagNone,
-		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Electro,
-		Durability: 25,
-		Mult:       burst[1][c.TalentLvlSkill()],
-	}
-	k.ae = core.AttackEvent{
-		Info:    ai,
-		Pattern: core.NewDefCircHit(5, false, core.TargettableEnemy),
-	}
 	//start ticking
 	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 45)
 	//add task to delete this one if times out (and not deleted by anything else)
@@ -78,9 +62,9 @@ func (c *char) popOldestKitsune() {
 	c.AddTag(yaeTotemCount, len(c.kitsunes))
 }
 
-func (c *char) kitsuneBurst(ai core.AttackInfo) {
+func (c *char) kitsuneBurst(ai core.AttackInfo, pattern core.AttackPattern) {
 	for i := 0; i < c.sakuraLevelCheck(); i++ {
-		c.Core.Combat.QueueAttackEvent(&c.kitsunes[i].ae, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
+		c.Core.Combat.QueueAttack(ai, pattern, 94+54+i*24, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
 		if c.Base.Cons >= 1 {
 			c.AddTask(func() {
 				c.AddEnergy("yae-c1", 8)
