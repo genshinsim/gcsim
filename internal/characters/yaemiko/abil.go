@@ -71,10 +71,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
-
+	ai2 := core.AttackInfo{
+		Abil:       "Tenko Thunderbolt",
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Electro,
+		Durability: 25,
+		Mult:       burst[1][c.TalentLvlSkill()],
+	}
+	pattern := core.NewDefCircHit(5, false, core.TargettableEnemy)
 	c.ConsumeEnergy(1) // TODO: not final
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 94)
-	c.kitsuneBurst(ai)
+	c.kitsuneBurst(ai2, pattern)
 	c.SetCD(core.ActionBurst, 22*60)
 	return f, a
 }
