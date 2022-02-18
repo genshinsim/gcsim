@@ -29,7 +29,6 @@ function extractItersFromConfig(cfg: string): number {
 export function runSim(cfg: string): AppThunk {
   return function (dispatch) {
     const startTime = window.performance.now();
-    console.time("runSim");
     let debug: string;
     let avg = 0;
     let results: Result[] = [];
@@ -52,7 +51,7 @@ export function runSim(cfg: string): AppThunk {
     };
 
     const debugRun = () =>
-      new Promise((resolve, reject) => {
+      new Promise<null>((resolve, reject) => {
         console.time("debug");
         const debugCB = (val: any) => {
           const res = JSON.parse(val);
@@ -71,7 +70,7 @@ export function runSim(cfg: string): AppThunk {
       });
 
     const sims = () =>
-      new Promise((resolve, reject) => {
+      new Promise<null>((resolve, reject) => {
         console.time("sim");
         let queued = 0;
         let done = 0;
@@ -135,7 +134,7 @@ export function runSim(cfg: string): AppThunk {
       });
 
     const aggregateResults = () =>
-      new Promise((resolve, reject) => {
+      new Promise<ResultsSummary>((resolve, reject) => {
         let s = JSON.stringify(results);
         console.log(new Blob([s]).size);
         pool.queue({
@@ -170,10 +169,6 @@ export function runSim(cfg: string): AppThunk {
         console.log("configs done");
         return Promise.all([debugRun(), sims()]);
       })
-      // .then(() => {
-      //   console.log("debug done, running next");
-      //   return sims();
-      // })
       .then(() => {
         console.log("all iters done, collecting results");
         console.time("aggregate results");
@@ -192,19 +187,15 @@ export function runSim(cfg: string): AppThunk {
           })
         );
         //add debug to the summary
-        //@ts-ignore
-        // console.log(summary.dps);
-        //@ts-ignore
         summary.debug = debug;
-        //@ts-ignore
         summary.v2 = true;
+        summary.runtime = end - startTime;
 
         console.timeEnd("aggregate results");
         //summary can now be passed to viewer
         dispatch(
           viewerActions.addViewerData({
             key: "Simulation run on: " + new Date().toLocaleString(),
-            //@ts-ignore
             data: summary,
           })
         );
