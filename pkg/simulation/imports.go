@@ -110,6 +110,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/solar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/thrilling"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/widsith"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/akuoumaru"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bell"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/blackcliff"
