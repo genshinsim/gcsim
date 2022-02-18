@@ -159,7 +159,7 @@ func (c *char) c1(a core.AttackCB) {
 	if a.Target.GetTag(talismanKey) < c.Core.F {
 		return
 	}
-	c.AddEnergy(2)
+	c.AddEnergy("qiqi-c1", 2)
 
 	c.Core.Log.NewEvent("Qiqi C1 Activation - Adding 2 energy", core.LogCharacterEvent, c.Index, "target", a.Target.Index())
 }

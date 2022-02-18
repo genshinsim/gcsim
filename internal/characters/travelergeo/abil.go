@@ -120,7 +120,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				return
 			}
 			a.Target.SetTag("traveler-c4-src", src)
-			c.AddEnergy(5)
+			c.AddEnergy("geo-traveler-c4", 5)
 		}
 	}
 

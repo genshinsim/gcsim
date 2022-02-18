@@ -72,7 +72,7 @@ func (c *char) a4() {
 			return false
 		}
 		for _, x := range c.Core.Chars {
-			x.AddEnergy(2)
+			x.AddEnergy("klee-a4", 2)
 		}
 		return false
 	}, "kleea2")

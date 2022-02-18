@@ -110,7 +110,7 @@ func (c *char) onDefeatTargets() {
 		//TODO: re-index riptide expiry frame array if needed
 
 		if c.Base.Cons >= 2 {
-			c.AddEnergy(4)
+			c.AddEnergy("tartaglia-c2", 4)
 			c.Core.Log.NewEvent("Tartaglia C2 restoring 4 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}
 		return false

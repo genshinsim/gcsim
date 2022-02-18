@@ -38,6 +38,8 @@ func main() {
 - tol_mean (default = 0.015): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS mean used in ER optimization
 - tol_sd (default = 0.33): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS SD used in ER optimization`)
 
+	flag.Parse()
+
 	if opt.prof {
 		defer profile.Start(profile.ProfilePath("./"), profile.CPUProfile).Stop()
 	}

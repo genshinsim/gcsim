@@ -28,6 +28,7 @@ func (s *Simulation) initChars() error {
 	s.stats.CharActiveTime = make([]int, count)
 	s.stats.AbilUsageCountByChar = make([]map[string]int, count)
 	s.stats.ParticleCount = make(map[string]int)
+	s.stats.EnergyDetail = make([]map[string][4]float64, count)
 	s.stats.EnergyWhenBurst = make([][]float64, count)
 	// }
 
@@ -58,6 +59,7 @@ func (s *Simulation) initChars() error {
 		s.stats.DamageByCharByTargets[i] = make(map[int]float64)
 		s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 		s.stats.CharNames[i] = v.Base.Key.String()
+		s.stats.EnergyDetail[i] = make(map[string][4]float64)
 		s.stats.EnergyWhenBurst[i] = make([]float64, 0, s.cfg.Settings.Duration/12+2)
 
 		//log the character data

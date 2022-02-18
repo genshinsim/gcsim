@@ -120,7 +120,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		srcCleaned = strings.Replace(srcCleaned, string(match), "", -1)
 	}
 
-	parser := parse.New("single", cfg)
+	parser := parse.New("single", srcCleaned)
 	simcfg, err := parser.Parse()
 
 	if err != nil {

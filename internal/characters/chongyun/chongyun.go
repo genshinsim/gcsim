@@ -60,7 +60,7 @@ func (c *char) c4() {
 			return false
 		}
 
-		c.AddEnergy(2)
+		c.AddEnergy("chongyun-c4", 2)
 
 		c.Core.Log.NewEvent("chongyun c4 recovering 2 energy", core.LogCharacterEvent, c.Index, "final energy", c.Energy)
 		icd = c.Core.F + 120

@@ -32,7 +32,8 @@ func (c *Tmpl) MaxEnergy() float64 {
 	return c.EnergyMax
 }
 
-func (c *Tmpl) AddEnergy(e float64) {
+func (c *Tmpl) AddEnergy(src string, e float64) {
+	preEnergy := c.Energy
 	c.Energy += e
 	if c.Energy > c.EnergyMax {
 		c.Energy = c.EnergyMax
@@ -40,7 +41,9 @@ func (c *Tmpl) AddEnergy(e float64) {
 	if c.Energy < 0 {
 		c.Energy = 0
 	}
-	c.Core.Log.NewEvent("adding energy", core.LogEnergyEvent, c.Index, "rec'd", e, "next energy", c.Energy, "char", c.Index)
+
+	c.Core.Events.Emit(core.OnEnergyChange, c, preEnergy, e, src)
+	c.Core.Log.NewEvent("adding energy", core.LogEnergyEvent, c.Index, "rec'd", e, "next energy", c.Energy, "char", c.Index, "src", src)
 }
 
 func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
@@ -78,6 +81,7 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 		c.Energy = c.EnergyMax
 	}
 
+	c.Core.Events.Emit(core.OnEnergyChange, c, pre, amt, p.Source)
 	c.Core.Log.NewEvent(
 		"particle",
 		core.LogEnergyEvent,

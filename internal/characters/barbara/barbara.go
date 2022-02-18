@@ -90,7 +90,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 func (c *char) c1(delay int) {
 	c.AddTask(func() {
-		c.AddEnergy(1)
+		c.AddEnergy("barbara-c1", 1)
 		c.c1(0)
 	}, "barbara-c1", delay+10*60)
 }

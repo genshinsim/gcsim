@@ -116,7 +116,7 @@ func (c *char) burstActiveHook() {
 		// While donning the Ceremonial Garment created by Nereid's Ascension, Sangonomiya Kokomi's Normal Attack SPD is increased by 10%, and Normal Attacks that hit opponents will restore 0.8 Energy for her. This effect can occur once every 0.2s.
 		if c.Base.Cons >= 4 {
 			if c.c4ICDExpiry <= c.Core.F {
-				c.AddEnergy(0.8)
+				c.AddEnergy("kokomi-c4", 0.8)
 				c.c4ICDExpiry = c.Core.F + 12
 			}
 		}

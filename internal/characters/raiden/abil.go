@@ -95,7 +95,7 @@ func (c *char) burstRestorefunc(a core.AttackCB) {
 		c.Core.Log.NewEvent("a4 energy restore stacks", core.LogCharacterEvent, c.Index, "stacks", excess, "increase", float64(excess)*0.006)
 		energy = energy * (1 + float64(excess)*0.006)
 		for _, char := range c.Core.Chars {
-			char.AddEnergy(energy)
+			char.AddEnergy("raiden-burst", energy)
 		}
 	}
 }
