@@ -40,6 +40,8 @@ export default function Dropzone({ className = "" }: { className?: string }) {
           return;
         }
 
+        parsed.v2 = true;
+
         //make an id
         dispatch(
           viewerActions.addViewerData({
