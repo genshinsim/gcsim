@@ -20,7 +20,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 114, 114 //frames from keqing lib
 	case core.ActionSkill:
-		return 21, 21 //ok
+		return 34, 34 //ok
 	case core.ActionBurst:
 		return 111, 111 //ok
 	default:
