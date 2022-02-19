@@ -1,8 +1,6 @@
 package generic
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -18,44 +16,29 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m := make([]float64, core.EndStatType)
 
 	incrDmg := .3 + float64(r)*0.06
-	decrDmg := 0.01
-	passiveThreshold := 18 // 0.3s
+	decrDmg := -0.01
+	passiveThresholdF := 18 // 0.3s
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	char.AddPreDamageMod(core.PreDamageMod{
+		Key: "slingshot",
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			// Only apply to NA or CA
+			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+				return nil, false // TODO - ask does this reset the buff/debuff?
+			}
 
-		// Attack belongs to the equipped character
-		if atk.Info.ActorIndex != char.CharIndex() {
-			return false
-		}
+			travel := c.F - atk.SourceFrame
 
-		// Active character has weapon equipped
-		if c.ActiveChar != char.CharIndex() {
-			return false
-		}
+			m[core.DmgP] = incrDmg
+			if travel > passiveThresholdF {
+				m[core.DmgP] = decrDmg
 
-		// Only apply on normal or charged attacks
-		if (atk.Info.AttackTag != core.AttackTagNormal) && (atk.Info.AttackTag != core.AttackTagExtra) {
-			return false
-		}
+			}
 
-		dmgP := decrDmg
-		arrowHangTime := c.F - atk.SourceFrame
-		if arrowHangTime > passiveThreshold {
-			dmgP = incrDmg
-		}
-
-		char.AddMod(core.CharStatMod{
-			Key: "slingshot",
-			Amount: func() ([]float64, bool) {
-				m[core.DmgP] = dmgP
-				return m, true
-			},
-			Expiry: -1,
-		})
-
-		return false
-	}, fmt.Sprintf("slingshot-%v", char.Name()))
+			return m, true
+		},
+		Expiry: -1,
+	})
 
 	return "slingshot"
 }
