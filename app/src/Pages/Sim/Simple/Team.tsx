@@ -92,7 +92,7 @@ export function Team() {
       {showTips ? (
         <div className="pl-2 pr-2">
           <Callout intent={Intent.PRIMARY} className="flex flex-col">
-            Enter your team information in this section
+            Get started by adding characters in to your team.
             <br />
             <div className="ml-auto">
               <Button small onClick={hideTips}>

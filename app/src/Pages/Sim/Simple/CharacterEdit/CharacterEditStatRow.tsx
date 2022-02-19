@@ -17,14 +17,14 @@ export function StatRow({
         <div className="w-4 fill-gray-100">{sub.icon}</div>
         <div className="ml-1">{sub.label}</div>
       </div>
-      <div className="grid grid-cols-1 gap-y-1 pt-1 pb-1 md:grid-cols-2 md:gap-1 md:gap-y-0  ">
+      <div className="grid grid-cols-1 gap-y-1 pt-1 pb-1 hd:grid-cols-2 md:gap-1 md:gap-y-0 md:w-[400px]">
         {sub.stat ? (
-          <div className="rounded-md flex flex-row  ">
+          <div className="rounded-md flex flex-row">
             <input
               type="number"
               step="any"
               placeholder="enter amount"
-              className="p-2 rounded-l-md bg-gray-800 text-right focus:outline-none invalid:text-red-500"
+              className="w-full p-2 rounded-l-md bg-gray-800 text-right focus:outline-none invalid:text-red-500"
               value={sub.val}
               onChange={(e) => {
                 let val: number;
@@ -52,7 +52,7 @@ export function StatRow({
               type="number"
               step="any"
               placeholder="enter percentage"
-              className="p-2 rounded-l-md bg-gray-800 text-right focus:outline-none invalid:text-red-500"
+              className="w-full p-2 rounded-l-md bg-gray-800 text-right focus:outline-none invalid:text-red-500"
               value={sub.val_}
               onChange={(e) => {
                 let val: number;
