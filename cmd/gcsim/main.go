@@ -10,6 +10,11 @@ import (
 	"github.com/pkg/profile"
 )
 
+var (
+	sha1ver   string // sha1 revision used to build the program
+	buildTime string // when the executable was built
+)
+
 type opts struct {
 	config       string
 	out          string //file result name
@@ -50,6 +55,8 @@ func main() {
 		ConfigPath:       opt.config,
 		ResultSaveToPath: opt.out,
 		GZIPResult:       opt.gz,
+		Version:          sha1ver,
+		BuildDate:        buildTime,
 	}
 
 	if opt.substatOptim {

@@ -13,6 +13,9 @@ import (
 )
 
 type Summary struct {
+	//version stuff
+	Version               string                          `json:"version"`
+	BuildDate             string                          `json:"build_date"`
 	IsDamageMode          bool                            `json:"is_damage_mode"`
 	ActiveChar            string                          `json:"active_char"`
 	CharNames             []string                        `json:"char_names"`

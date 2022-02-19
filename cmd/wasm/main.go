@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"log"
 	"syscall/js"
 
@@ -11,6 +12,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/parse"
 	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/simulation"
+)
+
+var (
+	sha1ver   string // sha1 revision used to build the program
+	buildTime string // when the executable was built
 )
 
 func main() {
@@ -31,10 +37,14 @@ func main() {
 	collectFunc := js.FuncOf(collect)
 	defer collectFunc.Release()
 
+	versionFunc := js.FuncOf(version)
+	defer versionFunc.Release()
+
 	global.Set("sim", runSimFunc)
 	global.Set("setcfg", setConfigFunc)
 	global.Set("debug", debugFunc)
 	global.Set("collect", collectFunc)
+	global.Set("version", versionFunc)
 
 	<-done
 }
@@ -53,6 +63,10 @@ func setConfig(this js.Value, args []js.Value) interface{} {
 	}
 	cfgStr = in
 	return "ok"
+}
+
+func version(this js.Value, args []js.Value) interface{} {
+	return fmt.Sprintf(`{"hash":"%v","date":"%v"}`, sha1ver, buildTime)
 }
 
 //run simulation once

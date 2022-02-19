@@ -24,6 +24,8 @@ type Options struct {
 	ResultSaveToPath string // file name (excluding ext) to save the result file; if "" then nothing is saved to file
 	GZIPResult       bool   // should the result file be gzipped; only if ResultSaveToPath is not ""
 	ConfigPath       string // path to the config file to read
+	Version          string
+	BuildDate        string
 }
 
 var start time.Time
@@ -93,6 +95,9 @@ func RunWithConfig(cfg string, simcfg core.SimulationConfig, opts Options) (resu
 	r.Debug = debugOut
 	r.Runtime = time.Since(start)
 	r.Config = cfg
+	r.Version = opts.Version
+	r.BuildDate = opts.BuildDate
+
 	//TODO: clean up this code
 
 	if opts.ResultSaveToPath != "" {
