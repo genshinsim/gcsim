@@ -84,7 +84,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	pattern := core.NewDefCircHit(5, false, core.TargettableEnemy)
 	c.ConsumeEnergy(1) // TODO: not final
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 94)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 94, 94)
 	c.kitsuneBurst(ai2, pattern)
 	c.SetCD(core.ActionBurst, 22*60)
 	return f, a
