@@ -87,7 +87,7 @@ export default function Summary({ data }: { data: SimResults }) {
           sec of combat ({data.iter} iterations took{" "}
           {(data.runtime / 1000000000).toFixed(3)} seconds to run).
           <br />
-          Build version:{" "}
+          git hash:{" "}
           {data.version ? (
             <a
               href={

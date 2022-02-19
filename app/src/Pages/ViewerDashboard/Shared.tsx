@@ -26,25 +26,25 @@ export default function Shared({ path, version = "v2", handleClose }: Props) {
   React.useEffect(() => {
     //load path
     console.log("loading version: " + version);
-    let url = "https://api.gcsim.app/viewer/" + path;
+    let url = "https://viewer.gcsim.workers.dev/" + path;
     if (version === "v2") {
       //do something with url
       console.log("v2: need to change url");
     }
     axios
-      .get("https://api.gcsim.app/viewer/" + path)
+      .get(url)
       .then((resp) => {
         console.log(resp.data);
 
         let data = resp.data;
 
-        if (data.results === undefined || data.results.length === 0) {
-          setMsg("Invalid URL");
-          return;
-        }
+        // if (data.data === undefined || data.results.length === 0) {
+        //   setMsg("Invalid URL");
+        //   return;
+        // }
 
         //decode base64
-        const binaryStr = Uint8ArrayFromBase64(data.results[0].data);
+        const binaryStr = Uint8ArrayFromBase64(data.data);
 
         let jsonData = extractJSONStringFromBinary(binaryStr);
 

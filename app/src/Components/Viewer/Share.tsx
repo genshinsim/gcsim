@@ -35,10 +35,11 @@ export default function Share(props: ShareProps) {
     let s = bytesToBase64(compressed);
 
     // console.log(s);
+    //"{\"author\":\"anon\",\"description\":\"none\",\"data\":\"stuff\"}"
     setIsLoading(true);
     axios({
       method: "post",
-      url: "https://api.gcsim.app/upload/",
+      url: "https://viewer.gcsim.workers.dev/upload",
       headers: { "Access-Control-Allow-Origin": "*" },
       data: {
         author: "anon",
