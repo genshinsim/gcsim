@@ -106,5 +106,6 @@ var actionKeys = map[string]core.ActionType{
 	"aim":         core.ActionAim,
 	"dash":        core.ActionDash,
 	"jump":        core.ActionJump,
+	"walk":        core.ActionWalk,
 	"swap":        core.ActionSwap,
 }

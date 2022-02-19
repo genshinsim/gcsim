@@ -203,6 +203,9 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 	case core.ActionJump:
 		f = core.JumpFrames
 		a.core.ResetAllNormalCounter()
+	case core.ActionWalk:
+		f = core.WalkFrames
+		a.core.ResetAllNormalCounter()
 	case core.ActionSwap:
 		//check if already on this char; if so ignore
 		if c.Key() == n.Target {
