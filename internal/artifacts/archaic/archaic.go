@@ -36,7 +36,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if shd != nil {
 				//activate
 				s.Status.AddStatus("archaic", 600)
-				s.Log.Debugw("archaic petra proc'd", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "ele", shd.Element())
+				s.Log.NewEvent("archaic petra proc'd", core.LogArtifactEvent, c.CharIndex(), "ele", shd.Element())
 				m[core.PyroP] = 0
 				m[core.HydroP] = 0
 				m[core.CryoP] = 0

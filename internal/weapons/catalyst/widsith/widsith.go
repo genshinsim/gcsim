@@ -55,7 +55,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			m[core.GeoP] = 0
 			m[core.DendroP] = 0
 			m[core.ATKP] = 0
-			c.Log.Debugw("widsith proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "stat", "em", "expiring", expiry)
+			c.Log.NewEvent("widsith proc'd", core.LogWeaponEvent, char.CharIndex(), "stat", "em", "expiring", expiry)
 		case 1:
 			m[core.EM] = 0
 			m[core.PyroP] = dmg
@@ -66,7 +66,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			m[core.GeoP] = dmg
 			m[core.DendroP] = dmg
 			m[core.ATKP] = 0
-			c.Log.Debugw("widsith proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "stat", "dmg%", "expiring", expiry)
+			c.Log.NewEvent("widsith proc'd", core.LogWeaponEvent, char.CharIndex(), "stat", "dmg%", "expiring", expiry)
 		default:
 			m[core.EM] = 0
 			m[core.PyroP] = 0
@@ -77,7 +77,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			m[core.GeoP] = 0
 			m[core.DendroP] = 0
 			m[core.ATKP] = atk
-			c.Log.Debugw("widsith proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "stat", "atk%", "expiring", expiry)
+			c.Log.NewEvent("widsith proc'd", core.LogWeaponEvent, char.CharIndex(), "stat", "atk%", "expiring", expiry)
 		}
 
 		return false

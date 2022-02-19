@@ -73,11 +73,10 @@ var tmpl = `package curves
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 
-var CharBaseMap = map[core.Char]CharBase{
+var CharBaseMap = map[core.CharKey]CharBase{
 	{{- range $key, $value := . }}
 	core.{{$value.Key}}: {
 		HPCurve: {{$value.Curve.HP}},
@@ -174,4 +173,5 @@ var CharNameToKey = map[string]string{
 	"lumine":            "TravelerFemale",
 	"shenhe":            "Shenhe",
 	"yunjin":            "Yunjin",
+	"yaemiko":           "YaeMiko",
 }

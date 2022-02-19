@@ -51,7 +51,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			}
 			icd = s.F + 48
 			c.ReduceActionCooldown(core.ActionSkill, 60)
-			s.Log.Debugw("thunderfury 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", atk.Info.Abil, "new cd", c.Cooldown(core.ActionSkill))
+			s.Log.NewEvent("thunderfury 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", atk.Info.Abil, "new cd", c.Cooldown(core.ActionSkill))
 			return false
 		}
 

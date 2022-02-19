@@ -1,7 +1,7 @@
 package klee
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -52,7 +52,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 50
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
@@ -72,7 +72,7 @@ func (c *char) a4() {
 			return false
 		}
 		for _, x := range c.Core.Chars {
-			x.AddEnergy(2)
+			x.AddEnergy("klee-a4", 2)
 		}
 		return false
 	}, "kleea2")

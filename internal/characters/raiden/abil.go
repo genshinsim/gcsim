@@ -1,14 +1,9 @@
 package raiden
 
 import (
+	"fmt"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
-
-/**
-let style = document.createElement('style');
-style.innerHTML = '*{ user-select: auto !important; }';
-document.body.appendChild(style);
-**/
 
 var polearmDelayOffset = [][]int{
 	{1},
@@ -28,7 +23,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -60,8 +55,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Charge Attack",
-			AttackTag:  core.AttackTagNormal,
-			ICDTag:     core.ICDTagNormalAttack,
+			AttackTag:  core.AttackTagExtra,
+			ICDTag:     core.ICDTagExtraAttack,
 			ICDGroup:   core.ICDGroupDefault,
 			Element:    core.Physical,
 			Durability: 25,
@@ -97,10 +92,10 @@ func (c *char) burstRestorefunc(a core.AttackCB) {
 		energy := burstRestore[c.TalentLvlBurst()]
 		//apply a4
 		excess := int(a.AttackEvent.Snapshot.Stats[core.ER] / 0.01)
-		c.Core.Log.Debugw("a4 energy restore stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "increase", float64(excess)*0.006)
+		c.Core.Log.NewEvent("a4 energy restore stacks", core.LogCharacterEvent, c.Index, "stacks", excess, "increase", float64(excess)*0.006)
 		energy = energy * (1 + float64(excess)*0.006)
 		for _, char := range c.Core.Chars {
-			char.AddEnergy(energy)
+			char.AddEnergy("raiden-burst", energy)
 		}
 	}
 }
@@ -108,7 +103,7 @@ func (c *char) burstRestorefunc(a core.AttackCB) {
 func (c *char) swordAttack(f int, a int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Musou Isshin",
+		Abil:       fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -143,7 +138,7 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Musou Isshin",
+		Abil:       "Musou Isshin (Charge Attack)",
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -306,7 +301,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}
 
-	c.Core.Log.Debugw("resolve stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", c.stacksConsumed)
+	c.Core.Log.NewEvent("resolve stacks", core.LogCharacterEvent, c.Index, "stacks", c.stacksConsumed)
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,

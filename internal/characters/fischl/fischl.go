@@ -3,7 +3,7 @@ package fischl
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -137,7 +137,7 @@ func (c *char) queueOz(src string) {
 		SourceFrame: c.Core.F,
 	}
 	c.AddTask(c.ozTick(c.Core.F), "oz", 60)
-	c.Core.Log.Debugw("Oz activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
+	c.Core.Log.NewEvent("Oz activated", core.LogCharacterEvent, c.Index, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
 
 	c.Core.Status.AddStatus("fischloz", dur)
 
@@ -145,12 +145,12 @@ func (c *char) queueOz(src string) {
 
 func (c *char) ozTick(src int) func() {
 	return func() {
-		c.Core.Log.Debugw("Oz checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
+		c.Core.Log.NewEvent("Oz checking for tick", core.LogCharacterEvent, c.Index, "src", src)
 		//if src != ozSource then this is no longer the same oz, do nothing
 		if src != c.ozSource {
 			return
 		}
-		c.Core.Log.Debugw("Oz ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
+		c.Core.Log.NewEvent("Oz ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
 		//trigger damage
 		ae := c.ozSnapshot
 		c.Core.Combat.QueueAttackEvent(&ae, 0)

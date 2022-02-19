@@ -64,11 +64,11 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai.Mult = ffb[c.TalentLvlAttack()]
 	ai.HitWeakPoint = false
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, bloom+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, travel+bloom+f)
 
 	// if c.a2expiry > c.Core.F {
 	// 	d.Stats[def.CR] += 0.2
-	// 	c.Core.Log.Debugw("ganyu a2", "frame", c.Core.F, "event", def.LogCalc, "char", c.Index, "new crit %", d.Stats[def.CR])
+	// 	c.Core.Log.Debugw("ganyu a2",  "event", def.LogCalc,  "new crit %", d.Stats[def.CR])
 	// }
 
 	c.a2expiry = c.Core.F + 5*60
@@ -211,7 +211,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				Expiry: c.Core.F + 60,
 			})
 			if t >= 900-18 {
-				c.Core.Log.Debugw("a4 last tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+60)
+				c.Core.Log.NewEvent("a4 last tick", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+60)
 			}
 		}, "ganyu-a4", i)
 	}

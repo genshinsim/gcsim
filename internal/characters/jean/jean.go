@@ -3,7 +3,7 @@ package jean
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -54,7 +54,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 4:
 			f = 159 - 124
 		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionCharge:
 		return 73, 73
@@ -70,7 +70,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 88, 88
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -144,7 +144,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if c.Base.Cons >= 1 && p["hold"] >= 60 {
 		//add 40% dmg
 		snap.Stats[core.DmgP] += .4
-		c.Core.Log.Debugw("jean c1 adding 40% dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "final dmg%", snap.Stats[core.DmgP])
+		c.Core.Log.NewEvent("jean c1 adding 40% dmg", core.LogCharacterEvent, c.Index, "final dmg%", snap.Stats[core.DmgP])
 	}
 
 	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1)
@@ -215,7 +215,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//duration is 10.5s
 	for i := 60; i < 630; i++ {
 		c.AddTask(func() {
-			c.Core.Log.Debugw("jean q healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "atk", atk, "heal amount", healDot)
+			c.Core.Log.NewEvent("jean q healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
 			c.Core.Health.HealActive(c.Index, heal)
 		}, "Jean Tick", i)
 	}
@@ -236,7 +236,7 @@ func (c *char) c6() {
 	// 	}
 	// 	return 0
 	// })
-	c.Core.Log.Warnw("jean c6 not implemented", "frame", c.Core.F, "event", core.LogCharacterEvent)
+	c.Core.Log.NewEvent("jean c6 not implemented", core.LogCharacterEvent, c.Index)
 }
 
 func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
@@ -254,7 +254,7 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 				Amount: func() ([]float64, bool) { return val, true },
 				Expiry: c.Core.F + 900,
 			})
-			c.Core.Log.Debugw("c2 - adding atk spd", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+			c.Core.Log.NewEvent("c2 - adding atk spd", core.LogCharacterEvent, c.Index, "char", c.Index)
 		}
 	}
 }

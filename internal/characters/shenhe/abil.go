@@ -21,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -46,7 +46,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charged[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
 
 	//return animation cd
 	return f, a
@@ -256,21 +256,20 @@ func (c *char) quillDamageMod() {
 		}
 
 		if c.quillcount[atk.Info.ActorIndex] > 0 {
-			ai := core.AttackInfo{
-				Abil:      "Quills",
-				AttackTag: core.AttackTagNone,
-			}
-			stats := c.SnapshotStats(&ai)
+			// ai := core.AttackInfo{
+			// 	Abil:      "Quills",
+			// 	AttackTag: core.AttackTagNone,
+			// }
+			stats, _ := c.SnapshotStats()
 			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.Atk)*(1+stats[core.ATKP]) + stats[core.ATK])
 			if consumeStack { //c6
 				c.quillcount[atk.Info.ActorIndex]--
 				c.updateBuffTags()
 			}
-			c.Core.Log.Debugw(
+			c.Core.Log.NewEvent(
 				"Shenhe Quill proc dmg add",
-				"frame", c.Core.F,
-				"event", core.LogPreDamageMod,
-				"char", atk.Info.ActorIndex,
+				core.LogPreDamageMod,
+				atk.Info.ActorIndex,
 				"before", atk.Info.FlatDmg,
 				"addition", amt,
 				"effect_ends_at", c.Core.Status.Duration(quillKey),

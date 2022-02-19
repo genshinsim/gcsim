@@ -59,6 +59,7 @@ const (
 	Itto
 	Shenhe
 	Yunjin
+	YaeMiko
 )
 
 func (c CharKey) String() string {
@@ -131,6 +132,7 @@ var CharNameToKey = map[string]CharKey{
 	"gorou":              Gorou,
 	"aratakiitto":        Itto,
 	"shenhe":             Shenhe,
+	"yaemiko":            YaeMiko,
 }
 
 var charNames = []string{
@@ -190,6 +192,7 @@ var charNames = []string{
 	"itto",
 	"shenhe",
 	"yunjin",
+	"yaemiko",
 }
 
 var CharKeyToEle = map[CharKey]EleType{

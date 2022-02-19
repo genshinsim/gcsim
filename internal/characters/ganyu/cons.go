@@ -14,7 +14,7 @@ func (c *char) c1() {
 		if atk.Info.Abil != "Frost Flake Arrow" {
 			return false
 		}
-		c.AddEnergy(2)
+		c.AddEnergy("ganyu-c1", 2)
 		t.AddResMod("ganyu-c1", core.ResistMod{
 			Ele:      core.Cryo,
 			Value:    -0.15,

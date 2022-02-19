@@ -3,8 +3,8 @@ package noelle
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -172,7 +172,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	snapshot := c.Snapshot(&aiSnapshot)
 	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[core.DEFP]) + snapshot.Stats[core.DEF]
-	// burstDefSnapshot := c.Base.Def*(1+c.Stats[core.DEFP]) + c.Stats[core.DEF]
 	mult := defconv[c.TalentLvlBurst()]
 	if c.Base.Cons == 6 {
 		mult += 0.5
@@ -192,7 +191,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			return val, true
 		},
 	})
-	c.Core.Log.Debugw("noelle burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
+	c.Core.Log.NewEvent("noelle burst", core.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
 
 	c.Core.Status.AddStatus("noelleq", 900+f)
 
@@ -203,7 +202,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			if c.Core.ActiveChar == c.Index {
 				return
 			}
-			c.Core.Log.Debugw("noelle max burst extension activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new_expiry", c.Core.F+600)
+			c.Core.Log.NewEvent("noelle max burst extension activated", core.LogCharacterEvent, c.Index, "new_expiry", c.Core.F+600)
 
 			// Adding the mod again with the same key replaces it
 			c.AddMod(core.CharStatMod{

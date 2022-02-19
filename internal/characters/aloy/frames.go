@@ -17,7 +17,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 3:
 			f = 128 - 85
 		}
-		atkspd := c.Stats[core.AtkSpd]
+		atkspd := c.Stat(core.AtkSpd)
 		f = int(float64(f) / (1 + atkspd))
 		return f, f
 	case core.ActionAim:
@@ -27,7 +27,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 118, 118
 	default:
-		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

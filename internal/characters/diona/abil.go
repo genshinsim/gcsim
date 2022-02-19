@@ -3,8 +3,8 @@ package diona
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -150,7 +150,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	for i := 0; i < 6; i++ {
 		c.AddTask(func() {
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
-			c.Core.Log.Debugw("diona healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
+			c.Core.Log.NewEvent("diona healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
 			c.Core.Health.HealActive(c.Index, heal)
 		}, "Diona Burst (DOT)", 60+i*120)
 	}
@@ -166,7 +166,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			if c.Energy > c.EnergyMax {
 				c.Energy = c.EnergyMax
 			}
-			c.Core.Log.Debugw("diona c1 regen 15 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
+			c.Core.Log.NewEvent("diona c1 regen 15 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}, "Diona C1", f+750)
 	}
 

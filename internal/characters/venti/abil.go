@@ -1,6 +1,7 @@
 package venti
 
 import (
+	"fmt"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -15,7 +16,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -142,12 +143,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 func (c *char) a4Restore() {
-	c.AddEnergy(15)
+	c.AddEnergy("venti-a4", 15)
 
 	if c.qInfuse != core.NoElement {
 		for _, char := range c.Core.Chars {
 			if char.Ele() == c.qInfuse {
-				char.AddEnergy(15)
+				char.AddEnergy("venti-a4", 15)
 			}
 		}
 	}

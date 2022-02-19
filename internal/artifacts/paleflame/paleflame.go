@@ -40,14 +40,18 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if icd > s.F {
 				return false
 			}
+			// reset stacks if expired
+			if dur < s.F {
+				stacks = 0
+			}
 			stacks++
-			if stacks > 2 {
+			if stacks >= 2 {
 				stacks = 2
 				m[core.PhyP] = 0.25
 			}
 			m[core.ATKP] = 0.09 * float64(stacks)
 
-			s.Log.Debugw("pale flame 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "stacks", stacks, "expiry", s.F+420, "icd", s.F+18)
+			s.Log.NewEvent("pale flame 4pc proc", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "expiry", s.F+420, "icd", s.F+18)
 			icd = s.F + 18
 			dur = s.F + 420
 			return false

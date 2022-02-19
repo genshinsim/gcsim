@@ -17,7 +17,7 @@ type Target interface {
 	Shape() Shape
 
 	//attacks
-	Attack(*AttackEvent) (float64, bool)
+	Attack(*AttackEvent, LogEvent) (float64, bool)
 
 	//reaction/aura stuff
 	Tick()

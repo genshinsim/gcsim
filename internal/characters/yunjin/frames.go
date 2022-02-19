@@ -20,7 +20,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 4:
 			f = 39
 		}
-		atkspd := c.Stats[core.AtkSpd]
+		atkspd := c.Stat(core.AtkSpd)
 		f = int(float64(f) / (1 + atkspd))
 		return f, f
 	case core.ActionCharge:
@@ -43,7 +43,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 53, 53
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

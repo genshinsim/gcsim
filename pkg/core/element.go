@@ -99,13 +99,11 @@ func (c *Core) AbsorbCheck(prio ...EleType) EleType {
 	for _, e := range prio {
 		for _, t := range c.Targets {
 			if t.AuraContains(e) {
-				if c.Flags.LogDebug {
-					c.Log.Debugw(
-						"infusion check picked up "+e.String(),
-						"frame", c.F,
-						"event", LogElementEvent,
-					)
-				}
+				c.Log.NewEvent(
+					"infusion check picked up "+e.String(),
+					LogElementEvent,
+					-1,
+				)
 				return e
 			}
 		}
