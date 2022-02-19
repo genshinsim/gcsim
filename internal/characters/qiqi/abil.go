@@ -159,9 +159,9 @@ func (c *char) c1(a core.AttackCB) {
 	if a.Target.GetTag(talismanKey) < c.Core.F {
 		return
 	}
-	c.AddEnergy(2)
+	c.AddEnergy("qiqi-c1", 2)
 
-	c.Core.Log.Debugw("Qiqi C1 Activation - Adding 2 energy", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "target", a.Target.Index())
+	c.Core.Log.NewEvent("Qiqi C1 Activation - Adding 2 energy", core.LogCharacterEvent, c.Index, "target", a.Target.Index())
 }
 
 // Handles skill auto healing ticks

@@ -1,7 +1,7 @@
 package qiqi
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -98,11 +98,10 @@ func (c *char) talismanHealHook() {
 		c.Core.Health.HealIndex(c.Index, atk.Info.ActorIndex, healAmt)
 		t.SetTag(talismanICDKey, c.Core.F+60)
 
-		c.Core.Log.Debugw(
+		c.Core.Log.NewEvent(
 			"Qiqi Talisman Healing",
-			"frame", c.Core.F,
-			"event", core.LogCharacterEvent,
-			"char", c.Index,
+			core.LogCharacterEvent,
+			c.Index,
 			"target", t.Index(),
 			"healed_char", atk.Info.ActorIndex,
 			"talisman_expiry", t.GetTag(talismanKey),
@@ -145,11 +144,10 @@ func (c *char) onNACAHitHook() {
 			if t.GetTag(talismanKey) < c.Core.F+360 {
 				t.SetTag(talismanKey, c.Core.F+360)
 				c.c4ICDExpiry = c.Core.F + 30*60
-				c.Core.Log.Debugw(
+				c.Core.Log.NewEvent(
 					"Qiqi A4 Adding Talisman",
-					"frame", c.Core.F,
-					"event", core.LogCharacterEvent,
-					"char", c.Index,
+					core.LogCharacterEvent,
+					c.Index,
 					"target", t.Index(),
 					"talisman_expiry", t.GetTag(talismanKey),
 					"c4_icd_expiry", c.c4ICDExpiry,
@@ -211,7 +209,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

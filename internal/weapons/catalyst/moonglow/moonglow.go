@@ -60,7 +60,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 
-		char.AddEnergy(0.6)
+		char.AddEnergy("moonglow", 0.6)
 		icd = c.F + 6 // 0.1s
 
 		return false

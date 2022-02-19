@@ -3,7 +3,7 @@ package xingqiu
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -86,7 +86,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 39, 39 //ok
 	default:
-		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -119,7 +119,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) orbitalfunc(src int) func() {
 	return func() {
-		c.Core.Log.Debugw("orbital checking tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+		c.Core.Log.NewEvent("orbital checking tick", core.LogCharacterEvent, c.Index, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 		if c.Core.Status.Duration("xqorb") == 0 {
 			c.orbitalActive = false
 			return
@@ -134,7 +134,7 @@ func (c *char) orbitalfunc(src int) func() {
 			Element:    core.Hydro,
 			Durability: 25,
 		}
-		c.Core.Log.Debugw("orbital ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+		c.Core.Log.NewEvent("orbital ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 
 		//queue up next instance
 		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
@@ -145,17 +145,17 @@ func (c *char) orbitalfunc(src int) func() {
 
 func (c *char) applyOrbital(duration int) {
 	f := c.Core.F
-	c.Core.Log.Debugw("Applying orbital", "frame", f, "event", core.LogCharacterEvent, "current status", c.Core.Status.Duration("xqorb"))
+	c.Core.Log.NewEvent("Applying orbital", core.LogCharacterEvent, c.Index, "current status", c.Core.Status.Duration("xqorb"))
 	//check if orbitals already active, if active extend duration
 	//other wise start first tick func
 	if !c.orbitalActive {
 		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 14)
 		c.orbitalActive = true
-		c.Core.Log.Debugw("orbital applied", "frame", f, "event", core.LogCharacterEvent, "expected end", f+900, "next expected tick", f+40)
+		c.Core.Log.NewEvent("orbital applied", core.LogCharacterEvent, c.Index, "expected end", f+900, "next expected tick", f+40)
 	}
 
 	c.Core.Status.AddStatus("xqorb", duration)
-	c.Core.Log.Debugw("orbital duration extended", "frame", f, "event", core.LogCharacterEvent, "new expiry", c.Core.Status.Duration("xqorb"))
+	c.Core.Log.NewEvent("orbital duration extended", core.LogCharacterEvent, c.Index, "new expiry", c.Core.Status.Duration("xqorb"))
 }
 
 var rainscreenDelay = [2]int{19, 35}
@@ -228,7 +228,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	dur = dur * 60
 	c.Core.Status.AddStatus("xqburst", dur)
-	c.Core.Log.Debugw("Xingqiu burst activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+dur)
+	c.Core.Log.NewEvent("Xingqiu burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur)
 
 	orbital := p["orbital"]
 

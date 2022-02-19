@@ -59,7 +59,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					Value:    -0.4,
 				})
 
-				s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", key, "char", c.CharIndex())
+				s.Log.NewEvent("vv 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", key, "char", c.CharIndex())
 
 				return false
 			}
@@ -101,7 +101,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				Value:    -0.4,
 			})
 
-			s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", key, "char", c.CharIndex())
+			s.Log.NewEvent("vv 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", key, "char", c.CharIndex())
 
 			return false
 		}, "vv4pc-secondary")

@@ -111,7 +111,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	switch c.eCharge {
 	case c.eChargeMax:
-		c.Core.Log.Debugw("amber bunny at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+721)
+		c.Core.Log.NewEvent("amber bunny at max charge, queuing next recovery", core.LogCharacterEvent, c.Index, "recover at", c.Core.F+721)
 		c.eNextRecover = c.Core.F + 721
 		c.AddTask(c.recoverCharge(c.Core.F), "charge", 720)
 		c.eTickSrc = c.Core.F
@@ -126,18 +126,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) recoverCharge(src int) func() {
 	return func() {
 		if c.eTickSrc != src {
-			c.Core.Log.Debugw("amber bunny recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
+			c.Core.Log.NewEvent("amber bunny recovery function ignored, src diff", core.LogCharacterEvent, c.Index, "src", src, "new src", c.eTickSrc)
 			return
 		}
 		c.eCharge++
-		c.Core.Log.Debugw("amber bunny recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
+		c.Core.Log.NewEvent("amber bunny recovering a charge", core.LogCharacterEvent, c.Index, "src", src, "total charge", c.eCharge)
 		c.SetCD(core.ActionSkill, 0)
 		if c.eCharge >= c.eChargeMax {
 			//fully charged
 			return
 		}
 		//other wise restore another charge
-		c.Core.Log.Debugw("amber bunny queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "recover at", c.Core.F+720)
+		c.Core.Log.NewEvent("amber bunny queuing next recovery", core.LogCharacterEvent, c.Index, "src", src, "recover at", c.Core.F+720)
 		c.eNextRecover = c.Core.F + 721
 		c.AddTask(c.recoverCharge(src), "charge", 720)
 
@@ -185,7 +185,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				Amount: func() ([]float64, bool) { return val, true },
 				Expiry: c.Core.F + 900,
 			})
-			c.Core.Log.Debugw("c6 - adding atk %", "frame", c.Core.F, "event", core.LogCharacterEvent, "character", c.Name())
+			c.Core.Log.NewEvent("c6 - adding atk %", core.LogCharacterEvent, c.Index, "character", c.Name())
 		}
 	}
 

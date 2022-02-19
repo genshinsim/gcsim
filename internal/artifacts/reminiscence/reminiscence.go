@@ -38,7 +38,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if c.CurrentEnergy() > 15 {
 				//consume 15 energy, increased normal/charge/plunge dmg by 50%
 				s.Tasks.Add(func() {
-					c.AddEnergy(-15)
+					c.AddEnergy("shim-4pc", -15)
 				}, 10)
 				c.AddPreDamageMod(core.PreDamageMod{
 					Key: "shim-4pc",

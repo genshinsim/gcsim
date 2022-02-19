@@ -13,3 +13,12 @@ out.json
 debug.html
 internal/characters/replace.txt
 .idea
+*.wasm
+**.zip
+./cmd/gcsim/*.exe
+./cmd/gcsim/gsim.exe
+./cmd/gcsim/gsim
+./cmd/gcsim/*.html
+./cmd/gcsim/tests
+./cmd/gcsim/*.gz
+./cmd/gcsim/*.json

@@ -142,7 +142,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 				return
 			}
 			count++
-			c.AddEnergy(2)
+			c.AddEnergy("lisa-c1", 2)
 		}
 	}
 

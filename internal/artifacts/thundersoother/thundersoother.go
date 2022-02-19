@@ -10,7 +10,7 @@ func init() {
 
 func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
-		s.Log.Warnw("thundersoother 2 pc not implemented", "event", core.LogArtifactEvent, "char", c.CharIndex(), "frame", s.F)
+		s.Log.NewEvent("thundersoother 2 pc not implemented", core.LogArtifactEvent, c.CharIndex(), "frame", s.F)
 	}
 	if count >= 4 {
 		c.AddPreDamageMod(core.PreDamageMod{

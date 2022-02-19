@@ -50,7 +50,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 		atk := snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]
 
-		c.Log.Debugw("acquila heal triggered", "frame", c.F, "event", core.LogWeaponEvent, "atk", atk, "heal amount", atk*heal)
+		c.Log.NewEvent("acquila heal triggered", core.LogWeaponEvent, char.CharIndex(), "atk", atk, "heal amount", atk*heal)
 		c.Health.HealActive(char.CharIndex(), atk*heal)
 		return false
 	}, fmt.Sprintf("aquila-%v", char.Name()))

@@ -34,7 +34,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				return false
 			}
 			dur = s.F + 600
-			s.Log.Debugw("maiden 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "char", c.CharIndex(), "expiry", dur)
+			s.Log.NewEvent("maiden 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", dur)
 			return false
 		}, fmt.Sprintf("maid 4pc - %v", c.Name()))
 

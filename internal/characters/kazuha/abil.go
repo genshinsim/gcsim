@@ -2,6 +2,7 @@ package kazuha
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -294,11 +295,10 @@ func (c *char) absorbCheckA2(src, count, max int) func() {
 		c.a2Ele = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
 
 		if c.a2Ele != core.NoElement {
-			c.Core.Log.Debugw(
-				"kazuha a2 infused "+c.a2Ele.String(),
-				"frame", c.Core.F,
-				"event", core.LogCharacterEvent,
-				"char", c.Index,
+			c.Core.Log.NewEventBuildMsg(
+				core.LogCharacterEvent,
+				c.Index,
+				"kazuha a2 infused ", c.a2Ele.String(),
 			)
 			return
 		}

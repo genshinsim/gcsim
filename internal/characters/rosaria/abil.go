@@ -87,7 +87,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 				return val, true
 			},
 		})
-		c.Core.Log.Debugw("Rosaria A1 activation", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+300)
+		c.Core.Log.NewEvent("Rosaria A1 activation", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+300)
 	}
 
 	// Rosaria E is dynamic, so requires a second snapshot
@@ -184,7 +184,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	val := make([]float64, core.EndStatType)
 	val[core.CR] = crit_share
-	c.Core.Log.Debugw("Rosaria A4 activation", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+600, "crit_share", crit_share)
+	c.Core.Log.NewEvent("Rosaria A4 activation", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+600, "crit_share", crit_share)
 
 	for i, char := range c.Core.Chars {
 		// skip Rosaria

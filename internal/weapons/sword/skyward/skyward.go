@@ -19,7 +19,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 		dur = c.F + 720
-		c.Log.Debugw("Skyward Blade activated", "frame", c.F, "event", core.LogWeaponEvent, "expiring ", dur)
+		c.Log.NewEvent("Skyward Blade activated", core.LogWeaponEvent, char.CharIndex(), "expiring ", dur)
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
 

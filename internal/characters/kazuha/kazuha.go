@@ -1,7 +1,7 @@
 package kazuha
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -49,7 +49,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -101,7 +101,7 @@ func (c *char) a4() {
 			//recalc em
 			em := c.Stat(core.EM)
 			val[ele] = 0.0004 * em
-			c.Core.Log.Debugw("kazuah a4 proc", "frame", c.Core.F, "event", core.LogCharacterEvent, "reaction", ele.String(), "char", c.CharIndex())
+			c.Core.Log.NewEvent("kazuah a4 proc", core.LogCharacterEvent, c.Index, "reaction", ele.String(), "char", c.CharIndex())
 
 			return false
 		}
@@ -137,7 +137,7 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	//add 0.2% dmg for every EM
 	ds.Stats[core.DmgP] += 0.002 * ds.Stats[core.EM]
 
-	c.Core.Log.Debugw("c6 adding dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "em", ds.Stats[core.EM], "final", ds.Stats[core.DmgP])
+	c.Core.Log.NewEvent("c6 adding dmg", core.LogCharacterEvent, c.Index, "em", ds.Stats[core.EM], "final", ds.Stats[core.DmgP])
 
 	return ds
 }

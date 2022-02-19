@@ -1,7 +1,7 @@
 package kokomi
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -116,7 +116,7 @@ func (c *char) burstActiveHook() {
 		// While donning the Ceremonial Garment created by Nereid's Ascension, Sangonomiya Kokomi's Normal Attack SPD is increased by 10%, and Normal Attacks that hit opponents will restore 0.8 Energy for her. This effect can occur once every 0.2s.
 		if c.Base.Cons >= 4 {
 			if c.c4ICDExpiry <= c.Core.F {
-				c.AddEnergy(0.8)
+				c.AddEnergy("kokomi-c4", 0.8)
 				c.c4ICDExpiry = c.Core.F + 12
 			}
 		}
@@ -164,7 +164,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

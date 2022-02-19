@@ -1,9 +1,9 @@
 package xiangling
 
 import (
+	"github.com/genshinsim/gcsim/internal/reactable"
+	"github.com/genshinsim/gcsim/internal/tmpl/target"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/target"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type panda struct {
@@ -22,7 +22,7 @@ func newGuoba(c *core.Core) *panda {
 	return p
 }
 
-func (p *panda) Attack(atk *core.AttackEvent) (float64, bool) {
+func (p *panda) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
 	//don't take damage, trigger swirl reaction only on sucrose E
 	if p.Core.Chars[atk.Info.ActorIndex].Key() != core.Sucrose {
 		return 0, false

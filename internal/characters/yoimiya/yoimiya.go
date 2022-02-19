@@ -1,7 +1,7 @@
 package yoimiya
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -93,7 +93,7 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 		ai.Element = core.Pyro
 		// ds.ICDTag = core.ICDTagNone
 		//multiplier
-		c.Core.Log.Debugw("skill mult applied", "frame", c.Core.F, "event", core.LogCharacterEvent, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
+		c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
 	}
 	return ds
