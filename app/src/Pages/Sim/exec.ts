@@ -32,6 +32,8 @@ export function runSim(cfg: string): AppThunk {
     let debug: string;
     let avg = 0;
     let results: Result[] = [];
+    let v: string;
+    let bt: string;
     //extract the number of iterations from the config file
     const iters = extractItersFromConfig(cfg);
 
@@ -154,6 +156,16 @@ export function runSim(cfg: string): AppThunk {
         });
       });
 
+    const version = () => new Promise<null>((resolve, reject) => {
+      const versionCB = (val: any) => {
+        const res = JSON.parse(val);
+        v = res.hash
+        bt = res.date
+        resolve(null)
+      }
+      pool.queue({ cmd: "version", cb: versionCB });
+    })
+
     //run the sim
     dispatch(
       simActions.setRunStats({
@@ -167,7 +179,7 @@ export function runSim(cfg: string): AppThunk {
     setConfig()
       .then(() => {
         console.log("configs done");
-        return Promise.all([debugRun(), sims()]);
+        return Promise.all([debugRun(), sims(), version()]);
       })
       .then(() => {
         console.log("all iters done, collecting results");
@@ -190,6 +202,8 @@ export function runSim(cfg: string): AppThunk {
         summary.debug = debug;
         summary.v2 = true;
         summary.runtime = end - startTime;
+        summary.version = v;
+        summary.build_date = bt;
 
         console.timeEnd("aggregate results");
         //summary can now be passed to viewer

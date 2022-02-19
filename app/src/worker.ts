@@ -17,6 +17,7 @@ declare function sim(): string;
 declare function debug(): string;
 declare function collect(data: string): string;
 declare function setcfg(content: string): string;
+declare function version(): string;
 
 let inst: WebAssembly.Instance;
 WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject)
@@ -46,6 +47,10 @@ onmessage = async (ev) => {
       const d = debug();
       // console.log("debug run done");
       postMessage(d);
+      break;
+    case "version":
+      const v = version();
+      postMessage(v);
       break;
     case "cfg":
       const ok = setcfg(ev.data.payload);

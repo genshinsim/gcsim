@@ -1,5 +1,7 @@
 export interface ResultsSummary {
   v2?: boolean;
+  version?: string;
+  build_date?: string;
   is_damage_mode: boolean;
   active_char: string;
   char_names: string[];

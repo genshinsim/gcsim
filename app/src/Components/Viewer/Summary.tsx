@@ -85,7 +85,21 @@ export default function Summary({ data }: { data: SimResults }) {
             maximumFractionDigits: 2,
           })}{" "}
           sec of combat ({data.iter} iterations took{" "}
-          {(data.runtime / 1000000000).toFixed(3)} seconds to run)
+          {(data.runtime / 1000000000).toFixed(3)} seconds to run).
+          <br />
+          Build version:{" "}
+          {data.version ? (
+            <a
+              href={
+                "https://github.com/genshinsim/gcsim/commit/" + data.version
+              }
+            >
+              {data.version.substring(0, 8)}
+            </a>
+          ) : (
+            "unknown"
+          )}
+          , built on: {data.build_date ? data.build_date : "unknown"}
         </div>
         <div className=" pl-4 pt-2 flex flex-row place-content-center">
           <div className="max-w-4xl w-full flex flex-col gap-1">
