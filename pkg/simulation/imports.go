@@ -73,6 +73,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/alley"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/amos"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/blackcliff"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/compound"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/elegy"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/hamayumi"
