@@ -1,8 +1,5 @@
 name: "build"
 on:
-  push:
-    branches:
-      - main
   repository_dispatch:
     types: [backend_automation]
 
