@@ -71,6 +71,13 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		c.Tags["e"] = 0
 		// c.CD[def.SkillCD] = c.eStartFrame + 100
 		c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
+
+		// TODO: Particle timing?
+		if c.Core.Rand.Float64() < .5 {
+			c.QueueParticle("keqing", 2, core.Electro, 100)
+		} else {
+			c.QueueParticle("keqing", 3, core.Electro, 100)
+		}
 	}
 
 	if c.Base.Cons == 6 {
@@ -171,6 +178,13 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 		}
 	}
 
+	// TODO: Particle timing?
+	if c.Core.Rand.Float64() < .5 {
+		c.QueueParticle("keqing", 2, core.Electro, 100)
+	} else {
+		c.QueueParticle("keqing", 3, core.Electro, 100)
+	}
+
 	//place on cooldown
 	c.Tags["e"] = 0
 	c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
@@ -196,7 +210,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//initial
 	ai := core.AttackInfo{
-		Abil:       "Starward Sword (Initial)",
+		Abil:       "Starward Sword (Cast)",
 		ActorIndex: c.Index,
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagElementalBurst,
@@ -209,7 +223,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 70, 70)
 	//8 hits
 
-	ai.Abil = "Starward Sword (Tick)"
+	ai.Abil = "Starward Sword (Consecutive Slash)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	for i := 70; i < 170; i += 13 {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), i, i)
@@ -217,7 +231,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//final
 
-	ai.Abil = "Starward Sword (Tick)"
+	ai.Abil = "Starward Sword (Last Attack)"
 	ai.Mult = burstFinal[c.TalentLvlBurst()]
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 211, 211)
 

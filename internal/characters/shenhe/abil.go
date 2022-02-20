@@ -92,7 +92,8 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus(quillKey, 10*60)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
-	c.QueueParticle("shenhe", 3, core.Cryo, f+20)
+	// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
+	c.QueueParticle("shenhe", 3, core.Cryo, 100)
 
 	return f, a
 }
@@ -117,7 +118,8 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus(quillKey, 15*60)
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
 
-	c.QueueParticle("shenhe", 4, core.Cryo, f+40)
+	// Particle spawn timing is a bit later than press E
+	c.QueueParticle("shenhe", 4, core.Cryo, 115)
 
 	return f, a
 }
@@ -142,21 +144,46 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//duration is 12 second (extended by c2 by 6s)
 	dur := 12 * 60
-	count := 5
+	count := 6
 	if c.Base.Cons >= 2 {
 		dur += 6 * 60
-		count = 6
+		count += 3
+
+		// Active characters within the skill's field deals 15% increased Cryo CRIT DMG.
+		// TODO: Exact mechanics of how this works is unknown. Not sure if it works like Gorou E/Bennett Q
+		// For now, assume that it operates like Kazuha C2, and extends for 2s after burst ends like the res shred
+		val := make([]float64, core.EndStatType)
+		val[core.CD] = 0.15
+		for _, char := range c.Core.Chars {
+			this := char
+			char.AddPreDamageMod(core.PreDamageMod{
+				Key:    "shenhe-c2",
+				Expiry: c.Core.F + dur + 2*60,
+				Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
+					if ae.Info.Element != core.Cryo {
+						return nil, false
+					}
+
+					switch this.CharIndex() {
+					case c.Core.ActiveChar, c.CharIndex():
+						return val, true
+					}
+					return nil, false
+				},
+			})
+		}
 	}
+	// Res shred persists for 2 seconds after burst ends
 	cb := func(a core.AttackCB) {
 		a.Target.AddResMod("Shenhe Burst Shred (Cryo)", core.ResistMod{
-			Duration: dur,
+			Duration: dur + 2*60,
 			Ele:      core.Cryo,
 			Value:    -burstrespp[c.TalentLvlBurst()],
 		})
 	}
 	cb2 := func(a core.AttackCB) {
 		a.Target.AddResMod("Shenhe Burst Shred (Phys)", core.ResistMod{
-			Duration: dur,
+			Duration: dur + 2*60,
 			Ele:      core.Physical,
 			Value:    -burstrespp[c.TalentLvlBurst()],
 		})

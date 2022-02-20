@@ -75,6 +75,9 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	mainstatValues[core.HPP] = 0.466
 	mainstatValues[core.DEFP] = 0.583
 
+	// Each optimizer run should not be saving anything out for the GZIP
+	simopt.GZIPResult = false
+
 	// Start logger
 	zapcfg := zap.NewDevelopmentConfig()
 	zapcfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
