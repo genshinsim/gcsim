@@ -97,7 +97,7 @@ export default function Share(props: ShareProps) {
               <div>
                 Upload ok. View results at:
                 <div>
-                  <pre>{`https://beta.gcsim.app/viewer/share/${url}`}</pre>
+                  <pre>{`https://gcsim.app/viewer/share/${url}`}</pre>
                 </div>
               </div>
             ) : null
@@ -111,7 +111,7 @@ export default function Share(props: ShareProps) {
               intent="none"
               onClick={() => {
                 navigator.clipboard
-                  .writeText(`https://beta.gcsim.app/viewer/share/${url}`)
+                  .writeText(`https://gcsim.app/viewer/share/${url}`)
                   .then(
                     () => {
                       alert("URL copied ok");
