@@ -59,21 +59,9 @@ type ViewProps = {
 function ViewOnly(props: ViewProps) {
   const [tabID, setTabID] = React.useState<string>("result");
   const [optOpen, setOptOpen] = React.useState<boolean>(false);
-  const [shareOpen, setShareOpen] = React.useState<boolean>(false);
 
   const handleTabChange = (next: string) => {
-    if (next === "share") {
-      setShareOpen(true);
-    }
     setTabID(next);
-  };
-
-  const shareProps: ShareProps = {
-    isOpen: shareOpen,
-    handleClose: () => {
-      setShareOpen(false);
-    },
-    data: props.data,
   };
 
   const optProps: OptionsProp = {
@@ -135,6 +123,7 @@ function ViewOnly(props: ViewProps) {
               <Debugger data={props.parsed} team={props.data.char_names} />
             ),
             details: <Details data={props.data} />,
+            share: <Share data={props.data} />,
           }[tabID]
         }
       </div>
@@ -153,7 +142,6 @@ function ViewOnly(props: ViewProps) {
       ) : null}
 
       <Options {...optProps} />
-      <Share {...shareProps} />
     </div>
   );
 }

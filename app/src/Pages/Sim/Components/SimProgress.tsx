@@ -61,7 +61,7 @@ export function SimProgress(props: Props) {
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
             <Button
               onClick={() => setLocation("/viewer")}
-              disabled={!done}
+              disabled={!done || run.err !== ""}
               intent="success"
             >
               See Results in Viewer
