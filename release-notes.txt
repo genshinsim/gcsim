@@ -1,0 +1,545 @@
+0.5.0  - Feb 20, 2022
+---------------------
+
+- Desktop app officially retired in favour of webapp (https://gcsim.app)
+- Hakushin Ring added
+- Wine and Song added
+- Compound Bow added
+- Logging framework refactor completed
+- Bug fixes:
+    * Various Yae fixes (too many to list)
+    * Fixes #252 - Add NA counter to abil name for missing chars
+    * Fixes #251 - Snow Tombed Starsilver did not proc due to ICD check
+    * Fixes #250 - Sara A4 energy gen calc was wrong
+    * Fixes #245 - Childe ranged burst did not properly apply riptide
+    * Fixes Kazuha C2 duration
+    * Change instances of c.Stats[] to c.Stat() in char code to use mods
+    * Offset Xiao plunging hits from main plunge attack
+    * Implement Kazuha CA #224
+    * Fix Beidou C6 #240
+    * Make Kokomi A4 dynamic
+    * Add travel time to Ganyu bloom #242
+    * Fix NA/CA/Plunge snapshot timing
+    * emc skill: fix particle element
+    * gmc: a2 damage should count as normal attack dmg
+    * raiden: fix polearm CA tags
+    * skyward/prototype: change PostBurst to PreBurst
+    * Fix Kokomi skill snapshot
+    * Change order of NA/CA callbacks to fix #246
+    * Fix Pale Flame stacks
+    * Add source string to AddEnergy
+    * Add char to fav procs; amend apl particle wait for compatibility
+    * Add energy detail log tracking
+    * Fix flags not getting parsed in cmd and substat optimizer parse bug
+    * Fixes #272 and #273 - Fixes Shenhe particle timing and burst
+        - Burst ticks were incorrectly coded
+        - C2 was not implemented correctly
+        - Burst res shred duration was wrong
+    * Fixes #235 - Generated crystallize shields were always electro
+    * Fixes #284 and #285 - Add particles to Keqing E; fix Keqing Q name
+    * Fixes #286 - Substat optimizer should ignore gzip setting
+    * Fixes #288 - Updates log for energy add, random normals, and status
+        - Energy add now have a fuller set of stats
+        - Random energy on normal logs moved to sim log
+        - Status log messages aligned with mod messages
+
+
+0.4.37 - Feb 08, 2022
+---------------------
+
+- Fixed Zhongli Stele not snapshotting
+- Fixed Zhongli Stele max count incorrectly capped at 1
+- Fixed Xiao snapshot timing
+- Fixed Yunjin perfect counter. Changed to skill[perfect=1]
+- Fixed Kazuha c2 not applied to self when off-field
+
+
+0.4.36 - Feb 06, 2022
+---------------------
+
+- Fixes pale flame 2 pc set typo
+- Fixes Bennett burst frame timing and A4 activation method
+- Fixes Gorou C6 incorrectly snapshotting
+- Add max energy in energy log
+- Add Eula skill hold check for tenacity and pale flame
+- Fixed Eula burst timing
+- Fixed Skyward Pride proc count
+- Added Calamity Queller
+- Fix Polar Star
+- Fix Mistsplitter burst bug
+- Add Moonglow
+
+
+0.4.35 - Feb 01, 2022
+---------------------
+
+- Fix Aloy coil stacks issue
+- Fix Xingqiu infinite burst
+- Fix Venti Q frames
+- Fix Kokomi not adding in heal bonus
+- Add ability to set Geo Traveller burst construct count for Zhongli
+- Fix Keqing C4 and weapon attack tag checks
+- Add Polar Star
+
+0.4.34 - Jan 27, 2022
+---------------------
+
+- Overall debug improvements, moving things into consistent categories (#201)
+- A lot of bugfixes. Below list the ones that have been resolved:
+  - Bennett Q did not work properly at C0
+  - Lisa C1 was activating on her CA and not her hold E
+  - Windblume Ode did not have an onfield check
+  - Ganyu E explosion particle timing was wrong
+  - Kaeya CA was coded as being an NA tag
+  - Geo Traveller had an 80 cost burst instead of 60
+  - Geo Traveller energy refund did not work if cast at frame 0
+  - Hydro swirl was doing AoE damage
+  - Jean NA was snapshotting incorrectly
+  - Jean CA was not implemented
+  - Keqing Q was coded as snapshotted, not dynamic
+
+0.4.33 - Jan 24, 2022
+---------------------
+
+- Fix substat optimizer typo
+- Fix Amber Attack Tag, ICD Tag, and ICD Group
+- Fix Eula grimheart stacks not adding
+- Fix Fischl snapshot frames to account for on damage proc timing
+- Fix Freedom Sworn - ATK did not snapshot, dmg% buff did not reset
+
+0.4.32 - Jan 24, 2022
+---------------------
+
+- Implement substat optimization in cmd line
+- Fix Primordial Jade Winged-Spear stacks
+- Fix Guoba snapshot timing
+- Fix Kazuha plunge not shattering
+- Fix Chongyun infuse field timing
+- Fix swirl damage ICD so an enemy can be affected by more than 2 damage instances
+- Fix VV not proccing on AoE targets appropriately
+
+0.4.31 - Jan 22, 2022
+---------------------
+
+- Fix Rosaria burst using wrong multiplier
+- Fix Diona burst framess
+
+0.4.30 - Jan 21, 2022
+---------------------
+
+- Fix Albedo burst CD
+- Fix Barbara E scaling
+
+0.4.29 - Jan 20, 2022
+---------------------
+
+- Fix burst CD start to match energy consumption
+- Fix Ayaka ICD on NA and Dash
+
+0.4.28 - Jan 18, 2022
+---------------------
+
+- Fix Chongyun Q frames
+
+0.4.27 - Jan 15, 2022
+---------------------
+
+- Minor bug fixes
+
+0.4.26 - Jan 11, 2022
+---------------------
+
+- Bug fixes for Ningguang, prototype amber, and elegy
+- Disable debug mode option; always use debug mode
+- Fix missing images
+
+0.4.25 - Jan 11, 2022
+---------------------
+
+- Logging cleanup
+
+0.4.24 - Jan 08, 2022
+---------------------
+
+- Fixed Solar Pearl, Alley Hunter, Lost Prayer, Lisa bugs
+
+0.4.23 - Jan 08, 2022
+---------------------
+
+- Fixed Ganyu Q bug
+
+0.4.22 - Jan 08, 2022
+---------------------
+
+- Fixed output file name
+
+0.4.21 - Jan 08, 2022
+---------------------
+
+- Disable workflow cache
+
+0.4.20 - Jan 07, 2022
+---------------------
+
+- Shenhe ICD fix
+- Yunjin particles adjustment
+- Added share button
+
+
+0.4.19 - Jan 07, 2022
+---------------------
+
+- Actually fix shatter this time.. (forgot to merge bugfix)
+
+0.4.18 - Jan 07, 2022
+---------------------
+
+- Fix shatter bug
+- Enable mods by default in debug view
+
+0.4.17 - Jan 07, 2022
+---------------------
+
+- Forgot to enable Yunjin...
+
+0.4.16 - Jan 06, 2022
+---------------------
+
+- Fix Shenhe NO4 snapshotting
+- Fix Kazuha frames
+- Fix shields not overwriting properly
+
+0.4.15 - Jan 06, 2022
+---------------------
+
+- Actually fix Shenhe cooldown this time...
+- Additional bug fixes for Noelle,  Hutao, Bennett, Yoimiya
+
+
+0.4.14 - Jan 05, 2022
+---------------------
+
+- Fix Shenhe skill cd
+
+
+0.4.13 - Jan 05, 2022
+---------------------
+
+- Add Shenhe
+- Fixed various Zhongli bugs
+- Change +try to either +try=drop or +try=wait
+
+0.4.12 - Jan 02, 2022
+---------------------
+
+- Various bug fixes
+
+0.4.11 - Jan 02, 2022
+---------------------
+
+- Fixed bug introduced in 0.4.10
+
+0.4.10 - Jan 02, 2022
+---------------------
+
+- Fixed Kazuha burst timing
+- Fixed Beidou ascension stat
+- Fixed debug output for reaction into freeze/ec
+
+0.4.9 - Jan 02, 2022
+--------------------
+
+- Added guoba swirl
+- Fixed Noelle and HT snapshots
+- Some backend clean up
+- Enabled Gorou
+
+0.4.8 - Dec 31, 2021
+--------------------
+
+- Fix limit/reset_limit commands not work
+
+0.4.7 - Dec 31, 2021
+--------------------
+
+- Add restart command to calc mode
+- Various bug fixes
+
+0.4.6 - Dec 31, 2021
+--------------------
+
+- Add Bennett Q self-infusion
+
+0.4.5 - Dec 31, 2021
+--------------------
+
+- Revert changes made in 0.4.4
+
+0.4.4 - Dec 30, 2021
+--------------------
+
+- Simplified calc mode shorthand to remove commas
+
+0.4.3 - Dec 30, 2021
+--------------------
+
+- Allow shorthand in calc mode (ui only)
+
+0.4.2 - Dec 30, 2021
+--------------------
+
+- Syntax bug fixes
+
+0.4.1 - Dec 30, 2021
+--------------------
+
+- Fixed ICD group bug
+
+0.4.0 - Dec 29, 2021
+--------------------
+
+- THIS RELEASE CONTAINS BREAKING CHANGES!!!
+  - The entire action list syntax has been redesigned to be simpler.
+  - All action lists on https://www.gcsim.app have been updated to this new format. Please check for example
+  - Documentation will be added shortly to the wiki
+
+Because this is a very significant change, as always please get in touch (Discord preferred) if you run into any issues
+
+0.3.6 - Dec 28, 2021
+--------------------
+
+- Fixed Riaden E restoring energy
+
+
+0.3.5 - Dec 28, 2021
+--------------------
+
+- Fixed EC ticks critting
+
+0.3.4 - Dec 26, 2021
+--------------------
+
+- Fixed Mona Q cost incorrectly set to 80
+
+0.3.3 - Dec 25, 2021
+--------------------
+
+- More bug fixes as a Christmas present
+
+0.3.2 - Dec 24, 2021
+--------------------
+
+- Fix reaction damage benefiting incorrectly from dynamic mods
+
+0.3.1 - Dec 24, 2021
+--------------------
+
+- Various bug fixes (freeze, calc mode, Mona not activated)
+
+0.3.0 - Dec 24, 2021
+--------------------
+
+- Added Mona
+- Geo MC and Gorou have been added as well but are not yet currently enabled due to issues with the UI
+- The entire targetting and reaction system have been rewritten. You'll notice the
+  following:
+  - There is always a target 0 that takes no damage. This is to represent the player
+  - Debug will contain a whole bunch of skipped messages. This is because targeting is
+    now based on a 2D hitbox system.
+If you notice any issues with sim results compared to previous builds, please drop an issue in GitHub
+
+
+0.2.27 - Dec 5, 2021
+--------------------
+
+- Would help if I remember to enable Qiqi in UI...
+
+0.2.26 - Dec 5, 2021
+--------------------
+
+- Qiqi added thanks to Tsym#2586; See https://github.com/genshinsim/gcsim/pull/79
+- Clam, Cinnabar and Husk added added
+- Fixed various bugs
+
+0.2.25 - Nov 27, 2021
+---------------------
+
+- Update genshin-db to latest version
+- Added a couple generic weapons with no effects
+- Added images for new artifacts
+- Fix artifact name showing up incorrectly in edit screen
+
+0.2.24 - Nov 25, 2021
+---------------------
+
+- Added ability to export full config to file
+- Fixed Fischl C6 bug
+
+0.2.23 - Nov 24, 2021
+---------------------
+
+- Fix UI bug where it is adding way too much CR/CD
+- Various bug fixes; see https://github.com/genshinsim/gcsim/pull/73
+
+0.2.22 - Nov 23, 2021
+---------------------
+
+- Fix a bug where debug is not hiding the right items
+
+0.2.21 - Nov 23, 2021
+---------------------
+
+- Revert back to genshin-db@3.11.2; Newest version seems to crash
+
+0.2.20 - Nov 23, 2021
+---------------------
+
+- Added calc mode (documentation needs to be added still)
+- Fixed Aloy not enabled (forgot again...)
+
+
+0.2.19 - Nov 22, 2021
+---------------------
+
+- Aloy added thanks to Tsym#2586; See https://github.com/genshinsim/gcsim/pull/71
+- Added ability to save and load teams to JSON files in UI
+
+0.2.18 - Nov 22, 2021
+---------------------
+
+- Tartaglia added thanks to vigne#5943 and Tsym#2586; See https://github.com/genshinsim/gcsim/pull/43
+
+
+0.2.17 - Nov 20, 2021
+---------------------
+
+- Forgot to actually enable Kokomi and Yanfei in UI....
+
+0.2.16 - Nov 20, 2021
+---------------------
+
+- Added Yanfei (thanks to Tsym#2586); See https://github.com/genshinsim/gcsim/pull/70
+- Added Kokomi (thanks to Tsym#2586); See https://github.com/genshinsim/gcsim/pull/68
+- Fixed a bug with Albedo E construct refreshing
+- Added tags/status for Bennett buff and Xiao E stacks
+- Fixed debug to lazy load/render; Should be faster now
+- Added better queue debug msgs
+
+0.2.15 - Nov 15, 2021
+---------------------
+
+- Various bug fixes from; See https://github.com/genshinsim/gcsim/pull/66
+
+
+0.2.14 - Nov 8, 2021
+---------------------
+
+- Rebrand app name
+
+
+0.2.13 - Nov 5, 2021
+---------------------
+
+- Various bug fixes:
+  - Fix Zhongli Q multiplier
+  - Fix Ningguang C2 reset at start
+  - Fix Ningguang skill multiplier incorrect
+  - Fix Prototype Archaic not activating properly
+  - Fix Fischl Oz number of hits
+  - Add Sea-Lord and Nagamasa
+
+0.2.12 - Nov 4, 2021
+---------------------
+
+- Various bug fixes:
+  - Archaic petra
+  - Diluc infusion timing/snapshot timing
+  - Fischl A4
+  - Kitain buffing wrong thing
+
+0.2.11 - Nov 4, 2021
+---------------------
+
+- Fixed Ningguang charge attack
+
+
+0.2.10 - Nov 4, 2021
+---------------------
+
+- Fixed an issue with rand not properly seeded and a bug introduced in 0.2.9
+
+0.2.9
+-----
+
+- Fixed weapons that add elemental damage incorrectly also adding to all damage:
+  - Mappa
+  - Skyward Atlas
+  - Kitain Cross
+  - Mistsplitter
+  - Widsith
+  - Lost Prayer
+
+0.2.8
+-----
+
+- Add VirusTotal scan to releases.
+
+0.2.7
+-----
+
+- Fixed Sara C6, Xingqiu orbital, VH procs, and other minor bugs (https://github.com/genshinsim/gcsim/pull/48)
+
+0.2.6
+-----
+
+- Fixed a bug where UI was running every simulation with R1 weapon only.
+
+0.2.5
+-----
+
+- Add new weapons:
+    Wavebreaker's Fin
+    Akuoumaru
+    Mouun's Moon
+
+0.2.4
+-----
+
+- Fixed a bug introduced in Raiden's C2 shred
+
+0.2.3
+-----
+
+- Fixed Raiden's c2 and cleaned up Sucrose A2 log (https://github.com/genshinsim/gcsim/commit/780753b29d8d8905a6cb587e2297e2a9972d07db)
+
+
+0.2.2
+-----
+
+- Merged PR#32. Fix Raiden/Xingqiu/Bennett snapshot timing
+
+
+0.2.1
+-----
+
+- Fixed Primordial Jade Cutter bug where it was incorrectly adding atk% instead of flat atk
+
+0.2.0
+-----
+
+- By default, sim will now use team from the team builder. This can be turned off in the options (advanced users).
+  The team config screen has been removed to reflect this.
+- Graphs have been added to results
+- Name changed to gcsim to reflect new website
+
+
+0.1.4
+-----
+
+- Updated app to include all image assets
+
+
+0.1.3
+-----
+
+- Added auto updater

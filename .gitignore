@@ -22,3 +22,4 @@ internal/characters/replace.txt
 ./cmd/gcsim/tests
 ./cmd/gcsim/*.gz
 ./cmd/gcsim/*.json
+!release-notes.txt
