@@ -68,3 +68,6 @@ parcel-bundle-reports/
 .parcel-cache/
 
 .DS_Store
+
+# build related
+temp/

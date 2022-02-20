@@ -85,7 +85,12 @@ export function Dash() {
         </DashCard>
 
         <DashCard
-          onClick={() => window.open("https://docs.gcsim.app", "_blank")}
+          onClick={() =>
+            window.open(
+              "https://github.com/genshinsim/gcsim#Contributing",
+              "_blank"
+            )
+          }
         >
           <span className="font-bold text-xl">
             <Icon icon="git-branch" className="mr-2" size={25} />
