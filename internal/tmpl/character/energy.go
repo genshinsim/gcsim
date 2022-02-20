@@ -43,7 +43,12 @@ func (c *Tmpl) AddEnergy(src string, e float64) {
 	}
 
 	c.Core.Events.Emit(core.OnEnergyChange, c, preEnergy, e, src)
-	c.Core.Log.NewEvent("adding energy", core.LogEnergyEvent, c.Index, "rec'd", e, "next energy", c.Energy, "char", c.Index, "src", src)
+	c.Core.Log.NewEvent("adding energy", core.LogEnergyEvent, c.Index,
+		"rec'd", e,
+		"post_recovery", c.Energy,
+		"source", src,
+		"max_energy", c.EnergyMax,
+	)
 }
 
 func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
