@@ -25,7 +25,7 @@ jobs:
         run: ls
       - run: |
           # make file runnable, might not be necessary
-          chmod +x "${GITHUB_WORKSPACE}/scripts/script.sh"
+          chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
 
           # run the script
           "${GITHUB_WORKSPACE}/scripts/build.sh"
