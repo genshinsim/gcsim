@@ -5,6 +5,7 @@ import { Dash } from "/src/Pages/Dash";
 import { Simple, Advanced } from "/src/Pages/Sim";
 import { SimWrapper } from "./Pages/Sim/SimWrapper";
 import { ViewerDash } from "./Pages/ViewerDashboard";
+import { DB } from "./Pages/DB";
 
 export default function App() {
   return (
@@ -27,6 +28,9 @@ export default function App() {
         </Route>
         <Route path="/viewer">
           <ViewerDash path="/" />
+        </Route>
+        <Route path="/db">
+          <DB />
         </Route>
         <Route>
           <div className="m-2 text-center">

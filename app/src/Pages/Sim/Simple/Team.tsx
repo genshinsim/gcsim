@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "~src/store";
 import { RootState } from "~src/store";
 import { simActions } from "~src/Pages/Sim/simSlice";
 import { CharacterEdit } from "./CharacterEdit";
+import { VideoPlayer } from "../Components";
 
 export function Team() {
   const { team, edit_index, showTips } = useAppSelector((state: RootState) => {
@@ -22,6 +23,7 @@ export function Team() {
   });
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState<boolean>(false);
+  const [openAddCharHelp, setOpenAddCharHelp] = React.useState<boolean>(false);
   const myRef = React.useRef<HTMLSpanElement>(null);
   React.useEffect(() => {
     if (edit_index > -1) {
@@ -92,8 +94,11 @@ export function Team() {
       {showTips ? (
         <div className="pl-2 pr-2">
           <Callout intent={Intent.PRIMARY} className="flex flex-col">
-            Get started by adding characters in to your team.
-            <br />
+            <span>
+              Get started by adding characters in to your team. Check out this{" "}
+              <a onClick={() => setOpenAddCharHelp(true)}>video</a> to get
+              started.
+            </span>
             <div className="ml-auto">
               <Button small onClick={hideTips}>
                 Hide all tips
@@ -141,6 +146,12 @@ export function Team() {
         onClose={() => setOpen(false)}
         onSelect={handleAddCharacter}
         isOpen={open}
+      />
+      <VideoPlayer
+        url="/videos/add-character.webm"
+        isOpen={openAddCharHelp}
+        onClose={() => setOpenAddCharHelp(false)}
+        title="Adding a character"
       />
     </div>
   );

@@ -83,8 +83,25 @@ export function Simple() {
         {showTips ? (
           <div className="pl-2 pr-2 pt-2">
             <Callout intent={Intent.PRIMARY} className="flex flex-col">
-              Enter action list here. For more detailed on action list, see ??
-              <br />
+              <p>
+                Enter the action list you wish to use in the textbox below. We
+                have a vast collection of user submitted action lists on our{" "}
+                <a href="https://discord.gg/W36ZwwhEaG" target="_blank">
+                  Discord
+                </a>{" "}
+                if you need some ideas.
+              </p>
+              <p>
+                Alternatively, check out our{" "}
+                <a
+                  href="https://docs.gcsim.app/tutorial/calc-mode"
+                  target="_blank"
+                >
+                  documentation
+                </a>{" "}
+                which includes a simple tutorial on how to write sequential
+                lists (previously known as calc mode)
+              </p>
               <div className="ml-auto">
                 <Button small onClick={toggleTips}>
                   Hide all tips
