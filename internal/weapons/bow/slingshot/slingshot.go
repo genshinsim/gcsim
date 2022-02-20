@@ -17,7 +17,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m := make([]float64, core.EndStatType)
 
 	incrDmg := .3 + float64(r)*0.06
-	decrDmg := -0.02
+	decrDmg := -0.10
 	passiveThresholdF := 18 // 0.3s
 	travel := 0
 
