@@ -20,6 +20,7 @@ function extractItersFromConfig(cfg: string): number {
   } else {
     console.log(cfg);
     console.warn("iter regex failed");
+    iters = 1000;
   }
   //   console.log("parsed iters: " + iters);
 
@@ -201,9 +202,10 @@ export function runSim(cfg: string): AppThunk {
         //add debug to the summary
         summary.debug = debug;
         summary.v2 = true;
-        summary.runtime = end - startTime;
+        summary.runtime = 1000000 * (end - startTime); //because cmd line outputs in nanoseconds
         summary.version = v;
         summary.build_date = bt;
+        summary.iter = iters;
 
         console.timeEnd("aggregate results");
         //summary can now be passed to viewer
