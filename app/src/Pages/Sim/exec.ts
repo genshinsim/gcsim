@@ -60,7 +60,7 @@ export function runSim(cfg: string): AppThunk {
           const res = JSON.parse(val);
           console.timeEnd("debug");
           if (res.err) {
-            reject(res);
+            reject(res.err);
             return;
           }
           //it's a string otherwise
@@ -89,7 +89,7 @@ export function runSim(cfg: string): AppThunk {
           //stop if we hit an error
           if (res && res.err) {
             console.timeEnd("sim");
-            reject(res);
+            reject(res.err);
             return;
           }
           results.push(res);
@@ -148,7 +148,7 @@ export function runSim(cfg: string): AppThunk {
             const res = JSON.parse(val);
             
             if (res.err) {
-              reject(res);
+              reject(res.err);
             } else {
               // console.log(res);
               resolve(res);
@@ -216,15 +216,15 @@ export function runSim(cfg: string): AppThunk {
           })
         );
       })
-      .catch((res) => {
-        console.warn(res);
+      .catch((err) => {
+        console.warn(err);
         const end = window.performance.now();
         dispatch(
           simActions.setRunStats({
             progress: -1,
             result: 0,
             time: end - startTime,
-            err: res,
+            err: err,
           })
         );
       });
