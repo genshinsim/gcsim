@@ -73,12 +73,12 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, pattern core.AttackPattern) {
 		c.ResetActionCooldown(core.ActionSkill)
 		c.Core.Log.NewEvent("sky kitsune thunderbolt", core.LogCharacterEvent, c.Index, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
-	c.AddTask(func() {
-		//pop all?
-		for range c.kitsunes {
-			c.popOldestKitsune()
-		}
-	}, "delay despawn for kitsunes", 78)
+	// c.AddTask(func() {
+	// 	//pop all?
+	for range c.kitsunes {
+		c.popOldestKitsune()
+	}
+	// }, "delay despawn for kitsunes", 0)
 
 }
 
