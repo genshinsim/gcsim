@@ -10,7 +10,7 @@ import (
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -35,7 +35,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 func (c *char) Aimed(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
 
@@ -62,7 +62,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	f, a := c.ActionFrames(core.ActionSkill, p)
 

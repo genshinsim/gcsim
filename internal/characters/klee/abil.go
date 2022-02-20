@@ -11,7 +11,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	ai := core.AttackInfo{
@@ -49,7 +49,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	ai := core.AttackInfo{

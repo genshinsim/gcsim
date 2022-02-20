@@ -8,11 +8,11 @@ import (
 
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other bow characters
-// Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 20)
+// Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 10)
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -37,14 +37,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 // Aimed charge attack damage queue generator
 // Additionally handles crowfeather state, E skill damage, and A4
 // A4 effect is: When Tengu Juurai: Ambush hits opponents, Kujou Sara will restore 1.2 Energy to all party members for every 100% Energy Recharge she has. This effect can be triggered once every 3s.
-// Has two parameters, "travel", used to set the number of frames that the arrow is in the air (default = 20)
+// Has two parameters, "travel", used to set the number of frames that the arrow is in the air (default = 10)
 // weak_point, used to determine if an arrow is hitting a weak point (default = 1 for true)
 func (c *char) Aimed(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAim, p)
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
 
