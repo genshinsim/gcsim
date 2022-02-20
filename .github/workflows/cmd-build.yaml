@@ -1,0 +1,28 @@
+name: "build cmd line tool"
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - run: |
+          # make file runnable, might not be necessary
+          chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
+
+          # run the script
+          "${GITHUB_WORKSPACE}/scripts/build.sh"
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            release-notes.txt
+            LICENSE
+            gcsim.exe
