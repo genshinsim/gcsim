@@ -145,9 +145,9 @@ export function runSim(cfg: string): AppThunk {
           cb: (val) => {
             //convert it back
             const res = JSON.parse(val);
-
+            
             if (res.err) {
-              reject(res.err);
+              reject(res);
             } else {
               // console.log(res);
               resolve(res);
@@ -222,7 +222,7 @@ export function runSim(cfg: string): AppThunk {
             progress: -1,
             result: 0,
             time: end - startTime,
-            err: res.err,
+            err: res,
           })
         );
       });

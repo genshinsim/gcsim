@@ -20,6 +20,7 @@ export function SimProgress(props: Props) {
 
   let done = run.progress === -1;
   //   console.log(done);
+  // console.log(run);
 
   return (
     <Dialog
