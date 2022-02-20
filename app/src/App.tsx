@@ -1,50 +1,44 @@
-import React from "react";
-import { Link, Route, Switch } from "wouter";
-import Fuse from "fuse.js";
+import { Route, Switch } from "wouter";
+import Footer from "/src/Components/Footer/Footer";
+import Nav from "/src/Components/Nav/Nav";
+import { Dash } from "/src/Pages/Dash";
+import { Simple, Advanced } from "/src/Pages/Sim";
+import { SimWrapper } from "./Pages/Sim/SimWrapper";
+import { ViewerDash } from "./Pages/ViewerDashboard";
+import { DB } from "./Pages/DB";
 
-import "./App.css";
-import Store from "./Store";
-import Nav from "./components/Nav";
-import Footer from "./components/Footer";
-import About from "./components/About";
-import Home from "./components/Home";
-import Browse from "./components/Browse";
-import SearchResults from "./components/SearchResults";
-import ActionDB from "./components/ActionDB";
-import GetStarted from "./components/GetStarted";
-
-import fuseIndex from "./data/fuse-index.json";
-import data from "./data/configs.json";
-
-const index = Fuse.parseIndex(fuseIndex);
-export const fuse = new Fuse(
-  data,
-  { keys: ["title", "author", "description", "characters"], threshold: 0.4 },
-  index
-);
-
-export default function AppWrapper(): JSX.Element {
-  // Store, renders the provider, so the context will be accessible from App.
+export default function App() {
   return (
-    <Store>
-      <App />
-    </Store>
-  );
-}
-
-function App() {
-  return (
-    <div className="h-screen">
-      <div className="md:container mx-auto flex flex-col h-full">
-        <Nav />
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/getting-started" component={GetStarted} />
-          <Route path="/browse" component={Browse} />
-          <Route path="/about" component={About} />
-          <Route path="/db" component={ActionDB} />
-          <Route path="/db/results" component={SearchResults} />
-        </Switch>
+    <div className=".bp3-dark h-screen flex flex-col">
+      <Nav />
+      <Switch>
+        <Route path="/" component={Dash} />
+        <Route path="/simple">
+          <SimWrapper>
+            <Simple />
+          </SimWrapper>
+        </Route>
+        <Route path="/advanced">
+          <SimWrapper>
+            <Advanced />
+          </SimWrapper>
+        </Route>
+        <Route path="/viewer/share/:id">
+          {(params) => <ViewerDash path={params.id} />}
+        </Route>
+        <Route path="/viewer">
+          <ViewerDash path="/" />
+        </Route>
+        <Route path="/db">
+          <DB />
+        </Route>
+        <Route>
+          <div className="m-2 text-center">
+            This page is not implemented yet. Stay tuned!
+          </div>
+        </Route>
+      </Switch>
+      <div className="w-full pt-4 pb-4 md:pl-4">
         <Footer />
       </div>
     </div>

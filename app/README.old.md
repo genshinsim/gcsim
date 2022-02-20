@@ -1,2 +1,0 @@
-# gcsim.app
-gcsim website

@@ -1,4 +1,96 @@
-/* ./src/index.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  .main-page-button-container {
+    @apply h-28 basis-full p-2 sm:basis-1/2;
+  }
+  .main-page-button {
+    @apply bg-gray-700 hover:bg-gray-600 hover:cursor-pointer rounded-md h-full w-full flex justify-center items-center;
+  }
+  .main-page-card {
+    @apply rounded-md h-full w-full flex justify-center items-center;
+  }
+
+  .main-page-row {
+    @apply grid sm:grid-cols-1 md:grid-cols-2 sm:gap-1 md:gap-4;
+  }
+}
+
+body {
+  background-color: #293742;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+div.debug-header {
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+  background-color: rgb(75 85 99);
+  text-align: center;
+  z-index: 10;
+}
+
+div.sticky-header {
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+}
+
+.character-parent {
+  position: relative;
+  z-index: 0;
+}
+.character-image {
+  z-index: -1;
+}
+.character-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.weapon-parent {
+  position: relative;
+}
+.weapon-name {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.character-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/images/overlay.jpg");
+  background-size: cover;
+  mix-blend-mode: luminosity;
+  background-position: center;
+  opacity: 0.5;
+  z-index: -1;
+}
+.svg-inline--fa.fa-w-13 {
+  width: 0.8125em;
+}
+.svg-inline--fa.fa-w-17 {
+  width: 1.0625em;
+}
+.substat-header {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  text-align: center;
+  vertical-align: -0.125em;
+  width: 1em;
+}
