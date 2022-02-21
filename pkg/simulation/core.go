@@ -1,6 +1,7 @@
 package simulation
 
 import (
+	"errors"
 	"math/rand"
 
 	"github.com/genshinsim/gcsim/internal/eventlog"
@@ -37,18 +38,20 @@ func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	return c
 }
 
-func NewCore(seed int64, debug bool, cfg core.SimulatorSettings) *core.Core {
+func NewCore(seed int64, debug bool, cfg core.SimulatorSettings) (*core.Core, error) {
 	c := newCoreNoQueue(seed, debug)
 	switch cfg.QueueMode {
 	case core.ActionPriorityList:
 		c.Queue = queue.NewQueuer(c)
 	case core.SequentialList:
 		c.Queue = calcqueue.New(c)
+	default:
+		return nil, errors.New("No action mode set - please add either mode=sl or mode=apl to the options.")
 	}
 
 	if cfg.SwapDelay > 0 {
 		c.Flags.SwapFrames = cfg.SwapDelay
 	}
 
-	return c
+	return c, nil
 }

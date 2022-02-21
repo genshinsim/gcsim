@@ -210,6 +210,11 @@ func (q *Queuer) blockUseable(a core.ActionBlock) (bool, error) {
 			}
 		}
 		return true, nil
+	// Add catch cases for calc mode blocks for clean error message purposes
+	case core.ActionBlockTypeCalcRestart:
+		return false, errors.New("invalid restart keyword detected in action priority mode list - did you mean to use sequential mode?")
+	case core.ActionBlockTypeCalcWait:
+		return false, errors.New("invalid wait keyword detected in action priority mode list - did you mean to use sequential mode?")
 	default:
 		//unknown type
 		return false, errors.New("unknown action block type")

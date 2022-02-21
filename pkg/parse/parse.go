@@ -44,6 +44,9 @@ func (p *Parser) Parse() (core.SimulationConfig, error) {
 	p.cfg.Settings.Iterations = 1000
 	p.cfg.Settings.NumberOfWorkers = 20
 
+	// Invalid value as default - should enforce setting mode to avoid confusion
+	p.cfg.Settings.QueueMode = -1
+
 	state := parseRows
 	for state != nil && err == nil {
 		state, err = state(p)
