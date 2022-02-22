@@ -1,1 +1,2 @@
-export * from "./DB"
+export * from "./DB";
+export * from "./dbSlice";
