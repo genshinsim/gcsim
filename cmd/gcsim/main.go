@@ -29,6 +29,8 @@ type opts struct {
 func main() {
 
 	var opt opts
+	var version bool
+	flag.BoolVar(&version, "version", false, "check gcsim version (git hash)")
 	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use; default config.txt")
 	flag.StringVar(&opt.out, "out", "", "output result to file? supply file path (otherwise empty string for disabled). default disabled")
 	flag.BoolVar(&opt.gz, "gz", false, "gzip json results; require out flag")
@@ -44,6 +46,11 @@ func main() {
 - tol_sd (default = 0.33): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS SD used in ER optimization`)
 
 	flag.Parse()
+
+	if version {
+		fmt.Println(sha1ver)
+		return
+	}
 
 	if opt.prof {
 		defer profile.Start(profile.ProfilePath("./"), profile.CPUProfile).Stop()
