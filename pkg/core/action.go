@@ -109,6 +109,7 @@ const (
 	ActionDash
 	ActionJump
 	ActionSwap
+	ActionWalk
 	EndActionType
 )
 
@@ -125,6 +126,7 @@ var astr = []string{
 	"dash",
 	"jump",
 	"swap",
+	"walk",
 }
 
 func (a ActionType) String() string {

@@ -14,6 +14,7 @@ const (
 	StamCDFrames       = 90
 	JumpFrames         = 33
 	DashFrames         = 24
+	WalkFrames         = 1
 	SwapFrames         = 1
 	SwapCDFrames       = 60
 	MaxTeamPlayerCount = 4
