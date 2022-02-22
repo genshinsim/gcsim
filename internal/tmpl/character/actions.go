@@ -130,6 +130,7 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 
 func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 	c.ActionCD[a] -= v
+	c.Core.Log.NewEvent("cooldown reduced", core.LogActionEvent, c.Index, "type", a.String(), "expiry", c.ActionCD[a])
 }
 
 func (c *Tmpl) ResetNormalCounter() {

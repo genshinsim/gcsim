@@ -20,9 +20,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 	}
 
+	c1cbArgs := make([]core.AttackCBFunc, 0, 1)
+	if c.Base.Cons >= 1 {
+		c1cbArgs = append(c1cbArgs, c.c1cb)
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i, c1cbArgs...)
 	}
 
 	c.AdvanceNormalIndex()
@@ -45,8 +50,16 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       ca[c.TalentLvlAttack()],
 	}
 
+	cbArgs := make([]core.AttackCBFunc, 0, 1)
+	if c.Base.Cons >= 1 {
+		cbArgs = append(cbArgs, c.c1cb)
+	}
+	if c.Base.Cons >= 6 {
+		cbArgs = append(cbArgs, c.c6cb)
+	}
+
 	for i := 0; i < 3; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-3+i, f-3+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-3+i, f-3+i, cbArgs...)
 	}
 
 	return f, a
@@ -119,11 +132,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	c.QueueParticle("ayaka", count, core.Cryo, f+100)
 
-	//a2 increase normal + ca dmg by 30% for 6s
+	//a1 increase normal + ca dmg by 30% for 6s
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.3
 	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "ayaka-a2",
+		Key:    "ayaka-a1",
 		Expiry: c.Core.F + 360,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 			return val, atk.Info.AttackTag == core.AttackTagNormal || ai.AttackTag == core.AttackTagExtra
@@ -151,17 +164,104 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 	}
 
+	c4cbArgs := make([]core.AttackCBFunc, 0, 1)
+	if c.Base.Cons >= 4 {
+		c4cbArgs = append(c4cbArgs, c.c4cb)
+	}
+
 	//5 second, 20 ticks, so once every 15 frames, bloom after 5 seconds
 	ai.Mult = burstBloom[c.TalentLvlBurst()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+300)
+	ai.Abil = "Soumetsu (Bloom)"
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+300, c4cbArgs...)
 
-	ai.Mult = burstCut[c.TalentLvlBurst()]
+	// C2 mini-frostflake bloom
+	var aiC2 core.AttackInfo
+	if c.Base.Cons >= 2 {
+		aiC2 = ai
+		aiC2.Mult = burstBloom[c.TalentLvlBurst()] * .2
+		aiC2.Abil = "C2 Mini-Frostflake Seki no To (Bloom)"
+		// TODO: Not sure about the positioning/size...
+		c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+300, c4cbArgs...)
+		c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+300, c4cbArgs...)
+	}
+
 	for i := 0; i < 19; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+i*15)
+		ai.Mult = burstCut[c.TalentLvlBurst()]
+		ai.Abil = "Soumetsu (Cutting)"
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+i*15, c4cbArgs...)
+
+		// C2 mini-frostflake cutting
+		if c.Base.Cons >= 2 {
+			aiC2.Mult = burstCut[c.TalentLvlBurst()] * .2
+			aiC2.Abil = "C2 Mini-Frostflake Seki no To (Cutting)"
+			// TODO: Not sure about the positioning/size...
+			c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+i*15, c4cbArgs...)
+			c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+i*15, c4cbArgs...)
+		}
 	}
 
 	c.SetCDWithDelay(core.ActionBurst, 20*60, 13)
 	c.ConsumeEnergy(13)
 
 	return f, a
+}
+
+// Callback for Ayaka C1 that is attached to NA/CA hits
+func (c *char) c1cb(a core.AttackCB) {
+	// When Kamisato Ayaka's Normal or Charged Attacks deal Cryo DMG to opponents, it has a 50% chance of decreasing the CD of Kamisato Art: Hyouka by 0.3s. This effect can occur once every 0.1s.
+	if c.icdC1 > c.Core.F {
+		return
+	}
+	if c.Core.Rand.Float64() < .5 {
+		return
+	}
+	c.ReduceActionCooldown(core.ActionSkill, 18)
+	c.icdC1 = c.Core.F + 6
+}
+
+// Callback for Ayaka C4 that is attached to Burst hits
+func (c *char) c4cb(a core.AttackCB) {
+	// Opponents damaged by Kamisato Art: Soumetsu's Frostflake Seki no To will have their DEF decreased by 30% for 6s.
+	a.Target.AddDefMod("ayaka-c4", -0.3, 60*6)
+}
+
+// Callback for Ayaka C6 that is attached to CA hits
+func (c *char) c6cb(a core.AttackCB) {
+	if !c.c6CDTimerAvail {
+		return
+	}
+
+	c.c6CDTimerAvail = false
+
+	c.AddTask(func() {
+		// TODO: When mod refactor is done, should change this to simply remove the mod or something
+		// Currently need to reload the mod with a null entry to allow for clear buff uptime tracking
+		c.AddPreDamageMod(core.PreDamageMod{
+			Key: "ayaka-c6",
+			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+				return nil, false
+			},
+			Expiry: 0,
+		})
+
+		c.AddTask(func() {
+			c.c6CDTimerAvail = true
+			c.c6AddBuff()
+		}, "ayaka-c6-reset", 600)
+	}, "ayaka-c6-clear", 30)
+}
+
+func (c *char) c6AddBuff() {
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 2.98
+	c.AddPreDamageMod(core.PreDamageMod{
+		Key: "ayaka-c6",
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != core.AttackTagExtra {
+				return nil, false
+			}
+			return val, true
+		},
+		Expiry: -1,
+	})
 }
