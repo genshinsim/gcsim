@@ -1,3 +1,8 @@
+0.5.3  - Feb 21, 2022
+---------------------
+
+- Sorry I lied. Really fixed auto build this time. Probably...
+
 0.5.2  - Feb 21, 2022
 ---------------------
 
