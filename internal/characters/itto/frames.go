@@ -116,7 +116,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 91, 91
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

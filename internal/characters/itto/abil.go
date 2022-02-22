@@ -195,7 +195,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			return val, true
 		},
 	})
-	c.Core.Log.Debugw("itto burst", "frame", c.Core.F, "event", core.LogSnapshotEvent, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
+	c.Core.Log.NewEvent("itto burst", core.LogSnapshotEvent, c.Index, "frame", c.Core.F, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
 
 	c.Core.Status.AddStatus("ittoq", 960+f) // inflated from 11.55 seconds to cover basic combo
 
@@ -227,10 +227,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				}
 			}
 			if count > 3 {
-				c.AddEnergy(3 * 6)
+				c.AddEnergy("itto-c2", 3*6)
 				c.ReduceActionCooldown(core.ActionBurst, 3*1.5*60)
 			} else {
-				c.AddEnergy(float64(count) * 6)
+				c.AddEnergy("itto-c2", float64(count)*6)
 				c.ReduceActionCooldown(core.ActionBurst, count*(1.5*60))
 			}
 		}, "c2-itto", 9)
