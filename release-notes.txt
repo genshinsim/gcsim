@@ -1,3 +1,12 @@
+0.5.1  - Feb 21, 2022
+---------------------
+
+- Add initial Itto implementation, thanks to Aftermath#7658
+- Add Ayaka cons
+- Add better error message when wrong mode is used (sequential vs action list)
+- Add walk action for cancel purposes (i.e. Klee)
+- Add Slingshot, thanks to warbear#3252
+
 0.5.0  - Feb 20, 2022
 ---------------------
 
