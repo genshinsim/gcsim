@@ -72,7 +72,10 @@ func version(this js.Value, args []js.Value) interface{} {
 //run simulation once
 func run(this js.Value, args []js.Value) interface{} {
 	//seed this with now
-	c := simulation.NewCore(cryptoRandSeed(), false, cfg.Settings)
+	c, err := simulation.NewCore(cryptoRandSeed(), false, cfg.Settings)
+	if err != nil {
+		return marshalErr(err)
+	}
 	s, err := simulation.New(cfg, c)
 	if err != nil {
 		return marshalErr(err)
@@ -91,7 +94,10 @@ func run(this js.Value, args []js.Value) interface{} {
 
 //debug generates the debug log (does not track dps value)
 func debug(this js.Value, args []js.Value) interface{} {
-	c := simulation.NewCore(cryptoRandSeed(), true, cfg.Settings)
+	c, err := simulation.NewCore(cryptoRandSeed(), true, cfg.Settings)
+	if err != nil {
+		return marshalErr(err)
+	}
 	c.Flags.LogDebug = true
 	//create a new simulation and run
 	s, err := simulation.New(cfg, c)

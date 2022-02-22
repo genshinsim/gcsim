@@ -39,7 +39,11 @@ func (p *Pool) worker() {
 	for {
 		select {
 		case job := <-p.QueueCh:
-			c := simulation.NewCore(job.Seed, false, job.Cfg.Settings)
+			c, err := simulation.NewCore(job.Seed, false, job.Cfg.Settings)
+			if err != nil {
+				p.errCh <- err
+				break
+			}
 			s, err := simulation.New(job.Cfg, c)
 			if err != nil {
 				p.errCh <- err

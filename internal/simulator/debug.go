@@ -9,7 +9,10 @@ import (
 //the debug log. Used for generating debug for min/max runs
 func GenerateDebugLogWithSeed(cfg core.SimulationConfig, seed int64) (string, error) {
 
-	c := simulation.NewCore(seed, true, cfg.Settings)
+	c, err := simulation.NewCore(seed, true, cfg.Settings)
+	if err != nil {
+		return "", err
+	}
 	//create a new simulation and run
 	s, err := simulation.New(cfg, c)
 	if err != nil {
