@@ -14,6 +14,7 @@ import (
 
 type Summary struct {
 	//version stuff
+	V2                    bool                            `json:"v2"`
 	Version               string                          `json:"version"`
 	BuildDate             string                          `json:"build_date"`
 	IsDamageMode          bool                            `json:"is_damage_mode"`
