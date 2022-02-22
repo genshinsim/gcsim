@@ -1,5 +1,6 @@
 import { Button, Classes, Dialog } from "@blueprintjs/core";
 import React from "react";
+import { IGOODImport, staticPath, parseFromGO } from "./char";
 
 type Props = {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export function LoadGOOD(props: Props) {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setStr(e.target.value);
     localStorage.setItem(lsKey, e.target.value);
+    console.log(parseFromGO(e.target.value));
   };
   return (
     <Dialog
@@ -28,13 +30,13 @@ export function LoadGOOD(props: Props) {
       canEscapeKeyClose
       canOutsideClickClose
       icon="import"
-      title="Import from GOOD"
+      title="Import from Genshin Optimizer/GOOD"
     >
       <div className={Classes.DIALOG_BODY}>
         <p>
           Paste import data in GOOD format in the textbox below. (If you are
           coming from Genshin Optimizer, you can export your database in GOOD
-          format{" "}
+          format
           <a
             href="https://frzyc.github.io/genshin-optimizer/#/database"
             target="_blank"
