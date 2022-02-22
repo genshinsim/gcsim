@@ -1,5 +1,5 @@
 import { Button, FormGroup, Switch } from "@blueprintjs/core";
-import { StatToIndexMap } from "~src/Components/Character";
+
 import { Character } from "~/src/types";
 import { StatRow } from "./CharacterEditStatRow";
 
@@ -22,6 +22,7 @@ import {
 } from "~src/Components/Icons";
 import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "~src/Pages/Sim";
+import { StatToIndexMap } from "~src/util";
 
 export type subDisplayLine = {
   stat?: string;

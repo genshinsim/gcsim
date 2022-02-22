@@ -1,4 +1,4 @@
-import { Callout, Intent, Button, Card } from "@blueprintjs/core";
+import { Callout, Intent, Button, Card, ButtonGroup } from "@blueprintjs/core";
 import React from "react";
 import {
   CharacterCard,
@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from "~src/store";
 import { RootState } from "~src/store";
 import { simActions } from "~src/Pages/Sim/simSlice";
 import { CharacterEdit } from "./CharacterEdit";
-import { VideoPlayer } from "../Components";
+import { LoadGOOD, VideoPlayer } from "../Components";
 
 export function Team() {
   const { team, edit_index, showTips } = useAppSelector((state: RootState) => {
@@ -23,6 +23,7 @@ export function Team() {
   });
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState<boolean>(false);
+  const [openImport, setOpenImport] = React.useState<boolean>(false);
   const [openAddCharHelp, setOpenAddCharHelp] = React.useState<boolean>(false);
   const myRef = React.useRef<HTMLSpanElement>(null);
   React.useEffect(() => {
@@ -130,15 +131,18 @@ export function Team() {
           </Button>
         </Card>
       ) : (
-        <div className={team.length >= 4 ? "hidden" : "mt-2 pl-2 pr-2"}>
-          <Button
-            fill
-            icon="add"
-            intent="primary"
-            onClick={() => setOpen(true)}
-          >
-            Add Character
-          </Button>
+        <div className="mt-2 pl-2 pr-2">
+          <ButtonGroup fill>
+            <Button onClick={() => setOpenImport(true)}>Import Data</Button>
+            <Button
+              icon="add"
+              intent="primary"
+              onClick={() => setOpen(true)}
+              disabled={team.length >= 4}
+            >
+              Add Character
+            </Button>
+          </ButtonGroup>
         </div>
       )}
       <CharacterSelect
@@ -147,6 +151,7 @@ export function Team() {
         onSelect={handleAddCharacter}
         isOpen={open}
       />
+      <LoadGOOD isOpen={openImport} onClose={() => setOpenImport(false)} />
       <VideoPlayer
         url="/videos/add-character.webm"
         isOpen={openAddCharHelp}

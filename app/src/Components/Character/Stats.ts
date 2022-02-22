@@ -1,4 +1,5 @@
 import { Character } from "~src/types";
+import { StatToIndexMap } from "~src/util";
 
 type CharViewableStats = {
   [key in string]: {
@@ -22,28 +23,6 @@ export type CharStatBlock = {
   t: string;
   flat: number;
   percent: number;
-};
-
-export const StatToIndexMap: { [key in string]: number } = {
-  DEFP: 1,
-  DEF: 2,
-  HP: 3,
-  HPP: 4,
-  ATK: 5,
-  ATKP: 6,
-  ER: 7,
-  EM: 8,
-  CR: 9,
-  CD: 10,
-  Heal: 11,
-  PyroP: 12,
-  HydroP: 13,
-  CryoP: 14,
-  ElectroP: 15,
-  AnemoP: 16,
-  GeoP: 17,
-  PhyP: 18,
-  DendroP: 19,
 };
 
 export function ConsolidateCharStats(chars: Character[]): {

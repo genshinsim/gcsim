@@ -91,7 +91,7 @@ export default function Summary({ data }: { data: SimResults }) {
           {data.version ? (
             <a
               href={
-                "https://github.com/genshinsim/gcsim/commit/" + data.version
+                "https://github.com/genshinsim/gcsim/commits/" + data.version
               }
             >
               {data.version.substring(0, 8)}
