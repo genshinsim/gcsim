@@ -24,6 +24,8 @@ jobs:
         working-directory: ./cmd/gcsim
       - run: ls
         working-directory: ./
+      - run: ls
+        working-directory: ./scripts
       # - uses: "marvinpinto/action-automatic-releases@latest"
       #   with:
       #     repo_token: "${{ secrets.GITHUB_TOKEN }}"
