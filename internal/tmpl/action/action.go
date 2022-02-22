@@ -166,8 +166,8 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 
 	//do one last ready check
 	if !c.ActionReady(n.Typ, n.Param) {
-		if n.Typ == core.ActionBurst {
-			a.core.Log.NewEvent("insufficient energy for burst", core.LogActionEvent, c.CharIndex(), "have", a.core.Stam)
+		if n.Typ == core.ActionBurst && c.CurrentEnergy() < c.MaxEnergy() {
+			a.core.Log.NewEvent("insufficient energy for burst", core.LogActionEvent, c.CharIndex(), "have", c.CurrentEnergy())
 		} else {
 			a.core.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
 		}
