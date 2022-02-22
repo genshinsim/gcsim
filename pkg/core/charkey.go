@@ -131,6 +131,7 @@ var CharNameToKey = map[string]CharKey{
 	"zhongli":            Zhongli,
 	"gorou":              Gorou,
 	"aratakiitto":        Itto,
+	"itto":				  Itto,
 	"shenhe":             Shenhe,
 	"yaemiko":            YaeMiko,
 }
