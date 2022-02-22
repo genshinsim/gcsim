@@ -11,7 +11,7 @@ import (
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -30,7 +30,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+travel)
+	// TODO - double check this snapshotDelay
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -84,7 +85,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
 

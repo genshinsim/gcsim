@@ -26,10 +26,11 @@ func (t *Tmpl) Stat(s core.StatType) float64 {
 func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 
 	s := core.Snapshot{
-		CharLvl:  c.Base.Level,
-		ActorEle: c.Base.Element,
-		BaseAtk:  c.Base.Atk + c.Weapon.Atk,
-		BaseDef:  c.Base.Def,
+		CharLvl:     c.Base.Level,
+		ActorEle:    c.Base.Element,
+		BaseAtk:     c.Base.Atk + c.Weapon.Atk,
+		BaseDef:     c.Base.Def,
+		SourceFrame: c.Core.F,
 	}
 
 	var evt core.LogEvent = nil

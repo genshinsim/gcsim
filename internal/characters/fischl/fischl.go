@@ -73,7 +73,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)

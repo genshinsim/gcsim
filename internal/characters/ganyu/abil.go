@@ -9,7 +9,7 @@ import (
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -25,7 +25,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
 
 	c.AdvanceNormalIndex()
 
@@ -37,7 +37,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	bloom, ok := p["bloom"]
 	if !ok {

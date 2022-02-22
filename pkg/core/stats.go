@@ -57,7 +57,7 @@ func PrettyPrintStatsSlice(stats []float64) []string {
 	r := make([]string, 0)
 	var sb strings.Builder
 	for i, v := range stats {
-		if v > 0 {
+		if v != 0 {
 			sb.WriteString(StatTypeString[i])
 			sb.WriteString(": ")
 			sb.WriteString(strconv.FormatFloat(v, 'f', 2, 32))

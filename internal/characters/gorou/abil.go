@@ -8,11 +8,11 @@ import (
 
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other bow characters
-// Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 20)
+// Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 10)
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -40,7 +40,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
 
