@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 const (
@@ -282,32 +279,4 @@ func (c *Core) Tick() {
 	}
 	//update activeduration
 	c.ActiveDuration++
-}
-
-func NewDefaultLogger(debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
-	config := zap.NewDevelopmentConfig()
-	if json {
-		config.Encoding = "json"
-	}
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	if debug {
-		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
-		config.OutputPaths = paths
-	} else {
-		config.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
-		config.OutputPaths = []string{}
-	}
-
-	config.EncoderConfig.TimeKey = ""
-	config.EncoderConfig.StacktraceKey = ""
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-	config.EncoderConfig.CallerKey = ""
-
-	// config.OutputPaths = []string{"stdout"}
-
-	zaplog, err := config.Build()
-	if err != nil {
-		return nil, err
-	}
-	return zaplog.Sugar(), nil
 }
