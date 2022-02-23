@@ -66,51 +66,45 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 //he still benefits from sucrose em but just cannot share it
 
 func (c *char) a4() {
-	val := make([]float64, core.EndStatType)
-	expiry := make([]int, core.EndStatType)
-	for _, char := range c.Core.Chars {
-		char.AddMod(core.CharStatMod{
-			Expiry: -1,
-			Key:    "kazuha-a4",
-			Amount: func() ([]float64, bool) {
-				m := make([]float64, core.EndStatType)
-				ok := false
-				for i, exp := range expiry {
-					if exp > c.Core.F {
-						m[i] = val[i]
-						ok = true
-					}
-				}
-				if !ok {
-					return nil, false
-				}
-				return m, true
-			},
-		})
-	}
+	m := make([]float64, core.EndStatType)
 
-	swirlfunc := func(ele core.StatType) func(args ...interface{}) bool {
+	swirlfunc := func(ele core.StatType, key string) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
 			atk := args[1].(*core.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false
 			}
-			//update expiry
-			expiry[ele] = c.Core.F + 480
-			// c.a4Expiry = c.Core.F + 480
+
 			//recalc em
-			em := c.Stat(core.EM)
-			val[ele] = 0.0004 * em
-			c.Core.Log.NewEvent("kazuah a4 proc", core.LogCharacterEvent, c.Index, "reaction", ele.String(), "char", c.CharIndex())
+			dmg := 0.0004 * c.Stat(core.EM)
+
+			for _, char := range c.Core.Chars {
+				char.AddMod(core.CharStatMod{
+					Key:    "kazuha-a4-" + key,
+					Expiry: c.Core.F + 60*8,
+					Amount: func() ([]float64, bool) {
+
+						m[core.CryoP] = 0
+						m[core.ElectroP] = 0
+						m[core.HydroP] = 0
+						m[core.PyroP] = 0
+
+						m[ele] = dmg
+						return m, true
+					},
+				})
+			}
+
+			c.Core.Log.NewEvent("kazuha a4 proc", core.LogCharacterEvent, c.Index, "reaction", ele.String(), "char", c.CharIndex())
 
 			return false
 		}
 	}
 
-	c.Core.Events.Subscribe(core.OnSwirlCryo, swirlfunc(core.CryoP), "kazuha-a4-cryo")
-	c.Core.Events.Subscribe(core.OnSwirlElectro, swirlfunc(core.ElectroP), "kazuha-a4-electro")
-	c.Core.Events.Subscribe(core.OnSwirlHydro, swirlfunc(core.HydroP), "kazuha-a4-hydro")
-	c.Core.Events.Subscribe(core.OnSwirlPyro, swirlfunc(core.PyroP), "kazuha-a4-pyro")
+	c.Core.Events.Subscribe(core.OnSwirlCryo, swirlfunc(core.CryoP, "cryo"), "kazuha-a4-cryo")
+	c.Core.Events.Subscribe(core.OnSwirlElectro, swirlfunc(core.ElectroP, "electro"), "kazuha-a4-electro")
+	c.Core.Events.Subscribe(core.OnSwirlHydro, swirlfunc(core.HydroP, "hydro"), "kazuha-a4-hydro")
+	c.Core.Events.Subscribe(core.OnSwirlPyro, swirlfunc(core.PyroP, "pyro"), "kazuha-a4-pyro")
 }
 
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
