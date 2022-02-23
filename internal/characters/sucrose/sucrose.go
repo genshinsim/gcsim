@@ -50,11 +50,6 @@ func (c *char) Init(index int) {
 	c.Tmpl.Init(index)
 	c.a2()
 	c.a4()
-
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
-
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -161,17 +156,16 @@ func (c *char) c4() {
 }
 
 func (c *char) c6() {
-	c.AddMod(core.CharStatMod{
-		Key: "sucrose-c6",
-		Amount: func() ([]float64, bool) {
-			if c.Core.Status.Duration("sucrosec6") == 0 {
-				return nil, false
-			}
-			p := core.EleToDmgP(c.qInfused)
-			val := make([]float64, core.EndStatType)
-			val[p] = 0.2
-			return val, true
-		},
-		Expiry: -1,
-	})
+	m := make([]float64, core.EndStatType)
+	m[core.EleToDmgP(c.qInfused)] = .20
+
+	for _, char := range c.Core.Chars {
+		char.AddMod(core.CharStatMod{
+			Key:    "sucrose-c6",
+			Expiry: c.Core.F + 60*10,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
+	}
 }
