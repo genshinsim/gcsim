@@ -2,9 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Character, maxStatLength, Talent, Weapon } from "~/src/types";
 import { characterKeyToICharacter } from "~src/Components/Character";
 import { AppThunk } from "~src/store";
-import { ascLvlMin, maxLvlToAsc } from "~src/util";
+import { ascLvlMax, ascLvlMin, maxLvlToAsc } from "~src/util";
 import { WorkerPool } from "~src/WorkerPool";
+import { IGOODImport } from "./Components/char";
 import { charToCfg } from "./helper";
+import { Character as GOChar } from "./Components/types";
 
 export let pool: WorkerPool = new WorkerPool();
 
@@ -24,6 +26,7 @@ export interface Sim {
   advanced_cfg: string;
   run: RunStats;
   showTips: boolean;
+  GOChars: Character[]
 }
 
 export const defaultRunStat: RunStats = {
@@ -42,7 +45,10 @@ const initialState: Sim = {
   advanced_cfg: "",
   run: defaultRunStat,
   showTips: true,
+  GOChars: []
 };
+
+
 
 const defWep: { [key in string]: string } = {
   bow: "dullblade",
@@ -51,6 +57,33 @@ const defWep: { [key in string]: string } = {
   sword: "dullblade",
   polearm: "dullblade",
 };
+
+const convertFromGO = (char: GOChar): Character=>{
+return {name: char.name,
+  level: char.level,
+  max_level: ascLvlMax(char.level),
+  element: char.element,
+  cons: char.constellation,
+  weapon: {
+    name: char.weapon.name,
+    refine: char.weapon.refinement,
+    level: char.weapon.level,
+    max_level: ascLvlMax(char.weapon.refinement),
+  },
+  talents: {
+    attack: char.talent.auto,
+    skill: char.talent.skill,
+    burst: char.talent.burst,
+  },
+  //need to sum stats
+  stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  snapshot: [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ],
+  // need to sum arti sets
+  sets: {},}
+}
+
 
 const newChar = (name: string): Character => {
   const c = characterKeyToICharacter[name];
@@ -271,6 +304,14 @@ export const simSlice = createSlice({
       state.edit_index = action.payload.index;
       return state;
     },
+    saveFromGO: (state, action: PayloadAction<{data: IGOODImport}>) => {
+      // if there are characters, do something
+      if(action.payload.data.characters.length > 0){
+        state.GOChars = action.payload.data.characters.map(convertFromGO)
+      }
+      console.log(state.GOChars)
+      return state;
+    }
   },
 });
 

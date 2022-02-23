@@ -12,18 +12,18 @@ export const staticPath = {
 export interface IGOODImport {
   err: string;
   characters: Character[];
-  selected: boolean[];
+  // selected: boolean[];
 }
 
 export function parseFromGO(val: string): IGOODImport {
   let result: {
     err: string;
     characters: Character[];
-    selected: boolean[];
+    // selected: boolean[];
   } = {
     err: "",
     characters: [],
-    selected: [],
+    // selected: [],
   };
 
   if (val === "") {
@@ -53,7 +53,7 @@ export function parseFromGO(val: string): IGOODImport {
     return {
       err: "",
       characters: [],
-      selected: [],
+      // selected: [],
     };
   }
   console.log("parsing characters ", data.characters);
@@ -179,7 +179,7 @@ export function parseFromGO(val: string): IGOODImport {
   });
 
   result.characters = chars;
-  result.selected = sel;
+  // result.selected = sel;
   return result;
 }
 

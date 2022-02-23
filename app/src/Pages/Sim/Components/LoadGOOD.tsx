@@ -1,5 +1,8 @@
 import { Button, Classes, Dialog } from "@blueprintjs/core";
 import React from "react";
+import { simActions } from "~src/Pages/Sim";
+import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+
 import { IGOODImport, staticPath, parseFromGO } from "./char";
 
 type Props = {
@@ -11,17 +14,24 @@ const lsKey = "GOOD-import";
 
 export function LoadGOOD(props: Props) {
   const [str, setStr] = React.useState<string>("");
+  const [data, setData] = React.useState<IGOODImport>();
+  const dispatch = useAppDispatch();
+
   React.useEffect(() => {
     const val = localStorage.getItem(lsKey);
     if (val !== null && val !== "") {
       setStr(val);
     }
   }, []);
-  const handleLoad = () => {};
+  const handleLoad = () => {
+    if (data) {
+      dispatch(simActions.saveFromGO({ data }));
+    }
+  };
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setStr(e.target.value);
     localStorage.setItem(lsKey, e.target.value);
-    console.log(parseFromGO(e.target.value));
+    setData(parseFromGO(e.target.value));
   };
   return (
     <Dialog
@@ -53,6 +63,9 @@ export function LoadGOOD(props: Props) {
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+          {data && data.err && (
+            <div className="pt-1.5 text-red-500">{data.err}</div>
+          )}
           <Button onClick={handleLoad}>Load</Button>
           <Button onClick={props.onClose}>Close</Button>
         </div>
