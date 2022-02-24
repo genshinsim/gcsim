@@ -100,14 +100,16 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			StrikeType: core.StrikeTypeDefault,
 			Element:    core.Electro,
 			Durability: 25,
-			Mult:       skill[c.sakuraLevelCheck()+c.turretBonus-1][c.TalentLvlSkill()],
 		}
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
 		}
-		c.Core.Log.NewEvent("sky kitsune tick", core.LogCharacterEvent, c.Index)
 		// no snapshot
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 51)
+		c.AddTask(func() {
+			c.Core.Log.NewEvent("sky kitsune tick at level", core.LogCharacterEvent, c.Index, "sakura level", c.sakuraLevelCheck())
+			ai.Mult = skill[c.sakuraLevelCheck()+c.turretBonus-1][c.TalentLvlSkill()]
+			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 1, 1)
+		}, "kitsune-tick", 50)
 		if c.Core.F+51 >= c.totemLastParticleF+176 { // 176 frame ICD until we are sure about ICD
 			c.Core.Log.NewEvent("sky kitsune particle", core.LogCharacterEvent, c.Index, "lastParticleF", c.totemLastParticleF)
 			c.QueueParticle("yaemiko", 1, core.Electro, 51+30)
