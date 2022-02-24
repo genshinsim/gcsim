@@ -68,7 +68,7 @@ type QueueHandler interface {
 
 type ShieldHandler interface {
 	Add(shd Shield)
-	IsShielded() bool
+	IsShielded(char int) bool
 	Get(t ShieldType) Shield
 	AddBonus(f func() float64)
 	OnDamage(dmg float64, ele EleType) float64

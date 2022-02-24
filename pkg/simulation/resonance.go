@@ -69,7 +69,7 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 				s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 					t := args[0].(core.Target)
 					atk := args[1].(*core.AttackEvent)
-					if s.C.Shields.IsShielded() && s.C.ActiveChar == atk.Info.ActorIndex {
+					if s.C.Shields.IsShielded(atk.Info.ActorIndex) {
 						t.AddResMod("geo res", core.ResistMod{
 							Duration: 15 * 60,
 							Ele:      core.Geo,
@@ -85,7 +85,7 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 					c.AddPreDamageMod(core.PreDamageMod{
 						Key: "geo-res",
 						Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
-							if s.C.Shields.IsShielded() && s.C.ActiveChar == ae.Info.ActorIndex {
+							if s.C.Shields.IsShielded(ae.Info.ActorIndex) {
 								return val, true
 							}
 							return nil, false

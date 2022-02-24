@@ -18,7 +18,9 @@ func NewCtrl(c *core.Core) *ShieldCtrl {
 
 func (s *ShieldCtrl) Count() int { return len(s.shields) }
 
-func (s *ShieldCtrl) IsShielded() bool { return len(s.shields) > 0 }
+func (s *ShieldCtrl) IsShielded(char int) bool {
+	return len(s.shields) > 0 && char == s.core.ActiveChar
+}
 
 func (s *ShieldCtrl) Get(t core.ShieldType) core.Shield {
 	for _, v := range s.shields {

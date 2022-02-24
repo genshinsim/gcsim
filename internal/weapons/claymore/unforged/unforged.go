@@ -49,7 +49,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		Amount: func() ([]float64, bool) {
 			if duration > c.F {
 				val[core.ATKP] = atk * float64(stacks)
-				if c.Shields.IsShielded() {
+				if c.Shields.IsShielded(char.CharIndex()) {
 					val[core.ATKP] *= 2
 				}
 				return val, true

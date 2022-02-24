@@ -21,7 +21,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		c.AddPreDamageMod(core.PreDamageMod{
 			Key: "bolide-2pc",
 			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return m, s.Shields.IsShielded() && (atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra)
+				return m, s.Shields.IsShielded(c.CharIndex()) && (atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra)
 			},
 			Expiry: -1,
 		})
