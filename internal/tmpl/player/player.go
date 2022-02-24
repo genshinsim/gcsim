@@ -53,10 +53,7 @@ func (p *Player) ApplySelfInfusion(ele core.EleType, dur core.Durability, f int)
 	if p.Durability[ele] > reactable.ZeroDur {
 		//make sure we're not adding more than incoming
 		if p.Durability[ele] < dur {
-			if p.Durability[ele]+dur > dur {
-				dur = dur - p.Durability[ele]
-			}
-			p.Durability[ele] += dur
+			p.Durability[ele] = dur
 		}
 		return
 	}
