@@ -18,12 +18,14 @@ type keyVal struct {
 
 //easyjson:json
 type Event struct {
-	Typ     core.LogSource         `json:"event"`
-	F       int                    `json:"frame"`
-	Ended   int                    `json:"ended"`
-	SrcChar int                    `json:"char_index"`
-	Msg     string                 `json:"msg,nocopy"`
-	Logs    map[string]interface{} `json:"logs"`
+	Typ      core.LogSource         `json:"event"`
+	F        int                    `json:"frame"`
+	Ended    int                    `json:"ended"`
+	SrcChar  int                    `json:"char_index"`
+	Msg      string                 `json:"msg,nocopy"`
+	Logs     map[string]interface{} `json:"logs"`
+	Ordering map[string]int         `json:"ordering"`
+	counter  int
 }
 
 //easyjson:json
@@ -48,6 +50,8 @@ func (e *Event) Write(keysAndValues ...interface{}) {
 		// 	Val: keysAndValues[i],
 		// })
 		e.Logs[key] = keysAndValues[i]
+		e.Ordering[key] = e.counter
+		e.counter++
 	}
 }
 
@@ -96,12 +100,13 @@ func (c *Ctrl) NewEventBuildMsg(typ core.LogSource, srcChar int, msg ...string) 
 
 func (c *Ctrl) NewEvent(msg string, typ core.LogSource, srcChar int, keysAndValues ...interface{}) core.LogEvent {
 	e := &Event{
-		Msg:     msg,
-		F:       c.core.F,
-		Ended:   c.core.F,
-		Typ:     typ,
-		SrcChar: srcChar,
-		Logs:    make(map[string]interface{}), //+5 from default just in case we need to add in more keys
+		Msg:      msg,
+		F:        c.core.F,
+		Ended:    c.core.F,
+		Typ:      typ,
+		SrcChar:  srcChar,
+		Logs:     make(map[string]interface{}), //+5 from default just in case we need to add in more keys
+		Ordering: make(map[string]int),
 	}
 	// c.events = append(c.events, e)
 	c.events[c.count] = e
