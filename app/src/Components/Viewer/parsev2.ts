@@ -7,6 +7,7 @@ type LogDetails = {
   frame: number;
   msg: string;
   logs: { [key in string]: any };
+  ordering?: { [key: string]: number };
 };
 
 export function parseLogV2(
@@ -67,6 +68,29 @@ export function parseLogV2(
         slots.push([]);
       }
     }
+
+    //make a copy of line and sort by ordering if ordering exist (then purge ordering)
+
+    let logLines: { key: string; val: any }[] = [];
+    //convert logs into array
+    for (const key in line.logs) {
+      logLines.push({ key: key, val: line.logs[key] });
+    }
+    //sort
+    if (line.ordering) {
+      logLines.sort((a, b) => {
+        let ao = line.ordering![a.key] || 0;
+        let bo = line.ordering![b.key] || 0;
+        return ao - bo;
+      });
+      //get rid of ordering
+      delete line.ordering;
+    }
+    //store it back
+    line.logs = {};
+    logLines.forEach((e) => {
+      line.logs[e.key] = e.val;
+    });
 
     let e: DebugItem = {
       frame: line.frame,
