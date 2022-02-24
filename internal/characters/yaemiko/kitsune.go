@@ -106,6 +106,9 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		}
 		// no snapshot
 		c.AddTask(func() {
+			if totem.deleted {
+				return
+			}
 			c.Core.Log.NewEvent("sky kitsune tick at level", core.LogCharacterEvent, c.Index, "sakura level", c.sakuraLevelCheck())
 			ai.Mult = skill[c.sakuraLevelCheck()+c.turretBonus-1][c.TalentLvlSkill()]
 			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 1, 1)
