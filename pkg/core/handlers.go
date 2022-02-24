@@ -45,6 +45,7 @@ type ConstructHandler interface {
 	CountByType(t GeoConstructType) int
 	Destroy(key int) bool
 	Has(key int) bool
+	Expiry(t GeoConstructType) int
 	Tick()
 }
 
