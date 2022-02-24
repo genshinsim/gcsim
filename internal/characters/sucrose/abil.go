@@ -2,6 +2,7 @@ package sucrose
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -169,6 +170,9 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		c.qInfused = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
 
 		if c.qInfused != core.NoElement {
+			if c.Base.Cons >= 6 {
+				c.c6()
+			}
 			return
 		}
 		//otherwise queue up

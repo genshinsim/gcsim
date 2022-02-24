@@ -24,7 +24,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				return nil, false
 			}
 			m[core.DmgP] = flat
-			travel := float64(c.F-atk.SourceFrame) / 60
+			travel := float64(c.F-atk.Snapshot.SourceFrame) / 60
 			stacks := int(travel / 0.1)
 			if stacks > 5 {
 				stacks = 5
