@@ -125,11 +125,11 @@ func aggregateResults(in []simulation.Result, cfg core.SimulationConfig) result.
 
 	r.Iterations = cfg.Settings.Iterations
 	r.ActiveChar = cfg.Characters.Initial.String()
-	if cfg.DamageMode {
-		r.Duration.Mean = float64(cfg.Settings.Duration)
-		r.Duration.Min = float64(cfg.Settings.Duration)
-		r.Duration.Max = float64(cfg.Settings.Duration)
-	}
+	// if cfg.DamageMode {
+	// 	r.Duration.Mean = float64(cfg.Settings.Duration)
+	// 	r.Duration.Min = float64(cfg.Settings.Duration)
+	// 	r.Duration.Max = float64(cfg.Settings.Duration)
+	// }
 
 	r.NumTargets = len(cfg.Targets)
 	r.CharDetails = in[0].CharDetails

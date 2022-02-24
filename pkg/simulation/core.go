@@ -21,6 +21,7 @@ import (
 
 func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	c := core.New()
+	c.F = -1
 	if debug {
 		c.Log = eventlog.NewCtrl(c, 500)
 		c.Flags.LogDebug = true
@@ -46,7 +47,7 @@ func NewCore(seed int64, debug bool, cfg core.SimulatorSettings) (*core.Core, er
 	case core.SequentialList:
 		c.Queue = calcqueue.New(c)
 	default:
-		return nil, errors.New("No action mode set - please add either mode=sl or mode=apl to the options.")
+		return nil, errors.New("no action mode set - please add either mode=sl or mode=apl to the options")
 	}
 
 	if cfg.SwapDelay > 0 {
