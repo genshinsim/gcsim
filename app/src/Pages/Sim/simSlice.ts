@@ -50,7 +50,7 @@ const initialState: Sim = {
 
 
 
-const defWep: { [key in string]: string } = {
+const defWep: { [key: string]: string } = {
   bow: "dullblade",
   catalyst: "dullblade",
   claymore: "dullblade",
@@ -59,13 +59,18 @@ const defWep: { [key in string]: string } = {
 };
 
 const convertFromGO = (char: GOChar): Character=>{
+
+  let newStats;
+  let setCount;
+
 return {name: char.name,
   level: char.level,
   max_level: ascLvlMax(char.level),
   element: char.element,
   cons: char.constellation,
   weapon: {
-    name: char.weapon.name,
+    // SRL uses {name} field like a key for action list
+    name: char.weapon.key,
     refine: char.weapon.refinement,
     level: char.weapon.level,
     max_level: ascLvlMax(char.weapon.refinement),

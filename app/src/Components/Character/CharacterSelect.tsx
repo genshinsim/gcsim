@@ -1,6 +1,6 @@
 import { ItemPredicate, Omnibar } from "@blueprintjs/select";
 import { ICharacter, characterSelectProps } from "./characters";
-
+import { simSlice } from "~src/Pages/Sim";
 const CharacterOmnibar = Omnibar.ofType<ICharacter>();
 
 type Props = {

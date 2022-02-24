@@ -15,6 +15,7 @@ const lsKey = "GOOD-import";
 export function LoadGOOD(props: Props) {
   const [str, setStr] = React.useState<string>("");
   const [data, setData] = React.useState<IGOODImport>();
+  const [isSuccess, setIsSuccess] = React.useState(false);
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -26,6 +27,8 @@ export function LoadGOOD(props: Props) {
   const handleLoad = () => {
     if (data) {
       dispatch(simActions.saveFromGO({ data }));
+      console.log("test");
+      setIsSuccess(true);
     }
   };
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -51,7 +54,7 @@ export function LoadGOOD(props: Props) {
             href="https://frzyc.github.io/genshin-optimizer/#/database"
             target="_blank"
           >
-            here
+            <text> here</text>
           </a>
         </p>
         <textarea
@@ -66,6 +69,10 @@ export function LoadGOOD(props: Props) {
           {data && data.err && (
             <div className="pt-1.5 text-red-500">{data.err}</div>
           )}
+          {isSuccess && (
+            <div className="pt-1.5 text-green-500">Successfully imported!</div>
+          )}
+
           <Button onClick={handleLoad}>Load</Button>
           <Button onClick={props.onClose}>Close</Button>
         </div>
