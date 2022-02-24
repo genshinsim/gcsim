@@ -22,12 +22,13 @@ export function LoadGOOD(props: Props) {
     const val = localStorage.getItem(lsKey);
     if (val !== null && val !== "") {
       setStr(val);
+      setData(parseFromGO(val));
     }
   }, []);
   const handleLoad = () => {
     if (data) {
+      // setData(parseFromGO());
       dispatch(simActions.saveFromGO({ data }));
-      console.log("test");
       setIsSuccess(true);
     }
   };
@@ -69,7 +70,7 @@ export function LoadGOOD(props: Props) {
           {data && data.err && (
             <div className="pt-1.5 text-red-500">{data.err}</div>
           )}
-          {isSuccess && (
+          {data && isSuccess && data.err === "" && (
             <div className="pt-1.5 text-green-500">Successfully imported!</div>
           )}
 

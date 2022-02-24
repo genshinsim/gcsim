@@ -6,7 +6,7 @@ import { ascLvlMax, ascLvlMin, maxLvlToAsc } from "~src/util";
 import { WorkerPool } from "~src/WorkerPool";
 import { IGOODImport } from "./Components/char";
 import { charToCfg } from "./helper";
-import { Character as GOChar } from "./Components/types";
+import { Artifact, Character as GOChar } from "./Components/types";
 
 export let pool: WorkerPool = new WorkerPool();
 
@@ -60,8 +60,15 @@ const defWep: { [key: string]: string } = {
 
 const convertFromGO = (char: GOChar): Character=>{
 
-  let newStats;
-  let setCount;
+  const artifacts = Object.values(char.artifact);
+  const newStats = artifacts.map((artifact) => {artifact.substats})
+  const setCount = tallyArtifactSet(artifacts)
+  console.log(setCount)
+  // take out and store set key
+
+  // sum sub and main stats
+  // console.log("pepega")
+  // console.log(artifacts)
 
 return {name: char.name,
   level: char.level,
@@ -88,7 +95,34 @@ return {name: char.name,
   // need to sum arti sets
   sets: {},}
 }
+//should probably check if the clamp is ever needed
+const tallyArtifactSet = (artifacts: Artifact[]): {[key: string]: number}=>{
+  const setKeyTally: {[key: string]: number} = {};
+  artifacts.map((artifact) => {return artifact.setKey}) // returns array of just set keys
+  .map((setKey) => {
+  // console.log(Object.keys(setKeyTally))
 
+    if (Object.keys(setKeyTally).includes(setKey)){
+    setKeyTally[setKey] += 1 }
+    else{
+      setKeyTally[setKey] = 1;
+    }
+  });
+  // Object.keys(setKeyTally).forEach(setKey => {
+  //   if(setKeyTally[setKey] < 2){
+  //     delete setKeyTally.setKey
+  //   }
+  //   else if(setKeyTally[setKey] > 2 && setKeyTally[setKey] < 4 ){
+  //     setKeyTally[setKey]= 2
+  //   }
+  //   else if(setKeyTally[setKey] > 4){
+  //     setKeyTally[setKey]= 4
+  //   }
+    
+  // });
+  return setKeyTally
+
+}
 
 const newChar = (name: string): Character => {
   const c = characterKeyToICharacter[name];
