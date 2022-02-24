@@ -34,7 +34,7 @@ func testUseAction(a core.ActionType, c *core.Core, x core.Character, count int)
 	}
 }
 
-func skipFrames(c *core.Core, i int) {
+func SkipFrames(c *core.Core, i int) {
 	for x := 0; x < i; x++ {
 		c.Tick()
 	}
@@ -47,7 +47,7 @@ func setupChar(c *core.Core, x core.Character) {
 	c.Init()
 
 	c.Targets = append(c.Targets, player.New(0, c))
-	c.Targets = append(c.Targets, enemy.New(1, c, EnemeyProfile()))
+	c.Targets = append(c.Targets, enemy.New(1, c, EnemyProfile()))
 }
 
 func TestCatalystCharacter(c *core.Core, x core.Character) {
@@ -56,7 +56,7 @@ func TestCatalystCharacter(c *core.Core, x core.Character) {
 	testUseAction(core.ActionBurst, c, x, 1)
 	testUseAction(core.ActionAttack, c, x, 10)
 	testUseAction(core.ActionCharge, c, x, 1)
-	skipFrames(c, 1200)
+	SkipFrames(c, 1200)
 }
 
 func TestSwordCharacter(c *core.Core, x core.Character) {
@@ -65,7 +65,7 @@ func TestSwordCharacter(c *core.Core, x core.Character) {
 	testUseAction(core.ActionBurst, c, x, 1)
 	testUseAction(core.ActionAttack, c, x, 10)
 	testUseAction(core.ActionCharge, c, x, 1)
-	skipFrames(c, 1200)
+	SkipFrames(c, 1200)
 }
 
 func TestPolearmCharacter(c *core.Core, x core.Character) {
@@ -74,7 +74,7 @@ func TestPolearmCharacter(c *core.Core, x core.Character) {
 	testUseAction(core.ActionBurst, c, x, 1)
 	testUseAction(core.ActionAttack, c, x, 10)
 	testUseAction(core.ActionCharge, c, x, 1)
-	skipFrames(c, 1200)
+	SkipFrames(c, 1200)
 }
 
 func TestClaymoreCharacter(c *core.Core, x core.Character) {
@@ -82,7 +82,7 @@ func TestClaymoreCharacter(c *core.Core, x core.Character) {
 	testUseAction(core.ActionSkill, c, x, 1)
 	testUseAction(core.ActionBurst, c, x, 1)
 	testUseAction(core.ActionAttack, c, x, 10)
-	skipFrames(c, 1200)
+	SkipFrames(c, 1200)
 }
 
 func TestBowCharacter(c *core.Core, x core.Character) {
@@ -92,5 +92,5 @@ func TestBowCharacter(c *core.Core, x core.Character) {
 	testUseAction(core.ActionAttack, c, x, 10)
 	testUseAction(core.ActionCharge, c, x, 1)
 	testUseAction(core.ActionAim, c, x, 10)
-	skipFrames(c, 1200)
+	SkipFrames(c, 1200)
 }
