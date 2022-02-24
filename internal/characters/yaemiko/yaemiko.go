@@ -18,8 +18,7 @@ type char struct {
 	additionalCDCharge     []int
 	a2skillTimer           int
 	a2burstTimer           int
-	turretBonus            int
-	totemLastParticleF     int
+	totemParticleICD       int
 }
 
 const (
@@ -48,7 +47,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.additionalCDCharge = make([]int, core.EndActionType)
 	c.availableCDCharge = make([]int, core.EndActionType)
 	c.kitsunes = make([]*kitsune, 0, 5)
-	c.totemLastParticleF = 0
+	c.totemParticleICD = 0
 
 	for i := 0; i < len(c.cdQueue); i++ {
 		c.cdQueue[i] = make([]int, 0, 4)
@@ -70,11 +69,6 @@ func (c *char) Init(index int) {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-	c.turretBonus = 0
-	if c.Base.Cons >= 2 {
-		c.turretBonus = 1
-	}
-
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

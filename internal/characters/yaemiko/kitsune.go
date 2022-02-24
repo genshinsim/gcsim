@@ -16,7 +16,7 @@ func (c *char) makeKitsune() {
 	k.src = c.Core.F
 	k.deleted = false
 	//start ticking
-	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 45)
+	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 45+50)
 	//add task to delete this one if times out (and not deleted by anything else)
 	c.AddTask(func() {
 		//i think we can just check for .deleted here
@@ -37,6 +37,15 @@ func (c *char) makeKitsune() {
 	c.kitsunes = append(c.kitsunes, k)
 	c.AddTag(yaeTotemCount, c.sakuraLevelCheck())
 
+}
+
+func (c *char) popAllKitsune() {
+	for i := range c.kitsunes {
+		c.kitsunes[i].deleted = true
+	}
+	c.kitsunes = c.kitsunes[:0]
+	c.Core.Status.DeleteStatus(yaeTotemStatus)
+	c.AddTag(yaeTotemCount, 0)
 }
 
 func (c *char) popOldestKitsune() {
@@ -75,10 +84,11 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, pattern core.AttackPattern) {
 	}
 	// c.AddTask(func() {
 	// 	//pop all?
-	for range c.kitsunes {
-		c.popOldestKitsune()
-	}
+	// for range c.kitsunes {
+	// 	c.popOldestKitsune()
+	// }
 	// }, "delay despawn for kitsunes", 0)
+	c.popAllKitsune()
 
 }
 
@@ -91,33 +101,41 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		}
 		// c6
 		// Sesshou Sakura start at Level 2 when created. Max level increased to 4, and their attacks will ignore 45% of the opponents' DEF.
+
+		lvl := c.sakuraLevelCheck()
+		if c.Base.Cons >= 2 {
+			lvl += 1
+		}
+
 		ai := core.AttackInfo{
 			Abil:       "Sesshou Sakura Tick",
 			ActorIndex: c.Index,
 			AttackTag:  core.AttackTagElementalArt,
+			Mult:       skill[lvl][c.TalentLvlSkill()],
 			ICDTag:     core.ICDTagElementalArt,
 			ICDGroup:   core.ICDGroupDefault,
 			StrikeType: core.StrikeTypeDefault,
 			Element:    core.Electro,
 			Durability: 25,
 		}
+
+		c.Core.Log.NewEvent("sky kitsune tick at level", core.LogCharacterEvent, c.Index, "sakura level", lvl)
+
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
 		}
-		// no snapshot
-		c.AddTask(func() {
-			if totem.deleted {
+
+		cb := func(ac core.AttackCB) {
+			//on hit check for particles
+			c.Core.Log.NewEvent("sky kitsune particle", core.LogCharacterEvent, c.Index, "lastParticleF", c.totemParticleICD)
+			if c.Core.F < c.totemParticleICD {
 				return
 			}
-			c.Core.Log.NewEvent("sky kitsune tick at level", core.LogCharacterEvent, c.Index, "sakura level", c.sakuraLevelCheck())
-			ai.Mult = skill[c.sakuraLevelCheck()+c.turretBonus-1][c.TalentLvlSkill()]
-			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 1, 1)
-		}, "kitsune-tick", 50)
-		if c.Core.F+51 >= c.totemLastParticleF+176 { // 176 frame ICD until we are sure about ICD
-			c.Core.Log.NewEvent("sky kitsune particle", core.LogCharacterEvent, c.Index, "lastParticleF", c.totemLastParticleF)
-			c.QueueParticle("yaemiko", 1, core.Electro, 51+30)
-			c.totemLastParticleF = c.Core.F + 51
+			c.totemParticleICD = c.Core.F + 176
+			c.QueueParticle("yaemiko", 1, core.Electro, 30)
 		}
+
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 1, 1, cb)
 		// tick per 2.5 seconds
 		c.AddTask(c.kitsuneTick(totem), "kitsune-tick", 176)
 	}
