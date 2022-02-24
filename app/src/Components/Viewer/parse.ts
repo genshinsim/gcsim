@@ -14,6 +14,7 @@ export interface DebugItem {
   color: string;
   icon: string;
   amount: number;
+  ended: number;
   target: "";
 }
 
@@ -103,6 +104,7 @@ export function parseLog(
       color: eventColor(d.event),
       icon: "circle",
       amount: 0,
+      ended: d.frame,
       target: "",
     };
 

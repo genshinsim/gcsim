@@ -102,6 +102,7 @@ export function parseLogV2(
       icon: "circle",
       amount: 0,
       target: "",
+      ended: line.ended,
     };
 
     if (e.color === "") {

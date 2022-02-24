@@ -1,13 +1,29 @@
 import { DebugItemView } from "./DebugItemView";
-import { DebugRow } from "./parse";
+import { DebugItem, DebugRow } from "./parse";
 import { useVirtual } from "react-virtual";
 import AutoSizer from "react-virtualized-auto-sizer";
 import React from "react";
 
-const Row = ({ row }: { row: DebugRow }) => {
+type buffSetting = {
+  start: number;
+  end: number;
+  show: boolean;
+};
+
+const Row = ({
+  row,
+  highlight,
+  showBuffDuration,
+}: {
+  row: DebugRow;
+  highlight: buffSetting;
+  showBuffDuration: (e: DebugItem) => void;
+}) => {
   const cols = row.slots.map((slot, ci) => {
     const events = slot.map((e, ei) => {
-      return <DebugItemView item={e} key={ei} />;
+      return (
+        <DebugItemView item={e} key={ei} showBuffDuration={showBuffDuration} />
+      );
     });
 
     return (
@@ -24,11 +40,18 @@ const Row = ({ row }: { row: DebugRow }) => {
     );
   });
 
+  const hl =
+    highlight.show && row.f >= highlight.start && row.f <= highlight.end;
+
   //map out each col
   return (
     <div className="flex flex-row" key={row.key}>
       <div
-        className="text-right text-gray-100 border-b-2 border-gray-500"
+        className={
+          hl
+            ? "text-right text-gray-100 border-b-2 border-gray-500 bg-blue-500"
+            : "text-right text-gray-100 border-b-2 border-gray-500"
+        }
         style={{ minWidth: "100px" }}
       >
         <div>{`${row.f} | ${(row.f / 60).toFixed(2)}s`}</div>
@@ -43,6 +66,21 @@ const Row = ({ row }: { row: DebugRow }) => {
 
 export function Debugger({ data, team }: { data: DebugRow[]; team: string[] }) {
   const parentRef = React.useRef<HTMLDivElement>(null!);
+  const [hl, sethl] = React.useState<buffSetting>({
+    start: 0,
+    end: 0,
+    show: false,
+  });
+
+  const handleShowBuffDuration = (e: DebugItem) => {
+    // const show = hl.show;
+    let next = {
+      show: true,
+      start: e.frame,
+      end: e.ended,
+    };
+    sethl(next);
+  };
 
   const rowVirtualizer = useVirtual({
     size: data.length,
@@ -83,7 +121,9 @@ export function Debugger({ data, team }: { data: DebugRow[]; team: string[] }) {
           >
             <div className="flex flex-row debug-header">
               <div
-                className="font-medium text-lg text-gray-100 border-b-2 border-gray-500 text-right"
+                className={
+                  "font-medium text-lg text-gray-100 border-b-2 border-gray-500 text-right "
+                }
                 style={{ minWidth: "100px" }}
               >
                 F | Sec
@@ -126,7 +166,11 @@ export function Debugger({ data, team }: { data: DebugRow[]; team: string[] }) {
                   }}
                   // id={"virtual-row-"+virtualRow.key}
                 >
-                  <Row row={data[virtualRow.index]} />
+                  <Row
+                    row={data[virtualRow.index]}
+                    highlight={hl}
+                    showBuffDuration={handleShowBuffDuration}
+                  />
                 </div>
               ))}
             </div>
