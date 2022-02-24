@@ -220,9 +220,10 @@ func (c *char) skillHoldLong() {
 
 }
 
+const burstStartFrame = 31
+
 func (c *char) Burst(p map[string]int) (int, int) {
 
-	burstStartFrame := 31
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//add field effect timer
@@ -258,6 +259,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	return f, a //todo fix field cast time
 }
 
+const bennettSelfInfusionDurationInFrames = 126
+
 func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 	hpplus := stats[core.Heal]
 	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
@@ -274,7 +277,7 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 		if !ok {
 			panic("target 0 should be Player but is not!!")
 		}
-		player.ApplySelfInfusion(core.Pyro, 25, 126)
+		player.ApplySelfInfusion(core.Pyro, 25, bennettSelfInfusionDurationInFrames)
 
 		active := c.Core.Chars[c.Core.ActiveChar]
 		//heal if under 70%

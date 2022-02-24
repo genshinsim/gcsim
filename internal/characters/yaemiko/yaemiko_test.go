@@ -23,7 +23,7 @@ func TestBasicAbilUsage(t *testing.T) {
 	c.CharPos[prof.Base.Key] = 0
 	c.Init()
 	//add targets to test with
-	eProf := testhelper.EnemeyProfile()
+	eProf := testhelper.EnemyProfile()
 	c.Targets = append(c.Targets, player.New(0, c))
 	c.Targets = append(c.Targets, enemy.New(1, c, eProf))
 

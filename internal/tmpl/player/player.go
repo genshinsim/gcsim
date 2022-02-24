@@ -41,6 +41,8 @@ func (p *Player) ReactBonus(atk core.AttackInfo) float64     { return 0 }
 func (p *Player) Kill()                                      {}
 
 func (p *Player) ApplySelfInfusion(ele core.EleType, dur core.Durability, f int) {
+
+	p.Core.Log.NewEventBuildMsg(core.LogSimEvent, -1, "self infusion applied: "+ele.String()).Write("durability", dur, "duration", f)
 	//we're assuming self infusion isn't subject to 0.8x multiplier
 	//also no real sanity check
 	if ele == core.Frozen {
@@ -49,7 +51,13 @@ func (p *Player) ApplySelfInfusion(ele core.EleType, dur core.Durability, f int)
 
 	//we're assuming refill maintains the same decay rate?
 	if p.Durability[ele] > reactable.ZeroDur {
-		p.Durability[ele] += dur
+		//make sure we're not adding more than incoming
+		if p.Durability[ele] < dur {
+			if p.Durability[ele]+dur > dur {
+				dur = dur - p.Durability[ele]
+			}
+			p.Durability[ele] += dur
+		}
 		return
 	}
 	//otherwise calculate decay based on specified f (in frames)

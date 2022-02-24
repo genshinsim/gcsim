@@ -29,7 +29,7 @@ func CharProfile(key core.CharKey, ele core.EleType, cons int) core.CharacterPro
 	return r
 }
 
-func EnemeyProfile() core.EnemyProfile {
+func EnemyProfile() core.EnemyProfile {
 	r := core.EnemyProfile{}
 	//target+="dummy" lvl=90 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 	r.Level = 90
