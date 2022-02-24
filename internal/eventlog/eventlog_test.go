@@ -49,11 +49,12 @@ func TestEventWriteNonStringKeyPanic(t *testing.T) {
 
 func TestEventWriteKeyVal(t *testing.T) {
 	e := &Event{
-		Msg:     "test",
-		F:       1,
-		Typ:     core.LogCharacterEvent,
-		SrcChar: 0,
-		Logs:    map[string]interface{}{},
+		Msg:      "test",
+		F:        1,
+		Typ:      core.LogCharacterEvent,
+		SrcChar:  0,
+		Logs:     map[string]interface{}{},
+		Ordering: make(map[string]int),
 	}
 
 	//this should be ok no panic

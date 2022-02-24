@@ -18,7 +18,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog(in *jlexer.Lexer, out *EventArr) {
+func easyjsonF1fb7bcaDecodeGithubComGenshinsimGcsimInternalEventlog(in *jlexer.Lexer, out *EventArr) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		in.Skip()
@@ -54,7 +54,7 @@ func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog(in *jlexer.Lex
 		in.Consumed()
 	}
 }
-func easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog(out *jwriter.Writer, in EventArr) {
+func easyjsonF1fb7bcaEncodeGithubComGenshinsimGcsimInternalEventlog(out *jwriter.Writer, in EventArr) {
 	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
@@ -76,27 +76,27 @@ func easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog(out *jwriter.W
 // MarshalJSON supports json.Marshaler interface
 func (v EventArr) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog(&w, v)
+	easyjsonF1fb7bcaEncodeGithubComGenshinsimGcsimInternalEventlog(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v EventArr) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog(w, v)
+	easyjsonF1fb7bcaEncodeGithubComGenshinsimGcsimInternalEventlog(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *EventArr) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog(&r, v)
+	easyjsonF1fb7bcaDecodeGithubComGenshinsimGcsimInternalEventlog(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *EventArr) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog(l, v)
+	easyjsonF1fb7bcaDecodeGithubComGenshinsimGcsimInternalEventlog(l, v)
 }
-func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog1(in *jlexer.Lexer, out *Event) {
+func easyjsonF1fb7bcaDecodeGithubComGenshinsimGcsimInternalEventlog1(in *jlexer.Lexer, out *Event) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -116,7 +116,7 @@ func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog1(in *jlexer.Le
 		}
 		switch key {
 		case "event":
-			out.Typ = core.LogSourceFromString[in.String()]
+			out.Typ = core.LogSource(core.LogSourceFromString[in.String()])
 		case "frame":
 			out.F = int(in.Int())
 		case "ended":
@@ -147,6 +147,22 @@ func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog1(in *jlexer.Le
 				}
 				in.Delim('}')
 			}
+		case "ordering":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				in.Delim('{')
+				out.Ordering = make(map[string]int)
+				for !in.IsDelim('}') {
+					key := string(in.String())
+					in.WantColon()
+					var v5 int
+					v5 = int(in.Int())
+					(out.Ordering)[key] = v5
+					in.WantComma()
+				}
+				in.Delim('}')
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -157,7 +173,7 @@ func easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog1(in *jlexer.Le
 		in.Consumed()
 	}
 }
-func easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog1(out *jwriter.Writer, in Event) {
+func easyjsonF1fb7bcaEncodeGithubComGenshinsimGcsimInternalEventlog1(out *jwriter.Writer, in Event) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -193,22 +209,43 @@ func easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog1(out *jwriter.
 			out.RawString(`null`)
 		} else {
 			out.RawByte('{')
-			v5First := true
-			for v5Name, v5Value := range in.Logs {
-				if v5First {
-					v5First = false
+			v6First := true
+			for v6Name, v6Value := range in.Logs {
+				if v6First {
+					v6First = false
 				} else {
 					out.RawByte(',')
 				}
-				out.String(string(v5Name))
+				out.String(string(v6Name))
 				out.RawByte(':')
-				if m, ok := v5Value.(easyjson.Marshaler); ok {
+				if m, ok := v6Value.(easyjson.Marshaler); ok {
 					m.MarshalEasyJSON(out)
-				} else if m, ok := v5Value.(json.Marshaler); ok {
+				} else if m, ok := v6Value.(json.Marshaler); ok {
 					out.Raw(m.MarshalJSON())
 				} else {
-					out.Raw(json.Marshal(v5Value))
+					out.Raw(json.Marshal(v6Value))
 				}
+			}
+			out.RawByte('}')
+		}
+	}
+	{
+		const prefix string = ",\"ordering\":"
+		out.RawString(prefix)
+		if in.Ordering == nil && (out.Flags&jwriter.NilMapAsEmpty) == 0 {
+			out.RawString(`null`)
+		} else {
+			out.RawByte('{')
+			v7First := true
+			for v7Name, v7Value := range in.Ordering {
+				if v7First {
+					v7First = false
+				} else {
+					out.RawByte(',')
+				}
+				out.String(string(v7Name))
+				out.RawByte(':')
+				out.Int(int(v7Value))
 			}
 			out.RawByte('}')
 		}
@@ -219,23 +256,23 @@ func easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog1(out *jwriter.
 // MarshalJSON supports json.Marshaler interface
 func (v Event) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog1(&w, v)
+	easyjsonF1fb7bcaEncodeGithubComGenshinsimGcsimInternalEventlog1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Event) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonCdc2ed07EncodeGithubComGenshinsimGcsimInternalEvtlog1(w, v)
+	easyjsonF1fb7bcaEncodeGithubComGenshinsimGcsimInternalEventlog1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Event) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog1(&r, v)
+	easyjsonF1fb7bcaDecodeGithubComGenshinsimGcsimInternalEventlog1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Event) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonCdc2ed07DecodeGithubComGenshinsimGcsimInternalEvtlog1(l, v)
+	easyjsonF1fb7bcaDecodeGithubComGenshinsimGcsimInternalEventlog1(l, v)
 }

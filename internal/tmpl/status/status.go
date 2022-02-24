@@ -51,6 +51,7 @@ func (s *StatusCtrl) AddStatus(key string, dur int) {
 	//otherwise create a new event
 	a.evt = s.core.Log.NewEvent("status added: ", core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur)
 	a.expiry = s.core.F + dur
+	a.evt.SetEnded(a.expiry)
 
 	s.status[key] = a
 }
