@@ -61,9 +61,9 @@ const defWep: { [key: string]: string } = {
 const convertFromGO = (char: GOChar): Character=>{
 
   const artifacts = Object.values(char.artifact);
-  const newStats = artifacts.map((artifact) => {artifact.substats})
+  const newStats = sumArtifactStats(artifacts);
   const setCount = tallyArtifactSet(artifacts)
-  console.log(setCount)
+  // console.log(setCount)  
   // take out and store set key
 
   // sum sub and main stats
@@ -93,16 +93,15 @@ return {name: char.name,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ],
   // need to sum arti sets
-  sets: {},}
+  sets: setCount,}
 }
 const tallyArtifactSet = (artifacts: Artifact[]): {[key: string]: number}=>{
   const setKeyTally: {[key: string]: number} = {};
   artifacts.map((artifact) => {return artifact.setKey}) 
   .map((setKey) => {
-
-    if (Object.keys(setKeyTally).includes(setKey)){
+    if (Object.keys(setKeyTally).includes(setKey) ){
     setKeyTally[setKey] += 1 }
-    else{
+    else if(setKey!=""){
       setKeyTally[setKey] = 1;
     }
   });// Tallies the set keys
@@ -118,9 +117,16 @@ const tallyArtifactSet = (artifacts: Artifact[]): {[key: string]: number}=>{
     else if(setKeyTally[setKey] > 4){
       setKeyTally[setKey]= 4
     }
-    
   });
   return setKeyTally
+}
+
+const sumArtifactStats = (artifacts: Artifact[]): number[]=>{
+  const totalStats =[1];
+  const totalMains= artifacts.map((artifact) => {return artifact.mainStatKey})
+  const totalSubs = artifacts.map((artifact) => {return artifact.substats}) 
+console.log(totalMains)
+  return totalStats;
 
 }
 
