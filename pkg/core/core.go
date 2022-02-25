@@ -175,7 +175,7 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 		if ok {
 			f(char, c, count, v.SetParams[key])
 		} else {
-			return nil, fmt.Errorf("unrecognized artifact: %v", key)
+			return nil, fmt.Errorf("character %v has unrecognized artifact: %v", v.Base.Name, key)
 		}
 	}
 	if total > 5 {
