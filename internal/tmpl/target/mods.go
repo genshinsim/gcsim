@@ -18,23 +18,32 @@ func (t *Tmpl) AddDefMod(key string, val float64, dur int) {
 		}
 	}
 	if ind != -1 {
-		t.Core.Log.NewEvent("enemy mod refreshed", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
+		m.Evt = t.DefMod[ind].Evt
+		ref := t.Core.Log.NewEvent("enemy mod refreshed", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
+		if m.Expiry != -1 {
+			m.Evt.SetEnded(m.Expiry)
+			ref.SetEnded(m.Expiry)
+		}
 		t.DefMod[ind] = m
 		return
 	}
+	m.Evt = t.Core.Log.NewEvent("enemy mod added", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
+	if m.Expiry != -1 {
+		m.Evt.SetEnded(m.Expiry)
+	}
 	t.DefMod = append(t.DefMod, m)
-	t.Core.Log.NewEvent("enemy mod added", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
+
 	// e.mod[key] = val
 
 	// Add task to check for mod expiry in debug instances
-	if t.Core.Flags.LogDebug && m.Expiry > 0 {
-		t.AddTask(func() {
-			if t.HasDefMod(m.Key) {
-				return
-			}
-			t.Core.Log.NewEvent("enemy mod expired", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
-		}, "check-m-expiry", m.Expiry+1-t.Core.F)
-	}
+	// if t.Core.Flags.LogDebug && m.Expiry > 0 {
+	// 	t.AddTask(func() {
+	// 		if t.HasDefMod(m.Key) {
+	// 			return
+	// 		}
+	// 		t.Core.Log.NewEvent("enemy mod expired", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
+	// 	}, "check-m-expiry", m.Expiry+1-t.Core.F)
+	// }
 }
 
 func (t *Tmpl) HasDefMod(key string) bool {
@@ -58,23 +67,31 @@ func (t *Tmpl) AddResMod(key string, val core.ResistMod) {
 		}
 	}
 	if ind != -1 {
-		t.Core.Log.NewEvent("enemy mod refreshed", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", val, "target", t.TargetIndex, "key", val.Key, "expiry", val.Expiry)
+		ref := t.Core.Log.NewEvent("enemy mod refreshed", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", val, "target", t.TargetIndex, "key", val.Key, "expiry", val.Expiry)
+		val.Evt = t.ResMod[ind].Evt
+		if val.Expiry != -1 {
+			val.Evt.SetEnded(val.Expiry)
+			ref.SetEnded(val.Expiry)
+		}
 		t.ResMod[ind] = val
 		return
 	}
+	val.Evt = t.Core.Log.NewEvent("enemy mod added", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", val, "target", t.TargetIndex, "key", val.Key, "expiry", val.Expiry)
+	if val.Expiry != -1 {
+		val.Evt.SetEnded(val.Expiry)
+	}
 	t.ResMod = append(t.ResMod, val)
-	t.Core.Log.NewEvent("enemy mod added", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", val, "target", t.TargetIndex, "key", val.Key, "expiry", val.Expiry)
 	// e.mod[key] = val
 
 	// Add task to check for mod expiry in debug instances
-	if t.Core.Flags.LogDebug && val.Expiry > -1 {
-		t.AddTask(func() {
-			if t.HasResMod(val.Key) {
-				return
-			}
-			t.Core.Log.NewEvent("enemy mod expired", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", val, "target", t.TargetIndex, "key", val.Key, "expiry", val.Expiry)
-		}, "check-m-expiry", val.Expiry+1-t.Core.F)
-	}
+	// if t.Core.Flags.LogDebug && val.Expiry > -1 {
+	// 	t.AddTask(func() {
+	// 		if t.HasResMod(val.Key) {
+	// 			return
+	// 		}
+	// 		t.Core.Log.NewEvent("enemy mod expired", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", val, "target", t.TargetIndex, "key", val.Key, "expiry", val.Expiry)
+	// 	}, "check-m-expiry", val.Expiry+1-t.Core.F)
+	// }
 }
 
 func (t *Tmpl) RemoveResMod(key string) {

@@ -92,12 +92,14 @@ type CharStatMod struct {
 	Amount        func() ([]float64, bool) // Returns an array containing the stats boost and whether mod applies
 	ConditionTags []AttackTag
 	Expiry        int
+	Evt           LogEvent
 }
 
 type PreDamageMod struct {
 	Key    string
 	Amount func(atk *AttackEvent, t Target) ([]float64, bool) // Returns an array containing the stats boost and whether mod applies
 	Expiry int
+	Evt    LogEvent
 }
 
 type WeaponInfusion struct {
@@ -105,6 +107,7 @@ type WeaponInfusion struct {
 	Ele    EleType
 	Tags   []AttackTag
 	Expiry int
+	Evt    LogEvent
 }
 
 type CDAdjust struct {
@@ -123,4 +126,5 @@ type ReactionBonusMod struct {
 	Key    string
 	Amount func(AttackInfo) (float64, bool)
 	Expiry int
+	Evt    LogEvent
 }
