@@ -35,7 +35,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 4 {
 
 		//post snap shot to increase stacks
-		s.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
+		s.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
