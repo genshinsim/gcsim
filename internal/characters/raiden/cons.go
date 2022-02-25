@@ -2,29 +2,26 @@ package raiden
 
 import "github.com/genshinsim/gcsim/pkg/core"
 
-func (c *char) c6() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if c.Core.Status.Duration("raidenburst") == 0 {
-			return false
-		}
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if atk.Info.Abil != "Musou Isshin" {
-			return false
-		}
-		if c.c6ICD > c.Core.F {
-			return false
+func (c *char) c6() func(ac core.AttackCB) {
+	if c.Base.Cons < 6 {
+		return nil
+	}
+
+	return func(ac core.AttackCB) {
+		if c.Core.F < c.c6ICD {
+			return
 		}
 		if c.c6Count == 5 {
-			return false
+			return
 		}
 		c.c6ICD = c.Core.F + 60
 		c.c6Count++
-		for _, char := range c.Core.Chars {
-			char.ReduceActionCooldown(core.ActionBurst, 1)
+		c.Core.Log.NewEvent("raiden c6 triggered", core.LogCharacterEvent, c.Index, "next_icd", c.c6ICD, "count", c.c6Count)
+		for i, char := range c.Core.Chars {
+			if i == c.Index {
+				continue
+			}
+			char.ReduceActionCooldown(core.ActionBurst, 60)
 		}
-		return false
-	}, "raiden-c6")
+	}
 }
