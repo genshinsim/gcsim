@@ -2,6 +2,7 @@ package raiden
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -48,32 +49,31 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	if c.Core.Status.Duration("raidenburst") == 0 {
-
-		f, a := c.ActionFrames(core.ActionCharge, p)
-
-		ai := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Charge Attack",
-			AttackTag:  core.AttackTagExtra,
-			ICDTag:     core.ICDTagExtraAttack,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Physical,
-			Durability: 25,
-			Mult:       charge[c.TalentLvlAttack()],
-		}
-
-		c.Core.Combat.QueueAttack(
-			ai,
-			core.NewDefCircHit(0.5, false, core.TargettableEnemy),
-			f-31,
-			f-31,
-		)
-
-		return f, a
+	if c.Core.Status.Duration("raidenburst") > 0 {
+		return c.swordCharge(p)
 	}
 
-	return c.swordCharge(p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge Attack",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+	}
+
+	c.Core.Combat.QueueAttack(
+		ai,
+		core.NewDefCircHit(0.5, false, core.TargettableEnemy),
+		f-31,
+		f-31,
+	)
+
+	return f, a
 
 }
 
@@ -124,6 +124,7 @@ func (c *char) swordAttack(f int, a int) (int, int) {
 			f-swordDelayOffset[c.NormalCounter][i],
 			f-swordDelayOffset[c.NormalCounter][i],
 			c.burstRestorefunc,
+			c.c6(),
 		)
 	}
 
@@ -159,6 +160,7 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 			f-42,
 			f-42,
 			c.burstRestorefunc,
+			c.c6(),
 		)
 	}
 
@@ -299,6 +301,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				},
 			})
 		}
+	}
+
+	if c.Base.Cons == 6 {
+		c.c6Count = 0
 	}
 
 	c.Core.Log.NewEvent("resolve stacks", core.LogCharacterEvent, c.Index, "stacks", c.stacksConsumed)
