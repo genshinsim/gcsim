@@ -118,16 +118,6 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 		return ds
 	}
 
-	//infusion to normal/plunge/charge
-	switch ai.AttackTag {
-	case core.AttackTagNormal:
-	case core.AttackTagExtra:
-	case core.AttackTagPlunge:
-	default:
-		return ds
-	}
-	ai.Element = core.Anemo
-
 	//add 0.2% dmg for every EM
 	ds.Stats[core.DmgP] += 0.002 * ds.Stats[core.EM]
 

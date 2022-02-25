@@ -31,6 +31,7 @@ const (
 	ICDTagNone ICDTag = iota
 	ICDTagNormalAttack
 	ICDTagExtraAttack
+	ICDTagPlungeAttack
 	ICDTagElementalArt
 	ICDTagElementalBurst
 	ICDTagDash
