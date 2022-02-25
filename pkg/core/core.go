@@ -214,7 +214,7 @@ func (c *Core) Swap(next CharKey) int {
 	return 1
 }
 
-func (c *Core) AnimationCancelDelay(next ActionType) int {
+func (c *Core) AnimationCancelDelay(next ActionType, p map[string]int) int {
 	//if last action is jump, dash, swap,
 	switch c.LastAction.Typ {
 	case ActionSwap:
@@ -225,7 +225,7 @@ func (c *Core) AnimationCancelDelay(next ActionType) int {
 		return 0
 	}
 	//other wise check with the current character
-	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next)
+	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next, p)
 }
 
 func (c *Core) UserCustomDelay() int {
@@ -246,7 +246,6 @@ func (c *Core) UserCustomDelay() int {
 	case ActionSwap:
 		d = c.Flags.Delays.Swap
 	}
-	c.Log.NewEvent("custom delay triggered", LogActionEvent, -1, "d", d, "param", c.LastAction.Param["delay"], "delays", c.Flags.Delays)
 	return c.LastAction.Param["delay"] + d
 }
 

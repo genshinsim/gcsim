@@ -41,44 +41,51 @@ type Tmpl struct {
 	NormalHitNum  int //how many hits in a normal combo
 	NormalCounter int
 
+	//map to track frames
+	normalCancelFrames map[int]map[core.ActionType]int             //this maps normal hit number into
+	cancelFrames       map[core.ActionType]map[core.ActionType]int //this maps all other skills
+
 	//infusion
 	Infusion core.WeaponInfusion //TODO currently just overides the old; disregarding any existing
 }
 
 func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
-	c := Tmpl{}
-	c.Core = x
-	c.Rand = x.Rand
+	t := Tmpl{}
+	t.Core = x
+	t.Rand = x.Rand
 
-	c.ActionCD = make([]int, core.EndActionType)
-	c.Mods = make([]core.CharStatMod, 0, 10)
-	c.Tags = make(map[string]int)
-	c.CDReductionFuncs = make([]core.CDAdjust, 0, 5)
-	c.Base = p.Base
-	c.Weapon = p.Weapon
-	c.Talents = p.Talents
-	c.SkillCon = 3
-	c.BurstCon = 5
-	if c.Talents.Attack < 1 || c.Talents.Attack > 15 {
-		return nil, fmt.Errorf("invalid talent lvl: attack - %v", c.Talents.Attack)
+	t.ActionCD = make([]int, core.EndActionType)
+	t.Mods = make([]core.CharStatMod, 0, 10)
+	t.Tags = make(map[string]int)
+	t.CDReductionFuncs = make([]core.CDAdjust, 0, 5)
+	t.Base = p.Base
+	t.Weapon = p.Weapon
+	t.Talents = p.Talents
+	t.SkillCon = 3
+	t.BurstCon = 5
+	if t.Talents.Attack < 1 || t.Talents.Attack > 15 {
+		return nil, fmt.Errorf("invalid talent lvl: attack - %v", t.Talents.Attack)
 	}
-	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
-		return nil, fmt.Errorf("invalid talent lvl: skill - %v", c.Talents.Skill)
+	if t.Talents.Attack < 1 || t.Talents.Attack > 12 {
+		return nil, fmt.Errorf("invalid talent lvl: skill - %v", t.Talents.Skill)
 	}
-	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
-		return nil, fmt.Errorf("invalid talent lvl: burst - %v", c.Talents.Burst)
+	if t.Talents.Attack < 1 || t.Talents.Attack > 12 {
+		return nil, fmt.Errorf("invalid talent lvl: burst - %v", t.Talents.Burst)
 	}
 	for i, v := range p.Stats {
-		c.Stats[i] = v
+		t.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		c.Core.Log.NewEvent("setting starting hp", core.LogCharacterEvent, c.Index, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
-		c.HPCurrent = p.Base.StartHP
+		t.Core.Log.NewEvent("setting starting hp", core.LogCharacterEvent, t.Index, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
+		t.HPCurrent = p.Base.StartHP
 	} else {
-		c.HPCurrent = math.MaxInt64
+		t.HPCurrent = math.MaxInt64
 	}
 
-	return &c, nil
+	t.normalCancelFrames = make(map[int]map[core.ActionType]int)
+	t.cancelFrames = make(map[core.ActionType]map[core.ActionType]int)
+
+	return &t, nil
 }
 
 // Character initialization function. Occurs AFTER all char/weapons are initially loaded

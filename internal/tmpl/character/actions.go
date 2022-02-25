@@ -46,11 +46,6 @@ func (c *Tmpl) ActionStam(a core.ActionType, p map[string]int) float64 {
 	}
 }
 
-func (c *Tmpl) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	c.Core.Log.NewEvent("ActionFrames not implemented", core.LogActionEvent, c.Index)
-	return 0, 0
-}
-
 func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 	switch a {
 	case core.ActionBurst:
@@ -63,10 +58,6 @@ func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 		return c.ActionCD[a] <= c.Core.F
 	}
 	return true
-}
-
-func (c *Tmpl) ActionInterruptableDelay(next core.ActionType) int {
-	return 0
 }
 
 func (c *Tmpl) AddCDAdjustFunc(rd core.CDAdjust) {
