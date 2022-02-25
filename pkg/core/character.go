@@ -1,8 +1,9 @@
 package core
 
 type Character interface {
-	Init(index int) //to be called when everything including weapon and artifacts has been loaded
-	Tick()          //function to be called every frame
+	SetIndex(index int) //to be called to set the index
+	Init()              //to be called when everything including weapon and artifacts has been loaded
+	Tick()              //function to be called every frame
 
 	//information functions
 	Key() CharKey

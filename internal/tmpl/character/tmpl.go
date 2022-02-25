@@ -81,9 +81,12 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 	return &c, nil
 }
 
-// Character initialization function. Occurs AFTER all char/weapons are initially loaded
-func (t *Tmpl) Init(index int) {
+func (t *Tmpl) SetIndex(index int) {
 	t.Index = index
+}
+
+// Character initialization function. Occurs AFTER all char/weapons are initially loaded
+func (t *Tmpl) Init() {
 	hpp := t.Stats[core.HPP]
 	hp := t.Stats[core.HP]
 
