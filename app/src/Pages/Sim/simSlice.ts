@@ -97,7 +97,7 @@ return {name: char.name,
 }
 const tallyArtifactSet = (artifacts: Artifact[]): {[key: string]: number}=>{
   const setKeyTally: {[key: string]: number} = {};
-  artifacts.map((artifact) => {return artifact.setKey}) // returns array of just set keys
+  artifacts.map((artifact) => {return artifact.setKey}) 
   .map((setKey) => {
 
     if (Object.keys(setKeyTally).includes(setKey)){
@@ -106,7 +106,7 @@ const tallyArtifactSet = (artifacts: Artifact[]): {[key: string]: number}=>{
       setKeyTally[setKey] = 1;
     }
   });// Tallies the set keys
-  
+
   // Clamps artifact set value for better handling down the line #blamesrl
   Object.keys(setKeyTally).forEach(setKey => {
     if(setKeyTally[setKey] < 2){
