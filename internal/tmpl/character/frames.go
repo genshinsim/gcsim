@@ -16,7 +16,7 @@ func (t *Tmpl) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 		//check our hit counter; should be hit counter - 1
 		lastHit := t.NormalCounter - 1
 		if lastHit < 0 {
-			lastHit = t.NormalHitNum
+			lastHit = t.NormalHitNum - 1
 		}
 		n, ok := t.normalCancelFrames[lastHit]
 		if !ok {

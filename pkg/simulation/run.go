@@ -124,24 +124,24 @@ func (s *Simulation) AdvanceFrame() error {
 		//so if current frame - when the last action is used is >= delay, then we shouldn't
 		//delay at all
 		if s.C.F-s.lastActionUsedAt >= delay {
-			s.C.Log.NewEvent(
-				"custom delay skipped",
-				core.LogActionEvent,
-				-1,
-				"time_passed_since_last", s.C.F-s.lastActionUsedAt,
-				"total_delay", delay,
-				"param", s.C.LastAction.Param["delay"],
-				"default_delays", s.C.Flags.Delays,
-			)
+			// s.C.Log.NewEvent(
+			// 	"custom delay skipped",
+			// 	core.LogActionEvent,
+			// 	-1,
+			// 	"time_passed_since_last", s.C.F-s.lastActionUsedAt,
+			// 	"total_delay", delay,
+			// 	"param", s.C.LastAction.Param["delay"],
+			// 	"default_delays", s.C.Flags.Delays,
+			// )
 			delay = 0
 		}
 
 		//other wise we can add delay
 		if delay > 0 {
 			s.C.Log.NewEvent(
-				"custom delay triggered",
+				"animation delay triggered",
 				core.LogActionEvent,
-				-1,
+				s.C.ActiveChar,
 				"total_delay", delay,
 				"param", s.C.LastAction.Param["delay"],
 				"default_delays", s.C.Flags.Delays,
