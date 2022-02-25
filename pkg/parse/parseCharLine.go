@@ -85,10 +85,10 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			n = p.next()
 			switch n.typ {
 			case itemParams:
-				//expecting [
-				n = p.next()
-				if n.typ != itemLeftSquareParen {
-					return nil, fmt.Errorf("invalid token after params; expecting [ got %v line %v", n, p.tokens)
+				//expecting =[
+				_, err = p.acceptSeqReturnLast(itemEqual, itemLeftSquareParen)
+				if err != nil {
+					return nil, err
 				}
 				p.backup()
 				//overriding here if it already exists
