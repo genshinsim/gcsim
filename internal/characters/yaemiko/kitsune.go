@@ -102,7 +102,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		// c6
 		// Sesshou Sakura start at Level 2 when created. Max level increased to 4, and their attacks will ignore 45% of the opponents' DEF.
 
-		lvl := c.sakuraLevelCheck()
+		lvl := c.sakuraLevelCheck() - 1
 		if c.Base.Cons >= 2 {
 			lvl += 1
 		}
