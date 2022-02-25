@@ -80,6 +80,12 @@ func (p *Parser) Parse() (core.SimulationConfig, error) {
 		}
 	}
 
+	//check number of targets (should have at least 1)
+
+	if len(p.cfg.Targets) == 0 {
+		return *p.cfg, errors.New("no target set; you should have at least 1 target added")
+	}
+
 	return *p.cfg, nil
 }
 
