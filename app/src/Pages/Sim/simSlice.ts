@@ -95,31 +95,31 @@ return {name: char.name,
   // need to sum arti sets
   sets: {},}
 }
-//should probably check if the clamp is ever needed
 const tallyArtifactSet = (artifacts: Artifact[]): {[key: string]: number}=>{
   const setKeyTally: {[key: string]: number} = {};
   artifacts.map((artifact) => {return artifact.setKey}) // returns array of just set keys
   .map((setKey) => {
-  // console.log(Object.keys(setKeyTally))
 
     if (Object.keys(setKeyTally).includes(setKey)){
     setKeyTally[setKey] += 1 }
     else{
       setKeyTally[setKey] = 1;
     }
-  });
-  // Object.keys(setKeyTally).forEach(setKey => {
-  //   if(setKeyTally[setKey] < 2){
-  //     delete setKeyTally.setKey
-  //   }
-  //   else if(setKeyTally[setKey] > 2 && setKeyTally[setKey] < 4 ){
-  //     setKeyTally[setKey]= 2
-  //   }
-  //   else if(setKeyTally[setKey] > 4){
-  //     setKeyTally[setKey]= 4
-  //   }
+  });// Tallies the set keys
+  
+  // Clamps artifact set value for better handling down the line #blamesrl
+  Object.keys(setKeyTally).forEach(setKey => {
+    if(setKeyTally[setKey] < 2){
+      delete setKeyTally[setKey]
+    }
+    else if(setKeyTally[setKey] > 2 && setKeyTally[setKey] < 4 ){
+      setKeyTally[setKey]= 2
+    }
+    else if(setKeyTally[setKey] > 4){
+      setKeyTally[setKey]= 4
+    }
     
-  // });
+  });
   return setKeyTally
 
 }
