@@ -24,7 +24,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Tmpl = t
 	c.Base.Element = core.Anemo
 
-	e, ok := p.Params["energy"]
+	e, ok := p.Params["start_energy"]
 	if !ok {
 		e = 80
 	}
