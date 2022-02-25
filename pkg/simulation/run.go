@@ -111,8 +111,9 @@ func (s *Simulation) AdvanceFrame() error {
 		var delay int
 		//check if the current action is executable right now; if not then delay
 		act, isAction := s.queue[0].(*core.ActionItem)
-		if isAction {
+		if isAction && s.lastActionCheckedAt != s.lastActionUsedAt {
 			delay = s.C.AnimationCancelDelay(act.Typ) + s.C.UserCustomDelay()
+			s.lastActionCheckedAt = s.lastActionUsedAt
 		}
 
 		if delay > 0 {
@@ -127,6 +128,7 @@ func (s *Simulation) AdvanceFrame() error {
 		// )
 
 		s.skip, done, err = s.C.Action.Exec(s.queue[0])
+		s.lastActionUsedAt = s.C.F
 		if err != nil {
 			return err
 		}

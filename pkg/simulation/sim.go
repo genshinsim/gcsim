@@ -18,6 +18,9 @@ type Simulation struct {
 	lastEnergyDrop int
 	//result
 	stats Result
+	//prevs action that was checked
+	lastActionUsedAt    int
+	lastActionCheckedAt int
 }
 
 func New(cfg core.SimulationConfig, c *core.Core) (*Simulation, error) {

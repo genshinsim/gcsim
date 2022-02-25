@@ -47,7 +47,37 @@ func parseOptions(p *Parser) (parseFn, error) {
 			case "swap_delay":
 				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 				if err == nil {
-					p.cfg.Settings.SwapDelay, err = itemNumberToInt(n)
+					p.cfg.Settings.Delays.Swap, err = itemNumberToInt(n)
+				}
+			case "attack_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Attack, err = itemNumberToInt(n)
+				}
+			case "charge_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Charge, err = itemNumberToInt(n)
+				}
+			case "skill_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Skill, err = itemNumberToInt(n)
+				}
+			case "burst_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Burst, err = itemNumberToInt(n)
+				}
+			case "jump_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Jump, err = itemNumberToInt(n)
+				}
+			case "dash_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Dash, err = itemNumberToInt(n)
 				}
 			case "er_calc":
 				//does nothing thus far...
