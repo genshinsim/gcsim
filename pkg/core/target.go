@@ -79,14 +79,14 @@ type ResistMod struct {
 	Value    float64
 	Duration int
 	Expiry   int
-	Evt      LogEvent
+	Evt      LogEvent `json:"-"`
 }
 
 type DefMod struct {
 	Key    string
 	Value  float64
 	Expiry int
-	Evt    LogEvent
+	Evt    LogEvent `json:"-"`
 }
 
 // func (c *Core) ReindexTargets() {
