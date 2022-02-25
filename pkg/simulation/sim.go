@@ -19,8 +19,7 @@ type Simulation struct {
 	//result
 	stats Result
 	//prevs action that was checked
-	lastActionUsedAt    int
-	lastActionCheckedAt int
+	lastActionUsedAt int
 }
 
 func New(cfg core.SimulationConfig, c *core.Core) (*Simulation, error) {
