@@ -22,7 +22,7 @@ type char struct {
 }
 
 const (
-	yaeTotemStatus = "oldestTotemTime"
+	yaeTotemStatus = "yae_oldest_totem_expiry"
 	yaeTotemCount  = "totems"
 )
 
