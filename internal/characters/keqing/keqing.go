@@ -23,7 +23,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Electro
-	c.Energy = 40
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 40
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 40
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
