@@ -33,8 +33,8 @@ func TestSkillSetCDSingleCharge(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	//check action ready
 	if x.ActionReady(core.ActionSkill, p) {
@@ -46,8 +46,8 @@ func TestSkillSetCDSingleCharge(t *testing.T) {
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 }
 
@@ -78,8 +78,8 @@ func TestBurstSetCDSingleCharge(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionBurst] > 0 {
-		t.Errorf("expecting 0 burst stacks got %v", x.availableCDCharge[core.ActionBurst])
+	if x.AvailableCDCharge[core.ActionBurst] > 0 {
+		t.Errorf("expecting 0 burst stacks got %v", x.AvailableCDCharge[core.ActionBurst])
 	}
 	//check action ready
 	if x.ActionReady(core.ActionBurst, p) {
@@ -91,8 +91,8 @@ func TestBurstSetCDSingleCharge(t *testing.T) {
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionBurst] != 1 {
-		t.Errorf("expecting 1 burst stacks got %v", x.availableCDCharge[core.ActionBurst])
+	if x.AvailableCDCharge[core.ActionBurst] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", x.AvailableCDCharge[core.ActionBurst])
 	}
 	//cooldown should be 0 since at least one avail?
 	if x.Cooldown(core.ActionBurst) != 0 {
@@ -134,13 +134,13 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 1 {
-		t.Errorf("expecting 1 stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 1 stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 2 stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 
 	//try longer cd
@@ -149,8 +149,8 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 1 {
-		t.Errorf("expecting 1 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 1 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	//check action ready (we have another stack)
 	if !x.ActionReady(core.ActionSkill, p) {
@@ -162,8 +162,8 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 2 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 
 	//try mixed cd
@@ -174,8 +174,8 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	//check action ready
 	if x.ActionReady(core.ActionSkill, p) {
@@ -187,15 +187,15 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	for i := 0; i < 10*60-1; i++ {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 1 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	//action should be ready since we have 1 stack
 	if !x.ActionReady(core.ActionSkill, p) {
@@ -207,8 +207,8 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 2 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 
 	//use press then hold
@@ -219,8 +219,8 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	//check action ready
 	if x.ActionReady(core.ActionSkill, p) {
@@ -232,15 +232,15 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	for i := 0; i < 15*60-1; i++ {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 1 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	//action should be ready since we have 1 stack
 	if !x.ActionReady(core.ActionSkill, p) {
@@ -252,8 +252,8 @@ func TestSkillSetCDDoubleCharge(t *testing.T) {
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 2 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 
 }
@@ -282,16 +282,16 @@ func TestFlatCDReduction(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if x.Cooldown(core.ActionSkill) != 1 {
 		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 burst stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -306,16 +306,16 @@ func TestFlatCDReduction(t *testing.T) {
 	}
 	//at this point there shoudl be 500 frames left
 	//we're going to reduce by 1000 and make sure stacks and everything are correct
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if x.Cooldown(core.ActionSkill) != 500 {
 		t.Errorf("expecting cooldown to be 500, got %v", x.Cooldown(core.ActionSkill))
 	}
 	x.ReduceActionCooldown(core.ActionSkill, 1000)
 	//check now
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 burst stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -327,8 +327,8 @@ func TestFlatCDReduction(t *testing.T) {
 	for i := 0; i < 5000; i++ {
 		c.Tick()
 	}
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 burst stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -365,16 +365,16 @@ func TestFlatCDReductionDoubleCharge(t *testing.T) {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if x.Cooldown(core.ActionSkill) != 1 {
 		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 burst stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -388,16 +388,16 @@ func TestFlatCDReductionDoubleCharge(t *testing.T) {
 		c.Tick()
 	}
 	//should be at 1 only
-	if x.availableCDCharge[core.ActionSkill] > 1 {
-		t.Errorf("expecting 1 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 1 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if x.Cooldown(core.ActionSkill) != 0 {
 		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 2 skill stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 skill stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -432,15 +432,15 @@ func TestResetSkillCD(t *testing.T) {
 		c.Tick()
 	}
 	//first charge is 500 from recharging
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if x.Cooldown(core.ActionSkill) != 500 {
 		t.Errorf("expecting cooldown to be 500, got %v", x.Cooldown(core.ActionSkill))
 	}
 	x.ResetActionCooldown(core.ActionSkill)
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 burst stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -453,16 +453,16 @@ func TestResetSkillCD(t *testing.T) {
 		c.Tick()
 	}
 	//should be at 1 only
-	if x.availableCDCharge[core.ActionSkill] > 1 {
-		t.Errorf("expecting 1 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 1 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if x.Cooldown(core.ActionSkill) != 0 {
 		t.Errorf("expecting cooldown to be 0, got %v", x.Cooldown(core.ActionSkill))
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 2 skill stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 skill stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -474,8 +474,8 @@ func TestResetSkillCD(t *testing.T) {
 	for i := 0; i < 5000; i++ {
 		c.Tick()
 	}
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 1 burst stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 1 burst stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -510,8 +510,8 @@ func TestResetSkillCooldownReduction(t *testing.T) {
 		c.Tick()
 	}
 	//first charge is 500 from recharging
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if x.Cooldown(core.ActionSkill) != 500 {
 		t.Errorf("expecting cooldown to be 500, got %v", x.Cooldown(core.ActionSkill))
@@ -528,16 +528,16 @@ func TestResetSkillCooldownReduction(t *testing.T) {
 	for i := 0; i < 499; i++ {
 		c.Tick()
 	}
-	if x.availableCDCharge[core.ActionSkill] > 0 {
-		t.Errorf("expecting 0 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 0 {
+		t.Errorf("expecting 0 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if x.Cooldown(core.ActionSkill) != 1 {
 		t.Errorf("expecting cooldown to be 1, got %v", x.Cooldown(core.ActionSkill))
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 1 {
-		t.Errorf("expecting 1 burst stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 1 {
+		t.Errorf("expecting 1 burst stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
@@ -551,13 +551,13 @@ func TestResetSkillCooldownReduction(t *testing.T) {
 		c.Tick()
 	}
 	//should be at 1 only
-	if x.availableCDCharge[core.ActionSkill] > 1 {
-		t.Errorf("expecting 1 e stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] > 1 {
+		t.Errorf("expecting 1 e stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	//1 more tick to be ready
 	c.Tick()
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 2 skill stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 2 skill stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack == 2")
@@ -569,8 +569,8 @@ func TestResetSkillCooldownReduction(t *testing.T) {
 	for i := 0; i < 5000; i++ {
 		c.Tick()
 	}
-	if x.availableCDCharge[core.ActionSkill] != 2 {
-		t.Errorf("expecting 1 skill stacks got %v", x.availableCDCharge[core.ActionSkill])
+	if x.AvailableCDCharge[core.ActionSkill] != 2 {
+		t.Errorf("expecting 1 skill stacks got %v", x.AvailableCDCharge[core.ActionSkill])
 	}
 	if !x.ActionReady(core.ActionSkill, p) {
 		t.Error("skill should be ready since stack >1")
