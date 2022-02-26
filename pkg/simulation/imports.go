@@ -81,6 +81,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/huntersbow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/mouunsmoon"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/polarstar"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/predator"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/royal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/rust"
