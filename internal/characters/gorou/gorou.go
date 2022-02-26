@@ -68,8 +68,8 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	}
 }
 
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	/**
 	Provides up to 3 buffs to active characters within the skill's AoE based on the number of Geo characters in the party at the time of casting:
