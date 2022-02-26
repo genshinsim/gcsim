@@ -35,3 +35,4 @@ jobs:
           committer_email: actions@github.com
           message: Update build
           add: "*.wasm"
+          new_branch: "staging"
