@@ -18,6 +18,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	dmg := .075 + float64(r)*.025
 
 	hrfunc := func(ele core.EleType, key string) func(args ...interface{}) bool {
+		icd := -1
 		return func(args ...interface{}) bool {
 			ae := args[1].(*core.AttackEvent)
 
@@ -27,6 +28,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			if ae.Info.ActorIndex != char.CharIndex() {
 				return false
 			}
+
+			// do not overwrite mod if same frame
+			if c.F < icd {
+				return false
+			}
+			icd = c.F + 1
 
 			for _, char := range c.Chars {
 				if char.Ele() != core.Electro && char.Ele() != ele {
