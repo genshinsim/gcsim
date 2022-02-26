@@ -197,7 +197,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//a4 every .3 seconds for the duration of the burst, add ice dmg up to active char for 1sec
 	//duration is 15 seconds
-	for i := 18; i < 900; i += 18 {
+	//starts from end of cast
+	for i := f; i < 900+f; i += 18 {
 		t := i
 		c.AddTask(func() {
 			active := c.Core.Chars[c.Core.ActiveChar]
