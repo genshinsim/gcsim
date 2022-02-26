@@ -109,6 +109,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Core.F + 300,
 	})
+	c.Core.Status.AddStatus("ayakaci", 5*60)
 	return f, f
 }
 
