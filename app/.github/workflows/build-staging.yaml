@@ -33,4 +33,4 @@ jobs:
         with:
           commit_message: Update build (automated)
           branch: staging
-          file_pattern: *.wasm
+          file_pattern: "*.wasm"
