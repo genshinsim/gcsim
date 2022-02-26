@@ -43,7 +43,7 @@ func (s *StatusCtrl) AddStatus(key string, dur int) {
 		//log an entry for refreshing
 		//TODO: this line may not be needed
 		if s.core.Flags.LogDebug {
-			s.core.Log.NewEvent("status refreshed: ", core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur)
+			s.core.Log.NewEvent("status refreshed: ", core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur).SetEnded(s.core.F + dur)
 		}
 		return
 	}
@@ -70,7 +70,7 @@ func (s *StatusCtrl) ExtendStatus(key string, dur int) {
 
 	//TODO: this line may not be needed
 	if s.core.Flags.LogDebug {
-		s.core.Log.NewEvent("status refreshed: ", core.LogStatusEvent, -1, "key", key, "expiry", a.expiry)
+		s.core.Log.NewEvent("status refreshed: ", core.LogStatusEvent, -1, "key", key, "expiry", a.expiry).SetEnded(a.expiry)
 	}
 }
 
