@@ -4,7 +4,7 @@ import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *Tmpl) SetNumCharges(a core.ActionType, num int) {
 	c.additionalCDCharge[a] = num - 1
-	c.availableCDCharge[a] = num
+	c.AvailableCDCharge[a] = num
 }
 
 func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
@@ -12,7 +12,7 @@ func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 	if a == core.ActionBurst && (c.Energy != c.EnergyMax) && !c.Core.Flags.EnergyCalcMode {
 		return false
 	}
-	return c.availableCDCharge[a] > 0
+	return c.AvailableCDCharge[a] > 0
 }
 
 func (c *Tmpl) SetCD(a core.ActionType, dur int) {
@@ -24,8 +24,8 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 		c.startCooldownQueueWorker(a, true)
 	}
 	//make sure to remove one from stack count
-	c.availableCDCharge[a]--
-	if c.availableCDCharge[a] < 0 {
+	c.AvailableCDCharge[a]--
+	if c.AvailableCDCharge[a] < 0 {
 		panic("unexpected charges less than 0")
 	}
 	c.Core.Log.NewEventBuildMsg(
@@ -34,7 +34,7 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 		a.String(), " cooldown triggered",
 	).Write(
 		"type", a.String(),
-		"charges_remain", c.availableCDCharge,
+		"charges_remain", c.AvailableCDCharge,
 		"cooldown_queue", c.cdQueue,
 	)
 }
@@ -49,7 +49,7 @@ func (c *Tmpl) SetCDWithDelay(a core.ActionType, dur int, delay int) {
 
 func (c *Tmpl) Cooldown(a core.ActionType) int {
 	//remaining cooldown is src + first item in queue - current frame
-	if c.availableCDCharge[a] > 0 {
+	if c.AvailableCDCharge[a] > 0 {
 		return 0
 	}
 	//otherwise check our queue
@@ -61,11 +61,11 @@ func (c *Tmpl) Cooldown(a core.ActionType) int {
 
 func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 	//if stacks already maxed then do nothing
-	if c.availableCDCharge[a] == 1+c.additionalCDCharge[a] {
+	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
 		return
 	}
 	//otherwise add a stack && pop queue
-	c.availableCDCharge[a]++
+	c.AvailableCDCharge[a]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
@@ -75,7 +75,7 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 		a.String(), " cooldown forcefully reset",
 	).Write(
 		"type", a.String(),
-		"charges_remain", c.availableCDCharge,
+		"charges_remain", c.AvailableCDCharge,
 		"cooldown_queue", c.cdQueue,
 	)
 	//check if anymore cd in queue
@@ -86,7 +86,7 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 
 func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 	//do nothing if stacks already maxed
-	if c.availableCDCharge[a] == 1+c.additionalCDCharge[a] {
+	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
 		return
 	}
 	//check if reduction > time remaing? if so then call reset cd
@@ -103,7 +103,7 @@ func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 		a.String(), " cooldown forcefully reduced",
 	).Write(
 		"type", a.String(),
-		"charges_remain", c.availableCDCharge,
+		"charges_remain", c.AvailableCDCharge,
 		"cooldown_queue", c.cdQueue,
 	)
 	c.startCooldownQueueWorker(a, false)
@@ -138,12 +138,12 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 			// return
 		}
 		//otherwise add a stack and pop first item in queue
-		c.availableCDCharge[a]++
+		c.AvailableCDCharge[a]++
 		c.cdQueue[a] = c.cdQueue[a][1:]
 
 		// c.Core.Log.Debugw("stack restored",  "avail", c.availableCDCharge[a], "queue", c.cdQueue)
 
-		if c.availableCDCharge[a] > 1+c.additionalCDCharge[a] {
+		if c.AvailableCDCharge[a] > 1+c.additionalCDCharge[a] {
 			//sanity check, this should never happen
 			panic("charges > max??")
 			// c.availableCDCharge[a] = 1 + c.additionalCDCharge[a]
@@ -156,7 +156,7 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 			a.String(), " cooldown ready",
 		).Write(
 			"type", a.String(),
-			"charges_remain", c.availableCDCharge,
+			"charges_remain", c.AvailableCDCharge,
 			"cooldown_queue", c.cdQueue,
 		)
 

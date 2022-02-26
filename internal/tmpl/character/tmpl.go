@@ -17,7 +17,7 @@ type Tmpl struct {
 	ActionCD               []int
 	cdQueueWorkerStartedAt []int
 	cdQueue                [][]int
-	availableCDCharge      []int
+	AvailableCDCharge      []int
 	additionalCDCharge     []int
 
 	//mods
@@ -93,11 +93,11 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 	t.cdQueueWorkerStartedAt = make([]int, core.EndActionType)
 	t.cdQueue = make([][]int, core.EndActionType)
 	t.additionalCDCharge = make([]int, core.EndActionType)
-	t.availableCDCharge = make([]int, core.EndActionType)
+	t.AvailableCDCharge = make([]int, core.EndActionType)
 
 	for i := 0; i < len(t.cdQueue); i++ {
 		t.cdQueue[i] = make([]int, 0, 4)
-		t.availableCDCharge[i] = 1
+		t.AvailableCDCharge[i] = 1
 	}
 
 	return &t, nil
