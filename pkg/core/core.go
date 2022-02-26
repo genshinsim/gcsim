@@ -176,7 +176,7 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 		if ok {
 			f(char, c, count, v.SetParams[key])
 		} else {
-			c.Log.NewEvent(fmt.Sprintf("character %v has unrecognized set %v", v.Base.Key, key), LogArtifactEvent, -1)
+			return nil, fmt.Errorf("character %v has unrecognized artifact: %v", v.Base.Name, key)
 		}
 	}
 	if total > 5 {
