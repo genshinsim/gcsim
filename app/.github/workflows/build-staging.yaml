@@ -29,10 +29,8 @@ jobs:
           # run the script
           "${GITHUB_WORKSPACE}/scripts/build.sh"
       - name: commit changes
-        uses: EndBug/add-and-commit@v7
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          committer_name: GitHub Actions
-          committer_email: actions@github.com
-          message: Update build
-          add: "*.wasm"
-          new_branch: "staging"
+          commit_message: Update build (automated)
+          branch: staging
+          file_pattern: *.wasm
