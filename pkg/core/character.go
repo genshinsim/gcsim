@@ -46,7 +46,7 @@ type Character interface {
 	// ActionFrames(a ActionType, p map[string]int) int
 	//return the number of frames the current action must wait before it can be
 	//executed;
-	ActionInterruptableDelay(next ActionType) int
+	ActionInterruptableDelay(next ActionType, p map[string]int) int
 
 	//char stat mods
 	AddMod(mod CharStatMod)

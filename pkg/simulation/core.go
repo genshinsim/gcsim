@@ -50,8 +50,9 @@ func NewCore(seed int64, debug bool, cfg core.SimulatorSettings) (*core.Core, er
 		return nil, errors.New("no action mode set - please add either mode=sl or mode=apl to the options")
 	}
 
-	if cfg.SwapDelay > 0 {
-		c.Flags.SwapFrames = cfg.SwapDelay
+	c.Flags.Delays = cfg.Delays
+	if c.Flags.Delays.Swap == 0 {
+		c.Flags.Delays.Swap = 1 //default 1 frame if none set
 	}
 
 	return c, nil
