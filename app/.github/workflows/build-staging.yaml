@@ -1,0 +1,37 @@
+name: "build staging"
+on:
+  repository_dispatch:
+    types: [staging_build]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed') || github.event_name == 'repository_dispatch'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          ref: staging
+      - name: checkout other repo
+        uses: actions/checkout@v2
+        with:
+          repository: genshinsim/gcsim
+          path: ./temp
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.17.7" # The Go version to download (if necessary) and use.
+      - name: check files
+        run: ls
+      - run: |
+          # make file runnable, might not be necessary
+          chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
+
+          # run the script
+          "${GITHUB_WORKSPACE}/scripts/build.sh"
+      - name: commit changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          message: Update build
+          add: "*.wasm"
