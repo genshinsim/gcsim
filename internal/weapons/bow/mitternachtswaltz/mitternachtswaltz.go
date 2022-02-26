@@ -20,6 +20,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	buffAmount := .15 + .05*float64(r) // same amount in either context
 	buffExpiry := 300                  // 5s
+	buffIcd := 0                       // Add a 1-frame ICD to prevent buffs from being applied too quickly for the sim
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
@@ -34,6 +35,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 
+		// Add 1-frame ICD to prevent too many buffs from being applied the sim simultaneously
+		if c.F <= buffIcd {
+			return false
+		}
+
+		buffIcd = c.F + 1
+
 		// only apply elemental skill buff on normal attacks
 		if atk.Info.AttackTag == core.AttackTagNormal {
 			char.AddPreDamageMod(core.PreDamageMod{
@@ -46,7 +54,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 					return nil, false
 				},
-				Expiry: buffExpiry,
+				Expiry: c.F + buffExpiry,
 			})
 		}
 
@@ -62,7 +70,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 					return nil, false
 				},
-				Expiry: buffExpiry,
+				Expiry: c.F + buffExpiry,
 			})
 		}
 
