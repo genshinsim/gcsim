@@ -47,10 +47,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
-}
-
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
 	case core.ActionDash:

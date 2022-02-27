@@ -35,7 +35,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.FailNow()
 	}
 	c.Chars = append(c.Chars, x)
-	x.Init(0)
+	x.Init()
 
 	if !floatApproxEqual(210, x.Base.Atk, 1) {
 		t.Errorf("expecting ~210 base atk, got %v", x.Base.Atk)

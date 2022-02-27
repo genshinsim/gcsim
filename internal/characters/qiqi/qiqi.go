@@ -54,8 +54,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 // Ensures the set of targets are initialized properly
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	// c.talismanExpiry = make([]int, len(c.Core.Targets))
 	// c.talismanICDExpiry = make([]int, len(c.Core.Targets))
