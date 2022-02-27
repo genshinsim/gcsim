@@ -5,6 +5,13 @@ import (
 	"sort"
 )
 
+type Reactable interface {
+	//reaction/aura stuff
+	Tick()
+	AuraContains(...EleType) bool
+	AuraType() EleType
+}
+
 type Target interface {
 	//basic info
 	Type() TargettableType //type of target
@@ -19,11 +26,18 @@ type Target interface {
 	//attacks
 	Attack(*AttackEvent, LogEvent) (float64, bool)
 
-	//reaction/aura stuff
-	Tick()
-	AuraContains(...EleType) bool
-	AuraType() EleType
+	Reactable
 
+	//getting rid of
+	Kill()
+}
+
+type Player interface {
+	Target
+}
+
+type Enemy interface {
+	Target
 	//tags
 	SetTag(key string, val int)
 	GetTag(key string) int
@@ -36,9 +50,9 @@ type Target interface {
 	RemoveDefMod(key string)
 	HasDefMod(key string) bool
 	HasResMod(key string) bool
+}
 
-	//getting rid of
-	Kill()
+type Object interface {
 }
 
 type TargettableType int
