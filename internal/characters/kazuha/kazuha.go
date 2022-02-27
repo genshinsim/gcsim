@@ -33,6 +33,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneInazuma
 
+	c.InitCancelFrames()
+
 	return &c, nil
 }
 
