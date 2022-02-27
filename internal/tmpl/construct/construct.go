@@ -1,6 +1,8 @@
 package construct
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 type ConstructCtrl struct {
 	constructs  []core.Construct
@@ -168,6 +170,36 @@ func (s *ConstructCtrl) Has(key int) bool {
 		}
 	}
 	return false
+}
+
+func (s *ConstructCtrl) Expiry(t core.GeoConstructType) int {
+	expiry := -1
+	for _, v := range s.constructs {
+		if v.Type() == t {
+			if expiry == -1 {
+				expiry = v.Expiry()
+			} else if expiry > v.Expiry() {
+				expiry = v.Expiry()
+			}
+		}
+	}
+	for _, v := range s.consNoLimit {
+		if v.Type() == t {
+			if expiry == -1 {
+				expiry = v.Expiry()
+			} else if expiry > v.Expiry() {
+				expiry = v.Expiry()
+			}
+		}
+	}
+
+	expiry = expiry - s.core.F
+
+	if expiry < 0 {
+		return 0
+	}
+
+	return expiry
 }
 
 //destroy key if exist, return true if destroyed
