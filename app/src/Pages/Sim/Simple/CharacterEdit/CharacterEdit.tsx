@@ -12,7 +12,9 @@ export function CharacterEdit() {
         Weapons and Artifacts
       </SectionDivider>
       <CharacterEditWeaponAndArtifacts />
-      <SectionDivider fontClass="font-bold text-md">Stats</SectionDivider>
+      <SectionDivider fontClass="font-bold text-md">
+        Artifact Stats (Main + Sub)
+      </SectionDivider>
       <div className="p-2">
         <CharacterEditStats />
       </div>
