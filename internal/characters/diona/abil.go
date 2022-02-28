@@ -88,7 +88,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypePierce,
+		StrikeType: core.StrikeTypeDefault,
 		Element:    core.Cryo,
 		Durability: 25,
 		Mult:       paw[c.TalentLvlSkill()],
