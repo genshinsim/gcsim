@@ -52,6 +52,7 @@ type Character interface {
 	ModIsActive(key string) bool
 	AddPreDamageMod(mod PreDamageMod)
 	AddWeaponInfuse(inf WeaponInfusion)
+	WeaponInfuseIsActive(key string) bool
 	AddReactBonusMod(mod ReactionBonusMod)
 	ReactBonus(AttackInfo) float64
 

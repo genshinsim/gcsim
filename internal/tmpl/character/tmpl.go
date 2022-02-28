@@ -225,6 +225,17 @@ func (c *Tmpl) ReactBonusModIsActive(key string) bool {
 	return true
 }
 
+func (c *Tmpl) WeaponInfuseIsActive(key string) bool {
+	if c.Infusion.Key != key {
+		return false
+	}
+	//check expiry
+	if c.Infusion.Expiry < c.Core.F && c.Infusion.Expiry > -1 {
+		return false
+	}
+	return true
+}
+
 func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 	ind := -1
 	for i, v := range t.ReactMod {
