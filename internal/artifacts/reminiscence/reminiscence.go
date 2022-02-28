@@ -17,11 +17,11 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m := make([]float64, core.EndStatType)
 		m[core.ATKP] = 0.18
 		c.AddMod(core.CharStatMod{
-			Key: "shim-2pc",
+			Key:    "shim-2pc",
+			Expiry: -1,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
-			Expiry: -1,
 		})
 	}
 	//11:51 AM] Episodde｜ShimenawaChildePeddler: Basically I found out that the fox set energy tax have around a 10 frame delay.
@@ -31,26 +31,33 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 4 {
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.50
+		cd := -1
 		s.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
-			if c.CurrentEnergy() > 15 {
-				//consume 15 energy, increased normal/charge/plunge dmg by 50%
-				s.Tasks.Add(func() {
-					c.AddEnergy("shim-4pc", -15)
-				}, 10)
-				c.AddPreDamageMod(core.PreDamageMod{
-					Key: "shim-4pc",
-					Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-						return m, atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra || atk.Info.AttackTag == core.AttackTagPlunge
-					},
-					Expiry: s.F + 600,
-				})
+			if c.CurrentEnergy() < 15 {
+				return false
 			}
+			if s.F < cd {
+				return false
+			}
+			cd = s.F + 60*10
+
+			//consume 15 energy, increased normal/charge/plunge dmg by 50%
+			s.Tasks.Add(func() {
+				c.AddEnergy("shim-4pc", -15)
+			}, 10)
+			c.AddPreDamageMod(core.PreDamageMod{
+				Key:    "shim-4pc",
+				Expiry: s.F + 60*10,
+				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+					return m, atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra || atk.Info.AttackTag == core.AttackTagPlunge
+				},
+			})
+
 			return false
 		}, fmt.Sprintf("shim-4pc-%v", c.Name()))
 
 	}
-	//add flat stat to char
 }
