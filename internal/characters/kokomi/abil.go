@@ -103,7 +103,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.AddTask(c.skillTickTask(d, c.Core.F), "kokomi-e-ticks", 120)
 
-	c.skillLastUsed = c.Core.F - 1
+	c.skillLastUsed = c.Core.F
 	c.SetCD(core.ActionSkill, 20*60)
 
 	return f, a
