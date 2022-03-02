@@ -46,7 +46,44 @@ export interface ICharacter {
     burst: number;
   };
 }
+export interface Weapon {
+  key: string;
+  name: string;
+  icon: string;
+  level: number;
+  ascension: number;
+  refinement: number;
+}
 
+export interface GOODArtifact {
+  setKey: string;
+  slotKey: SlotKey;
+  icon: string;
+  rarity: number;
+  level: number;
+  mainStatKey: StatKey | "";
+  substats: ISubstat[];
+}
+
+export interface Character {
+  key: string;
+  name: string;
+  element: string;
+  icon: string;
+  level: number;
+  constellation: number;
+  ascension: number;
+  talent: { auto: number; skill: number; burst: number };
+  weapontype: string;
+  weapon: Weapon;
+  artifact: {
+    flower: GOODArtifact;
+    plume: GOODArtifact;
+    sands: GOODArtifact;
+    goblet: GOODArtifact;
+    circlet: GOODArtifact;
+  };
+}
 export type StatKey =
   | "hp" //HP
   | "hp_" //HP%

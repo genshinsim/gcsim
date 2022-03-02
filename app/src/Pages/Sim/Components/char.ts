@@ -1,6 +1,10 @@
 import genshindb from "genshin-db";
-import { Artifact, Weapon, Character } from "./types";
-import { ICharacter, IGOOD } from "./goodTypes"
+// import { Artifact, Weapon, Character } from "./types";
+import { Character, maxStatLength, Talent, Weapon } from "~/src/types";
+import { characterKeyToICharacter } from "~src/Components/Character";
+import { ascLvlMax } from "~src/util";
+
+import { ICharacter, IGOOD, GOODArtifact } from "./goodTypes"
 
 export const staticPath = {
   avatar: "/images/avatar",
@@ -12,18 +16,19 @@ export const staticPath = {
 export interface IGOODImport {
   err: string;
   characters: Character[];
-  // selected: boolean[];
+}
+
+interface GOODGearBank {
+  [key: string] : {weapon: Weapon, artifact: GOODArtifact[]}
 }
 
 export function parseFromGO(val: string): IGOODImport {
   let result: {
     err: string;
     characters: Character[];
-    // selected: boolean[];
   } = {
     err: "",
     characters: [],
-    // selected: [],
   };
 
   if (val === "") {
@@ -44,6 +49,7 @@ export function parseFromGO(val: string): IGOODImport {
     result.err = "Invalid JSON";
     return result;
   }
+console.log("parse", data)
 
   //build the characters
   let pos = new Map();
@@ -53,7 +59,6 @@ export function parseFromGO(val: string): IGOODImport {
     return {
       err: "",
       characters: [],
-      // selected: [],
     };
   }
   console.log("parsing characters ", data.characters);
@@ -114,12 +119,10 @@ export function parseFromGO(val: string): IGOODImport {
           return;
         }
 
-        w.key = toKey(d.name);
+        w.name = convertFromGOODKey(d.name);
         w.name = d.name;
         w.level = e.level;
-        w.ascension = e.ascension;
-        w.refinement = e.refinement;
-        w.icon = `${staticPath.weapons}/${w.key}.png`;
+        w.refine = e.refinement;
 
         chars[index].weapon = w;
 
@@ -139,7 +142,7 @@ export function parseFromGO(val: string): IGOODImport {
       if (pos.has(e.location)) {
         //grab index
         let index = pos.get(e.location);
-        let art = chars[index].artifact[e.slotKey];
+        let art : GOODArtifact;
 
         let d = genshindb.artifacts(e.setKey);
         if (d === undefined) {
@@ -149,7 +152,7 @@ export function parseFromGO(val: string): IGOODImport {
         //copy - hope this works?
         art = JSON.parse(JSON.stringify(e));
         //change set key
-        art.setKey = toKey(d.name);
+        art.setKey = convertFromGOODKey(d.name);
         art.icon = `${staticPath.artifacts}/${art.setKey}_${art.slotKey}.png`;
         // delete art.location;
         // delete art.lock;
@@ -183,53 +186,90 @@ export function parseFromGO(val: string): IGOODImport {
   return result;
 }
 
+
+
 export function charFromGOOD(goodObj: ICharacter): Character | undefined {
   //find char
-  let d = genshindb.characters(goodObj.key);
-  if (d === undefined) {
+  if (goodObj === undefined) {
     //stop here
     return undefined;
   }
   //copy over all the attributes we care about; ignore anything
   //we don't need
-  let char = blankChar();
-  //convert key from db name
-  char.key = toKey(d.name); //note that traveler will be set as lumine here
-  char.icon = `${staticPath.avatar}/${char.key}.png`;
-  //copy db data
-  char.name = d.name;
-  char.element = d.element;
-  char.weapontype = d.weapontype;
-  //copy attributes from GOOD import
-  char.level = goodObj.level;
-  char.constellation = goodObj.constellation;
-  char.ascension = goodObj.ascension;
-  char.talent.auto = goodObj.talent.auto;
-  char.talent.skill = goodObj.talent.skill;
-  char.talent.burst = goodObj.talent.burst;
+  const name = convertFromGOODKey(goodObj.key)
+  let char = {name: name,
+    level: goodObj.level,
+    max_level: ascLvlMax(goodObj.level),
+    element: characterKeyToICharacter[convertFromGOODKey(goodObj.key)].element,
+    cons: goodObj.constellation,
+    weapon: {
+      // SRL uses {name} field like a key for action list
+      name: "dullblade",
+      refine: 1,
+      level: 1,
+      max_level: ascLvlMax(1),
+    },
+    talents: {
+      attack: goodObj.talent.auto,
+      skill: goodObj.talent.skill,
+      burst: goodObj.talent.burst,
+    },
+    //need to sum stats
+    stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    snapshot: [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    // need to sum arti sets
+    sets: {},}
 
   return char;
 }
-
-export function blankChar(): Character {
+const newChar = (name: string): Character => {
+  const c = characterKeyToICharacter[name];
+  //default weapons
   return {
-    key: "", //
-    name: "", //display name
-    element: "",
-    icon: "",
+    name: name,
     level: 80,
-    constellation: 0,
-    ascension: 6,
-    talent: {
-      auto: 6,
+    max_level: 90,
+    element: c.element,
+    cons: 0,
+    weapon: {
+      name: "dullblade",
+      refine: 1,
+      level: 1,
+      max_level: 20,
+    },
+    talents: {
+      attack: 6,
       skill: 6,
       burst: 6,
     },
-    weapontype: "",
-    weapon: blankWeapon(),
-    artifact: blankArtifacts(),
+    stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    snapshot: [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    sets: {},
   };
-}
+};
+// export function blankChar(): Character {
+//   return {
+//     key: "", //
+//     name: "", //display name
+//     element: "",
+//     icon: "",
+//     level: 80,
+//     constellation: 0,
+//     ascension: 6,
+//     talent: {
+//       auto: 6,
+//       skill: 6,
+//       burst: 6,
+//     },
+//     weapontype: "",
+//     weapon: blankWeapon(),
+//     artifact: blankArtifacts(),
+//   };
+// }
 
 export function blankWeapon(): Weapon {
   return {
@@ -318,6 +358,23 @@ export const defaultWeapons = {
   Polearm: "Beginner's Protector",
 };
 
-export function toKey(s: string) {
-  return s.replace(/[^0-9a-z]/gi, "").toLowerCase();
+export function convertFromGOODKey(s: string) {
+  switch (s){
+  case "KaedeharaKazuha":
+    return "kazuha"
+  case "KamisatoAyaka":
+    return "ayaka"
+  case "KujouSara":
+    return "sara"
+  case "RaidenShogun":
+    return "raiden"
+  case "SangonomiyaKokomi":
+      return "kokomi"
+  case "YaeMiko":
+    return "yaemiko"
+  case "AratakiItto":
+    return "itto"
+    }
+    const result = s.replace(/[^0-9a-z]/gi, "").toLowerCase();
+  return result
 }

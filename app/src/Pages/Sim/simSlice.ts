@@ -6,7 +6,7 @@ import { ascLvlMax, ascLvlMin, maxLvlToAsc } from "~src/util";
 import { WorkerPool } from "~src/WorkerPool";
 import { IGOODImport } from "./Components/char";
 import { charToCfg } from "./helper";
-import { Artifact, Character as GOChar } from "./Components/types";
+import { GOODArtifact as Artifact, Character as GOChar } from "./Components/goodTypes";
 
 export let pool: WorkerPool = new WorkerPool();
 
@@ -352,7 +352,7 @@ export const simSlice = createSlice({
     saveFromGO: (state, action: PayloadAction<{data: IGOODImport}>) => {
       // if there are characters, do something
       if(action.payload.data.characters.length > 0){
-        state.GOChars = action.payload.data.characters.map(convertFromGO)
+        // state.GOChars = action.payload.data.characters.map(convertFromGO)
       }
       console.log(state.GOChars)
       return state;
