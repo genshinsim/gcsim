@@ -14,19 +14,12 @@ type Reactable interface {
 
 type Target interface {
 	//basic info
-	Type() TargettableType //type of target
-	Index() int            //should correspond to index
-	SetIndex(ind int)      //update the current index
+	Shape() Shape //collision detection
 	MaxHP() float64
 	HP() float64
 
-	//collision detection
-	Shape() Shape
-
 	//attacks
 	Attack(*AttackEvent, LogEvent) (float64, bool)
-
-	Reactable
 
 	//getting rid of
 	Kill()
@@ -34,10 +27,17 @@ type Target interface {
 
 type Player interface {
 	Target
+	Reactable
 }
 
 type Enemy interface {
 	Target
+	Reactable
+
+	//index for tracking enemy number
+	Index() int       //should correspond to index
+	SetIndex(ind int) //update the current index
+
 	//tags
 	SetTag(key string, val int)
 	GetTag(key string) int
@@ -52,17 +52,19 @@ type Enemy interface {
 	HasResMod(key string) bool
 }
 
-type Object interface {
+type TargettableObject interface {
+	Target
+	Reactable
 }
 
-type TargettableType int
+// type TargettableType int
 
-const (
-	TargettableEnemy TargettableType = iota
-	TargettablePlayer
-	TargettableObject
-	TargettableTypeCount
-)
+// const (
+// 	TargettableEnemy TargettableType = iota
+// 	TargettablePlayer
+// 	TargettableObject
+// 	TargettableTypeCount
+// )
 
 // type TargetEnemy interface {
 // 	Index() int
