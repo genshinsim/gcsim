@@ -21,9 +21,9 @@ func (s *Simulation) initResonance(count map[core.EleType]int) {
 				}
 			case core.Hydro:
 				//heal not implemented yet
-				s.C.Log.NewEvent("adding hydro resonance (finally implemented)", core.LogSimEvent, -1)
+				s.C.Log.NewEvent("adding hydro resonance", core.LogSimEvent, -1)
 				s.C.Health.AddIncHealBonus(func(healedCharIndex int) float64 {
-					return 0.15
+					return 0.3
 				})
 			case core.Cryo:
 				s.C.Log.NewEvent("adding cryo resonance", core.LogSimEvent, -1)
