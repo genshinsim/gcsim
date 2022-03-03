@@ -111,6 +111,8 @@ const (
 	ActionSwap
 	ActionWalk
 	EndActionType
+	//these are only used for frames purposes and that's why it's after end
+	ActionSkillHoldFramesOnly
 )
 
 var astr = []string{

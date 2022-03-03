@@ -1,8 +1,9 @@
 package core
 
 type Character interface {
-	Init(index int) //to be called when everything including weapon and artifacts has been loaded
-	Tick()          //function to be called every frame
+	SetIndex(index int) //to be called to set the index
+	Init()              //to be called when everything including weapon and artifacts has been loaded
+	Tick()              //function to be called every frame
 
 	//information functions
 	Key() CharKey
@@ -45,7 +46,7 @@ type Character interface {
 	// ActionFrames(a ActionType, p map[string]int) int
 	//return the number of frames the current action must wait before it can be
 	//executed;
-	ActionInterruptableDelay(next ActionType) int
+	ActionInterruptableDelay(next ActionType, p map[string]int) int
 
 	//char stat mods
 	AddMod(mod CharStatMod)

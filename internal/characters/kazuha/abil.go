@@ -6,6 +6,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{
+	{12},         //n1
+	{11},         //n2
+	{16, 25},     //n3
+	{15},         //n4
+	{15, 23, 31}, //n5
+}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -23,7 +31,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-2+i, f-2+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -48,7 +56,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-len(charge)+i, f-len(charge)+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 20+i, 20+i)
 	}
 
 	return f, a
@@ -74,7 +82,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-10, f-10)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, f)
 	}
 
 	//aoe dmg
@@ -91,7 +99,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 		IgnoreInfusion: true,
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), f-8, f-8)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), f, f)
 
 	// a2 if applies
 	if c.a2Ele != core.NoElement {
@@ -137,7 +145,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 13)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f)
 
 	c.QueueParticle("kazuha", 3, core.Anemo, 100)
 
@@ -169,7 +177,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 34)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f)
 
 	c.QueueParticle("kazuha", 4, core.Anemo, 100)
 

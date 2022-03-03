@@ -3,7 +3,8 @@ package core
 type GeoConstructType int
 
 const (
-	GeoConstructNingSkill GeoConstructType = iota
+	GeoConstructInvalid GeoConstructType = iota
+	GeoConstructNingSkill
 	GeoConstructZhongliSkill
 	GeoConstructTravellerSkill
 	GeoConstructTravellerBurst
@@ -13,12 +14,22 @@ const (
 )
 
 var ConstructString = [...]string{
+	"Invalid",
 	"NingSkill",
 	"ZhongliSkill",
 	"TravellerSkill",
 	"TravellerBurst",
 	"AlbedoSkill",
 	"IttoSkill",
+}
+
+var ConstructNameToKey = map[string]GeoConstructType{
+	"ningguang":      GeoConstructNingSkill,
+	"zhongli":        GeoConstructZhongliSkill,
+	"traveler_skill": GeoConstructTravellerSkill,
+	"traveler_burst": GeoConstructTravellerBurst,
+	"albedo":         GeoConstructAlbedoSkill,
+	"itto":           GeoConstructIttoSkill,
 }
 
 func (c GeoConstructType) String() string {

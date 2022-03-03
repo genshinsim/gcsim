@@ -58,6 +58,8 @@ func (q *Queuer) evalCond(cond core.Condition) (bool, error) {
 		return q.evalAbilReady(cond)
 	case ".mods":
 		return q.evalCharMods(cond)
+	case ".construct":
+		return q.evalConstruct(cond)
 	}
 	return false, nil
 }
