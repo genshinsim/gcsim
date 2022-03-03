@@ -149,7 +149,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 
 	c.QueueParticle("kazuha", 3, core.Anemo, 100)
 
-	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/18)), "kaz-a2-absorb-check", 1)
+	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/6)), "kaz-a2-absorb-check", 1)
 
 	cd := 360
 	if c.Base.Cons > 0 {
@@ -181,7 +181,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 
 	c.QueueParticle("kazuha", 4, core.Anemo, 100)
 
-	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/18)), "kaz-a2-absorb-check", 1)
+	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/6)), "kaz-a2-absorb-check", 1)
 	cd := 540
 	if c.Base.Cons > 0 {
 		cd = 486
@@ -311,6 +311,6 @@ func (c *char) absorbCheckA2(src, count, max int) func() {
 			return
 		}
 		//otherwise queue up
-		c.AddTask(c.absorbCheckA2(src, count+1, max), "kaz-a2-absorb-check", 18)
+		c.AddTask(c.absorbCheckA2(src, count+1, max), "kaz-a2-absorb-check", 6)
 	}
 }
