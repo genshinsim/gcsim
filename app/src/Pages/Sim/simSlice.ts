@@ -62,7 +62,7 @@ const convertFromGO = (char: GOChar): Character=>{
 
   const artifacts = Object.values(char.artifact);
   const newStats = sumArtifactStats(artifacts);
-  const setCount = tallyArtifactSet(artifacts)
+  // const setCount = tallyArtifactSet(artifacts)
   // console.log(setCount)  
   // take out and store set key
 
@@ -93,33 +93,10 @@ return {name: char.name,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ],
   // need to sum arti sets
-  sets: setCount,}
+  sets: {},
 }
-const tallyArtifactSet = (artifacts: Artifact[]): {[key: string]: number}=>{
-  const setKeyTally: {[key: string]: number} = {};
-  artifacts.map((artifact) => {return artifact.setKey}) 
-  .map((setKey) => {
-    if (Object.keys(setKeyTally).includes(setKey) ){
-    setKeyTally[setKey] += 1 }
-    else if(setKey!=""){
-      setKeyTally[setKey] = 1;
-    }
-  });// Tallies the set keys
+}
 
-  // Clamps artifact set value for better handling down the line #blamesrl
-  Object.keys(setKeyTally).forEach(setKey => {
-    if(setKeyTally[setKey] < 2){
-      delete setKeyTally[setKey]
-    }
-    else if(setKeyTally[setKey] > 2 && setKeyTally[setKey] < 4 ){
-      setKeyTally[setKey]= 2
-    }
-    else if(setKeyTally[setKey] > 4){
-      setKeyTally[setKey]= 4
-    }
-  });
-  return setKeyTally
-}
 
 const sumArtifactStats = (artifacts: Artifact[]): number[]=>{
   const totalStats =[1];

@@ -3,7 +3,7 @@ export interface IGOOD {
   version: number; // GOOD API version.
   source: string; // The app that generates this data.
   characters?: ICharacter[];
-  artifacts?: IArtifact[];
+  artifacts?: GOODArtifact[];
   weapons?: IWeapon[];
 }
 
@@ -15,6 +15,17 @@ export interface IArtifact {
   mainStatKey: StatKey;
   location: CharacterKey | ""; //where "" means not equipped.
   lock: boolean; //Whether the artifact is locked in game.
+  substats: ISubstat[];
+}
+
+export interface GOODArtifact {
+  setKey: string;
+  slotKey: SlotKey;
+  icon: string;
+  rarity: number;
+  level: number;
+  mainStatKey: StatKey | "";
+  location: CharacterKey | ""
   substats: ISubstat[];
 }
 
@@ -55,15 +66,7 @@ export interface Weapon {
   refinement: number;
 }
 
-export interface GOODArtifact {
-  setKey: string;
-  slotKey: SlotKey;
-  icon: string;
-  rarity: number;
-  level: number;
-  mainStatKey: StatKey | "";
-  substats: ISubstat[];
-}
+
 
 export interface Character {
   key: string;

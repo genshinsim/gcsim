@@ -13,6 +13,8 @@ export const staticPath = {
   artifacts: "/images/artifacts",
 };
 
+interface IartifactBank {[srlcharkey : string]:GOODArtifact[] }
+
 export interface IGOODImport {
   err: string;
   characters: Character[];
@@ -50,14 +52,41 @@ export function parseFromGO(val: string): IGOODImport {
     return result;
   }
 console.log("parse", data)
+//Store artifacts based on character
+//add artifacts if any
+const artifactBank: IartifactBank={}
+if (data.artifacts) {
+    console.log("parsing artifacts ", data.artifacts);
+    data.artifacts.forEach((artifact) => {
+        let charKey  = convertFromGOODKey(artifact.location)
+        if (Object.keys(artifactBank).includes(charKey) ){
+          
+          if(artifactBank[charKey].length <5)
+          {artifactBank[charKey].push(artifact) }
+          else{
+            result.err = `Too many artifacts on ${charKey} `
+            return result
+          }
+        }
+        else if(charKey===""){        }
+          else{
+            artifactBank[charKey] = [artifact];
+          }
+        // //special check for traveler
+        // if (e.location === "Traveler") {
+        //   index = pos.get("Aether");
+        //   chars[index].artifact[e.slotKey] = JSON.parse(JSON.stringify(art));
+        // }
+      });
+      console.log("parsed results arts: ", artifactBank);
+  }
 
   //build the characters
-  let pos = new Map();
+  // let pos = new Map();
   let chars: Character[] = [];
-  let sel = [];
   if (!data.characters) {
     return {
-      err: "",
+      err: "No Characters Found",
       characters: [],
     };
   }
@@ -65,7 +94,7 @@ console.log("parse", data)
   let trav = "";
   data.characters.forEach((c, i) => {
     //convert GOOD key to our key
-    let char = charFromGOOD(c);
+    let char = importCharFromGOOD(c,artifactBank);
     if (char === undefined) {
       //skip char
       return;
@@ -74,7 +103,7 @@ console.log("parse", data)
     //we use the imported name as key since this is what
     //should match on weapon and artifacts
     //this should handle traveler as well
-    pos.set(c.key, i);
+    // pos.set(c.key, i);
 
     //special check for traveler
     if (c.key === "Traveler") {
@@ -86,109 +115,106 @@ console.log("parse", data)
     }
 
     chars.push(char);
-    sel.push(false);
-  });
 
-  if (trav !== "") {
-    let c = JSON.parse(trav);
-    c.name = "Aether";
-    let char = charFromGOOD(c);
-    if (char !== undefined) {
-      //shouldn't really happen other wise
-      chars.push(char);
-      pos.set("Aether", chars.length - 1);
-      sel.push(false);
+  });
+console.log("after Char", chars)
+    if (trav !== "") {
+    // let c = JSON.parse(trav);
+    // c.name = "Aether";
+    // let char = charFromGOOD(c);
+    // if (char !== undefined) {
+    //   //shouldn't really happen other wise
+    //   chars.push(char);
+    //   // pos.set("Aether", chars.length - 1);
     } else {
       console.log("Unexpected error parsing traveler");
     }
-  }
+  
+  
 
-  //add weapons if any
-  if (data.weapons) {
-    console.log("parsing weapons ", data.weapons);
-    data.weapons.forEach((e) => {
-      if (pos.has(e.location)) {
-        // console.log("adding weapon for ", e.location);
-        //grab index
-        let index = pos.get(e.location);
-        let w = chars[index].weapon;
-        let d = genshindb.weapons(e.key);
+  // //add weapons if any
+  // if (data.weapons) {
+  //   console.log("parsing weapons ", data.weapons);
+  //   data.weapons.forEach((e) => {
+  //     if (pos.has(e.location)) {
+  //       // console.log("adding weapon for ", e.location);
+  //       //grab index
+  //       let index = pos.get(e.location);
+  //       let w = chars[index].weapon;
 
-        if (d === undefined) {
-          //skip this weapon
-          return;
-        }
+  //       if (d === undefined) {
+  //         //skip this weapon
+  //         return;
+  //       }
 
-        w.name = convertFromGOODKey(d.name);
-        w.name = d.name;
-        w.level = e.level;
-        w.refine = e.refinement;
+  //       w.name = convertFromGOODKey(e.key);
+  //       w.name = d.name;
+  //       w.level = e.level;
+  //       w.refine = e.refinement;
 
-        chars[index].weapon = w;
+  //       chars[index].weapon = w;
 
-        //special check for traveler
-        if (e.location === "Traveler") {
-          index = pos.get("Aether");
-          chars[index].weapon = Object.assign({}, w);
-        }
-      }
-    });
-  }
+  //       //special check for traveler
+  //       if (e.location === "Traveler") {
+  //         index = pos.get("Aether");
+  //         chars[index].weapon = Object.assign({}, w);
+  //       }
+  //     }
+  //   });
+  // }
 
-  //add artifacts if any
-  if (data.artifacts) {
-    console.log("parsing artifacts ", data.artifacts);
-    data.artifacts.forEach((e) => {
-      if (pos.has(e.location)) {
-        //grab index
-        let index = pos.get(e.location);
-        let art : GOODArtifact;
+  
 
-        let d = genshindb.artifacts(e.setKey);
-        if (d === undefined) {
-          return;
-        }
+  // console.log("parsed results: ", chars);
+  // // 
 
-        //copy - hope this works?
-        art = JSON.parse(JSON.stringify(e));
-        //change set key
-        art.setKey = convertFromGOODKey(d.name);
-        art.icon = `${staticPath.artifacts}/${art.setKey}_${art.slotKey}.png`;
-        // delete art.location;
-        // delete art.lock;
+  // //sort chars by element -> name
+  // chars.sort((a, b) => {
+  //   if (b.name > a.name) {
+  //     return -1;
+  //   }
+  //   if (b.name < a.name) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // });
 
-        chars[index].artifact[e.slotKey] = art;
-
-        //special check for traveler
-        if (e.location === "Traveler") {
-          index = pos.get("Aether");
-          chars[index].artifact[e.slotKey] = JSON.parse(JSON.stringify(art));
-        }
-      }
-    });
-  }
-
-  console.log("parsed results: ", chars);
-
-  //sort chars by element -> name
-  chars.sort((a, b) => {
-    if (b.name > a.name) {
-      return -1;
-    }
-    if (b.name < a.name) {
-      return 1;
-    }
-    return 0;
-  });
-
-  result.characters = chars;
+  // result.characters = chars;
   // result.selected = sel;
   return result;
 }
 
+const tallyArtifactSet = (artifacts: GOODArtifact[]): {[key: string]: number}=>{
+  const setKeyTally: {[key: string]: number} = {};
+  if(artifacts === undefined ){
+    return {}
+  }
+  artifacts.map((artifact) => {return artifact.setKey}) 
+  .map((setKey) => {
+    if (Object.keys(setKeyTally).includes(setKey) ){
+    setKeyTally[setKey] += 1 }
+    else if(setKey!=""){
+      setKeyTally[setKey] = 1;
+    }
+  });// Tallies the set keys
+
+  // Clamps artifact set value for better handling down the line #blamesrl
+  Object.keys(setKeyTally).forEach(setKey => {
+    if(setKeyTally[setKey] < 2){
+      delete setKeyTally[setKey]
+    }
+    else if(setKeyTally[setKey] > 2 && setKeyTally[setKey] < 4 ){
+      setKeyTally[setKey]= 2
+    }
+    else if(setKeyTally[setKey] > 4){
+      setKeyTally[setKey]= 4
+    }
+  });
+  return setKeyTally
+}
 
 
-export function charFromGOOD(goodObj: ICharacter): Character | undefined {
+export function importCharFromGOOD(goodObj: ICharacter, artifactBank: IartifactBank): Character | undefined {
   //find char
   if (goodObj === undefined) {
     //stop here
@@ -197,6 +223,7 @@ export function charFromGOOD(goodObj: ICharacter): Character | undefined {
   //copy over all the attributes we care about; ignore anything
   //we don't need
   const name = convertFromGOODKey(goodObj.key)
+  const setcount = tallyArtifactSet(artifactBank[name])
   let char = {name: name,
     level: goodObj.level,
     max_level: ascLvlMax(goodObj.level),
@@ -220,7 +247,7 @@ export function charFromGOOD(goodObj: ICharacter): Character | undefined {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
     // need to sum arti sets
-    sets: {},}
+    sets: setcount,}
 
   return char;
 }
@@ -271,84 +298,84 @@ const newChar = (name: string): Character => {
 //   };
 // }
 
-export function blankWeapon(): Weapon {
-  return {
-    key: "", //"CrescentPike"
-    name: "",
-    icon: "",
-    level: 1, //1-90 inclusive
-    ascension: 0, //0-6 inclusive. need to disambiguate 80/90 or 80/80
-    refinement: 1, //1-5 inclusive
-    // location: "", //where "" means not equipped.
-    // lock: false, //Whether the weapon is locked in game.
-  };
-}
+// export function blankWeapon(): Weapon {
+//   return {
+//     // key: "", //"CrescentPike"
+//     name: "",
+//     // icon: "",
+//     level: 1, //1-90 inclusive
+//     // ascension: 0, //0-6 inclusive. need to disambiguate 80/90 or 80/80
+//     refine: 1, //1-5 inclusive
+//     // location: "", //where "" means not equipped.
+//     // lock: false, //Whether the weapon is locked in game.
+//   };
+// }
 
-export function blankArtifacts(): {
-  flower: Artifact;
-  plume: Artifact;
-  sands: Artifact;
-  goblet: Artifact;
-  circlet: Artifact;
-} {
-  return {
-    flower: {
-      setKey: "", //e.g. "GladiatorsFinale"
-      slotKey: "flower", //e.g. "plume"
-      icon: "",
-      level: 20, //0-20 inclusive
-      rarity: 5, //1-5 inclusive
-      mainStatKey: "hp",
-      // location: "", //where "" means not equipped.
-      // lock: false, //Whether the artifact is locked in game.
-      substats: [],
-    },
-    plume: {
-      setKey: "", //e.g. "GladiatorsFinale"
-      slotKey: "plume", //e.g. "plume"
-      icon: "",
-      level: 20, //0-20 inclusive
-      rarity: 5, //1-5 inclusive
-      mainStatKey: "atk",
-      // location: "", //where "" means not equipped.
-      // lock: false, //Whether the artifact is locked in game.
-      substats: [],
-    },
-    sands: {
-      setKey: "", //e.g. "GladiatorsFinale"
-      slotKey: "sands", //e.g. "plume"
-      icon: "",
-      level: 20, //0-20 inclusive
-      rarity: 5, //1-5 inclusive
-      mainStatKey: "",
-      // location: "", //where "" means not equipped.
-      // lock: false, //Whether the artifact is locked in game.
-      substats: [],
-    },
-    goblet: {
-      setKey: "", //e.g. "GladiatorsFinale"
-      slotKey: "goblet", //e.g. "plume"
-      icon: "",
-      level: 20, //0-20 inclusive
-      rarity: 5, //1-5 inclusive
-      mainStatKey: "",
-      // location: "", //where "" means not equipped.
-      // lock: false, //Whether the artifact is locked in game.
-      substats: [],
-    },
-    circlet: {
-      setKey: "", //e.g. "GladiatorsFinale"
-      slotKey: "circlet", //e.g. "plume"
-      icon: "",
-      level: 20, //0-20 inclusive
-      rarity: 5, //1-5 inclusive
-      mainStatKey: "",
-      // location: "", //where "" means not equipped.
-      // lock: false, //Whether the artifact is locked in game.
-      substats: [],
-    },
-  };
-}
+// export function blankArtifacts(): {
+//   flower: GOODArtifact;
+//   plume: GOODArtifact;
+//   sands: GOODArtifact;
+//   goblet: GOODArtifact;
+//   circlet: GOODArtifact;
+// } {
+//   return {
+//     flower: {
+//       setKey: "", //e.g. "GladiatorsFinale"
+//       slotKey: "flower", //e.g. "plume"
+//       icon: "",
+//       level: 20, //0-20 inclusive
+//       rarity: 5, //1-5 inclusive
+//       mainStatKey: "hp",
+//       // location: "", //where "" means not equipped.
+//       // lock: false, //Whether the artifact is locked in game.
+//       substats: [],
+//     },
+//     plume: {
+//       setKey: "", //e.g. "GladiatorsFinale"
+//       slotKey: "plume", //e.g. "plume"
+//       icon: "",
+//       level: 20, //0-20 inclusive
+//       rarity: 5, //1-5 inclusive
+//       mainStatKey: "atk",
+//       // location: "", //where "" means not equipped.
+//       // lock: false, //Whether the artifact is locked in game.
+//       substats: [],
+//     },
+//     sands: {
+//       setKey: "", //e.g. "GladiatorsFinale"
+//       slotKey: "sands", //e.g. "plume"
+//       icon: "",
+//       level: 20, //0-20 inclusive
+//       rarity: 5, //1-5 inclusive
+//       mainStatKey: "",
+//       // location: "", //where "" means not equipped.
+//       // lock: false, //Whether the artifact is locked in game.
+//       substats: [],
+//     },
+//     goblet: {
+//       setKey: "", //e.g. "GladiatorsFinale"
+//       slotKey: "goblet", //e.g. "plume"
+//       icon: "",
+//       level: 20, //0-20 inclusive
+//       rarity: 5, //1-5 inclusive
+//       mainStatKey: "",
+//       // location: "", //where "" means not equipped.
+//       // lock: false, //Whether the artifact is locked in game.
+//       substats: [],
+//     },
+//     circlet: {
+//       setKey: "", //e.g. "GladiatorsFinale"
+//       slotKey: "circlet", //e.g. "plume"
+//       icon: "",
+//       level: 20, //0-20 inclusive
+//       rarity: 5, //1-5 inclusive
+//       mainStatKey: "",
+//       // location: "", //where "" means not equipped.
+//       // lock: false, //Whether the artifact is locked in game.
+//       substats: [],
+//     },
+//   };
+// }
 
 export const defaultWeapons = {
   Sword: "Dull Blade",
@@ -375,6 +402,6 @@ export function convertFromGOODKey(s: string) {
   case "AratakiItto":
     return "itto"
     }
-    const result = s.replace(/[^0-9a-z]/gi, "").toLowerCase();
+    const result = s.toString().replace(/[^0-9a-z]/gi, "").toLowerCase();
   return result
 }
