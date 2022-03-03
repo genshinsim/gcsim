@@ -195,7 +195,6 @@ func (c *Core) RandomEnemyTarget() int {
 		}
 	}
 	panic("no random target found?? should not happen")
-	return -1
 }
 
 func (c *Core) RandomTargetIndex(typ TargettableType) int {
@@ -220,5 +219,4 @@ func (c *Core) RandomTargetIndex(typ TargettableType) int {
 		}
 	}
 	panic("no random target found?? should not happen")
-	return -1
 }
