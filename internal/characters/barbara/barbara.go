@@ -23,7 +23,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		return nil, err
 	}
 	c.Tmpl = t
-
+	c.Base.Element = core.Hydro
 	e, ok := p.Params["start_energy"]
 	if !ok {
 		e = 80

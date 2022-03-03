@@ -16,8 +16,6 @@ type char struct {
 	cdQueue                [][]int
 	availableCDCharge      []int
 	additionalCDCharge     []int
-	a2skillTimer           int
-	a2burstTimer           int
 	totemParticleICD       int
 }
 
@@ -61,15 +59,14 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.additionalCDCharge[core.ActionSkill] = 2
 	c.availableCDCharge[core.ActionSkill] += 2
-	c.a2burstTimer = 0
-	c.a2skillTimer = 0
 	c.Tags["eCharge"] = c.availableCDCharge[core.ActionSkill]
+
 	return &c, nil
 }
 
+
 func (c *char) Init() {
 	c.Tmpl.Init()
-	// c.a2()
 	c.a4()
 	if c.Base.Cons >= 4 {
 		c.c4()
@@ -87,59 +84,18 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	}
 }
 
-// func (c *char) a2() {
-// 	//Other nearby party members can decrease the CD of Yae Miko's Yakan Evocation: Sesshou Sakura:
-// 	// • Hitting opponents with Elemental Skill DMG decreases it by 1s and can occur once every 1.8s.
-// 	// • Hitting opponents with Elemental Burst DMG decreases it by 1s and can occur once every 1.8s.
-
-// 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-// 		atk := args[1].(*core.AttackEvent)
-// 		if c.Index == atk.Info.ActorIndex {
-// 			// do not trigger for yae attacks
-// 			return false
-// 		}
-// 		switch atk.Info.AttackTag {
-// 		case core.AttackTagElementalBurst:
-// 			if c.Core.F < c.a2burstTimer+1.8*60 {
-// 				return false
-// 			} else {
-// 				c.ReduceActionCooldown(core.ActionSkill, 60)
-// 				c.a2burstTimer = c.Core.F
-// 			}
-// 		case core.AttackTagElementalArt:
-// 			if c.Core.F < c.a2skillTimer+1.8*60 {
-// 				return false
-// 			} else {
-// 				c.ReduceActionCooldown(core.ActionSkill, 60)
-// 				c.a2skillTimer = c.Core.F
-// 			}
-// 		case core.AttackTagElementalArtHold:
-// 			if c.Core.F < c.a2skillTimer+1.8*60 {
-// 				return false
-// 			} else {
-// 				c.ReduceActionCooldown(core.ActionSkill, 60)
-// 				c.a2skillTimer = c.Core.F
-// 			}
-// 		default:
-// 			return false
-// 		}
-// 		return false
-// 	}, "yaemiko-a2")
-
-// }
-
 func (c *char) a4() {
+	m := make([]float64, core.EndStatType)
 	c.AddPreDamageMod(core.PreDamageMod{
-		Expiry: -1,
 		Key:    "yaemiko-a2",
+		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			// only trigger on elemental art damage
 			if atk.Info.AttackTag != core.AttackTagElementalArt {
-				// only trigger on elemental art damage
 				return nil, false
 			}
-			val := make([]float64, core.EndStatType)
-			val[core.DmgP] = c.Stats[core.EM] * 0.0015
-			return val, true
+			m[core.DmgP] = c.Stat(core.EM) * 0.0015
+			return m, true
 		},
 	})
 }

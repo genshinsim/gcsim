@@ -129,9 +129,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//first tick starts at 0
 	c.barbaraHealTick(heal, c.Core.F)()
 	ai.Abil = "Let the Show Begin♪ Wet Tick"
+	ai.AttackTag = core.AttackTagNone
 	ai.Mult = 0
 	c.barbaraWet(ai, c.Core.F)()
-	c.Energy = 0
 	if c.Base.Cons >= 2 {
 		c.SetCD(core.ActionSkill, 32*60*0.85)
 	} else {
@@ -187,7 +187,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
 	c.Core.Health.HealAll(c.Index, heal)
 
-	c.Energy = 0
+	c.ConsumeEnergy(8)
 	c.SetCD(core.ActionBurst, 20*60)
 	return f, a //todo fix field cast time
 }
