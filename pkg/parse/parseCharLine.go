@@ -165,6 +165,8 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 		case itemTerminateLine:
 			c.Sets[label] = count
 			return parseRows, nil
+		default:
+			return nil, fmt.Errorf("unexpected token after in parsing sets: %v at line %v", n, p.tokens)
 		}
 		if err != nil {
 			return nil, err
