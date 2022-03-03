@@ -140,9 +140,8 @@ func New() *Core {
 }
 
 func (c *Core) Init() {
-
-	for i, char := range c.Chars {
-		char.Init(i)
+	for _, char := range c.Chars {
+		char.Init()
 	}
 
 	c.Events.Emit(OnInitialize)
@@ -158,7 +157,9 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 		return nil, err
 	}
 	c.Chars = append(c.Chars, char)
-	c.CharPos[v.Base.Key] = len(c.Chars) - 1
+	i := len(c.Chars) - 1
+	c.CharPos[v.Base.Key] = i
+	char.SetIndex(i)
 
 	wf, ok := weaponMap[v.Weapon.Name]
 	if !ok {

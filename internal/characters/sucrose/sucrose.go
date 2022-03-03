@@ -51,8 +51,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 	c.a2()
 	c.a4()
 }

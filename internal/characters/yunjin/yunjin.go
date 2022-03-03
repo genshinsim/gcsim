@@ -52,8 +52,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 // Occurs after all characters are loaded, so getPartyElementalTypeCounts works properly
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.partyElementalTypes = 0
 	c.getPartyElementalTypeCounts()

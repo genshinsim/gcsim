@@ -61,8 +61,8 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 }
 
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 	//add damage mod for omen
 	//add E hook
 	val := make([]float64, core.EndStatType)
