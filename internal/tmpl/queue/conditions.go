@@ -60,6 +60,8 @@ func (q *Queuer) evalCond(cond core.Condition) (bool, error) {
 		return q.evalCharMods(cond)
 	case ".infusion":
 		return q.evalInfusion(cond)
+	case ".construct":
+		return q.evalConstruct(cond)
 	}
 	return false, nil
 }

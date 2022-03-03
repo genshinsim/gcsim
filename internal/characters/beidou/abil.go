@@ -143,6 +143,10 @@ func (c *char) burstProc() {
 		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
 			return false
 		}
+		//make sure the person triggering the attack is on field still
+		if ae.Info.ActorIndex != c.Core.ActiveChar {
+			return false
+		}
 		if c.Core.Status.Duration("beidouburst") == 0 {
 			return false
 		}

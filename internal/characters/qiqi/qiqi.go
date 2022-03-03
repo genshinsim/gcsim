@@ -33,7 +33,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Cryo
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
@@ -54,8 +59,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 // Ensures the set of targets are initialized properly
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	// c.talismanExpiry = make([]int, len(c.Core.Targets))
 	// c.talismanICDExpiry = make([]int, len(c.Core.Targets))

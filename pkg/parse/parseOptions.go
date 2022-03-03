@@ -47,7 +47,53 @@ func parseOptions(p *Parser) (parseFn, error) {
 			case "swap_delay":
 				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 				if err == nil {
-					p.cfg.Settings.SwapDelay, err = itemNumberToInt(n)
+					p.cfg.Settings.Delays.Swap, err = itemNumberToInt(n)
+				}
+			case "attack_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Attack, err = itemNumberToInt(n)
+				}
+			case "charge_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Charge, err = itemNumberToInt(n)
+				}
+			case "skill_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Skill, err = itemNumberToInt(n)
+				}
+			case "burst_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Burst, err = itemNumberToInt(n)
+				}
+			case "jump_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Jump, err = itemNumberToInt(n)
+				}
+			case "dash_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Dash, err = itemNumberToInt(n)
+				}
+			case "frame_defaults":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemIdentifier)
+				if err == nil {
+					switch n.val {
+					case "human":
+						p.cfg.Settings.Delays.Swap = 8
+						p.cfg.Settings.Delays.Attack = 5
+						p.cfg.Settings.Delays.Charge = 5
+						p.cfg.Settings.Delays.Skill = 5
+						p.cfg.Settings.Delays.Burst = 5
+						p.cfg.Settings.Delays.Dash = 5
+						p.cfg.Settings.Delays.Jump = 5
+					default:
+						return nil, fmt.Errorf("unrecognized option for frame_defaults specified: %v", n.val)
+					}
 				}
 			case "er_calc":
 				//does nothing thus far...

@@ -228,7 +228,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 		"swap_cd_post", a.core.SwapCD,
 		"stam_post", a.core.Stam,
 		"animation", f,
-	)
+	).SetEnded(a.core.F + f)
 
 	a.core.LastAction = *n
 
