@@ -12,7 +12,6 @@ const (
 	JumpFrames         = 33
 	DashFrames         = 24
 	WalkFrames         = 1
-	SwapFrames         = 1
 	SwapCDFrames       = 60
 	MaxTeamPlayerCount = 4
 	DefaultTargetIndex = 1
@@ -23,12 +22,22 @@ type Flags struct {
 	EnergyCalcMode bool // Allows Burst Action when not at full Energy, logs current Energy when using Burst
 	LogDebug       bool // Used to determine logging level
 	ChildeActive   bool // Used for Childe +1 NA talent passive
-	SwapFrames     int
+	Delays         Delays
 	// AmpReactionDidOccur bool
 	// AmpReactionType     ReactionType
 	// NextAttackMVMult    float64 // melt vape multiplier
 	// ReactionDamageTriggered bool
 	Custom map[string]int
+}
+
+type Delays struct {
+	Swap   int
+	Attack int
+	Charge int
+	Skill  int
+	Burst  int
+	Dash   int
+	Jump   int
 }
 
 type Core struct {
@@ -87,7 +96,6 @@ func New() *Core {
 	c.stamModifier = make([]stamMod, 0, 10)
 	//make a default nil writer
 	c.Log = &NilLogger{}
-	c.Flags.SwapFrames = SwapFrames
 	// c.queue = make([]Command, 0, 20)
 
 	// for _, f := range cfg {
@@ -204,10 +212,10 @@ func (c *Core) Swap(next CharKey) int {
 	c.Events.Emit(OnCharacterSwap, prev, c.ActiveChar)
 	//this duration reset needs to be after the hook for spine to behave properly
 	c.ActiveDuration = 0
-	return c.Flags.SwapFrames
+	return 1
 }
 
-func (c *Core) AnimationCancelDelay(next ActionType) int {
+func (c *Core) AnimationCancelDelay(next ActionType, p map[string]int) int {
 	//if last action is jump, dash, swap,
 	switch c.LastAction.Typ {
 	case ActionSwap:
@@ -218,11 +226,28 @@ func (c *Core) AnimationCancelDelay(next ActionType) int {
 		return 0
 	}
 	//other wise check with the current character
-	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next)
+	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next, p)
 }
 
 func (c *Core) UserCustomDelay() int {
-	return c.LastAction.Param["delay"]
+	d := 0
+	switch c.LastAction.Typ {
+	case ActionSkill:
+		d = c.Flags.Delays.Skill
+	case ActionBurst:
+		d = c.Flags.Delays.Burst
+	case ActionAttack:
+		d = c.Flags.Delays.Attack
+	case ActionCharge:
+		d = c.Flags.Delays.Charge
+	case ActionDash:
+		d = c.Flags.Delays.Dash
+	case JumpFrames:
+		d = c.Flags.Delays.Jump
+	case ActionSwap:
+		d = c.Flags.Delays.Swap
+	}
+	return c.LastAction.Param["delay"] + d
 }
 
 func (c *Core) ResetAllNormalCounter() {

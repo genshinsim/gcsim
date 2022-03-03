@@ -108,14 +108,44 @@ func (s *Simulation) AdvanceFrame() error {
 
 	if len(s.queue) > 0 {
 
+		//here we need to check for delay but only if the next action is an action
+		//i.e. not a wait
 		var delay int
-		//check if the current action is executable right now; if not then delay
 		act, isAction := s.queue[0].(*core.ActionItem)
+
+		//we need to check for when the previous action finished "executing"
+		//this is because sometimes the next action isn't queued for a while
+		//so we can end up with a situation where the last action was queued 100 frames ago
+		//and then we're still trying to add more delay on top of 100 frame
 		if isAction {
-			delay = s.C.AnimationCancelDelay(act.Typ) + s.C.UserCustomDelay()
+			delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
 		}
 
+		//so if current frame - when the last action is used is >= delay, then we shouldn't
+		//delay at all
+		if s.C.F-s.lastActionUsedAt >= delay {
+			// s.C.Log.NewEvent(
+			// 	"custom delay skipped",
+			// 	core.LogActionEvent,
+			// 	-1,
+			// 	"time_passed_since_last", s.C.F-s.lastActionUsedAt,
+			// 	"total_delay", delay,
+			// 	"param", s.C.LastAction.Param["delay"],
+			// 	"default_delays", s.C.Flags.Delays,
+			// )
+			delay = 0
+		}
+
+		//other wise we can add delay
 		if delay > 0 {
+			s.C.Log.NewEvent(
+				"animation delay triggered",
+				core.LogActionEvent,
+				s.C.ActiveChar,
+				"total_delay", delay,
+				"param", s.C.LastAction.Param["delay"],
+				"default_delays", s.C.Flags.Delays,
+			)
 			s.skip = delay
 			return nil
 		}
@@ -127,6 +157,8 @@ func (s *Simulation) AdvanceFrame() error {
 		// )
 
 		s.skip, done, err = s.C.Action.Exec(s.queue[0])
+		//last action used should then be current frame + how much we are skipping (i.e. first frame queueable)
+		s.lastActionUsedAt = s.C.F + s.skip
 		if err != nil {
 			return err
 		}
