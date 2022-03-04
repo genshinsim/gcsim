@@ -26,7 +26,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 			char.AddTask(func() {
 				char.AddEnergy("prototype-amber", e)
-				c.Health.HealAllPercent(char.CharIndex(), e/100.0*(1+char.Stat(core.Heal)))
+				c.Health.HealAllPercent(char.CharIndex(), e/100.0)
 			}, "recharge", i)
 		}
 
