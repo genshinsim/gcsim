@@ -16,37 +16,49 @@ func NewCtrl(c *core.Core) *HealthCtrl {
 	}
 }
 
-func (h *HealthCtrl) HealActive(caller int, hp float64) {
-	h.HealIndex(caller, h.core.ActiveChar, hp)
+func (h *HealthCtrl) HealActive(caller int, hp float64, bonus ...float64) {
+	h.HealIndex(caller, h.core.ActiveChar, hp, bonus...)
 }
 
-func (h *HealthCtrl) HealAll(caller int, hp float64) {
+func (h *HealthCtrl) HealAll(caller int, hp float64, bonus ...float64) {
+	if len(bonus) == 0 {
+		bonus = append(bonus, h.core.Chars[caller].Stat(core.Heal))
+	}
+
 	for i, c := range h.core.Chars {
-		bonus := h.healBonusMult(i) + h.core.Chars[caller].Stat(core.Heal)
-		heal := bonus * hp
+		bonus[0] += h.healBonusMult(i)
+		heal := bonus[0] * hp
 		c.ModifyHP(heal)
 		h.core.Events.Emit(core.OnHeal, caller, i, heal)
-		h.core.Log.NewEvent("healing (all)", core.LogHealEvent, i, "amount", hp, "bonus", bonus, "final", h.core.Chars[h.core.ActiveChar].HP())
+		h.core.Log.NewEvent("healing (all)", core.LogHealEvent, i, "amount", hp, "bonus", bonus[0], "final", h.core.Chars[h.core.ActiveChar].HP())
 	}
 }
 
-func (h *HealthCtrl) HealAllPercent(caller int, percent float64) {
+func (h *HealthCtrl) HealAllPercent(caller int, percent float64, bonus ...float64) {
+	if len(bonus) == 0 {
+		bonus = append(bonus, h.core.Chars[caller].Stat(core.Heal))
+	}
+
 	for i, c := range h.core.Chars {
 		hp := c.MaxHP() * percent
-		bonus := h.healBonusMult(i) + h.core.Chars[caller].Stat(core.Heal)
-		heal := bonus * hp
+		bonus[0] += h.healBonusMult(i)
+		heal := bonus[0] * hp
 		c.ModifyHP(heal)
 		h.core.Events.Emit(core.OnHeal, caller, i, heal)
-		h.core.Log.NewEvent("healing (all)", core.LogHealEvent, i, "amount", hp, "bonus", bonus, "final", h.core.Chars[h.core.ActiveChar].HP())
+		h.core.Log.NewEvent("healing (all)", core.LogHealEvent, i, "amount", hp, "bonus", bonus[0], "final", h.core.Chars[h.core.ActiveChar].HP())
 	}
 }
 
-func (h *HealthCtrl) HealIndex(caller int, index int, hp float64) {
-	bonus := h.healBonusMult(index) + h.core.Chars[caller].Stat(core.Heal)
-	heal := bonus * hp
+func (h *HealthCtrl) HealIndex(caller int, index int, hp float64, bonus ...float64) {
+	if len(bonus) == 0 {
+		bonus = append(bonus, h.core.Chars[caller].Stat(core.Heal))
+	}
+
+	bonus[0] += h.healBonusMult(index)
+	heal := bonus[0] * hp
 	h.core.Chars[index].ModifyHP(heal)
 	h.core.Events.Emit(core.OnHeal, caller, index, heal)
-	h.core.Log.NewEvent("healing", core.LogHealEvent, index, "amount", hp, "bonus", bonus, "final", h.core.Chars[h.core.ActiveChar].HP())
+	h.core.Log.NewEvent("healing", core.LogHealEvent, index, "amount", hp, "bonus", bonus[0], "final", h.core.Chars[h.core.ActiveChar].HP())
 }
 
 func (h *HealthCtrl) healBonusMult(healedCharIndex int) float64 {

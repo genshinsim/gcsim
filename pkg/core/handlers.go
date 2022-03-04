@@ -50,10 +50,10 @@ type ConstructHandler interface {
 }
 
 type HealthHandler interface {
-	HealIndex(caller int, index int, amt float64)
-	HealActive(caller int, amt float64)
-	HealAll(caller int, amt float64)
-	HealAllPercent(caller int, percent float64)
+	HealIndex(caller int, index int, amt float64, bonus ...float64)
+	HealActive(caller int, amt float64, bonus ...float64)
+	HealAll(caller int, amt float64, bonus ...float64)
+	HealAllPercent(caller int, percent float64, bonus ...float64)
 	AddIncHealBonus(f func(healedCharIndex int) float64)
 
 	AddDamageReduction(f func() (float64, bool))

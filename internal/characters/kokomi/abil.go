@@ -135,9 +135,6 @@ func (c *char) createSkillSnapshot() *core.AttackEvent {
 
 // Helper function that handles damage, healing, and particle components of every tick of her E
 func (c *char) skillTick(d *core.AttackEvent) {
-
-	hpplus := 1 + c.Stat(core.Heal)
-
 	// check if skill has burst bonus snapshot
 	// max swap frame should be 40 frame before 2nd tick
 	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < (c.skillLastUsed+120-40) {
@@ -147,7 +144,7 @@ func (c *char) skillTick(d *core.AttackEvent) {
 	}
 
 	c.Core.Combat.QueueAttackEvent(d, 0)
-	c.Core.Health.HealActive(c.Index, (skillHealPct[c.TalentLvlSkill()]*c.HPMax+skillHealFlat[c.TalentLvlSkill()])*hpplus)
+	c.Core.Health.HealActive(c.Index, skillHealPct[c.TalentLvlSkill()]*c.HPMax+skillHealFlat[c.TalentLvlSkill()], d.Snapshot.Stats[core.Heal])
 
 	// Particles are 0~1 (1:2) on every damage instance
 	if c.Core.Rand.Float64() < .6667 {
@@ -160,7 +157,7 @@ func (c *char) skillTick(d *core.AttackEvent) {
 	if c.Base.Cons >= 2 {
 		active := c.Core.Chars[c.Core.ActiveChar]
 		if active.HP()/active.MaxHP() <= .5 {
-			c.Core.Health.HealActive(c.Index, 0.045*c.HPMax*hpplus)
+			c.Core.Health.HealActive(c.Index, 0.045*c.HPMax)
 		}
 	}
 }
