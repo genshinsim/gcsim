@@ -195,7 +195,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if count > 5 {
 		count = 5
 	}
-	c.HPCurrent += c.HPMax * float64(count) * regen
+	c.Core.Health.HealActive(c.Index, c.HPMax*float64(count)*regen)
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
