@@ -247,7 +247,6 @@ func (c *Core) UserCustomDelay() int {
 	case ActionSwap:
 		d = c.Flags.Delays.Swap
 	}
-	d += c.Rand.Intn(5)-2;
 	return c.LastAction.Param["delay"] + d
 }
 
