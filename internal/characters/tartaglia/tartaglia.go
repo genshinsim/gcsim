@@ -16,10 +16,7 @@ type char struct {
 	*character.Tmpl
 	eCast         int // the frame tartaglia casts E to enter melee stance
 	rtParticleICD int
-	// rtFlashICD    []int
-	// rtSlashICD    []int
-	// rtExpiry      []int
-	mlBurstUsed bool // used for c6
+	mlBurstUsed   bool // used for c6
 }
 
 //constants for tags
@@ -55,9 +52,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 
 	c.rtParticleICD = 0
-	// c.rtFlashICD = make([]int, len(c.Core.Targets))
-	// c.rtSlashICD = make([]int, len(c.Core.Targets))
-	// c.rtExpiry = make([]int, len(c.Core.Targets))
 
 	c.Core.Flags.ChildeActive = true
 	c.onExitField()
@@ -121,40 +115,3 @@ func (c *char) onDefeatTargets() {
 		return false
 	}, "tartaglia-on-enemy-death")
 }
-
-//apply riptide status to enemy hit
-// func (c *char) applyRT() {
-// 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-// 		atk := args[1].(*core.AttackEvent)
-// 		t := args[0].(core.Target)
-// 		crit := args[3].(bool)
-
-// 		if c.Core.Status.Duration("tartagliamelee") > 0 {
-// 			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
-// 				return false
-// 			}
-// 			if !crit {
-// 				return false
-// 			}
-
-// 			//dont log if it just refreshes riptide status
-// 			if c.rtExpiry[t.Index()] <= c.Core.F {
-// 				c.Core.Log.NewEvent("Tartaglia applied riptide", core.LogCharacterEvent, c.Index, "target", t.Index(), "rtExpiry", c.Core.F+riptideDuration)
-// 			}
-// 			c.rtExpiry[t.Index()] = c.Core.F + riptideDuration
-// 		} else {
-// 			if atk.Info.AttackTag != core.AttackTagElementalBurst && atk.Info.AttackTag != core.AttackTagExtra {
-// 				return false
-// 			}
-
-// 			//ranged burst or aim mode
-// 			//dont log if it just refreshes riptide status
-// 			if c.rtExpiry[t.Index()] <= c.Core.F {
-// 				c.Core.Log.NewEvent("Tartaglia applied riptide", core.LogCharacterEvent, c.Index, "target", t.Index(), "rtExpiry", c.Core.F+riptideDuration)
-// 			}
-// 			c.rtExpiry[t.Index()] = c.Core.F + riptideDuration
-// 		}
-
-// 		return false
-// 	}, "tartaglia-apply-riptide")
-// }
