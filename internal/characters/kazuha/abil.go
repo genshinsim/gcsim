@@ -116,7 +116,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 			IgnoreInfusion: true,
 		}
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 10, 10)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), f-1, f-1)
 		c.a2Ele = core.NoElement
 	}
 

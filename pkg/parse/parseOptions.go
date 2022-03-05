@@ -79,6 +79,11 @@ func parseOptions(p *Parser) (parseFn, error) {
 				if err == nil {
 					p.cfg.Settings.Delays.Dash, err = itemNumberToInt(n)
 				}
+			case "aim_delay":
+				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err == nil {
+					p.cfg.Settings.Delays.Aim, err = itemNumberToInt(n)
+				}
 			case "frame_defaults":
 				n, err = p.acceptSeqReturnLast(itemEqual, itemIdentifier)
 				if err == nil {
@@ -91,6 +96,7 @@ func parseOptions(p *Parser) (parseFn, error) {
 						p.cfg.Settings.Delays.Burst = 5
 						p.cfg.Settings.Delays.Dash = 5
 						p.cfg.Settings.Delays.Jump = 5
+						p.cfg.Settings.Delays.Aim = 5
 					default:
 						return nil, fmt.Errorf("unrecognized option for frame_defaults specified: %v", n.val)
 					}

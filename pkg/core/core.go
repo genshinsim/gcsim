@@ -31,13 +31,14 @@ type Flags struct {
 }
 
 type Delays struct {
-	Swap   int
-	Attack int
-	Charge int
 	Skill  int
 	Burst  int
+	Attack int
+	Charge int
+	Aim    int
 	Dash   int
 	Jump   int
+	Swap   int
 }
 
 type Core struct {
@@ -96,54 +97,7 @@ func New() *Core {
 	c.stamModifier = make([]stamMod, 0, 10)
 	//make a default nil writer
 	c.Log = &NilLogger{}
-	// c.queue = make([]Command, 0, 20)
 
-	// for _, f := range cfg {
-	// 	err := f(c)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// }
-
-	// if c.Log == nil {
-	// 	c.Log, err = NewDefaultLogger(c, false, false, nil)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// }
-
-	// if c.Rand == nil {
-	// 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	// }
-	// if c.Events == nil {
-	// 	c.Events = NewEventCtrl(c)
-	// }
-	// if c.Status == nil {
-	// 	c.Status = NewStatusCtrl(c)
-	// }
-	// if c.Energy == nil {
-	// 	c.Energy = NewEnergyCtrl(c)
-	// }
-	// if c.Combat == nil {
-	// 	c.Combat = NewCombatCtrl(c)
-	// }
-	// if c.Tasks == nil {
-	// 	c.Tasks = NewTaskCtrl(&c.F)
-	// }
-	// if c.Constructs == nil {
-	// 	c.Constructs = NewConstructCtrl(c)
-	// }
-	// if c.Shields == nil {
-	// 	c.Shields = NewShieldCtrl(c)
-	// }
-	// if c.Health == nil {
-	// 	c.Health = NewHealthCtrl(c)
-	// }
-	// if c.Queue == nil {
-	// 	c.Queue = NewQueuer(c)
-	// }
-
-	//check handlers
 	return c
 }
 
@@ -242,10 +196,12 @@ func (c *Core) UserCustomDelay() int {
 		d = c.Flags.Delays.Charge
 	case ActionDash:
 		d = c.Flags.Delays.Dash
-	case JumpFrames:
+	case ActionJump:
 		d = c.Flags.Delays.Jump
 	case ActionSwap:
 		d = c.Flags.Delays.Swap
+	case ActionAim:
+		d = c.Flags.Delays.Aim
 	}
 	return c.LastAction.Param["delay"] + d
 }
