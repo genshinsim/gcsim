@@ -1,25 +1,18 @@
 // import { Artifact, Weapon, Character } from "./types";
-import { Character, maxStatLength, Talent, Weapon } from "~/src/types";
+import { Character, defaultStats, Weapon } from "~/src/types";
+
+import ArtifactMainStatsData from "~src/Components/Artifacts/artifact_main_gen.json";
 import { characterKeyToICharacter } from "~src/Components/Character";
-import { ascLvlMax, maxLvlToAsc } from "~src/util";
+import { ascLvlMax, maxLvlToAsc, StatToIndexMap } from "~src/util";
 
-import { ICharacter, IGOOD, GOODArtifact } from "./goodTypes";
-
-export const staticPath = {
-  avatar: "/images/avatar",
-  cons: "/images/avatar/cons",
-  weapons: "/images/weapons",
-  artifacts: "/images/artifacts",
-};
-
-interface IartifactBank {
-  [srlcharkey: string]: GOODArtifact[];
-}
+import { ICharacter, IGOOD, GOODArtifact, StatKey } from "./goodTypes";
 
 export interface IGOODImport {
   err: string;
   characters: Character[];
 }
+type rarityValue = "1" | "2" | "3" | "4" | "5";
+const convertRarity: rarityValue[] = ["1", "2", "3", "4", "5"];
 
 interface GOODGearBank {
   [key: string]: { weapon: Weapon; artifact: GOODArtifact[] };
@@ -75,6 +68,8 @@ export function parseFromGO(val: string): IGOODImport {
         artifact: [],
       };
     });
+  } else {
+    result.err = "No weapons found";
   }
 
   //Store artifacts based on character
@@ -119,7 +114,7 @@ export function parseFromGO(val: string): IGOODImport {
     };
   }
   // console.log("parsing characters ", data.characters);
-  data.characters.forEach((c, i) => {
+  data.characters.forEach((c) => {
     //convert GOOD key to our key
     let char = importCharFromGOOD(c, goodGearBank);
     if (char === undefined) {
@@ -145,6 +140,73 @@ export function parseFromGO(val: string): IGOODImport {
 
   result.characters = chars;
   return result;
+}
+
+const sumArtifactStats = (artifacts: GOODArtifact[]): number[] => {
+  const totalStats = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ].slice();
+
+  artifacts.forEach((artifact) => {
+    if (artifact.mainStatKey !== "" && artifact.mainStatKey !== "def") {
+      const mainStatValue =
+        ArtifactMainStatsData[convertRarity[artifact.rarity - 1]][
+          artifact.mainStatKey
+        ][artifact.level];
+      totalStats[StatToIndexMap[goodStattoSrlStat(artifact.mainStatKey)]] +=
+        mainStatValue;
+    } else {
+      console.log("pepegaW artifact");
+    }
+
+    artifact.substats.forEach((substat) => {
+      // console.log(totalStats);
+      totalStats[StatToIndexMap[goodStattoSrlStat(substat.key)]] +=
+        substat.value;
+    });
+  });
+  return totalStats;
+};
+
+function goodStattoSrlStat(goodStat: StatKey): string {
+  switch (goodStat) {
+    case "hp":
+      return "HP";
+    case "hp_":
+      return "HPP";
+    case "atk":
+      return "ATK";
+    case "atk_":
+      return "ATKP";
+    case "def":
+      return "DEF";
+    case "def_":
+      return "DEFP";
+    case "eleMas":
+      return "EM";
+    case "enerRech_":
+      return "ER";
+    case "heal_":
+      return "Heal";
+    case "critRate_":
+      return "CR";
+    case "critDMG_":
+      return "CD";
+    case "physical_dmg_":
+      return "PhyP";
+    case "anemo_dmg_":
+      return "AnemoP";
+    case "geo_dmg_":
+      return "GeoP";
+    case "electro_dmg_":
+      return "ElectroP";
+    case "hydro_dmg_":
+      return "HydroP";
+    case "pyro_dmg_":
+      return "PyroP";
+    case "cryo_dmg_":
+      return "CryoP";
+  }
 }
 
 const tallyArtifactSet = (
@@ -191,12 +253,14 @@ export function importCharFromGOOD(
   //copy over all the attributes we care about; ignore anything
   //we don't need
   const name = convertFromGOODKey(goodObj.key);
-  let setcount;
+  let setCount, statTotal;
 
-  if (goodGearBank[name] === undefined) {
-    setcount = {};
+  if (goodGearBank[name].artifact === undefined) {
+    setCount = {};
+    statTotal = defaultStats;
   } else {
-    setcount = tallyArtifactSet(goodGearBank[name].artifact);
+    setCount = tallyArtifactSet(goodGearBank[name].artifact);
+    statTotal = sumArtifactStats(goodGearBank[name].artifact);
   }
   let char = {
     name: name,
@@ -211,11 +275,11 @@ export function importCharFromGOOD(
       burst: goodObj.talent.burst,
     },
     //need to sum stats
-    stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    stats: statTotal,
     snapshot: [
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
-    sets: setcount,
+    sets: setCount,
   };
 
   return char;
