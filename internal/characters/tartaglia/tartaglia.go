@@ -115,3 +115,17 @@ func (c *char) onDefeatTargets() {
 		return false
 	}, "tartaglia-on-enemy-death")
 }
+
+func (c *char) c4(t core.Target) {
+	if t.GetTag(riptideKey) < c.Core.F {
+		return
+	}
+
+	if c.Core.Status.Duration("tartagliamelee") > 0 {
+		c.rtSlashTick(t)
+	} else {
+		c.rtFlashTick(t)
+	}
+
+	c.AddTask(func() { c.c4(t) }, "tartaglia-c4", 60*4)
+}

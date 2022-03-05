@@ -27,6 +27,10 @@ func (c *char) meleeApplyRiptide(a core.AttackCB) {
 }
 
 func (c *char) applyRiptide(src string, t core.Target) {
+	if c.Base.Cons >= 4 && t.GetTag(riptideKey) < c.Core.F {
+		c.AddTask(func() { c.c4(t) }, "tartaglia-c4", 60*4)
+	}
+
 	t.SetTag(riptideKey, c.Core.F+riptideDuration)
 	c.Core.Log.NewEvent(
 		fmt.Sprintf("riptide applied (%v)", src),
