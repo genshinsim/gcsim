@@ -6,7 +6,10 @@ import { ascLvlMax, ascLvlMin, maxLvlToAsc } from "~src/util";
 import { WorkerPool } from "~src/WorkerPool";
 import { IGOODImport } from "./Components/char";
 import { charToCfg } from "./helper";
-import { GOODArtifact as Artifact, Character as GOChar } from "./Components/goodTypes";
+import {
+  GOODArtifact as Artifact,
+  Character as GOChar,
+} from "./Components/goodTypes";
 
 export let pool: WorkerPool = new WorkerPool();
 
@@ -26,7 +29,7 @@ export interface Sim {
   advanced_cfg: string;
   run: RunStats;
   showTips: boolean;
-  GOChars: Character[]
+  GOChars: Character[];
 }
 
 export const defaultRunStat: RunStats = {
@@ -45,10 +48,8 @@ const initialState: Sim = {
   advanced_cfg: "",
   run: defaultRunStat,
   showTips: true,
-  GOChars: []
+  GOChars: [],
 };
-
-
 
 const defWep: { [key: string]: string } = {
   bow: "dullblade",
@@ -57,55 +58,6 @@ const defWep: { [key: string]: string } = {
   sword: "dullblade",
   polearm: "dullblade",
 };
-
-const convertFromGO = (char: GOChar): Character=>{
-
-  const artifacts = Object.values(char.artifact);
-  const newStats = sumArtifactStats(artifacts);
-  // const setCount = tallyArtifactSet(artifacts)
-  // console.log(setCount)  
-  // take out and store set key
-
-  // sum sub and main stats
-  // console.log("pepega")
-  // console.log(artifacts)
-
-return {name: char.name,
-  level: char.level,
-  max_level: ascLvlMax(char.level),
-  element: char.element,
-  cons: char.constellation,
-  weapon: {
-    // SRL uses {name} field like a key for action list
-    name: char.weapon.key,
-    refine: char.weapon.refinement,
-    level: char.weapon.level,
-    max_level: ascLvlMax(char.weapon.refinement),
-  },
-  talents: {
-    attack: char.talent.auto,
-    skill: char.talent.skill,
-    burst: char.talent.burst,
-  },
-  //need to sum stats
-  stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  snapshot: [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ],
-  // need to sum arti sets
-  sets: {},
-}
-}
-
-
-const sumArtifactStats = (artifacts: Artifact[]): number[]=>{
-  const totalStats =[1];
-  const totalMains= artifacts.map((artifact) => {return artifact.mainStatKey})
-  const totalSubs = artifacts.map((artifact) => {return artifact.substats}) 
-console.log(totalMains)
-  return totalStats;
-
-}
 
 const newChar = (name: string): Character => {
   const c = characterKeyToICharacter[name];
@@ -326,14 +278,14 @@ export const simSlice = createSlice({
       state.edit_index = action.payload.index;
       return state;
     },
-    saveFromGO: (state, action: PayloadAction<{data: IGOODImport}>) => {
+    saveFromGO: (state, action: PayloadAction<{ data: Character[] }>) => {
       // if there are characters, do something
-      if(action.payload.data.characters.length > 0){
-        // state.GOChars = action.payload.data.characters.map(convertFromGO)
+      if (action.payload.data.length > 0) {
+        state.GOChars = action.payload.data;
       }
-      console.log(state.GOChars)
+      console.log(state.GOChars);
       return state;
-    }
+    },
   },
 });
 

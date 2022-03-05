@@ -3,7 +3,7 @@ import React from "react";
 import { simActions } from "~src/Pages/Sim";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
 
-import { IGOODImport, staticPath, parseFromGO } from "./char";
+import { IGOODImport, parseFromGO } from "./char";
 
 type Props = {
   isOpen: boolean;
@@ -22,13 +22,14 @@ export function LoadGOOD(props: Props) {
     const val = localStorage.getItem(lsKey);
     if (val !== null && val !== "") {
       setStr(val);
+      // console.log("spahget", parseFromGO(val));
       setData(parseFromGO(val));
     }
   }, []);
   const handleLoad = () => {
-    if (data) {
+    if (data !== undefined) {
       // setData(parseFromGO());
-      dispatch(simActions.saveFromGO({ data }));
+      dispatch(simActions.saveFromGO({ data: data.characters }));
       setIsSuccess(true);
     }
   };
