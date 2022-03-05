@@ -119,12 +119,10 @@ func (s *Simulation) AdvanceFrame() error {
 		//and then we're still trying to add more delay on top of 100 frame
 		if isAction {
 			delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
-			switch s.C.LastAction.Typ {
-			case ActionAttack:
-				if(s.queue[0].Typ == ActionAttack || s.queue[0].Typ == ActionCharge)
+			if(s.C.LastAction.Typ == core.ActionAttack) {
+				if(s.queue[0].(*core.ActionItem).Typ == core.ActionAttack || s.queue[0].(*core.ActionItem).Typ == core.ActionCharge) {
 					delay -= s.C.UserCustomDelay();
-			case default:
-				delay = delay;
+				}
 			}
 		}
 
