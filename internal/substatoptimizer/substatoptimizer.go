@@ -34,7 +34,9 @@ var (
 
 	// TODO: Will need to update this once artifact keys are introduced, and if more 4* artifact sets are implemented
 	artifactSets4Star = []string{
+		"exile",
 		"instructor",
+		"theexile",
 	}
 
 	substatValues  = make([]float64, core.EndStatType)
