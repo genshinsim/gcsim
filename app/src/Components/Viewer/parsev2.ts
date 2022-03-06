@@ -346,6 +346,11 @@ export function parseLogV2(
     if (!(f in ended)) {
       continue;
     }
+    //skip if idx is -1?
+    console.log(idx);
+    if (idx === -1) {
+      continue;
+    }
     //now check if result[idx] is same as f; if so append
     //otherwise create new
     if (result[idx].f === f) {
