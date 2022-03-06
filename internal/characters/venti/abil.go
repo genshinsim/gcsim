@@ -2,6 +2,7 @@ package venti
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -98,7 +99,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f-1, cb)
 
-	c.QueueParticle("venti", 4, core.Anemo, f+100)
+	c.QueueParticle("venti", 3, core.Anemo, f+100)
 
 	c.SetCD(core.ActionSkill, cd)
 	return f, a
