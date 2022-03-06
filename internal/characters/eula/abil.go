@@ -2,6 +2,7 @@ package eula
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -131,7 +132,7 @@ func (c *char) holdE() {
 	}
 	for i := 0; i < v; i++ {
 		//spacing it out for stacks
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 90+i*7, shredCB)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 92+i*7, shredCB)
 	}
 
 	//A2
