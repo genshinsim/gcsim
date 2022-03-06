@@ -1,10 +1,12 @@
 package reactable
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 func calcSwirlAtkDurability(consumed, src core.Durability) core.Durability {
-	if consumed < 0.5*src {
-		return 1.25*(consumed-1) + 25
+	if consumed < src {
+		return 1.25*(0.5*consumed-1) + 25
 	}
 	return 1.25*(src-1) + 25
 }
