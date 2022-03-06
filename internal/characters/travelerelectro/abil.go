@@ -2,7 +2,6 @@ package travelerelectro
 
 import (
 	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -48,13 +47,81 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		hits = 1
 	}
 
+	maxAmulets := 2
+	if c.Base.Cons > 0 {
+		maxAmulets = 3
+	}
+
+	// clear existing amulets
+	c.Amulets = make([]abundanceAmulet, maxAmulets)
+
+	// accept param input to disable dashing to amulets on swap
+	ignoreAmulets, ok := p["ignore_amulets"]
+	if !ok {
+		ignoreAmulets = 0
+	}
+
+	// should emc wait and collect one of the amulets?
+	forceMcToCollectAmulet, ok := p["force_collect"]
+	if !ok {
+		forceMcToCollectAmulet = 0
+	}
+
+	// Counting from the frame E is pressed, it takes an average of 1.79 seconds for a character to be able to pick one up
+	// https://library.keqingmains.com/evidence/characters/electro/traveler-electro#amulets-delay
+	amuletDelay := 107 // ~1.79s
+
 	c.QueueParticle(c.Name(), 1, core.Electro, f+100)
 
 	for i := 0; i < hits; i++ {
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f)
+
+		c.AddTask(func() {
+			// generate amulet if generated amulets < limit
+			if i >= maxAmulets {
+				return
+			}
+
+			// log amulet generated event
+			a := abundanceAmulet{
+				Collected:    false,
+				CollectableF: c.Core.F + amuletDelay,
+			}
+
+			c.Amulets = append(c.Amulets, a)
+		}, fmt.Sprintf("emc-amulet-generate-%d", i), amuletDelay)
 	}
 
 	c.SetCD(core.ActionSkill, 810+21) //13.5s, starts 21 frames in
+
+	if forceMcToCollectAmulet == 1 && len(c.Amulets) > 0 {
+		// wait amuletDelay frames
+		f += amuletDelay
+
+		// then try to collect an amulet
+		for i := 0; i < len(c.Amulets); i++ {
+			ok := c.Amulets[i].tryToCollect(c.Core.F, c, c)
+			if ok {
+				break
+			}
+		}
+	}
+
+	if ignoreAmulets == 0 && len(c.Amulets) > 0 {
+		// Assume next swap(s) will dash to the amulet if they can
+		c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+			for i := 0; i < len(c.Amulets); i++ {
+				next := args[2].(*core.Character)
+				ok := c.Amulets[i].tryToCollect(c.Core.F, *next, c)
+				if ok {
+					break
+				}
+			}
+
+			return false
+		}, "check-pickup-abundance-amulet")
+	}
+
 	return f, a
 }
 

@@ -7,6 +7,7 @@ import (
 
 type char struct {
 	*character.Tmpl
+	Amulets []abundanceAmulet
 }
 
 func init() {
