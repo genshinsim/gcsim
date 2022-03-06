@@ -10,6 +10,10 @@ type LogDetails = {
   ordering?: { [key: string]: number };
 };
 
+type endedStatus = {
+  [key: number]: DebugItem[][];
+};
+
 export function parseLogV2(
   active: string,
   team: string[],
@@ -21,8 +25,9 @@ export function parseLogV2(
 
   let result: DebugRow[] = [];
   let slots: DebugItem[][] = [[], [], [], [], []];
-
+  let ended: endedStatus = {};
   let lastFrame = -1;
+  let finalFrame = -1;
 
   //we just need to parse it here
   /**
@@ -43,24 +48,64 @@ export function parseLogV2(
     return [];
   }
 
-  let rowKey = 0;
+  // let rowKey = 0;
   //bool to check if there are elements added
   let added = false;
 
+  //map out all ended
+  lines.forEach((line) => {
+    if (line.ended > line.frame) {
+      if (line.event !== "status") {
+        return;
+      }
+      if (!line.msg.includes("added")) {
+        return;
+      }
+      if (!(line.ended in ended)) {
+        slots = [];
+        for (var i = 0; i <= team.length; i++) {
+          slots.push([]);
+        }
+        ended[line.ended] = slots;
+      }
+      const key = line.logs["key"];
+      if (key === null || key === "") {
+        return;
+      }
+      const index = line.char_index + 1;
+      let e: DebugItem = {
+        frame: line.frame,
+        msg: key + " expired",
+        raw: JSON.stringify(line, null, 2),
+        event: line.event,
+        char: index,
+        color: eventColor(line.event),
+        icon: "iso",
+        amount: 0,
+        target: "",
+        ended: line.ended,
+      };
+      ended[e.ended][index].push(e);
+    }
+  });
+
   lines.forEach((line) => {
     const index = line.char_index + 1;
+    if (line.frame > finalFrame) {
+      finalFrame = line.frame;
+    }
 
     if (line.frame !== lastFrame) {
       if (added) {
         result.push({
-          key: rowKey,
+          key: lastFrame,
           f: lastFrame,
           slots: slots,
           active: activeIndex,
         });
       }
       added = false;
-      rowKey++;
+      // rowKey++;
       //reset
       lastFrame = line.frame;
       slots = [];
@@ -285,6 +330,39 @@ export function parseLogV2(
     slots[index].push(e);
     added = true;
   });
+
+  //append in ended status
+  console.log(ended);
+
+  let idx = -1;
+  for (let f = 0; f <= finalFrame; f++) {
+    //check if this frame is in results, if so shift idx 1 up to match
+    if (idx + 1 < result.length && result[idx + 1].f === f) {
+      //this way idx always tracks result.f such that result.f is either == f
+      //or the large closests but not > then f
+      idx++;
+    }
+    //check if there's an event in this frame, if not skip
+    if (!(f in ended)) {
+      continue;
+    }
+    //now check if result[idx] is same as f; if so append
+    //otherwise create new
+    if (result[idx].f === f) {
+      for (let j = 0; j < result[idx].slots.length; j++) {
+        result[idx].slots[j].push(...ended[f][j]);
+      }
+    } else {
+      const x = {
+        key: f,
+        f: f,
+        slots: ended[f],
+        active: result[idx].active,
+      };
+      result.splice(idx + 1, 0, x);
+      idx++;
+    }
+  }
 
   //   console.log(result);
 
