@@ -2629,7 +2629,7 @@ posthtml@^0.16.4, posthtml@^0.16.5:
 
 "prismjs@https://github.com/srliao/prism.git":
   version "1.27.0"
-  resolved "https://github.com/srliao/prism.git#eaa5aa1053cb7d6caa30218986885c9238bd39cd"
+  resolved "https://github.com/srliao/prism.git#b3ce15d378774e37130d134e9ed814f281494c88"
 
 process@^0.11.10:
   version "0.11.10"

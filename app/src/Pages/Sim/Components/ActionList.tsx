@@ -30,7 +30,7 @@ export function ActionList(props: Props) {
         style={{
           fontFamily: '"Fira code", "Fira Mono", monospace',
           fontSize: 14,
-          backgroundColor: "rgb(75 85 99)",
+          backgroundColor: "rgb(45 45 45)",
         }}
       />
     </div>
