@@ -347,7 +347,7 @@ export function parseLogV2(
       continue;
     }
     //skip if idx is -1?
-    console.log(idx);
+    // console.log(idx);
     if (idx === -1) {
       continue;
     }
