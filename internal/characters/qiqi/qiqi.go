@@ -100,7 +100,7 @@ func (c *char) talismanHealHook() {
 		atk := args[1].(*core.AttackEvent)
 
 		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
-		c.Core.Health.HealIndex(c.Index, atk.Info.ActorIndex, healAmt)
+		// c.Core.Health.HealIndex(c.Index, atk.Info.ActorIndex, healAmt)
 		t.SetTag(talismanICDKey, c.Core.F+60)
 
 		c.Core.Log.NewEvent(
