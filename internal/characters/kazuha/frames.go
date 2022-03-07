@@ -76,13 +76,13 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionAttack, 55-21) //charge -> n1
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSkill, 34-21)  //charge -> skill
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionBurst, 33-21)  //charge -> burst
-	c.SetAbilCancelFrames(core.ActionCharge, core.SwapCDFrames, 32-21) //charge -> swap
+	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSwap, 32-21)   //charge -> swap
 
 	// c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 55-21) //burst -> n1
 	// c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 34-21)  //burst -> skill
 	c.SetAbilCancelFrames(core.ActionBurst, core.ActionDash, 100-95) //burst -> burst
-	c.SetAbilCancelFrames(core.ActionBurst, core.JumpFrames, 100-95) //burst -> burst
-	// c.SetAbilCancelFrames(core.ActionBurst, core.SwapCDFrames, 32-21) //burst -> swap
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionJump, 100-95) //burst -> burst
+	// c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 32-21) //burst -> swap
 
 	//skill press frames, dmg at 14
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionAttack, 85-14)     //85 frames to float down
