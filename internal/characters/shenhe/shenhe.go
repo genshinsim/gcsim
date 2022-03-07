@@ -16,16 +16,6 @@ type char struct {
 	quillcount []int
 	c4count    int
 	c4expiry   int
-
-	// eChargeMax       int
-	// eCharges         int
-	// skillRecoverySrc int
-	// recoverQueue     []int //queue of recovery
-
-	// cdQueueWorkerStartedAt []int
-	// cdQueue                [][]int
-	// availableCDCharge      []int
-	// additionalCDCharge     []int
 }
 
 const (
@@ -56,19 +46,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.c4count = 0
 	c.c4expiry = 0
 
-	// c.cdQueueWorkerStartedAt = make([]int, core.EndActionType)
-	// c.cdQueue = make([][]int, core.EndActionType)
-	// c.additionalCDCharge = make([]int, core.EndActionType)
-	// c.availableCDCharge = make([]int, core.EndActionType)
-
-	// for i := 0; i < len(c.cdQueue); i++ {
-	// 	c.cdQueue[i] = make([]int, 0, 4)
-	// 	c.availableCDCharge[i] = 1
-	// }
-
 	if c.Base.Cons >= 1 {
-		// c.additionalCDCharge[core.ActionSkill] = 1
-		// c.availableCDCharge[core.ActionSkill]++
 		c.SetNumCharges(core.ActionSkill, 2)
 	}
 

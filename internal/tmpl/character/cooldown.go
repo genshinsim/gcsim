@@ -7,6 +7,10 @@ func (c *Tmpl) SetNumCharges(a core.ActionType, num int) {
 	c.AvailableCDCharge[a] = num
 }
 
+func (c *Tmpl) Charges(a core.ActionType) int {
+	return c.AvailableCDCharge[a]
+}
+
 func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
 	//up if energy is ready && stack > 0
 	if a == core.ActionBurst && (c.Energy != c.EnergyMax) && !c.Core.Flags.EnergyCalcMode {
