@@ -29,8 +29,13 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		//check for healing
 		if c.Core.Status.Duration("barbskill") > 0 {
 			//heal target
-			heal := (prochpp[c.TalentLvlSkill()]*c.MaxHP() + prochp[c.TalentLvlSkill()])
-			c.Core.Health.HealAll(c.Index, heal)
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  -1,
+				Message: "Melody Loop (Normal Attack)",
+				Src:     prochpp[c.TalentLvlSkill()]*c.MaxHP() + prochp[c.TalentLvlSkill()],
+				Bonus:   c.Stat(core.Heal),
+			})
 			done = true
 		}
 
@@ -67,8 +72,13 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		//check for healing
 		if c.Core.Status.Duration("barbskill") > 0 {
 			//heal target
-			heal := (prochpp[c.TalentLvlSkill()]*c.MaxHP() + prochp[c.TalentLvlSkill()])
-			c.Core.Health.HealAll(c.Index, 4*heal)
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  -1,
+				Message: "Melody Loop (Charged Attack)",
+				Src:     4 * (prochpp[c.TalentLvlSkill()]*c.MaxHP() + prochp[c.TalentLvlSkill()]),
+				Bonus:   c.Stat(core.Heal),
+			})
 			done = true
 		}
 
@@ -120,14 +130,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	stats, _ := c.SnapshotStats()
 	hpplus := stats[core.Heal]
-	heal := (skillhp[c.TalentLvlSkill()] + skillhpp[c.TalentLvlSkill()]*c.MaxHP()) * (1 + hpplus)
+	heal := skillhp[c.TalentLvlSkill()] + skillhpp[c.TalentLvlSkill()]*c.MaxHP()
 	//apply right away
 
 	c.skillInitF = c.Core.F
 	c.onSkillStackCount(c.Core.F)
 	//add 1 tick each 5s
 	//first tick starts at 0
-	c.barbaraHealTick(heal, c.Core.F)()
+	c.barbaraHealTick(heal, hpplus, c.Core.F)()
 	ai.Abil = "Let the Show Begin♪ Wet Tick"
 	ai.AttackTag = core.AttackTagNone
 	ai.Mult = 0
@@ -140,7 +150,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	return f, a //todo fix field cast time
 }
 
-func (c *char) barbaraHealTick(healAmt float64, skillInitF int) func() {
+func (c *char) barbaraHealTick(healAmt float64, hpplus float64, skillInitF int) func() {
 	return func() {
 		//make sure it's not overwritten
 		if c.skillInitF != skillInitF {
@@ -150,11 +160,17 @@ func (c *char) barbaraHealTick(healAmt float64, skillInitF int) func() {
 		if c.Core.Status.Duration("barbskill") == 0 {
 			return
 		}
-		c.Core.Log.NewEvent("barbara heal ticking", core.LogCharacterEvent, c.Index)
-		c.Core.Health.HealActive(c.Index, healAmt)
+		// c.Core.Log.NewEvent("barbara heal ticking", core.LogCharacterEvent, c.Index)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.ActiveChar,
+			Message: "Melody Loop (Tick)",
+			Src:     healAmt,
+			Bonus:   hpplus,
+		})
 
 		// tick per 5 seconds
-		c.AddTask(c.barbaraHealTick(healAmt, skillInitF), "barbara-heal-tick", 5*60)
+		c.AddTask(c.barbaraHealTick(healAmt, hpplus, skillInitF), "barbara-heal-tick", 5*60)
 	}
 }
 
@@ -183,9 +199,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	stats, _ := c.SnapshotStats()
 
-	hpplus := stats[core.Heal]
-	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
-	c.Core.Health.HealAll(c.Index, heal)
+	c.Core.Health.Heal(core.HealInfo{
+		Caller:  c.Index,
+		Target:  -1,
+		Message: "Shining Miracle♪",
+		Src:     bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP(),
+		Bonus:   stats[core.Heal],
+	})
 
 	c.ConsumeEnergy(8)
 	c.SetCD(core.ActionBurst, 20*60)
