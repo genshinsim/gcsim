@@ -41,8 +41,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			if c.Core.Rand.Float64() < prob {
 				//heal target
 				x := a.AttackEvent.Snapshot.BaseDef*(1+a.AttackEvent.Snapshot.Stats[core.DEFP]) + a.AttackEvent.Snapshot.Stats[core.DEF]
-				heal := (shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]) * (1 + a.AttackEvent.Snapshot.Stats[core.Heal])
-				c.Core.Health.HealAll(c.Index, heal)
+				heal := shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]
+				c.Core.Health.Heal(core.HealInfo{
+					Caller:  c.Index,
+					Target:  -1,
+					Message: "Breastplate (Attack)",
+					Src:     heal,
+					Bonus:   a.AttackEvent.Snapshot.Stats[core.Heal],
+				})
 				done = true
 			}
 		}
