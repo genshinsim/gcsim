@@ -105,7 +105,7 @@ func (c *char) burstActiveHook() {
 		c.Core.Health.Heal(core.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
-			Message: "Nereid's Ascension",
+			Message: "Ceremonial Garment",
 			Src:     burstHealPct[c.TalentLvlBurst()]*c.HPMax + burstHealFlat[c.TalentLvlBurst()],
 			Bonus:   c.Stat(core.Heal),
 		})
