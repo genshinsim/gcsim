@@ -121,7 +121,7 @@ func (c *char) burstActiveHook() {
 				c.Core.Health.Heal(core.HealInfo{
 					Caller:  c.Index,
 					Target:  i,
-					Message: "Kokomi C2",
+					Message: "The Clouds Like Waves Rippling",
 					Src:     0.006 * c.HPMax,
 					Bonus:   c.Stat(core.Heal),
 				})

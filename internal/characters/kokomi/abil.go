@@ -167,7 +167,7 @@ func (c *char) skillTick(d *core.AttackEvent) {
 			c.Core.Health.Heal(core.HealInfo{
 				Caller:  c.Index,
 				Target:  c.Core.ActiveChar,
-				Message: "Kokomi C2",
+				Message: "The Clouds Like Waves Rippling",
 				Src:     0.045 * c.HPMax,
 				Bonus:   c.Stat(core.Heal),
 			})
