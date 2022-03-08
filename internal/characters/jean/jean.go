@@ -102,7 +102,13 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		//check for healing
 		if c.Core.Rand.Float64() < 0.5 {
 			heal := 0.15 * (snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK])
-			c.Core.Health.HealAll(c.Index, heal)
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  -1,
+				Message: "Wind Companion",
+				Src:     heal,
+				Bonus:   c.Stat(core.Heal),
+			})
 		}
 	}, "jean-na", f-1)
 
@@ -210,18 +216,30 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//heal on cast
 	hpplus := snap.Stats[core.Heal]
 	atk := snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]
-	heal := (burstInitialHealFlat[c.TalentLvlBurst()] + atk*burstInitialHealPer[c.TalentLvlBurst()]) * (1 + hpplus)
-	healDot := (burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]) * (1 + hpplus)
+	heal := burstInitialHealFlat[c.TalentLvlBurst()] + atk*burstInitialHealPer[c.TalentLvlBurst()]
+	healDot := burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]
 
 	c.AddTask(func() {
-		c.Core.Health.HealAll(c.Index, heal)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  -1,
+			Message: "Dandelion Breeze",
+			Src:     heal,
+			Bonus:   hpplus,
+		})
 	}, "Jean Heal Initial", f)
 
 	//duration is 10.5s
 	for i := 60; i < 630; i++ {
 		c.AddTask(func() {
-			c.Core.Log.NewEvent("jean q healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
-			c.Core.Health.HealActive(c.Index, heal)
+			// c.Core.Log.NewEvent("jean q healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  c.Core.ActiveChar,
+				Message: "Dandelion Field",
+				Src:     healDot,
+				Bonus:   hpplus,
+			})
 		}, "Jean Tick", i)
 	}
 
