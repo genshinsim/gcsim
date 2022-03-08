@@ -106,33 +106,29 @@ func (s *Simulation) AdvanceFrame() error {
 		s.queue = append(s.queue, next...)
 	}
 
-	if len(s.queue) > 0 {
+	//here we need to check for delay but only if the next action is an action
+	//i.e. not a wait
 
-		//here we need to check for delay but only if the next action is an action
-		//i.e. not a wait
+	act, isAction := s.queue[0].(*core.ActionItem)
+
+	//we need to check for when the previous action finished "executing"
+	//this is because sometimes the next action isn't queued for a while
+	//so we can end up with a situation where the last action was queued 100 frames ago
+	//and then we're still trying to add more delay on top of 100 frame
+	if isAction {
 		var delay int
-		act, isAction := s.queue[0].(*core.ActionItem)
-
-		//we need to check for when the previous action finished "executing"
-		//this is because sometimes the next action isn't queued for a while
-		//so we can end up with a situation where the last action was queued 100 frames ago
-		//and then we're still trying to add more delay on top of 100 frame
-		if isAction {
-			delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
+		//check if this action is ready
+		char := s.C.Chars[s.C.ActiveChar]
+		if !(char.ActionReady(act.Typ, act.Param)) {
+			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
+			return nil
 		}
+		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
+		//check if we should delay
 
 		//so if current frame - when the last action is used is >= delay, then we shouldn't
 		//delay at all
 		if s.C.F-s.lastActionUsedAt >= delay {
-			// s.C.Log.NewEvent(
-			// 	"custom delay skipped",
-			// 	core.LogActionEvent,
-			// 	-1,
-			// 	"time_passed_since_last", s.C.F-s.lastActionUsedAt,
-			// 	"total_delay", delay,
-			// 	"param", s.C.LastAction.Param["delay"],
-			// 	"default_delays", s.C.Flags.Delays,
-			// )
 			delay = 0
 		}
 
@@ -149,44 +145,39 @@ func (s *Simulation) AdvanceFrame() error {
 			s.skip = delay
 			return nil
 		}
-
-		// s.C.Log.Debugw("queue check - before exec",
-		// 	"frame", s.C.F,
-		// 	core.LogQueueEvent,
-		// 	"remaining queue", s.queue,
-		// )
-
-		s.skip, done, err = s.C.Action.Exec(s.queue[0])
-		//last action used should then be current frame + how much we are skipping (i.e. first frame queueable)
-		s.lastActionUsedAt = s.C.F + s.skip
-		if err != nil {
-			return err
-		}
-
-		if done {
-			// if s.opts.LogDetails && isAction {
-			if isAction {
-				s.stats.AbilUsageCountByChar[s.C.ActiveChar][act.Typ.String()]++
-			}
-			//pop queue
-			s.queue = s.queue[1:]
-		} else {
-			if s.dropQueueIfFailed {
-				//drop rest of the queue
-				s.queue = s.queue[:0]
-				//reset
-				s.dropQueueIfFailed = false
-			}
-		}
-		// s.C.Log.Debugw("queue check - after exec",
-		// 	"frame", s.C.F,
-		// 	core.LogQueueEvent,
-		// 	"remaining queue", s.queue,
-		// 	"skip", s.skip,
-		// 	"done", done,
-		// 	"dropIfFailed", s.dropQueueIfFailed,
-		// )
 	}
+
+	s.skip, done, err = s.C.Action.Exec(s.queue[0])
+	//last action used should then be current frame + how much we are skipping (i.e. first frame queueable)
+	s.lastActionUsedAt = s.C.F + s.skip
+	if err != nil {
+		return err
+	}
+
+	if done {
+		// if s.opts.LogDetails && isAction {
+		if isAction {
+			s.stats.AbilUsageCountByChar[s.C.ActiveChar][act.Typ.String()]++
+		}
+		//pop queue
+		s.queue = s.queue[1:]
+	} else {
+		if s.dropQueueIfFailed {
+			//drop rest of the queue
+			s.queue = s.queue[:0]
+			//reset
+			s.dropQueueIfFailed = false
+		}
+	}
+	// s.C.Log.Debugw("queue check - after exec",
+	// 	"frame", s.C.F,
+	// 	core.LogQueueEvent,
+	// 	"remaining queue", s.queue,
+	// 	"skip", s.skip,
+	// 	"done", done,
+	// 	"dropIfFailed", s.dropQueueIfFailed,
+	// )
+
 	return nil
 }
 
