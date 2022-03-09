@@ -57,7 +57,7 @@ export function Dash() {
         <DashCard onClick={() => setLocation("/db")}>
           <span className="font-bold text-xl">
             <Icon icon="database" className="mr-2" size={25} />
-            Action Lists DB
+            Teams DB
           </span>
         </DashCard>
 

@@ -52,7 +52,7 @@ export default function Nav() {
               icon="database"
               onClick={() => setLocation("/db")}
             >
-              <span className="xs:hidden md:block">Action List DB</span>
+              <span className="xs:hidden md:block">Teams DB</span>
             </Button>
             <Button
               className={Classes.MINIMAL}
