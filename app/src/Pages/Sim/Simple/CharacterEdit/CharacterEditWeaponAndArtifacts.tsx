@@ -1,13 +1,16 @@
-import { Button, Checkbox } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
 import { simActions } from "~src/Pages/Sim";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { ascLvlMax, ascLvlMin, ascToMaxLvl, maxLvlToAsc } from "~src/util";
 import { NumberInput } from "~src/Components/NumberInput";
 import { CharacterEditArtifactSets } from "./CharacterEditArtifactSets";
 import React from "react";
 import { IWeapon, WeaponSelect } from "~src/Components/Weapon";
+import { Trans, useTranslation } from "react-i18next";
 
 export function CharacterEditWeaponAndArtifacts() {
+  let { t } = useTranslation()
+
   const { char } = useAppSelector((state: RootState) => {
     return {
       char: state.sim.team[state.sim.edit_index],
@@ -58,12 +61,12 @@ export function CharacterEditWeaponAndArtifacts() {
             setOpen(true);
           }}
         >
-          Change
+          <Trans>characteredit.change</Trans>
         </Button>
       </div>
       <div className="bg-gray-600 rounded-md basis-full flex-grow p-2 hd:basis-0 flex flex-col gap-y-2 ">
         <NumberInput
-          label="Refine"
+          label={t("characteredit.refine")}
           onChange={handleChangeWeaponAttr("refine")}
           value={char.weapon.refine}
           min={1}
@@ -71,7 +74,7 @@ export function CharacterEditWeaponAndArtifacts() {
           integerOnly
         />
         <NumberInput
-          label="Ascension"
+          label={t("characteredit.ascension")}
           onChange={handleChangeAsc}
           value={asc}
           integerOnly
@@ -79,7 +82,7 @@ export function CharacterEditWeaponAndArtifacts() {
           max={6}
         />
         <NumberInput
-          label="Level"
+          label={t("characteredit.level")}
           onChange={handleChangeWeaponAttr("level")}
           value={char.weapon.level}
           integerOnly

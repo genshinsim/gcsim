@@ -1,20 +1,6 @@
-import {
-  ResponsiveContainer,
-  PieChart,
-  Tooltip,
-  Legend,
-  Pie,
-  Cell,
-  Bar,
-  BarChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Line,
-  LineChart,
-} from "recharts";
-import { COLORS } from "./Graphs";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, } from "recharts";
 import { SimResults } from "../DataType";
+import { Trans, useTranslation } from "react-i18next";
 
 const formatY = (value: string, index: number) => {
   const num = parseFloat(value);
@@ -24,6 +10,8 @@ const formatY = (value: string, index: number) => {
 };
 
 export default function DPSOverTime({ data }: { data: SimResults }) {
+  useTranslation()
+
   let dmgOverTime: {
     time: number;
     mean: number;
@@ -66,7 +54,7 @@ export default function DPSOverTime({ data }: { data: SimResults }) {
   return (
     <div>
       <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-        Damage Dealt Over Time
+        <Trans>viewer.damage_dealt_over</Trans>
       </span>
       <ResponsiveContainer width="95%" height={288}>
         <LineChart data={dmgOverTime}>

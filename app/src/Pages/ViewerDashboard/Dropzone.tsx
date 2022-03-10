@@ -3,8 +3,11 @@ import { useDropzone } from "react-dropzone";
 import { useAppDispatch } from "~src/store";
 import { extractJSONStringFromBinary, parseAndValidate } from "./parse";
 import { viewerActions } from "./viewerSlice";
+import { Trans, useTranslation } from 'react-i18next'
 
 export default function Dropzone({ className = "" }: { className?: string }) {
+  let { t } = useTranslation()
+
   const [msg, setMsg] = React.useState<string>("");
   const dispatch = useAppDispatch();
 
@@ -28,7 +31,7 @@ export default function Dropzone({ className = "" }: { className?: string }) {
             "error encountered extracting json string: ",
             jsonData.err
           );
-          setMsg("URL does not contain valid gzipped JSON file");
+          setMsg(t("viewerdashboard.url_does_not"));
           return;
         }
 
@@ -64,11 +67,10 @@ export default function Dropzone({ className = "" }: { className?: string }) {
           <div>
             <input {...getInputProps()} />
             {isDragActive ? (
-              <p className="text-lg">Drop the file here ...</p>
+              <p className="text-lg"><Trans>viewerdashboard.drop_the_file</Trans></p>
             ) : (
               <p className="text-lg">
-                Drag 'n' drop gzipped json file from gcsim here, or click to
-                select
+                <Trans>viewerdashboard.drag_n_drop</Trans>
               </p>
             )}
             {msg === "" ? null : <p className="text-lg text-red-700">{msg}</p>}

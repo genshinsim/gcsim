@@ -1,19 +1,16 @@
-import { Callout, Intent, Button, Card } from "@blueprintjs/core";
+import { Button, Callout, Card, Intent } from "@blueprintjs/core";
 import React from "react";
-import {
-  CharacterCard,
-  CharacterSelect,
-  ConsolidateCharStats,
-  ICharacter,
-} from "~src/Components/Character";
+import { CharacterCard, CharacterSelect, ConsolidateCharStats, ICharacter, } from "~src/Components/Character";
 import { SectionDivider } from "~src/Components/SectionDivider";
-import { useAppDispatch, useAppSelector } from "~src/store";
-import { RootState } from "~src/store";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "~src/Pages/Sim/simSlice";
 import { CharacterEdit } from "./CharacterEdit";
 import { VideoPlayer } from "../Components";
+import { Trans, useTranslation } from "react-i18next";
 
 export function Team() {
+  useTranslation()
+
   const { team, edit_index, showTips } = useAppSelector((state: RootState) => {
     return {
       team: state.sim.team,
@@ -90,18 +87,17 @@ export function Team() {
   return (
     <div className="flex flex-col">
       <span ref={myRef} />
-      <SectionDivider>Team</SectionDivider>
+      <SectionDivider><Trans>simple.team</Trans></SectionDivider>
       {showTips ? (
         <div className="pl-2 pr-2">
           <Callout intent={Intent.PRIMARY} className="flex flex-col">
             <span>
-              Get started by adding characters in to your team. Check out this{" "}
-              <a onClick={() => setOpenAddCharHelp(true)}>video</a> to get
-              started.
+              <Trans>simple.video_pre</Trans>
+              <a onClick={() => setOpenAddCharHelp(true)}><Trans>simple.video</Trans></a><Trans>simple.video_post</Trans>
             </span>
             <div className="ml-auto">
               <Button small onClick={hideTips}>
-                Hide all tips
+                <Trans>simple.hide_all_tips</Trans>
               </Button>
             </div>
           </Callout>
@@ -109,7 +105,7 @@ export function Team() {
       ) : null}
       {team.length == 0 ? (
         <div className="p-4 bg-gray-700 rounded-md mt-2 ml-2 mr-2 text-center font-bold">
-          Start by adding some team members
+          <Trans>simple.start_by_adding</Trans>
         </div>
       ) : null}
       <div className={edit_index > -1 ? "hidden" : "mt-2"}>
@@ -126,7 +122,7 @@ export function Team() {
               dispatch(simActions.editCharacter({ index: -1 }));
             }}
           >
-            Done
+            <Trans>simple.done</Trans>
           </Button>
         </Card>
       ) : (
@@ -137,7 +133,7 @@ export function Team() {
             intent="primary"
             onClick={() => setOpen(true)}
           >
-            Add Character
+            <Trans>simple.add_character</Trans>
           </Button>
         </div>
       )}

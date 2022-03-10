@@ -1,6 +1,4 @@
-import { Button, FormGroup, Switch } from "@blueprintjs/core";
 import { StatToIndexMap } from "~src/Components/Character";
-import { Character } from "~/src/types";
 import { StatRow } from "./CharacterEditStatRow";
 
 import {
@@ -22,6 +20,7 @@ import {
 } from "~src/Components/Icons";
 import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "~src/Pages/Sim";
+import { useTranslation } from "react-i18next";
 
 export type subDisplayLine = {
   stat?: string;
@@ -38,11 +37,13 @@ type StatRowsProp = {
 };
 
 function StatRows(props: StatRowsProp) {
+  let { t } = useTranslation()
+
   let subs: subDisplayLine[] = [
     {
       stat: "HP",
       stat_: "HPP",
-      label: "HP/HP%",
+      label: t("characteredit.hp_hp"),
       val_: 0,
       val: 0,
       icon: <IconHP className="fill-gray-100" />,
@@ -50,7 +51,7 @@ function StatRows(props: StatRowsProp) {
     {
       stat: "ATK",
       stat_: "ATKP",
-      label: "Atk/Atk%",
+      label: t("characteredit.atk_atk"),
       val: 0,
       val_: 0,
       icon: <IconAtk className="fill-gray-100" />,
@@ -58,35 +59,35 @@ function StatRows(props: StatRowsProp) {
     {
       stat: "DEF",
       stat_: "DEFP",
-      label: "Def/Def%",
+      label: t("characteredit.def_def"),
       val_: 0,
       val: 0,
       icon: <IconDef className="fill-gray-100" />,
     },
     {
       stat: "EM",
-      label: "EM",
+      label: t("characteredit.em"),
       val_: 0,
       val: 0,
       icon: <IconEM className="fill-gray-100" />,
     },
     {
       stat_: "ER",
-      label: "ER",
+      label: t("characteredit.er"),
       val_: 0,
       val: 0,
       icon: <IconER className="fill-gray-100" />,
     },
     {
       stat_: "CR",
-      label: "CR",
+      label: t("characteredit.cr"),
       val_: 0,
       val: 0,
       icon: <IconCR className="fill-gray-100" />,
     },
     {
       stat_: "CD",
-      label: "CD",
+      label: t("characteredit.cd"),
       val_: 0,
       val: 0,
       icon: <IconCD className="fill-gray-100" />,
@@ -96,56 +97,56 @@ function StatRows(props: StatRowsProp) {
   let eleSubs: subDisplayLine[] = [
     {
       stat_: "Heal",
-      label: "Heal%",
+      label: t("characteredit.heal"),
       val_: 0,
       val: 0,
       icon: <IconHeal className="fill-gray-100" />,
     },
     {
       stat_: "PyroP",
-      label: "Pyro%",
+      label: t("characteredit.pyro"),
       val_: 0,
       val: 0,
       icon: <IconPyro className="fill-gray-100" />,
     },
     {
       stat_: "HydroP",
-      label: "Hydro%",
+      label: t("characteredit.hydro"),
       val_: 0,
       val: 0,
       icon: <IconHydro className="fill-gray-100" />,
     },
     {
       stat_: "CryoP",
-      label: "Cryo%",
+      label: t("characteredit.cryo"),
       val_: 0,
       val: 0,
       icon: <IconCryo className="fill-gray-100" />,
     },
     {
       stat_: "ElectroP",
-      label: "Electro%",
+      label: t("characteredit.electro"),
       val_: 0,
       val: 0,
       icon: <IconElectro className="fill-gray-100" />,
     },
     {
       stat_: "AnemoP",
-      label: "Anemo%",
+      label: t("characteredit.anemo"),
       val_: 0,
       val: 0,
       icon: <IconAnemo className="fill-gray-100" />,
     },
     {
       stat_: "GeoP",
-      label: "Geo%",
+      label: t("characteredit.geo"),
       val_: 0,
       val: 0,
       icon: <IconGeo className="fill-gray-100" />,
     },
     {
       stat_: "PhyP",
-      label: "Phy%",
+      label: t("characteredit.phy"),
       val_: 0,
       val: 0,
       icon: <IconPhysical className="fill-gray-100" />,

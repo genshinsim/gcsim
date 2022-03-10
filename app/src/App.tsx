@@ -6,8 +6,12 @@ import { Simple, Advanced } from "/src/Pages/Sim";
 import { SimWrapper } from "./Pages/Sim/SimWrapper";
 import { ViewerDash } from "./Pages/ViewerDashboard";
 import { DB } from "./Pages/DB";
+import './i18n'
+import { Trans, useTranslation } from "react-i18next";
 
 export default function App() {
+  useTranslation()
+
   return (
     <div className=".bp3-dark h-screen flex flex-col">
       <Nav />
@@ -34,7 +38,7 @@ export default function App() {
         </Route>
         <Route>
           <div className="m-2 text-center">
-            This page is not implemented yet. Stay tuned!
+            <Trans>src.this_page_is</Trans>
           </div>
         </Route>
       </Switch>

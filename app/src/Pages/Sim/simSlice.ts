@@ -53,7 +53,7 @@ const defWep: { [key in string]: string } = {
 };
 
 const newChar = (name: string): Character => {
-  const c = characterKeyToICharacter[name];
+  const c = characterKeyToICharacter.English[name];
   //default weapons
   return {
     name: name,

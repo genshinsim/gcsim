@@ -1,15 +1,13 @@
 import {
-  Dialog,
-  Classes,
   Button,
-  Spinner,
-  SpinnerSize,
   ButtonGroup,
   Callout,
   Checkbox,
   FormGroup,
   InputGroup,
   Position,
+  Spinner,
+  SpinnerSize,
   Toaster,
 } from "@blueprintjs/core";
 import axios, { AxiosRequestHeaders } from "axios";
@@ -17,6 +15,7 @@ import pako from "pako";
 import React from "react";
 import { bytesToBase64 } from "./base64";
 import { SimResults } from "./DataType";
+import { Trans, useTranslation } from "react-i18next";
 
 export interface ShareProps {
   // isOpen: boolean;
@@ -33,6 +32,8 @@ export const AppToaster = Toaster.create({
 });
 
 export default function Share(props: ShareProps) {
+  let { t } = useTranslation()
+
   const [loading, setIsLoading] = React.useState<boolean>(false);
   const [errMsg, setErrMsg] = React.useState<string>("");
   const [url, setURL] = React.useState<string>("");
@@ -89,14 +90,14 @@ export default function Share(props: ShareProps) {
           setIsPerm(response.data.perm);
           setIsLoading(false);
         } else {
-          setErrMsg("upload failed");
+          setErrMsg(t("viewer.upload_failed"));
           setURL("");
           setIsLoading(false);
         }
       })
       .catch((error) => {
         console.log(error);
-        setErrMsg("error encountered: " + error);
+        setErrMsg(t("viewer.error_encountered") + error);
         setURL("");
         setIsLoading(false);
       });
@@ -105,11 +106,11 @@ export default function Share(props: ShareProps) {
   const handleCopy = () => {
     navigator.clipboard.writeText(`https://gcsim.app/viewer/share/${url}`).then(
       () => {
-        AppToaster.show({ message: "Copied to clipboard", intent: "success" });
+        AppToaster.show({ message: t("viewer.copied_to_clipboard"), intent: "success" });
       },
       () => {
         AppToaster.show({
-          message: "Error copying :( Not sure what went wrong",
+          message: t("viewer.error_copying_not"),
           intent: "danger",
         });
       }
@@ -119,19 +120,16 @@ export default function Share(props: ShareProps) {
   return (
     <div className="wide:w-[70rem] ml-auto mr-auto bg-gray-600 rounded-md p-4 flex flex-col gap-2">
       <div>
-        <div className="font-bold text-lg mb-2">Create a shareable link</div>
+        <div className="font-bold text-lg mb-2"><Trans>viewer.create_a_shareable</Trans></div>
         <div>
-          Note that by default shareable links are <b>only valid for 7 days</b>.
-          This is done in order to keep server storage usage at a reasonable
-          level. Contributors and Ko-Fi supporters can enter in a private key to
-          make their links permanent.
+          <Trans>viewer.note_that_by</Trans>
         </div>
       </div>
       <div className="flex flex-col place-items-center">
-        <FormGroup label="Make link permanent?" inline>
+        <FormGroup label={t("viewer.make_link_permanent")} inline>
           <Checkbox checked={perm} onClick={() => setPerm(!perm)} />
         </FormGroup>
-        <FormGroup label="API Key (Supporters only)" inline>
+        <FormGroup label={t("viewer.api_key_supporters")} inline>
           <InputGroup
             type={viewPass ? "text" : "password"}
             value={apiKey}
@@ -151,12 +149,7 @@ export default function Share(props: ShareProps) {
         </FormGroup>
       </div>
       <div>
-        Please note that this is not an attempt to get people to donate money.
-        This is a simple way to gate the amount of data being shared while
-        providing a small thank you for those that either supported this project
-        financially or by contributing. If you do need a permanent link and you
-        don't have the access key, simply hop over to our Discord and ask
-        someone to do it for you.
+        <Trans>viewer.please_note_that</Trans>
       </div>
       <ButtonGroup fill className="mb-4">
         <Button
@@ -164,7 +157,7 @@ export default function Share(props: ShareProps) {
           onClick={handleUpload}
           disabled={loading || disabled}
         >
-          Upload
+          <Trans>viewer.upload</Trans>
         </Button>
       </ButtonGroup>
       {loading ? <Spinner size={SpinnerSize.LARGE} /> : null}
@@ -173,11 +166,9 @@ export default function Share(props: ShareProps) {
           <Callout intent="success">
             <div className="flex flex-col gap-2 place-items-center">
               <span className="text-lg">
-                Upload successful.{" "}
-                {isPerm
-                  ? "Link is permanent. "
-                  : "Link will expire in 7 days. "}{" "}
-                Results can be viewed at:
+                <Trans>viewer.link_pre</Trans>
+                {isPerm ? t("viewer.link_is_permanent") : t("viewer.link_will_expire")}
+                <Trans>viewer.link_post</Trans>
               </span>
               <div className="p-2 rounded-md bg-green-700">
                 <pre>{`https://gcsim.app/viewer/share/${url}`}</pre>
@@ -187,7 +178,7 @@ export default function Share(props: ShareProps) {
                 onClick={handleCopy}
                 disabled={url === ""}
               >
-                Copy Link
+                <Trans>viewer.copy_link</Trans>
               </Button>
             </div>
           </Callout>

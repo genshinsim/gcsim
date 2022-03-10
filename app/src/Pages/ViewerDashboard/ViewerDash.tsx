@@ -1,16 +1,19 @@
 import { useLocation } from "wouter";
 import { Viewer } from "~src/Components/Viewer";
 import { Viewport } from "~src/Components/Viewport";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import Dropzone from "./Dropzone";
 import Shared from "./Shared";
 import { viewerActions } from "./viewerSlice";
+import { Trans, useTranslation } from 'react-i18next'
 
 type Props = {
   path: string;
 };
 
 export function ViewerDash({ path }: Props) {
+  useTranslation()
+
   const [_, setLocation] = useLocation();
   const { data, selected } = useAppSelector((state: RootState) => {
     return {
@@ -67,11 +70,10 @@ export function ViewerDash({ path }: Props) {
   //show dash board otherwise
   return (
     <Viewport className="flex flex-col p-1">
-      <div className="font-bold">Upload a file</div>
+      <div className="font-bold"><Trans>viewerdashboard.upload_a_file</Trans></div>
       <Dropzone />
       <div className="font-bold mb-2">
-        Or select from the following previously opened files (deleted when page
-        reloads):
+        <Trans>viewerdashboard.or_select_from</Trans>
       </div>
       {rows}
     </Viewport>

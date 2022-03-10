@@ -1,12 +1,15 @@
 import { Button } from "@blueprintjs/core";
 import { simActions } from "~src/Pages/Sim";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { ascLvlMax, ascLvlMin, ascToMaxLvl, maxLvlToAsc } from "~src/util";
 import { NumberInput } from "~src/Components/NumberInput";
 import React from "react";
 import { CharacterSelect, ICharacter } from "~src/Components/Character";
+import { Trans, useTranslation } from "react-i18next";
 
 export function CharacterEditDetails() {
+  let { t } = useTranslation()
+
   const { char, team } = useAppSelector((state: RootState) => {
     return {
       team: state.sim.team,
@@ -72,12 +75,12 @@ export function CharacterEditDetails() {
           className="w-28"
         />
         <Button icon="swap-horizontal" fill onClick={() => setOpen(true)}>
-          Change
+          <Trans>characteredit.change</Trans>
         </Button>
       </div>
       <div className="bg-gray-600 rounded-md basis-full flex-grow p-2 hd:basis-0 flex flex-col gap-y-2">
         <NumberInput
-          label="Ascension"
+          label={t("characteredit.ascension")}
           onChange={handleChangeAsc}
           value={asc}
           min={0}
@@ -85,7 +88,7 @@ export function CharacterEditDetails() {
           integerOnly
         />
         <NumberInput
-          label="Level"
+          label={t("characteredit.level")}
           onChange={handleChangeLvl}
           value={char.level}
           min={ascLvlMin(asc)}
@@ -93,7 +96,7 @@ export function CharacterEditDetails() {
           integerOnly
         />
         <NumberInput
-          label="Cons"
+          label={t("characteredit.cons")}
           onChange={handleChangeCons}
           value={char.cons}
           integerOnly
@@ -101,7 +104,7 @@ export function CharacterEditDetails() {
       </div>
       <div className="bg-gray-600 rounded-md basis-full flex-grow p-2 hd:basis-0 flex flex-col gap-y-2">
         <NumberInput
-          label="Attack"
+          label={t("characteredit.attack")}
           onChange={handleChangeTalent("attack")}
           min={1}
           max={10}
@@ -109,7 +112,7 @@ export function CharacterEditDetails() {
           integerOnly
         />
         <NumberInput
-          label="Skill"
+          label={t("characteredit.skill")}
           onChange={handleChangeTalent("skill")}
           min={1}
           max={10}
@@ -117,7 +120,7 @@ export function CharacterEditDetails() {
           integerOnly
         />
         <NumberInput
-          label="Burst"
+          label={t("characteredit.burst")}
           onChange={handleChangeTalent("burst")}
           min={1}
           max={10}
