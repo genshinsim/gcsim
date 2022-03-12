@@ -182,7 +182,7 @@ func (c *char) burstProc() {
 
 		// Regenerate 1 flat energy for the active character
 		activeChar := c.Core.Chars[c.Core.ActiveChar]
-		activeChar.AddEnergy("travelerelectro-fallingthunder", 1)
+		activeChar.AddEnergy("travelerelectro-fallingthunder", burstRegen[c.TalentLvlBurst()])
 
 		// C2 - Violet Vehemence
 		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
