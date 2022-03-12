@@ -1,6 +1,5 @@
 import { ItemPredicate, Omnibar } from "@blueprintjs/select";
-import { ICharacter, characterSelectProps } from "./characters";
-import { simSlice } from "~src/Pages/Sim";
+import { characterSelectProps } from "./characters";
 import { RootState, useAppSelector } from "~src/store";
 import { Character } from "~src/types";
 const CharacterOmnibar = Omnibar.ofType<Character>();
@@ -23,11 +22,8 @@ export function CharacterSelect(props: Props) {
       goChars: state.sim.GOChars,
     };
   });
+  const items = characterSelectProps.items.concat(goChars);
 
-  //Forbidden code, this should never reach production
-  if (characterSelectProps.items.length < 70) {
-    characterSelectProps.items = characterSelectProps.items.concat(goChars);
-  }
   const filter: ItemPredicate<Character> = (
     query,
     item,
@@ -51,11 +47,11 @@ export function CharacterSelect(props: Props) {
       );
     }
   };
-  console.log("items ", characterSelectProps.items);
   return (
     <CharacterOmnibar
       resetOnSelect
-      {...characterSelectProps}
+      items={items}
+      itemRenderer={characterSelectProps.itemRenderer}
       itemPredicate={filter}
       isOpen={props.isOpen}
       onClose={props.onClose}

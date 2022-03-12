@@ -159,13 +159,6 @@ export function Team() {
         onClose={() => setOpenAddCharHelp(false)}
         title="Adding a character"
       />
-      <Button
-        onClick={() => {
-          // purge;
-        }}
-      >
-        test
-      </Button>
     </div>
   );
 }
