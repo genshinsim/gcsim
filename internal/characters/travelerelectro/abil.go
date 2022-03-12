@@ -53,18 +53,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	// clear existing amulets
-	c.Amulets = make([]abundanceAmulet, maxAmulets)
+	c.abundanceAmulets = 0
 
-	// accept param input to disable dashing to amulets on swap
-	ignoreAmulets, ok := p["ignore_amulets"]
-	if !ok {
-		ignoreAmulets = 0
-	}
-
-	// should emc wait and collect one of the amulets?
-	forceMcToCollectAmulet, ok := p["force_collect"]
-	if !ok {
-		forceMcToCollectAmulet = 0
+	// accept param to limit the amount of amulets generated
+	pMaxAmulets, ok := p["max_amulets"]
+	if ok {
+		maxAmulets = pMaxAmulets
 	}
 
 	// Counting from the frame E is pressed, it takes an average of 1.79 seconds for a character to be able to pick one up
@@ -74,53 +68,26 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.QueueParticle(c.Name(), 1, core.Electro, f+100)
 
 	for i := 0; i < hits; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f)
-
-		c.AddTask(func() {
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, func(atk core.AttackCB) {
 			// generate amulet if generated amulets < limit
 			if i >= maxAmulets {
 				return
 			}
 
-			// log amulet generated event
-			a := abundanceAmulet{
-				Collected:    false,
-				CollectableF: c.Core.F + amuletDelay,
-			}
+			// 1 amulet per attack
+			c.abundanceAmulets++
+			c.AddTag("generated", c.abundanceAmulets)
 
-			c.Amulets = append(c.Amulets, a)
-		}, fmt.Sprintf("emc-amulet-generate-%d", i), amuletDelay)
+			c.Core.Log.NewEvent("travelerelectro abundance amulet generated", core.LogCharacterEvent, c.Index, "amulets", c.abundanceAmulets)
+
+			c.AddTask(func() {
+				activeChar := c.Core.Chars[c.Core.ActiveChar]
+				c.collectAmulets(c.Core.F, activeChar)
+			}, fmt.Sprintf("pickup-abundance-amulets-%s", c.Name()), amuletDelay)
+		})
 	}
 
 	c.SetCD(core.ActionSkill, 810+21) //13.5s, starts 21 frames in
-
-	if forceMcToCollectAmulet == 1 && len(c.Amulets) > 0 {
-		// wait amuletDelay frames
-		f += amuletDelay
-
-		// then try to collect an amulet
-		for i := 0; i < len(c.Amulets); i++ {
-			ok := c.Amulets[i].tryToCollect(c.Core.F, c, c)
-			if ok {
-				break
-			}
-		}
-	}
-
-	if ignoreAmulets == 0 && len(c.Amulets) > 0 {
-		// Assume next swap(s) will dash to the amulet if they can
-		c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-			for i := 0; i < len(c.Amulets); i++ {
-				next := args[2].(*core.Character)
-				ok := c.Amulets[i].tryToCollect(c.Core.F, *next, c)
-				if ok {
-					break
-				}
-			}
-
-			return false
-		}, "check-pickup-abundance-amulet")
-	}
 
 	return f, a
 }
@@ -148,5 +115,80 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
 	c.ConsumeEnergy(42)
 	c.SetCD(core.ActionBurst, 1200+37)
+
+	c.Core.Status.AddStatus("travelerelectroburst", 720) // 12s
+
+	procAI := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Falling Thunder Proc (Q)",
+		AttackTag:  core.AttackTagNone,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Electro,
+		Durability: 25,
+		Mult:       burstTick[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&procAI)
+	c.burstAtk = &core.AttackEvent{
+		Info:     procAI,
+		Snapshot: snap,
+	}
+
 	return f, a
+}
+
+func (c *char) burstProc() {
+	icd := 0
+
+	// Lightning Shroud
+	//  When your active character's Normal or Charged Attacks hit opponents, they will call Falling Thunder forth, dealing Electro DMG.
+	//  When Falling Thunder hits opponents, it will regenerate Energy for that character.
+	//  One instance of Falling Thunder can be generated every 0.5s.
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*core.AttackEvent)
+		t := args[0].(core.Target)
+
+		// only apply on na/ca
+		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
+			return false
+		}
+		// make sure the person triggering the attack is on field still
+		if ae.Info.ActorIndex != c.Core.ActiveChar {
+			return false
+		}
+		// only apply if burst is active
+		if c.Core.Status.Duration("travelerelectroburst") == 0 {
+			return false
+		}
+		// One instance of Falling Thunder can be generated every 0.5s.
+		if icd > c.Core.F {
+			c.Core.Log.NewEvent("travelerelectro Q (active) on icd", core.LogCharacterEvent, c.Index)
+			return false
+		}
+
+		// Use burst snapshot, update target & source frame
+		atk := *c.burstAtk
+		atk.SourceFrame = c.Core.F
+		atk.Pattern = core.NewDefSingleTarget(t.Index(), core.TargettableEnemy)
+
+		// c6 - World-Shaker
+		//  Every 2 Falling Thunder attacks triggered by Bellowing Thunder will greatly increase the DMG
+		//  dealt by the next Falling Thunder, which will deal 200% of its original DMG and will restore
+		//  an additional 1 Energy to the current character.
+		c.c6(&atk)
+		c.Core.Combat.QueueAttackEvent(&atk, 1)
+
+		c.Core.Log.NewEvent("travelerelectro Q proc'd", core.LogCharacterEvent, c.Index, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
+
+		// Regenerate 1 flat energy for the active character
+		activeChar := c.Core.Chars[c.Core.ActiveChar]
+		activeChar.AddEnergy("travelerelectro-fallingthunder", 1)
+
+		// C2 - Violet Vehemence
+		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
+		c.c2(t)
+
+		icd = c.Core.F + 30 // 0.5s
+		return false
+	}, "travelerelectro-bellowingthunder")
 }
