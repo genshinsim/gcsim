@@ -1,9 +1,8 @@
-// import { Artifact, Weapon, Character } from "./types";
 import { Character, defaultStats, Weapon } from "~/src/types";
 
 import ArtifactMainStatsData from "~src/Components/Artifacts/artifact_main_gen.json";
 import { characterKeyToICharacter } from "~src/Components/Character";
-import { ascLvlMax, maxLvlToAsc, StatToIndexMap } from "~src/util";
+import { ascLvlMax, StatToIndexMap } from "~src/util";
 
 import { ICharacter, IGOOD, GOODArtifact, StatKey } from "./goodTypes";
 
@@ -73,7 +72,6 @@ export function parseFromGO(val: string): IGOODImport {
   }
 
   //Store artifacts based on character
-  //add artifacts if any
   if (data.artifacts) {
     console.log("parsing artifacts ", data.artifacts);
     data.artifacts.forEach((artifact) => {
@@ -102,9 +100,6 @@ export function parseFromGO(val: string): IGOODImport {
     });
     console.log("parsed results arts: ", goodGearBank);
   }
-
-  //add weapons if any
-
   //build the characters
   let chars: Character[] = [];
   if (!data.characters) {
@@ -124,8 +119,6 @@ export function parseFromGO(val: string): IGOODImport {
     chars.push(char);
   });
   console.log("after Char", chars);
-
-  // console.log("parsed results: ", chars);
 
   //sort chars by element -> name
   chars.sort((a, b) => {
@@ -246,10 +239,12 @@ export function importCharFromGOOD(
   goodGearBank: GOODGearBank
 ): Character | undefined {
   //find char
+
   if (goodObj === undefined) {
     //stop here
     return undefined;
   }
+  let today = new Date();
   //copy over all the attributes we care about; ignore anything
   //we don't need
   const name = convertFromGOODKey(goodObj.key);
@@ -280,37 +275,11 @@ export function importCharFromGOOD(
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
     sets: setCount,
+    date_added: today.toLocaleDateString(),
   };
 
   return char;
 }
-const newChar = (name: string): Character => {
-  const c = characterKeyToICharacter[name];
-  //default weapons
-  return {
-    name: name,
-    level: 80,
-    max_level: 90,
-    element: c.element,
-    cons: 0,
-    weapon: {
-      name: "dullblade",
-      refine: 1,
-      level: 1,
-      max_level: 20,
-    },
-    talents: {
-      attack: 6,
-      skill: 6,
-      burst: 6,
-    },
-    stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    snapshot: [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    sets: {},
-  };
-};
 
 export function convertFromGOODKey(s: string) {
   switch (s) {
