@@ -50,14 +50,14 @@ export function parseFromGO(val: string): IGOODImport {
   if (data.weapons) {
     console.log("parsing weapons ", data.weapons);
     data.weapons.forEach((goodweapon) => {
-      let charKey = convertFromGOODKey(goodweapon.location);
+      let charKey = goodKeytoSrlKey(goodweapon.location);
       if (charKey === "") {
         //skip this weapon
         return;
       }
 
       let importedWeapon: Weapon = {
-        name: convertFromGOODKey(goodweapon.key),
+        name: goodKeytoSrlKey(goodweapon.key),
         level: goodweapon.level,
         max_level: ascLvlMax(goodweapon.ascension),
         refine: goodweapon.refinement,
@@ -75,7 +75,7 @@ export function parseFromGO(val: string): IGOODImport {
   if (data.artifacts) {
     console.log("parsing artifacts ", data.artifacts);
     data.artifacts.forEach((artifact) => {
-      let charKey = convertFromGOODKey(artifact.location);
+      let charKey = goodKeytoSrlKey(artifact.location);
       if (Object.keys(goodGearBank).includes(charKey)) {
         if (goodGearBank[charKey].artifact.length < 5) {
           goodGearBank[charKey].artifact.push(artifact);
@@ -252,7 +252,7 @@ export function importCharFromGOOD(
   let today = new Date();
   //copy over all the attributes we care about; ignore anything
   //we don't need
-  const name = convertFromGOODKey(goodObj.key);
+  const name = goodKeytoSrlKey(goodObj.key);
   let setCount, statTotal;
 
   if (goodGearBank[name].artifact === undefined) {
@@ -265,8 +265,8 @@ export function importCharFromGOOD(
   let char = {
     name: name,
     level: goodObj.level,
-    max_level: ascLvlMax(goodObj.level),
-    element: characterKeyToICharacter[convertFromGOODKey(goodObj.key)].element,
+    max_level: ascLvlMax(goodObj.ascension),
+    element: characterKeyToICharacter[goodKeytoSrlKey(goodObj.key)].element,
     cons: goodObj.constellation,
     weapon: goodGearBank[name].weapon,
     talents: {
@@ -286,7 +286,7 @@ export function importCharFromGOOD(
   return char;
 }
 
-export function convertFromGOODKey(s: string) {
+export function goodKeytoSrlKey(s: string) {
   switch (s) {
     case "KaedeharaKazuha":
       return "kazuha";
