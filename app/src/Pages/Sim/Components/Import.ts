@@ -154,8 +154,13 @@ const sumArtifactStats = (artifacts: GOODArtifact[]): number[] => {
 
     artifact.substats.forEach((substat) => {
       // console.log(totalStats);
-      totalStats[StatToIndexMap[goodStattoSrlStat(substat.key)]] +=
-        substat.value;
+      if (substat.key.includes("_")) {
+        totalStats[StatToIndexMap[goodStattoSrlStat(substat.key)]] +=
+          substat.value / 100;
+      } else {
+        totalStats[StatToIndexMap[goodStattoSrlStat(substat.key)]] +=
+          substat.value;
+      }
     });
   });
   return totalStats;
