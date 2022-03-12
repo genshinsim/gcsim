@@ -3,7 +3,7 @@ import React from "react";
 import { simActions } from "~src/Pages/Sim";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
 
-import { IGOODImport, parseFromGO } from "./char";
+import { IGOODImport, parseFromGO } from "./Import";
 
 type Props = {
   isOpen: boolean;
