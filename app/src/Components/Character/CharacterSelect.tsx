@@ -1,12 +1,14 @@
 import { ItemPredicate, Omnibar } from "@blueprintjs/select";
 import { ICharacter, characterSelectProps } from "./characters";
 import { simSlice } from "~src/Pages/Sim";
-const CharacterOmnibar = Omnibar.ofType<ICharacter>();
+import { RootState, useAppSelector } from "~src/store";
+import { Character } from "~src/types";
+const CharacterOmnibar = Omnibar.ofType<Character>();
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (item: ICharacter) => void;
+  onSelect: (item: Character) => void;
   disabled?: string[];
 };
 
@@ -16,28 +18,40 @@ export function CharacterSelect(props: Props) {
     disabled = props.disabled;
   }
 
-  const filter: ItemPredicate<ICharacter> = (
+  const { goChars } = useAppSelector((state: RootState) => {
+    return {
+      goChars: state.sim.GOChars,
+    };
+  });
+
+  //Forbidden code, this should never reach production
+  if (characterSelectProps.items.length < 70) {
+    characterSelectProps.items = characterSelectProps.items.concat(goChars);
+  }
+  const filter: ItemPredicate<Character> = (
     query,
     item,
     _index,
     exactMatch
   ) => {
     //ignore filtered items
-    if (disabled.findIndex((v) => v === item.key) > -1) {
+    if (disabled.findIndex((v) => v === item.name) > -1) {
       return false;
     }
 
     const normalizedQuery = query.toLowerCase();
 
     if (exactMatch) {
-      return item.key === normalizedQuery;
+      return item.name === normalizedQuery;
     } else {
       return (
-        `${item.key} ${item.name} ${item.element}`.indexOf(normalizedQuery) >= 0
+        `${item.name} ${item.date_added} ${item.element}`.indexOf(
+          normalizedQuery
+        ) >= 0
       );
     }
   };
-
+  console.log("items ", characterSelectProps.items);
   return (
     <CharacterOmnibar
       resetOnSelect

@@ -1,5 +1,6 @@
 import { MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
+import { Character } from "~src/types";
 
 export const characterKeyToICharacter: { [key: string]: ICharacter } = {
   aether: {
@@ -239,11 +240,41 @@ export interface ICharacter {
   weapon_type: string;
 }
 
-export const items: ICharacter[] = Object.keys(characterKeyToICharacter).map(
-  (k) => characterKeyToICharacter[k]
+const newChar = (name: string): Character => {
+  const c = characterKeyToICharacter[name];
+  //default weapons
+  return {
+    name: name,
+    level: 80,
+    max_level: 90,
+    element: c.element,
+    cons: 0,
+    weapon: {
+      name: "dullblade",
+      refine: 1,
+      level: 1,
+      max_level: 20,
+    },
+    talents: {
+      attack: 6,
+      skill: 6,
+      burst: 6,
+    },
+    stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    snapshot: [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    sets: {},
+  };
+};
+
+export const items: Character[] = Object.keys(characterKeyToICharacter).map(
+  (key) => {
+    return newChar(key);
+  }
 );
 
-export const render: ItemRenderer<ICharacter> = (
+export const render: ItemRenderer<Character> = (
   item,
   { handleClick, modifiers, query }
 ) => {
@@ -254,8 +285,12 @@ export const render: ItemRenderer<ICharacter> = (
     <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
-      label={item.element}
-      key={item.key}
+      label={`${
+        item.date_added
+          ? item.element.concat(`, Imported: ${item.date_added}`)
+          : item.element
+      }`}
+      key={`${item.date_added ? item.name.concat(item.date_added) : item.name}`}
       onClick={handleClick}
       text={highlightText(item.name, query)}
     />

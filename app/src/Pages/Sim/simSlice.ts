@@ -2,15 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Character, maxStatLength, Talent, Weapon } from "~/src/types";
 import { characterKeyToICharacter } from "~src/Components/Character";
 import { AppThunk } from "~src/store";
-import { ascLvlMax, ascLvlMin, maxLvlToAsc } from "~src/util";
+import { ascLvlMin, maxLvlToAsc } from "~src/util";
 import { WorkerPool } from "~src/WorkerPool";
-import { IGOODImport } from "./Components/char";
 import { charToCfg } from "./helper";
-import {
-  GOODArtifact as Artifact,
-  Character as GOChar,
-} from "./Components/goodTypes";
-
 export let pool: WorkerPool = new WorkerPool();
 
 type RunStats = {
@@ -57,34 +51,6 @@ const defWep: { [key: string]: string } = {
   claymore: "dullblade",
   sword: "dullblade",
   polearm: "dullblade",
-};
-
-const newChar = (name: string): Character => {
-  const c = characterKeyToICharacter[name];
-  //default weapons
-  return {
-    name: name,
-    level: 80,
-    max_level: 90,
-    element: c.element,
-    cons: 0,
-    weapon: {
-      name: defWep[c.weapon_type],
-      refine: 1,
-      level: 1,
-      max_level: 20,
-    },
-    talents: {
-      attack: 6,
-      skill: 6,
-      burst: 6,
-    },
-    stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    snapshot: [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    sets: {},
-  };
 };
 
 const updateConfig = (team: Character[], cfg: string): string => {
@@ -250,9 +216,9 @@ export const simSlice = createSlice({
       state.cfg = cfg;
       return state;
     },
-    addCharacter: (state, action: PayloadAction<{ name: string }>) => {
+    addCharacter: (state, action: PayloadAction<{ character: Character }>) => {
       if (state.team.length >= 4) return state;
-      state.team.push(newChar(action.payload.name));
+      state.team.push(action.payload.character);
 
       let cfg = updateConfig(state.team, state.cfg);
       state.cfg = cfg;
@@ -283,7 +249,6 @@ export const simSlice = createSlice({
       if (action.payload.data.length > 0) {
         state.GOChars = action.payload.data;
       }
-      console.log(state.GOChars);
       return state;
     },
   },

@@ -12,6 +12,7 @@ import { RootState } from "~src/store";
 import { simActions } from "~src/Pages/Sim/simSlice";
 import { CharacterEdit } from "./CharacterEdit";
 import { LoadGOOD, VideoPlayer } from "../Components";
+import { Character } from "~src/types";
 
 export function Team() {
   const { team, edit_index, showTips } = useAppSelector((state: RootState) => {
@@ -51,9 +52,9 @@ export function Team() {
       myRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
-  const handleAddCharacter = (w: ICharacter) => {
+  const handleAddCharacter = (character: Character) => {
     setOpen(false);
-    dispatch(simActions.addCharacter({ name: w.key }));
+    dispatch(simActions.addCharacter({ character }));
   };
 
   const hideTips = () => {
@@ -158,6 +159,13 @@ export function Team() {
         onClose={() => setOpenAddCharHelp(false)}
         title="Adding a character"
       />
+      <Button
+        onClick={() => {
+          // purge;
+        }}
+      >
+        test
+      </Button>
     </div>
   );
 }
