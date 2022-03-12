@@ -44,11 +44,9 @@ export function parseFromGO(val: string): IGOODImport {
     result.err = "Invalid JSON";
     return result;
   }
-  console.log("parse", data);
   const goodGearBank: GOODGearBank = {};
 
   if (data.weapons) {
-    console.log("parsing weapons ", data.weapons);
     data.weapons.forEach((goodweapon) => {
       let charKey = goodKeytoSrlKey(goodweapon.location);
       if (charKey === "") {
@@ -73,7 +71,6 @@ export function parseFromGO(val: string): IGOODImport {
 
   //Store artifacts based on character
   if (data.artifacts) {
-    console.log("parsing artifacts ", data.artifacts);
     data.artifacts.forEach((artifact) => {
       let charKey = goodKeytoSrlKey(artifact.location);
       if (Object.keys(goodGearBank).includes(charKey)) {
@@ -98,7 +95,6 @@ export function parseFromGO(val: string): IGOODImport {
         goodGearBank[charKey].artifact = [artifact];
       }
     });
-    console.log("parsed results arts: ", goodGearBank);
   }
   //build the characters
   let chars: Character[] = [];
@@ -108,7 +104,6 @@ export function parseFromGO(val: string): IGOODImport {
       characters: [],
     };
   }
-  // console.log("parsing characters ", data.characters);
   data.characters.forEach((c) => {
     //convert GOOD key to our key
     let char = importCharFromGOOD(c, goodGearBank);
@@ -118,7 +113,6 @@ export function parseFromGO(val: string): IGOODImport {
     }
     chars.push(char);
   });
-  console.log("after Char", chars);
 
   //sort chars by element -> name
   chars.sort((a, b) => {
@@ -153,7 +147,6 @@ const sumArtifactStats = (artifacts: GOODArtifact[]): number[] => {
     }
 
     artifact.substats.forEach((substat) => {
-      // console.log(totalStats);
       if (substat.key.includes("_")) {
         totalStats[StatToIndexMap[goodStattoSrlStat(substat.key)]] +=
           substat.value / 100;
