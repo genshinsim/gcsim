@@ -8,7 +8,6 @@ import (
 type char struct {
 	*character.Tmpl
 	abundanceAmulets int
-	burstProcICD     int
 	burstC6Hits      int
 	burstSnap        core.Snapshot
 	burstAtk         *core.AttackEvent

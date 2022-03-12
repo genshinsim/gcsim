@@ -128,11 +128,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],
 	}
-	snap := c.Snapshot(&procAI)
+	c.burstSnap = c.Snapshot(&procAI)
 	c.burstAtk = &core.AttackEvent{
 		Info:     procAI,
-		Snapshot: snap,
+		Snapshot: c.burstSnap,
 	}
+	c.burstSrc = c.Core.F
 
 	return f, a
 }
