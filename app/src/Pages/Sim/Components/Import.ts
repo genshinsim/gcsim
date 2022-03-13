@@ -44,6 +44,10 @@ export function parseFromGO(val: string): IGOODImport {
     result.err = "Invalid JSON";
     return result;
   }
+  if (data.source !== "Genshin Optimizer") {
+    result.err = "Only databases from Genshin Optimzer accepted";
+    return result;
+  }
   const goodGearBank: GOODGearBank = {};
 
   if (data.weapons) {
