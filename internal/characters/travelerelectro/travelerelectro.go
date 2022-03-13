@@ -7,11 +7,12 @@ import (
 
 type char struct {
 	*character.Tmpl
-	abundanceAmulets int
-	burstC6Hits      int
-	burstSnap        core.Snapshot
-	burstAtk         *core.AttackEvent
-	burstSrc         int
+	abundanceAmulets      int
+	burstC6Hits           int
+	burstC6WillGiveEnergy bool
+	burstSnap             core.Snapshot
+	burstAtk              *core.AttackEvent
+	burstSrc              int
 }
 
 func init() {

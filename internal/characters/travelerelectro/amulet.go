@@ -13,6 +13,7 @@ func (c *char) collectAmulets(f int, collector core.Character) bool {
 	// Assume all available amulets are collected simultaneously
 
 	mER := make([]float64, core.EndStatType)
+
 	mER[core.ER] = 0.20
 
 	// handle a4 - Increases the Energy Recharge effect granted by Lightning Blade's Abundance Amulet by 10% of the

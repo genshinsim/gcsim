@@ -70,7 +70,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	for i := 0; i < hits; i++ {
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, func(atk core.AttackCB) {
 			// generate amulet if generated amulets < limit
-			if i >= maxAmulets {
+			if c.abundanceAmulets >= maxAmulets {
 				return
 			}
 
@@ -172,24 +172,28 @@ func (c *char) burstProc() {
 		atk.SourceFrame = c.Core.F
 		atk.Pattern = core.NewDefSingleTarget(t.Index(), core.TargettableEnemy)
 
+		// C2 - Violet Vehemence
+		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
 		// c6 - World-Shaker
 		//  Every 2 Falling Thunder attacks triggered by Bellowing Thunder will greatly increase the DMG
 		//  dealt by the next Falling Thunder, which will deal 200% of its original DMG and will restore
 		//  an additional 1 Energy to the current character.
-		c.c6(&atk)
+		c.c6Damage(&atk)
+		atk.Callbacks = append(atk.Callbacks, c.fallingThunderEnergy(), c.c2(t), c.c6Energy())
+
 		c.Core.Combat.QueueAttackEvent(&atk, 1)
 
 		c.Core.Log.NewEvent("travelerelectro Q proc'd", core.LogCharacterEvent, c.Index, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
 
-		// Regenerate 1 flat energy for the active character
-		activeChar := c.Core.Chars[c.Core.ActiveChar]
-		activeChar.AddEnergy("travelerelectro-fallingthunder", burstRegen[c.TalentLvlBurst()])
-
-		// C2 - Violet Vehemence
-		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
-		c.c2(t)
-
 		icd = c.Core.F + 30 // 0.5s
 		return false
 	}, "travelerelectro-bellowingthunder")
+}
+
+func (c *char) fallingThunderEnergy() core.AttackCBFunc {
+	return func(a core.AttackCB) {
+		// Regenerate 1 flat energy for the active character
+		activeChar := c.Core.Chars[c.Core.ActiveChar]
+		activeChar.AddEnergy("travelerelectro-fallingthunder", burstRegen[c.TalentLvlBurst()])
+	}
 }

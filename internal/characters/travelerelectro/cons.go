@@ -4,13 +4,15 @@ import "github.com/genshinsim/gcsim/pkg/core"
 
 // C2 - Violet Vehemence
 // When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
-func (c *char) c2(t core.Target) {
-	if c.Base.Cons > 1 {
-		t.AddResMod("travelerelectro-c2", core.ResistMod{
-			Duration: 480, //8s
-			Ele:      core.Electro,
-			Value:    -0.15,
-		})
+func (c *char) c2(t core.Target) core.AttackCBFunc {
+	return func(a core.AttackCB) {
+		if c.Base.Cons > 1 {
+			t.AddResMod("travelerelectro-c2", core.ResistMod{
+				Duration: 480, //8s
+				Ele:      core.Electro,
+				Value:    -0.15,
+			})
+		}
 	}
 }
 
@@ -21,7 +23,7 @@ func (c *char) c4(buffEnergy float64) float64 {
 		collector := c.Core.Chars[c.Core.ActiveChar]
 		currentEnergyP := collector.CurrentEnergy() / collector.MaxEnergy()
 
-		if currentEnergyP > 0.35 {
+		if currentEnergyP < 0.35 {
 			buffEnergy = buffEnergy * 2.0
 		}
 	}
@@ -31,19 +33,28 @@ func (c *char) c4(buffEnergy float64) float64 {
 
 // World-Shaker
 //  Every 2 Falling Thunder attacks triggered by Bellowing Thunder will greatly increase the DMG
-//  dealt by the next Falling Thunder, which will deal 200% of its original DMG and will restore
-//  an additional 1 Energy to the current character.
+//  dealt by the next Falling Thunder, which will deal 200% of its original DMG [..]
 // * Electro traveller's C6 is a multiplicative buff
-func (c *char) c6(ai *core.AttackEvent) {
+func (c *char) c6Damage(ai *core.AttackEvent) {
 	if c.Base.Cons > 5 {
 		c.burstC6Hits++
 		if c.burstC6Hits >= 3 {
 			// TODO will this properly multiply? Should we use a mod instead?
 			ai.Info.Mult *= 2
 			c.burstC6Hits = 0
+			c.burstC6WillGiveEnergy = true
+		}
+	}
+}
 
+// World-Shaker
+//  [..] and will restore an additional 1 Energy to the current character.
+func (c *char) c6Energy() core.AttackCBFunc {
+	return func(a core.AttackCB) {
+		if c.burstC6WillGiveEnergy {
 			activeChar := c.Core.Chars[c.Core.ActiveChar]
 			activeChar.AddEnergy("travelerelectro-c6", 1)
+			c.burstC6WillGiveEnergy = false
 		}
 	}
 }
