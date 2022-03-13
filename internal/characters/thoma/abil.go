@@ -1,8 +1,8 @@
 package thoma
 
 import (
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 // Normal attack damage queue generator
@@ -140,7 +140,7 @@ func (c *char) burstProc() {
 			return false
 		}
 		if icd > c.Core.F {
-			c.Core.Log.Debugw("thoma Q (active) on icd", "frame", c.Core.F, "event", core.LogCharacterEvent)
+			c.Core.Log.NewEvent("thoma Q (active) on icd", core.LogCharacterEvent, c.Index, "frame", c.Core.F)
 			return false
 		}
 
@@ -183,7 +183,7 @@ func (c *char) burstProc() {
 		}
 		c.Core.Combat.QueueAttackEvent(&atk, 1)
 
-		c.Core.Log.Debugw("thoma Q proc'd", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
+		c.Core.Log.NewEvent("thoma Q proc'd", core.LogCharacterEvent, c.Index, "frame", c.Core.F, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
 
 		icd = c.Core.F + 60 // once per second
 		return false
