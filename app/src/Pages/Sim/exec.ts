@@ -29,6 +29,9 @@ function extractItersFromConfig(cfg: string): number {
 
 export function runSim(cfg: string): AppThunk {
   return function (dispatch) {
+    console.log("starting run");
+    // console.log(cfg);
+    cfg = cfg + "\n";
     const startTime = window.performance.now();
     let debug: string;
     let avg = 0;
@@ -146,7 +149,7 @@ export function runSim(cfg: string): AppThunk {
           cb: (val) => {
             //convert it back
             const res = JSON.parse(val);
-            
+
             if (res.err) {
               reject(res.err);
             } else {
@@ -157,15 +160,16 @@ export function runSim(cfg: string): AppThunk {
         });
       });
 
-    const version = () => new Promise<null>((resolve, reject) => {
-      const versionCB = (val: any) => {
-        const res = JSON.parse(val);
-        v = res.hash
-        bt = res.date
-        resolve(null)
-      }
-      pool.queue({ cmd: "version", cb: versionCB });
-    })
+    const version = () =>
+      new Promise<null>((resolve, reject) => {
+        const versionCB = (val: any) => {
+          const res = JSON.parse(val);
+          v = res.hash;
+          bt = res.date;
+          resolve(null);
+        };
+        pool.queue({ cmd: "version", cb: versionCB });
+      });
 
     //run the sim
     dispatch(

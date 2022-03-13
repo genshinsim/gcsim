@@ -90,3 +90,25 @@ export interface SummaryStats {
   max: number;
   sd?: number;
 }
+
+export interface DBItem {
+  author: string;
+  config: string;
+  description: string;
+  hash: string;
+  team: DBCharInfo[];
+  dps: number;
+  mode: string;
+  duration: number;
+  target_count: number;
+  viewer_key: string;
+}
+
+export interface DBCharInfo {
+  name: string;
+  con: number;
+  weapon: string;
+  refine: number;
+  er: number;
+  talents: Talent;
+}

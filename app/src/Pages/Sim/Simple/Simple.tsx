@@ -94,7 +94,7 @@ export function Simple() {
               <p>
                 Alternatively, check out our{" "}
                 <a
-                  href="https://docs.gcsim.app/tutorial/sequential_mode"
+                  href="https://docs.gcsim.app/guide/sequential_mode"
                   target="_blank"
                 >
                   documentation

@@ -1,6 +1,14 @@
 import { TextArea } from "@blueprintjs/core";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
-import { simActions } from "..";
+import Editor from "react-simple-code-editor";
+
+//@ts-ignore
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-gcsim";
+
+// import Prism from "prismjs";
+import "prismjs/themes/prism-tomorrow.css";
+
+// Prism.highlight("stuff",Prism.languages)
 
 type Props = {
   cfg: string;
@@ -8,17 +16,23 @@ type Props = {
 };
 
 export function ActionList(props: Props) {
-  const dispatch = useAppDispatch();
+  // const t = () => {
+  //   Prism.highlightElement();
+  // };
   return (
     <div className="p-1 md:p-2">
-      <TextArea
-        rows={30}
-        fill
+      <Editor
         value={props.cfg}
-        onChange={(e) => {
-          props.onChange(e.target.value);
+        onValueChange={(code) => props.onChange(code)}
+        highlight={(code) => highlight(code, languages.gcsim)}
+        insertSpaces
+        padding={10}
+        style={{
+          fontFamily: '"Fira code", "Fira Mono", monospace',
+          fontSize: 14,
+          backgroundColor: "rgb(45 45 45)",
         }}
-      ></TextArea>
+      />
     </div>
   );
 }
