@@ -1,4 +1,4 @@
-package core
+package coretype
 
 type CharKey int
 
@@ -131,7 +131,7 @@ var CharNameToKey = map[string]CharKey{
 	"zhongli":            Zhongli,
 	"gorou":              Gorou,
 	"aratakiitto":        Itto,
-	"itto":				  Itto,
+	"itto":               Itto,
 	"shenhe":             Shenhe,
 	"yae":                YaeMiko,
 	"yaemiko":            YaeMiko,

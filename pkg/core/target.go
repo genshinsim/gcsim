@@ -89,15 +89,6 @@ type TargettableObject interface {
 // 	Delete() //gracefully deference everything so that it can be gc'd
 // }
 
-type ResistMod struct {
-	Key      string
-	Ele      EleType
-	Value    float64
-	Duration int
-	Expiry   int
-	Event    LogEvent
-}
-
 type DefMod struct {
 	Key    string
 	Value  float64

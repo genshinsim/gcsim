@@ -1,4 +1,4 @@
-package core
+package coretype
 
 //EleType is a string representing an element i.e. HYDRO/PYRO/etc...
 type EleType int
@@ -93,20 +93,3 @@ const (
 	NoReaction         ReactionType = ""
 	FreezeExtend       ReactionType = "FreezeExtend"
 )
-
-func (c *Core) AbsorbCheck(prio ...EleType) EleType {
-
-	for _, e := range prio {
-		for _, t := range c.Targets {
-			if t.AuraContains(e) {
-				c.Log.NewEvent(
-					"infusion check picked up "+e.String(),
-					LogElementEvent,
-					-1,
-				)
-				return e
-			}
-		}
-	}
-	return NoElement
-}

@@ -1,13 +1,12 @@
-package core
+package coretype
 
 type Character interface {
-	SetIndex(index int) //to be called to set the index
-	Init()              //to be called when everything including weapon and artifacts has been loaded
-	Tick()              //function to be called every frame
+	Indexer
+	Initer
+	Ticker
 
 	//information functions
 	Key() CharKey
-	Name() string
 	CharIndex() int
 	Ele() EleType
 	Level() int
@@ -66,9 +65,7 @@ type Character interface {
 	AddCDAdjustFunc(adj CDAdjust)
 
 	//status stuff
-	AddTag(key string, val int)
-	RemoveTag(key string)
-	Tag(key string) int
+	Tagger
 
 	//energy
 	QueueParticle(src string, num int, ele EleType, delay int)
@@ -88,6 +85,29 @@ const (
 	ZoneLiyue
 	ZoneInazuma
 )
+
+type WeaponClass int
+
+const (
+	WeaponClassSword WeaponClass = iota
+	WeaponClassClaymore
+	WeaponClassSpear
+	WeaponClassBow
+	WeaponClassCatalyst
+	EndWeaponClass
+)
+
+var weaponName = []string{
+	"sword",
+	"claymore",
+	"polearm",
+	"bow",
+	"catalyst",
+}
+
+func (w WeaponClass) String() string {
+	return weaponName[w]
+}
 
 type CharStatMod struct {
 	Key           string

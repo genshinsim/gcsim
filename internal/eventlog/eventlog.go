@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 	easyjson "github.com/mailru/easyjson"
 )
 
@@ -18,7 +18,7 @@ type keyVal struct {
 
 //easyjson:json
 type Event struct {
-	Typ      core.LogSource         `json:"event"`
+	Typ      coretype.LogSource     `json:"event"`
 	F        int                    `json:"frame"`
 	Ended    int                    `json:"ended"`
 	SrcChar  int                    `json:"char_index"`
@@ -55,23 +55,23 @@ func (e *Event) Write(keysAndValues ...interface{}) {
 	}
 }
 
-func (e *Event) SetEnded(end int)          { e.Ended = end }
-func (e *Event) LogSource() core.LogSource { return e.Typ }
-func (e *Event) StartFrame() int           { return e.F }
-func (e *Event) Src() int                  { return e.SrcChar }
+func (e *Event) SetEnded(end int)              { e.Ended = end }
+func (e *Event) LogSource() coretype.LogSource { return e.Typ }
+func (e *Event) StartFrame() int               { return e.F }
+func (e *Event) Src() int                      { return e.SrcChar }
 
 type Ctrl struct {
 	//keep it in an array so we can keep track order it occured
 	// events []*Event
 	events map[int]*Event
 	count  int
-	core   *core.Core
+	f      *int
 }
 
-func NewCtrl(c *core.Core, size int) core.LogCtrl {
+func NewCtrl(f *int, size int) coretype.Logger {
 	ctrl := &Ctrl{
 		events: make(map[int]*Event),
-		core:   c,
+		f:      f,
 	}
 	return ctrl
 }
@@ -87,7 +87,7 @@ func (c *Ctrl) Dump() ([]byte, error) {
 	return easyjson.Marshal(r)
 }
 
-func (c *Ctrl) NewEventBuildMsg(typ core.LogSource, srcChar int, msg ...string) core.LogEvent {
+func (c *Ctrl) NewEventBuildMsg(typ coretype.LogSource, srcChar int, msg ...string) coretype.LogEvent {
 	if len(msg) == 0 {
 		panic("no msg provided")
 	}
@@ -98,11 +98,11 @@ func (c *Ctrl) NewEventBuildMsg(typ core.LogSource, srcChar int, msg ...string) 
 	return c.NewEvent(sb.String(), typ, srcChar)
 }
 
-func (c *Ctrl) NewEvent(msg string, typ core.LogSource, srcChar int, keysAndValues ...interface{}) core.LogEvent {
+func (c *Ctrl) NewEvent(msg string, typ coretype.LogSource, srcChar int, keysAndValues ...interface{}) coretype.LogEvent {
 	e := &Event{
 		Msg:      msg,
-		F:        c.core.F,
-		Ended:    c.core.F,
+		F:        *c.f,
+		Ended:    *c.f,
 		Typ:      typ,
 		SrcChar:  srcChar,
 		Logs:     make(map[string]interface{}), //+5 from default just in case we need to add in more keys

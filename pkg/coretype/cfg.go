@@ -1,4 +1,4 @@
-package core
+package coretype
 
 //SimulationConfig describes the required settings to run an simulation
 type SimulationConfig struct {
@@ -56,16 +56,6 @@ const (
 	ActionPriorityList SimulationQueueMode = iota
 	SequentialList
 )
-
-// type RunOpt struct {
-// 	LogDetails bool `json:"log_details"`
-// 	Iteration  int  `json:"iter"`
-// 	Workers    int  `json:"workers"`
-// 	Duration   int  `json:"seconds"`
-// 	Debug      bool `json:"debug"`
-// 	ERCalcMode bool `json:"er_calc_mode"`
-// 	DebugPaths []string
-// }
 
 type CharacterProfile struct {
 	Base      CharacterBase             `json:"base"`

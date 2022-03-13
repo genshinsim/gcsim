@@ -1,4 +1,4 @@
-package core
+package coretype
 
 type AttackEvent struct {
 	Info    AttackInfo

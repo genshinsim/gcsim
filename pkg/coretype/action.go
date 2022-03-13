@@ -1,8 +1,6 @@
-package core
+package coretype
 
-import (
-	"strings"
-)
+import "strings"
 
 type ActionBlockType int
 

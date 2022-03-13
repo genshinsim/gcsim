@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+
+	"github.com/genshinsim/gcsim/internal/eventlog"
+	"github.com/genshinsim/gcsim/internal/player"
+	"github.com/genshinsim/gcsim/internal/tmpl/event"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 const (
-	MaxStam            = 240
+	// MaxStam            = 240
 	StamCDFrames       = 90
 	JumpFrames         = 33
 	DashFrames         = 24
@@ -17,61 +22,27 @@ const (
 	DefaultTargetIndex = 1
 )
 
-type Flags struct {
-	DamageMode     bool
-	EnergyCalcMode bool // Allows Burst Action when not at full Energy, logs current Energy when using Burst
-	LogDebug       bool // Used to determine logging level
-	ChildeActive   bool // Used for Childe +1 NA talent passive
-	Delays         Delays
-	// AmpReactionDidOccur bool
-	// AmpReactionType     ReactionType
-	// NextAttackMVMult    float64 // melt vape multiplier
-	// ReactionDamageTriggered bool
-	Custom map[string]int
-}
-
-type Delays struct {
-	Skill  int
-	Burst  int
-	Attack int
-	Charge int
-	Aim    int
-	Dash   int
-	Jump   int
-	Swap   int
-}
-
 type Core struct {
+	coretype.Logger
+	coretype.EventEmitter
 	//control
-	F     int   // current frame
-	Flags Flags // global flags
+	F     int            // current frame
+	Flags coretype.Flags // global flags
 	Rand  *rand.Rand
-	Log   LogCtrl
+	Log   coretype.Logger
 
-	//core data
-	Stam   float64
-	SwapCD int
-
-	//core stuff
-	// queue        []Command
-	stamModifier []stamMod
-	lastStamUse  int
-
-	//track characters
-	ActiveChar     int             // index of currently active char
-	ActiveDuration int             // duration in frames that the current char has been on field for
-	Chars          []Character     // array holding all the characters on the team
-	CharPos        map[CharKey]int // map of character string name to their index (for quick lookup by name)
+	//Player
+	Player player.Player
 
 	//track targets
 	Targets     []Target
 	TotalDamage float64 // keeps tracks of total damage dealt for the purpose of final results
 
 	//last action taken by the sim
-	LastAction ActionItem
+	LastAction coretype.ActionItem
 
 	//tracks the current animation state
-	state       AnimationState
+	state       coretype.AnimationState
 	stateExpiry int
 
 	//handlers
@@ -84,32 +55,28 @@ type Core struct {
 	Constructs ConstructHandler
 	Shields    ShieldHandler
 	Health     HealthHandler
-	Events     EventHandler
 }
 
 func New() *Core {
 	// var err error
 	c := &Core{}
 
-	c.CharPos = make(map[CharKey]int)
+	c.Logger = eventlog.NewCtrl(&c.F, 0)
+	c.EventEmitter = event.NewCtrl(c)
+
 	c.Flags.Custom = make(map[string]int)
-	c.Stam = MaxStam
-	c.stamModifier = make([]stamMod, 0, 10)
 	//make a default nil writer
-	c.Log = &NilLogger{}
+	c.Log = &eventlog.NilLogger{}
 
 	return c
 }
 
 func (c *Core) Init() {
-	for _, char := range c.Chars {
-		char.Init()
-	}
-
-	c.Events.Emit(OnInitialize)
+	c.Player.Init()
+	c.Emit(coretype.OnInitialize)
 }
 
-func (c *Core) AddChar(v CharacterProfile) (Character, error) {
+func (c *Core) AddChar(v coretype.CharacterProfile) (coretype.Character, error) {
 	f, ok := charMap[v.Base.Key]
 	if !ok {
 		return nil, fmt.Errorf("invalid character: %v", v.Base.Key.String())
@@ -118,10 +85,7 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.Chars = append(c.Chars, char)
-	i := len(c.Chars) - 1
-	c.CharPos[v.Base.Key] = i
-	char.SetIndex(i)
+	c.Player.AddChar(char)
 
 	wf, ok := weaponMap[v.Weapon.Name]
 	if !ok {
@@ -150,66 +114,49 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 	return char, err
 }
 
-func (c *Core) CharByName(key CharKey) (Character, bool) {
-	pos, ok := c.CharPos[key]
-	if !ok {
-		return nil, false
-	}
-	return c.Chars[pos], true
+func (c *Core) CharByName(key coretype.CharKey) (coretype.Character, bool) {
+	return c.Player.CharByName(key)
 }
 
-func (c *Core) Swap(next CharKey) int {
-	prev := c.ActiveChar
-	c.ActiveChar = c.CharPos[next]
-	c.SwapCD = SwapCDFrames
-	c.ResetAllNormalCounter()
-	c.Events.Emit(OnCharacterSwap, prev, c.ActiveChar)
-	//this duration reset needs to be after the hook for spine to behave properly
-	c.ActiveDuration = 0
-	return 1
+func (c *Core) Swap(next coretype.CharKey) int {
+	return c.Player.Swap(next)
 }
 
-func (c *Core) AnimationCancelDelay(next ActionType, p map[string]int) int {
+func (c *Core) AnimationCancelDelay(next coretype.ActionType, p map[string]int) int {
 	//if last action is jump, dash, swap,
 	switch c.LastAction.Typ {
-	case ActionSwap:
+	case coretype.ActionSwap:
 		fallthrough
-	case ActionDash:
+	case coretype.ActionDash:
 		fallthrough
-	case ActionJump:
+	case coretype.ActionJump:
 		return 0
 	}
 	//other wise check with the current character
-	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next, p)
+	return c.Player.Chars[c.Player.ActiveChar].ActionInterruptableDelay(next, p)
 }
 
 func (c *Core) UserCustomDelay() int {
 	d := 0
 	switch c.LastAction.Typ {
-	case ActionSkill:
+	case coretype.ActionSkill:
 		d = c.Flags.Delays.Skill
-	case ActionBurst:
+	case coretype.ActionBurst:
 		d = c.Flags.Delays.Burst
-	case ActionAttack:
+	case coretype.ActionAttack:
 		d = c.Flags.Delays.Attack
-	case ActionCharge:
+	case coretype.ActionCharge:
 		d = c.Flags.Delays.Charge
-	case ActionDash:
+	case coretype.ActionDash:
 		d = c.Flags.Delays.Dash
-	case ActionJump:
+	case coretype.ActionJump:
 		d = c.Flags.Delays.Jump
-	case ActionSwap:
+	case coretype.ActionSwap:
 		d = c.Flags.Delays.Swap
-	case ActionAim:
+	case coretype.ActionAim:
 		d = c.Flags.Delays.Aim
 	}
 	return c.LastAction.Param["delay"] + d
-}
-
-func (c *Core) ResetAllNormalCounter() {
-	for _, char := range c.Chars {
-		char.ResetNormalCounter()
-	}
 }
 
 func (c *Core) SetCustomFlag(key string, val int) {
@@ -242,23 +189,9 @@ func (c *Core) Tick() {
 	c.Shields.Tick()
 	//tick constructs
 	c.Constructs.Tick()
-	//tick characters
-	for _, v := range c.Chars {
-		v.Tick()
-	}
+
+	c.Player.Tick()
 	//run queued tasks
 	c.Tasks.Run()
-	//recover stamina
-	if c.Stam < MaxStam && c.F-c.lastStamUse > StamCDFrames {
-		c.Stam += 25.0 / 60
-		if c.Stam > MaxStam {
-			c.Stam = MaxStam
-		}
-	}
-	//recover swap cd
-	if c.SwapCD > 0 {
-		c.SwapCD--
-	}
-	//update activeduration
-	c.ActiveDuration++
+
 }

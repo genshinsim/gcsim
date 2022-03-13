@@ -1,4 +1,4 @@
-package core
+package coretype
 
 type AttackTag int //attacktag is used instead of actions etc..
 

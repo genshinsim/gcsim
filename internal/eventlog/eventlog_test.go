@@ -3,7 +3,7 @@ package eventlog
 import (
 	"testing"
 
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 	easyjson "github.com/mailru/easyjson"
 )
 
@@ -11,7 +11,7 @@ func TestEventWriteKeyOnlyPanic(t *testing.T) {
 	e := &Event{
 		Msg:     "test",
 		F:       1,
-		Typ:     core.LogCharacterEvent,
+		Typ:     coretype.LogCharacterEvent,
 		SrcChar: 0,
 		Logs:    map[string]interface{}{},
 	}
@@ -31,7 +31,7 @@ func TestEventWriteNonStringKeyPanic(t *testing.T) {
 	e := &Event{
 		Msg:     "test",
 		F:       1,
-		Typ:     core.LogCharacterEvent,
+		Typ:     coretype.LogCharacterEvent,
 		SrcChar: 0,
 		Logs:    map[string]interface{}{},
 	}
@@ -51,7 +51,7 @@ func TestEventWriteKeyVal(t *testing.T) {
 	e := &Event{
 		Msg:      "test",
 		F:        1,
-		Typ:      core.LogCharacterEvent,
+		Typ:      coretype.LogCharacterEvent,
 		SrcChar:  0,
 		Logs:     map[string]interface{}{},
 		Ordering: make(map[string]int),
@@ -73,7 +73,7 @@ func BenchmarkEasyJSONSerialization(b *testing.B) {
 		e := &Event{
 			Msg:     "test",
 			F:       1,
-			Typ:     core.LogCharacterEvent,
+			Typ:     coretype.LogCharacterEvent,
 			SrcChar: 0,
 			Logs:    map[string]interface{}{},
 		}

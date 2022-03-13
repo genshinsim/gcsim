@@ -1,7 +1,17 @@
-package core
+package coretype
+
+type Framer interface {
+	F() int
+}
 
 type CommandHandler interface {
 	Exec(n Command) (frames int, done bool, err error) //return frames, if executed, any errors
+}
+
+type Logger interface {
+	NewEvent(msg string, typ LogSource, srcChar int, keysAndValues ...interface{}) LogEvent
+	NewEventBuildMsg(typ LogSource, srcChar int, msg ...string) LogEvent
+	Dump() ([]byte, error) //print out all the logged events in array of JSON strings in the ordered they were added
 }
 
 type StatusHandler interface {
@@ -11,7 +21,7 @@ type StatusHandler interface {
 	DeleteStatus(key string)
 }
 
-type EventHandler interface {
+type EventEmitter interface {
 	Subscribe(e EventType, f EventHook, key string)
 	Unsubscribe(e EventType, key string)
 	Emit(e EventType, args ...interface{})

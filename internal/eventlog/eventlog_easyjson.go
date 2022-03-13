@@ -4,7 +4,7 @@ package eventlog
 
 import (
 	json "encoding/json"
-	core "github.com/genshinsim/gcsim/pkg/core"
+	coretype "github.com/genshinsim/gcsim/pkg/coretype"
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
@@ -116,7 +116,7 @@ func easyjsonF1fb7bcaDecodeGithubComGenshinsimGcsimInternalEventlog1(in *jlexer.
 		}
 		switch key {
 		case "event":
-			out.Typ = core.LogSource(core.LogSourceFromString[in.String()])
+			out.Typ = coretype.LogSource(coretype.LogSourceFromString[in.String()])
 		case "frame":
 			out.F = int(in.Int())
 		case "ended":

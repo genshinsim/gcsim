@@ -17,13 +17,14 @@ import (
 	"github.com/genshinsim/gcsim/internal/tmpl/status"
 	"github.com/genshinsim/gcsim/internal/tmpl/task"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	c := core.New()
 	c.F = -1
 	if debug {
-		c.Log = eventlog.NewCtrl(c, 500)
+		c.Log = eventlog.NewCtrl(&c.F, 500)
 		c.Flags.LogDebug = true
 	}
 	c.Rand = rand.New(rand.NewSource(seed))
@@ -39,12 +40,12 @@ func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	return c
 }
 
-func NewCore(seed int64, debug bool, cfg core.SimulatorSettings) (*core.Core, error) {
+func NewCore(seed int64, debug bool, cfg coretype.SimulatorSettings) (*core.Core, error) {
 	c := newCoreNoQueue(seed, debug)
 	switch cfg.QueueMode {
-	case core.ActionPriorityList:
+	case coretype.ActionPriorityList:
 		c.Queue = queue.NewQueuer(c)
-	case core.SequentialList:
+	case coretype.SequentialList:
 		c.Queue = calcqueue.New(c)
 	default:
 		return nil, errors.New("no action mode set - please add either mode=sl or mode=apl to the options")
