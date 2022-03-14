@@ -1,8 +1,8 @@
 import Graphs from "./Graphs/Graphs";
 import { SimResults } from "./DataType";
 import TeamView from "./Team/TeamView";
-import { Button, HTMLTable } from "@blueprintjs/core";
 import DPSOverTime from "./Graphs/DPSOverTime";
+import { Trans, useTranslation } from "react-i18next";
 
 const DEFP = 1;
 const DEF = 2;
@@ -25,6 +25,8 @@ const PhysP = 18;
 const DendroP = 19;
 
 export default function Summary({ data }: { data: SimResults }) {
+  let { t } = useTranslation()
+
   const chars = data.char_names.map((e) => {
     return (
       <div key={e}>
@@ -41,7 +43,7 @@ export default function Summary({ data }: { data: SimResults }) {
       <div className="w-full flex flex-row" key={key}>
         <span className="w-24">
           <span className="pl-2" />
-          {`Target ${key}:`}
+          {`${t("viewer.target")} ${key}:`}
         </span>
         <div className="grid grid-cols-4 grow">
           <span className="text-right">-</span>
@@ -64,9 +66,9 @@ export default function Summary({ data }: { data: SimResults }) {
           <span className="text-right">
             {data.dps_by_target[key].sd
               ? data.dps_by_target[key].sd!.toLocaleString(undefined, {
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })
+                maximumFractionDigits: 0,
+                minimumFractionDigits: 0,
+              })
               : "-"}
           </span>
         </div>
@@ -80,14 +82,17 @@ export default function Summary({ data }: { data: SimResults }) {
       <div className="bg-gray-600 relative rounded-md p-2 m-2 pt-10">
         <DPSOverTime data={data} />
         <div className="w-full text-center">
-          Simulated{" "}
+          <Trans>viewer.sec_pre</Trans>
           {data.sim_duration.mean.toLocaleString(undefined, {
             maximumFractionDigits: 2,
-          })}{" "}
-          sec of combat ({data.iter} iterations took{" "}
-          {(data.runtime / 1000000000).toFixed(3)} seconds to run).
+          })}
+          <Trans>viewer.sec_post</Trans>
+          {data.iter}
+          <Trans>viewer.time_pre</Trans>
+          {(data.runtime / 1000000000).toFixed(3)}
+          <Trans>viewer.time_post</Trans>
           <br />
-          git hash:{" "}
+          <Trans>viewer.git_hash</Trans>
           {data.version ? (
             <a
               href={
@@ -96,25 +101,24 @@ export default function Summary({ data }: { data: SimResults }) {
             >
               {data.version.substring(0, 8)}
             </a>
-          ) : (
-            "unknown"
-          )}
-          , built on: {data.build_date ? data.build_date : "unknown"}
+          ) : t("viewer.unknown")}
+          <Trans>viewer.built_on</Trans>
+          {data.build_date ? data.build_date : t("viewer.unknown")}
         </div>
         <div className=" pl-4 pt-2 flex flex-row place-content-center">
           <div className="max-w-4xl w-full flex flex-col gap-1">
             <div className="flex flex-row border-solid border-b-2 font-bold">
-              <span className="w-24">Target</span>
+              <span className="w-24"><Trans>viewer.target</Trans></span>
               <div className="grid grid-cols-4 grow">
-                <span className="text-right">Level</span>
-                <span className="text-right">Avg DPS</span>
+                <span className="text-right"><Trans>viewer.level</Trans></span>
+                <span className="text-right"><Trans>viewer.avg_dps</Trans></span>
                 <span className="text-right">%</span>
                 <span className="text-right">Std. Dev.</span>
               </div>
             </div>
             {trgs}
             <div className="w-full flex flex-row border-solid border-t-2 font-bold">
-              <span className="w-24">Combined</span>
+              <span className="w-24"><Trans>viewer.combined</Trans></span>
               <div className="grid grid-cols-4 grow">
                 <span className="text-right"></span>
                 <span className="text-right">

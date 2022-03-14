@@ -1,7 +1,7 @@
 import { Button, Classes, Dialog, ProgressBar } from "@blueprintjs/core";
-import { Tooltip2 } from "@blueprintjs/popover2";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { useLocation } from "wouter";
+import { Trans, useTranslation } from "react-i18next";
 
 type Props = {
   isOpen: boolean;
@@ -9,6 +9,8 @@ type Props = {
 };
 
 export function SimProgress(props: Props) {
+  useTranslation()
+
   const [_, setLocation] = useLocation();
   const { run, workers } = useAppSelector((state: RootState) => {
     return {
@@ -31,24 +33,23 @@ export function SimProgress(props: Props) {
     >
       <div className="flex flex-col rounded-md">
         <div className="text-left text-lg bg-gray-600  rounded-t-md mb-4 pl-2 pb-2 pt-2">
-          Running Simulation:
+          <Trans>components.running_simulation</Trans>
         </div>
         <div className="p-4 flex-grow">
           {!done ? (
             <div className="flex flex-col gap-1">
-              <div>Running sim with {workers} workers</div>
+              <div><Trans>components.workers_pre</Trans>{workers}<Trans>components.workers_post</Trans></div>
               <ProgressBar animate intent="primary" value={run.progress / 20} />
             </div>
           ) : (
             <div className="flex flex-col gap-1">
               {run.err === "" ? (
                 <div>
-                  Simulation completed in {run.time.toFixed(0)}ms with average
-                  dps: {run.result.toFixed(0)}
+                  <Trans>components.result_pre</Trans>{run.time.toFixed(0)}<Trans>components.result_post</Trans>{run.result.toFixed(0)}
                 </div>
               ) : (
                 <div>
-                  Simulation exited with error:
+                  <Trans>components.simulation_exited_with</Trans>
                   <pre className="p-2 mt-2 whitespace-pre-wrap bg-gray-600 rounded-md">
                     {run.err}
                   </pre>
@@ -64,10 +65,10 @@ export function SimProgress(props: Props) {
               disabled={!done || run.err !== ""}
               intent="success"
             >
-              See Results in Viewer
+              <Trans>components.see_results_in</Trans>
             </Button>
             <Button onClick={props.onClose} disabled={!done} intent="danger">
-              Close
+              <Trans>components.close</Trans>
             </Button>
           </div>
         </div>

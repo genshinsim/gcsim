@@ -1,8 +1,9 @@
 import { ItemPredicate, Omnibar } from "@blueprintjs/select";
-import { characterSelectProps } from "./characters";
+import { characterSelectProps,elementRender } from "./characters";
 import { RootState, useAppSelector } from "~src/store";
 import { Character } from "~src/types";
 const CharacterOmnibar = Omnibar.ofType<Character>();
+import { useTranslation } from 'react-i18next'
 
 type Props = {
   isOpen: boolean;
@@ -12,6 +13,8 @@ type Props = {
 };
 
 export function CharacterSelect(props: Props) {
+  let { i18n } = useTranslation()
+
   let disabled: string[] = [];
   if (props.disabled) {
     disabled = props.disabled;
@@ -22,7 +25,8 @@ export function CharacterSelect(props: Props) {
       goChars: state.sim.GOChars,
     };
   });
-  const items = characterSelectProps.items.concat(goChars);
+  const loadedCharacterSelectProps = characterSelectProps[i18n.language]
+  const items = loadedCharacterSelectProps.items.concat(goChars);
 
   const filter: ItemPredicate<Character> = (
     query,
@@ -41,7 +45,7 @@ export function CharacterSelect(props: Props) {
       return item.name === normalizedQuery;
     } else {
       return (
-        `${item.name} ${item.date_added} ${item.element}`.indexOf(
+        `${item.name} ${item.date_added} ${elementRender[i18n.language][item.element]}`.indexOf(
           normalizedQuery
         ) >= 0
       );
@@ -51,7 +55,7 @@ export function CharacterSelect(props: Props) {
     <CharacterOmnibar
       resetOnSelect
       items={items}
-      itemRenderer={characterSelectProps.itemRenderer}
+      itemRenderer={loadedCharacterSelectProps.itemRenderer}
       itemPredicate={filter}
       isOpen={props.isOpen}
       onClose={props.onClose}

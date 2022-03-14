@@ -7,9 +7,9 @@ import { Details } from "./Details";
 import { Options, OptionsProp } from "./Options";
 import { DebugRow, parseLog } from "./parse";
 import Summary from "./Summary";
-import Share, { ShareProps } from "./Share";
+import Share from "./Share";
 import { parseLogV2 } from "./parsev2";
-import { Viewport } from "../Viewport";
+import { Trans, useTranslation } from "react-i18next";
 
 const opts = [
   "procs",
@@ -57,6 +57,8 @@ type ViewProps = {
 };
 
 function ViewOnly(props: ViewProps) {
+  let { t } = useTranslation()
+
   const [tabID, setTabID] = React.useState<string>("result");
   const [optOpen, setOptOpen] = React.useState<boolean>(false);
 
@@ -99,11 +101,11 @@ function ViewOnly(props: ViewProps) {
           onChange={handleTabChange}
           className="w-full"
         >
-          <Tab id="result" title="Summary" className="focus:outline-none" />
-          <Tab id="details" title="Details" className="focus:outline-none" />
-          <Tab id="config" title="Config" className="focus:outline-none" />
-          <Tab id="debug" title="Debug" className="focus:outline-none" />
-          <Tab id="share" title="Share" className="focus:outline-none" />
+          <Tab id="result" title={t("viewer.summary")} className="focus:outline-none" />
+          <Tab id="details" title={t("viewer.details")} className="focus:outline-none" />
+          <Tab id="config" title={t("viewer.config")} className="focus:outline-none" />
+          <Tab id="debug" title={t("viewer.debug")} className="focus:outline-none" />
+          <Tab id="share" title={t("viewer.share")} className="focus:outline-none" />
           <Tabs.Expander />
           <Button icon="cross" intent="danger" onClick={props.handleClose} />
         </Tabs>
@@ -135,7 +137,7 @@ function ViewOnly(props: ViewProps) {
               icon="cog"
               intent="primary"
             >
-              Debug Settings
+              <Trans>viewer.debug_settings</Trans>
             </Button>
           </ButtonGroup>
         </div>

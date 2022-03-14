@@ -1,14 +1,11 @@
 import React from "react";
 import axios from "axios";
 import { Viewer } from "~src/Components/Viewer";
-import {
-  extractJSONStringFromBinary,
-  parseAndValidate,
-  Uint8ArrayFromBase64,
-} from "./parse";
+import { extractJSONStringFromBinary, parseAndValidate, Uint8ArrayFromBase64, } from "./parse";
 import { useAppDispatch } from "~src/store";
 import { viewerActions } from "./viewerSlice";
 import { ResultsSummary } from "~src/types";
+import { useTranslation } from "react-i18next";
 
 axios.defaults.headers.get["Access-Control-Allow-Origin"] = "*";
 
@@ -19,6 +16,8 @@ type Props = {
 };
 
 export default function Shared({ path, version = "v2", handleClose }: Props) {
+  let { t } = useTranslation()
+
   const dispatch = useAppDispatch();
   const [msg, setMsg] = React.useState<string>("");
   const [data, setData] = React.useState<ResultsSummary | null>(null);
@@ -53,7 +52,7 @@ export default function Shared({ path, version = "v2", handleClose }: Props) {
             "error encountered extracting json string: ",
             jsonData.err
           );
-          setMsg("URL does not contain valid gzipped JSON file");
+          setMsg(t("viewerdashboard.url_does_not"));
           return;
         }
 
@@ -76,7 +75,7 @@ export default function Shared({ path, version = "v2", handleClose }: Props) {
       })
       .catch(function (error) {
         // handle error
-        setMsg("error retrieving specified url");
+        setMsg(t("error_retrieving_specified"));
         console.log(error);
       });
   }, [path]);

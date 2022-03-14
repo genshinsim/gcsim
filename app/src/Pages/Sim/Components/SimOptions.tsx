@@ -1,10 +1,13 @@
 import { Button, Card } from "@blueprintjs/core";
 import React from "react";
 import { NumberInput } from "~src/Components/NumberInput";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
-import { setTotalWorkers, simActions } from "..";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
+import { setTotalWorkers } from "..";
+import { Trans, useTranslation } from "react-i18next";
 
 export function SimOptions() {
+  let { t } = useTranslation()
+
   const { workers } = useAppSelector((state: RootState) => {
     return {
       workers: state.sim.workers,
@@ -22,7 +25,7 @@ export function SimOptions() {
       <div className="w-full wide:basis-0 flex-grow p-2 text-center flex flex-row">
         <div className="flex-grow">
           <NumberInput
-            label={`Workers (currently loaded: ${workers})`}
+            label={`${t("components.currently_loaded_workers")}${workers}`}
             onChange={(v) => setNext(v)}
             value={next}
             min={1}
@@ -31,7 +34,7 @@ export function SimOptions() {
           />
         </div>
         <div className="w-1/3">
-          <Button onClick={updateWorkers}>Set</Button>
+          <Button onClick={updateWorkers}><Trans>components.set</Trans></Button>
         </div>
       </div>
     </Card>
