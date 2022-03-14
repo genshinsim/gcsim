@@ -1,7 +1,11 @@
+import { Trans, useTranslation } from 'react-i18next'
+
 export function Links() {
+  useTranslation()
+
   return (
     <div className="m-2 text-center text-lg">
-      Error loading database. No data found
+      <Trans>links.error_loading_database</Trans>
     </div>
   );
 }

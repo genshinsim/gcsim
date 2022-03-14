@@ -2,20 +2,20 @@ import React from "react";
 import {
   Bar,
   BarChart,
+  CartesianGrid,
+  Cell,
   Legend,
   Pie,
-  Cell,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
-  PieChart,
   XAxis,
   YAxis,
-  CartesianGrid,
 } from "recharts";
 import { SimResults } from "../DataType";
-import DPSOverTime from "./DPSOverTime";
 import ParticlesCount from "./ParticlesCount";
 import ReactionsTriggered from "./ReactionsTriggered";
+import { Trans, useTranslation } from "react-i18next";
 
 export const COLORS = [
   "#2965CC",
@@ -74,6 +74,8 @@ export const renderCustomizedLabel = ({
 };
 
 export default function Graphs({ data }: { data: SimResults }) {
+  let { t } = useTranslation()
+
   const [charSelected, setCharSelected] = React.useState<string>("");
 
   let dmg: { name: string; value: number }[] = [];
@@ -138,7 +140,7 @@ export default function Graphs({ data }: { data: SimResults }) {
         <div className="basis-full md:basis-1/2">
           <div className="rounded-md p-2 md:mr-1 pt-10 bg-gray-600 relative">
             <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-              Average DPS By Character
+              <Trans>viewer.average_dps_by</Trans>
             </span>
             <ResponsiveContainer width="95%" height={288}>
               <PieChart margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
@@ -146,10 +148,10 @@ export default function Graphs({ data }: { data: SimResults }) {
                   formatter={(value: number, name: string) => {
                     return [
                       "" +
-                        value.toFixed(2) +
-                        " (" +
-                        ((100 * value) / data.dps.mean).toFixed(2) +
-                        "%)",
+                      value.toFixed(2) +
+                      " (" +
+                      ((100 * value) / data.dps.mean).toFixed(2) +
+                      "%)",
                       name,
                     ];
                   }}
@@ -187,7 +189,7 @@ export default function Graphs({ data }: { data: SimResults }) {
         <div className="basis-full md:basis-1/2">
           <div className="rounded-md p-2 pt-10 bg-gray-600 relative md:ml-1">
             <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-              Average Character Field Time
+              <Trans>viewer.average_character_field</Trans>
             </span>
             <ResponsiveContainer width="95%" height={288}>
               <PieChart>
@@ -228,7 +230,7 @@ export default function Graphs({ data }: { data: SimResults }) {
           <div className="basis-full md:basis-1/2">
             <div className="rounded-md p-2 pt-10 bg-gray-600 relative md:mr-1">
               <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-                {charSelected + " - DPS by Ability (Average)"}
+                {charSelected + " - " + t("viewer.dps_by_ability")}
               </span>
               <ResponsiveContainer width="95%" height={288}>
                 <BarChart data={dmgDetail}>
@@ -261,7 +263,7 @@ export default function Graphs({ data }: { data: SimResults }) {
           <div className="basis-full md:basis-1/2">
             <div className="rounded-md p-2 pt-10 bg-gray-600 relative md:ml-1">
               <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-                {charSelected + " - Ability Usage Count (Average)"}
+                {charSelected + " - " + t("viewer.ability_usage_count")}
               </span>
               <ResponsiveContainer width="95%" height={288}>
                 <BarChart data={useCountDetails}>

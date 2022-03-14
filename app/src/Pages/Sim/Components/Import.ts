@@ -263,7 +263,7 @@ export function importCharFromGOOD(
     name: name,
     level: goodObj.level,
     max_level: ascLvlMax(goodObj.ascension),
-    element: characterKeyToICharacter[goodKeytoSrlKey(goodObj.key)].element,
+    element: characterKeyToICharacter.English[goodKeytoSrlKey(goodObj.key)].element,
     cons: goodObj.constellation,
     weapon: goodGearBank[name].weapon,
     talents: {

@@ -12,8 +12,11 @@ import {
 } from "recharts";
 import { COLORS } from "./Graphs";
 import { SimResults } from "../DataType";
+import { Trans, useTranslation } from "react-i18next";
 
 export default function ParticlesCount({ data }: { data: SimResults }) {
+  useTranslation()
+
   let particleCount: { name: string; value: number }[] = [];
 
   //particles
@@ -27,7 +30,7 @@ export default function ParticlesCount({ data }: { data: SimResults }) {
   return (
     <div>
       <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-        Particles Count
+        <Trans>viewer.particles_count</Trans>
       </span>
       <ResponsiveContainer width="95%" height={288}>
         <BarChart data={particleCount}>

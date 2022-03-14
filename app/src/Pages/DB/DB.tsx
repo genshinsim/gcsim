@@ -4,7 +4,6 @@ import {
   Callout,
   Classes,
   Dialog,
-  HTMLSelect,
   Icon,
   InputGroup,
   Menu,
@@ -22,11 +21,15 @@ import { IWeapon, weaponKeyToName, WeaponSelect } from "~src/Components/Weapon";
 import { useAppDispatch } from "~src/store";
 import { DBCharInfo, DBItem } from "~src/types";
 import { simActions } from "../Sim";
+import { Trans, useTranslation } from 'react-i18next'
 
 function CharTooltip({ char }: { char: DBCharInfo }) {
+  let { t, i18n } = useTranslation()
+
   return (
     <div className="m-2 flex flex-col">
-      <div className="ml-auto font-bold capitalize">{`${char.name} C${char.con} ${char.talents.attack}/${char.talents.skill}/${char.talents.burst}`}</div>
+      <div
+        className="ml-auto font-bold capitalize">{`${char.name} ${t("db.c_pre")}${char.con}${t("db.c_post")} ${char.talents.attack}/${char.talents.skill}/${char.talents.burst}`}</div>
       <div className="w-full border-b border-gray-500 mt-2 mb-2"></div>
       <div className="capitalize flex flex-row">
         <img
@@ -35,15 +38,17 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
           className="wide:h-8 h-auto "
         />
         <div className="mt-auto mb-auto">
-          {weaponKeyToName[char.weapon] + " R" + char.refine}
+          {weaponKeyToName[i18n.language][char.weapon] + t("db.r") + char.refine}
         </div>
       </div>
-      <div className="ml-auto">{`ER: ${char.er * 100 + 100}%`}</div>
+      <div className="ml-auto">{`${t("db.er")}${char.er * 100 + 100}%`}</div>
     </div>
   );
 }
 
 function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
+  useTranslation()
+
   const [location, setLocation] = useLocation();
 
   const chars = row.team.map((char) => {
@@ -68,21 +73,21 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
     <div className="flex flex-row w-full m-2 p-2 rounded-md bg-gray-700 place-items-center">
       <div className="flex flex-col basis-1/4">
         <div className="grid grid-cols-4">{chars}</div>
-        <div>Author: {row.author}</div>
+        <div><Trans>db.author</Trans>{row.author}</div>
       </div>
       <div className=" flex-1 overflow-hidden mb-auto pl-2">
-        <div className="font-bold">Description:</div>
+        <div className="font-bold"><Trans>db.description</Trans></div>
         {row.description.replace(/(.{150})..+/, "$1…")}
       </div>
       <div className="ml-auto flex flex-col mr-4 basis-60">
-        <span>Total DPS: {parseInt(row.dps.toFixed(0)).toLocaleString()}</span>
-        <span>Number of targets: {row.target_count}</span>
+        <span><Trans>db.total_dps</Trans>{parseInt(row.dps.toFixed(0)).toLocaleString()}</span>
+        <span><Trans>db.number_of_targets</Trans>{row.target_count}</span>
         <span>
-          Average DPS per target:{" "}
+          <Trans>db.average_dps_per</Trans>
           {parseInt((row.dps / row.target_count).toFixed(0)).toLocaleString()}
         </span>
         <span>
-          Hash:{" "}
+          <Trans>db.hash</Trans>
           <a href={"https://github.com/genshinsim/gcsim/commit/" + row.hash}>
             {row.hash.substring(0, 8)}
           </a>
@@ -97,10 +102,10 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
               setLocation("/viewer/share/" + row.viewer_key);
             }}
           >
-            Show in Viewer
+            <Trans>db.show_in_viewer</Trans>
           </Button>
           <Button small rightIcon="rocket-slant" onClick={setCfg}>
-            Load in Simulator
+            <Trans>db.load_in_simulator</Trans>
           </Button>
           <Button
             disabled
@@ -110,7 +115,7 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
               console.log("i do nothing yet");
             }}
           >
-            Details
+            <Trans>db.details</Trans>
           </Button>
         </ButtonGroup>
       </div>
@@ -119,6 +124,8 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
 }
 
 export function DB() {
+  let { t } = useTranslation()
+
   const [loading, setLoading] = React.useState<boolean>(true);
   const [data, setData] = React.useState<DBItem[]>([]);
   const [openAddChar, setOpenAddChar] = React.useState<boolean>(false);
@@ -202,7 +209,7 @@ export function DB() {
     return (
       <div className="m-2 text-center text-lg pt-2">
         <Spinner />
-        Loading ...
+        <Trans>db.loading</Trans>
       </div>
     );
   }
@@ -210,7 +217,7 @@ export function DB() {
   if (data.length === 0) {
     return (
       <div className="m-2 text-center text-lg">
-        Error loading database. No data found
+        <Trans>db.error_loading_database</Trans>
       </div>
     );
   }
@@ -289,17 +296,17 @@ export function DB() {
     <Viewport>
       <div className="flex flex-row items-center">
         <div className="flex flex-row items-center">
-          <Icon icon="filter-list" /> Filters:{" "}
+          <Icon icon="filter-list" /> <Trans>db.filters</Trans>{" "}
           <Popover2
             interactionKind="click"
             placement="bottom"
             content={
               <Menu>
                 <MenuItem
-                  text="Character"
+                  text={t("db.character")}
                   onClick={() => setOpenAddChar(true)}
                 />
-                <MenuItem text="Weapon" onClick={() => setOpenAddWeap(true)} />
+                <MenuItem text={t("db.weapon")} onClick={() => setOpenAddWeap(true)} />
               </Menu>
             }
             renderTarget={({ isOpen, ref, ...targetProps }) => (
@@ -320,7 +327,7 @@ export function DB() {
         <div className="ml-auto">
           <InputGroup
             leftIcon="search"
-            placeholder="Type to search..."
+            placeholder={t("db.type_to_search")}
             value={searchString}
             onChange={(e) => setSearchString(e.target.value)}
           ></InputGroup>
@@ -351,9 +358,9 @@ export function DB() {
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
             <Button onClick={openInSim} intent="primary">
-              Continue
+              <Trans>db.continue</Trans>
             </Button>
-            <Button onClick={() => setCfg("")}>Cancel</Button>
+            <Button onClick={() => setCfg("")}><Trans>db.cancel</Trans></Button>
           </div>
         </div>
       </Dialog>

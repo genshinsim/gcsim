@@ -1,31 +1,25 @@
 import { SimResults } from "./DataType";
-import React, { KeyboardEvent, ClipboardEvent, MouseEvent } from "react";
-import {
-  Button,
-  ButtonGroup,
-  Callout,
-  Classes,
-  Dialog,
-  Position,
-  Toast,
-  Toaster,
-} from "@blueprintjs/core";
+import React, { MouseEvent } from "react";
+import { Button, ButtonGroup, Callout, Classes, Dialog, Position, Toaster, } from "@blueprintjs/core";
 import { useAppDispatch } from "~src/store";
 import { simActions } from "~src/Pages/Sim";
 import { useLocation } from "wouter";
+import { Trans, useTranslation } from "react-i18next";
 
 export const AppToaster = Toaster.create({
   position: Position.BOTTOM_RIGHT,
 });
 
 export function Config({ data }: { data: SimResults }) {
+  let { t } = useTranslation()
+
   const [open, setOpen] = React.useState<boolean>(false);
   const dispatch = useAppDispatch();
   const [_, setLocation] = useLocation();
 
   function copyToClipboard(e: MouseEvent) {
     navigator.clipboard.writeText(data.config_file).then(() => {
-      AppToaster.show({ message: "Copied to clipboard", intent: "success" });
+      AppToaster.show({ message: t("viewer.copied_to_clipboard"), intent: "success" });
     });
     // TODO: Need to add a blueprintjs Toaster for ephemeral confirmation box
   }
@@ -43,10 +37,10 @@ export function Config({ data }: { data: SimResults }) {
       <div className="ml-2 mr-auto">
         <ButtonGroup>
           <Button onClick={copyToClipboard} icon="clipboard">
-            Copy
+            <Trans>viewer.copy</Trans>
           </Button>
           <Button onClick={() => setOpen(true)} icon="send-to">
-            Send To Simulator
+            <Trans>viewer.send_to_simulator</Trans>
           </Button>
         </ButtonGroup>
       </div>
@@ -55,20 +49,18 @@ export function Config({ data }: { data: SimResults }) {
       </div>
       <Dialog isOpen={open} onClose={() => setOpen(false)}>
         <div className={Classes.DIALOG_BODY}>
-          Load this configuration in <span className="font-bold">Advanced</span>{" "}
-          mode.
+          <Trans>viewer.load_this_configuration</Trans>
           <Callout intent="warning" className="mt-2">
-            This will overwrite any existing configuration you may have. Are you
-            sure you wish to continue?
+            <Trans>viewer.this_will_overwrite</Trans>
           </Callout>
         </div>
 
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
             <Button onClick={openInSim} intent="primary">
-              Continue
+              <Trans>viewer.continue</Trans>
             </Button>
-            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={() => setOpen(false)}><Trans>viewer.cancel</Trans></Button>
           </div>
         </div>
       </Dialog>

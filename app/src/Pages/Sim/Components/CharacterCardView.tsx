@@ -1,5 +1,6 @@
-import { ConsolidateCharStats, CharacterCard } from "~src/Components/Character";
+import { CharacterCard, ConsolidateCharStats } from "~src/Components/Character";
 import { Character } from "~src/types";
+import { Trans, useTranslation } from "react-i18next";
 
 type Props = {
   chars: Character[];
@@ -7,8 +8,10 @@ type Props = {
 };
 
 export function CharacterCardView(props: Props) {
+  useTranslation()
+
   if (!props.chars) {
-    return <div>No characters</div>;
+    return <div><Trans>components.no_characters</Trans></div>;
   }
 
   const teamStats = ConsolidateCharStats(props.chars);
