@@ -16,37 +16,32 @@ func NewCtrl(c *core.Core) *HealthCtrl {
 	}
 }
 
-func (h *HealthCtrl) HealActive(caller int, hp float64) {
-	heal := h.healBonusMult(h.core.ActiveChar) * hp
-	h.core.Chars[h.core.ActiveChar].ModifyHP(heal)
-	h.core.Events.Emit(core.OnHeal, caller, h.core.ActiveChar, heal)
-	h.core.Log.NewEvent("healing", core.LogHealEvent, h.core.ActiveChar, "amount", hp, "bonus", h.healBonusMult(h.core.ActiveChar), "final", h.core.Chars[h.core.ActiveChar].HP())
-}
+func (h *HealthCtrl) HealIndex(hi *core.HealInfo, index int) {
+	c := h.core.Chars[index]
 
-func (h *HealthCtrl) HealAll(caller int, hp float64) {
-	for i, c := range h.core.Chars {
-		heal := h.healBonusMult(i) * hp
-		c.ModifyHP(heal)
-		h.core.Events.Emit(core.OnHeal, caller, i, heal)
-		h.core.Log.NewEvent("healing (all)", core.LogHealEvent, i, "amount", hp, "bonus", h.healBonusMult(i), "final", h.core.Chars[h.core.ActiveChar].HP())
+	bonus := h.healBonusMult(index) + hi.Bonus
+	hp := .0
+	switch hi.Type {
+	case core.HealTypeAbsolute:
+		hp = hi.Src
+	case core.HealTypePercent:
+		hp = c.MaxHP() * hi.Src
 	}
+	heal := hp * bonus
+
+	c.ModifyHP(heal)
+	h.core.Events.Emit(core.OnHeal, hi.Caller, index, heal)
+	h.core.Log.NewEvent(hi.Message, core.LogHealEvent, index, "amount", hp, "bonus", bonus, "final", c.HP())
 }
 
-func (h *HealthCtrl) HealAllPercent(caller int, percent float64) {
-	for i, c := range h.core.Chars {
-		hp := c.MaxHP() * percent
-		heal := h.healBonusMult(i) * hp
-		c.ModifyHP(heal)
-		h.core.Events.Emit(core.OnHeal, caller, i, heal)
-		h.core.Log.NewEvent("healing (all)", core.LogHealEvent, i, "amount", hp, "bonus", h.healBonusMult(i), "final", h.core.Chars[h.core.ActiveChar].HP())
+func (h *HealthCtrl) Heal(hi core.HealInfo) {
+	if hi.Target == -1 { // all
+		for i := range h.core.Chars {
+			h.HealIndex(&hi, i)
+		}
+	} else {
+		h.HealIndex(&hi, hi.Target)
 	}
-}
-
-func (h *HealthCtrl) HealIndex(caller int, index int, hp float64) {
-	heal := h.healBonusMult(index) * hp
-	h.core.Chars[index].ModifyHP(heal)
-	h.core.Events.Emit(core.OnHeal, caller, index, heal)
-	h.core.Log.NewEvent("healing", core.LogHealEvent, index, "amount", hp, "bonus", h.healBonusMult(index), "final", h.core.Chars[h.core.ActiveChar].HP())
 }
 
 func (h *HealthCtrl) healBonusMult(healedCharIndex int) float64 {

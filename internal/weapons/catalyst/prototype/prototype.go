@@ -23,10 +23,16 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		for i := 120; i <= 360; i += 120 {
-
 			char.AddTask(func() {
 				char.AddEnergy("prototype-amber", e)
-				c.Health.HealAllPercent(char.CharIndex(), e/100.0*(1+char.Stat(core.Heal)))
+				c.Health.Heal(core.HealInfo{
+					Caller:  char.CharIndex(),
+					Target:  -1,
+					Type:    core.HealTypePercent,
+					Message: "Prototype Amber",
+					Src:     e / 100.0,
+					Bonus:   char.Stat(core.Heal),
+				})
 			}, "recharge", i)
 		}
 

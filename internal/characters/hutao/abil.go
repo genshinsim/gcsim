@@ -195,7 +195,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if count > 5 {
 		count = 5
 	}
-	c.HPCurrent += c.HPMax * float64(count) * regen
+	c.Core.Health.Heal(core.HealInfo{
+		Caller:  c.Index,
+		Target:  c.Index,
+		Message: "Spirit Soother",
+		Src:     c.HPMax * float64(count) * regen,
+		Bonus:   c.Stat(core.Heal),
+	})
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
 

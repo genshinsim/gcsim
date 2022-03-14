@@ -81,7 +81,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		snap := c.Snapshot(&ai)
 
 		// One healing proc happens immediately on cast
-		c.Core.Health.HealActive(c.Index, c.healSnapshot(&snap, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()))
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.ActiveChar,
+			Message: "Herald of Frost (Tick)",
+			Src:     c.healSnapshot(&snap, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()),
+			Bonus:   snap.Stats[core.Heal],
+		})
 
 		// Healing and damage instances are snapshot
 		// Separately cloned snapshots are fed into each function to ensure nothing interferes with each other
@@ -176,7 +182,13 @@ func (c *char) skillHealTickTask(src int) func() {
 			return
 		}
 
-		c.Core.Health.HealActive(c.Index, c.healSnapshot(&c.skillHealSnapshot, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()))
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.ActiveChar,
+			Message: "Herald of Frost (Tick)",
+			Src:     c.healSnapshot(&c.skillHealSnapshot, skillHealContPer, skillHealContFlat, c.TalentLvlSkill()),
+			Bonus:   c.skillHealSnapshot.Stats[core.Heal],
+		})
 
 		// Queue next instance
 		c.AddTask(c.skillHealTickTask(src), "qiqi-skill-heal-tick", 4.5*60)
@@ -210,13 +222,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 // Helper function to calculate healing amount dynamically using current character stats, which has all mods applied
 func (c *char) healDynamic(healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
 	atk := c.Base.Atk + c.Weapon.Atk*(1+c.Stat(core.ATKP)) + c.Stat(core.ATK)
-	heal := (healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]) * (1 + c.Stat(core.Heal))
+	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal
 }
 
 // Helper function to calculate healing amount from a snapshot instance
 func (c *char) healSnapshot(d *core.Snapshot, healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
 	atk := d.BaseAtk*(1+d.Stats[core.ATKP]) + d.Stats[core.ATK]
-	heal := (healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]) * (1 + d.Stats[core.Heal])
+	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal
 }

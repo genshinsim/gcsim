@@ -77,14 +77,18 @@ func (s *shd) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, b
 		//40% of dmg is converted into healing, but cannot exceed 8% of each char max hp
 		//so we have to go through each char one at a time....
 
-		for i, c := range s.c.Core.Chars {
-			heal := 0.4 * dmg
-			if heal > 0.08*c.MaxHP() {
-				heal = 0.08 * c.MaxHP()
-			}
-			s.c.Core.Health.HealIndex(s.c.Index, i, heal)
-			s.c.Core.Log.NewEvent("zhongli c6 healing char", core.LogHurtEvent, c.CharIndex(), "amount", heal, "final", c.HP())
+		c := s.c.Core.Chars[s.c.Core.ActiveChar]
+		heal := 0.4 * dmg
+		if heal > 0.08*c.MaxHP() {
+			heal = 0.08 * c.MaxHP()
 		}
+		s.c.Core.Health.Heal(core.HealInfo{
+			Caller:  s.c.Index,
+			Target:  s.c.Core.ActiveChar,
+			Message: "Chrysos, Bounty of Dominator",
+			Src:     heal,
+			Bonus:   c.Stat(core.Heal),
+		})
 	}
 	if !ok {
 		s.c.removeJadeShield()

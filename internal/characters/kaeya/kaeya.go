@@ -121,7 +121,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	a4count := 0
 	cb := func(a core.AttackCB) {
 		heal := .15 * (a.AttackEvent.Snapshot.BaseAtk*(1+a.AttackEvent.Snapshot.Stats[core.ATKP]) + a.AttackEvent.Snapshot.Stats[core.ATK])
-		c.Core.Health.HealActive(c.Index, heal)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.ActiveChar,
+			Message: "Cold-Blooded Strike",
+			Src:     heal,
+			Bonus:   c.Stat(core.Heal),
+		})
 		//if target is frozen after hit then drop additional energy;
 		if a4count == 2 {
 			return

@@ -45,8 +45,6 @@ a2: shielding if fall below hp threshold, not implemented
 
 a4: every 4 hit decrease breastplate cd by 1; implement as hook
 
-c1: 100% healing, not implemented
-
 c2: decrease stam consumption, to be implemented
 
 c4: explodes for 400% when expired or destroyed; how to implement expired?

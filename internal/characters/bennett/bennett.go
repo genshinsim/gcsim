@@ -268,7 +268,7 @@ const bennettSelfInfusionDurationInFrames = 126
 
 func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 	hpplus := stats[core.Heal]
-	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
+	heal := bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()
 	pc := burstatk[c.TalentLvlBurst()]
 	if c.Base.Cons >= 1 {
 		pc += 0.2
@@ -287,7 +287,13 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 		active := c.Core.Chars[c.Core.ActiveChar]
 		//heal if under 70%
 		if active.HP()/active.MaxHP() < .7 {
-			c.Core.Health.HealActive(c.Index, heal)
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  c.Core.ActiveChar,
+				Message: "Inspiration Field",
+				Src:     heal,
+				Bonus:   hpplus,
+			})
 		}
 
 		//add attack if over 70%

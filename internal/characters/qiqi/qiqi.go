@@ -100,19 +100,25 @@ func (c *char) talismanHealHook() {
 		atk := args[1].(*core.AttackEvent)
 
 		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
-		c.Core.Health.HealIndex(c.Index, atk.Info.ActorIndex, healAmt)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  atk.Info.ActorIndex,
+			Message: "Fortune-Preserving Talisman",
+			Src:     healAmt,
+			Bonus:   c.Stat(core.Heal),
+		})
 		t.SetTag(talismanICDKey, c.Core.F+60)
 
-		c.Core.Log.NewEvent(
-			"Qiqi Talisman Healing",
-			core.LogCharacterEvent,
-			c.Index,
-			"target", t.Index(),
-			"healed_char", atk.Info.ActorIndex,
-			"talisman_expiry", t.GetTag(talismanKey),
-			"talisman_healing_icd", t.GetTag(talismanICDKey),
-			"healed_amt", healAmt,
-		)
+		// c.Core.Log.NewEvent(
+		// 	"Qiqi Talisman Healing",
+		// 	core.LogCharacterEvent,
+		// 	c.Index,
+		// 	"target", t.Index(),
+		// 	"healed_char", atk.Info.ActorIndex,
+		// 	"talisman_expiry", t.GetTag(talismanKey),
+		// 	"talisman_healing_icd", t.GetTag(talismanICDKey),
+		// 	"healed_amt", healAmt,
+		// )
 
 		return false
 	}, "talisman-heal-hook")
@@ -162,7 +168,13 @@ func (c *char) onNACAHitHook() {
 
 		// Qiqi NA/CA healing proc in skill duration
 		if c.Core.Status.Duration("qiqiskill") > 0 {
-			c.Core.Health.HealAll(c.Index, c.healSnapshot(&c.skillHealSnapshot, skillHealOnHitPer, skillHealOnHitFlat, c.TalentLvlSkill()))
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  -1,
+				Message: "Herald of Frost (Attack)",
+				Src:     c.healSnapshot(&c.skillHealSnapshot, skillHealOnHitPer, skillHealOnHitFlat, c.TalentLvlSkill()),
+				Bonus:   c.skillHealSnapshot.Stats[core.Heal],
+			})
 		}
 
 		return false

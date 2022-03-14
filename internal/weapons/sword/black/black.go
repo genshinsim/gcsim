@@ -46,7 +46,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 		if crit && (c.F-last >= 300 || last == 0) {
-			c.Health.HealActive(char.CharIndex(), heal*(atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP])+atk.Snapshot.Stats[core.ATK]))
+			c.Health.Heal(core.HealInfo{
+				Caller:  char.CharIndex(),
+				Target:  c.ActiveChar,
+				Message: "The Black Sword",
+				Src:     heal * (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]),
+				Bonus:   char.Stat(core.Heal),
+			})
 			//trigger cd
 			last = c.F
 		}

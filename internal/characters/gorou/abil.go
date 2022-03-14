@@ -176,9 +176,14 @@ func (c *char) gorouSkillHealField(src int, stats []float64) func() {
 		}
 		//When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
 		//within its AoE by 50% of Gorou's own DEF every 1.5s.
-		//TODO: healing bonus
 		amt := c.Base.Def*(1+stats[core.DEFP]) + stats[core.DEF]
-		c.Core.Health.HealActive(c.Index, 0.5*amt)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.ActiveChar,
+			Message: "Lapping Hound: Warm as Water",
+			Src:     0.5 * amt,
+			Bonus:   c.Stat(core.Heal),
+		})
 
 		//tick every 1.5s
 		c.Core.Tasks.Add(c.gorouSkillBuffField(src), 90)
