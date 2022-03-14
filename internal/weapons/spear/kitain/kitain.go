@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,17 +12,17 @@ func init() {
 	core.RegisterWeaponFunc("kitaincrossspear", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	base := 0.045 + float64(r)*0.015
 	regen := 2.5 + float64(r)*0.5
 
 	m[core.DmgP] = base
 
-	char.AddPreDamageMod(core.PreDamageMod{
+	char.AddPreDamageMod(coretype.PreDamageMod{
 		Expiry: -1,
 		Key:    "kitain-skill-dmg-buff",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == core.AttackTagElementalArt || atk.Info.AttackTag == core.AttackTagElementalArtHold {
 				return m, true
 			}
@@ -30,18 +31,18 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	})
 
 	icd := 0
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
-		icd = c.F + 600 //once every 10 seconds
+		icd = c.Frame + 600 //once every 10 seconds
 		char.AddEnergy("kitain", -3)
 		for i := 120; i <= 360; i += 120 {
 			char.AddTask(func() {

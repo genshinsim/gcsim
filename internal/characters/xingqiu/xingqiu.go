@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type char struct {
@@ -22,7 +23,7 @@ func init() {
 	core.RegisterCharFunc(core.Xingqiu, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -43,7 +44,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneLiyue
 
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key: "a4",
 		Amount: func() ([]float64, bool) {
 			a4 := make([]float64, core.EndStatType)
@@ -91,7 +92,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 39, 39 //ok
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -102,7 +103,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -112,7 +113,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Abil = fmt.Sprintf("Normal %v", c.NormalCounter)
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
 	}
 
 	//add a 75 frame attackcounter reset
@@ -124,8 +125,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) orbitalfunc(src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("orbital checking tick", core.LogCharacterEvent, c.Index, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
-		if c.Core.Status.Duration("xqorb") == 0 {
+		c.coretype.Log.NewEvent("orbital checking tick", coretype.LogCharacterEvent, c.Index, "expiry", c.Core.StatusDuration("xqorb"), "src", src)
+		if c.Core.StatusDuration("xqorb") == 0 {
 			c.orbitalActive = false
 			return
 		}
@@ -139,28 +140,28 @@ func (c *char) orbitalfunc(src int) func() {
 			Element:    core.Hydro,
 			Durability: 25,
 		}
-		c.Core.Log.NewEvent("orbital ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
+		c.coretype.Log.NewEvent("orbital ticked", coretype.LogCharacterEvent, c.Index, "next expected tick", c.Core.Frame+150, "expiry", c.Core.StatusDuration("xqorb"), "src", src)
 
 		//queue up next instance
 		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 1)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), -1, 1)
 	}
 }
 
 func (c *char) applyOrbital(duration int) {
-	f := c.Core.F
-	c.Core.Log.NewEvent("Applying orbital", core.LogCharacterEvent, c.Index, "current status", c.Core.Status.Duration("xqorb"))
+	f := c.Core.Frame
+	c.coretype.Log.NewEvent("Applying orbital", coretype.LogCharacterEvent, c.Index, "current status", c.Core.StatusDuration("xqorb"))
 	//check if orbitals already active, if active extend duration
 	//other wise start first tick func
 	if !c.orbitalActive {
 		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 14)
 		c.orbitalActive = true
-		c.Core.Log.NewEvent("orbital applied", core.LogCharacterEvent, c.Index, "expected end", f+900, "next expected tick", f+40)
+		c.coretype.Log.NewEvent("orbital applied", coretype.LogCharacterEvent, c.Index, "expected end", f+900, "next expected tick", f+40)
 	}
 
-	c.Core.Status.AddStatus("xqorb", duration)
-	c.Core.Log.NewEvent("orbital duration extended", core.LogCharacterEvent, c.Index, "new expiry", c.Core.Status.Duration("xqorb"))
+	c.Core.AddStatus("xqorb", duration)
+	c.coretype.Log.NewEvent("orbital duration extended", coretype.LogCharacterEvent, c.Index, "new expiry", c.Core.StatusDuration("xqorb"))
 }
 
 var rainscreenDelay = [2]int{19, 35}
@@ -184,11 +185,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ai.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {
 			//check if ult is up, if so increase multiplier
-			if c.Core.Status.Duration("xqburst") > 0 {
+			if c.Core.StatusDuration("xqburst") > 0 {
 				ai.Mult = ai.Mult * 1.5
 			}
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), rainscreenDelay[i], rainscreenDelay[i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), rainscreenDelay[i], rainscreenDelay[i])
 	}
 
 	// Orbitals spawn in 1 frame before the second hit connects going by the "Wet" text
@@ -232,8 +233,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		dur += 3
 	}
 	dur = dur * 60
-	c.Core.Status.AddStatus("xqburst", dur)
-	c.Core.Log.NewEvent("Xingqiu burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur)
+	c.Core.AddStatus("xqburst", dur)
+	c.coretype.Log.NewEvent("Xingqiu burst activated", coretype.LogCharacterEvent, c.Index, "expiry", c.Core.Frame+dur)
 
 	orbital := p["orbital"]
 

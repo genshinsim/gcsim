@@ -3,6 +3,7 @@ package qiqi
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -25,14 +26,14 @@ const (
 
 // TODO: Not implemented - C6 (revival mechanic, not suitable for sim)
 // C4 - Enemy Atk reduction, not useful in this sim version
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Base.Element = core.Cryo
+	c.Base.Element = coretype.Cryo
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -62,22 +63,22 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Init() {
 	c.Tmpl.Init()
 
-	// c.talismanExpiry = make([]int, len(c.Core.Targets))
-	// c.talismanICDExpiry = make([]int, len(c.Core.Targets))
+	// c.talismanExpiry = make([]int, len(c.coretype.Targets))
+	// c.talismanICDExpiry = make([]int, len(c.coretype.Targets))
 }
 
 //Qiqi's Normal and Charge Attack DMG against opponents affected by Cryo is increased by 15%.
 func (c *char) c2() {
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = .15
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "qiqi-c2",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 				return nil, false
 			}
-			if !t.AuraContains(core.Cryo, core.Frozen) {
+			if !t.AuraContains(coretype.Cryo, coretype.Frozen) {
 				return nil, false
 			}
 			return val, true
@@ -86,18 +87,18 @@ func (c *char) c2() {
 }
 
 func (c *char) talismanHealHook() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		t := args[0].(core.Target)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		t := args[0].(coretype.Target)
 		//do nothing if talisman expired
-		if t.GetTag(talismanKey) < c.Core.F {
+		if t.GetTag(talismanKey) < c.Core.Frame {
 			return false
 		}
 		//do nothing if talisman still on icd
-		if t.GetTag(talismanICDKey) >= c.Core.F {
+		if t.GetTag(talismanICDKey) >= c.Core.Frame {
 			return false
 		}
 
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 
 		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
 		c.Core.Health.Heal(core.HealInfo{
@@ -127,9 +128,9 @@ func (c *char) talismanHealHook() {
 // Handles C2, A4, and skill NA/CA on hit hooks
 // Additionally handles burst Talisman hook - can't be done another way since Talisman is applied before the burst damage is dealt
 func (c *char) onNACAHitHook() {
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		t := args[0].(core.Target)
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		t := args[0].(coretype.Target)
+		atk := args[1].(*coretype.AttackEvent)
 
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -138,26 +139,26 @@ func (c *char) onNACAHitHook() {
 		// Talisman is applied before the damage is dealt
 		if atk.Info.Abil == "Fortune-Preserving Talisman" {
 			// c.talismanExpiry[t.Index()] = c.Core.F + 15*60
-			t.SetTag(talismanKey, c.Core.F+15*60)
+			t.SetTag(talismanKey, c.Core.Frame+15*60)
 		}
 
 		// All of the below only occur on Qiqi NA/CA hits
-		if !((atk.Info.AttackTag == core.AttackTagNormal) || (atk.Info.AttackTag == core.AttackTagExtra)) {
+		if !((atk.Info.AttackTag == coretype.AttackTagNormal) || (atk.Info.AttackTag == coretype.AttackTagExtra)) {
 			return false
 		}
 
 		// A4
 		// When Qiqi hits opponents with her Normal and Charged Attacks, she has a 50% chance to apply a Fortune-Preserving Talisman to them for 6s. This effect can only occur once every 30s.
-		if (c.c4ICDExpiry <= c.Core.F) && (c.Rand.Float64() < 0.5) {
+		if (c.c4ICDExpiry <= c.Core.Frame) && (c.Rand.Float64() < 0.5) {
 			// Don't want to overwrite a longer burst duration talisman with a shorter duration one
 			// TODO: Unclear how the interaction works if there is already a talisman on enemy
 			// TODO: Being generous for now and not putting it on CD if there is a conflict
-			if t.GetTag(talismanKey) < c.Core.F+360 {
-				t.SetTag(talismanKey, c.Core.F+360)
-				c.c4ICDExpiry = c.Core.F + 30*60
-				c.Core.Log.NewEvent(
+			if t.GetTag(talismanKey) < c.Core.Frame+360 {
+				t.SetTag(talismanKey, c.Core.Frame+360)
+				c.c4ICDExpiry = c.Core.Frame + 30*60
+				c.coretype.Log.NewEvent(
 					"Qiqi A4 Adding Talisman",
-					core.LogCharacterEvent,
+					coretype.LogCharacterEvent,
 					c.Index,
 					"target", t.Index(),
 					"talisman_expiry", t.GetTag(talismanKey),
@@ -191,32 +192,32 @@ func (c *char) a1() {
 	c.Core.Health.AddIncHealBonus(func(healedCharIndex int) float64 {
 		healedCharName := c.Core.Chars[healedCharIndex].Name()
 
-		if c.Core.Status.Duration("qiqia1"+healedCharName) > 0 {
+		if c.Core.StatusDuration("qiqia1"+healedCharName) > 0 {
 			return .2
 		}
 		return 0
 	})
 
 	a1Hook := func(args ...interface{}) bool {
-		if c.Core.Status.Duration("qiqiskill") == 0 {
+		if c.Core.StatusDuration("qiqiskill") == 0 {
 			return false
 		}
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 
 		// Active char is the only one under the effects of Qiqi skill
 		if atk.Info.ActorIndex != c.Core.ActiveChar {
 			return false
 		}
 
-		c.Core.Status.AddStatus("qiqia1"+c.Core.Chars[c.Core.ActiveChar].Name(), 8*60)
+		c.Core.AddStatus("qiqia1"+c.Core.Chars[c.Core.ActiveChar].Name(), 8*60)
 
 		return false
 	}
 	for i := core.EventType(core.ReactionEventStartDelim + 1); i < core.ReactionEventEndDelim; i++ {
-		c.Core.Events.Subscribe(i, a1Hook, "qiqi-a1")
+		c.Core.Subscribe(i, a1Hook, "qiqi-a1")
 	}
-	// c.Core.Events.Subscribe(core.OnTransReaction, a1Hook, "qiqi-a1")
-	// c.Core.Events.Subscribe(core.OnAmpReaction, a1Hook, "qiqi-a1")
+	// c.Core.Subscribe(core.OnTransReaction, a1Hook, "qiqi-a1")
+	// c.Core.Subscribe(core.OnAmpReaction, a1Hook, "qiqi-a1")
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -226,7 +227,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -17,14 +18,14 @@ type char struct {
 	icicleICD []int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Base.Element = core.Cryo
+	c.Base.Element = coretype.Cryo
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -56,7 +57,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -67,7 +68,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -75,7 +76,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.3, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.3, false, coretype.TargettableEnemy), f-1, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -88,7 +89,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge 1",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -97,10 +98,10 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[0][c.TalentLvlAttack()],
 	}
 	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-15, f-15)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, coretype.TargettableEnemy), f-15, f-15)
 	ai.Abil = "Charge 2"
 	ai.Mult = charge[1][c.TalentLvlAttack()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-5, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, coretype.TargettableEnemy), f-5, f-5)
 
 	return f, a
 }
@@ -114,7 +115,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
@@ -132,20 +133,20 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		if a4count == 2 {
 			return
 		}
-		if a.Target.AuraContains(core.Frozen) {
+		if a.Target.AuraContains(coretype.Frozen) {
 			a4count++
-			c.QueueParticle("kaeya", 1, core.Cryo, 100)
-			c.Core.Log.NewEvent("kaeya a4 proc", core.LogEnergyEvent, c.Index)
+			c.QueueParticle("kaeya", 1, coretype.Cryo, 100)
+			c.coretype.Log.NewEvent("kaeya a4 proc", coretype.LogEnergyEvent, c.Index)
 		}
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 28, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 0, 28, cb)
 
 	//2 or 3 1:1 ratio
 	count := 2
 	if c.Core.Rand.Float64() < 0.67 {
 		count = 3
 	}
-	c.QueueParticle("kaeya", count, core.Cryo, f+100)
+	c.QueueParticle("kaeya", count, coretype.Cryo, f+100)
 
 	c.SetCD(core.ActionSkill, 360+28) //+28 since cd starts 28 frames in
 	return f, a
@@ -160,7 +161,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
@@ -183,7 +184,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//on icicle collision, it'll trigger an aoe dmg with radius 2
 		//in effect, every target gets hit every time icicles rotate around
 		for j := f + offset*i; j < f+480; j += 120 {
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), j)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, coretype.TargettableEnemy), j)
 		}
 	}
 
@@ -197,8 +198,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 // func (c *char) burstICD() {
-// 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-// 		atk := args[1].(*core.AttackEvent)
+// 	c.Core.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+// 		atk := args[1].(*coretype.AttackEvent)
 // 		if atk.Info.ActorIndex != c.Index {
 // 			return false
 // 		}

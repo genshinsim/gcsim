@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Standard attack - nothing special
@@ -14,7 +15,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -23,7 +24,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 	for _, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, f)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), f, f)
 	}
 
 	c.AdvanceNormalIndex()
@@ -39,7 +40,7 @@ func (c *char) Charge(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -49,7 +50,7 @@ func (c *char) Charge(p map[string]int) (int, int) {
 	for _, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, f)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), f, f)
 	}
 
 	return f, a
@@ -60,9 +61,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	// +1 to avoid end duration issues
-	c.Core.Status.AddStatus("qiqiskill", 15*60+1)
-	c.skillLastUsed = c.Core.F
-	src := c.Core.F
+	c.Core.AddStatus("qiqiskill", 15*60+1)
+	c.skillLastUsed = c.Core.Frame
+	src := c.Core.Frame
 
 	// Initial damage
 	// Both healing and damage are snapshot
@@ -74,7 +75,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			ICDTag:     core.ICDTagElementalArt,
 			ICDGroup:   core.ICDGroupDefault,
 			StrikeType: core.StrikeTypeDefault,
-			Element:    core.Cryo,
+			Element:    coretype.Cryo,
 			Durability: 25,
 			Mult:       skillInitialDmg[c.TalentLvlSkill()],
 		}
@@ -112,17 +113,17 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		aiTick.Abil = "Herald of Frost: Skill Damage"
 		aiTick.Mult = skillDmgCont[c.TalentLvlSkill()]
 		snapTick := c.Snapshot(&aiTick)
-		tickAE := &core.AttackEvent{
+		tickAE := &coretype.AttackEvent{
 			Info:        aiTick,
 			Snapshot:    snapTick,
-			Pattern:     core.NewDefCircHit(2, false, core.TargettableEnemy),
-			SourceFrame: c.Core.F,
+			Pattern:     core.NewDefCircHit(2, false, coretype.TargettableEnemy),
+			SourceFrame: c.Core.Frame,
 		}
 
 		c.AddTask(c.skillDmgTickTask(src, tickAE, 60), "qiqi-skill-dmg-tick", 30)
 
 		// Apply damage needs to take place after above takes place to ensure stats are handled correctly
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 0)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0)
 	}, "qiqi-skill-activation", f)
 
 	c.SetCD(core.ActionSkill, 30*60)
@@ -133,9 +134,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 // Handles skill damage swipe instances
 // Also handles C1:
 // When the Herald of Frost hits an opponent marked by a Fortune-Preserving Talisman, Qiqi regenerates 2 Energy.
-func (c *char) skillDmgTickTask(src int, ae *core.AttackEvent, lastTickDuration int) func() {
+func (c *char) skillDmgTickTask(src int, ae *coretype.AttackEvent, lastTickDuration int) func() {
 	return func() {
-		if c.Core.Status.Duration("qiqiskill") == 0 {
+		if c.Core.StatusDuration("qiqiskill") == 0 {
 			return
 		}
 
@@ -162,18 +163,18 @@ func (c *char) skillDmgTickTask(src int, ae *core.AttackEvent, lastTickDuration 
 }
 
 func (c *char) c1(a core.AttackCB) {
-	if a.Target.GetTag(talismanKey) < c.Core.F {
+	if a.Target.GetTag(talismanKey) < c.Core.Frame {
 		return
 	}
 	c.AddEnergy("qiqi-c1", 2)
 
-	c.Core.Log.NewEvent("Qiqi C1 Activation - Adding 2 energy", core.LogCharacterEvent, c.Index, "target", a.Target.Index())
+	c.coretype.Log.NewEvent("Qiqi C1 Activation - Adding 2 energy", coretype.LogCharacterEvent, c.Index, "target", a.Target.Index())
 }
 
 // Handles skill auto healing ticks
 func (c *char) skillHealTickTask(src int) func() {
 	return func() {
-		if c.Core.Status.Duration("qiqiskill") == 0 {
+		if c.Core.StatusDuration("qiqiskill") == 0 {
 			return
 		}
 
@@ -207,12 +208,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f, f)
 	c.SetCDWithDelay(core.ActionBurst, 20*60, 10)
 	c.ConsumeEnergy(10)
 

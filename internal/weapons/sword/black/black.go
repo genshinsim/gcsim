@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -13,16 +14,16 @@ func init() {
 
 //Increases DMG dealt by Normal and Charged Attacks by 20%. Additionally,
 //regenerates 60% of ATK as HP when Normal and Charged Attacks score a CRIT Hit. This effect can occur once every 5s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.15 + 0.05*float64(r)
 
-	char.AddPreDamageMod(core.PreDamageMod{
+	char.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "black sword",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 				return nil, false
 			}
 			return val, true
@@ -32,17 +33,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	last := 0
 	heal := 0.5 + .1*float64(r)
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 		crit := args[3].(bool)
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
-		if c.ActiveChar != char.CharIndex() {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
 		if crit && (c.F-last >= 300 || last == 0) {
@@ -54,7 +55,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				Bonus:   char.Stat(core.Heal),
 			})
 			//trigger cd
-			last = c.F
+			last = c.Frame
 		}
 		return false
 	}, fmt.Sprintf("black-sword-%v", char.Name()))

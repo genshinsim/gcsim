@@ -3,13 +3,14 @@ package zhongli
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type char struct {
 	*character.Tmpl
 
 	//field use for calculating stele damage
-	steleSnapshot core.AttackEvent
+	steleSnapshot coretype.AttackEvent
 
 	maxStele   int
 	steleCount int
@@ -20,7 +21,7 @@ func init() {
 	core.RegisterCharFunc(core.Zhongli, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -57,14 +58,14 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
 }
 
 func (c *char) a2() {
-	c.Core.Shields.AddBonus(func() float64 {
+	c.Core.Player.AddShieldBonus(func() float64 {
 		if c.Tags["shielded"] == 0 {
 			return 0
 		}

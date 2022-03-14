@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -17,7 +18,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupAmber,
 		Element:    core.Physical,
@@ -25,7 +26,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -57,7 +58,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		Abil:         "Aim (Charged)",
 		ActorIndex:   c.Index,
-		AttackTag:    core.AttackTagExtra,
+		AttackTag:    coretype.AttackTagExtra,
 		ICDTag:       core.ICDTagExtraAttack,
 		ICDGroup:     core.ICDGroupAmber,
 		Element:      core.Pyro,
@@ -71,24 +72,24 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	//add 15% since 360noscope
 	cb := func(a core.AttackCB) {
 		if a.AttackEvent.Info.HitWeakPoint {
-			c.AddMod(core.CharStatMod{
+			c.AddMod(coretype.CharStatMod{
 				Key: "a2",
 				Amount: func() ([]float64, bool) {
 					val := make([]float64, core.EndStatType)
 					val[core.ATKP] = 0.15
 					return val, true
 				},
-				Expiry: c.Core.F + 600,
+				Expiry: c.Core.Frame + 600,
 			})
 		}
 
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, f+travel, cb)
 
 	if c.Base.Cons >= 1 {
 		ai.Mult = .2 * ai.Mult
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, f+travel)
 	}
 
 	return f, a
@@ -135,27 +136,27 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//TODO: properly implement random hits and hit box range. right now everything is just radius 3
 	for i := f + 24; i < 120+f; i += 24 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), i)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, coretype.TargettableEnemy), i)
 	}
 
 	for i := f + 36; i < 120+f; i += 36 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), i)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, coretype.TargettableEnemy), i)
 	}
 
 	for i := f + 12; i < 120+f; i += 12 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), i)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, coretype.TargettableEnemy), i)
 	}
 
 	if c.Base.Cons == 6 {
 		for _, active := range c.Core.Chars {
 			val := make([]float64, core.EndStatType)
 			val[core.ATKP] = 0.15
-			active.AddMod(core.CharStatMod{
+			active.AddMod(coretype.CharStatMod{
 				Key:    "amber-c6",
 				Amount: func() ([]float64, bool) { return val, true },
-				Expiry: c.Core.F + 900,
+				Expiry: c.Core.Frame + 900,
 			})
-			c.Core.Log.NewEvent("c6 - adding atk %", core.LogCharacterEvent, c.Index, "character", c.Name())
+			c.coretype.Log.NewEvent("c6 - adding atk %", coretype.LogCharacterEvent, c.Index, "character", c.Name())
 		}
 	}
 

@@ -4,9 +4,10 @@ import (
 	"github.com/genshinsim/gcsim/internal/tmpl/enemy"
 	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
-func testUseAction(a core.ActionType, c *core.Core, x core.Character, count int) {
+func testUseAction(a core.ActionType, c *core.Core, x coretype.Character, count int) {
 	p := make(map[string]int)
 	repeat := func(abil func(p map[string]int) (int, int)) {
 		for i := 0; i < count; i++ {
@@ -40,7 +41,7 @@ func SkipFrames(c *core.Core, i int) {
 	}
 }
 
-func setupChar(c *core.Core, x core.Character) {
+func setupChar(c *core.Core, x coretype.Character) {
 	//create a basic core with no logger
 	c.Chars = append(c.Chars, x)
 	c.CharPos[x.Key()] = 0
@@ -50,7 +51,7 @@ func setupChar(c *core.Core, x core.Character) {
 	c.Targets = append(c.Targets, enemy.New(1, c, EnemyProfile()))
 }
 
-func TestCatalystCharacter(c *core.Core, x core.Character) {
+func TestCatalystCharacter(c *core.Core, x coretype.Character) {
 	setupChar(c, x)
 	testUseAction(core.ActionSkill, c, x, 1)
 	testUseAction(core.ActionBurst, c, x, 1)
@@ -59,7 +60,7 @@ func TestCatalystCharacter(c *core.Core, x core.Character) {
 	SkipFrames(c, 1200)
 }
 
-func TestSwordCharacter(c *core.Core, x core.Character) {
+func TestSwordCharacter(c *core.Core, x coretype.Character) {
 	setupChar(c, x)
 	testUseAction(core.ActionSkill, c, x, 1)
 	testUseAction(core.ActionBurst, c, x, 1)
@@ -68,7 +69,7 @@ func TestSwordCharacter(c *core.Core, x core.Character) {
 	SkipFrames(c, 1200)
 }
 
-func TestPolearmCharacter(c *core.Core, x core.Character) {
+func TestPolearmCharacter(c *core.Core, x coretype.Character) {
 	setupChar(c, x)
 	testUseAction(core.ActionSkill, c, x, 1)
 	testUseAction(core.ActionBurst, c, x, 1)
@@ -77,7 +78,7 @@ func TestPolearmCharacter(c *core.Core, x core.Character) {
 	SkipFrames(c, 1200)
 }
 
-func TestClaymoreCharacter(c *core.Core, x core.Character) {
+func TestClaymoreCharacter(c *core.Core, x coretype.Character) {
 	setupChar(c, x)
 	testUseAction(core.ActionSkill, c, x, 1)
 	testUseAction(core.ActionBurst, c, x, 1)
@@ -85,7 +86,7 @@ func TestClaymoreCharacter(c *core.Core, x core.Character) {
 	SkipFrames(c, 1200)
 }
 
-func TestBowCharacter(c *core.Core, x core.Character) {
+func TestBowCharacter(c *core.Core, x coretype.Character) {
 	setupChar(c, x)
 	testUseAction(core.ActionSkill, c, x, 1)
 	testUseAction(core.ActionBurst, c, x, 1)

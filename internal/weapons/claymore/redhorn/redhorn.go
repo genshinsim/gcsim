@@ -2,6 +2,7 @@ package redhorn
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,13 +12,13 @@ func init() {
 
 // At R5
 // DEF is increased by 56%. Normal and Charged Attack DMG is increased by 80% of DEF.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	defBoost := .21 + 0.07*float64(r)
 	nacaBoost := .3 + .1*float64(r)
 
 	val := make([]float64, core.EndStatType)
 	val[core.DEFP] = defBoost
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Expiry: -1,
 		Key:    "redhorn-stonethrasher-def-boost",
 		Amount: func() ([]float64, bool) {
@@ -25,19 +26,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		},
 	})
 
-	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if !(atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra) {
+		if !(atk.Info.AttackTag == coretype.AttackTagNormal || atk.Info.AttackTag == coretype.AttackTagExtra) {
 			return false
 		}
 		baseDmgAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[core.DEFP]) + atk.Snapshot.Stats[core.DEF]) * nacaBoost
 		atk.Info.FlatDmg += baseDmgAdd
 
-		c.Log.NewEvent("Redhorn proc dmg add", core.LogPreDamageMod, char.CharIndex(), "base_added_dmg", baseDmgAdd)
+		c.Log.NewEvent("Redhorn proc dmg add", core.LogPreDamageMod, char.Index(), "base_added_dmg", baseDmgAdd)
 
 		return false
 	}, "")

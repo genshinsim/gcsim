@@ -3,6 +3,7 @@ package rosaria
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type char struct {
@@ -13,14 +14,14 @@ func init() {
 	core.RegisterCharFunc(core.Rosaria, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Base.Element = core.Cryo
+	c.Base.Element = coretype.Cryo
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -49,8 +50,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) c1() {
 	// Add hook that monitors for crit hits. Mirrors existing favonius code
 	// No log value saved as stat mod already shows up in debug view
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		crit := args[3].(bool)
 		if !crit {
 			return false
@@ -61,11 +62,11 @@ func (c *char) c1() {
 		val := make([]float64, core.EndStatType)
 		val[core.AtkSpd] = 0.1
 		val[core.DmgP] = 0.1
-		c.AddPreDamageMod(core.PreDamageMod{
+		c.AddPreDamageMod(coretype.PreDamageMod{
 			Key:    "rosaria-c1",
-			Expiry: c.Core.F + 240,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != core.AttackTagNormal {
+			Expiry: c.Core.Frame + 240,
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != coretype.AttackTagNormal {
 					return nil, false
 				}
 				return val, true
@@ -84,8 +85,8 @@ func (c *char) c1() {
 // Requires additional work and references - will leave implementation for later
 func (c *char) c4() {
 	icd := 0
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		crit := args[3].(bool)
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -94,13 +95,13 @@ func (c *char) c4() {
 			return false
 		}
 		// Use an icd to make it only once per skill cast. Use 30 frames as two hits occur 20 frames apart
-		if c.Core.F < icd {
+		if c.Core.Frame < icd {
 			return false
 		}
-		icd = c.Core.F + 30
+		icd = c.Core.Frame + 30
 
 		c.AddEnergy("rosaria-c4", 5)
-		c.Core.Log.NewEvent("Rosaria C4 recovering 5 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
+		c.coretype.Log.NewEvent("Rosaria C4 recovering 5 energy", coretype.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		return false
 	}, "rosaria-c4")
 }
@@ -112,7 +113,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

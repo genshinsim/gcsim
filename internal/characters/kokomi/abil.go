@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Standard attack damage function
@@ -19,7 +20,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Hydro,
@@ -28,7 +29,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, f+travel)
 	// TODO: Assume that this is not dynamic (snapshot on projectile release)
 
 	if c.NormalCounter == c.NormalHitNum-1 {
@@ -44,7 +45,7 @@ func (c *char) c1(f int) {
 	if c.Base.Cons == 0 {
 		return
 	}
-	if c.Core.Status.Duration("kokomiburst") == 0 {
+	if c.Core.StatusDuration("kokomiburst") == 0 {
 		return
 	}
 
@@ -63,7 +64,7 @@ func (c *char) c1(f int) {
 
 	// TODO: Frames not in library - Think it's 7 frames based on a rough count
 	// TODO: Is this snapshotted/dynamic?
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+7)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, f+7)
 }
 
 // Standard charge attack
@@ -75,7 +76,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Hydro,
@@ -84,7 +85,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	}
 	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f, f)
 	return f, a
 }
 
@@ -110,7 +111,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 }
 
 // Helper function since this needs to be created both on skill use and burst use
-func (c *char) createSkillSnapshot() *core.AttackEvent {
+func (c *char) createSkillSnapshot() *coretype.AttackEvent {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -124,17 +125,17 @@ func (c *char) createSkillSnapshot() *core.AttackEvent {
 	}
 	snap := c.Snapshot(&ai)
 
-	return (&core.AttackEvent{
+	return (&coretype.AttackEvent{
 		Info:        ai,
-		Pattern:     core.NewDefCircHit(5, false, core.TargettableEnemy),
-		SourceFrame: c.Core.F,
+		Pattern:     core.NewDefCircHit(5, false, coretype.TargettableEnemy),
+		SourceFrame: c.Core.Frame,
 		Snapshot:    snap,
 	})
 
 }
 
 // Helper function that handles damage, healing, and particle components of every tick of her E
-func (c *char) skillTick(d *core.AttackEvent) {
+func (c *char) skillTick(d *coretype.AttackEvent) {
 
 	// check if skill has burst bonus snapshot
 	// max swap frame should be 40 frame before 2nd tick
@@ -177,10 +178,10 @@ func (c *char) skillTick(d *core.AttackEvent) {
 
 // Handles repeating skill damage ticks. Split into a separate function as you can only have 1 jellyfish on field at once
 // Skill snapshots, so inputs into the function are the originating snapshot
-func (c *char) skillTickTask(originalSnapshot *core.AttackEvent, src int) func() {
+func (c *char) skillTickTask(originalSnapshot *coretype.AttackEvent, src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Skill Tick Debug", core.LogCharacterEvent, c.Index, "current dur", c.Core.Status.Duration("kokomiskill"), "skilllastused", c.skillLastUsed, "src", src)
-		if c.Core.Status.Duration("kokomiskill") == 0 {
+		c.coretype.Log.NewEvent("Skill Tick Debug", coretype.LogCharacterEvent, c.Index, "current dur", c.Core.StatusDuration("kokomiskill"), "skilllastused", c.skillLastUsed, "src", src)
+		if c.Core.StatusDuration("kokomiskill") == 0 {
 			return
 		}
 
@@ -218,30 +219,30 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.HPMax
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f, f)
 
-	c.Core.Status.AddStatus("kokomiburst", 10*60)
+	c.Core.AddStatus("kokomiburst", 10*60)
 
 	// Ascension 1 - reset duration of E Skill and also resnapshots it
 	// Should not activate HoD consistent with in game since it is not a skill usage
-	if c.Core.Status.Duration("kokomiskill") > 0 {
+	if c.Core.StatusDuration("kokomiskill") > 0 {
 		// +1 to avoid same frame expiry issues with skill tick
-		c.Core.Status.AddStatus("kokomiskill", 12*60+1)
+		c.Core.AddStatus("kokomiskill", 12*60+1)
 	}
 
 	// C4 attack speed buff
 	if c.Base.Cons >= 4 {
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "kokomi-c4",
 			Amount: func() ([]float64, bool) {
 				val := make([]float64, core.EndStatType)
 				val[core.AtkSpd] = 0.1
-				if c.Core.Status.Duration("kokomiburst") > 0 {
+				if c.Core.StatusDuration("kokomiburst") > 0 {
 					return val, true
 				}
 				return nil, false
 			},
-			Expiry: c.Core.F + 10*60,
+			Expiry: c.Core.Frame + 10*60,
 		})
 	}
 
@@ -253,13 +254,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 // Helper function for determining whether burst damage bonus should apply
 func (c *char) burstDmgBonus(a core.AttackTag) float64 {
-	if c.Core.Status.Duration("kokomiburst") == 0 {
+	if c.Core.StatusDuration("kokomiburst") == 0 {
 		return 0
 	}
 	switch a {
-	case core.AttackTagNormal:
+	case coretype.AttackTagNormal:
 		return burstBonusNormal[c.TalentLvlBurst()] * c.HPMax
-	case core.AttackTagExtra:
+	case coretype.AttackTagExtra:
 		return burstBonusCharge[c.TalentLvlBurst()] * c.HPMax
 	case core.AttackTagElementalArt:
 		return burstBonusSkill[c.TalentLvlBurst()] * c.HPMax

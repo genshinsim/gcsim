@@ -18,7 +18,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -28,7 +28,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		// TODO - double check snapshotDelay
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f+i, f+travel+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f+i, f+travel+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -48,7 +48,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim (Charged)",
-		AttackTag:    core.AttackTagExtra,
+		AttackTag:    coretype.AttackTagExtra,
 		ICDTag:       core.ICDTagNone,
 		ICDGroup:     core.ICDGroupDefault,
 		Element:      core.Anemo,
@@ -57,13 +57,13 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		HitWeakPoint: weakspot == 1,
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, core.TargettableEnemy), f, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, coretype.TargettableEnemy), f, travel+f)
 
 	if c.Base.Cons >= 1 {
 		ai.Abil = "Aim (Charged) C1"
 		ai.Mult = ai.Mult / 3.0
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, core.TargettableEnemy), f, travel+f)
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, core.TargettableEnemy), f, travel+f)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, coretype.TargettableEnemy), f, travel+f)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.1, false, coretype.TargettableEnemy), f, travel+f)
 	}
 
 	return f, a
@@ -97,7 +97,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		cb = c2cb
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, coretype.TargettableEnemy), 0, f-1, cb)
 
 	c.QueueParticle("venti", 3, core.Anemo, f+100)
 
@@ -129,11 +129,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	for i := 24; i <= 480; i += 24 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, coretype.TargettableEnemy), i, cb)
 	}
 
 	// Infusion usually occurs after 4 ticks of anemo according to KQM library
-	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(480/18)-24*4), "venti-absorb-check", 24*4)
+	c.AddTask(c.absorbCheckQ(c.Core.Frame, 0, int(480/18)-24*4), "venti-absorb-check", 24*4)
 
 	c.AddTask(func() {
 		c.a4Restore()
@@ -174,7 +174,7 @@ func (c *char) burstInfusedTicks() {
 	}
 
 	for i := 24; i <= 360; i += 24 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, coretype.TargettableEnemy), i, cb)
 	}
 }
 
@@ -183,7 +183,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, coretype.Cryo)
 		if c.qInfuse != core.NoElement {
 			//trigger dmg ticks here
 			c.burstInfusedTicks()

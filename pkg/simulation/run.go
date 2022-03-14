@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (s *Simulation) Run() (Result, error) {
@@ -23,8 +24,8 @@ func (s *Simulation) Run() (Result, error) {
 				Ele:    core.NoElement,
 			})
 		}, s.cfg.Energy.Start+1)
-		s.C.Log.NewEvent("energy queued (once)", core.LogSimEvent, -1, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.cfg.Energy.Start)
-		// s.C.Log.Debugw("energy queued (once)", "frame", s.C.F, core.LogSimEvent, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.cfg.Energy.Start)
+		s.C.Log.NewEvent("energy queued (once)", coretype.LogSimEvent, -1, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.cfg.Energy.Start)
+		// s.C.Log.Debugw("energy queued (once)", "frame", s.C.F, coretype.LogSimEvent, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.cfg.Energy.Start)
 	}
 
 	if s.cfg.Hurt.Active && s.cfg.Hurt.Once {
@@ -33,8 +34,8 @@ func (s *Simulation) Run() (Result, error) {
 		s.C.Tasks.Add(func() {
 			s.C.Health.HurtChar(amt, s.cfg.Hurt.Ele)
 		}, s.cfg.Hurt.Start+1)
-		s.C.Log.NewEvent("hurt queued (once)", core.LogSimEvent, -1, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.cfg.Hurt.Start)
-		// s.C.Log.Debugw("hurt queued (once)", "frame", s.C.F, core.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.cfg.Hurt.Start)
+		s.C.Log.NewEvent("hurt queued (once)", coretype.LogSimEvent, -1, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.cfg.Hurt.Start)
+		// s.C.Log.Debugw("hurt queued (once)", "frame", s.C.F, coretype.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.cfg.Hurt.Start)
 	}
 
 	//60fps, 60s/min, 2min
@@ -50,15 +51,15 @@ func (s *Simulation) Run() (Result, error) {
 			// log.Println(s.c.F, s.targets)
 			stop = len(s.C.Targets) == 1
 		} else {
-			stop = s.C.F == f
+			stop = s.C.Frame == f
 		}
 
 	}
 
 	s.stats.Damage = s.C.TotalDamage
 	// Sim starts at frame 0, so need to add 1 to get accurate DPS
-	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F+1)
-	s.stats.Duration = s.C.F + 1
+	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.Frame+1)
+	s.stats.Duration = s.C.Frame + 1
 
 	return s.stats, nil
 }
@@ -90,7 +91,7 @@ func (s *Simulation) AdvanceFrame() error {
 
 		// s.C.Log.Debugw("queue check - next queued",
 		// 	"frame", s.C.F,
-		// 	core.LogQueueEvent,
+		// 	coretype.LogQueueEvent,
 		// 	"remaining queue", s.queue,
 		// 	"next", next,
 		// 	"drop", drop,
@@ -120,7 +121,7 @@ func (s *Simulation) AdvanceFrame() error {
 		//check if this action is ready
 		char := s.C.Chars[s.C.ActiveChar]
 		if !(char.ActionReady(act.Typ, act.Param)) {
-			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
+			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", coretype.LogSimEvent, -1)
 			return nil
 		}
 		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
@@ -128,7 +129,7 @@ func (s *Simulation) AdvanceFrame() error {
 
 		//so if current frame - when the last action is used is >= delay, then we shouldn't
 		//delay at all
-		if s.C.F-s.lastActionUsedAt >= delay {
+		if s.C.Frame-s.lastActionUsedAt >= delay {
 			delay = 0
 		}
 
@@ -136,7 +137,7 @@ func (s *Simulation) AdvanceFrame() error {
 		if delay > 0 {
 			s.C.Log.NewEvent(
 				"animation delay triggered",
-				core.LogActionEvent,
+				coretype.LogActionEvent,
 				s.C.ActiveChar,
 				"total_delay", delay,
 				"param", s.C.LastAction.Param["delay"],
@@ -149,7 +150,7 @@ func (s *Simulation) AdvanceFrame() error {
 
 	s.skip, done, err = s.C.Action.Exec(s.queue[0])
 	//last action used should then be current frame + how much we are skipping (i.e. first frame queueable)
-	s.lastActionUsedAt = s.C.F + s.skip
+	s.lastActionUsedAt = s.C.Frame + s.skip
 	if err != nil {
 		return err
 	}
@@ -171,7 +172,7 @@ func (s *Simulation) AdvanceFrame() error {
 	}
 	// s.C.Log.Debugw("queue check - after exec",
 	// 	"frame", s.C.F,
-	// 	core.LogQueueEvent,
+	// 	coretype.LogQueueEvent,
 	// 	"remaining queue", s.queue,
 	// 	"skip", s.skip,
 	// 	"done", done,
@@ -190,14 +191,14 @@ func (s *Simulation) collectStats() {
 }
 
 func (s *Simulation) handleHurt() {
-	if s.cfg.Hurt.Active && s.C.F-s.lastHurt >= s.cfg.Hurt.Start {
+	if s.cfg.Hurt.Active && s.C.Frame-s.lastHurt >= s.cfg.Hurt.Start {
 		f := s.C.Rand.Intn(s.cfg.Hurt.End - s.cfg.Hurt.Start)
-		s.lastHurt = s.C.F + f
+		s.lastHurt = s.C.Frame + f
 		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
 		s.C.Tasks.Add(func() {
 			s.C.Health.HurtChar(amt, s.cfg.Hurt.Ele)
 		}, f)
-		s.C.Log.NewEvent("hurt queued", core.LogSimEvent, -1, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.C.F+f)
-		// s.C.Log.Debugw("hurt queued", "frame", s.C.F, core.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.C.F+f)
+		s.C.Log.NewEvent("hurt queued", coretype.LogSimEvent, -1, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.C.Frame+f)
+		// s.C.Log.Debugw("hurt queued", "frame", s.C.F, coretype.LogSimEvent, "last", s.lastHurt, "cfg", s.cfg.Hurt, "amt", amt, "hurt_frame", s.C.F+f)
 	}
 }

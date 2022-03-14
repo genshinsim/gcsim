@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type kitsune struct {
@@ -13,7 +14,7 @@ type kitsune struct {
 
 func (c *char) makeKitsune() {
 	k := &kitsune{}
-	k.src = c.Core.F
+	k.src = c.Core.Frame
 	k.deleted = false
 	//start ticking
 	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 45+50)
@@ -28,7 +29,7 @@ func (c *char) makeKitsune() {
 	}, "kitsune-expiry", 866) // e ani + duration
 
 	if len(c.kitsunes) == 0 {
-		c.Core.Status.AddStatus(yaeTotemStatus, 866)
+		c.Core.AddStatus(yaeTotemStatus, 866)
 	}
 	//pop oldest first
 	if len(c.kitsunes) == 3 {
@@ -59,11 +60,11 @@ func (c *char) popOldestKitsune() {
 
 	//here check for status
 	if len(c.kitsunes) > 0 {
-		dur := c.Core.F - c.kitsunes[0].src + 866
+		dur := c.Core.Frame - c.kitsunes[0].src + 866
 		if dur < 0 {
 			log.Panicf("oldest totem should have expired already? dur: %v totem: %v", dur, *c.kitsunes[0])
 		}
-		c.Core.Status.AddStatus(yaeTotemStatus, dur)
+		c.Core.AddStatus(yaeTotemStatus, dur)
 	} else {
 		c.Core.Status.DeleteStatus(yaeTotemStatus)
 	}
@@ -80,7 +81,7 @@ func (c *char) kitsuneBurst(ai core.AttackInfo, pattern core.AttackPattern) {
 			}, "energy from sky kitsune", 94+54+i*24)
 		}
 		c.ResetActionCooldown(core.ActionSkill)
-		c.Core.Log.NewEvent("sky kitsune thunderbolt", core.LogCharacterEvent, c.Index, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
+		c.coretype.Log.NewEvent("sky kitsune thunderbolt", coretype.LogCharacterEvent, c.Index, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
 	// c.AddTask(func() {
 	// 	//pop all?
@@ -118,7 +119,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			Durability: 25,
 		}
 
-		c.Core.Log.NewEvent("sky kitsune tick at level", core.LogCharacterEvent, c.Index, "sakura level", lvl)
+		c.coretype.Log.NewEvent("sky kitsune tick at level", coretype.LogCharacterEvent, c.Index, "sakura level", lvl)
 
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
@@ -132,11 +133,11 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			}
 
 			//on hit check for particles
-			c.Core.Log.NewEvent("sky kitsune particle", core.LogCharacterEvent, c.Index, "lastParticleF", c.totemParticleICD)
-			if c.Core.F < c.totemParticleICD {
+			c.coretype.Log.NewEvent("sky kitsune particle", coretype.LogCharacterEvent, c.Index, "lastParticleF", c.totemParticleICD)
+			if c.Core.Frame < c.totemParticleICD {
 				return
 			}
-			c.totemParticleICD = c.Core.F + 176
+			c.totemParticleICD = c.Core.Frame + 176
 			c.QueueParticle("yaemiko", 1, core.Electro, 30)
 		}
 

@@ -2,6 +2,7 @@ package bloodstained
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -9,11 +10,11 @@ func init() {
 	core.RegisterSetFunc("bloodstainedchivalry", New)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.PhyP] = 0.25
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "bloodstained-2pc",
 			Amount: func() ([]float64, bool) {
 				return m, true

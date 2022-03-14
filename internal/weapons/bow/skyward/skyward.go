@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,14 +12,14 @@ func init() {
 	core.RegisterWeaponFunc("skywardharp", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	//add passive crit, atk speed not sure how to do right now??
 	//looks like jsut reduce the frames of normal attacks by 1 + 12%
 	m := make([]float64, core.EndStatType)
 	m[core.CD] = 0.15 + float64(r)*0.05
 	cd := 270 - 30*r
 	p := 0.5 + 0.1*float64(r)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "skyward harp",
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -28,17 +29,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		//check if char is correct?
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.ActiveChar != char.CharIndex() {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
 		//check if cd is up
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
 		if c.Rand.Float64() > p {
@@ -48,7 +49,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		//add a new action that deals % dmg immediately
 		//superconduct attack
 		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+			ActorIndex: char.Index(),
 			Abil:       "Skyward Harp Proc",
 			AttackTag:  core.AttackTagWeaponSkill,
 			ICDTag:     core.ICDTagNone,
@@ -57,10 +58,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			Durability: 100,
 			Mult:       1.25,
 		}
-		c.Combat.QueueAttack(ai, core.NewDefCircHit(2, true, core.TargettableEnemy), 0, 1)
+		c.Combat.QueueAttack(ai, core.NewDefCircHit(2, true, coretype.TargettableEnemy), 0, 1)
 
 		//trigger cd
-		icd = c.F + cd
+		icd = c.Frame + cd
 
 		return false
 	}, fmt.Sprintf("skyward-harp-%v", char.Name()))

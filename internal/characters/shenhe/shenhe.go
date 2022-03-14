@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -22,7 +23,7 @@ const (
 	quillKey = "shenhequill"
 )
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -41,7 +42,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.CharZone = core.ZoneLiyue
-	c.Base.Element = core.Cryo
+	c.Base.Element = coretype.Cryo
 
 	c.c4count = 0
 	c.c4expiry = 0
@@ -75,8 +76,8 @@ func (c *char) Init() {
 // Should be run whenever c.quillcount is updated
 func (c *char) updateBuffTags() {
 	for _, char := range c.Core.Chars {
-		c.Tags["quills_"+char.Name()] = c.quillcount[char.CharIndex()]
-		c.Tags[fmt.Sprintf("quills_%v", char.CharIndex())] = c.quillcount[char.CharIndex()]
+		c.Tags["quills_"+char.Name()] = c.quillcount[char.Index()]
+		c.Tags[fmt.Sprintf("quills_%v", char.Index())] = c.quillcount[char.Index()]
 	}
 }
 
@@ -87,7 +88,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
@@ -97,16 +98,16 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 // TODO: technically always assumes you are inside shenhe burst
 func (c *char) a2() {
 	val := make([]float64, core.EndStatType)
-	val[core.CryoP] = 0.15
+	val[coretype.CryoP] = 0.15
 	for _, char := range c.Core.Chars {
 		// if i == c.Index {
 		// 	continue
 		// }
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key:    "shenhe-a2",
 			Expiry: -1,
 			Amount: func() ([]float64, bool) {
-				if c.Core.Status.Duration("shenheburst") > 0 {
+				if c.Core.StatusDuration("shenheburst") > 0 {
 					return val, true
 				} else {
 					return nil, false
@@ -120,15 +121,15 @@ func (c *char) c6() {
 	val := make([]float64, core.EndStatType)
 	val[core.CD] = 0.15
 	for _, char := range c.Core.Chars {
-		char.AddPreDamageMod(core.PreDamageMod{
+		char.AddPreDamageMod(coretype.PreDamageMod{
 			Key:    "shenhe-c2",
 			Expiry: -1,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				//check if tags active
-				if c.Core.Status.Duration("shenheburst") <= 0 {
+				if c.Core.StatusDuration("shenheburst") <= 0 {
 					return nil, false
 				}
-				if atk.Info.Element != core.Cryo {
+				if atk.Info.Element != coretype.Cryo {
 					return nil, false
 				}
 				return val, true
@@ -138,16 +139,16 @@ func (c *char) c6() {
 }
 
 func (c *char) c4() {
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Expiry: -1,
 		Key:    "shenhe-c4",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 
 			if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
 				return nil, false
 			}
-			if c.Core.F >= c.c4expiry {
+			if c.Core.Frame >= c.c4expiry {
 				return nil, false
 			}
 			val[core.DmgP] += 0.05 * float64(c.c4count)

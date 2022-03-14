@@ -12,6 +12,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/simulator"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 	"github.com/genshinsim/gcsim/pkg/parse"
 	"github.com/genshinsim/gcsim/pkg/result"
 
@@ -21,7 +22,7 @@ import (
 
 var (
 	// Only includes damage related substats scaling. Ignores things like HP for Barbara
-	charRelevantSubstats = map[core.CharKey][]core.StatType{
+	charRelevantSubstats = map[core.CharKey][]coretype.StatType{
 		core.Albedo:  {core.DEFP},
 		core.Hutao:   {core.HPP},
 		core.Kokomi:  {core.HPP},
@@ -198,7 +199,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	// Copy to save initial character state with fixed allocations (2 of each substat)
-	charProfilesInitial := make([]core.CharacterProfile, len(simcfg.Characters.Profile))
+	charProfilesInitial := make([]coretype.CharacterProfile, len(simcfg.Characters.Profile))
 
 	fixedSubstatCount := optionsMap["fixed_substats_count"]
 	for i, char := range simcfg.Characters.Profile {
@@ -207,7 +208,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			if stat == 0 {
 				continue
 			}
-			if core.StatType(idxStat) == core.ER {
+			if coretype.StatType(idxStat) == core.ER {
 				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat
 			} else {
 				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat * charSubstatRarityMod[i]
@@ -219,7 +220,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	charWithFavonius := make([]bool, len(simcfg.Characters.Profile))
 
 	// Give all characters max ER to set initial state
-	charProfilesERBaseline := make([]core.CharacterProfile, len(simcfg.Characters.Profile))
+	charProfilesERBaseline := make([]coretype.CharacterProfile, len(simcfg.Characters.Profile))
 
 	sugarLog.Info("Starting ER Optimization...")
 
@@ -255,7 +256,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// TODO: Can maybe replace with some kind of gradient descent for speed improvements/allow for 1 ER substat moves?
 	// When I tried before, it was hard to define a good step size and penalty on high ER substats that generally worked well
 	// At least this version works semi-reliably...
-	charProfilesCopy := make([]core.CharacterProfile, len(simcfg.Characters.Profile))
+	charProfilesCopy := make([]coretype.CharacterProfile, len(simcfg.Characters.Profile))
 	for i, char := range charProfilesERBaseline {
 		charProfilesCopy[i] = char.Clone()
 	}
@@ -264,7 +265,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	tolSD := optionsMap["tol_sd"]
 	// Interior loop of the ER optimization - takes in the parsed character index and a character profile
 	// No direct output - changes state of local variables instead
-	findOptimalERforChar := func(idxChar int, char core.CharacterProfile) {
+	findOptimalERforChar := func(idxChar int, char coretype.CharacterProfile) {
 		var initialMean float64
 		var initialSD float64
 		sugarLog.Debugf("%v", char.Base.Key)
@@ -366,10 +367,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		}
 
 		// Get relevant substats, and add additional ones for special characters if needed
-		relevantSubstats := []core.StatType{core.ATKP, core.CR, core.CD, core.EM}
+		relevantSubstats := []coretype.StatType{core.ATKP, core.CR, core.CD, core.EM}
 		// RIP crystallize...
 		if core.CharKeyToEle[char.Base.Key] == core.Geo {
-			relevantSubstats = []core.StatType{core.ATKP, core.CR, core.CD}
+			relevantSubstats = []coretype.StatType{core.ATKP, core.CR, core.CD}
 		}
 
 		addlSubstats := charRelevantSubstats[char.Base.Key]
@@ -403,7 +404,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		sugarLog.Debug(printVal)
 
 		// Assigns substats and returns the remaining global limit and individual substat limit
-		assignSubstats := func(substat core.StatType, amt int) (int, int) {
+		assignSubstats := func(substat coretype.StatType, amt int) (int, int) {
 			totalSubstatCount := 0
 			for _, val := range charSubstatFinal[idxChar] {
 				totalSubstatCount += val
@@ -543,7 +544,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			if value <= 0 {
 				continue
 			}
-			finalString += fmt.Sprintf(" %v=%.6g", core.StatTypeString[idxSubstat], value*float64(2+charSubstatFinal[idxChar][idxSubstat]))
+			finalString += fmt.Sprintf(" %v=%.6g", coretype.StatTypeString[idxSubstat], value*float64(2+charSubstatFinal[idxChar][idxSubstat]))
 		}
 
 		fmt.Println(finalString + ";")
@@ -579,7 +580,7 @@ func PrettyPrintStatsCounts(statsCounts []int) string {
 	var sb strings.Builder
 	for i, v := range statsCounts {
 		if v > 0 {
-			sb.WriteString(core.StatTypeString[i])
+			sb.WriteString(coretype.StatTypeString[i])
 			sb.WriteString(": ")
 			sb.WriteString(fmt.Sprintf("%v", v))
 			sb.WriteString(" ")

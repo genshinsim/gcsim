@@ -3,6 +3,7 @@ package eula
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -17,14 +18,14 @@ type char struct {
 	grimheartICD    int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Base.Element = core.Cryo
+	c.Base.Element = coretype.Cryo
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -44,41 +45,41 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.c4()
 	}
 
-	s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if c.Core.Status.Duration("eulaq") == 0 {
+	s.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if c.Core.StatusDuration("eulaq") == 0 {
 			return false
 		}
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.burstCounterICD > c.Core.F {
+		if c.burstCounterICD > c.Core.Frame {
 			return false
 		}
 		switch atk.Info.AttackTag {
 		case core.AttackTagElementalArt:
 		case core.AttackTagElementalBurst:
-		case core.AttackTagNormal:
+		case coretype.AttackTagNormal:
 		default:
 			return false
 		}
 
 		//add to counter
 		c.burstCounter++
-		c.Core.Log.NewEvent("eula burst add stack", core.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
+		c.coretype.Log.NewEvent("eula burst add stack", coretype.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
 		//check for c6
 		if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 			c.burstCounter++
-			c.Core.Log.NewEvent("eula c6 add additional stack", core.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
+			c.coretype.Log.NewEvent("eula c6 add additional stack", coretype.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
 		}
-		c.burstCounterICD = c.Core.F + 6
+		c.burstCounterICD = c.Core.Frame + 6
 		return false
 	}, "eula-burst-counter")
 	return &c, nil
 }
 
 func (c *char) a4() {
-	c.Core.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.PostBurst, func(args ...interface{}) bool {
 		if c.Core.ActiveChar != c.Index {
 			return false
 		}
@@ -89,7 +90,7 @@ func (c *char) a4() {
 		}
 		c.Tags["grimheart"] = v
 
-		c.Core.Log.NewEvent("eula a4 reset skill cd", core.LogCharacterEvent, c.Index)
+		c.coretype.Log.NewEvent("eula a4 reset skill cd", coretype.LogCharacterEvent, c.Index)
 		c.ResetActionCooldown(core.ActionSkill)
 
 		return false
@@ -97,8 +98,8 @@ func (c *char) a4() {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.Status.Duration("eulaq") > 0 {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.Core.StatusDuration("eulaq") > 0 {
 			c.triggerBurst()
 		}
 		return false
@@ -106,10 +107,10 @@ func (c *char) onExitField() {
 }
 
 func (c *char) c4() {
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Expiry: -1,
 		Key:    "eula-c4",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 
 			if atk.Info.Abil != "Glacial Illumination (Lightfall)" {

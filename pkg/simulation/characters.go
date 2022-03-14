@@ -5,11 +5,12 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (s *Simulation) initChars() error {
 	dup := make(map[core.CharKey]bool)
-	res := make(map[core.EleType]int)
+	res := make(map[coretype.EleType]int)
 
 	count := len(s.cfg.Characters.Profile)
 

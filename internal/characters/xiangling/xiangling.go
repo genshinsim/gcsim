@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -16,7 +17,7 @@ type char struct {
 	guoba *panda
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -73,7 +74,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 78, 78
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -85,7 +86,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
@@ -113,7 +114,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -124,7 +125,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.Core.Combat.QueueAttack(
 			ai,
-			core.NewDefCircHit(0.1, false, core.TargettableEnemy),
+			core.NewDefCircHit(0.1, false, coretype.TargettableEnemy),
 			f-i,
 			f-i,
 		)
@@ -144,7 +145,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			Durability: 25,
 			Mult:       .75,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 120, 120)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), 120, 120)
 	}
 	//add a 75 frame attackcounter reset
 	c.AdvanceNormalIndex()
@@ -158,14 +159,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupPole,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       nc[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	//return animation cd
 	return f, a
@@ -198,15 +199,15 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	delay := 120
-	c.Core.Status.AddStatus("xianglingguoba", 500)
+	c.Core.AddStatus("xianglingguoba", 500)
 
 	//lasts 73 seconds, shoots every 1.6 seconds
 	snap := c.Snapshot(&ai)
 	for i := 0; i < 4; i++ {
 		c.AddTask(func() {
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 10, cb)
-			c.guoba.pyroWindowStart = c.Core.F
-			c.guoba.pyroWindowEnd = c.Core.F + 20
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, coretype.TargettableEnemy), 10, cb)
+			c.guoba.pyroWindowStart = c.Core.Frame
+			c.guoba.pyroWindowEnd = c.Core.Frame + 20
 		}, "guoba-shoot", delay+i*90-10) //10 frame window to swirl
 		//TODO: check guoba fire delay
 		c.QueueParticle("xiangling", 1, core.Pyro, delay+i*95+90+60)
@@ -234,7 +235,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	for i := 0; i < len(pyronadoInitial); i++ {
 		ai.Abil = fmt.Sprintf("Pyronado Hit %v", i+1)
 		ai.Mult = pyronadoInitial[i][lvl]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), delay[i], delay[i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, coretype.TargettableEnemy), delay[i], delay[i])
 	}
 
 	//ok for now we assume it's 80 (or 70??) frames per cycle, that gives us roughly 10s uptime
@@ -255,10 +256,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       pyronadoSpin[lvl],
 	}
 
-	c.Core.Status.AddStatus("xianglingburst", max)
+	c.Core.AddStatus("xianglingburst", max)
 
 	for delay := 70; delay <= max; delay += 70 {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2.5, false, core.TargettableEnemy), 69, delay)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2.5, false, coretype.TargettableEnemy), 69, delay)
 	}
 
 	//add an effect starting at frame 70 to end of duration to increase pyro dmg by 15% if c6

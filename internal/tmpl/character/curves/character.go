@@ -1,6 +1,6 @@
 package curves
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/coretype"
 
 type CharBase struct {
 	HPCurve        CharStatCurve
@@ -9,7 +9,7 @@ type CharBase struct {
 	BaseHP         float64
 	BaseAtk        float64
 	BaseDef        float64
-	Specialized    core.StatType
+	Specialized    coretype.StatType
 	PromotionBonus []PromoData
 }
 

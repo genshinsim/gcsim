@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -19,7 +20,7 @@ type char struct {
 	icdSkill        int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -58,7 +59,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -86,14 +87,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-1, f-1)
 	c.AdvanceNormalIndex()
 
 	return f, a
@@ -106,7 +107,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -114,17 +115,17 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[0][c.TalentLvlAttack()],
 	}
 	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-15, f-15)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-15, f-15)
 	ai.Mult = charge[1][c.TalentLvlAttack()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-5, f-5)
 
 	return f, a
 }
 
 func (c *char) newConstruct(dur int) core.Construct {
 	return &construct{
-		src:    c.Core.F,
-		expiry: c.Core.F + dur,
+		src:    c.Core.Frame,
+		expiry: c.Core.Frame + dur,
 		char:   c,
 	}
 }
@@ -174,7 +175,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, f)
 
 	//snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -185,14 +186,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
 
 	// Reset ICD
-	c.icdSkill = c.Core.F - 1
+	c.icdSkill = c.Core.Frame - 1
 
 	//create a construct
 	// Construct is not fully formed until after the hit lands (exact timing unknown)
 	c.AddTask(func() {
 		c.Core.Constructs.New(c.newConstruct(1800), true)
 
-		c.lastConstruct = c.Core.F
+		c.lastConstruct = c.Core.Frame
 
 		c.Tags["elevator"] = 1
 	}, "albedo-create-construct", f)
@@ -202,13 +203,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 }
 
 func (c *char) skillHook() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		t := args[0].(core.Target)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		t := args[0].(coretype.Target)
 		if c.Tags["elevator"] == 0 {
 			return false
 		}
-		if c.Core.F < c.icdSkill {
+		if c.Core.Frame < c.icdSkill {
 			return false
 		}
 		// Can't be triggered by itself when refreshing
@@ -216,16 +217,16 @@ func (c *char) skillHook() {
 			return false
 		}
 
-		c.icdSkill = c.Core.F + 120 // every 2 seconds
+		c.icdSkill = c.Core.Frame + 120 // every 2 seconds
 
 		snap := c.skillSnapshot
 
 		if c.Core.Flags.DamageMode && t.HP()/t.MaxHP() < .5 {
 			snap.Stats[core.DmgP] += 0.25
-			c.Core.Log.NewEvent("a2 proc'd, dealing extra dmg", core.LogCharacterEvent, c.Index, "hp %", t.HP()/t.MaxHP(), "final dmg", snap.Stats[core.DmgP])
+			c.coretype.Log.NewEvent("a2 proc'd, dealing extra dmg", coretype.LogCharacterEvent, c.Index, "hp %", t.HP()/t.MaxHP(), "final dmg", snap.Stats[core.DmgP])
 		}
 
-		c.Core.Combat.QueueAttackWithSnap(c.skillAttackInfo, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 1)
+		c.Core.Combat.QueueAttackWithSnap(c.skillAttackInfo, snap, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 1)
 
 		//67% chance to generate 1 geo orb
 		if c.Core.Rand.Float64() < 0.67 {
@@ -235,15 +236,15 @@ func (c *char) skillHook() {
 		//c1
 		if c.Base.Cons >= 1 {
 			c.AddEnergy("albedo-c1", 1.2)
-			c.Core.Log.NewEvent("c1 restoring energy", core.LogCharacterEvent, c.Index)
+			c.coretype.Log.NewEvent("c1 restoring energy", coretype.LogCharacterEvent, c.Index)
 		}
 
 		//c2 add stacks
 		if c.Base.Cons >= 2 {
-			if c.Core.Status.Duration("albedoc2") == 0 {
+			if c.Core.StatusDuration("albedoc2") == 0 {
 				c.Tags["c2"] = 0
 			}
-			c.Core.Status.AddStatus("albedoc2", 1800) //lasts 30 seconds
+			c.Core.AddStatus("albedoc2", 1800) //lasts 30 seconds
 			c.Tags["c2"]++
 			if c.Tags["c2"] > 4 {
 				c.Tags["c2"] = 4
@@ -275,14 +276,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlSkill()],
 	}
 	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, f)
 
 	ai.Abil = "Rite of Progeniture: Tectonic Tide (Bloom)"
 	ai.Mult = burstPerBloom[c.TalentLvlSkill()]
 	snap := c.Snapshot(&ai)
 
 	//check stacks
-	if c.Base.Cons >= 2 && c.Core.Status.Duration("albedoc2") > 0 {
+	if c.Base.Cons >= 2 && c.Core.StatusDuration("albedoc2") > 0 {
 		ai.FlatDmg += (snap.BaseDef*(1+snap.Stats[core.DEFP]) + snap.Stats[core.DEF]) * float64(c.Tags["c2"])
 		c.Tags["c2"] = 0
 	}
@@ -290,19 +291,19 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// Blooms are generated on a slight delay from initial hit
 	// TODO: No precise frame data, guessing correct delay
 	for i := 0; i < hits; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), f+30+i*5)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, coretype.TargettableEnemy), f+30+i*5)
 	}
 
 	//Party wide EM buff
 	for _, char := range c.Core.Chars {
 		val := make([]float64, core.EndStatType)
 		val[core.EM] = 125
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key: "albedo-a4",
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},
-			Expiry: c.Core.F + 600,
+			Expiry: c.Core.Frame + 600,
 		})
 	}
 
@@ -316,11 +317,11 @@ func (c *char) c4() {
 	val[core.DmgP] = 0.3
 	for _, char := range c.Core.Chars {
 		this := char
-		char.AddPreDamageMod(core.PreDamageMod{
+		char.AddPreDamageMod(coretype.PreDamageMod{
 			Key:    "albedo-c4",
 			Expiry: -1,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				if c.Core.ActiveChar != this.CharIndex() {
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+				if c.Core.ActiveChar != this.Index() {
 					return nil, false
 				}
 				if atk.Info.AttackTag != core.AttackTagPlunge {
@@ -338,7 +339,7 @@ func (c *char) c4() {
 
 func (c *char) c6() {
 
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "albedo-c6",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
@@ -347,7 +348,7 @@ func (c *char) c6() {
 			if c.Tags["elevator"] != 1 {
 				return nil, false
 			}
-			if c.Core.Shields.Get(core.ShieldCrystallize) == nil {
+			if c.Core.Player.GetShield(coretype.ShieldCrystallize) == nil {
 				return nil, false
 			}
 			return val, true

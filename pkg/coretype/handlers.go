@@ -4,7 +4,7 @@ type Framer interface {
 	F() int
 }
 
-type CommandHandler interface {
+type CommandExecuter interface {
 	Exec(n Command) (frames int, done bool, err error) //return frames, if executed, any errors
 }
 
@@ -14,8 +14,8 @@ type Logger interface {
 	Dump() ([]byte, error) //print out all the logged events in array of JSON strings in the ordered they were added
 }
 
-type StatusHandler interface {
-	Duration(key string) int
+type Statuser interface {
+	StatusDuration(key string) int
 	AddStatus(key string, dur int)
 	ExtendStatus(key string, dur int)
 	DeleteStatus(key string)
@@ -29,10 +29,6 @@ type EventEmitter interface {
 
 type EventHook func(args ...interface{}) bool
 
-type EnergyHandler interface {
-	DistributeParticle(p Particle)
-}
-
 type CombatHandler interface {
 	ApplyDamage(*AttackEvent) float64
 	QueueAttack(a AttackInfo, p AttackPattern, snapshotDelay int, dmgDelay int, callbacks ...AttackCBFunc)
@@ -44,27 +40,17 @@ type CombatHandler interface {
 }
 
 type TaskHandler interface {
-	Add(f func(), delay int)
-	Run()
+	AddTask(f func(), delay int)
 }
 
 type ConstructHandler interface {
-	New(c Construct, refresh bool)
-	NewNoLimitCons(c Construct, refresh bool)
-	Count() int
-	CountByType(t GeoConstructType) int
-	Destroy(key int) bool
-	Has(key int) bool
-	Expiry(t GeoConstructType) int
-	Tick()
-}
-
-type HealthHandler interface {
-	Heal(hi HealInfo)
-	AddIncHealBonus(f func(healedCharIndex int) float64)
-
-	AddDamageReduction(f func() (float64, bool))
-	HurtChar(dmg float64, ele EleType)
+	NewConstruct(c Construct, refresh bool)
+	NewConstructNoLimit(c Construct, refresh bool)
+	CountConstruct() int
+	CountConstructByType(t GeoConstructType) int
+	DestroyConstruct(key int) bool
+	HasConstruct(key int) bool
+	ConstructExpiry(t GeoConstructType) int
 }
 
 type QueueHandler interface {
@@ -72,6 +58,19 @@ type QueueHandler interface {
 	//whether or not to drop sequence if any is not ready, and any error
 	Next() (queue []Command, dropIfFailed bool, err error)
 	SetActionList(pq []ActionBlock) error
+}
+
+// The rest are for players
+
+type EnergyHandler interface {
+	DistributeParticle(p Particle)
+}
+type HealthHandler interface {
+	Heal(hi HealInfo)
+	AddIncHealBonus(f func(healedCharIndex int) float64)
+
+	AddDamageReduction(f func() (float64, bool))
+	HurtChar(dmg float64, ele EleType)
 }
 
 type ShieldHandler interface {

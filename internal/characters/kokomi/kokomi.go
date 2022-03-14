@@ -3,6 +3,7 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -16,7 +17,7 @@ type char struct {
 	c4ICDExpiry   int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -54,7 +55,7 @@ func (c *char) passive() {
 	val := make([]float64, core.EndStatType)
 	val[core.Heal] = .25
 	val[core.CR] = -1
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "kokomi-passive",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
@@ -64,15 +65,15 @@ func (c *char) passive() {
 }
 
 func (c *char) a4() {
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != c.CharIndex() {
+	c.Core.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != c.Index() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
-		if c.Core.Status.Duration("kokomiburst") == 0 {
+		if c.Core.StatusDuration("kokomiburst") == 0 {
 			return false
 		}
 
@@ -86,18 +87,18 @@ func (c *char) a4() {
 // Implements event handler for healing during burst
 // Also checks constellations
 func (c *char) burstActiveHook() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 
-		if c.Core.Status.Duration("kokomiburst") == 0 {
+		if c.Core.StatusDuration("kokomiburst") == 0 {
 			return false
 		}
 
 		switch atk.Info.AttackTag {
-		case core.AttackTagNormal, core.AttackTagExtra:
+		case coretype.AttackTagNormal, coretype.AttackTagExtra:
 		default:
 			return false
 		}
@@ -131,9 +132,9 @@ func (c *char) burstActiveHook() {
 		// C4 (Energy piece only) handling
 		// While donning the Ceremonial Garment created by Nereid's Ascension, Sangonomiya Kokomi's Normal Attack SPD is increased by 10%, and Normal Attacks that hit opponents will restore 0.8 Energy for her. This effect can occur once every 0.2s.
 		if c.Base.Cons >= 4 {
-			if c.c4ICDExpiry <= c.Core.F {
+			if c.c4ICDExpiry <= c.Core.Frame {
 				c.AddEnergy("kokomi-c4", 0.8)
-				c.c4ICDExpiry = c.Core.F + 12
+				c.c4ICDExpiry = c.Core.Frame + 12
 			}
 		}
 
@@ -146,12 +147,12 @@ func (c *char) burstActiveHook() {
 				}
 				val := make([]float64, core.EndStatType)
 				val[core.HydroP] = .4
-				c.AddMod(core.CharStatMod{
+				c.AddMod(coretype.CharStatMod{
 					Key: "kokomi-c6",
 					Amount: func() ([]float64, bool) {
 						return val, true
 					},
-					Expiry: c.Core.F + 480,
+					Expiry: c.Core.Frame + 480,
 				})
 				// No need to continue checking if we found one
 				break
@@ -181,7 +182,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

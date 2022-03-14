@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -19,7 +20,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter+1),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -30,7 +31,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		totalMV += mult[c.TalentLvlAttack()]
 		// TODO - double check snapshotDelay
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, travel+f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-5+i, travel+f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -40,20 +41,20 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter+1),
-			AttackTag:  core.AttackTagNormal,
+			AttackTag:  coretype.AttackTagNormal,
 			ICDTag:     core.ICDTagNormalAttack,
 			ICDGroup:   core.ICDGroupDefault,
 			Element:    core.Pyro,
 			Durability: 25,
 			Mult:       totalMV,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, travel+f+5)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), 0, travel+f+5)
 
 	}
 
-	if c.Core.Status.Duration("yoimiyaskill") > 0 {
-		if c.lastPart < c.Core.F || c.lastPart == 0 {
-			c.lastPart = c.Core.F + 300 //every 5 second
+	if c.Core.StatusDuration("yoimiyaskill") > 0 {
+		if c.lastPart < c.Core.Frame || c.lastPart == 0 {
+			c.lastPart = c.Core.Frame + 300 //every 5 second
 			count := 2
 			if c.Core.Rand.Float64() < 0.5 {
 				count = 3
@@ -66,11 +67,11 @@ func (c *char) Attack(p map[string]int) (int, int) {
 }
 
 func (c *char) onExit() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 		next := args[1].(int)
 		if prev == c.Index && next != c.Index {
-			if c.Core.Status.Duration("yoimiyaskill") > 0 {
+			if c.Core.StatusDuration("yoimiyaskill") > 0 {
 				c.Core.Status.DeleteStatus("yoimiyaskill")
 			}
 		}
@@ -81,10 +82,10 @@ func (c *char) onExit() {
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	c.Core.Status.AddStatus("yoimiyaskill", 600) //activate for 10
-	// log.Println(c.Core.Status.Duration("yoimiyaskill"))
+	c.Core.AddStatus("yoimiyaskill", 600) //activate for 10
+	// log.Println(c.Core.StatusDuration("yoimiyaskill"))
 
-	if c.Core.Status.Duration("yoimiyaa2") == 0 {
+	if c.Core.StatusDuration("yoimiyaa2") == 0 {
 		c.a2stack = 0
 	}
 
@@ -107,7 +108,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 0, f)
 
 	//marker an opponent after first hit
 	//ignore the bouncing around for now (just assume it's always target 0)
@@ -117,7 +118,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		duration = 840
 	}
 	c.AddTask(func() {
-		c.Core.Status.AddStatus("aurous", duration)
+		c.Core.AddStatus("aurous", duration)
 		val := make([]float64, core.EndStatType)
 		//attack buff
 		val[core.ATKP] = 0.1 + float64(c.a2stack)*0.01
@@ -125,9 +126,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			if i == c.Index {
 				continue
 			}
-			char.AddMod(core.CharStatMod{
+			char.AddMod(coretype.CharStatMod{
 				Key:    "yoimiya-a4",
-				Expiry: c.Core.F + 900, //15s
+				Expiry: c.Core.Frame + 900, //15s
 				Amount: func() ([]float64, bool) {
 					return val, true
 				},
@@ -146,9 +147,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 func (c *char) burstHook() {
 	//check on attack landed for target 0
 	//if aurous active then trigger dmg if not on cd
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-		if c.Core.Status.Duration("aurous") == 0 {
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*coretype.AttackEvent)
+		if c.Core.StatusDuration("aurous") == 0 {
 			return false
 		}
 		if ae.Info.ActorIndex == c.Index {
@@ -156,13 +157,13 @@ func (c *char) burstHook() {
 			return false
 		}
 		//ignore if on icd
-		if c.Core.Status.Duration("aurousicd") > 0 {
+		if c.Core.StatusDuration("aurousicd") > 0 {
 			return false
 		}
 		//ignore if wrong tags
 		switch ae.Info.AttackTag {
-		case core.AttackTagNormal:
-		case core.AttackTagExtra:
+		case coretype.AttackTagNormal:
+		case coretype.AttackTagExtra:
 		case core.AttackTagPlunge:
 		case core.AttackTagElementalArt:
 		case core.AttackTagElementalBurst:
@@ -180,9 +181,9 @@ func (c *char) burstHook() {
 			Durability: 25,
 			Mult:       burstExplode[c.TalentLvlBurst()],
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 1)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, 1)
 
-		c.Core.Status.AddStatus("aurousicd", 120) //2 sec icd
+		c.Core.AddStatus("aurousicd", 120) //2 sec icd
 
 		//check for c4
 
@@ -196,7 +197,7 @@ func (c *char) burstHook() {
 
 	if c.Core.Flags.DamageMode {
 		//add check for if yoimiya dies
-		c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		c.Core.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
 			if c.HPCurrent <= 0 {
 				c.Core.Status.DeleteStatus("aurous")
 			}

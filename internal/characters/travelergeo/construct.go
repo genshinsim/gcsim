@@ -29,7 +29,7 @@ func (s *stone) OnDestruct() {
 			Durability: 50,
 			Mult:       skill[s.char.TalentLvlSkill()],
 		}
-		s.char.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
+		s.char.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, 0)
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -16,7 +17,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -27,17 +28,17 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	// Check burst status
 	r := 1.0
-	if c.Core.Status.Duration("ittoq") > 0 {
+	if c.Core.StatusDuration("ittoq") > 0 {
 		r = 2
 		// Burst can expire during normals
 		// If burst lasts to hitlag, extend burst
-		if f < c.Core.Status.Duration("ittoq") {
+		if f < c.Core.StatusDuration("ittoq") {
 			c.Core.Status.ExtendStatus("ittoq", 1)
 		}
 	}
 
 	// Add superlative strength stacks on damage
-	if c.Core.Status.Duration("ittoq") > 0 && c.NormalCounter < 3 {
+	if c.Core.StatusDuration("ittoq") > 0 && c.NormalCounter < 3 {
 		c.Tags["strStack"]++
 	} else if c.NormalCounter == 1 {
 		c.Tags["strStack"]++
@@ -48,7 +49,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		c.Tags["strStack"] = 5
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, a)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, coretype.TargettableEnemy), f, a)
 
 	c.sCACount = 0
 	c.dasshuUsed = false
@@ -63,11 +64,11 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	// Check burst status
 	r := 1.0
-	if c.Core.Status.Duration("ittoq") > 0 {
+	if c.Core.StatusDuration("ittoq") > 0 {
 		// Unsure of range, it's huge though
 		r = 3
 		// If burst will expire, extend for the CA
-		if f > c.Core.Status.Duration("ittoq") {
+		if f > c.Core.StatusDuration("ittoq") {
 			c.Core.Status.ExtendStatus("ittoq", f)
 		} else {
 			// Extend burst by hitlag value
@@ -78,7 +79,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Charged %v Stacks %v", c.sCACount, c.Tags["strStack"]),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -94,7 +95,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		ai.Mult = akFinal[c.TalentLvlAttack()]
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, coretype.TargettableEnemy), f, f)
 
 	c.Tags["strStack"]--
 	c.sCACount++
@@ -156,7 +157,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.dasshuCount = c.NormalCounter
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f+travel, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f, f+travel, cb)
 	c.sCACount = 0
 
 	c.SetCD(core.ActionSkill, 10*60)
@@ -188,16 +189,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
 	// Buff lasts 11.55s after anim, padded to cover basic combo
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "itto-burst",
-		Expiry: c.Core.F + 960 + f,
+		Expiry: c.Core.Frame + 960 + f,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})
-	c.Core.Log.NewEvent("itto burst", core.LogSnapshotEvent, c.Index, "frame", c.Core.F, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
+	c.coretype.Log.NewEvent("itto burst", coretype.LogSnapshotEvent, c.Index, "frame", c.Core.Frame, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
 
-	c.Core.Status.AddStatus("ittoq", 960+f) // inflated from 11.55 seconds to cover basic combo
+	c.Core.AddStatus("ittoq", 960+f) // inflated from 11.55 seconds to cover basic combo
 
 	if c.Base.Cons >= 4 {
 		val := make([]float64, core.EndStatType)
@@ -242,12 +243,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		c.Core.Status.DeleteStatus("ittoq")
 		// Re-add mod with 0 time to remove
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key:    "itto-burst",
-			Expiry: c.Core.F,
+			Expiry: c.Core.Frame,
 			Amount: func() ([]float64, bool) {
 				return make([]float64, core.EndStatType), true
 			},
@@ -259,13 +260,13 @@ func (c *char) onExitField() {
 func (c *char) c4cb(delay int, buff []float64) func() {
 	return func() {
 		c.AddTask(func() {
-			if c.Core.Status.Duration("ittoq") > 0 {
-				c.c4cb(c.Core.Status.Duration("ittoq"), buff)
+			if c.Core.StatusDuration("ittoq") > 0 {
+				c.c4cb(c.Core.StatusDuration("ittoq"), buff)
 			} else {
 				for _, char := range c.Core.Chars {
-					char.AddMod(core.CharStatMod{
+					char.AddMod(coretype.CharStatMod{
 						Key:    "itto-c4",
-						Expiry: c.Core.F + 10*60,
+						Expiry: c.Core.Frame + 10*60,
 						Amount: func() ([]float64, bool) {
 							return buff, true
 						},

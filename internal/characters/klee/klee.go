@@ -3,6 +3,7 @@ package klee
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -15,7 +16,7 @@ type char struct {
 	sparkICD int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -55,7 +56,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 50
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
@@ -74,13 +75,13 @@ func (c *char) a1() {
 }
 
 func (c *char) a4() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		crit := args[3].(bool)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
 		if !crit {
@@ -116,14 +117,14 @@ func (c *char) c1(delay int) {
 		Mult:       1.2 * burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, delay)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, delay)
 
 }
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		//if burst is active and klee no longer active char
-		if c.Core.ActiveChar != c.Index && c.Core.Status.Duration("kleeq") > 0 {
+		if c.Core.ActiveChar != c.Index && c.Core.StatusDuration("kleeq") > 0 {
 			c.Core.Status.DeleteStatus("kleeq")
 			//blow up
 			ai := core.AttackInfo{
@@ -137,7 +138,7 @@ func (c *char) c4() {
 				Mult:       5.55,
 			}
 
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 0, 0)
 		}
 		return false
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -17,7 +18,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypePierce,
@@ -25,7 +26,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, travel+f)
 
 	c.AdvanceNormalIndex()
 
@@ -43,18 +44,18 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim (Charged)",
-		AttackTag:    core.AttackTagExtra,
+		AttackTag:    coretype.AttackTagExtra,
 		ICDTag:       core.ICDTagExtraAttack,
 		ICDGroup:     core.ICDGroupDefault,
 		StrikeType:   core.StrikeTypePierce,
-		Element:      core.Cryo,
+		Element:      coretype.Cryo,
 		Durability:   25,
 		Mult:         aim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
 	// d.AnimationFrames = f
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, travel+f)
 
 	return f, a
 }
@@ -89,31 +90,31 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       paw[c.TalentLvlSkill()],
 	}
 	count := 0
 
 	for i := 0; i < pawCount; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, travel+f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, travel+f-5+i)
 		if c.Core.Rand.Float64() < 0.8 {
 			count++
 		}
 	}
 
 	//particles
-	c.QueueParticle("Diona", count, core.Cryo, 90) //90s travel time
+	c.QueueParticle("Diona", count, coretype.Cryo, 90) //90s travel time
 
 	//add shield
 	c.AddTask(func() {
 		c.Core.Shields.Add(&shield.Tmpl{
-			Src:        c.Core.F,
+			Src:        c.Core.Frame,
 			ShieldType: core.ShieldDionaSkill,
 			Name:       "Diona Skill",
 			HP:         shd,
-			Ele:        core.Cryo,
-			Expires:    c.Core.F + pawDur[c.TalentLvlSkill()], //15 sec
+			Ele:        coretype.Cryo,
+			Expires:    c.Core.Frame + pawDur[c.TalentLvlSkill()], //15 sec
 		})
 	}, "Diona-Paw-Shield", f)
 
@@ -133,11 +134,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, f-10)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 0, f-10)
 
 	ai.Abil = "Signature Mix (Tick)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
@@ -162,7 +163,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	//apparently lasts for 12.5
-	c.Core.Status.AddStatus("dionaburst", f+750) //TODO not sure when field starts, is it at animation end? prob when it lands...
+	c.Core.AddStatus("dionaburst", f+750) //TODO not sure when field starts, is it at animation end? prob when it lands...
 
 	//c1
 	if c.Base.Cons >= 1 {
@@ -172,7 +173,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			if c.Energy > c.EnergyMax {
 				c.Energy = c.EnergyMax
 			}
-			c.Core.Log.NewEvent("diona c1 regen 15 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
+			c.coretype.Log.NewEvent("diona c1 regen 15 energy", coretype.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}, "Diona C1", f+750)
 	}
 
@@ -182,9 +183,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				this := char
 				val := make([]float64, core.EndStatType)
 				val[core.EM] = 200
-				this.AddMod(core.CharStatMod{
+				this.AddMod(coretype.CharStatMod{
 					Key:    "diona-c6",
-					Expiry: c.Core.F + 750,
+					Expiry: c.Core.Frame + 750,
 					Amount: func() ([]float64, bool) {
 						return val, this.HP()/this.MaxHP() > 0.5
 					},

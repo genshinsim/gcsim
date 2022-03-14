@@ -12,7 +12,7 @@ func (q *Queuer) evalStatus(cond core.Condition) (bool, error) {
 		return false, errors.New("eval status: unexpected short field, expected at least 2")
 	}
 	name := strings.TrimPrefix(cond.Fields[1], ".")
-	status := q.core.Status.Duration(name)
+	status := q.core.StatusDuration(name)
 	// q.core.Log.Debugw("queue status check", "frame", q.core.F, "event", LogQueueEvent, "status", name, "val", status, "expected", c.Value, "op", c.Op)
 	return compInt(cond.Op, status, cond.Value), nil
 

@@ -2,6 +2,7 @@ package character
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *Tmpl) CharIndex() int {
@@ -24,7 +25,7 @@ func (c *Tmpl) Zone() core.ZoneType {
 	return c.CharZone
 }
 
-func (c *Tmpl) Ele() core.EleType {
+func (c *Tmpl) Ele() coretype.EleType {
 	return c.Base.Element
 }
 

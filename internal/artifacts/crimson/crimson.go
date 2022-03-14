@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,21 +12,21 @@ func init() {
 	core.RegisterSetFunc("crimsonwitchofflames", New)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	stacks := 0
 	key := fmt.Sprintf("%v-cw-4pc", c.Name())
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "crimson-2pc",
 			Amount: func() ([]float64, bool) {
-				if s.Status.Duration(key) == 0 {
+				if s.StatusDuration(key) == 0 {
 					stacks = 0
 				}
 				mult := 0.5*float64(stacks) + 1
 				m[core.PyroP] = 0.15 * mult
 				if mult > 1 {
-					s.Log.NewEvent("crimson witch 4pc", core.LogArtifactEvent, c.CharIndex(), "mult", mult)
+					s.Log.NewEvent("crimson witch 4pc", coretype.LogArtifactEvent, c.Index(), "mult", mult)
 				}
 				return m, true
 			},
@@ -35,11 +36,11 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 4 {
 
 		//post snap shot to increase stacks
-		s.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
-			if s.ActiveChar != c.CharIndex() {
+		s.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+			if s.Player.ActiveChar != c.Index()() {
 				return false
 			}
-			if s.Status.Duration(key) == 0 {
+			if s.StatusDuration(key) == 0 {
 				stacks = 0
 			}
 			//every exectuion, add 1 stack, to a max of 3, reset cd to 10 seconds
@@ -47,8 +48,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if stacks > 3 {
 				stacks = 3
 			}
-			s.Log.NewEvent("crimson witch 4pc adding stack", core.LogArtifactEvent, c.CharIndex(), "current stacks", stacks)
-			s.Status.AddStatus(key, 600)
+			s.Log.NewEvent("crimson witch 4pc adding stack", coretype.LogArtifactEvent, c.Index(), "current stacks", stacks)
+			s.AddStatus(key, 600)
 			return false
 		}, fmt.Sprintf("cw4s-%v", c.Name()))
 

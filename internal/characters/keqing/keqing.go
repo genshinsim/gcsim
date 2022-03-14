@@ -3,6 +3,7 @@ package keqing
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -15,7 +16,7 @@ type char struct {
 	c2ICD       int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -56,7 +57,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -65,12 +66,12 @@ func (c *char) c4() {
 
 	cb := func(args ...interface{}) bool {
 
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "c4",
 			Amount: func() ([]float64, bool) {
 
@@ -78,31 +79,31 @@ func (c *char) c4() {
 				val[core.ATKP] = 0.25
 				return val, true
 			},
-			Expiry: c.Core.F + 600,
+			Expiry: c.Core.Frame + 600,
 		})
 		return false
 	}
 
-	c.Core.Events.Subscribe(core.OnOverload, cb, "keqing-c4")
-	c.Core.Events.Subscribe(core.OnElectroCharged, cb, "keqing-c4")
-	c.Core.Events.Subscribe(core.OnSuperconduct, cb, "keqing-c4")
-	c.Core.Events.Subscribe(core.OnSwirlElectro, cb, "keqing-c4")
-	c.Core.Events.Subscribe(core.OnCrystallizeElectro, cb, "keqing-c4")
+	c.Core.Subscribe(core.OnOverload, cb, "keqing-c4")
+	c.Core.Subscribe(core.OnElectroCharged, cb, "keqing-c4")
+	c.Core.Subscribe(core.OnSuperconduct, cb, "keqing-c4")
+	c.Core.Subscribe(coretype.OnSwirlElectro, cb, "keqing-c4")
+	c.Core.Subscribe(core.OnCrystallizeElectro, cb, "keqing-c4")
 }
 
 func (c *char) c2() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.Core.F < c.c2ICD {
+		if c.Core.Frame < c.c2ICD {
 			return false
 		}
 		if c.Core.Rand.Float64() < 0.5 {
-			c.c2ICD = c.Core.F + 300
+			c.c2ICD = c.Core.Frame + 300
 			c.QueueParticle("keqing", 1, core.Electro, 100)
-			c.Core.Log.NewEvent("keqing c2 proc'd", core.LogCharacterEvent, c.Index, "next ready", c.c2ICD)
+			c.coretype.Log.NewEvent("keqing c2 proc'd", coretype.LogCharacterEvent, c.Index, "next ready", c.c2ICD)
 		}
 		return false
 	}, "keqingc2")
@@ -111,9 +112,9 @@ func (c *char) c2() {
 func (c *char) activateC6(src string) {
 	val := make([]float64, core.EndStatType)
 	val[core.ElectroP] = 0.06
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    src,
 		Amount: func() ([]float64, bool) { return val, true },
-		Expiry: c.Core.F + 480,
+		Expiry: c.Core.Frame + 480,
 	})
 }

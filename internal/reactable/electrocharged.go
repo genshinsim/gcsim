@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
-func (r *Reactable) tryAddEC(a *core.AttackEvent) {
+func (r *Reactable) tryAddEC(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -62,7 +63,7 @@ func (r *Reactable) tryAddEC(a *core.AttackEvent) {
 	//otherwise do nothing
 	//TODO: need to check if refresh ec triggers new tick immediately or not
 	if r.ecTickSrc == -1 {
-		r.ecTickSrc = r.core.F
+		r.ecTickSrc = r.core.Frame
 
 		r.core.Combat.QueueAttack(
 			r.ecSnapshot,
@@ -71,12 +72,12 @@ func (r *Reactable) tryAddEC(a *core.AttackEvent) {
 			10,
 		)
 
-		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
+		r.core.Tasks.Add(r.nextTick(r.core.Frame), 60+10)
 		//subscribe to wane ticks
-		r.core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		r.core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 			//target should be first, then snapshot
-			n := args[0].(core.Target)
-			a := args[1].(*core.AttackEvent)
+			n := args[0].(coretype.Target)
+			a := args[1].(*coretype.AttackEvent)
 			dmg := args[2].(float64)
 			//TODO: there's no target index
 			if n.Index() != r.self.Index() {
@@ -111,8 +112,8 @@ func (r *Reactable) waneEC() {
 	r.Durability[core.Electro] = max(0, r.Durability[core.Electro])
 	r.Durability[core.Hydro] -= 10
 	r.Durability[core.Hydro] = max(0, r.Durability[core.Hydro])
-	r.core.Log.NewEvent("ec wane",
-		core.LogElementEvent,
+	r.coretype.Log.NewEvent("ec wane",
+		coretype.LogElementEvent,
 		-1,
 		"aura", "ec",
 		"target", r.self.Index(),
@@ -126,9 +127,9 @@ func (r *Reactable) waneEC() {
 func (r *Reactable) checkEC() {
 	if r.Durability[core.Electro] < ZeroDur || r.Durability[core.Hydro] < ZeroDur {
 		r.ecTickSrc = -1
-		r.core.Events.Unsubscribe(core.OnDamage, fmt.Sprintf("ec-%v", r.self.Index()))
-		r.core.Log.NewEvent("ec expired",
-			core.LogElementEvent,
+		r.core.Events.Unsubscribe(coretype.OnDamage, fmt.Sprintf("ec-%v", r.self.Index()))
+		r.coretype.Log.NewEvent("ec expired",
+			coretype.LogElementEvent,
 			-1,
 			"aura", "ec",
 			"target", r.self.Index(),

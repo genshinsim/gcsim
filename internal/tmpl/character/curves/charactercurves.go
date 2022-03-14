@@ -2,6 +2,7 @@ package curves
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 var CharBaseMap = map[core.CharKey]CharBase{
@@ -132,7 +133,7 @@ var CharBaseMap = map[core.CharKey]CharBase{
 		BaseHP:      848.4547729492188,
 		BaseAtk:     18.210359573364258,
 		BaseDef:     52.65039825439453,
-		Specialized: core.CryoP,
+		Specialized: coretype.CryoP,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
@@ -612,7 +613,7 @@ var CharBaseMap = map[core.CharKey]CharBase{
 		BaseHP:      802.3760986328125,
 		BaseAtk:     17.808000564575195,
 		BaseDef:     50.358001708984375,
-		Specialized: core.CryoP,
+		Specialized: coretype.CryoP,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,

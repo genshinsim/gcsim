@@ -3,6 +3,7 @@ package xiao
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -20,7 +21,7 @@ type char struct {
 
 // Initializes character
 // TODO: C4 is not implemented - don't really care about def
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -59,7 +60,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) a4() {
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "xiao-a4",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
@@ -77,7 +78,7 @@ func (c *char) a4() {
 // Implements Xiao C2:
 // When in the party and not on the field, Xiao's Energy Recharge is increased by 25%
 func (c *char) c2() {
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "xiao-c2",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
@@ -95,20 +96,20 @@ func (c *char) c2() {
 // While under the effect of Bane of All Evil, hitting at least 2 opponents with Xiao's Plunge Attack will immediately grant him 1 charge of Lemniscatic Wind Cycling, and for the next 1s, he may use Lemniscatic Wind Cycling while ignoring its CD.
 // Adds an OnDamage event checker - if we record two or more instances of plunge damage, then activate C6
 func (c *char) c6() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 		if !((atk.Info.Abil == "High Plunge") || (atk.Info.Abil == "Low Plunge")) {
 			return false
 		}
-		if c.Core.Status.Duration("xiaoburst") == 0 {
+		if c.Core.StatusDuration("xiaoburst") == 0 {
 			return false
 		}
 		// Stops after reaching 2 hits on a single plunge.
 		// Plunge frames are greater than duration of C6 so this will always refresh properly.
-		if c.Core.Status.Duration("xiaoc6") > 0 {
+		if c.Core.StatusDuration("xiaoc6") > 0 {
 			return false
 		}
 		if c.c6Src != atk.SourceFrame {
@@ -123,8 +124,8 @@ func (c *char) c6() {
 		if c.c6Count == 2 {
 			c.ResetActionCooldown(core.ActionSkill)
 
-			c.Core.Status.AddStatus("xiaoc6", 60)
-			c.Core.Log.NewEvent("Xiao C6 activated", core.LogCharacterEvent, c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.F+60)
+			c.Core.AddStatus("xiaoc6", 60)
+			c.coretype.Log.NewEvent("Xiao C6 activated", coretype.LogCharacterEvent, c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.Frame+60)
 
 			c.c6Count = 0
 			return false
@@ -135,7 +136,7 @@ func (c *char) c6() {
 
 // Hook to end Xiao's burst prematurely if he leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		c.Core.Status.DeleteStatus("xiaoburst")
 		return false
 	}, "xiao-exit")
@@ -149,7 +150,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -161,21 +162,21 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 	ds := c.Tmpl.Snapshot(a)
 
-	if c.Core.Status.Duration("xiaoburst") > 0 {
+	if c.Core.StatusDuration("xiaoburst") > 0 {
 		// Calculate and add A1 damage bonus - applies to all damage
 		// Fraction dropped in int conversion in go - acts like floor
-		stacks := 1 + int((c.Core.F-c.qStarted)/180)
+		stacks := 1 + int((c.Core.Frame-c.qStarted)/180)
 		if stacks > 5 {
 			stacks = 5
 		}
 		ds.Stats[core.DmgP] += float64(stacks) * 0.05
-		c.Core.Log.NewEvent("a1 adding dmg %", core.LogCharacterEvent, c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F-c.qStarted)
+		c.coretype.Log.NewEvent("a1 adding dmg %", coretype.LogCharacterEvent, c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.Frame-c.qStarted)
 
 		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
 		// Also handle burst CA ICD change to share with Normal
 		switch a.AttackTag {
-		case core.AttackTagNormal:
-		case core.AttackTagExtra:
+		case coretype.AttackTagNormal:
+		case coretype.AttackTagExtra:
 			a.ICDTag = core.ICDTagNormalAttack
 		case core.AttackTagPlunge:
 		default:
@@ -184,7 +185,7 @@ func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 		a.Element = core.Anemo
 		bonus := burstBonus[c.TalentLvlBurst()]
 		ds.Stats[core.DmgP] += bonus
-		c.Core.Log.NewEvent("xiao burst damage bonus", core.LogCharacterEvent, c.Index, "bonus", bonus, "final", ds.Stats[core.DmgP])
+		c.coretype.Log.NewEvent("xiao burst damage bonus", coretype.LogCharacterEvent, c.Index, "bonus", bonus, "final", ds.Stats[core.DmgP])
 	}
 	return ds
 }

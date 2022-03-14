@@ -1,11 +1,14 @@
 package simulation
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 func (s *Simulation) handleEnergy() {
-	if s.cfg.Energy.Active && s.C.F-s.lastEnergyDrop >= s.cfg.Energy.Start {
+	if s.cfg.Energy.Active && s.C.Frame-s.lastEnergyDrop >= s.cfg.Energy.Start {
 		f := s.C.Rand.Intn(s.cfg.Energy.End - s.cfg.Energy.Start)
-		s.lastEnergyDrop = s.C.F + f
+		s.lastEnergyDrop = s.C.Frame + f
 		s.C.Tasks.Add(func() {
 			s.C.Energy.DistributeParticle(core.Particle{
 				Source: "drop",
@@ -13,7 +16,7 @@ func (s *Simulation) handleEnergy() {
 				Ele:    core.NoElement,
 			})
 		}, f)
-		s.C.Log.NewEvent("energy queued", core.LogSimEvent, -1, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.C.F+f)
+		s.C.Log.NewEvent("energy queued", coretype.LogSimEvent, -1, "last", s.lastEnergyDrop, "cfg", s.cfg.Energy, "amt", s.cfg.Energy.Particles, "energy_frame", s.C.Frame+f)
 	}
 }
 
@@ -36,13 +39,13 @@ func (s *Simulation) randomOnHitEnergy() {
 
 	//TODO not sure if there's like a 0.2s icd on this. for now let's add it in to be safe
 	icd := 0
-	s.C.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+	s.C.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
 		//check icd
-		if icd > s.C.F {
+		if icd > s.C.Frame {
 			return false
 		}
 		//check chance
@@ -56,13 +59,13 @@ func (s *Simulation) randomOnHitEnergy() {
 		//add energy
 		char.AddEnergy("na-ca-on-hit", 1)
 		// Add this log in sim if necessary to see as AddEnergy already generates a log
-		s.C.Log.NewEvent("random energy on normal", core.LogSimEvent, char.CharIndex(), "char", atk.Info.ActorIndex, "chance", current[w])
+		s.C.Log.NewEvent("random energy on normal", coretype.LogSimEvent, char.Index(), "char", atk.Info.ActorIndex, "chance", current[w])
 		//set icd
-		icd = s.C.F + 12
+		icd = s.C.Frame + 12
 		current[w] = 0
 		return false
 	}, "random-energy-restore-on-hit")
-	s.C.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	s.C.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		//TODO: assuming we clear the probability on swap
 		for i := range current {
 			current[i] = 0

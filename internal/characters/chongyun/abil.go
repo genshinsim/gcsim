@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -11,14 +12,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f, f)
 
 	if c.Base.Cons >= 1 && c.NormalCounter == 3 {
 		ai := core.AttackInfo{
@@ -27,13 +28,13 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			AttackTag:  core.AttackTagNone,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Cryo,
+			Element:    coretype.Cryo,
 			Durability: 25,
 			Mult:       .5,
 		}
 		//3 blades
 		for i := 0; i < 3; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f+i*5, f+i*5)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f+i*5, f+i*5)
 		}
 	}
 	c.AdvanceNormalIndex()
@@ -47,7 +48,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//we need to stop the old field from ticking (by changing fieldSrc)
 	//and also trigger a4 delayed damage
 
-	src := c.Core.F
+	src := c.Core.Frame
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
 	ai := core.AttackInfo{
@@ -57,14 +58,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, f-1)
 
 	//TODO: energy count; lib says 3:4?
-	c.QueueParticle("Chongyun", 4, core.Cryo, 100)
+	c.QueueParticle("Chongyun", 4, coretype.Cryo, 100)
 
 	ai = core.AttackInfo{
 		ActorIndex: c.Index,
@@ -73,14 +74,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	cb := func(a core.AttackCB) {
 		a.Target.AddResMod("Chongyun A4", core.ResistMod{
 			Duration: 480, //10 seconds
-			Ele:      core.Cryo,
+			Ele:      coretype.Cryo,
 			Value:    -0.10,
 		})
 	}
@@ -94,10 +95,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	c.fieldSrc = src
 	//override previous snap
-	c.a4Snap = &core.AttackEvent{
+	c.a4Snap = &coretype.AttackEvent{
 		Info:     ai,
 		Snapshot: snap,
-		Pattern:  core.NewDefCircHit(3, false, core.TargettableEnemy),
+		Pattern:  core.NewDefCircHit(3, false, coretype.TargettableEnemy),
 	}
 	c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, cb)
 
@@ -111,7 +112,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttackEvent(c.a4Snap, 0)
 	}, "Chongyun-Skill", f+600)
 
-	c.Core.Status.AddStatus("chongyunfield", 600)
+	c.Core.AddStatus("chongyunfield", 600)
 
 	//TODO: delay between when frost field start ticking?
 	for i := f - 1; i <= 600; i += 60 {
@@ -137,17 +138,17 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 50, 50)
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 57, 57)
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 65, 65)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 50, 50)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 57, 57)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 65, 65)
 
 	if c.Base.Cons == 6 {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 76, 76)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 76, 76)
 	}
 
 	c.SetCDWithDelay(core.ActionBurst, 720, 10)

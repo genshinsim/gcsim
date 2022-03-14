@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -13,7 +14,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -22,7 +23,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	r := 0.3
-	if c.Core.Status.Duration("noelleq") > 0 {
+	if c.Core.StatusDuration("noelleq") > 0 {
 		r = 2
 	}
 	done := false
@@ -31,9 +32,9 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			return
 		}
 		//check for healing
-		if c.Core.Shields.Get(core.ShieldNoelleSkill) != nil {
+		if c.Core.Player.GetShield(core.ShieldNoelleSkill) != nil {
 			var prob float64
-			if c.Base.Cons >= 1 && c.Core.Status.Duration("noelleq") > 0 {
+			if c.Base.Cons >= 1 && c.Core.StatusDuration("noelleq") > 0 {
 				prob = 1
 			} else {
 				prob = healChance[c.TalentLvlSkill()]
@@ -55,7 +56,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, coretype.TargettableEnemy), f, f, cb)
 
 	c.AdvanceNormalIndex()
 
@@ -81,7 +82,7 @@ func (n *noelleShield) OnExpire() {
 	}
 }
 
-func (n *noelleShield) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, bool) {
+func (n *noelleShield) OnDamage(dmg float64, ele coretype.EleType, bonus float64) (float64, bool) {
 	taken, ok := n.Tmpl.OnDamage(dmg, ele, bonus)
 	if !ok && n.c.Base.Cons >= 4 {
 		n.c.explodeShield()
@@ -92,11 +93,11 @@ func (n *noelleShield) OnDamage(dmg float64, ele core.EleType, bonus float64) (f
 func (c *char) newShield(base float64, t core.ShieldType, dur int) *noelleShield {
 	n := &noelleShield{}
 	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.Src = c.Core.F
+	n.Tmpl.Src = c.Core.Frame
 	n.Tmpl.ShieldType = t
 	n.Tmpl.Name = "Noelle Skill"
 	n.Tmpl.HP = base
-	n.Tmpl.Expires = c.Core.F + dur
+	n.Tmpl.Expires = c.Core.Frame + dur
 	n.c = c
 	return n
 }
@@ -125,16 +126,16 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Shields.Add(c.newShield(shield, core.ShieldNoelleSkill, 720))
 
 	//activate shield timer, on expiry explode
-	c.shieldTimer = c.Core.F + 720 //12 seconds
+	c.shieldTimer = c.Core.Frame + 720 //12 seconds
 
 	c.a4Counter = 0
 
-	x, y := c.Core.Targets[0].Shape().Pos()
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), f+1, f+1)
+	x, y := c.coretype.Targets[0].Shape().Pos()
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, coretype.TargettableEnemy), f+1, f+1)
 
 	if c.Base.Cons >= 4 {
 		c.AddTask(func() {
-			if c.shieldTimer == c.Core.F {
+			if c.shieldTimer == c.Core.Frame {
 				//deal damage
 				c.explodeShield()
 			}
@@ -159,8 +160,8 @@ func (c *char) explodeShield() {
 		Mult:       4,
 	}
 
-	x, y := c.Core.Targets[0].Shape().Pos()
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 4, false, core.TargettableEnemy), 0, 0)
+	x, y := c.coretype.Targets[0].Shape().Pos()
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 4, false, coretype.TargettableEnemy), 0, 0)
 
 }
 
@@ -190,16 +191,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	copy(valCopy, val)
 
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "noelle-burst",
-		Expiry: c.Core.F + 900 + f,
+		Expiry: c.Core.Frame + 900 + f,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})
-	c.Core.Log.NewEvent("noelle burst", core.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
+	c.coretype.Log.NewEvent("noelle burst", coretype.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
 
-	c.Core.Status.AddStatus("noelleq", 900+f)
+	c.Core.AddStatus("noelleq", 900+f)
 
 	// Queue up task for Noelle burst extension
 	// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
@@ -208,17 +209,17 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			if c.Core.ActiveChar == c.Index {
 				return
 			}
-			c.Core.Log.NewEvent("noelle max burst extension activated", core.LogCharacterEvent, c.Index, "new_expiry", c.Core.F+600)
+			c.coretype.Log.NewEvent("noelle max burst extension activated", coretype.LogCharacterEvent, c.Index, "new_expiry", c.Core.Frame+600)
 
 			// Adding the mod again with the same key replaces it
-			c.AddMod(core.CharStatMod{
+			c.AddMod(coretype.CharStatMod{
 				Key:    "noelle-burst",
-				Expiry: c.Core.F + 600,
+				Expiry: c.Core.Frame + 600,
 				Amount: func() ([]float64, bool) {
 					return valCopy, true
 				},
 			})
-			c.Core.Status.AddStatus("noelleq", 600)
+			c.Core.AddStatus("noelleq", 600)
 		}, "noelle-c6-burst-extension", 900+f)
 	}
 
@@ -234,7 +235,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	// TODO: Not sure of the exact frames
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(6.5, false, core.TargettableEnemy), f-30, f-30)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(6.5, false, coretype.TargettableEnemy), f-30, f-30)
 
 	ai = core.AttackInfo{
 		ActorIndex: c.Index,
@@ -248,7 +249,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstskill[c.TalentLvlBurst()],
 	}
 	// TODO: Not sure of the exact frames
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4.5, false, core.TargettableEnemy), f-10, f-10)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4.5, false, coretype.TargettableEnemy), f-10, f-10)
 
 	c.SetCDWithDelay(core.ActionBurst, 900, 8)
 	c.ConsumeEnergy(8)

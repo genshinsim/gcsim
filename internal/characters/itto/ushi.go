@@ -4,8 +4,8 @@ import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) newUshi(dur int) core.Construct {
 	return &construct{
-		src:    c.Core.F,
-		expiry: c.Core.F + dur,
+		src:    c.Core.Frame,
+		expiry: c.Core.Frame + dur,
 		char:   c,
 	}
 }

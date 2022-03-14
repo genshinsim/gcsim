@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,7 +12,7 @@ func init() {
 	core.RegisterWeaponFunc("alleyhunter", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	//max 10 stacks
 	w := weap{}
 	w.stacks = param["stacks"]
@@ -21,10 +22,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	dmg := 0.015 + float64(r)*0.005
 
 	m := make([]float64, core.EndStatType)
-	char.AddPreDamageMod(core.PreDamageMod{
+	char.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "alley-hunter",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			m[core.DmgP] = dmg * float64(w.stacks)
 			return m, true
 		},
@@ -32,22 +33,22 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	key := fmt.Sprintf("alley-hunter-%v", char.Name())
 
-	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
-		w.active = c.ActiveChar == char.CharIndex()
-		w.lastActiveChange = c.F
+	c.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+		w.active = c.ActiveChar == char.Index()
+		w.lastActiveChange = c.Frame
 		return true
 	}, key)
 
-	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 		next := args[1].(int)
-		w.lastActiveChange = c.F
-		if next == char.CharIndex() {
+		w.lastActiveChange = c.Frame
+		if next == char.Index() {
 			w.active = true
-			c.Tasks.Add(w.decStack(char, c.F), 240)
-		} else if prev == char.CharIndex() {
+			c.Tasks.Add(w.decStack(char, c.Frame), 240)
+		} else if prev == char.Index() {
 			w.active = false
-			c.Tasks.Add(w.incStack(char, c.F), 60)
+			c.Tasks.Add(w.incStack(char, c.Frame), 60)
 		}
 		return false
 	}, key)
@@ -61,7 +62,7 @@ type weap struct {
 	lastActiveChange int
 }
 
-func (w *weap) decStack(c core.Character, src int) func() {
+func (w *weap) decStack(c coretype.Character, src int) func() {
 	return func() {
 		if w.active && w.stacks > 0 && src == w.lastActiveChange {
 			w.stacks -= 2
@@ -73,7 +74,7 @@ func (w *weap) decStack(c core.Character, src int) func() {
 	}
 }
 
-func (w *weap) incStack(c core.Character, src int) func() {
+func (w *weap) incStack(c coretype.Character, src int) func() {
 	return func() {
 		if !w.active && w.stacks < 10 && src == w.lastActiveChange {
 			w.stacks++

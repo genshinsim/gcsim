@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -23,11 +24,11 @@ func init() {
 // 	Only one Sea-Dyed Foam can be produced every 3.5 seconds. Each Sea-Dyed Foam can accumulate up to 30,000 HP (including
 //  overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
 // 	This effect can still be triggered even when the character who is using this artifact set is not on the field.
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.Heal] = 0.15
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "ohc-2pc",
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -40,23 +41,23 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		bubbleDurationExpiry := 0
 		bubbleICDExpiry := 0
 
-		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+		s.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 			// Shows which character currently has an active OHC proc. -1 = Non-active
 			s.Flags.Custom["OHCActiveChar"] = -1
 			return true
 		}, "OHC-init")
 
 		// On Heal subscription to start accumulating the healing
-		s.Events.Subscribe(core.OnHeal, func(args ...interface{}) bool {
+		s.Subscribe(core.OnHeal, func(args ...interface{}) bool {
 			src := args[0].(int)
 			healAmt := args[2].(float64)
 
-			if src != c.CharIndex() {
+			if src != c.Index() {
 				return false
 			}
 
 			// OHC must either be inactive or this equipped character has to have an OHC bubble active
-			if !((s.Flags.Custom["OHCActiveChar"] == -1) || (s.Flags.Custom["OHCActiveChar"] == c.CharIndex())) {
+			if !((s.Flags.Custom["OHCActiveChar"] == -1) || (s.Flags.Custom["OHCActiveChar"] == c.Index())) {
 				return false
 			}
 
@@ -66,11 +67,11 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			}
 
 			// Activate bubble if this character's bubble is off CD, and add the bubble pop task
-			if bubbleICDExpiry < s.F {
-				bubbleDurationExpiry = s.F + 3*60
-				bubbleICDExpiry = s.F + 3.5*60
+			if bubbleICDExpiry < s.Frame {
+				bubbleDurationExpiry = s.Frame + 3*60
+				bubbleICDExpiry = s.Frame + 3.5*60
 
-				s.Flags.Custom["OHCActiveChar"] = c.CharIndex()
+				s.Flags.Custom["OHCActiveChar"] = c.Index()
 
 				// Bubble pop task
 				c.AddTask(func() {
@@ -85,13 +86,13 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					// 	0,
 					// 	0,
 					// )
-					// d.Targets = core.TargetAll
+					// d.Targets = coretype.TargetAll
 					// d.IsOHCDamage = true
 					// d.FlatDmg = bubbleHealStacks * .9
 					// c.QueueDmg(&d, 0)
 
 					atk := core.AttackInfo{
-						ActorIndex:       c.CharIndex(),
+						ActorIndex:       c.Index(),
 						DamageSrc:        0, //from player
 						Abil:             "OHC Damage",
 						AttackTag:        core.AttackTagNoneStat,
@@ -102,17 +103,17 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 						FlatDmg:          bubbleHealStacks * .9,
 					}
 					//snapshot -1 since we don't need stats
-					s.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, core.TargettableEnemy), -1, 1)
+					s.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, coretype.TargettableEnemy), -1, 1)
 
 					// Reset
 					s.Flags.Custom["OHCActiveChar"] = -1
 					bubbleHealStacks = 0
 				}, "ohc-bubble-pop", 3*60)
 
-				s.Log.NewEvent("ohc bubble activated", core.LogArtifactEvent, c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "ohc_icd_expiry", bubbleICDExpiry)
+				s.Log.NewEvent("ohc bubble activated", coretype.LogArtifactEvent, c.Index(), "bubble_pops_at", bubbleDurationExpiry, "ohc_icd_expiry", bubbleICDExpiry)
 			}
 
-			s.Log.NewEvent("ohc bubble accumulation", core.LogArtifactEvent, c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "bubble_total", bubbleHealStacks)
+			s.Log.NewEvent("ohc bubble accumulation", coretype.LogArtifactEvent, c.Index(), "bubble_pops_at", bubbleDurationExpiry, "bubble_total", bubbleHealStacks)
 
 			return false
 		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", c.Name()))

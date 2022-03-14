@@ -1,23 +1,26 @@
 package reactable
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
-func (r *Reactable) trySuperconduct(a *core.AttackEvent) {
+func (r *Reactable) trySuperconduct(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
 	//this is for non frozen one
-	if r.Durability[core.Frozen] >= ZeroDur {
+	if r.Durability[coretype.Frozen] >= ZeroDur {
 		return
 	}
 	switch a.Info.Element {
 	case core.Electro:
-		if r.Durability[core.Cryo] < ZeroDur {
+		if r.Durability[coretype.Cryo] < ZeroDur {
 			return
 		}
-		r.reduce(core.Cryo, a.Info.Durability, 1)
+		r.reduce(coretype.Cryo, a.Info.Durability, 1)
 		a.Info.Durability = 0
-	case core.Cryo:
+	case coretype.Cryo:
 		//could be ec potentially
 		if r.Durability[core.Electro] < ZeroDur {
 			return
@@ -37,12 +40,12 @@ func (r *Reactable) trySuperconduct(a *core.AttackEvent) {
 
 }
 
-func (r *Reactable) tryFrozenSuperconduct(a *core.AttackEvent) {
+func (r *Reactable) tryFrozenSuperconduct(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
 	//this is for frozen
-	if r.Durability[core.Frozen] < ZeroDur {
+	if r.Durability[coretype.Frozen] < ZeroDur {
 		return
 	}
 	//
@@ -51,8 +54,8 @@ func (r *Reactable) tryFrozenSuperconduct(a *core.AttackEvent) {
 		//TODO: the assumption here is we first reduce cryo, and if there's any
 		//src durability left, we reduce frozen. note that it's still only one
 		//superconduct reaction
-		a.Info.Durability -= r.reduce(core.Cryo, a.Info.Durability, 1)
-		r.reduce(core.Frozen, a.Info.Durability, 1)
+		a.Info.Durability -= r.reduce(coretype.Cryo, a.Info.Durability, 1)
+		r.reduce(coretype.Frozen, a.Info.Durability, 1)
 		a.Info.Durability = 0
 	default:
 		return
@@ -62,7 +65,7 @@ func (r *Reactable) tryFrozenSuperconduct(a *core.AttackEvent) {
 
 }
 
-func (r *Reactable) queueSuperconduct(a *core.AttackEvent) {
+func (r *Reactable) queueSuperconduct(a *coretype.AttackEvent) {
 	r.core.Events.Emit(core.OnSuperconduct, r.self, a)
 
 	//superconduct attack
@@ -73,11 +76,11 @@ func (r *Reactable) queueSuperconduct(a *core.AttackEvent) {
 		AttackTag:        core.AttackTagSuperconductDamage,
 		ICDTag:           core.ICDTagSuperconductDamage,
 		ICDGroup:         core.ICDGroupReactionA,
-		Element:          core.Cryo,
+		Element:          coretype.Cryo,
 		IgnoreDefPercent: 1,
 	}
 	atk.FlatDmg = 0.5 * r.calcReactionDmg(atk)
-	r.core.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, core.TargettableEnemy), -1, 1, superconductPhysShred)
+	r.core.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, coretype.TargettableEnemy), -1, 1, superconductPhysShred)
 }
 
 func superconductPhysShred(a core.AttackCB) {

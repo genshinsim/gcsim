@@ -2,6 +2,7 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func calcSwirlAtkDurability(consumed, src core.Durability) core.Durability {
@@ -11,7 +12,7 @@ func calcSwirlAtkDurability(consumed, src core.Durability) core.Durability {
 	return 1.25*(src-1) + 25
 }
 
-func (r *Reactable) queueSwirl(rt core.ReactionType, ele core.EleType, tag core.AttackTag, icd core.ICDTag, dur core.Durability, charIndex int) {
+func (r *Reactable) queueSwirl(rt core.ReactionType, ele coretype.EleType, tag core.AttackTag, icd core.ICDTag, dur core.Durability, charIndex int) {
 	//swirl triggers two attacks; one self with no gauge
 	//and one aoe with gauge
 	ai := core.AttackInfo{
@@ -40,13 +41,13 @@ func (r *Reactable) queueSwirl(rt core.ReactionType, ele core.EleType, tag core.
 	ai.Abil = string(rt) + " (aoe)"
 	r.core.Combat.QueueAttack(
 		ai,
-		core.NewDefCircHit(5, false, core.TargettableEnemy),
+		core.NewDefCircHit(5, false, coretype.TargettableEnemy),
 		-1,
 		1,
 	)
 }
 
-func (r *Reactable) trySwirlElectro(a *core.AttackEvent) {
+func (r *Reactable) trySwirlElectro(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -57,11 +58,11 @@ func (r *Reactable) trySwirlElectro(a *core.AttackEvent) {
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	//queue an attack first
-	r.core.Events.Emit(core.OnSwirlElectro, r.self, a)
+	r.core.Events.Emit(coretype.OnSwirlElectro, r.self, a)
 	r.queueSwirl(
 		core.SwirlElectro,
 		core.Electro,
-		core.AttackTagSwirlElectro,
+		coretype.AttackTagSwirlElectro,
 		core.ICDTagSwirlElectro,
 		atkDur,
 		a.Info.ActorIndex,
@@ -76,7 +77,7 @@ func (r *Reactable) trySwirlElectro(a *core.AttackEvent) {
 	}
 }
 
-func (r *Reactable) trySwirlHydro(a *core.AttackEvent) {
+func (r *Reactable) trySwirlHydro(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -87,40 +88,40 @@ func (r *Reactable) trySwirlHydro(a *core.AttackEvent) {
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	//queue an attack first
-	r.core.Events.Emit(core.OnSwirlHydro, r.self, a)
+	r.core.Events.Emit(coretype.OnSwirlHydro, r.self, a)
 	r.queueSwirl(
 		core.SwirlHydro,
 		core.Hydro,
-		core.AttackTagSwirlHydro,
+		coretype.AttackTagSwirlHydro,
 		core.ICDTagSwirlHydro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
 }
 
-func (r *Reactable) trySwirlCryo(a *core.AttackEvent) {
+func (r *Reactable) trySwirlCryo(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
-	if r.Durability[core.Cryo] < ZeroDur {
+	if r.Durability[coretype.Cryo] < ZeroDur {
 		return
 	}
-	rd := r.reduce(core.Cryo, a.Info.Durability, 0.5)
+	rd := r.reduce(coretype.Cryo, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	//queue an attack first
-	r.core.Events.Emit(core.OnSwirlCryo, r.self, a)
+	r.core.Events.Emit(coretype.OnSwirlCryo, r.self, a)
 	r.queueSwirl(
 		core.SwirlCryo,
-		core.Cryo,
-		core.AttackTagSwirlCryo,
+		coretype.Cryo,
+		coretype.AttackTagSwirlCryo,
 		core.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,
 	)
 }
 
-func (r *Reactable) trySwirlPyro(a *core.AttackEvent) {
+func (r *Reactable) trySwirlPyro(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -131,33 +132,33 @@ func (r *Reactable) trySwirlPyro(a *core.AttackEvent) {
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	//queue an attack first
-	r.core.Events.Emit(core.OnSwirlPyro, r.self, a)
+	r.core.Events.Emit(coretype.OnSwirlPyro, r.self, a)
 	r.queueSwirl(
 		core.SwirlPyro,
 		core.Pyro,
-		core.AttackTagSwirlPyro,
+		coretype.AttackTagSwirlPyro,
 		core.ICDTagSwirlPyro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
 }
 
-func (r *Reactable) trySwirlFrozen(a *core.AttackEvent) {
+func (r *Reactable) trySwirlFrozen(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
-	if r.Durability[core.Frozen] < ZeroDur {
+	if r.Durability[coretype.Frozen] < ZeroDur {
 		return
 	}
-	rd := r.reduce(core.Frozen, a.Info.Durability, 0.5)
+	rd := r.reduce(coretype.Frozen, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	//queue an attack first
-	r.core.Events.Emit(core.OnSwirlCryo, r.self, a)
+	r.core.Events.Emit(coretype.OnSwirlCryo, r.self, a)
 	r.queueSwirl(
 		core.SwirlCryo,
-		core.Cryo,
-		core.AttackTagSwirlCryo,
+		coretype.Cryo,
+		coretype.AttackTagSwirlCryo,
 		core.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,

@@ -2,9 +2,10 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
-func (r *Reactable) tryOverload(a *core.AttackEvent) {
+func (r *Reactable) tryOverload(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -51,5 +52,5 @@ func (r *Reactable) tryOverload(a *core.AttackEvent) {
 		IgnoreDefPercent: 1,
 	}
 	atk.FlatDmg = 2 * r.calcReactionDmg(atk)
-	r.core.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, core.TargettableEnemy), -1, 1)
+	r.core.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, coretype.TargettableEnemy), -1, 1)
 }

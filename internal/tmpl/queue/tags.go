@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (q *Queuer) evalTags(cond core.Condition) (bool, error) {
@@ -19,6 +20,6 @@ func (q *Queuer) evalTags(cond core.Condition) (bool, error) {
 	}
 	tag := strings.TrimPrefix(cond.Fields[2], ".")
 	v := char.Tag(tag)
-	q.core.Log.NewEvent("evaluating tags", core.LogQueueEvent, char.CharIndex(), "targ", tag, "val", v)
+	q.coretype.Log.NewEvent("evaluating tags", coretype.LogQueueEvent, char.Index(), "targ", tag, "val", v)
 	return compInt(cond.Op, v, cond.Value), nil
 }

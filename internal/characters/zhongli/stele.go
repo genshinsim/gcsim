@@ -2,6 +2,7 @@ package zhongli
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) newStele(dur int, max int) {
@@ -18,12 +19,12 @@ func (c *char) newStele(dur int, max int) {
 		Mult:       skill[c.TalentLvlSkill()],
 		FlatDmg:    0.019 * c.HPMax,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, 0)
 
 	//create a construct
 	con := &stoneStele{
-		src:    c.Core.F,
-		expiry: c.Core.F + dur,
+		src:    c.Core.Frame,
+		expiry: c.Core.Frame + dur,
 		c:      c,
 	}
 
@@ -33,14 +34,14 @@ func (c *char) newStele(dur int, max int) {
 
 	c.steleCount = c.Core.Constructs.CountByType(core.GeoConstructZhongliSkill)
 
-	c.Core.Log.NewEvent(
+	c.coretype.Log.NewEvent(
 		"Stele added",
-		core.LogCharacterEvent,
+		coretype.LogCharacterEvent,
 		c.Index,
 		"orig_count", num,
 		"cur_count", c.steleCount,
 		"max_hit", max,
-		"next_tick", c.Core.F+120,
+		"next_tick", c.Core.Frame+120,
 	)
 	// Snapshot buffs for resonance ticks
 	aiSnap := core.AttackInfo{
@@ -56,23 +57,23 @@ func (c *char) newStele(dur int, max int) {
 		FlatDmg:    0.019 * c.HPMax,
 	}
 	snap := c.Snapshot(&aiSnap)
-	c.steleSnapshot = core.AttackEvent{
+	c.steleSnapshot = coretype.AttackEvent{
 		Info:        aiSnap,
 		Snapshot:    snap,
-		Pattern:     core.NewDefCircHit(1, false, core.TargettableEnemy),
-		SourceFrame: c.Core.F,
+		Pattern:     core.NewDefCircHit(1, false, coretype.TargettableEnemy),
+		SourceFrame: c.Core.Frame,
 	}
 
-	c.AddTask(c.resonance(c.Core.F, max), "stele", 120)
+	c.AddTask(c.resonance(c.Core.Frame, max), "stele", 120)
 }
 
 func (c *char) resonance(src, max int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Stele checking for tick", core.LogCharacterEvent, c.Index, "src", src, "char", c.Index)
+		c.coretype.Log.NewEvent("Stele checking for tick", coretype.LogCharacterEvent, c.Index, "src", src, "char", c.Index)
 		if !c.Core.Constructs.Has(src) {
 			return
 		}
-		c.Core.Log.NewEvent("Stele ticked", core.LogCharacterEvent, c.Index, "next expected", c.Core.F+120, "src", src, "char", c.Index)
+		c.coretype.Log.NewEvent("Stele ticked", coretype.LogCharacterEvent, c.Index, "next expected", c.Core.Frame+120, "src", src, "char", c.Index)
 
 		// Use snapshot for damage
 		ae := c.steleSnapshot
@@ -85,12 +86,12 @@ func (c *char) resonance(src, max int) func() {
 		orb := false
 		for i := 0; i < count; i++ {
 			c.Core.Combat.QueueAttackEvent(&ae, 0)
-			if c.energyICD < c.Core.F && !orb && c.Core.Rand.Float64() < .5 {
+			if c.energyICD < c.Core.Frame && !orb && c.Core.Rand.Float64() < .5 {
 				orb = true
 			}
 		}
 		if orb {
-			c.energyICD = c.Core.F + 90
+			c.energyICD = c.Core.Frame + 90
 			c.QueueParticle("zhongli", 1, core.Geo, 120)
 		}
 		c.AddTask(c.resonance(src, max), "stele", 120)

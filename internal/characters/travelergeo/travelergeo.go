@@ -3,6 +3,7 @@ package travelergeo
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type char struct {
@@ -13,7 +14,7 @@ func init() {
 	core.RegisterCharFunc(core.TravelerGeo, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -51,7 +52,7 @@ func (c *char) c1() {
 	val := make([]float64, core.EndStatType)
 	val[core.CR] = .1
 	for _, char := range c.Core.Chars {
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key:    "geo-traveler-c1",
 			Expiry: -1,
 			Amount: func() ([]float64, bool) {

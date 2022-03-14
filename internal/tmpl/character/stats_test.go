@@ -4,15 +4,16 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func BenchmarkAddModHeap(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		//try adding mods 50 times in heap then calling amount
-		mods := make([]core.CharStatMod, 0, 50)
+		mods := make([]coretype.CharStatMod, 0, 50)
 		m := make([]float64, core.EndStatType)
 		for i := 0; i < 50; i++ {
-			mods = append(mods, core.CharStatMod{
+			mods = append(mods, coretype.CharStatMod{
 				Expiry: -1,
 				Amount: func() ([]float64, bool) {
 					//do some math here
@@ -34,10 +35,10 @@ func BenchmarkAddModHeap(b *testing.B) {
 func BenchmarkAddModStack(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		//try adding mods 50 times in heap then calling amount
-		mods := make([]core.CharStatMod, 0, 50)
+		mods := make([]coretype.CharStatMod, 0, 50)
 		for i := 0; i < 50; i++ {
 
-			mods = append(mods, core.CharStatMod{
+			mods = append(mods, coretype.CharStatMod{
 				Expiry: -1,
 				Amount: func() ([]float64, bool) {
 					m := make([]float64, core.EndStatType)

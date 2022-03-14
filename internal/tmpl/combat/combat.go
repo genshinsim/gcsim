@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type Ctrl struct {
@@ -20,11 +21,11 @@ func (c *Ctrl) QueueAttackWithSnap(a core.AttackInfo, s core.Snapshot, p core.At
 	if dmgDelay < 0 {
 		panic("dmgDelay cannot be less than 0")
 	}
-	ae := core.AttackEvent{
+	ae := coretype.AttackEvent{
 		Info:        a,
 		Pattern:     p,
 		Snapshot:    s,
-		SourceFrame: c.core.F,
+		SourceFrame: c.core.Frame,
 	}
 	//add callbacks only if not nil
 	for _, f := range callbacks {
@@ -35,7 +36,7 @@ func (c *Ctrl) QueueAttackWithSnap(a core.AttackInfo, s core.Snapshot, p core.At
 	c.queueDmg(&ae, dmgDelay)
 }
 
-func (c *Ctrl) QueueAttackEvent(ae *core.AttackEvent, dmgDelay int) {
+func (c *Ctrl) QueueAttackEvent(ae *coretype.AttackEvent, dmgDelay int) {
 	c.queueDmg(ae, dmgDelay)
 }
 
@@ -49,10 +50,10 @@ func (c *Ctrl) QueueAttack(a core.AttackInfo, p core.AttackPattern, snapshotDela
 		panic("dmgDelay cannot be less than 0")
 	}
 	//create attackevent
-	ae := core.AttackEvent{
+	ae := coretype.AttackEvent{
 		Info:        a,
 		Pattern:     p,
-		SourceFrame: c.core.F,
+		SourceFrame: c.core.Frame,
 	}
 	//add callbacks only if not nil
 	for _, f := range callbacks {
@@ -79,11 +80,11 @@ func (c *Ctrl) QueueAttack(a core.AttackInfo, p core.AttackPattern, snapshotDela
 
 }
 
-func (c *Ctrl) generateSnapshot(a *core.AttackEvent) {
+func (c *Ctrl) generateSnapshot(a *coretype.AttackEvent) {
 	a.Snapshot = c.core.Chars[a.Info.ActorIndex].Snapshot(&a.Info)
 }
 
-func (c *Ctrl) queueDmg(a *core.AttackEvent, delay int) {
+func (c *Ctrl) queueDmg(a *coretype.AttackEvent, delay int) {
 	if delay == 0 {
 		c.ApplyDamage(a)
 		return
@@ -93,7 +94,7 @@ func (c *Ctrl) queueDmg(a *core.AttackEvent, delay int) {
 	}, delay)
 }
 
-func willAttackLand(a *core.AttackEvent, t core.Target, index int) (bool, string) {
+func willAttackLand(a *coretype.AttackEvent, t coretype.Target, index int) (bool, string) {
 	//shape shouldn't be nil; panic here
 	if a.Pattern.Shape == nil {
 		panic("unexpected nil shape")
@@ -121,10 +122,10 @@ func willAttackLand(a *core.AttackEvent, t core.Target, index int) (bool, string
 	}
 }
 
-func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
+func (c *Ctrl) ApplyDamage(a *coretype.AttackEvent) float64 {
 	// died := false
 	var total float64
-	for i, t := range c.core.Targets {
+	for i, t := range c.coretype.Targets {
 		//skip nil targets; we don't want to reindex...
 		if t == nil {
 			continue
@@ -137,9 +138,9 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 			// TODO: Maybe want to add a separate set of log events for this?
 			//don't log this for target 0
 			if c.core.Flags.LogDebug && i > 0 {
-				c.core.Log.NewEvent(
+				c.coretype.Log.NewEvent(
 					"skipped "+a.Info.Abil+" "+reason,
-					core.LogSimEvent,
+					coretype.LogSimEvent,
 					a.Info.ActorIndex,
 					"attack_tag", a.Info.AttackTag,
 					"applied_ele", a.Info.Element,
@@ -169,9 +170,9 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 		var crit bool
 
 		if c.core.Flags.LogDebug {
-			evt = c.core.Log.NewEvent(
+			evt = c.coretype.Log.NewEvent(
 				cpy.Info.Abil,
-				core.LogDamageEvent,
+				coretype.LogDamageEvent,
 				cpy.Info.ActorIndex,
 				"target", i,
 				"attack-tag", cpy.Info.AttackTag,
@@ -199,7 +200,7 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 		dmg, crit = t.Attack(&cpy, evt)
 		total += dmg
 
-		c.core.Events.Emit(core.OnDamage, t, &cpy, dmg, crit)
+		c.core.Events.Emit(coretype.OnDamage, t, &cpy, dmg, crit)
 
 		//callbacks
 		cb := core.AttackCB{
@@ -220,7 +221,7 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 			t.Kill()
 			c.core.Events.Emit(core.OnTargetDied, t, cpy)
 			//this should be ok for stuff like guoba since they won't take damage
-			c.core.Targets[i] = nil
+			c.coretype.Targets[i] = nil
 			// log.Println("target died", i, dmg)
 		}
 
@@ -240,21 +241,21 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 }
 
 func (c *Ctrl) TargetHasResMod(key string, param int) bool {
-	if param >= len(c.core.Targets) {
+	if param >= len(c.coretype.Targets) {
 		return false
 	}
-	return c.core.Targets[param].HasResMod(key)
+	return c.coretype.Targets[param].HasResMod(key)
 }
 func (c *Ctrl) TargetHasDefMod(key string, param int) bool {
-	if param >= len(c.core.Targets) {
+	if param >= len(c.coretype.Targets) {
 		return false
 	}
-	return c.core.Targets[param].HasDefMod(key)
+	return c.coretype.Targets[param].HasDefMod(key)
 }
 
-func (c *Ctrl) TargetHasElement(ele core.EleType, param int) bool {
-	if param >= len(c.core.Targets) {
+func (c *Ctrl) TargetHasElement(ele coretype.EleType, param int) bool {
+	if param >= len(c.coretype.Targets) {
 		return false
 	}
-	return c.core.Targets[param].AuraContains(ele)
+	return c.coretype.Targets[param].AuraContains(ele)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Normal attack damage queue generator
@@ -14,7 +15,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -23,7 +24,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-5+i, f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -41,14 +42,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupPole,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       charged[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	//return animation cd
 	return f, a
@@ -84,18 +85,18 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
 	// c.AddTask(c.skillPressBuff, "shenhe (press) quill start", f-1)
 	c.skillPressBuff()
-	c.Core.Status.AddStatus(quillKey, 10*60)
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
+	c.Core.AddStatus(quillKey, 10*60)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f, f)
 
 	// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
-	c.QueueParticle("shenhe", 3, core.Cryo, 100)
+	c.QueueParticle("shenhe", 3, coretype.Cryo, 100)
 
 	return f, a
 }
@@ -110,18 +111,18 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArtHold,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 50,
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
 	// c.AddTask(c.skillHoldBuff, "shenhe (hold) quill start", f-1)
 	c.skillHoldBuff()
-	c.Core.Status.AddStatus(quillKey, 15*60)
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
+	c.Core.AddStatus(quillKey, 15*60)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, coretype.TargettableEnemy), f, f)
 
 	// Particle spawn timing is a bit later than press E
-	c.QueueParticle("shenhe", 4, core.Cryo, 115)
+	c.QueueParticle("shenhe", 4, coretype.Cryo, 115)
 
 	return f, a
 }
@@ -138,11 +139,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	x, y := c.Core.Targets[0].Shape().Pos()
+	x, y := c.coretype.Targets[0].Shape().Pos()
 
 	//duration is 12 second (extended by c2 by 6s)
 	dur := 12 * 60
@@ -158,16 +159,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		val[core.CD] = 0.15
 		for _, char := range c.Core.Chars {
 			this := char
-			char.AddPreDamageMod(core.PreDamageMod{
+			char.AddPreDamageMod(coretype.PreDamageMod{
 				Key:    "shenhe-c2",
-				Expiry: c.Core.F + dur + 2*60,
-				Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
-					if ae.Info.Element != core.Cryo {
+				Expiry: c.Core.Frame + dur + 2*60,
+				Amount: func(ae *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+					if ae.Info.Element != coretype.Cryo {
 						return nil, false
 					}
 
-					switch this.CharIndex() {
-					case c.Core.ActiveChar, c.CharIndex():
+					switch this.Index() {
+					case c.Core.ActiveChar, c.Index():
 						return val, true
 					}
 					return nil, false
@@ -179,7 +180,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	cb := func(a core.AttackCB) {
 		a.Target.AddResMod("Shenhe Burst Shred (Cryo)", core.ResistMod{
 			Duration: dur + 2*60,
-			Ele:      core.Cryo,
+			Ele:      coretype.Cryo,
 			Value:    -burstrespp[c.TalentLvlBurst()],
 		})
 	}
@@ -190,7 +191,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			Value:    -burstrespp[c.TalentLvlBurst()],
 		})
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 0, 15, cb, cb2)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, coretype.TargettableEnemy), 0, 15, cb, cb2)
 
 	ai = core.AttackInfo{
 		ActorIndex: c.Index,
@@ -198,19 +199,19 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       burstdot[c.TalentLvlBurst()],
 	}
 
 	c.AddTask(func() {
 		snap := c.Snapshot(&ai)
-		c.Core.Status.AddStatus("shenheburst", dur)
+		c.Core.AddStatus("shenheburst", dur)
 		//TODO: check this accuracy? Siri's sheet has 137 per
 		// dot every 2 second, double tick shortly after another
 		for i := 0; i < count; i++ {
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+50)
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, core.TargettableEnemy), i*120+80)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, coretype.TargettableEnemy), i*120+50)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewCircleHit(0, 0, 5, false, coretype.TargettableEnemy), i*120+80)
 		}
 	}, "shenhe-snapshot", f+2)
 
@@ -226,10 +227,10 @@ func (c *char) skillPressBuff() {
 	for i, char := range c.Core.Chars {
 		c.quillcount[i] = 5
 		c.updateBuffTags()
-		char.AddPreDamageMod(core.PreDamageMod{
+		char.AddPreDamageMod(coretype.PreDamageMod{
 			Key:    "shenhe-a2-press",
-			Expiry: c.Core.F + 10*60,
-			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Expiry: c.Core.Frame + 10*60,
+			Amount: func(a *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				if a.Info.AttackTag != core.AttackTagElementalBurst && a.Info.AttackTag != core.AttackTagElementalArt && a.Info.AttackTag != core.AttackTagElementalArtHold {
 					return nil, false
 				}
@@ -245,11 +246,11 @@ func (c *char) skillHoldBuff() {
 	for i, char := range c.Core.Chars {
 		c.quillcount[i] = 7
 		c.updateBuffTags()
-		char.AddPreDamageMod(core.PreDamageMod{
+		char.AddPreDamageMod(coretype.PreDamageMod{
 			Key:    "shenhe-a2-hold",
-			Expiry: c.Core.F + 15*60,
-			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-				if a.Info.AttackTag != core.AttackTagNormal && a.Info.AttackTag != core.AttackTagExtra && a.Info.AttackTag != core.AttackTagPlunge {
+			Expiry: c.Core.Frame + 15*60,
+			Amount: func(a *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+				if a.Info.AttackTag != coretype.AttackTagNormal && a.Info.AttackTag != coretype.AttackTagExtra && a.Info.AttackTag != core.AttackTagPlunge {
 					return nil, false
 				}
 				return val, true
@@ -260,10 +261,10 @@ func (c *char) skillHoldBuff() {
 
 func (c *char) quillDamageMod() {
 
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		consumeStack := true
-		if atk.Info.Element != core.Cryo {
+		if atk.Info.Element != coretype.Cryo {
 			return false
 		}
 
@@ -271,16 +272,16 @@ func (c *char) quillDamageMod() {
 		case core.AttackTagElementalBurst:
 		case core.AttackTagElementalArt:
 		case core.AttackTagElementalArtHold:
-		case core.AttackTagNormal:
+		case coretype.AttackTagNormal:
 			consumeStack = c.Base.Cons < 6
-		case core.AttackTagExtra:
+		case coretype.AttackTagExtra:
 			consumeStack = c.Base.Cons < 6
 		case core.AttackTagPlunge:
 		default:
 			return false
 		}
 
-		if c.Core.Status.Duration(quillKey) == 0 {
+		if c.Core.StatusDuration(quillKey) == 0 {
 			return false
 		}
 
@@ -295,13 +296,13 @@ func (c *char) quillDamageMod() {
 				c.quillcount[atk.Info.ActorIndex]--
 				c.updateBuffTags()
 			}
-			c.Core.Log.NewEvent(
+			c.coretype.Log.NewEvent(
 				"Shenhe Quill proc dmg add",
 				core.LogPreDamageMod,
 				atk.Info.ActorIndex,
 				"before", atk.Info.FlatDmg,
 				"addition", amt,
-				"effect_ends_at", c.Core.Status.Duration(quillKey),
+				"effect_ends_at", c.Core.StatusDuration(quillKey),
 				"quills left", c.quillcount[atk.Info.ActorIndex],
 			)
 			atk.Info.FlatDmg += amt
@@ -309,7 +310,7 @@ func (c *char) quillDamageMod() {
 				if c.c4count < 50 {
 					c.c4count++
 				}
-				c.c4expiry = c.Core.F + 60*60
+				c.c4expiry = c.Core.Frame + 60*60
 			}
 		}
 

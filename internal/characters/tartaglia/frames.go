@@ -1,12 +1,15 @@
 package tartaglia
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
+		if c.Core.StatusDuration("tartagliamelee") > 0 {
 			switch c.NormalCounter {
 			case 0:
 				f = 7 //frames from keqing lib
@@ -42,26 +45,26 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		f = int(float64(f) / (1 + atkspd))
 		return f, f
 	case core.ActionCharge:
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
+		if c.Core.StatusDuration("tartagliamelee") > 0 {
 			return 73, 73
 		}
-		c.Core.Log.NewEvent("Charge called when not in melee stance", core.LogActionEvent, c.Index, "action", a)
+		c.coretype.Log.NewEvent("Charge called when not in melee stance", coretype.LogActionEvent, c.Index, "action", a)
 		return 0, 0
 	case core.ActionAim:
 		return 84, 84
 	case core.ActionSkill:
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
+		if c.Core.StatusDuration("tartagliamelee") > 0 {
 			return 20, 20
 		}
 		//TODO: need exact frame
 		return 28, 28
 	case core.ActionBurst:
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
+		if c.Core.StatusDuration("tartagliamelee") > 0 {
 			return 97, 97
 		}
 		return 52, 52
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

@@ -3,6 +3,7 @@ package chongyun
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -12,17 +13,17 @@ func init() {
 type char struct {
 	*character.Tmpl
 	fieldSrc int
-	a4Snap   *core.AttackEvent
+	a4Snap   *coretype.AttackEvent
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Base.Element = core.Cryo
+	c.Base.Element = coretype.Cryo
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -52,23 +53,23 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) c4() {
 	icd := 0
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		t := args[0].(core.Target)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		t := args[0].(coretype.Target)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.Core.F < icd {
+		if c.Core.Frame < icd {
 			return false
 		}
-		if !t.AuraContains(core.Cryo) {
+		if !t.AuraContains(coretype.Cryo) {
 			return false
 		}
 
 		c.AddEnergy("chongyun-c4", 2)
 
-		c.Core.Log.NewEvent("chongyun c4 recovering 2 energy", core.LogCharacterEvent, c.Index, "final energy", c.Energy)
-		icd = c.Core.F + 120
+		c.coretype.Log.NewEvent("chongyun c4 recovering 2 energy", coretype.LogCharacterEvent, c.Index, "final energy", c.Energy)
+		icd = c.Core.Frame + 120
 
 		return false
 	}, "chongyun-c4")
@@ -76,31 +77,31 @@ func (c *char) c4() {
 }
 
 func (c *char) onSwapHook() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.Status.Duration("chongyunfield") == 0 {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.Core.StatusDuration("chongyunfield") == 0 {
 			return false
 		}
 		//add infusion on swap
-		c.Core.Log.NewEvent("chongyun adding infusion on swap", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		c.coretype.Log.NewEvent("chongyun adding infusion on swap", coretype.LogCharacterEvent, c.Index, "expiry", c.Core.Frame+infuseDur[c.TalentLvlSkill()])
 		active := c.Core.Chars[c.Core.ActiveChar]
 		c.infuse(active)
 		return false
 	}, "chongyun-field")
 }
 
-func (c *char) infuse(char core.Character) {
+func (c *char) infuse(char coretype.Character) {
 	switch char.WeaponClass() {
 	case core.WeaponClassClaymore:
 		fallthrough
 	case core.WeaponClassSpear:
 		fallthrough
 	case core.WeaponClassSword:
-		c.Core.Log.NewEvent("chongyun adding infusion", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		c.coretype.Log.NewEvent("chongyun adding infusion", coretype.LogCharacterEvent, c.Index, "expiry", c.Core.Frame+infuseDur[c.TalentLvlSkill()])
 		char.AddWeaponInfuse(core.WeaponInfusion{
 			Key:    "chongyun-ice-weapon",
-			Ele:    core.Cryo,
-			Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-			Expiry: c.Core.F + infuseDur[c.TalentLvlSkill()],
+			Ele:    coretype.Cryo,
+			Tags:   []core.AttackTag{coretype.AttackTagNormal, coretype.AttackTagExtra, core.AttackTagPlunge},
+			Expiry: c.Core.Frame + infuseDur[c.TalentLvlSkill()],
 		})
 	default:
 		return
@@ -109,10 +110,10 @@ func (c *char) infuse(char core.Character) {
 	//a2 adds 8% atkspd for 2.1 seconds
 	val := make([]float64, core.EndStatType)
 	val[core.AtkSpd] = 0.08
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "chongyun-field",
 		Amount: func() ([]float64, bool) { return val, true },
-		Expiry: c.Core.F + 126,
+		Expiry: c.Core.Frame + 126,
 	})
 	//c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
@@ -124,16 +125,16 @@ func (c *char) infuse(char core.Character) {
 				}
 				return 0
 			},
-			Expiry: c.Core.F + 126,
+			Expiry: c.Core.Frame + 126,
 		})
 	}
 }
 
 func (c *char) c6() {
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "chongyun-c6",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 
 			val := make([]float64, core.EndStatType)
 			if atk.Info.Abil != "Spirit Blade: Cloud-Parting Star" {

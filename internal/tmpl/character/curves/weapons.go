@@ -1,13 +1,13 @@
 package curves
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import "github.com/genshinsim/gcsim/pkg/coretype"
 
 type WeaponBase struct {
 	AtkCurve         WeaponStatCurve
 	SpecializedCurve WeaponStatCurve
 	BaseAtk          float64
 	BaseSpecialized  float64
-	Specialized      core.StatType
+	Specialized      coretype.StatType
 	PromotionBonus   []PromoData
 }
 

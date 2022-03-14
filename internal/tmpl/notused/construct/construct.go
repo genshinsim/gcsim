@@ -2,6 +2,7 @@ package construct
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type ConstructCtrl struct {
@@ -30,8 +31,8 @@ func (s *ConstructCtrl) New(c core.Construct, refresh bool) {
 		}
 	}
 	if ind > -1 {
-		s.core.Log.NewEventBuildMsg(
-			core.LogConstructEvent,
+		s.coretype.Log.NewEventBuildMsg(
+			coretype.LogConstructEvent,
 			-1,
 			"construct replaced - new: ", c.Type().String(),
 		).Write(
@@ -45,13 +46,13 @@ func (s *ConstructCtrl) New(c core.Construct, refresh bool) {
 	} else {
 		//add this one to the end
 		s.constructs = append(s.constructs, c)
-		s.core.Log.NewEventBuildMsg(core.LogConstructEvent, -1, "construct created: ", c.Type().String()).Write("key", c.Key(), "type", c.Type())
+		s.coretype.Log.NewEventBuildMsg(core.LogConstructEvent, -1, "construct created: ", c.Type().String()).Write("key", c.Key(), "type", c.Type())
 	}
 
 	//if length > 3, then destruct the beginning ones
 	for i := 0; i < len(s.constructs)-3; i++ {
 		s.constructs[i].OnDestruct()
-		s.core.Log.NewEventBuildMsg(core.LogConstructEvent, -1, "construct destroyed: "+s.constructs[i].Type().String()).Write("key", s.constructs[i].Key(), "type", s.constructs[i].Type())
+		s.coretype.Log.NewEventBuildMsg(core.LogConstructEvent, -1, "construct destroyed: "+s.constructs[i].Type().String()).Write("key", s.constructs[i].Key(), "type", s.constructs[i].Type())
 		s.constructs[i] = nil
 	}
 
@@ -78,8 +79,8 @@ func (s *ConstructCtrl) NewNoLimitCons(c core.Construct, refresh bool) {
 		if ind > -1 {
 			//destroy the existing by setting expiry
 			s.consNoLimit[ind].OnDestruct()
-			s.core.Log.NewEventBuildMsg(
-				core.LogConstructEvent, -1,
+			s.coretype.Log.NewEventBuildMsg(
+				coretype.LogConstructEvent, -1,
 				"construct destroyed: "+s.consNoLimit[ind].Type().String(),
 			).Write(
 				"key", s.consNoLimit[ind].Key(),
@@ -96,10 +97,10 @@ func (s *ConstructCtrl) Tick() {
 	//clean out expired
 	n := 0
 	for _, v := range s.constructs {
-		if v.Expiry() == s.core.F {
+		if v.Expiry() == s.core.Frame {
 			v.OnDestruct()
-			s.core.Log.NewEventBuildMsg(
-				core.LogConstructEvent, -1,
+			s.coretype.Log.NewEventBuildMsg(
+				coretype.LogConstructEvent, -1,
 				"construct destroyed: "+v.Type().String(),
 			).Write(
 				"key", v.Key(),
@@ -113,10 +114,10 @@ func (s *ConstructCtrl) Tick() {
 	s.constructs = s.constructs[:n]
 	n = 0
 	for i, v := range s.consNoLimit {
-		if v.Expiry() == s.core.F {
+		if v.Expiry() == s.core.Frame {
 			s.consNoLimit[i].OnDestruct()
-			s.core.Log.NewEventBuildMsg(
-				core.LogConstructEvent, -1,
+			s.coretype.Log.NewEventBuildMsg(
+				coretype.LogConstructEvent, -1,
 				"construct destroyed: "+v.Type().String(),
 			).Write(
 				"key", v.Key(),
@@ -193,7 +194,7 @@ func (s *ConstructCtrl) Expiry(t core.GeoConstructType) int {
 		}
 	}
 
-	expiry = expiry - s.core.F
+	expiry = expiry - s.core.Frame
 
 	if expiry < 0 {
 		return 0
@@ -211,8 +212,8 @@ func (s *ConstructCtrl) Destroy(key int) bool {
 		if v.Key() == key {
 			v.OnDestruct()
 			ok = true
-			s.core.Log.NewEventBuildMsg(
-				core.LogConstructEvent, -1,
+			s.coretype.Log.NewEventBuildMsg(
+				coretype.LogConstructEvent, -1,
 				"construct destroyed: "+v.Type().String(),
 			).Write(
 				"key", v.Key(),
@@ -232,8 +233,8 @@ func (s *ConstructCtrl) Destroy(key int) bool {
 		if v.Key() == key {
 			s.consNoLimit[i].OnDestruct()
 			ok = true
-			s.core.Log.NewEventBuildMsg(
-				core.LogConstructEvent, -1,
+			s.coretype.Log.NewEventBuildMsg(
+				coretype.LogConstructEvent, -1,
 				"construct destroyed: "+v.Type().String(),
 			).Write(
 				"key", v.Key(),

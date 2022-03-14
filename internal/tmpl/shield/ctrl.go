@@ -1,6 +1,9 @@
 package shield
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 type ShieldCtrl struct {
 	shields   []core.Shield
@@ -44,17 +47,17 @@ func (s *ShieldCtrl) Add(shd core.Shield) {
 		}
 	}
 	if ind > -1 {
-		s.core.Log.NewEvent("shield overridden", core.LogShieldEvent, -1, "overwrite", true, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
+		s.coretype.Log.NewEvent("shield overridden", coretype.LogShieldEvent, -1, "overwrite", true, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
 		s.shields[ind].OnOverwrite()
 		s.shields[ind] = shd
 	} else {
 		s.shields = append(s.shields, shd)
-		s.core.Log.NewEvent("shield added", core.LogShieldEvent, -1, "overwrite", false, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
+		s.coretype.Log.NewEvent("shield added", coretype.LogShieldEvent, -1, "overwrite", false, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
 	}
-	s.core.Events.Emit(core.OnShielded, shd)
+	s.core.Events.Emit(coretype.OnShielded, shd)
 }
 
-func (s *ShieldCtrl) OnDamage(dmg float64, ele core.EleType) float64 {
+func (s *ShieldCtrl) OnDamage(dmg float64, ele coretype.EleType) float64 {
 	var bonus float64
 	//find shield bonuses
 	for _, f := range s.bonusFunc {
@@ -79,9 +82,9 @@ func (s *ShieldCtrl) OnDamage(dmg float64, ele core.EleType) float64 {
 func (s *ShieldCtrl) Tick() {
 	n := 0
 	for _, v := range s.shields {
-		if v.Expiry() == s.core.F {
+		if v.Expiry() == s.core.Frame {
 			v.OnExpire()
-			s.core.Log.NewEvent("shield expired", core.LogShieldEvent, -1, "name", v.Desc(), "hp", v.CurrentHP())
+			s.coretype.Log.NewEvent("shield expired", coretype.LogShieldEvent, -1, "name", v.Desc(), "hp", v.CurrentHP())
 		} else {
 			s.shields[n] = v
 			n++

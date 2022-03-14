@@ -12,7 +12,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -21,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), f-1, f-1)
 
 	c.AdvanceNormalIndex()
 

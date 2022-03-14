@@ -5,11 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/testhelper"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func TestBasicAbilUsage(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Qiqi, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Qiqi, coretype.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)

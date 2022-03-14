@@ -2,6 +2,7 @@ package kazuha
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
@@ -32,7 +33,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 21, 55 // kqm lib
 	case core.ActionHighPlunge:
-		c.Core.Log.NewEvent("plunge skill check", core.LogCharacterEvent, c.Index, "previous", c.Core.LastAction)
+		c.coretype.Log.NewEvent("plunge skill check", coretype.LogCharacterEvent, c.Index, "previous", c.Core.LastAction)
 		if c.Core.LastAction.Target == core.Kazuha && c.Core.LastAction.Typ == core.ActionSkill {
 			h := c.Core.LastAction.Param["hold"]
 			if h > 0 {
@@ -40,7 +41,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			}
 			return 36, 55
 		}
-		c.Core.Log.NewEvent("invalid plunge (missing skill use)", core.LogActionEvent, c.Index, "action", a)
+		c.coretype.Log.NewEvent("invalid plunge (missing skill use)", coretype.LogActionEvent, c.Index, "action", a)
 		return 0, 0
 	case core.ActionSkill:
 		h := p["hold"]
@@ -51,7 +52,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 95, 100
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -117,7 +118,7 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 		prev := c.Core.LastAction
 		if prev.Typ != core.ActionSkill {
 			//this should not happen
-			c.Core.Log.NewEvent("ERROR: plunge used without skill use on kazuha!!", core.LogActionEvent, c.Index)
+			c.coretype.Log.NewEvent("ERROR: plunge used without skill use on kazuha!!", coretype.LogActionEvent, c.Index)
 			return 0
 		}
 		//check if hold

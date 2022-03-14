@@ -2,6 +2,7 @@ package freedom
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -9,10 +10,10 @@ func init() {
 	core.RegisterWeaponFunc("freedomsworn", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = 0.075 + float64(r)*0.025
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "freedom-dmg",
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -31,46 +32,46 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	cooldown := 0
 
 	stackFunc := func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if cooldown > c.F {
+		if cooldown > c.Frame {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
 
-		icd = c.F + 30
+		icd = c.Frame + 30
 		stacks++
-		c.Log.NewEvent("freedomsworn gained sigil", core.LogWeaponEvent, char.CharIndex(), "sigil", stacks)
+		c.Log.NewEvent("freedomsworn gained sigil", coretype.LogWeaponEvent, char.Index(), "sigil", stacks)
 
 		if stacks == 2 {
 			stacks = 0
-			c.Status.AddStatus("freedom", 12*60)
-			cooldown = c.F + 20*60
+			c.AddStatus("freedom", 12*60)
+			cooldown = c.Frame + 20*60
 			for _, char := range c.Chars {
 				// Attack buff snapshots so it needs to be in a separate mod
-				char.AddMod(core.CharStatMod{
+				char.AddMod(coretype.CharStatMod{
 					Key: "freedom-proc",
 					Amount: func() ([]float64, bool) {
 						return atkBuff, true
 					},
-					Expiry: c.F + 12*60,
+					Expiry: c.Frame + 12*60,
 				})
 
-				char.AddPreDamageMod(core.PreDamageMod{
+				char.AddPreDamageMod(coretype.PreDamageMod{
 					Key: "freedom-proc",
-					Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+					Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 						switch atk.Info.AttackTag {
-						case core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge:
+						case coretype.AttackTagNormal, coretype.AttackTagExtra, core.AttackTagPlunge:
 							return buffNACAPlunge, true
 						}
 						return nil, false
 					},
-					Expiry: c.F + 12*60,
+					Expiry: c.Frame + 12*60,
 				})
 			}
 		}
@@ -78,7 +79,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	}
 
 	for i := core.ReactionEventStartDelim + 1; i < core.ReactionEventEndDelim; i++ {
-		c.Events.Subscribe(i, stackFunc, "freedom-"+char.Name())
+		c.Subscribe(i, stackFunc, "freedom-"+char.Name())
 	}
 
 	return "freedomsworn"

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (q *Queuer) evalCharMods(cond core.Condition) (bool, error) {
@@ -25,6 +26,6 @@ func (q *Queuer) evalCharMods(cond core.Condition) (bool, error) {
 	} else {
 		val = 0
 	}
-	q.core.Log.NewEvent("evaluating mods", core.LogQueueEvent, char.CharIndex(), "mod", tag)
+	q.coretype.Log.NewEvent("evaluating mods", coretype.LogQueueEvent, char.Index(), "mod", tag)
 	return char.ModIsActive(tag) == (val == 1), nil
 }

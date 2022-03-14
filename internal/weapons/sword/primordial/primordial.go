@@ -2,6 +2,7 @@ package primordial
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -9,13 +10,13 @@ func init() {
 	core.RegisterWeaponFunc("primordialjadecutter", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	//add on hit effect to sim?
 	m := make([]float64, core.EndStatType)
 	m[core.HPP] = 0.15 + float64(r)*0.05
 	atkp := 0.009 + float64(r)*0.003
 
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "cutter hp bonus",
 		Amount: func() ([]float64, bool) {
 			m[core.ATK] = atkp * char.MaxHP()

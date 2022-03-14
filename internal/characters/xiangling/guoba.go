@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/reactable"
 	"github.com/genshinsim/gcsim/internal/tmpl/target"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type panda struct {
@@ -22,7 +23,7 @@ func newGuoba(c *core.Core) *panda {
 	return p
 }
 
-func (p *panda) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
+func (p *panda) Attack(atk *coretype.AttackEvent, evt core.LogEvent) (float64, bool) {
 	//don't take damage, trigger swirl reaction only on sucrose E
 	if p.Core.Chars[atk.Info.ActorIndex].Key() != core.Sucrose {
 		return 0, false
@@ -31,7 +32,7 @@ func (p *panda) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool)
 		return 0, false
 	}
 	//check pyro window
-	if p.Core.F < p.pyroWindowStart || p.Core.F > p.pyroWindowEnd {
+	if p.Core.Frame < p.pyroWindowStart || p.Core.Frame > p.pyroWindowEnd {
 		return 0, false
 	}
 
@@ -44,7 +45,7 @@ func (p *panda) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool)
 	return 0, false
 }
 
-func (p *panda) Type() core.TargettableType                 { return core.TargettableObject }
+func (p *panda) Type() coretype.TargettableType             { return coretype.TargettableObject }
 func (p *panda) MaxHP() float64                             { return 1 }
 func (p *panda) HP() float64                                { return 1 }
 func (p *panda) Shape() core.Shape                          { return &p.Hitbox }

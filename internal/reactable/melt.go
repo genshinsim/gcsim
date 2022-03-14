@@ -1,22 +1,25 @@
 package reactable
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
-func (r *Reactable) tryMelt(a *core.AttackEvent) {
+func (r *Reactable) tryMelt(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
-	if r.Durability[core.Frozen] > ZeroDur {
+	if r.Durability[coretype.Frozen] > ZeroDur {
 		return
 	}
 	switch a.Info.Element {
 	case core.Pyro:
-		if r.Durability[core.Cryo] < ZeroDur {
+		if r.Durability[coretype.Cryo] < ZeroDur {
 			return
 		}
-		r.reduce(core.Cryo, a.Info.Durability, 2)
+		r.reduce(coretype.Cryo, a.Info.Durability, 2)
 		a.Info.AmpMult = 2.0
-	case core.Cryo:
+	case coretype.Cryo:
 		if r.Durability[core.Pyro] < ZeroDur {
 			return
 		}
@@ -33,11 +36,11 @@ func (r *Reactable) tryMelt(a *core.AttackEvent) {
 	r.core.Events.Emit(core.OnMelt, r.self, a)
 }
 
-func (r *Reactable) tryMeltFrozen(a *core.AttackEvent) {
+func (r *Reactable) tryMeltFrozen(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
-	if r.Durability[core.Frozen] < ZeroDur {
+	if r.Durability[coretype.Frozen] < ZeroDur {
 		return
 	}
 	switch a.Info.Element {
@@ -45,8 +48,8 @@ func (r *Reactable) tryMeltFrozen(a *core.AttackEvent) {
 		//TODO: the assumption here is we first reduce cryo, and if there's any
 		//src durability left, we reduce frozen. note that it's still only one
 		//melt reaction
-		a.Info.Durability -= r.reduce(core.Cryo, a.Info.Durability, 2)
-		r.reduce(core.Frozen, a.Info.Durability, 2)
+		a.Info.Durability -= r.reduce(coretype.Cryo, a.Info.Durability, 2)
+		r.reduce(coretype.Frozen, a.Info.Durability, 2)
 		a.Info.AmpMult = 2.0
 	default:
 		//should be here

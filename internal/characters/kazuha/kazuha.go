@@ -3,6 +3,7 @@ package kazuha
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -12,12 +13,12 @@ func init() {
 type char struct {
 	*character.Tmpl
 	a4Expiry int
-	a2Ele    core.EleType
-	qInfuse  core.EleType
+	a2Ele    coretype.EleType
+	qInfuse  coretype.EleType
 	c6Active int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -56,7 +57,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -78,7 +79,7 @@ func (c *char) a4() {
 	swirlfunc := func(ele core.StatType, key string) func(args ...interface{}) bool {
 		icd := -1
 		return func(args ...interface{}) bool {
-			atk := args[1].(*core.AttackEvent)
+			atk := args[1].(*coretype.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false
 			}
@@ -92,12 +93,12 @@ func (c *char) a4() {
 			dmg := 0.0004 * c.Stat(core.EM)
 
 			for _, char := range c.Core.Chars {
-				char.AddMod(core.CharStatMod{
+				char.AddMod(coretype.CharStatMod{
 					Key:    "kazuha-a4-" + key,
-					Expiry: c.Core.F + 60*8,
+					Expiry: c.Core.Frame + 60*8,
 					Amount: func() ([]float64, bool) {
 
-						m[core.CryoP] = 0
+						m[coretype.CryoP] = 0
 						m[core.ElectroP] = 0
 						m[core.HydroP] = 0
 						m[core.PyroP] = 0
@@ -108,16 +109,16 @@ func (c *char) a4() {
 				})
 			}
 
-			c.Core.Log.NewEvent("kazuha a4 proc", core.LogCharacterEvent, c.Index, "reaction", ele.String(), "char", c.CharIndex())
+			c.coretype.Log.NewEvent("kazuha a4 proc", coretype.LogCharacterEvent, c.Index, "reaction", ele.String(), "char", c.Index())
 
 			return false
 		}
 	}
 
-	c.Core.Events.Subscribe(core.OnSwirlCryo, swirlfunc(core.CryoP, "cryo"), "kazuha-a4-cryo")
-	c.Core.Events.Subscribe(core.OnSwirlElectro, swirlfunc(core.ElectroP, "electro"), "kazuha-a4-electro")
-	c.Core.Events.Subscribe(core.OnSwirlHydro, swirlfunc(core.HydroP, "hydro"), "kazuha-a4-hydro")
-	c.Core.Events.Subscribe(core.OnSwirlPyro, swirlfunc(core.PyroP, "pyro"), "kazuha-a4-pyro")
+	c.Core.Subscribe(coretype.OnSwirlCryo, swirlfunc(coretype.CryoP, "cryo"), "kazuha-a4-cryo")
+	c.Core.Subscribe(coretype.OnSwirlElectro, swirlfunc(core.ElectroP, "electro"), "kazuha-a4-electro")
+	c.Core.Subscribe(coretype.OnSwirlHydro, swirlfunc(core.HydroP, "hydro"), "kazuha-a4-hydro")
+	c.Core.Subscribe(coretype.OnSwirlPyro, swirlfunc(core.PyroP, "pyro"), "kazuha-a4-pyro")
 }
 
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
@@ -127,14 +128,14 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 		return ds
 	}
 
-	if c.c6Active <= c.Core.F {
+	if c.c6Active <= c.Core.Frame {
 		return ds
 	}
 
 	//infusion to normal/plunge/charge
 	switch ai.AttackTag {
-	case core.AttackTagNormal:
-	case core.AttackTagExtra:
+	case coretype.AttackTagNormal:
+	case coretype.AttackTagExtra:
 	case core.AttackTagPlunge:
 	default:
 		return ds
@@ -144,7 +145,7 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	//add 0.2% dmg for every EM
 	ds.Stats[core.DmgP] += 0.002 * ds.Stats[core.EM]
 
-	c.Core.Log.NewEvent("c6 adding dmg", core.LogCharacterEvent, c.Index, "em", ds.Stats[core.EM], "final", ds.Stats[core.DmgP])
+	c.coretype.Log.NewEvent("c6 adding dmg", coretype.LogCharacterEvent, c.Index, "em", ds.Stats[core.EM], "final", ds.Stats[core.DmgP])
 
 	return ds
 }

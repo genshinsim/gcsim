@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -16,7 +17,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypePierce,
@@ -25,7 +26,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, travel+f)
 
 	c.AdvanceNormalIndex()
 
@@ -48,11 +49,11 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Frost Flake Arrow",
-		AttackTag:    core.AttackTagExtra,
+		AttackTag:    coretype.AttackTagExtra,
 		ICDTag:       core.ICDTagNone,
 		ICDGroup:     core.ICDGroupDefault,
 		StrikeType:   core.StrikeTypePierce,
-		Element:      core.Cryo,
+		Element:      coretype.Cryo,
 		Durability:   25,
 		Mult:         ffa[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
@@ -91,27 +92,27 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       lotus[c.TalentLvlSkill()],
 	}
 
 	snap := c.Snapshot(&ai)
 	//flower damage immediately
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 30)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 30)
 	//we get the orbs right away
-	c.QueueParticle("ganyu", 2, core.Cryo, 90)
+	c.QueueParticle("ganyu", 2, coretype.Cryo, 90)
 
 	//flower damage is after 6 seconds
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 360)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 360)
 	// TODO: Particle flight time is 60s?
-	c.QueueParticle("ganyu", 2, core.Cryo, 420)
+	c.QueueParticle("ganyu", 2, coretype.Cryo, 420)
 
 	//add cooldown to sim
 	// c.CD[charge] = c.Core.F + 10*60
 
 	if c.Base.Cons == 6 {
-		c.Core.Status.AddStatus("ganyuc6", 1800)
+		c.Core.AddStatus("ganyuc6", 1800)
 	}
 
 	c.SetCD(core.ActionSkill, 600)
@@ -129,13 +130,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       shower[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
 
-	c.Core.Status.AddStatus("ganyuburst", 15*60)
+	c.Core.AddStatus("ganyuburst", 15*60)
 
 	rad, ok := p["radius"]
 	if !ok {
@@ -145,21 +146,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	r := 2.5 + float64(rad)
 	prob := r * r / 90.25
 
-	lastHit := make(map[core.Target]int)
+	lastHit := make(map[coretype.Target]int)
 	// ccc := 0
 	//tick every .3 sec, every fifth hit is targetted i.e. 1, 0, 0, 0, 0, 1
 	for delay := 0; delay < 900; delay += 18 {
 		c.AddTask(func() {
 			//check if this hits first
 			target := -1
-			for i, t := range c.Core.Targets {
+			for i, t := range c.coretype.Targets {
 				//skip for target 0 aka player
 				if i == 0 {
 					continue
 				}
-				if lastHit[t] < c.Core.F {
+				if lastHit[t] < c.Core.Frame {
 					target = i
-					lastHit[t] = c.Core.F + 87 //cannot be targetted again for 1.45s
+					lastHit[t] = c.Core.Frame + 87 //cannot be targetted again for 1.45s
 					break
 				}
 			}
@@ -171,7 +172,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				return
 			}
 			//deal dmg
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(9, false, core.TargettableEnemy), 0)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(9, false, coretype.TargettableEnemy), 0)
 		}, "ganyu-q", delay+f)
 
 	}
@@ -187,30 +188,30 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.AddTask(func() {
 			active := c.Core.Chars[c.Core.ActiveChar]
 			val := make([]float64, core.EndStatType)
-			val[core.CryoP] = 0.2
-			active.AddMod(core.CharStatMod{
+			val[coretype.CryoP] = 0.2
+			active.AddMod(coretype.CharStatMod{
 				Key: "ganyu-field",
 				Amount: func() ([]float64, bool) {
 					return val, true
 				},
-				Expiry: c.Core.F + 60,
+				Expiry: c.Core.Frame + 60,
 			})
 			if t >= 900-18 {
-				c.Core.Log.NewEvent("a4 last tick", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+60)
+				c.coretype.Log.NewEvent("a4 last tick", coretype.LogCharacterEvent, c.Index, "ends_on", c.Core.Frame+60)
 			}
 		}, "ganyu-a4", i)
 	}
 
 	if c.Base.Cons >= 4 {
 		//we just assume this lasts for the full duration since no one moves...
-		start := c.Core.F
+		start := c.Core.Frame
 
 		val := make([]float64, core.EndStatType)
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key:    "ganyu-c4",
-			Expiry: c.Core.F + 1080,
+			Expiry: c.Core.Frame + 1080,
 			Amount: func() ([]float64, bool) {
-				elapsed := c.Core.F - start
+				elapsed := c.Core.Frame - start
 				stacks := int(elapsed / 180)
 				if stacks > 5 {
 					stacks = 5

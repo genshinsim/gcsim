@@ -1,12 +1,15 @@
 package shield
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 type Tmpl struct {
 	Name       string
 	Src        int
 	ShieldType core.ShieldType
-	Ele        core.EleType
+	Ele        coretype.EleType
 	HP         float64
 	Expires    int
 }
@@ -15,7 +18,7 @@ func (t *Tmpl) Desc() string {
 	return t.Name
 }
 
-func (t *Tmpl) Element() core.EleType {
+func (t *Tmpl) Element() coretype.EleType {
 	return t.Ele
 }
 
@@ -35,7 +38,7 @@ func (t *Tmpl) Type() core.ShieldType {
 	return t.ShieldType
 }
 
-func (t *Tmpl) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, bool) {
+func (t *Tmpl) OnDamage(dmg float64, ele coretype.EleType, bonus float64) (float64, bool) {
 	same := 1.0
 	if ele == t.Ele {
 		same = 2.5

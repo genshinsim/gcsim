@@ -1,9 +1,12 @@
 package character
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 func (t *Tmpl) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	t.Core.Log.NewEvent("ActionFrames not implemented", core.LogActionEvent, t.Index)
+	t.coretype.Log.NewEvent("ActionFrames not implemented", coretype.LogActionEvent, t.Index)
 	return 0, 0
 }
 

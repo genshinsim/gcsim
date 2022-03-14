@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Standard attack - infusion mechanics are handled as part of the skill
@@ -19,7 +20,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -28,7 +29,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f+i, f+i+travel)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f+i, f+i+travel)
 	}
 
 	c.AdvanceNormalIndex()
@@ -51,15 +52,15 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		ActorIndex: c.Index,
 		Abil:       "Charge Shot",
 		// TODO: Not sure about CA ICD
-		AttackTag:    core.AttackTagExtra,
+		AttackTag:    coretype.AttackTagExtra,
 		ICDTag:       core.ICDTagExtraAttack,
 		ICDGroup:     core.ICDGroupDefault,
-		Element:      core.Cryo,
+		Element:      coretype.Cryo,
 		Durability:   25,
 		Mult:         aim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f, f+travel)
 
 	return f, a
 }
@@ -96,12 +97,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			AttackTag:  core.AttackTagElementalArt,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Cryo,
+			Element:    coretype.Cryo,
 			Durability: 25,
 			Mult:       skillMain[c.TalentLvlSkill()],
 		}
 		c.coilStacks()
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 0)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, 0)
 	}, f)
 
 	// Bomblets snapshot on cast
@@ -111,14 +112,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       skillBomblets[c.TalentLvlSkill()],
 	}
 
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f+delay+((i+1)*6))
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), 0, f+delay+((i+1)*6))
 	}
 
 	// Queue up bomblet coil stacks
@@ -128,7 +129,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}, "aloy-bomblet-coil-stacks", f+delay+((i+1)*6))
 	}
 
-	c.QueueParticle("aloy", 5, core.Cryo, f+100)
+	c.QueueParticle("aloy", 5, coretype.Cryo, f+100)
 	c.SetCD(core.ActionSkill, 20*60)
 
 	return f, a
@@ -136,27 +137,27 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 // Handles coil stacking and associated effects, including triggering rushing ice
 func (c *char) coilStacks() {
-	if c.coilICDExpiry > c.Core.F {
+	if c.coilICDExpiry > c.Core.Frame {
 		return
 	}
 	// Can't gain coil stacks while in rushing ice
-	if c.Core.Status.Duration("aloyrushingice") > 0 {
+	if c.Core.StatusDuration("aloyrushingice") > 0 {
 		return
 	}
 	c.Tags["coil_stacks"]++
-	c.coilICDExpiry = c.Core.F + 6
+	c.coilICDExpiry = c.Core.Frame + 6
 
 	// A1
 	// When Aloy receives the Coil effect from Frozen Wilds, her ATK is increased by 16%, while nearby party members' ATK is increased by 8%. This effect lasts 10s.
 	for _, char := range c.Core.Chars {
 		valA1 := make([]float64, core.EndStatType)
 		valA1[core.ATKP] = .08
-		if char.CharIndex() == c.Index {
+		if char.Index() == c.Index {
 			valA1[core.ATKP] = .16
 		}
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key:    "aloy-a1",
-			Expiry: c.Core.F + 600,
+			Expiry: c.Core.Frame + 600,
 			Amount: func() ([]float64, bool) {
 				return valA1, true
 			},
@@ -171,23 +172,23 @@ func (c *char) coilStacks() {
 
 // Handles rushing ice state
 func (c *char) rushingIce() {
-	c.Core.Status.AddStatus("aloyrushingice", 600)
+	c.Core.AddStatus("aloyrushingice", 600)
 
 	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "aloy-rushing-ice",
-		Ele:    core.Cryo,
-		Tags:   []core.AttackTag{core.AttackTagNormal},
-		Expiry: c.Core.F + 600,
+		Ele:    coretype.Cryo,
+		Tags:   []core.AttackTag{coretype.AttackTagNormal},
+		Expiry: c.Core.Frame + 600,
 	})
 
 	// Rushing ice NA bonus
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "aloy-rushing-ice",
-		Expiry: c.Core.F + 600,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == core.AttackTagNormal {
+		Expiry: c.Core.Frame + 600,
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == coretype.AttackTagNormal {
 				return val, true
 			}
 			return nil, false
@@ -197,14 +198,14 @@ func (c *char) rushingIce() {
 	// A4 cryo damage increase
 	valA4 := make([]float64, core.EndStatType)
 	stacks := 1
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "aloy-strong-strike",
-		Expiry: c.Core.F + 600,
+		Expiry: c.Core.Frame + 600,
 		Amount: func() ([]float64, bool) {
 			if stacks > 10 {
 				stacks = 10
 			}
-			valA4[core.CryoP] = float64(stacks) * 0.035
+			valA4[coretype.CryoP] = float64(stacks) * 0.035
 			return valA4, true
 		},
 	})
@@ -225,11 +226,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), f, f)
 
 	c.SetCDWithDelay(core.ActionBurst, 12*60, 8)
 	c.ConsumeEnergy(8)

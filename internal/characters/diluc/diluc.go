@@ -3,6 +3,7 @@ package diluc
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -17,7 +18,7 @@ type char struct {
 	eCounter    int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -50,10 +51,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) c1() {
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "diluc-c1",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
 			if t.HP()/t.MaxHP() > 0.5 {
 				val[core.DmgP] = 0.15
@@ -67,12 +68,12 @@ func (c *char) c1() {
 func (c *char) c2() {
 	stack := 0
 	last := 0
-	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-		if last != 0 && c.Core.F-last < 90 {
+	c.Core.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if last != 0 && c.Core.Frame-last < 90 {
 			return false
 		}
 		//last time is more than 10 seconds ago, reset stacks back to 0
-		if c.Core.F-last > 600 {
+		if c.Core.Frame-last > 600 {
 			stack = 0
 		}
 		stack++
@@ -82,10 +83,10 @@ func (c *char) c2() {
 		val := make([]float64, core.EndStatType)
 		val[core.ATKP] = 0.1 * float64(stack)
 		val[core.AtkSpd] = 0.05 * float64(stack)
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key:    "diluc-c2",
 			Amount: func() ([]float64, bool) { return val, true },
-			Expiry: c.Core.F + 600,
+			Expiry: c.Core.Frame + 600,
 		})
 		return false
 	}, "diluc-c2")
@@ -93,12 +94,12 @@ func (c *char) c2() {
 }
 
 func (c *char) c4() {
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "diluc-c4",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
-			if c.Core.Status.Duration("dilucc4") > 0 {
+			if c.Core.StatusDuration("dilucc4") > 0 {
 				val[core.DmgP] = 0.4
 				return val, true
 			}
@@ -111,10 +112,10 @@ func (c *char) Tick() {
 
 	if c.eStarted {
 		//check if 4 second has passed since last use
-		if c.Core.F-c.eLastUse >= 240 {
+		if c.Core.Frame-c.eLastUse >= 240 {
 			//if so, set ability to be on cd equal to 10s less started
-			cd := 600 - (c.Core.F - c.eStartFrame)
-			c.Core.Log.NewEvent("diluc skill going on cd", core.LogCharacterEvent, c.Index, "duration", cd, "last", c.eLastUse)
+			cd := 600 - (c.Core.Frame - c.eStartFrame)
+			c.coretype.Log.NewEvent("diluc skill going on cd", coretype.LogCharacterEvent, c.Index, "duration", cd, "last", c.eLastUse)
 			c.SetCD(core.ActionSkill, cd)
 			//reset
 			c.eStarted = false
@@ -133,7 +134,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		// With A1
 		return 20
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 

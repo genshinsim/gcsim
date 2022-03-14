@@ -2,20 +2,22 @@ package core
 
 import (
 	"sync"
+
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 var (
 	mu        sync.RWMutex
-	charMap   = make(map[CharKey]NewCharacterFunc)
+	charMap   = make(map[coretype.CharKey]NewCharacterFunc)
 	setMap    = make(map[string]NewSetFunc)
 	weaponMap = make(map[string]NewWeaponFunc)
 )
 
-type NewCharacterFunc func(core *Core, p CharacterProfile) (Character, error)
-type NewSetFunc func(c Character, core *Core, count int, param map[string]int)
-type NewWeaponFunc func(c Character, core *Core, r int, param map[string]int) string
+type NewCharacterFunc func(core *Core, p coretype.CharacterProfile) (coretype.Character, error)
+type NewSetFunc func(c coretype.Character, core *Core, count int, param map[string]int)
+type NewWeaponFunc func(c coretype.Character, core *Core, r int, param map[string]int) string
 
-func RegisterCharFunc(char CharKey, f NewCharacterFunc) {
+func RegisterCharFunc(char coretype.CharKey, f NewCharacterFunc) {
 	mu.Lock()
 	defer mu.Unlock()
 	if _, dup := charMap[char]; dup {

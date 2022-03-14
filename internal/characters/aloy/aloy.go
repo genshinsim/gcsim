@@ -3,6 +3,7 @@ package aloy
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type char struct {
@@ -15,14 +16,14 @@ func init() {
 	core.RegisterCharFunc(core.Aloy, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Base.Element = core.Cryo
+	c.Base.Element = coretype.Cryo
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -48,11 +49,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 // Can't be made dynamic easily as coils last until 30s after when Aloy swaps off field
 func (c *char) coilMod() {
 	val := make([]float64, core.EndStatType)
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "aloy-coil-stacks",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == core.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == coretype.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
 				val[core.DmgP] = skillCoilNABonus[c.Tags["coil_stacks"]-1][c.TalentLvlSkill()]
 				return val, true
 			}
@@ -63,15 +64,15 @@ func (c *char) coilMod() {
 
 // Exit Field Hook to start timer to clear coil stacks
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 		if prev != c.Index {
 			return false
 		}
-		c.lastFieldExit = c.Core.F
+		c.lastFieldExit = c.Core.Frame
 
 		c.AddTask(func() {
-			if c.lastFieldExit != (c.Core.F - 30*60) {
+			if c.lastFieldExit != (c.Core.Frame - 30*60) {
 				return
 			}
 			c.Tags["coil_stacks"] = 0
@@ -86,7 +87,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,13 +12,13 @@ func init() {
 	core.RegisterSetFunc("noblesseoblige", New)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.2
-		c.AddPreDamageMod(core.PreDamageMod{
+		c.AddPreDamageMod(coretype.PreDamageMod{
 			Key: "nob-2pc",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				return m, atk.Info.AttackTag == core.AttackTagElementalBurst
 			},
 			Expiry: -1,
@@ -25,20 +26,20 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	}
 	if count >= 4 {
 
-		s.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+		s.Subscribe(core.PostBurst, func(args ...interface{}) bool {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
-			if s.ActiveChar != c.CharIndex() {
+			if s.Player.ActiveChar != c.Index()() {
 				return false
 			}
 
 			nob, ok := s.GetCustomFlag("nob-4pc")
 			//only activate if none existing
-			if s.Status.Duration("nob-4pc") == 0 || (nob == c.CharIndex() && ok) {
-				s.Status.AddStatus("nob-4pc", 720)
-				s.SetCustomFlag("nob-4pc", c.CharIndex())
+			if s.StatusDuration("nob-4pc") == 0 || (nob == c.Index() && ok) {
+				s.AddStatus("nob-4pc", 720)
+				s.SetCustomFlag("nob-4pc", c.Index())
 			}
 
-			s.Log.NewEvent("noblesse 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", s.Status.Duration("nob-4pc"))
+			s.Log.NewEvent("noblesse 4pc proc", coretype.LogArtifactEvent, c.Index(), "expiry", s.StatusDuration("nob-4pc"))
 			return false
 
 		}, fmt.Sprintf("no 4pc - %v", c.Name()))
@@ -46,12 +47,12 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m := make([]float64, core.EndStatType)
 		m[core.ATKP] = 0.2
 
-		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+		s.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 			for _, char := range s.Chars {
-				char.AddMod(core.CharStatMod{
+				char.AddMod(coretype.CharStatMod{
 					Key: "nob-4pc",
 					Amount: func() ([]float64, bool) {
-						if s.Status.Duration("nob-4pc") > 0 {
+						if s.StatusDuration("nob-4pc") > 0 {
 							return m, true
 						}
 						return nil, false

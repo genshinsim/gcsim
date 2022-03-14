@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Normal attack damage queue generator
@@ -15,7 +16,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -24,7 +25,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-5+i, f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -44,14 +45,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	//return animation cd
 	return f, a
@@ -70,7 +71,7 @@ func (c *char) PlungeAttack(delay int) (int, int) {
 		Durability: 25,
 		Mult:       plunge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay, delay)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), delay, delay)
 
 	//return animation cd
 	return delay, delay
@@ -105,7 +106,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       highplunge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f-1, f-1)
 
 	//return animation cd
 	return f, a
@@ -140,7 +141,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       lowplunge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f-1, f-1)
 
 	//return animation cd
 	return f, a
@@ -161,7 +162,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	// Add damage based on A4
-	if c.a4Expiry <= c.Core.F {
+	if c.a4Expiry <= c.Core.Frame {
 		c.Tags["a4"] = 0
 	}
 
@@ -176,25 +177,25 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), f)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f)
 
 	// Text is not explicit, but assume that gaining a stack while at max still refreshes duration
 	c.Tags["a4"]++
-	c.a4Expiry = c.Core.F + 420
+	c.a4Expiry = c.Core.Frame + 420
 	if c.Tags["a4"] > 3 {
 		c.Tags["a4"] = 3
 	}
 
 	// Cannot create energy during burst uptime
-	if c.Core.Status.Duration("xiaoburst") > 0 {
+	if c.Core.StatusDuration("xiaoburst") > 0 {
 	} else {
 		c.QueueParticle("xiao", 3, core.Anemo, f+100)
 	}
 
 	// C6 handling - can use skill ignoring CD and without draining charges
 	// Can simply return early
-	if c.Base.Cons == 6 && c.Core.Status.Duration("xiaoc6") > 0 {
-		c.Core.Log.NewEvent("xiao c6 active, Xiao E used, no charge used, no CD", core.LogCharacterEvent, c.Index, "c6 remaining duration", c.Core.Status.Duration("xiaoc6"))
+	if c.Base.Cons == 6 && c.Core.StatusDuration("xiaoc6") > 0 {
+		c.coretype.Log.NewEvent("xiao c6 active, Xiao E used, no charge used, no CD", coretype.LogCharacterEvent, c.Index, "c6 remaining duration", c.Core.StatusDuration("xiaoc6"))
 		return f, a
 	}
 
@@ -209,14 +210,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// Per previous code, believe that the burst duration starts ticking down from after the animation is done
 	// TODO: No indication of that in library though
-	c.Core.Status.AddStatus("xiaoburst", 900+f)
-	c.qStarted = c.Core.F
+	c.Core.AddStatus("xiaoburst", 900+f)
+	c.qStarted = c.Core.Frame
 
 	// HP Drain - removes HP every 1 second tick after burst is activated
 	// Per gameplay video, HP ticks start after animation is finished
 	for i := f + 60; i < 900+f; i++ {
 		c.AddTask(func() {
-			if c.Core.Status.Duration("xiaoburst") > 0 {
+			if c.Core.StatusDuration("xiaoburst") > 0 {
 				c.HPCurrent = c.HPCurrent * (1 - burstDrain[c.TalentLvlBurst()])
 			}
 		}, "xiaoburst-hp-drain", i)

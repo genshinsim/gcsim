@@ -2,6 +2,7 @@ package seal
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -10,11 +11,11 @@ func init() {
 	core.RegisterSetFunc("esr", New)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.ER] = 0.20
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "esr-2pc",
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -30,9 +31,9 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			amt = 0.75
 		}
 		m[core.DmgP] = amt
-		c.AddPreDamageMod(core.PreDamageMod{
+		c.AddPreDamageMod(coretype.PreDamageMod{
 			Key: "esr-4pc",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				if atk.Info.AttackTag == core.AttackTagElementalBurst {
 					//calc er
 					er := c.Stat(core.ER) + 1

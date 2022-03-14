@@ -1,6 +1,9 @@
 package health
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 type HealthCtrl struct {
 	healBonus []func(healedCharIndex int) float64 // Array that holds functions calculating incoming healing bonus
@@ -60,7 +63,7 @@ func (h *HealthCtrl) AddDamageReduction(f func() (float64, bool)) {
 	h.dr = append(h.dr, f)
 }
 
-func (h *HealthCtrl) HurtChar(dmg float64, ele core.EleType) {
+func (h *HealthCtrl) HurtChar(dmg float64, ele coretype.EleType) {
 	//reduce damage by damage reduction first, do so via a hook
 	var dr float64
 	n := 0
@@ -82,7 +85,7 @@ func (h *HealthCtrl) HurtChar(dmg float64, ele core.EleType) {
 	c := h.core.Chars[h.core.ActiveChar]
 	c.ModifyHP(-post)
 
-	h.core.Log.NewEvent("damage taken", core.LogHurtEvent, h.core.ActiveChar, "dmg", dmg, "taken", post, "shielded", dmg-post, "char_hp", c.HP(), "shield_count", h.core.Shields.Count())
+	h.coretype.Log.NewEvent("damage taken", coretype.LogHurtEvent, h.core.ActiveChar, "dmg", dmg, "taken", post, "shielded", dmg-post, "char_hp", c.HP(), "shield_count", h.core.Shields.Count())
 
 	if post > 0 {
 		h.core.Events.Emit(core.OnCharacterHurt, post)

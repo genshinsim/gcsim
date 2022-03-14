@@ -1,16 +1,19 @@
 package amber
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 type bunny struct {
-	ae  core.AttackEvent
+	ae  coretype.AttackEvent
 	src int
 }
 
 //TODO: forbidden bunny cryo swirl tech
 func (c *char) makeBunny() {
 	b := bunny{}
-	b.src = c.Core.F
+	b.src = c.Core.Frame
 	ai := core.AttackInfo{
 		Abil:       "Baron Bunny",
 		ActorIndex: c.Index,
@@ -23,10 +26,10 @@ func (c *char) makeBunny() {
 		Mult:       bunnyExplode[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	b.ae = core.AttackEvent{
+	b.ae = coretype.AttackEvent{
 		Info:        ai,
-		Pattern:     core.NewDefCircHit(2, false, core.TargettableEnemy),
-		SourceFrame: c.Core.F,
+		Pattern:     core.NewDefCircHit(2, false, coretype.TargettableEnemy),
+		SourceFrame: c.Core.Frame,
 		Snapshot:    snap,
 	}
 
@@ -41,7 +44,7 @@ func (c *char) makeBunny() {
 
 func (c *char) explode(src int) {
 	n := 0
-	c.Core.Log.NewEvent("amber exploding bunny", core.LogCharacterEvent, c.Index, "src", src)
+	c.coretype.Log.NewEvent("amber exploding bunny", coretype.LogCharacterEvent, c.Index, "src", src)
 	for _, v := range c.bunnies {
 		if v.src == src {
 			c.Core.Combat.QueueAttackEvent(&v.ae, 1)
@@ -73,9 +76,9 @@ func (c *char) manualExplode() {
 func (c *char) overloadExplode() {
 	//explode all bunnies on overload
 
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 		if len(c.bunnies) == 0 {
 			return false
 		}

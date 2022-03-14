@@ -2,6 +2,7 @@ package blizzard
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -9,11 +10,11 @@ func init() {
 	core.RegisterSetFunc("blizzardstrayer", New)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
-		m[core.CryoP] = 0.15
-		c.AddMod(core.CharStatMod{
+		m[coretype.CryoP] = 0.15
+		c.AddMod(coretype.CharStatMod{
 			Key: "bs-2pc",
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -22,17 +23,17 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		})
 	}
 	if count >= 4 {
-		c.AddPreDamageMod(core.PreDamageMod{
+		c.AddPreDamageMod(coretype.PreDamageMod{
 			Key:    "4bs",
 			Expiry: -1,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				m := make([]float64, core.EndStatType)
 				//frozen check first so we don't mistaken coexisting cryo
-				if t.AuraContains(core.Frozen) {
+				if t.AuraContains(coretype.Frozen) {
 					m[core.CR] = 0.4
 					return m, true
 				}
-				if t.AuraContains(core.Cryo) {
+				if t.AuraContains(coretype.Cryo) {
 					m[core.CR] = 0.2
 					return m, true
 				}

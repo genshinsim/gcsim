@@ -3,18 +3,19 @@ package kaeya
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) c1() {
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "kaeya-c1",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
-			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+			if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 				return nil, false
 			}
-			if !t.AuraContains(core.Cryo, core.Frozen) {
+			if !t.AuraContains(coretype.Cryo, coretype.Frozen) {
 				return nil, false
 			}
 			val[core.CR] = 0.15
@@ -24,19 +25,19 @@ func (c *char) c1() {
 }
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-		if c.Core.F < c.c4icd && c.c4icd != 0 {
+	c.Core.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.Core.Frame < c.c4icd && c.c4icd != 0 {
 			return false
 		}
 		if c.HPCurrent/c.HPMax < .2 {
-			c.c4icd = c.Core.F + 3600
+			c.c4icd = c.Core.Frame + 3600
 			c.Core.Shields.Add(&shield.Tmpl{
-				Src:        c.Core.F,
+				Src:        c.Core.Frame,
 				ShieldType: core.ShieldKaeyaC4,
 				Name:       "Kaeya C4",
 				HP:         .3 * c.HPMax,
-				Ele:        core.Cryo,
-				Expires:    c.Core.F + 1200,
+				Ele:        coretype.Cryo,
+				Expires:    c.Core.Frame + 1200,
 			})
 		}
 		return false

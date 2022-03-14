@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -14,13 +15,13 @@ func init() {
 type char struct {
 	*character.Tmpl
 	//field use for calculating oz damage
-	ozSnapshot core.AttackEvent
+	ozSnapshot coretype.AttackEvent
 
 	ozSource      int //keep tracks of source of oz aka resets
 	ozActiveUntil int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -85,7 +86,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypePierce,
@@ -93,15 +94,15 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, travel+f)
 	c.AdvanceNormalIndex()
 
 	//check for c1
-	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Core.F {
+	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Core.Frame {
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl C1",
-			AttackTag:  core.AttackTagNormal,
+			AttackTag:  coretype.AttackTagNormal,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
 			StrikeType: core.StrikeTypePierce,
@@ -109,7 +110,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			Durability: 100,
 			Mult:       0.22,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, travel+f)
 	}
 
 	return f, a
@@ -121,8 +122,8 @@ func (c *char) queueOz(src string) {
 	if c.Base.Cons == 6 {
 		dur += 120
 	}
-	c.ozActiveUntil = c.Core.F + dur
-	c.ozSource = c.Core.F
+	c.ozActiveUntil = c.Core.Frame + dur
+	c.ozSource = c.Core.Frame
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -135,27 +136,27 @@ func (c *char) queueOz(src string) {
 		Mult:       birdAtk[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.ozSnapshot = core.AttackEvent{
+	c.ozSnapshot = coretype.AttackEvent{
 		Info:        ai,
 		Snapshot:    snap,
-		Pattern:     core.NewDefSingleTarget(1, core.TargettableEnemy),
-		SourceFrame: c.Core.F,
+		Pattern:     core.NewDefSingleTarget(1, coretype.TargettableEnemy),
+		SourceFrame: c.Core.Frame,
 	}
-	c.AddTask(c.ozTick(c.Core.F), "oz", 60)
-	c.Core.Log.NewEvent("Oz activated", core.LogCharacterEvent, c.Index, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
+	c.AddTask(c.ozTick(c.Core.Frame), "oz", 60)
+	c.coretype.Log.NewEvent("Oz activated", coretype.LogCharacterEvent, c.Index, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.Frame+60)
 
-	c.Core.Status.AddStatus("fischloz", dur)
+	c.Core.AddStatus("fischloz", dur)
 
 }
 
 func (c *char) ozTick(src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Oz checking for tick", core.LogCharacterEvent, c.Index, "src", src)
+		c.coretype.Log.NewEvent("Oz checking for tick", coretype.LogCharacterEvent, c.Index, "src", src)
 		//if src != ozSource then this is no longer the same oz, do nothing
 		if src != c.ozSource {
 			return
 		}
-		c.Core.Log.NewEvent("Oz ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
+		c.coretype.Log.NewEvent("Oz ticked", coretype.LogCharacterEvent, c.Index, "next expected tick", c.Core.Frame+60, "active", c.ozActiveUntil, "src", src)
 		//trigger damage
 		ae := c.ozSnapshot
 		c.Core.Combat.QueueAttackEvent(&ae, 0)
@@ -166,7 +167,7 @@ func (c *char) ozTick(src int) func() {
 		}
 
 		//queue up next hit only if next hit oz is still active
-		if c.Core.F+60 <= c.ozActiveUntil {
+		if c.Core.Frame+60 <= c.ozActiveUntil {
 			c.AddTask(c.ozTick(src), "oz", 60)
 		}
 	}
@@ -191,7 +192,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ai.Mult += 2
 	}
 	// Should be aligned with Oz's skill snapshot timing
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-21, f-20)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f-21, f-20)
 
 	//set on field oz to be this one
 	c.AddTask(func() {
@@ -224,7 +225,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 2, 2)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 2, 2)
 
 	//check for C4 damage
 	if c.Base.Cons >= 4 {
@@ -241,7 +242,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 		// C4 damage always occurs before burst damage according to TCL.
 		// TODO: No frames given, assumed to just be a 1 frame difference
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 1, 1)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 1, 1)
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.AddTask(func() {

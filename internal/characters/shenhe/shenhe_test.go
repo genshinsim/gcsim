@@ -7,11 +7,12 @@ import (
 	"github.com/genshinsim/gcsim/internal/tmpl/enemy"
 	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func TestBasicAbilUsage(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Shenhe, coretype.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -59,7 +60,7 @@ func TestBasicAbilUsage(t *testing.T) {
 
 func TestSkillCDCon0(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Shenhe, coretype.Cryo, 6)
 	prof.Base.Cons = 0
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -86,7 +87,7 @@ func TestSkillCDCon0(t *testing.T) {
 		c.Tick()
 	}
 	//expecting skill to come up in f+10*60
-	for c.F < 599 {
+	for c.Frame < 599 {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
@@ -135,7 +136,7 @@ func TestSkillCDCon0(t *testing.T) {
 
 func TestBurstCDBasic(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Shenhe, coretype.Cryo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -193,7 +194,7 @@ func TestBurstCDBasic(t *testing.T) {
 
 func TestSkillCDCon1(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Shenhe, coretype.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -220,7 +221,7 @@ func TestSkillCDCon1(t *testing.T) {
 		c.Tick()
 	}
 	//expecting skill to come up in f+10*60
-	for c.F < 599 {
+	for c.Frame < 599 {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
@@ -355,7 +356,7 @@ func TestSkillCDCon1(t *testing.T) {
 
 func TestFlatCDReduction(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Shenhe, coretype.Cryo, 6)
 	prof.Base.Cons = 0
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -378,7 +379,7 @@ func TestFlatCDReduction(t *testing.T) {
 	x.Skill(p)
 	//reduce cd by 10 frames, should come up at 590
 	x.ReduceActionCooldown(core.ActionSkill, 10)
-	for c.F < 589 {
+	for c.Frame < 589 {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
@@ -441,7 +442,7 @@ func TestFlatCDReduction(t *testing.T) {
 
 func TestFlatCDReductionCon1(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Shenhe, coretype.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -468,7 +469,7 @@ func TestFlatCDReductionCon1(t *testing.T) {
 	x.Skill(p)
 	//reduce cd by 10 frames, should come up at 590
 	x.ReduceActionCooldown(core.ActionSkill, 10)
-	for c.F < 589 {
+	for c.Frame < 589 {
 		c.Tick()
 	}
 	//stack shouldn't be ready yet
@@ -491,7 +492,7 @@ func TestFlatCDReductionCon1(t *testing.T) {
 	}
 
 	//next one should be ready at 590 + 900
-	for c.F < 590+900-1 {
+	for c.Frame < 590+900-1 {
 		c.Tick()
 	}
 	//should be at 1 only
@@ -516,7 +517,7 @@ func TestFlatCDReductionCon1(t *testing.T) {
 
 func TestResetSkillCD(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Shenhe, coretype.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
@@ -599,7 +600,7 @@ func TestResetSkillCD(t *testing.T) {
 
 func TestResetSkillCooldownReduction(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Shenhe, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Shenhe, coretype.Cryo, 6)
 	prof.Base.Cons = 1
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members

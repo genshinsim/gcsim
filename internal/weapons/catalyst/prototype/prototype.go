@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -13,12 +14,12 @@ func init() {
 
 //Using an Elemental Burst regenerates 4/4.5/5/5.5/6 Energy every 2s for 6s. All party members
 //will regenerate 4/4.5/5/5.5/6% HP every 2s for this duration.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	e := 3.5 + float64(r)*0.5
 
-	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Subscribe(core.PreBurst, func(args ...interface{}) bool {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
 

@@ -11,7 +11,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
@@ -20,7 +20,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -32,7 +32,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
@@ -41,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), 0, f-1)
 
 	return f, a
 }
@@ -83,9 +83,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[1][c.TalentLvlSkill()],
 	}
-	pattern := core.NewDefCircHit(5, false, core.TargettableEnemy)
+	pattern := core.NewDefCircHit(5, false, coretype.TargettableEnemy)
 	c.ConsumeEnergy(1) // TODO: not final
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 94, 94)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy, coretype.TargettableObject), 94, 94)
 	c.kitsuneBurst(ai2, pattern)
 	c.SetCD(core.ActionBurst, 22*60)
 	return f, a

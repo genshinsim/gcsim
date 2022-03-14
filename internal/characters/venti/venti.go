@@ -3,18 +3,19 @@ package venti
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type char struct {
 	*character.Tmpl
-	qInfuse core.EleType
+	qInfuse coretype.EleType
 }
 
 func init() {
 	core.RegisterCharFunc(core.Venti, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -47,12 +48,12 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 
 		val := make([]float64, core.EndStatType)
 		val[core.AnemoP] = 0.25
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key:    "venti-c4",
 			Amount: func() ([]float64, bool) { return val, true },
-			Expiry: c.Core.F + 600,
+			Expiry: c.Core.Frame + 600,
 		})
-		c.Core.Log.NewEvent("c4 - adding anemo bonus", core.LogCharacterEvent, c.Index, "char", c.Index)
+		c.coretype.Log.NewEvent("c4 - adding anemo bonus", coretype.LogCharacterEvent, c.Index, "char", c.Index)
 
 	}
 }

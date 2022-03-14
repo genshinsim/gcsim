@@ -3,6 +3,7 @@ package tartaglia
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -27,7 +28,7 @@ const (
 )
 
 // Initializes character
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -67,7 +68,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -91,17 +92,17 @@ func (c *char) onExitField() {
 //that inflicts the Riptide status on nearby opponents hit.
 // Handles Childe riptide burst and C2 on death effects
 func (c *char) onDefeatTargets() {
-	c.Core.Events.Subscribe(core.OnTargetDied, func(args ...interface{}) bool {
-		t := args[0].(core.Target)
+	c.Core.Subscribe(core.OnTargetDied, func(args ...interface{}) bool {
+		t := args[0].(coretype.Target)
 		//do nothing if no riptide on target
-		if t.GetTag(riptideKey) < c.Core.F {
+		if t.GetTag(riptideKey) < c.Core.Frame {
 			return false
 		}
 		c.AddTask(func() {
 			ai := core.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Riptide Burst",
-				AttackTag:  core.AttackTagNormal,
+				AttackTag:  coretype.AttackTagNormal,
 				ICDTag:     core.ICDTagNone,
 				ICDGroup:   core.ICDGroupDefault,
 				StrikeType: core.StrikeTypeDefault,
@@ -109,24 +110,24 @@ func (c *char) onDefeatTargets() {
 				Durability: 50,
 				Mult:       rtBurst[c.TalentLvlAttack()],
 			}
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, 0)
 		}, "Riptide Burst", 5)
 		//TODO: re-index riptide expiry frame array if needed
 
 		if c.Base.Cons >= 2 {
 			c.AddEnergy("tartaglia-c2", 4)
-			c.Core.Log.NewEvent("Tartaglia C2 restoring 4 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
+			c.coretype.Log.NewEvent("Tartaglia C2 restoring 4 energy", coretype.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}
 		return false
 	}, "tartaglia-on-enemy-death")
 }
 
-func (c *char) c4(t core.Target) {
-	if t.GetTag(riptideKey) < c.Core.F {
+func (c *char) c4(t coretype.Target) {
+	if t.GetTag(riptideKey) < c.Core.Frame {
 		return
 	}
 
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.Core.StatusDuration("tartagliamelee") > 0 {
 		c.rtSlashTick(t)
 	} else {
 		c.rtFlashTick(t)

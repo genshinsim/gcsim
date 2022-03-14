@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -12,10 +13,10 @@ func init() {
 	core.RegisterWeaponFunc("elegy", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.EM] = 45 + float64(r)*15
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "elegy-em",
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -31,9 +32,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	stacks := 0
 	cooldown := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		switch atk.Info.AttackTag {
@@ -43,26 +44,26 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		default:
 			return false
 		}
-		if cooldown > c.F {
+		if cooldown > c.Frame {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
-		icd = c.F + 12
+		icd = c.Frame + 12
 		stacks++
 		if stacks == 4 {
 			stacks = 0
-			c.Status.AddStatus("elegy", 720)
+			c.AddStatus("elegy", 720)
 
-			cooldown = c.F + 1200
+			cooldown = c.Frame + 1200
 			for _, char := range c.Chars {
-				char.AddMod(core.CharStatMod{
+				char.AddMod(coretype.CharStatMod{
 					Key: "elegy-proc",
 					Amount: func() ([]float64, bool) {
 						return val, true
 					},
-					Expiry: c.F + 720,
+					Expiry: c.Frame + 720,
 				})
 			}
 		}

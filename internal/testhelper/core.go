@@ -20,7 +20,7 @@ import (
 func NewTestCore() *core.Core {
 	c := core.New()
 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	c.Tasks = task.NewCtrl(&c.F)
+	c.Tasks = task.NewCtrl(&c.Frame)
 	c.Events = event.NewCtrl(c)
 	c.Status = status.NewCtrl(c)
 	c.Energy = energy.NewCtrl(c)

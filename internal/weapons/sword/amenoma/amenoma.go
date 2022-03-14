@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,18 +12,18 @@ func init() {
 	core.RegisterWeaponFunc("amenomakageuchi", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	seeds := make([]int, 3) //keep track the seeds
 	refund := 4.5 + 1.5*float64(r)
 	icd := 0
 
-	c.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Subscribe(core.PostSkill, func(args ...interface{}) bool {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
 		// add 1 seed
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
 		// find oldest seed to overwrite
@@ -36,22 +37,22 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			}
 		}
 
-		seeds[index] = c.F + 30*60
+		seeds[index] = c.Frame + 30*60
 
-		c.Log.NewEvent("amenoma proc'd", core.LogWeaponEvent, char.CharIndex(), "index", index, "seeds", seeds)
+		c.Log.NewEvent("amenoma proc'd", coretype.LogWeaponEvent, char.Index(), "index", index, "seeds", seeds)
 
-		icd = c.F + 300 //5 seconds
+		icd = c.Frame + 300 //5 seconds
 
 		return false
 	}, fmt.Sprintf("amenoma-skill-%v", char.Name()))
 
-	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
 		count := 0
 		for i, v := range seeds {
-			if v > c.F {
+			if v > c.Frame {
 				count++
 			}
 			seeds[i] = 0

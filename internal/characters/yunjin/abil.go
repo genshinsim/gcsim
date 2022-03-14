@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Normal attack damage queue generator
@@ -14,7 +15,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupPole,
 		Element:    core.Physical,
@@ -23,7 +24,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for _, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f, f)
 	}
 
 	c.AdvanceNormalIndex()
@@ -39,14 +40,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupPole,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f, f)
 
 	//return animation cd
 	return f, a
@@ -101,15 +102,15 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ai.Abil = "Opening Flourish Level 2 (E)"
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), hitDelay, hitDelay)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), hitDelay, hitDelay)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Shields.Add(&shield.Tmpl{
-		Src:        c.Core.F,
+		Src:        c.Core.Frame,
 		ShieldType: core.ShieldYunjinSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.HPMax + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        core.Geo,
-		Expires:    c.Core.F + f,
+		Expires:    c.Core.Frame + f,
 	})
 
 	if c.Base.Cons >= 1 {
@@ -138,9 +139,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f, f)
 
-	c.Core.Status.AddStatus("yunjinburst", 12*60)
+	c.Core.AddStatus("yunjinburst", 12*60)
 
 	// Reset number of burst triggers to 30
 	for i := range c.burstTriggers {
@@ -153,15 +154,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		val := make([]float64, core.EndStatType)
 		val[core.DmgP] = .15
 		for _, char := range c.Core.Chars {
-			char.AddPreDamageMod(core.PreDamageMod{
+			char.AddPreDamageMod(coretype.PreDamageMod{
 				Key: "yunjin-c2",
-				Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
-					if ae.Info.AttackTag == core.AttackTagNormal {
+				Amount: func(ae *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+					if ae.Info.AttackTag == coretype.AttackTagNormal {
 						return val, true
 					}
 					return nil, false
 				},
-				Expiry: c.Core.F + 12*60,
+				Expiry: c.Core.Frame + 12*60,
 			})
 		}
 	}
@@ -170,11 +171,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		val := make([]float64, core.EndStatType)
 		val[core.AtkSpd] = .12
 		for _, char := range c.Core.Chars {
-			char.AddMod(core.CharStatMod{
+			char.AddMod(coretype.CharStatMod{
 				Key:    "yunjin-c6",
-				Expiry: c.Core.F + 12*60,
+				Expiry: c.Core.Frame + 12*60,
 				Amount: func() ([]float64, bool) {
-					if c.Core.Status.Duration("yunjinburst") == 0 {
+					if c.Core.StatusDuration("yunjinburst") == 0 {
 						return nil, false
 					}
 					return val, true
@@ -191,13 +192,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 func (c *char) burstProc() {
 	// Add Flying Cloud Flag Formation as a pre-damage hook
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		ae := args[1].(*coretype.AttackEvent)
 
-		if ae.Info.AttackTag != core.AttackTagNormal {
+		if ae.Info.AttackTag != coretype.AttackTagNormal {
 			return false
 		}
-		if c.Core.Status.Duration("yunjinburst") == 0 || c.burstTriggers[ae.Info.ActorIndex] == 0 {
+		if c.Core.StatusDuration("yunjinburst") == 0 || c.burstTriggers[ae.Info.ActorIndex] == 0 {
 			return false
 		}
 
@@ -219,7 +220,7 @@ func (c *char) burstProc() {
 		c.burstTriggers[ae.Info.ActorIndex]--
 		c.updateBuffTags()
 
-		c.Core.Log.NewEvent("yunjin burst adding damage", core.LogPreDamageMod, ae.Info.ActorIndex, "damage_added", dmgAdded, "stacks_remaining_for_char", c.burstTriggers[ae.Info.ActorIndex], "burst_def_pct", finalBurstBuff)
+		c.coretype.Log.NewEvent("yunjin burst adding damage", core.LogPreDamageMod, ae.Info.ActorIndex, "damage_added", dmgAdded, "stacks_remaining_for_char", c.burstTriggers[ae.Info.ActorIndex], "burst_def_pct", finalBurstBuff)
 
 		return false
 	}, "yunjin-burst")

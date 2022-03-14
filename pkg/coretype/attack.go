@@ -32,7 +32,7 @@ type AttackPattern struct {
 
 type AttackInfo struct {
 	ActorIndex       int    //character this attack belongs to
-	DamageSrc        int    //source of this attack (i.e. index of core.Targets); always 0 for player, 1+ for the rest
+	DamageSrc        int    //source of this attack (i.e. index of coretype.Targets); always 0 for player, 1+ for the rest
 	Abil             string //name of ability triggering the damage
 	AttackTag        AttackTag
 	ICDTag           ICDTag

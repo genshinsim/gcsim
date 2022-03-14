@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,24 +12,24 @@ func init() {
 	core.RegisterWeaponFunc("windblumeode", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.12 + float64(r)*0.04
 
 	// Effect should always apply BEFORE the skill hits
-	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+	c.Subscribe(core.PreSkill, func(args ...interface{}) bool {
 
 		// Character must be onfield
-		if char.CharIndex() != c.ActiveChar {
+		if char.Index() != c.ActiveChar {
 			return false
 		}
 
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key: "windblume",
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
-			Expiry: c.F + 360,
+			Expiry: c.Frame + 360,
 		})
 		return false
 	}, fmt.Sprintf("windblume-%v", char.Name()))

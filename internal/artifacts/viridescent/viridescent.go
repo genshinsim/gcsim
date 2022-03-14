@@ -2,6 +2,7 @@ package viridescent
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -9,11 +10,11 @@ func init() {
 	core.RegisterSetFunc("viridescentvenerer", New)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.AnemoP] = 0.15
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "vv-2pc",
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -29,10 +30,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			Amount: func(ai core.AttackInfo) (float64, bool) {
 				//overload dmg can't melt or vape so it's fine
 				switch ai.AttackTag {
-				case core.AttackTagSwirlCryo:
-				case core.AttackTagSwirlElectro:
-				case core.AttackTagSwirlHydro:
-				case core.AttackTagSwirlPyro:
+				case coretype.AttackTagSwirlCryo:
+				case coretype.AttackTagSwirlElectro:
+				case coretype.AttackTagSwirlHydro:
+				case coretype.AttackTagSwirlPyro:
 				default:
 					return 0, false
 				}
@@ -40,16 +41,16 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			},
 		})
 
-		vvfunc := func(ele core.EleType, key string) func(args ...interface{}) bool {
+		vvfunc := func(ele coretype.EleType, key string) func(args ...interface{}) bool {
 			return func(args ...interface{}) bool {
-				atk := args[1].(*core.AttackEvent)
-				t := args[0].(core.Target)
-				if atk.Info.ActorIndex != c.CharIndex() {
+				atk := args[1].(*coretype.AttackEvent)
+				t := args[0].(coretype.Target)
+				if atk.Info.ActorIndex != c.Index() {
 					return false
 				}
 
 				//ignore if character not on field
-				if s.ActiveChar != c.CharIndex() {
+				if s.Player.ActiveChar != c.Index()() {
 					return false
 				}
 
@@ -59,38 +60,38 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					Value:    -0.4,
 				})
 
-				s.Log.NewEvent("vv 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", key, "char", c.CharIndex())
+				s.Log.NewEvent("vv 4pc proc", coretype.LogArtifactEvent, c.Index(), "reaction", key, "char", c.Index())
 
 				return false
 			}
 		}
-		s.Events.Subscribe(core.OnSwirlCryo, vvfunc(core.Cryo, "vvcryo"), "vv4pc-"+c.Name())
-		s.Events.Subscribe(core.OnSwirlElectro, vvfunc(core.Electro, "vvelectro"), "vv4pc-"+c.Name())
-		s.Events.Subscribe(core.OnSwirlHydro, vvfunc(core.Hydro, "vvhydro"), "vv4pc-"+c.Name())
-		s.Events.Subscribe(core.OnSwirlPyro, vvfunc(core.Pyro, "vvpyro"), "vv4pc-"+c.Name())
+		s.Subscribe(coretype.OnSwirlCryo, vvfunc(coretype.Cryo, "vvcryo"), "vv4pc-"+c.Name())
+		s.Subscribe(coretype.OnSwirlElectro, vvfunc(core.Electro, "vvelectro"), "vv4pc-"+c.Name())
+		s.Subscribe(coretype.OnSwirlHydro, vvfunc(core.Hydro, "vvhydro"), "vv4pc-"+c.Name())
+		s.Subscribe(coretype.OnSwirlPyro, vvfunc(core.Pyro, "vvpyro"), "vv4pc-"+c.Name())
 
 		// Additional event for on damage proc on secondary targets
 		// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
 		// Possibly closure related? Not sure
-		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			atk := args[1].(*core.AttackEvent)
-			t := args[0].(core.Target)
-			if atk.Info.ActorIndex != c.CharIndex() {
+		s.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+			atk := args[1].(*coretype.AttackEvent)
+			t := args[0].(coretype.Target)
+			if atk.Info.ActorIndex != c.Index() {
 				return false
 			}
 
 			//ignore if character not on field
-			if s.ActiveChar != c.CharIndex() {
+			if s.Player.ActiveChar != c.Index()() {
 				return false
 			}
 
 			ele := atk.Info.Element
 			key := "vv" + ele.String()
 			switch atk.Info.AttackTag {
-			case core.AttackTagSwirlCryo:
-			case core.AttackTagSwirlElectro:
-			case core.AttackTagSwirlHydro:
-			case core.AttackTagSwirlPyro:
+			case coretype.AttackTagSwirlCryo:
+			case coretype.AttackTagSwirlElectro:
+			case coretype.AttackTagSwirlHydro:
+			case coretype.AttackTagSwirlPyro:
 			default:
 				return false
 			}
@@ -101,7 +102,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				Value:    -0.4,
 			})
 
-			s.Log.NewEvent("vv 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", key, "char", c.CharIndex())
+			s.Log.NewEvent("vv 4pc proc", coretype.LogArtifactEvent, c.Index(), "reaction", key, "char", c.Index())
 
 			return false
 		}, "vv4pc-secondary")

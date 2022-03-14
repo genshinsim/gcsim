@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,11 +12,11 @@ func init() {
 	core.RegisterWeaponFunc("skywardpride", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = 0.06 + float64(r)*0.02
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "skyward pride",
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -28,27 +29,27 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	dmg := 0.6 + float64(r)*0.2
 
-	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Subscribe(core.PreBurst, func(args ...interface{}) bool {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
-		dur = c.F + 1200
+		dur = c.Frame + 1200
 		counter = 0
-		c.Log.NewEvent("Skyward Pride activated", core.LogWeaponEvent, char.CharIndex(), "expiring ", dur)
+		c.Log.NewEvent("Skyward Pride activated", coretype.LogWeaponEvent, char.Index(), "expiring ", dur)
 		return false
 	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		//check if char is correct?
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
 		//check if cd is up
-		if c.F > dur {
+		if c.Frame > dur {
 			return false
 		}
 		if counter >= 8 {
@@ -57,7 +58,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 		counter++
 		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+			ActorIndex: char.Index(),
 			Abil:       "Skyward Pride Proc",
 			AttackTag:  core.AttackTagWeaponSkill,
 			ICDTag:     core.ICDTagNone,
@@ -67,7 +68,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			Durability: 100,
 			Mult:       dmg,
 		}
-		c.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
+		c.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 0, 1)
 		return false
 	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
 	return "skywardpride"

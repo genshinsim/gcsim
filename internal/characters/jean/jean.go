@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -15,7 +16,7 @@ type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -75,7 +76,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 88, 88
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -86,7 +87,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -97,7 +98,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	c.AddTask(func() {
 		snap := c.Snapshot(&ai)
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.4, false, core.TargettableEnemy), 0)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.4, false, coretype.TargettableEnemy), 0)
 
 		//check for healing
 		if c.Core.Rand.Float64() < 0.5 {
@@ -124,7 +125,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -132,7 +133,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.4, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.4, false, coretype.TargettableEnemy), f-1, f-1)
 
 	return f, a
 }
@@ -155,10 +156,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if c.Base.Cons >= 1 && p["hold"] >= 60 {
 		//add 40% dmg
 		snap.Stats[core.DmgP] += .4
-		c.Core.Log.NewEvent("jean c1 adding 40% dmg", core.LogCharacterEvent, c.Index, "final dmg%", snap.Stats[core.DmgP])
+		c.coretype.Log.NewEvent("jean c1 adding 40% dmg", coretype.LogCharacterEvent, c.Index, "final dmg%", snap.Stats[core.DmgP])
 	}
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f-1)
 
 	count := 2
 	if c.Core.Rand.Float64() < .67 {
@@ -192,19 +193,19 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f-10)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f-10)
 
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
 	for i := 0; i < enter; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f+i*delay)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f+i*delay)
 	}
 
-	c.Core.Status.AddStatus("jeanq", 630)
+	c.Core.AddStatus("jeanq", 630)
 
 	if c.Base.Cons >= 4 {
 		//add debuff to all target for ??? duration
-		for _, t := range c.Core.Targets {
+		for _, t := range c.coretype.Targets {
 			t.AddResMod("jeanc4", core.ResistMod{
 				Duration: 600, //10 seconds
 				Ele:      core.Anemo,
@@ -259,7 +260,7 @@ func (c *char) c6() {
 	// 	}
 	// 	return 0
 	// })
-	c.Core.Log.NewEvent("jean c6 not implemented", core.LogCharacterEvent, c.Index)
+	c.coretype.Log.NewEvent("jean c6 not implemented", coretype.LogCharacterEvent, c.Index)
 }
 
 func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
@@ -272,12 +273,12 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 		for _, active := range c.Core.Chars {
 			val := make([]float64, core.EndStatType)
 			val[core.AtkSpd] = 0.15
-			active.AddMod(core.CharStatMod{
+			active.AddMod(coretype.CharStatMod{
 				Key:    "jean-c2",
 				Amount: func() ([]float64, bool) { return val, true },
-				Expiry: c.Core.F + 900,
+				Expiry: c.Core.Frame + 900,
 			})
-			c.Core.Log.NewEvent("c2 - adding atk spd", core.LogCharacterEvent, c.Index, "char", c.Index)
+			c.coretype.Log.NewEvent("c2 - adding atk spd", coretype.LogCharacterEvent, c.Index, "char", c.Index)
 		}
 	}
 }

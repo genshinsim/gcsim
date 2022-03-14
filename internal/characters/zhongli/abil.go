@@ -11,7 +11,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -21,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	for i := 0; i < hits[c.NormalCounter]; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-i, f-i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-i, f-i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -33,7 +33,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupPole,
 		Element:    core.Physical,
@@ -41,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[c.TalentLvlAttack()],
 		FlatDmg:    0.0139 * c.HPMax,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	return f, a
 }
@@ -92,7 +92,7 @@ func (c *char) skillHold(f, max int, createStele bool) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 		FlatDmg:    0.019 * c.HPMax,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, f-1)
 	//create a stele if less than zhongli's max stele count and desired by player
 	if (c.steleCount <= c.maxStele) && createStele {
 		c.AddTask(func() {
@@ -122,7 +122,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 		FlatDmg:    0.33 * c.HPMax,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f-1, f-1)
 
 	if c.Base.Cons >= 2 {
 		c.addJadeShield()

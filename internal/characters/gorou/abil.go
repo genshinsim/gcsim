@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Normal attack damage queue generator
@@ -19,7 +20,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypePierce,
@@ -27,7 +28,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -47,7 +48,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Aim Charge Attack",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -58,7 +59,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		HitWeakPoint: weakspot == 1,
 	}
 	// d.AnimationFrames = f
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, f+travel)
 
 	return f, a
 }
@@ -94,7 +95,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttackWithSnap(
 			ai,
 			snap,
-			core.NewDefCircHit(5, false, core.TargettableEnemy),
+			core.NewDefCircHit(5, false, coretype.TargettableEnemy),
 			//TODO: skill damage frames
 			0,
 		)
@@ -111,14 +112,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//so it looks like gorou fields works much the same was as bennett field
 	//however e field cant be placed if q field still active
-	if c.Core.Status.Duration(generalGloryKey) == 0 {
+	if c.Core.StatusDuration(generalGloryKey) == 0 {
 
 		//TODO: when does ticks start?
-		c.eFieldSrc = c.Core.F
-		c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 59) //59 so we get one last tick
+		c.eFieldSrc = c.Core.Frame
+		c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.Frame), 59) //59 so we get one last tick
 
 		//add a status for general's banner, 10 seconds
-		c.Core.Status.AddStatus(generalWarBannerKey, 600)
+		c.Core.AddStatus(generalWarBannerKey, 600)
 
 		if c.Base.Cons >= 4 && c.geoCharCount > 1 {
 			//TODO: not sure if this actually snapshots stats
@@ -127,7 +128,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			// 	AttackTag: core.AttackTagNone,
 			// }
 			stats, _ := c.SnapshotStats()
-			c.Core.Tasks.Add(c.gorouSkillHealField(c.Core.F, stats[:]), 90)
+			c.Core.Tasks.Add(c.gorouSkillHealField(c.Core.Frame, stats[:]), 90)
 		}
 	}
 
@@ -144,16 +145,16 @@ func (c *char) gorouSkillBuffField(src int) func() {
 			return
 		}
 		//do nothing if both field expired
-		if c.Core.Status.Duration(generalWarBannerKey) == 0 && c.Core.Status.Duration(generalGloryKey) == 0 {
+		if c.Core.StatusDuration(generalWarBannerKey) == 0 && c.Core.StatusDuration(generalGloryKey) == 0 {
 			return
 		}
 		//do nothing if expired
 		//add buff to active char based on number of geo chars
 		//ok to overwrite existing mod
 		active := c.Core.Chars[c.Core.ActiveChar]
-		active.AddMod(core.CharStatMod{
+		active.AddMod(coretype.CharStatMod{
 			Key:    defenseBuffKey,
-			Expiry: c.Core.F + 126, //2.1s
+			Expiry: c.Core.Frame + 126, //2.1s
 			Amount: func() ([]float64, bool) {
 				return c.gorouBuff, true
 			},
@@ -171,7 +172,7 @@ func (c *char) gorouSkillHealField(src int, stats []float64) func() {
 			return
 		}
 		//do nothing if field expired
-		if c.Core.Status.Duration(generalWarBannerKey) == 0 {
+		if c.Core.StatusDuration(generalWarBannerKey) == 0 {
 			return
 		}
 		//When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
@@ -214,7 +215,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttackWithSnap(
 			ai,
 			snap,
-			core.NewDefCircHit(5, false, core.TargettableEnemy),
+			core.NewDefCircHit(5, false, coretype.TargettableEnemy),
 			//TODO: skill damage frames
 			0,
 		)
@@ -223,20 +224,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//Like the General's War Banner created by Inuzaka All-Round Defense, provides buffs to active characters
 	//within the skill's AoE based on the number of Geo characters in the party. Also moves together with
 	//your active character.
-	c.eFieldSrc = c.Core.F
-	c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 59) //59 so we get one last tick
+	c.eFieldSrc = c.Core.Frame
+	c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.Frame), 59) //59 so we get one last tick
 
 	//If a General's War Banner created by Gorou currently exists on the field when this ability is used,
 	//it will be destroyed. In addition, for the duration of General's Glory, Gorou's
 	//Elemental Skill "Inuzaka All-Round Defense" will not create the General's War Banner.
 	c.Core.Status.DeleteStatus(generalWarBannerKey)
-	c.Core.Status.AddStatus(generalGloryKey, generalGloryDuration)
+	c.Core.AddStatus(generalGloryKey, generalGloryDuration)
 
 	//Generates 1 Crystal Collapse every 1.5s that deals AoE Geo DMG to 1 opponent within the skill's AoE.
 	//Pulls 1 elemental shard in the skill's AoE to your active character's position every 1.5s (elemental
 	//shards are created by Crystallize reactions).
-	c.qFieldSrc = c.Core.F
-	c.Core.Tasks.Add(c.gorouCrystalCollapse(c.Core.F), 90) //every 90s?
+	c.qFieldSrc = c.Core.Frame
+	c.Core.Tasks.Add(c.gorouCrystalCollapse(c.Core.Frame), 90) //every 90s?
 
 	//TODO:  If Gorou falls, the effects of General's Glory will be cleared.
 
@@ -244,9 +245,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	val := make([]float64, core.EndStatType)
 	val[core.DEFP] = .25
 	for _, char := range c.Core.Chars {
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key:    heedlessKey,
-			Expiry: c.Core.F + 720, //12s
+			Expiry: c.Core.Frame + 720, //12s
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},
@@ -274,7 +275,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			return
 		}
 		//do nothing if field expired
-		if c.Core.Status.Duration(generalGloryKey) == 0 {
+		if c.Core.StatusDuration(generalGloryKey) == 0 {
 			return
 		}
 		//trigger damage
@@ -297,7 +298,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		c.Core.Combat.QueueAttackWithSnap(
 			ai,
 			snap,
-			core.NewDefCircHit(5, false, core.TargettableEnemy),
+			core.NewDefCircHit(5, false, coretype.TargettableEnemy),
 			//TODO: skill damage frames
 			1,
 		)

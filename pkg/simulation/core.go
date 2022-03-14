@@ -22,13 +22,13 @@ import (
 
 func newCoreNoQueue(seed int64, debug bool) *core.Core {
 	c := core.New()
-	c.F = -1
+	c.Frame = -1
 	if debug {
-		c.Log = eventlog.NewCtrl(&c.F, 500)
+		c.Log = eventlog.NewCtrl(&c.Frame, 500)
 		c.Flags.LogDebug = true
 	}
 	c.Rand = rand.New(rand.NewSource(seed))
-	c.Tasks = task.NewCtrl(&c.F)
+	c.Tasks = task.NewCtrl(&c.Frame)
 	c.Events = event.NewCtrl(c)
 	c.Status = status.NewCtrl(c)
 	c.Energy = energy.NewCtrl(c)

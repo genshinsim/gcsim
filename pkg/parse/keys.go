@@ -1,6 +1,9 @@
 package parse
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 var key = map[string]ItemType{
 	".": itemDot,
@@ -59,7 +62,7 @@ var queueModeKeys = map[string]core.SimulationQueueMode{
 	"sl":  core.SequentialList,
 }
 
-var statKeys = map[string]core.StatType{
+var statKeys = map[string]coretype.StatType{
 	"def%":     core.DEFP,
 	"def":      core.DEF,
 	"hp":       core.HP,
@@ -73,7 +76,7 @@ var statKeys = map[string]core.StatType{
 	"heal":     core.Heal,
 	"pyro%":    core.PyroP,
 	"hydro%":   core.HydroP,
-	"cryo%":    core.CryoP,
+	"cryo%":    coretype.CryoP,
 	"electro%": core.ElectroP,
 	"anemo%":   core.AnemoP,
 	"geo%":     core.GeoP,
@@ -84,12 +87,12 @@ var statKeys = map[string]core.StatType{
 	"dmg%":    core.DmgP,
 }
 
-var eleKeys = map[string]core.EleType{
+var eleKeys = map[string]coretype.EleType{
 	"electro":  core.Electro,
 	"pyro":     core.Pyro,
-	"cryo":     core.Cryo,
+	"cryo":     coretype.Cryo,
 	"hydro":    core.Hydro,
-	"frozen":   core.Frozen,
+	"frozen":   coretype.Frozen,
 	"anemo":    core.Anemo,
 	"dendro":   core.Dendro,
 	"geo":      core.Geo,

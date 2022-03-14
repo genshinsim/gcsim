@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -11,7 +12,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
@@ -20,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -36,7 +37,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
@@ -45,7 +46,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), 0, f-1)
 
 	if c.Base.Cons >= 4 {
 		c.c4()
@@ -78,7 +79,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.a4()
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 41, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy, coretype.TargettableObject), 0, 41, cb)
 
 	c.QueueParticle("sucrose", 4, core.Anemo, 150)
 
@@ -102,7 +103,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.qInfused = core.NoElement
 
 	// c.S.Status["sucroseburst"] = c.Core.F + count
-	c.Core.Status.AddStatus("sucroseburst", duration)
+	c.Core.AddStatus("sucroseburst", duration)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Forbidden Creation-Isomer 75/Type II",
@@ -141,19 +142,19 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	for i := 120; i <= duration; i += 120 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), i, cb)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, coretype.TargettableEnemy), i, cb)
 
 		c.AddTask(func() {
 			if c.qInfused != core.NoElement {
 				aiAbs.Element = c.qInfused
-				c.Core.Combat.QueueAttackWithSnap(aiAbs, snapAbs, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
+				c.Core.Combat.QueueAttackWithSnap(aiAbs, snapAbs, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 0)
 			}
 			//check if infused
 		}, "sucrose-burst-em", i)
 	}
 
 	//
-	c.AddTask(c.absorbCheck(c.Core.F, 0, int(duration/18)), "absorb-check", f)
+	c.AddTask(c.absorbCheck(c.Core.Frame, 0, int(duration/18)), "absorb-check", f)
 
 	c.SetCDWithDelay(core.ActionBurst, 1200, 26)
 	c.ConsumeEnergy(26)
@@ -165,7 +166,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfused = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+		c.qInfused = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, coretype.Cryo)
 
 		if c.qInfused != core.NoElement {
 			if c.Base.Cons >= 6 {
@@ -191,7 +192,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 // 		ice := false
 
 // 		//scan through all targets, order is fire > water > electric > ice/frozen
-// 		for _, t := range c.Core.Targets {
+// 		for _, t := range c.coretype.Targets {
 // 			switch t.AuraType() {
 // 			case core.Pyro:
 // 				fire = true
@@ -199,11 +200,11 @@ func (c *char) absorbCheck(src, count, max int) func() {
 // 				water = true
 // 			case core.Electro:
 // 				electric = true
-// 			case core.Cryo:
+// 			case coretype.Cryo:
 // 				ice = true
 // 			case core.EC:
 // 				water = true
-// 			case core.Frozen:
+// 			case coretype.Frozen:
 // 				ice = true
 // 			}
 // 		}
@@ -216,7 +217,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 // 		case electric:
 // 			c.qInfused = core.Electro
 // 		case ice:
-// 			c.qInfused = core.Cryo
+// 			c.qInfused = coretype.Cryo
 // 		default:
 // 			//nothing found, queue next
 // 			c.AddTask(c.absorbCheck(src, count+1, max), "absorb-detect", 18) //every 0.3 seconds

@@ -46,7 +46,7 @@ func TestBurstAura(t *testing.T) {
 	//player should have no aura
 	if player.AuraType() != core.NoElement {
 		t.FailNow()
-		log.Printf("at frame %v, aura is: %v\n", c.F, c.Targets[0].AuraType())
+		log.Printf("at frame %v, aura is: %v\n", c.Frame, c.Targets[0].AuraType())
 		t.Errorf("expected no aura, got %v", player.AuraType())
 	}
 
@@ -57,7 +57,7 @@ func TestBurstAura(t *testing.T) {
 	//damage should benefit from his own buff?
 	if player.AuraType() != core.Pyro {
 		t.FailNow()
-		log.Printf("at frame %v, aura is: %v, durability is: %v\n", c.F, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
+		log.Printf("at frame %v, aura is: %v, durability is: %v\n", c.Frame, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
 		t.Errorf("expected pyro aura, got %v", player.AuraType())
 	}
 
@@ -67,7 +67,7 @@ func TestBurstAura(t *testing.T) {
 	//check player aura
 	if player.AuraType() != core.Pyro {
 		t.FailNow()
-		log.Printf("at frame %v, aura is: %v, durability is: %v\n", c.F, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
+		log.Printf("at frame %v, aura is: %v, durability is: %v\n", c.Frame, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
 		t.Errorf("expected pyro aura, got %v", player.AuraType())
 	}
 
@@ -78,7 +78,7 @@ func TestBurstAura(t *testing.T) {
 	//this should be frame 720 + 31 = 751
 	if player.AuraType() != core.Pyro {
 		t.FailNow()
-		log.Printf("at frame %v, aura is: %v, durability is: %v\n", c.F, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
+		log.Printf("at frame %v, aura is: %v, durability is: %v\n", c.Frame, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
 		t.Errorf("expected pyro aura, got %v", player.AuraType())
 	}
 
@@ -89,7 +89,7 @@ func TestBurstAura(t *testing.T) {
 	if player.AuraType() != core.Pyro || player.Reactable.Durability[core.Pyro] <= reactable.ZeroDur {
 		t.FailNow()
 		t.Errorf("expected pyro aura, got %v", player.AuraType())
-		log.Printf("at frame %v (should be 1 frame before aura expires), aura is: %v, durability is: %v\n", c.F, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
+		log.Printf("at frame %v (should be 1 frame before aura expires), aura is: %v, durability is: %v\n", c.Frame, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
 
 	}
 
@@ -97,7 +97,7 @@ func TestBurstAura(t *testing.T) {
 	if player.AuraType() != core.NoElement || player.Reactable.Durability[core.Pyro] > reactable.ZeroDur {
 		t.FailNow()
 		t.Errorf("expected no aura, got %v", player.AuraType())
-		log.Printf("at frame %v (aura should have expired), aura is: %v, durability is: %v\n", c.F, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
+		log.Printf("at frame %v (aura should have expired), aura is: %v, durability is: %v\n", c.Frame, c.Targets[0].AuraType(), player.Reactable.Durability[core.Pyro])
 
 	}
 

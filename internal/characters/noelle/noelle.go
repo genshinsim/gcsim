@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -16,7 +17,7 @@ type char struct {
 	a4Counter   int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -55,15 +56,15 @@ c6: sweeping time increase additional 50%; add 1s up to 10s everytime opponent k
 
 func (c *char) a2() {
 	icd := 0
-	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-		if c.Core.F < icd {
+	c.Core.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.Core.Frame < icd {
 			return false
 		}
 		char := c.Core.Chars[c.Core.ActiveChar]
 		if char.HP()/char.MaxHP() >= 0.3 {
 			return false
 		}
-		icd = c.Core.F + 3600
+		icd = c.Core.Frame + 3600
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A2 Shield",
@@ -74,12 +75,12 @@ func (c *char) a2() {
 		//add shield
 		x := snap.BaseDef*(1+snap.Stats[core.DEFP]) + snap.Stats[core.DEF]
 		c.Core.Shields.Add(&shield.Tmpl{
-			Src:        c.Core.F,
+			Src:        c.Core.Frame,
 			ShieldType: core.ShieldNoelleA2,
 			Name:       "Noelle A2",
 			HP:         4 * x,
-			Ele:        core.Cryo,
-			Expires:    c.Core.F + 1200, //20 sec
+			Ele:        coretype.Cryo,
+			Expires:    c.Core.Frame + 1200, //20 sec
 		})
 		return false
 	}, "noelle-a2")
@@ -89,12 +90,12 @@ func (c *char) a2() {
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	ds := c.Tmpl.Snapshot(ai)
 
-	if c.Core.Status.Duration("noelleq") > 0 {
+	if c.Core.StatusDuration("noelleq") > 0 {
 		//infusion to attacks only
 		switch ai.AttackTag {
-		case core.AttackTagNormal:
+		case coretype.AttackTagNormal:
 		case core.AttackTagPlunge:
-		case core.AttackTagExtra:
+		case coretype.AttackTagExtra:
 		default:
 			return ds
 		}

@@ -2,6 +2,7 @@ package stringless
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -10,12 +11,12 @@ func init() {
 	core.RegisterWeaponFunc("stringless", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = 0.18 + float64(r)*0.06
-	char.AddPreDamageMod(core.PreDamageMod{
+	char.AddPreDamageMod(coretype.PreDamageMod{
 		Key: "stringless",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case core.AttackTagElementalArt:
 			case core.AttackTagElementalArtHold:

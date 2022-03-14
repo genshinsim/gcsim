@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,10 +12,10 @@ func init() {
 	core.RegisterWeaponFunc("aquilafavonia", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = .15 + .05*float64(r)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "acquila favonia",
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -27,16 +28,16 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	last := -1
 
-	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
-		if c.F-last < 900 && last != -1 {
+		if c.Frame-last < 900 && last != -1 {
 			return false
 		}
-		last = c.F
+		last = c.Frame
 		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+			ActorIndex: char.Index(),
 			Abil:       "Aquila Favonia",
 			AttackTag:  core.AttackTagWeaponSkill,
 			ICDTag:     core.ICDTagNone,
@@ -46,7 +47,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			Mult:       dmg,
 		}
 		snap := char.Snapshot(&ai)
-		c.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 1)
+		c.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 1)
 
 		atk := snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]
 

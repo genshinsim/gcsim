@@ -1,27 +1,30 @@
 package gorou
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 //When characters (other than Gorou) within the AoE of Gorou's General's War Banner
 //or General's Glory deal Geo DMG to opponents, the CD of Gorou's Inuzaka All-Round Defense
 //is decreased by 2s. This effect can occur once every 10s.
 func (c *char) c1() {
 	icd := -1
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		if c.Core.Status.Duration(generalGloryKey) == 0 && c.Core.Status.Duration(generalWarBannerKey) == 0 {
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		if c.Core.StatusDuration(generalGloryKey) == 0 && c.Core.StatusDuration(generalWarBannerKey) == 0 {
 			return false
 		}
-		if icd > c.Core.F {
+		if icd > c.Core.Frame {
 			return false
 		}
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 		if atk.Info.ActorIndex == c.Index {
 			return false
 		}
 		if atk.Info.Element != core.Geo {
 			return false
 		}
-		icd = c.Core.F + 600
+		icd = c.Core.Frame + 600
 		c.ReduceActionCooldown(core.ActionSkill, 120)
 		return false
 	}, "gorou-c1")
@@ -33,7 +36,7 @@ func (c *char) c1() {
 func (c *char) c2() {
 	//TODO: this is currently on reaction but really should be on pick up
 	cb := func(args ...interface{}) bool {
-		dur := c.Core.Status.Duration(generalGloryKey)
+		dur := c.Core.StatusDuration(generalGloryKey)
 		if dur == 0 {
 			return false
 		}
@@ -47,22 +50,22 @@ func (c *char) c2() {
 				ext = 180 - c.c2Extension
 			}
 			c.c2Extension += ext
-			c.Core.Status.AddStatus(generalGloryKey, c.Core.F+dur+ext)
+			c.Core.AddStatus(generalGloryKey, c.Core.Frame+dur+ext)
 		}, 30)
 		return false
 	}
-	c.Core.Events.Subscribe(core.OnCrystallizeCryo, cb, "gorou-c2")
-	c.Core.Events.Subscribe(core.OnCrystallizeElectro, cb, "gorou-c2")
-	c.Core.Events.Subscribe(core.OnCrystallizeHydro, cb, "gorou-c2")
-	c.Core.Events.Subscribe(core.OnCrystallizePyro, cb, "gorou-c2")
+	c.Core.Subscribe(core.OnCrystallizeCryo, cb, "gorou-c2")
+	c.Core.Subscribe(core.OnCrystallizeElectro, cb, "gorou-c2")
+	c.Core.Subscribe(core.OnCrystallizeHydro, cb, "gorou-c2")
+	c.Core.Subscribe(core.OnCrystallizePyro, cb, "gorou-c2")
 }
 
 func (c *char) c6() {
 	for _, char := range c.Core.Chars {
-		char.AddPreDamageMod(core.PreDamageMod{
+		char.AddPreDamageMod(coretype.PreDamageMod{
 			Key:    c6key,
-			Expiry: c.Core.F + 720, //12s
-			Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Expiry: c.Core.Frame + 720, //12s
+			Amount: func(ae *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				if ae.Info.Element != core.Geo {
 					return nil, false
 				}

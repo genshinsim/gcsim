@@ -3,6 +3,7 @@ package yoimiya
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -15,7 +16,7 @@ type char struct {
 	lastPart int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -56,12 +57,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) a2() {
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "yoimiya-a2",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
-			if c.Core.Status.Duration("yoimiyaa2") > 0 {
+			if c.Core.StatusDuration("yoimiyaa2") > 0 {
 				val[core.PyroP] = float64(c.a2stack) * 0.02
 				return val, true
 			}
@@ -69,22 +70,22 @@ func (c *char) a2() {
 			return nil, false
 		},
 	})
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.Core.Status.Duration("yoimiyaskill") == 0 {
+		if c.Core.StatusDuration("yoimiyaskill") == 0 {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != coretype.AttackTagNormal {
 			return false
 		}
 		//here we can add stacks up to 10
 		if c.a2stack < 10 {
 			c.a2stack++
 		}
-		c.Core.Status.AddStatus("yoimiyaa2", 180)
+		c.Core.AddStatus("yoimiyaa2", 180)
 		// c.a2expiry = c.Core.F + 180 // 3 seconds
 		return false
 	}, "yoimiya-a2")
@@ -94,11 +95,11 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	ds := c.Tmpl.Snapshot(ai)
 
 	//infusion to normal attack only
-	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == core.AttackTagNormal {
+	if c.Core.StatusDuration("yoimiyaskill") > 0 && ai.AttackTag == coretype.AttackTagNormal {
 		ai.Element = core.Pyro
 		// ds.ICDTag = core.ICDTagNone
 		//multiplier
-		c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
+		c.coretype.Log.NewEvent("skill mult applied", coretype.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
 	}
 	return ds

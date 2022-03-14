@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -13,7 +14,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -21,7 +22,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -34,7 +35,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//0 for base dmg, 1 for 1x bonus, 2 for max bonus
 	if counter >= 2 {
 		counter = 2
-		c.Core.Status.AddStatus("beidoua4", 600)
+		c.Core.AddStatus("beidoua4", 600)
 	}
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -47,7 +48,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       skillbase[c.TalentLvlSkill()] + skillbonus[c.TalentLvlSkill()]*float64(counter),
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	//2 if no hit, 3 if 1 hit, 4 if perfect
 	c.QueueParticle("beidou", 2+counter, core.Electro, 100)
@@ -55,12 +56,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if counter > 0 {
 		//add shield
 		c.Core.Shields.Add(&shield.Tmpl{
-			Src:        c.Core.F,
+			Src:        c.Core.Frame,
 			ShieldType: core.ShieldBeidouThunderShield,
 			Name:       "Beidou Skill",
 			HP:         shieldPer[c.TalentLvlSkill()]*c.HPMax + shieldBase[c.TalentLvlSkill()],
 			Ele:        core.Electro,
-			Expires:    c.Core.F + 900, //15 sec
+			Expires:    c.Core.Frame + 900, //15 sec
 		})
 	}
 
@@ -70,7 +71,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Energy < c.EnergyMax {
-		c.Core.Log.NewEvent("burst insufficient energy; skipping", core.LogCharacterEvent, c.Index, "character", c.Base.Key.String())
+		c.coretype.Log.NewEvent("burst insufficient energy; skipping", coretype.LogCharacterEvent, c.Index, "character", c.Base.Key.String())
 		return 0, 0
 	}
 
@@ -86,9 +87,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 100,
 		Mult:       burstonhit[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f-1, f-1)
 
-	c.Core.Status.AddStatus("beidouburst", 900)
+	c.Core.AddStatus("beidouburst", 900)
 
 	procAI := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -101,7 +102,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstproc[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&procAI)
-	c.burstAtk = &core.AttackEvent{
+	c.burstAtk = &coretype.AttackEvent{
 		Info:     procAI,
 		Snapshot: snap,
 	}
@@ -109,18 +110,18 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Base.Cons >= 1 {
 		//create a shield
 		c.Core.Shields.Add(&shield.Tmpl{
-			Src:        c.Core.F,
+			Src:        c.Core.Frame,
 			ShieldType: core.ShieldBeidouThunderShield,
 			Name:       "Beidou C1",
 			HP:         .16 * c.HPMax,
 			Ele:        core.Electro,
-			Expires:    c.Core.F + 900, //15 sec
+			Expires:    c.Core.Frame + 900, //15 sec
 		})
 	}
 
 	if c.Base.Cons == 6 {
 		c.AddTask(func() {
-			for _, t := range c.Core.Targets {
+			for _, t := range c.coretype.Targets {
 				t.AddResMod("beidouc6", core.ResistMod{
 					Duration: 900 - f, //15 seconds
 					Ele:      core.Electro,
@@ -137,37 +138,37 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 func (c *char) burstProc() {
 	icd := 0
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-		t := args[0].(core.Target)
-		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*coretype.AttackEvent)
+		t := args[0].(coretype.Target)
+		if ae.Info.AttackTag != coretype.AttackTagNormal && ae.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
 		//make sure the person triggering the attack is on field still
 		if ae.Info.ActorIndex != c.Core.ActiveChar {
 			return false
 		}
-		if c.Core.Status.Duration("beidouburst") == 0 {
+		if c.Core.StatusDuration("beidouburst") == 0 {
 			return false
 		}
-		if icd > c.Core.F {
-			c.Core.Log.NewEvent("beidou Q (active) on icd", core.LogCharacterEvent, c.Index)
+		if icd > c.Core.Frame {
+			c.coretype.Log.NewEvent("beidou Q (active) on icd", coretype.LogCharacterEvent, c.Index)
 			return false
 		}
 
 		//trigger a chain of attacks starting at the first target
 		atk := *c.burstAtk
-		atk.SourceFrame = c.Core.F
-		atk.Pattern = core.NewDefSingleTarget(t.Index(), core.TargettableEnemy)
-		cb := c.chain(c.Core.F, 1)
+		atk.SourceFrame = c.Core.Frame
+		atk.Pattern = core.NewDefSingleTarget(t.Index(), coretype.TargettableEnemy)
+		cb := c.chain(c.Core.Frame, 1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
 		}
 		c.Core.Combat.QueueAttackEvent(&atk, 1)
 
-		c.Core.Log.NewEvent("beidou Q proc'd", core.LogCharacterEvent, c.Index, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
+		c.coretype.Log.NewEvent("beidou Q proc'd", coretype.LogCharacterEvent, c.Index, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
 
-		icd = c.Core.F + 60 // once per second
+		icd = c.Core.Frame + 60 // once per second
 		return false
 	}, "beidou-burst")
 }
@@ -192,7 +193,7 @@ func (c *char) chain(src int, count int) core.AttackCBFunc {
 		//queue an attack vs next target
 		atk := *c.burstAtk
 		atk.SourceFrame = src
-		atk.Pattern = core.NewDefSingleTarget(trgs[next], core.TargettableEnemy)
+		atk.Pattern = core.NewDefSingleTarget(trgs[next], coretype.TargettableEnemy)
 		cb := c.chain(src, count+1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)

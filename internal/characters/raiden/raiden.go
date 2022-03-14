@@ -3,6 +3,7 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type char struct {
@@ -20,7 +21,7 @@ func init() {
 	core.RegisterCharFunc(core.Raiden, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -57,12 +58,12 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	case core.ActionCharge:
-		if c.Core.Status.Duration("raidenburst") == 0 {
+		if c.Core.StatusDuration("raidenburst") == 0 {
 			return 25
 		}
 		return 20
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -74,17 +75,17 @@ func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 	excess := int(s.Stats[core.ER] / 0.01)
 
 	s.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Core.Log.NewEvent("a4 adding electro dmg", core.LogCharacterEvent, c.Index, "stacks", excess, "final", s.Stats[core.ElectroP])
+	c.coretype.Log.NewEvent("a4 adding electro dmg", coretype.LogCharacterEvent, c.Index, "stacks", excess, "final", s.Stats[core.ElectroP])
 	//
 	////infusion to normal/plunge/charge
 	//switch ds.AttackTag {
-	//case core.AttackTagNormal:
-	//case core.AttackTagExtra:
+	//case coretype.AttackTagNormal:
+	//case coretype.AttackTagExtra:
 	//case core.AttackTagPlunge:
 	//default:
 	//	return ds
 	//}
-	//if c.Core.Status.Duration("raidenburst") > 0 {
+	//if c.Core.StatusDuration("raidenburst") > 0 {
 	//	ds.Element = core.Electro
 	//}
 

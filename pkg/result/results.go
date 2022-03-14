@@ -8,28 +8,29 @@ import (
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/montanaflynn/stats"
 )
 
 type Summary struct {
 	//version stuff
-	V2                    bool                            `json:"v2"`
-	Version               string                          `json:"version"`
-	BuildDate             string                          `json:"build_date"`
-	IsDamageMode          bool                            `json:"is_damage_mode"`
-	ActiveChar            string                          `json:"active_char"`
-	CharNames             []string                        `json:"char_names"`
-	DamageByChar          []map[string]FloatResult        `json:"damage_by_char"`
-	DamageInstancesByChar []map[string]IntResult          `json:"damage_instances_by_char"`
-	DamageByCharByTargets []map[int]FloatResult           `json:"damage_by_char_by_targets"`
-	CharActiveTime        []IntResult                     `json:"char_active_time"`
-	AbilUsageCountByChar  []map[string]IntResult          `json:"abil_usage_count_by_char"`
-	ParticleCount         map[string]IntResult            `json:"particle_count"`
-	ReactionsTriggered    map[core.ReactionType]IntResult `json:"reactions_triggered"`
-	Duration              FloatResult                     `json:"sim_duration"`
-	ElementUptime         []map[core.EleType]IntResult    `json:"ele_uptime"`
-	RequiredER            []float64                       `json:"required_er"`
+	V2                    bool                             `json:"v2"`
+	Version               string                           `json:"version"`
+	BuildDate             string                           `json:"build_date"`
+	IsDamageMode          bool                             `json:"is_damage_mode"`
+	ActiveChar            string                           `json:"active_char"`
+	CharNames             []string                         `json:"char_names"`
+	DamageByChar          []map[string]FloatResult         `json:"damage_by_char"`
+	DamageInstancesByChar []map[string]IntResult           `json:"damage_instances_by_char"`
+	DamageByCharByTargets []map[int]FloatResult            `json:"damage_by_char_by_targets"`
+	CharActiveTime        []IntResult                      `json:"char_active_time"`
+	AbilUsageCountByChar  []map[string]IntResult           `json:"abil_usage_count_by_char"`
+	ParticleCount         map[string]IntResult             `json:"particle_count"`
+	ReactionsTriggered    map[core.ReactionType]IntResult  `json:"reactions_triggered"`
+	Duration              FloatResult                      `json:"sim_duration"`
+	ElementUptime         []map[coretype.EleType]IntResult `json:"ele_uptime"`
+	RequiredER            []float64                        `json:"required_er"`
 	//final result
 	Damage         FloatResult            `json:"damage"`
 	DPS            FloatResult            `json:"dps"`
@@ -280,7 +281,7 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 		//ele up time
 		for t, m := range v.ElementUptime {
 			if len(result.ElementUptime) == t {
-				result.ElementUptime = append(result.ElementUptime, make(map[core.EleType]IntResult))
+				result.ElementUptime = append(result.ElementUptime, make(map[coretype.EleType]IntResult))
 			}
 			//go through m and add to our results
 			for ele, amt := range m {
@@ -490,8 +491,8 @@ func (r *Summary) PrettyPrint() string {
 			sb.WriteString("Element up time:\n")
 		}
 		sb.WriteString(fmt.Sprintf("\tTarget #%v\n", i+1))
-		for j, ele := range core.EleTypeString {
-			v, ok := m[core.EleType(j)]
+		for j, ele := range coretype.EleTypeString {
+			v, ok := m[coretype.EleType(j)]
 			if ok {
 				if ele == "" {
 					ele = "none"

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 var hitmarks = [][]int{
@@ -21,7 +22,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -31,7 +32,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -45,7 +46,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -56,7 +57,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 20+i, 20+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 20+i, 20+i)
 	}
 
 	return f, a
@@ -82,7 +83,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, f)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), f, f)
 	}
 
 	//aoe dmg
@@ -99,7 +100,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 		IgnoreInfusion: true,
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), f, f)
 
 	// a2 if applies
 	if c.a2Ele != core.NoElement {
@@ -116,7 +117,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 			IgnoreInfusion: true,
 		}
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), f-1, f-1)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), f-1, f-1)
 		c.a2Ele = core.NoElement
 	}
 
@@ -145,18 +146,18 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), 0, f)
 
 	c.QueueParticle("kazuha", 3, core.Anemo, 100)
 
-	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/6)), "kaz-a2-absorb-check", 1)
+	c.AddTask(c.absorbCheckA2(c.Core.Frame, 0, int(f/6)), "kaz-a2-absorb-check", 1)
 
 	cd := 360
 	if c.Base.Cons > 0 {
 		cd = 324
 	}
 	if c.Base.Cons == 6 {
-		c.c6Active = c.Core.F + f + 300
+		c.c6Active = c.Core.Frame + f + 300
 	}
 	c.SetCD(core.ActionSkill, cd)
 
@@ -177,17 +178,17 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), 0, f)
 
 	c.QueueParticle("kazuha", 4, core.Anemo, 100)
 
-	c.AddTask(c.absorbCheckA2(c.Core.F, 0, int(f/6)), "kaz-a2-absorb-check", 1)
+	c.AddTask(c.absorbCheckA2(c.Core.Frame, 0, int(f/6)), "kaz-a2-absorb-check", 1)
 	cd := 540
 	if c.Base.Cons > 0 {
 		cd = 486
 	}
 	if c.Base.Cons == 6 {
-		c.c6Active = c.Core.F + f + 300
+		c.c6Active = c.Core.Frame + f + 300
 	}
 	c.SetCD(core.ActionSkill, cd)
 	return f, a
@@ -209,7 +210,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstSlash[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 82)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), 0, 82)
 
 	//apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
@@ -217,7 +218,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	ai.Durability = 25
 	snap := c.Snapshot(&ai)
 
-	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(310/18)), "kaz-absorb-check", 10)
+	c.AddTask(c.absorbCheckQ(c.Core.Frame, 0, int(310/18)), "kaz-absorb-check", 10)
 
 	//from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
 	for i := 0; i < 5; i++ {
@@ -235,9 +236,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 					Durability: 25,
 					Mult:       burstEleDot[c.TalentLvlBurst()],
 				}
-				c.Core.Combat.QueueAttack(absorb, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0)
+				c.Core.Combat.QueueAttack(absorb, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 0, 0)
 			}
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 0)
 		}, "kazuha-burst-tick", 147+117*i)
 	}
 
@@ -257,12 +258,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		val[core.EM] = 200
 		for _, char := range c.Core.Chars {
 			this := char
-			char.AddMod(core.CharStatMod{
+			char.AddMod(coretype.CharStatMod{
 				Key:    "kazuha-c2",
-				Expiry: c.Core.F + 147 + 117*5,
+				Expiry: c.Core.Frame + 147 + 117*5,
 				Amount: func() ([]float64, bool) {
-					switch this.CharIndex() {
-					case c.Core.ActiveChar, c.CharIndex():
+					switch this.Index() {
+					case c.Core.ActiveChar, c.Index():
 						return val, true
 					}
 					return nil, false
@@ -272,7 +273,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	if c.Base.Cons == 6 {
-		c.c6Active = c.Core.F + f + 300
+		c.c6Active = c.Core.Frame + f + 300
 	}
 
 	c.SetCDWithDelay(core.ActionBurst, 15*60, 7)
@@ -285,7 +286,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, coretype.Cryo)
 
 		if c.qInfuse != core.NoElement {
 			return
@@ -300,11 +301,11 @@ func (c *char) absorbCheckA2(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.a2Ele = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+		c.a2Ele = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, coretype.Cryo)
 
 		if c.a2Ele != core.NoElement {
-			c.Core.Log.NewEventBuildMsg(
-				core.LogCharacterEvent,
+			c.coretype.Log.NewEventBuildMsg(
+				coretype.LogCharacterEvent,
 				c.Index,
 				"kazuha a2 infused ", c.a2Ele.String(),
 			)

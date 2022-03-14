@@ -2,6 +2,7 @@ package harbinger
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -9,11 +10,11 @@ func init() {
 	core.RegisterWeaponFunc("harbingerofdawn", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	m := make([]float64, core.EndStatType)
 	m[core.CR] = .105 + .035*float64(r)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "harbinger",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {

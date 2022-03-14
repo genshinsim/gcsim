@@ -9,7 +9,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionAttack:
 		f := 0
 		hl := 0
-		if c.Core.Status.Duration("ittoq") <= 0 {
+		if c.Core.StatusDuration("ittoq") <= 0 {
 			// Values outside of burst
 			//TODO: need to add atkspd mod
 			switch c.NormalCounter {
@@ -116,7 +116,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 91, 91
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

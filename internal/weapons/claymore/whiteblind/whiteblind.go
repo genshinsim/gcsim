@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -12,27 +13,27 @@ func init() {
 
 //On hit, Normal or Charged Attacks increase ATK and DEF by 6/7.5/9/10.5/12% for 6s.
 //Max 4 stacks (24/30/36/42/48% total). This effect can only occur once every 0.5s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	stacks := 0
 	icd := 0
 	duration := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
-		if duration < c.F {
+		if duration < c.Frame {
 			stacks = 0
 		}
-		duration = c.F + 360
-		icd = c.F + 30
+		duration = c.Frame + 360
+		icd = c.Frame + 30
 		stacks++
 		if stacks > 4 {
 			stacks = 4
@@ -43,11 +44,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	amt := 0.045 + float64(r)*0.015
 
 	val := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "whiteblind",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
-			if duration < c.F {
+			if duration < c.Frame {
 				stacks = 0
 				return nil, false
 			}

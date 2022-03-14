@@ -2,12 +2,13 @@ package ganyu
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) c1() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		t := args[0].(core.Target)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		t := args[0].(coretype.Target)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
@@ -16,7 +17,7 @@ func (c *char) c1() {
 		}
 		c.AddEnergy("ganyu-c1", 2)
 		t.AddResMod("ganyu-c1", core.ResistMod{
-			Ele:      core.Cryo,
+			Ele:      coretype.Cryo,
 			Value:    -0.15,
 			Duration: 5 * 60,
 		})

@@ -3,6 +3,7 @@ package mona
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -20,7 +21,7 @@ const (
 	omenKey   = "omen-debuff"
 )
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -55,7 +56,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 50
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
@@ -68,12 +69,12 @@ func (c *char) Init() {
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = dmgBonus[c.TalentLvlBurst()]
 	for _, char := range c.Core.Chars {
-		char.AddPreDamageMod(core.PreDamageMod{
+		char.AddPreDamageMod(coretype.PreDamageMod{
 			Key:    "mona-omen",
 			Expiry: -1,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				//ignore if omen or bubble not present
-				if t.GetTag(bubbleKey) < c.Core.F && t.GetTag(omenKey) < c.Core.F {
+				if t.GetTag(bubbleKey) < c.Core.Frame && t.GetTag(omenKey) < c.Core.Frame {
 					return nil, false
 				}
 				return val, true
@@ -89,10 +90,10 @@ func (c *char) Init() {
 //Increases Mona's Hydro DMG Bonus by a degree equivalent to 20% of her Energy Recharge rate.
 func (c *char) a4() {
 	val := make([]float64, core.EndStatType)
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "mona-a4",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			val[core.HydroP] = .2 * atk.Snapshot.Stats[core.ER]
 			return val, true
 		},

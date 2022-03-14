@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,11 +12,11 @@ func init() {
 	core.RegisterWeaponFunc("wolfsgravestone", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	val := make([]float64, core.EndStatType)
 	val[core.ATKP] = 0.15 + 0.05*float64(r)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "wolf-flat",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
@@ -27,29 +28,29 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	bonus[core.ATKP] = 0.3 + 0.1*float64(r)
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 		if !c.Flags.DamageMode {
 			return false //ignore as we not tracking HP
 		}
 
-		atk := args[1].(*core.AttackEvent)
-		t := args[0].(core.Target)
-		if atk.Info.ActorIndex != char.CharIndex() {
+		atk := args[1].(*coretype.AttackEvent)
+		t := args[0].(coretype.Target)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
 
 		if t.HP()/t.MaxHP() > 0.3 {
 			return false
 		}
-		icd = c.F + 1800 //every 30 seconds
+		icd = c.Frame + 1800 //every 30 seconds
 
 		for _, char := range c.Chars {
-			char.AddMod(core.CharStatMod{
+			char.AddMod(coretype.CharStatMod{
 				Key:    "wolf-proc",
-				Expiry: c.F + 720,
+				Expiry: c.Frame + 720,
 				Amount: func() ([]float64, bool) {
 					return bonus, true
 				},

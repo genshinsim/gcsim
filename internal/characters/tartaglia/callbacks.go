@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 //While aiming, the power of Hydro will accumulate on the arrowhead.
@@ -26,18 +27,18 @@ func (c *char) meleeApplyRiptide(a core.AttackCB) {
 	}
 }
 
-func (c *char) applyRiptide(src string, t core.Target) {
-	if c.Base.Cons >= 4 && t.GetTag(riptideKey) < c.Core.F {
+func (c *char) applyRiptide(src string, t coretype.Target) {
+	if c.Base.Cons >= 4 && t.GetTag(riptideKey) < c.Core.Frame {
 		c.AddTask(func() { c.c4(t) }, "tartaglia-c4", 60*4)
 	}
 
-	t.SetTag(riptideKey, c.Core.F+riptideDuration)
-	c.Core.Log.NewEvent(
+	t.SetTag(riptideKey, c.Core.Frame+riptideDuration)
+	c.coretype.Log.NewEvent(
 		fmt.Sprintf("riptide applied (%v)", src),
-		core.LogCharacterEvent,
+		coretype.LogCharacterEvent,
 		c.Index,
 		"target", t.Index(),
-		"expiry", c.Core.F+riptideDuration,
+		"expiry", c.Core.Frame+riptideDuration,
 	)
 }
 
@@ -45,25 +46,25 @@ func (c *char) applyRiptide(src string, t core.Target) {
 // by Riptide deals consecutive bouts of AoE DMG. Can occur once every 0.7s.
 func (c *char) rtFlashCallback(a core.AttackCB) {
 	//do nothing if no riptide on target
-	if a.Target.GetTag(riptideKey) < c.Core.F {
+	if a.Target.GetTag(riptideKey) < c.Core.Frame {
 		return
 	}
 	//do nothing if flash still on icd
-	if a.Target.GetTag(riptideFlashICDKey) > c.Core.F {
+	if a.Target.GetTag(riptideFlashICDKey) > c.Core.Frame {
 		return
 	}
 	//add 0.7s icd
-	a.Target.SetTag(riptideFlashICDKey, c.Core.F+42)
+	a.Target.SetTag(riptideFlashICDKey, c.Core.Frame+42)
 
 	c.rtFlashTick(a.Target)
 }
 
-func (c *char) rtFlashTick(t core.Target) {
+func (c *char) rtFlashTick(t coretype.Target) {
 	//queue damage
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Flash",
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagTartagliaRiptideFlash,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
@@ -78,19 +79,19 @@ func (c *char) rtFlashTick(t core.Target) {
 		c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 0.5, false, core.TargettableEnemy), 1, 1)
 	}
 
-	c.Core.Log.NewEvent(
+	c.coretype.Log.NewEvent(
 		"riptide flash triggered",
-		core.LogCharacterEvent,
+		coretype.LogCharacterEvent,
 		c.Index,
-		"dur", c.Core.Status.Duration("tartagliamelee"),
+		"dur", c.Core.StatusDuration("tartagliamelee"),
 		"target", t.Index(),
 		"riptide_flash_icd", t.GetTag(riptideFlashICDKey),
 		"riptide_expiry", t.GetTag(riptideKey),
 	)
 
 	//queue particles
-	if c.rtParticleICD < c.Core.F {
-		c.rtParticleICD = c.Core.F + 180 //3 sec
+	if c.rtParticleICD < c.Core.Frame {
+		c.rtParticleICD = c.Core.Frame + 180 //3 sec
 		c.QueueParticle("tartaglia", 1, core.Hydro, 100)
 	}
 }
@@ -99,20 +100,20 @@ func (c *char) rtFlashTick(t core.Target) {
 //DMG dealt in this way is considered Elemental Skill DMG, and can only occur once every 1.5s.
 func (c *char) rtSlashCallback(a core.AttackCB) {
 	//do nothing if no riptide on target
-	if a.Target.GetTag(riptideKey) < c.Core.F {
+	if a.Target.GetTag(riptideKey) < c.Core.Frame {
 		return
 	}
 	//do nothing if slash still on icd
-	if a.Target.GetTag(riptideSlashICDKey) > c.Core.F {
+	if a.Target.GetTag(riptideSlashICDKey) > c.Core.Frame {
 		return
 	}
 	//add 1.5s icd
-	a.Target.SetTag(riptideSlashICDKey, c.Core.F+90)
+	a.Target.SetTag(riptideSlashICDKey, c.Core.Frame+90)
 
 	c.rtSlashTick(a.Target)
 }
 
-func (c *char) rtSlashTick(t core.Target) {
+func (c *char) rtSlashTick(t coretype.Target) {
 	//trigger attack
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -127,21 +128,21 @@ func (c *char) rtSlashTick(t core.Target) {
 	}
 
 	x, y := t.Shape().Pos()
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 1, 1)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, coretype.TargettableEnemy), 1, 1)
 
-	c.Core.Log.NewEvent(
+	c.coretype.Log.NewEvent(
 		"riptide slash ticked",
-		core.LogCharacterEvent,
+		coretype.LogCharacterEvent,
 		c.Index,
-		"dur", c.Core.Status.Duration("tartagliamelee"),
+		"dur", c.Core.StatusDuration("tartagliamelee"),
 		"target", t.Index(),
 		"riptide_slash_icd", t.GetTag(riptideSlashICDKey),
 		"riptide_expiry", t.GetTag(riptideKey),
 	)
 
 	//queue particle if not on icd
-	if c.rtParticleICD < c.Core.F {
-		c.rtParticleICD = c.Core.F + 180 //3 sec
+	if c.rtParticleICD < c.Core.Frame {
+		c.rtParticleICD = c.Core.Frame + 180 //3 sec
 		c.QueueParticle("tartaglia", 1, core.Hydro, 100)
 	}
 }
@@ -150,11 +151,11 @@ func (c *char) rtSlashTick(t core.Target) {
 //and triggers a Hydro Explosion that deals AoE Hydro DMG. DMG dealt in this way is considered Elemental Burst DMG.
 func (c *char) rtBlastCallback(a core.AttackCB) {
 	//only triggers if target affected by riptide
-	if a.Target.GetTag(riptideKey) < c.Core.F {
+	if a.Target.GetTag(riptideKey) < c.Core.Frame {
 		return
 	}
 	//TODO: this shares icd with slash???
-	if a.Target.GetTag(riptideSlashICDKey) > c.Core.F {
+	if a.Target.GetTag(riptideSlashICDKey) > c.Core.Frame {
 		return
 	}
 	//queue damage
@@ -170,13 +171,13 @@ func (c *char) rtBlastCallback(a core.AttackCB) {
 		Mult:       rtBlast[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, 1)
 
-	c.Core.Log.NewEvent(
+	c.coretype.Log.NewEvent(
 		"riptide blast triggered",
-		core.LogCharacterEvent,
+		coretype.LogCharacterEvent,
 		c.Index,
-		"dur", c.Core.Status.Duration("tartagliamelee"),
+		"dur", c.Core.StatusDuration("tartagliamelee"),
 		"target", a.Target.Index(),
 		"rtExpiry", a.Target.GetTag(riptideKey),
 	)

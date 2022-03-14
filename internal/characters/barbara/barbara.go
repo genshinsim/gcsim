@@ -3,6 +3,7 @@ package barbara
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -16,7 +17,7 @@ type char struct {
 	// burstBuffExpiry   int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -51,7 +52,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) a1() {
 	c.Core.AddStamMod(func(a core.ActionType) (float64, bool) { // @srl does this activate for the active char?
-		if c.Core.Status.Duration("barbskill") >= 0 {
+		if c.Core.StatusDuration("barbskill") >= 0 {
 			return -0.12, false
 		}
 		return 0, false
@@ -65,11 +66,11 @@ func (c *char) c2() {
 		if i == c.Index {
 			continue
 		}
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key:    "barbara-c2",
 			Expiry: -1,
 			Amount: func() ([]float64, bool) {
-				if c.Core.Status.Duration("barbskill") >= 0 {
+				if c.Core.StatusDuration("barbskill") >= 0 {
 					return val, true
 				} else {
 					return nil, false
@@ -89,7 +90,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 50
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -102,7 +103,7 @@ func (c *char) c1(delay int) {
 
 // inspired from hutao c6
 func (c *char) c6() {
-	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
 		if c.Core.ActiveChar != c.Index { //trigger only when not barbara
 			c.checkc6()
 		}
@@ -114,7 +115,7 @@ func (c *char) checkc6() {
 	if c.Base.Cons < 6 {
 		return
 	}
-	if c.Core.F < c.c6icd && c.c6icd != 0 {
+	if c.Core.Frame < c.c6icd && c.c6icd != 0 {
 		return
 	}
 	//if dead, revive back to 1 hp
@@ -122,5 +123,5 @@ func (c *char) checkc6() {
 		c.HPCurrent = c.HPMax
 	}
 
-	c.c6icd = c.Core.F + 60*60*15
+	c.c6icd = c.Core.Frame + 60*60*15
 }

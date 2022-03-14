@@ -2,7 +2,9 @@ package mona
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -10,7 +12,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagMonaWaterDamage,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
@@ -25,7 +27,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		cb = c.c2cb
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, f-1, cb)
 
 	c.AdvanceNormalIndex()
 
@@ -37,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
@@ -46,7 +48,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), 0, f-1)
 
 	return f, a
 }
@@ -66,7 +68,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		Element:    core.Hydro,
 		Durability: 25,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, f)
 
 	//After she has used Illusory Torrent for 2s, if there are any opponents nearby,
 	//Mona will automatically create a Phantom.
@@ -96,7 +98,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//5.22 seconds duration after cast
 	//tick every 1 sec
 	for i := 60; i < 313; i += 60 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), f+i)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f+i)
 	}
 
 	aiExplode := core.AttackInfo{
@@ -110,7 +112,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(aiExplode, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f+313)
+	c.Core.Combat.QueueAttack(aiExplode, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, f+313)
 
 	count := 3
 	if c.Core.Rand.Float64() < .33 {
@@ -143,10 +145,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	cb := func(a core.AttackCB) {
 		//bubble is applied to each target on a per target basis
 		//lasts 8 seconds if not popped normally
-		a.Target.SetTag(bubbleKey, c.Core.F+481) //1 frame extra so we don't run into problems breaking
-		c.Core.Log.NewEvent("mona bubble on target", core.LogCharacterEvent, c.Index, "char", c.Index)
+		a.Target.SetTag(bubbleKey, c.Core.Frame+481) //1 frame extra so we don't run into problems breaking
+		c.coretype.Log.NewEvent("mona bubble on target", coretype.LogCharacterEvent, c.Index, "char", c.Index)
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), -1, 102, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, coretype.TargettableEnemy), -1, 102, cb)
 
 	//queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
 	aiBreak := core.AttackInfo{
@@ -159,7 +161,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 0,
 		Mult:       0,
 	}
-	c.Core.Combat.QueueAttack(aiBreak, core.NewDefCircHit(4, false, core.TargettableEnemy), -1, 102+480)
+	c.Core.Combat.QueueAttack(aiBreak, core.NewDefCircHit(4, false, coretype.TargettableEnemy), -1, 102+480)
 
 	c.SetCDWithDelay(core.ActionBurst, 15*60, 13)
 	c.ConsumeEnergy(13)
@@ -174,14 +176,14 @@ func (c *char) burstHook() {
 	//TODO: this implementation would currently cause bubble to break immediately on the first EC tick.
 	//According to: https://docs.google.com/document/d/1pXlgCaYEpoizMIP9-QKlSkQbmRicWfrEoxb9USWD1Ro/edit#
 	//only 2nd ec tick should break
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 		//ignore if target doesn't have debuff
-		t := args[0].(core.Target)
-		if t.GetTag(bubbleKey) < c.Core.F {
+		t := args[0].(coretype.Target)
+		if t.GetTag(bubbleKey) < c.Core.Frame {
 			return false
 		}
 		//always break if it's due to time up
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 		if atk.Info.AttackTag == core.AttackTagMonaBubbleBreak {
 			c.triggerBubbleBurst(t)
 			return false
@@ -197,11 +199,11 @@ func (c *char) burstHook() {
 	}, "mona-bubble-check")
 }
 
-func (c *char) triggerBubbleBurst(t core.Target) {
+func (c *char) triggerBubbleBurst(t coretype.Target) {
 	//remove bubble tag
 	t.RemoveTag(bubbleKey)
 	//add omen debuff
-	t.SetTag(omenKey, c.Core.F+omenDuration[c.TalentLvlBurst()])
+	t.SetTag(omenKey, c.Core.Frame+omenDuration[c.TalentLvlBurst()])
 	//trigger dmg
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,

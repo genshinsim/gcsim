@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character/curves"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (t *Tmpl) CalcBaseStats() error {
@@ -82,9 +83,9 @@ func (t *Tmpl) CalcBaseStats() error {
 	}
 
 	//log stats
-	t.Core.Log.NewEvent(
+	t.coretype.Log.NewEvent(
 		"stat calc done for "+t.Name(),
-		core.LogCharacterEvent, t.Index,
+		coretype.LogCharacterEvent, t.Index,
 		"char_base", t.Base,
 		"weap_base", t.Weapon,
 		"spec_char", spec,

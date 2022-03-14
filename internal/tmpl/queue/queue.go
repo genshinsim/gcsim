@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type Queuer struct {
@@ -34,9 +35,9 @@ func (q *Queuer) SetActionList(a []core.ActionBlock) error {
 		q.labels[v.Label] = i
 	}
 	q.pq = a
-	q.core.Log.NewEvent(
+	q.coretype.Log.NewEvent(
 		"priority queued set",
-		core.LogQueueEvent,
+		coretype.LogQueueEvent,
 		-1,
 		"pq", q.pq,
 	)
@@ -54,11 +55,11 @@ func (q *Queuer) Next() (next []core.Command, dropIfNotReady bool, err error) {
 		}
 		if ok {
 			q.pq[i].NumQueued++
-			q.pq[i].LastQueued = q.core.F
+			q.pq[i].LastQueued = q.core.Frame
 			next = q.createQueueFromBlock(v)
-			q.core.Log.NewEvent(
+			q.coretype.Log.NewEvent(
 				"item queued",
-				core.LogQueueEvent,
+				coretype.LogQueueEvent,
 				-1,
 				"queued", next,
 				"full", q.pq[i],
@@ -129,9 +130,9 @@ func (q *Queuer) createQueueFromChain(a core.ActionBlock) []core.Command {
 	for i := 0; i < len(a.ChainSequences); i++ {
 		//swap to this char if not currently active; only if v is a sequence command
 		if a.ChainSequences[i].Type == core.ActionBlockTypeSequence && active != a.ChainSequences[i].SequenceChar {
-			q.core.Log.NewEvent(
+			q.coretype.Log.NewEvent(
 				"adding swap before sequence",
-				core.LogQueueEvent,
+				coretype.LogQueueEvent,
 				-1,
 				"active", active,
 				"next", a.ChainSequences[i].SequenceChar,
@@ -246,9 +247,9 @@ func (q *Queuer) logSkipped(a core.ActionBlock, reason string, keysAndValue ...i
 		if len(str) > 0 {
 			str = str[:len(str)-1]
 		}
-		q.core.Log.NewEvent(
+		q.coretype.Log.NewEvent(
 			"skip",
-			core.LogQueueEvent,
+			coretype.LogQueueEvent,
 			-1,
 			"failed", true,
 			"reason", reason,
@@ -272,7 +273,7 @@ func (q *Queuer) chainUseable(a core.ActionBlock) (bool, error) {
 		return false, nil
 	}
 	//can't be timed out
-	if a.Timeout > 0 && q.core.F-a.LastQueued < a.Timeout {
+	if a.Timeout > 0 && q.core.Frame-a.LastQueued < a.Timeout {
 		q.logSkipped(a, "still in timeout", "timeout", a.Timeout)
 		return false, nil
 	}
@@ -350,7 +351,7 @@ func (q *Queuer) sequenceUseable(a core.ActionBlock) (bool, error) {
 		return false, nil
 	}
 	//can't be timed out
-	if a.Timeout > 0 && q.core.F-a.LastQueued < a.Timeout {
+	if a.Timeout > 0 && q.core.Frame-a.LastQueued < a.Timeout {
 		q.logSkipped(a, "still in timeout", "timeout", a.Timeout)
 		return false, nil
 	}

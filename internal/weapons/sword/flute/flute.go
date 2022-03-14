@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -14,31 +15,31 @@ func init() {
 //Normal or Charged Attacks grant a Harmonic on hits. Gaining 5 Harmonics triggers the
 //power of music and deals 100% ATK DMG to surrounding opponents. Harmonics last up to 30s,
 //and a maximum of 1 can be gained every 0.5s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	expiry := 0
 	stacks := 0
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
-		icd = c.F + 30 // every .5 sec
-		if expiry < c.F {
+		icd = c.Frame + 30 // every .5 sec
+		if expiry < c.Frame {
 			stacks = 0
 		}
 		stacks++
-		expiry = c.F + 1800 //stacks lasts 30s
+		expiry = c.Frame + 1800 //stacks lasts 30s
 
 		if stacks == 5 {
 			//trigger dmg at 5 stacks
@@ -46,7 +47,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			expiry = 0
 
 			ai := core.AttackInfo{
-				ActorIndex: char.CharIndex(),
+				ActorIndex: char.Index(),
 				Abil:       "Flute Proc",
 				AttackTag:  core.AttackTagWeaponSkill,
 				ICDTag:     core.ICDTagNone,
@@ -55,7 +56,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				Durability: 100,
 				Mult:       0.75 + 0.25*float64(r),
 			}
-			c.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 1)
+			c.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, 1)
 
 		}
 		return false

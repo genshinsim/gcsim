@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -13,7 +14,7 @@ func init() {
 
 //Increases Movement Speed SPD by 10%. When in battle, earn a 6/8/10/12/14% Elemental DMG Bonus every 4s.
 //Max 4 stacks. Lasts until the character falls or leaves combat.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	//ignore movement speed
 	w := weap{}
 	w.stacks = param["stacks"]
@@ -24,15 +25,15 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	char.AddTask(w.stackCheck(char, c), "prayer-stack", 240)
 
 	//remove stack on swap off
-	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.ActiveChar != char.Index() {
 			w.stacks = 0
 		}
 		return false
 	}, fmt.Sprintf("lostprayer-%v", char.Name()))
 
 	dmg := 0.04 + float64(r)*0.02
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "lost-prayer",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
@@ -43,7 +44,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			p := dmg * float64(w.stacks)
 			m[core.PyroP] = p
 			m[core.HydroP] = p
-			m[core.CryoP] = p
+			m[coretype.CryoP] = p
 			m[core.ElectroP] = p
 			m[core.AnemoP] = p
 			m[core.GeoP] = p
@@ -59,9 +60,9 @@ type weap struct {
 	stacks int
 }
 
-func (w *weap) stackCheck(char core.Character, c *core.Core) func() {
+func (w *weap) stackCheck(char coretype.Character, c *core.Core) func() {
 	return func() {
-		if c.ActiveChar == char.CharIndex() {
+		if c.ActiveChar == char.Index() {
 			w.stacks++
 			if w.stacks > 4 {
 				w.stacks = 4

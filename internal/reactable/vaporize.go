@@ -1,8 +1,11 @@
 package reactable
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
-func (r *Reactable) tryVaporize(a *core.AttackEvent) {
+func (r *Reactable) tryVaporize(a *coretype.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -13,7 +16,7 @@ func (r *Reactable) tryVaporize(a *core.AttackEvent) {
 			return
 		}
 		//if there's still frozen left don't try to vape
-		if r.Durability[core.Frozen] > ZeroDur {
+		if r.Durability[coretype.Frozen] > ZeroDur {
 			return
 		}
 		r.reduce(core.Hydro, a.Info.Durability, .5)

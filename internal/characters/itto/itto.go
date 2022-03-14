@@ -3,6 +3,7 @@ package itto
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -16,7 +17,7 @@ type char struct {
 	sCACount    int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -58,7 +59,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 20
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
@@ -68,12 +69,12 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	ds := c.Tmpl.Snapshot(ai)
 
-	if c.Core.Status.Duration("ittoq") > 0 {
+	if c.Core.StatusDuration("ittoq") > 0 {
 		//infusion to attacks only
 		switch ai.AttackTag {
-		case core.AttackTagNormal:
+		case coretype.AttackTagNormal:
 		case core.AttackTagPlunge:
-		case core.AttackTagExtra:
+		case coretype.AttackTagExtra:
 		default:
 			return ds
 		}
@@ -85,11 +86,11 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 func (c *char) c6() {
 	val := make([]float64, core.EndStatType)
 	val[core.CD] = 0.7
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "itto-c6",
 		Expiry: -1,
-		Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if a.Info.AttackTag != core.AttackTagExtra {
+		Amount: func(a *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+			if a.Info.AttackTag != coretype.AttackTagExtra {
 				return nil, false
 			}
 			return val, true

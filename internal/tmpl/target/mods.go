@@ -8,7 +8,7 @@ func (t *Tmpl) AddDefMod(key string, val float64, dur int) {
 	mod := core.DefMod{
 		Key:    key,
 		Value:  val,
-		Expiry: t.Core.F + dur,
+		Expiry: t.Core.Frame + dur,
 	}
 	//find if exists, if exists override, else append
 	ind := -1
@@ -41,7 +41,7 @@ func (t *Tmpl) HasDefMod(key string) bool {
 			ind = i
 		}
 	}
-	return ind != -1 && t.DefMod[ind].Expiry > t.Core.F
+	return ind != -1 && t.DefMod[ind].Expiry > t.Core.Frame
 }
 
 func (t *Tmpl) AddResMod(key string, mod core.ResistMod) {
@@ -94,5 +94,5 @@ func (t *Tmpl) HasResMod(key string) bool {
 			ind = i
 		}
 	}
-	return ind != -1 && t.ResMod[ind].Expiry > t.Core.F
+	return ind != -1 && t.ResMod[ind].Expiry > t.Core.Frame
 }

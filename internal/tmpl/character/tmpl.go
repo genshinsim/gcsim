@@ -6,6 +6,7 @@ import (
 	"math/rand"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type Tmpl struct {
@@ -27,7 +28,7 @@ type Tmpl struct {
 	ReactMod      []core.ReactionBonusMod
 	Tags          map[string]int
 	//Profile info
-	Base     core.CharacterBase
+	Base     coretype.CharacterBase
 	Weapon   core.WeaponProfile
 	Stats    [core.EndStatType]float64
 	Talents  core.TalentProfile
@@ -55,13 +56,13 @@ type Tmpl struct {
 	Infusion core.WeaponInfusion //TODO currently just overides the old; disregarding any existing
 }
 
-func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
+func NewTemplateChar(x *core.Core, p coretype.CharacterProfile) (*Tmpl, error) {
 	t := Tmpl{}
 	t.Core = x
 	t.Rand = x.Rand
 
 	t.ActionCD = make([]int, core.EndActionType)
-	t.Mods = make([]core.CharStatMod, 0, 10)
+	t.Mods = make([]coretype.CharStatMod, 0, 10)
 	t.Tags = make(map[string]int)
 	t.CDReductionFuncs = make([]core.CDAdjust, 0, 5)
 	t.Base = p.Base
@@ -82,7 +83,7 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 		t.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		t.Core.Log.NewEvent("setting starting hp", core.LogCharacterEvent, t.Index, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
+		t.coretype.Log.NewEvent("setting starting hp", coretype.LogCharacterEvent, t.Index, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
 		t.HPCurrent = p.Base.StartHP
 	} else {
 		t.HPCurrent = math.MaxInt64
@@ -115,7 +116,7 @@ func (t *Tmpl) Init() {
 	hp := t.Stats[core.HP]
 
 	for _, m := range t.Mods {
-		if m.Expiry > t.Core.F || m.Expiry == -1 {
+		if m.Expiry > t.Core.Frame || m.Expiry == -1 {
 			a, ok := m.Amount()
 			if ok {
 				hpp += a[core.HPP]
@@ -143,7 +144,7 @@ func (c *Tmpl) AddWeaponInfuse(inf core.WeaponInfusion) {
 	c.Infusion = inf
 }
 
-func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
+func (c *Tmpl) AddPreDamageMod(mod coretype.PreDamageMod) {
 	ind := -1
 	for i, v := range c.PreDamageMods {
 		if v.Key == mod.Key {
@@ -167,7 +168,7 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 	c.PreDamageMods[ind] = mod
 }
 
-func (c *Tmpl) AddMod(mod core.CharStatMod) {
+func (c *Tmpl) AddMod(mod coretype.CharStatMod) {
 	ind := -1
 	for i, v := range c.Mods {
 		if v.Key == mod.Key {
@@ -203,7 +204,7 @@ func (c *Tmpl) ModIsActive(key string) bool {
 		return false
 	}
 	//check expiry
-	if c.Mods[ind].Expiry < c.Core.F && c.Mods[ind].Expiry > -1 {
+	if c.Mods[ind].Expiry < c.Core.Frame && c.Mods[ind].Expiry > -1 {
 		return false
 	}
 	_, ok := c.Mods[ind].Amount()
@@ -224,7 +225,7 @@ func (c *Tmpl) PreDamageModIsActive(key string) bool {
 		return false
 	}
 	//check expiry
-	if c.PreDamageMods[ind].Expiry < c.Core.F && c.PreDamageMods[ind].Expiry > -1 {
+	if c.PreDamageMods[ind].Expiry < c.Core.Frame && c.PreDamageMods[ind].Expiry > -1 {
 		return false
 	}
 	return true
@@ -242,7 +243,7 @@ func (c *Tmpl) ReactBonusModIsActive(key string) bool {
 		return false
 	}
 	//check expiry
-	if c.ReactMod[ind].Expiry < c.Core.F && c.ReactMod[ind].Expiry > -1 {
+	if c.ReactMod[ind].Expiry < c.Core.Frame && c.ReactMod[ind].Expiry > -1 {
 		return false
 	}
 	return true
@@ -253,7 +254,7 @@ func (c *Tmpl) WeaponInfuseIsActive(key string) bool {
 		return false
 	}
 	//check expiry
-	if c.Infusion.Expiry < c.Core.F && c.Infusion.Expiry > -1 {
+	if c.Infusion.Expiry < c.Core.Frame && c.Infusion.Expiry > -1 {
 		return false
 	}
 	return true

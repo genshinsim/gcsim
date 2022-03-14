@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -16,7 +17,7 @@ type char struct {
 	*character.Tmpl
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -47,7 +48,7 @@ func (c *char) c2() {
 	val := make([]float64, core.EndStatType)
 	val[core.ER] = .3
 
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key: "bennett-c2",
 		Amount: func() ([]float64, bool) {
 			return val, c.HPCurrent/c.HPMax < 0.7
@@ -90,7 +91,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 51, 51 //ok
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -102,14 +103,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -156,7 +157,7 @@ func (c *char) skillPress() {
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 15, 15)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), 15, 15)
 
 	//25 % chance of 3 orbs
 	count := 2
@@ -182,7 +183,7 @@ func (c *char) skillHoldShort() {
 
 	for i, v := range skill1 {
 		ai.Mult = v[c.TalentLvlSkill()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[i], delay[i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), delay[i], delay[i])
 	}
 
 	//25 % chance of 3 orbs
@@ -210,11 +211,11 @@ func (c *char) skillHoldLong() {
 
 	for i, v := range skill2 {
 		ai.Mult = v[c.TalentLvlSkill()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[i], delay[i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), delay[i], delay[i])
 	}
 
 	ai.Mult = explosion[c.TalentLvlSkill()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 198, 198)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), 198, 198)
 
 	//25 % chance of 3 orbs
 	count := 2
@@ -232,7 +233,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//add field effect timer
-	c.Core.Status.AddStatus("btburst", 720+burstStartFrame)
+	c.Core.AddStatus("btburst", 720+burstStartFrame)
 	//hook for buffs; active right away after cast
 
 	ai := core.AttackInfo{
@@ -246,7 +247,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	//TODO: review bennett AOE size
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 33, 33)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 33, 33)
 	stats, _ := c.SnapshotStats()
 
 	//apply right away
@@ -275,10 +276,10 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 	}
 	atk := pc * float64(c.Base.Atk+c.Weapon.Atk)
 	return func() {
-		c.Core.Log.NewEvent("bennett field ticking", core.LogCharacterEvent, -1)
+		c.coretype.Log.NewEvent("bennett field ticking", coretype.LogCharacterEvent, -1)
 
 		//self infuse
-		player, ok := c.Core.Targets[0].(*player.Player)
+		player, ok := c.coretype.Targets[0].(*player.Player)
 		if !ok {
 			panic("target 0 should be Player but is not!!")
 		}
@@ -312,14 +313,14 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 				val[core.PyroP] = 0.15
 			}
 
-			active.AddMod(core.CharStatMod{
+			active.AddMod(coretype.CharStatMod{
 				Key: "bennett-field",
 				Amount: func() ([]float64, bool) {
 					return val, true
 				},
-				Expiry: c.Core.F + 126,
+				Expiry: c.Core.Frame + 126,
 			})
-			c.Core.Log.NewEvent("bennett field - adding attack", core.LogCharacterEvent, c.Index, "threshold", threshold)
+			c.coretype.Log.NewEvent("bennett field - adding attack", coretype.LogCharacterEvent, c.Index, "threshold", threshold)
 			//if c6 add weapon infusion and 15% pyro
 			if c.Base.Cons == 6 {
 				switch active.WeaponClass() {
@@ -331,8 +332,8 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 					active.AddWeaponInfuse(core.WeaponInfusion{
 						Key:    "bennett-fire-weapon",
 						Ele:    core.Pyro,
-						Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-						Expiry: c.Core.F + 126,
+						Tags:   []core.AttackTag{coretype.AttackTagNormal, coretype.AttackTagExtra, core.AttackTagPlunge},
+						Expiry: c.Core.Frame + 126,
 					})
 				}
 

@@ -3,6 +3,7 @@ package sucrose
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -18,7 +19,7 @@ type char struct {
 
 const eCD = 900
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -66,7 +67,7 @@ func (c *char) a1() {
 	swirlfunc := func(ele core.EleType) func(args ...interface{}) bool {
 		icd := -1
 		return func(args ...interface{}) bool {
-			atk := args[1].(*core.AttackEvent)
+			atk := args[1].(*coretype.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false
 			}
@@ -112,7 +113,7 @@ func (c *char) a4() {
 		if i == c.Index {
 			continue //nothing for sucrose
 		}
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key:    "sucrose-a4",
 			Expiry: c.Core.F + dur,
 			Amount: func() ([]float64, bool) {
@@ -140,17 +141,17 @@ func (c *char) c4() {
 	//we simply reduce the action cd
 	c.ReduceActionCooldown(core.ActionSkill, cdReduction)
 
-	c.Core.Log.NewEvent("sucrose c4 reducing E CD", core.LogCharacterEvent, c.Index, "cd_reduction", cdReduction)
+	c.coretype.Log.NewEvent("sucrose c4 reducing E CD", coretype.LogCharacterEvent, c.Index, "cd_reduction", cdReduction)
 }
 
 func (c *char) c6() {
 	m := make([]float64, core.EndStatType)
-	m[core.EleToDmgP(c.qInfused)] = .20
+	m[coretype.EleToDmgP(c.qInfused)] = .20
 
 	for _, char := range c.Core.Chars {
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key:    "sucrose-c6",
-			Expiry: c.Core.F + 60*10,
+			Expiry: c.Core.Frame + 60*10,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

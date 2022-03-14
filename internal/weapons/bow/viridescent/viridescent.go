@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,26 +12,26 @@ func init() {
 	core.RegisterWeaponFunc("theviridescenthunt", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	cd := 900 - r*60
 	icd := 0
 	mult := 0.3 + float64(r)*0.1
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 		//check if char is correct?
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		// Vhunt passive only applies for NAs and CAs
 		// For Tartaglia this also includes melee NAs/CAs
 		// See https://youtu.be/EBtOiFhrs94?t=221, Test 4 and 5
-		if !((atk.Info.AttackTag == core.AttackTagNormal) || (atk.Info.AttackTag == core.AttackTagExtra)) {
+		if !((atk.Info.AttackTag == coretype.AttackTagNormal) || (atk.Info.AttackTag == coretype.AttackTagExtra)) {
 			return false
 		}
 		//check if cd is up
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
 		//50% chance to proc
@@ -40,7 +41,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 		//add a new action that deals % dmg immediately
 		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+			ActorIndex: char.Index(),
 			Abil:       "Viridescent",
 			AttackTag:  core.AttackTagWeaponSkill,
 			ICDTag:     core.ICDTagNone,
@@ -51,11 +52,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		for i := 0; i <= 240; i += 30 {
-			c.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, i+1)
+			c.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, i+1)
 		}
 
 		//trigger cd
-		icd = c.F + cd
+		icd = c.Frame + cd
 
 		return false
 	}, fmt.Sprintf("veridescent-%v", char.Name()))

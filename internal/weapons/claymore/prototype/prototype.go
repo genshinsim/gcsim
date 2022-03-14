@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -12,25 +13,25 @@ func init() {
 }
 
 // On hit, Normal or Charged Attacks have a 50% chance to deal an additional 240~480% ATK DMG to opponents within a small AoE. Can only occur once every 15s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	atk := 1.8 + float64(r)*0.6
 	effectLastProc := -9999
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-		if ae.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*coretype.AttackEvent)
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.F < effectLastProc+15*60 {
+		if c.Frame < effectLastProc+15*60 {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
+		if ae.Info.AttackTag != coretype.AttackTagNormal && ae.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < 0.5 {
-			effectLastProc = c.F
+			effectLastProc = c.Frame
 			ai := core.AttackInfo{
-				ActorIndex: char.CharIndex(),
+				ActorIndex: char.Index(),
 				Abil:       "Prototype Archaic Proc",
 				AttackTag:  core.AttackTagWeaponSkill,
 				ICDTag:     core.ICDTagNone,
@@ -40,7 +41,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				Durability: 100,
 				Mult:       atk,
 			}
-			c.Combat.QueueAttack(ai, core.NewDefCircHit(.6, false, core.TargettableEnemy), 0, 1)
+			c.Combat.QueueAttack(ai, core.NewDefCircHit(.6, false, coretype.TargettableEnemy), 0, 1)
 		}
 		return false
 	}, fmt.Sprintf("forstbearer-%v", char.Name()))

@@ -4,11 +4,12 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func TestBasicAbilUsage(t *testing.T) {
 	c := core.New()
-	prof := core.CharacterProfile{}
+	prof := coretype.CharacterProfile{}
 	prof.Base.Element = core.Pyro
 	prof.Base.Key = core.Xiangling
 	prof.Stats = make([]float64, core.EndStatType)

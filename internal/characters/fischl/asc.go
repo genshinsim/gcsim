@@ -1,25 +1,28 @@
 package fischl
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 func (c *char) a4() {
 	last := 0
 	cb := func(args ...interface{}) bool {
 
-		t := args[0].(core.Target)
-		ae := args[1].(*core.AttackEvent)
+		t := args[0].(coretype.Target)
+		ae := args[1].(*coretype.AttackEvent)
 
 		if ae.Info.ActorIndex != c.Core.ActiveChar {
 			return false
 		}
 		//do nothing if oz not on field
-		if c.ozActiveUntil < c.Core.F {
+		if c.ozActiveUntil < c.Core.Frame {
 			return false
 		}
-		if c.Core.F-30 < last && last != 0 {
+		if c.Core.Frame-30 < last && last != 0 {
 			return false
 		}
-		last = c.Core.F
+		last = c.Core.Frame
 
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
@@ -36,13 +39,13 @@ func (c *char) a4() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// A4 uses Oz Snapshot
-		c.Core.Combat.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, core.NewDefSingleTarget(t.Index(), core.TargettableEnemy), 0)
+		c.Core.Combat.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, core.NewDefSingleTarget(t.Index(), coretype.TargettableEnemy), 0)
 
 		return false
 	}
-	c.Core.Events.Subscribe(core.OnOverload, cb, "fischl-a4")
-	c.Core.Events.Subscribe(core.OnElectroCharged, cb, "fischl-a4")
-	c.Core.Events.Subscribe(core.OnSuperconduct, cb, "fischl-a4")
-	c.Core.Events.Subscribe(core.OnSwirlElectro, cb, "fischl-a4")
-	c.Core.Events.Subscribe(core.OnCrystallizeElectro, cb, "fischl-a4")
+	c.Core.Subscribe(core.OnOverload, cb, "fischl-a4")
+	c.Core.Subscribe(core.OnElectroCharged, cb, "fischl-a4")
+	c.Core.Subscribe(core.OnSuperconduct, cb, "fischl-a4")
+	c.Core.Subscribe(coretype.OnSwirlElectro, cb, "fischl-a4")
+	c.Core.Subscribe(core.OnCrystallizeElectro, cb, "fischl-a4")
 }

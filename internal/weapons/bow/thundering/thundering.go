@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,7 +12,7 @@ func init() {
 	core.RegisterWeaponFunc("thunderingpulse", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.15 + float64(r)*0.05
 	stack := 0.09 + float64(r)*0.03
@@ -22,41 +23,41 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	key := fmt.Sprintf("thundering-pulse-%v", char.Name())
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != coretype.AttackTagNormal {
 			return false
 		}
-		normal = c.F + 300 // lasts 5 seconds
+		normal = c.Frame + 300 // lasts 5 seconds
 		return false
 	}, key)
 
-	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
-		skill = c.F + 600
+		skill = c.Frame + 600
 		return false
 	}, key)
 
-	char.AddPreDamageMod(core.PreDamageMod{
+	char.AddPreDamageMod(coretype.PreDamageMod{
 		Key: "thundering",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			m[core.DmgP] = 0
-			if atk.Info.AttackTag != core.AttackTagNormal {
+			if atk.Info.AttackTag != coretype.AttackTagNormal {
 				return m, true
 			}
 			count := 0
 			if char.CurrentEnergy() < char.MaxEnergy() {
 				count++
 			}
-			if normal > c.F {
+			if normal > c.Frame {
 				count++
 			}
-			if skill > c.F {
+			if skill > c.Frame {
 				count++
 			}
 			dmg := float64(count) * stack

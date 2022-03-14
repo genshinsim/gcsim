@@ -2,6 +2,7 @@ package thunderingfury
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -9,11 +10,11 @@ func init() {
 	core.RegisterSetFunc("thunderingfury", New)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.ElectroP] = 0.15
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "tf-2pc",
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -42,25 +43,25 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		})
 
 		reduce := func(args ...interface{}) bool {
-			atk := args[1].(*core.AttackEvent)
-			if atk.Info.ActorIndex != c.CharIndex() {
+			atk := args[1].(*coretype.AttackEvent)
+			if atk.Info.ActorIndex != c.Index() {
 				return false
 			}
-			if s.ActiveChar != c.CharIndex() {
+			if s.Player.ActiveChar != c.Index()() {
 				return false
 			}
-			if icd > s.F {
+			if icd > s.Frame {
 				return false
 			}
-			icd = s.F + 48
+			icd = s.Frame + 48
 			c.ReduceActionCooldown(core.ActionSkill, 60)
-			s.Log.NewEvent("thunderfury 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", atk.Info.Abil, "new cd", c.Cooldown(core.ActionSkill))
+			s.Log.NewEvent("thunderfury 4pc proc", coretype.LogArtifactEvent, c.Index(), "reaction", atk.Info.Abil, "new cd", c.Cooldown(core.ActionSkill))
 			return false
 		}
 
-		s.Events.Subscribe(core.OnOverload, reduce, "4tf"+c.Name())
-		s.Events.Subscribe(core.OnElectroCharged, reduce, "4tf"+c.Name())
-		s.Events.Subscribe(core.OnSuperconduct, reduce, "4tf"+c.Name())
+		s.Subscribe(core.OnOverload, reduce, "4tf"+c.Name())
+		s.Subscribe(core.OnElectroCharged, reduce, "4tf"+c.Name())
+		s.Subscribe(core.OnSuperconduct, reduce, "4tf"+c.Name())
 	}
 	//add flat stat to char
 }

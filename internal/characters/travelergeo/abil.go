@@ -12,7 +12,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -21,14 +21,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), f-1, f-1)
 
 	if c.NormalCounter == c.NormalHitNum-1 {
 		//add 60% as geo dmg
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A2",
-			AttackTag:  core.AttackTagNormal,
+			AttackTag:  coretype.AttackTagNormal,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
 			StrikeType: core.StrikeTypeBlunt,
@@ -36,7 +36,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			Durability: 25,
 			Mult:       0.6,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-1, f-1)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, coretype.TargettableEnemy), f-1, f-1)
 	}
 
 	c.AdvanceNormalIndex()
@@ -57,7 +57,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+10)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f, f+10)
 
 	count := 3
 	if c.Core.Rand.Float64() < 0.33 {
@@ -71,8 +71,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			dur += 600
 		}
 		con := &stone{
-			src:    c.Core.F,
-			expiry: c.Core.F + dur,
+			src:    c.Core.Frame,
+			expiry: c.Core.Frame + dur,
 			char:   c,
 		}
 		c.Core.Constructs.New(con, false)
@@ -111,7 +111,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//The shockwave triggered by Wake of Earth regenerates 5 Energy for every opponent hit.
 	// A maximum of 25 Energy can be regenerated in this manner at any one time.
 	var cb core.AttackCBFunc
-	src := c.Core.F
+	src := c.Core.Frame
 
 	if c.Base.Cons >= 4 {
 		cb = func(a core.AttackCB) {
@@ -126,7 +126,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//1.1 sec duration, tick every .25
 	for i := 0; i < hits; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), (i+1)*15, cb)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, coretype.TargettableEnemy), (i+1)*15, cb)
 	}
 
 	c.AddTask(func() {
@@ -135,8 +135,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			dur += 300
 		}
 		con := &barrier{
-			src:    c.Core.F,
-			expiry: c.Core.F + dur,
+			src:    c.Core.Frame,
+			expiry: c.Core.Frame + dur,
 			char:   c,
 			count:  maxConstructCount,
 		}

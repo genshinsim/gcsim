@@ -1,8 +1,11 @@
 package character
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
-func (c *Tmpl) QueueParticle(src string, num int, ele core.EleType, delay int) {
+func (c *Tmpl) QueueParticle(src string, num int, ele coretype.EleType, delay int) {
 	p := core.Particle{
 		Source: src,
 		Num:    num,
@@ -43,7 +46,7 @@ func (c *Tmpl) AddEnergy(src string, e float64) {
 	}
 
 	c.Core.Events.Emit(core.OnEnergyChange, c, preEnergy, e, src)
-	c.Core.Log.NewEvent("adding energy", core.LogEnergyEvent, c.Index,
+	c.coretype.Log.NewEvent("adding energy", coretype.LogEnergyEvent, c.Index,
 		"rec'd", e,
 		"post_recovery", c.Energy,
 		"source", src,
@@ -87,9 +90,9 @@ func (c *Tmpl) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 	}
 
 	c.Core.Events.Emit(core.OnEnergyChange, c, pre, amt, p.Source)
-	c.Core.Log.NewEvent(
+	c.coretype.Log.NewEvent(
 		"particle",
-		core.LogEnergyEvent,
+		coretype.LogEnergyEvent,
 		c.Index,
 
 		"source", p.Source,

@@ -3,6 +3,7 @@ package reactable
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type CrystallizeShield struct {
@@ -10,19 +11,19 @@ type CrystallizeShield struct {
 	emBonus float64
 }
 
-func (r *Reactable) tryCrystallize(a *core.AttackEvent) {
+func (r *Reactable) tryCrystallize(a *coretype.AttackEvent) {
 	//can't double crystallize it looks like
 	//freeze can trigger hydro first
 	//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
 	r.tryCrystallizeWithEle(a, core.Electro, core.CrystallizeElectro, core.OnCrystallizeElectro)
 	r.tryCrystallizeWithEle(a, core.Hydro, core.CrystallizeHydro, core.OnCrystallizeHydro)
-	r.tryCrystallizeWithEle(a, core.Cryo, core.CrystallizeCryo, core.OnCrystallizeCryo)
+	r.tryCrystallizeWithEle(a, coretype.Cryo, core.CrystallizeCryo, core.OnCrystallizeCryo)
 	r.tryCrystallizeWithEle(a, core.Pyro, core.CrystallizePyro, core.OnCrystallizePyro)
-	r.tryCrystallizeWithEle(a, core.Frozen, core.CrystallizeCryo, core.OnCrystallizeCryo)
+	r.tryCrystallizeWithEle(a, coretype.Frozen, core.CrystallizeCryo, core.OnCrystallizeCryo)
 
 }
 
-func (r *Reactable) tryCrystallizeWithEle(a *core.AttackEvent, ele core.EleType, rt core.ReactionType, evt core.EventType) {
+func (r *Reactable) tryCrystallizeWithEle(a *coretype.AttackEvent, ele coretype.EleType, rt core.ReactionType, evt core.EventType) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -37,7 +38,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *core.AttackEvent, ele core.EleType,
 		Abil:       string(rt),
 	}
 	snap := char.Snapshot(&ai)
-	shd := NewCrystallizeShield(ele, r.core.F, snap.CharLvl, snap.Stats[core.EM], r.core.F+900)
+	shd := NewCrystallizeShield(ele, r.core.Frame, snap.CharLvl, snap.Stats[core.EM], r.core.Frame+900)
 	r.core.Shields.Add(shd)
 	//reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
@@ -48,14 +49,14 @@ func (r *Reactable) tryCrystallizeWithEle(a *core.AttackEvent, ele core.EleType,
 	switch {
 	case ele == core.Electro && r.Durability[core.Hydro] > ZeroDur:
 		r.checkEC()
-	case ele == core.Frozen:
+	case ele == coretype.Frozen:
 		r.checkFreeze()
 
 	}
 
 }
 
-func NewCrystallizeShield(typ core.EleType, src int, lvl int, em float64, expiry int) *CrystallizeShield {
+func NewCrystallizeShield(typ coretype.EleType, src int, lvl int, em float64, expiry int) *CrystallizeShield {
 	s := &CrystallizeShield{}
 	s.Tmpl = &shield.Tmpl{}
 
@@ -68,7 +69,7 @@ func NewCrystallizeShield(typ core.EleType, src int, lvl int, em float64, expiry
 	}
 
 	s.Tmpl.Ele = typ
-	s.Tmpl.ShieldType = core.ShieldCrystallize
+	s.Tmpl.ShieldType = coretype.ShieldCrystallize
 	s.Tmpl.Name = "Crystallize " + typ.String()
 	s.Tmpl.Src = src
 	s.Tmpl.HP = shieldBaseHP[lvl]
@@ -79,7 +80,7 @@ func NewCrystallizeShield(typ core.EleType, src int, lvl int, em float64, expiry
 	return s
 }
 
-func (c *CrystallizeShield) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, bool) {
+func (c *CrystallizeShield) OnDamage(dmg float64, ele coretype.EleType, bonus float64) (float64, bool) {
 	bonus += c.emBonus
 	return c.Tmpl.OnDamage(dmg, ele, bonus)
 }

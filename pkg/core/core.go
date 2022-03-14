@@ -25,11 +25,11 @@ const (
 type Core struct {
 	coretype.Logger
 	coretype.EventEmitter
+
 	//control
-	F     int            // current frame
+	Frame int            // current frame
 	Flags coretype.Flags // global flags
 	Rand  *rand.Rand
-	Log   coretype.Logger
 
 	//Player
 	Player player.Player
@@ -45,30 +45,43 @@ type Core struct {
 	state       coretype.AnimationState
 	stateExpiry int
 
+	//status
+	status      map[string]status
+	tasks       map[int][]task
+	constructs  []coretype.Construct
+	consNoLimit []coretype.Construct
+
 	//handlers
-	Status     StatusHandler
-	Energy     EnergyHandler
-	Action     CommandHandler
-	Queue      QueueHandler
-	Combat     CombatHandler
-	Tasks      TaskHandler
-	Constructs ConstructHandler
-	Shields    ShieldHandler
-	Health     HealthHandler
+
+	Action coretype.CommandExecuter
+	Queue  coretype.QueueHandler
+	Combat coretype.CombatHandler
+
+	// Energy core.EnergyHandler
+	// Shields    ShieldHandler
+	// Health     HealthHandler
 }
 
 func New() *Core {
 	// var err error
 	c := &Core{}
 
-	c.Logger = eventlog.NewCtrl(&c.F, 0)
+	c.Logger = eventlog.NewCtrl(&c.Frame, 0)
+
 	c.EventEmitter = event.NewCtrl(c)
+	c.status = map[string]status{}
+	c.constructs = make([]coretype.Construct, 0, 3)
+	c.consNoLimit = make([]coretype.Construct, 0, 3)
 
 	c.Flags.Custom = make(map[string]int)
 	//make a default nil writer
-	c.Log = &eventlog.NilLogger{}
+	// c.Log = &eventlog.NilLogger{}
 
 	return c
+}
+
+func (c *Core) F() int {
+	return c.Frame
 }
 
 func (c *Core) Init() {
@@ -176,7 +189,7 @@ func (c *Core) Skip(n int) {
 
 func (c *Core) Tick() {
 	//increment frame count
-	c.F++
+	c.Frame++
 	//tick auras
 	for _, t := range c.Targets {
 		if t == nil {
@@ -186,12 +199,14 @@ func (c *Core) Tick() {
 		t.Tick()
 	}
 	//tick shields
-	c.Shields.Tick()
+
 	//tick constructs
-	c.Constructs.Tick()
+	c.tickConstruct()
+	// c.Constructs.Tick()
 
 	c.Player.Tick()
+	c.Shields.Tick()
 	//run queued tasks
-	c.Tasks.Run()
+	c.runTasks()
 
 }

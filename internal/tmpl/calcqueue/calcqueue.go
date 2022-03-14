@@ -1,6 +1,9 @@
 package calcqueue
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 type Queuer struct {
 	core *core.Core
@@ -18,9 +21,9 @@ func New(c *core.Core) *Queuer {
 
 func (q *Queuer) SetActionList(a []core.ActionBlock) error {
 	q.pq = a
-	q.core.Log.NewEvent(
+	q.coretype.Log.NewEvent(
 		"priority queued received",
-		core.LogQueueEvent,
+		coretype.LogQueueEvent,
 		-1,
 		"pq", a,
 	)
@@ -33,9 +36,9 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 	active := q.core.Chars[q.core.ActiveChar].Key()
 	for {
 		if q.ind >= len(q.pq) {
-			q.core.Log.NewEvent(
+			q.coretype.Log.NewEvent(
 				"no more actions",
-				core.LogQueueEvent,
+				coretype.LogQueueEvent,
 				-1,
 			)
 			return nil, false, nil
@@ -45,10 +48,10 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 		v := q.pq[q.ind]
 
 		//check if we're on wait
-		if q.wait > q.core.F {
-			q.core.Log.NewEvent(
+		if q.wait > q.core.Frame {
+			q.coretype.Log.NewEvent(
 				"queuer on wait",
-				core.LogQueueEvent,
+				coretype.LogQueueEvent,
 				-1,
 				"wait", q.wait,
 				"index", q.ind,
@@ -65,7 +68,7 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 			if v.CalcWait.Frames {
 				q.wait = v.CalcWait.Val
 			} else {
-				q.wait = q.core.F + v.CalcWait.Val
+				q.wait = q.core.Frame + v.CalcWait.Val
 			}
 		case core.ActionBlockTypeSequence:
 			//check if we need to swap
@@ -85,9 +88,9 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 		default:
 			//ignore and move on
 			q.ind++
-			q.core.Log.NewEvent(
+			q.coretype.Log.NewEvent(
 				"queuer skipping non sequence options",
-				core.LogQueueEvent,
+				coretype.LogQueueEvent,
 				-1,
 				"index", q.ind,
 				"type", v.Type,
@@ -98,7 +101,7 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 		// q.core.Log.Debugw(
 		// 	"item queued",
 		// 	"frame", q.core.F,
-		// 	core.LogQueueEvent,
+		// 	coretype.LogQueueEvent,
 		// 	"index", q.ind,
 		// 	"name", v.Name,
 		// 	"target", v.Target,

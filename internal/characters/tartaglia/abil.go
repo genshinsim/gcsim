@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Normal attack
@@ -16,13 +17,13 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.Core.StatusDuration("tartagliamelee") > 0 {
 		return c.meleeAttack(f, a)
 	}
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypePierce,
@@ -31,7 +32,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	// TODO - double check this snapshotDelay
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -54,7 +55,7 @@ func (c *char) meleeAttack(f, a int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -66,7 +67,7 @@ func (c *char) meleeAttack(f, a int) (int, int) {
 		delay := f - meleeDelayOffset[c.NormalCounter][i]
 		c.Core.Combat.QueueAttack(
 			ai,
-			core.NewDefCircHit(.5, false, core.TargettableEnemy),
+			core.NewDefCircHit(.5, false, coretype.TargettableEnemy),
 			delay,
 			delay,
 			//TODO: what's the ordering on these 2 callbacks?
@@ -92,7 +93,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim (Charged)",
-		AttackTag:    core.AttackTagExtra,
+		AttackTag:    coretype.AttackTagExtra,
 		ICDTag:       core.ICDTagNone,
 		ICDGroup:     core.ICDGroupDefault,
 		StrikeType:   core.StrikeTypePierce,
@@ -104,7 +105,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 	c.Core.Combat.QueueAttack(
 		ai,
-		core.NewDefSingleTarget(1, core.TargettableEnemy),
+		core.NewDefSingleTarget(1, coretype.TargettableEnemy),
 		f,
 		f+travel,
 		//TODO: what's the ordering on these 2 callbacks?
@@ -125,7 +126,7 @@ var meleeChargeDelayOffset = []int{
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
-	if c.Core.Status.Duration("tartagliamelee") == 0 {
+	if c.Core.StatusDuration("tartagliamelee") == 0 {
 		return f, a
 	}
 
@@ -137,7 +138,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Charged Attack",
-		AttackTag:    core.AttackTagExtra,
+		AttackTag:    coretype.AttackTagExtra,
 		ICDTag:       core.ICDTagExtraAttack,
 		ICDGroup:     core.ICDGroupDefault,
 		StrikeType:   core.StrikeTypeSlash,
@@ -149,7 +150,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.Core.Combat.QueueAttack(
 			ai,
-			core.NewDefCircHit(1, false, core.TargettableEnemy),
+			core.NewDefCircHit(1, false, coretype.TargettableEnemy),
 			f-meleeChargeDelayOffset[i],
 			f-meleeChargeDelayOffset[i],
 			//TODO: what's the ordering on these 2 callbacks?
@@ -165,15 +166,15 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.Core.StatusDuration("tartagliamelee") > 0 {
 		c.onExitMeleeStance()
 		c.ResetNormalCounter()
 		return f, a
 	}
 
-	c.eCast = c.Core.F
-	c.Core.Status.AddStatus("tartagliamelee", 30*60)
-	c.Core.Log.NewEvent("Foul Legacy acivated", core.LogCharacterEvent, c.Index, "rtexpiry", c.Core.F+30*60)
+	c.eCast = c.Core.Frame
+	c.Core.AddStatus("tartagliamelee", 30*60)
+	c.coretype.Log.NewEvent("Foul Legacy acivated", coretype.LogCharacterEvent, c.Index, "rtexpiry", c.Core.Frame+30*60)
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -187,7 +188,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f, f)
 
 	c.SetCD(core.ActionSkill, 60)
 	return f, a
@@ -201,7 +202,7 @@ func (c *char) onExitMeleeStance() {
 
 	skillCD := 0
 
-	switch timeInMeleeStance := c.Core.F - c.eCast; {
+	switch timeInMeleeStance := c.Core.Frame - c.eCast; {
 	case timeInMeleeStance < 2*60:
 		skillCD = 7 * 60
 	case 2*60 <= timeInMeleeStance && timeInMeleeStance < 4*60:
@@ -238,7 +239,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	skillName := "Ranged Stance: Flash of Havoc"
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.Core.StatusDuration("tartagliamelee") > 0 {
 		skillName = "Melee Stance: Light of Obliteration"
 		mult = meleeBurst[c.TalentLvlBurst()]
 	}
@@ -256,14 +257,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			Mult:       mult,
 		}
 		var cb core.AttackCBFunc
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
+		if c.Core.StatusDuration("tartagliamelee") > 0 {
 			cb = c.rtBlastCallback
 		} else {
 			cb = c.rangedBurstApplyRiptide
 		}
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0, cb)
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 0, 0, cb)
+		if c.Core.StatusDuration("tartagliamelee") > 0 {
 			if c.Base.Cons >= 6 {
 				c.mlBurstUsed = true
 			}
@@ -271,11 +272,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			c.AddTask(func() {
 				c.AddEnergy("tartaglia-ranged-burst-refund", 20)
 			}, "tartaglia-ranged-burst-energy-refund", 9)
-			c.Core.Log.NewEvent("Tartaglia ranged burst restoring 20 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
+			c.coretype.Log.NewEvent("Tartaglia ranged burst restoring 20 energy", coretype.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}
 	}, "tartaglia-burst-clear", f-5) //random 5 frame
 
-	if c.Core.Status.Duration("tartagliamelee") == 0 {
+	if c.Core.StatusDuration("tartagliamelee") == 0 {
 		c.ConsumeEnergy(8)
 		c.SetCDWithDelay(core.ActionBurst, 900, 8)
 	} else {

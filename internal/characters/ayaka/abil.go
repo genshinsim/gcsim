@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -13,7 +14,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -27,7 +28,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i, c1cbArgs...)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f-5+i, f-5+i, c1cbArgs...)
 	}
 
 	c.AdvanceNormalIndex()
@@ -42,7 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		Abil:       "Charge",
 		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -59,7 +60,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	}
 
 	for i := 0; i < 3; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-3+i, f-3+i, cbArgs...)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f-3+i, f-3+i, cbArgs...)
 	}
 
 	return f, a
@@ -77,7 +78,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagNone,
 		ICDTag:     core.ICDTagDash,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 	}
 
@@ -90,24 +91,24 @@ func (c *char) Dash(p map[string]int) (int, int) {
 
 		c.Core.RestoreStam(10)
 		val := make([]float64, core.EndStatType)
-		val[core.CryoP] = 0.18
+		val[coretype.CryoP] = 0.18
 		//a2 increase normal + ca dmg by 30% for 6s
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key:    "ayaka-a4",
-			Expiry: c.Core.F + 600,
+			Expiry: c.Core.Frame + 600,
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 		})
 		once = true
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, f, cb)
 	//add cryo infuse
 	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "ayaka-dash",
-		Ele:    core.Cryo,
-		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Core.F + 300,
+		Ele:    coretype.Cryo,
+		Tags:   []core.AttackTag{coretype.AttackTagNormal, coretype.AttackTagExtra, core.AttackTagPlunge},
+		Expiry: c.Core.Frame + 300,
 	})
 	return f, f
 }
@@ -120,7 +121,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
@@ -130,20 +131,20 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if c.Core.Rand.Float64() < 0.5 {
 		count = 5
 	}
-	c.QueueParticle("ayaka", count, core.Cryo, f+100)
+	c.QueueParticle("ayaka", count, coretype.Cryo, f+100)
 
 	//a1 increase normal + ca dmg by 30% for 6s
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 0.3
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "ayaka-a1",
-		Expiry: c.Core.F + 360,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return val, atk.Info.AttackTag == core.AttackTagNormal || ai.AttackTag == core.AttackTagExtra
+		Expiry: c.Core.Frame + 360,
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+			return val, atk.Info.AttackTag == coretype.AttackTagNormal || ai.AttackTag == coretype.AttackTagExtra
 		},
 	})
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, coretype.TargettableEnemy), 0, f)
 
 	c.SetCD(core.ActionSkill, 600)
 	return f, a
@@ -160,7 +161,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 	}
 
@@ -172,7 +173,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//5 second, 20 ticks, so once every 15 frames, bloom after 5 seconds
 	ai.Mult = burstBloom[c.TalentLvlBurst()]
 	ai.Abil = "Soumetsu (Bloom)"
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+300, c4cbArgs...)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f, f+300, c4cbArgs...)
 
 	// C2 mini-frostflake bloom
 	var aiC2 core.AttackInfo
@@ -181,22 +182,22 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		aiC2.Mult = burstBloom[c.TalentLvlBurst()] * .2
 		aiC2.Abil = "C2 Mini-Frostflake Seki no To (Bloom)"
 		// TODO: Not sure about the positioning/size...
-		c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+300, c4cbArgs...)
-		c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+300, c4cbArgs...)
+		c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f, f+300, c4cbArgs...)
+		c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f, f+300, c4cbArgs...)
 	}
 
 	for i := 0; i < 19; i++ {
 		ai.Mult = burstCut[c.TalentLvlBurst()]
 		ai.Abil = "Soumetsu (Cutting)"
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+i*15, c4cbArgs...)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f, f+i*15, c4cbArgs...)
 
 		// C2 mini-frostflake cutting
 		if c.Base.Cons >= 2 {
 			aiC2.Mult = burstCut[c.TalentLvlBurst()] * .2
 			aiC2.Abil = "C2 Mini-Frostflake Seki no To (Cutting)"
 			// TODO: Not sure about the positioning/size...
-			c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+i*15, c4cbArgs...)
-			c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+i*15, c4cbArgs...)
+			c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f, f+i*15, c4cbArgs...)
+			c.Core.Combat.QueueAttack(aiC2, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f, f+i*15, c4cbArgs...)
 		}
 	}
 
@@ -219,7 +220,7 @@ func (c *char) c1cb(a core.AttackCB) {
 		return
 	}
 	c.ReduceActionCooldown(core.ActionSkill, 18)
-	c.icdC1 = c.Core.F + 6
+	c.icdC1 = c.Core.Frame + 6
 }
 
 // Callback for Ayaka C4 that is attached to Burst hits
@@ -239,9 +240,9 @@ func (c *char) c6cb(a core.AttackCB) {
 	c.AddTask(func() {
 		// TODO: When mod refactor is done, should change this to simply remove the mod or something
 		// Currently need to reload the mod with a null entry to allow for clear buff uptime tracking
-		c.AddPreDamageMod(core.PreDamageMod{
+		c.AddPreDamageMod(coretype.PreDamageMod{
 			Key: "ayaka-c6",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				return nil, false
 			},
 			Expiry: 0,
@@ -257,10 +258,10 @@ func (c *char) c6cb(a core.AttackCB) {
 func (c *char) c6AddBuff() {
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = 2.98
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key: "ayaka-c6",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != core.AttackTagExtra {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != coretype.AttackTagExtra {
 				return nil, false
 			}
 			return val, true

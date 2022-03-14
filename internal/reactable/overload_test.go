@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func TestOverload(t *testing.T) {
@@ -25,8 +26,8 @@ func TestOverload(t *testing.T) {
 
 	c.Init()
 
-	var src *core.AttackEvent
-	trg.onDmgCallBack = func(atk *core.AttackEvent) (float64, bool) {
+	var src *coretype.AttackEvent
+	trg.onDmgCallBack = func(atk *coretype.AttackEvent) (float64, bool) {
 		src = atk
 		log.Println(atk.Info.Abil)
 		log.Println(atk.Info.Element)
@@ -35,7 +36,7 @@ func TestOverload(t *testing.T) {
 	}
 
 	//electro into pyro
-	trg.React(&core.AttackEvent{
+	trg.React(&coretype.AttackEvent{
 		Info: core.AttackInfo{
 			Element:    core.Pyro,
 			Durability: 25,
@@ -43,7 +44,7 @@ func TestOverload(t *testing.T) {
 	})
 	//1 tick
 	trg.Tick()
-	next := &core.AttackEvent{
+	next := &coretype.AttackEvent{
 		Info: core.AttackInfo{
 			Element:    core.Electro,
 			Durability: 25,

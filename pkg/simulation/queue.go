@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (s *Simulation) initQueuer() error {
@@ -23,7 +24,7 @@ func (s *Simulation) initQueuer() error {
 	}
 	s.C.Log.NewEvent(
 		"setting queue",
-		core.LogSimEvent,
+		coretype.LogSimEvent,
 		-1,
 		"pq", s.cfg.Rotation,
 	)

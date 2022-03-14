@@ -2,6 +2,7 @@ package gladiator
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -10,11 +11,11 @@ func init() {
 	core.RegisterSetFunc("gladiators", New)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func New(c coretype.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 2 {
 		m := make([]float64, core.EndStatType)
 		m[core.ATKP] = 0.18
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "glad-2pc",
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -34,10 +35,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.35
-		c.AddPreDamageMod(core.PreDamageMod{
+		c.AddPreDamageMod(coretype.PreDamageMod{
 			Key: "glad-4pc",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return m, (atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra)
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
+				return m, (atk.Info.AttackTag == coretype.AttackTagNormal || atk.Info.AttackTag == coretype.AttackTagExtra)
 			},
 			Expiry: -1,
 		})

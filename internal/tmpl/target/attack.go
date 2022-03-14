@@ -2,15 +2,16 @@ package target
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 
 	"strconv"
 	"strings"
 )
 
-func (t *Tmpl) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
+func (t *Tmpl) Attack(atk *coretype.AttackEvent, evt core.LogEvent) (float64, bool) {
 	//if target is frozen prior to attack landing, set impulse to 0
 	//let the break freeze attack to trigger actual impulse
-	if t.AuraType() == core.Frozen {
+	if t.AuraType() == coretype.Frozen {
 		atk.Info.NoImpulse = true
 	}
 
@@ -25,9 +26,9 @@ func (t *Tmpl) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) 
 			applied := atk.Info.Durability
 			t.React(atk)
 			if t.Core.Flags.LogDebug {
-				t.Core.Log.NewEvent(
+				t.coretype.Log.NewEvent(
 					"application",
-					core.LogElementEvent,
+					coretype.LogElementEvent,
 					atk.Info.ActorIndex,
 					"attack_tag", atk.Info.AttackTag,
 					"applied_ele", atk.Info.Element.String(),
@@ -49,11 +50,11 @@ func (t *Tmpl) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) 
 	return damage, isCrit
 }
 
-func (t *Tmpl) calcDmg(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
+func (t *Tmpl) calcDmg(atk *coretype.AttackEvent, evt core.LogEvent) (float64, bool) {
 
 	var isCrit bool
 
-	st := core.EleToDmgP(atk.Info.Element)
+	st := coretype.EleToDmgP(atk.Info.Element)
 	// if st < 0 {
 	// 	log.Println(atk)
 	// }
@@ -135,7 +136,7 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent, evt core.LogEvent) (float64, bool)
 	if atk.Info.Amped {
 		char := t.Core.Chars[atk.Info.ActorIndex]
 		reactBonus = char.ReactBonus(atk.Info)
-		// t.Core.Log.Debugw("debug", "frame", t.Core.F, core.LogPreDamageMod, "char", t.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
+		// t.Core.Log.Debugw("debug", "frame", t.Core.F, core.LogPreDamageMod, "char", t.Index, "char_react", char.Index(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
 		damage = damage * (atk.Info.AmpMult * (1 + emBonus + reactBonus))
 	}
 
@@ -151,7 +152,7 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent, evt core.LogEvent) (float64, bool)
 	}
 
 	if t.Core.Flags.LogDebug {
-		t.Core.Log.NewEvent(
+		t.coretype.Log.NewEvent(
 			atk.Info.Abil,
 			core.LogCalc,
 			atk.Info.ActorIndex,
@@ -212,7 +213,7 @@ func (t *Tmpl) Resist(ai *core.AttackInfo, evt core.LogEvent) float64 {
 
 	r := t.Res[ai.Element]
 	for _, v := range t.ResMod {
-		if v.Expiry > t.Core.F && v.Ele == ai.Element {
+		if v.Expiry > t.Core.Frame && v.Ele == ai.Element {
 			if t.Core.Flags.LogDebug {
 				sb.WriteString(v.Key)
 				logDetails = append(logDetails, sb.String(), []string{
@@ -245,7 +246,7 @@ func (t *Tmpl) DefAdj(ai *core.AttackInfo, evt core.LogEvent) float64 {
 
 	var r float64
 	for _, v := range t.DefMod {
-		if v.Expiry > t.Core.F {
+		if v.Expiry > t.Core.Frame {
 			if t.Core.Flags.LogDebug {
 				sb.WriteString(v.Key)
 				logDetails = append(logDetails, sb.String(), []string{

@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/reactable"
 	"github.com/genshinsim/gcsim/internal/tmpl/target"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type Player struct {
@@ -21,12 +22,12 @@ func New(index int, c *core.Core) *Player {
 	return p
 }
 
-func (p *Player) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
+func (p *Player) Attack(atk *coretype.AttackEvent, evt core.LogEvent) (float64, bool) {
 	//ignore attacks we don't get hit
 	return 0, false
 }
 
-func (p *Player) Type() core.TargettableType                 { return core.TargettablePlayer }
+func (p *Player) Type() coretype.TargettableType             { return coretype.TargettablePlayer }
 func (p *Player) MaxHP() float64                             { return 1 }
 func (p *Player) HP() float64                                { return 1 }
 func (p *Player) Shape() core.Shape                          { return &p.Hitbox }
@@ -40,12 +41,12 @@ func (p *Player) AddReactBonusMod(mod core.ReactionBonusMod) {}
 func (p *Player) ReactBonus(atk core.AttackInfo) float64     { return 0 }
 func (p *Player) Kill()                                      {}
 
-func (p *Player) ApplySelfInfusion(ele core.EleType, dur core.Durability, f int) {
+func (p *Player) ApplySelfInfusion(ele coretype.EleType, dur core.Durability, f int) {
 
-	p.Core.Log.NewEventBuildMsg(core.LogSimEvent, -1, "self infusion applied: "+ele.String()).Write("durability", dur, "duration", f)
+	p.coretype.Log.NewEventBuildMsg(core.LogSimEvent, -1, "self infusion applied: "+ele.String()).Write("durability", dur, "duration", f)
 	//we're assuming self infusion isn't subject to 0.8x multiplier
 	//also no real sanity check
-	if ele == core.Frozen {
+	if ele == coretype.Frozen {
 		return
 	}
 

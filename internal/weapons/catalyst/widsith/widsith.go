@@ -33,7 +33,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		next := args[1].(int)
 		//ignore if char is not the active one
-		if next != char.CharIndex() {
+		if next != char.Index() {
 			return false
 		}
 		//if char is the active one then we just came on to field

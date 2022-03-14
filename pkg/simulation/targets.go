@@ -3,14 +3,14 @@ package simulation
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/enemy"
 	"github.com/genshinsim/gcsim/internal/tmpl/player"
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (s *Simulation) initTargets() error {
-	s.C.Targets = make([]core.Target, len(s.cfg.Targets)+1)
+	s.C.Targets = make([]coretype.Target, len(s.cfg.Targets)+1)
 	// if s.opts.LogDetails {
-	s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
-	s.stats.ElementUptime[0] = make(map[core.EleType]int)
+	s.stats.ElementUptime = make([]map[coretype.EleType]int, len(s.C.Targets))
+	s.stats.ElementUptime[0] = make(map[coretype.EleType]int)
 	// }
 	s.C.Targets[0] = player.New(0, s.C)
 
@@ -23,7 +23,7 @@ func (s *Simulation) initTargets() error {
 		}
 		s.C.Targets[i+1] = enemy.New(i+1, s.C, s.cfg.Targets[i])
 		// if s.opts.LogDetails {
-		s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
+		s.stats.ElementUptime[i+1] = make(map[coretype.EleType]int)
 		// }
 	}
 	return nil

@@ -1,12 +1,15 @@
 package fischl
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
+)
 
 func (c *char) c6() {
 	//this is on attack animation state, not attack landed
-	c.Core.Events.Subscribe(core.PostAttack, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.PostAttack, func(args ...interface{}) bool {
 		//do nothing if oz not on field
-		if c.ozActiveUntil < c.Core.F {
+		if c.ozActiveUntil < c.Core.Frame {
 			return false
 		}
 		ai := core.AttackInfo{
@@ -24,7 +27,7 @@ func (c *char) c6() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// C4 uses Oz Snapshot
-		c.Core.Combat.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, core.NewDefSingleTarget(1, core.TargettableEnemy), 0)
+		c.Core.Combat.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0)
 		return false
 	}, "fischl-c6")
 }

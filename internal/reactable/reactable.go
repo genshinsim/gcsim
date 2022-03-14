@@ -4,13 +4,14 @@ import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type Reactable struct {
 	Durability []core.Durability
 	DecayRate  []core.Durability
 	// Source     []int //source frame of the aura
-	self core.Target
+	self coretype.Target
 	core *core.Core
 	//ec specific
 	ecSnapshot core.AttackInfo //index of owner of next ec ticks
@@ -22,12 +23,12 @@ const frzDecayCap core.Durability = 10.0 / 60.0
 
 const ZeroDur core.Durability = 0.00000000001
 
-func (r *Reactable) Init(self core.Target, c *core.Core) *Reactable {
+func (r *Reactable) Init(self coretype.Target, c *core.Core) *Reactable {
 	r.self = self
 	r.core = c
 	r.Durability = make([]core.Durability, core.ElementDelimAttachable)
 	r.DecayRate = make([]core.Durability, core.ElementDelimAttachable)
-	r.DecayRate[core.Frozen] = frzDecayCap
+	r.DecayRate[coretype.Frozen] = frzDecayCap
 	r.ecTickSrc = -1
 	return r
 }
@@ -36,14 +37,14 @@ func (r *Reactable) ActiveAuraString() []string {
 	var result []string
 	for i, v := range r.Durability {
 		if v > ZeroDur {
-			result = append(result, core.EleTypeString[i]+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
+			result = append(result, coretype.EleTypeString[i]+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
 		}
 	}
 
 	return result
 }
 
-func (r *Reactable) React(a *core.AttackEvent) {
+func (r *Reactable) React(a *coretype.AttackEvent) {
 	//before all else, check for shatter first
 	switch count := r.auraCount(); count {
 	case 0:
@@ -70,7 +71,7 @@ func (r *Reactable) React(a *core.AttackEvent) {
 			r.tryMeltFrozen(a)
 			//TODO: the current implementation would cauze vape to override melt multiplier
 			r.tryVaporize(a)
-		case core.Cryo:
+		case coretype.Cryo:
 			r.trySuperconduct(a)
 			r.tryFreeze(a)
 			r.tryMelt(a)
@@ -97,7 +98,7 @@ func (r *Reactable) React(a *core.AttackEvent) {
 
 }
 
-func (r *Reactable) AuraContains(e ...core.EleType) bool {
+func (r *Reactable) AuraContains(e ...coretype.EleType) bool {
 	for _, v := range e {
 		if r.Durability[v] > ZeroDur {
 			return true
@@ -106,9 +107,9 @@ func (r *Reactable) AuraContains(e ...core.EleType) bool {
 	return false
 }
 
-func (r *Reactable) AuraType() core.EleType {
-	if r.Durability[core.Frozen] > ZeroDur {
-		return core.Frozen
+func (r *Reactable) AuraType() coretype.EleType {
+	if r.Durability[coretype.Frozen] > ZeroDur {
+		return coretype.Frozen
 	}
 	if r.Durability[core.Electro] > ZeroDur && r.Durability[core.Hydro] > ZeroDur {
 		return core.EC
@@ -116,7 +117,7 @@ func (r *Reactable) AuraType() core.EleType {
 
 	for i, v := range r.Durability {
 		if v > 0 {
-			return core.EleType(i)
+			return coretype.EleType(i)
 		}
 	}
 
@@ -133,9 +134,9 @@ func (r *Reactable) auraCount() int {
 	return count
 }
 
-func (r *Reactable) tryAttach(ele core.EleType, dur *core.Durability) {
+func (r *Reactable) tryAttach(ele coretype.EleType, dur *core.Durability) {
 	//can't attach >= frozen
-	if ele >= core.Frozen {
+	if ele >= coretype.Frozen {
 		return
 	}
 	if *dur < ZeroDur {
@@ -145,9 +146,9 @@ func (r *Reactable) tryAttach(ele core.EleType, dur *core.Durability) {
 	*dur = 0
 }
 
-func (r *Reactable) tryRefill(ele core.EleType, dur *core.Durability) {
+func (r *Reactable) tryRefill(ele coretype.EleType, dur *core.Durability) {
 	//shouldn't be >= frozen
-	if ele >= core.Frozen {
+	if ele >= coretype.Frozen {
 		return
 	}
 	if *dur < ZeroDur {
@@ -174,13 +175,13 @@ func (r *Reactable) calcReactionDmg(atk core.AttackInfo) float64 {
 	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl]
 }
 
-func (r *Reactable) attach(e core.EleType, dur core.Durability, m core.Durability) {
+func (r *Reactable) attach(e coretype.EleType, dur core.Durability, m core.Durability) {
 	//calculate duration based on dur
 	r.DecayRate[e] = m * dur / (6*dur + 420)
 	r.addDurability(e, m*dur)
 }
 
-func (r *Reactable) refill(e core.EleType, dur core.Durability, m core.Durability) {
+func (r *Reactable) refill(e coretype.EleType, dur core.Durability, m core.Durability) {
 	add := max(dur*m-r.Durability[e], 0)
 	if add > 0 {
 		r.addDurability(e, add)
@@ -188,7 +189,7 @@ func (r *Reactable) refill(e core.EleType, dur core.Durability, m core.Durabilit
 }
 
 //reduce the requested element by dur * factor, return the amount of dur consumed
-func (r *Reactable) reduce(e core.EleType, dur core.Durability, factor core.Durability) (consumed core.Durability) {
+func (r *Reactable) reduce(e coretype.EleType, dur core.Durability, factor core.Durability) (consumed core.Durability) {
 	//if dur * factor > amount of existing element, then set amont of existing element to
 	//0; and consumed is equal to dur / facotr
 	if dur*factor >= r.Durability[e] {
@@ -203,7 +204,7 @@ func (r *Reactable) reduce(e core.EleType, dur core.Durability, factor core.Dura
 	return
 }
 
-func (r *Reactable) addDurability(e core.EleType, dur core.Durability) {
+func (r *Reactable) addDurability(e coretype.EleType, dur core.Durability) {
 	r.Durability[e] += dur
 	r.core.Events.Emit(core.OnAuraDurabilityAdded, r.self, e, dur)
 }
@@ -218,35 +219,35 @@ func (r *Reactable) Tick() {
 	//
 	//per frame then we have decay * (1 + 0.25 * (x/60))
 
-	for i := core.EleType(0); i < core.Frozen; i += 1 {
+	for i := coretype.EleType(0); i < coretype.Frozen; i += 1 {
 		if r.Durability[i] > ZeroDur {
 			r.Durability[i] -= r.DecayRate[i]
 			if r.Durability[i] <= ZeroDur {
 				r.Durability[i] = 0
 				r.DecayRate[i] = 0
 				// log.Println(r.self)
-				// log.Println("ele", core.EleType(i).String())
+				// log.Println("ele", coretype.EleType(i).String())
 				// log.Println("core", r.core)
 				// log.Println("frame", r.core.F)
-				r.core.Events.Emit(core.OnAuraDurabilityDepleted, r.self, core.EleType(i))
+				r.core.Events.Emit(core.OnAuraDurabilityDepleted, r.self, coretype.EleType(i))
 			}
 		}
 	}
 
 	//for freeze, durability can be calculated as:
 	//d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
-	if r.Durability[core.Frozen] > ZeroDur {
+	if r.Durability[coretype.Frozen] > ZeroDur {
 		//ramp up decay rate first
-		r.DecayRate[core.Frozen] += frzDelta
-		r.Durability[core.Frozen] -= r.DecayRate[core.Frozen]
+		r.DecayRate[coretype.Frozen] += frzDelta
+		r.Durability[coretype.Frozen] -= r.DecayRate[coretype.Frozen]
 
 		r.checkFreeze()
-	} else if r.DecayRate[core.Frozen] > frzDecayCap { //otherwise ramp down decay rate
-		r.DecayRate[core.Frozen] -= frzDelta * 2
+	} else if r.DecayRate[coretype.Frozen] > frzDecayCap { //otherwise ramp down decay rate
+		r.DecayRate[coretype.Frozen] -= frzDelta * 2
 
 		//cap decay
-		if r.DecayRate[core.Frozen] < frzDecayCap {
-			r.DecayRate[core.Frozen] = frzDecayCap
+		if r.DecayRate[coretype.Frozen] < frzDecayCap {
+			r.DecayRate[coretype.Frozen] = frzDecayCap
 		}
 	}
 

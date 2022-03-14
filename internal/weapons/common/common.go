@@ -4,23 +4,24 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 //After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.
 //This effect has a maximum of 3 stacks, and the duration of each stack is independent of the others.
-func Blackcliff(char core.Character, c *core.Core, r int, param map[string]int) {
+func Blackcliff(char coretype.Character, c *core.Core, r int, param map[string]int) {
 
 	atk := 0.09 + float64(r)*0.03
 	index := 0
 	stacks := []int{-1, -1, -1}
 
 	m := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "blackcliff",
 		Amount: func() ([]float64, bool) {
 			count := 0
 			for _, v := range stacks {
-				if v > c.F {
+				if v > c.Frame {
 					count++
 				}
 			}
@@ -30,8 +31,8 @@ func Blackcliff(char core.Character, c *core.Core, r int, param map[string]int) 
 		Expiry: -1,
 	})
 
-	c.Events.Subscribe(core.OnTargetDied, func(args ...interface{}) bool {
-		stacks[index] = c.F + 1800
+	c.Subscribe(core.OnTargetDied, func(args ...interface{}) bool {
+		stacks[index] = c.Frame + 1800
 		index++
 		if index == 3 {
 			index = 0
@@ -41,48 +42,48 @@ func Blackcliff(char core.Character, c *core.Core, r int, param map[string]int) 
 
 }
 
-func Favonius(char core.Character, c *core.Core, r int, param map[string]int) {
+func Favonius(char coretype.Character, c *core.Core, r int, param map[string]int) {
 
 	p := 0.50 + float64(r)*0.1
 	cd := 810 - r*90
 	icd := 0
 	//add on crit effect
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
 		crit := args[3].(bool)
 		if !crit {
 			return false
 		}
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.ActiveChar != char.CharIndex() {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
 
 		if c.Rand.Float64() > p {
 			return false
 		}
-		c.Log.NewEvent("favonius proc'd", core.LogWeaponEvent, char.CharIndex())
+		c.Log.NewEvent("favonius proc'd", coretype.LogWeaponEvent, char.Index())
 
 		char.QueueParticle("favonius-"+char.Name(), 3, core.NoElement, 80)
 
-		icd = c.F + cd
+		icd = c.Frame + cd
 
 		return false
 	}, fmt.Sprintf("favo-%v", char.Name()))
 
 }
 
-func Lithic(char core.Character, c *core.Core, r int, param map[string]int) {
+func Lithic(char coretype.Character, c *core.Core, r int, param map[string]int) {
 
 	stacks := 0
 	val := make([]float64, core.EndStatType)
 
-	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+	c.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 		for _, char := range c.Chars {
 			if char.Zone() == core.ZoneLiyue {
 				stacks++
@@ -93,7 +94,7 @@ func Lithic(char core.Character, c *core.Core, r int, param map[string]int) {
 		return true
 	}, fmt.Sprintf("lithic-%v", char.Name()))
 
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "lithic",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
@@ -102,10 +103,10 @@ func Lithic(char core.Character, c *core.Core, r int, param map[string]int) {
 	})
 }
 
-func Royal(char core.Character, c *core.Core, r int, param map[string]int) {
+func Royal(char coretype.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 		crit := args[3].(bool)
 		if crit {
 			stacks = 0
@@ -120,7 +121,7 @@ func Royal(char core.Character, c *core.Core, r int, param map[string]int) {
 
 	rate := 0.06 + float64(r)*0.02
 	m := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "royal",
 		Amount: func() ([]float64, bool) {
 			m[core.CR] = float64(stacks) * rate
@@ -133,7 +134,7 @@ func Royal(char core.Character, c *core.Core, r int, param map[string]int) {
 
 //After damaging an opponent with an Elemental Skill, the skill has a 40/50/60/70/80%
 //chance to end its own CD. Can only occur once every 30/26/22/19/16s.
-func Sacrificial(char core.Character, c *core.Core, r int, param map[string]int) {
+func Sacrificial(char coretype.Character, c *core.Core, r int, param map[string]int) {
 
 	last := 0
 	prob := 0.3 + float64(r)*0.1
@@ -143,18 +144,18 @@ func Sacrificial(char core.Character, c *core.Core, r int, param map[string]int)
 		cd = (19 - (r-4)*3) * 60
 	}
 	//add on crit effect
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.ActiveChar != char.CharIndex() {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
 		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
 			return false
 		}
-		if last != 0 && c.F-last < cd {
+		if last != 0 && c.Frame-last < cd {
 			return false
 		}
 		if char.Cooldown(core.ActionSkill) == 0 {
@@ -162,8 +163,8 @@ func Sacrificial(char core.Character, c *core.Core, r int, param map[string]int)
 		}
 		if c.Rand.Float64() < prob {
 			char.ResetActionCooldown(core.ActionSkill)
-			last = c.F
-			c.Log.NewEvent("sacrificial proc'd", core.LogWeaponEvent, char.CharIndex())
+			last = c.Frame
+			c.Log.NewEvent("sacrificial proc'd", coretype.LogWeaponEvent, char.Index())
 		}
 		return false
 	}, fmt.Sprintf("sac-%v", char.Name()))
@@ -178,14 +179,14 @@ func Sacrificial(char core.Character, c *core.Core, r int, param map[string]int)
 //r3 0.18 60%
 //r4 0.21 70%
 //r5 0.24 80%
-func Wavebreaker(char core.Character, c *core.Core, r int, param map[string]int) {
+func Wavebreaker(char coretype.Character, c *core.Core, r int, param map[string]int) {
 
 	per := 0.09 + 0.03*float64(r)
 	max := 0.3 + 0.1*float64(r)
 
 	var amt float64
 
-	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+	c.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 		var energy float64
 		//calculate total team energy
 		for _, x := range c.Chars {
@@ -196,13 +197,13 @@ func Wavebreaker(char core.Character, c *core.Core, r int, param map[string]int)
 		if amt > max {
 			amt = max
 		}
-		c.Log.NewEvent("wavebreaker dmg calc", core.LogWeaponEvent, char.CharIndex(), "total", energy, "per", per, "max", max, "amt", amt)
+		c.Log.NewEvent("wavebreaker dmg calc", coretype.LogWeaponEvent, char.Index(), "total", energy, "per", per, "max", max, "amt", amt)
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = amt
-		char.AddPreDamageMod(core.PreDamageMod{
+		char.AddPreDamageMod(coretype.PreDamageMod{
 			Expiry: -1,
 			Key:    "wavebreaker",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 				if atk.Info.AttackTag == core.AttackTagElementalBurst {
 					return m, true
 				}

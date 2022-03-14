@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -17,7 +18,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagKleeFireDamage,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -47,7 +48,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -103,7 +104,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			ai.Durability = 50
 		}
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f+30+i*40, cb)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, f+30+i*40, cb)
 	}
 
 	if bounce > 0 {
@@ -137,7 +138,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//roughly 160 frames after mines are laid
 	for i := 0; i < minehits; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, f+160, c2cb)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 0, f+160, c2cb)
 	}
 
 	c.c1(f + 30)
@@ -173,22 +174,22 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				return
 			}
 			//wave 1 = 1
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 0)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 0, 0)
 			//wave 2 = 1 + 30% chance of 1
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 12)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 0, 12)
 			if c.Core.Rand.Float64() < 0.3 {
-				c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 12)
+				c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 0, 12)
 			}
 			//wave 3 = 1 + 50% chance of 1
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 24)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 0, 24)
 			if c.Core.Rand.Float64() < 0.5 {
-				c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 24)
+				c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), 0, 24)
 			}
 		}, "klee-burst", i)
 	}
 
 	c.AddTask(func() {
-		c.Core.Status.AddStatus("kleeq", 600)
+		c.Core.AddStatus("kleeq", 600)
 	}, "klee-burst-status", 132)
 
 	//every 3 seconds add energy if c6
@@ -205,7 +206,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 						continue
 					}
 					x.AddEnergy("klee-c6", 3)
-					c.Core.Log.NewEvent("klee c6 regen 3 energy", core.LogEnergyEvent, c.Index, "char", x.CharIndex(), "new energy", x.CurrentEnergy())
+					c.coretype.Log.NewEvent("klee c6 regen 3 energy", coretype.LogEnergyEvent, c.Index, "char", x.Index(), "new energy", x.CurrentEnergy())
 				}
 
 			}, "klee-c6", i)
@@ -215,10 +216,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		for _, x := range c.Core.Chars {
 			val := make([]float64, core.EndStatType)
 			val[core.PyroP] = .1
-			x.AddMod(core.CharStatMod{
+			x.AddMod(coretype.CharStatMod{
 				Key:    "klee-c6",
 				Amount: func() ([]float64, bool) { return val, true },
-				Expiry: c.Core.F + 1500,
+				Expiry: c.Core.Frame + 1500,
 			})
 		}
 	}

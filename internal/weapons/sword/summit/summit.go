@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -12,10 +13,10 @@ func init() {
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	shd := .15 + float64(r)*.05
-	c.Shields.AddBonus(func() float64 {
+	c.Player.AddShieldBonus(func() float64 {
 		return shd
 	})
 
@@ -23,37 +24,37 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	icd := 0
 	duration := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
-		if duration < c.F {
+		if duration < c.Frame {
 			stacks = 0
 		}
 		stacks++
 		if stacks > 5 {
 			stacks = 0
 		}
-		icd = c.F + 18
+		icd = c.Frame + 18
 		return false
 	}, fmt.Sprintf("summit-shaper-%v", char.Name()))
 
 	atk := 0.03 + 0.01*float64(r)
 
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "summit",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
-			if duration > c.F {
+			if duration > c.Frame {
 				val[core.ATKP] = atk * float64(stacks)
-				if c.Shields.IsShielded(char.CharIndex()) {
+				if c.Player.IsCharShielded(char.Index()) {
 					val[core.ATKP] *= 2
 				}
 				return val, true

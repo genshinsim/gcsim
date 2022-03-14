@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -13,7 +14,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -22,7 +23,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
 	}
 
 	if c.Base.Cons == 6 {
@@ -39,7 +40,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -49,7 +50,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-i*10-5, f-i*10-5)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f-i*10-5, f-i*10-5)
 	}
 
 	if c.Tags["e"] == 1 {
@@ -64,13 +65,13 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			Mult:       skillCA[c.TalentLvlSkill()],
 		}
 		for i := 0; i < 2; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f, f)
 		}
 
 		//place on cooldown
 		c.Tags["e"] = 0
 		// c.CD[def.SkillCD] = c.eStartFrame + 100
-		c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
+		c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.Frame)
 
 		// TODO: Particle timing?
 		if c.Core.Rand.Float64() < .5 {
@@ -109,10 +110,10 @@ func (c *char) skillFirst(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f, f)
 
 	c.Tags["e"] = 1
-	c.eStartFrame = c.Core.F
+	c.eStartFrame = c.Core.Frame
 
 	//place on cd after certain frames if started is still true
 	//looks like the E thing lasts 5 seconds
@@ -120,9 +121,9 @@ func (c *char) skillFirst(p map[string]int) (int, int) {
 		if c.Tags["e"] == 1 {
 			c.Tags["e"] = 0
 			// c.CD[def.SkillCD] = c.eStartFrame + 100
-			c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F) //TODO: cooldown if not triggered, 7.5s
+			c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.Frame) //TODO: cooldown if not triggered, 7.5s
 		}
-	}, "keqing-skill-cd", c.Core.F+300) //TODO: check this
+	}, "keqing-skill-cd", c.Core.Frame+300) //TODO: check this
 
 	if c.Base.Cons == 6 {
 		c.activateC6("skill")
@@ -145,16 +146,16 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), f, f)
 	//add electro infusion
 
-	c.Core.Status.AddStatus("keqinginfuse", 300)
+	c.Core.AddStatus("keqinginfuse", 300)
 
 	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "a2",
 		Ele:    core.Electro,
-		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Core.F + 300,
+		Tags:   []core.AttackTag{coretype.AttackTagNormal, coretype.AttackTagExtra, core.AttackTagPlunge},
+		Expiry: c.Core.Frame + 300,
 	})
 
 	if c.Base.Cons >= 1 {
@@ -174,7 +175,7 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 			Mult:       .5,
 		}
 		for i := 0; i < hits; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), 0, f)
 		}
 	}
 
@@ -187,7 +188,7 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 
 	//place on cooldown
 	c.Tags["e"] = 0
-	c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
+	c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.Frame)
 	return f, a
 }
 
@@ -197,10 +198,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	val := make([]float64, core.EndStatType)
 	val[core.CR] = 0.15
 	val[core.ER] = 0.15
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "a4",
 		Amount: func() ([]float64, bool) { return val, true },
-		Expiry: c.Core.F + 480,
+		Expiry: c.Core.Frame + 480,
 	})
 
 	//first hit 70 frame
@@ -220,20 +221,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 70, 70)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 70, 70)
 	//8 hits
 
 	ai.Abil = "Starward Sword (Consecutive Slash)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	for i := 70; i < 170; i += 13 {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), i, i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), i, i)
 	}
 
 	//final
 
 	ai.Abil = "Starward Sword (Last Attack)"
 	ai.Mult = burstFinal[c.TalentLvlBurst()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 211, 211)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 211, 211)
 
 	if c.Base.Cons == 6 {
 		c.activateC6("burst")

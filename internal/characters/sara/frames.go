@@ -27,7 +27,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		// While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
 		// TODO: Maybe not exactly right since some component of this is not the charge time
 		// Nothing better in library yet though
-		if c.Core.Status.Duration("saracover") > 0 {
+		if c.Core.StatusDuration("saracover") > 0 {
 			reduced_frames := 78 * 0.4
 			return int(reduced_frames), int(reduced_frames)
 		}
@@ -38,7 +38,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		// In line with most other cases in sim, assume that you swap cancel this instead of the full 80 frames
 		return 60, 60
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

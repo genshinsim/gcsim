@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -12,7 +13,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagLisaElectro,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
@@ -20,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -37,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
@@ -57,7 +58,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		done = true
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), 0, f-1, cb)
 
 	return f, a
 }
@@ -97,7 +98,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		done = true
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, f-1, cb)
 
 	if c.Core.Rand.Float64() < 0.5 {
 		c.QueueParticle("Lisa", 1, core.Electro, f+100)
@@ -120,17 +121,17 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		Durability: 25,
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, f)
 
 	//c2 add defense? no interruptions either way
 	if c.Base.Cons >= 2 {
 		//increase def for the duration of this abil in however many frames
 		val := make([]float64, core.EndStatType)
 		val[core.DEFP] = 0.25
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key:    "lisa-c2",
 			Amount: func() ([]float64, bool) { return val, true },
-			Expiry: c.Core.F + 126,
+			Expiry: c.Core.Frame + 126,
 		})
 	}
 
@@ -148,7 +149,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 
 	//[8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f, c1cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, coretype.TargettableEnemy), 0, f, c1cb)
 
 	// count := 4
 	// if c.Core.Rand.Float64() < 0.5 {
@@ -166,7 +167,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//first zap has no icd
-	targ := c.Core.RandomTargetIndex(core.TargettableEnemy)
+	targ := c.Core.RandomTargetIndex(coretype.TargettableEnemy)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Rose (Initial)",
@@ -177,7 +178,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       0.1,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(targ, core.TargettableEnemy), f, f, a4cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(targ, coretype.TargettableEnemy), f, f, a4cb)
 
 	//duration is 15 seconds, tick every .5 sec
 	//30 zaps once every 30 frame, starting at f
@@ -211,12 +212,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 			}
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-1, f+i, cb, a4cb)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f-1, f+i, cb, a4cb)
 	}
 
 	//add a status for this just in case someone cares
 	c.AddTask(func() {
-		c.Core.Status.AddStatus("lisaburst", 900)
+		c.Core.AddStatus("lisaburst", 900)
 	}, "lisa burst status", f)
 
 	//on lisa c4

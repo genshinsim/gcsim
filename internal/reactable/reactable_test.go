@@ -17,13 +17,14 @@ import (
 	"github.com/genshinsim/gcsim/internal/tmpl/status"
 	"github.com/genshinsim/gcsim/internal/tmpl/task"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 //make our own core because otherwise we run into problems with circular import
 func testCore() *core.Core {
 	c := core.New()
 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	c.Tasks = task.NewCtrl(&c.F)
+	c.Tasks = task.NewCtrl(&c.Frame)
 	c.Events = event.NewCtrl(c)
 	c.Status = status.NewCtrl(c)
 	c.Energy = energy.NewCtrl(c)
@@ -39,10 +40,10 @@ func testCore() *core.Core {
 type testTarget struct {
 	*Reactable
 	src           int
-	onDmgCallBack func(*core.AttackEvent) (float64, bool)
+	onDmgCallBack func(*coretype.AttackEvent) (float64, bool)
 }
 
-func (t *testTarget) Type() core.TargettableType                 { return core.TargettableEnemy }
+func (t *testTarget) Type() coretype.TargettableType             { return coretype.TargettableEnemy }
 func (t *testTarget) Index() int                                 { return 0 }
 func (t *testTarget) SetIndex(ind int)                           {}
 func (t *testTarget) MaxHP() float64                             { return 1 }
@@ -61,14 +62,14 @@ func (t *testTarget) SetTag(key string, val int)                 {}
 func (t *testTarget) GetTag(key string) int                      { return 0 }
 func (t *testTarget) RemoveTag(key string)                       {}
 
-func (t *testTarget) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) {
+func (t *testTarget) Attack(atk *coretype.AttackEvent, evt core.LogEvent) (float64, bool) {
 	if t.onDmgCallBack != nil {
 		return t.onDmgCallBack(atk)
 	}
 	return 0, false
 }
 
-var testChar core.CharacterProfile
+var testChar coretype.CharacterProfile
 
 func TestMain(m *testing.M) {
 	testChar.Stats = make([]float64, core.EndStatType)
@@ -100,7 +101,7 @@ func TestTick(t *testing.T) {
 	trg.Init(trg, c)
 
 	//test electro
-	trg.React(&core.AttackEvent{
+	trg.React(&coretype.AttackEvent{
 		Info: core.AttackInfo{
 			Element:    core.Electro,
 			Durability: 25,
@@ -128,7 +129,7 @@ func TestTick(t *testing.T) {
 	//test multiple aura
 	trg.attach(core.Electro, 50, 0.8)
 	trg.attach(core.Hydro, 50, 0.8)
-	trg.attach(core.Cryo, 50, 0.8)
+	trg.attach(coretype.Cryo, 50, 0.8)
 	trg.attach(core.Pyro, 50, 0.8)
 	for i := 0; i < 6*50+420; i++ {
 		trg.Tick()
@@ -139,7 +140,7 @@ func TestTick(t *testing.T) {
 	}
 
 	//test refilling
-	trg.React(&core.AttackEvent{
+	trg.React(&coretype.AttackEvent{
 		Info: core.AttackInfo{
 			Element:    core.Electro,
 			Durability: 25,
@@ -154,7 +155,7 @@ func TestTick(t *testing.T) {
 	life := int((left + 40) / decay)
 	// log.Println(decay, left, life)
 
-	trg.React(&core.AttackEvent{
+	trg.React(&coretype.AttackEvent{
 		Info: core.AttackInfo{
 			Element:    core.Electro,
 			Durability: 50,
@@ -176,7 +177,7 @@ func TestTick(t *testing.T) {
 
 	//test frozen
 	//50 frozen should last just over 208 frames (i.e. 0 by 209)
-	trg.Durability[core.Frozen] = 50
+	trg.Durability[coretype.Frozen] = 50
 	for i := 0; i < 208; i++ {
 		trg.Tick()
 		// log.Println(trg.Durability)
@@ -184,13 +185,13 @@ func TestTick(t *testing.T) {
 		// log.Println("------------------------")
 	}
 	//should be > 0 still
-	if trg.Durability[core.Frozen] < 0 {
-		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[core.Frozen])
+	if trg.Durability[coretype.Frozen] < 0 {
+		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[coretype.Frozen])
 	}
 	//1 more tick and should be gone
 	trg.Tick()
-	if trg.Durability[core.Frozen] > 0 {
-		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[core.Frozen])
+	if trg.Durability[coretype.Frozen] > 0 {
+		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[coretype.Frozen])
 	}
 	//105 more frames to full recover
 	for i := 0; i < 104; i++ {
@@ -200,13 +201,13 @@ func TestTick(t *testing.T) {
 		// log.Println("------------------------")
 	}
 	//decay should be > 0 still
-	if trg.DecayRate[core.Frozen] < frzDecayCap {
-		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[core.Frozen])
+	if trg.DecayRate[coretype.Frozen] < frzDecayCap {
+		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[coretype.Frozen])
 	}
 	//1 more tick to reset decay
 	trg.Tick()
-	if trg.DecayRate[core.Frozen] > frzDecayCap {
-		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[core.Frozen])
+	if trg.DecayRate[coretype.Frozen] > frzDecayCap {
+		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[coretype.Frozen])
 	}
 
 }
@@ -214,15 +215,15 @@ func TestTick(t *testing.T) {
 func (target *testTarget) allNil(t *testing.T) bool {
 	ok := true
 	for i, v := range target.Durability {
-		ele := core.EleType(i)
+		ele := coretype.EleType(i)
 		if !durApproxEqual(0, v, 0.00001) {
 			t.Errorf("ele %v expected 0 durability got %v", ele, v)
 			ok = false
 		}
-		if !durApproxEqual(0, target.DecayRate[i], 0.00001) && ele != core.Frozen {
+		if !durApproxEqual(0, target.DecayRate[i], 0.00001) && ele != coretype.Frozen {
 			t.Errorf("ele %v expected 0 decay got %v", ele, target.DecayRate[i])
 			ok = false
-		} else if !durApproxEqual(frzDecayCap, target.DecayRate[i], 0.00001) && ele == core.Frozen {
+		} else if !durApproxEqual(frzDecayCap, target.DecayRate[i], 0.00001) && ele == coretype.Frozen {
 			t.Errorf("frozen decay expected %v got %v", frzDecayCap, target.DecayRate[i])
 			ok = false
 		}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -15,7 +16,7 @@ func init() {
 // After a Normal Attack, Charged Attack, Elemental Skill or Elemental Burst hits an opponent, 1 stack of Ashen Nightstar will be gained for 12s.
 // When 1/2/3/4 stacks of Ashen Nightstar are present, ATK is increased by (10/20/30/48)/(12.5/25/37.5/60)/(15/30/45/72)/(17.5/35/52.5/84)/(20/40/60/96)%.
 // The stack of Ashen Nightstar created by the Normal Attack, Charged Attack, Elemental Skill or Elemental Burst will be counted independently of the others.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	dmg := .09 + float64(r)*.03
 	stack := .075 + float64(r)*.025
@@ -27,21 +28,21 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	burst := 0
 
 	mATK := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "polar-star",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			count := 0
-			if normal > c.F {
+			if normal > c.Frame {
 				count++
 			}
-			if charged > c.F {
+			if charged > c.Frame {
 				count++
 			}
-			if skill > c.F {
+			if skill > c.Frame {
 				count++
 			}
-			if burst > c.F {
+			if burst > c.Frame {
 				count++
 			}
 
@@ -55,20 +56,20 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		},
 	})
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if c.ActiveChar != char.CharIndex() {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
 
-		cd := c.F + 60*12
+		cd := c.Frame + 60*12
 		switch atk.Info.AttackTag {
-		case core.AttackTagNormal:
+		case coretype.AttackTagNormal:
 			normal = cd
-		case core.AttackTagExtra:
+		case coretype.AttackTagExtra:
 			charged = cd
 		case core.AttackTagElementalArt, core.AttackTagElementalArtHold:
 			skill = cd
@@ -81,10 +82,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	mDmg := make([]float64, core.EndStatType)
 	mDmg[core.DmgP] = dmg
-	char.AddPreDamageMod(core.PreDamageMod{
+	char.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "polar-star",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case core.AttackTagElementalArt, core.AttackTagElementalArtHold, core.AttackTagElementalBurst:
 				return mDmg, true

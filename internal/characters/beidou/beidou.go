@@ -3,6 +3,7 @@ package beidou
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -12,11 +13,11 @@ func init() {
 type char struct {
 	*character.Tmpl
 	burstSnapshot core.Snapshot
-	burstAtk      *core.AttackEvent
+	burstAtk      *coretype.AttackEvent
 	burstSrc      int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -68,17 +69,17 @@ During the duration of Stormbreaker, the Electro RES of surrounding opponents is
 **/
 
 func (c *char) a4() {
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "beidou-a4",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			mod := make([]float64, core.EndStatType)
 			mod[core.DmgP] = .15
 
-			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+			if atk.Info.AttackTag != coretype.AttackTagNormal && atk.Info.AttackTag != coretype.AttackTagExtra {
 				return mod, false
 			}
-			if c.Core.Status.Duration("beidoua4") == 0 {
+			if c.Core.StatusDuration("beidoua4") == 0 {
 				return mod, false
 			}
 			return mod, true
@@ -87,32 +88,32 @@ func (c *char) a4() {
 }
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
 		if c.Core.ActiveChar != c.Index {
 			return false
 		}
-		c.Core.Status.AddStatus("beidouc4", 600)
-		c.Core.Log.NewEvent("c4 triggered on damage", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+600)
+		c.Core.AddStatus("beidouc4", 600)
+		c.coretype.Log.NewEvent("c4 triggered on damage", coretype.LogCharacterEvent, c.Index, "expiry", c.Core.Frame+600)
 		return false
 	}, "beidouc4")
 
 	mod := make([]float64, core.EndStatType)
 	mod[core.DmgP] = .15
 
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		t := args[0].(core.Target)
-		ae := args[1].(*core.AttackEvent)
+	c.Core.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		t := args[0].(coretype.Target)
+		ae := args[1].(*coretype.AttackEvent)
 		if ae.Info.ActorIndex != c.Index {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
+		if ae.Info.AttackTag != coretype.AttackTagNormal && ae.Info.AttackTag != coretype.AttackTagExtra {
 			return false
 		}
-		if c.Core.Status.Duration("beidouc4") == 0 {
+		if c.Core.StatusDuration("beidouc4") == 0 {
 			return false
 		}
 
-		c.Core.Log.NewEvent("c4 proc'd on attack", core.LogCharacterEvent, c.Index, "char", c.Index)
+		c.coretype.Log.NewEvent("c4 proc'd on attack", coretype.LogCharacterEvent, c.Index, "char", c.Index)
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Beidou C4",

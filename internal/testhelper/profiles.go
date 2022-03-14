@@ -2,10 +2,11 @@ package testhelper
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
-func CharProfile(key core.CharKey, ele core.EleType, cons int) core.CharacterProfile {
-	r := core.CharacterProfile{}
+func CharProfile(key core.CharKey, ele coretype.EleType, cons int) coretype.CharacterProfile {
+	r := coretype.CharacterProfile{}
 	r.Base.Element = ele
 	r.Base.Key = key
 	r.Base.Cons = cons
@@ -33,7 +34,7 @@ func EnemyProfile() core.EnemyProfile {
 	r := core.EnemyProfile{}
 	//target+="dummy" lvl=90 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=.1 cryo=.1;
 	r.Level = 90
-	r.Resist = make(map[core.EleType]float64)
+	r.Resist = make(map[coretype.EleType]float64)
 	r.Resist[core.Pyro] = 0.1
 	r.Resist[core.Hydro] = 0.1
 	r.Resist[core.Dendro] = 0.1
@@ -41,7 +42,7 @@ func EnemyProfile() core.EnemyProfile {
 	r.Resist[core.Geo] = 0.1
 	r.Resist[core.Anemo] = 0.1
 	r.Resist[core.Physical] = 0.1
-	r.Resist[core.Cryo] = 0.1
+	r.Resist[coretype.Cryo] = 0.1
 	r.Size = 0.5
 	r.CoordX = 0
 	r.CoordY = 0

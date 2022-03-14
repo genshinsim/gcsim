@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,28 +12,28 @@ func init() {
 	core.RegisterWeaponFunc("skywardatlas", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	dmg := 0.09 + float64(r)*0.03
 	atk := 1.2 + float64(r)*0.4
 
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-		if ae.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*coretype.AttackEvent)
+		if ae.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal {
+		if ae.Info.AttackTag != coretype.AttackTagNormal {
 			return false
 		}
-		if icd > c.F {
+		if icd > c.Frame {
 			return false
 		}
 		if c.Rand.Float64() < 0.5 {
 			return false
 		}
 		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+			ActorIndex: char.Index(),
 			Abil:       "Skyward Atlas Proc",
 			AttackTag:  core.AttackTagWeaponSkill,
 			ICDTag:     core.ICDTagNone,
@@ -43,21 +44,21 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 		snap := char.Snapshot(&ai)
 		for i := 0; i < 6; i++ {
-			c.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.1, false, core.TargettableEnemy), i*150)
+			c.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), i*150)
 		}
-		icd = c.F + 1800
+		icd = c.Frame + 1800
 		return false
 	}, fmt.Sprintf("skyward-atlast-%v", char.Name()))
 
 	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = dmg
 	m[core.HydroP] = dmg
-	m[core.CryoP] = dmg
+	m[coretype.CryoP] = dmg
 	m[core.ElectroP] = dmg
 	m[core.AnemoP] = dmg
 	m[core.GeoP] = dmg
 	m[core.DendroP] = dmg
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "skyward-atlast",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {

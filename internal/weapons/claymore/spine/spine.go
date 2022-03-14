@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,24 +12,24 @@ func init() {
 	core.RegisterWeaponFunc("serpentspine", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	stacks := param["stacks"]
 	c.Log.NewEvent(
 		"serpent spine stack check",
-		core.LogWeaponEvent,
-		char.CharIndex(),
+		coretype.LogWeaponEvent,
+		char.Index(),
 		"params", param,
 	)
 	buff := 0.05 + float64(r)*.01
 	active := false
 
-	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
-		active = c.ActiveChar == char.CharIndex()
+	c.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+		active = c.ActiveChar == char.Index()
 		return true
 	}, fmt.Sprintf("spine-%v", char.Name()))
 
-	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.ActiveChar == char.CharIndex() {
+	c.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.ActiveChar == char.Index() {
 			active = true
 		} else {
 			active = false
@@ -41,7 +42,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		return false
 	}, fmt.Sprintf("spine-%v", char.Name()))
 
-	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
 		stacks--
 		if stacks < 0 {
 			stacks = 0
@@ -50,7 +51,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	}, fmt.Sprintf("spine-%v", char.Name()))
 
 	val := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key:    "spine",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {

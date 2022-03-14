@@ -4,8 +4,8 @@ import "github.com/genshinsim/gcsim/pkg/core"
 
 func (c *char) newScreen(dur int) core.Construct {
 	return &construct{
-		src:    c.Core.F,
-		expiry: c.Core.F + dur,
+		src:    c.Core.Frame,
+		expiry: c.Core.Frame + dur,
 		char:   c,
 	}
 }
@@ -27,10 +27,10 @@ func (c *construct) Type() core.GeoConstructType {
 func (c *construct) OnDestruct() {
 	if c.char.Base.Cons >= 2 {
 		//make sure last reset is more than 6 seconds ago
-		if c.char.c2reset <= c.char.Core.F-360 {
+		if c.char.c2reset <= c.char.Core.Frame-360 {
 			//reset cd
 			c.char.ResetActionCooldown(core.ActionSkill)
-			c.char.c2reset = c.char.Core.F
+			c.char.c2reset = c.char.Core.Frame
 		}
 	}
 }

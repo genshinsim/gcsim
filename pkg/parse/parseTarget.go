@@ -5,12 +5,13 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func parseTarget(p *Parser) (parseFn, error) {
 	var err error
 	var r core.EnemyProfile
-	r.Resist = make(map[core.EleType]float64)
+	r.Resist = make(map[coretype.EleType]float64)
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemLvl:
@@ -41,7 +42,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 
 			//TODO: make this more elegant...
 			r.Resist[core.Electro] += amt
-			r.Resist[core.Cryo] += amt
+			r.Resist[coretype.Cryo] += amt
 			r.Resist[core.Hydro] += amt
 			r.Resist[core.Physical] += amt
 			r.Resist[core.Pyro] += amt

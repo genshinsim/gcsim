@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,28 +12,28 @@ func init() {
 	core.RegisterWeaponFunc("prototypecrescent", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 
 	dur := 0
 	key := fmt.Sprintf("prototype-crescent-%v", char.Name())
 	//add on hit effect
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
 		if atk.Info.HitWeakPoint {
-			dur = c.F + 600
+			dur = c.Frame + 600
 		}
 		return false
 	}, key)
 
 	m := make([]float64, core.EndStatType)
 	m[core.ATKP] = 0.27 + float64(r)*0.09
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "prototype-crescent",
 		Amount: func() ([]float64, bool) {
-			if dur < c.F {
+			if dur < c.Frame {
 				return nil, false
 			}
 			return m, true

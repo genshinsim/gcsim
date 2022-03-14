@@ -2,7 +2,9 @@ package rosaria
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Normal attack damage queue generator
@@ -13,7 +15,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
@@ -22,7 +24,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-5+i, f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -40,14 +42,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupPole,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       nc[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	//return animation cd
 	return f, a
@@ -67,12 +69,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       skill[0][c.TalentLvlSkill()],
 	}
 	// First hit comes out 20 frames before second
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-20, f-20)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-20, f-20)
 
 	// A1 activation
 	// When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT RATE increases by 12% for 5s.
@@ -80,14 +82,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if p["nobehind"] != 1 {
 		val := make([]float64, core.EndStatType)
 		val[core.CR] = 0.12
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key:    "rosaria-a1",
-			Expiry: c.Core.F + 300,
+			Expiry: c.Core.Frame + 300,
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},
 		})
-		c.Core.Log.NewEvent("Rosaria A1 activation", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+300)
+		c.coretype.Log.NewEvent("Rosaria A1 activation", coretype.LogCharacterEvent, c.Index, "ends_on", c.Core.Frame+300)
 	}
 
 	// Rosaria E is dynamic, so requires a second snapshot
@@ -98,14 +100,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       skill[1][c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f-1, f-1)
 
 	// Particles are emitted after the second hit lands
-	c.QueueParticle("rosaria", 3, core.Cryo, f+100)
+	c.QueueParticle("rosaria", 3, coretype.Cryo, f+100)
 
 	c.SetCD(core.ActionSkill, 360)
 
@@ -129,23 +131,23 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
-	x, y := c.Core.Targets[0].Shape().Pos()
+	x, y := c.coretype.Targets[0].Shape().Pos()
 	var cb core.AttackCBFunc
 	if c.Base.Cons == 6 {
 		cb = c6cb
 	}
 	// Hit 1 comes out on frame 10
 	// 2nd hit comes after lance drop animation finishes
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 1, false, core.TargettableEnemy), 10, 10, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 1, false, coretype.TargettableEnemy), 10, 10, cb)
 
 	ai.Abil = "Rites of Termination (Hit 2)"
 	ai.Mult = burst[1][c.TalentLvlBurst()]
 	// Note old code set the hit 10 frames before the recorded one - not sure why
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), f-10, f-10, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, coretype.TargettableEnemy), f-10, f-10, cb)
 
 	//duration is 8 second (extended by c2 by 4s), + 0.5
 	dur := 510
@@ -160,7 +162,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
@@ -168,11 +170,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.AddTask(func() {
 		// dot every 2 second after lance lands
 		for i := 120; i < dur; i += 120 {
-			c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, core.TargettableEnemy), 0, i+10, cb)
+			c.Core.Combat.QueueAttack(ai, core.NewCircleHit(0, 0, 2, false, coretype.TargettableEnemy), 0, i+10, cb)
 		}
 	}, "rosaria-snapshot", f-10)
 
-	c.Core.Status.AddStatus("rosariaburst", dur)
+	c.Core.AddStatus("rosariaburst", dur)
 
 	// Handle A4
 	// Casting Rites of Termination increases CRIT RATE of all nearby party members, excluding Rosaria herself, by 15% of Rosaria's CRIT RATE for 10s. CRIT RATE bonus gained this way cannot exceed 15%.
@@ -184,16 +186,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	val := make([]float64, core.EndStatType)
 	val[core.CR] = crit_share
-	c.Core.Log.NewEvent("Rosaria A4 activation", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+600, "crit_share", crit_share)
+	c.coretype.Log.NewEvent("Rosaria A4 activation", coretype.LogCharacterEvent, c.Index, "ends_on", c.Core.Frame+600, "crit_share", crit_share)
 
 	for i, char := range c.Core.Chars {
 		// skip Rosaria
 		if i == c.Index {
 			continue
 		}
-		char.AddMod(core.CharStatMod{
+		char.AddMod(coretype.CharStatMod{
 			Key:    "rosaria-a4",
-			Expiry: c.Core.F + 600,
+			Expiry: c.Core.Frame + 600,
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},
@@ -220,7 +222,7 @@ func c6cb(a core.AttackCB) {
 // func (c *char) applyC6(snap *core.Snapshot) {
 // 	if c.Base.Cons == 6 {
 // 		// Functions similarly to Guoba
-// 		snap.OnHitCallback = func(t core.Target) {
+// 		snap.OnHitCallback = func(t coretype.Target) {
 // 			t.AddResMod("rosaria-c6", core.ResistMod{
 // 				Ele:      core.Physical,
 // 				Value:    -0.2,

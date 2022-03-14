@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 // Normal attack damage queue generator
@@ -19,7 +20,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypePierce,
@@ -27,7 +28,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -51,7 +52,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim Charge Attack",
-		AttackTag:    core.AttackTagExtra,
+		AttackTag:    coretype.AttackTagExtra,
 		ICDTag:       core.ICDTagNone,
 		ICDGroup:     core.ICDGroupDefault,
 		StrikeType:   core.StrikeTypePierce,
@@ -61,10 +62,10 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		HitWeakPoint: weakspot == 1,
 	}
 	// d.AnimationFrames = f
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), f, f+travel)
 
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
-	if c.Core.Status.Duration("saracover") > 0 {
+	if c.Core.StatusDuration("saracover") > 0 {
 		// Not sure what kind of strike type this is
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
@@ -79,7 +80,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		}
 
 		//TODO: snapshot?
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f+travel+90)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f, f+travel+90)
 
 		// Particles are emitted after the ambush thing hits
 		c.QueueParticle("sara", 3, core.Electro, f+travel+90)
@@ -104,7 +105,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	// Snapshot for all of the crowfeathers are taken upon cast
-	c.Core.Status.AddStatus("saracover", 18*60)
+	c.Core.AddStatus("saracover", 18*60)
 
 	// C2 handling
 	if c.Base.Cons >= 2 {
@@ -119,7 +120,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			Durability: 25,
 			Mult:       0.3 * skill[c.TalentLvlSkill()],
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, 90)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, coretype.TargettableEnemy), f, 90)
 
 		c.attackBuff(90)
 		c.a4(90)
@@ -136,16 +137,16 @@ func (c *char) Skill(p map[string]int) (int, int) {
 // it's more like for every 1% of ER, she grants 0.012 flat energy
 func (c *char) a4(delay int) {
 	c.AddTask(func() {
-		if (c.a4LastProc + 180) >= c.Core.F {
+		if (c.a4LastProc + 180) >= c.Core.Frame {
 		} else {
 			energyAddAmt := 1.2 * (1 + c.Stat(core.ER))
 
-			c.Core.Log.NewEvent("Sara A4 adding energy", core.LogEnergyEvent, c.Index, "amount", energyAddAmt)
+			c.coretype.Log.NewEvent("Sara A4 adding energy", coretype.LogEnergyEvent, c.Index, "amount", energyAddAmt)
 			for _, char := range c.Core.Chars {
 				char.AddEnergy("sara-a4", energyAddAmt)
 			}
 
-			c.a4LastProc = c.Core.F
+			c.a4LastProc = c.Core.Frame
 		}
 	}, "a4-proc", delay)
 }
@@ -154,11 +155,11 @@ func (c *char) a4(delay int) {
 // Triggers on her E and Q
 func (c *char) c1(delay int) {
 	c.AddTask(func() {
-		if (c.Base.Cons < 1) || ((c.c1LastProc + 180) >= c.Core.F) {
+		if (c.Base.Cons < 1) || ((c.c1LastProc + 180) >= c.Core.Frame) {
 		} else {
 			c.ReduceActionCooldown(core.ActionSkill, 60)
-			c.c1LastProc = c.Core.F
-			c.Core.Log.NewEvent("sara c1 reducing E CD", core.LogCharacterEvent, c.Index, "new_cooldown", c.Cooldown(core.ActionSkill))
+			c.c1LastProc = c.Core.Frame
+			c.coretype.Log.NewEvent("sara c1 reducing E CD", coretype.LogCharacterEvent, c.Index, "new_cooldown", c.Cooldown(core.ActionSkill))
 		}
 	}, "c1-proc", delay)
 }
@@ -208,7 +209,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			Durability: 25,
 			Mult:       burstMain[c.TalentLvlBurst()],
 		}
-		// dTitanbreaker.Targets = core.TargetAll
+		// dTitanbreaker.Targets = coretype.TargetAll
 
 		//stormcluster
 		aiStormcluster := core.AttackInfo{
@@ -223,11 +224,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			Mult:       burstCluster[c.TalentLvlBurst()],
 		}
 		snapStormcluster := c.Snapshot(&aiStormcluster)
-		// dStormcluster.Targets = core.TargetAll
+		// dStormcluster.Targets = coretype.TargetAll
 
 		if waveClusterHits%10 == 1 {
 			// Actual hit procs after the full cast duration, or 80 frames
-			c.Core.Combat.QueueAttack(aiTitanbreaker, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, f+20)
+			c.Core.Combat.QueueAttack(aiTitanbreaker, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 0, f+20)
 			// c.QueueDmg(&dTitanbreaker, f+20)
 			c.c1(f + 20)
 		}
@@ -245,7 +246,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
 			if waveHits > 0 {
 				for j := 0; j < waveHits; j++ {
-					c.Core.Combat.QueueAttackWithSnap(aiStormcluster, snapStormcluster, core.NewDefCircHit(5, false, core.TargettableEnemy), f+20+(50*(waveN+1)))
+					c.Core.Combat.QueueAttackWithSnap(aiStormcluster, snapStormcluster, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f+20+(50*(waveN+1)))
 					// x := dStormcluster.Clone()
 					// c.QueueDmg(&x, f+20+(50*(waveN+1)))
 					c.c1(f + 20 + (50 * (waveN + 1)))
@@ -275,19 +276,19 @@ func (c *char) attackBuff(delay int) {
 
 		active := c.Core.Chars[c.Core.ActiveChar]
 
-		active.AddTag("sarabuff", c.Core.F+360)
-		// c.Core.Status.AddStatus(fmt.Sprintf("sarabuff%v", active.Name()), 360)
-		c.Core.Log.NewEvent("sara attack buff applied", core.LogCharacterEvent, c.Index, "char", active.CharIndex(), "buff", buff, "expiry", c.Core.F+360)
+		active.AddTag("sarabuff", c.Core.Frame+360)
+		// c.Core.AddStatus(fmt.Sprintf("sarabuff%v", active.Name()), 360)
+		c.coretype.Log.NewEvent("sara attack buff applied", coretype.LogCharacterEvent, c.Index, "char", active.Index(), "buff", buff, "expiry", c.Core.Frame+360)
 
 		val := make([]float64, core.EndStatType)
 		val[core.ATK] = buff
 		// AddMod function already only takes the most recent version of this buff
-		active.AddMod(core.CharStatMod{
+		active.AddMod(coretype.CharStatMod{
 			Key: "sara-attack-buff",
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},
-			Expiry: c.Core.F + 360,
+			Expiry: c.Core.Frame + 360,
 		})
 
 		if c.Base.Cons >= 6 {
@@ -297,13 +298,13 @@ func (c *char) attackBuff(delay int) {
 	}, "sara-attack-buff", delay)
 }
 
-func (c *char) c6(char core.Character) {
+func (c *char) c6(char coretype.Character) {
 	val := make([]float64, core.EndStatType)
 	val[core.CD] = 0.6
-	char.AddPreDamageMod(core.PreDamageMod{
+	char.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "sara-c6",
-		Expiry: c.Core.F + 360,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Expiry: c.Core.Frame + 360,
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			if atk.Info.Element != core.Electro {
 				return nil, false
 			}

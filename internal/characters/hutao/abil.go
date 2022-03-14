@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -14,7 +15,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeSlash,
@@ -24,7 +25,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i := 0; i < hits; i++ {
 		ai.Mult = attack[c.NormalCounter][i][c.TalentLvlAttack()]
 		finalFrame := dmgFrame[c.NormalCounter][i]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), finalFrame, finalFrame)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, coretype.TargettableEnemy), finalFrame, finalFrame)
 	}
 
 	c.AdvanceNormalIndex()
@@ -36,14 +37,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
 
-	if c.Core.Status.Duration("paramita") > 0 {
+	if c.Core.StatusDuration("paramita") > 0 {
 		//[3:56 PM] Isu: My theory is that since E changes attack animations, it was coded
 		//to not expire during any attack animation to simply avoid the case of potentially
 		//trying to change animations mid-attack, but not sure how to fully test that
 		//[4:41 PM] jstern25| ₼WHO_SUPREMACY: this mostly checks out
 		//her e can't expire during q as well
-		if f > c.Core.Status.Duration("paramita") {
-			c.Core.Status.AddStatus("paramita", f)
+		if f > c.Core.StatusDuration("paramita") {
+			c.Core.AddStatus("paramita", f)
 			// c.S.Status["paramita"] = c.Core.F + f //extend this to barely cover the burst
 		}
 
@@ -60,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupPole,
 		StrikeType: core.StrikeTypeSlash,
@@ -68,15 +69,15 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-5, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, coretype.TargettableEnemy), f-5, f-5)
 
 	return f, a
 }
 
 func (c *char) ppParticles() {
-	if c.Core.Status.Duration("paramita") > 0 {
-		if c.paraParticleICD < c.Core.F {
-			c.paraParticleICD = c.Core.F + 300 //5 seconds
+	if c.Core.StatusDuration("paramita") > 0 {
+		if c.paraParticleICD < c.Core.Frame {
+			c.paraParticleICD = c.Core.Frame + 300 //5 seconds
 			count := 2
 			if c.Core.Rand.Float64() < 0.5 {
 				count = 3
@@ -87,24 +88,24 @@ func (c *char) ppParticles() {
 }
 
 func (c *char) applyBB() {
-	c.Core.Log.NewEvent("Applying Blood Blossom", core.LogCharacterEvent, c.Index, "current dur", c.Core.Status.Duration("htbb"))
+	c.coretype.Log.NewEvent("Applying Blood Blossom", coretype.LogCharacterEvent, c.Index, "current dur", c.Core.StatusDuration("htbb"))
 	//check if blood blossom already active, if active extend duration by 8 second
 	//other wise start first tick func
 	if !c.tickActive {
 		//TODO: does BB tick immediately on first application?
-		c.AddTask(c.bbtickfunc(c.Core.F), "bb", 240)
+		c.AddTask(c.bbtickfunc(c.Core.Frame), "bb", 240)
 		c.tickActive = true
-		c.Core.Log.NewEvent("Blood Blossom applied", core.LogCharacterEvent, c.Index, "expected end", c.Core.F+570, "next expected tick", c.Core.F+240)
+		c.coretype.Log.NewEvent("Blood Blossom applied", coretype.LogCharacterEvent, c.Index, "expected end", c.Core.Frame+570, "next expected tick", c.Core.Frame+240)
 	}
 	// c.CD["bb"] = c.Core.F + 570 //TODO: no idea how accurate this is, does this screw up the ticks?
-	c.Core.Status.AddStatus("htbb", 570)
-	c.Core.Log.NewEvent("Blood Blossom duration extended", core.LogCharacterEvent, c.Index, "new expiry", c.Core.Status.Duration("htbb"))
+	c.Core.AddStatus("htbb", 570)
+	c.coretype.Log.NewEvent("Blood Blossom duration extended", coretype.LogCharacterEvent, c.Index, "new expiry", c.Core.StatusDuration("htbb"))
 }
 
 func (c *char) bbtickfunc(src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Blood Blossom checking for tick", core.LogCharacterEvent, c.Index, "cd", c.Core.Status.Duration("htbb"), "src", src)
-		if c.Core.Status.Duration("htbb") == 0 {
+		c.coretype.Log.NewEvent("Blood Blossom checking for tick", coretype.LogCharacterEvent, c.Index, "cd", c.Core.StatusDuration("htbb"), "src", src)
+		if c.Core.StatusDuration("htbb") == 0 {
 			c.tickActive = false
 			return
 		}
@@ -124,8 +125,8 @@ func (c *char) bbtickfunc(src int) func() {
 		if c.Base.Cons >= 2 {
 			ai.FlatDmg += c.HPMax * 0.1
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 0)
-		c.Core.Log.NewEvent("Blood Blossom ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+240, "dur", c.Core.Status.Duration("htbb"), "src", src)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, coretype.TargettableEnemy), 0, 0)
+		c.coretype.Log.NewEvent("Blood Blossom ticked", coretype.LogCharacterEvent, c.Index, "next expected tick", c.Core.Frame+240, "dur", c.Core.StatusDuration("htbb"), "src", src)
 		//only queue if next tick buff will be active still
 		// if c.Core.F+240 > c.CD["bb"] {
 		// 	return
@@ -139,8 +140,8 @@ func (c *char) bbtickfunc(src int) func() {
 func (c *char) Skill(p map[string]int) (int, int) {
 	//increase based on hp at cast time
 	//drains hp
-	c.Core.Status.AddStatus("paramita", 540+20) //to account for animation
-	c.Core.Log.NewEvent("Paramita acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+540+20)
+	c.Core.AddStatus("paramita", 540+20) //to account for animation
+	c.coretype.Log.NewEvent("Paramita acivated", coretype.LogCharacterEvent, c.Index, "expiry", c.Core.Frame+540+20)
 	//figure out atk buff
 	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.HPMax
 	max := (c.Base.Atk + c.Weapon.Atk) * 4
@@ -157,12 +158,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 }
 
 func (c *char) ppHook() {
-	c.AddMod(core.CharStatMod{
+	c.AddMod(coretype.CharStatMod{
 		Key:    "hutao-paramita",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
-			if c.Core.Status.Duration("paramita") == 0 {
+			if c.Core.StatusDuration("paramita") == 0 {
 				return nil, false
 			}
 			val[core.ATK] = c.ppBonus
@@ -172,7 +173,7 @@ func (c *char) ppHook() {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		c.Core.Status.DeleteStatus("paramita")
 		return false
 	}, "hutao-exit")
@@ -207,12 +208,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//[2:28 PM] Aluminum | Harbinger of Jank: I think the idea is that PP won't fall off before dmg hits, but other buffs aren't snapshot
 	//[2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
-	if f > c.Core.Status.Duration("paramita") && c.Core.Status.Duration("paramita") > 0 {
-		c.Core.Status.AddStatus("paramita", f) //extend this to barely cover the burst
-		c.Core.Log.NewEvent("Paramita status extension for burst", core.LogCharacterEvent, c.Index, "new_duration", c.Core.Status.Duration("paramita"))
+	if f > c.Core.StatusDuration("paramita") && c.Core.StatusDuration("paramita") > 0 {
+		c.Core.AddStatus("paramita", f) //extend this to barely cover the burst
+		c.coretype.Log.NewEvent("Paramita status extension for burst", coretype.LogCharacterEvent, c.Index, "new_duration", c.Core.StatusDuration("paramita"))
 	}
 
-	if c.Core.Status.Duration("paramita") > 0 && c.Base.Cons >= 2 {
+	if c.Core.StatusDuration("paramita") > 0 && c.Base.Cons >= 2 {
 		c.applyBB()
 	}
 
@@ -228,7 +229,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       mult,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f-5, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f-5, f-5)
 
 	c.ConsumeEnergy(73)
 	c.SetCDWithDelay(core.ActionBurst, 900, 73)

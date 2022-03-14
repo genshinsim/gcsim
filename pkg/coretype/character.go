@@ -7,7 +7,6 @@ type Character interface {
 
 	//information functions
 	Key() CharKey
-	CharIndex() int
 	Ele() EleType
 	Level() int
 	WeaponClass() WeaponClass

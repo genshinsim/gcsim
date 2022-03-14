@@ -3,6 +3,7 @@ package ningguang
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -16,7 +17,7 @@ type char struct {
 	particleICD int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -55,7 +56,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 50
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
@@ -68,12 +69,12 @@ func (c *char) a4() {
 			val := make([]float64, core.EndStatType)
 			val[core.GeoP] = 0.12
 			char := c.Core.Chars[c.Core.ActiveChar]
-			char.AddMod(core.CharStatMod{
+			char.AddMod(coretype.CharStatMod{
 				Key: "ning-screen",
 				Amount: func() ([]float64, bool) {
 					return val, true
 				},
-				Expiry: c.Core.F + 600,
+				Expiry: c.Core.Frame + 600,
 			})
 		}
 		return false

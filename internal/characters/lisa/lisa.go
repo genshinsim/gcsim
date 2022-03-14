@@ -3,6 +3,7 @@ package lisa
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -14,7 +15,7 @@ type char struct {
 	c6icd int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -50,18 +51,18 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 50
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.F < c.c6icd && c.c6icd != 0 {
+	c.Core.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		if c.Core.Frame < c.c6icd && c.c6icd != 0 {
 			return false
 		}
-		if c.Core.ActiveChar == c.CharIndex() {
+		if c.Core.ActiveChar == c.Index() {
 			//swapped to lisa
 
 			// Create a "fake attack" to apply conductive stacks to all nearby opponents
@@ -80,18 +81,18 @@ func (c *char) c6() {
 				a.Target.SetTag(conductiveTag, 3)
 			}
 			// TODO: No idea what the exact radius of this is
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 0, cb)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), -1, 0, cb)
 
-			c.c6icd = c.Core.F + 300
+			c.c6icd = c.Core.Frame + 300
 		}
 		return false
 	}, "lisa-c6")
 }
 
 func (c *char) skillHoldMult() {
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		t := args[0].(core.Target)
+	c.Core.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*coretype.AttackEvent)
+		t := args[0].(coretype.Target)
 		if atk.Info.Abil != "Violet Arc (Hold)" {
 			return false
 		}

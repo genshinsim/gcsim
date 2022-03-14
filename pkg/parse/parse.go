@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type Parser struct {
@@ -18,7 +19,7 @@ type Parser struct {
 
 	//results
 	cfg    *core.SimulationConfig
-	chars  map[core.CharKey]*core.CharacterProfile
+	chars  map[core.CharKey]*coretype.CharacterProfile
 	macros map[string]core.ActionBlock
 }
 
@@ -36,7 +37,7 @@ func (p *Parser) Parse() (core.SimulationConfig, error) {
 	var err error
 
 	p.cfg = &core.SimulationConfig{}
-	p.chars = make(map[core.CharKey]*core.CharacterProfile)
+	p.chars = make(map[core.CharKey]*coretype.CharacterProfile)
 	p.macros = make(map[string]core.ActionBlock)
 
 	//default run options

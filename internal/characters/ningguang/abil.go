@@ -2,7 +2,9 @@ package ningguang
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -16,7 +18,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -46,8 +48,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		r = 2
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f+travel, cb)
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f+travel, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, coretype.TargettableEnemy), f, f+travel, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, coretype.TargettableEnemy), f, f+travel, cb)
 
 	return f, a
 }
@@ -63,7 +65,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -71,12 +73,12 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f, f+travel)
 
 	ai = core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge (Gems)",
-		AttackTag:  core.AttackTagExtra,
+		AttackTag:  coretype.AttackTagExtra,
 		ICDTag:     core.ICDTagExtraAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -86,7 +88,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	}
 
 	for i := 0; i < c.Tags["jade"]; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f+travel)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f, f+travel)
 	}
 	c.Tags["jade"] = 0
 
@@ -107,7 +109,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), f, f)
 
 	//put skill on cd first then check for construct/c2
 	c.SetCD(core.ActionSkill, 720)
@@ -115,20 +117,20 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//create a construct
 	c.Core.Constructs.New(c.newScreen(1800), true) //30 seconds
 
-	c.lastScreen = c.Core.F
+	c.lastScreen = c.Core.Frame
 
 	//check if particles on icd
 
-	c.Core.Status.AddStatus("ningguangskillparticleICD", 360)
+	c.Core.AddStatus("ningguangskillparticleICD", 360)
 
-	if c.Core.F > c.particleICD {
+	if c.Core.Frame > c.particleICD {
 		//3 balls, 33% chance of a fourth
 		count := 3
 		if c.Core.Rand.Float64() < .33 {
 			count = 4
 		}
 		c.QueueParticle("ningguang", count, core.Geo, f+100)
-		c.particleICD = c.Core.F + 360
+		c.particleICD = c.Core.Frame + 360
 	}
 
 	return f, a
@@ -140,7 +142,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//fires 6 normally, + 6 if jade screen is active
 	count := 6
 	if c.Core.Constructs.Destroy(c.lastScreen) {
-		c.Core.Log.NewEvent("12 jade on burst", core.LogCharacterEvent, c.Index)
+		c.coretype.Log.NewEvent("12 jade on burst", coretype.LogCharacterEvent, c.Index)
 		count += 6
 	}
 
@@ -163,7 +165,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//geo applied 1 4 7 10, +3 pattern; or 0 3 6 9
 	for i := 0; i < count; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f+travel)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, coretype.TargettableEnemy), f, f+travel)
 	}
 
 	if c.Base.Cons == 6 {

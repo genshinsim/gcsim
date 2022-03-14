@@ -22,7 +22,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionAim:
-		if c.Base.Cons >= 4 && c.Core.Status.Duration("dionaburst") > 0 {
+		if c.Base.Cons >= 4 && c.Core.StatusDuration("dionaburst") > 0 {
 			return 34, 34 //reduced by 60%
 		}
 		return 84, 84 //kqm
@@ -36,7 +36,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			return 15, 15
 		}
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

@@ -117,7 +117,7 @@ var SpecKeyToStat = map[string]string{
 	"FIGHT_PROP_FIRE_ADD_HURT":     "core.PyroP",
 	"FIGHT_PROP_WATER_ADD_HURT":    "core.HydroP",
 	"FIGHT_PROP_DEFENSE_PERCENT":   "core.DEFP",
-	"FIGHT_PROP_ICE_ADD_HURT":      "core.CryoP",
+	"FIGHT_PROP_ICE_ADD_HURT":      "coretype.CryoP",
 	"FIGHT_PROP_WIND_ADD_HURT":     "core.AnemoP",
 }
 

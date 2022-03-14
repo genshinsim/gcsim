@@ -8,7 +8,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
-		if c.Core.Status.Duration("raidenburst") == 0 {
+		if c.Core.StatusDuration("raidenburst") == 0 {
 			switch c.NormalCounter {
 			//TODO: need to add atkspd mod
 			case 0:
@@ -47,7 +47,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionCharge:
-		if c.Core.Status.Duration("raidenburst") == 0 {
+		if c.Core.StatusDuration("raidenburst") == 0 {
 			return 61, 61 //30 if cancelled
 		}
 		return 79, 79 //37 <- if cancelled
@@ -56,7 +56,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 108, 108
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.coretype.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

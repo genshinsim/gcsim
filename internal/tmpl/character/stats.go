@@ -5,9 +5,10 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
-func (t *Tmpl) Stat(s core.StatType) float64 {
+func (t *Tmpl) Stat(s coretype.StatType) float64 {
 	val := t.Stats[s]
 	for _, m := range t.Mods {
 		//ignore this mod if stat type doesnt match
@@ -30,15 +31,15 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 		ActorEle:    c.Base.Element,
 		BaseAtk:     c.Base.Atk + c.Weapon.Atk,
 		BaseDef:     c.Base.Def,
-		SourceFrame: c.Core.F,
+		SourceFrame: c.Core.Frame,
 	}
 
 	var evt core.LogEvent = nil
 	var debug []interface{}
 
 	if c.Core.Flags.LogDebug {
-		evt = c.Core.Log.NewEvent(
-			a.Abil, core.LogSnapshotEvent, c.Index,
+		evt = c.coretype.Log.NewEvent(
+			a.Abil, coretype.LogSnapshotEvent, c.Index,
 			"abil", a.Abil,
 			"mult", a.Mult,
 			"ele", a.Element.String(),
@@ -52,7 +53,7 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 	s.Stats, debug = c.SnapshotStats()
 
 	//check infusion
-	var inf core.EleType
+	var inf coretype.EleType
 	if !a.IgnoreInfusion {
 		inf = c.infusionCheck(a.AttackTag)
 		if inf != core.NoElement {
@@ -72,7 +73,7 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 	return s
 }
 
-func (c *Tmpl) infusionCheck(a core.AttackTag) core.EleType {
+func (c *Tmpl) infusionCheck(a core.AttackTag) coretype.EleType {
 	if c.Infusion.Key != "" {
 		ok := false
 		for _, v := range c.Infusion.Tags {
@@ -82,7 +83,7 @@ func (c *Tmpl) infusionCheck(a core.AttackTag) core.EleType {
 			}
 		}
 		if ok {
-			if c.Infusion.Expiry > c.Core.F || c.Infusion.Expiry == -1 {
+			if c.Infusion.Expiry > c.Core.Frame || c.Infusion.Expiry == -1 {
 				return c.Infusion.Ele
 			}
 		}
@@ -105,7 +106,7 @@ func (c *Tmpl) SnapshotStats() ([core.EndStatType]float64, []interface{}) {
 	n := 0
 	for _, m := range c.Mods {
 
-		if m.Expiry > c.Core.F || m.Expiry == -1 {
+		if m.Expiry > c.Core.Frame || m.Expiry == -1 {
 
 			amt, ok := m.Amount()
 			if ok {
@@ -149,7 +150,7 @@ func (c *Tmpl) SnapshotStats() ([core.EndStatType]float64, []interface{}) {
 	return stats, debugDetails
 }
 
-func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) []interface{} {
+func (c *Tmpl) PreDamageSnapshotAdjust(a *coretype.AttackEvent, t coretype.Target) []interface{} {
 	//skip if this is reaction damage
 	if a.Info.AttackTag >= core.AttackTagNoneStat {
 		return nil
@@ -165,7 +166,7 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *core.AttackEvent, t core.Target) []int
 	n := 0
 	for _, m := range c.PreDamageMods {
 
-		if m.Expiry > c.Core.F || m.Expiry == -1 {
+		if m.Expiry > c.Core.Frame || m.Expiry == -1 {
 
 			amt, ok := m.Amount(a, t)
 			if ok {
@@ -212,7 +213,7 @@ func (t *Tmpl) ReactBonus(atk core.AttackInfo) (amt float64) {
 	n := 0
 	for _, m := range t.ReactMod {
 
-		if m.Expiry > t.Core.F || m.Expiry == -1 {
+		if m.Expiry > t.Core.Frame || m.Expiry == -1 {
 			a, done := m.Amount(atk)
 			amt += a
 			if !done {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 var delay = [][]int{{11}, {25}, {36, 49}, {33}, {45, 63}}
@@ -18,7 +19,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  coretype.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
@@ -29,7 +30,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range auto[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, coretype.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -57,30 +58,30 @@ func (c *char) pressE() {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 	//add 1 to grim heart if not capped by icd
 	cb := func(a core.AttackCB) {
-		if c.Core.F < c.grimheartICD {
+		if c.Core.Frame < c.grimheartICD {
 			return
 		}
-		c.grimheartICD = c.Core.F + 18
+		c.grimheartICD = c.Core.Frame + 18
 
 		if c.Tags["grimheart"] < 2 {
 			c.Tags["grimheart"]++
-			c.Core.Log.NewEvent("eula: grimheart stack", core.LogCharacterEvent, c.Index, "current count", c.Tags["grimheart"])
+			c.coretype.Log.NewEvent("eula: grimheart stack", coretype.LogCharacterEvent, c.Index, "current count", c.Tags["grimheart"])
 		}
 		c.grimheartReset = 18 * 60
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 35, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), 0, 35, cb)
 
 	n := 1
 	if c.Core.Rand.Float64() < .5 {
 		n = 2
 	}
-	c.QueueParticle("eula", n, core.Cryo, 100)
+	c.QueueParticle("eula", n, coretype.Cryo, 100)
 
 	c.SetCD(core.ActionSkill, 240)
 }
@@ -97,11 +98,11 @@ func (c *char) holdE() {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 25,
 		Mult:       skillHold[lvl],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 80)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), 0, 80)
 
 	//multiple brand hits
 	ai.Abil = "Icetide Vortex (Icewhirl)"
@@ -118,7 +119,7 @@ func (c *char) holdE() {
 				return
 			}
 			a.Target.AddResMod("Icewhirl Cryo", core.ResistMod{
-				Ele:      core.Cryo,
+				Ele:      coretype.Cryo,
 				Value:    -resRed[lvl],
 				Duration: 7 * v * 60,
 			})
@@ -132,7 +133,7 @@ func (c *char) holdE() {
 	}
 	for i := 0; i < v; i++ {
 		//spacing it out for stacks
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 92+i*7, shredCB)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), 0, 92+i*7, shredCB)
 	}
 
 	//A2
@@ -148,25 +149,25 @@ func (c *char) holdE() {
 			Durability: 25,
 			Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 108)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), 0, 108)
 	}
 
 	n := 2
 	if c.Core.Rand.Float64() < .5 {
 		n = 3
 	}
-	c.QueueParticle("eula", n, core.Cryo, 100)
+	c.QueueParticle("eula", n, coretype.Cryo, 100)
 
 	//c1 add debuff
 	if c.Base.Cons >= 1 && v > 0 {
 		val := make([]float64, core.EndStatType)
 		val[core.PhyP] = 0.3
-		c.AddMod(core.CharStatMod{
+		c.AddMod(coretype.CharStatMod{
 			Key: "eula-c1",
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},
-			Expiry: c.Core.F + (6*v+6)*60, //TODO: check if this is right
+			Expiry: c.Core.Frame + (6*v+6)*60, //TODO: check if this is right
 		})
 	}
 
@@ -182,14 +183,14 @@ func (c *char) holdE() {
 //looks like ult charges for 8 seconds
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
-	c.Core.Status.AddStatus("eulaq", 7*60+f+1)
+	c.Core.AddStatus("eulaq", 7*60+f+1)
 
 	c.burstCounter = 0
 	if c.Base.Cons == 6 {
 		c.burstCounter = 5
 	}
 
-	c.Core.Log.NewEvent("eula burst started", core.LogCharacterEvent, c.Index, "stacks", c.burstCounter, "expiry", c.Core.Status.Duration("eulaq"))
+	c.coretype.Log.NewEvent("eula burst started", coretype.LogCharacterEvent, c.Index, "stacks", c.burstCounter, "expiry", c.Core.StatusDuration("eulaq"))
 
 	lvl := c.TalentLvlBurst()
 	//add initial damage
@@ -200,11 +201,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Cryo,
+		Element:    coretype.Cryo,
 		Durability: 50,
 		Mult:       burstInitial[lvl],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, coretype.TargettableEnemy), 0, f-1)
 
 	//add 1 stack to Grimheart
 	v := c.Tags["grimheart"]
@@ -212,11 +213,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		v++
 	}
 	c.Tags["grimheart"] = v
-	c.Core.Log.NewEvent("eula: grimheart stack", core.LogCharacterEvent, c.Index, "current count", v)
+	c.coretype.Log.NewEvent("eula: grimheart stack", coretype.LogCharacterEvent, c.Index, "current count", v)
 
 	c.AddTask(func() {
 		//check to make sure it hasn't already exploded due to exiting field
-		if c.Core.Status.Duration("eulaq") > 0 {
+		if c.Core.StatusDuration("eulaq") > 0 {
 			c.triggerBurst()
 		}
 	}, "Eula-Burst-Lightfall", 7*60+f) //after 8 seconds
@@ -246,9 +247,9 @@ func (c *char) triggerBurst() {
 		Mult:       burstExplodeBase[c.TalentLvlBurst()] + burstExplodeStack[c.TalentLvlBurst()]*float64(stacks),
 	}
 
-	c.Core.Log.NewEvent("eula burst triggering", core.LogCharacterEvent, c.Index, "stacks", stacks, "mult", ai.Mult)
+	c.coretype.Log.NewEvent("eula burst triggering", coretype.LogCharacterEvent, c.Index, "stacks", stacks, "mult", ai.Mult)
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 23, 23)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, coretype.TargettableEnemy), 23, 23)
 	c.Core.Status.DeleteStatus("eulaq")
 	c.burstCounter = 0
 }

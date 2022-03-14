@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -11,60 +12,60 @@ func init() {
 	core.RegisterWeaponFunc("mistsplitterreforged", weapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+func weapon(char coretype.Character, c *core.Core, r int, param map[string]int) string {
 	m := make([]float64, core.EndStatType)
 	base := 0.09 + float64(r)*0.03
 	m[core.PyroP] = base
 	m[core.HydroP] = base
-	m[core.CryoP] = base
+	m[coretype.CryoP] = base
 	m[core.ElectroP] = base
 	m[core.AnemoP] = base
 	m[core.GeoP] = base
 	m[core.DendroP] = base
 	stack := 0.06 + float64(r)*0.02
 	max := 0.03 + float64(r)*0.01
-	bonus := core.EleToDmgP(char.Ele())
+	bonus := coretype.EleToDmgP(char.Ele())
 
 	normal := 0
 	skill := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Subscribe(coretype.OnDamage, func(args ...interface{}) bool {
 
-		atk := args[1].(*core.AttackEvent)
+		atk := args[1].(*coretype.AttackEvent)
 
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != coretype.AttackTagNormal {
 			return false
 		}
 		if atk.Info.Element == core.Physical {
 			return false
 		}
-		normal = c.F + 300 // lasts 5 seconds
+		normal = c.Frame + 300 // lasts 5 seconds
 		return false
 	}, fmt.Sprintf("mistsplitter-%v", char.Name()))
 
-	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Subscribe(core.PreBurst, func(args ...interface{}) bool {
+		if c.ActiveChar != char.Index() {
 			return false
 		}
-		skill = c.F + 600
+		skill = c.Frame + 600
 		return false
 
 	}, fmt.Sprintf("mistsplitter-%v", char.Name()))
 
-	char.AddMod(core.CharStatMod{
+	char.AddMod(coretype.CharStatMod{
 		Key: "mistsplitter",
 		Amount: func() ([]float64, bool) {
 			count := 0
 			if char.CurrentEnergy() < char.MaxEnergy() {
 				count++
 			}
-			if normal > c.F {
+			if normal > c.Frame {
 				count++
 			}
-			if skill > c.F {
+			if skill > c.Frame {
 				count++
 			}
 			dmg := float64(count) * stack

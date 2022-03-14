@@ -3,6 +3,7 @@ package amber
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 func init() {
@@ -14,7 +15,7 @@ type char struct {
 	bunnies []bunny
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, p coretype.CharacterProfile) (coretype.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
@@ -48,10 +49,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) a2() {
-	c.AddPreDamageMod(core.PreDamageMod{
+	c.AddPreDamageMod(coretype.PreDamageMod{
 		Key:    "amber-a2",
 		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+		Amount: func(atk *coretype.AttackEvent, t coretype.Target) ([]float64, bool) {
 			v := make([]float64, core.EndStatType)
 			v[core.CR] = .1
 			return v, atk.Info.AttackTag == core.AttackTagElementalBurst
