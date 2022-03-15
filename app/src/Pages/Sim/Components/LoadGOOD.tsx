@@ -1,5 +1,14 @@
-import { Button, Classes, Dialog } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  Callout,
+  Classes,
+  Dialog,
+  Position,
+  Toaster,
+} from "@blueprintjs/core";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "~src/store";
 import { userDataActions } from "../userDataSlice";
 import { IGOODImport, parseFromGO } from "./Import";
@@ -9,13 +18,17 @@ type Props = {
   onClose: () => void;
 };
 
+const AppToaster = Toaster.create({
+  position: Position.BOTTOM_RIGHT,
+});
+
 const lsKey = "GOOD-import";
 
 export function LoadGOOD(props: Props) {
   const [str, setStr] = React.useState<string>("");
   const [data, setData] = React.useState<IGOODImport>();
-  const [isSuccess, setIsSuccess] = React.useState(false);
   const dispatch = useAppDispatch();
+  let { t } = useTranslation();
 
   React.useEffect(() => {
     const val = localStorage.getItem(lsKey);
@@ -29,7 +42,11 @@ export function LoadGOOD(props: Props) {
     if (data !== undefined) {
       // setData(parseFromGO());
       dispatch(userDataActions.loadFromGOOD({ data: data.characters }));
-      setIsSuccess(true);
+      props.onClose();
+      AppToaster.show({
+        message: t("importer.import_success"),
+        intent: "success",
+      });
     }
   };
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -39,6 +56,7 @@ export function LoadGOOD(props: Props) {
   };
   return (
     <Dialog
+      className="w-screen"
       isOpen={props.isOpen}
       onClose={props.onClose}
       canEscapeKeyClose
@@ -58,24 +76,42 @@ export function LoadGOOD(props: Props) {
             <text> here</text>
           </a>
         </p>
+        <Callout intent="warning" title="Warning">
+          Importing will replace any existing GOOD import you already have. This
+          action cannot be reversed.
+        </Callout>
         <textarea
           value={str}
           onChange={handleChange}
           className="w-full p-2 bg-gray-600 rounded-md mt-2"
           rows={7}
         />
+        {data ? (
+          data.err === "" ? (
+            <Callout intent="success" className="mt-2 p-2">
+              Data parsed successfully
+            </Callout>
+          ) : (
+            <Callout intent="warning" className="mt-2 p-2">
+              {data!.err}
+            </Callout>
+          )
+        ) : null}
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-          {data && data.err && (
-            <div className="pt-1.5 text-red-500">{data.err}</div>
-          )}
-          {data && isSuccess && data.err === "" && (
-            <div className="pt-1.5 text-green-500">Successfully imported!</div>
-          )}
-
-          <Button onClick={handleLoad}>Load</Button>
-          <Button onClick={props.onClose}>Close</Button>
+          <ButtonGroup>
+            <Button
+              onClick={handleLoad}
+              disabled={!data || data.err !== ""}
+              intent="primary"
+            >
+              Load
+            </Button>
+            <Button onClick={props.onClose} intent="danger">
+              Cancel
+            </Button>
+          </ButtonGroup>
         </div>
       </div>
     </Dialog>

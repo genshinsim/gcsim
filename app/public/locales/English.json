@@ -97,6 +97,9 @@
     "footer": {
         "gcsim_is_not": "gcsim is not affiliated with miHoYo. Genshin Impact, game content and materials are trademarks and copyrights of miHoYo."
     },
+    "importer": {
+        "import_success": "GOOD data imported successfully"
+    },
     "links": {
         "error_loading_database": "Error loading database. No data found"
     },

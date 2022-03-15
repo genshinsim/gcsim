@@ -100,6 +100,9 @@
     "links": {
         "error_loading_database": "加载数据库失败。找不到数据"
     },
+    "importer": {
+        "import_success": "GOOD信息库已成功上载"
+    },
     "nav": {
         "about": "关于",
         "advanced": "进阶",

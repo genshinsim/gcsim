@@ -1,17 +1,25 @@
 import { SimResults } from "./DataType";
 import React, { MouseEvent } from "react";
-import { Button, ButtonGroup, Callout, Classes, Dialog, Position, Toaster, } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  Callout,
+  Classes,
+  Dialog,
+  Position,
+  Toaster,
+} from "@blueprintjs/core";
 import { useAppDispatch } from "~src/store";
 import { simActions } from "~src/Pages/Sim";
 import { useLocation } from "wouter";
 import { Trans, useTranslation } from "react-i18next";
 
-export const AppToaster = Toaster.create({
+const AppToaster = Toaster.create({
   position: Position.BOTTOM_RIGHT,
 });
 
 export function Config({ data }: { data: SimResults }) {
-  let { t } = useTranslation()
+  let { t } = useTranslation();
 
   const [open, setOpen] = React.useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -19,7 +27,10 @@ export function Config({ data }: { data: SimResults }) {
 
   function copyToClipboard(e: MouseEvent) {
     navigator.clipboard.writeText(data.config_file).then(() => {
-      AppToaster.show({ message: t("viewer.copied_to_clipboard"), intent: "success" });
+      AppToaster.show({
+        message: t("viewer.copied_to_clipboard"),
+        intent: "success",
+      });
     });
     // TODO: Need to add a blueprintjs Toaster for ephemeral confirmation box
   }
@@ -60,7 +71,9 @@ export function Config({ data }: { data: SimResults }) {
             <Button onClick={openInSim} intent="primary">
               <Trans>viewer.continue</Trans>
             </Button>
-            <Button onClick={() => setOpen(false)}><Trans>viewer.cancel</Trans></Button>
+            <Button onClick={() => setOpen(false)}>
+              <Trans>viewer.cancel</Trans>
+            </Button>
           </div>
         </div>
       </Dialog>
