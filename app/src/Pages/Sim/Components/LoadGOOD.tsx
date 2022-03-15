@@ -63,6 +63,7 @@ export function LoadGOOD(props: Props) {
       canOutsideClickClose
       icon="import"
       title="Import from Genshin Optimizer/GOOD"
+      style={{ width: "85%" }}
     >
       <div className={Classes.DIALOG_BODY}>
         <p>
