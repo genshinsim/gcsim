@@ -209,6 +209,11 @@ func (q *Queuer) blockUseable(a core.ActionBlock) (bool, error) {
 				q.pq[i].NumQueued = 0
 			}
 		}
+		q.core.Log.NewEvent(
+			"reset limits",
+			core.LogQueueEvent,
+			-1,
+		)
 		return true, nil
 	// Add catch cases for calc mode blocks for clean error message purposes
 	case core.ActionBlockTypeCalcRestart:
