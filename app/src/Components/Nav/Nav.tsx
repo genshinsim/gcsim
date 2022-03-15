@@ -3,6 +3,7 @@ import {
   Button,
   Classes,
   H5,
+  HTMLSelect,
   Navbar,
   NavbarDivider,
   NavbarGroup,
@@ -10,10 +11,10 @@ import {
   Switch,
 } from "@blueprintjs/core";
 import { useLocation } from "wouter";
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from "react-i18next";
 
 export default function Nav() {
-  let { t, i18n } = useTranslation()
+  let { t, i18n } = useTranslation();
   let language = i18n.language;
 
   const [location, setLocation] = useLocation();
@@ -35,46 +36,59 @@ export default function Nav() {
               icon="calculator"
               onClick={() => setLocation("/simple")}
             >
-              <span className="xs:hidden md:block"><Trans>nav.simulator</Trans></span>
+              <span className="xs:hidden md:block">
+                <Trans>nav.simulator</Trans>
+              </span>
             </Button>
             <Button
               className={Classes.MINIMAL}
               icon="rocket-slant"
               onClick={() => setLocation("/advanced")}
             >
-              <span className="xs:hidden md:block"><Trans>nav.advanced</Trans></span>
+              <span className="xs:hidden md:block">
+                <Trans>nav.advanced</Trans>
+              </span>
             </Button>
             <Button
               className={Classes.MINIMAL}
               icon="chart"
               onClick={() => setLocation("/viewer")}
             >
-              <span className="xs:hidden md:block"><Trans>nav.viewer</Trans></span>
+              <span className="xs:hidden md:block">
+                <Trans>nav.viewer</Trans>
+              </span>
             </Button>
             <Button
               className={Classes.MINIMAL}
               icon="database"
               onClick={() => setLocation("/db")}
             >
-              <span className="xs:hidden md:block"><Trans>nav.teams_db</Trans></span>
+              <span className="xs:hidden md:block">
+                <Trans>nav.teams_db</Trans>
+              </span>
             </Button>
             <Button
               className={Classes.MINIMAL}
               icon="info-sign"
               onClick={() => setLocation("/about")}
             >
-              <span className="xs:hidden md:block"><Trans>nav.about</Trans></span>
+              <span className="xs:hidden md:block">
+                <Trans>nav.about</Trans>
+              </span>
             </Button>
           </>
         ) : null}
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Trans>nav.language</Trans>
-        <select className="language-selector" value={language}
-                onChange={(e) => i18n.changeLanguage(e.target.value)}>
+        <HTMLSelect
+          className="ml-2"
+          value={language}
+          onChange={(e) => i18n.changeLanguage(e.target.value)}
+        >
           <option value="English">{t("nav.english")}</option>
           <option value="Chinese">{t("nav.chinese")}</option>
-        </select>
+        </HTMLSelect>
       </NavbarGroup>
     </Navbar>
   );

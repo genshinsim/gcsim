@@ -52,14 +52,14 @@ export function parseFromGO(val: string): IGOODImport {
 
   if (data.weapons) {
     data.weapons.forEach((goodweapon) => {
-      let charKey = goodKeytoSrlKey(goodweapon.location);
+      let charKey = GOODKeytoGCSIMKey(goodweapon.location);
       if (charKey === "") {
         //skip this weapon
         return;
       }
 
       let importedWeapon: Weapon = {
-        name: goodKeytoSrlKey(goodweapon.key),
+        name: GOODKeytoGCSIMKey(goodweapon.key),
         level: goodweapon.level,
         max_level: ascLvlMax(goodweapon.ascension),
         refine: goodweapon.refinement,
@@ -76,7 +76,7 @@ export function parseFromGO(val: string): IGOODImport {
   //Store artifacts based on character
   if (data.artifacts) {
     data.artifacts.forEach((artifact) => {
-      let charKey = goodKeytoSrlKey(artifact.location);
+      let charKey = GOODKeytoGCSIMKey(artifact.location);
       if (Object.keys(goodGearBank).includes(charKey)) {
         if (goodGearBank[charKey].artifact.length < 5) {
           goodGearBank[charKey].artifact.push(artifact);
@@ -213,7 +213,7 @@ const tallyArtifactSet = (
   }
   artifacts
     .map((artifact) => {
-      return artifact.setKey;
+      return artifact.setKey.toLowerCase();
     })
     .map((setKey) => {
       if (Object.keys(setKeyTally).includes(setKey)) {
@@ -249,7 +249,7 @@ export function importCharFromGOOD(
   let today = new Date();
   //copy over all the attributes we care about; ignore anything
   //we don't need
-  const name = goodKeytoSrlKey(goodObj.key);
+  const name = GOODKeytoGCSIMKey(goodObj.key);
   let setCount, statTotal;
 
   if (goodGearBank[name].artifact === undefined) {
@@ -263,7 +263,8 @@ export function importCharFromGOOD(
     name: name,
     level: goodObj.level,
     max_level: ascLvlMax(goodObj.ascension),
-    element: characterKeyToICharacter.English[goodKeytoSrlKey(goodObj.key)].element,
+    element:
+      characterKeyToICharacter.English[GOODKeytoGCSIMKey(goodObj.key)].element,
     cons: goodObj.constellation,
     weapon: goodGearBank[name].weapon,
     talents: {
@@ -283,7 +284,7 @@ export function importCharFromGOOD(
   return char;
 }
 
-export function goodKeytoSrlKey(s: string) {
+export function GOODKeytoGCSIMKey(s: string) {
   switch (s) {
     case "KaedeharaKazuha":
       return "kazuha";
