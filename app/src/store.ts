@@ -12,6 +12,9 @@ if (localStorage.getItem(simStateKey)) {
   s.edit_index = -1;
   s.ready = 0;
   s.run = defaultRunStat;
+  if (!s.GOChars) {
+    s.GOChars = [];
+  }
   persistedState = { sim: s };
   // localStorage.clear();
   console.log("loaded sim store from localStorage: ", persistedState);
