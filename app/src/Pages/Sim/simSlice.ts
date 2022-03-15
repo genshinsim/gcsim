@@ -23,7 +23,6 @@ export interface Sim {
   advanced_cfg: string;
   run: RunStats;
   showTips: boolean;
-  GOChars: Character[];
 }
 
 export const defaultRunStat: RunStats = {
@@ -42,7 +41,6 @@ const initialState: Sim = {
   advanced_cfg: "",
   run: defaultRunStat,
   showTips: true,
-  GOChars: [],
 };
 
 const defWep: { [key: string]: string } = {
@@ -242,13 +240,6 @@ export const simSlice = createSlice({
         return state;
       }
       state.edit_index = action.payload.index;
-      return state;
-    },
-    saveFromGO: (state, action: PayloadAction<{ data: Character[] }>) => {
-      // if there are characters, do something
-      if (action.payload.data.length > 0) {
-        state.GOChars = action.payload.data;
-      }
       return state;
     },
   },

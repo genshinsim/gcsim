@@ -1,6 +1,11 @@
 import { Callout, Intent, Button, Card, ButtonGroup } from "@blueprintjs/core";
 import React from "react";
-import { CharacterCard, CharacterSelect, ConsolidateCharStats, ICharacter, } from "~src/Components/Character";
+import {
+  CharacterCard,
+  CharacterSelect,
+  ConsolidateCharStats,
+  ICharacter,
+} from "~src/Components/Character";
 import { SectionDivider } from "~src/Components/SectionDivider";
 import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "~src/Pages/Sim/simSlice";
@@ -10,15 +15,18 @@ import { Character } from "~src/types";
 import { Trans, useTranslation } from "react-i18next";
 
 export function Team() {
-  useTranslation()
+  useTranslation();
 
-  const { team, edit_index, showTips } = useAppSelector((state: RootState) => {
-    return {
-      team: state.sim.team,
-      edit_index: state.sim.edit_index,
-      showTips: state.sim.showTips,
-    };
-  });
+  const { team, edit_index, showTips, imported } = useAppSelector(
+    (state: RootState) => {
+      return {
+        team: state.sim.team,
+        edit_index: state.sim.edit_index,
+        showTips: state.sim.showTips,
+        imported: state.user_data.GOODImport,
+      };
+    }
+  );
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState<boolean>(false);
   const [openImport, setOpenImport] = React.useState<boolean>(false);
@@ -89,13 +97,18 @@ export function Team() {
   return (
     <div className="flex flex-col">
       <span ref={myRef} />
-      <SectionDivider><Trans>simple.team</Trans></SectionDivider>
+      <SectionDivider>
+        <Trans>simple.team</Trans>
+      </SectionDivider>
       {showTips ? (
         <div className="pl-2 pr-2">
           <Callout intent={Intent.PRIMARY} className="flex flex-col">
             <span>
               <Trans>simple.video_pre</Trans>
-              <a onClick={() => setOpenAddCharHelp(true)}><Trans>simple.video</Trans></a><Trans>simple.video_post</Trans>
+              <a onClick={() => setOpenAddCharHelp(true)}>
+                <Trans>simple.video</Trans>
+              </a>
+              <Trans>simple.video_post</Trans>
             </span>
             <div className="ml-auto">
               <Button small onClick={hideTips}>
@@ -137,7 +150,7 @@ export function Team() {
               onClick={() => setOpen(true)}
               disabled={team.length >= 4}
             >
-                <Trans>simple.add_character</Trans>
+              <Trans>simple.add_character</Trans>
             </Button>
           </ButtonGroup>
         </div>
@@ -147,6 +160,7 @@ export function Team() {
         onClose={() => setOpen(false)}
         onSelect={handleAddCharacter}
         isOpen={open}
+        additionalOptions={imported}
       />
       <LoadGOOD isOpen={openImport} onClose={() => setOpenImport(false)} />
       <VideoPlayer

@@ -1,32 +1,32 @@
 import { ItemPredicate, Omnibar } from "@blueprintjs/select";
-import { characterSelectProps,elementRender } from "./characters";
-import { RootState, useAppSelector } from "~src/store";
+import { characterSelectProps, elementRender } from "./characters";
 import { Character } from "~src/types";
 const CharacterOmnibar = Omnibar.ofType<Character>();
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from "react-i18next";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (item: Character) => void;
+  additionalOptions?: Character[];
   disabled?: string[];
 };
 
 export function CharacterSelect(props: Props) {
-  let { i18n } = useTranslation()
+  let { i18n } = useTranslation();
 
   let disabled: string[] = [];
   if (props.disabled) {
     disabled = props.disabled;
   }
 
-  const { goChars } = useAppSelector((state: RootState) => {
-    return {
-      goChars: state.sim.GOChars,
-    };
-  });
-  const loadedCharacterSelectProps = characterSelectProps[i18n.language]
-  const items = loadedCharacterSelectProps.items.concat(goChars);
+  const loadedCharacterSelectProps = characterSelectProps[i18n.language];
+
+  let items = [...loadedCharacterSelectProps.items];
+  if (props.additionalOptions) {
+    items = items.concat(props.additionalOptions);
+  }
+  // const items = loadedCharacterSelectProps.items.concat(goChars);
 
   const filter: ItemPredicate<Character> = (
     query,
@@ -45,9 +45,9 @@ export function CharacterSelect(props: Props) {
       return item.name === normalizedQuery;
     } else {
       return (
-        `${item.name} ${item.date_added} ${elementRender[i18n.language][item.element]}`.indexOf(
-          normalizedQuery
-        ) >= 0
+        `${item.name} ${item.date_added} ${
+          elementRender[i18n.language][item.element]
+        }`.indexOf(normalizedQuery) >= 0
       );
     }
   };

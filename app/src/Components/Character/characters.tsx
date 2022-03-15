@@ -1,9 +1,8 @@
 import { MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
 import { Character } from "~src/types";
-export const characterKeyToICharacter:{
-  [key: string] : 
-  {[key: string]:ICharacter}
+export const characterKeyToICharacter: {
+  [key: string]: { [key: string]: ICharacter };
 } = {
   English: {
     aether: {
@@ -650,24 +649,23 @@ const newCharCn = (name: string): Character => {
   };
 };
 
-export const items= {
-  English: Object.keys(characterKeyToICharacter.English).map(
-    (k) => newCharEng(k)
-
+export const items = {
+  English: Object.keys(characterKeyToICharacter.English).map((k) =>
+    newCharEng(k)
   ),
-  Chinese: Object.keys(characterKeyToICharacter.Chinese).map(
-    (k) => newCharCn(k)
+  Chinese: Object.keys(characterKeyToICharacter.Chinese).map((k) =>
+    newCharCn(k)
   ),
 };
 export const elementRender: {
-  [key: string] : {[key: string]: string}}
-  = {
+  [key: string]: { [key: string]: string };
+} = {
   English: {
     none: "None",
     anemo: "Anemo",
     geo: "Geo",
     pyro: "Pyro",
-    cryo: "Cryp",
+    cryo: "Cryo",
     hydro: "Hydro",
     electro: "Electro",
     dendro: "Dendro",
@@ -682,14 +680,10 @@ export const elementRender: {
     electro: "雷属性",
     dendro: "草属性",
   },
-}
+};
 
-
-export const render: {[key: string]: ItemRenderer<Character>} = {
-  English: (
-    item: Character,
-    { handleClick, modifiers, query }
-  ) => {
+export const render: { [key: string]: ItemRenderer<Character> } = {
+  English: (item: Character, { handleClick, modifiers, query }) => {
     if (!modifiers.matchesPredicate) {
       return null;
     }
@@ -699,19 +693,20 @@ export const render: {[key: string]: ItemRenderer<Character>} = {
         disabled={modifiers.disabled}
         label={`${
           item.date_added
-            ? elementRender.English[item.element].concat(`, Imported: ${item.date_added}`)
+            ? elementRender.English[item.element].concat(
+                `, Imported: ${item.date_added}`
+              )
             : elementRender.English[item.element]
         }`}
-        key={`${item.date_added ? item.name.concat(item.date_added) : item.name}`}
+        key={`${
+          item.date_added ? item.name.concat(item.date_added) : item.name
+        }`}
         onClick={handleClick}
         text={highlightText(item.name, query)}
       />
     );
   },
-  Chinese: (
-    item: Character,
-    { handleClick, modifiers, query }
-  ) => {
+  Chinese: (item: Character, { handleClick, modifiers, query }) => {
     if (!modifiers.matchesPredicate) {
       return null;
     }
@@ -721,10 +716,14 @@ export const render: {[key: string]: ItemRenderer<Character>} = {
         disabled={modifiers.disabled}
         label={`${
           item.date_added
-            ? elementRender.Chinese[item.element].concat(`, Imported: ${item.date_added}`)
+            ? elementRender.Chinese[item.element].concat(
+                `, Imported: ${item.date_added}`
+              )
             : elementRender.Chinese[item.element]
         }`}
-        key={`${item.date_added ? item.name.concat(item.date_added) : item.name}`}
+        key={`${
+          item.date_added ? item.name.concat(item.date_added) : item.name
+        }`}
         onClick={handleClick}
         text={highlightText(item.name, query)}
       />
@@ -785,7 +784,8 @@ function highlightText(text: string, query: string) {
 }
 
 export const characterSelectProps: {
-  [key: string] : {itemRenderer: ItemRenderer<Character>, items: Character[]}} = {
+  [key: string]: { itemRenderer: ItemRenderer<Character>; items: Character[] };
+} = {
   English: {
     itemRenderer: render.English,
     items: items.English,

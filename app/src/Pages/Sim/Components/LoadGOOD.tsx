@@ -1,8 +1,7 @@
 import { Button, Classes, Dialog } from "@blueprintjs/core";
 import React from "react";
-import { simActions } from "~src/Pages/Sim";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
-
+import { useAppDispatch } from "~src/store";
+import { userDataActions } from "../userDataSlice";
 import { IGOODImport, parseFromGO } from "./Import";
 
 type Props = {
@@ -29,7 +28,7 @@ export function LoadGOOD(props: Props) {
   const handleLoad = () => {
     if (data !== undefined) {
       // setData(parseFromGO());
-      dispatch(simActions.saveFromGO({ data: data.characters }));
+      dispatch(userDataActions.loadFromGOOD({ data: data.characters }));
       setIsSuccess(true);
     }
   };
