@@ -181,7 +181,7 @@
         "weapon": "武器"
     },
     "footer": {
-        "gcsim_is_not": "gcsim不是官方工具，原神的游戏内容和素材的商标和版权归米哈游所有。本网站的国际化与汉化支持来自：古月浪子。"
+        "gcsim_is_not": "gcsim不是官方工具，原神的游戏内容和素材的商标和版权归米哈游所有。本网站的国际化汉化支持来自：古月浪子。"
     },
     "elements": {
         "none": "无属性",
@@ -204,6 +204,7 @@
         "advanced": "进阶",
         "chinese": "中文",
         "english": "English",
+        "japanese": "日本語",
         "language": "语言：",
         "simulator": "模拟器",
         "teams_db": "配队数据库",

@@ -17,19 +17,22 @@ import React from "react";
 import { useLocation } from "wouter";
 import { CharacterSelect, ICharacter } from "~src/Components/Character";
 import { Viewport } from "~src/Components/Viewport";
-import { IWeapon, weaponKeyToName, WeaponSelect } from "~src/Components/Weapon";
+import { IWeapon, WeaponSelect } from "~src/Components/Weapon";
 import { useAppDispatch } from "~src/store";
 import { DBCharInfo, DBItem } from "~src/types";
 import { simActions } from "../Sim";
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from "react-i18next";
 
 function CharTooltip({ char }: { char: DBCharInfo }) {
-  let { t, i18n } = useTranslation()
+  let { t } = useTranslation();
 
   return (
     <div className="m-2 flex flex-col">
-      <div
-        className="ml-auto font-bold capitalize">{`${char.name} ${t("db.c_pre")}${char.con}${t("db.c_post")} ${char.talents.attack}/${char.talents.skill}/${char.talents.burst}`}</div>
+      <div className="ml-auto font-bold capitalize">{`${t(
+        "character_names." + char.name
+      )} ${t("db.c_pre")}${char.con}${t("db.c_post")} ${char.talents.attack}/${
+        char.talents.skill
+      }/${char.talents.burst}`}</div>
       <div className="w-full border-b border-gray-500 mt-2 mb-2"></div>
       <div className="capitalize flex flex-row">
         <img
@@ -38,7 +41,7 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
           className="wide:h-8 h-auto "
         />
         <div className="mt-auto mb-auto">
-          {weaponKeyToName[i18n.language][char.weapon] + t("db.r") + char.refine}
+          {t("weapon_names." + char.weapon) + t("db.r") + char.refine}
         </div>
       </div>
       <div className="ml-auto">{`${t("db.er")}${char.er * 100 + 100}%`}</div>
@@ -47,7 +50,7 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
 }
 
 function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
-  useTranslation()
+  useTranslation();
 
   const [location, setLocation] = useLocation();
 
@@ -73,15 +76,26 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
     <div className="flex flex-row w-full m-2 p-2 rounded-md bg-gray-700 place-items-center">
       <div className="flex flex-col basis-1/4">
         <div className="grid grid-cols-4">{chars}</div>
-        <div><Trans>db.author</Trans>{row.author}</div>
+        <div>
+          <Trans>db.author</Trans>
+          {row.author}
+        </div>
       </div>
       <div className=" flex-1 overflow-hidden mb-auto pl-2">
-        <div className="font-bold"><Trans>db.description</Trans></div>
+        <div className="font-bold">
+          <Trans>db.description</Trans>
+        </div>
         {row.description.replace(/(.{150})..+/, "$1…")}
       </div>
       <div className="ml-auto flex flex-col mr-4 basis-60">
-        <span><Trans>db.total_dps</Trans>{parseInt(row.dps.toFixed(0)).toLocaleString()}</span>
-        <span><Trans>db.number_of_targets</Trans>{row.target_count}</span>
+        <span>
+          <Trans>db.total_dps</Trans>
+          {parseInt(row.dps.toFixed(0)).toLocaleString()}
+        </span>
+        <span>
+          <Trans>db.number_of_targets</Trans>
+          {row.target_count}
+        </span>
         <span>
           <Trans>db.average_dps_per</Trans>
           {parseInt((row.dps / row.target_count).toFixed(0)).toLocaleString()}
@@ -124,7 +138,7 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
 }
 
 export function DB() {
-  let { t } = useTranslation()
+  let { t } = useTranslation();
 
   const [loading, setLoading] = React.useState<boolean>(true);
   const [data, setData] = React.useState<DBItem[]>([]);
@@ -187,11 +201,11 @@ export function DB() {
   const addWeapFilter = (weap: IWeapon) => {
     setOpenAddWeap(false);
     //add to array if not exist already if
-    if (weapFilter.includes(weap.key)) {
+    if (weapFilter.includes(weap)) {
       return;
     }
     const next = [...weapFilter];
-    next.push(weap.key);
+    next.push(weap);
     setWeapFilter(next);
   };
 
@@ -233,7 +247,7 @@ export function DB() {
         onRemove={() => removeCharFilter(e)}
         className="ml-px mr-px"
       >
-        {e}
+        {t("character_names." + e)}
       </Tag>
     );
   });
@@ -246,7 +260,7 @@ export function DB() {
         onRemove={() => removeWeapFilter(e)}
         className="ml-px mr-px"
       >
-        {e}
+        {t("weapon_names." + e)}
       </Tag>
     );
   });
@@ -306,7 +320,10 @@ export function DB() {
                   text={t("db.character")}
                   onClick={() => setOpenAddChar(true)}
                 />
-                <MenuItem text={t("db.weapon")} onClick={() => setOpenAddWeap(true)} />
+                <MenuItem
+                  text={t("db.weapon")}
+                  onClick={() => setOpenAddWeap(true)}
+                />
               </Menu>
             }
             renderTarget={({ isOpen, ref, ...targetProps }) => (
@@ -360,7 +377,9 @@ export function DB() {
             <Button onClick={openInSim} intent="primary">
               <Trans>db.continue</Trans>
             </Button>
-            <Button onClick={() => setCfg("")}><Trans>db.cancel</Trans></Button>
+            <Button onClick={() => setCfg("")}>
+              <Trans>db.cancel</Trans>
+            </Button>
           </div>
         </div>
       </Dialog>
