@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Character } from "~/src/types";
 
 export interface UserData {
-  GOODImport: Character[];
+  GOODImport: { [key: string]: Character };
 }
 
 const initialState: UserData = {
-  GOODImport: [],
+  GOODImport: {},
 };
 
 export const userDataSlice = createSlice({
@@ -16,7 +16,11 @@ export const userDataSlice = createSlice({
     loadFromGOOD: (state, action: PayloadAction<{ data: Character[] }>) => {
       // if there are characters, do something
       if (action.payload.data.length > 0) {
-        state.GOODImport = action.payload.data;
+        //make it
+        state.GOODImport = {};
+        action.payload.data.forEach((c) => {
+          state.GOODImport[c.name] = c;
+        });
       }
       return state;
     },

@@ -8,7 +8,7 @@ import { CharacterSelect, ICharacter } from "~src/Components/Character";
 import { Trans, useTranslation } from "react-i18next";
 
 export function CharacterEditDetails() {
-  let { t } = useTranslation()
+  let { t } = useTranslation();
 
   const { char, team } = useAppSelector((state: RootState) => {
     return {

@@ -20,7 +20,7 @@ import {
 import { WeaponCard } from "~src/Components/Weapon";
 import { CharStatBlock } from "/src/Components/Character";
 import { Character } from "~src/types";
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from "react-i18next";
 
 type Props = {
   char: Character;
@@ -98,7 +98,7 @@ export function CharacterCard({
   handleDelete,
   className = "",
 }: Props) {
-  useTranslation()
+  const { t } = useTranslation();
 
   const arts: JSX.Element[] = [];
 
@@ -162,8 +162,7 @@ export function CharacterCard({
     rows.push(
       <tr key={count}>
         <td className="flex flex-row place-items-center">
-          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>
-          {" "}
+          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>{" "}
           {s.name}
         </td>
         {val}
@@ -197,7 +196,9 @@ export function CharacterCard({
           </div>
           <div className="character-header rounded-t-md" />
           <div className="character-name font-medium m-4 capitalize">
-            {char.name} <Trans>character.c_pre</Trans>{char.cons}<Trans>character.c_post</Trans>
+            {t(`character_names.${char.name}`)} <Trans>character.c_pre</Trans>
+            {char.cons}
+            <Trans>character.c_post</Trans>
           </div>
           <div className="w-1/2 text-sm">
             <div className="rounded-md pl-1 pr-1 mt-6">
@@ -205,8 +206,8 @@ export function CharacterCard({
                 <Trans>character.lvl</Trans> {char.level}/{char.max_level}
               </div>
               <div>
-                <Trans>character.talents</Trans> {char.talents.attack}/{char.talents.skill}/
-                {char.talents.burst}
+                <Trans>character.talents</Trans> {char.talents.attack}/
+                {char.talents.skill}/{char.talents.burst}
               </div>
               <div className="mt-1 mr-2 grid grid-cols-5">{arts}</div>
             </div>
@@ -223,7 +224,9 @@ export function CharacterCard({
         <WeaponCard weapon={char.weapon} />
 
         <div className="ml-2 mr-2 p-2 bg-gray-800 rounded-md">
-          <span className="font-bold"><Trans>character.artifact_stats</Trans></span>
+          <span className="font-bold">
+            <Trans>character.artifact_stats</Trans>
+          </span>
           <div className="px-2">
             <table className="w-full">
               <tbody>{rows}</tbody>

@@ -2,16 +2,17 @@ import { Callout, Intent, Button, Card, ButtonGroup } from "@blueprintjs/core";
 import React from "react";
 import {
   CharacterCard,
+  characterKeyToICharacter,
   CharacterSelect,
   ConsolidateCharStats,
   ICharacter,
+  newChar,
 } from "~src/Components/Character";
 import { SectionDivider } from "~src/Components/SectionDivider";
 import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "~src/Pages/Sim/simSlice";
 import { CharacterEdit } from "./CharacterEdit";
 import { LoadGOOD, VideoPlayer } from "../Components";
-import { Character } from "~src/types";
 import { Trans, useTranslation } from "react-i18next";
 
 export function Team() {
@@ -57,9 +58,16 @@ export function Team() {
       myRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
-  const handleAddCharacter = (character: Character) => {
+  const handleAddCharacter = (character: ICharacter) => {
     setOpen(false);
-    dispatch(simActions.addCharacter({ character }));
+    //check if this is from GOOD
+    if (character.notes) {
+      dispatch(simActions.addCharacter({ character: imported[character.key] }));
+      return;
+    }
+    //else it's new
+    const c = newChar(character.key);
+    dispatch(simActions.addCharacter({ character: c }));
   };
 
   const hideTips = () => {
@@ -93,6 +101,12 @@ export function Team() {
       );
     });
   }
+
+  const additionalChars = Object.keys(imported).map((k) => {
+    let x = Object.assign({}, characterKeyToICharacter[k]);
+    x.notes = `Imported on ${imported[k].date_added}`;
+    return x;
+  });
 
   return (
     <div className="flex flex-col">
@@ -160,7 +174,7 @@ export function Team() {
         onClose={() => setOpen(false)}
         onSelect={handleAddCharacter}
         isOpen={open}
-        additionalOptions={imported}
+        additionalOptions={additionalChars}
       />
       <LoadGOOD isOpen={openImport} onClose={() => setOpenImport(false)} />
       <VideoPlayer

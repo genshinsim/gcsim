@@ -1,9 +1,8 @@
-import { weaponKeyToName } from ".";
 import { Weapon } from "~src/types";
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from "react-i18next";
 
 export function WeaponCard({ weapon }: { weapon: Weapon }) {
-  let { i18n } = useTranslation()
+  let { t } = useTranslation();
 
   console.log(weapon.name);
   return (
@@ -18,7 +17,7 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
         </div>
         <div className="flex-grow text-sm pl-2 flex flex-col justify-center">
           <div className="font-medium text-left">
-            {weaponKeyToName[i18n.language][weapon.name].replace(/(.{20})..+/, "$1…") +
+            {t("weapon_names." + weapon.name).replace(/(.{20})..+/, "$1…") +
               " R" +
               weapon.refine}
           </div>

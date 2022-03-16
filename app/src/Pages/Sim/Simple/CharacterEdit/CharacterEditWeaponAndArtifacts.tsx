@@ -9,7 +9,7 @@ import { IWeapon, WeaponSelect } from "~src/Components/Weapon";
 import { Trans, useTranslation } from "react-i18next";
 
 export function CharacterEditWeaponAndArtifacts() {
-  let { t } = useTranslation()
+  let { t } = useTranslation();
 
   const { char } = useAppSelector((state: RootState) => {
     return {
@@ -23,7 +23,7 @@ export function CharacterEditWeaponAndArtifacts() {
   const handleChangeWeapon = (w: IWeapon) => {
     setOpen(false);
     let next = { ...char.weapon };
-    next.name = w.key;
+    next.name = w;
     dispatch(simActions.setCharacterWeapon({ val: next }));
   };
 

@@ -69,12 +69,12 @@ export function LoadGOOD(props: Props) {
         <p>
           Paste import data in GOOD format in the textbox below. (If you are
           coming from Genshin Optimizer, you can export your database in GOOD
-          format
+          format{" "}
           <a
             href="https://frzyc.github.io/genshin-optimizer/#/database"
             target="_blank"
           >
-            <text> here</text>
+            here
           </a>
         </p>
         <Callout intent="warning" title="Warning">
@@ -87,6 +87,11 @@ export function LoadGOOD(props: Props) {
           className="w-full p-2 bg-gray-600 rounded-md mt-2"
           rows={7}
         />
+        <p className="font-bold">
+          Once your character data has been imported, you can add your imported
+          character via Add Character button and search for the character's
+          name.
+        </p>
         {data ? (
           data.err === "" ? (
             <Callout intent="success" className="mt-2 p-2">

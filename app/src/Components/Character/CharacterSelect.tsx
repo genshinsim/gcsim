@@ -1,53 +1,54 @@
 import { ItemPredicate, Omnibar } from "@blueprintjs/select";
-import { characterSelectProps, elementRender } from "./characters";
-import { Character } from "~src/types";
-const CharacterOmnibar = Omnibar.ofType<Character>();
+import { characterSelectProps, ICharacter } from "./characters";
+const CharacterOmnibar = Omnibar.ofType<ICharacter>();
 import { useTranslation } from "react-i18next";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (item: Character) => void;
-  additionalOptions?: Character[];
+  onSelect: (item: ICharacter) => void;
+  additionalOptions?: ICharacter[];
   disabled?: string[];
 };
 
 export function CharacterSelect(props: Props) {
-  let { i18n } = useTranslation();
+  let { t } = useTranslation();
 
   let disabled: string[] = [];
   if (props.disabled) {
     disabled = props.disabled;
   }
 
-  const loadedCharacterSelectProps = characterSelectProps[i18n.language];
-
-  let items = [...loadedCharacterSelectProps.items];
+  console.log(characterSelectProps);
+  let items = [...characterSelectProps.items];
+  console.log("before additional", items);
   if (props.additionalOptions) {
     items = items.concat(props.additionalOptions);
   }
-  // const items = loadedCharacterSelectProps.items.concat(goChars);
+  console.log("after additional", items);
 
-  const filter: ItemPredicate<Character> = (
+  const filter: ItemPredicate<ICharacter> = (
     query,
     item,
     _index,
     exactMatch
   ) => {
     //ignore filtered items
-    if (disabled.findIndex((v) => v === item.name) > -1) {
+    if (
+      disabled.findIndex((v) => v === t("character_names:" + item.key)) > -1
+    ) {
       return false;
     }
 
     const normalizedQuery = query.toLowerCase();
 
     if (exactMatch) {
-      return item.name === normalizedQuery;
+      return t("character_names:" + item.key) === normalizedQuery;
     } else {
       return (
-        `${item.name} ${item.date_added} ${
-          elementRender[i18n.language][item.element]
-        }`.indexOf(normalizedQuery) >= 0
+        `${t("character_names:" + item.key)} ${item.key} ${item.notes} ${t(
+          "elements:" + item.element
+        )}`.indexOf(normalizedQuery) >= 0
       );
     }
   };
@@ -55,7 +56,7 @@ export function CharacterSelect(props: Props) {
     <CharacterOmnibar
       resetOnSelect
       items={items}
-      itemRenderer={loadedCharacterSelectProps.itemRenderer}
+      itemRenderer={characterSelectProps.itemRenderer}
       itemPredicate={filter}
       isOpen={props.isOpen}
       onClose={props.onClose}
