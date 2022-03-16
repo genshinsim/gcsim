@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function CharacterEditArtifactSets() {
-  useTranslation()
+  useTranslation();
 
   const { char } = useAppSelector((state: RootState) => {
     return {
@@ -27,10 +27,10 @@ export function CharacterEditArtifactSets() {
     //close the display
     setOpen(false);
     //make sure it doesn't exist already
-    if (set.key in char.sets) {
+    if (set in char.sets) {
       return;
     }
-    dispatch(simActions.addCharacterSet({ set: set.key }));
+    dispatch(simActions.addCharacterSet({ set: set }));
   };
 
   const handleDeleteSetBonus = (set: string) => {
@@ -74,15 +74,15 @@ export function CharacterEditArtifactSets() {
   const checkDisabled = (key: string, bonus: 2 | 4): boolean => {
     console.log(
       "set: " +
-      key +
-      "bonus for " +
-      bonus +
-      " total ticked: " +
-      total +
-      " in set: " +
-      char.sets[key] +
-      " check: " +
-      (total + bonus - char.sets[key])
+        key +
+        "bonus for " +
+        bonus +
+        " total ticked: " +
+        total +
+        " in set: " +
+        char.sets[key] +
+        " check: " +
+        (total + bonus - char.sets[key])
     );
     return total + bonus - char.sets[key] > 4 && char.sets[key] < bonus;
   };
@@ -100,7 +100,9 @@ export function CharacterEditArtifactSets() {
           src={`/images/artifacts/${key}_flower.png`}
           className="w-12"
         />
-        <span className="font-bold"><Trans>characteredit.set_bonus</Trans></span>
+        <span className="font-bold">
+          <Trans>characteredit.set_bonus</Trans>
+        </span>
         <div className="flex flex-row gap-2 flex-grow justify-center">
           <Checkbox
             large

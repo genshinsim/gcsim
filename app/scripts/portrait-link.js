@@ -190,17 +190,32 @@ fs.writeFileSync(
 );
 
 let setMap = {};
+let setTrans = {
+  English: {},
+  Chinese: {},
+  Japanese: {},
+  Spanish: {},
+};
 
 const sets = genshindb.artifacts("4", { matchCategories: true });
 
 sets.forEach((e) => {
-  const x = genshindb.artifacts(e);
+  const eng = genshindb.artifacts(e);
 
-  let art = x.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
-  setMap[art] = x.name;
+  let art = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
+  setMap[art] = eng.name;
+
+  const cn = genshindb.artifacts(e, { resultLanguage: "CHS" });
+  const jp = genshindb.artifacts(e, { resultLanguage: "JP" });
+  const es = genshindb.artifacts(e, { resultLanguage: "ES" });
+
+  setTrans["English"][art] = eng.name;
+  setTrans["Chinese"][art] = cn.name;
+  setTrans["Japanese"][art] = jp.name;
+  setTrans["Spanish"][art] = es.name;
 
   let filename;
-  for (const [key, value] of Object.entries(x.images)) {
+  for (const [key, value] of Object.entries(eng.images)) {
     filename = `./static/images/artifacts/${art}_${key}.png`;
 
     if (!fs.existsSync(filename)) {
@@ -219,5 +234,11 @@ sets.forEach((e) => {
 fs.writeFileSync(
   "./src/Components/data/artifactNames.json",
   JSON.stringify(setMap),
+  "utf-8"
+);
+
+fs.writeFileSync(
+  "./public/locales/artifacts.json",
+  JSON.stringify(setTrans),
   "utf-8"
 );
