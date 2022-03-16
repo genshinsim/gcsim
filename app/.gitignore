@@ -71,3 +71,5 @@ parcel-bundle-reports/
 
 # build related
 temp/
+
+.idea/

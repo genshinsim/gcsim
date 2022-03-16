@@ -1,5 +1,5 @@
-import { StatToIndexMap } from "~src/Components/Character";
 import { IconPercent } from "~src/Components/Icons";
+import { StatToIndexMap } from "~src/util";
 import { subDisplayLine } from "./CharacterEditStats";
 
 const regDec = new RegExp(/^(\d+)?(\.)?\d+$/);

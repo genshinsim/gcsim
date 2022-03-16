@@ -7,8 +7,11 @@ import { simActions } from "..";
 import { ActionList, SimOptions } from "../Components";
 import { SimProgress } from "../Components/SimProgress";
 import { runSim } from "../exec";
+import { Trans, useTranslation } from "react-i18next";
 
 export function Advanced() {
+  let { t } = useTranslation()
+
   const { ready, workers, cfg, runState } = useAppSelector(
     (state: RootState) => {
       return {
@@ -31,19 +34,19 @@ export function Advanced() {
   return (
     <Viewport className="flex flex-col gap-2">
       <div className="flex flex-col">
-        <SectionDivider>Action List</SectionDivider>
+        <SectionDivider><Trans>advanced.action_list</Trans></SectionDivider>
         <ActionList
           cfg={cfg}
           onChange={(v) => dispatch(simActions.setAdvCfg(v))}
         />
-        <SectionDivider>Helpers</SectionDivider>
+        <SectionDivider><Trans>advanced.helpers</Trans></SectionDivider>
         <div className="p-2">
-          <Button disabled>Substat Helper</Button>
+          <Button disabled><Trans>advanced.substat_helper</Trans></Button>
         </div>
-        <SectionDivider>Sim Options</SectionDivider>
+        <SectionDivider><Trans>advanced.sim_options</Trans></SectionDivider>
         <div className="ml-auto mr-2">
           <Button icon="edit" onClick={() => setShowOptions(!showOptions)}>
-            {showOptions ? "Hide" : "Show"}
+            {showOptions ? t("advanced.hide") : t("advanced.show")}
           </Button>
         </div>
         <Collapse
@@ -54,9 +57,10 @@ export function Advanced() {
           <SimOptions />
         </Collapse>
       </div>
-      <div className="sticky bottom-0 bg-bp-bg p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
+      <div
+        className="sticky bottom-0 bg-bp-bg p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
         <div className="basis-full wide:basis-0 flex-grow p-1">
-          {`Workers available: ${ready}`}
+          {`${t("advanced.workers_available")}${ready}`}
         </div>
         <div className="basis-full wide:basis-1/3 p-1">
           <Button
@@ -66,7 +70,7 @@ export function Advanced() {
             onClick={run}
             disabled={ready < workers || runState.progress !== -1}
           >
-            {ready < workers ? "Loading workers" : "Run"}
+            {ready < workers ? t("advanced.loading_workers") : t("advanced.run")}
           </Button>
         </div>
       </div>

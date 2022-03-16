@@ -4,8 +4,11 @@ import DiscordLogo from "./discord-icon.svg";
 import GithubLogo from "./github-icon.svg";
 //@ts-ignore
 import KofiLogo from "./ko-fi-icon.svg";
+import { Trans, useTranslation } from 'react-i18next'
 
 export default function Footer() {
+  useTranslation()
+
   return (
     <div className="flex flex-row flex-wrap md:flex-row-reverse w-full justify-end gap-2 items-end">
       <div className="flex flex-row justify-end ml-auto basis-full md:basis-auto">
@@ -38,8 +41,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="mr-auto text-xs basis-full  md:basis-auto p-1">
-        gcsim is not affiliated with miHoYo. Genshin Impact, game content and
-        materials are trademarks and copyrights of miHoYo.
+        <Trans>footer.gcsim_is_not</Trans>
       </div>
     </div>
   );

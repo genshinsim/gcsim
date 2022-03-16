@@ -1,4 +1,4 @@
-import { Callout, Intent, Button, Card } from "@blueprintjs/core";
+import { Callout, Intent, Button, Card, ButtonGroup } from "@blueprintjs/core";
 import React from "react";
 import {
   CharacterCard,
@@ -7,22 +7,29 @@ import {
   ICharacter,
 } from "~src/Components/Character";
 import { SectionDivider } from "~src/Components/SectionDivider";
-import { useAppDispatch, useAppSelector } from "~src/store";
-import { RootState } from "~src/store";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "~src/Pages/Sim/simSlice";
 import { CharacterEdit } from "./CharacterEdit";
-import { VideoPlayer } from "../Components";
+import { LoadGOOD, VideoPlayer } from "../Components";
+import { Character } from "~src/types";
+import { Trans, useTranslation } from "react-i18next";
 
 export function Team() {
-  const { team, edit_index, showTips } = useAppSelector((state: RootState) => {
-    return {
-      team: state.sim.team,
-      edit_index: state.sim.edit_index,
-      showTips: state.sim.showTips,
-    };
-  });
+  useTranslation();
+
+  const { team, edit_index, showTips, imported } = useAppSelector(
+    (state: RootState) => {
+      return {
+        team: state.sim.team,
+        edit_index: state.sim.edit_index,
+        showTips: state.sim.showTips,
+        imported: state.user_data.GOODImport,
+      };
+    }
+  );
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState<boolean>(false);
+  const [openImport, setOpenImport] = React.useState<boolean>(false);
   const [openAddCharHelp, setOpenAddCharHelp] = React.useState<boolean>(false);
   const myRef = React.useRef<HTMLSpanElement>(null);
   React.useEffect(() => {
@@ -50,9 +57,9 @@ export function Team() {
       myRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
-  const handleAddCharacter = (w: ICharacter) => {
+  const handleAddCharacter = (character: Character) => {
     setOpen(false);
-    dispatch(simActions.addCharacter({ name: w.key }));
+    dispatch(simActions.addCharacter({ character }));
   };
 
   const hideTips = () => {
@@ -90,18 +97,22 @@ export function Team() {
   return (
     <div className="flex flex-col">
       <span ref={myRef} />
-      <SectionDivider>Team</SectionDivider>
+      <SectionDivider>
+        <Trans>simple.team</Trans>
+      </SectionDivider>
       {showTips ? (
         <div className="pl-2 pr-2">
           <Callout intent={Intent.PRIMARY} className="flex flex-col">
             <span>
-              Get started by adding characters in to your team. Check out this{" "}
-              <a onClick={() => setOpenAddCharHelp(true)}>video</a> to get
-              started.
+              <Trans>simple.video_pre</Trans>
+              <a onClick={() => setOpenAddCharHelp(true)}>
+                <Trans>simple.video</Trans>
+              </a>
+              <Trans>simple.video_post</Trans>
             </span>
             <div className="ml-auto">
               <Button small onClick={hideTips}>
-                Hide all tips
+                <Trans>simple.hide_all_tips</Trans>
               </Button>
             </div>
           </Callout>
@@ -109,7 +120,7 @@ export function Team() {
       ) : null}
       {team.length == 0 ? (
         <div className="p-4 bg-gray-700 rounded-md mt-2 ml-2 mr-2 text-center font-bold">
-          Start by adding some team members
+          <Trans>simple.start_by_adding</Trans>
         </div>
       ) : null}
       <div className={edit_index > -1 ? "hidden" : "mt-2"}>
@@ -126,19 +137,22 @@ export function Team() {
               dispatch(simActions.editCharacter({ index: -1 }));
             }}
           >
-            Done
+            <Trans>simple.done</Trans>
           </Button>
         </Card>
       ) : (
-        <div className={team.length >= 4 ? "hidden" : "mt-2 pl-2 pr-2"}>
-          <Button
-            fill
-            icon="add"
-            intent="primary"
-            onClick={() => setOpen(true)}
-          >
-            Add Character
-          </Button>
+        <div className="mt-2 pl-2 pr-2">
+          <ButtonGroup fill>
+            <Button onClick={() => setOpenImport(true)}>Import Data</Button>
+            <Button
+              icon="add"
+              intent="primary"
+              onClick={() => setOpen(true)}
+              disabled={team.length >= 4}
+            >
+              <Trans>simple.add_character</Trans>
+            </Button>
+          </ButtonGroup>
         </div>
       )}
       <CharacterSelect
@@ -146,7 +160,9 @@ export function Team() {
         onClose={() => setOpen(false)}
         onSelect={handleAddCharacter}
         isOpen={open}
+        additionalOptions={imported}
       />
+      <LoadGOOD isOpen={openImport} onClose={() => setOpenImport(false)} />
       <VideoPlayer
         url="/videos/add-character.webm"
         isOpen={openAddCharHelp}

@@ -1,9 +1,10 @@
-import { Button, Checkbox, Switch } from "@blueprintjs/core";
+import { Button, Checkbox } from "@blueprintjs/core";
 import React from "react";
 import { Character } from "~/src/types";
 import { ArtifactSelect, IArtifact } from "~src/Components/Artifacts";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "../..";
+import { Trans, useTranslation } from "react-i18next";
 
 type Props = {
   char: Character;
@@ -11,6 +12,8 @@ type Props = {
 };
 
 export function CharacterEditArtifactSets() {
+  useTranslation()
+
   const { char } = useAppSelector((state: RootState) => {
     return {
       char: state.sim.team[state.sim.edit_index],
@@ -71,15 +74,15 @@ export function CharacterEditArtifactSets() {
   const checkDisabled = (key: string, bonus: 2 | 4): boolean => {
     console.log(
       "set: " +
-        key +
-        "bonus for " +
-        bonus +
-        " total ticked: " +
-        total +
-        " in set: " +
-        char.sets[key] +
-        " check: " +
-        (total + bonus - char.sets[key])
+      key +
+      "bonus for " +
+      bonus +
+      " total ticked: " +
+      total +
+      " in set: " +
+      char.sets[key] +
+      " check: " +
+      (total + bonus - char.sets[key])
     );
     return total + bonus - char.sets[key] > 4 && char.sets[key] < bonus;
   };
@@ -97,7 +100,7 @@ export function CharacterEditArtifactSets() {
           src={`/images/artifacts/${key}_flower.png`}
           className="w-12"
         />
-        <span className="font-bold">Set Bonus:</span>
+        <span className="font-bold"><Trans>characteredit.set_bonus</Trans></span>
         <div className="flex flex-row gap-2 flex-grow justify-center">
           <Checkbox
             large
@@ -135,7 +138,7 @@ export function CharacterEditArtifactSets() {
       </div>
       <div className="mt-2 w-full xs:w-[25rem]">
         <Button icon="add" fill intent="success" onClick={() => setOpen(true)}>
-          Add Set Bonus
+          <Trans>characteredit.add_set_bonus</Trans>
         </Button>
       </div>
       <ArtifactSelect

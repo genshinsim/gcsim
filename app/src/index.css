@@ -94,3 +94,9 @@ div.sticky-header {
   vertical-align: -0.125em;
   width: 1em;
 }
+
+.language-selector {
+  background-color: #5c7080;
+  margin-left: 0.5em;
+  padding: 0.3em;
+}

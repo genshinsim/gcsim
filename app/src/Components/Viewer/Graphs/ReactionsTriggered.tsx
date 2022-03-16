@@ -1,17 +1,7 @@
-import {
-  ResponsiveContainer,
-  PieChart,
-  Tooltip,
-  Legend,
-  Pie,
-  Cell,
-  Bar,
-  BarChart,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, } from "recharts";
 import { COLORS } from "./Graphs";
 import { SimResults } from "../DataType";
+import { Trans } from "~node_modules/react-i18next";
 
 export default function ReactionsTriggered({ data }: { data: SimResults }) {
   let reactionsTriggered: { name: string; value: number }[] = [];
@@ -25,7 +15,7 @@ export default function ReactionsTriggered({ data }: { data: SimResults }) {
   return (
     <div>
       <span className="ml-2 mt-1 font-bold capitalize absolute top-0 left-0">
-        Reactions Triggered
+        <Trans>viewer.reactions_triggered</Trans>
       </span>
       <ResponsiveContainer width="95%" height={288}>
         <BarChart data={reactionsTriggered}>

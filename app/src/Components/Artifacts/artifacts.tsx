@@ -1,41 +1,79 @@
 import { MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
 
-export const artifactKeyToName: { [key: string]: string } = {
-  archaicpetra: "Archaic Petra",
-  berserker: "Berserker",
-  blizzardstrayer: "Blizzard Strayer",
-  bloodstainedchivalry: "Bloodstained Chivalry",
-  braveheart: "Brave Heart",
-  crimsonwitchofflames: "Crimson Witch of Flames",
-  defenderswill: "Defender's Will",
-  emblemofseveredfate: "Emblem of Severed Fate",
-  gambler: "Gambler",
-  gladiatorsfinale: "Gladiator's Finale",
-  heartofdepth: "Heart of Depth",
-  huskofopulentdreams: "Husk of Opulent Dreams",
-  instructor: "Instructor",
-  lavawalker: "Lavawalker",
-  maidenbeloved: "Maiden Beloved",
-  martialartist: "Martial Artist",
-  noblesseoblige: "Noblesse Oblige",
-  oceanhuedclam: "Ocean-Hued Clam",
-  paleflame: "Pale Flame",
-  prayersfordestiny: "Prayers for Destiny",
-  prayersforillumination: "Prayers for Illumination",
-  prayersforwisdom: "Prayers for Wisdom",
-  prayerstospringtime: "Prayers to Springtime",
-  resolutionofsojourner: "Resolution of Sojourner",
-  retracingbolide: "Retracing Bolide",
-  scholar: "Scholar",
-  shimenawasreminiscence: "Shimenawa's Reminiscence",
-  tenacityofthemillelith: "Tenacity of the Millelith",
-  theexile: "The Exile",
-  thunderingfury: "Thundering Fury",
-  thundersoother: "Thundersoother",
-  tinymiracle: "Tiny Miracle",
-  viridescentvenerer: "Viridescent Venerer",
-  wandererstroupe: "Wanderer's Troupe",
+export const artifactKeyToName = {
+  English: {
+    archaicpetra: "Archaic Petra",
+    berserker: "Berserker",
+    blizzardstrayer: "Blizzard Strayer",
+    bloodstainedchivalry: "Bloodstained Chivalry",
+    braveheart: "Brave Heart",
+    crimsonwitchofflames: "Crimson Witch of Flames",
+    defenderswill: "Defender's Will",
+    emblemofseveredfate: "Emblem of Severed Fate",
+    gambler: "Gambler",
+    gladiatorsfinale: "Gladiator's Finale",
+    heartofdepth: "Heart of Depth",
+    huskofopulentdreams: "Husk of Opulent Dreams",
+    instructor: "Instructor",
+    lavawalker: "Lavawalker",
+    maidenbeloved: "Maiden Beloved",
+    martialartist: "Martial Artist",
+    noblesseoblige: "Noblesse Oblige",
+    oceanhuedclam: "Ocean-Hued Clam",
+    paleflame: "Pale Flame",
+    prayersfordestiny: "Prayers for Destiny",
+    prayersforillumination: "Prayers for Illumination",
+    prayersforwisdom: "Prayers for Wisdom",
+    prayerstospringtime: "Prayers to Springtime",
+    resolutionofsojourner: "Resolution of Sojourner",
+    retracingbolide: "Retracing Bolide",
+    scholar: "Scholar",
+    shimenawasreminiscence: "Shimenawa's Reminiscence",
+    tenacityofthemillelith: "Tenacity of the Millelith",
+    theexile: "The Exile",
+    thunderingfury: "Thundering Fury",
+    thundersoother: "Thundersoother",
+    tinymiracle: "Tiny Miracle",
+    viridescentvenerer: "Viridescent Venerer",
+    wandererstroupe: "Wanderer's Troupe",
+  },
+  Chinese: {
+    archaicpetra: "悠古的磐岩",
+    berserker: "战狂",
+    blizzardstrayer: "冰风迷途的勇士",
+    bloodstainedchivalry: "染血的骑士道",
+    braveheart: "勇士之心",
+    crimsonwitchofflames: "炽烈的炎之魔女",
+    defenderswill: "守护之心",
+    emblemofseveredfate: "绝缘之旗印",
+    gambler: "赌徒",
+    gladiatorsfinale: "角斗士的终幕礼",
+    heartofdepth: "沉沦之心",
+    huskofopulentdreams: "华馆梦醒形骸记",
+    instructor: "教官",
+    lavawalker: "渡过烈火的贤人",
+    maidenbeloved: "被怜爱的少女",
+    martialartist: "武人",
+    noblesseoblige: "昔日宗室之仪",
+    oceanhuedclam: "海染砗磲",
+    paleflame: "苍白之火",
+    prayersfordestiny: "祭水之人",
+    prayersforillumination: "祭火之人",
+    prayersforwisdom: "祭雷之人",
+    prayerstospringtime: "祭冰之人",
+    resolutionofsojourner: "行者之心",
+    retracingbolide: "逆飞的流星",
+    scholar: "学士",
+    shimenawasreminiscence: "追忆之注连",
+    tenacityofthemillelith: "千岩牢固",
+    theexile: "流放者",
+    thunderingfury: "如雷的盛怒",
+    thundersoother: "平息鸣雷的尊者",
+    tinymiracle: "奇迹",
+    viridescentvenerer: "翠绿之影",
+    wandererstroupe: "流浪大地的乐团",
+  },
 };
 
 export interface IArtifact {
@@ -43,10 +81,16 @@ export interface IArtifact {
   name: string;
 }
 
-export const items: IArtifact[] = Object.keys(artifactKeyToName).map((k) => ({
-  key: k,
-  name: artifactKeyToName[k],
-}));
+export const items = {
+  English: Object.keys(artifactKeyToName.English).map((k) => ({
+    key: k,
+    name: artifactKeyToName.English[k],
+  })),
+  Chinese: Object.keys(artifactKeyToName.Chinese).map((k) => ({
+    key: k,
+    name: artifactKeyToName.Chinese[k],
+  })),
+};
 
 export const render: ItemRenderer<IArtifact> = (
   item,
@@ -118,7 +162,14 @@ function highlightText(text: string, query: string) {
 }
 
 export const artifactSelectProps = {
-  itemPredicate: filter,
-  itemRenderer: render,
-  items: items,
+  English: {
+    itemPredicate: filter,
+    itemRenderer: render,
+    items: items.English,
+  },
+  Chinese: {
+    itemPredicate: filter,
+    itemRenderer: render,
+    items: items.Chinese,
+  },
 };

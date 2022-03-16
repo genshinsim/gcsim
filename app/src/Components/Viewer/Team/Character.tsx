@@ -1,8 +1,8 @@
-import { Dialog } from "@blueprintjs/core";
-import { Classes, Popover2, Tooltip2 } from "@blueprintjs/popover2";
+import { Tooltip2 } from "@blueprintjs/popover2";
 import React from "react";
 import { CharDetail } from "../DataType";
 import weaponNames from "./weapons";
+import { Trans, useTranslation } from "react-i18next";
 
 type weapMap = {
   [key: string]: string;
@@ -53,6 +53,8 @@ function charBG(element: string) {
 }
 
 export default function Character({ char }: Props) {
+  useTranslation()
+
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   const arts: JSX.Element[] = [];
@@ -125,8 +127,8 @@ export default function Character({ char }: Props) {
             </div>
 
             <div className="ml-2 justify-center items-center rounded-md">
-              <div>Level {char.weapon.level}/90</div>
-              <div>Refinement {char.weapon.refine}</div>
+              <div><Trans>viewer.level</Trans> {char.weapon.level}/90</div>
+              <div><Trans>viewer.refinement</Trans> {char.weapon.refine}</div>
             </div>
           </div>
         </div>
@@ -139,7 +141,7 @@ function SubstatView({ char }: Props) {
   return (
     <div className="flex flex-col m-2 p-2">
       <div className="flex flex-row">
-        <div className="font-bold">Substats</div>
+        <div className="font-bold"><Trans>viewer.substats</Trans></div>
       </div>
       <div className="flex flex-row ml-2">
         <div>
@@ -160,7 +162,7 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span>HP</span>
+          <span><Trans>viewer.hp</Trans></span>
         </div>
         <div className="flex-grow text-right">
           {(char.stats[HPP] * 100).toFixed(2) + "%"} | {char.stats[HP]}
@@ -185,7 +187,7 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span>Attack</span>
+          <span><Trans>viewer.attack</Trans></span>
         </div>
         <div className="flex-grow text-right">
           {(char.stats[ATKP] * 100).toFixed(2) + "%"} | {char.stats[ATK]}
@@ -210,7 +212,7 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span>Defense</span>
+          <span><Trans>viewer.defense</Trans></span>
         </div>
         <div className="flex-grow text-right">
           {(char.stats[DEFP] * 100).toFixed(2) + "%"} | {char.stats[DEF]}
@@ -235,7 +237,7 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span>EM</span>
+          <span><Trans>viewer.em</Trans></span>
         </div>
         <div className="flex-grow text-right">{char.stats[EM]}</div>
       </div>
@@ -258,7 +260,7 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span>ER</span>
+          <span><Trans>viewer.er</Trans></span>
         </div>
         <div className="flex-grow text-right">
           {char.stats[ER].toFixed(2) + "%"}
@@ -283,7 +285,7 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span>CR</span>
+          <span><Trans>viewer.cr</Trans></span>
         </div>
         <div className="flex-grow text-right">
           {(char.stats[CR] * 100).toFixed(2) + "%"}
@@ -308,7 +310,7 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span>CD</span>
+          <span><Trans>viewer.cd</Trans></span>
         </div>
         <div className="flex-grow text-right">
           {(char.stats[CD] * 100).toFixed(2) + "%"}
