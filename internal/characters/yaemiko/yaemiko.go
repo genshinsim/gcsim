@@ -64,13 +64,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-
 func (c *char) Init() {
 	c.Tmpl.Init()
 	c.a4()
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -100,26 +96,19 @@ func (c *char) a4() {
 	})
 }
 
+// When Sesshou Sakura lightning hits opponents, the Electro DMG Bonus of all nearby party members is increased by 20% for 5s.
 func (c *char) c4() {
-	// c4
-	// When Sesshou Sakura thunderbolts hit opponents, the Electro DMG Bonus of all nearby party members is increased by 20% for 5s.
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		// TODO: does this trigger for yaemiko too? assuming it does
-		for _, char := range c.Core.Chars {
-			char.AddPreDamageMod(core.PreDamageMod{
-				Expiry: c.Core.F + 5*60,
-				Key:    "yaemiko-c4",
-				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-					if atk.Info.AttackTag != core.AttackTagElementalArt {
-						// only trigger on elemental art damage
-						return nil, false
-					}
-					val := make([]float64, core.EndStatType)
-					val[core.ElectroP] = 0.2
-					return val, true
-				},
-			})
-		}
-		return false
-	}, "yaemiko-c4")
+	m := make([]float64, core.EndStatType)
+	m[core.ElectroP] = .20
+
+	// TODO: does this trigger for yaemiko too? assuming it does
+	for _, char := range c.Core.Chars {
+		char.AddMod(core.CharStatMod{
+			Key:    "yaemiko-c4",
+			Expiry: c.Core.F + 5*60,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
+	}
 }
