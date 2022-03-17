@@ -273,7 +273,7 @@ export function DB() {
 
     e.team.forEach((char) => {
       team.push(char.name);
-      team.push(char.weapon);
+      weapons.push(char.weapon);
     });
 
     //team needs to have every character in charFilter array
@@ -293,7 +293,11 @@ export function DB() {
     }
 
     //check something in team matches search string
-    const ss = JSON.stringify(e);
+    let ss = JSON.stringify(e);
+    e.team.forEach((c) => {
+      ss += " " + t("character_names." + c.name);
+      ss += " " + t("weapon_names." + c.weapon);
+    });
 
     if (searchString !== "" && !ss.includes(searchString)) {
       return false;
