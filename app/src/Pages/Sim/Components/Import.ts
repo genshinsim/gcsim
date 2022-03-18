@@ -27,7 +27,7 @@ export function parseFromGO(val: string): IGOODImport {
   };
 
   if (val === "") {
-    result.err = "Please paste JSON from Genshin Optimizer to continue";
+    result.err = "Please paste JSON in GOOD format to continue";
     return result;
   }
 
@@ -44,10 +44,10 @@ export function parseFromGO(val: string): IGOODImport {
     result.err = "Invalid JSON";
     return result;
   }
-  if (data.source !== "Genshin Optimizer") {
-    result.err = "Only databases from Genshin Optimzer accepted";
-    return result;
-  }
+  // if (data.source !== "Genshin Optimizer") {
+  //   result.err = "Only databases from Genshin Optimizer accepted";
+  //   return result;
+  // }
   const goodGearBank: GOODGearBank = {};
 
   if (data.weapons) {
