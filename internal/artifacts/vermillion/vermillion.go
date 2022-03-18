@@ -64,6 +64,11 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			return true
 		}, "verm-4pc-init")
 
+		s.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+			s.Status.DeleteStatus("verm-4pc")
+			return false
+		}, "verm-4pc-exit")
+
 	}
 	//add flat stat to char
 }
