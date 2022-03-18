@@ -22,7 +22,7 @@ func (p *Parser) acceptRestart() (core.ActionBlock, error) {
 	//next token should be ;
 	n := p.next()
 	if n.typ != itemTerminateLine {
-		return block, fmt.Errorf("reset_limit expecting ; got %v at line %v", n, p.tokens)
+		return block, fmt.Errorf("restart expecting ; got %v at line %v", n, p.tokens)
 	}
 
 	return block, nil
