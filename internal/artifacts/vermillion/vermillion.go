@@ -70,5 +70,4 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		}, "verm-4pc-exit")
 
 	}
-	//add flat stat to char
 }
