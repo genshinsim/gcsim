@@ -135,10 +135,13 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 	}
 	if ind > -1 {
 		c.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event = c.PreDamageMods[ind].Event
+		mod.Event.SetEnded(mod.Expiry)
 		c.PreDamageMods[ind] = mod
 	} else {
+		mod.Event = c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event.SetEnded(mod.Expiry)
 		c.PreDamageMods = append(c.PreDamageMods, mod)
-		c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 	}
 
 	// Add task to check for mod expiry in debug instances
@@ -161,10 +164,13 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 	}
 	if ind > -1 {
 		c.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event = c.Mods[ind].Event
+		mod.Event.SetEnded(mod.Expiry)
 		c.Mods[ind] = mod
 	} else {
+		mod.Event = c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event.SetEnded(mod.Expiry)
 		c.Mods = append(c.Mods, mod)
-		c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 	}
 
 	// Add task to check for mod expiry in debug instances
@@ -254,12 +260,15 @@ func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 		}
 	}
 	if ind != -1 {
-		t.ReactMod[ind] = mod
 		t.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, t.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event = t.ReactMod[ind].Event
+		mod.Event.SetEnded(mod.Expiry)
+		t.ReactMod[ind] = mod
 		return
 	}
+	mod.Event = t.Core.Log.NewEvent("mod added", core.LogStatusEvent, t.Index, "key", mod.Key, "expiry", mod.Expiry)
+	mod.Event.SetEnded(mod.Expiry)
 	t.ReactMod = append(t.ReactMod, mod)
-	t.Core.Log.NewEvent("mod added", core.LogStatusEvent, t.Index, "key", mod.Key, "expiry", mod.Expiry)
 
 	// Add task to check for mod expiry in debug instances
 	if t.Core.Flags.LogDebug && mod.Expiry > -1 {
