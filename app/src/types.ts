@@ -39,6 +39,7 @@ export interface Character {
   stats: number[];
   snapshot: number[];
   sets: Set;
+  date_added?: string;
 }
 
 export const defaultStats = [

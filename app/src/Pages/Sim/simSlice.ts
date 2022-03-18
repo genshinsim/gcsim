@@ -5,7 +5,6 @@ import { AppThunk } from "~src/store";
 import { ascLvlMin, maxLvlToAsc } from "~src/util";
 import { WorkerPool } from "~src/WorkerPool";
 import { charToCfg } from "./helper";
-
 export let pool: WorkerPool = new WorkerPool();
 
 type RunStats = {
@@ -44,40 +43,12 @@ const initialState: Sim = {
   showTips: true,
 };
 
-const defWep: { [key in string]: string } = {
+const defWep: { [key: string]: string } = {
   bow: "dullblade",
   catalyst: "dullblade",
   claymore: "dullblade",
   sword: "dullblade",
   polearm: "dullblade",
-};
-
-const newChar = (name: string): Character => {
-  const c = characterKeyToICharacter[name];
-  //default weapons
-  return {
-    name: name,
-    level: 80,
-    max_level: 90,
-    element: c.element,
-    cons: 0,
-    weapon: {
-      name: defWep[c.weapon_type],
-      refine: 1,
-      level: 1,
-      max_level: 20,
-    },
-    talents: {
-      attack: 6,
-      skill: 6,
-      burst: 6,
-    },
-    stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    snapshot: [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    sets: {},
-  };
 };
 
 const updateConfig = (team: Character[], cfg: string): string => {
@@ -243,9 +214,9 @@ export const simSlice = createSlice({
       state.cfg = cfg;
       return state;
     },
-    addCharacter: (state, action: PayloadAction<{ name: string }>) => {
+    addCharacter: (state, action: PayloadAction<{ character: Character }>) => {
       if (state.team.length >= 4) return state;
-      state.team.push(newChar(action.payload.name));
+      state.team.push(action.payload.character);
 
       let cfg = updateConfig(state.team, state.cfg);
       state.cfg = cfg;

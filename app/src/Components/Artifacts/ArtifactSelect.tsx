@@ -1,5 +1,5 @@
 import { Omnibar } from "@blueprintjs/select";
-import { IArtifact, artifactSelectProps } from "./artifacts";
+import { artifactSelectProps, IArtifact } from "./artifacts";
 
 const ArtifactOmnibar = Omnibar.ofType<IArtifact>();
 
@@ -8,6 +8,7 @@ type Props = {
   onClose: () => void;
   onSelect: (item: IArtifact) => void;
 };
+
 export function ArtifactSelect(props: Props) {
   return (
     <ArtifactOmnibar

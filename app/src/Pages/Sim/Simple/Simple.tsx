@@ -1,11 +1,4 @@
-import {
-  Button,
-  Callout,
-  Card,
-  Collapse,
-  Intent,
-  useHotkeys,
-} from "@blueprintjs/core";
+import { Button, Callout, Collapse, Intent, useHotkeys, } from "@blueprintjs/core";
 import React from "react";
 
 import { SectionDivider } from "~src/Components/SectionDivider";
@@ -16,8 +9,11 @@ import { ActionList, SimOptions } from "../Components";
 import { SimProgress } from "../Components/SimProgress";
 import { runSim } from "../exec";
 import { Team } from "./Team";
+import { Trans, useTranslation } from "react-i18next";
 
 export function Simple() {
+  let { t } = useTranslation()
+
   const { ready, workers, cfg, runState, showTips } = useAppSelector(
     (state: RootState) => {
       return {
@@ -40,7 +36,7 @@ export function Simple() {
       {
         combo: "Esc",
         global: true,
-        label: "Exit edit",
+        label: t("simple.exit_edit"),
         onKeyDown: () => {
           dispatch(simActions.editCharacter({ index: -1 }));
         },
@@ -65,46 +61,44 @@ export function Simple() {
         {!showTips ? (
           <div className="ml-auto mr-2">
             <Button icon="help" onClick={toggleTips}>
-              Give me back my tooltips!
+              <Trans>simple.give_me_back</Trans>
             </Button>
           </div>
         ) : null}
 
         <Team />
-        <SectionDivider>Action List</SectionDivider>
+        <SectionDivider><Trans>simple.action_list</Trans></SectionDivider>
         <div className="ml-auto mr-2">
           <Button
             icon="edit"
             onClick={() => setShowActionList(!showActionList)}
           >
-            {showActionList ? "Hide" : "Show"}
+            {showActionList ? t("simple.hide") : t("simple.show")}
           </Button>
         </div>
         {showTips ? (
           <div className="pl-2 pr-2 pt-2">
             <Callout intent={Intent.PRIMARY} className="flex flex-col">
               <p>
-                Enter the action list you wish to use in the textbox below. We
-                have a vast collection of user submitted action lists on our{" "}
+                <Trans>simple.discord_pre</Trans>
                 <a href="https://discord.gg/W36ZwwhEaG" target="_blank">
                   Discord
-                </a>{" "}
-                if you need some ideas.
+                </a>
+                <Trans>simple.discord_post</Trans>
               </p>
               <p>
-                Alternatively, check out our{" "}
+                <Trans>simple.documentation_pre</Trans>
                 <a
                   href="https://docs.gcsim.app/guide/sequential_mode"
                   target="_blank"
                 >
-                  documentation
-                </a>{" "}
-                which includes a simple tutorial on how to write sequential
-                lists (previously known as calc mode)
+                  <Trans>simple.documentation</Trans>
+                </a>
+                <Trans>simple.documentation_post</Trans>
               </p>
               <div className="ml-auto">
                 <Button small onClick={toggleTips}>
-                  Hide all tips
+                  <Trans>simple.hide_all_tips</Trans>
                 </Button>
               </div>
             </Callout>
@@ -120,10 +114,10 @@ export function Simple() {
             onChange={(v) => dispatch(simActions.setCfg(v))}
           />
         </Collapse>
-        <SectionDivider>Sim Options</SectionDivider>
+        <SectionDivider><Trans>simple.sim_options</Trans></SectionDivider>
         <div className="ml-auto mr-2">
           <Button icon="edit" onClick={() => setShowOptions(!showOptions)}>
-            {showOptions ? "Hide" : "Show"}
+            {showOptions ? t("simple.hide") : t("simple.show")}
           </Button>
         </div>
         <Collapse
@@ -134,9 +128,10 @@ export function Simple() {
           <SimOptions />
         </Collapse>
       </div>
-      <div className="sticky bottom-0 bg-bp-bg p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
+      <div
+        className="sticky bottom-0 bg-bp-bg p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
         <div className="basis-full wide:basis-0 flex-grow p-1">
-          {`Workers available: ${ready}`}
+          {`${t("simple.workers_available")}${ready}`}
         </div>
         <div className="basis-full wide:basis-1/3 p-1">
           <Button
@@ -146,7 +141,7 @@ export function Simple() {
             onClick={run}
             disabled={ready < workers || runState.progress !== -1}
           >
-            {ready < workers ? "Loading workers" : "Run"}
+            {ready < workers ? t("simple.loading_workers") : t("simple.run")}
           </Button>
         </div>
       </div>

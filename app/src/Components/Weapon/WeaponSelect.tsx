@@ -8,6 +8,7 @@ type Props = {
   onClose: () => void;
   onSelect: (item: IWeapon) => void;
 };
+
 export function WeaponSelect(props: Props) {
   return (
     <WeaponOmnibar

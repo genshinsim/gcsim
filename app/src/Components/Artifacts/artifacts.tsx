@@ -1,52 +1,45 @@
 import { MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
+import i18n from "i18next";
 
-export const artifactKeyToName: { [key: string]: string } = {
-  archaicpetra: "Archaic Petra",
-  berserker: "Berserker",
-  blizzardstrayer: "Blizzard Strayer",
-  bloodstainedchivalry: "Bloodstained Chivalry",
-  braveheart: "Brave Heart",
-  crimsonwitchofflames: "Crimson Witch of Flames",
-  defenderswill: "Defender's Will",
-  emblemofseveredfate: "Emblem of Severed Fate",
-  gambler: "Gambler",
-  gladiatorsfinale: "Gladiator's Finale",
-  heartofdepth: "Heart of Depth",
-  huskofopulentdreams: "Husk of Opulent Dreams",
-  instructor: "Instructor",
-  lavawalker: "Lavawalker",
-  maidenbeloved: "Maiden Beloved",
-  martialartist: "Martial Artist",
-  noblesseoblige: "Noblesse Oblige",
-  oceanhuedclam: "Ocean-Hued Clam",
-  paleflame: "Pale Flame",
-  prayersfordestiny: "Prayers for Destiny",
-  prayersforillumination: "Prayers for Illumination",
-  prayersforwisdom: "Prayers for Wisdom",
-  prayerstospringtime: "Prayers to Springtime",
-  resolutionofsojourner: "Resolution of Sojourner",
-  retracingbolide: "Retracing Bolide",
-  scholar: "Scholar",
-  shimenawasreminiscence: "Shimenawa's Reminiscence",
-  tenacityofthemillelith: "Tenacity of the Millelith",
-  theexile: "The Exile",
-  thunderingfury: "Thundering Fury",
-  thundersoother: "Thundersoother",
-  tinymiracle: "Tiny Miracle",
-  viridescentvenerer: "Viridescent Venerer",
-  wandererstroupe: "Wanderer's Troupe",
-};
+export const items = [
+  "archaicpetra",
+  "berserker",
+  "blizzardstrayer",
+  "bloodstainedchivalry",
+  "braveheart",
+  "crimsonwitchofflames",
+  "defenderswill",
+  "emblemofseveredfate",
+  "gambler",
+  "gladiatorsfinale",
+  "heartofdepth",
+  "huskofopulentdreams",
+  "instructor",
+  "lavawalker",
+  "maidenbeloved",
+  "martialartist",
+  "noblesseoblige",
+  "oceanhuedclam",
+  "paleflame",
+  "prayersfordestiny",
+  "prayersforillumination",
+  "prayersforwisdom",
+  "prayerstospringtime",
+  "resolutionofsojourner",
+  "retracingbolide",
+  "scholar",
+  "shimenawasreminiscence",
+  "tenacityofthemillelith",
+  "theexile",
+  "thunderingfury",
+  "thundersoother",
+  "tinymiracle",
+  "viridescentvenerer",
+  "wandererstroupe",
+];
 
-export interface IArtifact {
-  key: string;
-  name: string;
-}
-
-export const items: IArtifact[] = Object.keys(artifactKeyToName).map((k) => ({
-  key: k,
-  name: artifactKeyToName[k],
-}));
+export type IArtifact = string;
 
 export const render: ItemRenderer<IArtifact> = (
   item,
@@ -59,10 +52,10 @@ export const render: ItemRenderer<IArtifact> = (
     <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
-      label={item.name}
-      key={item.key}
+      label={""}
+      key={item}
       onClick={handleClick}
-      text={highlightText(item.name, query)}
+      text={highlightText(i18n.t("artifact_names." + item), query)}
     />
   );
 };
@@ -76,9 +69,12 @@ export const filter: ItemPredicate<IArtifact> = (
   const normalizedQuery = query.toLowerCase();
 
   if (exactMatch) {
-    return item.key === normalizedQuery;
+    return item === normalizedQuery;
   } else {
-    return `${item.key} ${item.name}`.indexOf(normalizedQuery) >= 0;
+    return (
+      `${item} ${i18n.t("artifact_names." + item)}`.indexOf(normalizedQuery) >=
+      0
+    );
   }
 };
 

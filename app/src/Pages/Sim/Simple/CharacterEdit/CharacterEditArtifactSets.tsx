@@ -1,9 +1,10 @@
-import { Button, Checkbox, Switch } from "@blueprintjs/core";
+import { Button, Checkbox } from "@blueprintjs/core";
 import React from "react";
 import { Character } from "~/src/types";
 import { ArtifactSelect, IArtifact } from "~src/Components/Artifacts";
-import { useAppSelector, RootState, useAppDispatch } from "~src/store";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { simActions } from "../..";
+import { Trans, useTranslation } from "react-i18next";
 
 type Props = {
   char: Character;
@@ -11,6 +12,8 @@ type Props = {
 };
 
 export function CharacterEditArtifactSets() {
+  useTranslation();
+
   const { char } = useAppSelector((state: RootState) => {
     return {
       char: state.sim.team[state.sim.edit_index],
@@ -24,10 +27,10 @@ export function CharacterEditArtifactSets() {
     //close the display
     setOpen(false);
     //make sure it doesn't exist already
-    if (set.key in char.sets) {
+    if (set in char.sets) {
       return;
     }
-    dispatch(simActions.addCharacterSet({ set: set.key }));
+    dispatch(simActions.addCharacterSet({ set: set }));
   };
 
   const handleDeleteSetBonus = (set: string) => {
@@ -97,7 +100,9 @@ export function CharacterEditArtifactSets() {
           src={`/images/artifacts/${key}_flower.png`}
           className="w-12"
         />
-        <span className="font-bold">Set Bonus:</span>
+        <span className="font-bold">
+          <Trans>characteredit.set_bonus</Trans>
+        </span>
         <div className="flex flex-row gap-2 flex-grow justify-center">
           <Checkbox
             large
@@ -135,7 +140,7 @@ export function CharacterEditArtifactSets() {
       </div>
       <div className="mt-2 w-full xs:w-[25rem]">
         <Button icon="add" fill intent="success" onClick={() => setOpen(true)}>
-          Add Set Bonus
+          <Trans>characteredit.add_set_bonus</Trans>
         </Button>
       </div>
       <ArtifactSelect

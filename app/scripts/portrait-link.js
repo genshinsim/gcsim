@@ -67,29 +67,46 @@ const names = [
   "itto",
   "shenhe",
   "yunjin",
+  "yaemiko",
 ];
 
 let chars = {};
 let properKeyToChar = {};
 
+let trans = {
+  English: {},
+  Chinese: {},
+  Japanese: {},
+  Spanish: {},
+};
+
 names.forEach((e) => {
-  const x = genshindb.characters(e);
-  let key = x.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
+  const eng = genshindb.characters(e);
+  let key = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
 
   chars[e] = {
     key: e,
-    name: x.name,
-    element: x.element.toLowerCase(),
-    weapon_type: x.weapontype.toLowerCase(),
+    name: eng.name,
+    element: eng.element.toLowerCase(),
+    weapon_type: eng.weapontype.toLowerCase(),
   };
   properKeyToChar[key] = e;
+
+  const cn = genshindb.characters(e, { resultLanguage: "CHS" });
+  const jp = genshindb.characters(e, { resultLanguage: "JP" });
+  const es = genshindb.characters(e, { resultLanguage: "ES" });
+
+  trans["English"][e] = eng.name;
+  trans["Chinese"][e] = cn.name;
+  trans["Japanese"][e] = jp.name;
+  trans["Spanish"][e] = es.name;
 
   let filename = "./static/images/avatar/" + e + ".png";
 
   if (!fs.existsSync(filename)) {
-    console.log(e + ": " + x.images.icon);
+    console.log(e + ": " + eng.images.icon);
 
-    download_image(x.images.icon, filename)
+    download_image(eng.images.icon, filename)
       .then((msg) => {
         console.log("done downloading to file: ", filename);
       })
@@ -111,24 +128,46 @@ fs.writeFileSync(
   "utf-8"
 );
 
+fs.writeFileSync(
+  "./public/locales/characters.json",
+  JSON.stringify(trans),
+  "utf-8"
+);
+
 //download weapons and sets :(
 
 const weapons = genshindb.weapons("names", { matchCategories: true });
 
 let weap = {};
+let weapTrans = {
+  English: {},
+  Chinese: {},
+  Japanese: {},
+  Spanish: {},
+};
 
 weapons.forEach((e) => {
-  const x = genshindb.weapons(e);
+  const eng = genshindb.weapons(e);
 
   let filename =
     "./static/images/weapons/" +
-    x.name.replace(/[^0-9a-z]/gi, "").toLowerCase() +
+    eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase() +
     ".png";
 
-  weap[x.name.replace(/[^0-9a-z]/gi, "").toLowerCase()] = x.name;
+  const key = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
+  weap[key] = eng.name;
+
+  const cn = genshindb.weapons(e, { resultLanguage: "CHS" });
+  const jp = genshindb.weapons(e, { resultLanguage: "JP" });
+  const es = genshindb.weapons(e, { resultLanguage: "ES" });
+
+  weapTrans["English"][key] = eng.name;
+  weapTrans["Chinese"][key] = cn.name;
+  weapTrans["Japanese"][key] = jp.name;
+  weapTrans["Spanish"][key] = es.name;
 
   if (!fs.existsSync(filename)) {
-    download_image(x.images.icon, filename)
+    download_image(eng.images.icon, filename)
       .then((msg) => {
         console.log("done downloading to file: ", filename);
       })
@@ -144,18 +183,39 @@ fs.writeFileSync(
   "utf-8"
 );
 
+fs.writeFileSync(
+  "./public/locales/weapons.json",
+  JSON.stringify(weapTrans),
+  "utf-8"
+);
+
 let setMap = {};
+let setTrans = {
+  English: {},
+  Chinese: {},
+  Japanese: {},
+  Spanish: {},
+};
 
 const sets = genshindb.artifacts("4", { matchCategories: true });
 
 sets.forEach((e) => {
-  const x = genshindb.artifacts(e);
+  const eng = genshindb.artifacts(e);
 
-  let art = x.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
-  setMap[art] = x.name;
+  let art = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
+  setMap[art] = eng.name;
+
+  const cn = genshindb.artifacts(e, { resultLanguage: "CHS" });
+  const jp = genshindb.artifacts(e, { resultLanguage: "JP" });
+  const es = genshindb.artifacts(e, { resultLanguage: "ES" });
+
+  setTrans["English"][art] = eng.name;
+  setTrans["Chinese"][art] = cn.name;
+  setTrans["Japanese"][art] = jp.name;
+  setTrans["Spanish"][art] = es.name;
 
   let filename;
-  for (const [key, value] of Object.entries(x.images)) {
+  for (const [key, value] of Object.entries(eng.images)) {
     filename = `./static/images/artifacts/${art}_${key}.png`;
 
     if (!fs.existsSync(filename)) {
@@ -174,5 +234,11 @@ sets.forEach((e) => {
 fs.writeFileSync(
   "./src/Components/data/artifactNames.json",
   JSON.stringify(setMap),
+  "utf-8"
+);
+
+fs.writeFileSync(
+  "./public/locales/artifacts.json",
+  JSON.stringify(setTrans),
   "utf-8"
 );
