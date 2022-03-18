@@ -11,8 +11,6 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a4EM []float64
-	// a4snap   core.Snapshot
 	qInfused core.EleType
 	//charges
 	eChargeMax int
@@ -40,7 +38,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 4
-	c.a4EM = make([]float64, core.EndStatType)
 
 	c.eChargeMax = 1
 	if c.Base.Cons >= 1 {
@@ -54,7 +51,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Init() {
 	c.Tmpl.Init()
 	c.a1()
-	c.a4()
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -112,23 +108,25 @@ func (c *char) a1() {
 }
 
 func (c *char) a4() {
-	c.a4EM = make([]float64, core.EndStatType)
+	m := make([]float64, core.EndStatType)
+	m[core.EM] = c.Stat(core.EM) * .20
 
+	dur := 60 * 8
+	c.Core.Status.AddStatus("sucrosea4", dur)
 	for i, char := range c.Core.Chars {
 		if i == c.Index {
 			continue //nothing for sucrose
 		}
 		char.AddMod(core.CharStatMod{
 			Key:    "sucrose-a4",
-			Expiry: -1,
+			Expiry: c.Core.F + dur,
 			Amount: func() ([]float64, bool) {
-				if c.Core.Status.Duration("sucrosea4") == 0 {
-					return nil, false
-				}
-				return c.a4EM, true
+				return m, true
 			},
 		})
 	}
+
+	c.Core.Log.NewEvent("sucrose a4 triggered", core.LogCharacterEvent, c.Index, "em snapshot", m[core.EM], "expiry", c.Core.F+dur)
 }
 
 // Handles C4: Every 7 Normal and Charged Attacks, Sucrose will reduce the CD of Astable Anemohypostasis Creation-6308 by 1-7s
