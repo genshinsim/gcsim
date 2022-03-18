@@ -24,7 +24,9 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	c.AdvanceNormalIndex()
 
-	c.c4()
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
 
 	return f, a
 }
