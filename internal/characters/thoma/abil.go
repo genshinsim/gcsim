@@ -73,20 +73,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// snap := c.Snapshot(&ai)
 
 	shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
-	if c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP() > c.MaxShield {
-		shieldamt = c.MaxShield - c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP()
-	}
-	//add shield
-	c.AddTask(func() {
-		c.Core.Shields.Add(&shield.Tmpl{
-			Src:        c.Core.F,
-			ShieldType: core.ShieldThomaSkill,
-			Name:       "Thoma Skill",
-			HP:         shieldamt,
-			Ele:        core.Pyro,
-			Expires:    c.Core.F + 8*60, //8 sec
-		})
-	}, "Thoma-Shield", f)
+	c.genShield("Thoma Skill", shieldamt)
 
 	// damage component not final
 	x, y := c.Core.Targets[0].Shape().Pos()
@@ -163,20 +150,7 @@ func (c *char) burstProc() {
 		atk.Pattern = core.NewDefSingleTarget(t.Index(), core.TargettableEnemy)
 		cb := func(a core.AttackCB) {
 			shieldamt := (burstshieldpp[c.TalentLvlSkill()]*c.MaxHP() + burstshieldflat[c.TalentLvlSkill()])
-			if c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP() > c.MaxShield {
-				shieldamt = c.MaxShield - c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP()
-			}
-			//add shield
-			c.AddTask(func() {
-				c.Core.Shields.Add(&shield.Tmpl{
-					Src:        c.Core.F,
-					ShieldType: core.ShieldThomaSkill,
-					Name:       "Thoma Skill",
-					HP:         shieldamt,
-					Ele:        core.Pyro,
-					Expires:    c.Core.F + 8*60, //8 sec
-				})
-			}, "Thoma-Shield", 1)
+			c.genShield("Thoma Burst", shieldamt)
 		}
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
@@ -188,4 +162,26 @@ func (c *char) burstProc() {
 		icd = c.Core.F + 60 // once per second
 		return false
 	}, "thoma-burst")
+}
+
+func (c *char) genShield(src string, shieldamt float64) {
+	if c.Core.F > c.a1icd && c.a1Stack < 5 {
+		c.a1Stack++
+		c.a1icd = c.Core.F + 0.3*60
+		c.Core.Status.AddStatus("thoma-a1", 6*60)
+	}
+	if c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP()+shieldamt > c.MaxShield {
+		shieldamt = c.MaxShield - c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP()
+	}
+	//add shield
+	c.AddTask(func() {
+		c.Core.Shields.Add(&shield.Tmpl{
+			Src:        c.Core.F,
+			ShieldType: core.ShieldThomaSkill,
+			Name:       src,
+			HP:         shieldamt,
+			Ele:        core.Pyro,
+			Expires:    c.Core.F + 8*60, //8 sec
+		})
+	}, "Thoma-Shield", 1)
 }
