@@ -163,15 +163,14 @@ export const filterWeapon: ItemPredicate<IWeapon> = (
   exactMatch
 ) => {
   const normalizedQuery = query.toLowerCase();
-
+  const transWeapon = i18n
+    .t("weapon_names." + weapon)
+    .replace(" ", "")
+    .toLowerCase();
   if (exactMatch) {
     return weapon === normalizedQuery;
   } else {
-    return (
-      `${weapon} ${i18n.t("weapon_names." + weapon)}`.indexOf(
-        normalizedQuery
-      ) >= 0
-    );
+    return `${weapon} ${transWeapon}`.indexOf(normalizedQuery) >= 0;
   }
 };
 

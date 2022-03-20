@@ -35,19 +35,21 @@ export function CharacterSelect(props: Props) {
   ) => {
     //ignore filtered items
     if (
-      disabled.findIndex((v) => v === t("character_names:" + item.key)) > -1
+      disabled.findIndex((v) => v === t("character_names." + item.key)) > -1
     ) {
       return false;
     }
 
     const normalizedQuery = query.toLowerCase();
-
+    const transChar = t("character_names." + item.key)
+      .replace(" ", "")
+      .toLowerCase();
     if (exactMatch) {
-      return t("character_names:" + item.key) === normalizedQuery;
+      return t("character_names." + item.key) === normalizedQuery;
     } else {
       return (
-        `${t("character_names:" + item.key)} ${item.key} ${item.notes} ${t(
-          "elements:" + item.element
+        `${transChar} ${item.key} ${item.notes} ${t(
+          "elements." + item.element
         )}`.indexOf(normalizedQuery) >= 0
       );
     }

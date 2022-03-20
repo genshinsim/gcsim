@@ -67,14 +67,14 @@ export const filter: ItemPredicate<IArtifact> = (
   exactMatch
 ) => {
   const normalizedQuery = query.toLowerCase();
-
+  const transItem = i18n
+    .t("artifact_names." + item)
+    .replace(" ", "")
+    .toLowerCase();
   if (exactMatch) {
     return item === normalizedQuery;
   } else {
-    return (
-      `${item} ${i18n.t("artifact_names." + item)}`.indexOf(normalizedQuery) >=
-      0
-    );
+    return `${item} ${transItem}`.indexOf(normalizedQuery) >= 0;
   }
 };
 

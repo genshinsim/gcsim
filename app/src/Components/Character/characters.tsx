@@ -9,6 +9,11 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: "none",
     weapon_type: "sword",
   },
+  traveler: {
+    key: "aether",
+    element: "none",
+    weapon_type: "sword",
+  },
   lumine: {
     key: "lumine",
     element: "none",

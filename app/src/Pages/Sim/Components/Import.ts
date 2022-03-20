@@ -86,16 +86,6 @@ export function parseFromGO(val: string): IGOODImport {
         }
       } else if (charKey === "") {
       } else {
-        // goodGearBank[charKey] = {
-        //   weapon: {
-        //     // SRL uses {name} field like a key for action list
-        //     name: "dullblade",
-        //     refine: 1,
-        //     level: 1,
-        //     max_level: ascLvlMax(1),
-        //   },
-        //   artifact: [artifact],
-        // };
         goodGearBank[charKey].artifact = [artifact];
       }
     });
@@ -250,8 +240,11 @@ export function importCharFromGOOD(
   //copy over all the attributes we care about; ignore anything
   //we don't need
   const name = GOODKeytoGCSIMKey(goodObj.key);
+  const iChar = characterKeyToICharacter[name];
+  if (iChar == undefined) {
+    return undefined;
+  }
   let setCount, statTotal;
-
   if (goodGearBank[name].artifact === undefined) {
     setCount = {};
     statTotal = defaultStats;
@@ -263,7 +256,7 @@ export function importCharFromGOOD(
     name: name,
     level: goodObj.level,
     max_level: ascLvlMax(goodObj.ascension),
-    element: characterKeyToICharacter[GOODKeytoGCSIMKey(goodObj.key)].element,
+    element: iChar.element,
     cons: goodObj.constellation,
     weapon: goodGearBank[name].weapon,
     talents: {
