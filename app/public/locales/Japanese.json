@@ -138,8 +138,8 @@
         "currently_loaded_workers": "現在読み込まれているワーカー数: ",
         "no_characters": "キャラクターがありません",
         "result_post": "ミリ秒 / DPS: ",
-        "result_pre": "シミュレーション完了。経過時間: ",
-        "running_simulation": "シミュレーション実行中。:",
+        "result_pre": "シミュレーション完了 - 経過時間: ",
+        "running_simulation": "シミュレーション実行中:",
         "see_results_in": "結果を閲覧モードで確認",
         "set": "設定",
         "simulation_exited_with": "エラー発生によりシミレーションは中断されました: ",
@@ -152,7 +152,7 @@
         "contribute": "協力する",
         "desktop_tool": "デスクトップ版",
         "documentation": "資料",
-        "is_a_team": "は原神のための編成DPSシミュレーターです. 以下のボタンから各モードへ移れます!",
+        "is_a_team": "は原神のための編成DPSシミュレーターです。 以下のボタンから各モードへ移れます!",
         "simulator": "シミュレーター",
         "teams_db": "編成データベース",
         "viewer": "閲覧モード"
@@ -181,7 +181,7 @@
         "weapon": "武器"
     },
     "footer": {
-        "gcsim_is_not": "このウェブサイトは個人的な計算を目的としており、gcsim, miHoYoとは関係ありません。原神のゲームコンテンツや素材の商標および著作権はmiHoYoに帰属します。 日本語翻訳作成:からしな_（Karashina#8663）"
+        "gcsim_is_not": "このウェブサイトは個人的な計算を目的としており、gcsim, miHoYoとは関係ありません。原神のゲームコンテンツや素材の商標および著作権はmiHoYoに帰属します。 日本語翻訳作成: からしな_（Karashina#8663）"
     },
     "links": {
         "error_loading_database": "データベースを読み込み中にエラーが発生しました: データが存在しません"
@@ -199,7 +199,7 @@
         "viewer": "閲覧モード"
     },
     "sim": {
-        "loading_simulator_please": "シミュレーター読み込み中。 しばらくお待ちください。"
+        "loading_simulator_please": "シミュレーター読み込み中 - しばらくお待ちください。"
     },
     "simple": {
         "action_list": "アクションリスト",
@@ -208,7 +208,7 @@
         "discord_pre": "下のテキストボックスにシミュレーションへ追加したい行動や要素を記述します。何を書けばいいかわからない方は",
         "documentation": "資料",
         "documentation_post": "もありますのでご活用ください。",
-        "documentation_pre": "また、連続モード（旧:計算モード）の使い方や使用できる要素をまとめた",
+        "documentation_pre": "また、連続モード（旧:calc mode）の使い方や使用できる要素をまとめた",
         "done": "完了",
         "exit_edit": "編集を終了する",
         "give_me_back": "チュートリアルを再表示",
