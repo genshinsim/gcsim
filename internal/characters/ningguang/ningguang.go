@@ -63,7 +63,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 func (c *char) a4() {
 	//activate a4 if screen is down and character uses dash
-	c.Core.Events.Subscribe(core.OnDash, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(core.PostDash, func(args ...interface{}) bool {
 		if c.Core.Constructs.CountByType(core.GeoConstructNingSkill) > 0 {
 			val := make([]float64, core.EndStatType)
 			val[core.GeoP] = 0.12
