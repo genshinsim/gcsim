@@ -183,7 +183,7 @@ export function parseLogV2(
 
         e.icon = "local_fire_department";
         e.amount = line.logs[d.damage];
-        e.target = line.logs[d.target];
+        e.target = d.target;
         break;
       case "queue":
         let msg = "";
@@ -230,10 +230,11 @@ export function parseLogV2(
               );
               if (before.length > 0) {
                 e.msg += before.join(" ");
-              } else {
-                e.msg += "no aura";
               }
               e.msg += "]";
+            }
+            else {
+              e.msg += " [no aura]";
             }
             if (d.after) {
               e.msg += " ➜ [";
@@ -242,10 +243,11 @@ export function parseLogV2(
               );
               if (after.length > 0) {
                 e.msg += after.join(" ");
-              } else {
-                e.msg += "no aura";
               }
               e.msg += "]";
+            }
+            else {
+              e.msg += " ➜ [no aura]";
             }
             break;
           case "refreshed":
@@ -265,10 +267,13 @@ export function parseLogV2(
             " from " +
             d.source +
             ", next: " +
-            Math.round(d["post_recovery"]);
+            Math.floor(d["post_recovery"]);
         }
         if (e.msg.includes("adding energy")) {
-          e.msg += ` ${d["rec'd"]}`;
+          e.msg = "adding " + ` ${d["rec'd"]}` + " energy from " + d.src + ", next: " + Math.floor(d["next energy"]);
+        }
+        if (d["post_recovery"] == d["max_energy"] && d["max_energy"]) {
+          e.msg += " (max)"
         }
         e.icon = "local_cafe";
         break;
