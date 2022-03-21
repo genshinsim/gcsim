@@ -19,7 +19,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		m := make([]float64, core.EndStatType)
 		m[core.DmgP] = 0.4
 		c.AddPreDamageMod(core.PreDamageMod{
-			Key: "bolide-2pc",
+			Key: "bolide-4pc",
 			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 				return m, s.Shields.IsShielded(c.CharIndex()) && (atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra)
 			},
