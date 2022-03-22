@@ -20,7 +20,7 @@ export default function Nav() {
   const [location, setLocation] = useLocation();
   return (
     <Navbar>
-      <NavbarGroup align={Alignment.LEFT}>
+      <NavbarGroup align={Alignment.LEFT} className="w-full">
         <NavbarHeading
           onClick={() => setLocation("/")}
           className="hover:cursor-pointer"
@@ -36,7 +36,7 @@ export default function Nav() {
               icon="calculator"
               onClick={() => setLocation("/simple")}
             >
-              <span className="xs:hidden md:block">
+              <span className="hidden md:block">
                 <Trans>nav.simulator</Trans>
               </span>
             </Button>
@@ -45,7 +45,7 @@ export default function Nav() {
               icon="rocket-slant"
               onClick={() => setLocation("/advanced")}
             >
-              <span className="xs:hidden md:block">
+              <span className="hidden md:block">
                 <Trans>nav.advanced</Trans>
               </span>
             </Button>
@@ -54,7 +54,7 @@ export default function Nav() {
               icon="chart"
               onClick={() => setLocation("/viewer")}
             >
-              <span className="xs:hidden md:block">
+              <span className="hidden md:block">
                 <Trans>nav.viewer</Trans>
               </span>
             </Button>
@@ -63,7 +63,7 @@ export default function Nav() {
               icon="database"
               onClick={() => setLocation("/db")}
             >
-              <span className="xs:hidden md:block">
+              <span className="hidden md:block">
                 <Trans>nav.teams_db</Trans>
               </span>
             </Button>
@@ -72,25 +72,28 @@ export default function Nav() {
               icon="info-sign"
               onClick={() => setLocation("/about")}
             >
-              <span className="xs:hidden md:block">
+              <span className="hidden md:block">
                 <Trans>nav.about</Trans>
               </span>
             </Button>
           </>
         ) : null}
-      </NavbarGroup>
-      <NavbarGroup align={Alignment.RIGHT}>
-        <Trans>nav.language</Trans>
-        <HTMLSelect
-          className="ml-2"
-          value={language}
-          onChange={(e) => i18n.changeLanguage(e.target.value)}
-        >
-          <option value="English">{t("nav.english")}</option>
-          <option value="Chinese">{t("nav.chinese")}</option>
-          <option value="Japanese">{t("nav.japanese")}</option>
-          <option value="Spanish">{t("nav.spanish")}</option>
-        </HTMLSelect>
+
+        <div className="flex flex-row items-center ml-auto">
+          <span className="hidden lg:block">
+            <Trans>nav.language</Trans>
+          </span>
+          <HTMLSelect
+            className="ml-2"
+            value={language}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+          >
+            <option value="English">{t("nav.english")}</option>
+            <option value="Chinese">{t("nav.chinese")}</option>
+            <option value="Japanese">{t("nav.japanese")}</option>
+            <option value="Spanish">{t("nav.spanish")}</option>
+          </HTMLSelect>
+        </div>
       </NavbarGroup>
     </Navbar>
   );

@@ -9,6 +9,7 @@
     "@parcel/packager-raw-url": "^2.3.2",
     "@parcel/reporter-bundle-analyzer": "^2.3.2",
     "@parcel/transformer-svg-react": "^2.3.2",
+    "@parcel/transformer-webmanifest": "2.3.2",
     "@types/pako": "^1.0.3",
     "@types/prismjs": "^1.26.0",
     "@types/react": "^17.0.38",
