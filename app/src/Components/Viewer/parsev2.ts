@@ -270,7 +270,7 @@ export function parseLogV2(
             Math.floor(d["post_recovery"]);
         }
         if (e.msg.includes("adding energy")) {
-          e.msg = "adding " + ` ${d["rec'd"]}` + " energy from " + d.src + ", next: " + Math.floor(d["next energy"]);
+          e.msg = "adding " + ` ${d["rec'd"]}` + " energy from " + d.source + ", next: " + Math.floor(d["post_recovery"]);
         }
         if (d["post_recovery"] == d["max_energy"] && d["max_energy"]) {
           e.msg += " (max)"
