@@ -76,11 +76,17 @@ func (c *char) a4() {
 	m := make([]float64, core.EndStatType)
 
 	swirlfunc := func(ele core.StatType, key string) func(args ...interface{}) bool {
+		icd := -1
 		return func(args ...interface{}) bool {
 			atk := args[1].(*core.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false
 			}
+			// do not overwrite mod if same frame
+			if c.Core.F < icd {
+				return false
+			}
+			icd = c.Core.F + 1
 
 			//recalc em
 			dmg := 0.0004 * c.Stat(core.EM)

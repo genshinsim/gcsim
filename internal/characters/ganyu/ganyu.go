@@ -11,7 +11,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a2expiry int
+	a1Expiry int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -35,16 +35,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
 
-	//add a2
-	val := make([]float64, core.EndStatType)
-	val[core.CR] = 0.2
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key: "ganyu-a2",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return val, c.a2expiry > c.Core.F && atk.Info.AttackTag == core.AttackTagExtra
-		},
-		Expiry: -1,
-	})
+	c.a1Expiry = -1
 
 	if c.Base.Cons >= 1 {
 		c.c1()

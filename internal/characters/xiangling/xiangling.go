@@ -42,9 +42,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
 	//add in a guoba
 	c.guoba = newGuoba(c.Core)
 	c.Core.AddTarget(c.guoba)
@@ -94,16 +91,18 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 }
 
-func (c *char) c6() {
+func (c *char) c6(dur int) {
 	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = 0.15
 
+	c.Core.Status.AddStatus("xlc6", dur)
+
 	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
-			Key:    "xl-c6",
-			Expiry: -1,
+			Key:    "xiangling-c6",
+			Expiry: c.Core.F + dur,
 			Amount: func() ([]float64, bool) {
-				return m, c.Core.Status.Duration("xlc6") > 0
+				return m, true
 			},
 		})
 	}
@@ -265,10 +264,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//add an effect starting at frame 70 to end of duration to increase pyro dmg by 15% if c6
 	if c.Base.Cons >= 6 {
 		//wait 70 frames, add effect
-		c.AddTask(func() {
-			c.Core.Status.AddStatus("xlc6", max)
-		}, "xl activate c6", 70)
-
+		c.AddTask(func() { c.c6(max) }, "xiangling-c6", 70)
 	}
 
 	//add cooldown to sim

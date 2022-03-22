@@ -209,6 +209,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 // Callback for Ayaka C1 that is attached to NA/CA hits
 func (c *char) c1cb(a core.AttackCB) {
 	// When Kamisato Ayaka's Normal or Charged Attacks deal Cryo DMG to opponents, it has a 50% chance of decreasing the CD of Kamisato Art: Hyouka by 0.3s. This effect can occur once every 0.1s.
+	if a.AttackEvent.Info.Element != core.Cryo {
+		return
+	}
 	if c.icdC1 > c.Core.F {
 		return
 	}

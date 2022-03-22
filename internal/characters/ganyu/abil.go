@@ -58,20 +58,25 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		HitWeakPoint: weakspot == 1,
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
+	// delay aim shot mostly to handle A1
+	c.AddTask(func() {
+		snap := c.Snapshot(&ai)
+		if c.Core.F < c.a1Expiry {
+			old := snap.Stats[core.CR]
+			snap.Stats[core.CR] += .20
+			c.Core.Log.NewEvent("a1 adding crit rate", core.LogCharacterEvent, c.Index, "old", old, "new", snap.Stats[core.CR], "expiry", c.a1Expiry)
+		}
 
-	ai.Abil = "Frost Flake Bloom"
-	ai.Mult = ffb[c.TalentLvlAttack()]
-	ai.HitWeakPoint = false
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefSingleTarget(1, core.TargettableEnemy), travel)
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, travel+bloom+f)
+		ai.Abil = "Frost Flake Bloom"
+		ai.Mult = ffb[c.TalentLvlAttack()]
+		ai.HitWeakPoint = false
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), travel+bloom)
 
-	// if c.a2expiry > c.Core.F {
-	// 	d.Stats[def.CR] += 0.2
-	// 	c.Core.Log.Debugw("ganyu a2",  "event", def.LogCalc,  "new crit %", d.Stats[def.CR])
-	// }
-
-	c.a2expiry = c.Core.F + 5*60
+		// first shot/bloom do not benefit from a1
+		c.a1Expiry = c.Core.F + 60*5
+	}, "ganyu-aim-snapshot", f)
 
 	return f, a
 }
