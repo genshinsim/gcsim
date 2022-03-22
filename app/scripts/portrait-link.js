@@ -78,6 +78,7 @@ let trans = {
   Chinese: {},
   Japanese: {},
   Spanish: {},
+  Russian: {},
 };
 
 names.forEach((e) => {
@@ -95,11 +96,13 @@ names.forEach((e) => {
   const cn = genshindb.characters(e, { resultLanguage: "CHS" });
   const jp = genshindb.characters(e, { resultLanguage: "JP" });
   const es = genshindb.characters(e, { resultLanguage: "ES" });
+  const ru = genshindb.characters(e, { resultLanguage: "RU" });
 
   trans["English"][e] = eng.name;
   trans["Chinese"][e] = cn.name;
   trans["Japanese"][e] = jp.name;
   trans["Spanish"][e] = es.name;
+  trans["Russian"][e] = ru.name;
 
   let filename = "./static/images/avatar/" + e + ".png";
 
@@ -144,6 +147,7 @@ let weapTrans = {
   Chinese: {},
   Japanese: {},
   Spanish: {},
+  Russian: {},
 };
 
 weapons.forEach((e) => {
@@ -160,11 +164,13 @@ weapons.forEach((e) => {
   const cn = genshindb.weapons(e, { resultLanguage: "CHS" });
   const jp = genshindb.weapons(e, { resultLanguage: "JP" });
   const es = genshindb.weapons(e, { resultLanguage: "ES" });
+  const ru = genshindb.weapons(e, { resultLanguage: "RU" });
 
   weapTrans["English"][key] = eng.name;
   weapTrans["Chinese"][key] = cn.name;
   weapTrans["Japanese"][key] = jp.name;
   weapTrans["Spanish"][key] = es.name;
+  weapTrans["Russian"][key] = ru.name;
 
   if (!fs.existsSync(filename)) {
     download_image(eng.images.icon, filename)
@@ -195,6 +201,7 @@ let setTrans = {
   Chinese: {},
   Japanese: {},
   Spanish: {},
+  Russian: {},
 };
 
 const sets = genshindb.artifacts("4", { matchCategories: true });
@@ -208,11 +215,13 @@ sets.forEach((e) => {
   const cn = genshindb.artifacts(e, { resultLanguage: "CHS" });
   const jp = genshindb.artifacts(e, { resultLanguage: "JP" });
   const es = genshindb.artifacts(e, { resultLanguage: "ES" });
+  const ru = genshindb.artifacts(e, { resultLanguage: "RU" });
 
   setTrans["English"][art] = eng.name;
   setTrans["Chinese"][art] = cn.name;
   setTrans["Japanese"][art] = jp.name;
   setTrans["Spanish"][art] = es.name;
+  setTrans["Russian"][art] = ru.name;
 
   let filename;
   for (const [key, value] of Object.entries(eng.images)) {
