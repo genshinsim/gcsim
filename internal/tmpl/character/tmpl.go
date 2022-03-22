@@ -133,16 +133,21 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 			ind = i
 		}
 	}
-	if ind > -1 {
+
+	// check if mod exists and has not expired
+	if ind != -1 && (c.PreDamageMods[ind].Expiry > c.Core.F || c.PreDamageMods[ind].Expiry == -1) {
 		c.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		mod.Event = c.PreDamageMods[ind].Event
-		mod.Event.SetEnded(mod.Expiry)
-		c.PreDamageMods[ind] = mod
 	} else {
 		mod.Event = c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
-		mod.Event.SetEnded(mod.Expiry)
-		c.PreDamageMods = append(c.PreDamageMods, mod)
+		// append empty mod if we can not reuse mods[ind]
+		if ind == -1 {
+			c.PreDamageMods = append(c.PreDamageMods, core.PreDamageMod{})
+			ind = len(c.PreDamageMods) - 1
+		}
 	}
+	mod.Event.SetEnded(mod.Expiry)
+	c.PreDamageMods[ind] = mod
 }
 
 func (c *Tmpl) AddMod(mod core.CharStatMod) {
@@ -152,16 +157,21 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 			ind = i
 		}
 	}
-	if ind > -1 {
+
+	// check if mod exists and has not expired
+	if ind != -1 && (c.Mods[ind].Expiry > c.Core.F || c.Mods[ind].Expiry == -1) {
 		c.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		mod.Event = c.Mods[ind].Event
-		mod.Event.SetEnded(mod.Expiry)
-		c.Mods[ind] = mod
 	} else {
 		mod.Event = c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
-		mod.Event.SetEnded(mod.Expiry)
-		c.Mods = append(c.Mods, mod)
+		// append empty mod if we can not reuse mods[ind]
+		if ind == -1 {
+			c.Mods = append(c.Mods, core.CharStatMod{})
+			ind = len(c.Mods) - 1
+		}
 	}
+	mod.Event.SetEnded(mod.Expiry)
+	c.Mods[ind] = mod
 }
 
 func (c *Tmpl) ModIsActive(key string) bool {
@@ -239,16 +249,21 @@ func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 			ind = i
 		}
 	}
-	if ind != -1 {
+
+	// check if mod exists and has not expired
+	if ind != -1 && (t.ReactMod[ind].Expiry > t.Core.F || t.ReactMod[ind].Expiry == -1) {
 		t.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, t.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		mod.Event = t.ReactMod[ind].Event
-		mod.Event.SetEnded(mod.Expiry)
-		t.ReactMod[ind] = mod
-		return
+	} else {
+		mod.Event = t.Core.Log.NewEvent("mod added", core.LogStatusEvent, t.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		// append empty mod if we can not reuse mods[ind]
+		if ind == -1 {
+			t.ReactMod = append(t.ReactMod, core.ReactionBonusMod{})
+			ind = len(t.ReactMod) - 1
+		}
 	}
-	mod.Event = t.Core.Log.NewEvent("mod added", core.LogStatusEvent, t.Index, "key", mod.Key, "expiry", mod.Expiry)
 	mod.Event.SetEnded(mod.Expiry)
-	t.ReactMod = append(t.ReactMod, mod)
+	t.ReactMod[ind] = mod
 }
 
 func (c *Tmpl) Tag(key string) int {

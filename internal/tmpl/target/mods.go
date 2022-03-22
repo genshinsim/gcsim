@@ -5,7 +5,7 @@ import (
 )
 
 func (t *Tmpl) AddDefMod(key string, val float64, dur int) {
-	m := core.DefMod{
+	mod := core.DefMod{
 		Key:    key,
 		Value:  val,
 		Expiry: t.Core.F + dur,
@@ -17,16 +17,21 @@ func (t *Tmpl) AddDefMod(key string, val float64, dur int) {
 			ind = i
 		}
 	}
-	if ind != -1 {
-		t.Core.Log.NewEvent("enemy mod refreshed", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
-		m.Event = t.DefMod[ind].Event
-		m.Event.SetEnded(m.Expiry)
-		t.DefMod[ind] = m
-		return
+
+	// check if mod exists and has not expired
+	if ind != -1 && (t.DefMod[ind].Expiry > t.Core.F || t.DefMod[ind].Expiry == -1) {
+		t.Core.Log.NewEvent("enemy mod refreshed", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event = t.DefMod[ind].Event
+	} else {
+		mod.Event = t.Core.Log.NewEvent("enemy mod added", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", mod.Key, "expiry", mod.Expiry)
+		// append empty mod if we can not reuse mods[ind]
+		if ind == -1 {
+			t.DefMod = append(t.DefMod, core.DefMod{})
+			ind = len(t.DefMod) - 1
+		}
 	}
-	m.Event = t.Core.Log.NewEvent("enemy mod added", core.LogStatusEvent, -1, "count", len(t.DefMod), "val", val, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
-	m.Event.SetEnded(m.Expiry)
-	t.DefMod = append(t.DefMod, m)
+	mod.Event.SetEnded(mod.Expiry)
+	t.DefMod[ind] = mod
 }
 
 func (t *Tmpl) HasDefMod(key string) bool {
@@ -39,9 +44,9 @@ func (t *Tmpl) HasDefMod(key string) bool {
 	return ind != -1 && t.DefMod[ind].Expiry > t.Core.F
 }
 
-func (t *Tmpl) AddResMod(key string, m core.ResistMod) {
-	m.Expiry = t.Core.F + m.Duration
-	m.Key = key
+func (t *Tmpl) AddResMod(key string, mod core.ResistMod) {
+	mod.Expiry = t.Core.F + mod.Duration
+	mod.Key = key
 	//find if exists, if exists override, else append
 	ind := -1
 	for i, v := range t.ResMod {
@@ -49,16 +54,21 @@ func (t *Tmpl) AddResMod(key string, m core.ResistMod) {
 			ind = i
 		}
 	}
-	if ind != -1 {
-		t.Core.Log.NewEvent("enemy mod refreshed", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", m, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
-		m.Event = t.ResMod[ind].Event
-		m.Event.SetEnded(m.Expiry)
-		t.ResMod[ind] = m
-		return
+
+	// check if mod exists and has not expired
+	if ind != -1 && (t.ResMod[ind].Expiry > t.Core.F || t.ResMod[ind].Expiry == -1) {
+		t.Core.Log.NewEvent("enemy mod refreshed", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", mod, "target", t.TargetIndex, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event = t.ResMod[ind].Event
+	} else {
+		mod.Event = t.Core.Log.NewEvent("enemy mod added", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", mod, "target", t.TargetIndex, "key", mod.Key, "expiry", mod.Expiry)
+		// append empty mod if we can not reuse mods[ind]
+		if ind == -1 {
+			t.ResMod = append(t.ResMod, core.ResistMod{})
+			ind = len(t.ResMod) - 1
+		}
 	}
-	m.Event = t.Core.Log.NewEvent("enemy mod added", core.LogStatusEvent, -1, "count", len(t.ResMod), "val", m, "target", t.TargetIndex, "key", m.Key, "expiry", m.Expiry)
-	m.Event.SetEnded(m.Expiry)
-	t.ResMod = append(t.ResMod, m)
+	mod.Event.SetEnded(mod.Expiry)
+	t.ResMod[ind] = mod
 }
 
 func (t *Tmpl) RemoveResMod(key string) {
