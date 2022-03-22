@@ -78,7 +78,6 @@ export default function Nav() {
             </Button>
           </>
         ) : null}
-
         <div className="flex flex-row items-center ml-auto">
           <span className="hidden lg:block">
             <Trans>nav.language</Trans>
@@ -92,6 +91,7 @@ export default function Nav() {
             <option value="Chinese">{t("nav.chinese")}</option>
             <option value="Japanese">{t("nav.japanese")}</option>
             <option value="Spanish">{t("nav.spanish")}</option>
+            <option value="Russian">{t("nav.russian")}</option>
           </HTMLSelect>
         </div>
       </NavbarGroup>

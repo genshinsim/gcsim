@@ -4,6 +4,7 @@ import English from "../public/locales/English.json";
 import Chinese from "../public/locales/Chinese.json";
 import Japanese from "../public/locales/Japanese.json";
 import Spanish from "../public/locales/Spanish.json";
+import Russian from "../public/locales/Russian.json";
 import { initReactI18next } from "react-i18next";
 
 i18n
@@ -23,6 +24,9 @@ i18n
       Spanish: {
         translation: Spanish,
       },
+      Russian: {
+        translation: Russian,
+      }
     },
     fallbackLng: "English",
     debug: false,
