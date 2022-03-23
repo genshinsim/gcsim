@@ -175,6 +175,7 @@ func (c *Ctrl) ApplyDamage(a *core.AttackEvent) float64 {
 				cpy.Info.ActorIndex,
 				"target", i,
 				"attack-tag", cpy.Info.AttackTag,
+				"ele", cpy.Info.Element.String(),
 				"damage", &dmg,
 				"crit", &crit,
 				"amp", &amp,
