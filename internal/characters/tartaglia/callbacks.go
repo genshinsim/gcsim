@@ -71,9 +71,11 @@ func (c *char) rtFlashTick(t core.Target) {
 		Durability: 25,
 		Mult:       rtFlash[c.TalentLvlAttack()],
 	}
+
 	//proc 3 hits
+	x, y := t.Shape().Pos()
 	for i := 1; i <= 3; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(t.Index(), core.TargettableEnemy), 1, 1)
+		c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 0.5, false, core.TargettableEnemy), 1, 1)
 	}
 
 	c.Core.Log.NewEvent(
