@@ -94,17 +94,17 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	// Plus 1 to avoid same frame issues with skill ticks
-	c.Core.Status.AddStatus("kokomiskill", 12*60+1)
+	// add 20 because the skill duration is not exactly 12s
+	c.Core.Status.AddStatus("kokomiskill", 20+12*60+1)
 
 	d := c.createSkillSnapshot()
 
 	// You get 1 tick immediately, then 1 tick every 2 seconds for a total of 7 ticks
-	c.AddTask(func() { c.skillTick(d) }, "kokomi-e-tick", 1)
-
-	c.AddTask(c.skillTickTask(d, c.Core.F), "kokomi-e-ticks", 120)
+	c.AddTask(func() { c.skillTick(d) }, "kokomi-e-tick", 24)
+	c.AddTask(c.skillTickTask(d, c.Core.F), "kokomi-e-ticks", 127)
 
 	c.skillLastUsed = c.Core.F
-	c.SetCD(core.ActionSkill, 20*60)
+	c.SetCDWithDelay(core.ActionSkill, 20*60, 20)
 
 	return f, a
 }
