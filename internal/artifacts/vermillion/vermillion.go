@@ -28,9 +28,12 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	}
 
 	if count >= 4 {
+		var stacks, lastHP float64
+		var HPicd int
+		stacks = 0
+		//HPicd = 0
 
 		s.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
-			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
@@ -40,6 +43,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if s.Status.Duration("verm-4pc") == 0 || (nob == c.CharIndex() && ok) {
 				s.Status.AddStatus("verm-4pc", 16*60)
 				s.SetCustomFlag("verm-4pc", c.CharIndex())
+				stacks = 0
+				lastHP = c.HP()
 			}
 
 			s.Log.NewEvent("verm 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", s.Status.Duration("verm-4pc"))
@@ -48,15 +53,18 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		}, fmt.Sprintf("verm 4pc - %v", c.Name()))
 
 		m := make([]float64, core.EndStatType)
-		m[core.ATKP] = 0.2
+		m[core.ATKP] = 0.08
 
 		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
 			c.AddMod(core.CharStatMod{
 				Key: "verm-4pc",
 				Amount: func() ([]float64, bool) {
 					if s.Status.Duration("verm-4pc") > 0 {
+
+						m[core.ATKP] = 0.08 + stacks*0.1
 						return m, true
 					}
+					stacks = 0
 					return nil, false
 				},
 				Expiry: -1,
@@ -64,10 +72,24 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			return true
 		}, "verm-4pc-init")
 
+		s.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+
+			if c.HP() < lastHP && s.F >= HPicd && stacks < 4 && s.Status.Duration("verm-4pc") > 0 { //grants stack if conditions are met
+				stacks++
+				s.Log.NewEvent("Vermillion stack gained", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks)
+				lastHP = c.HP()
+				HPicd = s.F + 48
+
+			}
+			return false
+		}, "Stack-on-hurt")
+
 		s.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 			s.Status.DeleteStatus("verm-4pc")
+			stacks = 0 //resets stacks to 0 when the character swaps
 			return false
-		}, "verm-4pc-exit")
+		}, "char-exit")
 
 	}
+	//add flat stat to char
 }
