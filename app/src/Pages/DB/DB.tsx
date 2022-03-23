@@ -102,7 +102,7 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
         </span>
         <span>
           <Trans>db.hash</Trans>
-          <a href={"https://github.com/genshinsim/gcsim/commit/" + row.hash}>
+          <a href={"https://github.com/genshinsim/gcsim/commits/" + row.hash}>
             {row.hash.substring(0, 8)}
           </a>
         </span>
