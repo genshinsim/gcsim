@@ -89,7 +89,9 @@ func (s *Simulation) initChars() error {
 		return errors.New("no active char set")
 	}
 
-	s.initResonance(res)
+	if count == 4 {
+		s.initResonance(res)
+	}
 
 	return nil
 }

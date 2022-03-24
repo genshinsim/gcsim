@@ -165,7 +165,8 @@ func (c *char) burstActiveHook() {
 // Clears Kokomi burst when she leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.Status.Duration("kokomiburst") > 0 {
+		prev := args[0].(int)
+		if prev == c.Index {
 			c.swapEarlyF = c.Core.F
 		}
 		c.Core.Status.DeleteStatus("kokomiburst")

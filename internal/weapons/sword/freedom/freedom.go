@@ -24,7 +24,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	atkBuff[core.ATKP] = .15 + float64(r)*0.05
 
 	buffNACAPlunge := make([]float64, core.EndStatType)
-	buffNACAPlunge[core.DmgP] = .12 + 0.4*float64(r)
+	buffNACAPlunge[core.DmgP] = .12 + 0.04*float64(r)
 
 	icd := 0
 	stacks := 0

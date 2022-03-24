@@ -22,7 +22,13 @@ func (c *char) summonSwordWave() {
 		}
 	}
 	if c.Base.Cons >= 2 {
+		icd := -1
 		c2cb = func(a core.AttackCB) {
+			if c.Core.F < icd {
+				return
+			}
+			icd = c.Core.F + 1
+
 			c.AddTask(func() {
 				a.Target.AddResMod("xingqiu-c2", core.ResistMod{
 					Ele:      core.Hydro,

@@ -102,16 +102,16 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	// Regex to identify main stats based on flower. Check that characters all have one that we can recognize
-	var reMainstats = regexp.MustCompile(`(?m)^[A-z]+ add stats.* hp=(4780|3571).*\n`)
-	var reNumChars = regexp.MustCompile(`(?m)^[A-z]+ char.*\n`)
-	if len(reMainstats.FindAllString(cfg, -1)) != len(reNumChars.FindAllString(cfg, -1)) {
+	var reMainstats = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\s+hp=(4780|3571)\b[^;]*;`)
+	var reGetCharNames = regexp.MustCompile(`(?m)^([a-z]+)\s+char\b[^;]*;`)
+	if len(reMainstats.FindAllString(cfg, -1)) != len(reGetCharNames.FindAllString(cfg, -1)) {
 		sugarLog.Error("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.")
 		sugarLog.Error("5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
 		os.Exit(1)
 	}
 
 	// Regex to remove stat rows that do not look like mainstat rows from the config
-	var reSubstats = regexp.MustCompile(`(?m)^[A-z]+ add stats.*\n`)
+	var reSubstats = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\b.*\n`)
 	srcCleaned := string(cfg)
 	errorPrinted := false
 	for _, match := range reSubstats.FindAllString(cfg, -1) {
@@ -144,7 +144,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 	// Parse and set all special sim options
 	if additionalOptions != "" {
-		reOptions := regexp.MustCompile("([a-z_]+)=([0-9.]+)")
+		reOptions := regexp.MustCompile(`([a-z_]+)=([0-9.]+)`)
 		parsedOptions := reOptions.FindAllStringSubmatch(additionalOptions, -1)
 		for _, val := range parsedOptions {
 			if _, ok := optionsMap[val[1]]; ok {
@@ -530,7 +530,6 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// Final output
 	// This doesn't take much time relatively speaking, so just always do the processing...
 	output := srcCleaned
-	reGetCharNames := regexp.MustCompile("(?m)^([a-z]+) char.*lvl")
 	charNames := make(map[core.CharKey]string)
 	for _, match := range reGetCharNames.FindAllStringSubmatch(output, -1) {
 		charKey := core.CharNameToKey[match[1]]
@@ -549,12 +548,13 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 		fmt.Println(finalString + ";")
 
-		reInsertLocation := regexp.MustCompile(fmt.Sprintf("(?m)^(%v add stats.*)\n", charNames[char.Base.Key]))
-		output = reInsertLocation.ReplaceAllString(output, fmt.Sprintf("$1\n%v;\n", finalString))
+		reInsertLocation := regexp.MustCompile(fmt.Sprintf(`(?m)^(%v\s+add\s+stats\b.*)$`, charNames[char.Base.Key]))
+		output = reInsertLocation.ReplaceAllString(output, fmt.Sprintf("$1\n%v;", finalString))
 	}
 
 	// Sticks optimized substat string into config and output
 	if simopt.ResultSaveToPath != "" {
+		output = strings.TrimSpace(output) + "\n"
 		//try creating file to write to
 		err := os.WriteFile(simopt.ResultSaveToPath, []byte(output), 0644)
 		if err != nil {
