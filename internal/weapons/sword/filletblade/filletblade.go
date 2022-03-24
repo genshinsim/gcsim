@@ -24,6 +24,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
+		if c.ActiveChar != char.CharIndex() {
+			return false
+		}
 		if icd > c.F {
 			return false
 		}
@@ -42,7 +45,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			Durability: 100,
 			Mult:       2.0 + 0.4*float64(r),
 		}
-		c.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 1)
+		c.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, 1)
 
 		// trigger cd
 		icd = c.F + cd
