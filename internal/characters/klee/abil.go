@@ -27,7 +27,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	cb := func(a core.AttackCB) { c.a1() }
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f+travel, cb)
 
 	c.c1(f + travel)
 
@@ -65,7 +65,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		c.Core.Log.NewEvent("klee consumed spark", core.LogCharacterEvent, c.Index, "icd", c.sparkICD)
 	}
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefSingleTarget(1, core.TargettableEnemy), f+travel)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), f+travel)
 
 	c.c1(f + travel)
 
