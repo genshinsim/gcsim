@@ -1,6 +1,8 @@
 package archaic
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -62,6 +64,6 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				}
 			}
 			return false
-		}, "archaic"+c.Name())
+		}, fmt.Sprintf("archaic-%v", c.Name()))
 	}
 }

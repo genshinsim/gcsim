@@ -1,6 +1,8 @@
 package viridescent
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -104,7 +106,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			s.Log.NewEvent("vv 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", key, "char", c.CharIndex())
 
 			return false
-		}, "vv4pc-secondary")
+		}, fmt.Sprintf("vv4pc-secondary-%v", c.Name()))
 
 	}
 	//add flat stat to char
