@@ -92,7 +92,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ActorIndex: c.Index,
 		Abil:       "Crimson Ooyoroi",
 		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
 		Element:    core.Pyro,
