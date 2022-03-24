@@ -236,6 +236,9 @@ func (c *char) recoverCharge(src int) func() {
 // Sets Xiao's burst damage state
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
+	var HPicd int
+	var HPlost float64
+	HPicd = 0
 
 	// Per previous code, believe that the burst duration starts ticking down from after the animation is done
 	// TODO: No indication of that in library though
@@ -246,8 +249,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// Per gameplay video, HP ticks start after animation is finished
 	for i := f + 60; i < 900+f; i++ {
 		c.AddTask(func() {
-			if c.Core.Status.Duration("xiaoburst") > 0 {
-				c.HPCurrent = c.HPCurrent * (1 - burstDrain[c.TalentLvlBurst()])
+			if c.Core.Status.Duration("xiaoburst") > 0 && c.Core.F >= HPicd {
+				HPlost = burstDrain[c.TalentLvlBurst()] * c.HPCurrent
+				c.HPCurrent = c.HPCurrent - HPlost
+				c.Core.Log.NewEvent("xiao hp drain", core.LogCharacterEvent, c.Index, "current HP", c.HPCurrent, "HP lost", HPlost)
+				c.Core.Events.Emit(core.OnCharacterHurt, HPlost)
+				HPicd = c.Core.F + 60
 			}
 		}, "xiaoburst-hp-drain", i)
 	}
