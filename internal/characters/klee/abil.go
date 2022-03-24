@@ -20,6 +20,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagKleeFireDamage,
 		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Pyro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
