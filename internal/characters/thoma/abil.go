@@ -104,9 +104,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	x, y := c.Core.Targets[0].Shape().Pos()
 	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), f+1, f+1)
 
-	c.Core.Status.AddStatus("thomaburst", 15*60)
+	d := 15
+	if c.Base.Cons >= 2 {
+		d = 18
+	}
+
+	c.Core.Status.AddStatus("thomaburst", d*60)
 
 	c.burstProc()
+
+	if c.Base.Cons >= 4 {
+		c.AddTask(func() {
+			c.c4Restore()
+		}, "thoma-c4-restore", 15)
+	}
 
 	c.SetCDWithDelay(core.ActionBurst, 20*60, 11)
 	c.ConsumeEnergy(11)
@@ -141,6 +152,7 @@ func (c *char) burstProc() {
 			Element:    core.Pyro,
 			Durability: 50,
 			Mult:       burstproc[c.TalentLvlSkill()],
+			FlatDmg:    0.022 * c.HPMax,
 		}
 		//trigger a chain of attacks starting at the first target
 		atk := core.AttackEvent{
@@ -170,8 +182,10 @@ func (c *char) genShield(src string, shieldamt float64) {
 		c.a1icd = c.Core.F + 0.3*60
 		c.Core.Status.AddStatus("thoma-a1", 6*60)
 	}
-	if c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP()+shieldamt > c.MaxShield {
-		shieldamt = c.MaxShield - c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP()
+	if c.Core.Shields.Get(core.ShieldThomaSkill) != nil {
+		if c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP()+shieldamt > c.MaxShield {
+			shieldamt = c.MaxShield - c.Core.Shields.Get(core.ShieldThomaSkill).CurrentHP()
+		}
 	}
 	//add shield
 	c.AddTask(func() {
@@ -184,4 +198,25 @@ func (c *char) genShield(src string, shieldamt float64) {
 			Expires:    c.Core.F + 8*60, //8 sec
 		})
 	}, "Thoma-Shield", 1)
+
+	if c.Base.Cons >= 6 {
+		val := make([]float64, core.EndStatType)
+		val[core.DmgP] = .15
+		for _, char := range c.Core.Chars {
+			char.AddPreDamageMod(core.PreDamageMod{
+				Key: "thoma-c6",
+				Amount: func(ae *core.AttackEvent, t core.Target) ([]float64, bool) {
+					if ae.Info.AttackTag == core.AttackTagNormal || ae.Info.AttackTag == core.AttackTagExtra || ae.Info.AttackTag == core.AttackTagPlunge {
+						return val, true
+					}
+					return nil, false
+				},
+				Expiry: c.Core.F + 6*60,
+			})
+		}
+	}
+}
+
+func (c *char) c4Restore() {
+	c.AddEnergy("thoma-c4", 15)
 }
