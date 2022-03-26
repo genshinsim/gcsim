@@ -125,7 +125,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	//2 or 3 1:1 ratio
+	//4 or 5, 1:1 ratio
 	count := 4
 	if c.Core.Rand.Float64() < 0.5 {
 		count = 5

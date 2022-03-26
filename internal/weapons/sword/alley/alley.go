@@ -9,6 +9,7 @@ import (
 func init() {
 	core.RegisterWeaponFunc("the alley flash", weapon)
 	core.RegisterWeaponFunc("thealleyflash", weapon)
+	core.RegisterWeaponFunc("alleyflash", weapon)
 }
 
 //Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.

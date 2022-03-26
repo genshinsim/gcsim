@@ -71,6 +71,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	// snapshot unknown
 	// snap := c.Snapshot(&ai)
+	
+	//3 or 4, 3:2 ratio
+	count := 3
+	if c.Core.Rand.Float64() < 0.4 {
+		count = 4
+	}
+	c.QueueParticle("thoma", count, core.Pyro, f+100)
 
 	shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
 	c.genShield("Thoma Skill", shieldamt)
@@ -78,8 +85,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// damage component not final
 	x, y := c.Core.Targets[0].Shape().Pos()
 	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), f+1, f+1)
-
-	c.SetCD(core.ActionSkill, 15*60)
+	
+	cd := 15
+	if c.Base.Cons >= 1 {
+		cd = 12; //the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 12 for sim purposes.
+	}
+	c.SetCD(core.ActionSkill, cd*60)
 	return f, a
 }
 
@@ -103,7 +114,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// damage component not final
 	x, y := c.Core.Targets[0].Shape().Pos()
 	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), f+1, f+1)
-
+	
 	d := 15
 	if c.Base.Cons >= 2 {
 		d = 18
@@ -112,14 +123,18 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("thomaburst", d*60)
 
 	c.burstProc()
-
+	
 	if c.Base.Cons >= 4 {
 		c.AddTask(func() {
 			c.c4Restore()
 		}, "thoma-c4-restore", 15)
 	}
 
-	c.SetCDWithDelay(core.ActionBurst, 20*60, 11)
+	cd := 20
+	if c.Base.Cons >= 1 {
+		cd = 17; //the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 17 for sim purposes.
+	}
+	c.SetCDWithDelay(core.ActionBurst, cd*60, 11)
 	c.ConsumeEnergy(11)
 
 	return f, a
@@ -198,7 +213,7 @@ func (c *char) genShield(src string, shieldamt float64) {
 			Expires:    c.Core.F + 8*60, //8 sec
 		})
 	}, "Thoma-Shield", 1)
-
+	
 	if c.Base.Cons >= 6 {
 		val := make([]float64, core.EndStatType)
 		val[core.DmgP] = .15
