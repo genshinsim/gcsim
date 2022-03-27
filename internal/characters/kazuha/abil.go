@@ -217,25 +217,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	ai.Durability = 25
 	snap := c.Snapshot(&ai)
 
+	aiAbsorb := ai
+	aiAbsorb.Abil = "Kazuha Slash (Absorb Dot)"
+	aiAbsorb.Mult = burstEleDot[c.TalentLvlBurst()]
+	aiAbsorb.Element = core.NoElement
+	snapAbsorb := c.Snapshot(&aiAbsorb)
+
 	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(310/18)), "kaz-absorb-check", 10)
 
 	//from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
 	for i := 0; i < 5; i++ {
 		c.AddTask(func() {
 			if c.qInfuse != core.NoElement {
-				//TODO: does absorb dot tick snapshot?
-				absorb := core.AttackInfo{
-					ActorIndex: c.Index,
-					Abil:       "Kazuha Slash (Absorb Dot)",
-					AttackTag:  core.AttackTagElementalBurst,
-					ICDTag:     core.ICDTagNone,
-					ICDGroup:   core.ICDGroupDefault,
-					StrikeType: core.StrikeTypeDefault,
-					Element:    c.qInfuse,
-					Durability: 25,
-					Mult:       burstEleDot[c.TalentLvlBurst()],
-				}
-				c.Core.Combat.QueueAttack(absorb, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0)
+				aiAbsorb.Element = c.qInfuse
+				c.Core.Combat.QueueAttackWithSnap(aiAbsorb, snapAbsorb, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
 			}
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
 		}, "kazuha-burst-tick", 147+117*i)
