@@ -2,23 +2,26 @@ package character
 
 import "github.com/genshinsim/gcsim/pkg/core"
 
-func (c *Tmpl) SetNumCharges(a core.ActionType, num int) {
-	c.additionalCDCharge[a] = num - 1
-	c.AvailableCDCharge[a] = num
-}
-
-func (c *Tmpl) Charges(a core.ActionType) int {
-	return c.AvailableCDCharge[a]
-}
-
-func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
-	//up if energy is ready && stack > 0
-	if a == core.ActionBurst && (c.Energy != c.EnergyMax) && !c.Core.Flags.EnergyCalcMode {
-		return false
-	}
-	return c.AvailableCDCharge[a] > 0
-}
-
+//SetCD takes two parameters:
+//	- a core.ActionType: this is the action type we are triggering the cooldown for
+//  - dur: duration in frames that the cooldown should last for
+//It is assumed that AvailableCDCharges[a] > 0 (otherwise action should not have been allowed)
+//
+//SetCD works by adding the cooldown duration to a queue. This is because when there are
+//multiple charges, the game will first finish recharging the first charge before starting
+//the full cooldown for the second charge.
+//
+//When a cooldown is added to queue for the first time, a queue worker is started. This queue
+//worker will check back at the cooldown specified for the first queued item, and if the queued
+//cooldown did not change, it will increment the number of charges by 1, and reschedule itself
+//to check back for the next item in queue
+//
+//Sometimes, the queued cooldown gets adjusted via ReduceActionCooldown or ResetActionCooldown.
+//When this happens, the initial queued worker will check back at the wrong time. To prevent this,
+//we use cdQueueWorkerStartedAt[a] which tracks the frame the worker started at. So when
+//ReduceActionCooldown or ResetActionCooldown gets called, we start a new worker, updating
+//cdQueueWorkerStartedAt[a] to represent the new worker start frame. This way the old worker can
+//check this value first and then gracefully exit if it no longer matches its starting frame
 func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 	//setting cd is just adding a cd to the recovery queue
 	//add current action and duration to the queue
@@ -32,6 +35,9 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 	if c.AvailableCDCharge[a] < 0 {
 		panic("unexpected charges less than 0")
 	}
+	if c.Tags["skill_charge"] > 0 {
+		c.Tags["skill_charge"]--
+	}
 	c.Core.Log.NewEventBuildMsg(
 		core.LogCharacterEvent,
 		c.Index,
@@ -41,6 +47,25 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 		"charges_remain", c.AvailableCDCharge,
 		"cooldown_queue", c.cdQueue,
 	)
+}
+
+func (c *Tmpl) SetNumCharges(a core.ActionType, num int) {
+	c.additionalCDCharge[a] = num - 1
+	c.AvailableCDCharge[a] = num
+}
+
+func (c *Tmpl) Charges(a core.ActionType) int {
+	return c.AvailableCDCharge[a]
+}
+
+//TODO: energy calc mode currently not working. we need to reset action or else we might get
+//charges < 0 while trying to SetCD
+func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
+	//up if energy is ready && stack > 0
+	if a == core.ActionBurst && (c.Energy != c.EnergyMax) {
+		return false
+	}
+	return c.AvailableCDCharge[a] > 0
 }
 
 func (c *Tmpl) SetCDWithDelay(a core.ActionType, dur int, delay int) {
@@ -70,6 +95,7 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 	}
 	//otherwise add a stack && pop queue
 	c.AvailableCDCharge[a]++
+	c.Tags["skill_charge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
@@ -95,7 +121,7 @@ func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 	}
 	//check if reduction > time remaing? if so then call reset cd
 	remain := c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F
-	if v > remain {
+	if v >= remain {
 		c.ResetActionCooldown(a)
 		return
 	}
@@ -143,6 +169,7 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 		}
 		//otherwise add a stack and pop first item in queue
 		c.AvailableCDCharge[a]++
+		c.Tags["skill_charge"]++
 		c.cdQueue[a] = c.cdQueue[a][1:]
 
 		// c.Core.Log.Debugw("stack restored",  "avail", c.availableCDCharge[a], "queue", c.cdQueue)

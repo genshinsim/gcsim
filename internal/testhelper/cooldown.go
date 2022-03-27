@@ -8,7 +8,6 @@ import (
 )
 
 func TestSkillCooldownSingleCharge(c *core.Core, char core.Character, cd int) error {
-	setupChar(c, char)
 	p := make(map[string]int)
 	char.Skill(p)
 	SkipFrames(c, cd-1)
@@ -31,7 +30,6 @@ func TestSkillCooldownSingleCharge(c *core.Core, char core.Character, cd int) er
 }
 
 func TestSkillCooldownDoubleCharge(c *core.Core, char core.Character, cd []int) error {
-	setupChar(c, char)
 	p := make(map[string]int)
 	char.Skill(p)
 	//should have one charge left
@@ -102,7 +100,6 @@ func TestSkillCooldownDoubleCharge(c *core.Core, char core.Character, cd []int) 
 }
 
 func TestFlatCDReductionSingleCharge(c *core.Core, char core.Character, cd int) error {
-	setupChar(c, char)
 	p := make(map[string]int)
 	char.Skill(p)
 	SkipFrames(c, cd-10)
@@ -132,7 +129,6 @@ func TestFlatCDReductionSingleCharge(c *core.Core, char core.Character, cd int) 
 }
 
 func TestFlatCDReductionDoubleCharge(c *core.Core, char core.Character, cd []int) error {
-	setupChar(c, char)
 	p := make(map[string]int)
 	char.Skill(p)
 	//should have one charge left
@@ -215,7 +211,6 @@ func TestFlatCDReductionDoubleCharge(c *core.Core, char core.Character, cd []int
 }
 
 func TestResetSkillCDSingleCharge(c *core.Core, char core.Character, cd int) error {
-	setupChar(c, char)
 	p := make(map[string]int)
 	char.Skill(p)
 	SkipFrames(c, cd-10)
@@ -237,7 +232,6 @@ func TestResetSkillCDSingleCharge(c *core.Core, char core.Character, cd int) err
 }
 
 func TestResetSkillCDDoubleCharge(c *core.Core, char core.Character, cd []int) error {
-	setupChar(c, char)
 	p := make(map[string]int)
 	char.Skill(p)
 	//should have one charge left
@@ -306,28 +300,99 @@ func TestResetSkillCDDoubleCharge(c *core.Core, char core.Character, cd []int) e
 	return nil
 }
 
+func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
+	setupChar(c, char)
+	p := make(map[string]int)
+
+	//use up all the charges
+	for i := range cd {
+		//should have length - i
+		if char.Charges(core.ActionSkill) != (len(cd) - i) {
+			return fmt.Errorf("used skill %v times, expecting to have %v charge left, got %v", i, len(cd)-i, char.Charges(core.ActionSkill))
+		}
+		if !char.ActionReady(core.ActionSkill, p) {
+			return fmt.Errorf("skill should be ready still after using %v charge", i)
+		}
+		if char.Cooldown(core.ActionSkill) > 0 {
+			return fmt.Errorf("used skill %v times, expecting cooldown to be 0, got %v", i, char.Cooldown(core.ActionSkill))
+		}
+		char.Skill(p)
+	}
+
+	//skip through cd queue
+	for i, v := range cd {
+		SkipFrames(c, v-1)
+		if char.Charges(core.ActionSkill) != i {
+			return fmt.Errorf("checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
+		}
+		//1 more frame to recharge
+		SkipFrames(c, 1)
+		if char.Charges(core.ActionSkill) != i+1 {
+			return fmt.Errorf("checking charge #%v, expecting to have %v charge left, got %v", i+1, i+1, char.Charges(core.ActionSkill))
+		}
+	}
+
+	//wait another 100 frames, all charges should be back up
+	SkipFrames(c, 100)
+	for range cd {
+		char.Skill(p)
+	}
+	for i, v := range cd {
+		SkipFrames(c, v-10)
+		if char.Charges(core.ActionSkill) != i {
+			return fmt.Errorf("(reduce cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
+		}
+		//reduce by 9
+		char.ReduceActionCooldown(core.ActionSkill, 9)
+		//1 more frame to recharge
+		SkipFrames(c, 1)
+		if char.Charges(core.ActionSkill) != i+1 {
+			return fmt.Errorf("(reduce cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i+1, char.Charges(core.ActionSkill))
+		}
+	}
+
+	//wait another 100 frames, all charges should be back up
+	SkipFrames(c, 100)
+	for range cd {
+		char.Skill(p)
+	}
+	for i, v := range cd {
+		SkipFrames(c, v-10)
+		if char.Charges(core.ActionSkill) != i {
+			return fmt.Errorf("(reset cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
+		}
+		//reset
+		char.ResetActionCooldown(core.ActionSkill)
+		if char.Charges(core.ActionSkill) != i+1 {
+			return fmt.Errorf("(reset cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i+1, char.Charges(core.ActionSkill))
+		}
+	}
+
+	return nil
+}
+
 func TestSkillCDSingleCharge(c *core.Core, char core.Character, cd int) error {
+	setupChar(c, char)
+
 	var err error
 	err = TestSkillCooldownSingleCharge(c, char, cd)
 	if err != nil {
-		return err
+		return fmt.Errorf("err testing single charge: %v", err)
 	}
 	err = TestFlatCDReductionSingleCharge(c, char, cd)
 	if err != nil {
-		return err
+		return fmt.Errorf("err testing flat cd reduction single charge: %v", err)
 	}
 	err = TestResetSkillCDSingleCharge(c, char, cd)
 	if err != nil {
-		return err
-	}
-	err = TestResetSkillCDSingleCharge(c, char, cd)
-	if err != nil {
-		return err
+		return fmt.Errorf("err testing skill reset single charge: %v", err)
 	}
 	return nil
 }
 
 func TestSkillCDDoubleCharge(c *core.Core, char core.Character, cd []int) error {
+	setupChar(c, char)
+
 	var err error
 	err = TestSkillCooldownDoubleCharge(c, char, cd)
 	if err != nil {

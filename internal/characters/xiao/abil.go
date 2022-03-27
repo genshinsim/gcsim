@@ -198,39 +198,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		return f, a
 	}
 
-	// Handle E charges
-	if c.Tags["eCharge"] == 1 {
-		c.SetCD(core.ActionSkill, c.eNextRecover)
-	} else {
-		c.eNextRecover = c.Core.F + 601
-		c.Core.Log.NewEvent("xiao e charge used, queuing next recovery", core.LogCharacterEvent, c.Index, "recover at", c.eNextRecover)
-		c.AddTask(c.recoverCharge(c.Core.F), "charge", 600)
-		c.eTickSrc = c.Core.F
-	}
-	c.Tags["eCharge"]--
+	c.SetCD(core.ActionSkill, 600)
 
 	return f, a
-}
-
-// Helper function that queues up Xiao e charge recovery - similar to other charge recovery functions
-func (c *char) recoverCharge(src int) func() {
-	return func() {
-		// Required stopper for recursion
-		if c.eTickSrc != src {
-			c.Core.Log.NewEvent("xiao e recovery function ignored, src diff", core.LogCharacterEvent, c.Index, "src", src, "new src", c.eTickSrc)
-			return
-		}
-		c.Tags["eCharge"]++
-		c.Core.Log.NewEvent("xiao e recovering a charge", core.LogCharacterEvent, c.Index, "skill last used at", src, "total charges", c.Tags["eCharge"])
-		c.SetCD(core.ActionSkill, 0)
-		if c.Tags["eCharge"] >= c.eChargeMax {
-			return
-		}
-
-		c.eNextRecover = c.Core.F + 601
-		c.Core.Log.NewEvent("xiao e charge queuing next recovery", core.LogCharacterEvent, c.Index, "recover at", c.eNextRecover)
-		c.AddTask(c.recoverCharge(src), "charge", 600)
-	}
 }
 
 // Sets Xiao's burst damage state

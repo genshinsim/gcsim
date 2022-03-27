@@ -19,3 +19,17 @@ func TestBasicAbilUsage(t *testing.T) {
 	}
 	testhelper.TestPolearmCharacter(c, x)
 }
+
+func TestCD(t *testing.T) {
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Yunjin, core.Geo, 0)
+	x, err := NewChar(c, prof)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	err = testhelper.TestSkillCDSingleCharge(c, x, 9*60)
+	if err != nil {
+		t.Error(err)
+	}
+}

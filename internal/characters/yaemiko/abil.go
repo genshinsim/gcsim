@@ -48,16 +48,13 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	// c2
-	// Yakan Evocation: Sesshou Sakura's CD is decreased by 20%
-	cd := 4 * 60
 
 	c.AddTask(func() {
 		c.makeKitsune()
 	}, "yaemiko-kitsune-summon", f)
 
 	//reduce charge by 1
-	c.SetCD(core.ActionSkill, cd)
+	c.SetCD(core.ActionSkill, 4*60)
 	return f, a
 }
 

@@ -11,12 +11,8 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	c1Chance     float64
-	eCharge      int
-	eChargeMax   int
-	eNextRecover int
-	eTickSrc     int
-	sparkICD     int
+	c1Chance float64
+	sparkICD int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -37,8 +33,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 3
 
-	c.eChargeMax = 2
-	c.eCharge = 2
+	c.SetNumCharges(core.ActionSkill, 2)
 	c.sparkICD = -1
 
 	c.a4()
