@@ -43,7 +43,7 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 		c.Tags["skill_charge"]--
 	}
 	c.Core.Log.NewEventBuildMsg(
-		core.LogCharacterEvent,
+		core.LogActionEvent,
 		c.Index,
 		a.String(), " cooldown triggered",
 	).Write(
@@ -105,7 +105,7 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 	//reset worker time
 	c.cdQueueWorkerStartedAt[a] = -1
 	c.Core.Log.NewEventBuildMsg(
-		core.LogCharacterEvent,
+		core.LogActionEvent,
 		c.Index,
 		a.String(), " cooldown forcefully reset",
 	).Write(
@@ -134,7 +134,7 @@ func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 	//otherwise reduce remain and restart queue
 	c.cdQueue[a][0] = remain - v
 	c.Core.Log.NewEventBuildMsg(
-		core.LogCharacterEvent,
+		core.LogActionEvent,
 		c.Index,
 		a.String(), " cooldown forcefully reduced",
 	).Write(
@@ -190,7 +190,7 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 		}
 
 		c.Core.Log.NewEventBuildMsg(
-			core.LogCharacterEvent,
+			core.LogActionEvent,
 			c.Index,
 			a.String(), " cooldown ready",
 		).Write(
@@ -214,7 +214,7 @@ func (c *Tmpl) cdReduction(a core.ActionType, dur int) int {
 		//if not expired
 		if v.Expiry == -1 || v.Expiry > c.Core.F {
 			amt := v.Amount(a)
-			c.Core.Log.NewEvent("applying cooldown modifier", core.LogCharacterEvent, c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
+			c.Core.Log.NewEvent("applying cooldown modifier", core.LogActionEvent, c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
 			cd += amt
 			c.CDReductionFuncs[n] = v
 			n++
