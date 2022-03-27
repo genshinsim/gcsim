@@ -1,6 +1,10 @@
 package character
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 //SetCD takes two parameters:
 //	- a core.ActionType: this is the action type we are triggering the cooldown for
@@ -93,12 +97,13 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
 		return
 	}
+	//log.Printf("resetting; frame %v, queue %v\n", c.Core.F, c.cdQueue[a])
 	//otherwise add a stack && pop queue
 	c.AvailableCDCharge[a]++
 	c.Tags["skill_charge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
-	c.cdQueueWorkerStartedAt[a] = c.Core.F
+	c.cdQueueWorkerStartedAt[a] = -1
 	c.Core.Log.NewEventBuildMsg(
 		core.LogCharacterEvent,
 		c.Index,
@@ -121,6 +126,7 @@ func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 	}
 	//check if reduction > time remaing? if so then call reset cd
 	remain := c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F
+	//log.Printf("hello reducing; reduction %v, remaining %v, frame %v, old queue %v\n", v, remain, c.Core.F, c.cdQueue[a])
 	if v >= remain {
 		c.ResetActionCooldown(a)
 		return
@@ -137,6 +143,7 @@ func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 		"cooldown_queue", c.cdQueue,
 	)
 	c.startCooldownQueueWorker(a, false)
+	//log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
 }
 
 func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
@@ -161,10 +168,11 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 			// c.Core.Log.Debugw("src changed",  "src", src, "new", c.cdQueueWorkerStartedAt[a])
 			return
 		}
+		//log.Printf("cd worker triggered, started; %v, queue: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a])
 		//check to make sure queue is not 0
 		if len(c.cdQueue[a]) == 0 {
 			//this should never happen
-			panic("charges > max??")
+			panic(fmt.Sprintf("queue is empty? character :%v, frame : %v, worker src: %v", c.Name(), c.Core.F, src))
 			// return
 		}
 		//otherwise add a stack and pop first item in queue
@@ -176,7 +184,7 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 
 		if c.AvailableCDCharge[a] > 1+c.additionalCDCharge[a] {
 			//sanity check, this should never happen
-			panic("charges > max??")
+			panic(fmt.Sprintf("charges > max? character :%v, frame : %v", c.Name(), c.Core.F))
 			// c.availableCDCharge[a] = 1 + c.additionalCDCharge[a]
 			// return
 		}
