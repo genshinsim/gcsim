@@ -108,6 +108,8 @@ func parseOptions(p *Parser) (parseFn, error) {
 			}
 		case itemTerminateLine:
 			return parseRows, nil
+		default:
+			return nil, fmt.Errorf("unrecognized token parsing options: %v at line %v", n, p.tokens)
 		}
 		if err != nil {
 			return nil, err
