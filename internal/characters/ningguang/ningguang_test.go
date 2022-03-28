@@ -19,3 +19,17 @@ func TestBasicAbilUsage(t *testing.T) {
 	}
 	testhelper.TestCatalystCharacter(c, x)
 }
+
+func TestCD(t *testing.T) {
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Ningguang, core.Geo, 0) //c0 otherwise construct will reset
+	x, err := NewChar(c, prof)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	err = testhelper.TestSkillCDSingleCharge(c, x, 720)
+	if err != nil {
+		t.Error(err)
+	}
+}

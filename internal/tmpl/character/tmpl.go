@@ -12,10 +12,15 @@ type Tmpl struct {
 	Core  *core.Core
 	Rand  *rand.Rand
 	Index int
-	//this should describe the frame in which the abil becomes available
-	//if frame > current then it's available. no need to decrement this way
-	// CD        map[string]int
-	ActionCD      []int
+
+	//cooldown related
+	ActionCD               []int
+	cdQueueWorkerStartedAt []int
+	cdQueue                [][]int
+	AvailableCDCharge      []int
+	additionalCDCharge     []int
+
+	//mods
 	Mods          []core.CharStatMod
 	PreDamageMods []core.PreDamageMod
 	ReactMod      []core.ReactionBonusMod
@@ -84,6 +89,16 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 
 	t.normalCancelFrames = make(map[int]map[core.ActionType]int)
 	t.cancelFrames = make(map[core.ActionType]map[core.ActionType]int)
+
+	t.cdQueueWorkerStartedAt = make([]int, core.EndActionType)
+	t.cdQueue = make([][]int, core.EndActionType)
+	t.additionalCDCharge = make([]int, core.EndActionType)
+	t.AvailableCDCharge = make([]int, core.EndActionType)
+
+	for i := 0; i < len(t.cdQueue); i++ {
+		t.cdQueue[i] = make([]int, 0, 4)
+		t.AvailableCDCharge[i] = 1
+	}
 
 	return &t, nil
 }

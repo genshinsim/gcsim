@@ -142,41 +142,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.c1(f + 30)
 
-	switch c.eCharge {
-	case c.eChargeMax:
-		c.Core.Log.NewEvent("klee at max charge, queuing next recovery", core.LogCharacterEvent, c.Index, "recover at", c.Core.F+721)
-		c.eNextRecover = c.Core.F + 1201
-		c.AddTask(c.recoverCharge(c.Core.F), "charge", 1200)
-		c.eTickSrc = c.Core.F
-	case 1:
-		c.SetCD(core.ActionSkill, c.eNextRecover)
-	}
-
-	c.eCharge--
+	c.SetCD(core.ActionSkill, 1200)
 
 	// c.SetCD(def.ActionSkill, 20*60)
 	return f, a
-}
-
-func (c *char) recoverCharge(src int) func() {
-	return func() {
-		if c.eTickSrc != src {
-			c.Core.Log.NewEvent("klee mine recovery function ignored, src diff", core.LogCharacterEvent, c.Index, "src", src, "new src", c.eTickSrc)
-			return
-		}
-		c.eCharge++
-		c.Core.Log.NewEvent("klee mine recovering a charge", core.LogCharacterEvent, c.Index, "src", src, "total charge", c.eCharge)
-		c.SetCD(core.ActionSkill, 0)
-		if c.eCharge >= c.eChargeMax {
-			//fully charged
-			return
-		}
-		//other wise restore another charge
-		c.Core.Log.NewEvent("klee mine queuing next recovery", core.LogCharacterEvent, c.Index, "src", src, "recover at", c.Core.F+720)
-		c.eNextRecover = c.Core.F + 1201
-		c.AddTask(c.recoverCharge(src), "charge", 1200)
-
-	}
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {

@@ -18,5 +18,18 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.FailNow()
 	}
 	testhelper.TestBowCharacter(c, x)
+}
 
+func TestCD(t *testing.T) {
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Aloy, core.Cryo, 6)
+	x, err := NewChar(c, prof)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	err = testhelper.TestSkillCDSingleCharge(c, x, 20*60)
+	if err != nil {
+		t.Error(err)
+	}
 }
