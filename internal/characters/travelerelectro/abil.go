@@ -34,7 +34,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ActorIndex: c.Index,
 		Abil:       "Lightning Blade",
 		AttackTag:  core.AttackTagElementalArt,
-		ICDTag:     core.ICDTagNone,
+		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
 		Element:    core.Electro,
@@ -64,12 +64,24 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	// Counting from the frame E is pressed, it takes an average of 1.79 seconds for a character to be able to pick one up
 	// https://library.keqingmains.com/evidence/characters/electro/traveler-electro#amulets-delay
-	amuletDelay := 107 // ~1.79s
+	amuletDelay := p["amulet_delay"]
+	//make it so that it can't be faster than 1.79s
+	if amuletDelay < 107 {
+		amuletDelay = 107 // ~1.79s
+	}
 
-	c.QueueParticle(c.Name(), 1, core.Electro, f+100)
+	//particles appear to be generated if the blades lands but capped at 1
+	partCount := 0
+	particlesCB := func(atk core.AttackCB) {
+		if partCount > 0 {
+			return
+		}
+		partCount++
+		c.QueueParticle(c.Name(), 1, core.Electro, 100) //this way we're future proof if for whatever reason this misses
+	}
 
 	for i := 0; i < hits; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, func(atk core.AttackCB) {
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, particlesCB, func(atk core.AttackCB) {
 			// generate amulet if generated amulets < limit
 			if c.abundanceAmulets >= maxAmulets {
 				return

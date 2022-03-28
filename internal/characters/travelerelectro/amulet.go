@@ -35,7 +35,9 @@ func (c *char) collectAmulets(f int, collector core.Character) bool {
 
 	// handle a1 - When another nearby character in the party obtains an Abundance Amulet created by Lightning Blade,
 	//   Lightning Blade's CD is decreased by 1.5s.
-	c.ReduceActionCooldown(core.ActionSkill, 90)
+	if collector.Key() != core.TravelerElectro {
+		c.ReduceActionCooldown(core.ActionSkill, 90)
+	}
 
 	// apply ER mod
 	modDuration := 360 // 6s
