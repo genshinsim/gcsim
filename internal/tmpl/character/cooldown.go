@@ -105,7 +105,8 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 	c.Tags["skill_charge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
-	c.cdQueueWorkerStartedAt[a] = c.Core.F - 1
+	c.cdQueueWorkerStartedAt[a] = c.Core.F
+	c.cdCurrentQueueWorker[a] = nil
 	c.Core.Log.NewEventBuildMsg(
 		core.LogActionEvent,
 		c.Index,
@@ -155,19 +156,19 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 	if len(c.cdQueue[a]) == 0 {
 		return
 	}
+
 	//set the time we starter this worker at
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
-	src := c.Core.F
+	var src *func()
 
 	//reduce the first item by the current cooldown reduction
 	if cdReduct {
 		c.cdQueue[a][0] = c.cdReduction(a, c.cdQueue[a][0])
 	}
 
-	//wait for c.cooldownQueue[a][0], then add a stack
-	c.AddTask(func() {
+	worker := func() {
 		//check if src changed; if so do nothing
-		if src != c.cdQueueWorkerStartedAt[a] {
+		if src != c.cdCurrentQueueWorker[a] {
 			// c.Core.Log.Debugw("src changed",  "src", src, "new", c.cdQueueWorkerStartedAt[a])
 			return
 		}
@@ -175,7 +176,7 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 		//check to make sure queue is not 0
 		if len(c.cdQueue[a]) == 0 {
 			//this should never happen
-			panic(fmt.Sprintf("queue is empty? character :%v, frame : %v, worker src: %v", c.Name(), c.Core.F, src))
+			panic(fmt.Sprintf("queue is empty? character :%v, frame : %v, worker src: %v, started: %v", c.Name(), c.Core.F, src, c.cdQueueWorkerStartedAt[a]))
 			// return
 		}
 		//otherwise add a stack and pop first item in queue
@@ -207,7 +208,14 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 			c.startCooldownQueueWorker(a, true)
 		}
 
-	}, "cooldown-worker-"+a.String(), c.cdQueue[a][0])
+	}
+
+	c.cdCurrentQueueWorker[a] = &worker
+	src = &worker
+
+	//wait for c.cooldownQueue[a][0], then add a stack
+	c.AddTask(worker, "cooldown-worker-"+a.String(), c.cdQueue[a][0])
+
 }
 
 func (c *Tmpl) cdReduction(a core.ActionType, dur int) int {
