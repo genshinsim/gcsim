@@ -199,14 +199,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// dStormcluster.Targets = core.TargetAll
 
-	c1cb := make([]core.AttackCBFunc, 0, 1)
+	var c1cb core.AttackCBFunc
 	if c.Base.Cons >= 1 {
-		c1cb = append(c1cb, func(a core.AttackCB) { c.c1() })
+		c1cb = func(a core.AttackCB) { c.c1() }
 	}
 
 	if waveClusterHits%10 == 1 {
 		// Actual hit procs after the full cast duration, or 50 frames
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 47, 50, c1cb...)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 47, 50, c1cb)
 	}
 	if waveAttackProcs%10 == 1 {
 		c.attackBuff(50)
@@ -225,7 +225,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
 		if waveHits > 0 {
 			for j := 0; j < waveHits; j++ {
-				c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 47, 100+18*waveN, c1cb...)
+				c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 47, 100+18*waveN, c1cb)
 			}
 		}
 		if waveAttackProc == 1 {
