@@ -48,6 +48,7 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 		a.String(), " cooldown triggered",
 	).Write(
 		"type", a.String(),
+		"expiry", c.Cooldown(a),
 		"charges_remain", c.AvailableCDCharge,
 		"cooldown_queue", c.cdQueue,
 	)
@@ -85,9 +86,10 @@ func (c *Tmpl) Cooldown(a core.ActionType) int {
 	if c.AvailableCDCharge[a] > 0 {
 		return 0
 	}
-	//otherwise check our queue
+	//otherwise check our queue; if zero then it's ready
 	if len(c.cdQueue) == 0 {
-		panic("queue length is somehow 0??")
+		// panic("queue length is somehow 0??")
+		return 0
 	}
 	return c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F
 }
@@ -139,6 +141,7 @@ func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 		a.String(), " cooldown forcefully reduced",
 	).Write(
 		"type", a.String(),
+		"expiry", c.Cooldown(a),
 		"charges_remain", c.AvailableCDCharge,
 		"cooldown_queue", c.cdQueue,
 	)
