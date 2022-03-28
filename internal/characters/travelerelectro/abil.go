@@ -2,6 +2,7 @@ package travelerelectro
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -33,7 +34,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ActorIndex: c.Index,
 		Abil:       "Lightning Blade",
 		AttackTag:  core.AttackTagElementalArt,
-		ICDTag:     core.ICDTagNone,
+		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeDefault,
 		Element:    core.Electro,
@@ -63,12 +64,24 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	// Counting from the frame E is pressed, it takes an average of 1.79 seconds for a character to be able to pick one up
 	// https://library.keqingmains.com/evidence/characters/electro/traveler-electro#amulets-delay
-	amuletDelay := 107 // ~1.79s
+	amuletDelay := p["amulet_delay"]
+	//make it so that it can't be faster than 1.79s
+	if amuletDelay < 107 {
+		amuletDelay = 107 // ~1.79s
+	}
 
-	c.QueueParticle(c.Name(), 1, core.Electro, f+100)
+	//particles appear to be generated if the blades lands but capped at 1
+	partCount := 0
+	particlesCB := func(atk core.AttackCB) {
+		if partCount > 0 {
+			return
+		}
+		partCount++
+		c.QueueParticle(c.Name(), 1, core.Electro, 100) //this way we're future proof if for whatever reason this misses
+	}
 
 	for i := 0; i < hits; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, func(atk core.AttackCB) {
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, particlesCB, func(atk core.AttackCB) {
 			// generate amulet if generated amulets < limit
 			if c.abundanceAmulets >= maxAmulets {
 				return
@@ -102,15 +115,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ActorIndex: c.Index,
 		Abil:       "Bellowing Thunder",
 		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeDefault,
+		StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Electro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, f)
 
 	//1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
 	c.ConsumeEnergy(42)
@@ -121,8 +134,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	procAI := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Falling Thunder Proc (Q)",
-		AttackTag:  core.AttackTagNone,
-		ICDTag:     core.ICDTagNone,
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
 		Durability: 25,
@@ -170,7 +183,9 @@ func (c *char) burstProc() {
 		// Use burst snapshot, update target & source frame
 		atk := *c.burstAtk
 		atk.SourceFrame = c.Core.F
-		atk.Pattern = core.NewDefSingleTarget(t.Index(), core.TargettableEnemy)
+		//attack is 2 (or 2.5 for enhanced) aoe centered on target
+		x, y := t.Shape().Pos()
+		atk.Pattern = core.NewCircleHit(x, y, 2, false, core.TargettableEnemy)
 
 		// C2 - Violet Vehemence
 		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
