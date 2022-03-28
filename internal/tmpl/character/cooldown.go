@@ -105,7 +105,7 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 	c.Tags["skill_charge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
-	c.cdQueueWorkerStartedAt[a] = -1
+	c.cdQueueWorkerStartedAt[a] = c.Core.F - 1
 	c.Core.Log.NewEventBuildMsg(
 		core.LogActionEvent,
 		c.Index,
