@@ -2,6 +2,7 @@ package travelerelectro
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -102,15 +103,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ActorIndex: c.Index,
 		Abil:       "Bellowing Thunder",
 		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeDefault,
+		StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Electro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, f)
 
 	//1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
 	c.ConsumeEnergy(42)
@@ -121,8 +122,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	procAI := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Falling Thunder Proc (Q)",
-		AttackTag:  core.AttackTagNone,
-		ICDTag:     core.ICDTagNone,
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
 		Durability: 25,
@@ -170,7 +171,9 @@ func (c *char) burstProc() {
 		// Use burst snapshot, update target & source frame
 		atk := *c.burstAtk
 		atk.SourceFrame = c.Core.F
-		atk.Pattern = core.NewDefSingleTarget(t.Index(), core.TargettableEnemy)
+		//attack is 2 (or 2.5 for enhanced) aoe centered on target
+		x, y := t.Shape().Pos()
+		atk.Pattern = core.NewCircleHit(x, y, 2, false, core.TargettableEnemy)
 
 		// C2 - Violet Vehemence
 		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
