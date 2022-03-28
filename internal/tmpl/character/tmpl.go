@@ -16,6 +16,7 @@ type Tmpl struct {
 	//cooldown related
 	ActionCD               []int
 	cdQueueWorkerStartedAt []int
+	cdCurrentQueueWorker   []*func()
 	cdQueue                [][]int
 	AvailableCDCharge      []int
 	additionalCDCharge     []int
@@ -91,6 +92,7 @@ func NewTemplateChar(x *core.Core, p core.CharacterProfile) (*Tmpl, error) {
 	t.cancelFrames = make(map[core.ActionType]map[core.ActionType]int)
 
 	t.cdQueueWorkerStartedAt = make([]int, core.EndActionType)
+	t.cdCurrentQueueWorker = make([]*func(), core.EndActionType)
 	t.cdQueue = make([][]int, core.EndActionType)
 	t.additionalCDCharge = make([]int, core.EndActionType)
 	t.AvailableCDCharge = make([]int, core.EndActionType)
