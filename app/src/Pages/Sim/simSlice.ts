@@ -21,6 +21,7 @@ export interface Sim {
   workers: number;
   cfg: string;
   advanced_cfg: string;
+  adv_cfg_err: string;
   run: RunStats;
   showTips: boolean;
 }
@@ -39,6 +40,7 @@ const initialState: Sim = {
   workers: 3,
   cfg: "",
   advanced_cfg: "",
+  adv_cfg_err: "",
   run: defaultRunStat,
   showTips: true,
 };
@@ -91,6 +93,40 @@ export function setTotalWorkers(count: number): AppThunk {
   };
 }
 
+export function updateAdvConfig(cfg: string): AppThunk {
+  return function (dispatch) {
+    dispatch(simActions.setAdvCfg(cfg));
+    const setConfig = () =>
+      new Promise((resolve, reject) => {
+        pool.setCfg(cfg, (val) => {
+          // console.log("set config callback: " + val);
+          try {
+            const res = JSON.parse(val);
+            console.log(res);
+            if (res.err) {
+              reject(res.err);
+            } else {
+              resolve(res);
+            }
+          } catch {
+            reject("unexpected err parsing json");
+          }
+        });
+      });
+
+    setConfig()
+      .then((res) => {
+        console.log(res);
+        // dispatch(simActions.setAdvCfg(cfg));
+        dispatch(simActions.setAdvCfgErr(""));
+      })
+      .catch((err) => {
+        //set error state
+        dispatch(simActions.setAdvCfgErr(err));
+      });
+  };
+}
+
 const optionsRegex = /^(options.+;)/;
 const charBlockRegEx =
   /####----GENERATED CHARACTER BLOCK DO NOT EDIT----####[^]+####----END GENERATED CHARACTER BLOCK DO NOT EDIT----####/;
@@ -120,6 +156,10 @@ export const simSlice = createSlice({
     },
     setAdvCfg: (state, action: PayloadAction<string>) => {
       state.advanced_cfg = action.payload;
+      return state;
+    },
+    setAdvCfgErr: (state, action: PayloadAction<string>) => {
+      state.adv_cfg_err = action.payload;
       return state;
     },
     setCharacterNameAndEle: (

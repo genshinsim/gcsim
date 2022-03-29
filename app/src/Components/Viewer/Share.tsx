@@ -32,7 +32,7 @@ export const AppToaster = Toaster.create({
 });
 
 export default function Share(props: ShareProps) {
-  let { t } = useTranslation()
+  let { t } = useTranslation();
 
   const [loading, setIsLoading] = React.useState<boolean>(false);
   const [errMsg, setErrMsg] = React.useState<string>("");
@@ -106,7 +106,10 @@ export default function Share(props: ShareProps) {
   const handleCopy = () => {
     navigator.clipboard.writeText(`https://gcsim.app/viewer/share/${url}`).then(
       () => {
-        AppToaster.show({ message: t("viewer.copied_to_clipboard"), intent: "success" });
+        AppToaster.show({
+          message: t("viewer.copied_to_clipboard"),
+          intent: "success",
+        });
       },
       () => {
         AppToaster.show({
@@ -120,7 +123,9 @@ export default function Share(props: ShareProps) {
   return (
     <div className="wide:w-[70rem] ml-auto mr-auto bg-gray-600 rounded-md p-4 flex flex-col gap-2">
       <div>
-        <div className="font-bold text-lg mb-2"><Trans>viewer.create_a_shareable</Trans></div>
+        <div className="font-bold text-lg mb-2">
+          <Trans>viewer.create_a_shareable</Trans>
+        </div>
         <div>
           <Trans>viewer.note_that_by</Trans>
         </div>
@@ -167,7 +172,9 @@ export default function Share(props: ShareProps) {
             <div className="flex flex-col gap-2 place-items-center">
               <span className="text-lg">
                 <Trans>viewer.link_pre</Trans>
-                {isPerm ? t("viewer.link_is_permanent") : t("viewer.link_will_expire")}
+                {isPerm
+                  ? t("viewer.link_is_permanent")
+                  : t("viewer.link_will_expire")}
                 <Trans>viewer.link_post</Trans>
               </span>
               <div className="p-2 rounded-md bg-green-700">

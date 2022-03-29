@@ -46,10 +46,16 @@ export function runSim(cfg: string): AppThunk {
       const p = new Promise((resolve, reject) => {
         pool.setCfg(cfg, (val) => {
           console.log("set config callback: " + val);
-          if (val !== "ok") {
+          try {
+            const res = JSON.parse(val);
+            console.log(res);
+            if (res.err) {
+              reject(res.err);
+            } else {
+              resolve(null);
+            }
+          } catch {
             reject(val);
-          } else {
-            resolve(null);
           }
         });
       });

@@ -24,7 +24,18 @@ export function ActionList(props: Props) {
       <Editor
         value={props.cfg}
         onValueChange={(code) => props.onChange(code)}
-        highlight={(code) => highlight(code, languages.gcsim)}
+        textareaId="codeArea"
+        className="editor"
+        highlight={(code) =>
+          highlight(code, languages.gcsim)
+            .split("\n")
+            .map(
+              //@ts-ignore
+              (line, i) =>
+                `<span class='editorLineNumber'>${i + 1}</span>${line}`
+            )
+            .join("\n")
+        }
         insertSpaces
         padding={10}
         style={{

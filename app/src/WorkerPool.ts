@@ -98,8 +98,8 @@ export class WorkerPool {
         count++;
         // we need to count how many are ok...
         if (count === max) {
-          console.log("all configs loaded");
-          console.log(pool);
+          // console.log("all configs loaded");
+          // console.log(pool);
           cb(ev.data);
         }
       };
