@@ -3,16 +3,16 @@ package core
 //SimulationConfig describes the required settings to run an simulation
 type SimulationConfig struct {
 	//these settings relate to each simulation iteration
-	DamageMode bool
-	Targets    []EnemyProfile
+	DamageMode bool           `json:"damage_mode"`
+	Targets    []EnemyProfile `json:"targets"`
 	Characters struct {
 		Initial CharKey
 		Profile []CharacterProfile
-	}
-	Rotation []ActionBlock
-	Hurt     HurtEvent
-	Energy   EnergyEvent
-	Settings SimulatorSettings
+	} `json:"characters"`
+	Rotation []ActionBlock     `json:"-"`
+	Hurt     HurtEvent         `json:"-"`
+	Energy   EnergyEvent       `json:"-"`
+	Settings SimulatorSettings `json:"-"`
 }
 
 func (c *SimulationConfig) Clone() SimulationConfig {
@@ -99,21 +99,21 @@ type CharacterBase struct {
 	Element  EleType `json:"element"`
 	Level    int     `json:"level"`
 	MaxLevel int     `json:"max_level"`
-	HP       float64 `json:"-"`
-	Atk      float64 `json:"-"`
-	Def      float64 `json:"-"`
+	HP       float64 `json:"base_hp"`
+	Atk      float64 `json:"base_atk"`
+	Def      float64 `json:"base_def"`
 	Cons     int     `json:"cons"`
-	StartHP  float64 `json:"-"`
+	StartHP  float64 `json:"start_hp"`
 }
 
 type WeaponProfile struct {
 	Name     string         `json:"name"`
-	Key      string         `json:""` //use this to match with weapon curve mapping
+	Key      string         `json:"key"` //use this to match with weapon curve mapping
 	Class    WeaponClass    `json:"-"`
 	Refine   int            `json:"refine"`
 	Level    int            `json:"level"`
 	MaxLevel int            `json:"max_level"`
-	Atk      float64        `json:"-"`
+	Atk      float64        `json:"base_atk"`
 	Params   map[string]int `json:"-"`
 }
 
