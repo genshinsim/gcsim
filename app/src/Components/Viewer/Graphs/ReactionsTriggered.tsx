@@ -19,7 +19,7 @@ export default function ReactionsTriggered({ data }: { data: SimResults }) {
       </span>
       <ResponsiveContainer width="95%" height={288}>
         <BarChart data={reactionsTriggered}>
-          <Tooltip />
+          <Tooltip labelStyle={{ color: "black" }} />
           <YAxis type="number" dataKey="value" tick={{ fill: "white" }} />
           <XAxis type="category" dataKey="name" tick={{ fill: "white" }} />
           <Bar dataKey="value" cx="50%" cy="50%" isAnimationActive={false}>

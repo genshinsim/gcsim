@@ -137,7 +137,7 @@ export function ConsolidateCharStats(chars: Character[]): {
     phys: {
       name: "phys%",
       flatIndex: -1,
-      percentIndex: StatToIndexMap["PhysP"],
+      percentIndex: StatToIndexMap["PhyP"],
       val: {},
       count: 0,
       t: "%",

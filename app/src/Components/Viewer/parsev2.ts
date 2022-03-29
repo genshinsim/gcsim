@@ -62,7 +62,7 @@ export function parseLogV2(
         return;
       }
       if (!(line.ended in ended)) {
-        slots = [];
+        let slots = [];
         for (var i = 0; i <= team.length; i++) {
           slots.push([]);
         }
@@ -75,7 +75,7 @@ export function parseLogV2(
       const index = line.char_index + 1;
       let e: DebugItem = {
         frame: line.frame,
-        msg: key + " expired",
+        msg: key + " expired" + strFrameWithSec(line.frame),
         raw: JSON.stringify(line, null, 2),
         event: line.event,
         char: index,
@@ -83,6 +83,7 @@ export function parseLogV2(
         icon: "iso",
         amount: 0,
         target: "",
+        added: line.frame,
         ended: line.ended,
       };
       ended[e.ended][index].push(e);
@@ -147,6 +148,7 @@ export function parseLogV2(
       icon: "circle",
       amount: 0,
       target: "",
+      added: line.frame,
       ended: line.ended,
     };
 
@@ -154,13 +156,16 @@ export function parseLogV2(
       e.color = "#6B7280";
     }
 
+    const d = line.logs;
+    //hightlight active char
+    if (e.event === "action" && line.msg.includes("executed") && d.action === "swap") {
+      activeIndex = e.char
+    }
     //skip if event is not in selected
     if (selected.indexOf(e.event) == -1) {
       return;
     }
-
-    const d = line.logs;
-    //set icon/color etc... based one vent
+    //set icon/color etc... based on event
     switch (e.event) {
       case "damage":
         //grab dmg amount
@@ -199,7 +204,6 @@ export function parseLogV2(
         break;
       case "action":
         if (line.msg.includes("executed") && d.action === "swap") {
-          activeIndex = team.findIndex((e) => e === d.target) + 1;
           e.msg += " to " + d.target;
         }
 
@@ -270,7 +274,7 @@ export function parseLogV2(
             Math.floor(d["post_recovery"]);
         }
         if (e.msg.includes("adding energy")) {
-          e.msg = "adding " + ` ${d["rec'd"]}` + " energy from " + d.source + ", next: " + Math.floor(d["post_recovery"]);
+          e.msg = "adding " + d["rec'd"].toFixed(2) + " energy from " + d.source + ", next: " + Math.floor(d["post_recovery"]);
         }
         if (d["post_recovery"] == d["max_energy"] && d["max_energy"]) {
           e.msg += " (max)"
@@ -324,6 +328,21 @@ export function parseLogV2(
             e.msg = d.key + " " + e.msg;
         }
 
+        // this hacky but i don't care
+        if (e.ended === e.frame && line.msg.includes("refreshed")) {
+          let idx = lines.findIndex((a) => {
+            return a.event === "status"
+              && line.char_index === a.char_index
+              && !a.logs.overwrite
+              && a.logs.key === line.logs.key
+              && line.frame >= a.frame && line.frame < a.ended
+          })
+          if (idx !== -1) {
+            e.added = lines[idx].frame
+            e.ended = lines[idx].ended
+          }
+        }
+
         if (d.target != undefined) {
           e.target = d.target;
         }
@@ -335,42 +354,50 @@ export function parseLogV2(
     slots[index].push(e);
     added = true;
   });
+  if (added) {
+    result.push({
+      key: lastFrame,
+      f: lastFrame,
+      slots: slots,
+      active: activeIndex,
+    });
+  }
 
   //append in ended status
   console.log(ended);
 
-  let idx = -1;
-  for (let f = 0; f <= finalFrame; f++) {
-    //check if this frame is in results, if so shift idx 1 up to match
-    if (idx + 1 < result.length && result[idx + 1].f === f) {
-      //this way idx always tracks result.f such that result.f is either == f
-      //or the large closests but not > then f
-      idx++;
-    }
-    //check if there's an event in this frame, if not skip
-    if (!(f in ended)) {
-      continue;
-    }
-    //skip if idx is -1?
-    // console.log(idx);
-    if (idx === -1) {
-      continue;
-    }
-    //now check if result[idx] is same as f; if so append
-    //otherwise create new
-    if (result[idx].f === f) {
-      for (let j = 0; j < result[idx].slots.length; j++) {
-        result[idx].slots[j].push(...ended[f][j]);
+  if (selected.indexOf("status") != -1) {
+    for (let f = -1; f <= finalFrame; f++) {
+      if (!(f in ended)) {
+        continue;
       }
-    } else {
+
+      let idx = result.findIndex((e) => e.f === f);
+      if (idx !== -1) {
+        for (let j = 0; j < result[idx].slots.length; j++) {
+          result[idx].slots[j].push(...ended[f][j]);
+        }
+        continue
+      }
+
+      // TODO: set active correctly instead of using last one. only matters if action log is disabled
+      let active = 0;
+      let insertAt = result.findIndex((r, i) => {
+        active = result[i].active
+        return r.f > f
+      })
+
       const x = {
         key: f,
         f: f,
         slots: ended[f],
-        active: result[idx].active,
+        active: active,
       };
-      result.splice(idx + 1, 0, x);
-      idx++;
+      if (insertAt !== -1) {
+        result.splice(insertAt, 0, x);
+      } else {
+        result.push(x);
+      }
     }
   }
 

@@ -76,7 +76,7 @@ export function Debugger({ data, team }: { data: DebugRow[]; team: string[] }) {
     // const show = hl.show;
     let next = {
       show: true,
-      start: e.frame,
+      start: e.added,
       end: e.ended,
     };
     sethl(next);

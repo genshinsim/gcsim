@@ -4,26 +4,6 @@ import TeamView from "./Team/TeamView";
 import DPSOverTime from "./Graphs/DPSOverTime";
 import { Trans, useTranslation } from "react-i18next";
 
-const DEFP = 1;
-const DEF = 2;
-const HP = 3;
-const HPP = 4;
-const ATK = 5;
-const ATKP = 6;
-const ER = 7;
-const EM = 8;
-const CR = 9;
-const CD = 10;
-const Heal = 11;
-const PyroP = 12;
-const HydroP = 13;
-const CryoP = 14;
-const ElectroP = 15;
-const AnemoP = 16;
-const GeoP = 17;
-const PhysP = 18;
-const DendroP = 19;
-
 export default function Summary({ data }: { data: SimResults }) {
   let { t } = useTranslation()
 
