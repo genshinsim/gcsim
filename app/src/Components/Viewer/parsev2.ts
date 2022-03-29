@@ -274,7 +274,11 @@ export function parseLogV2(
             Math.floor(d["post_recovery"]);
         }
         if (e.msg.includes("adding energy")) {
-          e.msg = "adding " + d["rec'd"].toFixed(2) + " energy from " + d.source + ", next: " + Math.floor(d["post_recovery"]);
+          let amt = d["rec'd"]
+          if (typeof amt === "number") {
+            amt = amt.toFixed(2)
+          }
+          e.msg = "adding " + amt + " energy from " + d.source + ", next: " + Math.floor(d["post_recovery"]);
         }
         if (d["post_recovery"] == d["max_energy"] && d["max_energy"]) {
           e.msg += " (max)"
