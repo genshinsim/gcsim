@@ -62,6 +62,8 @@ func (q *Queuer) evalCond(cond core.Condition) (bool, error) {
 		return q.evalInfusion(cond)
 	case ".construct":
 		return q.evalConstruct(cond)
+	case ".counter":
+		return q.evalCounter(cond)
 	}
 	return false, nil
 }

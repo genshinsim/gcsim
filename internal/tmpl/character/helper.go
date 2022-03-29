@@ -7,3 +7,7 @@ func (c *Tmpl) AdvanceNormalIndex() {
 		c.NormalCounter = 0
 	}
 }
+
+func (c *Tmpl) CurrentNormalCounter() int {
+	return c.NormalCounter
+}
