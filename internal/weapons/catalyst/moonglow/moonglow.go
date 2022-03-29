@@ -26,6 +26,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	nabuff := 0.005 + float64(r)*0.005
 	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
+			return false
+		}
 		if atk.Info.AttackTag != core.AttackTagNormal {
 			return false
 		}
