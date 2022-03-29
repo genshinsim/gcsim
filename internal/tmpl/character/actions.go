@@ -1,7 +1,6 @@
 package character
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
@@ -37,12 +36,12 @@ func (c *Tmpl) Dash(p map[string]int) (int, int) {
 	return 24, 24
 }
 
-func (c *Tmpl) ActionStam(a core.ActionType, p map[string]int) float64 {
+func (c *Tmpl) ActionStam(a coretype.ActionType, p map[string]int) float64 {
 	switch a {
-	case core.ActionDash:
+	case coretype.ActionDash:
 		return 18
 	default:
-		c.coretype.Log.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index)
+		c.Core.NewEvent("ActionStam not implemented", coretype.LogActionEvent, c.Index)
 		return 0
 	}
 }

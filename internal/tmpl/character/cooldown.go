@@ -3,11 +3,11 @@ package character
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 //SetCD takes two parameters:
-//	- a core.ActionType: this is the action type we are triggering the cooldown for
+//	- a coretype.ActionType: this is the action type we are triggering the cooldown for
 //  - dur: duration in frames that the cooldown should last for
 //It is assumed that AvailableCDCharges[a] > 0 (otherwise action should not have been allowed)
 //
@@ -26,7 +26,7 @@ import (
 //ReduceActionCooldown or ResetActionCooldown gets called, we start a new worker, updating
 //cdQueueWorkerStartedAt[a] to represent the new worker start frame. This way the old worker can
 //check this value first and then gracefully exit if it no longer matches its starting frame
-func (c *Tmpl) SetCD(a core.ActionType, dur int) {
+func (c *Tmpl) SetCD(a coretype.ActionType, dur int) {
 	//setting cd is just adding a cd to the recovery queue
 	//add current action and duration to the queue
 	c.cdQueue[a] = append(c.cdQueue[a], dur)
@@ -42,8 +42,8 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 	if c.Tags["skill_charge"] > 0 {
 		c.Tags["skill_charge"]--
 	}
-	c.Core.Log.NewEventBuildMsg(
-		core.LogActionEvent,
+	c.Core.NewEventBuildMsg(
+		coretype.LogActionEvent,
 		c.Index,
 		a.String(), " cooldown triggered",
 	).Write(
@@ -54,26 +54,26 @@ func (c *Tmpl) SetCD(a core.ActionType, dur int) {
 	)
 }
 
-func (c *Tmpl) SetNumCharges(a core.ActionType, num int) {
+func (c *Tmpl) SetNumCharges(a coretype.ActionType, num int) {
 	c.additionalCDCharge[a] = num - 1
 	c.AvailableCDCharge[a] = num
 }
 
-func (c *Tmpl) Charges(a core.ActionType) int {
+func (c *Tmpl) Charges(a coretype.ActionType) int {
 	return c.AvailableCDCharge[a]
 }
 
 //TODO: energy calc mode currently not working. we need to reset action or else we might get
 //charges < 0 while trying to SetCD
-func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
+func (c *Tmpl) ActionReady(a coretype.ActionType, p map[string]int) bool {
 	//up if energy is ready && stack > 0
-	if a == core.ActionBurst && (c.Energy != c.EnergyMax) {
+	if a == coretype.ActionBurst && (c.Energy != c.EnergyMax) {
 		return false
 	}
 	return c.AvailableCDCharge[a] > 0
 }
 
-func (c *Tmpl) SetCDWithDelay(a core.ActionType, dur int, delay int) {
+func (c *Tmpl) SetCDWithDelay(a coretype.ActionType, dur int, delay int) {
 	if delay == 0 {
 		c.SetCD(a, dur)
 		return
@@ -81,7 +81,7 @@ func (c *Tmpl) SetCDWithDelay(a core.ActionType, dur int, delay int) {
 	c.AddTask(func() { c.SetCD(a, dur) }, "set-cd", delay)
 }
 
-func (c *Tmpl) Cooldown(a core.ActionType) int {
+func (c *Tmpl) Cooldown(a coretype.ActionType) int {
 	//remaining cooldown is src + first item in queue - current frame
 	if c.AvailableCDCharge[a] > 0 {
 		return 0
@@ -91,10 +91,10 @@ func (c *Tmpl) Cooldown(a core.ActionType) int {
 		// panic("queue length is somehow 0??")
 		return 0
 	}
-	return c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F
+	return c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F()
 }
 
-func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
+func (c *Tmpl) ResetActionCooldown(a coretype.ActionType) {
 	//if stacks already maxed then do nothing
 	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
 		return
@@ -105,10 +105,10 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 	c.Tags["skill_charge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
-	c.cdQueueWorkerStartedAt[a] = c.Core.F
+	c.cdQueueWorkerStartedAt[a] = c.Core.F()
 	c.cdCurrentQueueWorker[a] = nil
-	c.Core.Log.NewEventBuildMsg(
-		core.LogActionEvent,
+	c.Core.NewEventBuildMsg(
+		coretype.LogActionEvent,
 		c.Index,
 		a.String(), " cooldown forcefully reset",
 	).Write(
@@ -122,13 +122,13 @@ func (c *Tmpl) ResetActionCooldown(a core.ActionType) {
 	}
 }
 
-func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
+func (c *Tmpl) ReduceActionCooldown(a coretype.ActionType, v int) {
 	//do nothing if stacks already maxed
 	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
 		return
 	}
 	//check if reduction > time remaing? if so then call reset cd
-	remain := c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F
+	remain := c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F()
 	//log.Printf("hello reducing; reduction %v, remaining %v, frame %v, old queue %v\n", v, remain, c.Core.F, c.cdQueue[a])
 	if v >= remain {
 		c.ResetActionCooldown(a)
@@ -136,8 +136,8 @@ func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 	}
 	//otherwise reduce remain and restart queue
 	c.cdQueue[a][0] = remain - v
-	c.Core.Log.NewEventBuildMsg(
-		core.LogActionEvent,
+	c.Core.NewEventBuildMsg(
+		coretype.LogActionEvent,
 		c.Index,
 		a.String(), " cooldown forcefully reduced",
 	).Write(
@@ -150,7 +150,7 @@ func (c *Tmpl) ReduceActionCooldown(a core.ActionType, v int) {
 	//log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
 }
 
-func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
+func (c *Tmpl) startCooldownQueueWorker(a coretype.ActionType, cdReduct bool) {
 	//check the length of the queue for action a, if there's nothing then there's
 	//nothing to start
 	if len(c.cdQueue[a]) == 0 {
@@ -158,7 +158,7 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 	}
 
 	//set the time we starter this worker at
-	c.cdQueueWorkerStartedAt[a] = c.Core.F
+	c.cdQueueWorkerStartedAt[a] = c.Core.F()
 	var src *func()
 
 	//reduce the first item by the current cooldown reduction
@@ -193,8 +193,8 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 			// return
 		}
 
-		c.Core.Log.NewEventBuildMsg(
-			core.LogActionEvent,
+		c.Core.NewEventBuildMsg(
+			coretype.LogActionEvent,
 			c.Index,
 			a.String(), " cooldown ready",
 		).Write(
@@ -218,14 +218,14 @@ func (c *Tmpl) startCooldownQueueWorker(a core.ActionType, cdReduct bool) {
 
 }
 
-func (c *Tmpl) cdReduction(a core.ActionType, dur int) int {
+func (c *Tmpl) cdReduction(a coretype.ActionType, dur int) int {
 	var cd float64 = 1
 	n := 0
 	for _, v := range c.CDReductionFuncs {
 		//if not expired
 		if v.Expiry == -1 || v.Expiry > c.Core.F {
 			amt := v.Amount(a)
-			c.Core.Log.NewEvent("applying cooldown modifier", core.LogActionEvent, c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
+			c.Core.NewEvent("applying cooldown modifier", coretype.LogActionEvent, c.Index, "key", v.Key, "modifier", amt, "expiry", v.Expiry)
 			cd += amt
 			c.CDReductionFuncs[n] = v
 			n++
@@ -236,7 +236,7 @@ func (c *Tmpl) cdReduction(a core.ActionType, dur int) int {
 	return int(float64(dur) * cd)
 }
 
-func (c *Tmpl) AddCDAdjustFunc(rd core.CDAdjust) {
+func (c *Tmpl) AddCDAdjustFunc(rd coretype.CDAdjust) {
 	ind := -1
 	for i, v := range c.CDReductionFuncs {
 		//if expired already, set to nil and ignore

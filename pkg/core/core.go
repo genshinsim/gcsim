@@ -80,6 +80,10 @@ func New() *Core {
 	return c
 }
 
+func (c *Core) R() *rand.Rand {
+	return c.Rand
+}
+
 func (c *Core) F() int {
 	return c.Frame
 }

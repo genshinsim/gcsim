@@ -12,7 +12,7 @@ func (t *Tmpl) Stat(s coretype.StatType) float64 {
 	val := t.Stats[s]
 	for _, m := range t.Mods {
 		//ignore this mod if stat type doesnt match
-		if m.AffectedStat != core.NoStat && m.AffectedStat != s {
+		if m.AffectedStat != coretype.NoStat && m.AffectedStat != s {
 			continue
 		}
 		amt, ok := m.Amount()
@@ -24,21 +24,21 @@ func (t *Tmpl) Stat(s coretype.StatType) float64 {
 	return val
 }
 
-func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
+func (c *Tmpl) Snapshot(a *coretype.AttackInfo) coretype.Snapshot {
 
-	s := core.Snapshot{
+	s := coretype.Snapshot{
 		CharLvl:     c.Base.Level,
 		ActorEle:    c.Base.Element,
 		BaseAtk:     c.Base.Atk + c.Weapon.Atk,
 		BaseDef:     c.Base.Def,
-		SourceFrame: c.Core.Frame,
+		SourceFrame: c.Core.F(),
 	}
 
-	var evt core.LogEvent = nil
+	var evt coretype.LogEvent = nil
 	var debug []interface{}
 
 	if c.Core.Flags.LogDebug {
-		evt = c.coretype.Log.NewEvent(
+		evt = c.Core.NewEvent(
 			a.Abil, coretype.LogSnapshotEvent, c.Index,
 			"abil", a.Abil,
 			"mult", a.Mult,
@@ -56,7 +56,7 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 	var inf coretype.EleType
 	if !a.IgnoreInfusion {
 		inf = c.infusionCheck(a.AttackTag)
-		if inf != core.NoElement {
+		if inf != coretype.NoElement {
 			a.Element = inf
 		}
 	}
@@ -65,7 +65,7 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 	if c.Core.Flags.LogDebug {
 		evt.Write(debug...)
 		evt.Write("final_stats", core.PrettyPrintStatsSlice(s.Stats[:]))
-		if inf != core.NoElement {
+		if inf != coretype.NoElement {
 			evt.Write("infused_ele", inf.String())
 		}
 		s.Logs = debug
@@ -73,7 +73,7 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 	return s
 }
 
-func (c *Tmpl) infusionCheck(a core.AttackTag) coretype.EleType {
+func (c *Tmpl) infusionCheck(a coretype.AttackTag) coretype.EleType {
 	if c.Infusion.Key != "" {
 		ok := false
 		for _, v := range c.Infusion.Tags {
@@ -83,12 +83,12 @@ func (c *Tmpl) infusionCheck(a core.AttackTag) coretype.EleType {
 			}
 		}
 		if ok {
-			if c.Infusion.Expiry > c.Core.Frame || c.Infusion.Expiry == -1 {
+			if c.Infusion.Expiry > c.Core.F() || c.Infusion.Expiry == -1 {
 				return c.Infusion.Ele
 			}
 		}
 	}
-	return core.NoElement
+	return coretype.NoElement
 }
 
 func (c *Tmpl) SnapshotStats() ([core.EndStatType]float64, []interface{}) {
@@ -106,7 +106,7 @@ func (c *Tmpl) SnapshotStats() ([core.EndStatType]float64, []interface{}) {
 	n := 0
 	for _, m := range c.Mods {
 
-		if m.Expiry > c.Core.Frame || m.Expiry == -1 {
+		if m.Expiry > c.Core.F() || m.Expiry == -1 {
 
 			amt, ok := m.Amount()
 			if ok {
@@ -152,7 +152,7 @@ func (c *Tmpl) SnapshotStats() ([core.EndStatType]float64, []interface{}) {
 
 func (c *Tmpl) PreDamageSnapshotAdjust(a *coretype.AttackEvent, t coretype.Target) []interface{} {
 	//skip if this is reaction damage
-	if a.Info.AttackTag >= core.AttackTagNoneStat {
+	if a.Info.AttackTag >= coretype.AttackTagNoneStat {
 		return nil
 	}
 
@@ -166,7 +166,7 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *coretype.AttackEvent, t coretype.Targe
 	n := 0
 	for _, m := range c.PreDamageMods {
 
-		if m.Expiry > c.Core.Frame || m.Expiry == -1 {
+		if m.Expiry > c.Core.F() || m.Expiry == -1 {
 
 			amt, ok := m.Amount(a, t)
 			if ok {
@@ -209,11 +209,11 @@ func (c *Tmpl) PreDamageSnapshotAdjust(a *coretype.AttackEvent, t coretype.Targe
 	return logDetails
 }
 
-func (t *Tmpl) ReactBonus(atk core.AttackInfo) (amt float64) {
+func (t *Tmpl) ReactBonus(atk coretype.AttackInfo) (amt float64) {
 	n := 0
 	for _, m := range t.ReactMod {
 
-		if m.Expiry > t.Core.Frame || m.Expiry == -1 {
+		if m.Expiry > t.Core.F() || m.Expiry == -1 {
 			a, done := m.Amount(atk)
 			amt += a
 			if !done {

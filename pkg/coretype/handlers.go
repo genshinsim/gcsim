@@ -1,5 +1,7 @@
 package coretype
 
+import "math/rand"
+
 type Framer interface {
 	F() int
 }
@@ -12,6 +14,10 @@ type Logger interface {
 	NewEvent(msg string, typ LogSource, srcChar int, keysAndValues ...interface{}) LogEvent
 	NewEventBuildMsg(typ LogSource, srcChar int, msg ...string) LogEvent
 	Dump() ([]byte, error) //print out all the logged events in array of JSON strings in the ordered they were added
+}
+
+type RandomGenerator interface {
+	R() *rand.Rand
 }
 
 type Statuser interface {

@@ -5,12 +5,19 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
+type Core interface {
+	coretype.Framer
+	coretype.EventEmitter
+	coretype.Logger
+	coretype.RandomGenerator
+	coretype.TaskHandler
+}
+
 type Tmpl struct {
-	Core  *core.Core
+	Core  Core
 	Rand  *rand.Rand
 	Index int
 
@@ -23,20 +30,20 @@ type Tmpl struct {
 	additionalCDCharge     []int
 
 	//mods
-	Mods          []core.CharStatMod
-	PreDamageMods []core.PreDamageMod
-	ReactMod      []core.ReactionBonusMod
+	Mods          []coretype.CharStatMod
+	PreDamageMods []coretype.PreDamageMod
+	ReactMod      []coretype.ReactionBonusMod
 	Tags          map[string]int
 	//Profile info
 	Base     coretype.CharacterBase
-	Weapon   core.WeaponProfile
-	Stats    [core.EndStatType]float64
-	Talents  core.TalentProfile
+	Weapon   coretype.WeaponProfile
+	Stats    [coretype.EndStatType]float64
+	Talents  coretype.TalentProfile
 	SkillCon int
 	BurstCon int
-	CharZone core.ZoneType
+	CharZone coretype.ZoneType
 
-	CDReductionFuncs []core.CDAdjust
+	CDReductionFuncs []coretype.CDAdjust
 
 	Energy    float64
 	EnergyMax float64
@@ -49,22 +56,22 @@ type Tmpl struct {
 	NormalCounter int
 
 	//map to track frames
-	normalCancelFrames map[int]map[core.ActionType]int             //this maps normal hit number into
-	cancelFrames       map[core.ActionType]map[core.ActionType]int //this maps all other skills
+	normalCancelFrames map[int]map[coretype.ActionType]int                 //this maps normal hit number into
+	cancelFrames       map[coretype.ActionType]map[coretype.ActionType]int //this maps all other skills
 
 	//infusion
-	Infusion core.WeaponInfusion //TODO currently just overides the old; disregarding any existing
+	Infusion coretype.WeaponInfusion //TODO currently just overides the old; disregarding any existing
 }
 
-func NewTemplateChar(x *core.Core, p coretype.CharacterProfile) (*Tmpl, error) {
+func NewTemplateChar(x Core, p coretype.CharacterProfile) (*Tmpl, error) {
 	t := Tmpl{}
 	t.Core = x
-	t.Rand = x.Rand
+	t.Rand = x.R()
 
-	t.ActionCD = make([]int, core.EndActionType)
+	t.ActionCD = make([]int, coretype.EndActionType)
 	t.Mods = make([]coretype.CharStatMod, 0, 10)
 	t.Tags = make(map[string]int)
-	t.CDReductionFuncs = make([]core.CDAdjust, 0, 5)
+	t.CDReductionFuncs = make([]coretype.CDAdjust, 0, 5)
 	t.Base = p.Base
 	t.Weapon = p.Weapon
 	t.Talents = p.Talents
@@ -83,20 +90,20 @@ func NewTemplateChar(x *core.Core, p coretype.CharacterProfile) (*Tmpl, error) {
 		t.Stats[i] = v
 	}
 	if p.Base.StartHP > -1 {
-		t.coretype.Log.NewEvent("setting starting hp", coretype.LogCharacterEvent, t.Index, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
+		t.Core.NewEvent("setting starting hp", coretype.LogCharacterEvent, t.Index, "character", p.Base.Key.String(), "hp", p.Base.StartHP)
 		t.HPCurrent = p.Base.StartHP
 	} else {
 		t.HPCurrent = math.MaxInt64
 	}
 
-	t.normalCancelFrames = make(map[int]map[core.ActionType]int)
-	t.cancelFrames = make(map[core.ActionType]map[core.ActionType]int)
+	t.normalCancelFrames = make(map[int]map[coretype.ActionType]int)
+	t.cancelFrames = make(map[coretype.ActionType]map[coretype.ActionType]int)
 
-	t.cdQueueWorkerStartedAt = make([]int, core.EndActionType)
-	t.cdCurrentQueueWorker = make([]*func(), core.EndActionType)
-	t.cdQueue = make([][]int, core.EndActionType)
-	t.additionalCDCharge = make([]int, core.EndActionType)
-	t.AvailableCDCharge = make([]int, core.EndActionType)
+	t.cdQueueWorkerStartedAt = make([]int, coretype.EndActionType)
+	t.cdCurrentQueueWorker = make([]*func(), coretype.EndActionType)
+	t.cdQueue = make([][]int, coretype.EndActionType)
+	t.additionalCDCharge = make([]int, coretype.EndActionType)
+	t.AvailableCDCharge = make([]int, coretype.EndActionType)
 
 	for i := 0; i < len(t.cdQueue); i++ {
 		t.cdQueue[i] = make([]int, 0, 4)
@@ -112,15 +119,15 @@ func (t *Tmpl) SetIndex(index int) {
 
 // Character initialization function. Occurs AFTER all char/weapons are initially loaded
 func (t *Tmpl) Init() {
-	hpp := t.Stats[core.HPP]
-	hp := t.Stats[core.HP]
+	hpp := t.Stats[coretype.HPP]
+	hp := t.Stats[coretype.HP]
 
 	for _, m := range t.Mods {
-		if m.Expiry > t.Core.Frame || m.Expiry == -1 {
+		if m.Expiry > t.Core.F() || m.Expiry == -1 {
 			a, ok := m.Amount()
 			if ok {
-				hpp += a[core.HPP]
-				hp += a[core.HP]
+				hpp += a[coretype.HPP]
+				hp += a[coretype.HP]
 			}
 		}
 	}
@@ -140,7 +147,7 @@ func (c *Tmpl) WeaponKey() string {
 	return c.Weapon.Key
 }
 
-func (c *Tmpl) AddWeaponInfuse(inf core.WeaponInfusion) {
+func (c *Tmpl) AddWeaponInfuse(inf coretype.WeaponInfusion) {
 	c.Infusion = inf
 }
 
@@ -153,14 +160,14 @@ func (c *Tmpl) AddPreDamageMod(mod coretype.PreDamageMod) {
 	}
 
 	// check if mod exists and has not expired
-	if ind != -1 && (c.PreDamageMods[ind].Expiry > c.Core.F || c.PreDamageMods[ind].Expiry == -1) {
-		c.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+	if ind != -1 && (c.PreDamageMods[ind].Expiry > c.Core.F() || c.PreDamageMods[ind].Expiry == -1) {
+		c.Core.NewEvent("mod refreshed", coretype.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		mod.Event = c.PreDamageMods[ind].Event
 	} else {
-		mod.Event = c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event = c.Core.NewEvent("mod added", coretype.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 		// append empty mod if we can not reuse mods[ind]
 		if ind == -1 {
-			c.PreDamageMods = append(c.PreDamageMods, core.PreDamageMod{})
+			c.PreDamageMods = append(c.PreDamageMods, coretype.PreDamageMod{})
 			ind = len(c.PreDamageMods) - 1
 		}
 	}
@@ -177,14 +184,14 @@ func (c *Tmpl) AddMod(mod coretype.CharStatMod) {
 	}
 
 	// check if mod exists and has not expired
-	if ind != -1 && (c.Mods[ind].Expiry > c.Core.F || c.Mods[ind].Expiry == -1) {
-		c.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+	if ind != -1 && (c.Mods[ind].Expiry > c.Core.F() || c.Mods[ind].Expiry == -1) {
+		c.Core.NewEvent("mod refreshed", coretype.LogStatusEvent, c.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		mod.Event = c.Mods[ind].Event
 	} else {
-		mod.Event = c.Core.Log.NewEvent("mod added", core.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event = c.Core.NewEvent("mod added", coretype.LogStatusEvent, c.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 		// append empty mod if we can not reuse mods[ind]
 		if ind == -1 {
-			c.Mods = append(c.Mods, core.CharStatMod{})
+			c.Mods = append(c.Mods, coretype.CharStatMod{})
 			ind = len(c.Mods) - 1
 		}
 	}
@@ -204,7 +211,7 @@ func (c *Tmpl) ModIsActive(key string) bool {
 		return false
 	}
 	//check expiry
-	if c.Mods[ind].Expiry < c.Core.Frame && c.Mods[ind].Expiry > -1 {
+	if c.Mods[ind].Expiry < c.Core.F() && c.Mods[ind].Expiry > -1 {
 		return false
 	}
 	_, ok := c.Mods[ind].Amount()
@@ -225,7 +232,7 @@ func (c *Tmpl) PreDamageModIsActive(key string) bool {
 		return false
 	}
 	//check expiry
-	if c.PreDamageMods[ind].Expiry < c.Core.Frame && c.PreDamageMods[ind].Expiry > -1 {
+	if c.PreDamageMods[ind].Expiry < c.Core.F() && c.PreDamageMods[ind].Expiry > -1 {
 		return false
 	}
 	return true
@@ -243,7 +250,7 @@ func (c *Tmpl) ReactBonusModIsActive(key string) bool {
 		return false
 	}
 	//check expiry
-	if c.ReactMod[ind].Expiry < c.Core.Frame && c.ReactMod[ind].Expiry > -1 {
+	if c.ReactMod[ind].Expiry < c.Core.F() && c.ReactMod[ind].Expiry > -1 {
 		return false
 	}
 	return true
@@ -254,13 +261,13 @@ func (c *Tmpl) WeaponInfuseIsActive(key string) bool {
 		return false
 	}
 	//check expiry
-	if c.Infusion.Expiry < c.Core.Frame && c.Infusion.Expiry > -1 {
+	if c.Infusion.Expiry < c.Core.F() && c.Infusion.Expiry > -1 {
 		return false
 	}
 	return true
 }
 
-func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
+func (t *Tmpl) AddReactBonusMod(mod coretype.ReactionBonusMod) {
 	ind := -1
 	for i, v := range t.ReactMod {
 		if v.Key == mod.Key {
@@ -269,14 +276,14 @@ func (t *Tmpl) AddReactBonusMod(mod core.ReactionBonusMod) {
 	}
 
 	// check if mod exists and has not expired
-	if ind != -1 && (t.ReactMod[ind].Expiry > t.Core.F || t.ReactMod[ind].Expiry == -1) {
-		t.Core.Log.NewEvent("mod refreshed", core.LogStatusEvent, t.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
+	if ind != -1 && (t.ReactMod[ind].Expiry > t.Core.F() || t.ReactMod[ind].Expiry == -1) {
+		t.Core.NewEvent("mod refreshed", coretype.LogStatusEvent, t.Index, "overwrite", true, "key", mod.Key, "expiry", mod.Expiry)
 		mod.Event = t.ReactMod[ind].Event
 	} else {
-		mod.Event = t.Core.Log.NewEvent("mod added", core.LogStatusEvent, t.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
+		mod.Event = t.Core.NewEvent("mod added", coretype.LogStatusEvent, t.Index, "overwrite", false, "key", mod.Key, "expiry", mod.Expiry)
 		// append empty mod if we can not reuse mods[ind]
 		if ind == -1 {
-			t.ReactMod = append(t.ReactMod, core.ReactionBonusMod{})
+			t.ReactMod = append(t.ReactMod, coretype.ReactionBonusMod{})
 			ind = len(t.ReactMod) - 1
 		}
 	}

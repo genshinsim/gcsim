@@ -39,6 +39,10 @@ type Player struct {
 	//	shields
 	//	health
 
+	//healing
+	healingBonus    []func(healedCharIndex int) float64 // Array that holds functions calculating incoming healing bonus
+	damageReduction []func() (float64, bool)
+
 	//shields
 	shields         []coretype.Shield
 	shieldBonusFunc []func() float64

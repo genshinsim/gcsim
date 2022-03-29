@@ -4,13 +4,14 @@ import (
 	"github.com/genshinsim/gcsim/internal/reactable"
 	"github.com/genshinsim/gcsim/internal/tmpl/target"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/coretype"
 )
 
 type Enemy struct {
 	*target.Tmpl
 }
 
-func New(index int, c *core.Core, p core.EnemyProfile) *Enemy {
+func New(index int, c *core.Core, p coretype.EnemyProfile) *Enemy {
 	e := &Enemy{}
 	e.Tmpl = &target.Tmpl{}
 	e.Reactable = &reactable.Reactable{}
