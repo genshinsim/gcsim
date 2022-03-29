@@ -115,7 +115,6 @@ func (c *char) onDefeatTargets() {
 
 		if c.Base.Cons >= 2 {
 			c.AddEnergy("tartaglia-c2", 4)
-			c.Core.Log.NewEvent("Tartaglia C2 restoring 4 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}
 		return false
 	}, "tartaglia-on-enemy-death")

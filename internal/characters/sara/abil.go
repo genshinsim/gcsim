@@ -137,7 +137,6 @@ func (c *char) a4(a core.AttackCB) {
 	for _, char := range c.Core.Chars {
 		char.AddEnergy("sara-a4", energyAddAmt)
 	}
-	c.Core.Log.NewEvent("sara A4 adding energy", core.LogEnergyEvent, c.Index, "amount", energyAddAmt)
 }
 
 // Implements C1 CD reduction. Waits until delay (when it hits the enemy), then procs the effect
