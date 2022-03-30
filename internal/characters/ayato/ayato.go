@@ -28,8 +28,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSword
 	c.CharZone = core.ZoneInazuma
-	c.BurstCon = 3
-	c.SkillCon = 5
+	c.BurstCon = 5
+	c.SkillCon = 3
 	c.NormalHitNum = 5
 	c.shunsuikenCounter = 3
 	c.stacksMax = 4
@@ -88,7 +88,7 @@ func (c *char) a4() {
 
 func (c *char) c1() {
 	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.3
+	val[core.DmgP] = 0.4
 	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "ayato-c1",
 		Expiry: -1,

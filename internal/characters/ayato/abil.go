@@ -76,7 +76,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0)
 	//figure out atk buff
 	c.waterIllusion(ai, 6*60)
-	c.SetCD(core.ActionSkill, 20*60)
+	c.SetCD(core.ActionSkill, 12*60)
 	return f, a
 
 }
@@ -100,15 +100,18 @@ func (c *char) soukaiKankaHook() {
 
 		if atk.Info.ActorIndex == c.Index {
 			c.stacks++
+			c.Core.Log.NewEvent("Soukai Kanka Proc'd by", core.LogCharacterEvent, c.Index)
 			if c.stacks > c.stacksMax {
 				c.stacks = c.stacksMax
 			}
 			return false
-		} else {
-			c.ReduceActionCooldown(core.ActionSkill, 2*60)
-			c.Core.Log.NewEvent("Soukai Kanka Proc'd by", core.LogCharacterEvent, c.Index)
-			return false
 		}
+		return false
+		// else {
+		// 	c.ReduceActionCooldown(core.ActionSkill, 2*60)
+
+		// 	return false
+		// }
 	}, "soukaiKankaProc")
 }
 
@@ -176,7 +179,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			}
 			c.AddPreDamageMod(core.PreDamageMod{
 				Key:    "ayato-c4",
-				Expiry: 10 * 60,
+				Expiry: 12 * 60,
 				Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
 					if a.Info.AttackTag != core.AttackTagNormal {
 						return nil, false
