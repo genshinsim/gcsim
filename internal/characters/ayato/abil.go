@@ -207,18 +207,24 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 func (c *char) waveFlash() {
-	val := make([]float64, core.EndStatType)
+	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		ae := args[1].(*core.AttackEvent)
 
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "ayato-waveFlash",
-		Expiry: -1,
-		Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if a.Info.AttackTag != core.AttackTagNormal || c.Core.Status.Duration("soukaikanka") <= 0 {
-				return nil, false
-			}
-			val[core.DmgP] = skillpp[c.TalentLvlSkill()] * c.MaxHP() * float64(c.stacks)
-			c.Core.Log.NewEvent("Waveflash Stacks: ", core.LogCharacterEvent, c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
-			return val, true
-		},
-	})
+		if c.Core.ActiveChar != c.CharIndex() {
+			return false
+		}
+		if ae.Info.AttackTag != core.AttackTagNormal {
+			return false
+		}
+		if c.Core.Status.Duration("soukaikanka") <= 0 {
+			return false
+		}
+
+		stats, _ := c.SnapshotStats()
+		dmgAdded := (c.Base.HP*(1+stats[core.HPP]) + stats[core.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
+		ae.Info.FlatDmg += dmgAdded
+
+		c.Core.Log.NewEvent("Waveflash Stacks: ", core.LogCharacterEvent, c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
+		return false
+	}, "ayato-waveflash")
 }
