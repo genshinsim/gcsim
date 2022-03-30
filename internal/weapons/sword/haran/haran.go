@@ -24,6 +24,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m[core.DendroP] = base
 	wavespikeICD := 0
 	wavespikeStacks := 0
+	maxWavespikeStacks := 2
 
 	char.AddMod(core.CharStatMod{
 		Key: "haran ele bonus",
@@ -39,8 +40,8 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 		if c.F > wavespikeICD && args[1].(*core.AttackEvent).Info.AttackTag == core.AttackTagNormal {
 			wavespikeStacks++
-			if wavespikeStacks > 5 {
-				wavespikeStacks = 5
+			if wavespikeStacks > maxWavespikeStacks {
+				wavespikeStacks = maxWavespikeStacks
 			}
 			wavespikeICD = c.F + 0.3*60
 		}
@@ -59,7 +60,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				if atk.Info.AttackTag != core.AttackTagNormal {
 					return nil, false
 				}
-				val[core.DmgP] = (0.08 * float64(r) * 0.02) * float64(wavespikeStacks)
+				val[core.DmgP] = (0.2 * float64(r) * 0.04) * float64(wavespikeStacks)
 				return val, true
 			},
 		})

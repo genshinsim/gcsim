@@ -44,6 +44,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.a4()
 	c.waveFlash()
 	c.soukaiKankaHook()
+	c.onExitField()
 
 	if c.Base.Cons >= 1 {
 		c.c1()
@@ -121,18 +122,27 @@ func (c *char) a2() {
 }
 
 func (c *char) a4() {
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.03 * c.MaxHP()
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "ayato-a4",
-		Expiry: -1,
-		Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if a.Info.AttackTag != core.AttackTagElementalBurst {
-				return nil, false
-			}
-			return val, true
-		},
-	})
+	// val := make([]float64, core.EndStatType)
+	// val[core.DmgP] = 0.03 * c.MaxHP()
+	// c.AddPreDamageMod(core.PreDamageMod{
+	// 	Key:    "ayato-a4",
+	// 	Expiry: -1,
+	// 	Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+	// 		if a.Info.AttackTag != core.AttackTagElementalBurst {
+	// 			return nil, false
+	// 		}
+	// 		return val, true
+	// 	},
+	// })
+	c.AddTask(c.a4task, "ayato-a4", 60)
+}
+
+func (c *char) a4task() {
+	if c.CharIndex() == c.Core.ActiveChar {
+		return
+	}
+	c.AddEnergy("ayato-a4", 2)
+	c.AddTask(c.a4task, "ayato-a4", 60)
 }
 
 func (c *char) c1() {
@@ -152,7 +162,7 @@ func (c *char) c1() {
 
 func (c *char) c2() {
 	val := make([]float64, core.EndStatType)
-	val[core.HPP] = 0.4
+	val[core.HPP] = 0.5
 	c.AddMod(core.CharStatMod{
 		Key:    "ayato-c2",
 		Expiry: -1,
@@ -194,4 +204,12 @@ func (c *char) AdvanceNormalIndex() {
 		}
 
 	}
+}
+
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		c.stacks = 0
+		c.Core.Status.DeleteStatus("soukaikanka")
+		return false
+	}, "ayato-exit")
 }

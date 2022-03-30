@@ -124,6 +124,7 @@ func (c *char) soukaiKankaHook() {
 
 func (c *char) Burst(p map[string]int) (int, int) {
 
+	dur := 18
 	f, a := c.ActionFrames(core.ActionBurst, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -149,7 +150,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	lastHit := make(map[core.Target]int)
 	// ccc := 0
 	//tick every .3 sec, every fifth hit is targetted i.e. 1, 0, 0, 0, 0, 1
-	for delay := 0; delay < 15*60; delay += 30 {
+	for delay := 0; delay < dur*60; delay += 30 {
 		c.AddTask(func() {
 			//check if this hits first
 			target := -1
@@ -177,26 +178,26 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	}
 
-	c.Core.Status.AddStatus("ayatoburst", 15*60) //doesn't account for animation
-	if c.Base.Cons >= 4 {
-		val := make([]float64, core.EndStatType)
-		val[core.DmgP] = 0.2
-		for _, char := range c.Core.Chars {
-			if char.CharIndex() == c.CharIndex() {
-				continue
-			}
-			c.AddPreDamageMod(core.PreDamageMod{
-				Key:    "ayato-c4",
-				Expiry: 15 * 60,
-				Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-					if a.Info.AttackTag != core.AttackTagNormal {
-						return nil, false
-					}
-					return val, true
-				},
-			})
+	c.Core.Status.AddStatus("ayatoburst", dur*60) //doesn't account for animation
+	// if c.Base.Cons >= 4 {
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.2
+	for _, char := range c.Core.Chars {
+		if char.CharIndex() == c.CharIndex() {
+			continue
 		}
+		c.AddPreDamageMod(core.PreDamageMod{
+			Key:    "ayato-c4",
+			Expiry: dur * 60,
+			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+				if a.Info.AttackTag != core.AttackTagNormal {
+					return nil, false
+				}
+				return val, true
+			},
+		})
 	}
+	// }
 	//add cooldown to sim
 	c.SetCDWithDelay(core.ActionBurst, 20*60, 8)
 	//use up energy
@@ -207,7 +208,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 func (c *char) waveFlash() {
 	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = skillpp[c.TalentLvlSkill()] * c.MaxHP()
+
 	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "ayato-waveFlash",
 		Expiry: -1,
@@ -215,6 +216,7 @@ func (c *char) waveFlash() {
 			if a.Info.AttackTag != core.AttackTagNormal || c.Core.Status.Duration("soukaikanka") <= 0 {
 				return nil, false
 			}
+			val[core.DmgP] = skillpp[c.TalentLvlSkill()] * c.MaxHP() * float64(c.stacks)
 			c.Core.Log.NewEvent("Waveflash Stacks: ", core.LogCharacterEvent, c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
 			return val, true
 		},
