@@ -1,0 +1,51 @@
+package ayato
+
+import (
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/pkg/core"
+)
+
+type char struct {
+	*character.Tmpl
+}
+
+func init() {
+	core.RegisterCharFunc(core.Ayaka, NewChar)
+}
+
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+	c := char{}
+	t, err := character.NewTemplateChar(s, p)
+	if err != nil {
+		return nil, err
+	}
+	c.Tmpl = t
+	c.Base.Element = core.Hydro
+	c.Energy = 80
+	c.EnergyMax = 80
+	c.Weapon.Class = core.WeaponClassSword
+	c.CharZone = core.ZoneInazuma
+	c.BurstCon = 3
+	c.SkillCon = 5
+	c.NormalHitNum = 5
+
+	return &c, nil
+}
+
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+	switch a {
+	case core.ActionDash:
+		f, ok := p["f"]
+		if !ok {
+			return 10 //tap = 36 frames, so under 1 second
+		}
+		//for every 1 second passed, consume extra 15
+		extra := f / 60
+		return float64(10 + 15*extra)
+	case core.ActionCharge:
+		return 20
+	default:
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		return 0
+	}
+}

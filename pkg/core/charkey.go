@@ -31,6 +31,7 @@ const (
 	Kazuha
 	Kaeya
 	Ayaka
+	Ayato
 	Keqing
 	Klee
 	Sara
@@ -100,6 +101,8 @@ var CharNameToKey = map[string]CharKey{
 	"kaeya":              Kaeya,
 	"kamisatoayaka":      Ayaka,
 	"ayaka":              Ayaka,
+	"kamisatoayato":      Ayato,
+	"ayato":              Ayato,
 	"keqing":             Keqing,
 	"klee":               Klee,
 	"kujousara":          Sara,
@@ -166,6 +169,7 @@ var charNames = []string{
 	"kazuha",
 	"kaeya",
 	"ayaka",
+	"ayato",
 	"keqing",
 	"klee",
 	"sara",
@@ -222,6 +226,7 @@ var CharKeyToEle = map[CharKey]EleType{
 	Kazuha:          Anemo,
 	Kaeya:           Cryo,
 	Ayaka:           Cryo,
+	Ayato:           Hydro,
 	Keqing:          Electro,
 	Klee:            Pyro,
 	Sara:            Electro,
