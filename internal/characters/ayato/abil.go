@@ -23,6 +23,10 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		for i, mult := range shunsuiken[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
 			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-5+i, f-5+i)
+			if c.Core.F > c.particleICD {
+				c.particleICD = c.Core.F + 112 //best info we have rn
+				c.QueueParticle("ayato", 1, core.Hydro, 80)
+			}
 		}
 	} else {
 		for i, mult := range attack[c.NormalCounter] {

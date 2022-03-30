@@ -10,6 +10,7 @@ type char struct {
 	stacks            int
 	stacksMax         int
 	shunsuikenCounter int
+	particleICD       int
 }
 
 func init() {
@@ -33,6 +34,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.shunsuikenCounter = 3
 	c.stacksMax = 4
+	c.particleICD = 0
 	c.a2()
 	c.a4()
 	c.waveFlash()
