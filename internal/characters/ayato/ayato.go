@@ -13,7 +13,7 @@ type char struct {
 }
 
 func init() {
-	core.RegisterCharFunc(core.Ayaka, NewChar)
+	core.RegisterCharFunc(core.Ayato, NewChar)
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
