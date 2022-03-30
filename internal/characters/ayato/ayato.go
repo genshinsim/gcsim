@@ -50,6 +50,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 2 {
 		c.stacksMax = 5
 	}
+	if c.Base.Cons >= 6 {
+		c.c6()
+	}
 
 	return &c, nil
 }
