@@ -83,7 +83,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) waterIllusion(ai core.AttackInfo, delay int) {
 	// currently assumes no attack
 	c.AddTask(func() {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), -1, 0)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
 	}, "Water Illusion Burst", delay)
 }
 
