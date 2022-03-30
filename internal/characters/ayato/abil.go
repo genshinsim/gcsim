@@ -19,10 +19,17 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Element:    core.Physical,
 		Durability: 25,
 	}
+	if c.Core.Status.Duration("soukaikanka") > 0 {
+		for i, mult := range shunsuiken[c.NormalCounter] {
+			ai.Mult = mult[c.TalentLvlAttack()]
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-5+i, f-5+i)
+		}
+	} else {
+		for i, mult := range attack[c.NormalCounter] {
+			ai.Mult = mult[c.TalentLvlAttack()]
+			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i)
+		}
 
-	for i, mult := range attack[c.NormalCounter] {
-		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -52,116 +59,134 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	return f, a
 }
 
-func (c *char) Dash(p map[string]int) (int, int) {
-	f, ok := p["f"]
-	if !ok {
-		f = 36
-	}
-	//no dmg attack at end of dash
-	ai := core.AttackInfo{
-		Abil:       "Dash",
-		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagNone,
-		ICDTag:     core.ICDTagDash,
-		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
-		Durability: 25,
-	}
-
-	//restore on hit, once per attack
-	once := false
-	cb := func(a core.AttackCB) {
-		if once {
-			return
-		}
-
-		c.Core.RestoreStam(10)
-		val := make([]float64, core.EndStatType)
-		val[core.CryoP] = 0.18
-		//a2 increase normal + ca dmg by 30% for 6s
-		c.AddMod(core.CharStatMod{
-			Key:    "ayaka-a4",
-			Expiry: c.Core.F + 600,
-			Amount: func() ([]float64, bool) {
-				return val, true
-			},
-		})
-		once = true
-	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, cb)
-	//add cryo infuse
-	c.AddWeaponInfuse(core.WeaponInfusion{
-		Key:    "ayaka-dash",
-		Ele:    core.Cryo,
-		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Core.F + 300,
-	})
-	return f, f
-}
-
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 	ai := core.AttackInfo{
-		Abil:       "Hyouka",
+		Abil:       "Kamisato Art: Kyouka",
 		ActorIndex: c.Index,
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
-		Durability: 50,
+		Element:    core.Hydro,
+		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	//2 or 3 1:1 ratio
-	count := 4
-	if c.Core.Rand.Float64() < 0.5 {
-		count = 5
-	}
-	c.QueueParticle("ayaka", count, core.Cryo, f+100)
-
-	//a2 increase normal + ca dmg by 30% for 6s
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.3
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "ayaka-a2",
-		Expiry: c.Core.F + 360,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return val, atk.Info.AttackTag == core.AttackTagNormal || ai.AttackTag == core.AttackTagExtra
-		},
-	})
-
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f)
-
-	c.SetCD(core.ActionSkill, 600)
+	c.Core.Status.AddStatus("soukaikanka", 6*60+0) //doesn't account for animation
+	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0)
+	//figure out atk buff
+	c.waterIllusion(ai, 6*60)
+	c.SetCD(core.ActionSkill, 20*60)
 	return f, a
 
+}
+func (c *char) waterIllusion(ai core.AttackInfo, delay int) {
+	// currently assumes no attack
+	c.AddTask(func() {
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), -1, 0)
+	}, "Water Illusion Burst", delay)
+}
+
+func (c *char) soukaiKankaHook() {
+	c.Core.Events.Subscribe(core.EventType(core.OnDamage), func(args ...interface{}) bool {
+		atk := args[1].(*core.AttackEvent)
+
+		if c.Core.Status.Duration("soukaikanka") <= 0 {
+			return false
+		}
+		if atk.Info.AttackTag != core.AttackTagNormal {
+			return false
+		}
+
+		if atk.Info.ActorIndex == c.Index {
+			c.stacks++
+			if c.stacks > 4 {
+				c.stacks = 4
+			}
+			return false
+		} else {
+			c.ReduceActionCooldown(core.ActionSkill, 2*60)
+			c.Core.Log.NewEvent("Soukai Kanka Proc'd by", core.LogCharacterEvent, c.Index)
+			return false
+		}
+	}, "soukaiKankaProc")
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
-
 	ai := core.AttackInfo{
-		Abil:       "Soumetsu",
 		ActorIndex: c.Index,
+		Abil:       "Kamisato Art: Suiyuu",
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagElementalBurst,
 		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Cryo,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Hydro,
 		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
+
+	rad, ok := p["radius"]
+	if !ok {
+		rad = 1
 	}
 
-	//5 second, 20 ticks, so once every 15 frames, bloom after 5 seconds
-	ai.Mult = burstBloom[c.TalentLvlBurst()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+300)
+	r := 2.5 + float64(rad)
+	prob := r * r / 90.25
 
-	ai.Mult = burstCut[c.TalentLvlBurst()]
-	for i := 0; i < 19; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f+i*15)
+	lastHit := make(map[core.Target]int)
+	// ccc := 0
+	//tick every .3 sec, every fifth hit is targetted i.e. 1, 0, 0, 0, 0, 1
+	for delay := 0; delay < 12*60; delay += 30 {
+		c.AddTask(func() {
+			//check if this hits first
+			target := -1
+			for i, t := range c.Core.Targets {
+				//skip for target 0 aka player
+				if i == 0 {
+					continue
+				}
+				if lastHit[t] < c.Core.F {
+					target = i
+					lastHit[t] = c.Core.F + 87 //cannot be targetted again for 1.45s
+					break
+				}
+			}
+			// log.Println(target)
+			//[1:14 PM] Aluminum | Harbinger of Jank: assuming uniform distribution and enemy at center:
+			//(radius_icicle + radius_enemy)^2 / radius_burst^2
+			if target == -1 && c.Core.Rand.Float64() > prob {
+				//no one getting hit
+				return
+			}
+			//deal dmg
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(9, false, core.TargettableEnemy), 0)
+		}, "ayato-q", delay+f)
+
 	}
 
-	c.SetCDWithDelay(core.ActionBurst, 20*60, 13)
-	c.ConsumeEnergy(13)
+	//add cooldown to sim
+	c.SetCDWithDelay(core.ActionBurst, 15*60, 8)
+	//use up energy
+	c.ConsumeEnergy(8)
 
 	return f, a
+}
+
+func (c *char) waveFlash() {
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = skillpp[c.TalentLvlSkill()] * c.MaxHP()
+	c.AddPreDamageMod(core.PreDamageMod{
+		Key:    "ayato-waveFlash",
+		Expiry: -1,
+		Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if a.Info.AttackTag != core.AttackTagNormal || c.Core.Status.Duration("soukaikanka") <= 0 {
+				return nil, false
+			}
+			c.Core.Log.NewEvent("Waveflash Stacks: ", core.LogCharacterEvent, c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
+			return val, true
+		},
+	})
 }
