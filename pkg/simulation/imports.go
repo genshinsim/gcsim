@@ -7,6 +7,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/bloodstained"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/bolide"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/crimson"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/echoes"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/exile"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/gladiator"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/heartofdepth"
@@ -22,6 +23,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/tenacity"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/thunderingfury"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/thundersoother"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/vermillion"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/viridescent"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/wanderer"
 
