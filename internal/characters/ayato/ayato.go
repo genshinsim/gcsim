@@ -146,6 +146,9 @@ func (c *char) a4task() {
 	if c.Core.F < c.a4ICD {
 		return
 	}
+	if c.CurrentEnergy() >= 40 {
+		return
+	}
 	c.AddEnergy("ayato-a4", 2)
 	c.AddTask(c.a4task, "ayato-a4", 60)
 	c.a4ICD = c.Core.F + 60
