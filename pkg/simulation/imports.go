@@ -173,6 +173,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/filletblade"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/flute"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/freedom"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/haran"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/harbinger"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/ironsting"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/lion"
