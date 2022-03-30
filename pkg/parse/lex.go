@@ -2,8 +2,6 @@ package parse
 
 import (
 	"fmt"
-	"log"
-	"runtime"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -75,7 +73,6 @@ func (l *lexer) emit(t ItemType) {
 		val:  l.input[l.start:l.pos],
 		line: l.startLine,
 	}
-	l.col = l.
 	l.start = l.pos
 	l.startLine = l.line
 }
