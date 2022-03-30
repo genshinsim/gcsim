@@ -26,6 +26,9 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			if c.Core.F > c.particleICD {
 				c.particleICD = c.Core.F + 112 //best info we have rn
 				c.QueueParticle("ayato", 1, core.Hydro, 80)
+				if c.Core.Rand.Float64() < 0.5 {
+					c.QueueParticle("ayato", 1, core.Hydro, 80)
+				}
 			}
 		}
 	} else {
