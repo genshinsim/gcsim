@@ -23,26 +23,29 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		for _, mult := range shunsuiken[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
 			ai.Element = core.Hydro
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
-			if c.Core.F > c.particleICD {
-				c.particleICD = c.Core.F + 112 //best info we have rn
-				c.QueueParticle("ayato", 1, core.Hydro, 80)
-				if c.Core.Rand.Float64() < 0.5 {
-					c.QueueParticle("ayato", 1, core.Hydro, 80)
-				}
-			}
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f, c.generateParticles)
 		}
 	} else {
 		for i, mult := range attack[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
 			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i)
 		}
-
 	}
 
 	c.AdvanceNormalIndex()
 
 	return f, a
+}
+
+func (c *char) generateParticles(ac core.AttackCB) {
+	if c.Core.F > c.particleICD {
+		c.particleICD = c.Core.F + 114
+		count := 1
+		if c.Core.Rand.Float64() < 0.5 {
+			count++
+		}
+		c.QueueParticle("ayato", count, core.Hydro, 80)
+	}
 }
 
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
