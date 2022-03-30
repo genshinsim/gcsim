@@ -92,7 +92,7 @@ func (c *char) c6() {
 			ICDGroup:   core.ICDGroupDefault,
 			Element:    core.Hydro,
 			Durability: 25,
-			Mult:       3,
+			Mult:       4.5,
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 20, 20)
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 22, 22)
