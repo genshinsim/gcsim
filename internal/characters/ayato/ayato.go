@@ -91,8 +91,8 @@ func (c *char) c6() {
 			Durability: 25,
 			Mult:       3,
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 24, 24)
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 28, 28)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 20, 20)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 22, 22)
 		// if c.Core.F > c.particleICD {
 		// 	c.particleICD = c.Core.F + 112 //best info we have rn
 		// 	c.QueueParticle("ayato", 1, core.Hydro, 80)
