@@ -49,6 +49,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	if c.Base.Cons >= 2 {
 		c.stacksMax = 5
+		c.c2()
 	}
 	if c.Base.Cons >= 6 {
 		c.c6()
@@ -144,6 +145,22 @@ func (c *char) c1() {
 				return nil, false
 			}
 			return val, true
+		},
+	})
+}
+
+func (c *char) c2() {
+	val := make([]float64, core.EndStatType)
+	val[core.HPP] = 0.4
+	c.AddMod(core.CharStatMod{
+		Key:    "ayato-c2",
+		Expiry: -1,
+		Amount: func() ([]float64, bool) {
+			if c.stacks >= 3 {
+				return val, true
+			} else {
+				return nil, false
+			}
 		},
 	})
 }
