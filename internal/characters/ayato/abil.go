@@ -177,6 +177,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	}
 
+	c.Core.Status.AddStatus("ayatoburst", 12*60) //doesn't account for animation
 	if c.Base.Cons >= 4 {
 		val := make([]float64, core.EndStatType)
 		val[core.DmgP] = 0.2

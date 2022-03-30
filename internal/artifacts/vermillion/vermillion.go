@@ -8,6 +8,7 @@ import (
 
 func init() {
 	core.RegisterSetFunc("vermillion hereafter", New)
+	core.RegisterSetFunc("vermillionhereafter", New)
 	core.RegisterSetFunc("vermillion", New)
 	core.RegisterSetFunc("verm", New)
 }
