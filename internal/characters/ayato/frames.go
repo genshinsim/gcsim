@@ -7,20 +7,30 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionAttack:
 		f := 0
 		if c.Core.Status.Duration("soukaikanka") > 0 {
-			f = 20
+			switch c.NormalCounter {
+			//TODO: need to add atkspd mod
+			case 0:
+				f = 9
+			case 1:
+				f = 33 - 9
+			case 2:
+				f = 57 - 33
+			}
+
+			f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		} else {
 			switch c.NormalCounter {
 			//TODO: need to add atkspd mod
 			case 0:
-				f = 8
+				f = 13
 			case 1:
-				f = 20
+				f = 45 - 13
 			case 2:
-				f = 28
+				f = 73 - 45
 			case 3:
-				f = 43
+				f = 124 - 73
 			case 4:
-				f = 37
+				f = 160 - 124
 			}
 
 			f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
@@ -29,9 +39,9 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 53, 53
 	case core.ActionSkill:
-		return 56, 56 //should be 82
+		return 20, 20 //should be 82
 	case core.ActionBurst:
-		return 95, 95 //ok
+		return 121, 121 //ok
 	default:
 		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0

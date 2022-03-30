@@ -87,7 +87,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.c6ready = true
 
 	}
-	c.waterIllusion(ai, 6*60)
+	c.waterIllusion(ai, 355)
 	c.SetCD(core.ActionSkill, 12*60)
 	return f, a
 
