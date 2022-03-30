@@ -20,7 +20,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 	}
 	if c.Core.Status.Duration("soukaikanka") > 0 {
-		for i, mult := range shunsuiken[c.NormalCounter] {
+		for _, mult := range shunsuiken[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
 			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 			if c.Core.F > c.particleICD {
