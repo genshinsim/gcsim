@@ -13,6 +13,7 @@ type char struct {
 	stacksMax         int
 	shunsuikenCounter int
 	particleICD       int
+	a4ICD             int
 	c6ready           bool
 }
 
@@ -39,6 +40,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.shunsuikenCounter = 3
 	c.stacksMax = 4
 	c.particleICD = 0
+	c.a4ICD = 0
 	c.c6ready = false
 	c.a2()
 	c.a4()
@@ -141,8 +143,12 @@ func (c *char) a4task() {
 	if c.CharIndex() == c.Core.ActiveChar {
 		return
 	}
+	if c.Core.F < c.a4ICD {
+		return
+	}
 	c.AddEnergy("ayato-a4", 2)
 	c.AddTask(c.a4task, "ayato-a4", 60)
+	c.a4ICD = c.Core.F + 60
 }
 
 func (c *char) c1() {
