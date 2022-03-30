@@ -22,6 +22,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	if c.Core.Status.Duration("soukaikanka") > 0 {
 		for _, mult := range shunsuiken[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
+			ai.Element = core.Hydro
 			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 			if c.Core.F > c.particleICD {
 				c.particleICD = c.Core.F + 112 //best info we have rn
@@ -114,11 +115,6 @@ func (c *char) soukaiKankaHook() {
 			return false
 		}
 		return false
-		// else {
-		// 	c.ReduceActionCooldown(core.ActionSkill, 2*60)
-
-		// 	return false
-		// }
 	}, "soukaiKankaProc")
 }
 
@@ -149,7 +145,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	lastHit := make(map[core.Target]int)
 	// ccc := 0
 	//tick every .3 sec, every fifth hit is targetted i.e. 1, 0, 0, 0, 0, 1
-	for delay := 0; delay < 12*60; delay += 30 {
+	for delay := 0; delay < 15*60; delay += 30 {
 		c.AddTask(func() {
 			//check if this hits first
 			target := -1
@@ -177,7 +173,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	}
 
-	c.Core.Status.AddStatus("ayatoburst", 12*60) //doesn't account for animation
+	c.Core.Status.AddStatus("ayatoburst", 15*60) //doesn't account for animation
 	if c.Base.Cons >= 4 {
 		val := make([]float64, core.EndStatType)
 		val[core.DmgP] = 0.2
@@ -187,7 +183,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			}
 			c.AddPreDamageMod(core.PreDamageMod{
 				Key:    "ayato-c4",
-				Expiry: 12 * 60,
+				Expiry: 15 * 60,
 				Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
 					if a.Info.AttackTag != core.AttackTagNormal {
 						return nil, false
@@ -198,7 +194,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}
 	//add cooldown to sim
-	c.SetCDWithDelay(core.ActionBurst, 15*60, 8)
+	c.SetCDWithDelay(core.ActionBurst, 20*60, 8)
 	//use up energy
 	c.ConsumeEnergy(8)
 

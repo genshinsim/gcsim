@@ -1,6 +1,8 @@
 package ayato
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
@@ -11,6 +13,7 @@ type char struct {
 	stacksMax         int
 	shunsuikenCounter int
 	particleICD       int
+	c6ready           bool
 }
 
 func init() {
@@ -35,6 +38,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.shunsuikenCounter = 3
 	c.stacksMax = 4
 	c.particleICD = 0
+	c.c6ready = false
 	c.a2()
 	c.a4()
 	c.waveFlash()
@@ -60,6 +64,44 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
+}
+
+func (c *char) c6() {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		if c.Core.ActiveChar != c.CharIndex() {
+			return false
+		}
+		if !c.c6ready {
+			return false
+		}
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.AttackTag != core.AttackTagNormal {
+			return false
+		}
+		ai := core.AttackInfo{
+			Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+			ActorIndex: c.Index,
+			AttackTag:  core.AttackTagNormal,
+			ICDTag:     core.ICDTagNormalAttack,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Hydro,
+			Durability: 25,
+			Mult:       3,
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 24, 24)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 28, 28)
+		// if c.Core.F > c.particleICD {
+		// 	c.particleICD = c.Core.F + 112 //best info we have rn
+		// 	c.QueueParticle("ayato", 1, core.Hydro, 80)
+		// 	if c.Core.Rand.Float64() < 0.5 {
+		// 		c.QueueParticle("ayato", 1, core.Hydro, 80)
+		// 	}
+		// }
+
+		c.Core.Log.NewEvent("ayato c6 proc'd", core.LogCharacterEvent, c.Index)
+		c.c6ready = false
+		return false
+	}, "ayato-c6")
 }
 
 func (c *char) a2() {
