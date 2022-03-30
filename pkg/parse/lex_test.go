@@ -23,7 +23,7 @@ func TestLex(t *testing.T) {
 	// last := "roar"
 	// stop := false
 	for n := l.nextItem(); n.typ != itemEOF; n = l.nextItem() {
-		// log.Println(n)
+		log.Printf("%v - %v: %v\n", n.line, n.pos, n)
 		if n.typ == itemError {
 			t.FailNow()
 		}
