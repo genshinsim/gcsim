@@ -100,8 +100,8 @@ func (c *char) soukaiKankaHook() {
 
 		if atk.Info.ActorIndex == c.Index {
 			c.stacks++
-			if c.stacks > 4 {
-				c.stacks = 4
+			if c.stacks > c.stacksMax {
+				c.stacks = c.stacksMax
 			}
 			return false
 		} else {
@@ -167,6 +167,25 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	}
 
+	if c.Base.Cons >= 4 {
+		val := make([]float64, core.EndStatType)
+		val[core.DmgP] = 0.2
+		for _, char := range c.Core.Chars {
+			if char.CharIndex() == c.CharIndex() {
+				continue
+			}
+			c.AddPreDamageMod(core.PreDamageMod{
+				Key:    "ayato-c4",
+				Expiry: 10 * 60,
+				Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+					if a.Info.AttackTag != core.AttackTagNormal {
+						return nil, false
+					}
+					return val, true
+				},
+			})
+		}
+	}
 	//add cooldown to sim
 	c.SetCDWithDelay(core.ActionBurst, 15*60, 8)
 	//use up energy

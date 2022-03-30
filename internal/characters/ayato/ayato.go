@@ -8,6 +8,7 @@ import (
 type char struct {
 	*character.Tmpl
 	stacks            int
+	stacksMax         int
 	shunsuikenCounter int
 }
 
@@ -31,10 +32,18 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.NormalHitNum = 5
 	c.shunsuikenCounter = 3
+	c.stacksMax = 4
 	c.a2()
 	c.a4()
 	c.waveFlash()
 	c.soukaiKankaHook()
+
+	if c.Base.Cons >= 1 {
+		c.c1()
+	}
+	if c.Base.Cons >= 2 {
+		c.stacksMax = 5
+	}
 
 	return &c, nil
 }
@@ -70,6 +79,21 @@ func (c *char) a4() {
 		Expiry: -1,
 		Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
 			if a.Info.AttackTag != core.AttackTagElementalBurst {
+				return nil, false
+			}
+			return val, true
+		},
+	})
+}
+
+func (c *char) c1() {
+	val := make([]float64, core.EndStatType)
+	val[core.DmgP] = 0.3
+	c.AddPreDamageMod(core.PreDamageMod{
+		Key:    "ayato-c1",
+		Expiry: -1,
+		Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if a.Info.AttackTag != core.AttackTagNormal || t.HP()/t.MaxHP() > 0.5 {
 				return nil, false
 			}
 			return val, true
