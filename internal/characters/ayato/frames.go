@@ -7,7 +7,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionAttack:
 		f := 0
 		if c.Core.Status.Duration("soukaikanka") > 0 {
-			f = 4
+			f = 24
 		} else {
 			switch c.NormalCounter {
 			//TODO: need to add atkspd mod
