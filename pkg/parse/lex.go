@@ -2,6 +2,8 @@ package parse
 
 import (
 	"fmt"
+	"log"
+	"runtime"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -73,13 +75,14 @@ func (l *lexer) emit(t ItemType) {
 		val:  l.input[l.start:l.pos],
 		line: l.startLine,
 	}
+	l.col = l.
 	l.start = l.pos
 	l.startLine = l.line
 }
 
 // ignore skips over the pending input before this point.
 func (l *lexer) ignore() {
-	l.line += strings.Count(l.input[l.start:l.pos], "\n")
+	// l.line += strings.Count(l.input[l.start:l.pos], "\n")
 	l.start = l.pos
 	l.startLine = l.line
 }
