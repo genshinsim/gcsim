@@ -210,6 +210,7 @@ func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		c.stacks = 0
 		c.Core.Status.DeleteStatus("soukaikanka")
+		c.a4()
 		return false
 	}, "ayato-exit")
 }
