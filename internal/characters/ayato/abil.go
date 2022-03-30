@@ -83,6 +83,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("soukaikanka", 6*60+0) //doesn't account for animation
 	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0)
 	//figure out atk buff
+	c.c6ready = true
 	c.waterIllusion(ai, 6*60)
 	c.SetCD(core.ActionSkill, 12*60)
 	return f, a
