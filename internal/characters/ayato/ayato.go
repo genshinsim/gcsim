@@ -20,6 +20,7 @@ func init() {
 	core.RegisterCharFunc(core.Ayato, NewChar)
 }
 
+// test auto build
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
