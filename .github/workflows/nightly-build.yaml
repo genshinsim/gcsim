@@ -2,7 +2,7 @@ name: "build cmd line tool"
 on:
   push:
     branches:
-      - main
+      - ayato
 
 jobs:
   tagged-release:
