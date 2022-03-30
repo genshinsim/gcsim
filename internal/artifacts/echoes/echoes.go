@@ -40,6 +40,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				snap := c.Snapshot(&atk.Info)
 				dmgAdded := (snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]) * 0.7
 				atk.Info.FlatDmg += dmgAdded
+				prob = 0.36
 			} else {
 				if s.F > probicd {
 					prob += 0.2
@@ -49,8 +50,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					prob = 1
 				}
 			}
+			s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex())
 			return false
 		}, fmt.Sprintf("echoes-4pc-%v", c.Name()))
-
 	}
 }
