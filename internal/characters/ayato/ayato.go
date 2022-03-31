@@ -44,7 +44,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.c6ready = false
 	c.a2()
 	c.a4()
-	c.waveFlash()
+	c.namisenStack()
 	c.soukaiKankaHook()
 	c.onExitField()
 
@@ -98,13 +98,6 @@ func (c *char) c6() {
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 20, 20)
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 22, 22)
-		// if c.Core.F > c.particleICD {
-		// 	c.particleICD = c.Core.F + 112 //best info we have rn
-		// 	c.QueueParticle("ayato", 1, core.Hydro, 80)
-		// 	if c.Core.Rand.Float64() < 0.5 {
-		// 		c.QueueParticle("ayato", 1, core.Hydro, 80)
-		// 	}
-		// }
 
 		c.Core.Log.NewEvent("ayato c6 proc'd", core.LogCharacterEvent, c.Index)
 		c.c6ready = false

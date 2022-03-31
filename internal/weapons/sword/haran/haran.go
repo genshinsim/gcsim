@@ -68,5 +68,5 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		return false
 	}, fmt.Sprintf("ripping-upheaval-%v", char.Name()))
 
-	return "harantsukishirofutsu"
+	return "harangeppakufutsu"
 }

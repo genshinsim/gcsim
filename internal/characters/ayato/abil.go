@@ -20,11 +20,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 	}
 	if c.Core.Status.Duration("soukaikanka") > 0 {
-		for _, mult := range shunsuiken[c.NormalCounter] {
-			ai.Mult = mult[c.TalentLvlAttack()]
-			ai.Element = core.Hydro
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f, c.generateParticles)
-		}
+		ai.Mult = shunsuiken[c.NormalCounter][c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f, c.generateParticles)
 	} else {
 		for i, mult := range attack[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
@@ -71,6 +68,13 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
+	delay := p["delay"]
+	if delay < 30 { //this might be too low? might be 48?
+		delay = 30
+	}
+	if delay > 6*60 {
+		delay = 360
+	}
 	f, a := c.ActionFrames(core.ActionSkill, p)
 	ai := core.AttackInfo{
 		Abil:       "Kamisato Art: Kyouka",
@@ -82,6 +86,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
+	c.AddTask(func() {
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3.5, false, core.TargettableEnemy), 0, 0)
+		//add a namisen stack
+	}, "Water Illusion Burst", delay)
 
 	c.Core.Status.AddStatus("soukaikanka", 6*60+0) //doesn't account for animation
 	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0)
@@ -90,16 +98,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.c6ready = true
 
 	}
-	c.waterIllusion(ai, 355)
 	c.SetCD(core.ActionSkill, 12*60)
 	return f, a
 
-}
-func (c *char) waterIllusion(ai core.AttackInfo, delay int) {
-	// currently assumes no attack
-	c.AddTask(func() {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
-	}, "Water Illusion Burst", delay)
 }
 
 func (c *char) soukaiKankaHook() {
@@ -209,7 +210,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	return f, a
 }
 
-func (c *char) waveFlash() {
+func (c *char) namisenStack() {
 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		ae := args[1].(*core.AttackEvent)
 
