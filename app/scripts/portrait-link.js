@@ -17,7 +17,10 @@ const download_image = (url, image_path) =>
             .on("error", (e) => reject(e));
         })
     )
-    .catch((e) => console.log(e));
+    .catch((e) => {
+      console.log("error downloading: " + e);
+      console.log("url is: " + url);
+    });
 
 const names = [
   "aether",
@@ -68,6 +71,7 @@ const names = [
   "shenhe",
   "yunjin",
   "yaemiko",
+  "ayato",
 ];
 
 let chars = {};
@@ -109,7 +113,7 @@ names.forEach((e) => {
   if (!fs.existsSync(filename)) {
     console.log(e + ": " + eng.images.icon);
 
-    download_image(eng.images.icon, filename)
+    download_image(eng.images.icon.replace("-os", ""), filename)
       .then((msg) => {
         console.log("done downloading to file: ", filename);
       })
@@ -173,7 +177,7 @@ weapons.forEach((e) => {
   weapTrans["Russian"][key] = ru.name;
 
   if (!fs.existsSync(filename)) {
-    download_image(eng.images.icon, filename)
+    download_image(eng.images.icon.replace("-os", ""), filename)
       .then((msg) => {
         console.log("done downloading to file: ", filename);
       })
@@ -229,7 +233,7 @@ sets.forEach((e) => {
 
     if (!fs.existsSync(filename)) {
       console.log(`${key}: ${value}`);
-      download_image(value, filename)
+      download_image(value.replace("-os", ""), filename)
         .then(() => {
           console.log("done downloading to file: ", filename);
         })
