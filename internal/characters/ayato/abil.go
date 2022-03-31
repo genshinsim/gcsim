@@ -153,7 +153,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	lastHit := make(map[core.Target]int)
 	// ccc := 0
-	//tick every .3 sec, every fifth hit is targetted i.e. 1, 0, 0, 0, 0, 1
+	//tick every .5 sec, every fourth hit is targetted i.e. 1, 0, 0, 0, 1
 	for delay := 0; delay < dur*60; delay += 30 {
 		c.AddTask(func() {
 			//check if this hits first
@@ -165,13 +165,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				}
 				if lastHit[t] < c.Core.F {
 					target = i
-					lastHit[t] = c.Core.F + 87 //cannot be targetted again for 1.45s
+					lastHit[t] = c.Core.F + 117 //cannot be targetted again for 1.95s
 					break
 				}
 			}
 			// log.Println(target)
 			//[1:14 PM] Aluminum | Harbinger of Jank: assuming uniform distribution and enemy at center:
-			//(radius_icicle + radius_enemy)^2 / radius_burst^2
+			//(radius_droplet + radius_enemy)^2 / radius_burst^2
 			if target == -1 && c.Core.Rand.Float64() > prob {
 				//no one getting hit
 				return
