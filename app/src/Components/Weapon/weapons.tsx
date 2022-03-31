@@ -47,6 +47,7 @@ export const weapons: IWeapon[] = [
   "hakushinring",
   "halberd",
   "hamayumi",
+  "harangeppakufutsu",
   "harbingerofdawn",
   "huntersbow",
   "ironpoint",

@@ -18,6 +18,7 @@
         "braveheart": "勇士の心",
         "crimsonwitchofflames": "燃え盛る炎の魔女",
         "defenderswill": "守護の心",
+        "echoesofanoffering": "来歆の余響",
         "emblemofseveredfate": "絶縁の旗印",
         "gambler": "博徒",
         "gladiatorsfinale": "剣闘士のフィナーレ",
@@ -43,6 +44,7 @@
         "thunderingfury": "雷のような怒り",
         "thundersoother": "雷を鎮める尊者",
         "tinymiracle": "奇跡",
+        "vermillionhereafter": "辰砂往生録",
         "viridescentvenerer": "翠緑の影",
         "wandererstroupe": "大地を流浪する楽団"
     },
@@ -131,7 +133,8 @@
         "itto": "荒瀧一斗",
         "shenhe": "申鶴",
         "yunjin": "雲菫",
-        "yaemiko": "八重神子"
+        "yaemiko": "八重神子",
+        "ayato": "神里綾人"
     },
     "components": {
         "close": "閉じる",
@@ -342,6 +345,7 @@
         "hakushinring": "白辰の輪",
         "halberd": "鉾槍",
         "hamayumi": "破魔の弓",
+        "harangeppakufutsu": "波乱月白経津",
         "harbingerofdawn": "黎明の神剣",
         "huntersbow": "狩猟弓",
         "ironpoint": "鉄尖槍",

@@ -18,6 +18,7 @@
         "braveheart": "Corazón del Guerrero",
         "crimsonwitchofflames": "Bruja Carmesí en Llamas",
         "defenderswill": "Corazón del Guardián",
+        "echoesofanoffering": "Eco del Sacrificio",
         "emblemofseveredfate": "Emblema del Destino",
         "gambler": "Jugadora",
         "gladiatorsfinale": "Final del Gladiador",
@@ -43,6 +44,7 @@
         "thunderingfury": "Furia del Trueno",
         "thundersoother": "Domador de Truenos",
         "tinymiracle": "Milagro",
+        "vermillionhereafter": "Deceso del Cinabrio",
         "viridescentvenerer": "Sombra Verde Esmeralda",
         "wandererstroupe": "Orquesta del Errante"
     },
@@ -131,7 +133,8 @@
         "itto": "Arataki Itto",
         "shenhe": "Shenhe",
         "yunjin": "Yun Jin",
-        "yaemiko": "Yae Miko"
+        "yaemiko": "Yae Miko",
+        "ayato": "Kamisato Ayato"
     },
     "components": {
         "close": "Cerrar",
@@ -345,6 +348,7 @@
         "hakushinring": "Anillo de Hakushin",
         "halberd": "Alabarda",
         "hamayumi": "Masacrademonios",
+        "harangeppakufutsu": "Luna Ondulante de Futsu",
         "harbingerofdawn": "Espada del Alba",
         "huntersbow": "Arco del Cazador",
         "ironpoint": "Punta de Hierro",

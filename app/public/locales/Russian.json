@@ -18,6 +18,7 @@
     "braveheart": "Душа храбреца",
     "crimsonwitchofflames": "Горящая алая ведьма",
     "defenderswill": "Воля защитника",
+    "echoesofanoffering": "Отголоски подношения",
     "emblemofseveredfate": "Эмблема рассечённой судьбы",
     "gambler": "Азартный игрок",
     "gladiatorsfinale": "Конец гладиатора",
@@ -43,6 +44,7 @@
     "thunderingfury": "Громогласный рёв ярости",
     "thundersoother": "Усмиряющий гром",
     "tinymiracle": "Маленькое чудо",
+    "vermillionhereafter": "Киноварное загробье",
     "viridescentvenerer": "Изумрудная тень",
     "wandererstroupe": "Странствующий ансамбль"
   },
@@ -131,7 +133,8 @@
     "itto": "Итто",
     "shenhe": "Шэнь Хэ",
     "yunjin": "Юнь Цзинь",
-    "yaemiko": "Яэ Мико"
+    "yaemiko": "Яэ Мико",
+    "ayato": "Аято"
   },
   "components": {
     "close": "Закрыть",
@@ -355,6 +358,7 @@
     "hakushinring": "Кольцо Хакусин",
     "halberd": "Алебарда Миллелита",
     "hamayumi": "Хамаюми",
+    "harangeppakufutsu": "Харан гэппаку фуцу",
     "harbingerofdawn": "Предвестник зари",
     "huntersbow": "Лук охотника",
     "ironpoint": "Железный наконечник",

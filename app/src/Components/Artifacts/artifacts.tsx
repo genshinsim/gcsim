@@ -10,6 +10,7 @@ export const items = [
   "braveheart",
   "crimsonwitchofflames",
   "defenderswill",
+  "echoesofanoffering",
   "emblemofseveredfate",
   "gambler",
   "gladiatorsfinale",
@@ -35,6 +36,7 @@ export const items = [
   "thunderingfury",
   "thundersoother",
   "tinymiracle",
+  "vermillionhereafter",
   "viridescentvenerer",
   "wandererstroupe",
 ];
