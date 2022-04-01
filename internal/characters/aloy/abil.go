@@ -81,7 +81,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		bombletCoilStacks = 2
 	}
 
-	delay, ok := p["delay"]
+	delay, ok := p["bomb_delay"]
 	if !ok {
 		delay = 0
 	}

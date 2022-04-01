@@ -68,7 +68,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
-	delay := p["delay"]
+	delay := p["illusion_delay"]
 	if delay < 30 { //this might be too low? might be 48?
 		delay = 30
 	}
