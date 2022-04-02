@@ -75,7 +75,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if delay > 6*60 {
 		delay = 360
 	}
-	extend := p["extend"]
+	hitlag := p["hitlag_extend"]
 	f, a := c.ActionFrames(core.ActionSkill, p)
 	ai := core.AttackInfo{
 		Abil:       "Kamisato Art: Kyouka",
@@ -95,8 +95,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}
 	}, "Water Illusion Burst", delay)
 
-	c.Core.Status.AddStatus("soukaikanka", 6*60+0+extend) //doesn't account for animation
-	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0+extend)
+	c.Core.Status.AddStatus("soukaikanka", 6*60+0+hitlag) //doesn't account for animation
+	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6ready = true
