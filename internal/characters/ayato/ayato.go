@@ -50,7 +50,6 @@ func (c *char) Init() {
 	c.Tmpl.Init()
 	c.a2()
 	c.a4()
-	c.soukaiKankaHook()
 	c.onExitField()
 
 	if c.Base.Cons >= 1 {

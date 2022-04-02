@@ -17,11 +17,6 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			}
 			f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 
-			// If the soukaikanka buff would expire during the normal attack, extend the buff so it expires immediately after instead.
-			if c.Core.Status.Duration("soukaikanka") <= f {
-				c.Core.Status.AddStatus("soukaikanka", f+1)
-				c.Core.Log.NewEvent("Soukai Kanka extended", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+f+1)
-			}
 			return f, f
 		}
 
@@ -54,73 +49,32 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 }
 
 func (c *char) InitCancelFrames() {
-
+	// CA recovery frames from KQM discord
+	c.SetAbilCancelFrames(core.ActionCharge, core.ActionAttack, 84) //charge -> n1
+	c.SetNormalCancelFrames(4, core.ActionAttack, 191-159)          //n5 -> next attack (n1), recovery frames from KQM discord
 }
 
 func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) int {
 	// Provide a custom override for differentiating Ayato's E stance attacks from his usual attacks
-	default_val := c.Tmpl.ActionInterruptableDelay(next, p)
-
-	prev := c.Core.LastAction
-	switch prev.Typ {
-	case core.ActionAttack:
-		if c.Core.Status.Duration("soukaikanka") > 0 {
-			// In E stance
-			switch next {
-			case core.ActionAttack:
-				f := 0
-				switch c.NormalCounter {
-				case 0:
-					// The sim loses 1 frame for executing the attack. Because these attacks are buffered, we should compensate for that
-					// The sim loses 1 frame for the animation delay. We should compensate for that here
-					// Final results is that sim takes 26f from slash to slash instead of 24f
-					f = 24 - 5
-				case 1:
-					f = 24 - 5
-				case 2:
-					f = 24 - 5
-				}
-				f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
-				return f
-			case core.ActionBurst:
-				return 0
-			case core.ActionDash:
-				return 0
-			case core.ActionJump:
-				return 0
-			case core.ActionSwap:
-				return 0
-			case core.ActionSkill: // I didn't actually test this so it's default for now
-				return default_val
-			}
-		} else {
-			// not in E stance
-			switch next {
-			case core.ActionAttack:
-				f := 0
-				switch c.NormalCounter {
-				case 0:
-					// N5 -> N1 frames
-					// recovery frames from KQM discord
-					f = 191 - 159
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					f = 0
-				}
-				return f
-			}
+	// we only over ride if prev is attack and next is also attack
+	if c.Core.LastAction.Typ == core.ActionAttack &&
+		next == core.ActionAttack &&
+		c.Core.Status.Duration("soukaikanka") > 0 {
+		f := 0
+		switch c.NormalCounter {
+		case 0:
+			// The sim loses 1 frame for executing the attack. Because these attacks are buffered, we should compensate for that
+			// The sim loses 1 frame for the animation delay. We should compensate for that here
+			// Final results is that sim takes 26f from slash to slash instead of 24f
+			f = 24 - 5
+		case 1:
+			f = 24 - 5
+		case 2:
+			f = 24 - 5
 		}
-	case core.ActionCharge:
-		//  charge attack won't be in E stance
-		switch next {
-		case core.ActionAttack:
-			// CA recovery frames from KQM discord
-			return 84
-		}
-		// everything else is default because i didn't see frames for it
+		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
+		return f
 	}
-
-	return default_val
+	//otherise use default implementation
+	return c.Tmpl.ActionInterruptableDelay(next, p)
 }

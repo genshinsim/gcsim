@@ -21,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 	if c.Core.Status.Duration("soukaikanka") > 0 {
 		ai.Mult = shunsuiken[c.NormalCounter][c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f, c.generateParticles)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f, c.generateParticles, c.skillStacks)
 	} else {
 		for i, mult := range attack[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
@@ -42,6 +42,13 @@ func (c *char) generateParticles(ac core.AttackCB) {
 			count++
 		}
 		c.QueueParticle("ayato", count, core.Hydro, 80)
+	}
+}
+
+func (c *char) skillStacks(ac core.AttackCB) {
+	if c.stacks < c.stacksMax {
+		c.stacks++
+		c.Core.Log.NewEvent("Soukai Kanka Proc'd by", core.LogCharacterEvent, c.Index)
 	}
 }
 
@@ -105,29 +112,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.SetCD(core.ActionSkill, 12*60)
 	return f, a
 
-}
-
-func (c *char) soukaiKankaHook() {
-	c.Core.Events.Subscribe(core.EventType(core.OnDamage), func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-
-		if c.Core.Status.Duration("soukaikanka") <= 0 {
-			return false
-		}
-		if atk.Info.AttackTag != core.AttackTagNormal {
-			return false
-		}
-
-		if atk.Info.ActorIndex == c.Index {
-			c.stacks++
-			c.Core.Log.NewEvent("Soukai Kanka Proc'd by", core.LogCharacterEvent, c.Index)
-			if c.stacks > c.stacksMax {
-				c.stacks = c.stacksMax
-			}
-			return false
-		}
-		return false
-	}, "soukaiKankaProc")
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
