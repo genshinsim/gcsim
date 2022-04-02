@@ -42,6 +42,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneLiyue
+	c.InitCancelFrames()
 
 	c.AddMod(core.CharStatMod{
 		Key: "a4",
@@ -63,38 +64,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-var delay = [][]int{{8}, {24}, {24, 43}, {36}, {43, 78}}
-
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	switch a {
-	case core.ActionAttack:
-		f := 0
-		switch c.NormalCounter {
-		//TODO: need to add atkspd mod
-		case 0:
-			f = 9
-		case 1:
-			f = 25
-		case 2:
-			f = 44
-		case 3:
-			f = 37
-		case 4:
-			f = 79
-		}
-		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
-		return f, f
-	case core.ActionCharge:
-		return 63, 63
-	case core.ActionSkill:
-		return 77, 77 //should be 82
-	case core.ActionBurst:
-		return 39, 39 //ok
-	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
-		return 0, 0
-	}
-}
+var hitmarks = [][]int{{10}, {16}, {9, 43}, {36}, {43, 78}} //second part of n3, n4, and n5 not recounted
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
@@ -112,7 +82,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Abil = fmt.Sprintf("Normal %v", c.NormalCounter)
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	//add a 75 frame attackcounter reset
@@ -163,7 +133,7 @@ func (c *char) applyOrbital(duration int) {
 	c.Core.Log.NewEvent("orbital duration extended", core.LogCharacterEvent, c.Index, "new expiry", c.Core.Status.Duration("xqorb"))
 }
 
-var rainscreenDelay = [2]int{19, 35}
+var rainscreenDelay = [2]int{12, 27}
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	//applies wet to self 30 frame after cast, sword applies wet every 2.5seconds, so should be 7 seconds
@@ -197,12 +167,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		if orbital == 1 {
 			c.applyOrbital(15 * 60)
 		}
-	}, "xingqiu-spawn-orbitals", 34)
+	}, "xingqiu-spawn-orbitals", rainscreenDelay[1]-1)
 
 	c.QueueParticle(c.Base.Key.String(), 5, core.Hydro, 100)
 
 	//should last 15s, cd 21s
-	c.SetCD(core.ActionSkill, 21*60)
+	c.SetCDWithDelay(core.ActionSkill, 21*60, 10)
 	return f, a
 }
 
@@ -245,7 +215,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.numSwords = 2
 
 	// c.CD[combat.BurstCD] = c.S.F + 20*60
-	c.SetCDWithDelay(core.ActionBurst, 20*60, 7)
-	c.ConsumeEnergy(7)
+	c.SetCD(core.ActionBurst, 20*60)
+	c.ConsumeEnergy(3)
 	return f, a
 }
