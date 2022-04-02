@@ -34,7 +34,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionSkill:
 		return 27, 77 // a not recounted
 	case core.ActionBurst:
-		return 0, 39 // a not recounted
+		return 28, 39 // a not recounted
 	default:
 		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
@@ -63,11 +63,11 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionBurst, 33-21)  //charge -> burst
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSwap, 32-21)   //charge -> swap*/
 
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 29) //burst -> n1
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 28)  //burst -> skill
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 29-28) //burst -> n1
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 28-28)  //burst -> skill
 	//c.SetAbilCancelFrames(core.ActionBurst, core.ActionDash, 100-95) //burst -> dash
 	//c.SetAbilCancelFrames(core.ActionBurst, core.ActionJump, 100-95) //burst -> jump
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 29) //burst -> swap
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 29-28) //burst -> swap
 
 	//skill frames, dmg at 27
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionAttack, 85-14)
