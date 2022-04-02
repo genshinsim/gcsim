@@ -23,20 +23,22 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		Expiry: -1,
 	})
 
-	nabuff := 0.0005 + float64(r)*0.0005
-	matk := make([]float64, core.EndStatType)
-	char.AddPreDamageMod(core.PreDamageMod{
-		Key: "moonglow-na-bonus",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != core.AttackTagNormal {
-				return nil, false
-			}
+	nabuff := 0.005 + float64(r)*0.005
+	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != char.CharIndex() {
+			return false
+		}
+		if atk.Info.AttackTag != core.AttackTagNormal {
+			return false
+		}
 
-			matk[core.ATK] = nabuff * char.MaxHP()
-			return matk, true
-		},
-		Expiry: -1,
-	})
+		flatdmg := char.MaxHP() * nabuff
+		atk.Info.FlatDmg += flatdmg
+
+		c.Log.NewEvent("moonglow add damage", core.LogPreDamageMod, char.CharIndex(), "damage_added", flatdmg)
+		return false
+	}, fmt.Sprintf("moonglow-nabuff-%v", char.Name()))
 
 	icd, dur := -1, -1
 	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {

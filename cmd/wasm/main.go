@@ -59,10 +59,15 @@ func setConfig(this js.Value, args []js.Value) interface{} {
 	var err error
 	cfg, err = parser.Parse()
 	if err != nil {
-		return err.Error()
+		return marshalErr(err)
 	}
 	cfgStr = in
-	return "ok"
+
+	data, err := json.Marshal(cfg)
+	if err != nil {
+		return marshalErr(err)
+	}
+	return string(data)
 }
 
 func version(this js.Value, args []js.Value) interface{} {

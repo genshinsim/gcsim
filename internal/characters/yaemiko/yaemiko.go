@@ -11,12 +11,8 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	kitsunes               []*kitsune
-	cdQueueWorkerStartedAt []int
-	cdQueue                [][]int
-	availableCDCharge      []int
-	additionalCDCharge     []int
-	totemParticleICD       int
+	kitsunes         []*kitsune
+	totemParticleICD int
 }
 
 const (
@@ -45,21 +41,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.SkillCon = 3
 
-	c.cdQueueWorkerStartedAt = make([]int, core.EndActionType)
-	c.cdQueue = make([][]int, core.EndActionType)
-	c.additionalCDCharge = make([]int, core.EndActionType)
-	c.availableCDCharge = make([]int, core.EndActionType)
-	c.kitsunes = make([]*kitsune, 0, 5)
-	c.totemParticleICD = 0
-
-	for i := 0; i < len(c.cdQueue); i++ {
-		c.cdQueue[i] = make([]int, 0, 4)
-		c.availableCDCharge[i] = 1
-	}
-
-	c.additionalCDCharge[core.ActionSkill] = 2
-	c.availableCDCharge[core.ActionSkill] += 2
-	c.Tags["eCharge"] = c.availableCDCharge[core.ActionSkill]
+	c.SetNumCharges(core.ActionSkill, 3)
 
 	return &c, nil
 }

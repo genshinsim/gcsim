@@ -125,17 +125,6 @@ func (c *char) Tick() {
 	}
 }
 
-// func (c *char) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d float64, mult float64) def.Snapshot {
-// 	ds := c.CharacterTemplate.Snapshot(name, a, icd, g, st, e, d, mult)
-// 	if c.S.StatusActive("dilucq") {
-// 		if atk.Info.AttackTag == def.AttackTagNormal || atk.Info.AttackTag == def.AttackTagExtra {
-// 			ds.Element = def.Pyro
-// 			ds.Stats[def.PyroP] += .2
-// 		}
-// 	}
-// 	return ds
-// }
-
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
 	case core.ActionDash:

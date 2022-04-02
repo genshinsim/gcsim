@@ -1,6 +1,8 @@
 package cinnabar
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -42,36 +44,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		return false
-	}, "cinnabar-spindle")
+	}, fmt.Sprintf("cinnabar-%v", char.Name()))
+
 	return "cinnabarspindle"
-
-	// char.AddPreDamageMod(core.PreDamageMod{
-	// 	Key:    "cinnabar",
-	// 	Expiry: -1,
-	// 	Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-
-	// 		m := make([]float64, core.EndStatType)
-
-	// 		if atk.Info.AttackTag != core.AttackTagElementalArt {
-	// 			return nil, false
-	// 		}
-	// 		if effectDurationExpiry < c.F && c.F <= effectICDExpiry {
-	// 			return nil, false
-	// 		}
-	// 		atk.Info.FlatDmg += atk.Snapshot.BaseDef*atk.Snapshot.Stats[core.DEFP] + atk.Snapshot.Stats[core.DEF]
-	// 		c.Log.Debugw("Cinnabar Spindle proc dmg add",core.LogCalc, char.CharIndex(), "lastproc", effectLastProc, "effect_ends_at", effectDurationExpiry, "effect_icd_ends_at", effectICDExpiry)
-
-	// 		// TODO: Assumes that the ICD starts after the last duration ends
-	// 		effectICDExpiry = c.F + 6 + 90
-
-	// 		// Only want to update the last proc and duration if we're not within the currently active period
-	// 		if !(effectLastProc < c.F && c.F <= effectDurationExpiry) {
-	// 			effectLastProc = c.F
-	// 			effectDurationExpiry = c.F + 6
-	// 		}
-
-	// 		return m, true
-	// 	},
-	// })
-
 }

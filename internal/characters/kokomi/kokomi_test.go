@@ -19,3 +19,17 @@ func TestBasicAbilUsage(t *testing.T) {
 	}
 	testhelper.TestCatalystCharacter(c, x)
 }
+
+func TestCD(t *testing.T) {
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Kokomi, core.Hydro, 0)
+	x, err := NewChar(c, prof)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	err = testhelper.TestSkillCDSingleCharge(c, x, 20*60+20) //20 frame delay on cd
+	if err != nil {
+		t.Error(err)
+	}
+}

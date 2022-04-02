@@ -7,6 +7,12 @@ import (
 
 type char struct {
 	*character.Tmpl
+	abundanceAmulets      int
+	burstC6Hits           int
+	burstC6WillGiveEnergy bool
+	burstSnap             core.Snapshot
+	burstAtk              *core.AttackEvent
+	burstSrc              int
 }
 
 func init() {
@@ -32,6 +38,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
+
+	c.burstProc()
 
 	return &c, nil
 }

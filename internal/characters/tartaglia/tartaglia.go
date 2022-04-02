@@ -76,6 +76,11 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
+			//TODO: need to verify if this is correct
+			//but if childe is currently in melee stance and skill is on CD that means that
+			//the button has lit up yet from original skill press
+			//in which case we need to reset the cooldown first
+			c.ResetActionCooldown(core.ActionSkill)
 			c.onExitMeleeStance()
 		}
 		return false
@@ -110,7 +115,6 @@ func (c *char) onDefeatTargets() {
 
 		if c.Base.Cons >= 2 {
 			c.AddEnergy("tartaglia-c2", 4)
-			c.Core.Log.NewEvent("Tartaglia C2 restoring 4 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}
 		return false
 	}, "tartaglia-on-enemy-death")

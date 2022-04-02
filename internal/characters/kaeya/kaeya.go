@@ -135,7 +135,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		if a.Target.AuraContains(core.Frozen) {
 			a4count++
 			c.QueueParticle("kaeya", 1, core.Cryo, 100)
-			c.Core.Log.NewEvent("kaeya a4 proc", core.LogEnergyEvent, c.Index)
+			c.Core.Log.NewEvent("kaeya a4 proc", core.LogCharacterEvent, c.Index)
 		}
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 28, cb)

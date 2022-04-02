@@ -83,7 +83,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				c.AddTask(gainStackOfffield(s.F), "husk-4pc-off-field-gain", 1)
 			}
 			return true
-		}, "husk-4pc-off-field-stack-init")
+		}, fmt.Sprintf("husk-4pc-off-field-stack-init-%v", c.Name()))
 
 		s.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
 			prev := args[0].(int)
@@ -93,7 +93,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			lastSwap = s.F
 			c.AddTask(gainStackOfffield(s.F), "husk-4pc-off-field-gain", 180)
 			return false
-		}, "husk-4pc-off-field-gain")
+		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", c.Name()))
 
 		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 			atk := args[1].(*core.AttackEvent)

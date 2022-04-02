@@ -41,6 +41,7 @@ type Character interface {
 	//info methods
 	ActionReady(a ActionType, p map[string]int) bool
 	ActionStam(a ActionType, p map[string]int) float64
+	Charges(ActionType) int
 
 	//number of frames this action will take
 	// ActionFrames(a ActionType, p map[string]int) int

@@ -41,7 +41,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {
-		c.Tags["last"] = -1
+		c.SetNumCharges(core.ActionSkill, 2)
 	}
 
 	return &c, nil

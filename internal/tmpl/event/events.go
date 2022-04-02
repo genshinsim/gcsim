@@ -48,7 +48,7 @@ func (h *Ctrl) Subscribe(e core.EventType, f core.EventHook, key string) {
 			key: key,
 			src: h.c.F,
 		})
-		h.c.Log.NewEvent("hook added", core.LogHookEvent, -1, "overwrite", true, "key", key, "type", e)
+		h.c.Log.NewEvent("hook added", core.LogHookEvent, -1, "overwrite", false, "key", key, "type", e)
 	}
 	h.events[e] = a
 }

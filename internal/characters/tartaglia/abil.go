@@ -271,7 +271,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			c.AddTask(func() {
 				c.AddEnergy("tartaglia-ranged-burst-refund", 20)
 			}, "tartaglia-ranged-burst-energy-refund", 9)
-			c.Core.Log.NewEvent("Tartaglia ranged burst restoring 20 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		}
 	}, "tartaglia-burst-clear", f-5) //random 5 frame
 

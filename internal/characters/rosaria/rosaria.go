@@ -100,7 +100,6 @@ func (c *char) c4() {
 		icd = c.Core.F + 30
 
 		c.AddEnergy("rosaria-c4", 5)
-		c.Core.Log.NewEvent("Rosaria C4 recovering 5 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
 		return false
 	}, "rosaria-c4")
 }
