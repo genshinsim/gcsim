@@ -75,6 +75,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	if delay > 6*60 {
 		delay = 360
 	}
+	hitlag := p["hitlag_extend"]
 	f, a := c.ActionFrames(core.ActionSkill, p)
 	ai := core.AttackInfo{
 		Abil:       "Kamisato Art: Kyouka",
@@ -89,9 +90,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.AddTask(func() {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3.5, false, core.TargettableEnemy), 0, 0)
 		//add a namisen stack
+		if c.stacks < c.stacksMax {
+			c.stacks++
+		}
 	}, "Water Illusion Burst", delay)
 
-	c.Core.Status.AddStatus("soukaikanka", 6*60+0) //doesn't account for animation
+	c.Core.Status.AddStatus("soukaikanka", 6*60+0+hitlag) //doesn't account for animation
 	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
@@ -208,27 +212,4 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.ConsumeEnergy(8)
 
 	return f, a
-}
-
-func (c *char) namisenStack() {
-	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-
-		if c.Core.ActiveChar != c.CharIndex() {
-			return false
-		}
-		if ae.Info.AttackTag != core.AttackTagNormal {
-			return false
-		}
-		if c.Core.Status.Duration("soukaikanka") <= 0 {
-			return false
-		}
-
-		stats, _ := c.SnapshotStats()
-		dmgAdded := (c.Base.HP*(1+stats[core.HPP]) + stats[core.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
-		ae.Info.FlatDmg += dmgAdded
-
-		c.Core.Log.NewEvent("Waveflash Stacks: ", core.LogCharacterEvent, c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
-		return false
-	}, "ayato-waveflash")
 }

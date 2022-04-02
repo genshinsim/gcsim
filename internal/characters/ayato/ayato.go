@@ -50,7 +50,6 @@ func (c *char) Init() {
 	c.Tmpl.Init()
 	c.a2()
 	c.a4()
-	c.namisenStack()
 	c.soukaiKankaHook()
 	c.onExitField()
 
@@ -196,6 +195,9 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 			return ds
 		}
 		ai.Element = core.Hydro
+		//add namisen stack
+		ai.FlatDmg += (c.Base.HP*(1+ds.Stats[core.HPP]) + ds.Stats[core.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
+		c.Core.Log.NewEvent("Waveflash Stacks: ", core.LogCharacterEvent, c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
 	}
 	return ds
 }
