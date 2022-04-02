@@ -259,7 +259,9 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 			c.Stats[pos] += amt
 		case itemTerminateLine:
 			return parseRows, nil
+		default:
+			return nil, fmt.Errorf("unrecognized token parsing add stats: %v at line %v", n, p.tokens)
 		}
 	}
-	return nil, errors.New("unexpected end of line while parsing character add set")
+	return nil, errors.New("unexpected end of line while parsing character add stats")
 }

@@ -12,9 +12,6 @@ func init() {
 type char struct {
 	*character.Tmpl
 	qInfused core.EleType
-	//charges
-	eChargeMax int
-	eCharges   int
 
 	c4Count int
 }
@@ -39,11 +36,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 4
 
-	c.eChargeMax = 1
 	if c.Base.Cons >= 1 {
-		c.eChargeMax = 2
+		c.SetNumCharges(core.ActionSkill, 2)
 	}
-	c.eCharges = c.eChargeMax
 
 	return &c, nil
 }

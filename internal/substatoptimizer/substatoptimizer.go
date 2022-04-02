@@ -111,7 +111,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	// Regex to remove stat rows that do not look like mainstat rows from the config
-	var reSubstats = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\b.*\n`)
+	var reSubstats = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\b[^;]*;.*\n`)
 	srcCleaned := string(cfg)
 	errorPrinted := false
 	for _, match := range reSubstats.FindAllString(cfg, -1) {

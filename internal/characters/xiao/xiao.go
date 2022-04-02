@@ -12,14 +12,10 @@ func init() {
 // Xiao specific character implementation
 type char struct {
 	*character.Tmpl
-	eCharge      int
-	eChargeMax   int
-	eNextRecover int
-	eTickSrc     int
-	qStarted     int
-	a4Expiry     int
-	c6Src        int
-	c6Count      int
+	qStarted int
+	a4Expiry int
+	c6Src    int
+	c6Count  int
 }
 
 // Initializes character
@@ -44,9 +40,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.NormalHitNum = 6
 
-	c.eChargeMax = 2
+	c.SetNumCharges(core.ActionSkill, 2)
 	if c.Base.Cons >= 1 {
-		c.eChargeMax = 3
+		c.SetNumCharges(core.ActionSkill, 3)
 	}
 
 	if c.Base.Cons >= 2 {
@@ -57,7 +53,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.c6()
 	}
 
-	c.Tags["eCharge"] = c.eChargeMax
 	c.onExitField()
 
 	return &c, nil
@@ -126,8 +121,7 @@ func (c *char) c6() {
 
 		// Prevents activation more than once in a single plunge attack
 		if c.c6Count == 2 {
-			c.recoverCharge(c.eTickSrc)
-			c.eTickSrc = c.Core.F
+			c.ResetActionCooldown(core.ActionSkill)
 
 			c.Core.Status.AddStatus("xiaoc6", 60)
 			c.Core.Log.NewEvent("Xiao C6 activated", core.LogCharacterEvent, c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.F+60)

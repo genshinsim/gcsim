@@ -114,30 +114,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Status.AddStatus("ganyuc6", 1800)
 	}
 
-	if c.Base.Cons >= 2 {
-		last := c.Tags["last"]
-		//we can only be here if the cooldown is up, meaning at least 1 charge is off cooldown
-		//last should just represent when the next charge starts recharging, this should equal
-		//to right when the first charge is off cooldown
-		if last == -1 {
-			c.Tags["last"] = c.Core.F
-			// c.Core.Log.Infof("\t Sucrose first time using skill, first charge cd up at %v", c.Core.F+900)
-		} else if c.Core.F-last < 600 {
-			//if last is less than 15s in the past, then 1 charge is up
-			//then we move last up to when the first charge goes off CD\
-			// c.Core.Log.Infof("\t Sucrose last diff %v", c.Core.F-last)
-			c.Tags["last"] = last + 600
-			c.SetCD(core.ActionSkill, last+600-c.Core.F)
-			// c.Core.Log.Infof("\t Sucrose skill going on CD until %v, last = %v", last+900, c.Tags["last"])
-		} else {
-			//so if last is more than 15s in the past, then both charges must be up
-			//so then the charge restarts now
-			c.Tags["last"] = c.Core.F
-			// c.Core.Log.Infof("\t Sucrose charge cd starts at %v", c.Core.F)
-		}
-	} else {
-		c.SetCD(core.ActionSkill, 600)
-	}
+	c.SetCD(core.ActionSkill, 600)
 
 	return f, a
 }
@@ -250,27 +227,4 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.ConsumeEnergy(8)
 
 	return f, a
-}
-
-func (c *char) ResetActionCooldown(a core.ActionType) {
-	//we're overriding this b/c of the c1 charges
-	switch a {
-	case core.ActionBurst:
-		c.ActionCD[a] = 0
-	case core.ActionSkill:
-		if c.Base.Cons < 2 {
-			c.ActionCD[a] = 0
-			return
-		}
-		//ok here's the fun part...
-		//if last is more than 15s away from current frame then both charges are up, do nothing
-		if c.Core.F-c.Tags["last"] > 600 || c.Tags["last"] == 0 {
-			return
-		}
-		//otherwise move CD and restart charging last now
-		c.Tags["last"] = c.Core.F
-		// c.CD[def.SkillCD] = c.Core.F
-		c.SetCD(a, 0)
-
-	}
 }

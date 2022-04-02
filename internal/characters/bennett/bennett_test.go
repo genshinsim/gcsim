@@ -102,3 +102,17 @@ func TestBurstAura(t *testing.T) {
 	}
 
 }
+
+func TestCD(t *testing.T) {
+	c := testhelper.NewTestCore()
+	prof := testhelper.CharProfile(core.Bennett, core.Pyro, 6)
+	x, err := NewChar(c, prof)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	err = testhelper.TestSkillCDSingleCharge(c, x, 300-60)
+	if err != nil {
+		t.Error(err)
+	}
+}

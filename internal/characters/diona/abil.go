@@ -168,11 +168,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Base.Cons >= 1 {
 		//15 energy after ends, flat not affected by ER
 		c.AddTask(func() {
-			c.Energy += 15
-			if c.Energy > c.EnergyMax {
-				c.Energy = c.EnergyMax
-			}
-			c.Core.Log.NewEvent("diona c1 regen 15 energy", core.LogEnergyEvent, c.Index, "new energy", c.Energy)
+			c.AddEnergy("diona-c1", 15)
 		}, "Diona C1", f+750)
 	}
 

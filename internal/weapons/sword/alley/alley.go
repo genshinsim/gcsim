@@ -24,7 +24,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	m := make([]float64, core.EndStatType)
 	m[core.DmgP] = 0.09 + 0.03*float64(r)
 	char.AddMod(core.CharStatMod{
-		Key: "royal",
+		Key: "alleyflash",
 		Amount: func() ([]float64, bool) {
 			return m, lockout < c.F
 		},
