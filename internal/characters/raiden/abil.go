@@ -234,10 +234,6 @@ func (c *char) eyeOnDamage() {
 		if c.Core.Status.Duration("raidenskill") == 0 {
 			return false
 		}
-		//ignore reaction damage
-		if ae.Info.AttackTag > core.ReactionAttackDelim {
-			return false
-		}
 		//ignore self dmg
 		if ae.Info.Abil == "Eye of Stormy Judgement" {
 			return false
