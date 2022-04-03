@@ -239,9 +239,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	selfSwirl := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dandelion Breeze (Self Swirl)",
-		AttackTag:  core.AttackTagNone,
-		ICDTag:     core.ICDTagNone,
-		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Anemo,
 		Durability: 25,
 	}
