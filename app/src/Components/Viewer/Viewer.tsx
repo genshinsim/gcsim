@@ -57,7 +57,7 @@ type ViewProps = {
 };
 
 function ViewOnly(props: ViewProps) {
-  let { t } = useTranslation()
+  let { t } = useTranslation();
 
   const [tabID, setTabID] = React.useState<string>("result");
   const [optOpen, setOptOpen] = React.useState<boolean>(false);
@@ -101,11 +101,31 @@ function ViewOnly(props: ViewProps) {
           onChange={handleTabChange}
           className="w-full"
         >
-          <Tab id="result" title={t("viewer.summary")} className="focus:outline-none" />
-          <Tab id="details" title={t("viewer.details")} className="focus:outline-none" />
-          <Tab id="config" title={t("viewer.config")} className="focus:outline-none" />
-          <Tab id="debug" title={t("viewer.debug")} className="focus:outline-none" />
-          <Tab id="share" title={t("viewer.share")} className="focus:outline-none" />
+          <Tab
+            id="result"
+            title={t("viewer.summary")}
+            className="focus:outline-none"
+          />
+          <Tab
+            id="details"
+            title={t("viewer.details")}
+            className="focus:outline-none"
+          />
+          <Tab
+            id="config"
+            title={t("viewer.config")}
+            className="focus:outline-none"
+          />
+          <Tab
+            id="debug"
+            title={t("viewer.debug")}
+            className="focus:outline-none"
+          />
+          <Tab
+            id="share"
+            title={t("viewer.share")}
+            className="focus:outline-none"
+          />
           <Tabs.Expander />
           <Button icon="cross" intent="danger" onClick={props.handleClose} />
         </Tabs>
@@ -154,8 +174,17 @@ type ViewerProps = {
   handleClose: () => void;
 };
 
+const SAVED_DEBUG_KEY = "gcsim-debug-settings";
+
 export function Viewer(props: ViewerProps) {
-  const [selected, setSelected] = React.useState<string[]>(defOpts);
+  const [selected, setSelected] = React.useState<string[]>(() => {
+    const saved = localStorage.getItem(SAVED_DEBUG_KEY);
+    if (saved) {
+      const initialValue = JSON.parse(saved);
+      return initialValue || defOpts;
+    }
+    return defOpts;
+  });
 
   //string
   console.log(props.data);
@@ -217,6 +246,7 @@ export function Viewer(props: ViewerProps) {
 
   const handleSetSelected = (next: string[]) => {
     setSelected(next);
+    localStorage.setItem(SAVED_DEBUG_KEY, JSON.stringify(next));
   };
 
   let viewProps = {
