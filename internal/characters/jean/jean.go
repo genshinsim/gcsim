@@ -173,7 +173,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 	//p is the number of times enemy enters or exits the field
 	enter := p["enter"]
-	delay, ok := p["delay"]
+	delay, ok := p["field_delay"]
 	if !ok {
 		delay = 10
 	}

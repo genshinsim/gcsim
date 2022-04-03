@@ -141,6 +141,8 @@ var CharNameToKey = map[string]string{
 	"kaeya":             "Kaeya",
 	"kamisatoayaka":     "Ayaka",
 	"ayaka":             "Ayaka",
+	"kamisatoayato":     "Ayato",
+	"ayato":             "Ayato",
 	"keqing":            "Keqing",
 	"klee":              "Klee",
 	"kujousara":         "Sara",
