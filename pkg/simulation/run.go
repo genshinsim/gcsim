@@ -142,7 +142,7 @@ func (s *Simulation) AdvanceFrame() error {
 				"param", s.C.LastAction.Param["delay"],
 				"default_delays", s.C.Flags.Delays,
 			)
-			s.skip = delay
+			s.skip = delay - 1
 			return nil
 		}
 	}

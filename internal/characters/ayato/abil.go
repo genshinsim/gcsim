@@ -102,7 +102,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}
 	}, "Water Illusion Burst", delay)
 
-	c.Core.Status.AddStatus("soukaikanka", 6*60+0+hitlag) //doesn't account for animation
+	c.Core.Status.AddStatus("soukaikanka", 6*60+f+hitlag) //add animation to the duration
 	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
