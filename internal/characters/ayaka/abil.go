@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{8}, {10}, {16}, {8, 15, 22}, {27}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -27,7 +29,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i, c1cbArgs...)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i], c1cbArgs...)
 	}
 
 	c.AdvanceNormalIndex()
@@ -59,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	}
 
 	for i := 0; i < 3; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-3+i, f-3+i, cbArgs...)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-2+i, f-2+i, cbArgs...)
 	}
 
 	return f, a
@@ -67,9 +69,11 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 func (c *char) Dash(p map[string]int) (int, int) {
 	f, ok := p["f"]
+	a := f + 10
 	if !ok {
-		f = 36
+		f, a = c.ActionFrames(core.ActionDash, p)
 	}
+
 	//no dmg attack at end of dash
 	ai := core.AttackInfo{
 		Abil:       "Dash",
@@ -109,7 +113,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Core.F + 300,
 	})
-	return f, f
+	return f, a
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
@@ -143,7 +147,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		},
 	})
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, 38)
 
 	c.SetCD(core.ActionSkill, 600)
 	return f, a
@@ -200,8 +204,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}
 
-	c.SetCDWithDelay(core.ActionBurst, 20*60, 13)
-	c.ConsumeEnergy(13)
+	c.SetCD(core.ActionBurst, 20*60)
+	c.ConsumeEnergy(8)
 
 	return f, a
 }
