@@ -6,14 +6,14 @@ import { Simple, Advanced } from "/src/Pages/Sim";
 import { SimWrapper } from "./Pages/Sim/SimWrapper";
 import { ViewerDash } from "./Pages/ViewerDashboard";
 import { DB } from "./Pages/DB";
-import './i18n'
+import "./i18n";
 import { Trans, useTranslation } from "react-i18next";
 
 export default function App() {
-  useTranslation()
+  useTranslation();
 
   return (
-    <div className=".bp3-dark h-screen flex flex-col">
+    <div className="bp4-dark h-screen flex flex-col">
       <Nav />
       <Switch>
         <Route path="/" component={Dash} />

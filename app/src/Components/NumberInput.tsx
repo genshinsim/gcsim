@@ -68,7 +68,7 @@ export function NumberInput({
               onChange(v);
             }}
           >
-            <span aria-hidden="true" className="bp3-icon bp3-icon-chevron-up">
+            <span aria-hidden="true" className="bp4-icon bp4-icon-chevron-up">
               <svg
                 data-icon="chevron-up"
                 width="16"
@@ -93,7 +93,7 @@ export function NumberInput({
               onChange(v);
             }}
           >
-            <span aria-hidden="true" className="bp3-icon bp3-icon-chevron-down">
+            <span aria-hidden="true" className="bp4-icon bp4-icon-chevron-down">
               <svg
                 data-icon="chevron-down"
                 width="16"
