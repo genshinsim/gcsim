@@ -174,9 +174,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 	//p is the number of times enemy enters or exits the field
 	enter := p["enter"]
-	delay, ok := p["field_delay"]
+	if enter < 1 {
+		enter = 1
+	}
+	delay, ok := p["enter_delay"]
 	if !ok {
-		delay = 10
+		delay = 600 / enter
 	}
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
@@ -193,12 +196,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f-10)
+	//looks to be around 60 frames in
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 60)
 
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
+	//first enter is at frame 66
 	for i := 0; i < enter; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f+i*delay)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 66+i*delay)
 	}
 
 	c.Core.Status.AddStatus("jeanq", 630)
@@ -243,8 +248,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 	}
 
-	//duration is 10.5s
-	for i := 60; i < 630; i += 60 {
+	//duration is 10.5s, first tick start at frame 100, + 60 each
+	for i := 100; i < 100+630; i += 60 {
 		c.AddTask(func() {
 			// c.Core.Log.NewEvent("jean q healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
 			c.Core.Health.Heal(core.HealInfo{
