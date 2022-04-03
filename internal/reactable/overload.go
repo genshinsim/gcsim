@@ -50,6 +50,8 @@ func (r *Reactable) tryOverload(a *core.AttackEvent) {
 		Element:          core.Pyro,
 		IgnoreDefPercent: 1,
 	}
-	atk.FlatDmg = 2 * r.calcReactionDmg(atk)
+	char := r.core.Chars[a.Info.ActorIndex]
+	em := char.Stat(core.EM)
+	atk.FlatDmg = 2 * r.calcReactionDmg(atk, em)
 	r.core.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, core.TargettableEnemy), -1, 1)
 }

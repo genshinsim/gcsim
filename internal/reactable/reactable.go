@@ -161,9 +161,8 @@ func (r *Reactable) tryRefill(ele core.EleType, dur *core.Durability) {
 	*dur = 0
 }
 
-func (r *Reactable) calcReactionDmg(atk core.AttackInfo) float64 {
+func (r *Reactable) calcReactionDmg(atk core.AttackInfo, em float64) float64 {
 	char := r.core.Chars[atk.ActorIndex]
-	em := char.Stat(core.EM)
 	lvl := char.Level() - 1
 	if lvl > 89 {
 		lvl = 89
