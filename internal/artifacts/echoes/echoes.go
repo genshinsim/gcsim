@@ -32,11 +32,13 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
-			if args[1].(*core.AttackEvent).Info.AttackTag != core.AttackTagNormal {
+			atk := args[1].(*core.AttackEvent)
+			if atk.Info.AttackTag != core.AttackTagNormal {
 				return false
 			}
-			atk := args[1].(*core.AttackEvent)
+
 			if s.Rand.Float64() < prob {
+				//TODO: need to check if this actually snapshots here
 				snap := c.Snapshot(&atk.Info)
 				dmgAdded := (snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]) * 0.7
 				atk.Info.FlatDmg += dmgAdded
