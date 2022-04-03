@@ -7,8 +7,8 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc("haran tsukishiro futsu", weapon)
-	core.RegisterWeaponFunc("harantsukishirofutsu", weapon)
+	core.RegisterWeaponFunc("haran geppaku futsu", weapon)
+	core.RegisterWeaponFunc("harangeppakufutsu", weapon)
 	core.RegisterWeaponFunc("haran", weapon)
 }
 
@@ -27,7 +27,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	maxWavespikeStacks := 2
 
 	char.AddMod(core.CharStatMod{
-		Key: "haran ele bonus",
+		Key: "haran-ele-bonus",
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},
@@ -54,7 +54,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 		char.AddPreDamageMod(core.PreDamageMod{
-			Key:    "ripping upheaval",
+			Key:    "ripping-upheaval",
 			Expiry: c.F + 60*8,
 			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != core.AttackTagNormal {
