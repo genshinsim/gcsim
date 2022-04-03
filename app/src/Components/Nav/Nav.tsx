@@ -85,10 +85,14 @@ export default function Nav() {
           <HTMLSelect
             className="ml-2"
             value={language}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            onChange={(e) => {
+              console.log(e.target.value);
+              i18n.changeLanguage(e.target.value);
+            }}
           >
             <option value="English">{t("nav.english")}</option>
             <option value="Chinese">{t("nav.chinese")}</option>
+            <option value="German">{t("nav.german")}</option>
             <option value="Japanese">{t("nav.japanese")}</option>
             <option value="Spanish">{t("nav.spanish")}</option>
             <option value="Russian">{t("nav.russian")}</option>
