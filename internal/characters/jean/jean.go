@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -229,8 +230,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		})
 	}, "Jean Heal Initial", f)
 
+	player, ok := c.Core.Targets[0].(*player.Player)
+	if !ok {
+		panic("target 0 should be Player but is not!!")
+	}
+
+	//attack self
+	selfSwirl := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Dandelion Breeze (Self Swirl)",
+		Element:    core.Anemo,
+		Durability: 25,
+	}
+
 	//duration is 10.5s
-	for i := 60; i < 630; i++ {
+	for i := 60; i < 630; i += 60 {
 		c.AddTask(func() {
 			// c.Core.Log.NewEvent("jean q healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
 			c.Core.Health.Heal(core.HealInfo{
@@ -240,6 +254,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				Src:     healDot,
 				Bonus:   hpplus,
 			})
+
+			ae := core.AttackEvent{
+				Info:        selfSwirl,
+				Pattern:     core.NewDefSingleTarget(0, player.TargetType),
+				SourceFrame: c.Core.F,
+			}
+			c.Core.Log.NewEvent("jean self swirling", core.LogCharacterEvent, c.Index)
+			player.ReactWithSelf(&ae)
 		}, "Jean Tick", i)
 	}
 
