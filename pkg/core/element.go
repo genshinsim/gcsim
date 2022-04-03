@@ -94,11 +94,37 @@ const (
 	FreezeExtend       ReactionType = "FreezeExtend"
 )
 
-func (c *Core) AbsorbCheck(prio ...EleType) EleType {
+func absorbCheckWillCollide(p AttackPattern, t Target, index int) bool {
+	//shape shouldn't be nil; panic here
+	if p.Shape == nil {
+		panic("unexpected nil shape")
+	}
+	//shape can't be nil now, check if type matches
+	if !p.Targets[t.Type()] {
+		return false
+	}
+
+	//check if shape matches
+	switch v := p.Shape.(type) {
+	case *Circle:
+		return t.Shape().IntersectCircle(*v)
+	case *Rectangle:
+		return t.Shape().IntersectRectangle(*v)
+	case *SingleTarget:
+		//only true if
+		return v.Target == index
+	default:
+		return false
+	}
+}
+
+func (c *Core) AbsorbCheck(p AttackPattern, prio ...EleType) EleType {
+
+	// check targets for collision first
 
 	for _, e := range prio {
-		for _, t := range c.Targets {
-			if t.AuraContains(e) {
+		for i, t := range c.Targets {
+			if absorbCheckWillCollide(p, t, i) && t.AuraContains(e) {
 				c.Log.NewEvent(
 					"infusion check picked up "+e.String(),
 					LogElementEvent,

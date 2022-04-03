@@ -165,7 +165,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfused = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+		c.qInfused = c.Core.AbsorbCheck(c.infuseCheckLocation, core.Pyro, core.Hydro, core.Electro, core.Cryo)
 
 		if c.qInfused != core.NoElement {
 			if c.Base.Cons >= 6 {

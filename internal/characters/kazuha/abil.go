@@ -280,7 +280,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+		c.qInfuse = c.Core.AbsorbCheck(c.infuseCheckLocation, core.Pyro, core.Hydro, core.Electro, core.Cryo)
 
 		if c.qInfuse != core.NoElement {
 			return
@@ -295,7 +295,7 @@ func (c *char) absorbCheckA2(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.a2Ele = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+		c.a2Ele = c.Core.AbsorbCheck(c.infuseCheckLocation, core.Pyro, core.Hydro, core.Electro, core.Cryo)
 
 		if c.a2Ele != core.NoElement {
 			c.Core.Log.NewEventBuildMsg(

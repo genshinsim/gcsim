@@ -7,7 +7,8 @@ import (
 
 type char struct {
 	*character.Tmpl
-	qInfuse core.EleType
+	qInfuse             core.EleType
+	infuseCheckLocation core.AttackPattern
 }
 
 func init() {
@@ -33,6 +34,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 6
 	c.BurstCon = 3
 	c.SkillCon = 5
+
+	c.infuseCheckLocation = core.NewDefCircHit(0.1, false, core.TargettableEnemy, core.TargettablePlayer, core.TargettableObject)
 
 	return &c, nil
 }
