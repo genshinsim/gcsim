@@ -40,7 +40,7 @@ func parseOptions(p *Parser) (parseFn, error) {
 					//should be either apl or sl
 					m, ok := queueModeKeys[n.val]
 					if !ok {
-						return nil, fmt.Errorf("invalid queue mode, got %v", n.val)
+						return nil, fmt.Errorf("ln%v: invalid queue mode, got %v", n.line, n.val)
 					}
 					p.cfg.Settings.QueueMode = m
 				}
@@ -98,18 +98,18 @@ func parseOptions(p *Parser) (parseFn, error) {
 						p.cfg.Settings.Delays.Jump = 5
 						p.cfg.Settings.Delays.Aim = 5
 					default:
-						return nil, fmt.Errorf("unrecognized option for frame_defaults specified: %v", n.val)
+						return nil, fmt.Errorf("ln%v: unrecognized option for frame_defaults specified: %v", n.line, n.val)
 					}
 				}
 			case "er_calc":
 				//does nothing thus far...
 			default:
-				return nil, fmt.Errorf("unrecognized option specified: %v", n.val)
+				return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.line, n.val)
 			}
 		case itemTerminateLine:
 			return parseRows, nil
 		default:
-			return nil, fmt.Errorf("unrecognized token parsing options: %v at line %v", n, p.tokens)
+			return nil, fmt.Errorf("ln%v: unrecognized token parsing options: %v", n.line, n)
 		}
 		if err != nil {
 			return nil, err

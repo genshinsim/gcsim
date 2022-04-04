@@ -12,36 +12,36 @@ func (p *Parser) acceptLevelReturnBaseMax() (base, max int, err error) {
 	var x item
 	x, err = p.consume(itemEqual)
 	if err != nil {
-		err = fmt.Errorf("unexpected token after lvl. expecting = got %v at line %v", x, p.tokens)
+		err = fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.line, x)
 		return
 	}
 	x, err = p.consume(itemNumber)
 	if err != nil {
-		err = fmt.Errorf("expecting a number for base lvl, got %v at line %v", x, p.tokens)
+		err = fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.line, x)
 		return
 	}
 	base, err = itemNumberToInt(x)
 	if err != nil {
-		err = fmt.Errorf("unexpected token for base lvl. got %v at line %v", x, p.tokens)
+		err = fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
 		return
 	}
 	x, err = p.consume(itemForwardSlash)
 	if err != nil {
-		err = fmt.Errorf("expecting / separator for lvl, got %v at line %v", x, p.tokens)
+		err = fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
 		return
 	}
 	x, err = p.consume(itemNumber)
 	if err != nil {
-		err = fmt.Errorf("expecting a number for max lvl, got %v at line %v", x, p.tokens)
+		err = fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.line, x)
 		return
 	}
 	max, err = itemNumberToInt(x)
 	if err != nil {
-		err = fmt.Errorf("unexpected token for lvl. got %v at line %v", x, p.tokens)
+		err = fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.line, x)
 		return
 	}
 	if max < base {
-		err = fmt.Errorf("max level %v cannot be less than base level %v at line %v", max, base, p.tokens)
+		err = fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.line, max, base)
 		return
 	}
 	return
@@ -83,7 +83,7 @@ func (p *Parser) acceptOptionalParamReturnMap() (map[string]int, error) {
 		case itemComma:
 			//do nothing, keep going
 		default:
-			return r, fmt.Errorf("<action param> bad token at line %v - %v: %v", n.line, n.pos, n)
+			return r, fmt.Errorf("ln%v: <action param> bad token %v", n.line, n)
 		}
 	}
 }
@@ -98,7 +98,7 @@ func (p *Parser) acceptOptionalRepeaterReturnCount() (int, error) {
 	//should be a number next
 	n = p.next()
 	if n.typ != itemNumber {
-		return count, fmt.Errorf("expected a number after : but got %v on line %v", n, p.tokens)
+		return count, fmt.Errorf("ln%v: expected a number after : but got %v", n.line, n)
 	}
 	//parse number
 	count, err := itemNumberToInt(n)
@@ -139,7 +139,7 @@ func (p *Parser) acceptAbilitiesReturnList() ([]core.ActionItem, error) {
 				return res, nil
 			}
 		default:
-			return nil, fmt.Errorf("unexpected token %v in line %v", n, p.tokens)
+			return nil, fmt.Errorf("ln%v: unexpected token %v", n.line, n)
 		}
 	}
 	return nil, errors.New("unexpected end of line")
@@ -154,7 +154,7 @@ func (p *Parser) acceptMacrosReturnList() ([]core.ActionBlock, error) {
 			//see if macro exists
 			block, ok := p.macros[n.val]
 			if !ok {
-				return nil, fmt.Errorf("macro %v not defined at line %v", n.val, p.tokens)
+				return nil, fmt.Errorf("ln%v: macro %v not defined", n.line, n.val)
 			}
 
 			//optional : and a number
@@ -175,7 +175,7 @@ func (p *Parser) acceptMacrosReturnList() ([]core.ActionBlock, error) {
 				return res, nil
 			}
 		default:
-			return nil, fmt.Errorf("unexpected token %v in line %v", n, p.tokens)
+			return nil, fmt.Errorf("ln%v: unexpected token %v", n.line, n)
 		}
 	}
 	return nil, errors.New("unexpected end of line")
