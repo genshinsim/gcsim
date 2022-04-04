@@ -11,6 +11,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
+	skillFlatDmg  float64
 	skillLastUsed int
 	swapEarlyF    int
 	c4ICDExpiry   int
@@ -37,6 +38,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.CharZone = core.ZoneInazuma
 
+	c.skillFlatDmg = 0
 	c.skillLastUsed = 0
 	c.swapEarlyF = 0
 	c.c4ICDExpiry = 0
@@ -168,6 +170,7 @@ func (c *char) onExitField() {
 		prev := args[0].(int)
 		if prev == c.Index {
 			c.swapEarlyF = c.Core.F
+			c.skillFlatDmg = c.burstDmgBonus(core.AttackTagElementalArt)
 		}
 		c.Core.Status.DeleteStatus("kokomiburst")
 		return false
