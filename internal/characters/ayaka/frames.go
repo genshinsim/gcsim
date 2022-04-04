@@ -32,7 +32,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionSkill:
 		return 30, 48
 	case core.ActionBurst:
-		return 93, 124
+		return 105, 124
 	case core.ActionDash:
 		return 20, 30
 	default:
@@ -44,7 +44,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 func (c *char) InitCancelFrames() {
 	//normal cancels
 	c.SetNormalCancelFrames(0, core.ActionAttack, 9-8)  //n1 -> next attack
-	c.SetNormalCancelFrames(0, core.ActionCharge, 14-8) //n1 -> charge
+	c.SetNormalCancelFrames(0, core.ActionCharge, 22-8) //n1 -> charge
 
 	c.SetNormalCancelFrames(1, core.ActionAttack, 18-10) //n2 -> next attack
 	c.SetNormalCancelFrames(1, core.ActionCharge, 20-10) //n2 -> charge
@@ -61,11 +61,11 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSkill, 62-31)  //charge -> skill
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionBurst, 65-31)  //charge -> burst
 
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 125-93) //burst -> n1
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 124-93)  //burst -> skill
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionDash, 124-93)   //burst -> dash
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionJump, 114-93)   //burst -> jump
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 124-93)   //burst -> swap
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 125-105) //burst -> n1
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 125-105)  //burst -> skill
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionDash, 124-105)   //burst -> dash
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionJump, 114-105)   //burst -> jump
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 124-105)   //burst -> swap
 
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionAttack, 50-30)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionBurst, 48-30)
