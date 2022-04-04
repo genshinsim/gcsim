@@ -106,7 +106,11 @@ func Royal(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
+		if atk.Info.ActorIndex != char.CharIndex() {
+			return false
+		}
 		if crit {
 			stacks = 0
 		} else {
@@ -121,12 +125,12 @@ func Royal(char core.Character, c *core.Core, r int, param map[string]int) {
 	rate := 0.06 + float64(r)*0.02
 	m := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
-		Key: "royal",
+		Key:    "royal",
+		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			m[core.CR] = float64(stacks) * rate
 			return m, true
 		},
-		Expiry: -1,
 	})
 
 }
