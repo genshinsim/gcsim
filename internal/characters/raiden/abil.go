@@ -234,6 +234,10 @@ func (c *char) eyeOnDamage() {
 		if c.Core.Status.Duration("raidenskill") == 0 {
 			return false
 		}
+		//ignore EC and hydro swirl damage
+		if ae.Info.AttackTag == core.AttackTagECDamage || ae.Info.AttackTag == core.AttackTagSwirlHydro {
+			return false
+		}
 		//ignore self dmg
 		if ae.Info.Abil == "Eye of Stormy Judgement" {
 			return false
