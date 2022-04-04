@@ -6,32 +6,43 @@ import German from "../public/locales/German.json";
 import Japanese from "../public/locales/Japanese.json";
 import Spanish from "../public/locales/Spanish.json";
 import Russian from "../public/locales/Russian.json";
+import IngameNames from "../public/locales/IngameNames.json";
 import { initReactI18next } from "react-i18next";
+
+const resources = {
+  English: {
+    translation: English,
+    game: IngameNames.English,
+  },
+  Chinese: {
+    translation: Chinese,
+    game: IngameNames.Chinese,
+  },
+  German: {
+    translation: German,
+    game: IngameNames.German,
+  },
+  Japanese: {
+    translation: Japanese,
+    game: IngameNames.Japanese,
+  },
+  Spanish: {
+    translation: Spanish,
+    game: IngameNames.Spanish,
+  },
+  Russian: {
+    translation: Russian,
+    game: IngameNames.Russian,
+  },
+};
 
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .init({
-    resources: {
-      English: {
-        translation: English,
-      },
-      Chinese: {
-        translation: Chinese,
-      },
-      German: {
-        translation: German,
-      },
-      Japanese: {
-        translation: Japanese,
-      },
-      Spanish: {
-        translation: Spanish,
-      },
-      Russian: {
-        translation: Russian,
-      },
-    },
+    resources,
+    defaultNS: "translation",
+    lng: "English",
     fallbackLng: "English",
     debug: false,
     interpolation: {

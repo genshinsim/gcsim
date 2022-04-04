@@ -152,7 +152,7 @@ export const renderWeapon: ItemRenderer<IWeapon> = (
       label={""}
       key={weapon}
       onClick={handleClick}
-      text={highlightText(i18n.t("weapon_names." + weapon), query)}
+      text={highlightText(i18n.t("game:weapon_names." + weapon), query)}
     />
   );
 };
@@ -165,7 +165,7 @@ export const filterWeapon: ItemPredicate<IWeapon> = (
 ) => {
   const normalizedQuery = query.toLowerCase();
   const transWeapon = i18n
-    .t("weapon_names." + weapon)
+    .t("game:weapon_names." + weapon)
     .replace(" ", "")
     .toLowerCase();
   if (exactMatch) {

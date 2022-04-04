@@ -57,7 +57,10 @@ export const render: ItemRenderer<IArtifact> = (
       label={""}
       key={item}
       onClick={handleClick}
-      text={highlightText(i18n.t("artifact_names." + item), query)}
+      text={highlightText(
+        i18n.t("artifact_names." + item, { ns: "game" }),
+        query
+      )}
     />
   );
 };
@@ -70,7 +73,7 @@ export const filter: ItemPredicate<IArtifact> = (
 ) => {
   const normalizedQuery = query.toLowerCase();
   const transItem = i18n
-    .t("artifact_names." + item)
+    .t("artifact_names." + item, { ns: "game" })
     .replace(" ", "")
     .toLowerCase();
   if (exactMatch) {

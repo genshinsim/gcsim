@@ -196,7 +196,8 @@ export function CharacterCard({
           </div>
           <div className="character-header rounded-t-md" />
           <div className="character-name font-medium m-4 capitalize">
-            {t(`character_names.${char.name}`)} <Trans>character.c_pre</Trans>
+            {t(`game:character_names.${char.name}`)}{" "}
+            <Trans>character.c_pre</Trans>
             {char.cons}
             <Trans>character.c_post</Trans>
           </div>

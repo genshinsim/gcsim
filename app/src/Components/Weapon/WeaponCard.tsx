@@ -17,7 +17,10 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
         </div>
         <div className="flex-grow text-sm pl-2 flex flex-col justify-center">
           <div className="font-medium text-left">
-            {t("weapon_names." + weapon.name).replace(/(.{20})..+/, "$1…") +
+            {t("game:weapon_names." + weapon.name).replace(
+              /(.{20})..+/,
+              "$1…"
+            ) +
               " R" +
               weapon.refine}
           </div>

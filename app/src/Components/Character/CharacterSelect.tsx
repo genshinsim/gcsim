@@ -35,17 +35,18 @@ export function CharacterSelect(props: Props) {
   ) => {
     //ignore filtered items
     if (
-      disabled.findIndex((v) => v === t("character_names." + item.key)) > -1
+      disabled.findIndex((v) => v === t("game:character_names." + item.key)) >
+      -1
     ) {
       return false;
     }
 
     const normalizedQuery = query.toLowerCase();
-    const transChar = t("character_names." + item.key)
+    const transChar = t("game:character_names." + item.key)
       .replace(" ", "")
       .toLowerCase();
     if (exactMatch) {
-      return t("character_names." + item.key) === normalizedQuery;
+      return t("game:character_names." + item.key) === normalizedQuery;
     } else {
       return (
         `${transChar} ${item.key} ${item.notes} ${t(

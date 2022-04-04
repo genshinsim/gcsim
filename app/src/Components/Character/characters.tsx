@@ -309,14 +309,14 @@ export const render: ItemRenderer<ICharacter> = (
       label={`${i18n.t("elements." + item.element)}`}
       key={`${
         item.notes
-          ? i18n.t("character_names." + item.key) + ` (${item.notes})`
-          : i18n.t("character_names." + item.key)
+          ? i18n.t("game:character_names." + item.key) + ` (${item.notes})`
+          : i18n.t("game:character_names." + item.key)
       }`}
       onClick={handleClick}
       text={highlightText(
         item.notes
-          ? i18n.t("character_names." + item.key) + ` (${item.notes})`
-          : i18n.t("character_names." + item.key),
+          ? i18n.t("game:character_names." + item.key) + ` (${item.notes})`
+          : i18n.t("game:character_names." + item.key),
         query
       )}
     />

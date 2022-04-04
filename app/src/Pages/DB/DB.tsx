@@ -29,7 +29,7 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
   return (
     <div className="m-2 flex flex-col">
       <div className="ml-auto font-bold capitalize">{`${t(
-        "character_names." + char.name
+        "game:character_names." + char.name
       )} ${t("db.c_pre")}${char.con}${t("db.c_post")} ${char.talents.attack}/${
         char.talents.skill
       }/${char.talents.burst}`}</div>
@@ -41,7 +41,7 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
           className="wide:h-8 h-auto "
         />
         <div className="mt-auto mb-auto">
-          {t("weapon_names." + char.weapon) + t("db.r") + char.refine}
+          {t("game:weapon_names." + char.weapon) + t("db.r") + char.refine}
         </div>
       </div>
       <div className="ml-auto">{`${t("db.er")}${char.er * 100 + 100}%`}</div>
@@ -247,7 +247,7 @@ export function DB() {
         onRemove={() => removeCharFilter(e)}
         className="ml-px mr-px"
       >
-        {t("character_names." + e)}
+        {t("game:character_names." + e)}
       </Tag>
     );
   });
@@ -260,7 +260,7 @@ export function DB() {
         onRemove={() => removeWeapFilter(e)}
         className="ml-px mr-px"
       >
-        {t("weapon_names." + e)}
+        {t("game:weapon_names." + e)}
       </Tag>
     );
   });
@@ -295,8 +295,8 @@ export function DB() {
     //check something in team matches search string
     let ss = JSON.stringify(e);
     e.team.forEach((c) => {
-      ss += " " + t("character_names." + c.name);
-      ss += " " + t("weapon_names." + c.weapon);
+      ss += " " + t("game:character_names." + c.name);
+      ss += " " + t("game:weapon_names." + c.weapon);
     });
 
     if (searchString !== "" && !ss.includes(searchString)) {

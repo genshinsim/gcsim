@@ -78,11 +78,12 @@ let chars = {};
 let properKeyToChar = {};
 
 let trans = {
-  English: {},
-  Chinese: {},
-  Japanese: {},
-  Spanish: {},
-  Russian: {},
+  English: { artifact_names: {}, character_names: {}, weapon_names: {} },
+  Chinese: { artifact_names: {}, character_names: {}, weapon_names: {} },
+  Japanese: { artifact_names: {}, character_names: {}, weapon_names: {} },
+  Spanish: { artifact_names: {}, character_names: {}, weapon_names: {} },
+  Russian: { artifact_names: {}, character_names: {}, weapon_names: {} },
+  German: { artifact_names: {}, character_names: {}, weapon_names: {} },
 };
 
 names.forEach((e) => {
@@ -101,12 +102,14 @@ names.forEach((e) => {
   const jp = genshindb.characters(e, { resultLanguage: "JP" });
   const es = genshindb.characters(e, { resultLanguage: "ES" });
   const ru = genshindb.characters(e, { resultLanguage: "RU" });
+  const de = genshindb.characters(e, { resultLanguage: "DE" });
 
-  trans["English"][e] = eng.name;
-  trans["Chinese"][e] = cn.name;
-  trans["Japanese"][e] = jp.name;
-  trans["Spanish"][e] = es.name;
-  trans["Russian"][e] = ru.name;
+  trans["English"]["character_names"][e] = eng.name;
+  trans["Chinese"]["character_names"][e] = cn.name;
+  trans["Japanese"]["character_names"][e] = jp.name;
+  trans["Spanish"]["character_names"][e] = es.name;
+  trans["Russian"]["character_names"][e] = ru.name;
+  trans["German"]["character_names"][e] = de.name;
 
   let filename = "./static/images/avatar/" + e + ".png";
 
@@ -135,24 +138,11 @@ fs.writeFileSync(
   "utf-8"
 );
 
-fs.writeFileSync(
-  "./public/locales/characters.json",
-  JSON.stringify(trans),
-  "utf-8"
-);
-
 //download weapons and sets :(
 
 const weapons = genshindb.weapons("names", { matchCategories: true });
 
 let weap = {};
-let weapTrans = {
-  English: {},
-  Chinese: {},
-  Japanese: {},
-  Spanish: {},
-  Russian: {},
-};
 
 weapons.forEach((e) => {
   const eng = genshindb.weapons(e);
@@ -169,12 +159,14 @@ weapons.forEach((e) => {
   const jp = genshindb.weapons(e, { resultLanguage: "JP" });
   const es = genshindb.weapons(e, { resultLanguage: "ES" });
   const ru = genshindb.weapons(e, { resultLanguage: "RU" });
+  const de = genshindb.weapons(e, { resultLanguage: "DE" });
 
-  weapTrans["English"][key] = eng.name;
-  weapTrans["Chinese"][key] = cn.name;
-  weapTrans["Japanese"][key] = jp.name;
-  weapTrans["Spanish"][key] = es.name;
-  weapTrans["Russian"][key] = ru.name;
+  trans["English"]["weapon_names"][key] = eng.name;
+  trans["Chinese"]["weapon_names"][key] = cn.name;
+  trans["Japanese"]["weapon_names"][key] = jp.name;
+  trans["Spanish"]["weapon_names"][key] = es.name;
+  trans["Russian"]["weapon_names"][key] = ru.name;
+  trans["German"]["weapon_names"][key] = de.name;
 
   if (!fs.existsSync(filename)) {
     download_image(eng.images.icon.replace("-os", ""), filename)
@@ -193,21 +185,7 @@ fs.writeFileSync(
   "utf-8"
 );
 
-fs.writeFileSync(
-  "./public/locales/weapons.json",
-  JSON.stringify(weapTrans),
-  "utf-8"
-);
-
 let setMap = {};
-let setTrans = {
-  English: {},
-  Chinese: {},
-  Japanese: {},
-  Spanish: {},
-  Russian: {},
-};
-
 const sets = genshindb.artifacts("4", { matchCategories: true });
 
 sets.forEach((e) => {
@@ -220,12 +198,14 @@ sets.forEach((e) => {
   const jp = genshindb.artifacts(e, { resultLanguage: "JP" });
   const es = genshindb.artifacts(e, { resultLanguage: "ES" });
   const ru = genshindb.artifacts(e, { resultLanguage: "RU" });
+  const de = genshindb.artifacts(e, { resultLanguage: "DE" });
 
-  setTrans["English"][art] = eng.name;
-  setTrans["Chinese"][art] = cn.name;
-  setTrans["Japanese"][art] = jp.name;
-  setTrans["Spanish"][art] = es.name;
-  setTrans["Russian"][art] = ru.name;
+  trans["English"]["artifact_names"][art] = eng.name;
+  trans["Chinese"]["artifact_names"][art] = cn.name;
+  trans["Japanese"]["artifact_names"][art] = jp.name;
+  trans["Spanish"]["artifact_names"][art] = es.name;
+  trans["Russian"]["artifact_names"][art] = ru.name;
+  trans["German"]["artifact_names"][art] = de.name;
 
   let filename;
   for (const [key, value] of Object.entries(eng.images)) {
@@ -251,7 +231,7 @@ fs.writeFileSync(
 );
 
 fs.writeFileSync(
-  "./public/locales/artifacts.json",
-  JSON.stringify(setTrans),
+  "./public/locales/IngameNames.json",
+  JSON.stringify(trans),
   "utf-8"
 );
