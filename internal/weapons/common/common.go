@@ -213,3 +213,9 @@ func Wavebreaker(char core.Character, c *core.Core, r int, param map[string]int)
 	}, fmt.Sprintf("wavebreaker-%v", char.Name()))
 
 }
+
+func NoEffectWeapon(key string) core.NewWeaponFunc {
+	return func(char core.Character, c *core.Core, r int, param map[string]int) string {
+		return key
+	}
+}

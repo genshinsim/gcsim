@@ -167,6 +167,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/black"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/cinnabar"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/darkironsword"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/dullblade"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/festering"
@@ -183,7 +184,10 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/royal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/sacrifical"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/silversword"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/skyrider"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/skyward"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/summit"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofdescension"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/travelershandysword"
 )
