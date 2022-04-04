@@ -18,11 +18,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		c.Health.Heal(core.HealInfo{
-			Caller:  char.CharIndex(),
-			Target:  c.ActiveChar,
+			Type:    core.HealTypePercent,
 			Message: "Traveler's Handy Sword (Proc)",
-			Src:     char.MaxHP() * (0.0075 + float64(r)*0.0025),
-			Bonus:   char.Stat(core.Heal),
+			Src:     0.0075 + float64(r)*0.0025,
 		})
 
 		return false
