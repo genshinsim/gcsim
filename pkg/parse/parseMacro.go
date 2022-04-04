@@ -18,7 +18,7 @@ func parseMacro(p *Parser) (parseFn, error) {
 		//lex should have checked this already
 		key, ok := core.CharNameToKey[n.val]
 		if !ok {
-			return nil, fmt.Errorf("unexpected error, should be a recognized character key: %v", n)
+			return nil, fmt.Errorf("ln%v: unexpected error, should be a recognized character key: %v", n.line, n)
 		}
 		if _, ok := p.chars[key]; !ok {
 			p.newChar(key)
@@ -31,7 +31,7 @@ func parseMacro(p *Parser) (parseFn, error) {
 		block, err = p.acceptResetLimit()
 	default:
 		//invalid
-		return nil, fmt.Errorf("invalid token for macro %v, line %v", n, p.tokens)
+		return nil, fmt.Errorf("ln%v: invalid token for macro %v, line %v", n.line, n, p.tokens)
 	}
 
 	if err != nil {

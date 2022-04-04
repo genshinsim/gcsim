@@ -55,7 +55,7 @@ func parseRows(p *Parser) (parseFn, error) {
 		//lex should have checked this already
 		key, ok := core.CharNameToKey[n.val]
 		if !ok {
-			return nil, fmt.Errorf("unexpected error, should be a recognized character key: %v", n)
+			return nil, fmt.Errorf("ln%v: unexpected error, should be a recognized character key: %v", n.line, n)
 		}
 		if _, ok := p.chars[key]; !ok {
 			p.newChar(key)
