@@ -31,7 +31,9 @@ func (p *Parser) newChar(key core.CharKey) {
 	r.SetParams = make(map[string]map[string]int)
 	r.Weapon.Params = make(map[string]int)
 	r.Base.StartHP = -1
+	r.Base.Element = core.CharKeyToEle[key]
 	p.chars[key] = &r
+	p.charOrder = append(p.charOrder, key)
 }
 
 func parseCharDetails(p *Parser) (parseFn, error) {
