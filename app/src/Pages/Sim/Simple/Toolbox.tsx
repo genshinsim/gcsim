@@ -9,7 +9,7 @@ import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
-import { LoadGOOD } from "../Components";
+import { LoadGOOD, SimOptions } from "../Components";
 import { SimProgress } from "../Components/SimProgress";
 import { runSim } from "../exec";
 import { simActions } from "../simSlice";
@@ -29,13 +29,14 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
       };
     });
   const [openImport, setOpenImport] = React.useState<boolean>(false);
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [openProgress, setOpenProgress] = React.useState<boolean>(false);
+  const [openWorkers, setOpenWorkers] = React.useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
   const run = () => {
     dispatch(runSim(cfg));
-    setOpen(true);
+    setOpenProgress(true);
   };
 
   const toggleTips = () => {
@@ -59,8 +60,6 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
         onClick={toggleBuilder}
       />
       <MenuDivider />
-      <MenuItem icon="build" text="Workers" disabled />
-      <MenuDivider />
       <MenuItem icon="cut" text="Substat Snippets" disabled />
 
       <MenuItem
@@ -73,8 +72,9 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
 
   return (
     <div className="p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
-      <div className="basis-full wide:basis-0 flex-grow p-1">
-        {`${t("simple.workers_available")}${ready}`}
+      <div className="basis-full wide:basis-0 flex-grow p-1 flex flex-row items-center">
+        <div className="pr-2">{`${t("simple.workers_available")}${ready}`}</div>
+        <Button icon="edit" minimal onClick={() => setOpenWorkers(true)} />
       </div>
       <div className="basis-full wide:basis-2/3 p-1 flex flex-row flex-wrap">
         <Popover2
@@ -99,8 +99,12 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
           </Button>
         </div>
       </div>
-      <SimProgress isOpen={open} onClose={() => setOpen(false)} />
+      <SimProgress
+        isOpen={openProgress}
+        onClose={() => setOpenProgress(false)}
+      />
       <LoadGOOD isOpen={openImport} onClose={() => setOpenImport(false)} />
+      <SimOptions isOpen={openWorkers} onClose={() => setOpenWorkers(false)} />
     </div>
   );
 };

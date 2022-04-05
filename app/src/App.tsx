@@ -1,4 +1,4 @@
-import { Route, Switch } from "wouter";
+import { Redirect, Route, Switch } from "wouter";
 import Footer from "/src/Components/Footer/Footer";
 import Nav from "/src/Components/Nav/Nav";
 import { Dash } from "/src/Pages/Dash";
@@ -18,13 +18,14 @@ export default function App() {
       <Switch>
         <Route path="/" component={Dash} />
         <Route path="/simple">
-          <SimWrapper>
-            <Simple />
-          </SimWrapper>
+          <Redirect to="/simulator" />
         </Route>
         <Route path="/advanced">
+          <Redirect to="/simulator" />
+        </Route>
+        <Route path="/simulator">
           <SimWrapper>
-            <Advanced />
+            <Simple />
           </SimWrapper>
         </Route>
         <Route path="/viewer/share/:id">

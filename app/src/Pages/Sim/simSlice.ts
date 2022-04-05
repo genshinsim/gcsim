@@ -125,9 +125,34 @@ export function updateAdvConfig(cfg: string): AppThunk {
   };
 }
 
-export function updateCfg(cfg: string): AppThunk {
-  return function (dispatch) {
+export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
+  return function (dispatch, getState) {
     console.log(cfg);
+    if (keepTeam) {
+      // purge char stat from incoming
+      let next = cfg;
+      //purge existing characters:
+      next = next.replace(charLinesRegEx, "");
+      //pull out existing
+
+      let old = "";
+      let lastChar = "";
+      const matches = getState().sim.cfg.matchAll(charLinesRegEx);
+      for (const match of matches) {
+        let line = match[0];
+        if (match[1] !== lastChar) {
+          old += "\n";
+          lastChar = match[1];
+        }
+        console.log(match);
+        old += line;
+      }
+
+      next = old + "\n" + next;
+
+      //strip extra new lines
+      cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
+    }
     dispatch(simActions.setCfg(cfg));
     const setConfig = () =>
       new Promise<ParsedResult>((resolve, reject) => {
@@ -178,7 +203,7 @@ const optionsRegex = /^(options.+;)/;
 const charBlockRegEx =
   /####----GENERATED CHARACTER BLOCK DO NOT EDIT----####[^]+####----END GENERATED CHARACTER BLOCK DO NOT EDIT----####/;
 const charLinesRegEx =
-  /^\w+ (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
+  /^(\w+) (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
 
 export const simSlice = createSlice({
   name: "sim",

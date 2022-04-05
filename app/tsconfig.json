@@ -11,6 +11,7 @@
         "dom.iterable",
         "esnext"
       ],
+      "downlevelIteration": true,
       "allowJs": true,
       "skipLibCheck": true,
       "esModuleInterop": true,

@@ -55,13 +55,6 @@ export function Advanced() {
             {showOptions ? t("advanced.hide") : t("advanced.show")}
           </Button>
         </div>
-        <Collapse
-          isOpen={showOptions}
-          keepChildrenMounted
-          className="basis-full flex flex-col"
-        >
-          <SimOptions />
-        </Collapse>
       </div>
       <div className="sticky bottom-0 bg-bp-bg p-2 wide:ml-2 wide:mr-2 flex flex-col ">
         {cfg_err !== "" ? (
