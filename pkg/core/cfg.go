@@ -6,8 +6,8 @@ type SimulationConfig struct {
 	DamageMode bool           `json:"damage_mode"`
 	Targets    []EnemyProfile `json:"targets"`
 	Characters struct {
-		Initial CharKey
-		Profile []CharacterProfile
+		Initial CharKey            `json:"initial"`
+		Profile []CharacterProfile `json:"profile"`
 	} `json:"characters"`
 	Rotation []ActionBlock     `json:"-"`
 	Hurt     HurtEvent         `json:"-"`
@@ -94,7 +94,7 @@ func (c *CharacterProfile) Clone() CharacterProfile {
 }
 
 type CharacterBase struct {
-	Key      CharKey `json:"-"`
+	Key      CharKey `json:"key"`
 	Name     string  `json:"name"`
 	Element  EleType `json:"element"`
 	Level    int     `json:"level"`

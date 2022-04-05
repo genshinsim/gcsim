@@ -60,6 +60,10 @@ func (p *Parser) Parse() (core.SimulationConfig, error) {
 		return *p.cfg, err
 	}
 
+	if len(p.charOrder) > 4 {
+		return *p.cfg, fmt.Errorf("config contains a total of %v characters; cannot exceed 4", len(p.charOrder))
+	}
+
 	for _, v := range p.charOrder {
 		p.cfg.Characters.Profile = append(p.cfg.Characters.Profile, *p.chars[v])
 		//check number of set

@@ -28,6 +28,9 @@ func main() {
 	setConfigFunc := js.FuncOf(setConfig)
 	defer setConfigFunc.Release()
 
+	checkConfigFunc := js.FuncOf(checkConfig)
+	defer checkConfigFunc.Release()
+
 	runSimFunc := js.FuncOf(run)
 	defer runSimFunc.Release()
 
@@ -42,6 +45,7 @@ func main() {
 
 	global.Set("sim", runSimFunc)
 	global.Set("setcfg", setConfigFunc)
+	global.Set("checkcfg", checkConfigFunc)
 	global.Set("debug", debugFunc)
 	global.Set("collect", collectFunc)
 	global.Set("version", versionFunc)
@@ -62,6 +66,27 @@ func setConfig(this js.Value, args []js.Value) interface{} {
 		return marshalErr(err)
 	}
 	cfgStr = in
+
+	data, err := json.Marshal(cfg)
+	if err != nil {
+		return marshalErr(err)
+	}
+	return string(data)
+}
+
+func checkConfig(this js.Value, args []js.Value) interface{} {
+	in := args[0].String()
+	//parse this
+	parser := parse.New("single", in)
+	var err error
+	cfg, err = parser.Parse()
+	if err != nil {
+		return marshalErr(err)
+	}
+
+	for i, v := range cfg.Characters.Profile {
+		log.Printf("%v: %v\n", i, v.Base.Key.String())
+	}
 
 	data, err := json.Marshal(cfg)
 	if err != nil {

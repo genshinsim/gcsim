@@ -1,5 +1,11 @@
 package core
 
+import (
+	"encoding/json"
+	"errors"
+	"strings"
+)
+
 //EleType is a string representing an element i.e. HYDRO/PYRO/etc...
 type EleType int
 
@@ -23,6 +29,25 @@ const (
 
 func (e EleType) String() string {
 	return EleTypeString[e]
+}
+
+func (e *EleType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(EleTypeString[*e])
+}
+
+func (e *EleType) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	s = strings.ToLower(s)
+	for i, v := range EleTypeString {
+		if v == s {
+			*e = EleType(i)
+			return nil
+		}
+	}
+	return errors.New("unrecognized element")
 }
 
 var EleTypeString = [...]string{
