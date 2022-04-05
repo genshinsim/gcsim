@@ -112,3 +112,38 @@ export interface DBCharInfo {
   er: number;
   talents: Talent;
 }
+
+export interface ParsedResult {
+  characters: ParsedCharacter;
+}
+export interface ParsedCharacter {
+  initial: number;
+  profile: ParsedCharacterProfile[];
+}
+export interface ParsedCharacterProfile {
+  base: Base;
+  weapon: Weapon;
+  talents: Talent;
+  stats: number[];
+  sets: Set;
+}
+export interface Base {
+  key: string;
+  name: string;
+  element: string;
+  level: number;
+  max_level: number;
+  base_hp: number;
+  base_atk: number;
+  base_def: number;
+  cons: number;
+  start_hp: number;
+}
+export interface ParsedWeapon {
+  name: string;
+  key: string;
+  refine: number;
+  level: number;
+  max_level: number;
+  base_atk: number;
+}

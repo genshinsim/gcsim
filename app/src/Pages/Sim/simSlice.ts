@@ -1,5 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Character, maxStatLength, Talent, Weapon } from "~/src/types";
+import {
+  Character,
+  defaultStats,
+  maxStatLength,
+  ParsedResult,
+  Talent,
+  Weapon,
+} from "~/src/types";
 import { characterKeyToICharacter } from "~src/Components/Character";
 import { AppThunk } from "~src/store";
 import { ascLvlMin, maxLvlToAsc } from "~src/util";
@@ -7,7 +14,7 @@ import { WorkerPool } from "~src/WorkerPool";
 import { charToCfg } from "./helper";
 export let pool: WorkerPool = new WorkerPool();
 
-type RunStats = {
+export type RunStats = {
   progress: number;
   result: number;
   time: number;
@@ -20,8 +27,10 @@ export interface Sim {
   ready: number;
   workers: number;
   cfg: string;
+  cfg_err: string;
   advanced_cfg: string;
   adv_cfg_err: string;
+  showBuilder: boolean;
   run: RunStats;
   showTips: boolean;
 }
@@ -39,8 +48,10 @@ const initialState: Sim = {
   ready: 0,
   workers: 3,
   cfg: "",
+  cfg_err: "",
   advanced_cfg: "",
   adv_cfg_err: "",
+  showBuilder: true,
   run: defaultRunStat,
   showTips: true,
 };
@@ -54,30 +65,17 @@ const defWep: { [key: string]: string } = {
 };
 
 const updateConfig = (team: Character[], cfg: string): string => {
-  let next: string = "####----GENERATED CHARACTER BLOCK DO NOT EDIT----####\n";
+  let next: string = "";
   //generate new
   team.forEach((c) => {
     next += charToCfg(c) + "\n";
   });
-  next += "####----END GENERATED CHARACTER BLOCK DO NOT EDIT----####";
-  // console.log(next);
-  //try finding block,
-  let m = charBlockRegEx.exec(cfg);
-  if (m) {
-    cfg = cfg.replace(charBlockRegEx, next);
-    return cfg;
-  }
-  // console.log("existing block not found, looking for option row");
-  //if not found insert after options block
-  m = optionsRegex.exec(cfg);
-  if (m) {
-    // let rpl = "$1\n\n" + next;
-    cfg = cfg.replace(optionsRegex, next + "\n\n$1");
-    return cfg;
-  }
-  // console.log("option row not found, adding at beginning");
-  //if options block not found, insert at beginning
-  cfg = next + "\n" + cfg;
+
+  //purge existing characters:
+  cfg = cfg.replace(charLinesRegEx, "");
+  cfg = next + cfg;
+  //stirp extra new lines
+  cfg = cfg.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
 
   return cfg;
 };
@@ -127,9 +125,60 @@ export function updateAdvConfig(cfg: string): AppThunk {
   };
 }
 
+export function updateCfg(cfg: string): AppThunk {
+  return function (dispatch) {
+    console.log(cfg);
+    dispatch(simActions.setCfg(cfg));
+    const setConfig = () =>
+      new Promise<ParsedResult>((resolve, reject) => {
+        const cb = (val: any) => {
+          // console.log("done?");
+          console.log(val);
+          const res = JSON.parse(val);
+          console.log(res);
+          if (res.err) {
+            reject(res.err);
+            return;
+          }
+          resolve(res);
+        };
+        pool.queue({ cmd: "parse", payload: cfg, cb: cb });
+      });
+
+    setConfig()
+      .then((res) => {
+        // dispatch(simActions.setAdvCfg(cfg));
+        dispatch(simActions.setCfgErr(""));
+        //if successful then we're going to update the team based on the parsed results
+        const team: Character[] = res.characters.profile.map((c) => {
+          return {
+            name: c.base.key,
+            level: c.base.level,
+            element: c.base.element,
+            max_level: c.base.max_level,
+            cons: c.base.cons,
+            weapon: c.weapon,
+            talents: c.talents,
+            stats: c.stats,
+            snapshot: defaultStats,
+            sets: c.sets,
+          };
+        });
+        console.log("updating team: ", team);
+        dispatch(simActions.setTeam(team));
+      })
+      .catch((err) => {
+        //set error state
+        dispatch(simActions.setCfgErr(err));
+      });
+  };
+}
+
 const optionsRegex = /^(options.+;)/;
 const charBlockRegEx =
   /####----GENERATED CHARACTER BLOCK DO NOT EDIT----####[^]+####----END GENERATED CHARACTER BLOCK DO NOT EDIT----####/;
+const charLinesRegEx =
+  /^\w+ (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
 
 export const simSlice = createSlice({
   name: "sim",
@@ -137,6 +186,9 @@ export const simSlice = createSlice({
   reducers: {
     setShowTips: (state, action: PayloadAction<boolean>) => {
       state.showTips = action.payload;
+    },
+    setShowBuilder: (state, action: PayloadAction<boolean>) => {
+      state.showBuilder = action.payload;
     },
     setRunStats: (state, action: PayloadAction<RunStats>) => {
       state.run = action.payload;
@@ -152,6 +204,10 @@ export const simSlice = createSlice({
     },
     setCfg: (state, action: PayloadAction<string>) => {
       state.cfg = action.payload;
+      return state;
+    },
+    setCfgErr: (state, action: PayloadAction<string>) => {
+      state.cfg_err = action.payload;
       return state;
     },
     setAdvCfg: (state, action: PayloadAction<string>) => {
@@ -280,6 +336,10 @@ export const simSlice = createSlice({
         return state;
       }
       state.edit_index = action.payload.index;
+      return state;
+    },
+    setTeam: (state, action: PayloadAction<Character[]>) => {
+      state.team = action.payload;
       return state;
     },
   },

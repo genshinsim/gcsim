@@ -20,6 +20,9 @@ if (localStorage.getItem(simStateKey)) {
   if (!s.adv_cfg_err) {
     s.adv_cfg_err = "";
   }
+  if (!s.cfg_err) {
+    s.cfg_err = "";
+  }
   if (!s.GOChars) {
     s.GOChars = [];
   }
