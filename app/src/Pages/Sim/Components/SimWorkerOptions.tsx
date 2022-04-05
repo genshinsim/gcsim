@@ -10,7 +10,7 @@ type Props = {
   onClose: () => void;
 };
 
-export function SimOptions(props: Props) {
+export function SimWorkerOptions(props: Props) {
   let { t } = useTranslation();
 
   const { workers } = useAppSelector((state: RootState) => {
