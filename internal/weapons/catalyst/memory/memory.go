@@ -42,12 +42,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		return false
 	}, fmt.Sprintf("memory-dust-%v", char.Name()))
 
+	val := make([]float64, core.EndStatType)
+	atk := 0.03 + 0.01*float64(r)
 	char.AddMod(core.CharStatMod{
 		Key:    "memory",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-			atk := 0.03 + 0.01*float64(r)
 			if duration > c.F {
 				val[core.ATKP] = atk * float64(stacks)
 				if c.Shields.IsShielded(char.CharIndex()) {
