@@ -19,13 +19,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	icd := 0
 	m := make([]float64, core.EndStatType)
 
-	switch char.Key() {
-	case core.TravelerCryo,
-		core.TravelerAnemo,
-		core.TravelerDendro,
-		core.TravelerElectro,
-		core.TravelerGeo,
-		core.TravelerHydro:
+	if char.Key() < core.TravelerDelim {
 		char.AddMod(core.CharStatMod{
 			Key:    "swordofdescension",
 			Expiry: -1,
@@ -34,8 +28,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				return m, true
 			},
 		})
-		break
-	default:
 	}
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
@@ -55,13 +47,13 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 
-		// Ignore 50% of the time, 1:1 ratio
-		if c.Rand.Float64() < 0.5 {
+		// Ignore if icd is still up
+		if c.F < icd {
 			return false
 		}
 
-		// Ignore if icd is still up
-		if c.F < icd {
+		// Ignore 50% of the time, 1:1 ratio
+		if c.Rand.Float64() < 0.5 {
 			return false
 		}
 
@@ -75,7 +67,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			ICDGroup:   core.ICDGroupDefault,
 			Element:    core.Physical,
 			Durability: 100,
-			Mult:       0.50,
+			Mult:       2.00,
 		}
 
 		c.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 1)
