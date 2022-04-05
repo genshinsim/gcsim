@@ -59,7 +59,9 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
         onClick={toggleBuilder}
       />
       <MenuDivider />
-      <MenuItem icon="cut" text="Substat Snippets" />
+      <MenuItem icon="build" text="Workers" disabled />
+      <MenuDivider />
+      <MenuItem icon="cut" text="Substat Snippets" disabled />
 
       <MenuItem
         text="Import from GO"
@@ -70,7 +72,7 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
   );
 
   return (
-    <div className="sticky bottom-0 bg-bp-bg p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
+    <div className="p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
       <div className="basis-full wide:basis-0 flex-grow p-1">
         {`${t("simple.workers_available")}${ready}`}
       </div>

@@ -63,15 +63,17 @@ export function Simple() {
 
           <ActionList cfg={cfg} onChange={(v) => dispatch(updateCfg(v))} />
 
-          {cfg_err !== "" ? (
-            <div className="basis-full p-1">
-              <Callout intent="warning" title="Error parsing config">
-                <pre className=" whitespace-pre-wrap">{cfg_err}</pre>
-              </Callout>
-            </div>
-          ) : null}
+          <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
+            {cfg_err !== "" ? (
+              <div className="basis-full p-1">
+                <Callout intent="warning" title="Error parsing config">
+                  <pre className=" whitespace-pre-wrap">{cfg_err}</pre>
+                </Callout>
+              </div>
+            ) : null}
 
-          <Toolbox canRun={cfg_err === ""} />
+            <Toolbox canRun={cfg_err === ""} />
+          </div>
         </div>
       </div>
       <SimProgress isOpen={open} onClose={() => setOpen(false)} />
