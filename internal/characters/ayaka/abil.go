@@ -147,7 +147,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		},
 	})
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, 38)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, 33)
 
 	c.SetCD(core.ActionSkill, 600)
 	return f, a
