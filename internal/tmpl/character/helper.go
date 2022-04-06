@@ -10,9 +10,9 @@ func (c *Tmpl) AdvanceNormalIndex() {
 	}
 }
 
-// c.NormalCounter returns the next hit, and always resets
+// c.NormalCounter returns the next normal index, and always resets
 // when it reaches the max hit of the normal attack combo
-func (c *Tmpl) NextNormalCounter() int {
+func (c *Tmpl) NextNormalIndex() int {
 	if c.NormalCounter == 0 && c.Core.LastAction.Typ == core.ActionAttack {
 		return c.NormalHitNum
 	}

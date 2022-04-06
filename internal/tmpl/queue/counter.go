@@ -18,6 +18,6 @@ func (q *Queuer) evalNormal(cond core.Condition) (bool, error) {
 	if !ok {
 		return false, errors.New("eval normal counter: invalid char in condition")
 	}
-	e := char.NextNormalCounter()
+	e := char.NextNormalIndex()
 	return compInt(cond.Op, e, cond.Value), nil
 }
