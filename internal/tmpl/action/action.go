@@ -212,7 +212,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 			break
 		}
 		if a.core.SwapCD > 0 {
-			a.core.Log.NewEvent("could not execute swap - on cd", core.LogActionEvent, c.CharIndex(), "cd", a.core.SwapCD)
+			a.core.Log.NewEvent("could not execute swap - on cd", core.LogSimEvent, -1, "cd", a.core.SwapCD)
 			return 0, false, nil
 		}
 		f = a.core.Swap(n.Target)
