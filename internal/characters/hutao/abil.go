@@ -149,7 +149,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	//remove some hp
-	c.HPCurrent = 0.7 * c.HPCurrent
+	c.Core.Health.Drain(core.DrainInfo{
+		ActorIndex: c.Index,
+		Abil:       "Paramita Papilio",
+		Amount:     .30 * c.HPCurrent,
+	})
 	c.checkc6()
 
 	c.SetCD(core.ActionSkill, 960)

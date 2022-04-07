@@ -28,10 +28,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	}
 
 	if count >= 4 {
-		var stacks, lastHP float64
+		var stacks float64
 		var HPicd int
-		stacks = 0
-		//HPicd = 0
 
 		s.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
 			if s.ActiveChar != c.CharIndex() {
@@ -44,7 +42,6 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				s.Status.AddStatus("verm-4pc", 16*60)
 				s.SetCustomFlag("verm-4pc", c.CharIndex())
 				stacks = 0
-				lastHP = c.HP()
 			}
 
 			s.Log.NewEvent("verm 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", s.Status.Duration("verm-4pc"))
@@ -73,13 +70,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		}, "verm-4pc-init")
 
 		s.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-
-			if c.HP() < lastHP && s.F >= HPicd && stacks < 4 && s.Status.Duration("verm-4pc") > 0 { //grants stack if conditions are met
+			if s.F >= HPicd && stacks < 4 && s.Status.Duration("verm-4pc") > 0 { //grants stack if conditions are met
 				stacks++
 				s.Log.NewEvent("Vermillion stack gained", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks)
-				lastHP = c.HP()
 				HPicd = s.F + 48
-
 			}
 			return false
 		}, "Stack-on-hurt")
@@ -91,5 +85,4 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		}, "char-exit")
 
 	}
-	//add flat stat to char
 }
