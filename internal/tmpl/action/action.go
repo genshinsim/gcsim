@@ -183,6 +183,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 			return 0, false, nil
 		}
 		a.core.Stam -= req
+		a.core.LastStamUse = a.core.F
 		f = a.execActionItem(n, core.PreChargeAttack, core.PostChargeAttack, core.ChargeAttackState, true, c.ChargeAttack)
 		a.core.Events.Emit(core.OnStamUse, core.ActionCharge)
 	case core.ActionHighPlunge:
@@ -198,6 +199,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 			return 0, false, nil
 		}
 		a.core.Stam -= req
+		a.core.LastStamUse = a.core.F
 		f = a.execActionItem(n, core.PreDash, core.PostDash, core.DashState, true, c.Dash)
 		a.core.Events.Emit(core.OnStamUse, core.ActionDash)
 	case core.ActionJump:
