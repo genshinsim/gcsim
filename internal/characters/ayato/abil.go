@@ -48,7 +48,7 @@ func (c *char) generateParticles(ac core.AttackCB) {
 func (c *char) skillStacks(ac core.AttackCB) {
 	if c.stacks < c.stacksMax {
 		c.stacks++
-		c.Core.Log.NewEvent("Soukai Kanka Proc'd by", core.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("gained namisen stack", core.LogCharacterEvent, c.Index, "stacks", c.stacks)
 	}
 }
 
