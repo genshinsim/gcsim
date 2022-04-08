@@ -234,8 +234,8 @@ func (c *char) eyeOnDamage() {
 		if c.Core.Status.Duration("raidenskill") == 0 {
 			return false
 		}
-		//ignore reaction damage
-		if ae.Info.AttackTag > core.ReactionAttackDelim {
+		//ignore EC and hydro swirl damage
+		if ae.Info.AttackTag == core.AttackTagECDamage || ae.Info.AttackTag == core.AttackTagSwirlHydro {
 			return false
 		}
 		//ignore self dmg
