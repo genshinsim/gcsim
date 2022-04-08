@@ -34,7 +34,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionSkill:
 		return 30, 67
 	case core.ActionBurst:
-		return 1, 33 //todo: burst hitmark
+		return 18, 33
 	default:
 		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
@@ -62,11 +62,11 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionBurst, 32-20)  //charge -> burst
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSwap, 31-20)   //charge -> swap
 
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 33-1) //burst -> n1
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 33-1)  //burst -> skill
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionDash, 33-1)   //burst -> dash
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionJump, 33-1)   //burst -> jump
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 40-1)   //burst -> swap
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 33-18) //burst -> n1
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 33-18)  //burst -> skill
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionDash, 33-18)   //burst -> dash
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionJump, 33-18)   //burst -> jump
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 40-18)   //burst -> swap
 
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionAttack, 67-30)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSkill, 65-30)

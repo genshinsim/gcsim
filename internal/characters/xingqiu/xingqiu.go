@@ -155,13 +155,13 @@ func (c *char) orbitalfunc(src int) func() {
 	}
 }
 
-func (c *char) applyOrbital(duration int) {
+func (c *char) applyOrbital(duration int, delay int) {
 	f := c.Core.F
 	c.Core.Log.NewEvent("Applying orbital", core.LogCharacterEvent, c.Index, "current status", c.Core.Status.Duration("xqorb"))
 	//check if orbitals already active, if active extend duration
 	//other wise start first tick func
 	if !c.orbitalActive {
-		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 14)
+		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", delay)
 		c.orbitalActive = true
 		c.Core.Log.NewEvent("orbital applied", core.LogCharacterEvent, c.Index, "expected end", f+900, "next expected tick", f+40)
 	}
@@ -199,12 +199,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	// Orbitals spawn in 1 frame before the second hit connects going by the "Wet" text
-	c.AddTask(func() {
-		orbital := p["orbital"]
-		if orbital == 1 {
-			c.applyOrbital(15 * 60)
-		}
-	}, "xingqiu-spawn-orbitals", rainscreenDelay[1]-1)
+	orbital := p["orbital"]
+	if orbital == 1 {
+		c.applyOrbital(15*60, rainscreenDelay[1]-2)
+	}
 
 	c.QueueParticle(c.Base.Key.String(), 5, core.Hydro, 100)
 
@@ -245,7 +243,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	orbital := p["orbital"]
 
 	if orbital == 1 {
-		c.applyOrbital(dur)
+		c.applyOrbital(dur, f)
 	}
 
 	c.burstCounter = 0

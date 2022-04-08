@@ -102,7 +102,7 @@ var actionKeys = map[string]core.ActionType{
 	"attack":      core.ActionAttack,
 	"charge":      core.ActionCharge,
 	"high_plunge": core.ActionHighPlunge,
-	"low_lunge":   core.ActionLowPlunge,
+	"low_plunge":  core.ActionLowPlunge,
 	"aim":         core.ActionAim,
 	"dash":        core.ActionDash,
 	"jump":        core.ActionJump,
