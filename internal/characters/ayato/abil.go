@@ -129,7 +129,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	snap := c.Snapshot(&ai)
+
+	// snapshot when the circle forms
+	var snap core.Snapshot
+	c.AddTask(func() { snap = c.Snapshot(&ai) }, "ayato-q-snapshot", 100)
 
 	rad, ok := p["radius"]
 	if !ok {
