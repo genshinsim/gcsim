@@ -33,6 +33,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 6
 	c.BurstCon = 3
 	c.SkillCon = 5
+	c.InitCancelFrames()
 
 	return &c, nil
 }

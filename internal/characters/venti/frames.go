@@ -36,7 +36,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		return 86, 94
 	case core.ActionHighPlunge:
 		c.Core.Log.NewEvent("plunge skill check", core.LogCharacterEvent, c.Index, "previous", c.Core.LastAction)
-		if c.Core.LastAction.Target == core.Kazuha && c.Core.LastAction.Typ == core.ActionSkill {
+		if c.Core.LastAction.Target == core.Venti && c.Core.LastAction.Typ == core.ActionSkill {
 			h := c.Core.LastAction.Param["hold"]
 			if h > 0 {
 				return 58, 58
