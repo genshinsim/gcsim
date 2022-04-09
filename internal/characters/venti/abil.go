@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{17, 27}, {19}, {28}, {15, 28}, {17}, {49}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -28,7 +30,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		// TODO - double check snapshotDelay
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f+i, f+travel+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i]+travel)
 	}
 
 	c.AdvanceNormalIndex()
@@ -74,6 +76,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	cd := 360
+	cdstart := 21
+	hitmark := 51
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Skyward Sonnett",
@@ -88,6 +92,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	if p["hold"] == 1 {
 		cd = 900
+		cdstart = 34
+		hitmark = 74
 		ai.Mult = skillHold[c.TalentLvlSkill()]
 	}
 
@@ -97,11 +103,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		cb = c2cb
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, hitmark, cb)
 
-	c.QueueParticle("venti", 3, core.Anemo, f+100)
+	c.QueueParticle("venti", 3, core.Anemo, hitmark+100)
 
-	c.SetCD(core.ActionSkill, cd)
+	c.SetCDWithDelay(core.ActionSkill, cd, cdstart)
 	return f, a
 }
 
@@ -141,6 +147,27 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.SetCDWithDelay(core.ActionBurst, 15*60, 90)
 	c.ConsumeEnergy(90)
+	return f, a
+}
+
+func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionHighPlunge, p)
+
+	ai := core.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "Plunge",
+		AttackTag:      core.AttackTagPlunge,
+		ICDTag:         core.ICDTagNormalAttack,
+		ICDGroup:       core.ICDGroupDefault,
+		StrikeType:     core.StrikeTypeBlunt,
+		Element:        core.Physical,
+		Durability:     25,
+		Mult:           highPlunge[c.TalentLvlAttack()],
+		IgnoreInfusion: true,
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), f, f)
+
 	return f, a
 }
 
