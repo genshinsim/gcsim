@@ -34,9 +34,14 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 
-	c.a2()
-
 	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+	c.InitCancelFrames()
+
+	c.a2()
 }
 
 /**
