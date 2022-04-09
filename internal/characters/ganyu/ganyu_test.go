@@ -34,17 +34,3 @@ func TestCD(t *testing.T) {
 		t.Error(err)
 	}
 }
-
-func TestC2CD(t *testing.T) {
-	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Ganyu, core.Cryo, 6)
-	x, err := NewChar(c, prof)
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	err = testhelper.TestSkillCDDoubleCharge(c, x, []int{600+10, 600+10})
-	if err != nil {
-		t.Error(err)
-	}
-}
