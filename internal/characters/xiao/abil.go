@@ -67,7 +67,7 @@ func (c *char) PlungeAttack(delay int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
-		Durability: 25,
+		Durability: 0,
 		Mult:       plunge[c.TalentLvlAttack()],
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay, delay)
