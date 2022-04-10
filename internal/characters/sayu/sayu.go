@@ -8,8 +8,9 @@ import (
 type char struct {
 	*character.Tmpl
 
-	eInfused  core.EleType
-	eDuration int
+	eInfused            core.EleType
+	eDuration           int
+	infuseCheckLocation core.AttackPattern
 }
 
 func init() {
@@ -60,7 +61,7 @@ func (c *char) absorbCheck() {
 		}
 		if c.eInfused == core.NoElement {
 			// TODO: need to check yourself element first
-			c.eInfused = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+			c.eInfused = c.Core.AbsorbCheck(c.infuseCheckLocation, core.Pyro, core.Hydro, core.Electro, core.Cryo)
 			if c.eInfused == core.NoElement {
 				return false
 			}
