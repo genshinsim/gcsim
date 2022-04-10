@@ -31,7 +31,6 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 4 {
 		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 			// if the active char is not the equipped char then ignore
-			// if the active char is not the equipped char then ignore
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
