@@ -65,11 +65,8 @@ func (r *Reactable) React(a *core.AttackEvent) {
 		case core.Pyro:
 			r.tryOverload(a)
 			r.tryMelt(a)
-			//TODO: the assumption here is that pyro will always melt frozen first
-			//and if there's any gauge left it'll try to vaporize
-			r.tryMeltFrozen(a)
-			//TODO: the current implementation would cauze vape to override melt multiplier
 			r.tryVaporize(a)
+			r.tryMeltFrozen(a)
 		case core.Cryo:
 			r.trySuperconduct(a)
 			r.tryFreeze(a)
