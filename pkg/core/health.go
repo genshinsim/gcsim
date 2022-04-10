@@ -9,6 +9,12 @@ type HealInfo struct {
 	Bonus   float64
 }
 
+type DrainInfo struct {
+	ActorIndex int
+	Abil       string
+	Amount     float64
+}
+
 type HealType int
 
 const (

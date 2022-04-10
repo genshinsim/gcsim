@@ -182,7 +182,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
-		Durability: 50,
+		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	c.Core.Combat.QueueAttack(

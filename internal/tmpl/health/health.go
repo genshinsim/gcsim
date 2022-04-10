@@ -29,9 +29,17 @@ func (h *HealthCtrl) HealIndex(hi *core.HealInfo, index int) {
 	}
 	heal := hp * bonus
 
+	prevhp := c.HP()
 	c.ModifyHP(heal)
+
+	h.core.Log.NewEvent(hi.Message, core.LogHealEvent, index,
+		"previous", prevhp,
+		"amount", hp,
+		"bonus", bonus,
+		"current", c.HP(),
+		"max_hp", c.MaxHP())
+
 	h.core.Events.Emit(core.OnHeal, hi.Caller, index, heal)
-	h.core.Log.NewEvent(hi.Message, core.LogHealEvent, index, "amount", hp, "bonus", bonus, "final", c.HP())
 }
 
 func (h *HealthCtrl) Heal(hi core.HealInfo) {
@@ -54,6 +62,21 @@ func (h *HealthCtrl) healBonusMult(healedCharIndex int) float64 {
 
 func (h *HealthCtrl) AddIncHealBonus(f func(healedCharIndex int) float64) {
 	h.healBonus = append(h.healBonus, f)
+}
+
+func (h *HealthCtrl) Drain(di core.DrainInfo) {
+	c := h.core.Chars[di.ActorIndex]
+
+	prevhp := c.HP()
+	c.ModifyHP(-di.Amount)
+
+	h.core.Log.NewEvent(di.Abil, core.LogHurtEvent, di.ActorIndex,
+		"previous", prevhp,
+		"amount", di.Amount,
+		"current", c.HP(),
+		"max_hp", c.MaxHP())
+
+	h.core.Events.Emit(core.OnCharacterHurt, di.Amount)
 }
 
 func (h *HealthCtrl) AddDamageReduction(f func() (float64, bool)) {

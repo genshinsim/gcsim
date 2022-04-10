@@ -51,6 +51,7 @@ type ConstructHandler interface {
 
 type HealthHandler interface {
 	Heal(hi HealInfo)
+	Drain(di DrainInfo)
 	AddIncHealBonus(f func(healedCharIndex int) float64)
 
 	AddDamageReduction(f func() (float64, bool))

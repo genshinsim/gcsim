@@ -139,7 +139,7 @@ func (c *char) skillTick(d *core.AttackEvent) {
 	// check if skill has burst bonus snapshot
 	// max swap frame should be 40 frame before 2nd tick
 	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < (c.skillLastUsed+120-40) {
-		d.Info.FlatDmg = burstBonusSkill[c.TalentLvlBurst()] * c.HPMax
+		d.Info.FlatDmg = c.skillFlatDmg
 	} else {
 		d.Info.FlatDmg = c.burstDmgBonus(d.Info.AttackTag)
 	}

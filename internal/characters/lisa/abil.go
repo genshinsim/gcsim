@@ -174,7 +174,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
-		Durability: 25,
+		Durability: 0,
 		Mult:       0.1,
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(targ, core.TargettableEnemy), f, f, a4cb)

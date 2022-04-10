@@ -13,32 +13,27 @@ func init() {
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
-	dur := 0
-	key := fmt.Sprintf("prototype-crescent-%v", char.Name())
+	m := make([]float64, core.EndStatType)
+	m[core.ATKP] = 0.27 + float64(r)*0.09
+
 	//add on hit effect
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		if atk.Info.HitWeakPoint {
-			dur = c.F + 600
+		if !atk.Info.HitWeakPoint {
+			return false
 		}
+		char.AddMod(core.CharStatMod{
+			Key:    "prototype-crescent",
+			Expiry: c.F + 60*10,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 		return false
-	}, key)
-
-	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = 0.27 + float64(r)*0.09
-	char.AddMod(core.CharStatMod{
-		Key: "prototype-crescent",
-		Amount: func() ([]float64, bool) {
-			if dur < c.F {
-				return nil, false
-			}
-			return m, true
-		},
-		Expiry: -1,
-	})
+	}, fmt.Sprintf("prototype-crescent-%v", char.Name()))
 
 	return "prototypecrescent"
 }
