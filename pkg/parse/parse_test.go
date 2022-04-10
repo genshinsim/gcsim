@@ -313,3 +313,39 @@ xingqiu attack +is_onfield;
 raidenshogun attack +is_onfield;
 
 `
+
+func TestConfigOrdering(t *testing.T) {
+	parser := New("test", orderstr)
+	c, err := parser.Parse()
+	if err != nil {
+		t.Error(err)
+	}
+
+	//expecting raiden, ayaka
+	var order = []core.CharKey{core.Raiden, core.Ayaka}
+	for i, v := range c.Characters.Profile {
+		if v.Base.Key != order[i] {
+			t.Errorf("expecting %v, got %v", order[i], v)
+		}
+	}
+
+}
+
+var orderstr = `
+raiden char lvl=90/90 cons=2 talent=10,10,10;
+raiden add weapon="engulfinglightning" refine=1 lvl=90/90;
+raiden add set="emblemofseveredfate" count=4;
+raiden add stats def%=0.07300 hp=5079 hp%=0.05300 atk=412.0 atk%=0.1920 er=0.6660 em=42.00 cr=0.5720 cd=1.119 electro%=0.4660;
+
+ayaka char lvl=90/90 cons=0 talent=9,9,9;
+ayaka add weapon="amenomakageuchi" refine=5 lvl=90/90;
+ayaka add set="blizzardstrayer" count=4;
+ayaka add stats def=95.00 hp=4780 hp%=0.04100 atk=503.0 atk%=0.7630 er=0.05800 em=42.00 cr=0.1590 cd=1.243 cryo%=0.4660;
+
+options mode=sl;
+
+target lvl=100 resist=0.1;
+active raiden;
+ 
+raiden skill;
+`

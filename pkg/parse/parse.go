@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"runtime"
-	"sort"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -17,9 +16,10 @@ type Parser struct {
 	currentCharKey core.CharKey //current character being parsed
 
 	//results
-	cfg    *core.SimulationConfig
-	chars  map[core.CharKey]*core.CharacterProfile
-	macros map[string]core.ActionBlock
+	cfg       *core.SimulationConfig
+	chars     map[core.CharKey]*core.CharacterProfile
+	charOrder []core.CharKey
+	macros    map[string]core.ActionBlock
 }
 
 type parseFn func(*Parser) (parseFn, error)
@@ -37,6 +37,7 @@ func (p *Parser) Parse() (core.SimulationConfig, error) {
 
 	p.cfg = &core.SimulationConfig{}
 	p.chars = make(map[core.CharKey]*core.CharacterProfile)
+	p.charOrder = make([]core.CharKey, 0, 4)
 	p.macros = make(map[string]core.ActionBlock)
 
 	//default run options
@@ -59,18 +60,23 @@ func (p *Parser) Parse() (core.SimulationConfig, error) {
 		return *p.cfg, err
 	}
 
-	sk := make([]string, 0, len(p.chars))
-	for k := range p.chars {
-		sk = append(sk, k.String())
+	if len(p.charOrder) > 4 {
+		return *p.cfg, fmt.Errorf("config contains a total of %v characters; cannot exceed 4", len(p.charOrder))
 	}
-	sort.Strings(sk)
-	for _, v := range sk {
-		k := core.CharNameToKey[v]
-		p.cfg.Characters.Profile = append(p.cfg.Characters.Profile, *p.chars[k])
+
+	for _, v := range p.charOrder {
+		p.cfg.Characters.Profile = append(p.cfg.Characters.Profile, *p.chars[v])
+		//check number of set
+		count := 0
+		for _, c := range p.chars[v].Sets {
+			count += c
+		}
+		if count > 5 {
+			return *p.cfg, fmt.Errorf("character %v have more than 5 total set items", v.String())
+		}
 	}
 
 	//check target hp
-
 	for i, v := range p.cfg.Targets {
 		if p.cfg.DamageMode && v.HP <= 0 {
 			return *p.cfg, errors.New("if any one target has hp > 0, then all target must have hp > 0")
