@@ -82,11 +82,41 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	return f, a
 }
 
-func (c *char) skillHold(p map[string]int, f int) (int, int) {
+func (c *char) skillHold(p map[string]int, duration int) (int, int) {
+	f, _ := c.ActionFrames(core.ActionSkill, p)
 
-	f, a := c.ActionFrames(core.ActionSkill, p)
+	c.eInfused = core.NoElement
+	c.eDuration = c.Core.F + (1+int(duration/30))*30
 
-	return f, a
+	i := 0
+	for ; i < duration; i += 30 {
+		ai := core.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Yoohoo Art: Fuuin Dash (Hold Tick)",
+			AttackTag:  core.AttackTagSayuRoll,
+			ICDTag:     core.ICDTagNone,
+			ICDGroup:   core.ICDGroupDefault,
+			Element:    core.Anemo,
+			Durability: 25,
+			Mult:       skillPress[c.TalentLvlSkill()],
+		}
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), i+3, i+3)
+	}
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Yoohoo Art: Fuuin Dash (Hold)",
+		AttackTag:  core.AttackTagElementalArtHold,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       skillHoldEnd[c.TalentLvlSkill()],
+	}
+	snap := c.Snapshot(&ai)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), i)
+
+	return i + f, i + f
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
