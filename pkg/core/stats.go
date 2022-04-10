@@ -32,7 +32,6 @@ const (
 	DendroP
 	AtkSpd
 	DmgP
-	Dmg
 	//delim
 	EndStatType
 )
@@ -94,7 +93,6 @@ var StatTypeString = [...]string{
 	"dendro%",
 	"atkspd%",
 	"dmg%",
-	"dmg",
 }
 
 func StrToStatType(s string) StatType {

@@ -34,8 +34,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	}
 
 	if count >= 4 {
-		mDMG := make([]float64, core.EndStatType)
-		var triggerAtk *core.AttackEvent
+		echoesProcTracker := make(map[*core.AttackEvent]bool)
 
 		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 			// if the active char is not the equipped char then ignore
@@ -43,10 +42,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				return false
 			}
 
-			atk := args[1].(*core.AttackEvent)
+			procAtk := args[1].(*core.AttackEvent)
 
 			// If this is not a normal attack then ignore
-			if atk.Info.AttackTag != core.AttackTagNormal {
+			if procAtk.Info.AttackTag != core.AttackTagNormal {
 				return false
 			}
 
@@ -58,22 +57,25 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			icd = s.F + 0.2*60
 
 			if s.Rand.Float64() < prob {
-				triggerAtk = atk
-				dmgAdded := (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
-				mDMG[core.Dmg] = dmgAdded
-
-				c.AddMod(core.CharStatMod{
+				c.AddPreDamageMod(core.PreDamageMod{
 					Key: "echoes-4pc",
-					Amount: func() ([]float64, bool) {
-						return mDMG, true
+					Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+						_, found := echoesProcTracker[atk]
+						if !found {
+							atk.Info.FlatDmg = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
+
+							s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex(),
+								"probability", prob,
+								"dmg_added", atk.Info.FlatDmg,
+							)
+
+							echoesProcTracker[atk] = true
+						}
+
+						return nil, true
 					},
 					Expiry: -1,
 				})
-
-				s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex(),
-					"probability", prob,
-					"dmg_added", dmgAdded,
-				)
 
 				prob = 0.36
 			} else {
@@ -96,21 +98,20 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				return false
 			}
 
-			// If this is the same attack that triggered echoes-4pc then ignore
-			if atkOnDmg == triggerAtk {
-				return false
-			}
-
 			// Only set a CD on the mod if it's currently active
-			if c.ModIsActive("echoes-4pc") {
-				c.AddMod(core.CharStatMod{
-					Key: "echoes-4pc",
-					Amount: func() ([]float64, bool) {
-						return mDMG, true
-					},
-					Expiry: 0.05 * 60, // 3 frames
-				})
-			}
+			c.AddPreDamageMod(core.PreDamageMod{
+				Key: "echoes-4pc",
+				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+					_, found := echoesProcTracker[atk]
+					if !found {
+						atk.Info.FlatDmg = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
+						echoesProcTracker[atk] = true
+					}
+
+					return nil, true
+				},
+				Expiry: 0.05 * 60, // 3 frames
+			})
 
 			return false
 		}, fmt.Sprintf("echoes-4pc-ondamage-%v", c.Name()))
