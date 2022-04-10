@@ -1,7 +1,7 @@
 package barbara
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -23,7 +23,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Energy = 80
+	c.Base.Element = core.Hydro
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.BurstCon = 3
@@ -84,13 +89,13 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 50
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
 func (c *char) c1(delay int) {
 	c.AddTask(func() {
-		c.AddEnergy(1)
+		c.AddEnergy("barbara-c1", 1)
 		c.c1(0)
 	}, "barbara-c1", delay+10*60)
 }

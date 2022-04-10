@@ -1,6 +1,10 @@
 package eula
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 var delay = [][]int{{11}, {25}, {36, 49}, {33}, {45, 63}}
 
@@ -13,7 +17,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -22,11 +26,10 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       0,
 	}
-	snap := c.Snapshot(&ai)
 
 	for i, mult := range auto[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -67,7 +70,7 @@ func (c *char) pressE() {
 
 		if c.Tags["grimheart"] < 2 {
 			c.Tags["grimheart"]++
-			c.Core.Log.Debugw("eula: grimheart stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "current count", c.Tags["grimheart"])
+			c.Core.Log.NewEvent("eula: grimheart stack", core.LogCharacterEvent, c.Index, "current count", c.Tags["grimheart"])
 		}
 		c.grimheartReset = 18 * 60
 	}
@@ -129,7 +132,7 @@ func (c *char) holdE() {
 	}
 	for i := 0; i < v; i++ {
 		//spacing it out for stacks
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 90+i*7, shredCB)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 92+i*7, shredCB)
 	}
 
 	//A2
@@ -186,7 +189,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.burstCounter = 5
 	}
 
-	c.Core.Log.Debugw("eula burst started", "frame", c.Core.F, "event", core.LogCharacterEvent, "stacks", c.burstCounter, "expiry", c.Core.Status.Duration("eulaq"))
+	c.Core.Log.NewEvent("eula burst started", core.LogCharacterEvent, c.Index, "stacks", c.burstCounter, "expiry", c.Core.Status.Duration("eulaq"))
 
 	lvl := c.TalentLvlBurst()
 	//add initial damage
@@ -209,7 +212,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		v++
 	}
 	c.Tags["grimheart"] = v
-	c.Core.Log.Debugw("eula: grimheart stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "current count", v)
+	c.Core.Log.NewEvent("eula: grimheart stack", core.LogCharacterEvent, c.Index, "current count", v)
 
 	c.AddTask(func() {
 		//check to make sure it hasn't already exploded due to exiting field
@@ -243,7 +246,7 @@ func (c *char) triggerBurst() {
 		Mult:       burstExplodeBase[c.TalentLvlBurst()] + burstExplodeStack[c.TalentLvlBurst()]*float64(stacks),
 	}
 
-	c.Core.Log.Debugw("eula burst triggering", "frame", c.Core.F, "event", core.LogCharacterEvent, "stacks", stacks, "mult", ai.Mult)
+	c.Core.Log.NewEvent("eula burst triggering", core.LogCharacterEvent, c.Index, "stacks", stacks, "mult", ai.Mult)
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 23, 23)
 	c.Core.Status.DeleteStatus("eulaq")

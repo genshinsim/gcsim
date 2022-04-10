@@ -4,10 +4,6 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"time"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 const (
@@ -15,7 +11,7 @@ const (
 	StamCDFrames       = 90
 	JumpFrames         = 33
 	DashFrames         = 24
-	SwapFrames         = 1
+	WalkFrames         = 1
 	SwapCDFrames       = 60
 	MaxTeamPlayerCount = 4
 	DefaultTargetIndex = 1
@@ -26,6 +22,7 @@ type Flags struct {
 	EnergyCalcMode bool // Allows Burst Action when not at full Energy, logs current Energy when using Burst
 	LogDebug       bool // Used to determine logging level
 	ChildeActive   bool // Used for Childe +1 NA talent passive
+	Delays         Delays
 	// AmpReactionDidOccur bool
 	// AmpReactionType     ReactionType
 	// NextAttackMVMult    float64 // melt vape multiplier
@@ -33,12 +30,23 @@ type Flags struct {
 	Custom map[string]int
 }
 
+type Delays struct {
+	Skill  int
+	Burst  int
+	Attack int
+	Charge int
+	Aim    int
+	Dash   int
+	Jump   int
+	Swap   int
+}
+
 type Core struct {
 	//control
 	F     int   // current frame
 	Flags Flags // global flags
 	Rand  *rand.Rand
-	Log   *zap.SugaredLogger
+	Log   LogCtrl
 
 	//core data
 	Stam   float64
@@ -79,72 +87,23 @@ type Core struct {
 	Events     EventHandler
 }
 
-func New(cfg ...func(*Core) error) (*Core, error) {
-	var err error
+func New() *Core {
+	// var err error
 	c := &Core{}
 
 	c.CharPos = make(map[CharKey]int)
 	c.Flags.Custom = make(map[string]int)
 	c.Stam = MaxStam
 	c.stamModifier = make([]stamMod, 0, 10)
-	// c.queue = make([]Command, 0, 20)
+	//make a default nil writer
+	c.Log = &NilLogger{}
 
-	for _, f := range cfg {
-		err := f(c)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if c.Log == nil {
-		c.Log, err = NewDefaultLogger(c, false, false, nil)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if c.Rand == nil {
-		c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	}
-	if c.Events == nil {
-		c.Events = NewEventCtrl(c)
-	}
-	if c.Status == nil {
-		c.Status = NewStatusCtrl(c)
-	}
-	if c.Energy == nil {
-		c.Energy = NewEnergyCtrl(c)
-	}
-	if c.Combat == nil {
-		c.Combat = NewCombatCtrl(c)
-	}
-	if c.Tasks == nil {
-		c.Tasks = NewTaskCtrl(&c.F)
-	}
-	if c.Constructs == nil {
-		c.Constructs = NewConstructCtrl(c)
-	}
-	if c.Shields == nil {
-		c.Shields = NewShieldCtrl(c)
-	}
-	if c.Health == nil {
-		c.Health = NewHealthCtrl(c)
-	}
-	if c.Action == nil {
-		c.Action = NewActionCtrl(c)
-	}
-	if c.Queue == nil {
-		c.Queue = NewQueuer(c)
-	}
-
-	//check handlers
-	return c, nil
+	return c
 }
 
 func (c *Core) Init() {
-
-	for i, char := range c.Chars {
-		char.Init(i)
+	for _, char := range c.Chars {
+		char.Init()
 	}
 
 	c.Events.Emit(OnInitialize)
@@ -160,7 +119,9 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 		return nil, err
 	}
 	c.Chars = append(c.Chars, char)
-	c.CharPos[v.Base.Key] = len(c.Chars) - 1
+	i := len(c.Chars) - 1
+	c.CharPos[v.Base.Key] = i
+	char.SetIndex(i)
 
 	wf, ok := weaponMap[v.Weapon.Name]
 	if !ok {
@@ -177,7 +138,7 @@ func (c *Core) AddChar(v CharacterProfile) (Character, error) {
 		if ok {
 			f(char, c, count, v.SetParams[key])
 		} else {
-			c.Log.Warnw(fmt.Sprintf("character %v has unrecognized set %v", v.Base.Key, key), "frame", -1, "event", LogArtifactEvent)
+			return nil, fmt.Errorf("character %v has unrecognized artifact: %v", v.Base.Name, key)
 		}
 	}
 	if total > 5 {
@@ -205,10 +166,10 @@ func (c *Core) Swap(next CharKey) int {
 	c.Events.Emit(OnCharacterSwap, prev, c.ActiveChar)
 	//this duration reset needs to be after the hook for spine to behave properly
 	c.ActiveDuration = 0
-	return SwapFrames
+	return 1
 }
 
-func (c *Core) AnimationCancelDelay(next ActionType) int {
+func (c *Core) AnimationCancelDelay(next ActionType, p map[string]int) int {
 	//if last action is jump, dash, swap,
 	switch c.LastAction.Typ {
 	case ActionSwap:
@@ -219,7 +180,30 @@ func (c *Core) AnimationCancelDelay(next ActionType) int {
 		return 0
 	}
 	//other wise check with the current character
-	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next)
+	return c.Chars[c.ActiveChar].ActionInterruptableDelay(next, p)
+}
+
+func (c *Core) UserCustomDelay() int {
+	d := 0
+	switch c.LastAction.Typ {
+	case ActionSkill:
+		d = c.Flags.Delays.Skill
+	case ActionBurst:
+		d = c.Flags.Delays.Burst
+	case ActionAttack:
+		d = c.Flags.Delays.Attack
+	case ActionCharge:
+		d = c.Flags.Delays.Charge
+	case ActionDash:
+		d = c.Flags.Delays.Dash
+	case ActionJump:
+		d = c.Flags.Delays.Jump
+	case ActionSwap:
+		d = c.Flags.Delays.Swap
+	case ActionAim:
+		d = c.Flags.Delays.Aim
+	}
+	return c.LastAction.Param["delay"] + d
 }
 
 func (c *Core) ResetAllNormalCounter() {
@@ -277,33 +261,4 @@ func (c *Core) Tick() {
 	}
 	//update activeduration
 	c.ActiveDuration++
-}
-
-func NewDefaultLogger(c *Core, debug bool, json bool, paths []string) (*zap.SugaredLogger, error) {
-	config := zap.NewDevelopmentConfig()
-	if json {
-		config.Encoding = "json"
-	}
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	if debug {
-		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
-		config.OutputPaths = paths
-		c.Flags.LogDebug = true
-	} else {
-		config.Level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
-		config.OutputPaths = []string{}
-	}
-
-	config.EncoderConfig.TimeKey = ""
-	config.EncoderConfig.StacktraceKey = ""
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-	config.EncoderConfig.CallerKey = ""
-
-	// config.OutputPaths = []string{"stdout"}
-
-	zaplog, err := config.Build()
-	if err != nil {
-		return nil, err
-	}
-	return zaplog.Sugar(), nil
 }

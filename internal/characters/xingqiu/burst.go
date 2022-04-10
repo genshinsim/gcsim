@@ -18,11 +18,17 @@ func (c *char) summonSwordWave() {
 	var c2cb, c6cb func(a core.AttackCB)
 	if c.nextRegen {
 		c6cb = func(a core.AttackCB) {
-			c.AddEnergy(3)
+			c.AddEnergy("xingqiu-c6", 3)
 		}
 	}
 	if c.Base.Cons >= 2 {
+		icd := -1
 		c2cb = func(a core.AttackCB) {
+			if c.Core.F < icd {
+				return
+			}
+			icd = c.Core.F + 1
+
 			c.AddTask(func() {
 				a.Target.AddResMod("xingqiu-c2", core.ResistMod{
 					Ele:      core.Hydro,
@@ -77,7 +83,7 @@ func (c *char) burstStateHook() {
 		}
 		//this should start a new ticker if not on ICD and state is correct
 		c.summonSwordWave()
-		c.Core.Log.Debugw("xq burst on state change", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "state", next, "icd", c.burstSwordICD)
+		c.Core.Log.NewEvent("xq burst on state change", core.LogCharacterEvent, c.Index, "state", next, "icd", c.burstSwordICD)
 		c.burstTickSrc = c.Core.F
 		c.AddTask(c.burstTickerFunc(c.Core.F), "xq-ticker", 60) //check every 1sec
 
@@ -92,16 +98,16 @@ func (c *char) burstTickerFunc(src int) func() {
 			return
 		}
 		if c.burstTickSrc != src {
-			c.Core.Log.Debugw("xq burst tick check ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "new src", c.burstTickSrc)
+			c.Core.Log.NewEvent("xq burst tick check ignored, src diff", core.LogCharacterEvent, c.Index, "src", src, "new src", c.burstTickSrc)
 			return
 		}
 		//stop if we are no longer in normal animation state
 		state := c.Core.State()
 		if state != core.NormalAttackState {
-			c.Core.Log.Debugw("xq burst tick check stopped, not normal state", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "state", state)
+			c.Core.Log.NewEvent("xq burst tick check stopped, not normal state", core.LogCharacterEvent, c.Index, "src", src, "state", state)
 			return
 		}
-		c.Core.Log.Debugw("xq burst triggered from ticker", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "state", state, "icd", c.burstSwordICD)
+		c.Core.Log.NewEvent("xq burst triggered from ticker", core.LogCharacterEvent, c.Index, "src", src, "state", state, "icd", c.burstSwordICD)
 		//we can trigger a wave here b/c we're in normal state still and src is still the same
 		c.summonSwordWave()
 		//in theory this should not hit an icd?
@@ -124,7 +130,7 @@ func (c *char) burstHook() {
 			//then we should queue up a sword anyways at when the icd comes up
 			if c.burstSwordICD <= c.Core.F+f+10 {
 				delay = c.burstSwordICD - c.Core.F
-				c.Core.Log.Debugw("Xingqiu Q on animation delay", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "icd", c.burstSwordICD, "f", f, "check", c.Core.F+f+10)
+				c.Core.Log.NewEvent("Xingqiu Q on animation delay", core.LogCharacterEvent, c.Index,  "icd", c.burstSwordICD, "f", f, "check", c.Core.F+f+10)
 			} else {
 				return false
 			}

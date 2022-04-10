@@ -1,8 +1,9 @@
 package core
 
 type Character interface {
-	Init(index int) //to be called when everything including weapon and artifacts has been loaded
-	Tick()          //function to be called every frame
+	SetIndex(index int) //to be called to set the index
+	Init()              //to be called when everything including weapon and artifacts has been loaded
+	Tick()              //function to be called every frame
 
 	//information functions
 	Key() CharKey
@@ -40,18 +41,20 @@ type Character interface {
 	//info methods
 	ActionReady(a ActionType, p map[string]int) bool
 	ActionStam(a ActionType, p map[string]int) float64
+	Charges(ActionType) int
 
 	//number of frames this action will take
 	// ActionFrames(a ActionType, p map[string]int) int
 	//return the number of frames the current action must wait before it can be
 	//executed;
-	ActionInterruptableDelay(next ActionType) int
+	ActionInterruptableDelay(next ActionType, p map[string]int) int
 
 	//char stat mods
 	AddMod(mod CharStatMod)
 	ModIsActive(key string) bool
 	AddPreDamageMod(mod PreDamageMod)
 	AddWeaponInfuse(inf WeaponInfusion)
+	WeaponInfuseIsActive(key string) bool
 	AddReactBonusMod(mod ReactionBonusMod)
 	ReactBonus(AttackInfo) float64
 
@@ -70,11 +73,11 @@ type Character interface {
 	//energy
 	QueueParticle(src string, num int, ele EleType, delay int)
 	ReceiveParticle(p Particle, isActive bool, partyCount int)
-	AddEnergy(e float64)
+	AddEnergy(src string, e float64)
 
 	//combat
 	Snapshot(a *AttackInfo) Snapshot
-	PreDamageSnapshotAdjust(*AttackEvent, Target)
+	PreDamageSnapshotAdjust(*AttackEvent, Target) []interface{}
 	ResetNormalCounter()
 }
 
@@ -92,12 +95,14 @@ type CharStatMod struct {
 	Amount        func() ([]float64, bool) // Returns an array containing the stats boost and whether mod applies
 	ConditionTags []AttackTag
 	Expiry        int
+	Event         LogEvent
 }
 
 type PreDamageMod struct {
 	Key    string
-	Amount func(atk *AttackEvent, t Target) ([]float64, bool)
+	Amount func(atk *AttackEvent, t Target) ([]float64, bool) // Returns an array containing the stats boost and whether mod applies
 	Expiry int
+	Event  LogEvent
 }
 
 type WeaponInfusion struct {
@@ -123,4 +128,5 @@ type ReactionBonusMod struct {
 	Key    string
 	Amount func(AttackInfo) (float64, bool)
 	Expiry int
+	Event  LogEvent
 }

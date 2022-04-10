@@ -28,6 +28,26 @@ A rough guideline for your comment is as follows:
 - [ ] C5
 - [ ] C6
 
+<details><summary>Click to expand copy-paste friendly version</summary>
+  
+```
+- [ ] Frames
+- [ ] Talents
+- [ ] C0 Normals
+- [ ] C0 Skill
+- [ ] C0 Burst
+- [ ] A1
+- [ ] A2 
+- [ ] A4
+- [ ] Sanity Test Cases
+- [ ] C1
+- [ ] C2
+- [ ] C3
+- [ ] C4
+- [ ] C5
+- [ ] C6
+```
+</details>
 Items may be omitted when irrelevant as is the case for many ascension passives.
 
 # Git/Github Quick Reference Guide
@@ -47,5 +67,5 @@ Where new parent is the commitment hash of the newest commit on the main branch 
 # Local Testing/Building
 0. Create a Config file
 1. Navigate to ```./gcsim/cmd/gcsim```
-2. Run ```go build``` to build the executable and then feed your config file in e.g. ```./gcsim.exe -c="config.txt" -js="out.gz" -gz --calc``` OR Run ```go run . -c="config.txt" -js="out.gz" -gz --calc``` 
+2. Run ```go build``` to build the executable and then feed your config file in e.g. ```./gcsim.exe -c="config.txt" -out="out.gz" -gz``` OR Run ```go run . -c="config.txt" -out="out.gz" -gz``` 
 3. Upload to the [viewer](https://viewer.gcsim.app) to view the output file to confirm everything is working accordingly, and optionally share the viewer in discord for debugging help.

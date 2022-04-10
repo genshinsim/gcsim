@@ -1,7 +1,7 @@
 package eula
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -25,7 +25,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Cryo
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 5
@@ -60,11 +65,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 		//add to counter
 		c.burstCounter++
-		c.Core.Log.Debugw("eula burst add stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "stack count", c.burstCounter)
+		c.Core.Log.NewEvent("eula burst add stack", core.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
 		//check for c6
 		if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 			c.burstCounter++
-			c.Core.Log.Debugw("eula c6 add additional stack", "frame", c.Core.F, "event", core.LogCharacterEvent, "stack count", c.burstCounter)
+			c.Core.Log.NewEvent("eula c6 add additional stack", core.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
 		}
 		c.burstCounterICD = c.Core.F + 6
 		return false
@@ -84,7 +89,7 @@ func (c *char) a4() {
 		}
 		c.Tags["grimheart"] = v
 
-		c.Core.Log.Debugw("eula a4 reset skill cd", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.NewEvent("eula a4 reset skill cd", core.LogCharacterEvent, c.Index)
 		c.ResetActionCooldown(core.ActionSkill)
 
 		return false

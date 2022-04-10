@@ -8,11 +8,11 @@ import (
 
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other bow characters
-// Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 20)
+// Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 10)
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -40,7 +40,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
 
@@ -122,11 +122,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 		if c.Base.Cons >= 4 && c.geoCharCount > 1 {
 			//TODO: not sure if this actually snapshots stats
-			ai := core.AttackInfo{
-				Abil:      "Inuzaka All-Round Defense C4",
-				AttackTag: core.AttackTagNone,
-			}
-			stats := c.SnapshotStats(&ai)
+			// ai := core.AttackInfo{
+			// 	Abil:      "Inuzaka All-Round Defense C4",
+			// 	AttackTag: core.AttackTagNone,
+			// }
+			stats, _ := c.SnapshotStats()
 			c.Core.Tasks.Add(c.gorouSkillHealField(c.Core.F, stats[:]), 90)
 		}
 	}
@@ -176,9 +176,14 @@ func (c *char) gorouSkillHealField(src int, stats []float64) func() {
 		}
 		//When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
 		//within its AoE by 50% of Gorou's own DEF every 1.5s.
-		//TODO: healing bonus
 		amt := c.Base.Def*(1+stats[core.DEFP]) + stats[core.DEF]
-		c.Core.Health.HealActive(c.Index, 0.5*amt)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.ActiveChar,
+			Message: "Lapping Hound: Warm as Water",
+			Src:     0.5 * amt,
+			Bonus:   c.Stat(core.Heal),
+		})
 
 		//tick every 1.5s
 		c.Core.Tasks.Add(c.gorouSkillBuffField(src), 90)

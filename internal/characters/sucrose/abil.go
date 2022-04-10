@@ -1,12 +1,16 @@
 package sucrose
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -20,7 +24,9 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	c.AdvanceNormalIndex()
 
-	c.c4()
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
 
 	return f, a
 }
@@ -68,10 +74,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		if done {
 			return
 		}
-		c.Core.Status.AddStatus("sucrosea4", 480)
-		c.a4EM[core.EM] = 0.2 * c.Stat(core.EM)
-		c.Core.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
 		done = true
+		c.a4()
 	}
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 41, cb)
@@ -128,14 +132,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	lockout := 0
 	cb := func(a core.AttackCB) {
+		//lockout for 1 frame to prevent triggering multiple times on one attack
 		if lockout > c.Core.F {
 			return
 		}
-		c.Core.Status.AddStatus("sucrosea4", 480)
-		c.a4EM[core.EM] = 0.2 * c.Stat(core.EM)
-		c.Core.Log.Debugw("sucrose a4 triggered", "frame", c.Core.F, "event", core.LogCharacterEvent, "em snapshot", c.a4EM, "expiry", c.Core.F+480)
-		//lockout for 1 frame to prevent triggering multiple times on one attack
 		lockout = c.Core.F + 1
+		c.a4()
 	}
 
 	for i := 120; i <= duration; i += 120 {
@@ -166,6 +168,9 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		c.qInfused = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
 
 		if c.qInfused != core.NoElement {
+			if c.Base.Cons >= 6 {
+				c.c6()
+			}
 			return
 		}
 		//otherwise queue up

@@ -11,7 +11,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	ai := core.AttackInfo{
@@ -20,26 +20,18 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagKleeFireDamage,
 		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Pyro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	cb := func(a core.AttackCB) {
-		if c.Core.Rand.Float64() < 0.5 {
-			c.Tags["spark"] = 1
-		}
-	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel, cb)
+	cb := func(a core.AttackCB) { c.a1() }
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f+travel, cb)
 
 	c.c1(f + travel)
 
 	c.AdvanceNormalIndex()
-
-	if _, ok := p["walk"]; ok {
-		//reset normal counter here
-		c.ResetNormalCounter()
-	}
 
 	return f, a
 }
@@ -49,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	ai := core.AttackInfo{
@@ -67,13 +59,13 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	//stam is calculated before this func is called so it's safe to
 	//set spark to 0 here
-
-	if c.Tags["spark"] == 1 {
-		c.Tags["spark"] = 0
-		snap.Stats[core.DmgP] += 0.5
+	if c.Core.Status.Duration("kleespark") > 0 {
+		snap.Stats[core.DmgP] += .50
+		c.Core.Status.DeleteStatus("kleespark")
+		c.Core.Log.NewEvent("klee consumed spark", core.LogCharacterEvent, c.Index, "icd", c.sparkICD)
 	}
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefSingleTarget(1, core.TargettableEnemy), f+travel)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), f+travel)
 
 	c.c1(f + travel)
 
@@ -92,13 +84,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	//mine lives for 5 seconds
 	//3 bounces, roughly 30, 70, 110 hits
-
-	cb := func(a core.AttackCB) {
-		if c.Core.Rand.Float64() < 0.5 {
-			c.Tags["spark"] = 1
-		}
-	}
-
+	cb := func(a core.AttackCB) { c.a1() }
 	for i := 0; i < bounce; i++ {
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
@@ -156,41 +142,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.c1(f + 30)
 
-	switch c.eCharge {
-	case c.eChargeMax:
-		c.Core.Log.Debugw("klee at max charge, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.Core.F+721)
-		c.eNextRecover = c.Core.F + 1201
-		c.AddTask(c.recoverCharge(c.Core.F), "charge", 1200)
-		c.eTickSrc = c.Core.F
-	case 1:
-		c.SetCD(core.ActionSkill, c.eNextRecover)
-	}
-
-	c.eCharge--
+	c.SetCD(core.ActionSkill, 1200)
 
 	// c.SetCD(def.ActionSkill, 20*60)
 	return f, a
-}
-
-func (c *char) recoverCharge(src int) func() {
-	return func() {
-		if c.eTickSrc != src {
-			c.Core.Log.Debugw("klee mine recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "new src", c.eTickSrc)
-			return
-		}
-		c.eCharge++
-		c.Core.Log.Debugw("klee mine recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "total charge", c.eCharge)
-		c.SetCD(core.ActionSkill, 0)
-		if c.eCharge >= c.eChargeMax {
-			//fully charged
-			return
-		}
-		//other wise restore another charge
-		c.Core.Log.Debugw("klee mine queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src, "recover at", c.Core.F+720)
-		c.eNextRecover = c.Core.F + 1201
-		c.AddTask(c.recoverCharge(src), "charge", 1200)
-
-	}
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
@@ -249,8 +204,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 					if i == c.Index {
 						continue
 					}
-					x.AddEnergy(3)
-					c.Core.Log.Debugw("klee c6 regen 3 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "char", x.CharIndex(), "new energy", x.CurrentEnergy())
+					x.AddEnergy("klee-c6", 3)
 				}
 
 			}, "klee-c6", i)

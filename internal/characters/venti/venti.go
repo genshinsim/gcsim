@@ -1,7 +1,7 @@
 package venti
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -22,7 +22,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Anemo
-	c.Energy = 60
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 60
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 6
@@ -47,7 +52,7 @@ func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
 			Amount: func() ([]float64, bool) { return val, true },
 			Expiry: c.Core.F + 600,
 		})
-		c.Core.Log.Debugw("c4 - adding anemo bonus", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+		c.Core.Log.NewEvent("c4 - adding anemo bonus", core.LogCharacterEvent, c.Index, "char", c.Index)
 
 	}
 }

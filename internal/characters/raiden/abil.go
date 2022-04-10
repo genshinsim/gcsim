@@ -1,14 +1,10 @@
 package raiden
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
-
-/**
-let style = document.createElement('style');
-style.innerHTML = '*{ user-select: auto !important; }';
-document.body.appendChild(style);
-**/
 
 var polearmDelayOffset = [][]int{
 	{1},
@@ -28,7 +24,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -53,32 +49,31 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
-	if c.Core.Status.Duration("raidenburst") == 0 {
-
-		f, a := c.ActionFrames(core.ActionCharge, p)
-
-		ai := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Charge Attack",
-			AttackTag:  core.AttackTagNormal,
-			ICDTag:     core.ICDTagNormalAttack,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Physical,
-			Durability: 25,
-			Mult:       charge[c.TalentLvlAttack()],
-		}
-
-		c.Core.Combat.QueueAttack(
-			ai,
-			core.NewDefCircHit(0.5, false, core.TargettableEnemy),
-			f-31,
-			f-31,
-		)
-
-		return f, a
+	if c.Core.Status.Duration("raidenburst") > 0 {
+		return c.swordCharge(p)
 	}
 
-	return c.swordCharge(p)
+	f, a := c.ActionFrames(core.ActionCharge, p)
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge Attack",
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+	}
+
+	c.Core.Combat.QueueAttack(
+		ai,
+		core.NewDefCircHit(0.5, false, core.TargettableEnemy),
+		f-31,
+		f-31,
+	)
+
+	return f, a
 
 }
 
@@ -97,10 +92,10 @@ func (c *char) burstRestorefunc(a core.AttackCB) {
 		energy := burstRestore[c.TalentLvlBurst()]
 		//apply a4
 		excess := int(a.AttackEvent.Snapshot.Stats[core.ER] / 0.01)
-		c.Core.Log.Debugw("a4 energy restore stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "increase", float64(excess)*0.006)
+		c.Core.Log.NewEvent("a4 energy restore stacks", core.LogCharacterEvent, c.Index, "stacks", excess, "increase", float64(excess)*0.006)
 		energy = energy * (1 + float64(excess)*0.006)
 		for _, char := range c.Core.Chars {
-			char.AddEnergy(energy)
+			char.AddEnergy("raiden-burst", energy)
 		}
 	}
 }
@@ -108,7 +103,7 @@ func (c *char) burstRestorefunc(a core.AttackCB) {
 func (c *char) swordAttack(f int, a int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Musou Isshin",
+		Abil:       fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -129,6 +124,7 @@ func (c *char) swordAttack(f int, a int) (int, int) {
 			f-swordDelayOffset[c.NormalCounter][i],
 			f-swordDelayOffset[c.NormalCounter][i],
 			c.burstRestorefunc,
+			c.c6(),
 		)
 	}
 
@@ -143,7 +139,7 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Musou Isshin",
+		Abil:       "Musou Isshin (Charge Attack)",
 		AttackTag:  core.AttackTagElementalBurst,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -164,6 +160,7 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 			f-42,
 			f-42,
 			c.burstRestorefunc,
+			c.c6(),
 		)
 	}
 
@@ -237,8 +234,8 @@ func (c *char) eyeOnDamage() {
 		if c.Core.Status.Duration("raidenskill") == 0 {
 			return false
 		}
-		//ignore reaction damage
-		if ae.Info.AttackTag > core.ReactionAttackDelim {
+		//ignore EC and hydro swirl damage
+		if ae.Info.AttackTag == core.AttackTagECDamage || ae.Info.AttackTag == core.AttackTagSwirlHydro {
 			return false
 		}
 		//ignore self dmg
@@ -306,7 +303,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}
 
-	c.Core.Log.Debugw("resolve stacks", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", c.stacksConsumed)
+	if c.Base.Cons == 6 {
+		c.c6Count = 0
+	}
+
+	c.Core.Log.NewEvent("resolve stacks", core.LogCharacterEvent, c.Index, "stacks", c.stacksConsumed)
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,

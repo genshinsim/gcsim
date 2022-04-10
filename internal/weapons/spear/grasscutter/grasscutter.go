@@ -24,7 +24,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		AffectedStat: core.ATKP, //this to prevent infinite loop when we ask to calculate ER
 		Amount: func() ([]float64, bool) {
 			er := char.Stat(core.ER)
-			c.Log.Debugw("cutter snapshot", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "er", er)
+			c.Log.NewEvent("cutter snapshot", core.LogWeaponEvent, char.CharIndex(), "er", er)
 			bonus := atk * er
 			if bonus > max {
 				bonus = max

@@ -1,7 +1,7 @@
 package zhongli
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -28,7 +28,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Geo
-	c.Energy = 40
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 40
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 40
 	c.Weapon.Class = core.WeaponClassSpear
 	c.BurstCon = 5
@@ -52,7 +57,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 

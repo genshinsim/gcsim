@@ -1,6 +1,8 @@
 package redhorn
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -37,9 +39,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		baseDmgAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[core.DEFP]) + atk.Snapshot.Stats[core.DEF]) * nacaBoost
 		atk.Info.FlatDmg += baseDmgAdd
 
-		c.Log.Debugw("Redhorn proc dmg add", "frame", c.F, "event", core.LogPreDamageMod, "char", char.CharIndex(), "base_added_dmg", baseDmgAdd)
+		c.Log.NewEvent("Redhorn proc dmg add", core.LogPreDamageMod, char.CharIndex(), "base_added_dmg", baseDmgAdd)
 
 		return false
-	}, "")
+	}, fmt.Sprintf("redhorn-%v", char.Name()))
+
 	return "redhornstonethresher"
 }

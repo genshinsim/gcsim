@@ -1,7 +1,7 @@
 package amber
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -11,11 +11,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	bunnies      []bunny
-	eCharge      int
-	eChargeMax   int
-	eNextRecover int
-	eTickSrc     int
+	bunnies []bunny
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -26,18 +22,21 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Pyro
-	c.Energy = 40
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 40
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 40
 	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 5
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.eChargeMax = 1
 	if c.Base.Cons >= 4 {
-		c.eChargeMax = 2
+		c.SetNumCharges(core.ActionSkill, 2)
 	}
-	c.eCharge = c.eChargeMax
 
 	if c.Base.Cons >= 2 {
 		c.overloadExplode()

@@ -11,7 +11,7 @@ import (
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -30,7 +30,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+travel)
+	// TODO - double check this snapshotDelay
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
 
 	c.AdvanceNormalIndex()
 
@@ -69,8 +70,8 @@ func (c *char) meleeAttack(f, a int) (int, int) {
 			delay,
 			delay,
 			//TODO: what's the ordering on these 2 callbacks?
-			c.rtSlashCallback,   //call back for triggering slash
 			c.meleeApplyRiptide, //call back for applying riptide
+			c.rtSlashCallback,   //call back for triggering slash
 		)
 	}
 
@@ -84,7 +85,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
 
@@ -152,8 +153,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			f-meleeChargeDelayOffset[i],
 			f-meleeChargeDelayOffset[i],
 			//TODO: what's the ordering on these 2 callbacks?
-			c.rtSlashCallback,   //call back for triggering slash
 			c.meleeApplyRiptide, //call back for applying riptide
+			c.rtSlashCallback,   //call back for triggering slash
 		)
 	}
 	return f, a
@@ -172,7 +173,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.eCast = c.Core.F
 	c.Core.Status.AddStatus("tartagliamelee", 30*60)
-	c.Core.Log.Debugw("Foul Legacy acivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "rtexpiry", c.Core.F+30*60)
+	c.Core.Log.NewEvent("Foul Legacy acivated", core.LogCharacterEvent, c.Index, "rtexpiry", c.Core.F+30*60)
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -257,6 +258,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		var cb core.AttackCBFunc
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			cb = c.rtBlastCallback
+		} else {
+			cb = c.rangedBurstApplyRiptide
 		}
 
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 0, 0, cb)
@@ -266,9 +269,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			}
 		} else {
 			c.AddTask(func() {
-				c.AddEnergy(20)
+				c.AddEnergy("tartaglia-ranged-burst-refund", 20)
 			}, "tartaglia-ranged-burst-energy-refund", 9)
-			c.Core.Log.Debugw("Tartaglia ranged burst restoring 20 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
 		}
 	}, "tartaglia-burst-clear", f-5) //random 5 frame
 

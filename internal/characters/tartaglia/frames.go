@@ -38,14 +38,14 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 				f = 162 - 123
 			}
 		}
-		atkspd := c.Stats[core.AtkSpd]
+		atkspd := c.Stat(core.AtkSpd)
 		f = int(float64(f) / (1 + atkspd))
 		return f, f
 	case core.ActionCharge:
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			return 73, 73
 		}
-		c.Core.Log.Warnw("Charge called when not in melee stance", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
+		c.Core.Log.NewEvent("Charge called when not in melee stance", core.LogActionEvent, c.Index, "action", a)
 		return 0, 0
 	case core.ActionAim:
 		return 84, 84
@@ -61,7 +61,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		}
 		return 52, 52
 	default:
-		c.Core.Log.Warnw("unknown action", "event", core.LogActionEvent, "frame", c.Core.F, "action", a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

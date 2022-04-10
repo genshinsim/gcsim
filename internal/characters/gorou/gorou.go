@@ -1,7 +1,7 @@
 package gorou
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -38,7 +38,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Geo
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 4
@@ -63,13 +68,13 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
 
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	/**
 	Provides up to 3 buffs to active characters within the skill's AoE based on the number of Geo characters in the party at the time of casting:

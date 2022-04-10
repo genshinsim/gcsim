@@ -3,14 +3,14 @@ package diona
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -35,7 +35,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 func (c *char) Aimed(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
 
@@ -62,7 +62,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
@@ -88,7 +88,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagElementalArt,
 		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypePierce,
+		StrikeType: core.StrikeTypeDefault,
 		Element:    core.Cryo,
 		Durability: 25,
 		Mult:       paw[c.TalentLvlSkill()],
@@ -144,14 +144,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	snap := c.Snapshot(&ai)
 	hpplus := snap.Stats[core.Heal]
 	maxhp := c.MaxHP()
-	heal := (burstHealPer[c.TalentLvlBurst()]*maxhp + burstHealFlat[c.TalentLvlBurst()]) * (1 + hpplus)
+	heal := burstHealPer[c.TalentLvlBurst()]*maxhp + burstHealFlat[c.TalentLvlBurst()]
 
 	//ticks every 2s, first tick at t=1s, then t=3,5,7,9,11, lasts for 12.5
 	for i := 0; i < 6; i++ {
 		c.AddTask(func() {
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
-			c.Core.Log.Debugw("diona healing", "frame", c.Core.F, "event", core.LogCharacterEvent, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
-			c.Core.Health.HealActive(c.Index, heal)
+			// c.Core.Log.NewEvent("diona healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  c.Core.ActiveChar,
+				Message: "Drunken Mist",
+				Src:     heal,
+				Bonus:   hpplus,
+			})
 		}, "Diona Burst (DOT)", 60+i*120)
 	}
 
@@ -162,11 +168,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	if c.Base.Cons >= 1 {
 		//15 energy after ends, flat not affected by ER
 		c.AddTask(func() {
-			c.Energy += 15
-			if c.Energy > c.EnergyMax {
-				c.Energy = c.EnergyMax
-			}
-			c.Core.Log.Debugw("diona c1 regen 15 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
+			c.AddEnergy("diona-c1", 15)
 		}, "Diona C1", f+750)
 	}
 

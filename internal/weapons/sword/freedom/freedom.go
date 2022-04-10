@@ -24,7 +24,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	atkBuff[core.ATKP] = .15 + float64(r)*0.05
 
 	buffNACAPlunge := make([]float64, core.EndStatType)
-	buffNACAPlunge[core.DmgP] = .12 + 0.4*float64(r)
+	buffNACAPlunge[core.DmgP] = .12 + 0.04*float64(r)
 
 	icd := 0
 	stacks := 0
@@ -36,25 +36,21 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
-		switch atk.Info.AttackTag {
-		case core.AttackTagElementalArt:
-		case core.AttackTagElementalArtHold:
-		case core.AttackTagElementalBurst:
-		default:
-			return false
-		}
 		if cooldown > c.F {
 			return false
 		}
 		if icd > c.F {
 			return false
 		}
+
 		icd = c.F + 30
 		stacks++
+		c.Log.NewEvent("freedomsworn gained sigil", core.LogWeaponEvent, char.CharIndex(), "sigil", stacks)
+
 		if stacks == 2 {
 			stacks = 0
-			c.Status.AddStatus("freedom", 720)
-			cooldown = c.F + 1200
+			c.Status.AddStatus("freedom", 12*60)
+			cooldown = c.F + 20*60
 			for _, char := range c.Chars {
 				// Attack buff snapshots so it needs to be in a separate mod
 				char.AddMod(core.CharStatMod{
@@ -74,7 +70,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 						}
 						return nil, false
 					},
-					Expiry: c.F + 720,
+					Expiry: c.F + 12*60,
 				})
 			}
 		}

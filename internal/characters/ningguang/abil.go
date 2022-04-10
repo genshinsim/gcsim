@@ -1,18 +1,21 @@
 package ningguang
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -54,7 +57,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	ai := core.AttackInfo{
@@ -137,13 +140,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//fires 6 normally, + 6 if jade screen is active
 	count := 6
 	if c.Core.Constructs.Destroy(c.lastScreen) {
-		c.Core.Log.Debugw("12 jade on burst", "event", core.LogCharacterEvent, "frame", c.Core.F, "char", c.Index)
+		c.Core.Log.NewEvent("12 jade on burst", core.LogCharacterEvent, c.Index)
 		count += 6
 	}
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	ai := core.AttackInfo{

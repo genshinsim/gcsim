@@ -21,7 +21,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
-		c.Log.Debugw("crescent pike active", "event", core.LogWeaponEvent, "frame", c.F, "char", char.CharIndex(), "expiry", c.F+300)
+		c.Log.NewEvent("crescent pike active", core.LogWeaponEvent, char.CharIndex(), "expiry", c.F+300)
 		active = c.F + 300
 
 		return false

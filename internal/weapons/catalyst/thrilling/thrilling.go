@@ -9,10 +9,11 @@ import (
 func init() {
 	core.RegisterWeaponFunc("thrilling tales of dragon slayers", weapon)
 	core.RegisterWeaponFunc("thrillingtalesofdragonslayers", weapon)
+	core.RegisterWeaponFunc("ttds", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	last := 0
+	cd := -1
 	isActive := false
 
 	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
@@ -35,13 +36,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			isActive = false
 
 			//do nothing if off cd
-			if last != 0 && c.F-last < 1200 {
+			if c.F < cd {
 				return false
 			}
 			//trigger buff if not on cd
-
-			last = c.F
-			expiry := c.F + 600
+			cd = c.F + 60*20
+			expiry := c.F + 60*10
 
 			active := c.Chars[c.ActiveChar]
 			active.AddMod(core.CharStatMod{
@@ -52,7 +52,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				Expiry: expiry,
 			})
 
-			c.Log.Debugw("ttds activated", "frame", c.F, "event", core.LogWeaponEvent, "char", active.CharIndex(), "expiry", expiry)
+			c.Log.NewEvent("ttds activated", core.LogWeaponEvent, active.CharIndex(), "expiry", expiry)
 		}
 
 		return false

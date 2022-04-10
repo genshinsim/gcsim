@@ -9,7 +9,7 @@ import (
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -25,7 +25,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, travel+f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
 
 	c.AdvanceNormalIndex()
 
@@ -37,7 +37,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	bloom, ok := p["bloom"]
 	if !ok {
@@ -58,20 +58,25 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		HitWeakPoint: weakspot == 1,
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
+	// delay aim shot mostly to handle A1
+	c.AddTask(func() {
+		snap := c.Snapshot(&ai)
+		if c.Core.F < c.a1Expiry {
+			old := snap.Stats[core.CR]
+			snap.Stats[core.CR] += .20
+			c.Core.Log.NewEvent("a1 adding crit rate", core.LogCharacterEvent, c.Index, "old", old, "new", snap.Stats[core.CR], "expiry", c.a1Expiry)
+		}
 
-	ai.Abil = "Frost Flake Bloom"
-	ai.Mult = ffb[c.TalentLvlAttack()]
-	ai.HitWeakPoint = false
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefSingleTarget(1, core.TargettableEnemy), travel)
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, bloom+f)
+		ai.Abil = "Frost Flake Bloom"
+		ai.Mult = ffb[c.TalentLvlAttack()]
+		ai.HitWeakPoint = false
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), travel+bloom)
 
-	// if c.a2expiry > c.Core.F {
-	// 	d.Stats[def.CR] += 0.2
-	// 	c.Core.Log.Debugw("ganyu a2", "frame", c.Core.F, "event", def.LogCalc, "char", c.Index, "new crit %", d.Stats[def.CR])
-	// }
-
-	c.a2expiry = c.Core.F + 5*60
+		// first shot/bloom do not benefit from a1
+		c.a1Expiry = c.Core.F + 60*5
+	}, "ganyu-aim-snapshot", f)
 
 	return f, a
 }
@@ -109,30 +114,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Status.AddStatus("ganyuc6", 1800)
 	}
 
-	if c.Base.Cons >= 2 {
-		last := c.Tags["last"]
-		//we can only be here if the cooldown is up, meaning at least 1 charge is off cooldown
-		//last should just represent when the next charge starts recharging, this should equal
-		//to right when the first charge is off cooldown
-		if last == -1 {
-			c.Tags["last"] = c.Core.F
-			// c.Core.Log.Infof("\t Sucrose first time using skill, first charge cd up at %v", c.Core.F+900)
-		} else if c.Core.F-last < 600 {
-			//if last is less than 15s in the past, then 1 charge is up
-			//then we move last up to when the first charge goes off CD\
-			// c.Core.Log.Infof("\t Sucrose last diff %v", c.Core.F-last)
-			c.Tags["last"] = last + 600
-			c.SetCD(core.ActionSkill, last+600-c.Core.F)
-			// c.Core.Log.Infof("\t Sucrose skill going on CD until %v, last = %v", last+900, c.Tags["last"])
-		} else {
-			//so if last is more than 15s in the past, then both charges must be up
-			//so then the charge restarts now
-			c.Tags["last"] = c.Core.F
-			// c.Core.Log.Infof("\t Sucrose charge cd starts at %v", c.Core.F)
-		}
-	} else {
-		c.SetCD(core.ActionSkill, 600)
-	}
+	c.SetCD(core.ActionSkill, 600)
 
 	return f, a
 }
@@ -152,6 +134,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       shower[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
+
+	c.Core.Status.AddStatus("ganyuburst", 15*60)
 
 	rad, ok := p["radius"]
 	if !ok {
@@ -197,7 +181,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//a4 every .3 seconds for the duration of the burst, add ice dmg up to active char for 1sec
 	//duration is 15 seconds
-	for i := 18; i < 900; i += 18 {
+	//starts from end of cast
+	for i := f; i < 900+f; i += 18 {
 		t := i
 		c.AddTask(func() {
 			active := c.Core.Chars[c.Core.ActiveChar]
@@ -211,7 +196,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				Expiry: c.Core.F + 60,
 			})
 			if t >= 900-18 {
-				c.Core.Log.Debugw("a4 last tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "ends_on", c.Core.F+60)
+				c.Core.Log.NewEvent("a4 last tick", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+60)
 			}
 		}, "ganyu-a4", i)
 	}
@@ -242,27 +227,4 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.ConsumeEnergy(8)
 
 	return f, a
-}
-
-func (c *char) ResetActionCooldown(a core.ActionType) {
-	//we're overriding this b/c of the c1 charges
-	switch a {
-	case core.ActionBurst:
-		c.ActionCD[a] = 0
-	case core.ActionSkill:
-		if c.Base.Cons < 2 {
-			c.ActionCD[a] = 0
-			return
-		}
-		//ok here's the fun part...
-		//if last is more than 15s away from current frame then both charges are up, do nothing
-		if c.Core.F-c.Tags["last"] > 600 || c.Tags["last"] == 0 {
-			return
-		}
-		//otherwise move CD and restart charging last now
-		c.Tags["last"] = c.Core.F
-		// c.CD[def.SkillCD] = c.Core.F
-		c.SetCD(a, 0)
-
-	}
 }

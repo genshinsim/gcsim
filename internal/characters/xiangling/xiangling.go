@@ -3,7 +3,7 @@ package xiangling
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -23,7 +23,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSpear
 	c.NormalHitNum = 5
@@ -35,11 +40,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
+func (c *char) Init() {
+	c.Tmpl.Init()
 	//add in a guoba
 	c.guoba = newGuoba(c.Core)
 	c.Core.AddTarget(c.guoba)
@@ -62,7 +64,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 4:
 			f = 167 - 141
 		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionSkill:
 		return 26, 26
@@ -71,7 +73,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 78, 78
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -83,22 +85,24 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
 }
 
-func (c *char) c6() {
+func (c *char) c6(dur int) {
 	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = 0.15
 
+	c.Core.Status.AddStatus("xlc6", dur)
+
 	for _, char := range c.Core.Chars {
 		char.AddMod(core.CharStatMod{
-			Key:    "xl-c6",
-			Expiry: -1,
+			Key:    "xiangling-c6",
+			Expiry: c.Core.F + dur,
 			Amount: func() ([]float64, bool) {
-				return m, c.Core.Status.Duration("xlc6") > 0
+				return m, true
 			},
 		})
 	}
@@ -108,7 +112,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -260,10 +264,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//add an effect starting at frame 70 to end of duration to increase pyro dmg by 15% if c6
 	if c.Base.Cons >= 6 {
 		//wait 70 frames, add effect
-		c.AddTask(func() {
-			c.Core.Status.AddStatus("xlc6", max)
-		}, "xl activate c6", 70)
-
+		c.AddTask(func() { c.c6(max) }, "xiangling-c6", 70)
 	}
 
 	//add cooldown to sim

@@ -3,7 +3,7 @@ package fischl
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -28,7 +28,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Electro
-	c.Energy = 60
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 60
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 5
@@ -73,7 +78,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -137,7 +142,7 @@ func (c *char) queueOz(src string) {
 		SourceFrame: c.Core.F,
 	}
 	c.AddTask(c.ozTick(c.Core.F), "oz", 60)
-	c.Core.Log.Debugw("Oz activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
+	c.Core.Log.NewEvent("Oz activated", core.LogCharacterEvent, c.Index, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
 
 	c.Core.Status.AddStatus("fischloz", dur)
 
@@ -145,12 +150,12 @@ func (c *char) queueOz(src string) {
 
 func (c *char) ozTick(src int) func() {
 	return func() {
-		c.Core.Log.Debugw("Oz checking for tick", "frame", c.Core.F, "event", core.LogCharacterEvent, "src", src)
+		c.Core.Log.NewEvent("Oz checking for tick", core.LogCharacterEvent, c.Index, "src", src)
 		//if src != ozSource then this is no longer the same oz, do nothing
 		if src != c.ozSource {
 			return
 		}
-		c.Core.Log.Debugw("Oz ticked", "frame", c.Core.F, "event", core.LogCharacterEvent, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
+		c.Core.Log.NewEvent("Oz ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
 		//trigger damage
 		ae := c.ozSnapshot
 		c.Core.Combat.QueueAttackEvent(&ae, 0)
@@ -240,7 +245,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.AddTask(func() {
-			c.Core.Health.HealActive(c.Index, heal)
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  c.Index,
+				Message: "Her Pilgrimage of Bleak",
+				Src:     heal,
+				Bonus:   c.Stat(core.Heal),
+			})
 		}, "c4heal", f-1)
 
 	}

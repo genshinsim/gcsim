@@ -1,6 +1,8 @@
 package venti
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -10,12 +12,12 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
@@ -25,7 +27,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f+travel+i)
+		// TODO - double check snapshotDelay
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f+i, f+travel+i)
 	}
 
 	c.AdvanceNormalIndex()
@@ -38,7 +41,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
 
@@ -96,7 +99,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f-1, cb)
 
-	c.QueueParticle("venti", 4, core.Anemo, f+100)
+	c.QueueParticle("venti", 3, core.Anemo, f+100)
 
 	c.SetCD(core.ActionSkill, cd)
 	return f, a
@@ -142,12 +145,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 }
 
 func (c *char) a4Restore() {
-	c.AddEnergy(15)
+	c.AddEnergy("venti-a4", 15)
 
 	if c.qInfuse != core.NoElement {
 		for _, char := range c.Core.Chars {
 			if char.Ele() == c.qInfuse {
-				char.AddEnergy(15)
+				char.AddEnergy("venti-a4", 15)
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 package raiden
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -28,7 +28,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Electro
-	c.Energy = 90
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 90
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 90
 	c.Weapon.Class = core.WeaponClassSpear
 	c.BurstCon = 3
@@ -47,10 +52,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
-}
-
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
 	case core.ActionDash:
@@ -61,7 +62,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 20
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -73,7 +74,7 @@ func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 	excess := int(s.Stats[core.ER] / 0.01)
 
 	s.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Core.Log.Debugw("a4 adding electro dmg", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", excess, "final", s.Stats[core.ElectroP])
+	c.Core.Log.NewEvent("a4 adding electro dmg", core.LogCharacterEvent, c.Index, "stacks", excess, "final", s.Stats[core.ElectroP])
 	//
 	////infusion to normal/plunge/charge
 	//switch ds.AttackTag {

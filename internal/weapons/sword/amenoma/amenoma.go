@@ -38,7 +38,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 		seeds[index] = c.F + 30*60
 
-		c.Log.Debugw("amenoma proc'd", "frame", c.F, "event", core.LogWeaponEvent, "char", char.CharIndex(), "index", index, "seeds", seeds)
+		c.Log.NewEvent("amenoma proc'd", core.LogWeaponEvent, char.CharIndex(), "index", index, "seeds", seeds)
 
 		icd = c.F + 300 //5 seconds
 
@@ -61,7 +61,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 		//regen energy after 2 seconds
 		char.AddTask(func() {
-			char.AddEnergy(refund * float64(count))
+			char.AddEnergy("amenoma", refund*float64(count))
 		}, "amenoma-regen", 120+60) //added 1 extra sec for burst animation but who knows if this is true
 
 		return false

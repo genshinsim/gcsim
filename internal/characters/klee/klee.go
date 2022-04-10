@@ -1,7 +1,7 @@
 package klee
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -11,11 +11,8 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	c1Chance     float64
-	eCharge      int
-	eChargeMax   int
-	eNextRecover int
-	eTickSrc     int
+	c1Chance float64
+	sparkICD int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -26,12 +23,18 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Pyro
-	c.Energy = 60
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 60
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 3
-	c.eChargeMax = 2
-	c.eCharge = 2
+
+	c.SetNumCharges(core.ActionSkill, 2)
+	c.sparkICD = -1
 
 	c.a4()
 
@@ -47,15 +50,27 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	case core.ActionCharge:
-		if c.Tags["spark"] > 0 {
+		if c.Core.Status.Duration("kleespark") > 0 {
 			return 0
 		}
 		return 50
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 
+}
+
+func (c *char) a1() {
+	if c.Core.F < c.sparkICD {
+		return
+	}
+	if c.Core.Rand.Float64() < 0.5 {
+		return
+	}
+	c.sparkICD = c.Core.F + 60*4
+	c.Core.Status.AddStatus("kleespark", 60*30)
+	c.Core.Log.NewEvent("klee gained spark", core.LogCharacterEvent, c.Index, "icd", c.sparkICD)
 }
 
 func (c *char) a4() {
@@ -72,7 +87,7 @@ func (c *char) a4() {
 			return false
 		}
 		for _, x := range c.Core.Chars {
-			x.AddEnergy(2)
+			x.AddEnergy("klee-a4", 2)
 		}
 		return false
 	}, "kleea2")

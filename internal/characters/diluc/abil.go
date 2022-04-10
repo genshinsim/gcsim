@@ -70,11 +70,14 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}, "dilucc4", f+120) // 2seconds after cast
 	}
 
+	//skill only goes on cd once all 3 charges have been used
+	//or if 4 second passed since last use, skill will also go on cd
+
 	c.eCounter++
 	if c.eCounter == 3 {
 		//ability can go on cd now
 		cd := 600 - (c.Core.F - c.eStartFrame)
-		c.Core.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd)
+		c.Core.Log.NewEvent("diluc skill going on cd", core.LogCharacterEvent, c.Index, "duration", cd)
 		c.SetCD(core.ActionSkill, cd)
 		c.eStarted = false
 		c.eStartFrame = -1

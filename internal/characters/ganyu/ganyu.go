@@ -1,7 +1,7 @@
 package ganyu
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -11,7 +11,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a2expiry int
+	a1Expiry int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -22,7 +22,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Cryo
-	c.Energy = 60
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 60
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 6
@@ -30,22 +35,13 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
 
-	//add a2
-	val := make([]float64, core.EndStatType)
-	val[core.CR] = 0.2
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key: "ganyu-a2",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return val, c.a2expiry > c.Core.F && atk.Info.AttackTag == core.AttackTagExtra
-		},
-		Expiry: -1,
-	})
+	c.a1Expiry = -1
 
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {
-		c.Tags["last"] = -1
+		c.SetNumCharges(core.ActionSkill, 2)
 	}
 
 	return &c, nil

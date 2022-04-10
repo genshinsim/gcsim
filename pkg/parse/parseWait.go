@@ -25,7 +25,7 @@ func parseCalcModeWait(p *Parser) (parseFn, error) {
 		//should be number next
 		n = p.next()
 		if n.typ != itemNumber {
-			return nil, fmt.Errorf("unexpected token after wait, expecting a number got %v line %v", n, p.tokens)
+			return nil, fmt.Errorf("ln%v: unexpected token after wait, expecting a number got %v line %v", n.line, n, p.tokens)
 		}
 		val, err := itemNumberToInt(n)
 		if err != nil {
@@ -34,12 +34,12 @@ func parseCalcModeWait(p *Parser) (parseFn, error) {
 		block.CalcWait.Frames = true
 		block.CalcWait.Val = val
 	default:
-		return nil, fmt.Errorf("unexpected token after wait, got %v line %v", n, p.tokens)
+		return nil, fmt.Errorf("ln%v: unexpected token after wait, got %v line %v", n.line, n, p.tokens)
 	}
 	//expect end of line
 	n = p.next()
 	if n.typ != itemTerminateLine {
-		return nil, fmt.Errorf("wait expecting ; got %v at line %v", n, p.tokens)
+		return nil, fmt.Errorf("ln%v: wait expecting ; got %v", n.line, n)
 	}
 	p.cfg.Rotation = append(p.cfg.Rotation, block)
 	return parseRows, nil
@@ -79,7 +79,7 @@ func (p *Parser) acceptWait() (core.ActionBlock, error) {
 		w.Wait.For = core.CmdWaitTypeTimed
 		condOk = true
 	default:
-		return w, fmt.Errorf("<parse wait> invalid option %v after wait_for at line %v", n.val, p.tokens)
+		return w, fmt.Errorf("ln%v: <parse wait> invalid option %v after wait_for", n.line, n.val)
 	}
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
@@ -161,10 +161,10 @@ func (p *Parser) acceptWait() (core.ActionBlock, error) {
 				}
 				w.Wait.FillAction = act
 			default:
-				return w, fmt.Errorf("<parse wait> unrecognized token %v after + at line %v", n, p.tokens)
+				return w, fmt.Errorf("ln%v: <parse wait> unrecognized token %v after +", n.line, n)
 			}
 		default:
-			err = fmt.Errorf("<parse wait> unrecognized token %v at line %v", n, p.tokens)
+			err = fmt.Errorf("ln%v: <parse wait> unrecognized token %v", n.line, n)
 		}
 		if err != nil {
 			return w, err

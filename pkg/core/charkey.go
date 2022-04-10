@@ -31,6 +31,7 @@ const (
 	Kazuha
 	Kaeya
 	Ayaka
+	Ayato
 	Keqing
 	Klee
 	Sara
@@ -59,6 +60,7 @@ const (
 	Itto
 	Shenhe
 	Yunjin
+	YaeMiko
 )
 
 func (c CharKey) String() string {
@@ -99,6 +101,8 @@ var CharNameToKey = map[string]CharKey{
 	"kaeya":              Kaeya,
 	"kamisatoayaka":      Ayaka,
 	"ayaka":              Ayaka,
+	"kamisatoayato":      Ayato,
+	"ayato":              Ayato,
 	"keqing":             Keqing,
 	"klee":               Klee,
 	"kujousara":          Sara,
@@ -130,7 +134,10 @@ var CharNameToKey = map[string]CharKey{
 	"zhongli":            Zhongli,
 	"gorou":              Gorou,
 	"aratakiitto":        Itto,
+	"itto":				  Itto,
 	"shenhe":             Shenhe,
+	"yae":                YaeMiko,
+	"yaemiko":            YaeMiko,
 }
 
 var charNames = []string{
@@ -162,6 +169,7 @@ var charNames = []string{
 	"kazuha",
 	"kaeya",
 	"ayaka",
+	"ayato",
 	"keqing",
 	"klee",
 	"sara",
@@ -190,6 +198,7 @@ var charNames = []string{
 	"itto",
 	"shenhe",
 	"yunjin",
+	"yaemiko",
 }
 
 var CharKeyToEle = map[CharKey]EleType{
@@ -217,6 +226,7 @@ var CharKeyToEle = map[CharKey]EleType{
 	Kazuha:          Anemo,
 	Kaeya:           Cryo,
 	Ayaka:           Cryo,
+	Ayato:           Hydro,
 	Keqing:          Electro,
 	Klee:            Pyro,
 	Sara:            Electro,

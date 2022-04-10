@@ -1,7 +1,7 @@
 package diluc
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -25,7 +25,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Pyro
-	c.Energy = 40
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 40
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 40
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
@@ -109,7 +114,7 @@ func (c *char) Tick() {
 		if c.Core.F-c.eLastUse >= 240 {
 			//if so, set ability to be on cd equal to 10s less started
 			cd := 600 - (c.Core.F - c.eStartFrame)
-			c.Core.Log.Debugw("diluc skill going on cd", "frame", c.Core.F, "event", core.LogCharacterEvent, "duration", cd, "last", c.eLastUse)
+			c.Core.Log.NewEvent("diluc skill going on cd", core.LogCharacterEvent, c.Index, "duration", cd, "last", c.eLastUse)
 			c.SetCD(core.ActionSkill, cd)
 			//reset
 			c.eStarted = false
@@ -120,17 +125,6 @@ func (c *char) Tick() {
 	}
 }
 
-// func (c *char) Snapshot(name string, a def.AttackTag, icd def.ICDTag, g def.ICDGroup, st def.StrikeType, e def.EleType, d float64, mult float64) def.Snapshot {
-// 	ds := c.CharacterTemplate.Snapshot(name, a, icd, g, st, e, d, mult)
-// 	if c.S.StatusActive("dilucq") {
-// 		if atk.Info.AttackTag == def.AttackTagNormal || atk.Info.AttackTag == def.AttackTagExtra {
-// 			ds.Element = def.Pyro
-// 			ds.Stats[def.PyroP] += .2
-// 		}
-// 	}
-// 	return ds
-// }
-
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
 	case core.ActionDash:
@@ -139,7 +133,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		// With A1
 		return 20
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 

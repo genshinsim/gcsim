@@ -3,7 +3,7 @@ package kaeya
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -25,7 +25,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Cryo
-	c.Energy = 60
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 60
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
@@ -51,7 +56,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -70,7 +75,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.3, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(.3, false, core.TargettableEnemy), f-1, f-1)
 
 	c.AdvanceNormalIndex()
 
@@ -92,10 +97,10 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[0][c.TalentLvlAttack()],
 	}
 	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, f-15)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-15, f-15)
 	ai.Abil = "Charge 2"
 	ai.Mult = charge[1][c.TalentLvlAttack()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 0, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-5, f-5)
 
 	return f, a
 }
@@ -116,7 +121,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	a4count := 0
 	cb := func(a core.AttackCB) {
 		heal := .15 * (a.AttackEvent.Snapshot.BaseAtk*(1+a.AttackEvent.Snapshot.Stats[core.ATKP]) + a.AttackEvent.Snapshot.Stats[core.ATK])
-		c.Core.Health.HealActive(c.Index, heal)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.ActiveChar,
+			Message: "Cold-Blooded Strike",
+			Src:     heal,
+			Bonus:   c.Stat(core.Heal),
+		})
 		//if target is frozen after hit then drop additional energy;
 		if a4count == 2 {
 			return
@@ -124,7 +135,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		if a.Target.AuraContains(core.Frozen) {
 			a4count++
 			c.QueueParticle("kaeya", 1, core.Cryo, 100)
-			c.Core.Log.Debugw("kaeya a4 proc", "event", core.LogEnergyEvent, "char", c.Index, "frame", c.Core.F)
+			c.Core.Log.NewEvent("kaeya a4 proc", core.LogCharacterEvent, c.Index)
 		}
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 28, cb)
@@ -178,7 +189,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.ConsumeEnergy(55)
 	if c.Base.Cons == 6 {
-		c.AddTask(func() { c.AddEnergy(15) }, "kaeya-c6", 56)
+		c.AddTask(func() { c.AddEnergy("kaeya-c6", 15) }, "kaeya-c6", 56)
 	}
 
 	c.SetCDWithDelay(core.ActionBurst, 900, 55)

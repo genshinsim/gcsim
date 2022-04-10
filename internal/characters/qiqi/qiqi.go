@@ -1,7 +1,7 @@
 package qiqi
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -33,7 +33,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Cryo
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
@@ -54,8 +59,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 // Ensures the set of targets are initialized properly
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	// c.talismanExpiry = make([]int, len(c.Core.Targets))
 	// c.talismanICDExpiry = make([]int, len(c.Core.Targets))
@@ -95,20 +100,25 @@ func (c *char) talismanHealHook() {
 		atk := args[1].(*core.AttackEvent)
 
 		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
-		c.Core.Health.HealIndex(c.Index, atk.Info.ActorIndex, healAmt)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  atk.Info.ActorIndex,
+			Message: "Fortune-Preserving Talisman",
+			Src:     healAmt,
+			Bonus:   c.Stat(core.Heal),
+		})
 		t.SetTag(talismanICDKey, c.Core.F+60)
 
-		c.Core.Log.Debugw(
-			"Qiqi Talisman Healing",
-			"frame", c.Core.F,
-			"event", core.LogCharacterEvent,
-			"char", c.Index,
-			"target", t.Index(),
-			"healed_char", atk.Info.ActorIndex,
-			"talisman_expiry", t.GetTag(talismanKey),
-			"talisman_healing_icd", t.GetTag(talismanICDKey),
-			"healed_amt", healAmt,
-		)
+		// c.Core.Log.NewEvent(
+		// 	"Qiqi Talisman Healing",
+		// 	core.LogCharacterEvent,
+		// 	c.Index,
+		// 	"target", t.Index(),
+		// 	"healed_char", atk.Info.ActorIndex,
+		// 	"talisman_expiry", t.GetTag(talismanKey),
+		// 	"talisman_healing_icd", t.GetTag(talismanICDKey),
+		// 	"healed_amt", healAmt,
+		// )
 
 		return false
 	}, "talisman-heal-hook")
@@ -145,11 +155,10 @@ func (c *char) onNACAHitHook() {
 			if t.GetTag(talismanKey) < c.Core.F+360 {
 				t.SetTag(talismanKey, c.Core.F+360)
 				c.c4ICDExpiry = c.Core.F + 30*60
-				c.Core.Log.Debugw(
+				c.Core.Log.NewEvent(
 					"Qiqi A4 Adding Talisman",
-					"frame", c.Core.F,
-					"event", core.LogCharacterEvent,
-					"char", c.Index,
+					core.LogCharacterEvent,
+					c.Index,
 					"target", t.Index(),
 					"talisman_expiry", t.GetTag(talismanKey),
 					"c4_icd_expiry", c.c4ICDExpiry,
@@ -159,7 +168,13 @@ func (c *char) onNACAHitHook() {
 
 		// Qiqi NA/CA healing proc in skill duration
 		if c.Core.Status.Duration("qiqiskill") > 0 {
-			c.Core.Health.HealAll(c.Index, c.healSnapshot(&c.skillHealSnapshot, skillHealOnHitPer, skillHealOnHitFlat, c.TalentLvlSkill()))
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  -1,
+				Message: "Herald of Frost (Attack)",
+				Src:     c.healSnapshot(&c.skillHealSnapshot, skillHealOnHitPer, skillHealOnHitFlat, c.TalentLvlSkill()),
+				Bonus:   c.skillHealSnapshot.Stats[core.Heal],
+			})
 		}
 
 		return false
@@ -211,7 +226,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 20
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

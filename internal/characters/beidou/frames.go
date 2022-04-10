@@ -19,7 +19,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 4:
 			f = 68
 		}
-		atkspd := c.Stats[core.AtkSpd]
+		atkspd := c.Stat(core.AtkSpd)
 		if c.Core.Status.Duration("beidoua4") > 0 {
 			atkspd += 0.15
 		}
@@ -27,7 +27,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		return f, f
 	case core.ActionCharge:
 		f := 35 //frames from keqing lib
-		atkspd := c.Stats[core.AtkSpd]
+		atkspd := c.Stat(core.AtkSpd)
 		if c.Core.Status.Duration("beidoua4") > 0 {
 			atkspd += 0.15
 		}
@@ -38,7 +38,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 45, 45 //ok
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

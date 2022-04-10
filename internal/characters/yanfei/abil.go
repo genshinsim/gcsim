@@ -3,8 +3,8 @@ package yanfei
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 // Standard attack function with seal handling
@@ -13,7 +13,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 20
+		travel = 10
 	}
 
 	done := false
@@ -25,7 +25,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			c.Tags["seal"]++
 		}
 		c.sealExpiry = c.Core.F + 600
-		c.Core.Log.Debugw("yanfei gained a seal from normal attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		c.Core.Log.NewEvent("yanfei gained a seal from normal attack", core.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
 		done = true
 	}
 
@@ -85,7 +85,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	// TODO: Not sure of snapshot timing
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
 
-	c.Core.Log.Debugw("yanfei charge attack consumed seals", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+	c.Core.Log.NewEvent("yanfei charge attack consumed seals", core.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
 
 	// Clear the seals next frame just in case for some reason we call stam check late
 	c.AddTask(func() {
@@ -112,7 +112,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			c.Tags["seal"] = c.maxTags
 		}
 		c.sealExpiry = c.Core.F + 600
-		c.Core.Log.Debugw("yanfei gained max seals", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		c.Core.Log.NewEvent("yanfei gained max seals", core.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
 		done = true
 	}
 
@@ -168,7 +168,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			c.Tags["seal"] = c.maxTags
 		}
 		c.sealExpiry = c.Core.F + 600
-		c.Core.Log.Debugw("yanfei gained max seals", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		c.Core.Log.NewEvent("yanfei gained max seals", core.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
 		done = true
 	}
 
@@ -224,7 +224,7 @@ func (c *char) burstAddSealHook() func() {
 		}
 		c.sealExpiry = c.Core.F + 600
 
-		c.Core.Log.Debugw("yanfei gained seal from burst", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		c.Core.Log.NewEvent("yanfei gained seal from burst", core.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
 
 		c.AddTask(c.burstAddSealHook(), "burst-add-seals", 60)
 	}

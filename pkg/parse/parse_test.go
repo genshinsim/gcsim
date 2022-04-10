@@ -1,13 +1,17 @@
 package parse
 
 import (
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"testing"
+
+	"github.com/genshinsim/gcsim/pkg/core"
 )
 
 func TestParse(t *testing.T) {
 	p := New("test", pteststring)
-	a, _, err := p.Parse()
+	a, err := p.Parse()
 	fmt.Println("characters:")
 	for _, v := range a.Characters.Profile {
 		fmt.Println(v.Base.Key.String())
@@ -36,23 +40,73 @@ func TestParse(t *testing.T) {
 	fmt.Println("\t", a.Energy)
 
 	p = New("test", raiden)
-	_, _, err = p.Parse()
+	_, err = p.Parse()
 	if err != nil {
 		t.Error(err)
 	}
 
 	p = New("test", s2)
-	_, _, err = p.Parse()
+	_, err = p.Parse()
 	if err != nil {
 		t.Error(err)
 	}
 
 	p = New("test", check)
-	_, _, err = p.Parse()
+	_, err = p.Parse()
 	if err != nil {
 		t.Error(err)
 	}
 
+}
+
+func TestConfigClone(t *testing.T) {
+	parser := New("test", pteststring)
+	c, err := parser.Parse()
+	if err != nil {
+		t.Error(err)
+	}
+	next := c.Clone()
+	// cjson, _ := json.Marshal(c)
+	// fmt.Println(string(cjson))
+	// fmt.Println("")
+	// njson, _ := json.Marshal(next)
+	// fmt.Println(string(njson))
+	if !reflect.DeepEqual(c, next) {
+		t.Fail()
+	}
+
+}
+
+func BenchmarkParse(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		parser := New("test", raiden)
+		parser.Parse()
+	}
+}
+
+func BenchmarkClone(b *testing.B) {
+	parser := New("test", raiden)
+	c, err := parser.Parse()
+	if err != nil {
+		b.Error(err)
+	}
+	// run clone b.N times
+	for n := 0; n < b.N; n++ {
+		c.Clone()
+	}
+}
+
+func BenchmarkSerialization(b *testing.B) {
+	parser := New("test", raiden)
+	c, err := parser.Parse()
+	if err != nil {
+		b.Error(err)
+	}
+	j, _ := json.Marshal(c)
+	for n := 0; n < b.N; n++ {
+		var out core.SimulationConfig
+		json.Unmarshal(j, &out)
+	}
 }
 
 var check = `
@@ -154,7 +208,7 @@ wait until 1000;
 `
 
 var s2 = `
-options debug=true iteration=3000 duration=41 workers=24;
+options debug=true iteration=3000 duration=41 workers=24 mode=apl;
 
 xiangling char lvl=80/90 cons=4 talent=6,9,9;
 xiangling add weapon="staff of homa" lvl=90/90 refine=1;

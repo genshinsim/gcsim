@@ -17,7 +17,7 @@ type Target interface {
 	Shape() Shape
 
 	//attacks
-	Attack(*AttackEvent) (float64, bool)
+	Attack(*AttackEvent, LogEvent) (float64, bool)
 
 	//reaction/aura stuff
 	Tick()
@@ -79,12 +79,14 @@ type ResistMod struct {
 	Value    float64
 	Duration int
 	Expiry   int
+	Event    LogEvent
 }
 
 type DefMod struct {
 	Key    string
 	Value  float64
 	Expiry int
+	Event  LogEvent
 }
 
 // func (c *Core) ReindexTargets() {
@@ -195,7 +197,6 @@ func (c *Core) RandomEnemyTarget() int {
 		}
 	}
 	panic("no random target found?? should not happen")
-	return -1
 }
 
 func (c *Core) RandomTargetIndex(typ TargettableType) int {
@@ -220,5 +221,4 @@ func (c *Core) RandomTargetIndex(typ TargettableType) int {
 		}
 	}
 	panic("no random target found?? should not happen")
-	return -1
 }

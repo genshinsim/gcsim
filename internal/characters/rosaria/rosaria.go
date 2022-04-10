@@ -1,7 +1,7 @@
 package rosaria
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -21,7 +21,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Cryo
-	c.Energy = 60
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 60
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassSpear
 	c.BurstCon = 5
@@ -94,8 +99,7 @@ func (c *char) c4() {
 		}
 		icd = c.Core.F + 30
 
-		c.AddEnergy(5)
-		c.Core.Log.Debugw("Rosaria C4 recovering 5 energy", "frame", c.Core.F, "event", core.LogEnergyEvent, "new energy", c.Energy)
+		c.AddEnergy("rosaria-c4", 5)
 		return false
 	}, "rosaria-c4")
 }
@@ -107,7 +111,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

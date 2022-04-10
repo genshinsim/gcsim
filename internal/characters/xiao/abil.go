@@ -91,7 +91,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 	for i := 0; i < plungeHits; i++ {
 		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
 		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
-		c.PlungeAttack(f - i - 1)
+		c.PlungeAttack(f - i - 2)
 	}
 
 	ai := core.AttackInfo{
@@ -126,7 +126,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 	for i := 0; i < plungeHits; i++ {
 		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
 		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
-		c.PlungeAttack(f - i - 1)
+		c.PlungeAttack(f - i - 2)
 	}
 
 	ai := core.AttackInfo{
@@ -194,48 +194,21 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// C6 handling - can use skill ignoring CD and without draining charges
 	// Can simply return early
 	if c.Base.Cons == 6 && c.Core.Status.Duration("xiaoc6") > 0 {
-		c.Core.Log.Debugw("xiao c6 active, Xiao E used, no charge used, no CD", "frame", c.Core.F, "event", core.LogCharacterEvent, "c6 remaining duration", c.Core.Status.Duration("xiaoc6"))
+		c.Core.Log.NewEvent("xiao c6 active, Xiao E used, no charge used, no CD", core.LogCharacterEvent, c.Index, "c6 remaining duration", c.Core.Status.Duration("xiaoc6"))
 		return f, a
 	}
 
-	// Handle E charges
-	if c.Tags["eCharge"] == 1 {
-		c.SetCD(core.ActionSkill, c.eNextRecover)
-	} else {
-		c.eNextRecover = c.Core.F + 601
-		c.Core.Log.Debugw("xiao e charge used, queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "recover at", c.eNextRecover)
-		c.AddTask(c.recoverCharge(c.Core.F), "charge", 600)
-		c.eTickSrc = c.Core.F
-	}
-	c.Tags["eCharge"]--
+	c.SetCD(core.ActionSkill, 600)
 
 	return f, a
-}
-
-// Helper function that queues up Xiao e charge recovery - similar to other charge recovery functions
-func (c *char) recoverCharge(src int) func() {
-	return func() {
-		// Required stopper for recursion
-		if c.eTickSrc != src {
-			c.Core.Log.Debugw("xiao e recovery function ignored, src diff", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "src", src, "new src", c.eTickSrc)
-			return
-		}
-		c.Tags["eCharge"]++
-		c.Core.Log.Debugw("xiao e recovering a charge", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "skill last used at", src, "total charges", c.Tags["eCharge"])
-		c.SetCD(core.ActionSkill, 0)
-		if c.Tags["eCharge"] >= c.eChargeMax {
-			return
-		}
-
-		c.eNextRecover = c.Core.F + 601
-		c.Core.Log.Debugw("xiao e charge queuing next recovery", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "recover at", c.eNextRecover)
-		c.AddTask(c.recoverCharge(src), "charge", 600)
-	}
 }
 
 // Sets Xiao's burst damage state
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
+	var HPicd int
+	var HPlost float64
+	HPicd = 0
 
 	// Per previous code, believe that the burst duration starts ticking down from after the animation is done
 	// TODO: No indication of that in library though
@@ -246,8 +219,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// Per gameplay video, HP ticks start after animation is finished
 	for i := f + 60; i < 900+f; i++ {
 		c.AddTask(func() {
-			if c.Core.Status.Duration("xiaoburst") > 0 {
-				c.HPCurrent = c.HPCurrent * (1 - burstDrain[c.TalentLvlBurst()])
+			if c.Core.Status.Duration("xiaoburst") > 0 && c.Core.F >= HPicd {
+				HPlost = burstDrain[c.TalentLvlBurst()] * c.HPCurrent
+				c.HPCurrent = c.HPCurrent - HPlost
+				c.Core.Log.NewEvent("xiao hp drain", core.LogCharacterEvent, c.Index, "current HP", c.HPCurrent, "HP lost", HPlost)
+				c.Core.Events.Emit(core.OnCharacterHurt, HPlost)
+				HPicd = c.Core.F + 60
 			}
 		}, "xiaoburst-hp-drain", i)
 	}

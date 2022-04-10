@@ -1,7 +1,7 @@
 package xiao
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -12,14 +12,10 @@ func init() {
 // Xiao specific character implementation
 type char struct {
 	*character.Tmpl
-	eCharge      int
-	eChargeMax   int
-	eNextRecover int
-	eTickSrc     int
-	qStarted     int
-	a4Expiry     int
-	c6Src        int
-	c6Count      int
+	qStarted int
+	a4Expiry int
+	c6Src    int
+	c6Count  int
 }
 
 // Initializes character
@@ -32,16 +28,21 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Anemo
-	c.Energy = 70
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 70
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 70
 	c.Weapon.Class = core.WeaponClassSpear
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = 6
 
-	c.eChargeMax = 2
+	c.SetNumCharges(core.ActionSkill, 2)
 	if c.Base.Cons >= 1 {
-		c.eChargeMax = 3
+		c.SetNumCharges(core.ActionSkill, 3)
 	}
 
 	if c.Base.Cons >= 2 {
@@ -52,7 +53,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.c6()
 	}
 
-	c.Tags["eCharge"] = c.eChargeMax
 	c.onExitField()
 
 	return &c, nil
@@ -121,11 +121,10 @@ func (c *char) c6() {
 
 		// Prevents activation more than once in a single plunge attack
 		if c.c6Count == 2 {
-			c.recoverCharge(c.eTickSrc)
-			c.eTickSrc = c.Core.F
+			c.ResetActionCooldown(core.ActionSkill)
 
 			c.Core.Status.AddStatus("xiaoc6", 60)
-			c.Core.Log.Debugw("Xiao C6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.F+60)
+			c.Core.Log.NewEvent("Xiao C6 activated", core.LogCharacterEvent, c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.F+60)
 
 			c.c6Count = 0
 			return false
@@ -150,7 +149,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
@@ -170,7 +169,7 @@ func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 			stacks = 5
 		}
 		ds.Stats[core.DmgP] += float64(stacks) * 0.05
-		c.Core.Log.Debugw("a1 adding dmg %", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F-c.qStarted)
+		c.Core.Log.NewEvent("a1 adding dmg %", core.LogCharacterEvent, c.Index, "stacks", stacks, "final", ds.Stats[core.DmgP], "time since burst start", c.Core.F-c.qStarted)
 
 		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
 		// Also handle burst CA ICD change to share with Normal
@@ -185,7 +184,7 @@ func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 		a.Element = core.Anemo
 		bonus := burstBonus[c.TalentLvlBurst()]
 		ds.Stats[core.DmgP] += bonus
-		c.Core.Log.Debugw("xiao burst damage bonus", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index, "bonus", bonus, "final", ds.Stats[core.DmgP])
+		c.Core.Log.NewEvent("xiao burst damage bonus", core.LogCharacterEvent, c.Index, "bonus", bonus, "final", ds.Stats[core.DmgP])
 	}
 	return ds
 }

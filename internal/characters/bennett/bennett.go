@@ -3,9 +3,9 @@ package bennett
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/player"
 )
 
 func init() {
@@ -23,7 +23,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Energy = 60
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 60
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
@@ -68,7 +73,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 4:
 			f = 49
 		}
-		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
+		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, f
 	case core.ActionCharge:
 		return 100, 100 //frames from keqing lib
@@ -85,7 +90,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionBurst:
 		return 51, 51 //ok
 	default:
-		c.Core.Log.Warnf("%v: unknown action (%v), frames invalid", c.Base.Key.String(), a)
+		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }
@@ -220,9 +225,10 @@ func (c *char) skillHoldLong() {
 
 }
 
+const burstStartFrame = 31
+
 func (c *char) Burst(p map[string]int) (int, int) {
 
-	burstStartFrame := 31
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//add field effect timer
@@ -241,12 +247,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	//TODO: review bennett AOE size
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 33, 33)
-
-	aiHeal := core.AttackInfo{
-		Abil:      "Fantastic Voyage (Heal)",
-		AttackTag: core.AttackTagNone,
-	}
-	stats := c.SnapshotStats(&aiHeal)
+	stats, _ := c.SnapshotStats()
 
 	//apply right away
 	c.applyBennettField(stats)()
@@ -263,28 +264,36 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	return f, a //todo fix field cast time
 }
 
+const bennettSelfInfusionDurationInFrames = 126
+
 func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 	hpplus := stats[core.Heal]
-	heal := (bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()) * (1 + hpplus)
+	heal := bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()
 	pc := burstatk[c.TalentLvlBurst()]
 	if c.Base.Cons >= 1 {
 		pc += 0.2
 	}
 	atk := pc * float64(c.Base.Atk+c.Weapon.Atk)
 	return func() {
-		c.Core.Log.Debugw("bennett field ticking", "frame", c.Core.F, "event", core.LogCharacterEvent)
+		c.Core.Log.NewEvent("bennett field ticking", core.LogCharacterEvent, -1)
 
 		//self infuse
 		player, ok := c.Core.Targets[0].(*player.Player)
 		if !ok {
 			panic("target 0 should be Player but is not!!")
 		}
-		player.ApplySelfInfusion(core.Pyro, 25, 126)
+		player.ApplySelfInfusion(core.Pyro, 25, bennettSelfInfusionDurationInFrames)
 
 		active := c.Core.Chars[c.Core.ActiveChar]
 		//heal if under 70%
 		if active.HP()/active.MaxHP() < .7 {
-			c.Core.Health.HealActive(c.Index, heal)
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  c.Core.ActiveChar,
+				Message: "Inspiration Field",
+				Src:     heal,
+				Bonus:   hpplus,
+			})
 		}
 
 		//add attack if over 70%
@@ -310,7 +319,7 @@ func (c *char) applyBennettField(stats [core.EndStatType]float64) func() {
 				},
 				Expiry: c.Core.F + 126,
 			})
-			c.Core.Log.Debugw("bennett field - adding attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "threshold", threshold)
+			c.Core.Log.NewEvent("bennett field - adding attack", core.LogCharacterEvent, c.Index, "threshold", threshold)
 			//if c6 add weapon infusion and 15% pyro
 			if c.Base.Cons == 6 {
 				switch active.WeaponClass() {

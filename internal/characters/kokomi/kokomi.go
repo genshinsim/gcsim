@@ -1,7 +1,7 @@
 package kokomi
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -12,7 +12,7 @@ func init() {
 type char struct {
 	*character.Tmpl
 	skillLastUsed int
-	skillLastTick int
+	swapEarlyF    int
 	c4ICDExpiry   int
 }
 
@@ -24,18 +24,27 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Hydro
-	c.Energy = 70
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 70
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 70
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 3
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.c4ICDExpiry = 0
 	c.CharZone = core.ZoneInazuma
+
+	c.skillLastUsed = 0
+	c.swapEarlyF = 0
+	c.c4ICDExpiry = 0
 
 	c.passive()
 	c.onExitField()
 	c.burstActiveHook()
+	c.a4()
 
 	return &c, nil
 }
@@ -52,6 +61,26 @@ func (c *char) passive() {
 			return val, true
 		},
 	})
+}
+
+func (c *char) a4() {
+	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*core.AttackEvent)
+		if atk.Info.ActorIndex != c.CharIndex() {
+			return false
+		}
+		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+			return false
+		}
+		if c.Core.Status.Duration("kokomiburst") == 0 {
+			return false
+		}
+
+		a4Bonus := c.Stat(core.Heal) * 0.15 * c.HPMax
+		atk.Info.FlatDmg += a4Bonus
+
+		return false
+	}, "kokomi-a4")
 }
 
 // Implements event handler for healing during burst
@@ -73,8 +102,13 @@ func (c *char) burstActiveHook() {
 			return false
 		}
 
-		hpplus := 1 + c.Stat(core.Heal)
-		c.Core.Health.HealAll(c.Index, (burstHealPct[c.TalentLvlBurst()]*c.HPMax+burstHealFlat[c.TalentLvlBurst()])*hpplus)
+		c.Core.Health.Heal(core.HealInfo{
+			Caller:  c.Index,
+			Target:  -1,
+			Message: "Ceremonial Garment",
+			Src:     burstHealPct[c.TalentLvlBurst()]*c.HPMax + burstHealFlat[c.TalentLvlBurst()],
+			Bonus:   c.Stat(core.Heal),
+		})
 
 		// C2 handling
 		// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
@@ -84,7 +118,13 @@ func (c *char) burstActiveHook() {
 				if char.HP()/char.MaxHP() > .5 {
 					continue
 				}
-				c.Core.Health.HealIndex(c.Index, i, 0.006*c.HPMax*hpplus)
+				c.Core.Health.Heal(core.HealInfo{
+					Caller:  c.Index,
+					Target:  i,
+					Message: "The Clouds Like Waves Rippling",
+					Src:     0.006 * c.HPMax,
+					Bonus:   c.Stat(core.Heal),
+				})
 			}
 		}
 
@@ -92,7 +132,7 @@ func (c *char) burstActiveHook() {
 		// While donning the Ceremonial Garment created by Nereid's Ascension, Sangonomiya Kokomi's Normal Attack SPD is increased by 10%, and Normal Attacks that hit opponents will restore 0.8 Energy for her. This effect can occur once every 0.2s.
 		if c.Base.Cons >= 4 {
 			if c.c4ICDExpiry <= c.Core.F {
-				c.AddEnergy(0.8)
+				c.AddEnergy("kokomi-c4", 0.8)
 				c.c4ICDExpiry = c.Core.F + 12
 			}
 		}
@@ -125,6 +165,10 @@ func (c *char) burstActiveHook() {
 // Clears Kokomi burst when she leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		prev := args[0].(int)
+		if prev == c.Index {
+			c.swapEarlyF = c.Core.F
+		}
 		c.Core.Status.DeleteStatus("kokomiburst")
 		return false
 	}, "kokomi-exit")
@@ -137,7 +181,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionDash:
 		return 18
 	default:
-		c.Core.Log.Warnw("ActionStam not implemented", "character", c.Base.Key.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }

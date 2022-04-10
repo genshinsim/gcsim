@@ -1,6 +1,8 @@
 package viridescent
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -27,7 +29,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			Key:    "vv",
 			Expiry: -1,
 			Amount: func(ai core.AttackInfo) (float64, bool) {
-				//overload dmg can't melt or vape so it's fine
+				//check to make sure this is not an amped swirl
+				if ai.Amped {
+					return 0, false
+				}
 				switch ai.AttackTag {
 				case core.AttackTagSwirlCryo:
 				case core.AttackTagSwirlElectro:
@@ -59,7 +64,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					Value:    -0.4,
 				})
 
-				s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", key, "char", c.CharIndex())
+				s.Log.NewEvent("vv 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", key, "char", c.CharIndex())
 
 				return false
 			}
@@ -101,10 +106,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				Value:    -0.4,
 			})
 
-			s.Log.Debugw("vv 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "reaction", key, "char", c.CharIndex())
+			s.Log.NewEvent("vv 4pc proc", core.LogArtifactEvent, c.CharIndex(), "reaction", key, "char", c.CharIndex())
 
 			return false
-		}, "vv4pc-secondary")
+		}, fmt.Sprintf("vv4pc-secondary-%v", c.Name()))
 
 	}
 	//add flat stat to char

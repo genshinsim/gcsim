@@ -157,7 +157,7 @@ LOOP:
 	// fmt.Printf("\n")
 
 	if ts == nil {
-		return nil, fmt.Errorf("if statement missing conditions at line %v", p.tokens)
+		return nil, fmt.Errorf("ln%v: if statement missing conditions", n.line)
 	}
 	root = ts[0]
 	return root, nil

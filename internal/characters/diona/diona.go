@@ -1,7 +1,7 @@
 package diona
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -21,7 +21,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Cryo
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 5
@@ -71,7 +76,7 @@ func (c *char) c6() {
 			return 0
 		}
 		if char.HP()/char.MaxHP() <= 0.5 {
-			c.Core.Log.Debugw("diona c6 activated", "frame", c.Core.F, "event", core.LogCharacterEvent)
+			c.Core.Log.NewEvent("diona c6 activated", core.LogCharacterEvent, c.Index)
 			return 0.3
 		}
 		return 0

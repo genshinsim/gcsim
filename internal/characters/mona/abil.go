@@ -1,12 +1,15 @@
 package mona
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Normal",
+		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  core.AttackTagNormal,
 		ICDTag:     core.ICDTagMonaWaterDamage,
 		ICDGroup:   core.ICDGroupDefault,
@@ -141,7 +144,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		//bubble is applied to each target on a per target basis
 		//lasts 8 seconds if not popped normally
 		a.Target.SetTag(bubbleKey, c.Core.F+481) //1 frame extra so we don't run into problems breaking
-		c.Core.Log.Debugw("mona bubble on target", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+		c.Core.Log.NewEvent("mona bubble on target", core.LogCharacterEvent, c.Index, "char", c.Index)
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), -1, 102, cb)
 

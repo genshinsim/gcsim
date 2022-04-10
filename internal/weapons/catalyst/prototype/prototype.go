@@ -17,16 +17,22 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	e := 3.5 + float64(r)*0.5
 
-	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
 
 		for i := 120; i <= 360; i += 120 {
-
 			char.AddTask(func() {
-				char.AddEnergy(e)
-				c.Health.HealAllPercent(char.CharIndex(), e/100.0*(1+char.Stat(core.Heal)))
+				char.AddEnergy("prototype-amber", e)
+				c.Health.Heal(core.HealInfo{
+					Caller:  char.CharIndex(),
+					Target:  -1,
+					Type:    core.HealTypePercent,
+					Message: "Prototype Amber",
+					Src:     e / 100.0,
+					Bonus:   char.Stat(core.Heal),
+				})
 			}, "recharge", i)
 		}
 

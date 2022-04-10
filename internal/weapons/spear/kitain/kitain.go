@@ -42,10 +42,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 		icd = c.F + 600 //once every 10 seconds
-		char.AddEnergy(-3)
+		char.AddEnergy("kitain", -3)
 		for i := 120; i <= 360; i += 120 {
 			char.AddTask(func() {
-				char.AddEnergy(regen)
+				char.AddEnergy("kitain", regen)
 			}, "kitain-restore", i)
 		}
 		return false

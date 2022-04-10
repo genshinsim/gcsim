@@ -14,12 +14,12 @@ func init() {
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	dur := -1
-	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
 		dur = c.F + 720
-		c.Log.Debugw("Skyward Blade activated", "frame", c.F, "event", core.LogWeaponEvent, "expiring ", dur)
+		c.Log.NewEvent("Skyward Blade activated", core.LogWeaponEvent, char.CharIndex(), "expiring ", dur)
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
 

@@ -3,7 +3,7 @@ package shenhe
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -16,16 +16,6 @@ type char struct {
 	quillcount []int
 	c4count    int
 	c4expiry   int
-
-	// eChargeMax       int
-	// eCharges         int
-	// skillRecoverySrc int
-	// recoverQueue     []int //queue of recovery
-
-	cdQueueWorkerStartedAt []int
-	cdQueue                [][]int
-	availableCDCharge      []int
-	additionalCDCharge     []int
 }
 
 const (
@@ -39,7 +29,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSpear
 	c.NormalHitNum = 5
@@ -51,19 +46,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.c4count = 0
 	c.c4expiry = 0
 
-	c.cdQueueWorkerStartedAt = make([]int, core.EndActionType)
-	c.cdQueue = make([][]int, core.EndActionType)
-	c.additionalCDCharge = make([]int, core.EndActionType)
-	c.availableCDCharge = make([]int, core.EndActionType)
-
-	for i := 0; i < len(c.cdQueue); i++ {
-		c.cdQueue[i] = make([]int, 0, 4)
-		c.availableCDCharge[i] = 1
-	}
-
 	if c.Base.Cons >= 1 {
-		c.additionalCDCharge[core.ActionSkill] = 1
-		c.availableCDCharge[core.ActionSkill]++
+		c.SetNumCharges(core.ActionSkill, 2)
 	}
 
 	if c.Base.Cons >= 4 {
@@ -78,8 +62,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	return &c, nil
 }
 
-func (c *char) Init(index int) {
-	c.Tmpl.Init(index)
+func (c *char) Init() {
+	c.Tmpl.Init()
 	// if c.Base.Cons >= 6 {
 	// 	c.c6()
 	// }
@@ -103,7 +87,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	case core.ActionCharge:
 		return 25
 	default:
-		c.Core.Log.Warnf("%v ActionStam for %v not implemented; Character stam usage may be incorrect", c.Base.Key.String(), a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 

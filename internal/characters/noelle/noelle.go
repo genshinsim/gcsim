@@ -1,9 +1,9 @@
 package noelle
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func init() {
@@ -24,7 +24,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Geo
-	c.Energy = 60
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 60
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
@@ -39,8 +44,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 a2: shielding if fall below hp threshold, not implemented
 
 a4: every 4 hit decrease breastplate cd by 1; implement as hook
-
-c1: 100% healing, not implemented
 
 c2: decrease stam consumption, to be implemented
 

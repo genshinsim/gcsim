@@ -7,6 +7,7 @@ import (
 func init() {
 	core.RegisterWeaponFunc("staff of homa", weapon)
 	core.RegisterWeaponFunc("staffofhoma", weapon)
+	core.RegisterWeaponFunc("homa", weapon)
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
@@ -23,7 +24,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			if char.HP()/char.MaxHP() <= 0.5 {
 				per += lowhp
 			}
-			// c.Log.Debugw("homa bonus atk%", "frame", c.F, "char", char.CharIndex(), "event", core.LogSnapshotEvent, "max-hp", char.MaxHP(), "percent", char.HP()/char.MaxHP(), "per", per)
+			// c.Log.Debugw("homa bonus atk%", "frame", c.F, char.CharIndex(), core.LogSnapshotEvent, "max-hp", char.MaxHP(), "percent", char.HP()/char.MaxHP(), "per", per)
 			m[core.ATK] = per * char.MaxHP()
 			return m, true
 		},

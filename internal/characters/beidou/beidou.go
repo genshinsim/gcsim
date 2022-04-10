@@ -1,7 +1,7 @@
 package beidou
 
 import (
-	"github.com/genshinsim/gcsim/pkg/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -24,7 +24,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Electro
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 5
@@ -87,7 +92,7 @@ func (c *char) c4() {
 			return false
 		}
 		c.Core.Status.AddStatus("beidouc4", 600)
-		c.Core.Log.Debugw("c4 triggered on damage", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+600)
+		c.Core.Log.NewEvent("c4 triggered on damage", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+600)
 		return false
 	}, "beidouc4")
 
@@ -107,7 +112,7 @@ func (c *char) c4() {
 			return false
 		}
 
-		c.Core.Log.Debugw("c4 proc'd on attack", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+		c.Core.Log.NewEvent("c4 proc'd on attack", core.LogCharacterEvent, c.Index, "char", c.Index)
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Beidou C4",

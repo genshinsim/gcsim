@@ -3,8 +3,8 @@ package zhongli
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/shield"
 )
 
 func (c *char) addJadeShield() {
@@ -30,7 +30,7 @@ func (c *char) addJadeShield() {
 		}
 	}
 
-	c.Core.Log.Debugw("zhongli res shred active", "frame", c.Core.F, "event", core.LogCharacterEvent, "expiry", c.Core.F+1200, "char", c.Index)
+	c.Core.Log.NewEvent("zhongli res shred active", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+1200, "char", c.Index)
 }
 
 func (c *char) removeJadeShield() {
@@ -45,7 +45,7 @@ func (c *char) removeJadeShield() {
 			t.RemoveResMod(key)
 		}
 	}
-	c.Core.Log.Debugw("zhongli res shred deactivated", "frame", c.Core.F, "event", core.LogCharacterEvent, "char", c.Index)
+	c.Core.Log.NewEvent("zhongli res shred deactivated", core.LogCharacterEvent, c.Index, "char", c.Index)
 }
 
 func (c *char) newShield(base float64, dur int) *shd {
@@ -77,14 +77,18 @@ func (s *shd) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, b
 		//40% of dmg is converted into healing, but cannot exceed 8% of each char max hp
 		//so we have to go through each char one at a time....
 
-		for i, c := range s.c.Core.Chars {
-			heal := 0.4 * dmg
-			if heal > 0.08*c.MaxHP() {
-				heal = 0.08 * c.MaxHP()
-			}
-			s.c.Core.Health.HealIndex(s.c.Index, i, heal)
-			s.c.Core.Log.Debugw("zhongli c6 healing char", "frame", s.c.Core.F, "event", core.LogHurtEvent, "char", c.CharIndex(), "amount", heal, "final", c.HP())
+		c := s.c.Core.Chars[s.c.Core.ActiveChar]
+		heal := 0.4 * dmg
+		if heal > 0.08*c.MaxHP() {
+			heal = 0.08 * c.MaxHP()
 		}
+		s.c.Core.Health.Heal(core.HealInfo{
+			Caller:  s.c.Index,
+			Target:  s.c.Core.ActiveChar,
+			Message: "Chrysos, Bounty of Dominator",
+			Src:     heal,
+			Bonus:   c.Stat(core.Heal),
+		})
 	}
 	if !ok {
 		s.c.removeJadeShield()

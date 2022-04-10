@@ -38,7 +38,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				s.SetCustomFlag("nob-4pc", c.CharIndex())
 			}
 
-			s.Log.Debugw("noblesse 4pc proc", "frame", s.F, "event", core.LogArtifactEvent, "expiry", s.Status.Duration("nob-4pc"))
+			s.Log.NewEvent("noblesse 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", s.Status.Duration("nob-4pc"))
 			return false
 
 		}, fmt.Sprintf("no 4pc - %v", c.Name()))

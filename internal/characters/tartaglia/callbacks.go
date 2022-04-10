@@ -1,19 +1,20 @@
 package tartaglia
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core"
+)
 
 //While aiming, the power of Hydro will accumulate on the arrowhead.
 //A arrow fully charged with the torrent will deal Hydro DMG and apply the Riptide status.
 func (c *char) aimedApplyRiptide(a core.AttackCB) {
-	a.Target.SetTag(riptideKey, c.Core.F+riptideDuration)
-	c.Core.Log.Debugw(
-		"riptide applied (CA)",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
-		"char", c.Index,
-		"target", a.Target.Index(),
-		"expiry", c.Core.F+riptideDuration,
-	)
+	c.applyRiptide("aimed shot", a.Target)
+}
+
+//Swiftly fires a Hydro-imbued magic arrow, dealing AoE Hydro DMG and applying the Riptide status.
+func (c *char) rangedBurstApplyRiptide(a core.AttackCB) {
+	c.applyRiptide("ranged burst", a.Target)
 }
 
 //When Tartaglia is in Foul Legacy: Raging Tide's Melee Stance, on dealing a CRIT hit,
@@ -21,16 +22,23 @@ func (c *char) aimedApplyRiptide(a core.AttackCB) {
 func (c *char) meleeApplyRiptide(a core.AttackCB) {
 	//only applies if is crit
 	if a.IsCrit {
-		a.Target.SetTag(riptideKey, c.Core.F+riptideDuration)
-		c.Core.Log.Debugw(
-			"riptide applied (melee)",
-			"frame", c.Core.F,
-			"event", core.LogCharacterEvent,
-			"char", c.Index,
-			"target", a.Target.Index(),
-			"expiry", c.Core.F+riptideDuration,
-		)
+		c.applyRiptide("melee", a.Target)
 	}
+}
+
+func (c *char) applyRiptide(src string, t core.Target) {
+	if c.Base.Cons >= 4 && t.GetTag(riptideKey) < c.Core.F {
+		c.AddTask(func() { c.c4(t) }, "tartaglia-c4", 60*4)
+	}
+
+	t.SetTag(riptideKey, c.Core.F+riptideDuration)
+	c.Core.Log.NewEvent(
+		fmt.Sprintf("riptide applied (%v)", src),
+		core.LogCharacterEvent,
+		c.Index,
+		"target", t.Index(),
+		"expiry", c.Core.F+riptideDuration,
+	)
 }
 
 // Riptide Flash: A fully-charged Aimed Shot that hits an opponent affected
@@ -46,6 +54,11 @@ func (c *char) rtFlashCallback(a core.AttackCB) {
 	}
 	//add 0.7s icd
 	a.Target.SetTag(riptideFlashICDKey, c.Core.F+42)
+
+	c.rtFlashTick(a.Target)
+}
+
+func (c *char) rtFlashTick(t core.Target) {
 	//queue damage
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -56,21 +69,23 @@ func (c *char) rtFlashCallback(a core.AttackCB) {
 		StrikeType: core.StrikeTypeDefault,
 		Element:    core.Hydro,
 		Durability: 25,
-		Mult:       rtFlash[0][c.TalentLvlAttack()],
+		Mult:       rtFlash[c.TalentLvlAttack()],
 	}
 
 	//proc 3 hits
+	x, y := t.Shape().Pos()
 	for i := 1; i <= 3; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 1)
+		c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 0.5, false, core.TargettableEnemy), 1, 1)
 	}
-	c.Core.Log.Debugw(
+
+	c.Core.Log.NewEvent(
 		"riptide flash triggered",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
+		core.LogCharacterEvent,
+		c.Index,
 		"dur", c.Core.Status.Duration("tartagliamelee"),
-		"target", a.Target.Index(),
-		"riptide_flash_icd", a.Target.GetTag(riptideFlashICDKey),
-		"riptide_expiry", a.Target.GetTag(riptideKey),
+		"target", t.Index(),
+		"riptide_flash_icd", t.GetTag(riptideFlashICDKey),
+		"riptide_expiry", t.GetTag(riptideKey),
 	)
 
 	//queue particles
@@ -94,6 +109,10 @@ func (c *char) rtSlashCallback(a core.AttackCB) {
 	//add 1.5s icd
 	a.Target.SetTag(riptideSlashICDKey, c.Core.F+90)
 
+	c.rtSlashTick(a.Target)
+}
+
+func (c *char) rtSlashTick(t core.Target) {
 	//trigger attack
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -107,16 +126,17 @@ func (c *char) rtSlashCallback(a core.AttackCB) {
 		Mult:       rtSlash[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
+	x, y := t.Shape().Pos()
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 1, 1)
 
-	c.Core.Log.Debugw(
-		"Riptide Slash ticked",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
+	c.Core.Log.NewEvent(
+		"riptide slash ticked",
+		core.LogCharacterEvent,
+		c.Index,
 		"dur", c.Core.Status.Duration("tartagliamelee"),
-		"target", a.Target.Index(),
-		"riptide_slash_icd", a.Target.GetTag(riptideSlashICDKey),
-		"riptide_expiry", a.Target.GetTag(riptideKey),
+		"target", t.Index(),
+		"riptide_slash_icd", t.GetTag(riptideSlashICDKey),
+		"riptide_expiry", t.GetTag(riptideKey),
 	)
 
 	//queue particle if not on icd
@@ -152,10 +172,10 @@ func (c *char) rtBlastCallback(a core.AttackCB) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 1)
 
-	c.Core.Log.Debugw(
+	c.Core.Log.NewEvent(
 		"riptide blast triggered",
-		"frame", c.Core.F,
-		"event", core.LogCharacterEvent,
+		core.LogCharacterEvent,
+		c.Index,
 		"dur", c.Core.Status.Duration("tartagliamelee"),
 		"target", a.Target.Index(),
 		"rtExpiry", a.Target.GetTag(riptideKey),
