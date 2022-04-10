@@ -47,13 +47,15 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) absorbCheck() {
-	icd := -1
 	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 		if atk.Info.ActorIndex != c.CharIndex() {
 			return false
 		}
 		if atk.Info.AttackTag != core.AttackTagSayuRoll && atk.Info.AttackTag != core.AttackTagElementalArtHold {
+			return false
+		}
+		if atk.Info.Element != core.Anemo {
 			return false
 		}
 		if c.Core.F > c.eDuration {
@@ -75,9 +77,6 @@ func (c *char) absorbCheck() {
 
 		switch atk.Info.AttackTag {
 		case core.AttackTagSayuRoll:
-			if icd > c.Core.F {
-				return false
-			}
 			ai := core.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
@@ -89,7 +88,6 @@ func (c *char) absorbCheck() {
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
 			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 1, 1)
-			icd = c.Core.F + 30
 		case core.AttackTagElementalArtHold:
 			ai := core.AttackInfo{
 				ActorIndex: c.Index,
