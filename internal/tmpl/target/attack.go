@@ -84,7 +84,7 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent, evt core.LogEvent) (float64, bool)
 		a = atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]
 	}
 
-	base := atk.Info.Mult*a + atk.Info.FlatDmg
+	base := atk.Info.Mult*a + atk.Info.FlatDmg + atk.Snapshot.Stats[core.Dmg]
 	damage := base * (1 + dmgBonus)
 
 	//make sure 0 <= cr <= 1
@@ -167,7 +167,7 @@ func (t *Tmpl) calcDmg(atk *core.AttackEvent, evt core.LogEvent) (float64, bool)
 			"base_def", atk.Snapshot.BaseDef,
 			"flat_def", atk.Snapshot.Stats[core.DEF],
 			"def_per", atk.Snapshot.Stats[core.DEFP],
-			"flat_dmg", atk.Info.FlatDmg,
+			"flat_dmg", atk.Info.FlatDmg+atk.Snapshot.Stats[core.Dmg],
 			"total_atk_def", a,
 			"base_dmg", base,
 			"ele", st,
