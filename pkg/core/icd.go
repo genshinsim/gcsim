@@ -12,6 +12,7 @@ const (
 	AttackTagElementalBurst
 	AttackTagWeaponSkill
 	AttackTagMonaBubbleBreak
+	AttackTagSayuRoll
 	AttackTagNoneStat
 	ReactionAttackDelim
 	AttackTagOverloadDamage
