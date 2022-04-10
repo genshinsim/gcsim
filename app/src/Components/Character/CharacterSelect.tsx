@@ -19,13 +19,13 @@ export function CharacterSelect(props: Props) {
     disabled = props.disabled;
   }
 
-  console.log(characterSelectProps);
+  // console.log(characterSelectProps);
   let items = [...characterSelectProps.items];
-  console.log("before additional", items);
+  // console.log("before additional", items);
   if (props.additionalOptions) {
     items = items.concat(props.additionalOptions);
   }
-  console.log("after additional", items);
+  // console.log("after additional", items);
 
   const filter: ItemPredicate<ICharacter> = (
     query,
@@ -34,10 +34,7 @@ export function CharacterSelect(props: Props) {
     exactMatch
   ) => {
     //ignore filtered items
-    if (
-      disabled.findIndex((v) => v === t("game:character_names." + item.key)) >
-      -1
-    ) {
+    if (disabled.findIndex((v) => v === item.key) > -1) {
       return false;
     }
 

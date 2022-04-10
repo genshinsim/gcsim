@@ -17,6 +17,7 @@ declare function sim(): string;
 declare function debug(): string;
 declare function collect(data: string): string;
 declare function setcfg(content: string): string;
+declare function checkcfg(content: string): string;
 declare function version(): string;
 
 let inst: WebAssembly.Instance;
@@ -56,6 +57,11 @@ onmessage = async (ev) => {
       const ok = setcfg(ev.data.payload);
       // console.log("configs set: " + ok);
       postMessage(ok);
+      break;
+    case "parse":
+      const cfgData = checkcfg(ev.data.payload);
+      // console.log("configs set: " + ok);
+      postMessage(cfgData);
       break;
   }
 };

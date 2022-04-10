@@ -2,6 +2,7 @@ import {
   Button,
   ButtonGroup,
   Callout,
+  Checkbox,
   Classes,
   Dialog,
   Icon,
@@ -20,7 +21,7 @@ import { Viewport } from "~src/Components/Viewport";
 import { IWeapon, WeaponSelect } from "~src/Components/Weapon";
 import { useAppDispatch } from "~src/store";
 import { DBCharInfo, DBItem } from "~src/types";
-import { simActions } from "../Sim";
+import { simActions, updateCfg } from "../Sim";
 import { Trans, useTranslation } from "react-i18next";
 
 function CharTooltip({ char }: { char: DBCharInfo }) {
@@ -137,6 +138,8 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
   );
 }
 
+const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
+
 export function DB() {
   let { t } = useTranslation();
 
@@ -148,6 +151,15 @@ export function DB() {
   const [weapFilter, setWeapFilter] = React.useState<string[]>([]);
   const [searchString, setSearchString] = React.useState<string>("");
   const [cfg, setCfg] = React.useState<string>("");
+  const [keepExistingTeam, setKeepExistingTeam] = React.useState<boolean>(
+    () => {
+      const saved = localStorage.getItem(LOCALSTORAGE_KEY);
+      if (saved === "true") {
+        return true;
+      }
+      return false;
+    }
+  );
 
   const dispatch = useAppDispatch();
   const [location, setLocation] = useLocation();
@@ -172,8 +184,8 @@ export function DB() {
   }, []);
 
   const openInSim = () => {
-    dispatch(simActions.setAdvCfg(cfg));
-    setLocation("/advanced");
+    dispatch(updateCfg(cfg, keepExistingTeam));
+    setLocation("/simulator");
     setCfg("");
   };
 
@@ -217,6 +229,11 @@ export function DB() {
     const next = [...weapFilter];
     next.splice(idx, 1);
     setWeapFilter(next);
+  };
+
+  const handleToggleSelected = () => {
+    localStorage.setItem(LOCALSTORAGE_KEY, keepExistingTeam ? "false" : "true");
+    setKeepExistingTeam(!keepExistingTeam);
   };
 
   if (loading) {
@@ -368,12 +385,16 @@ export function DB() {
       />
       <Dialog isOpen={cfg !== ""} onClose={() => setCfg("")}>
         <div className={Classes.DIALOG_BODY}>
-          Load this configuration in <span className="font-bold">Advanced</span>{" "}
-          mode.
+          <Trans>viewer.load_this_configuration</Trans>
           <Callout intent="warning" className="mt-2">
-            This will overwrite any existing configuration you may have. Are you
-            sure you wish to continue?
+            <Trans>viewer.this_will_overwrite</Trans>
           </Callout>
+          <Checkbox
+            label="Copy action list only (ignore character stats)"
+            className="mt-2"
+            checked={keepExistingTeam}
+            onClick={handleToggleSelected}
+          />
         </div>
 
         <div className={Classes.DIALOG_FOOTER}>

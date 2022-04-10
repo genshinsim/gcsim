@@ -34,19 +34,10 @@ export default function Nav() {
             <Button
               className={Classes.MINIMAL}
               icon="calculator"
-              onClick={() => setLocation("/simple")}
+              onClick={() => setLocation("/simulator")}
             >
               <span className="hidden md:block">
                 <Trans>nav.simulator</Trans>
-              </span>
-            </Button>
-            <Button
-              className={Classes.MINIMAL}
-              icon="rocket-slant"
-              onClick={() => setLocation("/advanced")}
-            >
-              <span className="hidden md:block">
-                <Trans>nav.advanced</Trans>
               </span>
             </Button>
             <Button

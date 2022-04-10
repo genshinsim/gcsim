@@ -23,7 +23,7 @@ function DashCard({ children, onClick }: DashCardProps) {
 }
 
 export function Dash() {
-  useTranslation()
+  useTranslation();
 
   const [_, setLocation] = useLocation();
   return (
@@ -35,17 +35,10 @@ export function Dash() {
         <Trans>dash.is_a_team</Trans>
       </span>
       <div className="flex flex-row flex-initial flex-wrap w-full lg:w-[60rem] mt-4">
-        <DashCard onClick={() => setLocation("/simple")}>
+        <DashCard onClick={() => setLocation("/simulator")}>
           <span className="font-bold text-xl">
             <Icon icon="calculator" className="mr-2" size={25} />
             <Trans>dash.simulator</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard onClick={() => setLocation("/advanced")}>
-          <span className="font-bold text-xl">
-            <Icon icon="rocket-slant" className="mr-2" size={25} />
-            <Trans>dash.advanced_mode</Trans>
           </span>
         </DashCard>
 

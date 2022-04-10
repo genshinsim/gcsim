@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@blueprintjs/core": "~4.0.0",
-    "@blueprintjs/popover2": "^0.13.0",
+    "@blueprintjs/popover2": "~1.0.0",
     "@blueprintjs/select": "~4.0.0",
     "@reduxjs/toolkit": "^1.6.2",
     "ajv": "^8.8.2",
