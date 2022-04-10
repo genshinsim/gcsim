@@ -47,6 +47,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				return false
 			}
 
+			icd = s.F + 0.2*60
+
 			if s.Rand.Float64() < prob {
 				dmgAdded := (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
 				atk.Info.FlatDmg += dmgAdded
@@ -56,14 +58,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				)
 
 				prob = 0.36
-				icd = s.F + 0.2*60
 			} else {
 				prob += 0.2
-				icd = s.F + 0.2*60
-
-				if prob > 1 {
-					prob = 1
-				}
 			}
 
 			return false
