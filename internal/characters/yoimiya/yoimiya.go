@@ -11,8 +11,9 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a2stack  int
-	lastPart int
+	a2stack               int
+	lastPart              int
+	skillMultiplierLookup map[string]bool
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -93,13 +94,5 @@ func (c *char) a2() {
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	ds := c.Tmpl.Snapshot(ai)
 
-	//infusion to normal attack only
-	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == core.AttackTagNormal {
-		ai.Element = core.Pyro
-		// ds.ICDTag = core.ICDTagNone
-		//multiplier
-		c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
-		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
-	}
 	return ds
 }
