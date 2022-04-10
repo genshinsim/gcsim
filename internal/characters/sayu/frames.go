@@ -20,9 +20,6 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f, f
 	case core.ActionSkill:
-		if h := p["hold"]; h == 1 {
-			return 35, 35 // ???
-		}
 		return 35, 35 // TODO: not ok
 	case core.ActionBurst:
 		return 65, 65

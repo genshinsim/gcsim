@@ -127,7 +127,78 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
-	c.SetCDWithDelay(core.ActionBurst, 900, 8)
-	c.ConsumeEnergy(8)
+	// dmg
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Yoohoo Art: Mujina Flurry",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 16)
+
+	// heal
+	atk := snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]
+	heal := initHealFlat[c.TalentLvlBurst()] + atk*initHealPP[c.TalentLvlBurst()]
+	c.Core.Health.Heal(core.HealInfo{
+		Caller:  c.Index,
+		Target:  -1,
+		Message: "Yoohoo Art: Mujina Flurry",
+		Src:     heal,
+		Bonus:   snap.Stats[core.Heal],
+	})
+
+	// ticks
+	d := c.createBurstSnapshot()
+	atk = d.Snapshot.BaseAtk*(1+d.Snapshot.Stats[core.ATKP]) + d.Snapshot.Stats[core.ATK]
+	heal = burstHealFlat[c.TalentLvlBurst()] + atk*burstHealPP[c.TalentLvlBurst()]
+	for i := 150; i < 150+540; i += 90 {
+		c.AddTask(func() {
+			active := c.Core.Chars[c.Core.ActiveChar]
+			needHeal := len(c.Core.Targets) == 0 || active.HP()/active.MaxHP() <= .7
+			needAttack := !needHeal
+
+			if needHeal {
+				c.Core.Health.Heal(core.HealInfo{
+					Caller:  c.Index,
+					Target:  c.Core.ActiveChar,
+					Message: "Muji-Muji Daruma",
+					Src:     heal,
+					Bonus:   d.Snapshot.Stats[core.Heal],
+				})
+			}
+			if needAttack {
+				c.Core.Combat.QueueAttackEvent(d, 0)
+			}
+		}, "Sayu Tick", i)
+	}
+
+	c.SetCDWithDelay(core.ActionBurst, 20*60, 11)
+	c.ConsumeEnergy(11)
 	return f, a
+}
+
+func (c *char) createBurstSnapshot() *core.AttackEvent {
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Muji-Muji Daruma",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       burstSkill[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
+
+	return (&core.AttackEvent{
+		Info:        ai,
+		Pattern:     core.NewDefCircHit(5, false, core.TargettableEnemy), // including A4
+		SourceFrame: c.Core.F,
+		Snapshot:    snap,
+	})
 }

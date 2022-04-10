@@ -203,7 +203,7 @@ var (
 		262.8 / 100,
 		277.4 / 100,
 	}
-	burstskill = []float64{
+	burstSkill = []float64{
 		52.0 / 100,
 		55.9 / 100,
 		59.8 / 100,
@@ -220,7 +220,7 @@ var (
 		117.0 / 100,
 		123.5 / 100,
 	}
-	inithealflat = []float64{
+	initHealFlat = []float64{
 		577,
 		635,
 		698,
@@ -237,7 +237,7 @@ var (
 		1703,
 		1824,
 	}
-	inithealpp = []float64{
+	initHealPP = []float64{
 		92.16 / 100,
 		99.07 / 100,
 		105.98 / 100,
@@ -254,7 +254,7 @@ var (
 		207.36 / 100,
 		218.88 / 100,
 	}
-	bursthealflat = []float64{
+	burstHealFlat = []float64{
 		500,
 		550,
 		605,
@@ -271,7 +271,7 @@ var (
 		1476,
 		1580,
 	}
-	bursthealpp = []float64{
+	burstHealPP = []float64{
 		79.87 / 100,
 		85.86 / 100,
 		91.85 / 100,
