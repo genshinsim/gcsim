@@ -127,19 +127,41 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	snap := c.Snapshot(&ai)
+	aiAbsorb := ai
+	aiAbsorb.Abil = "Wind's Grand Ode (Infused)"
+	aiAbsorb.Mult = burstAbsorbDot[c.TalentLvlBurst()]
+	aiAbsorb.Element = core.NoElement
+
+	// snapshot is around cd frame and 1st tick?
+	var snap, snapAbsorb core.Snapshot
+	c.AddTask(func() {
+		snap = c.Snapshot(&ai)
+		snapAbsorb = c.Snapshot(&aiAbsorb)
+	}, "venti-q-snapshot", 100)
 
 	var cb core.AttackCBFunc
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
 		cb = c6cb(core.Anemo)
 	}
 
-	for i := 24; i <= 480; i += 24 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
-	}
+	// starts at 106 with 24f interval between ticks. 20 total
+	for i := 0; i < 20; i++ {
+		c.AddTask(func() {
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, cb)
 
+			if c.qInfuse != core.NoElement {
+				var cb core.AttackCBFunc
+				if c.Base.Cons >= 6 {
+					cb = c6cb(c.qInfuse)
+				}
+				aiAbsorb.Element = c.qInfuse
+
+				c.Core.Combat.QueueAttackWithSnap(aiAbsorb, snapAbsorb, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, cb)
+			}
+		}, "venti-burst-tick", 106+24*i)
+	}
 	// Infusion usually occurs after 4 ticks of anemo according to KQM library
-	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(480/18)-24*4), "venti-absorb-check", 24*4)
+	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(480/18)), "venti-absorb-check", 106+24*4)
 
 	c.AddTask(func() {
 		c.a4Restore()
@@ -183,28 +205,6 @@ func (c *char) a4Restore() {
 	}
 }
 
-func (c *char) burstInfusedTicks() {
-	ai := core.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Wind's Grand Ode (Infused)",
-		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagVentiBurstAnemo,
-		ICDGroup:   core.ICDGroupVenti,
-		Element:    c.qInfuse,
-		Durability: 25,
-		Mult:       burstAbsorbDot[c.TalentLvlBurst()],
-	}
-	snap := c.Snapshot(&ai)
-	var cb core.AttackCBFunc
-	if c.Base.Cons == 6 {
-		cb = c6cb(c.qInfuse)
-	}
-
-	for i := 24; i <= 360; i += 24 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
-	}
-}
-
 func (c *char) absorbCheckQ(src, count, max int) func() {
 	return func() {
 		if count == max {
@@ -212,8 +212,6 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		}
 		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
 		if c.qInfuse != core.NoElement {
-			//trigger dmg ticks here
-			c.burstInfusedTicks()
 			return
 		}
 		//otherwise queue up
