@@ -174,8 +174,6 @@ func (c *Core) AnimationCancelDelay(next ActionType, p map[string]int) int {
 	switch c.LastAction.Typ {
 	case ActionSwap:
 		fallthrough
-	case ActionDash:
-		fallthrough
 	case ActionJump:
 		return 0
 	}
