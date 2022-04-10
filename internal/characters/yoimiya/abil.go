@@ -29,12 +29,11 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		//infusion to normal attack only
 		if c.Core.Status.Duration("yoimiyaskill") > 0 {
-			c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
-
 			// ds.ICDTag = core.ICDTagNone
 			//multiplier
 			ai.Element = core.Pyro
 			ai.Mult = skill[c.TalentLvlSkill()] * mult[c.TalentLvlAttack()]
+			c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", mult[c.TalentLvlAttack()], "next", ai.Mult, "char", c.Index)
 		} else {
 			ai.Mult = mult[c.TalentLvlAttack()]
 		}
