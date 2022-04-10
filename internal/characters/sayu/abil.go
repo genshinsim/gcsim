@@ -161,6 +161,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			active := c.Core.Chars[c.Core.ActiveChar]
 			needHeal := len(c.Core.Targets) == 0 || active.HP()/active.MaxHP() <= .7
 			needAttack := !needHeal
+			if c.Base.Cons >= 1 {
+				needHeal = true
+				needAttack = true
+			}
 
 			if needHeal {
 				c.Core.Health.Heal(core.HealInfo{
