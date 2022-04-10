@@ -40,6 +40,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.eDuration = -1
 
 	c.absorbCheck()
+	c.a1()
 
 	return &c, nil
 }
@@ -104,4 +105,36 @@ func (c *char) absorbCheck() {
 
 		return false
 	}, "sayu-absorb-check")
+}
+
+func (c *char) a1() {
+	swirlfunc := func(ele core.EleType) func(args ...interface{}) bool {
+		icd := -1
+		return func(args ...interface{}) bool {
+			atk := args[1].(*core.AttackEvent)
+			if atk.Info.ActorIndex != c.Index {
+				return false
+			}
+			if c.Core.F < icd {
+				return false
+			}
+			icd = c.Core.F + 120 // 2s
+
+			heal := 300 + c.Stat(core.EM)*1.2
+			c.Core.Health.Heal(core.HealInfo{
+				Caller:  c.Index,
+				Target:  -1,
+				Message: "Someone More Capable",
+				Src:     heal,
+				Bonus:   c.Stat(core.Heal),
+			})
+
+			return false
+		}
+	}
+
+	c.Core.Events.Subscribe(core.OnSwirlCryo, swirlfunc(core.Cryo), "sayu-a1-cryo")
+	c.Core.Events.Subscribe(core.OnSwirlElectro, swirlfunc(core.Electro), "sayu-a1-electro")
+	c.Core.Events.Subscribe(core.OnSwirlHydro, swirlfunc(core.Hydro), "sayu-a1-hydro")
+	c.Core.Events.Subscribe(core.OnSwirlPyro, swirlfunc(core.Pyro), "sayu-a1-pyro")
 }
