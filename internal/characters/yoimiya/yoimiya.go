@@ -11,9 +11,8 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a2stack               int
-	lastPart              int
-	skillMultiplierLookup map[string]bool
+	a2stack  int
+	lastPart int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
