@@ -11,10 +11,11 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a4Expiry int
-	a2Ele    core.EleType
-	qInfuse  core.EleType
-	c6Active int
+	a4Expiry            int
+	a2Ele               core.EleType
+	qInfuse             core.EleType
+	c6Active            int
+	infuseCheckLocation core.AttackPattern
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -39,6 +40,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.CharZone = core.ZoneInazuma
 
 	c.InitCancelFrames()
+
+	c.infuseCheckLocation = core.NewDefCircHit(1.5, false, core.TargettableEnemy, core.TargettablePlayer, core.TargettableObject)
 
 	return &c, nil
 }
