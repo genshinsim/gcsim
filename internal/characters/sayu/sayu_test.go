@@ -9,7 +9,7 @@ import (
 
 func TestBasicAbilUsage(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Sayu, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Sayu, core.Anemo, 6)
 	x, err := NewChar(c, prof)
 	//cast it to *char so we can access private members
 	// this := x.(*char)
@@ -22,7 +22,7 @@ func TestBasicAbilUsage(t *testing.T) {
 
 func TestCD(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Sayu, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Sayu, core.Anemo, 6)
 	x, err := NewChar(c, prof)
 	if err != nil {
 		t.Error(err)

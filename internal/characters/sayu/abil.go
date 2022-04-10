@@ -78,7 +78,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	snap = c.Snapshot(&ai)
 	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 25)
 
-	c.QueueParticle("sayu", 2, core.Anemo, f+73)
+	c.QueueParticle("sayu-skill", 2, core.Anemo, f+73)
 	return f, a
 }
 
@@ -101,6 +101,10 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 			Mult:       skillPress[c.TalentLvlSkill()],
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), i+3, i+3)
+
+		if i%180 == 0 { // 3s
+			c.QueueParticle("sayu-skill-hold", 1, core.Anemo, i+73)
+		}
 	}
 
 	ai := core.AttackInfo{
@@ -115,6 +119,7 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), i)
+	c.QueueParticle("sayu-skill", 2, core.Anemo, i+73)
 
 	return i + f, i + f
 }
