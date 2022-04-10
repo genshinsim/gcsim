@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = []int{28, 25, 20, 42}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -55,7 +57,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), hitmarks[c.NormalCounter], hitmarks[c.NormalCounter], cb)
 
 	c.AdvanceNormalIndex()
 
@@ -130,7 +132,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.a4Counter = 0
 
 	x, y := c.Core.Targets[0].Shape().Pos()
-	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), f+1, f+1)
+	c.Core.Combat.QueueAttack(ai, core.NewCircleHit(x, y, 2, false, core.TargettableEnemy), 15, 15)
 
 	if c.Base.Cons >= 4 {
 		c.AddTask(func() {
@@ -141,7 +143,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}, "noelle shield", 720)
 	}
 
-	c.SetCD(core.ActionSkill, 24*60)
+	c.SetCDWithDelay(core.ActionSkill, 24*60, 6)
 	return f, a
 }
 
@@ -169,7 +171,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// Add mod for def to attack burst conversion
 	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
-	val := make([]float64, core.EndStatType)
+	m := make([]float64, core.EndStatType)
 
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
 	aiSnapshot := core.AttackInfo{
@@ -179,25 +181,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	snapshot := c.Snapshot(&aiSnapshot)
 	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[core.DEFP]) + snapshot.Stats[core.DEF]
 	mult := defconv[c.TalentLvlBurst()]
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
 		mult += 0.5
 	}
-	fa := mult * burstDefSnapshot
-	val[core.ATK] = fa
-
-	// Not sure if something else in the code can modify this - to be safe, copy this for the burst extension
-	valCopy := make([]float64, core.EndStatType)
-	copy(valCopy, val)
+	m[core.ATK] = mult * burstDefSnapshot
 
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
 	c.AddMod(core.CharStatMod{
 		Key:    "noelle-burst",
 		Expiry: c.Core.F + 900 + f,
 		Amount: func() ([]float64, bool) {
-			return val, true
+			return m, true
 		},
 	})
-	c.Core.Log.NewEvent("noelle burst", core.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
+	c.Core.Log.NewEvent("noelle burst", core.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", m[core.ATK], "mult", mult)
 
 	c.Core.Status.AddStatus("noelleq", 900+f)
 
@@ -215,7 +212,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				Key:    "noelle-burst",
 				Expiry: c.Core.F + 600,
 				Amount: func() ([]float64, bool) {
-					return valCopy, true
+					return m, true
 				},
 			})
 			c.Core.Status.AddStatus("noelleq", 600)
@@ -233,24 +230,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	// TODO: Not sure of the exact frames
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(6.5, false, core.TargettableEnemy), f-30, f-30)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(6.5, false, core.TargettableEnemy), 24, 24)
 
-	ai = core.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Sweeping Time (Skill)",
-		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagElementalBurst,
-		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeBlunt,
-		Element:    core.Geo,
-		Durability: 25,
-		Mult:       burstskill[c.TalentLvlBurst()],
-	}
-	// TODO: Not sure of the exact frames
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4.5, false, core.TargettableEnemy), f-10, f-10)
+	ai.Abil = "Sweeping Time (Skill)"
+	ai.Mult = burstskill[c.TalentLvlBurst()]
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4.5, false, core.TargettableEnemy), 65, 65)
 
-	c.SetCDWithDelay(core.ActionBurst, 900, 8)
+	c.SetCD(core.ActionBurst, 900)
 	c.ConsumeEnergy(8)
 	return f, a
 }

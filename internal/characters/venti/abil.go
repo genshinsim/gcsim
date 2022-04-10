@@ -183,7 +183,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
+		c.qInfuse = c.Core.AbsorbCheck(c.infuseCheckLocation, core.Pyro, core.Hydro, core.Electro, core.Cryo)
 		if c.qInfuse != core.NoElement {
 			//trigger dmg ticks here
 			c.burstInfusedTicks()

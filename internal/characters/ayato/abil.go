@@ -48,7 +48,7 @@ func (c *char) generateParticles(ac core.AttackCB) {
 func (c *char) skillStacks(ac core.AttackCB) {
 	if c.stacks < c.stacksMax {
 		c.stacks++
-		c.Core.Log.NewEvent("Soukai Kanka Proc'd by", core.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("gained namisen stack", core.LogCharacterEvent, c.Index, "stacks", c.stacks)
 	}
 }
 
@@ -129,7 +129,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	snap := c.Snapshot(&ai)
+
+	// snapshot when the circle forms
+	var snap core.Snapshot
+	c.AddTask(func() { snap = c.Snapshot(&ai) }, "ayato-q-snapshot", 100)
 
 	rad, ok := p["radius"]
 	if !ok {

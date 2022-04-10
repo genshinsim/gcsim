@@ -89,6 +89,21 @@ func (c *char) onSwapHook() {
 }
 
 func (c *char) infuse(char core.Character) {
+	//c2 reduces CD by 15%
+	if c.Base.Cons >= 2 {
+		char.AddCDAdjustFunc(core.CDAdjust{
+			Key: "chongyun-c2",
+			Amount: func(a core.ActionType) float64 {
+				if a == core.ActionSkill || a == core.ActionBurst {
+					return -0.15
+				}
+				return 0
+			},
+			Expiry: c.Core.F + 126,
+		})
+	}
+
+	// weapon infuse
 	switch char.WeaponClass() {
 	case core.WeaponClassClaymore:
 		fallthrough
@@ -114,19 +129,6 @@ func (c *char) infuse(char core.Character) {
 		Amount: func() ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 126,
 	})
-	//c2 reduces CD by 15%
-	if c.Base.Cons >= 2 {
-		char.AddCDAdjustFunc(core.CDAdjust{
-			Key: "chongyun-c2",
-			Amount: func(a core.ActionType) float64 {
-				if a == core.ActionSkill || a == core.ActionBurst {
-					return -0.15
-				}
-				return 0
-			},
-			Expiry: c.Core.F + 126,
-		})
-	}
 }
 
 func (c *char) c6() {

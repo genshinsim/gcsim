@@ -36,6 +36,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
+	c.InitCancelFrames()
 
 	c.icdC1 = -1
 	c.c6CDTimerAvail = false

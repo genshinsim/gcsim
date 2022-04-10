@@ -11,9 +11,9 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	qInfused core.EleType
-
-	c4Count int
+	qInfused            core.EleType
+	infuseCheckLocation core.AttackPattern
+	c4Count             int
 }
 
 const eCD = 900
@@ -39,6 +39,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(core.ActionSkill, 2)
 	}
+
+	c.infuseCheckLocation = core.NewDefCircHit(0.1, false, core.TargettableEnemy, core.TargettablePlayer, core.TargettableObject)
 
 	return &c, nil
 }

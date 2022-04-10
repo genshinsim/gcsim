@@ -30,13 +30,19 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Hydro
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSword
 	c.CharZone = core.ZoneInazuma
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
+
 	c.shunsuikenCounter = 3
 	c.stacksMax = 4
 	c.particleICD = 0
@@ -195,8 +201,9 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 		}
 		ai.Element = core.Hydro
 		//add namisen stack
-		ai.FlatDmg += (c.Base.HP*(1+ds.Stats[core.HPP]) + ds.Stats[core.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
-		c.Core.Log.NewEvent("Waveflash Stacks: ", core.LogCharacterEvent, c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
+		flatdmg := (c.Base.HP*(1+ds.Stats[core.HPP]) + ds.Stats[core.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
+		ai.FlatDmg += flatdmg
+		c.Core.Log.NewEvent("namisen add damage", core.LogCharacterEvent, c.Index, "damage_added", flatdmg, "stacks", c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
 	}
 	return ds
 }

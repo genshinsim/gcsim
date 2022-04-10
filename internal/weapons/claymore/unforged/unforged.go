@@ -39,12 +39,12 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 		icd = c.F + 18
 		return false
-	}, fmt.Sprintf("memory-dust-%v", char.Name()))
+	}, fmt.Sprintf("theunforged-%v", char.Name()))
 
 	val := make([]float64, core.EndStatType)
 	atk := 0.03 + 0.01*float64(r)
 	char.AddMod(core.CharStatMod{
-		Key:    "memory",
+		Key:    "unforged",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			if duration > c.F {

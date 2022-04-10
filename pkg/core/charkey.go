@@ -1,6 +1,31 @@
 package core
 
+import (
+	"encoding/json"
+	"errors"
+	"strings"
+)
+
 type CharKey int
+
+func (c *CharKey) MarshalJSON() ([]byte, error) {
+	return json.Marshal(charNames[*c])
+}
+
+func (c *CharKey) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	s = strings.ToLower(s)
+	for i, v := range charNames {
+		if v == s {
+			*c = CharKey(i)
+			return nil
+		}
+	}
+	return errors.New("unrecognized character key")
+}
 
 const (
 	NoChar CharKey = iota
@@ -134,7 +159,7 @@ var CharNameToKey = map[string]CharKey{
 	"zhongli":            Zhongli,
 	"gorou":              Gorou,
 	"aratakiitto":        Itto,
-	"itto":				  Itto,
+	"itto":               Itto,
 	"shenhe":             Shenhe,
 	"yae":                YaeMiko,
 	"yaemiko":            YaeMiko,
@@ -255,4 +280,5 @@ var CharKeyToEle = map[CharKey]EleType{
 	Itto:            Geo,
 	Shenhe:          Cryo,
 	Yunjin:          Geo,
+	YaeMiko:         Electro,
 }

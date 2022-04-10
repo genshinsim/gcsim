@@ -39,8 +39,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 			if s.Rand.Float64() < prob {
 				//TODO: need to check if this actually snapshots here
-				snap := c.Snapshot(&atk.Info)
-				dmgAdded := (snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]) * 0.7
+				// snap := c.Snapshot(&atk.Info)
+				dmgAdded := (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
 				atk.Info.FlatDmg += dmgAdded
 				s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex(),
 					"probability", prob,
