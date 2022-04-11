@@ -20,6 +20,8 @@ func init() {
 func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	prob := 0.36
 	icd := 0
+	procDuration := 3 // 0.05s
+	procExpireF := 0
 
 	if count >= 2 {
 		mATK := make([]float64, core.EndStatType)
@@ -34,16 +36,16 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	}
 
 	if count >= 4 {
-		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
+		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 			// if the active char is not the equipped char then ignore
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
 
-			procAtk := args[1].(*core.AttackEvent)
+			atk := args[1].(*core.AttackEvent)
 
 			// If this is not a normal attack then ignore
-			if procAtk.Info.AttackTag != core.AttackTagNormal {
+			if atk.Info.AttackTag != core.AttackTagNormal {
 				return false
 			}
 
@@ -55,25 +57,19 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			icd = s.F + 0.2*60
 
 			if s.Rand.Float64() < prob {
-				// Apply a mod that lasts 0.05s to account
-				c.AddPreDamageMod(core.PreDamageMod{
-					Key: "echoes-4pc",
-					Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-						atk.Info.FlatDmg = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
-
-						s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex(),
-							"probability", prob,
-							"dmg_added", atk.Info.FlatDmg,
-						)
-
-						return nil, true
-					},
-					Expiry: 0.05 * 60, // 3 frames
-				})
-
+				procExpireF = s.F + procDuration
 				prob = 0.36
 			} else {
 				prob += 0.2
+			}
+
+			if s.F < procExpireF {
+				atk.Info.FlatDmg = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
+
+				s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex(),
+					"probability", prob,
+					"dmg_added", atk.Info.FlatDmg,
+				)
 			}
 
 			return false
