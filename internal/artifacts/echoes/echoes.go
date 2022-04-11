@@ -34,8 +34,6 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	}
 
 	if count >= 4 {
-		echoesProcTracker := make(map[*core.AttackEvent]bool)
-
 		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 			// if the active char is not the equipped char then ignore
 			if s.ActiveChar != c.CharIndex() {
@@ -57,24 +55,20 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 			icd = s.F + 0.2*60
 
 			if s.Rand.Float64() < prob {
+				// Apply a mod that lasts 0.05s to account
 				c.AddPreDamageMod(core.PreDamageMod{
 					Key: "echoes-4pc",
 					Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-						_, found := echoesProcTracker[atk]
-						if !found {
-							atk.Info.FlatDmg = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
+						atk.Info.FlatDmg = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
 
-							s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex(),
-								"probability", prob,
-								"dmg_added", atk.Info.FlatDmg,
-							)
-
-							echoesProcTracker[atk] = true
-						}
+						s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex(),
+							"probability", prob,
+							"dmg_added", atk.Info.FlatDmg,
+						)
 
 						return nil, true
 					},
-					Expiry: -1,
+					Expiry: 0.05 * 60, // 3 frames
 				})
 
 				prob = 0.36
@@ -84,37 +78,5 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 			return false
 		}, fmt.Sprintf("echoes-4pc-%v", c.Name()))
-
-		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			// if the active char is not the equipped char then ignore
-			if s.ActiveChar != c.CharIndex() {
-				return false
-			}
-
-			atkOnDmg := args[1].(*core.AttackEvent)
-
-			// If this is not a normal attack then ignore
-			if atkOnDmg.Info.AttackTag != core.AttackTagNormal {
-				return false
-			}
-
-			// Only set a CD on the mod if it's currently active
-			c.AddPreDamageMod(core.PreDamageMod{
-				Key: "echoes-4pc",
-				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-					_, found := echoesProcTracker[atk]
-					if !found {
-						atk.Info.FlatDmg = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
-						echoesProcTracker[atk] = true
-					}
-
-					return nil, true
-				},
-				Expiry: 0.05 * 60, // 3 frames
-			})
-
-			return false
-		}, fmt.Sprintf("echoes-4pc-ondamage-%v", c.Name()))
-
 	}
 }
