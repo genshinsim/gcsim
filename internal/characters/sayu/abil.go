@@ -2,6 +2,7 @@ package sayu
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 )
@@ -159,6 +160,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	d := c.createBurstSnapshot()
 	atk = d.Snapshot.BaseAtk*(1+d.Snapshot.Stats[core.ATKP]) + d.Snapshot.Stats[core.ATK]
 	heal = burstHealFlat[c.TalentLvlBurst()] + atk*burstHealPP[c.TalentLvlBurst()]
+
+	if c.Base.Cons >= 6 {
+		// TODO: is it snapshots?
+		d.Info.FlatDmg += atk * math.Min(d.Snapshot.Stats[core.EM]*0.002, 4.0)
+		heal += math.Min(d.Snapshot.Stats[core.EM]*3, 6000)
+	}
+
 	for i := 150; i < 150+540; i += 90 {
 		c.AddTask(func() {
 			active := c.Core.Chars[c.Core.ActiveChar]
