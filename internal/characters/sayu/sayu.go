@@ -11,6 +11,7 @@ type char struct {
 	eInfused            core.EleType
 	eDuration           int
 	infuseCheckLocation core.AttackPattern
+	c2Bonus             float64
 }
 
 func init() {
@@ -42,6 +43,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.absorbCheck()
 	c.a1()
+
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
 
 	return &c, nil
 }
@@ -136,4 +141,23 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(core.OnSwirlElectro, swirlfunc(core.Electro), "sayu-a1-electro")
 	c.Core.Events.Subscribe(core.OnSwirlHydro, swirlfunc(core.Hydro), "sayu-a1-hydro")
 	c.Core.Events.Subscribe(core.OnSwirlPyro, swirlfunc(core.Pyro), "sayu-a1-pyro")
+}
+
+func (c *char) c2() {
+	m := make([]float64, core.EndStatType)
+	c.AddPreDamageMod(core.PreDamageMod{
+		Key: "sayu-c2",
+		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+			if atk.Info.ActorIndex != c.Index {
+				return nil, false
+			}
+			if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
+				return nil, false
+			}
+			m[core.DmgP] = c.c2Bonus
+			c.c2Bonus = .0
+			return m, true
+		},
+		Expiry: -1,
+	})
 }

@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			hold = 600
 		}
 		f, a = c.skillHold(p, hold)
-		cd = int(6*60 + float32(hold)*0.5)
+		cd = int(6*60 + float64(hold)*0.5)
 	} else {
 		f, a = c.skillPress(p)
 		cd = 6 * 60
@@ -49,6 +49,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 func (c *char) skillPress(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
+
+	c.c2Bonus = 0.033
 
 	// Fuufuu Windwheel DMG
 	ai := core.AttackInfo{
@@ -88,20 +90,20 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 	c.eInfused = core.NoElement
 	c.eDuration = c.Core.F + (1+int(duration/30))*30
 	c.infuseCheckLocation = core.NewDefCircHit(0.1, true, core.TargettablePlayer, core.TargettableEnemy, core.TargettableObject)
+	c.c2Bonus = .0
 
+	// ticks
 	i := 0
-	for ; i < duration; i += 30 {
-		ai := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Yoohoo Art: Fuuin Dash (Hold Tick)",
-			AttackTag:  core.AttackTagSayuRoll,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Anemo,
-			Durability: 25,
-			Mult:       skillPress[c.TalentLvlSkill()],
-		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), i+3, i+3)
+	d := c.createSkillHoldSnapshot()
+	for ; i <= duration; i += 30 {
+		c.AddTask(func() {
+			c.Core.Combat.QueueAttackEvent(d, 0)
+
+			if c.Base.Cons >= 2 && c.c2Bonus < 0.66 {
+				c.c2Bonus += 0.033
+				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", core.LogCharacterEvent, c.Index, "dmg bonus%", c.c2Bonus)
+			}
+		}, "Sayu Skill Hold Tick", i)
 
 		if i%180 == 0 { // 3s
 			c.QueueParticle("sayu-skill-hold", 1, core.Anemo, i+73)
@@ -120,8 +122,8 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), i)
-	c.QueueParticle("sayu-skill", 2, core.Anemo, i+73)
 
+	c.QueueParticle("sayu-skill", 2, core.Anemo, i+73)
 	return i + f, i + f
 }
 
@@ -179,12 +181,33 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			if needAttack {
 				c.Core.Combat.QueueAttackEvent(d, 0)
 			}
-		}, "Sayu Tick", i)
+		}, "Sayu Burst Tick", i)
 	}
 
 	c.SetCDWithDelay(core.ActionBurst, 20*60, 11)
 	c.ConsumeEnergy(11)
 	return f, a
+}
+
+func (c *char) createSkillHoldSnapshot() *core.AttackEvent {
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Yoohoo Art: Fuuin Dash (Hold Tick)",
+		AttackTag:  core.AttackTagSayuRoll,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       skillPress[c.TalentLvlSkill()],
+	}
+	snap := c.Snapshot(&ai)
+
+	return (&core.AttackEvent{
+		Info:        ai,
+		Pattern:     core.NewDefCircHit(0.5, false, core.TargettableEnemy),
+		SourceFrame: c.Core.F,
+		Snapshot:    snap,
+	})
 }
 
 func (c *char) createBurstSnapshot() *core.AttackEvent {
