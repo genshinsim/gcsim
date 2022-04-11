@@ -35,8 +35,10 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		})
 	}
 
+	var dmgAdded float64
+
 	if count >= 4 {
-		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		s.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 			// if the active char is not the equipped char then ignore
 			if s.ActiveChar != c.CharIndex() {
 				return false
@@ -44,9 +46,24 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 			atk := args[1].(*core.AttackEvent)
 
+			// If attack does not belong to the equipped character then ignore
+			if atk.Info.ActorIndex != c.CharIndex() {
+				return false
+			}
+
 			// If this is not a normal attack then ignore
 			if atk.Info.AttackTag != core.AttackTagNormal {
 				return false
+			}
+
+			// if buff is already active then buff attack
+			if s.F < procExpireF {
+				dmgAdded = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
+				atk.Info.FlatDmg += dmgAdded
+				s.Log.NewEvent("echoes 4pc adding dmg", core.LogArtifactEvent, c.CharIndex(),
+					"buff_expiry", procExpireF,
+					"dmg_added", dmgAdded,
+				)
 			}
 
 			// If Artifact set effect is still on CD then ignore
@@ -54,23 +71,25 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				return false
 			}
 
-			icd = s.F + 0.2*60
-
-			if s.Rand.Float64() < prob {
-				procExpireF = s.F + procDuration
-				prob = 0.36
-			} else {
+			if s.Rand.Float64() > prob {
 				prob += 0.2
+				return false
 			}
 
-			if s.F < procExpireF {
-				atk.Info.FlatDmg = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
+			dmgAdded = (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[core.ATKP]) + atk.Snapshot.Stats[core.ATK]) * 0.7
+			atk.Info.FlatDmg += dmgAdded
 
-				s.Log.NewEvent("echoes 4pc proc", core.LogArtifactEvent, c.CharIndex(),
-					"probability", prob,
-					"dmg_added", atk.Info.FlatDmg,
-				)
-			}
+			procExpireF = s.F + procDuration
+			icd = s.F + 12 //0.2s
+
+			s.Log.NewEvent("echoes 4pc proc'd", core.LogArtifactEvent, c.CharIndex(),
+				"probability", prob,
+				"icd", icd,
+				"buff_expiry", procExpireF,
+				"dmg_added", atk.Info.FlatDmg,
+			)
+
+			prob = 0.36
 
 			return false
 		}, fmt.Sprintf("echoes-4pc-%v", c.Name()))
