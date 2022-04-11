@@ -79,7 +79,7 @@ type Character interface {
 	Snapshot(a *AttackInfo) Snapshot
 	PreDamageSnapshotAdjust(*AttackEvent, Target) []interface{}
 	ResetNormalCounter()
-	NextNormalIndex() int // the next normal index of active character
+	NextNormalCounter() int
 }
 
 type ZoneType int
