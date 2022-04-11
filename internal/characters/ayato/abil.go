@@ -25,7 +25,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	} else {
 		for i, mult := range attack[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
-			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i)
+			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-3*i, f-3*i)
 		}
 	}
 
@@ -67,17 +67,15 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       ca[c.TalentLvlAttack()],
 	}
 
-	for i := 0; i < 3; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-3+i, f-3+i)
-	}
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 
 	return f, a
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	delay := p["illusion_delay"]
-	if delay < 30 { //this might be too low? might be 48?
-		delay = 30
+	if delay < 35 {
+		delay = 35
 	}
 	if delay > 6*60 {
 		delay = 360
@@ -103,7 +101,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}, "Water Illusion Burst", delay)
 
 	c.Core.Status.AddStatus("soukaikanka", 6*60+f+hitlag) //add animation to the duration
-	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+0)
+	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+f)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6ready = true
@@ -130,9 +128,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	// snapshot when the circle forms
+	// snapshot when the circle forms (is this correct?)
 	var snap core.Snapshot
-	c.AddTask(func() { snap = c.Snapshot(&ai) }, "ayato-q-snapshot", 100)
+	c.AddTask(func() { snap = c.Snapshot(&ai) }, "ayato-q-snapshot", f)
 
 	rad, ok := p["radius"]
 	if !ok {
@@ -169,34 +167,34 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			}
 			//deal dmg
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(9, false, core.TargettableEnemy), 0)
-		}, "ayato-q", delay+f)
+		}, "ayato-q", delay+139)
 
 	}
 
-	c.Core.Status.AddStatus("ayatoburst", dur*60) //doesn't account for animation
-	// if c.Base.Cons >= 4 {
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.2
-	for _, char := range c.Core.Chars {
-		if char.CharIndex() == c.CharIndex() {
-			continue
+	c.Core.Status.AddStatus("ayatoburst", dur*60+f)
+	if c.Base.Cons >= 4 {
+		val := make([]float64, core.EndStatType)
+		val[core.DmgP] = 0.2
+		for _, char := range c.Core.Chars {
+			if char.CharIndex() == c.CharIndex() {
+				continue
+			}
+			c.AddPreDamageMod(core.PreDamageMod{
+				Key:    "ayato-c4",
+				Expiry: dur * 60,
+				Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+					if a.Info.AttackTag != core.AttackTagNormal {
+						return nil, false
+					}
+					return val, true
+				},
+			})
 		}
-		c.AddPreDamageMod(core.PreDamageMod{
-			Key:    "ayato-c4",
-			Expiry: dur * 60,
-			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-				if a.Info.AttackTag != core.AttackTagNormal {
-					return nil, false
-				}
-				return val, true
-			},
-		})
 	}
-	// }
 	//add cooldown to sim
-	c.SetCDWithDelay(core.ActionBurst, 20*60, 8)
+	c.SetCD(core.ActionBurst, 20*60)
 	//use up energy
-	c.ConsumeEnergy(8)
+	c.ConsumeEnergy(5)
 
 	return f, a
 }
