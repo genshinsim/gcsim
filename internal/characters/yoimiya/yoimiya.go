@@ -93,5 +93,8 @@ func (c *char) a2() {
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	ds := c.Tmpl.Snapshot(ai)
 
+	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == core.AttackTagNormal {
+		ai.Element = core.Pyro
+	}
 	return ds
 }
