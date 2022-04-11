@@ -124,6 +124,10 @@ func (c *char) a1() {
 			}
 			icd = c.Core.F + 120 // 2s
 
+			if c.Base.Cons >= 4 {
+				c.AddEnergy("sayu-c4", 1.2)
+			}
+
 			heal := 300 + c.Stat(core.EM)*1.2
 			c.Core.Health.Heal(core.HealInfo{
 				Caller:  c.Index,
