@@ -119,6 +119,9 @@ func (c *char) a1() {
 			if atk.Info.ActorIndex != c.Index {
 				return false
 			}
+			if c.Core.ActiveChar != c.Index {
+				return false
+			}
 			if c.Core.F < icd {
 				return false
 			}
