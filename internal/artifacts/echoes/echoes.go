@@ -24,12 +24,12 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	procExpireF := 0
 
 	if count >= 2 {
-		mATK := make([]float64, core.EndStatType)
-		mATK[core.ATKP] = 0.18
+		m := make([]float64, core.EndStatType)
+		m[core.ATKP] = 0.18
 		c.AddMod(core.CharStatMod{
 			Key: "echoes-2pc",
 			Amount: func() ([]float64, bool) {
-				return mATK, true
+				return m, true
 			},
 			Expiry: -1,
 		})
