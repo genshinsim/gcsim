@@ -78,7 +78,7 @@ func (c *char) resonance(src, max int) func() {
 		ae := c.steleSnapshot
 
 		//check how many times to hit
-		count := c.Core.Constructs.Count()
+		count := c.Core.Constructs.Count() - c.Core.Constructs.CountByType(core.GeoConstructZhongliSkill) + 1
 		if count > max {
 			count = max
 		}
