@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -25,7 +27,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	} else {
 		for i, mult := range attack[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
-			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-3*i, f-3*i)
+			c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 		}
 	}
 
