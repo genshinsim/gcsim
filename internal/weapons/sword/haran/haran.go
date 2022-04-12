@@ -25,7 +25,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	wavespikeICD := 0
 	wavespikeStacks := 0
 	maxWavespikeStacks := 2
-	stackSnapshot := 0
 
 	char.AddMod(core.CharStatMod{
 		Key: "haran-ele-bonus",
@@ -56,7 +55,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if c.ActiveChar != char.CharIndex() {
 			return false
 		}
-		stackSnapshot = wavespikeStacks
+		val[core.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
 		char.AddPreDamageMod(core.PreDamageMod{
 			Key:    "ripping-upheaval",
 			Expiry: c.F + 60*8,
@@ -64,7 +63,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				if atk.Info.AttackTag != core.AttackTagNormal {
 					return nil, false
 				}
-				val[core.DmgP] = (0.15 + float64(r)*0.05) * float64(stackSnapshot)
 				return val, true
 			},
 		})
