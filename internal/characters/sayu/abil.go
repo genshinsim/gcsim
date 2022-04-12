@@ -32,21 +32,24 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	hold := p["hold"]
-	var f, a, cd int
+	var f, a, cd, delay int
 	if hold > 0 {
 		if hold > 600 { // 10s
 			hold = 600
 		}
+
+		// 18 = 15 anim start + 3 to start swirling
+		// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
+		delay = 18 + hold + 2
 		f, a = c.skillHold(p, hold)
 		cd = int(6*60 + float64(hold)*0.5)
 	} else {
-		hold = 0
+		delay = 15
 		f, a = c.skillPress(p)
 		cd = 6 * 60
 	}
 
-	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
-	c.SetCDWithDelay(core.ActionSkill, cd, 18+hold+2)
+	c.SetCDWithDelay(core.ActionSkill, cd, delay)
 	return f, a
 }
 
@@ -67,7 +70,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 4)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 3)
 
 	// Fuufuu Whirlwind Kick Press DMG
 	ai = core.AttackInfo{
@@ -81,7 +84,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Mult:       skillPressEnd[c.TalentLvlSkill()],
 	}
 	snap = c.Snapshot(&ai)
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 4+25)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 3+25)
 
 	c.QueueParticle("sayu-skill", 2, core.Anemo, f+73)
 	return f, a
@@ -91,7 +94,7 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	c.eInfused = core.NoElement
-	c.eDuration = c.Core.F + 18 + duration + 20 // 18 = 15 anim start + 3 for swirl
+	c.eDuration = c.Core.F + 18 + duration + 20
 	c.infuseCheckLocation = core.NewDefCircHit(0.1, true, core.TargettablePlayer, core.TargettableEnemy, core.TargettableObject)
 	c.c2Bonus = .0
 

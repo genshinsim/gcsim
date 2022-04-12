@@ -37,8 +37,7 @@ func TestCD(t *testing.T) {
 	p["hold"] = 0
 	x.Skill(p)
 
-	// +1 = -1 + 2
-	testhelper.SkipFrames(c, 15+cd+1)
+	testhelper.SkipFrames(c, 15+cd-1)
 	if x.ActionReady(core.ActionSkill, p) {
 		t.Error(errors.New("skill shouldn't be ready yet"))
 	}
@@ -60,8 +59,8 @@ func TestCD(t *testing.T) {
 	cd = 6*60 + 300 + 150 // 150 = 300 * 0.5
 	x.Skill(p)
 
-	// +1 = -1 + 2
-	testhelper.SkipFrames(c, 15+cd+1)
+	// 1 = -1 + 2 (look at abil.go)
+	testhelper.SkipFrames(c, 18+cd+1)
 	if x.ActionReady(core.ActionSkill, p) {
 		t.Error(errors.New("skill shouldn't be ready yet"))
 	}
