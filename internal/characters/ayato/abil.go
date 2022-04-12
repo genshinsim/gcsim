@@ -178,7 +178,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		if char.CharIndex() == c.CharIndex() {
 			continue
 		}
-		c.AddPreDamageMod(core.PreDamageMod{
+		char.AddPreDamageMod(core.PreDamageMod{
 			Key:    "ayato-burst",
 			Expiry: dur * 60,
 			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
@@ -194,17 +194,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		val2 := make([]float64, core.EndStatType)
 		val2[core.AtkSpd] = 0.15
 		for _, char := range c.Core.Chars {
-			if char.CharIndex() == c.CharIndex() {
-				continue
-			}
-			c.AddPreDamageMod(core.PreDamageMod{
+			char.AddMod(core.CharStatMod{
 				Key:    "ayato-c4",
 				Expiry: 15 * 60,
-				Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-					if a.Info.AttackTag != core.AttackTagNormal {
+				Amount: func() ([]float64, bool) {
+					if c.Core.Status.Duration("ayatoburst") > 0 {
+						//should always be true but can't hurt just in case
+						return val, true
+					} else {
 						return nil, false
 					}
-					return val, true
 				},
 			})
 		}
