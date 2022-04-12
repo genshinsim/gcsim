@@ -8,7 +8,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		f := 0
 		a := 0
 		if c.Core.Status.Duration("soukaikanka") > 0 {
-			f = 6
+			f = 5
 			a = 10
 			f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 
@@ -89,7 +89,7 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 	if c.Core.LastAction.Typ == core.ActionAttack &&
 		next == core.ActionAttack &&
 		c.Core.Status.Duration("soukaikanka") > 0 {
-		f := 23 - 6
+		f := 23 - 5
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f
 	}
