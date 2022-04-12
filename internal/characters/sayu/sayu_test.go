@@ -17,7 +17,7 @@ func TestBasicAbilUsage(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	testhelper.TestPolearmCharacter(c, x)
+	testhelper.TestClaymoreCharacter(c, x)
 }
 
 func TestCD(t *testing.T) {

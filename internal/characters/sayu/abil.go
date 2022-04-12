@@ -92,7 +92,7 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 	a += duration
 
 	c.eInfused = core.NoElement
-	c.eDuration = c.Core.F + duration
+	c.eDuration = c.Core.F + 15 + duration + 20
 	c.infuseCheckLocation = core.NewDefCircHit(0.1, true, core.TargettablePlayer, core.TargettableEnemy, core.TargettableObject)
 	c.c2Bonus = .0
 
