@@ -171,15 +171,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.Core.Status.AddStatus("ayatoburst", dur*60) //doesn't account for animation
-	// if c.Base.Cons >= 4 {
 	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.2
+	val[core.DmgP] = burstatkp[c.TalentLvlBurst()]
+
 	for _, char := range c.Core.Chars {
 		if char.CharIndex() == c.CharIndex() {
 			continue
 		}
 		c.AddPreDamageMod(core.PreDamageMod{
-			Key:    "ayato-c4",
+			Key:    "ayato-burst",
 			Expiry: dur * 60,
 			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
 				if a.Info.AttackTag != core.AttackTagNormal {
@@ -189,7 +189,26 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			},
 		})
 	}
-	// }
+
+	if c.Base.Cons >= 4 {
+		val2 := make([]float64, core.EndStatType)
+		val2[core.AtkSpd] = 0.15
+		for _, char := range c.Core.Chars {
+			if char.CharIndex() == c.CharIndex() {
+				continue
+			}
+			c.AddPreDamageMod(core.PreDamageMod{
+				Key:    "ayato-c4",
+				Expiry: 15 * 60,
+				Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+					if a.Info.AttackTag != core.AttackTagNormal {
+						return nil, false
+					}
+					return val, true
+				},
+			})
+		}
+	}
 	//add cooldown to sim
 	c.SetCDWithDelay(core.ActionBurst, 20*60, 8)
 	//use up energy

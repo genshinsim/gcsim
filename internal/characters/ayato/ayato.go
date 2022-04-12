@@ -122,18 +122,6 @@ func (c *char) a2() {
 }
 
 func (c *char) a4() {
-	// val := make([]float64, core.EndStatType)
-	// val[core.DmgP] = 0.03 * c.MaxHP()
-	// c.AddPreDamageMod(core.PreDamageMod{
-	// 	Key:    "ayato-a4",
-	// 	Expiry: -1,
-	// 	Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-	// 		if a.Info.AttackTag != core.AttackTagElementalBurst {
-	// 			return nil, false
-	// 		}
-	// 		return val, true
-	// 	},
-	// })
 	c.AddTask(c.a4task, "ayato-a4", 60)
 }
 
