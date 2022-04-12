@@ -137,7 +137,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), f)
 
 	count := 2
-	if c.Core.Rand.Float64() < 1/3 {
+	if c.Core.Rand.Float64() < 2/3 {
 		count++
 	}
 	c.QueueParticle("Jean", count, core.Anemo, f+100)
