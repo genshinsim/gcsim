@@ -11,9 +11,8 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a2stack                     int
-	lastPart                    int
-	attacksWithSkillMultApplied map[*core.AttackInfo]bool
+	a2stack  int
+	lastPart int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -36,7 +35,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.CharZone = core.ZoneInazuma
-	c.attacksWithSkillMultApplied = make(map[*core.AttackInfo]bool)
 
 	c.a2()
 	c.onExit()
@@ -95,16 +93,13 @@ func (c *char) a2() {
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	ds := c.Tmpl.Snapshot(ai)
 
-	_, multHasBeenAppliedToAttack := c.attacksWithSkillMultApplied[ai]
-
 	//infusion to normal attack only
-	if !multHasBeenAppliedToAttack && c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == core.AttackTagNormal {
+	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == core.AttackTagNormal {
 		ai.Element = core.Pyro
 		// ds.ICDTag = core.ICDTagNone
 		//multiplier
 		c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
-		c.attacksWithSkillMultApplied[ai] = true
 	}
 
 	return ds
