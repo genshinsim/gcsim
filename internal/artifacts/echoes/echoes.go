@@ -64,6 +64,7 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					"buff_expiry", procExpireF,
 					"dmg_added", dmgAdded,
 				)
+				return false
 			}
 
 			// If Artifact set effect is still on CD then ignore
