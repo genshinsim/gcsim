@@ -27,18 +27,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		//infusion to normal attack only
-		if c.Core.Status.Duration("yoimiyaskill") > 0 {
-			// ds.ICDTag = core.ICDTagNone
-			//multiplier
-
-			ai.Mult = skill[c.TalentLvlSkill()] * mult[c.TalentLvlAttack()]
-			c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", mult[c.TalentLvlAttack()], "next", ai.Mult, "char", c.Index)
-		} else {
-			ai.Mult = mult[c.TalentLvlAttack()]
-		}
-
-		totalMV += ai.Mult
+		ai.Mult = mult[c.TalentLvlAttack()]
+		totalMV += mult[c.TalentLvlAttack()]
 
 		// TODO - double check snapshotDelay
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, travel+f-5+i)
