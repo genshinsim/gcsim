@@ -7,40 +7,12 @@ import (
 	"os"
 	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/genshinsim/gcsim/internal/simulator"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/parse"
 	"github.com/genshinsim/gcsim/pkg/result"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-)
-
-var (
-	// Only includes damage related substats scaling. Ignores things like HP for Barbara
-	charRelevantSubstats = map[core.CharKey][]core.StatType{
-		core.Albedo:  {core.DEFP},
-		core.Hutao:   {core.HPP},
-		core.Kokomi:  {core.HPP},
-		core.Zhongli: {core.HPP},
-		core.Itto:    {core.DEFP},
-		core.Yunjin:  {core.DEFP},
-		core.Noelle:  {core.DEFP},
-		core.Gorou:   {core.DEFP},
-	}
-
-	// TODO: Will need to update this once artifact keys are introduced, and if more 4* artifact sets are implemented
-	artifactSets4Star = []string{
-		"exile",
-		"instructor",
-		"theexile",
-	}
-
-	substatValues  = make([]float64, core.EndStatType)
-	mainstatValues = make([]float64, core.EndStatType)
 )
 
 // Additional runtime option to optimize substats according to KQM standards
@@ -53,46 +25,11 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	//    - Strategy is to just do a dumb grid search over ER substat values for each character
 	//    - ER substat values are set in increments of 2 to make the search easier
 	// 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
-
-	// TODO: Is this actually the best way to set these values or am I missing something..?
-	substatValues[core.ATKP] = 0.0496
-	substatValues[core.CR] = 0.0331
-	substatValues[core.CD] = 0.0662
-	substatValues[core.EM] = 19.82
-	substatValues[core.ER] = 0.0551
-	substatValues[core.HPP] = 0.0496
-	substatValues[core.DEFP] = 0.062
-	substatValues[core.ATK] = 16.54
-	substatValues[core.DEF] = 19.68
-	substatValues[core.HP] = 253.94
-
-	// Used to try to back out artifact main stats for limits
-	// TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
-	// Most people will have 1 5* artifact which messes things up
-	mainstatValues[core.ATKP] = 0.466
-	mainstatValues[core.CR] = 0.311
-	mainstatValues[core.CD] = 0.622
-	mainstatValues[core.EM] = 186.5
-	mainstatValues[core.ER] = 0.518
-	mainstatValues[core.HPP] = 0.466
-	mainstatValues[core.DEFP] = 0.583
+	stats := InitOptimStats()
+	sugarLog := InitLogger(verbose)
 
 	// Each optimizer run should not be saving anything out for the GZIP
 	simopt.GZIPResult = false
-
-	// Start logger
-	zapcfg := zap.NewDevelopmentConfig()
-	zapcfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
-	zapcfg.EncoderConfig.CallerKey = ""
-	zapcfg.EncoderConfig.StacktraceKey = ""
-	zapcfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-
-	if verbose {
-		zapcfg.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
-	}
-	logger, _ := zapcfg.Build()
-	defer logger.Sync()
-	sugarLog := logger.Sugar()
 
 	// Parse config
 	cfg, err := simulator.ReadConfig(simopt.ConfigPath)
@@ -101,29 +38,8 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		os.Exit(1)
 	}
 
-	// Regex to identify main stats based on flower. Check that characters all have one that we can recognize
-	var reMainstats = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\s+hp=(4780|3571)\b[^;]*;`)
-	var reGetCharNames = regexp.MustCompile(`(?m)^([a-z]+)\s+char\b[^;]*;`)
-	if len(reMainstats.FindAllString(cfg, -1)) != len(reGetCharNames.FindAllString(cfg, -1)) {
-		sugarLog.Error("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.")
-		sugarLog.Error("5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
-		os.Exit(1)
-	}
-
-	// Regex to remove stat rows that do not look like mainstat rows from the config
-	var reSubstats = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\b[^;]*;.*\n`)
-	srcCleaned := string(cfg)
-	errorPrinted := false
-	for _, match := range reSubstats.FindAllString(cfg, -1) {
-		if reMainstats.MatchString(string(match)) {
-			continue
-		}
-		if !errorPrinted {
-			sugarLog.Warn("Warning: Config found to have existing substat information. Ignoring...")
-			errorPrinted = true
-		}
-		srcCleaned = strings.Replace(srcCleaned, string(match), "", -1)
-	}
+	re := InitRegex()
+	srcCleaned := re.scrubSimCfg(cfg, sugarLog)
 
 	parser := parse.New("single", srcCleaned)
 	simcfg, err := parser.Parse()
@@ -144,15 +60,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 	// Parse and set all special sim options
 	if additionalOptions != "" {
-		reOptions := regexp.MustCompile(`([a-z_]+)=([0-9.]+)`)
-		parsedOptions := reOptions.FindAllStringSubmatch(additionalOptions, -1)
-		for _, val := range parsedOptions {
-			if _, ok := optionsMap[val[1]]; ok {
-				optionsMap[val[1]], _ = strconv.ParseFloat(val[2], 64)
-			} else {
-				sugarLog.Panic("Invalid substat optimization option found: %v", val[1], val[2])
-			}
-		}
+		re.scrubAdditionalOptimizerCfg(additionalOptions, optionsMap, sugarLog)
 	}
 
 	// Fix iterations at 350 for performance
@@ -174,21 +82,21 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	charSubstatRarityMod := make([]float64, len(simcfg.Characters.Profile))
 	for i, char := range simcfg.Characters.Profile {
 		charSubstatLimits[i] = make([]int, core.EndStatType)
-		for idxStat, stat := range mainstatValues {
+		for idxStat, stat := range stats.mainstatValues {
 			if stat == 0 {
 				continue
 			}
 			if char.Stats[idxStat] == 0 {
 				charSubstatLimits[i][idxStat] = indivSubstatLiquidCap
 			} else {
-				charSubstatLimits[i][idxStat] = indivSubstatLiquidCap - (2 * int(math.Round(char.Stats[idxStat]/mainstatValues[idxStat])))
+				charSubstatLimits[i][idxStat] = indivSubstatLiquidCap - (2 * int(math.Round(char.Stats[idxStat]/stats.mainstatValues[idxStat])))
 			}
 		}
 
 		// Display warning message for 4* sets
 		charSubstatRarityMod[i] = 1
 		for set := range char.Sets {
-			for _, fourStar := range artifactSets4Star {
+			for _, fourStar := range stats.artifactSets4Star {
 				if set == fourStar {
 					sugarLog.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
 					charSubstatRarityMod[i] = 0.8
@@ -203,7 +111,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	fixedSubstatCount := optionsMap["fixed_substats_count"]
 	for i, char := range simcfg.Characters.Profile {
 		charProfilesInitial[i] = char.Clone()
-		for idxStat, stat := range substatValues {
+		for idxStat, stat := range stats.substatValues {
 			if stat == 0 {
 				continue
 			}
@@ -238,14 +146,14 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		}
 		charSubstatFinal[i][core.ER] = erStack
 
-		charProfilesERBaseline[i].Stats[core.ER] += float64(erStack) * substatValues[core.ER]
-		charProfilesERBaseline[i].Stats[core.CR] += 4 * substatValues[core.CR] * charSubstatRarityMod[i]
-		charProfilesERBaseline[i].Stats[core.CD] += 4 * substatValues[core.CD] * charSubstatRarityMod[i]
+		charProfilesERBaseline[i].Stats[core.ER] += float64(erStack) * stats.substatValues[core.ER]
+		charProfilesERBaseline[i].Stats[core.CR] += 4 * stats.substatValues[core.CR] * charSubstatRarityMod[i]
+		charProfilesERBaseline[i].Stats[core.CD] += 4 * stats.substatValues[core.CD] * charSubstatRarityMod[i]
 
 		// Current strategy for favonius is to just boost this character's crit values a bit extra for optimal ER calculation purposes
 		// Then at next step of substat optimization, should naturally see relatively big DPS increases for that character if higher crit matters a lot
 		if strings.Contains(char.Weapon.Name, "favonius") {
-			charProfilesERBaseline[i].Stats[core.CR] += 4 * substatValues[core.CR] * charSubstatRarityMod[i]
+			charProfilesERBaseline[i].Stats[core.CR] += 4 * stats.substatValues[core.CR] * charSubstatRarityMod[i]
 			charWithFavonius[i] = true
 		}
 	}
@@ -270,7 +178,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		sugarLog.Debugf("%v", char.Base.Key)
 		for erStack := 0; erStack <= 10; erStack += 2 {
 			charProfilesCopy[idxChar] = char.Clone()
-			charProfilesCopy[idxChar].Stats[core.ER] -= float64(erStack) * substatValues[core.ER]
+			charProfilesCopy[idxChar].Stats[core.ER] -= float64(erStack) * stats.substatValues[core.ER]
 
 			simcfg.Characters.Profile = charProfilesCopy
 
@@ -324,7 +232,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			charSubstatFinal[i][core.ER] = 10
 		}
 
-		charProfilesERBaseline[i].Stats[core.ER] += float64(charSubstatFinal[i][core.ER]) * substatValues[core.ER]
+		charProfilesERBaseline[i].Stats[core.ER] += float64(charSubstatFinal[i][core.ER]) * stats.substatValues[core.ER]
 	}
 	for idxChar, char := range charProfilesERBaseline {
 		if char.Base.Key != core.Raiden {
@@ -338,7 +246,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	sugarLog.Info("Optimized ER Liquid Substats by character:")
 	printVal := ""
 	for i, char := range charProfilesInitial {
-		printVal += fmt.Sprintf("%v: %.4g, ", char.Base.Key.String(), float64(charSubstatFinal[i][core.ER])*substatValues[core.ER])
+		printVal += fmt.Sprintf("%v: %.4g, ", char.Base.Key.String(), float64(charSubstatFinal[i][core.ER])*stats.substatValues[core.ER])
 	}
 	sugarLog.Info(printVal)
 
@@ -362,7 +270,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 		// Reset favonius char crit rate
 		if charWithFavonius[idxChar] {
-			charProfilesCopy[idxChar].Stats[core.CR] -= 8 * substatValues[core.CR] * charSubstatRarityMod[idxChar]
+			charProfilesCopy[idxChar].Stats[core.CR] -= 8 * stats.substatValues[core.CR] * charSubstatRarityMod[idxChar]
 		}
 
 		// Get relevant substats, and add additional ones for special characters if needed
@@ -372,7 +280,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			relevantSubstats = []core.StatType{core.ATKP, core.CR, core.CD}
 		}
 
-		addlSubstats := charRelevantSubstats[char.Base.Key]
+		addlSubstats := stats.charRelevantSubstats[char.Base.Key]
 		if len(addlSubstats) > 0 {
 			relevantSubstats = append(relevantSubstats, addlSubstats...)
 		}
@@ -381,7 +289,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 		// Build "gradient" by substat
 		for idxSubstat, substat := range relevantSubstats {
-			charProfilesCopy[idxChar].Stats[substat] += 10 * substatValues[substat] * charSubstatRarityMod[idxChar]
+			charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * charSubstatRarityMod[idxChar]
 
 			simcfg.Characters.Profile = charProfilesCopy
 			substatEvalResult := runSimWithConfig(cfg, simcfg, simopt)
@@ -389,7 +297,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 			substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
 
-			charProfilesCopy[idxChar].Stats[substat] -= 10 * substatValues[substat] * charSubstatRarityMod[idxChar]
+			charProfilesCopy[idxChar].Stats[substat] -= 10 * stats.substatValues[substat] * charSubstatRarityMod[idxChar]
 		}
 
 		// Allocate substats
@@ -411,7 +319,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 			baseLiquidSubstats := int(optionsMap["total_liquid_substats"])
 			for set, count := range char.Sets {
-				for _, setfourstar := range artifactSets4Star {
+				for _, setfourstar := range stats.artifactSets4Star {
 					if set == setfourstar {
 						baseLiquidSubstats -= 2 * count
 					}
@@ -522,7 +430,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 		// Reset favonius char crit rate... again
 		if charWithFavonius[idxChar] {
-			charProfilesCopy[idxChar].Stats[core.CR] += 8 * substatValues[core.CR] * charSubstatRarityMod[idxChar]
+			charProfilesCopy[idxChar].Stats[core.CR] += 8 * stats.substatValues[core.CR] * charSubstatRarityMod[idxChar]
 		}
 	}
 
@@ -531,7 +439,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// This doesn't take much time relatively speaking, so just always do the processing...
 	output := srcCleaned
 	charNames := make(map[core.CharKey]string)
-	for _, match := range reGetCharNames.FindAllStringSubmatch(output, -1) {
+	for _, match := range re.GetCharNames.FindAllStringSubmatch(output, -1) {
 		charKey := core.CharNameToKey[match[1]]
 		charNames[charKey] = match[1]
 	}
@@ -539,7 +447,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	for idxChar, char := range charProfilesInitial {
 		finalString := fmt.Sprintf("%v add stats", charNames[char.Base.Key])
 
-		for idxSubstat, value := range substatValues {
+		for idxSubstat, value := range stats.substatValues {
 			if value <= 0 {
 				continue
 			}
