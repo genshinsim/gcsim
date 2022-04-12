@@ -35,6 +35,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 4
+	c.InitCancelFrames()
 
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(core.ActionSkill, 2)

@@ -29,21 +29,7 @@ func TestCD(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	err = testhelper.TestSkillCDSingleCharge(c, x, 15*60)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestC4CD(t *testing.T) {
-	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Sucrose, core.Anemo, 6)
-	x, err := NewChar(c, prof)
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	err = testhelper.TestSkillCDDoubleCharge(c, x, []int{15 * 60, 15 * 60})
+	err = testhelper.TestSkillCDSingleCharge(c, x, 15*60+9)
 	if err != nil {
 		t.Error(err)
 	}
