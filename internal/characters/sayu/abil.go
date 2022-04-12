@@ -46,7 +46,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
-	c.SetCDWithDelay(core.ActionSkill, cd, 15+hold+2)
+	c.SetCDWithDelay(core.ActionSkill, cd, 18+hold+2)
 	return f, a
 }
 
@@ -91,14 +91,14 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	c.eInfused = core.NoElement
-	c.eDuration = c.Core.F + 15 + duration + 20
+	c.eDuration = c.Core.F + 18 + duration + 20 // 18 = 15 anim start + 3 for swirl
 	c.infuseCheckLocation = core.NewDefCircHit(0.1, true, core.TargettablePlayer, core.TargettableEnemy, core.TargettableObject)
 	c.c2Bonus = .0
 
 	// ticks
 	i := 0
 	d := c.createSkillHoldSnapshot()
-	for ; i <= duration-3; i += 30 {
+	for ; i <= duration; i += 30 { // 1 tick for sure
 		c.AddTask(func() {
 			c.Core.Combat.QueueAttackEvent(d, 0)
 
@@ -106,10 +106,10 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 				c.c2Bonus += 0.033
 				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", core.LogCharacterEvent, c.Index, "dmg bonus%", c.c2Bonus)
 			}
-		}, "Sayu Skill Hold Tick", 15+i+3)
+		}, "Sayu Skill Hold Tick", 18+i)
 
 		if i%180 == 0 { // 3s
-			c.QueueParticle("sayu-skill-hold", 1, core.Anemo, 15+i+73)
+			c.QueueParticle("sayu-skill-hold", 1, core.Anemo, 18+i+73)
 		}
 	}
 
@@ -124,7 +124,7 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 		Mult:       skillHoldEnd[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 15+duration+20)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 18+duration+20)
 
 	c.QueueParticle("sayu-skill", 2, core.Anemo, f+73)
 	return f, a

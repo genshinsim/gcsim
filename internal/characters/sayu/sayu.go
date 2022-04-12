@@ -53,7 +53,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 }
 
 func (c *char) absorbCheck() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 		if atk.Info.ActorIndex != c.CharIndex() {
 			return false
