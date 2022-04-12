@@ -40,11 +40,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		f, a = c.skillHold(p, hold)
 		cd = int(6*60 + float64(hold)*0.5)
 	} else {
+		hold = 0
 		f, a = c.skillPress(p)
 		cd = 6 * 60
 	}
 
-	c.SetCD(core.ActionSkill, cd)
+	c.SetCDWithDelay(core.ActionSkill, cd, 15+hold)
 	return f, a
 }
 
@@ -57,7 +58,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Yoohoo Art: Fuuin Dash (Press)",
-		AttackTag:  core.AttackTagSayuRoll,
+		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Anemo,
@@ -86,10 +87,12 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 }
 
 func (c *char) skillHold(p map[string]int, duration int) (int, int) {
-	f, _ := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionSkill, p)
+	f += duration
+	a += duration
 
 	c.eInfused = core.NoElement
-	c.eDuration = c.Core.F + (1+int(duration/30))*30
+	c.eDuration = c.Core.F + duration
 	c.infuseCheckLocation = core.NewDefCircHit(0.1, true, core.TargettablePlayer, core.TargettableEnemy, core.TargettableObject)
 	c.c2Bonus = .0
 
@@ -104,10 +107,10 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 				c.c2Bonus += 0.033
 				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", core.LogCharacterEvent, c.Index, "dmg bonus%", c.c2Bonus)
 			}
-		}, "Sayu Skill Hold Tick", i)
+		}, "Sayu Skill Hold Tick", 15+i+3)
 
 		if i%180 == 0 { // 3s
-			c.QueueParticle("sayu-skill-hold", 1, core.Anemo, i+73)
+			c.QueueParticle("sayu-skill-hold", 1, core.Anemo, 15+i+73)
 		}
 	}
 
@@ -122,10 +125,10 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 		Mult:       skillHoldEnd[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), i)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 15+duration+20)
 
-	c.QueueParticle("sayu-skill", 2, core.Anemo, i+73)
-	return i + f, i + f
+	c.QueueParticle("sayu-skill", 2, core.Anemo, f+73)
+	return f, a
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
@@ -201,7 +204,7 @@ func (c *char) createSkillHoldSnapshot() *core.AttackEvent {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Yoohoo Art: Fuuin Dash (Hold Tick)",
-		AttackTag:  core.AttackTagSayuRoll,
+		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Anemo,

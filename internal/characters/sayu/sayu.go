@@ -40,6 +40,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.eInfused = core.NoElement
 	c.eDuration = -1
+	c.c2Bonus = .0
 
 	c.absorbCheck()
 	c.a1()
@@ -57,7 +58,7 @@ func (c *char) absorbCheck() {
 		if atk.Info.ActorIndex != c.CharIndex() {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagSayuRoll && atk.Info.AttackTag != core.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
 			return false
 		}
 		if atk.Info.Element != core.Anemo {
@@ -81,11 +82,11 @@ func (c *char) absorbCheck() {
 		}
 
 		switch atk.Info.AttackTag {
-		case core.AttackTagSayuRoll:
+		case core.AttackTagElementalArt:
 			ai := core.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
-				AttackTag:  core.AttackTagSayuRoll,
+				AttackTag:  core.AttackTagElementalArt,
 				ICDTag:     core.ICDTagNone,
 				ICDGroup:   core.ICDGroupDefault,
 				Element:    c.eInfused,
@@ -97,7 +98,7 @@ func (c *char) absorbCheck() {
 			ai := core.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
-				AttackTag:  core.AttackTagSayuRoll,
+				AttackTag:  core.AttackTagElementalArt,
 				ICDTag:     core.ICDTagNone,
 				ICDGroup:   core.ICDGroupDefault,
 				Element:    c.eInfused,
