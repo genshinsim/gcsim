@@ -45,7 +45,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		cd = 6 * 60
 	}
 
-	c.SetCDWithDelay(core.ActionSkill, cd, 15+hold)
+	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
+	c.SetCDWithDelay(core.ActionSkill, cd, 15+hold+2)
 	return f, a
 }
 
@@ -80,7 +81,7 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		Mult:       skillPressEnd[c.TalentLvlSkill()],
 	}
 	snap = c.Snapshot(&ai)
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 25)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 4+25)
 
 	c.QueueParticle("sayu-skill", 2, core.Anemo, f+73)
 	return f, a
@@ -88,8 +89,6 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 
 func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	f += duration
-	a += duration
 
 	c.eInfused = core.NoElement
 	c.eDuration = c.Core.F + 15 + duration + 20
@@ -99,7 +98,7 @@ func (c *char) skillHold(p map[string]int, duration int) (int, int) {
 	// ticks
 	i := 0
 	d := c.createSkillHoldSnapshot()
-	for ; i <= duration; i += 30 {
+	for ; i <= duration-3; i += 30 {
 		c.AddTask(func() {
 			c.Core.Combat.QueueAttackEvent(d, 0)
 

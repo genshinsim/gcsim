@@ -20,7 +20,12 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		f = int(float64(f) / (1 + c.Stats[core.AtkSpd]))
 		return f, f
 	case core.ActionSkill:
-		return 35, 35 // TODO: not ok
+		hold := p["hold"]
+		f := 41
+		if hold > 0 {
+			f = 15 + hold + 59
+		}
+		return f, f // TODO: not ok
 	case core.ActionBurst:
 		return 65, 65
 	default:
