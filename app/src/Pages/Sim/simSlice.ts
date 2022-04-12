@@ -160,8 +160,8 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
           // console.log("done?");
           console.log(val);
           const res = JSON.parse(val);
-          console.log(res);
-          if (res.err) {
+          console.log("config parsing done: ", res);
+          if (res.hasOwnProperty("err")) {
             reject(res.err);
             return;
           }
@@ -170,32 +170,36 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
         pool.queue({ cmd: "parse", payload: cfg, cb: cb });
       });
 
-    setConfig()
-      .then((res) => {
-        // dispatch(simActions.setAdvCfg(cfg));
+    setConfig().then(
+      (res) => {
+        console.log("all is good");
         dispatch(simActions.setCfgErr(""));
         //if successful then we're going to update the team based on the parsed results
-        const team: Character[] = res.characters.profile.map((c) => {
-          return {
-            name: c.base.key,
-            level: c.base.level,
-            element: c.base.element,
-            max_level: c.base.max_level,
-            cons: c.base.cons,
-            weapon: c.weapon,
-            talents: c.talents,
-            stats: c.stats,
-            snapshot: defaultStats,
-            sets: c.sets,
-          };
-        });
+        let team: Character[] = [];
+        if (res.characters.profile) {
+          team = res.characters.profile.map((c) => {
+            return {
+              name: c.base.key,
+              level: c.base.level,
+              element: c.base.element,
+              max_level: c.base.max_level,
+              cons: c.base.cons,
+              weapon: c.weapon,
+              talents: c.talents,
+              stats: c.stats,
+              snapshot: defaultStats,
+              sets: c.sets,
+            };
+          });
+        }
         console.log("updating team: ", team);
         dispatch(simActions.setTeam(team));
-      })
-      .catch((err) => {
+      },
+      (err) => {
         //set error state
         dispatch(simActions.setCfgErr(err));
-      });
+      }
+    );
   };
 }
 
