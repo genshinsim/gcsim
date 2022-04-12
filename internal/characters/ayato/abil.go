@@ -173,7 +173,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	}
 
-	c.Core.Status.AddStatus("ayatoburst", dur*60+f+hitlag)
+	c.Core.Status.AddStatus("ayatoburst", dur*60+f)
 	val := make([]float64, core.EndStatType)
 	val[core.DmgP] = burstatkp[c.TalentLvlBurst()]
 
