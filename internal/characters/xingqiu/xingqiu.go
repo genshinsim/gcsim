@@ -139,7 +139,7 @@ func (c *char) orbitalfunc(src int) func() {
 
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Xingqiu Skill (Orbital)",
+			Abil:       "Xingqiu Orbital",
 			AttackTag:  core.AttackTagNone,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
@@ -149,7 +149,7 @@ func (c *char) orbitalfunc(src int) func() {
 		c.Core.Log.NewEvent("orbital ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 
 		//queue up next instance
-		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
+		c.AddTask(c.orbitalfunc(src), "xq-orbital", 135)
 
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 1)
 	}
@@ -161,7 +161,7 @@ func (c *char) applyOrbital(duration int, delay int) {
 	//check if orbitals already active, if active extend duration
 	//other wise start first tick func
 	if !c.orbitalActive {
-		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", delay)
+		c.AddTask(c.orbitalfunc(f), "xq-orbital", delay)
 		c.orbitalActive = true
 		c.Core.Log.NewEvent("orbital applied", core.LogCharacterEvent, c.Index, "expected end", f+900, "next expected tick", f+40)
 	}
@@ -198,10 +198,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), rainscreenDelay[i], rainscreenDelay[i])
 	}
 
-	// Orbitals spawn in 1 frame before the second hit connects going by the "Wet" text
+	// orbitals apply wet at 44f
 	orbital := p["orbital"]
 	if orbital == 1 {
-		c.applyOrbital(15*60, rainscreenDelay[1]-2)
+		c.applyOrbital(15*60, 43) //takes 1 frame to apply it
 	}
 
 	c.QueueParticle(c.Base.Key.String(), 5, core.Hydro, 100)
