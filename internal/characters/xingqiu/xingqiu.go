@@ -198,8 +198,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), rainscreenDelay[i], rainscreenDelay[i])
 	}
 
+	orbital, ok := p["orbital"]
+	if !ok {
+		orbital = 1
+	}
+
 	// orbitals apply wet at 44f
-	orbital := p["orbital"]
 	if orbital == 1 {
 		c.applyOrbital(15*60, 43) //takes 1 frame to apply it
 	}
@@ -240,7 +244,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("xqburst", dur)
 	c.Core.Log.NewEvent("Xingqiu burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur)
 
-	orbital := p["orbital"]
+	orbital, ok := p["orbital"]
+	if !ok {
+		orbital = 1
+	}
 
 	if orbital == 1 {
 		c.applyOrbital(dur, f)
