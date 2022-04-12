@@ -103,7 +103,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}, "Water Illusion Burst", delay)
 
 	c.Core.Status.AddStatus("soukaikanka", 6*60+f+hitlag) //add animation to the duration
-	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+f)
+	c.Core.Log.NewEvent("Soukai Kanka acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+f+hitlag)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6ready = true
@@ -176,7 +176,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("ayatoburst", dur*60+f)
 	if c.Base.Cons >= 4 {
 		val := make([]float64, core.EndStatType)
-		val[core.DmgP] = 0.2
+		val[core.AtkSpd] = 0.2
 		for _, char := range c.Core.Chars {
 			if char.CharIndex() == c.CharIndex() {
 				continue
