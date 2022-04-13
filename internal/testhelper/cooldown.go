@@ -322,7 +322,12 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int, delay int) e
 
 	//skip through cd queue
 	for i, v := range cd {
-		SkipFrames(c, v-1)
+		correction := 0 //less waiting when i=0
+		if i == 0 {
+			correction = delay * (len(cd) - 1)
+		}
+
+		SkipFrames(c, v-1-correction)
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
@@ -338,8 +343,9 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int, delay int) e
 	for range cd {
 		char.Skill(p)
 	}
+	SkipFrames(delay)
 	for i, v := range cd {
-		SkipFrames(c, v-10+delay)
+		SkipFrames(c, v-10)
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("(reduce cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
@@ -357,8 +363,9 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int, delay int) e
 	for range cd {
 		char.Skill(p)
 	}
+	SkipFrames(delay)
 	for i, v := range cd {
-		SkipFrames(c, v-10+delay)
+		SkipFrames(c, v-10)
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("(reset cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
