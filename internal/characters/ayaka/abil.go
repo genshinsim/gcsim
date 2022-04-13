@@ -241,15 +241,7 @@ func (c *char) c6cb(a core.AttackCB) {
 	c.c6CDTimerAvail = false
 
 	c.AddTask(func() {
-		// TODO: When mod refactor is done, should change this to simply remove the mod or something
-		// Currently need to reload the mod with a null entry to allow for clear buff uptime tracking
-		c.AddPreDamageMod(core.PreDamageMod{
-			Key: "ayaka-c6",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return nil, false
-			},
-			Expiry: 0,
-		})
+		c.DeletePreDamageMod("ayaka-c6")
 
 		c.AddTask(func() {
 			c.c6CDTimerAvail = true
