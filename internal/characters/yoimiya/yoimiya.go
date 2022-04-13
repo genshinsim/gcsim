@@ -36,6 +36,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.CharZone = core.ZoneInazuma
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	c.a2()
 	c.onExit()
 	c.burstHook()
@@ -46,13 +52,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-	// if c.Base.Cons == 6 {
-	// 	c.c6()
-	// }
-
-	//add effect for burst
-
-	return &c, nil
 }
 
 func (c *char) a2() {

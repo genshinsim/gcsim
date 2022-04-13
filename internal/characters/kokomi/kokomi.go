@@ -43,12 +43,16 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.swapEarlyF = 0
 	c.c4ICDExpiry = 0
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	c.passive()
 	c.onExitField()
 	c.burstActiveHook()
 	c.a4()
-
-	return &c, nil
 }
 
 // Passive 2 - permanently modify stats for +25% healing bonus and -100% CR

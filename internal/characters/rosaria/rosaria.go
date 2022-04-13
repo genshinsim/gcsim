@@ -33,14 +33,18 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.NormalHitNum = 5
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
-	return &c, nil
 }
 
 // Adds event checker for C1: Unholy Revelation

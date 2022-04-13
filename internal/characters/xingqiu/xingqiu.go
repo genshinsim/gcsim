@@ -43,6 +43,14 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneLiyue
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.burstStateHook()
+
 	c.AddMod(core.CharStatMod{
 		Key: "a4",
 		Amount: func() ([]float64, bool) {
@@ -52,18 +60,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		},
 		Expiry: -1,
 	})
-	// c.burstHook()
-	c.burstStateHook()
-
-	/** c6
-	Activating 2 of Guhua Sword: Raincutter's sword rain attacks greatly increases the DMG of the third.
-	Xingqiu regenerates 3 Energy when sword rain attacks hit opponents.
-	**/
-
-	return &c, nil
 }
-
-var delay = [][]int{{8}, {24}, {24, 43}, {36}, {43, 78}}
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
@@ -96,6 +93,8 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	}
 }
 
+var hitmarks = [][]int{{8}, {24}, {24, 43}, {36}, {43, 78}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -112,7 +111,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Abil = fmt.Sprintf("Normal %v", c.NormalCounter)
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	//add a 75 frame attackcounter reset

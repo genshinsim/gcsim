@@ -42,10 +42,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+
 	//add in a guoba
 	c.guoba = newGuoba(c.Core)
 	c.Core.AddTarget(c.guoba)
-
 }
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {

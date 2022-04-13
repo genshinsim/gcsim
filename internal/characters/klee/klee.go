@@ -33,16 +33,21 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 3
 
-	c.SetNumCharges(core.ActionSkill, 2)
 	c.sparkICD = -1
+
+	c.SetNumCharges(core.ActionSkill, 2)
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.a4()
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
-	return &c, nil
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

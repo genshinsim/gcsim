@@ -41,16 +41,17 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.ozSource = -1
 	c.ozActiveUntil = -1
 
-	//register A4
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	c.a4()
 
-	if p.Base.Cons == 6 {
+	if c.Base.Cons == 6 {
 		c.c6()
 	}
-
-	// f.turbo()
-
-	return &c, nil
 }
 
 // func (c *char) ozAttack() {

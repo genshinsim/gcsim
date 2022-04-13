@@ -41,15 +41,19 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneInazuma
 
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.eyeOnDamage()
 	c.onBurstStackCount()
 	c.onSwapClearBurst()
 
-	return &c, nil
+	if c.Base.Cons == 6 {
+		c.c6()
+	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

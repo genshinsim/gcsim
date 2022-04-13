@@ -37,7 +37,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 90
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 3
-
 	c.BurstCon = 5
 	c.SkillCon = 3
 
@@ -48,6 +47,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+
 	c.a4()
 }
 

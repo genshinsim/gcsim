@@ -42,7 +42,6 @@ func (c *char) Init() {
 	if c.Base.Cons > 0 {
 		c.c1()
 	}
-
 }
 
 //Party members within the radius of Wake of Earth have their CRIT Rate increased by 10%

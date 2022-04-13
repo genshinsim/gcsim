@@ -35,19 +35,23 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
+
 	c.fieldSrc = -601
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.onSwapHook()
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
 	if c.Base.Cons == 6 && c.Core.Flags.DamageMode {
 		c.c6()
 	}
-
-	return &c, nil
 }
 
 func (c *char) c4() {

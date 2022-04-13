@@ -33,17 +33,20 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	c.a2()
 
 	if c.Base.Cons == 6 {
 		c.c6()
 	}
-
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-
-	return &c, nil
 }
 
 func (c *char) a2() {

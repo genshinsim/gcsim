@@ -50,25 +50,23 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.SetNumCharges(core.ActionSkill, 2)
 	}
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.quillcount = make([]int, len(c.Core.Chars))
+
+	c.a2()
+	c.quillDamageMod()
+
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
-
-	c.quillDamageMod()
-
-	return &c, nil
-}
-
-func (c *char) Init() {
-	c.Tmpl.Init()
-	// if c.Base.Cons >= 6 {
-	// 	c.c6()
-	// }
-	c.a2()
-	c.quillcount = make([]int, len(c.Core.Chars))
 }
 
 // Helper function to update tags that can be used in configs

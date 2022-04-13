@@ -34,17 +34,23 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
+	c.bunnies = make([]bunny, 0, 2)
+
 	if c.Base.Cons >= 4 {
 		c.SetNumCharges(core.ActionSkill, 2)
 	}
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.a2()
+
 	if c.Base.Cons >= 2 {
 		c.overloadExplode()
 	}
-	c.a2()
-	c.bunnies = make([]bunny, 0, 2)
-
-	return &c, nil
 }
 
 func (c *char) a2() {

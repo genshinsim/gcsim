@@ -36,18 +36,19 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
 
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
-
 	return &c, nil
 }
 
-var delay = [][]int{{8}, {20}, {25}, {25, 35}, {34}}
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+}
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
