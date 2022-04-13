@@ -322,7 +322,7 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int, delay int) e
 
 	//skip through cd queue
 	for i, v := range cd {
-		SkipFrames(c, v+delay)
+		SkipFrames(c, v-1)
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
