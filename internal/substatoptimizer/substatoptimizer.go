@@ -3,7 +3,6 @@ package substatoptimizer
 import (
 	"fmt"
 	"log"
-	"math"
 	"os"
 	"regexp"
 	"sort"
@@ -25,7 +24,6 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	//    - Strategy is to just do a dumb grid search over ER substat values for each character
 	//    - ER substat values are set in increments of 2 to make the search easier
 	// 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
-	stats := InitOptimStats()
 	sugarLog := InitLogger(verbose)
 
 	// Each optimizer run should not be saving anything out for the GZIP
@@ -43,7 +41,6 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 	parser := parse.New("single", srcCleaned)
 	simcfg, err := parser.Parse()
-
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
@@ -67,42 +64,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// TODO: Seems to be a roughly good number at KQM standards
 	simcfg.Settings.Iterations = int(optionsMap["sim_iter"])
 
-	// Final output array that holds [character][substat_count]
-	charSubstatFinal := make([][]int, len(simcfg.Characters.Profile))
-	for i := range simcfg.Characters.Profile {
-		charSubstatFinal[i] = make([]int, core.EndStatType)
-	}
-
-	// Obtain substat count limits based on main stats and also determine 4* set status
-	// TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
-	// Most people will have 1 5* artifact which messes things up
-	// TODO: Check whether taking like an average of the two stat values is good enough?
-	indivSubstatLiquidCap := int(optionsMap["indiv_liquid_cap"])
-	charSubstatLimits := make([][]int, len(simcfg.Characters.Profile))
-	charSubstatRarityMod := make([]float64, len(simcfg.Characters.Profile))
-	for i, char := range simcfg.Characters.Profile {
-		charSubstatLimits[i] = make([]int, core.EndStatType)
-		for idxStat, stat := range stats.mainstatValues {
-			if stat == 0 {
-				continue
-			}
-			if char.Stats[idxStat] == 0 {
-				charSubstatLimits[i][idxStat] = indivSubstatLiquidCap
-			} else {
-				charSubstatLimits[i][idxStat] = indivSubstatLiquidCap - (2 * int(math.Round(char.Stats[idxStat]/stats.mainstatValues[idxStat])))
-			}
-		}
-
-		// Display warning message for 4* sets
-		charSubstatRarityMod[i] = 1
-		for set := range char.Sets {
-			for _, fourStar := range stats.artifactSets4Star {
-				if set == fourStar {
-					sugarLog.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
-					charSubstatRarityMod[i] = 0.8
-				}
-			}
-		}
+	stats := InitOptimStats(simcfg, int(optionsMap["indiv_liquid_cap"]))
+	fourStarFound := stats.setStatLimits()
+	if fourStarFound {
+		sugarLog.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
 	}
 
 	// Copy to save initial character state with fixed allocations (2 of each substat)
@@ -118,7 +83,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			if core.StatType(idxStat) == core.ER {
 				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat
 			} else {
-				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat * charSubstatRarityMod[i]
+				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat * stats.charSubstatRarityMod[i]
 			}
 		}
 	}
@@ -144,16 +109,16 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		if char.Base.Key == core.Raiden {
 			erStack = 0
 		}
-		charSubstatFinal[i][core.ER] = erStack
+		stats.charSubstatFinal[i][core.ER] = erStack
 
 		charProfilesERBaseline[i].Stats[core.ER] += float64(erStack) * stats.substatValues[core.ER]
-		charProfilesERBaseline[i].Stats[core.CR] += 4 * stats.substatValues[core.CR] * charSubstatRarityMod[i]
-		charProfilesERBaseline[i].Stats[core.CD] += 4 * stats.substatValues[core.CD] * charSubstatRarityMod[i]
+		charProfilesERBaseline[i].Stats[core.CR] += 4 * stats.substatValues[core.CR] * stats.charSubstatRarityMod[i]
+		charProfilesERBaseline[i].Stats[core.CD] += 4 * stats.substatValues[core.CD] * stats.charSubstatRarityMod[i]
 
 		// Current strategy for favonius is to just boost this character's crit values a bit extra for optimal ER calculation purposes
 		// Then at next step of substat optimization, should naturally see relatively big DPS increases for that character if higher crit matters a lot
 		if strings.Contains(char.Weapon.Name, "favonius") {
-			charProfilesERBaseline[i].Stats[core.CR] += 4 * stats.substatValues[core.CR] * charSubstatRarityMod[i]
+			charProfilesERBaseline[i].Stats[core.CR] += 4 * stats.substatValues[core.CR] * stats.charSubstatRarityMod[i]
 			charWithFavonius[i] = true
 		}
 	}
@@ -183,7 +148,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			simcfg.Characters.Profile = charProfilesCopy
 
 			result := runSimWithConfig(cfg, simcfg, simopt)
-			sugarLog.Debugf("%v: %v (%v)", charSubstatFinal[idxChar][core.ER]-erStack, result.DPS.Mean, result.DPS.SD)
+			sugarLog.Debugf("%v: %v (%v)", stats.charSubstatFinal[idxChar][core.ER]-erStack, result.DPS.Mean, result.DPS.SD)
 
 			if erStack == 0 {
 				initialMean = result.DPS.Mean
@@ -202,15 +167,15 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 				// Reset character stats
 				charProfilesCopy[idxChar] = char.Clone()
 				// Save ER value - optimal value is the value immediately prior, so we subtract 2
-				charSubstatFinal[idxChar][core.ER] -= (erStack - 2)
+				stats.charSubstatFinal[idxChar][core.ER] -= (erStack - 2)
 				break
 			}
 
 			// Reached minimum possible ER stacks, so optimal is the minimum amount of ER stacks
-			if charSubstatFinal[idxChar][core.ER]-erStack == 0 {
+			if stats.charSubstatFinal[idxChar][core.ER]-erStack == 0 {
 				// Reset character stats
 				charProfilesCopy[idxChar] = char.Clone()
-				charSubstatFinal[idxChar][core.ER] -= erStack
+				stats.charSubstatFinal[idxChar][core.ER] -= erStack
 				break
 			}
 		}
@@ -229,10 +194,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		charProfilesERBaseline[i].Stats[core.ER] = charProfilesInitial[i].Stats[core.ER]
 
 		if char.Base.Key == core.Raiden {
-			charSubstatFinal[i][core.ER] = 10
+			stats.charSubstatFinal[i][core.ER] = 10
 		}
 
-		charProfilesERBaseline[i].Stats[core.ER] += float64(charSubstatFinal[i][core.ER]) * stats.substatValues[core.ER]
+		charProfilesERBaseline[i].Stats[core.ER] += float64(stats.charSubstatFinal[i][core.ER]) * stats.substatValues[core.ER]
 	}
 	for idxChar, char := range charProfilesERBaseline {
 		if char.Base.Key != core.Raiden {
@@ -246,7 +211,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	sugarLog.Info("Optimized ER Liquid Substats by character:")
 	printVal := ""
 	for i, char := range charProfilesInitial {
-		printVal += fmt.Sprintf("%v: %.4g, ", char.Base.Key.String(), float64(charSubstatFinal[i][core.ER])*stats.substatValues[core.ER])
+		printVal += fmt.Sprintf("%v: %.4g, ", char.Base.Key.String(), float64(stats.charSubstatFinal[i][core.ER])*stats.substatValues[core.ER])
 	}
 	sugarLog.Info(printVal)
 
@@ -270,7 +235,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 		// Reset favonius char crit rate
 		if charWithFavonius[idxChar] {
-			charProfilesCopy[idxChar].Stats[core.CR] -= 8 * stats.substatValues[core.CR] * charSubstatRarityMod[idxChar]
+			charProfilesCopy[idxChar].Stats[core.CR] -= 8 * stats.substatValues[core.CR] * stats.charSubstatRarityMod[idxChar]
 		}
 
 		// Get relevant substats, and add additional ones for special characters if needed
@@ -289,7 +254,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 		// Build "gradient" by substat
 		for idxSubstat, substat := range relevantSubstats {
-			charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * charSubstatRarityMod[idxChar]
+			charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 
 			simcfg.Characters.Profile = charProfilesCopy
 			substatEvalResult := runSimWithConfig(cfg, simcfg, simopt)
@@ -297,7 +262,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 			substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
 
-			charProfilesCopy[idxChar].Stats[substat] -= 10 * stats.substatValues[substat] * charSubstatRarityMod[idxChar]
+			charProfilesCopy[idxChar].Stats[substat] -= 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 		}
 
 		// Allocate substats
@@ -313,7 +278,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		// Assigns substats and returns the remaining global limit and individual substat limit
 		assignSubstats := func(substat core.StatType, amt int) (int, int) {
 			totalSubstatCount := 0
-			for _, val := range charSubstatFinal[idxChar] {
+			for _, val := range stats.charSubstatFinal[idxChar] {
 				totalSubstatCount += val
 			}
 
@@ -328,10 +293,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 			remainingLiquidSubstats := baseLiquidSubstats - totalSubstatCount
 			// Minimum of individual limit, global limit, desired amount
-			amtToAdd := minInt(charSubstatLimits[idxChar][substat]-charSubstatFinal[idxChar][substat], remainingLiquidSubstats, amt)
-			charSubstatFinal[idxChar][substat] += amtToAdd
+			amtToAdd := minInt(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat], remainingLiquidSubstats, amt)
+			stats.charSubstatFinal[idxChar][substat] += amtToAdd
 
-			return remainingLiquidSubstats - amtToAdd, charSubstatLimits[idxChar][substat] - charSubstatFinal[idxChar][substat]
+			return remainingLiquidSubstats - amtToAdd, stats.charSubstatLimits[idxChar][substat] - stats.charSubstatFinal[idxChar][substat]
 		}
 
 		for idxGrad, idxSubstat := range sorted.idx {
@@ -387,10 +352,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 				var iteration int
 				// Want this to continue until either global cap is reached, or we can neither add CR/CD
 				for globalLimit > 0 && (crLimit > 0 || cdLimit > 0) && iteration < 100 {
-					if charSubstatFinal[idxChar][core.CD] == 0 {
-						currentRatio = float64(charSubstatFinal[idxChar][core.CR])
+					if stats.charSubstatFinal[idxChar][core.CD] == 0 {
+						currentRatio = float64(stats.charSubstatFinal[idxChar][core.CR])
 					} else {
-						currentRatio = float64(charSubstatFinal[idxChar][core.CR]) / float64(charSubstatFinal[idxChar][core.CD])
+						currentRatio = float64(stats.charSubstatFinal[idxChar][core.CR]) / float64(stats.charSubstatFinal[idxChar][core.CD])
 					}
 
 					if currentRatio > crCDSubstatRatio {
@@ -426,11 +391,11 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			}
 		}
 
-		sugarLog.Info("Final Liquid Substat Counts: ", PrettyPrintStatsCounts(charSubstatFinal[idxChar]))
+		sugarLog.Info("Final Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 
 		// Reset favonius char crit rate... again
 		if charWithFavonius[idxChar] {
-			charProfilesCopy[idxChar].Stats[core.CR] += 8 * stats.substatValues[core.CR] * charSubstatRarityMod[idxChar]
+			charProfilesCopy[idxChar].Stats[core.CR] += 8 * stats.substatValues[core.CR] * stats.charSubstatRarityMod[idxChar]
 		}
 	}
 
@@ -451,7 +416,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			if value <= 0 {
 				continue
 			}
-			finalString += fmt.Sprintf(" %v=%.6g", core.StatTypeString[idxSubstat], value*float64(2+charSubstatFinal[idxChar][idxSubstat]))
+			finalString += fmt.Sprintf(" %v=%.6g", core.StatTypeString[idxSubstat], value*float64(2+stats.charSubstatFinal[idxChar][idxSubstat]))
 		}
 
 		fmt.Println(finalString + ";")
