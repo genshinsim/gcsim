@@ -101,5 +101,6 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 		c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
 	}
+
 	return ds
 }

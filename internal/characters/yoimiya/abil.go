@@ -29,13 +29,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		totalMV += mult[c.TalentLvlAttack()]
+
 		// TODO - double check snapshotDelay
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, travel+f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
 
-	if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
+	if c.Base.Cons == 6 && c.Core.Status.Duration("yoimiyaskill") > 0 && c.Core.Rand.Float64() < 0.5 {
 		//trigger attack
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
@@ -45,7 +46,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			ICDGroup:   core.ICDGroupDefault,
 			Element:    core.Pyro,
 			Durability: 25,
-			Mult:       totalMV,
+			Mult:       totalMV * 0.6,
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, travel+f+5)
 
