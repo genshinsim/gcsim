@@ -343,7 +343,7 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int, delay int) e
 	for range cd {
 		char.Skill(p)
 	}
-	SkipFrames(delay)
+	SkipFrames(c, delay)
 	for i, v := range cd {
 		SkipFrames(c, v-10)
 		if char.Charges(core.ActionSkill) != i {
@@ -363,7 +363,7 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int, delay int) e
 	for range cd {
 		char.Skill(p)
 	}
-	SkipFrames(delay)
+	SkipFrames(c, delay)
 	for i, v := range cd {
 		SkipFrames(c, v-10)
 		if char.Charges(core.ActionSkill) != i {
