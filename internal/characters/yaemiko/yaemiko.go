@@ -65,7 +65,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 func (c *char) a4() {
 	m := make([]float64, core.EndStatType)
 	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "yaemiko-a2",
+		Key:    "yaemiko-a1",
 		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 			// only trigger on elemental art damage

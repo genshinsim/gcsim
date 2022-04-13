@@ -58,7 +58,7 @@ func (c *char) Init() {
 
 	c.quillcount = make([]int, len(c.Core.Chars))
 
-	c.a2()
+	c.a1()
 	c.quillDamageMod()
 
 	if c.Base.Cons >= 4 {
@@ -93,7 +93,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 // inspired from barbara c2
 // TODO: technically always assumes you are inside shenhe burst
-func (c *char) a2() {
+func (c *char) a1() {
 	val := make([]float64, core.EndStatType)
 	val[core.CryoP] = 0.15
 	for _, char := range c.Core.Chars {
@@ -101,7 +101,7 @@ func (c *char) a2() {
 		// 	continue
 		// }
 		char.AddMod(core.CharStatMod{
-			Key:    "shenhe-a2",
+			Key:    "shenhe-a1",
 			Expiry: -1,
 			Amount: func() ([]float64, bool) {
 				if c.Core.Status.Duration("shenheburst") > 0 {

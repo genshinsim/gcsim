@@ -61,7 +61,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Init() {
 	c.Tmpl.Init()
 
-	c.a2()
+	c.a1()
 	c.a4()
 	c.onExitField()
 
@@ -119,15 +119,15 @@ func (c *char) c6() {
 	}, "ayato-c6")
 }
 
-func (c *char) a2() {
+func (c *char) a1() {
 	c.Core.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
 		if c.Core.ActiveChar != c.CharIndex() {
 			return false
 		}
 		c.stacks = 2
-		c.Core.Log.NewEvent("ayato a2 proc'd", core.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("ayato a1 proc'd", core.LogCharacterEvent, c.Index)
 		return false
-	}, "ayato-a2")
+	}, "ayato-a1")
 }
 
 func (c *char) a4() {

@@ -39,17 +39,17 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Init() {
 	c.Tmpl.Init()
 
-	c.a2()
+	c.a1()
 
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
+	if c.Base.Cons == 6 {
+		c.c6()
+	}
 }
 
-func (c *char) a2() {
+func (c *char) a1() {
 	c.Core.AddStamMod(func(a core.ActionType) (float64, bool) {
 		if c.Core.Shields.Get(core.ShieldDionaSkill) != nil {
 			return -0.1, false

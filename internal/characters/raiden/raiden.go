@@ -74,7 +74,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
 	s := c.Tmpl.Snapshot(a)
 
-	//a2 add dmg based on ER%
+	//a1 add dmg based on ER%
 	excess := int(s.Stats[core.ER] / 0.01)
 
 	s.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg

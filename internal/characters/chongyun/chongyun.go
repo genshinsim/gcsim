@@ -125,7 +125,7 @@ func (c *char) infuse(char core.Character) {
 		return
 	}
 
-	//a2 adds 8% atkspd for 2.1 seconds
+	//a1 adds 8% atkspd for 2.1 seconds
 	val := make([]float64, core.EndStatType)
 	val[core.AtkSpd] = 0.08
 	char.AddMod(core.CharStatMod{

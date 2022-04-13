@@ -46,21 +46,39 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Init() {
 	c.Tmpl.Init()
 
-	c.a2()
+	c.a1()
 
 	if c.Base.Cons >= 2 {
 		c.overloadExplode()
 	}
 }
 
-func (c *char) a2() {
+func (c *char) a1() {
+	m := make([]float64, core.EndStatType)
+	m[core.CR] = .1
+
 	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "amber-a2",
+		Key:    "amber-a1",
 		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			v := make([]float64, core.EndStatType)
-			v[core.CR] = .1
-			return v, atk.Info.AttackTag == core.AttackTagElementalBurst
+			return m, atk.Info.AttackTag == core.AttackTagElementalBurst
+		},
+	})
+}
+
+func (c *char) a4(a core.AttackCB) {
+	if !a.AttackEvent.Info.HitWeakPoint {
+		return
+	}
+
+	m := make([]float64, core.EndStatType)
+	m[core.ATKP] = 0.15
+
+	c.AddMod(core.CharStatMod{
+		Key:    "amber-a4",
+		Expiry: c.Core.F + 600,
+		Amount: func() ([]float64, bool) {
+			return m, true
 		},
 	})
 }

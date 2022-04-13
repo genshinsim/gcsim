@@ -27,7 +27,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		//add 60% as geo dmg
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "A2",
+			Abil:       "A1",
 			AttackTag:  core.AttackTagNormal,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,

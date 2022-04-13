@@ -95,7 +95,7 @@ func (c *char) a4() {
 			x.AddEnergy("klee-a4", 2)
 		}
 		return false
-	}, "kleea2")
+	}, "kleea1")
 }
 
 func (c *char) c1(delay int) {

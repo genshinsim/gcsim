@@ -35,7 +35,7 @@ func (c *char) addJadeShield() {
 
 func (c *char) removeJadeShield() {
 	c.Tags["shielded"] = 0
-	c.Tags["a2"] = 0
+	c.Tags["a1"] = 0
 	//deactivate resist mods
 	//add resist mod whenever we get a shield
 	res := []core.EleType{core.Pyro, core.Hydro, core.Cryo, core.Electro, core.Geo, core.Anemo, core.Physical}
@@ -93,8 +93,8 @@ func (s *shd) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, b
 	if !ok {
 		s.c.removeJadeShield()
 	}
-	if s.c.Tags["a2"] < 5 {
-		s.c.Tags["a2"]++
+	if s.c.Tags["a1"] < 5 {
+		s.c.Tags["a1"]++
 	}
 	return taken, ok
 }

@@ -153,7 +153,7 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("keqinginfuse", 300)
 
 	c.AddWeaponInfuse(core.WeaponInfusion{
-		Key:    "a2",
+		Key:    "keqing-a1",
 		Ele:    core.Electro,
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Core.F + 300,
@@ -195,15 +195,8 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
-	//a4 increase crit + ER
-	val := make([]float64, core.EndStatType)
-	val[core.CR] = 0.15
-	val[core.ER] = 0.15
-	c.AddMod(core.CharStatMod{
-		Key:    "a4",
-		Amount: func() ([]float64, bool) { return val, true },
-		Expiry: c.Core.F + 480,
-	})
+
+	c.a4()
 
 	//first hit 70 frame
 	//first tick 74 frame
@@ -242,7 +235,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.ConsumeEnergy(60)
-	// c.CD[def.BurstCD] = c.Core.F + 720 //12s
 	c.SetCDWithDelay(core.ActionBurst, 720, 60)
 
 	return f, a

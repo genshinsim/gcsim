@@ -85,8 +85,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("yoimiyaskill", 600) //activate for 10
 	// log.Println(c.Core.Status.Duration("yoimiyaskill"))
 
-	if c.Core.Status.Duration("yoimiyaa2") == 0 {
-		c.a2stack = 0
+	if c.Core.Status.Duration("yoimiyaa1") == 0 {
+		c.a1stack = 0
 	}
 
 	c.SetCD(core.ActionSkill, 1080)
@@ -121,7 +121,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Core.Status.AddStatus("aurous", duration)
 		val := make([]float64, core.EndStatType)
 		//attack buff
-		val[core.ATKP] = 0.1 + float64(c.a2stack)*0.01
+		val[core.ATKP] = 0.1 + float64(c.a1stack)*0.01
 		for i, char := range c.Core.Chars {
 			if i == c.Index {
 				continue

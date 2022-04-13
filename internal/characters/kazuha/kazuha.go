@@ -12,7 +12,7 @@ func init() {
 type char struct {
 	*character.Tmpl
 	a4Expiry            int
-	a2Ele               core.EleType
+	a1Ele               core.EleType
 	qInfuse             core.EleType
 	c6Active            int
 	infuseCheckLocation core.AttackPattern

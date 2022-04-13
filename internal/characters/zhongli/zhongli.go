@@ -51,7 +51,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Init() {
 	c.Tmpl.Init()
 
-	c.a2()
+	c.a1()
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -67,11 +67,11 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 }
 
-func (c *char) a2() {
+func (c *char) a1() {
 	c.Core.Shields.AddBonus(func() float64 {
 		if c.Tags["shielded"] == 0 {
 			return 0
 		}
-		return float64(c.Tags["a2"]) * 0.05
+		return float64(c.Tags["a1"]) * 0.05
 	})
 }

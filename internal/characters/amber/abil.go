@@ -65,26 +65,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 		Mult:         aim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
-
-	// d.AnimationFrames = f
-
-	//add 15% since 360noscope
-	cb := func(a core.AttackCB) {
-		if a.AttackEvent.Info.HitWeakPoint {
-			c.AddMod(core.CharStatMod{
-				Key: "a2",
-				Amount: func() ([]float64, bool) {
-					val := make([]float64, core.EndStatType)
-					val[core.ATKP] = 0.15
-					return val, true
-				},
-				Expiry: c.Core.F + 600,
-			})
-		}
-
-	}
-
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel, c.a4)
 
 	if c.Base.Cons >= 1 {
 		ai.Mult = .2 * ai.Mult
