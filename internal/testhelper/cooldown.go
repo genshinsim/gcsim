@@ -300,7 +300,7 @@ func TestResetSkillCDDoubleCharge(c *core.Core, char core.Character, cd []int) e
 	return nil
 }
 
-func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
+func TestSkillCooldown(c *core.Core, char core.Character, cd []int, delay int) error {
 	setupChar(c, char)
 	p := make(map[string]int)
 
@@ -317,11 +317,12 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
 			return fmt.Errorf("used skill %v times, expecting cooldown to be 0, got %v", i, char.Cooldown(core.ActionSkill))
 		}
 		char.Skill(p)
+		SkipFrames(c, delay)
 	}
 
 	//skip through cd queue
 	for i, v := range cd {
-		SkipFrames(c, v-1)
+		SkipFrames(c, v-1+delay)
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
@@ -338,7 +339,7 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
 		char.Skill(p)
 	}
 	for i, v := range cd {
-		SkipFrames(c, v-10)
+		SkipFrames(c, v-10+delay)
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("(reduce cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
@@ -357,7 +358,7 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
 		char.Skill(p)
 	}
 	for i, v := range cd {
-		SkipFrames(c, v-10)
+		SkipFrames(c, v-10+delay)
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("(reset cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
