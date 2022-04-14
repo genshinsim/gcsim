@@ -113,8 +113,8 @@ func (c *char) absorbCheck() {
 }
 
 func (c *char) a1() {
+	icd := -1
 	swirlfunc := func(ele core.EleType) func(args ...interface{}) bool {
-		icd := -1
 		return func(args ...interface{}) bool {
 			atk := args[1].(*core.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
