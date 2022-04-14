@@ -95,7 +95,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		c.Core.RestoreStam(10)
 		val := make([]float64, core.EndStatType)
 		val[core.CryoP] = 0.18
-		//a2 increase normal + ca dmg by 30% for 6s
+		//a1 increase normal + ca dmg by 30% for 6s
 		c.AddMod(core.CharStatMod{
 			Key:    "ayaka-a4",
 			Expiry: c.Core.F + 600,

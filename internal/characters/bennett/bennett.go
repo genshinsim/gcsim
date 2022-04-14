@@ -34,13 +34,15 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.Base.Element = core.Pyro
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-
-	//add effect for burst
-
-	return &c, nil
 }
 
 func (c *char) c2() {

@@ -35,18 +35,21 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	if c.Base.Cons >= 1 && c.Core.Flags.DamageMode {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
-	return &c, nil
 }
 
 func (c *char) c1() {

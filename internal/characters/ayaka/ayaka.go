@@ -36,7 +36,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
-	c.InitCancelFrames()
 
 	c.icdC1 = -1
 	c.c6CDTimerAvail = false
@@ -44,10 +43,20 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	// Start with C6 ability active
 	if c.Base.Cons == 6 {
 		c.c6CDTimerAvail = true
-		c.c6AddBuff()
 	}
 
+	c.InitCancelFrames()
+
 	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	// Start with C6 ability active
+	if c.Base.Cons == 6 {
+		c.c6AddBuff()
+	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

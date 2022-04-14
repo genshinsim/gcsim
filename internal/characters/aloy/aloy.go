@@ -38,10 +38,14 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.Tags["coil_stacks"] = 0
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	c.coilMod()
 	c.onExitField()
-
-	return &c, nil
 }
 
 // Add coil mod at the beginning of the sim

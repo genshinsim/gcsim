@@ -44,17 +44,24 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 
 	c.shunsuikenCounter = 3
-	c.stacksMax = 4
 	c.particleICD = 0
 	c.a4ICD = 0
 	c.c6ready = false
+
+	c.stacksMax = 4
+	if c.Base.Cons >= 2 {
+		c.stacksMax = 5
+	}
+
+	c.InitCancelFrames()
 
 	return &c, nil
 }
 
 func (c *char) Init() {
 	c.Tmpl.Init()
-	c.a2()
+
+	c.a1()
 	c.a4()
 	c.onExitField()
 
@@ -62,15 +69,11 @@ func (c *char) Init() {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {
-		c.stacksMax = 5
 		c.c2()
 	}
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
-
-	c.InitCancelFrames()
-
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -116,15 +119,15 @@ func (c *char) c6() {
 	}, "ayato-c6")
 }
 
-func (c *char) a2() {
+func (c *char) a1() {
 	c.Core.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
 		if c.Core.ActiveChar != c.CharIndex() {
 			return false
 		}
 		c.stacks = 2
-		c.Core.Log.NewEvent("ayato a2 proc'd", core.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("ayato a1 proc'd", core.LogCharacterEvent, c.Index)
 		return false
-	}, "ayato-a2")
+	}, "ayato-a1")
 }
 
 func (c *char) a4() {

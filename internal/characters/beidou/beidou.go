@@ -35,14 +35,18 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneLiyue
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	c.burstProc()
 	c.a4()
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
-	return &c, nil
 }
 
 /**

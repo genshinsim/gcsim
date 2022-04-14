@@ -39,7 +39,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.NormalHitNum = 5
 
-	c.burstProc()
-
 	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.burstProc()
 }

@@ -37,19 +37,23 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 40
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
+
 	c.icdSkill = 0
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.skillHook()
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
 	if c.Base.Cons == 6 {
 		c.c6()
 	}
-
-	return &c, nil
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -66,7 +70,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 /**
 
-a2: skill tick deal 25% more dmg if enemy hp < 50%
+a1: skill tick deal 25% more dmg if enemy hp < 50%
 
 a4: burst increase party em by 125 for 10s
 
@@ -224,7 +228,7 @@ func (c *char) skillHook() {
 
 		if c.Core.Flags.DamageMode && t.HP()/t.MaxHP() < .5 {
 			snap.Stats[core.DmgP] += 0.25
-			c.Core.Log.NewEvent("a2 proc'd, dealing extra dmg", core.LogCharacterEvent, c.Index, "hp %", t.HP()/t.MaxHP(), "final dmg", snap.Stats[core.DmgP])
+			c.Core.Log.NewEvent("a1 proc'd, dealing extra dmg", core.LogCharacterEvent, c.Index, "hp %", t.HP()/t.MaxHP(), "final dmg", snap.Stats[core.DmgP])
 		}
 
 		c.Core.Combat.QueueAttackWithSnap(c.skillAttackInfo, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 1)

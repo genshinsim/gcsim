@@ -24,6 +24,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Hydro
+
 	e, ok := p.Params["start_energy"]
 	if !ok {
 		e = 80
@@ -34,6 +35,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 4
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.a1()
 
@@ -46,7 +53,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
-	return &c, nil
 }
 
 func (c *char) a1() {

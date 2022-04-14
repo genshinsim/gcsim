@@ -36,18 +36,33 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
 
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
-
 	return &c, nil
 }
 
-var delay = [][]int{{8}, {20}, {25}, {25, 35}, {34}}
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+}
+
+func (c *char) a4() {
+	m := make([]float64, core.EndStatType)
+	m[core.CR] = 0.15
+	m[core.ER] = 0.15
+
+	c.AddMod(core.CharStatMod{
+		Key:    "keqing-a4",
+		Expiry: c.Core.F + 480,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
+}
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
@@ -62,24 +77,23 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) c4() {
+	m := make([]float64, core.EndStatType)
+	m[core.ATKP] = 0.25
 
 	cb := func(args ...interface{}) bool {
-
 		atk := args[1].(*core.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
 
 		c.AddMod(core.CharStatMod{
-			Key: "c4",
-			Amount: func() ([]float64, bool) {
-
-				val := make([]float64, core.EndStatType)
-				val[core.ATKP] = 0.25
-				return val, true
-			},
+			Key:    "keqing-c4",
 			Expiry: c.Core.F + 600,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
+
 		return false
 	}
 
