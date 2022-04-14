@@ -16,6 +16,7 @@ type char struct {
 	lastConstruct   int
 	skillAttackInfo core.AttackInfo
 	skillSnapshot   core.Snapshot
+	bloomSnapshot   core.Snapshot
 	icdSkill        int
 }
 
@@ -174,7 +175,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
+	c.bloomSnapshot = c.Snapshot(&ai)
+	c.Core.Combat.QueueAttackWithSnap(ai, c.bloomSnapshot, core.NewDefCircHit(3, false, core.TargettableEnemy), f)
 
 	//snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -274,11 +276,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlSkill()],
 	}
-	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
-
-	ai.Abil = "Rite of Progeniture: Tectonic Tide (Bloom)"
-	ai.Mult = burstPerBloom[c.TalentLvlSkill()]
 	snap := c.Snapshot(&ai)
 
 	//check stacks
@@ -287,10 +284,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Tags["c2"] = 0
 	}
 
+	//TODO: damage frame
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), f)
+
 	// Blooms are generated on a slight delay from initial hit
 	// TODO: No precise frame data, guessing correct delay
+	ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
+	ai.Mult = burstPerBloom[c.TalentLvlSkill()]
 	for i := 0; i < hits; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), f+30+i*5)
+		c.Core.Combat.QueueAttackWithSnap(ai, c.bloomSnapshot, core.NewDefCircHit(3, false, core.TargettableEnemy), f+30+i*5)
 	}
 
 	//Party wide EM buff

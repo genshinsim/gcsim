@@ -11,9 +11,10 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	c2reset     int
-	lastScreen  int
-	particleICD int
+	c2reset       int
+	lastScreen    int
+	particleICD   int
+	skillSnapshot core.Snapshot
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {

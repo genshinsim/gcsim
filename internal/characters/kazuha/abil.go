@@ -228,11 +228,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
 	for i := 0; i < 5; i++ {
 		c.AddTask(func() {
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
 			if c.qInfuse != core.NoElement {
 				aiAbsorb.Element = c.qInfuse
 				c.Core.Combat.QueueAttackWithSnap(aiAbsorb, snapAbsorb, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
 			}
-			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
 		}, "kazuha-burst-tick", 147+117*i)
 	}
 

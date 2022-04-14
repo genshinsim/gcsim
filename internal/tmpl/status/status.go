@@ -43,13 +43,13 @@ func (s *StatusCtrl) AddStatus(key string, dur int) {
 		//log an entry for refreshing
 		//TODO: this line may not be needed
 		if s.core.Flags.LogDebug {
-			s.core.Log.NewEvent("status refreshed: ", core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur)
+			s.core.Log.NewEvent("status refreshed", core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur)
 		}
 		return
 	}
 
 	//otherwise create a new event
-	a.evt = s.core.Log.NewEvent("status added: ", core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur)
+	a.evt = s.core.Log.NewEvent("status added", core.LogStatusEvent, -1, "key", key, "expiry", s.core.F+dur)
 	a.expiry = s.core.F + dur
 	a.evt.SetEnded(a.expiry)
 
@@ -70,7 +70,7 @@ func (s *StatusCtrl) ExtendStatus(key string, dur int) {
 
 	//TODO: this line may not be needed
 	if s.core.Flags.LogDebug {
-		s.core.Log.NewEvent("status refreshed: ", core.LogStatusEvent, -1, "key", key, "expiry", a.expiry)
+		s.core.Log.NewEvent("status refreshed", core.LogStatusEvent, -1, "key", key, "expiry", a.expiry)
 	}
 }
 
@@ -81,7 +81,7 @@ func (s *StatusCtrl) DeleteStatus(key string) {
 		a.evt.SetEnded(s.core.F)
 		//TODO: this line may not be needed
 		if s.core.Flags.LogDebug {
-			s.core.Log.NewEvent("status deleted: ", core.LogStatusEvent, -1, "key", key)
+			s.core.Log.NewEvent("status deleted", core.LogStatusEvent, -1, "key", key)
 		}
 	}
 	delete(s.status, key)

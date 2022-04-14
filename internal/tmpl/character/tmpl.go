@@ -167,6 +167,20 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 	c.PreDamageMods[ind] = mod
 }
 
+func (c *Tmpl) DeletePreDamageMod(key string) {
+	n := 0
+	for _, v := range c.PreDamageMods {
+		if v.Key == key {
+			v.Event.SetEnded(c.Core.F)
+			c.Core.Log.NewEvent("mod deleted", core.LogStatusEvent, c.Index, "key", key)
+		} else {
+			c.PreDamageMods[n] = v
+			n++
+		}
+	}
+	c.PreDamageMods = c.PreDamageMods[:n]
+}
+
 func (c *Tmpl) AddMod(mod core.CharStatMod) {
 	ind := -1
 	for i, v := range c.Mods {
@@ -189,6 +203,20 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 	}
 	mod.Event.SetEnded(mod.Expiry)
 	c.Mods[ind] = mod
+}
+
+func (c *Tmpl) DeleteMod(key string) {
+	n := 0
+	for _, v := range c.Mods {
+		if v.Key == key {
+			v.Event.SetEnded(c.Core.F)
+			c.Core.Log.NewEvent("mod deleted", core.LogStatusEvent, c.Index, "key", key)
+		} else {
+			c.Mods[n] = v
+			n++
+		}
+	}
+	c.Mods = c.Mods[:n]
 }
 
 func (c *Tmpl) ModIsActive(key string) bool {
