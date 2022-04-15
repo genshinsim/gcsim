@@ -194,19 +194,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	if c.Base.Cons >= 4 {
-		val2 := make([]float64, core.EndStatType)
-		val2[core.AtkSpd] = 0.15
+		m := make([]float64, core.EndStatType)
+		m[core.AtkSpd] = 0.15
 		for _, char := range c.Core.Chars {
 			char.AddMod(core.CharStatMod{
 				Key:    "ayato-c4",
-				Expiry: 15 * 60,
+				Expiry: c.Core.F + 15*60,
 				Amount: func() ([]float64, bool) {
-					if c.Core.Status.Duration("ayatoburst") > 0 {
-						//should always be true but can't hurt just in case
-						return val, true
-					} else {
-						return nil, false
-					}
+					return m, true
 				},
 			})
 		}
