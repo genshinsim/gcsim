@@ -75,10 +75,10 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 			ActorIndex:     c.Index,
 			Abil:           "Plunge (Collide)",
 			AttackTag:      core.AttackTagPlunge,
-			ICDTag:         core.ICDTagNormalAttack,
+			ICDTag:         core.ICDTagNone,
 			ICDGroup:       core.ICDGroupDefault,
 			Element:        ele,
-			Durability:     25,
+			Durability:     0,
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
@@ -90,7 +90,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 		ActorIndex:     c.Index,
 		Abil:           "Plunge",
 		AttackTag:      core.AttackTagPlunge,
-		ICDTag:         core.ICDTagNormalAttack,
+		ICDTag:         core.ICDTagNone,
 		ICDGroup:       core.ICDGroupDefault,
 		StrikeType:     core.StrikeTypeBlunt,
 		Element:        ele,
@@ -158,6 +158,14 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	if c.Base.Cons == 6 {
 		c.c6Active = c.Core.F + f + 300
 	}
+
+	c.AddWeaponInfuse(core.WeaponInfusion{
+		Key:    "kazuha-c6-infusion",
+		Ele:    core.Anemo,
+		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
+		Expiry: c.Core.F + f + 300,
+	})
+
 	c.SetCD(core.ActionSkill, cd)
 
 	return f, a
@@ -186,9 +194,18 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	if c.Base.Cons > 0 {
 		cd = 486
 	}
+
 	if c.Base.Cons == 6 {
 		c.c6Active = c.Core.F + f + 300
 	}
+
+	c.AddWeaponInfuse(core.WeaponInfusion{
+		Key:    "kazuha-c6-infusion",
+		Ele:    core.Anemo,
+		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
+		Expiry: c.Core.F + f + 300,
+	})
+
 	c.SetCD(core.ActionSkill, cd)
 	return f, a
 }
