@@ -269,6 +269,7 @@ bennett add weapon="favoniussword" lvl=90/90 refine=1;
 bennett add set="noblesseoblige" count=4;
 bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 label=main ;
 bennett add stats hp=717 hp%=0.057999999999999996 atk=78 atk%=0.663 def=118 em=42 er=0.221 cr=0.039 cd=0.475 label=subs ;
+bennett add stats roll=avg hp=1 hp%=1 atk=1 label=kqmcsucks ;
 
 active bennett;
 target lvl=100 resist=0.1;

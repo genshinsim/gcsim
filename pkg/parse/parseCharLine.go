@@ -250,6 +250,8 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 	//each line will be parsed separately into the map
 	var line = make([]float64, len(core.StatTypeString))
 	var key string
+	var useAvg bool
+	rarity := 5
 
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
@@ -270,6 +272,37 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 			key = x.val
+		case itemIdentifier:
+			switch n.val {
+			case "roll":
+				x, err := p.acceptSeqReturnLast(itemEqual, itemIdentifier)
+				if err != nil {
+					return nil, err
+				}
+				//should be min, max, avg
+				switch x.val {
+				case "avg":
+					useAvg = true
+				}
+			case "rarity":
+				x, err := p.acceptSeqReturnLast(itemEqual, itemNumber)
+				if err != nil {
+					return nil, err
+				}
+				amt, err := itemNumberToInt(x)
+				if err != nil {
+					return nil, err
+				}
+				if amt > 5 {
+					amt = 5
+				}
+				if amt < 4 {
+					amt = 4
+				}
+				rarity = amt
+			default:
+				return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats: %v", n.line, n)
+			}
 		case itemTerminateLine:
 			//add stats into label
 			m, ok := c.StatsByLabel[key]
@@ -277,8 +310,13 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 				m = make([]float64, len(core.StatTypeString))
 			}
 			for i, v := range line {
-				c.Stats[i] += v
-				m[i] += v
+				if useAvg {
+					c.Stats[i] += v * avgRoll[rarity-1][i]
+					m[i] += v * avgRoll[rarity-1][i]
+				} else {
+					c.Stats[i] += v
+					m[i] += v
+				}
 			}
 			c.StatsByLabel[key] = m
 			return parseRows, nil
@@ -287,4 +325,132 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 		}
 	}
 	return nil, errors.New("unexpected end of line while parsing character add stats")
+}
+
+var avgRoll = [][]float64{
+	//1
+	{
+		1, //n/a
+		1, //def%
+		1, //def
+		1, //hp
+		1, //hp%
+		1, //atk
+		1, //atk%
+		1, //er
+		1, //em
+		1, //cr
+		1, //cd
+		1, //heal
+		1, //pyro%
+		1, //hydro%
+		1, //cryo%
+		1, //electro%
+		1, //anemo%
+		1, //geo%
+		1, //phys%
+		1, //dendro%
+		1, //atkspd%
+		1, //dmg%
+	},
+	//2
+	{
+		1, //n/a
+		1, //def%
+		1, //def
+		1, //hp
+		1, //hp%
+		1, //atk
+		1, //atk%
+		1, //er
+		1, //em
+		1, //cr
+		1, //cd
+		1, //heal
+		1, //pyro%
+		1, //hydro%
+		1, //cryo%
+		1, //electro%
+		1, //anemo%
+		1, //geo%
+		1, //phys%
+		1, //dendro%
+		1, //atkspd%
+		1, //dmg%
+	},
+	//3
+	{
+		1, //n/a
+		1, //def%
+		1, //def
+		1, //hp
+		1, //hp%
+		1, //atk
+		1, //atk%
+		1, //er
+		1, //em
+		1, //cr
+		1, //cd
+		1, //heal
+		1, //pyro%
+		1, //hydro%
+		1, //cryo%
+		1, //electro%
+		1, //anemo%
+		1, //geo%
+		1, //phys%
+		1, //dendro%
+		1, //atkspd%
+		1, //dmg%
+	},
+	//4
+	{
+		1, //n/a
+		1, //def%
+		1, //def
+		1, //hp
+		1, //hp%
+		1, //atk
+		1, //atk%
+		1, //er
+		1, //em
+		1, //cr
+		1, //cd
+		1, //heal
+		1, //pyro%
+		1, //hydro%
+		1, //cryo%
+		1, //electro%
+		1, //anemo%
+		1, //geo%
+		1, //phys%
+		1, //dendro%
+		1, //atkspd%
+		1, //dmg%
+	},
+	//5
+	{
+		1, //n/a
+		1, //def%
+		1, //def
+		1, //hp
+		1, //hp%
+		1, //atk
+		1, //atk%
+		1, //er
+		1, //em
+		1, //cr
+		1, //cd
+		1, //heal
+		1, //pyro%
+		1, //hydro%
+		1, //cryo%
+		1, //electro%
+		1, //anemo%
+		1, //geo%
+		1, //phys%
+		1, //dendro%
+		1, //atkspd%
+		1, //dmg%
+	},
 }
