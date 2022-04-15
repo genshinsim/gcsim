@@ -70,17 +70,18 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 }
 
 func (c *char) a4() {
+	m := make([]float64, core.EndStatType)
+	m[core.PyroP] = 0.33
 	c.AddMod(core.CharStatMod{
-		Key:    "hutao-a4",
-		Expiry: -1,
+		Key:          "hutao-a4",
+		Expiry:       -1,
+		AffectedStat: core.PyroP, // to avoid infinite loop when calling MaxHP
 		Amount: func() ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-			val[core.PyroP] = 0.33
 			if c.Core.Status.Duration("paramita") == 0 {
 				return nil, false
 			}
-			if c.HPCurrent/c.HPMax <= 0.5 {
-				return val, true
+			if c.HP()/c.MaxHP() <= 0.5 {
+				return m, true
 			}
 			return nil, false
 		},
