@@ -26,6 +26,7 @@ func (p *Parser) newChar(key core.CharKey) {
 	r := core.CharacterProfile{}
 	r.Base.Key = key
 	r.Stats = make([]float64, len(core.StatTypeString))
+	r.StatsByLabel = make(map[string][]float64)
 	r.Params = make(map[string]int)
 	r.Sets = make(map[string]int)
 	r.SetParams = make(map[string]map[string]int)
@@ -246,6 +247,10 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 	//xiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
 	c := p.chars[p.currentCharKey]
 
+	//each line will be parsed separately into the map
+	var line = make([]float64, len(core.StatTypeString))
+	var key string
+
 	for n := p.next(); n.typ != itemEOF; n = p.next() {
 		switch n.typ {
 		case itemStatKey:
@@ -258,8 +263,24 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 			pos := statKeys[n.val]
-			c.Stats[pos] += amt
+			line[pos] += amt
+		case itemLabel:
+			x, err := p.acceptSeqReturnLast(itemEqual, itemIdentifier)
+			if err != nil {
+				return nil, err
+			}
+			key = x.val
 		case itemTerminateLine:
+			//add stats into label
+			m, ok := c.StatsByLabel[key]
+			if !ok {
+				m = make([]float64, len(core.StatTypeString))
+			}
+			for i, v := range line {
+				c.Stats[i] += v
+				m[i] += v
+			}
+			c.StatsByLabel[key] = m
 			return parseRows, nil
 		default:
 			return nil, fmt.Errorf("ln%v: unrecognized token parsing add stats: %v", n.line, n)

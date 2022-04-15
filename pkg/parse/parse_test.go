@@ -59,6 +59,32 @@ func TestParse(t *testing.T) {
 
 }
 
+func TestStatsLabel(t *testing.T) {
+	p := New("test", statLabelTest)
+	a, err := p.Parse()
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println("characters:")
+	for _, v := range a.Characters.Profile {
+		fmt.Println(v.Base.Key.String())
+		//basic stats:
+		fmt.Println("\t basics", v.Base)
+		fmt.Println("\t char params", v.Params)
+		fmt.Println("\t weapons", v.Weapon)
+		fmt.Println("\t talents", v.Talents)
+		fmt.Println("\t sets", v.Sets)
+		fmt.Println("\t set params", v.SetParams)
+		//pretty print stats
+		fmt.Println("\t stats", v.Stats)
+		//print stat map
+		for k, vv := range v.StatsByLabel {
+			fmt.Printf("\t stats for %v: %v\n", k, vv)
+		}
+	}
+
+}
+
 func TestConfigClone(t *testing.T) {
 	parser := New("test", pteststring)
 	c, err := parser.Parse()
@@ -235,14 +261,27 @@ chain a,b +label=xlcollect;
 
 xiangling attack +is_onfield +label=fill;`
 
+var statLabelTest = `
+options debug=true iteration=300 duration=60 workers=24;
+
+bennett char lvl=70/80 cons=2 talent=6,8,8;
+bennett add weapon="favoniussword" lvl=90/90 refine=1;
+bennett add set="noblesseoblige" count=4;
+bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 label=main ;
+bennett add stats hp=717 hp%=0.057999999999999996 atk=78 atk%=0.663 def=118 em=42 er=0.221 cr=0.039 cd=0.475 label=subs ;
+
+active bennett;
+target lvl=100 resist=0.1;
+`
+
 var raiden = `
 options debug=true iteration=300 duration=60 workers=24;
 
 bennett char lvl=70/80 cons=2 talent=6,8,8;
 bennett add weapon="favoniussword" lvl=90/90 refine=1;
 bennett add set="noblesseoblige" count=4;
-bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 ;
-bennett add stats hp=717 hp%=0.057999999999999996 atk=78 atk%=0.663 def=118 em=42 er=0.221 cr=0.039 cd=0.475 ;
+bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 label=main ;
+bennett add stats hp=717 hp%=0.057999999999999996 atk=78 atk%=0.663 def=118 em=42 er=0.221 cr=0.039 cd=0.475 label=subs ;
 
 raiden char lvl=90/90 cons=1 talent=10,10,10;
 raiden add weapon="engulfinglightning" lvl=90/90 refine=1;
