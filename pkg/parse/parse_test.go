@@ -358,10 +358,31 @@ bennett add weapon="favoniussword" lvl=90/90 refine=1;
 bennett add set="noblesseoblige" count=4;
 bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 label=main ;
 bennett add stats hp=717 hp%=0.057999999999999996 atk=78 atk%=0.663 def=118 em=42 er=0.221 cr=0.039 cd=0.475 label=subs ;
-bennett add stats roll=avg rarity=5 hp=1 hp%=1 atk=1 label=kqmcsucks ;
+bennett add stats roll=avg rarity=5 label=rolltest
+def%=1
+def=1
+hp=1
+hp%=1
+atk=1
+atk%=1
+er=1
+em=1
+cr=1
+cd=1
+heal=1
+pyro%=1
+hydro%=1
+cryo%=1
+electro%=1
+anemo%=1
+geo%=1
+phys%=1
+;
 
 active bennett;
 target lvl=100 resist=0.1;
+
+
 `
 
 func TestStatsLabel(t *testing.T) {
