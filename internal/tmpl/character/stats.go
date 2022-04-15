@@ -10,13 +10,15 @@ import (
 func (t *Tmpl) Stat(s core.StatType) float64 {
 	val := t.Stats[s]
 	for _, m := range t.Mods {
-		//ignore this mod if stat type doesnt match
+		// ignore this mod if stat type doesnt match
 		if m.AffectedStat != core.NoStat && m.AffectedStat != s {
 			continue
 		}
-		amt, ok := m.Amount()
-		if ok {
-			val += amt[s]
+		// check expiry
+		if m.Expiry > t.Core.F || m.Expiry == -1 {
+			if amt, ok := m.Amount(); ok {
+				val += amt[s]
+			}
 		}
 	}
 
