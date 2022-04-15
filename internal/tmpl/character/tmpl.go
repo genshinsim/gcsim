@@ -40,8 +40,8 @@ type Tmpl struct {
 	Energy    float64
 	EnergyMax float64
 
+	// TODO: maybe should change this to % of max hp
 	HPCurrent float64
-	HPMax     float64
 
 	//counters
 	NormalHitNum  int //how many hits in a normal combo
@@ -111,23 +111,9 @@ func (t *Tmpl) SetIndex(index int) {
 
 // Character initialization function. Occurs AFTER all char/weapons are initially loaded
 func (t *Tmpl) Init() {
-	hpp := t.Stats[core.HPP]
-	hp := t.Stats[core.HP]
-
-	for _, m := range t.Mods {
-		if m.Expiry > t.Core.F || m.Expiry == -1 {
-			a, ok := m.Amount()
-			if ok {
-				hpp += a[core.HPP]
-				hp += a[core.HP]
-			}
-		}
-	}
-
-	t.HPMax = t.Base.HP*(1+hpp) + hp
-	// c.HPCurrent = 1
-	if t.HPCurrent > t.HPMax {
-		t.HPCurrent = t.HPMax
+	maxhp := t.MaxHP()
+	if t.HP() > maxhp {
+		t.HPCurrent = maxhp
 	}
 }
 
