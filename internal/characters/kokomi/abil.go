@@ -59,7 +59,7 @@ func (c *char) c1(f int) {
 		Durability: 25,
 		Mult:       0,
 	}
-	ai.FlatDmg = 0.3 * c.HPMax
+	ai.FlatDmg = 0.3 * c.MaxHP()
 
 	// TODO: Frames not in library - Think it's 7 frames based on a rough count
 	// TODO: Is this snapshotted/dynamic?
@@ -144,12 +144,14 @@ func (c *char) skillTick(d *core.AttackEvent) {
 		d.Info.FlatDmg = c.burstDmgBonus(d.Info.AttackTag)
 	}
 
+	maxhp := c.MaxHP()
+
 	c.Core.Combat.QueueAttackEvent(d, 0)
 	c.Core.Health.Heal(core.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Core.ActiveChar,
 		Message: "Bake-Kurage",
-		Src:     skillHealPct[c.TalentLvlSkill()]*c.HPMax + skillHealFlat[c.TalentLvlSkill()],
+		Src:     skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()],
 		Bonus:   d.Snapshot.Stats[core.Heal],
 	})
 
@@ -168,7 +170,7 @@ func (c *char) skillTick(d *core.AttackEvent) {
 				Caller:  c.Index,
 				Target:  c.Core.ActiveChar,
 				Message: "The Clouds Like Waves Rippling",
-				Src:     0.045 * c.HPMax,
+				Src:     0.045 * maxhp,
 				Bonus:   c.Stat(core.Heal),
 			})
 		}
@@ -216,7 +218,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       0,
 	}
-	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.HPMax
+	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.MaxHP()
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
 
@@ -258,11 +260,11 @@ func (c *char) burstDmgBonus(a core.AttackTag) float64 {
 	}
 	switch a {
 	case core.AttackTagNormal:
-		return burstBonusNormal[c.TalentLvlBurst()] * c.HPMax
+		return burstBonusNormal[c.TalentLvlBurst()] * c.MaxHP()
 	case core.AttackTagExtra:
-		return burstBonusCharge[c.TalentLvlBurst()] * c.HPMax
+		return burstBonusCharge[c.TalentLvlBurst()] * c.MaxHP()
 	case core.AttackTagElementalArt:
-		return burstBonusSkill[c.TalentLvlBurst()] * c.HPMax
+		return burstBonusSkill[c.TalentLvlBurst()] * c.MaxHP()
 	default:
 		return 0
 	}

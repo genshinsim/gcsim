@@ -103,13 +103,14 @@ func (c *char) checkc6() {
 		return
 	}
 	//check if hp less than 25%
-	if c.HPCurrent/c.HPMax > .25 {
+	if c.HP()/c.MaxHP() > .25 {
 		return
 	}
 	//if dead, revive back to 1 hp
-	if c.HPCurrent == -1 {
+	if c.HP() <= -1 {
 		c.HPCurrent = 1
 	}
+
 	//increase crit rate to 100%
 	val := make([]float64, core.EndStatType)
 	val[core.CR] = 1

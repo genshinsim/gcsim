@@ -8,7 +8,7 @@ import (
 )
 
 func (c *char) addJadeShield() {
-	shield := shieldBase[c.TalentLvlSkill()] + shieldPer[c.TalentLvlSkill()]*c.HPMax
+	shield := shieldBase[c.TalentLvlSkill()] + shieldPer[c.TalentLvlSkill()]*c.MaxHP()
 
 	c.Core.Shields.Add(c.newShield(shield, 1200))
 	c.Tags["shielded"] = 1
@@ -79,8 +79,9 @@ func (s *shd) OnDamage(dmg float64, ele core.EleType, bonus float64) (float64, b
 
 		c := s.c.Core.Chars[s.c.Core.ActiveChar]
 		heal := 0.4 * dmg
-		if heal > 0.08*c.MaxHP() {
-			heal = 0.08 * c.MaxHP()
+		maxhp := c.MaxHP()
+		if heal > 0.08*maxhp {
+			heal = 0.08 * maxhp
 		}
 		s.c.Core.Health.Heal(core.HealInfo{
 			Caller:  s.c.Index,
