@@ -124,8 +124,8 @@ func (c *char) checkc6() {
 		return
 	}
 	//if dead, revive back to 1 hp
-	if c.HPCurrent < 0 {
-		c.HPCurrent = c.HPMax
+	if c.HP() <= -1 {
+		c.HPCurrent = c.MaxHP()
 	}
 
 	c.c6icd = c.Core.F + 60*60*15

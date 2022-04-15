@@ -17,7 +17,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
-		FlatDmg:    0.0139 * c.HPMax,
+		FlatDmg:    0.0139 * c.MaxHP(),
 	}
 
 	for i := 0; i < hits[c.NormalCounter]; i++ {
@@ -39,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
-		FlatDmg:    0.0139 * c.HPMax,
+		FlatDmg:    0.0139 * c.MaxHP(),
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
 
@@ -90,7 +90,7 @@ func (c *char) skillHold(f, max int, createStele bool) {
 		Element:    core.Geo,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
-		FlatDmg:    0.019 * c.HPMax,
+		FlatDmg:    0.019 * c.MaxHP(),
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f-1)
 	//create a stele if less than zhongli's max stele count and desired by player
@@ -120,7 +120,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Element:    core.Geo,
 		Durability: 100,
 		Mult:       burst[c.TalentLvlBurst()],
-		FlatDmg:    0.33 * c.HPMax,
+		FlatDmg:    0.33 * c.MaxHP(),
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f-1, f-1)
 

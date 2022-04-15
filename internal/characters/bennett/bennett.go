@@ -50,11 +50,12 @@ func (c *char) c2() {
 	val[core.ER] = .3
 
 	c.AddMod(core.CharStatMod{
-		Key: "bennett-c2",
+		Key:          "bennett-c2",
+		Expiry:       -1,
+		AffectedStat: core.ER, // to avoid infinite loop when calling MaxHP
 		Amount: func() ([]float64, bool) {
-			return val, c.HPCurrent/c.HPMax < 0.7
+			return val, c.HP()/c.MaxHP() < 0.7
 		},
-		Expiry: -1,
 	})
 }
 

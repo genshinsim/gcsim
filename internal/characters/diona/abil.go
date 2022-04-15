@@ -173,16 +173,17 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	if c.Base.Cons == 6 {
+		m := make([]float64, core.EndStatType)
+		m[core.EM] = 200
 		c.AddTask(func() {
 			for _, char := range c.Core.Chars {
 				this := char
-				val := make([]float64, core.EndStatType)
-				val[core.EM] = 200
 				this.AddMod(core.CharStatMod{
-					Key:    "diona-c6",
-					Expiry: c.Core.F + 750,
+					Key:          "diona-c6",
+					Expiry:       c.Core.F + 750,
+					AffectedStat: core.EM, // to avoid infinite loop when calling MaxHP
 					Amount: func() ([]float64, bool) {
-						return val, this.HP()/this.MaxHP() > 0.5
+						return m, this.HP()/this.MaxHP() > 0.5
 					},
 				})
 			}

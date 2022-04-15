@@ -174,39 +174,32 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	c.Core.Status.AddStatus("ayatoburst", dur*60+f)
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = burstatkp[c.TalentLvlBurst()]
 
-	for _, char := range c.Core.Chars {
-		if char.CharIndex() == c.CharIndex() {
-			continue
-		}
-		char.AddPreDamageMod(core.PreDamageMod{
-			Key:    "ayato-burst",
-			Expiry: dur * 60,
-			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-				if a.Info.AttackTag != core.AttackTagNormal {
-					return nil, false
-				}
-				return val, true
-			},
-		})
+	// NA buff starts after cast, ticks every 0.5s and last for 1.5s
+	m := make([]float64, core.EndStatType)
+	m[core.DmgP] = burstatkp[c.TalentLvlBurst()]
+	for i := f; i < f+dur*60; i += 30 {
+		c.AddTask(func() {
+			active := c.Core.Chars[c.Core.ActiveChar]
+			active.AddPreDamageMod(core.PreDamageMod{
+				Key:    "ayato-burst",
+				Expiry: c.Core.F + 90,
+				Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
+					return m, a.Info.AttackTag == core.AttackTagNormal
+				},
+			})
+		}, "ayato-burst-buff", i)
 	}
 
 	if c.Base.Cons >= 4 {
-		val2 := make([]float64, core.EndStatType)
-		val2[core.AtkSpd] = 0.15
+		m := make([]float64, core.EndStatType)
+		m[core.AtkSpd] = 0.15
 		for _, char := range c.Core.Chars {
 			char.AddMod(core.CharStatMod{
 				Key:    "ayato-c4",
-				Expiry: 15 * 60,
+				Expiry: c.Core.F + 15*60,
 				Amount: func() ([]float64, bool) {
-					if c.Core.Status.Duration("ayatoburst") > 0 {
-						//should always be true but can't hurt just in case
-						return val, true
-					} else {
-						return nil, false
-					}
+					return m, true
 				},
 			})
 		}

@@ -136,18 +136,17 @@ func (c *char) infuse(char core.Character) {
 }
 
 func (c *char) c6() {
+	m := make([]float64, core.EndStatType)
+	m[core.DmgP] = 0.15
 	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "chongyun-c6",
 		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-
-			val := make([]float64, core.EndStatType)
-			if atk.Info.Abil != "Spirit Blade: Cloud-Parting Star" {
+			if atk.Info.AttackTag != core.AttackTagElementalBurst {
 				return nil, false
 			}
-			if t.HP()/t.MaxHP() < c.HPCurrent/c.HPMax {
-				val[core.DmgP] += 0.15
-				return val, true
+			if t.HP()/t.MaxHP() < c.HP()/c.MaxHP() {
+				return m, true
 			}
 			return nil, false
 		},
