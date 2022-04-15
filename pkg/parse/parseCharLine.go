@@ -296,8 +296,8 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 				if amt > 5 {
 					amt = 5
 				}
-				if amt < 4 {
-					amt = 4
+				if amt < 1 {
+					amt = 1
 				}
 				rarity = amt
 			default:
@@ -330,127 +330,127 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 var avgRoll = [][]float64{
 	//1
 	{
-		1, //n/a
-		1, //def%
-		1, //def
-		1, //hp
-		1, //hp%
-		1, //atk
-		1, //atk%
-		1, //er
-		1, //em
-		1, //cr
-		1, //cd
-		1, //heal
-		1, //pyro%
-		1, //hydro%
-		1, //cryo%
-		1, //electro%
-		1, //anemo%
-		1, //geo%
-		1, //phys%
-		1, //dendro%
-		1, //atkspd%
-		1, //dmg%
+		0, //n/a
+		0, //def%
+		0, //def
+		0, //hp
+		0, //hp%
+		0, //atk
+		0, //atk%
+		0, //er
+		0, //em
+		0, //cr
+		0, //cd
+		0, //heal
+		0, //pyro%
+		0, //hydro%
+		0, //cryo%
+		0, //electro%
+		0, //anemo%
+		0, //geo%
+		0, //phys%
+		0, //dendro%
+		0, //atkspd%
+		0, //dmg%
 	},
 	//2
 	{
-		1, //n/a
-		1, //def%
-		1, //def
-		1, //hp
-		1, //hp%
-		1, //atk
-		1, //atk%
-		1, //er
-		1, //em
-		1, //cr
-		1, //cd
-		1, //heal
-		1, //pyro%
-		1, //hydro%
-		1, //cryo%
-		1, //electro%
-		1, //anemo%
-		1, //geo%
-		1, //phys%
-		1, //dendro%
-		1, //atkspd%
-		1, //dmg%
+		0, //n/a
+		0, //def%
+		0, //def
+		0, //hp
+		0, //hp%
+		0, //atk
+		0, //atk%
+		0, //er
+		0, //em
+		0, //cr
+		0, //cd
+		0, //heal
+		0, //pyro%
+		0, //hydro%
+		0, //cryo%
+		0, //electro%
+		0, //anemo%
+		0, //geo%
+		0, //phys%
+		0, //dendro%
+		0, //atkspd%
+		0, //dmg%
 	},
 	//3
 	{
-		1, //n/a
-		1, //def%
-		1, //def
-		1, //hp
-		1, //hp%
-		1, //atk
-		1, //atk%
-		1, //er
-		1, //em
-		1, //cr
-		1, //cd
-		1, //heal
-		1, //pyro%
-		1, //hydro%
-		1, //cryo%
-		1, //electro%
-		1, //anemo%
-		1, //geo%
-		1, //phys%
-		1, //dendro%
-		1, //atkspd%
-		1, //dmg%
+		0, //n/a
+		0, //def%
+		0, //def
+		0, //hp
+		0, //hp%
+		0, //atk
+		0, //atk%
+		0, //er
+		0, //em
+		0, //cr
+		0, //cd
+		0, //heal
+		0, //pyro%
+		0, //hydro%
+		0, //cryo%
+		0, //electro%
+		0, //anemo%
+		0, //geo%
+		0, //phys%
+		0, //dendro%
+		0, //atkspd%
+		0, //dmg%
 	},
 	//4
 	{
-		1, //n/a
-		1, //def%
-		1, //def
-		1, //hp
-		1, //hp%
-		1, //atk
-		1, //atk%
-		1, //er
-		1, //em
-		1, //cr
-		1, //cd
-		1, //heal
-		1, //pyro%
-		1, //hydro%
-		1, //cryo%
-		1, //electro%
-		1, //anemo%
-		1, //geo%
-		1, //phys%
-		1, //dendro%
-		1, //atkspd%
-		1, //dmg%
+		0, //n/a
+		0, //def%
+		0, //def
+		0, //hp
+		0, //hp%
+		0, //atk
+		0, //atk%
+		0, //er
+		0, //em
+		0, //cr
+		0, //cd
+		0, //heal
+		0, //pyro%
+		0, //hydro%
+		0, //cryo%
+		0, //electro%
+		0, //anemo%
+		0, //geo%
+		0, //phys%
+		0, //dendro%
+		0, //atkspd%
+		0, //dmg%
 	},
 	//5
 	{
-		1, //n/a
-		1, //def%
-		1, //def
-		1, //hp
-		1, //hp%
-		1, //atk
-		1, //atk%
-		1, //er
-		1, //em
-		1, //cr
-		1, //cd
-		1, //heal
-		1, //pyro%
-		1, //hydro%
-		1, //cryo%
-		1, //electro%
-		1, //anemo%
-		1, //geo%
-		1, //phys%
-		1, //dendro%
-		1, //atkspd%
-		1, //dmg%
+		0,      //n/a
+		0.0620, //def%
+		19.68,  //def
+		253.94, //hp
+		0.0496, //hp%
+		16.54,  //atk
+		0.0496, //atk%
+		0.0551, //er
+		19.82,  //em
+		0.0331, //cr
+		0.0662, //cd
+		0.359,  //heal
+		0.466,  //pyro%
+		0.466,  //hydro%
+		0.466,  //cryo%
+		0.466,  //electro%
+		0.466,  //anemo%
+		0.466,  //geo%
+		0.583,  //phys%
+		0.466,  //dendro%
+		0,      //atkspd%
+		0,      //dmg%
 	},
 }
