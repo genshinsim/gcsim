@@ -28,7 +28,7 @@ func TestCD(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	err = testhelper.TestSkillCooldown(c, x, []int{6 * 60}, 0)
+	err = testhelper.TestSkillCooldown(c, x, []int{6 * 60})
 	if err != nil {
 		t.Error(err)
 	}
