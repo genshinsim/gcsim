@@ -249,7 +249,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	//TODO: review bennett AOE size
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 33, 33)
+	switch p["skill_issue"] {
+	case 1:
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 15, 15)
+	case 2:
+		c.Core.Log.NewEvent("Bennett burst failed successfully", core.LogCharacterEvent,c.Index)
+	default:
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 33, 33)
+	}
+	
 	stats, _ := c.SnapshotStats()
 
 	//apply right away
