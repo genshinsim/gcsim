@@ -1,72 +1,74 @@
 import {
   Alignment,
-  Button,
+  AnchorButton,
   Classes,
-  H5,
   HTMLSelect,
   Navbar,
   NavbarDivider,
   NavbarGroup,
   NavbarHeading,
-  Switch,
 } from "@blueprintjs/core";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Trans, useTranslation } from "react-i18next";
 
 export default function Nav() {
   let { t, i18n } = useTranslation();
   let language = i18n.language;
 
-  const [location, setLocation] = useLocation();
+  const [location, _] = useLocation();
   return (
     <Navbar>
       <NavbarGroup align={Alignment.LEFT} className="w-full">
-        <NavbarHeading
-          onClick={() => setLocation("/")}
-          className="hover:cursor-pointer"
-        >
-          gcsim web (beta)
-        </NavbarHeading>
-
+        <Link href="/">
+          <NavbarHeading>
+            <a>
+              gcsim web (beta)
+            </a>
+          </NavbarHeading>
+        </Link>
         {location !== "/" ? (
           <>
             <NavbarDivider />
-            <Button
-              className={Classes.MINIMAL}
-              icon="calculator"
-              onClick={() => setLocation("/simulator")}
-            >
-              <span className="hidden md:block">
-                <Trans>nav.simulator</Trans>
-              </span>
-            </Button>
-            <Button
-              className={Classes.MINIMAL}
-              icon="chart"
-              onClick={() => setLocation("/viewer")}
-            >
-              <span className="hidden md:block">
-                <Trans>nav.viewer</Trans>
-              </span>
-            </Button>
-            <Button
-              className={Classes.MINIMAL}
-              icon="database"
-              onClick={() => setLocation("/db")}
-            >
-              <span className="hidden md:block">
-                <Trans>nav.teams_db</Trans>
-              </span>
-            </Button>
-            <Button
-              className={Classes.MINIMAL}
-              icon="info-sign"
-              onClick={() => setLocation("/about")}
-            >
-              <span className="hidden md:block">
-                <Trans>nav.about</Trans>
-              </span>
-            </Button>
+            <Link href="/simulator">
+              <AnchorButton
+                className={Classes.MINIMAL}
+                icon="calculator"
+              >
+                <span className="hidden md:block">
+                  <Trans>nav.simulator</Trans>
+                </span>
+              </AnchorButton>
+            </Link>
+            <Link href="/viewer">
+              <AnchorButton
+                className={Classes.MINIMAL}
+                icon="chart"
+              >
+                <span className="hidden md:block">
+                  <Trans>nav.viewer</Trans>
+                </span>
+              </AnchorButton>
+            </Link>
+            <Link href="/db">
+              <AnchorButton
+                className={Classes.MINIMAL}
+                icon="database"
+              >
+                <span className="hidden md:block">
+                  <Trans>nav.teams_db</Trans>
+                </span>
+              </AnchorButton>
+            </Link>
+            <Link href="/about">
+              <AnchorButton
+                className={Classes.MINIMAL}
+                icon="info-sign"
+              >
+                <span className="hidden md:block">
+                  <Trans>nav.about</Trans>
+                </span>
+              </AnchorButton>
+            </Link>
           </>
         ) : null}
         <div className="flex flex-row items-center ml-auto">

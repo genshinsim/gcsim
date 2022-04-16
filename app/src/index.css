@@ -123,3 +123,7 @@ div.sticky-header {
   width: 40px;
   font-weight: 100;
 }
+
+div.bp4-navbar-heading a, div.main-page-button-container a {
+  color: inherit;
+}

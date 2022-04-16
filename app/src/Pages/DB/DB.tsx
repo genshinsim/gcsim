@@ -16,13 +16,13 @@ import {
 import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import axios from "axios";
 import React from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { CharacterSelect, ICharacter } from "~src/Components/Character";
 import { Viewport } from "~src/Components/Viewport";
 import { IWeapon, WeaponSelect } from "~src/Components/Weapon";
 import { useAppDispatch } from "~src/store";
 import { DBCharInfo, DBItem } from "~src/types";
-import { simActions, updateCfg } from "../Sim";
+import { updateCfg } from "../Sim";
 import { Trans, useTranslation } from "react-i18next";
 
 function CharTooltip({ char }: { char: DBCharInfo }) {
@@ -32,9 +32,8 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
     <div className="m-2 flex flex-col">
       <div className="ml-auto font-bold capitalize">{`${t(
         "game:character_names." + char.name
-      )} ${t("db.c_pre")}${char.con}${t("db.c_post")} ${char.talents.attack}/${
-        char.talents.skill
-      }/${char.talents.burst}`}</div>
+      )} ${t("db.c_pre")}${char.con}${t("db.c_post")} ${char.talents.attack}/${char.talents.skill
+        }/${char.talents.burst}`}</div>
       <div className="w-full border-b border-gray-500 mt-2 mb-2"></div>
       <div className="capitalize flex flex-row">
         <img
@@ -53,9 +52,6 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
 
 function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
   useTranslation();
-
-  const [location, setLocation] = useLocation();
-
   const chars = row.team.map((char) => {
     return (
       <Popover2>
@@ -111,16 +107,14 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
       </div>
       <div>
         <ButtonGroup vertical>
-          <AnchorButton
-            small
-            rightIcon="chart"
-            // onClick={() => {
-            //   setLocation("/viewer/share/" + row.viewer_key);
-            // }}
-            href={"/viewer/share/" + row.viewer_key}
-          >
-            <Trans>db.show_in_viewer</Trans>
-          </AnchorButton>
+          <Link href={"/viewer/share/" + row.viewer_key}>
+            <AnchorButton
+              small
+              rightIcon="chart"
+            >
+              <Trans>db.show_in_viewer</Trans>
+            </AnchorButton>
+          </Link>
           <Button small rightIcon="rocket-slant" onClick={setCfg}>
             <Trans>db.load_in_simulator</Trans>
           </Button>
@@ -164,7 +158,7 @@ export function DB() {
   );
 
   const dispatch = useAppDispatch();
-  const [location, setLocation] = useLocation();
+  const [_, setLocation] = useLocation();
 
   React.useEffect(() => {
     const url = "https://viewer.gcsim.workers.dev/gcsimdb";
