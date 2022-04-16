@@ -1,4 +1,5 @@
 import {
+  AnchorButton,
   Button,
   ButtonGroup,
   Callout,
@@ -110,19 +111,20 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
       </div>
       <div>
         <ButtonGroup vertical>
-          <Button
+          <AnchorButton
             small
             rightIcon="chart"
-            onClick={() => {
-              setLocation("/viewer/share/" + row.viewer_key);
-            }}
+            // onClick={() => {
+            //   setLocation("/viewer/share/" + row.viewer_key);
+            // }}
+            href={"/viewer/share/" + row.viewer_key}
           >
             <Trans>db.show_in_viewer</Trans>
-          </Button>
+          </AnchorButton>
           <Button small rightIcon="rocket-slant" onClick={setCfg}>
             <Trans>db.load_in_simulator</Trans>
           </Button>
-          <Button
+          {/* <Button
             disabled
             small
             rightIcon="list-detail-view"
@@ -131,7 +133,7 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
             }}
           >
             <Trans>db.details</Trans>
-          </Button>
+          </Button> */}
         </ButtonGroup>
       </div>
     </div>
