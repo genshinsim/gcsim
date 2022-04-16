@@ -151,7 +151,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}, "venti-burst-tick", 106+24*i)
 	}
 	// Infusion usually occurs after 4 ticks of anemo according to KQM library
-	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int((480-24*4)/18)), "venti-absorb-check", 106+24*4)
+	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int((480-24*4)/18)), "venti-absorb-check", 106+24*3)
 
 	c.AddTask(func() {
 		c.a4Restore()
@@ -214,6 +214,17 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		}
 		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
 		if c.qInfuse != core.NoElement {
+			c.aiAbsorb.Element = c.qInfuse
+			switch c.qInfuse {
+			case core.Pyro:
+				c.aiAbsorb.ICDTag = core.ICDTagVentiBurstPyro
+			case core.Hydro:
+				c.aiAbsorb.ICDTag = core.ICDTagVentiBurstHydro
+			case core.Electro:
+				c.aiAbsorb.ICDTag = core.ICDTagVentiBurstElectro
+			case core.Cryo:
+				c.aiAbsorb.ICDTag = core.ICDTagVentiBurstCryo
+			}
 			//trigger dmg ticks here
 			c.burstInfusedTicks()
 			return
