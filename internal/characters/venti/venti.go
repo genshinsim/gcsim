@@ -7,7 +7,9 @@ import (
 
 type char struct {
 	*character.Tmpl
-	qInfuse core.EleType
+	qInfuse    core.EleType
+	aiAbsorb   core.AttackInfo
+	snapAbsorb core.Snapshot
 }
 
 func init() {

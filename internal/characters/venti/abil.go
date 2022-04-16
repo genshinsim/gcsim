@@ -127,16 +127,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	aiAbsorb := ai
-	aiAbsorb.Abil = "Wind's Grand Ode (Infused)"
-	aiAbsorb.Mult = burstAbsorbDot[c.TalentLvlBurst()]
-	aiAbsorb.Element = core.NoElement
+	c.aiAbsorb = ai
+	c.aiAbsorb.Abil = "Wind's Grand Ode (Infused)"
+	c.aiAbsorb.Mult = burstAbsorbDot[c.TalentLvlBurst()]
+	c.aiAbsorb.Element = core.NoElement
 
 	// snapshot is around cd frame and 1st tick?
-	var snap, snapAbsorb core.Snapshot
+	var snap core.Snapshot
 	c.AddTask(func() {
 		snap = c.Snapshot(&ai)
-		snapAbsorb = c.Snapshot(&aiAbsorb)
+		c.snapAbsorb = c.Snapshot(&c.aiAbsorb)
 	}, "venti-q-snapshot", 104)
 
 	var cb core.AttackCBFunc
@@ -148,20 +148,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	for i := 0; i < 20; i++ {
 		c.AddTask(func() {
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, cb)
-
-			if c.qInfuse != core.NoElement {
-				var cb core.AttackCBFunc
-				if c.Base.Cons >= 6 {
-					cb = c6cb(c.qInfuse)
-				}
-				aiAbsorb.Element = c.qInfuse
-
-				c.Core.Combat.QueueAttackWithSnap(aiAbsorb, snapAbsorb, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, cb)
-			}
 		}, "venti-burst-tick", 106+24*i)
 	}
 	// Infusion usually occurs after 4 ticks of anemo according to KQM library
-	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(480/18)), "venti-absorb-check", 106+24*4)
+	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int((480-24*4)/18)), "venti-absorb-check", 106+24*4)
 
 	c.AddTask(func() {
 		c.a4Restore()
@@ -205,6 +195,18 @@ func (c *char) a4Restore() {
 	}
 }
 
+func (c *char) burstInfusedTicks() {
+	var cb core.AttackCBFunc
+	if c.Base.Cons >= 6 {
+		cb = c6cb(c.qInfuse)
+	}
+
+	// ticks at 24f. 15 total
+	for i := 0; i < 15; i++ {
+		c.Core.Combat.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, core.NewDefCircHit(4, false, core.TargettableEnemy), i*24, cb)
+	}
+}
+
 func (c *char) absorbCheckQ(src, count, max int) func() {
 	return func() {
 		if count == max {
@@ -212,6 +214,8 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		}
 		c.qInfuse = c.Core.AbsorbCheck(core.Pyro, core.Hydro, core.Electro, core.Cryo)
 		if c.qInfuse != core.NoElement {
+			//trigger dmg ticks here
+			c.burstInfusedTicks()
 			return
 		}
 		//otherwise queue up
