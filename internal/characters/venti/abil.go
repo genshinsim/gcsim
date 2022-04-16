@@ -137,7 +137,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.AddTask(func() {
 		snap = c.Snapshot(&ai)
 		snapAbsorb = c.Snapshot(&aiAbsorb)
-	}, "venti-q-snapshot", 100)
+	}, "venti-q-snapshot", 104)
 
 	var cb core.AttackCBFunc
 	if c.Base.Cons >= 6 {

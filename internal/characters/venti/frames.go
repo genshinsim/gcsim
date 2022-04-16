@@ -99,7 +99,14 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionJump, 22-22)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSwap, 98-22)
 
-	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionHighPlunge, 116-116) //plunge should take 58 frames to
+	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionHighPlunge, 116-116) //plunge should take 58 frames to hit
+	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionAttack, 289-116)     //float down if you didn't plunge
+	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionAim, 289-116)
+	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionSkill, 289-116)
+	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionBurst, 289-116)
+	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionDash, 289-116)
+	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionJump, 289-116)
+	c.SetAbilCancelFrames(core.ActionSkillHoldFramesOnly, core.ActionSwap, 289-116)
 
 }
 
