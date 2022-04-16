@@ -124,6 +124,8 @@ div.sticky-header {
   font-weight: 100;
 }
 
-div.bp4-navbar-heading a, div.main-page-button-container a {
+div.bp4-navbar-heading a, div.main-page-button-container a,
+div.bp4-navbar-heading a:hover, div.main-page-button-container a:hover {
   color: inherit;
+  text-decoration: inherit;
 }
