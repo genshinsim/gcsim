@@ -1,4 +1,13 @@
-import { Button, ButtonGroup, Tab, Tabs } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  Callout,
+  Checkbox,
+  Classes,
+  Dialog,
+  Tab,
+  Tabs,
+} from "@blueprintjs/core";
 import React from "react";
 import { Config } from "./Config";
 import { SimResults } from "./DataType";
@@ -7,9 +16,12 @@ import { Details } from "./Details";
 import { Options, OptionsProp } from "./Options";
 import { DebugRow, parseLog } from "./parse";
 import Summary from "./Summary";
-import Share from "./Share";
+import Share, { AppToaster } from "./Share";
 import { parseLogV2 } from "./parsev2";
 import { Trans, useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
+import { updateCfg } from "~src/Pages/Sim";
+import { useAppDispatch } from "~src/store";
 
 const opts = [
   "procs",
@@ -56,9 +68,11 @@ type ViewProps = {
   handleClose: () => void;
 };
 
+const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
+
 function ViewOnly(props: ViewProps) {
   let { t } = useTranslation();
-
+  const [open, setOpen] = React.useState<boolean>(false);
   const [tabID, setTabID] = React.useState<string>("result");
   const [optOpen, setOptOpen] = React.useState<boolean>(false);
 
@@ -91,11 +105,21 @@ function ViewOnly(props: ViewProps) {
     options: opts,
   };
 
+  function copyToClipboard() {
+    navigator.clipboard.writeText(props.data.config_file).then(() => {
+      AppToaster.show({
+        message: t("viewer.copied_to_clipboard"),
+        intent: "success",
+      });
+    });
+    // TODO: Need to add a blueprintjs Toaster for ephemeral confirmation box
+  }
+
   return (
     <div
       className={props.classes + " p-4 rounded-lg bg-gray-800 flex flex-col"}
     >
-      <div className="flex flex-row  bg-gray-800 w-full">
+      <div className="flex flex-row  bg-gray-800 ">
         <Tabs
           selectedTabId={tabID}
           onChange={handleTabChange}
@@ -127,7 +151,18 @@ function ViewOnly(props: ViewProps) {
             className="focus:outline-none"
           />
           <Tabs.Expander />
-          <Button icon="cross" intent="danger" onClick={props.handleClose} />
+          <ButtonGroup>
+            <Button onClick={copyToClipboard} icon="clipboard">
+              <Trans>viewer.copy</Trans>
+            </Button>
+            <Button onClick={() => setOpen(true)} icon="send-to">
+              <Trans>viewer.send_to_simulator</Trans>
+            </Button>
+          </ButtonGroup>
+
+          <Button icon="cross" intent="danger" onClick={props.handleClose}>
+            Close
+          </Button>
         </Tabs>
       </div>
       <div className="mt-2 grow mb-4">
@@ -164,7 +199,71 @@ function ViewOnly(props: ViewProps) {
       ) : null}
 
       <Options {...optProps} />
+      <SendToSim
+        config={props.data.config_file}
+        isOpen={open}
+        onClose={() => setOpen(false)}
+      />
     </div>
+  );
+}
+
+type SendToSimProps = {
+  config: string;
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+function SendToSim({ config, isOpen, onClose }: SendToSimProps) {
+  const dispatch = useAppDispatch();
+  const [_, setLocation] = useLocation();
+  const [keepExistingTeam, setKeepExistingTeam] = React.useState<boolean>(
+    () => {
+      const saved = localStorage.getItem(LOCALSTORAGE_KEY);
+      if (saved === "true") {
+        return true;
+      }
+      return false;
+    }
+  );
+
+  const openInSim = () => {
+    onClose();
+    dispatch(updateCfg(config, keepExistingTeam));
+    setLocation("/simulator");
+  };
+
+  const handleToggleSelected = () => {
+    localStorage.setItem(LOCALSTORAGE_KEY, keepExistingTeam ? "false" : "true");
+    setKeepExistingTeam(!keepExistingTeam);
+  };
+
+  return (
+    <Dialog isOpen={isOpen} onClose={onClose}>
+      <div className={Classes.DIALOG_BODY}>
+        <Trans>viewer.load_this_configuration</Trans>
+        <Callout intent="warning" className="mt-2">
+          <Trans>viewer.this_will_overwrite</Trans>
+        </Callout>
+        <Checkbox
+          label="Copy action list only (ignore character stats)"
+          className="mt-2"
+          checked={keepExistingTeam}
+          onClick={handleToggleSelected}
+        />
+      </div>
+
+      <div className={Classes.DIALOG_FOOTER}>
+        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+          <Button onClick={openInSim} intent="primary">
+            <Trans>viewer.continue</Trans>
+          </Button>
+          <Button onClick={onClose}>
+            <Trans>viewer.cancel</Trans>
+          </Button>
+        </div>
+      </div>
+    </Dialog>
   );
 }
 
@@ -188,40 +287,6 @@ export function Viewer(props: ViewerProps) {
 
   //string
   console.log(props.data);
-
-  // if (!valid) {
-  //   console.log(validate.errors);
-  //   return (
-  //     <div
-  //       className={
-  //         props.className +
-  //         " p-4 rounded-lg bg-gray-800 flex flex-col w-full place-content-center items-center"
-  //       }
-  //     >
-  //       <div className="mb-4 text-center">
-  //         The data you have provided is not a valid format.{" "}
-  //         <span className="font-bold">
-  //           Please make sure you are using gcsim version 0.4.25 or higher.
-  //         </span>
-  //         <br />
-  //         <br />
-  //         Please click the close button and upload a valid file.
-  //       </div>
-  //       <div>
-  //         <Button intent="danger" icon="cross" onClick={props.handleClose}>
-  //           Click Here To Close
-  //         </Button>
-  //       </div>
-  //       <div className="mt-8 rounded-md p-4 bg-gray-600">
-  //         <p>
-  //           If you think this error is invalid, please show the following
-  //           message to the developers
-  //         </p>
-  //         <pre>{JSON.stringify(validate.errors, null, 2)}</pre>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   let parsed: DebugRow[];
   if (props.data.v2) {
