@@ -282,6 +282,8 @@ export function GOODKeytoGCSIMKey(s: string) {
       return "kazuha";
     case "KamisatoAyaka":
       return "ayaka";
+    case "KamisatoAyato":
+      return "ayato";
     case "KujouSara":
       return "sara";
     case "RaidenShogun":
