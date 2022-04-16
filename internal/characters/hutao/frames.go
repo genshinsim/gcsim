@@ -34,7 +34,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		return f, a
 	case core.ActionCharge:
 		if c.Core.Status.Duration("paramita") > 0 {
-			return 6, 44
+			return 2, 44
 		}
 		return 19, 57
 	case core.ActionSkill:
@@ -54,7 +54,7 @@ func (c *char) InitCancelFrames() {
 	c.SetNormalCancelFrames(0, core.ActionCharge, 19-12) //n1 -> charge
 
 	c.SetNormalCancelFrames(1, core.ActionAttack, 12-10) //n2 -> next attack
-	c.SetNormalCancelFrames(1, core.ActionCharge, 19-10) //n2 -> charge
+	c.SetNormalCancelFrames(1, core.ActionCharge, 18-10) //n2 -> charge
 
 	c.SetNormalCancelFrames(2, core.ActionAttack, 28-17) //n3 -> next attack
 	c.SetNormalCancelFrames(2, core.ActionCharge, 25-17) //n3 -> charge, could use more trials
@@ -89,18 +89,29 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 	// Provide a custom override for her CA cancels during paramita
 	if c.Core.LastAction.Typ == core.ActionCharge &&
 		c.Core.Status.Duration("paramita") > 0 {
+		f := 0
 		switch next {
 		case core.ActionAttack:
-			return 44 - 6
+			f = 44 - 2
 		case core.ActionBurst:
-			return 35 - 6
+			f = 35 - 2
 		case core.ActionDash:
-			return 6 - 6
+			f = 2 - 2
 		case core.ActionJump:
-			return 6 - 6
+			f = 2 - 2
 		case core.ActionSwap:
-			return 42 - 6
+			f = 42 - 2
 		}
+
+		//this is necessary to prevent double animation delay when paramita expires
+		if f > c.Core.Status.Duration("paramita") {
+			c.paramitaExpired = true
+		}
+		return f
+	} else if c.paramitaExpired {
+		//if paramita has just expired, do not do the animation delay again
+		c.paramitaExpired = false
+		return 0
 	}
 	//otherise use default implementation
 	return c.Tmpl.ActionInterruptableDelay(next, p)

@@ -14,9 +14,10 @@ type char struct {
 	paraParticleICD int
 	// chargeICDCounter   int
 	// chargeCounterReset int
-	ppBonus    float64
-	tickActive bool
-	c6icd      int
+	ppBonus         float64
+	tickActive      bool
+	c6icd           int
+	paramitaExpired bool
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -37,13 +38,14 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassSpear
 	c.NormalHitNum = 6
 	c.CharZone = core.ZoneLiyue
-	c.InitCancelFrames()
+	c.paramitaExpired = false
 
 	return &c, nil
 }
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+	c.InitCancelFrames()
 
 	c.ppHook()
 	c.onExitField()

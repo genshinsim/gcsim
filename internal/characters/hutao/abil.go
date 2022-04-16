@@ -42,8 +42,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		//trying to change animations mid-attack, but not sure how to fully test that
 		//[4:41 PM] jstern25| ₼WHO_SUPREMACY: this mostly checks out
 		//her e can't expire during q as well
-		if f > c.Core.Status.Duration("paramita") {
-			c.Core.Status.AddStatus("paramita", f)
+		if 6 > c.Core.Status.Duration("paramita") {
+			c.Core.Status.AddStatus("paramita", 6)
 			// c.S.Status["paramita"] = c.Core.F + f //extend this to barely cover the burst
 		}
 
@@ -68,7 +68,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 6, 6)
 
 	return f, a
 }
