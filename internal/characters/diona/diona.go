@@ -71,17 +71,12 @@ func (c *char) c2() {
 }
 func (c *char) c6() {
 	c.Core.Health.AddIncHealBonus(func(healedCharIndex int) float64 {
-		if c.Core.Status.Duration("dionaburst") == 0 {
+		//check tag for if bonus is active
+		char := c.Core.Chars[healedCharIndex]
+		if c.Core.F > c.Tags["c6bonus-"+char.Key().String()] {
 			return 0
 		}
-		char := c.Core.Chars[c.Core.ActiveChar]
-		if healedCharIndex != char.CharIndex() {
-			return 0
-		}
-		if char.HP()/char.MaxHP() <= 0.5 {
-			c.Core.Log.NewEvent("diona c6 activated", core.LogCharacterEvent, c.Index)
-			return 0.3
-		}
-		return 0
+		c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", core.LogCharacterEvent, c.Index)
+		return 0.3
 	})
 }
