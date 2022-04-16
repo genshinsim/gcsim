@@ -35,6 +35,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassCatalyst
 	c.NormalHitNum = 4
+	c.InitCancelFrames()
 
 	c.infuseCheckLocation = core.NewDefCircHit(0.1, false, core.TargettableEnemy, core.TargettablePlayer, core.TargettableObject)
 

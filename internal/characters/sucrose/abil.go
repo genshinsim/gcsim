@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = []int{17, 18, 28, 28}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	ai := core.AttackInfo{
@@ -20,7 +22,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, hitmarks[c.NormalCounter])
 
 	c.AdvanceNormalIndex()
 
@@ -45,7 +47,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), 0, 54)
 
 	if c.Base.Cons >= 4 {
 		c.c4()
@@ -56,7 +58,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	//41 frame delay
+
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Astable Anemohypostasis Creation-6308",
@@ -78,12 +80,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.a4()
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 41, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy, core.TargettableObject), 0, 42, cb)
 
 	c.QueueParticle("sucrose", 4, core.Anemo, 150)
 
 	//reduce charge by 1
-	c.SetCD(core.ActionSkill, eCD)
+	c.SetCDWithDelay(core.ActionSkill, eCD, 9)
 
 	return f, a
 }
@@ -91,8 +93,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 	//tag a4
-	//3 hits, 135, 249, 368; all 3 applied swirl; c2 i guess adds 2 second so one more hit
-	//let's just assume 120, 240, 360, 480
+	//first hit at 137, then 113 frames between hits
 
 	duration := 360
 	if c.Base.Cons >= 2 {
@@ -140,7 +141,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.a4()
 	}
 
-	for i := 120; i <= duration; i += 120 {
+	for i := 137; i <= duration+5; i += 113 {
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), i, cb)
 
 		c.AddTask(func() {
@@ -153,10 +154,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	//
-	c.AddTask(c.absorbCheck(c.Core.F, 0, int(duration/18)), "absorb-check", f)
+	c.AddTask(c.absorbCheck(c.Core.F, 0, int(duration/18)), "absorb-check", 136)
 
-	c.SetCDWithDelay(core.ActionBurst, 1200, 26)
-	c.ConsumeEnergy(26)
+	c.SetCDWithDelay(core.ActionBurst, 1200, 18)
+	c.ConsumeEnergy(21)
 	return f, a
 }
 
