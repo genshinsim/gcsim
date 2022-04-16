@@ -232,7 +232,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		// Need special exception to Raiden due to her burst mechanics
 		// TODO: Don't think there's a better solution without an expensive recursive solution to check across all Raiden ER states
 		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks low
-		erStack := 10
+		erStack := charSubstatLimits[i][core.ER]
 		if char.Base.Key == core.Raiden {
 			erStack = 0
 		}
