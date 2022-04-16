@@ -173,21 +173,29 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	if c.Base.Cons == 6 {
-		m := make([]float64, core.EndStatType)
-		m[core.EM] = 200
-		c.AddTask(func() {
-			for _, char := range c.Core.Chars {
-				this := char
-				this.AddMod(core.CharStatMod{
-					Key:          "diona-c6",
-					Expiry:       c.Core.F + 750,
-					AffectedStat: core.EM, // to avoid infinite loop when calling MaxHP
-					Amount: func() ([]float64, bool) {
-						return m, this.HP()/this.MaxHP() > 0.5
-					},
-				})
-			}
-		}, "c6-em-share", f)
+		val := make([]float64, core.EndStatType)
+		val[core.EM] = 200
+		//lasts 12.5 second, ticks every 0.5s; adds mod to active char for 2s
+		for i := 30; i < 750; i += 30 {
+			c.AddTask(func() {
+				//add 200EM to active char
+				char := c.Core.Chars[c.Core.ActiveChar]
+				if char.HP()/char.MaxHP() > 0.5 {
+					char.AddMod(core.CharStatMod{
+						Key:    "diona-c6",
+						Expiry: c.Core.F + 120, //lasts 2 seconds
+						Amount: func() ([]float64, bool) {
+							return val, true
+						},
+					})
+				} else {
+					//add healing bonus if < 0.5
+					c.Tags["c6bonus-"+char.Key().String()] = c.Core.F + 120
+				}
+
+			}, "c6-buffs", i)
+		}
+
 	}
 
 	c.SetCDWithDelay(core.ActionBurst, 1200, 49)
