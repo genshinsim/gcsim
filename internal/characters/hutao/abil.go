@@ -40,7 +40,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		//trying to change animations mid-attack, but not sure how to fully test that
 		//[4:41 PM] jstern25| ₼WHO_SUPREMACY: this mostly checks out
 		//her e can't expire during q as well
-		if 6 > c.Core.Status.Duration("paramita") {
+		if paramitaChargeHitmark > c.Core.Status.Duration("paramita") {
 			c.Core.Status.AddStatus("paramita", paramitaChargeHitmark)
 			// c.S.Status["paramita"] = c.Core.F + f //extend this to barely cover the burst
 		}
