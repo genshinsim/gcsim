@@ -47,6 +47,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			// c.S.Status["paramita"] = c.Core.F + f //extend this to barely cover the burst
 		}
 
+		c.ppSlide = true
+		c.AddTask(func() { c.ppSlide = false }, 44)
 		c.applyBB()
 		//charge land 182, tick 432, charge 632, tick 675
 		//charge land 250, tick 501, charge 712, tick 748
@@ -211,7 +213,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//[2:28 PM] Aluminum | Harbinger of Jank: I think the idea is that PP won't fall off before dmg hits, but other buffs aren't snapshot
 	//[2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
-	if f > c.Core.Status.Duration("paramita") && c.Core.Status.Duration("paramita") > 0 {
+	if f > c.Core.Status.Duration("paramita") && (c.Core.Status.Duration("paramita") > 0 || c.ppSlide) {
 		c.Core.Status.AddStatus("paramita", f) //extend this to barely cover the burst
 		c.Core.Log.NewEvent("Paramita status extension for burst", core.LogCharacterEvent, c.Index, "new_duration", c.Core.Status.Duration("paramita"))
 	}
