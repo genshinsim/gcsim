@@ -8,10 +8,13 @@ func (t *Tmpl) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 }
 
 func (t *Tmpl) ActionInterruptableDelay(next core.ActionType, p map[string]int) int {
-	switch t.Core.LastAction.Typ {
-	case core.ActionSwap:
-		//if not same character then there should be no delay
-		return 0
+
+	// check if next is skill hold
+	if next == core.ActionSkill && p["hold"] != 0 {
+		next = core.ActionSkillHoldFramesOnly
+	}
+
+	switch prev := t.Core.LastAction.Typ; prev {
 	case core.ActionAttack:
 		//check our hit counter; should be hit counter - 1
 		lastHit := t.NormalCounter - 1
@@ -24,8 +27,18 @@ func (t *Tmpl) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 			return 0
 		}
 		return n[next]
+	case core.ActionSkill:
+		// check if prev was hold
+		if t.Core.LastAction.Param["hold"] != 0 {
+			prev = core.ActionSkillHoldFramesOnly
+		}
+		n, ok := t.cancelFrames[prev]
+		if !ok {
+			return 0
+		}
+		return n[next]
 	default:
-		n, ok := t.cancelFrames[t.Core.LastAction.Typ]
+		n, ok := t.cancelFrames[prev]
 		if !ok {
 			return 0
 		}

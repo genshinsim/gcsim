@@ -103,15 +103,8 @@ func (c *char) InitCancelFrames() {
 }
 
 func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) int {
-	//provide override for skill and plunge cause it depends on hold vs press
+	//provide override for plunge cause it depends on hold vs press
 	switch next {
-	case core.ActionSkill:
-		//have to check for press vs hold
-		h := p["hold"]
-		if h > 0 {
-			return c.Tmpl.ActionInterruptableDelay(core.ActionSkillHoldFramesOnly, p)
-		}
-		return c.Tmpl.ActionInterruptableDelay(next, p)
 	case core.ActionHighPlunge:
 		//depends on if it was hold or press before so this has to be custom
 		prev := c.Core.LastAction
@@ -121,8 +114,7 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 			return 0
 		}
 		//check if hold
-		h := prev.Param["hold"]
-		if h > 0 {
+		if prev.Param["hold"] != 0 {
 			return plungeHoldSkillFrames(next)
 		}
 		return plungePressSkillFrames(next)
