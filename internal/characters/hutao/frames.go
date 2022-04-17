@@ -2,6 +2,9 @@ package hutao
 
 import "github.com/genshinsim/gcsim/pkg/core"
 
+var hitmarks = [][]int{{12}, {10}, {17}, {23}, {16, 27}, {27}}
+var paramitaChargeHitmark = 6
+
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:

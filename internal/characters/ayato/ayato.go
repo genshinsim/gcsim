@@ -15,7 +15,6 @@ type char struct {
 	particleICD       int
 	a4ICD             int
 	c6ready           bool
-	skillExpired      bool
 }
 
 func init() {
@@ -48,19 +47,19 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.particleICD = 0
 	c.a4ICD = 0
 	c.c6ready = false
-	c.skillExpired = false
 
 	c.stacksMax = 4
 	if c.Base.Cons >= 2 {
 		c.stacksMax = 5
 	}
 
+	c.InitCancelFrames()
+
 	return &c, nil
 }
 
 func (c *char) Init() {
 	c.Tmpl.Init()
-	c.InitCancelFrames()
 
 	c.a1()
 	c.a4()

@@ -6,8 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
-var hitmarks = [][]int{{12}, {10}, {17}, {23}, {16, 27}, {27}}
-
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	//check for particles
@@ -43,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		//[4:41 PM] jstern25| ₼WHO_SUPREMACY: this mostly checks out
 		//her e can't expire during q as well
 		if 6 > c.Core.Status.Duration("paramita") {
-			c.Core.Status.AddStatus("paramita", 6)
+			c.Core.Status.AddStatus("paramita", paramitaChargeHitmark)
 			// c.S.Status["paramita"] = c.Core.F + f //extend this to barely cover the burst
 		}
 
