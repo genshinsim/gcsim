@@ -1,28 +1,437 @@
 package substatoptimizer
 
 import (
+	"fmt"
 	"math"
+	"sort"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
 type OptimStats struct {
-	charRelevantSubstats map[keys.Char][]attributes.Stat
-	artifactSets4Star    []keys.Set
-	substatValues         []float64
-	mainstatValues        []float64
-	charSubstatFinal      [][]int
-	charSubstatLimits     [][]int
-	charSubstatRarityMod  []float64
-	indivSubstatLiquidCap int
-	fixedSubstatCount			int
-	simcfg                *ast.ActionList
+	charRelevantSubstats   map[keys.Char][]attributes.Stat
+	artifactSets4Star      []keys.Set
+	substatValues          []float64
+	mainstatValues         []float64
+	charSubstatFinal       [][]int
+	charSubstatLimits      [][]int
+	charSubstatRarityMod   []float64
+	charProfilesInitial    []character.CharacterProfile
+	charWithFavonius       []bool
+	charProfilesERBaseline []character.CharacterProfile
+	charProfilesCopy       []character.CharacterProfile
+	simcfg                 *ast.ActionList
+	fixedSubstatCount      int
+	indivSubstatLiquidCap  int
+	totalLiquidSubstats    int
 }
 
-func InitOptimStats(simcfg *ast.ActionList, indivLiquidCap int, fixedSubstatCount int) *OptimStats {
+// Calculate per-character per-substat "gradients" at initial state using finite differences
+// In practical evaluations, adding small numbers of substats (<10) can be VERY noisy
+// Therefore, "gradient" evaluations are done in groups of 10 substats
+// Allocation strategy is to just max substats according to highest gradient to lowest
+// TODO: Probably want to refactor to potentially run gradient step at least twice:
+// once initially then another at 10 assigned liquid substats
+// Fine grained evaluations are too expensive time wise, but can perhaps add in an option for people who want to sit around for a while
+func (stats *OptimStats) optimizeNonERSubstats(runner simRunner) []string {
+	var (
+		opDebug   []string
+		charDebug []string
+	)
+
+	stats.simcfg.Characters = stats.charProfilesCopy
+
+	// Get initial DPS value
+	initialResult := runner(stats.simcfg)
+	initialMean := initialResult.DPS.Mean
+
+	opDebug = append(opDebug, "Calculating optimal substat distribution...")
+	opDebug = append(opDebug, fmt.Sprintf("%v", initialMean))
+
+	for idxChar, char := range stats.charProfilesCopy {
+		charDebug = stats.optimizeNonErSubstatsForChar(idxChar, char, initialMean, runner)
+		opDebug = append(opDebug, charDebug...)
+	}
+
+	return opDebug
+}
+
+func (stats *OptimStats) optimizeNonErSubstatsForChar(idxChar int, char character.CharacterProfile, initialMean float64, runner simRunner) []string {
+	var opDebug []string
+	opDebug = append(opDebug, fmt.Sprintf("%v", char.Base.Key))
+
+	// Reset favonius char crit rate
+	if stats.charWithFavonius[idxChar] {
+		stats.charProfilesCopy[idxChar].Stats[attributes.CR] -= 8 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
+	}
+
+	relevantSubstats := stats.getNonErSubstatsToOptimizeForChar(char)
+
+	addlSubstats := stats.charRelevantSubstats[char.Base.Key]
+	if len(addlSubstats) > 0 {
+		relevantSubstats = append(relevantSubstats, addlSubstats...)
+	}
+
+	substatGradients, gradDebug := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, initialMean, runner)
+	opDebug = append(opDebug, gradDebug...)
+
+	allocDebug := stats.allocateSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats)
+	opDebug = append(opDebug, allocDebug...)
+
+	return opDebug
+}
+
+func (stats *OptimStats) allocateSubstatGradientsForChar(idxChar int, char character.CharacterProfile, substatGradient []float64, relevantSubstats []attributes.Stat) []string {
+	var opDebug []string
+
+	sorted := NewSlice(substatGradient...)
+	sort.Sort(sort.Reverse(sorted))
+
+	printVal := ""
+	for i, idxSorted := range sorted.idx {
+		printVal += fmt.Sprintf("%v: %5.5g, ", relevantSubstats[idxSorted], sorted.slice[i])
+	}
+	opDebug = append(opDebug, printVal)
+
+	for idxGrad, idxSubstat := range sorted.idx {
+		allocDebug := stats.allocateSubstatGradientForChar(idxChar, char, sorted, idxGrad, idxSubstat, relevantSubstats)
+		opDebug = append(opDebug, allocDebug...)
+	}
+
+	opDebug = append(opDebug, "Final Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+
+	stats.resetFavoniusCritRateForChar(idxChar)
+
+	return opDebug
+}
+
+func (stats *OptimStats) resetFavoniusCritRateForChar(idxChar int) {
+	if stats.charWithFavonius[idxChar] {
+		stats.charProfilesCopy[idxChar].Stats[attributes.CR] += 8 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
+	}
+}
+
+func (stats *OptimStats) allocateSubstatGradientForChar(idxChar int, char character.CharacterProfile, sorted *Slice, idxGrad int, idxSubstat int, relevantSubstats []attributes.Stat) []string {
+	var opDebug []string
+
+	substatToMax := relevantSubstats[idxSubstat]
+
+	// TODO: Improve this by adding a mix of CR/CD substats based on the ratio of gradient increase from CR/CD
+	// If CR/CD is one of the selected substats, then adding them in a mix is generally most optimal
+	// Use the ratio between gradient values to determine mix %
+	// Need manual override here since gradient method from init does not always find this result
+	var crCDSubstatRatio float64
+	var gradStat float64
+	switch substatToMax {
+	case attributes.CR:
+		gradCR := sorted.slice[idxGrad]
+		gradCD := 0.0
+		for i, idxSubstatTemp := range sorted.idx {
+			if relevantSubstats[idxSubstatTemp] == attributes.CD {
+				gradCD = sorted.slice[i]
+			}
+		}
+		crCDSubstatRatio = gradCR / gradCD
+	case attributes.CD:
+		gradCD := sorted.slice[idxGrad]
+		gradCR := 0.0
+		for i, idxSubstatTemp := range sorted.idx {
+			if relevantSubstats[idxSubstatTemp] == attributes.CR {
+				gradCR = sorted.slice[i]
+			}
+		}
+		crCDSubstatRatio = gradCR / gradCD
+	default:
+		gradStat = sorted.slice[idxGrad]
+	}
+
+	// If DPS change is really low, then it's usually better to just toss a few extra points into ER for stability
+	if gradStat < 50 && crCDSubstatRatio == 0 {
+		stats.assignSubstatsForChar(idxChar, char, attributes.ER, 4)
+		opDebug = append(opDebug, "Low damage contribution from substats - adding some points to ER instead")
+	}
+
+	var globalLimit int
+	var crLimit int
+	var cdLimit int
+	if crCDSubstatRatio > 0 {
+		globalLimit, crLimit = stats.assignSubstatsForChar(idxChar, char, attributes.CR, 0)
+		_, cdLimit = stats.assignSubstatsForChar(idxChar, char, attributes.CD, 0)
+
+		// Continually add CR/CD to try to align CR/CD ratio to ratio of gradients until we hit a limit
+		var currentRatio float64
+		var amtCR int
+		var amtCD int
+		currentStat := attributes.CR
+		// Debug to avoid runaway loops...
+		var iteration int
+		// Want this to continue until either global cap is reached, or we can neither add CR/CD
+		for globalLimit > 0 && (crLimit > 0 || cdLimit > 0) && iteration < 100 {
+			if stats.charSubstatFinal[idxChar][attributes.CD] == 0 {
+				currentRatio = float64(stats.charSubstatFinal[idxChar][attributes.CR])
+			} else {
+				currentRatio = float64(stats.charSubstatFinal[idxChar][attributes.CR]) / float64(stats.charSubstatFinal[idxChar][attributes.CD])
+			}
+
+			if currentRatio > crCDSubstatRatio {
+				amtCR = 0
+				amtCD = 1
+			} else if currentRatio <= crCDSubstatRatio {
+				amtCR = 1
+				amtCD = 0
+			}
+
+			// When we hit the limit on one stat, just try to fill the other up to max
+			if crLimit == 0 {
+				amtCD = stats.indivSubstatLiquidCap
+			}
+			if cdLimit == 0 {
+				amtCR = stats.indivSubstatLiquidCap
+			}
+
+			if currentStat == attributes.CR {
+				globalLimit, crLimit = stats.assignSubstatsForChar(idxChar, char, attributes.CR, amtCR)
+				currentStat = attributes.CD
+			} else if currentStat == attributes.CD {
+				globalLimit, cdLimit = stats.assignSubstatsForChar(idxChar, char, attributes.CD, amtCD)
+				currentStat = attributes.CR
+			}
+			iteration += 1
+		}
+	} else {
+		globalLimit, _ = stats.assignSubstatsForChar(idxChar, char, substatToMax, stats.indivSubstatLiquidCap+stats.fixedSubstatCount)
+	}
+	if globalLimit == 0 {
+		return opDebug
+	}
+
+	return opDebug
+}
+
+// Assigns substats and returns the remaining global limit and individual substat limit
+func (stats *OptimStats) assignSubstatsForChar(idxChar int, char character.CharacterProfile, substat attributes.Stat, amt int) (int, int) {
+	totalSubstatCount := 0
+	for _, val := range stats.charSubstatFinal[idxChar] {
+		totalSubstatCount += val
+	}
+
+	baseLiquidSubstats := stats.totalLiquidSubstats
+	for set, count := range char.Sets {
+		for _, setfourstar := range stats.artifactSets4Star {
+			if set == setfourstar {
+				baseLiquidSubstats -= 2 * count
+			}
+		}
+	}
+
+	remainingLiquidSubstats := baseLiquidSubstats - totalSubstatCount
+	// Minimum of individual limit, global limit, desired amount
+	amtToAdd := minInt(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat], remainingLiquidSubstats, amt)
+	stats.charSubstatFinal[idxChar][substat] += amtToAdd
+
+	return remainingLiquidSubstats - amtToAdd, stats.charSubstatLimits[idxChar][substat] - stats.charSubstatFinal[idxChar][substat]
+}
+
+func (stats *OptimStats) calculateSubstatGradientsForChar(idxChar int, relevantSubstats []attributes.Stat, initialMean float64, runner simRunner) ([]float64, []string) {
+	var opDebug []string
+	substatGradients := make([]float64, len(relevantSubstats))
+
+	// Build "gradient" by substat
+	for idxSubstat, substat := range relevantSubstats {
+		stats.charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+
+		stats.simcfg.Characters = stats.charProfilesCopy
+		substatEvalResult := runner(stats.simcfg)
+		// opDebug = append(opDebug, fmt.Sprintf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD))
+
+		substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
+
+		stats.charProfilesCopy[idxChar].Stats[substat] -= 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+	}
+
+	return substatGradients, opDebug
+}
+
+// TODO: Seems like this should be configurable
+func (stats *OptimStats) getNonErSubstatsToOptimizeForChar(char character.CharacterProfile) []attributes.Stat {
+	// Get relevant substats, and add additional ones for special characters if needed
+	relevantSubstats := []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD, attributes.EM}
+	// RIP crystallize...
+	if keys.CharKeyToEle[char.Base.Key] == attributes.Geo {
+		relevantSubstats = []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD}
+	}
+
+	return relevantSubstats
+}
+
+// Find optimal ER cutoffs for each character
+// For each character, do grid search to find optimal ER values
+// TODO: Can maybe replace with some kind of gradient descent for speed improvements/allow for 1 ER substat moves?
+// When I tried before, it was hard to define a good step size and penalty on high ER substats that generally worked well
+// At least this version works semi-reliably...
+func (stats *OptimStats) optimizeERSubstats(tolMean float64, tolSD float64, runner simRunner) []string {
+	var (
+		charDebug []string
+		opDebug   []string
+	)
+
+	for idxChar, char := range stats.charProfilesERBaseline {
+		charDebug = stats.findOptimalERforChar(idxChar, char, tolMean, tolSD, runner)
+		opDebug = append(opDebug, charDebug...)
+	}
+
+	// Need a separate optimization routine for strong battery characters (currently Raiden only, maybe EMC?)
+	// Need to set all other character's ER substats at final value, then see added benefit from ER for global battery chars
+	for i, char := range stats.charProfilesERBaseline {
+		stats.charProfilesERBaseline[i].Stats[attributes.ER] = stats.charProfilesInitial[i].Stats[attributes.ER]
+
+		if char.Base.Key == keys.Raiden {
+			stats.charSubstatFinal[i][attributes.ER] = stats.indivSubstatLiquidCap
+		}
+
+		stats.charProfilesERBaseline[i].Stats[attributes.ER] += float64(stats.charSubstatFinal[i][attributes.ER]) * stats.substatValues[attributes.ER]
+	}
+
+	for i, char := range stats.charProfilesERBaseline {
+		if char.Base.Key != keys.Raiden {
+			continue
+		}
+		opDebug = append(opDebug, "Raiden found in team comp - running secondary optimization routine...")
+		charDebug = stats.findOptimalERforChar(i, char, tolMean, tolSD, runner)
+		opDebug = append(opDebug, charDebug...)
+	}
+
+	// Fix ER at previously found values then optimize all other substats
+	opDebug = append(opDebug, "Optimized ER Liquid Substats by character:")
+	printVal := ""
+	for i, char := range stats.charProfilesInitial {
+		printVal += fmt.Sprintf("%v: %.4g, ", char.Base.Key.String(), float64(stats.charSubstatFinal[i][attributes.ER])*stats.substatValues[attributes.ER])
+	}
+	opDebug = append(opDebug, printVal)
+
+	return opDebug
+}
+
+func (stats *OptimStats) setCharProfilesCopy(charsToCopy []character.CharacterProfile) {
+	for i, char := range charsToCopy {
+		stats.charProfilesCopy[i] = char.Clone()
+	}
+}
+
+func (stats *OptimStats) findOptimalERforChar(idxChar int, char character.CharacterProfile, tolMean float64, tolSD float64, runner simRunner) []string {
+	var debug []string
+	var initialMean float64
+	var initialSD float64
+
+	debug = append(debug, fmt.Sprintf("%v", char.Base.Key))
+
+	for erStack := 0; erStack <= stats.indivSubstatLiquidCap; erStack += 2 {
+		stats.charProfilesCopy[idxChar] = char.Clone()
+		stats.charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(erStack) * stats.substatValues[attributes.ER]
+
+		stats.simcfg.Characters = stats.charProfilesCopy
+
+		result := runner(stats.simcfg)
+		debug = append(debug, fmt.Sprintf("%v: %v (%v)", stats.charSubstatFinal[idxChar][attributes.ER]-erStack, result.DPS.Mean, result.DPS.SD))
+
+		if erStack == 0 {
+			initialMean = result.DPS.Mean
+			initialSD = result.DPS.SD
+		}
+
+		condition := result.DPS.Mean/initialMean-1 < -tolMean || result.DPS.SD/initialSD-1 > tolSD
+		// For Raiden, we can't use DPS directly as a measure since she scales off of her own ER
+		// Instead we ONLY use the SD tolerance as big jumps indicate the rotation is becoming more unstable
+		if char.Base.Key == keys.Raiden {
+			condition = result.DPS.SD/initialSD-1 > tolSD
+		}
+
+		// If differences exceed tolerances, then immediately break
+		if condition {
+			// Reset character stats
+			stats.charProfilesCopy[idxChar] = char.Clone()
+			// Save ER value - optimal value is the value immediately prior, so we subtract 2
+			stats.charSubstatFinal[idxChar][attributes.ER] -= erStack - 2
+			break
+		}
+
+		// Reached minimum possible ER stacks, so optimal is the minimum amount of ER stacks
+		if stats.charSubstatFinal[idxChar][attributes.ER]-erStack == 0 {
+			// Reset character stats
+			stats.charProfilesCopy[idxChar] = char.Clone()
+			stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
+			break
+		}
+	}
+
+	return debug
+}
+
+func (stats *OptimStats) setInitialSubstats(fixedSubstatCount int) {
+	stats.cloneStatsWithFixedAllocations(fixedSubstatCount)
+	stats.calculateERBaseline()
+}
+
+// Copy to save initial character state with fixed allocations (2 of each substat)
+func (stats *OptimStats) cloneStatsWithFixedAllocations(fixedSubstatCount int) {
+	for i, char := range stats.simcfg.Characters {
+		stats.charProfilesInitial[i] = char.Clone()
+		for idxStat, stat := range stats.substatValues {
+			if stat == 0 {
+				continue
+			}
+			if attributes.Stat(idxStat) == attributes.ER {
+				stats.charProfilesInitial[i].Stats[idxStat] += float64(fixedSubstatCount) * stat
+			} else {
+				stats.charProfilesInitial[i].Stats[idxStat] += float64(fixedSubstatCount) * stat * stats.charSubstatRarityMod[i]
+			}
+		}
+	}
+}
+
+// Add some points into CR/CD to reduce crit variance and have reasonable baseline stats
+// Also helps to slightly better evaluate the impact of favonius
+// Current concern is that optimization on 2nd stage doesn't perform very well due to messed up rotation
+func (stats *OptimStats) calculateERBaseline() {
+	for i, char := range stats.charProfilesInitial {
+		stats.charProfilesERBaseline[i] = char.Clone()
+		// Need special exception to Raiden due to her burst mechanics
+		// TODO: Don't think there's a better solution without an expensive recursive solution to check across all Raiden ER states
+		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks low
+		erStack := stats.indivSubstatLiquidCap
+		if char.Base.Key == keys.Raiden {
+			erStack = 0
+		}
+		stats.charSubstatFinal[i][attributes.ER] = erStack
+
+		stats.charProfilesERBaseline[i].Stats[attributes.ER] += float64(erStack) * stats.substatValues[attributes.ER]
+		stats.charProfilesERBaseline[i].Stats[attributes.CR] += 4 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[i]
+		stats.charProfilesERBaseline[i].Stats[attributes.CD] += 4 * stats.substatValues[attributes.CD] * stats.charSubstatRarityMod[i]
+
+		if strings.Contains(char.Weapon.Name, "favonius") {
+			stats.calculateERBaselineHandleFav(i)
+		}
+	}
+}
+
+// Current strategy for favonius is to just boost this character's crit values a bit extra for optimal ER calculation purposes
+// Then at next step of substat optimization, should naturally see relatively big DPS increases for that character if higher crit matters a lot
+// TODO: Do we need a better special case for favonius?
+func (stats *OptimStats) calculateERBaselineHandleFav(i int) {
+	stats.charProfilesERBaseline[i].Stats[attributes.CR] += 4 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[i]
+	stats.charWithFavonius[i] = true
+}
+
+func InitOptimStats(simcfg *ast.ActionList, indivLiquidCap int, totalLiquidSubstats int, fixedSubstatCount int) *OptimStats {
 	s := OptimStats{}
+	s.simcfg = simcfg
+	s.fixedSubstatCount = fixedSubstatCount
+	s.indivSubstatLiquidCap = indivLiquidCap
+	s.totalLiquidSubstats = totalLiquidSubstats
 
 	s.artifactSets4Star = []keys.Set{
 		keys.TheExile,
@@ -73,11 +482,15 @@ func InitOptimStats(simcfg *ast.ActionList, indivLiquidCap int, fixedSubstatCoun
 		s.charSubstatFinal[i] = make([]int, attributes.EndStatType)
 	}
 
-	s.simcfg = simcfg
-	s.indivSubstatLiquidCap = indivLiquidCap
-	s.fixedSubstatCount = fixedSubstatCount
 	s.charSubstatLimits = make([][]int, len(simcfg.Characters))
 	s.charSubstatRarityMod = make([]float64, len(simcfg.Characters))
+	s.charProfilesInitial = make([]character.CharacterProfile, len(simcfg.Characters))
+
+	// Need to make an exception in energy calcs for these characters for optimization purposes
+	s.charWithFavonius = make([]bool, len(simcfg.Characters))
+	// Give all characters max ER to set initial state
+	s.charProfilesERBaseline = make([]character.CharacterProfile, len(simcfg.Characters))
+	s.charProfilesCopy = make([]character.CharacterProfile, len(simcfg.Characters))
 
 	return &s
 }
