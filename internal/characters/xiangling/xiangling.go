@@ -186,7 +186,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	var cb core.AttackCBFunc
-	if c.Base.Cons > 1 {
+	if c.Base.Cons >= 1 {
 		cb = func(a core.AttackCB) {
 			a.Target.AddResMod("xiangling-c1", core.ResistMod{
 				Ele:      core.Pyro,
