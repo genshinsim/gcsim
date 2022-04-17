@@ -49,8 +49,9 @@ type Core struct {
 	Log   LogCtrl
 
 	//core data
-	Stam   float64
-	SwapCD int
+	Stam       float64
+	SwapCD     int
+	SwapTarget int
 
 	//core stuff
 	// queue        []Command
@@ -159,14 +160,28 @@ func (c *Core) CharByName(key CharKey) (Character, bool) {
 }
 
 func (c *Core) Swap(next CharKey) int {
+	f := c.Flags.Delays.Swap + 1
 	prev := c.ActiveChar
-	c.ActiveChar = c.CharPos[next]
-	c.SwapCD = SwapCDFrames
+	c.SwapTarget = c.CharPos[next]
 	c.ResetAllNormalCounter()
-	c.Events.Emit(OnCharacterSwap, prev, c.ActiveChar)
-	//this duration reset needs to be after the hook for spine to behave properly
-	c.ActiveDuration = 0
-	return 1
+	c.Tasks.Add(func() {
+		c.ActiveChar = c.SwapTarget
+		c.SwapCD = SwapCDFrames
+
+		c.Log.NewEvent("executed "+ActionSwap.String(), LogActionEvent, c.ActiveChar,
+			"action", ActionSwap.String(),
+			"target", next.String(),
+			"swap_cd_post", c.SwapCD,
+			"stam_post", c.Stam,
+			"animation", 1,
+		)
+
+		c.Events.Emit(OnCharacterSwap, prev, c.ActiveChar)
+		//this duration reset needs to be after the hook for spine to behave properly
+		c.ActiveDuration = 0
+		c.ClearState()
+	}, f)
+	return f
 }
 
 func (c *Core) AnimationCancelDelay(next ActionType, p map[string]int) int {
@@ -196,8 +211,6 @@ func (c *Core) UserCustomDelay() int {
 		d = c.Flags.Delays.Dash
 	case ActionJump:
 		d = c.Flags.Delays.Jump
-	case ActionSwap:
-		d = c.Flags.Delays.Swap
 	case ActionAim:
 		d = c.Flags.Delays.Aim
 	}

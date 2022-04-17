@@ -218,7 +218,6 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 			return 0, false, nil
 		}
 		f = a.core.Swap(n.Target)
-		a.core.ClearState()
 	}
 
 	a.core.Log.NewEvent(
