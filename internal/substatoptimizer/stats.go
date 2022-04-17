@@ -402,7 +402,7 @@ func (stats *OptimStats) calculateERBaseline() {
 		// Need special exception to Raiden due to her burst mechanics
 		// TODO: Don't think there's a better solution without an expensive recursive solution to check across all Raiden ER states
 		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks low
-		erStack := stats.indivSubstatLiquidCap
+		erStack := stats.charSubstatLimits[i][attributes.ER]
 		if char.Base.Key == keys.Raiden {
 			erStack = 0
 		}
