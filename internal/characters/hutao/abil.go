@@ -48,7 +48,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		}
 
 		c.ppSlide = true
-		c.AddTask(func() { c.ppSlide = false }, 44)
+		c.AddTask(func() { c.ppSlide = false }, "ppslide", 44)
 		c.applyBB()
 		//charge land 182, tick 432, charge 632, tick 675
 		//charge land 250, tick 501, charge 712, tick 748
