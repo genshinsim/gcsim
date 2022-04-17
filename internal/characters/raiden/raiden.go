@@ -14,7 +14,6 @@ type char struct {
 	restoreCount   int
 	c6Count        int
 	c6ICD          int
-	burstExpired   bool
 }
 
 func init() {
@@ -41,14 +40,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneInazuma
-	c.burstExpired = false
 
 	return &c, nil
 }
 
 func (c *char) Init() {
 	c.Tmpl.Init()
-	c.InitCancelFrames()
 
 	c.eyeOnDamage()
 	c.onBurstStackCount()
