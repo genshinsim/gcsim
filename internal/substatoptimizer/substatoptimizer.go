@@ -1,10 +1,11 @@
 package substatoptimizer
 
 import (
+	"errors"
 	"fmt"
+	"go.uber.org/zap"
 	"log"
 	"os"
-	"regexp"
 	"sort"
 	"strings"
 
@@ -14,37 +15,24 @@ import (
 	"github.com/genshinsim/gcsim/pkg/result"
 )
 
+type FatalError struct {
+	msg string
+}
+
+func (err *FatalError) Error() string {
+	return err.msg
+}
+
+func NewFatalErr(msg string) *FatalError {
+	return &FatalError{
+		msg: msg,
+	}
+}
+
 // Additional runtime option to optimize substats according to KQM standards
 func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions string) {
-	// Substat Optimization strategy is very simplistic right now:
-	// This is not fully optimal - see other comments in code
-	// 1) User sets team, weapons, artifact sets/main stats, and rotation
-	// 2) Given those, for each character, sim picks ER substat value that functionally maximizes DPS Mean/SD,
-	// subject to a penalty on high ER values
-	//    - Strategy is to just do a dumb grid search over ER substat values for each character
-	//    - ER substat values are set in increments of 2 to make the search easier
-	// 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
-	sugarLog := InitLogger(verbose)
-
 	// Each optimizer run should not be saving anything out for the GZIP
 	simopt.GZIPResult = false
-
-	// Parse config
-	cfg, err := simulator.ReadConfig(simopt.ConfigPath)
-	if err != nil {
-		sugarLog.Error(err)
-		os.Exit(1)
-	}
-
-	re := InitRegex()
-	srcCleaned := re.scrubSimCfg(cfg, sugarLog)
-
-	parser := parse.New("single", srcCleaned)
-	simcfg, err := parser.Parse()
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
 
 	optionsMap := map[string]float64{
 		"total_liquid_substats": 20,
@@ -53,377 +41,56 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		"sim_iter":              350,
 		"tol_mean":              0.015,
 		"tol_sd":                0.33,
+		"verbose":               0,
 	}
+
+	if verbose {
+		optionsMap["verbose"] = 1
+	}
+
+	re := InitRegex()
 
 	// Parse and set all special sim options
+	var sugarLog *zap.SugaredLogger
 	if additionalOptions != "" {
-		re.scrubAdditionalOptimizerCfg(additionalOptions, optionsMap, sugarLog)
+		optionsMap, err := re.scrubAdditionalOptimizerCfg(additionalOptions, optionsMap)
+		sugarLog = InitLogger(optionsMap["verbose"] == 1)
+		if err != nil {
+			sugarLog.Panic(err.Error())
+		}
+	} else {
+		sugarLog = InitLogger(optionsMap["verbose"] == 1)
 	}
 
-	// Fix iterations at 350 for performance
-	// TODO: Seems to be a roughly good number at KQM standards
-	simcfg.Settings.Iterations = int(optionsMap["sim_iter"])
-
-	stats := InitOptimStats(simcfg, int(optionsMap["indiv_liquid_cap"]))
-	fourStarFound := stats.setStatLimits()
-	if fourStarFound {
-		sugarLog.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
+	// Parse config
+	cfg, err := simulator.ReadConfig(simopt.ConfigPath)
+	if err != nil {
+		sugarLog.Error(err)
+		os.Exit(1)
 	}
 
-	// Copy to save initial character state with fixed allocations (2 of each substat)
-	charProfilesInitial := make([]core.CharacterProfile, len(simcfg.Characters.Profile))
+	srcCleaned, err := re.scrubSimCfg(cfg)
 
-	fixedSubstatCount := optionsMap["fixed_substats_count"]
-	for i, char := range simcfg.Characters.Profile {
-		charProfilesInitial[i] = char.Clone()
-		for idxStat, stat := range stats.substatValues {
-			if stat == 0 {
-				continue
-			}
-			if core.StatType(idxStat) == core.ER {
-				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat
-			} else {
-				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat * stats.charSubstatRarityMod[i]
-			}
-		}
+	fatal := &FatalError{}
+	if errors.As(err, &fatal) {
+		sugarLog.Panic(err.Error())
+		os.Exit(1)
 	}
 
-	// Need to special case these characters for optimization purposes
-	charWithFavonius := make([]bool, len(simcfg.Characters.Profile))
-
-	// Give all characters max ER to set initial state
-	charProfilesERBaseline := make([]core.CharacterProfile, len(simcfg.Characters.Profile))
-
-	sugarLog.Info("Starting ER Optimization...")
-
-	// Add some points into CR/CD to reduce crit variance and have reasonable baseline stats
-	// Also helps to slightly better evaluate the impact of favonius
-	// TODO: Do we need a better special case for favonius?
-	// Current concern is that optimization on 2nd stage doesn't perform very well due to messed up rotation
-	for i, char := range charProfilesInitial {
-		charProfilesERBaseline[i] = char.Clone()
-		// Need special exception to Raiden due to her burst mechanics
-		// TODO: Don't think there's a better solution without an expensive recursive solution to check across all Raiden ER states
-		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks low
-		erStack := 10
-		if char.Base.Key == core.Raiden {
-			erStack = 0
-		}
-		stats.charSubstatFinal[i][core.ER] = erStack
-
-		charProfilesERBaseline[i].Stats[core.ER] += float64(erStack) * stats.substatValues[core.ER]
-		charProfilesERBaseline[i].Stats[core.CR] += 4 * stats.substatValues[core.CR] * stats.charSubstatRarityMod[i]
-		charProfilesERBaseline[i].Stats[core.CD] += 4 * stats.substatValues[core.CD] * stats.charSubstatRarityMod[i]
-
-		// Current strategy for favonius is to just boost this character's crit values a bit extra for optimal ER calculation purposes
-		// Then at next step of substat optimization, should naturally see relatively big DPS increases for that character if higher crit matters a lot
-		if strings.Contains(char.Weapon.Name, "favonius") {
-			charProfilesERBaseline[i].Stats[core.CR] += 4 * stats.substatValues[core.CR] * stats.charSubstatRarityMod[i]
-			charWithFavonius[i] = true
-		}
+	if err != nil {
+		sugarLog.Warn(err.Error())
 	}
 
-	// Find optimal ER cutoffs for each character
-	// For each character, do grid search to find optimal ER values
-	// TODO: Can maybe replace with some kind of gradient descent for speed improvements/allow for 1 ER substat moves?
-	// When I tried before, it was hard to define a good step size and penalty on high ER substats that generally worked well
-	// At least this version works semi-reliably...
-	charProfilesCopy := make([]core.CharacterProfile, len(simcfg.Characters.Profile))
-	for i, char := range charProfilesERBaseline {
-		charProfilesCopy[i] = char.Clone()
+	parser := parse.New("single", srcCleaned)
+	simcfg, err := parser.Parse()
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
 	}
 
-	tolMean := optionsMap["tol_mean"]
-	tolSD := optionsMap["tol_sd"]
-	// Interior loop of the ER optimization - takes in the parsed character index and a character profile
-	// No direct output - changes state of local variables instead
-	findOptimalERforChar := func(idxChar int, char core.CharacterProfile) {
-		var initialMean float64
-		var initialSD float64
-		sugarLog.Debugf("%v", char.Base.Key)
-		for erStack := 0; erStack <= 10; erStack += 2 {
-			charProfilesCopy[idxChar] = char.Clone()
-			charProfilesCopy[idxChar].Stats[core.ER] -= float64(erStack) * stats.substatValues[core.ER]
-
-			simcfg.Characters.Profile = charProfilesCopy
-
-			result := runSimWithConfig(cfg, simcfg, simopt)
-			sugarLog.Debugf("%v: %v (%v)", stats.charSubstatFinal[idxChar][core.ER]-erStack, result.DPS.Mean, result.DPS.SD)
-
-			if erStack == 0 {
-				initialMean = result.DPS.Mean
-				initialSD = result.DPS.SD
-			}
-
-			condition := result.DPS.Mean/initialMean-1 < -tolMean || result.DPS.SD/initialSD-1 > tolSD
-			// For Raiden, we can't use DPS directly as a measure since she scales off of her own ER
-			// Instead we ONLY use the SD tolerance as big jumps indicate the rotation is becoming more unstable
-			if char.Base.Key == core.Raiden {
-				condition = result.DPS.SD/initialSD-1 > tolSD
-			}
-
-			// If differences exceed tolerances, then immediately break
-			if condition {
-				// Reset character stats
-				charProfilesCopy[idxChar] = char.Clone()
-				// Save ER value - optimal value is the value immediately prior, so we subtract 2
-				stats.charSubstatFinal[idxChar][core.ER] -= (erStack - 2)
-				break
-			}
-
-			// Reached minimum possible ER stacks, so optimal is the minimum amount of ER stacks
-			if stats.charSubstatFinal[idxChar][core.ER]-erStack == 0 {
-				// Reset character stats
-				charProfilesCopy[idxChar] = char.Clone()
-				stats.charSubstatFinal[idxChar][core.ER] -= erStack
-				break
-			}
-		}
-	}
-
-	// Tolerance cutoffs for mean and SD from initial state
-	// Initial state is used rather than checking across each iteration due to noise
-	// TODO: May want to adjust further?
-	for idxChar, char := range charProfilesERBaseline {
-		findOptimalERforChar(idxChar, char)
-	}
-
-	// Need a separate optimization routine for strong battery characters (currently Raiden only, maybe EMC?)
-	// Need to set all other character's ER substats at final value, then see added benefit from ER for global battery chars
-	for i, char := range charProfilesERBaseline {
-		charProfilesERBaseline[i].Stats[core.ER] = charProfilesInitial[i].Stats[core.ER]
-
-		if char.Base.Key == core.Raiden {
-			stats.charSubstatFinal[i][core.ER] = 10
-		}
-
-		charProfilesERBaseline[i].Stats[core.ER] += float64(stats.charSubstatFinal[i][core.ER]) * stats.substatValues[core.ER]
-	}
-	for idxChar, char := range charProfilesERBaseline {
-		if char.Base.Key != core.Raiden {
-			continue
-		}
-		sugarLog.Info("Raiden found in team comp - running secondary optimization routine...")
-		findOptimalERforChar(idxChar, char)
-	}
-
-	// Fix ER at previously found values then optimize all other substats
-	sugarLog.Info("Optimized ER Liquid Substats by character:")
-	printVal := ""
-	for i, char := range charProfilesInitial {
-		printVal += fmt.Sprintf("%v: %.4g, ", char.Base.Key.String(), float64(stats.charSubstatFinal[i][core.ER])*stats.substatValues[core.ER])
-	}
-	sugarLog.Info(printVal)
-
-	// Calculate per-character per-substat "gradients" at initial state using finite differences
-	// In practical evaluations, adding small numbers of substats (<10) can be VERY noisy
-	// Therefore, "gradient" evaluations are done in groups of 10 substats
-	// Allocation strategy is to just max substats according to highest gradient to lowest
-	// TODO: Probably want to refactor to potentially run gradient step at least twice:
-	// once initially then another at 10 assigned liquid substats
-	// Fine grained evaluations are too expensive time wise, but can perhaps add in an option for people who want to sit around for a while
-	sugarLog.Info("Calculating optimal substat distribution...")
-
-	// Get initial DPS value
-	simcfg.Characters.Profile = charProfilesCopy
-	initialResult := runSimWithConfig(cfg, simcfg, simopt)
-	initialMean := initialResult.DPS.Mean
-	sugarLog.Debug(initialMean)
-
-	for idxChar, char := range charProfilesCopy {
-		sugarLog.Info(char.Base.Key)
-
-		// Reset favonius char crit rate
-		if charWithFavonius[idxChar] {
-			charProfilesCopy[idxChar].Stats[core.CR] -= 8 * stats.substatValues[core.CR] * stats.charSubstatRarityMod[idxChar]
-		}
-
-		// Get relevant substats, and add additional ones for special characters if needed
-		relevantSubstats := []core.StatType{core.ATKP, core.CR, core.CD, core.EM}
-		// RIP crystallize...
-		if core.CharKeyToEle[char.Base.Key] == core.Geo {
-			relevantSubstats = []core.StatType{core.ATKP, core.CR, core.CD}
-		}
-
-		addlSubstats := stats.charRelevantSubstats[char.Base.Key]
-		if len(addlSubstats) > 0 {
-			relevantSubstats = append(relevantSubstats, addlSubstats...)
-		}
-
-		substatGradients := make([]float64, len(relevantSubstats))
-
-		// Build "gradient" by substat
-		for idxSubstat, substat := range relevantSubstats {
-			charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
-
-			simcfg.Characters.Profile = charProfilesCopy
-			substatEvalResult := runSimWithConfig(cfg, simcfg, simopt)
-			// sugarLog.Debugf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD)
-
-			substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
-
-			charProfilesCopy[idxChar].Stats[substat] -= 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
-		}
-
-		// Allocate substats
-		sorted := NewSlice(substatGradients...)
-		sort.Sort(sort.Reverse(sorted))
-
-		printVal = ""
-		for i, idxSorted := range sorted.idx {
-			printVal += fmt.Sprintf("%v: %5.5g, ", relevantSubstats[idxSorted], sorted.slice[i])
-		}
-		sugarLog.Debug(printVal)
-
-		// Assigns substats and returns the remaining global limit and individual substat limit
-		assignSubstats := func(substat core.StatType, amt int) (int, int) {
-			totalSubstatCount := 0
-			for _, val := range stats.charSubstatFinal[idxChar] {
-				totalSubstatCount += val
-			}
-
-			baseLiquidSubstats := int(optionsMap["total_liquid_substats"])
-			for set, count := range char.Sets {
-				for _, setfourstar := range stats.artifactSets4Star {
-					if set == setfourstar {
-						baseLiquidSubstats -= 2 * count
-					}
-				}
-			}
-
-			remainingLiquidSubstats := baseLiquidSubstats - totalSubstatCount
-			// Minimum of individual limit, global limit, desired amount
-			amtToAdd := minInt(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat], remainingLiquidSubstats, amt)
-			stats.charSubstatFinal[idxChar][substat] += amtToAdd
-
-			return remainingLiquidSubstats - amtToAdd, stats.charSubstatLimits[idxChar][substat] - stats.charSubstatFinal[idxChar][substat]
-		}
-
-		for idxGrad, idxSubstat := range sorted.idx {
-			substatToMax := relevantSubstats[idxSubstat]
-			// TODO: Improve this by adding a mix of CR/CD substats based on the ratio of gradient increase from CR/CD
-			// If CR/CD is one of the selected substats, then adding them in a mix is generally most optimal
-			// Use the ratio between gradient values to determine mix %
-			// Need manual override here since gradient method from init does not always find this result
-			var crCDSubstatRatio float64
-			var gradStat float64
-			switch substatToMax {
-			case core.CR:
-				gradCR := sorted.slice[idxGrad]
-				gradCD := 0.0
-				for i, idxSubstatTemp := range sorted.idx {
-					if relevantSubstats[idxSubstatTemp] == core.CD {
-						gradCD = sorted.slice[i]
-					}
-				}
-				crCDSubstatRatio = (gradCR / gradCD)
-			case core.CD:
-				gradCD := sorted.slice[idxGrad]
-				gradCR := 0.0
-				for i, idxSubstatTemp := range sorted.idx {
-					if relevantSubstats[idxSubstatTemp] == core.CR {
-						gradCR = sorted.slice[i]
-					}
-				}
-				crCDSubstatRatio = (gradCR / gradCD)
-			default:
-				gradStat = sorted.slice[idxGrad]
-			}
-
-			// If DPS change is really low, then it's usually better to just toss a few extra points into ER for stability
-			if gradStat < 50 && crCDSubstatRatio == 0 {
-				assignSubstats(core.ER, 4)
-				sugarLog.Info("Low damage contribution from substats - adding some points to ER instead")
-			}
-
-			var globalLimit int
-			var crLimit int
-			var cdLimit int
-			if crCDSubstatRatio > 0 {
-				globalLimit, crLimit = assignSubstats(core.CR, 0)
-				_, cdLimit = assignSubstats(core.CD, 0)
-
-				// Continually add CR/CD to try to align CR/CD ratio to ratio of gradients until we hit a limit
-				var currentRatio float64
-				var amtCR int
-				var amtCD int
-				currentStat := core.CR
-				// Debug to avoid runaway loops...
-				var iteration int
-				// Want this to continue until either global cap is reached, or we can neither add CR/CD
-				for globalLimit > 0 && (crLimit > 0 || cdLimit > 0) && iteration < 100 {
-					if stats.charSubstatFinal[idxChar][core.CD] == 0 {
-						currentRatio = float64(stats.charSubstatFinal[idxChar][core.CR])
-					} else {
-						currentRatio = float64(stats.charSubstatFinal[idxChar][core.CR]) / float64(stats.charSubstatFinal[idxChar][core.CD])
-					}
-
-					if currentRatio > crCDSubstatRatio {
-						amtCR = 0
-						amtCD = 1
-					} else if currentRatio <= crCDSubstatRatio {
-						amtCR = 1
-						amtCD = 0
-					}
-
-					// When we hit the limit on one stat, just try to fill the other up to max
-					if crLimit == 0 {
-						amtCD = 10
-					}
-					if cdLimit == 0 {
-						amtCR = 10
-					}
-
-					if currentStat == core.CR {
-						globalLimit, crLimit = assignSubstats(core.CR, amtCR)
-						currentStat = core.CD
-					} else if currentStat == core.CD {
-						globalLimit, cdLimit = assignSubstats(core.CD, amtCD)
-						currentStat = core.CR
-					}
-					iteration += 1
-				}
-			} else {
-				globalLimit, _ = assignSubstats(substatToMax, 12)
-			}
-			if globalLimit == 0 {
-				break
-			}
-		}
-
-		sugarLog.Info("Final Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
-
-		// Reset favonius char crit rate... again
-		if charWithFavonius[idxChar] {
-			charProfilesCopy[idxChar].Stats[core.CR] += 8 * stats.substatValues[core.CR] * stats.charSubstatRarityMod[idxChar]
-		}
-	}
-
-	sugarLog.Info("Final config substat strings:")
-	// Final output
-	// This doesn't take much time relatively speaking, so just always do the processing...
-	output := srcCleaned
-	charNames := make(map[core.CharKey]string)
-	for _, match := range re.GetCharNames.FindAllStringSubmatch(output, -1) {
-		charKey := core.CharNameToKey[match[1]]
-		charNames[charKey] = match[1]
-	}
-
-	for idxChar, char := range charProfilesInitial {
-		finalString := fmt.Sprintf("%v add stats", charNames[char.Base.Key])
-
-		for idxSubstat, value := range stats.substatValues {
-			if value <= 0 {
-				continue
-			}
-			finalString += fmt.Sprintf(" %v=%.6g", core.StatTypeString[idxSubstat], value*float64(2+stats.charSubstatFinal[idxChar][idxSubstat]))
-		}
-
-		fmt.Println(finalString + ";")
-
-		reInsertLocation := regexp.MustCompile(fmt.Sprintf(`(?m)^(%v\s+add\s+stats\b.*)$`, charNames[char.Base.Key]))
-		output = reInsertLocation.ReplaceAllString(output, fmt.Sprintf("$1\n%v;", finalString))
-	}
+	algo := InitAlgoV1(cfg, simopt, simcfg, optionsMap, sugarLog)
+	algo.OptimizeSubstats()
+	output := algo.PrettyPrintOptimizerOutput(srcCleaned, re, algo.stats)
 
 	// Sticks optimized substat string into config and output
 	if simopt.ResultSaveToPath != "" {
@@ -434,6 +101,14 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			log.Panic(err)
 		}
 		sugarLog.Infof("Saved to the following location: %v", simopt.ResultSaveToPath)
+	}
+}
+
+type simRunner func(config core.SimulationConfig) result.Summary
+
+func runSimWithConfigGenerator(cfg string, simopt simulator.Options) simRunner {
+	return func(simcfg core.SimulationConfig) result.Summary {
+		return runSimWithConfig(cfg, simcfg, simopt)
 	}
 }
 
