@@ -1,5 +1,8 @@
 package core
 
+type ActionInfo struct {
+	Frames func(next ActionType) int
+}
 type Character interface {
 	SetIndex(index int) //to be called to set the index
 	Init()              //to be called when everything including weapon and artifacts has been loaded
@@ -29,14 +32,14 @@ type Character interface {
 	//actions; each action should return 2 ints:
 	//	the earliest frame at which the next action may be queued, and;
 	// 	the total length of the animation state
-	Attack(p map[string]int) (int, int)
-	Aimed(p map[string]int) (int, int)
-	ChargeAttack(p map[string]int) (int, int)
-	HighPlungeAttack(p map[string]int) (int, int)
-	LowPlungeAttack(p map[string]int) (int, int)
-	Skill(p map[string]int) (int, int)
-	Burst(p map[string]int) (int, int)
-	Dash(p map[string]int) (int, int)
+	Attack(p map[string]int) ActionInfo
+	Aimed(p map[string]int) ActionInfo
+	ChargeAttack(p map[string]int) ActionInfo
+	HighPlungeAttack(p map[string]int) ActionInfo
+	LowPlungeAttack(p map[string]int) ActionInfo
+	Skill(p map[string]int) ActionInfo
+	Burst(p map[string]int) ActionInfo
+	Dash(p map[string]int) ActionInfo
 
 	//info methods
 	ActionReady(a ActionType, p map[string]int) bool
@@ -44,10 +47,9 @@ type Character interface {
 	Charges(ActionType) int
 
 	//number of frames this action will take
-	// ActionFrames(a ActionType, p map[string]int) int
 	//return the number of frames the current action must wait before it can be
 	//executed;
-	ActionInterruptableDelay(next ActionType, p map[string]int) int
+	// ActionInterruptableDelay(next ActionType, p map[string]int) int
 
 	//char stat mods
 	AddMod(mod CharStatMod)

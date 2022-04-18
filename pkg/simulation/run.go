@@ -39,7 +39,8 @@ func (s *Simulation) Run() (Result, error) {
 
 	//60fps, 60s/min, 2min
 	for !stop {
-		err = s.AdvanceFrame()
+		// err = s.AdvanceFrame()
+		err = s.Tick()
 		if err != nil {
 			return s.stats, err
 		}
@@ -169,15 +170,140 @@ func (s *Simulation) AdvanceFrame() error {
 			s.dropQueueIfFailed = false
 		}
 	}
-	// s.C.Log.Debugw("queue check - after exec",
-	// 	"frame", s.C.F,
-	// 	core.LogQueueEvent,
-	// 	"remaining queue", s.queue,
-	// 	"skip", s.skip,
-	// 	"done", done,
-	// 	"dropIfFailed", s.dropQueueIfFailed,
-	// )
 
+	return nil
+}
+
+func (s *Simulation) Tick() error {
+	var err error
+	//advance frame
+	s.C.Tick()
+	//check for hurt dmg
+	s.handleHurt()
+	s.handleEnergy()
+	//grab stats
+	s.collectStats()
+
+	//check queue
+	err = s.lookForNextCmd()
+	if err != nil {
+		return err
+	}
+
+	s.queueNextAction()
+
+	//execute actions queued on current frame
+	s.executeActionQueue()
+
+	return nil
+}
+
+func (s *Simulation) lookForNextCmd() error {
+	//only queue if empty
+	if len(s.queue) > 0 {
+		return nil
+	}
+
+	//TODO: this here should be a for loop; if the command is not
+	//something that should consume a frame it should be executed right here
+	//and we look for another command
+	next, drop, err := s.C.Queue.Next()
+	s.dropQueueIfFailed = drop
+
+	if err != nil {
+		return err
+	}
+	//do nothing, skip this frame
+	if len(next) == 0 {
+		return nil
+	}
+	s.queue = append(s.queue, next...)
+	return nil
+}
+
+func (s *Simulation) queueNextAction() {
+	//do nothing if we're still in animation lockout
+	if s.C.F <= s.animationLockoutUntil {
+		return
+	}
+	if len(s.queue) == 0 {
+		return
+	}
+	if s.nextAction != nil {
+		return
+	}
+	//pop first item in queue, check for delay
+	act, isAction := s.queue[0].(*core.ActionItem)
+	delay := 0
+	if isAction {
+		char := s.C.Chars[s.C.ActiveChar]
+		//prevent us from queuing an action that's not ready
+		if !(char.ActionReady(act.Typ, act.Param)) {
+			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
+			return
+		}
+		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
+	}
+	if delay > 0 {
+		s.C.Log.NewEvent(
+			"animation delay triggered",
+			core.LogActionEvent,
+			s.C.ActiveChar,
+			"total_delay", delay,
+			"param", s.C.LastAction.Param["delay"],
+			"default_delays", s.C.Flags.Delays,
+		)
+	}
+	s.nextAction = s.queue[0]
+	s.nextActionUseableAt = s.C.F + delay
+	s.animationLockoutUntil = s.C.F + delay //TODO: do we need a +1 here?
+	s.C.Log.NewEvent(
+		"action queued",
+		core.LogActionEvent,
+		s.C.ActiveChar,
+		"action", s.queue[0],
+		"delay", s.animationLockoutUntil,
+	)
+	//pop queue
+	s.queue = s.queue[1:]
+
+}
+
+func (s *Simulation) dropQueueOnFail() {
+	if !s.dropQueueIfFailed {
+		return
+	}
+	s.C.Log.NewEvent(
+		"queue dropped",
+		core.LogActionEvent,
+		s.C.ActiveChar,
+		"queue", s.queue,
+	)
+	s.queue = s.queue[:0]
+	s.dropQueueIfFailed = false
+}
+
+func (s *Simulation) executeActionQueue() error {
+	if s.nextAction == nil {
+		return nil
+	}
+	if s.nextActionUseableAt > s.C.F {
+		return nil
+	}
+	lockout, done, err := s.C.Action.Exec(s.nextAction)
+	if err != nil {
+		return err
+	}
+	if !done {
+		s.dropQueueOnFail()
+		s.animationLockoutUntil = s.C.F + 1
+		return nil
+	}
+	if act, isAction := s.nextAction.(*core.ActionItem); isAction {
+		s.stats.AbilUsageCountByChar[s.C.ActiveChar][act.Typ.String()]++
+	}
+	s.animationLockoutUntil = s.C.F + lockout
+	s.nextAction = nil
 	return nil
 }
 

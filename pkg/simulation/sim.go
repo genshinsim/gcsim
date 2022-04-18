@@ -19,7 +19,13 @@ type Simulation struct {
 	//result
 	stats Result
 	//prevs action that was checked
-	lastActionUsedAt int
+	lastActionUsedAt      int
+	animationLockoutUntil int //how many frames we're locked out from executing next action
+	nextAction            core.Command
+	nextActionUseableAt   int
+
+	//track previous action, when it was used at, and the earliest
+	//useable frame for all other chained actions
 }
 
 func New(cfg core.SimulationConfig, c *core.Core) (*Simulation, error) {
@@ -27,26 +33,8 @@ func New(cfg core.SimulationConfig, c *core.Core) (*Simulation, error) {
 	s := &Simulation{}
 	s.cfg = cfg
 	s.C = c
+	s.animationLockoutUntil = -1
 
-	// c, err := core.New(
-	// 	func(c *core.Core) error {
-	// 		c.Rand = rand.New(rand.NewSource(seed))
-	// 		// if seed > 0 {
-	// 		// 	c.Rand = rand.New(rand.NewSource(seed))
-	// 		// } else {
-	// 		// 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	// 		// }
-	// 		c.F = -1
-	// 		c.Flags.DamageMode = cfg.DamageMode
-	// 		c.Flags.EnergyCalcMode = opts.ERCalcMode
-	// 		c.Log, err = core.NewDefaultLogger(c, opts.Debug, true, opts.DebugPaths)
-	// 		if err != nil {
-	// 			return err
-	// 		}
-
-	// 		return nil
-	// 	},
-	// )
 	if err != nil {
 		return nil, err
 	}
@@ -62,9 +50,7 @@ func New(cfg core.SimulationConfig, c *core.Core) (*Simulation, error) {
 	}
 	s.stats.IsDamageMode = cfg.DamageMode
 
-	// if s.opts.LogDetails {
 	s.initDetailLog()
-	// }
 
 	err = s.initQueuer()
 	if err != nil {
@@ -73,16 +59,8 @@ func New(cfg core.SimulationConfig, c *core.Core) (*Simulation, error) {
 
 	s.randomOnHitEnergy()
 
-	// for _, f := range cust {
-	// 	err := f(s)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// }
-
 	c.Init()
 
-	// if s.opts.LogDetails {
 	//grab a snapshot for each char
 	for i, c := range s.C.Chars {
 		stats := c.Snapshot(&core.AttackInfo{
@@ -93,9 +71,6 @@ func New(cfg core.SimulationConfig, c *core.Core) (*Simulation, error) {
 		s.stats.CharDetails[i].Element = c.Ele().String()
 		s.stats.CharDetails[i].Weapon.Name = c.WeaponKey()
 	}
-	// }
-
-	// log.Println(s.cfg.Energy)
 
 	return s, nil
 }

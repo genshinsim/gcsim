@@ -53,7 +53,7 @@ func runAndCompare(d DBData) error {
 	os.Remove(f)
 	os.Remove(fj)
 	os.WriteFile(f, []byte(d.Config), 0700)
-	fmt.Printf("Comparing %v: ", d.ViewerKey)
+	fmt.Printf("Comparing,%v,", d.ViewerKey)
 	simopt := simulator.Options{
 		ConfigPath:       f,
 		ResultSaveToPath: fj,
@@ -73,7 +73,7 @@ func runAndCompare(d DBData) error {
 		return err
 	}
 	//compare
-	fmt.Printf("original %.0f, new %.0f (sd: %.0f), diff %.0f (p of sd: %.2f)\n", d.DPS, res.DPS.Mean, res.DPS.SD, res.DPS.Mean-d.DPS, (res.DPS.Mean-d.DPS)/res.DPS.SD)
+	fmt.Printf("original,%.0f,new,%.0f,sd,%.0f,diff,%.0f,p of sd,%.2f\n", d.DPS, res.DPS.Mean, res.DPS.SD, res.DPS.Mean-d.DPS, (res.DPS.Mean-d.DPS)/res.DPS.SD)
 
 	return nil
 }
