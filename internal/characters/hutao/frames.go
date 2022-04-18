@@ -105,17 +105,8 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 		case core.ActionSwap:
 			f = 42 - 2
 		}
-
-		//this is necessary to prevent double animation delay when paramita expires
-		if f > c.Core.Status.Duration("paramita") {
-			c.paramitaExpired = true
-		}
 		return f
-	} else if c.paramitaExpired {
-		//if paramita has just expired, do not do the animation delay again
-		c.paramitaExpired = false
-		return 0
 	}
-	//otherise use default implementation
+	//otherwise use default implementation
 	return c.Tmpl.ActionInterruptableDelay(next, p)
 }
