@@ -70,14 +70,13 @@ func (a *AlgoV1) OptimizeSubstats() {
 	for _, debugLog := range debugLogs {
 		a.sugarLog.Info(debugLog)
 	}
-
-	a.sugarLog.Info("Final config substat strings:")
 }
 
 // Final output
 // This doesn't take much time relatively speaking, so just always do the processing...
 func (a *AlgoV1) PrettyPrintOptimizerOutput(output string, re *OptimRegex, statsFinal *OptimStats) string {
 	charNames := make(map[core.CharKey]string)
+	a.sugarLog.Info("Final config substat strings:")
 
 	for _, match := range re.GetCharNames.FindAllStringSubmatch(output, -1) {
 		charKey := core.CharNameToKey[match[1]]

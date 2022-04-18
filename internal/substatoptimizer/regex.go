@@ -16,6 +16,8 @@ type OptimRegex struct {
 	InsertLocation *regexp.Regexp
 }
 
+var RegexParseFatalErr = errors.New("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.\n5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
+
 func InitRegex() *OptimRegex {
 	re := OptimRegex{}
 
@@ -38,10 +40,7 @@ func ReplaceSimOutputForChar(charName, src, finalOutput string) string {
 
 func (re *OptimRegex) scrubSimCfg(cfg string) (string, error) {
 	if len(re.Mainstats.FindAllString(cfg, -1)) != len(re.GetCharNames.FindAllString(cfg, -1)) {
-		msg := "Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.\n"
-		msg += "5* flowers must have 4780 HP, and 4* flowers must have 3571 HP."
-
-		return "", NewFatalErr(msg)
+		return "", RegexParseFatalErr
 	}
 
 	srcCleaned := cfg

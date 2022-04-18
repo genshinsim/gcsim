@@ -1,7 +1,6 @@
 package substatoptimizer
 
 import (
-	"errors"
 	"fmt"
 	"go.uber.org/zap"
 	"log"
@@ -14,20 +13,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/parse"
 	"github.com/genshinsim/gcsim/pkg/result"
 )
-
-type FatalError struct {
-	msg string
-}
-
-func (err *FatalError) Error() string {
-	return err.msg
-}
-
-func NewFatalErr(msg string) *FatalError {
-	return &FatalError{
-		msg: msg,
-	}
-}
 
 // Additional runtime option to optimize substats according to KQM standards
 func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions string) {
@@ -70,9 +55,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	srcCleaned, err := re.scrubSimCfg(cfg)
-
-	fatal := &FatalError{}
-	if errors.As(err, &fatal) {
+	if err == RegexParseFatalErr {
 		sugarLog.Panic(err.Error())
 		os.Exit(1)
 	}
@@ -96,7 +79,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	if simopt.ResultSaveToPath != "" {
 		output = strings.TrimSpace(output) + "\n"
 		//try creating file to write to
-		err := os.WriteFile(simopt.ResultSaveToPath, []byte(output), 0644)
+		err = os.WriteFile(simopt.ResultSaveToPath, []byte(output), 0644)
 		if err != nil {
 			log.Panic(err)
 		}
