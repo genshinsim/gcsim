@@ -113,16 +113,7 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 			f = burstChargeCancels(next)
 		}
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
-
-		//this is necessary to prevent double animation delay when her Q expires
-		if f > c.Core.Status.Duration("raidenburst") {
-			c.burstExpired = true
-		}
 		return f
-	} else if c.burstExpired {
-		//if her Q has just expired, do not do the animation delay again
-		c.burstExpired = false
-		return 0
 	}
 	//otherwise use default implementation
 	return c.Tmpl.ActionInterruptableDelay(next, p)
