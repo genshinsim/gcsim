@@ -11,6 +11,8 @@ const (
 	BurstState
 	AimState
 	DashState
+	WalkState
+	JumpState
 )
 
 func (c *Core) SetState(state AnimationState, duration int) {
