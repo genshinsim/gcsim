@@ -5,14 +5,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+const stilettoKey = "keqingstiletto"
+
 func init() {
 	core.RegisterCharFunc(core.Keqing, NewChar)
 }
 
 type char struct {
 	*character.Tmpl
-	eStartFrame int
-	c2ICD       int
+	c2ICD int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -48,6 +49,14 @@ func (c *char) Init() {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
+}
+
+func (c *char) ActionReady(a core.ActionType, p map[string]int) bool {
+	// check if stiletto is on-field
+	if a == core.ActionSkill && c.Core.Status.Duration(stilettoKey) > 0 {
+		return true
+	}
+	return c.Tmpl.ActionReady(a, p)
 }
 
 func (c *char) a4() {
