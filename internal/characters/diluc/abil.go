@@ -30,13 +30,12 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 func (c *char) Skill(p map[string]int) (int, int) {
 
-	f, a := c.ActionFrames(core.ActionSkill, p)
-
-	if c.eCounter == 0 {
-		c.eStarted = true
-		c.eStartFrame = c.Core.F
+	// reset counter
+	if c.Core.F >= c.eWindow {
+		c.eCounter = 0
 	}
-	c.eLastUse = c.Core.F
+
+	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	orb := 1
 	if c.Core.Rand.Float64() < 0.33 {
@@ -51,7 +50,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Searing Onslaught",
+		Abil:       fmt.Sprintf("Searing Onslaught %v", c.eCounter),
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
@@ -70,20 +69,21 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}, "dilucc4", f+120) // 2seconds after cast
 	}
 
-	//skill only goes on cd once all 3 charges have been used
-	//or if 4 second passed since last use, skill will also go on cd
+	// allow skill to be used again if 4s hasn't passed since last use
+	c.eWindow = c.Core.F + 60*4
 
 	c.eCounter++
-	if c.eCounter == 3 {
-		//ability can go on cd now
-		cd := 600 - (c.Core.F - c.eStartFrame)
-		c.Core.Log.NewEvent("diluc skill going on cd", core.LogCharacterEvent, c.Index, "duration", cd)
-		c.SetCD(core.ActionSkill, cd)
-		c.eStarted = false
-		c.eStartFrame = -1
-		c.eLastUse = -1
+	switch c.eCounter {
+	case 1:
+		// TODO: cd delay?
+		// set cd on first use
+		c.SetCD(core.ActionSkill, 10*60)
+	case 3:
+		// reset window since we're at 3rd use
+		c.eWindow = -1
 		c.eCounter = 0
 	}
+
 	//return animation cd
 	//this also depends on which hit in the chain this is
 	return f, a
