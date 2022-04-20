@@ -153,8 +153,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			//check if this hits first
 			target := -1
 			for i, t := range c.Core.Targets {
-				//skip for target 0 aka player
-				if i == 0 {
+				// skip non-enemy targets
+				if t.Type() != core.TargettableEnemy {
 					continue
 				}
 				if lastHit[t] < c.Core.F {
