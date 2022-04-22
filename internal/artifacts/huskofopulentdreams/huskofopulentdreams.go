@@ -42,13 +42,18 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 		// Helper function to check for stack loss
 		// called after every stack gain
-		checkStackLoss := func() {
-			if (lastStackGain + 360) >= s.F {
+		var checkStackLoss func()
+		checkStackLoss = func() {
+			if (lastStackGain + 360) > s.F {
 				return
 			}
 			stacks--
 			s.Log.NewEvent("Husk lost stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
 
+			// queue up again if we still have stacks
+			if stacks > 0 {
+				c.AddTask(checkStackLoss, "husk-4pc-stack-loss-check", 360)
+			}
 		}
 
 		var gainStackOfffield func(src int) func()
