@@ -9,7 +9,7 @@ import (
 const (
 	MaxStam            = 240
 	StamCDFrames       = 90
-	JumpFrames         = 31 //jump frames vary +-3 based on character. Perhaps in the future each character can get specific frames, but for now this average is good enough.
+	JumpFrames         = 33
 	DashFrames         = 24
 	WalkFrames         = 1
 	SwapCDFrames       = 60
