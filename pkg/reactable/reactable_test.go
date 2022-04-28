@@ -1,0 +1,236 @@
+package reactable
+
+import (
+	"math/rand"
+	"os"
+	"testing"
+	"time"
+
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+)
+
+//make our own core because otherwise we run into problems with circular import
+func testCore() *core.Core {
+	c := core.New()
+	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+	c.Tasks = task.NewCtrl(&c.F)
+	c.Events = event.NewCtrl(c)
+	c.Status = status.NewCtrl(c)
+	c.Energy = energy.NewCtrl(c)
+	c.Combat = combat.NewCtrl(c)
+	c.Constructs = construct.NewCtrl(c)
+	c.Shields = shield.NewCtrl(c)
+	c.Health = health.NewCtrl(c)
+	c.Action = action.NewCtrl(c)
+	c.Queue = queue.NewQueuer(c)
+	return c
+}
+
+type testTarget struct {
+	*Reactable
+	src           int
+	onDmgCallBack func(*combat.AttackEvent) (float64, bool)
+}
+
+func (t *testTarget) Type() core.TargettableType                 { return core.TargettableEnemy }
+func (t *testTarget) Index() int                                 { return 0 }
+func (t *testTarget) SetIndex(ind int)                           {}
+func (t *testTarget) MaxHP() float64                             { return 1 }
+func (t *testTarget) HP() float64                                { return 1 }
+func (t *testTarget) Shape() core.Shape                          { return core.NewCircle(0, 0, 1) }
+func (t *testTarget) AddDefMod(key string, val float64, dur int) {}
+func (t *testTarget) AddResMod(key string, val core.ResistMod)   {}
+func (t *testTarget) RemoveResMod(key string)                    {}
+func (t *testTarget) RemoveDefMod(key string)                    {}
+func (t *testTarget) HasDefMod(key string) bool                  { return false }
+func (t *testTarget) HasResMod(key string) bool                  { return false }
+func (t *testTarget) AddReactBonusMod(mod core.ReactionBonusMod) {}
+func (t *testTarget) ReactBonus(atk combat.AttackInfo) float64   { return 0 }
+func (t *testTarget) Kill()                                      {}
+func (t *testTarget) SetTag(key string, val int)                 {}
+func (t *testTarget) GetTag(key string) int                      { return 0 }
+func (t *testTarget) RemoveTag(key string)                       {}
+
+func (t *testTarget) Attack(atk *combat.AttackEvent, evt core.LogEvent) (float64, bool) {
+	if t.onDmgCallBack != nil {
+		return t.onDmgCallBack(atk)
+	}
+	return 0, false
+}
+
+var testChar core.CharacterProfile
+
+func TestMain(m *testing.M) {
+	testChar.Stats = make([]float64, core.EndStatType)
+	testChar.Talents.Attack = 1
+	testChar.Talents.Burst = 1
+	testChar.Talents.Skill = 1
+	testChar.Base.Level = 90
+	testChar.Stats[core.EM] = 100
+
+	os.Exit(m.Run())
+}
+
+func TestReduce(t *testing.T) {
+	r := &Reactable{}
+	r.Durability = make([]combat.Durability, core.ElementDelimAttachable)
+	r.DecayRate = make([]combat.Durability, core.ElementDelimAttachable)
+	r.Durability[attributes.Electro] = 20
+	r.reduce(attributes.Electro, 20, 1)
+	if r.Durability[attributes.Electro] != 0 {
+		t.Errorf("expecting nil electro balance, got %v", r.Durability[attributes.Electro])
+	}
+}
+
+func TestTick(t *testing.T) {
+	c := testCore()
+
+	trg := &testTarget{src: 1}
+	trg.Reactable = &Reactable{}
+	trg.Init(trg, c)
+
+	//test electro
+	trg.React(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Electro,
+			Durability: 25,
+		},
+	})
+
+	if trg.Durability[attributes.Electro] != 0.8*25 {
+		t.Errorf("expecting 20 electro, got %v", trg.Durability[attributes.Electro])
+	}
+	if trg.DecayRate[attributes.Electro] != 20.0/(6*25+420) {
+		t.Errorf("expecting %v decay rate, got %v", 1.0/(6*25+420), trg.DecayRate[attributes.Electro])
+	}
+
+	//should deplete fully in 570 ticks
+	for i := 0; i < 6*50+420; i++ {
+		trg.Tick()
+		// log.Println(target.Durability)
+	}
+	//check all durability should be nil
+	ok := trg.allNil(t)
+	if !ok {
+		t.FailNow()
+	}
+
+	//test multiple aura
+	trg.attach(attributes.Electro, 50, 0.8)
+	trg.attach(attributes.Hydro, 50, 0.8)
+	trg.attach(attributes.Cryo, 50, 0.8)
+	trg.attach(attributes.Pyro, 50, 0.8)
+	for i := 0; i < 6*50+420; i++ {
+		trg.Tick()
+	}
+	ok = trg.allNil(t)
+	if !ok {
+		t.FailNow()
+	}
+
+	//test refilling
+	trg.React(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Electro,
+			Durability: 25,
+		},
+	})
+	for i := 0; i < 100; i++ {
+		trg.Tick()
+	}
+	//calculate expected duration
+	decay := combat.Durability(20.0 / (6*25 + 420))
+	left := 20 - 100*decay
+	life := int((left + 40) / decay)
+	// log.Println(decay, left, life)
+
+	trg.React(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Electro,
+			Durability: 50,
+		},
+	})
+	for i := 0; i < life-1; i++ {
+		trg.Tick()
+	}
+	//make sure > 0
+	if trg.Durability[attributes.Electro] < 0 {
+		t.Errorf("expecting electro not to be 0 yet, got %v", trg.Durability[attributes.Electro])
+	}
+	//1 more tick and should be gone
+	trg.Tick()
+	ok = trg.allNil(t)
+	if !ok {
+		t.FailNow()
+	}
+
+	//test frozen
+	//50 frozen should last just over 208 frames (i.e. 0 by 209)
+	trg.Durability[attributes.Frozen] = 50
+	for i := 0; i < 208; i++ {
+		trg.Tick()
+		// log.Println(trg.Durability)
+		// log.Println(trg.DecayRate)
+		// log.Println("------------------------")
+	}
+	//should be > 0 still
+	if trg.Durability[attributes.Frozen] < 0 {
+		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[attributes.Frozen])
+	}
+	//1 more tick and should be gone
+	trg.Tick()
+	if trg.Durability[attributes.Frozen] > 0 {
+		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[attributes.Frozen])
+	}
+	//105 more frames to full recover
+	for i := 0; i < 104; i++ {
+		trg.Tick()
+		// log.Println(trg.Durability)
+		// log.Println(trg.DecayRate)
+		// log.Println("------------------------")
+	}
+	//decay should be > 0 still
+	if trg.DecayRate[attributes.Frozen] < frzDecayCap {
+		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[attributes.Frozen])
+	}
+	//1 more tick to reset decay
+	trg.Tick()
+	if trg.DecayRate[attributes.Frozen] > frzDecayCap {
+		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[attributes.Frozen])
+	}
+
+}
+
+func (target *testTarget) allNil(t *testing.T) bool {
+	ok := true
+	for i, v := range target.Durability {
+		ele := attributes.Element(i)
+		if !durApproxEqual(0, v, 0.00001) {
+			t.Errorf("ele %v expected 0 durability got %v", ele, v)
+			ok = false
+		}
+		if !durApproxEqual(0, target.DecayRate[i], 0.00001) && ele != attributes.Frozen {
+			t.Errorf("ele %v expected 0 decay got %v", ele, target.DecayRate[i])
+			ok = false
+		} else if !durApproxEqual(frzDecayCap, target.DecayRate[i], 0.00001) && ele == attributes.Frozen {
+			t.Errorf("frozen decay expected %v got %v", frzDecayCap, target.DecayRate[i])
+			ok = false
+		}
+	}
+	return ok
+}
+
+func durApproxEqual(expect, result, tol combat.Durability) bool {
+	if expect > result {
+		return expect-result < tol
+	}
+	return result-expect < tol
+}
+
+// func floatApproxEqual(expect, result, tol float64) bool {
+// 	if expect > result {
+// 		return expect-result < tol
+// 	}
+// 	return result-expect < tol
+// }
