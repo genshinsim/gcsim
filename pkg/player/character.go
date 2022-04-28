@@ -30,8 +30,6 @@ type MasterChar struct {
 	//stats related
 	Stats [attributes.EndStat]float64
 
-	CooldownMods []cooldownMod
-
 	//infusion
 	Infusion WeaponInfusion
 

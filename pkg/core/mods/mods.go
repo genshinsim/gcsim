@@ -19,4 +19,5 @@ type Handler struct {
 	statsMod          [MaxTeamSize][]StatMod
 	attackMods        [MaxTeamSize][]AttackMod
 	reactionBonusMods [MaxTeamSize][]reactionBonusMod
+	CooldownMods      [MaxTeamSize][]cooldownMod
 }
