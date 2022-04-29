@@ -3,7 +3,7 @@ package target
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/target/reactable"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type Tmpl struct {

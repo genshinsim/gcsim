@@ -1,7 +1,6 @@
-- mods should just be changed to snapshots and house char stats as well
 - fix teams in core
-- fix reactable
 - add constructs
+- add damage formula module
 - add enemy
 - add energy
 - add health
@@ -10,6 +9,7 @@
 - run sim
 - change weapon structure
 - change artifact structure
+- fix reactable tests
 - add characters
 - add weapons
 - add artifacts
