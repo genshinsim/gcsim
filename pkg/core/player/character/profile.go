@@ -1,9 +1,9 @@
-package team
+package character
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/weapon"
 )
 
 type CharacterProfile struct {

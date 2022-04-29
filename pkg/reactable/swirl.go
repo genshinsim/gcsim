@@ -26,8 +26,8 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 		Element:          ele,
 		IgnoreDefPercent: 1,
 	}
-	char := r.core.Team.ByIndex(charIndex)
-	em := r.core.CharAttr.Stat(charIndex, attributes.EM)
+	char := r.core.Player.ByIndex(charIndex)
+	em := r.core.Player.Stat(charIndex, attributes.EM)
 	ai.FlatDmg = 0.6 * r.calcReactionDmg(ai, em)
 	snap := combat.Snapshot{
 		CharLvl:  char.Base.Level,

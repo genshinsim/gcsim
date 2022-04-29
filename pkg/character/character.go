@@ -3,13 +3,13 @@ package character
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/team"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 type Character struct {
 	Core  *core.Core
 	Index int
-	team.Character
+	character.Character
 
 	SkillCon int
 	BurstCon int

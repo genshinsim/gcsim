@@ -82,7 +82,7 @@ func (c *Core) QueueAttack(
 //
 //does it make sense for core to have any knowledge of teams? probably not??
 func (c *Core) generateSnapshot(a *combat.AttackEvent) {
-	a.Snapshot = c.Team.ByIndex(a.Info.ActorIndex).Snapshot(&a.Info)
+	a.Snapshot = c.Player.ByIndex(a.Info.ActorIndex).Snapshot(&a.Info)
 }
 
 func (c *Core) queueDmg(a *combat.AttackEvent, delay int) {

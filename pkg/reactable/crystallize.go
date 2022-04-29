@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/shield"
+	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
 type CrystallizeShield struct {
@@ -32,7 +32,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 		return
 	}
 	//grab current snapshot for shield
-	char := r.core.Team.ByIndex(a.Info.ActorIndex)
+	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	ai := combat.AttackInfo{
 		ActorIndex: a.Info.ActorIndex,
 		DamageSrc:  r.self.Index(),
@@ -40,7 +40,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	}
 	snap := char.Snapshot(&ai)
 	shd := NewCrystallizeShield(ele, r.core.F, snap.CharLvl, snap.Stats[attributes.EM], r.core.F+900)
-	r.core.Shields.Add(shd)
+	r.core.Player.Shields.Add(shd)
 	//reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
 	a.Info.Durability = 0

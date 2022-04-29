@@ -1,4 +1,3 @@
-- fix teams in core
 - add constructs
 - add damage formula module
 - add enemy

@@ -80,7 +80,7 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 		Element:          attributes.Cryo,
 		IgnoreDefPercent: 1,
 	}
-	em := r.core.CharAttr.Stat(a.Info.ActorIndex, attributes.EM)
+	em := r.core.Player.Stat(a.Info.ActorIndex, attributes.EM)
 	atk.FlatDmg = 0.5 * r.calcReactionDmg(atk, em)
 	r.core.QueueAttack(atk, combat.NewDefCircHit(3, true, combat.TargettableEnemy), -1, 1, superconductPhysShred)
 }

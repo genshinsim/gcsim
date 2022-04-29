@@ -1,4 +1,4 @@
-package team
+package player
 
 type ActionInfo struct {
 	Frames func(next Action) int
