@@ -19,51 +19,41 @@ export default function Nav() {
   return (
     <Navbar>
       <NavbarGroup align={Alignment.LEFT} className="w-full">
+        <img
+          src="/images/logo.png"
+          className=" object-contain max-h-[75%] mt-auto mb-auto mr-1"
+        />
         <Link href="/">
           <NavbarHeading>
-            <a>
-              gcsim web (beta)
-            </a>
+            <a>gcsim web (beta)</a>
           </NavbarHeading>
         </Link>
         {location !== "/" ? (
           <>
             <NavbarDivider />
             <Link href="/simulator">
-              <AnchorButton
-                className={Classes.MINIMAL}
-                icon="calculator"
-              >
+              <AnchorButton className={Classes.MINIMAL} icon="calculator">
                 <span className="hidden md:block">
                   <Trans>nav.simulator</Trans>
                 </span>
               </AnchorButton>
             </Link>
             <Link href="/viewer">
-              <AnchorButton
-                className={Classes.MINIMAL}
-                icon="chart"
-              >
+              <AnchorButton className={Classes.MINIMAL} icon="chart">
                 <span className="hidden md:block">
                   <Trans>nav.viewer</Trans>
                 </span>
               </AnchorButton>
             </Link>
             <Link href="/db">
-              <AnchorButton
-                className={Classes.MINIMAL}
-                icon="database"
-              >
+              <AnchorButton className={Classes.MINIMAL} icon="database">
                 <span className="hidden md:block">
                   <Trans>nav.teams_db</Trans>
                 </span>
               </AnchorButton>
             </Link>
             <Link href="/about">
-              <AnchorButton
-                className={Classes.MINIMAL}
-                icon="info-sign"
-              >
+              <AnchorButton className={Classes.MINIMAL} icon="info-sign">
                 <span className="hidden md:block">
                   <Trans>nav.about</Trans>
                 </span>
