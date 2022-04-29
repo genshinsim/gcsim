@@ -28,7 +28,7 @@ export function CharacterEditDetails() {
       }
     }
     dispatch(
-      simActions.setCharacterNameAndEle({ name: w.key, ele: w.element })
+      simActions.setCharacterNameAndEle(w)
     );
   };
 

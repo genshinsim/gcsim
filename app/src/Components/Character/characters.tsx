@@ -3,22 +3,65 @@ import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
 import i18n from "i18next";
 import { Character } from "~src/types";
 
+export interface ICharacter {
+  key: string;
+  element: string;
+  weapon_type: string;
+  notes?: string;
+}
+
 export const characterKeyToICharacter: { [key: string]: ICharacter } = {
-  aether: {
-    key: "aether",
-    element: "none",
-    weapon_type: "sword",
-  },
+  // aether: {
+  //   key: "aether",
+  //   element: "none",
+  //   weapon_type: "sword",
+  // },
+  // lumine: {
+  //   key: "lumine",
+  //   element: "none",
+  //   weapon_type: "sword",
+  // },
   traveler: {
     key: "aether",
     element: "none",
     weapon_type: "sword",
   },
-  lumine: {
-    key: "lumine",
-    element: "none",
+  travelerelectro: {
+    key: "aether",
+    element: "electro",
     weapon_type: "sword",
   },
+  traveleranemo: {
+    key: "aether",
+    element: "anemo",
+    weapon_type: "sword",
+  },
+  travelergeo: {
+    key: "aether",
+    element: "geo",
+    weapon_type: "sword",
+  },
+  // travelerhydro: {
+  //   key: "aether",
+  //   element: "hydro",
+  //   weapon_type: "sword",
+  // },
+  // travelercryo: {
+  //   key: "aether",
+  //   element: "cryo",
+  //   weapon_type: "sword",
+  // },
+  // travelerpyro: {
+  //   key: "aether",
+  //   element: "pyro",
+  //   weapon_type: "sword",
+  // },
+  // travelerdendro: {
+  //   key: "aether",
+  //   element: "dendro",
+  //   weapon_type: "sword",
+  // },
+
   albedo: {
     key: "albedo",
     element: "geo",
@@ -256,25 +299,23 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
   },
 };
 
-export interface ICharacter {
-  key: string;
-  element: string;
-  weapon_type: string;
-  notes?: string;
-}
-
 export const items: ICharacter[] = Object.keys(characterKeyToICharacter).map(
   (k) => characterKeyToICharacter[k]
 );
 
-export const newChar = (key: string): Character => {
-  const c = characterKeyToICharacter[key];
+export const isTraveler = (key: string): boolean =>
+  key == "aether" || key == "lumine" || key == "traveler";
+
+export const newChar = (info: ICharacter): Character => {
+  let key = info.key;
+  if (isTraveler(key) && info.element != "none")
+    key = "traveler" + info.element;
   //default weapons
   return {
     name: key,
     level: 80,
     max_level: 90,
-    element: c.element,
+    element: info.element,
     cons: 0,
     weapon: {
       name: "dullblade",

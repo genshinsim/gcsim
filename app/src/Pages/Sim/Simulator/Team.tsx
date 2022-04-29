@@ -48,7 +48,7 @@ export function Team() {
       return;
     }
     //else it's new
-    const c = newChar(character.key);
+    const c = newChar(character);
     dispatch(simActions.addCharacter({ character: c }));
   };
 

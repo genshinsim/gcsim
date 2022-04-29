@@ -87,7 +87,10 @@
             "shenhe": "Shenhe",
             "yunjin": "Yun Jin",
             "yaemiko": "Yae Miko",
-            "ayato": "Kamisato Ayato"
+            "ayato": "Kamisato Ayato",
+            "travelerelectro": "Traveler (Electro)",
+            "traveleranemo": "Traveler (Anemo)",
+            "travelergeo": "Traveler (Geo)"
         },
         "weapon_names": {
             "akuoumaru": "Akuoumaru",
@@ -311,7 +314,10 @@
             "shenhe": "申鹤",
             "yunjin": "云堇",
             "yaemiko": "八重神子",
-            "ayato": "神里绫人"
+            "ayato": "神里绫人",
+            "travelerelectro": "旅行者 (雷元素)",
+            "traveleranemo": "旅行者 (风元素)",
+            "travelergeo": "旅行者 (岩元素)"
         },
         "weapon_names": {
             "akuoumaru": "恶王丸",
@@ -535,7 +541,10 @@
             "shenhe": "申鶴",
             "yunjin": "雲菫",
             "yaemiko": "八重神子",
-            "ayato": "神里綾人"
+            "ayato": "神里綾人",
+            "travelerelectro": "旅人 (雷元素)",
+            "traveleranemo": "旅人 (風元素)",
+            "travelergeo": "旅人 (岩元素)"
         },
         "weapon_names": {
             "akuoumaru": "惡王丸",
@@ -759,7 +768,10 @@
             "shenhe": "Shenhe",
             "yunjin": "Yun Jin",
             "yaemiko": "Yae Miko",
-            "ayato": "Kamisato Ayato"
+            "ayato": "Kamisato Ayato",
+            "travelerelectro": "Viajera (Electro)",
+            "traveleranemo": "Viajera (Anemo)",
+            "travelergeo": "Viajera (Geo)"
         },
         "weapon_names": {
             "akuoumaru": "Rey del Mal",
@@ -983,7 +995,10 @@
             "shenhe": "Шэнь Хэ",
             "yunjin": "Юнь Цзинь",
             "yaemiko": "Яэ Мико",
-            "ayato": "Аято"
+            "ayato": "Аято",
+            "travelerelectro": "Путешественница (Электро)",
+            "traveleranemo": "Путешественница (Анемо)",
+            "travelergeo": "Путешественница (Гео)"
         },
         "weapon_names": {
             "akuoumaru": "Акуомару",
@@ -1207,7 +1222,10 @@
             "shenhe": "Shenhe",
             "yunjin": "Yun Jin",
             "yaemiko": "Yae Miko",
-            "ayato": "Kamisato Ayato"
+            "ayato": "Kamisato Ayato",
+            "travelerelectro": "Reisende (Elektro)",
+            "traveleranemo": "Reisende (Anemo)",
+            "travelergeo": "Reisende (Geo)"
         },
         "weapon_names": {
             "akuoumaru": "Akuoumaru",
