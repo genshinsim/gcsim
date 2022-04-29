@@ -1,5 +1,3 @@
-- add health
-- change pkg/character into a template
 - add enemy
 - load simulator
 - add queues
