@@ -201,7 +201,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.queueOz("Skill")
 	}, "oz-skill", ozSpawn)
 
-	c.SetCDWithDelay(core.ActionSkill, 25*60, 18)
+	c.SetCD(core.ActionSkill, 25*60+18) //18 frames until CD starts
 	//return animation cd
 	return f, a
 }
