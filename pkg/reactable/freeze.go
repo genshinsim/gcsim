@@ -90,8 +90,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
 		Element:          attributes.Physical,
 		IgnoreDefPercent: 1,
 	}
-	char := r.core.Team.ByIndex(a.Info.ActorIndex)
-	em := char.Stat(attributes.EM)
+	em := r.core.Mods.Stat(a.Info.ActorIndex, attributes.EM)
 	ai.FlatDmg = 1.5 * r.calcReactionDmg(ai, em)
 	//shatter is a self attack
 	r.core.QueueAttack(

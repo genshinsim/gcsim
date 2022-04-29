@@ -58,8 +58,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 		Element:          attributes.Electro,
 		IgnoreDefPercent: 1,
 	}
-	char := r.core.Team.ByIndex(a.Info.ActorIndex)
-	em := char.Stat(attributes.EM)
+	em := r.core.Mods.Stat(a.Info.ActorIndex, attributes.EM)
 	atk.FlatDmg = 1.2 * r.calcReactionDmg(atk, em)
 	r.ecSnapshot = atk
 

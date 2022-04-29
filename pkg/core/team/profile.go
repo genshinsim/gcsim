@@ -1,6 +1,10 @@
-package character
+package team
 
-import "github.com/genshinsim/gcsim/pkg/core/attributes"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/weapon"
+)
 
 type CharacterProfile struct {
 	Base      CharacterBase             `json:"base"`
@@ -29,7 +33,7 @@ func (c *CharacterProfile) Clone() CharacterProfile {
 }
 
 type CharacterBase struct {
-	Key      CharKey            `json:"key"`
+	Key      keys.CharKey       `json:"key"`
 	Name     string             `json:"name"`
 	Element  attributes.Element `json:"element"`
 	Level    int                `json:"level"`
@@ -42,14 +46,14 @@ type CharacterBase struct {
 }
 
 type WeaponProfile struct {
-	Name     string         `json:"name"`
-	Key      string         `json:"key"` //use this to match with weapon curve mapping
-	Class    WeaponClass    `json:"-"`
-	Refine   int            `json:"refine"`
-	Level    int            `json:"level"`
-	MaxLevel int            `json:"max_level"`
-	Atk      float64        `json:"base_atk"`
-	Params   map[string]int `json:"-"`
+	Name     string             `json:"name"`
+	Key      string             `json:"key"` //use this to match with weapon curve mapping
+	Class    weapon.WeaponClass `json:"-"`
+	Refine   int                `json:"refine"`
+	Level    int                `json:"level"`
+	MaxLevel int                `json:"max_level"`
+	Atk      float64            `json:"base_atk"`
+	Params   map[string]int     `json:"-"`
 }
 
 type TalentProfile struct {

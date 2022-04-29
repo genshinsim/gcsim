@@ -1,11 +1,7 @@
-// Package mods provides a handler that keeps track of the various
-// mods for each character including:
-//	- stats mods (or buffs)
-//	- attack mods (buffs/debuffs that applies before attack lands)
-//  - reaction bonus mods
 package mods
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -21,4 +17,13 @@ type Handler struct {
 	reactionBonusMods [MaxTeamSize][]reactionBonusMod
 	cooldownMods      [MaxTeamSize][]cooldownMod
 	shieldBonusMods   [MaxTeamSize][]shieldBonusMod
+
+	team []char
+}
+
+type char struct {
+	stats [attributes.EndStatType]float64
+	atk   float64 //base atk including weapon
+	hp    float64
+	def   float64
 }

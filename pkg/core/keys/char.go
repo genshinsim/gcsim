@@ -1,4 +1,4 @@
-package character
+package keys
 
 import (
 	"encoding/json"

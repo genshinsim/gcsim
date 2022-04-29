@@ -27,11 +27,11 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 		IgnoreDefPercent: 1,
 	}
 	char := r.core.Team.ByIndex(charIndex)
-	em := char.Stat(attributes.EM)
+	em := r.core.Mods.Stat(charIndex, attributes.EM)
 	ai.FlatDmg = 0.6 * r.calcReactionDmg(ai, em)
 	snap := combat.Snapshot{
-		CharLvl:  char.Level(),
-		ActorEle: char.Ele(),
+		CharLvl:  char.Base.Level,
+		ActorEle: char.Base.Element,
 	}
 	snap.Stats[attributes.EM] = em
 	//first attack is self no hitbox

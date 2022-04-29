@@ -33,7 +33,7 @@ const (
 	AtkSpd
 	DmgP
 	//delim
-	EndStat
+	EndStatType
 )
 
 func (s Stat) String() string {

@@ -1,9 +1,6 @@
 package mods
 
 import (
-	"strconv"
-	"strings"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
@@ -86,80 +83,4 @@ func (h *Handler) StatModIsActive(key string, char int) bool {
 	}
 	_, ok := h.statsMod[char][ind].Amount()
 	return ok
-}
-
-func (h *Handler) StatsMods(char int) ([attributes.EndStat]float64, []interface{}) {
-	var sb strings.Builder
-	var debugDetails []interface{} = nil
-
-	//grab char stats
-	var stats [attributes.EndStat]float64
-
-	if h.debug {
-		debugDetails = make([]interface{}, 0, 2*len(h.statsMod))
-	}
-
-	n := 0
-	for _, mod := range h.statsMod[char] {
-
-		if mod.Expiry > *h.f || mod.Expiry == -1 {
-
-			amt, ok := mod.Amount()
-			if ok {
-				for k, v := range amt {
-					stats[k] += v
-				}
-			}
-			h.statsMod[char][n] = mod
-			n++
-
-			if h.debug {
-				modStatus := make([]string, 0)
-				if ok {
-					sb.WriteString(mod.Key)
-					modStatus = append(
-						modStatus,
-						"status: added",
-						"expiry_frame: "+strconv.Itoa(mod.Expiry),
-					)
-					modStatus = append(
-						modStatus,
-						attributes.PrettyPrintStatsSlice(amt)...,
-					)
-					debugDetails = append(debugDetails, sb.String(), modStatus)
-					sb.Reset()
-				} else {
-					sb.WriteString(mod.Key)
-					modStatus = append(
-						modStatus,
-						"status: rejected",
-						"reason: conditions not met",
-					)
-					debugDetails = append(debugDetails, sb.String(), modStatus)
-					sb.Reset()
-				}
-			}
-		}
-	}
-	h.statsMod[char] = h.statsMod[char][:n]
-
-	return stats, debugDetails
-}
-
-func (h *Handler) StatMod(char int, s attributes.Stat) float64 {
-	var val float64
-	for _, mod := range h.statsMod[char] {
-		// ignore this mod if stat type doesnt match
-		if mod.AffectedStat != attributes.NoStat && mod.AffectedStat != s {
-			continue
-		}
-		// check expiry
-		if mod.Expiry > *h.f || mod.Expiry == -1 {
-			if amt, ok := mod.Amount(); ok {
-				val += amt[s]
-			}
-		}
-	}
-
-	return val
 }

@@ -1,7 +1,6 @@
 package reactable
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -33,14 +32,14 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 		return
 	}
 	//grab current snapshot for shield
-	char := r.core.Chars[a.Info.ActorIndex]
+	char := r.core.Team.ByIndex(a.Info.ActorIndex)
 	ai := combat.AttackInfo{
 		ActorIndex: a.Info.ActorIndex,
 		DamageSrc:  r.self.Index(),
 		Abil:       string(rt),
 	}
 	snap := char.Snapshot(&ai)
-	shd := NewCrystallizeShield(ele, r.core.F, snap.CharLvl, snap.Stats[core.EM], r.core.F+900)
+	shd := NewCrystallizeShield(ele, r.core.F, snap.CharLvl, snap.Stats[attributes.EM], r.core.F+900)
 	r.core.Shields.Add(shd)
 	//reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
@@ -71,7 +70,7 @@ func NewCrystallizeShield(typ attributes.Element, src int, lvl int, em float64, 
 	}
 
 	s.Tmpl.Ele = typ
-	s.Tmpl.ShieldType = core.ShieldCrystallize
+	s.Tmpl.ShieldType = shield.ShieldCrystallize
 	s.Tmpl.Name = "Crystallize " + typ.String()
 	s.Tmpl.Src = src
 	s.Tmpl.HP = shieldBaseHP[lvl]

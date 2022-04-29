@@ -62,10 +62,10 @@ const (
 type Snapshot struct {
 	CharLvl    int
 	ActorEle   attributes.Element
-	ExtraIndex int                         //this is currently purely for Kaeya icicle ICD
-	Cancelled  bool                        //set to true if this snap should be ignored
-	Stats      [attributes.EndStat]float64 //total character stats including from artifact, bonuses, etc...
-	BaseAtk    float64                     //base attack used in calc
+	ExtraIndex int                             //this is currently purely for Kaeya icicle ICD
+	Cancelled  bool                            //set to true if this snap should be ignored
+	Stats      [attributes.EndStatType]float64 //total character stats including from artifact, bonuses, etc...
+	BaseAtk    float64                         //base attack used in calc
 	BaseDef    float64
 
 	SourceFrame int           // frame snapshot was generated at

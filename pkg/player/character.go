@@ -28,7 +28,7 @@ type MasterChar struct {
 	NormalCounter int
 
 	//stats related
-	Stats [attributes.EndStat]float64
+	Stats [attributes.EndStatType]float64
 
 	//infusion
 	Infusion WeaponInfusion

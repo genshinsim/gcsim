@@ -52,8 +52,7 @@ func (r *Reactable) tryOverload(a *combat.AttackEvent) {
 		Element:          attributes.Pyro,
 		IgnoreDefPercent: 1,
 	}
-	char := r.core.Team.ByIndex(a.Info.ActorIndex)
-	em := char.Stat(attributes.EM)
+	em := r.core.Mods.Stat(a.Info.ActorIndex, attributes.EM)
 	atk.FlatDmg = 2 * r.calcReactionDmg(atk, em)
 	r.core.QueueAttack(atk, combat.NewDefCircHit(3, true, combat.TargettableEnemy), -1, 1)
 }

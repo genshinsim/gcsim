@@ -163,14 +163,14 @@ func (r *Reactable) tryRefill(ele attributes.Element, dur *combat.Durability) {
 
 func (r *Reactable) calcReactionDmg(atk combat.AttackInfo, em float64) float64 {
 	char := r.core.Team.ByIndex(atk.ActorIndex)
-	lvl := char.Level() - 1
+	lvl := char.Base.Level - 1
 	if lvl > 89 {
 		lvl = 89
 	}
 	if lvl < 0 {
 		lvl = 0
 	}
-	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl]
+	return (1 + ((16 * em) / (2000 + em)) + r.core.Mods.ReactBonus(atk, atk.ActorIndex)) * reactionLvlBase[lvl]
 }
 
 func (r *Reactable) attach(e attributes.Element, dur combat.Durability, m combat.Durability) {

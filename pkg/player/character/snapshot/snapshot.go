@@ -8,7 +8,7 @@ import (
 )
 
 type ModsHandler interface {
-	StatsMods(char int) ([attributes.EndStat]float64, []interface{})
+	StatsMods(char int) ([attributes.EndStatType]float64, []interface{})
 	StatMod(char int, s attributes.Stat) float64
 }
 
@@ -47,7 +47,7 @@ func (h *Handler) Snapshot(m *player.MasterChar, a *combat.AttackInfo) combat.Sn
 	}
 
 	//snapshot the stats
-	copy(s.Stats[:], m.Stats[:attributes.EndStat])
+	copy(s.Stats[:], m.Stats[:attributes.EndStatType])
 	mods, debug := h.mods.StatsMods(m.Index)
 	for i, v := range mods {
 		s.Stats[i] += v

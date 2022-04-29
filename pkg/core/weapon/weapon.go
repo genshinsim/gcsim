@@ -1,4 +1,4 @@
-package character
+package weapon
 
 type WeaponClass int
 
