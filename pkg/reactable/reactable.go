@@ -170,7 +170,7 @@ func (r *Reactable) calcReactionDmg(atk combat.AttackInfo, em float64) float64 {
 	if lvl < 0 {
 		lvl = 0
 	}
-	return (1 + ((16 * em) / (2000 + em)) + r.core.Player.ReactBonus(atk, atk.ActorIndex)) * reactionLvlBase[lvl]
+	return (1 + ((16 * em) / (2000 + em)) + r.core.Player.ByIndex(atk.ActorIndex).ReactBonus(atk)) * reactionLvlBase[lvl]
 }
 
 func (r *Reactable) attach(e attributes.Element, dur combat.Durability, m combat.Durability) {

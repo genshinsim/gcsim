@@ -1,8 +1,6 @@
-- add constructs
-- add damage formula module
-- add enemy
-- add energy
 - add health
+- change pkg/character into a template
+- add enemy
 - load simulator
 - add queues
 - run sim

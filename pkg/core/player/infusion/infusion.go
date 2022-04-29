@@ -16,14 +16,14 @@ type WeaponInfusion struct {
 
 const MaxTeamSize = 4
 
-type Handler struct {
+type InfusionHandler struct {
 	f        *int
 	log      glog.Logger
 	debug    bool
 	infusion [MaxTeamSize]WeaponInfusion
 }
 
-func (m *Handler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canOverride bool, tags ...combat.AttackTag) {
+func (m *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canOverride bool, tags ...combat.AttackTag) {
 	if !m.infusion[char].CanOverride && m.infusion[char].Expiry > *m.f {
 		return
 	}
@@ -37,7 +37,7 @@ func (m *Handler) AddWeaponInfuse(char int, key string, ele attributes.Element, 
 	m.infusion[char] = inf
 }
 
-func (m *Handler) WeaponInfuseIsActive(char int, key string) bool {
+func (m *InfusionHandler) WeaponInfuseIsActive(char int, key string) bool {
 	if m.infusion[char].Key != key {
 		return false
 	}
@@ -48,7 +48,7 @@ func (m *Handler) WeaponInfuseIsActive(char int, key string) bool {
 	return true
 }
 
-func (h *Handler) Infused(char int, a combat.AttackTag) attributes.Element {
+func (h *InfusionHandler) Infused(char int, a combat.AttackTag) attributes.Element {
 	if h.infusion[char].Key != "" {
 		ok := false
 		for _, v := range h.infusion[char].Tags {

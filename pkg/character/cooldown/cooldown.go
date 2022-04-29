@@ -4,12 +4,14 @@ package cooldown
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/player"
 )
 
-type Handler struct {
-	c                      *player.MasterChar
+type CDHandler struct {
+	core                   *core.Core
+	index                  int
 	ActionCD               []int
 	cdQueueWorkerStartedAt []int
 	cdCurrentQueueWorker   []*func()
@@ -19,7 +21,7 @@ type Handler struct {
 }
 
 //SetCD takes two parameters:
-//	- a player.Action: this is the action type we are triggering the cooldown for
+//	- a action.Action: this is the action type we are triggering the cooldown for
 //  - dur: duration in frames that the cooldown should last for
 //It is assumed that AvailableCDCharges[a] > 0 (otherwise action should not have been allowed)
 //
@@ -38,7 +40,7 @@ type Handler struct {
 //ReduceActionCooldown or ResetActionCooldown gets called, we start a new worker, updating
 //cdQueueWorkerStartedAt[a] to represent the new worker start frame. This way the old worker can
 //check this value first and then gracefully exit if it no longer matches its starting frame
-func (h *Handler) SetCD(a player.Action, dur int) {
+func (h *CDHandler) SetCD(a action.Action, dur int) {
 	//setting cd is just adding a cd to the recovery queue
 	//add current action and duration to the queue
 	h.cdQueue[a] = append(h.cdQueue[a], dur)
@@ -52,12 +54,12 @@ func (h *Handler) SetCD(a player.Action, dur int) {
 		panic("unexpected charges less than 0")
 	}
 	//TODO: remove these tags; add special syntax just to check for charges instead of using tags
-	if h.c.Tags["skill_charge"] > 0 {
-		h.c.Tags["skill_charge"]--
+	if h.core.Player.ByIndex(h.index).Tags["skill_charge"] > 0 {
+		h.core.Player.ByIndex(h.index).Tags["skill_charge"]--
 	}
-	h.c.Player.Core.Log.NewEventBuildMsg(
+	h.core.Log.NewEventBuildMsg(
 		glog.LogActionEvent,
-		h.c.Index,
+		h.index,
 		a.String(), " cooldown triggered",
 	).Write(
 		"type", a.String(),
@@ -67,45 +69,46 @@ func (h *Handler) SetCD(a player.Action, dur int) {
 	)
 }
 
-func (h *Handler) SetNumCharges(a player.Action, num int) {
+func (h *CDHandler) SetNumCharges(a action.Action, num int) {
 	h.additionalCDCharge[a] = num - 1
 	h.AvailableCDCharge[a] = num
 }
 
-func (h *Handler) Charges(a player.Action) int {
+func (h *CDHandler) Charges(a action.Action) int {
 	return h.AvailableCDCharge[a]
 }
 
-func (h *Handler) ActionReady(a player.Action, p map[string]int) bool {
+func (h *CDHandler) ActionReady(a action.Action, p map[string]int) bool {
 	//up if energy is ready && stack > 0
-	if a == player.ActionBurst && (h.c.Energy != h.c.EnergyMax) {
+	if a == action.ActionBurst &&
+		(h.core.Player.ByIndex(h.index).Energy != h.core.Player.ByIndex(h.index).EnergyMax) {
 		return false
 	}
 	return h.AvailableCDCharge[a] > 0
 }
 
-func (c *Handler) SetCDWithDelay(a player.Action, dur int, delay int) {
+func (h *CDHandler) SetCDWithDelay(a action.Action, dur int, delay int) {
 	if delay == 0 {
-		c.SetCD(a, dur)
+		h.SetCD(a, dur)
 		return
 	}
-	c.c.Player.Core.Tasks.Add(func() { c.SetCD(a, dur) }, delay)
+	h.core.Tasks.Add(func() { h.SetCD(a, dur) }, delay)
 }
 
-func (c *Handler) Cooldown(a player.Action) int {
+func (h *CDHandler) Cooldown(a action.Action) int {
 	//remaining cooldown is src + first item in queue - current frame
-	if c.AvailableCDCharge[a] > 0 {
+	if h.AvailableCDCharge[a] > 0 {
 		return 0
 	}
 	//otherwise check our queue; if zero then it's ready
-	if len(c.cdQueue) == 0 {
+	if len(h.cdQueue) == 0 {
 		// panic("queue length is somehow 0??")
 		return 0
 	}
-	return c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.c.Player.Core.F
+	return h.cdQueueWorkerStartedAt[a] + h.cdQueue[a][0] - h.core.F
 }
 
-func (h *Handler) ResetActionCooldown(a player.Action) {
+func (h *CDHandler) ResetActionCooldown(a action.Action) {
 	//if stacks already maxed then do nothing
 	if h.AvailableCDCharge[a] == 1+h.additionalCDCharge[a] {
 		return
@@ -113,14 +116,14 @@ func (h *Handler) ResetActionCooldown(a player.Action) {
 	//log.Printf("resetting; frame %v, queue %v\n", c.F, c.cdQueue[a])
 	//otherwise add a stack && pop queue
 	h.AvailableCDCharge[a]++
-	h.c.Tags["skill_charge"]++
+	h.core.Player.ByIndex(h.index).Tags["skill_charge"]++
 	h.cdQueue[a] = h.cdQueue[a][1:]
 	//reset worker time
-	h.cdQueueWorkerStartedAt[a] = h.c.Player.Core.F
+	h.cdQueueWorkerStartedAt[a] = h.core.F
 	h.cdCurrentQueueWorker[a] = nil
-	h.c.Player.Core.Log.NewEventBuildMsg(
+	h.core.Log.NewEventBuildMsg(
 		glog.LogActionEvent,
-		h.c.Index,
+		h.index,
 		a.String(), " cooldown forcefully reset",
 	).Write(
 		"type", a.String(),
@@ -133,13 +136,13 @@ func (h *Handler) ResetActionCooldown(a player.Action) {
 	}
 }
 
-func (h *Handler) ReduceActionCooldown(a player.Action, v int) {
+func (h *CDHandler) ReduceActionCooldown(a action.Action, v int) {
 	//do nothing if stacks already maxed
 	if h.AvailableCDCharge[a] == 1+h.additionalCDCharge[a] {
 		return
 	}
 	//check if reduction > time remaing? if so then call reset cd
-	remain := h.cdQueueWorkerStartedAt[a] + h.cdQueue[a][0] - h.c.Player.Core.F
+	remain := h.cdQueueWorkerStartedAt[a] + h.cdQueue[a][0] - h.core.F
 	//log.Printf("hello reducing; reduction %v, remaining %v, frame %v, old queue %v\n", v, remain, c.F, c.cdQueue[a])
 	if v >= remain {
 		h.ResetActionCooldown(a)
@@ -147,9 +150,9 @@ func (h *Handler) ReduceActionCooldown(a player.Action, v int) {
 	}
 	//otherwise reduce remain and restart queue
 	h.cdQueue[a][0] = remain - v
-	h.c.Player.Core.Log.NewEventBuildMsg(
+	h.core.Log.NewEventBuildMsg(
 		glog.LogActionEvent,
-		h.c.Index,
+		h.index,
 		a.String(), " cooldown forcefully reduced",
 	).Write(
 		"type", a.String(),
@@ -161,7 +164,7 @@ func (h *Handler) ReduceActionCooldown(a player.Action, v int) {
 	//log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
 }
 
-func (h *Handler) startCooldownQueueWorker(a player.Action, cdReduct bool) {
+func (h *CDHandler) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 	//check the length of the queue for action a, if there's nothing then there's
 	//nothing to start
 	if len(h.cdQueue[a]) == 0 {
@@ -169,12 +172,12 @@ func (h *Handler) startCooldownQueueWorker(a player.Action, cdReduct bool) {
 	}
 
 	//set the time we starter this worker at
-	h.cdQueueWorkerStartedAt[a] = h.c.Player.Core.F
+	h.cdQueueWorkerStartedAt[a] = h.core.F
 	var src *func()
 
 	//reduce the first item by the current cooldown reduction
 	if cdReduct {
-		h.cdQueue[a][0] = h.c.CDReduction(a, h.cdQueue[a][0])
+		h.cdQueue[a][0] = h.core.Player.ByIndex(h.index).CDReduction(a, h.cdQueue[a][0])
 	}
 
 	worker := func() {
@@ -187,26 +190,30 @@ func (h *Handler) startCooldownQueueWorker(a player.Action, cdReduct bool) {
 		//check to make sure queue is not 0
 		if len(h.cdQueue[a]) == 0 {
 			//this should never happen
-			panic(fmt.Sprintf("queue is empty? character :%v, frame : %v, worker src: %v, started: %v", h.c.Base.Key.String(), h.c.Player.Core.F, src, h.cdQueueWorkerStartedAt[a]))
+			panic(fmt.Sprintf(
+				"queue is empty? index :%v, frame : %v, worker src: %v, started: %v",
+				h.index,
+				h.core.F,
+				src,
+				h.cdQueueWorkerStartedAt[a],
+			))
 			// return
 		}
 		//otherwise add a stack and pop first item in queue
 		h.AvailableCDCharge[a]++
-		h.c.Tags["skill_charge"]++
+		h.core.Player.ByIndex(h.index).Tags["skill_charge"]++
 		h.cdQueue[a] = h.cdQueue[a][1:]
 
 		// c.Log.Debugw("stack restored",  "avail", c.availableCDCharge[a], "queue", c.cdQueue)
 
 		if h.AvailableCDCharge[a] > 1+h.additionalCDCharge[a] {
 			//sanity check, this should never happen
-			panic(fmt.Sprintf("charges > max? character :%v, frame : %v", h.c.Base.Key.String(), h.c.Player.Core.F))
-			// c.availableCDCharge[a] = 1 + c.additionalCDCharge[a]
-			// return
+			panic(fmt.Sprintf("charges > max? index :%v, frame : %v", h.index, h.core.F))
 		}
 
-		h.c.Player.Core.Log.NewEventBuildMsg(
+		h.core.Log.NewEventBuildMsg(
 			glog.LogActionEvent,
-			h.c.Index,
+			h.index,
 			a.String(), " cooldown ready",
 		).Write(
 			"type", a.String(),
@@ -225,6 +232,6 @@ func (h *Handler) startCooldownQueueWorker(a player.Action, cdReduct bool) {
 	src = &worker
 
 	//wait for c.cooldownQueue[a][0], then add a stack
-	h.c.Player.Core.Tasks.Add(worker, h.cdQueue[a][0])
+	h.core.Tasks.Add(worker, h.cdQueue[a][0])
 
 }

@@ -34,7 +34,7 @@ const (
 	OnShielded         //shield
 	OnCharacterSwap    //prev, next
 	OnParticleReceived //particle
-	OnEnergyChange     //character_received, pre_energy, energy_change, src (post-energy available in character_received)
+	OnEnergyChange     //character_received_index, pre_energy, energy_change, src (post-energy available in character_received)
 	OnTargetDied       //target
 	OnCharacterHurt    //amount
 	OnHeal             //src char, target character, amount

@@ -13,12 +13,9 @@ type Handler struct {
 	shields []Shield
 	log     glog.Logger
 	events  event.Eventter
-	mods    shieldMods
 	f       *int
-}
 
-type shieldMods interface {
-	ShieldBonus(int) float64
+	shieldBonusMods []shieldBonusMod
 }
 
 func (s *Handler) Count() int { return len(s.shields) }
@@ -61,7 +58,7 @@ func (s *Handler) Add(shd Shield) {
 
 func (s *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float64 {
 	//find shield bonuses
-	bonus := s.mods.ShieldBonus(char)
+	bonus := s.ShieldBonus()
 	min := dmg //min of damage taken
 	n := 0
 	for _, v := range s.shields {
