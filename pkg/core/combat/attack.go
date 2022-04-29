@@ -1,6 +1,8 @@
 package combat
 
-import "github.com/genshinsim/gcsim/pkg/core/attributes"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+)
 
 type AttackEvent struct {
 	Info    AttackInfo

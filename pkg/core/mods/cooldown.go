@@ -16,7 +16,7 @@ type cooldownMod struct {
 func (c *Handler) CDReduction(a action.Action, dur int, char int) int {
 	var cd float64 = 1
 	n := 0
-	for _, v := range c.CooldownMods[char] {
+	for _, v := range c.cooldownMods[char] {
 		//if not expired
 		if v.Expiry == -1 || v.Expiry > *c.f {
 			amt := v.Amount(a)
@@ -29,11 +29,11 @@ func (c *Handler) CDReduction(a action.Action, dur int, char int) int {
 				"expiry", v.Expiry,
 			)
 			cd += amt
-			c.CooldownMods[char][n] = v
+			c.cooldownMods[char][n] = v
 			n++
 		}
 	}
-	c.CooldownMods[char] = c.CooldownMods[char][:n]
+	c.cooldownMods[char] = c.cooldownMods[char][:n]
 
 	return int(float64(dur) * cd)
 }
@@ -46,16 +46,16 @@ func (c *Handler) AddCDAdjust(key string, dur int, amt func(a action.Action) flo
 			Expiry: *c.f + dur,
 		}
 		ind := -1
-		for i, v := range c.CooldownMods[char] {
+		for i, v := range c.cooldownMods[char] {
 			//if expired already, set to nil and ignore
 			if v.Key == key {
 				ind = i
 			}
 		}
 		if ind > -1 {
-			c.CooldownMods[char][ind] = mod
+			c.cooldownMods[char][ind] = mod
 		} else {
-			c.CooldownMods[char] = append(c.CooldownMods[char], mod)
+			c.cooldownMods[char] = append(c.cooldownMods[char], mod)
 		}
 	}
 }

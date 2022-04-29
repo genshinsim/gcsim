@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/shield"
 )
 
 type CrystallizeShield struct {
@@ -15,15 +17,15 @@ func (r *Reactable) tryCrystallize(a *combat.AttackEvent) {
 	//can't double crystallize it looks like
 	//freeze can trigger hydro first
 	//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
-	r.tryCrystallizeWithEle(a, attributes.Electro, core.CrystallizeElectro, core.OnCrystallizeElectro)
-	r.tryCrystallizeWithEle(a, attributes.Hydro, core.CrystallizeHydro, core.OnCrystallizeHydro)
-	r.tryCrystallizeWithEle(a, attributes.Cryo, core.CrystallizeCryo, core.OnCrystallizeCryo)
-	r.tryCrystallizeWithEle(a, attributes.Pyro, core.CrystallizePyro, core.OnCrystallizePyro)
-	r.tryCrystallizeWithEle(a, attributes.Frozen, core.CrystallizeCryo, core.OnCrystallizeCryo)
+	r.tryCrystallizeWithEle(a, attributes.Electro, combat.CrystallizeElectro, event.OnCrystallizeElectro)
+	r.tryCrystallizeWithEle(a, attributes.Hydro, combat.CrystallizeHydro, event.OnCrystallizeHydro)
+	r.tryCrystallizeWithEle(a, attributes.Cryo, combat.CrystallizeCryo, event.OnCrystallizeCryo)
+	r.tryCrystallizeWithEle(a, attributes.Pyro, combat.CrystallizePyro, event.OnCrystallizePyro)
+	r.tryCrystallizeWithEle(a, attributes.Frozen, combat.CrystallizeCryo, event.OnCrystallizeCryo)
 
 }
 
-func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt combat.ReactionType, evt core.EventType) {
+func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt combat.ReactionType, evt event.Event) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
