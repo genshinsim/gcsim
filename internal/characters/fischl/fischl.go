@@ -117,6 +117,33 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	return f, a
 }
 
+func (c *char) Aimed(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionAim, p)
+
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 10
+	}
+	weakspot, ok := p["weakspot"]
+
+	ai := core.AttackInfo{
+		ActorIndex:   c.Index,
+		Abil:         "Charge Attack",
+		AttackTag:    core.AttackTagExtra,
+		ICDTag:       core.ICDTagNone,
+		ICDGroup:     core.ICDGroupDefault,
+		StrikeType:   core.StrikeTypePierce,
+		Element:      core.Electro,
+		Durability:   25,
+		Mult:         aim[c.TalentLvlAttack()],
+		HitWeakPoint: weakspot == 1,
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
+
+	return f, a
+}
+
 func (c *char) queueOz(src string) {
 
 	dur := 600
