@@ -43,7 +43,7 @@ func TestC2CD(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	err = testhelper.TestSkillCooldown(c, x, []int{600, 600}, 10)
+	err = testhelper.TestSkillCooldown(c, x, []int{600+10, 600})
 	if err != nil {
 		t.Error(err)
 	}
