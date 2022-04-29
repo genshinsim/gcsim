@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
-var hitmarks = [][]int{{8}, {20}, {25}, {25, 35}, {34}}
+var hitmarks = [][]int{{11}, {11}, {15}, {12, 22}, {26}}
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
@@ -35,6 +35,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	return f, a
 }
 
+var chargeHitmarks = []int{22, 24}
+
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionCharge, p)
@@ -51,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-i*10-5, f-i*10-5)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	if c.Core.Status.Duration(stilettoKey) > 0 {
@@ -70,7 +72,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			Mult:       skillCA[c.TalentLvlSkill()],
 		}
 		for i := 0; i < 2; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 		}
 
 		// TODO: Particle timing?
@@ -111,7 +113,7 @@ func (c *char) skillFirst(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 25, 25)
 
 	if c.Base.Cons == 6 {
 		c.activateC6("skill")
@@ -139,7 +141,7 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 27, 27)
 	//add electro infusion
 
 	c.Core.Status.AddStatus("keqinginfuse", 300)
@@ -168,7 +170,7 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 			Mult:       .5,
 		}
 		for i := 0; i < hits; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 27)
 		}
 	}
 
@@ -190,10 +192,10 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.a4()
 
-	//first hit 70 frame
-	//first tick 74 frame
-	//last tick 168
-	//last hit 211
+	//first hit 56 frame
+	//first tick 82 frame
+	//last tick 162
+	//last hit 197
 
 	//initial
 	ai := core.AttackInfo{
@@ -207,12 +209,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 70, 70)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 56, 56)
 	//8 hits
 
 	ai.Abil = "Starward Sword (Consecutive Slash)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
-	for i := 70; i < 170; i += 13 {
+	for i := 82; i < 162; i += 11 {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), i, i)
 	}
 
@@ -220,14 +222,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	ai.Abil = "Starward Sword (Last Attack)"
 	ai.Mult = burstFinal[c.TalentLvlBurst()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 211, 211)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 197, 197)
 
 	if c.Base.Cons == 6 {
 		c.activateC6("burst")
 	}
 
-	c.ConsumeEnergy(60)
-	c.SetCDWithDelay(core.ActionBurst, 720, 60)
+	c.ConsumeEnergy(55)
+	c.SetCDWithDelay(core.ActionBurst, 720, 52)
 
 	return f, a
 }
