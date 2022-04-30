@@ -9,6 +9,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/crimson"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/echoes"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/exile"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/gambler"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/gladiator"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/heartofdepth"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/huskofopulentdreams"
