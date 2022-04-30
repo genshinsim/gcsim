@@ -51,7 +51,10 @@ func New(cfg SimulationConfig, c *core.Core) (*Simulation, error) {
 	}
 	s.C = c
 
-	InitTargets(c, cfg)
+	err = SetupTargetsInCore(c, cfg.PlayerPos, cfg.Targets)
+	if err != nil {
+		return nil, err
+	}
 
 	return s, nil
 }

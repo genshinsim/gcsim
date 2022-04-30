@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type CharWrapper struct {
@@ -18,7 +19,7 @@ type CharWrapper struct {
 
 	//base characteristics
 	Base     CharacterBase
-	Weapon   WeaponProfile
+	Weapon   weapon.WeaponProfile
 	Talents  TalentProfile
 	CharZone ZoneType
 
@@ -41,11 +42,42 @@ type CharWrapper struct {
 	damageReductionMods []*damageReductionMod
 }
 
+func New(
+	p CharacterProfile,
+	f *int, //current frame
+	debug bool, //are we running in debug mode
+	log glog.Logger, //logging, can be nil
+	events event.Eventter, //event emitter
+) *CharWrapper {
+	c := &CharWrapper{
+		Base:                p.Base,
+		Weapon:              p.Weapon,
+		Talents:             p.Talents,
+		log:                 log,
+		events:              events,
+		Tags:                make(map[string]int),
+		statsMod:            make([]*statMod, 0, 10),
+		attackMods:          make([]*attackMod, 0, 10),
+		reactionBonusMods:   make([]*reactionBonusMod, 0, 10),
+		cooldownMods:        make([]*cooldownMod, 0, 10),
+		healBonusMods:       make([]*healBonusMod, 0, 10),
+		damageReductionMods: make([]*damageReductionMod, 0, 10),
+	}
+	s := (*[attributes.EndStatType]float64)(p.Stats)
+	c.stats = *s
+
+	return c
+}
+
+func (c *CharWrapper) SetIndex(index int) {
+	c.Index = index
+}
+
 func (c *CharWrapper) Tag(key string) int {
 	return c.Tags[key]
 }
 
-func (c *CharWrapper) AddTag(key string, val int) {
+func (c *CharWrapper) SetTag(key string, val int) {
 	c.Tags[key] = val
 }
 

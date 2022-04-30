@@ -1,7 +1,7 @@
-- add enemy
 - load simulator
 - add queues
 - run sim
+- logging control
 - change weapon structure
 - change artifact structure
 - fix reactable tests

@@ -12,18 +12,20 @@ type SimulationConfig struct {
 	Duration   int            `json:"duration"`
 	DamageMode bool           `json:"damage_mode"`
 	Targets    []EnemyProfile `json:"targets"`
-	Pos        struct {
-		X float64 `json:"x"`
-		Y float64 `json:"y"`
-		R float64 `json:"r"`
-	} `json:"player_initial_pos"`
+	PlayerPos  Pos            `json:"player_initial_pos"`
 	Characters struct {
-		Initial keys.CharKey                 `json:"initial"`
+		Initial keys.Char                    `json:"initial"`
 		Profile []character.CharacterProfile `json:"profile"`
 	} `json:"characters"`
 	Rotation []queue.ActionBlock `json:"-"`
 	Hurt     HurtEvent           `json:"-"`
 	Energy   EnergyEvent         `json:"-"`
+}
+
+type Pos struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	R float64 `json:"r"`
 }
 
 func (c *SimulationConfig) Clone() SimulationConfig {
@@ -51,11 +53,7 @@ type EnemyProfile struct {
 	Level  int                            `json:"level"`
 	HP     float64                        `json:"-"`
 	Resist map[attributes.Element]float64 `json:"-"`
-	Pos    struct {
-		X float64 `json:"x"`
-		Y float64 `json:"y"`
-		R float64 `json:"r"`
-	} `json:"-"`
+	Pos    Pos                            `json:"-"`
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {

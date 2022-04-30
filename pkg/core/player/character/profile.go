@@ -3,17 +3,17 @@ package character
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type CharacterProfile struct {
-	Base      CharacterBase             `json:"base"`
-	Weapon    WeaponProfile             `json:"weapon"`
-	Talents   TalentProfile             `json:"talents"`
-	Stats     []float64                 `json:"stats"`
-	Sets      map[string]int            `json:"sets"`
-	SetParams map[string]map[string]int `json:"-"`
-	Params    map[string]int            `json:"-"`
+	Base      CharacterBase               `json:"base"`
+	Weapon    weapon.WeaponProfile        `json:"weapon"`
+	Talents   TalentProfile               `json:"talents"`
+	Stats     []float64                   `json:"stats"`
+	Sets      map[keys.Set]int            `json:"sets"`
+	SetParams map[keys.Set]map[string]int `json:"-"`
+	Params    map[string]int              `json:"-"`
 }
 
 func (c *CharacterProfile) Clone() CharacterProfile {
@@ -24,7 +24,7 @@ func (c *CharacterProfile) Clone() CharacterProfile {
 	}
 	r.Stats = make([]float64, len(c.Stats))
 	copy(r.Stats, c.Stats)
-	r.Sets = make(map[string]int)
+	r.Sets = make(map[keys.Set]int)
 	for k, v := range c.Sets {
 		r.Sets[k] = v
 	}
@@ -33,7 +33,7 @@ func (c *CharacterProfile) Clone() CharacterProfile {
 }
 
 type CharacterBase struct {
-	Key      keys.CharKey       `json:"key"`
+	Key      keys.Char          `json:"key"`
 	Name     string             `json:"name"`
 	Element  attributes.Element `json:"element"`
 	Level    int                `json:"level"`
@@ -43,17 +43,6 @@ type CharacterBase struct {
 	Def      float64            `json:"base_def"`
 	Cons     int                `json:"cons"`
 	StartHP  float64            `json:"start_hp"`
-}
-
-type WeaponProfile struct {
-	Name     string             `json:"name"`
-	Key      string             `json:"key"` //use this to match with weapon curve mapping
-	Class    weapon.WeaponClass `json:"-"`
-	Refine   int                `json:"refine"`
-	Level    int                `json:"level"`
-	MaxLevel int                `json:"max_level"`
-	Atk      float64            `json:"base_atk"`
-	Params   map[string]int     `json:"-"`
 }
 
 type TalentProfile struct {

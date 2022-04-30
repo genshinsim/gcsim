@@ -8,13 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
 
-type CharKey int
+type Char int
 
-func (c *CharKey) MarshalJSON() ([]byte, error) {
+func (c *Char) MarshalJSON() ([]byte, error) {
 	return json.Marshal(charNames[*c])
 }
 
-func (c *CharKey) UnmarshalJSON(b []byte) error {
+func (c *Char) UnmarshalJSON(b []byte) error {
 	var s string
 	if err := json.Unmarshal(b, &s); err != nil {
 		return err
@@ -22,7 +22,7 @@ func (c *CharKey) UnmarshalJSON(b []byte) error {
 	s = strings.ToLower(s)
 	for i, v := range charNames {
 		if v == s {
-			*c = CharKey(i)
+			*c = Char(i)
 			return nil
 		}
 	}
@@ -30,7 +30,7 @@ func (c *CharKey) UnmarshalJSON(b []byte) error {
 }
 
 const (
-	NoChar CharKey = iota
+	NoChar Char = iota
 	TravelerElectro
 	TravelerAnemo
 	TravelerGeo
@@ -90,7 +90,7 @@ const (
 	YaeMiko
 )
 
-func (c CharKey) String() string {
+func (c Char) String() string {
 	return charNames[c]
 }
 
@@ -155,7 +155,7 @@ var charNames = []string{
 	"yaemiko",
 }
 
-var CharKeyToEle = map[CharKey]attributes.Element{
+var CharKeyToEle = map[Char]attributes.Element{
 	TravelerElectro: attributes.Electro,
 	TravelerAnemo:   attributes.Anemo,
 	TravelerGeo:     attributes.Geo,

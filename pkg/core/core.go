@@ -8,6 +8,7 @@
 package core
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -15,6 +16,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/status"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
@@ -37,4 +39,55 @@ type Flags struct {
 	LogDebug     bool // Used to determine logging level
 	ChildeActive bool // Used for Childe +1 NA talent passive
 	Custom       map[string]int
+}
+
+func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
+	var err error
+
+	// initialize character
+
+	char := character.New(p, &c.F, c.Flags.LogDebug, c.Log, &c.Events)
+
+	f, ok := charMap[p.Base.Key]
+	if !ok {
+		return -1, fmt.Errorf("invalid character: %v", p.Base.Key.String())
+	}
+	err = f(c, char, p)
+	if err != nil {
+		return -1, err
+	}
+	index := c.Player.AddChar(char)
+
+	// initialize weapon
+	wf, ok := weaponMap[p.Weapon.Key]
+	if !ok {
+		return -1, fmt.Errorf("unrecognized weapon %v for character %v", p.Weapon.Name, p.Base.Key.String())
+	}
+	weap, err := wf(c, char, p.Weapon)
+	if err != nil {
+		return -1, err
+	}
+	c.Player.AddWeapon(p.Weapon.Key, weap)
+
+	//set bonus
+	total := 0
+	for key, count := range p.Sets {
+		total += count
+		af, ok := setMap[key]
+		if ok {
+			s, err := af(c, char, count, p.SetParams[key])
+			if err != nil {
+				return -1, err
+			}
+			c.Player.AddSet(key, s)
+		} else {
+			return -1, fmt.Errorf("character %v has unrecognized artifact: %v", p.Base.Name, key)
+		}
+	}
+	//TODO: this should be handled by parser
+	if total > 5 {
+		return -1, fmt.Errorf("total set count cannot exceed 5, got %v", total)
+	}
+
+	return index, nil
 }

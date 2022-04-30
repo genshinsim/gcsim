@@ -2,7 +2,7 @@ package shortcut
 
 import "github.com/genshinsim/gcsim/pkg/core/keys"
 
-var CharNameToKey = map[string]keys.CharKey{
+var CharNameToKey = map[string]keys.Char{
 	"travelerelectro":   keys.TravelerElectro,
 	"traveleranemo":     keys.TravelerAnemo,
 	"travelergeo":       keys.TravelerGeo,

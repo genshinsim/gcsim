@@ -21,7 +21,7 @@ type ActionBlock struct {
 	Type  ActionBlockType
 	//sequence is only relevant to ActionBlockTypeSequence
 	Sequence     []ActionItem
-	SequenceChar keys.CharKey
+	SequenceChar keys.Char
 
 	ChainSequences []ActionBlock
 
@@ -33,10 +33,10 @@ type ActionBlock struct {
 	Timeout    int           //the action block cannot be used again for x frames
 
 	//options
-	SwapTo            keys.CharKey //character to swap to after this block
-	SwapLock          int          //must stay on current char for x frames
-	Try               bool         //if true then drop rest of queue if any action is not ready
-	TryDropIfNotReady bool         //if false will keep trying next action; other wise drop sequence. Only if Try is set to true
+	SwapTo            keys.Char //character to swap to after this block
+	SwapLock          int       //must stay on current char for x frames
+	Try               bool      //if true then drop rest of queue if any action is not ready
+	TryDropIfNotReady bool      //if false will keep trying next action; other wise drop sequence. Only if Try is set to true
 
 	//tracking
 	NumQueued  int //number of times this action block has been queued
@@ -77,7 +77,7 @@ func (a *ActionBlock) Clone() ActionBlock {
 type ActionItem struct {
 	Typ    action.Action
 	Param  map[string]int
-	Target keys.CharKey
+	Target keys.Char
 }
 
 func (a *ActionItem) Type() CommandType { return CommandTypeAction }

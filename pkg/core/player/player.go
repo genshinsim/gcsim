@@ -9,19 +9,54 @@ package player
 import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/infusion"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type Handler struct {
-	chars  []*character.CharWrapper
-	active int
 	log    glog.Logger
 	events event.Eventter
 
+	chars   []*character.CharWrapper
+	active  int
+	charPos map[keys.Char]int
+
+	weaps   []weapon.Weapon
+	weapPos map[keys.Weapon]int
+
+	sets   []artifact.Set
+	setPos map[keys.Set]int
+
 	Shields shield.Handler
 	infusion.InfusionHandler
+}
+
+func (h *Handler) AddChar(char *character.CharWrapper) int {
+	h.chars = append(h.chars, char)
+	index := len(h.chars) - 1
+	char.SetIndex(index)
+	h.charPos[char.Base.Key] = index
+	return index
+}
+
+func (h *Handler) AddWeapon(key keys.Weapon, w weapon.Weapon) int {
+	h.weaps = append(h.weaps, w)
+	index := len(h.weaps) - 1
+	w.SetIndex(index)
+	h.weapPos[key] = index
+	return index
+}
+
+func (h *Handler) AddSet(key keys.Set, set artifact.Set) int {
+	h.sets = append(h.sets, set)
+	index := len(h.weaps) - 1
+	set.SetIndex(index)
+	h.setPos[key] = index
+	return index
 }
 
 func (h *Handler) ByIndex(i int) *character.CharWrapper {
