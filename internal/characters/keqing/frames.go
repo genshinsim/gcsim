@@ -70,6 +70,7 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 123-56)   //burst -> swap
 
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionAttack, 36-21)
+	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSkill, 35-21)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionBurst, 37-21)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionDash, 21-21)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionJump, 21-21)
