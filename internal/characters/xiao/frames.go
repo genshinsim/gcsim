@@ -6,34 +6,43 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	switch a {
 	case core.ActionAttack:
 		f := 0
+		a := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
 		case 0:
-			f = 16 //frames from keqing lib
+			f = 17
+			a = 25
 		case 1:
-			f = 42 - 16
+			f = 15
+			a = 22
 		case 2:
-			f = 68 - 42
+			f = 15
+			a = 26
 		case 3:
-			f = 115 - 68
+			f = 31
+			a = 39
 		case 4:
-			f = 145 - 115
+			f = 16
+			a = 24
 		case 5:
-			f = 197 - 145
+			f = 39
+			a = 79
 		}
 		atkspd := c.Stat(core.AtkSpd)
 		f = int(float64(f) / (1 + atkspd))
-		return f, f
+		return f, a
 	case core.ActionCharge:
-		return 80 - 16, 80 - 16 // Taken as N1C - N1. Not entirely right due to different recovery frames
+		return 17, 46
 	case core.ActionHighPlunge:
-		return 75, 75
+		return 54, 67
 	case core.ActionLowPlunge:
-		return 65, 65
+		return 49, 66
 	case core.ActionSkill:
-		return 36, 36
+		return 4, 24
 	case core.ActionBurst:
-		return 58, 58
+		return 57, 82
+	case core.ActionDash:
+		return 21, 21
 	default:
 		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
