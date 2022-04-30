@@ -29,6 +29,10 @@ func (c *Char) UnmarshalJSON(b []byte) error {
 	return errors.New("unrecognized character key")
 }
 
+func (c Char) String() string {
+	return charNames[c]
+}
+
 const (
 	NoChar Char = iota
 	TravelerElectro
@@ -89,10 +93,6 @@ const (
 	Yunjin
 	YaeMiko
 )
-
-func (c Char) String() string {
-	return charNames[c]
-}
 
 var charNames = []string{
 	"",

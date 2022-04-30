@@ -1,7 +1,7 @@
+- base stats
 - load simulator
 - add queues
 - particle drops
--
 - run sim
 - logging control
 - change weapon structure

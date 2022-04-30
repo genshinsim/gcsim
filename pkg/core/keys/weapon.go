@@ -1,9 +1,302 @@
 package keys
 
+import (
+	"encoding/json"
+	"errors"
+	"strings"
+)
+
 type Weapon int
+
+func (c *Weapon) MarshalJSON() ([]byte, error) {
+	return json.Marshal(charNames[*c])
+}
+
+func (c *Weapon) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	s = strings.ToLower(s)
+	for i, v := range charNames {
+		if v == s {
+			*c = Weapon(i)
+			return nil
+		}
+	}
+	return errors.New("unrecognized character key")
+}
 
 func (c Weapon) String() string {
 	return weaponNames[c]
 }
 
-var weaponNames = []string{}
+var weaponNames = []string{
+	"",
+	"akuoumaru",
+	"alleyhunter",
+	"amenomakageuchi",
+	"amosbow",
+	"apprenticesnotes",
+	"aquilafavonia",
+	"beginnersprotector",
+	"blackcliffagate",
+	"blackclifflongsword",
+	"blackcliffpole",
+	"blackcliffslasher",
+	"blackcliffwarbow",
+	"blacktassel",
+	"bloodtaintedgreatsword",
+	"calamityqueller",
+	"cinnabarspindle",
+	"compoundbow",
+	"coolsteel",
+	"crescentpike",
+	"darkironsword",
+	"deathmatch",
+	"debateclub",
+	"dodocotales",
+	"dragonsbane",
+	"dragonspinespear",
+	"dullblade",
+	"elegyfortheend",
+	"emeraldorb",
+	"engulfinglightning",
+	"everlastingmoonglow",
+	"eyeofperception",
+	"favoniuscodex",
+	"favoniusgreatsword",
+	"favoniuslance",
+	"favoniussword",
+	"favoniuswarbow",
+	"ferrousshadow",
+	"festeringdesire",
+	"filletblade",
+	"freedomsworn",
+	"frostbearer",
+	"hakushinring",
+	"halberd",
+	"hamayumi",
+	"harangeppakufutsu",
+	"harbingerofdawn",
+	"huntersbow",
+	"ironpoint",
+	"ironsting",
+	"kagurasverity",
+	"katsuragikirinagamasa",
+	"kitaincrossspear",
+	"lionsroar",
+	"lithicblade",
+	"lithicspear",
+	"lostprayertothesacredwinds",
+	"luxurioussealord",
+	"magicguide",
+	"mappamare",
+	"memoryofdust",
+	"messenger",
+	"mistsplitterreforged",
+	"mitternachtswaltz",
+	"mouunsmoon",
+	"oathsworneye",
+	"oldmercspal",
+	"otherworldlystory",
+	"pocketgrimoire",
+	"polarstar",
+	"predator",
+	"primordialjadecutter",
+	"primordialjadewingedspear",
+	"prototypeamber",
+	"prototypearchaic",
+	"prototypecrescent",
+	"prototyperancour",
+	"prototypestarglitter",
+	"rainslasher",
+	"ravenbow",
+	"recurvebow",
+	"redhornstonethresher",
+	"royalbow",
+	"royalgreatsword",
+	"royalgrimoire",
+	"royallongsword",
+	"royalspear",
+	"rust",
+	"sacrificialbow",
+	"sacrificialfragments",
+	"sacrificialgreatsword",
+	"sacrificialsword",
+	"seasonedhuntersbow",
+	"serpentspine",
+	"sharpshootersoath",
+	"silversword",
+	"skyridergreatsword",
+	"skyridersword",
+	"skywardatlas",
+	"skywardblade",
+	"skywardharp",
+	"skywardpride",
+	"skywardspine",
+	"slingshot",
+	"snowtombedstarsilver",
+	"solarpearl",
+	"songofbrokenpines",
+	"staffofhoma",
+	"summitshaper",
+	"swordofdescension",
+	"thealleyflash",
+	"thebell",
+	"theblacksword",
+	"thecatch",
+	"theflute",
+	"thestringless",
+	"theunforged",
+	"theviridescenthunt",
+	"thewidsith",
+	"thrillingtalesofdragonslayers",
+	"thunderingpulse",
+	"travelershandysword",
+	"twinnephrite",
+	"vortexvanquisher",
+	"wastergreatsword",
+	"wavebreakersfin",
+	"whiteblind",
+	"whiteirongreatsword",
+	"whitetassel",
+	"windblumeode",
+	"wineandsong",
+	"wolfsgravestone",
+}
+
+const (
+	NoWeapon Weapon = iota
+	Akuoumaru
+	Alleyhunter
+	Amenomakageuchi
+	Amosbow
+	Apprenticesnotes
+	Aquilafavonia
+	Beginnersprotector
+	Blackcliffagate
+	Blackclifflongsword
+	Blackcliffpole
+	Blackcliffslasher
+	Blackcliffwarbow
+	Blacktassel
+	Bloodtaintedgreatsword
+	Calamityqueller
+	Cinnabarspindle
+	Compoundbow
+	Coolsteel
+	Crescentpike
+	Darkironsword
+	Deathmatch
+	Debateclub
+	Dodocotales
+	Dragonsbane
+	Dragonspinespear
+	Dullblade
+	Elegyfortheend
+	Emeraldorb
+	Engulfinglightning
+	Everlastingmoonglow
+	Eyeofperception
+	Favoniuscodex
+	Favoniusgreatsword
+	Favoniuslance
+	Favoniussword
+	Favoniuswarbow
+	Ferrousshadow
+	Festeringdesire
+	Filletblade
+	Freedomsworn
+	Frostbearer
+	Hakushinring
+	Halberd
+	Hamayumi
+	Harangeppakufutsu
+	Harbingerofdawn
+	Huntersbow
+	Ironpoint
+	Ironsting
+	Kagurasverity
+	Katsuragikirinagamasa
+	Kitaincrossspear
+	Lionsroar
+	Lithicblade
+	Lithicspear
+	Lostprayertothesacredwinds
+	Luxurioussealord
+	Magicguide
+	Mappamare
+	Memoryofdust
+	Messenger
+	Mistsplitterreforged
+	Mitternachtswaltz
+	Mouunsmoon
+	Oathsworneye
+	Oldmercspal
+	Otherworldlystory
+	Pocketgrimoire
+	Polarstar
+	Predator
+	Primordialjadecutter
+	Primordialjadewingedspear
+	Prototypeamber
+	Prototypearchaic
+	Prototypecrescent
+	Prototyperancour
+	Prototypestarglitter
+	Rainslasher
+	Ravenbow
+	Recurvebow
+	Redhornstonethresher
+	Royalbow
+	Royalgreatsword
+	Royalgrimoire
+	Royallongsword
+	Royalspear
+	Rust
+	Sacrificialbow
+	Sacrificialfragments
+	Sacrificialgreatsword
+	Sacrificialsword
+	Seasonedhuntersbow
+	Serpentspine
+	Sharpshootersoath
+	Silversword
+	Skyridergreatsword
+	Skyridersword
+	Skywardatlas
+	Skywardblade
+	Skywardharp
+	Skywardpride
+	Skywardspine
+	Slingshot
+	Snowtombedstarsilver
+	Solarpearl
+	Songofbrokenpines
+	Staffofhoma
+	Summitshaper
+	Swordofdescension
+	Thealleyflash
+	Thebell
+	Theblacksword
+	Thecatch
+	Theflute
+	Thestringless
+	Theunforged
+	Theviridescenthunt
+	Thewidsith
+	Thrillingtalesofdragonslayers
+	Thunderingpulse
+	Travelershandysword
+	Twinnephrite
+	Vortexvanquisher
+	Wastergreatsword
+	Wavebreakersfin
+	Whiteblind
+	Whiteirongreatsword
+	Whitetassel
+	Windblumeode
+	Wineandsong
+	Wolfsgravestone
+)
