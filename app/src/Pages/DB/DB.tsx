@@ -169,6 +169,7 @@ export function DB() {
         let data = resp.data;
 
         setData(data);
+        parseFilterUrl();
         setLoading(false);
       })
       .catch(function (error) {
@@ -185,6 +186,28 @@ export function DB() {
     setCfg("");
   };
 
+  const updateFilterUrl = (type: string, data: Array<string>) => {
+    const url = new URL(window.location);
+    url.searchParams.set(type, data.join(','));
+    window.history.pushState({}, '', url);
+  }
+
+  const parseFilterUrl = () => {
+    const url = new URL(window.location);
+    const chars = getSearchParamData(url, 'chars');
+    const weaps = getSearchParamData(url, 'weaps');
+
+    console.log(chars);
+
+    if (chars) setCharFilter(chars);
+    if (weaps) setWeapFilter(weaps);
+  }
+
+  const getSearchParamData = (url: URL, key: string) => {
+    const data = url.searchParams.get(key);
+    return data ? data.split(',') : null;
+  }
+
   const addCharFilter = (char: ICharacter) => {
     setOpenAddChar(false);
     //add to array if not exist already if
@@ -194,6 +217,8 @@ export function DB() {
     const next = [...charFilter];
     next.push(char.key);
     setCharFilter(next);
+    
+    updateFilterUrl('chars', next);
   };
 
   const removeCharFilter = (char: string) => {
@@ -204,6 +229,8 @@ export function DB() {
     const next = [...charFilter];
     next.splice(idx, 1);
     setCharFilter(next);
+
+    updateFilterUrl('chars', next);
   };
 
   const addWeapFilter = (weap: IWeapon) => {
@@ -215,6 +242,8 @@ export function DB() {
     const next = [...weapFilter];
     next.push(weap);
     setWeapFilter(next);
+
+    updateFilterUrl('weaps', next);
   };
 
   const removeWeapFilter = (weap: string) => {
@@ -225,6 +254,8 @@ export function DB() {
     const next = [...weapFilter];
     next.splice(idx, 1);
     setWeapFilter(next);
+
+    updateFilterUrl('weaps', next);
   };
 
   const handleToggleSelected = () => {
