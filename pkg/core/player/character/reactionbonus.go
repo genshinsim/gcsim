@@ -12,8 +12,8 @@ type reactionBonusMod struct {
 func (c *CharWrapper) AddReactBonusMod(key string, dur int, f ReactBonusModFunc) {
 	mod := reactionBonusMod{
 		modTmpl: modTmpl{
-			ModKey:    key,
-			ModExpiry: *c.f + dur,
+			key:    key,
+			expiry: *c.f + dur,
 		},
 		Amount: f,
 	}
@@ -30,7 +30,7 @@ func (c *CharWrapper) ReactBonus(atk combat.AttackInfo) (amt float64) {
 	n := 0
 	for _, mod := range c.reactionBonusMods {
 
-		if mod.ModExpiry > *c.f || mod.ModExpiry == -1 {
+		if mod.expiry > *c.f || mod.expiry == -1 {
 			a, done := mod.Amount(atk)
 			amt += a
 			if !done {

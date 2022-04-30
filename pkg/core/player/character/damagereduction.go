@@ -10,8 +10,8 @@ type damageReductionMod struct {
 func (c *CharWrapper) AddDamageReductionMod(key string, dur int, f DamageReductionModFunc) {
 	mod := damageReductionMod{
 		modTmpl: modTmpl{
-			ModKey:    key,
-			ModExpiry: *c.f + dur,
+			key:    key,
+			expiry: *c.f + dur,
 		},
 		Amount: f,
 	}
@@ -34,7 +34,7 @@ func (c *CharWrapper) DamageReductionModIsActive(key string) bool {
 func (c *CharWrapper) DamageReduction(char int) (amt float64) {
 	n := 0
 	for _, mod := range c.damageReductionMods {
-		if mod.ModExpiry > *c.f || mod.ModExpiry == -1 {
+		if mod.expiry > *c.f || mod.expiry == -1 {
 			a, done := mod.Amount()
 			amt += a
 			if !done {

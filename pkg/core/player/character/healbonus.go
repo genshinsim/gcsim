@@ -10,8 +10,8 @@ type healBonusMod struct {
 func (c *CharWrapper) AddHealBonusMod(key string, dur int, f HealBonusModFunc) {
 	mod := healBonusMod{
 		modTmpl: modTmpl{
-			ModKey:    key,
-			ModExpiry: *c.f + dur,
+			key:    key,
+			expiry: *c.f + dur,
 		},
 		Amount: f,
 	}
@@ -34,7 +34,7 @@ func (c *CharWrapper) HealBonusModIsActive(key string) bool {
 func (c *CharWrapper) HealBonus() (amt float64) {
 	n := 0
 	for _, mod := range c.healBonusMods {
-		if mod.ModExpiry > *c.f || mod.ModExpiry == -1 {
+		if mod.expiry > *c.f || mod.expiry == -1 {
 			a, done := mod.Amount()
 			amt += a
 			if !done {

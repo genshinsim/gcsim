@@ -19,8 +19,8 @@ type statMod struct {
 func (c *CharWrapper) AddStatMod(key string, dur int, affected attributes.Stat, f StatModFunc) {
 	mod := statMod{
 		modTmpl: modTmpl{
-			ModKey:    key,
-			ModExpiry: *c.f + dur,
+			key:    key,
+			expiry: *c.f + dur,
 		},
 		AffectedStat: affected,
 		Amount:       f,
@@ -57,7 +57,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	n := 0
 	for _, mod := range c.statsMod {
 
-		if mod.ModExpiry > *c.f || mod.ModExpiry == -1 {
+		if mod.expiry > *c.f || mod.expiry == -1 {
 
 			amt, ok := mod.Amount()
 			if ok {
@@ -71,11 +71,11 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 			if c.debug {
 				modStatus := make([]string, 0)
 				if ok {
-					sb.WriteString(mod.ModKey)
+					sb.WriteString(mod.key)
 					modStatus = append(
 						modStatus,
 						"status: added",
-						"expiry_frame: "+strconv.Itoa(mod.ModExpiry),
+						"expiry_frame: "+strconv.Itoa(mod.expiry),
 					)
 					modStatus = append(
 						modStatus,
@@ -84,7 +84,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 					debugDetails = append(debugDetails, sb.String(), modStatus)
 					sb.Reset()
 				} else {
-					sb.WriteString(mod.ModKey)
+					sb.WriteString(mod.key)
 					modStatus = append(
 						modStatus,
 						"status: rejected",
@@ -109,7 +109,7 @@ func (h *CharWrapper) Stat(s attributes.Stat) float64 {
 			continue
 		}
 		// check expiry
-		if mod.ModExpiry > *h.f || mod.ModExpiry == -1 {
+		if mod.expiry > *h.f || mod.expiry == -1 {
 			if amt, ok := mod.Amount(); ok {
 				val += amt[s]
 			}
@@ -131,7 +131,7 @@ func (c *CharWrapper) MaxHP() float64 {
 			continue
 		}
 		// check expiry
-		if mod.ModExpiry > *c.f || mod.ModExpiry == -1 {
+		if mod.expiry > *c.f || mod.expiry == -1 {
 			if amt, ok := mod.Amount(); ok {
 				hpp += amt[attributes.HPP]
 				hp += amt[attributes.HP]

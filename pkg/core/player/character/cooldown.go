@@ -17,7 +17,7 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 	n := 0
 	for _, v := range c.cooldownMods {
 		//if not expired
-		if v.ModExpiry == -1 || v.ModExpiry > *c.f {
+		if v.expiry == -1 || v.expiry > *c.f {
 			amt := v.Amount(a)
 			c.log.NewEvent(
 				"applying cooldown modifier",
@@ -40,8 +40,8 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 func (c *CharWrapper) AddCooldownMod(key string, dur int, f CooldownModFunc) {
 	mod := cooldownMod{
 		modTmpl: modTmpl{
-			ModKey:    key,
-			ModExpiry: *c.f + dur,
+			key:    key,
+			expiry: *c.f + dur,
 		},
 		Amount: f,
 	}

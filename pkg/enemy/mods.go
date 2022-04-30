@@ -1,6 +1,8 @@
-package character
+package enemy
 
-import "github.com/genshinsim/gcsim/pkg/core/glog"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+)
 
 type mod interface {
 	Key() string
@@ -9,23 +11,23 @@ type mod interface {
 	SetEvent(glog.Event)
 }
 
-type modTmpl struct {
+type tmpl struct {
 	key    string
 	expiry int
 	event  glog.Event
 }
 
-func (m *modTmpl) Key() string             { return m.key }
-func (m *modTmpl) Expiry() int             { return m.expiry }
-func (m *modTmpl) Event() glog.Event       { return m.event }
-func (m *modTmpl) SetEvent(evt glog.Event) { m.event = evt }
+func (t *tmpl) Key() string             { return t.key }
+func (t *tmpl) Expiry() int             { return t.expiry }
+func (t *tmpl) Event() glog.Event       { return t.event }
+func (t *tmpl) SetEvent(evt glog.Event) { t.event = evt }
 
-func deleteMod[K mod](c *CharWrapper, slice []K, key string) {
+func deleteMod[K mod](c *Enemy, slice []K, key string) {
 	n := 0
 	for _, v := range slice {
 		if v.Key() == key {
-			v.Event().SetEnded(*c.f)
-			c.log.NewEvent("mod deleted", glog.LogStatusEvent, c.Index, "key", key)
+			v.Event().SetEnded(c.Core.F)
+			c.Core.Log.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1, "key", key)
 		} else {
 			slice[n] = v
 			n++
@@ -34,13 +36,13 @@ func deleteMod[K mod](c *CharWrapper, slice []K, key string) {
 	slice = slice[:n]
 }
 
-func addMod[K mod](c *CharWrapper, slice []K, mod K) {
+func addMod[K mod](c *Enemy, slice []K, mod K) {
 	ind := findMod(slice, mod.Key())
 
 	//if does not exist, make new and add
 	if ind == -1 {
-		evt := c.log.NewEvent(
-			"mod added", glog.LogStatusEvent, c.Index,
+		evt := c.Core.Log.NewEvent(
+			"enemy mod added", glog.LogStatusEvent, -1,
 			"overwrite", false,
 			"key", mod.Key(),
 			"expiry", mod.Expiry(),
@@ -53,9 +55,9 @@ func addMod[K mod](c *CharWrapper, slice []K, mod K) {
 
 	//otherwise check not expired
 	var evt glog.Event
-	if slice[ind].Expiry() > *c.f || slice[ind].Expiry() == -1 {
-		evt = c.log.NewEvent(
-			"mod refreshed", glog.LogStatusEvent, c.Index,
+	if slice[ind].Expiry() > c.Core.F || slice[ind].Expiry() == -1 {
+		evt = c.Core.Log.NewEvent(
+			"enemy mod refreshed", glog.LogStatusEvent, -1,
 			"overwrite", true,
 			"key", mod.Key(),
 			"expiry", mod.Expiry(),
@@ -63,8 +65,8 @@ func addMod[K mod](c *CharWrapper, slice []K, mod K) {
 
 	} else {
 		//if expired overide the event
-		evt = c.log.NewEvent(
-			"mod added", glog.LogStatusEvent, c.Index,
+		evt = c.Core.Log.NewEvent(
+			"enemy mod added", glog.LogStatusEvent, -1,
 			"overwrite", false,
 			"key", mod.Key(),
 			"expiry", mod.Expiry(),

@@ -8,6 +8,8 @@
 package core
 
 import (
+	"math/rand"
+
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -20,6 +22,7 @@ import (
 type Core struct {
 	F     int
 	Flags Flags
+	Rand  *rand.Rand
 	//various functionalities of core
 	Log        glog.Logger   //we use an interface here so that we can pass in a nil logger for all except 1 run
 	Events     event.Handler //track events: subscribe/unsubscribe/emit

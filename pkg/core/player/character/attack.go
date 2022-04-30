@@ -20,8 +20,8 @@ func (c *CharWrapper) AddAttackMod(key string, dur int, f AttackModFunc, chars .
 	mod := attackMod{
 		Amount: f,
 		modTmpl: modTmpl{
-			ModKey:    key,
-			ModExpiry: *c.f + dur,
+			key:    key,
+			expiry: *c.f + dur,
 		},
 	}
 	addMod(c, c.attackMods, &mod)
@@ -47,7 +47,7 @@ func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target, ch
 	n := 0
 	for _, m := range c.attackMods {
 
-		if m.ModExpiry > *c.f || m.ModExpiry == -1 {
+		if m.expiry > *c.f || m.expiry == -1 {
 
 			amt, ok := m.Amount(a, t)
 			if ok {
@@ -61,11 +61,11 @@ func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target, ch
 			if c.debug {
 				modStatus := make([]string, 0)
 				if ok {
-					sb.WriteString(m.ModKey)
+					sb.WriteString(m.key)
 					modStatus = append(
 						modStatus,
 						"status: added",
-						"expiry_frame: "+strconv.Itoa(m.ModExpiry),
+						"expiry_frame: "+strconv.Itoa(m.expiry),
 					)
 					modStatus = append(
 						modStatus,
@@ -74,7 +74,7 @@ func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target, ch
 					logDetails = append(logDetails, sb.String(), modStatus)
 					sb.Reset()
 				} else {
-					sb.WriteString(m.ModKey)
+					sb.WriteString(m.key)
 					modStatus = append(
 						modStatus,
 						"status: rejected",

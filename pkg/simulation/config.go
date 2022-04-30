@@ -2,7 +2,8 @@ package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/player"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/simulation/queue"
 )
 
@@ -12,8 +13,8 @@ type SimulationConfig struct {
 	DamageMode bool           `json:"damage_mode"`
 	Targets    []EnemyProfile `json:"targets"`
 	Characters struct {
-		Initial player.CharKey            `json:"initial"`
-		Profile []player.CharacterProfile `json:"profile"`
+		Initial keys.CharKey                 `json:"initial"`
+		Profile []character.CharacterProfile `json:"profile"`
 	} `json:"characters"`
 	Rotation []queue.ActionBlock `json:"-"`
 	Hurt     HurtEvent           `json:"-"`
@@ -28,7 +29,7 @@ func (c *SimulationConfig) Clone() SimulationConfig {
 		r.Targets[i] = v.Clone()
 	}
 
-	r.Characters.Profile = make([]player.CharacterProfile, len(c.Characters.Profile))
+	r.Characters.Profile = make([]character.CharacterProfile, len(c.Characters.Profile))
 	for i, v := range c.Characters.Profile {
 		r.Characters.Profile[i] = v.Clone()
 	}
