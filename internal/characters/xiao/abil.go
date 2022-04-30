@@ -234,6 +234,6 @@ func (c *char) Dash(p map[string]int) (int, int) {
 }
 
 func (c *char) Jump(p map[string]int) (int, int) {
-	f, a := c.ActionFrames(core.ActionDash, p)
+	f, a := c.ActionFrames(core.ActionJump, p)
 	return f, a
 }
