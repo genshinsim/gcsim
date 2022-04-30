@@ -37,6 +37,7 @@ type Character interface {
 	Skill(p map[string]int) (int, int)
 	Burst(p map[string]int) (int, int)
 	Dash(p map[string]int) (int, int)
+	Jump(p map[string]int) (int, int)
 
 	//info methods
 	ActionReady(a ActionType, p map[string]int) bool
