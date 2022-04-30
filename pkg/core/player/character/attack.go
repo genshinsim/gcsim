@@ -16,12 +16,16 @@ type attackMod struct {
 	modTmpl
 }
 
-func (c *CharWrapper) AddAttackMod(key string, dur int, f AttackModFunc, chars ...int) {
+func (c *CharWrapper) AddAttackMod(key string, dur int, f AttackModFunc) {
+	expiry := *c.f + dur
+	if dur < 0 {
+		expiry = -1
+	}
 	mod := attackMod{
 		Amount: f,
 		modTmpl: modTmpl{
 			key:    key,
-			expiry: *c.f + dur,
+			expiry: expiry,
 		},
 	}
 	addMod(c, c.attackMods, &mod)

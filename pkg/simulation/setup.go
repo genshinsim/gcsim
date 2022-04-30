@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/player"
 )
 
-func SetupTargetsInCore(core *core.Core, p Pos, targets []EnemyProfile) error {
+func SetupTargetsInCore(core *core.Core, p Pos, targets []enemy.EnemyProfile) error {
 
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
@@ -25,7 +27,7 @@ func SetupTargetsInCore(core *core.Core, p Pos, targets []EnemyProfile) error {
 		if v.Pos.R == 0 {
 			return fmt.Errorf("target cannot have 0 radius (index %v)", i)
 		}
-		e := enemy.New(core, v.Pos.X, v.Pos.Y, v.Pos.R)
+		e := enemy.New(core, v)
 		core.Combat.AddTarget(e)
 		//s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
 	}
@@ -33,7 +35,32 @@ func SetupTargetsInCore(core *core.Core, p Pos, targets []EnemyProfile) error {
 	return nil
 }
 
-func SetupCharactersInCore(core *core.Core) error {
+func SetupCharactersInCore(core *core.Core, chars []character.CharacterProfile, initial keys.Char) error {
+	if len(chars) > 4 {
+		return errors.New("cannot have more than 4 characters per team")
+	}
+	dup := make(map[keys.Char]bool)
 
-	return nil
+	active := -1
+	for _, v := range chars {
+		i, err := core.AddChar(v)
+		if err != nil {
+			return err
+		}
+
+		if v.Base.Key == initial {
+			core.Player.SetActive(i)
+		}
+
+		if _, ok := dup[v.Base.Key]; ok {
+			return fmt.Errorf("duplicated character %v", v.Base.Key)
+		}
+		dup[v.Base.Key] = true
+	}
+
+	if active == -1 {
+		return errors.New("no active character set")
+	}
+
+	return core.Player.InitializeTeam()
 }

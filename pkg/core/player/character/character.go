@@ -9,6 +9,33 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
+type Character interface {
+	Attack(p map[string]int) action.ActionInfo
+	Aimed(p map[string]int) action.ActionInfo
+	ChargeAttack(p map[string]int) action.ActionInfo
+	HighPlungeAttack(p map[string]int) action.ActionInfo
+	LowPlungeAttack(p map[string]int) action.ActionInfo
+	Skill(p map[string]int) action.ActionInfo
+	Burst(p map[string]int) action.ActionInfo
+	Dash(p map[string]int) action.ActionInfo
+	Jump(p map[string]int) action.ActionInfo
+	Swap(p map[string]int) action.ActionInfo
+
+	ActionStam(a action.Action, p map[string]int) float64
+
+	ActionReady(a action.Action, p map[string]int) bool
+	SetCD(a action.Action, dur int)
+	Cooldown(a action.Action) int
+	ResetActionCooldown(a action.Action)
+	ReduceActionCooldown(a action.Action, v int)
+	Charges(a action.Action) int
+
+	Snapshot(a *combat.AttackInfo) combat.Snapshot
+
+	AddEnergy(src string, amt float64)
+	ReceiveParticle(p Particle, isActive bool, partyCount int)
+}
+
 type CharWrapper struct {
 	Index int
 	f     *int //current frame
@@ -94,31 +121,6 @@ func (c *CharWrapper) ModifyHP(amt float64) {
 	if c.HPCurrent > maxhp {
 		c.HPCurrent = maxhp
 	}
-}
-
-type Character interface {
-	Attack(p map[string]int) action.ActionInfo
-	Aimed(p map[string]int) action.ActionInfo
-	ChargeAttack(p map[string]int) action.ActionInfo
-	HighPlungeAttack(p map[string]int) action.ActionInfo
-	LowPlungeAttack(p map[string]int) action.ActionInfo
-	Skill(p map[string]int) action.ActionInfo
-	Burst(p map[string]int) action.ActionInfo
-	Dash(p map[string]int) action.ActionInfo
-
-	ActionStam(a action.Action, p map[string]int) float64
-
-	ActionReady(a action.Action, p map[string]int) bool
-	SetCD(a action.Action, dur int)
-	Cooldown(a action.Action) int
-	ResetActionCooldown(a action.Action)
-	ReduceActionCooldown(a action.Action, v int)
-	Charges(a action.Action) int
-
-	Snapshot(a *combat.AttackInfo) combat.Snapshot
-
-	AddEnergy(src string, amt float64)
-	ReceiveParticle(p Particle, isActive bool, partyCount int)
 }
 
 type Particle struct {

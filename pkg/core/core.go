@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -41,11 +42,39 @@ type Flags struct {
 	Custom       map[string]int
 }
 
+type Reactable interface {
+	React(a *combat.AttackEvent)
+	AuraContains(e ...attributes.Element) bool
+	AuraType() attributes.Element
+	Tick()
+}
+
+type Enemy interface {
+	AddResistMod(key string, dur int, ele attributes.Element, val float64)
+	DeleteResistMod(key string)
+	ResistModIsActive(key string) bool
+	AddDefMod(key string, dur int, val float64)
+	DeleteDefMod(key string)
+	DefModIsActive(key string) bool
+}
+
+func (c *Core) QueueParticle(p character.Particle, delay int) {
+	if delay == 0 {
+		c.Player.DistributeParticle(p)
+		return
+	}
+	if delay < 0 {
+		panic("queue particle called with delay < 0")
+	}
+	c.Tasks.Add(func() {
+		c.Player.DistributeParticle(p)
+	}, delay)
+}
+
 func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 	var err error
 
 	// initialize character
-
 	char := character.New(p, &c.F, c.Flags.LogDebug, c.Log, &c.Events)
 
 	f, ok := charMap[p.Base.Key]

@@ -85,3 +85,9 @@ func (e *Handler) DistributeParticle(p character.Particle) {
 	}
 	e.events.Emit(event.OnParticleReceived, p)
 }
+
+//InitializeTeam will set up resonance event hooks and calculate
+//all character base stats
+func (h *Handler) InitializeTeam() error {
+	return nil
+}

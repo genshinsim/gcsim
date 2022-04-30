@@ -56,5 +56,10 @@ func New(cfg SimulationConfig, c *core.Core) (*Simulation, error) {
 		return nil, err
 	}
 
+	err = SetupCharactersInCore(c, cfg.Characters, cfg.InitialChar)
+	if err != nil {
+		return nil, err
+	}
+
 	return s, nil
 }

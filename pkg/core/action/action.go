@@ -18,6 +18,7 @@ const (
 	ActionAim
 	ActionDash
 	ActionJump
+	//following action have to implementations
 	ActionSwap
 	ActionWalk
 	ActionWait // character should stand around and wait

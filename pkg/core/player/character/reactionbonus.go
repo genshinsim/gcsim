@@ -10,10 +10,14 @@ type reactionBonusMod struct {
 }
 
 func (c *CharWrapper) AddReactBonusMod(key string, dur int, f ReactBonusModFunc) {
+	expiry := *c.f + dur
+	if dur < 0 {
+		expiry = -1
+	}
 	mod := reactionBonusMod{
 		modTmpl: modTmpl{
 			key:    key,
-			expiry: *c.f + dur,
+			expiry: expiry,
 		},
 		Amount: f,
 	}

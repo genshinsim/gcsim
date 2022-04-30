@@ -17,10 +17,14 @@ type statMod struct {
 }
 
 func (c *CharWrapper) AddStatMod(key string, dur int, affected attributes.Stat, f StatModFunc) {
+	expiry := *c.f + dur
+	if dur < 0 {
+		expiry = -1
+	}
 	mod := statMod{
 		modTmpl: modTmpl{
 			key:    key,
-			expiry: *c.f + dur,
+			expiry: expiry,
 		},
 		AffectedStat: affected,
 		Amount:       f,

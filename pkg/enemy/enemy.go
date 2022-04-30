@@ -11,13 +11,43 @@ import (
 
 const MaxTeamSize = 4
 
+type EnemyProfile struct {
+	Level                 int                            `json:"level"`
+	HP                    float64                        `json:"-"`
+	Resist                map[attributes.Element]float64 `json:"-"`
+	Pos                   Pos                            `json:"-"`
+	ParticleDropThreshold float64                        `json:"-"` // drop particle every x dmg dealt
+	ParticleDropCount     float64                        `json:"-"`
+	ParticleElement       attributes.Element             `json:"-"`
+}
+
+type Pos struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	R float64 `json:"r"`
+}
+
+func (e *EnemyProfile) Clone() EnemyProfile {
+	r := EnemyProfile{
+		Level:  e.Level,
+		Resist: make(map[attributes.Element]float64),
+	}
+	for k, v := range e.Resist {
+		r.Resist[k] = v
+	}
+	return r
+}
+
 type Enemy struct {
 	*target.Target
 	*reactable.Reactable
 
-	Level int
-
+	Level  int
 	resist map[attributes.Element]float64
+	prof   EnemyProfile
+
+	damageTaken      float64
+	lastParticleDrop int
 
 	//mods
 	resistMods  []*resistMod
@@ -30,9 +60,9 @@ type Enemy struct {
 	icdDamageTagCounter [MaxTeamSize][combat.ICDTagLength]int
 }
 
-func New(core *core.Core, x, y, r float64) *Enemy {
+func New(core *core.Core, p EnemyProfile) *Enemy {
 	e := &Enemy{}
-	e.Target = target.New(core, x, y, r)
+	e.Target = target.New(core, p.Pos.X, p.Pos.Y, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
 	return e
