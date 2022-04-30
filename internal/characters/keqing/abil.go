@@ -233,3 +233,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	return f, a
 }
+
+//Keqing dash is 20 frames
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
+	return f, a
+}
