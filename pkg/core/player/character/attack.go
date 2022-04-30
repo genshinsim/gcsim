@@ -31,7 +31,7 @@ func (c *CharWrapper) DeleteAttackMod(key string) {
 	deleteMod(c, c.attackMods, key)
 }
 
-func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target, char int) []interface{} {
+func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []interface{} {
 	//skip if this is reaction damage
 	if a.Info.AttackTag >= combat.AttackTagNoneStat {
 		return nil

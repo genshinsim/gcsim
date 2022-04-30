@@ -40,3 +40,18 @@ Simulation should maintain the following:
 - team: this should be a separate package which handles loading the characters, weapons, artifact sets, resonance etc..
 
 **/
+
+func New(cfg SimulationConfig, c *core.Core) (*Simulation, error) {
+	var err error
+	s := &Simulation{}
+	s.cfg = cfg
+	s.C = c
+	if err != nil {
+		return nil, err
+	}
+	s.C = c
+
+	InitTargets(c, cfg)
+
+	return s, nil
+}

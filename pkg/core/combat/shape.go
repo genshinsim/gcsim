@@ -73,6 +73,11 @@ func (c *Circle) Pos() (float64, float64) {
 	return c.x, c.y
 }
 
+func (c *Circle) SetPos(x, y float64) {
+	c.x = x
+	c.y = y
+}
+
 type Rectangle struct {
 	x, y, w, h float64
 }
@@ -114,4 +119,9 @@ func (r *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 
 func (r *Rectangle) Pos() (float64, float64) {
 	return r.x, r.y
+}
+
+func (r *Rectangle) SetPos(x, y float64) {
+	r.x = x
+	r.y = y
 }

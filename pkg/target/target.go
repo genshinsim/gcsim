@@ -3,11 +3,9 @@ package target
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
-type Tmpl struct {
-	*reactable.Reactable
+type Target struct {
 	Core        *core.Core
 	TargetType  combat.TargettableType
 	TargetIndex int
@@ -18,22 +16,34 @@ type Tmpl struct {
 	HPCurrent float64
 }
 
-func (t *Tmpl) Type() combat.TargettableType { return t.TargetType }
-func (t *Tmpl) Index() int                   { return t.TargetIndex }
-func (t *Tmpl) SetIndex(ind int)             { t.TargetIndex = ind }
-func (t *Tmpl) MaxHP() float64               { return t.HPMax }
-func (t *Tmpl) HP() float64                  { return t.HPCurrent }
-func (t *Tmpl) Shape() combat.Shape          { return &t.Hitbox }
-func (t *Tmpl) Kill()                        {} // do nothing
+func New(core *core.Core, x, y, r float64) *Target {
+	t := &Target{
+		Core: core,
+	}
+	t.Hitbox = *combat.NewCircle(x, y, r)
+	t.Tags = make(map[string]int)
 
-func (t *Tmpl) SetTag(key string, val int) {
+	return t
+}
+
+func (t *Target) Type() combat.TargettableType { return t.TargetType }
+func (t *Target) Index() int                   { return t.TargetIndex }
+func (t *Target) SetIndex(ind int)             { t.TargetIndex = ind }
+func (t *Target) MaxHP() float64               { return t.HPMax }
+func (t *Target) HP() float64                  { return t.HPCurrent }
+func (t *Target) Shape() combat.Shape          { return &t.Hitbox }
+func (t *Target) SetPos(x, y float64)          { t.Hitbox.SetPos(x, y) }
+func (t *Target) Pos() (float64, float64)      { return t.Hitbox.Pos() }
+func (t *Target) Kill()                        {} // do nothing
+
+func (t *Target) SetTag(key string, val int) {
 	t.Tags[key] = val
 }
 
-func (t *Tmpl) GetTag(key string) int {
+func (t *Target) GetTag(key string) int {
 	return t.Tags[key]
 }
 
-func (t *Tmpl) RemoveTag(key string) {
+func (t *Target) RemoveTag(key string) {
 	delete(t.Tags, key)
 }
