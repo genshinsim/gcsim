@@ -58,17 +58,19 @@ type Enemy interface {
 	DefModIsActive(key string) bool
 }
 
-func (c *Core) QueueParticle(p character.Particle, delay int) {
-	if delay == 0 {
-		c.Player.DistributeParticle(p)
-		return
-	}
-	if delay < 0 {
-		panic("queue particle called with delay < 0")
-	}
-	c.Tasks.Add(func() {
-		c.Player.DistributeParticle(p)
-	}, delay)
+const MaxTeamSize = 4
+
+func (c *Core) Init() error {
+	//setup list
+	//	- resonance
+	//	- on hit energy
+	//	- base stats
+	//	- char inits
+	//	- init call backs
+	c.SetupResonance()
+	c.SetupOnNormalHitEnergy()
+
+	return nil
 }
 
 func (c *Core) AddChar(p character.CharacterProfile) (int, error) {

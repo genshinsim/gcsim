@@ -1,5 +1,4 @@
 - load simulator
-- on hit random energy??
 - add queues
 - particle drops
 -
