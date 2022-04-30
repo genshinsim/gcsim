@@ -22,7 +22,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 	c.AdvanceNormalIndex()
 
 	return f, a
@@ -60,7 +60,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.eCounter][c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-5, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 
 	//add a timer to activate c4
 	if c.Base.Cons >= 4 {
@@ -155,9 +155,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			ai.Mult = burstExplode[c.TalentLvlBurst()]
 			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 110)
 		}
-	}, "diluc-burst", 100)
+	}, "diluc-burst", f-1)
 
-	c.ConsumeEnergy(24)
-	c.SetCDWithDelay(core.ActionBurst, 720, 24)
+	c.ConsumeEnergy(21)
+	c.SetCDWithDelay(core.ActionBurst, 720, 14)
+	return f, a
+}
+
+//Diluc dash is 19 frames
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
 	return f, a
 }
