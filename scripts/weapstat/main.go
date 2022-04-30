@@ -44,7 +44,7 @@ func main() {
 	for k, v := range d {
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		if v.Specialized == "" {
-			v.Specialized = "core.NoStat"
+			v.Specialized = "attributes.NoStat"
 		}
 		v.TitleCase = strings.Title(k)
 		d[k] = v
@@ -91,7 +91,7 @@ import (
 
 var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 	{{- range $key, $value := . }}
-	"{{$key}}": {
+	keys.{{$value.TitleCase}}: {
 		AtkCurve: {{$value.Curve.Atk}},
 		SpecializedCurve: {{$value.Curve.Specialized}},
 		BaseAtk: {{$value.Base.Atk}},
