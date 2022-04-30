@@ -20,6 +20,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/paleflame"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/reminiscence"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/seal"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/scholar"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/tenacity"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/thunderingfury"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/thundersoother"
