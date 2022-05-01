@@ -46,10 +46,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	hits, ok := p["hits"]
 	if !ok {
 		hits = 1
+	} else if hits > 3 {
+		hits = 3
 	}
 
 	maxAmulets := 2
-	if c.Base.Cons > 0 {
+	if c.Base.Cons >= 1 {
 		maxAmulets = 3
 	}
 
@@ -58,7 +60,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	// accept param to limit the amount of amulets generated
 	pMaxAmulets, ok := p["max_amulets"]
-	if ok {
+	if ok && pMaxAmulets < maxAmulets {
 		maxAmulets = pMaxAmulets
 	}
 
@@ -80,27 +82,30 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.QueueParticle(c.Name(), 1, core.Electro, 100) //this way we're future proof if for whatever reason this misses
 	}
 
-	for i := 0; i < hits; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, particlesCB, func(atk core.AttackCB) {
-			// generate amulet if generated amulets < limit
-			if c.abundanceAmulets >= maxAmulets {
-				return
-			}
+	amuletCB := func(atk core.AttackCB) {
+		// generate amulet if generated amulets < limit
+		if c.abundanceAmulets >= maxAmulets {
+			return
+		}
 
-			// 1 amulet per attack
-			c.abundanceAmulets++
-			c.AddTag("generated", c.abundanceAmulets)
+		// 1 amulet per attack
+		c.abundanceAmulets++
+		c.AddTag("generated", c.abundanceAmulets)
 
-			c.Core.Log.NewEvent("travelerelectro abundance amulet generated", core.LogCharacterEvent, c.Index, "amulets", c.abundanceAmulets)
-
-			c.AddTask(func() {
-				activeChar := c.Core.Chars[c.Core.ActiveChar]
-				c.collectAmulets(c.Core.F, activeChar)
-			}, fmt.Sprintf("pickup-abundance-amulets-%s", c.Name()), amuletDelay)
-		})
+		c.Core.Log.NewEvent("travelerelectro abundance amulet generated", core.LogCharacterEvent, c.Index, "amulets", c.abundanceAmulets)
 	}
 
-	c.SetCD(core.ActionSkill, 810+21) //13.5s, starts 21 frames in
+	for i := 0; i < hits; i++ {
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f, particlesCB, amuletCB)
+	}
+
+	// try to pick up amulets
+	c.AddTask(func() {
+		activeChar := c.Core.Chars[c.Core.ActiveChar]
+		c.collectAmulets(c.Core.F, activeChar)
+	}, "pickup-abundance-amulets", amuletDelay)
+
+	c.SetCDWithDelay(core.ActionSkill, 810, 21) //13.5s, starts 21 frames in
 
 	return f, a
 }
