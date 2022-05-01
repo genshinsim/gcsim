@@ -52,31 +52,22 @@ func main() {
 		// fmt.Println(k)
 	}
 	// fmt.Println(d)
-	t, err := template.New("out").Parse(tmpl)
+	writeTmpl(tmpl, "./weap.txt", d)
+	writeTmpl(tmplKeys, "./keys.txt", d)
+	writeTmpl(tmplShortcuts, "./shortcuts.txt", d)
+}
+
+func writeTmpl(tmplStr string, outFile string, d map[string]data) {
+	t, err := template.New("out").Parse(tmplStr)
 	if err != nil {
 		log.Panic(err)
 	}
-	os.Remove("./weap.txt")
-	of, err := os.Create("./weap.txt")
+	os.Remove(outFile)
+	of, err := os.Create(outFile)
 	if err != nil {
 		log.Panic(err)
 	}
 	err = t.Execute(of, d)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	//keys
-	t2, err := template.New("out").Parse(tmplKeys)
-	if err != nil {
-		log.Panic(err)
-	}
-	os.Remove("./keys.txt")
-	of2, err := os.Create("./keys.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	err = t2.Execute(of2, d)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -183,6 +174,17 @@ const (
 	{{$value.TitleCase}}
 	{{- end }}
 )
+`
+
+var tmplShortcuts = `package shortcut
+
+import "github.com/genshinsim/gcsim/pkg/core/keys"
+
+var WeaponNameToKey = map[string]keys.Weapon{
+	{{- range $key, $value := . }}
+	"{{$key}}": keys.{{$value.TitleCase}},
+	{{- end }}
+}
 `
 
 var SpecKeyToStat = map[string]string{
