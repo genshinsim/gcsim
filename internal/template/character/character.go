@@ -1,4 +1,4 @@
-package snapshot
+package character
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -7,29 +7,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-type SnapshotHandler struct {
-	index int
-	core  *core.Core
+type Character struct {
+	Core                   *core.Core
+	Index                  *int
+	ActionCD               []int
+	cdQueueWorkerStartedAt []int
+	cdCurrentQueueWorker   []*func()
+	cdQueue                [][]int
+	AvailableCDCharge      []int
+	additionalCDCharge     []int
 }
 
-func (h *SnapshotHandler) Snapshot(a *combat.AttackInfo) combat.Snapshot {
+func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 
-	char := h.core.Player.ByIndex(h.index)
+	char := c.Core.Player.ByIndex(*c.Index)
 
 	s := combat.Snapshot{
 		CharLvl:     char.Base.Level,
 		ActorEle:    char.Base.Element,
 		BaseAtk:     char.Base.Atk + char.Weapon.Atk,
 		BaseDef:     char.Base.Def,
-		SourceFrame: h.core.F,
+		SourceFrame: c.Core.F,
 	}
 
 	var evt glog.Event = nil
 	var debug []interface{}
 
-	if h.core.Flags.LogDebug {
-		evt = h.core.Log.NewEvent(
-			a.Abil, glog.LogSnapshotEvent, h.index,
+	if c.Core.Flags.LogDebug {
+		evt = c.Core.Log.NewEvent(
+			a.Abil, glog.LogSnapshotEvent, *c.Index,
 			"abil", a.Abil,
 			"mult", a.Mult,
 			"ele", a.Element.String(),
@@ -40,19 +46,19 @@ func (h *SnapshotHandler) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	}
 
 	//snapshot the stats
-	s.Stats, debug = h.core.Player.ByIndex(h.index).Stats()
+	s.Stats, debug = c.Core.Player.ByIndex(*c.Index).Stats()
 
 	//check infusion
 	var inf attributes.Element
 	if !a.IgnoreInfusion {
-		inf = h.core.Player.Infused(h.index, a.AttackTag)
+		inf = c.Core.Player.Infused(*c.Index, a.AttackTag)
 		if inf != attributes.NoElement {
 			a.Element = inf
 		}
 	}
 
 	//check if we need to log
-	if h.core.Flags.LogDebug {
+	if c.Core.Flags.LogDebug {
 		evt.Write(debug...)
 		evt.Write("final_stats", attributes.PrettyPrintStatsSlice(s.Stats[:]))
 		if inf != attributes.NoElement {

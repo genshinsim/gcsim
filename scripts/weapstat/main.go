@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 	"text/template"
 )
 
@@ -92,7 +93,8 @@ func readNameMap() map[string]string {
 
 	for k, v := range m.Names {
 		//strip out any none word characters
-		m.Names[k] = re.ReplaceAllString(v, "")
+		v = strings.ReplaceAll(v, "'", "")
+		m.Names[k] = re.ReplaceAllString(strings.Title(v), "")
 	}
 	return m.Names
 }

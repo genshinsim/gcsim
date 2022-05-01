@@ -5,6 +5,10 @@ type task struct {
 	f      func()
 }
 
+type Tasker interface {
+	Add(f func(), delay int)
+}
+
 type Handler struct {
 	f     *int
 	tasks map[int][]task

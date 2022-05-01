@@ -944,7 +944,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.ElegyfortheEnd: {
+	keys.ElegyForTheEnd: {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
 		BaseAtk:          45.9364013671875,
@@ -1092,7 +1092,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.EyeofPerception: {
+	keys.EyeOfPerception: {
 		AtkCurve:         GROW_CURVE_ATTACK_204,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
 		BaseAtk:          41.067100524902344,
@@ -1647,7 +1647,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.HarbingerofDawn: {
+	keys.HarbingerOfDawn: {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
 		BaseAtk:          38.74129867553711,
@@ -2001,7 +2001,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.LostPrayertotheSacredWinds: {
+	keys.LostPrayerToTheSacredWinds: {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
 		BaseAtk:          45.9364013671875,
@@ -2149,7 +2149,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.MemoryofDust: {
+	keys.MemoryOfDust: {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
 		BaseAtk:          45.9364013671875,
@@ -3819,7 +3819,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.SongofBrokenPines: {
+	keys.SongOfBrokenPines: {
 		AtkCurve:         GROW_CURVE_ATTACK_303,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
 		BaseAtk:          49.137699127197266,
@@ -3856,7 +3856,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.StaffofHoma: {
+	keys.StaffOfHoma: {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
 		BaseAtk:          45.9364013671875,
@@ -3930,7 +3930,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.SwordofDescension: {
+	keys.SwordOfDescension: {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
 		BaseAtk:          38.74129867553711,
@@ -4300,7 +4300,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.ThrillingTalesofDragonSlayers: {
+	keys.ThrillingTalesOfDragonSlayers: {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
 		BaseAtk:          38.74129867553711,
@@ -4699,7 +4699,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.WineandSong: {
+	keys.WineAndSong: {
 		AtkCurve:         GROW_CURVE_ATTACK_202,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
 		BaseAtk:          43.734901428222656,

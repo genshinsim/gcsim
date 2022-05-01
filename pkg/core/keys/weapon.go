@@ -194,11 +194,11 @@ const (
 	DragonsBane
 	DragonspineSpear
 	DullBlade
-	ElegyfortheEnd
+	ElegyForTheEnd
 	EmeraldOrb
 	EngulfingLightning
 	EverlastingMoonglow
-	EyeofPerception
+	EyeOfPerception
 	FavoniusCodex
 	FavoniusGreatsword
 	FavoniusLance
@@ -213,7 +213,7 @@ const (
 	Halberd
 	Hamayumi
 	HaranGeppakuFutsu
-	HarbingerofDawn
+	HarbingerOfDawn
 	HuntersBow
 	IronPoint
 	IronSting
@@ -223,11 +223,11 @@ const (
 	LionsRoar
 	LithicBlade
 	LithicSpear
-	LostPrayertotheSacredWinds
+	LostPrayerToTheSacredWinds
 	LuxuriousSeaLord
 	MagicGuide
 	MappaMare
-	MemoryofDust
+	MemoryOfDust
 	Messenger
 	MistsplitterReforged
 	MitternachtsWaltz
@@ -273,10 +273,10 @@ const (
 	Slingshot
 	SnowTombedStarsilver
 	SolarPearl
-	SongofBrokenPines
-	StaffofHoma
+	SongOfBrokenPines
+	StaffOfHoma
 	SummitShaper
-	SwordofDescension
+	SwordOfDescension
 	TheAlleyFlash
 	TheBell
 	TheBlackSword
@@ -286,7 +286,7 @@ const (
 	TheUnforged
 	TheViridescentHunt
 	TheWidsith
-	ThrillingTalesofDragonSlayers
+	ThrillingTalesOfDragonSlayers
 	ThunderingPulse
 	TravelersHandySword
 	TwinNephrite
@@ -297,6 +297,6 @@ const (
 	WhiteIronGreatsword
 	WhiteTassel
 	WindblumeOde
-	WineandSong
+	WineAndSong
 	WolfsGravestone
 )

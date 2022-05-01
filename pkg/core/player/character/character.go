@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
 type Character interface {
@@ -35,7 +36,6 @@ type Character interface {
 	Snapshot(a *combat.AttackInfo) combat.Snapshot
 
 	AddEnergy(src string, amt float64)
-	ReceiveParticle(p Particle, isActive bool, partyCount int)
 }
 
 type CharWrapper struct {
@@ -45,17 +45,24 @@ type CharWrapper struct {
 	Character
 	events event.Eventter
 	log    glog.Logger
+	tasks  task.Tasker
 
 	//base characteristics
 	Base     CharacterBase
 	Weapon   weapon.WeaponProfile
 	Talents  TalentProfile
 	CharZone ZoneType
+	SkillCon int
+	BurstCon int
 
 	//current status
 	Energy    float64
 	EnergyMax float64
 	HPCurrent float64
+
+	//normal attack counter
+	NormalHitNum  int //how many hits in a normal combo
+	NormalCounter int
 
 	//tags
 	Tags map[string]int
@@ -77,6 +84,7 @@ func New(
 	debug bool, //are we running in debug mode
 	log glog.Logger, //logging, can be nil
 	events event.Eventter, //event emitter
+	task task.Tasker,
 ) *CharWrapper {
 	c := &CharWrapper{
 		Base:                p.Base,
