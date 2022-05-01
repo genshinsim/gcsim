@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
-	"strings"
+	"regexp"
 	"text/template"
 )
 
@@ -30,6 +30,7 @@ type data struct {
 }
 
 func main() {
+	names := readNameMap()
 
 	f, err := os.ReadFile("./weapons.json")
 	if err != nil {
@@ -46,7 +47,7 @@ func main() {
 		if v.Specialized == "" {
 			v.Specialized = "attributes.NoStat"
 		}
-		v.TitleCase = strings.Title(k)
+		v.TitleCase = names[k]
 		d[k] = v
 		// fmt.Println(k)
 	}
@@ -79,6 +80,30 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+}
+
+type namemap struct {
+	Names map[string]string `json:"namemap"`
+}
+
+var re = regexp.MustCompile(`(?i)[^0-9a-z]`)
+
+func readNameMap() map[string]string {
+	f, err := os.ReadFile("./weapons_names.json")
+	if err != nil {
+		log.Panic(err)
+	}
+	var m namemap
+	err = json.Unmarshal(f, &m)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	for k, v := range m.Names {
+		//strip out any none word characters
+		m.Names[k] = re.ReplaceAllString(v, "")
+	}
+	return m.Names
 }
 
 var tmpl = `package curves
