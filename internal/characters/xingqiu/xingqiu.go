@@ -246,6 +246,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	c.burstCounter = 0
 	c.numSwords = 2
+	c.nextRegen = false
 
 	// c.CD[combat.BurstCD] = c.S.F + 20*60
 	c.SetCDWithDelay(core.ActionBurst, 20*60, 7)
