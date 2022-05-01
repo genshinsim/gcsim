@@ -61,6 +61,7 @@ type Enemy interface {
 const MaxTeamSize = 4
 
 func (c *Core) Init() error {
+	var err error
 	//setup list
 	//	- resonance
 	//	- on hit energy
@@ -69,7 +70,12 @@ func (c *Core) Init() error {
 	//	- init call backs
 	c.SetupResonance()
 	c.SetupOnNormalHitEnergy()
+	err = c.Player.InitializeTeam()
+	if err != nil {
+		return err
+	}
 
+	c.Events.Emit(event.OnInitialize)
 	return nil
 }
 

@@ -38,4 +38,5 @@ type WeaponProfile struct {
 
 type Weapon interface {
 	SetIndex(int)
+	Init() error
 }

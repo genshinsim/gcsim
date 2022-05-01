@@ -89,5 +89,27 @@ func (e *Handler) DistributeParticle(p character.Particle) {
 //InitializeTeam will set up resonance event hooks and calculate
 //all character base stats
 func (h *Handler) InitializeTeam() error {
+	var err error
+	for _, c := range h.chars {
+		err = c.UpdateBaseStats()
+		if err != nil {
+			return err
+		}
+	}
+	//loop again to initialize
+	for i := range h.chars {
+		err = h.chars[i].Init()
+		if err != nil {
+			return err
+		}
+		err = h.weaps[i].Init()
+		if err != nil {
+			return err
+		}
+		err = h.sets[i].Init()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

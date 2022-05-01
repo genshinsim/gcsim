@@ -1,4 +1,3 @@
-- base stats
 - load simulator
 - add queues
 - particle drops

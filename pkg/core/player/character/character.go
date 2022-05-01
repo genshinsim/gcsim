@@ -10,6 +10,8 @@ import (
 )
 
 type Character interface {
+	Init() error //init function built into every char to setup any variables etc.
+
 	Attack(p map[string]int) action.ActionInfo
 	Aimed(p map[string]int) action.ActionInfo
 	ChargeAttack(p map[string]int) action.ActionInfo
