@@ -42,6 +42,9 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	}, fmt.Sprintf("spine-%v", char.Name()))
 
 	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.ActiveChar != char.CharIndex() {
+			return false
+		}
 		stacks--
 		if stacks < 0 {
 			stacks = 0

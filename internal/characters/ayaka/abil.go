@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{8}, {10}, {16}, {8, 15, 22}, {27}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -27,7 +29,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-5+i, f-5+i, c1cbArgs...)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i], c1cbArgs...)
 	}
 
 	c.AdvanceNormalIndex()
@@ -59,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	}
 
 	for i := 0; i < 3; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-3+i, f-3+i, cbArgs...)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-2+i, f-2+i, cbArgs...)
 	}
 
 	return f, a
@@ -67,9 +69,11 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 func (c *char) Dash(p map[string]int) (int, int) {
 	f, ok := p["f"]
+	a := f + 10
 	if !ok {
-		f = 36
+		f, a = c.ActionFrames(core.ActionDash, p)
 	}
+
 	//no dmg attack at end of dash
 	ai := core.AttackInfo{
 		Abil:       "Dash",
@@ -91,7 +95,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		c.Core.RestoreStam(10)
 		val := make([]float64, core.EndStatType)
 		val[core.CryoP] = 0.18
-		//a2 increase normal + ca dmg by 30% for 6s
+		//a1 increase normal + ca dmg by 30% for 6s
 		c.AddMod(core.CharStatMod{
 			Key:    "ayaka-a4",
 			Expiry: c.Core.F + 600,
@@ -109,7 +113,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Core.F + 300,
 	})
-	return f, f
+	return f, a
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
@@ -143,7 +147,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		},
 	})
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, 33)
 
 	c.SetCD(core.ActionSkill, 600)
 	return f, a
@@ -200,8 +204,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 	}
 
-	c.SetCDWithDelay(core.ActionBurst, 20*60, 13)
-	c.ConsumeEnergy(13)
+	c.SetCD(core.ActionBurst, 20*60)
+	c.ConsumeEnergy(8)
 
 	return f, a
 }
@@ -237,15 +241,7 @@ func (c *char) c6cb(a core.AttackCB) {
 	c.c6CDTimerAvail = false
 
 	c.AddTask(func() {
-		// TODO: When mod refactor is done, should change this to simply remove the mod or something
-		// Currently need to reload the mod with a null entry to allow for clear buff uptime tracking
-		c.AddPreDamageMod(core.PreDamageMod{
-			Key: "ayaka-c6",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return nil, false
-			},
-			Expiry: 0,
-		})
+		c.DeletePreDamageMod("ayaka-c6")
 
 		c.AddTask(func() {
 			c.c6CDTimerAvail = true

@@ -35,19 +35,23 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
+
 	c.fieldSrc = -601
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.onSwapHook()
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
 	if c.Base.Cons == 6 && c.Core.Flags.DamageMode {
 		c.c6()
 	}
-
-	return &c, nil
 }
 
 func (c *char) c4() {
@@ -89,6 +93,21 @@ func (c *char) onSwapHook() {
 }
 
 func (c *char) infuse(char core.Character) {
+	//c2 reduces CD by 15%
+	if c.Base.Cons >= 2 {
+		char.AddCDAdjustFunc(core.CDAdjust{
+			Key: "chongyun-c2",
+			Amount: func(a core.ActionType) float64 {
+				if a == core.ActionSkill || a == core.ActionBurst {
+					return -0.15
+				}
+				return 0
+			},
+			Expiry: c.Core.F + 126,
+		})
+	}
+
+	// weapon infuse
 	switch char.WeaponClass() {
 	case core.WeaponClassClaymore:
 		fallthrough
@@ -106,7 +125,7 @@ func (c *char) infuse(char core.Character) {
 		return
 	}
 
-	//a2 adds 8% atkspd for 2.1 seconds
+	//a1 adds 8% atkspd for 2.1 seconds
 	val := make([]float64, core.EndStatType)
 	val[core.AtkSpd] = 0.08
 	char.AddMod(core.CharStatMod{
@@ -114,34 +133,20 @@ func (c *char) infuse(char core.Character) {
 		Amount: func() ([]float64, bool) { return val, true },
 		Expiry: c.Core.F + 126,
 	})
-	//c2 reduces CD by 15%
-	if c.Base.Cons >= 2 {
-		char.AddCDAdjustFunc(core.CDAdjust{
-			Key: "chongyun-c2",
-			Amount: func(a core.ActionType) float64 {
-				if a == core.ActionSkill || a == core.ActionBurst {
-					return -0.15
-				}
-				return 0
-			},
-			Expiry: c.Core.F + 126,
-		})
-	}
 }
 
 func (c *char) c6() {
+	m := make([]float64, core.EndStatType)
+	m[core.DmgP] = 0.15
 	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "chongyun-c6",
 		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-
-			val := make([]float64, core.EndStatType)
-			if atk.Info.Abil != "Spirit Blade: Cloud-Parting Star" {
+			if atk.Info.AttackTag != core.AttackTagElementalBurst {
 				return nil, false
 			}
-			if t.HP()/t.MaxHP() < c.HPCurrent/c.HPMax {
-				val[core.DmgP] += 0.15
-				return val, true
+			if t.HP()/t.MaxHP() < c.HP()/c.MaxHP() {
+				return m, true
 			}
 			return nil, false
 		},

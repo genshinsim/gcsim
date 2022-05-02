@@ -46,18 +46,24 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.BurstCon = 5
 	c.NormalHitNum = 6
+
 	c.eCast = 0
+	c.rtParticleICD = 0
+
 	if c.Base.Cons >= 6 {
 		c.mlBurstUsed = false
 	}
 
-	c.rtParticleICD = 0
-
 	c.Core.Flags.ChildeActive = true
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	c.onExitField()
 	c.onDefeatTargets()
-	// c.applyRT()
-	return &c, nil
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

@@ -5,7 +5,7 @@ type ShieldType int
 const (
 	ShieldCrystallize ShieldType = iota //lasts 15 seconds
 	ShieldNoelleSkill
-	ShieldNoelleA2
+	ShieldNoelleA1
 	ShieldZhongliJadeShield
 	ShieldDionaSkill
 	ShieldBeidouThunderShield

@@ -37,16 +37,9 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.NormalHitNum = 3
 
-	c.onExitField()
-	c.a4()
-
 	c.maxTags = 3
 	if c.Base.Cons == 6 {
 		c.maxTags = 4
-	}
-
-	if c.Base.Cons >= 2 {
-		c.c2()
 	}
 
 	c.sealStamReduction = 0.15
@@ -55,6 +48,17 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 
 	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.onExitField()
+	c.a4()
+
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
 }
 
 // Hook that clears yanfei burst status and seals when she leaves the field

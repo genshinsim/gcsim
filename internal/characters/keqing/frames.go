@@ -21,7 +21,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 52, 52
 	case core.ActionSkill:
-		if c.Tags["e"] == 1 {
+		if c.Core.Status.Duration(stilettoKey) > 0 {
 			//2nd part
 			return 84, 84
 		}

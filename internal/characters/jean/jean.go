@@ -36,11 +36,15 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	if c.Base.Cons == 6 {
 		c.c6()
 	}
-
-	return &c, nil
 }
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {

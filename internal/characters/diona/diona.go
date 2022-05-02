@@ -33,20 +33,23 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.a2()
+	return &c, nil
+}
 
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.a1()
 
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-
-	return &c, nil
+	if c.Base.Cons == 6 {
+		c.c6()
+	}
 }
 
-func (c *char) a2() {
+func (c *char) a1() {
 	c.Core.AddStamMod(func(a core.ActionType) (float64, bool) {
 		if c.Core.Shields.Get(core.ShieldDionaSkill) != nil {
 			return -0.1, false
@@ -68,17 +71,12 @@ func (c *char) c2() {
 }
 func (c *char) c6() {
 	c.Core.Health.AddIncHealBonus(func(healedCharIndex int) float64 {
-		if c.Core.Status.Duration("dionaburst") == 0 {
+		//check tag for if bonus is active
+		char := c.Core.Chars[healedCharIndex]
+		if c.Core.F > c.Tags["c6bonus-"+char.Key().String()] {
 			return 0
 		}
-		char := c.Core.Chars[c.Core.ActiveChar]
-		if healedCharIndex != char.CharIndex() {
-			return 0
-		}
-		if char.HP()/char.MaxHP() <= 0.5 {
-			c.Core.Log.NewEvent("diona c6 activated", core.LogCharacterEvent, c.Index)
-			return 0.3
-		}
-		return 0
+		c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", core.LogCharacterEvent, c.Index)
+		return 0.3
 	})
 }

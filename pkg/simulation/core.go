@@ -51,9 +51,6 @@ func NewCore(seed int64, debug bool, cfg core.SimulatorSettings) (*core.Core, er
 	}
 
 	c.Flags.Delays = cfg.Delays
-	if c.Flags.Delays.Swap == 0 {
-		c.Flags.Delays.Swap = 1 //default 1 frame if none set
-	}
 
 	return c, nil
 }

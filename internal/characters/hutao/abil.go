@@ -122,7 +122,7 @@ func (c *char) bbtickfunc(src int) func() {
 		}
 		//if cons 2, add flat dmg
 		if c.Base.Cons >= 2 {
-			ai.FlatDmg += c.HPMax * 0.1
+			ai.FlatDmg += c.MaxHP() * 0.1
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, 0)
 		c.Core.Log.NewEvent("Blood Blossom ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+240, "dur", c.Core.Status.Duration("htbb"), "src", src)
@@ -142,14 +142,18 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("paramita", 540+20) //to account for animation
 	c.Core.Log.NewEvent("Paramita acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+540+20)
 	//figure out atk buff
-	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.HPMax
+	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.MaxHP()
 	max := (c.Base.Atk + c.Weapon.Atk) * 4
 	if c.ppBonus > max {
 		c.ppBonus = max
 	}
 
 	//remove some hp
-	c.HPCurrent = 0.7 * c.HPCurrent
+	c.Core.Health.Drain(core.DrainInfo{
+		ActorIndex: c.Index,
+		Abil:       "Paramita Papilio",
+		Amount:     .30 * c.HP(),
+	})
 	c.checkc6()
 
 	c.SetCD(core.ActionSkill, 960)
@@ -179,7 +183,7 @@ func (c *char) onExitField() {
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
-	low := (c.HPCurrent / c.HPMax) <= 0.5
+	low := (c.HP() / c.MaxHP()) <= 0.5
 	mult := burst[c.TalentLvlBurst()]
 	regen := regen[c.TalentLvlBurst()]
 	if low {
@@ -199,7 +203,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Caller:  c.Index,
 		Target:  c.Index,
 		Message: "Spirit Soother",
-		Src:     c.HPMax * float64(count) * regen,
+		Src:     c.MaxHP() * float64(count) * regen,
 		Bonus:   c.Stat(core.Heal),
 	})
 

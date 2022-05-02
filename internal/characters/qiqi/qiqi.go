@@ -47,14 +47,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.skillLastUsed = 0
 
-	c.talismanHealHook()
-	c.onNACAHitHook()
-	c.a1()
-
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-
 	return &c, nil
 }
 
@@ -62,8 +54,13 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Init() {
 	c.Tmpl.Init()
 
-	// c.talismanExpiry = make([]int, len(c.Core.Targets))
-	// c.talismanICDExpiry = make([]int, len(c.Core.Targets))
+	c.talismanHealHook()
+	c.onNACAHitHook()
+	c.a1()
+
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
 }
 
 //Qiqi's Normal and Charge Attack DMG against opponents affected by Cryo is increased by 15%.

@@ -30,25 +30,38 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Tmpl = t
 	c.Base.Element = core.Hydro
-	c.Energy = 80
+
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 80
+	}
+	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassSword
 	c.CharZone = core.ZoneInazuma
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
+
 	c.shunsuikenCounter = 3
-	c.stacksMax = 4
 	c.particleICD = 0
 	c.a4ICD = 0
 	c.c6ready = false
+
+	c.stacksMax = 4
+	if c.Base.Cons >= 2 {
+		c.stacksMax = 5
+	}
+
+	c.InitCancelFrames()
 
 	return &c, nil
 }
 
 func (c *char) Init() {
 	c.Tmpl.Init()
-	c.a2()
+
+	c.a1()
 	c.a4()
 	c.onExitField()
 
@@ -56,15 +69,11 @@ func (c *char) Init() {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {
-		c.stacksMax = 5
 		c.c2()
 	}
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
-
-	c.InitCancelFrames()
-
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -110,30 +119,18 @@ func (c *char) c6() {
 	}, "ayato-c6")
 }
 
-func (c *char) a2() {
+func (c *char) a1() {
 	c.Core.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
 		if c.Core.ActiveChar != c.CharIndex() {
 			return false
 		}
 		c.stacks = 2
-		c.Core.Log.NewEvent("ayato a2 proc'd", core.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("ayato a1 proc'd", core.LogCharacterEvent, c.Index)
 		return false
-	}, "ayato-a2")
+	}, "ayato-a1")
 }
 
 func (c *char) a4() {
-	// val := make([]float64, core.EndStatType)
-	// val[core.DmgP] = 0.03 * c.MaxHP()
-	// c.AddPreDamageMod(core.PreDamageMod{
-	// 	Key:    "ayato-a4",
-	// 	Expiry: -1,
-	// 	Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-	// 		if a.Info.AttackTag != core.AttackTagElementalBurst {
-	// 			return nil, false
-	// 		}
-	// 		return val, true
-	// 	},
-	// })
 	c.AddTask(c.a4task, "ayato-a4", 60)
 }
 
@@ -195,8 +192,9 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 		}
 		ai.Element = core.Hydro
 		//add namisen stack
-		ai.FlatDmg += (c.Base.HP*(1+ds.Stats[core.HPP]) + ds.Stats[core.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
-		c.Core.Log.NewEvent("Waveflash Stacks: ", core.LogCharacterEvent, c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
+		flatdmg := (c.Base.HP*(1+ds.Stats[core.HPP]) + ds.Stats[core.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
+		ai.FlatDmg += flatdmg
+		c.Core.Log.NewEvent("namisen add damage", core.LogCharacterEvent, c.Index, "damage_added", flatdmg, "stacks", c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
 	}
 	return ds
 }

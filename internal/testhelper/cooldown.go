@@ -301,9 +301,12 @@ func TestResetSkillCDDoubleCharge(c *core.Core, char core.Character, cd []int) e
 }
 
 func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
+	if len(cd) < 1 {
+		return errors.New("cd length cannot be less than 1")
+	}
 	setupChar(c, char)
 	p := make(map[string]int)
-
+	f := 0
 	//use up all the charges
 	for i := range cd {
 		//should have length - i
@@ -316,12 +319,20 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
 		if char.Cooldown(core.ActionSkill) > 0 {
 			return fmt.Errorf("used skill %v times, expecting cooldown to be 0, got %v", i, char.Cooldown(core.ActionSkill))
 		}
-		char.Skill(p)
+		_, a := char.Skill(p)
+		SkipFrames(c, a)
+		f += a
 	}
 
 	//skip through cd queue
 	for i, v := range cd {
-		SkipFrames(c, v-1)
+		//for the first charge, we need to adjust cd by f (numbers of frames already passed since first use)
+		if i == 0 {
+			SkipFrames(c, v-f-1)
+		} else {
+			//other skip for the full cd, less 1
+			SkipFrames(c, v-1)
+		}
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
@@ -334,11 +345,20 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
 
 	//wait another 100 frames, all charges should be back up
 	SkipFrames(c, 100)
+	f = 0
 	for range cd {
-		char.Skill(p)
+		_, a := char.Skill(p)
+		SkipFrames(c, a)
+		f += a
 	}
 	for i, v := range cd {
-		SkipFrames(c, v-10)
+		//for the first charge, we need to adjust cd by f (numbers of frames already passed since first use)
+		if i == 0 {
+			SkipFrames(c, v-f-10)
+		} else {
+			//other skip for the full cd, less 10
+			SkipFrames(c, v-10)
+		}
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("(reduce cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}
@@ -353,11 +373,19 @@ func TestSkillCooldown(c *core.Core, char core.Character, cd []int) error {
 
 	//wait another 100 frames, all charges should be back up
 	SkipFrames(c, 100)
+	f = 0
 	for range cd {
-		char.Skill(p)
+		_, a := char.Skill(p)
+		SkipFrames(c, a)
+		f += a
 	}
 	for i, v := range cd {
-		SkipFrames(c, v-10)
+		if i == 0 {
+			SkipFrames(c, v-f-10)
+		} else {
+			//other skip for the full cd, less 10
+			SkipFrames(c, v-10)
+		}
 		if char.Charges(core.ActionSkill) != i {
 			return fmt.Errorf("(reset cooldown test) checking charge #%v, expecting to have %v charge left, got %v", i+1, i, char.Charges(core.ActionSkill))
 		}

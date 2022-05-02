@@ -34,14 +34,20 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 
-	c.a2()
+	c.InitCancelFrames()
 
 	return &c, nil
 }
 
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.a1()
+}
+
 /**
 
-a2: shielding if fall below hp threshold, not implemented
+a1: shielding if fall below hp threshold, not implemented
 
 a4: every 4 hit decrease breastplate cd by 1; implement as hook
 
@@ -53,7 +59,7 @@ c6: sweeping time increase additional 50%; add 1s up to 10s everytime opponent k
 
 **/
 
-func (c *char) a2() {
+func (c *char) a1() {
 	icd := 0
 	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
 		if c.Core.F < icd {
@@ -66,7 +72,7 @@ func (c *char) a2() {
 		icd = c.Core.F + 3600
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "A2 Shield",
+			Abil:       "A1 Shield",
 			AttackTag:  core.AttackTagNone,
 		}
 		snap := c.Snapshot(&ai)
@@ -75,14 +81,14 @@ func (c *char) a2() {
 		x := snap.BaseDef*(1+snap.Stats[core.DEFP]) + snap.Stats[core.DEF]
 		c.Core.Shields.Add(&shield.Tmpl{
 			Src:        c.Core.F,
-			ShieldType: core.ShieldNoelleA2,
-			Name:       "Noelle A2",
+			ShieldType: core.ShieldNoelleA1,
+			Name:       "Noelle A1",
 			HP:         4 * x,
 			Ele:        core.Cryo,
 			Expires:    c.Core.F + 1200, //20 sec
 		})
 		return false
-	}, "noelle-a2")
+	}, "noelle-a1")
 }
 
 // Noelle Geo infusion can't be overridden, so it must be a snapshot modification rather than a weapon infuse

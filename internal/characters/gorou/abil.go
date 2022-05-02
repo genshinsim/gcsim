@@ -240,7 +240,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	//TODO:  If Gorou falls, the effects of General's Glory will be cleared.
 
-	//A2: After using Juuga: Forward Unto Victory, all nearby party members' DEF is increased by 25% for 12s.
+	//A1: After using Juuga: Forward Unto Victory, all nearby party members' DEF is increased by 25% for 12s.
 	val := make([]float64, core.EndStatType)
 	val[core.DEFP] = .25
 	for _, char := range c.Core.Chars {

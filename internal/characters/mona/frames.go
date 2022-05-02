@@ -24,7 +24,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		return 50, 50
 	case core.ActionSkill:
 		//TODO: need count
-		return 60, 60
+		return 42, 60
 	case core.ActionBurst:
 		return 127, 127
 	default:

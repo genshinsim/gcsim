@@ -42,10 +42,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+
 	//add in a guoba
 	c.guoba = newGuoba(c.Core)
 	c.Core.AddTarget(c.guoba)
-
 }
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
@@ -186,7 +186,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 
 	var cb core.AttackCBFunc
-	if c.Base.Cons > 1 {
+	if c.Base.Cons >= 1 {
 		cb = func(a core.AttackCB) {
 			a.Target.AddResMod("xiangling-c1", core.ResistMod{
 				Ele:      core.Pyro,
