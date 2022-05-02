@@ -8,6 +8,7 @@ import (
 type char struct {
 	*character.Tmpl
 	qInfuse    core.EleType
+	infuseCheckLocation core.AttackPattern
 	aiAbsorb   core.AttackInfo
 	snapAbsorb core.Snapshot
 }
