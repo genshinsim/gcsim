@@ -106,7 +106,11 @@ func Royal(char core.Character, c *core.Core, r int, param map[string]int) {
 	stacks := 0
 
 	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*core.AttackEvent)
 		crit := args[3].(bool)
+		if atk.Info.ActorIndex != char.CharIndex() {
+			return false
+		}
 		if crit {
 			stacks = 0
 		} else {
@@ -121,12 +125,12 @@ func Royal(char core.Character, c *core.Core, r int, param map[string]int) {
 	rate := 0.06 + float64(r)*0.02
 	m := make([]float64, core.EndStatType)
 	char.AddMod(core.CharStatMod{
-		Key: "royal",
+		Key:    "royal",
+		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			m[core.CR] = float64(stacks) * rate
 			return m, true
 		},
-		Expiry: -1,
 	})
 
 }
@@ -212,4 +216,69 @@ func Wavebreaker(char core.Character, c *core.Core, r int, param map[string]int)
 		return true
 	}, fmt.Sprintf("wavebreaker-%v", char.Name()))
 
+}
+
+// Golden Majesty:
+// Increases Shield Strength by 20/25/30/35/40%.
+// Scoring hits on opponents increases ATK by 4/5/6/7/8% for 8s.
+// Max 5 stacks. Can only occur once every 0.3s.
+// While protected by a shield, this ATK increase effect is increased by 100%.
+func GoldenMajesty(char core.Character, c *core.Core, r int, param map[string]int) {
+
+	shd := .15 + float64(r)*.05
+	atkbuff := 0.03 + 0.01*float64(r)
+
+	c.Shields.AddBonus(func() float64 { return shd })
+
+	icd := -1
+	stacks := 0
+	expiry := 0
+	m := make([]float64, core.EndStatType)
+
+	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*core.AttackEvent)
+
+		if ae.Info.ActorIndex != char.CharIndex() {
+			return false
+		}
+		if c.ActiveChar != char.CharIndex() {
+			return false
+		}
+
+		if c.F < icd {
+			return false
+		}
+		icd = c.F + 18
+
+		// reset stacks if expired
+		if c.F > expiry {
+			stacks = 0
+		}
+
+		stacks++
+		if stacks > 5 {
+			stacks = 5
+		}
+
+		expiry = c.F + 60*8
+		char.AddMod(core.CharStatMod{
+			Key:    "golden-majesty",
+			Expiry: expiry,
+			Amount: func() ([]float64, bool) {
+				m[core.ATKP] = atkbuff * float64(stacks)
+				if c.Shields.IsShielded(char.CharIndex()) {
+					m[core.ATKP] *= 2
+				}
+				return m, true
+			},
+		})
+
+		return false
+	}, fmt.Sprintf("golden-majesty-%v", char.Name()))
+}
+
+func NoEffectWeapon(key string) core.NewWeaponFunc {
+	return func(char core.Character, c *core.Core, r int, param map[string]int) string {
+		return key
+	}
 }

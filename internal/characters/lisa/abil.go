@@ -174,7 +174,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
-		Durability: 25,
+		Durability: 0,
 		Mult:       0.1,
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(targ, core.TargettableEnemy), f, f, a4cb)
@@ -227,9 +227,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//[8:11 PM] gimmeabreak: i guess single target it does nothing then?
 	//[8:12 PM] ArchedNosi | Lisa Unleashed: yeah single does nothing
 
+	//burst cd starts 52 frames after executed
+	//energy consumed the same time as the initial hit (64 frames)
 	c.ConsumeEnergy(64)
 	// c.CD[def.BurstCD] = c.Core.F + 1200
-	c.SetCDWithDelay(core.ActionBurst, 1200, 64)
+	c.SetCDWithDelay(core.ActionBurst, 1200, 52)
 	return f, a
 }
 

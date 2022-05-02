@@ -11,10 +11,8 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	eStarted    bool
-	eStartFrame int
-	eLastUse    int
-	eCounter    int
+	eCounter int
+	eWindow  int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -35,29 +33,43 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 
+	c.eCounter = 0
+	c.eWindow = -1
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	if c.Base.Cons >= 1 && c.Core.Flags.DamageMode {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
+}
 
-	return &c, nil
+func (c *char) ActionReady(a core.ActionType, p map[string]int) bool {
+	// check if it is possible to use next skill
+	if a == core.ActionSkill && c.Core.F < c.eWindow {
+		return true
+	}
+	return c.Tmpl.ActionReady(a, p)
 }
 
 func (c *char) c1() {
+	m := make([]float64, core.EndStatType)
+	m[core.DmgP] = 0.15
 	c.AddPreDamageMod(core.PreDamageMod{
 		Key:    "diluc-c1",
 		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
 			if t.HP()/t.MaxHP() > 0.5 {
-				val[core.DmgP] = 0.15
-				return val, true
+				return m, true
 			}
 			return nil, false
 		},
@@ -65,6 +77,7 @@ func (c *char) c1() {
 }
 
 func (c *char) c2() {
+	m := make([]float64, core.EndStatType)
 	stack := 0
 	last := 0
 	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
@@ -79,50 +92,30 @@ func (c *char) c2() {
 		if stack > 3 {
 			stack = 3
 		}
-		val := make([]float64, core.EndStatType)
-		val[core.ATKP] = 0.1 * float64(stack)
-		val[core.AtkSpd] = 0.05 * float64(stack)
+		m[core.ATKP] = 0.1 * float64(stack)
+		m[core.AtkSpd] = 0.05 * float64(stack)
 		c.AddMod(core.CharStatMod{
 			Key:    "diluc-c2",
-			Amount: func() ([]float64, bool) { return val, true },
+			Amount: func() ([]float64, bool) { return m, true },
 			Expiry: c.Core.F + 600,
 		})
 		return false
 	}, "diluc-c2")
-
 }
 
 func (c *char) c4() {
+	m := make([]float64, core.EndStatType)
+	m[core.DmgP] = 0.4
 	c.AddMod(core.CharStatMod{
 		Key:    "diluc-c4",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
 			if c.Core.Status.Duration("dilucc4") > 0 {
-				val[core.DmgP] = 0.4
-				return val, true
+				return m, true
 			}
 			return nil, false
 		},
 	})
-}
-func (c *char) Tick() {
-	c.Tmpl.Tick()
-
-	if c.eStarted {
-		//check if 4 second has passed since last use
-		if c.Core.F-c.eLastUse >= 240 {
-			//if so, set ability to be on cd equal to 10s less started
-			cd := 600 - (c.Core.F - c.eStartFrame)
-			c.Core.Log.NewEvent("diluc skill going on cd", core.LogCharacterEvent, c.Index, "duration", cd, "last", c.eLastUse)
-			c.SetCD(core.ActionSkill, cd)
-			//reset
-			c.eStarted = false
-			c.eStartFrame = -1
-			c.eLastUse = -1
-			c.eCounter = 0
-		}
-	}
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -136,5 +129,4 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
-
 }

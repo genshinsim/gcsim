@@ -67,7 +67,7 @@ func (c *char) PlungeAttack(delay int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Physical,
-		Durability: 25,
+		Durability: 0,
 		Mult:       plunge[c.TalentLvlAttack()],
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay, delay)
@@ -206,6 +206,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 // Sets Xiao's burst damage state
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
+	var HPicd int
+	HPicd = 0
 
 	// Per previous code, believe that the burst duration starts ticking down from after the animation is done
 	// TODO: No indication of that in library though
@@ -216,8 +218,13 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	// Per gameplay video, HP ticks start after animation is finished
 	for i := f + 60; i < 900+f; i++ {
 		c.AddTask(func() {
-			if c.Core.Status.Duration("xiaoburst") > 0 {
-				c.HPCurrent = c.HPCurrent * (1 - burstDrain[c.TalentLvlBurst()])
+			if c.Core.Status.Duration("xiaoburst") > 0 && c.Core.F >= HPicd {
+				HPicd = c.Core.F + 60
+				c.Core.Health.Drain(core.DrainInfo{
+					ActorIndex: c.Index,
+					Abil:       "Bane of All Evil",
+					Amount:     burstDrain[c.TalentLvlBurst()] * c.HP(),
+				})
 			}
 		}, "xiaoburst-hp-drain", i)
 	}

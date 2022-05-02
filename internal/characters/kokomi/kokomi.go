@@ -11,6 +11,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
+	skillFlatDmg  float64
 	skillLastUsed int
 	swapEarlyF    int
 	c4ICDExpiry   int
@@ -37,16 +38,21 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.CharZone = core.ZoneInazuma
 
+	c.skillFlatDmg = 0
 	c.skillLastUsed = 0
 	c.swapEarlyF = 0
 	c.c4ICDExpiry = 0
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.passive()
 	c.onExitField()
 	c.burstActiveHook()
 	c.a4()
-
-	return &c, nil
 }
 
 // Passive 2 - permanently modify stats for +25% healing bonus and -100% CR
@@ -76,7 +82,7 @@ func (c *char) a4() {
 			return false
 		}
 
-		a4Bonus := c.Stat(core.Heal) * 0.15 * c.HPMax
+		a4Bonus := c.Stat(core.Heal) * 0.15 * c.MaxHP()
 		atk.Info.FlatDmg += a4Bonus
 
 		return false
@@ -106,7 +112,7 @@ func (c *char) burstActiveHook() {
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Ceremonial Garment",
-			Src:     burstHealPct[c.TalentLvlBurst()]*c.HPMax + burstHealFlat[c.TalentLvlBurst()],
+			Src:     burstHealPct[c.TalentLvlBurst()]*c.MaxHP() + burstHealFlat[c.TalentLvlBurst()],
 			Bonus:   c.Stat(core.Heal),
 		})
 
@@ -122,7 +128,7 @@ func (c *char) burstActiveHook() {
 					Caller:  c.Index,
 					Target:  i,
 					Message: "The Clouds Like Waves Rippling",
-					Src:     0.006 * c.HPMax,
+					Src:     0.006 * c.MaxHP(),
 					Bonus:   c.Stat(core.Heal),
 				})
 			}
@@ -168,6 +174,7 @@ func (c *char) onExitField() {
 		prev := args[0].(int)
 		if prev == c.Index {
 			c.swapEarlyF = c.Core.F
+			c.skillFlatDmg = c.burstDmgBonus(core.AttackTagElementalArt)
 		}
 		c.Core.Status.DeleteStatus("kokomiburst")
 		return false

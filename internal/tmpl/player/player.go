@@ -16,7 +16,7 @@ func New(index int, c *core.Core) *Player {
 	p.Reactable = &reactable.Reactable{}
 	p.TargetIndex = index
 	p.Reactable.Init(p, c)
-	p.Tmpl.Init(0, 0, 0.5)
+	p.Tmpl.Init(0, -1, 0.5)
 	p.Core = c
 	return p
 }
@@ -60,4 +60,25 @@ func (p *Player) ApplySelfInfusion(ele core.EleType, dur core.Durability, f int)
 	//otherwise calculate decay based on specified f (in frames)
 	p.Durability[ele] = dur
 	p.DecayRate[ele] = dur / core.Durability(f)
+}
+
+func (p *Player) ReactWithSelf(atk *core.AttackEvent) {
+	//check if have an element
+
+	if p.Reactable.AuraType() == core.NoElement {
+		return
+	}
+	//otherwise react
+	existing := p.Reactable.ActiveAuraString()
+	applied := atk.Info.Durability
+	p.React(atk)
+	p.Core.Log.NewEvent("self reaction occured", core.LogElementEvent, atk.Info.ActorIndex,
+		"attack_tag", atk.Info.AttackTag,
+		"applied_ele", atk.Info.Element.String(),
+		"dur", applied,
+		"abil", atk.Info.Abil,
+		"target", 0,
+		"existing", existing,
+		"after", p.Reactable.ActiveAuraString(),
+	)
 }

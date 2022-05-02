@@ -135,7 +135,7 @@ func (c *char) holdE() {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 92+i*7, shredCB)
 	}
 
-	//A2
+	//A1
 	if v == 2 {
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,

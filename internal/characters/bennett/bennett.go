@@ -34,13 +34,15 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.Base.Element = core.Pyro
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-
-	//add effect for burst
-
-	return &c, nil
 }
 
 func (c *char) c2() {
@@ -48,11 +50,12 @@ func (c *char) c2() {
 	val[core.ER] = .3
 
 	c.AddMod(core.CharStatMod{
-		Key: "bennett-c2",
+		Key:          "bennett-c2",
+		Expiry:       -1,
+		AffectedStat: core.ER, // to avoid infinite loop when calling MaxHP
 		Amount: func() ([]float64, bool) {
-			return val, c.HPCurrent/c.HPMax < 0.7
+			return val, c.HP()/c.MaxHP() < 0.7
 		},
-		Expiry: -1,
 	})
 }
 

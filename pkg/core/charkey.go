@@ -1,6 +1,31 @@
 package core
 
+import (
+	"encoding/json"
+	"errors"
+	"strings"
+)
+
 type CharKey int
+
+func (c *CharKey) MarshalJSON() ([]byte, error) {
+	return json.Marshal(charNames[*c])
+}
+
+func (c *CharKey) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	s = strings.ToLower(s)
+	for i, v := range charNames {
+		if v == s {
+			*c = CharKey(i)
+			return nil
+		}
+	}
+	return errors.New("unrecognized character key")
+}
 
 const (
 	NoChar CharKey = iota
@@ -31,6 +56,7 @@ const (
 	Kazuha
 	Kaeya
 	Ayaka
+	Ayato
 	Keqing
 	Klee
 	Sara
@@ -67,85 +93,80 @@ func (c CharKey) String() string {
 }
 
 var CharNameToKey = map[string]CharKey{
-	"travelerelectro":    TravelerElectro,
-	"traveleranemo":      TravelerAnemo,
-	"travelergeo":        TravelerGeo,
-	"travelerhydro":      TravelerHydro,
-	"travelercryo":       TravelerCryo,
-	"travelerpyro":       TravelerPyro,
-	"travelerdendro":     TravelerDendro,
-	"traveler (electro)": TravelerElectro,
-	"traveler (anemo)":   TravelerAnemo,
-	"traveler (geo)":     TravelerGeo,
-	"traveler (hydro)":   TravelerHydro,
-	"traveler (cryo)":    TravelerCryo,
-	"traveler (pyro)":    TravelerPyro,
-	"traveler (dendro)":  TravelerDendro,
-	"albedo":             Albedo,
-	"aloy":               Aloy,
-	"amber":              Amber,
-	"barbara":            Barbara,
-	"beidou":             Beidou,
-	"bennett":            Bennett,
-	"chongyun":           Chongyun,
-	"diluc":              Diluc,
-	"diona":              Diona,
-	"eula":               Eula,
-	"fischl":             Fischl,
-	"ganyu":              Ganyu,
-	"hutao":              Hutao,
-	"jean":               Jean,
-	"kaedeharakazuha":    Kazuha,
-	"kazuha":             Kazuha,
-	"kaeya":              Kaeya,
-	"kamisatoayaka":      Ayaka,
-	"ayaka":              Ayaka,
-	"keqing":             Keqing,
-	"klee":               Klee,
-	"kujousara":          Sara,
-	"kujosara":           Sara,
-	"sara":               Sara,
-	"lisa":               Lisa,
-	"mona":               Mona,
-	"ningguang":          Ningguang,
-	"noelle":             Noelle,
-	"qiqi":               Qiqi,
-	"raidenshogun":       Raiden,
-	"raiden":             Raiden,
-	"razor":              Razor,
-	"rosaria":            Rosaria,
-	"sangonomiyakokomi":  Kokomi,
-	"kokomi":             Kokomi,
-	"sayu":               Sayu,
-	"sucrose":            Sucrose,
-	"tartaglia":          Tartaglia,
-	"thoma":              Thoma,
-	"venti":              Venti,
-	"xiangling":          Xiangling,
-	"xiao":               Xiao,
-	"xingqiu":            Xingqiu,
-	"xinyan":             Xinyan,
-	"yanfei":             Yanfei,
-	"yoimiya":            Yoimiya,
-	"yunjin":             Yunjin,
-	"zhongli":            Zhongli,
-	"gorou":              Gorou,
-	"aratakiitto":        Itto,
-	"itto":				  Itto,
-	"shenhe":             Shenhe,
-	"yae":                YaeMiko,
-	"yaemiko":            YaeMiko,
+	"travelerelectro":   TravelerElectro,
+	"traveleranemo":     TravelerAnemo,
+	"travelergeo":       TravelerGeo,
+	"travelerhydro":     TravelerHydro,
+	"travelercryo":      TravelerCryo,
+	"travelerpyro":      TravelerPyro,
+	"travelerdendro":    TravelerDendro,
+	"albedo":            Albedo,
+	"aloy":              Aloy,
+	"amber":             Amber,
+	"barbara":           Barbara,
+	"beidou":            Beidou,
+	"bennett":           Bennett,
+	"chongyun":          Chongyun,
+	"diluc":             Diluc,
+	"diona":             Diona,
+	"eula":              Eula,
+	"fischl":            Fischl,
+	"ganyu":             Ganyu,
+	"hutao":             Hutao,
+	"jean":              Jean,
+	"kaedeharakazuha":   Kazuha,
+	"kazuha":            Kazuha,
+	"kaeya":             Kaeya,
+	"kamisatoayaka":     Ayaka,
+	"ayaka":             Ayaka,
+	"kamisatoayato":     Ayato,
+	"ayato":             Ayato,
+	"keqing":            Keqing,
+	"klee":              Klee,
+	"kujousara":         Sara,
+	"kujosara":          Sara,
+	"sara":              Sara,
+	"lisa":              Lisa,
+	"mona":              Mona,
+	"ningguang":         Ningguang,
+	"noelle":            Noelle,
+	"qiqi":              Qiqi,
+	"raidenshogun":      Raiden,
+	"raiden":            Raiden,
+	"razor":             Razor,
+	"rosaria":           Rosaria,
+	"sangonomiyakokomi": Kokomi,
+	"kokomi":            Kokomi,
+	"sayu":              Sayu,
+	"sucrose":           Sucrose,
+	"tartaglia":         Tartaglia,
+	"thoma":             Thoma,
+	"venti":             Venti,
+	"xiangling":         Xiangling,
+	"xiao":              Xiao,
+	"xingqiu":           Xingqiu,
+	"xinyan":            Xinyan,
+	"yanfei":            Yanfei,
+	"yoimiya":           Yoimiya,
+	"yunjin":            Yunjin,
+	"zhongli":           Zhongli,
+	"gorou":             Gorou,
+	"aratakiitto":       Itto,
+	"itto":              Itto,
+	"shenhe":            Shenhe,
+	"yae":               YaeMiko,
+	"yaemiko":           YaeMiko,
 }
 
 var charNames = []string{
 	"",
-	"traveler (electro)",
-	"traveler (anemo)",
-	"traveler (geo)",
-	"traveler (hydro)",
-	"traveler (cryo)",
-	"traveler (pyro)",
-	"traveler (dendro)",
+	"travelerelectro",
+	"traveleranemo",
+	"travelergeo",
+	"travelerhydro",
+	"travelercryo",
+	"travelerpyro",
+	"travelerdendro",
 	"aether",
 	"lumine",
 	"", //delim for traveler
@@ -166,6 +187,7 @@ var charNames = []string{
 	"kazuha",
 	"kaeya",
 	"ayaka",
+	"ayato",
 	"keqing",
 	"klee",
 	"sara",
@@ -222,6 +244,7 @@ var CharKeyToEle = map[CharKey]EleType{
 	Kazuha:          Anemo,
 	Kaeya:           Cryo,
 	Ayaka:           Cryo,
+	Ayato:           Hydro,
 	Keqing:          Electro,
 	Klee:            Pyro,
 	Sara:            Electro,
@@ -250,4 +273,5 @@ var CharKeyToEle = map[CharKey]EleType{
 	Itto:            Geo,
 	Shenhe:          Cryo,
 	Yunjin:          Geo,
+	YaeMiko:         Electro,
 }

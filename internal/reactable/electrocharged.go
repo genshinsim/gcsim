@@ -55,7 +55,9 @@ func (r *Reactable) tryAddEC(a *core.AttackEvent) {
 		Element:          core.Electro,
 		IgnoreDefPercent: 1,
 	}
-	atk.FlatDmg = 1.2 * r.calcReactionDmg(atk)
+	char := r.core.Chars[a.Info.ActorIndex]
+	em := char.Stat(core.EM)
+	atk.FlatDmg = 1.2 * r.calcReactionDmg(atk, em)
 	r.ecSnapshot = atk
 
 	//if this is a new ec then trigger tick immediately and queue up ticks

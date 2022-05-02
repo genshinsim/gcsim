@@ -28,13 +28,14 @@ func (c *char) c4() {
 		if c.Core.F < c.c4icd && c.c4icd != 0 {
 			return false
 		}
-		if c.HPCurrent/c.HPMax < .2 {
+		maxhp := c.MaxHP()
+		if c.HP()/maxhp < .2 {
 			c.c4icd = c.Core.F + 3600
 			c.Core.Shields.Add(&shield.Tmpl{
 				Src:        c.Core.F,
 				ShieldType: core.ShieldKaeyaC4,
 				Name:       "Kaeya C4",
-				HP:         .3 * c.HPMax,
+				HP:         .3 * maxhp,
 				Ele:        core.Cryo,
 				Expires:    c.Core.F + 1200,
 			})

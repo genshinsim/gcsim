@@ -34,7 +34,7 @@ func parseChain(p *Parser) (parseFn, error) {
 			//check block then add to action list
 			ok := validateBlock(&block)
 			if !ok {
-				return nil, fmt.Errorf("invalid action at %v", p.tokens)
+				return nil, fmt.Errorf("ln%v: invalid action at %v", n.line, p.tokens)
 			}
 			p.cfg.Rotation = append(p.cfg.Rotation, block)
 			return parseRows, nil

@@ -28,7 +28,7 @@ func TestCD(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	err = testhelper.TestSkillCDSingleCharge(c, x, 24*60)
+	err = testhelper.TestSkillCDSingleCharge(c, x, 24*60+6) // +6 from cd delay
 	if err != nil {
 		t.Error(err)
 	}

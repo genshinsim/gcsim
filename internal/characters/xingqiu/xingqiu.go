@@ -44,24 +44,27 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.CharZone = core.ZoneLiyue
 	c.InitCancelFrames()
 
-	c.AddMod(core.CharStatMod{
-		Key: "a4",
-		Amount: func() ([]float64, bool) {
-			a4 := make([]float64, core.EndStatType)
-			a4[core.HydroP] = 0.2
-			return a4, true
-		},
-		Expiry: -1,
-	})
-	// c.burstHook()
-	c.burstStateHook()
-
-	/** c6
-	Activating 2 of Guhua Sword: Raincutter's sword rain attacks greatly increases the DMG of the third.
-	Xingqiu regenerates 3 Energy when sword rain attacks hit opponents.
-	**/
-
 	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.a4()
+	c.burstStateHook()
+}
+
+func (c *char) a4() {
+	m := make([]float64, core.EndStatType)
+	m[core.HydroP] = 0.2
+
+	c.AddMod(core.CharStatMod{
+		Key:    "xingqiu-a4",
+		Expiry: -1,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }
 
 var hitmarks = [][]int{{10}, {13}, {9, 19}, {17}, {18, 39}}

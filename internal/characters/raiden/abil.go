@@ -182,7 +182,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
-		Durability: 50,
+		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	c.Core.Combat.QueueAttack(
@@ -234,8 +234,8 @@ func (c *char) eyeOnDamage() {
 		if c.Core.Status.Duration("raidenskill") == 0 {
 			return false
 		}
-		//ignore reaction damage
-		if ae.Info.AttackTag > core.ReactionAttackDelim {
+		//ignore EC and hydro swirl damage
+		if ae.Info.AttackTag == core.AttackTagECDamage || ae.Info.AttackTag == core.AttackTagSwirlHydro {
 			return false
 		}
 		//ignore self dmg

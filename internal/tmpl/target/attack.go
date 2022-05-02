@@ -18,9 +18,9 @@ func (t *Tmpl) Attack(atk *core.AttackEvent, evt core.LogEvent) (float64, bool) 
 	t.ShatterCheck(atk)
 
 	//check tags
-	if atk.Info.Durability > 0 && atk.Info.Element != core.Physical {
+	if atk.Info.Durability > 0 {
 		//check for ICD first
-		if t.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex) {
+		if t.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex) && atk.Info.Element != core.Physical {
 			existing := t.Reactable.ActiveAuraString()
 			applied := atk.Info.Durability
 			t.React(atk)

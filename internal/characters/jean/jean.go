@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/player"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -35,11 +36,15 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
 	if c.Base.Cons == 6 {
 		c.c6()
 	}
-
-	return &c, nil
 }
 
 func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
@@ -173,9 +178,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 	//p is the number of times enemy enters or exits the field
 	enter := p["enter"]
-	delay, ok := p["delay"]
+	if enter < 1 {
+		enter = 1
+	}
+	delay, ok := p["enter_delay"]
 	if !ok {
-		delay = 10
+		delay = 600 / enter
 	}
 
 	f, a := c.ActionFrames(core.ActionBurst, p)
@@ -192,12 +200,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f-10)
+	//looks to be around 60 frames in
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 60)
 
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
+	//first enter is at frame 66
 	for i := 0; i < enter; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f+i*delay)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), 66+i*delay)
 	}
 
 	c.Core.Status.AddStatus("jeanq", 630)
@@ -229,8 +239,21 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		})
 	}, "Jean Heal Initial", f)
 
-	//duration is 10.5s
-	for i := 60; i < 630; i++ {
+	player, ok := c.Core.Targets[0].(*player.Player)
+	if !ok {
+		panic("target 0 should be Player but is not!!")
+	}
+
+	//attack self
+	selfSwirl := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Dandelion Breeze (Self Swirl)",
+		Element:    core.Anemo,
+		Durability: 25,
+	}
+
+	//duration is 10.5s, first tick start at frame 100, + 60 each
+	for i := 100; i < 100+630; i += 60 {
 		c.AddTask(func() {
 			// c.Core.Log.NewEvent("jean q healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
 			c.Core.Health.Heal(core.HealInfo{
@@ -240,6 +263,14 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				Src:     healDot,
 				Bonus:   hpplus,
 			})
+
+			ae := core.AttackEvent{
+				Info:        selfSwirl,
+				Pattern:     core.NewDefSingleTarget(0, player.TargetType),
+				SourceFrame: c.Core.F,
+			}
+			c.Core.Log.NewEvent("jean self swirling", core.LogCharacterEvent, c.Index)
+			player.ReactWithSelf(&ae)
 		}, "Jean Tick", i)
 	}
 

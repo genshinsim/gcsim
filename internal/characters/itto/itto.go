@@ -33,19 +33,25 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 70
 	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
+	c.SkillCon = 3
+	c.BurstCon = 5
+
 	c.dasshuUsed = false
 	c.dasshuCount = 0
 	c.Tags["strStack"] = 0
 	c.sCACount = 0
-	c.SkillCon = 3
-	c.BurstCon = 5
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.onExitField()
+
 	if c.Base.Cons == 6 {
 		c.c6()
 	}
-
-	return &c, nil
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

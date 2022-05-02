@@ -29,13 +29,14 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		totalMV += mult[c.TalentLvlAttack()]
+
 		// TODO - double check snapshotDelay
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, travel+f-5+i)
 	}
 
 	c.AdvanceNormalIndex()
 
-	if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
+	if c.Base.Cons == 6 && c.Core.Status.Duration("yoimiyaskill") > 0 && c.Core.Rand.Float64() < 0.5 {
 		//trigger attack
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
@@ -45,7 +46,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			ICDGroup:   core.ICDGroupDefault,
 			Element:    core.Pyro,
 			Durability: 25,
-			Mult:       totalMV,
+			Mult:       totalMV * 0.6,
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, travel+f+5)
 
@@ -84,8 +85,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Status.AddStatus("yoimiyaskill", 600) //activate for 10
 	// log.Println(c.Core.Status.Duration("yoimiyaskill"))
 
-	if c.Core.Status.Duration("yoimiyaa2") == 0 {
-		c.a2stack = 0
+	if c.Core.Status.Duration("yoimiyaa1") == 0 {
+		c.a1stack = 0
 	}
 
 	c.SetCD(core.ActionSkill, 1080)
@@ -120,7 +121,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Core.Status.AddStatus("aurous", duration)
 		val := make([]float64, core.EndStatType)
 		//attack buff
-		val[core.ATKP] = 0.1 + float64(c.a2stack)*0.01
+		val[core.ATKP] = 0.1 + float64(c.a1stack)*0.01
 		for i, char := range c.Core.Chars {
 			if i == c.Index {
 				continue
@@ -197,7 +198,7 @@ func (c *char) burstHook() {
 	if c.Core.Flags.DamageMode {
 		//add check for if yoimiya dies
 		c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-			if c.HPCurrent <= 0 {
+			if c.HP() <= 0 {
 				c.Core.Status.DeleteStatus("aurous")
 			}
 			return false

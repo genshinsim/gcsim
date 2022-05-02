@@ -206,7 +206,7 @@ func (c *char) c4() {
 			Src:        c.Core.F,
 			ShieldType: core.ShieldYanfeiC4,
 			Name:       "Yanfei C4",
-			HP:         c.HPMax * .45,
+			HP:         c.MaxHP() * .45,
 			Ele:        core.Pyro,
 			Expires:    c.Core.F + 15*60,
 		})

@@ -48,11 +48,11 @@ func (p *Parser) acceptCharAction() (core.ActionBlock, error) {
 			//check block then add to action list
 			ok := validateBlock(&block)
 			if !ok {
-				return block, fmt.Errorf("invalid action at %v", p.tokens)
+				return block, fmt.Errorf("ln%v: invalid action at %v", n.line, p.tokens)
 			}
 			return block, nil
 		default:
-			return block, fmt.Errorf("(accept char action) unexpected token %v at line %v", n, p.tokens)
+			return block, fmt.Errorf("ln%v: (accept char action) unexpected token %v", n.line, n)
 		}
 	}
 	return block, errors.New("unexpected end of line parsing character action")
@@ -88,7 +88,7 @@ func (p *Parser) acceptActionBlockFlags(a *core.ActionBlock) error {
 		x, err = p.acceptSeqReturnLast(itemEqual, itemCharacterKey)
 		key, ok := core.CharNameToKey[x.val]
 		if !ok {
-			err = fmt.Errorf("bad token at line %v - %v: %v; invalid char name; line: %v", x.line, x.pos, x, p.tokens)
+			err = fmt.Errorf("ln%v: bad token at line %v - %v: %v; invalid char name; line: %v", n.line, x.line, x.pos, x, p.tokens)
 		}
 		a.SwapTo = key
 	case itemSwapLock:
@@ -130,7 +130,7 @@ func (p *Parser) acceptActionBlockFlags(a *core.ActionBlock) error {
 		case itemWait:
 			a.TryDropIfNotReady = false
 		default:
-			err = fmt.Errorf("unexpected token after try=, expecting drop or wait, got %v at line %v", n, p.tokens)
+			err = fmt.Errorf("ln%v: unexpected token after try=, expecting drop or wait, got %v", n.line, n)
 		}
 	}
 	return err

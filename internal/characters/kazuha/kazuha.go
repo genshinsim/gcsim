@@ -11,10 +11,11 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a4Expiry int
-	a2Ele    core.EleType
-	qInfuse  core.EleType
-	c6Active int
+	a4Expiry            int
+	a1Ele               core.EleType
+	qInfuse             core.EleType
+	c6Active            int
+	infuseCheckLocation core.AttackPattern
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -38,6 +39,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneInazuma
 
+	c.infuseCheckLocation = core.NewDefCircHit(1.5, false, core.TargettableEnemy, core.TargettablePlayer, core.TargettableObject)
+
 	c.InitCancelFrames()
 
 	return &c, nil
@@ -45,8 +48,8 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
-	c.a4()
 
+	c.a4()
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -130,16 +133,6 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 	if c.c6Active <= c.Core.F {
 		return ds
 	}
-
-	//infusion to normal/plunge/charge
-	switch ai.AttackTag {
-	case core.AttackTagNormal:
-	case core.AttackTagExtra:
-	case core.AttackTagPlunge:
-	default:
-		return ds
-	}
-	ai.Element = core.Anemo
 
 	//add 0.2% dmg for every EM
 	ds.Stats[core.DmgP] += 0.002 * ds.Stats[core.EM]
