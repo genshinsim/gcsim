@@ -18,6 +18,17 @@ type Handler struct {
 	shieldBonusMods []shieldBonusMod
 }
 
+func New(f *int, log glog.Logger, events event.Eventter) *Handler {
+	h := &Handler{
+		shields:         make([]Shield, 0, EndShieldType),
+		log:             log,
+		events:          events,
+		f:               f,
+		shieldBonusMods: make([]shieldBonusMod, 0, 5),
+	}
+	return h
+}
+
 func (s *Handler) Count() int { return len(s.shields) }
 
 func (h *Handler) PlayerIsShielded() bool {

@@ -23,6 +23,14 @@ type InfusionHandler struct {
 	infusion [MaxTeamSize]WeaponInfusion
 }
 
+func New(f *int, log glog.Logger, debug bool) InfusionHandler {
+	return InfusionHandler{
+		f:     f,
+		log:   log,
+		debug: debug,
+	}
+}
+
 func (m *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canOverride bool, tags ...combat.AttackTag) {
 	if !m.infusion[char].CanOverride && m.infusion[char].Expiry > *m.f {
 		return

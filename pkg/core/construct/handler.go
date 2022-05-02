@@ -11,7 +11,7 @@ type Handler struct {
 	f           *int
 }
 
-func NewCtrl(f *int, log glog.Logger) *Handler {
+func New(f *int, log glog.Logger) *Handler {
 	return &Handler{
 		constructs:  make([]Construct, 0, 3),
 		consNoLimit: make([]Construct, 0, 3),

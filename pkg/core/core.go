@@ -27,13 +27,13 @@ type Core struct {
 	Flags Flags
 	Rand  *rand.Rand
 	//various functionalities of core
-	Log        glog.Logger   //we use an interface here so that we can pass in a nil logger for all except 1 run
-	Events     event.Handler //track events: subscribe/unsubscribe/emit
-	Status     status.Handler
-	Tasks      task.Handler
-	Combat     combat.Handler
-	Constructs construct.Handler
-	Player     player.Handler
+	Log        glog.Logger    //we use an interface here so that we can pass in a nil logger for all except 1 run
+	Events     *event.Handler //track events: subscribe/unsubscribe/emit
+	Status     *status.Handler
+	Tasks      *task.Handler
+	Combat     *combat.Handler
+	Constructs *construct.Handler
+	Player     *player.Handler
 }
 
 type Flags struct {
@@ -60,6 +60,25 @@ type Enemy interface {
 
 const MaxTeamSize = 4
 
+func New(seed int64, debug bool) (*Core, error) {
+	c := &Core{}
+	c.Rand = rand.New(rand.NewSource(seed))
+	c.Flags.Custom = make(map[string]int)
+	if debug {
+		c.Log = nil
+	} else {
+		c.Log = &glog.NilLogger{}
+	}
+
+	c.Events = event.New()
+	c.Status = status.New(&c.F, c.Log)
+	c.Tasks = task.New(&c.F)
+	c.Constructs = construct.New(&c.F, c.Log)
+	c.Player = player.New(&c.F, c.Log, c.Events, debug)
+
+	return c, nil
+}
+
 func (c *Core) Init() error {
 	var err error
 	//setup list
@@ -83,7 +102,7 @@ func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 	var err error
 
 	// initialize character
-	char := character.New(p, &c.F, c.Flags.LogDebug, c.Log, &c.Events, &c.Tasks)
+	char := character.New(p, &c.F, c.Flags.LogDebug, c.Log, c.Events, c.Tasks)
 
 	f, ok := charMap[p.Base.Key]
 	if !ok {

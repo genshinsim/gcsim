@@ -77,7 +77,7 @@ type ehook struct {
 	key string
 }
 
-func NewCtrl() *Handler {
+func New() *Handler {
 	h := &Handler{
 		events: make([][]ehook, EndEventTypes),
 	}

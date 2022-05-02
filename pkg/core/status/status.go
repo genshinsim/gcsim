@@ -13,7 +13,7 @@ type Handler struct {
 	log    glog.Logger
 }
 
-func NewCtrl(f *int, log glog.Logger) *Handler {
+func New(f *int, log glog.Logger) *Handler {
 	return &Handler{
 		status: make(map[string]status),
 		f:      f,

@@ -31,8 +31,22 @@ type Handler struct {
 	sets   []artifact.Set
 	setPos map[keys.Set]int
 
-	Shields shield.Handler
+	Shields *shield.Handler
 	infusion.InfusionHandler
+}
+
+func New(f *int, log glog.Logger, events event.Eventter, debug bool) *Handler {
+	h := &Handler{
+		chars:   make([]*character.CharWrapper, 0, 4),
+		charPos: make(map[keys.Char]int),
+		weapPos: make(map[keys.Weapon]int),
+		setPos:  make(map[keys.Set]int),
+		log:     log,
+		events:  events,
+	}
+	h.Shields = shield.New(f, log, events)
+	h.InfusionHandler = infusion.New(f, log, debug)
+	return h
 }
 
 func (h *Handler) AddChar(char *character.CharWrapper) int {
