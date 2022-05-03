@@ -244,8 +244,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		dur += 3
 	}
 	dur = dur * 60
-	c.Core.Status.AddStatus("xqburst", dur)
-	c.Core.Log.NewEvent("Xingqiu burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur)
+	c.Core.Status.AddStatus("xqburst", dur+a)
+	c.Core.Log.NewEvent("Xingqiu burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur+a)
 
 	orbital, ok := p["orbital"]
 	if !ok {
