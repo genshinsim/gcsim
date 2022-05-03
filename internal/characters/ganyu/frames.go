@@ -41,7 +41,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionSkill:
 		return 13, 28 //ok
 	case core.ActionBurst:
-		return 122, 148 //ok
+		return 122, 130 //ok
 	default:
 		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
