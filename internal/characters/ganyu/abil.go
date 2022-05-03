@@ -135,7 +135,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 
-	c.Core.Status.AddStatus("ganyuburst", 15*60+148)
+	c.Core.Status.AddStatus("ganyuburst", 15*60+130)
 
 	rad, ok := p["radius"]
 	if !ok {
