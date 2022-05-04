@@ -7,45 +7,66 @@
 package player
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/animation"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/infusion"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
 type Handler struct {
 	log    glog.Logger
 	events event.Eventter
+	tasks  task.Tasker
+	f      *int
+	//handlers
+	*animation.AnimationHandler
+	Shields *shield.Handler
+	infusion.InfusionHandler
 
+	//tracking
 	chars   []*character.CharWrapper
 	active  int
 	charPos map[keys.Char]int
-
 	weaps   []weapon.Weapon
 	weapPos map[keys.Weapon]int
+	sets    []artifact.Set
+	setPos  map[keys.Set]int
 
-	sets   []artifact.Set
-	setPos map[keys.Set]int
+	//stam
+	Stam            float64
+	LastStamUse     int
+	stamPercentMods []stamPercentMod
 
-	Shields *shield.Handler
-	infusion.InfusionHandler
+	//last action
+	LastAction struct {
+		UsedAt int
+		Type   action.Action
+		Param  map[string]int
+		Char   int
+	}
 }
 
-func New(f *int, log glog.Logger, events event.Eventter, debug bool) *Handler {
+func New(f *int, log glog.Logger, events event.Eventter, tasks task.Tasker, debug bool) *Handler {
 	h := &Handler{
-		chars:   make([]*character.CharWrapper, 0, 4),
-		charPos: make(map[keys.Char]int),
-		weapPos: make(map[keys.Weapon]int),
-		setPos:  make(map[keys.Set]int),
-		log:     log,
-		events:  events,
+		chars:           make([]*character.CharWrapper, 0, 4),
+		charPos:         make(map[keys.Char]int),
+		weapPos:         make(map[keys.Weapon]int),
+		setPos:          make(map[keys.Set]int),
+		stamPercentMods: make([]stamPercentMod, 0, 5),
+		log:             log,
+		events:          events,
+		f:               f,
 	}
 	h.Shields = shield.New(f, log, events)
 	h.InfusionHandler = infusion.New(f, log, debug)
+	h.AnimationHandler = animation.New(f, log, events, tasks)
 	return h
 }
 
@@ -89,15 +110,21 @@ func (h *Handler) SetActive(i int) {
 	h.active = i
 }
 
-func (e *Handler) Adjust(src string, char int, amt float64) {
-	e.chars[char].AddEnergy(src, amt)
+func (h *Handler) Adjust(src string, char int, amt float64) {
+	h.chars[char].AddEnergy(src, amt)
 }
 
-func (e *Handler) DistributeParticle(p character.Particle) {
-	for i, char := range e.chars {
-		char.ReceiveParticle(p, e.active == i, len(e.chars))
+func (h *Handler) ResetAllNormalCounter() {
+	for _, char := range h.chars {
+		char.ResetNormalCounter()
 	}
-	e.events.Emit(event.OnParticleReceived, p)
+}
+
+func (h *Handler) DistributeParticle(p character.Particle) {
+	for i, char := range h.chars {
+		char.ReceiveParticle(p, h.active == i, len(h.chars))
+	}
+	h.events.Emit(event.OnParticleReceived, p)
 }
 
 //InitializeTeam will set up resonance event hooks and calculate
@@ -126,4 +153,19 @@ func (h *Handler) InitializeTeam() error {
 		}
 	}
 	return nil
+}
+
+func (h *Handler) Tick() {
+	//	- player (stamina, swap, animation, etc...)
+	//		- character
+	//		- shields
+	//		- animation
+	//		- stamina
+	//		- swap
+	h.Shields.Tick()
+	for _, c := range h.chars {
+		c.Tick()
+	}
+	h.AnimationHandler.Tick()
+
 }

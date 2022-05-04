@@ -2,7 +2,11 @@
 package action
 
 type ActionInfo struct {
-	Frames func(next Action) int
+	Frames          func(next Action) int
+	AnimationLength int
+	CanQueueAfter   int
+	Post            int
+	State           AnimationState
 }
 
 type Action int
@@ -46,3 +50,16 @@ var astr = []string{
 func (a Action) String() string {
 	return astr[a]
 }
+
+type AnimationState int
+
+const (
+	Idle AnimationState = iota
+	NormalAttackState
+	ChargeAttackState
+	PlungeAttackState
+	SkillState
+	BurstState
+	AimState
+	DashState
+)

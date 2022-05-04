@@ -67,7 +67,7 @@ type Ctrl struct {
 	f      *int
 }
 
-func NewCtrl(f *int, size int) Logger {
+func New(f *int, size int) Logger {
 	ctrl := &Ctrl{
 		events: make(map[int]*LogEvent),
 		f:      f,

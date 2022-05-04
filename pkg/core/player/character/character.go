@@ -21,8 +21,8 @@ type Character interface {
 	Skill(p map[string]int) action.ActionInfo
 	Burst(p map[string]int) action.ActionInfo
 	Dash(p map[string]int) action.ActionInfo
+	Walk(p map[string]int) action.ActionInfo
 	Jump(p map[string]int) action.ActionInfo
-	Swap(p map[string]int) action.ActionInfo
 
 	ActionStam(a action.Action, p map[string]int) float64
 
@@ -36,6 +36,8 @@ type Character interface {
 	Snapshot(a *combat.AttackInfo) combat.Snapshot
 
 	AddEnergy(src string, amt float64)
+
+	Tick()
 }
 
 type CharWrapper struct {

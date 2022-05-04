@@ -16,6 +16,8 @@ type Target interface {
 	//apply attack to target
 	Attack(*AttackEvent, glog.Event) (float64, bool)
 
+	Tick() //called every tick
+
 	//getting rid of
 	Kill()
 }

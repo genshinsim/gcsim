@@ -52,3 +52,9 @@ func (h *Handler) Target(i int) Target {
 func (h *Handler) SetTargetPos(i int, x, y float64) {
 	h.targets[i].SetPos(x, y)
 }
+
+func (h *Handler) Tick() {
+	for _, t := range h.targets {
+		t.Tick()
+	}
+}

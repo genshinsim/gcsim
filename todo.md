@@ -1,3 +1,5 @@
+- player animation system
+- player action execution
 - core tick
 - load simulator
 - add queues

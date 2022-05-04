@@ -65,7 +65,7 @@ func New(seed int64, debug bool) (*Core, error) {
 	c.Rand = rand.New(rand.NewSource(seed))
 	c.Flags.Custom = make(map[string]int)
 	if debug {
-		c.Log = nil
+		c.Log = glog.New(&c.F, 500)
 	} else {
 		c.Log = &glog.NilLogger{}
 	}
@@ -74,7 +74,7 @@ func New(seed int64, debug bool) (*Core, error) {
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)
 	c.Constructs = construct.New(&c.F, c.Log)
-	c.Player = player.New(&c.F, c.Log, c.Events, debug)
+	c.Player = player.New(&c.F, c.Log, c.Events, c.Tasks, debug)
 
 	return c, nil
 }
@@ -96,6 +96,23 @@ func (c *Core) Init() error {
 
 	c.Events.Emit(event.OnInitialize)
 	return nil
+}
+
+func (c *Core) Tick() {
+	// things to tick:
+	//	- targets
+	//	- constructs
+	//	- player (stamina, swap, animation, etc...)
+	//		- character
+	//		- shields
+	//		- animation
+	//		- stamina
+	//		- swap
+	//	- tasks
+	c.Combat.Tick()
+	c.Constructs.Tick()
+	c.Player.Tick()
+
 }
 
 func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
