@@ -105,6 +105,8 @@ func (c *char) holdE() {
 
 	//multiple brand hits
 	ai.Abil = "Icetide Vortex (Icewhirl)"
+	ai.ICDTag = core.ICDTagElementalArt
+	ai.StrikeType = core.StrikeTypeDefault
 	ai.Mult = icewhirl[lvl]
 
 	v := c.Tags["grimheart"]
