@@ -89,14 +89,18 @@ func parseOptions(p *Parser) (parseFn, error) {
 				if err == nil {
 					switch n.val {
 					case "human":
-						p.cfg.Settings.Delays.Swap = 8
-						p.cfg.Settings.Delays.Attack = 5
-						p.cfg.Settings.Delays.Charge = 5
-						p.cfg.Settings.Delays.Skill = 5
-						p.cfg.Settings.Delays.Burst = 5
-						p.cfg.Settings.Delays.Dash = 5
-						p.cfg.Settings.Delays.Jump = 5
-						p.cfg.Settings.Delays.Aim = 5
+						// This depends on your ping
+						p.cfg.Settings.Delays.SwapJitterMin = 4
+						p.cfg.Settings.Delays.SwapJitterMax = 8
+						// Normal attacks are usually buffered into each other
+						// or into charge attacks.
+						p.cfg.Settings.Delays.AttackJitterMax = 0
+						p.cfg.Settings.Delays.ChargeJitterMax = 5
+						p.cfg.Settings.Delays.SkillJitterMax = 5
+						p.cfg.Settings.Delays.BurstJitterMax = 5
+						p.cfg.Settings.Delays.DashJitterMax = 5
+						p.cfg.Settings.Delays.JumpJitterMax = 5
+						p.cfg.Settings.Delays.AimJitterMax = 5
 					default:
 						return nil, fmt.Errorf("ln%v: unrecognized option for frame_defaults specified: %v", n.line, n.val)
 					}
