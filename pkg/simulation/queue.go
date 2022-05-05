@@ -20,6 +20,7 @@ func (s *Simulation) initQueuer() error {
 			return fmt.Errorf("invalid char in rotation %v; %v", v.SequenceChar, v)
 		}
 		s.cfg.Rotation[i].LastQueued = -1
+		s.cfg.Rotation[i].NumQueued = 0
 	}
 	s.C.Log.NewEvent(
 		"setting queue",
