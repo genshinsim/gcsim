@@ -39,6 +39,39 @@ type Delays struct {
 	Dash   int
 	Jump   int
 	Swap   int
+
+	// Minimum random delay before each skill
+	SkillJitterMin int
+	// Maximum random delay before each skill
+	SkillJitterMax int
+	// Minimum random delay before each burst
+	BurstJitterMin int
+	// Maximum random delay before each burst
+	BurstJitterMax int
+	// Minimum random delay before each attack
+	AttackJitterMin int
+	// Maximum random delay before each attack
+	AttackJitterMax int
+	// Minimum random delay before each charge attack
+	ChargeJitterMin int
+	// Maximum random delay before each charge attack
+	ChargeJitterMax int
+	// Minimum random delay before each aim shot
+	AimJitterMin int
+	// Maximum random delay before each aim shot
+	AimJitterMax int
+	// Minimum random delay before each dash
+	DashJitterMin int
+	// Maximum random delay before each dash
+	DashJitterMax int
+	// Minimum random delay before each jump
+	JumpJitterMin int
+	// Maximum random delay before each jump
+	JumpJitterMax int
+	// Minimum random delay before each swap
+	SwapJitterMin int
+	// Maximum random delay before each swap
+	SwapJitterMax int
 }
 
 type Core struct {
@@ -202,6 +235,42 @@ func (c *Core) UserCustomDelay() int {
 		d = c.Flags.Delays.Aim
 	}
 	return c.LastAction.Param["delay"] + d
+}
+
+// Returns a pseudo-random value from a range depending on the last action.
+func (c *Core) Jitter() int {
+	switch c.LastAction.Typ {
+	case ActionSkill:
+		return jitter(c.Rand, c.Flags.Delays.SkillJitterMin, c.Flags.Delays.SkillJitterMax)
+	case ActionBurst:
+		return jitter(c.Rand, c.Flags.Delays.BurstJitterMin, c.Flags.Delays.BurstJitterMax)
+	case ActionAttack:
+		return jitter(c.Rand, c.Flags.Delays.AttackJitterMin, c.Flags.Delays.AttackJitterMax)
+	case ActionCharge:
+		return jitter(c.Rand, c.Flags.Delays.ChargeJitterMin, c.Flags.Delays.ChargeJitterMax)
+	case ActionDash:
+		return jitter(c.Rand, c.Flags.Delays.DashJitterMin, c.Flags.Delays.DashJitterMax)
+	case ActionJump:
+		return jitter(c.Rand, c.Flags.Delays.JumpJitterMin, c.Flags.Delays.JumpJitterMax)
+	case ActionSwap:
+		return jitter(c.Rand, c.Flags.Delays.SwapJitterMin, c.Flags.Delays.SwapJitterMax)
+	case ActionAim:
+		return jitter(c.Rand, c.Flags.Delays.AimJitterMin, c.Flags.Delays.AimJitterMax)
+	default:
+		return 0
+	}
+}
+
+// Returns a pseudo-random value from the range [min, max]. Note it is
+// inclusive of both min and max values.
+func jitter(randSrc *rand.Rand, min, max int) int {
+	if min == max {
+		return 0
+	}
+
+	// Add 1 because rand.Intn is not inclusive of the max value
+	diff := max - min + 1
+	return randSrc.Intn(diff) + min
 }
 
 func (c *Core) ResetAllNormalCounter() {

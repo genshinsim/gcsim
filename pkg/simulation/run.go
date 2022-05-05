@@ -123,7 +123,7 @@ func (s *Simulation) AdvanceFrame() error {
 			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
 			return nil
 		}
-		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
+		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay() + s.C.Jitter()
 		//check if we should delay
 
 		//so if current frame - when the last action is used is > delay, then we shouldn't
