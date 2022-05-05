@@ -163,40 +163,43 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		NoImpulse:  true,
 	}
 	//lasts 10 seconds, starts after 2.2 seconds maybe?
+	c.Core.Status.AddStatus("kleeq", 600+132+1)
 
 	//every 1.8 second +on added shoots between 3 to 5, ignore the queue thing.. space it out .2 between each wave i guess
 
+	// snapshot at end of animation?
+	var snap core.Snapshot
+	c.AddTask(func() {
+		snap = c.Snapshot(&ai)
+	}, "klee-burst-snapshot", 100)
+
 	for i := 132; i < 732; i += 108 {
 		c.AddTask(func() {
-			//no more if klee is not on field
-			if c.Core.ActiveChar != c.Index {
+			//no more if burst has ended early
+			if c.Core.Status.Duration("kleeq") <= 0 {
 				return
 			}
 			//wave 1 = 1
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 0)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), 0)
 			//wave 2 = 1 + 30% chance of 1
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 12)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), 12)
 			if c.Core.Rand.Float64() < 0.3 {
-				c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 12)
+				c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), 12)
 			}
 			//wave 3 = 1 + 50% chance of 1
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 24)
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), 24)
 			if c.Core.Rand.Float64() < 0.5 {
-				c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 24)
+				c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(1, false, core.TargettableEnemy), 24)
 			}
 		}, "klee-burst", i)
 	}
-
-	c.AddTask(func() {
-		c.Core.Status.AddStatus("kleeq", 600)
-	}, "klee-burst-status", 132)
 
 	//every 3 seconds add energy if c6
 	if c.Base.Cons == 6 {
 		for i := f + 180; i < f+600; i += 180 {
 			c.AddTask(func() {
-				//no more if klee is not on field
-				if c.Core.ActiveChar != c.Index {
+				//no more if burst has ended early
+				if c.Core.Status.Duration("kleeq") <= 0 {
 					return
 				}
 
@@ -206,17 +209,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 					}
 					x.AddEnergy("klee-c6", 3)
 				}
-
 			}, "klee-c6", i)
 		}
 
-		//add 25% buff
+		// add 10% pyro for 25s
+		m := make([]float64, core.EndStatType)
+		m[core.PyroP] = .1
 		for _, x := range c.Core.Chars {
-			val := make([]float64, core.EndStatType)
-			val[core.PyroP] = .1
 			x.AddMod(core.CharStatMod{
 				Key:    "klee-c6",
-				Amount: func() ([]float64, bool) { return val, true },
+				Amount: func() ([]float64, bool) { return m, true },
 				Expiry: c.Core.F + 1500,
 			})
 		}
