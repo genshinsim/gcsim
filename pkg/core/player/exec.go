@@ -41,15 +41,17 @@ func (p *Handler) Exec(t action.Action, param map[string]int) error {
 
 	char := p.chars[p.active]
 	//check for energy, cd, etc..
+	//TODO: make sure there is a default check for charge attack/dash stams in char implementation
+	//this should deal with Ayaka/Mona's drain vs straight up consumption
 	if !char.ActionReady(t, param) {
 		return ErrActionNotReady
 	}
 
 	switch t {
 	case action.ActionCharge: //require special calc for stam
-		return p.chargeattack(char, param)
+		p.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash: //require special calc for stam
-		return p.dash(char, param)
+		p.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
 		p.useAbility(t, param, char.Jump)
 	case action.ActionWalk:
@@ -78,6 +80,7 @@ func (p *Handler) Exec(t action.Action, param map[string]int) error {
 }
 
 var actionToEvent = map[action.Action]event.Event{
+	action.ActionDash:       event.PreDash,
 	action.ActionSkill:      event.PreSkill,
 	action.ActionBurst:      event.PreBurst,
 	action.ActionAttack:     event.PreAttack,
@@ -141,17 +144,30 @@ func (p *Handler) chargeattack(c character.Character, param map[string]int) erro
 func (p *Handler) dash(c character.Character, param map[string]int) error {
 	req := p.StamPercentMod(action.ActionDash) * c.ActionStam(action.ActionDash, param)
 	if p.Stam < req {
-		p.log.NewEvent("insufficient stam: dash", glog.LogActionEvent.LogSimEvent, -1, "have", p.Stam)
+		p.log.NewEvent("insufficient stam: dash", glog.LogSimEvent, -1, "have", p.Stam)
 		return ErrActionNotReady
 	}
-	p.core.Events.Emit(core.PreDash)
-	//stam should be consumed at end of animation?
-	p.core.Tasks.Add(func() {
+	p.events.Emit(event.PreDash)
+	info := c.Dash(param)
+	p.SetActionUsed(p.active, info)
+
+	//TODO: this is problematic for ayaka as she consume stam consistently?
+	//perhaps stam consumption should be dealt with in the Dash function instead of here
+	delay := info.Post
+	if info.Post <= 0 {
+		delay = 20 //TODO: add some sane delay for dash stam consumption here
+	}
+	p.tasks.Add(func() {
+		p.events.Emit(event.PostDash) //post is always +1 from pre
+		//stam should be consumed at end of animation?
 		p.Stam -= req
-		p.LastStamUse = p.core.F
-		p.core.Events.Emit(core.OnStamUse, core.ActionDash)
-		p.core.Events.Emit(core.PostDash)
-	}, p.FramesSettings.Dash-1)
+		p.LastStamUse = *p.f
+		p.events.Emit(event.OnStamUse, action.ActionDash)
+		p.events.Emit(event.PostDash)
+	}, delay)
+	p.LastAction.Type = action.ActionCharge
+	p.LastAction.Param = param
+	p.LastAction.Char = p.active
 
 	return nil
 }

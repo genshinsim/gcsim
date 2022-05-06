@@ -127,6 +127,10 @@ func (h *Handler) DistributeParticle(p character.Particle) {
 	h.events.Emit(event.OnParticleReceived, p)
 }
 
+func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64 {
+	return h.StamPercentMod(action.ActionDash) * h.chars[i].ActionStam(action.ActionDash, p)
+}
+
 //InitializeTeam will set up resonance event hooks and calculate
 //all character base stats
 func (h *Handler) InitializeTeam() error {

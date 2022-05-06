@@ -62,4 +62,6 @@ const (
 	BurstState
 	AimState
 	DashState
+	JumpState
+	WalkState
 )

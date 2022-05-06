@@ -66,15 +66,6 @@ func (c *Character) Charges(a action.Action) int {
 	return c.AvailableCDCharge[a]
 }
 
-func (c *Character) ActionReady(a action.Action, p map[string]int) bool {
-	//up if energy is ready && stack > 0
-	if a == action.ActionBurst &&
-		(c.Core.Player.ByIndex(*c.Index).Energy != c.Core.Player.ByIndex(*c.Index).EnergyMax) {
-		return false
-	}
-	return c.AvailableCDCharge[a] > 0
-}
-
 func (h *Character) SetCDWithDelay(a action.Action, dur int, delay int) {
 	if delay == 0 {
 		h.SetCD(a, dur)
