@@ -6,6 +6,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/simulation/queue"
 )
 
+type Queuer interface {
+	//returns a sequence of 1 or more commands to execute,
+	//whether or not to drop sequence if any is not ready, and any error
+	Next() (queue []queue.Command, dropIfFailed bool, err error)
+	SetActionList(pq []queue.ActionBlock) error
+}
 type Simulation struct {
 	// f    int
 	skip int
@@ -13,6 +19,7 @@ type Simulation struct {
 	cfg  SimulationConfig
 	// queue
 	queue             []queue.Command
+	queuer            Queuer
 	dropQueueIfFailed bool
 	//hurt event
 	lastHurt int

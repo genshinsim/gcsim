@@ -188,6 +188,15 @@ func (r *Reactable) refill(e attributes.Element, dur combat.Durability, m combat
 
 //reduce the requested element by dur * factor, return the amount of dur consumed
 func (r *Reactable) reduce(e attributes.Element, dur combat.Durability, factor combat.Durability) (consumed combat.Durability) {
+	t := dur * factor
+	if t > r.Durability[e] {
+		t = r.Durability[e]
+	}
+	r.Durability[e] -= t
+	consumed = t / factor
+
+	return
+
 	//if dur * factor > amount of existing element, then set amont of existing element to
 	//0; and consumed is equal to dur / facotr
 	if dur*factor >= r.Durability[e] {
@@ -197,6 +206,7 @@ func (r *Reactable) reduce(e attributes.Element, dur combat.Durability, factor c
 		return
 	}
 	//otherwise consumed = dur
+	//TODO: this is wrong. should be just = dur
 	consumed = dur / factor
 	r.Durability[e] -= dur * factor
 	return
