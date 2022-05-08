@@ -143,7 +143,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Key:    "ayaka-a1",
 		Expiry: c.Core.F + 360,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return val, atk.Info.AttackTag == core.AttackTagNormal || ai.AttackTag == core.AttackTagExtra
+			return val, atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra
 		},
 	})
 
