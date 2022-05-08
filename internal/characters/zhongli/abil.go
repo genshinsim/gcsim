@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{11}, {9}, {8}, {16}, {11, 18, 23, 29}, {29}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	ai := core.AttackInfo{
@@ -21,7 +23,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 
 	for i := 0; i < hits[c.NormalCounter]; i++ {
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-i, f-i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -41,7 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[c.TalentLvlAttack()],
 		FlatDmg:    0.0139 * c.MaxHP(),
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
 	return f, a
 }
@@ -49,6 +51,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 
 	cd := 240
+	cdDelay := 47
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	max, ok := p["res_count"]
@@ -65,9 +68,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		cd = 720
 	} else {
 		c.skillPress(f, max)
+		cdDelay = 22
 	}
 
-	c.SetCD(core.ActionSkill, cd)
+	c.SetCDWithDelay(core.ActionSkill, cd, cdDelay)
 	//no geo drain
 	return f, a
 }
@@ -92,7 +96,7 @@ func (c *char) skillHold(f, max int, createStele bool) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 		FlatDmg:    0.019 * c.MaxHP(),
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
 	//create a stele if less than zhongli's max stele count and desired by player
 	if (c.steleCount <= c.maxStele) && createStele {
 		c.AddTask(func() {
@@ -103,7 +107,7 @@ func (c *char) skillHold(f, max int, createStele bool) {
 	//make a shield - enemy debuff arrows appear 3-5 frames after the damage number shows up in game
 	c.AddTask(func() {
 		c.addJadeShield()
-	}, "zhongli-create-shield", f-1)
+	}, "zhongli-create-shield", f)
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
@@ -122,13 +126,19 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 		FlatDmg:    0.33 * c.MaxHP(),
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
 
 	if c.Base.Cons >= 2 {
 		c.addJadeShield()
 	}
 
-	c.SetCDWithDelay(core.ActionBurst, 720, 6)
-	c.ConsumeEnergy(6)
+	c.SetCD(core.ActionBurst, 720)
+	c.ConsumeEnergy(7)
+	return f, a
+}
+
+//Zhongli dash is 19 frames
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
 	return f, a
 }
