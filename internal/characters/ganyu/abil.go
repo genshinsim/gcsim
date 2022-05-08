@@ -41,7 +41,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 	}
 	bloom, ok := p["bloom"]
 	if !ok {
-		bloom = 20
+		bloom = 24
 	}
 	weakspot, ok := p["weakspot"]
 
@@ -98,12 +98,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	snap := c.Snapshot(&ai)
 	//flower damage immediately
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 30)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 13)
 	//we get the orbs right away
 	c.QueueParticle("ganyu", 2, core.Cryo, 90)
 
 	//flower damage is after 6 seconds
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 360)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 373)
 	// TODO: Particle flight time is 60s?
 	c.QueueParticle("ganyu", 2, core.Cryo, 420)
 
@@ -114,7 +114,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Status.AddStatus("ganyuc6", 1800)
 	}
 
-	c.SetCD(core.ActionSkill, 600)
+	c.SetCDWithDelay(core.ActionSkill, 600, 10)
 
 	return f, a
 }
@@ -135,7 +135,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	snap := c.Snapshot(&ai)
 
-	c.Core.Status.AddStatus("ganyuburst", 15*60)
+	c.Core.Status.AddStatus("ganyuburst", 15*60+130)
 
 	rad, ok := p["radius"]
 	if !ok {
@@ -148,7 +148,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	lastHit := make(map[core.Target]int)
 	// ccc := 0
 	//tick every .3 sec, every fifth hit is targetted i.e. 1, 0, 0, 0, 0, 1
-	for delay := 0; delay < 900; delay += 18 {
+	//first hit at 148
+	for delay := a; delay < 900+a; delay += 18 {
 		c.AddTask(func() {
 			//check if this hits first
 			target := -1
@@ -172,7 +173,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			}
 			//deal dmg
 			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(9, false, core.TargettableEnemy), 0)
-		}, "ganyu-q", delay+f)
+		}, "ganyu-q", delay)
 
 	}
 	// c.AddTask(func() {
@@ -182,7 +183,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//a4 every .3 seconds for the duration of the burst, add ice dmg up to active char for 1sec
 	//duration is 15 seconds
 	//starts from end of cast
-	for i := f; i < 900+f; i += 18 {
+	for i := a; i < 900+a; i += 18 {
 		t := i
 		c.AddTask(func() {
 			active := c.Core.Chars[c.Core.ActiveChar]
@@ -195,7 +196,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 				},
 				Expiry: c.Core.F + 60,
 			})
-			if t >= 900-18 {
+			if t >= 900+a-18 {
 				c.Core.Log.NewEvent("a4 last tick", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+60)
 			}
 		}, "ganyu-a4", i)
@@ -222,9 +223,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	//add cooldown to sim
-	c.SetCDWithDelay(core.ActionBurst, 15*60, 8)
+	c.SetCD(core.ActionBurst, 15*60)
 	//use up energy
-	c.ConsumeEnergy(8)
+	c.ConsumeEnergy(3)
 
 	return f, a
 }
