@@ -27,13 +27,14 @@ func (c *construct) Type() core.GeoConstructType {
 func (c *construct) OnDestruct() {
 	if c.char.Base.Cons >= 2 {
 		//make sure last reset is more than 6 seconds ago
-		if c.char.c2reset <= c.char.Core.F-360 {
+		if c.char.c2reset <= c.char.Core.F-360 && c.char.Cooldown(core.ActionSkill) > 0 {
 			//reset cd
 			c.char.ResetActionCooldown(core.ActionSkill)
 			c.char.c2reset = c.char.Core.F
 		}
 	}
 }
+
 func (c *construct) Expiry() int {
 	return c.expiry
 }

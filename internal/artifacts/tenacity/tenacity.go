@@ -25,6 +25,8 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		})
 	}
 	if count >= 4 {
+		m := make([]float64, core.EndStatType)
+		m[core.ATKP] = 0.2
 		icd := 0
 
 		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
@@ -43,23 +45,15 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 
 			for _, char := range s.Chars {
 				char.AddMod(core.CharStatMod{
-					Key: "tom-4pc",
+					Key:    "tom-4pc",
+					Expiry: s.F + 180,
 					Amount: func() ([]float64, bool) {
-						m := make([]float64, core.EndStatType)
-						m[core.ATKP] = 0.2
-						if s.Status.Duration("tom-proc") == 0 {
-							return nil, false
-						}
 						return m, true
 					},
-					Expiry: s.F + 180,
 				})
-
 			}
 			s.Log.NewEvent("tom 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", s.F+180, "icd", s.F+30)
 			return false
 		}, fmt.Sprintf("tom4-%v", c.Name()))
-
 	}
-	//add flat stat to char
 }

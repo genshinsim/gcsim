@@ -22,11 +22,11 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 		})
 	}
 	if count >= 4 {
+		m := make([]float64, core.EndStatType)
 		c.AddPreDamageMod(core.PreDamageMod{
 			Key:    "4bs",
 			Expiry: -1,
 			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				m := make([]float64, core.EndStatType)
 				//frozen check first so we don't mistaken coexisting cryo
 				if t.AuraContains(core.Frozen) {
 					m[core.CR] = 0.4
@@ -39,7 +39,5 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 				return nil, false
 			},
 		})
-
 	}
-	//add flat stat to char
 }

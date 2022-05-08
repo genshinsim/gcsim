@@ -117,10 +117,8 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
 		Element:    core.Electro,
-		Durability: 25,
+		Durability: 50,
 	}
-
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
 
 	//c2 add defense? no interruptions either way
 	if c.Base.Cons >= 2 {

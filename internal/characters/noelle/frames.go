@@ -19,7 +19,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			a = 31
 		case 3:
 			f = 42
-			a = 105
+			a = 107
 		}
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f, a
@@ -38,7 +38,7 @@ func (c *char) InitCancelFrames() {
 	c.SetNormalCancelFrames(0, core.ActionAttack, 38-28-1)  // n1 -> next attack
 	c.SetNormalCancelFrames(1, core.ActionAttack, 46-25-1)  // n2 -> next attack
 	c.SetNormalCancelFrames(2, core.ActionAttack, 31-20-1)  // n3 -> next attack
-	c.SetNormalCancelFrames(3, core.ActionAttack, 105-42-1) // n4 -> next attack
+	c.SetNormalCancelFrames(3, core.ActionAttack, 107-42-1) // n4 -> next attack
 
 	// skill -> x
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSwap, 78-12)
