@@ -57,7 +57,7 @@ func (c *char) InitCancelFrames() {
 	c.SetNormalCancelFrames(3, core.ActionAttack, 37-29) //n4 -> next attack
 	c.SetNormalCancelFrames(3, core.ActionCharge, 34-29) //n4 -> charge
 
-	c.SetNormalCancelFrames(4, core.ActionAttack, 71-21) //n5 -> n1
+	c.SetNormalCancelFrames(4, core.ActionAttack, 200-21) //n5 -> n1
 
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionAttack, 67-24) //charge -> n1
 	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSkill, 69-24)  //charge -> skill
