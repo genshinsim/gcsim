@@ -201,3 +201,13 @@ func (c *char) chain(src int, count int) core.AttackCBFunc {
 
 	}
 }
+
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
+	return f, a
+}
+
+func (c *char) Jump(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionJump, p)
+	return f, a
+}
