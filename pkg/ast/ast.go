@@ -12,8 +12,7 @@ type AST struct {
 }
 
 type Node interface {
-	Pos() token.Pos
-	End() token.Pos
+	node()
 }
 
 type Expr interface {
@@ -31,12 +30,22 @@ type (
 		Param map[string]int
 	}
 
-	CondExpr struct {
-		Left   *CondExpr
-		Right  *CondExpr
-		Op     token.Token
-		IsLeaf bool
-		Comp   *CompExpr
+	//A BinaryExpr node represents a binary expression i.e. a > b
+	BinaryExpr struct {
+		Left  *BinaryExpr
+		Right *BinaryExpr
+		Op    token.Token
+	}
+
+	BasicLit struct {
+		Kind  token.Token // token.INT, token.FLOAT, token.CHAR
+		Value string      // literal string; eg. 42, 3.14
+	}
+
+	//an Ident node represents an identifier
+	Ident struct {
+		Name string
+		Kind IdentKind
 	}
 
 	CompExpr struct {
@@ -46,41 +55,68 @@ type (
 	}
 )
 
+type IdentKind int
+
+const (
+	Bad IdentKind = iota
+	Var
+	Fun
+	Lbl
+)
+
+// node() implementations for expression/types nodes
+func (*BinaryExpr) node()
+func (*CompExpr) node()
+func (*ActionExpr) node()
+
+// exprNode()
+func (*BinaryExpr) exprNode()
+func (*CompExpr) exprNode()
+func (*ActionExpr) exprNode()
+
 type Stmt interface {
 	Node
 	stmtNode()
 }
 
-type AssignStmt struct{}
-type ExprStmt struct{}
+type (
+	// An AssingStmt node represents a variable assignment i.e. a = 1
+	AssignStmt struct {
+		LHS string
+		RHS []Expr
+	}
+	ExprStmt struct{}
 
-//represents a braced statement list
-type BlockStmt struct {
-	List []Stmt
-}
+	//represents a braced statement list
+	BlockStmt struct {
+		List []Stmt
+	}
 
-// An IfStmt node represents an if statement
-type IfStmt struct {
-	Cond Expr       // condition
-	Body *BlockStmt //block to execute if true
-	Else Stmt       // else branch, also
-}
+	// An IfStmt node represents an if statement
+	IfStmt struct {
+		Cond Expr       // condition
+		Body *BlockStmt //block to execute if true
+		Else Stmt       // else branch, also
+	}
 
-// A branchStmt node represents a break, continue, goto or fallthrough statement
-type BranchStmt struct {
-	Tok token.Token
-}
+	// A branchStmt node represents a break, continue, goto or fallthrough statement
+	BranchStmt struct {
+		Tok token.Token
+	}
 
-type SwitchStmt struct {
-	Body *BlockStmt
-}
+	SwitchStmt struct {
+		Body *BlockStmt
+	}
 
-type CaseClause struct {
-	List []Expr // list of expressions or types; nil means default case
-	Body []Stmt
-}
+	CaseClause struct {
+		List []Expr // list of expressions or types; nil means default case
+		Body []Stmt
+	}
 
-type ForStmt struct {
-	Cond *CondExpr
-	Body *BlockStmt
-}
+	ForStmt struct {
+		Cond *BinaryExpr
+		Body *BlockStmt
+	}
+)
+
+// stmtNode()

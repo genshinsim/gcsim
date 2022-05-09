@@ -40,7 +40,10 @@ func execFor(n ast.ForStmt) {
 	}
 }
 
-func evalCondition(c *ast.CondExpr) bool {
+func evalBinaryExpr(c *ast.BinaryExpr) interface{} {
+	//each side of the tree should evalute to a value
+	if c.Left
+	
 	if c.IsLeaf {
 		return evalComp(c.Comp)
 	}
@@ -58,6 +61,10 @@ func evalCondition(c *ast.CondExpr) bool {
 	}
 }
 
-func evalComp(c *ast.CompExpr) bool {
-	return false
+func evalExpr() {
+
+}
+
+func compValue(x, y interface{}) interface{} {
+
 }
