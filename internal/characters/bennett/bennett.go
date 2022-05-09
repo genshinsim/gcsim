@@ -60,18 +60,6 @@ func (c *char) c2() {
 	})
 }
 
-func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
-	switch a {
-	case core.ActionDash:
-		return 18
-	case core.ActionCharge:
-		return 20
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
-		return 0
-	}
-}
-
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -93,55 +81,25 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	return f, a
 }
 
-func (c *char) ChargeAttack(p map[string]int) (int, int) {
-
-	delay := []int{10, 21}
-
-	f, a := c.ActionFrames(core.ActionCharge, p)
-
-	ai := core.AttackInfo{
-		ActorIndex: c.Index,
-		AttackTag:  core.AttackTagExtra,
-		ICDTag:     core.ICDTagNormalAttack,
-		ICDGroup:   core.ICDGroupDefault,
-		Element:    core.Physical,
-		Durability: 25,
-	}
-
-	for i, mult := range charge {
-		ai.Mult = mult[c.TalentLvlAttack()]
-		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), delay[i], delay[i])
-	}
-
-	return f, a
-}
-
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	var cd int
 	var cdDelay int
 
-	if p["hold_c4"] == 1 { //TODO: check if they actually have c4
-		c.skillHoldShort(true)
+	switch p["hold"] {
+	case 1:
+		c.skillHoldShort(false)
 		cd = 450 - 90
 		cdDelay = 43
-	} else {
-		switch p["hold"] {
-		case 1:
-			c.skillHoldShort(false)
-			cd = 450 - 90
-			cdDelay = 43
-		case 2:
-			c.skillHoldLong()
-			cd = 600 - 120
-			cdDelay = 110
-		default:
-			c.skillPress()
-			cd = 300 - 60
-			cdDelay = 14
-		}
+	case 2:
+		c.skillHoldLong()
+		cd = 600 - 120
+		cdDelay = 110
+	default:
+		c.skillPress()
+		cd = 300 - 60
+		cdDelay = 14
 	}
 
 	//A4
@@ -177,7 +135,7 @@ func (c *char) skillPress() {
 	c.QueueParticle("bennett", count, core.Pyro, 120)
 }
 
-func (c *char) skillHoldShort(c4Active bool) {
+func (c *char) skillHoldShort() {
 
 	delay := []int{45, 57}
 
@@ -196,14 +154,12 @@ func (c *char) skillHoldShort(c4Active bool) {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[i], delay[i])
 	}
 
-	if c4Active { //user-specified c4 variant adds an additional attack that deals 135% of the second hit
-		ai.Mult = skill1[1][c.TalentLvlSkill()] * 1.35
-		ai.Abil = "Passion Overload (C4)"
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 94, 94)
+	//25 % chance of 3 orbs
+	count := 2
+	if c.Core.Rand.Float64() < .25 {
+		count++
 	}
-
-	//Bennett Hold E is guaranteed 3 orbs
-	c.QueueParticle("bennett", 3, core.Pyro, 215)
+	c.QueueParticle("bennett", count, core.Pyro, 215)
 }
 
 func (c *char) skillHoldLong() {
