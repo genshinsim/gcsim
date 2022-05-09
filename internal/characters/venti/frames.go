@@ -34,6 +34,16 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		return f, a
 	case core.ActionAim:
 		return 86, 94
+	case core.ActionHighPlunge:
+		c.Core.Log.NewEvent("plunge skill check", core.LogCharacterEvent, c.Index, "previous", c.Core.LastAction)
+		if c.Core.LastAction.Target == core.Venti && c.Core.LastAction.Typ == core.ActionSkill {
+			h := c.Core.LastAction.Param["hold"]
+			if h > 0 {
+				return 58, 58
+			}
+		}
+		c.Core.Log.NewEvent("invalid plunge (missing hold skill use)", core.LogActionEvent, c.Index, "action", a)
+		return 0, 0
 	case core.ActionSkill:
 		if p["hold"] == 0 {
 			return 22, 98

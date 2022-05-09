@@ -162,6 +162,27 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	return f, a
 }
 
+func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionHighPlunge, p)
+
+	ai := core.AttackInfo{
+		ActorIndex:     c.Index,
+		Abil:           "Plunge",
+		AttackTag:      core.AttackTagPlunge,
+		ICDTag:         core.ICDTagNormalAttack,
+		ICDGroup:       core.ICDGroupDefault,
+		StrikeType:     core.StrikeTypeBlunt,
+		Element:        core.Physical,
+		Durability:     25,
+		Mult:           highPlunge[c.TalentLvlAttack()],
+		IgnoreInfusion: true,
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1.5, false, core.TargettableEnemy), f, f)
+
+	return f, a
+}
+
 func (c *char) a4Restore() {
 	c.AddEnergy("venti-a4", 15)
 
