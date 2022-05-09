@@ -74,7 +74,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		return 0, 0
 	}
 
-	f, a := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stormbreaker (Q)",
