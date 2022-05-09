@@ -123,28 +123,28 @@ func burstNormalCancels(next core.ActionType, NormalCounter int) int {
 	switch next {
 	case core.ActionAttack:
 		switch NormalCounter {
-		case 1:
-			return 19 - 12
-		case 2:
-			return 16 - 13
-		case 3:
-			return 16 - 11
-		case 4:
-			return 44 - 33
 		case 0:
+			return 19 - 12
+		case 1:
+			return 16 - 13
+		case 2:
+			return 16 - 11
+		case 3:
+			return 44 - 33
+		case 4:
 			return 59 - 33
 		}
 	case core.ActionCharge:
 		switch NormalCounter {
-		case 1:
-			return 24 - 12
-		case 2:
-			return 26 - 13
-		case 3:
-			return 34 - 11
-		case 4:
-			return 67 - 33
 		case 0:
+			return 24 - 12
+		case 1:
+			return 26 - 13
+		case 2:
+			return 34 - 11
+		case 3:
+			return 67 - 33
+		case 4:
 			return 83 - 33
 		}
 	}
