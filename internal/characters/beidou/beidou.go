@@ -28,7 +28,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	e, ok := p.Params["start_energy"]
 	if !ok {
 		e = 80
-	}//hi
+	}
 	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = core.WeaponClassClaymore
@@ -40,6 +40,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+	c.InitCancelFrames()
 
 	c.burstProc()
 	c.a4()

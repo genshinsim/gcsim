@@ -21,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
 	c.AdvanceNormalIndex()
 
@@ -64,7 +64,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		})
 	}
 
-	c.SetCD(core.ActionSkill, 450)
+	c.SetCDWithDelay(core.ActionSkill, 450, 4)
 	return f, a
 }
 
@@ -86,7 +86,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 100,
 		Mult:       burstonhit[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
 	c.Core.Status.AddStatus("beidouburst", 900)
 
@@ -130,8 +130,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}, "beidou-c6", f)
 	}
 
-	c.ConsumeEnergy(11)
-	c.SetCDWithDelay(core.ActionBurst, 1200, 11)
+	c.ConsumeEnergy(6)
+	c.SetCD(core.ActionBurst, 1200)
 	return f, a
 }
 
@@ -174,10 +174,10 @@ func (c *char) burstProc() {
 
 func (c *char) chain(src int, count int) core.AttackCBFunc {
 
-	if c.Base.Cons > 1 && count == 5 {
+	if c.Base.Cons >= 2 && count == 5 {
 		return nil
 	}
-	if c.Base.Cons < 2 && count == 3 {
+	if c.Base.Cons <= 1 && count == 3 {
 		return nil
 	}
 	return func(a core.AttackCB) {
