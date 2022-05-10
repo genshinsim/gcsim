@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
-func init() {
+func init() {lkk;
 	core.RegisterCharFunc(core.Bennett, NewChar)
 }
 
