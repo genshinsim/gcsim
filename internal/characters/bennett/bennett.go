@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
-func init() {lkk;
+func init() {
 	core.RegisterCharFunc(core.Bennett, NewChar)
 }
 
@@ -60,6 +60,18 @@ func (c *char) c2() {
 	})
 }
 
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+	switch a {
+	case core.ActionDash:
+		return 18
+	case core.ActionCharge:
+		return 20
+	default:
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		return 0
+	}
+}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -77,6 +89,30 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
 	c.AdvanceNormalIndex()
+
+	return f, a
+}
+
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+
+	delay := []int{10, 21}
+
+	f, a := c.ActionFrames(core.ActionCharge, p)
+
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagNormalAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
+	for i, mult := range charge {
+		ai.Mult = mult[c.TalentLvlAttack()]
+		ai.Abil = fmt.Sprintf("Charge %v", i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), delay[i], delay[i])
+	}
 
 	return f, a
 }
