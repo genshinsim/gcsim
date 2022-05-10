@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{15, 24}, {17}, {25}, {11, 26}, {17}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 	travel, ok := p["travel"]
 	if !ok {
@@ -31,7 +33,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		totalMV += mult[c.TalentLvlAttack()]
 
 		// TODO - double check snapshotDelay
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, travel+f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], travel+hitmarks[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -48,6 +50,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			Durability: 25,
 			Mult:       totalMV * 0.6,
 		}
+		//TODO: frames?
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, travel+f+5)
 
 	}
@@ -82,14 +85,14 @@ func (c *char) onExit() {
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
-	c.Core.Status.AddStatus("yoimiyaskill", 600) //activate for 10
+	c.Core.Status.AddStatus("yoimiyaskill", 600+f) //activate for 10
 	// log.Println(c.Core.Status.Duration("yoimiyaskill"))
 
 	if c.Core.Status.Duration("yoimiyaa1") == 0 {
 		c.a1stack = 0
 	}
 
-	c.SetCD(core.ActionSkill, 1080)
+	c.SetCDWithDelay(core.ActionSkill, 1080, 11)
 	return f, a
 }
 
@@ -137,7 +140,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}, "start-blaze", f)
 
 	//add cooldown to sim
-	c.SetCDWithDelay(core.ActionBurst, 15*60, 5)
+	c.SetCD(core.ActionBurst, 15*60)
 	//use up energy
 	c.ConsumeEnergy(5)
 
@@ -204,4 +207,14 @@ func (c *char) burstHook() {
 			return false
 		}, "yoimiya-died")
 	}
+}
+
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
+	return f, a
+}
+
+func (c *char) Jump(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionJump, p)
+	return f, a
 }
