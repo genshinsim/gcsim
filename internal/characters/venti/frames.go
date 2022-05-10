@@ -9,7 +9,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionAttack:
 		f := 0
 		a := 0
-		switch c.NormalCounter {
+		switch c.NormalCounter {jhk
 		//TODO: need to add atkspd mod
 		case 0:
 			f = 27
