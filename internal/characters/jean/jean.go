@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(core.Jean, NewChar)
+	core.RegisterCharFunc(core.Jean, NewChar)jh;kjhl;kjbhkjrr
 }
 
 type char struct {
