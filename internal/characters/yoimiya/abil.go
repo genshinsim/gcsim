@@ -36,8 +36,6 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], travel+hitmarks[c.NormalCounter][i])
 	}
 
-	c.AdvanceNormalIndex()
-
 	if c.Base.Cons == 6 && c.Core.Status.Duration("yoimiyaskill") > 0 && c.Core.Rand.Float64() < 0.5 {
 		//trigger attack
 		ai := core.AttackInfo{
@@ -54,6 +52,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, travel+f+5)
 
 	}
+
+	c.AdvanceNormalIndex()
 
 	if c.Core.Status.Duration("yoimiyaskill") > 0 {
 		if c.lastPart < c.Core.F || c.lastPart == 0 {
