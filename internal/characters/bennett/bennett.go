@@ -89,7 +89,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	switch p["hold"] {
 	case 1:
-		c.skillHoldShort()
+		c.skillHoldShort(false)
 		cd = 450 - 90
 		cdDelay = 43
 	case 2:
@@ -154,12 +154,8 @@ func (c *char) skillHoldShort() {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[i], delay[i])
 	}
 
-	//25 % chance of 3 orbs
-	count := 2
-	if c.Core.Rand.Float64() < .25 {
-		count++
-	}
-	c.QueueParticle("bennett", count, core.Pyro, 215)
+	//Bennett Hold E is guaranteed 3 orbs
+	c.QueueParticle("bennett", 3, core.Pyro, 215)
 }
 
 func (c *char) skillHoldLong() {
