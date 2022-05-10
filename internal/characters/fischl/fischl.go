@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 )
-
+this is the easiest way to make a branch from the frames branch lol
 func init() {
 	core.RegisterCharFunc(core.Fischl, NewChar)
 }
