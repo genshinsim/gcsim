@@ -166,7 +166,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	orbital, ok := p["orbital"]
 	if !ok {
-		orbital = 0
+		orbital = 1
 	}
 
 	// orbitals apply wet at 44f
@@ -212,7 +212,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	orbital, ok := p["orbital"]
 	if !ok {
-		orbital = 0
+		orbital = 1
 	}
 
 	if orbital == 1 {
