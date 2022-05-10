@@ -2,7 +2,7 @@ package amber
 
 import (
 	"github.com/genshinsim/gcsim/internal/tmpl/character"
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core"//hi
 )
 
 func init() {
