@@ -95,6 +95,43 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	return f, a
 }
 
+var caHitmarks = [2]int{8, 20}
+
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionCharge, p)
+
+	ai := core.AttackInfo{
+		Abil:       "Charge",
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
+	for i, mult := range ca {
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), caHitmarks[i], caHitmarks[i])
+	}
+
+	return f, a
+}
+
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+	switch a {
+	case core.ActionDash:
+		return 18
+	case core.ActionCharge:
+		return 20
+	default:
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		return 0
+	}
+
+}
+
 func (c *char) orbitalfunc(src int) func() {
 	return func() {
 		c.Core.Log.NewEvent("orbital checking tick", core.LogCharacterEvent, c.Index, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
