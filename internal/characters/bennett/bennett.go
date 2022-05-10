@@ -87,19 +87,25 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	var cd int
 	var cdDelay int
 
-	switch p["hold"] {
-	case 1:
-		c.skillHoldShort()
+	if p["hold_c4"] == 1 { //TODO: check if they actually have c4
+		c.skillHoldShort(true)
 		cd = 450 - 90
 		cdDelay = 43
-	case 2:
-		c.skillHoldLong()
-		cd = 600 - 120
-		cdDelay = 110
-	default:
-		c.skillPress()
-		cd = 300 - 60
-		cdDelay = 14
+	} else {
+		switch p["hold"] {
+		case 1:
+			c.skillHoldShort(false)
+			cd = 450 - 90
+			cdDelay = 43
+		case 2:
+			c.skillHoldLong()
+			cd = 600 - 120
+			cdDelay = 110
+		default:
+			c.skillPress()
+			cd = 300 - 60
+			cdDelay = 14
+		}
 	}
 
 	//A4
@@ -135,7 +141,7 @@ func (c *char) skillPress() {
 	c.QueueParticle("bennett", count, core.Pyro, 120)
 }
 
-func (c *char) skillHoldShort() {
+func (c *char) skillHoldShort(c4Active bool) {
 
 	delay := []int{45, 57}
 
@@ -152,6 +158,12 @@ func (c *char) skillHoldShort() {
 	for i, v := range skill1 {
 		ai.Mult = v[c.TalentLvlSkill()]
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[i], delay[i])
+	}
+
+	if c4Active { //user-specified c4 variant adds an additional attack that deals 135% of the second hit
+		ai.Mult = skill1[1][c.TalentLvlSkill()] * 1.35
+		ai.Abil = "Passion Overload (C4)"
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 94, 94)
 	}
 
 	//25 % chance of 3 orbs
