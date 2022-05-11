@@ -203,7 +203,7 @@ func (a *Ctrl) execAction(n *core.ActionItem) (int, bool, error) {
 		f = a.execActionItem(n, core.PreDash, core.PostDash, core.DashState, true, c.Dash)
 		a.core.Events.Emit(core.OnStamUse, core.ActionDash)
 	case core.ActionJump:
-		f = core.JumpFrames
+		f = a.execActionItem(n, core.PreJump, core.PostJump, core.JumpState, true, c.Jump)
 		a.core.ResetAllNormalCounter()
 	case core.ActionWalk:
 		f = core.WalkFrames

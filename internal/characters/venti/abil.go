@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{17, 27}, {19}, {28}, {15, 28}, {17}, {49}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -28,7 +30,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		// TODO - double check snapshotDelay
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f+i, f+travel+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i]+travel)
 	}
 
 	c.AdvanceNormalIndex()
@@ -74,6 +76,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	cd := 360
+	cdstart := 21
+	hitmark := 51
 	ai := core.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Skyward Sonnett",
@@ -88,6 +92,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	if p["hold"] == 1 {
 		cd = 900
+		cdstart = 34
+		hitmark = 74
 		ai.Mult = skillHold[c.TalentLvlSkill()]
 	}
 
@@ -97,11 +103,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		cb = c2cb
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, hitmark, cb)
 
-	c.QueueParticle("venti", 3, core.Anemo, f+100)
+	c.QueueParticle("venti", 3, core.Anemo, hitmark+100)
 
-	c.SetCD(core.ActionSkill, cd)
+	c.SetCDWithDelay(core.ActionSkill, cd, cdstart)
 	return f, a
 }
 
@@ -121,26 +127,38 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	snap := c.Snapshot(&ai)
+	c.aiAbsorb = ai
+	c.aiAbsorb.Abil = "Wind's Grand Ode (Infused)"
+	c.aiAbsorb.Mult = burstAbsorbDot[c.TalentLvlBurst()]
+	c.aiAbsorb.Element = core.NoElement
+
+	// snapshot is around cd frame and 1st tick?
+	var snap core.Snapshot
+	c.AddTask(func() {
+		snap = c.Snapshot(&ai)
+		c.snapAbsorb = c.Snapshot(&c.aiAbsorb)
+	}, "venti-q-snapshot", 104)
 
 	var cb core.AttackCBFunc
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
 		cb = c6cb(core.Anemo)
 	}
 
-	for i := 24; i <= 480; i += 24 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
+	// starts at 106 with 24f interval between ticks. 20 total
+	for i := 0; i < 20; i++ {
+		c.AddTask(func() {
+			c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), 0, cb)
+		}, "venti-burst-tick", 106+24*i)
 	}
-
 	// Infusion usually occurs after 4 ticks of anemo according to KQM library
-	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int(480/18)-24*4), "venti-absorb-check", 24*4)
+	c.AddTask(c.absorbCheckQ(c.Core.F, 0, int((480-24*4)/18)), "venti-absorb-check", 106+24*3)
 
 	c.AddTask(func() {
 		c.a4Restore()
 	}, "venti-a4-restore", 480+f)
 
-	c.SetCDWithDelay(core.ActionBurst, 15*60, 90)
-	c.ConsumeEnergy(90)
+	c.SetCDWithDelay(core.ActionBurst, 15*60, 81)
+	c.ConsumeEnergy(84)
 	return f, a
 }
 
@@ -157,24 +175,14 @@ func (c *char) a4Restore() {
 }
 
 func (c *char) burstInfusedTicks() {
-	ai := core.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Wind's Grand Ode (Infused)",
-		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagVentiBurstAnemo,
-		ICDGroup:   core.ICDGroupVenti,
-		Element:    c.qInfuse,
-		Durability: 25,
-		Mult:       burstAbsorbDot[c.TalentLvlBurst()],
-	}
-	snap := c.Snapshot(&ai)
 	var cb core.AttackCBFunc
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
 		cb = c6cb(c.qInfuse)
 	}
 
-	for i := 24; i <= 360; i += 24 {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(4, false, core.TargettableEnemy), i, cb)
+	// ticks at 24f. 15 total
+	for i := 0; i < 15; i++ {
+		c.Core.Combat.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, core.NewDefCircHit(4, false, core.TargettableEnemy), i*24, cb)
 	}
 }
 
@@ -185,6 +193,17 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		}
 		c.qInfuse = c.Core.AbsorbCheck(c.infuseCheckLocation, core.Pyro, core.Hydro, core.Electro, core.Cryo)
 		if c.qInfuse != core.NoElement {
+			c.aiAbsorb.Element = c.qInfuse
+			switch c.qInfuse {
+			case core.Pyro:
+				c.aiAbsorb.ICDTag = core.ICDTagVentiBurstPyro
+			case core.Hydro:
+				c.aiAbsorb.ICDTag = core.ICDTagVentiBurstHydro
+			case core.Electro:
+				c.aiAbsorb.ICDTag = core.ICDTagVentiBurstElectro
+			case core.Cryo:
+				c.aiAbsorb.ICDTag = core.ICDTagVentiBurstCryo
+			}
 			//trigger dmg ticks here
 			c.burstInfusedTicks()
 			return

@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{4, 17}, {15}, {15}, {14, 31}, {16}, {39}}
+
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other characters
 func (c *char) Attack(p map[string]int) (int, int) {
@@ -24,7 +26,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-5+i, f-5+i)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -51,18 +53,20 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
 	//return animation cd
 	return f, a
 }
+
+var collisionFrame = 38
 
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) PlungeAttack(delay int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Plunge (Normal)",
+		Abil:       "Plunge Collision",
 		AttackTag:  core.AttackTagPlunge,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
@@ -77,21 +81,19 @@ func (c *char) PlungeAttack(delay int) (int, int) {
 }
 
 // High Plunge attack damage queue generator
-// Use the "plunge_hits" optional argument to determine how many plunge falling hits you do on the way down
+// Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionHighPlunge, p)
 
-	plungeHits, ok := p["plunge_hits"]
+	collision, ok := p["collision"]
 	if !ok {
-		plungeHits = 0 // Number of normal plunge hits
+		collision = 0 // Whether or not Xiao does a collision hit
 	}
 
-	for i := 0; i < plungeHits; i++ {
-		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
-		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
-		c.PlungeAttack(f - i - 2)
+	if collision > 0 {
+		c.PlungeAttack(collisionFrame)
 	}
 
 	ai := core.AttackInfo{
@@ -105,28 +107,26 @@ func (c *char) HighPlungeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       highplunge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 
 	//return animation cd
 	return f, a
 }
 
 // Low Plunge attack damage queue generator
-// Use the "plunge_hits" optional argument to determine how many plunge falling hits you do on the way down
+// Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
 func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionLowPlunge, p)
 
-	plungeHits, ok := p["plunge_hits"]
+	collision, ok := p["collision"]
 	if !ok {
-		plungeHits = 0 // Number of normal plunge hits
+		collision = 0 // Whether or not Xiao does a collision hit
 	}
 
-	for i := 0; i < plungeHits; i++ {
-		// Add plunge attack in each frame leading up to final hit for now - not sure we have clear mechanics on this
-		// TODO: Perhaps amend later, but functionally in combat you usually get at most one of these anyway
-		c.PlungeAttack(f - i - 2)
+	if collision > 0 {
+		c.PlungeAttack(collisionFrame)
 	}
 
 	ai := core.AttackInfo{
@@ -140,7 +140,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       lowplunge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 
 	//return animation cd
 	return f, a
@@ -152,13 +152,6 @@ func (c *char) LowPlungeAttack(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
-	// According to KQM library, double E is only 60 frames long whereas single cast is 36
-	// No idea how this works, but add a special case to reduce the frames of the 2nd cast
-	// TODO: No data listed on how 3 casts work - this might be too few frames compared to actual 3x usage
-	if c.Core.LastAction.Target == core.Xiao && c.Core.LastAction.Typ == core.ActionSkill {
-		f = 60 - f
-		a = 60 - a
-	}
 
 	// Add damage based on A4
 	if c.a4Expiry <= c.Core.F {
@@ -229,9 +222,18 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}, "xiaoburst-hp-drain", i)
 	}
 
-	// Checked gameplay - burst starts ticking down from activation. CD is 16.6 seconds after animation is done
-	c.SetCDWithDelay(core.ActionBurst, 18*60, 39)
-	c.ConsumeEnergy(39)
+	c.SetCDWithDelay(core.ActionBurst, 18*60, 29)
+	c.ConsumeEnergy(36)
 
+	return f, a
+}
+
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
+	return f, a
+}
+
+func (c *char) Jump(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionJump, p)
 	return f, a
 }

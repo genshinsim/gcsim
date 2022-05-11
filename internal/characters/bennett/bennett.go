@@ -39,6 +39,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+	c.InitCancelFrames()
 
 	if c.Base.Cons >= 2 {
 		c.c2()
@@ -59,45 +60,6 @@ func (c *char) c2() {
 	})
 }
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	switch a {
-	case core.ActionAttack:
-		f := 0
-		switch c.NormalCounter {
-		//TODO: need to add atkspd mod
-		case 0:
-			f = 12 //frames from keqing lib
-		case 1:
-			f = 20 + 5 //+5 i guess recovery from n1?
-		case 2:
-			f = 31
-		case 3:
-			f = 55
-		case 4:
-			f = 49
-		}
-		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
-		return f, f
-	case core.ActionCharge:
-		return 100, 100 //frames from keqing lib
-	case core.ActionSkill:
-		hold := p["hold"]
-		switch hold {
-		case 1:
-			return 112, 112
-		case 2:
-			return 197, 197
-		default:
-			return 52, 52
-		}
-	case core.ActionBurst:
-		return 51, 51 //ok
-	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
-		return 0, 0
-	}
-}
-
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -112,7 +74,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f)
 
 	c.AdvanceNormalIndex()
 
@@ -123,17 +85,21 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	var cd int
+	var cdDelay int
 
 	switch p["hold"] {
 	case 1:
 		c.skillHoldShort()
 		cd = 450 - 90
+		cdDelay = 43
 	case 2:
 		c.skillHoldLong()
 		cd = 600 - 120
+		cdDelay = 110
 	default:
 		c.skillPress()
 		cd = 300 - 60
+		cdDelay = 14
 	}
 
 	//A4
@@ -141,7 +107,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		cd = cd / 2
 	}
 
-	c.SetCD(core.ActionSkill, cd)
+	c.SetCDWithDelay(core.ActionSkill, cd, cdDelay)
 
 	return f, a
 
@@ -159,7 +125,7 @@ func (c *char) skillPress() {
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 15, 15)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 16, 16)
 
 	//25 % chance of 3 orbs
 	count := 2
@@ -171,7 +137,7 @@ func (c *char) skillPress() {
 
 func (c *char) skillHoldShort() {
 
-	delay := []int{89, 115}
+	delay := []int{45, 57}
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -197,9 +163,8 @@ func (c *char) skillHoldShort() {
 }
 
 func (c *char) skillHoldLong() {
-	//i think explode is guaranteed 3 orbs
 
-	delay := []int{136, 154}
+	delay := []int{112, 121}
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -217,18 +182,14 @@ func (c *char) skillHoldLong() {
 	}
 
 	ai.Mult = explosion[c.TalentLvlSkill()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 198, 198)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 166, 166)
 
-	//25 % chance of 3 orbs
-	count := 2
-	if c.Core.Rand.Float64() < .25 {
-		count++
-	}
-	c.QueueParticle("bennett", count, core.Pyro, 298)
+	//Bennett Hold E is guaranteed 3 orbs
+	c.QueueParticle("bennett", 3, core.Pyro, 298)
 
 }
 
-const burstStartFrame = 31
+const burstStartFrame = 34
 
 func (c *char) Burst(p map[string]int) (int, int) {
 
@@ -249,7 +210,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	//TODO: review bennett AOE size
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 33, 33)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 37, 37)
 	stats, _ := c.SnapshotStats()
 
 	//apply right away
@@ -262,9 +223,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.AddTask(c.applyBennettField(stats), "bennett-field", i)
 	}
 
-	c.ConsumeEnergy(42)
-	c.SetCDWithDelay(core.ActionBurst, 900, 42)
-	return f, a //todo fix field cast time
+	c.ConsumeEnergy(36)
+	c.SetCDWithDelay(core.ActionBurst, 900, 34)
+	return f, a
 }
 
 const bennettSelfInfusionDurationInFrames = 126

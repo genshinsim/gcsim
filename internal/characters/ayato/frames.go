@@ -93,6 +93,6 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 		return f
 	}
-	//otherise use default implementation
+	//otherwise use default implementation
 	return c.Tmpl.ActionInterruptableDelay(next, p)
 }
