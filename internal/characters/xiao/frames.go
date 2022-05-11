@@ -113,6 +113,8 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionLowPlunge, core.ActionDash, 60-44)
 	c.SetAbilCancelFrames(core.ActionLowPlunge, core.ActionJump, 61-44)
 	c.SetAbilCancelFrames(core.ActionLowPlunge, core.ActionSwap, 62-44)
+
+	c.SetAbilCancelFrames(core.ActionJump, core.ActionSkill, 5) //Using the same frame number as the air E in burst
 }
 
 func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) int {
@@ -130,6 +132,7 @@ func BurstJumpFrames(next core.ActionType) int {
 	case core.ActionHighPlunge:
 		return 6 - 5
 	case core.ActionLowPlunge:
+	case core.ActionSkill: //Xiao E can be used in the air
 		return 5 - 5
 	default:
 		return 58 - 5 //if jump was not followed by plunge, he must wait to float down
