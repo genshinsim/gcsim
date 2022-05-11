@@ -68,13 +68,14 @@ const (
 // }
 
 type CharacterProfile struct {
-	Base      CharacterBase             `json:"base"`
-	Weapon    WeaponProfile             `json:"weapon"`
-	Talents   TalentProfile             `json:"talents"`
-	Stats     []float64                 `json:"stats"`
-	Sets      map[string]int            `json:"sets"`
-	SetParams map[string]map[string]int `json:"-"`
-	Params    map[string]int            `json:"-"`
+	Base         CharacterBase             `json:"base"`
+	Weapon       WeaponProfile             `json:"weapon"`
+	Talents      TalentProfile             `json:"talents"`
+	Stats        []float64                 `json:"stats"`
+	StatsByLabel map[string][]float64      `json:"stats_by_label"`
+	Sets         map[string]int            `json:"sets"`
+	SetParams    map[string]map[string]int `json:"-"`
+	Params       map[string]int            `json:"-"`
 }
 
 func (c *CharacterProfile) Clone() CharacterProfile {
