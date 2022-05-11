@@ -105,6 +105,18 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	return f, a
 }
 
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+	switch a {
+	case core.ActionDash:
+		return 18
+	case core.ActionCharge:
+		return 20
+	default:
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		return 0
+	}
+}
+
 func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
