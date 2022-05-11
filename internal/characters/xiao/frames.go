@@ -113,8 +113,6 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionLowPlunge, core.ActionDash, 60-44)
 	c.SetAbilCancelFrames(core.ActionLowPlunge, core.ActionJump, 61-44)
 	c.SetAbilCancelFrames(core.ActionLowPlunge, core.ActionSwap, 62-44)
-
-	c.SetAbilCancelFrames(core.ActionJump, core.ActionSkill, 5) //Using the same frame number as the air E in burst
 }
 
 func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) int {
