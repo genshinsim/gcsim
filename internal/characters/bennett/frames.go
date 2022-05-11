@@ -30,6 +30,11 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 22, 55
 	case core.ActionSkill:
+		holdc4 := p["hold_c4"]
+		if holdc4 == 1 {
+			return 95, 107
+		}
+
 		hold := p["hold"]
 		switch hold {
 		case 1:
@@ -86,7 +91,13 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 	// Provide a custom override for Bennett's Hold E varieties
 	if c.Core.LastAction.Typ == core.ActionSkill {
 		//depends on which type of hold E was used
+		hc4 := c.Core.LastAction.Param["hold_c4"]
 		h := c.Core.LastAction.Param["hold"]
+
+		//override for c4 hold tech
+		if hc4 == 1 {
+			return SkillHoldC4Frames(next)
+		}
 
 		switch h { //determine cancel frames based on which Hold E was used
 		case 1:
@@ -104,7 +115,6 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 	return c.Tmpl.ActionInterruptableDelay(next, p)
 }
 
-//not yet used
 func SkillHoldC4Frames(next core.ActionType) int {
 	switch next {
 	case core.ActionAttack:
