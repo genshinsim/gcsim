@@ -20,6 +20,8 @@ type Simulation struct {
 	stats Result
 	//prevs action that was checked
 	lastActionUsedAt int
+	//prevs delay that was triggered
+	lastDelayAt int
 }
 
 func New(cfg core.SimulationConfig, c *core.Core) (*Simulation, error) {
