@@ -391,9 +391,9 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 			// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
 			// might give them "too much" cr (= max out liquid cr subs) but that's probably not a big deal
-			if charWithFavonius[idxChar] && idxSubstat == 1 {
+			if charWithFavonius[idxChar] && substat == core.CR {
 				substatGradients[idxSubstat] += 1000
-			}	
+			}
 
 			charProfilesCopy[idxChar].Stats[substat] -= 10 * substatValues[substat] * charSubstatRarityMod[idxChar]
 		}
