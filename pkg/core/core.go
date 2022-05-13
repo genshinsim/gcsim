@@ -199,7 +199,7 @@ func (c *Core) UserCustomDelay() int {
 	case ActionAim:
 		d = c.Flags.Delays.Aim
 	}
-	return c.LastAction.Param["delay"] + d
+	return c.LastAction.Param["delay"] + d - 1
 }
 
 func (c *Core) ResetAllNormalCounter() {
