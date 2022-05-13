@@ -250,6 +250,11 @@ func (stats *OptimStats) calculateSubstatGradientsForChar(idxChar int, relevantS
 
 		substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
 
+		// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
+		// might give them "too much" cr (= max out liquid cr subs) but that's probably not a big deal
+		if stats.charWithFavonius[idxChar] && substat == attributes.CR {
+			substatGradients[idxSubstat] += 1000
+		}
 		stats.charProfilesCopy[idxChar].Stats[substat] -= 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 	}
 
@@ -402,7 +407,7 @@ func (stats *OptimStats) calculateERBaseline() {
 		// Need special exception to Raiden due to her burst mechanics
 		// TODO: Don't think there's a better solution without an expensive recursive solution to check across all Raiden ER states
 		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks low
-		erStack := stats.fixedSubstatCount
+		erStack := stats.charSubstatLimits[i][attributes.ER]
 		if char.Base.Key == keys.Raiden {
 			erStack = 0
 		}
