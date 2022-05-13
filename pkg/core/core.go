@@ -199,7 +199,14 @@ func (c *Core) UserCustomDelay() int {
 	case ActionAim:
 		d = c.Flags.Delays.Aim
 	}
-	return c.LastAction.Param["delay"] + d - 1
+
+	//it takes one frame to queue an action, so delay should be reduced by one.
+	d += c.LastAction.Param["delay"] - 1
+	if d < 0 {
+		d = 0
+	}
+
+	return d
 }
 
 func (c *Core) ResetAllNormalCounter() {
