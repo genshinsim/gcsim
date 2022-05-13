@@ -51,13 +51,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.CharZone = core.ZoneInazuma
 
-	if c.Base.Cons > 0 {
-		c.c1()
-	}
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-
 	return &c, nil
 }
 
@@ -112,4 +105,10 @@ func (c *char) Init() {
 		c.c6buff[core.CD] = 0.4
 	}
 
+	if c.Base.Cons > 0 {
+		c.c1()
+	}
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
 }

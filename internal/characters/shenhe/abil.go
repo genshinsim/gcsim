@@ -227,7 +227,7 @@ func (c *char) skillPressBuff() {
 		c.quillcount[i] = 5
 		c.updateBuffTags()
 		char.AddPreDamageMod(core.PreDamageMod{
-			Key:    "shenhe-a2-press",
+			Key:    "shenhe-a1-press",
 			Expiry: c.Core.F + 10*60,
 			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
 				if a.Info.AttackTag != core.AttackTagElementalBurst && a.Info.AttackTag != core.AttackTagElementalArt && a.Info.AttackTag != core.AttackTagElementalArtHold {
@@ -246,7 +246,7 @@ func (c *char) skillHoldBuff() {
 		c.quillcount[i] = 7
 		c.updateBuffTags()
 		char.AddPreDamageMod(core.PreDamageMod{
-			Key:    "shenhe-a2-hold",
+			Key:    "shenhe-a1-hold",
 			Expiry: c.Core.F + 15*60,
 			Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
 				if a.Info.AttackTag != core.AttackTagNormal && a.Info.AttackTag != core.AttackTagExtra && a.Info.AttackTag != core.AttackTagPlunge {

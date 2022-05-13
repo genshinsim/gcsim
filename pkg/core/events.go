@@ -53,6 +53,8 @@ const (
 	PostAimShoot     //nil, frames
 	PreDash
 	PostDash
+	PreJump
+	PostJump
 	//sim stuff
 	OnInitialize  //nil
 	OnStateChange //prev, next

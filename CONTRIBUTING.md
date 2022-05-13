@@ -18,7 +18,6 @@ A rough guideline for your comment is as follows:
 - [ ] C0 Skill
 - [ ] C0 Burst
 - [ ] A1
-- [ ] A2 
 - [ ] A4
 - [ ] Sanity Test Cases
 - [ ] C1
@@ -37,7 +36,6 @@ A rough guideline for your comment is as follows:
 - [ ] C0 Skill
 - [ ] C0 Burst
 - [ ] A1
-- [ ] A2 
 - [ ] A4
 - [ ] Sanity Test Cases
 - [ ] C1

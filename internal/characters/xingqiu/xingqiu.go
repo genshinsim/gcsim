@@ -42,59 +42,32 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 5
 	c.NormalHitNum = 5
 	c.CharZone = core.ZoneLiyue
-
-	c.AddMod(core.CharStatMod{
-		Key: "a4",
-		Amount: func() ([]float64, bool) {
-			a4 := make([]float64, core.EndStatType)
-			a4[core.HydroP] = 0.2
-			return a4, true
-		},
-		Expiry: -1,
-	})
-	// c.burstHook()
-	c.burstStateHook()
-
-	/** c6
-	Activating 2 of Guhua Sword: Raincutter's sword rain attacks greatly increases the DMG of the third.
-	Xingqiu regenerates 3 Energy when sword rain attacks hit opponents.
-	**/
+	c.InitCancelFrames()
 
 	return &c, nil
 }
 
-var delay = [][]int{{8}, {24}, {24, 43}, {36}, {43, 78}}
+func (c *char) Init() {
+	c.Tmpl.Init()
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
-	switch a {
-	case core.ActionAttack:
-		f := 0
-		switch c.NormalCounter {
-		//TODO: need to add atkspd mod
-		case 0:
-			f = 9
-		case 1:
-			f = 25
-		case 2:
-			f = 44
-		case 3:
-			f = 37
-		case 4:
-			f = 79
-		}
-		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
-		return f, f
-	case core.ActionCharge:
-		return 63, 63
-	case core.ActionSkill:
-		return 77, 77 //should be 82
-	case core.ActionBurst:
-		return 39, 39 //ok
-	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
-		return 0, 0
-	}
+	c.a4()
+	c.burstStateHook()
 }
+
+func (c *char) a4() {
+	m := make([]float64, core.EndStatType)
+	m[core.HydroP] = 0.2
+
+	c.AddMod(core.CharStatMod{
+		Key:    "xingqiu-a4",
+		Expiry: -1,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
+}
+
+var hitmarks = [][]int{{10}, {13}, {9, 19}, {17}, {18, 39}}
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
@@ -112,7 +85,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Abil = fmt.Sprintf("Normal %v", c.NormalCounter)
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	//add a 75 frame attackcounter reset
@@ -120,6 +93,43 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	//return animation cd
 	//this also depends on which hit in the chain this is
 	return f, a
+}
+
+var caHitmarks = [2]int{8, 20}
+
+func (c *char) ChargeAttack(p map[string]int) (int, int) {
+
+	f, a := c.ActionFrames(core.ActionCharge, p)
+
+	ai := core.AttackInfo{
+		Abil:       "Charge",
+		ActorIndex: c.Index,
+		AttackTag:  core.AttackTagExtra,
+		ICDTag:     core.ICDTagExtraAttack,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 25,
+	}
+
+	for i, mult := range ca {
+		ai.Mult = mult[c.TalentLvlAttack()]
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), caHitmarks[i], caHitmarks[i])
+	}
+
+	return f, a
+}
+
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+	switch a {
+	case core.ActionDash:
+		return 18
+	case core.ActionCharge:
+		return 20
+	default:
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		return 0
+	}
+
 }
 
 func (c *char) orbitalfunc(src int) func() {
@@ -132,7 +142,7 @@ func (c *char) orbitalfunc(src int) func() {
 
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Xingqiu Skill (Orbital)",
+			Abil:       "Xingqiu Orbital",
 			AttackTag:  core.AttackTagNone,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
@@ -142,19 +152,19 @@ func (c *char) orbitalfunc(src int) func() {
 		c.Core.Log.NewEvent("orbital ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+150, "expiry", c.Core.Status.Duration("xqorb"), "src", src)
 
 		//queue up next instance
-		c.AddTask(c.orbitalfunc(src), "xq-skill-orbital", 135)
+		c.AddTask(c.orbitalfunc(src), "xq-orbital", 135)
 
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), -1, 1)
 	}
 }
 
-func (c *char) applyOrbital(duration int) {
+func (c *char) applyOrbital(duration int, delay int) {
 	f := c.Core.F
 	c.Core.Log.NewEvent("Applying orbital", core.LogCharacterEvent, c.Index, "current status", c.Core.Status.Duration("xqorb"))
 	//check if orbitals already active, if active extend duration
 	//other wise start first tick func
 	if !c.orbitalActive {
-		c.AddTask(c.orbitalfunc(f), "xq-skill-orbital", 14)
+		c.AddTask(c.orbitalfunc(f), "xq-orbital", delay)
 		c.orbitalActive = true
 		c.Core.Log.NewEvent("orbital applied", core.LogCharacterEvent, c.Index, "expected end", f+900, "next expected tick", f+40)
 	}
@@ -163,7 +173,7 @@ func (c *char) applyOrbital(duration int) {
 	c.Core.Log.NewEvent("orbital duration extended", core.LogCharacterEvent, c.Index, "new expiry", c.Core.Status.Duration("xqorb"))
 }
 
-var rainscreenDelay = [2]int{19, 35}
+var rainscreenDelay = [2]int{12, 31}
 
 func (c *char) Skill(p map[string]int) (int, int) {
 	//applies wet to self 30 frame after cast, sword applies wet every 2.5seconds, so should be 7 seconds
@@ -191,18 +201,20 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), rainscreenDelay[i], rainscreenDelay[i])
 	}
 
-	// Orbitals spawn in 1 frame before the second hit connects going by the "Wet" text
-	c.AddTask(func() {
-		orbital := p["orbital"]
-		if orbital == 1 {
-			c.applyOrbital(15 * 60)
-		}
-	}, "xingqiu-spawn-orbitals", 34)
+	orbital, ok := p["orbital"]
+	if !ok {
+		orbital = 1
+	}
+
+	// orbitals apply wet at 44f
+	if orbital == 1 {
+		c.applyOrbital(15*60, 43) //takes 1 frame to apply it
+	}
 
 	c.QueueParticle(c.Base.Key.String(), 5, core.Hydro, 100)
 
 	//should last 15s, cd 21s
-	c.SetCD(core.ActionSkill, 21*60)
+	c.SetCDWithDelay(core.ActionSkill, 21*60, 10)
 	return f, a
 }
 
@@ -232,20 +244,24 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		dur += 3
 	}
 	dur = dur * 60
-	c.Core.Status.AddStatus("xqburst", dur)
-	c.Core.Log.NewEvent("Xingqiu burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur)
+	c.Core.Status.AddStatus("xqburst", dur+a)
+	c.Core.Log.NewEvent("Xingqiu burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur+a)
 
-	orbital := p["orbital"]
+	orbital, ok := p["orbital"]
+	if !ok {
+		orbital = 1
+	}
 
 	if orbital == 1 {
-		c.applyOrbital(dur)
+		c.applyOrbital(dur, f)
 	}
 
 	c.burstCounter = 0
 	c.numSwords = 2
+	c.nextRegen = false
 
 	// c.CD[combat.BurstCD] = c.S.F + 20*60
-	c.SetCDWithDelay(core.ActionBurst, 20*60, 7)
-	c.ConsumeEnergy(7)
+	c.SetCD(core.ActionBurst, 20*60)
+	c.ConsumeEnergy(3)
 	return f, a
 }

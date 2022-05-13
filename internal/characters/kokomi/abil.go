@@ -28,11 +28,11 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+travel)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
 	// TODO: Assume that this is not dynamic (snapshot on projectile release)
 
 	if c.NormalCounter == c.NormalHitNum-1 {
-		c.c1(f)
+		c.c1(f, travel)
 	}
 
 	c.AdvanceNormalIndex()
@@ -40,7 +40,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	return f, a
 }
 
-func (c *char) c1(f int) {
+func (c *char) c1(f, travel int) {
 	if c.Base.Cons == 0 {
 		return
 	}
@@ -51,7 +51,7 @@ func (c *char) c1(f int) {
 	// TODO: Assume that these are 1A (not specified in library)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
+		Abil:       "At Water's Edge (C1)",
 		AttackTag:  core.AttackTagNone,
 		ICDTag:     core.ICDTagNone,
 		ICDGroup:   core.ICDGroupDefault,
@@ -59,11 +59,10 @@ func (c *char) c1(f int) {
 		Durability: 25,
 		Mult:       0,
 	}
-	ai.FlatDmg = 0.3 * c.HPMax
+	ai.FlatDmg = 0.3 * c.MaxHP()
 
-	// TODO: Frames not in library - Think it's 7 frames based on a rough count
 	// TODO: Is this snapshotted/dynamic?
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f+7)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, f+travel)
 }
 
 // Standard charge attack
@@ -93,15 +92,15 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
+	// skill duration is ~12.5s
 	// Plus 1 to avoid same frame issues with skill ticks
-	// add 20 because the skill duration is not exactly 12s
-	c.Core.Status.AddStatus("kokomiskill", 20+12*60+1)
+	c.Core.Status.AddStatus("kokomiskill", 12*60+30+1)
 
 	d := c.createSkillSnapshot()
 
 	// You get 1 tick immediately, then 1 tick every 2 seconds for a total of 7 ticks
 	c.AddTask(func() { c.skillTick(d) }, "kokomi-e-tick", 24)
-	c.AddTask(c.skillTickTask(d, c.Core.F), "kokomi-e-ticks", 127)
+	c.AddTask(c.skillTickTask(d, c.Core.F), "kokomi-e-ticks", 24+126)
 
 	c.skillLastUsed = c.Core.F
 	c.SetCDWithDelay(core.ActionSkill, 20*60, 20)
@@ -144,12 +143,14 @@ func (c *char) skillTick(d *core.AttackEvent) {
 		d.Info.FlatDmg = c.burstDmgBonus(d.Info.AttackTag)
 	}
 
+	maxhp := c.MaxHP()
+
 	c.Core.Combat.QueueAttackEvent(d, 0)
 	c.Core.Health.Heal(core.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Core.ActiveChar,
 		Message: "Bake-Kurage",
-		Src:     skillHealPct[c.TalentLvlSkill()]*c.HPMax + skillHealFlat[c.TalentLvlSkill()],
+		Src:     skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()],
 		Bonus:   d.Snapshot.Stats[core.Heal],
 	})
 
@@ -168,7 +169,7 @@ func (c *char) skillTick(d *core.AttackEvent) {
 				Caller:  c.Index,
 				Target:  c.Core.ActiveChar,
 				Message: "The Clouds Like Waves Rippling",
-				Src:     0.045 * c.HPMax,
+				Src:     0.045 * maxhp,
 				Bonus:   c.Stat(core.Heal),
 			})
 		}
@@ -216,7 +217,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       0,
 	}
-	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.HPMax
+	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.MaxHP()
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
 
@@ -231,23 +232,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	// C4 attack speed buff
 	if c.Base.Cons >= 4 {
+		m := make([]float64, core.EndStatType)
+		m[core.AtkSpd] = 0.1
 		c.AddMod(core.CharStatMod{
-			Key: "kokomi-c4",
-			Amount: func() ([]float64, bool) {
-				val := make([]float64, core.EndStatType)
-				val[core.AtkSpd] = 0.1
-				if c.Core.Status.Duration("kokomiburst") > 0 {
-					return val, true
-				}
-				return nil, false
-			},
+			Key:    "kokomi-c4",
 			Expiry: c.Core.F + 10*60,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 
 	// Cannot be prefed particles
 	c.ConsumeEnergy(57)
-	c.SetCDWithDelay(core.ActionBurst, 18*60, 57)
+	c.SetCDWithDelay(core.ActionBurst, 18*60, 46)
 	return f, a
 }
 
@@ -258,11 +256,11 @@ func (c *char) burstDmgBonus(a core.AttackTag) float64 {
 	}
 	switch a {
 	case core.AttackTagNormal:
-		return burstBonusNormal[c.TalentLvlBurst()] * c.HPMax
+		return burstBonusNormal[c.TalentLvlBurst()] * c.MaxHP()
 	case core.AttackTagExtra:
-		return burstBonusCharge[c.TalentLvlBurst()] * c.HPMax
+		return burstBonusCharge[c.TalentLvlBurst()] * c.MaxHP()
 	case core.AttackTagElementalArt:
-		return burstBonusSkill[c.TalentLvlBurst()] * c.HPMax
+		return burstBonusSkill[c.TalentLvlBurst()] * c.MaxHP()
 	default:
 		return 0
 	}

@@ -66,7 +66,7 @@ func (s *Simulation) initChars() error {
 		s.stats.CharDetails = append(s.stats.CharDetails, CharDetail{
 			Name:     v.Base.Key.String(),
 			Level:    v.Base.Level,
-			MaxLevel: v.Base.Level,
+			MaxLevel: v.Base.MaxLevel,
 			Cons:     v.Base.Cons,
 			Weapon: WeaponDetail{
 				Refine:   v.Weapon.Refine,

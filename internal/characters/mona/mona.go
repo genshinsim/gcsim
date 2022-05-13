@@ -42,9 +42,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.c2icd = -1
 
-	c.burstHook()
-	c.a4()
-
 	return &c, nil
 }
 
@@ -63,6 +60,10 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+
+	c.burstHook()
+	c.a4()
+
 	//add damage mod for omen
 	//add E hook
 	val := make([]float64, core.EndStatType)

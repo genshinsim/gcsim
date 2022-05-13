@@ -95,7 +95,7 @@ func (c *char) Dash(p map[string]int) (int, int) {
 		c.Core.RestoreStam(10)
 		val := make([]float64, core.EndStatType)
 		val[core.CryoP] = 0.18
-		//a2 increase normal + ca dmg by 30% for 6s
+		//a1 increase normal + ca dmg by 30% for 6s
 		c.AddMod(core.CharStatMod{
 			Key:    "ayaka-a4",
 			Expiry: c.Core.F + 600,
@@ -143,7 +143,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Key:    "ayaka-a1",
 		Expiry: c.Core.F + 360,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return val, atk.Info.AttackTag == core.AttackTagNormal || ai.AttackTag == core.AttackTagExtra
+			return val, atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra
 		},
 	})
 
@@ -241,15 +241,7 @@ func (c *char) c6cb(a core.AttackCB) {
 	c.c6CDTimerAvail = false
 
 	c.AddTask(func() {
-		// TODO: When mod refactor is done, should change this to simply remove the mod or something
-		// Currently need to reload the mod with a null entry to allow for clear buff uptime tracking
-		c.AddPreDamageMod(core.PreDamageMod{
-			Key: "ayaka-c6",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return nil, false
-			},
-			Expiry: 0,
-		})
+		c.DeletePreDamageMod("ayaka-c6")
 
 		c.AddTask(func() {
 			c.c6CDTimerAvail = true

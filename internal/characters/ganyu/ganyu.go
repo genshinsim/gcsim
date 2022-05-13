@@ -34,15 +34,21 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
+	c.InitCancelFrames()
 
 	c.a1Expiry = -1
 
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
 	if c.Base.Cons >= 2 {
 		c.SetNumCharges(core.ActionSkill, 2)
 	}
 
 	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	if c.Base.Cons >= 1 {
+		c.c1()
+	}
 }

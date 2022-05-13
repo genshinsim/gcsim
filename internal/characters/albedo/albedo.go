@@ -16,6 +16,7 @@ type char struct {
 	lastConstruct   int
 	skillAttackInfo core.AttackInfo
 	skillSnapshot   core.Snapshot
+	bloomSnapshot   core.Snapshot
 	icdSkill        int
 }
 
@@ -36,19 +37,23 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.EnergyMax = 40
 	c.Weapon.Class = core.WeaponClassSword
 	c.NormalHitNum = 5
+
 	c.icdSkill = 0
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	c.skillHook()
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
 	if c.Base.Cons == 6 {
 		c.c6()
 	}
-
-	return &c, nil
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
@@ -65,7 +70,7 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 /**
 
-a2: skill tick deal 25% more dmg if enemy hp < 50%
+a1: skill tick deal 25% more dmg if enemy hp < 50%
 
 a4: burst increase party em by 125 for 10s
 
@@ -174,7 +179,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
+	c.bloomSnapshot = c.Snapshot(&ai)
+	c.Core.Combat.QueueAttackWithSnap(ai, c.bloomSnapshot, core.NewDefCircHit(3, false, core.TargettableEnemy), f)
 
 	//snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -222,7 +228,7 @@ func (c *char) skillHook() {
 
 		if c.Core.Flags.DamageMode && t.HP()/t.MaxHP() < .5 {
 			snap.Stats[core.DmgP] += 0.25
-			c.Core.Log.NewEvent("a2 proc'd, dealing extra dmg", core.LogCharacterEvent, c.Index, "hp %", t.HP()/t.MaxHP(), "final dmg", snap.Stats[core.DmgP])
+			c.Core.Log.NewEvent("a1 proc'd, dealing extra dmg", core.LogCharacterEvent, c.Index, "hp %", t.HP()/t.MaxHP(), "final dmg", snap.Stats[core.DmgP])
 		}
 
 		c.Core.Combat.QueueAttackWithSnap(c.skillAttackInfo, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 1)
@@ -274,11 +280,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlSkill()],
 	}
-	//TODO: damage frame
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f)
-
-	ai.Abil = "Rite of Progeniture: Tectonic Tide (Bloom)"
-	ai.Mult = burstPerBloom[c.TalentLvlSkill()]
 	snap := c.Snapshot(&ai)
 
 	//check stacks
@@ -287,10 +288,15 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Tags["c2"] = 0
 	}
 
+	//TODO: damage frame
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), f)
+
 	// Blooms are generated on a slight delay from initial hit
 	// TODO: No precise frame data, guessing correct delay
+	ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
+	ai.Mult = burstPerBloom[c.TalentLvlSkill()]
 	for i := 0; i < hits; i++ {
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), f+30+i*5)
+		c.Core.Combat.QueueAttackWithSnap(ai, c.bloomSnapshot, core.NewDefCircHit(3, false, core.TargettableEnemy), f+30+i*5)
 	}
 
 	//Party wide EM buff

@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{11}, {11}, {15}, {12, 22}, {26}}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 	//apply attack speed
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -22,7 +24,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), delay[c.NormalCounter][i], delay[c.NormalCounter][i])
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	if c.Base.Cons == 6 {
@@ -32,6 +34,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	c.AdvanceNormalIndex()
 	return f, a
 }
+
+var chargeHitmarks = []int{22, 24}
 
 func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
@@ -49,13 +53,17 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-i*10-5, f-i*10-5)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
-	if c.Tags["e"] == 1 {
+	if c.Core.Status.Duration(stilettoKey) > 0 {
+		// despawn stiletto
+		c.Core.Status.DeleteStatus(stilettoKey)
+
 		//2 hits
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
+			Abil:       "Thunderclap Slash",
 			AttackTag:  core.AttackTagElementalArt,
 			ICDTag:     core.ICDTagElementalArt,
 			ICDGroup:   core.ICDGroupDefault,
@@ -64,13 +72,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 			Mult:       skillCA[c.TalentLvlSkill()],
 		}
 		for i := 0; i < 2; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 		}
-
-		//place on cooldown
-		c.Tags["e"] = 0
-		// c.CD[def.SkillCD] = c.eStartFrame + 100
-		c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
 
 		// TODO: Particle timing?
 		if c.Core.Rand.Float64() < .5 {
@@ -88,7 +91,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 }
 
 func (c *char) Skill(p map[string]int) (int, int) {
-	if c.Tags["e"] == 1 {
+	// check if stiletto is on-field
+	if c.Core.Status.Duration(stilettoKey) > 0 {
 		return c.skillNext(p)
 	}
 	return c.skillFirst(p)
@@ -109,24 +113,16 @@ func (c *char) skillFirst(p map[string]int) (int, int) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
-
-	c.Tags["e"] = 1
-	c.eStartFrame = c.Core.F
-
-	//place on cd after certain frames if started is still true
-	//looks like the E thing lasts 5 seconds
-	c.AddTask(func() {
-		if c.Tags["e"] == 1 {
-			c.Tags["e"] = 0
-			// c.CD[def.SkillCD] = c.eStartFrame + 100
-			c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F) //TODO: cooldown if not triggered, 7.5s
-		}
-	}, "keqing-skill-cd", c.Core.F+300) //TODO: check this
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 25, 25)
 
 	if c.Base.Cons == 6 {
 		c.activateC6("skill")
 	}
+
+	// spawn after cd and stays for 5s
+	c.Core.Status.AddStatus(stilettoKey, 5*60+20)
+
+	c.SetCDWithDelay(core.ActionSkill, 7*60+30, 20)
 
 	return f, a
 }
@@ -145,13 +141,13 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 27, 27)
 	//add electro infusion
 
 	c.Core.Status.AddStatus("keqinginfuse", 300)
 
 	c.AddWeaponInfuse(core.WeaponInfusion{
-		Key:    "a2",
+		Key:    "keqing-a1",
 		Ele:    core.Electro,
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
 		Expiry: c.Core.F + 300,
@@ -164,7 +160,7 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 			hits = 1 //default 1 hit
 		}
 		ai := core.AttackInfo{
-			Abil:       "Stellar Restoration (Slashing)",
+			Abil:       "Stellar Restoration (C1)",
 			ActorIndex: c.Index,
 			AttackTag:  core.AttackTagElementalArtHold,
 			ICDTag:     core.ICDTagElementalArt,
@@ -174,7 +170,7 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 			Mult:       .5,
 		}
 		for i := 0; i < hits; i++ {
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, f)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 27)
 		}
 	}
 
@@ -185,28 +181,21 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 		c.QueueParticle("keqing", 3, core.Electro, 100)
 	}
 
-	//place on cooldown
-	c.Tags["e"] = 0
-	c.SetCD(core.ActionSkill, c.eStartFrame+450-c.Core.F)
+	// despawn stiletto
+	c.Core.Status.DeleteStatus(stilettoKey)
+
 	return f, a
 }
 
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
-	//a4 increase crit + ER
-	val := make([]float64, core.EndStatType)
-	val[core.CR] = 0.15
-	val[core.ER] = 0.15
-	c.AddMod(core.CharStatMod{
-		Key:    "a4",
-		Amount: func() ([]float64, bool) { return val, true },
-		Expiry: c.Core.F + 480,
-	})
 
-	//first hit 70 frame
-	//first tick 74 frame
-	//last tick 168
-	//last hit 211
+	c.a4()
+
+	//first hit 56 frame
+	//first tick 82 frame
+	//last tick 162
+	//last hit 197
 
 	//initial
 	ai := core.AttackInfo{
@@ -220,12 +209,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 70, 70)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 56, 56)
 	//8 hits
 
 	ai.Abil = "Starward Sword (Consecutive Slash)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
-	for i := 70; i < 170; i += 13 {
+	for i := 82; i < 162; i += 11 {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), i, i)
 	}
 
@@ -233,15 +222,20 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	ai.Abil = "Starward Sword (Last Attack)"
 	ai.Mult = burstFinal[c.TalentLvlBurst()]
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 211, 211)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), 197, 197)
 
 	if c.Base.Cons == 6 {
 		c.activateC6("burst")
 	}
 
-	c.ConsumeEnergy(60)
-	// c.CD[def.BurstCD] = c.Core.F + 720 //12s
-	c.SetCDWithDelay(core.ActionBurst, 720, 60)
+	c.ConsumeEnergy(55)
+	c.SetCDWithDelay(core.ActionBurst, 720, 52)
 
+	return f, a
+}
+
+//Keqing dash is 20 frames
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
 	return f, a
 }

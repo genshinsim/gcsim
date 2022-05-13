@@ -40,8 +40,8 @@ type Tmpl struct {
 	Energy    float64
 	EnergyMax float64
 
+	// TODO: maybe should change this to % of max hp
 	HPCurrent float64
-	HPMax     float64
 
 	//counters
 	NormalHitNum  int //how many hits in a normal combo
@@ -111,23 +111,9 @@ func (t *Tmpl) SetIndex(index int) {
 
 // Character initialization function. Occurs AFTER all char/weapons are initially loaded
 func (t *Tmpl) Init() {
-	hpp := t.Stats[core.HPP]
-	hp := t.Stats[core.HP]
-
-	for _, m := range t.Mods {
-		if m.Expiry > t.Core.F || m.Expiry == -1 {
-			a, ok := m.Amount()
-			if ok {
-				hpp += a[core.HPP]
-				hp += a[core.HP]
-			}
-		}
-	}
-
-	t.HPMax = t.Base.HP*(1+hpp) + hp
-	// c.HPCurrent = 1
-	if t.HPCurrent > t.HPMax {
-		t.HPCurrent = t.HPMax
+	maxhp := t.MaxHP()
+	if t.HP() > maxhp {
+		t.HPCurrent = maxhp
 	}
 }
 
@@ -167,6 +153,20 @@ func (c *Tmpl) AddPreDamageMod(mod core.PreDamageMod) {
 	c.PreDamageMods[ind] = mod
 }
 
+func (c *Tmpl) DeletePreDamageMod(key string) {
+	n := 0
+	for _, v := range c.PreDamageMods {
+		if v.Key == key {
+			v.Event.SetEnded(c.Core.F)
+			c.Core.Log.NewEvent("mod deleted", core.LogStatusEvent, c.Index, "key", key)
+		} else {
+			c.PreDamageMods[n] = v
+			n++
+		}
+	}
+	c.PreDamageMods = c.PreDamageMods[:n]
+}
+
 func (c *Tmpl) AddMod(mod core.CharStatMod) {
 	ind := -1
 	for i, v := range c.Mods {
@@ -189,6 +189,20 @@ func (c *Tmpl) AddMod(mod core.CharStatMod) {
 	}
 	mod.Event.SetEnded(mod.Expiry)
 	c.Mods[ind] = mod
+}
+
+func (c *Tmpl) DeleteMod(key string) {
+	n := 0
+	for _, v := range c.Mods {
+		if v.Key == key {
+			v.Event.SetEnded(c.Core.F)
+			c.Core.Log.NewEvent("mod deleted", core.LogStatusEvent, c.Index, "key", key)
+		} else {
+			c.Mods[n] = v
+			n++
+		}
+	}
+	c.Mods = c.Mods[:n]
 }
 
 func (c *Tmpl) ModIsActive(key string) bool {

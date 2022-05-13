@@ -37,14 +37,24 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+	c.InitCancelFrames()
+
 	c.a4()
+	c.burstStacks()
 	c.onExitField()
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
+}
 
-	s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
+func (c *char) burstStacks() {
+	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
 		if c.Core.Status.Duration("eulaq") == 0 {
 			return false
@@ -74,7 +84,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 		c.burstCounterICD = c.Core.F + 6
 		return false
 	}, "eula-burst-counter")
-	return &c, nil
 }
 
 func (c *char) a4() {

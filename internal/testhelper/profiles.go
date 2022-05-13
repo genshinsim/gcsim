@@ -25,6 +25,8 @@ func CharProfile(key core.CharKey, ele core.EleType, cons int) core.CharacterPro
 	r.Stats[core.HPP] = .149
 	r.Stats[core.DEF] = 59
 	r.Stats[core.DEFP] = .186
+	r.Weapon.Key = "dullblade"
+	r.Base.StartHP = -1
 
 	return r
 }

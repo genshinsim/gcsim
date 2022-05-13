@@ -170,11 +170,9 @@ func (c *Core) Swap(next CharKey) int {
 }
 
 func (c *Core) AnimationCancelDelay(next ActionType, p map[string]int) int {
-	//if last action is jump, dash, swap,
+	//if last action is swap,
 	switch c.LastAction.Typ {
 	case ActionSwap:
-		fallthrough
-	case ActionJump:
 		return 0
 	}
 	//other wise check with the current character

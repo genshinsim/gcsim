@@ -107,7 +107,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.Core.Shields.Add(&shield.Tmpl{
 		Src:        c.Core.F,
 		ShieldType: core.ShieldYunjinSkill,
-		HP:         skillShieldPct[c.TalentLvlSkill()]*c.HPMax + skillShieldFlat[c.TalentLvlSkill()],
+		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        core.Geo,
 		Expires:    c.Core.F + f,
 	})
