@@ -77,7 +77,7 @@ func (s *Simulation) AdvanceFrame() error {
 	s.collectStats()
 	// }
 
-	if s.skip > 0 {
+	if s.skip > 1 {
 		//if in cooldown, do nothing
 		s.skip--
 		return nil
@@ -142,7 +142,7 @@ func (s *Simulation) AdvanceFrame() error {
 				"param", s.C.LastAction.Param["delay"],
 				"default_delays", s.C.Flags.Delays,
 			)
-			s.skip = delay - 1
+			s.skip = delay
 			s.lastDelayAt = s.C.F
 			return nil
 		}
