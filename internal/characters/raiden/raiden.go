@@ -7,11 +7,13 @@ import (
 
 type char struct {
 	*character.Tmpl
+	burstCastF     int
 	eyeICD         int
 	stacksConsumed float64
 	stacks         float64
 	restoreICD     int
 	restoreCount   int
+	applyC4        bool
 	c6Count        int
 	c6ICD          int
 }
