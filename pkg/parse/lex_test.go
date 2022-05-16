@@ -12,12 +12,12 @@ func TestBasicToken(t *testing.T) {
 	let x = 5;
 	label A:
 	while {
-		## comment
+		#comment
 		x = y(x);
 		if x > 10 {
 			break A;
 		}
-		// comment
+		//comment
 		switch x {
 		case 1:
 			fallthrough;
@@ -29,7 +29,7 @@ func TestBasicToken(t *testing.T) {
 	}
 	`
 
-	expected := []item{
+	expected := []Token{
 		//function
 		{typ: keywordLet, val: "let"},
 		{typ: itemIdentifier, val: "y"},
@@ -60,6 +60,8 @@ func TestBasicToken(t *testing.T) {
 		//while loop
 		{typ: keywordWhile, val: "while"},
 		{typ: itemLeftBrace, val: "{"},
+		//comment
+		{typ: itemComment, val: "comment"},
 		//function call
 		{typ: itemIdentifier, val: "x"},
 		{typ: itemAssign, val: "="},
@@ -80,6 +82,8 @@ func TestBasicToken(t *testing.T) {
 		{typ: itemTerminateLine, val: ";"},
 		//end if
 		{typ: itemRightBrace, val: "}"},
+		//comment
+		{typ: itemComment, val: "comment"},
 		//switch
 		{typ: keywordSwitch, val: "switch"},
 		{typ: itemIdentifier, val: "x"},
@@ -112,7 +116,7 @@ func TestBasicToken(t *testing.T) {
 	l := lex("test", input)
 	i := 0
 	for n := l.nextItem(); n.typ != itemEOF; n = l.nextItem() {
-		if expected[i].typ != n.typ || expected[i].val != n.val {
+		if expected[i].typ != n.typ && expected[i].val != n.val {
 			t.Errorf("expected %v got %v", expected[i], n)
 		}
 		if i < len(expected)-1 {
@@ -147,7 +151,7 @@ func testActionToken(t *testing.T) {
 	}
 	`
 
-	expected := []item{
+	expected := []Token{
 		//function
 		{typ: keywordLet, val: "let"},
 		{typ: itemIdentifier, val: "y"},

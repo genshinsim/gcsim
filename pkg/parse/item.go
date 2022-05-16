@@ -2,22 +2,22 @@ package parse
 
 import "fmt"
 
-// item represents a token or text string returned from the scanner.
-type item struct {
-	typ  ItemType // The type of this item.
-	pos  Pos      // The starting position, in bytes, of this item in the input string.
-	val  string   // The value of this item.
-	line int      // The line number at the start of this item.
+// Token represents a token or text string returned from the scanner.
+type Token struct {
+	typ  tokenType // The type of this item.
+	pos  Pos       // The starting position, in bytes, of this item in the input string.
+	val  string    // The value of this item.
+	line int       // The line number at the start of this item.
 }
 
-func (i item) String() string {
+func (i Token) String() string {
 	switch {
 	case i.typ == itemEOF:
 		return "EOF"
 	case i.typ == itemError:
 		return i.val
 	case i.typ == itemTerminateLine:
-		return "End Line"
+		return ";"
 	case i.typ > itemCompareOp && i.typ < itemKeyword:
 		return i.val
 	case i.typ > itemKeyword:
@@ -28,13 +28,14 @@ func (i item) String() string {
 	return fmt.Sprintf("%q", i.val)
 }
 
-// ItemType identifies the type of lex items.
-type ItemType int
+// tokenType identifies the type of lex items.
+type tokenType int
 
 const (
-	itemError ItemType = iota // error occurred; value is text of error
-	itemBool                  // boolean constant
+	itemError tokenType = iota // error occurred; value is text of error
+	itemBool                   // boolean constant
 
+	itemComment       // comment text
 	itemAssign        // equals ('=') introducing an assignment
 	itemComma         // coma (,) used to break up list of ident
 	itemTerminateLine // \n to denote end of a line

@@ -6,7 +6,20 @@ type AST struct {
 }
 
 type Node interface {
+	Type() NodeType
 	Copy() Node
+}
+
+type NodeType struct {
+}
+
+func (t NodeType) Type() NodeType {
+	return t
+}
+
+type ListNode struct {
+	NodeType
+	tr *Tree
 }
 
 type IdentKind int

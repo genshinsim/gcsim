@@ -9,26 +9,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
-type Pos int
-
-func (p Pos) Position() Pos {
-	return p
-}
-
 const eof = -1
 
 type stateFn func(*lexer) stateFn
 
 // lexer holds the state of the scanner.
 type lexer struct {
-	name         string    // the name of the input; used only for error reports
-	input        string    // the string being scanned
-	pos          Pos       // current position in the input
-	start        Pos       // start position of this item
-	width        Pos       // width of last rune read from input
-	items        chan item // channel of scanned items
-	line         int       // 1+number of newlines seen
-	startLine    int       // start line of this item
+	name         string     // the name of the input; used only for error reports
+	input        string     // the string being scanned
+	pos          Pos        // current position in the input
+	start        Pos        // start position of this item
+	width        Pos        // width of last rune read from input
+	items        chan Token // channel of scanned items
+	line         int        // 1+number of newlines seen
+	startLine    int        // start line of this item
 	parenDepth   int
 	sqParenDepth int
 	braceDepth   int
@@ -66,8 +60,8 @@ func (l *lexer) backup() {
 }
 
 // emit passes an item back to the client.
-func (l *lexer) emit(t ItemType) {
-	l.items <- item{
+func (l *lexer) emit(t tokenType) {
+	l.items <- Token{
 		typ:  t,
 		pos:  l.start,
 		val:  l.input[l.start:l.pos],
@@ -103,13 +97,13 @@ func (l *lexer) acceptRun(valid string) {
 // errorf returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.nextItem.
 func (l *lexer) errorf(format string, args ...interface{}) stateFn {
-	l.items <- item{itemError, l.start, fmt.Sprintf(format, args...), l.startLine}
+	l.items <- Token{itemError, l.start, fmt.Sprintf(format, args...), l.startLine}
 	return nil
 }
 
 // nextItem returns the next item from the input.
 // Called by the parser, not in the lexing goroutine.
-func (l *lexer) nextItem() item {
+func (l *lexer) nextItem() Token {
 	return <-l.items
 }
 
@@ -125,7 +119,7 @@ func lex(name, input string) *lexer {
 	l := &lexer{
 		name:      name,
 		input:     input,
-		items:     make(chan item),
+		items:     make(chan Token),
 		line:      1,
 		startLine: 1,
 	}
@@ -159,6 +153,7 @@ func lexText(l *lexer) stateFn {
 	case isSpace(r):
 		l.ignore()
 	case r == '#':
+		l.ignore()
 		return lexComment
 	case r == '=':
 		n := l.next()
@@ -187,6 +182,7 @@ func lexText(l *lexer) stateFn {
 		//check if next is another / or not; if / then lexComment
 		n := l.next()
 		if n == '/' {
+			l.ignore()
 			return lexComment
 		} else {
 			l.backup()
@@ -272,16 +268,18 @@ func lexText(l *lexer) stateFn {
 }
 
 func lexComment(l *lexer) stateFn {
+Loop:
 	for {
 		switch r := l.next(); {
 		case r == '\n':
 			l.backup()
-			return lexText
+			break Loop
 		default:
 			// absorb
 		}
 	}
-
+	l.emit(itemComment)
+	return lexText
 }
 
 // lexField scans a field: .Alphanumeric.
@@ -354,7 +352,7 @@ Loop:
 	return lexText
 }
 
-func checkIdentifier(word string) ItemType {
+func checkIdentifier(word string) tokenType {
 	if _, ok := statKeys[word]; ok {
 		return itemStatKey
 	}
