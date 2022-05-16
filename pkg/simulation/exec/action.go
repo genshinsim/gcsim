@@ -9,7 +9,7 @@ import (
 
 type Executor struct {
 	core       *core.Core
-	ast        ast.AST
+	ast        ast.Program
 	ActionChan chan ast.ActionExpr
 	Next       chan bool
 }
