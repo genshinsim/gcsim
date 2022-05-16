@@ -49,7 +49,6 @@ func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
 	if r.Durability[attributes.Frozen] < ZeroDur {
 		return
 	}
-	//
 	switch a.Info.Element {
 	case attributes.Electro:
 		//TODO: the assumption here is we first reduce cryo, and if there's any

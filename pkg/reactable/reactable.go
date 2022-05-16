@@ -59,12 +59,13 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		}
 		fallthrough
 	default:
+		//TODO: double check order of reactions
 		switch a.Info.Element {
 		case attributes.Electro:
 			r.tryOverload(a)
-			r.tryAddEC(a)
-			r.trySuperconduct(a)
 			r.tryFrozenSuperconduct(a)
+			r.trySuperconduct(a)
+			r.tryAddEC(a)
 		case attributes.Pyro:
 			r.tryOverload(a)
 			r.tryMelt(a)

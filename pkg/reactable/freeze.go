@@ -24,6 +24,7 @@ func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
 			//ec should have been taken care of already
 			a.Info.Durability -= consumed
 			a.Info.Durability = max(a.Info.Durability, 0)
+			r.core.Events.Emit(event.OnFrozen, r.self, a)
 			return
 		}
 		//otherwise attach hydro only if frozen exists
@@ -41,6 +42,7 @@ func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
 			r.Durability[attributes.Hydro] = max(r.Durability[attributes.Hydro], 0)
 			a.Info.Durability -= consumed
 			a.Info.Durability = max(a.Info.Durability, 0)
+			r.core.Events.Emit(event.OnFrozen, r.self, a)
 			return
 		}
 		//otherwise attach cryo only if frozen exists
@@ -55,7 +57,6 @@ func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
 		//should be here
 		return
 	}
-	r.core.Events.Emit(event.OnFrozen, r.self, a)
 }
 
 func max(a, b combat.Durability) combat.Durability {
