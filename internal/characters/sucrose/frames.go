@@ -31,6 +31,8 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		return 11, 57
 	case core.ActionBurst:
 		return 46, 49
+	case core.ActionDash:
+		return 1, 24
 	default:
 		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
@@ -88,6 +90,15 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionDash, 11-11)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionJump, 11-11)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSwap, 56-11)
+
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionAttack, 24-1)
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionCharge, 24-1)
+	//sucrose cancel her dash with her E and Q
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionSkill, 1-1)
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionBurst, 1-1)
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionDash, 24-1)
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionJump, 24-1)
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionSwap, 24-1)
 }
 
 func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) int {
