@@ -1,95 +1,123 @@
 package parse
 
-import "errors"
+import (
+	"errors"
+)
 
-type Parser struct {
-	lex  *lexer
-	tree *Tree
-
-	//lookahead
-	token     [3]Token
-	peekCount int
-}
-
-type Tree struct {
-	FnMap map[string]Node
-	Node  Node
-}
-
-type parseFn func(*Parser) (parseFn, error)
-
-func New(name, input string) *Parser {
-	p := &Parser{}
-	p.lex = lex(name, input)
-	p.tree = &Tree{
-		FnMap: make(map[string]Node),
-	}
-	return p
-}
-
-func (p *Parser) Parse(text string) (*Tree, error) {
+func (p *Parser) Parse(text string) (*ActionList, error) {
 	var err error
-	for state := parseProgram; state != nil; {
+	for state := parseText; state != nil; {
 		state, err = state(p)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return p.tree, nil
+	return p.res, nil
+}
+
+func parseText(p *Parser) (parseFn, error) {
+	switch n := p.next(); n.typ {
+	case itemCharacterKey:
+		//parse character
+		p.backup()
+		return parseCharacter, nil
+	//case options:
+	//case active:
+	//case target:
+	//case energy:
+	default: //default should be look for gcsl
+		return parseProgram, nil
+	}
+}
+
+func parseCharacter(p *Parser) (parseFn, error) {
+	return nil, nil
 }
 
 func parseProgram(p *Parser) (parseFn, error) {
+
 	//each line should start with one of the following:
 	//	let
 	//	a function call or action
 	//	if
 	//	while
+	//loop through each line and add it to the block
+	for {
+		switch n := p.peek(); {
+		case n.typ == keywordLet:
+			node, err := p.parseLet()
+			if err != nil {
+				return nil, err
+			}
+			p.res.Program.append(node)
+		case n.typ == itemIdentifier || n.typ == itemNumber:
+			node, err := p.parseExpr()
+			if err != nil {
+				return nil, err
+			}
+			p.res.Program.append(node)
+		case n.typ == itemCharacterKey:
+			t1 := p.next() //should be char key
+			if p.peek().typ <= itemActionKey {
+				//not an ActionStmt
+				p.backup2(t1)
+				return parseCharacter, nil
+			}
+			//parse action item
+			p.backup2(t1)
+			node, err := p.parseAction()
+			if err != nil {
+				return nil, err
+			}
+			p.res.Program.append(node)
+		//case options:
+		//case active:
+		//case target:
+		//case energy:
+		default:
+			return nil, errors.New("unrecognized token")
 
-	switch n := p.next(); {
-	case n.typ == keywordLet:
-		return parseLet, nil
+		}
+	}
+}
+
+//parseAction returns a node contain a character action, or a block of node containing
+//a list of character actions
+func (p *Parser) parseAction() (Stmt, error) {
+
+	return nil, nil
+}
+
+// "let" has already been consumed.
+func (p *Parser) parseLet() (Stmt, error) {
+	//can be one of
+	//ident = fn
+	//ident = expr
+
+	ident, err := p.consume(itemIdentifier)
+	if err != nil {
+		return nil, err //next token not and identifier
+	}
+
+	_, err = p.consume(itemAssign)
+	if err != nil {
+		return nil, err //next token not and identifier
+	}
+
+	switch n := p.peek(); {
+	case n.typ == keywordFn:
+	case n.typ == itemIdentifier || n.typ == itemNumber:
 	default:
-		//unknown
 		return nil, errors.New("unrecognized token")
 	}
+
+	return nil, nil
 }
 
-// next returns the next token.
-func (p *Parser) next() Token {
-	if p.peekCount > 0 {
-		p.peekCount--
-	} else {
-		p.token[0] = p.lex.nextItem()
-	}
-	return p.token[p.peekCount]
+func (p *Parser) parseExpr() (Expr, error) {
+	return nil, nil
 }
 
-// backup backs the input stream up one token.
-func (p *Parser) backup() {
-	p.peekCount++
-}
-
-// backup2 backs the input stream up two tokens.
-// The zeroth token is already there.
-func (p *Parser) backup2(t1 Token) {
-	p.token[1] = t1
-	p.peekCount = 2
-}
-
-// backup3 backs the input stream up three tokens
-// The zeroth token is already there.
-func (p *Parser) backup3(t2, t1 Token) { // Reverse order: we're pushing back.
-	p.token[1] = t1
-	p.token[2] = t2
-	p.peekCount = 3
-}
-
-// peek returns but does not consume the next token.
-func (p *Parser) peek() Token {
-	if p.peekCount > 0 {
-		return p.token[p.peekCount-1]
-	}
-	p.peekCount = 1
-	p.token[0] = p.lex.nextItem()
-	return p.token[0]
+func (p *Parser) parseFn() (*FnStmt, error) {
+	return nil, nil
 }
