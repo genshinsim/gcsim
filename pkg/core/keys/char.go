@@ -33,6 +33,8 @@ func (c Char) String() string {
 	return charNames[c]
 }
 
+const ChildePassive = "childe-talent-passive"
+
 const (
 	NoChar Char = iota
 	TravelerElectro

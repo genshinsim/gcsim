@@ -10,18 +10,18 @@ func (c *Character) ActionReady(a action.Action, p map[string]int) bool {
 
 	switch a {
 	case action.ActionBurst:
-		return c.Core.Player.ByIndex(*c.Index).Energy == c.Core.Player.ByIndex(*c.Index).EnergyMax
+		return c.Core.Player.ByIndex(c.Index).Energy == c.Core.Player.ByIndex(c.Index).EnergyMax
 	case action.ActionSkill:
 		return c.AvailableCDCharge[a] > 0
 	case action.ActionCharge:
-		req := c.Core.Player.AbilStamCost(*c.Index, a, p)
+		req := c.Core.Player.AbilStamCost(c.Index, a, p)
 		if c.Core.Player.Stam < req {
 			c.Core.Log.NewEvent("insufficient stam: charge attack", glog.LogSimEvent, -1, "have", c.Core.Player.Stam)
 			return false
 		}
 		return true
 	case action.ActionDash:
-		req := c.Core.Player.AbilStamCost(*c.Index, a, p)
+		req := c.Core.Player.AbilStamCost(c.Index, a, p)
 		if c.Core.Player.Stam < req {
 			c.Core.Log.NewEvent("insufficient stam: dash", glog.LogSimEvent, -1, "have", c.Core.Player.Stam)
 			return false

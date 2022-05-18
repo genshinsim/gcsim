@@ -42,12 +42,12 @@ func (c *Character) SetCD(a action.Action, dur int) {
 		panic("unexpected charges less than 0")
 	}
 	//TODO: remove these tags; add special syntax just to check for charges instead of using tags
-	if c.Core.Player.ByIndex(*c.Index).Tags["skill_charge"] > 0 {
-		c.Core.Player.ByIndex(*c.Index).Tags["skill_charge"]--
+	if c.Core.Player.ByIndex(c.Index).Tags["skill_charge"] > 0 {
+		c.Core.Player.ByIndex(c.Index).Tags["skill_charge"]--
 	}
 	c.Core.Log.NewEventBuildMsg(
 		glog.LogActionEvent,
-		*c.Index,
+		c.Index,
 		a.String(), " cooldown triggered",
 	).Write(
 		"type", a.String(),
@@ -95,14 +95,14 @@ func (c *Character) ResetActionCooldown(a action.Action) {
 	//log.Printf("resetting; frame %v, queue %v\n", c.F, c.cdQueue[a])
 	//otherwise add a stack && pop queue
 	c.AvailableCDCharge[a]++
-	c.Core.Player.ByIndex(*c.Index).Tags["skill_charge"]++
+	c.Core.Player.ByIndex(c.Index).Tags["skill_charge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	//reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
 	c.cdCurrentQueueWorker[a] = nil
 	c.Core.Log.NewEventBuildMsg(
 		glog.LogActionEvent,
-		*c.Index,
+		c.Index,
 		a.String(), " cooldown forcefully reset",
 	).Write(
 		"type", a.String(),
@@ -131,7 +131,7 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 	c.cdQueue[a][0] = remain - v
 	c.Core.Log.NewEventBuildMsg(
 		glog.LogActionEvent,
-		*c.Index,
+		c.Index,
 		a.String(), " cooldown forcefully reduced",
 	).Write(
 		"type", a.String(),
@@ -156,7 +156,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 
 	//reduce the first item by the current cooldown reduction
 	if cdReduct {
-		c.cdQueue[a][0] = c.Core.Player.ByIndex(*c.Index).CDReduction(a, c.cdQueue[a][0])
+		c.cdQueue[a][0] = c.Core.Player.ByIndex(c.Index).CDReduction(a, c.cdQueue[a][0])
 	}
 
 	worker := func() {
@@ -171,7 +171,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 			//this should never happen
 			panic(fmt.Sprintf(
 				"queue is empty? index :%v, frame : %v, worker src: %v, started: %v",
-				*c.Index,
+				c.Index,
 				c.Core.F,
 				src,
 				c.cdQueueWorkerStartedAt[a],
@@ -180,19 +180,19 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 		}
 		//otherwise add a stack and pop first item in queue
 		c.AvailableCDCharge[a]++
-		c.Core.Player.ByIndex(*c.Index).Tags["skill_charge"]++
+		c.Core.Player.ByIndex(c.Index).Tags["skill_charge"]++
 		c.cdQueue[a] = c.cdQueue[a][1:]
 
 		// c.Log.Debugw("stack restored",  "avail", c.availableCDCharge[a], "queue", c.cdQueue)
 
 		if c.AvailableCDCharge[a] > 1+c.additionalCDCharge[a] {
 			//sanity check, this should never happen
-			panic(fmt.Sprintf("charges > max? index :%v, frame : %v", *c.Index, c.Core.F))
+			panic(fmt.Sprintf("charges > max? index :%v, frame : %v", c.Index, c.Core.F))
 		}
 
 		c.Core.Log.NewEventBuildMsg(
 			glog.LogActionEvent,
-			*c.Index,
+			c.Index,
 			a.String(), " cooldown ready",
 		).Write(
 			"type", a.String(),

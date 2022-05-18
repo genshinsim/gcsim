@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
@@ -133,6 +134,26 @@ func (c *CharWrapper) ModifyHP(amt float64) {
 	if c.HPCurrent > maxhp {
 		c.HPCurrent = maxhp
 	}
+}
+
+func (c *CharWrapper) TalentLvlAttack() int {
+	//TODO: make sure childe on init sets this tag
+	if c.Tags[keys.ChildePassive] > 0 {
+		return c.Talents.Attack
+	}
+	return c.Talents.Attack - 1
+}
+func (c *CharWrapper) TalentLvlSkill() int {
+	if c.Base.Cons >= c.SkillCon {
+		return c.Talents.Skill + 2
+	}
+	return c.Talents.Skill - 1
+}
+func (c *CharWrapper) TalentLvlBurst() int {
+	if c.Base.Cons >= c.BurstCon {
+		return c.Talents.Burst + 2
+	}
+	return c.Talents.Burst - 1
 }
 
 type Particle struct {

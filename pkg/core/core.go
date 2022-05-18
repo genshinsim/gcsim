@@ -37,9 +37,8 @@ type Core struct {
 }
 
 type Flags struct {
-	LogDebug     bool // Used to determine logging level
-	ChildeActive bool // Used for Childe +1 NA talent passive
-	Custom       map[string]int
+	LogDebug bool // Used to determine logging level
+	Custom   map[string]int
 }
 
 type Reactable interface {

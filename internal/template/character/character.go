@@ -2,14 +2,16 @@ package character
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 type Character struct {
+	*character.CharWrapper
 	Core                   *core.Core
-	Index                  *int
 	ActionCD               []int
 	cdQueueWorkerStartedAt []int
 	cdCurrentQueueWorker   []*func()
@@ -18,9 +20,20 @@ type Character struct {
 	additionalCDCharge     []int
 }
 
+func New(c *core.Core) *Character {
+	return &Character{
+		Core:                   c,
+		ActionCD:               make([]int, action.EndActionType),
+		cdQueueWorkerStartedAt: make([]int, action.EndActionType),
+		cdCurrentQueueWorker:   make([]*func(), action.EndActionType),
+		AvailableCDCharge:      make([]int, action.EndActionType),
+		additionalCDCharge:     make([]int, action.EndActionType),
+	}
+}
+
 func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 
-	char := c.Core.Player.ByIndex(*c.Index)
+	char := c.Core.Player.ByIndex(c.Index)
 
 	s := combat.Snapshot{
 		CharLvl:     char.Base.Level,
@@ -35,7 +48,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 
 	if c.Core.Flags.LogDebug {
 		evt = c.Core.Log.NewEvent(
-			a.Abil, glog.LogSnapshotEvent, *c.Index,
+			a.Abil, glog.LogSnapshotEvent, c.Index,
 			"abil", a.Abil,
 			"mult", a.Mult,
 			"ele", a.Element.String(),
@@ -46,12 +59,12 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	}
 
 	//snapshot the stats
-	s.Stats, debug = c.Core.Player.ByIndex(*c.Index).Stats()
+	s.Stats, debug = c.Core.Player.ByIndex(c.Index).Stats()
 
 	//check infusion
 	var inf attributes.Element
 	if !a.IgnoreInfusion {
-		inf = c.Core.Player.Infused(*c.Index, a.AttackTag)
+		inf = c.Core.Player.Infused(c.Index, a.AttackTag)
 		if inf != attributes.NoElement {
 			a.Element = inf
 		}

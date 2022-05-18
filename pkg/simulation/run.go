@@ -21,27 +21,6 @@ func (s *Simulation) AdvanceFrame() error {
 func (s *Simulation) queueAndExec() (bool, error) {
 	//TODO: we should do some optimization here to at least skip some frames
 	//if we know for sure the action won't be ready
-
-	//if queue empty, grab item from queue
-	if len(s.queue) == 0 {
-		next, dropIfFailed, err := s.queuer.Next()
-		if err != nil {
-			return false, err
-		}
-		//if queue is empty, then there's nothing to do
-		//so we skip this frame
-		if len(next) == 0 {
-			return true, nil
-		}
-		s.dropQueueIfFailed = dropIfFailed
-		s.queue = append(s.queue, next...)
-	}
-
-	//try executing first item in queue, if failed b/c not ready, skip frame
-	a, isAction := s.queue[0].(*queue.ActionItem)
-
-	//check if we need to purge queue
-
 	return true, nil
 }
 

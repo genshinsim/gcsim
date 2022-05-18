@@ -16,7 +16,7 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) int {
 		//25 polearm
 		//40 per second claymore
 		//50 catalyst
-		switch c.Core.Player.ByIndex(*c.Index).Weapon.Class {
+		switch c.Core.Player.ByIndex(c.Index).Weapon.Class {
 		case weapon.WeaponClassSword:
 			return 20
 		case weapon.WeaponClassSpear:
@@ -24,10 +24,10 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) int {
 		case weapon.WeaponClassCatalyst:
 			return 50
 		case weapon.WeaponClassClaymore:
-			c.Core.Log.NewEvent("CLAYMORE CHARGE NOT IMPLEMENTED", glog.LogSimEvent, *c.Index)
+			c.Core.Log.NewEvent("CLAYMORE CHARGE NOT IMPLEMENTED", glog.LogSimEvent, c.Index)
 			return 0
 		case weapon.WeaponClassBow:
-			c.Core.Log.NewEvent("BOWS DONT HAVE CHARGE ATTACK; USE AIM", glog.LogSimEvent, *c.Index)
+			c.Core.Log.NewEvent("BOWS DONT HAVE CHARGE ATTACK; USE AIM", glog.LogSimEvent, c.Index)
 			return 0
 		default:
 			return 0
@@ -48,6 +48,22 @@ var defaultDash = action.ActionInfo{
 	State:           action.DashState,
 }
 
+var df = []int{
+	20, //InvalidAction
+	20, //ActionSkill
+	20, //ActionBurst
+	20, //ActionAttack
+	20, //ActionCharge
+	20, //ActionHighPlunge
+	20, //ActionLowPlunge
+	20, //ActionAim
+	20, //ActionDash
+	20, //ActionJump
+	20, //ActionSwap
+	20, //ActionWalk
+	20, //ActionWait
+}
+
 func defaultDashFrames(next action.Action) int {
 	return 20
 }
@@ -56,7 +72,7 @@ func (c *Character) Dash(p map[string]int) action.ActionInfo {
 	//consume stam at the end
 
 	c.Core.Tasks.Add(func() {
-		req := c.Core.Player.AbilStamCost(*c.Index, action.ActionDash, p)
+		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
 		c.Core.Player.Stam -= req
 		//this really shouldn't happen??
 		if c.Core.Player.Stam < 0 {
