@@ -73,20 +73,20 @@ func (c *char) InitCancelFrames() {
 	c.initNormalCancels()
 	c.initBurstAttackCancels()
 
-	frames.InitAbilSlice(&chargeFrames, 37) //n1, skill, burst all at 37
+	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
 	chargeFrames[action.ActionSwap] = 36
 
-	frames.InitAbilSlice(&swordCAFrames, 56)
+	swordCAFrames = frames.InitAbilSlice(56)
 	swordCAFrames[action.ActionDash] = 35
 	swordCAFrames[action.ActionJump] = 35
 	swordCAFrames[action.ActionSwap] = 55
 
-	frames.InitAbilSlice(&skillFrames, 37)
+	skillFrames = frames.InitAbilSlice(37)
 	skillFrames[action.ActionDash] = 17
 	skillFrames[action.ActionJump] = 17
 	skillFrames[action.ActionSwap] = 17
 
-	frames.InitAbilSlice(&burstFrames, 112)
+	burstFrames = frames.InitAbilSlice(112)
 	burstFrames[action.ActionAttack] = 111
 	burstFrames[action.ActionSkill] = 111
 	burstFrames[action.ActionCharge] = 500 //TODO: this action is illegal

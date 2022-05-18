@@ -18,10 +18,10 @@ func (c *char) attackFrameFunc(next action.Action) int {
 	if n < 0 {
 		n = c.NormalHitNum - 1
 	}
-	//atkspd
-	f := attackFrames[n][next]
-	f = int(-0.5 * float64(f) * c.Stat(attributes.AtkSpd))
-	return f
+	return frames.AtkSpdAdjust(
+		attackFrames[n][next],
+		c.Stat(attributes.AtkSpd),
+	)
 }
 
 func (c *char) initNormalCancels() {
@@ -101,10 +101,10 @@ func (c *char) swordAttackFramesFunc(next action.Action) int {
 	if n < 0 {
 		n = c.NormalHitNum - 1
 	}
-	//atkspd
-	f := swordFrames[n][next]
-	f = int(-0.5 * float64(f) * c.Stat(attributes.AtkSpd))
-	return f
+	return frames.AtkSpdAdjust(
+		swordFrames[n][next],
+		c.Stat(attributes.AtkSpd),
+	)
 }
 
 func (c *char) initBurstAttackCancels() {
@@ -137,6 +137,7 @@ func (c *char) initBurstAttackCancels() {
 	swordFrames[4][action.ActionAttack] = 59
 	swordFrames[4][action.ActionCharge] = 83
 }
+
 func (c *char) swordAttack() action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

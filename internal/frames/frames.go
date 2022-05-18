@@ -3,7 +3,7 @@ package frames
 import "github.com/genshinsim/gcsim/pkg/core/action"
 
 func InitNormalCancelSlice(slice *[][]int, index int, hitmark int, animation int) {
-	t := *slice
+	var t [][]int = make([][]int, len(*slice))
 	t[index] = make([]int, action.EndActionType)
 	for i := range t[index] {
 		t[index][i] = animation
@@ -13,8 +13,20 @@ func InitNormalCancelSlice(slice *[][]int, index int, hitmark int, animation int
 	t[index][action.ActionDash] = animation
 	t[index][action.ActionJump] = animation
 	t[index][action.ActionSwap] = animation
+	slice = &t
 }
 
-func InitAbilSlice(slice *[]int, animation int) {
+func InitAbilSlice(animation int) []int {
+	var t []int = make([]int, action.EndActionType)
+	for i := range t {
+		t[i] = animation
+	}
+	return t
+}
 
+func AtkSpdAdjust(f int, atkspd float64) int {
+	if atkspd > 0.6 {
+		atkspd = 0.6
+	}
+	return f + int(-0.5*atkspd*float64(f))
 }
