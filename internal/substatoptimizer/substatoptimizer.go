@@ -274,7 +274,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 			simcfg.Characters.Profile = charProfilesCopy
 
-			result := runSimWithConfig(cfg, simcfg, simopt)
+			result, err := runSimWithConfig(cfg, simcfg, simopt)
+			if err != nil {
+				panic(err) // TODO better handle
+			}
 			sugarLog.Debugf("%v: %v (%v)", charSubstatFinal[idxChar][core.ER]-erStack, result.DPS.Mean, result.DPS.SD)
 
 			if erStack == 0 {
@@ -353,7 +356,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 	// Get initial DPS value
 	simcfg.Characters.Profile = charProfilesCopy
-	initialResult := runSimWithConfig(cfg, simcfg, simopt)
+	initialResult, err := runSimWithConfig(cfg, simcfg, simopt)
+	if err != nil {
+		panic(err) // TODO better handle
+	}
 	initialMean := initialResult.DPS.Mean
 	sugarLog.Debug(initialMean)
 
@@ -378,24 +384,61 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		}
 
 		substatGradients := make([]float64, len(relevantSubstats))
+		respCh := make(chan SubstatSummary)
+		errCh := make(chan error)
+		count := 0
 
 		// Build "gradient" by substat
 		for idxSubstat, substat := range relevantSubstats {
+			charProfilesCopy := charProfilesCopy
 			charProfilesCopy[idxChar].Stats[substat] += 10 * substatValues[substat] * charSubstatRarityMod[idxChar]
 
+			simcfg := simcfg.Clone()
 			simcfg.Characters.Profile = charProfilesCopy
-			substatEvalResult := runSimWithConfig(cfg, simcfg, simopt)
+
+			count++
+
+			go func() {
+				idxSubstat := idxSubstat
+				idxChar := idxChar
+				relevantSubstats := relevantSubstats
+
+				summary, err := runSimWithConfig(cfg, simcfg, simopt)
+
+				if err != nil {
+					errCh <- err
+				} else {
+					substatResult := SubstatSummary{
+						Summary:    summary,
+						IdxSubstat: idxSubstat,
+						IdxChar:    idxChar,
+						Substat:    relevantSubstats[idxSubstat],
+					}
+
+					respCh <- substatResult
+				}
+			}()
+
 			// sugarLog.Debugf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD)
 
-			substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
+			//charProfilesCopy[idxChar].Stats[substat] -= 10 * substatValues[substat] * charSubstatRarityMod[idxChar]
+		}
 
-			// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
-			// might give them "too much" cr (= max out liquid cr subs) but that's probably not a big deal
-			if charWithFavonius[idxChar] && substat == core.CR {
-				substatGradients[idxSubstat] += 1000
+		for count > 0 {
+			select {
+			case r := <-respCh:
+				substatGradients[r.IdxSubstat] = r.Summary.DPS.Mean - initialMean
+
+				// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
+				// might give them "too much" cr (= max out liquid cr subs) but that's probably not a big deal
+				if charWithFavonius[r.IdxChar] && r.Substat == core.CR {
+					substatGradients[r.IdxSubstat] += 1000
+				}
+
+				count--
+			case err := <-errCh:
+				panic(err) // TODO better handle
 			}
-
-			charProfilesCopy[idxChar].Stats[substat] -= 10 * substatValues[substat] * charSubstatRarityMod[idxChar]
 		}
 
 		// Allocate substats
@@ -570,14 +613,16 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 }
 
+type SubstatSummary struct {
+	Summary    result.Summary
+	Substat    core.StatType
+	IdxSubstat int
+	IdxChar    int
+}
+
 // Just runs the sim with specified settings
-func runSimWithConfig(cfg string, simcfg core.SimulationConfig, simopt simulator.Options) result.Summary {
-	result, err := simulator.RunWithConfig(cfg, simcfg, simopt)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-	return result
+func runSimWithConfig(cfg string, simcfg core.SimulationConfig, simopt simulator.Options) (result.Summary, error) {
+	return simulator.RunWithConfig(cfg, simcfg, simopt)
 }
 
 // Helper function to pretty print substat counts. Stolen from similar function that takes in the float array
