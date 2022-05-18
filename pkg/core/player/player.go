@@ -106,6 +106,10 @@ func (h *Handler) Active() int {
 	return h.active
 }
 
+func (h *Handler) ActiveChar() *character.CharWrapper {
+	return h.chars[h.active]
+}
+
 func (h *Handler) SetActive(i int) {
 	h.active = i
 }

@@ -1,6 +1,7 @@
 package core
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -8,7 +9,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-func (c *Core) QueueParticle(p character.Particle, delay int) {
+func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, delay int) {
+	p := character.Particle{
+		Source: src,
+		Num:    num,
+		Ele:    ele,
+	}
 	if delay == 0 {
 		c.Player.DistributeParticle(p)
 		return
