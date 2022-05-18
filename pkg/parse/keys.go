@@ -11,7 +11,7 @@ var key = map[string]tokenType{
 	"while":       keywordWhile,
 	"if":          keywordIf,
 	"else":        keywordElse,
-	"fn":          keywordFn,
+	"func":        keywordFunc,
 	"switch":      keywordSwitch,
 	"case":        keywordCase,
 	"break":       keywordBreak,

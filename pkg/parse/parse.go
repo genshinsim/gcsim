@@ -2,6 +2,7 @@ package parse
 
 import (
 	"errors"
+	"fmt"
 )
 
 func (p *Parser) Parse(text string) (*ActionList, error) {
@@ -90,8 +91,6 @@ func (p *Parser) parseAction() (Stmt, error) {
 
 // "let" has already been consumed.
 func (p *Parser) parseLet() (Stmt, error) {
-	//can be one of
-	//ident = fn
 	//ident = expr
 
 	ident, err := p.consume(itemIdentifier)
@@ -99,16 +98,15 @@ func (p *Parser) parseLet() (Stmt, error) {
 		return nil, err //next token not and identifier
 	}
 
+	fmt.Print(ident)
 	_, err = p.consume(itemAssign)
 	if err != nil {
 		return nil, err //next token not and identifier
 	}
 
-	switch n := p.peek(); {
-	case n.typ == keywordFn:
-	case n.typ == itemIdentifier || n.typ == itemNumber:
-	default:
-		return nil, errors.New("unrecognized token")
+	exp, err := p.parseExpr()
+	if err != nil {
+		return nil, err //not valid expression
 	}
 
 	return nil, nil

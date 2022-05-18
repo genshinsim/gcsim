@@ -63,8 +63,8 @@ type (
 )
 
 // stmtNode()
-func (*BlockStmt) stmtNode()
-func (*CommentStmt) stmtNode()
+func (*BlockStmt) stmtNode()   {}
+func (*CommentStmt) stmtNode() {}
 
 // BlockStmt.
 func newBlockStmt(pos Pos) *BlockStmt {
@@ -211,7 +211,7 @@ type (
 )
 
 //exprNode()
-func (*BinaryExpr) exprNode()
+func (*BinaryExpr) exprNode() {}
 
 // BinaryExpr.
 

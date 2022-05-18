@@ -74,7 +74,7 @@ const (
 	keywordWhile       // while
 	keywordIf          // if
 	keywordElse        // else
-	keywordFn          // fn
+	keywordFunc        // func
 	keywordSwitch      // switch
 	keywordCase        // case
 	keywordBreak       // break
