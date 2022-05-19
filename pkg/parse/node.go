@@ -37,15 +37,16 @@ type (
 		Pos
 	}
 
-	// CommentStmt holds a comment.
-	CommentStmt struct {
-		Pos
-		Text string // Comment text.
-	}
-
 	// ActionStmt represents a sim action; Does not produce a value
 	ActionStmt struct {
 		Pos
+	}
+
+	// LetStmt represents a variable assignment
+	LetStmt struct {
+		Pos
+		Ident Token
+		Val   Expr
 	}
 
 	// IfStmt represents an if block
@@ -59,13 +60,15 @@ type (
 	// FnStmt represents a fn block
 	FnStmt struct {
 		Pos
+		Ident Token
 		Block *BlockStmt
 	}
 )
 
 // stmtNode()
-func (*BlockStmt) stmtNode()   {}
-func (*CommentStmt) stmtNode() {}
+func (*BlockStmt) stmtNode() {}
+func (*LetStmt) stmtNode()   {}
+func (*FnStmt) stmtNode()    {}
 
 // BlockStmt.
 func newBlockStmt(pos Pos) *BlockStmt {
@@ -103,32 +106,69 @@ func (l *BlockStmt) Copy() Node {
 	return l.CopyBlock()
 }
 
-func newComment(pos Pos, text string) *CommentStmt {
-	return &CommentStmt{Pos: pos, Text: text}
-}
+// LetStmt.
 
-// CommentStmt.
-
-func (c *CommentStmt) String() string {
+func (l *LetStmt) String() string {
 	var sb strings.Builder
-	c.writeTo(&sb)
+	l.writeTo(&sb)
 	return sb.String()
 }
 
-func (c *CommentStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString("//")
-	sb.WriteString(c.Text)
+func (l *LetStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString("let ")
+	sb.WriteString(l.Ident.String())
+	sb.WriteString(" = ")
+	l.Val.writeTo(sb)
 }
 
-func (c *CommentStmt) Copy() Node {
-	return &CommentStmt{Pos: c.Pos, Text: c.Text}
+func (l *LetStmt) CopyBlock() *LetStmt {
+	if l == nil {
+		return l
+	}
+	n := &LetStmt{
+		Pos:   l.Pos,
+		Ident: l.Ident,
+	}
+	n.Val = l.Val.CopyExpr()
+	return n
+}
+
+func (l *LetStmt) Copy() Node {
+	return l.CopyBlock()
+}
+
+// FnStmt.
+
+func (f *FnStmt) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *FnStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString("fn ")
+	sb.WriteString(f.Ident.String())
+	sb.WriteString(" {\n")
+	f.Block.writeTo(sb)
+	sb.WriteString(" }")
+}
+
+func (f *FnStmt) CopyFn() *FnStmt {
+	if f == nil {
+		return f
+	}
+	return &FnStmt{
+		Pos:   f.Pos,
+		Ident: f.Ident,
+		Block: f.Block.CopyBlock(),
+	}
+}
+
+func (f *FnStmt) Copy() Node {
+	return f.CopyFn()
 }
 
 // IfStmt.
-
-func newIfStmt(pos Pos) *IfStmt {
-	return &IfStmt{Pos: pos}
-}
 
 func (i *IfStmt) SetCondition(e Expr) {
 	i.Condition = e

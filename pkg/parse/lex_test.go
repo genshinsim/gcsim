@@ -64,7 +64,7 @@ func TestBasicToken(t *testing.T) {
 		{typ: keywordWhile, Val: "while"},
 		{typ: itemLeftBrace, Val: "{"},
 		//comment
-		{typ: itemComment, Val: "comment"},
+		// {typ: itemComment, Val: "comment"},
 		//function call
 		{typ: itemIdentifier, Val: "x"},
 		{typ: itemAssign, Val: "="},
@@ -86,7 +86,7 @@ func TestBasicToken(t *testing.T) {
 		//end if
 		{typ: itemRightBrace, Val: "}"},
 		//comment
-		{typ: itemComment, Val: "comment"},
+		// {typ: itemComment, Val: "comment"},
 		//switch
 		{typ: keywordSwitch, Val: "switch"},
 		{typ: itemIdentifier, Val: "x"},

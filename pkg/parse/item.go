@@ -70,7 +70,6 @@ const (
 	itemIdentifier // alphanumeric identifier not starting with '.'
 	itemNumber     // simple number
 	itemBool       // boolean
-	itemComment    // comment text
 	// Keywords appear after all the rest.
 	itemKeyword        // used only to delimit the keywords
 	keywordLet         // let

@@ -2,7 +2,6 @@ package parse
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 )
 
@@ -51,20 +50,26 @@ func (p *Parser) Parse() (*ActionList, error) {
 }
 
 func parseText(p *Parser) (parseFn, error) {
-	switch n := p.next(); n.typ {
+	switch n := p.peek(); n.typ {
 	case itemCharacterKey:
-		//parse character
+		p.next()
+		//check if this is character stats etc or an action
+		if p.peek().typ <= itemActionKey {
+			//not an ActionStmt
+			p.backup()
+			return parseCharacter, nil
+		}
 		p.backup()
-		return parseCharacter, nil
-		//case options:
-		//case active:
-		//case target:
-		//case energy:
+		//parse action item
+		fallthrough
+	case keywordFunc:
+		fallthrough
+	case keywordLet:
+		return parseProgram, nil
 	case itemEOF:
 		return nil, nil
 	default: //default should be look for gcsl
-		p.backup()
-		return parseStatement, nil
+		return parseProgram, nil
 	}
 }
 
@@ -72,78 +77,61 @@ func parseCharacter(p *Parser) (parseFn, error) {
 	return nil, nil
 }
 
-func parseStatement(p *Parser) (parseFn, error) {
+func parseProgram(p *Parser) (parseFn, error) {
+	node := p.parseStatement()
+	n, err := p.consume(itemTerminateLine)
+	if err != nil {
+		return nil, fmt.Errorf("expecting end of line token parsing stmt, got %v", n)
+	}
+	p.res.Program.append(node)
+	return parseText, nil
+}
 
-	//each line should start with one of the following:
-	//	let
-	//	a function call or action
-	//	if
-	//	while
-	//loop through each line and add it to the block
-	for {
-		switch n := p.peek(); {
-		case n.typ == keywordLet:
-			node, err := p.parseLet()
-			if err != nil {
-				return nil, err
-			}
-			p.res.Program.append(node)
-		case n.typ == itemCharacterKey:
-			t1 := p.next() //should be char key
-			if p.peek().typ <= itemActionKey {
-				//not an ActionStmt
-				p.backup2(t1)
-				return parseCharacter, nil
-			}
-			//parse action item
-			p.backup2(t1)
-			node, err := p.parseAction()
-			if err != nil {
-				return nil, err
-			}
-			p.res.Program.append(node)
-		//case options:
-		//case active:
-		//case target:
-		//case energy:
-		default:
-			node := p.parseExpr(LOWEST)
-			p.res.Program.append(node)
-			//consume next token if it's end expr
-			if n := p.peek(); n.typ == itemTerminateLine {
-				p.next()
-			}
-			return parseText, nil
-		}
+func (p *Parser) parseStatement() Node {
+	n := p.peek()
+	switch n.typ {
+	case keywordLet:
+		return p.parseLet()
+	case itemCharacterKey:
+		return p.parseAction()
+	case keywordFunc:
+		return p.parseFn()
+	default:
+		return p.parseExpr(LOWEST)
 	}
 }
 
 //parseAction returns a node contain a character action, or a block of node containing
 //a list of character actions
-func (p *Parser) parseAction() (Stmt, error) {
+func (p *Parser) parseAction() Stmt {
 
-	return nil, nil
+	return nil
 }
 
 // "let" has already been consumed.
-func (p *Parser) parseLet() (Stmt, error) {
-	//ident = expr
+func (p *Parser) parseLet() Stmt {
+	//ident = expr;
 
 	ident, err := p.consume(itemIdentifier)
 	if err != nil {
-		return nil, err //next token not and identifier
+		return nil //next token not and identifier
 	}
 
 	fmt.Print(ident)
 	_, err = p.consume(itemAssign)
 	if err != nil {
-		return nil, err //next token not and identifier
+		return nil //next token not and identifier
 	}
 
-	exp := p.parseExpr(LOWEST)
-	log.Println(exp)
+	expr := p.parseExpr(LOWEST)
 
-	return nil, nil
+	stmt := &LetStmt{
+		Pos:   ident.pos,
+		Ident: ident,
+		Val:   expr,
+	}
+
+	return stmt
 }
 
 func (p *Parser) parseExpr(pre precedence) Expr {
@@ -165,15 +153,6 @@ func (p *Parser) parseExpr(pre precedence) Expr {
 	}
 
 	return leftExp
-}
-
-func endExpr(t Token) bool {
-	switch t.typ {
-	case itemTerminateLine:
-	default:
-		return false
-	}
-	return true
 }
 
 //next is an identifier
@@ -245,6 +224,6 @@ func (p *Parser) parseParen() Expr {
 	return exp
 }
 
-func (p *Parser) parseFn() (*FnStmt, error) {
-	return nil, nil
+func (p *Parser) parseFn() *FnStmt {
+	return nil
 }

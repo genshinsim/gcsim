@@ -297,7 +297,7 @@ Loop:
 			// absorb
 		}
 	}
-	l.emit(itemComment)
+	// l.emit(itemComment)
 	return lexText
 }
 
