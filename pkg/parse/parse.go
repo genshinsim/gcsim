@@ -78,10 +78,17 @@ func parseCharacter(p *Parser) (parseFn, error) {
 }
 
 func parseProgram(p *Parser) (parseFn, error) {
+	n := p.peek()
 	node := p.parseStatement()
-	n, err := p.consume(itemTerminateLine)
-	if err != nil {
-		return nil, fmt.Errorf("expecting end of line token parsing stmt, got %v", n)
+	//TODO: this code is kinda dumb; need better way to handle terminating line
+	switch n.typ {
+	case keywordIf:
+	case keywordFunc:
+	default:
+		n, err := p.consume(itemTerminateLine)
+		if err != nil {
+			return nil, fmt.Errorf("expecting end of line token parsing stmt, got %v", n)
+		}
 	}
 	p.res.Program.append(node)
 	return parseText, nil
@@ -94,11 +101,52 @@ func (p *Parser) parseStatement() Node {
 		return p.parseLet()
 	case itemCharacterKey:
 		return p.parseAction()
+	case keywordIf:
+		return p.parseIf()
 	case keywordFunc:
 		return p.parseFn()
 	default:
 		return p.parseExpr(LOWEST)
 	}
+}
+
+//parseBlock return a node contain and BlockStmt
+func (p *Parser) parseBlock() *BlockStmt {
+	//should be surronded by {}
+	n, err := p.consume(itemLeftBrace)
+	if err != nil {
+		//TODO: better parser error handling
+		panic("expecting block to start with {")
+	}
+	block := newBlockStmt(n.pos)
+	var node Node
+	//parse line by line until we hit }
+	for {
+		//make sure we don't get any illegal lines
+		switch n := p.peek(); n.typ {
+		case itemCharacterKey:
+			p.next()
+			//check if this is character stats etc or an action
+			if p.peek().typ <= itemActionKey {
+				//not an ActionStmt
+				panic("unexpected non action statement with char in block")
+			}
+			p.backup()
+		case itemRightBrace:
+			p.next() //consume the braces
+			return block
+		case itemEOF:
+			panic("reached end of file without }")
+		}
+		//parse statement here
+		node = p.parseStatement()
+		n, err = p.consume(itemTerminateLine)
+		if err != nil {
+			panic(fmt.Sprintf("expecting end of line token parsing stmt, got %v", n))
+		}
+		block.append(node)
+	}
+
 }
 
 //parseAction returns a node contain a character action, or a block of node containing
@@ -222,6 +270,37 @@ func (p *Parser) parseParen() Expr {
 	p.next() // consume the right paren
 
 	return exp
+}
+
+func (p *Parser) parseIf() Stmt {
+	//skip the if
+	n := p.next()
+
+	stmt := &IfStmt{
+		Pos: n.pos,
+	}
+
+	stmt.Condition = p.parseExpr(LOWEST)
+
+	//expecting a { next
+	if n := p.peek(); n.typ != itemLeftBrace {
+		return nil
+	}
+
+	stmt.IfBlock = p.parseBlock() //parse block here
+
+	//stop if no else
+	if n := p.peek(); n.typ != keywordElse {
+		return stmt
+	}
+
+	//skip the else keyword
+	p.next()
+
+	//expecting another block
+	stmt.ElseBlock = p.parseBlock()
+
+	return stmt
 }
 
 func (p *Parser) parseFn() *FnStmt {

@@ -68,6 +68,7 @@ type (
 // stmtNode()
 func (*BlockStmt) stmtNode() {}
 func (*LetStmt) stmtNode()   {}
+func (*IfStmt) stmtNode()    {}
 func (*FnStmt) stmtNode()    {}
 
 // BlockStmt.
@@ -191,14 +192,13 @@ func (i *IfStmt) String() string {
 func (i *IfStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString("if ")
 	i.Condition.writeTo(sb)
-	sb.WriteString(" {")
+	sb.WriteString(" {\n")
 	i.IfBlock.writeTo(sb)
-	sb.WriteString(" }")
+	sb.WriteString("}")
 	if i.ElseBlock != nil {
-		sb.WriteString("else ")
-		sb.WriteString(" {")
+		sb.WriteString("else {\n")
 		sb.WriteString(i.ElseBlock.String())
-		sb.WriteString(" }")
+		sb.WriteString("}")
 	}
 }
 

@@ -18,6 +18,26 @@ func TestParseIdent(t *testing.T) {
 	prettyPrint(al)
 }
 
+func TestParseIf(t *testing.T) {
+	s := `
+	if x > y {
+		1 + 1;
+		2 + 2;
+		3 + 3;
+	} else {
+		//do stuff
+		c + d;
+	}
+	`
+	p := New(s)
+	res, err := p.Parse()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	fmt.Println(res.Program.String())
+}
+
 func TestOrderPrecedence(t *testing.T) {
 	tests := []struct {
 		input    string
