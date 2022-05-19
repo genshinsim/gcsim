@@ -9,33 +9,33 @@ type precedence int
 
 const (
 	_ precedence = iota
-	LOWEST
-	EQUALS
-	LESSGREATER
-	SUM
-	PRODUCT
-	PREFIX
-	CALL
+	Lowest
+	Equals
+	LessOrGreater
+	Sum
+	Product
+	Prefix
+	Call
 )
 
 var precedences = map[TokenType]precedence{
-	OpEqual:              EQUALS,
-	OpNotEqual:           EQUALS,
-	OpLessThan:           LESSGREATER,
-	OpGreaterThan:        LESSGREATER,
-	OpLessThanOrEqual:    LESSGREATER,
-	OpGreaterThanOrEqual: LESSGREATER,
-	itemPlus:             SUM,
-	itemMinus:            SUM,
-	itemSlash:            PRODUCT,
-	itemAsterisk:         PRODUCT,
+	OpEqual:              Equals,
+	OpNotEqual:           Equals,
+	OpLessThan:           LessOrGreater,
+	OpGreaterThan:        LessOrGreater,
+	OpLessThanOrEqual:    LessOrGreater,
+	OpGreaterThanOrEqual: LessOrGreater,
+	itemPlus:             Sum,
+	itemMinus:            Sum,
+	itemSlash:            Product,
+	itemAsterisk:         Product,
 }
 
 func (t Token) precedence() precedence {
 	if p, ok := precedences[t.typ]; ok {
 		return p
 	}
-	return LOWEST
+	return Lowest
 }
 
 func (p *Parser) Parse() (*ActionList, error) {
@@ -106,7 +106,7 @@ func (p *Parser) parseStatement() Node {
 	case keywordFunc:
 		return p.parseFn()
 	default:
-		return p.parseExpr(LOWEST)
+		return p.parseExpr(Lowest)
 	}
 }
 
@@ -171,7 +171,7 @@ func (p *Parser) parseLet() Stmt {
 		return nil //next token not and identifier
 	}
 
-	expr := p.parseExpr(LOWEST)
+	expr := p.parseExpr(Lowest)
 
 	stmt := &LetStmt{
 		Pos:   ident.pos,
@@ -242,7 +242,7 @@ func (p *Parser) parseUnaryExpr() Expr {
 		Pos: n.pos,
 		Op:  n,
 	}
-	expr.Right = p.parseExpr(PREFIX)
+	expr.Right = p.parseExpr(Prefix)
 	return expr
 }
 
@@ -262,7 +262,7 @@ func (p *Parser) parseParen() Expr {
 	//skip the paren
 	p.next()
 
-	exp := p.parseExpr(LOWEST)
+	exp := p.parseExpr(Lowest)
 
 	if n := p.peek(); n.typ != itemRightParen {
 		return nil
@@ -280,7 +280,7 @@ func (p *Parser) parseIf() Stmt {
 		Pos: n.pos,
 	}
 
-	stmt.Condition = p.parseExpr(LOWEST)
+	stmt.Condition = p.parseExpr(Lowest)
 
 	//expecting a { next
 	if n := p.peek(); n.typ != itemLeftBrace {

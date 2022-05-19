@@ -42,6 +42,11 @@ type (
 		Pos
 	}
 
+	// AssignStmt represents assigning of a value to a previously declared variable
+	AssignStmt struct {
+		Pos
+	}
+
 	// LetStmt represents a variable assignment
 	LetStmt struct {
 		Pos
