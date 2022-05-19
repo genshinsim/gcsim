@@ -9,6 +9,10 @@ type Parser struct {
 	//lookahead
 	token     [3]Token
 	peekCount int
+
+	//parseFn
+	prefixParseFns map[TokenType]func() Expr
+	infixParseFns  map[TokenType]func(Expr) Expr
 }
 
 type ActionList struct {
@@ -18,19 +22,39 @@ type ActionList struct {
 
 type parseFn func(*Parser) (parseFn, error)
 
-func New(name, input string) *Parser {
-	p := &Parser{}
-	p.lex = lex(name, input)
+func New(input string) *Parser {
+	p := &Parser{
+		prefixParseFns: make(map[TokenType]func() Expr),
+		infixParseFns:  make(map[TokenType]func(Expr) Expr),
+	}
+	p.lex = lex(input)
 	p.res = &ActionList{
 		FnMap:   make(map[string]Node),
 		Program: newBlockStmt(0),
 	}
+	//expr functions
+	p.prefixParseFns[itemIdentifier] = p.parseIdent
+	p.prefixParseFns[itemNumber] = p.parseNumber
+	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
+	p.prefixParseFns[itemMinus] = p.parseUnaryExpr
+
+	p.infixParseFns[itemPlus] = p.parseBinaryExpr
+	p.infixParseFns[itemMinus] = p.parseBinaryExpr
+	p.infixParseFns[itemSlash] = p.parseBinaryExpr
+	p.infixParseFns[itemAsterisk] = p.parseBinaryExpr
+	p.infixParseFns[OpEqual] = p.parseBinaryExpr
+	p.infixParseFns[OpNotEqual] = p.parseBinaryExpr
+	p.infixParseFns[OpLessThan] = p.parseBinaryExpr
+	p.infixParseFns[OpLessThanOrEqual] = p.parseBinaryExpr
+	p.infixParseFns[OpGreaterThan] = p.parseBinaryExpr
+	p.infixParseFns[OpGreaterThanOrEqual] = p.parseBinaryExpr
+
 	return p
 }
 
 // consume returns err if next token does not match expected
 // otherwise return next token and nil error
-func (p *Parser) consume(i tokenType) (Token, error) {
+func (p *Parser) consume(i TokenType) (Token, error) {
 	n := p.next()
 	if n.typ != i {
 		return n, errors.New("unexpected token")

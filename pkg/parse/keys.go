@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
 
-var key = map[string]tokenType{
+var key = map[string]TokenType{
 	".":           itemDot,
 	"let":         keywordLet,
 	"while":       keywordWhile,

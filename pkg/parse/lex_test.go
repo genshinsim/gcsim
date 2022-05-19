@@ -27,94 +27,105 @@ func TestBasicToken(t *testing.T) {
 			break A;
 		}
 	}
+	
+	-1
+	1
+	-
+	-a
 	`
 
 	expected := []Token{
 		//function
-		{typ: keywordFunc, val: "func"},
-		{typ: itemIdentifier, val: "y"},
-		{typ: itemLeftParen, val: "("},
-		{typ: itemIdentifier, val: "x"},
-		{typ: keywordNum, val: "num"},
-		{typ: itemRightParen, val: ")"},
-		{typ: keywordNum, val: "num"},
-		{typ: itemLeftBrace, val: "{"},
-		{typ: keywordReturn, val: "return"},
-		{typ: itemIdentifier, val: "x"},
-		{typ: itemPlus, val: "+"},
-		{typ: itemNumber, val: "1"},
-		{typ: itemTerminateLine, val: ";"},
-		{typ: itemRightBrace, val: "}"},
+		{typ: keywordFunc, Val: "func"},
+		{typ: itemIdentifier, Val: "y"},
+		{typ: itemLeftParen, Val: "("},
+		{typ: itemIdentifier, Val: "x"},
+		{typ: keywordNum, Val: "num"},
+		{typ: itemRightParen, Val: ")"},
+		{typ: keywordNum, Val: "num"},
+		{typ: itemLeftBrace, Val: "{"},
+		{typ: keywordReturn, Val: "return"},
+		{typ: itemIdentifier, Val: "x"},
+		{typ: itemPlus, Val: "+"},
+		{typ: itemNumber, Val: "1"},
+		{typ: itemTerminateLine, Val: ";"},
+		{typ: itemRightBrace, Val: "}"},
 		//variable
-		{typ: keywordLet, val: "let"},
-		{typ: itemIdentifier, val: "x"},
-		{typ: itemAssign, val: "="},
-		{typ: itemNumber, val: "5"},
-		{typ: itemTerminateLine, val: ";"},
+		{typ: keywordLet, Val: "let"},
+		{typ: itemIdentifier, Val: "x"},
+		{typ: itemAssign, Val: "="},
+		{typ: itemNumber, Val: "5"},
+		{typ: itemTerminateLine, Val: ";"},
 		//label
-		{typ: keywordLabel, val: "label"},
-		{typ: itemIdentifier, val: "A"},
-		{typ: itemColon, val: ":"},
+		{typ: keywordLabel, Val: "label"},
+		{typ: itemIdentifier, Val: "A"},
+		{typ: itemColon, Val: ":"},
 		//while loop
-		{typ: keywordWhile, val: "while"},
-		{typ: itemLeftBrace, val: "{"},
+		{typ: keywordWhile, Val: "while"},
+		{typ: itemLeftBrace, Val: "{"},
 		//comment
-		{typ: itemComment, val: "comment"},
+		{typ: itemComment, Val: "comment"},
 		//function call
-		{typ: itemIdentifier, val: "x"},
-		{typ: itemAssign, val: "="},
-		{typ: itemIdentifier, val: "y"},
-		{typ: itemLeftParen, val: "("},
-		{typ: itemIdentifier, val: "x"},
-		{typ: itemRightParen, val: ")"},
-		{typ: itemTerminateLine, val: ";"},
+		{typ: itemIdentifier, Val: "x"},
+		{typ: itemAssign, Val: "="},
+		{typ: itemIdentifier, Val: "y"},
+		{typ: itemLeftParen, Val: "("},
+		{typ: itemIdentifier, Val: "x"},
+		{typ: itemRightParen, Val: ")"},
+		{typ: itemTerminateLine, Val: ";"},
 		//if statement
-		{typ: keywordIf, val: "if"},
-		{typ: itemIdentifier, val: "x"},
-		{typ: OpGreaterThan, val: ">"},
-		{typ: itemNumber, val: "10"},
-		{typ: itemLeftBrace, val: "{"},
+		{typ: keywordIf, Val: "if"},
+		{typ: itemIdentifier, Val: "x"},
+		{typ: OpGreaterThan, Val: ">"},
+		{typ: itemNumber, Val: "10"},
+		{typ: itemLeftBrace, Val: "{"},
 		//break
-		{typ: keywordBreak, val: "break"},
-		{typ: itemIdentifier, val: "A"},
-		{typ: itemTerminateLine, val: ";"},
+		{typ: keywordBreak, Val: "break"},
+		{typ: itemIdentifier, Val: "A"},
+		{typ: itemTerminateLine, Val: ";"},
 		//end if
-		{typ: itemRightBrace, val: "}"},
+		{typ: itemRightBrace, Val: "}"},
 		//comment
-		{typ: itemComment, val: "comment"},
+		{typ: itemComment, Val: "comment"},
 		//switch
-		{typ: keywordSwitch, val: "switch"},
-		{typ: itemIdentifier, val: "x"},
-		{typ: itemLeftBrace, val: "{"},
+		{typ: keywordSwitch, Val: "switch"},
+		{typ: itemIdentifier, Val: "x"},
+		{typ: itemLeftBrace, Val: "{"},
 		//case
-		{typ: keywordCase, val: "case"},
-		{typ: itemNumber, val: "1"},
-		{typ: itemColon, val: ":"},
-		{typ: keywordFallthrough, val: "fallthrough"},
-		{typ: itemTerminateLine, val: ";"},
+		{typ: keywordCase, Val: "case"},
+		{typ: itemNumber, Val: "1"},
+		{typ: itemColon, Val: ":"},
+		{typ: keywordFallthrough, Val: "fallthrough"},
+		{typ: itemTerminateLine, Val: ";"},
 		//case
-		{typ: keywordCase, val: "case"},
-		{typ: itemNumber, val: "2"},
-		{typ: itemColon, val: ":"},
-		{typ: keywordFallthrough, val: "fallthrough"},
-		{typ: itemTerminateLine, val: ";"},
+		{typ: keywordCase, Val: "case"},
+		{typ: itemNumber, Val: "2"},
+		{typ: itemColon, Val: ":"},
+		{typ: keywordFallthrough, Val: "fallthrough"},
+		{typ: itemTerminateLine, Val: ";"},
 		//case
-		{typ: keywordCase, val: "case"},
-		{typ: itemNumber, val: "3"},
-		{typ: itemColon, val: ":"},
-		{typ: keywordBreak, val: "break"},
-		{typ: itemIdentifier, val: "A"},
-		{typ: itemTerminateLine, val: ";"},
+		{typ: keywordCase, Val: "case"},
+		{typ: itemNumber, Val: "3"},
+		{typ: itemColon, Val: ":"},
+		{typ: keywordBreak, Val: "break"},
+		{typ: itemIdentifier, Val: "A"},
+		{typ: itemTerminateLine, Val: ";"},
 		//end switch
-		{typ: itemRightBrace, val: "}"},
+		{typ: itemRightBrace, Val: "}"},
 		//end while
-		{typ: itemRightBrace, val: "}"},
+		{typ: itemRightBrace, Val: "}"},
+		//misc tests
+		{typ: itemNumber, Val: "-1"},
+		{typ: itemNumber, Val: "1"},
+		{typ: itemMinus, Val: "-"},
+		{typ: itemMinus, Val: "-"},
+		{typ: itemIdentifier, Val: "a"},
 	}
 
-	l := lex("test", input)
+	l := lex(input)
 	i := 0
 	for n := l.nextItem(); n.typ != itemEOF; n = l.nextItem() {
-		if expected[i].typ != n.typ && expected[i].val != n.val {
+		if expected[i].typ != n.typ && expected[i].Val != n.Val {
 			t.Errorf("expected %v got %v", expected[i], n)
 		}
 		if i < len(expected)-1 {

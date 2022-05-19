@@ -15,7 +15,6 @@ type stateFn func(*lexer) stateFn
 
 // lexer holds the state of the scanner.
 type lexer struct {
-	name         string     // the name of the input; used only for error reports
 	input        string     // the string being scanned
 	pos          Pos        // current position in the input
 	start        Pos        // start position of this item
@@ -60,11 +59,11 @@ func (l *lexer) backup() {
 }
 
 // emit passes an item back to the client.
-func (l *lexer) emit(t tokenType) {
+func (l *lexer) emit(t TokenType) {
 	l.items <- Token{
 		typ:  t,
 		pos:  l.start,
-		val:  l.input[l.start:l.pos],
+		Val:  l.input[l.start:l.pos],
 		line: l.startLine,
 	}
 	l.start = l.pos
@@ -115,9 +114,8 @@ func (l *lexer) drain() {
 }
 
 // lex creates a new scanner for the input string.
-func lex(name, input string) *lexer {
+func lex(input string) *lexer {
 	l := &lexer{
-		name:      name,
 		input:     input,
 		items:     make(chan Token),
 		line:      1,
@@ -165,18 +163,20 @@ func lexText(l *lexer) stateFn {
 		}
 	case r == ',':
 		l.emit(itemComma)
+	case r == '*':
+		l.emit(itemAsterisk)
 	case r == '+':
-		//check if next item is a number or not; if number lexNumber
-		//otherwise it's a + sign
-		n := l.next()
-		if isNumeric(n) {
-			//back up twice
-			l.backup()
-			l.backup()
-			return lexNumber
-		}
-		//otherwise it's a plus sign
-		l.backup()
+		// //check if next item is a number or not; if number lexNumber
+		// //otherwise it's a + sign
+		// n := l.next()
+		// if isNumeric(n) {
+		// 	//back up twice
+		// 	l.backup()
+		// 	l.backup()
+		// 	return lexNumber
+		// }
+		// //otherwise it's a plus sign
+		// l.backup()
 		l.emit(itemPlus)
 	case r == '/':
 		//check if next is another / or not; if / then lexComment
@@ -186,7 +186,7 @@ func lexText(l *lexer) stateFn {
 			return lexComment
 		} else {
 			l.backup()
-			l.emit(itemDivide)
+			l.emit(itemSlash)
 		}
 	case r == '.':
 		// special look-ahead for ".field" so we don't break l.backup().
@@ -197,9 +197,21 @@ func lexText(l *lexer) stateFn {
 			}
 		}
 		fallthrough // '.' can start a number.
-	case r == '-' || ('0' <= r && r <= '9'):
+	case ('0' <= r && r <= '9'):
 		l.backup()
 		return lexNumber
+	case r == '-':
+		//if next item is a number then lex number
+		n := l.next()
+		if isNumeric(n) {
+			//backup twice
+			l.backup()
+			l.backup()
+			return lexNumber
+		}
+		//other wise it's a - sign
+		l.backup()
+		l.emit(itemMinus)
 	case r == '>':
 		if n := l.next(); n == '=' {
 			l.emit(OpGreaterThanOrEqual)
@@ -222,6 +234,13 @@ func lexText(l *lexer) stateFn {
 			l.emit(LogicOr)
 		} else {
 			return l.errorf("unrecognized character in action: %#U", r)
+		}
+	case r == '!':
+		if n := l.next(); n == '=' {
+			l.emit(OpNotEqual)
+		} else {
+			l.backup()
+			l.emit(LogicNot)
 		}
 	case r == '"':
 		return lexQuote
@@ -352,7 +371,7 @@ Loop:
 	return lexText
 }
 
-func checkIdentifier(word string) tokenType {
+func checkIdentifier(word string) TokenType {
 	if _, ok := statKeys[word]; ok {
 		return itemStatKey
 	}

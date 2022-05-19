@@ -1,6 +1,7 @@
 package parse
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -83,6 +84,7 @@ func (l *BlockStmt) String() string {
 func (l *BlockStmt) writeTo(sb *strings.Builder) {
 	for _, n := range l.List {
 		n.writeTo(sb)
+		sb.WriteString(";\n")
 	}
 }
 
@@ -180,10 +182,25 @@ type Expr interface {
 // An expression is represented by a tree consisting of one or
 // more of the following concrete expression nodes
 type (
-	BasicLit struct {
+	NumberLit struct {
 		Pos
-		Kind  tokenType
-		Value string // literal string; eg. 42, 3.14
+		IntVal   int64
+		FloatVal float64
+		IsInt    bool
+	}
+
+	StringLit struct {
+		Pos
+		Value float64
+	}
+	BoolLit struct {
+		Pos
+		Value float64
+	}
+
+	Ident struct {
+		Pos
+		Value string
 	}
 
 	// A CallExpr node represents an expression followed by an argument list.
@@ -197,47 +214,112 @@ type (
 	// A UnaryExpr node represents a unary expression.
 	UnaryExpr struct {
 		Pos
-		Op Token
-		X  Expr // operand
+		Op    Token
+		Right Expr // operand
 	}
 
 	//A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
 	BinaryExpr struct {
 		Pos
-		LHS Expr
-		RHS Expr  // need to evalute to same type as lhs
-		Op  Token //should be > itemCompareOP and < itemDot
+		Left  Expr
+		Right Expr  // need to evalute to same type as lhs
+		Op    Token //should be > itemCompareOP and < itemDot
 	}
 )
 
 //exprNode()
+func (*NumberLit) exprNode()  {}
+func (*Ident) exprNode()      {}
+func (*CallExpr) exprNode()   {}
+func (*UnaryExpr) exprNode()  {}
 func (*BinaryExpr) exprNode() {}
 
+// BasicLit.
+
+func (b *NumberLit) CopyExpr() Expr {
+	return &NumberLit{Pos: b.Pos, IntVal: b.IntVal}
+}
+
+func (b *NumberLit) Copy() Node {
+	return b.CopyExpr()
+}
+
+func (b *NumberLit) String() string {
+	var sb strings.Builder
+	b.writeTo(&sb)
+	return sb.String()
+}
+
+func (b *NumberLit) writeTo(sb *strings.Builder) {
+	if b.IsInt {
+		sb.WriteString(strconv.FormatInt(b.IntVal, 10))
+	} else {
+		sb.WriteString(strconv.FormatFloat(b.FloatVal, 'f', -1, 64))
+	}
+}
+
+// Ident.
+
+func (i *Ident) CopyExpr() Expr {
+	return &Ident{Pos: i.Pos, Value: i.Value}
+}
+
+func (i *Ident) Copy() Node {
+	return i.CopyExpr()
+}
+
+func (b *Ident) String() string {
+	var sb strings.Builder
+	b.writeTo(&sb)
+	return sb.String()
+}
+
+func (b *Ident) writeTo(sb *strings.Builder) {
+	sb.WriteString(b.Value)
+}
+
+// UnaryExpr.
+
+func (u *UnaryExpr) CopyUnaryExpr() *UnaryExpr {
+	if u == nil {
+		return u
+	}
+	n := &UnaryExpr{Pos: u.Pos}
+	n.Right = u.Right.CopyExpr()
+	n.Op = u.Op
+	return n
+}
+
+func (u *UnaryExpr) CopyExpr() Expr {
+	return u.CopyUnaryExpr()
+}
+
+func (u *UnaryExpr) Copy() Node {
+	return u.CopyUnaryExpr()
+}
+
+func (u *UnaryExpr) String() string {
+	var sb strings.Builder
+	u.writeTo(&sb)
+	return sb.String()
+}
+
+func (u *UnaryExpr) writeTo(sb *strings.Builder) {
+	sb.WriteString("(")
+	sb.WriteString(u.Op.String())
+	u.Right.writeTo(sb)
+	sb.WriteString(")")
+}
+
 // BinaryExpr.
-
-func newBinaryExpr(pos Pos) *BinaryExpr {
-	return &BinaryExpr{Pos: pos}
-}
-
-func (b *BinaryExpr) SetLHS(e Expr) {
-	b.LHS = e
-}
-
-func (b *BinaryExpr) SetRHS(e Expr) {
-	b.RHS = e
-}
-
-func (b *BinaryExpr) SetOP(op Token) {
-	b.Op = op
-}
 
 func (b *BinaryExpr) CopyBinaryExpr() *BinaryExpr {
 	if b == nil {
 		return b
 	}
-	n := newBinaryExpr(b.Pos)
-	n.LHS = b.LHS.CopyExpr()
-	n.RHS = b.RHS.CopyExpr()
+	n := &BinaryExpr{Pos: b.Pos}
+	n.Left = b.Left.CopyExpr()
+	n.Right = b.Right.CopyExpr()
 	n.Op = b.Op
 	return n
 }
@@ -257,9 +339,11 @@ func (b *BinaryExpr) String() string {
 }
 
 func (b *BinaryExpr) writeTo(sb *strings.Builder) {
-	b.LHS.writeTo(sb)
-	sb.WriteString(" ")
-	b.RHS.writeTo(sb)
+	sb.WriteString("(")
+	b.Left.writeTo(sb)
 	sb.WriteString(" ")
 	sb.WriteString(b.Op.String())
+	sb.WriteString(" ")
+	b.Right.writeTo(sb)
+	sb.WriteString(")")
 }

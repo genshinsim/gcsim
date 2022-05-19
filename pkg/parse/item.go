@@ -4,9 +4,9 @@ import "fmt"
 
 // Token represents a token or text string returned from the scanner.
 type Token struct {
-	typ  tokenType // The type of this item.
+	typ  TokenType // The type of this item.
 	pos  Pos       // The starting position, in bytes, of this item in the input string.
-	val  string    // The value of this item.
+	Val  string    // The value of this item.
 	line int       // The line number at the start of this item.
 }
 
@@ -15,34 +15,29 @@ func (i Token) String() string {
 	case i.typ == itemEOF:
 		return "EOF"
 	case i.typ == itemError:
-		return i.val
+		return i.Val
 	case i.typ == itemTerminateLine:
 		return ";"
-	case i.typ > itemCompareOp && i.typ < itemKeyword:
-		return i.val
+	case i.typ > itemTerminateLine && i.typ < itemKeyword:
+		return i.Val
 	case i.typ > itemKeyword:
-		return fmt.Sprintf("<%s>", i.val)
+		return fmt.Sprintf("<%s>", i.Val)
 		// case len(i.val) > 10:
 		// 	return fmt.Sprintf("%.10q...", i.val)
 	}
-	return fmt.Sprintf("%q", i.val)
+	return fmt.Sprintf("%q", i.Val)
 }
 
-// tokenType identifies the type of lex items.
-type tokenType int
+// TokenType identifies the type of lex items.
+type TokenType int
 
 const (
-	itemError tokenType = iota // error occurred; value is text of error
-	itemBool                   // boolean constant
+	itemError TokenType = iota // error occurred; value is text of error
 
-	itemComment       // comment text
-	itemAssign        // equals ('=') introducing an assignment
-	itemComma         // coma (,) used to break up list of ident
-	itemTerminateLine // \n to denote end of a line
 	itemEOF
-	itemField            // alphanumeric identifier starting with '.'
-	itemIdentifier       // alphanumeric identifier not starting with '.'
-	itemNumber           // simple number
+	itemTerminateLine    // \n to denote end of a line
+	itemAssign           // equals ('=') introducing an assignment
+	itemComma            // coma (,) used to break up list of ident
 	itemLeftParen        // '('
 	itemRightParen       // ')'
 	itemLeftSquareParen  // '['
@@ -52,11 +47,12 @@ const (
 	itemColon            // ':'
 	itemPlus             // '+'
 	itemMinus            // '-'
-	itemMultiply         // '*'
-	itemDivide           // '/'
+	itemAsterisk         // '*'
+	itemSlash            // '/'
 	itemString           // string, including quotes
 	// following is logic operator
 	itemLogicOP // used only to delimit logical operation
+	LogicNot    // !
 	LogicAnd    // && keyword
 	LogicOr     // || keyword
 	// following is comparison operator
@@ -68,6 +64,13 @@ const (
 	OpLessThan           // < keyword
 	OpLessThanOrEqual    // <= keyword
 	itemDot              // the cursor, spelled '.'
+	// item types
+	itemTypes
+	itemField      // alphanumeric identifier starting with '.'
+	itemIdentifier // alphanumeric identifier not starting with '.'
+	itemNumber     // simple number
+	itemBool       // boolean
+	itemComment    // comment text
 	// Keywords appear after all the rest.
 	itemKeyword        // used only to delimit the keywords
 	keywordLet         // let
