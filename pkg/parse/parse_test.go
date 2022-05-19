@@ -18,7 +18,7 @@ func TestParseIdent(t *testing.T) {
 	prettyPrint(al)
 }
 
-func TestOrderPrecedenec(t *testing.T) {
+func TestOrderPrecedence(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected string
@@ -40,16 +40,20 @@ func TestOrderPrecedenec(t *testing.T) {
 			`((a * b) + c);`,
 		},
 		{
-			"-a * b",
+			"-a * b;",
 			"((-a) * b);",
 		},
 		{
-			"a - b",
+			"a - b;",
 			"(a - b);",
 		},
 		{
-			"!-a",
+			"!-a;",
 			"(!(-a));",
+		},
+		{
+			"(1+2)*3;",
+			"((1 + 2) * 3);",
 		},
 	}
 

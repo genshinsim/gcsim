@@ -56,13 +56,15 @@ func parseText(p *Parser) (parseFn, error) {
 		//parse character
 		p.backup()
 		return parseCharacter, nil
-	//case options:
-	//case active:
-	//case target:
-	//case energy:
+		//case options:
+		//case active:
+		//case target:
+		//case energy:
+	case itemEOF:
+		return nil, nil
 	default: //default should be look for gcsl
 		p.backup()
-		return parseProgram, nil
+		return parseStatement, nil
 	}
 }
 
@@ -70,7 +72,7 @@ func parseCharacter(p *Parser) (parseFn, error) {
 	return nil, nil
 }
 
-func parseProgram(p *Parser) (parseFn, error) {
+func parseStatement(p *Parser) (parseFn, error) {
 
 	//each line should start with one of the following:
 	//	let
@@ -104,13 +106,14 @@ func parseProgram(p *Parser) (parseFn, error) {
 		//case active:
 		//case target:
 		//case energy:
-		case n.typ == itemEOF:
-			return nil, nil
 		default:
 			node := p.parseExpr(LOWEST)
 			p.res.Program.append(node)
-			// return nil, fmt.Errorf("unrecognized token: %v", n)
-
+			//consume next token if it's end expr
+			if n := p.peek(); n.typ == itemTerminateLine {
+				p.next()
+			}
+			return parseText, nil
 		}
 	}
 }
@@ -152,18 +155,13 @@ func (p *Parser) parseExpr(pre precedence) Expr {
 	p.backup()
 	leftExp := prefix()
 
-	for n := p.peek(); !endExpr(n) && pre < n.precedence(); n = p.peek() {
+	for n := p.peek(); n.typ != itemTerminateLine && pre < n.precedence(); n = p.peek() {
 		infix := p.infixParseFns[n.typ]
 		if infix == nil {
 			return leftExp
 		}
 
 		leftExp = infix(leftExp)
-	}
-
-	//consume next token if it's end expr
-	if endExpr(p.peek()) {
-		p.next()
 	}
 
 	return leftExp
@@ -231,6 +229,20 @@ func (p *Parser) parseBinaryExpr(left Expr) Expr {
 	pr := n.precedence()
 	expr.Right = p.parseExpr(pr)
 	return expr
+}
+
+func (p *Parser) parseParen() Expr {
+	//skip the paren
+	p.next()
+
+	exp := p.parseExpr(LOWEST)
+
+	if n := p.peek(); n.typ != itemRightParen {
+		return nil
+	}
+	p.next() // consume the right paren
+
+	return exp
 }
 
 func (p *Parser) parseFn() (*FnStmt, error) {

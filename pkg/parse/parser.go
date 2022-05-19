@@ -37,6 +37,7 @@ func New(input string) *Parser {
 	p.prefixParseFns[itemNumber] = p.parseNumber
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
 	p.prefixParseFns[itemMinus] = p.parseUnaryExpr
+	p.prefixParseFns[itemLeftParen] = p.parseParen
 
 	p.infixParseFns[itemPlus] = p.parseBinaryExpr
 	p.infixParseFns[itemMinus] = p.parseBinaryExpr
