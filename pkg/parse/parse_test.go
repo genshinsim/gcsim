@@ -104,6 +104,16 @@ func prettyPrint(body interface{}) {
 }
 
 const cfg = `
+	switch a {
+	case 1:
+		1+1;
+		fallthrough;
+	case 2:
+		2+2;
+		break;
+	default:
+		3+3;
+	}
 	fn y(a, b) {
 		let c = a + b;
 		return c;
@@ -112,8 +122,12 @@ const cfg = `
 	while x < 10 {
 		x = y(x, 1);
 		//do loopy stuff
+		if x > 0 {
+			continue;
+		} else {
+			break;
+		}
 	}
-	//this should be valid?
 `
 
 func TestCfg(t *testing.T) {

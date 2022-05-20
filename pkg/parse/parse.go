@@ -1,7 +1,6 @@
 package parse
 
 import (
-	"fmt"
 	"strconv"
 )
 
@@ -62,11 +61,16 @@ func parseText(p *Parser) (parseFn, error) {
 		}
 		p.backup()
 		//parse action item
-		return parseProgram, nil
+		// return parseProgram, nil
+		node := p.parseStatement()
+		p.res.Program.append(node)
+		return parseText, nil
 	case itemEOF:
 		return nil, nil
 	default: //default should be look for gcsl
-		return parseProgram, nil
+		node := p.parseStatement()
+		p.res.Program.append(node)
+		return parseText, nil
 	}
 }
 
@@ -74,51 +78,56 @@ func parseCharacter(p *Parser) (parseFn, error) {
 	return nil, nil
 }
 
-func parseProgram(p *Parser) (parseFn, error) {
-	n := p.peek()
-	node := p.parseStatement()
-	//TODO: this code is kinda dumb; need better way to handle terminating line
-	switch n.typ {
-	case keywordIf:
-	case keywordWhile:
-	case keywordFn:
-	default:
-		n, err := p.consume(itemTerminateLine)
-		if err != nil {
-			return nil, fmt.Errorf("expecting ; got %v", n)
-		}
-	}
-	p.res.Program.append(node)
-	return parseText, nil
-}
-
 func (p *Parser) parseStatement() Node {
+	//some statements end in semi, other don't
+	hasSemi := true
+	var node Node
 	switch n := p.peek(); n.typ {
+	case keywordBreak:
+		fallthrough
+	case keywordFallthrough:
+		fallthrough
+	case keywordContinue:
+		node = p.parseCtrl()
 	case keywordLet:
-		return p.parseLet()
+		node = p.parseLet()
 	case itemCharacterKey:
-		return p.parseAction()
-	case keywordIf:
-		return p.parseIf()
-	case keywordFn:
-		return p.parseFn()
+		node = p.parseAction()
 	case keywordReturn:
-		return p.parseReturn()
+		node = p.parseReturn()
+	case keywordIf:
+		node = p.parseIf()
+		hasSemi = false
+	case keywordSwitch:
+		node = p.parseSwitch()
+		hasSemi = false
+	case keywordFn:
+		node = p.parseFn()
+		hasSemi = false
 	case keywordWhile:
-		return p.parseWhile()
+		node = p.parseWhile()
+		hasSemi = false
 	case itemIdentifier:
 		p.next()
 		//check if = after
 		if x := p.peek(); x.typ == itemAssign {
 			p.backup()
-			return p.parseAssign()
+			node = p.parseAssign()
+			break
 		}
 		//it's an expr if no assign
 		p.backup()
 		fallthrough
 	default:
-		return p.parseExpr(Lowest)
+		node = p.parseExpr(Lowest)
 	}
+	if hasSemi {
+		n, err := p.consume(itemTerminateLine)
+		if err != nil {
+			panic("expecting ; got " + n.String())
+		}
+	}
+	return node
 }
 
 //parseAction returns a node contain a character action, or a block of node containing
@@ -212,6 +221,82 @@ func (p *Parser) parseIf() Stmt {
 	return stmt
 }
 
+func (p *Parser) parseSwitch() Stmt {
+
+	//switch expr { }
+	n, err := p.consume(keywordSwitch)
+	if err != nil {
+		panic("unreachable")
+	}
+
+	stmt := &SwitchStmt{
+		Pos: n.pos,
+	}
+
+	stmt.Condition = p.parseExpr(Lowest)
+
+	if p.next().typ != itemLeftBrace {
+		//TODO: handle switch error
+		return nil
+	}
+
+	//look for cases while not }
+	for n := p.next(); n.typ != itemRightBrace; n = p.next() {
+		//expecting case expr: block
+		switch n.typ {
+		case keywordCase:
+			cs := &CaseStmt{
+				Pos: n.pos,
+			}
+			cs.Condition = p.parseExpr(Lowest)
+			//colon, then read until we hit next case
+			if p.peek().typ != itemColon {
+				panic("expecting : got " + p.peek().String())
+			}
+			cs.Body = p.parseCaseBody()
+			stmt.Cases = append(stmt.Cases, cs)
+		case keywordDefault:
+			//colon, then read until we hit next case
+			if p.peek().typ != itemColon {
+				panic("expecting : got " + p.peek().String())
+			}
+			stmt.Default = p.parseCaseBody()
+		default:
+			panic("expecting case or default token, got " + n.String())
+		}
+
+	}
+
+	return stmt
+}
+
+func (p *Parser) parseCaseBody() *BlockStmt {
+	n := p.next() //start with :
+	block := newBlockStmt(n.pos)
+	var node Node
+	//parse line by line until we hit }
+	for {
+		//make sure we don't get any illegal lines
+		switch n := p.peek(); n.typ {
+		case itemCharacterKey:
+			if !p.peekValidCharAction() {
+				panic("unexpected non action statement with char in block")
+			}
+		case keywordDefault:
+			fallthrough
+		case keywordCase:
+			fallthrough
+		case itemRightBrace:
+			return block
+		case itemEOF:
+			panic("reached end of file without }")
+		}
+		//parse statement here
+		node = p.parseStatement()
+		block.append(node)
+	}
+}
+
 // while { }
 func (p *Parser) parseWhile() Stmt {
 	n := p.next()
@@ -294,6 +379,24 @@ func (p *Parser) parseReturn() Stmt {
 	return stmt
 }
 
+func (p *Parser) parseCtrl() Stmt {
+	n := p.next()
+	stmt := &CtrlStmt{
+		Pos: n.pos,
+	}
+	switch n.typ {
+	case keywordBreak:
+		stmt.Typ = CtrlBreak
+	case keywordContinue:
+		stmt.Typ = CtrlContinue
+	case keywordFallthrough:
+		stmt.Typ = CtrlFallthrough
+	default:
+		panic("invalid token, expecting a ctrl token, got " + n.String())
+	}
+	return stmt
+}
+
 func (p *Parser) parseCall(fun Expr) Expr {
 	// ident has aready been consumed
 	// switch fun.(type) {
@@ -342,6 +445,19 @@ func (p *Parser) parseCallArgs() []Expr {
 	return args
 }
 
+//check if it's a valid character action, assuming current token is "character"
+func (p *Parser) peekValidCharAction() bool {
+	p.next()
+	//check if this is character stats etc or an action
+	if p.peek().typ <= itemActionKey {
+		p.backup()
+		//not an ActionStmt
+		return false
+	}
+	p.backup()
+	return true
+}
+
 //parseBlock return a node contain and BlockStmt
 func (p *Parser) parseBlock() *BlockStmt {
 	//should be surronded by {}
@@ -357,13 +473,9 @@ func (p *Parser) parseBlock() *BlockStmt {
 		//make sure we don't get any illegal lines
 		switch n := p.peek(); n.typ {
 		case itemCharacterKey:
-			p.next()
-			//check if this is character stats etc or an action
-			if p.peek().typ <= itemActionKey {
-				//not an ActionStmt
+			if !p.peekValidCharAction() {
 				panic("unexpected non action statement with char in block")
 			}
-			p.backup()
 		case itemRightBrace:
 			p.next() //consume the braces
 			return block
@@ -372,10 +484,6 @@ func (p *Parser) parseBlock() *BlockStmt {
 		}
 		//parse statement here
 		node = p.parseStatement()
-		n, err = p.consume(itemTerminateLine)
-		if err != nil {
-			panic(fmt.Sprintf("expecting ; got %v", n))
-		}
 		block.append(node)
 	}
 

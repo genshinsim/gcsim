@@ -79,7 +79,9 @@ const (
 	keywordFn          // fn
 	keywordSwitch      // switch
 	keywordCase        // case
+	keywordDefault     // default
 	keywordBreak       // break
+	keywordContinue    // continue
 	keywordFallthrough // fallthrough
 	keywordLabel       // label
 	keywordReturn      // return
