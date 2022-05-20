@@ -40,7 +40,6 @@ func New(input string) *Parser {
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
 	p.prefixParseFns[itemMinus] = p.parseUnaryExpr
 	p.prefixParseFns[itemLeftParen] = p.parseParen
-	p.prefixParseFns[keywordFn] = p.parseFn
 
 	p.infixParseFns[itemPlus] = p.parseBinaryExpr
 	p.infixParseFns[itemMinus] = p.parseBinaryExpr
@@ -52,6 +51,7 @@ func New(input string) *Parser {
 	p.infixParseFns[OpLessThanOrEqual] = p.parseBinaryExpr
 	p.infixParseFns[OpGreaterThan] = p.parseBinaryExpr
 	p.infixParseFns[OpGreaterThanOrEqual] = p.parseBinaryExpr
+	p.infixParseFns[itemLeftParen] = p.parseCall
 
 	return p
 }

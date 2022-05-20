@@ -29,6 +29,7 @@ var precedences = map[TokenType]precedence{
 	itemMinus:            Sum,
 	itemSlash:            Product,
 	itemAsterisk:         Product,
+	itemLeftParen:        Call,
 }
 
 func (t Token) precedence() precedence {
@@ -81,6 +82,7 @@ func parseProgram(p *Parser) (parseFn, error) {
 	case keywordIf:
 	case keywordWhile:
 	case keywordLet:
+	case keywordFn:
 	default:
 		n, err := p.consume(itemTerminateLine)
 		if err != nil {
@@ -99,6 +101,8 @@ func (p *Parser) parseStatement() Node {
 		return p.parseAction()
 	case keywordIf:
 		return p.parseIf()
+	case keywordFn:
+		return p.parseFn()
 	case keywordWhile:
 		return p.parseWhile()
 	case itemIdentifier:
@@ -239,23 +243,30 @@ func (p *Parser) parseWhile() Stmt {
 	return stmt
 }
 
-func (p *Parser) parseFn() Expr {
+func (p *Parser) parseFn() Stmt {
+	//fn ident(...ident){ block }
 	//consume fn
 	n := p.next()
-	expr := &FnExpr{
-		Pos:    n.pos,
-		FunVal: n,
+	stmt := &FnStmt{
+		Pos: n.pos,
 	}
+
+	//ident next
+	n, err := p.consume(itemIdentifier)
+	if err != nil {
+		panic("expecting identifier after fn, got " + n.String())
+	}
+	stmt.FunVal = n
 
 	if l := p.peek(); l.typ != itemLeftParen {
 		//TODO: error handling here?
 		return nil
 	}
 
-	expr.Args = p.parseFnArgs()
-	expr.Body = p.parseBlock()
+	stmt.Args = p.parseFnArgs()
+	stmt.Body = p.parseBlock()
 
-	return expr
+	return stmt
 }
 
 func (p *Parser) parseFnArgs() []*Ident {
@@ -282,6 +293,54 @@ func (p *Parser) parseFnArgs() []*Ident {
 			}
 		}
 	}
+	return args
+}
+
+func (p *Parser) parseCall(fun Expr) Expr {
+	// ident has aready been consumed
+	// switch fun.(type) {
+	// case *Ident:
+	// case *FnExpr:
+	// default:
+	// 	panic("invalid fun expression to function call")
+	// }
+
+	//expecting (params)
+	n, err := p.consume(itemLeftParen)
+	if err != nil {
+		panic("expecting call to start with (")
+	}
+	expr := &CallExpr{
+		Pos: n.pos,
+		Fun: fun,
+	}
+	expr.Args = p.parseCallArgs()
+
+	return expr
+
+}
+
+func (p *Parser) parseCallArgs() []Expr {
+	var args []Expr
+
+	if p.peek().typ == itemRightParen {
+		return args
+	}
+
+	//next should be an expression
+	args = append(args, p.parseExpr(Lowest))
+
+	for p.peek().typ == itemComma {
+		p.next() //skip the comma
+		args = append(args, p.parseExpr(Lowest))
+	}
+
+	if p.next().typ != itemRightParen {
+		p.backup()
+		//TODO: handle error here
+		return nil
+	}
+
 	return args
 }
 

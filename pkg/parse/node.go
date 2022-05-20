@@ -56,6 +56,18 @@ type (
 		Val   Expr
 	}
 
+	// ReturnStmt represents return <expr>.
+	ReturnStmt struct {
+		Pos
+		Expr Expr
+	}
+
+	// ContinueStmt represents continue with optional label ident
+	ContinueStmt struct {
+		Pos
+		Label *Ident
+	}
+
 	// IfStmt represents an if block
 	IfStmt struct {
 		Pos
@@ -64,6 +76,13 @@ type (
 		ElseBlock *BlockStmt // What to execute if false
 	}
 
+	// A FnStmt node represents a function
+	FnStmt struct {
+		Pos
+		FunVal Token
+		Args   []*Ident
+		Body   *BlockStmt
+	}
 	// WhileStmt represents a while block
 	WhileStmt struct {
 		Pos
@@ -77,6 +96,7 @@ func (*BlockStmt) stmtNode()  {}
 func (*AssignStmt) stmtNode() {}
 func (*LetStmt) stmtNode()    {}
 func (*IfStmt) stmtNode()     {}
+func (*FnStmt) stmtNode()     {}
 func (*WhileStmt) stmtNode()  {}
 
 // BlockStmt.
@@ -212,6 +232,52 @@ func (i *IfStmt) Copy() Node {
 	}
 }
 
+// FnExpr.
+
+func (f *FnStmt) CopyFn() Stmt {
+	if f == nil {
+		return nil
+	}
+	n := &FnStmt{
+		Pos:    f.Pos,
+		FunVal: f.FunVal,
+		Body:   f.Body.CopyBlock(),
+		Args:   make([]*Ident, 0, len(f.Args)),
+	}
+	for i := range f.Args {
+		n.Args = append(n.Args, f.Args[i].CopyIdent())
+	}
+
+	return n
+}
+
+func (f *FnStmt) CopyStmt() Stmt {
+	return f.CopyFn()
+}
+
+func (f *FnStmt) Copy() Node {
+	return f.CopyStmt()
+}
+
+func (f *FnStmt) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *FnStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString("fn(")
+	for i, v := range f.Args {
+		if i > 0 {
+			sb.WriteString(", ")
+		}
+		v.writeTo(sb)
+	}
+	sb.WriteString(") {\n")
+	f.Body.writeTo(sb)
+	sb.WriteString("}")
+}
+
 // WhileStmt.
 
 func (w *WhileStmt) String() string {
@@ -271,20 +337,11 @@ type (
 		Value string
 	}
 
-	// A FnExpr node represents a function
-	FnExpr struct {
-		Pos
-		FunVal Token
-		Args   []*Ident
-		Body   *BlockStmt
-	}
-
 	// A CallExpr node represents an expression followed by an argument list.
 	CallExpr struct {
 		Pos
-		FunVal string // function name
-		Fun    Expr   // function expression
-		Args   []Expr // function arguments; or nil
+		Fun  Expr   // function expression
+		Args []Expr // function arguments; or nil
 	}
 
 	// A UnaryExpr node represents a unary expression.
@@ -306,7 +363,6 @@ type (
 //exprNode()
 func (*NumberLit) exprNode()  {}
 func (*Ident) exprNode()      {}
-func (*FnExpr) exprNode()     {}
 func (*CallExpr) exprNode()   {}
 func (*UnaryExpr) exprNode()  {}
 func (*BinaryExpr) exprNode() {}
@@ -365,50 +421,48 @@ func (b *Ident) writeTo(sb *strings.Builder) {
 	sb.WriteString(b.Value)
 }
 
-// FnExpr.
+// CallExpr.
 
-func (f *FnExpr) CopyFn() Expr {
-	if f == nil {
+func (c *CallExpr) CopyFn() Expr {
+	if c == nil {
 		return nil
 	}
-	n := &FnExpr{
-		Pos:    f.Pos,
-		FunVal: f.FunVal,
-		Body:   f.Body.CopyBlock(),
-		Args:   make([]*Ident, 0, len(f.Args)),
+	n := &CallExpr{
+		Pos:  c.Pos,
+		Fun:  c.Fun.CopyExpr(),
+		Args: make([]Expr, 0, len(c.Args)),
 	}
-	for i := range f.Args {
-		n.Args = append(n.Args, f.Args[i].CopyIdent())
+	for i := range c.Args {
+		n.Args = append(n.Args, c.Args[i].CopyExpr())
 	}
 
 	return n
 }
 
-func (f *FnExpr) CopyExpr() Expr {
+func (f *CallExpr) CopyExpr() Expr {
 	return f.CopyFn()
 }
 
-func (f *FnExpr) Copy() Node {
+func (f *CallExpr) Copy() Node {
 	return f.CopyExpr()
 }
 
-func (f *FnExpr) String() string {
+func (f *CallExpr) String() string {
 	var sb strings.Builder
 	f.writeTo(&sb)
 	return sb.String()
 }
 
-func (b *FnExpr) writeTo(sb *strings.Builder) {
-	sb.WriteString("fn(")
+func (b *CallExpr) writeTo(sb *strings.Builder) {
+	b.Fun.writeTo(sb)
+	sb.WriteString("(")
 	for i, v := range b.Args {
 		if i > 0 {
 			sb.WriteString(", ")
 		}
 		v.writeTo(sb)
 	}
-	sb.WriteString(") {\n")
-	b.Body.writeTo(sb)
-	sb.WriteString("}")
+	sb.WriteString(")")
 }
 
 // UnaryExpr.

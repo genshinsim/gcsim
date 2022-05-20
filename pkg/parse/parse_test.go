@@ -104,14 +104,15 @@ func prettyPrint(body interface{}) {
 }
 
 const cfg = `
-	let y = fn(a, b) {
+	fn y(a, b) {
 		a + b;
 	}
 	let x = 0;
 	while x < 10 {
-		//x = y(x, 1);
+		x = y(x, 1);
 		//do loopy stuff
 	}
+	//this should be valid?
 `
 
 func TestCfg(t *testing.T) {
