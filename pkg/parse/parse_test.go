@@ -105,7 +105,8 @@ func prettyPrint(body interface{}) {
 
 const cfg = `
 	fn y(a, b) {
-		a + b;
+		let c = a + b;
+		return c;
 	}
 	let x = 0;
 	while x < 10 {

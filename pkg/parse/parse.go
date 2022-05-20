@@ -81,7 +81,6 @@ func parseProgram(p *Parser) (parseFn, error) {
 	switch n.typ {
 	case keywordIf:
 	case keywordWhile:
-	case keywordLet:
 	case keywordFn:
 	default:
 		n, err := p.consume(itemTerminateLine)
@@ -103,6 +102,8 @@ func (p *Parser) parseStatement() Node {
 		return p.parseIf()
 	case keywordFn:
 		return p.parseFn()
+	case keywordReturn:
+		return p.parseReturn()
 	case keywordWhile:
 		return p.parseWhile()
 	case itemIdentifier:
@@ -143,24 +144,12 @@ func (p *Parser) parseLet() Stmt {
 		panic("expecting assign after nil, got " + a.String())
 	}
 
-	//peek if next is a fn
-	l := p.peek()
-	isFn := l.typ == keywordFn
-
 	expr := p.parseExpr(Lowest)
 
 	stmt := &LetStmt{
 		Pos:   n.pos,
 		Ident: ident,
 		Val:   expr,
-	}
-
-	if !isFn {
-		//consume semicolon
-		n, err := p.consume(itemTerminateLine)
-		if err != nil {
-			panic(fmt.Sprintf("expecting ; at end of let stmt got %v", n))
-		}
 	}
 
 	return stmt
@@ -294,6 +283,15 @@ func (p *Parser) parseFnArgs() []*Ident {
 		}
 	}
 	return args
+}
+
+func (p *Parser) parseReturn() Stmt {
+	n := p.next() //return
+	stmt := &ReturnStmt{
+		Pos: n.pos,
+	}
+	stmt.Val = p.parseExpr(Lowest)
+	return stmt
 }
 
 func (p *Parser) parseCall(fun Expr) Expr {

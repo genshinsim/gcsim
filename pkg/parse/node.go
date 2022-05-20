@@ -59,7 +59,7 @@ type (
 	// ReturnStmt represents return <expr>.
 	ReturnStmt struct {
 		Pos
-		Expr Expr
+		Val Expr
 	}
 
 	// ContinueStmt represents continue with optional label ident
@@ -95,6 +95,7 @@ type (
 func (*BlockStmt) stmtNode()  {}
 func (*AssignStmt) stmtNode() {}
 func (*LetStmt) stmtNode()    {}
+func (*ReturnStmt) stmtNode() {}
 func (*IfStmt) stmtNode()     {}
 func (*FnStmt) stmtNode()     {}
 func (*WhileStmt) stmtNode()  {}
@@ -197,6 +198,34 @@ func (l *LetStmt) CopyLet() *LetStmt {
 
 func (l *LetStmt) Copy() Node {
 	return l.CopyLet()
+}
+
+// ReturnStmt.
+
+func (l *ReturnStmt) String() string {
+	var sb strings.Builder
+	l.writeTo(&sb)
+	return sb.String()
+}
+
+func (l *ReturnStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString("return ")
+	l.Val.writeTo(sb)
+}
+
+func (l *ReturnStmt) CopyReturn() *ReturnStmt {
+	if l == nil {
+		return l
+	}
+	n := &ReturnStmt{
+		Pos: l.Pos,
+	}
+	n.Val = l.Val.CopyExpr()
+	return n
+}
+
+func (l *ReturnStmt) Copy() Node {
+	return l.CopyReturn()
 }
 
 // IfStmt.
