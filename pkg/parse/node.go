@@ -45,9 +45,11 @@ type (
 	// AssignStmt represents assigning of a value to a previously declared variable
 	AssignStmt struct {
 		Pos
+		Ident Token
+		Val   Expr
 	}
 
-	// LetStmt represents a variable assignment
+	// LetStmt represents a variable assignment. Number only
 	LetStmt struct {
 		Pos
 		Ident Token
@@ -62,54 +64,85 @@ type (
 		ElseBlock *BlockStmt // What to execute if false
 	}
 
-	// FnStmt represents a fn block
-	FnStmt struct {
+	// WhileStmt represents a while block
+	WhileStmt struct {
 		Pos
-		Ident Token
-		Block *BlockStmt
+		Condition  Expr       //TODO: this should be an expr?
+		WhileBlock *BlockStmt // What to execute if true
 	}
 )
 
 // stmtNode()
-func (*BlockStmt) stmtNode() {}
-func (*LetStmt) stmtNode()   {}
-func (*IfStmt) stmtNode()    {}
-func (*FnStmt) stmtNode()    {}
+func (*BlockStmt) stmtNode()  {}
+func (*AssignStmt) stmtNode() {}
+func (*LetStmt) stmtNode()    {}
+func (*IfStmt) stmtNode()     {}
+func (*WhileStmt) stmtNode()  {}
 
 // BlockStmt.
 func newBlockStmt(pos Pos) *BlockStmt {
 	return &BlockStmt{Pos: pos}
 }
-func (l *BlockStmt) append(n Node) {
-	l.List = append(l.List, n)
+func (b *BlockStmt) append(n Node) {
+	b.List = append(b.List, n)
 }
 
-func (l *BlockStmt) String() string {
+func (b *BlockStmt) String() string {
 	var sb strings.Builder
-	l.writeTo(&sb)
+	b.writeTo(&sb)
 	return sb.String()
 }
 
-func (l *BlockStmt) writeTo(sb *strings.Builder) {
-	for _, n := range l.List {
+func (b *BlockStmt) writeTo(sb *strings.Builder) {
+	for _, n := range b.List {
 		n.writeTo(sb)
 		sb.WriteString(";\n")
 	}
 }
 
-func (l *BlockStmt) CopyBlock() *BlockStmt {
-	if l == nil {
-		return l
+func (b *BlockStmt) CopyBlock() *BlockStmt {
+	if b == nil {
+		return b
 	}
-	n := newBlockStmt(l.Pos)
-	for _, elem := range l.List {
+	n := newBlockStmt(b.Pos)
+	for _, elem := range b.List {
 		n.append(elem.Copy())
 	}
 	return n
 }
 
-func (l *BlockStmt) Copy() Node {
-	return l.CopyBlock()
+func (b *BlockStmt) Copy() Node {
+	return b.CopyBlock()
+}
+
+// AssignStmt.
+
+func (a *AssignStmt) String() string {
+	var sb strings.Builder
+	a.writeTo(&sb)
+	return sb.String()
+}
+
+func (a *AssignStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString(a.Ident.String())
+	sb.WriteString(" = ")
+	a.Val.writeTo(sb)
+}
+
+func (a *AssignStmt) CopyAssign() *AssignStmt {
+	if a == nil {
+		return a
+	}
+	n := &AssignStmt{
+		Pos:   a.Pos,
+		Ident: a.Ident,
+	}
+	n.Val = a.Val.CopyExpr()
+	return n
+}
+
+func (a *AssignStmt) Copy() Node {
+	return a.CopyAssign()
 }
 
 // LetStmt.
@@ -124,10 +157,13 @@ func (l *LetStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString("let ")
 	sb.WriteString(l.Ident.String())
 	sb.WriteString(" = ")
-	l.Val.writeTo(sb)
+	if l.Val != nil {
+
+		l.Val.writeTo(sb)
+	}
 }
 
-func (l *LetStmt) CopyBlock() *LetStmt {
+func (l *LetStmt) CopyLet() *LetStmt {
 	if l == nil {
 		return l
 	}
@@ -140,53 +176,10 @@ func (l *LetStmt) CopyBlock() *LetStmt {
 }
 
 func (l *LetStmt) Copy() Node {
-	return l.CopyBlock()
-}
-
-// FnStmt.
-
-func (f *FnStmt) String() string {
-	var sb strings.Builder
-	f.writeTo(&sb)
-	return sb.String()
-}
-
-func (f *FnStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString("fn ")
-	sb.WriteString(f.Ident.String())
-	sb.WriteString(" {\n")
-	f.Block.writeTo(sb)
-	sb.WriteString(" }")
-}
-
-func (f *FnStmt) CopyFn() *FnStmt {
-	if f == nil {
-		return f
-	}
-	return &FnStmt{
-		Pos:   f.Pos,
-		Ident: f.Ident,
-		Block: f.Block.CopyBlock(),
-	}
-}
-
-func (f *FnStmt) Copy() Node {
-	return f.CopyFn()
+	return l.CopyLet()
 }
 
 // IfStmt.
-
-func (i *IfStmt) SetCondition(e Expr) {
-	i.Condition = e
-}
-
-func (i *IfStmt) SetIfBlock(b *BlockStmt) {
-	i.IfBlock = b
-}
-
-func (i *IfStmt) SetElseBlock(b *BlockStmt) {
-	i.ElseBlock = b
-}
 
 func (i *IfStmt) String() string {
 	var sb strings.Builder
@@ -208,11 +201,41 @@ func (i *IfStmt) writeTo(sb *strings.Builder) {
 }
 
 func (i *IfStmt) Copy() Node {
+	if i == nil {
+		return nil
+	}
 	return &IfStmt{
 		Pos:       i.Pos,
 		Condition: i.Condition.CopyExpr(),
 		IfBlock:   i.IfBlock.CopyBlock(),
 		ElseBlock: i.ElseBlock.CopyBlock(),
+	}
+}
+
+// WhileStmt.
+
+func (w *WhileStmt) String() string {
+	var sb strings.Builder
+	w.writeTo(&sb)
+	return sb.String()
+}
+
+func (w *WhileStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString("while ")
+	w.Condition.writeTo(sb)
+	sb.WriteString(" {\n")
+	w.WhileBlock.writeTo(sb)
+	sb.WriteString("}")
+}
+
+func (w *WhileStmt) Copy() Node {
+	if w == nil {
+		return nil
+	}
+	return &WhileStmt{
+		Pos:        w.Pos,
+		Condition:  w.Condition.CopyExpr(),
+		WhileBlock: w.WhileBlock.CopyBlock(),
 	}
 }
 
@@ -248,6 +271,14 @@ type (
 		Value string
 	}
 
+	// A FnExpr node represents a function
+	FnExpr struct {
+		Pos
+		FunVal Token
+		Args   []*Ident
+		Body   *BlockStmt
+	}
+
 	// A CallExpr node represents an expression followed by an argument list.
 	CallExpr struct {
 		Pos
@@ -275,42 +306,53 @@ type (
 //exprNode()
 func (*NumberLit) exprNode()  {}
 func (*Ident) exprNode()      {}
+func (*FnExpr) exprNode()     {}
 func (*CallExpr) exprNode()   {}
 func (*UnaryExpr) exprNode()  {}
 func (*BinaryExpr) exprNode() {}
 
-// BasicLit.
+// NumberLit.
 
-func (b *NumberLit) CopyExpr() Expr {
-	return &NumberLit{Pos: b.Pos, IntVal: b.IntVal}
+func (n *NumberLit) CopyExpr() Expr {
+	if n == nil {
+		return nil
+	}
+	return &NumberLit{Pos: n.Pos, IntVal: n.IntVal}
 }
 
-func (b *NumberLit) Copy() Node {
-	return b.CopyExpr()
+func (n *NumberLit) Copy() Node {
+	return n.CopyExpr()
 }
 
-func (b *NumberLit) String() string {
+func (n *NumberLit) String() string {
 	var sb strings.Builder
-	b.writeTo(&sb)
+	n.writeTo(&sb)
 	return sb.String()
 }
 
-func (b *NumberLit) writeTo(sb *strings.Builder) {
-	if b.IsInt {
-		sb.WriteString(strconv.FormatInt(b.IntVal, 10))
+func (n *NumberLit) writeTo(sb *strings.Builder) {
+	if n.IsInt {
+		sb.WriteString(strconv.FormatInt(n.IntVal, 10))
 	} else {
-		sb.WriteString(strconv.FormatFloat(b.FloatVal, 'f', -1, 64))
+		sb.WriteString(strconv.FormatFloat(n.FloatVal, 'f', -1, 64))
 	}
 }
 
 // Ident.
 
-func (i *Ident) CopyExpr() Expr {
+func (i *Ident) CopyIdent() *Ident {
+	if i == nil {
+		return nil
+	}
 	return &Ident{Pos: i.Pos, Value: i.Value}
 }
 
+func (i *Ident) CopyExpr() Expr {
+	return i.CopyIdent()
+}
+
 func (i *Ident) Copy() Node {
-	return i.CopyExpr()
+	return i.CopyIdent()
 }
 
 func (b *Ident) String() string {
@@ -321,6 +363,52 @@ func (b *Ident) String() string {
 
 func (b *Ident) writeTo(sb *strings.Builder) {
 	sb.WriteString(b.Value)
+}
+
+// FnExpr.
+
+func (f *FnExpr) CopyFn() Expr {
+	if f == nil {
+		return nil
+	}
+	n := &FnExpr{
+		Pos:    f.Pos,
+		FunVal: f.FunVal,
+		Body:   f.Body.CopyBlock(),
+		Args:   make([]*Ident, 0, len(f.Args)),
+	}
+	for i := range f.Args {
+		n.Args = append(n.Args, f.Args[i].CopyIdent())
+	}
+
+	return n
+}
+
+func (f *FnExpr) CopyExpr() Expr {
+	return f.CopyFn()
+}
+
+func (f *FnExpr) Copy() Node {
+	return f.CopyExpr()
+}
+
+func (f *FnExpr) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (b *FnExpr) writeTo(sb *strings.Builder) {
+	sb.WriteString("fn(")
+	for i, v := range b.Args {
+		if i > 0 {
+			sb.WriteString(", ")
+		}
+		v.writeTo(sb)
+	}
+	sb.WriteString(") {\n")
+	b.Body.writeTo(sb)
+	sb.WriteString("}")
 }
 
 // UnaryExpr.

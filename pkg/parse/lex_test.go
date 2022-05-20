@@ -6,7 +6,7 @@ import (
 
 func TestBasicToken(t *testing.T) {
 	input := `
-	func y(x num) num {
+	let y = fn(x) {
 		return x + 1;
 	}
 	let x = 5;
@@ -36,13 +36,15 @@ func TestBasicToken(t *testing.T) {
 
 	expected := []Token{
 		//function
-		{typ: keywordFunc, Val: "func"},
+		{typ: keywordLet, Val: "let"},
 		{typ: itemIdentifier, Val: "y"},
+		{typ: itemAssign, Val: "="},
+		{typ: keywordFn, Val: "fn"},
 		{typ: itemLeftParen, Val: "("},
 		{typ: itemIdentifier, Val: "x"},
-		{typ: keywordNum, Val: "num"},
+		// {typ: typeNum, Val: "num"},
 		{typ: itemRightParen, Val: ")"},
-		{typ: keywordNum, Val: "num"},
+		// {typ: typeNum, Val: "num"}
 		{typ: itemLeftBrace, Val: "{"},
 		{typ: keywordReturn, Val: "return"},
 		{typ: itemIdentifier, Val: "x"},

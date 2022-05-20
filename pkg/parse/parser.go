@@ -7,8 +7,8 @@ type Parser struct {
 	res *ActionList
 
 	//lookahead
-	token     [3]Token
-	peekCount int
+	token []Token
+	pos   int
 
 	//parseFn
 	prefixParseFns map[TokenType]func() Expr
@@ -26,6 +26,8 @@ func New(input string) *Parser {
 	p := &Parser{
 		prefixParseFns: make(map[TokenType]func() Expr),
 		infixParseFns:  make(map[TokenType]func(Expr) Expr),
+		token:          make([]Token, 0, 20),
+		pos:            -1,
 	}
 	p.lex = lex(input)
 	p.res = &ActionList{
@@ -38,6 +40,7 @@ func New(input string) *Parser {
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
 	p.prefixParseFns[itemMinus] = p.parseUnaryExpr
 	p.prefixParseFns[itemLeftParen] = p.parseParen
+	p.prefixParseFns[keywordFn] = p.parseFn
 
 	p.infixParseFns[itemPlus] = p.parseBinaryExpr
 	p.infixParseFns[itemMinus] = p.parseBinaryExpr
@@ -65,40 +68,27 @@ func (p *Parser) consume(i TokenType) (Token, error) {
 
 // next returns the next token.
 func (p *Parser) next() Token {
-	if p.peekCount > 0 {
-		p.peekCount--
-	} else {
-		p.token[0] = p.lex.nextItem()
+	p.pos++
+	if p.pos == len(p.token) {
+		//grab more from the stream
+		n := p.lex.nextItem()
+		p.token = append(p.token, n)
 	}
-	return p.token[p.peekCount]
+	return p.token[p.pos]
 }
 
 // backup backs the input stream up one token.
 func (p *Parser) backup() {
-	p.peekCount++
-}
-
-// backup2 backs the input stream up two tokens.
-// The zeroth token is already there.
-func (p *Parser) backup2(t1 Token) {
-	p.token[1] = t1
-	p.peekCount = 2
-}
-
-// backup3 backs the input stream up three tokens
-// The zeroth token is already there.
-func (p *Parser) backup3(t2, t1 Token) { // Reverse order: we're pushing back.
-	p.token[1] = t1
-	p.token[2] = t2
-	p.peekCount = 3
+	p.pos--
+	//no op if at beginning
+	if p.pos < -1 {
+		p.pos = -1
+	}
 }
 
 // peek returns but does not consume the next token.
 func (p *Parser) peek() Token {
-	if p.peekCount > 0 {
-		return p.token[p.peekCount-1]
-	}
-	p.peekCount = 1
-	p.token[0] = p.lex.nextItem()
-	return p.token[0]
+	n := p.next()
+	p.backup()
+	return n
 }

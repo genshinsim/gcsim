@@ -102,3 +102,26 @@ func prettyPrint(body interface{}) {
 	}
 	fmt.Println(string(b))
 }
+
+const cfg = `
+	let y = fn(a, b) {
+		a + b;
+	}
+	let x = 0;
+	while x < 10 {
+		//x = y(x, 1);
+		//do loopy stuff
+	}
+`
+
+func TestCfg(t *testing.T) {
+	p := New(cfg)
+	fmt.Printf("parsing:\n %v\n", cfg)
+	res, err := p.Parse()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	fmt.Println("output:")
+	fmt.Println(res.Program.String())
+}

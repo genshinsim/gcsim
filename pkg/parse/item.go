@@ -49,7 +49,6 @@ const (
 	itemMinus            // '-'
 	itemAsterisk         // '*'
 	itemSlash            // '/'
-	itemString           // string, including quotes
 	// following is logic operator
 	itemLogicOP // used only to delimit logical operation
 	LogicNot    // !
@@ -70,19 +69,19 @@ const (
 	itemIdentifier // alphanumeric identifier not starting with '.'
 	itemNumber     // simple number
 	itemBool       // boolean
+	itemString     // string, including quotes
 	// Keywords appear after all the rest.
 	itemKeyword        // used only to delimit the keywords
 	keywordLet         // let
 	keywordWhile       // while
 	keywordIf          // if
 	keywordElse        // else
-	keywordFunc        // func
+	keywordFn          // fn
 	keywordSwitch      // switch
 	keywordCase        // case
 	keywordBreak       // break
 	keywordFallthrough // fallthrough
 	keywordLabel       // label
-	keywordNum         // num
 	keywordReturn      // return
 
 	// Keywords specific to gcsim appears after this

@@ -11,15 +11,15 @@ var key = map[string]TokenType{
 	"while":       keywordWhile,
 	"if":          keywordIf,
 	"else":        keywordElse,
-	"func":        keywordFunc,
+	"fn":          keywordFn,
 	"switch":      keywordSwitch,
 	"case":        keywordCase,
 	"break":       keywordBreak,
 	"fallthrough": keywordFallthrough,
 	"label":       keywordLabel,
-	"num":         keywordNum,
 	"return":      keywordReturn,
-
+	// "num":  typeNum,
+	// "bool": typeBool,
 	//commands
 	//team keywords
 	//flags
