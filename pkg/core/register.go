@@ -17,8 +17,8 @@ var (
 )
 
 type NewCharacterFunc func(core *Core, char *character.CharWrapper, p character.CharacterProfile) error
-type NewSetFunc func(core *Core, char *character.CharWrapper, count int, param map[string]int) (weapon.Weapon, error)
-type NewWeaponFunc func(core *Core, char *character.CharWrapper, p weapon.WeaponProfile) (artifact.Set, error)
+type NewSetFunc func(core *Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error)
+type NewWeaponFunc func(core *Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error)
 
 func RegisterCharFunc(char keys.Char, f NewCharacterFunc) {
 	mu.Lock()
