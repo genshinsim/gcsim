@@ -29,7 +29,7 @@ var catalysts = []string{"frostbearer", "hakushinring", "kagura", "mappamare",
 	"prototypeamber", "skywardatlas", "solarpearl", "ttds", "thewidsith", "wineandsong",
 	"blackcliffagate", "dodocotales", "favoniuscodex"}
 var claymores = []string{"songofbrokenpines", "prototypearchaic", "rainslasher",
-	"redhornstonethresher", "luxurioussealord", "skywardpride", "serpentspine", "snowtombedstarsilver",
+	"redhornstonethresher", "lithicblade", "luxurioussealord", "skywardpride", "serpentspine", "snowtombedstarsilver",
 	"theunforged", "whiteblind", "wolfsgravestone", "akuoumaru", "blackcliffslasher",
 	"favoniusgreatsword", "katsuragikirinagamasa"}
 var polearms = []string{"calamityqueller", "thecatch", "crescentpike", "deathmatch", "dragonsbane",
@@ -38,7 +38,7 @@ var polearms = []string{"calamityqueller", "thecatch", "crescentpike", "deathmat
 	"blackcliffpole"}
 var swords = []string{"aquilafavonia", "theblacksword", "blackclifflongsword",
 	"favoniussword", "festeringdesire", "theflute", "freedomsworn", "haran",
-	"harbingerofdawn", "ironsting", "lionsroar", "lithicblade", "mistsplitterreforged",
+	"harbingerofdawn", "ironsting", "lionsroar", "mistsplitterreforged",
 	"jadecutter", "prototyperancour", "sacrificialsword", "skywardblade", "summitshaper",
 	"thealleyflash", "amenomakageuchi"}
 
