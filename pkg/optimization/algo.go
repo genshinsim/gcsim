@@ -1,4 +1,4 @@
-package substatoptimizer
+package optimization
 
 import (
 	"fmt"
@@ -11,23 +11,23 @@ import (
 	"go.uber.org/zap"
 )
 
-type AlgoV1 struct {
-	sugarLog   *zap.SugaredLogger
+type SubstatOptimizer struct {
+	logger   *zap.SugaredLogger
 	optionsMap map[string]float64
 	cfg        string
 	simopt     simulator.Options
 	simcfg     *ast.ActionList
-	stats      *OptimStats
+	Details      *SubstatOptimizerDetails
 }
 
-func InitAlgoV1(cfg string, simopt simulator.Options, simcfg *ast.ActionList, optionsMap map[string]float64, sugarLog *zap.SugaredLogger) *AlgoV1 {
-	a := AlgoV1{}
+func NewSubstatOptimizer(cfg string, simopt simulator.Options, simcfg *ast.ActionList, optionsMap map[string]float64, sugarLog *zap.SugaredLogger) *SubstatOptimizer {
+	a := SubstatOptimizer{}
 
 	a.cfg = cfg
 	a.simopt = simopt
 	a.simcfg = simcfg
 	a.optionsMap = optionsMap
-	a.sugarLog = sugarLog
+	a.logger = sugarLog
 
 	return &a
 }
@@ -40,48 +40,48 @@ func InitAlgoV1(cfg string, simopt simulator.Options, simcfg *ast.ActionList, op
 //    - Strategy is to just do a dumb grid search over ER substat values for each character
 //    - ER substat values are set in increments of 2 to make the search easier
 // 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
-func (a *AlgoV1) OptimizeSubstats() {
+func (a *SubstatOptimizer) Run() {
 	// Fix iterations at 350 for performance
 	// TODO: Seems to be a roughly good number at KQM standards
 	a.simcfg.Settings.Iterations = int(a.optionsMap["sim_iter"])
 
-	a.stats = InitOptimStats(a.simcfg, int(a.optionsMap["indiv_liquid_cap"]), int(a.optionsMap["total_liquid_substats"]), int(a.optionsMap["fixed_substats_count"]))
+	a.Details = InitOptimStats(a.simcfg, int(a.optionsMap["indiv_liquid_cap"]), int(a.optionsMap["total_liquid_substats"]), int(a.optionsMap["fixed_substats_count"]))
 
-	fourStarFound := a.stats.setStatLimits()
+	fourStarFound := a.Details.setStatLimits()
 	if fourStarFound {
-		a.sugarLog.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
+		a.logger.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
 	}
 
-	a.stats.setInitialSubstats(a.stats.fixedSubstatCount)
-	a.sugarLog.Info("Starting ER Optimization...")
+	a.Details.setInitialSubstats(a.Details.fixedSubstatCount)
+	a.logger.Info("Starting ER Optimization...")
 
-	a.stats.setCharProfilesCopy(a.stats.charProfilesERBaseline)
+	a.Details.setCharProfilesCopy(a.Details.charProfilesERBaseline)
 
 	// Tolerance cutoffs for mean and SD from initial state
 	// Initial state is used rather than checking across each iteration due to noise
 	// TODO: May want to adjust further?
 	tolMean := a.optionsMap["tol_mean"]
 	tolSD := a.optionsMap["tol_sd"]
-	runner := runSimWithConfigGenerator(a.cfg, a.simopt)
+	runner := generateSimRunner(a.cfg, a.simopt)
 
-	debugLogs := a.stats.optimizeERSubstats(tolMean, tolSD, runner)
+	debugLogs := a.Details.optimizeERSubstats(tolMean, tolSD, runner)
 	for _, debugLog := range debugLogs {
-		a.sugarLog.Info(debugLog)
+		a.logger.Info(debugLog)
 	}
 
-	debugLogs = a.stats.optimizeNonERSubstats(runner)
+	debugLogs = a.Details.optimizeNonERSubstats(runner)
 	for _, debugLog := range debugLogs {
-		a.sugarLog.Info(debugLog)
+		a.logger.Info(debugLog)
 	}
 }
 
 // Final output
 // This doesn't take much time relatively speaking, so just always do the processing...
-func (a *AlgoV1) PrettyPrintOptimizerOutput(output string, re *OptimRegex, statsFinal *OptimStats) string {
+func (a *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimizerDetails) string {
 	charNames := make(map[keys.Char]string)
-	a.sugarLog.Info("Final config substat strings:")
+	a.logger.Info("Final config substat strings:")
 
-	for _, match := range re.GetCharNames.FindAllStringSubmatch(output, -1) {
+	for _, match := range REGEXP_LINE_CHARNAME.FindAllStringSubmatch(output, -1) {
 		charKey := shortcut.CharNameToKey[match[1]]
 		charNames[charKey] = match[1]
 	}

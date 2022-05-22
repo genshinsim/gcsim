@@ -1,4 +1,4 @@
-package substatoptimizer
+package optimization
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-type OptimStats struct {
+type SubstatOptimizerDetails struct {
 	charRelevantSubstats   map[keys.Char][]attributes.Stat
 	artifactSets4Star      []keys.Set
 	substatValues          []float64
@@ -37,7 +37,7 @@ type OptimStats struct {
 // TODO: Probably want to refactor to potentially run gradient step at least twice:
 // once initially then another at 10 assigned liquid substats
 // Fine grained evaluations are too expensive time wise, but can perhaps add in an option for people who want to sit around for a while
-func (stats *OptimStats) optimizeNonERSubstats(runner simRunner) []string {
+func (stats *SubstatOptimizerDetails) optimizeNonERSubstats(runner simRunner) []string {
 	var (
 		opDebug   []string
 		charDebug []string
@@ -60,7 +60,7 @@ func (stats *OptimStats) optimizeNonERSubstats(runner simRunner) []string {
 	return opDebug
 }
 
-func (stats *OptimStats) optimizeNonErSubstatsForChar(idxChar int, char character.CharacterProfile, initialMean float64, runner simRunner) []string {
+func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(idxChar int, char character.CharacterProfile, initialMean float64, runner simRunner) []string {
 	var opDebug []string
 	opDebug = append(opDebug, fmt.Sprintf("%v", char.Base.Key))
 
@@ -85,7 +85,7 @@ func (stats *OptimStats) optimizeNonErSubstatsForChar(idxChar int, char characte
 	return opDebug
 }
 
-func (stats *OptimStats) allocateSubstatGradientsForChar(idxChar int, char character.CharacterProfile, substatGradient []float64, relevantSubstats []attributes.Stat) []string {
+func (stats *SubstatOptimizerDetails) allocateSubstatGradientsForChar(idxChar int, char character.CharacterProfile, substatGradient []float64, relevantSubstats []attributes.Stat) []string {
 	var opDebug []string
 
 	sorted := NewSlice(substatGradient...)
@@ -109,13 +109,13 @@ func (stats *OptimStats) allocateSubstatGradientsForChar(idxChar int, char chara
 	return opDebug
 }
 
-func (stats *OptimStats) resetFavoniusCritRateForChar(idxChar int) {
+func (stats *SubstatOptimizerDetails) resetFavoniusCritRateForChar(idxChar int) {
 	if stats.charWithFavonius[idxChar] {
 		stats.charProfilesCopy[idxChar].Stats[attributes.CR] += 8 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
 	}
 }
 
-func (stats *OptimStats) allocateSubstatGradientForChar(idxChar int, char character.CharacterProfile, sorted *Slice, idxGrad int, idxSubstat int, relevantSubstats []attributes.Stat) []string {
+func (stats *SubstatOptimizerDetails) allocateSubstatGradientForChar(idxChar int, char character.CharacterProfile, sorted *Slice, idxGrad int, idxSubstat int, relevantSubstats []attributes.Stat) []string {
 	var opDebug []string
 
 	substatToMax := relevantSubstats[idxSubstat]
@@ -213,7 +213,7 @@ func (stats *OptimStats) allocateSubstatGradientForChar(idxChar int, char charac
 }
 
 // Assigns substats and returns the remaining global limit and individual substat limit
-func (stats *OptimStats) assignSubstatsForChar(idxChar int, char character.CharacterProfile, substat attributes.Stat, amt int) (int, int) {
+func (stats *SubstatOptimizerDetails) assignSubstatsForChar(idxChar int, char character.CharacterProfile, substat attributes.Stat, amt int) (int, int) {
 	totalSubstatCount := 0
 	for _, val := range stats.charSubstatFinal[idxChar] {
 		totalSubstatCount += val
@@ -230,13 +230,13 @@ func (stats *OptimStats) assignSubstatsForChar(idxChar int, char character.Chara
 
 	remainingLiquidSubstats := baseLiquidSubstats - totalSubstatCount
 	// Minimum of individual limit, global limit, desired amount
-	amtToAdd := minInt(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat], remainingLiquidSubstats, amt)
+	amtToAdd := MinInt(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat], remainingLiquidSubstats, amt)
 	stats.charSubstatFinal[idxChar][substat] += amtToAdd
 
 	return remainingLiquidSubstats - amtToAdd, stats.charSubstatLimits[idxChar][substat] - stats.charSubstatFinal[idxChar][substat]
 }
 
-func (stats *OptimStats) calculateSubstatGradientsForChar(idxChar int, relevantSubstats []attributes.Stat, initialMean float64, runner simRunner) ([]float64, []string) {
+func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(idxChar int, relevantSubstats []attributes.Stat, initialMean float64, runner simRunner) ([]float64, []string) {
 	var opDebug []string
 	substatGradients := make([]float64, len(relevantSubstats))
 
@@ -262,7 +262,7 @@ func (stats *OptimStats) calculateSubstatGradientsForChar(idxChar int, relevantS
 }
 
 // TODO: Seems like this should be configurable
-func (stats *OptimStats) getNonErSubstatsToOptimizeForChar(char character.CharacterProfile) []attributes.Stat {
+func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char character.CharacterProfile) []attributes.Stat {
 	// Get relevant substats, and add additional ones for special characters if needed
 	relevantSubstats := []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD, attributes.EM}
 	// RIP crystallize...
@@ -278,7 +278,7 @@ func (stats *OptimStats) getNonErSubstatsToOptimizeForChar(char character.Charac
 // TODO: Can maybe replace with some kind of gradient descent for speed improvements/allow for 1 ER substat moves?
 // When I tried before, it was hard to define a good step size and penalty on high ER substats that generally worked well
 // At least this version works semi-reliably...
-func (stats *OptimStats) optimizeERSubstats(tolMean float64, tolSD float64, runner simRunner) []string {
+func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD float64, runner simRunner) []string {
 	var (
 		charDebug []string
 		opDebug   []string
@@ -321,13 +321,13 @@ func (stats *OptimStats) optimizeERSubstats(tolMean float64, tolSD float64, runn
 	return opDebug
 }
 
-func (stats *OptimStats) setCharProfilesCopy(charsToCopy []character.CharacterProfile) {
+func (stats *SubstatOptimizerDetails) setCharProfilesCopy(charsToCopy []character.CharacterProfile) {
 	for i, char := range charsToCopy {
 		stats.charProfilesCopy[i] = char.Clone()
 	}
 }
 
-func (stats *OptimStats) findOptimalERforChar(idxChar int, char character.CharacterProfile, tolMean float64, tolSD float64, runner simRunner) []string {
+func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char character.CharacterProfile, tolMean float64, tolSD float64, runner simRunner) []string {
 	var debug []string
 	var initialMean float64
 	var initialSD float64
@@ -376,13 +376,13 @@ func (stats *OptimStats) findOptimalERforChar(idxChar int, char character.Charac
 	return debug
 }
 
-func (stats *OptimStats) setInitialSubstats(fixedSubstatCount int) {
+func (stats *SubstatOptimizerDetails) setInitialSubstats(fixedSubstatCount int) {
 	stats.cloneStatsWithFixedAllocations(fixedSubstatCount)
 	stats.calculateERBaseline()
 }
 
 // Copy to save initial character state with fixed allocations (2 of each substat)
-func (stats *OptimStats) cloneStatsWithFixedAllocations(fixedSubstatCount int) {
+func (stats *SubstatOptimizerDetails) cloneStatsWithFixedAllocations(fixedSubstatCount int) {
 	for i, char := range stats.simcfg.Characters {
 		stats.charProfilesInitial[i] = char.Clone()
 		for idxStat, stat := range stats.substatValues {
@@ -401,7 +401,7 @@ func (stats *OptimStats) cloneStatsWithFixedAllocations(fixedSubstatCount int) {
 // Add some points into CR/CD to reduce crit variance and have reasonable baseline stats
 // Also helps to slightly better evaluate the impact of favonius
 // Current concern is that optimization on 2nd stage doesn't perform very well due to messed up rotation
-func (stats *OptimStats) calculateERBaseline() {
+func (stats *SubstatOptimizerDetails) calculateERBaseline() {
 	for i, char := range stats.charProfilesInitial {
 		stats.charProfilesERBaseline[i] = char.Clone()
 		// Need special exception to Raiden due to her burst mechanics
@@ -426,13 +426,13 @@ func (stats *OptimStats) calculateERBaseline() {
 // Current strategy for favonius is to just boost this character's crit values a bit extra for optimal ER calculation purposes
 // Then at next step of substat optimization, should naturally see relatively big DPS increases for that character if higher crit matters a lot
 // TODO: Do we need a better special case for favonius?
-func (stats *OptimStats) calculateERBaselineHandleFav(i int) {
+func (stats *SubstatOptimizerDetails) calculateERBaselineHandleFav(i int) {
 	stats.charProfilesERBaseline[i].Stats[attributes.CR] += 4 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[i]
 	stats.charWithFavonius[i] = true
 }
 
-func InitOptimStats(simcfg *ast.ActionList, indivLiquidCap int, totalLiquidSubstats int, fixedSubstatCount int) *OptimStats {
-	s := OptimStats{}
+func InitOptimStats(simcfg *ast.ActionList, indivLiquidCap int, totalLiquidSubstats int, fixedSubstatCount int) *SubstatOptimizerDetails {
+	s := SubstatOptimizerDetails{}
 	s.simcfg = simcfg
 	s.fixedSubstatCount = fixedSubstatCount
 	s.indivSubstatLiquidCap = indivLiquidCap
@@ -504,7 +504,7 @@ func InitOptimStats(simcfg *ast.ActionList, indivLiquidCap int, totalLiquidSubst
 // TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
 // Most people will have 1 5* artifact which messes things up
 // TODO: Check whether taking like an average of the two stat values is good enough?
-func (stats *OptimStats) setStatLimits() bool {
+func (stats *SubstatOptimizerDetails) setStatLimits() bool {
 	profileIncludesFourStar := false
 
 	for i, char := range stats.simcfg.Characters {
@@ -533,4 +533,18 @@ func (stats *OptimStats) setStatLimits() bool {
 	}
 
 	return profileIncludesFourStar
+}
+
+// Helper function to pretty print substat counts. Stolen from similar function that takes in the float array
+func PrettyPrintStatsCounts(statsCounts []int) string {
+	var sb strings.Builder
+	for i, v := range statsCounts {
+		if v > 0 {
+			sb.WriteString(attributes.StatTypeString[i])
+			sb.WriteString(": ")
+			sb.WriteString(fmt.Sprintf("%v", v))
+			sb.WriteString(" ")
+		}
+	}
+	return strings.Trim(sb.String(), " ")
 }
