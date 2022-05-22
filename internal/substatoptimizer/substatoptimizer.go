@@ -1,17 +1,14 @@
 package substatoptimizer
 
 import (
-	"fmt"
+	"github.com/genshinsim/gcsim/pkg/optimization"
 	"go.uber.org/zap"
 	"log"
 	"os"
-	"sort"
 	"strings"
 
 	"github.com/genshinsim/gcsim/internal/simulator"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/parse"
-	"github.com/genshinsim/gcsim/pkg/result"
 )
 
 // Additional runtime option to optimize substats according to KQM standards
@@ -33,12 +30,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		optionsMap["verbose"] = 1
 	}
 
-	re := InitRegex()
-
 	// Parse and set all special sim options
 	var sugarLog *zap.SugaredLogger
 	if additionalOptions != "" {
-		optionsMap, err := re.scrubAdditionalOptimizerCfg(additionalOptions, optionsMap)
+		optionsMap, err := optimization.ParseOptimizerCfg(additionalOptions, optionsMap)
 		sugarLog = InitLogger(optionsMap["verbose"] == 1)
 		if err != nil {
 			sugarLog.Panic(err.Error())
@@ -54,8 +49,8 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		os.Exit(1)
 	}
 
-	srcCleaned, err := re.scrubSimCfg(cfg)
-	if err == RegexParseFatalErr {
+	clean, err := optimization.RemoveSubstatLines(cfg)
+	if err == optimization.InvalidStats {
 		sugarLog.Panic(err.Error())
 		os.Exit(1)
 	}
@@ -64,16 +59,16 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		sugarLog.Warn(err.Error())
 	}
 
-	parser := parse.New("single", srcCleaned)
+	parser := parse.New("single", clean)
 	simcfg, err := parser.Parse()
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
 
-	algo := InitAlgoV1(cfg, simopt, simcfg, optionsMap, sugarLog)
-	algo.OptimizeSubstats()
-	output := algo.PrettyPrintOptimizerOutput(srcCleaned, re, algo.stats)
+	algo := optimization.NewSubstatOptimizer(cfg, simopt, simcfg, optionsMap, sugarLog)
+	algo.Run()
+	output := algo.PrettyPrint(clean, algo.Details)
 
 	// Sticks optimized substat string into config and output
 	if simopt.ResultSaveToPath != "" {
@@ -85,78 +80,4 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		}
 		sugarLog.Infof("Saved to the following location: %v", simopt.ResultSaveToPath)
 	}
-}
-
-type simRunner func(config core.SimulationConfig) result.Summary
-
-func runSimWithConfigGenerator(cfg string, simopt simulator.Options) simRunner {
-	return func(simcfg core.SimulationConfig) result.Summary {
-		return runSimWithConfig(cfg, simcfg, simopt)
-	}
-}
-
-// Just runs the sim with specified settings
-func runSimWithConfig(cfg string, simcfg core.SimulationConfig, simopt simulator.Options) result.Summary {
-	result, err := simulator.RunWithConfig(cfg, simcfg, simopt)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-	return result
-}
-
-// Helper function to pretty print substat counts. Stolen from similar function that takes in the float array
-func PrettyPrintStatsCounts(statsCounts []int) string {
-	var sb strings.Builder
-	for i, v := range statsCounts {
-		if v > 0 {
-			sb.WriteString(core.StatTypeString[i])
-			sb.WriteString(": ")
-			sb.WriteString(fmt.Sprintf("%v", v))
-			sb.WriteString(" ")
-		}
-	}
-	return strings.Trim(sb.String(), " ")
-}
-
-// Gets the minimum of a slice of integers
-func minInt(vars ...int) int {
-	min := vars[0]
-
-	for _, val := range vars {
-		if min > val {
-			min = val
-		}
-	}
-	return min
-}
-
-// Thin wrapper around sort Slice to retrieve the sorted indices as well
-type Slice struct {
-	slice sort.Float64Slice
-	idx   []int
-}
-
-func (s Slice) Len() int {
-	return len(s.slice)
-}
-
-func (s Slice) Less(i, j int) bool {
-	return s.slice[i] < s.slice[j]
-}
-
-func (s Slice) Swap(i, j int) {
-	s.slice.Swap(i, j)
-	s.idx[i], s.idx[j] = s.idx[j], s.idx[i]
-}
-
-func NewSlice(n ...float64) *Slice {
-	s := &Slice{
-		slice: sort.Float64Slice(n),
-		idx:   make([]int, len(n)),
-	}
-	for i := range s.idx {
-		s.idx[i] = i
-	}
-	return s
 }
