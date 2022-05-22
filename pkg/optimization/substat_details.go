@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
 type SubstatOptimizerDetails struct {
@@ -25,6 +26,8 @@ type SubstatOptimizerDetails struct {
 	charProfilesERBaseline []character.CharacterProfile
 	charProfilesCopy       []character.CharacterProfile
 	simcfg                 *ast.ActionList
+	simopt                 simulator.Options
+	cfg                    string
 	fixedSubstatCount      int
 	indivSubstatLiquidCap  int
 	totalLiquidSubstats    int
@@ -37,7 +40,7 @@ type SubstatOptimizerDetails struct {
 // TODO: Probably want to refactor to potentially run gradient step at least twice:
 // once initially then another at 10 assigned liquid substats
 // Fine grained evaluations are too expensive time wise, but can perhaps add in an option for people who want to sit around for a while
-func (stats *SubstatOptimizerDetails) optimizeNonERSubstats(runner simRunner) []string {
+func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	var (
 		opDebug   []string
 		charDebug []string
@@ -46,21 +49,21 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats(runner simRunner) []
 	stats.simcfg.Characters = stats.charProfilesCopy
 
 	// Get initial DPS value
-	initialResult := runner(stats.simcfg)
+	initialResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt)
 	initialMean := initialResult.DPS.Mean
 
 	opDebug = append(opDebug, "Calculating optimal substat distribution...")
 	opDebug = append(opDebug, fmt.Sprintf("%v", initialMean))
 
 	for idxChar, char := range stats.charProfilesCopy {
-		charDebug = stats.optimizeNonErSubstatsForChar(idxChar, char, initialMean, runner)
+		charDebug = stats.optimizeNonErSubstatsForChar(idxChar, char, initialMean)
 		opDebug = append(opDebug, charDebug...)
 	}
 
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(idxChar int, char character.CharacterProfile, initialMean float64, runner simRunner) []string {
+func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(idxChar int, char character.CharacterProfile, initialMean float64) []string {
 	var opDebug []string
 	opDebug = append(opDebug, fmt.Sprintf("%v", char.Base.Key))
 
@@ -76,7 +79,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(idxChar int, 
 		relevantSubstats = append(relevantSubstats, addlSubstats...)
 	}
 
-	substatGradients, gradDebug := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, initialMean, runner)
+	substatGradients, gradDebug := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, initialMean)
 	opDebug = append(opDebug, gradDebug...)
 
 	allocDebug := stats.allocateSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats)
@@ -236,7 +239,7 @@ func (stats *SubstatOptimizerDetails) assignSubstatsForChar(idxChar int, char ch
 	return remainingLiquidSubstats - amtToAdd, stats.charSubstatLimits[idxChar][substat] - stats.charSubstatFinal[idxChar][substat]
 }
 
-func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(idxChar int, relevantSubstats []attributes.Stat, initialMean float64, runner simRunner) ([]float64, []string) {
+func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(idxChar int, relevantSubstats []attributes.Stat, initialMean float64) ([]float64, []string) {
 	var opDebug []string
 	substatGradients := make([]float64, len(relevantSubstats))
 
@@ -245,7 +248,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(idxChar i
 		stats.charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 
 		stats.simcfg.Characters = stats.charProfilesCopy
-		substatEvalResult := runner(stats.simcfg)
+		substatEvalResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt)
 		// opDebug = append(opDebug, fmt.Sprintf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD))
 
 		substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
@@ -278,14 +281,14 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char cha
 // TODO: Can maybe replace with some kind of gradient descent for speed improvements/allow for 1 ER substat moves?
 // When I tried before, it was hard to define a good step size and penalty on high ER substats that generally worked well
 // At least this version works semi-reliably...
-func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD float64, runner simRunner) []string {
+func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD float64) []string {
 	var (
 		charDebug []string
 		opDebug   []string
 	)
 
 	for idxChar, char := range stats.charProfilesERBaseline {
-		charDebug = stats.findOptimalERforChar(idxChar, char, tolMean, tolSD, runner)
+		charDebug = stats.findOptimalERforChar(idxChar, char, tolMean, tolSD)
 		opDebug = append(opDebug, charDebug...)
 	}
 
@@ -306,7 +309,7 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 			continue
 		}
 		opDebug = append(opDebug, "Raiden found in team comp - running secondary optimization routine...")
-		charDebug = stats.findOptimalERforChar(i, char, tolMean, tolSD, runner)
+		charDebug = stats.findOptimalERforChar(i, char, tolMean, tolSD)
 		opDebug = append(opDebug, charDebug...)
 	}
 
@@ -327,7 +330,7 @@ func (stats *SubstatOptimizerDetails) setCharProfilesCopy(charsToCopy []characte
 	}
 }
 
-func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char character.CharacterProfile, tolMean float64, tolSD float64, runner simRunner) []string {
+func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char character.CharacterProfile, tolMean float64, tolSD float64) []string {
 	var debug []string
 	var initialMean float64
 	var initialSD float64
@@ -340,7 +343,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char cha
 
 		stats.simcfg.Characters = stats.charProfilesCopy
 
-		result := runner(stats.simcfg)
+		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt)
 		debug = append(debug, fmt.Sprintf("%v: %v (%v)", stats.charSubstatFinal[idxChar][attributes.ER]-erStack, result.DPS.Mean, result.DPS.SD))
 
 		if erStack == 0 {
@@ -431,8 +434,10 @@ func (stats *SubstatOptimizerDetails) calculateERBaselineHandleFav(i int) {
 	stats.charWithFavonius[i] = true
 }
 
-func InitOptimStats(simcfg *ast.ActionList, indivLiquidCap int, totalLiquidSubstats int, fixedSubstatCount int) *SubstatOptimizerDetails {
+func NewSubstatOptimizerDetails(cfg string, simopt simulator.Options, simcfg *ast.ActionList, indivLiquidCap int, totalLiquidSubstats int, fixedSubstatCount int) *SubstatOptimizerDetails {
 	s := SubstatOptimizerDetails{}
+	s.cfg = cfg
+	s.simopt = simopt
 	s.simcfg = simcfg
 	s.fixedSubstatCount = fixedSubstatCount
 	s.indivSubstatLiquidCap = indivLiquidCap
