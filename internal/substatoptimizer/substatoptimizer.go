@@ -16,6 +16,8 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// Each optimizer run should not be saving anything out for the GZIP
 	simopt.GZIPResult = false
 
+	// Fix iterations at 350 for performance
+	// TODO: Seems to be a roughly good number at KQM standards
 	optionsMap := map[string]float64{
 		"total_liquid_substats": 20,
 		"indiv_liquid_cap":      10,
@@ -34,12 +36,12 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	var sugarLog *zap.SugaredLogger
 	if additionalOptions != "" {
 		optionsMap, err := optimization.ParseOptimizerCfg(additionalOptions, optionsMap)
-		sugarLog = InitLogger(optionsMap["verbose"] == 1)
+		sugarLog = NewLogger(optionsMap["verbose"] == 1)
 		if err != nil {
 			sugarLog.Panic(err.Error())
 		}
 	} else {
-		sugarLog = InitLogger(optionsMap["verbose"] == 1)
+		sugarLog = NewLogger(optionsMap["verbose"] == 1)
 	}
 
 	// Parse config
@@ -66,9 +68,9 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		os.Exit(1)
 	}
 
-	algo := optimization.NewSubstatOptimizer(cfg, simopt, simcfg, optionsMap, sugarLog)
-	algo.Run()
-	output := algo.PrettyPrint(clean, algo.Details)
+	optimizer := optimization.NewSubstatOptimizer(optionsMap, sugarLog)
+	optimizer.Run(cfg, simopt, simcfg)
+	output := optimizer.PrettyPrint(clean, optimizer.Details)
 
 	// Sticks optimized substat string into config and output
 	if simopt.ResultSaveToPath != "" {

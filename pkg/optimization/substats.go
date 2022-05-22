@@ -10,22 +10,15 @@ import (
 type SubstatOptimizer struct {
 	logger     *zap.SugaredLogger
 	optionsMap map[string]float64
-	cfg        string
-	simopt     simulator.Options
-	simcfg     core.SimulationConfig
 	Details    *SubstatOptimizerDetails
 }
 
-func NewSubstatOptimizer(cfg string, simopt simulator.Options, simcfg core.SimulationConfig, optionsMap map[string]float64, sugarLog *zap.SugaredLogger) *SubstatOptimizer {
-	a := SubstatOptimizer{}
+func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLogger) *SubstatOptimizer {
+	o := SubstatOptimizer{}
+	o.optionsMap = optionsMap
+	o.logger = sugarLog
 
-	a.cfg = cfg
-	a.simopt = simopt
-	a.simcfg = simcfg
-	a.optionsMap = optionsMap
-	a.logger = sugarLog
-
-	return &a
+	return &o
 }
 
 // Substat Optimization strategy is very simplistic right now:
@@ -36,47 +29,44 @@ func NewSubstatOptimizer(cfg string, simopt simulator.Options, simcfg core.Simul
 //    - Strategy is to just do a dumb grid search over ER substat values for each character
 //    - ER substat values are set in increments of 2 to make the search easier
 // 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
-func (a *SubstatOptimizer) Run() {
-	// Fix iterations at 350 for performance
-	// TODO: Seems to be a roughly good number at KQM standards
-	a.simcfg.Settings.Iterations = int(a.optionsMap["sim_iter"])
+func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg core.SimulationConfig) {
 
-	a.Details = InitOptimStats(a.simcfg, int(a.optionsMap["indiv_liquid_cap"]), int(a.optionsMap["total_liquid_substats"]))
+	simcfg.Settings.Iterations = int(o.optionsMap["sim_iter"])
+	o.Details = NewSubstatOptimizerDetails(cfg, simopt, simcfg, int(o.optionsMap["indiv_liquid_cap"]), int(o.optionsMap["total_liquid_substats"]))
 
-	fourStarFound := a.Details.setStatLimits()
+	fourStarFound := o.Details.setStatLimits()
 	if fourStarFound {
-		a.logger.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
+		o.logger.Warn("Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.")
 	}
 
-	fixedSubstatCount := a.optionsMap["fixed_substats_count"]
-	a.Details.setInitialSubstats(fixedSubstatCount)
-	a.logger.Info("Starting ER Optimization...")
+	fixedSubstatCount := o.optionsMap["fixed_substats_count"]
+	o.Details.setInitialSubstats(fixedSubstatCount)
+	o.logger.Info("Starting ER Optimization...")
 
-	a.Details.setCharProfilesCopy(a.Details.charProfilesERBaseline)
+	o.Details.setCharProfilesCopy(o.Details.charProfilesERBaseline)
 
 	// Tolerance cutoffs for mean and SD from initial state
 	// Initial state is used rather than checking across each iteration due to noise
 	// TODO: May want to adjust further?
-	tolMean := a.optionsMap["tol_mean"]
-	tolSD := a.optionsMap["tol_sd"]
-	runner := generateSimRunner(a.cfg, a.simopt)
+	tolMean := o.optionsMap["tol_mean"]
+	tolSD := o.optionsMap["tol_sd"]
 
-	debugLogs := a.Details.optimizeERSubstats(tolMean, tolSD, runner)
+	debugLogs := o.Details.optimizeERSubstats(tolMean, tolSD)
 	for _, debugLog := range debugLogs {
-		a.logger.Info(debugLog)
+		o.logger.Info(debugLog)
 	}
 
-	debugLogs = a.Details.optimizeNonERSubstats(runner)
+	debugLogs = o.Details.optimizeNonERSubstats()
 	for _, debugLog := range debugLogs {
-		a.logger.Info(debugLog)
+		o.logger.Info(debugLog)
 	}
 }
 
 // Final output
 // This doesn't take much time relatively speaking, so just always do the processing...
-func (a *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimizerDetails) string {
+func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimizerDetails) string {
 	charNames := make(map[core.CharKey]string)
-	a.logger.Info("Final config substat strings:")
+	o.logger.Info("Final config substat strings:")
 
 	for _, match := range REGEXP_LINE_CHARNAME.FindAllStringSubmatch(output, -1) {
 		charKey := core.CharNameToKey[match[1]]
