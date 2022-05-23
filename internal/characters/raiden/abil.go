@@ -6,13 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
-var polearmDelayOffset = [][]int{
-	{1},
-	{1},
-	{1},
-	{14, 1},
-	{1},
-}
+var hitmarks = [][]int{{14}, {9}, {14}, {14, 27}, {34}}
 
 func (c *char) Attack(p map[string]int) (int, int) {
 
@@ -37,8 +31,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttack(
 			ai,
 			core.NewDefCircHit(0.5, false, core.TargettableEnemy),
-			f-polearmDelayOffset[c.NormalCounter][i],
-			f-polearmDelayOffset[c.NormalCounter][i],
+			hitmarks[c.NormalCounter][i],
+			hitmarks[c.NormalCounter][i],
 		)
 	}
 
@@ -66,23 +60,10 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(
-		ai,
-		core.NewDefCircHit(0.5, false, core.TargettableEnemy),
-		f-31,
-		f-31,
-	)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f, f)
 
 	return f, a
 
-}
-
-var swordDelayOffset = [][]int{
-	{1},
-	{1},
-	{1},
-	{14, 1},
-	{1},
 }
 
 func (c *char) burstRestorefunc(a core.AttackCB) {
@@ -99,6 +80,8 @@ func (c *char) burstRestorefunc(a core.AttackCB) {
 		}
 	}
 }
+
+var burstHitmarks = [][]int{{12}, {13}, {11}, {22, 33}, {33}}
 
 func (c *char) swordAttack(f int, a int) (int, int) {
 	ai := core.AttackInfo{
@@ -121,8 +104,8 @@ func (c *char) swordAttack(f int, a int) (int, int) {
 		c.Core.Combat.QueueAttack(
 			ai,
 			core.NewDefCircHit(2, false, core.TargettableEnemy),
-			f-swordDelayOffset[c.NormalCounter][i],
-			f-swordDelayOffset[c.NormalCounter][i],
+			burstHitmarks[c.NormalCounter][i],
+			burstHitmarks[c.NormalCounter][i],
 			c.burstRestorefunc,
 			c.c6(),
 		)
@@ -156,9 +139,9 @@ func (c *char) swordCharge(p map[string]int) (int, int) {
 		}
 		c.Core.Combat.QueueAttack(
 			ai,
-			core.NewDefCircHit(2, false, core.TargettableEnemy),
-			f-42,
-			f-42,
+			core.NewDefCircHit(5, false, core.TargettableEnemy),
+			f,
+			f,
 			c.burstRestorefunc,
 			c.c6(),
 		)
@@ -185,12 +168,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(
-		ai,
-		core.NewDefCircHit(2, false, core.TargettableEnemy),
-		f+19,
-		f+19,
-	)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 51, 51)
 
 	//activate eye
 	c.Core.Status.AddStatus("raidenskill", 1500+f)
@@ -214,7 +192,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		})
 	}
 
-	c.SetCD(core.ActionSkill, 600)
+	c.SetCDWithDelay(core.ActionSkill, 600, 6)
 	return f, a
 }
 
@@ -278,6 +256,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//activate burst, reset stacks
+	c.burstCastF = c.Core.F
 	c.stacksConsumed = c.stacks
 	c.stacks = 0
 	c.Core.Status.AddStatus("raidenburst", 420+f) //7 seconds
@@ -286,21 +265,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.c6Count = 0
 	c.c6ICD = 0
 
+	// apply when burst ends
 	if c.Base.Cons >= 4 {
-		val := make([]float64, core.EndStatType)
-		val[core.ATKP] = 0.3
-		for i, char := range c.Core.Chars {
-			if i == c.Index {
-				continue
+		c.applyC4 = true
+		src := c.burstCastF
+		c.AddTask(func() {
+			if src == c.burstCastF && c.applyC4 {
+				c.applyC4 = false
+				c.c4()
 			}
-			char.AddMod(core.CharStatMod{
-				Key:    "raiden-c4",
-				Expiry: c.Core.F + 600, //10s
-				Amount: func() ([]float64, bool) {
-					return val, true
-				},
-			})
-		}
+		}, "raiden-c4", 420+f)
 	}
 
 	if c.Base.Cons == 6 {
@@ -325,8 +299,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), f, f)
 
-	c.SetCDWithDelay(core.ActionBurst, 18*60, 12)
-	c.ConsumeEnergy(12)
+	c.SetCD(core.ActionBurst, 18*60)
+	c.ConsumeEnergy(8)
 	return f, a
 }
 
@@ -339,6 +313,10 @@ func (c *char) onSwapClearBurst() {
 		prev := args[0].(int)
 		if prev == c.Index {
 			c.Core.Status.DeleteStatus("raidenburst")
+			if c.applyC4 {
+				c.applyC4 = false
+				c.c4()
+			}
 		}
 		return false
 	}, "raiden-burst-clear")

@@ -28,7 +28,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	done := false
 	cb := func(a core.AttackCB) {
-		if !done {
+		if done {
 			return
 		}
 		count := c.Tags["jade"]
@@ -37,6 +37,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			count++
 			if count > 3 {
 				count = 3
+			} else {
+				c.Core.Log.NewEvent("adding star jade", core.LogCharacterEvent, c.Index, "count", count)
 			}
 			c.Tags["jade"] = count
 		}
@@ -177,6 +179,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	if c.Base.Cons == 6 {
 		c.Tags["jade"] = 7
+		c.Core.Log.NewEvent("c6 - adding star jade", core.LogCharacterEvent, c.Index, "count", c.Tags["jade"])
 	}
 
 	c.ConsumeEnergy(8)

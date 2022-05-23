@@ -33,7 +33,11 @@ func (c *Tmpl) Burst(p map[string]int) (int, int) {
 }
 
 func (c *Tmpl) Dash(p map[string]int) (int, int) {
-	return 24, 24
+	return 24, 24 //likely too long
+}
+
+func (c *Tmpl) Jump(p map[string]int) (int, int) {
+	return 33, 33 //likely too long
 }
 
 func (c *Tmpl) ActionStam(a core.ActionType, p map[string]int) float64 {

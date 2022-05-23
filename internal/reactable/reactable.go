@@ -59,9 +59,9 @@ func (r *Reactable) React(a *core.AttackEvent) {
 		switch a.Info.Element {
 		case core.Electro:
 			r.tryOverload(a)
+			r.tryFrozenSuperconduct(a)
 			r.tryAddEC(a)
 			r.trySuperconduct(a)
-			r.tryFrozenSuperconduct(a)
 		case core.Pyro:
 			r.tryOverload(a)
 			r.tryMelt(a)

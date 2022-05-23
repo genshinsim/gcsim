@@ -15,12 +15,20 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 	addStack := func(args ...interface{}) bool {
 		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex == char.CharIndex() {
+		if atk.Info.ActorIndex != char.CharIndex() {
+			return false
+		}
+		if c.ActiveChar != char.CharIndex() {
+			return false
+		}
+
+		if c.F > dur {
+			stacks = 1
+			dur = c.F + 600
+			c.Log.NewEvent("mappa proc'd", core.LogWeaponEvent, char.CharIndex(), "stacks", stacks, "expiry", dur)
+		} else if stacks < 2 {
 			stacks++
-			if stacks > 2 {
-				stacks = 2
-				dur = c.F + 600
-			}
+			c.Log.NewEvent("mappa proc'd", core.LogWeaponEvent, char.CharIndex(), "stacks", stacks, "expiry", dur)
 		}
 		return false
 	}
@@ -30,21 +38,23 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	}
 
 	dmg := 0.06 + float64(r)*0.02
-
 	m := make([]float64, core.EndStatType)
-
-	m[core.PyroP] = dmg
-	m[core.HydroP] = dmg
-	m[core.CryoP] = dmg
-	m[core.ElectroP] = dmg
-	m[core.AnemoP] = dmg
-	m[core.GeoP] = dmg
-	m[core.DendroP] = dmg
 
 	char.AddMod(core.CharStatMod{
 		Key: "mappa",
 		Amount: func() ([]float64, bool) {
-			return m, dur > c.F
+			if c.F > dur {
+				return nil, false
+			}
+
+			m[core.PyroP] = dmg * float64(stacks)
+			m[core.HydroP] = dmg * float64(stacks)
+			m[core.CryoP] = dmg * float64(stacks)
+			m[core.ElectroP] = dmg * float64(stacks)
+			m[core.AnemoP] = dmg * float64(stacks)
+			m[core.GeoP] = dmg * float64(stacks)
+			m[core.DendroP] = dmg * float64(stacks)
+			return m, true
 		},
 		Expiry: -1,
 	})

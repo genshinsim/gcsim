@@ -173,7 +173,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.eCast = c.Core.F
 	c.Core.Status.AddStatus("tartagliamelee", 30*60)
-	c.Core.Log.NewEvent("Foul Legacy acivated", core.LogCharacterEvent, c.Index, "rtexpiry", c.Core.F+30*60)
+	c.Core.Log.NewEvent("Foul Legacy activated", core.LogCharacterEvent, c.Index, "rtexpiry", c.Core.F+30*60)
 
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -189,7 +189,15 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
+	src := c.eCast
+	c.AddTask(func() {
+		if src == c.eCast && c.Core.Status.Duration("tartagliamelee") > 0 {
+			c.onExitMeleeStance()
+			c.ResetNormalCounter()
+		}
+	}, "tartagliamelee-cd", 30*60)
 	c.SetCD(core.ActionSkill, 60)
+
 	return f, a
 }
 
@@ -221,7 +229,7 @@ func (c *char) onExitMeleeStance() {
 	}
 
 	if c.mlBurstUsed {
-		c.SetCD(core.ActionSkill, 0)
+		c.ResetActionCooldown(core.ActionSkill)
 		c.mlBurstUsed = false
 	} else {
 		c.SetCD(core.ActionSkill, skillCD)

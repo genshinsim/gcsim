@@ -56,6 +56,12 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	return f, a
 }
 
+//sucrose's dash can be cancelled by her E and Q, so we override it here
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
+	return f, a
+}
+
 func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 

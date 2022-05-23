@@ -232,7 +232,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		// Need special exception to Raiden due to her burst mechanics
 		// TODO: Don't think there's a better solution without an expensive recursive solution to check across all Raiden ER states
 		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks low
-		erStack := 10
+		erStack := charSubstatLimits[i][core.ER]
 		if char.Base.Key == core.Raiden {
 			erStack = 0
 		}
@@ -388,6 +388,12 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			// sugarLog.Debugf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD)
 
 			substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
+
+			// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
+			// might give them "too much" cr (= max out liquid cr subs) but that's probably not a big deal
+			if charWithFavonius[idxChar] && substat == core.CR {
+				substatGradients[idxSubstat] += 1000
+			}
 
 			charProfilesCopy[idxChar].Stats[substat] -= 10 * substatValues[substat] * charSubstatRarityMod[idxChar]
 		}

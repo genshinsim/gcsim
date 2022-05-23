@@ -7,11 +7,13 @@ import (
 
 type char struct {
 	*character.Tmpl
+	burstCastF     int
 	eyeICD         int
 	stacksConsumed float64
 	stacks         float64
 	restoreICD     int
 	restoreCount   int
+	applyC4        bool
 	c6Count        int
 	c6ICD          int
 }
@@ -46,6 +48,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+	c.InitCancelFrames()
 
 	c.eyeOnDamage()
 	c.onBurstStackCount()
