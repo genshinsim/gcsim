@@ -1,6 +1,11 @@
 package parse
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"runtime"
+	"strconv"
+)
 
 type Parser struct {
 	lex *lexer
@@ -91,4 +96,26 @@ func (p *Parser) peek() Token {
 	n := p.next()
 	p.backup()
 	return n
+}
+
+func (p *Parser) acceptSeqReturnLast(items ...TokenType) (Token, error) {
+	var n Token
+	for _, v := range items {
+		n = p.next()
+		if n.typ != v {
+			_, file, no, _ := runtime.Caller(1)
+			return n, fmt.Errorf("(%s#%d) expecting %v, got token %v", file, no, v, n)
+		}
+	}
+	return n, nil
+}
+
+func itemNumberToInt(i Token) (int, error) {
+	r, err := strconv.Atoi(i.Val)
+	return int(r), err
+}
+
+func itemNumberToFloat64(i Token) (float64, error) {
+	r, err := strconv.ParseFloat(i.Val, 64)
+	return r, err
 }

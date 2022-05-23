@@ -83,9 +83,23 @@ const (
 	keywordBreak       // break
 	keywordContinue    // continue
 	keywordFallthrough // fallthrough
-	keywordLabel       // label
 	keywordReturn      // return
-
+	// Keywords after this are specific to Genshin (i.e. not generic scripting keywords)
+	// These are special char related keywords
+	keywordAdd     // add
+	keywordChar    // char
+	keywordStats   // stats
+	keywordWeapon  // weapon
+	keywordSet     // set
+	keywordLvl     // lvl
+	keywordRefine  // refine
+	keywordCons    // cons
+	keywordTalent  // talent
+	keywordStartHP // start_hp
+	keywordCount   // count
+	keywordParams  // params
+	keywordLabel   // label
+	keywordUntil   // until
 	// Keywords specific to gcsim appears after this
 	itemKeys
 	itemStatKey      // stats: def%, def, etc..

@@ -74,10 +74,6 @@ func parseText(p *Parser) (parseFn, error) {
 	}
 }
 
-func parseCharacter(p *Parser) (parseFn, error) {
-	return nil, nil
-}
-
 func (p *Parser) parseStatement() Node {
 	//some statements end in semi, other don't
 	hasSemi := true
