@@ -5,11 +5,20 @@ import (
 	"fmt"
 	"runtime"
 	"strconv"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 type Parser struct {
 	lex *lexer
 	res *ActionList
+
+	//other information tracked as we parse
+	chars          map[keys.Char]*character.CharacterProfile
+	charOrder      []keys.Char
+	currentCharKey keys.Char
 
 	//lookahead
 	token []Token
@@ -21,8 +30,10 @@ type Parser struct {
 }
 
 type ActionList struct {
-	FnMap   map[string]Node
-	Program *BlockStmt
+	FnMap      map[string]Node
+	Program    *BlockStmt
+	Characters []character.CharacterProfile
+	Targets    []enemy.EnemyProfile
 }
 
 type parseFn func(*Parser) (parseFn, error)

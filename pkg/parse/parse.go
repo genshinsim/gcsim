@@ -2,6 +2,8 @@ package parse
 
 import (
 	"strconv"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type precedence int
@@ -56,6 +58,16 @@ func parseText(p *Parser) (parseFn, error) {
 		//check if this is character stats etc or an action
 		if p.peek().typ != itemActionKey {
 			//not an ActionStmt
+			//set up char and set key
+			key, ok := keys.CharNameToKey[n.Val]
+			if !ok {
+				//TODO: better err handling
+				panic("invalid char key " + n.Val)
+			}
+			if _, ok := p.chars[key]; !ok {
+				p.newChar(key)
+			}
+			p.currentCharKey = key
 			p.backup()
 			return parseCharacter, nil
 		}

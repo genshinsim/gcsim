@@ -7,13 +7,14 @@ import (
 )
 
 type CharacterProfile struct {
-	Base      CharacterBase               `json:"base"`
-	Weapon    weapon.WeaponProfile        `json:"weapon"`
-	Talents   TalentProfile               `json:"talents"`
-	Stats     []float64                   `json:"stats"`
-	Sets      map[keys.Set]int            `json:"sets"`
-	SetParams map[keys.Set]map[string]int `json:"-"`
-	Params    map[string]int              `json:"-"`
+	Base         CharacterBase               `json:"base"`
+	Weapon       weapon.WeaponProfile        `json:"weapon"`
+	Talents      TalentProfile               `json:"talents"`
+	Stats        []float64                   `json:"stats"`
+	StatsByLabel map[string][]float64        `json:"stats_by_label"`
+	Sets         map[keys.Set]int            `json:"sets"`
+	SetParams    map[keys.Set]map[string]int `json:"-"`
+	Params       map[string]int              `json:"-"`
 }
 
 func (c *CharacterProfile) Clone() CharacterProfile {
