@@ -2,6 +2,8 @@ package parse
 
 import (
 	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type actionItem struct {
@@ -19,7 +21,9 @@ type actionAPLOpt struct {
 	tryDropIfNotReady bool
 }
 
-func (p *Parser) parseCharacterAction() Stmt {
+//parseAction returns a node contain a character action, or a block of node containing
+//a list of character actions
+func (p *Parser) parseAction() Stmt {
 	//actions can be
 	//apl options:
 	//	+if
@@ -35,9 +39,10 @@ func (p *Parser) parseCharacterAction() Stmt {
 	if err != nil {
 		panic("parse char action expects character key, got " + char.String())
 	}
+	charKey := keys.CharNameToKey[char.Val]
 
 	//should be multiple action keys next
-	var actions []actionItem
+	var actions []*ActionStmt
 	if p.peek().typ != itemActionKey {
 		//TODO: fix error logging
 		return nil
@@ -51,11 +56,13 @@ Loop:
 			//stop here
 			break Loop
 		case itemActionKey:
-			a := actionItem{
-				typ: n,
+			a := &ActionStmt{
+				Pos:    char.pos,
+				Char:   charKey,
+				Action: actionKeys[n.Val],
 			}
 			//check for param -> then repeat
-			a.param, err = p.acceptOptionalParamReturnMap()
+			a.Param, err = p.acceptOptionalParamReturnMap()
 			if err != nil {
 				//TODO: fix error logging
 				return nil
@@ -87,7 +94,15 @@ Loop:
 
 	//build stmt
 
-	return nil
+	if len(actions) == 1 {
+		return actions[0]
+	} else {
+		b := newBlockStmt(char.pos)
+		for _, v := range actions {
+			b.append(v)
+		}
+		return b
+	}
 }
 
 func (p *Parser) acceptOptionalParamReturnMap() (map[string]int, error) {

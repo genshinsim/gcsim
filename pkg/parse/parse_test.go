@@ -122,6 +122,8 @@ const cfg = `
 	while x < 10 {
 		x = y(x, 1);
 		//do loopy stuff
+		xingqiu skill;
+		xingqiu attack:4;
 		if x > 0 {
 			continue;
 		} else {

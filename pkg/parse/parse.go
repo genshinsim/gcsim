@@ -126,13 +126,6 @@ func (p *Parser) parseStatement() Node {
 	return node
 }
 
-//parseAction returns a node contain a character action, or a block of node containing
-//a list of character actions
-func (p *Parser) parseAction() Stmt {
-
-	return nil
-}
-
 func (p *Parser) parseLet() Stmt {
 	//var ident = expr;
 	n := p.next()
@@ -445,7 +438,7 @@ func (p *Parser) parseCallArgs() []Expr {
 func (p *Parser) peekValidCharAction() bool {
 	p.next()
 	//check if this is character stats etc or an action
-	if p.peek().typ <= itemActionKey {
+	if p.peek().typ < itemActionKey {
 		p.backup()
 		//not an ActionStmt
 		return false
