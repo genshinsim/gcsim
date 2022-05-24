@@ -45,35 +45,35 @@ func TestOrderPrecedence(t *testing.T) {
 	}{
 		{
 			"1+2*3;",
-			"(1 + (2 * 3));",
+			"(1 + (2 * 3))",
 		},
 		{
 			"1+2+3;",
-			`((1 + 2) + 3);`,
+			`((1 + 2) + 3)`,
 		},
 		{
 			"1 * 2 + 3;",
-			"((1 * 2) + 3);",
+			"((1 * 2) + 3)",
 		},
 		{
 			"a * b + c;",
-			`((a * b) + c);`,
+			`((a * b) + c)`,
 		},
 		{
 			"-a * b;",
-			"((-a) * b);",
+			"((-a) * b)",
 		},
 		{
 			"a - b;",
-			"(a - b);",
+			"(a - b)",
 		},
 		{
 			"!-a;",
-			"(!(-a));",
+			"(!(-a))",
 		},
 		{
 			"(1+2)*3;",
-			"((1 + 2) * 3);",
+			"((1 + 2) * 3)",
 		},
 	}
 
@@ -132,7 +132,7 @@ const cfg = `
 	}
 `
 
-func TestCfg(t *testing.T) {
+func testCfg(t *testing.T) {
 	p := New(cfg)
 	fmt.Printf("parsing:\n %v\n", cfg)
 	res, err := p.Parse()
@@ -140,6 +140,23 @@ func TestCfg(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
+	fmt.Println("output:")
+	fmt.Println(res.Program.String())
+}
+
+const charaction = `
+xingqiu attack[randomparam=2]:4,skill;
+xingqiu burst[orbital=0];
+`
+
+func TestCharAction(t *testing.T) {
+	p := New(charaction)
+	res, err := p.Parse()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
 	fmt.Println("output:")
 	fmt.Println(res.Program.String())
 }

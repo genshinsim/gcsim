@@ -54,7 +54,7 @@ func parseText(p *Parser) (parseFn, error) {
 	case itemCharacterKey:
 		p.next()
 		//check if this is character stats etc or an action
-		if p.peek().typ <= itemActionKey {
+		if p.peek().typ != itemActionKey {
 			//not an ActionStmt
 			p.backup()
 			return parseCharacter, nil
@@ -438,7 +438,7 @@ func (p *Parser) parseCallArgs() []Expr {
 func (p *Parser) peekValidCharAction() bool {
 	p.next()
 	//check if this is character stats etc or an action
-	if p.peek().typ < itemActionKey {
+	if p.peek().typ != itemActionKey {
 		p.backup()
 		//not an ActionStmt
 		return false
