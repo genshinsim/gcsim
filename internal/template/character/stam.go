@@ -9,7 +9,7 @@ import (
 
 //ActionStam provides default implementation for stam cost for charge and dash
 //character should override this though
-func (c *Character) ActionStam(a action.Action, p map[string]int) int {
+func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
 		//20 sword (most)
