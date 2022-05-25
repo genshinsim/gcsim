@@ -1,20 +1,12 @@
 package raiden
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
-	tmpl "github.com/genshinsim/gcsim/internal/template/character"
+	"github.com/genshinsim/gcsim/internal/tmpl/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type char struct {
-	*tmpl.Character
+	*character.Tmpl
 	burstCastF     int
 	eyeICD         int
 	stacksConsumed float64
@@ -27,16 +19,17 @@ type char struct {
 }
 
 func init() {
-	core.RegisterCharFunc(keys.Raiden, NewChar)
+	core.RegisterCharFunc(core.Raiden, NewChar)
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c := char{}
-	t := tmpl.New(s)
-	t.CharWrapper = w
-	c.Character = t
-
-	c.Base.Element = attributes.Electro
+	t, err := character.NewTemplateChar(s, p)
+	if err != nil {
+		return nil, err
+	}
+	c.Tmpl = t
+	c.Base.Element = core.Electro
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -44,20 +37,19 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 90
-	c.Weapon.Class = weapon.WeaponClassSpear
+	c.Weapon.Class = core.WeaponClassSpear
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = 5
-	c.CharZone = character.ZoneInazuma
+	c.CharZone = core.ZoneInazuma
 
-	w.Character = &c
-
-	return nil
+	return &c, nil
 }
 
-func (c *char) Init() error {
-
+func (c *char) Init() {
+	c.Tmpl.Init()
 	c.InitCancelFrames()
+
 	c.eyeOnDamage()
 	c.onBurstStackCount()
 	c.onSwapClearBurst()
@@ -65,58 +57,43 @@ func (c *char) Init() error {
 	if c.Base.Cons == 6 {
 		c.c6()
 	}
-
-	return nil
 }
 
-func (c *char) InitCancelFrames() {
-	c.initNormalCancels()
-	c.initBurstAttackCancels()
-
-	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
-	chargeFrames[action.ActionSwap] = 36
-
-	swordCAFrames = frames.InitAbilSlice(56)
-	swordCAFrames[action.ActionDash] = 35
-	swordCAFrames[action.ActionJump] = 35
-	swordCAFrames[action.ActionSwap] = 55
-
-	skillFrames = frames.InitAbilSlice(37)
-	skillFrames[action.ActionDash] = 17
-	skillFrames[action.ActionJump] = 17
-	skillFrames[action.ActionSwap] = 17
-
-	burstFrames = frames.InitAbilSlice(112)
-	burstFrames[action.ActionAttack] = 111
-	burstFrames[action.ActionSkill] = 111
-	burstFrames[action.ActionCharge] = 500 //TODO: this action is illegal
-	burstFrames[action.ActionDash] = 110
-	burstFrames[action.ActionSwap] = 110
-}
-
-func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
+func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 	switch a {
-	case action.ActionDash:
+	case core.ActionDash:
 		return 18
-	case action.ActionCharge:
+	case core.ActionCharge:
 		if c.Core.Status.Duration("raidenburst") == 0 {
 			return 25
 		}
 		return 20
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", glog.LogActionEvent, c.Index, "action", a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
 }
 
-func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
-	s := c.Character.Snapshot(a)
+func (c *char) Snapshot(a *core.AttackInfo) core.Snapshot {
+	s := c.Tmpl.Snapshot(a)
 
 	//a1 add dmg based on ER%
-	excess := int(s.Stats[attributes.ER] / 0.01)
+	excess := int(s.Stats[core.ER] / 0.01)
 
-	s.Stats[attributes.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Core.Log.NewEvent("a4 adding electro dmg", glog.LogCharacterEvent, c.Index, "stacks", excess, "final", s.Stats[attributes.ElectroP])
+	s.Stats[core.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
+	c.Core.Log.NewEvent("a4 adding electro dmg", core.LogCharacterEvent, c.Index, "stacks", excess, "final", s.Stats[core.ElectroP])
+	//
+	////infusion to normal/plunge/charge
+	//switch ds.AttackTag {
+	//case core.AttackTagNormal:
+	//case core.AttackTagExtra:
+	//case core.AttackTagPlunge:
+	//default:
+	//	return ds
+	//}
+	//if c.Core.Status.Duration("raidenburst") > 0 {
+	//	ds.Element = core.Electro
+	//}
 
 	return s
 }
