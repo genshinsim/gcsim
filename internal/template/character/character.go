@@ -32,14 +32,11 @@ func New(c *core.Core) *Character {
 }
 
 func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
-
-	char := c.Core.Player.ByIndex(c.Index)
-
 	s := combat.Snapshot{
-		CharLvl:     char.Base.Level,
-		ActorEle:    char.Base.Element,
-		BaseAtk:     char.Base.Atk + char.Weapon.Atk,
-		BaseDef:     char.Base.Def,
+		CharLvl:     c.Base.Level,
+		ActorEle:    c.Base.Element,
+		BaseAtk:     c.Base.Atk + c.Weapon.Atk,
+		BaseDef:     c.Base.Def,
 		SourceFrame: c.Core.F,
 	}
 
@@ -59,7 +56,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	}
 
 	//snapshot the stats
-	s.Stats, debug = c.Core.Player.ByIndex(c.Index).Stats()
+	s.Stats, debug = c.Stats()
 
 	//check infusion
 	var inf attributes.Element

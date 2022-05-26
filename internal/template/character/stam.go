@@ -16,7 +16,7 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 		//25 polearm
 		//40 per second claymore
 		//50 catalyst
-		switch c.Core.Player.ByIndex(c.Index).Weapon.Class {
+		switch c.Weapon.Class {
 		case weapon.WeaponClassSword:
 			return 20
 		case weapon.WeaponClassSpear:
