@@ -195,7 +195,7 @@ func (c *Core) UserCustomDelay() int {
 	case ActionJump:
 		d = c.Flags.Delays.Jump
 	case ActionSwap:
-		d = c.Flags.Delays.Swap
+		d = 0 //swap delay is handled separately, since it's after the swap rather than before it
 	case ActionAim:
 		d = c.Flags.Delays.Aim
 	}

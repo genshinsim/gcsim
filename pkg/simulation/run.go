@@ -126,10 +126,9 @@ func (s *Simulation) AdvanceFrame() error {
 		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
 		//check if we should delay
 
-		//so if current frame - when the last action is used is > delay, then we shouldn't
-		//delay at all
-		if s.C.F-s.lastActionUsedAt > delay {
-			delay = 0
+		//swap delay should be after the swap, not before it
+		if act.Typ == core.ActionSwap {
+			delay += s.C.Flags.Delays.Swap
 		}
 
 		//other wise we can add delay
