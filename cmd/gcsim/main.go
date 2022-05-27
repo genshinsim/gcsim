@@ -102,7 +102,7 @@ func main() {
 		serverDone := &sync.WaitGroup{}
 		serverDone.Add(1)
 		serveLocal(serverDone, "./serve_data.json.gz")
-		url := "http://localhost:1234/viewer/local"
+		url := "https://gcsim.app/viewer/local"
 		err = open(url)
 		if err != nil {
 			//try "xdg-open-wsl"
