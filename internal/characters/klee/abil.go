@@ -163,7 +163,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		NoImpulse:  true,
 	}
 	//lasts 10 seconds, starts after 2.2 seconds maybe?
-	c.Core.Status.AddStatus("kleeq", 600+132+1)
+	c.Core.Status.AddStatus("kleeq", 600+132)
 
 	//every 1.8 second +on added shoots between 3 to 5, ignore the queue thing.. space it out .2 between each wave i guess
 

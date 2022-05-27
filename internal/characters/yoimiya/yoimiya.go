@@ -30,7 +30,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 60
-	c.Weapon.Class = core.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 5
 	c.BurstCon = 5
 	c.SkillCon = 3

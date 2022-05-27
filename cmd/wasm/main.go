@@ -102,11 +102,12 @@ func version(this js.Value, args []js.Value) interface{} {
 //run simulation once
 func run(this js.Value, args []js.Value) interface{} {
 	//seed this with now
-	c, err := simulation.NewCore(cryptoRandSeed(), false, cfg.Settings)
+	t := cfg.Clone()
+	c, err := simulation.NewCore(cryptoRandSeed(), false, t.Settings)
 	if err != nil {
 		return marshalErr(err)
 	}
-	s, err := simulation.New(cfg, c)
+	s, err := simulation.New(t, c)
 	if err != nil {
 		return marshalErr(err)
 	}

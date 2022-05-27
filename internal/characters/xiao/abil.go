@@ -163,7 +163,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Abil:       "Lemniscatic Wind Cycling",
 		AttackTag:  core.AttackTagElementalArt,
 		ICDTag:     core.ICDTagElementalArt,
-		ICDGroup:   core.ICDGroupDefault,
+		ICDGroup:   core.ICDGroupXiaoDash,
 		Element:    core.Anemo,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],

@@ -183,43 +183,55 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//a4 every .3 seconds for the duration of the burst, add ice dmg up to active char for 1sec
 	//duration is 15 seconds
 	//starts from end of cast
+	mA4 := make([]float64, core.EndStatType)
+	mC4 := make([]float64, core.EndStatType)
+	mA4[core.CryoP] = 0.2
 	for i := a; i < 900+a; i += 18 {
 		t := i
 		c.AddTask(func() {
 			active := c.Core.Chars[c.Core.ActiveChar]
-			val := make([]float64, core.EndStatType)
-			val[core.CryoP] = 0.2
 			active.AddMod(core.CharStatMod{
-				Key: "ganyu-field",
-				Amount: func() ([]float64, bool) {
-					return val, true
-				},
+				Key:    "ganyu-field",
 				Expiry: c.Core.F + 60,
+				Amount: func() ([]float64, bool) {
+					return mA4, true
+				},
 			})
 			if t >= 900+a-18 {
 				c.Core.Log.NewEvent("a4 last tick", core.LogCharacterEvent, c.Index, "ends_on", c.Core.F+60)
 			}
-		}, "ganyu-a4", i)
-	}
 
-	if c.Base.Cons >= 4 {
-		//we just assume this lasts for the full duration since no one moves...
-		start := c.Core.F
-
-		val := make([]float64, core.EndStatType)
-		c.AddMod(core.CharStatMod{
-			Key:    "ganyu-c4",
-			Expiry: c.Core.F + 1080,
-			Amount: func() ([]float64, bool) {
-				elapsed := c.Core.F - start
-				stacks := int(elapsed / 180)
-				if stacks > 5 {
-					stacks = 5
+			// C4: similar to A4 expect it lingers for 3s
+			// assume this lasts for the full duration since no one moves...
+			if c.Base.Cons >= 4 {
+				// check for 1st tick and reset stacks if expired
+				if t == a && !c.PreDamageModIsActive("ganyu-c4") {
+					c.c4Stacks = 0
 				}
-				val[core.DmgP] = float64(stacks) * 0.05
-				return val, true
-			},
-		})
+
+				// increase stacks at 3s interval
+				if (t-a)%180 == 0 {
+					c.c4Stacks++
+					if c.c4Stacks > 5 {
+						c.c4Stacks = 5
+					}
+					mC4[core.DmgP] = float64(c.c4Stacks) * 0.05
+				}
+
+				// TODO: should be changed to target mod
+				for _, char := range c.Core.Chars {
+					char.AddPreDamageMod(core.PreDamageMod{
+						Key:    "ganyu-c4",
+						Expiry: c.Core.F + 60*3,
+						Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+							return mC4, true
+						},
+					})
+				}
+
+				c.Core.Log.NewEvent("ganyu c4 stacks", core.LogCharacterEvent, c.Index, "stacks", c.c4Stacks)
+			}
+		}, "ganyu-burst-checks", i)
 	}
 
 	//add cooldown to sim

@@ -28,7 +28,7 @@ func TestCD(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	err = testhelper.TestSkillCDSingleCharge(c, x, 60)
+	err = testhelper.TestSkillCDSingleCharge(c, x, 60+17) //17 frames for CD to start
 	if err != nil {
 		t.Error(err)
 	}

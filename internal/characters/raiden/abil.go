@@ -256,6 +256,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
 	//activate burst, reset stacks
+	c.burstCastF = c.Core.F
 	c.stacksConsumed = c.stacks
 	c.stacks = 0
 	c.Core.Status.AddStatus("raidenburst", 420+f) //7 seconds
@@ -264,21 +265,16 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.c6Count = 0
 	c.c6ICD = 0
 
+	// apply when burst ends
 	if c.Base.Cons >= 4 {
-		val := make([]float64, core.EndStatType)
-		val[core.ATKP] = 0.3
-		for i, char := range c.Core.Chars {
-			if i == c.Index {
-				continue
+		c.applyC4 = true
+		src := c.burstCastF
+		c.AddTask(func() {
+			if src == c.burstCastF && c.applyC4 {
+				c.applyC4 = false
+				c.c4()
 			}
-			char.AddMod(core.CharStatMod{
-				Key:    "raiden-c4",
-				Expiry: c.Core.F + 600, //10s
-				Amount: func() ([]float64, bool) {
-					return val, true
-				},
-			})
-		}
+		}, "raiden-c4", 420+f)
 	}
 
 	if c.Base.Cons == 6 {
@@ -317,6 +313,10 @@ func (c *char) onSwapClearBurst() {
 		prev := args[0].(int)
 		if prev == c.Index {
 			c.Core.Status.DeleteStatus("raidenburst")
+			if c.applyC4 {
+				c.applyC4 = false
+				c.c4()
+			}
 		}
 		return false
 	}, "raiden-burst-clear")

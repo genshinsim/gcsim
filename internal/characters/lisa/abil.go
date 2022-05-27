@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = []int{26, 18, 17, 31}
+
 func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
@@ -20,7 +22,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-1)
+	//todo: Does it really snapshot immediately?
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, hitmarks[c.NormalCounter])
 
 	c.AdvanceNormalIndex()
 
@@ -57,10 +60,12 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		done = true
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, f, cb)
 
 	return f, a
 }
+
+var skillHitmarks = []int{22, 117}
 
 //p = 0 for no hold, p = 1 for hold
 func (c *char) Skill(p map[string]int) (int, int) {
@@ -97,13 +102,13 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 		done = true
 	}
 
-	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, f-1, cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, skillHitmarks[0], cb)
 
 	if c.Core.Rand.Float64() < 0.5 {
 		c.QueueParticle("Lisa", 1, core.Electro, f+100)
 	}
 
-	c.SetCD(core.ActionSkill, 60)
+	c.SetCDWithDelay(core.ActionSkill, 60, 17)
 	return f, a
 }
 
@@ -146,7 +151,7 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 
 	//[8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, f, c1cb)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, skillHitmarks[1], c1cb)
 
 	// count := 4
 	// if c.Core.Rand.Float64() < 0.5 {
@@ -154,8 +159,8 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 	// }
 	c.QueueParticle("Lisa", 5, core.Electro, f+100)
 
-	// c.CD[def.SkillCD] = c.Core.F + 960 //16seconds
-	c.SetCD(core.ActionSkill, 960)
+	// c.CD[def.SkillCD] = c.Core.F + 960 //16seconds, starts after 114 frames
+	c.SetCDWithDelay(core.ActionSkill, 960, 114)
 	return f, a
 }
 
@@ -178,7 +183,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(targ, core.TargettableEnemy), f, f, a4cb)
 
 	//duration is 15 seconds, tick every .5 sec
-	//30 zaps once every 30 frame, starting at f
+	//30 zaps once every 30 frame, starting at 119
 
 	ai = core.AttackInfo{
 		ActorIndex: c.Index,
@@ -191,7 +196,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	for i := 30; i <= 900; i += 30 {
+	for i := 119; i <= 119+900; i += 30 { //first tick at 119
 
 		var cb core.AttackCBFunc
 		if c.Base.Cons >= 4 {
@@ -209,12 +214,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 			}
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-1, f+i, cb, a4cb)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-1, i, cb, a4cb)
 	}
 
 	//add a status for this just in case someone cares
 	c.AddTask(func() {
-		c.Core.Status.AddStatus("lisaburst", 900)
+		c.Core.Status.AddStatus("lisaburst", 119+900)
 	}, "lisa burst status", f)
 
 	//on lisa c4
@@ -225,11 +230,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//[8:11 PM] gimmeabreak: i guess single target it does nothing then?
 	//[8:12 PM] ArchedNosi | Lisa Unleashed: yeah single does nothing
 
-	//burst cd starts 52 frames after executed
-	//energy consumed the same time as the initial hit (64 frames)
-	c.ConsumeEnergy(64)
+	//burst cd starts 53 frames after executed
+	//energy usually consumed after 63 frames
+	c.ConsumeEnergy(63)
 	// c.CD[def.BurstCD] = c.Core.F + 1200
-	c.SetCDWithDelay(core.ActionBurst, 1200, 52)
+	c.SetCDWithDelay(core.ActionBurst, 1200, 53)
 	return f, a
 }
 
