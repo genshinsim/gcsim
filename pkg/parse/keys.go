@@ -18,10 +18,22 @@ var key = map[string]TokenType{
 	"break":       keywordBreak,
 	"continue":    keywordContinue,
 	"fallthrough": keywordFallthrough,
-	"label":       keywordLabel,
 	"return":      keywordReturn,
-	// "num":  typeNum,
-	// "bool": typeBool,
+	//genshin specific keywrods
+	"add":      keywordAdd,
+	"char":     keywordChar,
+	"stats":    keywordStats,
+	"weapon":   keywordWeapon,
+	"set":      keywordSet,
+	"lvl":      keywordLvl,
+	"refine":   keywordRefine,
+	"cons":     keywordCons,
+	"talent":   keywordTalent,
+	"start_hp": keywordStartHP,
+	"count":    keywordCount,
+	"params":   keywordParams,
+	"label":    keywordLabel,
+	"until":    keywordUntil,
 	//commands
 	//team keywords
 	//flags

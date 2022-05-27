@@ -1,9 +1,10 @@
 package parse
 
 import (
+	"fmt"
 	"strconv"
 
-	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 type precedence int
@@ -28,7 +29,7 @@ var precedences = map[TokenType]precedence{
 	OpGreaterThanOrEqual: LessOrGreater,
 	itemPlus:             Sum,
 	itemMinus:            Sum,
-	itemSlash:            Product,
+	itemForwardSlash:     Product,
 	itemAsterisk:         Product,
 	itemLeftParen:        Call,
 }
@@ -42,16 +43,33 @@ func (t Token) precedence() precedence {
 
 func (p *Parser) Parse() (*ActionList, error) {
 	var err error
-	for state := parseText; state != nil; {
+	for state := parseRows; state != nil; {
 		state, err = state(p)
 		if err != nil {
 			return nil, err
 		}
 	}
+
+	if len(p.charOrder) > 4 {
+		return p.res, fmt.Errorf("config contains a total of %v characters; cannot exceed 4", len(p.charOrder))
+	}
+
+	for _, v := range p.charOrder {
+		p.res.Characters = append(p.res.Characters, *p.chars[v])
+		//check number of set
+		count := 0
+		for _, c := range p.chars[v].Sets {
+			count += c
+		}
+		if count > 5 {
+			return p.res, fmt.Errorf("character %v have more than 5 total set items", v.String())
+		}
+	}
+
 	return p.res, nil
 }
 
-func parseText(p *Parser) (parseFn, error) {
+func parseRows(p *Parser) (parseFn, error) {
 	switch n := p.peek(); n.typ {
 	case itemCharacterKey:
 		p.next()
@@ -59,7 +77,7 @@ func parseText(p *Parser) (parseFn, error) {
 		if p.peek().typ != itemActionKey {
 			//not an ActionStmt
 			//set up char and set key
-			key, ok := keys.CharNameToKey[n.Val]
+			key, ok := shortcut.CharNameToKey[n.Val]
 			if !ok {
 				//TODO: better err handling
 				panic("invalid char key " + n.Val)
@@ -68,7 +86,6 @@ func parseText(p *Parser) (parseFn, error) {
 				p.newChar(key)
 			}
 			p.currentCharKey = key
-			p.backup()
 			return parseCharacter, nil
 		}
 		p.backup()
@@ -76,13 +93,13 @@ func parseText(p *Parser) (parseFn, error) {
 		// return parseProgram, nil
 		node := p.parseStatement()
 		p.res.Program.append(node)
-		return parseText, nil
+		return parseRows, nil
 	case itemEOF:
 		return nil, nil
 	default: //default should be look for gcsl
 		node := p.parseStatement()
 		p.res.Program.append(node)
-		return parseText, nil
+		return parseRows, nil
 	}
 }
 

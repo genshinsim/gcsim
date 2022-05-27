@@ -140,7 +140,7 @@ import (
 type Weapon int
 
 func (c *Weapon) MarshalJSON() ([]byte, error) {
-	return json.Marshal(charNames[*c])
+	return json.Marshal(weaponNames[*c])
 }
 
 func (c *Weapon) UnmarshalJSON(b []byte) error {
@@ -149,13 +149,13 @@ func (c *Weapon) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	s = strings.ToLower(s)
-	for i, v := range charNames {
+	for i, v := range weaponNames {
 		if v == s {
 			*c = Weapon(i)
 			return nil
 		}
 	}
-	return errors.New("unrecognized character key")
+	return errors.New("unrecognized weapon key")
 }
 
 func (c Weapon) String() string {

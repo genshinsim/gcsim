@@ -48,7 +48,7 @@ const (
 	itemPlus             // '+'
 	itemMinus            // '-'
 	itemAsterisk         // '*'
-	itemSlash            // '/'
+	itemForwardSlash     // '/'
 	// following is logic operator
 	itemLogicOP // used only to delimit logical operation
 	LogicNot    // !

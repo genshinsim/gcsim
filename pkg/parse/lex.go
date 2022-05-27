@@ -6,7 +6,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 const eof = -1
@@ -186,7 +186,7 @@ func lexText(l *lexer) stateFn {
 			return lexComment
 		} else {
 			l.backup()
-			l.emit(itemSlash)
+			l.emit(itemForwardSlash)
 		}
 	case r == '.':
 		// special look-ahead for ".field" so we don't break l.backup().
@@ -378,7 +378,7 @@ func checkIdentifier(word string) TokenType {
 	if _, ok := eleKeys[word]; ok {
 		return itemElementKey
 	}
-	if _, ok := keys.CharNameToKey[word]; ok {
+	if _, ok := shortcut.CharNameToKey[word]; ok {
 		return itemCharacterKey
 	}
 	if _, ok := actionKeys[word]; ok {

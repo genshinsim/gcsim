@@ -3,7 +3,7 @@ package parse
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 type actionItem struct {
@@ -39,7 +39,7 @@ func (p *Parser) parseAction() Stmt {
 	if err != nil {
 		panic("parse char action expects character key, got " + char.String())
 	}
-	charKey := keys.CharNameToKey[char.Val]
+	charKey := shortcut.CharNameToKey[char.Val]
 
 	//should be multiple action keys next
 	var actions []*ActionStmt

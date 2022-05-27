@@ -40,6 +40,7 @@ type parseFn func(*Parser) (parseFn, error)
 
 func New(input string) *Parser {
 	p := &Parser{
+		chars:          make(map[keys.Char]*character.CharacterProfile),
 		prefixParseFns: make(map[TokenType]func() Expr),
 		infixParseFns:  make(map[TokenType]func(Expr) Expr),
 		token:          make([]Token, 0, 20),
@@ -59,7 +60,7 @@ func New(input string) *Parser {
 
 	p.infixParseFns[itemPlus] = p.parseBinaryExpr
 	p.infixParseFns[itemMinus] = p.parseBinaryExpr
-	p.infixParseFns[itemSlash] = p.parseBinaryExpr
+	p.infixParseFns[itemForwardSlash] = p.parseBinaryExpr
 	p.infixParseFns[itemAsterisk] = p.parseBinaryExpr
 	p.infixParseFns[OpEqual] = p.parseBinaryExpr
 	p.infixParseFns[OpNotEqual] = p.parseBinaryExpr
