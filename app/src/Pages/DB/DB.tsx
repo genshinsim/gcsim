@@ -17,7 +17,7 @@ import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import axios from "axios";
 import React from "react";
 import { Link, useLocation } from "wouter";
-import { CharacterSelect, ICharacter } from "~src/Components/Character";
+import { CharacterSelect, ICharacter, isTraveler } from "~src/Components/Character";
 import { Viewport } from "~src/Components/Viewport";
 import { IWeapon, WeaponSelect } from "~src/Components/Weapon";
 import { useAppDispatch } from "~src/store";
@@ -211,11 +211,14 @@ export function DB() {
   const addCharFilter = (char: ICharacter) => {
     setOpenAddChar(false);
     //add to array if not exist already if
-    if (charFilter.includes(char.key)) {
+    let key = char.key;
+    if (isTraveler(key) && char.element != "none")
+      key = "traveler" + char.element;
+    if (charFilter.includes(key)) {
       return;
     }
     const next = [...charFilter];
-    next.push(char.key);
+    next.push(key);
     setCharFilter(next);
     
     updateFilterUrl('chars', next);
