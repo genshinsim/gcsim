@@ -1,7 +1,11 @@
 import React from "react";
 import axios from "axios";
 import { Viewer } from "~src/Components/Viewer";
-import { extractJSONStringFromBinary, parseAndValidate, Uint8ArrayFromBase64, } from "./parse";
+import {
+  extractJSONStringFromBinary,
+  parseAndValidate,
+  Uint8ArrayFromBase64,
+} from "./parse";
 import { useAppDispatch } from "~src/store";
 import { viewerActions } from "./viewerSlice";
 import { ResultsSummary } from "~src/types";
@@ -16,7 +20,7 @@ type Props = {
 };
 
 export default function Shared({ path, version = "v2", handleClose }: Props) {
-  let { t } = useTranslation()
+  let { t } = useTranslation();
 
   const dispatch = useAppDispatch();
   const [msg, setMsg] = React.useState<string>("");
@@ -26,6 +30,9 @@ export default function Shared({ path, version = "v2", handleClose }: Props) {
     //load path
     console.log("loading version: " + version);
     let url = "https://viewer.gcsim.workers.dev/" + path;
+    if (path == "local") {
+      url = "http://127.0.0.1:8381/data";
+    }
     if (version === "v2") {
       //do something with url
       console.log("v2: need to change url");
