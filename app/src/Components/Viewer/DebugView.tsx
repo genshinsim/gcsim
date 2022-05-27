@@ -3,6 +3,11 @@ import { DebugItem, DebugRow } from "./parse";
 import { useVirtual } from "react-virtual";
 import AutoSizer from "react-virtualized-auto-sizer";
 import React from "react";
+import {
+  Button,
+  FormGroup,
+  InputGroup,
+} from "@blueprintjs/core";
 
 type buffSetting = {
   start: number;
@@ -64,8 +69,11 @@ const Row = ({
   );
 };
 
-export function Debugger({ data, team }: { data: DebugRow[]; team: string[] }) {
+let lastSearchIndex: number = 0;
+
+export function Debugger({ data, team, searchable }: { data: DebugRow[]; team: string[], searchable: { [key: number]: any } }) {
   const parentRef = React.useRef<HTMLDivElement>(null!);
+  const searchRef = React.useRef<HTMLInputElement>(null!);
   const [hl, sethl] = React.useState<buffSetting>({
     start: 0,
     end: 0,
@@ -104,8 +112,45 @@ export function Debugger({ data, team }: { data: DebugRow[]; team: string[] }) {
     );
   });
 
+  const searchAndScroll = (val: string) => {
+    let total = Object.keys(searchable).length;
+    for (var index = lastSearchIndex; index < total; index++) {
+      for (let msg of searchable[index]) {
+        if (msg.indexOf(val) > -1) {
+          console.log(index, lastSearchIndex);
+          lastSearchIndex = index + 1;
+          rowVirtualizer.scrollToIndex(index, { align: 'start' });
+          return;
+        }
+      }
+    }
+  }
+
   return (
     <div className="h-full m-2 p-2 rounded-md bg-gray-600 text-xs flex flex-col min-w-[60rem] min-h-[20rem]">
+      <FormGroup label="Search" inline>
+        <InputGroup
+          type="text"
+          inputRef={searchRef}
+          rightElement={
+            <FormGroup>
+              <Button
+                icon="arrow-down"
+                intent="warning"
+                onClick={() => { searchAndScroll(searchRef.current.value) }}
+              />
+              <Button
+                icon="reset"
+                intent="warning"
+                onClick={() => { 
+                  searchRef.current.value = ''; lastSearchIndex = 0; rowVirtualizer.scrollToIndex(0) 
+                }}
+              />
+            </FormGroup>
+          }
+        />
+      </FormGroup>
+
       <AutoSizer defaultHeight={100}>
         {({ height, width }) => (
           <div

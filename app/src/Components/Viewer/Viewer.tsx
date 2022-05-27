@@ -68,6 +68,23 @@ type ViewProps = {
   handleClose: () => void;
 };
 
+let msgs: { [key: number]: any } = {};
+const extractMsgData = (data: DebugRow[]) => {
+  data.map((row, i) => {
+    let results: string[] = [];
+
+    row.slots.map((slot, ci) => {
+      slot.map((e, ei) => {
+        results.push(e.msg);
+      })
+    })
+
+    msgs[i] = results;
+  })
+
+  console.log(msgs);
+}
+
 const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
 
 function ViewOnly(props: ViewProps) {
@@ -75,6 +92,8 @@ function ViewOnly(props: ViewProps) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [tabID, setTabID] = React.useState<string>("result");
   const [optOpen, setOptOpen] = React.useState<boolean>(false);
+
+  extractMsgData(props.parsed);
 
   const handleTabChange = (next: string) => {
     setTabID(next);
@@ -177,7 +196,7 @@ function ViewOnly(props: ViewProps) {
             ),
             config: <Config data={props.data} />,
             debug: (
-              <Debugger data={props.parsed} team={props.data.char_names} />
+              <Debugger data={props.parsed} team={props.data.char_names} searchable={msgs} />
             ),
             details: <Details data={props.data} />,
             share: <Share data={props.data} />,
