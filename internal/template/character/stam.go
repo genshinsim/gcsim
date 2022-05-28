@@ -41,31 +41,10 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 var defaultDash = action.ActionInfo{
-	Frames:          defaultDashFrames,
-	AnimationLength: 20,
-	CanQueueAfter:   20,
-	Post:            20,
-	State:           action.DashState,
-}
-
-var df = []int{
-	20, //InvalidAction
-	20, //ActionSkill
-	20, //ActionBurst
-	20, //ActionAttack
-	20, //ActionCharge
-	20, //ActionHighPlunge
-	20, //ActionLowPlunge
-	20, //ActionAim
-	20, //ActionDash
-	20, //ActionJump
-	20, //ActionSwap
-	20, //ActionWalk
-	20, //ActionWait
-}
-
-func defaultDashFrames(next action.Action) int {
-	return 20
+	Frames:        func(action.Action) int { return 20 },
+	CanQueueAfter: 20,
+	Post:          20,
+	State:         action.DashState,
 }
 
 func (c *Character) Dash(p map[string]int) action.ActionInfo {
@@ -85,15 +64,11 @@ func (c *Character) Dash(p map[string]int) action.ActionInfo {
 }
 
 var defaultJump = action.ActionInfo{
-	Frames:          defaultJumpFrames,
+	Frames:          func(action.Action) int { return 30 },
 	AnimationLength: 30,
 	CanQueueAfter:   30,
 	Post:            30,
 	State:           action.JumpState,
-}
-
-func defaultJumpFrames(next action.Action) int {
-	return 30
 }
 
 func (c *Character) Jump(p map[string]int) action.ActionInfo {
