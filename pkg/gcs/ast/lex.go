@@ -61,7 +61,7 @@ func (l *lexer) backup() {
 // emit passes an item back to the client.
 func (l *lexer) emit(t TokenType) {
 	l.items <- Token{
-		typ:  t,
+		Typ:  t,
 		pos:  l.start,
 		Val:  l.input[l.start:l.pos],
 		line: l.startLine,
@@ -164,7 +164,7 @@ func lexText(l *lexer) stateFn {
 	case r == ',':
 		l.emit(itemComma)
 	case r == '*':
-		l.emit(itemAsterisk)
+		l.emit(ItemAsterisk)
 	case r == '+':
 		// //check if next item is a number or not; if number lexNumber
 		// //otherwise it's a + sign
@@ -177,7 +177,7 @@ func lexText(l *lexer) stateFn {
 		// }
 		// //otherwise it's a plus sign
 		// l.backup()
-		l.emit(itemPlus)
+		l.emit(ItemPlus)
 	case r == '/':
 		//check if next is another / or not; if / then lexComment
 		n := l.next()
@@ -186,7 +186,7 @@ func lexText(l *lexer) stateFn {
 			return lexComment
 		} else {
 			l.backup()
-			l.emit(itemForwardSlash)
+			l.emit(ItemForwardSlash)
 		}
 	case r == '.':
 		// special look-ahead for ".field" so we don't break l.backup().
@@ -211,7 +211,7 @@ func lexText(l *lexer) stateFn {
 		}
 		//other wise it's a - sign
 		l.backup()
-		l.emit(itemMinus)
+		l.emit(ItemMinus)
 	case r == '>':
 		if n := l.next(); n == '=' {
 			l.emit(OpGreaterThanOrEqual)

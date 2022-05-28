@@ -15,7 +15,7 @@ func parseCharacter(p *Parser) (parseFn, error) {
 	//	char lvl etc
 	// 	add
 	//should be any action here
-	switch n := p.next(); n.typ {
+	switch n := p.next(); n.Typ {
 	case keywordChar:
 		return parseCharDetails, nil
 	case keywordAdd:
@@ -45,8 +45,8 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 	c := p.chars[p.currentCharKey]
 	var err error
 	var x Token
-	for n := p.next(); n.typ != itemEOF; n = p.next() {
-		switch n.typ {
+	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+		switch n.Typ {
 		case keywordLvl:
 			c.Base.Level, c.Base.MaxLevel, err = p.acceptLevelReturnBaseMax()
 			//err check below
@@ -87,9 +87,9 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			if err == nil {
 				c.Base.StartHP, err = itemNumberToFloat64(x)
 			}
-		case itemPlus: //optional flags
+		case ItemPlus: //optional flags
 			n = p.next()
-			switch n.typ {
+			switch n.Typ {
 			case keywordParams:
 				//expecting =[
 				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
@@ -115,7 +115,7 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 func parseCharacterAdd(p *Parser) (parseFn, error) {
 	//after add we expect either weapon, set, or stats
 	n := p.next()
-	switch n.typ {
+	switch n.Typ {
 	case keywordWeapon:
 		return parseCharAddWeapon, nil
 	case keywordSet:
@@ -149,16 +149,16 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 	}
 	count := 0
 
-	for n := p.next(); n.typ != itemEOF; n = p.next() {
-		switch n.typ {
+	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+		switch n.Typ {
 		case keywordCount:
 			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
 				count, err = itemNumberToInt(x)
 			}
-		case itemPlus: //optional flags
+		case ItemPlus: //optional flags
 			n = p.next()
-			switch n.typ {
+			switch n.Typ {
 			case keywordParams:
 				//expecting =[
 				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
@@ -205,8 +205,8 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 	lvlOk := false
 	refineOk := false
 
-	for n := p.next(); n.typ != itemEOF; n = p.next() {
-		switch n.typ {
+	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+		switch n.Typ {
 		case keywordLvl:
 			c.Weapon.Level, c.Weapon.MaxLevel, err = p.acceptLevelReturnBaseMax()
 			lvlOk = true
@@ -216,9 +216,9 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 				c.Weapon.Refine, err = itemNumberToInt(x)
 				refineOk = true
 			}
-		case itemPlus: //optional flags
+		case ItemPlus: //optional flags
 			n = p.next()
-			switch n.typ {
+			switch n.Typ {
 			case keywordParams:
 				//expecting =[
 				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
@@ -260,8 +260,8 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 	rollOpt := "avg"
 	rarity := 5
 
-	for n := p.next(); n.typ != itemEOF; n = p.next() {
-		switch n.typ {
+	for n := p.next(); n.Typ != itemEOF; n = p.next() {
+		switch n.Typ {
 		case itemStatKey:
 			x, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err != nil {
@@ -383,7 +383,7 @@ func (p *Parser) acceptLevelReturnBaseMax() (base, max int, err error) {
 		err = fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
 		return
 	}
-	x, err = p.consume(itemForwardSlash)
+	x, err = p.consume(ItemForwardSlash)
 	if err != nil {
 		err = fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
 		return

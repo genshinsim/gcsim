@@ -55,13 +55,14 @@ func New(input string) *Parser {
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
 	p.prefixParseFns[itemNumber] = p.parseNumber
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
-	p.prefixParseFns[itemMinus] = p.parseUnaryExpr
+	p.prefixParseFns[ItemMinus] = p.parseUnaryExpr
 	p.prefixParseFns[itemLeftParen] = p.parseParen
-
-	p.infixParseFns[itemPlus] = p.parseBinaryExpr
-	p.infixParseFns[itemMinus] = p.parseBinaryExpr
-	p.infixParseFns[itemForwardSlash] = p.parseBinaryExpr
-	p.infixParseFns[itemAsterisk] = p.parseBinaryExpr
+	p.infixParseFns[LogicAnd] = p.parseBinaryExpr
+	p.infixParseFns[LogicOr] = p.parseBinaryExpr
+	p.infixParseFns[ItemPlus] = p.parseBinaryExpr
+	p.infixParseFns[ItemMinus] = p.parseBinaryExpr
+	p.infixParseFns[ItemForwardSlash] = p.parseBinaryExpr
+	p.infixParseFns[ItemAsterisk] = p.parseBinaryExpr
 	p.infixParseFns[OpEqual] = p.parseBinaryExpr
 	p.infixParseFns[OpNotEqual] = p.parseBinaryExpr
 	p.infixParseFns[OpLessThan] = p.parseBinaryExpr
@@ -77,7 +78,7 @@ func New(input string) *Parser {
 // otherwise return next token and nil error
 func (p *Parser) consume(i TokenType) (Token, error) {
 	n := p.next()
-	if n.typ != i {
+	if n.Typ != i {
 		return n, errors.New("unexpected token")
 	}
 	return n, nil
@@ -114,7 +115,7 @@ func (p *Parser) acceptSeqReturnLast(items ...TokenType) (Token, error) {
 	var n Token
 	for _, v := range items {
 		n = p.next()
-		if n.typ != v {
+		if n.Typ != v {
 			_, file, no, _ := runtime.Caller(1)
 			return n, fmt.Errorf("(%s#%d) expecting %v, got token %v", file, no, v, n)
 		}

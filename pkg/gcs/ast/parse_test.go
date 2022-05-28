@@ -145,7 +145,9 @@ func TestCfg(t *testing.T) {
 }
 
 const fntest = `
-y(1,2)();
+y(1,2);
+y(1+1,2);
+y(x,a+b);
 `
 
 func TestFnCall(t *testing.T) {

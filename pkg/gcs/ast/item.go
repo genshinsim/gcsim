@@ -4,7 +4,7 @@ import "fmt"
 
 // Token represents a token or text string returned from the scanner.
 type Token struct {
-	typ  TokenType // The type of this item.
+	Typ  TokenType // The type of this item.
 	pos  Pos       // The starting position, in bytes, of this item in the input string.
 	Val  string    // The value of this item.
 	line int       // The line number at the start of this item.
@@ -12,15 +12,15 @@ type Token struct {
 
 func (i Token) String() string {
 	switch {
-	case i.typ == itemEOF:
+	case i.Typ == itemEOF:
 		return "EOF"
-	case i.typ == itemError:
+	case i.Typ == itemError:
 		return i.Val
-	case i.typ == itemTerminateLine:
+	case i.Typ == itemTerminateLine:
 		return ";"
-	case i.typ > itemTerminateLine && i.typ < itemKeyword:
+	case i.Typ > itemTerminateLine && i.Typ < itemKeyword:
 		return i.Val
-	case i.typ > itemKeyword:
+	case i.Typ > itemKeyword:
 		return fmt.Sprintf("<%s>", i.Val)
 		// case len(i.val) > 10:
 		// 	return fmt.Sprintf("%.10q...", i.val)
@@ -45,10 +45,10 @@ const (
 	itemLeftBrace        // '{'
 	itemRightBrace       // '}'
 	itemColon            // ':'
-	itemPlus             // '+'
-	itemMinus            // '-'
-	itemAsterisk         // '*'
-	itemForwardSlash     // '/'
+	ItemPlus             // '+'
+	ItemMinus            // '-'
+	ItemAsterisk         // '*'
+	ItemForwardSlash     // '/'
 	// following is logic operator
 	itemLogicOP // used only to delimit logical operation
 	LogicNot    // !

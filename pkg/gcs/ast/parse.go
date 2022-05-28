@@ -27,15 +27,17 @@ var precedences = map[TokenType]precedence{
 	OpGreaterThan:        LessOrGreater,
 	OpLessThanOrEqual:    LessOrGreater,
 	OpGreaterThanOrEqual: LessOrGreater,
-	itemPlus:             Sum,
-	itemMinus:            Sum,
-	itemForwardSlash:     Product,
-	itemAsterisk:         Product,
+	LogicAnd:             LessOrGreater,
+	LogicOr:              LessOrGreater,
+	ItemPlus:             Sum,
+	ItemMinus:            Sum,
+	ItemForwardSlash:     Product,
+	ItemAsterisk:         Product,
 	itemLeftParen:        Call,
 }
 
 func (t Token) precedence() precedence {
-	if p, ok := precedences[t.typ]; ok {
+	if p, ok := precedences[t.Typ]; ok {
 		return p
 	}
 	return Lowest
@@ -70,11 +72,11 @@ func (p *Parser) Parse() (*ActionList, error) {
 }
 
 func parseRows(p *Parser) (parseFn, error) {
-	switch n := p.peek(); n.typ {
+	switch n := p.peek(); n.Typ {
 	case itemCharacterKey:
 		p.next()
 		//check if this is character stats etc or an action
-		if p.peek().typ != itemActionKey {
+		if p.peek().Typ != itemActionKey {
 			//not an ActionStmt
 			//set up char and set key
 			key, ok := shortcut.CharNameToKey[n.Val]
@@ -107,7 +109,7 @@ func (p *Parser) parseStatement() Node {
 	//some statements end in semi, other don't
 	hasSemi := true
 	var node Node
-	switch n := p.peek(); n.typ {
+	switch n := p.peek(); n.Typ {
 	case keywordBreak:
 		fallthrough
 	case keywordFallthrough:
@@ -135,7 +137,7 @@ func (p *Parser) parseStatement() Node {
 	case itemIdentifier:
 		p.next()
 		//check if = after
-		if x := p.peek(); x.typ == itemAssign {
+		if x := p.peek(); x.Typ == itemAssign {
 			p.backup()
 			node = p.parseAssign()
 			break
@@ -219,14 +221,14 @@ func (p *Parser) parseIf() Stmt {
 	stmt.Condition = p.parseExpr(Lowest)
 
 	//expecting a { next
-	if n := p.peek(); n.typ != itemLeftBrace {
+	if n := p.peek(); n.Typ != itemLeftBrace {
 		return nil
 	}
 
 	stmt.IfBlock = p.parseBlock() //parse block here
 
 	//stop if no else
-	if n := p.peek(); n.typ != keywordElse {
+	if n := p.peek(); n.Typ != keywordElse {
 		return stmt
 	}
 
@@ -253,29 +255,29 @@ func (p *Parser) parseSwitch() Stmt {
 
 	stmt.Condition = p.parseExpr(Lowest)
 
-	if p.next().typ != itemLeftBrace {
+	if p.next().Typ != itemLeftBrace {
 		//TODO: handle switch error
 		return nil
 	}
 
 	//look for cases while not }
-	for n := p.next(); n.typ != itemRightBrace; n = p.next() {
+	for n := p.next(); n.Typ != itemRightBrace; n = p.next() {
 		//expecting case expr: block
-		switch n.typ {
+		switch n.Typ {
 		case keywordCase:
 			cs := &CaseStmt{
 				Pos: n.pos,
 			}
 			cs.Condition = p.parseExpr(Lowest)
 			//colon, then read until we hit next case
-			if p.peek().typ != itemColon {
+			if p.peek().Typ != itemColon {
 				panic("expecting : got " + p.peek().String())
 			}
 			cs.Body = p.parseCaseBody()
 			stmt.Cases = append(stmt.Cases, cs)
 		case keywordDefault:
 			//colon, then read until we hit next case
-			if p.peek().typ != itemColon {
+			if p.peek().Typ != itemColon {
 				panic("expecting : got " + p.peek().String())
 			}
 			stmt.Default = p.parseCaseBody()
@@ -295,7 +297,7 @@ func (p *Parser) parseCaseBody() *BlockStmt {
 	//parse line by line until we hit }
 	for {
 		//make sure we don't get any illegal lines
-		switch n := p.peek(); n.typ {
+		switch n := p.peek(); n.Typ {
 		case itemCharacterKey:
 			if !p.peekValidCharAction() {
 				panic("unexpected non action statement with char in block")
@@ -326,7 +328,7 @@ func (p *Parser) parseWhile() Stmt {
 	stmt.Condition = p.parseExpr(Lowest)
 
 	//expecting a { next
-	if n := p.peek(); n.typ != itemLeftBrace {
+	if n := p.peek(); n.Typ != itemLeftBrace {
 		return nil
 	}
 
@@ -350,7 +352,7 @@ func (p *Parser) parseFn() Stmt {
 	}
 	stmt.FunVal = n
 
-	if l := p.peek(); l.typ != itemLeftParen {
+	if l := p.peek(); l.Typ != itemLeftParen {
 		//TODO: error handling here?
 		return nil
 	}
@@ -365,10 +367,10 @@ func (p *Parser) parseFnArgs() []*Ident {
 	//consume (
 	var args []*Ident
 	p.next()
-	for n := p.next(); n.typ != itemRightParen; n = p.next() {
+	for n := p.next(); n.Typ != itemRightParen; n = p.next() {
 		a := &Ident{}
 		//expecting ident, comma
-		if n.typ != itemIdentifier {
+		if n.Typ != itemIdentifier {
 			panic("expecting ident in param list, got " + n.String())
 		}
 		a.Pos = n.pos
@@ -378,9 +380,9 @@ func (p *Parser) parseFnArgs() []*Ident {
 
 		//if next token is a comma, then there should be another ident after that
 		//otherwise we have a problem
-		if l := p.peek(); l.typ == itemComma {
+		if l := p.peek(); l.Typ == itemComma {
 			p.next() //consume the comma
-			if l = p.peek(); l.typ != itemIdentifier {
+			if l = p.peek(); l.Typ != itemIdentifier {
 				panic("expecting another identifier after comma, got " + l.String())
 			}
 		}
@@ -402,7 +404,7 @@ func (p *Parser) parseCtrl() Stmt {
 	stmt := &CtrlStmt{
 		Pos: n.pos,
 	}
-	switch n.typ {
+	switch n.Typ {
 	case keywordBreak:
 		stmt.Typ = CtrlBreak
 	case keywordContinue:
@@ -424,6 +426,14 @@ func (p *Parser) parseCall(fun Expr) Expr {
 	// 	panic("invalid fun expression to function call")
 	// }
 
+	//for our purpose, we do not allow closure or functions returning
+	//anything other than a number; therefore call must start with
+	//a ident
+	if _, ok := fun.(*Ident); !ok {
+		//TODO: better error handling
+		panic("expecting function calls to start with ident")
+	}
+
 	//expecting (params)
 	n, err := p.consume(itemLeftParen)
 	if err != nil {
@@ -442,19 +452,19 @@ func (p *Parser) parseCall(fun Expr) Expr {
 func (p *Parser) parseCallArgs() []Expr {
 	var args []Expr
 
-	if p.peek().typ == itemRightParen {
+	if p.peek().Typ == itemRightParen {
 		return args
 	}
 
 	//next should be an expression
 	args = append(args, p.parseExpr(Lowest))
 
-	for p.peek().typ == itemComma {
+	for p.peek().Typ == itemComma {
 		p.next() //skip the comma
 		args = append(args, p.parseExpr(Lowest))
 	}
 
-	if p.next().typ != itemRightParen {
+	if p.next().Typ != itemRightParen {
 		p.backup()
 		//TODO: handle error here
 		return nil
@@ -467,7 +477,7 @@ func (p *Parser) parseCallArgs() []Expr {
 func (p *Parser) peekValidCharAction() bool {
 	p.next()
 	//check if this is character stats etc or an action
-	if p.peek().typ != itemActionKey {
+	if p.peek().Typ != itemActionKey {
 		p.backup()
 		//not an ActionStmt
 		return false
@@ -489,7 +499,7 @@ func (p *Parser) parseBlock() *BlockStmt {
 	//parse line by line until we hit }
 	for {
 		//make sure we don't get any illegal lines
-		switch n := p.peek(); n.typ {
+		switch n := p.peek(); n.Typ {
 		case itemCharacterKey:
 			if !p.peekValidCharAction() {
 				panic("unexpected non action statement with char in block")
@@ -508,15 +518,15 @@ func (p *Parser) parseBlock() *BlockStmt {
 }
 func (p *Parser) parseExpr(pre precedence) Expr {
 	t := p.next()
-	prefix := p.prefixParseFns[t.typ]
+	prefix := p.prefixParseFns[t.Typ]
 	if prefix == nil {
 		return nil
 	}
 	p.backup()
 	leftExp := prefix()
 
-	for n := p.peek(); n.typ != itemTerminateLine && pre < n.precedence(); n = p.peek() {
-		infix := p.infixParseFns[n.typ]
+	for n := p.peek(); n.Typ != itemTerminateLine && pre < n.precedence(); n = p.peek() {
+		infix := p.infixParseFns[n.Typ]
 		if infix == nil {
 			return leftExp
 		}
@@ -542,13 +552,13 @@ func (p *Parser) parseNumber() Expr {
 	iv, err := strconv.ParseInt(n.Val, 10, 64)
 	if err == nil {
 		num.IntVal = iv
-		num.IsInt = true
 		num.FloatVal = float64(iv)
 	} else {
 		fv, err := strconv.ParseFloat(n.Val, 64)
 		if err != nil {
 			panic("invalid number")
 		}
+		num.IsFloat = true
 		num.FloatVal = fv
 	}
 	return num
@@ -556,9 +566,9 @@ func (p *Parser) parseNumber() Expr {
 
 func (p *Parser) parseUnaryExpr() Expr {
 	n := p.next()
-	switch n.typ {
+	switch n.Typ {
 	case LogicNot:
-	case itemMinus:
+	case ItemMinus:
 	default:
 		panic("unrecognized unary operator")
 	}
@@ -588,7 +598,7 @@ func (p *Parser) parseParen() Expr {
 
 	exp := p.parseExpr(Lowest)
 
-	if n := p.peek(); n.typ != itemRightParen {
+	if n := p.peek(); n.Typ != itemRightParen {
 		return nil
 	}
 	p.next() // consume the right paren

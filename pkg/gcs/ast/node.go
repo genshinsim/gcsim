@@ -535,7 +535,7 @@ type (
 		Pos
 		IntVal   int64
 		FloatVal float64
-		IsInt    bool
+		IsFloat  bool
 	}
 
 	StringLit struct {
@@ -593,7 +593,7 @@ func (n *NumberLit) CopyExpr() Expr {
 		Pos:      n.Pos,
 		IntVal:   n.IntVal,
 		FloatVal: n.FloatVal,
-		IsInt:    n.IsInt,
+		IsFloat:  n.IsFloat,
 	}
 }
 
@@ -608,10 +608,10 @@ func (n *NumberLit) String() string {
 }
 
 func (n *NumberLit) writeTo(sb *strings.Builder) {
-	if n.IsInt {
-		sb.WriteString(strconv.FormatInt(n.IntVal, 10))
-	} else {
+	if n.IsFloat {
 		sb.WriteString(strconv.FormatFloat(n.FloatVal, 'f', -1, 64))
+	} else {
+		sb.WriteString(strconv.FormatInt(n.IntVal, 10))
 	}
 }
 

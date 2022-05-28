@@ -43,7 +43,7 @@ func (p *Parser) parseAction() Stmt {
 
 	//should be multiple action keys next
 	var actions []*ActionStmt
-	if p.peek().typ != itemActionKey {
+	if p.peek().Typ != itemActionKey {
 		//TODO: fix error logging
 		return nil
 	}
@@ -51,7 +51,7 @@ func (p *Parser) parseAction() Stmt {
 	//all actions needs to come before any + flags
 Loop:
 	for {
-		switch n := p.next(); n.typ {
+		switch n := p.next(); n.Typ {
 		case itemTerminateLine:
 			//stop here
 			break Loop
@@ -81,7 +81,7 @@ Loop:
 			}
 
 			n = p.next()
-			if n.typ != itemComma {
+			if n.Typ != itemComma {
 				p.backup()
 				break Loop
 			}
@@ -110,7 +110,7 @@ func (p *Parser) acceptOptionalParamReturnMap() (map[string]int, error) {
 
 	//check for params
 	n := p.next()
-	if n.typ != itemLeftSquareParen {
+	if n.Typ != itemLeftSquareParen {
 		p.backup()
 		return r, nil
 	}
@@ -135,7 +135,7 @@ func (p *Parser) acceptOptionalParamReturnMap() (map[string]int, error) {
 
 		//if we hit ], return; if we hit , keep going, other wise error
 		n := p.next()
-		switch n.typ {
+		switch n.Typ {
 		case itemRightSquareParen:
 			return r, nil
 		case itemComma:
@@ -149,13 +149,13 @@ func (p *Parser) acceptOptionalParamReturnMap() (map[string]int, error) {
 func (p *Parser) acceptOptionalRepeaterReturnCount() (int, error) {
 	count := 1
 	n := p.next()
-	if n.typ != itemColon {
+	if n.Typ != itemColon {
 		p.backup()
 		return count, nil
 	}
 	//should be a number next
 	n = p.next()
-	if n.typ != itemNumber {
+	if n.Typ != itemNumber {
 		return count, fmt.Errorf("ln%v: expected a number after : but got %v", n.line, n)
 	}
 	//parse number
