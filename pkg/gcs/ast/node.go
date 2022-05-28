@@ -1,4 +1,4 @@
-package parse
+package ast
 
 import (
 	"strconv"
@@ -97,7 +97,7 @@ type (
 		Body      *BlockStmt
 	}
 
-	// A FnStmt node represents a function
+	// A FnStmt node represents a function. Should always return a number
 	FnStmt struct {
 		Pos
 		FunVal Token

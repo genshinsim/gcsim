@@ -1,4 +1,4 @@
-package parse
+package ast
 
 import (
 	"encoding/json"
@@ -132,7 +132,7 @@ const cfg = `
 	}
 `
 
-func testCfg(t *testing.T) {
+func TestCfg(t *testing.T) {
 	p := New(cfg)
 	fmt.Printf("parsing:\n %v\n", cfg)
 	res, err := p.Parse()
@@ -140,6 +140,22 @@ func testCfg(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
+	fmt.Println("output:")
+	fmt.Println(res.Program.String())
+}
+
+const fntest = `
+y(1,2)();
+`
+
+func TestFnCall(t *testing.T) {
+	p := New(fntest)
+	res, err := p.Parse()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
 	fmt.Println("output:")
 	fmt.Println(res.Program.String())
 }

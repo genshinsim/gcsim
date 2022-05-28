@@ -1,22 +1,26 @@
-package exec
+package gcs
 
 import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/parse"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-type Executor struct {
-	Core *core.Core
-	AST  parse.Node
-	Next chan bool
-	Work chan parse.ActionStmt
+type Eval struct {
+	Core   *core.Core
+	AST    ast.Node
+	Next   chan bool
+	Work   chan ast.ActionStmt
+	fnMap  map[ast.Token]*ast.FnStmt
+	varMap map[ast.Token]*number
 }
 
 //Run will execute the provided AST. Any genshin specific actions will be passed
 //back to the
-func (e *Executor) Run() {
+func (e *Eval) Run() {
+	e.fnMap = make(map[ast.Token]*ast.FnStmt)
+	e.varMap = make(map[ast.Token]*number)
 	//this should run until it hits an Action
 	//it will then pass the action on a resp channel
 	//it will then wait for Next before running again
@@ -45,7 +49,7 @@ type (
 	}
 
 	ctrl struct {
-		typ parse.CtrlTyp
+		typ ast.CtrlTyp
 	}
 )
 
@@ -72,11 +76,11 @@ func (r *retval) Inspect() string {
 // breakVal.
 func (b *ctrl) Inspect() string { return "break" }
 
-func (e *Executor) evalNode(n parse.Node) Obj {
+func (e *Eval) evalNode(n ast.Node) Obj {
 	switch v := n.(type) {
-	case parse.Expr:
+	case ast.Expr:
 		return e.evalExpr(v)
-	case parse.Stmt:
+	case ast.Stmt:
 		return e.evalStmt(v)
 	default:
 		return &null{}

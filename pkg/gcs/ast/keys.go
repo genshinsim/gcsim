@@ -1,4 +1,4 @@
-package parse
+package ast
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
