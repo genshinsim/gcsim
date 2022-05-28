@@ -12,6 +12,37 @@ import (
 
 const Prompt = ">> "
 
+func Eval(s string, log *log.Logger) {
+
+	simActions := make(chan ast.ActionStmt)
+	done := make(chan bool)
+	go handleSimActions(simActions, done)
+
+	p := ast.New(s)
+	res, err := p.Parse()
+
+	if err != nil {
+		fmt.Println("Error parsing input:")
+		fmt.Printf("\t%v\n", err)
+		return
+	}
+
+	fmt.Println("Program parsed:")
+	fmt.Println(res.Program.String())
+
+	eval := gcs.Eval{
+		AST:  res.Program,
+		Next: done,
+		Work: simActions,
+		Log:  log,
+	}
+
+	result := eval.Run()
+
+	fmt.Println("Program results:")
+	fmt.Println(result.Inspect())
+}
+
 func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 	scanner := bufio.NewScanner(in)
 

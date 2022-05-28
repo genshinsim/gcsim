@@ -36,6 +36,7 @@ func (e *Eval) evalBlock(b *ast.BlockStmt, env *Env) Obj {
 			return v
 		case *ctrl:
 			// TODO: how do we check for invalid continue or break here
+			// prob need to add some sort of context to env
 			return v
 		}
 	}
@@ -47,8 +48,9 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) Obj {
 	res := e.evalExpr(l.Val, env)
 	//res should be a number
 	v, ok := res.(*number)
+	e.Log.Printf("let expr: %v, type: %T\n", res, res)
 	if !ok {
-		panic("return does not eval to a number")
+		panic("let expr does not eval to a number")
 	}
 	_, exist := env.varMap[l.Ident.Val]
 	if exist {
@@ -77,6 +79,7 @@ func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) Obj {
 
 func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) Obj {
 	res := e.evalExpr(r.Val, env)
+	e.Log.Printf("return res: %v, type: %T\n", res, res)
 	//res should be a number
 	if _, ok := res.(*number); !ok {
 		panic("return does not eval to a number")

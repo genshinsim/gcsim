@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -8,7 +9,21 @@ import (
 )
 
 func main() {
-	l := log.New(os.Stdout, "eval", log.LstdFlags)
+	f := ""
+	if len(os.Args) > 1 {
+		f = os.Args[1]
+	}
+	l := log.New(os.Stdout, "eval log ", log.LstdFlags)
+
+	if f != "" {
+		b, err := ioutil.ReadFile("./" + f)
+		if err != nil {
+			panic(err)
+		}
+		repl.Eval(string(b), l)
+		return
+	}
+
 	for {
 		runReplCatchPanic(l)
 	}

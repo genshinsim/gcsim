@@ -360,6 +360,15 @@ func (p *Parser) parseFn() Stmt {
 	stmt.Args = p.parseFnArgs()
 	stmt.Body = p.parseBlock()
 
+	//check that args are not duplicates
+	chk := make(map[string]bool)
+	for _, v := range stmt.Args {
+		if _, ok := chk[v.Value]; ok {
+			panic("fn cannot have duplicated param names")
+		}
+		chk[v.Value] = true
+	}
+
 	return stmt
 }
 

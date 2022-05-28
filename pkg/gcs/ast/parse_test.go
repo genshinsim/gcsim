@@ -145,9 +145,14 @@ func TestCfg(t *testing.T) {
 }
 
 const fntest = `
-y(1,2);
-y(1+1,2);
-y(x,a+b);
+fn y(x) {
+    print(x);
+    return x +1;
+}
+
+let z = f(2);
+
+print(z);
 `
 
 func TestFnCall(t *testing.T) {

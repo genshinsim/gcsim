@@ -16,6 +16,8 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) Obj {
 		return e.evalIdent(v, env)
 	case *ast.BinaryExpr:
 		return e.evalBinaryExpr(v, env)
+	case *ast.CallExpr:
+		return e.evalCallExpr(v, env)
 	default:
 		return &null{}
 	}
@@ -41,12 +43,50 @@ func (e *Eval) evalIdent(n *ast.Ident, env *Env) Obj {
 }
 
 func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) Obj {
+	//c.Fun should be an Ident; otherwise panic here
+	ident, ok := c.Fun.(*ast.Ident)
+	if !ok {
+		panic("invalid function call " + c.Fun.String())
+	}
+
 	//check if it's a system function
 	//otherwise check the function map
-
-	//c.Fun is an expression. It needs to evaluate to a FnStmt
-
-	return &null{}
+	switch s := ident.Value; s {
+	case "print":
+		return e.print(c, env)
+	default:
+		//grab the function first
+		fn := env.fn(s)
+		if !ok {
+			//TODO: better error handling
+			panic("undeclared function " + s)
+		}
+		//check number of param matches
+		if len(c.Args) != len(fn.Args) {
+			//TODO: better error handling
+			panic("unmatched number of params for fn" + s)
+		}
+		//params are just variables assigned to a local env
+		local := NewEnv(env)
+		for i, v := range fn.Args {
+			param := e.evalExpr(c.Args[i], env)
+			n, ok := param.(*number)
+			if !ok {
+				//TODO: better error handling
+				panic("fn param must evaluate to a number")
+			}
+			local.varMap[v.Value] = n
+		}
+		res := e.evalNode(fn.Body, local)
+		switch v := res.(type) {
+		case *retval:
+			return v.res
+		case *null:
+			return &number{}
+		default:
+			panic("invalid return type from function call")
+		}
+	}
 }
 
 func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) Obj {
