@@ -117,12 +117,6 @@ func (s *Simulation) AdvanceFrame() error {
 	//and then we're still trying to add more delay on top of 100 frame
 	if isAction {
 		var delay int
-		//check if this action is ready
-		char := s.C.Chars[s.C.ActiveChar]
-		if !(char.ActionReady(act.Typ, act.Param)) {
-			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
-			return nil
-		}
 		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
 		//check if we should delay
 
@@ -130,6 +124,9 @@ func (s *Simulation) AdvanceFrame() error {
 		if act.Typ == core.ActionSwap {
 			delay += s.C.Flags.Delays.Swap
 		}
+
+		//If some delay, like a wait command, caused us to not be able to start delay immediately, shorten delay by this amount
+		delay -= s.C.F - s.lastActionUsedAt
 
 		//other wise we can add delay
 		if delay > 0 && s.lastDelayAt < s.lastActionUsedAt {
@@ -143,6 +140,13 @@ func (s *Simulation) AdvanceFrame() error {
 			)
 			s.skip = delay
 			s.lastDelayAt = s.C.F
+			return nil
+		}
+
+		//check if this action is ready
+		char := s.C.Chars[s.C.ActiveChar]
+		if !(char.ActionReady(act.Typ, act.Param)) {
+			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
 			return nil
 		}
 	}
