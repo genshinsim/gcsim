@@ -540,7 +540,7 @@ type (
 
 	StringLit struct {
 		Pos
-		Value float64
+		Value string
 	}
 	BoolLit struct {
 		Pos
@@ -577,6 +577,7 @@ type (
 
 //exprNode()
 func (*NumberLit) exprNode()  {}
+func (*StringLit) exprNode()  {}
 func (*Ident) exprNode()      {}
 func (*CallExpr) exprNode()   {}
 func (*UnaryExpr) exprNode()  {}
@@ -588,7 +589,12 @@ func (n *NumberLit) CopyExpr() Expr {
 	if n == nil {
 		return nil
 	}
-	return &NumberLit{Pos: n.Pos, IntVal: n.IntVal}
+	return &NumberLit{
+		Pos:      n.Pos,
+		IntVal:   n.IntVal,
+		FloatVal: n.FloatVal,
+		IsInt:    n.IsInt,
+	}
 }
 
 func (n *NumberLit) Copy() Node {
@@ -607,6 +613,30 @@ func (n *NumberLit) writeTo(sb *strings.Builder) {
 	} else {
 		sb.WriteString(strconv.FormatFloat(n.FloatVal, 'f', -1, 64))
 	}
+}
+
+// StringLit.
+
+func (n *StringLit) CopyExpr() Expr {
+	if n == nil {
+		return nil
+	}
+	return &StringLit{
+		Pos:   n.Pos,
+		Value: n.Value,
+	}
+}
+
+func (n *StringLit) Copy() Node {
+	return n.CopyExpr()
+}
+
+func (n *StringLit) String() string {
+	return n.Value
+}
+
+func (n *StringLit) writeTo(sb *strings.Builder) {
+	sb.WriteString(n.Value)
 }
 
 // Ident.
