@@ -120,7 +120,7 @@ func (s *Simulation) AdvanceFrame() error {
 		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
 		//check if we should delay
 
-		//swap delay should be after the swap, not before it
+		//swap delay should be before the swap, not after it
 		if act.Typ == core.ActionSwap {
 			delay += s.C.Flags.Delays.Swap
 		}
