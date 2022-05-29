@@ -54,6 +54,7 @@ func New(input string) *Parser {
 	//expr functions
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
 	p.prefixParseFns[itemNumber] = p.parseNumber
+	p.prefixParseFns[itemString] = p.parseString
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
 	p.prefixParseFns[ItemMinus] = p.parseUnaryExpr
 	p.prefixParseFns[itemLeftParen] = p.parseParen

@@ -1,6 +1,7 @@
 package gcs
 
 import (
+	"context"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -15,6 +16,7 @@ type Eval struct {
 	Next chan bool
 	Work chan ast.ActionStmt
 	Log  *log.Logger
+	ctx  context.Context
 }
 
 type Env struct {
@@ -59,10 +61,11 @@ func (e *Env) v(s string) *number {
 
 //Run will execute the provided AST. Any genshin specific actions will be passed
 //back to the
-func (e *Eval) Run() Obj {
+func (e *Eval) Run(ctx context.Context) Obj {
 	if e.Log == nil {
 		e.Log = log.New(ioutil.Discard, "", log.LstdFlags)
 	}
+	e.ctx = ctx
 	//this should run until it hits an Action
 	//it will then pass the action on a resp channel
 	//it will then wait for Next before running again
@@ -72,7 +75,19 @@ func (e *Eval) Run() Obj {
 
 type Obj interface {
 	Inspect() string
+	Typ() ObjTyp
 }
+
+type ObjTyp int
+
+const (
+	typNull ObjTyp = iota
+	typNum
+	typStr
+	typRet
+	typCtr
+	typTerminate
+)
 
 //various Obj types
 type (
@@ -94,10 +109,17 @@ type (
 	ctrl struct {
 		typ ast.CtrlTyp
 	}
+
+	terminate struct{}
 )
 
 // null.
 func (n *null) Inspect() string { return "null" }
+func (n *null) Typ() ObjTyp     { return typNull }
+
+// terminate.
+func (n *terminate) Inspect() string { return "terminate" }
+func (n *terminate) Typ() ObjTyp     { return typTerminate }
 
 // number.
 func (n *number) Inspect() string {
@@ -107,17 +129,21 @@ func (n *number) Inspect() string {
 		return strconv.FormatInt(n.ival, 10)
 	}
 }
+func (n *number) Typ() ObjTyp { return typNum }
 
 // null.
 func (s *strval) Inspect() string { return s.str }
+func (n *strval) Typ() ObjTyp     { return typStr }
 
 // retval.
 func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
+func (n *retval) Typ() ObjTyp { return typRet }
 
 // breakVal.
 func (b *ctrl) Inspect() string { return "break" }
+func (n *ctrl) Typ() ObjTyp     { return typCtr }
 
 func (e *Eval) evalNode(n ast.Node, env *Env) Obj {
 	switch v := n.(type) {

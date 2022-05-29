@@ -2,6 +2,7 @@ package gcs
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
@@ -32,8 +33,9 @@ func (e *Eval) evalNumberLit(n *ast.NumberLit, env *Env) Obj {
 }
 
 func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
+	//strip the ""
 	return &strval{
-		str: n.Value,
+		str: strings.Trim(n.Value, "\""),
 	}
 }
 
@@ -83,6 +85,8 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) Obj {
 			return v.res
 		case *null:
 			return &number{}
+		case *terminate:
+			return v
 		default:
 			panic("invalid return type from function call")
 		}

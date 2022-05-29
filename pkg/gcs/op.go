@@ -1,5 +1,16 @@
 package gcs
 
+func otob(v Obj) bool {
+	switch x := v.(type) {
+	case *number:
+		return ntob(x)
+	case *strval:
+		return true
+	default:
+		return false
+	}
+}
+
 func ntob(v *number) bool {
 	//check int 0
 	if !v.isFloat && v.ival == 0 {

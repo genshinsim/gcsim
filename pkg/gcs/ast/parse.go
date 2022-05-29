@@ -553,6 +553,11 @@ func (p *Parser) parseIdent() Expr {
 
 }
 
+func (p *Parser) parseString() Expr {
+	n := p.next()
+	return &StringLit{Pos: n.pos, Value: n.Val}
+}
+
 func (p *Parser) parseNumber() Expr {
 	//string, int, float, or bool
 	n := p.next()

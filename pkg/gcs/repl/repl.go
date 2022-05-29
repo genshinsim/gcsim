@@ -2,6 +2,7 @@ package repl
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -13,6 +14,8 @@ import (
 const Prompt = ">> "
 
 func Eval(s string, log *log.Logger) {
+
+	ctx := context.Background()
 
 	simActions := make(chan ast.ActionStmt)
 	done := make(chan bool)
@@ -30,6 +33,7 @@ func Eval(s string, log *log.Logger) {
 	fmt.Println("Program parsed:")
 	fmt.Println(res.Program.String())
 
+	fmt.Println("Running program...:")
 	eval := gcs.Eval{
 		AST:  res.Program,
 		Next: done,
@@ -37,15 +41,16 @@ func Eval(s string, log *log.Logger) {
 		Log:  log,
 	}
 
-	result := eval.Run()
+	result := eval.Run(ctx)
 
-	fmt.Println("Program results:")
+	fmt.Print("Program result: ")
 	fmt.Println(result.Inspect())
 }
 
 func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 	scanner := bufio.NewScanner(in)
 
+	ctx := context.Background()
 	simActions := make(chan ast.ActionStmt)
 	done := make(chan bool)
 	go handleSimActions(simActions, done)
@@ -79,7 +84,7 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 			Log:  log,
 		}
 
-		result := eval.Run()
+		result := eval.Run(ctx)
 
 		fmt.Println(result.Inspect())
 	}

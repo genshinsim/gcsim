@@ -153,6 +153,8 @@ fn y(x) {
 let z = f(2);
 
 print(z);
+
+print("hi");
 `
 
 func TestFnCall(t *testing.T) {
