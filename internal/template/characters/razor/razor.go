@@ -60,6 +60,8 @@ func (c *char) Init() error {
 
 	c.a4()
 
+	c.c1()
+
 	return nil
 }
 
