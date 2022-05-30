@@ -55,7 +55,11 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) Obj {
 	//otherwise check the function map
 	switch s := ident.Value; s {
 	case "print":
+		//print outputs
 		return e.print(c, env)
+	case "wait":
+		//execute wait command
+
 	default:
 		//grab the function first
 		fn := env.fn(s)
