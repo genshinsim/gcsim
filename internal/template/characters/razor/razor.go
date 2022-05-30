@@ -47,12 +47,27 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	return nil
 }
 
+func (c *char) Init() error {
+	c.InitCancelFrames()
+
+	// skill
+	c.EnergySigil()
+
+	// burst
+	c.SpeedBurst()
+	c.WolfBurst()
+	c.onSwapClearBurst()
+
+	return nil
+}
+
 func (c *char) InitCancelFrames() {
 	// TODO: need to update frames
 	c.initNormalCancels()
 
 	skillPressFrames = frames.InitAbilSlice(74)
 	skillHoldFrames = frames.InitAbilSlice(92)
+	burstFrames = frames.InitAbilSlice(62)
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
@@ -66,16 +81,4 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 		c.Core.Log.NewEvent("ActionStam not implemented", glog.LogActionEvent, c.Index, "action", a.String())
 		return 0
 	}
-}
-
-func (c *char) EnergySigil() {
-	val := make([]float64, attributes.EndStatType)
-	c.AddStatMod("er-sigil", -1, attributes.ER, func() ([]float64, bool) {
-		if c.Core.F > c.sigilsDuration {
-			return nil, false
-		}
-
-		val[attributes.ER] = float64(c.sigils) * 0.2
-		return val, true
-	})
 }

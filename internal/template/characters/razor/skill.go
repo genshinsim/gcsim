@@ -79,9 +79,11 @@ func (c *char) SkillHold() action.ActionInfo {
 	)
 
 	c.ClearSigil()
-
 	c.SetCD(action.ActionSkill, 10*60)
-	c.Core.QueueParticle("razor", 4, attributes.Electro, 80)
+
+	if c.Core.Status.Duration("razorburst") == 0 {
+		c.Core.QueueParticle("razor", 4, attributes.Electro, 80)
+	}
 
 	return action.ActionInfo{
 		Frames:          c.skillHoldFrameFunc,
@@ -113,4 +115,16 @@ func (c *char) ClearSigil() {
 		c.sigils = 0
 		c.sigilsDuration = 0
 	}
+}
+
+func (c *char) EnergySigil() {
+	val := make([]float64, attributes.EndStatType)
+	c.AddStatMod("er-sigil", -1, attributes.ER, func() ([]float64, bool) {
+		if c.Core.F > c.sigilsDuration {
+			return nil, false
+		}
+
+		val[attributes.ER] = float64(c.sigils) * 0.2
+		return val, true
+	})
 }
