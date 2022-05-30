@@ -16,6 +16,7 @@ func (c *char) burstFrameFunc(next action.Action) int {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
+	c.SetCD(action.ActionSkill, 0) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
 	c.Core.Status.Add("razorburst", 15*60+burstHitmark)
 	c.ClearSigil()
 

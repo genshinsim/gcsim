@@ -48,8 +48,12 @@ func (c *char) SkillPress() action.ActionInfo {
 
 	c.AddSigil()
 
-	c.SetCD(action.ActionSkill, 6*60)
-	c.Core.QueueParticle("razor", 3, attributes.Electro, 80)
+	cd := 6 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
+	c.SetCD(action.ActionSkill, int(cd))
+
+	if c.Core.Status.Duration("razorburst") == 0 {
+		c.Core.QueueParticle("razor", 3, attributes.Electro, 80)
+	}
 
 	return action.ActionInfo{
 		Frames:          c.skillPressFrameFunc,
@@ -79,7 +83,9 @@ func (c *char) SkillHold() action.ActionInfo {
 	)
 
 	c.ClearSigil()
-	c.SetCD(action.ActionSkill, 10*60)
+
+	cd := 10 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
+	c.SetCD(action.ActionSkill, int(cd))
 
 	if c.Core.Status.Duration("razorburst") == 0 {
 		c.Core.QueueParticle("razor", 4, attributes.Electro, 80)
