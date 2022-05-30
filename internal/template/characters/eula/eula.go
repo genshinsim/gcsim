@@ -1,30 +1,38 @@
 package eula
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/frames"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
+const normalHitNum = 5
+
 func init() {
-	core.RegisterCharFunc(core.Eula, NewChar)
+	initCancelFrames()
+	core.RegisterCharFunc(keys.Eula, NewChar)
 }
 
 type char struct {
-	*character.Tmpl
+	*tmpl.Character
 	grimheartReset  int
 	burstCounter    int
 	burstCounterICD int
 	grimheartICD    int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Cryo
+	t := tmpl.New(s)
+	t.CharWrapper = w
+	c.Character = t
+
+	c.Base.Element = attributes.Cryo
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -32,114 +40,63 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 80
-	c.Weapon.Class = core.WeaponClassClaymore
-	c.NormalHitNum = 5
+	c.Weapon.Class = weapon.WeaponClassClaymore
+	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-	c.InitCancelFrames()
-
+func (c *char) Init() error {
 	c.a4()
 	c.burstStacks()
 	c.onExitField()
-
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
+	return nil
 }
 
-func (c *char) burstStacks() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if c.Core.Status.Duration("eulaq") == 0 {
-			return false
-		}
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if c.burstCounterICD > c.Core.F {
-			return false
-		}
-		switch atk.Info.AttackTag {
-		case core.AttackTagElementalArt:
-		case core.AttackTagElementalBurst:
-		case core.AttackTagNormal:
-		default:
-			return false
-		}
+func initCancelFrames() {
+	// NA cancels
+	attackFrames = make([][]int, normalHitNum)
 
-		//add to counter
-		c.burstCounter++
-		c.Core.Log.NewEvent("eula burst add stack", core.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
-		//check for c6
-		if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
-			c.burstCounter++
-			c.Core.Log.NewEvent("eula c6 add additional stack", core.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
-		}
-		c.burstCounterICD = c.Core.F + 6
-		return false
-	}, "eula-burst-counter")
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 34)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 36)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 56)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 44)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 105)
+
+	// skill (press) -> x
+	skillPressFrames = frames.InitAbilSlice(48)
+	skillPressFrames[action.ActionAttack] = 31
+	skillPressFrames[action.ActionBurst] = 31
+	skillPressFrames[action.ActionDash] = 29
+	skillPressFrames[action.ActionJump] = 30
+	skillPressFrames[action.ActionSwap] = 29
+
+	// skill (hold) -> x
+	skillHoldFrames = frames.InitAbilSlice(77)
+	skillHoldFrames[action.ActionDash] = 75
+	skillHoldFrames[action.ActionJump] = 75
+	skillHoldFrames[action.ActionSwap] = 100
+	skillHoldFrames[action.ActionWalk] = 75
+
+	// burst -> x
+	burstFrames = frames.InitAbilSlice(122)
+	burstFrames[action.ActionDash] = 121
+	burstFrames[action.ActionJump] = 121
+	burstFrames[action.ActionSwap] = 121
+	burstFrames[action.ActionWalk] = 117
 }
 
-func (c *char) a4() {
-	c.Core.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
-		if c.Core.ActiveChar != c.Index {
-			return false
-		}
-		//reset CD, add 1 stack
-		v := c.Tags["grimheart"]
-		if v < 2 {
-			v++
-		}
-		c.Tags["grimheart"] = v
-
-		c.Core.Log.NewEvent("eula a4 reset skill cd", core.LogCharacterEvent, c.Index)
-		c.ResetActionCooldown(core.ActionSkill)
-
-		return false
-	}, "eula-a4")
-}
-
-func (c *char) onExitField() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.Status.Duration("eulaq") > 0 {
-			c.triggerBurst()
-		}
-		return false
-	}, "eula-exit")
-}
-
-func (c *char) c4() {
-	c.AddPreDamageMod(core.PreDamageMod{
-		Expiry: -1,
-		Key:    "eula-c4",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-
-			if atk.Info.Abil != "Glacial Illumination (Lightfall)" {
-				return nil, false
-			}
-			if !c.Core.Flags.DamageMode {
-				return nil, false
-			}
-			if t.HP()/t.MaxHP() >= 0.5 {
-				return nil, false
-			}
-			val[core.DmgP] += 0.25
-			return val, true
-		},
-	})
-}
-
-func (e *char) Tick() {
-	e.Tmpl.Tick()
-	e.grimheartReset--
-	if e.grimheartReset == 0 {
-		e.Tags["grimheart"] = 0
+func (c *char) Tick() {
+	c.Character.Tick()
+	c.grimheartReset--
+	if c.grimheartReset == 0 {
+		c.Tags["grimheart"] = 0
 	}
 }
