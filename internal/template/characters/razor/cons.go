@@ -9,6 +9,10 @@ import (
 
 // Picking up an Elemental Orb or Particle increases Razor's DMG by 10% for 8s.
 func (c *char) c1() {
+	if c.Base.Cons < 1 {
+		return
+	}
+
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.1
 
@@ -22,6 +26,10 @@ func (c *char) c1() {
 
 // Increases CRIT Rate against opponents with less than 30% HP by 10%.
 func (c *char) c2() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.1
 
@@ -49,6 +57,10 @@ func (c *char) c4cb(a combat.AttackCB) {
 // Every 10s, Razor's sword charges up, causing the next Normal Attack to release lightning that deals 100% of Razor's ATK as Electro DMG.
 // When Razor is not using Lightning Fang, a lightning strike on an opponent will grant Razor an Electro Sigil for Claw and Thunder.
 func (c *char) c6() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
 	dur := 0
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
