@@ -40,17 +40,12 @@ func (c *char) SkillPress() action.ActionInfo {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c4cbArgs := make([]combat.AttackCBFunc, 0, 1)
-	if c.Base.Cons >= 4 {
-		c4cbArgs = append(c4cbArgs, c.c4cb)
-	}
-
 	c.Core.QueueAttack(
 		ai,
 		combat.NewDefCircHit(2, false, combat.TargettableEnemy),
 		skillPressHitmark,
 		skillPressHitmark,
-		c4cbArgs...,
+		c.c4cb,
 	)
 
 	c.AddSigil()

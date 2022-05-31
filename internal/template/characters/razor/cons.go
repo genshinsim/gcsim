@@ -1,6 +1,7 @@
 package razor
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -34,7 +35,15 @@ func (c *char) c2() {
 
 // When casting Claw and Thunder (Press), opponents hit will have their DEF decreased by 15% for 7s.
 func (c *char) c4cb(a combat.AttackCB) {
-	// a.Target.AddDefMod("razor-c4", -0.15, 7*60)
+	if c.Base.Cons < 4 {
+		return
+	}
+
+	e, ok := a.Target.(core.Enemy)
+	if !ok {
+		return
+	}
+	e.AddDefMod("razor-c4", 7*60, -0.15)
 }
 
 // Every 10s, Razor's sword charges up, causing the next Normal Attack to release lightning that deals 100% of Razor's ATK as Electro DMG.
