@@ -31,3 +31,50 @@ func (c *char) c2() {
 		return nil, false
 	})
 }
+
+// When casting Claw and Thunder (Press), opponents hit will have their DEF decreased by 15% for 7s.
+func (c *char) c4cb(a combat.AttackCB) {
+	// a.Target.AddDefMod("razor-c4", -0.15, 7*60)
+}
+
+// Every 10s, Razor's sword charges up, causing the next Normal Attack to release lightning that deals 100% of Razor's ATK as Electro DMG.
+// When Razor is not using Lightning Fang, a lightning strike on an opponent will grant Razor an Electro Sigil for Claw and Thunder.
+func (c *char) c6() {
+	dur := 0
+	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		if c.Core.Player.Active() != c.Index {
+			return false
+		}
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.AttackTag != combat.AttackTagNormal {
+			return false
+		}
+		if dur > c.Core.F {
+			return false
+		}
+
+		dur = c.Core.F + 10*60
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Lupus Fulguris",
+			AttackTag:  combat.AttackTagNormal, // or combat.AttackTagNone?
+			ICDTag:     combat.ICDTagNormalAttack,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Electro,
+			Durability: 25,
+			Mult:       1,
+		}
+		c.Core.QueueAttack(
+			ai,
+			combat.NewDefCircHit(0.5, false, combat.TargettableEnemy),
+			1,
+			1,
+		)
+
+		if c.Core.Status.Duration("razorburst") == 0 {
+			c.AddSigil()
+		}
+
+		return false
+	}, "razor-c6")
+}
