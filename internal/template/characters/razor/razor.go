@@ -62,6 +62,7 @@ func (c *char) Init() error {
 
 	c.c1()
 	c.c2()
+	c.c6()
 
 	return nil
 }
