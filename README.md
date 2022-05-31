@@ -1,10 +1,12 @@
 # Overview
 
-GSim is a Monte Carlo simulation tool used to model team dps. It allows for the formation of arbitrary combination of any characters.
+gcsim is a Monte Carlo simulation tool used to model team dps. It allows for the formation of arbitrary combination of any characters.
 
 # Getting started
 
-You can download the latest build [here](https://github.com/genshinsim/gcsimui/releases). We are also beta testing a new webapp at [https://beta.gcsim.app](https://beta.gcsim.app).
+You can use it on our website at [https://beta.gcsim.app](https://beta.gcsim.app).
+
+**NOTE: Desktop app has been deprecated.** It may be revived again in the future but due to popular demand, the focus is all on the webapp now.
 
 ## Project status
 
