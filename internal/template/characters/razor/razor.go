@@ -61,6 +61,7 @@ func (c *char) Init() error {
 	c.a4()
 
 	c.c1()
+	c.c2()
 
 	return nil
 }

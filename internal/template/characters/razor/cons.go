@@ -8,20 +8,15 @@ import (
 
 // Picking up an Elemental Orb or Particle increases Razor's DMG by 10% for 8s.
 func (c *char) c1() {
-	dur := 0
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
-		dur = c.Core.F + 8*60
-		return false
-	}, "razor-c1")
-
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.1
-	c.AddStatMod("c1", -1, attributes.DmgP, func() ([]float64, bool) {
-		if c.Core.F > dur {
-			return nil, false
-		}
-		return val, true
-	})
+
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+		c.AddStatMod("razor-c1", 8*60, attributes.DmgP, func() ([]float64, bool) {
+			return val, true
+		})
+		return false
+	}, "razor-c1")
 }
 
 // Increases CRIT Rate against opponents with less than 30% HP by 10%.
