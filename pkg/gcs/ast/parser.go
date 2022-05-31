@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"strconv"
 
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -28,12 +29,32 @@ type Parser struct {
 	prefixParseFns map[TokenType]func() Expr
 	infixParseFns  map[TokenType]func(Expr) Expr
 }
-
 type ActionList struct {
-	FnMap      map[string]Node
-	Program    *BlockStmt
-	Characters []character.CharacterProfile
-	Targets    []enemy.EnemyProfile
+	Duration    int                          `json:"duration"`
+	DamageMode  bool                         `json:"damage_mode"`
+	Targets     []enemy.EnemyProfile         `json:"targets"`
+	PlayerPos   core.Coord                   `json:"player_initial_pos"`
+	Characters  []character.CharacterProfile `json:"characters"`
+	InitialChar keys.Char                    `json:"initial"`
+	Program     *BlockStmt
+}
+
+func (c *ActionList) CLone() ActionList {
+
+	r := *c
+
+	r.Targets = make([]enemy.EnemyProfile, len(c.Targets))
+	for i, v := range c.Targets {
+		r.Targets[i] = v.Clone()
+	}
+
+	r.Characters = make([]character.CharacterProfile, len(c.Characters))
+	for i, v := range c.Characters {
+		r.Characters[i] = v.Clone()
+	}
+
+	r.Program = c.Program.CopyBlock()
+	return r
 }
 
 type parseFn func(*Parser) (parseFn, error)
@@ -48,7 +69,6 @@ func New(input string) *Parser {
 	}
 	p.lex = lex(input)
 	p.res = &ActionList{
-		FnMap:   make(map[string]Node),
 		Program: newBlockStmt(0),
 	}
 	//expr functions

@@ -40,6 +40,11 @@ type Flags struct {
 	LogDebug bool // Used to determine logging level
 	Custom   map[string]int
 }
+type Coord struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	R float64 `json:"r"`
+}
 
 type Reactable interface {
 	React(a *combat.AttackEvent)

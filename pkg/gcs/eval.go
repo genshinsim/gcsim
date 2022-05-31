@@ -14,7 +14,7 @@ type Eval struct {
 	Core *core.Core
 	AST  ast.Node
 	Next chan bool
-	Work chan ast.ActionStmt
+	Work chan *ast.ActionStmt
 	Log  *log.Logger
 	ctx  context.Context
 }

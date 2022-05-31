@@ -2,36 +2,30 @@
 package simulation
 
 import (
+	"context"
+
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/simulation/queue"
+	"github.com/genshinsim/gcsim/pkg/gcs"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-type Queuer interface {
-	//returns a sequence of 1 or more commands to execute,
-	//whether or not to drop sequence if any is not ready, and any error
-	Next() (queue []queue.Command, dropIfFailed bool, err error)
-	SetActionList(pq []queue.ActionBlock) error
-}
 type Simulation struct {
 	// f    int
 	skip int
 	C    *core.Core
-	cfg  SimulationConfig
-	// queue
-	queue             []queue.Command
-	queuer            Queuer
-	dropQueueIfFailed bool
+	//action list stuff
+	cfg          ast.ActionList
+	queue        *ast.ActionStmt
+	nextAction   chan *ast.ActionStmt
+	continueEval chan bool
+	terminate    context.CancelFunc
+	queuer       gcs.Eval
 	//hurt event
 	lastHurt int
 	//energy event
 	lastEnergyDrop int
 	//result
 	stats Result
-	//prevs action that was checked
-	lastActionUsedAt      int
-	animationLockoutUntil int //how many frames we're locked out from executing next action
-	nextAction            queue.Command
-	nextActionUseableAt   int
 
 	//track previous action, when it was used at, and the earliest
 	//useable frame for all other chained actions
@@ -48,7 +42,7 @@ Simulation should maintain the following:
 
 **/
 
-func New(cfg SimulationConfig, c *core.Core) (*Simulation, error) {
+func New(cfg ast.ActionList, c *core.Core) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
 	s.cfg = cfg

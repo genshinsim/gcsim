@@ -18,7 +18,7 @@ func (e *Eval) print(c *ast.CallExpr, env *Env) Obj {
 }
 
 func (e *Eval) wait(c *ast.CallExpr, env *Env) Obj {
-	e.Work <- ast.ActionStmt{
+	e.Work <- &ast.ActionStmt{
 		Action: action.ActionWait,
 		Param:  map[string]int{},
 	}

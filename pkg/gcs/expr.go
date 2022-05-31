@@ -59,7 +59,7 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) Obj {
 		return e.print(c, env)
 	case "wait":
 		//execute wait command
-
+		return e.wait(c, env)
 	default:
 		//grab the function first
 		fn := env.fn(s)

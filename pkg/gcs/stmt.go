@@ -98,7 +98,7 @@ func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) Obj {
 
 func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) Obj {
 	//TODO: should we make a copy of action here??
-	e.Work <- *a
+	e.Work <- a
 	//block until sim is done with the action; unless we're done
 	for {
 		select {

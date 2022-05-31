@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/player"
 )
 
-func SetupTargetsInCore(core *core.Core, p Pos, targets []enemy.EnemyProfile) error {
+func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProfile) error {
 
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
