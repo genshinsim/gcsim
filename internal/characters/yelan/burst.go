@@ -2,6 +2,8 @@ package yelan
 
 import "github.com/genshinsim/gcsim/pkg/core"
 
+var burstHitmarks = []int{25, 30, 36, 41} //c2 hitmark not framecounted
+
 func (c *char) summonExquisiteThrow() {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -15,15 +17,15 @@ func (c *char) summonExquisiteThrow() {
 		FlatDmg:    burstDice[c.TalentLvlBurst()] * c.MaxHP(),
 	}
 	for i := 0; i < 3; i++ {
-		//TODO: frames timing on this?
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 22+i*6, 22+i*6)
+		//TODO: probably snapshots before hitmark
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), burstHitmarks[i], burstHitmarks[i])
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
 		ai.Abil = "Yelan C2 Proc"
 		ai.FlatDmg = 12.0 / 100 * c.MaxHP()
 		c.c2icd = c.Core.F + 1.6*60
 		//TODO: frames timing on this?
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 22+4*6, 22+4*6)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), burstHitmarks[3], burstHitmarks[3])
 	}
 
 	c.burstDiceICD = c.Core.F + 60

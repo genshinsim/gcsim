@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+var hitmarks = [][]int{{13}, {13}, {18}, {15, 29}}
+
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other bow characters
 // Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 10)
@@ -32,7 +34,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			if c.c6count >= 5 {
 				c.Core.Status.DeleteStatus(c6Status) //delete status after 5 arrows
 			}
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f+i, f+travel+i)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i]+travel)
 		}
 	} else {
 		ai := core.AttackInfo{
@@ -49,7 +51,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		for i, mult := range attack[c.NormalCounter] {
 			ai.Mult = mult[c.TalentLvlAttack()]
 			// TODO - double check snapshotDelay
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f+i, f+travel+i)
+			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i]+travel)
 		}
 	}
 
@@ -106,7 +108,7 @@ When her rapid movement ends, the Lifeline will explode, dealing Hydro DMG to th
 **/
 
 const skillTargetCountTag = "marked"
-const skillHoldDuration = "hold_length"
+const skillHoldDuration = "hold_length" //not yet implemented
 const skillMarkedTag = "yelan-skill-marked"
 
 func (c *char) Skill(p map[string]int) (int, int) {
@@ -158,8 +160,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// hold := p["hold"]
 
 	cb := func(ac core.AttackCB) {
-		//TODO: particle frames
-		c.QueueParticle("yelan", 4, core.Hydro, 60)
+
+		c.QueueParticle("yelan", 4, core.Hydro, 82)
 		//check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
 			//TODO: does this thing even time out?
@@ -212,10 +214,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			}
 		}
 
-	}, f+f+10, //TODO: frames for e dmg? possibly 5 second after attaching?
+	}, f, //TODO: frames for e dmg? possibly 5 second after attaching?
 	)
 
-	c.SetCDWithDelay(core.ActionSkill, eCD, f)
+	c.SetCDWithDelay(core.ActionSkill, eCD, 33)
 	return f, a
 }
 
@@ -250,7 +252,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Log.NewEvent("burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+15*60)
 
 	c.SetCD(core.ActionBurst, 18*60)
-	c.ConsumeEnergy(7)
+	c.ConsumeEnergy(6)
 	return f, a
 }
 
@@ -277,4 +279,14 @@ func (c *char) a2() {
 			},
 		})
 	}
+}
+
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
+	return f, a
+}
+
+func (c *char) Jump(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionJump, p)
+	return f, a
 }
