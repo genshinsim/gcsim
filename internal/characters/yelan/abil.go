@@ -161,7 +161,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	cb := func(ac core.AttackCB) {
 
-		c.QueueParticle("yelan", 4, core.Hydro, 82-f)
+		c.QueueParticle("yelan", 4, core.Hydro, 82)
 		//check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
 			//TODO: does this thing even time out?
