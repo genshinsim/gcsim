@@ -1700,14 +1700,14 @@ function-bind@^1.1.1:
   integrity sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
 
 fuzzysort@^1.1.4:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/fuzzysort/-/fuzzysort-1.2.1.tgz#ea23d3c4d7726422888f538044fcea265644d54c"
-  integrity sha512-egTSF3U6H6T9tXtAhEm5P5guSSDjd96/NUWrbmoGlIu3ATMdXra13gwQdEFRY6ehsFe8xec7UnQz+k34CGWCIg==
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/fuzzysort/-/fuzzysort-1.9.0.tgz#d36d27949eae22340bb6f7ba30ea6751b92a181c"
+  integrity sha512-MOxCT0qLTwLqmEwc7UtU045RKef7mc8Qz8eR4r2bLNEq9dy/c3ZKMEFp6IEst69otkQdFZ4FfgH2dmZD+ddX1g==
 
 genshin-db@^4.1.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.1.1.tgz#4ac337b0c7dc1e0b00f096286b9436b210fe2775"
-  integrity sha512-/HV15INhCwVwwgaKpAWdzWs0+c9QSnI7ZVGiCumapYKvc/VWj5BnFy+ds0oBYBFcQuM46ezrmSFDOHWOpt8mKw==
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.2.0.tgz#5a050139b54a1c145426c85e90bf1188e0c58630"
+  integrity sha512-vemgCQdRsDiOHYYJpoHS9M4JO9rwZ7HIBBWp1CNJz9URiPevd4adrhNDtw+vBcDz1o2uMag+slrga/ttHqLELg==
   dependencies:
     fuzzysort "^1.1.4"
     pako "^2.0.4"

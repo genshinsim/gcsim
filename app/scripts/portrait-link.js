@@ -18,8 +18,8 @@ const download_image = (url, image_path) =>
         })
     )
     .catch((e) => {
-      console.log("error downloading: " + e);
-      console.log("url is: " + url);
+      console.log(`error downloading ${url}: ${e}`);
+      // console.log("url is: " + url);
     });
 
 const names = [
@@ -72,6 +72,7 @@ const names = [
   "yunjin",
   "yaemiko",
   "ayato",
+  "yelan",
 ];
 
 const travelers = [
@@ -130,7 +131,7 @@ names.forEach((e) => {
 
     download_image(eng.images.icon.replace("-os", ""), filename)
       .then((msg) => {
-        console.log("done downloading to file: ", filename);
+        // console.log("done downloading to file: ", filename);
       })
       .catch((e) => {
         console.log(e);
@@ -173,7 +174,7 @@ travelers.map((e) => {
 
     download_image(mc.images.icon.replace("-os", ""), filename)
       .then((msg) => {
-        console.log("done downloading to file: ", filename);
+        // console.log("done downloading to file: ", filename);
       })
       .catch((e) => {
         console.log(e);
@@ -228,7 +229,7 @@ weapons.forEach((e) => {
   if (!fs.existsSync(filename)) {
     download_image(eng.images.icon.replace("-os", ""), filename)
       .then((msg) => {
-        console.log("done downloading to file: ", filename);
+        // console.log("done downloading to file: ", filename);
       })
       .catch((e) => {
         console.log(e);
@@ -274,7 +275,7 @@ sets.forEach((e) => {
       console.log(`${key}: ${value}`);
       download_image(value.replace("-os", ""), filename)
         .then(() => {
-          console.log("done downloading to file: ", filename);
+          // console.log("done downloading to file: ", filename);
         })
         .catch((e) => {
           console.log(e);
