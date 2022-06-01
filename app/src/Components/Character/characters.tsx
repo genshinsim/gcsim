@@ -267,6 +267,11 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: "pyro",
     weapon_type: "catalyst",
   },
+  yelan: {
+    key: "yelan",
+    element: "hydro",
+    weapon_type: "bow",
+  },
   yoimiya: {
     key: "yoimiya",
     element: "pyro",

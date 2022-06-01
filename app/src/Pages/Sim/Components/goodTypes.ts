@@ -190,6 +190,7 @@ export type CharacterKey =
   | "Xinyan" //Xinyan
   | "Yanfei" //Yanfei
   | "Yoimiya" //Yoimiya
+  | "Yelan" //Yelan
   | "Zhongli"; //Zhongli
 
 export type WeaponKey =
