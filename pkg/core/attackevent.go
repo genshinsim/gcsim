@@ -64,6 +64,7 @@ type Snapshot struct {
 	Stats      [EndStatType]float64 //total character stats including from artifact, bonuses, etc...
 	BaseAtk    float64              //base attack used in calc
 	BaseDef    float64
+	BaseHP     float64
 
 	SourceFrame int           // frame snapshot was generated at
 	Logs        []interface{} // logs for the snapshot
