@@ -170,8 +170,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}
 		//TODO: icd on this??
 		if c.Core.Status.Duration(burstStatus) > 0 {
-			c.summonExquisiteThrow()
-			c.burstTickSrc = c.Core.F
+			c.exquisiteThrowSkillProc()
 			c.Core.Log.NewEvent("yelan burst on skill", core.LogCharacterEvent, c.Index, "icd", c.burstDiceICD)
 		}
 	}

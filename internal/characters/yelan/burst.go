@@ -4,6 +4,24 @@ import "github.com/genshinsim/gcsim/pkg/core"
 
 var burstHitmarks = []int{25, 30, 36, 41} //c2 hitmark not framecounted
 
+func (c *char) exquisiteThrowSkillProc() {
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Exquisite Throw",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagYelanBurst,
+		ICDGroup:   core.ICDGroupYelanBurst,
+		Element:    core.Hydro,
+		Durability: 25,
+		Mult:       0,
+		FlatDmg:    burstDice[c.TalentLvlBurst()] * c.MaxHP(),
+	}
+	for i := 0; i < 3; i++ {
+		//TODO: probably snapshots before hitmark
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), burstHitmarks[i], burstHitmarks[i])
+	}
+}
+
 func (c *char) summonExquisiteThrow() {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
