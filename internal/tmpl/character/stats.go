@@ -32,6 +32,7 @@ func (c *Tmpl) Snapshot(a *core.AttackInfo) core.Snapshot {
 		ActorEle:    c.Base.Element,
 		BaseAtk:     c.Base.Atk + c.Weapon.Atk,
 		BaseDef:     c.Base.Def,
+		BaseHP:      c.Base.HP,
 		SourceFrame: c.Core.F,
 	}
 

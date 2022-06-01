@@ -86,6 +86,7 @@ const (
 	Shenhe
 	Yunjin
 	YaeMiko
+	Yelan
 )
 
 func (c CharKey) String() string {
@@ -156,6 +157,7 @@ var CharNameToKey = map[string]CharKey{
 	"shenhe":            Shenhe,
 	"yae":               YaeMiko,
 	"yaemiko":           YaeMiko,
+	"yelan":             Yelan,
 }
 
 var charNames = []string{
@@ -217,6 +219,7 @@ var charNames = []string{
 	"shenhe",
 	"yunjin",
 	"yaemiko",
+	"yelan",
 }
 
 var CharKeyToEle = map[CharKey]EleType{
@@ -274,4 +277,5 @@ var CharKeyToEle = map[CharKey]EleType{
 	Shenhe:          Cryo,
 	Yunjin:          Geo,
 	YaeMiko:         Electro,
+	Yelan:           Hydro,
 }

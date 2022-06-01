@@ -157,14 +157,13 @@ func (c *char) skillPress(p map[string]int) (int, int) {
 	}
 	if c.Base.Cons == 6 {
 		c.c6Active = c.Core.F + f + 300
+		c.AddWeaponInfuse(core.WeaponInfusion{
+			Key:    "kazuha-c6-infusion",
+			Ele:    core.Anemo,
+			Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
+			Expiry: c.Core.F + f + 300,
+		})
 	}
-
-	c.AddWeaponInfuse(core.WeaponInfusion{
-		Key:    "kazuha-c6-infusion",
-		Ele:    core.Anemo,
-		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Core.F + f + 300,
-	})
 
 	c.SetCD(core.ActionSkill, cd)
 
@@ -197,14 +196,13 @@ func (c *char) skillHold(p map[string]int) (int, int) {
 
 	if c.Base.Cons == 6 {
 		c.c6Active = c.Core.F + f + 300
+		c.AddWeaponInfuse(core.WeaponInfusion{
+			Key:    "kazuha-c6-infusion",
+			Ele:    core.Anemo,
+			Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
+			Expiry: c.Core.F + f + 300,
+		})
 	}
-
-	c.AddWeaponInfuse(core.WeaponInfusion{
-		Key:    "kazuha-c6-infusion",
-		Ele:    core.Anemo,
-		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Core.F + f + 300,
-	})
 
 	c.SetCD(core.ActionSkill, cd)
 	return f, a
@@ -285,6 +283,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	if c.Base.Cons == 6 {
 		c.c6Active = c.Core.F + f + 300
+		c.AddWeaponInfuse(core.WeaponInfusion{
+			Key:    "kazuha-c6-infusion",
+			Ele:    core.Anemo,
+			Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
+			Expiry: c.Core.F + f + 300,
+		})
 	}
 
 	c.SetCDWithDelay(core.ActionBurst, 15*60, 7)

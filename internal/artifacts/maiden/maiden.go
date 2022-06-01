@@ -28,15 +28,16 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 	if count >= 4 {
 		dur := 0
 
-		s.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
-			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
+		f := func(args ...interface{}) bool {
 			if s.ActiveChar != c.CharIndex() {
 				return false
 			}
 			dur = s.F + 600
 			s.Log.NewEvent("maiden 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", dur)
 			return false
-		}, fmt.Sprintf("maid 4pc - %v", c.Name()))
+		}
+		s.Events.Subscribe(core.PreBurst, f, fmt.Sprintf("maid 4pc - %v", c.Name()))
+		s.Events.Subscribe(core.PreSkill, f, fmt.Sprintf("maid 4pc - %v", c.Name()))
 
 		// Applies to all characters, so no filters needed
 		s.Health.AddIncHealBonus(func(healedCharIndex int) float64 {
