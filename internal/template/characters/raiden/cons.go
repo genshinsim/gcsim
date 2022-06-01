@@ -17,37 +17,29 @@ func (c *char) c4() {
 		if i == c.Index {
 			continue
 		}
-		char.AddStatMod(
-			"raiden-c4",
-			600,
-			attributes.NoStat,
-			func() ([]float64, bool) {
-				return m, true
-			},
-		)
+		char.AddStatMod("raiden-c4", 600, attributes.ATKP, func() ([]float64, bool) {
+			return m, true
+		})
 	}
 }
 
-func (c *char) c6() func(ac combat.AttackCB) {
+func (c *char) c6(ac combat.AttackCB) {
 	if c.Base.Cons < 6 {
-		return nil
+		return
 	}
-
-	return func(ac combat.AttackCB) {
-		if c.Core.F < c.c6ICD {
-			return
+	if c.Core.F < c.c6ICD {
+		return
+	}
+	if c.c6Count == 5 {
+		return
+	}
+	c.c6ICD = c.Core.F + 60
+	c.c6Count++
+	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index, "next_icd", c.c6ICD, "count", c.c6Count)
+	for i, char := range c.Core.Player.Chars() {
+		if i == c.Index {
+			continue
 		}
-		if c.c6Count == 5 {
-			return
-		}
-		c.c6ICD = c.Core.F + 60
-		c.c6Count++
-		c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index, "next_icd", c.c6ICD, "count", c.c6Count)
-		for i, char := range c.Core.Player.Chars() {
-			if i == c.Index {
-				continue
-			}
-			char.ReduceActionCooldown(action.ActionBurst, 60)
-		}
+		char.ReduceActionCooldown(action.ActionBurst, 60)
 	}
 }

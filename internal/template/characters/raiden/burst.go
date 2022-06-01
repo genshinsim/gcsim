@@ -1,6 +1,7 @@
 package raiden
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -11,10 +12,6 @@ import (
 var burstFrames []int
 
 const burstHitmark = 98
-
-func (c *char) burstFrameFunc(next action.Action) int {
-	return burstFrames[next]
-}
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//activate burst, reset stacks
@@ -59,17 +56,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 2 {
 		ai.IgnoreDefPercent = 0.6
 	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewDefCircHit(2, false, combat.TargettableEnemy),
-		burstHitmark,
-		burstHitmark,
-	)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(8)
+
 	return action.ActionInfo{
-		Frames:          c.burstFrameFunc,
+		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
 		Post:            burstHitmark,

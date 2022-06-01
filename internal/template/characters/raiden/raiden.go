@@ -13,6 +13,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
+const normalHitNum = 5
+
+func init() {
+	initCancelFrames()
+	core.RegisterCharFunc(keys.Raiden, NewChar)
+}
+
 type char struct {
 	*tmpl.Character
 	burstCastF     int
@@ -26,10 +33,6 @@ type char struct {
 	c6ICD          int
 }
 
-func init() {
-	core.RegisterCharFunc(keys.Raiden, NewChar)
-}
-
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
 	t := tmpl.New(s)
@@ -38,16 +41,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 	c.Base.Element = attributes.Electro
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 90
-	}
-	c.Energy = float64(e)
 	c.EnergyMax = 90
 	c.Weapon.Class = weapon.WeaponClassSpear
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.NormalHitNum = 5
+	c.NormalHitNum = normalHitNum
 	c.CharZone = character.ZoneInazuma
 
 	w.Character = &c
@@ -56,57 +54,51 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
-
-	c.InitCancelFrames()
 	c.eyeOnDamage()
 	c.onBurstStackCount()
 	c.onSwapClearBurst()
-
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
-
 	return nil
 }
 
-func (c *char) InitCancelFrames() {
-	c.initNormalCancels()
-	c.initBurstAttackCancels()
+func initCancelFrames() {
+	initAttackFrames()
+	initSwordFrames()
 
+	// charge -> x
 	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 36
 
+	// charge (burst) -> x
 	swordCAFrames = frames.InitAbilSlice(56)
-	swordCAFrames[action.ActionDash] = 35
-	swordCAFrames[action.ActionJump] = 35
-	swordCAFrames[action.ActionSwap] = 55
+	swordCAFrames[action.ActionDash] = swordCAHitmarks[len(swordCAHitmarks)-1]
+	swordCAFrames[action.ActionJump] = swordCAHitmarks[len(swordCAHitmarks)-1]
 
+	// skill -> x
 	skillFrames = frames.InitAbilSlice(37)
 	skillFrames[action.ActionDash] = 17
 	skillFrames[action.ActionJump] = 17
-	skillFrames[action.ActionSwap] = 17
+	skillFrames[action.ActionSwap] = 36
 
+	// burst -> x
 	burstFrames = frames.InitAbilSlice(112)
 	burstFrames[action.ActionAttack] = 111
-	burstFrames[action.ActionSkill] = 111
 	burstFrames[action.ActionCharge] = 500 //TODO: this action is illegal
+	burstFrames[action.ActionSkill] = 111
 	burstFrames[action.ActionDash] = 110
 	burstFrames[action.ActionSwap] = 110
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
-	case action.ActionDash:
-		return 18
 	case action.ActionCharge:
-		if c.Core.Status.Duration("raidenburst") == 0 {
-			return 25
+		if c.Core.Status.Duration("raidenburst") > 0 {
+			return 20
 		}
-		return 20
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", glog.LogActionEvent, c.Index, "action", a.String())
-		return 0
+		return 25
 	}
+	return c.Character.ActionStam(a, p)
 }
 
 func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {

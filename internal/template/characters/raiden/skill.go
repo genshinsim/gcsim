@@ -1,6 +1,7 @@
 package raiden
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -16,10 +17,6 @@ const skillHitmark = 51
 
 var skillFrames []int
 
-func (c *char) skillFrameFunc(next action.Action) int {
-	return skillFrames[next]
-}
-
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -31,40 +28,33 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewDefCircHit(2, false, combat.TargettableEnemy),
-		skillHitmark,
-		skillHitmark,
-	)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	//activate eye
 	c.Core.Status.Add("raidenskill", 1500+skillHitmark)
 
 	// Add pre-damage mod
 	mult := skillBurstBonus[c.TalentLvlSkill()]
-	val := make([]float64, attributes.EndStatType)
+	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		this := char
-		char.AddAttackMod(
-			"raiden-e",
-			1500+skillHitmark,
-			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
-					return nil, false
-				}
-				val[attributes.DmgP] = mult * this.EnergyMax
-				return val, true
-			})
+		char.AddAttackMod("raiden-e", 1500+skillHitmark, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+				return nil, false
+			}
+
+			m[attributes.DmgP] = mult * this.EnergyMax
+			return m, true
+		})
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 6)
 
 	return action.ActionInfo{
-		Frames:          c.skillFrameFunc,
+		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
-		Post:            skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		Post:            skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

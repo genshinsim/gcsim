@@ -1,6 +1,7 @@
 package raiden
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -8,14 +9,9 @@ import (
 
 var chargeFrames []int
 
-const chargeAttackHitmark = 22
-
-func (c *char) chargeAttackFrameFunc(next action.Action) int {
-	return chargeFrames[next]
-}
+const chargeHitmark = 22
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-
 	if c.Core.Status.Duration("raidenburst") > 0 {
 		return c.swordCharge(p)
 	}
@@ -31,33 +27,21 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewDefCircHit(0.5, false, combat.TargettableEnemy),
-		chargeAttackHitmark,
-		chargeAttackHitmark,
-	)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
 
 	return action.ActionInfo{
-		Frames:          c.chargeAttackFrameFunc,
+		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeAttackHitmark,
-		Post:            chargeAttackHitmark,
+		CanQueueAfter:   chargeHitmark,
+		Post:            chargeHitmark,
 		State:           action.ChargeAttackState,
 	}
-
 }
 
 var swordCAFrames []int
-
-const swordCAHitmark = 22
-
-func (c *char) swordCAFrameFunc(next action.Action) int {
-	return swordCAFrames[next]
-}
+var swordCAHitmarks = []int{24, 31}
 
 func (c *char) swordCharge(p map[string]int) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Musou Isshin (Charge Attack)",
@@ -68,7 +52,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	for _, mult := range chargeSword {
+	for i, mult := range chargeSword {
 		// Sword hits are dynamic - group snapshots with damage proc
 		ai.Mult = mult[c.TalentLvlBurst()]
 		ai.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
@@ -78,18 +62,18 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewDefCircHit(5, false, combat.TargettableEnemy),
-			swordCAHitmark,
-			swordCAHitmark,
+			swordCAHitmarks[i],
+			swordCAHitmarks[i],
 			c.burstRestorefunc,
-			c.c6(),
+			c.c6,
 		)
 	}
 
 	return action.ActionInfo{
-		Frames:          c.swordCAFrameFunc,
+		Frames:          frames.NewAbilFunc(swordCAFrames),
 		AnimationLength: swordCAFrames[action.InvalidAction],
-		CanQueueAfter:   swordCAHitmark,
-		Post:            swordCAHitmark,
+		CanQueueAfter:   swordCAHitmarks[len(swordCAHitmarks)-1],
+		Post:            swordCAHitmarks[len(swordCAHitmarks)-1],
 		State:           action.ChargeAttackState,
 	}
 }
