@@ -1,4 +1,4 @@
-package favonius
+package dullblade
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
@@ -9,9 +9,9 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.FavoniusWarbow, wf)
+	core.RegisterWeaponFunc(keys.DullBlade, wf)
 }
 
 func wf(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	return common.NewFavonius(c, char, p)
+	return common.NewNoEffect(c, char, p)
 }
