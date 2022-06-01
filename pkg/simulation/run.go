@@ -1,8 +1,9 @@
 package simulation
 
 import (
-	"context"
+	"errors"
 
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
@@ -16,15 +17,13 @@ func (s *Simulation) Run() (Result, error) {
 	//setup ast
 	s.nextAction = make(chan *ast.ActionStmt)
 	s.continueEval = make(chan bool)
-	ctx, cancel := context.WithCancel(context.Background())
-	s.terminate = cancel
 	s.queuer = gcs.Eval{
 		AST:  s.cfg.Program,
 		Next: s.continueEval,
 		Work: s.nextAction,
 	}
-	go s.queuer.Run(ctx)
-	defer s.terminate()
+	go s.queuer.Run()
+	defer close(s.continueEval)
 
 	for !stop {
 
@@ -46,39 +45,63 @@ func (s *Simulation) Run() (Result, error) {
 }
 
 func (s *Simulation) AdvanceFrame() error {
-	var err error
-	var done bool
-	for !done {
-		done, err = s.queueAndExec()
-		if err != nil {
+	//TODO: this for loops is completely unnecessary
+	for {
+		if s.queue != nil {
+			err := s.C.Player.Exec(s.queue.Action, s.queue.Param)
+			switch err {
+			case player.ErrActionNotReady:
+				//action not ready yet, skipping frame
+				//TODO: log something here
+				return nil
+			case player.ErrPlayerNotReady:
+				//player still in animation, skipping frame
+				//TODO: log something here
+				return nil
+			case nil:
+				//exeucted successfully
+				s.queue = nil
+			default:
+				//this should now error out
+				return err
+			}
+		}
+		//do nothing if no more actions anyways
+		if s.noMoreActions {
+			//TODO: log here?
+			return nil
+		}
+		//check if read to queue first
+		if s.C.Player.CanQueueNextAction() {
+			//skip frame if not ready
+			return nil
+		}
+		//check if we can queue an action, if not then skip
+		err := s.tryQueueNext()
+		switch err {
+		case nil:
+			//we have an action, continue execute
+		case ErrNoMoreActions:
+			//make a note no more actions or else <-s.nextAction will block indefinitely
+			s.noMoreActions = true
+			return nil //do nothing, skip frame
+		default:
+			//shouldn't really happen??
 			return err
 		}
 	}
-	return nil
 }
 
-func (s *Simulation) queueAndExec() (bool, error) {
-	//check if queue is empty
-	if s.queue == nil {
-		s.queue = <-s.nextAction
+var ErrNoMoreActions = errors.New("no more actions left")
+
+func (s *Simulation) tryQueueNext() error {
+	//tell eval to keep going
+	s.continueEval <- true
+	//wait for next action
+	var ok bool
+	s.queue, ok = <-s.nextAction
+	if !ok {
+		return ErrNoMoreActions
 	}
-
-	//we will keep trying to execute this action until it
-	//completed successfully
-	//TODO: we should do some optimization here to at least skip some frames
-	//if we know for sure the action won't be ready
-
-	return true, nil
-}
-
-//executes the provided command, returns 2 booleans:
-//	- executed if this action was successfully executed and should be purged from queue
-//	- frameDone if this action consumes a frame
-func (s *Simulation) execCommand(c ast.ActionStmt) (executed, frameDone bool) {
-
-	return
-}
-
-func (s *Simulation) QueueNext() {
-
+	return nil
 }

@@ -2,8 +2,6 @@
 package simulation
 
 import (
-	"context"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -14,12 +12,12 @@ type Simulation struct {
 	skip int
 	C    *core.Core
 	//action list stuff
-	cfg          ast.ActionList
-	queue        *ast.ActionStmt
-	nextAction   chan *ast.ActionStmt
-	continueEval chan bool
-	terminate    context.CancelFunc
-	queuer       gcs.Eval
+	cfg           ast.ActionList
+	queue         *ast.ActionStmt
+	nextAction    chan *ast.ActionStmt
+	continueEval  chan bool
+	queuer        gcs.Eval
+	noMoreActions bool
 	//hurt event
 	lastHurt int
 	//energy event

@@ -1,7 +1,6 @@
 package gcs
 
 import (
-	"context"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -16,7 +15,6 @@ type Eval struct {
 	Next chan bool
 	Work chan *ast.ActionStmt
 	Log  *log.Logger
-	ctx  context.Context
 }
 
 type Env struct {
@@ -61,15 +59,18 @@ func (e *Env) v(s string) *number {
 
 //Run will execute the provided AST. Any genshin specific actions will be passed
 //back to the
-func (e *Eval) Run(ctx context.Context) Obj {
+func (e *Eval) Run() Obj {
 	if e.Log == nil {
 		e.Log = log.New(ioutil.Discard, "", log.LstdFlags)
 	}
-	e.ctx = ctx
 	//this should run until it hits an Action
 	//it will then pass the action on a resp channel
 	//it will then wait for Next before running again
 	global := NewEnv(nil)
+
+	//start running once we get signal to go
+	<-e.Next
+	defer close(e.Work)
 	return e.evalNode(e.AST, global)
 }
 

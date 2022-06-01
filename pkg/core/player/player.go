@@ -98,6 +98,10 @@ func (h *Handler) ByIndex(i int) *character.CharWrapper {
 	return h.chars[i]
 }
 
+func (h *Handler) ByKey(k keys.Char) *character.CharWrapper {
+	return h.chars[h.charPos[k]]
+}
+
 func (h *Handler) Chars() []*character.CharWrapper {
 	return h.chars
 }

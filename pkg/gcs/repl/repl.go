@@ -2,7 +2,6 @@ package repl
 
 import (
 	"bufio"
-	"context"
 	"fmt"
 	"io"
 	"log"
@@ -15,9 +14,7 @@ const Prompt = ">> "
 
 func Eval(s string, log *log.Logger) {
 
-	ctx := context.Background()
-
-	simActions := make(chan ast.ActionStmt)
+	simActions := make(chan *ast.ActionStmt)
 	done := make(chan bool)
 	go handleSimActions(simActions, done)
 
@@ -41,7 +38,7 @@ func Eval(s string, log *log.Logger) {
 		Log:  log,
 	}
 
-	result := eval.Run(ctx)
+	result := eval.Run()
 
 	fmt.Print("Program result: ")
 	fmt.Println(result.Inspect())
@@ -50,10 +47,9 @@ func Eval(s string, log *log.Logger) {
 func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 	scanner := bufio.NewScanner(in)
 
-	ctx := context.Background()
-	simActions := make(chan ast.ActionStmt)
-	done := make(chan bool)
-	go handleSimActions(simActions, done)
+	simActions := make(chan *ast.ActionStmt)
+	next := make(chan bool)
+	go handleSimActions(simActions, next)
 
 	for {
 		fmt.Printf(Prompt)
@@ -79,21 +75,20 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 
 		eval := gcs.Eval{
 			AST:  res.Program,
-			Next: done,
+			Next: next,
 			Work: simActions,
 			Log:  log,
 		}
-
-		result := eval.Run(ctx)
+		result := eval.Run()
 
 		fmt.Println(result.Inspect())
 	}
 }
 
-func handleSimActions(in chan ast.ActionStmt, done chan bool) {
+func handleSimActions(in chan *ast.ActionStmt, next chan bool) {
 	for {
+		next <- true
 		x := <-in
 		fmt.Printf("\tExecuting: %v\n", x.String())
-		done <- true
 	}
 }

@@ -100,14 +100,11 @@ func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) Obj {
 	//TODO: should we make a copy of action here??
 	e.Work <- a
 	//block until sim is done with the action; unless we're done
-	for {
-		select {
-		case <-e.Next:
-			return &null{}
-		case <-e.ctx.Done():
-			return &terminate{}
-		}
+	_, ok := <-e.Next
+	if !ok {
+		return &terminate{} //no more work, shutting down
 	}
+	return &null{}
 }
 
 func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) Obj {
