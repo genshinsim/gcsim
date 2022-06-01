@@ -29,13 +29,13 @@ func (c *char) initNormalCancels() {
 	attackFrames = make([][]int, c.NormalHitNum) // should be 4
 
 	// n1 animations
-	frames.InitNormalCancelSlice(&attackFrames, 0, hitmarks[0], 25)
+	attackFrames[0] = frames.InitNormalCancelSlice(hitmarks[0], 25)
 	// n2 animations
-	frames.InitNormalCancelSlice(&attackFrames, 1, hitmarks[1], 46) // 71-25
+	attackFrames[1] = frames.InitNormalCancelSlice(hitmarks[1], 46) // 71-25
 	// n3 animations
-	frames.InitNormalCancelSlice(&attackFrames, 2, hitmarks[2], 38) // 109-71
+	attackFrames[2] = frames.InitNormalCancelSlice(hitmarks[2], 38) // 109-71
 	// n4 animations
-	frames.InitNormalCancelSlice(&attackFrames, 3, hitmarks[3], 83) // 192-109
+	attackFrames[3] = frames.InitNormalCancelSlice(hitmarks[3], 83) // 192-109
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {

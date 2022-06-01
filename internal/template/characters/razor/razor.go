@@ -47,12 +47,33 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	return nil
 }
 
+func (c *char) Init() error {
+	c.InitCancelFrames()
+
+	// skill
+	c.EnergySigil()
+
+	// burst
+	c.SpeedBurst()
+	c.WolfBurst()
+	c.onSwapClearBurst()
+
+	c.a4()
+
+	c.c1()
+	c.c2()
+	c.c6()
+
+	return nil
+}
+
 func (c *char) InitCancelFrames() {
 	// TODO: need to update frames
 	c.initNormalCancels()
 
 	skillPressFrames = frames.InitAbilSlice(74)
 	skillHoldFrames = frames.InitAbilSlice(92)
+	burstFrames = frames.InitAbilSlice(62)
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
@@ -68,14 +89,15 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	}
 }
 
-func (c *char) EnergySigil() {
+// When Razor's Energy is below 50%, increases Energy Recharge by 30%.
+func (c *char) a4() {
 	val := make([]float64, attributes.EndStatType)
+	val[attributes.ER] = 0.3
 	c.AddStatMod("er-sigil", -1, attributes.ER, func() ([]float64, bool) {
-		if c.Core.F > c.sigilsDuration {
+		if c.Energy/c.EnergyMax < 0.5 {
 			return nil, false
 		}
 
-		val[attributes.ER] = float64(c.sigils) * 0.2
 		return val, true
 	})
 }
