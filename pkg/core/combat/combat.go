@@ -11,7 +11,7 @@ import (
 )
 
 type CharHandler interface {
-	ByIndex(int) Character
+	CombatByIndex(int) Character
 }
 
 type Character interface {

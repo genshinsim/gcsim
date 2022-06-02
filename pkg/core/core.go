@@ -79,6 +79,7 @@ func New(seed int64, debug bool) (*Core, error) {
 	c.Tasks = task.New(&c.F)
 	c.Constructs = construct.New(&c.F, c.Log)
 	c.Player = player.New(&c.F, c.Log, c.Events, c.Tasks, debug)
+	c.Combat = combat.New(c.Log, c.Events, c.Player, false)
 
 	return c, nil
 }
@@ -138,13 +139,13 @@ func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 	// initialize weapon
 	wf, ok := weaponMap[p.Weapon.Key]
 	if !ok {
-		return -1, fmt.Errorf("unrecognized weapon %v for character %v", p.Weapon.Name, p.Base.Key.String())
+		return -1, fmt.Errorf("unrecognized weapon %v for character %v", p.Weapon.Key, p.Base.Key.String())
 	}
 	weap, err := wf(c, char, p.Weapon)
 	if err != nil {
 		return -1, err
 	}
-	c.Player.AddWeapon(p.Weapon.Key, weap)
+	char.SetWeapon(weap)
 
 	//set bonus
 	total := 0
@@ -156,7 +157,7 @@ func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 			if err != nil {
 				return -1, err
 			}
-			c.Player.AddSet(key, s)
+			char.SetArtifactSet(key, s)
 		} else {
 			return -1, fmt.Errorf("character %v has unrecognized artifact: %v", p.Base.Name, key)
 		}

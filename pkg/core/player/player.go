@@ -8,15 +8,14 @@ package player
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/animation"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/infusion"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
@@ -34,10 +33,6 @@ type Handler struct {
 	chars   []*character.CharWrapper
 	active  int
 	charPos map[keys.Char]int
-	weaps   []weapon.Weapon
-	weapPos map[keys.Weapon]int
-	sets    []artifact.Set
-	setPos  map[keys.Set]int
 
 	//stam
 	Stam            float64
@@ -57,8 +52,6 @@ func New(f *int, log glog.Logger, events event.Eventter, tasks task.Tasker, debu
 	h := &Handler{
 		chars:           make([]*character.CharWrapper, 0, 4),
 		charPos:         make(map[keys.Char]int),
-		weapPos:         make(map[keys.Weapon]int),
-		setPos:          make(map[keys.Set]int),
 		stamPercentMods: make([]stamPercentMod, 0, 5),
 		log:             log,
 		events:          events,
@@ -75,26 +68,15 @@ func (h *Handler) AddChar(char *character.CharWrapper) int {
 	index := len(h.chars) - 1
 	char.SetIndex(index)
 	h.charPos[char.Base.Key] = index
-	return index
-}
 
-func (h *Handler) AddWeapon(key keys.Weapon, w weapon.Weapon) int {
-	h.weaps = append(h.weaps, w)
-	index := len(h.weaps) - 1
-	w.SetIndex(index)
-	h.weapPos[key] = index
-	return index
-}
-
-func (h *Handler) AddSet(key keys.Set, set artifact.Set) int {
-	h.sets = append(h.sets, set)
-	index := len(h.weaps) - 1
-	set.SetIndex(index)
-	h.setPos[key] = index
 	return index
 }
 
 func (h *Handler) ByIndex(i int) *character.CharWrapper {
+	return h.chars[i]
+}
+
+func (h *Handler) CombatByIndex(i int) combat.Character {
 	return h.chars[i]
 }
 
@@ -155,13 +137,9 @@ func (h *Handler) InitializeTeam() error {
 		if err != nil {
 			return err
 		}
-		err = h.weaps[i].Init()
-		if err != nil {
-			return err
-		}
-		err = h.sets[i].Init()
-		if err != nil {
-			return err
+		h.chars[i].Equip.Weapon.Init()
+		for k := range h.chars[i].Equip.Sets {
+			h.chars[i].Equip.Sets[k].Init()
 		}
 	}
 	return nil

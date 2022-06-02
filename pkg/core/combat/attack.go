@@ -103,7 +103,7 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 			if cpy.Info.ActorIndex < 0 {
 				log.Println(cpy)
 			}
-			preDmgModDebug := c.team.ByIndex(cpy.Info.ActorIndex).ApplyAttackMods(&cpy, t)
+			preDmgModDebug := c.team.CombatByIndex(cpy.Info.ActorIndex).ApplyAttackMods(&cpy, t)
 			evt.Write("pre_damage_mods", preDmgModDebug)
 		}
 

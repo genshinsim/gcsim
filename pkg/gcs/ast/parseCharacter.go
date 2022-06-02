@@ -201,6 +201,7 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 		s = s[:len(s)-1]
 	}
 	c.Weapon.Name = s
+	c.Weapon.Key = shortcut.WeaponNameToKey[s]
 
 	lvlOk := false
 	refineOk := false

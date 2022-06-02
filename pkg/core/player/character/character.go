@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
@@ -58,6 +59,11 @@ type CharWrapper struct {
 	SkillCon int
 	BurstCon int
 
+	Equip struct {
+		Weapon weapon.Weapon
+		Sets   map[keys.Set]artifact.Set
+	}
+
 	//current status
 	Energy    float64
 	EnergyMax float64
@@ -105,12 +111,21 @@ func New(
 	}
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.stats = *s
+	c.Equip.Sets = make(map[keys.Set]artifact.Set)
 
 	return c
 }
 
 func (c *CharWrapper) SetIndex(index int) {
 	c.Index = index
+}
+
+func (c *CharWrapper) SetWeapon(w weapon.Weapon) {
+	c.Equip.Weapon = w
+}
+
+func (c *CharWrapper) SetArtifactSet(key keys.Set, set artifact.Set) {
+	c.Equip.Sets[key] = set
 }
 
 func (c *CharWrapper) Tag(key string) int {

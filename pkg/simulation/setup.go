@@ -50,6 +50,7 @@ func SetupCharactersInCore(core *core.Core, chars []character.CharacterProfile, 
 
 		if v.Base.Key == initial {
 			core.Player.SetActive(i)
+			active = i
 		}
 
 		if _, ok := dup[v.Base.Key]; ok {

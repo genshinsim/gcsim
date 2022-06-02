@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -52,6 +53,7 @@ func (p *Parser) Parse() (*ActionList, error) {
 		}
 	}
 
+	//sanity checks
 	if len(p.charOrder) > 4 {
 		return p.res, fmt.Errorf("config contains a total of %v characters; cannot exceed 4", len(p.charOrder))
 	}
@@ -66,6 +68,15 @@ func (p *Parser) Parse() (*ActionList, error) {
 		if count > 5 {
 			return p.res, fmt.Errorf("character %v have more than 5 total set items", v.String())
 		}
+	}
+
+	if p.res.InitialChar == keys.NoChar {
+		return p.res, fmt.Errorf("config does not contain active char")
+	}
+
+	//set some sane defaults
+	if p.res.PlayerPos.R <= 0 {
+		p.res.PlayerPos.R = 1 //player radius 1 by default
 	}
 
 	return p.res, nil
@@ -96,6 +107,20 @@ func parseRows(p *Parser) (parseFn, error) {
 		node := p.parseStatement()
 		p.res.Program.append(node)
 		return parseRows, nil
+	case keywordActive:
+		p.next()
+		//next should be char then end line
+		char, err := p.consume(itemCharacterKey)
+		if err != nil {
+			panic("invalid char key after active: " + char.Val)
+		}
+		p.res.InitialChar = shortcut.CharNameToKey[char.Val]
+		n, err := p.consume(itemTerminateLine)
+		if err != nil {
+			panic("expecting ; after active <char> got " + n.Val)
+		}
+		return parseRows, nil
+
 	case itemEOF:
 		return nil, nil
 	default: //default should be look for gcsl

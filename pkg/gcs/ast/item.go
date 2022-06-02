@@ -100,6 +100,7 @@ const (
 	keywordParams  // params
 	keywordLabel   // label
 	keywordUntil   // until
+	keywordActive
 	// Keywords specific to gcsim appears after this
 	itemKeys
 	itemStatKey      // stats: def%, def, etc..
