@@ -55,6 +55,7 @@ func New(f *int, log glog.Logger, events event.Eventter, tasks task.Tasker, debu
 		stamPercentMods: make([]stamPercentMod, 0, 5),
 		log:             log,
 		events:          events,
+		tasks:           tasks,
 		f:               f,
 	}
 	h.Shields = shield.New(f, log, events)

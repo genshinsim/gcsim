@@ -16,6 +16,7 @@ type CharHandler interface {
 
 type Character interface {
 	ApplyAttackMods(a *AttackEvent, t Target) []interface{}
+	ApplyHitlag(factor float64, dur int)
 }
 
 type Handler struct {
@@ -26,16 +27,18 @@ type Handler struct {
 	targets     []Target
 	TotalDamage float64
 	DamageMode  bool
+
+	defHalt bool
 }
 
-func New(log glog.Logger, events event.Eventter, team CharHandler, damageMode bool) *Handler {
+func New(log glog.Logger, events event.Eventter, team CharHandler, damageMode bool, defHalt bool) *Handler {
 	h := &Handler{
 		log:        log,
 		events:     events,
 		team:       team,
 		DamageMode: damageMode,
 	}
-	h.targets = make([]Target, 5)
+	h.targets = make([]Target, 0, 5)
 
 	return h
 }

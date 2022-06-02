@@ -91,7 +91,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		"weap_base", c.Weapon,
 		"spec_char", spec,
 		"spec_weap", specw,
-		"final_stats", c.Stats,
+		"final_stats", c.stats,
 	)
 
 	return nil

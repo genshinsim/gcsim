@@ -9,6 +9,10 @@ import (
 )
 
 func (s *Simulation) Run() (Result, error) {
+	//run sim for 90s if no duration set
+	if s.cfg.Duration == 0 {
+		s.cfg.Duration = 90
+	}
 	//duration
 	f := s.cfg.Duration*60 - 1
 	stop := false
@@ -45,6 +49,22 @@ func (s *Simulation) Run() (Result, error) {
 }
 
 func (s *Simulation) AdvanceFrame() error {
+	s.C.F++
+	s.C.Tick()
+	err := s.queueAndExec()
+	if err != nil {
+		return err
+	}
+	// fmt.Printf("Tick - f = %v\n", s.C.F)
+	return nil
+}
+
+func (s *Simulation) queueAndExec() error {
+	//use this to skip some frames as an optimization
+	if s.skip > 0 {
+		s.skip--
+		return nil
+	}
 	//TODO: this for loops is completely unnecessary
 	for {
 		if s.queue != nil {
@@ -69,10 +89,11 @@ func (s *Simulation) AdvanceFrame() error {
 		//do nothing if no more actions anyways
 		if s.noMoreActions {
 			//TODO: log here?
+			// fmt.Println("no more action")
 			return nil
 		}
 		//check if read to queue first
-		if s.C.Player.CanQueueNextAction() {
+		if !s.C.Player.CanQueueNextAction() {
 			//skip frame if not ready
 			return nil
 		}

@@ -1,26 +1,13 @@
 package animation
 
-import "github.com/genshinsim/gcsim/pkg/core/action"
+import (
+	"sync"
 
-type AnimationEvent interface {
-	//Init is called when this event is first added
-	Init(postFunc func())
+	"github.com/genshinsim/gcsim/pkg/core/action"
+)
 
-	//Tick is called every frame and should return true if this animation
-	//event has ended
-	Tick() bool
-
-	//CanUse returns true if the specified next action can be performed now
-	CanUse(next action.Action) bool
-
-	//CanQueueNext returns true if the next action can be queued now
-	CanQueueNext() bool
-
-	//State returns the type of animation state we are currently in
-	AnimationState() action.AnimationState
-
-	//OnRemoved is called if this animation event is replaced by another one
-	OnRemoved()
+var pool = sync.Pool{
+	New: func() any { return new(Event) },
 }
 
 type Action struct {
@@ -28,28 +15,46 @@ type Action struct {
 	Delay float64
 }
 
+func NewEvent() *Event {
+	evt := pool.Get().(Event)
+	evt.Frames = nil
+	evt.AnimationLength = 0
+	evt.CanQueueAfter = 0
+	evt.State = action.Idle
+	evt.OnRemovedCB = nil
+	evt.HitlagFactor = nil
+	evt.timePassed = 0
+	evt.postFunc = nil
+	evt.Post = 0
+	return &evt
+}
+
 type Event struct {
 	Actions         []Action //sequential list of actions sorted earliest to latest
 	Frames          func(action.Action) int
-	cachedFrames    []int // cached cancelled frames
 	AnimationLength int
 	CanQueueAfter   int
+	Post            int
 	State           action.AnimationState
 	OnRemovedCB     func()
 	HitlagFactor    func() float64
-	timePassed      float64
+
+	cachedFrames [action.EndActionType]int // cached cancelled frames
+	timePassed   float64
 
 	//emit PostXX event. this is a bit awkward to handle though
-	PostEventAt int
-	postFunc    func()
+	postFunc func()
 }
 
 func (e *Event) Init(postFunc func()) {
-	e.cachedFrames = make([]int, action.EndActionType)
 	for i := range e.cachedFrames {
 		e.cachedFrames[i] = e.Frames(action.Action(i))
 	}
 	e.postFunc = postFunc
+}
+
+func (e *Event) AddAction(f func(), delay int) {
+	e.Actions = append(e.Actions, Action{F: f, Delay: float64(delay)})
 }
 
 func (e *Event) Tick() bool {
@@ -69,7 +74,7 @@ func (e *Event) Tick() bool {
 	e.Actions = e.Actions[n:]
 
 	//post even if not done yet
-	if e.postFunc != nil && e.timePassed >= float64(e.PostEventAt) {
+	if e.postFunc != nil && e.timePassed >= float64(e.Post) {
 		//emit event??
 		e.postFunc()
 		e.postFunc = nil
@@ -95,8 +100,4 @@ func (e *Event) CanQueueNext() bool {
 
 func (e *Event) AnimationState() action.AnimationState {
 	return e.State
-}
-
-func (e *Event) OnRemoved() {
-	e.OnRemovedCB()
 }

@@ -2,6 +2,7 @@ package combat
 
 import (
 	"log"
+	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -38,6 +39,7 @@ func willAttackLand(a *AttackEvent, t Target, index int) (bool, string) {
 func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 	// died := false
 	var total float64
+	var landed bool
 	for i, t := range c.targets {
 		//skip nil targets; we don't want to reindex...
 		if t == nil {
@@ -79,6 +81,7 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 		if a.Cancelled {
 			continue
 		}
+		landed = true
 
 		var amp string
 		var dmg float64
@@ -143,9 +146,17 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 		}
 
 	}
-	// if died {
-	// 	c.ReindexTargets()
-	// }
+	//add hitlag to actor
+	if landed {
+		dur := a.Info.HitlagHaltFrames
+		if c.defHalt && a.Info.CanBeDefenseHalted {
+			dur += 3.6 //0.06
+		}
+		dur = math.Ceil(dur)
+		if dur > 0 {
+			c.team.CombatByIndex(a.Info.ActorIndex).ApplyHitlag(a.Info.HitlagFactor, int(dur))
+		}
+	}
 	c.TotalDamage += total
 	return total
 }

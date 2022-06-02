@@ -90,23 +90,33 @@ var actionToEvent = map[action.Action]event.Event{
 	action.ActionAim:        event.PreAimShoot,
 }
 
-func (p *Handler) useAbility(t action.Action, param map[string]int, f func(p map[string]int) action.ActionInfo) {
+func (p *Handler) useAbility(
+	t action.Action,
+	param map[string]int,
+	f func(p map[string]int) action.ActionInfo,
+) {
 	state, ok := actionToEvent[t]
 	if ok {
 		p.events.Emit(state)
 	}
 	info := f(param)
-	p.SetActionUsed(p.active, info)
-
-	//on end emit state
-	if ok && info.Post > 0 {
-		p.tasks.Add(func() {
-			p.events.Emit(state + 1) //post is always +1 from pre
-		}, info.Post)
+	info.CacheFrames()
+	info.PostFunc = func() {
+		p.events.Emit(state + 1) //post is always +1 from pre
 	}
+	p.SetActionUsed(p.active, &info)
+
 	p.LastAction.Type = t
 	p.LastAction.Param = param
 	p.LastAction.Char = p.active
+
+	p.log.NewEvent(
+		"executed "+t.String(),
+		glog.LogActionEvent,
+		p.active,
+		"action", t.String(),
+	)
+
 }
 
 //try using charge attack, return ErrActionNotReady if not enough stam
@@ -126,7 +136,7 @@ func (p *Handler) chargeattack(c character.Character, param map[string]int) erro
 	p.events.Emit(event.OnStamUse, action.ActionCharge)
 
 	info := c.ChargeAttack(param)
-	p.SetActionUsed(p.active, info)
+	p.SetActionUsed(p.active, &info)
 
 	if info.Post > 0 {
 		p.tasks.Add(func() {
@@ -149,7 +159,7 @@ func (p *Handler) dash(c character.Character, param map[string]int) error {
 	}
 	p.events.Emit(event.PreDash)
 	info := c.Dash(param)
-	p.SetActionUsed(p.active, info)
+	p.SetActionUsed(p.active, &info)
 
 	//TODO: this is problematic for ayaka as she consume stam consistently?
 	//perhaps stam consumption should be dealt with in the Dash function instead of here

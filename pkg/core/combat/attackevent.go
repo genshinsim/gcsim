@@ -47,6 +47,12 @@ type AttackInfo struct {
 	//special flag for sim generated attack
 	SourceIsSim bool
 	DoNotLog    bool
+	//hitlag stuff
+	HitlagHaltFrames   float64 //this is the number of frames to pause by
+	HitlagFactor       float64 //this is factor to slow clock by
+	CanBeDefenseHalted bool    //for whacking ruin gaurds
+	IsDeployable       bool    //if this is true, then hitlag does not affect owner
+	HeadshotOnly       bool    //if this is true, will only apply if HitWeakpoint is also true
 }
 
 type StrikeType int

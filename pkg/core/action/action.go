@@ -1,12 +1,89 @@
 //Package action describes the valid actions that any character may take
 package action
 
+//TODO: add a sync.Pool here to save some memory allocs
 type ActionInfo struct {
-	Frames          func(next Action) int
-	AnimationLength int
-	CanQueueAfter   int
-	Post            int
-	State           AnimationState
+	Frames              func(next Action) int
+	AnimationLength     int
+	CanQueueAfter       int
+	Post                int
+	State               AnimationState
+	FramePausedOnHitlag func() bool
+	OnRemoved           func()
+	PostFunc            func()
+	//hidden stuff
+	queued       []queuedAction
+	cachedFrames [EndActionType]int
+	timePassed   float64
+}
+
+type queuedAction struct {
+	f     func()
+	delay float64
+}
+
+func (a *ActionInfo) CacheFrames() {
+	for i := range a.cachedFrames {
+		a.cachedFrames[i] = a.Frames(Action(i))
+	}
+}
+
+func (a *ActionInfo) QueueAction(f func(), delay int) {
+	a.queued = append(a.queued, queuedAction{f: f, delay: float64(delay)})
+}
+
+func (a *ActionInfo) CanQueueNext() bool {
+	return a.timePassed >= float64(a.CanQueueAfter)
+}
+
+func (a *ActionInfo) CanUse(next Action) bool {
+	return a.timePassed >= float64(a.cachedFrames[next])
+}
+
+func (a *ActionInfo) AnimationState() AnimationState {
+	return a.State
+}
+
+func (a *ActionInfo) Tick() bool {
+	//time only goes on if either not hitlag function, or not paused
+	if a.FramePausedOnHitlag == nil || !a.FramePausedOnHitlag() {
+		a.timePassed++
+	}
+
+	//execute all action such that timePassed > delay, and then remove from
+	//slice
+	n := -1
+	for i := range a.queued {
+		if a.queued[i].delay <= a.timePassed {
+			a.queued[i].f()
+		} else {
+			n = i
+			break
+		}
+	}
+	if n == -1 {
+		a.queued = nil
+	} else {
+		a.queued = a.queued[n:]
+	}
+
+	//post even if not done yet
+	if a.PostFunc != nil && a.timePassed >= float64(a.Post) {
+		//emit event??
+		a.PostFunc()
+		a.PostFunc = nil
+	}
+
+	//check if animation is over
+	if a.timePassed > float64(a.AnimationLength) {
+		//handle remove
+		if a.OnRemoved != nil {
+			a.OnRemoved()
+		}
+		return true
+	}
+
+	return false
 }
 
 type Action int

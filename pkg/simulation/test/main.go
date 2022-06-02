@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -17,7 +19,7 @@ raiden add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984
 active raiden;
 
 let x = 0;
-while x < 10 {
+while x < 5 {
 	x = x + 1;
 	raiden attack;
 }
@@ -31,6 +33,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(cfg.Program.String())
 
 	//create core
 	c, err := core.New(0, true)
@@ -51,6 +55,15 @@ func main() {
 	}
 
 	fmt.Println(res)
+
+	logs, err := c.Log.Dump()
+	if err != nil {
+		panic(err)
+	}
+	// fmt.Println(string(logs))
+
+	os.Remove("logs.json")
+	ioutil.WriteFile("logs.json", logs, 0600)
 
 	//do stuff
 }

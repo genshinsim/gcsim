@@ -18,6 +18,9 @@ type Character struct {
 	cdQueue                [][]int
 	AvailableCDCharge      []int
 	additionalCDCharge     []int
+	//hitlag fields
+	hitlagUntil  int
+	hitlagFactor float64
 }
 
 func New(c *core.Core) *Character {
@@ -29,6 +32,10 @@ func New(c *core.Core) *Character {
 		AvailableCDCharge:      make([]int, action.EndActionType),
 		additionalCDCharge:     make([]int, action.EndActionType),
 	}
+}
+
+func (c *Character) Tick() {
+
 }
 
 func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {

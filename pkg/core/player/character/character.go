@@ -39,6 +39,8 @@ type Character interface {
 
 	AddEnergy(src string, amt float64)
 
+	ApplyHitlag(factor float64, dur int)
+
 	Tick()
 }
 

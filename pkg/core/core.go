@@ -79,7 +79,7 @@ func New(seed int64, debug bool) (*Core, error) {
 	c.Tasks = task.New(&c.F)
 	c.Constructs = construct.New(&c.F, c.Log)
 	c.Player = player.New(&c.F, c.Log, c.Events, c.Tasks, debug)
-	c.Combat = combat.New(c.Log, c.Events, c.Player, false)
+	c.Combat = combat.New(c.Log, c.Events, c.Player, false, false)
 
 	return c, nil
 }
@@ -117,7 +117,7 @@ func (c *Core) Tick() {
 	c.Combat.Tick()
 	c.Constructs.Tick()
 	c.Player.Tick()
-
+	c.Tasks.Run()
 }
 
 func (c *Core) AddChar(p character.CharacterProfile) (int, error) {

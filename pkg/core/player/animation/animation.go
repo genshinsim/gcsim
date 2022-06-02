@@ -18,7 +18,7 @@ type AnimationHandler struct {
 
 	char    int
 	started int
-	info    action.ActionInfo
+	aniEvt  *action.ActionInfo
 
 	state       action.AnimationState
 	stateExpiry int
@@ -37,6 +37,9 @@ func New(f *int, log glog.Logger, events event.Eventter, tasks task.Tasker) *Ani
 //IsAnimationLocked returns true if the next action can be executed on the
 //current frame; false otherwise
 func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
+	if h.aniEvt == nil {
+		return false
+	}
 	//actions are always executed after ticks and right before we advance to
 	//the next frame i.e. at the end of a frame
 	//
@@ -44,40 +47,47 @@ func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	//f >= s + 20
 	//
 	//i.e the action lasted 20 frames counting the current frame
-	return *h.f >= h.info.Frames(next)+h.started
+	// fmt.Printf("animation check; current frame %v, animation duration %v\n", *h.f, h.info.Frames(next))
+	return h.aniEvt.CanUse(next)
 }
 
 //CanQueue returns true if we can start looking for the next action to queue
 //on the current frame, false otherwise
 func (h *AnimationHandler) CanQueueNextAction() bool {
-	return *h.f >= h.info.CanQueueAfter+h.started
+	if h.aniEvt == nil {
+		return true
+	}
+	return h.aniEvt.CanQueueNext()
 }
 
-func (h *AnimationHandler) SetActionUsed(char int, info action.ActionInfo) {
+func (h *AnimationHandler) SetActionUsed(char int, evt *action.ActionInfo) {
 	h.char = char
 	h.started = *h.f
-	h.info = info
-	//update state to current state; drop state to idle if no change otherwise after
-	//total animation druation
-	h.events.Emit(event.OnStateChange, h.state, info.State)
-	h.state = info.State
-	h.stateExpiry = *h.f + info.AnimationLength
-}
-
-func (h *AnimationHandler) ClearState() {
-	h.state = action.Idle
-	h.stateExpiry = -1
+	//remove previous if still active
+	if h.aniEvt != nil {
+		if h.aniEvt.OnRemoved != nil {
+			h.aniEvt.OnRemoved()
+		}
+		pool.Put(h.aniEvt)
+	}
+	h.aniEvt = evt
+	h.events.Emit(event.OnStateChange, h.state, evt.State)
+	h.state = evt.State
+	h.stateExpiry = *h.f + evt.AnimationLength
 }
 
 func (h *AnimationHandler) CurrentState() action.AnimationState {
-	if h.stateExpiry <= *h.f {
-		h.state = action.Idle
-		h.stateExpiry = -1
+	if h.aniEvt == nil {
+		return action.Idle
 	}
-
 	return h.state
 }
 
 func (h *AnimationHandler) Tick() {
-
+	if h.aniEvt != nil && h.aniEvt.Tick() {
+		h.events.Emit(event.OnStateChange, h.state, action.Idle)
+		h.state = action.Idle
+		pool.Put(h.aniEvt)
+		h.aniEvt = nil
+	}
 }
