@@ -45,7 +45,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Physical,
 		Durability:         25,
-		HitlagHaltFrames:   12, //all raiden normals have 0.2s hitlag
+		HitlagHaltFrames:   10, //all raiden normals have 0.02s hitlag
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}

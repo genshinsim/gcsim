@@ -35,6 +35,8 @@ var key = map[string]TokenType{
 	"label":    keywordLabel,
 	"until":    keywordUntil,
 	"active":   keywordActive,
+	"target":   keywordTarget,
+	"resist":   keywordResist,
 	//commands
 	//team keywords
 	//flags

@@ -24,14 +24,22 @@ type Character struct {
 }
 
 func New(c *core.Core) *Character {
-	return &Character{
+	t := &Character{
 		Core:                   c,
 		ActionCD:               make([]int, action.EndActionType),
 		cdQueueWorkerStartedAt: make([]int, action.EndActionType),
 		cdCurrentQueueWorker:   make([]*func(), action.EndActionType),
+		cdQueue:                make([][]int, action.EndActionType),
 		AvailableCDCharge:      make([]int, action.EndActionType),
 		additionalCDCharge:     make([]int, action.EndActionType),
 	}
+
+	for i := 0; i < len(t.cdQueue); i++ {
+		t.cdQueue[i] = make([]int, 0, 4)
+		t.AvailableCDCharge[i] = 1
+	}
+
+	return t
 }
 
 func (c *Character) Tick() {

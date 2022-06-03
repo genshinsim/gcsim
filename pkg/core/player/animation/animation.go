@@ -48,7 +48,7 @@ func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	//
 	//i.e the action lasted 20 frames counting the current frame
 	// fmt.Printf("animation check; current frame %v, animation duration %v\n", *h.f, h.info.Frames(next))
-	return h.aniEvt.CanUse(next)
+	return !h.aniEvt.CanUse(next)
 }
 
 //CanQueue returns true if we can start looking for the next action to queue

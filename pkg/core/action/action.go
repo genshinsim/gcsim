@@ -37,6 +37,10 @@ func (a *ActionInfo) CanQueueNext() bool {
 }
 
 func (a *ActionInfo) CanUse(next Action) bool {
+	//can't use anything if we're frozen
+	if a.FramePausedOnHitlag != nil && a.FramePausedOnHitlag() {
+		return false
+	}
 	return a.timePassed >= float64(a.cachedFrames[next])
 }
 

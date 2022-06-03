@@ -100,7 +100,10 @@ const (
 	keywordParams  // params
 	keywordLabel   // label
 	keywordUntil   // until
-	keywordActive
+	keywordActive  // active
+	keywordTarget  // target
+	keywordResist  // resist
+
 	// Keywords specific to gcsim appears after this
 	itemKeys
 	itemStatKey      // stats: def%, def, etc..

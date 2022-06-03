@@ -39,7 +39,7 @@ type ActionList struct {
 	Program     *BlockStmt
 }
 
-func (c *ActionList) CLone() ActionList {
+func (c *ActionList) Copy() ActionList {
 
 	r := *c
 

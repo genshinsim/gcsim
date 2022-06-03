@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		this := char
-		char.AddAttackMod("raiden-e", 1500+skillHitmark, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		this.AddAttackMod("raiden-e", 1500+skillHitmark, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 				return nil, false
 			}
