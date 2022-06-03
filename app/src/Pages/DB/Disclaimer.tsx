@@ -115,8 +115,8 @@ export function Disclaimer(props: Props) {
             working very hard on to add in. However, due to the complexity (it
             literally affects anything that relies on time, but not
             consistently), this is taking a while and is forcing us to rewrite
-            our entire back end. This is also why you have not seeing any update
-            to the UI in a long time because all my time is sunk into dealing
+            our entire back end. This is also why you have not seen any updates
+            to the UI for a long time now. All my time is spent on dealing
             with this.
           </p>
           <p>
