@@ -17,13 +17,18 @@ import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import axios from "axios";
 import React from "react";
 import { Link, useLocation } from "wouter";
-import { CharacterSelect, ICharacter, isTraveler } from "~src/Components/Character";
+import {
+  CharacterSelect,
+  ICharacter,
+  isTraveler,
+} from "~src/Components/Character";
 import { Viewport } from "~src/Components/Viewport";
 import { IWeapon, WeaponSelect } from "~src/Components/Weapon";
 import { useAppDispatch } from "~src/store";
 import { DBCharInfo, DBItem } from "~src/types";
 import { updateCfg } from "../Sim";
 import { Trans, useTranslation } from "react-i18next";
+import { Disclaimer } from "./Disclaimer";
 
 function CharTooltip({ char }: { char: DBCharInfo }) {
   let { t } = useTranslation();
@@ -32,8 +37,9 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
     <div className="m-2 flex flex-col">
       <div className="ml-auto font-bold capitalize">{`${t(
         "game:character_names." + char.name
-      )} ${t("db.c_pre")}${char.con}${t("db.c_post")} ${char.talents.attack}/${char.talents.skill
-        }/${char.talents.burst}`}</div>
+      )} ${t("db.c_pre")}${char.con}${t("db.c_post")} ${char.talents.attack}/${
+        char.talents.skill
+      }/${char.talents.burst}`}</div>
       <div className="w-full border-b border-gray-500 mt-2 mb-2"></div>
       <div className="capitalize flex flex-row">
         <img
@@ -108,10 +114,7 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
       <div>
         <ButtonGroup vertical>
           <Link href={"/viewer/share/" + row.viewer_key}>
-            <AnchorButton
-              small
-              rightIcon="chart"
-            >
+            <AnchorButton small rightIcon="chart">
               <Trans>db.show_in_viewer</Trans>
             </AnchorButton>
           </Link>
@@ -135,6 +138,7 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
 }
 
 const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
+const LOCALSTORAGE_DISC_KEY = "gcsim-db-disclaimer-show";
 
 export function DB() {
   let { t } = useTranslation();
@@ -156,6 +160,13 @@ export function DB() {
       return false;
     }
   );
+  const [showDisclaimer, setShowDisclaimer] = React.useState<boolean>(() => {
+    const saved = localStorage.getItem(LOCALSTORAGE_DISC_KEY);
+    if (saved === "false") {
+      return false;
+    }
+    return true;
+  });
 
   const dispatch = useAppDispatch();
   const [_, setLocation] = useLocation();
@@ -186,27 +197,32 @@ export function DB() {
     setCfg("");
   };
 
+  const hideDisclaimer = () => {
+    localStorage.setItem(LOCALSTORAGE_DISC_KEY, "false");
+    setShowDisclaimer(false);
+  };
+
   const updateFilterUrl = (type: string, data: Array<string>) => {
-    const url = new URL(window.location);
-    url.searchParams.set(type, data.join(','));
-    window.history.pushState({}, '', url);
-  }
+    const url = new URL(window.location.toString());
+    url.searchParams.set(type, data.join(","));
+    window.history.pushState({}, "", url);
+  };
 
   const parseFilterUrl = () => {
-    const url = new URL(window.location);
-    const chars = getSearchParamData(url, 'chars');
-    const weaps = getSearchParamData(url, 'weaps');
+    const url = new URL(window.location.toString());
+    const chars = getSearchParamData(url, "chars");
+    const weaps = getSearchParamData(url, "weaps");
 
     console.log(chars);
 
     if (chars) setCharFilter(chars);
     if (weaps) setWeapFilter(weaps);
-  }
+  };
 
   const getSearchParamData = (url: URL, key: string) => {
     const data = url.searchParams.get(key);
-    return data ? data.split(',') : null;
-  }
+    return data ? data.split(",") : null;
+  };
 
   const addCharFilter = (char: ICharacter) => {
     setOpenAddChar(false);
@@ -220,8 +236,8 @@ export function DB() {
     const next = [...charFilter];
     next.push(key);
     setCharFilter(next);
-    
-    updateFilterUrl('chars', next);
+
+    updateFilterUrl("chars", next);
   };
 
   const removeCharFilter = (char: string) => {
@@ -233,7 +249,7 @@ export function DB() {
     next.splice(idx, 1);
     setCharFilter(next);
 
-    updateFilterUrl('chars', next);
+    updateFilterUrl("chars", next);
   };
 
   const addWeapFilter = (weap: IWeapon) => {
@@ -246,7 +262,7 @@ export function DB() {
     next.push(weap);
     setWeapFilter(next);
 
-    updateFilterUrl('weaps', next);
+    updateFilterUrl("weaps", next);
   };
 
   const removeWeapFilter = (weap: string) => {
@@ -258,7 +274,7 @@ export function DB() {
     next.splice(idx, 1);
     setWeapFilter(next);
 
-    updateFilterUrl('weaps', next);
+    updateFilterUrl("weaps", next);
   };
 
   const handleToggleSelected = () => {
@@ -392,7 +408,16 @@ export function DB() {
             {wRows}
           </div>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex flex-row gap-x-1">
+          <Button
+            intent="primary"
+            onClick={() => {
+              localStorage.setItem(LOCALSTORAGE_DISC_KEY, "true");
+              setShowDisclaimer(true);
+            }}
+          >
+            Show FAQs
+          </Button>
           <InputGroup
             leftIcon="search"
             placeholder={t("db.type_to_search")}
@@ -438,6 +463,11 @@ export function DB() {
           </div>
         </div>
       </Dialog>
+      <Disclaimer
+        isOpen={showDisclaimer}
+        onClose={() => setShowDisclaimer(false)}
+        hideAlways={hideDisclaimer}
+      />
     </Viewport>
   );
 }
