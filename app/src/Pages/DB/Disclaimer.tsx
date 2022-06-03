@@ -186,6 +186,21 @@ export function Disclaimer(props: Props) {
               <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
             </b>
           </p>
+          <H4>So you're saying I should farm artifact x right</H4>
+          <p>
+            I sincerely hope that is not the conclusion you will draw from this
+            database.{" "}
+            <span className="line-through">
+              And if it is please consider re-reading this FAQ again.
+            </span>
+          </p>
+          <p>
+            Seriously. Due to limitations mentioned above we only show one
+            possible weapon/artifact configuration per team. It does not make
+            said configuration optimal to farm given resin constraints. It also
+            does not mean said configuration is the absolute best (because we're
+            not fighting dps dummies here in Genshin).
+          </p>
           <H4>Why is this database single target only?!</H4>
           <p>
             For the same reason as the question above. We all want to see
