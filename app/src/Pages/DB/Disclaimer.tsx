@@ -18,10 +18,15 @@ export function Disclaimer(props: Props) {
     >
       <div className={Classes.DIALOG_BODY}>
         <div className="flex flex-col place-items-start ">
-          <H3>FAQs</H3>
+          <H3>FAQs (and Disclaimers). Seriously. READ THIS FIRST.</H3>
           <p>
             Welcome to the gcsim rotation database. Here you'll find many{" "}
             <b>user submitted</b> rotations and their calculated DPS.
+          </p>
+          <p className=" text-red-700 font-semibold">
+            You will want to read this FAQs in its entirety before you draw any
+            conclusions from this database. Seriously. Read it. Don't say I
+            didn't warn you.
           </p>
           <H4>Purpose of this database</H4>
           <p>
@@ -104,6 +109,50 @@ export function Disclaimer(props: Props) {
             the little tips and tricks you can use to increase your dps ever so
             slightly.
           </p>
+          <H4>What about hitlag?!</H4>
+          <p>
+            Yes hitlag is not implemented in gcsim. It is something we are
+            working very hard on to add in. However, due to the complexity (it
+            literally affects anything that relies on time, but not
+            consistently), this is taking a while and is forcing us to rewrite
+            our entire back end. This is also why you have not seeing any update
+            to the UI in a long time because all my time is sunk into dealing
+            with this.
+          </p>
+          <p>
+            This does have some implications on the results:
+            <li className="ml-6">
+              The exact rotation will not translate to the same amount of
+              execution time in game because all frames currently used in gcsim
+              is based on hitlag free frames. You can roughly estimate the
+              result of hitlag on rotation length by adding roughly 3 frames to
+              every melee hit. Give or take.
+            </li>
+            <li className="ml-6">
+              It will cause the dps to be potentially inflated compare to a
+              world with hitlag due to longer actual rotation time in game.
+              However, the expected inflation is not as large as some rumours
+              would have it. My current napkin math place it somewhere around
+              10% at most. For teams that primarily relies upon either off-field
+              sources of damage or fully ranged, I expect the effects of hitlag
+              to be even smaller.
+            </li>
+            <li className="ml-6">
+              However, since gcsim is meant for relative comparison purposes,
+              since everything is hitlag free, the lack of hitlag should not
+              affect the calculations relatively speaking (excluding certain
+              teams that are purely ranged).
+            </li>
+          </p>
+          <p>
+            An additional note on the rotation time. Hitlag is not the only
+            reason why it would lead to longer rotation in game. As I mentioned
+            previously, gcsim assumes frame perfect. However, most people cannot
+            play frame perfect with any sort of consistency. That is also
+            something to keep in mind. Every tool has its intended purpose and
+            limitations. That is no different for gcsim. Always keep that in
+            mind.
+          </p>
           <H4>
             Why does character x uses artifact or weapon y?! We all know z is
             better!
@@ -134,7 +183,7 @@ export function Disclaimer(props: Props) {
               and would like to help out, we're in desparate need of help.
               Please help us make this site better by adding in some of these
               features. Please reach out to us on{" "}
-              <a href="https://discord.gg/gcsim">discord</a>.
+              <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
             </b>
           </p>
           <H4>Why is this database single target only?!</H4>
@@ -145,7 +194,7 @@ export function Disclaimer(props: Props) {
             <b className="text-amber-600">
               So again, if you're a web developer and would like to help out,
               please please reach out to us on{" "}
-              <a href="https://discord.gg/gcsim">discord</a>.
+              <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
             </b>
           </p>
           <H4>Why does this database load so damn slow?!</H4>
@@ -160,7 +209,7 @@ export function Disclaimer(props: Props) {
           <p>
             Also, in case it wasn't made clear before...{" "}
             <b className="text-amber-600">
-              PLEASE SEND <a href="https://discord.gg/gcsim"> HALP</a>
+              PLEASE SEND <a href="https://discord.gg/m7jvjdxx7q"> HALP</a>
             </b>
           </p>
           <H4>
@@ -170,7 +219,7 @@ export function Disclaimer(props: Props) {
           <p>
             This is a great way to share your rotation with the community.
             Please do not hesitate to submit your rotation on our{" "}
-            <a href="https://discord.gg/gcsim">discord</a>.
+            <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
           </p>
           <H4>
             I have a suggestion for a new rotation or a correction to a
@@ -178,27 +227,28 @@ export function Disclaimer(props: Props) {
           </H4>
           <p>
             Please do not hesitate to submit your suggestion on our{" "}
-            <a href="https://discord.gg/gcsim">discord</a>.
+            <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
           </p>
           <H4>I have a question that is not answered here.</H4>
           <p>
             Please do not hesitate to ask your question on the{" "}
-            <a href="https://discord.gg/gcsim">discord</a>.
+            <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
           </p>
           <H4>I have a problem with the database.</H4>
           <p>
             <span className=" line-through">Blame srl.</span> Please do not
             hesitate to contact us on{" "}
-            <a href="https://discord.gg/gcsim">discord</a>.
+            <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
           </p>
           <H4>
             In case it wasn't obvious, come talk to us on{" "}
-            <a href="https://discord.gg/gcsim">discord</a> about the meaning of
-            sim, life, 42, anything.
+            <a href="https://discord.gg/m7jvjdxx7q">discord</a> about the
+            meaning of sim, life, 42, anything.
           </H4>
         </div>
       </div>
       <div className={Classes.DIALOG_FOOTER}>
+        Written by srl. Last updated June 3, 2022.
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button intent="primary" onClick={props.onClose}>
             Close
