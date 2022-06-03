@@ -37,7 +37,7 @@ export function Disclaimer(props: Props) {
             </li>
             <li className="ml-6">
               It is sorted by DPS in order to provoke a reaction for the purpose
-              of driving code quality. We subscribe to same philsophy as used by
+              of driving code quality. We subscribe to same philosophy as used by
               World of Warcraft's SimulationCraft. See{" "}
               <a href="https://github.com/simulationcraft/simc/wiki/PremedititatedProvocation">
                 here
@@ -180,7 +180,7 @@ export function Disclaimer(props: Props) {
           <p>
             <b className="text-amber-600">
               Finally, if you are a web developer (Javascript/Typescript/React)
-              and would like to help out, we're in desparate need of help.
+              and would like to help out, we're in desperate need of help.
               Please help us make this site better by adding in some of these
               features. Please reach out to us on{" "}
               <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
