@@ -1,22 +1,26 @@
 package fischl
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+)
 
 func (c *char) c6() {
 	//this is on attack animation state, not attack landed
-	c.Core.Events.Subscribe(core.PostAttack, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.PostAttack, func(args ...interface{}) bool {
 		//do nothing if oz not on field
 		if c.ozActiveUntil < c.Core.F {
 			return false
 		}
-		ai := core.AttackInfo{
+		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl C6",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagElementalArt,
-			ICDGroup:   core.ICDGroupFischl,
-			StrikeType: core.StrikeTypePierce,
-			Element:    core.Electro,
+			AttackTag:  combat.AttackTagElementalArt,
+			ICDTag:     combat.ICDTagElementalArt,
+			ICDGroup:   combat.ICDGroupFischl,
+			StrikeType: combat.StrikeTypePierce,
+			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.3,
 		}
@@ -24,7 +28,7 @@ func (c *char) c6() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// C4 uses Oz Snapshot
-		c.Core.Combat.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, core.NewDefSingleTarget(1, core.TargettableEnemy), 0)
+		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(1, combat.TargettableEnemy), 0)
 		return false
 	}, "fischl-c6")
 }
