@@ -9,7 +9,7 @@ func (s *Simulation) Run() (Result, error) {
 	if !s.cfg.DamageMode && s.cfg.Settings.Duration == 0 {
 		s.cfg.Settings.Duration = 90
 	}
-	f := s.cfg.Settings.Duration*60 - 1
+	f := int(s.cfg.Settings.Duration*60 - 1)
 	stop := false
 
 	//check for once energy and hurt event
