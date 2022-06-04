@@ -1,4 +1,4 @@
-import { Card, Elevation, Icon } from "@blueprintjs/core";
+import { Callout, Card, Elevation, Icon } from "@blueprintjs/core";
 import { Link } from "wouter";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -11,7 +11,7 @@ interface DashCardProps {
 function DashCard({ children, href, target }: DashCardProps) {
   return (
     <div className="main-page-button-container">
-      {target?
+      {target ? (
         <a href={href} target={target}>
           <Card
             interactive
@@ -21,17 +21,19 @@ function DashCard({ children, href, target }: DashCardProps) {
             {children}
           </Card>
         </a>
-        :
-        <Link href={href}><a>
-          <Card
-            interactive
-            elevation={Elevation.TWO}
-            className="main-page-card"
-          >
-            {children}
-          </Card>
-        </a></Link>
-      }
+      ) : (
+        <Link href={href}>
+          <a>
+            <Card
+              interactive
+              elevation={Elevation.TWO}
+              className="main-page-card"
+            >
+              {children}
+            </Card>
+          </a>
+        </Link>
+      )}
     </div>
   );
 }
@@ -45,6 +47,14 @@ export function Dash() {
           gcsim
         </a>{" "}
         <Trans>dash.is_a_team</Trans>
+      </span>
+      <span>
+        <Callout intent="warning" className=" max-w-[600px] mt-4">
+          Please note that gcsim is currently on a feature freeze for now as we
+          work on rewriting the calculation core to properly simulate hitlag. As
+          such, no new features (other than new characters and urgent bug fixes)
+          will be added for now until we are done with the rewrite.
+        </Callout>
       </span>
       <div className="flex flex-row flex-initial flex-wrap w-full lg:w-[60rem] mt-4">
         <DashCard href="/simulator">
@@ -78,10 +88,7 @@ export function Dash() {
           </span>
         </DashCard>
 
-        <DashCard
-          href="https://docs.gcsim.app"
-          target="_blank"
-        >
+        <DashCard href="https://docs.gcsim.app" target="_blank">
           <span className="font-bold text-xl">
             <Icon icon="document" className="mr-2" size={25} />
             <Trans>dash.documentation</Trans>
@@ -105,6 +112,6 @@ export function Dash() {
           </span>
         </DashCard>
       </div>
-    </main >
+    </main>
   );
 }
