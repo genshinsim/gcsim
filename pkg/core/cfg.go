@@ -37,7 +37,7 @@ func (c *SimulationConfig) Clone() SimulationConfig {
 }
 
 type SimulatorSettings struct {
-	Duration   int
+	Duration   float64
 	DamageMode bool
 	Delays     Delays
 

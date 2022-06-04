@@ -27,7 +27,7 @@ func parseOptions(p *Parser) (parseFn, error) {
 			case "duration":
 				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
 				if err == nil {
-					p.cfg.Settings.Duration, err = itemNumberToInt(n)
+					p.cfg.Settings.Duration, err = itemNumberToFloat64(n)
 				}
 			case "workers":
 				n, err = p.acceptSeqReturnLast(itemEqual, itemNumber)
