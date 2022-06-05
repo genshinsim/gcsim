@@ -3,6 +3,7 @@ package simulation
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type Result struct {
@@ -15,7 +16,7 @@ type Result struct {
 	DamageDetailByTime    map[int]float64              `json:"damage_detail_by_time"`
 	CharActiveTime        []int                        `json:"char_active_time"`
 	AbilUsageCountByChar  []map[string]int             `json:"abil_usage_count_by_char"`
-	ParticleCount         map[string]int               `json:"particle_count"`
+	ParticleCount         map[string]float64           `json:"particle_count"`
 	ReactionsTriggered    map[combat.ReactionType]int  `json:"reactions_triggered"`
 	Duration              int                          `json:"sim_duration"`
 	ElementUptime         []map[attributes.Element]int `json:"ele_uptime"`
@@ -31,16 +32,16 @@ type Result struct {
 }
 
 type CharDetail struct {
-	Name          string         `json:"name"`
-	Element       string         `json:"element"`
-	Level         int            `json:"level"`
-	MaxLevel      int            `json:"max_level"`
-	Cons          int            `json:"cons"`
-	Weapon        WeaponDetail   `json:"weapon"`
-	Talents       TalentDetail   `json:"talents"`
-	Sets          map[string]int `json:"sets"`
-	Stats         []float64      `json:"stats"`
-	SnapshotStats []float64      `json:"snapshot"`
+	Name          string           `json:"name"`
+	Element       string           `json:"element"`
+	Level         int              `json:"level"`
+	MaxLevel      int              `json:"max_level"`
+	Cons          int              `json:"cons"`
+	Weapon        WeaponDetail     `json:"weapon"`
+	Talents       TalentDetail     `json:"talents"`
+	Sets          map[keys.Set]int `json:"sets"`
+	Stats         []float64        `json:"stats"`
+	SnapshotStats []float64        `json:"snapshot"`
 }
 
 type DamageDetails struct {

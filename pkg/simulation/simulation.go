@@ -3,6 +3,7 @@ package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
@@ -58,6 +59,22 @@ func New(cfg ast.ActionList, c *core.Core) (*Simulation, error) {
 	err = SetupCharactersInCore(c, cfg.Characters, cfg.InitialChar)
 	if err != nil {
 		return nil, err
+	}
+
+	//TODO: this stat collection  module needs to be rewritten. See https://github.com/genshinsim/gcsim/issues/561
+	s.initDetailLog()
+	s.initTeamStats()
+	s.stats.IsDamageMode = cfg.Settings.DamageMode
+
+	//grab a snapshot for each char
+	for i, c := range s.C.Player.Chars() {
+		stats := c.Snapshot(&combat.AttackInfo{
+			Abil:      "stats-check",
+			AttackTag: combat.AttackTagNone,
+		})
+		s.stats.CharDetails[i].SnapshotStats = stats.Stats[:]
+		s.stats.CharDetails[i].Element = c.Base.Element.String()
+		s.stats.CharDetails[i].Weapon.Name = c.Weapon.Key.String()
 	}
 
 	return s, nil

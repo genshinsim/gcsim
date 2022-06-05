@@ -37,6 +37,15 @@ type ActionList struct {
 	Characters  []character.CharacterProfile `json:"characters"`
 	InitialChar keys.Char                    `json:"initial"`
 	Program     *BlockStmt
+	Settings    SimulatorSettings
+}
+
+type SimulatorSettings struct {
+	Duration   int
+	DamageMode bool
+	//other stuff
+	NumberOfWorkers int // how many workers to run the simulation
+	Iterations      int // how many iterations to run
 }
 
 func (c *ActionList) Copy() ActionList {
