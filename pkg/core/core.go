@@ -195,11 +195,18 @@ func (c *Core) UserCustomDelay() int {
 	case ActionJump:
 		d = c.Flags.Delays.Jump
 	case ActionSwap:
-		d = c.Flags.Delays.Swap
+		d = 0 //swap delay is handled separately, since it's before the swap rather than after it
 	case ActionAim:
 		d = c.Flags.Delays.Aim
 	}
-	return c.LastAction.Param["delay"] + d
+
+	//it takes one frame to queue an action, so delay should be reduced by one.
+	d += c.LastAction.Param["delay"] - 1
+	if d < 0 {
+		d = 0
+	}
+
+	return d
 }
 
 func (c *Core) ResetAllNormalCounter() {
