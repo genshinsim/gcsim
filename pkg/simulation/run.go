@@ -77,7 +77,7 @@ func (s *Simulation) AdvanceFrame() error {
 	s.collectStats()
 	// }
 
-	if s.skip > 0 {
+	if s.skip > 1 {
 		//if in cooldown, do nothing
 		s.skip--
 		return nil
@@ -117,23 +117,19 @@ func (s *Simulation) AdvanceFrame() error {
 	//and then we're still trying to add more delay on top of 100 frame
 	if isAction {
 		var delay int
-		//check if this action is ready
-		char := s.C.Chars[s.C.ActiveChar]
-		if !(char.ActionReady(act.Typ, act.Param)) {
-			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
-			return nil
-		}
 		delay = s.C.AnimationCancelDelay(act.Typ, act.Param) + s.C.UserCustomDelay()
 		//check if we should delay
 
-		//so if current frame - when the last action is used is > delay, then we shouldn't
-		//delay at all
-		if s.C.F-s.lastActionUsedAt > delay {
-			delay = 0
+		//swap delay should be before the swap, not after it
+		if act.Typ == core.ActionSwap {
+			delay += s.C.Flags.Delays.Swap
 		}
 
+		//If some delay, like a wait command, caused us to not be able to start delay immediately, shorten delay by this amount
+		delay -= s.C.F - s.lastActionUsedAt
+
 		//other wise we can add delay
-		if delay > 0 {
+		if delay > 0 && s.lastDelayAt < s.lastActionUsedAt {
 			s.C.Log.NewEvent(
 				"animation delay triggered",
 				core.LogActionEvent,
@@ -142,14 +138,25 @@ func (s *Simulation) AdvanceFrame() error {
 				"param", s.C.LastAction.Param["delay"],
 				"default_delays", s.C.Flags.Delays,
 			)
-			s.skip = delay - 1
+			s.skip = delay
+			s.lastDelayAt = s.C.F
+			return nil
+		}
+
+		//check if this action is ready
+		char := s.C.Chars[s.C.ActiveChar]
+		if !(char.ActionReady(act.Typ, act.Param)) {
+			s.C.Log.NewEvent("queued action is not ready, should not happen; skipping frame", core.LogSimEvent, -1)
 			return nil
 		}
 	}
 
 	s.skip, done, err = s.C.Action.Exec(s.queue[0])
 	//last action used should then be current frame + how much we are skipping (i.e. first frame queueable)
-	s.lastActionUsedAt = s.C.F + s.skip
+	//if skip is 0, the action either failed or was invalid.
+	if s.skip > 0 {
+		s.lastActionUsedAt = s.C.F + s.skip
+	}
 	if err != nil {
 		return err
 	}
