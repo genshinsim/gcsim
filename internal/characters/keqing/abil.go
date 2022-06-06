@@ -143,14 +143,13 @@ func (c *char) skillNext(p map[string]int) (int, int) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 27, 27)
 	//add electro infusion
-
-	c.Core.Status.AddStatus("keqinginfuse", 300)
+	c.Core.Status.AddStatus("keqinginfuse", 300+27) //account for it starting somewhere around hitmark
 
 	c.AddWeaponInfuse(core.WeaponInfusion{
 		Key:    "keqing-a1",
 		Ele:    core.Electro,
 		Tags:   []core.AttackTag{core.AttackTagNormal, core.AttackTagExtra, core.AttackTagPlunge},
-		Expiry: c.Core.F + 300,
+		Expiry: c.Core.F + 300 + 27, //account for it starting somewhere around hitmark
 	})
 
 	if c.Base.Cons >= 1 {
