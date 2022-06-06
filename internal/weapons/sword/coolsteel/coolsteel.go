@@ -17,9 +17,6 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		Expiry: -1,
 		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
 			m := make([]float64, core.EndStatType)
-			if atk.Info.AttackTag > core.ReactionAttackDelim {
-				return nil, false
-			}
 			if t.AuraContains(core.Hydro, core.Cryo) {
 				m[core.DmgP] = dmg
 				return m, true
