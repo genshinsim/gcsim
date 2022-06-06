@@ -80,6 +80,7 @@ import (
 	//weapons
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/alley"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/amos"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/aqua"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/compound"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/elegy"
@@ -100,7 +101,6 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/slingshot"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/stringless"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/thundering"
-	_ "github.com/genshinsim/gcsim/internal/weapons/bow/aqua"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/twilight"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/viridescent"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/windblume"
@@ -173,6 +173,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/black"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/cinnabar"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/coolsteel"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/darkironsword"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/dullblade"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/favonius"
