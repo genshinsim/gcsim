@@ -86,6 +86,7 @@ const (
 	keywordReturn      // return
 	// Keywords after this are specific to Genshin (i.e. not generic scripting keywords)
 	// These are special char related keywords
+	keywordOptions // options
 	keywordAdd     // add
 	keywordChar    // char
 	keywordStats   // stats

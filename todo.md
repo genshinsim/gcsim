@@ -1,14 +1,7 @@
-- player animation system
-- player action execution
-- core tick
-- load simulator
-- add queues
-- particle drops
-- run sim
-- logging control
-- change weapon structure
-- change artifact structure
-- fix reactable tests
+- iterations and output
 - add characters
 - add weapons
 - add artifacts
+- fix reactable tests
+- parse APL
+- hitlag
