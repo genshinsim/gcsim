@@ -133,7 +133,12 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}
 		t.SetTag(skillMarkedTag, 0)
 	}
-	c.c4count = 0
+
+	if c.Core.Status.Duration("yelanc4") == 0 {
+		c.c4count = 0
+		c.Core.Log.NewEvent("c4 stacks set to 0", core.LogCharacterEvent, c.Index)
+
+	}
 
 	//add a task to loop through targets and mark them
 	marked, ok := p[skillTargetCountTag]
@@ -153,6 +158,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			c.Core.Log.NewEvent("marked by Lifeline", core.LogCharacterEvent, c.Index, "target", i)
 			marked--
 			c.c4count++
+		}
+		if c.Base.Cons >= 4 {
+			c.Core.Status.AddStatus("yelanc4", 25*60)
 		}
 	}, f, //TODO: frames for hold e
 	)
