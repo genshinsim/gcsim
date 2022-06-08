@@ -40,8 +40,8 @@ func (c *char) summonExquisiteThrow() {
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
 		ai.Abil = "Yelan C2 Proc"
-		ai.FlatDmg = 12.0 / 100 * c.MaxHP()
-		c.c2icd = c.Core.F + 1.6*60
+		ai.FlatDmg = 14.0 / 100 * c.MaxHP()
+		c.c2icd = c.Core.F + 1.8*60
 		//TODO: frames timing on this?
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), burstHitmarks[3], burstHitmarks[3])
 	}
