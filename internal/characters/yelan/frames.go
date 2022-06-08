@@ -26,10 +26,9 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		return f, a
 	case core.ActionAim:
 		if c.Core.Status.Duration("breakthrough") > 0 { //Reduce required by 80% time if she has breakthrough
-			reduced_frames := 34
-			return int(reduced_frames), int(reduced_frames)
+			return 32, 42
 		}
-		return 74, 74 //kqm
+		return 86, 96
 	case core.ActionBurst:
 		return 76, 93
 	case core.ActionSkill:
@@ -58,7 +57,12 @@ func (c *char) InitCancelFrames() {
 	c.SetNormalCancelFrames(3, core.ActionAttack, 67-29) //n4 -> next attack (n1)
 	//c.SetNormalCancelFrames(3, core.Actionaim, 33-17) //n4 -> aim
 
-	//todo: aim cancels
+	//todo: confirm that aim->x is the same for all cancels
+	c.SetAbilCancelFrames(core.ActionAim, core.ActionAttack, 96-86) //aim -> n1
+	c.SetAbilCancelFrames(core.ActionAim, core.ActionAim, 96-86)    //aim -> aim
+	c.SetAbilCancelFrames(core.ActionAim, core.ActionSkill, 96-86)  //aim -> skill
+	c.SetAbilCancelFrames(core.ActionAim, core.ActionBurst, 96-86)  //aim -> burst
+	c.SetAbilCancelFrames(core.ActionAim, core.ActionSwap, 96-86)   //aim -> swap
 
 	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 92-76) //burst -> n1
 	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAim, 92-76)    //burst -> aim (assumed)
