@@ -11,7 +11,8 @@ replace = [
         '}\n'
         'func (w * Weapon) SetIndex(idx int) {w.Index = idx}\n'
         'func(w * Weapon) Init() error      {return nil}\n'
-        'func NewWeapon(c * core.Core, char * character.CharWrapper, p weapon.WeaponProfile)(*Weapon, error) {\n'
+        'func NewWeapon(c * core.Core, char * character.CharWrapper, p weapon.WeaponProfile)(weapon.Weapon, error) {\n'
+        'w := &Weapon{}\n'
         'r := p.Refine\n'
     ],
     [r"core\.EleType\b", "attributes.Element"],
@@ -96,6 +97,7 @@ replace = [
     [r"core\.EndEventTypes\b", "event.EndEventTypes"],
     [r"core\.AttackEvent\b", "combat.AttackEvent"],
     [r"core\.Target\b", "combat.Target"],
+    [r"AddPreDamageMod\(core\.PreDamageMod{", "AddAttackMod("],
 ]
 
 
