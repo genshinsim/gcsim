@@ -70,6 +70,7 @@ func New(seed int64, debug bool) (*Core, error) {
 	c.Flags.Custom = make(map[string]int)
 	if debug {
 		c.Log = glog.New(&c.F, 500)
+		c.Flags.LogDebug = true
 	} else {
 		c.Log = &glog.NilLogger{}
 	}

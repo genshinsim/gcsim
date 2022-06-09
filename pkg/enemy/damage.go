@@ -18,10 +18,8 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	if st > -1 {
 		elePer = atk.Snapshot.Stats[st]
 		// Generally not needed except for sim issues
-		// t.Core.Log.Debugw("ele lookup ok",
-		// 	"frame", t.Core.F,
-		// 	core.LogCalc,
-		// 	"char", atk.Info.ActorIndex,
+		// t.Core.Log.NewEvent("ele lookup ok",
+		// 	glog.LogCalc, atk.Info.ActorIndex,
 		// 	"attack_tag", atk.Info.AttackTag,
 		// 	"ele", atk.Info.Element,
 		// 	"st", st,
@@ -130,6 +128,8 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			"ele_per", elePer,
 			"bonus_dmg", dmgBonus,
 			"def_adj", defadj,
+			"target_lvl", t.Level,
+			"char_lvl", atk.Snapshot.CharLvl,
 			"def_mod", defmod,
 			"res", res,
 			"res_mod", resmod,

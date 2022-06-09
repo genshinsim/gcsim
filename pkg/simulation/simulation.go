@@ -2,8 +2,6 @@
 package simulation
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/gcs"
@@ -47,7 +45,7 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
 	s.cfg = cfg
-	fmt.Printf("cfg: %+v\n", cfg)
+	// fmt.Printf("cfg: %+v\n", cfg)
 	s.C = c
 	if err != nil {
 		return nil, err

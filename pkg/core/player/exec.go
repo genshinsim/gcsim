@@ -76,6 +76,8 @@ func (p *Handler) Exec(t action.Action, param map[string]int) error {
 		p.ResetAllNormalCounter()
 	}
 
+	p.events.Emit(event.OnActionExec, p.active, t, param)
+
 	return nil
 }
 

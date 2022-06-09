@@ -3,6 +3,7 @@ package simulation
 import (
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -17,6 +18,14 @@ func (s *Simulation) initDetailLog() {
 	for i := range s.stats.ElementUptime {
 		s.stats.ElementUptime[i] = make(map[attributes.Element]int)
 	}
+	//add call back to track actions executed
+	s.C.Events.Subscribe(event.OnActionExec, func(args ...interface{}) bool {
+
+		active := args[0].(int)
+		action := args[1].(action.Action)
+		s.stats.AbilUsageCountByChar[active][action.String()]++
+		return false
+	}, "sim-abil-usage")
 	//add new targets
 	s.C.Events.Subscribe(event.OnTargetAdded, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)

@@ -39,6 +39,7 @@ const (
 	OnCharacterHurt    //amount
 	OnHeal             //src char, target character, amount
 	//ability use
+	OnActionExec     //ActiveCharIndex, action.Action, param
 	PreSkill         //nil
 	PostSkill        //nil, frames
 	PreBurst         //nil

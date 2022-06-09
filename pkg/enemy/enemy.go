@@ -54,6 +54,11 @@ type Enemy struct {
 
 func New(core *core.Core, p EnemyProfile) *Enemy {
 	e := &Enemy{}
+	e.Level = p.Level
+	//TODO: do we need to clone this map isntead?
+	e.resist = p.Resist
+	//TODO: this is kinda redundant to keep both profile and lvl/resist
+	e.prof = p
 	e.Target = target.New(core, p.Pos.X, p.Pos.Y, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)

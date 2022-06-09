@@ -16,7 +16,7 @@ func (s *Simulation) Run() (Result, error) {
 		s.cfg.Settings.Duration = 90
 	}
 	//duration
-	f := s.cfg.Settings.Duration*60 - 1
+	f := s.cfg.Settings.Duration * 60
 	stop := false
 	var err error
 
