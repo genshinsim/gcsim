@@ -115,7 +115,7 @@ func (s *Simulation) initDetailLog() {
 	}, "particles-log")
 
 	s.C.Events.Subscribe(event.OnEnergyChange, func(args ...interface{}) bool {
-		char := args[0].(character.CharWrapper)
+		char := args[0].(*character.CharWrapper)
 		preEnergy := args[1].(float64)
 		amt := args[2].(float64)
 		src := args[3].(string)
