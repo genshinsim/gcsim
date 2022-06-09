@@ -10,7 +10,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/davecgh/go-spew/spew"
 	"golang.org/x/tools/go/ast/astutil"
 )
 
@@ -40,7 +39,7 @@ func fix(path string) error {
 	if err != nil {
 		return err
 	}
-	spew.Dump(f)
+	// spew.Dump(f)
 
 	astutil.Apply(f, func(cr *astutil.Cursor) bool {
 		found, next := findAndReplacePreDamageBlock(cr.Node())
