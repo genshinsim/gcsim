@@ -98,6 +98,10 @@ replace = [
     [r"core\.AttackEvent\b", "combat.AttackEvent"],
     [r"core\.Target\b", "combat.Target"],
     [r"AddPreDamageMod\(core\.PreDamageMod{", "AddAttackMod("],
+    [r"\.AddMod\(core\.CharStatMod{", ".AddStatMod("],
+    [r"char\.CharIndex\(\)", "char.Index"],
+    [r"c\.ActiveChar", "c.Player.Active()"],
+    [r"char\.Name\(\)", "char.Base.Name"],
 ]
 
 
