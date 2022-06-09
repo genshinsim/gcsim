@@ -77,7 +77,7 @@ func (s *Simulation) AdvanceFrame() error {
 	s.collectStats()
 	// }
 
-	if s.skip > 1 {
+	if s.skip > 1 { //We end lockouts one frame early, so that the next action can be queued right when the previous one ends
 		//if in cooldown, do nothing
 		s.skip--
 		return nil
