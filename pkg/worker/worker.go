@@ -13,7 +13,7 @@ type Pool struct {
 }
 
 type Job struct {
-	Cfg  ast.ActionList
+	Cfg  *ast.ActionList
 	Seed int64
 }
 
@@ -39,6 +39,7 @@ func (p *Pool) worker() {
 	for {
 		select {
 		case job := <-p.QueueCh:
+			// fmt.Printf("got job: %s\n", job.Cfg.PrettyPrint())
 			c, err := simulation.NewCore(job.Seed, false, job.Cfg)
 			if err != nil {
 				p.errCh <- err

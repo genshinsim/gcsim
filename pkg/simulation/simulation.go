@@ -2,6 +2,8 @@
 package simulation
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/gcs"
@@ -13,7 +15,7 @@ type Simulation struct {
 	skip int
 	C    *core.Core
 	//action list stuff
-	cfg           ast.ActionList
+	cfg           *ast.ActionList
 	queue         *ast.ActionStmt
 	nextAction    chan *ast.ActionStmt
 	continueEval  chan bool
@@ -41,10 +43,11 @@ Simulation should maintain the following:
 
 **/
 
-func New(cfg ast.ActionList, c *core.Core) (*Simulation, error) {
+func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
 	s.cfg = cfg
+	fmt.Printf("cfg: %+v\n", cfg)
 	s.C = c
 	if err != nil {
 		return nil, err

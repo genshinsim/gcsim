@@ -46,7 +46,7 @@ func main() {
 	}
 
 	//create simulation
-	sim, err := simulation.New(*cfg, c)
+	sim, err := simulation.New(cfg, c)
 	if err != nil {
 		panic(err)
 	}

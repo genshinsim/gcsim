@@ -11,11 +11,12 @@ import (
 
 func (s *Simulation) Run() (Result, error) {
 	//run sim for 90s if no duration set
-	if s.cfg.Duration == 0 {
-		s.cfg.Duration = 90
+	if s.cfg.Settings.Duration == 0 {
+		// fmt.Println("no duration set, running for 90s")
+		s.cfg.Settings.Duration = 90
 	}
 	//duration
-	f := s.cfg.Duration*60 - 1
+	f := s.cfg.Settings.Duration*60 - 1
 	stop := false
 	var err error
 

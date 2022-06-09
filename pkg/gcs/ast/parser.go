@@ -1,8 +1,10 @@
 package ast
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"runtime"
 	"strconv"
 
@@ -30,8 +32,6 @@ type Parser struct {
 	infixParseFns  map[TokenType]func(Expr) Expr
 }
 type ActionList struct {
-	Duration    int                          `json:"duration"`
-	DamageMode  bool                         `json:"damage_mode"`
 	Targets     []enemy.EnemyProfile         `json:"targets"`
 	PlayerPos   core.Coord                   `json:"player_initial_pos"`
 	Characters  []character.CharacterProfile `json:"characters"`
@@ -60,7 +60,7 @@ type Delays struct {
 	Swap   int
 }
 
-func (c *ActionList) Copy() ActionList {
+func (c *ActionList) Copy() *ActionList {
 
 	r := *c
 
@@ -75,7 +75,15 @@ func (c *ActionList) Copy() ActionList {
 	}
 
 	r.Program = c.Program.CopyBlock()
-	return r
+	return &r
+}
+
+func (a *ActionList) PrettyPrint() string {
+	prettyJson, err := json.MarshalIndent(a, "", "  ")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	return string(prettyJson)
 }
 
 type parseFn func(*Parser) (parseFn, error)

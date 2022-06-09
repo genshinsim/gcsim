@@ -3,8 +3,6 @@ package simulator
 import (
 	"crypto/rand"
 	"encoding/binary"
-	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"path"
@@ -42,13 +40,6 @@ func Run(opts Options) (result.Summary, error) {
 	if err != nil {
 		return result.Summary{}, err
 	}
-
-	prettyJson, err := json.MarshalIndent(simcfg, "", "  ")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	fmt.Printf("config: %s\n", string(prettyJson))
-
 	return RunWithConfig(cfg, simcfg, opts)
 }
 
@@ -124,7 +115,7 @@ func aggregateResults(in []simulation.Result, cfg *ast.ActionList) result.Summar
 
 	r := result.CollectResult(
 		in,
-		cfg.DamageMode,
+		cfg.Settings.DamageMode,
 		chars,
 		true,
 	)
