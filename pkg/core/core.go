@@ -145,9 +145,6 @@ func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 		if char.Energy > char.EnergyMax {
 			char.Energy = char.EnergyMax
 		}
-		if char.Energy < 0 {
-			char.Energy = 0
-		}
 	}
 
 	// initialize weapon
