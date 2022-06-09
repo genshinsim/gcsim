@@ -31,13 +31,9 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.GeoP] = 0.15
-		char.AddAttackMod(
-			"archaic-2pc",
-			-1,
-			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				return m, true
-			},
-		)
+		char.AddStatMod("archaic-2pc", -1, attributes.GeoP, func() ([]float64, bool) {
+			return m, true
+		})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
