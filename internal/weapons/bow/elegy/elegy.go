@@ -4,42 +4,51 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("elegy for the end", weapon)
-	core.RegisterWeaponFunc("elegyfortheend", weapon)
-	core.RegisterWeaponFunc("elegy", weapon)
+	core.RegisterWeaponFunc(keys.ElegyForTheEnd, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	m := make([]float64, core.EndStatType)
-	m[core.EM] = 45 + float64(r)*15
-	char.AddMod(core.CharStatMod{
-		Key: "elegy-em",
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-		Expiry: -1,
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.EM] = 45 + float64(r)*15
+	char.AddStatMod("elegy-em", -1, attributes.NoStat, func() ([]float64, bool) {
+		return m, true
 	})
 
-	val := make([]float64, core.EndStatType)
-	val[core.ATKP] = .15 + float64(r)*0.05
-	val[core.EM] = 75 + float64(r)*25
+	val := make([]float64, attributes.EndStatType)
+	val[attributes.ATKP] = .15 + float64(r)*0.05
+	val[attributes.EM] = 75 + float64(r)*25
 
 	icd := 0
 	stacks := 0
 	cooldown := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		switch atk.Info.AttackTag {
-		case core.AttackTagElementalArt:
-		case core.AttackTagElementalArtHold:
-		case core.AttackTagElementalBurst:
+		case combat.AttackTagElementalArt:
+		case combat.AttackTagElementalArtHold:
+		case combat.AttackTagElementalBurst:
 		default:
 			return false
 		}
@@ -53,21 +62,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		stacks++
 		if stacks == 4 {
 			stacks = 0
-			c.Status.AddStatus("elegy", 720)
+			c.Status.Add("elegy", 720)
 
 			cooldown = c.F + 1200
-			for _, char := range c.Chars {
-				char.AddMod(core.CharStatMod{
-					Key: "elegy-proc",
-					Amount: func() ([]float64, bool) {
-						return val, true
-					},
-					Expiry: c.F + 720,
+			for _, char := range c.Player.Chars() {
+				char.AddStatMod("elegy-proc", 720, attributes.NoStat, func() ([]float64, bool) {
+					return val, true
 				})
 			}
 		}
 		return false
-	}, fmt.Sprintf("elegy-%v", char.Name()))
+	}, fmt.Sprintf("elegy-%v", char.Base.Name))
 
-	return "elegyfortheend"
+	return w, nil
 }

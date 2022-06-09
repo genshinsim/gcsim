@@ -102,6 +102,7 @@ replace = [
     [r"char\.CharIndex\(\)", "char.Index"],
     [r"c\.ActiveChar", "c.Player.Active()"],
     [r"char\.Name\(\)", "char.Base.Name"],
+    [r"\.Status\.AddStatus\(", ".Status.Add("],
 ]
 
 
