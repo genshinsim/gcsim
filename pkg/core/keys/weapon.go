@@ -38,6 +38,7 @@ var weaponNames = []string{
 	"amenomakageuchi",
 	"amosbow",
 	"apprenticesnotes",
+	"aquasimulacra",
 	"aquilafavonia",
 	"beginnersprotector",
 	"blackcliffagate",
@@ -64,6 +65,7 @@ var weaponNames = []string{
 	"engulfinglightning",
 	"everlastingmoonglow",
 	"eyeofperception",
+	"fadingtwilight",
 	"favoniuscodex",
 	"favoniusgreatsword",
 	"favoniuslance",
@@ -173,6 +175,7 @@ const (
 	AmenomaKageuchi
 	AmosBow
 	ApprenticesNotes
+	AquaSimulacra
 	AquilaFavonia
 	BeginnersProtector
 	BlackcliffAgate
@@ -199,6 +202,7 @@ const (
 	EngulfingLightning
 	EverlastingMoonglow
 	EyeOfPerception
+	FadingTwilight
 	FavoniusCodex
 	FavoniusGreatsword
 	FavoniusLance
