@@ -42,6 +42,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.Base.Element = attributes.Electro
 
 	c.EnergyMax = 90
+	e, ok := p.Params["start_energy"]
+	if !ok {
+		e = 90
+	}
+	c.Energy = float64(e)
 	c.Weapon.Class = weapon.WeaponClassSpear
 	c.BurstCon = 3
 	c.SkillCon = 5
