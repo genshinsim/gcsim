@@ -13,6 +13,10 @@ import (
 func (s *Simulation) initDetailLog() {
 	var sb strings.Builder
 	s.stats.ReactionsTriggered = make(map[combat.ReactionType]int)
+	s.stats.ElementUptime = make([]map[attributes.Element]int, len(s.C.Combat.Targets()))
+	for i := range s.stats.ElementUptime {
+		s.stats.ElementUptime[i] = make(map[attributes.Element]int)
+	}
 	//add new targets
 	s.C.Events.Subscribe(event.OnTargetAdded, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)

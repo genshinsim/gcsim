@@ -52,6 +52,10 @@ func (h *Handler) Target(i int) Target {
 	return h.targets[i]
 }
 
+func (h *Handler) Targets() []Target {
+	return h.targets
+}
+
 func (h *Handler) SetTargetPos(i int, x, y float64) {
 	h.targets[i].SetPos(x, y)
 }

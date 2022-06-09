@@ -79,8 +79,8 @@ func (p *Parser) Parse() (*ActionList, error) {
 		p.res.PlayerPos.R = 1 //player radius 1 by default
 	}
 
-	for i, t := range p.res.Targets {
-		if t.Pos.R == 0 {
+	for i := range p.res.Targets {
+		if p.res.Targets[i].Pos.R == 0 {
 			p.res.Targets[i].Pos.R = 1
 		}
 	}
@@ -126,10 +126,12 @@ func parseRows(p *Parser) (parseFn, error) {
 			panic("expecting ; after active <char> got " + n.Val)
 		}
 		return parseRows, nil
-
 	case keywordTarget:
 		p.next()
 		return parseTarget, nil
+	case keywordOptions:
+		p.next()
+		return parseOptions, nil
 	case itemEOF:
 		return nil, nil
 	default: //default should be look for gcsl

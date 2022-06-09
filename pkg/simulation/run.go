@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
@@ -51,12 +52,23 @@ func (s *Simulation) Run() (Result, error) {
 func (s *Simulation) AdvanceFrame() error {
 	s.C.F++
 	s.C.Tick()
+	s.collectStats()
 	err := s.queueAndExec()
 	if err != nil {
 		return err
 	}
 	// fmt.Printf("Tick - f = %v\n", s.C.F)
 	return nil
+}
+
+func (s *Simulation) collectStats() {
+	//add char active time
+	s.stats.CharActiveTime[s.C.Player.Active()]++
+	for i, v := range s.C.Combat.Targets() {
+		if t, ok := v.(*enemy.Enemy); ok {
+			s.stats.ElementUptime[i][t.AuraType()]++
+		}
+	}
 }
 
 func (s *Simulation) queueAndExec() error {

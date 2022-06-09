@@ -25,7 +25,7 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 	// add targets
 	for i, v := range targets {
 		if v.Pos.R == 0 {
-			return fmt.Errorf("target cannot have 0 radius (index %v)", i)
+			return fmt.Errorf("target cannot have 0 radius (index %v): %v", i, v)
 		}
 		e := enemy.New(core, v)
 		core.Combat.AddTarget(e)

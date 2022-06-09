@@ -22,10 +22,8 @@ type EnemyProfile struct {
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {
-	r := EnemyProfile{
-		Level:  e.Level,
-		Resist: make(map[attributes.Element]float64),
-	}
+	r := *e
+	r.Resist = make(map[attributes.Element]float64)
 	for k, v := range e.Resist {
 		r.Resist[k] = v
 	}

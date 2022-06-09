@@ -46,6 +46,18 @@ type SimulatorSettings struct {
 	//other stuff
 	NumberOfWorkers int // how many workers to run the simulation
 	Iterations      int // how many iterations to run
+	Delays          Delays
+}
+
+type Delays struct {
+	Skill  int
+	Burst  int
+	Attack int
+	Charge int
+	Aim    int
+	Dash   int
+	Jump   int
+	Swap   int
 }
 
 func (c *ActionList) Copy() ActionList {
