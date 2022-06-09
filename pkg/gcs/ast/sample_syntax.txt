@@ -1,0 +1,54 @@
+
+//comments start with // or ##
+
+//built in functions
+//  ready(xingqiu, skill, param) <- xingqiu and skill are actually enums so this is more like ready(0, 1)
+//  cond(".some.tag.here")
+//  f() <- current frame
+
+let x = 1;
+
+let y = fn(a, b) {
+    if a > 0 {
+        xingiu attack
+    } else {
+        ganyu attack
+    }
+}
+
+xingqiu attack; 
+//either interpreter or parser needs to insert swap
+//also IsReady needs to check for if on field? otherwise swap lock won't work?
+bennett attack, burst; //short for exec(bennett, attack), exec(bennett, burst)
+
+if .some.tag.here > 1 { //-> if cond(".some.tag.here") > 1 { //do stuff }
+    xingqiu attack
+}
+
+label A:
+ayaka dash, attack, skill; 
+ganyu aim[weakspot=1]:2;
+ganyu skill;
+
+goto A;
+
+ganyu skill +swap_to=ayaka; //this would just be parsed into ganyu skill; swap ayaka;
+ganyu attack +is_onfield; //this would be parsed into an if statement
+
+
+//wait_for is a big hard; need some kind of internal function here to track for procs/events
+//and then loop that queues wait(1) over and over again with some sort of counter
+//probably need the following 3 built in functions
+//  mods(blah)
+//  particles(source, since)
+//      the since part is prob a bit hard. need to do a let f = f() and then something like
+//      while( f() - f < 100 && mods(blah)) { wait(1) }  <- something like that?
+
+
+
+//swap_lock
+
+//chain could just be a function; or rather the macros are functions and chain just calls a bunch of functions in
+//a nested if stmt
+
+

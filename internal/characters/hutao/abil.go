@@ -8,7 +8,6 @@ import (
 
 func (c *char) Attack(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionAttack, p)
-	hits := len(attack[c.NormalCounter])
 	//check for particles
 	c.ppParticles()
 	ai := core.AttackInfo{
@@ -21,10 +20,9 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Element:    core.Physical,
 		Durability: 25,
 	}
-	for i := 0; i < hits; i++ {
+	for i := range attack[c.NormalCounter] {
 		ai.Mult = attack[c.NormalCounter][i][c.TalentLvlAttack()]
-		finalFrame := dmgFrame[c.NormalCounter][i]
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), finalFrame, finalFrame)
+		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
 	c.AdvanceNormalIndex()
@@ -42,8 +40,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		//trying to change animations mid-attack, but not sure how to fully test that
 		//[4:41 PM] jstern25| ₼WHO_SUPREMACY: this mostly checks out
 		//her e can't expire during q as well
-		if f > c.Core.Status.Duration("paramita") {
-			c.Core.Status.AddStatus("paramita", f)
+		if paramitaChargeHitmark > c.Core.Status.Duration("paramita") {
+			c.Core.Status.AddStatus("paramita", paramitaChargeHitmark)
 			// c.S.Status["paramita"] = c.Core.F + f //extend this to barely cover the burst
 		}
 
@@ -55,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	}
 
 	//check for particles
-	//TODO: assuming charge can generate particles as well
+	//TODO: assuming charge can generate particles as well (is this accurate? needs testing)
 	c.ppParticles()
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -68,7 +66,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), f-5, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.5, false, core.TargettableEnemy), 6, 6)
 
 	return f, a
 }
@@ -81,7 +79,7 @@ func (c *char) ppParticles() {
 			if c.Core.Rand.Float64() < 0.5 {
 				count = 3
 			}
-			c.QueueParticle("Hutao", count, core.Pyro, dmgFrame[c.NormalCounter][0])
+			c.QueueParticle("Hutao", count, core.Pyro, hitmarks[c.NormalCounter][0])
 		}
 	}
 }
@@ -139,8 +137,10 @@ func (c *char) bbtickfunc(src int) func() {
 func (c *char) Skill(p map[string]int) (int, int) {
 	//increase based on hp at cast time
 	//drains hp
-	c.Core.Status.AddStatus("paramita", 540+20) //to account for animation
-	c.Core.Log.NewEvent("Paramita acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+540+20)
+	f, a := c.ActionFrames(core.ActionSkill, p)
+
+	c.Core.Status.AddStatus("paramita", 540+f) //to account for animation
+	c.Core.Log.NewEvent("Paramita acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+540+f)
 	//figure out atk buff
 	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.MaxHP()
 	max := (c.Base.Atk + c.Weapon.Atk) * 4
@@ -156,8 +156,8 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	})
 	c.checkc6()
 
-	c.SetCD(core.ActionSkill, 960)
-	return c.ActionFrames(core.ActionSkill, p)
+	c.SetCDWithDelay(core.ActionSkill, 960, 14)
+	return f, a
 }
 
 func (c *char) ppHook() {
@@ -232,9 +232,9 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 50,
 		Mult:       mult,
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f-5, f-5)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
 
-	c.ConsumeEnergy(73)
-	c.SetCDWithDelay(core.ActionBurst, 900, 73)
+	c.ConsumeEnergy(68)
+	c.SetCDWithDelay(core.ActionBurst, 900, 62)
 	return f, a
 }

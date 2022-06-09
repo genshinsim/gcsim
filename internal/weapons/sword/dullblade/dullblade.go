@@ -1,13 +1,17 @@
 package dullblade
 
 import (
+	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("dullblade", weapon)
+	core.RegisterWeaponFunc(keys.DullBlade, wf)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	return "dullblade"
+func wf(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	return common.NewNoEffect(c, char, p)
 }

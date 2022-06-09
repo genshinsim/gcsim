@@ -39,6 +39,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 func (c *char) Init() {
 	c.Tmpl.Init()
+	c.InitCancelFrames()
 
 	c.skillHoldMult()
 

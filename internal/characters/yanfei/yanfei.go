@@ -113,7 +113,6 @@ func (c *char) a4() {
 			AttackTag:  core.AttackTagExtra,
 			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
-			StrikeType: core.StrikeTypeBlunt,
 			Element:    core.Pyro,
 			Durability: 25,
 			Mult:       0.8,

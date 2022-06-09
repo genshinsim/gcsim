@@ -1,7 +1,7 @@
 package worker
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 )
 
@@ -13,7 +13,7 @@ type Pool struct {
 }
 
 type Job struct {
-	Cfg  core.SimulationConfig
+	Cfg  *ast.ActionList
 	Seed int64
 }
 
@@ -39,7 +39,8 @@ func (p *Pool) worker() {
 	for {
 		select {
 		case job := <-p.QueueCh:
-			c, err := simulation.NewCore(job.Seed, false, job.Cfg.Settings)
+			// fmt.Printf("got job: %s\n", job.Cfg.PrettyPrint())
+			c, err := simulation.NewCore(job.Seed, false, job.Cfg)
 			if err != nil {
 				p.errCh <- err
 				break

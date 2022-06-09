@@ -31,30 +31,17 @@ func (c *char) c1() {
 //active character obtains an Elemental Shard from a Crystallize reaction.
 //This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
-	//TODO: this is currently on reaction but really should be on pick up
-	cb := func(args ...interface{}) bool {
-		dur := c.Core.Status.Duration(generalGloryKey)
-		if dur == 0 {
+	c.Core.Events.Subscribe(core.OnShielded, func(args ...interface{}) bool {
+		if c.Core.Status.Duration(generalGloryKey) <= 0 {
 			return false
 		}
-		if c.c2Extension == 180 {
+		if c.c2Extension >= 3 {
 			return false
 		}
-		//to simulate pickup we add 30 frames delay
-		c.Core.Tasks.Add(func() {
-			ext := 60
-			if c.c2Extension+ext > 180 {
-				ext = 180 - c.c2Extension
-			}
-			c.c2Extension += ext
-			c.Core.Status.AddStatus(generalGloryKey, c.Core.F+dur+ext)
-		}, 30)
+		c.c2Extension++
+		c.Core.Status.AddStatus(generalGloryKey, 60)
 		return false
-	}
-	c.Core.Events.Subscribe(core.OnCrystallizeCryo, cb, "gorou-c2")
-	c.Core.Events.Subscribe(core.OnCrystallizeElectro, cb, "gorou-c2")
-	c.Core.Events.Subscribe(core.OnCrystallizeHydro, cb, "gorou-c2")
-	c.Core.Events.Subscribe(core.OnCrystallizePyro, cb, "gorou-c2")
+	}, "gorou-c2")
 }
 
 func (c *char) c6() {

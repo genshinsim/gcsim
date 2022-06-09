@@ -3,13 +3,15 @@ package blackcliff
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("blackcliffwarbow", weapon)
+	core.RegisterWeaponFunc(keys.BlackcliffWarbow, wf)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	common.Blackcliff(char, c, r, param)
-	return "blackcliffwarbow"
+func wf(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	return common.NewBlackcliff(c, char, p)
 }

@@ -2,20 +2,25 @@ package core
 
 import (
 	"sync"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 var (
 	mu        sync.RWMutex
-	charMap   = make(map[CharKey]NewCharacterFunc)
-	setMap    = make(map[string]NewSetFunc)
-	weaponMap = make(map[string]NewWeaponFunc)
+	charMap   = make(map[keys.Char]NewCharacterFunc)
+	setMap    = make(map[keys.Set]NewSetFunc)
+	weaponMap = make(map[keys.Weapon]NewWeaponFunc)
 )
 
-type NewCharacterFunc func(core *Core, p CharacterProfile) (Character, error)
-type NewSetFunc func(c Character, core *Core, count int, param map[string]int)
-type NewWeaponFunc func(c Character, core *Core, r int, param map[string]int) string
+type NewCharacterFunc func(core *Core, char *character.CharWrapper, p character.CharacterProfile) error
+type NewSetFunc func(core *Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error)
+type NewWeaponFunc func(core *Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error)
 
-func RegisterCharFunc(char CharKey, f NewCharacterFunc) {
+func RegisterCharFunc(char keys.Char, f NewCharacterFunc) {
 	mu.Lock()
 	defer mu.Unlock()
 	if _, dup := charMap[char]; dup {
@@ -24,20 +29,20 @@ func RegisterCharFunc(char CharKey, f NewCharacterFunc) {
 	charMap[char] = f
 }
 
-func RegisterSetFunc(name string, f NewSetFunc) {
+func RegisterSetFunc(set keys.Set, f NewSetFunc) {
 	mu.Lock()
 	defer mu.Unlock()
-	if _, dup := setMap[name]; dup {
-		panic("combat: RegisterSetBonus called twice for character " + name)
+	if _, dup := setMap[set]; dup {
+		panic("combat: RegisterSetBonus called twice for character " + set.String())
 	}
-	setMap[name] = f
+	setMap[set] = f
 }
 
-func RegisterWeaponFunc(name string, f NewWeaponFunc) {
+func RegisterWeaponFunc(weap keys.Weapon, f NewWeaponFunc) {
 	mu.Lock()
 	defer mu.Unlock()
-	if _, dup := weaponMap[name]; dup {
-		panic("combat: RegisterWeapon called twice for character " + name)
+	if _, dup := weaponMap[weap]; dup {
+		panic("combat: RegisterWeapon called twice for character " + weap.String())
 	}
-	weaponMap[name] = f
+	weaponMap[weap] = f
 }
