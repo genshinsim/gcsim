@@ -1,23 +1,36 @@
-package generic
+package compound
 
 import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("compoundbow", weapon)
-	core.RegisterWeaponFunc("compound-bow", weapon)
-	core.RegisterWeaponFunc("compound", weapon)
+	core.RegisterWeaponFunc(keys.CompoundBow, NewWeapon)
 }
 
 /*
 * Normal Attack and Charged Attack hits increase ATK by 4/5/6/7/8% and Normal ATK SPD by
 * 1.2/1.5/1.8/2.1/2.4% for 6s. Max 4 stacks. Can only occur once every 0.3s.
  */
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	m := make([]float64, core.EndStatType)
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	m := make([]float64, attributes.EndStatType)
 
 	incAtk := .03 + float64(r)*0.01
 	incSpd := 0.009 + float64(r)*0.003
@@ -30,21 +43,21 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	cd := 18 // frames = 0.3s * 60fps
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
 
 		// Attack belongs to the equipped character
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 
 		// Active character has weapon equipped
-		if c.ActiveChar != char.CharIndex() {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 
 		// Only apply on normal or charged attacks
-		if (atk.Info.AttackTag != core.AttackTagNormal) && (atk.Info.AttackTag != core.AttackTagExtra) {
+		if (atk.Info.AttackTag != combat.AttackTagNormal) && (atk.Info.AttackTag != combat.AttackTagExtra) {
 			return false
 		}
 
@@ -68,23 +81,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		icd = c.F + cd
 		stackExpiry = c.F + stackDuration
 
-		char.AddMod(core.CharStatMod{
-			Key: "compoundbow",
-			Amount: func() ([]float64, bool) {
-				// Reset stacks if they've expired
-				if c.F > stackExpiry {
-					stacks = 0
-				}
+		char.AddStatMod("compoundbow", stackExpiry, attributes.NoStat, func() ([]float64, bool) {
+			// Reset stacks if they've expired
+			if c.F > stackExpiry {
+				stacks = 0
+			}
 
-				m[core.ATKP] = incAtk * float64(stacks)
-				m[core.AtkSpd] = incSpd * float64(stacks)
-				return m, true
-			},
-			Expiry: stackExpiry,
+			m[attributes.ATKP] = incAtk * float64(stacks)
+			m[attributes.AtkSpd] = incSpd * float64(stacks)
+			return m, true
 		})
 
 		return false
-	}, fmt.Sprintf("compoundbow-%v", char.Name()))
+	}, fmt.Sprintf("compoundbow-%v", char.Base.Name))
 
-	return "compoundbow"
+	return w, nil
 }

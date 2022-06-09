@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"regexp"
 	"strings"
@@ -31,6 +33,19 @@ type data struct {
 }
 
 func main() {
+	//https://raw.githubusercontent.com/theBowja/genshin-db/main/src/data/stats/weapons.json -> weapons.json
+	//https://raw.githubusercontent.com/theBowja/genshin-db/main/src/data/index/English/weapons.json -> weapons_names.json
+	os.Remove("./weapons.json")
+	err := download("./weapons.json", "https://raw.githubusercontent.com/theBowja/genshin-db/main/src/data/stats/weapons.json")
+	if err != nil {
+		panic(err)
+	}
+	os.Remove("./weapons_names.json")
+	err = download("./weapons_names.json", "https://raw.githubusercontent.com/theBowja/genshin-db/main/src/data/index/English/weapons.json")
+	if err != nil {
+		panic(err)
+	}
+
 	names := readNameMap()
 
 	f, err := os.ReadFile("./weapons.json")
@@ -56,6 +71,27 @@ func main() {
 	writeTmpl(tmpl, "./weap.txt", d)
 	writeTmpl(tmplKeys, "./keys.txt", d)
 	writeTmpl(tmplShortcuts, "./shortcuts.txt", d)
+}
+
+func download(filepath string, url string) error {
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
 
 func writeTmpl(tmplStr string, outFile string, d map[string]data) {

@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/player"
 )
 
 func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProfile) error {
@@ -19,7 +19,7 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 	if p.R == 0 {
 		return errors.New("player cannot have 0 radius")
 	}
-	player := player.New(core, p.X, p.Y, p.R)
+	player := avatar.New(core, p.X, p.Y, p.R)
 	core.Combat.AddTarget(player)
 
 	// add targets
