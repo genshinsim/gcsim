@@ -106,6 +106,6 @@ type NoEffect struct {
 
 func (b *NoEffect) SetIndex(idx int) { b.Index = idx }
 func (b *NoEffect) Init() error      { return nil }
-func NewNoEffect(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (*NoEffect, error) {
+func NewNoEffect(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	return &NoEffect{}, nil
 }
