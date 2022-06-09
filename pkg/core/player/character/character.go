@@ -103,6 +103,7 @@ func New(
 		Talents:             p.Talents,
 		log:                 log,
 		events:              events,
+		tasks:               task,
 		Tags:                make(map[string]int),
 		statsMod:            make([]*statMod, 0, 10),
 		attackMods:          make([]*attackMod, 0, 10),

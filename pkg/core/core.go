@@ -137,6 +137,16 @@ func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 	}
 	index := c.Player.AddChar(char)
 
+	// set the energy
+	char.Energy = char.EnergyMax
+	if e, ok := p.Params["start_energy"]; ok {
+		char.Energy = float64(e)
+		//some sanity check in case user decide to set energy = 10000000
+		if char.Energy > char.EnergyMax {
+			char.Energy = char.EnergyMax
+		}
+	}
+
 	// initialize weapon
 	wf, ok := weaponMap[p.Weapon.Key]
 	if !ok {
