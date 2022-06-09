@@ -58,6 +58,11 @@ func (q *Queuer) Next() ([]core.Command, bool, error) {
 
 		switch v.Type {
 		case core.ActionBlockTypeCalcRestart:
+			q.core.Log.NewEvent(
+				"restarting queue",
+				core.LogQueueEvent,
+				-1,
+			)
 			q.ind = 0
 			return nil, false, nil
 		case core.ActionBlockTypeCalcWait:
