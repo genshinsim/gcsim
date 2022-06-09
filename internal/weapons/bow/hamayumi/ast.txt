@@ -1,0 +1,851 @@
+(*ast.File)(0xc00012c180)({
+ Doc: (*ast.CommentGroup)(<nil>),
+ Package: (token.Pos) 1,
+ Name: (*ast.Ident)(0xc000066180)(hamayumi),
+ Decls: ([]ast.Decl) (len=6 cap=8) {
+  (*ast.GenDecl)(0xc00010a1c0)({
+   Doc: (*ast.CommentGroup)(<nil>),
+   TokPos: (token.Pos) 19,
+   Tok: (token.Token) import,
+   Lparen: (token.Pos) 26,
+   Specs: ([]ast.Spec) (len=1 cap=1) {
+    (*ast.ImportSpec)(0xc00007c6f0)({
+     Doc: (*ast.CommentGroup)(<nil>),
+     Name: (*ast.Ident)(<nil>),
+     Path: (*ast.BasicLit)(0xc0000661a0)({
+      ValuePos: (token.Pos) 29,
+      Kind: (token.Token) STRING,
+      Value: (string) (len=38) "\"github.com/genshinsim/gcsim/pkg/core\""
+     }),
+     Comment: (*ast.CommentGroup)(<nil>),
+     EndPos: (token.Pos) 0
+    })
+   },
+   Rparen: (token.Pos) 68
+  }),
+  (*ast.FuncDecl)(0xc00007c780)({
+   Doc: (*ast.CommentGroup)(<nil>),
+   Recv: (*ast.FieldList)(<nil>),
+   Name: (*ast.Ident)(0xc0000661c0)(init),
+   Type: (*ast.FuncType)(0xc000066280)({
+    Func: (token.Pos) 71,
+    TypeParams: (*ast.FieldList)(<nil>),
+    Params: (*ast.FieldList)(0xc00007c720)({
+     Opening: (token.Pos) 80,
+     List: ([]*ast.Field) <nil>,
+     Closing: (token.Pos) 81
+    }),
+    Results: (*ast.FieldList)(<nil>)
+   }),
+   Body: (*ast.BlockStmt)(0xc00007c750)({
+    Lbrace: (token.Pos) 83,
+    List: ([]ast.Stmt) (len=1 cap=1) {
+     (*ast.ExprStmt)(0xc000010490)({
+      X: (*ast.CallExpr)(0xc00010a200)({
+       Fun: (*ast.SelectorExpr)(0xc00000c108)({
+        X: (*ast.Ident)(0xc0000661e0)(core),
+        Sel: (*ast.Ident)(0xc000066200)(RegisterWeaponFunc)
+       }),
+       Lparen: (token.Pos) 109,
+       Args: ([]ast.Expr) (len=2 cap=2) {
+        (*ast.BasicLit)(0xc000066220)({
+         ValuePos: (token.Pos) 110,
+         Kind: (token.Token) STRING,
+         Value: (string) (len=10) "\"hamayumi\""
+        }),
+        (*ast.Ident)(0xc000066240)(weapon)
+       },
+       Ellipsis: (token.Pos) 0,
+       Rparen: (token.Pos) 128
+      })
+     })
+    },
+    Rbrace: (token.Pos) 130
+   })
+  }),
+  (*ast.GenDecl)(0xc00010a2c0)({
+   Doc: (*ast.CommentGroup)(<nil>),
+   TokPos: (token.Pos) 133,
+   Tok: (token.Token) type,
+   Lparen: (token.Pos) 0,
+   Specs: ([]ast.Spec) (len=1 cap=1) {
+    (*ast.TypeSpec)(0xc00010a240)({
+     Doc: (*ast.CommentGroup)(<nil>),
+     Name: (*ast.Ident)(0xc0000662c0)(Weapon),
+     TypeParams: (*ast.FieldList)(<nil>),
+     Assign: (token.Pos) 0,
+     Type: (*ast.StructType)(0xc00000c120)({
+      Struct: (token.Pos) 145,
+      Fields: (*ast.FieldList)(0xc00007c7b0)({
+       Opening: (token.Pos) 152,
+       List: ([]*ast.Field) (len=1 cap=1) {
+        (*ast.Field)(0xc00010a280)({
+         Doc: (*ast.CommentGroup)(<nil>),
+         Names: ([]*ast.Ident) (len=1 cap=1) {
+          (*ast.Ident)(0xc0000662e0)(Index)
+         },
+         Type: (*ast.Ident)(0xc000066300)(int),
+         Tag: (*ast.BasicLit)(<nil>),
+         Comment: (*ast.CommentGroup)(<nil>)
+        })
+       },
+       Closing: (token.Pos) 164
+      }),
+      Incomplete: (bool) false
+     }),
+     Comment: (*ast.CommentGroup)(<nil>)
+    })
+   },
+   Rparen: (token.Pos) 0
+  }),
+  (*ast.FuncDecl)(0xc00007c870)({
+   Doc: (*ast.CommentGroup)(<nil>),
+   Recv: (*ast.FieldList)(0xc00007c7e0)({
+    Opening: (token.Pos) 171,
+    List: ([]*ast.Field) (len=1 cap=1) {
+     (*ast.Field)(0xc00010a340)({
+      Doc: (*ast.CommentGroup)(<nil>),
+      Names: ([]*ast.Ident) (len=1 cap=1) {
+       (*ast.Ident)(0xc000066320)(w)
+      },
+      Type: (*ast.StarExpr)(0xc00000c138)({
+       Star: (token.Pos) 174,
+       X: (*ast.Ident)(0xc000066340)(Weapon)
+      }),
+      Tag: (*ast.BasicLit)(<nil>),
+      Comment: (*ast.CommentGroup)(<nil>)
+     })
+    },
+    Closing: (token.Pos) 182
+   }),
+   Name: (*ast.Ident)(0xc000066360)(SetIndex),
+   Type: (*ast.FuncType)(0xc000066420)({
+    Func: (token.Pos) 166,
+    TypeParams: (*ast.FieldList)(<nil>),
+    Params: (*ast.FieldList)(0xc00007c810)({
+     Opening: (token.Pos) 192,
+     List: ([]*ast.Field) (len=1 cap=1) {
+      (*ast.Field)(0xc00010a380)({
+       Doc: (*ast.CommentGroup)(<nil>),
+       Names: ([]*ast.Ident) (len=1 cap=1) {
+        (*ast.Ident)(0xc000066380)(idx)
+       },
+       Type: (*ast.Ident)(0xc0000663a0)(int),
+       Tag: (*ast.BasicLit)(<nil>),
+       Comment: (*ast.CommentGroup)(<nil>)
+      })
+     },
+     Closing: (token.Pos) 200
+    }),
+    Results: (*ast.FieldList)(<nil>)
+   }),
+   Body: (*ast.BlockStmt)(0xc00007c840)({
+    Lbrace: (token.Pos) 202,
+    List: ([]ast.Stmt) (len=1 cap=1) {
+     (*ast.AssignStmt)(0xc00010a3c0)({
+      Lhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.SelectorExpr)(0xc00000c180)({
+        X: (*ast.Ident)(0xc0000663c0)(w),
+        Sel: (*ast.Ident)(0xc0000663e0)(Index)
+       })
+      },
+      TokPos: (token.Pos) 211,
+      Tok: (token.Token) =,
+      Rhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.Ident)(0xc000066400)(idx)
+      }
+     })
+    },
+    Rbrace: (token.Pos) 216
+   })
+  }),
+  (*ast.FuncDecl)(0xc00007c960)({
+   Doc: (*ast.CommentGroup)(<nil>),
+   Recv: (*ast.FieldList)(0xc00007c8a0)({
+    Opening: (token.Pos) 222,
+    List: ([]*ast.Field) (len=1 cap=1) {
+     (*ast.Field)(0xc00010a400)({
+      Doc: (*ast.CommentGroup)(<nil>),
+      Names: ([]*ast.Ident) (len=1 cap=1) {
+       (*ast.Ident)(0xc000066440)(w)
+      },
+      Type: (*ast.StarExpr)(0xc00000c198)({
+       Star: (token.Pos) 225,
+       X: (*ast.Ident)(0xc000066460)(Weapon)
+      }),
+      Tag: (*ast.BasicLit)(<nil>),
+      Comment: (*ast.CommentGroup)(<nil>)
+     })
+    },
+    Closing: (token.Pos) 233
+   }),
+   Name: (*ast.Ident)(0xc000066480)(Init),
+   Type: (*ast.FuncType)(0xc000066500)({
+    Func: (token.Pos) 218,
+    TypeParams: (*ast.FieldList)(<nil>),
+    Params: (*ast.FieldList)(0xc00007c8d0)({
+     Opening: (token.Pos) 239,
+     List: ([]*ast.Field) <nil>,
+     Closing: (token.Pos) 240
+    }),
+    Results: (*ast.FieldList)(0xc00007c900)({
+     Opening: (token.Pos) 0,
+     List: ([]*ast.Field) (len=1 cap=1) {
+      (*ast.Field)(0xc00010a440)({
+       Doc: (*ast.CommentGroup)(<nil>),
+       Names: ([]*ast.Ident) <nil>,
+       Type: (*ast.Ident)(0xc0000664a0)(error),
+       Tag: (*ast.BasicLit)(<nil>),
+       Comment: (*ast.CommentGroup)(<nil>)
+      })
+     },
+     Closing: (token.Pos) 0
+    })
+   }),
+   Body: (*ast.BlockStmt)(0xc00007c930)({
+    Lbrace: (token.Pos) 253,
+    List: ([]ast.Stmt) (len=1 cap=1) {
+     (*ast.ReturnStmt)(0xc0000664e0)({
+      Return: (token.Pos) 254,
+      Results: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.Ident)(0xc0000664c0)(nil)
+      }
+     })
+    },
+    Rbrace: (token.Pos) 264
+   })
+  }),
+  (*ast.FuncDecl)(0xc00007cfc0)({
+   Doc: (*ast.CommentGroup)(<nil>),
+   Recv: (*ast.FieldList)(<nil>),
+   Name: (*ast.Ident)(0xc000066520)(NewWeapon),
+   Type: (*ast.FuncType)(0xc0000672e0)({
+    Func: (token.Pos) 266,
+    TypeParams: (*ast.FieldList)(<nil>),
+    Params: (*ast.FieldList)(0xc00007c9c0)({
+     Opening: (token.Pos) 280,
+     List: ([]*ast.Field) (len=3 cap=4) {
+      (*ast.Field)(0xc00010a480)({
+       Doc: (*ast.CommentGroup)(<nil>),
+       Names: ([]*ast.Ident) (len=1 cap=1) {
+        (*ast.Ident)(0xc000066540)(c)
+       },
+       Type: (*ast.StarExpr)(0xc00000c1e0)({
+        Star: (token.Pos) 283,
+        X: (*ast.SelectorExpr)(0xc00000c1c8)({
+         X: (*ast.Ident)(0xc000066560)(core),
+         Sel: (*ast.Ident)(0xc000066580)(Core)
+        })
+       }),
+       Tag: (*ast.BasicLit)(<nil>),
+       Comment: (*ast.CommentGroup)(<nil>)
+      }),
+      (*ast.Field)(0xc00010a4c0)({
+       Doc: (*ast.CommentGroup)(<nil>),
+       Names: ([]*ast.Ident) (len=1 cap=1) {
+        (*ast.Ident)(0xc0000665a0)(char)
+       },
+       Type: (*ast.StarExpr)(0xc00000c228)({
+        Star: (token.Pos) 301,
+        X: (*ast.SelectorExpr)(0xc00000c210)({
+         X: (*ast.Ident)(0xc0000665c0)(character),
+         Sel: (*ast.Ident)(0xc0000665e0)(CharWrapper)
+        })
+       }),
+       Tag: (*ast.BasicLit)(<nil>),
+       Comment: (*ast.CommentGroup)(<nil>)
+      }),
+      (*ast.Field)(0xc00010a500)({
+       Doc: (*ast.CommentGroup)(<nil>),
+       Names: ([]*ast.Ident) (len=1 cap=1) {
+        (*ast.Ident)(0xc000066600)(p)
+       },
+       Type: (*ast.SelectorExpr)(0xc00000c240)({
+        X: (*ast.Ident)(0xc000066620)(weapon),
+        Sel: (*ast.Ident)(0xc000066640)(WeaponProfile)
+       }),
+       Tag: (*ast.BasicLit)(<nil>),
+       Comment: (*ast.CommentGroup)(<nil>)
+      })
+     },
+     Closing: (token.Pos) 348
+    }),
+    Results: (*ast.FieldList)(0xc00007ca20)({
+     Opening: (token.Pos) 349,
+     List: ([]*ast.Field) (len=2 cap=2) {
+      (*ast.Field)(0xc00010a540)({
+       Doc: (*ast.CommentGroup)(<nil>),
+       Names: ([]*ast.Ident) <nil>,
+       Type: (*ast.SelectorExpr)(0xc00000c258)({
+        X: (*ast.Ident)(0xc000066680)(weapon),
+        Sel: (*ast.Ident)(0xc0000666a0)(Weapon)
+       }),
+       Tag: (*ast.BasicLit)(<nil>),
+       Comment: (*ast.CommentGroup)(<nil>)
+      }),
+      (*ast.Field)(0xc00010a580)({
+       Doc: (*ast.CommentGroup)(<nil>),
+       Names: ([]*ast.Ident) <nil>,
+       Type: (*ast.Ident)(0xc0000666c0)(error),
+       Tag: (*ast.BasicLit)(<nil>),
+       Comment: (*ast.CommentGroup)(<nil>)
+      })
+     },
+     Closing: (token.Pos) 370
+    })
+   }),
+   Body: (*ast.BlockStmt)(0xc00007cf90)({
+    Lbrace: (token.Pos) 372,
+    List: ([]ast.Stmt) (len=6 cap=8) {
+     (*ast.AssignStmt)(0xc00010a600)({
+      Lhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.Ident)(0xc0000666e0)(w)
+      },
+      TokPos: (token.Pos) 376,
+      Tok: (token.Token) :=,
+      Rhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.UnaryExpr)(0xc000066720)({
+        OpPos: (token.Pos) 379,
+        Op: (token.Token) &,
+        X: (*ast.CompositeLit)(0xc00010a5c0)({
+         Type: (*ast.Ident)(0xc000066700)(Weapon),
+         Lbrace: (token.Pos) 386,
+         Elts: ([]ast.Expr) <nil>,
+         Rbrace: (token.Pos) 387,
+         Incomplete: (bool) false
+        })
+       })
+      }
+     }),
+     (*ast.AssignStmt)(0xc00010a640)({
+      Lhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.Ident)(0xc000066740)(r)
+      },
+      TokPos: (token.Pos) 391,
+      Tok: (token.Token) :=,
+      Rhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.SelectorExpr)(0xc00000c288)({
+        X: (*ast.Ident)(0xc000066760)(p),
+        Sel: (*ast.Ident)(0xc000066780)(Refine)
+       })
+      }
+     }),
+     (*ast.AssignStmt)(0xc00010a6c0)({
+      Lhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.Ident)(0xc0000667c0)(nm)
+      },
+      TokPos: (token.Pos) 409,
+      Tok: (token.Token) :=,
+      Rhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.BinaryExpr)(0xc00007ca80)({
+        X: (*ast.BasicLit)(0xc0000667e0)({
+         ValuePos: (token.Pos) 412,
+         Kind: (token.Token) FLOAT,
+         Value: (string) (len=3) ".12"
+        }),
+        OpPos: (token.Pos) 416,
+        Op: (token.Token) +,
+        Y: (*ast.BinaryExpr)(0xc00007ca50)({
+         X: (*ast.BasicLit)(0xc000066800)({
+          ValuePos: (token.Pos) 418,
+          Kind: (token.Token) FLOAT,
+          Value: (string) (len=3) ".04"
+         }),
+         OpPos: (token.Pos) 421,
+         Op: (token.Token) *,
+         Y: (*ast.CallExpr)(0xc00010a680)({
+          Fun: (*ast.Ident)(0xc000066820)(float64),
+          Lparen: (token.Pos) 429,
+          Args: ([]ast.Expr) (len=1 cap=1) {
+           (*ast.Ident)(0xc000066840)(r)
+          },
+          Ellipsis: (token.Pos) 0,
+          Rparen: (token.Pos) 431
+         })
+        })
+       })
+      }
+     }),
+     (*ast.AssignStmt)(0xc00010a780)({
+      Lhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.Ident)(0xc000066860)(ca)
+      },
+      TokPos: (token.Pos) 437,
+      Tok: (token.Token) :=,
+      Rhs: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.BinaryExpr)(0xc00007cae0)({
+        X: (*ast.BasicLit)(0xc000066880)({
+         ValuePos: (token.Pos) 440,
+         Kind: (token.Token) FLOAT,
+         Value: (string) (len=3) ".09"
+        }),
+        OpPos: (token.Pos) 444,
+        Op: (token.Token) +,
+        Y: (*ast.BinaryExpr)(0xc00007cab0)({
+         X: (*ast.BasicLit)(0xc0000668a0)({
+          ValuePos: (token.Pos) 446,
+          Kind: (token.Token) FLOAT,
+          Value: (string) (len=3) ".03"
+         }),
+         OpPos: (token.Pos) 449,
+         Op: (token.Token) *,
+         Y: (*ast.CallExpr)(0xc00010a740)({
+          Fun: (*ast.Ident)(0xc0000668c0)(float64),
+          Lparen: (token.Pos) 457,
+          Args: ([]ast.Expr) (len=1 cap=1) {
+           (*ast.Ident)(0xc0000668e0)(r)
+          },
+          Ellipsis: (token.Pos) 0,
+          Rparen: (token.Pos) 459
+         })
+        })
+       })
+      }
+     }),
+     (*ast.ExprStmt)(0xc0000107f0)({
+      X: (*ast.CallExpr)(0xc00010ad80)({
+       Fun: (*ast.SelectorExpr)(0xc00000c2a0)({
+        X: (*ast.Ident)(0xc000066900)(char),
+        Sel: (*ast.Ident)(0xc000066920)(AddPreDamageMod)
+       }),
+       Lparen: (token.Pos) 483,
+       Args: ([]ast.Expr) (len=1 cap=1) {
+        (*ast.CompositeLit)(0xc00010ad40)({
+         Type: (*ast.SelectorExpr)(0xc00000c2b8)({
+          X: (*ast.Ident)(0xc000066940)(core),
+          Sel: (*ast.Ident)(0xc000066960)(PreDamageMod)
+         }),
+         Lbrace: (token.Pos) 501,
+         Elts: ([]ast.Expr) (len=3 cap=4) {
+          (*ast.KeyValueExpr)(0xc00007cb10)({
+           Key: (*ast.Ident)(0xc000066980)(Key),
+           Colon: (token.Pos) 508,
+           Value: (*ast.BasicLit)(0xc0000669a0)({
+            ValuePos: (token.Pos) 513,
+            Kind: (token.Token) STRING,
+            Value: (string) (len=10) "\"hamayumi\""
+           })
+          }),
+          (*ast.KeyValueExpr)(0xc00007cb40)({
+           Key: (*ast.Ident)(0xc0000669c0)(Expiry),
+           Colon: (token.Pos) 533,
+           Value: (*ast.UnaryExpr)(0xc000066a00)({
+            OpPos: (token.Pos) 535,
+            Op: (token.Token) -,
+            X: (*ast.BasicLit)(0xc0000669e0)({
+             ValuePos: (token.Pos) 536,
+             Kind: (token.Token) INT,
+             Value: (string) (len=1) "1"
+            })
+           })
+          }),
+          (*ast.KeyValueExpr)(0xc00007cf60)({
+           Key: (*ast.Ident)(0xc000066a40)(Amount),
+           Colon: (token.Pos) 547,
+           Value: (*ast.FuncLit)(0xc0000107c0)({
+            Type: (*ast.FuncType)(0xc000066b60)({
+             Func: (token.Pos) 549,
+             TypeParams: (*ast.FieldList)(<nil>),
+             Params: (*ast.FieldList)(0xc00007cba0)({
+              Opening: (token.Pos) 553,
+              List: ([]*ast.Field) (len=2 cap=2) {
+               (*ast.Field)(0xc00010a7c0)({
+                Doc: (*ast.CommentGroup)(<nil>),
+                Names: ([]*ast.Ident) (len=1 cap=1) {
+                 (*ast.Ident)(0xc000066a60)(atk)
+                },
+                Type: (*ast.StarExpr)(0xc00000c2e8)({
+                 Star: (token.Pos) 558,
+                 X: (*ast.SelectorExpr)(0xc00000c2d0)({
+                  X: (*ast.Ident)(0xc000066a80)(combat),
+                  Sel: (*ast.Ident)(0xc000066aa0)(AttackEvent)
+                 })
+                }),
+                Tag: (*ast.BasicLit)(<nil>),
+                Comment: (*ast.CommentGroup)(<nil>)
+               }),
+               (*ast.Field)(0xc00010a800)({
+                Doc: (*ast.CommentGroup)(<nil>),
+                Names: ([]*ast.Ident) (len=1 cap=1) {
+                 (*ast.Ident)(0xc000066ac0)(t)
+                },
+                Type: (*ast.SelectorExpr)(0xc00000c318)({
+                 X: (*ast.Ident)(0xc000066ae0)(combat),
+                 Sel: (*ast.Ident)(0xc000066b00)(Target)
+                }),
+                Tag: (*ast.BasicLit)(<nil>),
+                Comment: (*ast.CommentGroup)(<nil>)
+               })
+              },
+              Closing: (token.Pos) 594
+             }),
+             Results: (*ast.FieldList)(0xc00007cc30)({
+              Opening: (token.Pos) 596,
+              List: ([]*ast.Field) (len=2 cap=2) {
+               (*ast.Field)(0xc00010a840)({
+                Doc: (*ast.CommentGroup)(<nil>),
+                Names: ([]*ast.Ident) <nil>,
+                Type: (*ast.ArrayType)(0xc00007cbd0)({
+                 Lbrack: (token.Pos) 597,
+                 Len: (ast.Expr) <nil>,
+                 Elt: (*ast.Ident)(0xc000066b20)(float64)
+                }),
+                Tag: (*ast.BasicLit)(<nil>),
+                Comment: (*ast.CommentGroup)(<nil>)
+               }),
+               (*ast.Field)(0xc00010a880)({
+                Doc: (*ast.CommentGroup)(<nil>),
+                Names: ([]*ast.Ident) <nil>,
+                Type: (*ast.Ident)(0xc000066b40)(bool),
+                Tag: (*ast.BasicLit)(<nil>),
+                Comment: (*ast.CommentGroup)(<nil>)
+               })
+              },
+              Closing: (token.Pos) 612
+             })
+            }),
+            Body: (*ast.BlockStmt)(0xc00007cf30)({
+             Lbrace: (token.Pos) 614,
+             List: ([]ast.Stmt) (len=4 cap=4) {
+              (*ast.AssignStmt)(0xc00010a900)({
+               Lhs: ([]ast.Expr) (len=1 cap=1) {
+                (*ast.Ident)(0xc000066b80)(val)
+               },
+               TokPos: (token.Pos) 623,
+               Tok: (token.Token) :=,
+               Rhs: ([]ast.Expr) (len=1 cap=1) {
+                (*ast.CallExpr)(0xc00010a8c0)({
+                 Fun: (*ast.Ident)(0xc000066ba0)(make),
+                 Lparen: (token.Pos) 630,
+                 Args: ([]ast.Expr) (len=2 cap=2) {
+                  (*ast.ArrayType)(0xc00007cc60)({
+                   Lbrack: (token.Pos) 631,
+                   Len: (ast.Expr) <nil>,
+                   Elt: (*ast.Ident)(0xc000066bc0)(float64)
+                  }),
+                  (*ast.SelectorExpr)(0xc00000c348)({
+                   X: (*ast.Ident)(0xc000066be0)(attributes),
+                   Sel: (*ast.Ident)(0xc000066c00)(EndStatType)
+                  })
+                 },
+                 Ellipsis: (token.Pos) 0,
+                 Rparen: (token.Pos) 664
+                })
+               }
+              }),
+              (*ast.IfStmt)(0xc00010aac0)({
+               If: (token.Pos) 669,
+               Init: (ast.Stmt) <nil>,
+               Cond: (*ast.BinaryExpr)(0xc00007cc90)({
+                X: (*ast.SelectorExpr)(0xc00000c378)({
+                 X: (*ast.SelectorExpr)(0xc00000c360)({
+                  X: (*ast.Ident)(0xc000066c40)(atk),
+                  Sel: (*ast.Ident)(0xc000066c60)(Info)
+                 }),
+                 Sel: (*ast.Ident)(0xc000066c80)(AttackTag)
+                }),
+                OpPos: (token.Pos) 691,
+                Op: (token.Token) ==,
+                Y: (*ast.SelectorExpr)(0xc00000c390)({
+                 X: (*ast.Ident)(0xc000066ca0)(combat),
+                 Sel: (*ast.Ident)(0xc000066cc0)(AttackTagNormal)
+                })
+               }),
+               Body: (*ast.BlockStmt)(0xc00007cdb0)({
+                Lbrace: (token.Pos) 717,
+                List: ([]ast.Stmt) (len=3 cap=4) {
+                 (*ast.AssignStmt)(0xc00010a940)({
+                  Lhs: ([]ast.Expr) (len=1 cap=1) {
+                   (*ast.IndexExpr)(0xc00007ccc0)({
+                    X: (*ast.Ident)(0xc000066ce0)(val),
+                    Lbrack: (token.Pos) 726,
+                    Index: (*ast.SelectorExpr)(0xc00000c3a8)({
+                     X: (*ast.Ident)(0xc000066d00)(attributes),
+                     Sel: (*ast.Ident)(0xc000066d20)(DmgP)
+                    }),
+                    Rbrack: (token.Pos) 742
+                   })
+                  },
+                  TokPos: (token.Pos) 744,
+                  Tok: (token.Token) =,
+                  Rhs: ([]ast.Expr) (len=1 cap=1) {
+                   (*ast.Ident)(0xc000066d40)(nm)
+                  }
+                 }),
+                 (*ast.IfStmt)(0xc00010aa40)({
+                  If: (token.Pos) 753,
+                  Init: (ast.Stmt) <nil>,
+                  Cond: (*ast.BinaryExpr)(0xc00007ccf0)({
+                   X: (*ast.CallExpr)(0xc00010a980)({
+                    Fun: (*ast.SelectorExpr)(0xc00000c3c0)({
+                     X: (*ast.Ident)(0xc000066d60)(char),
+                     Sel: (*ast.Ident)(0xc000066d80)(CurrentEnergy)
+                    }),
+                    Lparen: (token.Pos) 774,
+                    Args: ([]ast.Expr) <nil>,
+                    Ellipsis: (token.Pos) 0,
+                    Rparen: (token.Pos) 775
+                   }),
+                   OpPos: (token.Pos) 777,
+                   Op: (token.Token) ==,
+                   Y: (*ast.CallExpr)(0xc00010a9c0)({
+                    Fun: (*ast.SelectorExpr)(0xc00000c3d8)({
+                     X: (*ast.Ident)(0xc000066da0)(char),
+                     Sel: (*ast.Ident)(0xc000066dc0)(MaxEnergy)
+                    }),
+                    Lparen: (token.Pos) 794,
+                    Args: ([]ast.Expr) <nil>,
+                    Ellipsis: (token.Pos) 0,
+                    Rparen: (token.Pos) 795
+                   })
+                  }),
+                  Body: (*ast.BlockStmt)(0xc00007cd80)({
+                   Lbrace: (token.Pos) 797,
+                   List: ([]ast.Stmt) (len=1 cap=1) {
+                    (*ast.AssignStmt)(0xc00010aa00)({
+                     Lhs: ([]ast.Expr) (len=1 cap=1) {
+                      (*ast.IndexExpr)(0xc00007cd20)({
+                       X: (*ast.Ident)(0xc000066de0)(val),
+                       Lbrack: (token.Pos) 807,
+                       Index: (*ast.SelectorExpr)(0xc00000c3f0)({
+                        X: (*ast.Ident)(0xc000066e00)(attributes),
+                        Sel: (*ast.Ident)(0xc000066e20)(DmgP)
+                       }),
+                       Rbrack: (token.Pos) 823
+                      })
+                     },
+                     TokPos: (token.Pos) 825,
+                     Tok: (token.Token) =,
+                     Rhs: ([]ast.Expr) (len=1 cap=1) {
+                      (*ast.BinaryExpr)(0xc00007cd50)({
+                       X: (*ast.Ident)(0xc000066e40)(nm),
+                       OpPos: (token.Pos) 830,
+                       Op: (token.Token) *,
+                       Y: (*ast.BasicLit)(0xc000066e60)({
+                        ValuePos: (token.Pos) 832,
+                        Kind: (token.Token) INT,
+                        Value: (string) (len=1) "2"
+                       })
+                      })
+                     }
+                    })
+                   },
+                   Rbrace: (token.Pos) 838
+                  }),
+                  Else: (ast.Stmt) <nil>
+                 }),
+                 (*ast.ReturnStmt)(0xc000066f00)({
+                  Return: (token.Pos) 844,
+                  Results: ([]ast.Expr) (len=2 cap=2) {
+                   (*ast.Ident)(0xc000066ea0)(val),
+                   (*ast.Ident)(0xc000066ec0)(true)
+                  }
+                 })
+                },
+                Rbrace: (token.Pos) 864
+               }),
+               Else: (ast.Stmt) <nil>
+              }),
+              (*ast.IfStmt)(0xc00010ac80)({
+               If: (token.Pos) 870,
+               Init: (ast.Stmt) <nil>,
+               Cond: (*ast.BinaryExpr)(0xc00007cde0)({
+                X: (*ast.SelectorExpr)(0xc00000c420)({
+                 X: (*ast.SelectorExpr)(0xc00000c408)({
+                  X: (*ast.Ident)(0xc000066f40)(atk),
+                  Sel: (*ast.Ident)(0xc000066f60)(Info)
+                 }),
+                 Sel: (*ast.Ident)(0xc000066f80)(AttackTag)
+                }),
+                OpPos: (token.Pos) 892,
+                Op: (token.Token) ==,
+                Y: (*ast.SelectorExpr)(0xc00000c438)({
+                 X: (*ast.Ident)(0xc000066fa0)(combat),
+                 Sel: (*ast.Ident)(0xc000066fc0)(AttackTagExtra)
+                })
+               }),
+               Body: (*ast.BlockStmt)(0xc00007cf00)({
+                Lbrace: (token.Pos) 917,
+                List: ([]ast.Stmt) (len=3 cap=4) {
+                 (*ast.AssignStmt)(0xc00010ab00)({
+                  Lhs: ([]ast.Expr) (len=1 cap=1) {
+                   (*ast.IndexExpr)(0xc00007ce10)({
+                    X: (*ast.Ident)(0xc000066fe0)(val),
+                    Lbrack: (token.Pos) 926,
+                    Index: (*ast.SelectorExpr)(0xc00000c450)({
+                     X: (*ast.Ident)(0xc000067000)(attributes),
+                     Sel: (*ast.Ident)(0xc000067020)(DmgP)
+                    }),
+                    Rbrack: (token.Pos) 942
+                   })
+                  },
+                  TokPos: (token.Pos) 944,
+                  Tok: (token.Token) =,
+                  Rhs: ([]ast.Expr) (len=1 cap=1) {
+                   (*ast.Ident)(0xc000067040)(ca)
+                  }
+                 }),
+                 (*ast.IfStmt)(0xc00010ac00)({
+                  If: (token.Pos) 953,
+                  Init: (ast.Stmt) <nil>,
+                  Cond: (*ast.BinaryExpr)(0xc00007ce40)({
+                   X: (*ast.CallExpr)(0xc00010ab40)({
+                    Fun: (*ast.SelectorExpr)(0xc00000c468)({
+                     X: (*ast.Ident)(0xc000067060)(char),
+                     Sel: (*ast.Ident)(0xc000067080)(CurrentEnergy)
+                    }),
+                    Lparen: (token.Pos) 974,
+                    Args: ([]ast.Expr) <nil>,
+                    Ellipsis: (token.Pos) 0,
+                    Rparen: (token.Pos) 975
+                   }),
+                   OpPos: (token.Pos) 977,
+                   Op: (token.Token) ==,
+                   Y: (*ast.CallExpr)(0xc00010ab80)({
+                    Fun: (*ast.SelectorExpr)(0xc00000c480)({
+                     X: (*ast.Ident)(0xc0000670a0)(char),
+                     Sel: (*ast.Ident)(0xc0000670c0)(MaxEnergy)
+                    }),
+                    Lparen: (token.Pos) 994,
+                    Args: ([]ast.Expr) <nil>,
+                    Ellipsis: (token.Pos) 0,
+                    Rparen: (token.Pos) 995
+                   })
+                  }),
+                  Body: (*ast.BlockStmt)(0xc00007ced0)({
+                   Lbrace: (token.Pos) 997,
+                   List: ([]ast.Stmt) (len=1 cap=1) {
+                    (*ast.AssignStmt)(0xc00010abc0)({
+                     Lhs: ([]ast.Expr) (len=1 cap=1) {
+                      (*ast.IndexExpr)(0xc00007ce70)({
+                       X: (*ast.Ident)(0xc0000670e0)(val),
+                       Lbrack: (token.Pos) 1007,
+                       Index: (*ast.SelectorExpr)(0xc00000c498)({
+                        X: (*ast.Ident)(0xc000067100)(attributes),
+                        Sel: (*ast.Ident)(0xc000067120)(DmgP)
+                       }),
+                       Rbrack: (token.Pos) 1023
+                      })
+                     },
+                     TokPos: (token.Pos) 1025,
+                     Tok: (token.Token) =,
+                     Rhs: ([]ast.Expr) (len=1 cap=1) {
+                      (*ast.BinaryExpr)(0xc00007cea0)({
+                       X: (*ast.Ident)(0xc000067140)(ca),
+                       OpPos: (token.Pos) 1030,
+                       Op: (token.Token) *,
+                       Y: (*ast.BasicLit)(0xc000067160)({
+                        ValuePos: (token.Pos) 1032,
+                        Kind: (token.Token) INT,
+                        Value: (string) (len=1) "2"
+                       })
+                      })
+                     }
+                    })
+                   },
+                   Rbrace: (token.Pos) 1038
+                  }),
+                  Else: (ast.Stmt) <nil>
+                 }),
+                 (*ast.ReturnStmt)(0xc000067200)({
+                  Return: (token.Pos) 1044,
+                  Results: ([]ast.Expr) (len=2 cap=2) {
+                   (*ast.Ident)(0xc0000671a0)(val),
+                   (*ast.Ident)(0xc0000671c0)(true)
+                  }
+                 })
+                },
+                Rbrace: (token.Pos) 1064
+               }),
+               Else: (ast.Stmt) <nil>
+              }),
+              (*ast.ReturnStmt)(0xc000067280)({
+               Return: (token.Pos) 1069,
+               Results: ([]ast.Expr) (len=2 cap=2) {
+                (*ast.Ident)(0xc000067220)(nil),
+                (*ast.Ident)(0xc000067240)(false)
+               }
+              })
+             },
+             Rbrace: (token.Pos) 1089
+            })
+           })
+          })
+         },
+         Rbrace: (token.Pos) 1093,
+         Incomplete: (bool) false
+        })
+       },
+       Ellipsis: (token.Pos) 0,
+       Rparen: (token.Pos) 1094
+      })
+     }),
+     (*ast.ReturnStmt)(0xc0000672c0)({
+      Return: (token.Pos) 1098,
+      Results: ([]ast.Expr) (len=1 cap=1) {
+       (*ast.BasicLit)(0xc0000672a0)({
+        ValuePos: (token.Pos) 1105,
+        Kind: (token.Token) STRING,
+        Value: (string) (len=10) "\"hamayumi\""
+       })
+      }
+     })
+    },
+    Rbrace: (token.Pos) 1116
+   })
+  })
+ },
+ Scope: (*ast.Scope)(0xc000010810)(scope 0xc000010810 {
+	type Weapon
+	func NewWeapon
+}
+),
+ Imports: ([]*ast.ImportSpec) (len=1 cap=1) {
+  (*ast.ImportSpec)(0xc00007c6f0)({
+   Doc: (*ast.CommentGroup)(<nil>),
+   Name: (*ast.Ident)(<nil>),
+   Path: (*ast.BasicLit)(0xc0000661a0)({
+    ValuePos: (token.Pos) 29,
+    Kind: (token.Token) STRING,
+    Value: (string) (len=38) "\"github.com/genshinsim/gcsim/pkg/core\""
+   }),
+   Comment: (*ast.CommentGroup)(<nil>),
+   EndPos: (token.Pos) 0
+  })
+ },
+ Unresolved: ([]*ast.Ident) (len=31 cap=32) {
+  (*ast.Ident)(0xc0000661e0)(core),
+  (*ast.Ident)(0xc000066240)(weapon),
+  (*ast.Ident)(0xc000066300)(int),
+  (*ast.Ident)(0xc0000663a0)(int),
+  (*ast.Ident)(0xc0000664a0)(error),
+  (*ast.Ident)(0xc0000664c0)(nil),
+  (*ast.Ident)(0xc000066560)(core),
+  (*ast.Ident)(0xc0000665c0)(character),
+  (*ast.Ident)(0xc000066620)(weapon),
+  (*ast.Ident)(0xc000066680)(weapon),
+  (*ast.Ident)(0xc0000666c0)(error),
+  (*ast.Ident)(0xc000066820)(float64),
+  (*ast.Ident)(0xc0000668c0)(float64),
+  (*ast.Ident)(0xc000066940)(core),
+  (*ast.Ident)(0xc000066a80)(combat),
+  (*ast.Ident)(0xc000066ae0)(combat),
+  (*ast.Ident)(0xc000066b20)(float64),
+  (*ast.Ident)(0xc000066b40)(bool),
+  (*ast.Ident)(0xc000066ba0)(make),
+  (*ast.Ident)(0xc000066bc0)(float64),
+  (*ast.Ident)(0xc000066be0)(attributes),
+  (*ast.Ident)(0xc000066ca0)(combat),
+  (*ast.Ident)(0xc000066d00)(attributes),
+  (*ast.Ident)(0xc000066e00)(attributes),
+  (*ast.Ident)(0xc000066ec0)(true),
+  (*ast.Ident)(0xc000066fa0)(combat),
+  (*ast.Ident)(0xc000067000)(attributes),
+  (*ast.Ident)(0xc000067100)(attributes),
+  (*ast.Ident)(0xc0000671c0)(true),
+  (*ast.Ident)(0xc000067220)(nil),
+  (*ast.Ident)(0xc000067240)(false)
+ },
+ Comments: ([]*ast.CommentGroup) <nil>
+})
+found pre damage block
