@@ -1,4 +1,3 @@
-- iterations and output
 - add characters
 - add weapons
 - add artifacts
