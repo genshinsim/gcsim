@@ -128,7 +128,7 @@ func (s *Simulation) AdvanceFrame() error {
 		//If some delay, like a wait command, caused us to not be able to start delay immediately, shorten delay by this amount
 		delay -= s.C.F - s.lastActionUsedAt
 
-		//other wise we can add delay
+		//otherwise we can add delay - but only do so if we haven't already delayed since the previous action.
 		if delay > 0 && s.lastDelayAt < s.lastActionUsedAt {
 			s.C.Log.NewEvent(
 				"animation delay triggered",
