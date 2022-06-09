@@ -7,29 +7,30 @@ import (
 	"strings"
 	"time"
 
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/simulation"
-	"github.com/montanaflynn/stats"
 )
 
 type Summary struct {
 	//version stuff
-	V2                    bool                            `json:"v2"`
-	Version               string                          `json:"version"`
-	BuildDate             string                          `json:"build_date"`
-	IsDamageMode          bool                            `json:"is_damage_mode"`
-	ActiveChar            string                          `json:"active_char"`
-	CharNames             []string                        `json:"char_names"`
-	DamageByChar          []map[string]FloatResult        `json:"damage_by_char"`
-	DamageInstancesByChar []map[string]IntResult          `json:"damage_instances_by_char"`
-	DamageByCharByTargets []map[int]FloatResult           `json:"damage_by_char_by_targets"`
-	CharActiveTime        []IntResult                     `json:"char_active_time"`
-	AbilUsageCountByChar  []map[string]IntResult          `json:"abil_usage_count_by_char"`
-	ParticleCount         map[string]IntResult            `json:"particle_count"`
-	ReactionsTriggered    map[core.ReactionType]IntResult `json:"reactions_triggered"`
-	Duration              FloatResult                     `json:"sim_duration"`
-	ElementUptime         []map[core.EleType]IntResult    `json:"ele_uptime"`
-	RequiredER            []float64                       `json:"required_er"`
+	V2                    bool                               `json:"v2"`
+	Version               string                             `json:"version"`
+	BuildDate             string                             `json:"build_date"`
+	IsDamageMode          bool                               `json:"is_damage_mode"`
+	ActiveChar            string                             `json:"active_char"`
+	CharNames             []string                           `json:"char_names"`
+	DamageByChar          []map[string]FloatResult           `json:"damage_by_char"`
+	DamageInstancesByChar []map[string]IntResult             `json:"damage_instances_by_char"`
+	DamageByCharByTargets []map[int]FloatResult              `json:"damage_by_char_by_targets"`
+	CharActiveTime        []IntResult                        `json:"char_active_time"`
+	AbilUsageCountByChar  []map[string]IntResult             `json:"abil_usage_count_by_char"`
+	ParticleCount         map[string]FloatResult             `json:"particle_count"`
+	ReactionsTriggered    map[combat.ReactionType]IntResult  `json:"reactions_triggered"`
+	Duration              FloatResult                        `json:"sim_duration"`
+	ElementUptime         []map[attributes.Element]IntResult `json:"ele_uptime"`
+	RequiredER            []float64                          `json:"required_er"`
 	//final result
 	Damage         FloatResult            `json:"damage"`
 	DPS            FloatResult            `json:"dps"`
@@ -40,7 +41,7 @@ type Summary struct {
 	//other info
 	NumTargets    int                     `json:"num_targets"` //TODO: to deprecate this
 	CharDetails   []simulation.CharDetail `json:"char_details"`
-	TargetDetails []core.EnemyProfile     `json:"target_details"`
+	TargetDetails []enemy.EnemyProfile    `json:"target_details"`
 	//for tracking min/max run
 	MinSeed int64 `json:"-"`
 	MaxSeed int64 `json:"-"`
@@ -64,7 +65,7 @@ type FloatResult struct {
 	SD   float64 `json:"sd"`
 }
 
-func CollectResult(data []simulation.Result, mode bool, chars []string, detailed bool, erCalcMode bool) (result Summary) {
+func CollectResult(data []simulation.Result, mode bool, chars []string, detailed bool) (result Summary) {
 
 	n := len(data)
 
@@ -75,9 +76,9 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 	result.DPSByTarget = make(map[int]FloatResult)
 	result.DamageOverTime = make(map[string]FloatResult)
 	if detailed {
-		result.ReactionsTriggered = make(map[core.ReactionType]IntResult)
+		result.ReactionsTriggered = make(map[combat.ReactionType]IntResult)
 		result.CharNames = make([]string, charCount)
-		result.ParticleCount = make(map[string]IntResult)
+		result.ParticleCount = make(map[string]FloatResult)
 		result.AbilUsageCountByChar = make([]map[string]IntResult, charCount)
 		result.CharActiveTime = make([]IntResult, charCount)
 		result.DamageByChar = make([]map[string]FloatResult, charCount)
@@ -280,7 +281,7 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 		//ele up time
 		for t, m := range v.ElementUptime {
 			if len(result.ElementUptime) == t {
-				result.ElementUptime = append(result.ElementUptime, make(map[core.EleType]IntResult))
+				result.ElementUptime = append(result.ElementUptime, make(map[attributes.Element]IntResult))
 			}
 			//go through m and add to our results
 			for ele, amt := range m {
@@ -367,47 +368,6 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 		result.DPSByTarget[idxTarget] = dpsTargetRollup
 	}
 
-	// required ER
-
-	if erCalcMode {
-
-		/*
-				initialize a two dimensional array, the first index representing the character
-				every characters array is supposed to be a list of the minimum amount of "current energy during burst"
-			    (read: the maximum amount of needed ER) of each iteration
-				afterwards it is possible to use most statistical summary methods on those arrays, in this case we are
-				using the mode to determine how much ER is needed in most cases
-		*/
-
-		accEnergy := make([][]float64, charCount)
-
-		for i := 0; i < charCount; i++ {
-			accEnergy[i] = make([]float64, 0, len(data))
-		}
-
-		for i := 0; i < len(data); i++ {
-
-			for j := 0; j < charCount; j++ {
-				current, _ := stats.Min(data[i].EnergyWhenBurst[j])
-
-				// for simplcity we are already converting the current energies to the amount of ER needed in that case
-				current = data[i].EnergyWhenBurst[j][0] / current
-
-				accEnergy[j] = append(accEnergy[j], current)
-
-			}
-
-		}
-
-		result.RequiredER = make([]float64, charCount)
-
-		for i := 0; i < charCount; i++ {
-			modes, _ := stats.Mode(accEnergy[i])
-			result.RequiredER[i] = modes[0]
-		}
-
-	}
-
 	return
 }
 
@@ -472,7 +432,7 @@ func (r *Summary) PrettyPrint() string {
 		v := r.ParticleCount[k]
 		sb.WriteString(fmt.Sprintf("\t%v: avg %.2f [min: %v max: %v]\n", k, v.Mean, v.Min, v.Max))
 	}
-	rk := make([]core.ReactionType, 0, len(r.ReactionsTriggered))
+	rk := make([]combat.ReactionType, 0, len(r.ReactionsTriggered))
 	for k := range r.ReactionsTriggered {
 		rk = append(rk, k)
 	}
@@ -490,8 +450,8 @@ func (r *Summary) PrettyPrint() string {
 			sb.WriteString("Element up time:\n")
 		}
 		sb.WriteString(fmt.Sprintf("\tTarget #%v\n", i+1))
-		for j, ele := range core.EleTypeString {
-			v, ok := m[core.EleType(j)]
+		for j, ele := range attributes.ElementString {
+			v, ok := m[attributes.Element(j)]
 			if ok {
 				if ele == "" {
 					ele = "none"

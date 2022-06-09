@@ -11,24 +11,34 @@ func init() {
 }
 
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	//add on hit effect to sim?
-	m := make([]float64, core.EndStatType)
-	m[core.HPP] = 0.15 + float64(r)*0.05
+
+	mHP := make([]float64, core.EndStatType)
+	mHP[core.HPP] = 0.15 + float64(r)*0.05
+	char.AddMod(core.CharStatMod{
+		Key:    "homa-hp",
+		Expiry: -1,
+		Amount: func() ([]float64, bool) {
+			return mHP, true
+		},
+	})
+
+	mATK := make([]float64, core.EndStatType)
 	atkp := 0.006 + float64(r)*0.002
 	lowhp := 0.008 + float64(r)*0.002
-
 	char.AddMod(core.CharStatMod{
-		Key: "homa hp bonus",
+		Key:          "homa-atk-buff",
+		Expiry:       -1,
+		AffectedStat: core.ATK, // to avoid infinite loop when calling MaxHP
 		Amount: func() ([]float64, bool) {
+			maxhp := char.MaxHP()
 			per := atkp
-			if char.HP()/char.MaxHP() <= 0.5 {
+			if maxhp <= 0.5 {
 				per += lowhp
 			}
-			// c.Log.Debugw("homa bonus atk%", "frame", c.F, char.CharIndex(), core.LogSnapshotEvent, "max-hp", char.MaxHP(), "percent", char.HP()/char.MaxHP(), "per", per)
-			m[core.ATK] = per * char.MaxHP()
-			return m, true
+			mATK[core.ATK] = per * maxhp
+			return mATK, true
 		},
-		Expiry: -1,
 	})
+
 	return "staffofhoma"
 }

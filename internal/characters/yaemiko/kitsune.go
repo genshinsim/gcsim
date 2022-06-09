@@ -3,7 +3,10 @@ package yaemiko
 import (
 	"log"
 
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 type kitsune struct {
@@ -16,26 +19,26 @@ func (c *char) makeKitsune() {
 	k.src = c.Core.F
 	k.deleted = false
 	//start ticking
-	c.AddTask(c.kitsuneTick(k), "kitsune-tick", 45+50)
+	c.Core.Tasks.Add(c.kitsuneTick(k), 45+50)
 	//add task to delete this one if times out (and not deleted by anything else)
-	c.AddTask(func() {
+	c.Core.Tasks.Add(func() {
 		//i think we can just check for .deleted here
 		if k.deleted {
 			return
 		}
 		//ok now we can delete this
 		c.popOldestKitsune()
-	}, "kitsune-expiry", 866) // e ani + duration
+	}, 866) // e ani + duration
 
 	if len(c.kitsunes) == 0 {
-		c.Core.Status.AddStatus(yaeTotemStatus, 866)
+		c.Core.Status.Add(yaeTotemStatus, 866)
 	}
 	//pop oldest first
 	if len(c.kitsunes) == 3 {
 		c.popOldestKitsune()
 	}
 	c.kitsunes = append(c.kitsunes, k)
-	c.AddTag(yaeTotemCount, c.sakuraLevelCheck())
+	c.SetTag(yaeTotemCount, c.sakuraLevelCheck())
 
 }
 
@@ -44,8 +47,8 @@ func (c *char) popAllKitsune() {
 		c.kitsunes[i].deleted = true
 	}
 	c.kitsunes = c.kitsunes[:0]
-	c.Core.Status.DeleteStatus(yaeTotemStatus)
-	c.AddTag(yaeTotemCount, 0)
+	c.Core.Status.Delete(yaeTotemStatus)
+	c.SetTag(yaeTotemCount, 0)
 }
 
 func (c *char) popOldestKitsune() {
@@ -63,33 +66,26 @@ func (c *char) popOldestKitsune() {
 		if dur < 0 {
 			log.Panicf("oldest totem should have expired already? dur: %v totem: %v", dur, *c.kitsunes[0])
 		}
-		c.Core.Status.AddStatus(yaeTotemStatus, dur)
+		c.Core.Status.Add(yaeTotemStatus, dur)
 	} else {
-		c.Core.Status.DeleteStatus(yaeTotemStatus)
+		c.Core.Status.Delete(yaeTotemStatus)
 	}
 
-	c.AddTag(yaeTotemCount, len(c.kitsunes))
+	c.SetTag(yaeTotemCount, len(c.kitsunes))
 }
 
-func (c *char) kitsuneBurst(ai core.AttackInfo, pattern core.AttackPattern) {
+func (c *char) kitsuneBurst(ai combat.AttackInfo, pattern combat.AttackPattern) {
 	for i := 0; i < c.sakuraLevelCheck(); i++ {
-		c.Core.Combat.QueueAttack(ai, pattern, 94+54+i*24, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
+		c.Core.QueueAttack(ai, pattern, 94+54+i*24, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
 		if c.Base.Cons >= 1 {
-			c.AddTask(func() {
+			c.Core.Tasks.Add(func() {
 				c.AddEnergy("yae-c1", 8)
-			}, "energy from sky kitsune", 94+54+i*24)
+			}, 94+54+i*24)
 		}
-		c.ResetActionCooldown(core.ActionSkill)
-		c.Core.Log.NewEvent("sky kitsune thunderbolt", core.LogCharacterEvent, c.Index, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
+		c.ResetActionCooldown(action.ActionSkill)
+		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
 	}
-	// c.AddTask(func() {
-	// 	//pop all?
-	// for range c.kitsunes {
-	// 	c.popOldestKitsune()
-	// }
-	// }, "delay despawn for kitsunes", 0)
 	c.popAllKitsune()
-
 }
 
 func (c *char) kitsuneTick(totem *kitsune) func() {
@@ -106,50 +102,48 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			lvl += 1
 		}
 
-		ai := core.AttackInfo{
+		ai := combat.AttackInfo{
 			Abil:       "Sesshou Sakura Tick",
 			ActorIndex: c.Index,
-			AttackTag:  core.AttackTagElementalArt,
+			AttackTag:  combat.AttackTagElementalArt,
 			Mult:       skill[lvl][c.TalentLvlSkill()],
-			ICDTag:     core.ICDTagElementalArt,
-			ICDGroup:   core.ICDGroupDefault,
-			StrikeType: core.StrikeTypeDefault,
-			Element:    core.Electro,
+			ICDTag:     combat.ICDTagElementalArt,
+			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Electro,
 			Durability: 25,
 		}
 
-		c.Core.Log.NewEvent("sky kitsune tick at level", core.LogCharacterEvent, c.Index, "sakura level", lvl)
+		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index, "sakura level", lvl)
 
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
 		}
 
 		done := false
-		cb := func(ac core.AttackCB) {
+		cb := func(ac combat.AttackCB) {
 			if c.Base.Cons >= 4 && !done {
 				done = true
 				c.c4()
 			}
 
 			//on hit check for particles
-			c.Core.Log.NewEvent("sky kitsune particle", core.LogCharacterEvent, c.Index, "lastParticleF", c.totemParticleICD)
+			c.Core.Log.NewEvent("sky kitsune particle", glog.LogCharacterEvent, c.Index, "lastParticleF", c.totemParticleICD)
 			if c.Core.F < c.totemParticleICD {
 				return
 			}
 			c.totemParticleICD = c.Core.F + 176
-			c.QueueParticle("yaemiko", 1, core.Electro, 30)
+			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, 30)
 		}
 
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(c.Core.RandomEnemyTarget(), core.TargettableEnemy), 1, 1, cb)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.RandomEnemyTarget(), combat.TargettableEnemy), 1, 1, cb)
 		// tick per 2.5 seconds
-		c.AddTask(c.kitsuneTick(totem), "kitsune-tick", 176)
+		c.Core.Tasks.Add(c.kitsuneTick(totem), 176)
 	}
 }
 
 func (c *char) sakuraLevelCheck() int {
-
 	count := len(c.kitsunes)
-
 	if count < 0 {
 		//this is for the base case when there are no totems (other wise we'll end up with 1 if C6)
 		return 0

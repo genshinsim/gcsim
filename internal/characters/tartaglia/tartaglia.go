@@ -1,40 +1,45 @@
 package tartaglia
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/frames"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+)
+
+const (
+	normalHitNum       = 6
+	riptideDuration    = 18 * 60
+	riptideFlashICDKey = "riptide-flash-icd"
+	riptideKey         = "riptide"
+	riptideSlashICDKey = "riptide-slash-icd"
 )
 
 func init() {
-	core.RegisterCharFunc(core.Tartaglia, NewChar)
+	initCancelFrames()
+	core.RegisterCharFunc(keys.Tartaglia, NewChar)
 }
-
-const riptideDuration = 18 * 60 // riptide duration lasts 18 sec
 
 // tartaglia specific character implementation
 type char struct {
-	*character.Tmpl
+	*tmpl.Character
 	eCast         int // the frame tartaglia casts E to enter melee stance
 	rtParticleICD int
 	mlBurstUsed   bool // used for c6
 }
 
-//constants for tags
-const (
-	riptideKey         = "riptide"
-	riptideSlashICDKey = "riptide-slash-icd"
-	riptideFlashICDKey = "riptide-flash-icd"
-)
-
 // Initializes character
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Hydro
+	t := tmpl.New(s)
+	t.CharWrapper = w
+	c.Character = t
+
+	c.Base.Element = attributes.Hydro
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -42,94 +47,86 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 60
-	c.Weapon.Class = core.WeaponClassBow
+	c.Weapon.Class = weapon.WeaponClassBow
 	c.SkillCon = 3
 	c.BurstCon = 5
-	c.NormalHitNum = 6
+	c.NormalHitNum = normalHitNum
+
 	c.eCast = 0
-	if c.Base.Cons >= 6 {
-		c.mlBurstUsed = false
-	}
-
 	c.rtParticleICD = 0
+	c.mlBurstUsed = false
 
-	c.Core.Flags.ChildeActive = true
+	w.Character = &c
+
+	return nil
+}
+
+func (c *char) Init() error {
 	c.onExitField()
 	c.onDefeatTargets()
-	// c.applyRT()
-	return &c, nil
+
+	for _, char := range c.Core.Player.Chars() {
+		char.SetTag(keys.ChildePassive, 1)
+	}
+
+	return nil
 }
 
-func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+func initCancelFrames() {
+	initRangedFrames()
+	initMeleeFrames()
+}
+
+func initRangedFrames() {
+	// NA cancels
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 17)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 13)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 34)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 37)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 22)
+	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5], 39)
+
+	// aimed -> x
+	aimedFrames = frames.InitAbilSlice(84)
+
+	// skill -> x
+	skillRangedFrames = frames.InitAbilSlice(28)
+
+	// burst -> x
+	burstRangedFrames = frames.InitAbilSlice(52)
+}
+
+func initMeleeFrames() {
+	// melee cancels
+
+	// NA cancels (melee)
+	meleeFrames = make([][]int, normalHitNum)
+
+	meleeFrames[0] = frames.InitNormalCancelSlice(meleeFrames[0][0], 7)
+	meleeFrames[1] = frames.InitNormalCancelSlice(meleeFrames[1][0], 13)
+	meleeFrames[2] = frames.InitNormalCancelSlice(meleeFrames[2][0], 28)
+	meleeFrames[3] = frames.InitNormalCancelSlice(meleeFrames[3][0], 32)
+	meleeFrames[4] = frames.InitNormalCancelSlice(meleeFrames[4][0], 36)
+	meleeFrames[5] = frames.InitNormalCancelSlice(meleeFrames[5][1], 49)
+
+	// charge -> x
+	chargeFrames = frames.InitAbilSlice(73)
+	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+
+	// skill -> x
+	skillMeleeFrames = frames.InitAbilSlice(20)
+
+	// burst -> x
+	burstMeleeFrames = frames.InitAbilSlice(97)
+}
+
+func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
-	case core.ActionCharge:
+	case action.ActionCharge:
 		return 20
-	case core.ActionDash:
-		return 18
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
-		return 0
 	}
-}
-
-// Hook to end Tartaglia's melee stance prematurely if he leaves the field
-func (c *char) onExitField() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
-			//TODO: need to verify if this is correct
-			//but if childe is currently in melee stance and skill is on CD that means that
-			//the button has lit up yet from original skill press
-			//in which case we need to reset the cooldown first
-			c.ResetActionCooldown(core.ActionSkill)
-			c.onExitMeleeStance()
-		}
-		return false
-	}, "tartaglia-exit")
-}
-
-//Riptide Burst: Defeating an opponent affected by Riptide creates a Hydro burst
-//that inflicts the Riptide status on nearby opponents hit.
-// Handles Childe riptide burst and C2 on death effects
-func (c *char) onDefeatTargets() {
-	c.Core.Events.Subscribe(core.OnTargetDied, func(args ...interface{}) bool {
-		t := args[0].(core.Target)
-		//do nothing if no riptide on target
-		if t.GetTag(riptideKey) < c.Core.F {
-			return false
-		}
-		c.AddTask(func() {
-			ai := core.AttackInfo{
-				ActorIndex: c.Index,
-				Abil:       "Riptide Burst",
-				AttackTag:  core.AttackTagNormal,
-				ICDTag:     core.ICDTagNone,
-				ICDGroup:   core.ICDGroupDefault,
-				StrikeType: core.StrikeTypeDefault,
-				Element:    core.Hydro,
-				Durability: 50,
-				Mult:       rtBurst[c.TalentLvlAttack()],
-			}
-			c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 0, 0)
-		}, "Riptide Burst", 5)
-		//TODO: re-index riptide expiry frame array if needed
-
-		if c.Base.Cons >= 2 {
-			c.AddEnergy("tartaglia-c2", 4)
-		}
-		return false
-	}, "tartaglia-on-enemy-death")
-}
-
-func (c *char) c4(t core.Target) {
-	if t.GetTag(riptideKey) < c.Core.F {
-		return
-	}
-
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
-		c.rtSlashTick(t)
-	} else {
-		c.rtFlashTick(t)
-	}
-
-	c.AddTask(func() { c.c4(t) }, "tartaglia-c4", 60*4)
+	return c.Character.ActionStam(a, p)
 }

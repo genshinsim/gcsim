@@ -40,22 +40,28 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.NormalHitNum = 6
 
+	c.c6Count = 0
+
 	c.SetNumCharges(core.ActionSkill, 2)
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(core.ActionSkill, 3)
 	}
 
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+	c.InitCancelFrames()
+
+	c.onExitField()
+
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
 	if c.Base.Cons >= 6 {
-		c.c6Count = 0
 		c.c6()
 	}
-
-	c.onExitField()
-
-	return &c, nil
 }
 
 func (c *char) a4() {

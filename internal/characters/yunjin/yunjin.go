@@ -38,15 +38,11 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 
+	c.partyElementalTypes = 0
+
 	for i := range c.burstTriggers {
 		c.burstTriggers[i] = 30
 	}
-
-	c.getPartyElementalTypeCounts()
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
-	c.burstProc()
 
 	return &c, nil
 }
@@ -55,8 +51,12 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 func (c *char) Init() {
 	c.Tmpl.Init()
 
-	c.partyElementalTypes = 0
 	c.getPartyElementalTypeCounts()
+	c.burstProc()
+
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
 }
 
 // Helper function to update tags that can be used in configs
@@ -74,10 +74,8 @@ func (c *char) getPartyElementalTypeCounts() {
 	for _, char := range c.Core.Chars {
 		partyElementalTypes[char.Ele()]++
 	}
-	for i := range partyElementalTypes {
+	for range partyElementalTypes {
 		c.partyElementalTypes += 1
-		// Is there a more elegant way to get go to not complain about variable not used?
-		i += 0
 	}
 	c.Core.Log.NewEvent("Yun Jin Party Elemental Types (A4)", core.LogCharacterEvent, c.Index, "party_elements", c.partyElementalTypes)
 }

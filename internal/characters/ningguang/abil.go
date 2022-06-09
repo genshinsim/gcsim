@@ -2,6 +2,7 @@ package ningguang
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
@@ -27,7 +28,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	done := false
 	cb := func(a core.AttackCB) {
-		if !done {
+		if done {
 			return
 		}
 		count := c.Tags["jade"]
@@ -36,6 +37,8 @@ func (c *char) Attack(p map[string]int) (int, int) {
 			count++
 			if count > 3 {
 				count = 3
+			} else {
+				c.Core.Log.NewEvent("adding star jade", core.LogCharacterEvent, c.Index, "count", count)
 			}
 			c.Tags["jade"] = count
 		}
@@ -107,7 +110,11 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
+
+	c.AddTask(func() {
+		c.skillSnapshot = c.Snapshot(&ai)
+		c.Core.Combat.QueueAttackWithSnap(ai, c.skillSnapshot, core.NewDefCircHit(5, false, core.TargettableEnemy), 0)
+	}, "ningguang-skill-snapshot", f)
 
 	//put skill on cd first then check for construct/c2
 	c.SetCD(core.ActionSkill, 720)
@@ -137,13 +144,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 func (c *char) Burst(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionBurst, p)
 
-	//fires 6 normally, + 6 if jade screen is active
-	count := 6
-	if c.Core.Constructs.Destroy(c.lastScreen) {
-		c.Core.Log.NewEvent("12 jade on burst", core.LogCharacterEvent, c.Index)
-		count += 6
-	}
-
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -161,13 +161,25 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	//geo applied 1 4 7 10, +3 pattern; or 0 3 6 9
-	for i := 0; i < count; i++ {
+	// TODO: hitmark timing
+	// fires 6 normally
+	// geo applied 1 4 7 10, +3 pattern; or 0 3 6 9
+	for i := 0; i < 6; i++ {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f, f+travel)
+	}
+	// if jade screen is active add 6 jades
+	if c.Core.Constructs.Destroy(c.lastScreen) {
+		ai.Abil = "Starshatter (Jade Screen Gems)"
+		for i := 6; i < 12; i++ {
+			c.Core.Combat.QueueAttackWithSnap(ai, c.skillSnapshot, core.NewDefCircHit(0.1, false, core.TargettableEnemy), f+travel)
+		}
+		// do we need to log this?
+		c.Core.Log.NewEvent("extra 6 gems from jade screen", core.LogCharacterEvent, c.Index)
 	}
 
 	if c.Base.Cons == 6 {
 		c.Tags["jade"] = 7
+		c.Core.Log.NewEvent("c6 - adding star jade", core.LogCharacterEvent, c.Index, "count", c.Tags["jade"])
 	}
 
 	c.ConsumeEnergy(8)

@@ -1,28 +1,38 @@
 package keqing
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/frames"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+)
+
+const (
+	normalHitNum = 5
+	stilettoKey  = "keqingstiletto"
 )
 
 func init() {
-	core.RegisterCharFunc(core.Keqing, NewChar)
+	initCancelFrames()
+	core.RegisterCharFunc(keys.Keqing, NewChar)
 }
 
 type char struct {
-	*character.Tmpl
-	eStartFrame int
-	c2ICD       int
+	*tmpl.Character
+	c2ICD int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Electro
+	t := tmpl.New(s)
+	t.CharWrapper = w
+	c.Character = t
+
+	c.Base.Element = attributes.Electro
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -30,90 +40,87 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 40
-	c.Weapon.Class = core.WeaponClassSword
-	c.NormalHitNum = 5
+	c.Weapon.Class = weapon.WeaponClassSword
+	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.CharZone = core.ZoneLiyue
+	c.CharZone = character.ZoneLiyue
 
+	w.Character = &c
+
+	return nil
+}
+
+func (c *char) Init() error {
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
-	return &c, nil
+	return nil
 }
 
-var delay = [][]int{{8}, {20}, {25}, {25, 35}, {34}}
+func initCancelFrames() {
+	// NA cancels
+	attackFrames = make([][]int, normalHitNum)
 
-func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 21)
+	attackFrames[0][action.ActionAttack] = 15
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 24)
+	attackFrames[1][action.ActionAttack] = 16
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 36)
+	attackFrames[2][action.ActionAttack] = 27
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 58)
+	attackFrames[3][action.ActionAttack] = 31
+
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 66)
+	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+
+	// charge -> x
+	chargeFrames = frames.InitAbilSlice(36)
+	chargeFrames[action.ActionSkill] = 35
+	chargeFrames[action.ActionBurst] = 35
+	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
+
+	// skill -> x
+	skillFrames = frames.InitAbilSlice(37)
+	skillFrames[action.ActionAttack] = 36
+	skillFrames[action.ActionSkill] = 35
+	skillFrames[action.ActionDash] = 21
+	skillFrames[action.ActionJump] = 21
+	skillFrames[action.ActionSwap] = 28
+
+	// skill (recast) -> x
+	skillRecastFrames = frames.InitAbilSlice(43)
+	skillRecastFrames[action.ActionAttack] = 42
+	skillRecastFrames[action.ActionDash] = 15
+	skillRecastFrames[action.ActionJump] = 16
+	skillRecastFrames[action.ActionSwap] = 42
+
+	// burst -> x
+	burstFrames = frames.InitAbilSlice(124)
+	burstFrames[action.ActionDash] = 122
+	burstFrames[action.ActionSwap] = 123
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) bool {
+	// check if stiletto is on-field
+	if a == action.ActionSkill && c.Core.Status.Duration(stilettoKey) > 0 {
+		return true
+	}
+	return c.Character.ActionReady(a, p)
+}
+
+func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
-	case core.ActionDash:
-		return 18
-	case core.ActionCharge:
+	case action.ActionCharge:
 		return 25
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
-		return 0
 	}
-}
-
-func (c *char) c4() {
-
-	cb := func(args ...interface{}) bool {
-
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-
-		c.AddMod(core.CharStatMod{
-			Key: "c4",
-			Amount: func() ([]float64, bool) {
-
-				val := make([]float64, core.EndStatType)
-				val[core.ATKP] = 0.25
-				return val, true
-			},
-			Expiry: c.Core.F + 600,
-		})
-		return false
-	}
-
-	c.Core.Events.Subscribe(core.OnOverload, cb, "keqing-c4")
-	c.Core.Events.Subscribe(core.OnElectroCharged, cb, "keqing-c4")
-	c.Core.Events.Subscribe(core.OnSuperconduct, cb, "keqing-c4")
-	c.Core.Events.Subscribe(core.OnSwirlElectro, cb, "keqing-c4")
-	c.Core.Events.Subscribe(core.OnCrystallizeElectro, cb, "keqing-c4")
-}
-
-func (c *char) c2() {
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if c.Core.F < c.c2ICD {
-			return false
-		}
-		if c.Core.Rand.Float64() < 0.5 {
-			c.c2ICD = c.Core.F + 300
-			c.QueueParticle("keqing", 1, core.Electro, 100)
-			c.Core.Log.NewEvent("keqing c2 proc'd", core.LogCharacterEvent, c.Index, "next ready", c.c2ICD)
-		}
-		return false
-	}, "keqingc2")
-}
-
-func (c *char) activateC6(src string) {
-	val := make([]float64, core.EndStatType)
-	val[core.ElectroP] = 0.06
-	c.AddMod(core.CharStatMod{
-		Key:    src,
-		Amount: func() ([]float64, bool) { return val, true },
-		Expiry: c.Core.F + 480,
-	})
+	return c.Character.ActionStam(a, p)
 }

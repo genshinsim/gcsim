@@ -1,34 +1,38 @@
 package shenhe
 
 import (
-	"fmt"
-
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/frames"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+)
+
+const (
+	normalHitNum = 5
+	quillKey     = "shenhequill"
 )
 
 func init() {
-	core.RegisterCharFunc(core.Shenhe, NewChar)
+	initCancelFrames()
+	core.RegisterCharFunc(keys.Shenhe, NewChar)
 }
 
 type char struct {
-	*character.Tmpl
+	*tmpl.Character
 	quillcount []int
 	c4count    int
 	c4expiry   int
 }
 
-const (
-	quillKey = "shenhequill"
-)
-
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
+	t := tmpl.New(s)
+	t.CharWrapper = w
+	c.Character = t
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -36,124 +40,56 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 80
-	c.Weapon.Class = core.WeaponClassSpear
-	c.NormalHitNum = 5
+	c.Weapon.Class = weapon.WeaponClassSpear
+	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.CharZone = core.ZoneLiyue
-	c.Base.Element = core.Cryo
+	c.CharZone = character.ZoneLiyue
+	c.Base.Element = attributes.Cryo
 
 	c.c4count = 0
 	c.c4expiry = 0
 
 	if c.Base.Cons >= 1 {
-		c.SetNumCharges(core.ActionSkill, 2)
+		c.SetNumCharges(action.ActionSkill, 2)
 	}
 
+	w.Character = &c
+
+	return nil
+}
+
+func (c *char) Init() error {
+	c.quillcount = make([]int, len(c.Core.Player.Chars()))
+	c.quillDamageMod()
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
-
-	c.quillDamageMod()
-
-	return &c, nil
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-	// if c.Base.Cons >= 6 {
-	// 	c.c6()
-	// }
-	c.a2()
-	c.quillcount = make([]int, len(c.Core.Chars))
-}
+func initCancelFrames() {
+	// NA cancels
+	attackFrames = make([][]int, normalHitNum)
 
-// Helper function to update tags that can be used in configs
-// Should be run whenever c.quillcount is updated
-func (c *char) updateBuffTags() {
-	for _, char := range c.Core.Chars {
-		c.Tags["quills_"+char.Name()] = c.quillcount[char.CharIndex()]
-		c.Tags[fmt.Sprintf("quills_%v", char.CharIndex())] = c.quillcount[char.CharIndex()]
-	}
-}
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 23)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 19)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 42)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 30)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 81)
+	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 
-func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
-	switch a {
-	case core.ActionDash:
-		return 18
-	case core.ActionCharge:
-		return 25
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
-		return 0
-	}
+	// charge -> x
+	chargeFrames = frames.InitAbilSlice(49)
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
 
-}
+	// skill (press) -> x
+	skillPressFrames = frames.InitAbilSlice(31)
 
-// inspired from barbara c2
-// TODO: technically always assumes you are inside shenhe burst
-func (c *char) a2() {
-	val := make([]float64, core.EndStatType)
-	val[core.CryoP] = 0.15
-	for _, char := range c.Core.Chars {
-		// if i == c.Index {
-		// 	continue
-		// }
-		char.AddMod(core.CharStatMod{
-			Key:    "shenhe-a2",
-			Expiry: -1,
-			Amount: func() ([]float64, bool) {
-				if c.Core.Status.Duration("shenheburst") > 0 {
-					return val, true
-				} else {
-					return nil, false
-				}
-			},
-		})
-	}
-}
+	// skill (hold) -> x
+	skillHoldFrames = frames.InitAbilSlice(44)
 
-func (c *char) c6() {
-	val := make([]float64, core.EndStatType)
-	val[core.CD] = 0.15
-	for _, char := range c.Core.Chars {
-		char.AddPreDamageMod(core.PreDamageMod{
-			Key:    "shenhe-c2",
-			Expiry: -1,
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				//check if tags active
-				if c.Core.Status.Duration("shenheburst") <= 0 {
-					return nil, false
-				}
-				if atk.Info.Element != core.Cryo {
-					return nil, false
-				}
-				return val, true
-			},
-		})
-	}
-}
-
-func (c *char) c4() {
-	c.AddPreDamageMod(core.PreDamageMod{
-		Expiry: -1,
-		Key:    "shenhe-c4",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-
-			if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
-				return nil, false
-			}
-			if c.Core.F >= c.c4expiry {
-				return nil, false
-			}
-			val[core.DmgP] += 0.05 * float64(c.c4count)
-			c.c4count = 0
-			c.c4expiry = 0
-			return val, true
-		},
-	})
+	// burst -> x
+	burstFrames = frames.InitAbilSlice(99)
 }

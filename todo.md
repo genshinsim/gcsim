@@ -1,0 +1,6 @@
+- add characters
+- add weapons
+- add artifacts
+- fix reactable tests
+- parse APL
+- hitlag

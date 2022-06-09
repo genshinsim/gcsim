@@ -11,9 +11,10 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	c2reset     int
-	lastScreen  int
-	particleICD int
+	c2reset       int
+	lastScreen    int
+	particleICD   int
+	skillSnapshot core.Snapshot
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -36,13 +37,18 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = core.ZoneLiyue
+
 	// Initialize at some very low value so these happen correctly at start of sim
 	c.c2reset = -9999
 	c.particleICD = -9999
 
-	c.a4()
-
 	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+
+	c.a4()
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

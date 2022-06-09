@@ -36,17 +36,19 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.NormalHitNum = 5
 
 	c.icicleICD = make([]int, 4)
-	// c.burstICD()
+
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
 
 	if c.Base.Cons > 0 {
 		c.c1()
 	}
-
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-
-	return &c, nil
 }
 
 func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {

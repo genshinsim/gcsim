@@ -11,7 +11,7 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	a2stack  int
+	a1stack  int
 	lastPart int
 }
 
@@ -30,13 +30,20 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 60
-	c.Weapon.Class = core.WeaponClassSword
+	c.Weapon.Class = core.WeaponClassBow
 	c.NormalHitNum = 5
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.CharZone = core.ZoneInazuma
 
-	c.a2()
+	return &c, nil
+}
+
+func (c *char) Init() {
+	c.Tmpl.Init()
+	c.InitCancelFrames()
+
+	c.a1()
 	c.onExit()
 	c.burstHook()
 
@@ -46,26 +53,19 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-	// if c.Base.Cons == 6 {
-	// 	c.c6()
-	// }
-
-	//add effect for burst
-
-	return &c, nil
 }
 
-func (c *char) a2() {
+func (c *char) a1() {
 	c.AddMod(core.CharStatMod{
-		Key:    "yoimiya-a2",
+		Key:    "yoimiya-a1",
 		Expiry: -1,
 		Amount: func() ([]float64, bool) {
 			val := make([]float64, core.EndStatType)
-			if c.Core.Status.Duration("yoimiyaa2") > 0 {
-				val[core.PyroP] = float64(c.a2stack) * 0.02
+			if c.Core.Status.Duration("yoimiyaa1") > 0 {
+				val[core.PyroP] = float64(c.a1stack) * 0.02
 				return val, true
 			}
-			c.a2stack = 0
+			c.a1stack = 0
 			return nil, false
 		},
 	})
@@ -81,13 +81,13 @@ func (c *char) a2() {
 			return false
 		}
 		//here we can add stacks up to 10
-		if c.a2stack < 10 {
-			c.a2stack++
+		if c.a1stack < 10 {
+			c.a1stack++
 		}
-		c.Core.Status.AddStatus("yoimiyaa2", 180)
-		// c.a2expiry = c.Core.F + 180 // 3 seconds
+		c.Core.Status.AddStatus("yoimiyaa1", 180)
+		// c.a1expiry = c.Core.F + 180 // 3 seconds
 		return false
-	}, "yoimiya-a2")
+	}, "yoimiya-a1")
 }
 
 func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
@@ -101,5 +101,6 @@ func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
 		c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
 	}
+
 	return ds
 }

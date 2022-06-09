@@ -21,7 +21,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
 	c.AdvanceNormalIndex()
 
@@ -58,13 +58,13 @@ func (c *char) Skill(p map[string]int) (int, int) {
 			Src:        c.Core.F,
 			ShieldType: core.ShieldBeidouThunderShield,
 			Name:       "Beidou Skill",
-			HP:         shieldPer[c.TalentLvlSkill()]*c.HPMax + shieldBase[c.TalentLvlSkill()],
+			HP:         shieldPer[c.TalentLvlSkill()]*c.MaxHP() + shieldBase[c.TalentLvlSkill()],
 			Ele:        core.Electro,
 			Expires:    c.Core.F + 900, //15 sec
 		})
 	}
 
-	c.SetCD(core.ActionSkill, 450)
+	c.SetCDWithDelay(core.ActionSkill, 450, 4)
 	return f, a
 }
 
@@ -74,7 +74,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		return 0, 0
 	}
 
-	f, a := c.ActionFrames(core.ActionSkill, p)
+	f, a := c.ActionFrames(core.ActionBurst, p)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stormbreaker (Q)",
@@ -86,7 +86,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		Durability: 100,
 		Mult:       burstonhit[c.TalentLvlBurst()],
 	}
-	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f-1, f-1)
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
 	c.Core.Status.AddStatus("beidouburst", 900)
 
@@ -112,7 +112,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			Src:        c.Core.F,
 			ShieldType: core.ShieldBeidouThunderShield,
 			Name:       "Beidou C1",
-			HP:         .16 * c.HPMax,
+			HP:         .16 * c.MaxHP(),
 			Ele:        core.Electro,
 			Expires:    c.Core.F + 900, //15 sec
 		})
@@ -130,8 +130,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}, "beidou-c6", f)
 	}
 
-	c.ConsumeEnergy(11)
-	c.SetCDWithDelay(core.ActionBurst, 1200, 11)
+	c.ConsumeEnergy(6)
+	c.SetCD(core.ActionBurst, 1200)
 	return f, a
 }
 
@@ -174,10 +174,10 @@ func (c *char) burstProc() {
 
 func (c *char) chain(src int, count int) core.AttackCBFunc {
 
-	if c.Base.Cons > 1 && count == 5 {
+	if c.Base.Cons >= 2 && count == 5 {
 		return nil
 	}
-	if c.Base.Cons < 2 && count == 3 {
+	if c.Base.Cons <= 1 && count == 3 {
 		return nil
 	}
 	return func(a core.AttackCB) {
@@ -200,4 +200,14 @@ func (c *char) chain(src int, count int) core.AttackCBFunc {
 		c.Core.Combat.QueueAttackEvent(&atk, 1)
 
 	}
+}
+
+func (c *char) Dash(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionDash, p)
+	return f, a
+}
+
+func (c *char) Jump(p map[string]int) (int, int) {
+	f, a := c.ActionFrames(core.ActionJump, p)
+	return f, a
 }
