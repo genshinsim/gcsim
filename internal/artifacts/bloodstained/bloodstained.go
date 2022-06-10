@@ -2,23 +2,32 @@ package bloodstained
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func init() {
-	core.RegisterSetFunc("bloodstained chivalry", New)
-	core.RegisterSetFunc("bloodstainedchivalry", New)
+	core.RegisterSetFunc(keys.BloodstainedChivalry, NewSet)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+type Set struct {
+	Index int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
+
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
-		m[core.PhyP] = 0.25
-		c.AddMod(core.CharStatMod{
-			Key: "bloodstained-2pc",
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-			Expiry: -1,
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.PhyP] = 0.15
+		char.AddStatMod("bloodstained-2pc", -1, attributes.PhyP, func() ([]float64, bool) {
+			return m, true
 		})
 	}
+
+	return &s, nil
 }
