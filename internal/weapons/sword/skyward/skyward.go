@@ -4,75 +4,86 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("skyward blade", weapon)
-	core.RegisterWeaponFunc("skywardblade", weapon)
+	core.RegisterWeaponFunc(keys.SkywardBlade, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+//CRIT Rate increased by 4%. Gains Skypiercing Might upon using an Elemental
+//Burst: Increases Movement SPD by 10%, increases ATK SPD by 10%, and Normal and
+//Charged hits deal additional DMG equal to 20% of ATK. Skypiercing Might lasts
+//for 12s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	//perm buff
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.03 + float64(r)*0.01
+	char.AddStatMod("skyward-blade-crit", -1, attributes.NoStat, func() ([]float64, bool) {
+		return m, true
+	})
 
 	dur := -1
-	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	atkspdBuff := make([]float64, attributes.EndStatType)
+	atkspdBuff[attributes.AtkSpd] = 0.1
+	c.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 		dur = c.F + 720
-		c.Log.NewEvent("Skyward Blade activated", core.LogWeaponEvent, char.CharIndex(), "expiring ", dur)
+		char.AddStatMod("skyward blade", 720, attributes.NoStat, func() ([]float64, bool) {
+			return atkspdBuff, true
+		})
+		c.Log.NewEvent("Skyward Blade activated", glog.LogWeaponEvent, char.Index, "expiring ", dur)
 		return false
-	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
+	}, fmt.Sprintf("skyward-blade-%v", char.Base.Name))
 
-	m := make([]float64, core.EndStatType)
-	m[core.CR] = 0.03 + float64(r)*0.01
-
-	char.AddMod(core.CharStatMod{
-		Key: "skyward blade",
-		Amount: func() ([]float64, bool) {
-			m[core.AtkSpd] = 0
-			if dur > c.F {
-				m[core.AtkSpd] = 0.1 //if burst active
-			}
-			return m, true
-		},
-		Expiry: -1,
-	})
-
-	//damage procs
-	atk := .15 + .05*float64(r)
-
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-
-		ae := args[1].(*core.AttackEvent)
-
+	//deals damage proc on normal/charged attacks. i dont know why description in game sucks
+	dmgper := .15 + .05*float64(r)
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
 		//check if char is correct?
-		if ae.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		//check if buff up
 		if dur < c.F {
 			return false
 		}
-
 		//add a new action that deals % dmg immediately
-		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
 			Abil:       "Skyward Blade Proc",
-			AttackTag:  core.AttackTagWeaponSkill,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Physical,
+			AttackTag:  combat.AttackTagWeaponSkill,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Physical,
 			Durability: 100,
-			Mult:       atk,
+			Mult:       dmgper,
 		}
-		c.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, 1)
-
+		c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 		return false
 
-	}, fmt.Sprintf("skyward-blade-%v", char.Name()))
+	}, fmt.Sprintf("skyward-blade-%v", char.Base.Name))
 
-	return "skywardblade"
+	return w, nil
 }

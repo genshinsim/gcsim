@@ -37,8 +37,9 @@ type Core struct {
 }
 
 type Flags struct {
-	LogDebug bool // Used to determine logging level
-	Custom   map[string]int
+	LogDebug   bool // Used to determine logging level
+	DamageMode bool //for hp mode
+	Custom     map[string]int
 }
 type Coord struct {
 	X float64 `json:"x"`
@@ -80,7 +81,7 @@ func New(seed int64, debug bool) (*Core, error) {
 	c.Tasks = task.New(&c.F)
 	c.Constructs = construct.New(&c.F, c.Log)
 	c.Player = player.New(&c.F, c.Log, c.Events, c.Tasks, debug)
-	c.Combat = combat.New(c.Log, c.Events, c.Player, false, false)
+	c.Combat = combat.New(c.Log, c.Events, c.Player, c.Rand, false, false)
 
 	return c, nil
 }

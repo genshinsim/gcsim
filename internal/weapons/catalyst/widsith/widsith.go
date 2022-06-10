@@ -4,71 +4,77 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("the widsith", weapon)
-	core.RegisterWeaponFunc("thewidsith", weapon)
+	core.RegisterWeaponFunc(keys.TheWidsith, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	mATK := make([]float64, core.EndStatType)
-	mATK[core.ATKP] = .45 + float64(r)*0.15
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-	mEM := make([]float64, core.EndStatType)
-	mEM[core.EM] = 180 + float64(r)*60
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
 
-	mDmg := make([]float64, core.EndStatType)
+	mATK := make([]float64, attributes.EndStatType)
+	mATK[attributes.ATKP] = .45 + float64(r)*0.15
+
+	mEM := make([]float64, attributes.EndStatType)
+	mEM[attributes.EM] = 180 + float64(r)*60
+
+	mDmg := make([]float64, attributes.EndStatType)
 	dmg := .36 + float64(r)*.12
-	mDmg[core.PyroP] = dmg
-	mDmg[core.HydroP] = dmg
-	mDmg[core.CryoP] = dmg
-	mDmg[core.ElectroP] = dmg
-	mDmg[core.AnemoP] = dmg
-	mDmg[core.GeoP] = dmg
-	mDmg[core.DendroP] = dmg
+	mDmg[attributes.PyroP] = dmg
+	mDmg[attributes.HydroP] = dmg
+	mDmg[attributes.CryoP] = dmg
+	mDmg[attributes.ElectroP] = dmg
+	mDmg[attributes.AnemoP] = dmg
+	mDmg[attributes.GeoP] = dmg
+	mDmg[attributes.DendroP] = dmg
 
 	icd := -1
-	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+	state := -1
+	stats := []string{"em", "dmg%", "atk%"}
+	buff := [][]float64{mEM, mDmg, mATK}
+
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		next := args[1].(int)
-		//ignore if char is not the active one
-		if next != char.CharIndex() {
+
+		if next != char.Index {
 			return false
 		}
-		//if char is the active one then we just came on to field
+
 		if c.F < icd {
 			return false
 		}
 		icd = c.F + 60*30
 
-		//random 1 of 3
-		i := c.Rand.Intn(3)
-		var stat string
-		var fn func() ([]float64, bool)
-		switch i {
-		case 0:
-			stat = "em"
-			fn = func() ([]float64, bool) { return mEM, true }
-		case 1:
-			stat = "dmg%"
-			fn = func() ([]float64, bool) { return mDmg, true }
-		case 2:
-			stat = "atk%"
-			fn = func() ([]float64, bool) { return mATK, true }
-		}
+		state = c.Rand.Intn(3)
 
 		expiry := c.F + 60*10
-		char.AddMod(core.CharStatMod{
-			Key:    "widsith",
-			Expiry: expiry,
-			Amount: fn,
+		char.AddStatMod("widsith", 600, attributes.NoStat, func() ([]float64, bool) {
+			//sanity check; should never happen
+			if state == -1 {
+				return nil, false
+			}
+			return buff[state], true
 		})
-		c.Log.NewEvent("widsith proc'd", core.LogWeaponEvent, char.CharIndex(), "stat", stat, "expiring", expiry)
+		c.Log.NewEvent("widsith proc'd", glog.LogWeaponEvent, char.Index, "stat", stats[state], "expiring", expiry)
 
 		return false
-	}, fmt.Sprintf("width-%v", char.Name()))
+	}, fmt.Sprintf("width-%v", char.Base.Name))
 
-	return "thewidsith"
+	return w, nil
 
 }

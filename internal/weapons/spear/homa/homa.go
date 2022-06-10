@@ -2,43 +2,45 @@ package homa
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("staff of homa", weapon)
-	core.RegisterWeaponFunc("staffofhoma", weapon)
-	core.RegisterWeaponFunc("homa", weapon)
+	core.RegisterWeaponFunc(keys.StaffOfHoma, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	mHP := make([]float64, core.EndStatType)
-	mHP[core.HPP] = 0.15 + float64(r)*0.05
-	char.AddMod(core.CharStatMod{
-		Key:    "homa-hp",
-		Expiry: -1,
-		Amount: func() ([]float64, bool) {
-			return mHP, true
-		},
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	mHP := make([]float64, attributes.EndStatType)
+	mHP[attributes.HPP] = 0.15 + float64(r)*0.05
+	char.AddStatMod("homa-hp", -1, attributes.NoStat, func() ([]float64, bool) {
+		return mHP, true
 	})
 
-	mATK := make([]float64, core.EndStatType)
+	mATK := make([]float64, attributes.EndStatType)
 	atkp := 0.006 + float64(r)*0.002
 	lowhp := 0.008 + float64(r)*0.002
-	char.AddMod(core.CharStatMod{
-		Key:          "homa-atk-buff",
-		Expiry:       -1,
-		AffectedStat: core.ATK, // to avoid infinite loop when calling MaxHP
-		Amount: func() ([]float64, bool) {
-			maxhp := char.MaxHP()
-			per := atkp
-			if maxhp <= 0.5 {
-				per += lowhp
-			}
-			mATK[core.ATK] = per * maxhp
-			return mATK, true
-		},
+	char.AddStatMod("homa-atk-buff", -1, attributes.ATK, func() ([]float64, bool) {
+		maxhp := char.MaxHP()
+		per := atkp
+		if maxhp <= 0.5 {
+			per += lowhp
+		}
+		mATK[attributes.ATK] = per * maxhp
+		return mATK, true
 	})
 
-	return "staffofhoma"
+	return w, nil
 }

@@ -2,31 +2,46 @@ package dragonbane
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 func init() {
-	core.RegisterWeaponFunc("lion's roar", weapon)
-	core.RegisterWeaponFunc("lionsroar", weapon)
+	core.RegisterWeaponFunc(keys.LionsRoar, NewWeapon)
 }
 
 //Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	dmg := 0.16 + float64(r)*0.04
+type Weapon struct {
+	Index int
+}
 
-	char.AddPreDamageMod(core.PreDamageMod{
-		Key:    "lionsroar",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			m := make([]float64, core.EndStatType)
-			if atk.Info.AttackTag > core.ReactionAttackDelim {
-				return nil, false
-			}
-			if t.AuraContains(core.Electro, core.Pyro) {
-				m[core.DmgP] = dmg
-				return m, true
-			}
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.16 + float64(r)*0.04
+
+	char.AddAttackMod("lionsroar", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		if atk.Info.AttackTag > combat.ReactionAttackDelim {
 			return nil, false
-		},
+		}
+		x, ok := t.(*enemy.Enemy)
+		if !ok {
+			return nil, false
+		}
+		if x.AuraContains(attributes.Electro, attributes.Pyro) {
+			return m, true
+		}
+		return nil, false
 	})
-	return "lionsroar"
+
+	return w, nil
 }

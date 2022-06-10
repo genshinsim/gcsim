@@ -4,34 +4,40 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("windblume ode", weapon)
-	core.RegisterWeaponFunc("windblumeode", weapon)
+	core.RegisterWeaponFunc(keys.WindblumeOde, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = 0.12 + float64(r)*0.04
+type Weapon struct {
+	Index int
+}
 
-	// Effect should always apply BEFORE the skill hits
-	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-		// Character must be onfield
-		if char.CharIndex() != c.ActiveChar {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.12 + float64(r)*0.04
+
+	c.Events.Subscribe(event.PreSkill, func(args ...interface{}) bool {
+		if char.Index != c.Player.Active() {
 			return false
 		}
-
-		char.AddMod(core.CharStatMod{
-			Key: "windblume",
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-			Expiry: c.F + 360,
+		char.AddStatMod("windblume", 360, attributes.NoStat, func() ([]float64, bool) {
+			return m, true
 		})
 		return false
-	}, fmt.Sprintf("windblume-%v", char.Name()))
+	}, fmt.Sprintf("windblume-%v", char.Base.Name))
 
-	return "windblumeode"
+	return w, nil
 }

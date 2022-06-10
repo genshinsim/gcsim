@@ -4,54 +4,71 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 func init() {
-	core.RegisterWeaponFunc("frostbearer", weapon)
+	core.RegisterWeaponFunc(keys.Frostbearer, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
 	atk := 0.65 + float64(r)*0.15
 	atkc := 1.6 + float64(r)*0.4
-	p := 0.5 + float64(r)*0.1
+	prob := 0.5 + float64(r)*0.1
 
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-		t := args[0].(core.Target)
-		if ae.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*combat.AttackEvent)
+		t := args[0].(*enemy.Enemy)
+		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
 		if c.F > icd {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
+		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if c.Rand.Float64() < p {
+		if c.Rand.Float64() < prob {
 			icd = c.F + 600
 
-			ai := core.AttackInfo{
-				ActorIndex: char.CharIndex(),
+			ai := combat.AttackInfo{
+				ActorIndex: char.Index,
 				Abil:       "Frostbearer Proc",
-				AttackTag:  core.AttackTagWeaponSkill,
-				ICDTag:     core.ICDTagNone,
-				ICDGroup:   core.ICDGroupDefault,
-				Element:    core.Physical,
+				AttackTag:  combat.AttackTagWeaponSkill,
+				ICDTag:     combat.ICDTagNone,
+				ICDGroup:   combat.ICDGroupDefault,
+				Element:    attributes.Physical,
 				Durability: 100,
 				Mult:       atk,
 			}
 
-			if t.AuraContains(core.Cryo) || t.AuraContains(core.Frozen) {
+			if t.AuraContains(attributes.Cryo) || t.AuraContains(attributes.Frozen) {
 				ai.Mult = atkc
 			}
 
-			c.Combat.QueueAttack(ai, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, 1)
+			c.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 0, 1)
 
 		}
 		return false
-	}, fmt.Sprintf("forstbearer-%v", char.Name()))
+	}, fmt.Sprintf("forstbearer-%v", char.Base.Name))
 
-	return "frostbearer"
+	return w, nil
 }

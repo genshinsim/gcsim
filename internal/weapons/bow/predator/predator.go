@@ -2,30 +2,36 @@ package predator
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("predator", weapon)
+	core.RegisterWeaponFunc(keys.Predator, NewWeapon)
 }
 
-/*
- * Dealing Cryo DMG to opponents increases this character's Normal and Charged Attack DMG by 10% for 6s.
- * This effect can have a maximum of 2 stacks.
- * Additionally, when Aloy equips Predator, ATK is increased by 66.
- * (Refines do not change the weapon effect)
- */
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	mATK, mDMG := make([]float64, core.EndStatType), make([]float64, core.EndStatType)
+type Weapon struct {
+	Index int
+}
 
-	if char.Key() == core.Aloy {
-		char.AddMod(core.CharStatMod{
-			Key:    "predator",
-			Expiry: -1,
-			Amount: func() ([]float64, bool) {
-				mATK[core.ATK] = 66
-				return mATK, true
-			},
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+
+	mATK, mDMG := make([]float64, attributes.EndStatType), make([]float64, attributes.EndStatType)
+
+	if char.Base.Key == keys.Aloy {
+		mATK[attributes.ATK] = 66
+		char.AddStatMod("predator", -1, attributes.NoStat, func() ([]float64, bool) {
+			return mATK, true
 		})
 	}
 
@@ -34,60 +40,47 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	stacks := 0
 	stackExpiry := 0
 	maxStacks := 2
-	stackDuration := 360 // 6s
+	stackDuration := 360
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
 
-		// Attack belongs to the equipped character
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 
-		// Active character has weapon equipped
-		if c.ActiveChar != char.CharIndex() {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 
-		// Only apply when damage element is cryo
-		if atk.Info.Element != core.Cryo {
+		if atk.Info.Element != attributes.Cryo {
 			return false
 		}
 
-		// Reset stacks if they've expired
 		if c.F > stackExpiry {
 			stacks = 0
 		}
 
-		// Checks done, proc weapon passive
-		// Increment stack count
 		if stacks < maxStacks {
 			stacks++
 		}
 
 		stackExpiry = c.F + stackDuration
 
-		char.AddPreDamageMod(core.PreDamageMod{
-			Key: "predator",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				// Reset stacks if they've expired
-				if c.F > stackExpiry {
-					stacks = 0
-				}
-
-				// Only apply to normal or charged attacks
-				if (atk.Info.AttackTag == core.AttackTagNormal) || (atk.Info.AttackTag == core.AttackTagExtra) {
-					mDMG[core.DmgP] = buffDmgP * float64(stacks)
-					return mDMG, true
-				}
-
-				return nil, false
-			},
-			Expiry: stackExpiry,
+		char.AddAttackMod("predator", stackDuration, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			//TODO: not sure if this check is needed here
+			if c.F > stackExpiry {
+				stacks = 0
+			}
+			if (atk.Info.AttackTag == combat.AttackTagNormal) || (atk.Info.AttackTag == combat.AttackTagExtra) {
+				mDMG[attributes.DmgP] = buffDmgP * float64(stacks)
+				return mDMG, true
+			}
+			return nil, false
 		})
 
 		return false
-	}, fmt.Sprintf("predator-%v", char.Name()))
+	}, fmt.Sprintf("predator-%v", char.Base.Name))
 
-	return "predator"
+	return w, nil
 }

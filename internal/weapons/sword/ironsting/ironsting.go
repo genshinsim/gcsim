@@ -4,58 +4,63 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("iron sting", weapon)
-	core.RegisterWeaponFunc("ironsting", weapon)
+	core.RegisterWeaponFunc(keys.IronSting, NewWeapon)
 }
 
-//After using an Elemental Skill, increases Normal and Charged Attack DMG by 8% for 12s. Max 2 stacks.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index  int
+	stacks int
+	buff   []float64
+}
 
-	expiry := 0
-	atk := 0.045 + 0.015*float64(r)
-	stacks := 0
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+//Dealing Elemental DMG increases all DMG by 6% for 6s. Max 2 stacks. Can occur once every 1s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	dmgbuff := 0.045 + 0.015*float64(r)
 	icd := 0
+	activeUntil := 0
+	w.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-
-		atk := args[1].(*core.AttackEvent)
-
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.Element == core.Physical {
+		if atk.Info.Element == attributes.Physical {
 			return false
 		}
 		if icd > c.F {
 			return false
 		}
 		icd = c.F + 60
-		if expiry < c.F {
-			stacks = 0
+		if activeUntil < c.F {
+			w.stacks = 0
 		}
-		stacks++
-		if stacks > 2 {
-			stacks = 2
+		if w.stacks < 2 {
+			w.stacks++
+			w.buff[attributes.DmgP] = dmgbuff * float64(w.stacks)
 		}
-		expiry = c.F + 360
+		activeUntil = c.F + 360
+		//refresh mod
+		char.AddStatMod("ironsting", 360, attributes.NoStat, func() ([]float64, bool) {
+			return w.buff, true
+		})
 		return false
-	}, fmt.Sprintf("ironsting-%v", char.Name()))
+	}, fmt.Sprintf("ironsting-%v", char.Base.Name))
 
-	val := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
-		Key:    "ironsting",
-		Expiry: -1,
-		Amount: func() ([]float64, bool) {
-			if expiry < c.F {
-				stacks = 0
-				return nil, false
-			}
-			val[core.DmgP] = atk * float64(stacks)
-			return val, true
-		},
-	})
-	return "ironsting"
+	return w, nil
 }

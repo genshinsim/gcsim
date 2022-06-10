@@ -2,27 +2,41 @@ package rainslasher
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 func init() {
-	core.RegisterWeaponFunc("rainslasher", weapon)
+	core.RegisterWeaponFunc(keys.Rainslasher, NewWeapon)
 }
 
-//Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	dmg := 0.16 + float64(r)*0.04
+type Weapon struct {
+	Index int
+}
 
-	char.AddPreDamageMod(core.PreDamageMod{
-		Key:    "rainslasher",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			m := make([]float64, core.EndStatType)
-			if !t.AuraContains(core.Hydro, core.Electro) {
-				return nil, false
-			}
-			m[core.DmgP] = dmg
-			return m, true
-		},
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.16 + float64(r)*0.04
+
+	char.AddAttackMod("rainslasher", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		x, ok := t.(*enemy.Enemy)
+		if !ok {
+			return nil, false
+		}
+		if !x.AuraContains(attributes.Hydro, attributes.Electro) {
+			return nil, false
+		}
+		return m, true
 	})
-	return "rainslasher"
+
+	return w, nil
 }

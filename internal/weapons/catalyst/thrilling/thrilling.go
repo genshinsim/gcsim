@@ -4,59 +4,66 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("thrilling tales of dragon slayers", weapon)
-	core.RegisterWeaponFunc("thrillingtalesofdragonslayers", weapon)
-	core.RegisterWeaponFunc("ttds", weapon)
+	core.RegisterWeaponFunc(keys.ThrillingTalesOfDragonSlayers, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//When switching characters, the new character taking the field has their
+	//ATK increased by 24% for 10s. This effect can only occur once every 20s.
+	w := &Weapon{}
+	r := p.Refine
+
 	cd := -1
 	isActive := false
+	key := fmt.Sprintf("thrilling-%v", char.Base.Name)
 
-	c.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
-		isActive = c.ActiveChar == char.CharIndex()
+	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+		isActive = c.Player.Active() == char.Index
 		return true
-	}, fmt.Sprintf("thrilling-%v", char.Name()))
+	}, key)
 
-	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = .18 + float64(r)*0.06
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = .18 + float64(r)*0.06
 
-	c.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		if !isActive && c.ActiveChar == char.CharIndex() {
-			//swapped to current char
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		if !isActive && c.Player.Active() == char.Index {
 			isActive = true
 			return false
 		}
 
-		//swap from current char to new char
-		if isActive && c.ActiveChar != char.CharIndex() {
+		if isActive && c.Player.Active() != char.Index {
 			isActive = false
-
-			//do nothing if off cd
 			if c.F < cd {
 				return false
 			}
-			//trigger buff if not on cd
-			cd = c.F + 60*20
-			expiry := c.F + 60*10
 
-			active := c.Chars[c.ActiveChar]
-			active.AddMod(core.CharStatMod{
-				Key: "thrilling tales",
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-				Expiry: expiry,
+			cd = c.F + 60*20
+			active := c.Player.ActiveChar()
+			active.AddStatMod("thrilling tales", 600, attributes.NoStat, func() ([]float64, bool) {
+				return m, true
 			})
 
-			c.Log.NewEvent("ttds activated", core.LogWeaponEvent, active.CharIndex(), "expiry", expiry)
+			c.Log.NewEvent("ttds activated", glog.LogWeaponEvent, c.Player.Active(), "expiry", c.F+600)
 		}
 
 		return false
-	}, fmt.Sprintf("thrilling-%v", char.Name()))
+	}, key)
 
-	return "thrillingtalesofdragonslayers"
+	return w, nil
 }

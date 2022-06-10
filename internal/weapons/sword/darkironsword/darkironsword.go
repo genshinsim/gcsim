@@ -2,48 +2,60 @@ package darkironsword
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("darkironsword", weapon)
+	core.RegisterWeaponFunc(keys.DarkIronSword, NewWeapon)
 }
+
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
 // Overloaded
 // Upon causing an Overloaded, Superconduct, Electro-Charged, or an Electro-infused Swirl reaction,
 // ATK is increased by 20/25/30/35/40% for 12s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	dur := 12 * 60
-	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = 0.15 + float64(r)*0.05
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.15 + float64(r)*0.05
 
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 
 		//ignore if character not on field
-		if c.ActiveChar != char.CharIndex() {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 
 		switch atk.Info.AttackTag {
-		case core.AttackTagSuperconductDamage,
-			core.AttackTagECDamage,
-			core.AttackTagOverloadDamage,
-			core.AttackTagSwirlElectro:
-			char.AddMod(core.CharStatMod{
-				Key: "darkironsword",
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-				Expiry: c.F + dur,
+		case combat.AttackTagSuperconductDamage,
+			combat.AttackTagECDamage,
+			combat.AttackTagOverloadDamage,
+			combat.AttackTagSwirlElectro:
+			char.AddStatMod("darkironsword", 720, attributes.NoStat, func() ([]float64, bool) {
+				return m, true
 			})
 		}
 
 		return false
-	}, fmt.Sprintf("darkironsword-%v", char.Name()))
-	return "darkironsword"
+	}, fmt.Sprintf("darkironsword-%v", char.Base.Name))
+	return w, nil
 }

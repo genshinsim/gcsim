@@ -4,54 +4,65 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("crescent pike", weapon)
-	core.RegisterWeaponFunc("crescentpike", weapon)
+	core.RegisterWeaponFunc(keys.CrescentPike, NewWeapon)
 }
 
-//After defeating an enemy, ATK is increased by 12/15/18/21/24% for 30s.
-//This effect has a maximum of 3 stacks, and the duration of each stack is independent of the others.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
 	atk := .15 + float64(r)*.05
 	active := 0
 
-	c.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
-		c.Log.NewEvent("crescent pike active", core.LogWeaponEvent, char.CharIndex(), "expiry", c.F+300)
+		c.Log.NewEvent("crescent pike active", glog.LogWeaponEvent, char.Index, "expiry", c.F+300)
 		active = c.F + 300
 
 		return false
-	}, fmt.Sprintf("cp-%v", char.Name()))
+	}, fmt.Sprintf("cp-%v", char.Base.Name))
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-		//check if char is correct?
-		if ae.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*combat.AttackEvent)
+		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
+		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		if c.F < active {
-			//add a new action that deals % dmg immediately
-			ai := core.AttackInfo{
-				ActorIndex: char.CharIndex(),
+			ai := combat.AttackInfo{
+				ActorIndex: char.Index,
 				Abil:       "Crescent Pike Proc",
-				AttackTag:  core.AttackTagWeaponSkill,
-				ICDTag:     core.ICDTagNone,
-				ICDGroup:   core.ICDGroupDefault,
-				Element:    core.Physical,
+				AttackTag:  combat.AttackTagWeaponSkill,
+				ICDTag:     combat.ICDTagNone,
+				ICDGroup:   combat.ICDGroupDefault,
+				Element:    attributes.Physical,
 				Durability: 100,
 				Mult:       atk,
 			}
-			c.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, 1)
-
+			c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 		}
 		return false
-	}, fmt.Sprintf("cpp-%v", char.Name()))
-	return "crescentpike"
+	}, fmt.Sprintf("cpp-%v", char.Base.Name))
+	return w, nil
 }

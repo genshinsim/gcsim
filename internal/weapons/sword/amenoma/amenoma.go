@@ -4,21 +4,34 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("amenoma kageuchi", weapon)
-	core.RegisterWeaponFunc("amenomakageuchi", weapon)
+	core.RegisterWeaponFunc(keys.AmenomaKageuchi, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
 
 	seeds := make([]int, 3) //keep track the seeds
 	refund := 4.5 + 1.5*float64(r)
 	icd := 0
 
-	c.Events.Subscribe(core.PostSkill, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.PostSkill, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 		// add 1 seed
@@ -35,18 +48,17 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 				index = i
 			}
 		}
-
 		seeds[index] = c.F + 30*60
 
-		c.Log.NewEvent("amenoma proc'd", core.LogWeaponEvent, char.CharIndex(), "index", index, "seeds", seeds)
+		c.Log.NewEvent("amenoma proc'd", glog.LogWeaponEvent, char.Index, "index", index, "seeds", seeds)
 
 		icd = c.F + 300 //5 seconds
 
 		return false
-	}, fmt.Sprintf("amenoma-skill-%v", char.Name()))
+	}, fmt.Sprintf("amenoma-skill-%v", char.Base.Name))
 
-	c.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.PostBurst, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 		count := 0
@@ -60,11 +72,11 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			return false
 		}
 		//regen energy after 2 seconds
-		char.AddTask(func() {
+		c.Tasks.Add(func() {
 			char.AddEnergy("amenoma", refund*float64(count))
-		}, "amenoma-regen", 120+60) //added 1 extra sec for burst animation but who knows if this is true
+		}, 120+60) //added 1 extra sec for burst animation but who knows if this is true
 
 		return false
-	}, fmt.Sprintf("amenoma-burst-%v", char.Name()))
-	return "amenomakageuchi"
+	}, fmt.Sprintf("amenoma-burst-%v", char.Base.Name))
+	return w, nil
 }

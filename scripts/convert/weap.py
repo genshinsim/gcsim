@@ -22,6 +22,8 @@ replace = [
     [r"char\.MaxEnergy\(\)", "char.EnergyMax"],
     [r"\.Status\.AddStatus\(", ".Status.Add("],
     [r"core\.RegisterWeaponFunc\(\"(.+)\", weapon\)", ""],
+    [r"return \"(.+)\"", "return w, nil"],
+    [r"c\.Combat\.Queue", "c.Queue"]
 ]
 
 

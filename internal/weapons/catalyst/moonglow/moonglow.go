@@ -4,58 +4,69 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("everlastingmoonglow", weapon)
-	core.RegisterWeaponFunc("everlasting moonglow", weapon)
-	core.RegisterWeaponFunc("moonglow", weapon)
+
+	core.RegisterWeaponFunc(keys.EverlastingMoonglow, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	mheal := make([]float64, core.EndStatType)
-	mheal[core.Heal] = 0.075 + float64(r)*0.025
-	char.AddMod(core.CharStatMod{
-		Key: "moonglow-heal-bonus",
-		Amount: func() ([]float64, bool) {
-			return mheal, true
-		},
-		Expiry: -1,
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	mheal := make([]float64, attributes.EndStatType)
+	mheal[attributes.Heal] = 0.075 + float64(r)*0.025
+	char.AddStatMod("moonglow-heal-bonus", -1, attributes.NoStat, func() ([]float64, bool) {
+		return mheal, true
 	})
 
 	nabuff := 0.005 + float64(r)*0.005
-	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
 
 		flatdmg := char.MaxHP() * nabuff
 		atk.Info.FlatDmg += flatdmg
 
-		c.Log.NewEvent("moonglow add damage", core.LogPreDamageMod, char.CharIndex(), "damage_added", flatdmg)
+		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index, "damage_added", flatdmg)
 		return false
-	}, fmt.Sprintf("moonglow-nabuff-%v", char.Name()))
+	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Name))
 
 	icd, dur := -1, -1
-	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
-		dur = c.F + 720 // 12s
-
+		dur = c.F + 720
 		return false
-	}, fmt.Sprintf("moonglow-onburst-%v", char.Name()))
+	}, fmt.Sprintf("moonglow-onburst-%v", char.Base.Name))
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal {
+		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
 		if dur < c.F || icd > c.F {
@@ -63,10 +74,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		char.AddEnergy("moonglow", 0.6)
-		icd = c.F + 6 // 0.1s
+		icd = c.F + 6
 
 		return false
-	}, fmt.Sprintf("moonglow-energy-%v", char.Name()))
+	}, fmt.Sprintf("moonglow-energy-%v", char.Base.Name))
 
-	return "everlastingmoonglow"
+	return w, nil
 }

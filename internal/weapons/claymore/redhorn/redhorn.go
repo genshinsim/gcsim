@@ -4,45 +4,52 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("redhorn stonethresher", weapon)
-	core.RegisterWeaponFunc("redhornstonethresher", weapon)
+	core.RegisterWeaponFunc(keys.RedhornStonethresher, NewWeapon)
 }
 
-// At R5
-// DEF is increased by 56%. Normal and Charged Attack DMG is increased by 80% of DEF.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	defBoost := .21 + 0.07*float64(r)
-	nacaBoost := .3 + .1*float64(r)
+type Weapon struct {
+	Index int
+}
 
-	val := make([]float64, core.EndStatType)
-	val[core.DEFP] = defBoost
-	char.AddMod(core.CharStatMod{
-		Expiry: -1,
-		Key:    "redhorn-stonethrasher-def-boost",
-		Amount: func() ([]float64, bool) {
-			return val, true
-		},
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//DEF is increased by 28%. Normal and Charged Attack DMG is increased by 40% of DEF.
+	w := &Weapon{}
+	r := p.Refine
+
+	defBoost := .21 + 0.07*float64(r)
+	val := make([]float64, attributes.EndStatType)
+	val[attributes.DEFP] = defBoost
+	char.AddStatMod("redhorn-stonethrasher-def-boost", -1, attributes.NoStat, func() ([]float64, bool) {
+		return val, true
 	})
 
-	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-
-		if atk.Info.ActorIndex != char.CharIndex() {
+	nacaBoost := .3 + .1*float64(r)
+	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if !(atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra) {
+		if !(atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagExtra) {
 			return false
 		}
-		baseDmgAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[core.DEFP]) + atk.Snapshot.Stats[core.DEF]) * nacaBoost
+		baseDmgAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * nacaBoost
 		atk.Info.FlatDmg += baseDmgAdd
-
-		c.Log.NewEvent("Redhorn proc dmg add", core.LogPreDamageMod, char.CharIndex(), "base_added_dmg", baseDmgAdd)
-
+		c.Log.NewEvent("Redhorn proc dmg add", glog.LogPreDamageMod, char.Index, "base_added_dmg", baseDmgAdd)
 		return false
-	}, fmt.Sprintf("redhorn-%v", char.Name()))
+	}, fmt.Sprintf("redhorn-%v", char.Base.Name))
 
-	return "redhornstonethresher"
+	return w, nil
 }

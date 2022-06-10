@@ -29,7 +29,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 
 	buffAmount := .15 + .05*float64(r)
-	buffExpiry := 300
 	buffIcd := 0
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -50,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		buffIcd = c.F + 1
 
 		if atk.Info.AttackTag == combat.AttackTagNormal {
-			char.AddAttackMod("mitternachtswaltz-ele", buffExpiry, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			char.AddAttackMod("mitternachtswaltz-ele", 300, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
 					m[attributes.DmgP] = buffAmount
 					return m, true
@@ -60,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
-			char.AddAttackMod("mitternachtswaltz-na", buffExpiry, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			char.AddAttackMod("mitternachtswaltz-na", 300, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag == combat.AttackTagNormal {
 					m[attributes.DmgP] = buffAmount
 					return m, true

@@ -4,37 +4,50 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("skyward spine", weapon)
-	core.RegisterWeaponFunc("skywardspine", weapon)
+	core.RegisterWeaponFunc(keys.SkywardSpine, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	m := make([]float64, core.EndStatType)
-	m[core.CR] = 0.06 + float64(r)*0.02
-	m[core.AtkSpd] = 0.12
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-	char.AddMod(core.CharStatMod{
-		Key: "skyward spine",
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-		Expiry: -1,
+//Increases CRIT Rate by 8% and increases Normal ATK SPD by 12%. Additionally,
+//Normal and Charged Attacks hits on opponents have a 50% chance to trigger a
+//vacuum blade that deals 40% of ATK as DMG in a small AoE. This effect can
+//occur no more than once every 2s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	//perm buff
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.06 + float64(r)*0.02
+	m[attributes.AtkSpd] = 0.12
+	char.AddStatMod("skyward spine", -1, attributes.NoStat, func() ([]float64, bool) {
+		return m, true
 	})
 
 	icd := 0
 	atk := .25 + .15*float64(r)
-
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*combat.AttackEvent)
 		//check if char is correct?
-		if ae.Info.ActorIndex != char.CharIndex() {
+		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal && ae.Info.AttackTag != core.AttackTagExtra {
+		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		//check if cd is up
@@ -46,21 +59,21 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		//add a new action that deals % dmg immediately
-		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
 			Abil:       "Skyward Spine Proc",
-			AttackTag:  core.AttackTagWeaponSkill,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Physical,
+			AttackTag:  combat.AttackTagWeaponSkill,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       atk,
 		}
-		c.Combat.QueueAttack(ai, core.NewDefCircHit(0.1, false, core.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 
 		//trigger cd
 		icd = c.F + 120
 		return false
-	}, fmt.Sprintf("skyward-spine-%v", char.Name()))
-	return "skywardspine"
+	}, fmt.Sprintf("skyward-spine-%v", char.Base.Name))
+	return w, nil
 }

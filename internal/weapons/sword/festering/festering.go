@@ -2,28 +2,38 @@ package festering
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("festering desire", weapon)
-	core.RegisterWeaponFunc("festeringdesire", weapon)
+	core.RegisterWeaponFunc(keys.FesteringDesire, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	m := make([]float64, core.EndStatType)
-	m[core.CR] = .045 + .015*float64(r)
-	m[core.DmgP] = .12 + 0.04*float64(r)
-	char.AddPreDamageMod(core.PreDamageMod{
-		Key:    "festering",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			switch atk.Info.AttackTag {
-			case core.AttackTagElementalArt, core.AttackTagElementalArtHold:
-				return m, true
-			}
-			return nil, false
-		},
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = .045 + .015*float64(r)
+	m[attributes.DmgP] = .12 + 0.04*float64(r)
+	char.AddAttackMod("festering", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		switch atk.Info.AttackTag {
+		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold:
+			return m, true
+		}
+		return nil, false
 	})
-	return "festeringdesire"
+
+	return w, nil
 }

@@ -4,61 +4,73 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("primordial jade winged-spear", weapon)
-	core.RegisterWeaponFunc("primordialjadewingedspear", weapon)
+	core.RegisterWeaponFunc(keys.PrimordialJadeCutter, NewWeapon)
 }
 
-//For every character in the party who hails from Liyue, the character who equips this
-//weapon gains 6/7/8/9//10% ATK increase and 2/3/4/5/6% CRIT Rate increase.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index  int
+	stacks int
+	buff   []float64
+}
 
-	last := 0
-	stacks := 0
-	active := 0
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-	m := make([]float64, core.EndStatType)
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//On hit, increases ATK by 3.2% for 6s. Max 7 stacks. This effect can only
+	//occur once every 0.3s. While in possession of the maximum possible stacks,
+	//DMG dealt is increased by 12%.
+	w := &Weapon{}
+	r := p.Refine
 
-	char.AddMod(core.CharStatMod{
-		Key: "primordial",
-		Amount: func() ([]float64, bool) {
-			return m, active > c.F
-		},
-		Expiry: -1,
-	})
+	icd := 0
+	activeUntil := -1
+	w.buff = make([]float64, attributes.EndStatType)
+	perStackBuff := float64(r)*0.007 + 0.025
+	dmgBuffAtMax := 0.09 + float64(r)*0.03
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
 		//check if char is correct?
-		if atk.Info.ActorIndex != char.CharIndex() {
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if c.ActiveChar != char.CharIndex() {
+		if c.Player.Active() != char.Index {
 			return false
 		}
-		//check if cd is up
-		if c.F-last < 18 && last != 0 {
+		if icd > c.F {
 			return false
 		}
-		//check if expired; reset stacks if so
-		if active < c.F {
-			stacks = 0
+		if activeUntil < c.F {
+			w.stacks = 0
+		}
+		activeUntil = c.F + 300
+		icd = c.F + 18 //every 0.3s
+
+		if w.stacks < 7 {
+			w.stacks++
+			//check if it's max or amt
+			if w.stacks == 7 {
+				w.buff[attributes.DmgP] = dmgBuffAtMax
+			}
+			w.buff[attributes.ATKP] = float64(w.stacks) * perStackBuff
 		}
 
-		stacks++
-		active = c.F + 360
+		//refresh mod
+		char.AddStatMod("primordial", 300, attributes.NoStat, func() ([]float64, bool) {
+			return w.buff, true
+		})
 
-		if stacks >= 7 {
-			stacks = 7
-			m[core.DmgP] = 0.09 + float64(r)*0.03
-		}
-		m[core.ATKP] = (float64(r)*0.007 + 0.025) * float64(stacks)
-
-		//trigger cd
-		last = c.F
 		return false
-	}, fmt.Sprintf("primordial-%v", char.Name()))
-	return "primordialjadewingedspear"
+	}, fmt.Sprintf("primordial-%v", char.Base.Name))
+	return w, nil
 }

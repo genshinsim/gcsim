@@ -4,51 +4,65 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("kitain cross spear", weapon)
-	core.RegisterWeaponFunc("kitaincrossspear", weapon)
+	core.RegisterWeaponFunc(keys.KitainCrossSpear, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	m := make([]float64, core.EndStatType)
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//Increases Elemental Skill DMG by 6%. After Elemental Skill hits an
+	//opponent, the character loses 3 Energy but regenerates 3 Energy every 2s
+	//for the next 6s. This effect can occur once every 10s. Can be triggered
+	//even when the character is not on the field.
+	w := &Weapon{}
+	r := p.Refine
+
+	//permanent increase
+	m := make([]float64, attributes.EndStatType)
 	base := 0.045 + float64(r)*0.015
-	regen := 2.5 + float64(r)*0.5
-
-	m[core.DmgP] = base
-
-	char.AddPreDamageMod(core.PreDamageMod{
-		Expiry: -1,
-		Key:    "kitain-skill-dmg-buff",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == core.AttackTagElementalArt || atk.Info.AttackTag == core.AttackTagElementalArtHold {
-				return m, true
-			}
-			return nil, false
-		},
+	m[attributes.DmgP] = base
+	char.AddAttackMod("kitain-skill-dmg-buff", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
+			return m, true
+		}
+		return nil, false
 	})
 
+	regen := 2.5 + float64(r)*0.5
 	icd := 0
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagElementalArt && atk.Info.AttackTag != core.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return false
 		}
 		if icd > c.F {
 			return false
 		}
-		icd = c.F + 600 //once every 10 seconds
+		icd = c.F + 600
 		char.AddEnergy("kitain", -3)
 		for i := 120; i <= 360; i += 120 {
-			char.AddTask(func() {
+			c.Tasks.Add(func() {
 				char.AddEnergy("kitain", regen)
-			}, "kitain-restore", i)
+			}, i)
 		}
 		return false
-	}, fmt.Sprintf("kitain-%v", char.Name()))
-	return "kitaincrossspear"
+	}, fmt.Sprintf("kitain-%v", char.Base.Name))
+	return w, nil
 }

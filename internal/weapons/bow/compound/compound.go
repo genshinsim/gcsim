@@ -81,12 +81,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		icd = c.F + cd
 		stackExpiry = c.F + stackDuration
 
-		char.AddStatMod("compoundbow", stackExpiry, attributes.NoStat, func() ([]float64, bool) {
-			// Reset stacks if they've expired
-			if c.F > stackExpiry {
-				stacks = 0
-			}
-
+		//buff lasts 6 * 60 = 360 frames
+		char.AddStatMod("compoundbow", stackDuration, attributes.NoStat, func() ([]float64, bool) {
 			m[attributes.ATKP] = incAtk * float64(stacks)
 			m[attributes.AtkSpd] = incSpd * float64(stacks)
 			return m, true

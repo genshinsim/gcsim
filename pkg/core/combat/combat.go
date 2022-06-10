@@ -6,6 +6,8 @@
 package combat
 
 import (
+	"math/rand"
+
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
@@ -23,6 +25,7 @@ type Handler struct {
 	log    glog.Logger
 	events event.Eventter
 	team   CharHandler
+	rand   *rand.Rand
 
 	targets     []Target
 	TotalDamage float64
@@ -31,11 +34,12 @@ type Handler struct {
 	defHalt bool
 }
 
-func New(log glog.Logger, events event.Eventter, team CharHandler, damageMode bool, defHalt bool) *Handler {
+func New(log glog.Logger, events event.Eventter, team CharHandler, rand *rand.Rand, damageMode bool, defHalt bool) *Handler {
 	h := &Handler{
 		log:        log,
 		events:     events,
 		team:       team,
+		rand:       rand,
 		DamageMode: damageMode,
 	}
 	h.targets = make([]Target, 0, 5)

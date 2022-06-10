@@ -4,40 +4,52 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("prototype amber", weapon)
-	core.RegisterWeaponFunc("prototypeamber", weapon)
+	core.RegisterWeaponFunc(keys.PrototypeAmber, NewWeapon)
 }
 
-//Using an Elemental Burst regenerates 4/4.5/5/5.5/6 Energy every 2s for 6s. All party members
-//will regenerate 4/4.5/5/5.5/6% HP every 2s for this duration.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
 
 	e := 3.5 + float64(r)*0.5
 
-	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 
 		for i := 120; i <= 360; i += 120 {
-			char.AddTask(func() {
+			c.Tasks.Add(func() {
 				char.AddEnergy("prototype-amber", e)
-				c.Health.Heal(core.HealInfo{
-					Caller:  char.CharIndex(),
+				c.Player.Heal(player.HealInfo{
+					Caller:  char.Index,
 					Target:  -1,
-					Type:    core.HealTypePercent,
+					Type:    player.HealTypePercent,
 					Message: "Prototype Amber",
 					Src:     e / 100.0,
-					Bonus:   char.Stat(core.Heal),
+					Bonus:   char.Stat(attributes.Heal),
 				})
-			}, "recharge", i)
+			}, i)
 		}
 
 		return false
-	}, fmt.Sprintf("prototype-amber-%v", char.Name()))
+	}, fmt.Sprintf("prototype-amber-%v", char.Base.Name))
 
-	return "prototypeamber"
+	return w, nil
 }

@@ -2,24 +2,33 @@ package harbinger
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("harbinger of dawn", weapon)
-	core.RegisterWeaponFunc("harbingerofdawn", weapon)
+	core.RegisterWeaponFunc(keys.HarbingerOfDawn, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	m := make([]float64, core.EndStatType)
-	m[core.CR] = .105 + .035*float64(r)
-	char.AddMod(core.CharStatMod{
-		Key:          "harbinger",
-		Expiry:       -1,
-		AffectedStat: core.CR, // to avoid infinite loop when calling MaxHP
-		Amount: func() ([]float64, bool) {
-			return m, char.HP()/char.MaxHP() >= 0.9
-		},
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = .105 + .035*float64(r)
+
+	// set stat to crit to avoid infinite loop when calling MaxHP
+	char.AddStatMod("harbinger", -1, attributes.CR, func() ([]float64, bool) {
+		return m, char.HPCurrent/char.MaxHP() >= 0.9
 	})
-	return "harbingerofdawn"
+	return w, nil
 }

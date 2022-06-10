@@ -3,48 +3,60 @@ package bell
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/internal/tmpl/shield"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("the bell", weapon)
-	core.RegisterWeaponFunc("thebell", weapon)
+	core.RegisterWeaponFunc(keys.TheBell, NewWeapon)
 }
 
-//Taking DMG generates a shield which absorbs DMG up to 20/23/26/29/32% of Max HP.
-//This shield lasts for 10s or until broken, and can only be triggered once every 45/45/45/45/45s.
-//While protected by the shield, the character gains 12/15/18/21/24% increased DMG.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//Taking DMG generates a shield which absorbs DMG up to 20% of Max HP. This
+	//shield lasts for 10s or until broken, and can only be triggered once every
+	//45s. While protected by a shield, the character gains 12% increased DMG.
+
+	w := &Weapon{}
+	r := p.Refine
 
 	hp := 0.17 + float64(r)*0.03
 	icd := 0
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.09 + float64(r)*0.03
+	val := make([]float64, attributes.EndStatType)
+	val[attributes.DmgP] = 0.09 + float64(r)*0.03
 
-	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
 		if icd > c.F {
 			return false
 		}
-		icd = c.F + 2700 //45 seconds
-		//generate a shield
-		c.Shields.Add(&shield.Tmpl{
+		icd = c.F + 2700
+
+		c.Player.Shields.Add(&shield.Tmpl{
 			Src:        c.F,
-			ShieldType: core.ShieldBell,
+			ShieldType: shield.ShieldBell,
 			Name:       "Bell",
 			HP:         hp * char.MaxHP(),
-			Ele:        core.NoElement,
-			Expires:    c.F + 600, //10 sec
+			Ele:        attributes.NoElement,
+			Expires:    c.F + 600,
 		})
 		return false
-	}, fmt.Sprintf("bell-%v", char.Name()))
+	}, fmt.Sprintf("bell-%v", char.Base.Name))
 
-	char.AddMod(core.CharStatMod{
-		Key:    "bell",
-		Expiry: -1,
-		Amount: func() ([]float64, bool) {
-			return val, c.Shields.Get(core.ShieldBell) != nil
-		},
+	//add damage if shielded
+	char.AddStatMod("bell", -1, attributes.NoStat, func() ([]float64, bool) {
+		return val, char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded()
 	})
-	return "thebell"
+
+	return w, nil
 }

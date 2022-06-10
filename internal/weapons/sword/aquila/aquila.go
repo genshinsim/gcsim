@@ -4,61 +4,76 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("aquila favonia", weapon)
-	core.RegisterWeaponFunc("aquilafavonia", weapon)
+	core.RegisterWeaponFunc(keys.AquilaFavonia, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = .15 + .05*float64(r)
-	char.AddMod(core.CharStatMod{
-		Key: "acquila favonia",
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-		Expiry: -1,
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+//ATK is increased by 20%. Triggers on taking DMG: the soul of the Falcon of the
+//West awakens, holding the banner of resistance aloft, regenerating HP equal to
+//100% of ATK and dealing 200% of ATK as DMG to surrounding opponents. This
+//effect can only occur once every 15s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	//perm buff
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = .15 + .05*float64(r)
+	char.AddStatMod("acquila favonia", -1, attributes.NoStat, func() ([]float64, bool) {
+		return m, true
 	})
 
 	dmg := 1.7 + .3*float64(r)
 	heal := .85 + .15*float64(r)
-
 	last := -1
 
-	c.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 		if c.F-last < 900 && last != -1 {
 			return false
 		}
 		last = c.F
-		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
 			Abil:       "Aquila Favonia",
-			AttackTag:  core.AttackTagWeaponSkill,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Physical,
+			AttackTag:  combat.AttackTagWeaponSkill,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       dmg,
 		}
 		snap := char.Snapshot(&ai)
-		c.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(2, false, core.TargettableEnemy), 1)
+		c.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 1)
 
-		atk := snap.BaseAtk*(1+snap.Stats[core.ATKP]) + snap.Stats[core.ATK]
+		atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
 
-		// c.Log.NewEvent("acquila heal triggered", core.LogWeaponEvent, char.CharIndex(), "atk", atk, "heal amount", atk*heal)
-		c.Health.Heal(core.HealInfo{
-			Caller:  char.CharIndex(),
-			Target:  c.ActiveChar,
+		c.Player.Heal(player.HealInfo{
+			Caller:  char.Index,
+			Target:  c.Player.Active(),
 			Message: "Aquila Favonia",
 			Src:     atk * heal,
-			Bonus:   char.Stat(core.Heal),
+			Bonus:   char.Stat(attributes.Heal),
 		})
 		return false
-	}, fmt.Sprintf("aquila-%v", char.Name()))
-	return "aquilafavonia"
+	}, fmt.Sprintf("aquila-%v", char.Base.Name))
+	return w, nil
 }

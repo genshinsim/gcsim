@@ -4,29 +4,44 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("prototype rancour", weapon)
-	core.RegisterWeaponFunc("prototyperancour", weapon)
+	core.RegisterWeaponFunc(keys.PrototypeRancour, NewWeapon)
 }
 
-//After using an Elemental Skill, increases Normal and Charged Attack DMG by 8% for 12s. Max 2 stacks.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index  int
+	buff   []float64
+	stacks int
+}
 
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+//On hit, Normal or Charged Attacks increase ATK and DEF by 4% for 6s. Max 4
+//stacks. This effect can only occur once every 0.3s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	w.buff = make([]float64, attributes.EndStatType)
 	expiry := 0
-	per := 0.03 + 0.01*float64(r)
-	stacks := 0
+	perStack := 0.03 + 0.01*float64(r)
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-
-		atk := args[1].(*core.AttackEvent)
-
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		if icd > c.F {
@@ -34,31 +49,20 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 		icd = c.F + 18
 		if expiry < c.F {
-			stacks = 0
+			w.stacks = 0
 		}
-		stacks++
-		if stacks > 4 {
-			stacks = 4
+		if w.stacks < 4 {
+			w.stacks++
+			w.buff[attributes.ATKP] = perStack * float64(w.stacks)
+			w.buff[attributes.DEFP] = perStack * float64(w.stacks)
 		}
 		expiry = c.F + 360
+		char.AddStatMod("prototype-rancour", 360, attributes.NoStat, func() ([]float64, bool) {
+			return w.buff, true
+		})
 		return false
-	}, fmt.Sprintf("prototype-rancour-%v", char.Name()))
+	}, fmt.Sprintf("prototype-rancour-%v", char.Base.Name))
 
-	char.AddMod(core.CharStatMod{
-		Key:    "prototype",
-		Expiry: -1,
-		Amount: func() ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-			if expiry < c.F {
-				stacks = 0
-				return nil, false
-			}
-			val[core.ATKP] = per * float64(stacks)
-			val[core.DEFP] = per * float64(stacks)
-			return val, true
-		},
-	})
-
-	return "prototyperancour"
+	return w, nil
 
 }

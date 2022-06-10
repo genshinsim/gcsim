@@ -4,55 +4,71 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("skyrider greatsword", weapon)
-	core.RegisterWeaponFunc("skyridergreatsword", weapon)
+	core.RegisterWeaponFunc(keys.SkyriderGreatsword, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index  int
+	stacks int
+	buff   []float64
+}
 
-	atk := 0.05 + float64(r)*0.01
-	stacks := 0
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//On hit, Normal or Charged Attacks increase ATK by 6% for 6s. Max 4 stacks. Can occur once every 0.5s.
+	w := &Weapon{}
+	r := p.Refine
+
+	atkbuff := 0.05 + float64(r)*0.01
 	icd := 0
-	duration := 0
+	activeUntil := -1
+	w.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		if icd > c.F {
 			return false
 		}
-		if duration < c.F {
-			stacks = 0
+		//if hit lands after all stack should have fallen off, reset to 0
+		if activeUntil < c.F {
+			w.stacks = 0
 		}
 
-		stacks++
-		if stacks > 4 {
-			stacks = 4
+		if w.stacks < 4 {
+			w.stacks++
+			//update buff
+			w.buff[attributes.ATKP] = float64(w.stacks) * atkbuff
 		}
+
+		//extend buff timer
+		activeUntil = c.F + 360
 		icd = c.F + 30
-		return false
-	}, fmt.Sprintf("skyrider-greatsword-%v", char.Name()))
 
-	val := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
-		Key:    "skyrider",
-		Expiry: -1,
-		Amount: func() ([]float64, bool) {
-			if duration > c.F {
-				val[core.ATKP] = atk * float64(stacks)
-				return val, true
-			}
-			stacks = 0
-			return nil, false
-		},
-	})
-	return "skyridergreatsword"
+		//every whack adds a stack while under 4 and refreshes buff
+		//lasts 6 seconds
+		char.AddStatMod("skyrider", 360, attributes.NoStat, func() ([]float64, bool) {
+			return w.buff, true
+		})
+
+		return false
+	}, fmt.Sprintf("skyrider-greatsword-%v", char.Base.Name))
+
+	return w, nil
 }
