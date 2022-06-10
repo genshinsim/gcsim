@@ -34,12 +34,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.Character = tmpl.NewWithWrapper(s, w)
 
 	c.Base.Element = attributes.Electro
-
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 80
-	}
-	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = weapon.WeaponClassSword
 	c.BurstCon = 3

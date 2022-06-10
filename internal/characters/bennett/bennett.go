@@ -25,12 +25,6 @@ type char struct {
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
-
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 60
-	}
-	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = weapon.WeaponClassSword
 	c.NormalHitNum = normalHitNum
