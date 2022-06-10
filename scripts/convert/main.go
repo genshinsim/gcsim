@@ -68,18 +68,20 @@ func fix(path string) error {
 			return false
 		}
 
-		var done bool
+		var notFound bool
 
-		done = rep(findAndReplaceStatBlock)
-		if done {
-			return true
+		notFound = rep(findAndReplaceStatBlock)
+		if !notFound {
+			fmt.Println("add mod block found")
+			return false
 		}
-		done = rep(findAndReplacePreDamageBlock)
-		if done {
-			return true
+		notFound = rep(findAndReplacePreDamageBlock)
+		if !notFound {
+			fmt.Println("add predmgmod block found")
+			return false
 		}
 
-		return false
+		return true
 	}, nil)
 	// Print result
 	out, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
