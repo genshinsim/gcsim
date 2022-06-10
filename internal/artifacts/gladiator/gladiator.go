@@ -25,8 +25,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
-		m[attributes.ATK] = 0.18
-		char.AddStatMod("glad-2pc", -1, attributes.ATK, func() ([]float64, bool) {
+		m[attributes.ATKP] = 0.18
+		char.AddStatMod("glad-2pc", -1, attributes.ATKP, func() ([]float64, bool) {
 			return m, true
 		})
 	}

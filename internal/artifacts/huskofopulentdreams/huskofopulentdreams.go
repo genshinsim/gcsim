@@ -4,12 +4,32 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func init() {
-	core.RegisterSetFunc("huskofopulentdreams", New)
-	core.RegisterSetFunc("husk of opulent dreams", New)
+	core.RegisterSetFunc(keys.HuskOfOpulentDreams, NewSet)
 }
+
+type Set struct {
+	stacks             int
+	stackGainICDExpiry int
+	// Required to check for stack loss
+	lastStackGain int
+	// Source initializes at -1
+	lastSwap int
+	Core     *core.Core
+	Index    int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
 
 /**
 A character equipped with this Artifact set will obtain the Curiosity effect in the following conditions:
@@ -19,126 +39,135 @@ triggering a maximum of once every 0.3s. When off the field, the character gains
 Curiosity can stack up to 4 times, each providing 6% DEF and a 6% Geo DMG Bonus. When 6 seconds pass
 without gaining a Curiosity stack, 1 stack is lost.
 **/
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
+	s.lastSwap = -1
+	s.stacks = param["stacks"]
+	if s.stacks > 4 {
+		s.stacks = 4
+	}
+
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
-		m[core.DEFP] = 0.30
-		c.AddMod(core.CharStatMod{
-			Key: "husk-2pc",
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-			Expiry: -1,
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DEFP] = 0.30
+		char.AddStatMod("husk-2pc", -1, attributes.DEFP, func() ([]float64, bool) {
+			return m, true
 		})
 	}
 	if count >= 4 {
-		m := make([]float64, core.EndStatType)
-		stacks := params["stacks"]
-		stackGainICDExpiry := 0
-		// Required to check for stack loss
-		lastStackGain := 0
-		// Source initializes at -1
-		lastSwap := -1
-
-		// Helper function to check for stack loss
-		// called after every stack gain
-		var checkStackLoss func()
-		checkStackLoss = func() {
-			if (lastStackGain + 360) > s.F {
-				return
-			}
-			stacks--
-			s.Log.NewEvent("Husk lost stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
-
-			// queue up again if we still have stacks
-			if stacks > 0 {
-				c.AddTask(checkStackLoss, "husk-4pc-stack-loss-check", 360)
-			}
-		}
-
-		var gainStackOfffield func(src int) func()
-
-		gainStackOfffield = func(src int) func() {
-			return func() {
-				s.Log.NewEvent("Husk check for off-field stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain, "source", src)
-				if s.ActiveChar == c.CharIndex() {
-					return
-				}
-				// Ignore if the last source was not not the most recent swap
-				if lastSwap != src {
-					return
-				}
-
-				if stacks < 4 {
-					stacks++
-				}
-
-				s.Log.NewEvent("Husk gained off-field stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
-
-				lastStackGain = s.F
-
-				c.AddTask(gainStackOfffield(src), "husk-4pc-off-field-gain", 180)
-				c.AddTask(checkStackLoss, "husk-4pc-stack-loss-check", 360)
-			}
-		}
+		m := make([]float64, attributes.EndStatType)
 
 		// Initiate off-field stacking if off-field at start of the sim
-		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
-			if s.ActiveChar != c.CharIndex() {
-				c.AddTask(gainStackOfffield(s.F), "husk-4pc-off-field-gain", 1)
+		c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+			if c.Player.Active() != char.Index {
+				c.Tasks.Add(s.gainStackOfffield(c, char, c.F), 1)
 			}
 			return true
-		}, fmt.Sprintf("husk-4pc-off-field-stack-init-%v", c.Name()))
+		}, fmt.Sprintf("husk-4pc-off-field-stack-init-%v", char.Base.Name))
 
-		s.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 			prev := args[0].(int)
-			if prev != c.CharIndex() {
+			if prev != char.Index {
 				return false
 			}
-			lastSwap = s.F
-			c.AddTask(gainStackOfffield(s.F), "husk-4pc-off-field-gain", 180)
+			s.lastSwap = c.F
+			c.Tasks.Add(s.gainStackOfffield(c, char, c.F), 180)
 			return false
-		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", c.Name()))
+		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Name))
 
-		s.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-			atk := args[1].(*core.AttackEvent)
+		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+			atk := args[1].(*combat.AttackEvent)
 			// Only triggers when onfield
-			if s.ActiveChar != c.CharIndex() {
+			if c.Player.Active() != char.Index {
 				return false
 			}
-			if atk.Info.ActorIndex != c.CharIndex() {
+			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
-			if stackGainICDExpiry > s.F {
+			if s.stackGainICDExpiry > c.F {
 				return false
 			}
-			if atk.Info.Element != core.Geo {
+			if atk.Info.Element != attributes.Geo {
 				return false
 			}
 
-			if stacks < 4 {
-				stacks++
+			if s.stacks < 4 {
+				s.stacks++
 			}
 
-			s.Log.NewEvent("Husk gained on-field stack", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks, "last_swap", lastSwap, "last_stack_change", lastStackGain)
+			c.Log.NewEvent("Husk gained on-field stack", glog.LogArtifactEvent, char.Index,
+				"stacks", s.stacks,
+				"last_swap", s.lastSwap,
+				"last_stack_change", s.lastStackGain,
+			)
 
-			lastStackGain = s.F
-			stackGainICDExpiry = s.F + 18
-			c.AddTask(checkStackLoss, "husk-4pc-stack-loss-check", 360)
+			s.lastStackGain = c.F
+			s.stackGainICDExpiry = c.F + 18 // 0.3 sec
+			c.Tasks.Add(s.checkStackLoss(c, char), 360)
 
 			return false
-		}, fmt.Sprintf("husk-4pc-%v", c.Name()))
+		}, fmt.Sprintf("husk-4pc-%v", char.Base.Name))
 
-		c.AddMod(core.CharStatMod{
-			Key: "husk-4pc",
-			Amount: func() ([]float64, bool) {
-				m[core.DEFP] = 0.06 * float64(stacks)
-				m[core.GeoP] = 0.06 * float64(stacks)
-
-				return m, true
-			},
-			Expiry: -1,
+		char.AddStatMod("husk-4pc", -1, attributes.NoStat, func() ([]float64, bool) {
+			m[attributes.DEFP] = 0.06 * float64(s.stacks)
+			m[attributes.GeoP] = 0.06 * float64(s.stacks)
+			return m, true
 		})
+	}
 
+	return &s, nil
+}
+
+// Helper function to check for stack loss
+// called after every stack gain
+func (s *Set) checkStackLoss(c *core.Core, char *character.CharWrapper) func() {
+	return func() {
+		if (s.lastStackGain + 360) > c.F {
+			return
+		}
+		s.stacks--
+		s.Core.Log.NewEvent("Husk lost stack", glog.LogArtifactEvent, char.Index,
+			"stacks", s.stacks,
+			"last_swap", s.lastSwap,
+			"last_stack_change", s.lastStackGain,
+		)
+
+		// queue up again if we still have stacks
+		if s.stacks > 0 {
+			c.Tasks.Add(s.checkStackLoss(c, char), 6*60)
+		}
+	}
+}
+
+func (s *Set) gainStackOfffield(c *core.Core, char *character.CharWrapper, src int) func() {
+	return func() {
+		c.Log.NewEvent("Husk check for off-field stack", glog.LogArtifactEvent, char.Index,
+			"stacks", s.stacks,
+			"last_swap", s.lastSwap,
+			"last_stack_change", s.lastStackGain,
+			"source", src,
+		)
+		if c.Player.Active() == char.Index {
+			return
+		}
+		// Ignore if the last source was not not the most recent swap
+		if s.lastSwap != src {
+			return
+		}
+
+		if s.stacks < 4 {
+			s.stacks++
+		}
+
+		c.Log.NewEvent("Husk gained off-field stack", glog.LogArtifactEvent, char.Index,
+			"stacks", s.stacks,
+			"last_swap", s.lastSwap,
+			"last_stack_change", s.lastStackGain,
+		)
+
+		s.lastStackGain = c.F
+
+		c.Tasks.Add(s.gainStackOfffield(c, char, src), 180)
+		c.Tasks.Add(s.checkStackLoss(c, char), 360)
 	}
 }
