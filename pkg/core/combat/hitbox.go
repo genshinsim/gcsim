@@ -2,7 +2,7 @@ package combat
 
 type AttackPattern struct {
 	Shape    Shape
-	Targets  [combat.TargettableTypeCount]bool
+	Targets  [TargettableTypeCount]bool
 	SelfHarm bool
 }
 
