@@ -2,62 +2,75 @@ package mappa
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("mappa mare", weapon)
-	core.RegisterWeaponFunc("mappamare", weapon)
+	core.RegisterWeaponFunc(keys.MappaMare, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
 	stacks := 0
 	dur := 0
 
 	addStack := func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if c.ActiveChar != char.CharIndex() {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 
 		if c.F > dur {
 			stacks = 1
 			dur = c.F + 600
-			c.Log.NewEvent("mappa proc'd", core.LogWeaponEvent, char.CharIndex(), "stacks", stacks, "expiry", dur)
+			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index, "stacks", stacks, "expiry", dur)
 		} else if stacks < 2 {
 			stacks++
-			c.Log.NewEvent("mappa proc'd", core.LogWeaponEvent, char.CharIndex(), "stacks", stacks, "expiry", dur)
+			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index, "stacks", stacks, "expiry", dur)
 		}
 		return false
 	}
 
-	for i := core.EventType(core.ReactionEventStartDelim + 1); i < core.ReactionEventEndDelim; i++ {
-		c.Events.Subscribe(i, addStack, "mappa"+char.Name())
+	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.ReactionEventEndDelim; i++ {
+		c.Events.Subscribe(i, addStack, "mappa"+char.Base.Name)
 	}
 
 	dmg := 0.06 + float64(r)*0.02
-	m := make([]float64, core.EndStatType)
+	m := make([]float64, attributes.EndStatType)
+	char.AddStatMod("mappa",
 
-	char.AddMod(core.CharStatMod{
-		Key: "mappa",
-		Amount: func() ([]float64, bool) {
+		-1, attributes.NoStat, func() ([]float64, bool) {
 			if c.F > dur {
 				return nil, false
 			}
 
-			m[core.PyroP] = dmg * float64(stacks)
-			m[core.HydroP] = dmg * float64(stacks)
-			m[core.CryoP] = dmg * float64(stacks)
-			m[core.ElectroP] = dmg * float64(stacks)
-			m[core.AnemoP] = dmg * float64(stacks)
-			m[core.GeoP] = dmg * float64(stacks)
-			m[core.DendroP] = dmg * float64(stacks)
+			m[attributes.PyroP] = dmg * float64(stacks)
+			m[attributes.HydroP] = dmg * float64(stacks)
+			m[attributes.CryoP] = dmg * float64(stacks)
+			m[attributes.ElectroP] = dmg * float64(stacks)
+			m[attributes.AnemoP] = dmg * float64(stacks)
+			m[attributes.GeoP] = dmg * float64(stacks)
+			m[attributes.DendroP] = dmg * float64(stacks)
 			return m, true
-		},
-		Expiry: -1,
-	})
+		})
 
-	return "mappamare"
+	return w, nil
 }

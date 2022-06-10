@@ -4,26 +4,80 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 func init() {
-	core.RegisterWeaponFunc("eye of perception", weapon)
-	core.RegisterWeaponFunc("eyeofperception", weapon)
+	core.RegisterWeaponFunc(keys.EyeOfPerception, NewWeapon)
 }
 
-//Normal and Charged Attacks have a 50% chance to fire a Bolt of Perception,
-//dealing 240/270/300/330/360% ATK as DMG. This bolt can bounce between enemies a maximum of 4 times.
-//This effect can occur once every 12/11/10/9/8s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+	atk   *combat.AttackEvent
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+const bounceKey = "eye-of-preception-bounce"
+
+func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) func(a combat.AttackCB) {
+	if count == 4 {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		//check target is an enemey
+		t, ok := a.Target.(*enemy.Enemy)
+		if !ok {
+			return
+		}
+		t.SetTag(bounceKey, c.F+36)
+		x, y := a.Target.Shape().Pos()
+		trgs := c.Combat.EnemyByDistance(x, y, a.Target.Index())
+		next := -1
+		for _, v := range trgs {
+			trg, ok := c.Combat.Target(v).(*enemy.Enemy)
+			if !ok {
+				continue
+			}
+			if trg.GetTag(bounceKey) < c.F {
+				next = v
+				break
+			}
+		}
+
+		if next == -1 {
+			return
+		}
+
+		atk := *w.atk
+		atk.SourceFrame = c.F
+		atk.Pattern = combat.NewDefSingleTarget(next, combat.TargettableEnemy)
+		cb := w.chain(count+1, c, char)
+		if cb != nil {
+			atk.Callbacks = append(atk.Callbacks, cb)
+		}
+		c.QueueAttackEvent(&atk, 10)
+	}
+}
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
 
 	dmg := 2.1 * float64(r) * 0.3
 	cd := (13 - r) * 60
 	icd := 0
-	var w weap
 
-	c.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-		if ae.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+		ae := args[1].(*combat.AttackEvent)
+		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
 		if icd > c.F {
@@ -31,74 +85,30 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 		icd = c.F + cd
 
-		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
 			Abil:       "Eye of Preception Proc",
-			AttackTag:  core.AttackTagWeaponSkill,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Physical,
+			AttackTag:  combat.AttackTagWeaponSkill,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       dmg,
 		}
-		w.atk = &core.AttackEvent{
+		w.atk = &combat.AttackEvent{
 			Info:     ai,
 			Snapshot: char.Snapshot(&ai),
 		}
 		atk := *w.atk
 		atk.SourceFrame = c.F
-		atk.Pattern = core.NewDefSingleTarget(0, core.TargettableEnemy)
+		atk.Pattern = combat.NewDefSingleTarget(0, combat.TargettableEnemy)
 		cb := w.chain(0, c, char)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
 		}
-		c.Combat.QueueAttackEvent(&atk, 10) //TODO: no idea actual travel time
+		c.QueueAttackEvent(&atk, 10)
 		return false
-	}, fmt.Sprintf("perception-%v", char.Name()))
+	}, fmt.Sprintf("perception-%v", char.Base.Name))
 
-	//bounce...
-	//d.OnHitCallback = char.chainQ(t.Index(), char.Sim.Frame(), 1)
-
-	//on hit find next target not marked. marks lasts 60 seconds
-	return "eyeofperception"
-}
-
-type weap struct {
-	atk *core.AttackEvent
-}
-
-const bounceKey = "eye-of-preception-bounce"
-
-func (w *weap) chain(count int, c *core.Core, char core.Character) func(a core.AttackCB) {
-	if count == 4 {
-		return nil
-	}
-	return func(a core.AttackCB) {
-		//mark the current target, then grab nearest target not marked
-		//and trigger another attack while count < 4
-		a.Target.SetTag(bounceKey, c.F+36) //lock out for 0.6s
-		x, y := a.Target.Shape().Pos()
-		trgs := c.EnemyByDistance(x, y, a.Target.Index())
-		next := -1
-		for _, v := range trgs {
-			trg := c.Targets[v]
-			if trg.GetTag(bounceKey) < c.F {
-				next = v
-				break
-			}
-		}
-		//do nothing if no targets found
-		if next == -1 {
-			return
-		}
-		//we have a target so trigger an atk
-		atk := *w.atk
-		atk.SourceFrame = c.F
-		atk.Pattern = core.NewDefSingleTarget(next, core.TargettableEnemy)
-		cb := w.chain(count+1, c, char)
-		if cb != nil {
-			atk.Callbacks = append(atk.Callbacks, cb)
-		}
-		c.Combat.QueueAttackEvent(&atk, 10) //TODO: no idea actual travel time
-	}
+	return w, nil
 }
