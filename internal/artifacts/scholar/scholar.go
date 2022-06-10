@@ -4,48 +4,59 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterSetFunc("scholar", New)
+	core.RegisterSetFunc(keys.Scholar, NewSet)
 
+}
+
+type Set struct {
+	Index int
 }
 
 // 2-Piece Bonus: Energy Recharge +20%.
 // 4-Piece Bonus: Gaining Elemental Particles or Orbs gives 3 Energy to all party members who have a bow or a catalyst equipped. Can only occur once every 3s.
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
+
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
-		m[core.ER] = .20
-		c.AddMod(core.CharStatMod{
-			Key:    "scholar-2pc",
-			Expiry: -1,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ER] = 0.20
+		char.AddStatMod("scholar-2pc", -1, attributes.ER, func() ([]float64, bool) {
+			return m, true
 		})
 	}
 	if count >= 4 {
 		// TODO: test lmao
-		s.Events.Subscribe(core.OnParticleReceived, func(args ...interface{}) bool {
-			if s.ActiveChar != c.CharIndex() {
+		c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+			if c.Player.Active() != char.Index {
 				return false
 			}
-			if s.Status.Duration("scholar") > 0 {
+			if c.Status.Duration("scholar") > 0 {
 				return false
 			}
-			s.Status.AddStatus("scholar", 180)
+			c.Status.Add("scholar", 3*60)
 
-			for _, char := range s.Chars {
-				this := char
-
+			for _, this := range c.Player.Chars() {
 				// only for bow and catalyst
-				if this.WeaponClass()==core.WeaponClassBow ||this.WeaponClass()==core.WeaponClassCatalyst{
+				if this.Weapon.Class == weapon.WeaponClassBow || this.Weapon.Class == weapon.WeaponClassCatalyst {
 					this.AddEnergy("scholar-4pc", 3)
 				}
 			}
 
 			return false
-		}, fmt.Sprintf("scholar-4pc-%v", c.Name()))
+		}, fmt.Sprintf("scholar-4pc-%v", char.Base.Name))
 	}
+
+	return &s, nil
 }
