@@ -59,7 +59,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					continue
 				}
 
-				this.AddStatMod("instructor-4pc", c.F+480, attributes.EM, func() ([]float64, bool) {
+				this.AddStatMod("instructor-4pc", 480, attributes.EM, func() ([]float64, bool) {
 					return m, true
 				})
 			}
