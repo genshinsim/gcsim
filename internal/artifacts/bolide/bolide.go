@@ -2,28 +2,53 @@ package bolide
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func init() {
-	core.RegisterSetFunc("retracing bolide", New)
-	core.RegisterSetFunc("retracingbolide", New)
+	core.RegisterSetFunc(keys.RetracingBolide, NewSet)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+type Set struct {
+	Index int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
+
 	if count >= 2 {
-		s.Shields.AddBonus(func() float64 {
-			return 0.35 //shield bonus always active
+		// shield bonus always active
+		c.Player.Shields.AddShieldBonusMod("bolide-2pc", -1, func() (float64, bool) {
+			return 0.35, false
 		})
 	}
 	if count >= 4 {
-		m := make([]float64, core.EndStatType)
-		m[core.DmgP] = 0.4
-		c.AddPreDamageMod(core.PreDamageMod{
-			Key: "bolide-2pc",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return m, s.Shields.IsShielded(c.CharIndex()) && (atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra)
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DmgP] = 0.4
+		char.AddAttackMod(
+			"bolide-4pc",
+			-1,
+			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				// TODO: works off field?
+				if c.Player.Active() != char.Index {
+					return nil, false
+				}
+				if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+					return nil, false
+				}
+				if !c.Player.Shields.PlayerIsShielded() {
+					return nil, false
+				}
+				return m, true
 			},
-			Expiry: -1,
-		})
+		)
 	}
+
+	return &s, nil
 }
