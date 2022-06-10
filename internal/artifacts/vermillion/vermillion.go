@@ -4,85 +4,88 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func init() {
-	core.RegisterSetFunc("vermillion hereafter", New)
-	core.RegisterSetFunc("vermillionhereafter", New)
-	core.RegisterSetFunc("vermillion", New)
-	core.RegisterSetFunc("verm", New)
+	core.RegisterSetFunc(keys.VermillionHereafter, NewSet)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+type Set struct {
+	stacks int
+	HPicd  int
+	Index  int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
 
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
-		m[core.ATKP] = 0.18
-		c.AddMod(core.CharStatMod{
-			Key: "verm-2pc",
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-			Expiry: -1,
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ATKP] = 0.18
+		char.AddStatMod("verm-2pc", -1, attributes.ATKP, func() ([]float64, bool) {
+			return m, true
 		})
 	}
 
 	if count >= 4 {
-		var stacks float64
-		var HPicd int
-
-		s.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
-			if s.ActiveChar != c.CharIndex() {
+		c.Events.Subscribe(event.PostBurst, func(args ...interface{}) bool {
+			if c.Player.Active() != char.Index {
 				return false
 			}
 
-			nob, ok := s.GetCustomFlag("verm-4pc")
-			//only activate if none existing
-			if s.Status.Duration("verm-4pc") == 0 || (nob == c.CharIndex() && ok) {
-				s.Status.AddStatus("verm-4pc", 16*60)
-				s.SetCustomFlag("verm-4pc", c.CharIndex())
-				stacks = 0
+			nob, ok := c.Flags.Custom["verm-4pc"]
+			// only activate if none existing
+			if c.Status.Duration("verm-4pc") == 0 || (nob == char.Index && ok) {
+				c.Status.Add("verm-4pc", 16*60)
+				c.Flags.Custom["verm-4pc"] = char.Index
+				s.stacks = 0
 			}
 
-			s.Log.NewEvent("verm 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", s.Status.Duration("verm-4pc"))
+			c.Log.NewEvent("verm 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.Status.Duration("verm-4pc"))
 			return false
 
-		}, fmt.Sprintf("verm 4pc - %v", c.Name()))
+		}, fmt.Sprintf("verm-4pc-%v", char.Base.Name))
 
-		m := make([]float64, core.EndStatType)
-		m[core.ATKP] = 0.08
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ATKP] = 0.08
 
-		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
-			c.AddMod(core.CharStatMod{
-				Key: "verm-4pc",
-				Amount: func() ([]float64, bool) {
-					if s.Status.Duration("verm-4pc") > 0 {
+		c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+			char.AddStatMod("verm-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
+				if c.Status.Duration("verm-4pc") > 0 {
 
-						m[core.ATKP] = 0.08 + stacks*0.1
-						return m, true
-					}
-					stacks = 0
-					return nil, false
-				},
-				Expiry: -1,
+					m[attributes.ATKP] = 0.08 + float64(s.stacks)*0.1
+					return m, true
+				}
+				s.stacks = 0
+				return nil, false
 			})
 			return true
 		}, "verm-4pc-init")
 
-		s.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-			if s.F >= HPicd && stacks < 4 && s.Status.Duration("verm-4pc") > 0 { //grants stack if conditions are met
-				stacks++
-				s.Log.NewEvent("Vermillion stack gained", core.LogArtifactEvent, c.CharIndex(), "stacks", stacks)
-				HPicd = s.F + 48
+		c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+			if c.F >= s.HPicd && s.stacks < 4 && c.Status.Duration("verm-4pc") > 0 { // grants stack if conditions are met
+				s.stacks++
+				c.Log.NewEvent("Vermillion stack gained", glog.LogArtifactEvent, char.Index, "stacks", s.stacks)
+				s.HPicd = c.F + 48
 			}
 			return false
 		}, "Stack-on-hurt")
 
-		s.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-			s.Status.DeleteStatus("verm-4pc")
-			stacks = 0 //resets stacks to 0 when the character swaps
+		c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+			c.Status.Delete("verm-4pc")
+			s.stacks = 0 // resets stacks to 0 when the character swaps
 			return false
 		}, "char-exit")
 
 	}
+
+	return &s, nil
 }
