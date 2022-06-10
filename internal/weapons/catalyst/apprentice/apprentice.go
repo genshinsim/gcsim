@@ -1,13 +1,11 @@
 package favonius
 
 import (
+	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func init() {
-	core.RegisterWeaponFunc("apprenticesnotes", weapon)
-}
-
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	return "apprenticesnotes"
+	core.RegisterWeaponFunc(keys.ApprenticesNotes, common.NewNoEffect)
 }

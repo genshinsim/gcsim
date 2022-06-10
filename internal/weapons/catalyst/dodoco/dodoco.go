@@ -4,53 +4,57 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("dodoco tales", weapon)
-	core.RegisterWeaponFunc("dodocotales", weapon)
+	core.RegisterWeaponFunc(keys.DodocoTales, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	atkExpiry := 0
-	dmgExpiry := 0
+type Weapon struct {
+	Index int
+}
 
-	m := make([]float64, core.EndStatType)
-	m[core.DmgP] = .12 + float64(r)*.04
-	char.AddPreDamageMod(core.PreDamageMod{
-		Key: "dodoco-ca",
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != core.AttackTagExtra {
-				return nil, false
-			}
-			return m, dmgExpiry > c.F
-		},
-		Expiry: -1,
-	})
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-	n := make([]float64, core.EndStatType)
-	n[core.ATKP] = .06 + float64(r)*0.02
-	char.AddMod(core.CharStatMod{
-		Key: "dodoco atk",
-		Amount: func() ([]float64, bool) {
-			return n, atkExpiry > c.F
-		},
-		Expiry: -1,
-	})
+//Normal Attack hits on opponents increase Charged Attack DMG by 16% for 6s. Charged Attack hits on opponents
+//increase ATK by 8% for 6s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = .12 + float64(r)*.04
+
+	n := make([]float64, attributes.EndStatType)
+	n[attributes.ATKP] = .06 + float64(r)*0.02
+
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		switch atk.Info.AttackTag {
-		case core.AttackTagNormal:
-			dmgExpiry = c.F + 360
-		case core.AttackTagExtra:
-			atkExpiry = c.F + 360
+		case combat.AttackTagNormal:
+			char.AddAttackMod("dodoco-ca", 360, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagExtra {
+					return nil, false
+				}
+				return m, true
+			})
+		case combat.AttackTagExtra:
+			char.AddStatMod("dodoco atk", 360, attributes.NoStat, func() ([]float64, bool) {
+				return n, true
+			})
 		}
 		return false
-	}, fmt.Sprintf("dodoco-%v", char.Name()))
+	}, fmt.Sprintf("dodoco-%v", char.Base.Name))
 
-	return "dodocotales"
+	return w, nil
 }
