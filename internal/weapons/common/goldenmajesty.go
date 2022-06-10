@@ -23,8 +23,8 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 
 	shd := .15 + float64(r)*.05
 	atkbuff := 0.03 + 0.01*float64(r)
-
-	c.Shields.AddBonus(func() float64 { return shd })
+	key := fmt.Sprintf("golden-majesty-%v", char.Base.Name)
+	c.Player.Shields.AddShieldBonusMod(key, -1, func() (float64, bool) { return shd, false })
 
 	icd := -1
 	stacks := 0
@@ -56,17 +56,15 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 		}
 
 		expiry = c.F + 60*8
-		char.AddStatMod("golden-majesty",
-			expiry, attributes.NoStat, func() ([]float64, bool) {
-				m[attributes.ATKP] = atkbuff * float64(stacks)
-				if c.Shields.IsShielded(char.Index) {
-					m[attributes.ATKP] *= 2
-				}
-				return m, true
-			})
-
+		char.AddStatMod("golden-majesty", expiry, attributes.NoStat, func() ([]float64, bool) {
+			m[attributes.ATKP] = atkbuff * float64(stacks)
+			if char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded() {
+				m[attributes.ATKP] *= 2
+			}
+			return m, true
+		})
 		return false
-	}, fmt.Sprintf("golden-majesty-%v", char.Base.Name))
+	}, key)
 
 	return w, nil
 }

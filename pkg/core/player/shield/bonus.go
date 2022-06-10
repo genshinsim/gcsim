@@ -52,6 +52,9 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 		Expiry: *h.f + dur,
 		Amount: f,
 	}
+	if dur < 0 {
+		mod.Expiry = -1
+	}
 	ind := -1
 	for i, v := range h.shieldBonusMods {
 		if v.Key == mod.Key {
