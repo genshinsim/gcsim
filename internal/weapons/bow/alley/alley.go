@@ -22,10 +22,16 @@ type Weapon struct {
 	lastActiveChange int
 	Index            int
 	core             *core.Core
+	char             *character.CharWrapper
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
-func (w *Weapon) Init() error      { return nil }
+func (w *Weapon) Init() error {
+
+	w.active = w.core.Player.Active() == w.char.Index
+	w.lastActiveChange = w.core.F
+	return nil
+}
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	//While the character equipped with this weapon is in the party but not on the field, their DMG
@@ -34,7 +40,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	//max 10 stacks
-	w := Weapon{}
+	w := Weapon{
+		core: c,
+		char: char,
+	}
 	w.stacks = p.Params["stacks"]
 	if w.stacks > 10 {
 		w.stacks = 10
@@ -48,12 +57,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	})
 
 	key := fmt.Sprintf("alley-hunter-%v", char.Base.Name)
-
-	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
-		w.active = c.Player.Active() == char.Index
-		w.lastActiveChange = c.F
-		return true
-	}, key)
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
