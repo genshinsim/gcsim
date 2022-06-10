@@ -36,7 +36,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	})
 	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", m[attributes.ATK], "mult", mult)
 
-	c.burstInfusion(900 + burstStart)
 	c.Core.Status.Add("noelleq", 900+burstStart)
 	// Queue up task for Noelle burst extension
 	// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
@@ -50,8 +49,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return m, true
 			})
 			c.Core.Log.NewEvent("noelle max burst extension activated", glog.LogCharacterEvent, c.Index, "new_expiry", c.Core.F+600)
-			// check if this work as intended
-			c.burstInfusion(600)
 			c.Core.Status.Add("noelleq", 600)
 		}, 900+burstStart)
 	}
@@ -83,15 +80,4 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Post:            burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
-}
-
-func (c *char) burstInfusion(dur int) {
-	c.Core.Player.AddWeaponInfuse(
-		c.Index,
-		"noelle-burst",
-		attributes.Geo,
-		dur,
-		false,
-		combat.AttackTagNormal, combat.AttackTagPlunge, combat.AttackTagExtra,
-	)
 }

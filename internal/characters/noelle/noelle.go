@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -76,4 +77,23 @@ func initCancelFrames() {
 	burstFrames[action.ActionDash] = 81
 	burstFrames[action.ActionJump] = 81
 	burstFrames[action.ActionWalk] = 90
+}
+
+// Noelle Geo infusion can't be overridden, so it must be a snapshot modification rather than a weapon infuse
+func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+	ds := c.Character.Snapshot(ai)
+
+	if c.Core.Status.Duration("noelleq") > 0 {
+		//infusion to attacks only
+		switch ai.AttackTag {
+		case combat.AttackTagNormal:
+		case combat.AttackTagPlunge:
+		case combat.AttackTagExtra:
+		default:
+			return ds
+		}
+		ai.Element = attributes.Geo
+	}
+
+	return ds
 }
