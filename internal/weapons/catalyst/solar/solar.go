@@ -4,54 +4,61 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("solar pearl", weapon)
-	core.RegisterWeaponFunc("solarpearl", weapon)
+	core.RegisterWeaponFunc(keys.SolarPearl, NewWeapon)
 }
 
-//Normal Attack hits increase Elemental Skill and Elemental Burst DMG by 20/25/30/35/40% for 6s.
-//Likewise, Elemental Skill or Elmental Burst hits increase Normal Attack DMG by 20/25/30/35/40% for 6s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.15 + float64(r)*0.05
+type Weapon struct {
+	Index int
+}
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	val := make([]float64, attributes.EndStatType)
+	val[attributes.DmgP] = 0.15 + float64(r)*0.05
+
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		switch atk.Info.AttackTag {
-		case core.AttackTagElementalArt, core.AttackTagElementalArtHold, core.AttackTagElementalBurst:
-			char.AddPreDamageMod(core.PreDamageMod{
-				Key:    "solar-na-buff",
-				Expiry: c.F + 6*60,
-				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-					switch atk.Info.AttackTag {
-					case core.AttackTagNormal:
-						return val, true
-					}
-					return nil, false
-				},
+		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
+			char.AddAttackMod("solar-na-buff", 6*60, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				switch atk.Info.AttackTag {
+				case combat.AttackTagNormal:
+					return val, true
+				}
+				return nil, false
 			})
-		case core.AttackTagNormal:
-			char.AddPreDamageMod(core.PreDamageMod{
-				Key:    "solar-skill-burst-buff",
-				Expiry: c.F + 6*60,
-				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-					switch atk.Info.AttackTag {
-					case core.AttackTagElementalArt, core.AttackTagElementalArtHold, core.AttackTagElementalBurst:
-						return val, true
-					}
-					return nil, false
-				},
+
+		case combat.AttackTagNormal:
+			char.AddAttackMod("solar-skill-burst-buff", 6*60, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				switch atk.Info.AttackTag {
+				case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
+					return val, true
+				}
+				return nil, false
 			})
+
 		default:
 			return false
 		}
 		return false
-	}, fmt.Sprintf("solar-%v", char.Name()))
+	}, fmt.Sprintf("solar-%v", char.Base.Name))
 
-	return "solarpearl"
+	return w, nil
 }

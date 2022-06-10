@@ -4,25 +4,41 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("skyward atlas", weapon)
-	core.RegisterWeaponFunc("skywardatlas", weapon)
+	core.RegisterWeaponFunc(keys.SkywardAtlas, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+
+	w := &Weapon{}
+	r := p.Refine
+
 	dmg := 0.09 + float64(r)*0.03
 	atk := 1.2 + float64(r)*0.4
 
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-		if ae.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*combat.AttackEvent)
+		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal {
+		if ae.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
 		if icd > c.F {
@@ -31,38 +47,36 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		if c.Rand.Float64() < 0.5 {
 			return false
 		}
-		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
 			Abil:       "Skyward Atlas Proc",
-			AttackTag:  core.AttackTagWeaponSkill,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Physical,
+			AttackTag:  combat.AttackTagWeaponSkill,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       atk,
 		}
 		snap := char.Snapshot(&ai)
 		for i := 0; i < 6; i++ {
-			c.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.1, false, core.TargettableEnemy), i*150)
+			c.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), i*150)
 		}
 		icd = c.F + 1800
 		return false
-	}, fmt.Sprintf("skyward-atlast-%v", char.Name()))
+	}, fmt.Sprintf("skyward-atlast-%v", char.Base.Name))
 
-	m := make([]float64, core.EndStatType)
-	m[core.PyroP] = dmg
-	m[core.HydroP] = dmg
-	m[core.CryoP] = dmg
-	m[core.ElectroP] = dmg
-	m[core.AnemoP] = dmg
-	m[core.GeoP] = dmg
-	m[core.DendroP] = dmg
-	char.AddMod(core.CharStatMod{
-		Key:    "skyward-atlast",
-		Expiry: -1,
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
+	//permanent stat buff
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.PyroP] = dmg
+	m[attributes.HydroP] = dmg
+	m[attributes.CryoP] = dmg
+	m[attributes.ElectroP] = dmg
+	m[attributes.AnemoP] = dmg
+	m[attributes.GeoP] = dmg
+	m[attributes.DendroP] = dmg
+	char.AddStatMod("skyward-atlast", -1, attributes.NoStat, func() ([]float64, bool) {
+		return m, true
 	})
-	return "skywardatlas"
+
+	return w, nil
 }

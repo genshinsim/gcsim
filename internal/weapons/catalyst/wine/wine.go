@@ -4,61 +4,65 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("wine and song", weapon)
-	core.RegisterWeaponFunc("wineandsong", weapon)
+	core.RegisterWeaponFunc(keys.WineAndSong, NewWeapon)
 }
 
-// Hitting an opponent with a Normal Attack decreases the Stamina consumption of Sprint or Alternate sprint by 14/16/18/20/22% for 5s.
-// Additionally, using a Sprint or Alternate Sprint ability increases ATK by 20/25/30/35/40% for 5s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = .15 + float64(r)*.05
-	stam := .12 + float64(r)*.02
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-	c.Events.Subscribe(core.PreDash, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//Hitting an opponent with a Normal Attack decreases the Stamina consumption
+	//of Sprint or Alternate Sprint by 14% for 5s. Additionally, using a Sprint
+	//or Alternate Sprint ability increases ATK by 20% for 5s.
+
+	w := &Weapon{}
+	r := p.Refine
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = .15 + float64(r)*.05
+	stamReduction := .12 + float64(r)*.02
+	key := fmt.Sprintf("wineandsong-%v", char.Base.Name)
+	c.Events.Subscribe(event.PreDash, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
-
-		char.AddMod(core.CharStatMod{
-			Key:    "wineandsong",
-			Expiry: c.F + 60*5,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
+		char.AddStatMod("wineandsong", 60*5, attributes.NoStat, func() ([]float64, bool) {
+			return m, true
 		})
 		return false
-	}, fmt.Sprintf("wineandsong-%v", char.Name()))
+	}, key)
 
-	stamExpiry := -1
-
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		ae := args[1].(*core.AttackEvent)
-
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		ae := args[1].(*combat.AttackEvent)
+		if c.Player.Active() != char.Index {
 			return false
 		}
-		if ae.Info.ActorIndex != char.CharIndex() {
+		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != core.AttackTagNormal {
+		if ae.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
 
-		stamExpiry = c.F + 60*5
+		c.Player.AddStamPercentMod(key, 300, func(a action.Action) (float64, bool) {
+			return -stamReduction, a == action.ActionDash
+		})
 		return false
-	}, fmt.Sprintf("wineandsong-%v", char.Name()))
+	}, key)
 
-	c.AddStamMod(func(a core.ActionType) (float64, bool) {
-		if a == core.ActionDash && stamExpiry > c.F {
-			return -stam, false
-		}
-		return 0, false
-	}, fmt.Sprintf("wineandsong-%v", char.Name()))
-
-	return "wineandsong"
+	return w, nil
 }

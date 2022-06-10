@@ -10,11 +10,18 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/davecgh/go-spew/spew"
 	"golang.org/x/tools/go/ast/astutil"
 )
 
 func main() {
 	// read every file in directory
+
+	//check args if we want to print ast out
+	dump := false
+	if len(os.Args) > 1 {
+		dump = true
+	}
 
 	files, err := ioutil.ReadDir("./")
 	if err != nil {
@@ -22,14 +29,14 @@ func main() {
 	}
 
 	for _, file := range files {
-		err = fix(file.Name())
+		err = fix(file.Name(), dump)
 		if err != nil {
 			panic(err)
 		}
 	}
 }
 
-func fix(path string) error {
+func fix(path string, dump bool) error {
 	//do nothing
 	if filepath.Ext(path) != ".go" {
 		return nil
@@ -39,7 +46,9 @@ func fix(path string) error {
 	if err != nil {
 		return err
 	}
-	// spew.Dump(f)
+	if dump {
+		spew.Dump(f)
+	}
 
 	//fix any core package names
 	astutil.Apply(f, func(cr *astutil.Cursor) bool {
@@ -343,8 +352,8 @@ var pkgNameReplace = map[string][2]string{
 	"core.PostPlunge":               {"event", "PostPlunge"},
 	"core.PreAimShoot":              {"event", "PreAimShoot"},
 	"core.PostAimShoot":             {"event", "PostAimShoot"},
-	"core.PreDas":                   {"event", "PreDas"},
-	"core.PostDas":                  {"event", "PostDas"},
+	"core.PreDash":                  {"event", "PreDash"},
+	"core.PostDash":                 {"event", "PostDash"},
 	"core.OnInitialize":             {"event", "OnInitialize"},
 	"core.OnStateChange":            {"event", "OnStateChange"},
 	"core.OnTargetAdded":            {"event", "OnTargetAdded"},
@@ -355,6 +364,7 @@ var pkgNameReplace = map[string][2]string{
 	"core.AttackInfo":                  {"combat", "AttackInfo"},
 	"core.AttackCB":                    {"combat", "AttackCB"},
 	"core.NewDefSingleTarget":          {"combat", "NewDefSingleTarget"},
+	"core.NewDefCircHit":               {"combat", "NewDefCircHit"},
 	"core.AttackTagNone":               {"combat", "AttackTagNone"},
 	"core.AttackTagNormal":             {"combat", "AttackTagNormal"},
 	"core.AttackTagExtra":              {"combat", "AttackTagExtra"},
@@ -418,6 +428,7 @@ var pkgNameReplace = map[string][2]string{
 	"core.TargettableTypeCount":        {"combat", "TargettableTypeCount"},
 
 	//actions
+	"core.ActionType":                {"action", "Action"},
 	"core.InvalidAction":             {"action", "InvalidAction"},
 	"core.ActionSkill":               {"action", "ActionSkill"},
 	"core.ActionBurst":               {"action", "ActionBurst"},
@@ -458,6 +469,10 @@ var pkgNameReplace = map[string][2]string{
 	"core.LogShieldEvent":       {"glog", "LogShieldEvent"},
 	"core.LogConstructEvent":    {"glog", "LogConstructEvent"},
 	"core.LogICDEvent":          {"glog", "LogICDEvent"},
-
+	//character
 	"core.Character": {"*character", "CharWrapper"},
+	//player
+	"core.HealInfo":         {"player", "HealInfo"},
+	"core.HealTypeAbsolute": {"player", "HealTypeAbsolute"},
+	"core.HealTypePercent":  {"player", "HealTypePercent"},
 }
