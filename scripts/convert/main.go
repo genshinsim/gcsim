@@ -42,7 +42,7 @@ func fix(path string, dump bool) error {
 		return nil
 	}
 	fs := token.NewFileSet()
-	f, err := parser.ParseFile(fs, path, nil, parser.AllErrors)
+	f, err := parser.ParseFile(fs, path, nil, parser.ParseComments)
 	if err != nil {
 		return err
 	}
@@ -475,7 +475,10 @@ var pkgNameReplace = map[string][2]string{
 	"core.LogConstructEvent":    {"glog", "LogConstructEvent"},
 	"core.LogICDEvent":          {"glog", "LogICDEvent"},
 	//character
-	"core.Character": {"*character", "CharWrapper"},
+	"core.Character":     {"*character", "CharWrapper"},
+	"core.ZoneMondstadt": {"*character", "ZoneMondstadt"},
+	"core.ZoneLiyue":     {"*character", "ZoneLiyue"},
+	"core.ZoneInazuma":   {"*character", "ZoneInazuma"},
 	//player
 	"core.HealInfo":         {"player", "HealInfo"},
 	"core.HealTypeAbsolute": {"player", "HealTypeAbsolute"},

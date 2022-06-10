@@ -2,28 +2,37 @@ package catch
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("the catch", weapon)
-	core.RegisterWeaponFunc("thecatch", weapon)
+	core.RegisterWeaponFunc(keys.TheCatch, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	val := make([]float64, core.EndStatType)
-	val[core.DmgP] = 0.12 + 0.04*float64(r)
-	val[core.CR] = 0.045 + 0.015*float64(r)
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-	char.AddPreDamageMod(core.PreDamageMod{
-		Key:    "the-catch",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == core.AttackTagElementalBurst {
-				return val, true
-			}
-			return nil, false
-		},
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	val := make([]float64, attributes.EndStatType)
+	val[attributes.DmgP] = 0.12 + 0.04*float64(r)
+	val[attributes.CR] = 0.045 + 0.015*float64(r)
+	char.AddAttackMod("the-catch", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		if atk.Info.AttackTag == combat.AttackTagElementalBurst {
+			return val, true
+		}
+		return nil, false
 	})
-	return "thecatch"
+
+	return w, nil
 }

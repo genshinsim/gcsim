@@ -4,50 +4,57 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("prototype starglitter", weapon)
-	core.RegisterWeaponFunc("prototypestarglitter", weapon)
+	core.RegisterWeaponFunc(keys.PrototypeStarglitter, NewWeapon)
 }
 
-//After using an Elemental Skill, increases Normal and Charged Attack DMG by 8% for 12s. Max 2 stacks.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index  int
+	buff   []float64
+	stacks int
+}
 
-	expiry := 0
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+//After using an Elemental Skill, increases Normal and Charged Attack DMG by 8% for 12s. Max 2 stacks.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	//no icd on this one
+	activeUntil := -1
+	w.buff = make([]float64, attributes.EndStatType)
 	atkbonus := 0.06 + 0.02*float64(r)
-	stacks := 0
 	//add on crit effect
-	c.Events.Subscribe(core.PreSkill, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.PreSkill, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
-		if expiry < c.F {
-			stacks = 0
+		if activeUntil < c.F {
+			w.stacks = 0
 		}
-		stacks++
-		if stacks > 2 {
-			stacks = 2
+		if w.stacks < 2 {
+			w.stacks++
+			w.buff[attributes.ATKP] = atkbonus * float64(w.stacks)
 		}
-		expiry = c.F + 720
+		activeUntil = c.F + 720
+		char.AddAttackMod("prototype", 720, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+				return nil, false
+			}
+			return w.buff, true
+		})
 		return false
-	}, fmt.Sprintf("prototype-starglitter-%v", char.Name()))
+	}, fmt.Sprintf("prototype-starglitter-%v", char.Base.Name))
 
-	char.AddPreDamageMod(core.PreDamageMod{
-		Key:    "prototype",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-			if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
-				return nil, false
-			}
-			if expiry < c.F {
-				stacks = 0
-				return nil, false
-			}
-			val[core.ATKP] = atkbonus * float64(stacks)
-			return val, true
-		},
-	})
-	return "prototypestarglitter"
+	return w, nil
 }
