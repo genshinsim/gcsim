@@ -2,25 +2,43 @@ package gambler
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func init() {
-	core.RegisterSetFunc("gambler", New)
+	core.RegisterSetFunc(keys.Gambler, NewSet)
 }
+
+type Set struct {
+	Index int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
 
 // 2-Piece Bonus: Elemental Skill Dmg +20%
 // 4-Piece Bonus: Resets Skill CD after defeating an enemy - not yet relevent to the sim
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
+
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
-		m[core.DmgP] = 0.2
-		c.AddPreDamageMod(core.PreDamageMod{
-			Key: "gambler-2pc",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return m, (atk.Info.AttackTag == core.AttackTagElementalArt ||
-					atk.Info.AttackTag == core.AttackTagElementalArtHold)
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DmgP] = 0.20
+		char.AddAttackMod(
+			"gambler-2pc",
+			-1,
+			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+					return nil, false
+				}
+				return m, true
 			},
-			Expiry: -1,
-		})
+		)
 	}
+
+	return &s, nil
 }
