@@ -1,4 +1,4 @@
-package player
+package avatar
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"

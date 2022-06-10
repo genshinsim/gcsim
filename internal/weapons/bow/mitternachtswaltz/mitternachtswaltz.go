@@ -2,80 +2,76 @@ package mitternachtswaltz
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("mitternachtswaltz", weapon)
-	core.RegisterWeaponFunc("mitternachts", weapon)
-	core.RegisterWeaponFunc("mitternacht", weapon)
+	core.RegisterWeaponFunc(keys.MitternachtsWaltz, NewWeapon)
 }
 
-/*
- * Normal Attack hits on opponents increase Elemental Skill DMG by 20/25/30/35/40% for 5s.
- * Elemental Skill hits on opponents increase Normal Attack DMG by 20/25/30/35/40% for 5s.
- */
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	m := make([]float64, core.EndStatType)
+type Weapon struct {
+	Index int
+}
 
-	buffAmount := .15 + .05*float64(r) // same amount in either context
-	buffExpiry := 300                  // 5s
-	buffIcd := 0                       // Add a 1-frame ICD to prevent buffs from being applied too quickly for the sim
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	m := make([]float64, attributes.EndStatType)
 
-		// Attack belongs to the equipped character
-		if atk.Info.ActorIndex != char.CharIndex() {
+	buffAmount := .15 + .05*float64(r)
+	buffExpiry := 300
+	buffIcd := 0
+
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 
-		// Active character has weapon equipped
-		if c.ActiveChar != char.CharIndex() {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 
-		// Add 1-frame ICD to prevent too many buffs from being applied the sim simultaneously
 		if c.F <= buffIcd {
 			return false
 		}
 
 		buffIcd = c.F + 1
 
-		// only apply elemental skill buff on normal attacks
-		if atk.Info.AttackTag == core.AttackTagNormal {
-			char.AddPreDamageMod(core.PreDamageMod{
-				Key: "mitternachtswaltz-ele",
-				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-					if (atk.Info.AttackTag == core.AttackTagElementalArt) || (atk.Info.AttackTag == core.AttackTagElementalArtHold) {
-						m[core.DmgP] = buffAmount
-						return m, true
-					}
-
-					return nil, false
-				},
-				Expiry: c.F + buffExpiry,
+		if atk.Info.AttackTag == combat.AttackTagNormal {
+			char.AddAttackMod("mitternachtswaltz-ele", buffExpiry, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
+					m[attributes.DmgP] = buffAmount
+					return m, true
+				}
+				return nil, false
 			})
 		}
 
-		// only apply normal attack buff on elemental skill
-		if (atk.Info.AttackTag == core.AttackTagElementalArt) || (atk.Info.AttackTag == core.AttackTagElementalArtHold) {
-			char.AddPreDamageMod(core.PreDamageMod{
-				Key: "mitternachtswaltz-na",
-				Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-					if atk.Info.AttackTag == core.AttackTagNormal {
-						m[core.DmgP] = buffAmount
-						return m, true
-					}
-
-					return nil, false
-				},
-				Expiry: c.F + buffExpiry,
+		if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
+			char.AddAttackMod("mitternachtswaltz-na", buffExpiry, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag == combat.AttackTagNormal {
+					m[attributes.DmgP] = buffAmount
+					return m, true
+				}
+				return nil, false
 			})
 		}
 
 		return false
-	}, fmt.Sprintf("mitternachtswaltz-%v", char.Name()))
+	}, fmt.Sprintf("mitternachtswaltz-%v", char.Base.Name))
 
-	return "mitternachtswaltz"
+	return w, nil
+
 }

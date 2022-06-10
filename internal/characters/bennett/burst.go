@@ -2,13 +2,13 @@ package bennett
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
-	controller "github.com/genshinsim/gcsim/pkg/player"
 )
 
 var burstFrames []int
@@ -75,7 +75,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 		c.Core.Log.NewEvent("bennett field ticking", glog.LogCharacterEvent, -1)
 
 		//self infuse
-		p, ok := c.Core.Combat.Target(0).(*controller.Player)
+		p, ok := c.Core.Combat.Target(0).(*avatar.Player)
 		if !ok {
 			panic("target 0 should be Player but is not!!")
 		}
