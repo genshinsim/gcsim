@@ -32,8 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-
-		c.Health.Heal(player.HealInfo{
+		c.Player.Heal(player.HealInfo{
 			Type:    player.HealTypePercent,
 			Message: "Traveler's Handy Sword (Proc)",
 			Src:     0.0075 + float64(r)*0.0025,
