@@ -24,8 +24,7 @@ type char struct {
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t := tmpl.New(s)
-	c.Character = t
+	c.Character = tmpl.NewWithWrapper(s, w)
 
 	e, ok := p.Params["start_energy"]
 	if !ok {

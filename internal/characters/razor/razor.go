@@ -24,9 +24,7 @@ func init() {
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t := tmpl.New(s)
-	t.CharWrapper = w
-	c.Character = t
+	c.Character = tmpl.NewWithWrapper(s, w)
 
 	c.Base.Element = attributes.Electro
 
