@@ -37,8 +37,9 @@ type Core struct {
 }
 
 type Flags struct {
-	LogDebug bool // Used to determine logging level
-	Custom   map[string]int
+	LogDebug   bool // Used to determine logging level
+	DamageMode bool //for hp mode
+	Custom     map[string]int
 }
 type Coord struct {
 	X float64 `json:"x"`

@@ -20,6 +20,9 @@ func (s *Simulation) Run() (Result, error) {
 	stop := false
 	var err error
 
+	//TODO: enable hp mode?
+	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
+
 	//setup ast
 	s.nextAction = make(chan *ast.ActionStmt)
 	s.continueEval = make(chan bool)

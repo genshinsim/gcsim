@@ -426,6 +426,11 @@ var pkgNameReplace = map[string][2]string{
 	"core.TargettablePlayer":           {"combat", "TargettablePlayer"},
 	"core.TargettableObject":           {"combat", "TargettableObject"},
 	"core.TargettableTypeCount":        {"combat", "TargettableTypeCount"},
+	"core.StrikeTypeDefault":           {"combat", "StrikeTypeDefault"},
+	"core.StrikeTypePierce":            {"combat", "StrikeTypePierce"},
+	"core.StrikeTypeBlunt":             {"combat", "StrikeTypeBlunt"},
+	"core.StrikeTypeSlash":             {"combat", "StrikeTypeSlash"},
+	"core.StrikeTypeSpear":             {"combat", "StrikeTypeSpear"},
 
 	//actions
 	"core.ActionType":                {"action", "Action"},
@@ -475,4 +480,18 @@ var pkgNameReplace = map[string][2]string{
 	"core.HealInfo":         {"player", "HealInfo"},
 	"core.HealTypeAbsolute": {"player", "HealTypeAbsolute"},
 	"core.HealTypePercent":  {"player", "HealTypePercent"},
+	//shield
+	"core.ShieldCrystallize":         {"shield", "ShieldCrystallize"},
+	"core.ShieldNoelleSkill":         {"shield", "ShieldNoelleSkill"},
+	"core.ShieldNoelleA1":            {"shield", "ShieldNoelleA1"},
+	"core.ShieldZhongliJadeShield":   {"shield", "ShieldZhongliJadeShield"},
+	"core.ShieldDionaSkill":          {"shield", "ShieldDionaSkill"},
+	"core.ShieldBeidouThunderShield": {"shield", "ShieldBeidouThunderShield"},
+	"core.ShieldXinyanSkill":         {"shield", "ShieldXinyanSkill"},
+	"core.ShieldXinyanC2":            {"shield", "ShieldXinyanC2"},
+	"core.ShieldKaeyaC4":             {"shield", "ShieldKaeyaC4"},
+	"core.ShieldYanfeiC4":            {"shield", "ShieldYanfeiC4"},
+	"core.ShieldBell":                {"shield", "ShieldBell"},
+	"core.ShieldYunjinSkill":         {"shield", "ShieldYunjinSkill"},
+	"core.EndShieldType":             {"shield", "EndShieldType"},
 }

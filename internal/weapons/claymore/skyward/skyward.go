@@ -4,50 +4,62 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("skyward pride", weapon)
-	core.RegisterWeaponFunc("skywardpride", weapon)
+	core.RegisterWeaponFunc(keys.SkywardPride, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	m := make([]float64, core.EndStatType)
-	m[core.DmgP] = 0.06 + float64(r)*0.02
-	char.AddMod(core.CharStatMod{
-		Key: "skyward pride",
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-		Expiry: -1,
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//Increases all DMG by 8%. After using an Elemental Burst, Normal or Charged
+	//Attack, on hit, creates a vacuum blade that does 80% of ATK as DMG to
+	//opponents along its path. Lasts for 20s or 8 vacuum blades.
+	w := &Weapon{}
+	r := p.Refine
+
+	//perm buff
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.06 + float64(r)*0.02
+	char.AddStatMod("skyward pride", -1, attributes.NoStat, func() ([]float64, bool) {
+		return m, true
 	})
 
 	counter := 0
 	dur := 0
-
 	dmg := 0.6 + float64(r)*0.2
 
-	c.Events.Subscribe(core.PreBurst, func(args ...interface{}) bool {
-		if c.ActiveChar != char.CharIndex() {
+	c.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 		dur = c.F + 1200
 		counter = 0
-		c.Log.NewEvent("Skyward Pride activated", core.LogWeaponEvent, char.CharIndex(), "expiring ", dur)
+		c.Log.NewEvent("Skyward Pride activated", glog.LogWeaponEvent, char.Index, "expiring ", dur)
 		return false
-	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
+	}, fmt.Sprintf("skyward-pride-%v", char.Base.Name))
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		//check if char is correct?
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		//check if cd is up
 		if c.F > dur {
 			return false
 		}
@@ -56,19 +68,19 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		}
 
 		counter++
-		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
 			Abil:       "Skyward Pride Proc",
-			AttackTag:  core.AttackTagWeaponSkill,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			StrikeType: core.StrikeTypeDefault,
-			Element:    core.Physical,
+			AttackTag:  combat.AttackTagWeaponSkill,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       dmg,
 		}
-		c.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 1)
 		return false
-	}, fmt.Sprintf("skyward-pride-%v", char.Name()))
-	return "skywardpride"
+	}, fmt.Sprintf("skyward-pride-%v", char.Base.Name))
+	return w, nil
 }

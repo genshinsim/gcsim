@@ -4,57 +4,70 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("whiteblind", weapon)
+	core.RegisterWeaponFunc(keys.Whiteblind, NewWeapon)
 }
 
-//On hit, Normal or Charged Attacks increase ATK and DEF by 6/7.5/9/10.5/12% for 6s.
-//Max 4 stacks (24/30/36/42/48% total). This effect can only occur once every 0.5s.
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	stacks := 0
-	icd := 0
-	duration := 0
+type Weapon struct {
+	Index  int
+	stacks int
+	buff   []float64
+}
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//On hit, Normal or Charged Attacks increase ATK and DEF by 6% for 6s. Max 4
+	//stacks. This effect can only occur once every 0.5s.
+	w := &Weapon{}
+	r := p.Refine
+
+	icd := 0
+	activeUntil := -1
+	w.buff = make([]float64, attributes.EndStatType)
+	amt := 0.045 + float64(r)*0.015
+
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != core.AttackTagNormal && atk.Info.AttackTag != core.AttackTagExtra {
+		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		if icd > c.F {
 			return false
 		}
-		if duration < c.F {
-			stacks = 0
+		if activeUntil < c.F {
+			w.stacks = 0
 		}
-		duration = c.F + 360
+
+		activeUntil = c.F + 360
 		icd = c.F + 30
-		stacks++
-		if stacks > 4 {
-			stacks = 4
+
+		if w.stacks < 4 {
+			w.stacks++
+			//update buff
+			w.buff[attributes.ATKP] = amt * float64(w.stacks)
+			w.buff[attributes.DEFP] = amt * float64(w.stacks)
 		}
+
+		//refresh mod
+		char.AddStatMod("whiteblind", 360, attributes.NoStat, func() ([]float64, bool) {
+			return w.buff, true
+		})
+
 		return false
-	}, fmt.Sprintf("whiteblind-%v", char.Name()))
+	}, fmt.Sprintf("whiteblind-%v", char.Base.Name))
 
-	amt := 0.045 + float64(r)*0.015
-
-	val := make([]float64, core.EndStatType)
-	char.AddMod(core.CharStatMod{
-		Key:    "whiteblind",
-		Expiry: -1,
-		Amount: func() ([]float64, bool) {
-			if duration < c.F {
-				stacks = 0
-				return nil, false
-			}
-			val[core.ATKP] = amt * float64(stacks)
-			val[core.DEFP] = amt * float64(stacks)
-			return val, true
-		},
-	})
-	return "whiteblind"
+	return w, nil
 }
