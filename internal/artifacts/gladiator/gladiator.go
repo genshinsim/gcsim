@@ -2,45 +2,57 @@ package gladiator
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterSetFunc("gladiator's finale", New)
-	core.RegisterSetFunc("gladiatorsfinale", New)
-	core.RegisterSetFunc("gladiators", New)
+	core.RegisterSetFunc(keys.GladiatorsFinale, NewSet)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+type Set struct {
+	Index int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
+
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
-		m[core.ATKP] = 0.18
-		c.AddMod(core.CharStatMod{
-			Key: "glad-2pc",
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-			Expiry: -1,
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ATK] = 0.18
+		char.AddStatMod("glad-2pc", -1, attributes.ATK, func() ([]float64, bool) {
+			return m, true
 		})
 	}
 	if count >= 4 {
-		switch c.WeaponClass() {
-		case core.WeaponClassSpear:
-		case core.WeaponClassSword:
-		case core.WeaponClassClaymore:
+		switch char.Weapon.Class {
+		case weapon.WeaponClassSpear:
+		case weapon.WeaponClassSword:
+		case weapon.WeaponClassClaymore:
 		default:
-			//don't add this mod if wrong weapon class
-			return
+			// don't add this mod if wrong weapon class
+			return &s, nil
 		}
 
-		m := make([]float64, core.EndStatType)
-		m[core.DmgP] = 0.35
-		c.AddPreDamageMod(core.PreDamageMod{
-			Key: "glad-4pc",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return m, (atk.Info.AttackTag == core.AttackTagNormal || atk.Info.AttackTag == core.AttackTagExtra)
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DmgP] = 0.35
+		char.AddAttackMod(
+			"glad-4pc",
+			-1,
+			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+					return nil, false
+				}
+				return m, true
 			},
-			Expiry: -1,
-		})
+		)
 	}
-	//add flat stat to char
+
+	return &s, nil
 }
