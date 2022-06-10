@@ -2,11 +2,11 @@ package ganyu
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var burstFrames []int
@@ -71,13 +71,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			target := -1
 			for i, t := range c.Core.Combat.Targets() {
 				// skip non-enemy targets
-				if _, ok := t.(core.Enemy); !ok {
+				x, ok := t.(*enemy.Enemy)
+				if !ok {
 					continue
 				}
 
 				// C4 lingers for 3s
 				if c.Base.Cons >= 4 {
-					t.SetTag("ganuyc4", c.Core.F+60*3)
+					x.SetTag("ganuyc4", c.Core.F+60*3)
 				}
 
 				if lastHit[t] < c.Core.F {
