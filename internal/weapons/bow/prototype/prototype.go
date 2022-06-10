@@ -4,36 +4,45 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("prototype crescent", weapon)
-	core.RegisterWeaponFunc("prototypecrescent", weapon)
+	core.RegisterWeaponFunc(keys.PrototypeCrescent, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
+type Weapon struct {
+	Index int
+}
 
-	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = 0.27 + float64(r)*0.09
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-	//add on hit effect
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != char.CharIndex() {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.27 + float64(r)*0.09
+
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		if !atk.Info.HitWeakPoint {
 			return false
 		}
-		char.AddMod(core.CharStatMod{
-			Key:    "prototype-crescent",
-			Expiry: c.F + 60*10,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
+		char.AddStatMod("prototype-crescent", 60*10, attributes.NoStat, func() ([]float64, bool) {
+			return m, true
 		})
 		return false
-	}, fmt.Sprintf("prototype-crescent-%v", char.Name()))
+	}, fmt.Sprintf("prototype-crescent-%v", char.Base.Name))
 
-	return "prototypecrescent"
+	return w, nil
 }
