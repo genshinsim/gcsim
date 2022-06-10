@@ -1,7 +1,6 @@
 package shenhe
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -11,13 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-const (
-	normalHitNum = 5
-	quillKey     = "shenhequill"
-)
-
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.Shenhe, NewChar)
 }
 
@@ -58,30 +51,4 @@ func (c *char) Init() error {
 		c.c4()
 	}
 	return nil
-}
-
-func initCancelFrames() {
-	// NA cancels
-	attackFrames = make([][]int, normalHitNum)
-
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 23)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 19)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 42)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 30)
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 81)
-	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
-
-	// charge -> x
-	chargeFrames = frames.InitAbilSlice(49)
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
-
-	// skill (press) -> x
-	skillPressFrames = frames.InitAbilSlice(31)
-
-	// skill (hold) -> x
-	skillHoldFrames = frames.InitAbilSlice(44)
-
-	// burst -> x
-	burstFrames = frames.InitAbilSlice(99)
 }

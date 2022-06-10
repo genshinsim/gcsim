@@ -14,6 +14,14 @@ var skillRangedFrames []int
 
 const skillHitmark = 28
 
+func init() {
+	// skill (melee) -> x
+	skillMeleeFrames = frames.InitAbilSlice(20)
+
+	// skill (ranged) -> x
+	skillRangedFrames = frames.InitAbilSlice(28)
+}
+
 //Cast: AoE strong hydro damage
 //Melee Stance: infuse NA/CA to hydro damage
 func (c *char) Skill(p map[string]int) action.ActionInfo {

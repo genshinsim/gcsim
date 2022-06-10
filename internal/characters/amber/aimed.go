@@ -11,6 +11,10 @@ var aimedFrames []int
 
 const aimedHitmark = 94
 
+func init() {
+	aimedFrames = frames.InitAbilSlice(94)
+}
+
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]
 	if !ok {

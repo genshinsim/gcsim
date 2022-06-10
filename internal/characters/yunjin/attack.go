@@ -12,6 +12,18 @@ import (
 var attackFrames [][]int
 var attackHitmarks = [][]int{{24}, {22}, {28, 28}, {33, 33}, {39}}
 
+const normalHitNum = 5
+
+func init() {
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 24)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 22)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 28)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 33)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 39)
+}
+
 // Normal attack damage queue generator
 // Very standard
 func (c *char) Attack(p map[string]int) action.ActionInfo {

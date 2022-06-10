@@ -1,24 +1,21 @@
 package razor
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillPressFrames, skillHoldFrames []int
+var skillPressFrames []int
+var skillHoldFrames []int
 
-const (
-	skillPressHitmark = 74
-	skillHoldHitmark  = 92
-)
+const skillPressHitmark = 74
+const skillHoldHitmark = 92
 
-func (c *char) skillPressFrameFunc(next action.Action) int {
-	return skillPressFrames[next]
-}
-
-func (c *char) skillHoldFrameFunc(next action.Action) int {
-	return skillHoldFrames[next]
+func init() {
+	skillPressFrames = frames.InitAbilSlice(74)
+	skillHoldFrames = frames.InitAbilSlice(92)
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -48,7 +45,7 @@ func (c *char) SkillPress() action.ActionInfo {
 		c.c4cb,
 	)
 
-	c.AddSigil()
+	c.addSigil()
 
 	cd := 6 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
 	c.SetCD(action.ActionSkill, int(cd))
@@ -58,7 +55,7 @@ func (c *char) SkillPress() action.ActionInfo {
 	}
 
 	return action.ActionInfo{
-		Frames:          c.skillPressFrameFunc,
+		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressHitmark,
 		Post:            skillPressHitmark,
@@ -84,7 +81,7 @@ func (c *char) SkillHold() action.ActionInfo {
 		skillHoldHitmark,
 	)
 
-	c.ClearSigil()
+	c.clearSigil()
 
 	cd := 10 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
 	c.SetCD(action.ActionSkill, int(cd))
@@ -94,7 +91,7 @@ func (c *char) SkillHold() action.ActionInfo {
 	}
 
 	return action.ActionInfo{
-		Frames:          c.skillHoldFrameFunc,
+		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldHitmark,
 		Post:            skillHoldHitmark,
@@ -102,7 +99,7 @@ func (c *char) SkillHold() action.ActionInfo {
 	}
 }
 
-func (c *char) AddSigil() {
+func (c *char) addSigil() {
 	if c.Core.F > c.sigilsDuration {
 		c.sigils = 0
 	}
@@ -113,7 +110,7 @@ func (c *char) AddSigil() {
 	}
 }
 
-func (c *char) ClearSigil() {
+func (c *char) clearSigil() {
 	if c.Core.F > c.sigilsDuration {
 		c.sigils = 0
 	}
@@ -125,7 +122,7 @@ func (c *char) ClearSigil() {
 	}
 }
 
-func (c *char) EnergySigil() {
+func (c *char) energySigil() {
 	val := make([]float64, attributes.EndStatType)
 	c.AddStatMod("er-sigil", -1, attributes.ER, func() ([]float64, bool) {
 		if c.Core.F > c.sigilsDuration {

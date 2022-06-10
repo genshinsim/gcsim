@@ -1,7 +1,6 @@
 package yaemiko
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -12,13 +11,11 @@ import (
 )
 
 const (
-	normalHitNum   = 3
 	yaeTotemCount  = "totems"
 	yaeTotemStatus = "yae_oldest_totem_expiry"
 )
 
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.YaeMiko, NewChar)
 }
 
@@ -49,24 +46,4 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 func (c *char) Init() error {
 	c.a4()
 	return nil
-}
-
-func initCancelFrames() {
-	// NA cancels
-	attackFrames = make([][]int, normalHitNum)
-
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 21)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 23)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 21)
-
-	// charge -> x
-	chargeFrames = frames.InitAbilSlice(114)
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
-
-	// skill -> x
-	skillFrames = frames.InitAbilSlice(34)
-
-	// burst -> x
-	burstFrames = frames.InitAbilSlice(111)
 }

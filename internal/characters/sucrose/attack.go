@@ -12,6 +12,25 @@ import (
 var attackFrames [][]int
 var attackHitmarks = []int{17, 18, 28, 28}
 
+const normalHitNum = 4
+
+func init() {
+	attackFrames = make([][]int, normalHitNum)
+
+	// TODO: check if hitmarks for NA->CA and CA->CA lines up
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 20)
+	attackFrames[0][action.ActionAttack] = 17
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 26)
+	attackFrames[1][action.ActionCharge] = 18
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 33)
+	attackFrames[2][action.ActionCharge] = 28
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[2], 54)
+	attackFrames[3][action.ActionAttack] = 51
+}
+
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

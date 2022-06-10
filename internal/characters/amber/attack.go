@@ -12,6 +12,18 @@ import (
 var attackFrames [][]int
 var attackHitmarks = []int{15, 18, 39, 41, 42}
 
+const normalHitNum = 5
+
+func init() {
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 15)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 18)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 39)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 41)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 42)
+}
+
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]
 	if !ok {

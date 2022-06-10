@@ -12,6 +12,14 @@ var skillFrames []int
 
 const skillHitmark = 23
 
+func init() {
+	skillFrames = frames.InitAbilSlice(45)
+	skillFrames[action.ActionAttack] = 44
+	skillFrames[action.ActionDash] = 24
+	skillFrames[action.ActionJump] = 24
+	skillFrames[action.ActionSwap] = 44
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	//0 for base dmg, 1 for 1x bonus, 2 for max bonus
 	counter := p["counter"]

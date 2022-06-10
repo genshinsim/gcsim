@@ -1,6 +1,7 @@
 package sucrose
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -10,6 +11,16 @@ var chargeFrames []int
 
 // hitmark frame, includes CA windup
 const chargeHitmark = 54
+
+func init() {
+	chargeFrames = frames.InitAbilSlice(69)
+	chargeFrames[action.ActionCharge] = 66
+	chargeFrames[action.ActionSkill] = 60
+	chargeFrames[action.ActionBurst] = 61
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = chargeHitmark // idk if this is correct or not
+}
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{

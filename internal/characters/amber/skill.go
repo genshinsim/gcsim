@@ -1,12 +1,17 @@
 package amber
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 )
 
 var skillFrames []int
 
 const skillStart = 35
+
+func init() {
+	skillFrames = frames.InitAbilSlice(35)
+}
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hold := p["hold"]

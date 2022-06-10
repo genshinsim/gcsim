@@ -10,6 +10,24 @@ import (
 var skillFrames []int
 
 const skillHitmark = 25
+const stilettoKey = "keqingstiletto"
+
+func init() {
+	// skill -> x
+	skillFrames = frames.InitAbilSlice(37)
+	skillFrames[action.ActionAttack] = 36
+	skillFrames[action.ActionSkill] = 35
+	skillFrames[action.ActionDash] = 21
+	skillFrames[action.ActionJump] = 21
+	skillFrames[action.ActionSwap] = 28
+
+	// skill (recast) -> x
+	skillRecastFrames = frames.InitAbilSlice(43)
+	skillRecastFrames[action.ActionAttack] = 42
+	skillRecastFrames[action.ActionDash] = 15
+	skillRecastFrames[action.ActionJump] = 16
+	skillRecastFrames[action.ActionSwap] = 42
+}
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// check if stiletto is on-field

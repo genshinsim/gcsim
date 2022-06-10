@@ -1,7 +1,6 @@
 package raiden
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -13,10 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-const normalHitNum = 5
-
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.Raiden, NewChar)
 }
 
@@ -56,36 +52,6 @@ func (c *char) Init() error {
 	c.onBurstStackCount()
 	c.onSwapClearBurst()
 	return nil
-}
-
-func initCancelFrames() {
-	initAttackFrames()
-	initSwordFrames()
-
-	// charge -> x
-	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 36
-
-	// charge (burst) -> x
-	swordCAFrames = frames.InitAbilSlice(56)
-	swordCAFrames[action.ActionDash] = swordCAHitmarks[len(swordCAHitmarks)-1]
-	swordCAFrames[action.ActionJump] = swordCAHitmarks[len(swordCAHitmarks)-1]
-
-	// skill -> x
-	skillFrames = frames.InitAbilSlice(37)
-	skillFrames[action.ActionDash] = 17
-	skillFrames[action.ActionJump] = 17
-	skillFrames[action.ActionSwap] = 36
-
-	// burst -> x
-	burstFrames = frames.InitAbilSlice(112)
-	burstFrames[action.ActionAttack] = 111
-	burstFrames[action.ActionCharge] = 500 //TODO: this action is illegal
-	burstFrames[action.ActionSkill] = 111
-	burstFrames[action.ActionDash] = 110
-	burstFrames[action.ActionSwap] = 110
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {

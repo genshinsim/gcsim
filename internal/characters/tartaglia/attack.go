@@ -9,8 +9,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
+const normalHitNum = 6
+
 var attackFrames [][]int
 var attackHitmarks = []int{17, 13, 34, 37, 22, 39}
+
+func init() {
+	// attack (ranged) -> x
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 17)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 13)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 34)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 37)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 22)
+	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5], 39)
+}
 
 // Normal attack
 // Perform up to 6 consecutive shots with a bow.
@@ -55,6 +69,18 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 var meleeFrames [][]int
 var meleeHitmarks = [][]int{{7}, {13}, {28}, {32}, {36}, {48, 49}}
+
+func init() {
+	// attack (melee) -> x
+	meleeFrames = make([][]int, normalHitNum)
+
+	meleeFrames[0] = frames.InitNormalCancelSlice(meleeFrames[0][0], 7)
+	meleeFrames[1] = frames.InitNormalCancelSlice(meleeFrames[1][0], 13)
+	meleeFrames[2] = frames.InitNormalCancelSlice(meleeFrames[2][0], 28)
+	meleeFrames[3] = frames.InitNormalCancelSlice(meleeFrames[3][0], 32)
+	meleeFrames[4] = frames.InitNormalCancelSlice(meleeFrames[4][0], 36)
+	meleeFrames[5] = frames.InitNormalCancelSlice(meleeFrames[5][1], 49)
+}
 
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.

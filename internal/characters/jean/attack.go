@@ -13,6 +13,28 @@ import (
 var attackFrames [][]int
 var attackHitmarks = []int{13, 6, 17, 37, 25}
 
+const normalHitNum = 5
+
+func init() {
+	// NA cancels
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 25)
+	attackFrames[0][action.ActionAttack] = 22
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 20)
+	attackFrames[1][action.ActionAttack] = 14
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 31)
+	attackFrames[2][action.ActionAttack] = 28
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 49)
+	attackFrames[3][action.ActionAttack] = 44
+
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 68)
+	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+}
+
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

@@ -1,6 +1,7 @@
 package jean
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -10,6 +11,13 @@ import (
 var skillFrames []int
 
 const skillHitmark = 21
+
+func init() {
+	skillFrames = frames.InitAbilSlice(46)
+	skillFrames[action.ActionDash] = 28
+	skillFrames[action.ActionJump] = 28
+	skillFrames[action.ActionSwap] = 45
+}
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hold := p["hold"]

@@ -15,6 +15,14 @@ var burstFrames []int
 
 const burstHitmark = 28
 
+func init() {
+	burstFrames = frames.InitAbilSlice(58)
+	burstFrames[action.ActionAttack] = 55
+	burstFrames[action.ActionDash] = 48
+	burstFrames[action.ActionJump] = 48
+	burstFrames[action.ActionSwap] = 46
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

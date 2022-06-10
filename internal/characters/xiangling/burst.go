@@ -12,6 +12,11 @@ import (
 var burstFrames []int
 var burstHitmarks = []int{18, 33, 56} // initial 3 hits
 
+func init() {
+	burstFrames = frames.InitAbilSlice(80)
+	burstFrames[action.ActionSwap] = 79
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

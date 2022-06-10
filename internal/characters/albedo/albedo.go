@@ -1,10 +1,8 @@
 package albedo
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -12,10 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-const normalHitNum = 5
-
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.Albedo, NewChar)
 }
 
@@ -53,26 +48,4 @@ func (c *char) Init() error {
 		c.c6()
 	}
 	return nil
-}
-
-func initCancelFrames() {
-	// NA cancels
-	attackFrames = make([][]int, normalHitNum)
-
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 12)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 18)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 29)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 39)
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[3], 54)
-
-	// charge -> x
-	chargeFrames = frames.InitAbilSlice(54)
-	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
-
-	// skill -> x
-	skillFrames = frames.InitAbilSlice(32)
-
-	// burst -> x
-	burstFrames = frames.InitAbilSlice(96)
 }

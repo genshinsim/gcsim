@@ -7,13 +7,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var burstRangedFrames []int
 var burstMeleeFrames []int
+var burstRangedFrames []int
 
-const (
-	burstMeleeHitmark  = 92
-	burstRangedHitmark = 47
-)
+const burstMeleeHitmark = 92
+const burstRangedHitmark = 47
+
+func init() {
+	// burst (melee) -> x
+	burstMeleeFrames = frames.InitAbilSlice(97)
+
+	// burst (ranged) -> x
+	burstRangedFrames = frames.InitAbilSlice(52)
+}
 
 //Performs a different attack depending on the stance in which it is cast.
 //Ranged Stance: dealing AoE Hydro DMG. Apply Riptide status to enemies hit. Returns 20 Energy after use

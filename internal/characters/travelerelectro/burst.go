@@ -13,6 +13,10 @@ var burstFrames []int
 
 const burstHitmark = 60
 
+func init() {
+	burstFrames = frames.InitAbilSlice(60)
+}
+
 /**
 [12:01 PM] pai: never tried to measure it but emc burst looks like it has roughly 1~1.5 abyss tile of range, skill goes a bit further i think
 [12:01 PM] pai: the 3 hits from the skill also like split out and kind of auto target if that's useful information

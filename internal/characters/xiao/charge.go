@@ -11,6 +11,15 @@ var chargeFrames []int
 
 const chargeHitmark = 16
 
+func init() {
+	chargeFrames = frames.InitAbilSlice(45)
+	chargeFrames[action.ActionSkill] = 38
+	chargeFrames[action.ActionBurst] = 37
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = 43
+}
+
 // Charge attack damage queue generator
 // Very standard - consistent with other characters like Xiangling
 // Note that his CAs share an ICD with his NAs when he is under the effects of his burst

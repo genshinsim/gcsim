@@ -1,7 +1,6 @@
 package chongyun
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -11,10 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-const normalHitNum = 4
-
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.Chongyun, NewChar)
 }
 
@@ -52,20 +48,4 @@ func (c *char) Init() error {
 		c.c6()
 	}
 	return nil
-}
-
-func initCancelFrames() {
-	// NA cancels
-	attackFrames = make([][]int, normalHitNum)
-
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 24)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 38)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 62)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 80)
-
-	// skill -> x
-	skillFrames = frames.InitAbilSlice(57)
-
-	// burst -> x
-	burstFrames = frames.InitAbilSlice(79)
 }

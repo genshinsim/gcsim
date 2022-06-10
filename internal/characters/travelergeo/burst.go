@@ -12,6 +12,10 @@ var burstFrames []int
 
 const burstStart = 38
 
+func init() {
+	burstFrames = frames.InitAbilSlice(38)
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	hits, ok := p["hits"]
 	if !ok {

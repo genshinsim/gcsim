@@ -12,6 +12,18 @@ import (
 var attackFrames [][]int
 var attackHitmarks = []int{19, 25, 38, 41, 58}
 
+const normalHitNum = 5
+
+func init() {
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 19)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 25)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 38)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 41)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 58)
+}
+
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other bow characters
 // Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 10)

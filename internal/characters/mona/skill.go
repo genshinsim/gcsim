@@ -11,6 +11,10 @@ var skillFrames []int
 
 const skillHitmark = 42
 
+func init() {
+	skillFrames = frames.InitAbilSlice(42)
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

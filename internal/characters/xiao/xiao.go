@@ -1,7 +1,6 @@
 package xiao
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -13,10 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-const normalHitNum = 6
-
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.Xiao, NewChar)
 }
 
@@ -63,64 +59,6 @@ func (c *char) Init() error {
 		c.c6()
 	}
 	return nil
-}
-
-func initCancelFrames() {
-	// NA cancels
-	attackFrames = make([][]int, normalHitNum)
-
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][1], 26)
-	attackFrames[0][action.ActionAttack] = 25
-
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 27)
-	attackFrames[1][action.ActionAttack] = 22
-
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 38)
-	attackFrames[2][action.ActionAttack] = 26
-
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 42)
-	attackFrames[3][action.ActionAttack] = 39
-
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 30)
-	attackFrames[4][action.ActionAttack] = 24
-
-	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 79)
-	attackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
-
-	// charge -> x
-	chargeFrames = frames.InitAbilSlice(45)
-	chargeFrames[action.ActionSkill] = 38
-	chargeFrames[action.ActionBurst] = 37
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 43
-
-	// high_plunge -> x
-	highPlungeFrames = frames.InitAbilSlice(66)
-	highPlungeFrames[action.ActionAttack] = 61
-	highPlungeFrames[action.ActionJump] = 65
-	highPlungeFrames[action.ActionSwap] = 64
-
-	// low_plunge -> x
-	lowPlungeFrames = frames.InitAbilSlice(62)
-	lowPlungeFrames[action.ActionAttack] = 60
-	lowPlungeFrames[action.ActionSkill] = 59
-	lowPlungeFrames[action.ActionDash] = 60
-	lowPlungeFrames[action.ActionJump] = 61
-
-	// skill -> x
-	skillFrames = frames.InitAbilSlice(37)
-	skillFrames[action.ActionAttack] = 24
-	skillFrames[action.ActionSkill] = 24
-	skillFrames[action.ActionBurst] = 24
-	skillFrames[action.ActionDash] = 35
-	skillFrames[action.ActionSwap] = 35
-
-	// burst -> x
-	burstFrames = frames.InitAbilSlice(82)
-	burstFrames[action.ActionDash] = 57
-	burstFrames[action.ActionJump] = 58
-	burstFrames[action.ActionSwap] = 67
 }
 
 // Xiao specific Snapshot implementation for his burst bonuses. Similar to Hu Tao

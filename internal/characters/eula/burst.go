@@ -14,6 +14,14 @@ var burstFrames []int
 const burstHitmark = 100
 const lightfallHitmark = 35
 
+func init() {
+	burstFrames = frames.InitAbilSlice(122)
+	burstFrames[action.ActionDash] = 121
+	burstFrames[action.ActionJump] = 121
+	burstFrames[action.ActionSwap] = 121
+	burstFrames[action.ActionWalk] = 117
+}
+
 //ult 365 to 415, 60fps = 120
 //looks like ult charges for 8 seconds
 func (c *char) Burst(p map[string]int) action.ActionInfo {

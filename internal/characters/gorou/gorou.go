@@ -1,7 +1,6 @@
 package gorou
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -11,7 +10,6 @@ import (
 )
 
 const (
-	normalHitNum             = 4
 	defenseBuffKey           = "goroubuff"
 	generalWarBannerKey      = "generalwarbanner"
 	generalGloryKey          = "generalglory"
@@ -22,7 +20,6 @@ const (
 )
 
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.Gorou, NewChar)
 }
 
@@ -100,23 +97,4 @@ func (c *char) Init() error {
 	}
 
 	return nil
-}
-
-func initCancelFrames() {
-	// NA cancels
-	attackFrames = make([][]int, normalHitNum)
-
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 15)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 18)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 39)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 41)
-
-	// aimed -> x
-	aimedFrames = frames.InitAbilSlice(94)
-
-	// skill -> x
-	skillFrames = frames.InitAbilSlice(35)
-
-	// burst -> x
-	burstFrames = frames.InitAbilSlice(74)
 }

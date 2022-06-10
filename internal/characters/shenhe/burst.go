@@ -12,6 +12,10 @@ var burstFrames []int
 
 const burstHitmark = 99
 
+func init() {
+	burstFrames = frames.InitAbilSlice(99)
+}
+
 // Burst attack damage queue generator
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// TODO: Not 100% sure if this shares ICD with the DoT, currently coded that it does

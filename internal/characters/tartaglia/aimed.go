@@ -11,6 +11,10 @@ var aimedFrames []int
 
 const aimedHitmark = 84
 
+func init() {
+	aimedFrames = frames.InitAbilSlice(84)
+}
+
 //Once fully charged, deal Hydro DMG and apply the Riptide status.
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]

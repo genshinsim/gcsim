@@ -13,6 +13,10 @@ var burstFrames []int
 
 const burstHitmark = 102
 
+func init() {
+	burstFrames = frames.InitAbilSlice(127)
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//bubble deal 0 dmg hydro app
 	//add bubble status, when bubble status disappears trigger omen dmg the frame after

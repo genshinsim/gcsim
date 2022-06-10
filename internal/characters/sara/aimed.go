@@ -1,6 +1,7 @@
 package sara
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -9,6 +10,10 @@ import (
 var aimedFrames []int
 
 const aimedHitmark = 103
+
+func init() {
+	aimedFrames = frames.InitAbilSlice(78)
+}
 
 // Aimed charge attack damage queue generator
 // Additionally handles crowfeather state, E skill damage, and A4

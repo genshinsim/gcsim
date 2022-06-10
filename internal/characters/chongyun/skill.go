@@ -16,6 +16,10 @@ var skillFrames []int
 
 const skillHitmark = 56
 
+func init() {
+	skillFrames = frames.InitAbilSlice(57)
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	//if fieldSrc is < duration then this is prob a sac proc

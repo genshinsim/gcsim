@@ -9,6 +9,15 @@ import (
 
 var skillFrames []int
 
+func init() {
+	skillFrames = frames.InitAbilSlice(57)
+	skillFrames[action.ActionCharge] = 56
+	skillFrames[action.ActionSkill] = 56
+	skillFrames[action.ActionDash] = 11
+	skillFrames[action.ActionJump] = 11
+	skillFrames[action.ActionSwap] = 56
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

@@ -14,6 +14,13 @@ var skillFrames []int
 
 const skillOzSpawn = 32
 
+func init() {
+	skillFrames = frames.InitAbilSlice(43)
+	skillFrames[action.ActionDash] = 14
+	skillFrames[action.ActionJump] = 16
+	skillFrames[action.ActionSwap] = 42
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	//always trigger electro no ICD on initial summon
 	ai := combat.AttackInfo{

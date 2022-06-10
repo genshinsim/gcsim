@@ -13,6 +13,12 @@ var skillFrames []int
 
 const skillHitmark = 24
 
+func init() {
+	skillFrames = frames.InitAbilSlice(61)
+	skillFrames[action.ActionDash] = 29
+	skillFrames[action.ActionJump] = 29
+}
+
 // Skill handling - Handles primary damage instance
 // Deals Hydro DMG to surrounding opponents and heal nearby active characters once every 2s. This healing is based on Kokomi's Max HP.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
