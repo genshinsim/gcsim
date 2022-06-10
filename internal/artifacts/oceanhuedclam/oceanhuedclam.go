@@ -4,13 +4,27 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func init() {
-	core.RegisterSetFunc("oceanhuedclam", New)
-	core.RegisterSetFunc("ocean hued clam", New)
-	core.RegisterSetFunc("ocean-hued clam", New)
+	core.RegisterSetFunc(keys.OceanHuedClam, NewSet)
 }
+
+type Set struct {
+	bubbleHealStacks     float64
+	bubbleDurationExpiry int
+	Index                int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
 
 // 2-Piece Bonus: Healing Bonus +15%
 // 4-Piece Bonus: When the character equipping this artifact set heals a character in the party,
@@ -23,57 +37,53 @@ func init() {
 // 	Only one Sea-Dyed Foam can be produced every 3.5 seconds. Each Sea-Dyed Foam can accumulate up to 30,000 HP (including
 //  overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
 // 	This effect can still be triggered even when the character who is using this artifact set is not on the field.
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
+
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
-		m[core.Heal] = 0.15
-		c.AddMod(core.CharStatMod{
-			Key: "ohc-2pc",
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-			Expiry: -1,
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.Heal] = 0.15
+		char.AddStatMod("ohc-2pc", -1, attributes.Heal, func() ([]float64, bool) {
+			return m, true
 		})
 	}
 	if count >= 4 {
-		bubbleHealStacks := 0.0
-		bubbleDurationExpiry := 0
 		bubbleICDExpiry := 0
 
-		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
 			// Shows which character currently has an active OHC proc. -1 = Non-active
-			s.Flags.Custom["OHCActiveChar"] = -1
+			c.Flags.Custom["OHCActiveChar"] = -1
 			return true
 		}, "OHC-init")
 
 		// On Heal subscription to start accumulating the healing
-		s.Events.Subscribe(core.OnHeal, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 			src := args[0].(int)
 			healAmt := args[2].(float64)
 
-			if src != c.CharIndex() {
+			if src != char.Index {
 				return false
 			}
 
 			// OHC must either be inactive or this equipped character has to have an OHC bubble active
-			if !((s.Flags.Custom["OHCActiveChar"] == -1) || (s.Flags.Custom["OHCActiveChar"] == c.CharIndex())) {
+			if c.Flags.Custom["OHCActiveChar"] != -1 && c.Flags.Custom["OHCActiveChar"] != char.Index {
 				return false
 			}
 
-			bubbleHealStacks += healAmt
-			if bubbleHealStacks >= 30000 {
-				bubbleHealStacks = 30000
+			s.bubbleHealStacks += healAmt
+			if s.bubbleHealStacks >= 30000 {
+				s.bubbleHealStacks = 30000
 			}
 
 			// Activate bubble if this character's bubble is off CD, and add the bubble pop task
-			if bubbleICDExpiry < s.F {
-				bubbleDurationExpiry = s.F + 3*60
-				bubbleICDExpiry = s.F + 3.5*60
+			if bubbleICDExpiry < c.F {
+				s.bubbleDurationExpiry = c.F + 3*60
+				bubbleICDExpiry = c.F + 3.5*60
 
-				s.Flags.Custom["OHCActiveChar"] = c.CharIndex()
+				c.Flags.Custom["OHCActiveChar"] = char.Index
 
 				// Bubble pop task
-				c.AddTask(func() {
+				c.Tasks.Add(func() {
 					// Bubble is physical damage. This is handled in the reaction damage function, so it is not affected by physical dmg bonus/enemy defense
 					// d := c.Snapshot(
 					// 	"OHC Damage",
@@ -90,31 +100,39 @@ func New(c core.Character, s *core.Core, count int, params map[string]int) {
 					// d.FlatDmg = bubbleHealStacks * .9
 					// c.QueueDmg(&d, 0)
 
-					atk := core.AttackInfo{
-						ActorIndex:       c.CharIndex(),
-						DamageSrc:        0, //from player
+					atk := combat.AttackInfo{
+						ActorIndex:       char.Index,
+						DamageSrc:        0, // from player
 						Abil:             "OHC Damage",
-						AttackTag:        core.AttackTagNoneStat,
-						ICDTag:           core.ICDTagNone,
-						ICDGroup:         core.ICDGroupDefault,
-						Element:          core.Physical,
+						AttackTag:        combat.AttackTagNoneStat,
+						ICDTag:           combat.ICDTagNone,
+						ICDGroup:         combat.ICDGroupDefault,
+						Element:          attributes.Physical,
 						IgnoreDefPercent: 1,
-						FlatDmg:          bubbleHealStacks * .9,
+						FlatDmg:          s.bubbleHealStacks * .9,
 					}
 					//snapshot -1 since we don't need stats
-					s.Combat.QueueAttack(atk, core.NewDefCircHit(3, true, core.TargettableEnemy), -1, 1)
+					c.QueueAttack(atk, combat.NewDefCircHit(3, true, combat.TargettableEnemy), -1, 1)
 
 					// Reset
-					s.Flags.Custom["OHCActiveChar"] = -1
-					bubbleHealStacks = 0
-				}, "ohc-bubble-pop", 3*60)
+					c.Flags.Custom["OHCActiveChar"] = -1
+					s.bubbleHealStacks = 0
+				}, 3*60)
 
-				s.Log.NewEvent("ohc bubble activated", core.LogArtifactEvent, c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "ohc_icd_expiry", bubbleICDExpiry)
+				c.Log.NewEvent("ohc bubble activated", glog.LogArtifactEvent, char.Index,
+					"bubble_pops_at", s.bubbleDurationExpiry,
+					"ohc_icd_expiry", bubbleICDExpiry,
+				)
 			}
 
-			s.Log.NewEvent("ohc bubble accumulation", core.LogArtifactEvent, c.CharIndex(), "bubble_pops_at", bubbleDurationExpiry, "bubble_total", bubbleHealStacks)
+			c.Log.NewEvent("ohc bubble accumulation", glog.LogArtifactEvent, char.Index,
+				"bubble_pops_at", s.bubbleDurationExpiry,
+				"bubble_total", s.bubbleHealStacks,
+			)
 
 			return false
-		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", c.Name()))
+		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", char.Base.Name))
 	}
+
+	return &s, nil
 }
