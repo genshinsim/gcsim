@@ -4,64 +4,75 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 func init() {
-	core.RegisterSetFunc("noblesse oblige", New)
-	core.RegisterSetFunc("noblesseoblige", New)
+	core.RegisterSetFunc(keys.NoblesseOblige, NewSet)
 }
 
-func New(c core.Character, s *core.Core, count int, params map[string]int) {
+type Set struct {
+	Index int
+}
+
+func (s *Set) SetIndex(idx int) { s.Index = idx }
+func (s *Set) Init() error      { return nil }
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+	s := Set{}
+
 	if count >= 2 {
-		m := make([]float64, core.EndStatType)
-		m[core.DmgP] = 0.2
-		c.AddPreDamageMod(core.PreDamageMod{
-			Key: "nob-2pc",
-			Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-				return m, atk.Info.AttackTag == core.AttackTagElementalBurst
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DmgP] = 0.20
+		char.AddAttackMod(
+			"nob-2pc",
+			-1,
+			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+					return nil, false
+				}
+				return m, true
 			},
-			Expiry: -1,
-		})
+		)
 	}
 	if count >= 4 {
-
-		s.Events.Subscribe(core.PostBurst, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.PostBurst, func(args ...interface{}) bool {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
-			if s.ActiveChar != c.CharIndex() {
+			if c.Player.Active() != char.Index {
 				return false
 			}
 
-			nob, ok := s.GetCustomFlag("nob-4pc")
+			nob, ok := c.Flags.Custom["nob-4pc"]
 			//only activate if none existing
-			if s.Status.Duration("nob-4pc") == 0 || (nob == c.CharIndex() && ok) {
-				s.Status.AddStatus("nob-4pc", 720)
-				s.SetCustomFlag("nob-4pc", c.CharIndex())
+			if c.Status.Duration("nob-4pc") == 0 || (nob == char.Index && ok) {
+				c.Status.Add("nob-4pc", 12*60)
+				c.Flags.Custom["nob-4pc"] = char.Index
 			}
 
-			s.Log.NewEvent("noblesse 4pc proc", core.LogArtifactEvent, c.CharIndex(), "expiry", s.Status.Duration("nob-4pc"))
+			c.Log.NewEvent("noblesse 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.Status.Duration("nob-4pc"))
 			return false
+		}, fmt.Sprintf("no 4pc - %v", char.Base.Name))
 
-		}, fmt.Sprintf("no 4pc - %v", c.Name()))
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ATKP] = 0.2
 
-		m := make([]float64, core.EndStatType)
-		m[core.ATKP] = 0.2
-
-		s.Events.Subscribe(core.OnInitialize, func(args ...interface{}) bool {
-			for _, char := range s.Chars {
-				char.AddMod(core.CharStatMod{
-					Key: "nob-4pc",
-					Amount: func() ([]float64, bool) {
-						if s.Status.Duration("nob-4pc") > 0 {
-							return m, true
-						}
-						return nil, false
-					},
-					Expiry: -1,
+		c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+			for _, this := range c.Player.Chars() {
+				this.AddStatMod("nob-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
+					if c.Status.Duration("nob-4pc") > 0 {
+						return m, true
+					}
+					return nil, false
 				})
 			}
 			return true
 		}, "nob-4pc-init")
-
 	}
-	//add flat stat to char
+
+	return &s, nil
 }
