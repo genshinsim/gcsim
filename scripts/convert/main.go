@@ -330,7 +330,7 @@ var pkgNameReplace = map[string][2]string{
 	"core.OnCrystallizeCryo":        {"event", "OnCrystallizeCryo"},
 	"core.OnCrystallizeElectro":     {"event", "OnCrystallizeElectro"},
 	"core.OnCrystallizePyro":        {"event", "OnCrystallizePyro"},
-	"core.ReactionEventEndDelim":    {"event", "ReactionEventEndDeli,"},
+	"core.ReactionEventEndDelim":    {"event", "ReactionEventEndDelim"},
 	"core.OnStamUse":                {"event", "OnStamUse"},
 	"core.OnShielded":               {"event", "OnShielded"},
 	"core.OnCharacterSwap":          {"event", "OnCharacterSwap"},
