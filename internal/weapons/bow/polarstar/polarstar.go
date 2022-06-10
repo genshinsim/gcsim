@@ -11,10 +11,6 @@ func init() {
 	core.RegisterWeaponFunc("polarstar", weapon)
 }
 
-// Elemental Skill and Elemental Burst DMG increased by 12/15/18/21/24%.
-// After a Normal Attack, Charged Attack, Elemental Skill or Elemental Burst hits an opponent, 1 stack of Ashen Nightstar will be gained for 12s.
-// When 1/2/3/4 stacks of Ashen Nightstar are present, ATK is increased by (10/20/30/48)/(12.5/25/37.5/60)/(15/30/45/72)/(17.5/35/52.5/84)/(20/40/60/96)%.
-// The stack of Ashen Nightstar created by the Normal Attack, Charged Attack, Elemental Skill or Elemental Burst will be counted independently of the others.
 func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
 
 	dmg := .09 + float64(r)*.03
@@ -26,10 +22,10 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 	skill := 0
 	burst := 0
 
-	mATK := make([]float64, core.EndStatType)
+	mATK := make([]float64, attributes.EndStatType)
 	char.AddMod(core.CharStatMod{
-		Key:    "polar-star",
-		Expiry: -1,
+		Key:	"polar-star",
+		Expiry:	-1,
 		Amount: func() ([]float64, bool) {
 			count := 0
 			if normal > c.F {
@@ -49,14 +45,14 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			if count >= 4 {
 				atkbonus += max
 			}
-			mATK[core.ATKP] = atkbonus
+			mATK[attributes.ATKP] = atkbonus
 
 			return mATK, true
 		},
 	})
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.CharIndex() {
 			return false
 		}
@@ -66,32 +62,30 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 
 		cd := c.F + 60*12
 		switch atk.Info.AttackTag {
-		case core.AttackTagNormal:
+		case combat.AttackTagNormal:
 			normal = cd
-		case core.AttackTagExtra:
+		case combat.AttackTagExtra:
 			charged = cd
-		case core.AttackTagElementalArt, core.AttackTagElementalArtHold:
+		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold:
 			skill = cd
-		case core.AttackTagElementalBurst:
+		case combat.AttackTagElementalBurst:
 			burst = cd
 		}
 
 		return false
 	}, fmt.Sprintf("polar-star-%v", char.Name()))
 
-	mDmg := make([]float64, core.EndStatType)
-	mDmg[core.DmgP] = dmg
-	char.AddPreDamageMod(core.PreDamageMod{
-		Key:    "polar-star",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
+	mDmg := make([]float64, attributes.EndStatType)
+	mDmg[attributes.DmgP] = dmg
+	char.AddAttackMod("polar-star",
+		-1,
+		func(atk *combat.AttackEvent, t combat.Target,) ([]float64, bool) {
 			switch atk.Info.AttackTag {
-			case core.AttackTagElementalArt, core.AttackTagElementalArtHold, core.AttackTagElementalBurst:
+			case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
 				return mDmg, true
 			}
 			return nil, false
-		},
-	})
+		})
 
 	return "polarstar"
 }

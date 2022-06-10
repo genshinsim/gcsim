@@ -2,6 +2,7 @@ package predator
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 

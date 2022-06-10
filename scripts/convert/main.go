@@ -53,11 +53,33 @@ func fix(path string) error {
 	}, nil)
 
 	astutil.Apply(f, func(cr *astutil.Cursor) bool {
-		found, next := findAndReplacePreDamageBlock(cr.Node())
-		if !found {
+		// found, next := findAndReplacePreDamageBlock(cr.Node())
+		// if !found {
+		// 	return true
+		// }
+		// cr.Replace(next)
+		// return false
+
+		rep := func(f func(ast.Node) (bool, ast.Node)) bool {
+			found, next := f(cr.Node())
+			if !found {
+				return true
+			}
+			cr.Replace(next)
+			return false
+		}
+
+		var done bool
+
+		done = rep(findAndReplaceStatBlock)
+		if done {
 			return true
 		}
-		cr.Replace(next)
+		done = rep(findAndReplacePreDamageBlock)
+		if done {
+			return true
+		}
+
 		return false
 	}, nil)
 	// Print result
@@ -72,7 +94,7 @@ func fix(path string) error {
 	return nil
 }
 
-func findAndReplacePreDamageBlock(n ast.Node) (bool, *ast.ExprStmt) {
+func findAndReplacePreDamageBlock(n ast.Node) (bool, ast.Node) {
 	if expr, ok := n.(*ast.ExprStmt); ok {
 		block, ok := expr.X.(*ast.CallExpr)
 		if !ok {
@@ -132,6 +154,80 @@ func findAndReplacePreDamageBlock(n ast.Node) (bool, *ast.ExprStmt) {
 			X: &ast.CallExpr{
 				Fun:  ast.NewIdent(fmt.Sprintf("%v.AddAttackMod", caller.Name)),
 				Args: []ast.Expr{key, expiry, amount},
+			},
+		}
+
+		return true, next
+	}
+	return false, nil
+}
+
+func findAndReplaceStatBlock(n ast.Node) (bool, ast.Node) {
+	if expr, ok := n.(*ast.ExprStmt); ok {
+		block, ok := expr.X.(*ast.CallExpr)
+		if !ok {
+			return false, nil
+		}
+
+		//FUN should be a SelectorExpr
+		fun, ok := block.Fun.(*ast.SelectorExpr)
+		if !ok {
+			return false, nil
+		}
+
+		//Sel should be AddPreDamageMod
+		if fun.Sel.Name != "AddMod" {
+			return false, nil
+		}
+
+		fmt.Println("found stat block")
+
+		//work through the args and find amount, expiry, and key
+		//args should be len 1
+		if len(block.Args) != 1 {
+			fmt.Println("unexpected args length > 1")
+			return false, nil
+		}
+
+		//check to make sure it's a CompositeLit
+		lit, ok := block.Args[0].(*ast.CompositeLit)
+		if !ok {
+			fmt.Println("unexpected arg type, not a composite lit")
+			return false, nil
+		}
+
+		//loop through Elts to find amount, expiry and key
+		var amount, expiry, key ast.Expr
+		var stat ast.Expr = &ast.SelectorExpr{
+			X:   ast.NewIdent("attributes"),
+			Sel: ast.NewIdent("NoStat"),
+		}
+		for _, v := range lit.Elts {
+			t, ok := v.(*ast.KeyValueExpr)
+			if !ok {
+				continue
+			}
+			switch t.Key.(*ast.Ident).Name {
+			case "Amount":
+				amount = t.Value
+			case "Expiry":
+				expiry = t.Value
+			case "Key":
+				key = t.Value
+			case "AffectedStat":
+				stat = t.Value
+			}
+		}
+
+		caller, ok := fun.X.(*ast.Ident)
+		if !ok {
+			fmt.Println("unexpected fun.X type, not an ident")
+		}
+
+		next := &ast.ExprStmt{
+			X: &ast.CallExpr{
+				Fun:  ast.NewIdent(fmt.Sprintf("%v.AddStatMod", caller.Name)),
+				Args: []ast.Expr{key, expiry, stat, amount},
 			},
 		}
 
@@ -276,4 +372,45 @@ var pkgNameReplace = map[string][2]string{
 	"core.AttackTagSwirlCryo":          {"combat", "AttackTagSwirlCryo"},
 	"core.AttackTagSwirlElectro":       {"combat", "AttackTagSwirlElectro"},
 	"core.AttackTagLength":             {"combat", "AttackTagLength"},
+	//actions
+	"core.InvalidAction":             {"action", "InvalidAction"},
+	"core.ActionSkill":               {"action", "ActionSkill"},
+	"core.ActionBurst":               {"action", "ActionBurst"},
+	"core.ActionAttack":              {"action", "ActionAttack"},
+	"core.ActionCharge":              {"action", "ActionCharge"},
+	"core.ActionHighPlunge":          {"action", "ActionHighPlunge"},
+	"core.ActionLowPlunge":           {"action", "ActionLowPlunge"},
+	"core.ActionAim":                 {"action", "ActionAim"},
+	"core.ActionDash":                {"action", "ActionDash"},
+	"core.ActionJump":                {"action", "ActionJump"},
+	"core.ActionSwap":                {"action", "ActionSwap"},
+	"core.ActionWalk":                {"action", "ActionWalk"},
+	"core.ActionWait":                {"action", "ActionWait"},
+	"core.EndActionType":             {"action", "EndActionType"},
+	"core.ActionSkillHoldFramesOnly": {"action", "ActionSkillHoldFramesOnly"},
+	//logs
+	"core.LogProcs":             {"glog", "LogProcs"},
+	"core.LogDamageEvent":       {"glog", "LogDamageEvent"},
+	"core.LogPreDamageMod":      {"glog", "LogPreDamageMod"},
+	"core.LogHurtEvent":         {"glog", "LogHurtEvent"},
+	"core.LogHealEvent":         {"glog", "LogHealEvent"},
+	"core.LogCalc":              {"glog", "LogCalc"},
+	"core.LogReactionEvent":     {"glog", "LogReactionEvent"},
+	"core.LogElementEvent":      {"glog", "LogElementEvent"},
+	"core.LogSnapshotEvent":     {"glog", "LogSnapshotEvent"},
+	"core.LogSnapshotModsEvent": {"glog", "LogSnapshotModsEvent"},
+	"core.LogStatusEvent":       {"glog", "LogStatusEvent"},
+	"core.LogActionEvent":       {"glog", "LogActionEvent"},
+	"core.LogQueueEvent":        {"glog", "LogQueueEvent"},
+	"core.LogEnergyEvent":       {"glog", "LogEnergyEvent"},
+	"core.LogCharacterEvent":    {"glog", "LogCharacterEvent"},
+	"core.LogEnemyEvent":        {"glog", "LogEnemyEvent"},
+	"core.LogHookEvent":         {"glog", "LogHookEvent"},
+	"core.LogSimEvent":          {"glog", "LogSimEvent"},
+	"core.LogTaskEvent":         {"glog", "LogTaskEvent"},
+	"core.LogArtifactEvent":     {"glog", "LogArtifactEvent"},
+	"core.LogWeaponEvent":       {"glog", "LogWeaponEvent"},
+	"core.LogShieldEvent":       {"glog", "LogShieldEvent"},
+	"core.LogConstructEvent":    {"glog", "LogConstructEvent"},
+	"core.LogICDEvent":          {"glog", "LogICDEvent"},
 }
