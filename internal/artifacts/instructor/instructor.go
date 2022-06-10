@@ -40,6 +40,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.EM] = 120
 
+		// TODO: does multiple instructor holders extend the duration?
 		add := func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			// Character must be on field to proc bonus
