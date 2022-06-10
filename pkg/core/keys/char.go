@@ -94,6 +94,7 @@ const (
 	Shenhe
 	Yunjin
 	YaeMiko
+	Yelan
 )
 
 var charNames = []string{
@@ -155,6 +156,7 @@ var charNames = []string{
 	"shenhe",
 	"yunjin",
 	"yaemiko",
+	"yelan",
 }
 
 var CharKeyToEle = map[Char]attributes.Element{
@@ -212,4 +214,5 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Shenhe:          attributes.Cryo,
 	Yunjin:          attributes.Geo,
 	YaeMiko:         attributes.Electro,
+	Yelan:           attributes.Hydro,
 }

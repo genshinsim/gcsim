@@ -33,6 +33,7 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 
 	//calculate using attack or def
 	var a float64
+	totalhp := atk.Snapshot.BaseHP*(1+atk.Snapshot.Stats[attributes.HPP]) + atk.Snapshot.Stats[attributes.HP]
 	if atk.Info.UseDef {
 		a = atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]
 	} else {
@@ -121,6 +122,10 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			"base_def", atk.Snapshot.BaseDef,
 			"flat_def", atk.Snapshot.Stats[attributes.DEF],
 			"def_per", atk.Snapshot.Stats[attributes.DEFP],
+			"base_hp", atk.Snapshot.BaseHP,
+			"flat_hp", atk.Snapshot.Stats[attributes.HP],
+			"hp_per", atk.Snapshot.Stats[attributes.HPP],
+			"total_hp", totalhp,
 			"flat_dmg", atk.Info.FlatDmg,
 			"total_atk_def", a,
 			"base_dmg", base,

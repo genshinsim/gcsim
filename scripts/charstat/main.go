@@ -76,9 +76,9 @@ import (
 )
 
 
-var CharBaseMap = map[core.CharKey]CharBase{
+var CharBaseMap = map[keys.Char]CharBase{
 	{{- range $key, $value := . }}
-	core.{{$value.Key}}: {
+	keys.{{$value.Key}}: {
 		HPCurve: {{$value.Curve.HP}},
 		AtkCurve: {{$value.Curve.Atk}},
 		DefCurve: {{$value.Curve.Def}},
@@ -104,21 +104,21 @@ var CharBaseMap = map[core.CharKey]CharBase{
 `
 
 var SpecKeyToStat = map[string]string{
-	"FIGHT_PROP_CRITICAL_HURT":     "core.CD",
-	"FIGHT_PROP_HEAL_ADD":          "core.Heal",
-	"FIGHT_PROP_ATTACK_PERCENT":    "core.ATKP",
-	"FIGHT_PROP_ELEMENT_MASTERY":   "core.EM",
-	"FIGHT_PROP_HP_PERCENT":        "core.HPP",
-	"FIGHT_PROP_CHARGE_EFFICIENCY": "core.ER",
-	"FIGHT_PROP_CRITICAL":          "core.CR",
-	"FIGHT_PROP_PHYSICAL_ADD_HURT": "core.PhyP",
-	"FIGHT_PROP_ELEC_ADD_HURT":     "core.ElectroP",
-	"FIGHT_PROP_ROCK_ADD_HURT":     "core.GeoP",
-	"FIGHT_PROP_FIRE_ADD_HURT":     "core.PyroP",
-	"FIGHT_PROP_WATER_ADD_HURT":    "core.HydroP",
-	"FIGHT_PROP_DEFENSE_PERCENT":   "core.DEFP",
-	"FIGHT_PROP_ICE_ADD_HURT":      "core.CryoP",
-	"FIGHT_PROP_WIND_ADD_HURT":     "core.AnemoP",
+	"FIGHT_PROP_CRITICAL_HURT":     "attributes.CD",
+	"FIGHT_PROP_HEAL_ADD":          "attributes.Heal",
+	"FIGHT_PROP_ATTACK_PERCENT":    "attributes.ATKP",
+	"FIGHT_PROP_ELEMENT_MASTERY":   "attributes.EM",
+	"FIGHT_PROP_HP_PERCENT":        "attributes.HPP",
+	"FIGHT_PROP_CHARGE_EFFICIENCY": "attributes.ER",
+	"FIGHT_PROP_CRITICAL":          "attributes.CR",
+	"FIGHT_PROP_PHYSICAL_ADD_HURT": "attributes.PhyP",
+	"FIGHT_PROP_ELEC_ADD_HURT":     "attributes.ElectroP",
+	"FIGHT_PROP_ROCK_ADD_HURT":     "attributes.GeoP",
+	"FIGHT_PROP_FIRE_ADD_HURT":     "attributes.PyroP",
+	"FIGHT_PROP_WATER_ADD_HURT":    "attributes.HydroP",
+	"FIGHT_PROP_DEFENSE_PERCENT":   "attributes.DEFP",
+	"FIGHT_PROP_ICE_ADD_HURT":      "attributes.CryoP",
+	"FIGHT_PROP_WIND_ADD_HURT":     "attributes.AnemoP",
 }
 
 var CharNameToKey = map[string]string{
@@ -176,4 +176,5 @@ var CharNameToKey = map[string]string{
 	"shenhe":            "Shenhe",
 	"yunjin":            "Yunjin",
 	"yaemiko":           "YaeMiko",
+	"yelan":             "Yelan",
 }
