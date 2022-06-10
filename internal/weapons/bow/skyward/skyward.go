@@ -4,66 +4,76 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterWeaponFunc("skyward harp", weapon)
-	core.RegisterWeaponFunc("skywardharp", weapon)
+	core.RegisterWeaponFunc(keys.SkywardHarp, NewWeapon)
 }
 
-func weapon(char core.Character, c *core.Core, r int, param map[string]int) string {
-	//add passive crit, atk speed not sure how to do right now??
-	//looks like jsut reduce the frames of normal attacks by 1 + 12%
-	m := make([]float64, core.EndStatType)
-	m[core.CD] = 0.15 + float64(r)*0.05
-	cd := 270 - 30*r
-	p := 0.5 + 0.1*float64(r)
-	char.AddMod(core.CharStatMod{
-		Key: "skyward harp",
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-		Expiry: -1,
+type Weapon struct {
+	Index int
+}
+
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	//Increases CRIT DMG by 20%. Hits have a 60% chance to inflict a small AoE attack, dealing 125% Physical
+	//ATK DMG. Can only occur once every 4s.
+	w := &Weapon{}
+	r := p.Refine
+
+	//free crit damage
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CD] = 0.15 + float64(r)*0.05
+	char.AddStatMod("skyward harp", -1, attributes.NoStat, func() ([]float64, bool) {
+		return m, true
 	})
 
+	//procs
+	cd := 270 - 30*r
+	prob := 0.5 + 0.1*float64(r)
 	icd := 0
 
-	c.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		//check if char is correct?
-		if atk.Info.ActorIndex != char.CharIndex() {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if c.ActiveChar != char.CharIndex() {
+		if c.Player.Active() != char.Index {
 			return false
 		}
-		//check if cd is up
+
 		if icd > c.F {
 			return false
 		}
-		if c.Rand.Float64() > p {
+		if c.Rand.Float64() > prob {
 			return false
 		}
 
-		//add a new action that deals % dmg immediately
-		//superconduct attack
-		ai := core.AttackInfo{
-			ActorIndex: char.CharIndex(),
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
 			Abil:       "Skyward Harp Proc",
-			AttackTag:  core.AttackTagWeaponSkill,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Physical,
+			AttackTag:  combat.AttackTagWeaponSkill,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       1.25,
 		}
-		c.Combat.QueueAttack(ai, core.NewDefCircHit(2, true, core.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewDefCircHit(2, true, combat.TargettableEnemy), 0, 1)
 
-		//trigger cd
 		icd = c.F + cd
 
 		return false
-	}, fmt.Sprintf("skyward-harp-%v", char.Name()))
+	}, fmt.Sprintf("skyward-harp-%v", char.Base.Name))
 
-	return "skywardharp"
+	return w, nil
 }
