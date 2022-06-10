@@ -1,26 +1,34 @@
 package travelergeo
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	"github.com/genshinsim/gcsim/internal/frames"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-type char struct {
-	*character.Tmpl
-}
+const normalHitNum = 5
 
 func init() {
-	core.RegisterCharFunc(core.TravelerGeo, NewChar)
+	initCancelFrames()
+	core.RegisterCharFunc(keys.TravelerGeo, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+type char struct {
+	*tmpl.Character
+}
+
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Geo
+	t := tmpl.New(s)
+	t.CharWrapper = w
+	c.Character = t
+
+	c.Base.Element = attributes.Geo
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
@@ -28,37 +36,44 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 60
-	c.Weapon.Class = core.WeaponClassSword
+	c.Weapon.Class = weapon.WeaponClassSword
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.NormalHitNum = 5
+	c.NormalHitNum = normalHitNum
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-
-	if c.Base.Cons > 0 {
+func (c *char) Init() error {
+	if c.Base.Cons >= 1 {
 		c.c1()
 	}
+	return nil
 }
 
-//Party members within the radius of Wake of Earth have their CRIT Rate increased by 10%
-//and have increased resistance against interruption.
-func (c *char) c1() {
-	val := make([]float64, core.EndStatType)
-	val[core.CR] = .1
-	for _, char := range c.Core.Chars {
-		char.AddMod(core.CharStatMod{
-			Key:    "geo-traveler-c1",
-			Expiry: -1,
-			Amount: func() ([]float64, bool) {
-				if c.Core.Constructs.CountByType(core.GeoConstructTravellerBurst) == 0 {
-					return nil, false
-				}
-				return val, true
-			},
-		})
-	}
+func initCancelFrames() {
+	// NA cancels
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 13)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 25)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 33)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 52)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 40)
+	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+
+	// charge -> x
+	// TODO: charge not implemented
+	//chargeFrames = frames.InitAbilSlice(41)
+	//chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
+	//chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	//chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
+
+	// skill -> x
+	skillFrames = frames.InitAbilSlice(24)
+
+	// burst -> x
+	burstFrames = frames.InitAbilSlice(38)
 }
