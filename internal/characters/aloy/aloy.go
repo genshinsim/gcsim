@@ -1,36 +1,31 @@
 package aloy
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type char struct {
-	*character.Tmpl
+	*tmpl.Character
 	coilICDExpiry int
 	lastFieldExit int
 }
 
 func init() {
-	core.RegisterCharFunc(core.Aloy, NewChar)
+	core.RegisterCharFunc(keys.Aloy, NewChar)
+	initCancelFrames()
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Cryo
-
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 40
-	}
-	c.Energy = float64(e)
+	c.Character = tmpl.NewWithWrapper(s, w)
+	c.Base.Element = attributes.Cryo
 	c.EnergyMax = 40
-	c.Weapon.Class = core.WeaponClassBow
+	c.Weapon.Class = weapon.WeaponClassBow
 	c.NormalHitNum = 4
 
 	c.coilICDExpiry = 0
@@ -38,59 +33,21 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	c.Tags["coil_stacks"] = 0
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-
+func (c *char) Init() error {
 	c.coilMod()
 	c.onExitField()
+
+	return nil
 }
 
-// Add coil mod at the beginning of the sim
-// Can't be made dynamic easily as coils last until 30s after when Aloy swaps off field
-func (c *char) coilMod() {
-	val := make([]float64, core.EndStatType)
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "aloy-coil-stacks",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == core.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
-				val[core.DmgP] = skillCoilNABonus[c.Tags["coil_stacks"]-1][c.TalentLvlSkill()]
-				return val, true
-			}
-			return nil, false
-		},
-	})
-}
-
-// Exit Field Hook to start timer to clear coil stacks
-func (c *char) onExitField() {
-	c.Core.Events.Subscribe(core.OnCharacterSwap, func(args ...interface{}) bool {
-		prev := args[0].(int)
-		if prev != c.Index {
-			return false
-		}
-		c.lastFieldExit = c.Core.F
-
-		c.AddTask(func() {
-			if c.lastFieldExit != (c.Core.F - 30*60) {
-				return
-			}
-			c.Tags["coil_stacks"] = 0
-		}, "aloy-on-field-exit", 30*60)
-
-		return false
-	}, "aloy-exit")
-}
-
-func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
-	switch a {
-	case core.ActionDash:
-		return 18
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
-		return 0
-	}
+func initCancelFrames() {
+	initAimedFrames()
+	initAttackFrames()
+	initBurstFrames()
+	initSkillFrames()
 }
