@@ -2,6 +2,10 @@
 
 gcsim is a Monte Carlo simulation tool used to model team dps. It allows for the formation of arbitrary combination of any characters.
 
+# Notice
+
+Please note that gcsim is currently on a feature freeze as we work on rewriting the core in order to properly simulate hitlag (along with a number of other improvements). As such, until the rewrite is finished, we are no implementing any new features other than new characters or urgent bug fixes. Thanks for your understanding.
+
 # Getting started
 
 You can use it on our website at [https://beta.gcsim.app](https://beta.gcsim.app).
