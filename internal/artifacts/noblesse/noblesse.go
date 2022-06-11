@@ -18,13 +18,29 @@ func init() {
 }
 
 type Set struct {
+	core  *core.Core
 	Index int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error      { return nil }
+func (s *Set) Init() error {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.2
+
+	for _, this := range s.core.Player.Chars() {
+		this.AddStatMod("nob-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
+			if s.core.Status.Duration("nob-4pc") > 0 {
+				return m, true
+			}
+			return nil, false
+		})
+	}
+}
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
-	s := Set{}
+	s := Set{
+		core: c,
+	}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -56,22 +72,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			c.Log.NewEvent("noblesse 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.Status.Duration("nob-4pc"))
 			return false
-		}, fmt.Sprintf("no 4pc - %v", char.Base.Name))
-
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.ATKP] = 0.2
-
-		c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
-			for _, this := range c.Player.Chars() {
-				this.AddStatMod("nob-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
-					if c.Status.Duration("nob-4pc") > 0 {
-						return m, true
-					}
-					return nil, false
-				})
-			}
-			return true
-		}, "nob-4pc-init")
+		}, fmt.Sprintf("nob-4pc-%v", char.Base.Name))
 	}
 
 	return &s, nil
