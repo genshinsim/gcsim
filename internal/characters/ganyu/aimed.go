@@ -13,8 +13,10 @@ var aimedFrames []int
 const aimedHitmark = 103
 
 func init() {
-	// TODO: is this 103 or 113?
+	// TODO: get separate counts for each cancel, currently using generic frames for all of them
 	aimedFrames = frames.InitAbilSlice(113)
+	aimedFrames[action.ActionDash] = aimedHitmark
+	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
 func (c *char) Aimed(p map[string]int) action.ActionInfo {

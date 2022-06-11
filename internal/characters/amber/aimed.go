@@ -13,6 +13,8 @@ const aimedHitmark = 94
 
 func init() {
 	aimedFrames = frames.InitAbilSlice(94)
+	aimedFrames[action.ActionDash] = aimedHitmark
+	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
 func (c *char) Aimed(p map[string]int) action.ActionInfo {

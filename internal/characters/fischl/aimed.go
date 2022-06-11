@@ -12,8 +12,10 @@ var aimedFrames []int
 const aimedHitmark = 86
 
 func init() {
-	// aim cancel frames are currently generic, should record specific cancels for each one at some point
+	// TODO: aim cancel frames are currently generic, should record specific cancels for each one at some point
 	aimedFrames = frames.InitAbilSlice(96)
+	aimedFrames[action.ActionDash] = aimedHitmark
+	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
