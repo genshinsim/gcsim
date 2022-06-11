@@ -19,11 +19,28 @@ func init() {
 type Set struct {
 	stacks int
 	HPicd  int
+	core   *core.Core
+	char   *character.CharWrapper
 	Index  int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error      { return nil }
+
+func (s *Set) Init() error {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.08
+
+	s.char.AddStatMod("verm-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
+		if s.core.Status.Duration("verm-4pc") > 0 {
+			m[attributes.ATKP] = 0.08 + float64(s.stacks)*0.1
+			return m, true
+		}
+		s.stacks = 0
+		return nil, false
+	})
+	return nil
+}
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -53,22 +70,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 
 		}, fmt.Sprintf("verm-4pc-%v", char.Base.Name))
-
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.ATKP] = 0.08
-
-		c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
-			char.AddStatMod("verm-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
-				if c.Status.Duration("verm-4pc") > 0 {
-
-					m[attributes.ATKP] = 0.08 + float64(s.stacks)*0.1
-					return m, true
-				}
-				s.stacks = 0
-				return nil, false
-			})
-			return true
-		}, "verm-4pc-init")
 
 		c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
 			if c.F >= s.HPicd && s.stacks < 4 && c.Status.Duration("verm-4pc") > 0 { // grants stack if conditions are met
