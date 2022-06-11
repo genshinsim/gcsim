@@ -19,11 +19,35 @@ func init() {
 
 type Set struct {
 	icd   int
+	core  *core.Core
 	Index int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error      { return nil }
+
+func (s *Set) Init() error {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.2
+
+	for _, this := range s.core.Player.Chars() {
+		this.AddStatMod("tom-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
+			if s.core.Status.Duration("tom-proc") > 0 {
+				return m, true
+			}
+			return nil, false
+		})
+	}
+
+	s.core.Player.Shields.AddShieldBonusMod("tom-4pc", -1, func() (float64, bool) {
+		if s.core.Status.Duration("tom-proc") > 0 {
+			return 0.30, false
+		}
+		return 0, false
+	})
+
+	return nil
+}
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -49,18 +73,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if s.icd > c.F {
 				return false
 			}
-			c.Status.Add("tom-proc", 180)
+			c.Status.Add("tom-proc", 3*60)
 			s.icd = c.F + 30 // .5 second icd
-
-			for _, this := range c.Player.Chars() {
-				this.AddStatMod("tom-4pc", 3*60, attributes.ATKP, func() ([]float64, bool) {
-					return m, true
-				})
-			}
-
-			c.Player.Shields.AddShieldBonusMod("tom-4pc", 3*60, func() (float64, bool) {
-				return 0.30, false
-			})
 
 			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.F+180, "icd", s.icd)
 			return false
