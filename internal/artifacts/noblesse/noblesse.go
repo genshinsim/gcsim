@@ -35,6 +35,8 @@ func (s *Set) Init() error {
 			return nil, false
 		})
 	}
+
+	return nil
 }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {

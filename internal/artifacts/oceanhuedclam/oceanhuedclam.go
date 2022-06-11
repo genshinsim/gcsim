@@ -20,11 +20,16 @@ func init() {
 type Set struct {
 	bubbleHealStacks     float64
 	bubbleDurationExpiry int
+	core                 *core.Core
 	Index                int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error      { return nil }
+func (s *Set) Init() error {
+	// Shows which character currently has an active OHC proc. -1 = Non-active
+	s.core.Flags.Custom["OHCActiveChar"] = -1
+	return nil
+}
 
 // 2-Piece Bonus: Healing Bonus +15%
 // 4-Piece Bonus: When the character equipping this artifact set heals a character in the party,
@@ -38,7 +43,9 @@ func (s *Set) Init() error      { return nil }
 //  overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
 // 	This effect can still be triggered even when the character who is using this artifact set is not on the field.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
-	s := Set{}
+	s := Set{
+		core: c,
+	}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -49,12 +56,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		bubbleICDExpiry := 0
-
-		c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
-			// Shows which character currently has an active OHC proc. -1 = Non-active
-			c.Flags.Custom["OHCActiveChar"] = -1
-			return true
-		}, "OHC-init")
 
 		// On Heal subscription to start accumulating the healing
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
