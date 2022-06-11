@@ -42,7 +42,10 @@ func (s *Set) Init() error {
 }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
-	s := Set{}
+	s := Set{
+		core: c,
+		char: char,
+	}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
