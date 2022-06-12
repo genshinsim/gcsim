@@ -78,6 +78,7 @@ func (c *char) Init() {
 	c.c2icd = 0
 	c.c6count = 0
 	c.a1()
+	c.InitCancelFrames()
 
 }
 
