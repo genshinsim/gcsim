@@ -172,6 +172,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	indivSubstatLiquidCap := int(optionsMap["indiv_liquid_cap"])
 	charSubstatLimits := make([][]int, len(simcfg.Characters.Profile))
 	charSubstatRarityMod := make([]float64, len(simcfg.Characters.Profile))
+	fixedSubstatCount := int(optionsMap["fixed_substats_count"])
 	for i, char := range simcfg.Characters.Profile {
 		charSubstatLimits[i] = make([]int, core.EndStatType)
 		for idxStat, stat := range mainstatValues {
@@ -181,7 +182,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			if char.Stats[idxStat] == 0 {
 				charSubstatLimits[i][idxStat] = indivSubstatLiquidCap
 			} else {
-				charSubstatLimits[i][idxStat] = indivSubstatLiquidCap - (2 * int(math.Round(char.Stats[idxStat]/mainstatValues[idxStat])))
+				charSubstatLimits[i][idxStat] = indivSubstatLiquidCap - (fixedSubstatCount * int(math.Round(char.Stats[idxStat]/mainstatValues[idxStat])))
 			}
 		}
 
@@ -200,7 +201,6 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// Copy to save initial character state with fixed allocations (2 of each substat)
 	charProfilesInitial := make([]core.CharacterProfile, len(simcfg.Characters.Profile))
 
-	fixedSubstatCount := optionsMap["fixed_substats_count"]
 	for i, char := range simcfg.Characters.Profile {
 		charProfilesInitial[i] = char.Clone()
 		for idxStat, stat := range substatValues {
@@ -208,9 +208,9 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 				continue
 			}
 			if core.StatType(idxStat) == core.ER {
-				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat
+				charProfilesInitial[i].Stats[idxStat] += float64(fixedSubstatCount) * stat
 			} else {
-				charProfilesInitial[i].Stats[idxStat] += fixedSubstatCount * stat * charSubstatRarityMod[i]
+				charProfilesInitial[i].Stats[idxStat] += float64(fixedSubstatCount) * stat * charSubstatRarityMod[i]
 			}
 		}
 	}
@@ -549,7 +549,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 			if value <= 0 {
 				continue
 			}
-			finalString += fmt.Sprintf(" %v=%.6g", core.StatTypeString[idxSubstat], value*float64(2+charSubstatFinal[idxChar][idxSubstat]))
+			finalString += fmt.Sprintf(" %v=%.6g", core.StatTypeString[idxSubstat], value*float64(fixedSubstatCount+charSubstatFinal[idxChar][idxSubstat]))
 		}
 
 		fmt.Println(finalString + ";")
