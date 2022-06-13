@@ -1,105 +1,64 @@
 package yoimiya
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterCharFunc(core.Yoimiya, NewChar)
+	core.RegisterCharFunc(keys.Yoimiya, NewChar)
 }
 
 type char struct {
-	*character.Tmpl
+	*tmpl.Character
 	a1stack  int
 	lastPart int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Pyro
+	c.Character = tmpl.NewWithWrapper(s, w)
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 60
-	}
-	c.Energy = float64(e)
+	c.Base.Element = attributes.Pyro
 	c.EnergyMax = 60
-	c.Weapon.Class = core.WeaponClassBow
-	c.NormalHitNum = 5
+	c.Weapon.Class = weapon.WeaponClassBow
+	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.CharZone = core.ZoneInazuma
+	c.CharZone = character.ZoneInazuma
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-	c.InitCancelFrames()
-
+func (c *char) Init() error {
 	c.a1()
 	c.onExit()
 	c.burstHook()
-
-	if c.Base.Cons > 0 {
+	if c.Base.Cons >= 1 {
 		c.c1()
 	}
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
+	return nil
 }
 
-func (c *char) a1() {
-	c.AddMod(core.CharStatMod{
-		Key:    "yoimiya-a1",
-		Expiry: -1,
-		Amount: func() ([]float64, bool) {
-			val := make([]float64, core.EndStatType)
-			if c.Core.Status.Duration("yoimiyaa1") > 0 {
-				val[core.PyroP] = float64(c.a1stack) * 0.02
-				return val, true
-			}
-			c.a1stack = 0
-			return nil, false
-		},
-	})
-	c.Core.Events.Subscribe(core.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*core.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if c.Core.Status.Duration("yoimiyaskill") == 0 {
-			return false
-		}
-		if atk.Info.AttackTag != core.AttackTagNormal {
-			return false
-		}
-		//here we can add stacks up to 10
-		if c.a1stack < 10 {
-			c.a1stack++
-		}
-		c.Core.Status.AddStatus("yoimiyaa1", 180)
-		// c.a1expiry = c.Core.F + 180 // 3 seconds
-		return false
-	}, "yoimiya-a1")
-}
-
-func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
-	ds := c.Tmpl.Snapshot(ai)
+func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+	ds := c.Character.Snapshot(ai)
 
 	//infusion to normal attack only
-	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == core.AttackTagNormal {
-		ai.Element = core.Pyro
-		// ds.ICDTag = core.ICDTagNone
-		//multiplier
-		c.Core.Log.NewEvent("skill mult applied", core.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
+	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == combat.AttackTagNormal {
+		ai.Element = attributes.Pyro
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
+		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
 	}
 
 	return ds
