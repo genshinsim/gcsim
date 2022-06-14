@@ -92,7 +92,7 @@ func (c *char) a4() {
 	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = 0.33
 	c.AddMod(core.CharStatMod{
-		Key:          "hutao-a2",
+		Key:          "hutao-a4",
 		Expiry:       -1,
 		AffectedStat: core.PyroP, // to avoid infinite loop when calling MaxHP
 		Amount: func() ([]float64, bool) {
