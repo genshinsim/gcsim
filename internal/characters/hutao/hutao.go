@@ -70,6 +70,24 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 
 }
 
+func (c *char) a2() {
+	m := make([]float64, core.EndStatType)
+	m[core.CR] = 0.12
+	for i, char := range c.Core.Chars {
+		//does not affect hutao
+		if c.Index == i {
+			continue
+		}
+		char.AddMod(core.CharStatMod{
+			Key:    "hutao-a1",
+			Expiry: c.Core.F + 480,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
+	}
+}
+
 func (c *char) a4() {
 	m := make([]float64, core.EndStatType)
 	m[core.PyroP] = 0.33
