@@ -90,7 +90,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Frames:          func(next action.Action) int { return aimedFrames[next] - skip },
 		AnimationLength: aimedFrames[action.InvalidAction] - skip,
 		CanQueueAfter:   aimedHitmark - skip,
-		Post:            aimedHitmark - skip,
-		State:           action.AimState,
+
+		State: action.AimState,
 	}
 }

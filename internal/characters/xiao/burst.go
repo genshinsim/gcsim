@@ -50,8 +50,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
-		Post:            burstFrames[action.ActionDash], // earliest cancel
-		State:           action.BurstState,
+
+		State: action.BurstState,
 	}
 }
 

@@ -41,8 +41,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
-		Post:            chargeHitmark,
-		State:           action.ChargeAttackState,
+
+		State: action.ChargeAttackState,
 	}
 }
 
@@ -88,7 +88,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(swordCAFrames),
 		AnimationLength: swordCAFrames[action.InvalidAction],
 		CanQueueAfter:   swordCAHitmarks[len(swordCAHitmarks)-1],
-		Post:            swordCAHitmarks[len(swordCAHitmarks)-1],
-		State:           action.ChargeAttackState,
+
+		State: action.ChargeAttackState,
 	}
 }

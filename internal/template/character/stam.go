@@ -43,8 +43,8 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 var defaultDash = action.ActionInfo{
 	Frames:        func(action.Action) int { return 20 },
 	CanQueueAfter: 20,
-	Post:          20,
-	State:         action.DashState,
+
+	State: action.DashState,
 }
 
 func (c *Character) Dash(p map[string]int) action.ActionInfo {
@@ -67,8 +67,8 @@ var defaultJump = action.ActionInfo{
 	Frames:          func(action.Action) int { return 30 },
 	AnimationLength: 30,
 	CanQueueAfter:   30,
-	Post:            30,
-	State:           action.JumpState,
+
+	State: action.JumpState,
 }
 
 func (c *Character) Jump(p map[string]int) action.ActionInfo {
@@ -84,7 +84,7 @@ func (c *Character) Walk(p map[string]int) action.ActionInfo {
 		Frames:          func(next action.Action) int { return f },
 		AnimationLength: f,
 		CanQueueAfter:   f,
-		Post:            f,
-		State:           action.WalkState,
+
+		State: action.WalkState,
 	}
 }

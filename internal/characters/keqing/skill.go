@@ -64,8 +64,8 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		Post:            skillFrames[action.ActionDash], // earliest cancel
-		State:           action.SkillState,
+
+		State: action.SkillState,
 	}
 }
 
@@ -126,7 +126,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
 		AnimationLength: skillRecastFrames[action.InvalidAction],
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel
-		Post:            skillRecastFrames[action.ActionDash], // earliest cancel
-		State:           action.SkillState,
+
+		State: action.SkillState,
 	}
 }

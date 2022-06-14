@@ -53,10 +53,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	act := action.ActionInfo{
-		Frames:              frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength:     attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:       attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
-		Post:                attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+
 		State:               action.NormalAttackState,
 		FramePausedOnHitlag: c.FramePausedOnHitlag,
 	}
@@ -113,8 +113,8 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAttackFunc(c.Character, swordFrames),
 		AnimationLength: swordFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   swordHitmarks[c.NormalCounter][len(swordHitmarks[c.NormalCounter])-1],
-		Post:            swordHitmarks[c.NormalCounter][len(swordHitmarks[c.NormalCounter])-1],
-		State:           action.NormalAttackState,
+
+		State: action.NormalAttackState,
 	}
 
 	for i, mult := range attackB[c.NormalCounter] {

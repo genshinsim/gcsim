@@ -57,8 +57,8 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressHitmark,
-		Post:            skillPressHitmark,
-		State:           action.SkillState,
+
+		State: action.SkillState,
 	}
 }
 
@@ -86,8 +86,8 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldHitmark,
-		Post:            skillHoldHitmark,
-		State:           action.SkillState,
+
+		State: action.SkillState,
 	}
 }
 

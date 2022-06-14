@@ -32,8 +32,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Frames:          frames.NewAbilFunc(skillMeleeFrames),
 			AnimationLength: skillMeleeFrames[action.InvalidAction],
 			CanQueueAfter:   skillMeleeFrames[action.ActionDash], // earliest cancel
-			Post:            skillMeleeFrames[action.ActionDash], // earliest cancel
-			State:           action.SkillState,
+
+			State: action.SkillState,
 		}
 	}
 
@@ -68,8 +68,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillRangedFrames),
 		AnimationLength: skillRangedFrames[action.InvalidAction],
 		CanQueueAfter:   skillRangedFrames[action.ActionDash], // earliest cancel
-		Post:            skillRangedFrames[action.ActionDash], // earliest cancel
-		State:           action.SkillState,
+
+		State: action.SkillState,
 	}
 }
 
