@@ -137,7 +137,7 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "energy-change-log")
 
-	s.C.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		activeChar := s.C.Player.ActiveChar()
 		s.stats.EnergyWhenBurst[activeChar.Index] = append(s.stats.EnergyWhenBurst[activeChar.Index], activeChar.Energy)
 		return false

@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dur := -1
 	atkspdBuff := make([]float64, attributes.EndStatType)
 	atkspdBuff[attributes.AtkSpd] = 0.1
-	c.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

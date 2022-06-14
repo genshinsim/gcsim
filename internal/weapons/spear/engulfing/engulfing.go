@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	erval := make([]float64, attributes.EndStatType)
 	erval[attributes.ER] = .25 + .05*float64(r)
 
-	c.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

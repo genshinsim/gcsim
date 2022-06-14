@@ -6,11 +6,9 @@ type ActionInfo struct {
 	Frames              func(next Action) int
 	AnimationLength     int
 	CanQueueAfter       int
-	Post                int
 	State               AnimationState
 	FramePausedOnHitlag func() bool
 	OnRemoved           func()
-	PostFunc            func()
 	//hidden stuff
 	queued       []queuedAction
 	cachedFrames [EndActionType]int
@@ -69,13 +67,6 @@ func (a *ActionInfo) Tick() bool {
 		a.queued = nil
 	} else {
 		a.queued = a.queued[n:]
-	}
-
-	//post even if not done yet
-	if a.PostFunc != nil && a.timePassed >= float64(a.Post) {
-		//emit event??
-		a.PostFunc()
-		a.PostFunc = nil
 	}
 
 	//check if animation is over
