@@ -36,7 +36,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	val := make([]float64, attributes.EndStatType)
 	lastActiveUntil := -1
 
-	c.Events.Subscribe(event.PostSkill, func(args ...interface{}) bool {
+	//TODO: this used to be on postskill. make sure nothing broke here
+	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

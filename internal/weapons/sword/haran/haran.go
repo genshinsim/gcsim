@@ -51,7 +51,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	wavespikeICD := 0
 	wavespikeStacks := 0
 	maxWavespikeStacks := 2
-	c.Events.Subscribe(event.PostSkill, func(args ...interface{}) bool {
+	//TODO: this used to be on post. make sure nothing broke here
+	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() == char.Index {
 			return false
 		}
@@ -67,7 +68,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}, fmt.Sprintf("wavespike-%v", char.Base.Name))
 
 	val := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.PostSkill, func(args ...interface{}) bool {
+	//TODO: this used to be on post. make sure nothing broke here
+	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
