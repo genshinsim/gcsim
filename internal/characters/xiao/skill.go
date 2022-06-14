@@ -12,6 +12,15 @@ var skillFrames []int
 
 const skillHitmark = 4
 
+func init() {
+	skillFrames = frames.InitAbilSlice(37)
+	skillFrames[action.ActionAttack] = 24
+	skillFrames[action.ActionSkill] = 24
+	skillFrames[action.ActionBurst] = 24
+	skillFrames[action.ActionDash] = 35
+	skillFrames[action.ActionSwap] = 35
+}
+
 // Skill attack damage queue generator
 // Additionally implements A4
 // Using Lemniscatic Wind Cycling increases the DMG of subsequent uses of Lemniscatic Wind Cycling by 15%. This effect lasts for 7s and has a maximum of 3 stacks. Gaining a new stack refreshes the duration of this effect.

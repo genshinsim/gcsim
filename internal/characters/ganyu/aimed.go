@@ -1,6 +1,7 @@
 package ganyu
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -10,6 +11,13 @@ import (
 var aimedFrames []int
 
 const aimedHitmark = 103
+
+func init() {
+	// TODO: get separate counts for each cancel, currently using generic frames for all of them
+	aimedFrames = frames.InitAbilSlice(113)
+	aimedFrames[action.ActionDash] = aimedHitmark
+	aimedFrames[action.ActionJump] = aimedHitmark
+}
 
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]

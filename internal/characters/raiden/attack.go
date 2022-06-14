@@ -9,11 +9,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
+const normalHitNum = 5
+
 var attackFrames [][]int
 var attackHitmarks = [][]int{{14}, {9}, {14}, {14, 27}, {34}}
 
-func initAttackFrames() {
-	// NA cancels
+func init() {
+	// NA cancels (polearm)
 	attackFrames = make([][]int, normalHitNum)
 
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 24)
@@ -74,7 +76,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 var swordFrames [][]int
 var swordHitmarks = [][]int{{12}, {13}, {11}, {22, 33}, {33}}
 
-func initSwordFrames() {
+func init() {
 	// NA cancels (burst)
 	swordFrames = make([][]int, normalHitNum)
 

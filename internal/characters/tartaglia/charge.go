@@ -11,6 +11,12 @@ import (
 var chargeFrames []int
 var chargeHitmarks = []int{71, 73}
 
+func init() {
+	chargeFrames = frames.InitAbilSlice(73)
+	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+}
+
 // since E is aoe, so this should be considered aoe too
 // hitWeakPoint: tartaglia can proc Prototype Cresent's Passive on Geovishap's weakspots.
 // Evidence: https://youtu.be/oOfeu5pW0oE

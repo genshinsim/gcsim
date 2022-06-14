@@ -12,6 +12,10 @@ var skillFrames []int
 
 const skillHitmark = 35
 
+func init() {
+	skillFrames = frames.InitAbilSlice(35)
+}
+
 /**
 Provides up to 3 buffs to active characters within the skill's AoE based on the number of Geo characters in
 the party at the time of casting:

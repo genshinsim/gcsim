@@ -13,6 +13,10 @@ var skillFrames []int
 
 const skillStart = 21
 
+func init() {
+	skillFrames = frames.InitAbilSlice(21)
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	delay := p["illusion_delay"]
 	if delay < 35 {

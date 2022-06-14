@@ -12,6 +12,15 @@ import (
 var chargeFrames []int
 var chargeHitmarks = []int{22, 24}
 
+func init() {
+	chargeFrames = frames.InitAbilSlice(36)
+	chargeFrames[action.ActionSkill] = 35
+	chargeFrames[action.ActionBurst] = 35
+	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
+}
+
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

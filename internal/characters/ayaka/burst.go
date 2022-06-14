@@ -11,6 +11,14 @@ var burstFrames []int
 
 const burstHitmark = 104
 
+func init() {
+	burstFrames = frames.InitAbilSlice(125)
+	burstFrames[action.ActionAttack] = 124
+	burstFrames[action.ActionDash] = 124
+	burstFrames[action.ActionJump] = 114
+	burstFrames[action.ActionSwap] = 123
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Soumetsu",

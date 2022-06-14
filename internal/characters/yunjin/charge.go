@@ -11,6 +11,13 @@ var chargeFrames []int
 
 const chargeHitmark = 66
 
+func init() {
+	chargeFrames = frames.InitAbilSlice(66)
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = 66
+}
+
 // Charge attack damage queue generator
 // Very standard - consistent with other characters like Xiangling
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {

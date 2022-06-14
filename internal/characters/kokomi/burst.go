@@ -13,6 +13,10 @@ var burstFrames []int
 
 const burstHitmark = 49
 
+func init() {
+	burstFrames = frames.InitAbilSlice(77)
+}
+
 // Burst - This function only handles initial damage and status setting
 // Damage bonus modification is handled in a separate function based on status
 // The might of Watatsumi descends, dealing Hydro DMG to surrounding opponents, before robing Kokomi in a Ceremonial Garment made from the flowing waters of Sangonomiya.

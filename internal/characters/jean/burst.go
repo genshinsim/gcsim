@@ -15,6 +15,14 @@ var burstFrames []int
 
 const burstStart = 40
 
+func init() {
+	burstFrames = frames.InitAbilSlice(84)
+	burstFrames[action.ActionAttack] = 83
+	burstFrames[action.ActionSkill] = 83
+	burstFrames[action.ActionDash] = 70
+	burstFrames[action.ActionJump] = 70
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//p is the number of times enemy enters or exits the field
 	enter := p["enter"]

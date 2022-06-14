@@ -14,6 +14,21 @@ const collisionHitmark = 38
 const highPlungeHitmark = 46
 const lowPlungeHitmark = 44
 
+func init() {
+	// high_plunge -> x
+	highPlungeFrames = frames.InitAbilSlice(66)
+	highPlungeFrames[action.ActionAttack] = 61
+	highPlungeFrames[action.ActionJump] = 65
+	highPlungeFrames[action.ActionSwap] = 64
+
+	// low_plunge -> x
+	lowPlungeFrames = frames.InitAbilSlice(62)
+	lowPlungeFrames[action.ActionAttack] = 60
+	lowPlungeFrames[action.ActionSkill] = 59
+	lowPlungeFrames[action.ActionDash] = 60
+	lowPlungeFrames[action.ActionJump] = 61
+}
+
 // High Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0

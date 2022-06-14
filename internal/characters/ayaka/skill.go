@@ -11,6 +11,14 @@ var skillFrames []int
 
 const skillHitmark = 33
 
+func init() {
+	skillFrames = frames.InitAbilSlice(49)
+	skillFrames[action.ActionBurst] = 48
+	skillFrames[action.ActionDash] = 30
+	skillFrames[action.ActionJump] = 32
+	skillFrames[action.ActionSwap] = 48
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Hyouka",

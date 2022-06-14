@@ -11,6 +11,12 @@ var aimedFrames []int
 
 const aimedHitmark = 94
 
+func init() {
+	aimedFrames = frames.InitAbilSlice(94)
+	aimedFrames[action.ActionDash] = aimedHitmark
+	aimedFrames[action.ActionJump] = aimedHitmark
+}
+
 // Aimed charge attack damage queue generator
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]

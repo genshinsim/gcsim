@@ -11,6 +11,14 @@ var chargeFrames []int
 
 const chargeHitmark = 36
 
+func init() {
+	chargeFrames = frames.InitAbilSlice(57)
+	chargeFrames[action.ActionBurst] = 56
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = 39
+}
+
 // CA has no special interaction with her kit
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{

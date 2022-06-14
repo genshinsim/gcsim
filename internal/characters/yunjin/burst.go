@@ -15,6 +15,10 @@ var burstFrames []int
 
 const burstHitmark = 53
 
+func init() {
+	burstFrames = frames.InitAbilSlice(53)
+}
+
 // Burst - The main buff effects are handled in a separate function
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// AoE Geo damage

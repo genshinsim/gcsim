@@ -9,6 +9,15 @@ import (
 
 var burstFrames []int
 
+func init() {
+	burstFrames = frames.InitAbilSlice(49)
+	burstFrames[action.ActionCharge] = 48
+	burstFrames[action.ActionSkill] = 48
+	burstFrames[action.ActionDash] = 47
+	burstFrames[action.ActionJump] = 47
+	burstFrames[action.ActionSwap] = 47
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//tag a4
 	//first hit at 137, then 113 frames between hits

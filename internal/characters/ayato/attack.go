@@ -14,7 +14,25 @@ var attackFrames [][]int
 var attackHitmarks = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
 var shunsuikenFrames []int
 
+const normalHitNum = 5
 const shunsuikenHitmark = 5
+
+func init() {
+	// NA cancels
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 24)
+	attackFrames[0][action.ActionAttack] = 15
+
+	// TODO: charge cancels are missing?
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 27)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 30)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 27)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 63)
+
+	// NA (in skill) -> x
+	shunsuikenFrames = frames.InitNormalCancelSlice(shunsuikenHitmark, 23)
+}
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{

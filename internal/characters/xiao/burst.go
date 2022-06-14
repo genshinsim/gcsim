@@ -11,6 +11,13 @@ var burstFrames []int
 
 const burstStart = 57
 
+func init() {
+	burstFrames = frames.InitAbilSlice(82)
+	burstFrames[action.ActionDash] = 57
+	burstFrames[action.ActionJump] = 58
+	burstFrames[action.ActionSwap] = 67
+}
+
 // Sets Xiao's burst damage state
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	var HPicd int

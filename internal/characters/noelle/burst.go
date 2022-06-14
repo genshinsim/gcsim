@@ -13,6 +13,15 @@ var burstFrames []int
 // TODO: not sure about this
 const burstStart = 80
 
+func init() {
+	burstFrames = frames.InitAbilSlice(121)
+	burstFrames[action.ActionAttack] = 83
+	burstFrames[action.ActionSkill] = 82
+	burstFrames[action.ActionDash] = 81
+	burstFrames[action.ActionJump] = 81
+	burstFrames[action.ActionWalk] = 90
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug

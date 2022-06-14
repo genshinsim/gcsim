@@ -12,6 +12,17 @@ import (
 var attackFrames [][]int
 var attackHitmarks = []int{24, 38, 62, 80}
 
+const normalHitNum = 4
+
+func init() {
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 24)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 38)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 62)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 80)
+}
+
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),

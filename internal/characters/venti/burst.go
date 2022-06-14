@@ -11,6 +11,15 @@ var burstFrames []int
 
 const burstStart = 94
 
+func init() {
+	burstFrames = frames.InitAbilSlice(96)
+	burstFrames[action.ActionAttack] = 95
+	burstFrames[action.ActionAim] = 95 // assumed
+	burstFrames[action.ActionDash] = 95
+	burstFrames[action.ActionJump] = 95
+	burstFrames[action.ActionSwap] = 94
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.qInfuse = attributes.NoElement
 

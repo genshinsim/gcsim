@@ -1,6 +1,7 @@
 package ayaka
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -9,6 +10,12 @@ import (
 var dashFrames []int
 
 const dashHitmark = 20
+
+func init() {
+	dashFrames = frames.InitAbilSlice(35)
+	dashFrames[action.ActionDash] = 30
+	dashFrames[action.ActionSwap] = 34
+}
 
 // TODO: move this into PostDash event instead
 func (c *char) Dash(p map[string]int) action.ActionInfo {

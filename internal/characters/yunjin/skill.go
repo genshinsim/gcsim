@@ -11,6 +11,19 @@ import (
 var skillFrames [][]int
 var skillHitmarks = []int{31, 81, 121}
 
+func init() {
+	skillFrames = make([][]int, 3)
+
+	// skill (press) -> x
+	skillFrames[0] = frames.InitAbilSlice(31)
+
+	// skill (level=1) -> x
+	skillFrames[1] = frames.InitAbilSlice(81)
+
+	// skill (level=2) -> x
+	skillFrames[2] = frames.InitAbilSlice(121)
+}
+
 // Skill - modelled after Beidou E
 // Has two parameters:
 // perfect = 1 if you are doing a perfect counter

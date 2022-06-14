@@ -214,7 +214,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 			}
 		}
-		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f-1, i, cb, a4cb)
+		c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(c.Core.RandomEnemyTarget(), core.TargettableEnemy), f-1, i, cb, a4cb)
 	}
 
 	//add a status for this just in case someone cares

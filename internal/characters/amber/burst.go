@@ -11,6 +11,10 @@ var burstFrames []int
 
 const burstStart = 74
 
+func init() {
+	burstFrames = frames.InitAbilSlice(74)
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Fiery Rain",

@@ -12,6 +12,13 @@ var burstFrames []int
 
 const burstHitmark = 18
 
+func init() {
+	burstFrames = frames.InitAbilSlice(148)
+	burstFrames[action.ActionDash] = 111
+	burstFrames[action.ActionJump] = 115
+	burstFrames[action.ActionSwap] = 24
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//set on field oz to be this one
 	//TODO: Oz should spawn and snapshot when the burst animation is cancelled

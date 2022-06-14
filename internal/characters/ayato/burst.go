@@ -12,6 +12,11 @@ var burstFrames []int
 
 const burstStart = 101
 
+func init() {
+	burstFrames = frames.InitAbilSlice(102)
+	burstFrames[action.ActionSwap] = 101
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	ai := combat.AttackInfo{

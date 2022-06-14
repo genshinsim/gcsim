@@ -10,6 +10,21 @@ import (
 var skillPressFrames []int
 var skillHoldFrames []int
 
+func init() {
+	// skill (press) -> x
+	skillPressFrames = frames.InitAbilSlice(98)
+	skillPressFrames[action.ActionAttack] = 22
+	skillPressFrames[action.ActionAim] = 22   // assumed
+	skillPressFrames[action.ActionSkill] = 22 // uses burst frames
+	skillPressFrames[action.ActionBurst] = 22
+	skillPressFrames[action.ActionDash] = 22
+	skillPressFrames[action.ActionJump] = 22
+
+	// skill (hold) -> x
+	skillHoldFrames = frames.InitAbilSlice(289)
+	skillHoldFrames[action.ActionHighPlunge] = 116
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,

@@ -10,32 +10,17 @@ import (
 )
 
 var attackFrames [][]int
-var hitmarks = []int{25, 46, 38, 83}
+var attackHitmarks = []int{25, 46, 38, 83}
 
-func (c *char) attackFrameFunc(next action.Action) int {
-	// back out what last attack was
-	n := c.NormalCounter - 1
-	if n < 0 {
-		n = c.NormalHitNum - 1
-	}
-	return frames.AtkSpdAdjust(
-		attackFrames[n][next],
-		c.Stat(attributes.AtkSpd),
-	)
-}
+const normalHitNum = 4
 
-func (c *char) initNormalCancels() {
-	// normal cancels
-	attackFrames = make([][]int, c.NormalHitNum) // should be 4
+func (c *char) init() {
+	attackFrames = make([][]int, normalHitNum) // should be 4
 
-	// n1 animations
-	attackFrames[0] = frames.InitNormalCancelSlice(hitmarks[0], 25)
-	// n2 animations
-	attackFrames[1] = frames.InitNormalCancelSlice(hitmarks[1], 46) // 71-25
-	// n3 animations
-	attackFrames[2] = frames.InitNormalCancelSlice(hitmarks[2], 38) // 109-71
-	// n4 animations
-	attackFrames[3] = frames.InitNormalCancelSlice(hitmarks[3], 83) // 192-109
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 25)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 46) // 71-25
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 38) // 109-71
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // 192-109
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
@@ -53,17 +38,17 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewDefCircHit(0.5, false, combat.TargettableEnemy),
-		hitmarks[c.NormalCounter],
-		hitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter],
 	)
 
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:          c.attackFrameFunc,
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   hitmarks[c.NormalCounter],
-		Post:            hitmarks[c.NormalCounter],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		Post:            attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 }

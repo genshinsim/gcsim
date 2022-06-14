@@ -12,6 +12,12 @@ var highPlungeFrames []int
 
 const highPlungeHitmark = 58
 
+func init() {
+	// TODO: missing counts for plunge cancels?
+	// using hitmark as placeholder for now
+	highPlungeFrames = frames.InitAbilSlice(highPlungeHitmark)
+}
+
 func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 
 	// check if hold skill was used
