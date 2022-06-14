@@ -15,7 +15,7 @@ var attackFrames [][]int
 
 const normalHitNum = 4
 
-func initAttackFrames() {
+func init() {
 	attackFrames = make([][]int, normalHitNum)
 	//TODO: no cancelled frames here; this is machine gunning
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], attackHitmarks[0])

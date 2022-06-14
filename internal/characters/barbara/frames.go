@@ -1,13 +1,17 @@
 package barbara
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+)
 
-func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
+func (c *char) ActionFrames(a action.Action, p map[string]int) (int, int) {
 	/*
 		Source: https://library.keqingmains.com/characters/hydro/barbara
 	*/
 	switch a {
-	case core.ActionAttack:
+	case action.ActionAttack:
 		f := 0
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
@@ -20,17 +24,17 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		case 3:
 			f = 92 - 45 - 25 - 7
 		}
-		atkspd := c.Stat(core.AtkSpd)
+		atkspd := c.Stat(attributes.AtkSpd)
 		f = int(float64(f) / (1 + atkspd))
 		return f, f
-	case core.ActionCharge:
+	case action.ActionCharge:
 		return 90, 90
-	case core.ActionSkill:
+	case action.ActionSkill:
 		return 52, 52
-	case core.ActionBurst:
+	case action.ActionBurst:
 		return 110, 110
 	default:
-		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
+		c.Core.Log.NewEventBuildMsg(glog.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
 	}
 }

@@ -17,7 +17,6 @@ type char struct {
 
 func init() {
 	core.RegisterCharFunc(keys.Aloy, NewChar)
-	initCancelFrames()
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -43,11 +42,4 @@ func (c *char) Init() error {
 	c.onExitField()
 
 	return nil
-}
-
-func initCancelFrames() {
-	initAimedFrames()
-	initAttackFrames()
-	initBurstFrames()
-	initSkillFrames()
 }

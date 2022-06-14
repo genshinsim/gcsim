@@ -10,7 +10,7 @@ import (
 
 var skillFrames []int
 
-func initSkillFrames() {
+func init() {
 	//TODO: no cancelled frames yet
 	skillFrames = frames.InitAbilSlice(67)
 }

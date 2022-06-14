@@ -11,7 +11,7 @@ var burstFrames []int
 
 const burstHitmark = 118
 
-func initBurstFrames() {
+func init() {
 	burstFrames = frames.InitAbilSlice(118)
 }
 

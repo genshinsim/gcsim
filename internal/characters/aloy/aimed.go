@@ -9,7 +9,7 @@ import (
 
 var aimedFrames []int
 
-func initAimedFrames() {
+func init() {
 	//TODO: this frames needs to be checked
 	//kqm doesn't have frames lol
 	aimedFrames = frames.InitAbilSlice(84)
