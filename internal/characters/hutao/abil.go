@@ -140,6 +140,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	f, a := c.ActionFrames(core.ActionSkill, p)
 
 	c.Core.Status.AddStatus("paramita", 540+f) //to account for animation
+	c.AddTask(c.a1, "hutao-a1", 540+f)
 	c.Core.Log.NewEvent("Paramita acivated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+540+f)
 	//figure out atk buff
 	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.MaxHP()
