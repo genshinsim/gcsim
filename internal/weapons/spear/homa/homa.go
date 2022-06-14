@@ -32,7 +32,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 		Amount: func() ([]float64, bool) {
 			maxhp := char.MaxHP()
 			per := atkp
-			if maxhp <= 0.5 {
+			if char.HP() <= 0.5*maxhp {
 				per += lowhp
 			}
 			mATK[core.ATK] = per * maxhp
