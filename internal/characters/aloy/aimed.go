@@ -43,7 +43,6 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedFrames[action.InvalidAction],
-		Post:            aimedFrames[action.InvalidAction],
 		State:           action.AimState,
 	}
 }
