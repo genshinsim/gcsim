@@ -66,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Name))
 
 	//using burst
-	c.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

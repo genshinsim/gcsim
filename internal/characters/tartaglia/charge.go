@@ -27,8 +27,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
-			Post:            1200,
-			State:           action.Idle,
+
+			State: action.Idle,
 		}
 	}
 
@@ -65,7 +65,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
-		Post:            chargeHitmarks[len(chargeHitmarks)-1],
-		State:           action.ChargeAttackState,
+
+		State: action.ChargeAttackState,
 	}
 }

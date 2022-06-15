@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, key)
 
-	c.Events.Subscribe(event.PreSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

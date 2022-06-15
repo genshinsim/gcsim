@@ -30,7 +30,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ATKP] = 0.09 + 0.03*float64(r)
 
-	c.Events.Subscribe(event.PostBurst, func(args ...interface{}) bool {
+	//TODO: this used to be on post. make sure nothing broke here
+	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

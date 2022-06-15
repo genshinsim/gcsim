@@ -53,8 +53,8 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			Frames:          frames.NewAbilFunc(aimedBarbFrames),
 			AnimationLength: aimedBarbFrames[action.InvalidAction],
 			CanQueueAfter:   aimedBarbHitmark,
-			Post:            aimedBarbHitmark,
-			State:           action.AimState,
+
+			State: action.AimState,
 		}
 	}
 
@@ -75,7 +75,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedHitmark,
-		Post:            aimedHitmark,
-		State:           action.AimState,
+
+		State: action.AimState,
 	}
 }

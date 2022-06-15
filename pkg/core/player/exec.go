@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 //ErrActionNotReady is returned if the requested action is not ready; this could be
@@ -47,10 +46,28 @@ func (p *Handler) Exec(t action.Action, param map[string]int) error {
 		return ErrActionNotReady
 	}
 
+	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
+		req := p.StamPercentMod(t) * char.ActionStam(t, param)
+		return req, p.Stam >= req
+	}
+
 	switch t {
 	case action.ActionCharge: //require special calc for stam
+		amt, ok := stamCheck(t, param)
+		if !ok {
+			return ErrActionNotReady
+		}
+		//use stam
+		p.Stam -= amt
+		p.LastStamUse = *p.f
+		p.events.Emit(event.OnStamUse, t)
 		p.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash: //require special calc for stam
+		//dash handles it in the action itself
+		_, ok := stamCheck(t, param)
+		if !ok {
+			return ErrActionNotReady
+		}
 		p.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
 		p.useAbility(t, param, char.Jump)
@@ -82,14 +99,14 @@ func (p *Handler) Exec(t action.Action, param map[string]int) error {
 }
 
 var actionToEvent = map[action.Action]event.Event{
-	action.ActionDash:       event.PreDash,
-	action.ActionSkill:      event.PreSkill,
-	action.ActionBurst:      event.PreBurst,
-	action.ActionAttack:     event.PreAttack,
-	action.ActionCharge:     event.PreChargeAttack,
-	action.ActionLowPlunge:  event.PrePlunge,
-	action.ActionHighPlunge: event.PrePlunge,
-	action.ActionAim:        event.PreAimShoot,
+	action.ActionDash:       event.OnDash,
+	action.ActionSkill:      event.OnSkill,
+	action.ActionBurst:      event.OnBurst,
+	action.ActionAttack:     event.OnAttack,
+	action.ActionCharge:     event.OnChargeAttack,
+	action.ActionLowPlunge:  event.OnPlunge,
+	action.ActionHighPlunge: event.OnPlunge,
+	action.ActionAim:        event.OnAimShoot,
 }
 
 func (p *Handler) useAbility(
@@ -103,9 +120,6 @@ func (p *Handler) useAbility(
 	}
 	info := f(param)
 	info.CacheFrames()
-	info.PostFunc = func() {
-		p.events.Emit(state + 1) //post is always +1 from pre
-	}
 	p.SetActionUsed(p.active, &info)
 
 	p.LastAction.Type = t
@@ -119,67 +133,4 @@ func (p *Handler) useAbility(
 		"action", t.String(),
 	)
 
-}
-
-//try using charge attack, return ErrActionNotReady if not enough stam
-func (p *Handler) chargeattack(c character.Character, param map[string]int) error {
-	req := p.StamPercentMod(action.ActionCharge) * c.ActionStam(action.ActionCharge, param)
-	if p.Stam < req {
-		p.log.NewEvent("insufficient stam: charge attack", glog.LogSimEvent, -1, "have", p.Stam)
-		return ErrActionNotReady
-	}
-	p.events.Emit(event.PreChargeAttack)
-
-	//[8:09 PM] characters frame recount beggar: anyone know whether charge attack consumes energy at the end or at the beginning?
-	//[8:10 PM] BowTae: should be beginning, since you can cancel catalyst CA before it comes out
-	//[8:10 PM] BowTae: and stamina is still consumed
-	p.Stam -= req
-	p.LastStamUse = *p.f
-	p.events.Emit(event.OnStamUse, action.ActionCharge)
-
-	info := c.ChargeAttack(param)
-	p.SetActionUsed(p.active, &info)
-
-	if info.Post > 0 {
-		p.tasks.Add(func() {
-			p.events.Emit(event.PostChargeAttack) //post is always +1 from pre
-		}, info.Post)
-	}
-	p.LastAction.Type = action.ActionCharge
-	p.LastAction.Param = param
-	p.LastAction.Char = p.active
-
-	return nil
-}
-
-//try dashing, return ErrActionNotReady if not enough stam
-func (p *Handler) dash(c character.Character, param map[string]int) error {
-	req := p.StamPercentMod(action.ActionDash) * c.ActionStam(action.ActionDash, param)
-	if p.Stam < req {
-		p.log.NewEvent("insufficient stam: dash", glog.LogSimEvent, -1, "have", p.Stam)
-		return ErrActionNotReady
-	}
-	p.events.Emit(event.PreDash)
-	info := c.Dash(param)
-	p.SetActionUsed(p.active, &info)
-
-	//TODO: this is problematic for ayaka as she consume stam consistently?
-	//perhaps stam consumption should be dealt with in the Dash function instead of here
-	delay := info.Post
-	if info.Post <= 0 {
-		delay = 20 //TODO: add some sane delay for dash stam consumption here
-	}
-	p.tasks.Add(func() {
-		p.events.Emit(event.PostDash) //post is always +1 from pre
-		//stam should be consumed at end of animation?
-		p.Stam -= req
-		p.LastStamUse = *p.f
-		p.events.Emit(event.OnStamUse, action.ActionDash)
-		p.events.Emit(event.PostDash)
-	}, delay)
-	p.LastAction.Type = action.ActionCharge
-	p.LastAction.Param = param
-	p.LastAction.Char = p.active
-
-	return nil
 }

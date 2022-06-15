@@ -53,7 +53,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Name))
 
 	icd, dur := -1, -1
-	c.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

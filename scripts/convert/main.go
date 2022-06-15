@@ -79,6 +79,7 @@ func fix(path string, dump bool) error {
 
 		var notFound bool
 
+		//if found then we have to return false so we don't keep drilling down on a replaced node
 		notFound = rep(findAndReplaceStatBlock)
 		if !notFound {
 			fmt.Println("add mod block found")
@@ -87,6 +88,11 @@ func fix(path string, dump bool) error {
 		notFound = rep(findAndReplacePreDamageBlock)
 		if !notFound {
 			fmt.Println("add predmgmod block found")
+			return false
+		}
+		notFound = rep(findAndReplaceActionSignature)
+		if !notFound {
+			fmt.Println("abil block found")
 			return false
 		}
 
@@ -246,6 +252,62 @@ func findAndReplaceStatBlock(n ast.Node) (bool, ast.Node) {
 	return false, nil
 }
 
+var abilFunctions = map[string]bool{
+	"Attack":           true,
+	"Aimed":            true,
+	"ChargeAttack":     true,
+	"HighPlungeAttack": true,
+	"LowPlungeAttack":  true,
+	"Skill":            true,
+	"Burst":            true,
+	"Dash":             true,
+	"Walk":             true,
+	"Jump":             true,
+}
+
+func findAndReplaceActionSignature(n ast.Node) (bool, ast.Node) {
+	//look for function declaration that matches and return (int, int)
+	fd, ok := n.(*ast.FuncDecl)
+	if !ok {
+		return false, nil
+	}
+	//check name is in map
+	if _, ok := abilFunctions[fd.Name.Name]; !ok {
+		return false, nil
+	}
+	//check result is len 2 and both int
+	if len(fd.Type.Results.List) != 2 {
+		return false, nil
+	}
+	bad := false
+	for _, v := range fd.Type.Results.List {
+		//should be an ident with name int
+		id, ok := v.Type.(*ast.Ident)
+		if !ok {
+			bad = true
+			break
+		}
+		if id.Name != "int" {
+			bad = true
+			break
+		}
+	}
+	if bad {
+		return false, nil
+	}
+
+	//now we want to over write the result list with action.ActionInfo
+	field := &ast.Field{
+		Type: &ast.SelectorExpr{
+			X:   ast.NewIdent("action"),
+			Sel: ast.NewIdent("ActionInfo"),
+		},
+	}
+	//replace the list
+	fd.Type.Results.List = []*ast.Field{field}
+	return true, fd
+}
+
 func fixCorePkgName(n ast.Node) (bool, *ast.SelectorExpr) {
 	//check if selector
 	sel, ok := n.(*ast.SelectorExpr)
@@ -363,6 +425,7 @@ var pkgNameReplace = map[string][2]string{
 	"core.Target":                      {"combat", "Target"},
 	"core.AttackInfo":                  {"combat", "AttackInfo"},
 	"core.AttackCB":                    {"combat", "AttackCB"},
+	"core.AttackTag":                   {"combat", "AttackTag"},
 	"core.NewDefSingleTarget":          {"combat", "NewDefSingleTarget"},
 	"core.NewDefCircHit":               {"combat", "NewDefCircHit"},
 	"core.AttackTagNone":               {"combat", "AttackTagNone"},
@@ -497,4 +560,12 @@ var pkgNameReplace = map[string][2]string{
 	"core.ShieldBell":                {"shield", "ShieldBell"},
 	"core.ShieldYunjinSkill":         {"shield", "ShieldYunjinSkill"},
 	"core.EndShieldType":             {"shield", "EndShieldType"},
+
+	//weapon
+	"core.WeaponClassSword":    {"weapon", "WeaponClassSword"},
+	"core.WeaponClassClaymore": {"weapon", "WeaponClassClaymore"},
+	"core.WeaponClassSpear":    {"weapon", "WeaponClassSpear"},
+	"core.WeaponClassBow":      {"weapon", "WeaponClassBow"},
+	"core.WeaponClassCatalyst": {"weapon", "WeaponClassCatalyst"},
+	"core.EndWeaponClass":      {"weapon", "EndWeaponClass"},
 }
