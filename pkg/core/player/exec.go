@@ -46,10 +46,28 @@ func (p *Handler) Exec(t action.Action, param map[string]int) error {
 		return ErrActionNotReady
 	}
 
+	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
+		req := p.StamPercentMod(t) * char.ActionStam(t, param)
+		return req, p.Stam >= req
+	}
+
 	switch t {
 	case action.ActionCharge: //require special calc for stam
+		amt, ok := stamCheck(t, param)
+		if !ok {
+			return ErrActionNotReady
+		}
+		//use stam
+		p.Stam -= amt
+		p.LastStamUse = *p.f
+		p.events.Emit(event.OnStamUse, t)
 		p.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash: //require special calc for stam
+		//dash handles it in the action itself
+		_, ok := stamCheck(t, param)
+		if !ok {
+			return ErrActionNotReady
+		}
 		p.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
 		p.useAbility(t, param, char.Jump)

@@ -43,13 +43,11 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 var defaultDash = action.ActionInfo{
 	Frames:        func(action.Action) int { return 20 },
 	CanQueueAfter: 20,
-
-	State: action.DashState,
+	State:         action.DashState,
 }
 
 func (c *Character) Dash(p map[string]int) action.ActionInfo {
 	//consume stam at the end
-
 	c.Core.Tasks.Add(func() {
 		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
 		c.Core.Player.Stam -= req
