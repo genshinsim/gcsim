@@ -36,14 +36,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	done := false
-	// Taken from Noelle code
 	cb := func(a combat.AttackCB) {
-		if done { //why do we need this @srl
+		if done {
 			return
 		}
 		//check for healing
-		if c.Core.Status.Duration("barbskill") > 0 {
-			//heal target
+		if c.Core.Status.Duration(barbSkillKey) > 0 {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,

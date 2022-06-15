@@ -1,16 +1,21 @@
 package barbara
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-// Charge attack function - handles seal use
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+var chargeFrames []int
+var chargeHitmark = 90
 
-	f, a := c.ActionFrames(action.ActionCharge, p)
+func init() {
+	chargeFrames = frames.InitAbilSlice(90)
+}
+
+func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -24,15 +29,14 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	// Taken from Noelle code
 	cb := func(a combat.AttackCB) {
-		if done { //why do we need this @srl
+		if done {
 			return
 		}
 		//check for healing
-		if c.Core.Status.Duration("barbskill") > 0 {
+		if c.Core.Status.Duration(barbSkillKey) > 0 {
 			//heal target
-			c.Core.Health.Heal(player.HealInfo{
+			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,
 				Message: "Melody Loop (Charged Attack)",
@@ -43,22 +47,31 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		}
 
 	}
-	var cbenergy func(a combat.AttackCB)
-	energyCount := 0
+	var c4CB combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
-		cbenergy = func(a combat.AttackCB) {
+		energyCount := 0
+		c4CB = func(a combat.AttackCB) {
 			//check for healing
-			if c.Core.Status.Duration("barbskill") > 0 && energyCount < 5 {
+			if c.Core.Status.Duration(barbSkillKey) > 0 && energyCount < 5 {
 				//regen energy
 				c.AddEnergy("barbara-c4", 1)
 				energyCount++
 			}
-
 		}
 	}
 
 	// TODO: Not sure of snapshot timing
-	c.Core.Combat.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, f, cb, cbenergy)
+	c.Core.QueueAttack(ai,
+		combat.NewDefCircHit(2, false, combat.TargettableEnemy),
+		0,
+		chargeHitmark,
+		cb,
+		c4CB)
 
-	return f, a
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(chargeFrames),
+		AnimationLength: chargeFrames[action.InvalidAction],
+		CanQueueAfter:   chargeHitmark,
+		State:           action.ChargeAttackState,
+	}
 }

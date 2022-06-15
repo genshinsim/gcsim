@@ -16,9 +16,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	c6icd      int
-	skillInitF int
-	// burstBuffExpiry   int
+	c6icd         int
+	skillInitF    int
+	a4extendCount int
+	c2buff        []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -31,6 +32,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.SkillCon = 5
 	c.NormalHitNum = 4
 	c.CharZone = character.ZoneMondstadt
+	c.c2buff = make([]float64, attributes.EndStatType)
+	c.c2buff[attributes.HydroP] = 0.15
 
 	w.Character = &c
 	return nil
@@ -38,12 +41,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 func (c *char) Init() error {
 	c.a1()
+	c.a4()
 
 	if c.Base.Cons >= 1 {
 		c.c1(1)
-	}
-	if c.Base.Cons >= 2 {
-		c.c2()
 	}
 	if c.Base.Cons >= 6 {
 		c.c6()
@@ -52,10 +53,8 @@ func (c *char) Init() error {
 }
 
 func (c *char) a1() {
-	c.Core.AddStamMod(func(a action.Action) (float64, bool) { // @srl does this activate for the active char?
-		if c.Core.Status.Duration("barbskill") >= 0 {
-			return -0.12, false
-		}
-		return 0, false
-	}, "barb-a1-stam")
+	//a1 last for duration of barb skill which is 900 frames
+	c.Core.Player.AddStamPercentMod("barb-a1-stam", skillDuration, func(a action.Action) (float64, bool) { // @srl does this activate for the active char?
+		return -0.12, false
+	})
 }

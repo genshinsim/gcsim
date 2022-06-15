@@ -6,36 +6,29 @@ import (
 )
 
 func (c *char) c2() {
-	val := make([]float64, attributes.EndStatType)
-	val[attributes.HydroP] = 0.15
-	for i, char := range c.Core.Chars {
+	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
 			continue
 		}
-		char.AddStatMod("barbara-c2",
-			-1, attributes.NoStat, func() ([]float64, bool) {
-				if c.Core.Status.Duration("barbskill") >= 0 {
-					return val, true
-				} else {
-					return nil, false
-				}
-			})
+		char.AddStatMod("barbara-c2", skillDuration, attributes.NoStat, func() ([]float64, bool) {
+			return c.c2buff, true
+		})
 
 	}
 }
 
 func (c *char) c1(delay int) {
-	c.AddTask(func() {
+	c.Core.Tasks.Add(func() {
 		c.AddEnergy("barbara-c1", 1)
 		c.c1(0)
-	}, "barbara-c1", delay+10*60)
+	}, delay+10*60)
 }
 
 // inspired from hutao c6
 //TODO: does this even work?
 func (c *char) c6() {
 	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
-		if c.Core.ActiveChar != c.Index { //trigger only when not barbara
+		if c.Core.Player.Active() != c.Index { //trigger only when not barbara
 			c.checkc6()
 		}
 		return false
@@ -49,8 +42,10 @@ func (c *char) checkc6() {
 	if c.Core.F < c.c6icd && c.c6icd != 0 {
 		return
 	}
+	//grab the active char
+	char := c.Core.Player.ActiveChar()
 	//if dead, revive back to 1 hp
-	if c.HP() <= -1 {
+	if char.HPCurrent <= -1 {
 		c.HPCurrent = c.MaxHP()
 	}
 
