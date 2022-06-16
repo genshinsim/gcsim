@@ -96,7 +96,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfused = c.Core.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qInfused = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.qInfused != attributes.NoElement {
 			if c.Base.Cons >= 6 {

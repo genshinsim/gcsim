@@ -4,6 +4,7 @@ import (
 	"math"
 	"sort"
 
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -20,6 +21,9 @@ type Target interface {
 
 	//apply attack to target
 	Attack(*AttackEvent, glog.Event) (float64, bool)
+
+	//aura checks
+	AuraContains(e ...attributes.Element) bool
 
 	Tick() //called every tick
 
