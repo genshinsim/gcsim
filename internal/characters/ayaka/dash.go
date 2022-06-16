@@ -46,7 +46,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		}
 		once = true
 
-		c.Core.RestoreStam(10)
+		c.Core.Player.RestoreStam(10)
 		c.AddStatMod("ayaka-a4", 600, attributes.CryoP, func() ([]float64, bool) {
 			return m, true
 		})
