@@ -27,7 +27,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), f, travel+f)
 
-	c.AdvanceNormalIndex()
+	defer c.AdvanceNormalIndex()
 
 	return f, a
 }

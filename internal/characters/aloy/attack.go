@@ -26,7 +26,6 @@ func init() {
 
 // Standard attack - infusion mechanics are handled as part of the skill
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -51,7 +50,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			attackHitmarks[c.NormalCounter]+i+travel)
 	}
 
-	c.AdvanceNormalIndex()
+	defer c.AdvanceNormalIndex()
 
 	// return animation cd
 	return action.ActionInfo{

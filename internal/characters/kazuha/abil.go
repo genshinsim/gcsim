@@ -34,7 +34,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(0.3, false, core.TargettableEnemy), hitmarks[c.NormalCounter][i], hitmarks[c.NormalCounter][i])
 	}
 
-	c.AdvanceNormalIndex()
+	defer c.AdvanceNormalIndex()
 
 	return f, a
 }

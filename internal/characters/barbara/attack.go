@@ -10,8 +10,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var attackHitmarks = []int{7, 25 - 7, 45 - 25, 92 - 45}
 var attackFrames [][]int
+var attackHitmarks = []int{7, 18, 20, 47}
 
 const normalHitNum = 4
 
@@ -59,7 +59,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		attackHitmarks[c.NormalCounter],
 		cb,
 	)
-	c.AdvanceNormalIndex()
+
+	defer c.AdvanceNormalIndex()
 
 	// return animation cd
 	return action.ActionInfo{

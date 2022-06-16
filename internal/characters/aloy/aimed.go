@@ -9,17 +9,16 @@ import (
 
 var aimedFrames []int
 
+const aimedHitmark = 84
+
 func init() {
 	//TODO: this frames needs to be checked
 	//kqm doesn't have frames lol
 	aimedFrames = frames.InitAbilSlice(84)
 }
 
-const aimedHitmark = 84
-
 // Standard aimed attack
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
-
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -42,7 +41,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
-		CanQueueAfter:   aimedFrames[action.InvalidAction],
+		CanQueueAfter:   aimedHitmark,
 		State:           action.AimState,
 	}
 }

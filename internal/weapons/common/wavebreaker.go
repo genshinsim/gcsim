@@ -16,8 +16,8 @@ type Wavebreaker struct {
 	Index int
 }
 
-func (b *Wavebreaker) SetIndex(idx int)	{ b.Index = idx }
-func (b *Wavebreaker) Init() error	{ return nil }
+func (b *Wavebreaker) SetIndex(idx int) { b.Index = idx }
+func (b *Wavebreaker) Init() error      { return nil }
 
 func NewWavebreaker(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	r := p.Refine

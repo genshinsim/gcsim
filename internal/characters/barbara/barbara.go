@@ -3,7 +3,6 @@ package barbara
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -25,13 +24,15 @@ type char struct {
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
+
 	c.Base.Element = attributes.Hydro
 	c.EnergyMax = 80
 	c.Weapon.Class = weapon.WeaponClassCatalyst
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.NormalHitNum = 4
+	c.NormalHitNum = normalHitNum
 	c.CharZone = character.ZoneMondstadt
+
 	c.c2buff = make([]float64, attributes.EndStatType)
 	c.c2buff[attributes.HydroP] = 0.15
 
@@ -50,11 +51,4 @@ func (c *char) Init() error {
 		c.c6()
 	}
 	return nil
-}
-
-func (c *char) a1() {
-	//a1 last for duration of barb skill which is 900 frames
-	c.Core.Player.AddStamPercentMod("barb-a1-stam", skillDuration, func(a action.Action) (float64, bool) { // @srl does this activate for the active char?
-		return -0.12, false
-	})
 }

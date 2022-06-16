@@ -70,7 +70,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(cancels),
 		AnimationLength: cancels[action.InvalidAction],
 		CanQueueAfter:   cancels[action.ActionDash], // earliest cancel
-
-		State: action.BurstState,
+		State:           action.BurstState,
 	}
 }

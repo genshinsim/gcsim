@@ -39,7 +39,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
-
-		State: action.ChargeAttackState,
+		State:           action.ChargeAttackState,
 	}
 }

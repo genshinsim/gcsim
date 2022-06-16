@@ -52,7 +52,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	c.sCACount = 0
 	c.dasshuUsed = false
-	c.AdvanceNormalIndex()
+	defer c.AdvanceNormalIndex()
 
 	return f, a
 }

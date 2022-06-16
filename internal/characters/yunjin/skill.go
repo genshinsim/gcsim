@@ -95,7 +95,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames[animIdx]),
 		AnimationLength: skillFrames[animIdx][action.InvalidAction],
 		CanQueueAfter:   skillHitmarks[animIdx],
-
-		State: action.SkillState,
+		State:           action.SkillState,
 	}
 }

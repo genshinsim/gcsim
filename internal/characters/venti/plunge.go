@@ -28,8 +28,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
-
-			State: action.Idle,
+			State:           action.Idle,
 		}
 	}
 
@@ -51,7 +50,6 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeHitmark,
-
-		State: action.PlungeAttackState,
+		State:           action.PlungeAttackState,
 	}
 }

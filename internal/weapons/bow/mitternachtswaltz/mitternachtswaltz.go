@@ -22,6 +22,7 @@ type Weapon struct {
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
+
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine

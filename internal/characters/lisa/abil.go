@@ -25,7 +25,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	//todo: Does it really snapshot immediately?
 	c.Core.Combat.QueueAttack(ai, core.NewDefSingleTarget(1, core.TargettableEnemy), 0, hitmarks[c.NormalCounter])
 
-	c.AdvanceNormalIndex()
+	defer c.AdvanceNormalIndex()
 
 	return f, a
 }

@@ -26,7 +26,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(0.3, false, core.TargettableEnemy), f-2+i)
 	}
 
-	c.AdvanceNormalIndex()
+	defer c.AdvanceNormalIndex()
 	return f, a
 }
 

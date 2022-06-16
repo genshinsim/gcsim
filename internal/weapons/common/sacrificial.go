@@ -16,8 +16,9 @@ type Sacrificial struct {
 	Index int
 }
 
-func (b *Sacrificial) SetIndex(idx int)	{ b.Index = idx }
-func (b *Sacrificial) Init() error	{ return nil }
+func (b *Sacrificial) SetIndex(idx int) { b.Index = idx }
+func (b *Sacrificial) Init() error      { return nil }
+
 func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Royal{}
 	r := p.Refine

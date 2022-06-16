@@ -9,7 +9,8 @@ import (
 )
 
 var chargeFrames []int
-var chargeHitmark = 90
+
+const chargeHitmark = 90
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(90)

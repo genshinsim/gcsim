@@ -30,7 +30,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          func(next action.Action) int { return skillFrames[next] + hold },
 		AnimationLength: skillFrames[action.InvalidAction] + hold,
 		CanQueueAfter:   skillStart + hold,
-
-		State: action.SkillState,
+		State:           action.SkillState,
 	}
 }

@@ -16,6 +16,7 @@ type Lithic struct {
 
 func (b *Lithic) SetIndex(idx int) { b.Index = idx }
 func (b *Lithic) Init() error      { return nil }
+
 func NewLithic(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	l := &Lithic{}
 	r := p.Refine

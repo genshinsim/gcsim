@@ -5,6 +5,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
+func (c *char) c1(delay int) {
+	c.Core.Tasks.Add(func() {
+		c.AddEnergy("barbara-c1", 1)
+		c.c1(0)
+	}, delay+10*60)
+}
+
 func (c *char) c2() {
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
@@ -15,13 +22,6 @@ func (c *char) c2() {
 		})
 
 	}
-}
-
-func (c *char) c1(delay int) {
-	c.Core.Tasks.Add(func() {
-		c.AddEnergy("barbara-c1", 1)
-		c.c1(0)
-	}, delay+10*60)
 }
 
 // inspired from hutao c6

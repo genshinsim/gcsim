@@ -62,8 +62,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
-
-		State: action.NormalAttackState,
+		State:           action.NormalAttackState,
 	}
 }
 
@@ -114,7 +113,6 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAttackFunc(c.Character, meleeFrames),
 		AnimationLength: meleeFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   meleeHitmarks[c.NormalCounter][len(meleeHitmarks[c.NormalCounter])-1],
-
-		State: action.NormalAttackState,
+		State:           action.NormalAttackState,
 	}
 }

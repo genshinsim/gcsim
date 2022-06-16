@@ -10,12 +10,12 @@ import (
 
 var skillFrames []int
 
+const skillHitmark = 67
+
 func init() {
 	//TODO: no cancelled frames yet
 	skillFrames = frames.InitAbilSlice(67)
 }
-
-const skillHitmark = 67
 
 // Skill - Handles main damage, bomblet, and coil effects
 // Has 3 parameters, "bomblets" = Number of bomblets that hit

@@ -65,8 +65,7 @@ var defaultJump = action.ActionInfo{
 	Frames:          func(action.Action) int { return 30 },
 	AnimationLength: 30,
 	CanQueueAfter:   30,
-
-	State: action.JumpState,
+	State:           action.JumpState,
 }
 
 func (c *Character) Jump(p map[string]int) action.ActionInfo {
@@ -82,7 +81,6 @@ func (c *Character) Walk(p map[string]int) action.ActionInfo {
 		Frames:          func(next action.Action) int { return f },
 		AnimationLength: f,
 		CanQueueAfter:   f,
-
-		State: action.WalkState,
+		State:           action.WalkState,
 	}
 }

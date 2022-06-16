@@ -14,8 +14,8 @@ type Blackcliff struct {
 	Index int
 }
 
-func (b *Blackcliff) SetIndex(idx int)	{ b.Index = idx }
-func (b *Blackcliff) Init() error	{ return nil }
+func (b *Blackcliff) SetIndex(idx int) { b.Index = idx }
+func (b *Blackcliff) Init() error      { return nil }
 
 func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 
