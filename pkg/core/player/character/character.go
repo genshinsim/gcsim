@@ -78,7 +78,7 @@ type CharWrapper struct {
 	//tags
 	Tags map[string]int
 
-	stats [attributes.EndStatType]float64
+	BaseStats [attributes.EndStatType]float64
 
 	//mods
 	statsMod            []*statMod
@@ -114,7 +114,7 @@ func New(
 		f:                   f,
 	}
 	s := (*[attributes.EndStatType]float64)(p.Stats)
-	c.stats = *s
+	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]artifact.Set)
 
 	return c

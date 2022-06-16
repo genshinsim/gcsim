@@ -121,7 +121,7 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	//   Picking up an Amulet to increase the Traveler's ER will not impact the amount of ER shared by
 	//   Resounding Roar for other Amulet pickups.
 	//   TODO how do we pull unbuffed energy recharge %? Store on init?
-	mER[attributes.ER] += c.stats[attributes.ER] * .1
+	mER[attributes.ER] += c.BaseStats[attributes.ER] * .1
 
 	// apply flat energy
 	buffEnergy := skillRegen[c.Talents.Skill] * float64(c.abundanceAmulets)
