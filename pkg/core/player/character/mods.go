@@ -31,6 +31,7 @@ func deleteMod[K mod](c *CharWrapper, slice []K, key string) {
 			n++
 		}
 	}
+	//BUG: i think this needs to be *K here. otherwise delete wont work?
 	slice = slice[:n]
 }
 
@@ -47,6 +48,7 @@ func addMod[K mod](c *CharWrapper, slice []K, mod K) {
 		)
 		evt.SetEnded(mod.Expiry())
 		mod.SetEvent(evt)
+		//BUG: i think this needs to be *K here. otherwise delete wont work?
 		slice = append(slice, mod)
 		return
 	}

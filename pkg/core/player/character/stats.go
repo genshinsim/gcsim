@@ -36,7 +36,7 @@ func (c *CharWrapper) DeleteStatMod(key string) {
 	deleteMod(c, c.statsMod, key)
 }
 
-func (c *CharWrapper) StatModIsActive(key string, char int) bool {
+func (c *CharWrapper) StatModIsActive(key string) bool {
 	ind, ok := findModCheckExpiry(c.statsMod, key, *c.f)
 	if !ok {
 		return false
