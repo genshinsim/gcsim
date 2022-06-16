@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var burstFrames []int
@@ -34,9 +35,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       0,
 	}
 	cb := func(a combat.AttackCB) {
+		t, ok := a.Target.(*enemy.Enemy)
+		if !ok {
+			return
+		}
 		//bubble is applied to each target on a per target basis
 		//lasts 8 seconds if not popped normally
-		a.Target.SetTag(bubbleKey, c.Core.F+481) //1 frame extra so we don't run into problems breaking
+		t.SetTag(bubbleKey, c.Core.F+481) //1 frame extra so we don't run into problems breaking
 		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index, "char", c.Index)
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(4, false, combat.TargettableEnemy), -1, burstHitmark, cb)
@@ -70,8 +75,12 @@ func (c *char) burstDamageBonus() {
 	m[attributes.DmgP] = dmgBonus[c.TalentLvlBurst()]
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod("mona-omen", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			x, ok := t.(*enemy.Enemy)
+			if !ok {
+				return nil, false
+			}
 			//ignore if omen or bubble not present
-			if t.GetTag(bubbleKey) < c.Core.F && t.GetTag(omenKey) < c.Core.F {
+			if x.GetTag(bubbleKey) < c.Core.F && x.GetTag(omenKey) < c.Core.F {
 				return nil, false
 			}
 			return m, true
@@ -89,7 +98,10 @@ func (c *char) burstHook() {
 	//only 2nd ec tick should break
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		//ignore if target doesn't have debuff
-		t := args[0].(combat.Target)
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
 		if t.GetTag(bubbleKey) < c.Core.F {
 			return false
 		}
@@ -110,7 +122,7 @@ func (c *char) burstHook() {
 	}, "mona-bubble-check")
 }
 
-func (c *char) triggerBubbleBurst(t combat.Target) {
+func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	//remove bubble tag
 	t.RemoveTag(bubbleKey)
 	//add omen debuff
