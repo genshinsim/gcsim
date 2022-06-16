@@ -112,7 +112,8 @@ func (c *char) onSwapClearBurst() {
 }
 
 func (c *char) onBurstStackCount() {
-	c.Core.Events.Subscribe(event.PostBurst, func(args ...interface{}) bool {
+	//TODO: this used to be on PostBurst; need to check if it works correctly still
+	c.Core.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Core.Player.Active() == c.Index {
 			return false
 		}
