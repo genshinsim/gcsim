@@ -55,3 +55,24 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 
 	h.events.Emit(event.OnHeal, info.Caller, index, heal)
 }
+
+type DrainInfo struct {
+	ActorIndex int
+	Abil       string
+	Amount     float64
+}
+
+func (h *Handler) Drain(di DrainInfo) {
+	c := h.chars[di.ActorIndex]
+
+	prevhp := c.HPCurrent
+	c.ModifyHP(-di.Amount)
+
+	h.log.NewEvent(di.Abil, glog.LogHurtEvent, di.ActorIndex,
+		"previous", prevhp,
+		"amount", di.Amount,
+		"current", c.HPCurrent,
+		"max_hp", c.MaxHP())
+
+	h.events.Emit(event.OnCharacterHurt, di.Amount)
+}
