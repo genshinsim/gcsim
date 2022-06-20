@@ -18,7 +18,6 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a4Expiry            int
 	a1Ele               attributes.Element
 	qInfuse             attributes.Element
 	c6Active            int
@@ -38,8 +37,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.CharZone = character.ZoneInazuma
 
 	c.infuseCheckLocation = combat.NewDefCircHit(1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
-
-	c.InitCancelFrames()
 
 	w.Character = &c
 
@@ -65,7 +62,7 @@ func (c *char) Init() error {
 func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 
-	swirlfunc := func(ele core.StatType, key string) func(args ...interface{}) bool {
+	swirlfunc := func(ele attributes.Stat, key string) func(args ...interface{}) bool {
 		icd := -1
 		return func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
@@ -81,22 +78,18 @@ func (c *char) a4() {
 			//recalc em
 			dmg := 0.0004 * c.Stat(attributes.EM)
 
-			for _, char := range c.Core.Chars {
-				char.AddStatMod("kazuha-a4-"+key,
-					c.Core.F+60*8, attributes.NoStat, func() ([]float64, bool) {
-
-						m[attributes.CryoP] = 0
-						m[attributes.ElectroP] = 0
-						m[attributes.HydroP] = 0
-						m[attributes.PyroP] = 0
-
-						m[ele] = dmg
-						return m, true
-					})
-
+			for _, char := range c.Core.Player.Chars() {
+				char.AddStatMod("kazuha-a4-"+key, 60*8, attributes.NoStat, func() ([]float64, bool) {
+					m[attributes.CryoP] = 0
+					m[attributes.ElectroP] = 0
+					m[attributes.HydroP] = 0
+					m[attributes.PyroP] = 0
+					m[ele] = dmg
+					return m, true
+				})
 			}
 
-			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index, "reaction", ele.String(), "char", c.CharIndex())
+			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index, "reaction", ele.String())
 
 			return false
 		}
@@ -108,8 +101,8 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.PyroP, "pyro"), "kazuha-a4-pyro")
 }
 
-func (c *char) Snapshot(ai *combat.AttackInfo) core.Snapshot {
-	ds := c.Tmpl.Snapshot(ai)
+func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+	ds := c.Character.Snapshot(ai)
 
 	if c.Base.Cons < 6 {
 		return ds
@@ -121,8 +114,6 @@ func (c *char) Snapshot(ai *combat.AttackInfo) core.Snapshot {
 
 	//add 0.2% dmg for every EM
 	ds.Stats[attributes.DmgP] += 0.002 * ds.Stats[attributes.EM]
-
 	c.Core.Log.NewEvent("c6 adding dmg", glog.LogCharacterEvent, c.Index, "em", ds.Stats[attributes.EM], "final", ds.Stats[attributes.DmgP])
-
 	return ds
 }

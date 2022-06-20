@@ -1,17 +1,52 @@
 package kazuha
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
+var plungeHoldFrames []int
+var plungePressFrames []int
+
+const (
+	plungeHoldAnimation  = 60
+	plungePressAnimation = 55
+)
+
+func init() {
+	plungeHoldFrames = frames.InitAbilSlice(50)
+	plungeHoldFrames[action.ActionAttack] = 60
+	plungeHoldFrames[action.ActionBurst] = 60
+
+	plungePressFrames = frames.InitAbilSlice(47)
+	plungeHoldFrames[action.ActionAttack] = 55
+	plungeHoldFrames[action.ActionBurst] = 55
+}
+
 func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
-	f, a := c.ActionFrames(action.ActionHighPlunge, p)
 	ele := attributes.Physical
-	if c.Core.LastAction.Target == core.Kazuha && c.Core.LastAction.Typ == action.ActionSkill {
+	//TODO: this really shouldn't be anything else since it should only be used after skill?
+	if c.Core.Player.LastAction.Char == c.Index && c.Core.Player.LastAction.Type == action.ActionSkill {
 		ele = attributes.Anemo
+	}
+
+	a := action.ActionInfo{
+		State: action.PlungeAttackState,
+	}
+	//TODO: is this accurate?? these should be the hitmarks
+	var f int
+	if c.Core.Player.LastAction.Param["hold"] > 0 {
+		f = 41
+		a.Frames = frames.NewAbilFunc(plungeHoldFrames)
+		a.AnimationLength = plungeHoldAnimation
+		a.CanQueueAfter = f
+	} else {
+		f = 36
+		a.Frames = frames.NewAbilFunc(plungePressFrames)
+		a.AnimationLength = plungePressAnimation
+		a.CanQueueAfter = f
 	}
 
 	_, ok := p["collide"]
@@ -65,5 +100,5 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		c.a1Ele = attributes.NoElement
 	}
 
-	return f, a
+	return a
 }

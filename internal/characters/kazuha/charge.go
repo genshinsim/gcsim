@@ -3,14 +3,26 @@ package kazuha
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+var chargeFrames []int
 
-	f, a := c.ActionFrames(action.ActionCharge, p)
+const chargeHitmark = 21
+
+func init() {
+	chargeFrames = frames.InitAbilSlice(55)
+	chargeFrames[action.ActionAttack] = 55
+	chargeFrames[action.SkillState] = 34
+	chargeFrames[action.BurstState] = 33
+	chargeFrames[action.ActionSwap] = 32
+	//TODO: missing charge -> dash?
+}
+
+func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -28,5 +40,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 20+i, 20+i)
 	}
 
-	return f, a
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(chargeFrames),
+		AnimationLength: chargeFrames[action.InvalidAction],
+		CanQueueAfter:   chargeHitmark,
+		State:           action.ChargeAttackState,
+	}
 }

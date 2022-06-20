@@ -32,14 +32,20 @@ func init() {
 	attackFrames[1][action.ActionAttack] = 20
 	attackFrames[1][action.ActionCharge] = 25
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 25)
-	attackFrames[1][action.ActionAttack] = 20
-	attackFrames[1][action.ActionCharge] = 25
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 25)
+	attackFrames[2][action.ActionAttack] = 30
+	attackFrames[2][action.ActionCharge] = 35
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 15)
+	attackFrames[3][action.ActionAttack] = 40
+	attackFrames[3][action.ActionCharge] = 36
+
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][2], 31)
+	attackFrames[4][action.ActionAttack] = 71
+	attackFrames[4][action.ActionCharge] = 71 //TODO: missing frame for n5 -> charge
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
-	f, a := c.ActionFrames(action.ActionAttack, p)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -52,12 +58,25 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
+	act := action.ActionInfo{
+		Frames:              frames.NewAttackFunc(c.Character, attackFrames),
+		AnimationLength:     attackFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:       attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		State:               action.NormalAttackState,
+		FramePausedOnHitlag: c.FramePausedOnHitlag,
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.3, false, combat.TargettableEnemy), attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewDefCircHit(0.3, false, combat.TargettableEnemy),
+			attackHitmarks[c.NormalCounter][i],
+			attackHitmarks[c.NormalCounter][i],
+		)
 	}
 
 	defer c.AdvanceNormalIndex()
 
-	return f, a
+	return act
 }
