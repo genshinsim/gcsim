@@ -61,7 +61,7 @@ func weapon(char core.Character, c *core.Core, r int, param map[string]int) stri
 			}
 			dmg := float64(count) * stack
 			if count >= 3 {
-				dmg += max
+				dmg = max
 			}
 			m[core.DmgP] = dmg
 			return m, true
