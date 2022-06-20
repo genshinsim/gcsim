@@ -74,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		dmg := float64(count) * stack
 		if count >= 3 {
-			dmg += max
+			dmg = max
 		}
 		m[attributes.DmgP] = dmg
 		return m, true
