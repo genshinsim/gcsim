@@ -19,12 +19,13 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionAttack, p)
 	if c.Base.Cons >= 6 && c.Core.Status.Duration(c6Status) > 0 {
+		//c6 is default ICD group for some odd reason
 		ai := core.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
 			AttackTag:  core.AttackTagExtra,
 			ICDTag:     core.ICDTagExtraAttack,
-			ICDGroup:   core.ICDGroupYelanBreakthrough,
+			ICDGroup:   core.ICDGroupDefault,
 			Element:    core.Hydro,
 			Durability: 25,
 		}
@@ -76,7 +77,7 @@ func (c *char) Aimed(p map[string]int) (int, int) {
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
 			AttackTag:  core.AttackTagExtra,
-			ICDTag:     core.ICDTagExtraAttack,
+			ICDTag:     core.ICDTagYelanBreakthrough,
 			ICDGroup:   core.ICDGroupYelanBreakthrough,
 			Element:    core.Hydro,
 			Durability: 25,
@@ -255,6 +256,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 
 	if c.Base.Cons >= 6 { //C6 passive, lasts 20 seconds
 		c.Core.Status.AddStatus(c6Status, 20*60)
+		c.c6count = 0
 	}
 	c.Core.Log.NewEvent("burst activated", core.LogCharacterEvent, c.Index, "expiry", c.Core.F+15*60)
 
