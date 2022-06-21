@@ -41,6 +41,7 @@ const (
 	ICDTagVentiBurstHydro
 	ICDTagVentiBurstCryo
 	ICDTagVentiBurstElectro
+	ICDTagYelanBreakthrough
 	ICDTagYelanBurst
 	ICDTagMonaWaterDamage
 	ICDTagTravelerWakeOfEarth

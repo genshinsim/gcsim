@@ -49,6 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	if c.Base.Cons >= 6 { //C6 passive, lasts 20 seconds
 		c.Core.Status.Add(c6Status, 20*60)
+		c.c6count = 0
 	}
 	c.Core.Log.NewEvent("burst activated", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+15*60)
 

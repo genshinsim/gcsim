@@ -33,12 +33,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	if c.Base.Cons >= 6 && c.Core.Status.Duration(c6Status) > 0 {
+		//c6 is default ICD group for some odd reason
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
 			AttackTag:  combat.AttackTagExtra,
 			ICDTag:     combat.ICDTagExtraAttack,
-			ICDGroup:   combat.ICDGroupYelanBreakthrough,
+			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}

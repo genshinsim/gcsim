@@ -41,7 +41,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
 			AttackTag:  combat.AttackTagExtra,
-			ICDTag:     combat.ICDTagExtraAttack,
+			ICDTag:     combat.ICDTagYelanBreakthrough,
 			ICDGroup:   combat.ICDGroupYelanBreakthrough,
 			Element:    attributes.Hydro,
 			Durability: 25,
