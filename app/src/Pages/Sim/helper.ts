@@ -45,7 +45,7 @@ export function charToCfg(char: Character): string {
   char.stats.forEach((v, i) => {
     if (v === 0) return;
     count++;
-    statStr += ` ${statKeys[i]}=${v.toPrecision(4)}`;
+    statStr += ` ${statKeys[i]}=${v.toPrecision()}`;
   });
   if (count > 0) {
     str += statStr + `;\n`;
