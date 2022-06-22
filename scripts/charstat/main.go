@@ -177,4 +177,5 @@ var CharNameToKey = map[string]string{
 	"yunjin":            "Yunjin",
 	"yaemiko":           "YaeMiko",
 	"yelan":             "Yelan",
+	"kukishinobu":       "Kuki",
 }
