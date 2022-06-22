@@ -53,6 +53,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/keqing"
 	_ "github.com/genshinsim/gcsim/internal/characters/klee"
 	_ "github.com/genshinsim/gcsim/internal/characters/kokomi"
+	_ "github.com/genshinsim/gcsim/internal/characters/kuki"
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
 	_ "github.com/genshinsim/gcsim/internal/characters/mona"
 	_ "github.com/genshinsim/gcsim/internal/characters/ningguang"
