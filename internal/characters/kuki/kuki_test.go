@@ -22,7 +22,7 @@ func TestBasicAbilUsage(t *testing.T) {
 
 func TestCD(t *testing.T) {
 	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Kaeya, core.Cryo, 6)
+	prof := testhelper.CharProfile(core.Kuki, core.Electro, 6)
 	x, err := NewChar(c, prof)
 	if err != nil {
 		t.Error(err)
