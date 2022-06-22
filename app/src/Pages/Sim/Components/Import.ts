@@ -294,6 +294,8 @@ export function GOODKeytoGCSIMKey(s: string) {
       return "yaemiko";
     case "AratakiItto":
       return "itto";
+    case "KukiShinobu":
+      return "kuki";
   }
   const result = s
     .toString()

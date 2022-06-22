@@ -73,6 +73,7 @@ const names = [
   "yaemiko",
   "ayato",
   "yelan",
+  "kuki",
 ];
 
 const travelers = [
@@ -82,7 +83,7 @@ const travelers = [
   "hydro",
   "cryo",
   "pyro",
-  "dendro"
+  "dendro",
 ];
 
 let chars = {};
@@ -99,13 +100,12 @@ let trans = {
 
 names.forEach((e) => {
   const eng = genshindb.characters(e);
-  if (!eng)
-    return;
+  if (!eng) return;
   let key = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
 
   chars[e] = {
     key: e,
-    name: eng.name,
+    // name: eng.name,
     element: eng.element.toLowerCase(),
     weapon_type: eng.weapontype.toLowerCase(),
   };
@@ -143,12 +143,11 @@ travelers.map((e) => {
   const key = `traveler${e}`;
   const mc = genshindb.characters("aether");
   const eng = genshindb.talents(key);
-  if (!mc || !eng)
-    return;
+  if (!mc || !eng) return;
 
   chars[key] = {
     key,
-    name: eng.name,
+    // name: eng.name,
     element: e,
     weapon_type: mc.weapontype,
   };
@@ -202,8 +201,7 @@ let weap = {};
 
 weapons.forEach((e) => {
   const eng = genshindb.weapons(e);
-  if (!eng)
-    return;
+  if (!eng) return;
 
   let filename =
     "./static/images/weapons/" +
@@ -248,8 +246,7 @@ const sets = genshindb.artifacts("4", { matchCategories: true });
 
 sets.forEach((e) => {
   const eng = genshindb.artifacts(e);
-  if (!eng)
-    return;
+  if (!eng) return;
 
   let art = eng.name.replace(/[^0-9a-z]/gi, "").toLowerCase();
   setMap[art] = eng.name;
@@ -272,14 +269,16 @@ sets.forEach((e) => {
     filename = `./static/images/artifacts/${art}_${key}.png`;
 
     if (!fs.existsSync(filename)) {
-      console.log(`${key}: ${value}`);
-      download_image(value.replace("-os", ""), filename)
-        .then(() => {
-          // console.log("done downloading to file: ", filename);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      if (key.indexOf("name") !== 0) {
+        console.log(`${key}: ${value}`);
+        download_image(value.replace("-os", ""), filename)
+          .then(() => {
+            // console.log("done downloading to file: ", filename);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     }
   }
 });

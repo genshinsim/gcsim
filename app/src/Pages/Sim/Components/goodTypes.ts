@@ -25,7 +25,7 @@ export interface GOODArtifact {
   rarity: number;
   level: number;
   mainStatKey: StatKey | "";
-  location: CharacterKey | ""
+  location: CharacterKey | "";
   substats: ISubstat[];
 }
 
@@ -65,8 +65,6 @@ export interface Weapon {
   ascension: number;
   refinement: number;
 }
-
-
 
 export interface Character {
   key: string;
@@ -191,7 +189,8 @@ export type CharacterKey =
   | "Yanfei" //Yanfei
   | "Yoimiya" //Yoimiya
   | "Yelan" //Yelan
-  | "Zhongli"; //Zhongli
+  | "Zhongli" //Zhongli
+  | "KukiShinobu"; //Kuki
 
 export type WeaponKey =
   | "Akuoumaru" //Akuoumaru

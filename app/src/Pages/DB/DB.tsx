@@ -82,13 +82,14 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
     <div className="flex flex-row flex-wrap sm:flex-nowrap gap-y-1 w-full m-2 p-2 rounded-md bg-gray-700 place-items-center">
       <div className="flex flex-col sm:basis-1/4 xs:basis-full">
         <div className="grid grid-cols-4">{chars}</div>
-        <div className="hidden basis-0 lg:block md:flex-1">
-          <Trans>db.author</Trans>
-          {row.author}
-        </div>
+        <div className="hidden basis-0 lg:block md:flex-1"></div>
       </div>
       <div className=" flex-1 overflow-hidden mb-auto pl-2 hidden lg:block">
         <div className="font-bold">
+          <Trans>db.author</Trans>
+        </div>
+        {row.author}
+        <div className="font-bold mt-1">
           <Trans>db.description</Trans>
         </div>
         {row.description.replace(/(.{150})..+/, "$1…")}
