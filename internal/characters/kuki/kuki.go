@@ -99,6 +99,7 @@ func (c *char) A4passive() {
 		},
 	})
 	//This line only applies if healing is also multiplicative (and needs a skill check) instead I assumed it is flat
+
 	// val := make([]float64, core.EndStatType)
 	// c.AddMod(core.CharStatMod{
 	// 	Key:    "kuki-a1",
@@ -191,13 +192,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
-	//c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), f)
-	// if c.Core.Rand.Float64() < 0.4 {
-	// 	c.QueueParticle("kuki", 3, core.Electro, 100)
-	// } else {
-	// 	c.QueueParticle("kuki", 4, core.Electro, 100)
-	// }
-
 	c.SetCD(core.ActionSkill, a+15*60)  // what's the diff between f and a again? Nice question Yakult
 	c.AddTask(c.bellTick(), "bell", 90) //Assuming this executes every 90 frames-1.5s
 	c.bellActiveUntil = c.Core.F + c.skilldur
@@ -284,22 +278,3 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.SetCDWithDelay(core.ActionBurst, 900, 55)
 	return f, a
 }
-
-// func (c *char) burstICD() {
-// 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-// 		atk := args[1].(*core.AttackEvent)
-// 		if atk.Info.ActorIndex != c.Index {
-// 			return false
-// 		}
-// 		if ds.Abil != "Glacial Waltz" {
-// 			return false
-// 		}
-// 		//check icd
-// 		if c.icicleICD[ds.ExtraIndex] > c.Core.F {
-// 			ds.Cancelled = true
-// 			return false
-// 		}
-// 		c.icicleICD[ds.ExtraIndex] = c.Core.F + 30
-// 		return false
-// 	}, "kaeya-burst-icd")
-// }
