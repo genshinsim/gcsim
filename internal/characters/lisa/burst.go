@@ -1,18 +1,33 @@
 package lisa
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
+
+var burstFrames []int
+
+const (
+	firstHitHitmark = 56
+)
+
+func init() {
+	burstFrames = frames.InitAbilSlice(86)
+	burstFrames[action.ActionAttack] = 86
+	burstFrames[action.ActionCharge] = 86
+	burstFrames[action.ActionSkill] = 87
+	burstFrames[action.ActionDash] = 88
+	burstFrames[action.ActionJump] = 57
+	burstFrames[action.ActionSwap] = 56
+}
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
-	f, a := c.ActionFrames(action.ActionBurst, p)
-
-	//first zap has no icd
-	targ := c.Core.RandomTargetIndex(combat.TargettableEnemy)
+	//first zap has no icd and hits everyone
+	//it has a call back to shred def
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Rose (Initial)",
@@ -23,7 +38,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 0,
 		Mult:       0.1,
 	}
-	c.Core.Combat.QueueAttack(ai, combat.NewDefSingleTarget(targ, combat.TargettableEnemy), f, f, a4cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewDefCircHit(7, false, combat.TargettableEnemy),
+		firstHitHitmark,
+		firstHitHitmark,
+		a4cb,
+	)
 
 	//duration is 15 seconds, tick every .5 sec
 	//30 zaps once every 30 frame, starting at 119
@@ -38,49 +59,75 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	var snap combat.Snapshot
+
+	c.Core.Tasks.Add(func() {
+		snap = c.Snapshot(&ai)
+	}, firstHitHitmark-1)
 
 	for i := 119; i <= 119+900; i += 30 { //first tick at 119
+		//picks up to 3 random targets
+		c.Core.Tasks.Add(func() {
+			//grab enemies
+			enemies := c.Core.Combat.EnemiesWithinRadius(0, 0, 7)
 
-		var cb core.AttackCBFunc
-		if c.Base.Cons >= 4 {
-			//random 1 to 3 jumps
-			count := c.Rand.Intn(3) + 1
-			cb = func(a combat.AttackCB) {
-				if count == 0 {
-					return
-				}
-				//generate additional attack, random target
-				//if we get -1 for a target then that just means there's no target
-				//to jump to so that's fine; chain will terminate
-				count++
-				//grab a list of enemies by range; we assume it'll just hit the closest?
-
+			count := 1
+			if c.Base.Cons >= 4 {
+				count = c.Core.Rand.Intn(2) + 1
 			}
-		}
-		c.Core.Combat.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.RandomEnemyTarget(), combat.TargettableEnemy), f-1, i, cb, a4cb)
+
+			//loop through and damage enemies
+			for {
+				if count == 0 {
+					break
+				}
+				if len(enemies) == 0 {
+					break
+				}
+				count--
+				//pick a random enemy
+				x := c.Core.Rand.Intn(len(enemies))
+				//attack this enemy and remove from slice
+				ind := enemies[x]
+				enemies[x] = enemies[len(enemies)-1]
+				enemies = enemies[:len(enemies)-1]
+
+				c.Core.QueueAttackWithSnap(
+					ai,
+					snap,
+					combat.NewDefSingleTarget(ind, combat.TargettableEnemy),
+					0,
+					a4cb,
+				)
+			}
+
+		}, i)
 	}
 
 	//add a status for this just in case someone cares
-	c.AddTask(func() {
-		c.Core.Status.AddStatus("lisaburst", 119+900)
-	}, "lisa burst status", f)
-
-	//on lisa c4
-	//[8:11 PM] gimmeabreak: er, what does lisa c4 do?
-	//[8:11 PM] ArchedNosi | Lisa Unleashed: allows each pulse of the ult to be 2-4 arcs
-	//[8:11 PM] ArchedNosi | Lisa Unleashed: if theres enemies given
-	//[8:11 PM] gimmeabreak: oh so it jumps 2 to 4 times?
-	//[8:11 PM] gimmeabreak: i guess single target it does nothing then?
-	//[8:12 PM] ArchedNosi | Lisa Unleashed: yeah single does nothing
+	c.Core.Tasks.Add(func() {
+		c.Core.Status.Add("lisaburst", 119+900)
+	}, firstHitHitmark)
 
 	//burst cd starts 53 frames after executed
 	//energy usually consumed after 63 frames
 	c.ConsumeEnergy(63)
 	// c.CD[def.BurstCD] = c.Core.F + 1200
 	c.SetCDWithDelay(action.ActionBurst, 1200, 53)
-	return f, a
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(burstFrames),
+		AnimationLength: burstFrames[action.InvalidAction],
+		CanQueueAfter:   firstHitHitmark,
+		State:           action.BurstState,
+	}
+
 }
 
 func a4cb(a combat.AttackCB) {
-	a.Target.AddDefMod("lisa-a4", -0.15, 600)
+	t, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
+	t.AddDefMod("lisa-a4", 600, -0.15)
 }

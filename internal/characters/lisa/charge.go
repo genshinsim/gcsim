@@ -1,18 +1,44 @@
 package lisa
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-const conductiveTag = "lisa-conductive-stacks"
+var chargeFramesNoWindup []int
+var chargeFrames []int
+
+const (
+	//TODO: this hitmark should also change depending on windup or not?
+	chargeHitmark = 70
+	//TODO: stacks technically only last 15s and each stack has its own
+	//timer
+	conductiveTag = "lisa-conductive-stacks"
+)
+
+func init() {
+	chargeFrames = frames.InitAbilSlice(94) //used to say 91??
+	chargeFrames[action.ActionAttack] = 86
+	chargeFrames[action.ActionCharge] = 90
+	chargeFrames[action.ActionSkill] = 94
+	chargeFrames[action.ActionBurst] = 93
+	chargeFrames[action.ActionSwap] = 90
+
+	//no wind up
+	chargeFramesNoWindup = frames.InitAbilSlice(94) //used to say 91??
+	chargeFramesNoWindup[action.ActionAttack] = 86
+	chargeFramesNoWindup[action.ActionCharge] = 90
+	chargeFramesNoWindup[action.ActionSkill] = 94
+	chargeFramesNoWindup[action.ActionBurst] = 93
+	chargeFramesNoWindup[action.ActionSwap] = 90
+}
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	f, a := c.ActionFrames(action.ActionCharge, p)
-
-	//TODO: assumes this applies every time per
-	//[7:53 PM] Hold ₼KLEE like others hold GME: CHarge is pyro every charge
+	//TODO: we should be checking previous action to return frames here
+	//and use chargeFramesNoWindup where it applies
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
@@ -24,19 +50,28 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	done := false
 	cb := func(a combat.AttackCB) {
-		if done {
+		t, ok := a.Target.(*enemy.Enemy)
+		if !ok {
 			return
 		}
-		count := a.Target.GetTag(conductiveTag)
+		count := t.GetTag(conductiveTag)
 		if count < 3 {
-			a.Target.SetTag(conductiveTag, count+1)
+			t.SetTag(conductiveTag, count+1)
 		}
-		done = true
 	}
 
-	c.Core.Combat.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, f, cb)
+	c.Core.QueueAttack(ai,
+		combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
+		0,
+		chargeHitmark, //no travel for lisa
+		cb,
+	)
 
-	return f, a
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(chargeFrames),
+		AnimationLength: chargeFrames[action.InvalidAction],
+		CanQueueAfter:   chargeHitmark,
+		State:           action.ChargeAttackState,
+	}
 }
