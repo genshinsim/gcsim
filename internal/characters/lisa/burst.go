@@ -27,7 +27,6 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//first zap has no icd and hits everyone
-	//it has a call back to shred def
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Rose (Initial)",
@@ -38,12 +37,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 0,
 		Mult:       0.1,
 	}
+	//based on discussion with nosi; turns out this does not apply def shred
 	c.Core.QueueAttack(
 		ai,
 		combat.NewDefCircHit(7, false, combat.TargettableEnemy),
 		firstHitHitmark,
 		firstHitHitmark,
-		a4cb,
 	)
 
 	//duration is 15 seconds, tick every .5 sec
