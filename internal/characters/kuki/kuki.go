@@ -13,12 +13,11 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	bellActiveUntil   int
-	skillHealSnapshot core.Snapshot // Required as both on hit procs and continuous healing need to use this
-	c1AoeMod          float64
-	skilldur          int
-	c4ICD             int
-	c6icd             int
+	bellActiveUntil int
+	c1AoeMod        float64
+	skilldur        int
+	c4ICD           int
+	c6icd           int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -41,7 +40,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.A1passive()
-	c.A4passive()
 
 	c.c1AoeMod = 2
 	c.skilldur = 720
@@ -80,36 +78,6 @@ func (c *char) A1passive() {
 			return nil, false
 		},
 	})
-
-}
-
-func (c *char) A4passive() {
-	//TODO: This assumes the dmg bonus works like Yae (multiplicative), however it can be flat (like ZL)
-	m := make([]float64, core.EndStatType)
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "kuki-a4",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			// only trigger on elemental art damage
-			if atk.Info.AttackTag != core.AttackTagElementalArt {
-				return nil, false
-			}
-			m[core.DmgP] = c.Stat(core.EM) * 0.0025
-			return m, true
-		},
-	})
-	//This line only applies if healing is also multiplicative (and needs a skill check) instead I assumed it is flat
-
-	// val := make([]float64, core.EndStatType)
-	// c.AddMod(core.CharStatMod{
-	// 	Key:    "kuki-a1",
-	// 	Expiry: -1,
-	// 	Amount: func() ([]float64, bool) {
-	// 		val[core.Heal] = c.Stat(core.EM) * 0.0075
-	// 		return val, true
-
-	// 	},
-	// })
 
 }
 
@@ -189,6 +157,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Element:    core.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
+		FlatDmg:    c.Stat(core.EM) * 0.25,
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
@@ -216,6 +185,7 @@ func (c *char) bellTick() func() {
 			Element:    core.Electro,
 			Durability: 25,
 			Mult:       skilldot[c.TalentLvlSkill()],
+			FlatDmg:    c.Stat(core.EM) * 0.25,
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 2, 2)
 
