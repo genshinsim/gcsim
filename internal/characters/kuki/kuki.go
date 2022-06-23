@@ -219,12 +219,13 @@ func (c *char) bellTick() func() {
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 2, 2)
 
+		//A4 is considered here
 		c.Core.Health.Heal(core.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.ActiveChar,
 			Message: "Grass Ring of Sanctification Healing",
-			Src:     skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()],
-			Bonus:   c.skillHealSnapshot.Stats[core.Heal],
+			Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.Stat(core.EM)*0.75),
+			Bonus:   c.Stats[core.Heal],
 		})
 
 		c.Core.Log.NewEvent("Bell ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+90, "active", c.bellActiveUntil)
