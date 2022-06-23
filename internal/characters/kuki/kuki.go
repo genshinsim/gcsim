@@ -13,12 +13,11 @@ func init() {
 
 type char struct {
 	*character.Tmpl
-	bellActiveUntil   int
-	skillHealSnapshot core.Snapshot // Required as both on hit procs and continuous healing need to use this
-	c1AoeMod          float64
-	skilldur          int
-	c4ICD             int
-	c6icd             int
+	bellActiveUntil int
+	c1AoeMod        float64
+	skilldur        int
+	c4ICD           int
+	c6icd           int
 }
 
 func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
@@ -41,7 +40,6 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.A1passive()
-	c.A4passive()
 
 	c.c1AoeMod = 2
 	c.skilldur = 720
@@ -80,35 +78,6 @@ func (c *char) A1passive() {
 			return nil, false
 		},
 	})
-
-}
-
-func (c *char) A4passive() {
-	//TODO: This assumes the dmg bonus works like Yae (multiplicative), however it can be flat (like ZL)
-	m := make([]float64, core.EndStatType)
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "kuki-a4",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			// only trigger on elemental art damage
-			if atk.Info.AttackTag != core.AttackTagElementalArt {
-				return nil, false
-			}
-			m[core.DmgP] = c.Stat(core.EM) * 0.0025
-			return m, true
-		},
-	})
-	//This line only applies if healing is also multiplicative (and needs a skill check) instead I assumed it is flat
-	// val := make([]float64, core.EndStatType)
-	// c.AddMod(core.CharStatMod{
-	// 	Key:    "kuki-a1",
-	// 	Expiry: -1,
-	// 	Amount: func() ([]float64, bool) {
-	// 		val[core.Heal] = c.Stat(core.EM) * 0.0075
-	// 		return val, true
-
-	// 	},
-	// })
 
 }
 
@@ -188,22 +157,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		Element:    core.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
+		FlatDmg:    c.Stat(core.EM) * 0.25,
 	}
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), f, f)
 
-	//c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), f)
-	// if c.Core.Rand.Float64() < 0.4 {
-	// 	c.QueueParticle("kuki", 3, core.Electro, 100)
-	// } else {
-	// 	c.QueueParticle("kuki", 4, core.Electro, 100)
-	// }
-	c.Core.Health.Heal(core.HealInfo{
-		Caller:  c.Index,
-		Target:  -1,
-		Message: "Sanctifying Ring (Heal)",
-		Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.Stat(core.EM)*0.75),
-		Bonus:   c.Stat(core.Heal),
-	})
 	c.SetCD(core.ActionSkill, a+15*60)  // what's the diff between f and a again? Nice question Yakult
 	c.AddTask(c.bellTick(), "bell", 90) //Assuming this executes every 90 frames-1.5s
 	c.bellActiveUntil = c.Core.F + c.skilldur
@@ -222,27 +179,28 @@ func (c *char) bellTick() func() {
 			ActorIndex: c.Index,
 			Abil:       "Grass Ring of Sanctification",
 			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagNone,
+			ICDTag:     core.ICDTagElementalArt,
 			ICDGroup:   core.ICDGroupDefault,
 			StrikeType: core.StrikeTypePierce,
 			Element:    core.Electro,
 			Durability: 25,
 			Mult:       skilldot[c.TalentLvlSkill()],
+			FlatDmg:    c.Stat(core.EM) * 0.25,
 		}
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(1, false, core.TargettableEnemy), 2, 2)
 
+		//A4 is considered here
 		c.Core.Health.Heal(core.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.ActiveChar,
 			Message: "Grass Ring of Sanctification Healing",
-			Src:     skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()],
-			Bonus:   c.skillHealSnapshot.Stats[core.Heal],
+			Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.Stat(core.EM)*0.75),
+			Bonus:   c.Stats[core.Heal],
 		})
 
 		c.Core.Log.NewEvent("Bell ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+90, "active", c.bellActiveUntil)
 		//trigger damage
-		//TODO: Check for snapshots (uba help)
-		//ae := c.ozSnapshot
+		//TODO: Check for snapshots
 
 		//c.Core.Combat.QueueAttackEvent(&ae, 0)
 		//check for orb
@@ -251,7 +209,7 @@ func (c *char) bellTick() func() {
 			c.QueueParticle("Kuki", 1, core.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
 		}
 
-		//queue up next hit only if next hit oz is still active
+		//queue up next hit only if next hit bell is still active
 		if c.Core.F+90 <= c.bellActiveUntil {
 			c.AddTask(c.bellTick(), "Kuki", 90)
 		}
@@ -291,22 +249,3 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.SetCDWithDelay(core.ActionBurst, 900, 55)
 	return f, a
 }
-
-// func (c *char) burstICD() {
-// 	c.Core.Events.Subscribe(core.OnAttackWillLand, func(args ...interface{}) bool {
-// 		atk := args[1].(*core.AttackEvent)
-// 		if atk.Info.ActorIndex != c.Index {
-// 			return false
-// 		}
-// 		if ds.Abil != "Glacial Waltz" {
-// 			return false
-// 		}
-// 		//check icd
-// 		if c.icicleICD[ds.ExtraIndex] > c.Core.F {
-// 			ds.Cancelled = true
-// 			return false
-// 		}
-// 		c.icicleICD[ds.ExtraIndex] = c.Core.F + 30
-// 		return false
-// 	}, "kaeya-burst-icd")
-// }
