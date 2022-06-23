@@ -37,8 +37,8 @@ export function Disclaimer(props: Props) {
             </li>
             <li className="ml-6">
               It is sorted by DPS in order to provoke a reaction for the purpose
-              of driving code quality. We subscribe to same philosophy as used by
-              World of Warcraft's SimulationCraft. See{" "}
+              of driving code quality. We subscribe to same philosophy as used
+              by World of Warcraft's SimulationCraft. See{" "}
               <a href="https://github.com/simulationcraft/simc/wiki/PremedititatedProvocation">
                 here
               </a>
@@ -116,8 +116,8 @@ export function Disclaimer(props: Props) {
             literally affects anything that relies on time, but not
             consistently), this is taking a while and is forcing us to rewrite
             our entire back end. This is also why you have not seen any updates
-            to the UI for a long time now. All my time is spent on dealing
-            with this.
+            to the UI for a long time now. All my time is spent on dealing with
+            this.
           </p>
           <p>
             This does have some implications on the results:
@@ -212,6 +212,16 @@ export function Disclaimer(props: Props) {
               <a href="https://discord.gg/m7jvjdxx7q">discord</a>.
             </b>
           </p>
+          <p>
+            Edited Jun 23, 2022: It has been brought to my attention that
+            somehow everyone thinks this means that gcsim can only handle single
+            target calculations. That is <b>NOT</b> what I'm saying here. gcsim
+            itself can handle multiple targets just fine (in fact as many as
+            your computer can handle; just copy and paste the target line in the
+            config). However, we simply don't have the UI to show both single
+            target and multi target simulations on the database nicely. So it
+            was decided by the maintainer to only show single target for now.
+          </p>
           <H4>Why does this database load so damn slow?!</H4>
           <p>
             Because some idiot dev{" "}
@@ -263,7 +273,7 @@ export function Disclaimer(props: Props) {
         </div>
       </div>
       <div className={Classes.DIALOG_FOOTER}>
-        Written by srl. Last updated June 3, 2022.
+        Written by srl. Last updated June 23, 2022.
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button intent="primary" onClick={props.onClose}>
             Close
