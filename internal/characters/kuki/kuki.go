@@ -197,13 +197,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	// } else {
 	// 	c.QueueParticle("kuki", 4, core.Electro, 100)
 	// }
-	c.Core.Health.Heal(core.HealInfo{
-		Caller:  c.Index,
-		Target:  -1,
-		Message: "Sanctifying Ring (Heal)",
-		Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.Stat(core.EM)*0.75),
-		Bonus:   c.Stat(core.Heal),
-	})
+
 	c.SetCD(core.ActionSkill, a+15*60)  // what's the diff between f and a again? Nice question Yakult
 	c.AddTask(c.bellTick(), "bell", 90) //Assuming this executes every 90 frames-1.5s
 	c.bellActiveUntil = c.Core.F + c.skilldur
