@@ -14,6 +14,7 @@ const normalHitNum = 4
 
 type char struct {
 	*tmpl.Character
+	shieldLevel int
 }
 
 func init() {
@@ -43,6 +44,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 	w.Character = &c
 
+	c.shieldLevel = 1
+
 	return nil
 }
 
@@ -59,4 +62,6 @@ func initCancelFrames() {
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 44)
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 70)
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 65)
+
+	skillFrames = frames.InitAbilSlice(65)
 }
