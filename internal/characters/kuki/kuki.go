@@ -216,7 +216,7 @@ func (c *char) bellTick() func() {
 			ActorIndex: c.Index,
 			Abil:       "Grass Ring of Sanctification",
 			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagNone,
+			ICDTag:     core.ICDTagElementalArt,
 			ICDGroup:   core.ICDGroupDefault,
 			StrikeType: core.StrikeTypePierce,
 			Element:    core.Electro,
@@ -235,8 +235,7 @@ func (c *char) bellTick() func() {
 
 		c.Core.Log.NewEvent("Bell ticked", core.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+90, "active", c.bellActiveUntil)
 		//trigger damage
-		//TODO: Check for snapshots (uba help)
-		//ae := c.ozSnapshot
+		//TODO: Check for snapshots
 
 		//c.Core.Combat.QueueAttackEvent(&ae, 0)
 		//check for orb
@@ -245,7 +244,7 @@ func (c *char) bellTick() func() {
 			c.QueueParticle("Kuki", 1, core.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
 		}
 
-		//queue up next hit only if next hit oz is still active
+		//queue up next hit only if next hit bell is still active
 		if c.Core.F+90 <= c.bellActiveUntil {
 			c.AddTask(c.bellTick(), "Kuki", 90)
 		}
