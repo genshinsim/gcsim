@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -90,6 +91,27 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) skillHoldMult() {
+	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		if atk.Info.Abil != "Violet Arc (Hold)" {
+			return false
+		}
+		stacks := t.GetTag(conductiveTag)
+
+		atk.Info.Mult = skillHold[stacks][c.TalentLvlSkill()]
+
+		//consume the stacks
+		t.SetTag(conductiveTag, 0)
+
+		return false
+	}, "lisa-skill-hold-mul")
+}
+
 //After an extended casting time, calls down lightning from the heavens, dealing massive Electro DMG to all nearby opponents.
 //Deals great amounts of extra damage to opponents based on the number of Conductive stacks applied to them, and clears their Conductive status.
 func (c *char) skillHold(p map[string]int) action.ActionInfo {
@@ -114,15 +136,6 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	clearStacks := func(a combat.AttackCB) {
-		t, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		//clear stacks
-		t.SetTag(conductiveTag, 0)
-	}
-
 	count := 0
 	var c1cb func(a combat.AttackCB)
 	if c.Base.Cons > 0 {
@@ -141,7 +154,6 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		combat.NewDefCircHit(3, false, combat.TargettableEnemy),
 		0,
 		skillHoldHitmark,
-		clearStacks,
 		c1cb,
 	)
 

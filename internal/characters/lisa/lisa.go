@@ -4,12 +4,9 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 func init() {
@@ -45,25 +42,4 @@ func (c *char) Init() error {
 	}
 
 	return nil
-}
-
-func (c *char) skillHoldMult() {
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		t, ok := args[0].(*enemy.Enemy)
-		if !ok {
-			return false
-		}
-		if atk.Info.Abil != "Violet Arc (Hold)" {
-			return false
-		}
-		stacks := t.GetTag(conductiveTag)
-
-		atk.Info.Mult = skillHold[stacks][c.TalentLvlSkill()]
-
-		//consume the stacks
-		t.SetTag(conductiveTag, 0)
-
-		return false
-	}, "lisa-skill-hold-mul")
 }
