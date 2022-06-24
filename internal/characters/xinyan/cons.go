@@ -71,3 +71,6 @@ func (c *char) c4(a combat.AttackCB) {
 	}
 	e.AddResistMod("xinyan-c4", 12*60, attributes.Physical, -0.15)
 }
+
+// Decreases the Stamina Consumption of Xinyan's Charged Attacks by 30%. Additionally, Xinyan's Charged Attacks gain an ATK Bonus equal to 50% of her DEF.
+// func (c *char) c6() {}
