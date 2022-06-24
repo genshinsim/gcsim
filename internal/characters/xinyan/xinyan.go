@@ -50,6 +50,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	c.a4()
 
 	return nil
 }

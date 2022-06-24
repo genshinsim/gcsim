@@ -32,6 +32,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	cb := func(a combat.AttackCB) {
 		hitOpponents++
 
+		// including a1
 		updateShield := false
 		shieldhp := 0.0
 		if hitOpponents >= 2 && c.shieldLevel < 3 {
