@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -43,7 +42,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Yoohoo Art: Fuuin Dash (Press)",
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     combat.ICDTagSayuSkillAnemo,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
@@ -81,12 +80,15 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 
 	c.eInfused = attributes.NoElement
+	c.eInfusedTag = combat.ICDTagNone
 	c.eDuration = c.Core.F + 18 + duration + 20
 	c.infuseCheckLocation = combat.NewDefCircHit(0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableObject)
 	c.c2Bonus = .0
 
 	// ticks
 	d := c.createSkillHoldSnapshot()
+	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, int(duration/12)), 18)
+
 	for i := 0; i <= duration; i += 30 { // 1 tick for sure
 		c.Core.Tasks.Add(func() {
 			c.Core.QueueAttackEvent(d, 0)
@@ -133,8 +135,8 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Yoohoo Art: Fuuin Dash (Hold Tick)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		AttackTag:  combat.AttackTagElementalArtHold,
+		ICDTag:     combat.ICDTagSayuSkillAnemo,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
@@ -150,61 +152,29 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	})
 }
 
-//TODO: shouldn't this be on a timer like kazu/sucrose/venti?
-func (c *char) absorbCheck() {
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+func (c *char) absorbCheck(src, count, max int) func() {
+	return func() {
+		if count == max {
+			return
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
-			return false
-		}
-		if atk.Info.Element != attributes.Anemo {
-			return false
-		}
-		if c.Core.F > c.eDuration {
-			return false
-		}
-		if c.eInfused == attributes.NoElement {
-			// TODO: need to check yourself element first
-			c.eInfused = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
-			if c.eInfused == attributes.NoElement {
-				return false
-			}
 
+		c.eInfused = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		if c.eInfused != attributes.NoElement {
+			switch c.eInfused {
+			case attributes.Pyro:
+				c.eInfusedTag = combat.ICDTagSayuSkillPyro
+			case attributes.Hydro:
+				c.eInfusedTag = combat.ICDTagSayuSkillHydro
+			case attributes.Electro:
+				c.eInfusedTag = combat.ICDTagSayuSkillElectro
+			case attributes.Cryo:
+				c.eInfusedTag = combat.ICDTagSayuSkillCryo
+			}
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
 				"sayu infused ", c.eInfused.String(),
 			)
+			return
 		}
-
-		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalArt:
-			ai := combat.AttackInfo{
-				ActorIndex: c.Index,
-				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
-				AttackTag:  combat.AttackTagElementalArt,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
-				Element:    c.eInfused,
-				Durability: 25,
-				Mult:       skillAbsorb[c.TalentLvlSkill()],
-			}
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 1, 1)
-		case combat.AttackTagElementalArtHold:
-			ai := combat.AttackInfo{
-				ActorIndex: c.Index,
-				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
-				AttackTag:  combat.AttackTagElementalArt,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
-				Element:    c.eInfused,
-				Durability: 25,
-				Mult:       skillAbsorbEnd[c.TalentLvlSkill()],
-			}
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 1, 1)
-		}
-
-		return false
-	}, "sayu-absorb-check")
+		c.Core.Tasks.Add(c.absorbCheck(src, count+1, max), 12)
+	}
 }

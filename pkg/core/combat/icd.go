@@ -47,6 +47,11 @@ const (
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
+	ICDTagSayuSkillAnemo
+	ICDTagSayuSkillPyro
+	ICDTagSayuSkillHydro
+	ICDTagSayuSkillCryo
+	ICDTagSayuSkillElectro
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
