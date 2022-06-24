@@ -64,4 +64,5 @@ func initCancelFrames() {
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 65)
 
 	skillFrames = frames.InitAbilSlice(65)
+	burstFrames = frames.InitAbilSlice(98)
 }
