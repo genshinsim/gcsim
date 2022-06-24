@@ -40,3 +40,19 @@ func (c *char) c1() {
 		return false
 	}, "xinyan-c1")
 }
+
+func (c *char) c2() {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 1
+
+	c.AddAttackMod(
+		"xinyan-c2",
+		-1,
+		func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+				return nil, false
+			}
+			return m, true
+		},
+	)
+}

@@ -40,6 +40,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), f, f)
 	}
 
+	if c.Base.Cons >= 2 {
+		stats, _ := c.Stats()
+		defFactor := c.Base.Def*(1+stats[attributes.DEFP]) + stats[attributes.DEF]
+		c.updateShield(3, defFactor)
+	}
+
 	c.ConsumeEnergy(11)
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 3)
 
