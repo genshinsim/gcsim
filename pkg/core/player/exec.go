@@ -84,6 +84,7 @@ func (p *Handler) Exec(t action.Action, param map[string]int) error {
 	case action.ActionAttack:
 		p.useAbility(t, param, char.Attack)
 	case action.ActionHighPlunge:
+		//TODO: there should be a flag that says airborne and only then can you plunge
 		p.useAbility(t, param, char.HighPlungeAttack)
 	case action.ActionLowPlunge:
 		p.useAbility(t, param, char.LowPlungeAttack)

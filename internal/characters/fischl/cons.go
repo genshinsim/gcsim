@@ -8,7 +8,9 @@ import (
 
 func (c *char) c6() {
 	//this is on attack animation state, not attack landed
-	c.Core.Events.Subscribe(event.PostAttack, func(args ...interface{}) bool {
+	//TODO: this used to be on PostAttack, changed to OnAttack
+	//i think this might be more accurate to be OnAttackWillLand? or on animation state change?
+	c.Core.Events.Subscribe(event.OnAttack, func(args ...interface{}) bool {
 		//do nothing if oz not on field
 		if c.ozActiveUntil < c.Core.F {
 			return false

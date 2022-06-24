@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var burstFrames []int
@@ -45,11 +46,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	var c4cb combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		c4cb = func(a combat.AttackCB) {
-			// TODO: A bit of a cludge to deal with frame 0 casts. Will have to think about this behavior a bit more
-			if a.Target.GetTag("traveler-c4-src") == src && src > 0 {
+			t, ok := a.Target.(*enemy.Enemy)
+			if !ok {
 				return
 			}
-			a.Target.SetTag("traveler-c4-src", src)
+			// TODO: A bit of a cludge to deal with frame 0 casts. Will have to think about this behavior a bit more
+			if t.GetTag("traveler-c4-src") == src && src > 0 {
+				return
+			}
+			t.SetTag("traveler-c4-src", src)
 			c.AddEnergy("geo-traveler-c4", 5)
 		}
 	}

@@ -19,6 +19,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
+const (
+	MaxStam      = 240
+	StamCDFrames = 90
+)
+
 type Handler struct {
 	log    glog.Logger
 	events event.Eventter
@@ -122,6 +127,13 @@ func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64
 	return h.StamPercentMod(action.ActionDash) * h.chars[i].ActionStam(action.ActionDash, p)
 }
 
+func (h *Handler) RestoreStam(v float64) {
+	h.Stam += v
+	if h.Stam > MaxStam {
+		h.Stam = MaxStam
+	}
+}
+
 //InitializeTeam will set up resonance event hooks and calculate
 //all character base stats
 func (h *Handler) InitializeTeam() error {
@@ -153,6 +165,13 @@ func (h *Handler) Tick() {
 	//		- animation
 	//		- stamina
 	//		- swap
+	//recover stamina
+	if h.Stam < MaxStam && *h.f-h.LastStamUse > StamCDFrames {
+		h.Stam += 25.0 / 60
+		if h.Stam > MaxStam {
+			h.Stam = MaxStam
+		}
+	}
 	h.Shields.Tick()
 	for _, c := range h.chars {
 		c.Tick()

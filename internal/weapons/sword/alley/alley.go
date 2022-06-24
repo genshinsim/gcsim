@@ -47,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		//user supplied lambda should be per min, so we need to scale this down by *60*60
 		l := float64(lambda) / 3600.0
 		//queue tasks to disable
-		next := int(math.Log(w.c.Rand.Float64()) / l)
+		next := int(-math.Log(1-w.c.Rand.Float64()) / l)
 		c.Tasks.Add(w.selfDisable(l), next)
 	}
 
