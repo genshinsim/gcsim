@@ -55,6 +55,9 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
+	if c.Base.Cons >= 2 {
+		c.c1()
+	}
 
 	return nil
 }

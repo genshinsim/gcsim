@@ -1,6 +1,7 @@
 package xinyan
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -41,6 +42,7 @@ func (c *char) c1() {
 	}, "xinyan-c1")
 }
 
+// Riff Revolution's Physical DMG has its CRIT Rate increased by 100%, and will form a shield at Shield Level 3: Rave when cast.
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 1
@@ -55,4 +57,17 @@ func (c *char) c2() {
 			return m, true
 		},
 	)
+}
+
+// Sweeping Fervor's swing DMG decreases opponent's Physical RES by 15% for 12s.
+func (c *char) c4(a combat.AttackCB) {
+	if c.Base.Cons < 4 {
+		return
+	}
+
+	e, ok := a.Target.(core.Enemy)
+	if !ok {
+		return
+	}
+	e.AddResistMod("xinyan-c4", 12*60, attributes.Physical, -0.15)
 }
