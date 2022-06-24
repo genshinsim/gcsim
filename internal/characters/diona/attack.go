@@ -10,17 +10,18 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = []int{16, 37 - 16, 67 - 37, 101 - 67, 152 - 101}
+var attackHitmarks = []int{16, 21, 30, 34, 51}
 
 const normalHitNum = 5
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
+
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 16)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 37-16)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 67-37)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 101-67)
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 152-101)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 21)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 30)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 34)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 51)
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
@@ -40,7 +41,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	a := action.ActionInfo{
+	act := action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
@@ -50,10 +51,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewDefSingleTarget(1, combat.TargettableEnemy),
 		attackHitmarks[c.NormalCounter],
-		travel+attackHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter]+travel,
 	)
 
 	defer c.AdvanceNormalIndex()
 
-	return a
+	return act
 }

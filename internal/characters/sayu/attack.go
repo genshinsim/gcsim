@@ -10,19 +10,21 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = []int{23, 70 - 23, 109 - 70, 187 - 109}
+var attackHitmarks = [][]int{{23}, {47}, {38, 39}, {78}}
+
+const normalHitNum = 4
 
 //TODO: need frame count
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 23)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 70-23)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 109-70)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 187-109)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 23)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 47)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 39)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 78)
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -33,13 +35,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
-	snap := c.Snapshot(&ai)
+
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttackWithSnap(ai,
-			snap,
+		c.Core.QueueAttack(
+			ai,
 			combat.NewDefCircHit(0.3, false, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter]-2+i,
+			attackHitmarks[c.NormalCounter][i],
+			attackHitmarks[c.NormalCounter][i],
 		)
 	}
 
@@ -48,7 +51,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 }

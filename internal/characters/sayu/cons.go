@@ -10,7 +10,6 @@ import (
 // Every 0.5s in the Fuufuu Windwheel state will increase the DMG of this Fuufuu
 // Whirlwind Kick by 3.3%. The maximum DMG increase possible through this method
 // is 66%.
-
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod("sayu-c2", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {

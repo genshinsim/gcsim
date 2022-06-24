@@ -3,11 +3,9 @@ package diona
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
@@ -41,22 +39,9 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
 		c.c6buff = make([]float64, attributes.EndStatType)
 		c.c6buff[attributes.EM] = 200
 	}
 	return nil
-}
-
-func (c *char) a1() {
-	c.Core.Player.AddStamPercentMod(
-		"diona-a1",
-		-1,
-		func(a action.Action) (float64, bool) {
-			if c.Core.Player.Shields.Get(shield.ShieldDionaSkill) != nil {
-				return -0.1, false
-			}
-			return 0, false
-		},
-	)
 }

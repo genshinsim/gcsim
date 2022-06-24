@@ -17,7 +17,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	// dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

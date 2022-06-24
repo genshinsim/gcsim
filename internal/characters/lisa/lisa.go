@@ -21,11 +21,11 @@ type char struct {
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
-	c.Base.Element = attributes.Electro
 
+	c.Base.Element = attributes.Electro
 	c.EnergyMax = 80
 	c.Weapon.Class = weapon.WeaponClassCatalyst
-	c.NormalHitNum = 4
+	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.CharZone = character.ZoneMondstadt
@@ -37,9 +37,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 func (c *char) Init() error {
 	c.skillHoldMult()
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
 		c.c6()
 	}
-
 	return nil
 }

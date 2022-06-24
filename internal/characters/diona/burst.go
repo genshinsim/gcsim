@@ -65,7 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, burstStart+750)
 	}
 
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
 		c.c6()
 	}
 

@@ -5,27 +5,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var burstFrames []int
 
-const (
-	firstHitHitmark = 56
-)
+const burstHitmark = 56
 
 func init() {
-	burstFrames = frames.InitAbilSlice(86)
+	burstFrames = frames.InitAbilSlice(88)
 	burstFrames[action.ActionAttack] = 86
 	burstFrames[action.ActionCharge] = 86
 	burstFrames[action.ActionSkill] = 87
-	burstFrames[action.ActionDash] = 88
 	burstFrames[action.ActionJump] = 57
 	burstFrames[action.ActionSwap] = 56
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	//first zap has no icd and hits everyone
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -38,16 +33,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       0.1,
 	}
 	//based on discussion with nosi; turns out this does not apply def shred
-	c.Core.QueueAttack(
-		ai,
-		combat.NewDefCircHit(7, false, combat.TargettableEnemy),
-		firstHitHitmark,
-		firstHitHitmark,
-	)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(7, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	//duration is 15 seconds, tick every .5 sec
 	//30 zaps once every 30 frame, starting at 119
-
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Rose (Tick)",
@@ -58,11 +47,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	var snap combat.Snapshot
 
+	var snap combat.Snapshot
 	c.Core.Tasks.Add(func() {
 		snap = c.Snapshot(&ai)
-	}, firstHitHitmark-1)
+	}, burstHitmark-1)
 
 	for i := 119; i <= 119+900; i += 30 { //first tick at 119
 		//picks up to 3 random targets
@@ -96,7 +85,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					snap,
 					combat.NewDefSingleTarget(ind, combat.TargettableEnemy),
 					0,
-					a4cb,
+					c.a4,
 				)
 			}
 
@@ -106,7 +95,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//add a status for this just in case someone cares
 	c.Core.Tasks.Add(func() {
 		c.Core.Status.Add("lisaburst", 119+900)
-	}, firstHitHitmark)
+	}, burstHitmark)
 
 	//burst cd starts 53 frames after executed
 	//energy usually consumed after 63 frames
@@ -117,16 +106,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   firstHitHitmark,
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
-
-}
-
-func a4cb(a combat.AttackCB) {
-	t, ok := a.Target.(*enemy.Enemy)
-	if !ok {
-		return
-	}
-	t.AddDefMod("lisa-a4", 600, -0.15)
 }

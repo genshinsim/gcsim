@@ -1,7 +1,7 @@
 package lisa
 
 var (
-	attack	= [][]float64{
+	attack = [][]float64{
 		{
 			0.396,
 			0.4257,
@@ -71,7 +71,7 @@ var (
 			1.3454,
 		},
 	}
-	skillPress	= []float64{
+	skillPress = []float64{
 		0.8,
 		0.86,
 		0.92,
@@ -89,7 +89,7 @@ var (
 		1.9,
 	}
 
-	skillHold	= [][]float64{
+	skillHold = [][]float64{
 		{
 			3.2,
 			3.44,
@@ -159,7 +159,7 @@ var (
 			11.571,
 		},
 	}
-	burst	= []float64{
+	burst = []float64{
 		0.3656,
 		0.393,
 		0.4204,
@@ -176,7 +176,7 @@ var (
 		0.8226,
 		0.8683,
 	}
-	charge	= []float64{
+	charge = []float64{
 		1.7712,
 		1.904,
 		2.0369,

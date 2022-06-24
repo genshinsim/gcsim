@@ -1,7 +1,7 @@
 package sayu
 
 var (
-	attack	= [][][]float64{
+	attack = [][][]float64{
 		// N1
 		{
 			{
@@ -100,7 +100,7 @@ var (
 			},
 		},
 	}
-	skillPress	= []float64{
+	skillPress = []float64{
 		36.0 / 100,
 		38.7 / 100,
 		41.4 / 100,
@@ -117,7 +117,7 @@ var (
 		81.0 / 100,
 		85.5 / 100,
 	}
-	skillHoldEnd	= []float64{
+	skillHoldEnd = []float64{
 		217.6 / 100,
 		233.92 / 100,
 		250.24 / 100,
@@ -134,7 +134,7 @@ var (
 		489.6 / 100,
 		516.8 / 100,
 	}
-	skillPressEnd	= []float64{
+	skillPressEnd = []float64{
 		158.4 / 100,
 		170.28 / 100,
 		182.16 / 100,
@@ -151,7 +151,7 @@ var (
 		356.4 / 100,
 		376.2 / 100,
 	}
-	skillAbsorb	= []float64{
+	skillAbsorb = []float64{
 		16.8 / 100,
 		18.06 / 100,
 		19.32 / 100,
@@ -168,7 +168,7 @@ var (
 		37.8 / 100,
 		39.9 / 100,
 	}
-	skillAbsorbEnd	= []float64{
+	skillAbsorbEnd = []float64{
 		76.16 / 100,
 		81.87 / 100,
 		87.58 / 100,
@@ -186,7 +186,7 @@ var (
 		180.88 / 100,
 	}
 
-	burst	= []float64{
+	burst = []float64{
 		116.8 / 100,
 		125.56 / 100,
 		134.32 / 100,
@@ -203,7 +203,7 @@ var (
 		262.8 / 100,
 		277.4 / 100,
 	}
-	burstSkill	= []float64{
+	burstSkill = []float64{
 		52.0 / 100,
 		55.9 / 100,
 		59.8 / 100,
@@ -220,7 +220,7 @@ var (
 		117.0 / 100,
 		123.5 / 100,
 	}
-	initHealFlat	= []float64{
+	initHealFlat = []float64{
 		577,
 		635,
 		698,
@@ -237,7 +237,7 @@ var (
 		1703,
 		1824,
 	}
-	initHealPP	= []float64{
+	initHealPP = []float64{
 		92.16 / 100,
 		99.07 / 100,
 		105.98 / 100,
@@ -254,7 +254,7 @@ var (
 		207.36 / 100,
 		218.88 / 100,
 	}
-	burstHealFlat	= []float64{
+	burstHealFlat = []float64{
 		500,
 		550,
 		605,
@@ -271,7 +271,7 @@ var (
 		1476,
 		1580,
 	}
-	burstHealPP	= []float64{
+	burstHealPP = []float64{
 		79.87 / 100,
 		85.86 / 100,
 		91.85 / 100,

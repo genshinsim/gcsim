@@ -10,14 +10,15 @@ import (
 
 var burstFrames []int
 
-func init() {
-	burstFrames = frames.InitAbilSlice(95)
-	burstFrames[action.ActionDash] = burstAnimation
-	burstFrames[action.ActionJump] = burstAnimation
-}
-
 const burstAnimation = 100
 const burstHitmark = 82
+
+func init() {
+	burstFrames = frames.InitAbilSlice(burstAnimation)
+	burstFrames[action.ActionAttack] = 95
+	burstFrames[action.ActionSkill] = 95
+	burstFrames[action.ActionSwap] = 95
+}
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
@@ -34,7 +35,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burstSlash[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 0, 82)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 0, burstHitmark)
 
 	//apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
@@ -77,22 +78,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// Does it apply to Kazuha's initial hit?
 		// Not sure when it lasts from and until
 		// For consistency with how it was previously done, assume that it lasts from button press to the last tick
-		val := make([]float64, attributes.EndStatType)
-		val[attributes.EM] = 200
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.EM] = 200
 		for _, char := range c.Core.Player.Chars() {
 			this := char
-			char.AddStatMod(
-				"kazuha-c2",
-				147+117*5,
-				attributes.NoStat,
-				func() ([]float64, bool) {
-					switch this.Index {
-					case c.Core.Player.Active(), c.Index:
-						return val, true
-					}
-					return nil, false
-				},
-			)
+			char.AddStatMod("kazuha-c2", 147+117*5, attributes.EM, func() ([]float64, bool) {
+				switch this.Index {
+				case c.Core.Player.Active(), c.Index:
+					return m, true
+				}
+				return nil, false
+			})
 		}
 	}
 

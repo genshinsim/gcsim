@@ -7,22 +7,27 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var plungeHoldFrames []int
 var plungePressFrames []int
+var plungeHoldFrames []int
 
-const (
-	plungeHoldAnimation  = 60
-	plungePressAnimation = 55
-)
+const plungePressHitmark = 36
+const plungeHoldHitmark = 41
 
+// TODO: missing plunge -> skill
 func init() {
-	plungeHoldFrames = frames.InitAbilSlice(50)
-	plungeHoldFrames[action.ActionAttack] = 60
-	plungeHoldFrames[action.ActionBurst] = 60
+	// skill (press) -> high plunge -> x
+	plungePressFrames = frames.InitAbilSlice(55)
+	plungePressFrames[action.ActionDash] = 48
+	plungePressFrames[action.ActionJump] = 48
+	plungePressFrames[action.ActionSwap] = 49
 
-	plungePressFrames = frames.InitAbilSlice(47)
-	plungeHoldFrames[action.ActionAttack] = 55
-	plungeHoldFrames[action.ActionBurst] = 55
+	// skill (hold) -> high plunge -> x
+	plungeHoldFrames = frames.InitAbilSlice(61)
+	plungeHoldFrames[action.ActionSkill] = 60 // uses burst frames
+	plungeHoldFrames[action.ActionBurst] = 60
+	plungeHoldFrames[action.ActionDash] = 48
+	plungeHoldFrames[action.ActionJump] = 48
+	plungeHoldFrames[action.ActionSwap] = 53
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
@@ -32,21 +37,22 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		ele = attributes.Anemo
 	}
 
-	a := action.ActionInfo{
+	act := action.ActionInfo{
 		State: action.PlungeAttackState,
 	}
+
 	//TODO: is this accurate?? these should be the hitmarks
-	var f int
-	if c.Core.Player.LastAction.Param["hold"] > 0 {
-		f = 41
-		a.Frames = frames.NewAbilFunc(plungeHoldFrames)
-		a.AnimationLength = plungeHoldAnimation
-		a.CanQueueAfter = f
+	var hitmark int
+	if c.Core.Player.LastAction.Param["hold"] == 0 {
+		hitmark = plungePressHitmark
+		act.Frames = frames.NewAbilFunc(plungePressFrames)
+		act.AnimationLength = plungePressFrames[action.InvalidAction]
+		act.CanQueueAfter = plungePressFrames[action.ActionDash] // earliest cancel
 	} else {
-		f = 36
-		a.Frames = frames.NewAbilFunc(plungePressFrames)
-		a.AnimationLength = plungePressAnimation
-		a.CanQueueAfter = f
+		hitmark = plungeHoldHitmark
+		act.Frames = frames.NewAbilFunc(plungeHoldFrames)
+		act.AnimationLength = plungeHoldFrames[action.InvalidAction]
+		act.CanQueueAfter = plungeHoldFrames[action.ActionDash] // earliest cancel
 	}
 
 	_, ok := p["collide"]
@@ -62,7 +68,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.3, false, combat.TargettableEnemy), f, f)
+		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.3, false, combat.TargettableEnemy), hitmark, hitmark)
 	}
 
 	//aoe dmg
@@ -79,7 +85,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		IgnoreInfusion: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), f, f)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	// a1 if applies
 	if c.a1Ele != attributes.NoElement {
@@ -96,9 +102,9 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			IgnoreInfusion: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), f-1, f-1)
+		c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), hitmark-1, hitmark-1)
 		c.a1Ele = attributes.NoElement
 	}
 
-	return a
+	return act
 }

@@ -8,14 +8,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
-const skillPressAnimation = 15
-const skillHoldAnimation = 24
-
 var skillPressFrames []int
 var skillHoldFrames []int
 
+const skillPressAnimation = 15
+const skillHoldAnimation = 24
+
 func init() {
+	// skill (press) -> x
 	skillPressFrames = frames.InitAbilSlice(skillPressAnimation)
+
+	// skill (hold) -> x
 	skillHoldFrames = frames.InitAbilSlice(skillHoldAnimation)
 }
 
@@ -45,6 +48,7 @@ func (c *char) skillPress(travel int) action.ActionInfo {
 func (c *char) skillHold(travel int) action.ActionInfo {
 	c.pawsPewPew(skillHoldAnimation, travel, 5)
 	c.SetCD(action.ActionSkill, 900+skillHoldAnimation)
+
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldAnimation,

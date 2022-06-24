@@ -102,7 +102,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		c.sCACount = 0
 		c.Tags["strStack"] = 0
 	}
-	
+
 	c.dasshuUsed = false
 
 	return f, a
@@ -212,8 +212,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		c.Tags["strStack"] += 2
 		if c.Tags["strStack"] > 5 {
 			c.Tags["strStack"] = 5
-		}		
-		for frame := 140; frame <= 200 ; frame += 30 {
+		}
+		for frame := 140; frame <= 200; frame += 30 {
 			c.AddTask(func() {
 				if c.Tags["strStack"] <= 4 {
 					c.Tags["strStack"]++
@@ -279,4 +279,3 @@ func (c *char) c4cb(delay int, buff []float64) func() {
 		}, "ittoqend", delay)
 	}
 }
-

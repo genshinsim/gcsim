@@ -1,7 +1,7 @@
 package kazuha
 
 var (
-	attack	= [][][]float64{
+	attack = [][][]float64{
 		//n1
 		{
 			{
@@ -154,7 +154,7 @@ var (
 			},
 		},
 	}
-	charge	= [][]float64{
+	charge = [][]float64{
 		{
 			0.43,
 			0.465,
@@ -190,7 +190,7 @@ var (
 			2.1691,
 		},
 	}
-	plunge	= []float64{
+	plunge = []float64{
 		0.8183,
 		0.8849,
 		0.9516,
@@ -224,7 +224,7 @@ var (
 	// 	4.1479,
 	// 	4.3762,
 	// }
-	highPlunge	= []float64{
+	highPlunge = []float64{
 		2.0439,
 		2.2102,
 		2.3766,
@@ -241,7 +241,7 @@ var (
 		5.1809,
 		5.4661,
 	}
-	skill	= []float64{
+	skill = []float64{
 		1.92,
 		2.064,
 		2.208,
@@ -258,7 +258,7 @@ var (
 		4.32,
 		4.56,
 	}
-	skillHold	= []float64{
+	skillHold = []float64{
 		2.608,
 		2.8036,
 		2.9992,
@@ -275,7 +275,7 @@ var (
 		5.868,
 		6.194,
 	}
-	burstSlash	= []float64{
+	burstSlash = []float64{
 		2.624,
 		2.8208,
 		3.0176,
@@ -292,7 +292,7 @@ var (
 		5.904,
 		6.232,
 	}
-	burstDot	= []float64{
+	burstDot = []float64{
 		1.2,
 		1.29,
 		1.38,
@@ -309,7 +309,7 @@ var (
 		2.7,
 		2.85,
 	}
-	burstEleDot	= []float64{
+	burstEleDot = []float64{
 		0.36,
 		0.387,
 		0.414,

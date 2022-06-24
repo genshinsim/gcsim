@@ -9,23 +9,27 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackHitmark = []int{26, 18, 17, 31}
-var attackReleaseFrame = []int{15, 12, 17, 31}
 var attackFrames [][]int
+var attackHitmarks = []int{26, 18, 17, 31}
 
 const normalHitNum = 4
 
-//TODO: these frames are wrong!!!
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackReleaseFrame[0], 30)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackReleaseFrame[1], 20)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackReleaseFrame[2], 34)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackReleaseFrame[3], 57)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 30)
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 24)
+	attackFrames[1][action.ActionAttack] = 20
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 40)
+	attackFrames[2][action.ActionCharge] = 34
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 57)
+	attackFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -37,11 +41,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	//todo: Does it really snapshot immediately?
 	c.Core.QueueAttack(ai,
 		combat.NewDefSingleTarget(1, combat.TargettableEnemy),
-		0,
-		attackHitmark[c.NormalCounter],
+		attackHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter],
 	)
 
 	defer c.AdvanceNormalIndex()
@@ -49,7 +52,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackReleaseFrame[c.NormalCounter],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 }

@@ -55,22 +55,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	dmg := 0.06 + float64(r)*0.02
 	m := make([]float64, attributes.EndStatType)
-	char.AddStatMod("mappa",
+	char.AddStatMod("mappa", -1, attributes.NoStat, func() ([]float64, bool) {
+		if c.F > dur {
+			return nil, false
+		}
 
-		-1, attributes.NoStat, func() ([]float64, bool) {
-			if c.F > dur {
-				return nil, false
-			}
-
-			m[attributes.PyroP] = dmg * float64(stacks)
-			m[attributes.HydroP] = dmg * float64(stacks)
-			m[attributes.CryoP] = dmg * float64(stacks)
-			m[attributes.ElectroP] = dmg * float64(stacks)
-			m[attributes.AnemoP] = dmg * float64(stacks)
-			m[attributes.GeoP] = dmg * float64(stacks)
-			m[attributes.DendroP] = dmg * float64(stacks)
-			return m, true
-		})
+		m[attributes.PyroP] = dmg * float64(stacks)
+		m[attributes.HydroP] = dmg * float64(stacks)
+		m[attributes.CryoP] = dmg * float64(stacks)
+		m[attributes.ElectroP] = dmg * float64(stacks)
+		m[attributes.AnemoP] = dmg * float64(stacks)
+		m[attributes.GeoP] = dmg * float64(stacks)
+		m[attributes.DendroP] = dmg * float64(stacks)
+		return m, true
+	})
 
 	return w, nil
 }

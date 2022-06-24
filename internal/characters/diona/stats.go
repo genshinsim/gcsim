@@ -1,7 +1,7 @@
 package diona
 
 var (
-	auto	= [][]float64{
+	auto = [][]float64{
 		{
 			0.3612,
 			0.3906,
@@ -83,7 +83,7 @@ var (
 			1.4516,
 		},
 	}
-	aim	= []float64{
+	aim = []float64{
 		1.24,
 		1.333,
 		1.426,
@@ -100,7 +100,7 @@ var (
 		2.8669,
 		3.0355,
 	}
-	paw	= []float64{
+	paw = []float64{
 		0.4192,
 		0.4506,
 		0.4821,
@@ -117,7 +117,7 @@ var (
 		0.9432,
 		0.9956,
 	}
-	pawShieldPer	= []float64{
+	pawShieldPer = []float64{
 		0.072,
 		0.0774,
 		0.0828,
@@ -134,7 +134,7 @@ var (
 		0.162,
 		0.171,
 	}
-	pawShieldFlat	= []float64{
+	pawShieldFlat = []float64{
 		693,
 		762,
 		837,
@@ -151,7 +151,7 @@ var (
 		2044,
 		2188,
 	}
-	pawDur	= []int{
+	pawDur = []int{
 		108,
 		114,
 		120,
@@ -168,7 +168,7 @@ var (
 		144,
 		144,
 	}
-	burst	= []float64{
+	burst = []float64{
 		0.8,
 		0.86,
 		0.92,
@@ -185,7 +185,7 @@ var (
 		1.8,
 		1.9,
 	}
-	burstDot	= []float64{
+	burstDot = []float64{
 		0.5264,
 		0.5659,
 		0.6054,
@@ -202,7 +202,7 @@ var (
 		1.1844,
 		1.2502,
 	}
-	burstHealPer	= []float64{
+	burstHealPer = []float64{
 		0.0534,
 		0.0574,
 		0.0614,
@@ -219,7 +219,7 @@ var (
 		0.1201,
 		0.1267,
 	}
-	burstHealFlat	= []float64{
+	burstHealFlat = []float64{
 		513,
 		565,
 		620,
