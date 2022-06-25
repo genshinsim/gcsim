@@ -23,13 +23,13 @@ func init() {
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 27)
 	attackFrames[1][action.ActionAttack] = 23
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 34)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 34)
 	attackFrames[2][action.ActionAttack] = 31
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][2], 52)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 52)
 	attackFrames[3][action.ActionAttack] = 44
 
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 66)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 66)
 	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
