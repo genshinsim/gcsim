@@ -4,6 +4,7 @@ import (
 	"math"
 	"sort"
 
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -21,6 +22,9 @@ type Target interface {
 	//apply attack to target
 	Attack(*AttackEvent, glog.Event) (float64, bool)
 
+	//aura checks
+	AuraContains(e ...attributes.Element) bool
+
 	Tick() //called every tick
 
 	//getting rid of
@@ -36,7 +40,7 @@ const (
 	TargettableTypeCount
 )
 
-//EnemeyByDistance returns an array of indices of the enemies sorted by distance
+//EnemyByDistance returns an array of indices of the enemies sorted by distance
 func (c *Handler) EnemyByDistance(x, y float64, excl int) []int {
 	//we dont actually need to know the exact distance. just find the lowest
 	//of x^2 + y^2 to avoid sqrt
@@ -69,6 +73,24 @@ func (c *Handler) EnemyByDistance(x, y float64, excl int) []int {
 
 	for _, v := range tuples {
 		result = append(result, v.ind)
+	}
+
+	return result
+}
+
+//EnemiesWithinRadius returns an array of indices of the enemies within radius r
+func (c *Handler) EnemiesWithinRadius(x, y, r float64) []int {
+	result := make([]int, 0, len(c.targets))
+	for i, v := range c.targets {
+		if v.Type() != TargettableEnemy {
+			continue
+		}
+		vx, vy := v.Shape().Pos()
+		dist := math.Pow(x-vx, 2) + math.Pow(y-vy, 2)
+		if dist > r {
+			continue
+		}
+		result = append(result, i)
 	}
 
 	return result

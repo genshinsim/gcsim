@@ -13,6 +13,15 @@ var burstFrames []int
 
 const burstHitmark = 98
 
+func init() {
+	burstFrames = frames.InitAbilSlice(112)
+	burstFrames[action.ActionAttack] = 111
+	burstFrames[action.ActionCharge] = 500 //TODO: this action is illegal
+	burstFrames[action.ActionSkill] = 111
+	burstFrames[action.ActionDash] = 110
+	burstFrames[action.ActionSwap] = 110
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//activate burst, reset stacks
 	c.burstCastF = c.Core.F
@@ -65,7 +74,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
-		Post:            burstHitmark,
 		State:           action.BurstState,
 	}
 }
@@ -104,7 +112,8 @@ func (c *char) onSwapClearBurst() {
 }
 
 func (c *char) onBurstStackCount() {
-	c.Core.Events.Subscribe(event.PostBurst, func(args ...interface{}) bool {
+	//TODO: this used to be on PostBurst; need to check if it works correctly still
+	c.Core.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Core.Player.Active() == c.Index {
 			return false
 		}

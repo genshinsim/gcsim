@@ -14,6 +14,14 @@ var burstFrames []int
 
 const burstHitmark = 18
 
+func init() {
+	burstFrames = frames.InitAbilSlice(40)
+	burstFrames[action.ActionAttack] = 33
+	burstFrames[action.ActionSkill] = 33
+	burstFrames[action.ActionDash] = 33
+	burstFrames[action.ActionJump] = 33
+}
+
 /**
 The number of Hydro Swords summoned per wave follows a specific pattern, usually alternating between 2 and 3 swords.
 At C6, this is upgraded and follows a pattern of 2 → 3 → 5… which then repeats.
@@ -62,7 +70,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
-		Post:            burstHitmark,
 		State:           action.BurstState,
 	}
 }

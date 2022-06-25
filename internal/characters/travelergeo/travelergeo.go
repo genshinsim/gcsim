@@ -1,64 +1,41 @@
 package travelergeo
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-type char struct {
-	*character.Tmpl
-}
-
 func init() {
-	core.RegisterCharFunc(core.TravelerGeo, NewChar)
+	core.RegisterCharFunc(keys.TravelerGeo, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
-	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Geo
+type char struct {
+	*tmpl.Character
+}
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 60
-	}
-	c.Energy = float64(e)
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+	c := char{}
+	c.Character = tmpl.NewWithWrapper(s, w)
+
+	c.Base.Element = attributes.Geo
 	c.EnergyMax = 60
-	c.Weapon.Class = core.WeaponClassSword
+	c.Weapon.Class = weapon.WeaponClassSword
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.NormalHitNum = 5
+	c.NormalHitNum = normalHitNum
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-
-	if c.Base.Cons > 0 {
+func (c *char) Init() error {
+	if c.Base.Cons >= 1 {
 		c.c1()
 	}
-}
-
-//Party members within the radius of Wake of Earth have their CRIT Rate increased by 10%
-//and have increased resistance against interruption.
-func (c *char) c1() {
-	val := make([]float64, core.EndStatType)
-	val[core.CR] = .1
-	for _, char := range c.Core.Chars {
-		char.AddMod(core.CharStatMod{
-			Key:    "geo-traveler-c1",
-			Expiry: -1,
-			Amount: func() ([]float64, bool) {
-				if c.Core.Constructs.CountByType(core.GeoConstructTravellerBurst) == 0 {
-					return nil, false
-				}
-				return val, true
-			},
-		})
-	}
+	return nil
 }

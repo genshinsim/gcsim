@@ -1,6 +1,7 @@
 package ayaka
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -9,6 +10,12 @@ import (
 var dashFrames []int
 
 const dashHitmark = 20
+
+func init() {
+	dashFrames = frames.InitAbilSlice(35)
+	dashFrames[action.ActionDash] = 30
+	dashFrames[action.ActionSwap] = 34
+}
 
 // TODO: move this into PostDash event instead
 func (c *char) Dash(p map[string]int) action.ActionInfo {
@@ -39,7 +46,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		}
 		once = true
 
-		c.Core.RestoreStam(10)
+		c.Core.Player.RestoreStam(10)
 		c.AddStatMod("ayaka-a4", 600, attributes.CryoP, func() ([]float64, bool) {
 			return m, true
 		})
@@ -64,7 +71,6 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		Frames:          func(next action.Action) int { return dashFrames[next] + f },
 		AnimationLength: dashFrames[action.InvalidAction] + f,
 		CanQueueAfter:   dashHitmark + f,
-		Post:            dashHitmark + f,
 		State:           action.DashState,
 	}
 }

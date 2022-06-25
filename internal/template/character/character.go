@@ -23,6 +23,12 @@ type Character struct {
 	hitlagFactor float64
 }
 
+func NewWithWrapper(c *core.Core, w *character.CharWrapper) *Character {
+	r := New(c)
+	r.CharWrapper = w
+	return r
+}
+
 func New(c *core.Core) *Character {
 	t := &Character{
 		Core:                   c,
@@ -52,6 +58,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		ActorEle:    c.Base.Element,
 		BaseAtk:     c.Base.Atk + c.Weapon.Atk,
 		BaseDef:     c.Base.Def,
+		BaseHP:      c.Base.HP,
 		SourceFrame: c.Core.F,
 	}
 

@@ -10,6 +10,24 @@ import (
 var skillFrames []int
 
 const skillHitmark = 25
+const stilettoKey = "keqingstiletto"
+
+func init() {
+	// skill -> x
+	skillFrames = frames.InitAbilSlice(37)
+	skillFrames[action.ActionAttack] = 36
+	skillFrames[action.ActionSkill] = 35
+	skillFrames[action.ActionDash] = 21
+	skillFrames[action.ActionJump] = 21
+	skillFrames[action.ActionSwap] = 28
+
+	// skill (recast) -> x
+	skillRecastFrames = frames.InitAbilSlice(43)
+	skillRecastFrames[action.ActionAttack] = 42
+	skillRecastFrames[action.ActionDash] = 15
+	skillRecastFrames[action.ActionJump] = 16
+	skillRecastFrames[action.ActionSwap] = 42
+}
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// check if stiletto is on-field
@@ -46,7 +64,6 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		Post:            skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -108,7 +125,6 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
 		AnimationLength: skillRecastFrames[action.InvalidAction],
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel
-		Post:            skillRecastFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

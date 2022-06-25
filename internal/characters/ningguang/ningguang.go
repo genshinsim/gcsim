@@ -1,87 +1,61 @@
 package ningguang
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterCharFunc(core.Ningguang, NewChar)
+	core.RegisterCharFunc(keys.Ningguang, NewChar)
 }
 
 type char struct {
-	*character.Tmpl
+	*tmpl.Character
 	c2reset       int
 	lastScreen    int
 	particleICD   int
-	skillSnapshot core.Snapshot
+	skillSnapshot combat.Snapshot
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Geo
+	c.Character = tmpl.NewWithWrapper(s, w)
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 40
-	}
-	c.Energy = float64(e)
+	c.Base.Element = attributes.Geo
 	c.EnergyMax = 40
-	c.Weapon.Class = core.WeaponClassCatalyst
-	c.NormalHitNum = 1
+	c.Weapon.Class = weapon.WeaponClassCatalyst
+	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.CharZone = core.ZoneLiyue
+	c.CharZone = character.ZoneLiyue
 
 	// Initialize at some very low value so these happen correctly at start of sim
 	c.c2reset = -9999
 	c.particleICD = -9999
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-
+func (c *char) Init() error {
 	c.a4()
+	return nil
 }
 
-func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
-	case core.ActionDash:
-		return 18
-	case core.ActionCharge:
+	case action.ActionCharge:
 		if c.Tags["jade"] > 0 {
 			return 0
 		}
 		return 50
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
-		return 0
 	}
-
-}
-
-func (c *char) a4() {
-	//activate a4 if screen is down and character uses dash
-	c.Core.Events.Subscribe(core.PostDash, func(args ...interface{}) bool {
-		if c.Core.Constructs.CountByType(core.GeoConstructNingSkill) > 0 {
-			val := make([]float64, core.EndStatType)
-			val[core.GeoP] = 0.12
-			char := c.Core.Chars[c.Core.ActiveChar]
-			char.AddMod(core.CharStatMod{
-				Key: "ning-screen",
-				Amount: func() ([]float64, bool) {
-					return val, true
-				},
-				Expiry: c.Core.F + 600,
-			})
-		}
-		return false
-	}, "ningguang-a4")
+	return c.Character.ActionStam(a, p)
 }

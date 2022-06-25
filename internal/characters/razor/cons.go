@@ -93,7 +93,7 @@ func (c *char) c6() {
 		)
 
 		if c.Core.Status.Duration("razorburst") == 0 {
-			c.AddSigil()
+			c.addSigil()
 		}
 
 		return false

@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	char.AddStatMod("homa-atk-buff", -1, attributes.ATK, func() ([]float64, bool) {
 		maxhp := char.MaxHP()
 		per := atkp
-		if maxhp <= 0.5 {
+		if char.HPCurrent <= 0.5*maxhp {
 			per += lowhp
 		}
 		mATK[attributes.ATK] = per * maxhp

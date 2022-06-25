@@ -10,6 +10,13 @@ import (
 
 var burstFrames []int
 
+func init() {
+	burstFrames = frames.InitAbilSlice(70)
+	burstFrames[action.ActionDash] = 57
+	burstFrames[action.ActionJump] = 59
+	burstFrames[action.ActionSwap] = 69
+}
+
 // Burst attack damage queue generator
 // Rosaria swings her weapon to slash surrounding opponents, then she summons a frigid Ice Lance that strikes the ground. Both actions deal Cryo DMG.
 // While active, the Ice Lance periodically releases a blast of cold air, dealing Cryo DMG to surrounding opponents.
@@ -95,7 +102,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
-		Post:            burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }

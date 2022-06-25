@@ -7,17 +7,26 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 //While aiming, the power of Hydro will accumulate on the arrowhead.
 //A arrow fully charged with the torrent will deal Hydro DMG and apply the Riptide status.
 func (c *char) aimedApplyRiptide(a combat.AttackCB) {
-	c.applyRiptide("aimed shot", a.Target)
+	t, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
+	c.applyRiptide("aimed shot", t)
 }
 
 //Swiftly fires a Hydro-imbued magic arrow, dealing AoE Hydro DMG and applying the Riptide status.
 func (c *char) rangedBurstApplyRiptide(a combat.AttackCB) {
-	c.applyRiptide("ranged burst", a.Target)
+	t, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
+	c.applyRiptide("ranged burst", t)
 }
 
 //When Tartaglia is in Foul Legacy: Raging Tide's Melee Stance, on dealing a CRIT hit,
@@ -25,11 +34,15 @@ func (c *char) rangedBurstApplyRiptide(a combat.AttackCB) {
 func (c *char) meleeApplyRiptide(a combat.AttackCB) {
 	//only applies if is crit
 	if a.IsCrit {
-		c.applyRiptide("melee", a.Target)
+		t, ok := a.Target.(*enemy.Enemy)
+		if !ok {
+			return
+		}
+		c.applyRiptide("melee", t)
 	}
 }
 
-func (c *char) applyRiptide(src string, t combat.Target) {
+func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 	if c.Base.Cons >= 4 && t.GetTag(riptideKey) < c.Core.F {
 		c.Core.Tasks.Add(func() { c.rtC4Tick(t) }, 60*4)
 	}
@@ -46,7 +59,7 @@ func (c *char) applyRiptide(src string, t combat.Target) {
 
 // if tartaglia is in melee stance, triggers Riptide Slash against opponents on the field affected by Riptide every 4s, otherwise, triggers Riptide Flash.
 // this constellation effect is not subject to ICD.
-func (c *char) rtC4Tick(t combat.Target) {
+func (c *char) rtC4Tick(t *enemy.Enemy) {
 	if t.GetTag(riptideKey) < c.Core.F {
 		return
 	}
@@ -63,21 +76,26 @@ func (c *char) rtC4Tick(t combat.Target) {
 // Riptide Flash: A fully-charged Aimed Shot that hits an opponent affected
 // by Riptide deals consecutive bouts of AoE DMG. Can occur once every 0.7s.
 func (c *char) rtFlashCallback(a combat.AttackCB) {
+	//make sure it's actually an enemey
+	t, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
 	//do nothing if no riptide on target
-	if a.Target.GetTag(riptideKey) < c.Core.F {
+	if t.GetTag(riptideKey) < c.Core.F {
 		return
 	}
 	//do nothing if flash still on icd
-	if a.Target.GetTag(riptideFlashICDKey) > c.Core.F {
+	if t.GetTag(riptideFlashICDKey) > c.Core.F {
 		return
 	}
 	//add 0.7s icd
-	a.Target.SetTag(riptideFlashICDKey, c.Core.F+42)
+	t.SetTag(riptideFlashICDKey, c.Core.F+42)
 
-	c.rtFlashTick(a.Target)
+	c.rtFlashTick(t)
 }
 
-func (c *char) rtFlashTick(t combat.Target) {
+func (c *char) rtFlashTick(t *enemy.Enemy) {
 	//queue damage
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -117,21 +135,26 @@ func (c *char) rtFlashTick(t combat.Target) {
 //Hitting an opponent affected by Riptide with a melee attack unleashes a Riptide Slash that deals AoE Hydro DMG.
 //DMG dealt in this way is considered Elemental Skill DMG, and can only occur once every 1.5s.
 func (c *char) rtSlashCallback(a combat.AttackCB) {
+	//make sure it's actually an enemey
+	t, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
 	//do nothing if no riptide on target
-	if a.Target.GetTag(riptideKey) < c.Core.F {
+	if t.GetTag(riptideKey) < c.Core.F {
 		return
 	}
 	//do nothing if slash still on icd
-	if a.Target.GetTag(riptideSlashICDKey) > c.Core.F {
+	if t.GetTag(riptideSlashICDKey) > c.Core.F {
 		return
 	}
 	//add 1.5s icd
-	a.Target.SetTag(riptideSlashICDKey, c.Core.F+90)
+	t.SetTag(riptideSlashICDKey, c.Core.F+90)
 
-	c.rtSlashTick(a.Target)
+	c.rtSlashTick(t)
 }
 
-func (c *char) rtSlashTick(t combat.Target) {
+func (c *char) rtSlashTick(t *enemy.Enemy) {
 	//trigger attack
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -168,12 +191,17 @@ func (c *char) rtSlashTick(t combat.Target) {
 //When the obliterating waters hit an opponent affected by Riptide, it clears their Riptide status
 //and triggers a Hydro Explosion that deals AoE Hydro DMG. DMG dealt in this way is considered Elemental Burst DMG.
 func (c *char) rtBlastCallback(a combat.AttackCB) {
+	//make sure it's actually an enemey
+	t, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
 	//only triggers if target affected by riptide
-	if a.Target.GetTag(riptideKey) < c.Core.F {
+	if t.GetTag(riptideKey) < c.Core.F {
 		return
 	}
 	//TODO: this shares icd with slash???
-	if a.Target.GetTag(riptideSlashICDKey) > c.Core.F {
+	if t.GetTag(riptideSlashICDKey) > c.Core.F {
 		return
 	}
 	//queue damage
@@ -196,12 +224,12 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		glog.LogCharacterEvent,
 		c.Index,
 		"dur", c.Core.Status.Duration("tartagliamelee"),
-		"target", a.Target.Index(),
-		"rtExpiry", a.Target.GetTag(riptideKey),
+		"target", t.Index(),
+		"rtExpiry", t.GetTag(riptideKey),
 	)
 
 	//clear riptide status
-	a.Target.RemoveTag(riptideKey)
+	t.RemoveTag(riptideKey)
 }
 
 //Riptide Burst: Defeating an opponent affected by Riptide creates a Hydro burst
@@ -209,7 +237,11 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 // Handles Childe riptide burst and C2 on death effects
 func (c *char) onDefeatTargets() {
 	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
-		t := args[0].(combat.Target)
+		t, ok := args[0].(*enemy.Enemy)
+		//do nothing if not an enemy
+		if !ok {
+			return false
+		}
 		//do nothing if no riptide on target
 		if t.GetTag(riptideKey) < c.Core.F {
 			return false

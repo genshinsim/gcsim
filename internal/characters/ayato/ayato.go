@@ -1,10 +1,8 @@
 package ayato
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -13,10 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-const normalHitNum = 5
-
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.Ayato, NewChar)
 }
 
@@ -32,17 +27,9 @@ type char struct {
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t := tmpl.New(s)
-	t.CharWrapper = w
-	c.Character = t
+	c.Character = tmpl.NewWithWrapper(s, w)
 
 	c.Base.Element = attributes.Hydro
-
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 80
-	}
-	c.Energy = float64(e)
 	c.EnergyMax = 80
 	c.Weapon.Class = weapon.WeaponClassSword
 	c.CharZone = character.ZoneInazuma
@@ -79,36 +66,6 @@ func (c *char) Init() error {
 		c.c6()
 	}
 	return nil
-}
-
-func initCancelFrames() {
-	// NA cancels
-	attackFrames = make([][]int, normalHitNum)
-
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 24)
-	attackFrames[0][action.ActionAttack] = 15
-
-	// TODO: charge cancels are missing?
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 27)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 30)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 27)
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 63)
-
-	// NA (in skill) -> x
-	shunsuikenFrames = frames.InitNormalCancelSlice(shunsuikenHitmark, 23)
-
-	// charge -> x
-	chargeFrames = frames.InitAbilSlice(55)
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 53
-
-	// skill -> x
-	skillFrames = frames.InitAbilSlice(21)
-
-	// burst -> x
-	burstFrames = frames.InitAbilSlice(102)
-	burstFrames[action.ActionSwap] = 101
 }
 
 func (c *char) AdvanceNormalIndex() {

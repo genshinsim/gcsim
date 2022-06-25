@@ -1,51 +1,35 @@
 package venti
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+)
 
-func c2cb(a core.AttackCB) {
-	a.Target.AddResMod("venti-c2-phys", core.ResistMod{
-		Ele:      core.Physical,
-		Value:    -0.12,
-		Duration: 600,
-	})
-	a.Target.AddResMod("venti-c2-anemo", core.ResistMod{
-		Ele:      core.Physical,
-		Value:    -0.12,
-		Duration: 600,
-	})
+// TODO: the airborne part isn't implemented
+// Skyward Sonnet decreases opponents' Anemo RES and Physical RES by 12% for 10s.
+// Opponents launched by Skyward Sonnet suffer an additional 12% Anemo RES and Physical RES decrease while airborne.
+func (c *char) c2(a combat.AttackCB) {
+	if c.Base.Cons < 2 {
+		return
+	}
+	e, ok := a.Target.(core.Enemy)
+	if !ok {
+		return
+	}
+
+	e.AddResistMod("venti-c2-anemo", 600, attributes.Anemo, -0.12)
+	e.AddResistMod("venti-c2-phys", 600, attributes.Physical, -0.12)
 }
 
-func c6cb(ele core.EleType) func(a core.AttackCB) {
-	return func(a core.AttackCB) {
-		a.Target.AddResMod("venti-c6-anemo", core.ResistMod{
-			Ele:      ele,
-			Value:    -0.20,
-			Duration: 600,
-		})
+// Targets who take DMG from Wind's Grand Ode have their Anemo RES decreased by 20%.
+// If an Elemental Absorption occurred, then their RES towards the corresponding Element is also decreased by 20%.
+func (c *char) c6(ele attributes.Element) func(a combat.AttackCB) {
+	return func(a combat.AttackCB) {
+		e, ok := a.Target.(core.Enemy)
+		if !ok {
+			return
+		}
+		e.AddResistMod("venti-c6-"+ele.String(), 600, ele, -0.20)
 	}
 }
-
-// func (c *char) applyC2(ds *core.Snapshot) {
-// 	ds.OnHitCallback = func(t core.Target) {
-// 		t.AddResMod("venti-c2-phys", core.ResistMod{
-// 			Ele:      core.Physical,
-// 			Value:    -0.12,
-// 			Duration: 600,
-// 		})
-// 		t.AddResMod("venti-c2-anemo", core.ResistMod{
-// 			Ele:      core.Physical,
-// 			Value:    -0.12,
-// 			Duration: 600,
-// 		})
-// 	}
-// }
-
-// func (c *char) applyC6(ds *core.Snapshot, ele core.EleType) {
-// 	ds.OnHitCallback = func(t core.Target) {
-// 		t.AddResMod("venti-c6-anemo", core.ResistMod{
-// 			Ele:      ele,
-// 			Value:    -0.20,
-// 			Duration: 600,
-// 		})
-// 	}
-// }

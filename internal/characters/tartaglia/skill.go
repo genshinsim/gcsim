@@ -14,6 +14,14 @@ var skillRangedFrames []int
 
 const skillHitmark = 28
 
+func init() {
+	// skill (melee) -> x
+	skillMeleeFrames = frames.InitAbilSlice(20)
+
+	// skill (ranged) -> x
+	skillRangedFrames = frames.InitAbilSlice(28)
+}
+
 //Cast: AoE strong hydro damage
 //Melee Stance: infuse NA/CA to hydro damage
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -24,7 +32,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Frames:          frames.NewAbilFunc(skillMeleeFrames),
 			AnimationLength: skillMeleeFrames[action.InvalidAction],
 			CanQueueAfter:   skillMeleeFrames[action.ActionDash], // earliest cancel
-			Post:            skillMeleeFrames[action.ActionDash], // earliest cancel
 			State:           action.SkillState,
 		}
 	}
@@ -60,7 +67,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillRangedFrames),
 		AnimationLength: skillRangedFrames[action.InvalidAction],
 		CanQueueAfter:   skillRangedFrames[action.ActionDash], // earliest cancel
-		Post:            skillRangedFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

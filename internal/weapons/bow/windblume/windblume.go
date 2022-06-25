@@ -29,7 +29,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.12 + float64(r)*0.04
 
-	c.Events.Subscribe(event.PreSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if char.Index != c.Player.Active() {
 			return false
 		}

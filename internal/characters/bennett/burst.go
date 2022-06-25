@@ -16,6 +16,13 @@ var burstFrames []int
 const burstStartFrame = 34
 const burstBuffDuration = 126
 
+func init() {
+	burstFrames = frames.InitAbilSlice(53)
+	burstFrames[action.ActionDash] = 49
+	burstFrames[action.ActionJump] = 50
+	burstFrames[action.ActionSwap] = 51
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//add field effect timer
 	c.Core.Status.Add("btburst", 720+burstStartFrame)
@@ -52,7 +59,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
-		Post:            burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }

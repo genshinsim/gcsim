@@ -15,8 +15,9 @@ type Royal struct {
 	Index int
 }
 
-func (b *Royal) SetIndex(idx int)	{ b.Index = idx }
-func (b *Royal) Init() error		{ return nil }
+func (b *Royal) SetIndex(idx int) { b.Index = idx }
+func (b *Royal) Init() error      { return nil }
+
 func NewRoyal(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Royal{}
 	r := p.Refine

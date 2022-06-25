@@ -7,11 +7,11 @@ import (
 )
 
 type WeaponInfusion struct {
-	Key         string
-	Ele         attributes.Element
-	Tags        []combat.AttackTag
-	Expiry      int
-	CanOverride bool
+	Key             string
+	Ele             attributes.Element
+	Tags            []combat.AttackTag
+	Expiry          int
+	CanBeOverridden bool
 }
 
 const MaxTeamSize = 4
@@ -31,16 +31,16 @@ func New(f *int, log glog.Logger, debug bool) InfusionHandler {
 	}
 }
 
-func (m *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canOverride bool, tags ...combat.AttackTag) {
-	if !m.infusion[char].CanOverride && m.infusion[char].Expiry > *m.f {
+func (m *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...combat.AttackTag) {
+	if !m.infusion[char].CanBeOverridden && m.infusion[char].Expiry > *m.f {
 		return
 	}
 	inf := WeaponInfusion{
-		Key:         key,
-		Ele:         ele,
-		Expiry:      *m.f + dur,
-		CanOverride: canOverride,
-		Tags:        tags,
+		Key:             key,
+		Ele:             ele,
+		Expiry:          *m.f + dur,
+		CanBeOverridden: canBeOverriden,
+		Tags:            tags,
 	}
 	m.infusion[char] = inf
 }

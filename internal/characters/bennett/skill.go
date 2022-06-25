@@ -14,6 +14,43 @@ var skillHoldHitmarks = [][]int{{45, 57}, {112, 121}}
 
 const skillPressHitmark = 16
 
+func init() {
+	skillFrames = make([][]int, 5)
+
+	// skill (press) -> x
+	skillFrames[0] = frames.InitAbilSlice(42)
+	skillFrames[0][action.ActionDash] = 22
+	skillFrames[0][action.ActionJump] = 23
+	skillFrames[0][action.ActionSwap] = 41
+
+	// skill (hold=1) -> x
+	skillFrames[1] = frames.InitAbilSlice(98)
+	skillFrames[1][action.ActionBurst] = 97
+	skillFrames[1][action.ActionDash] = 65
+	skillFrames[1][action.ActionJump] = 66
+	skillFrames[1][action.ActionSwap] = 96
+
+	// skill (hold=1,c4) -> x
+	skillFrames[2] = frames.InitAbilSlice(107)
+	skillFrames[2][action.ActionDash] = 95
+	skillFrames[2][action.ActionJump] = 95
+	skillFrames[2][action.ActionSwap] = 106
+
+	// skill (hold=2) -> x
+	skillFrames[3] = frames.InitAbilSlice(343)
+	skillFrames[3][action.ActionSkill] = 339 // uses burst frames
+	skillFrames[3][action.ActionBurst] = 339
+	skillFrames[3][action.ActionDash] = 231
+	skillFrames[3][action.ActionJump] = 340
+	skillFrames[3][action.ActionSwap] = 337
+
+	// skill (hold=2,a4) -> x
+	skillFrames[4] = frames.InitAbilSlice(175)
+	skillFrames[4][action.ActionDash] = 171
+	skillFrames[4][action.ActionJump] = 174
+	skillFrames[4][action.ActionSwap] = 175
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	level, ok := p["hold"]
 	if !ok || level < 0 || level > 2 {
@@ -64,7 +101,6 @@ func (c *char) skillPress() action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames[0]),
 		AnimationLength: skillFrames[0][action.InvalidAction],
 		CanQueueAfter:   skillFrames[0][action.ActionDash], // earliest cancel
-		Post:            skillFrames[0][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -146,7 +182,6 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames[idx]),
 		AnimationLength: skillFrames[idx][action.InvalidAction],
 		CanQueueAfter:   skillFrames[idx][action.ActionDash], // earliest cancel
-		Post:            skillFrames[idx][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

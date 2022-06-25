@@ -1,140 +1,75 @@
 package hutao
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterCharFunc(core.Hutao, NewChar)
+	core.RegisterCharFunc(keys.Hutao, NewChar)
 }
 
 type char struct {
-	*character.Tmpl
+	*tmpl.Character
 	paraParticleICD int
-	// chargeICDCounter   int
-	// chargeCounterReset int
-	ppBonus    float64
-	tickActive bool
-	c6icd      int
+	ppBonus         float64
+	tickActive      bool
+	c6icd           int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Pyro
+	c.Character = tmpl.NewWithWrapper(s, w)
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 60
-	}
-	c.Energy = float64(e)
+	c.Base.Element = attributes.Pyro
 	c.EnergyMax = 60
-	c.Weapon.Class = core.WeaponClassSpear
-	c.NormalHitNum = 6
-	c.CharZone = core.ZoneLiyue
+	c.Weapon.Class = weapon.WeaponClassSpear
+	c.NormalHitNum = normalHitNum
+	c.CharZone = character.ZoneLiyue
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-	c.InitCancelFrames()
-
+func (c *char) Init() error {
 	c.ppHook()
 	c.onExitField()
 	c.a4()
-
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
 		c.c6()
 	}
+	return nil
 }
 
-func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
-	case core.ActionDash:
-		return 18
-	case core.ActionCharge:
+	case action.ActionCharge:
 		if c.Core.Status.Duration("paramita") > 0 && c.Base.Cons >= 1 {
 			return 0
 		}
 		return 25
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
-		return 0
 	}
-
+	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) a4() {
-	m := make([]float64, core.EndStatType)
-	m[core.PyroP] = 0.33
-	c.AddMod(core.CharStatMod{
-		Key:          "hutao-a4",
-		Expiry:       -1,
-		AffectedStat: core.PyroP, // to avoid infinite loop when calling MaxHP
-		Amount: func() ([]float64, bool) {
-			if c.Core.Status.Duration("paramita") == 0 {
-				return nil, false
-			}
-			if c.HP()/c.MaxHP() <= 0.5 {
-				return m, true
-			}
-			return nil, false
-		},
-	})
-}
-
-func (c *char) c6() {
-	c.Core.Events.Subscribe(core.OnCharacterHurt, func(args ...interface{}) bool {
-		c.checkc6()
-		return false
-	}, "hutao-c6")
-}
-
-func (c *char) checkc6() {
-	if c.Base.Cons < 6 {
-		return
-	}
-	if c.Core.F < c.c6icd && c.c6icd != 0 {
-		return
-	}
-	//check if hp less than 25%
-	if c.HP()/c.MaxHP() > .25 {
-		return
-	}
-	//if dead, revive back to 1 hp
-	if c.HP() <= -1 {
-		c.HPCurrent = 1
-	}
-
-	//increase crit rate to 100%
-	val := make([]float64, core.EndStatType)
-	val[core.CR] = 1
-	c.AddMod(core.CharStatMod{
-		Key:    "hutao-c6",
-		Amount: func() ([]float64, bool) { return val, true },
-		Expiry: c.Core.F + 600,
-	})
-
-	c.c6icd = c.Core.F + 3600
-}
-
-func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
-	ds := c.Tmpl.Snapshot(ai)
+func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+	ds := c.Character.Snapshot(ai)
 
 	if c.Core.Status.Duration("paramita") > 0 {
 		switch ai.AttackTag {
-		case core.AttackTagNormal:
-		case core.AttackTagExtra:
+		case combat.AttackTagNormal:
+		case combat.AttackTagExtra:
 		default:
 			return ds
 		}
-		ai.Element = core.Pyro
+		ai.Element = attributes.Pyro
 	}
 	return ds
 }

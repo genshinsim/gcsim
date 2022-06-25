@@ -9,6 +9,15 @@ import (
 
 var burstFrames []int
 
+func init() {
+	burstFrames = frames.InitAbilSlice(49)
+	burstFrames[action.ActionCharge] = 48
+	burstFrames[action.ActionSkill] = 48
+	burstFrames[action.ActionDash] = 47
+	burstFrames[action.ActionJump] = 47
+	burstFrames[action.ActionSwap] = 47
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//tag a4
 	//first hit at 137, then 113 frames between hits
@@ -78,7 +87,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
-		Post:            burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }
@@ -88,7 +96,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfused = c.Core.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qInfused = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.qInfused != attributes.NoElement {
 			if c.Base.Cons >= 6 {

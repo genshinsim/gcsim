@@ -43,13 +43,11 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 var defaultDash = action.ActionInfo{
 	Frames:        func(action.Action) int { return 20 },
 	CanQueueAfter: 20,
-	Post:          20,
 	State:         action.DashState,
 }
 
 func (c *Character) Dash(p map[string]int) action.ActionInfo {
 	//consume stam at the end
-
 	c.Core.Tasks.Add(func() {
 		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
 		c.Core.Player.Stam -= req
@@ -67,7 +65,6 @@ var defaultJump = action.ActionInfo{
 	Frames:          func(action.Action) int { return 30 },
 	AnimationLength: 30,
 	CanQueueAfter:   30,
-	Post:            30,
 	State:           action.JumpState,
 }
 
@@ -84,7 +81,6 @@ func (c *Character) Walk(p map[string]int) action.ActionInfo {
 		Frames:          func(next action.Action) int { return f },
 		AnimationLength: f,
 		CanQueueAfter:   f,
-		Post:            f,
 		State:           action.WalkState,
 	}
 }

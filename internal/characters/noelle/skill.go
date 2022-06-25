@@ -12,6 +12,16 @@ var skillFrames []int
 
 const skillHitmark = 15
 
+func init() {
+	skillFrames = frames.InitAbilSlice(78)
+	skillFrames[action.ActionAttack] = 12
+	skillFrames[action.ActionSkill] = 14 // uses burst frames
+	skillFrames[action.ActionBurst] = 14
+	skillFrames[action.ActionDash] = 11
+	skillFrames[action.ActionJump] = 11
+	skillFrames[action.ActionWalk] = 43
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -55,7 +65,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		Post:            skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

@@ -11,6 +11,12 @@ var burstFrames []int
 
 const burstHitmark = 56
 
+func init() {
+	burstFrames = frames.InitAbilSlice(124)
+	burstFrames[action.ActionDash] = 122
+	burstFrames[action.ActionSwap] = 123
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//first hit 56 frame
 	//first tick 82 frame
@@ -56,7 +62,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
-		Post:            burstHitmark,
 		State:           action.BurstState,
 	}
 }

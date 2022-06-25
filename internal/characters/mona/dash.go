@@ -41,7 +41,6 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		Frames:          func(next action.Action) int { return dashFrames[next] + f },
 		AnimationLength: dashFrames[action.InvalidAction] + f,
 		CanQueueAfter:   dashHitmark + f,
-		Post:            dashHitmark + f,
 		State:           action.DashState,
 	}
 }

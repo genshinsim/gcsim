@@ -13,6 +13,15 @@ var burstFrames []int
 // TODO: not sure about this
 const burstStart = 80
 
+func init() {
+	burstFrames = frames.InitAbilSlice(121)
+	burstFrames[action.ActionAttack] = 83
+	burstFrames[action.ActionSkill] = 82
+	burstFrames[action.ActionDash] = 81
+	burstFrames[action.ActionJump] = 81
+	burstFrames[action.ActionWalk] = 90
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
@@ -36,7 +45,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	})
 	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", m[attributes.ATK], "mult", mult)
 
-	c.burstInfusion(900 + burstStart)
 	c.Core.Status.Add("noelleq", 900+burstStart)
 	// Queue up task for Noelle burst extension
 	// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
@@ -50,8 +58,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return m, true
 			})
 			c.Core.Log.NewEvent("noelle max burst extension activated", glog.LogCharacterEvent, c.Index, "new_expiry", c.Core.F+600)
-			// check if this work as intended
-			c.burstInfusion(600)
 			c.Core.Status.Add("noelleq", 600)
 		}, 900+burstStart)
 	}
@@ -80,18 +86,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
-		Post:            burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
-}
-
-func (c *char) burstInfusion(dur int) {
-	c.Core.Player.AddWeaponInfuse(
-		c.Index,
-		"noelle-burst",
-		attributes.Geo,
-		dur,
-		false,
-		combat.AttackTagNormal, combat.AttackTagPlunge, combat.AttackTagExtra,
-	)
 }

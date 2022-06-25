@@ -13,6 +13,10 @@ var skillFrames []int
 
 const skillHitmark = 32
 
+func init() {
+	skillFrames = frames.InitAbilSlice(32)
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -56,7 +60,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillHitmark,
-		Post:            skillHitmark,
 		State:           action.SkillState,
 	}
 }

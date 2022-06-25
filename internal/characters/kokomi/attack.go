@@ -12,6 +12,23 @@ import (
 var attackFrames [][]int
 var attackHitmarks = []int{4, 12, 28}
 
+const normalHitNum = 3
+
+func init() {
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 30)
+	attackFrames[0][action.ActionAttack] = 14
+	attackFrames[0][action.ActionCharge] = 19
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 34)
+	attackFrames[1][action.ActionAttack] = 30
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 65)
+	attackFrames[2][action.ActionCharge] = 60
+	attackFrames[2][action.ActionWalk] = 60
+}
+
 // Standard attack damage function
 // Has "travel" parameter, used to set the number of frames that the projectile is in the air (default = 10)
 func (c *char) Attack(p map[string]int) action.ActionInfo {
@@ -49,7 +66,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
-		Post:            attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 

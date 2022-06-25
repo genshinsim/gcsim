@@ -13,9 +13,16 @@ The Raiden Shogun unveils a shard of her Euthymia, dealing Electro DMG to nearby
 Eye of Stormy Judgment
 **/
 
+var skillFrames []int
+
 const skillHitmark = 51
 
-var skillFrames []int
+func init() {
+	skillFrames = frames.InitAbilSlice(37)
+	skillFrames[action.ActionDash] = 17
+	skillFrames[action.ActionJump] = 17
+	skillFrames[action.ActionSwap] = 36
+}
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
@@ -54,7 +61,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		Post:            skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

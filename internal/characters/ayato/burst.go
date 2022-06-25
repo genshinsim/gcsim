@@ -12,6 +12,11 @@ var burstFrames []int
 
 const burstStart = 101
 
+func init() {
+	burstFrames = frames.InitAbilSlice(102)
+	burstFrames[action.ActionSwap] = 101
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	ai := combat.AttackInfo{
@@ -101,7 +106,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
-		Post:            burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

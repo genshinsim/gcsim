@@ -16,8 +16,8 @@ type Favonius struct {
 	Index int
 }
 
-func (b *Favonius) SetIndex(idx int)	{ b.Index = idx }
-func (b *Favonius) Init() error		{ return nil }
+func (b *Favonius) SetIndex(idx int) { b.Index = idx }
+func (b *Favonius) Init() error      { return nil }
 
 func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	b := &Favonius{}

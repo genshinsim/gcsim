@@ -1,15 +1,19 @@
 package fischl
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+)
 
 func (c *char) a4() {
 	last := 0
 	cb := func(args ...interface{}) bool {
 
-		t := args[0].(core.Target)
-		ae := args[1].(*core.AttackEvent)
+		t := args[0].(combat.Target)
+		ae := args[1].(*combat.AttackEvent)
 
-		if ae.Info.ActorIndex != c.Core.ActiveChar {
+		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
 		//do nothing if oz not on field
@@ -21,14 +25,14 @@ func (c *char) a4() {
 		}
 		last = c.Core.F
 
-		ai := core.AttackInfo{
+		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl A4",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupFischl,
-			StrikeType: core.StrikeTypePierce,
-			Element:    core.Electro,
+			AttackTag:  combat.AttackTagElementalArt,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupFischl,
+			StrikeType: combat.StrikeTypePierce,
+			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.8,
 		}
@@ -36,13 +40,13 @@ func (c *char) a4() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// A4 uses Oz Snapshot
-		c.Core.Combat.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, core.NewDefSingleTarget(t.Index(), core.TargettableEnemy), 0)
+		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(t.Index(), combat.TargettableEnemy), 0)
 
 		return false
 	}
-	c.Core.Events.Subscribe(core.OnOverload, cb, "fischl-a4")
-	c.Core.Events.Subscribe(core.OnElectroCharged, cb, "fischl-a4")
-	c.Core.Events.Subscribe(core.OnSuperconduct, cb, "fischl-a4")
-	c.Core.Events.Subscribe(core.OnSwirlElectro, cb, "fischl-a4")
-	c.Core.Events.Subscribe(core.OnCrystallizeElectro, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnOverload, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnElectroCharged, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "fischl-a4")
 }

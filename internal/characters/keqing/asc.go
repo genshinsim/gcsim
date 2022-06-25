@@ -6,12 +6,14 @@ import (
 )
 
 func (c *char) a1() {
-	c.Core.Status.Add("keqinginfuse", 300)
+	//account for it starting somewhere around hitmark
+	dur := 300 + skillRecastHitmark
+	c.Core.Status.Add("keqinginfuse", dur)
 	c.Core.Player.AddWeaponInfuse(
 		c.Index,
 		"keqing-a1",
 		attributes.Electro,
-		300,
+		dur,
 		true,
 		combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
 	)

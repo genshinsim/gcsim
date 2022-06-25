@@ -11,6 +11,10 @@ var burstFrames []int
 
 const burstHitmark = 96
 
+func init() {
+	burstFrames = frames.InitAbilSlice(96)
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	hits, ok := p["bloom"]
 	if !ok {
@@ -64,7 +68,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
-		Post:            burstHitmark,
 		State:           action.BurstState,
 	}
 }

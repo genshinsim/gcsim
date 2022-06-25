@@ -41,10 +41,17 @@ const (
 	ICDTagVentiBurstHydro
 	ICDTagVentiBurstCryo
 	ICDTagVentiBurstElectro
+	ICDTagYelanBreakthrough
+	ICDTagYelanBurst
 	ICDTagMonaWaterDamage
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
+	ICDTagSayuSkillAnemo
+	ICDTagSayuSkillPyro
+	ICDTagSayuSkillHydro
+	ICDTagSayuSkillCryo
+	ICDTagSayuSkillElectro
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
@@ -68,6 +75,8 @@ const (
 	ICDGroupDiluc
 	ICDGroupPole
 	ICDGroupXiaoDash
+	ICDGroupYelanBreakthrough
+	ICDGroupYelanBurst
 	ICDGroupReactionA
 	ICDGroupReactionB
 	ICDGroupLength
@@ -81,6 +90,8 @@ var ICDGroupResetTimer = []int{
 	300, //diluc
 	30,  //pole
 	6,   //xiao dash
+	18,  //yelan pew pew
+	120, //yelan burst
 	30,  //reaction a
 	30,  //reaciton b
 }
@@ -100,6 +111,10 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
 	//xiao dash
 	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	//yelan pew pew
+	{1.0, 0.0, 0.0, 0.0},
+	//yelan burst
+	{1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
 	//reaction a
 	{1.0, 1.0},
 	//reaction b
@@ -121,6 +136,10 @@ var ICDGroupDamageSequence = [][]float64{
 	{1, 1, 1, 1, 1},
 	//xiao
 	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	//yelan pew pew
+	{1.0, 0.0, 0.0, 0.0},
+	//yelan burst
+	{1, 1, 1, 1, 1},
 	//ele A
 	{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//ele B

@@ -33,8 +33,8 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	c.Base.Atk = b.BaseAtk * curves.CharStatGrowthMult[lvl][b.AtkCurve]
 	c.Base.Def = b.BaseDef * curves.CharStatGrowthMult[lvl][b.DefCurve]
 	//default cr/cd
-	c.stats[attributes.CD] += 0.5
-	c.stats[attributes.CR] += 0.05
+	c.BaseStats[attributes.CD] += 0.5
+	c.BaseStats[attributes.CR] += 0.05
 	//track specialized stat
 	var spec [attributes.EndStatType]float64
 	var specw [attributes.EndStatType]float64
@@ -51,7 +51,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		c.Base.Atk += b.PromotionBonus[ind].Atk
 		c.Base.Def += b.PromotionBonus[ind].Def
 		//add specialized
-		c.stats[b.Specialized] += b.PromotionBonus[ind].Special
+		c.BaseStats[b.Specialized] += b.PromotionBonus[ind].Special
 		spec[b.Specialized] += b.PromotionBonus[ind].Special
 	}
 
@@ -70,7 +70,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	}
 	c.Weapon.Atk = bw.BaseAtk * curves.WeaponStatGrowthMult[lvl][bw.AtkCurve]
 	//add weapon special stat
-	c.stats[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
+	c.BaseStats[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
 	specw[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
 	//calculate promotion bonus
 	ind = -1
@@ -91,7 +91,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		"weap_base", c.Weapon,
 		"spec_char", spec,
 		"spec_weap", specw,
-		"final_stats", c.stats,
+		"final_stats", c.BaseStats,
 	)
 
 	return nil

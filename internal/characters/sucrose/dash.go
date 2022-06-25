@@ -7,6 +7,12 @@ import (
 
 var dashFrames []int
 
+func init() {
+	dashFrames = frames.InitAbilSlice(24)
+	dashFrames[action.ActionSkill] = 1
+	dashFrames[action.ActionBurst] = 1
+}
+
 // sucrose's dash can be cancelled by her E and Q, so we override it here. wtf sucrose
 func (c *char) Dash(p map[string]int) action.ActionInfo {
 	// call default implementation to handle stamina
@@ -15,7 +21,6 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(dashFrames),
 		AnimationLength: dashFrames[action.InvalidAction],
 		CanQueueAfter:   dashFrames[action.ActionDash], // earliest cancel
-		Post:            dashFrames[action.ActionDash], // earliest cancel
 		State:           action.DashState,
 	}
 }

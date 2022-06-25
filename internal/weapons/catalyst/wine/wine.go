@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.ATKP] = .15 + float64(r)*.05
 	stamReduction := .12 + float64(r)*.02
 	key := fmt.Sprintf("wineandsong-%v", char.Base.Name)
-	c.Events.Subscribe(event.PreDash, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDash, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

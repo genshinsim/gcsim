@@ -1,6 +1,7 @@
 package razor
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -11,14 +12,13 @@ var burstFrames []int
 
 const burstHitmark = 62
 
-func (c *char) burstFrameFunc(next action.Action) int {
-	return burstFrames[next]
+func init() {
+	burstFrames = frames.InitAbilSlice(62)
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionSkill, 0) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
 	c.Core.Status.Add("razorburst", 15*60+burstHitmark)
-	c.ClearSigil()
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -40,16 +40,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 11)
 	c.ConsumeEnergy(11)
+	c.Core.Tasks.Add(c.clearSigil, 11)
+
 	return action.ActionInfo{
-		Frames:          c.burstFrameFunc,
+		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
-		Post:            burstHitmark,
 		State:           action.BurstState,
 	}
 }
 
-func (c *char) SpeedBurst() {
+func (c *char) speedBurst() {
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.AtkSpd] = burstATKSpeed[c.TalentLvlBurst()]
 	c.AddStatMod("speed-burst", -1, attributes.AtkSpd, func() ([]float64, bool) {
@@ -60,7 +61,7 @@ func (c *char) SpeedBurst() {
 	})
 }
 
-func (c *char) WolfBurst() {
+func (c *char) wolfBurst() {
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false

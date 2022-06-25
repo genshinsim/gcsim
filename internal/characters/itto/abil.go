@@ -52,7 +52,7 @@ func (c *char) Attack(p map[string]int) (int, int) {
 
 	c.sCACount = 0
 	c.dasshuUsed = false
-	c.AdvanceNormalIndex()
+	defer c.AdvanceNormalIndex()
 
 	return f, a
 }
@@ -102,6 +102,8 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		c.sCACount = 0
 		c.Tags["strStack"] = 0
 	}
+
+	c.dasshuUsed = false
 
 	return f, a
 }
@@ -207,10 +209,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	}
 
 	if c.Base.Cons >= 1 {
-		if c.Tags["strStack"] <= 3 {
-			c.Tags["strStack"] += 2
+		c.Tags["strStack"] += 2
+		if c.Tags["strStack"] > 5 {
+			c.Tags["strStack"] = 5
 		}
-		for frame := 60; frame < 60*1.5; frame += 30 {
+		for frame := 140; frame <= 200; frame += 30 {
 			c.AddTask(func() {
 				if c.Tags["strStack"] <= 4 {
 					c.Tags["strStack"]++
@@ -218,6 +221,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			}, "c1-itto", frame)
 		}
 	}
+
 	if c.Base.Cons >= 2 {
 		c.AddTask(func() {
 			count := 0

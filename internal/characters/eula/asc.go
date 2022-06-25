@@ -8,7 +8,7 @@ import (
 
 // A4: When Glacial Illumination is cast, the CD of Icetide Vortex is reset and Eula gains 1 stack of Grimheart.
 func (c *char) a4() {
-	c.Core.Events.Subscribe(event.PreBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}

@@ -11,6 +11,12 @@ var chargeFrames []int
 
 const chargeHitmark = 50
 
+func init() {
+	chargeFrames = frames.InitAbilSlice(50)
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+}
+
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -30,7 +36,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
-		Post:            chargeHitmark,
 		State:           action.ChargeAttackState,
 	}
 }

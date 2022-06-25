@@ -1,0 +1,53 @@
+package barbara
+
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+)
+
+func (c *char) c1(delay int) {
+	c.Core.Tasks.Add(func() {
+		c.AddEnergy("barbara-c1", 1)
+		c.c1(0)
+	}, delay+10*60)
+}
+
+func (c *char) c2() {
+	for i, char := range c.Core.Player.Chars() {
+		if i == c.Index {
+			continue
+		}
+		char.AddStatMod("barbara-c2", skillDuration, attributes.NoStat, func() ([]float64, bool) {
+			return c.c2buff, true
+		})
+
+	}
+}
+
+// inspired from hutao c6
+//TODO: does this even work?
+func (c *char) c6() {
+	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+		if c.Core.Player.Active() != c.Index { //trigger only when not barbara
+			c.checkc6()
+		}
+		return false
+	}, "barbara-c6")
+}
+
+func (c *char) checkc6() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	if c.Core.F < c.c6icd && c.c6icd != 0 {
+		return
+	}
+	//grab the active char
+	char := c.Core.Player.ActiveChar()
+	//if dead, revive back to 1 hp
+	if char.HPCurrent <= -1 {
+		c.HPCurrent = c.MaxHP()
+	}
+
+	c.c6icd = c.Core.F + 60*60*15
+}

@@ -11,6 +11,14 @@ var chargeFrames []int
 
 const chargeHitmark = 22
 
+func init() {
+	// charge -> x
+	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = 36
+}
+
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	if c.Core.Status.Duration("raidenburst") > 0 {
 		return c.swordCharge(p)
@@ -33,13 +41,19 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
-		Post:            chargeHitmark,
 		State:           action.ChargeAttackState,
 	}
 }
 
 var swordCAFrames []int
 var swordCAHitmarks = []int{24, 31}
+
+func init() {
+	// charge (burst) -> x
+	swordCAFrames = frames.InitAbilSlice(56)
+	swordCAFrames[action.ActionDash] = swordCAHitmarks[len(swordCAHitmarks)-1]
+	swordCAFrames[action.ActionJump] = swordCAHitmarks[len(swordCAHitmarks)-1]
+}
 
 func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
@@ -73,7 +87,6 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(swordCAFrames),
 		AnimationLength: swordCAFrames[action.InvalidAction],
 		CanQueueAfter:   swordCAHitmarks[len(swordCAHitmarks)-1],
-		Post:            swordCAHitmarks[len(swordCAHitmarks)-1],
 		State:           action.ChargeAttackState,
 	}
 }

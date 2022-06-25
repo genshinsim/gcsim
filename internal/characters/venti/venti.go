@@ -1,64 +1,56 @@
 package venti
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-type char struct {
-	*character.Tmpl
-	qInfuse    core.EleType
-	infuseCheckLocation core.AttackPattern
-	aiAbsorb   core.AttackInfo
-	snapAbsorb core.Snapshot
-}
-
 func init() {
-	core.RegisterCharFunc(core.Venti, NewChar)
+	core.RegisterCharFunc(keys.Venti, NewChar)
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
-	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Anemo
+type char struct {
+	*tmpl.Character
+	qInfuse             attributes.Element
+	infuseCheckLocation combat.AttackPattern
+	aiAbsorb            combat.AttackInfo
+	snapAbsorb          combat.Snapshot
+}
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 60
-	}
-	c.Energy = float64(e)
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+	c := char{}
+	c.Character = tmpl.NewWithWrapper(s, w)
+
+	c.Base.Element = attributes.Anemo
 	c.EnergyMax = 60
-	c.Weapon.Class = core.WeaponClassBow
-	c.NormalHitNum = 6
+	c.Weapon.Class = weapon.WeaponClassBow
+	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.InitCancelFrames()
 
-	c.infuseCheckLocation = core.NewDefCircHit(0.1, false, core.TargettableEnemy, core.TargettablePlayer, core.TargettableObject)
+	c.infuseCheckLocation = combat.NewDefCircHit(0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) ReceiveParticle(p core.Particle, isActive bool, partyCount int) {
-	c.Tmpl.ReceiveParticle(p, isActive, partyCount)
+func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount int) {
+	c.Character.ReceiveParticle(p, isActive, partyCount)
 	if c.Base.Cons >= 4 {
 		//only pop this if active
 		if !isActive {
 			return
 		}
-
-		val := make([]float64, core.EndStatType)
-		val[core.AnemoP] = 0.25
-		c.AddMod(core.CharStatMod{
-			Key:    "venti-c4",
-			Amount: func() ([]float64, bool) { return val, true },
-			Expiry: c.Core.F + 600,
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.AnemoP] = 0.25
+		c.AddStatMod("venti-c4", 600, attributes.AnemoP, func() ([]float64, bool) {
+			return m, true
 		})
-		c.Core.Log.NewEvent("c4 - adding anemo bonus", core.LogCharacterEvent, c.Index, "char", c.Index)
-
 	}
 }

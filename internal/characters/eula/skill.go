@@ -16,6 +16,23 @@ var icewhirlHitmarks = []int{79, 92}
 const skillPressHitmark = 20
 const skillHoldHitmark = 49
 
+func init() {
+	// skill (press) -> x
+	skillPressFrames = frames.InitAbilSlice(48)
+	skillPressFrames[action.ActionAttack] = 31
+	skillPressFrames[action.ActionBurst] = 31
+	skillPressFrames[action.ActionDash] = 29
+	skillPressFrames[action.ActionJump] = 30
+	skillPressFrames[action.ActionSwap] = 29
+
+	// skill (hold) -> x
+	skillHoldFrames = frames.InitAbilSlice(77)
+	skillHoldFrames[action.ActionDash] = 75
+	skillHoldFrames[action.ActionJump] = 75
+	skillHoldFrames[action.ActionSwap] = 100
+	skillHoldFrames[action.ActionWalk] = 75
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if p["hold"] != 0 {
 		return c.holdSkill(p)
@@ -62,7 +79,6 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
-		Post:            skillPressFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -169,7 +185,6 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel
-		Post:            skillHoldFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

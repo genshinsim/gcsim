@@ -1,84 +1,50 @@
 package amber
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
-	core.RegisterCharFunc(core.Amber, NewChar)
+	core.RegisterCharFunc(keys.Amber, NewChar)
 }
 
 type char struct {
-	*character.Tmpl
+	*tmpl.Character
 	bunnies []bunny
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Pyro
+	c.Character = tmpl.NewWithWrapper(s, w)
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 40
-	}
-	c.Energy = float64(e)
+	c.Base.Element = attributes.Pyro
 	c.EnergyMax = 40
-	c.Weapon.Class = core.WeaponClassBow
-	c.NormalHitNum = 5
+	c.Weapon.Class = weapon.WeaponClassBow
+	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
 
 	c.bunnies = make([]bunny, 0, 2)
 
 	if c.Base.Cons >= 4 {
-		c.SetNumCharges(core.ActionSkill, 2)
+		c.SetNumCharges(action.ActionSkill, 2)
 	}
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-
+func (c *char) Init() error {
 	c.a1()
-
 	if c.Base.Cons >= 2 {
 		c.overloadExplode()
 	}
-}
-
-func (c *char) a1() {
-	m := make([]float64, core.EndStatType)
-	m[core.CR] = .1
-
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "amber-a1",
-		Expiry: -1,
-		Amount: func(atk *core.AttackEvent, t core.Target) ([]float64, bool) {
-			return m, atk.Info.AttackTag == core.AttackTagElementalBurst
-		},
-	})
-}
-
-func (c *char) a4(a core.AttackCB) {
-	if !a.AttackEvent.Info.HitWeakPoint {
-		return
-	}
-
-	m := make([]float64, core.EndStatType)
-	m[core.ATKP] = 0.15
-
-	c.AddMod(core.CharStatMod{
-		Key:    "amber-a4",
-		Expiry: c.Core.F + 600,
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-	})
+	return nil
 }

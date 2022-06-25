@@ -13,6 +13,10 @@ var skillFrames []int
 
 const skillStart = 21
 
+func init() {
+	skillFrames = frames.InitAbilSlice(21)
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	delay := p["illusion_delay"]
 	if delay < 35 {
@@ -54,8 +58,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		Post:            skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) generateParticles(ac combat.AttackCB) {
+	if c.Core.F > c.particleICD {
+		c.particleICD = c.Core.F + 114
+		var count float64 = 1
+		if c.Core.Rand.Float64() < 0.5 {
+			count++
+		}
+		c.Core.QueueParticle("ayato", count, attributes.Hydro, 80)
+	}
+}
+
+func (c *char) skillStacks(ac combat.AttackCB) {
+	if c.stacks < c.stacksMax {
+		c.stacks++
+		c.Core.Log.NewEvent("gained namisen stack", glog.LogCharacterEvent, c.Index, "stacks", c.stacks)
 	}
 }
 

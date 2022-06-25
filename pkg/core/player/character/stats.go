@@ -36,7 +36,7 @@ func (c *CharWrapper) DeleteStatMod(key string) {
 	deleteMod(c, c.statsMod, key)
 }
 
-func (c *CharWrapper) StatModIsActive(key string, char int) bool {
+func (c *CharWrapper) StatModIsActive(key string) bool {
 	ind, ok := findModCheckExpiry(c.statsMod, key, *c.f)
 	if !ok {
 		return false
@@ -52,7 +52,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	//grab char stats
 
 	var stats [attributes.EndStatType]float64
-	copy(stats[:], c.stats[:attributes.EndStatType])
+	copy(stats[:], c.BaseStats[:attributes.EndStatType])
 
 	if c.debug {
 		debugDetails = make([]interface{}, 0, 2*len(c.statsMod))
@@ -106,7 +106,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 }
 
 func (h *CharWrapper) Stat(s attributes.Stat) float64 {
-	val := h.stats[s]
+	val := h.BaseStats[s]
 	for _, mod := range h.statsMod {
 		// ignore this mod if stat type doesnt match
 		if mod.AffectedStat != attributes.NoStat && mod.AffectedStat != s {
@@ -124,8 +124,8 @@ func (h *CharWrapper) Stat(s attributes.Stat) float64 {
 }
 
 func (c *CharWrapper) MaxHP() float64 {
-	hpp := c.stats[attributes.HPP]
-	hp := c.stats[attributes.HP]
+	hpp := c.BaseStats[attributes.HPP]
+	hp := c.BaseStats[attributes.HP]
 
 	for _, mod := range c.statsMod {
 		// ignore this mod if stat type doesnt match

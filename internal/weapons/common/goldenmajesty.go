@@ -17,6 +17,7 @@ type GoldenMajesty struct {
 
 func (b *GoldenMajesty) SetIndex(idx int) { b.Index = idx }
 func (b *GoldenMajesty) Init() error      { return nil }
+
 func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &GoldenMajesty{}
 	r := p.Refine

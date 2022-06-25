@@ -11,16 +11,27 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+var skillPressFrames []int
+var skillHoldFrames []int
+
+const skillPressHitmark = 31
+const skillHoldHitmark = 44
+const quillKey = "shenhequill"
+
+func init() {
+	// skill (press) -> x
+	skillPressFrames = frames.InitAbilSlice(31)
+
+	// skill (hold) -> x
+	skillHoldFrames = frames.InitAbilSlice(44)
+}
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if p["hold"] != 0 {
 		return c.skillHold(p)
 	}
 	return c.skillPress(p)
 }
-
-var skillPressFrames []int
-
-const skillPressHitmark = 31
 
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
@@ -46,14 +57,9 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressHitmark,
-		Post:            skillPressHitmark,
 		State:           action.SkillState,
 	}
 }
-
-var skillHoldFrames []int
-
-const skillHoldHitmark = 44
 
 func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
@@ -79,7 +85,6 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldHitmark,
-		Post:            skillHoldHitmark,
 		State:           action.SkillState,
 	}
 }

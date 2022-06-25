@@ -12,6 +12,13 @@ var skillFrames []int
 
 const skillHitmark = 24
 
+func init() {
+	skillFrames = frames.InitAbilSlice(51)
+	skillFrames[action.ActionDash] = 38
+	skillFrames[action.ActionJump] = 40
+	skillFrames[action.ActionSwap] = 50
+}
+
 // Skill attack damage queue generator
 // Includes optional argument "nobehind" for whether Rosaria appears behind her opponent or not (for her A1).
 // Default behavior is to appear behind enemy - set "nobehind=1" to diasble A1 proc
@@ -65,7 +72,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		Post:            skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

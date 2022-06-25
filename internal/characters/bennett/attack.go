@@ -12,6 +12,27 @@ import (
 var attackFrames [][]int
 var attackHitmarks = []int{13, 9, 13, 25, 24}
 
+const normalHitNum = 5
+
+func init() {
+	attackFrames = make([][]int, normalHitNum)
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33)
+	attackFrames[0][action.ActionAttack] = 20
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 27)
+	attackFrames[1][action.ActionAttack] = 17
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 46)
+	attackFrames[2][action.ActionAttack] = 37
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 48)
+	attackFrames[3][action.ActionAttack] = 44
+
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 60)
+	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+}
+
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -37,7 +58,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
-		Post:            attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 }

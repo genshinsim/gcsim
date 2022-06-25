@@ -39,21 +39,14 @@ const (
 	OnCharacterHurt    //amount
 	OnHeal             //src char, target character, amount
 	//ability use
-	OnActionExec     //ActiveCharIndex, action.Action, param
-	PreSkill         //nil
-	PostSkill        //nil, frames
-	PreBurst         //nil
-	PostBurst        //nil, frames
-	PreAttack        //nil
-	PostAttack       //nil, frames
-	PreChargeAttack  //nil
-	PostChargeAttack //nil, frames
-	PrePlunge        //nil
-	PostPlunge       //nil, frames
-	PreAimShoot      //nil
-	PostAimShoot     //nil, frames
-	PreDash
-	PostDash
+	OnActionExec   //ActiveCharIndex, action.Action, param
+	OnSkill        //nil
+	OnBurst        //nil
+	OnAttack       //nil
+	OnChargeAttack //nil
+	OnPlunge       //nil
+	OnAimShoot     //nil
+	OnDash
 	//sim stuff
 	OnInitialize  //nil
 	OnStateChange //prev, next
