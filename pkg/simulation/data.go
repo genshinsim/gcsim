@@ -168,7 +168,7 @@ func (s *Simulation) initTeamStats() {
 		s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 		s.stats.CharNames[i] = v.Base.Key.String()
 		s.stats.EnergyDetail[i] = make(map[string][4]float64)
-		s.stats.EnergyWhenBurst[i] = make([]float64, 0, s.cfg.Settings.Duration/12+2)
+		s.stats.EnergyWhenBurst[i] = make([]float64, 0, int(s.cfg.Settings.Duration/12+2))
 
 		//log the character data
 		s.stats.CharDetails = append(s.stats.CharDetails, CharDetail{

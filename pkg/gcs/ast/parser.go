@@ -37,11 +37,18 @@ type ActionList struct {
 	Characters  []character.CharacterProfile `json:"characters"`
 	InitialChar keys.Char                    `json:"initial"`
 	Program     *BlockStmt
+	Energy      EnergySettings
 	Settings    SimulatorSettings
 }
 
+type EnergySettings struct {
+	Every  float64
+	Amount int
+	Lambda float64
+}
+
 type SimulatorSettings struct {
-	Duration   int
+	Duration   float64
 	DamageMode bool
 	//other stuff
 	NumberOfWorkers int // how many workers to run the simulation

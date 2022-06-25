@@ -104,6 +104,7 @@ const (
 	keywordActive  // active
 	keywordTarget  // target
 	keywordResist  // resist
+	keywordEnergy  // energy
 
 	// Keywords specific to gcsim appears after this
 	itemKeys

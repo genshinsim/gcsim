@@ -129,6 +129,9 @@ func parseRows(p *Parser) (parseFn, error) {
 	case keywordTarget:
 		p.next()
 		return parseTarget, nil
+	case keywordEnergy:
+		p.next()
+		return parseEnergy, nil
 	case keywordOptions:
 		p.next()
 		return parseOptions, nil
