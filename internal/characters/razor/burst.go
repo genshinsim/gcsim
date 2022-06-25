@@ -19,7 +19,6 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionSkill, 0) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
 	c.Core.Status.Add("razorburst", 15*60+burstHitmark)
-	c.clearSigil()
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -41,6 +40,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 11)
 	c.ConsumeEnergy(11)
+	c.Core.Tasks.Add(c.clearSigil, 11)
+
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
