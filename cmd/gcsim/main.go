@@ -23,11 +23,12 @@ var (
 )
 
 type opts struct {
-	config string
-	out    string //file result name
-	gz     bool
-	prof   bool
-	serve  bool
+	config    string
+	out       string //file result name
+	gz        bool
+	prof      bool
+	serve     bool
+	nobrowser bool
 	// substatOptim bool
 	// verbose      bool
 	// options      string
@@ -44,6 +45,7 @@ func main() {
 	flag.BoolVar(&opt.gz, "gz", false, "gzip json results; require out flag")
 	flag.BoolVar(&opt.prof, "p", false, "run cpu profile; default false")
 	flag.BoolVar(&opt.serve, "s", false, "serve file to viewer (local). default false")
+	flag.BoolVar(&opt.nobrowser, "nb", false, "disable opening default browser")
 
 	flag.Parse()
 
@@ -83,12 +85,14 @@ func main() {
 		serverDone.Add(1)
 		serveLocal(serverDone, "./serve_data.json.gz")
 		url := "https://gcsim.app/viewer/local"
-		err = open(url)
-		if err != nil {
-			//try "xdg-open-wsl"
-			err = openWSL(url)
+		if !opt.nobrowser {
+			err = open(url)
 			if err != nil {
-				fmt.Printf("Error opening default browser... please visit: %v\n", url)
+				//try "xdg-open-wsl"
+				err = openWSL(url)
+				if err != nil {
+					fmt.Printf("Error opening default browser... please visit: %v\n", url)
+				}
 			}
 		}
 		serverDone.Wait()
