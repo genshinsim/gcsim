@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -177,4 +178,51 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		}
 		c.Core.Tasks.Add(c.absorbCheck(src, count+1, max), 12)
 	}
+}
+
+func (c *char) rollAbsorb() {
+	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
+			return false
+		}
+		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+			return false
+		}
+		if atk.Info.Element != attributes.Anemo || c.eInfused == attributes.NoElement {
+			return false
+		}
+		if c.Core.F > c.eDuration {
+			return false
+		}
+
+		switch atk.Info.AttackTag {
+		case combat.AttackTagElementalArt:
+			ai := combat.AttackInfo{
+				ActorIndex: c.Index,
+				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
+				AttackTag:  combat.AttackTagElementalArtHold,
+				ICDTag:     c.eInfusedTag,
+				ICDGroup:   combat.ICDGroupDefault,
+				Element:    c.eInfused,
+				Durability: 25,
+				Mult:       skillAbsorb[c.TalentLvlSkill()],
+			}
+			c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 1, 1)
+		case combat.AttackTagElementalArtHold:
+			ai := combat.AttackInfo{
+				ActorIndex: c.Index,
+				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
+				AttackTag:  combat.AttackTagElementalArt,
+				ICDTag:     combat.ICDTagNone,
+				ICDGroup:   combat.ICDGroupDefault,
+				Element:    c.eInfused,
+				Durability: 25,
+				Mult:       skillAbsorbEnd[c.TalentLvlSkill()],
+			}
+			c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 1, 1)
+		}
+
+		return false
+	}, "sayu-absorb-check")
 }
