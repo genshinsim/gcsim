@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var attackFrames [][]int
@@ -80,23 +79,5 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
-	}
-}
-
-func (c *char) generateParticles(ac combat.AttackCB) {
-	if c.Core.F > c.particleICD {
-		c.particleICD = c.Core.F + 114
-		var count float64 = 1
-		if c.Core.Rand.Float64() < 0.5 {
-			count++
-		}
-		c.Core.QueueParticle("ayato", count, attributes.Hydro, 80)
-	}
-}
-
-func (c *char) skillStacks(ac combat.AttackCB) {
-	if c.stacks < c.stacksMax {
-		c.stacks++
-		c.Core.Log.NewEvent("gained namisen stack", glog.LogCharacterEvent, c.Index, "stacks", c.stacks)
 	}
 }

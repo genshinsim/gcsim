@@ -206,7 +206,7 @@ func (c *char) bellTick() func() {
 		//check for orb
 		//Particle check is 45% for particle
 		if c.Core.Rand.Float64() < .45 {
-			c.QueueParticle("Kuki", 1, core.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
+			c.QueueParticle("kuki", 1, core.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
 		}
 
 		//queue up next hit only if next hit bell is still active
