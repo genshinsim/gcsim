@@ -59,7 +59,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		)
 	}
 	if count >= 4 {
-		c.Events.Subscribe(event.PostBurst, func(args ...interface{}) bool {
+		//TODO: this used to be post. need to check
+		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
 			if c.Player.Active() != char.Index {
 				return false

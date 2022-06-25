@@ -41,7 +41,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.50
-		c.Events.Subscribe(event.PreSkill, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 			if c.Player.Active() != char.Index {
 				return false
 			}
