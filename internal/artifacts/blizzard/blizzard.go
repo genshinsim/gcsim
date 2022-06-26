@@ -31,7 +31,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		m[attributes.CryoP] = 0.15
 		char.AddAttackMod(
 			"bs-4pc",
 			-1,
