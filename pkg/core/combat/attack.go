@@ -54,7 +54,7 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 			//don't log this for target 0
 			if i > 0 {
 				c.log.NewEventBuildMsg(
-					glog.LogSimEvent,
+					glog.LogDebugEvent,
 					a.Info.ActorIndex,
 					"skipped ",
 					a.Info.Abil,

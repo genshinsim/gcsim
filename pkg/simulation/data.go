@@ -30,9 +30,7 @@ func (s *Simulation) initDetailLog() {
 	s.C.Events.Subscribe(event.OnTargetAdded, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
 
-		s.C.Log.NewEvent("Target Added", glog.LogSimEvent, -1, "target_type", t.Type())
-		// s.C.Log.Debugw("Target Added", "frame", s.C.F, core.LogSimEvent, "target_type", t.Type())
-
+		s.C.Log.NewEvent("Target Added", glog.LogDebugEvent, -1, "target_type", t.Type())
 		s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[attributes.Element]int))
 
 		return false

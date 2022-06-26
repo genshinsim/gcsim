@@ -1,19 +1,21 @@
 package gcs
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
 func (e *Eval) print(c *ast.CallExpr, env *Env) Obj {
 	//concat all args
+	var sb strings.Builder
 	for _, arg := range c.Args {
 		val := e.evalExpr(arg, env)
-		fmt.Print(val.Inspect())
+		sb.WriteString(val.Inspect())
 	}
-	fmt.Print("\n")
+	e.Core.Log.NewEvent(sb.String(), glog.LogUserEvent, -1)
 	return &number{}
 }
 

@@ -23,12 +23,13 @@ var (
 )
 
 type opts struct {
-	config    string
-	out       string //file result name
-	gz        bool
-	prof      bool
-	serve     bool
-	nobrowser bool
+	config      string
+	out         string //file result name
+	gz          bool
+	prof        bool
+	serve       bool
+	nobrowser   bool
+	keepserving bool
 	// substatOptim bool
 	// verbose      bool
 	// options      string
@@ -46,6 +47,7 @@ func main() {
 	flag.BoolVar(&opt.prof, "p", false, "run cpu profile; default false")
 	flag.BoolVar(&opt.serve, "s", false, "serve file to viewer (local). default false")
 	flag.BoolVar(&opt.nobrowser, "nb", false, "disable opening default browser")
+	flag.BoolVar(&opt.keepserving, "ks", false, "keep serving same file without terminating web server")
 
 	flag.Parse()
 
@@ -83,7 +85,7 @@ func main() {
 		//start server to listen for token
 		serverDone := &sync.WaitGroup{}
 		serverDone.Add(1)
-		serveLocal(serverDone, "./serve_data.json.gz")
+		serveLocal(serverDone, "./serve_data.json.gz", opt.keepserving)
 		url := "https://gcsim.app/viewer/local"
 		if !opt.nobrowser {
 			err = open(url)
@@ -133,7 +135,7 @@ type viewerData struct {
 	Description string `json:"description"`
 }
 
-func serveLocal(wg *sync.WaitGroup, path string) {
+func serveLocal(wg *sync.WaitGroup, path string, keepserving bool) {
 	srv := &http.Server{Addr: "127.0.0.1:8381"}
 	http.HandleFunc("/data", func(w http.ResponseWriter, r *http.Request) {
 		select {
@@ -189,10 +191,12 @@ func serveLocal(wg *sync.WaitGroup, path string) {
 			f.Flush()
 		}
 
-		// // Shut down server here
-		cancel() // to say sorry, above.
+		if !keepserving {
+			// // Shut down server here
+			cancel() // to say sorry, above.
 
-		close(quit)
+			close(quit)
+		}
 
 	})
 

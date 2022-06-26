@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -24,7 +23,6 @@ func (s *Core) SetupResonance() {
 		if v >= 2 {
 			switch k {
 			case attributes.Pyro:
-				s.Log.NewEvent("adding pyro resonance", glog.LogSimEvent, -1)
 				val := make([]float64, attributes.EndStatType)
 				val[attributes.ATKP] = 0.25
 				f := func() ([]float64, bool) {
@@ -35,7 +33,6 @@ func (s *Core) SetupResonance() {
 				}
 			case attributes.Hydro:
 				//heal not implemented yet
-				s.Log.NewEvent("adding hydro resonance", glog.LogSimEvent, -1)
 				f := func() (float64, bool) {
 					return 0.3, true
 				}
@@ -43,7 +40,6 @@ func (s *Core) SetupResonance() {
 					c.AddHealBonusMod("hydro-res", -1, f)
 				}
 			case attributes.Cryo:
-				s.Log.NewEvent("adding cryo resonance", glog.LogSimEvent, -1)
 				val := make([]float64, attributes.EndStatType)
 				val[attributes.CR] = .15
 				f := func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
@@ -60,7 +56,6 @@ func (s *Core) SetupResonance() {
 					c.AddAttackMod("cyro-res", -1, f)
 				}
 			case attributes.Electro:
-				s.Log.NewEvent("adding electro resonance", glog.LogSimEvent, -1)
 				last := 0
 				recover := func(args ...interface{}) bool {
 					if s.F-last < 300 && last != 0 { // every 5 seconds
@@ -79,7 +74,6 @@ func (s *Core) SetupResonance() {
 				s.Events.Subscribe(event.OnElectroCharged, recover, "electro-res")
 
 			case attributes.Geo:
-				s.Log.NewEvent("adding geo resonance", glog.LogSimEvent, -1)
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
 				//following special characteristics:
 
@@ -113,7 +107,6 @@ func (s *Core) SetupResonance() {
 				}
 
 			case attributes.Anemo:
-				s.Log.NewEvent("adding anemo resonance", glog.LogSimEvent, -1)
 				for _, c := range chars {
 					c.AddCooldownMod("anemo-res", -1, func(a action.Action) float64 { return -0.05 })
 				}
