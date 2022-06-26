@@ -2,15 +2,11 @@ package simulation
 
 import (
 	"errors"
-	"fmt"
 	"log"
-	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -46,7 +42,7 @@ func (s *Simulation) Run() (Result, error) {
 	s.C.Init()
 
 	//queue up enery tasks
-	s.QueueEnergyEvent()
+	s.SetupRandEnergyDrop()
 
 	for !stop {
 		err = s.AdvanceFrame()
@@ -65,35 +61,6 @@ func (s *Simulation) Run() (Result, error) {
 
 	//we're done yay
 	return s.stats, nil
-}
-
-func (s *Simulation) randEnergy() {
-	//drop energy
-	s.C.Player.DistributeParticle(character.Particle{
-		Source: "drop",
-		Num:    float64(s.cfg.Energy.Amount),
-		Ele:    attributes.NoElement,
-	})
-
-	//calculate next
-	next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
-	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy queued - ", fmt.Sprintf("next %v", s.C.F+next)).Write("settings", s.cfg.Energy, "first", next)
-	s.C.Tasks.Add(s.randEnergy, next)
-}
-
-func (s *Simulation) QueueEnergyEvent() {
-	//do nothing if none set
-	if s.cfg.Energy.Every == 0 {
-		return
-	}
-	//every is given in seconds, so lambda (events per second) is 1 / every
-	s.cfg.Energy.Lambda = 1.0 / s.cfg.Energy.Every
-	//lambda is per s so we need to scale it to per frame
-	s.cfg.Energy.Lambda /= 60
-	next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
-	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy started - ", fmt.Sprintf("next %v", s.C.F+next)).Write("settings", s.cfg.Energy, "first", next)
-	//start the first round
-	s.C.Tasks.Add(s.randEnergy, next)
 }
 
 func (s *Simulation) AdvanceFrame() error {

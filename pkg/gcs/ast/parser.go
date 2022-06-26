@@ -45,7 +45,7 @@ type ActionList struct {
 type EnergySettings struct {
 	Every  float64
 	Amount int
-	Lambda float64
+	Mean   float64
 }
 
 type SimulatorSettings struct {
