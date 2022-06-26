@@ -33,7 +33,7 @@ func (h *Handler) Heal(info HealInfo) {
 
 func (h *Handler) HealIndex(info *HealInfo, index int) {
 	c := h.chars[index]
-	bonus := h.chars[index].HealBonus() + info.Bonus
+	bonus := 1 + h.chars[index].HealBonus() + info.Bonus
 	hp := .0
 	switch info.Type {
 	case HealTypeAbsolute:
