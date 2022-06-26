@@ -1,6 +1,8 @@
 package character
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -96,7 +98,7 @@ func New(
 	log glog.Logger, //logging, can be nil
 	events event.Eventter, //event emitter
 	task task.Tasker,
-) *CharWrapper {
+) (*CharWrapper, error) {
 	c := &CharWrapper{
 		Base:                p.Base,
 		Weapon:              p.Weapon,
@@ -120,8 +122,24 @@ func New(
 	//default cons
 	c.SkillCon = 3
 	c.BurstCon = 5
+	//check talents
+	if c.Talents.Attack < 1 || c.Talents.Attack > 15 {
+		return nil, fmt.Errorf("invalid talent lvl: attack - %v", c.Talents.Attack)
+	}
+	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
+		return nil, fmt.Errorf("invalid talent lvl: skill - %v", c.Talents.Skill)
+	}
+	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
+		return nil, fmt.Errorf("invalid talent lvl: burst - %v", c.Talents.Burst)
+	}
+	//setup base hp
+	if p.Base.StartHP > -1 {
+		c.HPCurrent = p.Base.StartHP
+	} else {
+		c.HPCurrent = -1 //to be cleared up in init
+	}
 
-	return c
+	return c, nil
 }
 
 func (c *CharWrapper) SetIndex(index int) {

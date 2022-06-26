@@ -126,7 +126,10 @@ func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 	var err error
 
 	// initialize character
-	char := character.New(p, &c.F, c.Flags.LogDebug, c.Log, c.Events, c.Tasks)
+	char, err := character.New(p, &c.F, c.Flags.LogDebug, c.Log, c.Events, c.Tasks)
+	if err != nil {
+		return -1, err
+	}
 
 	f, ok := charMap[p.Base.Key]
 	if !ok {
