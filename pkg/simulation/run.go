@@ -38,9 +38,6 @@ func (s *Simulation) Run() (Result, error) {
 	go s.queuer.Run()
 	defer close(s.continueEval)
 
-	//init sim
-	s.C.Init()
-
 	//queue up enery tasks
 	s.SetupRandEnergyDrop()
 

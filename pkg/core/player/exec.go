@@ -98,6 +98,8 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			return ErrActionNotReady
 		}
 		//otherwise swap at the end of timer
+		//log here that we're starting a swap
+		p.log.NewEventBuildMsg(glog.LogActionEvent, p.active, "swapping ", p.chars[p.active].Base.Key.String(), " to ", p.chars[p.charPos[k]].Base.Key.String())
 
 		x := action.ActionInfo{
 			Frames: func(next action.Action) int {
