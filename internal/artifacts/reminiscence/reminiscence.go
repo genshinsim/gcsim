@@ -23,6 +23,7 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	s.cd = -1
@@ -58,20 +59,16 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				char.AddEnergy("shim-4pc", -15)
 			}, 10)
 
-			char.AddAttackMod(
-				"shim-4pc",
-				c.F+60*10,
-				func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					switch atk.Info.AttackTag {
-					case combat.AttackTagNormal:
-					case combat.AttackTagExtra:
-					case combat.AttackTagPlunge:
-					default:
-						return nil, false
-					}
-					return m, true
-				},
-			)
+			char.AddAttackMod("shim-4pc", 60*10, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				switch atk.Info.AttackTag {
+				case combat.AttackTagNormal:
+				case combat.AttackTagExtra:
+				case combat.AttackTagPlunge:
+				default:
+					return nil, false
+				}
+				return m, true
+			})
 
 			return false
 		}, fmt.Sprintf("shim-4pc-%v", char.Base.Name))

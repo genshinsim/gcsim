@@ -47,16 +47,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.20
-		char.AddAttackMod(
-			"nob-2pc",
-			-1,
-			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
-					return nil, false
-				}
-				return m, true
-			},
-		)
+		char.AddAttackMod("nob-2pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+				return nil, false
+			}
+			return m, true
+		})
 	}
 	if count >= 4 {
 		//TODO: this used to be post. need to check
