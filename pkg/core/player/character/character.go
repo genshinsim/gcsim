@@ -117,6 +117,9 @@ func New(
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]artifact.Set)
+	//default cons
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	return c
 }
