@@ -10,7 +10,7 @@ func (c *Character) ActionReady(a action.Action, p map[string]int) bool {
 
 	switch a {
 	case action.ActionBurst:
-		return c.Energy == c.EnergyMax
+		return c.Energy == c.EnergyMax && c.AvailableCDCharge[a] > 0
 	case action.ActionSkill:
 		return c.AvailableCDCharge[a] > 0
 	case action.ActionCharge:

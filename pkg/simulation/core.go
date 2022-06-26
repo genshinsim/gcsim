@@ -6,5 +6,5 @@ import (
 )
 
 func NewCore(seed int64, debug bool, cfg *ast.ActionList) (*core.Core, error) {
-	return core.New(seed, debug)
+	return core.New(seed, debug, cfg.Settings.Delays)
 }

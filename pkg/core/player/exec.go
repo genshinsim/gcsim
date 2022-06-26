@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 //ErrActionNotReady is returned if the requested action is not ready; this could be
@@ -15,6 +16,7 @@ import (
 //	- Player currently in animation
 var ErrActionNotReady = errors.New("action is not ready yet; cannot be executed")
 var ErrPlayerNotReady = errors.New("player still in animation; cannot execute action")
+var ErrActionNoOp = errors.New("action is a noop")
 
 //Exec mirrors the idea of the in game buttons where you can press the button but
 //it may be greyed out. If grey'd out it will return ErrActionNotReady. Otherwise
@@ -32,7 +34,7 @@ var ErrPlayerNotReady = errors.New("player still in animation; cannot execute ac
 //Note that although wait is not strictly a button in game, it is still a valid action.
 //When wait is executed, it will simply put the player in a lock animation state for
 //the requested number of frames
-func (p *Handler) Exec(t action.Action, param map[string]int) error {
+func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error {
 	//check animation state
 	if p.IsAnimationLocked(t) {
 		return ErrPlayerNotReady
@@ -88,6 +90,29 @@ func (p *Handler) Exec(t action.Action, param map[string]int) error {
 		p.useAbility(t, param, char.HighPlungeAttack)
 	case action.ActionLowPlunge:
 		p.useAbility(t, param, char.LowPlungeAttack)
+	case action.ActionSwap:
+		if p.active == p.charPos[k] {
+			return ErrActionNoOp
+		}
+		if p.SwapCD > 0 {
+			return ErrActionNotReady
+		}
+		//otherwise swap at the end of timer
+
+		x := action.ActionInfo{
+			Frames: func(next action.Action) int {
+				return p.delays.Swap
+			},
+			AnimationLength: p.delays.Swap,
+			CanQueueAfter:   p.delays.Swap,
+			State:           action.SwapState,
+		}
+		x.QueueAction(p.swap(k), p.delays.Swap)
+		x.CacheFrames()
+		p.SetActionUsed(p.active, &x)
+		p.LastAction.Type = t
+		p.LastAction.Param = param
+		p.LastAction.Char = p.active
 	default:
 		panic("invalid action reached")
 	}
@@ -129,10 +154,11 @@ func (p *Handler) useAbility(
 	p.LastAction.Param = param
 	p.LastAction.Char = p.active
 
-	p.log.NewEvent(
-		"executed "+t.String(),
+	p.log.NewEventBuildMsg(
 		glog.LogActionEvent,
 		p.active,
+		"executed ", t.String(),
+	).Write(
 		"action", t.String(),
 	)
 

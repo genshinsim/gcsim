@@ -3,6 +3,8 @@ package gcs
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -96,7 +98,28 @@ func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) Obj {
 	return n
 }
 
+func (e *Eval) execSwap(char keys.Char) Obj {
+	e.Work <- &ast.ActionStmt{
+		Char:   char,
+		Action: action.ActionSwap,
+	}
+	_, ok := <-e.Next
+	if !ok {
+		return &terminate{} //no more work, shutting down
+	}
+
+	return &null{}
+}
+
 func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) Obj {
+	//check if character is active, if not then issue a swap action first
+	if !e.Core.Player.CharIsActive(a.Char) {
+		res := e.execSwap(a.Char)
+		if res.Typ() != typNull {
+			return res
+		}
+	}
+
 	//TODO: should we make a copy of action here??
 	e.Work <- a
 	//block until sim is done with the action; unless we're done

@@ -3,8 +3,10 @@ package simulation
 import (
 	"errors"
 	"fmt"
+	"log"
 	"math"
 
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -35,6 +37,7 @@ func (s *Simulation) Run() (Result, error) {
 		AST:  s.cfg.Program,
 		Next: s.continueEval,
 		Work: s.nextAction,
+		Core: s.C,
 	}
 	go s.queuer.Run()
 	defer close(s.continueEval)
@@ -45,6 +48,7 @@ func (s *Simulation) Run() (Result, error) {
 	for !stop {
 		err = s.AdvanceFrame()
 		if err != nil {
+			log.Println(err)
 			return s.stats, err
 		}
 
@@ -120,32 +124,47 @@ func (s *Simulation) queueAndExec() error {
 	//TODO: this for loops is completely unnecessary
 	for {
 		if s.queue != nil {
-			err := s.C.Player.Exec(s.queue.Action, s.queue.Param)
-			switch err {
-			case player.ErrActionNotReady:
-				//action not ready yet, skipping frame
-				//TODO: log something here
-				return nil
-			case player.ErrPlayerNotReady:
-				//player still in animation, skipping frame
-				//TODO: log something here
-				return nil
-			case nil:
-				//exeucted successfully
+			//handle wait separately
+			if s.queue.Action == action.ActionWait {
+				//wipe the action here, set skip
+				s.skip = s.queue.Param["f"]
+				s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active(), "f", s.queue.Param["f"])
 				s.queue = nil
-			default:
-				//this should now error out
-				return err
+				return nil
+			} else {
+				err := s.C.Player.Exec(s.queue.Action, s.queue.Char, s.queue.Param)
+				switch err {
+				case player.ErrActionNotReady:
+					//action not ready yet, skipping frame
+					//TODO: log something here
+					return nil
+				case player.ErrPlayerNotReady:
+					//player still in animation, skipping frame
+					//TODO: log something here
+					return nil
+				case player.ErrActionNoOp:
+					//technically the same as nil
+					s.C.Log.NewEventBuildMsg(glog.LogActionEvent, s.C.Player.Active(), "noop action: ", s.queue.Action.String())
+					s.queue = nil
+				case nil:
+					//exeucted successfully
+					s.queue = nil
+				default:
+					//this should now error out
+					return err
+				}
 			}
 		}
 		//do nothing if no more actions anyways
 		if s.noMoreActions {
 			//TODO: log here?
 			// fmt.Println("no more action")
+			s.C.Log.NewEvent("no more actions", glog.LogActionEvent, -1)
 			return nil
 		}
-		//check if read to queue first
+		//check if ready to queue first
 		if !s.C.Player.CanQueueNextAction() {
+			s.C.Log.NewEventBuildMsg(glog.LogActionEvent, -1, "action can't be queued yet")
 			//skip frame if not ready
 			return nil
 		}

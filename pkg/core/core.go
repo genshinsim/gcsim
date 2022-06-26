@@ -65,7 +65,7 @@ type Enemy interface {
 
 const MaxTeamSize = 4
 
-func New(seed int64, debug bool) (*Core, error) {
+func New(seed int64, debug bool, delays player.Delays) (*Core, error) {
 	c := &Core{}
 	c.Rand = rand.New(rand.NewSource(seed))
 	c.Flags.Custom = make(map[string]int)
@@ -80,7 +80,7 @@ func New(seed int64, debug bool) (*Core, error) {
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)
 	c.Constructs = construct.New(&c.F, c.Log)
-	c.Player = player.New(&c.F, c.Log, c.Events, c.Tasks, debug)
+	c.Player = player.New(&c.F, delays, c.Log, c.Events, c.Tasks, debug)
 	c.Combat = combat.New(c.Log, c.Events, c.Player, c.Rand, false, false)
 
 	return c, nil

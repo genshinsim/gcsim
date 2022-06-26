@@ -10,6 +10,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -53,7 +54,7 @@ type SimulatorSettings struct {
 	//other stuff
 	NumberOfWorkers int // how many workers to run the simulation
 	Iterations      int // how many iterations to run
-	Delays          Delays
+	Delays          player.Delays
 }
 
 type Delays struct {

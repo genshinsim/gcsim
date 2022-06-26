@@ -136,4 +136,5 @@ const (
 	DashState
 	JumpState
 	WalkState
+	SwapState
 )
