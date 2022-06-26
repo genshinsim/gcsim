@@ -170,6 +170,12 @@ func (s *Simulation) initTeamStats() {
 		s.stats.EnergyDetail[i] = make(map[string][4]float64)
 		s.stats.EnergyWhenBurst[i] = make([]float64, 0, int(s.cfg.Settings.Duration/12+2))
 
+		//convert set to string
+		m := make(map[string]int)
+		for k, v := range v.Sets {
+			m[k.String()] = v
+		}
+
 		//log the character data
 		s.stats.CharDetails = append(s.stats.CharDetails, CharDetail{
 			Name:     v.Base.Key.String(),
@@ -186,7 +192,8 @@ func (s *Simulation) initTeamStats() {
 				Skill:  v.Talents.Skill,
 				Burst:  v.Talents.Burst,
 			},
-			Sets: v.Sets,
+			Sets: m,
 		})
+
 	}
 }
