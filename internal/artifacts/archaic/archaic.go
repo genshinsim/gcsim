@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -68,7 +67,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 			// Apply mod to all characters
 			for _, c := range core.Player.Chars() {
-				c.AddAttackMod("archaic-4pc", 10*60, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				c.AddStatMod("archaic-4pc", 10*60, attributes.NoStat, func() ([]float64, bool) {
 					if core.Status.Duration("archaic") == 0 {
 						return nil, false
 					}
