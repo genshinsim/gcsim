@@ -19,6 +19,7 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -31,27 +32,23 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		char.AddAttackMod(
-			"bs-4pc",
-			-1,
-			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				r, ok := t.(core.Reactable)
-				if !ok {
-					return nil, false
-				}
-
-				// Frozen check first so we don't mistaken coexisting cryo
-				if r.AuraContains(attributes.Frozen) {
-					m[attributes.CR] = 0.4
-					return m, true
-				}
-				if r.AuraContains(attributes.Cryo) {
-					m[attributes.CR] = 0.2
-					return m, true
-				}
+		char.AddAttackMod("bs-4pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			r, ok := t.(core.Reactable)
+			if !ok {
 				return nil, false
-			},
-		)
+			}
+
+			// Frozen check first so we don't mistaken coexisting cryo
+			if r.AuraContains(attributes.Frozen) {
+				m[attributes.CR] = 0.4
+				return m, true
+			}
+			if r.AuraContains(attributes.Cryo) {
+				m[attributes.CR] = 0.2
+				return m, true
+			}
+			return nil, false
+		})
 	}
 
 	return &s, nil

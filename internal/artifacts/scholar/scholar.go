@@ -21,11 +21,11 @@ type Set struct {
 	Index int
 }
 
-// 2-Piece Bonus: Energy Recharge +20%.
-// 4-Piece Bonus: Gaining Elemental Particles or Orbs gives 3 Energy to all party members who have a bow or a catalyst equipped. Can only occur once every 3s.
-
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
+// 2-Piece Bonus: Energy Recharge +20%.
+// 4-Piece Bonus: Gaining Elemental Particles or Orbs gives 3 Energy to all party members who have a bow or a catalyst equipped. Can only occur once every 3s.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 

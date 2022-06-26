@@ -19,6 +19,7 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -31,23 +32,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.4
-		char.AddAttackMod(
-			"bolide-4pc",
-			-1,
-			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				// TODO: works off field?
-				if c.Player.Active() != char.Index {
-					return nil, false
-				}
-				if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-					return nil, false
-				}
-				if !c.Player.Shields.PlayerIsShielded() {
-					return nil, false
-				}
-				return m, true
-			},
-		)
+		char.AddAttackMod("bolide-4pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			// TODO: works off field?
+			if c.Player.Active() != char.Index {
+				return nil, false
+			}
+			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+				return nil, false
+			}
+			if !c.Player.Shields.PlayerIsShielded() {
+				return nil, false
+			}
+			return m, true
+		})
 	}
 
 	return &s, nil

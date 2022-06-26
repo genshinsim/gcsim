@@ -25,6 +25,7 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
 func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -67,16 +68,12 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 			// Apply mod to all characters
 			for _, c := range core.Player.Chars() {
-				c.AddAttackMod(
-					"archaic-4pc",
-					10*60,
-					func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-						if core.Status.Duration("archaic") == 0 {
-							return nil, false
-						}
-						return m, true
-					},
-				)
+				c.AddAttackMod("archaic-4pc", 10*60, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					if core.Status.Duration("archaic") == 0 {
+						return nil, false
+					}
+					return m, true
+				})
 			}
 
 			return false
