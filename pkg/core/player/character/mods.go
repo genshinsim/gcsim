@@ -20,22 +20,22 @@ func (m *modTmpl) Expiry() int             { return m.expiry }
 func (m *modTmpl) Event() glog.Event       { return m.event }
 func (m *modTmpl) SetEvent(evt glog.Event) { m.event = evt }
 
-func deleteMod[K mod](c *CharWrapper, slice []K, key string) {
+func deleteMod[K mod](c *CharWrapper, slice *[]K, key string) {
 	n := 0
-	for _, v := range slice {
+	for _, v := range *slice {
 		if v.Key() == key {
 			v.Event().SetEnded(*c.f)
 			c.log.NewEvent("mod deleted", glog.LogStatusEvent, c.Index, "key", key)
 		} else {
-			slice[n] = v
+			(*slice)[n] = v
 			n++
 		}
 	}
 	//BUG: i think this needs to be *K here. otherwise delete wont work?
-	slice = slice[:n]
+	*slice = (*slice)[:n]
 }
 
-func addMod[K mod](c *CharWrapper, slice []K, mod K) {
+func addMod[K mod](c *CharWrapper, slice *[]K, mod K) {
 	ind := findMod(slice, mod.Key())
 
 	//if does not exist, make new and add
@@ -49,13 +49,13 @@ func addMod[K mod](c *CharWrapper, slice []K, mod K) {
 		evt.SetEnded(mod.Expiry())
 		mod.SetEvent(evt)
 		//BUG: i think this needs to be *K here. otherwise delete wont work?
-		slice = append(slice, mod)
+		*slice = append(*slice, mod)
 		return
 	}
 
 	//otherwise check not expired
 	var evt glog.Event
-	if slice[ind].Expiry() > *c.f || slice[ind].Expiry() == -1 {
+	if (*slice)[ind].Expiry() > *c.f || (*slice)[ind].Expiry() == -1 {
 		evt = c.log.NewEvent(
 			"mod refreshed", glog.LogStatusEvent, c.Index,
 			"overwrite", true,
@@ -74,12 +74,12 @@ func addMod[K mod](c *CharWrapper, slice []K, mod K) {
 	}
 	mod.SetEvent(evt)
 	evt.SetEnded(mod.Expiry())
-	slice[ind] = mod
+	(*slice)[ind] = mod
 }
 
-func findMod[K mod](slice []K, key string) int {
+func findMod[K mod](slice *[]K, key string) int {
 	ind := -1
-	for i, v := range slice {
+	for i, v := range *slice {
 		if v.Key() == key {
 			ind = i
 		}
@@ -87,12 +87,12 @@ func findMod[K mod](slice []K, key string) int {
 	return ind
 }
 
-func findModCheckExpiry[K mod](slice []K, key string, f int) (int, bool) {
+func findModCheckExpiry[K mod](slice *[]K, key string, f int) (int, bool) {
 	ind := findMod(slice, key)
 	if ind == -1 {
 		return ind, false
 	}
-	if slice[ind].Expiry() < f && slice[ind].Expiry() > -1 {
+	if (*slice)[ind].Expiry() < f && (*slice)[ind].Expiry() > -1 {
 		return ind, false
 	}
 	return ind, true

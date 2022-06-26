@@ -21,11 +21,11 @@ func (c *CharWrapper) AddReactBonusMod(key string, dur int, f ReactBonusModFunc)
 		},
 		Amount: f,
 	}
-	addMod(c, c.reactionBonusMods, &mod)
+	addMod(c, &c.reactionBonusMods, &mod)
 }
 
 func (c *CharWrapper) DeleteReactBonusMod(key string) {
-	deleteMod(c, c.reactionBonusMods, key)
+	deleteMod(c, &c.reactionBonusMods, key)
 }
 
 //TODO: consider merging this with just attack mods? reaction bonus should

@@ -19,15 +19,15 @@ func (c *CharWrapper) AddHealBonusMod(key string, dur int, f HealBonusModFunc) {
 		},
 		Amount: f,
 	}
-	addMod(c, c.healBonusMods, &mod)
+	addMod(c, &c.healBonusMods, &mod)
 }
 
 func (c *CharWrapper) DeleteHealBonusMod(key string) {
-	deleteMod(c, c.healBonusMods, key)
+	deleteMod(c, &c.healBonusMods, key)
 }
 
 func (c *CharWrapper) HealBonusModIsActive(key string) bool {
-	ind, ok := findModCheckExpiry(c.healBonusMods, key, *c.f)
+	ind, ok := findModCheckExpiry(&c.healBonusMods, key, *c.f)
 	if !ok {
 		return false
 	}

@@ -28,11 +28,11 @@ func (c *CharWrapper) AddAttackMod(key string, dur int, f AttackModFunc) {
 			expiry: expiry,
 		},
 	}
-	addMod(c, c.attackMods, &mod)
+	addMod(c, &c.attackMods, &mod)
 }
 
 func (c *CharWrapper) DeleteAttackMod(key string) {
-	deleteMod(c, c.attackMods, key)
+	deleteMod(c, &c.attackMods, key)
 }
 
 func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []interface{} {
