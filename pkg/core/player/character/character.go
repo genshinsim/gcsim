@@ -112,6 +112,7 @@ func New(
 		healBonusMods:       make([]*healBonusMod, 0, 10),
 		damageReductionMods: make([]*damageReductionMod, 0, 10),
 		f:                   f,
+		debug:               debug,
 	}
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s

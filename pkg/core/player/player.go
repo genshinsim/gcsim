@@ -88,6 +88,8 @@ func New(f *int, delays Delays, log glog.Logger, events event.Eventter, tasks ta
 
 func (h *Handler) swap(to keys.Char) func() {
 	return func() {
+		prev := h.active
+		h.active = h.charPos[to]
 		h.log.NewEventBuildMsg(
 			glog.LogActionEvent,
 			h.active,
@@ -96,8 +98,6 @@ func (h *Handler) swap(to keys.Char) func() {
 			"action", "swap",
 			"target", to.String(),
 		)
-		prev := h.active
-		h.active = h.charPos[to]
 		h.SwapCD = SwapCDFrames
 		h.ResetAllNormalCounter()
 		h.events.Emit(event.OnCharacterSwap, prev, h.active)

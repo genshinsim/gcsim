@@ -42,6 +42,9 @@ func (s *Simulation) Run() (Result, error) {
 	go s.queuer.Run()
 	defer close(s.continueEval)
 
+	//init sim
+	s.C.Init()
+
 	//queue up enery tasks
 	s.QueueEnergyEvent()
 
@@ -164,7 +167,7 @@ func (s *Simulation) queueAndExec() error {
 		}
 		//check if ready to queue first
 		if !s.C.Player.CanQueueNextAction() {
-			s.C.Log.NewEventBuildMsg(glog.LogActionEvent, -1, "action can't be queued yet")
+			// s.C.Log.NewEventBuildMsg(glog.LogActionEvent, -1, "action can't be queued yet")
 			//skip frame if not ready
 			return nil
 		}

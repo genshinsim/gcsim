@@ -63,5 +63,5 @@ func SetupCharactersInCore(core *core.Core, chars []character.CharacterProfile, 
 		return errors.New("no active character set")
 	}
 
-	return core.Player.InitializeTeam()
+	return nil
 }

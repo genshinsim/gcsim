@@ -28,7 +28,7 @@ func (s *Core) SetupResonance() {
 				val := make([]float64, attributes.EndStatType)
 				val[attributes.ATKP] = 0.25
 				f := func() ([]float64, bool) {
-					return val, false
+					return val, true
 				}
 				for _, c := range chars {
 					c.AddStatMod("pyro-res", -1, attributes.NoStat, f)
@@ -37,7 +37,7 @@ func (s *Core) SetupResonance() {
 				//heal not implemented yet
 				s.Log.NewEvent("adding hydro resonance", glog.LogSimEvent, -1)
 				f := func() (float64, bool) {
-					return 0.3, false
+					return 0.3, true
 				}
 				for _, c := range chars {
 					c.AddHealBonusMod("hydro-res", -1, f)
@@ -84,7 +84,7 @@ func (s *Core) SetupResonance() {
 				//following special characteristics:
 
 				//	DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
-				f := func() (float64, bool) { return 0.15, false }
+				f := func() (float64, bool) { return 0.15, true }
 				s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 				//shred geo res of target
