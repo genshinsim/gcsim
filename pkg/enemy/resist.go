@@ -24,15 +24,15 @@ func (e *Enemy) AddResistMod(key string, dur int, ele attributes.Element, val fl
 		ele:   ele,
 		value: val,
 	}
-	addMod(e, e.resistMods, &mod)
+	addMod(e, &e.resistMods, &mod)
 }
 
 func (e *Enemy) DeleteResistMod(key string) {
-	deleteMod(e, e.resistMods, key)
+	deleteMod(e, &e.resistMods, key)
 }
 
 func (c *Enemy) ResistModIsActive(key string) bool {
-	_, ok := findModCheckExpiry(c.resistMods, key, c.Core.F)
+	_, ok := findModCheckExpiry(&c.resistMods, key, c.Core.F)
 	return ok
 }
 

@@ -89,13 +89,13 @@ func (s *Core) SetupResonance() {
 
 				//shred geo res of target
 				s.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
-					t := args[0].(combat.Target)
+					t, ok := args[0].(Enemy)
+					if !ok {
+						return false
+					}
 					atk := args[1].(*combat.AttackEvent)
 					if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
-						e, ok := t.(Enemy)
-						if ok {
-							e.AddResistMod("geo-res", 15*60, attributes.Geo, -0.2)
-						}
+						t.AddResistMod("geo-res", 15*60, attributes.Geo, -0.2)
 					}
 					return false
 				}, "geo res")
