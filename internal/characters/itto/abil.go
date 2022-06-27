@@ -96,7 +96,9 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f)
 
-	c.Tags["strStack"]--
+	if c.Base.Cons < 6 || c.Core.Rand.Float64() < 0.5 {
+		c.Tags["strStack"]--
+	}
 	c.sCACount++
 	if c.Tags["strStack"] <= 0 {
 		c.sCACount = 0
