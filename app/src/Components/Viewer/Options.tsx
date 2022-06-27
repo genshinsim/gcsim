@@ -1,4 +1,4 @@
-import { Button, Classes, Dialog } from "@blueprintjs/core";
+import { Button, ButtonGroup, Classes, Dialog } from "@blueprintjs/core";
 import { eventColor } from "./parse";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -8,12 +8,13 @@ export interface OptionsProp {
   handleToggle: (opt: string) => void;
   handleClear: () => void;
   handleResetDefault: () => void;
+  handleSetPresets: (opt: "simple" | "advanced" | "verbose" | "debug") => void;
   selected: string[];
   options: string[];
 }
 
 export function Options(props: OptionsProp) {
-  useTranslation()
+  useTranslation();
 
   const cols = props.options.map((o, index) => {
     return (
@@ -25,9 +26,12 @@ export function Options(props: OptionsProp) {
             className="checkbox cursor-pointer"
             onChange={() => props.handleToggle(o)}
           />
-          <span className="font-medium text-sm pl-1" style={{ color: eventColor(o) }}>
-          {o}
-        </span>
+          <span
+            className="font-medium text-sm pl-1"
+            style={{ color: eventColor(o) }}
+          >
+            {o}
+          </span>
         </label>
       </div>
     );
@@ -45,13 +49,27 @@ export function Options(props: OptionsProp) {
     >
       <div className="p-2">
         <div className={Classes.DIALOG_BODY}>
-          <div className="text-md font-medium"><Trans>viewer.log_options</Trans></div>
+          <div className="text-md font-medium">
+            <Trans>viewer.log_options</Trans>
+          </div>
           <div className="grid grid-cols-3">{cols}</div>
+          <div>
+            <ButtonGroup></ButtonGroup>
+          </div>
         </div>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button intent="primary" onClick={props.handleResetDefault}>
-              <Trans>viewer.defaults</Trans>
+            <Button onClick={() => props.handleSetPresets("simple")}>
+              Simple
+            </Button>
+            <Button onClick={() => props.handleSetPresets("advanced")}>
+              Advanced
+            </Button>
+            <Button onClick={() => props.handleSetPresets("verbose")}>
+              Verbose
+            </Button>
+            <Button onClick={() => props.handleSetPresets("debug")}>
+              Debug
             </Button>
             <Button intent="danger" onClick={props.handleClear}>
               <Trans>viewer.clear</Trans>

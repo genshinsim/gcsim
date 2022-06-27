@@ -158,8 +158,12 @@ export function parseLogV2(
 
     const d = line.logs;
     //hightlight active char
-    if (e.event === "action" && line.msg.includes("executed") && d.action === "swap") {
-      activeIndex = e.char
+    if (
+      e.event === "action" &&
+      line.msg.includes("executed") &&
+      d.action === "swap"
+    ) {
+      activeIndex = e.char;
     }
     //skip if event is not in selected
     if (selected.indexOf(e.event) == -1) {
@@ -217,7 +221,18 @@ export function parseLogV2(
               e.msg = d.type + " " + e.msg;
           }
         }
+        //trim "executed "
+        e.msg = e.msg.replace("executed ", "");
         e.icon = "play_arrow";
+        break;
+      case "hitlag":
+        e.icon = "severe_cold";
+        break;
+      case "enemy":
+        e.icon = "mood_bad";
+        break;
+      case "user":
+        e.icon = "comment";
         break;
       case "element":
         switch (line.msg) {
@@ -236,8 +251,7 @@ export function parseLogV2(
                 e.msg += before.join(" ");
               }
               e.msg += "]";
-            }
-            else {
+            } else {
               e.msg += " [no aura]";
             }
             if (d.after) {
@@ -249,8 +263,7 @@ export function parseLogV2(
                 e.msg += after.join(" ");
               }
               e.msg += "]";
-            }
-            else {
+            } else {
               e.msg += " ➜ [no aura]";
             }
             break;
@@ -274,14 +287,20 @@ export function parseLogV2(
             Math.floor(d["post_recovery"]);
         }
         if (e.msg.includes("adding energy")) {
-          let amt = d["rec'd"]
+          let amt = d["rec'd"];
           if (typeof amt === "number") {
-            amt = amt.toFixed(2)
+            amt = amt.toFixed(2);
           }
-          e.msg = "adding " + amt + " energy from " + d.source + ", next: " + Math.floor(d["post_recovery"]);
+          e.msg =
+            "adding " +
+            amt +
+            " energy from " +
+            d.source +
+            ", next: " +
+            Math.floor(d["post_recovery"]);
         }
         if (d["post_recovery"] == d["max_energy"] && d["max_energy"]) {
-          e.msg += " (max)"
+          e.msg += " (max)";
         }
         e.icon = "local_cafe";
         break;
@@ -335,15 +354,18 @@ export function parseLogV2(
         // this hacky but i don't care
         if (e.ended === e.frame && line.msg.includes("refreshed")) {
           let idx = lines.findIndex((a) => {
-            return a.event === "status"
-              && line.char_index === a.char_index
-              && !a.logs.overwrite
-              && a.logs.key === line.logs.key
-              && line.frame >= a.frame && line.frame < a.ended
-          })
+            return (
+              a.event === "status" &&
+              line.char_index === a.char_index &&
+              !a.logs.overwrite &&
+              a.logs.key === line.logs.key &&
+              line.frame >= a.frame &&
+              line.frame < a.ended
+            );
+          });
           if (idx !== -1) {
-            e.added = lines[idx].frame
-            e.ended = lines[idx].ended
+            e.added = lines[idx].frame;
+            e.ended = lines[idx].ended;
           }
         }
 
@@ -381,15 +403,15 @@ export function parseLogV2(
         for (let j = 0; j < result[idx].slots.length; j++) {
           result[idx].slots[j].push(...ended[f][j]);
         }
-        continue
+        continue;
       }
 
       // TODO: set active correctly instead of using last one. only matters if action log is disabled
       let active = 0;
       let insertAt = result.findIndex((r, i) => {
-        active = result[i].active
-        return r.f > f
-      })
+        active = result[i].active;
+        return r.f > f;
+      });
 
       const x = {
         key: f,

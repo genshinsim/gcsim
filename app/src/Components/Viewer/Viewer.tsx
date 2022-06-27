@@ -22,42 +22,14 @@ import { Trans, useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { updateCfg } from "~src/Pages/Sim";
 import { useAppDispatch } from "~src/store";
-
-const opts = [
-  "procs",
-  "damage",
-  "pre_damage_mods",
-  "hurt",
-  "heal",
-  "calc",
-  "reaction",
-  "element",
-  "snapshot",
-  "snapshot_mods",
-  "status",
-  "action",
-  "queue",
-  "energy",
-  "character",
-  "enemy",
-  "hook",
-  "sim",
-  "task",
-  "artifact",
-  "weapon",
-  "shield",
-  "construct",
-  "icd",
-];
-
-const defOpts = [
-  "damage",
-  "element",
-  "action",
-  "energy",
-  "pre_damage_mods",
-  "status",
-];
+import {
+  AdvancedPreset,
+  AllDebugOptions,
+  DebugPreset,
+  DefaultDebugOptions,
+  SimplePreset,
+  VerbosePreset,
+} from "./debugOptions";
 
 type ViewProps = {
   classes?: string;
@@ -76,14 +48,14 @@ const extractMsgData = (data: DebugRow[]) => {
     row.slots.map((slot, ci) => {
       slot.map((e, ei) => {
         results.push(e.msg);
-      })
-    })
+      });
+    });
 
     msgs[i] = results;
-  })
+  });
 
   console.log(msgs);
-}
+};
 
 const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
 
@@ -118,10 +90,26 @@ function ViewOnly(props: ViewProps) {
       props.handleSetSelected([]);
     },
     handleResetDefault: () => {
-      props.handleSetSelected(defOpts);
+      props.handleSetSelected(DefaultDebugOptions);
+    },
+    handleSetPresets: (opt: "simple" | "advanced" | "verbose" | "debug") => {
+      switch (opt) {
+        case "simple":
+          props.handleSetSelected(SimplePreset);
+          return;
+        case "advanced":
+          props.handleSetSelected(AdvancedPreset);
+          return;
+        case "verbose":
+          props.handleSetSelected(VerbosePreset);
+          return;
+        case "debug":
+          props.handleSetSelected(DebugPreset);
+          return;
+      }
     },
     selected: props.selected,
-    options: opts,
+    options: AllDebugOptions,
   };
 
   function copyToClipboard() {
@@ -196,7 +184,11 @@ function ViewOnly(props: ViewProps) {
             ),
             config: <Config data={props.data} />,
             debug: (
-              <Debugger data={props.parsed} team={props.data.char_names} searchable={msgs} />
+              <Debugger
+                data={props.parsed}
+                team={props.data.char_names}
+                searchable={msgs}
+              />
             ),
             details: <Details data={props.data} />,
             share: <Share data={props.data} />,
@@ -299,9 +291,9 @@ export function Viewer(props: ViewerProps) {
     const saved = localStorage.getItem(SAVED_DEBUG_KEY);
     if (saved) {
       const initialValue = JSON.parse(saved);
-      return initialValue || defOpts;
+      return initialValue || DefaultDebugOptions;
     }
-    return defOpts;
+    return DefaultDebugOptions;
   });
 
   //string
