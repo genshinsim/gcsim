@@ -66,17 +66,21 @@ export function runSim(cfg: string): AppThunk {
       new Promise<null>((resolve, reject) => {
         console.time("debug");
         const debugCB = (val: any) => {
-          const res = JSON.parse(val);
-          console.timeEnd("debug");
-          if (res.err) {
-            reject(res.err);
-            return;
+          try {
+            const res = JSON.parse(val);
+            console.timeEnd("debug");
+            if (res.err) {
+              reject(res.err);
+              return;
+            }
+            //it's a string otherwise
+            // console.log(res);
+            debug = val;
+            resolve(null);
+            // console.log("finish debug run: ", res);
+          } catch {
+            reject("unexpected error??");
           }
-          //it's a string otherwise
-          // console.log(res);
-          debug = val;
-          resolve(null);
-          // console.log("finish debug run: ", res);
         };
         pool.queue({ cmd: "debug", cb: debugCB });
       });
