@@ -92,9 +92,11 @@ func (c *char) skillPress() action.ActionInfo {
 
 	// a4 reduce cd by 50%
 	if c.StatModIsActive("bennett-field") {
-		c.SetCDWithDelay(action.ActionSkill, 300/2, 14)
+		//a4 reduces it from 240 to 120
+		c.SetCDWithDelay(action.ActionSkill, 240/2, 14)
 	} else {
-		c.SetCDWithDelay(action.ActionSkill, 300, 14)
+		//default is 300, a2 reduces it by 20% to 240
+		c.SetCDWithDelay(action.ActionSkill, 240, 14)
 	}
 
 	return action.ActionInfo{
@@ -156,14 +158,14 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	switch level {
 	case 1:
 		idx = 1
-		cd = 450
+		cd = 450 - 90 //-90 for a2
 		cdDelay = 43
 		if c4Active {
 			idx = 2
 		}
 	case 2:
 		idx = 3
-		cd = 600
+		cd = 600 - 120 //-120 from a2
 		cdDelay = 110
 		if applyA4 {
 			idx = 4
