@@ -78,7 +78,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Charged %v Stacks %v", c.sCACount, c.Tags["strStack"]),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  core.AttackTagExtra,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
