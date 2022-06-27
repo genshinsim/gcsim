@@ -27,7 +27,7 @@ func init() {
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 28)
 	attackFrames[2][action.ActionAttack] = 19
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 34)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 34)
 	attackFrames[3][action.ActionCharge] = 33
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][3], 31)

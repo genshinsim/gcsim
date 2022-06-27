@@ -6,6 +6,8 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -63,5 +65,39 @@ func SetupCharactersInCore(core *core.Core, chars []character.CharacterProfile, 
 		return errors.New("no active character set")
 	}
 
-	return core.Player.InitializeTeam()
+	return nil
+}
+
+func (s *Simulation) randEnergy() {
+	//drop energy
+	s.C.Player.DistributeParticle(character.Particle{
+		Source: "drop",
+		Num:    float64(s.cfg.Energy.Amount),
+		Ele:    attributes.NoElement,
+	})
+
+	//calculate next
+	next := int(s.C.Rand.Float64()*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
+	// next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
+	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy queued - ", fmt.Sprintf("next %v", s.C.F+next)).Write("settings", s.cfg.Energy, "first", next)
+	s.C.Tasks.Add(s.randEnergy, next)
+}
+
+func (s *Simulation) SetupRandEnergyDrop() {
+	//do nothing if none set
+	if s.cfg.Energy.Every == 0 {
+		return
+	}
+	//every is given in seconds, so lambda (events per second) is 1 / every
+	// s.cfg.Energy.Mean = 1.0 / s.cfg.Energy.Every
+	//lambda is per s so we need to scale it to per frame
+	// s.cfg.Energy.Mean /= 60
+
+	//convert every to per frame; right now every is in seconds
+	s.cfg.Energy.Mean = s.cfg.Energy.Every * 60
+	next := int(s.C.Rand.Float64()*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
+	// next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
+	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy started - ", fmt.Sprintf("next %v", s.C.F+next)).Write("settings", s.cfg.Energy, "first", next)
+	//start the first round
+	s.C.Tasks.Add(s.randEnergy, next)
 }

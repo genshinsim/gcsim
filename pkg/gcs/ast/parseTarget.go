@@ -49,7 +49,26 @@ func parseTarget(p *Parser) (parseFn, error) {
 			r.Resist[attributes.Geo] += amt
 			r.Resist[attributes.Dendro] += amt
 			r.Resist[attributes.Anemo] += amt
-
+		case keywordParticleThreshold:
+			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err != nil {
+				return nil, err
+			}
+			amt, err := itemNumberToFloat64(item)
+			if err != nil {
+				return nil, err
+			}
+			r.ParticleDropThreshold = amt
+		case keywordParticleDropCount:
+			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err != nil {
+				return nil, err
+			}
+			amt, err := itemNumberToFloat64(item)
+			if err != nil {
+				return nil, err
+			}
+			r.ParticleDropCount = amt
 		case itemElementKey:
 			s := n.Val
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)

@@ -9,7 +9,7 @@ import (
 type Set int
 
 func (s *Set) MarshalJSON() ([]byte, error) {
-	return json.Marshal(weaponNames[*s])
+	return json.Marshal(setNames[*s])
 }
 
 func (c *Set) UnmarshalJSON(b []byte) error {

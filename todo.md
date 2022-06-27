@@ -1,5 +1,4 @@
 - add characters
-- add artifacts
 - fix character taking damage/hurt
 - fix reactable tests
 - parse APL

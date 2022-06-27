@@ -25,6 +25,7 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	s.stacks = 0
@@ -48,7 +49,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		// post snap shot to increase stacks
-		c.Events.Subscribe(event.PreSkill, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 			if c.Player.Active() != char.Index {
 				return false
 			}

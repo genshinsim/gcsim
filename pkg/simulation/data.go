@@ -30,9 +30,7 @@ func (s *Simulation) initDetailLog() {
 	s.C.Events.Subscribe(event.OnTargetAdded, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
 
-		s.C.Log.NewEvent("Target Added", glog.LogSimEvent, -1, "target_type", t.Type())
-		// s.C.Log.Debugw("Target Added", "frame", s.C.F, core.LogSimEvent, "target_type", t.Type())
-
+		s.C.Log.NewEvent("Target Added", glog.LogDebugEvent, -1, "target_type", t.Type())
 		s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[attributes.Element]int))
 
 		return false
@@ -168,7 +166,13 @@ func (s *Simulation) initTeamStats() {
 		s.stats.AbilUsageCountByChar[i] = make(map[string]int)
 		s.stats.CharNames[i] = v.Base.Key.String()
 		s.stats.EnergyDetail[i] = make(map[string][4]float64)
-		s.stats.EnergyWhenBurst[i] = make([]float64, 0, s.cfg.Settings.Duration/12+2)
+		s.stats.EnergyWhenBurst[i] = make([]float64, 0, int(s.cfg.Settings.Duration/12+2))
+
+		//convert set to string
+		m := make(map[string]int)
+		for k, v := range v.Sets {
+			m[k.String()] = v
+		}
 
 		//log the character data
 		s.stats.CharDetails = append(s.stats.CharDetails, CharDetail{
@@ -186,7 +190,8 @@ func (s *Simulation) initTeamStats() {
 				Skill:  v.Talents.Skill,
 				Burst:  v.Talents.Burst,
 			},
-			Sets: v.Sets,
+			Sets: m,
 		})
+
 	}
 }

@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.PrimordialJadeCutter, NewWeapon)
+	core.RegisterWeaponFunc(keys.PrimordialJadeWingedSpear, NewWeapon)
 }
 
 type Weapon struct {

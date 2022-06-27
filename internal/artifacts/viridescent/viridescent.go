@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 func init() {
@@ -23,6 +24,7 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -54,7 +56,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		vvfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
 			return func(args ...interface{}) bool {
 				atk := args[1].(*combat.AttackEvent)
-				t := args[0].(core.Enemy)
+				t, ok := args[0].(*enemy.Enemy)
+				if !ok {
+					return false
+				}
 				if atk.Info.ActorIndex != char.Index {
 					return false
 				}
@@ -80,7 +85,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		// Possibly closure related? Not sure
 		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
-			t := args[0].(core.Enemy)
+			t, ok := args[0].(*enemy.Enemy)
+			if !ok {
+				return false
+			}
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}

@@ -29,7 +29,7 @@ func (p *Player) Attack(ae *combat.AttackEvent, evt glog.Event) (float64, bool) 
 
 func (p *Player) ApplySelfInfusion(ele attributes.Element, dur combat.Durability, f int) {
 
-	p.Core.Log.NewEventBuildMsg(glog.LogSimEvent, -1, "self infusion applied: "+ele.String()).Write("durability", dur, "duration", f)
+	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).Write("durability", dur, "duration", f)
 	//we're assuming self infusion isn't subject to 0.8x multiplier
 	//also no real sanity check
 	if ele == attributes.Frozen {

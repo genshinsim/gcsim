@@ -46,7 +46,7 @@ func (c *Character) SetCD(a action.Action, dur int) {
 		c.Tags["skill_charge"]--
 	}
 	c.Core.Log.NewEventBuildMsg(
-		glog.LogActionEvent,
+		glog.LogCooldownEvent,
 		c.Index,
 		a.String(), " cooldown triggered",
 	).Write(
@@ -101,7 +101,7 @@ func (c *Character) ResetActionCooldown(a action.Action) {
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
 	c.cdCurrentQueueWorker[a] = nil
 	c.Core.Log.NewEventBuildMsg(
-		glog.LogActionEvent,
+		glog.LogCooldownEvent,
 		c.Index,
 		a.String(), " cooldown forcefully reset",
 	).Write(
@@ -130,7 +130,7 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 	//otherwise reduce remain and restart queue
 	c.cdQueue[a][0] = remain - v
 	c.Core.Log.NewEventBuildMsg(
-		glog.LogActionEvent,
+		glog.LogCooldownEvent,
 		c.Index,
 		a.String(), " cooldown forcefully reduced",
 	).Write(
@@ -191,7 +191,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 		}
 
 		c.Core.Log.NewEventBuildMsg(
-			glog.LogActionEvent,
+			glog.LogCooldownEvent,
 			c.Index,
 			a.String(), " cooldown ready",
 		).Write(

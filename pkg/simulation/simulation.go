@@ -62,6 +62,11 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 		return nil, err
 	}
 
+	err = s.C.Init()
+	if err != nil {
+		return nil, err
+	}
+
 	//TODO: this stat collection  module needs to be rewritten. See https://github.com/genshinsim/gcsim/issues/561
 	s.initDetailLog()
 	s.initTeamStats()

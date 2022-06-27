@@ -1,6 +1,7 @@
 package combat
 
 import (
+	"fmt"
 	"log"
 	"math"
 
@@ -36,11 +37,11 @@ func willAttackLand(a *AttackEvent, t Target, index int) (bool, string) {
 	}
 }
 
-func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
+func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 	// died := false
 	var total float64
 	var landed bool
-	for i, t := range c.targets {
+	for i, t := range h.targets {
 		//skip nil targets; we don't want to reindex...
 		if t == nil {
 			continue
@@ -53,8 +54,8 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 			// TODO: Maybe want to add a separate set of log events for this?
 			//don't log this for target 0
 			if i > 0 {
-				c.log.NewEventBuildMsg(
-					glog.LogSimEvent,
+				h.log.NewEventBuildMsg(
+					glog.LogDebugEvent,
 					a.Info.ActorIndex,
 					"skipped ",
 					a.Info.Abil,
@@ -75,7 +76,7 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 		cpy := *a
 
 		//at this point attack will land
-		c.events.Emit(event.OnAttackWillLand, t, &cpy)
+		h.events.Emit(event.OnAttackWillLand, t, &cpy)
 
 		//check to make sure it's not cancelled for w/e reason
 		if a.Cancelled {
@@ -87,7 +88,7 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 		var dmg float64
 		var crit bool
 
-		evt := c.log.NewEvent(
+		evt := h.log.NewEvent(
 			cpy.Info.Abil,
 			glog.LogDamageEvent,
 			cpy.Info.ActorIndex,
@@ -106,14 +107,14 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 			if cpy.Info.ActorIndex < 0 {
 				log.Println(cpy)
 			}
-			preDmgModDebug := c.team.CombatByIndex(cpy.Info.ActorIndex).ApplyAttackMods(&cpy, t)
+			preDmgModDebug := h.team.CombatByIndex(cpy.Info.ActorIndex).ApplyAttackMods(&cpy, t)
 			evt.Write("pre_damage_mods", preDmgModDebug)
 		}
 
 		dmg, crit = t.Attack(&cpy, evt)
 		total += dmg
 
-		c.events.Emit(event.OnDamage, t, &cpy, dmg, crit)
+		h.events.Emit(event.OnDamage, t, &cpy, dmg, crit)
 
 		//callbacks
 		cb := AttackCB{
@@ -128,13 +129,13 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 
 		//check if target is dead; skip this for i = 0 since we don't want to
 		//delete the player by accident
-		if c.DamageMode && t.HP() <= 0 {
+		if h.DamageMode && t.HP() <= 0 {
 			log.Println("died")
 			// died = true
 			t.Kill()
-			c.events.Emit(event.OnTargetDied, t, cpy)
+			h.events.Emit(event.OnTargetDied, t, cpy)
 			//this should be ok for stuff like guoba since they won't take damage
-			c.targets[i] = nil
+			h.targets[i] = nil
 			// log.Println("target died", i, dmg)
 		}
 
@@ -149,14 +150,17 @@ func (c *Handler) ApplyAttack(a *AttackEvent) float64 {
 	//add hitlag to actor
 	if landed {
 		dur := a.Info.HitlagHaltFrames
-		if c.defHalt && a.Info.CanBeDefenseHalted {
+		if h.defHalt && a.Info.CanBeDefenseHalted {
 			dur += 3.6 //0.06
 		}
 		dur = math.Ceil(dur)
 		if dur > 0 {
-			c.team.CombatByIndex(a.Info.ActorIndex).ApplyHitlag(a.Info.HitlagFactor, int(dur))
+			h.team.CombatByIndex(a.Info.ActorIndex).ApplyHitlag(a.Info.HitlagFactor, int(dur))
+			if h.debug {
+				h.log.NewEvent(fmt.Sprintf("%v applying hitlag: %v", a.Info.Abil, dur), glog.LogHitlagEvent, a.Info.ActorIndex, "duration", dur, "factor", a.Info.HitlagFactor)
+			}
 		}
 	}
-	c.TotalDamage += total
+	h.TotalDamage += total
 	return total
 }

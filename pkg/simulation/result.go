@@ -3,7 +3,6 @@ package simulation
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type Result struct {
@@ -32,16 +31,16 @@ type Result struct {
 }
 
 type CharDetail struct {
-	Name          string           `json:"name"`
-	Element       string           `json:"element"`
-	Level         int              `json:"level"`
-	MaxLevel      int              `json:"max_level"`
-	Cons          int              `json:"cons"`
-	Weapon        WeaponDetail     `json:"weapon"`
-	Talents       TalentDetail     `json:"talents"`
-	Sets          map[keys.Set]int `json:"sets"`
-	Stats         []float64        `json:"stats"`
-	SnapshotStats []float64        `json:"snapshot"`
+	Name          string         `json:"name"`
+	Element       string         `json:"element"`
+	Level         int            `json:"level"`
+	MaxLevel      int            `json:"max_level"`
+	Cons          int            `json:"cons"`
+	Weapon        WeaponDetail   `json:"weapon"`
+	Talents       TalentDetail   `json:"talents"`
+	Sets          map[string]int `json:"sets"`
+	Stats         []float64      `json:"stats"`
+	SnapshotStats []float64      `json:"snapshot"`
 }
 
 type DamageDetails struct {

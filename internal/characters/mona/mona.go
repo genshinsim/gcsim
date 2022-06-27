@@ -43,6 +43,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 func (c *char) Init() error {
 	c.burstHook()
+	c.burstDamageBonus()
 	c.a4()
 	if c.Base.Cons >= 4 {
 		c.c4()

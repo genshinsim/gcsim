@@ -1,6 +1,8 @@
 package enemy
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -47,11 +49,24 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	e.HPCurrent -= damage
 	e.damageTaken += damage //TODO: do we actually need this?
 
+	//check for hitlag
+	//TODO: hit weakpoint??
+	dur := atk.Info.HitlagHaltFrames
+	if e.Core.Flags.DefHalt && atk.Info.CanBeDefenseHalted {
+		dur += 3.6
+	}
+	dur = math.Ceil(dur)
+	if dur > 0 {
+		//apply hit lag
+		e.ApplyHitlag(dur, atk.Info.HitlagFactor)
+	}
+
 	//check for particle drops
 	if e.prof.ParticleDropThreshold > 0 {
 		next := int(e.damageTaken / e.prof.ParticleDropThreshold)
 		if next > e.lastParticleDrop {
 			e.lastParticleDrop = next
+			e.Core.Log.NewEvent("particle hp threshold triggered", glog.LogEnemyEvent, atk.Info.ActorIndex)
 			e.Core.Tasks.Add(
 				func() {
 					e.Core.Player.DistributeParticle(character.Particle{

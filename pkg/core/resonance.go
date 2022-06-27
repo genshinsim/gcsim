@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -24,26 +23,23 @@ func (s *Core) SetupResonance() {
 		if v >= 2 {
 			switch k {
 			case attributes.Pyro:
-				s.Log.NewEvent("adding pyro resonance", glog.LogSimEvent, -1)
 				val := make([]float64, attributes.EndStatType)
 				val[attributes.ATKP] = 0.25
 				f := func() ([]float64, bool) {
-					return val, false
+					return val, true
 				}
 				for _, c := range chars {
 					c.AddStatMod("pyro-res", -1, attributes.NoStat, f)
 				}
 			case attributes.Hydro:
 				//heal not implemented yet
-				s.Log.NewEvent("adding hydro resonance", glog.LogSimEvent, -1)
 				f := func() (float64, bool) {
-					return 0.3, false
+					return 0.3, true
 				}
 				for _, c := range chars {
 					c.AddHealBonusMod("hydro-res", -1, f)
 				}
 			case attributes.Cryo:
-				s.Log.NewEvent("adding cryo resonance", glog.LogSimEvent, -1)
 				val := make([]float64, attributes.EndStatType)
 				val[attributes.CR] = .15
 				f := func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
@@ -60,7 +56,6 @@ func (s *Core) SetupResonance() {
 					c.AddAttackMod("cyro-res", -1, f)
 				}
 			case attributes.Electro:
-				s.Log.NewEvent("adding electro resonance", glog.LogSimEvent, -1)
 				last := 0
 				recover := func(args ...interface{}) bool {
 					if s.F-last < 300 && last != 0 { // every 5 seconds
@@ -79,23 +74,22 @@ func (s *Core) SetupResonance() {
 				s.Events.Subscribe(event.OnElectroCharged, recover, "electro-res")
 
 			case attributes.Geo:
-				s.Log.NewEvent("adding geo resonance", glog.LogSimEvent, -1)
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
 				//following special characteristics:
 
 				//	DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
-				f := func() (float64, bool) { return 0.15, false }
+				f := func() (float64, bool) { return 0.15, true }
 				s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 				//shred geo res of target
 				s.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
-					t := args[0].(combat.Target)
+					t, ok := args[0].(Enemy)
+					if !ok {
+						return false
+					}
 					atk := args[1].(*combat.AttackEvent)
 					if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
-						e, ok := t.(Enemy)
-						if ok {
-							e.AddResistMod("geo-res", 15*60, attributes.Geo, -0.2)
-						}
+						t.AddResistMod("geo-res", 15*60, attributes.Geo, -0.2)
 					}
 					return false
 				}, "geo res")
@@ -113,7 +107,6 @@ func (s *Core) SetupResonance() {
 				}
 
 			case attributes.Anemo:
-				s.Log.NewEvent("adding anemo resonance", glog.LogSimEvent, -1)
 				for _, c := range chars {
 					c.AddCooldownMod("anemo-res", -1, func(a action.Action) float64 { return -0.05 })
 				}

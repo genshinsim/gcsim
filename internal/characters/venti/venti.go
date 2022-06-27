@@ -40,6 +40,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	return nil
 }
 
+func (c *char) Init() error {
+	return nil
+}
+
 func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount int) {
 	c.Character.ReceiveParticle(p, isActive, partyCount)
 	if c.Base.Cons >= 4 {

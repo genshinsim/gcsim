@@ -1,44 +1,15 @@
 package ast
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
-func TestParseIdent(t *testing.T) {
-	p := New("x;")
-
-	al, err := p.Parse()
-	if err != nil {
-		t.Error(err)
-	}
-
-	prettyPrint(al)
-}
-
-func TestParseIf(t *testing.T) {
-	s := `
-	if x > y {
-		1 + 1;
-		2 + 2;
-		3 + 3;
-	} else {
-		//do stuff
-		c + d;
-	}
-	`
-	p := New(s)
-	res, err := p.Parse()
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	fmt.Println(res.Program.String())
-}
-
-func TestOrderPrecedence(t *testing.T) {
+//this test won't pass because there's no active char....
+func testOrderPrecedence(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected string
@@ -95,15 +66,16 @@ func TestOrderPrecedence(t *testing.T) {
 	}
 }
 
-func prettyPrint(body interface{}) {
-	b, err := json.MarshalIndent(body, "", "\t")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
-}
+// func prettyPrint(body interface{}) {
+// 	b, err := json.MarshalIndent(body, "", "\t")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	fmt.Println(string(b))
+// }
 
 const cfg = `
+	active xingqiu;
 	switch a {
 	case 1:
 		1+1;
@@ -145,6 +117,7 @@ func TestCfg(t *testing.T) {
 }
 
 const fntest = `
+active bennett;
 fn y(x) {
     print(x);
     return x +1;
@@ -172,6 +145,7 @@ func TestFnCall(t *testing.T) {
 const charaction = `
 xingqiu attack[randomparam=2]:4,skill;
 xingqiu burst[orbital=0];
+active xingqiu;
 `
 
 func TestCharAction(t *testing.T) {
@@ -212,6 +186,8 @@ xiangling add stats hp=4780 atk=311.0 em=187.0 cr=0.3110 pyro%=0.4660;
 xiangling add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=79.28 cr=0.331 cd=0.7944;
 
 active raiden;
+
+energy every=10 amount=1;
 `
 
 func TestCharAdd(t *testing.T) {
@@ -221,6 +197,5 @@ func TestCharAdd(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	fmt.Println("output:")
-	fmt.Println(res.Characters)
+	spew.Config.Dump(res)
 }

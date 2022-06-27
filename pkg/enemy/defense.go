@@ -21,15 +21,15 @@ func (e *Enemy) AddDefMod(key string, dur int, val float64) {
 		},
 		value: val,
 	}
-	addMod(e, e.defenseMods, &mod)
+	addMod(e, &e.defenseMods, &mod)
 }
 
 func (e *Enemy) DeleteDefMod(key string) {
-	deleteMod(e, e.defenseMods, key)
+	deleteMod(e, &e.defenseMods, key)
 }
 
 func (c *Enemy) DefModIsActive(key string) bool {
-	_, ok := findModCheckExpiry(c.defenseMods, key, c.Core.F)
+	_, ok := findModCheckExpiry(&c.defenseMods, key, c.Core.F)
 	return ok
 }
 

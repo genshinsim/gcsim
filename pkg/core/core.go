@@ -39,6 +39,7 @@ type Core struct {
 type Flags struct {
 	LogDebug   bool // Used to determine logging level
 	DamageMode bool //for hp mode
+	DefHalt    bool //for hitlag
 	Custom     map[string]int
 }
 type Coord struct {
@@ -65,23 +66,33 @@ type Enemy interface {
 
 const MaxTeamSize = 4
 
-func New(seed int64, debug bool) (*Core, error) {
+type CoreOpt struct {
+	Seed       int64
+	Debug      bool
+	DefHalt    bool
+	DamageMode bool
+	Delays     player.Delays
+}
+
+func New(opt CoreOpt) (*Core, error) {
 	c := &Core{}
-	c.Rand = rand.New(rand.NewSource(seed))
+	c.Rand = rand.New(rand.NewSource(opt.Seed))
 	c.Flags.Custom = make(map[string]int)
-	if debug {
+	if opt.Debug {
 		c.Log = glog.New(&c.F, 500)
 		c.Flags.LogDebug = true
 	} else {
 		c.Log = &glog.NilLogger{}
 	}
 
+	c.Flags.DamageMode = opt.DamageMode
+	c.Flags.DefHalt = opt.DefHalt
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)
 	c.Constructs = construct.New(&c.F, c.Log)
-	c.Player = player.New(&c.F, c.Log, c.Events, c.Tasks, debug)
-	c.Combat = combat.New(c.Log, c.Events, c.Player, c.Rand, false, false)
+	c.Player = player.New(&c.F, opt.Delays, c.Log, c.Events, c.Tasks, opt.Debug)
+	c.Combat = combat.New(c.Log, c.Events, c.Player, c.Rand, opt.Debug, opt.DamageMode, opt.DefHalt)
 
 	return c, nil
 }
@@ -126,7 +137,10 @@ func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 	var err error
 
 	// initialize character
-	char := character.New(p, &c.F, c.Flags.LogDebug, c.Log, c.Events, c.Tasks)
+	char, err := character.New(p, &c.F, c.Flags.LogDebug, c.Log, c.Events, c.Tasks)
+	if err != nil {
+		return -1, err
+	}
 
 	f, ok := charMap[p.Base.Key]
 	if !ok {

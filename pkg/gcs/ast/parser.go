@@ -10,6 +10,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -37,16 +38,24 @@ type ActionList struct {
 	Characters  []character.CharacterProfile `json:"characters"`
 	InitialChar keys.Char                    `json:"initial"`
 	Program     *BlockStmt
+	Energy      EnergySettings
 	Settings    SimulatorSettings
 }
 
+type EnergySettings struct {
+	Every  float64
+	Amount int
+	Mean   float64
+}
+
 type SimulatorSettings struct {
-	Duration   int
+	Duration   float64
 	DamageMode bool
+	DefHalt    bool // for hitlag
 	//other stuff
 	NumberOfWorkers int // how many workers to run the simulation
 	Iterations      int // how many iterations to run
-	Delays          Delays
+	Delays          player.Delays
 }
 
 type Delays struct {

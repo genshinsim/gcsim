@@ -19,15 +19,15 @@ func (c *CharWrapper) AddDamageReductionMod(key string, dur int, f DamageReducti
 		},
 		Amount: f,
 	}
-	addMod(c, c.damageReductionMods, &mod)
+	addMod(c, &c.damageReductionMods, &mod)
 }
 
 func (c *CharWrapper) DeleteDamageReductionMod(key string) {
-	deleteMod(c, c.damageReductionMods, key)
+	deleteMod(c, &c.damageReductionMods, key)
 }
 
 func (c *CharWrapper) DamageReductionModIsActive(key string) bool {
-	ind, ok := findModCheckExpiry(c.damageReductionMods, key, *c.f)
+	ind, ok := findModCheckExpiry(&c.damageReductionMods, key, *c.f)
 	if !ok {
 		return false
 	}

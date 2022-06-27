@@ -22,6 +22,7 @@ import (
 const (
 	MaxStam      = 240
 	StamCDFrames = 90
+	SwapCDFrames = 60
 )
 
 type Handler struct {
@@ -44,6 +45,10 @@ type Handler struct {
 	LastStamUse     int
 	stamPercentMods []stamPercentMod
 
+	//swap
+	SwapCD int
+	delays Delays
+
 	//last action
 	LastAction struct {
 		UsedAt int
@@ -53,7 +58,18 @@ type Handler struct {
 	}
 }
 
-func New(f *int, log glog.Logger, events event.Eventter, tasks task.Tasker, debug bool) *Handler {
+type Delays struct {
+	Skill  int
+	Burst  int
+	Attack int
+	Charge int
+	Aim    int
+	Dash   int
+	Jump   int
+	Swap   int
+}
+
+func New(f *int, delays Delays, log glog.Logger, events event.Eventter, tasks task.Tasker, debug bool) *Handler {
 	h := &Handler{
 		chars:           make([]*character.CharWrapper, 0, 4),
 		charPos:         make(map[keys.Char]int),
@@ -62,11 +78,30 @@ func New(f *int, log glog.Logger, events event.Eventter, tasks task.Tasker, debu
 		events:          events,
 		tasks:           tasks,
 		f:               f,
+		delays:          delays,
 	}
 	h.Shields = shield.New(f, log, events)
 	h.InfusionHandler = infusion.New(f, log, debug)
-	h.AnimationHandler = animation.New(f, log, events, tasks)
+	h.AnimationHandler = animation.New(f, debug, log, events, tasks)
 	return h
+}
+
+func (h *Handler) swap(to keys.Char) func() {
+	return func() {
+		prev := h.active
+		h.active = h.charPos[to]
+		h.log.NewEventBuildMsg(
+			glog.LogActionEvent,
+			h.active,
+			"executed swap",
+		).Write(
+			"action", "swap",
+			"target", to.String(),
+		)
+		h.SwapCD = SwapCDFrames
+		h.ResetAllNormalCounter()
+		h.events.Emit(event.OnCharacterSwap, prev, h.active)
+	}
 }
 
 func (h *Handler) AddChar(char *character.CharWrapper) int {
@@ -100,6 +135,10 @@ func (h *Handler) Active() int {
 
 func (h *Handler) ActiveChar() *character.CharWrapper {
 	return h.chars[h.active]
+}
+
+func (h *Handler) CharIsActive(k keys.Char) bool {
+	return h.charPos[k] == h.active
 }
 
 func (h *Handler) SetActive(i int) {
@@ -154,6 +193,11 @@ func (h *Handler) InitializeTeam() error {
 		for k := range h.chars[i].Equip.Sets {
 			h.chars[i].Equip.Sets[k].Init()
 		}
+		//set each char's starting hp
+		if h.chars[i].HPCurrent == -1 {
+			h.chars[i].HPCurrent = h.chars[i].MaxHP()
+		}
+		h.log.NewEvent("starting hp set", glog.LogCharacterEvent, i, "hp", h.chars[i].HPCurrent)
 	}
 	return nil
 }
@@ -171,6 +215,9 @@ func (h *Handler) Tick() {
 		if h.Stam > MaxStam {
 			h.Stam = MaxStam
 		}
+	}
+	if h.SwapCD > 0 {
+		h.SwapCD--
 	}
 	h.Shields.Tick()
 	for _, c := range h.chars {

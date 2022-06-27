@@ -79,6 +79,10 @@ func (p *Parser) Parse() (*ActionList, error) {
 		p.res.PlayerPos.R = 1 //player radius 1 by default
 	}
 
+	if p.res.Settings.Delays.Swap == 0 {
+		p.res.Settings.Delays.Swap = 1
+	}
+
 	for i := range p.res.Targets {
 		if p.res.Targets[i].Pos.R == 0 {
 			p.res.Targets[i].Pos.R = 1
@@ -129,6 +133,9 @@ func parseRows(p *Parser) (parseFn, error) {
 	case keywordTarget:
 		p.next()
 		return parseTarget, nil
+	case keywordEnergy:
+		p.next()
+		return parseEnergy, nil
 	case keywordOptions:
 		p.next()
 		return parseOptions, nil
@@ -498,6 +505,8 @@ func (p *Parser) parseCallArgs() []Expr {
 	var args []Expr
 
 	if p.peek().Typ == itemRightParen {
+		//consume the right paren
+		p.next()
 		return args
 	}
 

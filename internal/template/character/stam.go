@@ -24,10 +24,10 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 		case weapon.WeaponClassCatalyst:
 			return 50
 		case weapon.WeaponClassClaymore:
-			c.Core.Log.NewEvent("CLAYMORE CHARGE NOT IMPLEMENTED", glog.LogSimEvent, c.Index)
+			c.Core.Log.NewEvent("CLAYMORE CHARGE NOT IMPLEMENTED", glog.LogWarnings, c.Index)
 			return 0
 		case weapon.WeaponClassBow:
-			c.Core.Log.NewEvent("BOWS DONT HAVE CHARGE ATTACK; USE AIM", glog.LogSimEvent, c.Index)
+			c.Core.Log.NewEvent("BOWS DONT HAVE CHARGE ATTACK; USE AIM", glog.LogWarnings, c.Index)
 			return 0
 		default:
 			return 0
@@ -41,9 +41,10 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 var defaultDash = action.ActionInfo{
-	Frames:        func(action.Action) int { return 20 },
-	CanQueueAfter: 20,
-	State:         action.DashState,
+	Frames:          func(action.Action) int { return 20 },
+	AnimationLength: 20,
+	CanQueueAfter:   20,
+	State:           action.DashState,
 }
 
 func (c *Character) Dash(p map[string]int) action.ActionInfo {

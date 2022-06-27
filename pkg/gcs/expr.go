@@ -54,6 +54,8 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) Obj {
 	//check if it's a system function
 	//otherwise check the function map
 	switch s := ident.Value; s {
+	case "f":
+		return e.f()
 	case "print":
 		//print outputs
 		return e.print(c, env)

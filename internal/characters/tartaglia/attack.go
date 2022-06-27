@@ -73,12 +73,12 @@ func init() {
 	// attack (melee) -> x
 	meleeFrames = make([][]int, normalHitNum)
 
-	meleeFrames[0] = frames.InitNormalCancelSlice(meleeFrames[0][0], 7)
-	meleeFrames[1] = frames.InitNormalCancelSlice(meleeFrames[1][0], 13)
-	meleeFrames[2] = frames.InitNormalCancelSlice(meleeFrames[2][0], 28)
-	meleeFrames[3] = frames.InitNormalCancelSlice(meleeFrames[3][0], 32)
-	meleeFrames[4] = frames.InitNormalCancelSlice(meleeFrames[4][0], 36)
-	meleeFrames[5] = frames.InitNormalCancelSlice(meleeFrames[5][1], 49)
+	meleeFrames[0] = frames.InitNormalCancelSlice(meleeHitmarks[0][0], 7)
+	meleeFrames[1] = frames.InitNormalCancelSlice(meleeHitmarks[1][0], 13)
+	meleeFrames[2] = frames.InitNormalCancelSlice(meleeHitmarks[2][0], 28)
+	meleeFrames[3] = frames.InitNormalCancelSlice(meleeHitmarks[3][0], 32)
+	meleeFrames[4] = frames.InitNormalCancelSlice(meleeHitmarks[4][0], 36)
+	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][1], 49)
 }
 
 // Melee stance attack.

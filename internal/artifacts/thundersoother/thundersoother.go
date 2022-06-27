@@ -20,6 +20,7 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -29,21 +30,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.35
-		char.AddAttackMod(
-			"ts-4pc",
-			-1,
-			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				r, ok := t.(core.Reactable)
-				if !ok {
-					return nil, false
-				}
-
-				if r.AuraContains(attributes.Electro) {
-					return m, true
-				}
+		char.AddAttackMod("ts-4pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			r, ok := t.(core.Reactable)
+			if !ok {
 				return nil, false
-			},
-		)
+			}
+
+			if r.AuraContains(attributes.Electro) {
+				return m, true
+			}
+			return nil, false
+		})
 	}
 
 	return &s, nil

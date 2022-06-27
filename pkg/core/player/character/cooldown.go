@@ -49,14 +49,14 @@ func (c *CharWrapper) AddCooldownMod(key string, dur int, f CooldownModFunc) {
 		},
 		Amount: f,
 	}
-	addMod(c, c.cooldownMods, &mod)
+	addMod(c, &c.cooldownMods, &mod)
 }
 
 func (c *CharWrapper) DeleteCooldowntMod(key string) {
-	deleteMod(c, c.cooldownMods, key)
+	deleteMod(c, &c.cooldownMods, key)
 }
 
 func (c *CharWrapper) CooldownModIsActive(key string, char int, a action.Action) bool {
-	_, ok := findModCheckExpiry(c.cooldownMods, key, *c.f)
+	_, ok := findModCheckExpiry(&c.cooldownMods, key, *c.f)
 	return ok
 }

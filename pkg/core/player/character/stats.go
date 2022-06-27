@@ -29,15 +29,15 @@ func (c *CharWrapper) AddStatMod(key string, dur int, affected attributes.Stat, 
 		AffectedStat: affected,
 		Amount:       f,
 	}
-	addMod(c, c.statsMod, &mod)
+	addMod(c, &c.statsMod, &mod)
 }
 
 func (c *CharWrapper) DeleteStatMod(key string) {
-	deleteMod(c, c.statsMod, key)
+	deleteMod(c, &c.statsMod, key)
 }
 
 func (c *CharWrapper) StatModIsActive(key string) bool {
-	ind, ok := findModCheckExpiry(c.statsMod, key, *c.f)
+	ind, ok := findModCheckExpiry(&c.statsMod, key, *c.f)
 	if !ok {
 		return false
 	}
