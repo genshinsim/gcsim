@@ -1,4 +1,4 @@
-name: "build cmd line tool"
+name: "build cmd line tool for next"
 on:
   push:
     branches:
