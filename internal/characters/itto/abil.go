@@ -85,7 +85,7 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       akCombo[c.TalentLvlAttack()],
-		FlatDmg:    0.35*c.Base.Def*(1+c.Stats[core.DEFP]) + c.Stats[core.DEF],
+		FlatDmg:    0.35*c.Base.Def*(1+c.Stat(core.DEFP)) + c.Stat(core.DEF),
 	}
 	if c.Tags["strStack"] == 0 {
 		ai.Mult = saichiSlash[c.TalentLvlAttack()]
