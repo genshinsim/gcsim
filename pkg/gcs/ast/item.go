@@ -86,25 +86,27 @@ const (
 	keywordReturn      // return
 	// Keywords after this are specific to Genshin (i.e. not generic scripting keywords)
 	// These are special char related keywords
-	keywordOptions // options
-	keywordAdd     // add
-	keywordChar    // char
-	keywordStats   // stats
-	keywordWeapon  // weapon
-	keywordSet     // set
-	keywordLvl     // lvl
-	keywordRefine  // refine
-	keywordCons    // cons
-	keywordTalent  // talent
-	keywordStartHP // start_hp
-	keywordCount   // count
-	keywordParams  // params
-	keywordLabel   // label
-	keywordUntil   // until
-	keywordActive  // active
-	keywordTarget  // target
-	keywordResist  // resist
-	keywordEnergy  // energy
+	keywordOptions           // options
+	keywordAdd               // add
+	keywordChar              // char
+	keywordStats             // stats
+	keywordWeapon            // weapon
+	keywordSet               // set
+	keywordLvl               // lvl
+	keywordRefine            // refine
+	keywordCons              // cons
+	keywordTalent            // talent
+	keywordStartHP           // start_hp
+	keywordCount             // count
+	keywordParams            // params
+	keywordLabel             // label
+	keywordUntil             // until
+	keywordActive            // active
+	keywordTarget            // target
+	keywordResist            // resist
+	keywordEnergy            // energy
+	keywordParticleThreshold // particle_threshold
+	keywordParticleDropCount // particle_drop_count
 
 	// Keywords specific to gcsim appears after this
 	itemKeys
