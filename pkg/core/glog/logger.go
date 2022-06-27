@@ -30,7 +30,7 @@ type LogEvent struct {
 //easyjson:json
 type EventArr []*LogEvent
 
-func (e *LogEvent) Write(keysAndValues ...interface{}) {
+func (e *LogEvent) Write(keysAndValues ...interface{}) Event {
 	//should be even number
 	var key string
 	var ok bool
@@ -52,9 +52,14 @@ func (e *LogEvent) Write(keysAndValues ...interface{}) {
 		e.Ordering[key] = e.counter
 		e.counter++
 	}
+	return e
 }
 
-func (e *LogEvent) SetEnded(end int)  { e.Ended = end }
+func (e *LogEvent) SetEnded(end int) Event {
+	e.Ended = end
+	return e
+}
+
 func (e *LogEvent) LogSource() Source { return e.Typ }
 func (e *LogEvent) StartFrame() int   { return e.F }
 func (e *LogEvent) Src() int          { return e.SrcChar }

@@ -47,8 +47,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Physical,
 		Durability:         25,
-		HitlagHaltFrames:   0, //all raiden normals have 0.02s hitlag
-		HitlagFactor:       0.00,
+		HitlagHaltFrames:   1.2, //all raiden normals have 0.02s hitlag
+		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
 
@@ -104,7 +104,7 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Electro,
 		Durability:         25,
-		HitlagHaltFrames:   12, //all raiden normals have 0.2s hitlag
+		HitlagHaltFrames:   0.02, //all raiden normals have 0.2s hitlag
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}

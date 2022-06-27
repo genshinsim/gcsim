@@ -3,16 +3,17 @@ package action
 
 //TODO: add a sync.Pool here to save some memory allocs
 type ActionInfo struct {
-	Frames              func(next Action) int
+	Frames              func(next Action) int `json:"-"`
 	AnimationLength     int
 	CanQueueAfter       int
 	State               AnimationState
-	FramePausedOnHitlag func() bool
-	OnRemoved           func()
+	FramePausedOnHitlag func() bool `json:"-"`
+	OnRemoved           func()      `json:"-"`
+	//following are exposed only so we can log it properly
+	CachedFrames [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
+	TimePassed   float64
 	//hidden stuff
-	queued       []queuedAction
-	cachedFrames [EndActionType]int
-	timePassed   float64
+	queued []queuedAction
 }
 
 type queuedAction struct {
@@ -21,8 +22,8 @@ type queuedAction struct {
 }
 
 func (a *ActionInfo) CacheFrames() {
-	for i := range a.cachedFrames {
-		a.cachedFrames[i] = a.Frames(Action(i))
+	for i := range a.CachedFrames {
+		a.CachedFrames[i] = a.Frames(Action(i))
 	}
 }
 
@@ -31,7 +32,7 @@ func (a *ActionInfo) QueueAction(f func(), delay int) {
 }
 
 func (a *ActionInfo) CanQueueNext() bool {
-	return a.timePassed >= float64(a.CanQueueAfter)
+	return a.TimePassed >= float64(a.CanQueueAfter)
 }
 
 func (a *ActionInfo) CanUse(next Action) bool {
@@ -39,7 +40,7 @@ func (a *ActionInfo) CanUse(next Action) bool {
 	if a.FramePausedOnHitlag != nil && a.FramePausedOnHitlag() {
 		return false
 	}
-	return a.timePassed >= float64(a.cachedFrames[next])
+	return a.TimePassed >= float64(a.CachedFrames[next])
 }
 
 func (a *ActionInfo) AnimationState() AnimationState {
@@ -49,14 +50,14 @@ func (a *ActionInfo) AnimationState() AnimationState {
 func (a *ActionInfo) Tick() bool {
 	//time only goes on if either not hitlag function, or not paused
 	if a.FramePausedOnHitlag == nil || !a.FramePausedOnHitlag() {
-		a.timePassed++
+		a.TimePassed++
 	}
 
 	//execute all action such that timePassed > delay, and then remove from
 	//slice
 	n := -1
 	for i := range a.queued {
-		if a.queued[i].delay <= a.timePassed {
+		if a.queued[i].delay <= a.TimePassed {
 			a.queued[i].f()
 		} else {
 			n = i
@@ -70,7 +71,7 @@ func (a *ActionInfo) Tick() bool {
 	}
 
 	//check if animation is over
-	if a.timePassed > float64(a.AnimationLength) {
+	if a.TimePassed > float64(a.AnimationLength) {
 		//handle remove
 		if a.OnRemoved != nil {
 			a.OnRemoved()
@@ -138,3 +139,21 @@ const (
 	WalkState
 	SwapState
 )
+
+var statestr = []string{
+	"idle",
+	"normal",
+	"charge",
+	"plunge",
+	"skill",
+	"burst",
+	"aim",
+	"dash",
+	"jump",
+	"walk",
+	"swap",
+}
+
+func (a AnimationState) String() string {
+	return statestr[a]
+}

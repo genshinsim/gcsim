@@ -99,7 +99,10 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 	//TODO: clean up this code
 
 	if opts.ResultSaveToPath != "" {
-		r.Save(opts.ResultSaveToPath, opts.GZIPResult)
+		err = r.Save(opts.ResultSaveToPath, opts.GZIPResult)
+		if err != nil {
+			return r, err
+		}
 	}
 
 	//all done

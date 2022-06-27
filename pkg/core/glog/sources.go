@@ -26,6 +26,7 @@ const (
 	LogHealEvent     // healing events
 	LogHurtEvent     // taking dmg event
 	LogCooldownEvent // for tracking things going on and off cooldown
+	LogHitlagEvent   // for debugging hitlag
 	LogUserEvent     //user print event
 )
 
@@ -50,10 +51,11 @@ var LogSourceFromString = map[string]Source{
 	"debug":           LogDebugEvent,
 	"warning":         LogWarnings,
 	"player":          LogPlayerEvent,
-	"cooldown":        LogCooldownEvent,
-	"user":            LogUserEvent,
 	"heal":            LogHealEvent,
 	"hurt":            LogHurtEvent,
+	"cooldown":        LogCooldownEvent,
+	"hitlag":          LogHitlagEvent,
+	"user":            LogUserEvent,
 }
 
 var LogSourceString = [...]string{
@@ -80,6 +82,7 @@ var LogSourceString = [...]string{
 	"heal",
 	"hurt",
 	"cooldown",
+	"hitlag",
 	"user",
 }
 

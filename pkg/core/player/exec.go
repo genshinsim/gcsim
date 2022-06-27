@@ -111,7 +111,7 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		}
 		x.QueueAction(p.swap(k), p.delays.Swap)
 		x.CacheFrames()
-		p.SetActionUsed(p.active, &x)
+		p.SetActionUsed(p.active, t, &x)
 		p.LastAction.Type = t
 		p.LastAction.Param = param
 		p.LastAction.Char = p.active
@@ -150,7 +150,7 @@ func (p *Handler) useAbility(
 	}
 	info := f(param)
 	info.CacheFrames()
-	p.SetActionUsed(p.active, &info)
+	p.SetActionUsed(p.active, t, &info)
 
 	p.LastAction.Type = t
 	p.LastAction.Param = param

@@ -4,6 +4,8 @@
 package animation
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -18,18 +20,22 @@ type AnimationHandler struct {
 
 	char    int
 	started int
+	lastAct action.Action
 	aniEvt  *action.ActionInfo
 
 	state       action.AnimationState
 	stateExpiry int
+
+	debug bool
 }
 
-func New(f *int, log glog.Logger, events event.Eventter, tasks task.Tasker) *AnimationHandler {
+func New(f *int, debug bool, log glog.Logger, events event.Eventter, tasks task.Tasker) *AnimationHandler {
 	h := &AnimationHandler{
 		f:      f,
 		log:    log,
 		events: events,
 		tasks:  tasks,
+		debug:  debug,
 	}
 	return h
 }
@@ -60,20 +66,42 @@ func (h *AnimationHandler) CanQueueNextAction() bool {
 	return h.aniEvt.CanQueueNext()
 }
 
-func (h *AnimationHandler) SetActionUsed(char int, evt *action.ActionInfo) {
-	h.char = char
-	h.started = *h.f
+func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *action.ActionInfo) {
 	//remove previous if still active
 	if h.aniEvt != nil {
 		if h.aniEvt.OnRemoved != nil {
 			h.aniEvt.OnRemoved()
 		}
-		pool.Put(h.aniEvt)
+		if h.debug {
+			h.log.NewEvent(
+				fmt.Sprintf("%v from %v ended, time passed: %v", h.lastAct, h.started, h.aniEvt.TimePassed),
+				glog.LogHitlagEvent,
+				h.char,
+			)
+		}
 	}
+	//setup next
+	h.char = char
+	h.started = *h.f
 	h.aniEvt = evt
 	h.events.Emit(event.OnStateChange, h.state, evt.State)
 	h.state = evt.State
 	h.stateExpiry = *h.f + evt.AnimationLength
+	h.lastAct = act
+	if h.debug {
+		l := h.log.NewEvent(fmt.Sprintf("%v started", act.String()), glog.LogHitlagEvent, char)
+		l.Write(
+			"AnimationLength", evt.AnimationLength,
+			"CanQueueAfter", evt.CanQueueAfter,
+			"State", evt.State.String(),
+		)
+		for i, v := range evt.CachedFrames {
+			l.Write(
+				action.Action(i).String(),
+				v,
+			)
+		}
+	}
 }
 
 func (h *AnimationHandler) CurrentState() action.AnimationState {
@@ -87,7 +115,6 @@ func (h *AnimationHandler) Tick() {
 	if h.aniEvt != nil && h.aniEvt.Tick() {
 		h.events.Emit(event.OnStateChange, h.state, action.Idle)
 		h.state = action.Idle
-		pool.Put(h.aniEvt)
 		h.aniEvt = nil
 	}
 }

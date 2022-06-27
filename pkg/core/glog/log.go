@@ -2,11 +2,11 @@ package glog
 
 // Event describes one event to be logged
 type Event interface {
-	LogSource() Source              //returns the type of this log event i.e. character, sim, damage, etc...
-	StartFrame() int                //returns the frame on which this event was started
-	Src() int                       //returns the index of the character that triggered this event. -1 if it's not a character
-	Write(keyAndVal ...interface{}) //write additional keyAndVal pairs to the event
-	SetEnded(f int)
+	LogSource() Source                    //returns the type of this log event i.e. character, sim, damage, etc...
+	StartFrame() int                      //returns the frame on which this event was started
+	Src() int                             //returns the index of the character that triggered this event. -1 if it's not a character
+	Write(keyAndVal ...interface{}) Event //write additional keyAndVal pairs to the event
+	SetEnded(f int) Event
 }
 
 // Logger records LogEvents

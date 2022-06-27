@@ -82,7 +82,7 @@ func New(f *int, delays Delays, log glog.Logger, events event.Eventter, tasks ta
 	}
 	h.Shields = shield.New(f, log, events)
 	h.InfusionHandler = infusion.New(f, log, debug)
-	h.AnimationHandler = animation.New(f, log, events, tasks)
+	h.AnimationHandler = animation.New(f, debug, log, events, tasks)
 	return h
 }
 

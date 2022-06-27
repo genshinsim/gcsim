@@ -81,7 +81,7 @@ func New(seed int64, debug bool, delays player.Delays) (*Core, error) {
 	c.Tasks = task.New(&c.F)
 	c.Constructs = construct.New(&c.F, c.Log)
 	c.Player = player.New(&c.F, delays, c.Log, c.Events, c.Tasks, debug)
-	c.Combat = combat.New(c.Log, c.Events, c.Player, c.Rand, false, false)
+	c.Combat = combat.New(c.Log, c.Events, c.Player, c.Rand, debug, false, false)
 
 	return c, nil
 }

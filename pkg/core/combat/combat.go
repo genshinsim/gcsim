@@ -26,6 +26,7 @@ type Handler struct {
 	events event.Eventter
 	team   CharHandler
 	rand   *rand.Rand
+	debug  bool
 
 	targets     []Target
 	TotalDamage float64
@@ -34,13 +35,14 @@ type Handler struct {
 	defHalt bool
 }
 
-func New(log glog.Logger, events event.Eventter, team CharHandler, rand *rand.Rand, damageMode bool, defHalt bool) *Handler {
+func New(log glog.Logger, events event.Eventter, team CharHandler, rand *rand.Rand, debug bool, damageMode bool, defHalt bool) *Handler {
 	h := &Handler{
 		log:        log,
 		events:     events,
 		team:       team,
 		rand:       rand,
 		DamageMode: damageMode,
+		debug:      debug,
 	}
 	h.targets = make([]Target, 0, 5)
 

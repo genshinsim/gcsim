@@ -61,7 +61,7 @@ func main() {
 	}
 
 	if opt.serve {
-		os.Remove("serve_data.json")
+		os.Remove("serve_data.json.gz") //not really needed since we truncate anyways
 		opt.out = "serve_data.json"
 		opt.gz = true
 	}
