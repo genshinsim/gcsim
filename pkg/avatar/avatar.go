@@ -22,6 +22,8 @@ func New(core *core.Core, x, y, r float64) *Player {
 	return p
 }
 
+func (p *Player) Type() combat.TargettableType { return combat.TargettablePlayer }
+
 func (p *Player) Attack(ae *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//TODO: consider using this to implement additional self reactions
 	return 0, false

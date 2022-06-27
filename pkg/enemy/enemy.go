@@ -64,3 +64,5 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e.Reactable.Init(e, core)
 	return e
 }
+
+func (e *Enemy) Type() combat.TargettableType { return combat.TargettableEnemy }
