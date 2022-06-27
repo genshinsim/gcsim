@@ -1,5 +1,9 @@
 - add characters
+  - itto
 - fix character taking damage/hurt
 - fix reactable tests
 - parse APL
 - hitlag
+  - add additional array for hitlag affected mods (def, res, stat, and attack). on hitlag will loop through affected mods and add x to expiry
+  - add hitlag task queue; on hitlag will delay execution of tasks by x
+  - probably need to get rid of frame caching in order to handle Hutao cancels
