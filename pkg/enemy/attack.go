@@ -65,13 +65,15 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	if e.prof.ParticleDropThreshold > 0 {
 		next := int(e.damageTaken / e.prof.ParticleDropThreshold)
 		if next > e.lastParticleDrop {
+			//check the count too
+			count := next - e.lastParticleDrop
 			e.lastParticleDrop = next
 			e.Core.Log.NewEvent("particle hp threshold triggered", glog.LogEnemyEvent, atk.Info.ActorIndex)
 			e.Core.Tasks.Add(
 				func() {
 					e.Core.Player.DistributeParticle(character.Particle{
 						Source: "hp_drop",
-						Num:    e.prof.ParticleDropCount,
+						Num:    e.prof.ParticleDropCount * float64(count),
 						Ele:    e.prof.ParticleElement,
 					})
 				},
