@@ -56,13 +56,13 @@ func addMod[K mod](c *CharWrapper, slice *[]K, mod K) {
 	//otherwise check not expired
 	var evt glog.Event
 	if (*slice)[ind].Expiry() > *c.f || (*slice)[ind].Expiry() == -1 {
-		evt = c.log.NewEvent(
+		c.log.NewEvent(
 			"mod refreshed", glog.LogStatusEvent, c.Index,
 			"overwrite", true,
 			"key", mod.Key(),
 			"expiry", mod.Expiry(),
 		)
-
+		evt = (*slice)[ind].Event()
 	} else {
 		//if expired overide the event
 		evt = c.log.NewEvent(

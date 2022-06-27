@@ -56,13 +56,13 @@ func addMod[K mod](c *Enemy, slice *[]K, mod K) {
 	//otherwise check not expired
 	var evt glog.Event
 	if (*slice)[ind].Expiry() > c.Core.F || (*slice)[ind].Expiry() == -1 {
-		evt = c.Core.Log.NewEvent(
+		c.Core.Log.NewEvent(
 			"enemy mod refreshed", glog.LogStatusEvent, -1,
 			"overwrite", true,
 			"key", mod.Key(),
 			"expiry", mod.Expiry(),
 		)
-
+		evt = (*slice)[ind].Event()
 	} else {
 		//if expired overide the event
 		evt = c.Core.Log.NewEvent(
