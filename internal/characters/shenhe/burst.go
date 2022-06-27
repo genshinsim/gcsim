@@ -65,8 +65,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if !ok {
 			return
 		}
-		e.AddResistMod("shenhe-burst-shred-cryo", 2*60, attributes.Cryo, -burstrespp[c.TalentLvlBurst()])
-		e.AddResistMod("shenhe-burst-shred-phys", 2*60, attributes.Physical, -burstrespp[c.TalentLvlBurst()])
+		e.AddResistMod("shenhe-burst-shred-cryo", dur+2*60, attributes.Cryo, -burstrespp[c.TalentLvlBurst()])
+		e.AddResistMod("shenhe-burst-shred-phys", dur+2*60, attributes.Physical, -burstrespp[c.TalentLvlBurst()])
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 2, false, combat.TargettableEnemy), 0, 15, cb)
 

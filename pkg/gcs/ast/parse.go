@@ -75,6 +75,10 @@ func (p *Parser) Parse() (*ActionList, error) {
 	}
 
 	//set some sane defaults
+	if p.res.Settings.NumberOfWorkers <= 0 {
+		p.res.Settings.NumberOfWorkers = 20
+	}
+
 	if p.res.PlayerPos.R <= 0 {
 		p.res.PlayerPos.R = 1 //player radius 1 by default
 	}

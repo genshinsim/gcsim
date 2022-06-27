@@ -78,14 +78,14 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Charged %v Stacks %v", c.sCACount, c.Tags["strStack"]),
-		AttackTag:  core.AttackTagNormal,
+		AttackTag:  core.AttackTagExtra,
 		ICDTag:     core.ICDTagNormalAttack,
 		ICDGroup:   core.ICDGroupDefault,
 		StrikeType: core.StrikeTypeBlunt,
 		Element:    core.Physical,
 		Durability: 25,
 		Mult:       akCombo[c.TalentLvlAttack()],
-		FlatDmg:    0.35*c.Base.Def*(1+c.Stats[core.DEFP]) + c.Stats[core.DEF],
+		FlatDmg:    0.35*c.Base.Def*(1+c.Stat(core.DEFP)) + c.Stat(core.DEF),
 	}
 	if c.Tags["strStack"] == 0 {
 		ai.Mult = saichiSlash[c.TalentLvlAttack()]
@@ -96,7 +96,9 @@ func (c *char) ChargeAttack(p map[string]int) (int, int) {
 
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(r, false, core.TargettableEnemy), f, f)
 
-	c.Tags["strStack"]--
+	if c.Base.Cons < 6 || c.Core.Rand.Float64() < 0.5 {
+		c.Tags["strStack"]--
+	}
 	c.sCACount++
 	if c.Tags["strStack"] <= 0 {
 		c.sCACount = 0
@@ -240,8 +242,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}, "c2-itto", 9)
 
 	}
+
+	c.dasshuUsed = false
+
 	c.SetCDWithDelay(core.ActionBurst, 1080, 8)
 	c.ConsumeEnergy(8)
+
 	return f, a
 }
 
