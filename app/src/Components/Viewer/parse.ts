@@ -333,6 +333,12 @@ export function eventColor(eve: string): string {
       return "#902D89";
     case "action":
       return "#AB5F45";
+    case "hitlag":
+      return "#A27B5C";
+    case "user":
+      return "#5F7161";
+    case "enemy":
+      return "#632626";
     case "queue":
       return "";
     case "energy":
