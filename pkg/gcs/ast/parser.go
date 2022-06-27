@@ -51,6 +51,7 @@ type EnergySettings struct {
 type SimulatorSettings struct {
 	Duration   float64
 	DamageMode bool
+	DefHalt    bool // for hitlag
 	//other stuff
 	NumberOfWorkers int // how many workers to run the simulation
 	Iterations      int // how many iterations to run

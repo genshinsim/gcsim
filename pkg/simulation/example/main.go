@@ -84,7 +84,13 @@ func main() {
 	fmt.Println(cfg.Program.String())
 
 	//create core
-	c, err := core.New(0, true, cfg.Settings.Delays)
+	c, err := core.New(core.CoreOpt{
+		Seed:       0,
+		Debug:      true,
+		Delays:     cfg.Settings.Delays,
+		DefHalt:    cfg.Settings.DefHalt,
+		DamageMode: cfg.Settings.DamageMode,
+	})
 	if err != nil {
 		panic(err)
 	}
