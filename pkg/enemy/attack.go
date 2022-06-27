@@ -1,6 +1,8 @@
 package enemy
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -46,6 +48,18 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	//record dmg
 	e.HPCurrent -= damage
 	e.damageTaken += damage //TODO: do we actually need this?
+
+	//check for hitlag
+	//TODO: hit weakpoint??
+	dur := atk.Info.HitlagHaltFrames
+	if e.Core.Flags.DefHalt && atk.Info.CanBeDefenseHalted {
+		dur += 3.6
+	}
+	dur = math.Ceil(dur)
+	if dur > 0 {
+		//apply hit lag
+		e.ApplyHitlag(dur, atk.Info.HitlagFactor)
+	}
 
 	//check for particle drops
 	if e.prof.ParticleDropThreshold > 0 {
