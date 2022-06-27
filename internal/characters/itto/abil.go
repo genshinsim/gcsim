@@ -240,8 +240,12 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}, "c2-itto", 9)
 
 	}
+
+	c.dasshuUsed = false
+
 	c.SetCDWithDelay(core.ActionBurst, 1080, 8)
 	c.ConsumeEnergy(8)
+
 	return f, a
 }
 
