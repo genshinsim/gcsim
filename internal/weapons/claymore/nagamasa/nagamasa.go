@@ -63,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			}, i)
 		}
 		return false
-	}, fmt.Sprintf("nagamasa-%v", char.Base.Name))
+	}, fmt.Sprintf("nagamasa-%v", char.Base.Key.String()))
 
 	return w, nil
 }

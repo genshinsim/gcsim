@@ -63,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		normal = c.F + 300 // lasts 5 seconds
 		return false
-	}, fmt.Sprintf("mistsplitter-%v", char.Base.Name))
+	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 
 	//using burst
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		skill = c.F + 600
 		return false
 
-	}, fmt.Sprintf("mistsplitter-%v", char.Base.Name))
+	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 	char.AddStatMod("mistsplitter", -1, attributes.NoStat, func() ([]float64, bool) {
 		count := 0
 		if char.Energy < char.EnergyMax {

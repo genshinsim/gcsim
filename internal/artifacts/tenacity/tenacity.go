@@ -80,7 +80,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.F+180, "icd", s.icd)
 			return false
-		}, fmt.Sprintf("tom4-%v", char.Base.Name))
+		}, fmt.Sprintf("tom4-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

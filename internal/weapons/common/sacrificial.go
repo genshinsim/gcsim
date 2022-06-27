@@ -59,7 +59,7 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 			c.Log.NewEvent("sacrificial proc'd", glog.LogWeaponEvent, char.Index)
 		}
 		return false
-	}, fmt.Sprintf("sac-%v", char.Base.Name))
+	}, fmt.Sprintf("sac-%v", char.Base.Key.String()))
 
 	return w, nil
 }

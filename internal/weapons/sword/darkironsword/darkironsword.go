@@ -56,6 +56,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		return false
-	}, fmt.Sprintf("darkironsword-%v", char.Base.Name))
+	}, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	return w, nil
 }

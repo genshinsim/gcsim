@@ -69,11 +69,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 	}
 
-	c.Events.Subscribe(event.OnCrystallizeElectro, hrfunc(attributes.Geo, "hr-crystallize"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
-	c.Events.Subscribe(event.OnSwirlElectro, hrfunc(attributes.Anemo, "hr-swirl"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
-	c.Events.Subscribe(event.OnElectroCharged, hrfunc(attributes.Hydro, "hr-ec"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
-	c.Events.Subscribe(event.OnOverload, hrfunc(attributes.Pyro, "hr-ol"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
-	c.Events.Subscribe(event.OnSuperconduct, hrfunc(attributes.Cryo, "hr-sc"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
+	c.Events.Subscribe(event.OnCrystallizeElectro, hrfunc(attributes.Geo, "hr-crystallize"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlElectro, hrfunc(attributes.Anemo, "hr-swirl"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnElectroCharged, hrfunc(attributes.Hydro, "hr-ec"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnOverload, hrfunc(attributes.Pyro, "hr-ol"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSuperconduct, hrfunc(attributes.Cryo, "hr-sc"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
 
 	return w, nil
 }

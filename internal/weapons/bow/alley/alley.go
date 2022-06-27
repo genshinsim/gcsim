@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return m, true
 	})
 
-	key := fmt.Sprintf("alley-hunter-%v", char.Base.Name)
+	key := fmt.Sprintf("alley-hunter-%v", char.Base.Key.String())
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)

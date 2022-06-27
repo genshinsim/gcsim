@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		icd = c.F + 300 //5 seconds
 
 		return false
-	}, fmt.Sprintf("amenoma-skill-%v", char.Base.Name))
+	}, fmt.Sprintf("amenoma-skill-%v", char.Base.Key.String()))
 
 	//TODO: this used to be on postburst. make sure nothing broke here
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
@@ -79,6 +79,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}, 120+60) //added 1 extra sec for burst animation but who knows if this is true
 
 		return false
-	}, fmt.Sprintf("amenoma-burst-%v", char.Base.Name))
+	}, fmt.Sprintf("amenoma-burst-%v", char.Base.Key.String()))
 	return w, nil
 }

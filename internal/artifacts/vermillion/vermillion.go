@@ -73,7 +73,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Log.NewEvent("verm 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.Status.Duration("verm-4pc"))
 			return false
 
-		}, fmt.Sprintf("verm-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("verm-4pc-%v", char.Base.Key.String()))
 
 		c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
 			if c.F >= s.HPicd && s.stacks < 4 && c.Status.Duration("verm-4pc") > 0 { // grants stack if conditions are met

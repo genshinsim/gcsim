@@ -65,6 +65,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		icd = c.F + cd
 
 		return false
-	}, fmt.Sprintf("fillet-blade-%v", char.Base.Name))
+	}, fmt.Sprintf("fillet-blade-%v", char.Base.Key.String()))
 	return w, nil
 }

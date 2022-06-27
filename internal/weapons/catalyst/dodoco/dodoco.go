@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			})
 		}
 		return false
-	}, fmt.Sprintf("dodoco-%v", char.Base.Name))
+	}, fmt.Sprintf("dodoco-%v", char.Base.Key.String()))
 
 	return w, nil
 }

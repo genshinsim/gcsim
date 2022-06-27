@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return m, true
 		})
 		return false
-	}, fmt.Sprintf("prototype-crescent-%v", char.Base.Name))
+	}, fmt.Sprintf("prototype-crescent-%v", char.Base.Key.String()))
 
 	return w, nil
 }

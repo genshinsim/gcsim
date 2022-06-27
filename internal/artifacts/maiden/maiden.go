@@ -46,8 +46,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Log.NewEvent("maiden 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", dur)
 			return false
 		}
-		c.Events.Subscribe(event.OnBurst, f, fmt.Sprintf("maiden-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnSkill, f, fmt.Sprintf("maiden-4pc-%v", char.Base.Name))
+		c.Events.Subscribe(event.OnBurst, f, fmt.Sprintf("maiden-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSkill, f, fmt.Sprintf("maiden-4pc-%v", char.Base.Key.String()))
 
 		// Applies to all characters, so no filters needed
 		for _, this := range c.Player.Chars() {

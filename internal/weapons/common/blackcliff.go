@@ -44,7 +44,7 @@ func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponPro
 			index = 0
 		}
 		return false
-	}, fmt.Sprintf("blackcliff-%v", char.Base.Name))
+	}, fmt.Sprintf("blackcliff-%v", char.Base.Key.String()))
 
 	return b, nil
 }

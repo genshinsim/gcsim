@@ -80,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			}
 		}
 		return false
-	}, fmt.Sprintf("pines-%v", char.Base.Name))
+	}, fmt.Sprintf("pines-%v", char.Base.Key.String()))
 
 	return w, nil
 }

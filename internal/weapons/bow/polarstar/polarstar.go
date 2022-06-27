@@ -88,7 +88,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		return false
-	}, fmt.Sprintf("polar-star-%v", char.Base.Name))
+	}, fmt.Sprintf("polar-star-%v", char.Base.Key.String()))
 
 	mDmg := make([]float64, attributes.EndStatType)
 	mDmg[attributes.DmgP] = dmg

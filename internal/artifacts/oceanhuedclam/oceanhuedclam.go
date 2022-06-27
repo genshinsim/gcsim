@@ -132,7 +132,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			)
 
 			return false
-		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", char.Base.Name))
+		}, fmt.Sprintf("ohc-4pc-heal-accumulation-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

@@ -39,7 +39,7 @@ func NewRoyal(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile)
 			}
 		}
 		return false
-	}, fmt.Sprintf("royal-%v", char.Base.Name))
+	}, fmt.Sprintf("royal-%v", char.Base.Key.String()))
 
 	rate := 0.06 + float64(r)*0.02
 	m := make([]float64, attributes.EndStatType)

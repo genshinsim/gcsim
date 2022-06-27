@@ -93,7 +93,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 // Should be run whenever c.quillcount is updated
 func (c *char) updateBuffTags() {
 	for _, char := range c.Core.Player.Chars() {
-		c.Tags["quills_"+char.Base.Name] = c.quillcount[char.Index]
+		c.Tags["quills_"+char.Base.Key.String()] = c.quillcount[char.Index]
 		c.Tags[fmt.Sprintf("quills_%v", char.Index)] = c.quillcount[char.Index]
 	}
 }

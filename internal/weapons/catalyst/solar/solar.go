@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		return false
-	}, fmt.Sprintf("solar-%v", char.Base.Name))
+	}, fmt.Sprintf("solar-%v", char.Base.Key.String()))
 
 	return w, nil
 }

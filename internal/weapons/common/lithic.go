@@ -33,7 +33,7 @@ func NewLithic(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		val[attributes.CR] = (0.02 + float64(r)*0.01) * float64(stacks)
 		val[attributes.ATKP] = (0.06 + float64(r)*0.01) * float64(stacks)
 		return true
-	}, fmt.Sprintf("lithic-%v", char.Base.Name))
+	}, fmt.Sprintf("lithic-%v", char.Base.Key.String()))
 	char.AddStatMod("lithic", -1, attributes.NoStat, func() ([]float64, bool) {
 		return val, true
 	})

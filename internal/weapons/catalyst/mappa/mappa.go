@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 
 	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.ReactionEventEndDelim; i++ {
-		c.Events.Subscribe(i, addStack, "mappa"+char.Base.Name)
+		c.Events.Subscribe(i, addStack, "mappa"+char.Base.Key.String())
 	}
 
 	dmg := 0.06 + float64(r)*0.02

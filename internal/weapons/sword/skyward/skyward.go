@@ -52,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		})
 		c.Log.NewEvent("Skyward Blade activated", glog.LogWeaponEvent, char.Index, "expiring ", dur)
 		return false
-	}, fmt.Sprintf("skyward-blade-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
 	//deals damage proc on normal/charged attacks. i dont know why description in game sucks
 	dmgper := .15 + .05*float64(r)
@@ -83,7 +83,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 		return false
 
-	}, fmt.Sprintf("skyward-blade-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
 	return w, nil
 }

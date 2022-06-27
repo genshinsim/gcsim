@@ -92,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
-		c.Events.Subscribe(i, stackFunc, "freedom-"+char.Base.Name)
+		c.Events.Subscribe(i, stackFunc, "freedom-"+char.Base.Key.String())
 	}
 
 	return w, nil

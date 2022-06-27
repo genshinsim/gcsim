@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 	stacks := 0
-	key := fmt.Sprintf("kaguradance-%v", char.Base.Name)
+	key := fmt.Sprintf("kaguradance-%v", char.Base.Key.String())
 	dmg := 0.12 + 0.03*float64(r-1)
 	val := make([]float64, attributes.EndStatType)
 	lastActiveUntil := -1

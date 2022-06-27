@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		})
 
 		return false
-	}, fmt.Sprintf("skyrider-greatsword-%v", char.Base.Name))
+	}, fmt.Sprintf("skyrider-greatsword-%v", char.Base.Key.String()))
 
 	return w, nil
 }

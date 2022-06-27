@@ -47,12 +47,12 @@ func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfi
 		}
 		c.Log.NewEvent("favonius proc'd", glog.LogWeaponEvent, char.Index)
 
-		c.QueueParticle("favonius-"+char.Base.Name, 3, attributes.NoElement, 80)
+		c.QueueParticle("favonius-"+char.Base.Key.String(), 3, attributes.NoElement, 80)
 
 		icd = c.F + cd
 
 		return false
-	}, fmt.Sprintf("favo-%v", char.Base.Name))
+	}, fmt.Sprintf("favo-%v", char.Base.Key.String()))
 
 	return b, nil
 }

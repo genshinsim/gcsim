@@ -74,6 +74,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Bonus:   char.Stat(attributes.Heal),
 		})
 		return false
-	}, fmt.Sprintf("aquila-%v", char.Base.Name))
+	}, fmt.Sprintf("aquila-%v", char.Base.Key.String()))
 	return w, nil
 }

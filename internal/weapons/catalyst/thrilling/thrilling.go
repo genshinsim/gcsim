@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	cd := -1
 	isActive := false
-	key := fmt.Sprintf("thrilling-%v", char.Base.Name)
+	key := fmt.Sprintf("thrilling-%v", char.Base.Key.String())
 
 	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
 		isActive = c.Player.Active() == char.Index

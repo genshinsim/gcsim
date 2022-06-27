@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			wavespikeICD = c.F + 0.3*60
 		}
 		return false
-	}, fmt.Sprintf("wavespike-%v", char.Base.Name))
+	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))
 
 	val := make([]float64, attributes.EndStatType)
 	//TODO: this used to be on post. make sure nothing broke here
@@ -83,7 +83,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		wavespikeStacks = 0
 		return false
-	}, fmt.Sprintf("ripping-upheaval-%v", char.Base.Name))
+	}, fmt.Sprintf("ripping-upheaval-%v", char.Base.Key.String()))
 
 	return w, nil
 }

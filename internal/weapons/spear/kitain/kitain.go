@@ -63,6 +63,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			}, i)
 		}
 		return false
-	}, fmt.Sprintf("kitain-%v", char.Base.Name))
+	}, fmt.Sprintf("kitain-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return w.buff, true
 		})
 		return false
-	}, fmt.Sprintf("prototype-starglitter-%v", char.Base.Name))
+	}, fmt.Sprintf("prototype-starglitter-%v", char.Base.Key.String()))
 
 	return w, nil
 }

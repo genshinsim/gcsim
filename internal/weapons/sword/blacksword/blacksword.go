@@ -65,6 +65,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			last = c.F
 		}
 		return false
-	}, fmt.Sprintf("black-sword-%v", char.Base.Name))
+	}, fmt.Sprintf("black-sword-%v", char.Base.Key.String()))
 	return w, nil
 }

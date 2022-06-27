@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	normal := 0
 	skill := 0
 
-	key := fmt.Sprintf("thundering-pulse-%v", char.Base.Name)
+	key := fmt.Sprintf("thundering-pulse-%v", char.Base.Key.String())
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)

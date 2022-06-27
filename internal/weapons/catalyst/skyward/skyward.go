@@ -63,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		icd = c.F + 1800
 		return false
-	}, fmt.Sprintf("skyward-atlast-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-atlast-%v", char.Base.Key.String()))
 
 	//permanent stat buff
 	m := make([]float64, attributes.EndStatType)

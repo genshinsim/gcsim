@@ -67,7 +67,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 
 		for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
-			c.Events.Subscribe(i, add, fmt.Sprintf("instructor-4pc-%v", char.Base.Name))
+			c.Events.Subscribe(i, add, fmt.Sprintf("instructor-4pc-%v", char.Base.Key.String()))
 		}
 	}
 

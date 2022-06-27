@@ -185,7 +185,7 @@ func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
 			}
 			char.SetArtifactSet(key, s)
 		} else {
-			return -1, fmt.Errorf("character %v has unrecognized artifact: %v", p.Base.Name, key)
+			return -1, fmt.Errorf("character %v has unrecognized artifact: %v", p.Base.Key.String(), key)
 		}
 	}
 	//TODO: this should be handled by parser

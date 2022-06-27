@@ -36,7 +36,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < 0.33 {
 		count = 4
 	}
-	c.Core.QueueParticle(c.Base.Name, count, attributes.Geo, skillHitmark+100)
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, skillHitmark+100)
 
 	c.Core.Tasks.Add(func() {
 		dur := 30 * 60

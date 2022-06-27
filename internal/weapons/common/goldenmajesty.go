@@ -24,7 +24,7 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 
 	shd := .15 + float64(r)*.05
 	atkbuff := 0.03 + 0.01*float64(r)
-	key := fmt.Sprintf("golden-majesty-%v", char.Base.Name)
+	key := fmt.Sprintf("golden-majesty-%v", char.Base.Key.String())
 	c.Player.Shields.AddShieldBonusMod(key, -1, func() (float64, bool) { return shd, false })
 
 	icd := -1

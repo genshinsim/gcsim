@@ -69,7 +69,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			w.updateBuff()
 		}
 		return false
-	}, fmt.Sprintf("lostprayer-%v", char.Base.Name))
+	}, fmt.Sprintf("lostprayer-%v", char.Base.Key.String()))
 
 	char.AddStatMod("lost-prayer", -1, attributes.NoStat, func() ([]float64, bool) {
 		if w.stacks == 0 {

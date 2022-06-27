@@ -39,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		active = c.F + 300
 
 		return false
-	}, fmt.Sprintf("cp-%v", char.Base.Name))
+	}, fmt.Sprintf("cp-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
@@ -63,6 +63,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 		}
 		return false
-	}, fmt.Sprintf("cpp-%v", char.Base.Name))
+	}, fmt.Sprintf("cpp-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -76,7 +76,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			}
 
 			return false
-		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

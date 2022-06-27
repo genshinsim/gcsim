@@ -90,7 +90,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		})
 
 		return false
-	}, fmt.Sprintf("compoundbow-%v", char.Base.Name))
+	}, fmt.Sprintf("compoundbow-%v", char.Base.Key.String()))
 
 	return w, nil
 }

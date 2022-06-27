@@ -35,7 +35,6 @@ func (c *CharacterProfile) Clone() CharacterProfile {
 
 type CharacterBase struct {
 	Key      keys.Char          `json:"key"`
-	Name     string             `json:"name"`
 	Element  attributes.Element `json:"element"`
 	Level    int                `json:"level"`
 	MaxLevel int                `json:"max_level"`

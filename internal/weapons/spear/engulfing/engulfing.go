@@ -56,6 +56,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return erval, true
 		})
 		return false
-	}, fmt.Sprintf("engulfing-%v", char.Base.Name))
+	}, fmt.Sprintf("engulfing-%v", char.Base.Key.String()))
 	return w, nil
 }

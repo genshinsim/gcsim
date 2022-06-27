@@ -85,7 +85,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 
 	//log stats
 	c.log.NewEvent(
-		"stat calc done for "+c.Base.Name,
+		"stat calc done for "+c.Base.Key.String(),
 		glog.LogCharacterEvent, c.Index,
 		"char_base", c.Base,
 		"weap_base", c.Weapon,

@@ -71,7 +71,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			c.Log.NewEvent("noblesse 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.Status.Duration("nob-4pc"))
 			return false
-		}, fmt.Sprintf("nob-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("nob-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

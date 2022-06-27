@@ -68,9 +68,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}
 
-		c.Events.Subscribe(event.OnOverload, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnElectroCharged, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnSuperconduct, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Name))
+		c.Events.Subscribe(event.OnOverload, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnElectroCharged, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSuperconduct, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

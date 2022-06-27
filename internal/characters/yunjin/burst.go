@@ -98,7 +98,7 @@ func (c *char) burstProc() {
 // Should be run whenever c.burstTriggers is updated
 func (c *char) updateBuffTags() {
 	for _, char := range c.Core.Player.Chars() {
-		c.Tags["burststacks_"+char.Base.Name] = c.burstTriggers[char.Index]
+		c.Tags["burststacks_"+char.Base.Key.String()] = c.burstTriggers[char.Index]
 		c.Tags[fmt.Sprintf("burststacks_%v", char.Index)] = c.burstTriggers[char.Index]
 	}
 }

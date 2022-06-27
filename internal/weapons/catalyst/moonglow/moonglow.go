@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index, "damage_added", flatdmg)
 		return false
-	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Name))
+	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Key.String()))
 
 	icd, dur := -1, -1
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		dur = c.F + 720
 		return false
-	}, fmt.Sprintf("moonglow-onburst-%v", char.Base.Name))
+	}, fmt.Sprintf("moonglow-onburst-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -77,7 +77,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		icd = c.F + 6
 
 		return false
-	}, fmt.Sprintf("moonglow-energy-%v", char.Base.Name))
+	}, fmt.Sprintf("moonglow-energy-%v", char.Base.Key.String()))
 
 	return w, nil
 }

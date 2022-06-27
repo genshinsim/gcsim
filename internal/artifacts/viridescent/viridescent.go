@@ -75,10 +75,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 		}
-		c.Events.Subscribe(event.OnSwirlCryo, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnSwirlElectro, vvfunc(attributes.Electro, "vvelectro"), fmt.Sprintf("vv-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnSwirlHydro, vvfunc(attributes.Hydro, "vvhydro"), fmt.Sprintf("vv-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnSwirlPyro, vvfunc(attributes.Pyro, "vvpyro"), fmt.Sprintf("vv-4pc-%v", char.Base.Name))
+		c.Events.Subscribe(event.OnSwirlCryo, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSwirlElectro, vvfunc(attributes.Electro, "vvelectro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSwirlHydro, vvfunc(attributes.Hydro, "vvhydro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSwirlPyro, vvfunc(attributes.Pyro, "vvpyro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
 
 		// Additional event for on damage proc on secondary targets
 		// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
@@ -113,7 +113,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index, "reaction", key, "char", char.Index)
 
 			return false
-		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Name))
+		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Key.String()))
 
 	}
 

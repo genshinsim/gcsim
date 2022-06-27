@@ -76,7 +76,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			s.lastSwap = c.F
 			c.Tasks.Add(s.gainStackOfffield(c.F), 3*60)
 			return false
-		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Name))
+		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Key.String()))
 
 		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
@@ -109,7 +109,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Tasks.Add(s.checkStackLoss, 360)
 
 			return false
-		}, fmt.Sprintf("husk-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("husk-4pc-%v", char.Base.Key.String()))
 
 		char.AddStatMod("husk-4pc", -1, attributes.NoStat, func() ([]float64, bool) {
 			m[attributes.DEFP] = 0.06 * float64(s.stacks)

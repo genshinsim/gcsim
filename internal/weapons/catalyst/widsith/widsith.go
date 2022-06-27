@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.Log.NewEvent("widsith proc'd", glog.LogWeaponEvent, char.Index, "stat", stats[state], "expiring", expiry)
 
 		return false
-	}, fmt.Sprintf("width-%v", char.Base.Name))
+	}, fmt.Sprintf("width-%v", char.Base.Key.String()))
 
 	return w, nil
 

@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		})
 
 		return false
-	}, fmt.Sprintf("calamity-queller-%v", char.Base.Name))
+	}, fmt.Sprintf("calamity-queller-%v", char.Base.Key.String()))
 
 	return w, nil
 }

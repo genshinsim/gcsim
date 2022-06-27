@@ -80,6 +80,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 1)
 
 		return false
-	}, fmt.Sprintf("swordofdescension-%v", char.Base.Name))
+	}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))
 	return w, nil
 }

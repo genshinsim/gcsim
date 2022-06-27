@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		})
 
 		return false
-	}, fmt.Sprintf("whiteblind-%v", char.Base.Name))
+	}, fmt.Sprintf("whiteblind-%v", char.Base.Key.String()))
 
 	return w, nil
 }

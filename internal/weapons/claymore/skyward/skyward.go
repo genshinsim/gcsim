@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		counter = 0
 		c.Log.NewEvent("Skyward Pride activated", glog.LogWeaponEvent, char.Index, "expiring ", dur)
 		return false
-	}, fmt.Sprintf("skyward-pride-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-pride-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -81,6 +81,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		c.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 1)
 		return false
-	}, fmt.Sprintf("skyward-pride-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-pride-%v", char.Base.Key.String()))
 	return w, nil
 }

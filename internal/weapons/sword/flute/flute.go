@@ -73,6 +73,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		}
 		return false
-	}, fmt.Sprintf("flute-%v", char.Base.Name))
+	}, fmt.Sprintf("flute-%v", char.Base.Key.String()))
 	return w, nil
 }

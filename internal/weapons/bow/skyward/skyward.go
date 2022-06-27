@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		icd = c.F + cd
 
 		return false
-	}, fmt.Sprintf("skyward-harp-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-harp-%v", char.Base.Key.String()))
 
 	return w, nil
 }

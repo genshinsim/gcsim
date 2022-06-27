@@ -70,7 +70,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				"icd", s.icd,
 			)
 			return false
-		}, fmt.Sprintf("pf4-%v", char.Base.Name))
+		}, fmt.Sprintf("pf4-%v", char.Base.Key.String()))
 
 		char.AddStatMod("pf-4pc", -1, attributes.NoStat, func() ([]float64, bool) {
 			if s.dur < c.F {

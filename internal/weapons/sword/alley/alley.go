@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
 		w.lockout = c.F + 300
 		return false
-	}, fmt.Sprintf("alleyflash-%v", char.Base.Name))
+	}, fmt.Sprintf("alleyflash-%v", char.Base.Key.String()))
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.09 + 0.03*float64(r)

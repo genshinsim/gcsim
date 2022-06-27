@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Expires:    c.F + 600,
 		})
 		return false
-	}, fmt.Sprintf("bell-%v", char.Base.Name))
+	}, fmt.Sprintf("bell-%v", char.Base.Key.String()))
 
 	//add damage if shielded
 	char.AddStatMod("bell", -1, attributes.NoStat, func() ([]float64, bool) {

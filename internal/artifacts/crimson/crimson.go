@@ -29,7 +29,7 @@ func (s *Set) Init() error      { return nil }
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	s.stacks = 0
-	s.key = fmt.Sprintf("%v-cw-4pc", char.Base.Name)
+	s.key = fmt.Sprintf("%v-cw-4pc", char.Base.Key.String())
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)

@@ -74,6 +74,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		//trigger cd
 		icd = c.F + 120
 		return false
-	}, fmt.Sprintf("skyward-spine-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-spine-%v", char.Base.Key.String()))
 	return w, nil
 }

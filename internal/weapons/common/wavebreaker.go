@@ -49,7 +49,7 @@ func NewWavebreaker(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 			return nil, false
 		})
 		return true
-	}, fmt.Sprintf("wavebreaker-%v", char.Base.Name))
+	}, fmt.Sprintf("wavebreaker-%v", char.Base.Key.String()))
 
 	return b, nil
 }

@@ -105,7 +105,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			s.prob = 0.36
 
 			return false
-		}, fmt.Sprintf("echoes-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("echoes-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil
