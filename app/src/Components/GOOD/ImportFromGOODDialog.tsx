@@ -10,8 +10,8 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "~src/store";
-import { userDataActions } from "../userDataSlice";
-import { IGOODImport, parseFromGO } from "./Import";
+import { userDataActions } from "../../Pages/Sim/userDataSlice";
+import { IGOODImport, parseFromGOOD } from "./parseFromGOOD";
 
 type Props = {
   isOpen: boolean;
@@ -24,23 +24,13 @@ const AppToaster = Toaster.create({
 
 const lsKey = "GOOD-import";
 
-export function LoadGOOD(props: Props) {
-  const [str, setStr] = React.useState<string>("");
+export function ImportFromGOODDialog(props: Props) {
   const [data, setData] = React.useState<IGOODImport>();
   const dispatch = useAppDispatch();
   let { t } = useTranslation();
 
-  React.useEffect(() => {
-    const val = localStorage.getItem(lsKey);
-    if (val !== null && val !== "") {
-      setStr(val);
-      // console.log("spahget", parseFromGO(val));
-      setData(parseFromGO(val));
-    }
-  }, []);
   const handleLoad = () => {
     if (data !== undefined) {
-      // setData(parseFromGO());
       dispatch(userDataActions.loadFromGOOD({ data: data.characters }));
       props.onClose();
       AppToaster.show({
@@ -50,9 +40,8 @@ export function LoadGOOD(props: Props) {
     }
   };
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setStr(e.target.value);
     localStorage.setItem(lsKey, e.target.value);
-    setData(parseFromGO(e.target.value));
+    setData(parseFromGOOD(e.target.value));
   };
   return (
     <Dialog
@@ -82,7 +71,7 @@ export function LoadGOOD(props: Props) {
           action cannot be reversed.
         </Callout>
         <textarea
-          value={str}
+          value={localStorage.getItem(lsKey) ?? ""}
           onChange={handleChange}
           className="w-full p-2 bg-gray-600 rounded-md mt-2"
           rows={7}
