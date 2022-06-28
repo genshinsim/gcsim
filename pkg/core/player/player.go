@@ -121,8 +121,12 @@ func (h *Handler) CombatByIndex(i int) combat.Character {
 	return h.chars[i]
 }
 
-func (h *Handler) ByKey(k keys.Char) *character.CharWrapper {
-	return h.chars[h.charPos[k]]
+func (h *Handler) ByKey(k keys.Char) (*character.CharWrapper, bool) {
+	i, ok := h.charPos[k]
+	if !ok {
+		return nil, false
+	}
+	return h.chars[i], true
 }
 
 func (h *Handler) Chars() []*character.CharWrapper {

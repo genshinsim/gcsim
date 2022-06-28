@@ -40,6 +40,7 @@ type ActionList struct {
 	Program     *BlockStmt
 	Energy      EnergySettings
 	Settings    SimulatorSettings
+	Errors      []error
 }
 
 type EnergySettings struct {
@@ -111,6 +112,7 @@ func New(input string) *Parser {
 	}
 	//expr functions
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
+	p.prefixParseFns[itemField] = p.parseField
 	p.prefixParseFns[itemNumber] = p.parseNumber
 	p.prefixParseFns[itemString] = p.parseString
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr

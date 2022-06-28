@@ -1,9 +1,19 @@
 package ast
 
 import (
+	"fmt"
 	"testing"
 )
 
+func TestFields(t *testing.T) {
+	input := `if .status.field > 0 { print("hi") };`
+
+	l := lex(input)
+	for n := l.nextItem(); n.Typ != itemEOF; n = l.nextItem() {
+		fmt.Println(n)
+	}
+
+}
 func TestBasicToken(t *testing.T) {
 	input := `
 	let y = fn(x) {

@@ -55,6 +55,9 @@ func (h *Handler) AddTarget(t Target) {
 }
 
 func (h *Handler) Target(i int) Target {
+	if i < 0 || i > len(h.targets) {
+		return nil
+	}
 	return h.targets[i]
 }
 

@@ -199,3 +199,13 @@ func TestCharAdd(t *testing.T) {
 	}
 	spew.Config.Dump(res)
 }
+
+func TestField(t *testing.T) {
+	p := New(`if .status.field > 0 { print("hi"); }`)
+	res, err := p.Parse()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	spew.Config.Dump(res)
+}

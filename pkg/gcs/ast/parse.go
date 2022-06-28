@@ -55,7 +55,7 @@ func (p *Parser) Parse() (*ActionList, error) {
 
 	//sanity checks
 	if len(p.charOrder) > 4 {
-		return p.res, fmt.Errorf("config contains a total of %v characters; cannot exceed 4", len(p.charOrder))
+		p.res.Errors = append(p.res.Errors, fmt.Errorf("config contains a total of %v characters; cannot exceed 4", len(p.charOrder)))
 	}
 
 	for _, v := range p.charOrder {
@@ -66,12 +66,12 @@ func (p *Parser) Parse() (*ActionList, error) {
 			count += c
 		}
 		if count > 5 {
-			return p.res, fmt.Errorf("character %v have more than 5 total set items", v.String())
+			p.res.Errors = append(p.res.Errors, fmt.Errorf("character %v have more than 5 total set items", v.String()))
 		}
 	}
 
 	if p.res.InitialChar == keys.NoChar {
-		return p.res, fmt.Errorf("config does not contain active char")
+		p.res.Errors = append(p.res.Errors, fmt.Errorf("config does not contain active char"))
 	}
 
 	//set some sane defaults
@@ -599,7 +599,19 @@ func (p *Parser) parseExpr(pre precedence) Expr {
 func (p *Parser) parseIdent() Expr {
 	n := p.next()
 	return &Ident{Pos: n.pos, Value: n.Val}
+}
 
+func (p *Parser) parseField() Expr {
+	//next is field, keep parsing as long as it is still fields
+	//then concat them all together
+	n := p.next()
+	fields := make([]string, 0, 5)
+	for ; n.Typ == itemField; n = p.next() {
+		fields = append(fields, n.Val)
+	}
+	//we would have consumed one too many here
+	p.backup()
+	return &Field{Pos: n.pos, Value: fields}
 }
 
 func (p *Parser) parseString() Expr {
