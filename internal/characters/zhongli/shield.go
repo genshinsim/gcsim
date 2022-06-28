@@ -3,11 +3,12 @@ package zhongli
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) addJadeShield() {
@@ -22,11 +23,11 @@ func (c *char) addJadeShield() {
 	for _, v := range res {
 		key := fmt.Sprintf("zhongli-%v", v.String())
 		for _, t := range c.Core.Combat.Targets() {
-			e, ok := t.(core.Enemy)
+			e, ok := t.(*enemy.Enemy)
 			if !ok {
 				continue
 			}
-			e.AddResistMod(key, 1200, v, -0.2)
+			e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase(key, 1200), Ele: v, Value: -0.2})
 		}
 	}
 
@@ -42,7 +43,7 @@ func (c *char) removeJadeShield() {
 	for _, v := range res {
 		key := fmt.Sprintf("zhongli-%v", v.String())
 		for _, t := range c.Core.Combat.Targets() {
-			e, ok := t.(core.Enemy)
+			e, ok := t.(*enemy.Enemy)
 			if !ok {
 				continue
 			}

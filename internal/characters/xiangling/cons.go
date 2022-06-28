@@ -1,10 +1,10 @@
 package xiangling
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -12,11 +12,11 @@ func (c *char) c1(a combat.AttackCB) {
 	if c.Base.Cons < 1 {
 		return
 	}
-	e, ok := a.Target.(core.Enemy)
+	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	e.AddResistMod("xiangling-c1", 6*60, attributes.Pyro, -0.15)
+	e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("xiangling-c1", 6*60), Ele: attributes.Pyro, Value: -0.15})
 }
 
 func (c *char) c6(dur int) {

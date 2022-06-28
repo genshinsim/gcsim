@@ -2,12 +2,12 @@ package eula
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -119,13 +119,13 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			if done {
 				return
 			}
-			e, ok := a.Target.(core.Enemy)
+			e, ok := a.Target.(*enemy.Enemy)
 			if !ok {
 				return
 			}
 			done = true
-			e.AddResistMod("eula-icewhirl-shred-cryo", 7*v*60, attributes.Cryo, -resRed[lvl])
-			e.AddResistMod("eula-icewhirl-shred-phys", 7*v*60, attributes.Physical, -resRed[lvl])
+			e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("eula-icewhirl-shred-cryo", 7*v*60), Ele: attributes.Cryo, Value: -resRed[lvl]})
+			e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("eula-icewhirl-shred-phys", 7*v*60), Ele: attributes.Physical, Value: -resRed[lvl]})
 		}
 	}
 

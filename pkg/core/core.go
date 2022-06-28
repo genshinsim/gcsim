@@ -55,14 +55,14 @@ type Reactable interface {
 	Tick()
 }
 
-type Enemy interface {
-	AddResistMod(key string, dur int, ele attributes.Element, val float64)
-	DeleteResistMod(key string)
-	ResistModIsActive(key string) bool
-	AddDefMod(key string, dur int, val float64)
-	DeleteDefMod(key string)
-	DefModIsActive(key string) bool
-}
+// type Enemy interface {
+// 	AddResistMod(key string, dur int, ele attributes.Element, val float64)
+// 	DeleteResistMod(key string)
+// 	ResistModIsActive(key string) bool
+// 	AddDefMod(key string, dur int, val float64)
+// 	DeleteDefMod(key string)
+// 	DefModIsActive(key string) bool
+// }
 
 const MaxTeamSize = 4
 
@@ -105,7 +105,6 @@ func (c *Core) Init() error {
 	//	- base stats
 	//	- char inits
 	//	- init call backs
-	c.SetupResonance()
 	c.SetupOnNormalHitEnergy()
 	err = c.Player.InitializeTeam()
 	if err != nil {

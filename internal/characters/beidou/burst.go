@@ -2,13 +2,14 @@ package beidou
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -71,11 +72,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 6 {
 		c.Core.Tasks.Add(func() {
 			for _, t := range c.Core.Combat.Targets() {
-				e, ok := t.(core.Enemy)
+				e, ok := t.(*enemy.Enemy)
 				if !ok {
 					continue
 				}
-				e.AddResistMod("beidouc6", 900-burstHitmark, attributes.Electro, -0.15)
+				e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("beidouc6", 900-burstHitmark), Ele: attributes.Electro, Value: -0.15})
 			}
 		}, burstHitmark)
 	}

@@ -62,6 +62,8 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 		return nil, err
 	}
 
+	SetupResonance(c)
+
 	err = s.C.Init()
 	if err != nil {
 		return nil, err

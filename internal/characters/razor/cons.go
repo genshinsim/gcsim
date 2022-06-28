@@ -1,11 +1,11 @@
 package razor
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -49,11 +49,11 @@ func (c *char) c4cb(a combat.AttackCB) {
 		return
 	}
 
-	e, ok := a.Target.(core.Enemy)
+	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	e.AddDefMod("razor-c4", 7*60, -0.15)
+	e.AddDefMod(enemy.DefMod{Base: modifier.NewBase("razor-c4", 7*60), Value: -0.15})
 }
 
 // Every 10s, Razor's sword charges up, causing the next Normal Attack to release lightning that deals 100% of Razor's ATK as Electro DMG.

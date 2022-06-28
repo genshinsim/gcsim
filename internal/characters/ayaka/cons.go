@@ -1,11 +1,11 @@
 package ayaka
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -37,11 +37,11 @@ func (c *char) c4(a combat.AttackCB) {
 		return
 	}
 
-	e, ok := a.Target.(core.Enemy)
+	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	e.AddDefMod("ayaka-c4", 60*6, -0.3)
+	e.AddDefMod(enemy.DefMod{Base: modifier.NewBase("ayaka-c4", 60*6), Value: -0.3})
 }
 
 // Callback for Ayaka C6 that is attached to CA hits

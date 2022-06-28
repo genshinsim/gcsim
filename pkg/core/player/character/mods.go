@@ -168,6 +168,8 @@ func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []
 	for _, v := range c.mods {
 		m, ok := v.(*AttackMod)
 		if !ok {
+			c.mods[n] = v
+			n++
 			continue
 		}
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
@@ -177,7 +179,7 @@ func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []
 					a.Snapshot.Stats[k] += v
 				}
 			}
-			c.mods[n] = m
+			c.mods[n] = v
 			n++
 			if c.debug {
 				modStatus := make([]string, 0)
@@ -217,6 +219,8 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 	for _, v := range c.mods {
 		m, ok := v.(*CooldownMod)
 		if !ok {
+			c.mods[n] = v
+			n++
 			continue
 		}
 		//if not expired
@@ -231,7 +235,7 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 				"expiry", m.Expiry,
 			)
 			cd += amt
-			c.mods[n] = m
+			c.mods[n] = v
 			n++
 		}
 	}
@@ -245,13 +249,15 @@ func (c *CharWrapper) DamageReduction(char int) (amt float64) {
 	for _, v := range c.mods {
 		m, ok := v.(*DamageReductionMod)
 		if !ok {
+			c.mods[n] = v
+			n++
 			continue
 		}
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
 			a, done := m.Amount()
 			amt += a
 			if !done {
-				c.mods[n] = m
+				c.mods[n] = v
 				n++
 			}
 		}
@@ -265,13 +271,15 @@ func (c *CharWrapper) HealBonus() (amt float64) {
 	for _, v := range c.mods {
 		m, ok := v.(*HealBonusMod)
 		if !ok {
+			c.mods[n] = v
+			n++
 			continue
 		}
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
 			a, done := m.Amount()
 			amt += a
 			if !done {
-				c.mods[n] = m
+				c.mods[n] = v
 				n++
 			}
 		}
@@ -287,13 +295,15 @@ func (c *CharWrapper) ReactBonus(atk combat.AttackInfo) (amt float64) {
 	for _, v := range c.mods {
 		m, ok := v.(*ReactBonusMod)
 		if !ok {
+			c.mods[n] = v
+			n++
 			continue
 		}
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
 			a, done := m.Amount(atk)
 			amt += a
 			if !done {
-				c.mods[n] = m
+				c.mods[n] = v
 				n++
 			}
 		}

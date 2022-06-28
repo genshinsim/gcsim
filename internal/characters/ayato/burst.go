@@ -2,11 +2,11 @@ package ayato
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -55,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			target := -1
 			for i, t := range c.Core.Combat.Targets() {
 				// skip non-enemy targets
-				if _, ok := t.(core.Enemy); !ok {
+				if _, ok := t.(*enemy.Enemy); !ok {
 					continue
 				}
 				if lastHit[t] < c.Core.F {

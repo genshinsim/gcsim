@@ -1,7 +1,6 @@
 package ganyu
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -13,7 +12,7 @@ import (
 func (c *char) c1() {
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		e, ok := args[0].(core.Enemy)
+		e, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
 		}
@@ -25,7 +24,7 @@ func (c *char) c1() {
 		}
 
 		c.AddEnergy("ganyu-c1", 2)
-		e.AddResistMod("ganyu-c1", 5*60, attributes.Cryo, -0.15)
+		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("ganyu-c1", 5*60), Ele: attributes.Cryo, Value: -0.15})
 
 		return false
 	}, "ganyu-c1")

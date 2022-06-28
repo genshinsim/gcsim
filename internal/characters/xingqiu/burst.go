@@ -2,12 +2,13 @@ package xingqiu
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -100,14 +101,14 @@ func (c *char) summonSwordWave() {
 				return
 			}
 
-			e, ok := a.Target.(core.Enemy)
+			e, ok := a.Target.(*enemy.Enemy)
 			if !ok {
 				return
 			}
 
 			icd = c.Core.F + 1
 			c.Core.Tasks.Add(func() {
-				e.AddResistMod("xingqiu-c2", 4*60, attributes.Hydro, -0.15)
+				e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("xingqiu-c2", 4*60), Ele: attributes.Hydro, Value: -0.15})
 			}, 1)
 		}
 	}

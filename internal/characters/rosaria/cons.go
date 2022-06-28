@@ -1,11 +1,11 @@
 package rosaria
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -75,9 +75,9 @@ func (c *char) c6(a combat.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	e, ok := a.Target.(core.Enemy)
+	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	e.AddResistMod("rosaria-c6", 600, attributes.Physical, -0.2)
+	e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("rosaria-c6", 600), Ele: attributes.Physical, Value: -0.2})
 }

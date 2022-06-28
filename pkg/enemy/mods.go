@@ -58,6 +58,7 @@ func (e *Enemy) DefModIsActive(key string) bool    { return e.modIsActive(key) }
 
 // Amount.
 
+//TODO: this needs to purge if done?
 func (e *Enemy) Resist(ai *combat.AttackInfo, evt glog.Event) float64 {
 	var logDetails []interface{}
 	var sb strings.Builder

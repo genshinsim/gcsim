@@ -2,11 +2,11 @@ package shenhe
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -63,12 +63,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// Res shred persists for 2 seconds after burst ends
 	cb := func(a combat.AttackCB) {
-		e, ok := a.Target.(core.Enemy)
+		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		e.AddResistMod("shenhe-burst-shred-cryo", dur+2*60, attributes.Cryo, -burstrespp[c.TalentLvlBurst()])
-		e.AddResistMod("shenhe-burst-shred-phys", dur+2*60, attributes.Physical, -burstrespp[c.TalentLvlBurst()])
+		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("shenhe-burst-shred-cryo", dur+2*60), Ele: attributes.Cryo, Value: -burstrespp[c.TalentLvlBurst()]})
+		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("shenhe-burst-shred-phys", dur+2*60), Ele: attributes.Physical, Value: -burstrespp[c.TalentLvlBurst()]})
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 2, false, combat.TargettableEnemy), 0, 15, cb)
 

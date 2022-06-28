@@ -2,7 +2,6 @@ package chongyun
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -10,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -56,11 +56,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	cb := func(a combat.AttackCB) {
-		e, ok := a.Target.(core.Enemy)
+		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		e.AddResistMod("chongyun-a4", 480, attributes.Cryo, -0.10)
+		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("chongyun-a4", 480), Ele: attributes.Cryo, Value: -0.10})
 	}
 	snap := c.Snapshot(&ai)
 

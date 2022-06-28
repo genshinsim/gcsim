@@ -440,8 +440,8 @@ func fixResistMod(n ast.Node) (bool, ast.Node) {
 
 		//work through the args and find amount, expiry, and key
 		//args should be len 1
-		if len(block.Args) != 5 {
-			fmt.Println("unexpected args length != 5")
+		if len(block.Args) < 4 {
+			fmt.Println("unexpected res mod args length != 4")
 			return false, nil
 		}
 
@@ -450,7 +450,21 @@ func fixResistMod(n ast.Node) (bool, ast.Node) {
 		//base stuff -> key + dur
 		base := &ast.KeyValueExpr{
 			Key: ast.NewIdent("Base"),
-			Value: &ast.CallExpr{
+		}
+		if len(block.Args) == 4 {
+			base.Value = &ast.CallExpr{
+				Fun: &ast.SelectorExpr{
+					X:   ast.NewIdent("modifier"),
+					Sel: ast.NewIdent("NewBase"),
+				},
+				Args: []ast.Expr{
+					block.Args[0],
+					block.Args[1],
+				},
+			}
+		}
+		if len(block.Args) == 5 {
+			base.Value = &ast.CallExpr{
 				Fun: &ast.SelectorExpr{
 					X:   ast.NewIdent("modifier"),
 					Sel: ast.NewIdent("NewBaseWithHitlag"),
@@ -460,8 +474,9 @@ func fixResistMod(n ast.Node) (bool, ast.Node) {
 					block.Args[1],
 					block.Args[4],
 				},
-			},
+			}
 		}
+
 		ele := &ast.KeyValueExpr{
 			Key:   ast.NewIdent("Ele"),
 			Value: block.Args[2],
@@ -512,8 +527,8 @@ func fixDefMod(n ast.Node) (bool, ast.Node) {
 
 		//work through the args and find amount, expiry, and key
 		//args should be len 1
-		if len(block.Args) != 4 {
-			fmt.Println("unexpected args length != 4")
+		if len(block.Args) < 3 {
+			fmt.Println("unexpected def mod arg length != 4")
 			return false, nil
 		}
 
@@ -522,7 +537,21 @@ func fixDefMod(n ast.Node) (bool, ast.Node) {
 		//base stuff -> key + dur
 		base := &ast.KeyValueExpr{
 			Key: ast.NewIdent("Base"),
-			Value: &ast.CallExpr{
+		}
+		if len(block.Args) == 3 {
+			base.Value = &ast.CallExpr{
+				Fun: &ast.SelectorExpr{
+					X:   ast.NewIdent("modifier"),
+					Sel: ast.NewIdent("NewBase"),
+				},
+				Args: []ast.Expr{
+					block.Args[0],
+					block.Args[1],
+				},
+			}
+		}
+		if len(block.Args) == 4 {
+			base.Value = &ast.CallExpr{
 				Fun: &ast.SelectorExpr{
 					X:   ast.NewIdent("modifier"),
 					Sel: ast.NewIdent("NewBaseWithHitlag"),
@@ -532,7 +561,7 @@ func fixDefMod(n ast.Node) (bool, ast.Node) {
 					block.Args[1],
 					block.Args[3],
 				},
-			},
+			}
 		}
 		amtfun := &ast.KeyValueExpr{
 			Key:   ast.NewIdent("Value"),

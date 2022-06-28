@@ -29,10 +29,10 @@ func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
 func (t *Base) AffectedByHitlag() bool  { return t.Hitlag }
 func (t *Base) Extend(amt float64)      { t.extension += amt }
 func (t *Base) SetExpiry(f int) {
-	if t.Dur > 0 {
-		t.ModExpiry = f + t.Dur
-	} else {
+	if t.Dur == -1 {
 		t.ModExpiry = -1
+	} else {
+		t.ModExpiry = f + t.Dur
 	}
 }
 

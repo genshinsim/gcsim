@@ -24,6 +24,8 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	for _, v := range c.mods {
 		m, ok := v.(*StatMod)
 		if !ok {
+			c.mods[n] = v
+			n++
 			continue
 		}
 		if m.Expiry() > *c.f || m.Expiry() == -1 {
