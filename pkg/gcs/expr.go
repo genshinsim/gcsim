@@ -135,6 +135,8 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) Obj {
 		return gte(l, r)
 	case ast.OpEqual:
 		return eq(l, r)
+	case ast.OpNotEqual:
+		return neq(l, r)
 	case ast.OpLessThan:
 		return lt(l, r)
 	case ast.OpLessThanOrEqual:

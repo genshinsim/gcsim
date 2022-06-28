@@ -66,6 +66,10 @@ func eq(l, r *number) *number {
 	return bton(ntof(l) == ntof(r))
 }
 
+func neq(l, r *number) *number {
+	return bton(ntof(l) != ntof(r))
+}
+
 func add(l, r *number) *number {
 	return &number{
 		ival:    l.ival + r.ival,
