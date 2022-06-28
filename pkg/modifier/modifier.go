@@ -14,24 +14,32 @@ type Mod interface {
 }
 
 type Base struct {
-	key       string
-	expiry    int
+	ModKey    string
+	Dur       int
+	Hitlag    bool
+	ModExpiry int
 	extension float64
 	event     glog.Event
-	hitlag    bool
 }
 
-func (t *Base) Key() string             { return t.key }
-func (t *Base) Expiry() int             { return t.expiry + int(t.extension) }
+func (t *Base) Key() string             { return t.ModKey }
+func (t *Base) Expiry() int             { return t.ModExpiry + int(t.extension) }
 func (t *Base) Event() glog.Event       { return t.event }
 func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
-func (t *Base) AffectedByHitlag() bool  { return t.hitlag }
+func (t *Base) AffectedByHitlag() bool  { return t.Hitlag }
 func (t *Base) Extend(amt float64)      { t.extension += amt }
+func (t *Base) SetExpiry(f int) {
+	if t.Dur > 0 {
+		t.ModExpiry = f + t.Dur
+	} else {
+		t.ModExpiry = -1
+	}
+}
 
-func NewBase(key string, expiry int, affectedByHitlag bool) Base {
+func NewBase(key string, dur int) Base {
 	return Base{
-		key:    key,
-		expiry: expiry,
+		ModKey: key,
+		Dur:    dur,
 	}
 }
 
@@ -92,11 +100,11 @@ func FindCheckExpiry[K Mod](slice *[]K, key string, f int) (int, bool) {
 }
 
 //LogAdd is a helper that logs mod add events
-func LogAdd[K Mod](prefix string, mod K, logger glog.Logger, overwrote bool, oldEvt glog.Event) {
+func LogAdd[K Mod](prefix string, index int, mod K, logger glog.Logger, overwrote bool, oldEvt glog.Event) {
 	var evt glog.Event
 	if overwrote {
 		logger.NewEventBuildMsg(
-			glog.LogStatusEvent, -1,
+			glog.LogStatusEvent, index,
 			prefix, " mod refreshed",
 		).Write(
 			"overwrite", true,
@@ -106,7 +114,7 @@ func LogAdd[K Mod](prefix string, mod K, logger glog.Logger, overwrote bool, old
 		evt = oldEvt
 	} else {
 		evt = logger.NewEventBuildMsg(
-			glog.LogStatusEvent, -1,
+			glog.LogStatusEvent, index,
 			prefix, " mod added",
 		).Write(
 			"overwrite", false,
@@ -118,7 +126,7 @@ func LogAdd[K Mod](prefix string, mod K, logger glog.Logger, overwrote bool, old
 	mod.SetEvent(evt)
 }
 
-func LogDelete[K Mod](prefix string, mod K, logger glog.Logger, f int) {
+func LogDelete[K Mod](prefix string, index int, mod K, logger glog.Logger, f int) {
 	mod.Event().SetEnded(f)
-	logger.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1, "key", mod.Key())
+	logger.NewEvent("enemy mod deleted", glog.LogStatusEvent, index, "key", mod.Key())
 }

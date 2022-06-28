@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/core/task"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Character interface {
@@ -83,12 +84,7 @@ type CharWrapper struct {
 	BaseStats [attributes.EndStatType]float64
 
 	//mods
-	statsMod            []*statMod
-	attackMods          []*attackMod
-	reactionBonusMods   []*reactionBonusMod
-	cooldownMods        []*cooldownMod
-	healBonusMods       []*healBonusMod
-	damageReductionMods []*damageReductionMod
+	mods []modifier.Mod
 }
 
 func New(
@@ -100,21 +96,16 @@ func New(
 	task task.Tasker,
 ) (*CharWrapper, error) {
 	c := &CharWrapper{
-		Base:                p.Base,
-		Weapon:              p.Weapon,
-		Talents:             p.Talents,
-		log:                 log,
-		events:              events,
-		tasks:               task,
-		Tags:                make(map[string]int),
-		statsMod:            make([]*statMod, 0, 10),
-		attackMods:          make([]*attackMod, 0, 10),
-		reactionBonusMods:   make([]*reactionBonusMod, 0, 10),
-		cooldownMods:        make([]*cooldownMod, 0, 10),
-		healBonusMods:       make([]*healBonusMod, 0, 10),
-		damageReductionMods: make([]*damageReductionMod, 0, 10),
-		f:                   f,
-		debug:               debug,
+		Base:    p.Base,
+		Weapon:  p.Weapon,
+		Talents: p.Talents,
+		log:     log,
+		events:  events,
+		tasks:   task,
+		Tags:    make(map[string]int),
+		mods:    make([]modifier.Mod, 0, 20),
+		f:       f,
+		debug:   debug,
 	}
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s

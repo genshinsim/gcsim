@@ -10,51 +10,45 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-type resistMod struct {
-	ele   attributes.Element
-	value float64
+type ResistMod struct {
+	Ele   attributes.Element
+	Value float64
 	modifier.Base
 }
 
-type defenseMod struct {
-	value float64
+type DefMod struct {
+	Value float64
+	Dur   int
 	modifier.Base
 }
 
-// Add helpers
+// Add.
 
-func (e *Enemy) AddResistMod(key string, dur int, ele attributes.Element, val float64, hitlag bool) {
-	mod := resistMod{
-		Base:  modifier.NewBase(key, e.Core.F+dur, hitlag),
-		ele:   ele,
-		value: val,
-	}
+func (e *Enemy) AddResistMod(mod ResistMod) {
+	mod.SetExpiry(e.Core.F)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("enemy", &mod, e.Core.Log, overwrote, oldEvt)
+	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
-func (e *Enemy) AddDefMod(key string, dur int, val float64, hitlag bool) {
-	mod := defenseMod{
-		Base:  modifier.NewBase(key, e.Core.F+dur, hitlag),
-		value: val,
-	}
+func (e *Enemy) AddDefMod(mod DefMod) {
+	mod.SetExpiry(e.Core.F)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("enemy", &mod, e.Core.Log, overwrote, oldEvt)
+	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
-// Delete helpers
+// Delete.
 
 func (e *Enemy) deleteMod(key string) {
 	m := modifier.Delete(&e.mods, key)
 	if m != nil {
-		modifier.LogDelete("enemy", m, e.Core.Log, e.Core.F)
+		modifier.LogDelete("enemy", -1, m, e.Core.Log, e.Core.F)
 	}
 }
 
 func (e *Enemy) DeleteResistMod(key string) { e.deleteMod(key) }
 func (e *Enemy) DeleteDefMod(key string)    { e.deleteMod(key) }
 
-// Active check
+// Active.
 func (e *Enemy) modIsActive(key string) bool {
 	_, ok := modifier.FindCheckExpiry(&e.mods, key, e.Core.F)
 	return ok
@@ -62,7 +56,7 @@ func (e *Enemy) modIsActive(key string) bool {
 func (e *Enemy) ResistModIsActive(key string) bool { return e.modIsActive(key) }
 func (e *Enemy) DefModIsActive(key string) bool    { return e.modIsActive(key) }
 
-// Values
+// Amount.
 
 func (e *Enemy) Resist(ai *combat.AttackInfo, evt glog.Event) float64 {
 	var logDetails []interface{}
@@ -74,22 +68,22 @@ func (e *Enemy) Resist(ai *combat.AttackInfo, evt glog.Event) float64 {
 
 	r := e.resist[ai.Element]
 	for _, v := range e.mods {
-		m, ok := v.(*resistMod)
+		m, ok := v.(*ResistMod)
 		if !ok {
 			continue
 		}
-		if m.Expiry() > e.Core.F && m.ele == ai.Element {
+		if m.Expiry() > e.Core.F && m.Ele == ai.Element {
 			if e.Core.Flags.LogDebug {
 				sb.WriteString(m.Key())
 				logDetails = append(logDetails, sb.String(), []string{
 					"status: added",
 					"expiry_frame: " + strconv.Itoa(m.Expiry()),
-					"ele: " + m.ele.String(),
-					"amount: " + strconv.FormatFloat(m.value, 'f', -1, 64),
+					"ele: " + m.Ele.String(),
+					"amount: " + strconv.FormatFloat(m.Value, 'f', -1, 64),
 				})
 				sb.Reset()
 			}
-			r += m.value
+			r += m.Value
 		}
 	}
 
@@ -111,7 +105,7 @@ func (t *Enemy) DefAdj(ai *combat.AttackInfo, evt glog.Event) float64 {
 
 	var r float64
 	for _, v := range t.mods {
-		m, ok := v.(*defenseMod)
+		m, ok := v.(*DefMod)
 		if !ok {
 			continue
 		}
@@ -121,11 +115,11 @@ func (t *Enemy) DefAdj(ai *combat.AttackInfo, evt glog.Event) float64 {
 				logDetails = append(logDetails, sb.String(), []string{
 					"status: added",
 					"expiry_frame: " + strconv.Itoa(m.Expiry()),
-					"amount: " + strconv.FormatFloat(m.value, 'f', -1, 64),
+					"amount: " + strconv.FormatFloat(m.Value, 'f', -1, 64),
 				})
 				sb.Reset()
 			}
-			r += m.value
+			r += m.Value
 		}
 	}
 

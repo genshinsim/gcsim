@@ -53,6 +53,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 			// Activate
 			// TODO: cd for proc?
+			// TODO: is this status realy needed?
 			core.Status.Add("archaic", 10*60)
 			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index, "ele", s.element)
 
@@ -68,9 +69,6 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			// Apply mod to all characters
 			for _, c := range core.Player.Chars() {
 				c.AddStatMod("archaic-4pc", 10*60, attributes.NoStat, func() ([]float64, bool) {
-					if core.Status.Duration("archaic") == 0 {
-						return nil, false
-					}
 					return m, true
 				})
 			}

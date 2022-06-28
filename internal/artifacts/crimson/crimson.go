@@ -26,6 +26,8 @@ type Set struct {
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
 
+const cw4pc = "cw-4pc"
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	s.stacks = 0
@@ -34,7 +36,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		char.AddStatMod("crimson-2pc", -1, attributes.PyroP, func() ([]float64, bool) {
-			if c.Status.Duration(s.key) == 0 {
+			if char.StatusExpiry(cw4pc) < c.F {
 				s.stacks = 0
 			}
 			mult := 0.5*float64(s.stacks) + 1
@@ -55,7 +57,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			// every exectuion, add 1 stack, to a max of 3, reset cd to 10 seconds
-			if c.Status.Duration(s.key) == 0 {
+			//TODO: check if this works correctly
+			if char.StatusExpiry(cw4pc) < c.F {
 				s.stacks = 0
 			}
 			if s.stacks < 3 {
@@ -63,7 +66,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index, "current stacks", s.stacks)
-			c.Status.Add(s.key, 10*60)
+			char.AddStatus(cw4pc, 10*60, true)
 			return false
 		}, s.key)
 
