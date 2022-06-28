@@ -44,6 +44,135 @@ func (c *char) Attack(p map[string]int) (int, int) {
 	return f, a
 }
 
+func (c *char) SkillPress() {
+	hitmark := 34
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Palm Vortex (Tap)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       skillInitialStorm[c.TalentLvlSkill()],
+	}
+
+	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), hitmark, hitmark)
+
+	c.QueueParticle(c.Name(), 2, core.Anemo, hitmark+90)
+	c.SetCDWithDelay(core.ActionSkill, 5*60, hitmark-5)
+}
+
+func (c *char) SkillHold(holdTicks int) {
+	c.eInfuse = core.NoElement
+	c.eICDTag = core.ICDTagNone
+
+	aiCut := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Palm Vortex Initial Cutting (Hold)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       skillInitialCutting[c.TalentLvlSkill()],
+	}
+
+	aiCutAbs := aiCut
+	aiCutAbs.Abil = "Palm Vortex Initial Cutting Absorbed (Hold)"
+	aiCutAbs.ICDTag = core.ICDTagNone
+	aiCutAbs.Element = core.NoElement
+	aiCutAbs.Mult = skillInitialCuttingAbsorb[c.TalentLvlSkill()]
+
+	aiMaxCutAbs := aiCutAbs
+	aiMaxCutAbs.Abil = "Palm Vortex Max Cutting Absorbed (Hold)"
+	aiMaxCutAbs.Mult = skillMaxCuttingAbsorb[c.TalentLvlSkill()]
+
+	hitmark := 31
+	for i := 0; i < holdTicks; i += 1 {
+
+		c.Core.Combat.QueueAttack(aiCut, core.NewDefCircHit(1, false, core.TargettableEnemy), hitmark, hitmark)
+		if i > 1 {
+			c.AddTask(func() {
+				if c.eInfuse != core.NoElement {
+					aiMaxCutAbs.Element = c.eInfuse
+					aiMaxCutAbs.ICDTag = c.eICDTag
+					c.Core.Combat.QueueAttack(aiMaxCutAbs, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 0)
+				}
+				//check if infused
+			}, "amc-e-cutting-absorb", hitmark)
+		} else {
+			c.AddTask(func() {
+				if c.eInfuse != core.NoElement {
+					aiCutAbs.Element = c.eInfuse
+					aiCutAbs.ICDTag = c.eICDTag
+					c.Core.Combat.QueueAttack(aiCutAbs, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 0)
+				}
+				//check if infused
+			}, "amc-e-cutting-absorb", hitmark)
+		}
+
+		hitmark += 15
+		if i == 1 {
+			aiCut.Mult = skillMaxCutting[c.TalentLvlSkill()]
+			aiCut.Abil = "Palm Vortex Max Cutting (Hold)"
+
+			// there is a 5 frame delay when it shifts from initial to max
+			hitmark += 5
+		}
+	}
+	// move the hitmark back by 1 tick (15f) then forward by 5f for the Storm damage
+	hitmark = hitmark - 15 + 5
+	aiStorm := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Palm Vortex Initial Storm (Hold)",
+		AttackTag:  core.AttackTagElementalArt,
+		ICDTag:     core.ICDTagElementalArt,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       skillInitialStorm[c.TalentLvlSkill()],
+	}
+
+	aiStormAbs := aiStorm
+	aiStormAbs.Abil = "Palm Vortex Initial Storm Absorbed (Hold)"
+	aiStormAbs.ICDTag = core.ICDTagNone
+	aiStormAbs.Element = core.NoElement
+	aiStormAbs.Mult = skillInitialStormAbsorb[c.TalentLvlSkill()]
+
+	// it does max storm when there are 2 or more ticks
+	if holdTicks >= 2 {
+		aiStorm.Mult = skillMaxStorm[c.TalentLvlSkill()]
+		aiStorm.Abil = "Palm Vortex Max Storm (Hold)"
+
+		aiStormAbs.Mult = skillMaxStormAbsorb[c.TalentLvlSkill()]
+		aiStormAbs.Abil = "Palm Vortex Max Storm Absorbed (Hold)"
+
+		count := 3
+		if c.Core.Rand.Float64() < 0.33 {
+			count = 4
+		}
+		c.QueueParticle(c.Name(), count, core.Anemo, hitmark+90)
+		c.SetCDWithDelay(core.ActionSkill, 8*60, hitmark-5)
+	} else {
+		c.QueueParticle(c.Name(), 2, core.Anemo, hitmark+90)
+		c.SetCDWithDelay(core.ActionSkill, 5*60, hitmark-5)
+	}
+
+	c.Core.Combat.QueueAttack(aiCut, core.NewDefCircHit(2, false, core.TargettableEnemy), hitmark, hitmark)
+	c.AddTask(func() {
+		if c.eInfuse != core.NoElement {
+			aiStormAbs.Element = c.eInfuse
+			aiStormAbs.ICDTag = c.eICDTag
+			c.Core.Combat.QueueAttack(aiStormAbs, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 0)
+		}
+		//check if infused
+	}, "amc-e-storm-absorb", hitmark)
+
+	// starts absorbing after the first tick?
+	c.AddTask(c.absorbCheckE(c.Core.F, 0, int((hitmark)/18)), "amc-e-absorb-check", 32)
+}
+
 func (c *char) Skill(p map[string]int) (int, int) {
 
 	f, a := c.ActionFrames(core.ActionSkill, p)
@@ -56,143 +185,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		holdTicks = p["hold_ticks"]
 	}
 	if holdTicks == 0 {
-		hitmark := 34
-		ai := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Palm Vortex (Tap)",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagElementalArt,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Anemo,
-			Durability: 25,
-			Mult:       skillInitialStorm[c.TalentLvlSkill()],
-		}
-
-		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), hitmark, hitmark)
-
-		c.QueueParticle(c.Name(), 2, core.Anemo, hitmark+90)
-		c.SetCDWithDelay(core.ActionSkill, 5*60, hitmark-5)
+		c.SkillPress()
 	} else {
-		c.eInfuse = core.NoElement
-		c.eICDTag = core.ICDTagNone
-		aiCut := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Palm Vortex Initial Cutting (Hold)",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagElementalArt,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Anemo,
-			Durability: 25,
-			Mult:       skillInitialCutting[c.TalentLvlSkill()],
-		}
-		aiCutAbs := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Palm Vortex Initial Cutting Absorbed (Hold)",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.NoElement,
-			Durability: 25,
-			Mult:       skillInitialCuttingAbsorb[c.TalentLvlSkill()],
-		}
-
-		aiMaxCutAbs := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Palm Vortex Max Cutting Absorbed (Hold)",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.NoElement,
-			Durability: 25,
-			Mult:       skillMaxCuttingAbsorb[c.TalentLvlSkill()],
-		}
-		hitmark := 31
-		for i := 0; i < holdTicks; i += 1 {
-
-			c.Core.Combat.QueueAttack(aiCut, core.NewDefCircHit(1, false, core.TargettableEnemy), hitmark, hitmark)
-			if i > 1 {
-				c.AddTask(func() {
-					if c.eInfuse != core.NoElement {
-						aiMaxCutAbs.Element = c.eInfuse
-						aiMaxCutAbs.ICDTag = c.eICDTag
-						c.Core.Combat.QueueAttack(aiMaxCutAbs, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 0)
-					}
-					//check if infused
-				}, "amc-e-cutting-absorb", hitmark)
-			} else {
-				c.AddTask(func() {
-					if c.eInfuse != core.NoElement {
-						aiCutAbs.Element = c.eInfuse
-						aiCutAbs.ICDTag = c.eICDTag
-						c.Core.Combat.QueueAttack(aiCutAbs, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 0)
-					}
-					//check if infused
-				}, "amc-e-cutting-absorb", hitmark)
-			}
-
-			hitmark += 15
-			if i == 1 {
-				aiCut.Mult = skillMaxCutting[c.TalentLvlSkill()]
-				aiCut.Abil = "Palm Vortex Max Cutting (Hold)"
-
-				// there is a 5 frame delay when it shifts from initial to max
-				hitmark += 5
-			}
-		}
-		// move the hitmark back by 1 tick (15f) then forward by 5f for the Storm damage
-		hitmark = hitmark - 15 + 5
-		aiStorm := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Palm Vortex Initial Storm (Hold)",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagElementalArt,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Anemo,
-			Durability: 25,
-			Mult:       skillInitialStorm[c.TalentLvlSkill()],
-		}
-		aiStormAbs := core.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Palm Vortex Initial Storm Absorbed (Hold)",
-			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagNone,
-			ICDGroup:   core.ICDGroupDefault,
-			Element:    core.Anemo,
-			Durability: 25,
-			Mult:       skillInitialStormAbsorb[c.TalentLvlSkill()],
-		}
-
-		// it does max storm when there are 2 or more ticks
-		if holdTicks >= 2 {
-			aiStorm.Mult = skillMaxStorm[c.TalentLvlSkill()]
-			aiStorm.Abil = "Palm Vortex Max Storm (Hold)"
-
-			aiStormAbs.Mult = skillMaxStormAbsorb[c.TalentLvlSkill()]
-			aiStormAbs.Abil = "Palm Vortex Max Storm Absorbed (Hold)"
-
-			count := 3
-			if c.Core.Rand.Float64() < 0.33 {
-				count = 4
-			}
-			c.QueueParticle(c.Name(), count, core.Anemo, hitmark+90)
-			c.SetCDWithDelay(core.ActionSkill, 8*60, hitmark-5)
-		} else {
-			c.QueueParticle(c.Name(), 2, core.Anemo, hitmark+90)
-			c.SetCDWithDelay(core.ActionSkill, 5*60, hitmark-5)
-		}
-
-		c.Core.Combat.QueueAttack(aiCut, core.NewDefCircHit(2, false, core.TargettableEnemy), hitmark, hitmark)
-		c.AddTask(func() {
-			if c.eInfuse != core.NoElement {
-				aiStormAbs.Element = c.eInfuse
-				aiStormAbs.ICDTag = c.eICDTag
-				c.Core.Combat.QueueAttack(aiStormAbs, core.NewDefCircHit(1.5, false, core.TargettableEnemy), 0, 0)
-			}
-			//check if infused
-		}, "amc-e-storm-absorb", hitmark)
-
-		// starts absorbing after the first tick?
-		c.AddTask(c.absorbCheckE(c.Core.F, 0, int((hitmark)/18)), "amc-e-absorb-check", 32)
+		c.SkillHold(holdTicks)
 	}
 
 	return f, a
