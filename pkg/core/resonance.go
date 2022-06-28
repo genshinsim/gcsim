@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (s *Core) SetupResonance() {
@@ -29,7 +30,7 @@ func (s *Core) SetupResonance() {
 					return val, true
 				}
 				for _, c := range chars {
-					c.AddStatMod("pyro-res", -1, attributes.NoStat, f)
+					c.AddStatMod(character.StatMod{Base: modifier.NewBase("pyro-res", -1), AffectedStat: attributes.NoStat, Amount: f})
 				}
 			case attributes.Hydro:
 				//heal not implemented yet
@@ -37,7 +38,7 @@ func (s *Core) SetupResonance() {
 					return 0.3, true
 				}
 				for _, c := range chars {
-					c.AddHealBonusMod("hydro-res", -1, f)
+					c.AddHealBonusMod(character.HealBonusMod{Base: modifier.NewBase("hydro-res", -1), Amount: f})
 				}
 			case attributes.Cryo:
 				val := make([]float64, attributes.EndStatType)
@@ -53,7 +54,7 @@ func (s *Core) SetupResonance() {
 					return nil, false
 				}
 				for _, c := range chars {
-					c.AddAttackMod("cyro-res", -1, f)
+					c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("cyro-res", -1), Amount: f})
 				}
 			case attributes.Electro:
 				last := 0
@@ -103,12 +104,12 @@ func (s *Core) SetupResonance() {
 					return nil, false
 				}
 				for _, c := range chars {
-					c.AddAttackMod("geo-res", -1, atkf)
+					c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("geo-res", -1), Amount: atkf})
 				}
 
 			case attributes.Anemo:
 				for _, c := range chars {
-					c.AddCooldownMod("anemo-res", -1, func(a action.Action) float64 { return -0.05 })
+					c.AddCooldownMod(character.CooldownMod{Base: modifier.NewBase("anemo-res", -1), Amount: func(a action.Action) float64 { return -0.05 }})
 				}
 			}
 		}
