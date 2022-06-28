@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c2() {
@@ -35,9 +37,9 @@ func (c *char) c4() {
 			return false
 		}
 
-		c.AddStatMod("keqing-c4", 600, attributes.ATKP, func() ([]float64, bool) {
+		c.AddStatMod(character.StatMod{Base: modifier.NewBase("keqing-c4", 600), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 
 		return false
 	}
@@ -53,7 +55,7 @@ func (c *char) c6(src string) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ElectroP] = 0.06
 
-	c.AddStatMod("keqing-c6-"+src, 480, attributes.ElectroP, func() ([]float64, bool) {
+	c.AddStatMod(character.StatMod{Base: modifier.NewBase("keqing-c6-"+src, 480), AffectedStat: attributes.ElectroP, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 }

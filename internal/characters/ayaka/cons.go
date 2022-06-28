@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Callback for Ayaka C1 that is attached to NA/CA hits
@@ -67,10 +69,10 @@ func (c *char) c6AddBuff() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 2.98
 
-	c.AddAttackMod("ayaka-c6", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("ayaka-c6", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag != combat.AttackTagExtra {
 			return nil, false
 		}
 		return m, true
-	})
+	}})
 }

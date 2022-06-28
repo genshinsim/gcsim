@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -53,8 +54,8 @@ func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount i
 		}
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AnemoP] = 0.25
-		c.AddStatMod("venti-c4", 600, attributes.AnemoP, func() ([]float64, bool) {
+		c.AddStatMod(character.StatMod{Base: modifier.NewBase("venti-c4", 600), AffectedStat: attributes.AnemoP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 }

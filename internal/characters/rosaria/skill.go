@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -42,9 +44,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if p["nobehind"] != 1 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CR] = 0.12
-		c.AddStatMod("rosaria-a1", 300+skillHitmark, attributes.CR, func() ([]float64, bool) {
+		c.AddStatMod(character.StatMod{Base: modifier.NewBase("rosaria-a1", 300+skillHitmark), AffectedStat: attributes.CR, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index, "ends_on", c.Core.F+300+skillHitmark)
 	}
 

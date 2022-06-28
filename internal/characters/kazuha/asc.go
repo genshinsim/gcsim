@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 //Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
@@ -37,14 +39,14 @@ func (c *char) a4() {
 			dmg := 0.0004 * c.Stat(attributes.EM)
 
 			for _, char := range c.Core.Player.Chars() {
-				char.AddStatMod("kazuha-a4-"+key, 60*8, attributes.NoStat, func() ([]float64, bool) {
+				char.AddStatMod(character.StatMod{Base: modifier.NewBase("kazuha-a4-"+key, 60*8), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 					m[attributes.CryoP] = 0
 					m[attributes.ElectroP] = 0
 					m[attributes.HydroP] = 0
 					m[attributes.PyroP] = 0
 					m[ele] = dmg
 					return m, true
-				})
+				}})
 			}
 
 			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index, "reaction", ele.String())

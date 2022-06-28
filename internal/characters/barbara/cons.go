@@ -3,6 +3,8 @@ package barbara
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c1(delay int) {
@@ -17,9 +19,9 @@ func (c *char) c2() {
 		if i == c.Index {
 			continue
 		}
-		char.AddStatMod("barbara-c2", skillDuration, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("barbara-c2", skillDuration), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			return c.c2buff, true
-		})
+		}})
 
 	}
 }

@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Handles C4: Every 7 Normal and Charged Attacks, Sucrose will reduce the CD of Astable Anemohypostasis Creation-6308 by 1-7s
@@ -30,8 +32,8 @@ func (c *char) c6() {
 	m[stat] = .20
 
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod("sucrose-c6", 60*10, stat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("sucrose-c6", 60*10), AffectedStat: stat, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 }

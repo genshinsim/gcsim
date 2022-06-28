@@ -3,6 +3,8 @@ package sayu
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Yoohoo Art: Fuuin Dash gains the following effects:
@@ -12,7 +14,7 @@ import (
 // is 66%.
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod("sayu-c2", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("sayu-c2", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.ActorIndex != c.Index {
 			return nil, false
 		}
@@ -23,5 +25,5 @@ func (c *char) c2() {
 		//reset bonus back to 0
 		c.c2Bonus = 0
 		return m, true
-	})
+	}})
 }

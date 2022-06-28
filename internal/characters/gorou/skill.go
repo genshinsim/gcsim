@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -108,9 +110,9 @@ func (c *char) gorouSkillBuffField(src int) func() {
 		//add buff to active char based on number of geo chars
 		//ok to overwrite existing mod
 		active := c.Core.Player.ActiveChar()
-		active.AddStatMod(defenseBuffKey, 126, attributes.NoStat, func() ([]float64, bool) {
+		active.AddStatMod(character.StatMod{Base: modifier.NewBase(defenseBuffKey, 126), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			return c.gorouBuff, true
-		})
+		}})
 
 		//tick again every second
 		c.Core.Tasks.Add(c.gorouSkillBuffField(src), 60)

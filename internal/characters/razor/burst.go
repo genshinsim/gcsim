@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -53,12 +55,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 func (c *char) speedBurst() {
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.AtkSpd] = burstATKSpeed[c.TalentLvlBurst()]
-	c.AddStatMod("speed-burst", -1, attributes.AtkSpd, func() ([]float64, bool) {
+	c.AddStatMod(character.StatMod{Base: modifier.NewBase("speed-burst", -1), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
 		if c.Core.Status.Duration("razorburst") == 0 {
 			return nil, false
 		}
 		return val, true
-	})
+	}})
 }
 
 func (c *char) wolfBurst() {

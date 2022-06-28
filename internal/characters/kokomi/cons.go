@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c1(f, travel int) {
@@ -70,9 +72,9 @@ func (c *char) c6() {
 		if char.HPCurrent/char.MaxHP() < .8 {
 			continue
 		}
-		c.AddStatMod("kokomi-c6", 480, attributes.HydroP, func() ([]float64, bool) {
+		c.AddStatMod(character.StatMod{Base: modifier.NewBase("kokomi-c6", 480), AffectedStat: attributes.HydroP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 		// No need to continue checking if we found one
 		break
 	}

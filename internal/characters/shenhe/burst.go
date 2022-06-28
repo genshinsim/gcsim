@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -46,7 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m[attributes.CD] = 0.15
 		for _, char := range c.Core.Player.Chars() {
 			this := char
-			char.AddAttackMod("shenhe-c2", dur+2*60, func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("shenhe-c2", dur+2*60), Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Cryo {
 					return nil, false
 				}
@@ -56,7 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					return m, true
 				}
 				return nil, false
-			})
+			}})
 		}
 	}
 	// Res shred persists for 2 seconds after burst ends
@@ -90,9 +92,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// TODO: this isn't right.. it should only apply for active char
 		// TODO: technically always assumes you are inside shenhe burst
 		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod("shenhe-a1", dur, attributes.CryoP, func() ([]float64, bool) {
+			char.AddStatMod(character.StatMod{Base: modifier.NewBase("shenhe-a1", dur), AffectedStat: attributes.CryoP, Amount: func() ([]float64, bool) {
 				return mA1, true
-			})
+			}})
 		}
 		//TODO: check this accuracy? Siri's sheet has 137 per
 		// dot every 2 second, double tick shortly after another

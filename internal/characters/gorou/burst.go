@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -66,9 +68,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DEFP] = .25
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(heedlessKey, 720, attributes.DEFP, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase(heedlessKey, 720), AffectedStat: attributes.DEFP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 
 	//c6 check

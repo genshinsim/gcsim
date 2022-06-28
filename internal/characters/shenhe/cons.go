@@ -3,11 +3,13 @@ package shenhe
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod("shenhe-c4", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("shenhe-c4", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return nil, false
 		}
@@ -18,5 +20,5 @@ func (c *char) c4() {
 		c.c4count = 0
 		c.c4expiry = 0
 		return m, true
-	})
+	}})
 }

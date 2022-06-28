@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -82,13 +84,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m[attributes.EM] = 200
 		for _, char := range c.Core.Player.Chars() {
 			this := char
-			char.AddStatMod("kazuha-c2", 147+117*5, attributes.EM, func() ([]float64, bool) {
+			char.AddStatMod(character.StatMod{Base: modifier.NewBase("kazuha-c2", 147+117*5), AffectedStat: attributes.EM, Amount: func() ([]float64, bool) {
 				switch this.Index {
 				case c.Core.Player.Active(), c.Index:
 					return m, true
 				}
 				return nil, false
-			})
+			}})
 		}
 	}
 

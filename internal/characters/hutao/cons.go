@@ -3,6 +3,8 @@ package hutao
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c6() {
@@ -31,9 +33,9 @@ func (c *char) checkc6() {
 	//increase crit rate to 100%
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 1
-	c.AddStatMod("hutao-c6", 600, attributes.CR, func() ([]float64, bool) {
+	c.AddStatMod(character.StatMod{Base: modifier.NewBase("hutao-c6", 600), AffectedStat: attributes.CR, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 
 	c.c6icd = c.Core.F + 3600
 }

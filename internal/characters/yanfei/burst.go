@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -24,12 +26,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = burstBonus[c.TalentLvlBurst()]
-	c.AddAttackMod("yanfei-burst", 15*60, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("yanfei-burst", 15*60), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag == combat.AttackTagExtra {
 			return m, true
 		}
 		return nil, false
-	})
+	}})
 
 	done := false
 	addSeal := func(a combat.AttackCB) {

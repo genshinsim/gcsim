@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c4() {
@@ -38,7 +40,7 @@ func (c *char) c4() {
 func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.15
-	c.AddAttackMod("chongyun-c6", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("chongyun-c6", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 			return nil, false
 		}
@@ -46,5 +48,5 @@ func (c *char) c6() {
 			return m, true
 		}
 		return nil, false
-	})
+	}})
 }

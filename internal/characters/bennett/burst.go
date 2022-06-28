@@ -8,7 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -125,9 +127,9 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 				}
 			}
 
-			active.AddStatMod("bennett-field", burstBuffDuration, attributes.NoStat, func() ([]float64, bool) {
+			active.AddStatMod(character.StatMod{Base: modifier.NewBase("bennett-field", burstBuffDuration), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 				return m, true
-			})
+			}})
 
 			c.Core.Log.NewEvent("bennett field - adding attack", glog.LogCharacterEvent, c.Index, "threshold", threshold)
 		}

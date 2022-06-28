@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -51,9 +52,9 @@ func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount i
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.15
 		for _, active := range c.Core.Player.Chars() {
-			active.AddStatMod("jean-c2", 900, attributes.AtkSpd, func() ([]float64, bool) {
+			active.AddStatMod(character.StatMod{Base: modifier.NewBase("jean-c2", 900), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
 				return m, true
-			})
+			}})
 		}
 	}
 }

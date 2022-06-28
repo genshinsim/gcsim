@@ -4,20 +4,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // During Niwabi Fire-Dance, shots from Yoimiya's Normal Attack will increase her Pyro DMG Bonus by 2% on hit.
 // This effect lasts for 3s and can have a maximum of 10 stacks.
 func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
-	c.AddStatMod("yoimiya-a1", -1, attributes.PyroP, func() ([]float64, bool) {
+	c.AddStatMod(character.StatMod{Base: modifier.NewBase("yoimiya-a1", -1), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
 		if c.Core.Status.Duration("yoimiyaa1") > 0 {
 			m[attributes.PyroP] = float64(c.a1stack) * 0.02
 			return m, true
 		}
 		c.a1stack = 0
 		return nil, false
-	})
+	}})
 
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -50,8 +52,8 @@ func (c *char) a4() {
 		if x.Index == c.Index {
 			continue
 		}
-		x.AddStatMod("yoimiya-a4", 900, attributes.ATKP, func() ([]float64, bool) {
+		x.AddStatMod(character.StatMod{Base: modifier.NewBase("yoimiya-a4", 900), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 }

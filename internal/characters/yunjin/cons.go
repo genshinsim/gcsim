@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // After Cliffbreaker's Banner is unleashed, all nearby party members' Normal Attack DMG is increased by 15% for 12s.
@@ -11,12 +13,12 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = .15
 	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod("yunjin-c2", 12*60, func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("yunjin-c2", 12*60), Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if ae.Info.AttackTag == combat.AttackTagNormal {
 				return m, true
 			}
 			return nil, false
-		})
+		}})
 	}
 }
 
@@ -30,9 +32,9 @@ func (c *char) c4() {
 			return false
 		}
 
-		c.AddStatMod("yunjin-c4", 12*60, attributes.DEFP, func() ([]float64, bool) {
+		c.AddStatMod(character.StatMod{Base: modifier.NewBase("yunjin-c4", 12*60), AffectedStat: attributes.DEFP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 
 		return false
 	}
@@ -47,8 +49,8 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = .12
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod("yunjin-c6", 12*60, attributes.AtkSpd, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("yunjin-c6", 12*60), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 }

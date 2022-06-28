@@ -2,6 +2,8 @@ package hutao
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) a1() {
@@ -12,16 +14,16 @@ func (c *char) a1() {
 		if c.Index == i {
 			continue
 		}
-		char.AddStatMod("hutao-a1", 480, attributes.CR, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("hutao-a1", 480), AffectedStat: attributes.CR, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 }
 
 func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = 0.33
-	c.AddStatMod("hutao-a4", -1, attributes.PyroP, func() ([]float64, bool) {
+	c.AddStatMod(character.StatMod{Base: modifier.NewBase("hutao-a4", -1), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
 		if c.Core.Status.Duration("paramita") == 0 {
 			return nil, false
 		}
@@ -29,5 +31,5 @@ func (c *char) a4() {
 			return m, true
 		}
 		return nil, false
-	})
+	}})
 }

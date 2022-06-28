@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Adds event checker for C1: Unholy Revelation
@@ -26,12 +28,12 @@ func (c *char) c1() {
 			return false
 		}
 
-		c.AddAttackMod("rosaria-c1", 240, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("rosaria-c1", 240), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagNormal {
 				return nil, false
 			}
 			return m, true
-		})
+		}})
 
 		return false
 	}, "rosaria-c1")

@@ -4,13 +4,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod("kaeya-c1", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("kaeya-c1", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		e, ok := t.(*enemy.Enemy)
 		if !ok {
 			return nil, false
@@ -23,7 +25,7 @@ func (c *char) c1() {
 		}
 		m[attributes.CR] = 0.15
 		return m, true
-	})
+	}})
 }
 
 func (c *char) c4() {

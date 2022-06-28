@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -67,9 +69,9 @@ func (c *char) attackBuff(delay int) {
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATK] = buff
-		active.AddStatMod("sara-attack-buff", 360, attributes.ATK, func() ([]float64, bool) {
+		active.AddStatMod(character.StatMod{Base: modifier.NewBase("sara-attack-buff", 360), AffectedStat: attributes.ATK, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 
 		if c.Base.Cons >= 1 {
 			c.c1()

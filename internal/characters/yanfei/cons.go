@@ -3,14 +3,16 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Hook for C2:
 // Increases Yan Fei's Charged Attack CRIT Rate by 20% against enemies below 50% HP.
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod("yanfei-c2", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("yanfei-c2", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag != combat.AttackTagExtra {
 			return nil, false
 		}
@@ -19,7 +21,7 @@ func (c *char) c2() {
 		}
 		m[attributes.CR] = 0.20
 		return m, true
-	})
+	}})
 }
 
 // Handles C4 shield creation

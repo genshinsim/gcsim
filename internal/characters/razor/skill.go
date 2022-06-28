@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillPressFrames []int
@@ -122,12 +124,12 @@ func (c *char) clearSigil() {
 
 func (c *char) energySigil() {
 	val := make([]float64, attributes.EndStatType)
-	c.AddStatMod("er-sigil", -1, attributes.ER, func() ([]float64, bool) {
+	c.AddStatMod(character.StatMod{Base: modifier.NewBase("er-sigil", -1), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
 		if c.Core.F > c.sigilsDuration {
 			return nil, false
 		}
 
 		val[attributes.ER] = float64(c.sigils) * 0.2
 		return val, true
-	})
+	}})
 }

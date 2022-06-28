@@ -4,7 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c1(a combat.AttackCB) {
@@ -25,7 +27,7 @@ func (c *char) c1(a combat.AttackCB) {
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = .15
-	c.AddAttackMod("qiqi-c2", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("qiqi-c2", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return nil, false
 		}
@@ -39,5 +41,5 @@ func (c *char) c2() {
 		}
 
 		return m, true
-	})
+	}})
 }

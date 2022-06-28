@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillPressFrames []int
@@ -169,9 +171,9 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PhyP] = 0.3
 		//TODO: check if the duration is right
-		c.AddStatMod("eula-c1", (6*v+6)*60, attributes.PhyP, func() ([]float64, bool) {
+		c.AddStatMod(character.StatMod{Base: modifier.NewBase("eula-c1", (6*v+6)*60), AffectedStat: attributes.PhyP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 
 	c.Tags["grimheart"] = 0

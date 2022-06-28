@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var dashFrames []int
@@ -47,9 +49,9 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		once = true
 
 		c.Core.Player.RestoreStam(10)
-		c.AddStatMod("ayaka-a4", 600, attributes.CryoP, func() ([]float64, bool) {
+		c.AddStatMod(character.StatMod{Base: modifier.NewBase("ayaka-a4", 600), AffectedStat: attributes.CryoP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), dashHitmark+f, dashHitmark+f, cb)
 

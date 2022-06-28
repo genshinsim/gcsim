@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Implements Xiao C2:
@@ -13,12 +15,12 @@ import (
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ER] = 0.25
-	c.AddStatMod("xiao-c2", -1, attributes.ER, func() ([]float64, bool) {
+	c.AddStatMod(character.StatMod{Base: modifier.NewBase("xiao-c2", -1), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
 		if c.Core.Player.Active() != c.Index {
 			return m, true
 		}
 		return nil, false
-	})
+	}})
 }
 
 // Implements Xiao C6:

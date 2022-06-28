@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -54,9 +56,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.1
-		c.AddStatMod("kokomi-c4", 10*60, attributes.AtkSpd, func() ([]float64, bool) {
+		c.AddStatMod(character.StatMod{Base: modifier.NewBase("kokomi-c4", 10*60), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 
 	// Cannot be prefed particles

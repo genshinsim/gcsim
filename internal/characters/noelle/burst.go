@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -40,9 +42,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	m[attributes.ATK] = mult * burstDefSnapshot
 
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
-	c.AddStatMod("noelle-burst", 900+burstStart, attributes.ATK, func() ([]float64, bool) {
+	c.AddStatMod(character.StatMod{Base: modifier.NewBase("noelle-burst", 900+burstStart), AffectedStat: attributes.ATK, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", m[attributes.ATK], "mult", mult)
 
 	c.Core.Status.Add("noelleq", 900+burstStart)
@@ -54,9 +56,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return
 			}
 			// Adding the mod again with the same key replaces it
-			c.AddStatMod("noelle-burst", 600, attributes.ATK, func() ([]float64, bool) {
+			c.AddStatMod(character.StatMod{Base: modifier.NewBase("noelle-burst", 600), AffectedStat: attributes.ATK, Amount: func() ([]float64, bool) {
 				return m, true
-			})
+			}})
 			c.Core.Log.NewEvent("noelle max burst extension activated", glog.LogCharacterEvent, c.Index, "new_expiry", c.Core.F+600)
 			c.Core.Status.Add("noelleq", 600)
 		}, 900+burstStart)

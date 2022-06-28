@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -82,9 +84,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := burstStart; i < burstStart+dur*60; i += 30 {
 		c.Core.Tasks.Add(func() {
 			active := c.Core.Player.ActiveChar()
-			active.AddAttackMod("ayato-burst", 90, func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			active.AddAttackMod(character.AttackMod{Base: modifier.NewBase("ayato-burst", 90), Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				return m, a.Info.AttackTag == combat.AttackTagNormal
-			})
+			}})
 		}, i)
 	}
 
@@ -92,9 +94,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.15
 		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod("ayato-c4", 15*60, attributes.AtkSpd, func() ([]float64, bool) {
+			char.AddStatMod(character.StatMod{Base: modifier.NewBase("ayato-c4", 15*60), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
 				return m, true
-			})
+			}})
 		}
 	}
 	//add cooldown to sim

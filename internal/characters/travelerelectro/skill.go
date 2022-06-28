@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -139,9 +140,9 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	}
 
 	// apply ER mod
-	collector.AddStatMod("abundance-amulet", 360, attributes.ER, func() ([]float64, bool) {
+	collector.AddStatMod(character.StatMod{Base: modifier.NewBase("abundance-amulet", 360), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
 		return mER, true
-	})
+	}})
 
 	// Reset amulets
 	c.abundanceAmulets = 0

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -127,12 +128,12 @@ func (c *char) onSwapHook() {
 func (c *char) infuse(active *character.CharWrapper) {
 	//c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
-		active.AddCooldownMod("chongyun-c2", 126, func(a action.Action) float64 {
+		active.AddCooldownMod(character.CooldownMod{Base: modifier.NewBase("chongyun-c2", 126), Amount: func(a action.Action) float64 {
 			if a == action.ActionSkill || a == action.ActionBurst {
 				return -0.15
 			}
 			return 0
-		})
+		}})
 	}
 
 	// weapon infuse
@@ -158,7 +159,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 	//a1 adds 8% atkspd for 2.1 seconds
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = 0.08
-	active.AddStatMod("chongyun-field", 126, attributes.NoStat, func() ([]float64, bool) {
+	active.AddStatMod(character.StatMod{Base: modifier.NewBase("chongyun-field", 126), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 }

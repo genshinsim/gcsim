@@ -6,7 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -54,9 +56,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 			// A4 every .3 seconds for the duration of the burst, add ice dmg up to active char for 1sec
 			active := c.Core.Player.ActiveChar()
-			active.AddStatMod("ganyu-field", 60, attributes.CryoP, func() ([]float64, bool) {
+			active.AddStatMod(character.StatMod{Base: modifier.NewBase("ganyu-field", 60), AffectedStat: attributes.CryoP, Amount: func() ([]float64, bool) {
 				return m, true
-			})
+			}})
 			if tick >= 900+burstStart-18 {
 				c.Core.Log.NewEvent("a4 last tick", glog.LogCharacterEvent, c.Index, "ends_on", c.Core.F+60)
 			}

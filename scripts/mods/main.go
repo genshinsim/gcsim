@@ -66,7 +66,9 @@ func fix(path string, dump bool) error {
 	fix(fixAttackMod)
 	fix(fixReactBonus)
 	fix(fixHealBonus)
+	fix(fixCooldownMod)
 	fix(fixResistMod)
+	fix(fixDefMod)
 
 	// Print result
 	out, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
@@ -352,6 +354,73 @@ func fixHealBonus(n ast.Node) (bool, ast.Node) {
 	return false, nil
 }
 
+func fixCooldownMod(n ast.Node) (bool, ast.Node) {
+	if expr, ok := n.(*ast.ExprStmt); ok {
+		block, ok := expr.X.(*ast.CallExpr)
+		if !ok {
+			return false, nil
+		}
+
+		//FUN should be a SelectorExpr
+		fun, ok := block.Fun.(*ast.SelectorExpr)
+		if !ok {
+			return false, nil
+		}
+
+		if fun.Sel.Name != "AddCooldownMod" {
+			return false, nil
+		}
+
+		//work through the args and find amount, expiry, and key
+		//args should be len 1
+		if len(block.Args) != 3 {
+			fmt.Println("unexpected args length != 3")
+			return false, nil
+		}
+
+		//the args are BasicLit, UnaryExpr, FuncLit
+
+		//base stuff -> key + dur
+		base := &ast.KeyValueExpr{
+			Key: ast.NewIdent("Base"),
+			Value: &ast.CallExpr{
+				Fun: &ast.SelectorExpr{
+					X:   ast.NewIdent("modifier"),
+					Sel: ast.NewIdent("NewBase"),
+				},
+				Args: []ast.Expr{
+					block.Args[0],
+					block.Args[1],
+				},
+			},
+		}
+		amtfun := &ast.KeyValueExpr{
+			Key:   ast.NewIdent("Amount"),
+			Value: block.Args[2],
+		}
+
+		//should be compositelit with ident
+		next := &ast.ExprStmt{
+			X: &ast.CallExpr{
+				Fun: block.Fun,
+				Args: []ast.Expr{
+					&ast.CompositeLit{
+						Type: &ast.SelectorExpr{
+							X:   ast.NewIdent("character"),
+							Sel: ast.NewIdent("CooldownMod"),
+						},
+						Elts: []ast.Expr{
+							base, amtfun},
+					},
+				},
+			},
+		}
+
+		return true, next
+	}
+	return false, nil
+}
+
 func fixResistMod(n ast.Node) (bool, ast.Node) {
 	if expr, ok := n.(*ast.ExprStmt); ok {
 		block, ok := expr.X.(*ast.CallExpr)
@@ -414,6 +483,74 @@ func fixResistMod(n ast.Node) (bool, ast.Node) {
 						},
 						Elts: []ast.Expr{
 							base, ele, amtfun},
+					},
+				},
+			},
+		}
+
+		return true, next
+	}
+	return false, nil
+}
+
+func fixDefMod(n ast.Node) (bool, ast.Node) {
+	if expr, ok := n.(*ast.ExprStmt); ok {
+		block, ok := expr.X.(*ast.CallExpr)
+		if !ok {
+			return false, nil
+		}
+
+		//FUN should be a SelectorExpr
+		fun, ok := block.Fun.(*ast.SelectorExpr)
+		if !ok {
+			return false, nil
+		}
+
+		if fun.Sel.Name != "AddDefMod" {
+			return false, nil
+		}
+
+		//work through the args and find amount, expiry, and key
+		//args should be len 1
+		if len(block.Args) != 4 {
+			fmt.Println("unexpected args length != 4")
+			return false, nil
+		}
+
+		//the args are BasicLit, UnaryExpr, FuncLit
+
+		//base stuff -> key + dur
+		base := &ast.KeyValueExpr{
+			Key: ast.NewIdent("Base"),
+			Value: &ast.CallExpr{
+				Fun: &ast.SelectorExpr{
+					X:   ast.NewIdent("modifier"),
+					Sel: ast.NewIdent("NewBaseWithHitlag"),
+				},
+				Args: []ast.Expr{
+					block.Args[0],
+					block.Args[1],
+					block.Args[3],
+				},
+			},
+		}
+		amtfun := &ast.KeyValueExpr{
+			Key:   ast.NewIdent("Value"),
+			Value: block.Args[2],
+		}
+
+		//should be compositelit with ident
+		next := &ast.ExprStmt{
+			X: &ast.CallExpr{
+				Fun: block.Fun,
+				Args: []ast.Expr{
+					&ast.CompositeLit{
+						Type: &ast.SelectorExpr{
+							X:   ast.NewIdent("enemy"),
+							Sel: ast.NewIdent("DefMod"),
+						},
+						Elts: []ast.Expr{
+							base, amtfun},
 					},
 				},
 			},

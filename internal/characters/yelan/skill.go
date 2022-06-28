@@ -6,7 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -124,9 +126,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			}
 			c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index, "enemies count", c.c4count)
 			for _, char := range c.Core.Player.Chars() {
-				char.AddStatMod("yelan-c4", 25*60, attributes.HPP, func() ([]float64, bool) {
+				char.AddStatMod(character.StatMod{Base: modifier.NewBase("yelan-c4", 25*60), AffectedStat: attributes.HPP, Amount: func() ([]float64, bool) {
 					return m, true
-				})
+				}})
 			}
 		}
 
