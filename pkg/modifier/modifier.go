@@ -10,6 +10,7 @@ type Mod interface {
 	Event() glog.Event
 	SetEvent(glog.Event)
 	AffectedByHitlag() bool
+	Extend(float64)
 }
 
 type Base struct {
@@ -88,4 +89,36 @@ func FindCheckExpiry[K Mod](slice *[]K, key string, f int) (int, bool) {
 		return ind, false
 	}
 	return ind, true
+}
+
+//LogAdd is a helper that logs mod add events
+func LogAdd[K Mod](prefix string, mod K, logger glog.Logger, overwrote bool, oldEvt glog.Event) {
+	var evt glog.Event
+	if overwrote {
+		logger.NewEventBuildMsg(
+			glog.LogStatusEvent, -1,
+			prefix, " mod refreshed",
+		).Write(
+			"overwrite", true,
+			"key", mod.Key(),
+			"expiry", mod.Expiry(),
+		)
+		evt = oldEvt
+	} else {
+		evt = logger.NewEventBuildMsg(
+			glog.LogStatusEvent, -1,
+			prefix, " mod added",
+		).Write(
+			"overwrite", false,
+			"key", mod.Key(),
+			"expiry", mod.Expiry(),
+		)
+	}
+	evt.SetEnded(mod.Expiry())
+	mod.SetEvent(evt)
+}
+
+func LogDelete[K Mod](prefix string, mod K, logger glog.Logger, f int) {
+	mod.Event().SetEnded(f)
+	logger.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1, "key", mod.Key())
 }

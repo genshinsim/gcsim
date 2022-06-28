@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
@@ -42,8 +43,7 @@ type Enemy struct {
 	lastParticleDrop int
 
 	//mods
-	resistMods  []*resistMod
-	defenseMods []*defenseMod
+	mods []modifier.Mod
 
 	//icd related
 	icdTagOnTimer       [MaxTeamSize][combat.ICDTagLength]bool
@@ -62,6 +62,7 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e.Target = target.New(core, p.Pos.X, p.Pos.Y, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
+	e.mods = make([]modifier.Mod, 0, 10)
 	return e
 }
 
