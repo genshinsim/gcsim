@@ -16,9 +16,9 @@ type resistMod struct {
 	modifier.Base
 }
 
-func (e *Enemy) AddResistMod(key string, dur int, ele attributes.Element, val float64) {
+func (e *Enemy) AddResistMod(key string, dur int, ele attributes.Element, val float64, hitlag bool) {
 	mod := resistMod{
-		Base:  modifier.NewBase(key, e.Core.F+dur),
+		Base:  modifier.NewBase(key, e.Core.F+dur, hitlag),
 		ele:   ele,
 		value: val,
 	}

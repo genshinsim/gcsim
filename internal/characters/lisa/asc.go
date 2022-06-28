@@ -10,5 +10,5 @@ func (c *char) a4(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	t.AddDefMod("lisa-a4", 600, -0.15)
+	t.AddDefMod("lisa-a4", 600, -0.15, true)
 }

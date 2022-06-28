@@ -9,20 +9,25 @@ type Mod interface {
 	Expiry() int
 	Event() glog.Event
 	SetEvent(glog.Event)
+	AffectedByHitlag() bool
 }
 
 type Base struct {
-	key    string
-	expiry int
-	event  glog.Event
+	key       string
+	expiry    int
+	extension float64
+	event     glog.Event
+	hitlag    bool
 }
 
 func (t *Base) Key() string             { return t.key }
-func (t *Base) Expiry() int             { return t.expiry }
+func (t *Base) Expiry() int             { return t.expiry + int(t.extension) }
 func (t *Base) Event() glog.Event       { return t.event }
 func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
+func (t *Base) AffectedByHitlag() bool  { return t.hitlag }
+func (t *Base) Extend(amt float64)      { t.extension += amt }
 
-func NewBase(key string, expiry int) Base {
+func NewBase(key string, expiry int, affectedByHitlag bool) Base {
 	return Base{
 		key:    key,
 		expiry: expiry,
