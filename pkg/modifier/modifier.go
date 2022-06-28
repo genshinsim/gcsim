@@ -34,59 +34,39 @@ func NewBase(key string, expiry int, affectedByHitlag bool) Base {
 	}
 }
 
-func Delete[K Mod](f int, log glog.Logger, slice *[]K, key string) {
+//Delete removes a modifier. Returns true if deleted ok
+func Delete[K Mod](slice *[]K, key string) (m Mod) {
 	n := 0
-	for _, v := range *slice {
+	for i, v := range *slice {
 		if v.Key() == key {
-			v.Event().SetEnded(f)
-			log.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1, "key", key)
+			m = (*slice)[i]
 		} else {
 			(*slice)[n] = v
 			n++
 		}
 	}
 	*slice = (*slice)[:n]
+	return
 }
 
-func Add[K Mod](f int, log glog.Logger, slice *[]K, mod K) {
+//Add adds a modifier. Returns true if overwritten and the original evt (if overwritten)
+func Add[K Mod](slice *[]K, mod K, f int) (overwrote bool, evt glog.Event) {
 	ind := Find(slice, mod.Key())
 
 	//if does not exist, make new and add
 	if ind == -1 {
-		evt := log.NewEvent(
-			"enemy mod added", glog.LogStatusEvent, -1,
-			"overwrite", false,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
-		evt.SetEnded(mod.Expiry())
-		mod.SetEvent(evt)
 		*slice = append(*slice, mod)
 		return
 	}
 
 	//otherwise check not expired
-	var evt glog.Event
 	if (*slice)[ind].Expiry() > f || (*slice)[ind].Expiry() == -1 {
-		log.NewEvent(
-			"enemy mod refreshed", glog.LogStatusEvent, -1,
-			"overwrite", true,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
+		overwrote = true
 		evt = (*slice)[ind].Event()
-	} else {
-		//if expired overide the event
-		evt = log.NewEvent(
-			"enemy mod added", glog.LogStatusEvent, -1,
-			"overwrite", false,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
 	}
-	mod.SetEvent(evt)
-	evt.SetEnded(mod.Expiry())
 	(*slice)[ind] = mod
+
+	return
 }
 
 func Find[K Mod](slice *[]K, key string) int {

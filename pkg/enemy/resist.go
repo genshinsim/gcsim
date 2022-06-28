@@ -22,11 +22,34 @@ func (e *Enemy) AddResistMod(key string, dur int, ele attributes.Element, val fl
 		ele:   ele,
 		value: val,
 	}
-	modifier.Add(e.Core.F, e.Core.Log, &e.resistMods, &mod)
+	var evt glog.Event
+	overwrote, oldEvt := modifier.Add(&e.resistMods, &mod, e.Core.F)
+	if overwrote {
+		e.Core.Log.NewEvent(
+			"enemy mod refreshed", glog.LogStatusEvent, -1,
+			"overwrite", true,
+			"key", mod.Key(),
+			"expiry", mod.Expiry(),
+		)
+		evt = oldEvt
+	} else {
+		evt = e.Core.Log.NewEvent(
+			"enemy mod added", glog.LogStatusEvent, -1,
+			"overwrite", false,
+			"key", mod.Key(),
+			"expiry", mod.Expiry(),
+		)
+	}
+	evt.SetEnded(mod.Expiry())
+	mod.SetEvent(evt)
 }
 
 func (e *Enemy) DeleteResistMod(key string) {
-	modifier.Delete(e.Core.F, e.Core.Log, &e.resistMods, key)
+	m := modifier.Delete(&e.resistMods, key)
+	if m != nil {
+		m.Event().SetEnded(e.Core.F)
+		e.Core.Log.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1, "key", key)
+	}
 }
 
 func (c *Enemy) ResistModIsActive(key string) bool {

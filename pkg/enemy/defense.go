@@ -19,11 +19,34 @@ func (e *Enemy) AddDefMod(key string, dur int, val float64, hitlag bool) {
 		Base:  modifier.NewBase(key, e.Core.F+dur, hitlag),
 		value: val,
 	}
-	modifier.Add(e.Core.F, e.Core.Log, &e.defenseMods, &mod)
+	var evt glog.Event
+	overwrote, oldEvt := modifier.Add(&e.defenseMods, &mod, e.Core.F)
+	if overwrote {
+		e.Core.Log.NewEvent(
+			"mod refreshed", glog.LogStatusEvent, -1,
+			"overwrite", true,
+			"key", mod.Key(),
+			"expiry", mod.Expiry(),
+		)
+		evt = oldEvt
+	} else {
+		evt = e.Core.Log.NewEvent(
+			"mod added", glog.LogStatusEvent, -1,
+			"overwrite", false,
+			"key", mod.Key(),
+			"expiry", mod.Expiry(),
+		)
+	}
+	evt.SetEnded(mod.Expiry())
+	mod.SetEvent(evt)
 }
 
 func (e *Enemy) DeleteDefMod(key string) {
-	modifier.Delete(e.Core.F, e.Core.Log, &e.defenseMods, key)
+	m := modifier.Delete(&e.defenseMods, key)
+	if m != nil {
+		m.Event().SetEnded(e.Core.F)
+		e.Core.Log.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1, "key", key)
+	}
 }
 
 func (c *Enemy) DefModIsActive(key string) bool {
