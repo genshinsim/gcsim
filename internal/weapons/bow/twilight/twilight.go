@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -33,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	base := 0.0
 
 	m[attributes.DmgP] = base
-	char.AddAttackMod("twilight-bonus-dmg", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("twilight-bonus-dmg", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		switch cycle {
 		case 2:
 			base = 0.105 + float64(r)*0.035
@@ -45,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		m[attributes.DmgP] = base
 		return m, true
-	})
+	}})
 
 	icd := 0
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {

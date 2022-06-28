@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,9 +32,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	mheal := make([]float64, attributes.EndStatType)
 	mheal[attributes.Heal] = 0.075 + float64(r)*0.025
-	char.AddStatMod("moonglow-heal-bonus", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("moonglow-heal-bonus", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return mheal, true
-	})
+	}})
 
 	nabuff := 0.005 + float64(r)*0.005
 	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {

@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -28,7 +29,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmg := 0.16 + float64(r)*0.04
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = dmg
-	char.AddAttackMod("dragonbane", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("dragonbane", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		x, ok := t.(*enemy.Enemy)
 		if !ok {
 			return nil, false
@@ -37,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return m, true
 		}
 		return nil, false
-	})
+	}})
 
 	return w, nil
 }

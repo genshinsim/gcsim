@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -35,9 +36,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.03 + float64(r)*0.01
-	char.AddStatMod("skyward-blade-crit", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("skyward-blade-crit", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 
 	dur := -1
 	atkspdBuff := make([]float64, attributes.EndStatType)
@@ -47,9 +48,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		dur = c.F + 720
-		char.AddStatMod("skyward blade", 720, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("skyward blade", 720), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			return atkspdBuff, true
-		})
+		}})
 		c.Log.NewEvent("Skyward Blade activated", glog.LogWeaponEvent, char.Index, "expiring ", dur)
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))

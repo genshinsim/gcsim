@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -83,11 +84,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		stackExpiry = c.F + stackDuration
 
 		//buff lasts 6 * 60 = 360 frames
-		char.AddStatMod("compoundbow", stackDuration, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("compoundbow", stackDuration), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			m[attributes.ATKP] = incAtk * float64(stacks)
 			m[attributes.AtkSpd] = incSpd * float64(stacks)
 			return m, true
-		})
+		}})
 
 		return false
 	}, fmt.Sprintf("compoundbow-%v", char.Base.Key.String()))

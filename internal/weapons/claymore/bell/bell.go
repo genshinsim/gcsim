@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -54,9 +55,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}, fmt.Sprintf("bell-%v", char.Base.Key.String()))
 
 	//add damage if shielded
-	char.AddStatMod("bell", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("bell", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return val, char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded()
-	})
+	}})
 
 	return w, nil
 }

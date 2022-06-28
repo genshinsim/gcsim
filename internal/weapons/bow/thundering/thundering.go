@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -57,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, key)
 
-	char.AddAttackMod("thundering", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("thundering", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		m[attributes.DmgP] = 0
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return m, true
@@ -78,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		m[attributes.DmgP] = dmg
 		return m, true
-	})
+	}})
 
 	return w, nil
 }

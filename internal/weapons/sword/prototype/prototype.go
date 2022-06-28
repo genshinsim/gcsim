@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -57,9 +58,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			w.buff[attributes.DEFP] = perStack * float64(w.stacks)
 		}
 		expiry = c.F + 360
-		char.AddStatMod("prototype-rancour", 360, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("prototype-rancour", 360), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			return w.buff, true
-		})
+		}})
 		return false
 	}, fmt.Sprintf("prototype-rancour-%v", char.Base.Key.String()))
 

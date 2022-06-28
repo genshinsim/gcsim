@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -36,10 +37,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 
 	if char.Base.Key < keys.TravelerDelim {
-		char.AddStatMod("swordofdescension", -1, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("swordofdescension", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			m[attributes.ATK] = 66
 			return m, true
-		})
+		}})
 	}
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {

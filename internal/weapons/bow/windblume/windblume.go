@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -33,9 +34,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if char.Index != c.Player.Active() {
 			return false
 		}
-		char.AddStatMod("windblume", 360, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("windblume", 360), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 		return false
 	}, fmt.Sprintf("windblume-%v", char.Base.Key.String()))
 

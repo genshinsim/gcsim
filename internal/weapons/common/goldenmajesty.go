@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type GoldenMajesty struct {
@@ -57,13 +58,13 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 		}
 
 		expiry = c.F + 60*8
-		char.AddStatMod("golden-majesty", expiry, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("golden-majesty", expiry), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			m[attributes.ATKP] = atkbuff * float64(stacks)
 			if char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded() {
 				m[attributes.ATKP] *= 2
 			}
 			return m, true
-		})
+		}})
 		return false
 	}, key)
 

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -29,9 +30,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 45 + float64(r)*15
-	char.AddStatMod("elegy-em", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("elegy-em", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ATKP] = .15 + float64(r)*0.05
@@ -67,9 +68,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 			cooldown = c.F + 1200
 			for _, char := range c.Player.Chars() {
-				char.AddStatMod("elegy-proc", 720, attributes.NoStat, func() ([]float64, bool) {
+				char.AddStatMod(character.StatMod{Base: modifier.NewBase("elegy-proc", 720), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 					return val, true
-				})
+				}})
 			}
 		}
 		return false

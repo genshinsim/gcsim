@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -44,9 +45,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.AnemoP] = base
 	m[attributes.GeoP] = base
 	m[attributes.DendroP] = base
-	char.AddStatMod("haran-ele-bonus", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("haran-ele-bonus", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 
 	wavespikeICD := 0
 	wavespikeStacks := 0
@@ -74,12 +75,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		val[attributes.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
-		char.AddAttackMod("ripping-upheaval", 480, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("ripping-upheaval", 480), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagNormal {
 				return nil, false
 			}
 			return val, true
-		})
+		}})
 
 		wavespikeStacks = 0
 		return false

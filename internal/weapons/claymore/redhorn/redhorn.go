@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -32,9 +33,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	defBoost := .21 + 0.07*float64(r)
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DEFP] = defBoost
-	char.AddStatMod("redhorn-stonethrasher-def-boost", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("redhorn-stonethrasher-def-boost", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return val, true
-	})
+	}})
 
 	nacaBoost := .3 + .1*float64(r)
 	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {

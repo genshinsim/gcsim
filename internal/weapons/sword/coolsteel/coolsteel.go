@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -29,7 +30,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.09 + float64(r)*0.03
 
-	char.AddAttackMod("coolsteel", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("coolsteel", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		x, ok := t.(*enemy.Enemy)
 		if !ok {
 			return nil, false
@@ -38,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return m, true
 		}
 		return nil, false
-	})
+	}})
 
 	return w, nil
 }

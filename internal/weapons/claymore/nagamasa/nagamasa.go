@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -36,12 +37,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	regen := 2.5 + float64(r)*0.5
 
 	m[attributes.DmgP] = base
-	char.AddAttackMod("nagamasa-skill-dmg-buff", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("nagamasa-skill-dmg-buff", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
 			return m, true
 		}
 		return nil, false
-	})
+	}})
 
 	icd := 0
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {

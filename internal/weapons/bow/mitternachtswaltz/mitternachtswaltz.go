@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -50,23 +51,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		buffIcd = c.F + 1
 
 		if atk.Info.AttackTag == combat.AttackTagNormal {
-			char.AddAttackMod("mitternachtswaltz-ele", 300, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("mitternachtswaltz-ele", 300), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
 					m[attributes.DmgP] = buffAmount
 					return m, true
 				}
 				return nil, false
-			})
+			}})
 		}
 
 		if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
-			char.AddAttackMod("mitternachtswaltz-na", 300, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("mitternachtswaltz-na", 300), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag == combat.AttackTagNormal {
 					m[attributes.DmgP] = buffAmount
 					return m, true
 				}
 				return nil, false
-			})
+			}})
 		}
 
 		return false

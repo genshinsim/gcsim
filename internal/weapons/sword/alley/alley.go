@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -58,9 +59,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.09 + 0.03*float64(r)
-	char.AddStatMod("alleyflash", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("alleyflash", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return m, w.lockout < c.F
-	})
+	}})
 
 	return w, nil
 }

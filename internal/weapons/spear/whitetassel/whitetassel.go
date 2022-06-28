@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -27,9 +28,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.18 + 0.06*float64(r)
-	char.AddAttackMod("whitetassel", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("whitetassel", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		return m, atk.Info.AttackTag == combat.AttackTagNormal
-	})
+	}})
 
 	return w, nil
 }

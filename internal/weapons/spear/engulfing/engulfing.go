@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -34,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	max := 0.7 + 0.1*float64(r)
 
 	val := make([]float64, attributes.EndStatType)
-	char.AddStatMod("engulfing-lightning", -1, attributes.ATKP, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("engulfing-lightning", -1), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
 		er := char.Stat(attributes.ER)
 		c.Log.NewEvent("engulfing lightning snapshot", glog.LogWeaponEvent, char.Index, "er", er)
 		bonus := atk * er
@@ -43,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		val[attributes.ATKP] = bonus
 		return val, true
-	})
+	}})
 
 	erval := make([]float64, attributes.EndStatType)
 	erval[attributes.ER] = .25 + .05*float64(r)
@@ -52,9 +53,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		char.AddStatMod("engulfing-er", 720, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("engulfing-er", 720), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			return erval, true
-		})
+		}})
 		return false
 	}, fmt.Sprintf("engulfing-%v", char.Base.Key.String()))
 	return w, nil

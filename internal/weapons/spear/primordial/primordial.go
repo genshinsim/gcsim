@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -66,9 +67,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		//refresh mod
-		char.AddStatMod("primordial", 300, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("primordial", 300), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			return w.buff, true
-		})
+		}})
 
 		return false
 	}, fmt.Sprintf("primordial-%v", char.Base.Key.String()))

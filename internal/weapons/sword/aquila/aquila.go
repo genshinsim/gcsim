@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -35,9 +36,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .15 + .05*float64(r)
-	char.AddStatMod("acquila favonia", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("acquila favonia", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 
 	dmg := 1.7 + .3*float64(r)
 	heal := .85 + .15*float64(r)

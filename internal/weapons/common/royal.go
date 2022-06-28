@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Royal struct {
@@ -43,10 +44,10 @@ func NewRoyal(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile)
 
 	rate := 0.06 + float64(r)*0.02
 	m := make([]float64, attributes.EndStatType)
-	char.AddStatMod("royal", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("royal", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		m[attributes.CR] = float64(stacks) * rate
 		return m, true
-	})
+	}})
 
 	return w, nil
 }

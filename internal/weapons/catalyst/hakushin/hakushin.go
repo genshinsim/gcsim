@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -52,7 +53,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 					continue
 				}
 				this := char
-				char.AddStatMod("hakushin-passive", 6*60, attributes.NoStat, func() ([]float64, bool) {
+				char.AddStatMod(character.StatMod{Base: modifier.NewBase("hakushin-passive", 6*60), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 					m[attributes.PyroP] = 0
 					m[attributes.HydroP] = 0
 					m[attributes.CryoP] = 0
@@ -62,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 					m[attributes.DendroP] = 0
 					m[attributes.EleToDmgP(this.Base.Element)] = dmg
 					return m, true
-				})
+				}})
 			}
 			c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index, "trigger", key, "expiring", c.F+6*60)
 			return false

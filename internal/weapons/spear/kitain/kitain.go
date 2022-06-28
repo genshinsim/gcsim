@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -35,12 +36,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	base := 0.045 + float64(r)*0.015
 	m[attributes.DmgP] = base
-	char.AddAttackMod("kitain-skill-dmg-buff", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("kitain-skill-dmg-buff", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
 			return m, true
 		}
 		return nil, false
-	})
+	}})
 
 	regen := 2.5 + float64(r)*0.5
 	icd := 0

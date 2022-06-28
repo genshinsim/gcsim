@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -40,9 +41,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//permanent atk% increase
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.12 + float64(r)*0.04
-	char.AddStatMod("pines-atk", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("pines-atk", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return m, true
-	})
+	}})
 
 	//sigil buff
 	val := make([]float64, attributes.EndStatType)
@@ -74,9 +75,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			c.Status.Add("pines", 720)
 			cooldown = c.F + 1200
 			for _, char := range c.Player.Chars() {
-				char.AddStatMod("pines-proc", 720, attributes.NoStat, func() ([]float64, bool) {
+				char.AddStatMod(character.StatMod{Base: modifier.NewBase("pines-proc", 720), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 					return val, true
-				})
+				}})
 			}
 		}
 		return false

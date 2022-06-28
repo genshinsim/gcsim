@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -32,12 +33,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.15 + 0.05*float64(r)
-	char.AddAttackMod("blacksword", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("blacksword", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return nil, false
 		}
 		return val, true
-	})
+	}})
 
 	last := 0
 	heal := 0.5 + .1*float64(r)

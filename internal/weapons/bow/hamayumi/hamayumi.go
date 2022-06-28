@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -26,7 +27,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	nm := .12 + .04*float64(r)
 	ca := .09 + .03*float64(r)
-	char.AddAttackMod("hamayumi", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("hamayumi", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		val := make([]float64, attributes.EndStatType)
 		if atk.Info.AttackTag == combat.AttackTagNormal {
 			val[attributes.DmgP] = nm
@@ -44,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return val, true
 		}
 		return nil, false
-	})
+	}})
 
 	return w, nil
 }

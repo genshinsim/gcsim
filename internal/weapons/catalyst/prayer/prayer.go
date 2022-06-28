@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -71,12 +72,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("lostprayer-%v", char.Base.Key.String()))
 
-	char.AddStatMod("lost-prayer", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("lost-prayer", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		if w.stacks == 0 {
 			return nil, false
 		}
 		return w.buff, true
-	})
+	}})
 
 	return w, nil
 }

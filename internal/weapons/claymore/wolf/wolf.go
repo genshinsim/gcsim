@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -34,9 +35,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//flat atk% increase
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ATKP] = 0.15 + 0.05*float64(r)
-	char.AddStatMod("wolf-flat", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("wolf-flat", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		return val, true
-	})
+	}})
 
 	//under hp increase
 	bonus := make([]float64, attributes.EndStatType)
@@ -66,9 +67,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		icd = c.F + 1800
 
 		for _, char := range c.Player.Chars() {
-			char.AddStatMod("wolf-proc", 720, attributes.NoStat, func() ([]float64, bool) {
+			char.AddStatMod(character.StatMod{Base: modifier.NewBase("wolf-proc", 720), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 				return bonus, true
-			})
+			}})
 		}
 		return false
 	}, fmt.Sprintf("wolf-%v", char.Base.Key.String()))

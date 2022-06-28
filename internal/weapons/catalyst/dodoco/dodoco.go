@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -42,16 +43,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		switch atk.Info.AttackTag {
 		case combat.AttackTagNormal:
-			char.AddAttackMod("dodoco-ca", 360, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("dodoco-ca", 360), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagExtra {
 					return nil, false
 				}
 				return m, true
-			})
+			}})
 		case combat.AttackTagExtra:
-			char.AddStatMod("dodoco atk", 360, attributes.NoStat, func() ([]float64, bool) {
+			char.AddStatMod(character.StatMod{Base: modifier.NewBase("dodoco atk", 360), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 				return n, true
-			})
+			}})
 		}
 		return false
 	}, fmt.Sprintf("dodoco-%v", char.Base.Key.String()))

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -42,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	burst := 0
 
 	mATK := make([]float64, attributes.EndStatType)
-	char.AddStatMod("polar-star", -1, attributes.NoStat, func() ([]float64, bool) {
+	char.AddStatMod(character.StatMod{Base: modifier.NewBase("polar-star", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 		count := 0
 		if normal > c.F {
 			count++
@@ -64,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		mATK[attributes.ATKP] = atkbonus
 
 		return mATK, true
-	})
+	}})
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -92,13 +93,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	mDmg := make([]float64, attributes.EndStatType)
 	mDmg[attributes.DmgP] = dmg
-	char.AddAttackMod("polar-star", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("polar-star", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 		switch atk.Info.AttackTag {
 		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
 			return mDmg, true
 		}
 		return nil, false
-	})
+	}})
 
 	return w, nil
 }
