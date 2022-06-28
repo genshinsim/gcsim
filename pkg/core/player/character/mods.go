@@ -56,7 +56,14 @@ type (
 
 // Add.
 
-func (c *CharWrapper) AddStatus(mod Status) {
+func (c *CharWrapper) AddStatus(key string, dur int, hitlag bool) {
+	mod := Status{
+		Base: modifier.Base{
+			ModKey: key,
+			Dur:    dur,
+			Hitlag: hitlag,
+		},
+	}
 	if mod.Dur < 0 {
 		mod.ModExpiry = -1
 	} else {

@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,13 +32,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AnemoP] = 0.15
-		char.AddStatMod("vv-2pc", -1, attributes.AnemoP, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("vv-2pc", -1), AffectedStat: attributes.AnemoP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		// add +0.6 reaction damage
-		char.AddReactBonusMod("vv-4pc", -1, func(ai combat.AttackInfo) (float64, bool) {
+		char.AddReactBonusMod(character.ReactBonusMod{Base: modifier.NewBase("vv-4pc", -1), Amount: func(ai combat.AttackInfo) (float64, bool) {
 			//check to make sure this is not an amped swirl
 			if ai.Amped {
 				return 0, false
@@ -51,7 +52,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return 0, false
 			}
 			return 0.6, false
-		})
+		}})
 
 		vvfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
 			return func(args ...interface{}) bool {
@@ -69,7 +70,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return false
 				}
 
-				t.AddResistMod(key, 10*60, ele, -0.4, true)
+				t.AddResistMod(enemy.ResistMod{Base: modifier.NewBaseWithHitlag(key, 10*60, true), Ele: ele, Value: -0.4})
 				c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index, "reaction", key, "char", char.Index)
 
 				return false
@@ -109,7 +110,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			t.AddResistMod(key, 10*60, ele, -0.4, true)
+			t.AddResistMod(enemy.ResistMod{Base: modifier.NewBaseWithHitlag(key, 10*60, true), Ele: ele, Value: -0.4})
 			c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index, "reaction", key, "char", char.Index)
 
 			return false

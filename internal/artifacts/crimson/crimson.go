@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -35,7 +36,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
-		char.AddStatMod("crimson-2pc", -1, attributes.PyroP, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("crimson-2pc", -1), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
 			if char.StatusExpiry(cw4pc) < c.F {
 				s.stacks = 0
 			}
@@ -46,7 +47,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			return m, true
-		})
+		}})
 	}
 
 	if count >= 4 {
@@ -70,7 +71,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}, s.key)
 
-		char.AddReactBonusMod("crimson-4pc", -1, func(ai combat.AttackInfo) (float64, bool) {
+		char.AddReactBonusMod(character.ReactBonusMod{Base: modifier.NewBase("crimson-4pc", -1), Amount: func(ai combat.AttackInfo) (float64, bool) {
 			if ai.AttackTag == combat.AttackTagOverloadDamage {
 				return 0.4, false
 			}
@@ -78,7 +79,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return 0.15, false
 			}
 			return 0, false
-		})
+		}})
 	}
 
 	return &s, nil

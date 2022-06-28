@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,9 +32,9 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.GeoP] = 0.15
-		char.AddStatMod("archaic-2pc", -1, attributes.GeoP, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("archaic-2pc", -1), AffectedStat: attributes.GeoP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
@@ -68,9 +69,9 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 			// Apply mod to all characters
 			for _, c := range core.Player.Chars() {
-				c.AddStatMod("archaic-4pc", 10*60, attributes.NoStat, func() ([]float64, bool) {
+				c.AddStatMod(character.StatMod{Base: modifier.NewBase("archaic-4pc", 10*60), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 					return m, true
-				})
+				}})
 			}
 
 			return false

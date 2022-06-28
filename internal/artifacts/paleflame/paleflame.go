@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -33,9 +34,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PhyP] = 0.25
-		char.AddStatMod("pf-2pc", -1, attributes.PhyP, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("pf-2pc", -1), AffectedStat: attributes.PhyP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
@@ -72,7 +73,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}, fmt.Sprintf("pf4-%v", char.Base.Key.String()))
 
-		char.AddStatMod("pf-4pc", -1, attributes.NoStat, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("pf-4pc", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
 			if s.dur < c.F {
 				m[attributes.ATKP] = 0
 				m[attributes.PhyP] = 0
@@ -80,7 +81,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			return m, true
-		})
+		}})
 	}
 
 	return &s, nil

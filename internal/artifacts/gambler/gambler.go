@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -28,12 +29,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.20
-		char.AddAttackMod("gambler-2pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("gambler-2pc", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 				return nil, false
 			}
 			return m, true
-		})
+		}})
 	}
 
 	return &s, nil

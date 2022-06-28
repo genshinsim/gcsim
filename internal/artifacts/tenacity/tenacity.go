@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -30,12 +31,12 @@ func (s *Set) Init() error {
 	m[attributes.ATKP] = 0.2
 
 	for _, this := range s.core.Player.Chars() {
-		this.AddStatMod("tom-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
+		this.AddStatMod(character.StatMod{Base: modifier.NewBase("tom-4pc", -1), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
 			if s.core.Status.Duration("tom-proc") > 0 {
 				return m, true
 			}
 			return nil, false
-		})
+		}})
 	}
 
 	s.core.Player.Shields.AddShieldBonusMod("tom-4pc", -1, func() (float64, bool) {
@@ -56,9 +57,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.HPP] = 0.20
-		char.AddStatMod("tom-2pc", -1, attributes.HPP, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("tom-2pc", -1), AffectedStat: attributes.HPP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)

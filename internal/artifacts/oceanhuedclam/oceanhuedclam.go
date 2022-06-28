@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -50,9 +51,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.Heal] = 0.15
-		char.AddStatMod("ohc-2pc", -1, attributes.Heal, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("ohc-2pc", -1), AffectedStat: attributes.Heal, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		bubbleICDExpiry := 0

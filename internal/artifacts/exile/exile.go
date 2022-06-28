@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -30,9 +31,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ER] = 0.20
-		char.AddStatMod("exile-2pc", -1, attributes.ER, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("exile-2pc", -1), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		// TODO: does multiple exile holders extend the duration?

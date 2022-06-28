@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -28,12 +29,12 @@ func (s *Set) Init() error {
 	m[attributes.ATKP] = 0.2
 
 	for _, this := range s.core.Player.Chars() {
-		this.AddStatMod("nob-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
+		this.AddStatMod(character.StatMod{Base: modifier.NewBase("nob-4pc", -1), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
 			if s.core.Status.Duration("nob-4pc") > 0 {
 				return m, true
 			}
 			return nil, false
-		})
+		}})
 	}
 
 	return nil
@@ -47,12 +48,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.20
-		char.AddAttackMod("nob-2pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("nob-2pc", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 				return nil, false
 			}
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		//TODO: this used to be post. need to check

@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -27,9 +28,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.18
-		char.AddStatMod("glad-2pc", -1, attributes.ATKP, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("glad-2pc", -1), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		switch char.Weapon.Class {
@@ -43,12 +44,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.35
-		char.AddAttackMod("glad-4pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("glad-4pc", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 				return nil, false
 			}
 			return m, true
-		})
+		}})
 	}
 
 	return &s, nil

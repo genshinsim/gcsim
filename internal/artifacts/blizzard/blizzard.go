@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -26,13 +27,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CryoP] = 0.15
-		char.AddStatMod("bs-2pc", -1, attributes.CryoP, func() ([]float64, bool) {
+		char.AddStatMod(character.StatMod{Base: modifier.NewBase("bs-2pc", -1), AffectedStat: attributes.CryoP, Amount: func() ([]float64, bool) {
 			return m, true
-		})
+		}})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		char.AddAttackMod("bs-4pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("bs-4pc", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			r, ok := t.(core.Reactable)
 			if !ok {
 				return nil, false
@@ -48,7 +49,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return m, true
 			}
 			return nil, false
-		})
+		}})
 	}
 
 	return &s, nil

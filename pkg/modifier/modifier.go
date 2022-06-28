@@ -43,6 +43,14 @@ func NewBase(key string, dur int) Base {
 	}
 }
 
+func NewBaseWithHitlag(key string, dur int, hitlag bool) Base {
+	return Base{
+		ModKey: key,
+		Dur:    dur,
+		Hitlag: hitlag,
+	}
+}
+
 //Delete removes a modifier. Returns true if deleted ok
 func Delete[K Mod](slice *[]K, key string) (m Mod) {
 	n := 0
