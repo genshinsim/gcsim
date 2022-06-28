@@ -19,10 +19,6 @@ type Simulation struct {
 	continueEval  chan bool
 	queuer        gcs.Eval
 	noMoreActions bool
-	//hurt event
-	lastHurt int
-	//energy event
-	lastEnergyDrop int
 	//result
 	stats Result
 

@@ -42,9 +42,7 @@ type Character interface {
 
 	AddEnergy(src string, amt float64)
 
-	ApplyHitlag(factor float64, dur int)
-
-	Tick()
+	ApplyHitlag(factor, dur float64)
 }
 
 type CharWrapper struct {
@@ -79,12 +77,21 @@ type CharWrapper struct {
 	NormalCounter int
 
 	//tags
-	Tags map[string]int
-
+	Tags      map[string]int
 	BaseStats [attributes.EndStatType]float64
 
 	//mods
 	mods []modifier.Mod
+
+	//hitlag stuff
+	timePassed   float64 //how many frames have passed since start of sim
+	frozenFrames float64 //how many frames are we still frozen for
+	queue        []charTask
+}
+
+type charTask struct {
+	f     func()
+	delay float64
 }
 
 func New(

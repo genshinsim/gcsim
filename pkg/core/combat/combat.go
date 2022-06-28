@@ -18,7 +18,7 @@ type CharHandler interface {
 
 type Character interface {
 	ApplyAttackMods(a *AttackEvent, t Target) []interface{}
-	ApplyHitlag(factor float64, dur int)
+	ApplyHitlag(factor, dur float64)
 }
 
 type Handler struct {
