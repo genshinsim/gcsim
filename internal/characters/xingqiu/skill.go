@@ -36,15 +36,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	for i, v := range rainscreen {
-		ai.Mult = v[c.TalentLvlSkill()]
+		ax := ai
+		ax.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {
 			//check if ult is up, if so increase multiplier
 			if c.StatusIsActive(burstKey) {
-				ai.Mult = ai.Mult * 1.5
+				ax.Mult = ax.Mult * 1.5
 			}
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ax, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 0)
 		}, skillHitmarks[i])
 	}
 

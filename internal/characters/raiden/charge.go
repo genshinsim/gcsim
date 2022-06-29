@@ -73,14 +73,15 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 
 	for i, mult := range chargeSword {
 		// Sword hits are dynamic - group snapshots with damage proc
-		ai.Mult = mult[c.TalentLvlBurst()]
-		ai.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
+		ax := ai
+		ax.Mult = mult[c.TalentLvlBurst()]
+		ax.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
 		if c.Base.Cons >= 2 {
 			ai.IgnoreDefPercent = .6
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
-				ai,
+				ax,
 				combat.NewDefCircHit(5, false, combat.TargettableEnemy),
 				0,
 				0,

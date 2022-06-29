@@ -111,6 +111,7 @@ func (c *char) skillPress() action.ActionInfo {
 }
 
 func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Passion Overload (Level %v)", level),
@@ -124,11 +125,12 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	}
 
 	for i, v := range skillHold[level-1] {
-		ai.Mult = v[c.TalentLvlSkill()]
-		ai.HitlagHaltFrames = 0.09 * 60
+		ax := ai
+		ax.Mult = v[c.TalentLvlSkill()]
+		ax.HitlagHaltFrames = 0.09 * 60
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
-				ai,
+				ax,
 				combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
 				0,
 				0,

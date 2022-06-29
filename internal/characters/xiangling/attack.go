@@ -33,21 +33,21 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:          combat.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		Element:            attributes.Physical,
-		Durability:         25,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
-	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai.Mult = mult[c.TalentLvlAttack()]
-		ai.HitlagHaltFrames = attackHitlagHaltFrame[c.NormalCounter][i] * 60
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			Mult:               mult[c.TalentLvlAttack()],
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			Element:            attributes.Physical,
+			Durability:         25,
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: true,
+		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,

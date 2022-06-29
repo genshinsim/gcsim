@@ -18,22 +18,22 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
-		ICDGroup:           combat.ICDGroupDefault,
-		Element:            attributes.Pyro,
-		Durability:         25,
-		HitlagHaltFrames:   0.03 * 60,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
-	}
 	for i := range pyronadoInitial {
-		ai.Abil = fmt.Sprintf("Pyronado Hit %v", i+1)
-		ai.Mult = pyronadoInitial[i][c.TalentLvlBurst()]
+		initialHit := combat.AttackInfo{
+			Abil:               fmt.Sprintf("Pyronado Hit %v", i+1),
+			ActorIndex:         c.Index,
+			AttackTag:          combat.AttackTagElementalBurst,
+			ICDTag:             combat.ICDTagElementalBurst,
+			ICDGroup:           combat.ICDGroupDefault,
+			Element:            attributes.Pyro,
+			Durability:         25,
+			HitlagHaltFrames:   0.03 * 60,
+			HitlagFactor:       0.01,
+			CanBeDefenseHalted: true,
+			Mult:               pyronadoInitial[i][c.TalentLvlBurst()],
+		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(initialHit, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 0, 0)
 		}, burstHitmarks[i])
 	}
 
@@ -42,7 +42,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// TODO: anim length idk if this is accurate or not
 	a := 56
 
-	ai = combat.AttackInfo{
+	burstHit := combat.AttackInfo{
 		Abil:       "Pyronado",
 		ActorIndex: c.Index,
 		AttackTag:  combat.AttackTagElementalBurst,
@@ -61,7 +61,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		c.Core.Status.Add("xianglingburst", max)
 		for delay := 56; delay <= max; delay += 73 { //first hit on same frame as 3rd initial hit
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(2.5, false, combat.TargettableEnemy), 0, delay)
+			c.Core.QueueAttack(burstHit, combat.NewDefCircHit(2.5, false, combat.TargettableEnemy), 0, delay)
 		}
 		//add an effect starting at frame 55 to end of duration to increase pyro dmg by 15% if c6
 		if c.Base.Cons >= 6 {
