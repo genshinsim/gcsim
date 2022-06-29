@@ -59,15 +59,16 @@ func init() {
 
 func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
-		Abil:             "Musou Isshin (Charge Attack)",
-		AttackTag:        combat.AttackTagElementalBurst,
-		ICDTag:           combat.ICDTagNormalAttack,
-		ICDGroup:         combat.ICDGroupDefault,
-		Element:          attributes.Electro,
-		Durability:       25,
-		HitlagHaltFrames: 0.02 * 60, //all raiden normals have 0.02s hitlag
-		HitlagFactor:     0.01,
+		ActorIndex:         c.Index,
+		Abil:               "Musou Isshin (Charge Attack)",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagNormalAttack,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Electro,
+		Durability:         25,
+		HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.02s hitlag
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 
 	for i, mult := range chargeSword {
