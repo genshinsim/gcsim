@@ -49,9 +49,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// a4: add 20% pyro damage
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = 0.2
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("diluc-fire-weapon", 720), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("diluc-fire-weapon", 720),
+		AffectedStat: attributes.PyroP,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	// Snapshot occurs late in the animation when it is released from the claymore
 	// For our purposes, snapshot upon damage proc

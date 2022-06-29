@@ -58,9 +58,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			w.buff[attributes.DEFP] = perStack * float64(w.stacks)
 		}
 		expiry = c.F + 360
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("prototype-rancour", 360), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			return w.buff, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("prototype-rancour", 360),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return w.buff, true
+			},
+		})
 		return false
 	}, fmt.Sprintf("prototype-rancour-%v", char.Base.Key.String()))
 

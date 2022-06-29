@@ -55,9 +55,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}, fmt.Sprintf("bell-%v", char.Base.Key.String()))
 
 	//add damage if shielded
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("bell", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return val, char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded()
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("bell", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return val, char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded()
+		},
+	})
 
 	return w, nil
 }

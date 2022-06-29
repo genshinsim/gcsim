@@ -112,9 +112,13 @@ func (c *char) coilStacks() {
 		if char.Index == c.Index {
 			valA1[attributes.ATKP] = .16
 		}
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("aloy-a1", 600), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			return valA1, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("aloy-a1", 600),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return valA1, true
+			},
+		})
 	}
 
 	if c.Tags["coil_stacks"] == 4 {
@@ -131,23 +135,30 @@ func (c *char) rushingIce() {
 	// Rushing ice NA bonus
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
-	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("aloy-rushing-ice", 600), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag == combat.AttackTagNormal {
-			return val, true
-		}
-		return nil, false
-	}})
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("aloy-rushing-ice", 600),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == combat.AttackTagNormal {
+				return val, true
+			}
+			return nil, false
+		},
+	})
 
 	// A4 cryo damage increase
 	valA4 := make([]float64, attributes.EndStatType)
 	stacks := 1
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("aloy-strong-strike", 600), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		if stacks > 10 {
-			stacks = 10
-		}
-		valA4[attributes.CryoP] = float64(stacks) * 0.035
-		return valA4, true
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("aloy-strong-strike", 600),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			if stacks > 10 {
+				stacks = 10
+			}
+			valA4[attributes.CryoP] = float64(stacks) * 0.035
+			return valA4, true
+		},
+	})
 
 	for i := 0; i < 10; i++ {
 		c.Core.Tasks.Add(func() { stacks++ }, 60*(1+i))
@@ -158,13 +169,16 @@ func (c *char) rushingIce() {
 // Can't be made dynamic easily as coils last until 30s after when Aloy swaps off field
 func (c *char) coilMod() {
 	val := make([]float64, attributes.EndStatType)
-	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("aloy-coil-stacks", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag == combat.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
-			val[attributes.DmgP] = skillCoilNABonus[c.Tags["coil_stacks"]-1][c.TalentLvlSkill()]
-			return val, true
-		}
-		return nil, false
-	}})
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("aloy-coil-stacks", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == combat.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
+				val[attributes.DmgP] = skillCoilNABonus[c.Tags["coil_stacks"]-1][c.TalentLvlSkill()]
+				return val, true
+			}
+			return nil, false
+		},
+	})
 
 }
 

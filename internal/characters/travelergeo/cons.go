@@ -13,11 +13,15 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = .1
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("geo-traveler-c1", -1), AffectedStat: attributes.CR, Amount: func() ([]float64, bool) {
-			if c.Core.Constructs.CountByType(construct.GeoConstructTravellerBurst) == 0 {
-				return nil, false
-			}
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("geo-traveler-c1", -1),
+			AffectedStat: attributes.CR,
+			Amount: func() ([]float64, bool) {
+				if c.Core.Constructs.CountByType(construct.GeoConstructTravellerBurst) == 0 {
+					return nil, false
+				}
+				return m, true
+			},
+		})
 	}
 }

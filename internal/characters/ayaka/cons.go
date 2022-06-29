@@ -41,7 +41,10 @@ func (c *char) c4(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(enemy.DefMod{Base: modifier.NewBase("ayaka-c4", 60*6), Value: -0.3})
+	e.AddDefMod(enemy.DefMod{
+		Base:  modifier.NewBase("ayaka-c4", 60*6),
+		Value: -0.3,
+	})
 }
 
 // Callback for Ayaka C6 that is attached to CA hits
@@ -69,10 +72,13 @@ func (c *char) c6AddBuff() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 2.98
 
-	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("ayaka-c6", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag != combat.AttackTagExtra {
-			return nil, false
-		}
-		return m, true
-	}})
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("ayaka-c6", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagExtra {
+				return nil, false
+			}
+			return m, true
+		},
+	})
 }

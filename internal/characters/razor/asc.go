@@ -10,11 +10,15 @@ import (
 func (c *char) a4() {
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ER] = 0.3
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("er-sigil", -1), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
-		if c.Energy/c.EnergyMax < 0.5 {
-			return nil, false
-		}
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("er-sigil", -1),
+		AffectedStat: attributes.ER,
+		Amount: func() ([]float64, bool) {
+			if c.Energy/c.EnergyMax < 0.5 {
+				return nil, false
+			}
 
-		return val, true
-	}})
+			return val, true
+		},
+	})
 }

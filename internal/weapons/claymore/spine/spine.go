@@ -94,9 +94,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("spine-%v", char.Base.Key.String()))
 
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("spine", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return w.buff, w.stacks > 0
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("spine", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return w.buff, w.stacks > 0
+		},
+	})
 
 	return w, nil
 }

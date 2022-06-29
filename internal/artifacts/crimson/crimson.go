@@ -36,18 +36,22 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("crimson-2pc", -1), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
-			if char.StatusExpiry(cw4pc) < c.F {
-				s.stacks = 0
-			}
-			mult := 0.5*float64(s.stacks) + 1
-			m[attributes.PyroP] = 0.15 * mult
-			if mult > 1 {
-				c.Log.NewEvent("crimson witch 4pc", glog.LogArtifactEvent, char.Index, "mult", mult)
-			}
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("crimson-2pc", -1),
+			AffectedStat: attributes.PyroP,
+			Amount: func() ([]float64, bool) {
+				if char.StatusExpiry(cw4pc) < c.F {
+					s.stacks = 0
+				}
+				mult := 0.5*float64(s.stacks) + 1
+				m[attributes.PyroP] = 0.15 * mult
+				if mult > 1 {
+					c.Log.NewEvent("crimson witch 4pc", glog.LogArtifactEvent, char.Index, "mult", mult)
+				}
 
-			return m, true
-		}})
+				return m, true
+			},
+		})
 	}
 
 	if count >= 4 {
@@ -71,15 +75,18 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}, s.key)
 
-		char.AddReactBonusMod(character.ReactBonusMod{Base: modifier.NewBase("crimson-4pc", -1), Amount: func(ai combat.AttackInfo) (float64, bool) {
-			if ai.AttackTag == combat.AttackTagOverloadDamage {
-				return 0.4, false
-			}
-			if ai.Amped {
-				return 0.15, false
-			}
-			return 0, false
-		}})
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase("crimson-4pc", -1),
+			Amount: func(ai combat.AttackInfo) (float64, bool) {
+				if ai.AttackTag == combat.AttackTagOverloadDamage {
+					return 0.4, false
+				}
+				if ai.Amped {
+					return 0.15, false
+				}
+				return 0, false
+			},
+		})
 	}
 
 	return &s, nil

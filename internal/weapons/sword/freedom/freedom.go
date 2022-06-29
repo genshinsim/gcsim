@@ -41,9 +41,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.075 + float64(r)*0.025
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("freedom-dmg", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("freedom-dmg", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	atkBuff := make([]float64, attributes.EndStatType)
 	atkBuff[attributes.ATKP] = .15 + float64(r)*0.05
@@ -77,16 +81,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			cooldown = c.F + 20*60
 			for _, char := range c.Player.Chars() {
 				// Attack buff snapshots so it needs to be in a separate mod
-				char.AddStatMod(character.StatMod{Base: modifier.NewBase("freedom-proc", 12*60), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-					return atkBuff, true
-				}})
-				char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("freedom-proc", 12*60), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					switch atk.Info.AttackTag {
-					case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
-						return buffNACAPlunge, true
-					}
-					return nil, false
-				}})
+				char.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("freedom-proc", 12*60),
+					AffectedStat: attributes.NoStat,
+					Amount: func() ([]float64, bool) {
+						return atkBuff, true
+					},
+				})
+				char.AddAttackMod(character.AttackMod{
+					Base: modifier.NewBase("freedom-proc", 12*60),
+					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+						switch atk.Info.AttackTag {
+						case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
+							return buffNACAPlunge, true
+						}
+						return nil, false
+					},
+				})
 			}
 		}
 		return false

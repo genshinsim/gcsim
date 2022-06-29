@@ -27,16 +27,20 @@ func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponPro
 	stacks := []int{-1, -1, -1}
 
 	m := make([]float64, attributes.EndStatType)
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("blackcliff", -1), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
-		count := 0
-		for _, v := range stacks {
-			if v > c.F {
-				count++
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("blackcliff", -1),
+		AffectedStat: attributes.ATKP,
+		Amount: func() ([]float64, bool) {
+			count := 0
+			for _, v := range stacks {
+				if v > c.F {
+					count++
+				}
 			}
-		}
-		m[attributes.ATKP] = atk * float64(count)
-		return m, true
-	}})
+			m[attributes.ATKP] = atk * float64(count)
+			return m, true
+		},
+	})
 
 	c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
 		stacks[index] = c.F + 1800

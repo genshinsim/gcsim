@@ -124,12 +124,16 @@ func (c *char) clearSigil() {
 
 func (c *char) energySigil() {
 	val := make([]float64, attributes.EndStatType)
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("er-sigil", -1), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
-		if c.Core.F > c.sigilsDuration {
-			return nil, false
-		}
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("er-sigil", -1),
+		AffectedStat: attributes.ER,
+		Amount: func() ([]float64, bool) {
+			if c.Core.F > c.sigilsDuration {
+				return nil, false
+			}
 
-		val[attributes.ER] = float64(c.sigils) * 0.2
-		return val, true
-	}})
+			val[attributes.ER] = float64(c.sigils) * 0.2
+			return val, true
+		},
+	})
 }

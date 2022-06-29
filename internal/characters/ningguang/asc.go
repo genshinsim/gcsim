@@ -19,9 +19,13 @@ func (c *char) a4() {
 			return false
 		}
 		active := c.Core.Player.ActiveChar()
-		active.AddStatMod(character.StatMod{Base: modifier.NewBase("ning-screen", 600), AffectedStat: attributes.GeoP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		active.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("ning-screen", 600),
+			AffectedStat: attributes.GeoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 		return false
 	}, "ningguang-a4")
 }

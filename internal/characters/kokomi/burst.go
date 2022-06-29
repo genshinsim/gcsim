@@ -56,9 +56,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.1
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("kokomi-c4", 10*60), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("kokomi-c4", 10*60),
+			AffectedStat: attributes.AtkSpd,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 
 	// Cannot be prefed particles

@@ -27,29 +27,36 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CryoP] = 0.15
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("bs-2pc", -1), AffectedStat: attributes.CryoP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("bs-2pc", -1),
+			AffectedStat: attributes.CryoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("bs-4pc", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			r, ok := t.(core.Reactable)
-			if !ok {
-				return nil, false
-			}
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("bs-4pc", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				r, ok := t.(core.Reactable)
+				if !ok {
+					return nil, false
+				}
 
-			// Frozen check first so we don't mistaken coexisting cryo
-			if r.AuraContains(attributes.Frozen) {
-				m[attributes.CR] = 0.4
-				return m, true
-			}
-			if r.AuraContains(attributes.Cryo) {
-				m[attributes.CR] = 0.2
-				return m, true
-			}
-			return nil, false
-		}})
+				// Frozen check first so we don't mistaken coexisting cryo
+				if r.AuraContains(attributes.Frozen) {
+					m[attributes.CR] = 0.4
+					return m, true
+				}
+				if r.AuraContains(attributes.Cryo) {
+					m[attributes.CR] = 0.2
+					return m, true
+				}
+				return nil, false
+			},
+		})
 	}
 
 	return &s, nil

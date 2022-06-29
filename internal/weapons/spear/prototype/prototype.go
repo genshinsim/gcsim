@@ -48,12 +48,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			w.buff[attributes.ATKP] = atkbonus * float64(w.stacks)
 		}
 		activeUntil = c.F + 720
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("prototype", 720), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-				return nil, false
-			}
-			return w.buff, true
-		}})
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("prototype", 720),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+					return nil, false
+				}
+				return w.buff, true
+			},
+		})
 		return false
 	}, fmt.Sprintf("prototype-starglitter-%v", char.Base.Key.String()))
 

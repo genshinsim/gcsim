@@ -40,5 +40,8 @@ func (c *char) c2(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(enemy.DefMod{Base: modifier.NewBase("kleec2", 10*60), Value: -0.233})
+	e.AddDefMod(enemy.DefMod{
+		Base:  modifier.NewBase("kleec2", 10*60),
+		Value: -0.233,
+	})
 }

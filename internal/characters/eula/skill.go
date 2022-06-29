@@ -124,8 +124,16 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 				return
 			}
 			done = true
-			e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("eula-icewhirl-shred-cryo", 7*v*60), Ele: attributes.Cryo, Value: -resRed[lvl]})
-			e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("eula-icewhirl-shred-phys", 7*v*60), Ele: attributes.Physical, Value: -resRed[lvl]})
+			e.AddResistMod(enemy.ResistMod{
+				Base:  modifier.NewBase("eula-icewhirl-shred-cryo", 7*v*60),
+				Ele:   attributes.Cryo,
+				Value: -resRed[lvl],
+			})
+			e.AddResistMod(enemy.ResistMod{
+				Base:  modifier.NewBase("eula-icewhirl-shred-phys", 7*v*60),
+				Ele:   attributes.Physical,
+				Value: -resRed[lvl],
+			})
 		}
 	}
 
@@ -171,9 +179,13 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PhyP] = 0.3
 		//TODO: check if the duration is right
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("eula-c1", (6*v+6)*60), AffectedStat: attributes.PhyP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("eula-c1", (6*v+6)*60),
+			AffectedStat: attributes.PhyP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 
 	c.Tags["grimheart"] = 0

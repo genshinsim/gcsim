@@ -17,9 +17,13 @@ func (c *char) c1() {
 			return false
 		}
 
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("yoimiya-c1", 1200), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("yoimiya-c1", 1200),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 
 		return false
 	}, "yoimiya-c1")
@@ -36,9 +40,13 @@ func (c *char) c2() {
 			return false
 		}
 
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("yoimiya-c2", 360), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("yoimiya-c2", 360),
+			AffectedStat: attributes.PyroP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 
 		return false
 	}, "yoimiya-c2")

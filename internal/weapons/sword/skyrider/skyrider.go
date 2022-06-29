@@ -36,9 +36,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("skyrider", 900), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			return val, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("skyrider", 900),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return val, true
+			},
+		})
 		return false
 	}, fmt.Sprintf("skyrider-sword-%v", char.Base.Key.String()))
 

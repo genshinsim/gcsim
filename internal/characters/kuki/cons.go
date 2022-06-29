@@ -70,9 +70,13 @@ func (c *char) c6() {
 		}
 
 		//increase EM by 150 for 15s
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("kuki-c6", 900), AffectedStat: attributes.EM, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("kuki-c6", 900),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 
 		c.c6ICD = c.Core.F + 3600
 

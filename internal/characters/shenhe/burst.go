@@ -48,17 +48,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m[attributes.CD] = 0.15
 		for _, char := range c.Core.Player.Chars() {
 			this := char
-			char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("shenhe-c2", dur+2*60), Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if ae.Info.Element != attributes.Cryo {
-					return nil, false
-				}
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("shenhe-c2", dur+2*60),
+				Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					if ae.Info.Element != attributes.Cryo {
+						return nil, false
+					}
 
-				switch this.Index {
-				case c.Core.Player.Active(), c.Index:
-					return m, true
-				}
-				return nil, false
-			}})
+					switch this.Index {
+					case c.Core.Player.Active(), c.Index:
+						return m, true
+					}
+					return nil, false
+				},
+			})
 		}
 	}
 	// Res shred persists for 2 seconds after burst ends
@@ -67,8 +70,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if !ok {
 			return
 		}
-		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("shenhe-burst-shred-cryo", dur+2*60), Ele: attributes.Cryo, Value: -burstrespp[c.TalentLvlBurst()]})
-		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("shenhe-burst-shred-phys", dur+2*60), Ele: attributes.Physical, Value: -burstrespp[c.TalentLvlBurst()]})
+		e.AddResistMod(enemy.ResistMod{
+			Base:  modifier.NewBase("shenhe-burst-shred-cryo", dur+2*60),
+			Ele:   attributes.Cryo,
+			Value: -burstrespp[c.TalentLvlBurst()],
+		})
+		e.AddResistMod(enemy.ResistMod{
+			Base:  modifier.NewBase("shenhe-burst-shred-phys", dur+2*60),
+			Ele:   attributes.Physical,
+			Value: -burstrespp[c.TalentLvlBurst()],
+		})
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 2, false, combat.TargettableEnemy), 0, 15, cb)
 
@@ -92,9 +103,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// TODO: this isn't right.. it should only apply for active char
 		// TODO: technically always assumes you are inside shenhe burst
 		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod(character.StatMod{Base: modifier.NewBase("shenhe-a1", dur), AffectedStat: attributes.CryoP, Amount: func() ([]float64, bool) {
-				return mA1, true
-			}})
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("shenhe-a1", dur),
+				AffectedStat: attributes.CryoP,
+				Amount: func() ([]float64, bool) {
+					return mA1, true
+				},
+			})
 		}
 		//TODO: check this accuracy? Siri's sheet has 137 per
 		// dot every 2 second, double tick shortly after another

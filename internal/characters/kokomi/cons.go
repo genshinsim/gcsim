@@ -72,9 +72,13 @@ func (c *char) c6() {
 		if char.HPCurrent/char.MaxHP() < .8 {
 			continue
 		}
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("kokomi-c6", 480), AffectedStat: attributes.HydroP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("kokomi-c6", 480),
+			AffectedStat: attributes.HydroP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 		// No need to continue checking if we found one
 		break
 	}

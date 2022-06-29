@@ -32,8 +32,12 @@ func (c *char) c6() {
 	m[stat] = .20
 
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("sucrose-c6", 60*10), AffectedStat: stat, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("sucrose-c6", 60*10),
+			AffectedStat: stat,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 }

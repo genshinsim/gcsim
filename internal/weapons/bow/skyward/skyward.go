@@ -33,9 +33,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//free crit damage
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CD] = 0.15 + float64(r)*0.05
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("skyward harp", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("skyward harp", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	//procs
 	cd := 270 - 30*r

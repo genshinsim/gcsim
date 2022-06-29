@@ -19,8 +19,16 @@ func (c *char) c2(a combat.AttackCB) {
 		return
 	}
 
-	e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("venti-c2-anemo", 600), Ele: attributes.Anemo, Value: -0.12})
-	e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("venti-c2-phys", 600), Ele: attributes.Physical, Value: -0.12})
+	e.AddResistMod(enemy.ResistMod{
+		Base:  modifier.NewBase("venti-c2-anemo", 600),
+		Ele:   attributes.Anemo,
+		Value: -0.12,
+	})
+	e.AddResistMod(enemy.ResistMod{
+		Base:  modifier.NewBase("venti-c2-phys", 600),
+		Ele:   attributes.Physical,
+		Value: -0.12,
+	})
 }
 
 // Targets who take DMG from Wind's Grand Ode have their Anemo RES decreased by 20%.
@@ -31,6 +39,10 @@ func (c *char) c6(ele attributes.Element) func(a combat.AttackCB) {
 		if !ok {
 			return
 		}
-		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("venti-c6-"+ele.String(), 600), Ele: ele, Value: -0.20})
+		e.AddResistMod(enemy.ResistMod{
+			Base:  modifier.NewBase("venti-c6-"+ele.String(), 600),
+			Ele:   ele,
+			Value: -0.20,
+		})
 	}
 }

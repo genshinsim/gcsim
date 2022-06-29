@@ -37,9 +37,13 @@ func (c *char) c4() {
 			return false
 		}
 
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("keqing-c4", 600), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("keqing-c4", 600),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 
 		return false
 	}
@@ -55,7 +59,11 @@ func (c *char) c6(src string) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ElectroP] = 0.06
 
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("keqing-c6-"+src, 480), AffectedStat: attributes.ElectroP, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("keqing-c6-"+src, 480),
+		AffectedStat: attributes.ElectroP,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }

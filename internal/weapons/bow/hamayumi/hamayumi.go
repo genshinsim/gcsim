@@ -27,25 +27,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	nm := .12 + .04*float64(r)
 	ca := .09 + .03*float64(r)
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("hamayumi", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		val := make([]float64, attributes.EndStatType)
-		if atk.Info.AttackTag == combat.AttackTagNormal {
-			val[attributes.DmgP] = nm
-			if char.Energy == char.EnergyMax {
-				val[attributes.DmgP] = nm * 2
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("hamayumi", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			val := make([]float64, attributes.EndStatType)
+			if atk.Info.AttackTag == combat.AttackTagNormal {
+				val[attributes.DmgP] = nm
+				if char.Energy == char.EnergyMax {
+					val[attributes.DmgP] = nm * 2
+				}
+				return val, true
 			}
-			return val, true
-		}
 
-		if atk.Info.AttackTag == combat.AttackTagExtra {
-			val[attributes.DmgP] = ca
-			if char.Energy == char.EnergyMax {
-				val[attributes.DmgP] = ca * 2
+			if atk.Info.AttackTag == combat.AttackTagExtra {
+				val[attributes.DmgP] = ca
+				if char.Energy == char.EnergyMax {
+					val[attributes.DmgP] = ca * 2
+				}
+				return val, true
 			}
-			return val, true
-		}
-		return nil, false
-	}})
+			return nil, false
+		},
+	})
 
 	return w, nil
 }

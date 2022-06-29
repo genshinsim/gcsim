@@ -43,12 +43,15 @@ func NewWavebreaker(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index, "total", energy, "per", per, "max", max, "amt", amt)
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = amt
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("wavebreaker", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagElementalBurst {
-				return m, true
-			}
-			return nil, false
-		}})
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("wavebreaker", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag == combat.AttackTagElementalBurst {
+					return m, true
+				}
+				return nil, false
+			},
+		})
 		return true
 	}, fmt.Sprintf("wavebreaker-%v", char.Base.Key.String()))
 

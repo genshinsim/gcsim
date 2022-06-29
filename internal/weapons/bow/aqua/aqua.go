@@ -31,14 +31,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	v[attributes.HPP] = 0.12 + float64(r)*0.04
 	m[attributes.DmgP] = 0.15 + float64(r)*0.05
 
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("aquasimulacra", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return v, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("aquasimulacra", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return v, true
+		},
+	})
 
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("aquasimulacra", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		//TODO: need range check here
-		return m, true
-	}})
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("aquasimulacra", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			//TODO: need range check here
+			return m, true
+		},
+	})
 
 	return w, nil
 }

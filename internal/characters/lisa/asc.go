@@ -11,5 +11,8 @@ func (c *char) a4(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	t.AddDefMod(enemy.DefMod{Base: modifier.NewBaseWithHitlag("lisa-a4", 600), Value: -0.15})
+	t.AddDefMod(enemy.DefMod{
+		Base:  modifier.NewBaseWithHitlag("lisa-a4", 600),
+		Value: -0.15,
+	})
 }

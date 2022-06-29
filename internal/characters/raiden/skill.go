@@ -54,6 +54,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 					return nil, false
 				}
+
 				m[attributes.DmgP] = mult * this.EnergyMax
 				return m, true
 			},

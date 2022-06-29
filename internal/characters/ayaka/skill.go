@@ -36,9 +36,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	//a1 increase normal + ca dmg by 30% for 6s
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.3
-	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("ayaka-a1", 360), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		return m, atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagExtra
-	}})
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("ayaka-a1", 360),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			return m, atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagExtra
+		},
+	})
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(4, false, combat.TargettableEnemy), 0, skillHitmark)
 

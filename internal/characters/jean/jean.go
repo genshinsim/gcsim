@@ -52,9 +52,13 @@ func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount i
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.15
 		for _, active := range c.Core.Player.Chars() {
-			active.AddStatMod(character.StatMod{Base: modifier.NewBase("jean-c2", 900), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
-				return m, true
-			}})
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("jean-c2", 900),
+				AffectedStat: attributes.AtkSpd,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
 		}
 	}
 }

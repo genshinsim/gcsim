@@ -39,14 +39,18 @@ func (c *char) a4() {
 			dmg := 0.0004 * c.Stat(attributes.EM)
 
 			for _, char := range c.Core.Player.Chars() {
-				char.AddStatMod(character.StatMod{Base: modifier.NewBase("kazuha-a4-"+key, 60*8), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-					m[attributes.CryoP] = 0
-					m[attributes.ElectroP] = 0
-					m[attributes.HydroP] = 0
-					m[attributes.PyroP] = 0
-					m[ele] = dmg
-					return m, true
-				}})
+				char.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("kazuha-a4-"+key, 60*8),
+					AffectedStat: attributes.NoStat,
+					Amount: func() ([]float64, bool) {
+						m[attributes.CryoP] = 0
+						m[attributes.ElectroP] = 0
+						m[attributes.HydroP] = 0
+						m[attributes.PyroP] = 0
+						m[ele] = dmg
+						return m, true
+					},
+				})
 			}
 
 			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index, "reaction", ele.String())

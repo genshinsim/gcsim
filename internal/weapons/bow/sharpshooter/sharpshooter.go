@@ -27,14 +27,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	dmg := 0.18 + float64(r)*0.06
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("sharpshooter", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		m := make([]float64, attributes.EndStatType)
-		if atk.Info.HitWeakPoint {
-			m[attributes.DmgP] = dmg
-			return m, true
-		}
-		return nil, false
-	}})
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("sharpshooter", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			m := make([]float64, attributes.EndStatType)
+			if atk.Info.HitWeakPoint {
+				m[attributes.DmgP] = dmg
+				return m, true
+			}
+			return nil, false
+		},
+	})
 
 	return w, nil
 }

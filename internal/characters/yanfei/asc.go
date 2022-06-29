@@ -13,9 +13,13 @@ import (
 func (c *char) a1(stacks int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = float64(stacks) * 0.05
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("yanfei-a1", 360), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("yanfei-a1", 360),
+		AffectedStat: attributes.PyroP,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }
 
 // When Yan Fei's Charged Attacks deal CRIT Hits, she will deal an additional instance of AoE Pyo DMG equal to 80% of her ATK. This DMG counts as Charged Attack DMG.

@@ -68,9 +68,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DEFP] = .25
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase(heedlessKey, 720), AffectedStat: attributes.DEFP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(heedlessKey, 720),
+			AffectedStat: attributes.DEFP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 
 	//c6 check

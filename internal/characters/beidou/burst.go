@@ -76,7 +76,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				if !ok {
 					continue
 				}
-				e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("beidouc6", 900-burstHitmark), Ele: attributes.Electro, Value: -0.15})
+				e.AddResistMod(enemy.ResistMod{
+					Base:  modifier.NewBase("beidouc6", 900-burstHitmark),
+					Ele:   attributes.Electro,
+					Value: -0.15,
+				})
 			}
 		}, burstHitmark)
 	}

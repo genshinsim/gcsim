@@ -84,9 +84,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PyroP] = .1
 		for _, x := range c.Core.Player.Chars() {
-			x.AddStatMod(character.StatMod{Base: modifier.NewBase("klee-c6", 1500), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
-				return m, true
-			}})
+			x.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("klee-c6", 1500),
+				AffectedStat: attributes.PyroP,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
 		}
 	}
 

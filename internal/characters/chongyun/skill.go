@@ -60,7 +60,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if !ok {
 			return
 		}
-		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("chongyun-a4", 480), Ele: attributes.Cryo, Value: -0.10})
+		e.AddResistMod(enemy.ResistMod{
+			Base:  modifier.NewBase("chongyun-a4", 480),
+			Ele:   attributes.Cryo,
+			Value: -0.10,
+		})
 	}
 	snap := c.Snapshot(&ai)
 
@@ -128,12 +132,15 @@ func (c *char) onSwapHook() {
 func (c *char) infuse(active *character.CharWrapper) {
 	//c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
-		active.AddCooldownMod(character.CooldownMod{Base: modifier.NewBase("chongyun-c2", 126), Amount: func(a action.Action) float64 {
-			if a == action.ActionSkill || a == action.ActionBurst {
-				return -0.15
-			}
-			return 0
-		}})
+		active.AddCooldownMod(character.CooldownMod{
+			Base: modifier.NewBase("chongyun-c2", 126),
+			Amount: func(a action.Action) float64 {
+				if a == action.ActionSkill || a == action.ActionBurst {
+					return -0.15
+				}
+				return 0
+			},
+		})
 	}
 
 	// weapon infuse
@@ -159,7 +166,11 @@ func (c *char) infuse(active *character.CharWrapper) {
 	//a1 adds 8% atkspd for 2.1 seconds
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = 0.08
-	active.AddStatMod(character.StatMod{Base: modifier.NewBase("chongyun-field", 126), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	active.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("chongyun-field", 126),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }

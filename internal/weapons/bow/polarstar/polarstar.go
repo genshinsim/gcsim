@@ -43,29 +43,33 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	burst := 0
 
 	mATK := make([]float64, attributes.EndStatType)
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("polar-star", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		count := 0
-		if normal > c.F {
-			count++
-		}
-		if charged > c.F {
-			count++
-		}
-		if skill > c.F {
-			count++
-		}
-		if burst > c.F {
-			count++
-		}
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("polar-star", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			count := 0
+			if normal > c.F {
+				count++
+			}
+			if charged > c.F {
+				count++
+			}
+			if skill > c.F {
+				count++
+			}
+			if burst > c.F {
+				count++
+			}
 
-		atkbonus := stack * float64(count)
-		if count >= 4 {
-			atkbonus += max
-		}
-		mATK[attributes.ATKP] = atkbonus
+			atkbonus := stack * float64(count)
+			if count >= 4 {
+				atkbonus += max
+			}
+			mATK[attributes.ATKP] = atkbonus
 
-		return mATK, true
-	}})
+			return mATK, true
+		},
+	})
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -93,13 +97,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	mDmg := make([]float64, attributes.EndStatType)
 	mDmg[attributes.DmgP] = dmg
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("polar-star", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
-			return mDmg, true
-		}
-		return nil, false
-	}})
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("polar-star", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			switch atk.Info.AttackTag {
+			case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
+				return mDmg, true
+			}
+			return nil, false
+		},
+	})
 
 	return w, nil
 }

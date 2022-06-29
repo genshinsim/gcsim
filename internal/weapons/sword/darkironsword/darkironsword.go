@@ -51,9 +51,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			combat.AttackTagECDamage,
 			combat.AttackTagOverloadDamage,
 			combat.AttackTagSwirlElectro:
-			char.AddStatMod(character.StatMod{Base: modifier.NewBase("darkironsword", 720), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-				return m, true
-			}})
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("darkironsword", 720),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
 		}
 
 		return false

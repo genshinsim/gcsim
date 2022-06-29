@@ -26,9 +26,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PhyP] = 0.25
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("bloodstained-2pc", -1), AffectedStat: attributes.PhyP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("bloodstained-2pc", -1),
+			AffectedStat: attributes.PhyP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 
 	return &s, nil

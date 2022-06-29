@@ -84,9 +84,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := burstStart; i < burstStart+dur*60; i += 30 {
 		c.Core.Tasks.Add(func() {
 			active := c.Core.Player.ActiveChar()
-			active.AddAttackMod(character.AttackMod{Base: modifier.NewBase("ayato-burst", 90), Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				return m, a.Info.AttackTag == combat.AttackTagNormal
-			}})
+			active.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("ayato-burst", 90),
+				Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					return m, a.Info.AttackTag == combat.AttackTagNormal
+				},
+			})
 		}, i)
 	}
 
@@ -94,9 +97,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.15
 		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod(character.StatMod{Base: modifier.NewBase("ayato-c4", 15*60), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
-				return m, true
-			}})
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("ayato-c4", 15*60),
+				AffectedStat: attributes.AtkSpd,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
 		}
 	}
 	//add cooldown to sim

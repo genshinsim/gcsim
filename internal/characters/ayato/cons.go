@@ -14,23 +14,30 @@ import (
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.4
-	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("ayato-c1", -1), Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if a.Info.AttackTag != combat.AttackTagNormal || t.HP()/t.MaxHP() > 0.5 {
-			return nil, false
-		}
-		return m, true
-	}})
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("ayato-c1", -1),
+		Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if a.Info.AttackTag != combat.AttackTagNormal || t.HP()/t.MaxHP() > 0.5 {
+				return nil, false
+			}
+			return m, true
+		},
+	})
 }
 
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = 0.5
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("ayato-c2", -1), AffectedStat: attributes.HPP, Amount: func() ([]float64, bool) {
-		if c.stacks >= 3 {
-			return m, true
-		}
-		return nil, false
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("ayato-c2", -1),
+		AffectedStat: attributes.HPP,
+		Amount: func() ([]float64, bool) {
+			if c.stacks >= 3 {
+				return m, true
+			}
+			return nil, false
+		},
+	})
 }
 
 func (c *char) c6() {

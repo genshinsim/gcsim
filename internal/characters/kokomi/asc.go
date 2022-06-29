@@ -13,9 +13,13 @@ func (c *char) passive() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.Heal] = .25
 	m[attributes.CR] = -1
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("kokomi-passive", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("kokomi-passive", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }
 
 func (c *char) a4() {

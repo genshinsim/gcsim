@@ -75,9 +75,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.AnemoP] = dmg
 	m[attributes.GeoP] = dmg
 	m[attributes.DendroP] = dmg
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("skyward-atlast", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("skyward-atlast", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	return w, nil
 }

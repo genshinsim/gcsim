@@ -18,7 +18,11 @@ func (c *char) c2(t combat.Target) combat.AttackCBFunc {
 		if !ok {
 			return
 		}
-		e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("travelerelectro-c2", 480), Ele: attributes.Electro, Value: -0.15})
+		e.AddResistMod(enemy.ResistMod{
+			Base:  modifier.NewBase("travelerelectro-c2", 480),
+			Ele:   attributes.Electro,
+			Value: -0.15,
+		})
 	}
 }
 
