@@ -146,8 +146,8 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		}
 
 	}
-	//add hitlag to actor
-	if landed {
+	//add hitlag to actor (but ignore if this is headshot only)
+	if landed && !a.Info.HeadshotOnly {
 		dur := a.Info.HitlagHaltFrames
 		if h.defHalt && a.Info.CanBeDefenseHalted {
 			dur += 3.6 //0.06

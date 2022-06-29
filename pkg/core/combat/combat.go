@@ -43,6 +43,7 @@ func New(log glog.Logger, events event.Eventter, team CharHandler, rand *rand.Ra
 		rand:       rand,
 		DamageMode: damageMode,
 		debug:      debug,
+		defHalt:    defHalt,
 	}
 	h.targets = make([]Target, 0, 5)
 
