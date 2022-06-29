@@ -43,11 +43,11 @@ func NewBase(key string, dur int) Base {
 	}
 }
 
-func NewBaseWithHitlag(key string, dur int, hitlag bool) Base {
+func NewBaseWithHitlag(key string, dur int) Base {
 	return Base{
 		ModKey: key,
 		Dur:    dur,
-		Hitlag: hitlag,
+		Hitlag: true,
 	}
 }
 

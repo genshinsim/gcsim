@@ -177,6 +177,14 @@ func (h *Handler) RestoreStam(v float64) {
 	}
 }
 
+func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
+	//make sure we only apply hitlag if this character is on field
+	if char != h.active {
+		return
+	}
+	h.chars[char].ApplyHitlag(factor, dur)
+}
+
 //InitializeTeam will set up resonance event hooks and calculate
 //all character base stats
 func (h *Handler) InitializeTeam() error {

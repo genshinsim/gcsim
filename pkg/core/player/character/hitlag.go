@@ -54,9 +54,13 @@ func (c *CharWrapper) FramePausedOnHitlag() bool {
 //ApplyHitlag adds hitlag to the character for specified duration
 func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	//number of frames frozen is total duration * (1 - factor)
-	c.frozenFrames += dur * (1 - factor)
+	ext := dur * (1 - factor)
+	c.frozenFrames += ext
+	var logs []string
+	var evt glog.Event
 	if c.debug {
-		c.log.NewEvent(
+		logs = make([]string, 0, len(c.mods))
+		evt = c.log.NewEvent(
 			fmt.Sprintf("hitlag applied to char: %v", dur),
 			glog.LogHitlagEvent, c.Index,
 			"duration", dur,
@@ -64,4 +68,18 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 		).
 			SetEnded(*c.f + int(math.Ceil(dur)))
 	}
+
+	for i, v := range c.mods {
+		if v.AffectedByHitlag() {
+			c.mods[i].Extend(ext)
+			if c.debug {
+				logs = append(logs, fmt.Sprintf("%v: %v", v.Key(), v.Expiry()))
+			}
+		}
+	}
+
+	if c.debug {
+		evt.Write("mods affected", logs)
+	}
+
 }

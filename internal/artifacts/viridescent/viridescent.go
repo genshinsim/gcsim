@@ -70,7 +70,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return false
 				}
 
-				t.AddResistMod(enemy.ResistMod{Base: modifier.NewBaseWithHitlag(key, 10*60, true), Ele: ele, Value: -0.4})
+				t.AddResistMod(enemy.ResistMod{Base: modifier.NewBaseWithHitlag(key, 10*60), Ele: ele, Value: -0.4})
 				c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index, "reaction", key, "char", char.Index)
 
 				return false
@@ -110,7 +110,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			t.AddResistMod(enemy.ResistMod{Base: modifier.NewBaseWithHitlag(key, 10*60, true), Ele: ele, Value: -0.4})
+			t.AddResistMod(enemy.ResistMod{Base: modifier.NewBaseWithHitlag(key, 10*60), Ele: ele, Value: -0.4})
 			c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index, "reaction", key, "char", char.Index)
 
 			return false

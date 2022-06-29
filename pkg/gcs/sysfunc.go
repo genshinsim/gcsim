@@ -46,6 +46,11 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) Obj {
 		f = int(n.fval)
 	}
 
+	if f <= 0 {
+		//do nothing if less or equal to 0
+		return &null{}
+	}
+
 	e.Work <- &ast.ActionStmt{
 		Action: action.ActionWait,
 		Param:  map[string]int{"f": f},

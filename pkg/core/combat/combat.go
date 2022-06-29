@@ -14,11 +14,11 @@ import (
 
 type CharHandler interface {
 	CombatByIndex(int) Character
+	ApplyHitlag(char int, factor, dur float64)
 }
 
 type Character interface {
 	ApplyAttackMods(a *AttackEvent, t Target) []interface{}
-	ApplyHitlag(factor, dur float64)
 }
 
 type Handler struct {
