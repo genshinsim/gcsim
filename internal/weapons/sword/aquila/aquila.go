@@ -36,9 +36,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .15 + .05*float64(r)
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("acquila favonia", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("acquila favonia", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	dmg := 1.7 + .3*float64(r)
 	heal := .85 + .15*float64(r)

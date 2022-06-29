@@ -55,12 +55,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 func (c *char) speedBurst() {
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.AtkSpd] = burstATKSpeed[c.TalentLvlBurst()]
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("speed-burst", -1), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
-		if c.Core.Status.Duration("razorburst") == 0 {
-			return nil, false
-		}
-		return val, true
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("speed-burst", -1),
+		AffectedStat: attributes.AtkSpd,
+		Amount: func() ([]float64, bool) {
+			if c.Core.Status.Duration("razorburst") == 0 {
+				return nil, false
+			}
+			return val, true
+		},
+	})
 }
 
 func (c *char) wolfBurst() {

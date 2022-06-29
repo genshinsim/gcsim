@@ -31,17 +31,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.35
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("lavawaler-4pc", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			r, ok := t.(core.Reactable)
-			if !ok {
-				return nil, false
-			}
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("lavawaler-4pc", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				r, ok := t.(core.Reactable)
+				if !ok {
+					return nil, false
+				}
 
-			if r.AuraContains(attributes.Pyro) {
-				return m, true
-			}
-			return nil, false
-		}})
+				if r.AuraContains(attributes.Pyro) {
+					return m, true
+				}
+				return nil, false
+			},
+		})
 	}
 
 	return &s, nil

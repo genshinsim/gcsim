@@ -35,9 +35,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.06 + float64(r)*0.02
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("skyward pride", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("skyward pride", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	counter := 0
 	dur := 0

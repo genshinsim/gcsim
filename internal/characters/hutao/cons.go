@@ -33,9 +33,13 @@ func (c *char) checkc6() {
 	//increase crit rate to 100%
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 1
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("hutao-c6", 600), AffectedStat: attributes.CR, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("hutao-c6", 600),
+		AffectedStat: attributes.CR,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	c.c6icd = c.Core.F + 3600
 }

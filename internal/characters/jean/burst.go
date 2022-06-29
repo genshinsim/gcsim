@@ -68,7 +68,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				continue
 			}
 			//10 seconds + animation
-			e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("jeanc4", 600+burstStart), Ele: attributes.Anemo, Value: -0.4})
+			e.AddResistMod(enemy.ResistMod{
+				Base:  modifier.NewBase("jeanc4", 600+burstStart),
+				Ele:   attributes.Anemo,
+				Value: -0.4,
+			})
 		}
 	}
 

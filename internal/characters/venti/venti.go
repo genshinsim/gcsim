@@ -54,8 +54,12 @@ func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount i
 		}
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AnemoP] = 0.25
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("venti-c4", 600), AffectedStat: attributes.AnemoP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("venti-c4", 600),
+			AffectedStat: attributes.AnemoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 }

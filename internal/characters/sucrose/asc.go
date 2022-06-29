@@ -32,9 +32,13 @@ func (c *char) a1() {
 				if this.Base.Element != ele {
 					continue
 				}
-				this.AddStatMod(character.StatMod{Base: modifier.NewBase("sucrose-a1", dur), AffectedStat: attributes.EM, Amount: func() ([]float64, bool) {
-					return m, true
-				}})
+				this.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("sucrose-a1", dur),
+					AffectedStat: attributes.EM,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
+				})
 			}
 
 			c.Core.Log.NewEvent("sucrose a1 triggered", glog.LogCharacterEvent, c.Index, "reaction", "swirl-"+ele.String(), "expiry", c.Core.F+dur)
@@ -58,9 +62,13 @@ func (c *char) a4() {
 		if i == c.Index {
 			continue //nothing for sucrose
 		}
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("sucrose-a4", dur), AffectedStat: attributes.EM, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("sucrose-a4", dur),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 
 	c.Core.Log.NewEvent("sucrose a4 triggered", glog.LogCharacterEvent, c.Index, "em snapshot", m[attributes.EM], "expiry", c.Core.F+dur)

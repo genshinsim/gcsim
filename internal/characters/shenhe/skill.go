@@ -111,12 +111,15 @@ func (c *char) skillPressBuff() {
 	c.Core.Status.Add(quillKey, 10*60)
 
 	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("shenhe-a4-press", 10*60), Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if a.Info.AttackTag != combat.AttackTagElementalBurst && a.Info.AttackTag != combat.AttackTagElementalArt && a.Info.AttackTag != combat.AttackTagElementalArtHold {
-				return nil, false
-			}
-			return m, true
-		}})
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("shenhe-a4-press", 10*60),
+			Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if a.Info.AttackTag != combat.AttackTagElementalBurst && a.Info.AttackTag != combat.AttackTagElementalArt && a.Info.AttackTag != combat.AttackTagElementalArtHold {
+					return nil, false
+				}
+				return m, true
+			},
+		})
 	}
 }
 
@@ -131,12 +134,15 @@ func (c *char) skillHoldBuff() {
 	c.Core.Status.Add(quillKey, 15*60)
 
 	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("shenhe-a4-hold", 15*60), Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if a.Info.AttackTag != combat.AttackTagNormal && a.Info.AttackTag != combat.AttackTagExtra && a.Info.AttackTag != combat.AttackTagPlunge {
-				return nil, false
-			}
-			return m, true
-		}})
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("shenhe-a4-hold", 15*60),
+			Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if a.Info.AttackTag != combat.AttackTagNormal && a.Info.AttackTag != combat.AttackTagExtra && a.Info.AttackTag != combat.AttackTagPlunge {
+					return nil, false
+				}
+				return m, true
+			},
+		})
 	}
 }
 

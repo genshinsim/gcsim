@@ -19,9 +19,13 @@ func (c *char) c4() {
 		if i == c.Index {
 			continue
 		}
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("raiden-c4", 600), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("raiden-c4", 600),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 }
 

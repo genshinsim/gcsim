@@ -57,9 +57,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		activeUntil = c.F + 360
 		//refresh mod
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("ironsting", 360), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			return w.buff, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("ironsting", 360),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return w.buff, true
+			},
+		})
 		return false
 	}, fmt.Sprintf("ironsting-%v", char.Base.Key.String()))
 

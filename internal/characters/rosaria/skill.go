@@ -44,9 +44,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if p["nobehind"] != 1 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CR] = 0.12
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("rosaria-a1", 300+skillHitmark), AffectedStat: attributes.CR, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("rosaria-a1", 300+skillHitmark),
+			AffectedStat: attributes.CR,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index, "ends_on", c.Core.F+300+skillHitmark)
 	}
 

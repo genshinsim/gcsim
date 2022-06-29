@@ -41,9 +41,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("wineandsong", 60*5), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("wineandsong", 60*5),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 		return false
 	}, key)
 

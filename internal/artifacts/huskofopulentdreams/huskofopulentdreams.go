@@ -62,9 +62,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DEFP] = 0.30
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("husk-2pc", -1), AffectedStat: attributes.DEFP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("husk-2pc", -1),
+			AffectedStat: attributes.DEFP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
@@ -112,11 +116,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}, fmt.Sprintf("husk-4pc-%v", char.Base.Key.String()))
 
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("husk-4pc", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			m[attributes.DEFP] = 0.06 * float64(s.stacks)
-			m[attributes.GeoP] = 0.06 * float64(s.stacks)
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("husk-4pc", -1),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				m[attributes.DEFP] = 0.06 * float64(s.stacks)
+				m[attributes.GeoP] = 0.06 * float64(s.stacks)
+				return m, true
+			},
+		})
 	}
 
 	return &s, nil

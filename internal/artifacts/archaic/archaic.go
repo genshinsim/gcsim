@@ -32,9 +32,13 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.GeoP] = 0.15
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("archaic-2pc", -1), AffectedStat: attributes.GeoP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("archaic-2pc", -1),
+			AffectedStat: attributes.GeoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
@@ -69,9 +73,13 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 			// Apply mod to all characters
 			for _, c := range core.Player.Chars() {
-				c.AddStatMod(character.StatMod{Base: modifier.NewBase("archaic-4pc", 10*60), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-					return m, true
-				}})
+				c.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("archaic-4pc", 10*60),
+					AffectedStat: attributes.NoStat,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
+				})
 			}
 
 			return false

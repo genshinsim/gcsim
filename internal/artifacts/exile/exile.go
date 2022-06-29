@@ -31,9 +31,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ER] = 0.20
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("exile-2pc", -1), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("exile-2pc", -1),
+			AffectedStat: attributes.ER,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	if count >= 4 {
 		// TODO: does multiple exile holders extend the duration?

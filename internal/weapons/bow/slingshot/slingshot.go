@@ -31,17 +31,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	decrDmg := -0.10
 	passiveThresholdF := 18
 	travel := 0
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("slingshot", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if (atk.Info.AttackTag != combat.AttackTagNormal) && (atk.Info.AttackTag != combat.AttackTagExtra) {
-			return nil, false
-		}
-		travel = c.F - atk.Snapshot.SourceFrame
-		m[attributes.DmgP] = incrDmg
-		if travel > passiveThresholdF {
-			m[attributes.DmgP] = decrDmg
-		}
-		return m, true
-	}})
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("slingshot", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if (atk.Info.AttackTag != combat.AttackTagNormal) && (atk.Info.AttackTag != combat.AttackTagExtra) {
+				return nil, false
+			}
+			travel = c.F - atk.Snapshot.SourceFrame
+			m[attributes.DmgP] = incrDmg
+			if travel > passiveThresholdF {
+				m[attributes.DmgP] = decrDmg
+			}
+			return m, true
+		},
+	})
 
 	return w, nil
 }

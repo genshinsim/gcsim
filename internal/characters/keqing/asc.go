@@ -26,7 +26,11 @@ func (c *char) a4() {
 	m[attributes.CR] = 0.15
 	m[attributes.ER] = 0.15
 
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("keqing-a4", 480), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("keqing-a4", 480),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }

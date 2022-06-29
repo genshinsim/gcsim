@@ -56,9 +56,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 			cd = c.F + 60*20
 			active := c.Player.ActiveChar()
-			active.AddStatMod(character.StatMod{Base: modifier.NewBase("thrilling tales", 600), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-				return m, true
-			}})
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("thrilling tales", 600),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
 
 			c.Log.NewEvent("ttds activated", glog.LogWeaponEvent, c.Player.Active(), "expiry", c.F+600)
 		}

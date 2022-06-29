@@ -63,9 +63,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		//refresh mod
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("whiteblind", 360), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			return w.buff, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("whiteblind", 360),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return w.buff, true
+			},
+		})
 
 		return false
 	}, fmt.Sprintf("whiteblind-%v", char.Base.Key.String()))

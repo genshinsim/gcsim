@@ -64,9 +64,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		//every whack adds a stack while under 4 and refreshes buff
 		//lasts 6 seconds
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("skyrider", 360), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			return w.buff, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("skyrider", 360),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return w.buff, true
+			},
+		})
 
 		return false
 	}, fmt.Sprintf("skyrider-greatsword-%v", char.Base.Key.String()))

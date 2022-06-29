@@ -12,20 +12,23 @@ import (
 
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("kaeya-c1", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		e, ok := t.(*enemy.Enemy)
-		if !ok {
-			return nil, false
-		}
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-			return nil, false
-		}
-		if !e.AuraContains(attributes.Cryo, attributes.Frozen) {
-			return nil, false
-		}
-		m[attributes.CR] = 0.15
-		return m, true
-	}})
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("kaeya-c1", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			e, ok := t.(*enemy.Enemy)
+			if !ok {
+				return nil, false
+			}
+			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+				return nil, false
+			}
+			if !e.AuraContains(attributes.Cryo, attributes.Frozen) {
+				return nil, false
+			}
+			m[attributes.CR] = 0.15
+			return m, true
+		},
+	})
 }
 
 func (c *char) c4() {

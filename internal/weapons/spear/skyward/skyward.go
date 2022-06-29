@@ -36,9 +36,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.06 + float64(r)*0.02
 	m[attributes.AtkSpd] = 0.12
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("skyward spine", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("skyward spine", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	icd := 0
 	atk := .25 + .15*float64(r)

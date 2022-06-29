@@ -32,9 +32,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.Heal] = 0.15
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("maiden-2pc", -1), AffectedStat: attributes.Heal, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("maiden-2pc", -1),
+			AffectedStat: attributes.Heal,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	if count >= 4 {
 		dur := 0
@@ -52,12 +56,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		// Applies to all characters, so no filters needed
 		for _, this := range c.Player.Chars() {
-			this.AddHealBonusMod(character.HealBonusMod{Base: modifier.NewBase("hydro-res", -1), Amount: func() (float64, bool) {
-				if c.F < dur {
-					return 0.2, false
-				}
-				return 0, false
-			}})
+			this.AddHealBonusMod(character.HealBonusMod{
+				Base: modifier.NewBase("hydro-res", -1),
+				Amount: func() (float64, bool) {
+					if c.F < dur {
+						return 0.2, false
+					}
+					return 0, false
+				},
+			})
 		}
 	}
 

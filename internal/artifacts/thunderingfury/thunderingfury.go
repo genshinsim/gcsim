@@ -33,24 +33,31 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ElectroP] = 0.15
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("tf-2pc", -1), AffectedStat: attributes.ElectroP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("tf-2pc", -1),
+			AffectedStat: attributes.ElectroP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	if count >= 4 {
 
 		// add +0.4 reaction damage
-		char.AddReactBonusMod(character.ReactBonusMod{Base: modifier.NewBase("tf-4pc", -1), Amount: func(ai combat.AttackInfo) (float64, bool) {
-			// overload dmg can't melt or vape so it's fine
-			switch ai.AttackTag {
-			case combat.AttackTagOverloadDamage:
-			case combat.AttackTagECDamage:
-			case combat.AttackTagSuperconductDamage:
-			default:
-				return 0, false
-			}
-			return 0.4, false
-		}})
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase("tf-4pc", -1),
+			Amount: func(ai combat.AttackInfo) (float64, bool) {
+				// overload dmg can't melt or vape so it's fine
+				switch ai.AttackTag {
+				case combat.AttackTagOverloadDamage:
+				case combat.AttackTagECDamage:
+				case combat.AttackTagSuperconductDamage:
+				default:
+					return 0, false
+				}
+				return 0.4, false
+			},
+		})
 
 		reduce := func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)

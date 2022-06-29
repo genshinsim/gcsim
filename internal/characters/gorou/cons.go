@@ -53,11 +53,14 @@ func (c *char) c2() {
 
 func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase(c6key, 720), Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if ae.Info.Element != attributes.Geo {
-				return nil, false
-			}
-			return c.c6buff, true
-		}})
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase(c6key, 720),
+			Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if ae.Info.Element != attributes.Geo {
+					return nil, false
+				}
+				return c.c6buff, true
+			},
+		})
 	}
 }

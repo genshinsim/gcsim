@@ -126,9 +126,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			}
 			c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index, "enemies count", c.c4count)
 			for _, char := range c.Core.Player.Chars() {
-				char.AddStatMod(character.StatMod{Base: modifier.NewBase("yelan-c4", 25*60), AffectedStat: attributes.HPP, Amount: func() ([]float64, bool) {
-					return m, true
-				}})
+				char.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("yelan-c4", 25*60),
+					AffectedStat: attributes.HPP,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
+				})
 			}
 		}
 

@@ -91,9 +91,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if i == c.Index {
 			continue
 		}
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("rosaria-a4", 600), AffectedStat: attributes.CR, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("rosaria-a4", 600),
+			AffectedStat: attributes.CR,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index, "ends_on", c.Core.F+600, "crit_share", crit_share)
 

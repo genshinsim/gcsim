@@ -28,8 +28,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.CR] = .105 + .035*float64(r)
 
 	// set stat to crit to avoid infinite loop when calling MaxHP
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("harbinger", -1), AffectedStat: attributes.CR, Amount: func() ([]float64, bool) {
-		return m, char.HPCurrent/char.MaxHP() >= 0.9
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("harbinger", -1),
+		AffectedStat: attributes.CR,
+		Amount: func() ([]float64, bool) {
+			return m, char.HPCurrent/char.MaxHP() >= 0.9
+		},
+	})
 	return w, nil
 }

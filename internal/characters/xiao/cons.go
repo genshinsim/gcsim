@@ -15,12 +15,16 @@ import (
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ER] = 0.25
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("xiao-c2", -1), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
-		if c.Core.Player.Active() != c.Index {
-			return m, true
-		}
-		return nil, false
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("xiao-c2", -1),
+		AffectedStat: attributes.ER,
+		Amount: func() ([]float64, bool) {
+			if c.Core.Player.Active() != c.Index {
+				return m, true
+			}
+			return nil, false
+		},
+	})
 }
 
 // Implements Xiao C6:

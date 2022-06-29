@@ -28,12 +28,15 @@ func (c *char) c1() {
 			return false
 		}
 
-		c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("rosaria-c1", 240), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagNormal {
-				return nil, false
-			}
-			return m, true
-		}})
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("rosaria-c1", 240),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagNormal {
+					return nil, false
+				}
+				return m, true
+			},
+		})
 
 		return false
 	}, "rosaria-c1")
@@ -79,5 +82,9 @@ func (c *char) c6(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("rosaria-c6", 600), Ele: attributes.Physical, Value: -0.2})
+	e.AddResistMod(enemy.ResistMod{
+		Base:  modifier.NewBase("rosaria-c6", 600),
+		Ele:   attributes.Physical,
+		Value: -0.2,
+	})
 }

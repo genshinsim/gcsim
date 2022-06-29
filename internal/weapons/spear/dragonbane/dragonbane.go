@@ -29,16 +29,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmg := 0.16 + float64(r)*0.04
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = dmg
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("dragonbane", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		x, ok := t.(*enemy.Enemy)
-		if !ok {
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("dragonbane", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			x, ok := t.(*enemy.Enemy)
+			if !ok {
+				return nil, false
+			}
+			if x.AuraContains(attributes.Hydro, attributes.Pyro) {
+				return m, true
+			}
 			return nil, false
-		}
-		if x.AuraContains(attributes.Hydro, attributes.Pyro) {
-			return m, true
-		}
-		return nil, false
-	}})
+		},
+	})
 
 	return w, nil
 }

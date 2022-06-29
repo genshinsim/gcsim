@@ -31,19 +31,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	// m[attributes.DmgP] = 0.09 + 0.03*float64(r)
 	flat := 0.09 + 0.03*float64(r)
 
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("amos", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-			return nil, false
-		}
-		m[attributes.DmgP] = flat
-		travel := float64(c.F-atk.Snapshot.SourceFrame) / 60
-		stacks := int(travel / 0.1)
-		if stacks > 5 {
-			stacks = 5
-		}
-		m[attributes.DmgP] += dmgpers * float64(stacks)
-		return m, true
-	}})
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("amos", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+				return nil, false
+			}
+			m[attributes.DmgP] = flat
+			travel := float64(c.F-atk.Snapshot.SourceFrame) / 60
+			stacks := int(travel / 0.1)
+			if stacks > 5 {
+				stacks = 5
+			}
+			m[attributes.DmgP] += dmgpers * float64(stacks)
+			return m, true
+		},
+	})
 
 	return w, nil
 }

@@ -33,12 +33,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.15 + 0.05*float64(r)
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("blacksword", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-			return nil, false
-		}
-		return val, true
-	}})
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("blacksword", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+				return nil, false
+			}
+			return val, true
+		},
+	})
 
 	last := 0
 	heal := 0.5 + .1*float64(r)

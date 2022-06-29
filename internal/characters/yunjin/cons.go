@@ -13,12 +13,15 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = .15
 	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("yunjin-c2", 12*60), Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if ae.Info.AttackTag == combat.AttackTagNormal {
-				return m, true
-			}
-			return nil, false
-		}})
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("yunjin-c2", 12*60),
+			Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if ae.Info.AttackTag == combat.AttackTagNormal {
+					return m, true
+				}
+				return nil, false
+			},
+		})
 	}
 }
 
@@ -32,9 +35,13 @@ func (c *char) c4() {
 			return false
 		}
 
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("yunjin-c4", 12*60), AffectedStat: attributes.DEFP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("yunjin-c4", 12*60),
+			AffectedStat: attributes.DEFP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 
 		return false
 	}
@@ -49,8 +56,12 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = .12
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("yunjin-c6", 12*60), AffectedStat: attributes.AtkSpd, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("yunjin-c6", 12*60),
+			AffectedStat: attributes.AtkSpd,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 }

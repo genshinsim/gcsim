@@ -21,7 +21,6 @@ func (c *char) c1(a combat.AttackCB) {
 		Ele:   attributes.Pyro,
 		Value: -0.15,
 	})
-
 }
 
 func (c *char) c6(dur int) {

@@ -27,7 +27,11 @@ func (c *char) addJadeShield() {
 			if !ok {
 				continue
 			}
-			e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase(key, 1200), Ele: v, Value: -0.2})
+			e.AddResistMod(enemy.ResistMod{
+				Base:  modifier.NewBase(key, 1200),
+				Ele:   v,
+				Value: -0.2,
+			})
 		}
 	}
 

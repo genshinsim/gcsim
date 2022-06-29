@@ -103,9 +103,13 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		//increase def for the duration of this abil in however many frames
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DEFP] = 0.25
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("lisa-c2", 126), AffectedStat: attributes.DEFP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("lisa-c2", 126),
+			AffectedStat: attributes.DEFP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 
 	count := 0

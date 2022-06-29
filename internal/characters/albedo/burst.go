@@ -58,9 +58,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 125
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("albedo-a4", 600), AffectedStat: attributes.EM, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("albedo-a4", 600),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 
 	c.SetCDWithDelay(action.ActionBurst, 720, 80)

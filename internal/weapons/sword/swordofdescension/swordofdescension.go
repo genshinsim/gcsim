@@ -37,10 +37,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 
 	if char.Base.Key < keys.TravelerDelim {
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("swordofdescension", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			m[attributes.ATK] = 66
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("swordofdescension", -1),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				m[attributes.ATK] = 66
+				return m, true
+			},
+		})
 	}
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {

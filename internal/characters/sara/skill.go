@@ -69,9 +69,13 @@ func (c *char) attackBuff(delay int) {
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATK] = buff
-		active.AddStatMod(character.StatMod{Base: modifier.NewBase("sara-attack-buff", 360), AffectedStat: attributes.ATK, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		active.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("sara-attack-buff", 360),
+			AffectedStat: attributes.ATK,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 
 		if c.Base.Cons >= 1 {
 			c.c1()

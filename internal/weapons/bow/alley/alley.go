@@ -52,10 +52,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmg := 0.015 + float64(r)*0.005
 
 	m := make([]float64, attributes.EndStatType)
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("alley-hunter", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		m[attributes.DmgP] = dmg * float64(w.stacks)
-		return m, true
-	}})
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("alley-hunter", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			m[attributes.DmgP] = dmg * float64(w.stacks)
+			return m, true
+		},
+	})
 
 	key := fmt.Sprintf("alley-hunter-%v", char.Base.Key.String())
 

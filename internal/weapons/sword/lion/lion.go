@@ -30,19 +30,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.16 + float64(r)*0.04
 
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("lionsroar", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag > combat.ReactionAttackDelim {
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("lionsroar", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag > combat.ReactionAttackDelim {
+				return nil, false
+			}
+			x, ok := t.(*enemy.Enemy)
+			if !ok {
+				return nil, false
+			}
+			if x.AuraContains(attributes.Electro, attributes.Pyro) {
+				return m, true
+			}
 			return nil, false
-		}
-		x, ok := t.(*enemy.Enemy)
-		if !ok {
-			return nil, false
-		}
-		if x.AuraContains(attributes.Electro, attributes.Pyro) {
-			return m, true
-		}
-		return nil, false
-	}})
+		},
+	})
 
 	return w, nil
 }

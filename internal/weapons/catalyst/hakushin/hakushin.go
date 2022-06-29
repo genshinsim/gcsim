@@ -53,17 +53,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 					continue
 				}
 				this := char
-				char.AddStatMod(character.StatMod{Base: modifier.NewBase("hakushin-passive", 6*60), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-					m[attributes.PyroP] = 0
-					m[attributes.HydroP] = 0
-					m[attributes.CryoP] = 0
-					m[attributes.ElectroP] = 0
-					m[attributes.AnemoP] = 0
-					m[attributes.GeoP] = 0
-					m[attributes.DendroP] = 0
-					m[attributes.EleToDmgP(this.Base.Element)] = dmg
-					return m, true
-				}})
+				char.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("hakushin-passive", 6*60),
+					AffectedStat: attributes.NoStat,
+					Amount: func() ([]float64, bool) {
+						m[attributes.PyroP] = 0
+						m[attributes.HydroP] = 0
+						m[attributes.CryoP] = 0
+						m[attributes.ElectroP] = 0
+						m[attributes.AnemoP] = 0
+						m[attributes.GeoP] = 0
+						m[attributes.DendroP] = 0
+						m[attributes.EleToDmgP(this.Base.Element)] = dmg
+						return m, true
+					},
+				})
 			}
 			c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index, "trigger", key, "expiring", c.F+6*60)
 			return false

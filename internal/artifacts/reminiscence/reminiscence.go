@@ -32,9 +32,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.18
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("shim-2pc", -1), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("shim-2pc", -1),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	//11:51 AM] Episodde｜ShimenawaChildePeddler: Basically I found out that the fox set energy tax have around a 10 frame delay.
 	//so I was testing if you can evade the fox set 15 energy tax by casting burst within those 10 frame after using an elemental
@@ -60,16 +64,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				char.AddEnergy("shim-4pc", -15)
 			}, 10)
 
-			char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("shim-4pc", 60*10), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				switch atk.Info.AttackTag {
-				case combat.AttackTagNormal:
-				case combat.AttackTagExtra:
-				case combat.AttackTagPlunge:
-				default:
-					return nil, false
-				}
-				return m, true
-			}})
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("shim-4pc", 60*10),
+				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					switch atk.Info.AttackTag {
+					case combat.AttackTagNormal:
+					case combat.AttackTagExtra:
+					case combat.AttackTagPlunge:
+					default:
+						return nil, false
+					}
+					return m, true
+				},
+			})
 
 			return false
 		}, fmt.Sprintf("shim-4pc-%v", char.Base.Key.String()))

@@ -84,13 +84,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m[attributes.EM] = 200
 		for _, char := range c.Core.Player.Chars() {
 			this := char
-			char.AddStatMod(character.StatMod{Base: modifier.NewBase("kazuha-c2", 147+117*5), AffectedStat: attributes.EM, Amount: func() ([]float64, bool) {
-				switch this.Index {
-				case c.Core.Player.Active(), c.Index:
-					return m, true
-				}
-				return nil, false
-			}})
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("kazuha-c2", 147+117*5),
+				AffectedStat: attributes.EM,
+				Amount: func() ([]float64, bool) {
+					switch this.Index {
+					case c.Core.Player.Active(), c.Index:
+						return m, true
+					}
+					return nil, false
+				},
+			})
 		}
 	}
 

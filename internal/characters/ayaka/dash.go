@@ -49,9 +49,13 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		once = true
 
 		c.Core.Player.RestoreStam(10)
-		c.AddStatMod(character.StatMod{Base: modifier.NewBase("ayaka-a4", 600), AffectedStat: attributes.CryoP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("ayaka-a4", 600),
+			AffectedStat: attributes.CryoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), dashHitmark+f, dashHitmark+f, cb)
 

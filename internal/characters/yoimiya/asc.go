@@ -12,14 +12,18 @@ import (
 // This effect lasts for 3s and can have a maximum of 10 stacks.
 func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
-	c.AddStatMod(character.StatMod{Base: modifier.NewBase("yoimiya-a1", -1), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
-		if c.Core.Status.Duration("yoimiyaa1") > 0 {
-			m[attributes.PyroP] = float64(c.a1stack) * 0.02
-			return m, true
-		}
-		c.a1stack = 0
-		return nil, false
-	}})
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("yoimiya-a1", -1),
+		AffectedStat: attributes.PyroP,
+		Amount: func() ([]float64, bool) {
+			if c.Core.Status.Duration("yoimiyaa1") > 0 {
+				m[attributes.PyroP] = float64(c.a1stack) * 0.02
+				return m, true
+			}
+			c.a1stack = 0
+			return nil, false
+		},
+	})
 
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -52,8 +56,12 @@ func (c *char) a4() {
 		if x.Index == c.Index {
 			continue
 		}
-		x.AddStatMod(character.StatMod{Base: modifier.NewBase("yoimiya-a4", 900), AffectedStat: attributes.ATKP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		x.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("yoimiya-a4", 900),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 }

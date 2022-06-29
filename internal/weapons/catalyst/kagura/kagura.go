@@ -72,15 +72,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			val[attributes.DendroP] = 0
 		}
 		//add mod for duration, override last
-		char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("kagurasverity", 960), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.ActorIndex != char.Index {
-				return nil, false
-			}
-			if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
-				val[attributes.DmgP] = dmg
-			}
-			return val, true
-		}})
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("kagurasverity", 960),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.ActorIndex != char.Index {
+					return nil, false
+				}
+				if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
+					val[attributes.DmgP] = dmg
+				}
+				return val, true
+			},
+		})
 		return false
 	}, key)
 

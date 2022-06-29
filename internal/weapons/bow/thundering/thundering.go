@@ -58,28 +58,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, key)
 
-	char.AddAttackMod(character.AttackMod{Base: modifier.NewBase("thundering", -1), Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		m[attributes.DmgP] = 0
-		if atk.Info.AttackTag != combat.AttackTagNormal {
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("thundering", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			m[attributes.DmgP] = 0
+			if atk.Info.AttackTag != combat.AttackTagNormal {
+				return m, true
+			}
+			count := 0
+			if char.Energy < char.EnergyMax {
+				count++
+			}
+			if normal > c.F {
+				count++
+			}
+			if skill > c.F {
+				count++
+			}
+			dmg := float64(count) * stack
+			if count >= 3 {
+				dmg = max
+			}
+			m[attributes.DmgP] = dmg
 			return m, true
-		}
-		count := 0
-		if char.Energy < char.EnergyMax {
-			count++
-		}
-		if normal > c.F {
-			count++
-		}
-		if skill > c.F {
-			count++
-		}
-		dmg := float64(count) * stack
-		if count >= 3 {
-			dmg = max
-		}
-		m[attributes.DmgP] = dmg
-		return m, true
-	}})
+		},
+	})
 
 	return w, nil
 }

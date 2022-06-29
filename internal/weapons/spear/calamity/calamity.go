@@ -41,9 +41,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.AnemoP] = dmg
 	m[attributes.GeoP] = dmg
 	m[attributes.DendroP] = dmg
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("calamity-queller", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		return m, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("calamity-queller", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	//atk increase per stack after using skill
 	//double bonus if not on field
@@ -59,19 +63,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if skillInitF == -1 || (skillInitF+dur) < c.F {
 			skillInitF = c.F
 		}
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("calamity-consummation", dur), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-			stacks := (c.F - skillInitF) / 60
-			if stacks > 6 {
-				stacks = 6
-			}
-			atk := atkbonus * float64(stacks)
-			if c.Player.Active() != char.Index {
-				atk *= 2
-			}
-			skillPressBonus[attributes.ATKP] = atk
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("calamity-consummation", dur),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				stacks := (c.F - skillInitF) / 60
+				if stacks > 6 {
+					stacks = 6
+				}
+				atk := atkbonus * float64(stacks)
+				if c.Player.Active() != char.Index {
+					atk *= 2
+				}
+				skillPressBonus[attributes.ATKP] = atk
 
-			return skillPressBonus, true
-		}})
+				return skillPressBonus, true
+			},
+		})
 
 		return false
 	}, fmt.Sprintf("calamity-queller-%v", char.Base.Key.String()))

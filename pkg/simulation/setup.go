@@ -93,7 +93,11 @@ func SetupResonance(s *core.Core) {
 					return val, true
 				}
 				for _, c := range chars {
-					c.AddStatMod(character.StatMod{Base: modifier.NewBase("pyro-res", -1), AffectedStat: attributes.NoStat, Amount: f})
+					c.AddStatMod(character.StatMod{
+						Base:         modifier.NewBase("pyro-res", -1),
+						AffectedStat: attributes.NoStat,
+						Amount:       f,
+					})
 				}
 			case attributes.Hydro:
 				//heal not implemented yet
@@ -101,7 +105,10 @@ func SetupResonance(s *core.Core) {
 					return 0.3, true
 				}
 				for _, c := range chars {
-					c.AddHealBonusMod(character.HealBonusMod{Base: modifier.NewBase("hydro-res", -1), Amount: f})
+					c.AddHealBonusMod(character.HealBonusMod{
+						Base:   modifier.NewBase("hydro-res", -1),
+						Amount: f,
+					})
 				}
 			case attributes.Cryo:
 				val := make([]float64, attributes.EndStatType)
@@ -117,7 +124,10 @@ func SetupResonance(s *core.Core) {
 					return nil, false
 				}
 				for _, c := range chars {
-					c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("cyro-res", -1), Amount: f})
+					c.AddAttackMod(character.AttackMod{
+						Base:   modifier.NewBase("cyro-res", -1),
+						Amount: f,
+					})
 				}
 			case attributes.Electro:
 				last := 0
@@ -153,7 +163,11 @@ func SetupResonance(s *core.Core) {
 					}
 					atk := args[1].(*combat.AttackEvent)
 					if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
-						t.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("geo-res", 15*60), Ele: attributes.Geo, Value: -0.2})
+						t.AddResistMod(enemy.ResistMod{
+							Base:  modifier.NewBase("geo-res", 15*60),
+							Ele:   attributes.Geo,
+							Value: -0.2,
+						})
 					}
 					return false
 				}, "geo res")
@@ -167,12 +181,18 @@ func SetupResonance(s *core.Core) {
 					return nil, false
 				}
 				for _, c := range chars {
-					c.AddAttackMod(character.AttackMod{Base: modifier.NewBase("geo-res", -1), Amount: atkf})
+					c.AddAttackMod(character.AttackMod{
+						Base:   modifier.NewBase("geo-res", -1),
+						Amount: atkf,
+					})
 				}
 
 			case attributes.Anemo:
 				for _, c := range chars {
-					c.AddCooldownMod(character.CooldownMod{Base: modifier.NewBase("anemo-res", -1), Amount: func(a action.Action) float64 { return -0.05 }})
+					c.AddCooldownMod(character.CooldownMod{
+						Base:   modifier.NewBase("anemo-res", -1),
+						Amount: func(a action.Action) float64 { return -0.05 },
+					})
 				}
 			}
 		}

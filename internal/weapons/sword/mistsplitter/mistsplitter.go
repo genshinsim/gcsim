@@ -75,24 +75,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
-	char.AddStatMod(character.StatMod{Base: modifier.NewBase("mistsplitter", -1), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-		count := 0
-		if char.Energy < char.EnergyMax {
-			count++
-		}
-		if normal > c.F {
-			count++
-		}
-		if skill > c.F {
-			count++
-		}
-		dmg := float64(count) * stack
-		if count >= 3 {
-			dmg += max
-		}
-		m[bonus] = base + dmg
-		return m, true
-	}})
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("mistsplitter", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			count := 0
+			if char.Energy < char.EnergyMax {
+				count++
+			}
+			if normal > c.F {
+				count++
+			}
+			if skill > c.F {
+				count++
+			}
+			dmg := float64(count) * stack
+			if count >= 3 {
+				dmg += max
+			}
+			m[bonus] = base + dmg
+			return m, true
+		},
+	})
 
 	return w, nil
 }

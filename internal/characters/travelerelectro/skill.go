@@ -140,9 +140,13 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	}
 
 	// apply ER mod
-	collector.AddStatMod(character.StatMod{Base: modifier.NewBase("abundance-amulet", 360), AffectedStat: attributes.ER, Amount: func() ([]float64, bool) {
-		return mER, true
-	}})
+	collector.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("abundance-amulet", 360),
+		AffectedStat: attributes.ER,
+		Amount: func() ([]float64, bool) {
+			return mER, true
+		},
+	})
 
 	// Reset amulets
 	c.abundanceAmulets = 0
