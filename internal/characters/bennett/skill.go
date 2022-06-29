@@ -71,14 +71,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) skillPress() action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Passion Overload (Press)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 50,
-		Mult:       skill[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Passion Overload (Press)",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		Durability:         50,
+		HitlagHaltFrames:   0.09 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
+		Mult:               skill[c.TalentLvlSkill()],
 	}
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), skillPressHitmark, skillPressHitmark)
@@ -91,7 +94,7 @@ func (c *char) skillPress() action.ActionInfo {
 	c.Core.QueueParticle("bennett", count, attributes.Pyro, 120)
 
 	// a4 reduce cd by 50%
-	if c.StatModIsActive("bennett-field") {
+	if c.StatModIsActive(burstFieldKey) {
 		//a4 reduces it from 240 to 120
 		c.SetCDWithDelay(action.ActionSkill, 240/2, 14)
 	} else {
@@ -109,26 +112,32 @@ func (c *char) skillPress() action.ActionInfo {
 
 func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Passion Overload (Level %v)", level),
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 25,
+		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Passion Overload (Level %v)", level),
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
+		Durability:         25,
 	}
 
 	for i, v := range skillHold[level-1] {
 		ai.Mult = v[c.TalentLvlSkill()]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
-			skillHoldHitmarks[level-1][i],
-			skillHoldHitmarks[level-1][i],
-		)
+		ai.HitlagHaltFrames = 0.09 * 60
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
+				0,
+				0,
+			)
+		}, skillHoldHitmarks[level-1][i])
 	}
 	if level == 2 {
 		ai.Mult = explosion[c.TalentLvlSkill()]
+		ai.HitlagHaltFrames = 0
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 166, 166)
 	}
 
@@ -136,6 +145,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	if level == 1 && c4Active {
 		ai.Mult = skillHold[level-1][1][c.TalentLvlSkill()] * 1.35
 		ai.Abil = "Passion Overload (C4)"
+		ai.HitlagHaltFrames = 0.12 * 60
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 94, 94)
 
 	}
@@ -144,8 +154,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	//Bennett Hold E is guaranteed 3 orbs
 	c.Core.QueueParticle("bennett", 3, attributes.Pyro, 298)
 
-	// FIXME: do we really need to pass index here??
-	applyA4 := c.StatModIsActive("bennett-field")
+	applyA4 := c.StatModIsActive(burstFieldKey)
 
 	// figure out which frames to return
 	// 0: skill (press) -> x

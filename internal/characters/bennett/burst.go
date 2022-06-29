@@ -15,8 +15,12 @@ import (
 
 var burstFrames []int
 
-const burstStartFrame = 34
-const burstBuffDuration = 126
+const (
+	burstStartFrame   = 34
+	burstBuffDuration = 126
+	burstKey          = "bennettburst"
+	burstFieldKey     = "bennett-field"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(53)
@@ -27,7 +31,8 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//add field effect timer
-	c.Core.Status.Add("btburst", 720+burstStartFrame)
+	//deployable thus not hitlag
+	c.Core.Status.Add(burstKey, 720+burstStartFrame)
 	//hook for buffs; active right away after cast
 
 	ai := combat.AttackInfo{
@@ -127,9 +132,13 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 				}
 			}
 
-			active.AddStatMod(character.StatMod{Base: modifier.NewBase("bennett-field", burstBuffDuration), AffectedStat: attributes.NoStat, Amount: func() ([]float64, bool) {
-				return m, true
-			}})
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag(burstFieldKey, burstBuffDuration),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
 
 			c.Core.Log.NewEvent("bennett field - adding attack", glog.LogCharacterEvent, c.Index, "threshold", threshold)
 		}
