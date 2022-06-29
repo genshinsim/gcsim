@@ -16,7 +16,12 @@ func (c *char) c1(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("xiangling-c1", 6*60), Ele: attributes.Pyro, Value: -0.15})
+	e.AddResistMod(enemy.ResistMod{
+		Base:  modifier.NewBaseWithHitlag("xiangling-c1", 6*60),
+		Ele:   attributes.Pyro,
+		Value: -0.15,
+	})
+
 }
 
 func (c *char) c6(dur int) {
@@ -26,8 +31,12 @@ func (c *char) c6(dur int) {
 	c.Core.Status.Add("xlc6", dur)
 
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(character.StatMod{Base: modifier.NewBase("xiangling-c6", dur), AffectedStat: attributes.PyroP, Amount: func() ([]float64, bool) {
-			return m, true
-		}})
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("xiangling-c6", dur),
+			AffectedStat: attributes.PyroP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 }

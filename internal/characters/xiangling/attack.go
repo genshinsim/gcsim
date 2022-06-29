@@ -11,6 +11,7 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = [][]int{{12}, {8}, {11, 18}, {5, 15, 24, 29}, {21}}
+var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0}, {0, 0, 0, 0.03}, {0.09}}
 
 const normalHitNum = 5
 
@@ -33,40 +34,45 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Physical,
-		Durability: 25,
+		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:          combat.AttackTagNormal,
+		ICDTag:             combat.ICDTagNormalAttack,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Physical,
+		Durability:         25,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
-		)
+		ai.HitlagHaltFrames = attackHitlagHaltFrame[c.NormalCounter][i] * 60
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
+				0,
+				0,
+			)
+		}, attackHitmarks[c.NormalCounter][i])
 	}
 
 	//if n = 5, add explosion for c2
 	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
-		// According to TCL, does not snapshot and has no ability type scaling tags
-		// TODO: Does not mention ICD or pyro aura strength?
+		//No icd, no attack tag, 25 durability
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Oil Meets Fire (C2)",
 			AttackTag:  combat.AttackTagNone,
-			ICDTag:     combat.ICDTagNormalAttack,
+			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       .75,
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 120, 120) //todo: explosion frames
+		//TODO: explosion frames
+		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 120, 120)
 	}
 
 	defer c.AdvanceNormalIndex()
