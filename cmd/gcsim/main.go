@@ -86,7 +86,7 @@ func main() {
 		serverDone := &sync.WaitGroup{}
 		serverDone.Add(1)
 		serveLocal(serverDone, "./serve_data.json.gz", opt.keepserving)
-		url := "https://gcsim.app/viewer/local"
+		url := "https://next.gcsim-app.pages.dev/viewer/local"
 		if !opt.nobrowser {
 			err = open(url)
 			if err != nil {
