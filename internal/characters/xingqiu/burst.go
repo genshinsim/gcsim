@@ -13,7 +13,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 18
+const (
+	burstHitmark = 18
+	burstKey     = "xingqiuburst"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(40)
@@ -47,8 +50,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		dur += 3
 	}
 	dur = dur * 60
-	c.Core.Status.Add("xqburst", dur+33) // add 33f for anim
-	c.Core.Log.NewEvent("Xingqiu burst activated", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur+33)
+	c.AddStatus(burstKey, dur+33, true) // add 33f for anim
 
 	orbital, ok := p["orbital"]
 	if !ok {
@@ -108,7 +110,11 @@ func (c *char) summonSwordWave() {
 
 			icd = c.Core.F + 1
 			c.Core.Tasks.Add(func() {
-				e.AddResistMod(enemy.ResistMod{Base: modifier.NewBase("xingqiu-c2", 4*60), Ele: attributes.Hydro, Value: -0.15})
+				e.AddResistMod(enemy.ResistMod{
+					Base:  modifier.NewBaseWithHitlag("xingqiu-c2", 4*60),
+					Ele:   attributes.Hydro,
+					Value: -0.15,
+				})
 			}, 1)
 		}
 	}
@@ -143,7 +149,7 @@ func (c *char) summonSwordWave() {
 func (c *char) burstStateHook() {
 	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
 		//check if buff is up
-		if c.Core.Status.Duration("xqburst") <= 0 {
+		if !c.StatusIsActive(burstKey) {
 			return false
 		}
 		next := args[1].(action.AnimationState)
@@ -168,7 +174,7 @@ func (c *char) burstStateHook() {
 func (c *char) burstTickerFunc(src int) func() {
 	return func() {
 		//check if buff is up
-		if c.Core.Status.Duration("xqburst") <= 0 {
+		if !c.StatusIsActive(burstKey) {
 			return
 		}
 		if c.burstTickSrc != src {
