@@ -37,10 +37,11 @@ type Core struct {
 }
 
 type Flags struct {
-	LogDebug   bool // Used to determine logging level
-	DamageMode bool //for hp mode
-	DefHalt    bool //for hitlag
-	Custom     map[string]int
+	LogDebug     bool // Used to determine logging level
+	DamageMode   bool //for hp mode
+	DefHalt      bool //for hitlag
+	EnableHitlag bool //hitlag enabled
+	Custom       map[string]int
 }
 type Coord struct {
 	X float64 `json:"x"`
@@ -67,11 +68,12 @@ type Reactable interface {
 const MaxTeamSize = 4
 
 type CoreOpt struct {
-	Seed       int64
-	Debug      bool
-	DefHalt    bool
-	DamageMode bool
-	Delays     player.Delays
+	Seed         int64
+	Debug        bool
+	EnableHitlag bool
+	DefHalt      bool
+	DamageMode   bool
+	Delays       player.Delays
 }
 
 func New(opt CoreOpt) (*Core, error) {
@@ -87,12 +89,32 @@ func New(opt CoreOpt) (*Core, error) {
 
 	c.Flags.DamageMode = opt.DamageMode
 	c.Flags.DefHalt = opt.DefHalt
+	c.Flags.EnableHitlag = opt.EnableHitlag
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)
 	c.Constructs = construct.New(&c.F, c.Log)
-	c.Player = player.New(&c.F, opt.Delays, c.Log, c.Events, c.Tasks, opt.Debug)
-	c.Combat = combat.New(c.Log, c.Events, c.Player, c.Rand, opt.Debug, opt.DamageMode, opt.DefHalt)
+	c.Player = player.New(
+		player.Opt{
+			F:            &c.F,
+			Delays:       opt.Delays,
+			Log:          c.Log,
+			Events:       c.Events,
+			Tasks:        c.Tasks,
+			Debug:        opt.Debug,
+			EnableHitlag: opt.EnableHitlag,
+		},
+	)
+	c.Combat = combat.New(combat.Opt{
+		Events:       c.Events,
+		Team:         c.Player,
+		Rand:         c.Rand,
+		Debug:        c.Flags.LogDebug,
+		Log:          c.Log,
+		DamageMode:   c.Flags.DamageMode,
+		DefHalt:      c.Flags.DefHalt,
+		EnableHitlag: c.Flags.EnableHitlag,
+	})
 
 	return c, nil
 }

@@ -26,10 +26,7 @@ const (
 )
 
 type Handler struct {
-	log    glog.Logger
-	events event.Eventter
-	tasks  task.Tasker
-	f      *int
+	Opt
 	//handlers
 	*animation.AnimationHandler
 	Shields *shield.Handler
@@ -47,7 +44,6 @@ type Handler struct {
 
 	//swap
 	SwapCD int
-	delays Delays
 
 	//last action
 	LastAction struct {
@@ -69,20 +65,26 @@ type Delays struct {
 	Swap   int
 }
 
-func New(f *int, delays Delays, log glog.Logger, events event.Eventter, tasks task.Tasker, debug bool) *Handler {
+type Opt struct {
+	F            *int
+	Log          glog.Logger
+	Events       event.Eventter
+	Tasks        task.Tasker
+	Delays       Delays
+	Debug        bool
+	EnableHitlag bool
+}
+
+func New(opt Opt) *Handler {
 	h := &Handler{
 		chars:           make([]*character.CharWrapper, 0, 4),
 		charPos:         make(map[keys.Char]int),
 		stamPercentMods: make([]stamPercentMod, 0, 5),
-		log:             log,
-		events:          events,
-		tasks:           tasks,
-		f:               f,
-		delays:          delays,
+		Opt:             opt,
 	}
-	h.Shields = shield.New(f, log, events)
-	h.InfusionHandler = infusion.New(f, log, debug)
-	h.AnimationHandler = animation.New(f, debug, log, events, tasks)
+	h.Shields = shield.New(opt.F, opt.Log, opt.Events)
+	h.InfusionHandler = infusion.New(opt.F, opt.Log, opt.Debug)
+	h.AnimationHandler = animation.New(opt.F, opt.Debug, opt.Log, opt.Events, opt.Tasks)
 	return h
 }
 
@@ -90,7 +92,7 @@ func (h *Handler) swap(to keys.Char) func() {
 	return func() {
 		prev := h.active
 		h.active = h.charPos[to]
-		h.log.NewEventBuildMsg(
+		h.Log.NewEventBuildMsg(
 			glog.LogActionEvent,
 			h.active,
 			"executed swap",
@@ -100,7 +102,7 @@ func (h *Handler) swap(to keys.Char) func() {
 		)
 		h.SwapCD = SwapCDFrames
 		h.ResetAllNormalCounter()
-		h.events.Emit(event.OnCharacterSwap, prev, h.active)
+		h.Events.Emit(event.OnCharacterSwap, prev, h.active)
 	}
 }
 
@@ -163,7 +165,7 @@ func (h *Handler) DistributeParticle(p character.Particle) {
 	for i, char := range h.chars {
 		char.ReceiveParticle(p, h.active == i, len(h.chars))
 	}
-	h.events.Emit(event.OnParticleReceived, p)
+	h.Events.Emit(event.OnParticleReceived, p)
 }
 
 func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64 {
@@ -209,7 +211,7 @@ func (h *Handler) InitializeTeam() error {
 		if h.chars[i].HPCurrent == -1 {
 			h.chars[i].HPCurrent = h.chars[i].MaxHP()
 		}
-		h.log.NewEvent("starting hp set", glog.LogCharacterEvent, i, "hp", h.chars[i].HPCurrent)
+		h.Log.NewEvent("starting hp set", glog.LogCharacterEvent, i, "hp", h.chars[i].HPCurrent)
 	}
 	return nil
 }
@@ -222,7 +224,7 @@ func (h *Handler) Tick() {
 	//		- stamina
 	//		- swap
 	//recover stamina
-	if h.Stam < MaxStam && *h.f-h.LastStamUse > StamCDFrames {
+	if h.Stam < MaxStam && *h.F-h.LastStamUse > StamCDFrames {
 		h.Stam += 25.0 / 60
 		if h.Stam > MaxStam {
 			h.Stam = MaxStam

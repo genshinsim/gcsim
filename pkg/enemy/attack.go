@@ -50,20 +50,22 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	e.damageTaken += damage //TODO: do we actually need this?
 
 	//check for hitlag
-	willapply := true
-	if atk.Info.HeadshotOnly {
-		willapply = atk.Info.HitWeakPoint
-	}
-	dur := atk.Info.HitlagHaltFrames
-	if e.Core.Flags.DefHalt && atk.Info.CanBeDefenseHalted {
-		dur += 3.6
-	}
-	dur = math.Ceil(dur)
-	if willapply && dur > 0 {
-		//apply hit lag to enemy
-		e.ApplyHitlag(atk.Info.HitlagFactor, dur)
-		//also apply hitlag to reactable
-		e.Reactable.ApplyHitlag(atk.Info.HitlagFactor, dur)
+	if e.Core.Combat.EnableHitlag {
+		willapply := true
+		if atk.Info.HeadshotOnly {
+			willapply = atk.Info.HitWeakPoint
+		}
+		dur := atk.Info.HitlagHaltFrames
+		if e.Core.Flags.DefHalt && atk.Info.CanBeDefenseHalted {
+			dur += 3.6
+		}
+		dur = math.Ceil(dur)
+		if willapply && dur > 0 {
+			//apply hit lag to enemy
+			e.ApplyHitlag(atk.Info.HitlagFactor, dur)
+			//also apply hitlag to reactable
+			e.Reactable.ApplyHitlag(atk.Info.HitlagFactor, dur)
+		}
 	}
 
 	//check for particle drops

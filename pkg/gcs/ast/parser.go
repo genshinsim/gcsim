@@ -50,9 +50,10 @@ type EnergySettings struct {
 }
 
 type SimulatorSettings struct {
-	Duration   float64
-	DamageMode bool
-	DefHalt    bool // for hitlag
+	Duration     float64
+	DamageMode   bool
+	EnableHitlag bool
+	DefHalt      bool // for hitlag
 	//other stuff
 	NumberOfWorkers int // how many workers to run the simulation
 	Iterations      int // how many iterations to run
@@ -110,6 +111,7 @@ func New(input string) *Parser {
 	p.res = &ActionList{
 		Program: newBlockStmt(0),
 		Settings: SimulatorSettings{
+			EnableHitlag:    true, // default hitlag enabled
 			DefHalt:         true, //default defhalt to true
 			NumberOfWorkers: 20,   //default 20 workers if none set
 			Iterations:      1000, //default 1000 iterations

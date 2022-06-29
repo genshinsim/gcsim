@@ -22,28 +22,25 @@ type Character interface {
 }
 
 type Handler struct {
-	log    glog.Logger
-	events event.Eventter
-	team   CharHandler
-	rand   *rand.Rand
-	debug  bool
-
+	Opt
 	targets     []Target
 	TotalDamage float64
-	DamageMode  bool
-
-	defHalt bool
 }
 
-func New(log glog.Logger, events event.Eventter, team CharHandler, rand *rand.Rand, debug bool, damageMode bool, defHalt bool) *Handler {
+type Opt struct {
+	Events       event.Eventter
+	Team         CharHandler
+	Rand         *rand.Rand
+	Debug        bool
+	Log          glog.Logger
+	DamageMode   bool
+	DefHalt      bool
+	EnableHitlag bool
+}
+
+func New(opt Opt) *Handler {
 	h := &Handler{
-		log:        log,
-		events:     events,
-		team:       team,
-		rand:       rand,
-		DamageMode: damageMode,
-		debug:      debug,
-		defHalt:    defHalt,
+		Opt: opt,
 	}
 	h.targets = make([]Target, 0, 5)
 
