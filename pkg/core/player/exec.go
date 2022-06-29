@@ -151,6 +151,9 @@ func (p *Handler) useAbility(
 	info := f(param)
 	info.CacheFrames()
 	p.SetActionUsed(p.active, t, &info)
+	if info.FramePausedOnHitlag == nil {
+		info.FramePausedOnHitlag = p.ActiveChar().FramePausedOnHitlag
+	}
 
 	p.LastAction.Type = t
 	p.LastAction.Param = param

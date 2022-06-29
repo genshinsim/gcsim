@@ -65,6 +65,7 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 			glog.LogHitlagEvent, c.Index,
 			"duration", dur,
 			"factor", factor,
+			"frozen_frames", c.frozenFrames,
 		).
 			SetEnded(*c.f + int(math.Ceil(dur)))
 	}
