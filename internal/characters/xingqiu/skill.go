@@ -18,7 +18,7 @@ func init() {
 }
 
 const (
-	orbitalKey = "xingqiu_orbital"
+	orbitalKey = "xingqiu-orbital"
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
