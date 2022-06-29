@@ -32,26 +32,26 @@ const (
 	ICDTagNormalAttack
 	ICDTagExtraAttack
 	ICDTagElementalArt
+	ICDTagElementalArtAnemo
+	ICDTagElementalArtPyro
+	ICDTagElementalArtHydro
+	ICDTagElementalArtCryo
+	ICDTagElementalArtElectro
 	ICDTagElementalBurst
+	ICDTagElementalBurstAnemo
+	ICDTagElementalBurstPyro
+	ICDTagElementalBurstHydro
+	ICDTagElementalBurstCryo
+	ICDTagElementalBurstElectro
 	ICDTagDash
 	ICDTagLisaElectro
 	ICDTagYanfeiFire
-	ICDTagVentiBurstAnemo
-	ICDTagVentiBurstPyro
-	ICDTagVentiBurstHydro
-	ICDTagVentiBurstCryo
-	ICDTagVentiBurstElectro
 	ICDTagYelanBreakthrough
 	ICDTagYelanBurst
 	ICDTagMonaWaterDamage
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
-	ICDTagSayuSkillAnemo
-	ICDTagSayuSkillPyro
-	ICDTagSayuSkillHydro
-	ICDTagSayuSkillCryo
-	ICDTagSayuSkillElectro
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
