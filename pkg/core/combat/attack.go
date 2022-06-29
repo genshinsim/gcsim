@@ -155,7 +155,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		if dur > 0 {
 			h.team.ApplyHitlag(a.Info.ActorIndex, a.Info.HitlagFactor, dur)
 			if h.debug {
-				h.log.NewEvent(fmt.Sprintf("%v applying hitlag: %v", a.Info.Abil, dur), glog.LogHitlagEvent, a.Info.ActorIndex, "duration", dur, "factor", a.Info.HitlagFactor)
+				h.log.NewEvent(fmt.Sprintf("%v applying hitlag: %.3f", a.Info.Abil, dur), glog.LogHitlagEvent, a.Info.ActorIndex, "duration", dur, "factor", a.Info.HitlagFactor)
 			}
 		}
 	}

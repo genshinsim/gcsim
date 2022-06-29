@@ -20,19 +20,21 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if c.Core.Status.Duration("raidenburst") > 0 {
+	if c.StatusIsActive(burstKey) {
 		return c.swordCharge(p)
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
+		ActorIndex:       c.Index,
+		Abil:             "Charge Attack",
+		AttackTag:        combat.AttackTagExtra,
+		ICDTag:           combat.ICDTagExtraAttack,
+		ICDGroup:         combat.ICDGroupDefault,
+		Element:          attributes.Physical,
+		Durability:       25,
+		HitlagHaltFrames: 0.02 * 60, //all raiden normals have 0.02s hitlag
+		HitlagFactor:     0.01,
+		Mult:             charge[c.TalentLvlAttack()],
 	}
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
@@ -57,13 +59,15 @@ func init() {
 
 func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Musou Isshin (Charge Attack)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Electro,
-		Durability: 25,
+		ActorIndex:       c.Index,
+		Abil:             "Musou Isshin (Charge Attack)",
+		AttackTag:        combat.AttackTagElementalBurst,
+		ICDTag:           combat.ICDTagNormalAttack,
+		ICDGroup:         combat.ICDGroupDefault,
+		Element:          attributes.Electro,
+		Durability:       25,
+		HitlagHaltFrames: 0.02 * 60, //all raiden normals have 0.02s hitlag
+		HitlagFactor:     0.01,
 	}
 
 	for i, mult := range chargeSword {
@@ -73,14 +77,16 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		if c.Base.Cons >= 2 {
 			ai.IgnoreDefPercent = .6
 		}
-		c.Core.QueueAttack(
-			ai,
-			combat.NewDefCircHit(5, false, combat.TargettableEnemy),
-			swordCAHitmarks[i],
-			swordCAHitmarks[i],
-			c.burstRestorefunc,
-			c.c6,
-		)
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewDefCircHit(5, false, combat.TargettableEnemy),
+				0,
+				0,
+				c.burstRestorefunc,
+				c.c6,
+			)
+		}, swordCAHitmarks[i])
 	}
 
 	return action.ActionInfo{

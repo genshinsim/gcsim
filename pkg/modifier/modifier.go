@@ -2,7 +2,11 @@
 //of modifiers
 package modifier
 
-import "github.com/genshinsim/gcsim/pkg/core/glog"
+import (
+	"math"
+
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+)
 
 type Mod interface {
 	Key() string
@@ -23,11 +27,14 @@ type Base struct {
 }
 
 func (t *Base) Key() string             { return t.ModKey }
-func (t *Base) Expiry() int             { return t.ModExpiry + int(t.extension) }
+func (t *Base) Expiry() int             { return t.ModExpiry + int(math.Ceil(t.extension)) }
 func (t *Base) Event() glog.Event       { return t.event }
 func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
 func (t *Base) AffectedByHitlag() bool  { return t.Hitlag }
-func (t *Base) Extend(amt float64)      { t.extension += amt }
+func (t *Base) Extend(amt float64) {
+	t.extension += amt
+	t.event.SetEnded(t.Expiry())
+}
 func (t *Base) SetExpiry(f int) {
 	if t.Dur == -1 {
 		t.ModExpiry = -1

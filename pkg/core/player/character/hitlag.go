@@ -61,7 +61,7 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	if c.debug {
 		logs = make([]string, 0, len(c.mods))
 		evt = c.log.NewEvent(
-			fmt.Sprintf("hitlag applied to char: %v", dur),
+			fmt.Sprintf("hitlag applied to char: %.3f", dur),
 			glog.LogHitlagEvent, c.Index,
 			"duration", dur,
 			"factor", factor,

@@ -70,7 +70,7 @@ func (c *CharWrapper) AddStatus(key string, dur int, hitlag bool) {
 		mod.ModExpiry = *c.f + mod.Dur
 	}
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("attack", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("status", c.Index, &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddAttackMod(mod AttackMod) {
@@ -94,19 +94,19 @@ func (c *CharWrapper) AddDamageReductionMod(mod DamageReductionMod) {
 func (c *CharWrapper) AddHealBonusMod(mod HealBonusMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("dr", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("heal bonus", c.Index, &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddReactBonusMod(mod ReactBonusMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("dr", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("react bonus", c.Index, &mod, c.log, overwrote, oldEvt)
 }
 
 func (c *CharWrapper) AddStatMod(mod StatMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
-	modifier.LogAdd("dr", c.Index, &mod, c.log, overwrote, oldEvt)
+	modifier.LogAdd("stat", c.Index, &mod, c.log, overwrote, oldEvt)
 }
 
 // Delete.

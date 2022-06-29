@@ -35,7 +35,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	if c.Core.Status.Duration("raidenburst") > 0 {
+	if c.StatusIsActive(burstKey) {
 		return c.swordAttack(p)
 	}
 
@@ -47,17 +47,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Physical,
 		Durability:         25,
-		HitlagHaltFrames:   1.2, //all raiden normals have 0.02s hitlag
+		HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.02s hitlag
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
-	}
-
-	act := action.ActionInfo{
-		Frames:              frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength:     attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:       attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
-		State:               action.NormalAttackState,
-		FramePausedOnHitlag: c.FramePausedOnHitlag,
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -69,7 +61,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return act
+	return action.ActionInfo{
+		Frames:              frames.NewAttackFunc(c.Character, attackFrames),
+		AnimationLength:     attackFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:       attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		State:               action.NormalAttackState,
+		FramePausedOnHitlag: c.FramePausedOnHitlag,
+	}
 }
 
 var swordFrames [][]int
@@ -104,15 +102,9 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Electro,
 		Durability:         25,
-		HitlagHaltFrames:   0.02, //all raiden normals have 0.2s hitlag
+		HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.2s hitlag
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
-	}
-	act := action.ActionInfo{
-		Frames:          frames.NewAttackFunc(c.Character, swordFrames),
-		AnimationLength: swordFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   swordHitmarks[c.NormalCounter][len(swordHitmarks[c.NormalCounter])-1],
-		State:           action.NormalAttackState,
 	}
 
 	for i, mult := range attackB[c.NormalCounter] {
@@ -122,12 +114,17 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 		if c.Base.Cons >= 2 {
 			ai.IgnoreDefPercent = .6
 		}
-		act.QueueAction(func() {
+		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 0, c.burstRestorefunc, c.c6)
 		}, swordHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
 
-	return act
+	return action.ActionInfo{
+		Frames:          frames.NewAttackFunc(c.Character, swordFrames),
+		AnimationLength: swordFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   swordHitmarks[c.NormalCounter][len(swordHitmarks[c.NormalCounter])-1],
+		State:           action.NormalAttackState,
+	}
 }
