@@ -56,6 +56,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				}
 				// 3 ticks
 				for i := 120; i <= 360; i += 120 {
+					//TODO: should this delay be affected by wearer's hitlag?
 					c.Tasks.Add(func() {
 						this.AddEnergy("exile-4pc", 2)
 					}, i)

@@ -52,7 +52,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Status.Add(s.key, 15*60)
 			// add stat mod here
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("hod-4pc", 900),
+				Base: modifier.NewBaseWithHitlag("hod-4pc", 900),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 						return nil, false

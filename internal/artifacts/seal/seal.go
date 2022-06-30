@@ -50,7 +50,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 					return nil, false
 				}
-
 				//calc er
 				er := char.Stat(attributes.ER) + 1
 				amt := 0.25 * er

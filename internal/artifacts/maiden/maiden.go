@@ -57,7 +57,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		// Applies to all characters, so no filters needed
 		for _, this := range c.Player.Chars() {
 			this.AddHealBonusMod(character.HealBonusMod{
-				Base: modifier.NewBase("hydro-res", -1),
+				Base: modifier.NewBaseWithHitlag("maiden-4pc", -1),
 				Amount: func() (float64, bool) {
 					if c.F < dur {
 						return 0.2, false

@@ -65,7 +65,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}, 10)
 
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("shim-4pc", 60*10),
+				Base: modifier.NewBaseWithHitlag("shim-4pc", 60*10),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
 					case combat.AttackTagNormal:

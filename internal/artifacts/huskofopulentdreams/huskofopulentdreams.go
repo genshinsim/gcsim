@@ -92,6 +92,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
+			//TODO: check if this icd is subject to hitlag?
 			if s.stackGainICDExpiry > c.F {
 				return false
 			}

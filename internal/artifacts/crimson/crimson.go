@@ -40,7 +40,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			Base:         modifier.NewBase("crimson-2pc", -1),
 			AffectedStat: attributes.PyroP,
 			Amount: func() ([]float64, bool) {
-				if char.StatusExpiry(cw4pc) < c.F {
+				if !char.StatusIsActive(cw4pc) {
 					s.stacks = 0
 				}
 				mult := 0.5*float64(s.stacks) + 1
@@ -62,8 +62,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			// every exectuion, add 1 stack, to a max of 3, reset cd to 10 seconds
-			//TODO: check if this works correctly
-			if char.StatusExpiry(cw4pc) < c.F {
+			if !char.StatusIsActive(cw4pc) {
 				s.stacks = 0
 			}
 			if s.stacks < 3 {

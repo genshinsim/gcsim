@@ -41,16 +41,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 	}
+	icd := 0
 	if count >= 4 {
 		// TODO: test lmao
 		c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
 			if c.Player.Active() != char.Index {
 				return false
 			}
-			if c.Status.Duration("scholar") > 0 {
+			if icd > c.F {
 				return false
 			}
-			c.Status.Add("scholar", 3*60)
+			icd = c.F + 160 //3 s icd
 
 			for _, this := range c.Player.Chars() {
 				// only for bow and catalyst

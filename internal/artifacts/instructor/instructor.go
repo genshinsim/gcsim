@@ -65,7 +65,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				}
 
 				this.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("instructor-4pc", 480),
+					Base:         modifier.NewBaseWithHitlag("instructor-4pc", 480),
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
 						return m, true
