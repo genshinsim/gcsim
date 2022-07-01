@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -43,17 +42,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
+	const durKey = "skyward-pride-active"
 	counter := 0
-	dur := 0
 	dmg := 0.6 + float64(r)*0.2
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		dur = c.F + 1200
+		char.AddStatus(durKey, 1200, true)
 		counter = 0
-		c.Log.NewEvent("Skyward Pride activated", glog.LogWeaponEvent, char.Index, "expiring ", dur)
 		return false
 	}, fmt.Sprintf("skyward-pride-%v", char.Base.Key.String()))
 
@@ -65,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if c.F > dur {
+		if !char.StatusIsActive(durKey) {
 			return false
 		}
 		if counter >= 8 {

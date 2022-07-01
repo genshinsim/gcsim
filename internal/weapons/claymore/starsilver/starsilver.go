@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	mc := 1.6 + float64(r)*0.4
 	prob := 0.5 + float64(r)*0.1
 
-	icd := 0
+	const icdKey = "starsilver-icd"
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
@@ -43,14 +43,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if c.F < icd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < prob {
-			icd = c.F + 600
+			char.AddStatus(icdKey, 600, true)
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Starsilver Proc",

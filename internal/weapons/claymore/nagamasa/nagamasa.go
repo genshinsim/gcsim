@@ -47,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	icd := 0
+	const icdKey = "nagamasa-icd"
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -56,13 +56,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 600
+		char.AddStatus(icdKey, 600, true)
 		char.AddEnergy("nagamasa", -3)
 		for i := 120; i <= 360; i += 120 {
-			c.Tasks.Add(func() {
+			//use char queue for hitlag
+			char.QueueCharTask(func() {
 				char.AddEnergy("nagamasa", regen)
 			}, i)
 		}

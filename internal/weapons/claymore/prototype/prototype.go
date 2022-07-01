@@ -28,21 +28,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	atk := 1.8 + float64(r)*0.6
-	effectLastProc := -9999
+	const icdKey = "prototype-archaic-icd"
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if c.F < effectLastProc+15*60 {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < 0.5 {
-			effectLastProc = c.F
+			char.AddStatus(icdKey, 15*60, true)
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Prototype Archaic Proc",

@@ -23,9 +23,10 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 	w := &Sacrificial{}
 	r := p.Refine
 
+	const icdKey = "sacrificial-cd"
+
 	prob := 0.3 + float64(r)*0.1
 
-	last := 0
 	cd := (34 - r*4) * 60
 
 	if r >= 4 {
@@ -47,7 +48,7 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return false
 		}
-		if last != 0 && c.F-last < cd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if char.Cooldown(action.ActionSkill) == 0 {
@@ -55,7 +56,7 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 		}
 		if c.Rand.Float64() < prob {
 			char.ResetActionCooldown(action.ActionSkill)
-			last = c.F
+			char.AddStatus(icdKey, cd, true)
 			c.Log.NewEvent("sacrificial proc'd", glog.LogWeaponEvent, char.Index)
 		}
 		return false

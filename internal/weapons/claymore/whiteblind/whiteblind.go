@@ -32,10 +32,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 
-	icd := 0
-	activeUntil := -1
 	w.buff = make([]float64, attributes.EndStatType)
 	amt := 0.045 + float64(r)*0.015
+	const icdKey = "whiteblind-icd"
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -45,15 +44,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if icd > c.F {
+		if char.StatModIsActive(icdKey) {
 			return false
 		}
-		if activeUntil < c.F {
+		if !char.StatModIsActive("whiteblind") {
 			w.stacks = 0
 		}
 
-		activeUntil = c.F + 360
-		icd = c.F + 30
+		char.AddStatus(icdKey, 30, true)
 
 		if w.stacks < 4 {
 			w.stacks++
@@ -64,7 +62,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		//refresh mod
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("whiteblind", 360),
+			Base:         modifier.NewBaseWithHitlag("whiteblind", 360),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return w.buff, true

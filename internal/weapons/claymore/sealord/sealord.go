@@ -46,19 +46,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	})
 
 	tunaDmg := .75 + float64(r)*0.25
-	icd := -1
+	const icdKey = "sealord-icd"
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if c.F < icd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 			return false
 		}
-		icd = c.F + 900 //15 * 60
+		char.AddStatus(icdKey, 900, true)
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Luxurious Sea-Lord Proc",

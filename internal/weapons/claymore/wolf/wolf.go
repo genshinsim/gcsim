@@ -46,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//under hp increase
 	bonus := make([]float64, attributes.EndStatType)
 	bonus[attributes.ATKP] = 0.3 + 0.1*float64(r)
-	icd := 0
+	const icdKey = "wolf-gravestone-icd"
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		if !c.Flags.DamageMode {
@@ -61,18 +61,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 
 		if t.HP()/t.MaxHP() > 0.3 {
 			return false
 		}
-		icd = c.F + 1800
+		char.AddStatus(icdKey, 1800, true)
 
 		for _, char := range c.Player.Chars() {
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("wolf-proc", 720),
+				Base:         modifier.NewBaseWithHitlag("wolf-proc", 720),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return bonus, true

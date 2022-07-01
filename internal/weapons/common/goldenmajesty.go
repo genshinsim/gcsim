@@ -23,12 +23,13 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 	w := &GoldenMajesty{}
 	r := p.Refine
 
+	const icdKey = "golden-majesty-icd"
+
 	shd := .15 + float64(r)*.05
 	atkbuff := 0.03 + 0.01*float64(r)
 	key := fmt.Sprintf("golden-majesty-%v", char.Base.Key.String())
 	c.Player.Shields.AddShieldBonusMod(key, -1, func() (float64, bool) { return shd, false })
 
-	icd := -1
 	stacks := 0
 	expiry := 0
 	m := make([]float64, attributes.EndStatType)
@@ -42,11 +43,10 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 		if c.Player.Active() != char.Index {
 			return false
 		}
-
-		if c.F < icd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 18
+		char.AddStatus(icdKey, 18, true)
 
 		if c.F > expiry {
 			stacks = 0
