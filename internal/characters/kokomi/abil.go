@@ -222,7 +222,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(5, false, core.TargettableEnemy), f, f)
 
 	c.Core.Status.AddStatus("kokomiburst", 10*60)
-	c.skillFlatDmg = c.burstDmgBonus(core.AttackTagElementalArt)
 
 	// Ascension 1 - reset duration of E Skill and also resnapshots it
 	// Should not activate HoD consistent with in game since it is not a skill usage
