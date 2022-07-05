@@ -60,7 +60,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			max = 14 * 60
 		}
 		c.Core.Status.Add("xianglingburst", max)
-		for delay := 56; delay <= max; delay += 73 { //first hit on same frame as 3rd initial hit
+		for delay := 0; delay <= max; delay += 73 { //first hit on same frame as 3rd initial hit
 			c.Core.QueueAttack(burstHit, combat.NewDefCircHit(2.5, false, combat.TargettableEnemy), 0, delay)
 		}
 		//add an effect starting at frame 55 to end of duration to increase pyro dmg by 15% if c6
