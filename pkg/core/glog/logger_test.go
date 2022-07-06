@@ -87,3 +87,47 @@ func BenchmarkEasyJSONSerialization(b *testing.B) {
 	}
 
 }
+
+type testChain struct{}
+
+func (t *testChain) Write(key interface{}, val interface{}) *testChain { return t }
+
+type testVariadic struct{}
+
+func (t *testVariadic) Write(kv ...interface{}) {}
+
+func BenchmarkChainCalls(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		//write 10 kv pairs
+		var x testChain
+		x.Write("key", "val").
+			Write("key", "val").
+			Write("key", "val").
+			Write("key", "val").
+			Write("key", "val").
+			Write("key", "val").
+			Write("key", "val").
+			Write("key", "val").
+			Write("key", "val").
+			Write("key", "val")
+	}
+}
+
+func BenchmarkChainVariadic(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		//write 10 kv pairs
+		var x testVariadic
+		x.Write(
+			"key", "val",
+			"key", "val",
+			"key", "val",
+			"key", "val",
+			"key", "val",
+			"key", "val",
+			"key", "val",
+			"key", "val",
+			"key", "val",
+			"key", "val",
+		)
+	}
+}
