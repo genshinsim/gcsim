@@ -19,6 +19,7 @@ export function Disclaimer(props: Props) {
       <div className={Classes.DIALOG_BODY}>
         <div className="flex flex-col place-items-start ">
           <H3>FAQs (and Disclaimers). Seriously. READ THIS FIRST.</H3>
+          <p>Last updated July 7th, 2022.</p>
           <p>
             Welcome to the gcsim rotation database. Here you'll find many{" "}
             <b>user submitted</b> rotations and their calculated DPS.
@@ -48,14 +49,25 @@ export function Disclaimer(props: Props) {
             The purpose of this database <b>is not to provide a tier list</b>.
             There are too many qualitative considerations that cannot be
             captured in these calculations. In addition, all of these
-            calculations make certain substat assumptions that in general do
-            not apply to all users.
+            calculations make certain substat assumptions that in general do not
+            apply to all users.
           </p>
           <H4>Why is this database sorted by DPS?!</H4>
           <p>See point 2 in the purpose above</p>
           <H4>
             I cannot replicate these numbers in game! The calc must be wrong!
           </H4>
+          <p>
+            Addendum (July 7, 2022): It appears that some people are
+            misinterpreting this explanation. No gcsim cannot calculate your in
+            game damage, but that does not make the results useless or
+            inaccurate. What it means is that what <b>YOU</b> do in game can
+            differ from simulated results due to skill issues, ping, enemy
+            movement, dodging, other game mechanics etc... It also means that
+            when looking at teams you must also consider qualitative factors
+            such as ease to play, healing, etc... Numbers by itself does not
+            tell the whole story.
+          </p>
           <p>
             In the first place, gcsim cannot and will not ever be a good way to
             calculate your in game damage. There does not (currently) exist any
@@ -67,8 +79,8 @@ export function Disclaimer(props: Props) {
             for that.
           </p>
           <p>
-            In addition, Genshin combat relies upon reactions which are timing 
-            specific and just missing a single one could alter your results. 
+            In addition, Genshin combat relies upon reactions which are timing
+            specific and just missing a single one could alter your results.
             (Obviously this differs from team to team.)
           </p>
           <p>
@@ -80,12 +92,12 @@ export function Disclaimer(props: Props) {
             Genshin Optimizer.
           </p>
           <p>
-            Finally, all of these calculations are user submitted, and anyone
-            is capable of submitting one no matter how unoptimized the rotation 
-            may appear. Meaning some teams and their rotations are more optimized 
-            than others due to their popularity. Some rotations are more difficult 
-            to execute than others, this is not something than can be captured by 
-            numbers alone.
+            Finally, all of these calculations are user submitted, and anyone is
+            capable of submitting one no matter how unoptimized the rotation may
+            appear. Meaning some teams and their rotations are more optimized
+            than others due to their popularity. Some rotations are more
+            difficult to execute than others, this is not something than can be
+            captured by numbers alone.
           </p>
           <H4>
             Why don't you simulate skill issue or make these simulations more
@@ -104,9 +116,9 @@ export function Disclaimer(props: Props) {
             modify it to something you can pull off yourself.
           </p>
           <p>
-            In addition to that, highly optimized rotations can have educational 
-            value. You can analyze the rotation to see tips and tricks that increase 
-            your dps ever so slightly.
+            In addition to that, highly optimized rotations can have educational
+            value. You can analyze the rotation to see tips and tricks that
+            increase your dps ever so slightly.
           </p>
           <H4>What about hitlag?!</H4>
           <p>
@@ -132,21 +144,22 @@ export function Disclaimer(props: Props) {
               However, the expected inflation is not as large as some rumours
               would have it. My current napkin math places it somewhere around
               10% at most. For teams that primarily rely upon either off-field
-              or fully ranged sources of damage, the effects of hitlag should
-              be even smaller.
+              or fully ranged sources of damage, the effects of hitlag should be
+              even smaller.
             </li>
             <li className="ml-6">
-              However, since gcsim is meant for relative comparisons, the current
-              lack of hitlag should not affect the calculations relatively speaking 
-              (excluding certain teams that are purely ranged).
+              However, since gcsim is meant for relative comparisons, the
+              current lack of hitlag should not affect the calculations
+              relatively speaking (excluding certain teams that are purely
+              ranged).
             </li>
           </p>
           <p>
             An additional note on the rotation time. Hitlag is not the only
             reason why rotation times can be longer than in-game. As I mentioned
             previously, gcsim assumes frame perfect. However, most people cannot
-            play frame perfect with any sort of consistency. Every tool has its 
-            intended purpose and limitations. That is no different for gcsim. 
+            play frame perfect with any sort of consistency. Every tool has its
+            intended purpose and limitations. That is no different for gcsim.
             Always keep that in mind.
           </p>
           <H4>
@@ -157,10 +170,10 @@ export function Disclaimer(props: Props) {
             As mentioned previously, these are all user submitted calculations.
             Currently, due to the design limitations of the website, only one
             calculation is kept per team. To keep things simple, the maintainer
-            of this database (a volunteer) has decided to show the team that
-            has the highest dps to keep things unopinionated. This does mean
-            that unfortunately some very valid weapon/artifact combinations that
-            are just as competitive are not shown.
+            of this database (a volunteer) has decided to show the team that has
+            the highest dps to keep things unopinionated. This does mean that
+            unfortunately some very valid weapon/artifact combinations that are
+            just as competitive are not shown.
           </p>
           <p>
             In an ideal world, we would have the interface to show all the
@@ -269,7 +282,7 @@ export function Disclaimer(props: Props) {
         </div>
       </div>
       <div className={Classes.DIALOG_FOOTER}>
-        Written by srl. Last updated July 7th, 2022.
+        Written by srl.
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button intent="primary" onClick={props.onClose}>
             Close
