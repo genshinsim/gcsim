@@ -30,9 +30,9 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
+	const buffKey = "prototype"
 
 	//no icd on this one
-	activeUntil := -1
 	w.buff = make([]float64, attributes.EndStatType)
 	atkbonus := 0.06 + 0.02*float64(r)
 	//add on crit effect
@@ -40,16 +40,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if activeUntil < c.F {
+		if !char.StatusIsActive(buffKey) {
 			w.stacks = 0
 		}
 		if w.stacks < 2 {
 			w.stacks++
 			w.buff[attributes.ATKP] = atkbonus * float64(w.stacks)
 		}
-		activeUntil = c.F + 720
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("prototype", 720),
+			Base: modifier.NewBase(buffKey, 720),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 					return nil, false

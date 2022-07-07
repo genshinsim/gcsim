@@ -44,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	icd := 0
+	const icdKey = "skyward-spine-icd"
 	atk := .25 + .15*float64(r)
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		//check if cd is up
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if c.Rand.Float64() > .5 {
@@ -77,7 +77,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 
 		//trigger cd
-		icd = c.F + 120
+		char.AddStatus(icdKey, 120, true)
 		return false
 	}, fmt.Sprintf("skyward-spine-%v", char.Base.Key.String()))
 	return w, nil

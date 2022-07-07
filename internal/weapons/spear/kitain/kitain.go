@@ -31,6 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//even when the character is not on the field.
 	w := &Weapon{}
 	r := p.Refine
+	const icdKey = "kitain-icd"
 
 	//permanent increase
 	m := make([]float64, attributes.EndStatType)
@@ -47,7 +48,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	})
 
 	regen := 2.5 + float64(r)*0.5
-	icd := 0
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -56,13 +56,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 600
+		char.AddStatus(icdKey, 600, true)
 		char.AddEnergy("kitain", -3)
 		for i := 120; i <= 360; i += 120 {
-			c.Tasks.Add(func() {
+			//assuming the ticks gets affected by hitlag
+			char.QueueCharTask(func() {
 				char.AddEnergy("kitain", regen)
 			}, i)
 		}

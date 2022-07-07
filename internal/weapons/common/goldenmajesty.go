@@ -57,9 +57,8 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 			stacks = 5
 		}
 
-		expiry = c.F + 60*8
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("golden-majesty", expiry),
+			Base:         modifier.NewBaseWithHitlag("golden-majesty", 60*8),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				m[attributes.ATKP] = atkbuff * float64(stacks)

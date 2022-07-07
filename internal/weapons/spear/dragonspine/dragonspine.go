@@ -51,6 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		if c.Rand.Float64() < prob {
 			icd = c.F + 600
+			//TODO: not sure if this proc triggers hitlag
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Dragonspine Proc",

@@ -50,6 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		if c.F < active {
+			//TODO: does this proc trigger any hitlag? probably not?
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Crescent Pike Proc",

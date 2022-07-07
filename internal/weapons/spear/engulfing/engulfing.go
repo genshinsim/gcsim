@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("engulfing-er", 720),
+			Base:         modifier.NewBaseWithHitlag("engulfing-er", 720),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return erval, true

@@ -32,9 +32,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//DMG dealt is increased by 12%.
 	w := &Weapon{}
 	r := p.Refine
-
-	icd := 0
-	activeUntil := -1
+	const icdKey = "primordial-jade-spear-icd"
+	const buffKey = "primordial"
 	w.buff = make([]float64, attributes.EndStatType)
 	perStackBuff := float64(r)*0.007 + 0.025
 	dmgBuffAtMax := 0.09 + float64(r)*0.03
@@ -48,14 +47,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if icd > c.F {
+		//check if spear is on icd
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		if activeUntil < c.F {
+		//check if buff expired; if so reset the stacks
+		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
 		}
-		activeUntil = c.F + 300
-		icd = c.F + 18 //every 0.3s
+		//every 0.3s
+		char.AddStatus(icdKey, 18, true)
 
 		if w.stacks < 7 {
 			w.stacks++
@@ -68,7 +69,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		//refresh mod
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("primordial", 300),
+			Base:         modifier.NewBase(buffKey, 300),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return w.buff, true

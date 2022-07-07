@@ -60,11 +60,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		dur := 60 * 20
+		//TODO: not sure if the per second is affected by hitlag i.e. hitlag prolong the period before
+		//last stack icnrease. For now we're leaving it as is (not affected)
 		if skillInitF == -1 || (skillInitF+dur) < c.F {
 			skillInitF = c.F
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("calamity-consummation", dur),
+			Base:         modifier.NewBaseWithHitlag("calamity-consummation", dur),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				stacks := (c.F - skillInitF) / 60
