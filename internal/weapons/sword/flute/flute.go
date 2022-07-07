@@ -26,13 +26,16 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	icdKey      = "flute-icd"
+	durationKey = "flute-stack-duration"
+)
+
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
-	expiry := 0
 	stacks := 0
-	icd := 0
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 
@@ -44,20 +47,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 30 // every .5 sec
-		if expiry < c.F {
+		char.AddStatus(icdKey, 30, true) //every 0.5s
+		if !char.StatusIsActive(durationKey) {
 			stacks = 0
 		}
 		stacks++
-		expiry = c.F + 1800 //stacks lasts 30s
+		//stacks lasts 30s
+		char.AddStatus(durationKey, 1800, true)
 
 		if stacks == 5 {
 			//trigger dmg at 5 stacks
 			stacks = 0
-			expiry = 0
+			char.DeleteStatus(durationKey)
 
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,

@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -24,6 +23,10 @@ type Weapon struct {
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
+
+const (
+	buffKey = "skyward-blade"
+)
 
 //CRIT Rate increased by 4%. Gains Skypiercing Might upon using an Elemental
 //Burst: Increases Movement SPD by 10%, increases ATK SPD by 10%, and Normal and
@@ -44,22 +47,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	dur := -1
 	atkspdBuff := make([]float64, attributes.EndStatType)
 	atkspdBuff[attributes.AtkSpd] = 0.1
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		dur = c.F + 720
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("skyward blade", 720),
+			Base:         modifier.NewBaseWithHitlag(buffKey, 720),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return atkspdBuff, true
 			},
 		})
-		c.Log.NewEvent("Skyward Blade activated", glog.LogWeaponEvent, char.Index, "expiring ", dur)
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
@@ -75,7 +75,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		//check if buff up
-		if dur < c.F {
+		if !char.StatModIsActive(buffKey) {
 			return false
 		}
 		//add a new action that deals % dmg immediately

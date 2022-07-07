@@ -25,6 +25,11 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	icdKey             = "haran-icd"
+	maxWavespikeStacks = 2
+)
+
 //Obtain 12% All Elemental DMG Bonus. When other nearby party members use
 //Elemental Skills, the character equipping this weapon will gain 1 Wavespike
 //stack. Max 2 stacks. This effect can be triggered once every 0.3s. When the
@@ -53,34 +58,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	wavespikeICD := 0
 	wavespikeStacks := 0
-	maxWavespikeStacks := 2
-	//TODO: this used to be on post. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() == char.Index {
+
+	nonActiveFn := func() bool {
+		//once every 0.3s
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		if c.F > wavespikeICD {
-			wavespikeStacks++
-			if wavespikeStacks > maxWavespikeStacks {
-				wavespikeStacks = maxWavespikeStacks
-			}
-			c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index, "stack", wavespikeStacks)
-			wavespikeICD = c.F + 0.3*60
+		//add stacks
+		wavespikeStacks++
+		if wavespikeStacks > maxWavespikeStacks {
+			wavespikeStacks = maxWavespikeStacks
 		}
+		c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index, "stack", wavespikeStacks)
+		char.AddStatus(icdKey, 18, true)
 		return false
-	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))
+	}
 
 	val := make([]float64, attributes.EndStatType)
-	//TODO: this used to be on post. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
-		}
+	activeFn := func() bool {
 		val[attributes.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("ripping-upheaval", 480),
+			Base: modifier.NewBaseWithHitlag("ripping-upheaval", 480),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagNormal {
 					return nil, false
@@ -88,10 +87,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				return val, true
 			},
 		})
-
 		wavespikeStacks = 0
 		return false
-	}, fmt.Sprintf("ripping-upheaval-%v", char.Base.Key.String()))
+	}
+
+	//TODO: this used to be on post. make sure nothing broke here
+	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+		if c.Player.Active() == char.Index {
+			return activeFn()
+		} else {
+			return nonActiveFn()
+		}
+	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))
 
 	return w, nil
 }

@@ -30,10 +30,12 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	icdKey = "swordofdescension-icd"
+)
+
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
-
-	icd := 0
 	m := make([]float64, attributes.EndStatType)
 
 	if char.Base.Key < keys.TravelerDelim {
@@ -61,15 +63,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		// Ignore if icd is still up
-		if c.F < icd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		// Ignore 50% of the time, 1:1 ratio
 		if c.Rand.Float64() < 0.5 {
 			return false
 		}
-
-		icd = c.F + 10*60
+		char.AddStatus(icdKey, 600, true)
 
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,

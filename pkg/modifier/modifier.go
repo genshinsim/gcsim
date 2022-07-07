@@ -74,6 +74,7 @@ func Delete[K Mod](slice *[]K, key string) (m Mod) {
 }
 
 //Add adds a modifier. Returns true if overwritten and the original evt (if overwritten)
+//TODO: consider adding a map here to track the index to assist with faster lookups
 func Add[K Mod](slice *[]K, mod K, f int) (overwrote bool, evt glog.Event) {
 	ind := Find(slice, mod.Key())
 

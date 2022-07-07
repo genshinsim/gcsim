@@ -23,6 +23,13 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	icdKey     = "freedom-sworn-sigil-icd"
+	cdKey      = "freedom-sworn-cooldown"
+	statModKey = "freedomsworn"
+	atkModKey  = "freedomsworn-atk-buff"
+)
+
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	//A part of the "Millennial Movement" that wanders amidst the winds.
 	//Increases DMG by 10%. When the character wielding this weapon triggers
@@ -54,9 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	buffNACAPlunge := make([]float64, attributes.EndStatType)
 	buffNACAPlunge[attributes.DmgP] = .12 + 0.04*float64(r)
 
-	icd := 0
 	stacks := 0
-	cooldown := 0
 
 	stackFunc := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -64,32 +69,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if cooldown > c.F {
+		if char.StatusIsActive(cdKey) {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-
-		icd = c.F + 30
+		//max 1 stack per 0.5s
+		char.AddStatus(icdKey, 30, true)
 		stacks++
 		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index, "sigil", stacks)
 
 		if stacks == 2 {
 			stacks = 0
-			c.Status.Add("freedom", 12*60)
-			cooldown = c.F + 20*60
+			char.AddStatus(cdKey, 20*60, true)
 			for _, char := range c.Player.Chars() {
 				// Attack buff snapshots so it needs to be in a separate mod
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("freedom-proc", 12*60),
+					Base:         modifier.NewBaseWithHitlag(statModKey, 12*60),
 					AffectedStat: attributes.NoStat,
 					Amount: func() ([]float64, bool) {
 						return atkBuff, true
 					},
 				})
 				char.AddAttackMod(character.AttackMod{
-					Base: modifier.NewBase("freedom-proc", 12*60),
+					Base: modifier.NewBaseWithHitlag(atkModKey, 12*60),
 					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 						switch atk.Info.AttackTag {
 						case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:

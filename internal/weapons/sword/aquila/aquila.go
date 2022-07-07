@@ -46,16 +46,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	dmg := 1.7 + .3*float64(r)
 	heal := .85 + .15*float64(r)
-	last := -1
+	const icdKey = "aquila-icd"
 
 	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if c.F-last < 900 && last != -1 {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		last = c.F
+		char.AddStatus(icdKey, 900, true) // 15 sec
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Aquila Favonia",

@@ -26,14 +26,17 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	icdKey  = "ironsting-icd"
+	buffKey = "ironsting"
+)
+
 //Dealing Elemental DMG increases all DMG by 6% for 6s. Max 2 stacks. Can occur once every 1s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
 	dmgbuff := 0.045 + 0.015*float64(r)
-	icd := 0
-	activeUntil := 0
 	w.buff = make([]float64, attributes.EndStatType)
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -44,18 +47,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.Element == attributes.Physical {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 60
-		if activeUntil < c.F {
+		char.AddStatus(icdKey, 60, true)
+		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
 		}
 		if w.stacks < 2 {
 			w.stacks++
 			w.buff[attributes.DmgP] = dmgbuff * float64(w.stacks)
 		}
-		activeUntil = c.F + 360
 		//refresh mod
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("ironsting", 360),

@@ -26,6 +26,11 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	icdKey  = "prototype-rancour-icd"
+	buffKey = "prototype-rancour"
+)
+
 //On hit, Normal or Charged Attacks increase ATK and DEF by 4% for 6s. Max 4
 //stacks. This effect can only occur once every 0.3s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
@@ -33,9 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	w.buff = make([]float64, attributes.EndStatType)
-	expiry := 0
 	perStack := 0.03 + 0.01*float64(r)
-	icd := 0
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -45,11 +48,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 18
-		if expiry < c.F {
+		char.AddStatus(icdKey, 18, true)
+		if char.StatModIsActive(buffKey) {
 			w.stacks = 0
 		}
 		if w.stacks < 4 {
@@ -57,9 +60,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			w.buff[attributes.ATKP] = perStack * float64(w.stacks)
 			w.buff[attributes.DEFP] = perStack * float64(w.stacks)
 		}
-		expiry = c.F + 360
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("prototype-rancour", 360),
+			Base:         modifier.NewBaseWithHitlag(buffKey, 360),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return w.buff, true

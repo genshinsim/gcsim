@@ -24,6 +24,11 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	normalBuffKey = "mistsplitter-normal"
+	burstBuffKey  = "mistsplitter-burst"
+)
+
 //Gain a 12% Elemental DMG Bonus for all elements and receive the might of the
 //Mistsplitter's Emblem. At stack levels 1/2/3, the Mistsplitter's Emblem
 //provides a 8/16/28% Elemental DMG Bonus for the character's Elemental Type.
@@ -47,8 +52,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	stack := 0.06 + float64(r)*0.02
 	max := 0.03 + float64(r)*0.01
 	bonus := attributes.EleToDmgP(char.Base.Element)
-	normal := 0
-	skill := 0
 
 	//normal dealing dmg
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -62,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.Element == attributes.Physical {
 			return false
 		}
-		normal = c.F + 300 // lasts 5 seconds
+		char.AddStatus(normalBuffKey, 300, true)
 		return false
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 
@@ -71,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		skill = c.F + 600
+		char.AddStatus(burstBuffKey, 600, true)
 		return false
 
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
@@ -83,10 +86,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			if char.Energy < char.EnergyMax {
 				count++
 			}
-			if normal > c.F {
+			if char.StatusIsActive(normalBuffKey) {
 				count++
 			}
-			if skill > c.F {
+			if char.StatusIsActive(burstBuffKey) {
 				count++
 			}
 			dmg := float64(count) * stack

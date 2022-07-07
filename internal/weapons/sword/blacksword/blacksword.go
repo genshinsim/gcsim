@@ -43,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	last := 0
+	const icdKey = "black-sword-icd"
 	heal := 0.5 + .1*float64(r)
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -57,7 +57,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if crit && (c.F-last >= 300 || last == 0) {
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		if crit {
 			c.Player.Heal(player.HealInfo{
 				Caller:  char.Index,
 				Target:  c.Player.Active(),
@@ -66,7 +69,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				Bonus:   char.Stat(attributes.Heal),
 			})
 			//trigger cd
-			last = c.F
+			char.AddStatus(icdKey, 300, true) //every 5s
 		}
 		return false
 	}, fmt.Sprintf("black-sword-%v", char.Base.Key.String()))
