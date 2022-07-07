@@ -16,11 +16,14 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	lastConstruct   int
+	lastConstruct int
+	bloomSnapshot combat.Snapshot
+	//tracking skill information
+	skillActive     bool
 	skillAttackInfo combat.AttackInfo
 	skillSnapshot   combat.Snapshot
-	bloomSnapshot   combat.Snapshot
-	icdSkill        int
+	//c2 tracking
+	c2stacks int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -31,8 +34,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.EnergyMax = 40
 	c.Weapon.Class = weapon.WeaponClassSword
 	c.NormalHitNum = normalHitNum
-
-	c.icdSkill = 0
 
 	w.Character = &c
 
@@ -48,4 +49,20 @@ func (c *char) Init() error {
 		c.c6()
 	}
 	return nil
+}
+
+func (c *char) Condition(k string) int64 {
+	switch k {
+	case "skill":
+		fallthrough
+	case "elevator":
+		if c.skillActive {
+			return 1
+		}
+		return 0
+	case "c2stacks":
+		return int64(c.c2stacks)
+	default:
+		return 0
+	}
 }

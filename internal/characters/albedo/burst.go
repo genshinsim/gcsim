@@ -37,9 +37,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	//check stacks
-	if c.Base.Cons >= 2 && c.Core.Status.Duration("albedoc2") > 0 {
-		ai.FlatDmg += (snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]) * float64(c.Tags["c2"])
-		c.Tags["c2"] = 0
+	if c.Base.Cons >= 2 && c.StatusIsActive(c2key) {
+		ai.FlatDmg += (snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]) * float64(c.c2stacks)
+		c.c2stacks = 0
 	}
 
 	//TODO: damage frame
@@ -59,7 +59,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	m[attributes.EM] = 125
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("albedo-a4", 600),
+			Base:         modifier.NewBaseWithHitlag("albedo-a4", 600),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true

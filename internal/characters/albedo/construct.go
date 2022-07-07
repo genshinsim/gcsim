@@ -16,7 +16,7 @@ func (c *char) newConstruct(dur int) *skillConstruct {
 	}
 }
 
-func (c *skillConstruct) OnDestruct()                      { c.char.Tags["elevator"] = 0 }
+func (c *skillConstruct) OnDestruct()                      { c.char.skillActive = false }
 func (c *skillConstruct) Key() int                         { return c.src }
 func (c *skillConstruct) Type() construct.GeoConstructType { return construct.GeoConstructAlbedoSkill }
 func (c *skillConstruct) Expiry() int                      { return c.expiry }
