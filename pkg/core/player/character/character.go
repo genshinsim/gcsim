@@ -43,6 +43,8 @@ type Character interface {
 	AddEnergy(src string, amt float64)
 
 	ApplyHitlag(factor, dur float64)
+
+	Condition(string) int64
 }
 
 type CharWrapper struct {

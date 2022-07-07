@@ -1,6 +1,9 @@
 package conditional
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/shortcut"
+)
 
 func Eval(c *core.Core, fields []string) int64 {
 	switch fields[0] {
@@ -29,6 +32,10 @@ func Eval(c *core.Core, fields []string) int64 {
 	case ".normal":
 		return evalNormalCounter(c, fields)
 	default:
+		//check if it's a char name; if so check char custom eval func
+		if key, ok := shortcut.CharNameToKey[fields[0]]; ok {
+			return evalCharCustom(c, key, fields)
+		}
 		return 0
 	}
 }
