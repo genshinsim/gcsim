@@ -226,7 +226,7 @@ export function parseLogV2(
         e.icon = "play_arrow";
         break;
       case "hitlag":
-        e.icon = "severe_cold";
+        e.icon = "sports_martial_arts";
         break;
       case "enemy":
         e.icon = "mood_bad";
