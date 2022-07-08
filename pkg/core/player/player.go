@@ -185,6 +185,9 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 		return
 	}
 	h.chars[char].ApplyHitlag(factor, dur)
+	//also extend infusion
+	//TODO: this is a really awkward place to apply this
+	h.ExtendInfusion(char, factor, dur)
 }
 
 //InitializeTeam will set up resonance event hooks and calculate
