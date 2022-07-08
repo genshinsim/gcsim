@@ -26,15 +26,18 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	weakspot, ok := p["weakspot"]
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Charge Shot",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		Element:      attributes.Cryo,
-		Durability:   25,
-		Mult:         aim[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		ActorIndex:           c.Index,
+		Abil:                 "Charge Shot",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone,
+		ICDGroup:             combat.ICDGroupDefault,
+		Element:              attributes.Cryo,
+		Durability:           25,
+		Mult:                 aim[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot == 1,
+		HitlagHaltFrames:     0.12,
+		HitlagFactor:         0.01,
+		HitlagOnHeadshotOnly: true,
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
 

@@ -19,6 +19,10 @@ func init() {
 	skillFrames = frames.InitAbilSlice(67)
 }
 
+const (
+	rushingIceKey = "rushingice"
+)
+
 // Skill - Handles main damage, bomblet, and coil effects
 // Has 3 parameters, "bomblets" = Number of bomblets that hit
 // "bomblet_coil_stacks" = Number of coil stacks gained
@@ -98,10 +102,10 @@ func (c *char) coilStacks() {
 		return
 	}
 	// Can't gain coil stacks while in rushing ice
-	if c.Core.Status.Duration("aloyrushingice") > 0 {
+	if c.StatusIsActive(rushingIceKey) {
 		return
 	}
-	c.Tags["coil_stacks"]++
+	c.coils++
 	c.coilICDExpiry = c.Core.F + 6
 
 	// A1
@@ -121,22 +125,22 @@ func (c *char) coilStacks() {
 		})
 	}
 
-	if c.Tags["coil_stacks"] == 4 {
-		c.Tags["coil_stacks"] = 0
+	if c.coils == 4 {
+		c.coils = 0
 		c.rushingIce()
 	}
 }
 
 // Handles rushing ice state
 func (c *char) rushingIce() {
-	c.Core.Status.Add("aloyrushingice", 600)
+	c.AddStatus(rushingIceKey, 600, true)
 	c.Core.Player.AddWeaponInfuse(c.Index, "aloy-rushing-ice", attributes.Cryo, 600, true, combat.AttackTagNormal)
 
 	// Rushing ice NA bonus
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("aloy-rushing-ice", 600),
+		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", 600),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == combat.AttackTagNormal {
 				return val, true
@@ -149,7 +153,7 @@ func (c *char) rushingIce() {
 	valA4 := make([]float64, attributes.EndStatType)
 	stacks := 1
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("aloy-strong-strike", 600),
+		Base:         modifier.NewBaseWithHitlag("aloy-strong-strike", 600),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			if stacks > 10 {
@@ -161,7 +165,8 @@ func (c *char) rushingIce() {
 	})
 
 	for i := 0; i < 10; i++ {
-		c.Core.Tasks.Add(func() { stacks++ }, 60*(1+i))
+		//every 1 s, affected by hitlag
+		c.QueueCharTask(func() { stacks++ }, 60*(1+i))
 	}
 }
 
@@ -172,8 +177,8 @@ func (c *char) coilMod() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("aloy-coil-stacks", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
-				val[attributes.DmgP] = skillCoilNABonus[c.Tags["coil_stacks"]-1][c.TalentLvlSkill()]
+			if atk.Info.AttackTag == combat.AttackTagNormal && c.coils > 0 {
+				val[attributes.DmgP] = skillCoilNABonus[c.coils-1][c.TalentLvlSkill()]
 				return val, true
 			}
 			return nil, false
@@ -195,7 +200,7 @@ func (c *char) onExitField() {
 			if c.lastFieldExit != (c.Core.F - 30*60) {
 				return
 			}
-			c.Tags["coil_stacks"] = 0
+			c.coils = 0
 		}, 30*60)
 
 		return false
