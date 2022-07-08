@@ -11,6 +11,7 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
+var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0}, {0.08}}
 var shunsuikenFrames []int
 
 const normalHitNum = 5
@@ -34,50 +35,71 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Physical,
-		Durability: 25,
+
+	if c.StatusIsActive(skillBuffKey) {
+		return c.SoukaiKanka(p)
 	}
 
-	if c.Core.Status.Duration("soukaikanka") > 0 {
-		ai.Mult = shunsuiken[c.NormalCounter][c.TalentLvlSkill()]
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
-	} else {
-		for i, mult := range attack[c.NormalCounter] {
-			ai.Mult = mult[c.TalentLvlAttack()]
+	for i, mult := range attack[c.NormalCounter] {
+		ai := combat.AttackInfo{
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			ActorIndex:         c.Index,
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			Element:            attributes.Physical,
+			Durability:         25,
+			Mult:               mult[c.TalentLvlAttack()],
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: true,
+		}
+		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewDefSingleTarget(1, combat.TargettableEnemy),
-				attackHitmarks[c.NormalCounter][i],
-				attackHitmarks[c.NormalCounter][i],
+				0,
+				0,
 			)
-		}
+		}, attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
-
-	// while in skill
-	if c.Core.Status.Duration("soukaikanka") > 0 {
-		return action.ActionInfo{
-			Frames: func(next action.Action) int {
-				return frames.AtkSpdAdjust(shunsuikenFrames[next], c.Stat(attributes.AtkSpd))
-			},
-			AnimationLength: shunsuikenFrames[action.InvalidAction],
-			CanQueueAfter:   shunsuikenHitmark,
-			State:           action.NormalAttackState,
-		}
-	}
 
 	// normal state
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		State:           action.NormalAttackState,
+	}
+}
+
+func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
+
+	ai := combat.AttackInfo{
+		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+		ActorIndex:         c.Index,
+		AttackTag:          combat.AttackTagNormal,
+		ICDTag:             combat.ICDTagNormalAttack,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               shunsuiken[c.NormalCounter][c.TalentLvlSkill()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.03 * 60,
+		CanBeDefenseHalted: true,
+	}
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
+
+	defer c.AdvanceNormalIndex()
+
+	return action.ActionInfo{
+		Frames: func(next action.Action) int {
+			return frames.AtkSpdAdjust(shunsuikenFrames[next], c.Stat(attributes.AtkSpd))
+		},
+		AnimationLength: shunsuikenFrames[action.InvalidAction],
+		CanQueueAfter:   shunsuikenHitmark,
 		State:           action.NormalAttackState,
 	}
 }

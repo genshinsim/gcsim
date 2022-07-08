@@ -20,10 +20,13 @@ type char struct {
 	stacks            int
 	stacksMax         int
 	shunsuikenCounter int
-	particleICD       int
-	a4ICD             int
 	c6ready           bool
 }
+
+const (
+	a4ICDKey       = "ayato-a4-icd"
+	particleICDKey = "ayato-particle-icd"
+)
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
 	c := char{}
@@ -38,8 +41,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.NormalHitNum = normalHitNum
 
 	c.shunsuikenCounter = 3
-	c.particleICD = 0
-	c.a4ICD = 0
 	c.c6ready = false
 
 	c.stacksMax = 4
@@ -71,7 +72,7 @@ func (c *char) Init() error {
 func (c *char) AdvanceNormalIndex() {
 	c.NormalCounter++
 
-	if c.Core.Status.Duration("soukaikanka") > 0 {
+	if c.StatusIsActive(skillBuffKey) {
 		if c.NormalCounter == c.shunsuikenCounter {
 			c.NormalCounter = 0
 		}
@@ -87,7 +88,7 @@ func (c *char) AdvanceNormalIndex() {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.Core.Status.Duration("soukaikanka") > 0 {
+	if c.StatusIsActive(skillBuffKey) {
 		switch ai.AttackTag {
 		case combat.AttackTagNormal:
 		case combat.AttackTagExtra:
@@ -98,7 +99,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		//add namisen stack
 		flatdmg := (c.Base.HP*(1+ds.Stats[attributes.HPP]) + ds.Stats[attributes.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
 		ai.FlatDmg += flatdmg
-		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index, "damage_added", flatdmg, "stacks", c.stacks, "expiry", c.Core.Status.Duration("soukaikanka"))
+		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index, "damage_added", flatdmg, "stacks", c.stacks, "expiry", c.StatusExpiry(skillBuffKey))
 	}
 	return ds
 }

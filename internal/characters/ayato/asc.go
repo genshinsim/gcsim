@@ -25,7 +25,7 @@ func (c *char) a4task() {
 	if c.Core.Player.Active() == c.Index {
 		return
 	}
-	if c.Core.F < c.a4ICD {
+	if c.StatusIsActive(a4ICDKey) {
 		return
 	}
 	if c.Energy >= 40 {
@@ -33,5 +33,5 @@ func (c *char) a4task() {
 	}
 	c.AddEnergy("ayato-a4", 2)
 	c.Core.Tasks.Add(c.a4task, 60)
-	c.a4ICD = c.Core.F + 60
+	c.AddStatus(a4ICDKey, 60, true)
 }
