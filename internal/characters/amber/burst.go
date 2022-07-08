@@ -50,7 +50,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m[attributes.ATKP] = 0.15
 		for _, active := range c.Core.Player.Chars() {
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("amber-c6", 900),
+				Base:         modifier.NewBaseWithHitlag("amber-c6", 900),
 				AffectedStat: attributes.ATKP,
 				Amount: func() ([]float64, bool) {
 					return m, true

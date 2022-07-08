@@ -26,7 +26,7 @@ func (c *char) a4(a combat.AttackCB) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.15
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("amber-a4", 600),
+		Base:         modifier.NewBaseWithHitlag("amber-a4", 600),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return m, true
