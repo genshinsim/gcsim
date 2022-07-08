@@ -50,7 +50,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 
 		c.Core.Player.RestoreStam(10)
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("ayaka-a4", 600),
+			Base:         modifier.NewBaseWithHitlag("ayaka-a4", 600),
 			AffectedStat: attributes.CryoP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -60,15 +60,17 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), dashHitmark+f, dashHitmark+f, cb)
 
 	//add cryo infuse
-	// TODO: weapon infuse happen at dash end
-	c.Core.Player.AddWeaponInfuse(
-		c.Index,
-		"ayaka-dash",
-		attributes.Cryo,
-		300,
-		true,
-		combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-	)
+	//TODO: check weapon infuse timing; this SHOULD be ok?
+	c.Core.Tasks.Add(func() {
+		c.Core.Player.AddWeaponInfuse(
+			c.Index,
+			"ayaka-dash",
+			attributes.Cryo,
+			300,
+			true,
+			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+		)
+	}, dashHitmark+f)
 
 	// call default implementation to handle stamina
 	c.Character.Dash(p)

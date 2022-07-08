@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.3
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("ayaka-a1", 360),
+		Base: modifier.NewBaseWithHitlag("ayaka-a1", 360),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			return m, atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagExtra
 		},

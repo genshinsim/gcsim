@@ -16,7 +16,6 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	icdC1          int
 	c6CDTimerAvail bool // Flag that controls whether the 0.5 C6 CD timer is available to be started
 }
 
@@ -32,7 +31,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
-	c.icdC1 = -1
 	c.c6CDTimerAvail = false
 
 	// Start with C6 ability active

@@ -9,6 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	c1ICDKey = "ayaka-c1-icd"
+)
+
 // Callback for Ayaka C1 that is attached to NA/CA hits
 // When Kamisato Ayaka's Normal or Charged Attacks deal Cryo DMG to opponents, it has a 50% chance of decreasing the CD of Kamisato Art: Hyouka by 0.3s.
 // This effect can occur once every 0.1s.
@@ -16,18 +20,17 @@ func (c *char) c1(a combat.AttackCB) {
 	if c.Base.Cons < 1 {
 		return
 	}
-
 	if a.AttackEvent.Info.Element != attributes.Cryo {
 		return
 	}
-	if c.icdC1 > c.Core.F {
+	if c.StatusIsActive(c1ICDKey) {
 		return
 	}
 	if c.Core.Rand.Float64() < .5 {
 		return
 	}
 	c.ReduceActionCooldown(action.ActionSkill, 18)
-	c.icdC1 = c.Core.F + 6
+	c.AddStatus(c1ICDKey, 6, true)
 }
 
 // Callback for Ayaka C4 that is attached to Burst hits
@@ -42,7 +45,7 @@ func (c *char) c4(a combat.AttackCB) {
 		return
 	}
 	e.AddDefMod(enemy.DefMod{
-		Base:  modifier.NewBase("ayaka-c4", 60*6),
+		Base:  modifier.NewBaseWithHitlag("ayaka-c4", 60*6),
 		Value: -0.3,
 	})
 }
@@ -58,10 +61,9 @@ func (c *char) c6(a combat.AttackCB) {
 	}
 	c.c6CDTimerAvail = false
 
-	c.Core.Tasks.Add(func() {
+	c.QueueCharTask(func() {
 		c.DeleteAttackMod("ayaka-c6")
-
-		c.Core.Tasks.Add(func() {
+		c.QueueCharTask(func() {
 			c.c6CDTimerAvail = true
 			c.c6AddBuff()
 		}, 600)
