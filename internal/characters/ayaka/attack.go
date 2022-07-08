@@ -11,7 +11,7 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = [][]int{{8}, {10}, {16}, {8, 15, 22}, {27}}
-var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.03}, {0.08}}
+var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.03}, {0}}
 
 const normalHitNum = 5
 
