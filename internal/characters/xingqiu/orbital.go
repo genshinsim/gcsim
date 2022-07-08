@@ -17,7 +17,8 @@ func (c *char) applyOrbital(duration int, delay int) {
 	//check if orbitals already active, if active extend duration
 	//other wise start first tick func
 	if !c.orbitalActive {
-		c.Core.Tasks.Add(c.orbitalTickTask(src), delay)
+		//use hitlag affected queue
+		c.QueueCharTask(c.orbitalTickTask(src), delay)
 		c.orbitalActive = true
 		c.Core.Log.NewEvent(
 			"orbital applied", glog.LogCharacterEvent, c.Index,
@@ -61,7 +62,7 @@ func (c *char) orbitalTickTask(src int) func() {
 		)
 
 		//queue up next instance
-		c.Core.Tasks.Add(c.orbitalTickTask(src), 135)
+		c.QueueCharTask(c.orbitalTickTask(src), 135)
 
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), -1, 1)
 	}

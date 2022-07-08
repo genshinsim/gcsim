@@ -16,6 +16,7 @@ var burstFrames []int
 const (
 	burstHitmark = 18
 	burstKey     = "xingqiuburst"
+	burstICDKey  = "xingqiu-burst-icd"
 )
 
 func init() {
@@ -143,7 +144,7 @@ func (c *char) summonSwordWave() {
 		c.nextRegen = false
 	}
 
-	c.burstSwordICD = c.Core.F + 60
+	c.AddStatus(burstICDKey, 60, true)
 }
 
 func (c *char) burstStateHook() {
@@ -158,14 +159,15 @@ func (c *char) burstStateHook() {
 			return false
 		}
 		//ignore if on ICD
-		if c.burstSwordICD > c.Core.F {
+		if c.StatusIsActive(burstICDKey) {
 			return false
 		}
 		//this should start a new ticker if not on ICD and state is correct
 		c.summonSwordWave()
-		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index, "state", next, "icd", c.burstSwordICD)
+		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index, "state", next, "icd", c.StatusExpiry(burstICDKey))
 		c.burstTickSrc = c.Core.F
-		c.Core.Tasks.Add(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
+		//use the hitlag affected queue for this
+		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
 
 		return false
 	}, "xq-burst-animation-check")
@@ -187,10 +189,11 @@ func (c *char) burstTickerFunc(src int) func() {
 			c.Core.Log.NewEvent("xq burst tick check stopped, not normal state", glog.LogCharacterEvent, c.Index, "src", src, "state", state)
 			return
 		}
-		c.Core.Log.NewEvent("xq burst triggered from ticker", glog.LogCharacterEvent, c.Index, "src", src, "state", state, "icd", c.burstSwordICD)
+		c.Core.Log.NewEvent("xq burst triggered from ticker", glog.LogCharacterEvent, c.Index, "src", src, "state", state, "icd", c.StatusExpiry(burstICDKey))
 		//we can trigger a wave here b/c we're in normal state still and src is still the same
 		c.summonSwordWave()
 		//in theory this should not hit an icd?
-		c.Core.Tasks.Add(c.burstTickerFunc(src), 60) //check every 1sec
+		//use the hitlag affected queue for this
+		c.QueueCharTask(c.burstTickerFunc(src), 60) //check every 1sec
 	}
 }
