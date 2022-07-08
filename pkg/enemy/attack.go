@@ -52,7 +52,7 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	//check for hitlag
 	if e.Core.Combat.EnableHitlag {
 		willapply := true
-		if atk.Info.HeadshotOnly {
+		if atk.Info.HitlagOnHeadshotOnly {
 			willapply = atk.Info.HitWeakPoint
 		}
 		dur := atk.Info.HitlagHaltFrames
