@@ -90,8 +90,8 @@ func (c *char) c6() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Lupus Fulguris",
-			AttackTag:  combat.AttackTagNormal, // or combat.AttackTagNone?
-			ICDTag:     combat.ICDTagNormalAttack,
+			AttackTag:  combat.AttackTagNone, // TODO: it has another tag?
+			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
