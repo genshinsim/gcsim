@@ -89,7 +89,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 
 	//check if we need to log
 	if c.Core.Flags.LogDebug {
-		evt.WriteOld(debug...)
+		evt.WriteBuildMsg(debug...)
 		evt.Write("final_stats", attributes.PrettyPrintStatsSlice(s.Stats[:]))
 		if inf != attributes.NoElement {
 			evt.Write("infused_ele", inf.String())

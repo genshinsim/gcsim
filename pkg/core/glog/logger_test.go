@@ -22,7 +22,7 @@ func TestEventWriteKeyOnlyPanic(t *testing.T) {
 	}()
 
 	//this should panic
-	e.WriteOld("keyonly")
+	e.WriteBuildMsg("keyonly")
 
 }
 
@@ -42,7 +42,7 @@ func TestEventWriteNonStringKeyPanic(t *testing.T) {
 	}()
 
 	//this should panic
-	e.WriteOld(1)
+	e.WriteBuildMsg(1)
 
 }
 

@@ -89,7 +89,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			Write("amp", &amp).
 			Write("abil", cpy.Info.Abil).
 			Write("source_frame", cpy.SourceFrame)
-		evt.WriteOld(cpy.Snapshot.Logs...)
+		evt.WriteBuildMsg(cpy.Snapshot.Logs...)
 
 		if !cpy.Info.SourceIsSim {
 			if cpy.Info.ActorIndex < 0 {
