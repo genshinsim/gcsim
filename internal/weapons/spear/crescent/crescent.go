@@ -35,7 +35,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		c.Log.NewEvent("crescent pike active", glog.LogWeaponEvent, char.Index, "expiry", c.F+300)
+		c.Log.NewEvent("crescent pike active", glog.LogWeaponEvent, char.Index).
+			Write("expiry", c.F+300)
 		active = c.F + 300
 
 		return false

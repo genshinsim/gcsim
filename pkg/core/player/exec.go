@@ -57,7 +57,9 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	case action.ActionCharge: //require special calc for stam
 		amt, ok := stamCheck(t, param)
 		if !ok {
-			p.log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1, "have", p.Stam, "cost", amt)
+			p.log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
+				Write("have", p.Stam).
+				Write("cost", amt)
 			return ErrActionNotReady
 		}
 		//use stam
@@ -69,7 +71,9 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		//dash handles it in the action itself
 		amt, ok := stamCheck(t, param)
 		if !ok {
-			p.log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1, "have", p.Stam, "cost", amt)
+			p.log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
+				Write("have", p.Stam).
+				Write("cost", amt)
 			return ErrActionNotReady
 		}
 		p.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
@@ -160,8 +164,6 @@ func (p *Handler) useAbility(
 		glog.LogActionEvent,
 		p.active,
 		"executed ", t.String(),
-	).Write(
-		"action", t.String(),
-	)
+	).Write("action", t.String())
 
 }

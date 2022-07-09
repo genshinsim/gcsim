@@ -49,7 +49,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		damageAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * defPer
 		atk.Info.FlatDmg += damageAdd
 
-		c.Log.NewEvent("Cinnabar Spindle proc dmg add", glog.LogPreDamageMod, char.Index, "damage_added", damageAdd, "lastproc", effectLastProc, "effect_ends_at", effectDurationExpiry, "effect_icd_ends_at", effectICDExpiry)
+		c.Log.NewEvent("Cinnabar Spindle proc dmg add", glog.LogPreDamageMod, char.Index).
+			Write("damage_added", damageAdd).
+			Write("lastproc", effectLastProc).
+			Write("effect_ends_at", effectDurationExpiry).
+			Write("effect_icd_ends_at", effectICDExpiry)
 
 		// TODO: Assumes that the ICD starts after the last duration ends
 		effectICDExpiry = c.F + 6 + 90

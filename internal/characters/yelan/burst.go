@@ -51,7 +51,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Status.Add(c6Status, 20*60)
 		c.c6count = 0
 	}
-	c.Core.Log.NewEvent("burst activated", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+15*60)
+	c.Core.Log.NewEvent("burst activated", glog.LogCharacterEvent, c.Index).
+		Write("expiry", c.Core.F+15*60)
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(6)
@@ -126,7 +127,9 @@ func (c *char) burstStateHook() {
 		}
 		//this should start a new ticker if not on ICD and state is correct
 		c.summonExquisiteThrow()
-		c.Core.Log.NewEvent("yelan burst on state change", glog.LogCharacterEvent, c.Index, "state", next, "icd", c.burstDiceICD)
+		c.Core.Log.NewEvent("yelan burst on state change", glog.LogCharacterEvent, c.Index).
+			Write("state", next).
+			Write("icd", c.burstDiceICD)
 		c.burstTickSrc = c.Core.F
 		c.Core.Tasks.Add(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
 
@@ -141,16 +144,23 @@ func (c *char) burstTickerFunc(src int) func() {
 			return
 		}
 		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("yelan burst tick check ignored, src diff", glog.LogCharacterEvent, c.Index, "src", src, "new src", c.burstTickSrc)
+			c.Core.Log.NewEvent("yelan burst tick check ignored, src diff", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("new src", c.burstTickSrc)
 			return
 		}
 		//stop if we are no longer in normal animation state
 		state := c.Core.Player.CurrentState()
 		if state != action.NormalAttackState {
-			c.Core.Log.NewEvent("yelan burst tick check stopped, not normal state", glog.LogCharacterEvent, c.Index, "src", src, "state", state)
+			c.Core.Log.NewEvent("yelan burst tick check stopped, not normal state", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("state", state)
 			return
 		}
-		c.Core.Log.NewEvent("yelan burst triggered from ticker", glog.LogCharacterEvent, c.Index, "src", src, "state", state, "icd", c.burstDiceICD)
+		c.Core.Log.NewEvent("yelan burst triggered from ticker", glog.LogCharacterEvent, c.Index).
+			Write("src", src).
+			Write("state", state).
+			Write("icd", c.burstDiceICD)
 		//we can trigger a wave here b/c we're in normal state still and src is still the same
 		c.summonExquisiteThrow()
 		//in theory this should not hit an icd?

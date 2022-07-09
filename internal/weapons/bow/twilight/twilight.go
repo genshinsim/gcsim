@@ -60,7 +60,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		icd = c.F + 420
 		cycle++
 		cycle = cycle % 3
-		c.Log.NewEvent("fading twillight cycle changed", glog.LogWeaponEvent, char.Index, "cycle", cycle, "next cycle", icd)
+		c.Log.NewEvent("fading twillight cycle changed", glog.LogWeaponEvent, char.Index).
+			Write("cycle", cycle).
+			Write("next cycle", icd)
 
 		return false
 	}, fmt.Sprintf("fadingtwilight-%v", char.Base.Name))

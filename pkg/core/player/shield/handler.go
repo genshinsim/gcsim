@@ -57,12 +57,22 @@ func (s *Handler) Add(shd Shield) {
 		}
 	}
 	if ind > -1 {
-		s.log.NewEvent("shield overridden", glog.LogShieldEvent, -1, "overwrite", true, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
+		s.log.NewEvent("shield overridden", glog.LogShieldEvent, -1).
+			Write("overwrite", true).
+			Write("name", shd.Desc()).
+			Write("hp", shd.CurrentHP()).
+			Write("ele", shd.Element()).
+			Write("expiry", shd.Expiry())
 		s.shields[ind].OnOverwrite()
 		s.shields[ind] = shd
 	} else {
 		s.shields = append(s.shields, shd)
-		s.log.NewEvent("shield added", glog.LogShieldEvent, -1, "overwrite", false, "name", shd.Desc(), "hp", shd.CurrentHP(), "ele", shd.Element(), "expiry", shd.Expiry())
+		s.log.NewEvent("shield added", glog.LogShieldEvent, -1).
+			Write("overwrite", false).
+			Write("name", shd.Desc()).
+			Write("hp", shd.CurrentHP()).
+			Write("ele", shd.Element()).
+			Write("expiry", shd.Expiry())
 	}
 	s.events.Emit(event.OnShielded, shd)
 }
@@ -91,7 +101,9 @@ func (s *Handler) Tick() {
 	for _, v := range s.shields {
 		if v.Expiry() == *s.f {
 			v.OnExpire()
-			s.log.NewEvent("shield expired", glog.LogShieldEvent, -1, "name", v.Desc(), "hp", v.CurrentHP())
+			s.log.NewEvent("shield expired", glog.LogShieldEvent, -1).
+				Write("name", v.Desc()).
+				Write("hp", v.CurrentHP())
 		} else {
 			s.shields[n] = v
 			n++

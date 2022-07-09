@@ -13,7 +13,8 @@ func (c *char) c4() {
 			return false
 		}
 		c.Core.Status.Add("beidouc4", 600)
-		c.Core.Log.NewEvent("c4 triggered on damage", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+600)
+		c.Core.Log.NewEvent("c4 triggered on damage", glog.LogCharacterEvent, c.Index).
+			Write("expiry", c.Core.F+600)
 		return false
 	}, "beidouc4")
 
@@ -30,7 +31,8 @@ func (c *char) c4() {
 			return false
 		}
 
-		c.Core.Log.NewEvent("c4 proc'd on attack", glog.LogCharacterEvent, c.Index, "char", c.Index)
+		c.Core.Log.NewEvent("c4 proc'd on attack", glog.LogCharacterEvent, c.Index).
+			Write("char", c.Index)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Beidou C4",

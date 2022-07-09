@@ -54,7 +54,8 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			// Activate
 			// TODO: cd for proc?
 			core.Status.Add("archaic", 10*60)
-			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index, "ele", s.element)
+			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index).
+				Write("ele", s.element)
 
 			m[attributes.PyroP] = 0
 			m[attributes.HydroP] = 0

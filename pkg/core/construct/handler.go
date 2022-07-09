@@ -32,28 +32,27 @@ func (h *Handler) New(c Construct, refresh bool) {
 		}
 	}
 	if ind > -1 {
-		h.log.NewEventBuildMsg(
-			glog.LogConstructEvent,
-			-1,
-			"construct replaced - new: ", c.Type().String(),
-		).Write(
-			"key", h.constructs[ind].Key(),
-			"prev type", h.constructs[ind].Type(),
-			"next type", c.Type(),
-		)
+		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct replaced - new: ", c.Type().String()).
+			Write("key", h.constructs[ind].Key()).
+			Write("prev type", h.constructs[ind].Type()).
+			Write("next type", c.Type())
 		h.constructs[ind].OnDestruct()
 		h.constructs[ind] = c
 
 	} else {
 		//add this one to the end
 		h.constructs = append(h.constructs, c)
-		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct created: ", c.Type().String()).Write("key", c.Key(), "type", c.Type())
+		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct created: ", c.Type().String()).
+			Write("key", c.Key()).
+			Write("type", c.Type())
 	}
 
 	//if length > 3, then destruct the beginning ones
 	for i := 0; i < len(h.constructs)-3; i++ {
 		h.constructs[i].OnDestruct()
-		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+h.constructs[i].Type().String()).Write("key", h.constructs[i].Key(), "type", h.constructs[i].Type())
+		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+h.constructs[i].Type().String()).
+			Write("key", h.constructs[i].Key()).
+			Write("type", h.constructs[i].Type())
 		h.constructs[i] = nil
 	}
 
@@ -80,13 +79,9 @@ func (h *Handler) NewNoLimitCons(c Construct, refresh bool) {
 		if ind > -1 {
 			//destroy the existing by setting expiry
 			h.consNoLimit[ind].OnDestruct()
-			h.log.NewEventBuildMsg(
-				glog.LogConstructEvent, -1,
-				"construct destroyed: "+h.consNoLimit[ind].Type().String(),
-			).Write(
-				"key", h.consNoLimit[ind].Key(),
-				"type", h.consNoLimit[ind].Type(),
-			)
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+h.consNoLimit[ind].Type().String()).
+				Write("key", h.consNoLimit[ind].Key()).
+				Write("type", h.consNoLimit[ind].Type())
 			h.consNoLimit[ind] = nil
 
 		}
@@ -100,13 +95,9 @@ func (h *Handler) Tick() {
 	for _, v := range h.constructs {
 		if v.Expiry() == *h.f {
 			v.OnDestruct()
-			h.log.NewEventBuildMsg(
-				glog.LogConstructEvent, -1,
-				"construct destroyed: "+v.Type().String(),
-			).Write(
-				"key", v.Key(),
-				"type", v.Type(),
-			)
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+v.Type().String()).
+				Write("key", v.Key()).
+				Write("type", v.Type())
 		} else {
 			h.constructs[n] = v
 			n++
@@ -117,13 +108,9 @@ func (h *Handler) Tick() {
 	for i, v := range h.consNoLimit {
 		if v.Expiry() == *h.f {
 			h.consNoLimit[i].OnDestruct()
-			h.log.NewEventBuildMsg(
-				glog.LogConstructEvent, -1,
-				"construct destroyed: "+v.Type().String(),
-			).Write(
-				"key", v.Key(),
-				"type", v.Type(),
-			)
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+v.Type().String()).
+				Write("key", v.Key()).
+				Write("type", v.Type())
 		} else {
 			h.consNoLimit[n] = v
 			n++
@@ -213,13 +200,9 @@ func (h *Handler) Destroy(key int) bool {
 		if v.Key() == key {
 			v.OnDestruct()
 			ok = true
-			h.log.NewEventBuildMsg(
-				glog.LogConstructEvent, -1,
-				"construct destroyed: "+v.Type().String(),
-			).Write(
-				"key", v.Key(),
-				"type", v.Type(),
-			)
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+v.Type().String()).
+				Write("key", v.Key()).
+				Write("type", v.Type())
 		} else {
 			h.constructs[n] = v
 			n++
@@ -234,13 +217,9 @@ func (h *Handler) Destroy(key int) bool {
 		if v.Key() == key {
 			h.consNoLimit[i].OnDestruct()
 			ok = true
-			h.log.NewEventBuildMsg(
-				glog.LogConstructEvent, -1,
-				"construct destroyed: "+v.Type().String(),
-			).Write(
-				"key", v.Key(),
-				"type", v.Type(),
-			)
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+v.Type().String()).
+				Write("key", v.Key()).
+				Write("type", v.Type())
 		} else {
 			h.consNoLimit[n] = v
 			n++

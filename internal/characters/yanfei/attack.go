@@ -39,7 +39,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			c.Tags["seal"]++
 		}
 		c.sealExpiry = c.Core.F + 600
-		c.Core.Log.NewEvent("yanfei gained a seal from normal attack", glog.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		c.Core.Log.NewEvent("yanfei gained a seal from normal attack", glog.LogCharacterEvent, c.Index).
+			Write("current_seals", c.Tags["seal"]).
+			Write("expiry", c.sealExpiry)
 		done = true
 	}
 

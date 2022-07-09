@@ -45,7 +45,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.AddStatMod("rosaria-a1", 300+skillHitmark, attributes.CR, func() ([]float64, bool) {
 			return m, true
 		})
-		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index, "ends_on", c.Core.F+300+skillHitmark)
+		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index).
+			Write("ends_on", c.Core.F+300+skillHitmark)
 	}
 
 	// Rosaria E is dynamic, so requires a second snapshot

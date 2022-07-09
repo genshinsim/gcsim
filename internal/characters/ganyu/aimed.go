@@ -47,7 +47,8 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	skip := 0
 	if c.Core.Status.Duration("ganyuc6") > 0 {
 		c.Core.Status.Delete("ganyuc6")
-		c.Core.Log.NewEvent("ganyu c6 proc used", glog.LogCharacterEvent, c.Index, "char", c.Index)
+		c.Core.Log.NewEvent("ganyu c6 proc used", glog.LogCharacterEvent, c.Index).
+			Write("char", c.Index)
 		// skip aimed charge time
 		skip = 83
 	}
@@ -59,7 +60,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		if c.Core.F < c.a1Expiry {
 			old := snap.Stats[attributes.CR]
 			snap.Stats[attributes.CR] += .20
-			c.Core.Log.NewEvent("a1 adding crit rate", glog.LogCharacterEvent, c.Index, "old", old, "new", snap.Stats[attributes.CR], "expiry", c.a1Expiry)
+			c.Core.Log.NewEvent("a1 adding crit rate", glog.LogCharacterEvent, c.Index).
+				Write("old", old).
+				Write("new", snap.Stats[attributes.CR]).
+				Write("expiry", c.a1Expiry)
 		}
 
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefSingleTarget(1, combat.TargettableEnemy), travel)

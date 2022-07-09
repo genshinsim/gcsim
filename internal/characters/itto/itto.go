@@ -64,7 +64,8 @@ func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
 		}
 		return 20
 	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index, "action", a.String())
+		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index).
+			Write("action", a.String())
 		return 0
 	}
 

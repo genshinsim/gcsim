@@ -42,12 +42,16 @@ func (t *Handler) Add(key string, dur int) {
 		a.expiry = *t.f + dur
 		a.evt.SetEnded(a.expiry)
 		t.status[key] = a
-		t.log.NewEvent("status refreshed", glog.LogStatusEvent, -1, "key", key, "expiry", *t.f+dur)
+		t.log.NewEvent("status refreshed", glog.LogStatusEvent, -1).
+			Write("key", key).
+			Write("expiry", *t.f+dur)
 		return
 	}
 
 	//otherwise create a new event
-	a.evt = t.log.NewEvent("status added", glog.LogStatusEvent, -1, "key", key, "expiry", *t.f+dur)
+	a.evt = t.log.NewEvent("status added", glog.LogStatusEvent, -1).
+		Write("key", key).
+		Write("expiry", *t.f+dur)
 	a.expiry = *t.f + dur
 	a.evt.SetEnded(a.expiry)
 
@@ -65,7 +69,9 @@ func (t *Handler) Extend(key string, dur int) {
 	a.expiry += dur
 	a.evt.SetEnded(a.expiry)
 	t.status[key] = a
-	t.log.NewEvent("status refreshed", glog.LogStatusEvent, -1, "key", key, "expiry", a.expiry)
+	t.log.NewEvent("status refreshed", glog.LogStatusEvent, -1).
+		Write("key", key).
+		Write("expiry", a.expiry)
 
 }
 
@@ -74,7 +80,8 @@ func (t *Handler) Delete(key string) {
 	a, ok := t.status[key]
 	if ok && a.expiry > *t.f {
 		a.evt.SetEnded(*t.f)
-		t.log.NewEvent("status deleted", glog.LogStatusEvent, -1, "key", key)
+		t.log.NewEvent("status deleted", glog.LogStatusEvent, -1).
+			Write("key", key)
 	}
 	delete(t.status, key)
 }

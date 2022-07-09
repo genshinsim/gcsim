@@ -95,7 +95,8 @@ func (s *Simulation) queueAndExec() error {
 			if s.queue.Action == action.ActionWait {
 				//wipe the action here, set skip
 				s.skip = s.queue.Param["f"]
-				s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active(), "f", s.queue.Param["f"])
+				s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active()).
+					Write("f", s.queue.Param["f"])
 				s.queue = nil
 				return nil
 			} else {

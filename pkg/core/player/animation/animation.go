@@ -90,16 +90,11 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 	h.lastAct = act
 	if h.debug {
 		l := h.log.NewEvent(fmt.Sprintf("%v started", act.String()), glog.LogHitlagEvent, char)
-		l.Write(
-			"AnimationLength", evt.AnimationLength,
-			"CanQueueAfter", evt.CanQueueAfter,
-			"State", evt.State.String(),
-		)
+		l.Write("AnimationLength", evt.AnimationLength).
+			Write("CanQueueAfter", evt.CanQueueAfter).
+			Write("State", evt.State.String())
 		for i, v := range evt.CachedFrames {
-			l.Write(
-				action.Action(i).String(),
-				v,
-			)
+			l.Write(action.Action(i).String(), v)
 		}
 	}
 }

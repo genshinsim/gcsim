@@ -35,7 +35,9 @@ func (c *char) a1() {
 				})
 			}
 
-			c.Core.Log.NewEvent("sucrose a1 triggered", glog.LogCharacterEvent, c.Index, "reaction", "swirl-"+ele.String(), "expiry", c.Core.F+dur)
+			c.Core.Log.NewEvent("sucrose a1 triggered", glog.LogCharacterEvent, c.Index).
+				Write("reaction", "swirl-"+ele.String()).
+				Write("expiry", c.Core.F+dur)
 			return false
 		}
 	}
@@ -61,5 +63,7 @@ func (c *char) a4() {
 		})
 	}
 
-	c.Core.Log.NewEvent("sucrose a4 triggered", glog.LogCharacterEvent, c.Index, "em snapshot", m[attributes.EM], "expiry", c.Core.F+dur)
+	c.Core.Log.NewEvent("sucrose a4 triggered", glog.LogCharacterEvent, c.Index).
+		Write("em snapshot", m[attributes.EM]).
+		Write("expiry", c.Core.F+dur)
 }

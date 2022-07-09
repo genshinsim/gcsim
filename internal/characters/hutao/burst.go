@@ -50,7 +50,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//[2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
 	if burstHitmark > c.Core.Status.Duration("paramita") && c.Core.Status.Duration("paramita") > 0 {
 		c.Core.Status.Add("paramita", burstHitmark) //extend this to barely cover the burst
-		c.Core.Log.NewEvent("Paramita status extension for burst", glog.LogCharacterEvent, c.Index, "new_duration", c.Core.Status.Duration("paramita"))
+		c.Core.Log.NewEvent("Paramita status extension for burst", glog.LogCharacterEvent, c.Index).
+			Write("new_duration", c.Core.Status.Duration("paramita"))
 	}
 
 	if c.Core.Status.Duration("paramita") > 0 && c.Base.Cons >= 2 {

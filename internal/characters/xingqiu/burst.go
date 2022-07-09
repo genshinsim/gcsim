@@ -47,7 +47,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	dur = dur * 60
 	c.Core.Status.Add("xqburst", dur+33) // add 33f for anim
-	c.Core.Log.NewEvent("Xingqiu burst activated", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+dur+33)
+	c.Core.Log.NewEvent("Xingqiu burst activated", glog.LogCharacterEvent, c.Index).
+		Write("expiry", c.Core.F+dur+33)
 
 	orbital, ok := p["orbital"]
 	if !ok {
@@ -156,7 +157,9 @@ func (c *char) burstStateHook() {
 		}
 		//this should start a new ticker if not on ICD and state is correct
 		c.summonSwordWave()
-		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index, "state", next, "icd", c.burstSwordICD)
+		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index).
+			Write("state", next).
+			Write("icd", c.burstSwordICD)
 		c.burstTickSrc = c.Core.F
 		c.Core.Tasks.Add(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
 
@@ -171,16 +174,23 @@ func (c *char) burstTickerFunc(src int) func() {
 			return
 		}
 		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("xq burst tick check ignored, src diff", glog.LogCharacterEvent, c.Index, "src", src, "new src", c.burstTickSrc)
+			c.Core.Log.NewEvent("xq burst tick check ignored, src diff", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("new src", c.burstTickSrc)
 			return
 		}
 		//stop if we are no longer in normal animation state
 		state := c.Core.Player.CurrentState()
 		if state != action.NormalAttackState {
-			c.Core.Log.NewEvent("xq burst tick check stopped, not normal state", glog.LogCharacterEvent, c.Index, "src", src, "state", state)
+			c.Core.Log.NewEvent("xq burst tick check stopped, not normal state", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("state", state)
 			return
 		}
-		c.Core.Log.NewEvent("xq burst triggered from ticker", glog.LogCharacterEvent, c.Index, "src", src, "state", state, "icd", c.burstSwordICD)
+		c.Core.Log.NewEvent("xq burst triggered from ticker", glog.LogCharacterEvent, c.Index).
+			Write("src", src).
+			Write("state", state).
+			Write("icd", c.burstSwordICD)
 		//we can trigger a wave here b/c we're in normal state still and src is still the same
 		c.summonSwordWave()
 		//in theory this should not hit an icd?

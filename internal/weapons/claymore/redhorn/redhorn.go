@@ -47,7 +47,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		baseDmgAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * nacaBoost
 		atk.Info.FlatDmg += baseDmgAdd
-		c.Log.NewEvent("Redhorn proc dmg add", glog.LogPreDamageMod, char.Index, "base_added_dmg", baseDmgAdd)
+		c.Log.NewEvent("Redhorn proc dmg add", glog.LogPreDamageMod, char.Index).
+			Write("base_added_dmg", baseDmgAdd)
 		return false
 	}, fmt.Sprintf("redhorn-%v", char.Base.Name))
 

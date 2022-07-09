@@ -64,7 +64,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			icd = c.F + 48
 			char.ReduceActionCooldown(action.ActionSkill, 60)
-			c.Log.NewEvent("thunderfury 4pc proc", glog.LogArtifactEvent, char.Index, "reaction", atk.Info.Abil, "new cd", char.Cooldown(action.ActionSkill))
+			c.Log.NewEvent("thunderfury 4pc proc", glog.LogArtifactEvent, char.Index).
+				Write("reaction", atk.Info.Abil).
+				Write("new cd", char.Cooldown(action.ActionSkill))
 			return false
 		}
 

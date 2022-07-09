@@ -50,7 +50,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddStatMod("skyward blade", 720, attributes.NoStat, func() ([]float64, bool) {
 			return atkspdBuff, true
 		})
-		c.Log.NewEvent("Skyward Blade activated", glog.LogWeaponEvent, char.Index, "expiring ", dur)
+		c.Log.NewEvent("Skyward Blade activated", glog.LogWeaponEvent, char.Index).
+			Write("expiring ", dur)
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Name))
 

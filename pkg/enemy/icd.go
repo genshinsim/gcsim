@@ -27,7 +27,13 @@ func (t *Enemy) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) b
 		t.icdTagCounter[char][tag] = 0
 	}
 
-	t.Core.Log.NewEvent("ele icd check", glog.LogICDEvent, char, "grp", grp, "target", t.TargetIndex, "tag", tag, "counter", val, "val", combat.ICDGroupEleApplicationSequence[grp][val], "group on timer", x)
+	t.Core.Log.NewEvent("ele icd check", glog.LogICDEvent, char).
+		Write("grp", grp).
+		Write("target", t.TargetIndex).
+		Write("tag", tag).
+		Write("counter", val).
+		Write("val", combat.ICDGroupEleApplicationSequence[grp][val]).
+		Write("group on timer", x)
 	//true if group seq is 1
 	return combat.ICDGroupEleApplicationSequence[grp][val] == 1
 }
@@ -57,9 +63,14 @@ func (t *Enemy) ResetDamageCounterAfterDelay(tag combat.ICDTag, grp combat.ICDGr
 		//set the counter back to 0
 		t.icdDamageTagCounter[char][tag] = 0
 		t.icdDamageTagOnTimer[char][tag] = false
-		t.Core.Log.NewEvent("damage counter reset", glog.LogICDEvent, char, "tag", tag, "grp", grp)
+		t.Core.Log.NewEvent("damage counter reset", glog.LogICDEvent, char).
+			Write("tag", tag).
+			Write("grp", grp)
 	}, combat.ICDGroupResetTimer[grp]-1)
-	t.Core.Log.NewEvent("damage reset timer set", glog.LogICDEvent, char, "tag", tag, "grp", grp, "reset", t.Core.F+combat.ICDGroupResetTimer[grp]-1)
+	t.Core.Log.NewEvent("damage reset timer set", glog.LogICDEvent, char).
+		Write("tag", tag).
+		Write("grp", grp).
+		Write("reset", t.Core.F+combat.ICDGroupResetTimer[grp]-1)
 }
 
 func (t *Enemy) ResetTagCounterAfterDelay(tag combat.ICDTag, grp combat.ICDGroup, char int) {
@@ -67,7 +78,12 @@ func (t *Enemy) ResetTagCounterAfterDelay(tag combat.ICDTag, grp combat.ICDGroup
 		//set the counter back to 0
 		t.icdTagCounter[char][tag] = 0
 		t.icdTagOnTimer[char][tag] = false
-		t.Core.Log.NewEvent("ele app counter reset", glog.LogICDEvent, char, "tag", tag, "grp", grp)
+		t.Core.Log.NewEvent("ele app counter reset", glog.LogICDEvent, char).
+			Write("tag", tag).
+			Write("grp", grp)
 	}, combat.ICDGroupResetTimer[grp]-1)
-	t.Core.Log.NewEvent("ele app reset timer set", glog.LogICDEvent, char, "tag", tag, "grp", grp, "reset", t.Core.F+combat.ICDGroupResetTimer[grp]-1)
+	t.Core.Log.NewEvent("ele app reset timer set", glog.LogICDEvent, char).
+		Write("tag", tag).
+		Write("grp", grp).
+		Write("reset", t.Core.F+combat.ICDGroupResetTimer[grp]-1)
 }

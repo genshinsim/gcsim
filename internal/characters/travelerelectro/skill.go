@@ -80,7 +80,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.abundanceAmulets++
 		c.SetTag("generated", c.abundanceAmulets)
 
-		c.Core.Log.NewEvent("travelerelectro abundance amulet generated", glog.LogCharacterEvent, c.Index, "amulets", c.abundanceAmulets)
+		c.Core.Log.NewEvent("travelerelectro abundance amulet generated", glog.LogCharacterEvent, c.Index).
+			Write("amulets", c.abundanceAmulets)
 	}
 
 	for i := 0; i < hits; i++ {

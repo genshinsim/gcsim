@@ -54,7 +54,9 @@ func (c *char) c6() {
 			c.ResetActionCooldown(action.ActionSkill)
 
 			c.Core.Status.Add("xiaoc6", 60)
-			c.Core.Log.NewEvent("Xiao C6 activated", glog.LogCharacterEvent, c.Index, "new E charges", c.Tags["eCharge"], "expiry", c.Core.F+60)
+			c.Core.Log.NewEvent("Xiao C6 activated", glog.LogCharacterEvent, c.Index).
+				Write("new E charges", c.Tags["eCharge"]).
+				Write("expiry", c.Core.F+60)
 
 			c.c6Count = 0
 			return false

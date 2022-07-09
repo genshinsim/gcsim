@@ -60,6 +60,8 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 
 	//add 0.2% dmg for every EM
 	ds.Stats[attributes.DmgP] += 0.002 * ds.Stats[attributes.EM]
-	c.Core.Log.NewEvent("c6 adding dmg", glog.LogCharacterEvent, c.Index, "em", ds.Stats[attributes.EM], "final", ds.Stats[attributes.DmgP])
+	c.Core.Log.NewEvent("c6 adding dmg", glog.LogCharacterEvent, c.Index).
+		Write("em", ds.Stats[attributes.EM]).
+		Write("final", ds.Stats[attributes.DmgP])
 	return ds
 }

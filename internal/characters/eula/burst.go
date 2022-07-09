@@ -32,7 +32,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// lights up 9.5s from cast
 	c.Core.Status.Add("eulaq", 9*60+30)
-	c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index, "stacks", c.burstCounter, "expiry", c.Core.Status.Duration("eulaq"))
+	c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index).
+		Write("stacks", c.burstCounter).
+		Write("expiry", c.Core.Status.Duration("eulaq"))
 
 	//add initial damage
 	ai := combat.AttackInfo{
@@ -54,7 +56,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		v++
 	}
 	c.Tags["grimheart"] = v
-	c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index, "current count", v)
+	c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
+		Write("current count", v)
 
 	// lightfall hitmark is 600f from cast
 	c.Core.Tasks.Add(func() {
@@ -93,7 +96,9 @@ func (c *char) triggerBurst() {
 		Mult:       burstExplodeBase[c.TalentLvlBurst()] + burstExplodeStack[c.TalentLvlBurst()]*float64(stacks),
 	}
 
-	c.Core.Log.NewEvent("eula burst triggering", glog.LogCharacterEvent, c.Index, "stacks", stacks, "mult", ai.Mult)
+	c.Core.Log.NewEvent("eula burst triggering", glog.LogCharacterEvent, c.Index).
+		Write("stacks", stacks).
+		Write("mult", ai.Mult)
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), lightfallHitmark, lightfallHitmark)
 	c.Core.Status.Delete("eulaq")
@@ -122,11 +127,13 @@ func (c *char) burstStacks() {
 
 		//add to counter
 		c.burstCounter++
-		c.Core.Log.NewEvent("eula burst add stack", glog.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
+		c.Core.Log.NewEvent("eula burst add stack", glog.LogCharacterEvent, c.Index).
+			Write("stack count", c.burstCounter)
 		//check for c6
 		if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 			c.burstCounter++
-			c.Core.Log.NewEvent("eula c6 add additional stack", glog.LogCharacterEvent, c.Index, "stack count", c.burstCounter)
+			c.Core.Log.NewEvent("eula c6 add additional stack", glog.LogCharacterEvent, c.Index).
+				Write("stack count", c.burstCounter)
 		}
 		c.burstCounterICD = c.Core.F + 6
 		return false

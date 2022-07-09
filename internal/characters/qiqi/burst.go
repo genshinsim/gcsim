@@ -114,10 +114,11 @@ func (c *char) onNACAHitHook() {
 					"Qiqi A4 Adding Talisman",
 					glog.LogCharacterEvent,
 					c.Index,
-					"target", e.Index(),
-					"talisman_expiry", e.GetTag(talismanKey),
-					"c4_icd_expiry", c.c4ICDExpiry,
-				)
+				).
+					Write("target", e.Index()).
+					Write("talisman_expiry", e.GetTag(talismanKey)).
+					Write("c4_icd_expiry", c.c4ICDExpiry)
+
 			}
 		}
 

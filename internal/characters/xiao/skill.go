@@ -62,7 +62,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Base.Cons < 6 || c.Core.Status.Duration("xiaoc6") == 0 {
 		c.SetCD(action.ActionSkill, 600)
 	} else {
-		c.Core.Log.NewEvent("xiao c6 active, Xiao E used, no charge used, no CD", glog.LogCharacterEvent, c.Index, "c6 remaining duration", c.Core.Status.Duration("xiaoc6"))
+		c.Core.Log.NewEvent("xiao c6 active, Xiao E used, no charge used, no CD", glog.LogCharacterEvent, c.Index).
+			Write("c6 remaining duration", c.Core.Status.Duration("xiaoc6"))
 	}
 
 	return action.ActionInfo{

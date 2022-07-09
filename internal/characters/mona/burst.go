@@ -42,7 +42,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		//bubble is applied to each target on a per target basis
 		//lasts 8 seconds if not popped normally
 		t.SetTag(bubbleKey, c.Core.F+481) //1 frame extra so we don't run into problems breaking
-		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index, "char", c.Index)
+		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index).
+			Write("char", c.Index)
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(4, false, combat.TargettableEnemy), -1, burstHitmark, cb)
 

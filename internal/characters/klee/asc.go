@@ -15,7 +15,8 @@ func (c *char) a1(a combat.AttackCB) {
 	}
 	c.sparkICD = c.Core.F + 60*4
 	c.Core.Status.Add("kleespark", 60*30)
-	c.Core.Log.NewEvent("klee gained spark", glog.LogCharacterEvent, c.Index, "icd", c.sparkICD)
+	c.Core.Log.NewEvent("klee gained spark", glog.LogCharacterEvent, c.Index).
+		Write("icd", c.sparkICD)
 }
 
 func (c *char) a4() {

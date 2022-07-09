@@ -59,7 +59,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				return m, true
 			})
 
-			c.Log.NewEvent("ttds activated", glog.LogWeaponEvent, c.Player.Active(), "expiry", c.F+600)
+			c.Log.NewEvent("ttds activated", glog.LogWeaponEvent, c.Player.Active()).
+				Write("expiry", c.F+600)
 		}
 
 		return false

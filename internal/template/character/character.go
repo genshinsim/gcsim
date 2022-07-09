@@ -66,15 +66,13 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	var debug []interface{}
 
 	if c.Core.Flags.LogDebug {
-		evt = c.Core.Log.NewEvent(
-			a.Abil, glog.LogSnapshotEvent, c.Index,
-			"abil", a.Abil,
-			"mult", a.Mult,
-			"ele", a.Element.String(),
-			"durability", float64(a.Durability),
-			"icd_tag", a.ICDTag,
-			"icd_group", a.ICDGroup,
-		)
+		evt = c.Core.Log.NewEvent(a.Abil, glog.LogSnapshotEvent, c.Index).
+			Write("abil", a.Abil).
+			Write("mult", a.Mult).
+			Write("ele", a.Element.String()).
+			Write("durability", float64(a.Durability)).
+			Write("icd_tag", a.ICDTag).
+			Write("icd_group", a.ICDGroup)
 	}
 
 	//snapshot the stats
@@ -91,7 +89,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 
 	//check if we need to log
 	if c.Core.Flags.LogDebug {
-		evt.Write(debug...)
+		evt.WriteOld(debug...)
 		evt.Write("final_stats", attributes.PrettyPrintStatsSlice(s.Stats[:]))
 		if inf != attributes.NoElement {
 			evt.Write("infused_ele", inf.String())

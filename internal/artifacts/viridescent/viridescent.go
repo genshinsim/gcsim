@@ -70,7 +70,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				}
 
 				t.AddResistMod(key, 10*60, ele, -0.4)
-				c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index, "reaction", key, "char", char.Index)
+				c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index).
+					Write("reaction", key).
+					Write("char", char.Index)
 
 				return false
 			}
@@ -110,7 +112,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			t.AddResistMod(key, 10*60, ele, -0.4)
-			c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index, "reaction", key, "char", char.Index)
+			c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index).
+				Write("reaction", key).
+				Write("char", char.Index)
 
 			return false
 		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Name))

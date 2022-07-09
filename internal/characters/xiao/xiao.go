@@ -76,7 +76,10 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 			stacks = 5
 		}
 		ds.Stats[attributes.DmgP] += float64(stacks) * 0.05
-		c.Core.Log.NewEvent("a1 adding dmg %", glog.LogCharacterEvent, c.Index, "stacks", stacks, "final", ds.Stats[attributes.DmgP], "time since burst start", c.Core.F-c.qStarted)
+		c.Core.Log.NewEvent("a1 adding dmg %", glog.LogCharacterEvent, c.Index).
+			Write("stacks", stacks).
+			Write("final", ds.Stats[attributes.DmgP]).
+			Write("time since burst start", c.Core.F-c.qStarted)
 
 		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
 		// Also handle burst CA ICD change to share with Normal
@@ -91,7 +94,9 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		a.Element = attributes.Anemo
 		bonus := burstBonus[c.TalentLvlBurst()]
 		ds.Stats[attributes.DmgP] += bonus
-		c.Core.Log.NewEvent("xiao burst damage bonus", glog.LogCharacterEvent, c.Index, "bonus", bonus, "final", ds.Stats[attributes.DmgP])
+		c.Core.Log.NewEvent("xiao burst damage bonus", glog.LogCharacterEvent, c.Index).
+			Write("bonus", bonus).
+			Write("final", ds.Stats[attributes.DmgP])
 	}
 	return ds
 }

@@ -43,7 +43,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 			dur = c.F + 10*60
-			c.Log.NewEvent("maiden 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", dur)
+			c.Log.NewEvent("maiden 4pc proc", glog.LogArtifactEvent, char.Index).
+				Write("expiry", dur)
 			return false
 		}
 		c.Events.Subscribe(event.OnBurst, f, fmt.Sprintf("maiden-4pc-%v", char.Base.Name))

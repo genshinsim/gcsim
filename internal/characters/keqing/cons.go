@@ -19,7 +19,8 @@ func (c *char) c2() {
 		if c.Core.Rand.Float64() < 0.5 {
 			c.c2ICD = c.Core.F + 300
 			c.Core.QueueParticle("keqing", 1, attributes.Electro, 100)
-			c.Core.Log.NewEvent("keqing c2 proc'd", glog.LogCharacterEvent, c.Index, "next ready", c.c2ICD)
+			c.Core.Log.NewEvent("keqing c2 proc'd", glog.LogCharacterEvent, c.Index).
+				Write("next ready", c.c2ICD)
 		}
 		return false
 	}, "keqing-c2")

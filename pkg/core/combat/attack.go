@@ -54,20 +54,12 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			// TODO: Maybe want to add a separate set of log events for this?
 			//don't log this for target 0
 			if i > 0 {
-				h.log.NewEventBuildMsg(
-					glog.LogDebugEvent,
-					a.Info.ActorIndex,
-					"skipped ",
-					a.Info.Abil,
-					" ",
-					reason,
-				).Write(
-					"attack_tag", a.Info.AttackTag,
-					"applied_ele", a.Info.Element,
-					"dur", a.Info.Durability,
-					"target", i,
-					"shape", a.Pattern.Shape.String(),
-				)
+				h.log.NewEventBuildMsg(glog.LogDebugEvent, a.Info.ActorIndex, "skipped ", a.Info.Abil, " ", reason).
+					Write("attack_tag", a.Info.AttackTag).
+					Write("applied_ele", a.Info.Element).
+					Write("dur", a.Info.Durability).
+					Write("target", i).
+					Write("shape", a.Pattern.Shape.String())
 			}
 			continue
 		}
@@ -88,20 +80,16 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		var dmg float64
 		var crit bool
 
-		evt := h.log.NewEvent(
-			cpy.Info.Abil,
-			glog.LogDamageEvent,
-			cpy.Info.ActorIndex,
-			"target", i,
-			"attack-tag", cpy.Info.AttackTag,
-			"ele", cpy.Info.Element.String(),
-			"damage", &dmg,
-			"crit", &crit,
-			"amp", &amp,
-			"abil", cpy.Info.Abil,
-			"source_frame", cpy.SourceFrame,
-		)
-		evt.Write(cpy.Snapshot.Logs...)
+		evt := h.log.NewEvent(cpy.Info.Abil, glog.LogDamageEvent, cpy.Info.ActorIndex).
+			Write("target", i).
+			Write("attack-tag", cpy.Info.AttackTag).
+			Write("ele", cpy.Info.Element.String()).
+			Write("damage", &dmg).
+			Write("crit", &crit).
+			Write("amp", &amp).
+			Write("abil", cpy.Info.Abil).
+			Write("source_frame", cpy.SourceFrame)
+		evt.WriteOld(cpy.Snapshot.Logs...)
 
 		if !cpy.Info.SourceIsSim {
 			if cpy.Info.ActorIndex < 0 {
@@ -157,7 +145,9 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		if dur > 0 {
 			h.team.CombatByIndex(a.Info.ActorIndex).ApplyHitlag(a.Info.HitlagFactor, int(dur))
 			if h.debug {
-				h.log.NewEvent(fmt.Sprintf("%v applying hitlag: %v", a.Info.Abil, dur), glog.LogHitlagEvent, a.Info.ActorIndex, "duration", dur, "factor", a.Info.HitlagFactor)
+				h.log.NewEvent(fmt.Sprintf("%v applying hitlag: %v", a.Info.Abil, dur), glog.LogHitlagEvent, a.Info.ActorIndex).
+					Write("duration", dur).
+					Write("factor", a.Info.HitlagFactor)
 			}
 		}
 	}
