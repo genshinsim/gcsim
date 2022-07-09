@@ -139,6 +139,9 @@ func (c *char) burstActiveHook() {
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
+		if c.Core.Status.Duration("kokomiburst") == 0 {
+			return false
+		}
 		// snapshot burst damage bonus
 		if prev == c.Index {
 			c.swapEarlyF = c.Core.F

@@ -19,7 +19,9 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	c.SetCD(action.ActionSkill, 0) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
+	c.Core.Tasks.Add(func() {
+		c.ResetActionCooldown(action.ActionSkill) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
+	}, burstHitmark)
 	c.Core.Status.Add("razorburst", 15*60+burstHitmark)
 
 	ai := combat.AttackInfo{
