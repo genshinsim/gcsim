@@ -47,10 +47,10 @@ func (c *char) SkillPress() action.ActionInfo {
 		c.c4cb,
 	)
 
-	c.addSigil()
+	c.Core.Tasks.Add(c.addSigil, skillPressHitmark)
 
 	cd := 6 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
-	c.SetCD(action.ActionSkill, int(cd))
+	c.SetCDWithDelay(action.ActionSkill, int(cd), skillPressHitmark)
 
 	if c.Core.Status.Duration("razorburst") == 0 {
 		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmark+80)
@@ -82,10 +82,10 @@ func (c *char) SkillHold() action.ActionInfo {
 		skillHoldHitmark,
 	)
 
-	c.clearSigil()
+	c.Core.Tasks.Add(c.clearSigil, skillHoldHitmark)
 
 	cd := 10 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
-	c.SetCD(action.ActionSkill, int(cd))
+	c.SetCDWithDelay(action.ActionSkill, int(cd), skillHoldHitmark)
 
 	if c.Core.Status.Duration("razorburst") == 0 {
 		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmark+80)
@@ -106,8 +106,8 @@ func (c *char) addSigil() {
 
 	if c.sigils < 3 {
 		c.sigils++
-		c.sigilsDuration = c.Core.F + 18*60
 	}
+	c.sigilsDuration = c.Core.F + 18*60
 }
 
 func (c *char) clearSigil() {

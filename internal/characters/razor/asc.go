@@ -11,10 +11,10 @@ func (c *char) a4() {
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ER] = 0.3
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("er-sigil", -1),
+		Base:         modifier.NewBase("razor-a4", -1),
 		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
-			if c.Energy/c.EnergyMax < 0.5 {
+			if c.Energy/c.EnergyMax >= 0.5 {
 				return nil, false
 			}
 
