@@ -19,6 +19,10 @@ func (c *char) c1() {
 	val[attributes.DmgP] = 0.1
 
 	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+		// ignore if character not on field
+		if c.Core.Player.Active() != c.Index {
+			return false
+		}
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("razor-c1", 8*60),
 			AffectedStat: attributes.DmgP,
