@@ -29,6 +29,7 @@ func (c *CharWrapper) AddEnergy(src string, e float64) {
 	c.events.Emit(event.OnEnergyChange, c, preEnergy, e, src)
 	c.log.NewEvent("adding energy", glog.LogEnergyEvent, c.Index).
 		Write("rec'd", e).
+		Write("pre_recovery", preEnergy).
 		Write("post_recovery", c.Energy).
 		Write("source", src).
 		Write("max_energy", c.EnergyMax)
