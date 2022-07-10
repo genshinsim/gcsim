@@ -44,7 +44,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
 
-	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index).
+		Write("current_seals", c.Tags["seal"]).
+		Write("expiry", c.sealExpiry)
 
 	// Clear the seals next frame just in case for some reason we call stam check late
 	c.Core.Tasks.Add(func() {

@@ -25,7 +25,8 @@ func deleteMod[K mod](c *CharWrapper, slice *[]K, key string) {
 	for _, v := range *slice {
 		if v.Key() == key {
 			v.Event().SetEnded(*c.f)
-			c.log.NewEvent("mod deleted", glog.LogStatusEvent, c.Index, "key", key)
+			c.log.NewEvent("mod deleted", glog.LogStatusEvent, c.Index).
+				Write("key", key)
 		} else {
 			(*slice)[n] = v
 			n++
@@ -40,12 +41,10 @@ func addMod[K mod](c *CharWrapper, slice *[]K, mod K) {
 
 	//if does not exist, make new and add
 	if ind == -1 {
-		evt := c.log.NewEvent(
-			"mod added", glog.LogStatusEvent, c.Index,
-			"overwrite", false,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
+		evt := c.log.NewEvent("mod added", glog.LogStatusEvent, c.Index).
+			Write("overwrite", false).
+			Write("key", mod.Key()).
+			Write("expiry", mod.Expiry())
 		evt.SetEnded(mod.Expiry())
 		mod.SetEvent(evt)
 		//BUG: i think this needs to be *K here. otherwise delete wont work?
@@ -56,21 +55,17 @@ func addMod[K mod](c *CharWrapper, slice *[]K, mod K) {
 	//otherwise check not expired
 	var evt glog.Event
 	if (*slice)[ind].Expiry() > *c.f || (*slice)[ind].Expiry() == -1 {
-		evt = c.log.NewEvent(
-			"mod refreshed", glog.LogStatusEvent, c.Index,
-			"overwrite", true,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
+		evt = c.log.NewEvent("mod refreshed", glog.LogStatusEvent, c.Index).
+			Write("overwrite", true).
+			Write("key", mod.Key()).
+			Write("expiry", mod.Expiry())
 
 	} else {
 		//if expired overide the event
-		evt = c.log.NewEvent(
-			"mod added", glog.LogStatusEvent, c.Index,
-			"overwrite", false,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
+		evt = c.log.NewEvent("mod added", glog.LogStatusEvent, c.Index).
+			Write("overwrite", false).
+			Write("key", mod.Key()).
+			Write("expiry", mod.Expiry())
 	}
 	mod.SetEvent(evt)
 	evt.SetEnded(mod.Expiry())

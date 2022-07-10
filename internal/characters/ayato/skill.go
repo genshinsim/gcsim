@@ -46,7 +46,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, delay)
 
 	c.Core.Status.Add("soukaikanka", 6*60+skillStart+hitlag) //add animation to the duration
-	c.Core.Log.NewEvent("Soukai Kanka acivated", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+6*60+skillStart+hitlag)
+	c.Core.Log.NewEvent("Soukai Kanka acivated", glog.LogCharacterEvent, c.Index).
+		Write("expiry", c.Core.F+6*60+skillStart+hitlag)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6ready = true
@@ -76,7 +77,8 @@ func (c *char) generateParticles(ac combat.AttackCB) {
 func (c *char) skillStacks(ac combat.AttackCB) {
 	if c.stacks < c.stacksMax {
 		c.stacks++
-		c.Core.Log.NewEvent("gained namisen stack", glog.LogCharacterEvent, c.Index, "stacks", c.stacks)
+		c.Core.Log.NewEvent("gained namisen stack", glog.LogCharacterEvent, c.Index).
+			Write("stacks", c.stacks)
 	}
 }
 

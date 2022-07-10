@@ -16,7 +16,8 @@ func (c *char) c1() {
 	}
 	c.c1LastProc = c.Core.F + 180
 	c.ReduceActionCooldown(action.ActionSkill, 60)
-	c.Core.Log.NewEvent("c1 reducing skill cooldown", glog.LogCharacterEvent, c.Index, "new_cooldown", c.Cooldown(action.ActionSkill))
+	c.Core.Log.NewEvent("c1 reducing skill cooldown", glog.LogCharacterEvent, c.Index).
+		Write("new_cooldown", c.Cooldown(action.ActionSkill))
 }
 
 // The Electro DMG of characters who have had their ATK increased by Tengu Juurai has its Crit DMG increased by 60%.

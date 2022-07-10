@@ -51,7 +51,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		seeds[index] = c.F + 30*60
 
-		c.Log.NewEvent("amenoma proc'd", glog.LogWeaponEvent, char.Index, "index", index, "seeds", seeds)
+		c.Log.NewEvent("amenoma proc'd", glog.LogWeaponEvent, char.Index).
+			Write("index", index).
+			Write("seeds", seeds)
 
 		icd = c.F + 300 //5 seconds
 

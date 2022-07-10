@@ -23,10 +23,11 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 				"applying cooldown modifier",
 				glog.LogActionEvent,
 				c.Index,
-				"key", v.Key,
-				"modifier", amt,
-				"expiry", v.Expiry,
-			)
+			).
+				Write("key", v.Key).
+				Write("modifier", amt).
+				Write("expiry", v.Expiry)
+
 			cd += amt
 			c.cooldownMods[n] = v
 			n++

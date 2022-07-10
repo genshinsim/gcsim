@@ -36,7 +36,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	val := make([]float64, attributes.EndStatType)
 	char.AddStatMod("engulfing-lightning", -1, attributes.ATKP, func() ([]float64, bool) {
 		er := char.Stat(attributes.ER)
-		c.Log.NewEvent("engulfing lightning snapshot", glog.LogWeaponEvent, char.Index, "er", er)
+		c.Log.NewEvent("engulfing lightning snapshot", glog.LogWeaponEvent, char.Index).
+			Write("er", er)
 		bonus := atk * er
 		if bonus > max {
 			bonus = max

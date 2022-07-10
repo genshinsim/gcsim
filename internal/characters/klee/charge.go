@@ -41,7 +41,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	if c.Core.Status.Duration("kleespark") > 0 {
 		snap.Stats[attributes.DmgP] += .50
 		c.Core.Status.Delete("kleespark")
-		c.Core.Log.NewEvent("klee consumed spark", glog.LogCharacterEvent, c.Index, "icd", c.sparkICD)
+		c.Core.Log.NewEvent("klee consumed spark", glog.LogCharacterEvent, c.Index).
+			Write("icd", c.sparkICD)
 	}
 
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(2, false, combat.TargettableEnemy), chargeHitmark+travel)

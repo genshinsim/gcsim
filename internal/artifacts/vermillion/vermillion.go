@@ -70,7 +70,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks = 0
 			}
 
-			c.Log.NewEvent("verm 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.Status.Duration("verm-4pc"))
+			c.Log.NewEvent("verm 4pc proc", glog.LogArtifactEvent, char.Index).
+				Write("expiry", c.Status.Duration("verm-4pc"))
 			return false
 
 		}, fmt.Sprintf("verm-4pc-%v", char.Base.Name))
@@ -78,7 +79,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
 			if c.F >= s.HPicd && s.stacks < 4 && c.Status.Duration("verm-4pc") > 0 { // grants stack if conditions are met
 				s.stacks++
-				c.Log.NewEvent("Vermillion stack gained", glog.LogArtifactEvent, char.Index, "stacks", s.stacks)
+				c.Log.NewEvent("Vermillion stack gained", glog.LogArtifactEvent, char.Index).
+					Write("stacks", s.stacks)
 				s.HPicd = c.F + 48
 			}
 			return false

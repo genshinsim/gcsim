@@ -58,7 +58,10 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == combat.AttackTagNormal {
 		ai.Element = attributes.Pyro
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
-		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index, "prev", ai.Mult, "next", skill[c.TalentLvlSkill()]*ai.Mult, "char", c.Index)
+		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index).
+			Write("prev", ai.Mult).
+			Write("next", skill[c.TalentLvlSkill()]*ai.Mult).
+			Write("char", c.Index)
 	}
 
 	return ds

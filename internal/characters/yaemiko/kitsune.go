@@ -83,7 +83,9 @@ func (c *char) kitsuneBurst(ai combat.AttackInfo, pattern combat.AttackPattern) 
 			}, 94+54+i*24)
 		}
 		c.ResetActionCooldown(action.ActionSkill)
-		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index, "src", c.kitsunes[i].src, "delay", 94+54+i*24)
+		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index).
+			Write("src", c.kitsunes[i].src).
+			Write("delay", 94+54+i*24)
 	}
 	c.popAllKitsune()
 }
@@ -114,7 +116,8 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			Durability: 25,
 		}
 
-		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index, "sakura level", lvl)
+		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
+			Write("sakura level", lvl)
 
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
@@ -128,7 +131,8 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			}
 
 			//on hit check for particles
-			c.Core.Log.NewEvent("sky kitsune particle", glog.LogCharacterEvent, c.Index, "lastParticleF", c.totemParticleICD)
+			c.Core.Log.NewEvent("sky kitsune particle", glog.LogCharacterEvent, c.Index).
+				Write("lastParticleF", c.totemParticleICD)
 			if c.Core.F < c.totemParticleICD {
 				return
 			}

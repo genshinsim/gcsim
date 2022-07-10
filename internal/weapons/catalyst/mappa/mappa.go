@@ -41,10 +41,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.F > dur {
 			stacks = 1
 			dur = c.F + 600
-			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index, "stacks", stacks, "expiry", dur)
+			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index).
+				Write("stacks", stacks).
+				Write("expiry", dur)
 		} else if stacks < 2 {
 			stacks++
-			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index, "stacks", stacks, "expiry", dur)
+			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index).
+				Write("stacks", stacks).
+				Write("expiry", dur)
 		}
 		return false
 	}

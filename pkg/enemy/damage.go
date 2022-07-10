@@ -110,53 +110,54 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			atk.Info.Abil,
 			glog.LogCalc,
 			atk.Info.ActorIndex,
-			"src_frame", atk.SourceFrame,
-			"damage_grp_mult", x,
-			"damage", damage,
-			"abil", atk.Info.Abil,
-			"talent", atk.Info.Mult,
-			"base_atk", atk.Snapshot.BaseAtk,
-			"flat_atk", atk.Snapshot.Stats[attributes.ATK],
-			"atk_per", atk.Snapshot.Stats[attributes.ATKP],
-			"use_def", atk.Info.UseDef,
-			"base_def", atk.Snapshot.BaseDef,
-			"flat_def", atk.Snapshot.Stats[attributes.DEF],
-			"def_per", atk.Snapshot.Stats[attributes.DEFP],
-			"base_hp", atk.Snapshot.BaseHP,
-			"flat_hp", atk.Snapshot.Stats[attributes.HP],
-			"hp_per", atk.Snapshot.Stats[attributes.HPP],
-			"total_hp", totalhp,
-			"flat_dmg", atk.Info.FlatDmg,
-			"total_atk_def", a,
-			"base_dmg", base,
-			"ele", st,
-			"ele_per", elePer,
-			"bonus_dmg", dmgBonus,
-			"def_adj", defadj,
-			"target_lvl", t.Level,
-			"char_lvl", atk.Snapshot.CharLvl,
-			"def_mod", defmod,
-			"res", res,
-			"res_mod", resmod,
-			"cr", atk.Snapshot.Stats[attributes.CR],
-			"cd", atk.Snapshot.Stats[attributes.CD],
-			"pre_crit_dmg", precritdmg,
-			"dmg_if_crit", precritdmg*(1+atk.Snapshot.Stats[attributes.CD]),
-			"avg_crit_dmg", (1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]),
-			"is_crit", isCrit,
-			"pre_amp_dmg", preampdmg,
-			"reaction_type", atk.Info.AmpType,
-			"melt_vape", atk.Info.Amped,
-			"react_mult", atk.Info.AmpMult,
-			"em", em,
-			"em_bonus", emBonus,
-			"react_bonus", reactBonus,
-			"amp_mult_total", (atk.Info.AmpMult * (1 + emBonus + reactBonus)),
-			"pre_crit_dmg_react", precritdmg*(atk.Info.AmpMult*(1+emBonus+reactBonus)),
-			"dmg_if_crit_react", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])*(atk.Info.AmpMult*(1+emBonus+reactBonus)),
-			"avg_crit_dmg_react", ((1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]))*(atk.Info.AmpMult*(1+emBonus+reactBonus)),
-			"target", t.TargetIndex,
-		)
+		).
+			Write("src_frame", atk.SourceFrame).
+			Write("damage_grp_mult", x).
+			Write("damage", damage).
+			Write("abil", atk.Info.Abil).
+			Write("talent", atk.Info.Mult).
+			Write("base_atk", atk.Snapshot.BaseAtk).
+			Write("flat_atk", atk.Snapshot.Stats[attributes.ATK]).
+			Write("atk_per", atk.Snapshot.Stats[attributes.ATKP]).
+			Write("use_def", atk.Info.UseDef).
+			Write("base_def", atk.Snapshot.BaseDef).
+			Write("flat_def", atk.Snapshot.Stats[attributes.DEF]).
+			Write("def_per", atk.Snapshot.Stats[attributes.DEFP]).
+			Write("base_hp", atk.Snapshot.BaseHP).
+			Write("flat_hp", atk.Snapshot.Stats[attributes.HP]).
+			Write("hp_per", atk.Snapshot.Stats[attributes.HPP]).
+			Write("total_hp", totalhp).
+			Write("flat_dmg", atk.Info.FlatDmg).
+			Write("total_atk_def", a).
+			Write("base_dmg", base).
+			Write("ele", st).
+			Write("ele_per", elePer).
+			Write("bonus_dmg", dmgBonus).
+			Write("def_adj", defadj).
+			Write("target_lvl", t.Level).
+			Write("char_lvl", atk.Snapshot.CharLvl).
+			Write("def_mod", defmod).
+			Write("res", res).
+			Write("res_mod", resmod).
+			Write("cr", atk.Snapshot.Stats[attributes.CR]).
+			Write("cd", atk.Snapshot.Stats[attributes.CD]).
+			Write("pre_crit_dmg", precritdmg).
+			Write("dmg_if_crit", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])).
+			Write("avg_crit_dmg", (1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD])).
+			Write("is_crit", isCrit).
+			Write("pre_amp_dmg", preampdmg).
+			Write("reaction_type", atk.Info.AmpType).
+			Write("melt_vape", atk.Info.Amped).
+			Write("react_mult", atk.Info.AmpMult).
+			Write("em", em).
+			Write("em_bonus", emBonus).
+			Write("react_bonus", reactBonus).
+			Write("amp_mult_total", (atk.Info.AmpMult*(1+emBonus+reactBonus))).
+			Write("pre_crit_dmg_react", precritdmg*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
+			Write("dmg_if_crit_react", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
+			Write("avg_crit_dmg_react", ((1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]))*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
+			Write("target", t.TargetIndex)
+
 	}
 
 	return damage, isCrit

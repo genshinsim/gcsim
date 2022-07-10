@@ -39,7 +39,11 @@ func NewWavebreaker(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 		if amt > max {
 			amt = max
 		}
-		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index, "total", energy, "per", per, "max", max, "amt", amt)
+		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index).
+			Write("total", energy).
+			Write("per", per).
+			Write("max", max).
+			Write("amt", amt)
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = amt
 		char.AddAttackMod("wavebreaker", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {

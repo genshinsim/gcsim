@@ -64,11 +64,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			s.icd = c.F + 18
 			s.dur = c.F + 420
-			c.Log.NewEvent("pale flame 4pc proc", glog.LogArtifactEvent, char.Index,
-				"stacks", s.stacks,
-				"expiry", s.dur,
-				"icd", s.icd,
-			)
+			c.Log.NewEvent("pale flame 4pc proc", glog.LogArtifactEvent, char.Index).
+				Write("stacks", s.stacks).
+				Write("expiry", s.dur).
+				Write("icd", s.icd)
+
 			return false
 		}, fmt.Sprintf("pf4-%v", char.Base.Name))
 

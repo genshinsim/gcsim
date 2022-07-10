@@ -30,7 +30,15 @@ type LogEvent struct {
 //easyjson:json
 type EventArr []*LogEvent
 
-func (e *LogEvent) Write(keysAndValues ...interface{}) Event {
+func (e *LogEvent) Write(key string, value interface{}) Event {
+	e.Logs[key] = value
+	e.Ordering[key] = e.counter
+	e.counter++
+
+	return e
+}
+
+func (e *LogEvent) WriteBuildMsg(keysAndValues ...interface{}) Event {
 	//should be even number
 	var key string
 	var ok bool
@@ -102,7 +110,7 @@ func (c *Ctrl) NewEventBuildMsg(typ Source, srcChar int, msg ...string) Event {
 	return c.NewEvent(sb.String(), typ, srcChar)
 }
 
-func (c *Ctrl) NewEvent(msg string, typ Source, srcChar int, keysAndValues ...interface{}) Event {
+func (c *Ctrl) NewEvent(msg string, typ Source, srcChar int) Event {
 	e := &LogEvent{
 		Msg:      msg,
 		F:        *c.f,
@@ -115,8 +123,5 @@ func (c *Ctrl) NewEvent(msg string, typ Source, srcChar int, keysAndValues ...in
 	// c.events = append(c.events, e)
 	c.events[c.count] = e
 	c.count++
-	if keysAndValues != nil {
-		e.Write(keysAndValues...)
-	}
 	return e
 }

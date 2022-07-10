@@ -61,7 +61,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			if wavespikeStacks > maxWavespikeStacks {
 				wavespikeStacks = maxWavespikeStacks
 			}
-			c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index, "stack", wavespikeStacks)
+			c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index).
+				Write("stack", wavespikeStacks)
 			wavespikeICD = c.F + 0.3*60
 		}
 		return false

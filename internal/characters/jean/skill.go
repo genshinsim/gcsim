@@ -42,7 +42,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 1 && p["hold"] >= 60 {
 		//add 40% dmg
 		snap.Stats[attributes.DmgP] += .4
-		c.Core.Log.NewEvent("jean c1 adding 40% dmg", glog.LogCharacterEvent, c.Index, "final dmg%", snap.Stats[attributes.DmgP])
+		c.Core.Log.NewEvent("jean c1 adding 40% dmg", glog.LogCharacterEvent, c.Index).
+			Write("final dmg%", snap.Stats[attributes.DmgP])
 	}
 
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), hitmark)

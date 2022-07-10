@@ -96,7 +96,8 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 
 			if c.Base.Cons >= 2 && c.c2Bonus < 0.66 {
 				c.c2Bonus += 0.033
-				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index, "dmg bonus%", c.c2Bonus)
+				c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index).
+					Write("dmg bonus%", c.c2Bonus)
 			}
 		}, 18+i)
 

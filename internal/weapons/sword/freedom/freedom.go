@@ -68,7 +68,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		icd = c.F + 30
 		stacks++
-		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index, "sigil", stacks)
+		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index).
+			Write("sigil", stacks)
 
 		if stacks == 2 {
 			stacks = 0

@@ -23,7 +23,8 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 	// check if hold skill was used
 	lastAct := c.Core.Player.LastAction
 	if lastAct.Char != c.Index || lastAct.Type != action.ActionSkill || lastAct.Param["hold"] != 0 {
-		c.Core.Log.NewEvent("high_plunge should be preceded by hold skill", glog.LogActionEvent, c.Index, "action", action.ActionHighPlunge)
+		c.Core.Log.NewEvent("high_plunge should be preceded by hold skill", glog.LogActionEvent, c.Index).
+			Write("action", action.ActionHighPlunge)
 		return action.ActionInfo{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,

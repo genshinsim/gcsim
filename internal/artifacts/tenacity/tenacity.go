@@ -78,7 +78,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Status.Add("tom-proc", 3*60)
 			s.icd = c.F + 30 // .5 second icd
 
-			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index, "expiry", c.F+180, "icd", s.icd)
+			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index).
+				Write("expiry", c.F+180).
+				Write("icd", s.icd)
 			return false
 		}, fmt.Sprintf("tom4-%v", char.Base.Name))
 	}

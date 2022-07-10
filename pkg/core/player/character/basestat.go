@@ -87,12 +87,12 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	c.log.NewEvent(
 		"stat calc done for "+c.Base.Name,
 		glog.LogCharacterEvent, c.Index,
-		"char_base", c.Base,
-		"weap_base", c.Weapon,
-		"spec_char", spec,
-		"spec_weap", specw,
-		"final_stats", c.BaseStats,
-	)
+	).
+		Write("char_base", c.Base).
+		Write("weap_base", c.Weapon).
+		Write("spec_char", spec).
+		Write("spec_weap", specw).
+		Write("final_stats", c.BaseStats)
 
 	return nil
 }

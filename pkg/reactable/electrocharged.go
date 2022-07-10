@@ -118,11 +118,12 @@ func (r *Reactable) waneEC() {
 	r.core.Log.NewEvent("ec wane",
 		glog.LogElementEvent,
 		-1,
-		"aura", "ec",
-		"target", r.self.Index(),
-		"hydro", r.Durability[attributes.Hydro],
-		"electro", r.Durability[attributes.Electro],
-	)
+	).
+		Write("aura", "ec").
+		Write("target", r.self.Index()).
+		Write("hydro", r.Durability[attributes.Hydro]).
+		Write("electro", r.Durability[attributes.Electro])
+
 	//ec is gone
 	r.checkEC()
 }
@@ -134,11 +135,12 @@ func (r *Reactable) checkEC() {
 		r.core.Log.NewEvent("ec expired",
 			glog.LogElementEvent,
 			-1,
-			"aura", "ec",
-			"target", r.self.Index(),
-			"hydro", r.Durability[attributes.Hydro],
-			"electro", r.Durability[attributes.Electro],
-		)
+		).
+			Write("aura", "ec").
+			Write("target", r.self.Index()).
+			Write("hydro", r.Durability[attributes.Hydro]).
+			Write("electro", r.Durability[attributes.Electro])
+
 	}
 }
 

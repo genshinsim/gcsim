@@ -34,7 +34,8 @@ func Delete[K Mod](f int, log glog.Logger, slice *[]K, key string) {
 	for _, v := range *slice {
 		if v.Key() == key {
 			v.Event().SetEnded(f)
-			log.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1, "key", key)
+			log.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1).
+				Write("key", key)
 		} else {
 			(*slice)[n] = v
 			n++
@@ -48,12 +49,10 @@ func Add[K Mod](f int, log glog.Logger, slice *[]K, mod K) {
 
 	//if does not exist, make new and add
 	if ind == -1 {
-		evt := log.NewEvent(
-			"enemy mod added", glog.LogStatusEvent, -1,
-			"overwrite", false,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
+		evt := log.NewEvent("enemy mod added", glog.LogStatusEvent, -1).
+			Write("overwrite", false).
+			Write("key", mod.Key()).
+			Write("expiry", mod.Expiry())
 		evt.SetEnded(mod.Expiry())
 		mod.SetEvent(evt)
 		*slice = append(*slice, mod)
@@ -63,21 +62,17 @@ func Add[K Mod](f int, log glog.Logger, slice *[]K, mod K) {
 	//otherwise check not expired
 	var evt glog.Event
 	if (*slice)[ind].Expiry() > f || (*slice)[ind].Expiry() == -1 {
-		evt = log.NewEvent(
-			"enemy mod refreshed", glog.LogStatusEvent, -1,
-			"overwrite", true,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
+		evt = log.NewEvent("enemy mod refreshed", glog.LogStatusEvent, -1).
+			Write("overwrite", true).
+			Write("key", mod.Key()).
+			Write("expiry", mod.Expiry())
 
 	} else {
 		//if expired overide the event
-		evt = log.NewEvent(
-			"enemy mod added", glog.LogStatusEvent, -1,
-			"overwrite", false,
-			"key", mod.Key(),
-			"expiry", mod.Expiry(),
-		)
+		evt = log.NewEvent("enemy mod added", glog.LogStatusEvent, -1).
+			Write("overwrite", false).
+			Write("key", mod.Key()).
+			Write("expiry", mod.Expiry())
 	}
 	mod.SetEvent(evt)
 	evt.SetEnded(mod.Expiry())
