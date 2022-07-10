@@ -36,7 +36,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Durability:         25,
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
 		HitlagFactor:       0.01,
-		HitlagHaltFrames:   attackHitlagHaltFrame[normalHitNum],
+		HitlagHaltFrames:   attackHitlagHaltFrame[normalHitNum] * 60,
 		CanBeDefenseHalted: true,
 	}
 
