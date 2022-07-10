@@ -53,7 +53,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		flatdmg := char.MaxHP() * nabuff
 		atk.Info.FlatDmg += flatdmg
 
-		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index, "damage_added", flatdmg)
+		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index).
+			Write("damage_added", flatdmg)
 		return false
 	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Key.String()))
 

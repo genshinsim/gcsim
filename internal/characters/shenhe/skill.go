@@ -182,11 +182,12 @@ func (c *char) quillDamageMod() {
 				"Shenhe Quill proc dmg add",
 				glog.LogPreDamageMod,
 				atk.Info.ActorIndex,
-				"before", atk.Info.FlatDmg,
-				"addition", amt,
-				"effect_ends_at", c.Core.Status.Duration(quillKey),
-				"quills left", c.quillcount[atk.Info.ActorIndex],
-			)
+			).
+				Write("before", atk.Info.FlatDmg).
+				Write("addition", amt).
+				Write("effect_ends_at", c.Core.Status.Duration(quillKey)).
+				Write("quills left", c.quillcount[atk.Info.ActorIndex])
+
 			atk.Info.FlatDmg += amt
 			if c.Base.Cons >= 4 {
 				if c.c4count < 50 {

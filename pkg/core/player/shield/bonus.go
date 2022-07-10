@@ -65,12 +65,10 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 
 	//if does not exist, make new and add
 	if ind == -1 {
-		mod.Event = h.log.NewEvent(
-			"shield bonus added", glog.LogStatusEvent, -1,
-			"overwrite", false,
-			"key", mod.Key,
-			"expiry", mod.Expiry,
-		)
+		mod.Event = h.log.NewEvent("shield bonus added", glog.LogStatusEvent, -1).
+			Write("overwrite", false).
+			Write("key", mod.Key).
+			Write("expiry", mod.Expiry)
 		mod.Event.SetEnded(mod.Expiry)
 		h.shieldBonusMods = append(h.shieldBonusMods, mod)
 		return
@@ -80,19 +78,18 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 	if h.shieldBonusMods[ind].Expiry > *h.f || h.shieldBonusMods[ind].Expiry == -1 {
 		h.log.NewEvent(
 			"shield bonus refreshed", glog.LogStatusEvent, -1,
-			"overwrite", true,
-			"key", mod.Key,
-			"expiry", mod.Expiry,
-		)
+		).
+			Write("overwrite", true).
+			Write("key", mod.Key).
+			Write("expiry", mod.Expiry)
+
 		mod.Event = h.shieldBonusMods[ind].Event
 	} else {
 		//if expired overide the event
-		mod.Event = h.log.NewEvent(
-			"shield bonus added", glog.LogStatusEvent, -1,
-			"overwrite", false,
-			"key", mod.Key,
-			"expiry", mod.Expiry,
-		)
+		mod.Event = h.log.NewEvent("shield bonus added", glog.LogStatusEvent, -1).
+			Write("overwrite", false).
+			Write("key", mod.Key).
+			Write("expiry", mod.Expiry)
 	}
 	mod.Event.SetEnded(mod.Expiry)
 	h.shieldBonusMods[ind] = mod

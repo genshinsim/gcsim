@@ -66,8 +66,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w.stacks = p.Params["stacks"]
 	c.Log.NewEvent(
 		"serpent spine stack check", glog.LogWeaponEvent, char.Index,
-		"params", p.Params,
-	)
+	).
+		Write("params", p.Params)
+
 	if w.stacks > 5 {
 		w.stacks = 5
 	}

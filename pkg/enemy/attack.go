@@ -31,14 +31,15 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 					"application",
 					glog.LogElementEvent,
 					atk.Info.ActorIndex,
-					"attack_tag", atk.Info.AttackTag,
-					"applied_ele", atk.Info.Element.String(),
-					"dur", applied,
-					"abil", atk.Info.Abil,
-					"target", e.TargetIndex,
-					"existing", existing,
-					"after", e.Reactable.ActiveAuraString(),
-				)
+				).
+					Write("attack_tag", atk.Info.AttackTag).
+					Write("applied_ele", atk.Info.Element.String()).
+					Write("dur", applied).
+					Write("abil", atk.Info.Abil).
+					Write("target", e.TargetIndex).
+					Write("existing", existing).
+					Write("after", e.Reactable.ActiveAuraString())
+
 			}
 		}
 	}

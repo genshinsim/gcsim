@@ -23,7 +23,8 @@ func (c *char) c4() {
 	//we simply reduce the action cd
 	c.ReduceActionCooldown(action.ActionSkill, cdReduction)
 
-	c.Core.Log.NewEvent("sucrose c4 reducing E CD", glog.LogCharacterEvent, c.Index, "cd_reduction", cdReduction)
+	c.Core.Log.NewEvent("sucrose c4 reducing E CD", glog.LogCharacterEvent, c.Index).
+		Write("cd_reduction", cdReduction)
 }
 
 func (c *char) c6() {

@@ -61,8 +61,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		damageAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * defPer
 		atk.Info.FlatDmg += damageAdd
 
-		c.Log.NewEvent("Cinnabar Spindle proc dmg add", glog.LogPreDamageMod, char.Index, "damage_added", damageAdd)
-
+		c.Log.NewEvent("Cinnabar Spindle proc dmg add", glog.LogPreDamageMod, char.Index).
+			Write("damage_added", damageAdd)
 		return false
 	}, fmt.Sprintf("cinnabar-%v", char.Base.Key.String()))
 

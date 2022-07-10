@@ -104,11 +104,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks++
 			}
 
-			c.Log.NewEvent("Husk gained on-field stack", glog.LogArtifactEvent, char.Index,
-				"stacks", s.stacks,
-				"last_swap", s.lastSwap,
-				"last_stack_change", s.lastStackGain,
-			)
+			c.Log.NewEvent("Husk gained on-field stack", glog.LogArtifactEvent, char.Index).
+				Write("stacks", s.stacks).
+				Write("last_swap", s.lastSwap).
+				Write("last_stack_change", s.lastStackGain)
 
 			s.lastStackGain = c.F
 			s.stackGainICDExpiry = c.F + 18 // 0.3 sec
@@ -138,11 +137,10 @@ func (s *Set) checkStackLoss() {
 		return
 	}
 	s.stacks--
-	s.core.Log.NewEvent("Husk lost stack", glog.LogArtifactEvent, s.char.Index,
-		"stacks", s.stacks,
-		"last_swap", s.lastSwap,
-		"last_stack_change", s.lastStackGain,
-	)
+	s.core.Log.NewEvent("Husk lost stack", glog.LogArtifactEvent, s.char.Index).
+		Write("stacks", s.stacks).
+		Write("last_swap", s.lastSwap).
+		Write("last_stack_change", s.lastStackGain)
 
 	// queue up again if we still have stacks
 	if s.stacks > 0 {
@@ -152,12 +150,12 @@ func (s *Set) checkStackLoss() {
 
 func (s *Set) gainStackOfffield(src int) func() {
 	return func() {
-		s.core.Log.NewEvent("Husk check for off-field stack", glog.LogArtifactEvent, s.char.Index,
-			"stacks", s.stacks,
-			"last_swap", s.lastSwap,
-			"last_stack_change", s.lastStackGain,
-			"source", src,
-		)
+		s.core.Log.NewEvent("Husk check for off-field stack", glog.LogArtifactEvent, s.char.Index).
+			Write("stacks", s.stacks).
+			Write("last_swap", s.lastSwap).
+			Write("last_stack_change", s.lastStackGain).
+			Write("source", src)
+
 		if s.core.Player.Active() == s.char.Index {
 			return
 		}
@@ -170,11 +168,10 @@ func (s *Set) gainStackOfffield(src int) func() {
 			s.stacks++
 		}
 
-		s.core.Log.NewEvent("Husk gained off-field stack", glog.LogArtifactEvent, s.char.Index,
-			"stacks", s.stacks,
-			"last_swap", s.lastSwap,
-			"last_stack_change", s.lastStackGain,
-		)
+		s.core.Log.NewEvent("Husk gained off-field stack", glog.LogArtifactEvent, s.char.Index).
+			Write("stacks", s.stacks).
+			Write("last_swap", s.lastSwap).
+			Write("last_stack_change", s.lastStackGain)
 
 		s.lastStackGain = s.core.F
 

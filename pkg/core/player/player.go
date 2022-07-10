@@ -92,14 +92,9 @@ func (h *Handler) swap(to keys.Char) func() {
 	return func() {
 		prev := h.active
 		h.active = h.charPos[to]
-		h.Log.NewEventBuildMsg(
-			glog.LogActionEvent,
-			h.active,
-			"executed swap",
-		).Write(
-			"action", "swap",
-			"target", to.String(),
-		)
+		h.Log.NewEvent("executed swap", glog.LogActionEvent, h.active).
+			Write("action", "swap").
+			Write("target", to.String())
 		h.SwapCD = SwapCDFrames
 		h.ResetAllNormalCounter()
 		h.Events.Emit(event.OnCharacterSwap, prev, h.active)
@@ -214,7 +209,8 @@ func (h *Handler) InitializeTeam() error {
 		if h.chars[i].HPCurrent == -1 {
 			h.chars[i].HPCurrent = h.chars[i].MaxHP()
 		}
-		h.Log.NewEvent("starting hp set", glog.LogCharacterEvent, i, "hp", h.chars[i].HPCurrent)
+		h.Log.NewEvent("starting hp set", glog.LogCharacterEvent, i).
+			Write("hp", h.chars[i].HPCurrent)
 	}
 	return nil
 }

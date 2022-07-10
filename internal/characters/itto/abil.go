@@ -199,7 +199,11 @@ func (c *char) Burst(p map[string]int) (int, int) {
 			return val, true
 		},
 	})
-	c.Core.Log.NewEvent("itto burst", core.LogSnapshotEvent, c.Index, "frame", c.Core.F, "total def", burstDefSnapshot, "atk added", fa, "mult", mult)
+	c.Core.Log.NewEvent("itto burst", core.LogSnapshotEvent, c.Index).
+		Write("frame", c.Core.F).
+		Write("total def", burstDefSnapshot).
+		Write("atk added", fa).
+		Write("mult", mult)
 
 	c.Core.Status.AddStatus("ittoq", 960+f) // inflated from 11.55 seconds to cover basic combo
 

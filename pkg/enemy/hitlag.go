@@ -14,7 +14,8 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 	var evt glog.Event
 	if e.Core.Flags.LogDebug {
 		logs = make([]string, 0, len(e.mods))
-		evt = e.Core.Log.NewEvent("enemy hitlag - extending mods", glog.LogHitlagEvent, -1, "target", e.Index())
+		evt = e.Core.Log.NewEvent("enemy hitlag - extending mods", glog.LogHitlagEvent, -1).
+			Write("target", e.Index())
 	}
 
 	//check resist mods

@@ -210,7 +210,9 @@ func (s *Simulation) randEnergy() {
 	//calculate next
 	next := int(s.C.Rand.Float64()*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
 	// next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
-	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy queued - ", fmt.Sprintf("next %v", s.C.F+next)).Write("settings", s.cfg.Energy, "first", next)
+	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy queued - ", fmt.Sprintf("next %v", s.C.F+next)).
+		Write("settings", s.cfg.Energy).
+		Write("first", next)
 	s.C.Tasks.Add(s.randEnergy, next)
 }
 
@@ -228,7 +230,9 @@ func (s *Simulation) SetupRandEnergyDrop() {
 	s.cfg.Energy.Mean = s.cfg.Energy.Every * 60
 	next := int(s.C.Rand.Float64()*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
 	// next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
-	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy started - ", fmt.Sprintf("next %v", s.C.F+next)).Write("settings", s.cfg.Energy, "first", next)
+	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy started - ", fmt.Sprintf("next %v", s.C.F+next)).
+		Write("settings", s.cfg.Energy).
+		Write("first", next)
 	//start the first round
 	s.C.Tasks.Add(s.randEnergy, next)
 }

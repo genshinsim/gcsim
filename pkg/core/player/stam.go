@@ -65,12 +65,10 @@ func (h *Handler) AddStamPercentMod(key string, dur int, f StamPercentModFunc) {
 
 	//if does not exist, make new and add
 	if ind == -1 {
-		mod.Event = h.Log.NewEvent(
-			"stam mod added", glog.LogStatusEvent, -1,
-			"overwrite", false,
-			"key", mod.Key,
-			"expiry", mod.Expiry,
-		)
+		mod.Event = h.Log.NewEvent("stam mod added", glog.LogStatusEvent, -1).
+			Write("overwrite", false).
+			Write("key", mod.Key).
+			Write("expiry", mod.Expiry)
 		mod.Event.SetEnded(mod.Expiry)
 		h.stamPercentMods = append(h.stamPercentMods, mod)
 		return
@@ -80,19 +78,18 @@ func (h *Handler) AddStamPercentMod(key string, dur int, f StamPercentModFunc) {
 	if h.stamPercentMods[ind].Expiry > *h.F || h.stamPercentMods[ind].Expiry == -1 {
 		h.Log.NewEvent(
 			"stam mod refreshed", glog.LogStatusEvent, -1,
-			"overwrite", true,
-			"key", mod.Key,
-			"expiry", mod.Expiry,
-		)
+		).
+			Write("overwrite", true).
+			Write("key", mod.Key).
+			Write("expiry", mod.Expiry)
+
 		mod.Event = h.stamPercentMods[ind].Event
 	} else {
 		//if expired overide the event
-		mod.Event = h.Log.NewEvent(
-			"stam mod added", glog.LogStatusEvent, -1,
-			"overwrite", false,
-			"key", mod.Key,
-			"expiry", mod.Expiry,
-		)
+		mod.Event = h.Log.NewEvent("stam mod added", glog.LogStatusEvent, -1).
+			Write("overwrite", false).
+			Write("key", mod.Key).
+			Write("expiry", mod.Expiry)
 	}
 	mod.Event.SetEnded(mod.Expiry)
 	h.stamPercentMods[ind] = mod

@@ -84,7 +84,10 @@ func (c *char) queueOz(src string) {
 		SourceFrame: c.Core.F,
 	}
 	c.Core.Tasks.Add(c.ozTick(c.Core.F), 60)
-	c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index, "source", src, "expected end", c.ozActiveUntil, "next expected tick", c.Core.F+60)
+	c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index).
+		Write("source", src).
+		Write("expected end", c.ozActiveUntil).
+		Write("next expected tick", c.Core.F+60)
 
 	c.Core.Status.Add("fischloz", dur)
 
@@ -92,12 +95,16 @@ func (c *char) queueOz(src string) {
 
 func (c *char) ozTick(src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Oz checking for tick", glog.LogCharacterEvent, c.Index, "src", src)
+		c.Core.Log.NewEvent("Oz checking for tick", glog.LogCharacterEvent, c.Index).
+			Write("src", src)
 		//if src != ozSource then this is no longer the same oz, do nothing
 		if src != c.ozSource {
 			return
 		}
-		c.Core.Log.NewEvent("Oz ticked", glog.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+60, "active", c.ozActiveUntil, "src", src)
+		c.Core.Log.NewEvent("Oz ticked", glog.LogCharacterEvent, c.Index).
+			Write("next expected tick", c.Core.F+60).
+			Write("active", c.ozActiveUntil).
+			Write("src", src)
 		//trigger damage
 		ae := c.ozSnapshot
 		c.Core.QueueAttackEvent(&ae, 0)

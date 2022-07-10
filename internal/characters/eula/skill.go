@@ -63,7 +63,8 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 
 		if c.Tags["grimheart"] < 2 {
 			c.Tags["grimheart"]++
-			c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index, "current count", c.Tags["grimheart"])
+			c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
+				Write("current count", c.Tags["grimheart"])
 		}
 		c.grimheartReset = 18 * 60
 	}

@@ -8,7 +8,8 @@ import (
 
 func evalCharCustom(c *core.Core, key keys.Char, fields []string) int64 {
 	if len(fields) < 2 {
-		c.Log.NewEvent("bad char custom conditon: invalid num of fields", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad char custom conditon: invalid num of fields", glog.LogWarnings, -1).
+			Write("fields", fields)
 		return 0
 	}
 	char, ok := c.Player.ByKey(key)

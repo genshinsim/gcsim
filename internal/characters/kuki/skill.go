@@ -49,7 +49,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionSkill, skillHitmark+15*60) // what's the diff between f and a again? Nice question Yakult
 	c.Core.Tasks.Add(c.bellTick(), 90)              //Assuming this executes every 90 frames-1.5s
 	c.bellActiveUntil = c.Core.F + skilldur
-	c.Core.Log.NewEvent("Bell activated", glog.LogCharacterEvent, c.Index, "expected end", c.bellActiveUntil, "next expected tick", c.Core.F+90)
+	c.Core.Log.NewEvent("Bell activated", glog.LogCharacterEvent, c.Index).
+		Write("expected end", c.bellActiveUntil).
+		Write("next expected tick", c.Core.F+90)
 
 	c.Core.Status.Add("kukibell", skilldur)
 
@@ -88,7 +90,9 @@ func (c *char) bellTick() func() {
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
-		c.Core.Log.NewEvent("Bell ticked", glog.LogCharacterEvent, c.Index, "next expected tick", c.Core.F+90, "active", c.bellActiveUntil)
+		c.Core.Log.NewEvent("Bell ticked", glog.LogCharacterEvent, c.Index).
+			Write("next expected tick", c.Core.F+90).
+			Write("active", c.bellActiveUntil)
 		//trigger damage
 		//TODO: Check for snapshots
 

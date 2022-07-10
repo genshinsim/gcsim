@@ -88,7 +88,9 @@ func (c *char) skillHook() {
 		// a1: skill tick deal 25% more dmg if enemy hp < 50%
 		if c.Core.Combat.DamageMode && t.HP()/t.MaxHP() < .5 {
 			snap.Stats[attributes.DmgP] += 0.25
-			c.Core.Log.NewEvent("a1 proc'd, dealing extra dmg", glog.LogCharacterEvent, c.Index, "hp %", t.HP()/t.MaxHP(), "final dmg", snap.Stats[attributes.DmgP])
+			c.Core.Log.NewEvent("a1 proc'd, dealing extra dmg", glog.LogCharacterEvent, c.Index).
+				Write("hp %", t.HP()/t.MaxHP()).
+				Write("final dmg", snap.Stats[attributes.DmgP])
 		}
 
 		c.Core.QueueAttackWithSnap(c.skillAttackInfo, snap, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 1)

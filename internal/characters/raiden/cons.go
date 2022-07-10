@@ -41,7 +41,9 @@ func (c *char) c6(ac combat.AttackCB) {
 	}
 	c.c6ICD = c.Core.F + 60
 	c.c6Count++
-	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index, "next_icd", c.c6ICD, "count", c.c6Count)
+	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index).
+		Write("next_icd", c.c6ICD).
+		Write("count", c.c6Count)
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
 			continue

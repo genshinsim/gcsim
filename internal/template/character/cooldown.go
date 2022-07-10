@@ -45,16 +45,11 @@ func (c *Character) SetCD(a action.Action, dur int) {
 	if c.Tags["skill_charge"] > 0 {
 		c.Tags["skill_charge"]--
 	}
-	c.Core.Log.NewEventBuildMsg(
-		glog.LogCooldownEvent,
-		c.Index,
-		a.String(), " cooldown triggered",
-	).Write(
-		"type", a.String(),
-		"expiry", c.Cooldown(a),
-		"charges_remain", c.AvailableCDCharge,
-		"cooldown_queue", c.cdQueue,
-	)
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown triggered").
+		Write("type", a.String()).
+		Write("expiry", c.Cooldown(a)).
+		Write("charges_remain", c.AvailableCDCharge).
+		Write("cooldown_queue", c.cdQueue)
 }
 
 func (c *Character) SetNumCharges(a action.Action, num int) {
@@ -100,15 +95,10 @@ func (c *Character) ResetActionCooldown(a action.Action) {
 	//reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
 	c.cdCurrentQueueWorker[a] = nil
-	c.Core.Log.NewEventBuildMsg(
-		glog.LogCooldownEvent,
-		c.Index,
-		a.String(), " cooldown forcefully reset",
-	).Write(
-		"type", a.String(),
-		"charges_remain", c.AvailableCDCharge,
-		"cooldown_queue", c.cdQueue,
-	)
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown forcefully reset").
+		Write("type", a.String()).
+		Write("charges_remain", c.AvailableCDCharge).
+		Write("cooldown_queue", c.cdQueue)
 	//check if anymore cd in queue
 	if len(c.cdQueue) > 0 {
 		c.startCooldownQueueWorker(a, true)
@@ -129,16 +119,11 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 	}
 	//otherwise reduce remain and restart queue
 	c.cdQueue[a][0] = remain - v
-	c.Core.Log.NewEventBuildMsg(
-		glog.LogCooldownEvent,
-		c.Index,
-		a.String(), " cooldown forcefully reduced",
-	).Write(
-		"type", a.String(),
-		"expiry", c.Cooldown(a),
-		"charges_remain", c.AvailableCDCharge,
-		"cooldown_queue", c.cdQueue,
-	)
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown forcefully reduced").
+		Write("type", a.String()).
+		Write("expiry", c.Cooldown(a)).
+		Write("charges_remain", c.AvailableCDCharge).
+		Write("cooldown_queue", c.cdQueue)
 	c.startCooldownQueueWorker(a, false)
 	//log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
 }
@@ -190,15 +175,10 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 			panic(fmt.Sprintf("charges > max? index :%v, frame : %v", c.Index, c.Core.F))
 		}
 
-		c.Core.Log.NewEventBuildMsg(
-			glog.LogCooldownEvent,
-			c.Index,
-			a.String(), " cooldown ready",
-		).Write(
-			"type", a.String(),
-			"charges_remain", c.AvailableCDCharge,
-			"cooldown_queue", c.cdQueue,
-		)
+		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown ready").
+			Write("type", a.String()).
+			Write("charges_remain", c.AvailableCDCharge).
+			Write("cooldown_queue", c.cdQueue)
 
 		//if queue still has len > 0 then call start queue again
 		if len(c.cdQueue) > 0 {

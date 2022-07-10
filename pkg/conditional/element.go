@@ -13,7 +13,7 @@ import (
 func evalElement(c *core.Core, fields []string) int64 {
 	//.element.t1.pyro
 	if len(fields) < 3 {
-		c.Log.NewEvent("bad element conditon: invalid num of fields", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad element conditon: invalid num of fields", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 	trg := strings.TrimPrefix(fields[1], ".t")
@@ -21,23 +21,23 @@ func evalElement(c *core.Core, fields []string) int64 {
 	tid, err := strconv.ParseInt(trg, 10, 64)
 	if err != nil {
 		//invalid target
-		c.Log.NewEvent("bad element conditon: invalid target", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad element conditon: invalid target", glog.LogWarnings, -1).Write("fields", fields)
 	}
 	ele := strings.TrimPrefix(fields[2], ".")
 	elekey := attributes.StringToEle(ele)
 	if elekey == attributes.UnknownElement {
-		c.Log.NewEvent("bad element conditon: invalid element", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad element conditon: invalid element", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 
 	t := c.Combat.Target(int(tid))
 	if t == nil {
-		c.Log.NewEvent("bad element conditon: invalid target", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad element conditon: invalid target", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 	enemy, ok := t.(*enemy.Enemy)
 	if !ok {
-		c.Log.NewEvent("bad element conditon: target not an enemy", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad element conditon: target not an enemy", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 

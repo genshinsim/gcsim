@@ -46,7 +46,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				mult := 0.5*float64(s.stacks) + 1
 				m[attributes.PyroP] = 0.15 * mult
 				if mult > 1 {
-					c.Log.NewEvent("crimson witch 4pc", glog.LogArtifactEvent, char.Index, "mult", mult)
+					c.Log.NewEvent("crimson witch 4pc", glog.LogArtifactEvent, char.Index).Write("mult", mult)
 				}
 
 				return m, true
@@ -69,7 +69,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks++
 			}
 
-			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index, "current stacks", s.stacks)
+			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index).Write("current stacks", s.stacks)
 			char.AddStatus(cw4pc, 10*60, true)
 			return false
 		}, s.key)

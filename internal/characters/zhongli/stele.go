@@ -40,11 +40,12 @@ func (c *char) newStele(dur int, max int) {
 		"Stele added",
 		glog.LogCharacterEvent,
 		c.Index,
-		"orig_count", num,
-		"cur_count", c.steleCount,
-		"max_hit", max,
-		"next_tick", c.Core.F+120,
-	)
+	).
+		Write("orig_count", num).
+		Write("cur_count", c.steleCount).
+		Write("max_hit", max).
+		Write("next_tick", c.Core.F+120)
+
 	// Snapshot buffs for resonance ticks
 	aiSnap := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -71,11 +72,16 @@ func (c *char) newStele(dur int, max int) {
 
 func (c *char) resonance(src, max int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index, "src", src, "char", c.Index)
+		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index).
+			Write("src", src).
+			Write("char", c.Index)
 		if !c.Core.Constructs.Has(src) {
 			return
 		}
-		c.Core.Log.NewEvent("Stele ticked", glog.LogCharacterEvent, c.Index, "next expected", c.Core.F+120, "src", src, "char", c.Index)
+		c.Core.Log.NewEvent("Stele ticked", glog.LogCharacterEvent, c.Index).
+			Write("next expected", c.Core.F+120).
+			Write("src", src).
+			Write("char", c.Index)
 
 		// Use snapshot for damage
 		ae := c.steleSnapshot

@@ -99,7 +99,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			},
 		})
 	}
-	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index, "ends_on", c.Core.F+600, "crit_share", crit_share)
+	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index).
+		Write("ends_on", c.Core.F+600).
+		Write("crit_share", crit_share)
 
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(6)

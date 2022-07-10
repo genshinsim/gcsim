@@ -51,7 +51,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			if count > 3 {
 				count = 3
 			} else {
-				c.Core.Log.NewEvent("adding star jade", glog.LogCharacterEvent, c.Index, "count", count)
+				c.Core.Log.NewEvent("adding star jade", glog.LogCharacterEvent, c.Index).
+					Write("count", count)
 			}
 			c.Tags["jade"] = count
 		}

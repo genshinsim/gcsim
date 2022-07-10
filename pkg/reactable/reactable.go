@@ -235,9 +235,8 @@ func (r *Reactable) Tick() {
 			r.animationFreeze = 0
 		}
 		//skip this tick (aka no decay)
-		r.core.Log.NewEvent("reactable skipping tick", glog.LogHitlagEvent, -1,
-			"animationFreeze", r.animationFreeze,
-		)
+		r.core.Log.NewEvent("reactable skipping tick", glog.LogHitlagEvent, -1).
+			Write("animationFreeze", r.animationFreeze)
 		//in reality this is not quite accurate. the ticks aren't frozen but instead
 		//the decay still happens but at 0.01x instead of the normal speed
 		return

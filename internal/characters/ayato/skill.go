@@ -81,7 +81,8 @@ func (c *char) generateParticles(ac combat.AttackCB) {
 func (c *char) skillStacks(ac combat.AttackCB) {
 	if c.stacks < c.stacksMax {
 		c.stacks++
-		c.Core.Log.NewEvent("gained namisen stack", glog.LogCharacterEvent, c.Index, "stacks", c.stacks)
+		c.Core.Log.NewEvent("gained namisen stack", glog.LogCharacterEvent, c.Index).
+			Write("stacks", c.stacks)
 	}
 }
 

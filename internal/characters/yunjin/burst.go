@@ -88,7 +88,10 @@ func (c *char) burstProc() {
 		c.burstTriggers[ae.Info.ActorIndex]--
 		c.updateBuffTags()
 
-		c.Core.Log.NewEvent("yunjin burst adding damage", glog.LogPreDamageMod, ae.Info.ActorIndex, "damage_added", dmgAdded, "stacks_remaining_for_char", c.burstTriggers[ae.Info.ActorIndex], "burst_def_pct", finalBurstBuff)
+		c.Core.Log.NewEvent("yunjin burst adding damage", glog.LogPreDamageMod, ae.Info.ActorIndex).
+			Write("damage_added", dmgAdded).
+			Write("stacks_remaining_for_char", c.burstTriggers[ae.Info.ActorIndex]).
+			Write("burst_def_pct", finalBurstBuff)
 
 		return false
 	}, "yunjin-burst")

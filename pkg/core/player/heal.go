@@ -46,12 +46,12 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 	prevhp := c.Base.HP
 	c.ModifyHP(heal)
 
-	h.Log.NewEvent(info.Message, glog.LogHealEvent, index,
-		"previous", prevhp,
-		"amount", hp,
-		"bonus", bonus,
-		"current", c.Base.HP,
-		"max_hp", c.MaxHP())
+	h.Log.NewEvent(info.Message, glog.LogHealEvent, index).
+		Write("previous", prevhp).
+		Write("amount", hp).
+		Write("bonus", bonus).
+		Write("current", c.Base.HP).
+		Write("max_hp", c.MaxHP())
 
 	h.Events.Emit(event.OnHeal, info.Caller, index, heal)
 }
@@ -68,11 +68,11 @@ func (h *Handler) Drain(di DrainInfo) {
 	prevhp := c.HPCurrent
 	c.ModifyHP(-di.Amount)
 
-	h.Log.NewEvent(di.Abil, glog.LogHurtEvent, di.ActorIndex,
-		"previous", prevhp,
-		"amount", di.Amount,
-		"current", c.HPCurrent,
-		"max_hp", c.MaxHP())
+	h.Log.NewEvent(di.Abil, glog.LogHurtEvent, di.ActorIndex).
+		Write("previous", prevhp).
+		Write("amount", di.Amount).
+		Write("current", c.HPCurrent).
+		Write("max_hp", c.MaxHP())
 
 	h.Events.Emit(event.OnCharacterHurt, di.Amount)
 }

@@ -140,7 +140,8 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 				},
 			})
 
-			c.Core.Log.NewEvent("bennett field - adding attack", glog.LogCharacterEvent, c.Index, "threshold", threshold)
+			c.Core.Log.NewEvent("bennett field - adding attack", glog.LogCharacterEvent, c.Index).
+				Write("threshold", threshold)
 		}
 	}
 }

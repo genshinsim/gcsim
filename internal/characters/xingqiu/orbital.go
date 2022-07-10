@@ -12,6 +12,7 @@ func (c *char) applyOrbital(duration int, delay int) {
 	src := c.Core.F
 	c.Core.Log.NewEvent(
 		"Applying orbital", glog.LogCharacterEvent, c.Index,
+	).Write(
 		"current status", c.StatusExpiry(orbitalKey),
 	)
 	//check if orbitals already active, if active extend duration
@@ -22,13 +23,16 @@ func (c *char) applyOrbital(duration int, delay int) {
 		c.orbitalActive = true
 		c.Core.Log.NewEvent(
 			"orbital applied", glog.LogCharacterEvent, c.Index,
+		).Write(
 			"expected end", src+900,
+		).Write(
 			"next expected tick", src+40,
 		)
 	}
 	c.AddStatus(orbitalKey, duration, true)
 	c.Core.Log.NewEvent(
 		"orbital duration extended", glog.LogCharacterEvent, c.Index,
+	).Write(
 		"new expiry", c.StatusExpiry(orbitalKey),
 	)
 }
@@ -37,7 +41,9 @@ func (c *char) orbitalTickTask(src int) func() {
 	return func() {
 		c.Core.Log.NewEvent(
 			"orbital checking tick", glog.LogCharacterEvent, c.Index,
+		).Write(
 			"expiry", c.StatusExpiry(orbitalKey),
+		).Write(
 			"src", src,
 		)
 		if !c.StatusIsActive(orbitalKey) {
@@ -56,8 +62,11 @@ func (c *char) orbitalTickTask(src int) func() {
 		}
 		c.Core.Log.NewEvent(
 			"orbital ticked", glog.LogCharacterEvent, c.Index,
+		).Write(
 			"next expected tick", c.Core.F+135,
+		).Write(
 			"expiry", c.StatusExpiry(orbitalKey),
+		).Write(
 			"src", src,
 		)
 

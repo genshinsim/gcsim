@@ -31,7 +31,9 @@ func (p *Player) Attack(ae *combat.AttackEvent, evt glog.Event) (float64, bool) 
 
 func (p *Player) ApplySelfInfusion(ele attributes.Element, dur combat.Durability, f int) {
 
-	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).Write("durability", dur, "duration", f)
+	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).
+		Write("durability", dur).
+		Write("duration", f)
 	//we're assuming self infusion isn't subject to 0.8x multiplier
 	//also no real sanity check
 	if ele == attributes.Frozen {
@@ -61,13 +63,13 @@ func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
 	existing := p.Reactable.ActiveAuraString()
 	applied := atk.Info.Durability
 	p.React(atk)
-	p.Core.Log.NewEvent("self reaction occured", glog.LogElementEvent, atk.Info.ActorIndex,
-		"attack_tag", atk.Info.AttackTag,
-		"applied_ele", atk.Info.Element.String(),
-		"dur", applied,
-		"abil", atk.Info.Abil,
-		"target", 0,
-		"existing", existing,
-		"after", p.Reactable.ActiveAuraString(),
-	)
+	p.Core.Log.NewEvent("self reaction occured", glog.LogElementEvent, atk.Info.ActorIndex).
+		Write("attack_tag", atk.Info.AttackTag).
+		Write("applied_ele", atk.Info.Element.String()).
+		Write("dur", applied).
+		Write("abil", atk.Info.Abil).
+		Write("target", 0).
+		Write("existing", existing).
+		Write("after", p.Reactable.ActiveAuraString())
+
 }

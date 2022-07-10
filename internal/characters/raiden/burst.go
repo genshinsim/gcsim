@@ -55,7 +55,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.c6Count = 0
 	}
 
-	c.Core.Log.NewEvent("resolve stacks", glog.LogCharacterEvent, c.Index, "stacks", c.stacksConsumed)
+	c.Core.Log.NewEvent("resolve stacks", glog.LogCharacterEvent, c.Index).
+		Write("stacks", c.stacksConsumed)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -91,7 +92,9 @@ func (c *char) burstRestorefunc(a combat.AttackCB) {
 		energy := burstRestore[c.TalentLvlBurst()]
 		//apply a4
 		excess := int(a.AttackEvent.Snapshot.Stats[attributes.ER] / 0.01)
-		c.Core.Log.NewEvent("a4 energy restore stacks", glog.LogCharacterEvent, c.Index, "stacks", excess, "increase", float64(excess)*0.006)
+		c.Core.Log.NewEvent("a4 energy restore stacks", glog.LogCharacterEvent, c.Index).
+			Write("stacks", excess).
+			Write("increase", float64(excess)*0.006)
 		energy = energy * (1 + float64(excess)*0.006)
 		for _, char := range c.Core.Player.Chars() {
 			char.AddEnergy("raiden-burst", energy)

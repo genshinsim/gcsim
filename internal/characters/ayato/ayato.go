@@ -99,7 +99,10 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		//add namisen stack
 		flatdmg := (c.Base.HP*(1+ds.Stats[attributes.HPP]) + ds.Stats[attributes.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
 		ai.FlatDmg += flatdmg
-		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index, "damage_added", flatdmg, "stacks", c.stacks, "expiry", c.StatusExpiry(skillBuffKey))
+		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index).
+			Write("damage_added", flatdmg).
+			Write("stacks", c.stacks).
+			Write("expiry", c.StatusExpiry(skillBuffKey))
 	}
 	return ds
 }

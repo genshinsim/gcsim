@@ -78,7 +78,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		//max 1 stack per 0.5s
 		char.AddStatus(icdKey, 30, true)
 		stacks++
-		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index, "sigil", stacks)
+		c.Log.NewEvent("freedomsworn gained sigil", glog.LogWeaponEvent, char.Index).
+			Write("sigil", stacks)
 
 		if stacks == 2 {
 			stacks = 0

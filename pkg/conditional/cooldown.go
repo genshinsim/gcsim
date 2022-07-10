@@ -12,19 +12,19 @@ import (
 func evalCD(c *core.Core, fields []string) int64 {
 	//.element.t1.pyro
 	if len(fields) < 3 {
-		c.Log.NewEvent("bad cooldown conditon: invalid num of fields", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad cooldown conditon: invalid num of fields", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 	//check target is valid
 	name := strings.TrimPrefix(fields[1], ".")
 	key, ok := shortcut.CharNameToKey[name]
 	if !ok {
-		c.Log.NewEvent("bad cooldown conditon: invalid character", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad cooldown conditon: invalid character", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 	char, ok := c.Player.ByKey(key)
 	if !ok {
-		c.Log.NewEvent("bad cooldown conditon: invalid character", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad cooldown conditon: invalid character", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 	var cd int
@@ -35,7 +35,7 @@ func evalCD(c *core.Core, fields []string) int64 {
 	case ".burst":
 		cd = char.Cooldown(action.ActionBurst)
 	default:
-		c.Log.NewEvent("bad cooldown conditon: invalid action", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad cooldown conditon: invalid action", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 	//check vs the conditions

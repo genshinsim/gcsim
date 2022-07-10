@@ -115,7 +115,10 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 // Skill snapshots, so inputs into the function are the originating snapshot
 func (c *char) skillTickTask(originalSnapshot *combat.AttackEvent, src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Skill Tick Debug", glog.LogCharacterEvent, c.Index, "current dur", c.Core.Status.Duration("kokomiskill"), "skilllastused", c.skillLastUsed, "src", src)
+		c.Core.Log.NewEvent("Skill Tick Debug", glog.LogCharacterEvent, c.Index).
+			Write("current dur", c.Core.Status.Duration("kokomiskill")).
+			Write("skilllastused", c.skillLastUsed).
+			Write("src", src)
 		if c.Core.Status.Duration("kokomiskill") == 0 {
 			return
 		}

@@ -53,7 +53,8 @@ func (c *char) a4() {
 				})
 			}
 
-			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index, "reaction", ele.String())
+			c.Core.Log.NewEvent("kazuha a4 proc", glog.LogCharacterEvent, c.Index).
+				Write("reaction", ele.String())
 
 			return false
 		}

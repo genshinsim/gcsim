@@ -64,7 +64,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				},
 			})
 			if tick >= 900+burstStart-18 {
-				c.Core.Log.NewEvent("a4 last tick", glog.LogCharacterEvent, c.Index, "ends_on", c.Core.F+60)
+				c.Core.Log.NewEvent("a4 last tick", glog.LogCharacterEvent, c.Index).
+					Write("ends_on", c.Core.F+60)
 			}
 
 			// increase C4 stacks at 3s interval
@@ -74,7 +75,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				if c.c4Stacks > 5 {
 					c.c4Stacks = 5
 				}
-				c.Core.Log.NewEvent("ganyu c4 tick", glog.LogCharacterEvent, c.Index, "stacks", c.c4Stacks)
+				c.Core.Log.NewEvent("ganyu c4 tick", glog.LogCharacterEvent, c.Index).
+					Write("stacks", c.c4Stacks)
 			}
 
 			// damage ticks and C4

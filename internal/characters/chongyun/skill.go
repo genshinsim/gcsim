@@ -122,7 +122,8 @@ func (c *char) onSwapHook() {
 			return false
 		}
 		//add infusion on swap
-		c.Core.Log.NewEvent("chongyun adding infusion on swap", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		c.Core.Log.NewEvent("chongyun adding infusion on swap", glog.LogCharacterEvent, c.Index).
+			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
 		active := c.Core.Player.ActiveChar()
 		c.infuse(active)
 		return false
@@ -158,7 +159,8 @@ func (c *char) infuse(active *character.CharWrapper) {
 			true,
 			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
 		)
-		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index).
+			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
 	default:
 		return
 	}

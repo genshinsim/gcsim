@@ -49,7 +49,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			return m, true
 		},
 	})
-	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index, "total def", burstDefSnapshot, "atk added", m[attributes.ATK], "mult", mult)
+	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index).
+		Write("total def", burstDefSnapshot).
+		Write("atk added", m[attributes.ATK]).
+		Write("mult", mult)
 
 	c.Core.Status.Add("noelleq", 900+burstStart)
 	// Queue up task for Noelle burst extension
@@ -67,7 +70,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					return m, true
 				},
 			})
-			c.Core.Log.NewEvent("noelle max burst extension activated", glog.LogCharacterEvent, c.Index, "new_expiry", c.Core.F+600)
+			c.Core.Log.NewEvent("noelle max burst extension activated", glog.LogCharacterEvent, c.Index).
+				Write("new_expiry", c.Core.F+600)
 			c.Core.Status.Add("noelleq", 600)
 		}, 900+burstStart)
 	}

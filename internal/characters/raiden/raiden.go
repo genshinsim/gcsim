@@ -72,7 +72,9 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	excess := int(s.Stats[attributes.ER] / 0.01)
 
 	s.Stats[attributes.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Core.Log.NewEvent("a4 adding electro dmg", glog.LogCharacterEvent, c.Index, "stacks", excess, "final", s.Stats[attributes.ElectroP])
+	c.Core.Log.NewEvent("a4 adding electro dmg", glog.LogCharacterEvent, c.Index).
+		Write("stacks", excess).
+		Write("final", s.Stats[attributes.ElectroP])
 
 	return s
 }

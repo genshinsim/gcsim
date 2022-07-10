@@ -38,7 +38,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.eCast = c.Core.F
 	c.Core.Status.Add("tartagliamelee", 30*60)
-	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index, "rtexpiry", c.Core.F+30*60)
+	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index).
+		Write("rtexpiry", c.Core.F+30*60)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

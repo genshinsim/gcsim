@@ -35,7 +35,9 @@ func (c *char) addJadeShield() {
 		}
 	}
 
-	c.Core.Log.NewEvent("zhongli res shred active", glog.LogCharacterEvent, c.Index, "expiry", c.Core.F+1200, "char", c.Index)
+	c.Core.Log.NewEvent("zhongli res shred active", glog.LogCharacterEvent, c.Index).
+		Write("expiry", c.Core.F+1200).
+		Write("char", c.Index)
 }
 
 func (c *char) removeJadeShield() {
@@ -54,7 +56,8 @@ func (c *char) removeJadeShield() {
 			e.DeleteResistMod(key)
 		}
 	}
-	c.Core.Log.NewEvent("zhongli res shred deactivated", glog.LogCharacterEvent, c.Index, "char", c.Index)
+	c.Core.Log.NewEvent("zhongli res shred deactivated", glog.LogCharacterEvent, c.Index).
+		Write("char", c.Index)
 }
 
 func (c *char) newShield(base float64, dur int) *shd {

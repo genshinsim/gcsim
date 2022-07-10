@@ -27,12 +27,12 @@ func (c *CharWrapper) AddEnergy(src string, e float64) {
 	}
 
 	c.events.Emit(event.OnEnergyChange, c, preEnergy, e, src)
-	c.log.NewEvent("adding energy", glog.LogEnergyEvent, c.Index,
-		"rec'd", e,
-		"post_recovery", c.Energy,
-		"source", src,
-		"max_energy", c.EnergyMax,
-	)
+	c.log.NewEvent("adding energy", glog.LogEnergyEvent, c.Index).
+		Write("rec'd", e).
+		Write("post_recovery", c.Energy).
+		Write("source", src).
+		Write("max_energy", c.EnergyMax)
+
 }
 
 func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int) {
@@ -70,15 +70,16 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 		"particle",
 		glog.LogEnergyEvent,
 		c.Index,
-		"source", p.Source,
-		"count", p.Num,
-		"ele", p.Ele,
-		"ER", er,
-		"is_active", isActive,
-		"party_count", partyCount,
-		"pre_recovery", pre,
-		"amt", amt,
-		"post_recovery", c.Energy,
-		"max_energy", c.EnergyMax,
-	)
+	).
+		Write("source", p.Source).
+		Write("count", p.Num).
+		Write("ele", p.Ele).
+		Write("ER", er).
+		Write("is_active", isActive).
+		Write("party_count", partyCount).
+		Write("pre_recovery", pre).
+		Write("amt", amt).
+		Write("post_recovery", c.Energy).
+		Write("max_energy", c.EnergyMax)
+
 }

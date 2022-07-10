@@ -46,7 +46,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Tags["seal"] = c.maxTags
 		}
 		c.sealExpiry = c.Core.F + 600
-		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index).
+			Write("current_seals", c.Tags["seal"]).
+			Write("expiry", c.sealExpiry)
 		done = true
 	}
 
@@ -90,7 +92,9 @@ func (c *char) burstAddSealHook() func() {
 		}
 		c.sealExpiry = c.Core.F + 600
 
-		c.Core.Log.NewEvent("yanfei gained seal from burst", glog.LogCharacterEvent, c.Index, "current_seals", c.Tags["seal"], "expiry", c.sealExpiry)
+		c.Core.Log.NewEvent("yanfei gained seal from burst", glog.LogCharacterEvent, c.Index).
+			Write("current_seals", c.Tags["seal"]).
+			Write("expiry", c.sealExpiry)
 
 		c.Core.Tasks.Add(c.burstAddSealHook(), 60)
 	}

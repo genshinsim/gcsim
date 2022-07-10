@@ -97,7 +97,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			s.stacks++
 			s.HPicd = c.F + 48 //0.8s lockout
 			s.updateBuff()
-			c.Log.NewEvent("Vermillion stack gained", glog.LogArtifactEvent, char.Index, "stacks", s.stacks)
+			c.Log.NewEvent("Vermillion stack gained", glog.LogArtifactEvent, char.Index).Write("stacks", s.stacks)
 
 			return false
 		}, "Stack-on-hurt")

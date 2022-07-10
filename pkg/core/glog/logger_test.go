@@ -22,7 +22,7 @@ func TestEventWriteKeyOnlyPanic(t *testing.T) {
 	}()
 
 	//this should panic
-	e.Write("keyonly")
+	e.WriteBuildMsg("keyonly")
 
 }
 
@@ -42,7 +42,7 @@ func TestEventWriteNonStringKeyPanic(t *testing.T) {
 	}()
 
 	//this should panic
-	e.Write(1)
+	e.WriteBuildMsg(1)
 
 }
 
@@ -57,8 +57,10 @@ func TestEventWriteKeyVal(t *testing.T) {
 	}
 
 	//this should be ok no panic
-	e.Write("stuff", 1, "goes", true, "here", "two")
-
+	// e.Write("stuff", 1, "goes", true, "here", "two")
+	e.Write("stuff", 1).
+		Write("goes", true).
+		Write("here", "two")
 }
 
 func BenchmarkEasyJSONSerialization(b *testing.B) {
@@ -77,7 +79,12 @@ func BenchmarkEasyJSONSerialization(b *testing.B) {
 			Logs:     map[string]interface{}{},
 			Ordering: make(map[string]int),
 		}
-		e.Write("a", 1, "b", true, "c", "stuff", "e", 123, "f", "boo", "g", 111)
+		e.Write("a", 1).
+			Write("b", true).
+			Write("c", "stuff").
+			Write("e", 123).
+			Write("f", "boo").
+			Write("g", 111)
 		testdata = append(testdata, e)
 	}
 

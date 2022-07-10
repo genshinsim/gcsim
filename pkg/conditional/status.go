@@ -10,7 +10,7 @@ import (
 func evalStatus(c *core.Core, fields []string) int64 {
 	//.energy.char
 	if len(fields) < 2 {
-		c.Log.NewEvent("bad status conditon: invalid num of fields", glog.LogWarnings, -1, "fields", fields)
+		c.Log.NewEvent("bad status conditon: invalid num of fields", glog.LogWarnings, -1).Write("fields", fields)
 		return 0
 	}
 	//check target is valid

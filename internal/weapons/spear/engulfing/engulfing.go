@@ -40,7 +40,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			er := char.Stat(attributes.ER)
-			c.Log.NewEvent("engulfing lightning snapshot", glog.LogWeaponEvent, char.Index, "er", er)
+			c.Log.NewEvent("engulfing lightning snapshot", glog.LogWeaponEvent, char.Index).
+				Write("er", er)
 			bonus := atk * er
 			if bonus > max {
 				bonus = max

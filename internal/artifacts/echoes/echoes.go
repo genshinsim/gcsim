@@ -77,10 +77,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if c.F < s.procExpireF {
 				dmgAdded = snATK * 0.7
 				atk.Info.FlatDmg += dmgAdded
-				c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index,
-					"buff_expiry", s.procExpireF,
-					"dmg_added", dmgAdded,
-				)
+				c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
+					Write("buff_expiry", s.procExpireF).
+					Write("dmg_added", dmgAdded)
+
 				return false
 			}
 
@@ -100,12 +100,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			s.procExpireF = c.F + procDuration
 			s.icd = c.F + 12 // 0.2s
 
-			c.Log.NewEvent("echoes 4pc proc'd", glog.LogArtifactEvent, char.Index,
-				"probability", s.prob,
-				"icd", s.icd,
-				"buff_expiry", s.procExpireF,
-				"dmg_added", dmgAdded,
-			)
+			c.Log.NewEvent("echoes 4pc proc'd", glog.LogArtifactEvent, char.Index).
+				Write("probability", s.prob).
+				Write("icd", s.icd).
+				Write("buff_expiry", s.procExpireF).
+				Write("dmg_added", dmgAdded)
 
 			s.prob = 0.36
 

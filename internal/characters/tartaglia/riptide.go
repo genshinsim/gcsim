@@ -52,9 +52,10 @@ func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 		fmt.Sprintf("riptide applied (%v)", src),
 		glog.LogCharacterEvent,
 		c.Index,
-		"target", t.Index(),
-		"expiry", c.Core.F+riptideDuration,
-	)
+	).
+		Write("target", t.Index()).
+		Write("expiry", c.Core.F+riptideDuration)
+
 }
 
 // if tartaglia is in melee stance, triggers Riptide Slash against opponents on the field affected by Riptide every 4s, otherwise, triggers Riptide Flash.
@@ -119,11 +120,11 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		"riptide flash triggered",
 		glog.LogCharacterEvent,
 		c.Index,
-		"dur", c.Core.Status.Duration("tartagliamelee"),
-		"target", t.Index(),
-		"riptide_flash_icd", t.GetTag(riptideFlashICDKey),
-		"riptide_expiry", t.GetTag(riptideKey),
-	)
+	).
+		Write("dur", c.Core.Status.Duration("tartagliamelee")).
+		Write("target", t.Index()).
+		Write("riptide_flash_icd", t.GetTag(riptideFlashICDKey)).
+		Write("riptide_expiry", t.GetTag(riptideKey))
 
 	//queue particles
 	if c.rtParticleICD < c.Core.F {
@@ -175,11 +176,11 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		"riptide slash ticked",
 		glog.LogCharacterEvent,
 		c.Index,
-		"dur", c.Core.Status.Duration("tartagliamelee"),
-		"target", t.Index(),
-		"riptide_slash_icd", t.GetTag(riptideSlashICDKey),
-		"riptide_expiry", t.GetTag(riptideKey),
-	)
+	).
+		Write("dur", c.Core.Status.Duration("tartagliamelee")).
+		Write("target", t.Index()).
+		Write("riptide_slash_icd", t.GetTag(riptideSlashICDKey)).
+		Write("riptide_expiry", t.GetTag(riptideKey))
 
 	//queue particle if not on icd
 	if c.rtParticleICD < c.Core.F {
@@ -223,10 +224,10 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		"riptide blast triggered",
 		glog.LogCharacterEvent,
 		c.Index,
-		"dur", c.Core.Status.Duration("tartagliamelee"),
-		"target", t.Index(),
-		"rtExpiry", t.GetTag(riptideKey),
-	)
+	).
+		Write("dur", c.Core.Status.Duration("tartagliamelee")).
+		Write("target", t.Index()).
+		Write("rtExpiry", t.GetTag(riptideKey))
 
 	//clear riptide status
 	t.RemoveTag(riptideKey)

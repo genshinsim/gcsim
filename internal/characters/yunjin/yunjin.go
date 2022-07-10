@@ -61,5 +61,6 @@ func (c *char) getPartyElementalTypeCounts() {
 	for range partyElementalTypes {
 		c.partyElementalTypes += 1
 	}
-	c.Core.Log.NewEvent("Yun Jin Party Elemental Types (A4)", glog.LogCharacterEvent, c.Index, "party_elements", c.partyElementalTypes)
+	c.Core.Log.NewEvent("Yun Jin Party Elemental Types (A4)", glog.LogCharacterEvent, c.Index).
+		Write("party_elements", c.partyElementalTypes)
 }

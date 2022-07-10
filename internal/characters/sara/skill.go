@@ -65,7 +65,10 @@ func (c *char) attackBuff(delay int) {
 
 		active := c.Core.Player.ActiveChar()
 		active.SetTag("sarabuff", c.Core.F+360)
-		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index, "char", active.Index, "buff", buff, "expiry", c.Core.F+360)
+		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index).
+			Write("char", active.Index).
+			Write("buff", buff).
+			Write("expiry", c.Core.F+360)
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATK] = buff

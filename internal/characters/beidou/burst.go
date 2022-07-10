@@ -126,7 +126,9 @@ func (c *char) burstProc() {
 		}
 		c.Core.QueueAttackEvent(&atk, 1)
 
-		c.Core.Log.NewEvent("beidou Q proc'd", glog.LogCharacterEvent, c.Index, "char", ae.Info.ActorIndex, "attack tag", ae.Info.AttackTag)
+		c.Core.Log.NewEvent("beidou Q proc'd", glog.LogCharacterEvent, c.Index).
+			Write("char", ae.Info.ActorIndex).
+			Write("attack tag", ae.Info.AttackTag)
 
 		icd = c.Core.F + 60 // once per second
 		return false

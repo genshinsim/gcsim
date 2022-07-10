@@ -69,7 +69,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 					},
 				})
 			}
-			c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index, "trigger", key, "expiring", c.F+6*60)
+			c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index).
+				Write("trigger", key).
+				Write("expiring", c.F+6*60)
 			return false
 		}
 	}

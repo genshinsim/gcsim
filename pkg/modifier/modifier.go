@@ -124,7 +124,9 @@ func LogAdd[K Mod](prefix string, index int, mod K, logger glog.Logger, overwrot
 			prefix, " mod refreshed",
 		).Write(
 			"overwrite", true,
+		).Write(
 			"key", mod.Key(),
+		).Write(
 			"expiry", mod.Expiry(),
 		)
 		evt = oldEvt
@@ -134,7 +136,9 @@ func LogAdd[K Mod](prefix string, index int, mod K, logger glog.Logger, overwrot
 			prefix, " mod added",
 		).Write(
 			"overwrite", false,
+		).Write(
 			"key", mod.Key(),
+		).Write(
 			"expiry", mod.Expiry(),
 		)
 	}
@@ -144,5 +148,5 @@ func LogAdd[K Mod](prefix string, index int, mod K, logger glog.Logger, overwrot
 
 func LogDelete[K Mod](prefix string, index int, mod K, logger glog.Logger, f int) {
 	mod.Event().SetEnded(f)
-	logger.NewEvent("enemy mod deleted", glog.LogStatusEvent, index, "key", mod.Key())
+	logger.NewEvent("enemy mod deleted", glog.LogStatusEvent, index).Write("key", mod.Key())
 }
