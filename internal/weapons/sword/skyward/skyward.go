@@ -7,10 +7,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -24,6 +24,10 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	buffKey = "skyward-blade"
+)
+
 //CRIT Rate increased by 4%. Gains Skypiercing Might upon using an Elemental
 //Burst: Increases Movement SPD by 10%, increases ATK SPD by 10%, and Normal and
 //Charged hits deal additional DMG equal to 20% of ATK. Skypiercing Might lasts
@@ -35,25 +39,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.03 + float64(r)*0.01
-	char.AddStatMod("skyward-blade-crit", -1, attributes.NoStat, func() ([]float64, bool) {
-		return m, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("skyward-blade-crit", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 
-	dur := -1
 	atkspdBuff := make([]float64, attributes.EndStatType)
 	atkspdBuff[attributes.AtkSpd] = 0.1
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		dur = c.F + 720
-		char.AddStatMod("skyward blade", 720, attributes.NoStat, func() ([]float64, bool) {
-			return atkspdBuff, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(buffKey, 720),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return atkspdBuff, true
+			},
 		})
-		c.Log.NewEvent("Skyward Blade activated", glog.LogWeaponEvent, char.Index).
-			Write("expiring ", dur)
 		return false
-	}, fmt.Sprintf("skyward-blade-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
 	//deals damage proc on normal/charged attacks. i dont know why description in game sucks
 	dmgper := .15 + .05*float64(r)
@@ -67,7 +75,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		//check if buff up
-		if dur < c.F {
+		if !char.StatModIsActive(buffKey) {
 			return false
 		}
 		//add a new action that deals % dmg immediately
@@ -84,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 		return false
 
-	}, fmt.Sprintf("skyward-blade-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
 	return w, nil
 }

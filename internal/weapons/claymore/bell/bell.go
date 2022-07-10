@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -27,20 +28,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//Taking DMG generates a shield which absorbs DMG up to 20% of Max HP. This
 	//shield lasts for 10s or until broken, and can only be triggered once every
 	//45s. While protected by a shield, the character gains 12% increased DMG.
-
+	const icdKey = "bell-icd"
 	w := &Weapon{}
 	r := p.Refine
 
 	hp := 0.17 + float64(r)*0.03
-	icd := 0
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.09 + float64(r)*0.03
 
 	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 2700
+		char.AddStatus(icdKey, 2700, true)
 
 		c.Player.Shields.Add(&shield.Tmpl{
 			Src:        c.F,
@@ -51,11 +51,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Expires:    c.F + 600,
 		})
 		return false
-	}, fmt.Sprintf("bell-%v", char.Base.Name))
+	}, fmt.Sprintf("bell-%v", char.Base.Key.String()))
 
 	//add damage if shielded
-	char.AddStatMod("bell", -1, attributes.NoStat, func() ([]float64, bool) {
-		return val, char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded()
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("bell", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return val, char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded()
+		},
 	})
 
 	return w, nil

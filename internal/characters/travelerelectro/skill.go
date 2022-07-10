@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -67,7 +68,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			return
 		}
 		partCount++
-		c.Core.QueueParticle(c.Base.Name, 1, attributes.Electro, 100) //this way we're future proof if for whatever reason this misses
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, 100) //this way we're future proof if for whatever reason this misses
 	}
 
 	amuletCB := func(atk combat.AttackCB) {
@@ -140,8 +141,12 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	}
 
 	// apply ER mod
-	collector.AddStatMod("abundance-amulet", 360, attributes.ER, func() ([]float64, bool) {
-		return mER, true
+	collector.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("abundance-amulet", 360),
+		AffectedStat: attributes.ER,
+		Amount: func() ([]float64, bool) {
+			return mER, true
+		},
 	})
 
 	// Reset amulets

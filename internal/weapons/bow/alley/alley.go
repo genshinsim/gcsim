@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -51,12 +52,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmg := 0.015 + float64(r)*0.005
 
 	m := make([]float64, attributes.EndStatType)
-	char.AddAttackMod("alley-hunter", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		m[attributes.DmgP] = dmg * float64(w.stacks)
-		return m, true
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("alley-hunter", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			m[attributes.DmgP] = dmg * float64(w.stacks)
+			return m, true
+		},
 	})
 
-	key := fmt.Sprintf("alley-hunter-%v", char.Base.Name)
+	key := fmt.Sprintf("alley-hunter-%v", char.Base.Key.String())
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)

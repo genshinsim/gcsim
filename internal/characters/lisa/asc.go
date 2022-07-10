@@ -3,6 +3,7 @@ package lisa
 import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) a4(a combat.AttackCB) {
@@ -10,5 +11,8 @@ func (c *char) a4(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	t.AddDefMod("lisa-a4", 600, -0.15)
+	t.AddDefMod(enemy.DefMod{
+		Base:  modifier.NewBaseWithHitlag("lisa-a4", 600),
+		Value: -0.15,
+	})
 }

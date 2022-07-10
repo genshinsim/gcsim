@@ -3,6 +3,8 @@ package qiqi
 import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Implements event hook and incoming healing bonus function for A1
@@ -22,8 +24,11 @@ func (c *char) a1() {
 			return false
 		}
 
-		active.AddHealBonusMod("qiqi-a1", 8*60, func() (float64, bool) {
-			return .2, true
+		active.AddHealBonusMod(character.HealBonusMod{
+			Base: modifier.NewBase("qiqi-a1", 8*60),
+			Amount: func() (float64, bool) {
+				return .2, true
+			},
 		})
 
 		return false

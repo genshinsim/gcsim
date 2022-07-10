@@ -22,9 +22,10 @@ func (b *Favonius) Init() error      { return nil }
 func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	b := &Favonius{}
 
+	const icdKey = "favonius-cd"
+
 	prob := 0.50 + float64(p.Refine)*0.1
 	cd := 810 - p.Refine*90
-	icd := 0
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -38,21 +39,21 @@ func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfi
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-
 		if c.Rand.Float64() > prob {
 			return false
 		}
 		c.Log.NewEvent("favonius proc'd", glog.LogWeaponEvent, char.Index)
 
-		c.QueueParticle("favonius-"+char.Base.Name, 3, attributes.NoElement, 80)
+		c.QueueParticle("favonius-"+char.Base.Key.String(), 3, attributes.NoElement, 80)
 
-		icd = c.F + cd
+		//adds a modifier to track icd; this should be fine since it's per char and not global
+		char.AddStatus(icdKey, cd, true)
 
 		return false
-	}, fmt.Sprintf("favo-%v", char.Base.Name))
+	}, fmt.Sprintf("favo-%v", char.Base.Key.String()))
 
 	return b, nil
 }

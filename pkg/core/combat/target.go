@@ -126,7 +126,7 @@ func (c *Handler) RandomEnemyTarget() int {
 		//this will basically cause that attack to hit nothing
 		return -1
 	}
-	n := c.rand.Intn(count)
+	n := c.Rand.Intn(count)
 	count = 0
 	for i, v := range c.targets {
 		if v.Type() == TargettableEnemy {
@@ -150,7 +150,7 @@ func (c *Handler) RandomTargetIndex(typ TargettableType) int {
 		//this will basically cause that attack to hit nothing
 		return -1
 	}
-	n := c.rand.Intn(count)
+	n := c.Rand.Intn(count)
 	count = 0
 	for i, v := range c.targets {
 		if v.Type() == typ {

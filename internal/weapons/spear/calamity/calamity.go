@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -40,8 +41,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.AnemoP] = dmg
 	m[attributes.GeoP] = dmg
 	m[attributes.DendroP] = dmg
-	char.AddStatMod("calamity-queller", -1, attributes.NoStat, func() ([]float64, bool) {
-		return m, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("calamity-queller", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 
 	//atk increase per stack after using skill
@@ -55,25 +60,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		dur := 60 * 20
+		//TODO: not sure if the per second is affected by hitlag i.e. hitlag prolong the period before
+		//last stack icnrease. For now we're leaving it as is (not affected)
 		if skillInitF == -1 || (skillInitF+dur) < c.F {
 			skillInitF = c.F
 		}
-		char.AddStatMod("calamity-consummation", dur, attributes.NoStat, func() ([]float64, bool) {
-			stacks := (c.F - skillInitF) / 60
-			if stacks > 6 {
-				stacks = 6
-			}
-			atk := atkbonus * float64(stacks)
-			if c.Player.Active() != char.Index {
-				atk *= 2
-			}
-			skillPressBonus[attributes.ATKP] = atk
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("calamity-consummation", dur),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				stacks := (c.F - skillInitF) / 60
+				if stacks > 6 {
+					stacks = 6
+				}
+				atk := atkbonus * float64(stacks)
+				if c.Player.Active() != char.Index {
+					atk *= 2
+				}
+				skillPressBonus[attributes.ATKP] = atk
 
-			return skillPressBonus, true
+				return skillPressBonus, true
+			},
 		})
 
 		return false
-	}, fmt.Sprintf("calamity-queller-%v", char.Base.Name))
+	}, fmt.Sprintf("calamity-queller-%v", char.Base.Key.String()))
 
 	return w, nil
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -34,27 +35,30 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	burstDmgIncrease := .09 + float64(r)*0.03
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = burstDmgIncrease
-	char.AddAttackMod("luxurious-sea-lord", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag == combat.AttackTagElementalBurst {
-			return val, true
-		}
-		return nil, false
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("luxurious-sea-lord", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == combat.AttackTagElementalBurst {
+				return val, true
+			}
+			return nil, false
+		},
 	})
 
 	tunaDmg := .75 + float64(r)*0.25
-	icd := -1
+	const icdKey = "sealord-icd"
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if c.F < icd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 			return false
 		}
-		icd = c.F + 900 //15 * 60
+		char.AddStatus(icdKey, 900, true)
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Luxurious Sea-Lord Proc",
@@ -69,6 +73,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 1)
 
 		return false
-	}, fmt.Sprintf("sealord-%v", char.Base.Name))
+	}, fmt.Sprintf("sealord-%v", char.Base.Key.String()))
 	return w, nil
 }

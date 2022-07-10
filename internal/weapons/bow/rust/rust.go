@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -27,16 +28,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	m := make([]float64, attributes.EndStatType)
 	inc := .3 + float64(r)*0.1
-	char.AddAttackMod("rust", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag == combat.AttackTagNormal {
-			m[attributes.DmgP] = inc
-			return m, true
-		}
-		if atk.Info.AttackTag == combat.AttackTagExtra {
-			m[attributes.DmgP] = -0.1
-			return m, true
-		}
-		return nil, false
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("rust", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == combat.AttackTagNormal {
+				m[attributes.DmgP] = inc
+				return m, true
+			}
+			if atk.Info.AttackTag == combat.AttackTagExtra {
+				m[attributes.DmgP] = -0.1
+				return m, true
+			}
+			return nil, false
+		},
 	})
 
 	return w, nil

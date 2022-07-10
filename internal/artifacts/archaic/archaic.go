@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,8 +32,12 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.GeoP] = 0.15
-		char.AddStatMod("archaic-2pc", -1, attributes.GeoP, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("archaic-2pc", -1),
+			AffectedStat: attributes.GeoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
@@ -53,7 +58,6 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 			// Activate
 			// TODO: cd for proc?
-			core.Status.Add("archaic", 10*60)
 			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index).
 				Write("ele", s.element)
 
@@ -68,16 +72,17 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 
 			// Apply mod to all characters
 			for _, c := range core.Player.Chars() {
-				c.AddStatMod("archaic-4pc", 10*60, attributes.NoStat, func() ([]float64, bool) {
-					if core.Status.Duration("archaic") == 0 {
-						return nil, false
-					}
-					return m, true
+				c.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag("archaic-4pc", 10*60),
+					AffectedStat: attributes.NoStat,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
 				})
 			}
 
 			return false
-		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

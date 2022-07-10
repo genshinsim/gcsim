@@ -2,81 +2,96 @@
 //of modifiers
 package modifier
 
-import "github.com/genshinsim/gcsim/pkg/core/glog"
+import (
+	"math"
+
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+)
 
 type Mod interface {
 	Key() string
 	Expiry() int
 	Event() glog.Event
 	SetEvent(glog.Event)
+	AffectedByHitlag() bool
+	Extend(float64)
 }
 
 type Base struct {
-	key    string
-	expiry int
-	event  glog.Event
+	ModKey    string
+	Dur       int
+	Hitlag    bool
+	ModExpiry int
+	extension float64
+	event     glog.Event
 }
 
-func (t *Base) Key() string             { return t.key }
-func (t *Base) Expiry() int             { return t.expiry }
+func (t *Base) Key() string             { return t.ModKey }
+func (t *Base) Expiry() int             { return t.ModExpiry + int(math.Ceil(t.extension)) }
 func (t *Base) Event() glog.Event       { return t.event }
 func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
-
-func NewBase(key string, expiry int) Base {
-	return Base{
-		key:    key,
-		expiry: expiry,
+func (t *Base) AffectedByHitlag() bool  { return t.Hitlag }
+func (t *Base) Extend(amt float64) {
+	t.extension += amt
+	t.event.SetEnded(t.Expiry())
+}
+func (t *Base) SetExpiry(f int) {
+	if t.Dur == -1 {
+		t.ModExpiry = -1
+	} else {
+		t.ModExpiry = f + t.Dur
 	}
 }
 
-func Delete[K Mod](f int, log glog.Logger, slice *[]K, key string) {
+func NewBase(key string, dur int) Base {
+	return Base{
+		ModKey: key,
+		Dur:    dur,
+	}
+}
+
+func NewBaseWithHitlag(key string, dur int) Base {
+	return Base{
+		ModKey: key,
+		Dur:    dur,
+		Hitlag: true,
+	}
+}
+
+//Delete removes a modifier. Returns true if deleted ok
+func Delete[K Mod](slice *[]K, key string) (m Mod) {
 	n := 0
-	for _, v := range *slice {
+	for i, v := range *slice {
 		if v.Key() == key {
-			v.Event().SetEnded(f)
-			log.NewEvent("enemy mod deleted", glog.LogStatusEvent, -1).
-				Write("key", key)
+			m = (*slice)[i]
 		} else {
 			(*slice)[n] = v
 			n++
 		}
 	}
 	*slice = (*slice)[:n]
+	return
 }
 
-func Add[K Mod](f int, log glog.Logger, slice *[]K, mod K) {
+//Add adds a modifier. Returns true if overwritten and the original evt (if overwritten)
+//TODO: consider adding a map here to track the index to assist with faster lookups
+func Add[K Mod](slice *[]K, mod K, f int) (overwrote bool, evt glog.Event) {
 	ind := Find(slice, mod.Key())
 
 	//if does not exist, make new and add
 	if ind == -1 {
-		evt := log.NewEvent("enemy mod added", glog.LogStatusEvent, -1).
-			Write("overwrite", false).
-			Write("key", mod.Key()).
-			Write("expiry", mod.Expiry())
-		evt.SetEnded(mod.Expiry())
-		mod.SetEvent(evt)
 		*slice = append(*slice, mod)
 		return
 	}
 
 	//otherwise check not expired
-	var evt glog.Event
 	if (*slice)[ind].Expiry() > f || (*slice)[ind].Expiry() == -1 {
-		evt = log.NewEvent("enemy mod refreshed", glog.LogStatusEvent, -1).
-			Write("overwrite", true).
-			Write("key", mod.Key()).
-			Write("expiry", mod.Expiry())
-
-	} else {
-		//if expired overide the event
-		evt = log.NewEvent("enemy mod added", glog.LogStatusEvent, -1).
-			Write("overwrite", false).
-			Write("key", mod.Key()).
-			Write("expiry", mod.Expiry())
+		overwrote = true
+		evt = (*slice)[ind].Event()
 	}
-	mod.SetEvent(evt)
-	evt.SetEnded(mod.Expiry())
 	(*slice)[ind] = mod
+
+	return
 }
 
 func Find[K Mod](slice *[]K, key string) int {
@@ -98,4 +113,40 @@ func FindCheckExpiry[K Mod](slice *[]K, key string, f int) (int, bool) {
 		return ind, false
 	}
 	return ind, true
+}
+
+//LogAdd is a helper that logs mod add events
+func LogAdd[K Mod](prefix string, index int, mod K, logger glog.Logger, overwrote bool, oldEvt glog.Event) {
+	var evt glog.Event
+	if overwrote {
+		logger.NewEventBuildMsg(
+			glog.LogStatusEvent, index,
+			prefix, " mod refreshed",
+		).Write(
+			"overwrite", true,
+		).Write(
+			"key", mod.Key(),
+		).Write(
+			"expiry", mod.Expiry(),
+		)
+		evt = oldEvt
+	} else {
+		evt = logger.NewEventBuildMsg(
+			glog.LogStatusEvent, index,
+			prefix, " mod added",
+		).Write(
+			"overwrite", false,
+		).Write(
+			"key", mod.Key(),
+		).Write(
+			"expiry", mod.Expiry(),
+		)
+	}
+	evt.SetEnded(mod.Expiry())
+	mod.SetEvent(evt)
+}
+
+func LogDelete[K Mod](prefix string, index int, mod K, logger glog.Logger, f int) {
+	mod.Event().SetEnded(f)
+	logger.NewEvent("enemy mod deleted", glog.LogStatusEvent, index).Write("key", mod.Key())
 }

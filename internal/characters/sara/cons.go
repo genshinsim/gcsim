@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Implements C1 CD reduction. Waits until delay (when it hits the enemy), then procs the effect
@@ -25,10 +26,13 @@ func (c *char) c6(char *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CD] = 0.6
 
-	char.AddAttackMod("sara-c6", 360, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.Element != attributes.Electro {
-			return nil, false
-		}
-		return m, true
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("sara-c6", 360),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.Element != attributes.Electro {
+				return nil, false
+			}
+			return m, true
+		},
 	})
 }

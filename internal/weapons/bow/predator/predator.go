@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -30,8 +31,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	if char.Base.Key == keys.Aloy {
 		mATK[attributes.ATK] = 66
-		char.AddStatMod("predator", -1, attributes.NoStat, func() ([]float64, bool) {
-			return mATK, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("predator", -1),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return mATK, true
+			},
 		})
 	}
 
@@ -67,20 +72,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		stackExpiry = c.F + stackDuration
 
-		char.AddAttackMod("predator", stackDuration, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			//TODO: not sure if this check is needed here
-			if c.F > stackExpiry {
-				stacks = 0
-			}
-			if (atk.Info.AttackTag == combat.AttackTagNormal) || (atk.Info.AttackTag == combat.AttackTagExtra) {
-				mDMG[attributes.DmgP] = buffDmgP * float64(stacks)
-				return mDMG, true
-			}
-			return nil, false
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("predator", stackDuration),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				//TODO: not sure if this check is needed here
+				if c.F > stackExpiry {
+					stacks = 0
+				}
+				if (atk.Info.AttackTag == combat.AttackTagNormal) || (atk.Info.AttackTag == combat.AttackTagExtra) {
+					mDMG[attributes.DmgP] = buffDmgP * float64(stacks)
+					return mDMG, true
+				}
+				return nil, false
+			},
 		})
 
 		return false
-	}, fmt.Sprintf("predator-%v", char.Base.Name))
+	}, fmt.Sprintf("predator-%v", char.Base.Key.String()))
 
 	return w, nil
 }

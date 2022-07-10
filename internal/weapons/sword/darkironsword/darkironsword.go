@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -50,12 +51,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			combat.AttackTagECDamage,
 			combat.AttackTagOverloadDamage,
 			combat.AttackTagSwirlElectro:
-			char.AddStatMod("darkironsword", 720, attributes.NoStat, func() ([]float64, bool) {
-				return m, true
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("darkironsword", 720),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
 			})
 		}
 
 		return false
-	}, fmt.Sprintf("darkironsword-%v", char.Base.Name))
+	}, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	return w, nil
 }

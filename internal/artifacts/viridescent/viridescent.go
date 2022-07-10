@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,26 +32,33 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AnemoP] = 0.15
-		char.AddStatMod("vv-2pc", -1, attributes.AnemoP, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("vv-2pc", -1),
+			AffectedStat: attributes.AnemoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
 		// add +0.6 reaction damage
-		char.AddReactBonusMod("vv-4pc", -1, func(ai combat.AttackInfo) (float64, bool) {
-			//check to make sure this is not an amped swirl
-			if ai.Amped {
-				return 0, false
-			}
-			switch ai.AttackTag {
-			case combat.AttackTagSwirlCryo:
-			case combat.AttackTagSwirlElectro:
-			case combat.AttackTagSwirlHydro:
-			case combat.AttackTagSwirlPyro:
-			default:
-				return 0, false
-			}
-			return 0.6, false
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase("vv-4pc", -1),
+			Amount: func(ai combat.AttackInfo) (float64, bool) {
+				//check to make sure this is not an amped swirl
+				if ai.Amped {
+					return 0, false
+				}
+				switch ai.AttackTag {
+				case combat.AttackTagSwirlCryo:
+				case combat.AttackTagSwirlElectro:
+				case combat.AttackTagSwirlHydro:
+				case combat.AttackTagSwirlPyro:
+				default:
+					return 0, false
+				}
+				return 0.6, false
+			},
 		})
 
 		vvfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
@@ -69,18 +77,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return false
 				}
 
-				t.AddResistMod(key, 10*60, ele, -0.4)
-				c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index).
-					Write("reaction", key).
-					Write("char", char.Index)
+				t.AddResistMod(enemy.ResistMod{
+					Base:  modifier.NewBaseWithHitlag(key, 10*60),
+					Ele:   ele,
+					Value: -0.4,
+				})
+				c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index).Write("reaction", key).Write("char", char.Index)
 
 				return false
 			}
 		}
-		c.Events.Subscribe(event.OnSwirlCryo, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnSwirlElectro, vvfunc(attributes.Electro, "vvelectro"), fmt.Sprintf("vv-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnSwirlHydro, vvfunc(attributes.Hydro, "vvhydro"), fmt.Sprintf("vv-4pc-%v", char.Base.Name))
-		c.Events.Subscribe(event.OnSwirlPyro, vvfunc(attributes.Pyro, "vvpyro"), fmt.Sprintf("vv-4pc-%v", char.Base.Name))
+		c.Events.Subscribe(event.OnSwirlCryo, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSwirlElectro, vvfunc(attributes.Electro, "vvelectro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSwirlHydro, vvfunc(attributes.Hydro, "vvhydro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSwirlPyro, vvfunc(attributes.Pyro, "vvpyro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
 
 		// Additional event for on damage proc on secondary targets
 		// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
@@ -111,13 +121,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			t.AddResistMod(key, 10*60, ele, -0.4)
-			c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index).
-				Write("reaction", key).
-				Write("char", char.Index)
+			t.AddResistMod(enemy.ResistMod{
+				Base:  modifier.NewBaseWithHitlag(key, 10*60),
+				Ele:   ele,
+				Value: -0.4,
+			})
+			c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index).Write("reaction", key).Write("char", char.Index)
 
 			return false
-		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Name))
+		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Key.String()))
 
 	}
 

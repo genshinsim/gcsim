@@ -1,9 +1,10 @@
 package klee
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c1(delay int) {
@@ -35,9 +36,12 @@ func (c *char) c2(a combat.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
-	e, ok := a.Target.(core.Enemy)
+	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	e.AddDefMod("kleec2", 10*60, -0.233)
+	e.AddDefMod(enemy.DefMod{
+		Base:  modifier.NewBase("kleec2", 10*60),
+		Value: -0.233,
+	})
 }

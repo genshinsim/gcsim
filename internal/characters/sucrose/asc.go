@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) a1() {
@@ -30,8 +32,12 @@ func (c *char) a1() {
 				if this.Base.Element != ele {
 					continue
 				}
-				this.AddStatMod("sucrose-a1", dur, attributes.EM, func() ([]float64, bool) {
-					return m, true
+				this.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("sucrose-a1", dur),
+					AffectedStat: attributes.EM,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
 				})
 			}
 
@@ -58,8 +64,12 @@ func (c *char) a4() {
 		if i == c.Index {
 			continue //nothing for sucrose
 		}
-		char.AddStatMod("sucrose-a4", dur, attributes.EM, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("sucrose-a4", dur),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 

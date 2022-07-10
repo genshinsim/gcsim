@@ -57,21 +57,21 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	case action.ActionCharge: //require special calc for stam
 		amt, ok := stamCheck(t, param)
 		if !ok {
-			p.log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
+			p.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
 				Write("have", p.Stam).
 				Write("cost", amt)
 			return ErrActionNotReady
 		}
 		//use stam
 		p.Stam -= amt
-		p.LastStamUse = *p.f
-		p.events.Emit(event.OnStamUse, t)
+		p.LastStamUse = *p.F
+		p.Events.Emit(event.OnStamUse, t)
 		p.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash: //require special calc for stam
 		//dash handles it in the action itself
 		amt, ok := stamCheck(t, param)
 		if !ok {
-			p.log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
+			p.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
 				Write("have", p.Stam).
 				Write("cost", amt)
 			return ErrActionNotReady
@@ -103,17 +103,17 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		}
 		//otherwise swap at the end of timer
 		//log here that we're starting a swap
-		p.log.NewEventBuildMsg(glog.LogActionEvent, p.active, "swapping ", p.chars[p.active].Base.Key.String(), " to ", p.chars[p.charPos[k]].Base.Key.String())
+		p.Log.NewEventBuildMsg(glog.LogActionEvent, p.active, "swapping ", p.chars[p.active].Base.Key.String(), " to ", p.chars[p.charPos[k]].Base.Key.String())
 
 		x := action.ActionInfo{
 			Frames: func(next action.Action) int {
-				return p.delays.Swap
+				return p.Delays.Swap
 			},
-			AnimationLength: p.delays.Swap,
-			CanQueueAfter:   p.delays.Swap,
+			AnimationLength: p.Delays.Swap,
+			CanQueueAfter:   p.Delays.Swap,
 			State:           action.SwapState,
 		}
-		x.QueueAction(p.swap(k), p.delays.Swap)
+		x.QueueAction(p.swap(k), p.Delays.Swap)
 		x.CacheFrames()
 		p.SetActionUsed(p.active, t, &x)
 		p.LastAction.Type = t
@@ -127,7 +127,7 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		p.ResetAllNormalCounter()
 	}
 
-	p.events.Emit(event.OnActionExec, p.active, t, param)
+	p.Events.Emit(event.OnActionExec, p.active, t, param)
 
 	return nil
 }
@@ -150,17 +150,20 @@ func (p *Handler) useAbility(
 ) {
 	state, ok := actionToEvent[t]
 	if ok {
-		p.events.Emit(state)
+		p.Events.Emit(state)
 	}
 	info := f(param)
 	info.CacheFrames()
 	p.SetActionUsed(p.active, t, &info)
+	if info.FramePausedOnHitlag == nil {
+		info.FramePausedOnHitlag = p.ActiveChar().FramePausedOnHitlag
+	}
 
 	p.LastAction.Type = t
 	p.LastAction.Param = param
 	p.LastAction.Char = p.active
 
-	p.log.NewEventBuildMsg(
+	p.Log.NewEventBuildMsg(
 		glog.LogActionEvent,
 		p.active,
 		"executed ", t.String(),

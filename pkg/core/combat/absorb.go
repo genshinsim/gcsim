@@ -35,7 +35,7 @@ func (c *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 	for _, e := range prio {
 		for i, t := range c.targets {
 			if WillCollide(p, t, i) && t.AuraContains(e) {
-				c.log.NewEvent(
+				c.Log.NewEvent(
 					"infusion check picked up "+e.String(),
 					glog.LogElementEvent,
 					-1,

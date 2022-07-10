@@ -7,44 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
 
-// StatModFunc returns an array containing the stats boost and whether mod applies
-type StatModFunc func() ([]float64, bool)
-
-type statMod struct {
-	AffectedStat attributes.Stat
-	Amount       StatModFunc
-	modTmpl
-}
-
-func (c *CharWrapper) AddStatMod(key string, dur int, affected attributes.Stat, f StatModFunc) {
-	expiry := *c.f + dur
-	if dur < 0 {
-		expiry = -1
-	}
-	mod := statMod{
-		modTmpl: modTmpl{
-			key:    key,
-			expiry: expiry,
-		},
-		AffectedStat: affected,
-		Amount:       f,
-	}
-	addMod(c, &c.statsMod, &mod)
-}
-
-func (c *CharWrapper) DeleteStatMod(key string) {
-	deleteMod(c, &c.statsMod, key)
-}
-
-func (c *CharWrapper) StatModIsActive(key string) bool {
-	ind, ok := findModCheckExpiry(&c.statsMod, key, *c.f)
-	if !ok {
-		return false
-	}
-	_, ok = c.statsMod[ind].Amount()
-	return ok
-}
-
 func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	var sb strings.Builder
 	var debugDetails []interface{} = nil
@@ -55,31 +17,35 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	copy(stats[:], c.BaseStats[:attributes.EndStatType])
 
 	if c.debug {
-		debugDetails = make([]interface{}, 0, 2*len(c.statsMod))
+		debugDetails = make([]interface{}, 0, 2*len(c.mods))
 	}
 
 	n := 0
-	for _, mod := range c.statsMod {
-
-		if mod.expiry > *c.f || mod.expiry == -1 {
-
-			amt, ok := mod.Amount()
+	for _, v := range c.mods {
+		m, ok := v.(*StatMod)
+		if !ok {
+			c.mods[n] = v
+			n++
+			continue
+		}
+		if m.Expiry() > *c.f || m.Expiry() == -1 {
+			amt, ok := m.Amount()
 			if ok {
 				for k, v := range amt {
 					stats[k] += v
 				}
 			}
-			c.statsMod[n] = mod
+			c.mods[n] = m
 			n++
 
 			if c.debug {
 				modStatus := make([]string, 0)
 				if ok {
-					sb.WriteString(mod.key)
+					sb.WriteString(m.Key())
 					modStatus = append(
 						modStatus,
 						"status: added",
-						"expiry_frame: "+strconv.Itoa(mod.expiry),
+						"expiry_frame: "+strconv.Itoa(m.Expiry()),
 					)
 					modStatus = append(
 						modStatus,
@@ -88,7 +54,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 					debugDetails = append(debugDetails, sb.String(), modStatus)
 					sb.Reset()
 				} else {
-					sb.WriteString(mod.key)
+					sb.WriteString(m.Key())
 					modStatus = append(
 						modStatus,
 						"status: rejected",
@@ -100,21 +66,25 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 			}
 		}
 	}
-	c.statsMod = c.statsMod[:n]
+	c.mods = c.mods[:n]
 
 	return stats, debugDetails
 }
 
 func (h *CharWrapper) Stat(s attributes.Stat) float64 {
 	val := h.BaseStats[s]
-	for _, mod := range h.statsMod {
+	for _, v := range h.mods {
+		m, ok := v.(*StatMod)
+		if !ok {
+			continue
+		}
 		// ignore this mod if stat type doesnt match
-		if mod.AffectedStat != attributes.NoStat && mod.AffectedStat != s {
+		if m.AffectedStat != attributes.NoStat && m.AffectedStat != s {
 			continue
 		}
 		// check expiry
-		if mod.expiry > *h.f || mod.expiry == -1 {
-			if amt, ok := mod.Amount(); ok {
+		if m.Expiry() > *h.f || m.Expiry() == -1 {
+			if amt, ok := m.Amount(); ok {
 				val += amt[s]
 			}
 		}
@@ -127,21 +97,24 @@ func (c *CharWrapper) MaxHP() float64 {
 	hpp := c.BaseStats[attributes.HPP]
 	hp := c.BaseStats[attributes.HP]
 
-	for _, mod := range c.statsMod {
+	for _, v := range c.mods {
+		m, ok := v.(*StatMod)
+		if !ok {
+			continue
+		}
 		// ignore this mod if stat type doesnt match
-		switch mod.AffectedStat {
+		switch m.AffectedStat {
 		case attributes.NoStat, attributes.HP, attributes.HPP:
 		default:
 			continue
 		}
 		// check expiry
-		if mod.expiry > *c.f || mod.expiry == -1 {
-			if amt, ok := mod.Amount(); ok {
+		if m.Expiry() > *c.f || m.Expiry() == -1 {
+			if amt, ok := m.Amount(); ok {
 				hpp += amt[attributes.HPP]
 				hp += amt[attributes.HP]
 			}
 		}
 	}
-
 	return c.Base.HP*(1+hpp) + hp
 }

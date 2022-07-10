@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -30,20 +31,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//even when the character is not on the field.
 	w := &Weapon{}
 	r := p.Refine
+	const icdKey = "kitain-icd"
 
 	//permanent increase
 	m := make([]float64, attributes.EndStatType)
 	base := 0.045 + float64(r)*0.015
 	m[attributes.DmgP] = base
-	char.AddAttackMod("kitain-skill-dmg-buff", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
-			return m, true
-		}
-		return nil, false
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("kitain-skill-dmg-buff", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
+				return m, true
+			}
+			return nil, false
+		},
 	})
 
 	regen := 2.5 + float64(r)*0.5
-	icd := 0
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -52,17 +56,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 600
+		char.AddStatus(icdKey, 600, true)
 		char.AddEnergy("kitain", -3)
 		for i := 120; i <= 360; i += 120 {
-			c.Tasks.Add(func() {
+			//assuming the ticks gets affected by hitlag
+			char.QueueCharTask(func() {
 				char.AddEnergy("kitain", regen)
 			}, i)
 		}
 		return false
-	}, fmt.Sprintf("kitain-%v", char.Base.Name))
+	}, fmt.Sprintf("kitain-%v", char.Base.Key.String()))
 	return w, nil
 }

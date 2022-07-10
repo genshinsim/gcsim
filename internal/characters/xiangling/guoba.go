@@ -25,10 +25,11 @@ func newGuoba(c *core.Core) *panda {
 
 	p.Target.HPCurrent = 1
 	p.Target.HPMax = 1
-	p.Target.TargetType = combat.TargettableObject
 
 	return p
 }
+
+func (p *panda) Type() combat.TargettableType { return combat.TargettableObject }
 
 func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//don't take damage, trigger swirl reaction only on sucrose E

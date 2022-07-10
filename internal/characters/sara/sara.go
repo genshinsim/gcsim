@@ -34,3 +34,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 	return nil
 }
+
+func (c *char) Init() error {
+	return nil
+}

@@ -3,7 +3,9 @@ package thoma
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) genShield(src string, shieldamt float64) {
@@ -33,12 +35,15 @@ func (c *char) genShield(src string, shieldamt float64) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = .15
 		for _, char := range c.Core.Player.Chars() {
-			char.AddAttackMod("thoma-c6", 6*60, func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				switch ae.Info.AttackTag {
-				case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
-					return m, true
-				}
-				return nil, false
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("thoma-c6", 6*60),
+				Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					switch ae.Info.AttackTag {
+					case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
+						return m, true
+					}
+					return nil, false
+				},
 			})
 		}
 	}

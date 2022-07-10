@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var dashFrames []int
@@ -47,22 +49,28 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		once = true
 
 		c.Core.Player.RestoreStam(10)
-		c.AddStatMod("ayaka-a4", 600, attributes.CryoP, func() ([]float64, bool) {
-			return m, true
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("ayaka-a4", 600),
+			AffectedStat: attributes.CryoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), dashHitmark+f, dashHitmark+f, cb)
 
 	//add cryo infuse
-	// TODO: weapon infuse happen at dash end
-	c.Core.Player.AddWeaponInfuse(
-		c.Index,
-		"ayaka-dash",
-		attributes.Cryo,
-		300,
-		true,
-		combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-	)
+	//TODO: check weapon infuse timing; this SHOULD be ok?
+	c.Core.Tasks.Add(func() {
+		c.Core.Player.AddWeaponInfuse(
+			c.Index,
+			"ayaka-dash",
+			attributes.Cryo,
+			300,
+			true,
+			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+		)
+	}, dashHitmark+f)
 
 	// call default implementation to handle stamina
 	c.Character.Dash(p)

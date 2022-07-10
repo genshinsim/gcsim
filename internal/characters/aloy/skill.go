@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -16,6 +18,10 @@ func init() {
 	//TODO: no cancelled frames yet
 	skillFrames = frames.InitAbilSlice(67)
 }
+
+const (
+	rushingIceKey = "rushingice"
+)
 
 // Skill - Handles main damage, bomblet, and coil effects
 // Has 3 parameters, "bomblets" = Number of bomblets that hit
@@ -96,10 +102,10 @@ func (c *char) coilStacks() {
 		return
 	}
 	// Can't gain coil stacks while in rushing ice
-	if c.Core.Status.Duration("aloyrushingice") > 0 {
+	if c.StatusIsActive(rushingIceKey) {
 		return
 	}
-	c.Tags["coil_stacks"]++
+	c.coils++
 	c.coilICDExpiry = c.Core.F + 6
 
 	// A1
@@ -110,45 +116,57 @@ func (c *char) coilStacks() {
 		if char.Index == c.Index {
 			valA1[attributes.ATKP] = .16
 		}
-		char.AddStatMod("aloy-a1", 600, attributes.NoStat, func() ([]float64, bool) {
-			return valA1, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("aloy-a1", 600),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return valA1, true
+			},
 		})
 	}
 
-	if c.Tags["coil_stacks"] == 4 {
-		c.Tags["coil_stacks"] = 0
+	if c.coils == 4 {
+		c.coils = 0
 		c.rushingIce()
 	}
 }
 
 // Handles rushing ice state
 func (c *char) rushingIce() {
-	c.Core.Status.Add("aloyrushingice", 600)
+	c.AddStatus(rushingIceKey, 600, true)
 	c.Core.Player.AddWeaponInfuse(c.Index, "aloy-rushing-ice", attributes.Cryo, 600, true, combat.AttackTagNormal)
 
 	// Rushing ice NA bonus
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
-	c.AddAttackMod("aloy-rushing-ice", 600, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag == combat.AttackTagNormal {
-			return val, true
-		}
-		return nil, false
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", 600),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == combat.AttackTagNormal {
+				return val, true
+			}
+			return nil, false
+		},
 	})
 
 	// A4 cryo damage increase
 	valA4 := make([]float64, attributes.EndStatType)
 	stacks := 1
-	c.AddStatMod("aloy-strong-strike", 600, attributes.NoStat, func() ([]float64, bool) {
-		if stacks > 10 {
-			stacks = 10
-		}
-		valA4[attributes.CryoP] = float64(stacks) * 0.035
-		return valA4, true
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag("aloy-strong-strike", 600),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			if stacks > 10 {
+				stacks = 10
+			}
+			valA4[attributes.CryoP] = float64(stacks) * 0.035
+			return valA4, true
+		},
 	})
 
 	for i := 0; i < 10; i++ {
-		c.Core.Tasks.Add(func() { stacks++ }, 60*(1+i))
+		//every 1 s, affected by hitlag
+		c.QueueCharTask(func() { stacks++ }, 60*(1+i))
 	}
 }
 
@@ -156,12 +174,15 @@ func (c *char) rushingIce() {
 // Can't be made dynamic easily as coils last until 30s after when Aloy swaps off field
 func (c *char) coilMod() {
 	val := make([]float64, attributes.EndStatType)
-	c.AddAttackMod("aloy-coil-stacks", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag == combat.AttackTagNormal && c.Tags["coil_stacks"] > 0 {
-			val[attributes.DmgP] = skillCoilNABonus[c.Tags["coil_stacks"]-1][c.TalentLvlSkill()]
-			return val, true
-		}
-		return nil, false
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("aloy-coil-stacks", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == combat.AttackTagNormal && c.coils > 0 {
+				val[attributes.DmgP] = skillCoilNABonus[c.coils-1][c.TalentLvlSkill()]
+				return val, true
+			}
+			return nil, false
+		},
 	})
 
 }
@@ -179,7 +200,7 @@ func (c *char) onExitField() {
 			if c.lastFieldExit != (c.Core.F - 30*60) {
 				return
 			}
-			c.Tags["coil_stacks"] = 0
+			c.coils = 0
 		}, 30*60)
 
 		return false

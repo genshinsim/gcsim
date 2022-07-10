@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -32,20 +33,25 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ER] = 0.20
-		char.AddStatMod("scholar-2pc", -1, attributes.ER, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("scholar-2pc", -1),
+			AffectedStat: attributes.ER,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
+	icd := 0
 	if count >= 4 {
 		// TODO: test lmao
 		c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
 			if c.Player.Active() != char.Index {
 				return false
 			}
-			if c.Status.Duration("scholar") > 0 {
+			if icd > c.F {
 				return false
 			}
-			c.Status.Add("scholar", 3*60)
+			icd = c.F + 160 //3 s icd
 
 			for _, this := range c.Player.Chars() {
 				// only for bow and catalyst
@@ -55,7 +61,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			return false
-		}, fmt.Sprintf("scholar-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("scholar-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

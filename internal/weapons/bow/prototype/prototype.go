@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -38,11 +39,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if !atk.Info.HitWeakPoint {
 			return false
 		}
-		char.AddStatMod("prototype-crescent", 60*10, attributes.NoStat, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("prototype-crescent", 60*10),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 		return false
-	}, fmt.Sprintf("prototype-crescent-%v", char.Base.Name))
+	}, fmt.Sprintf("prototype-crescent-%v", char.Base.Key.String()))
 
 	return w, nil
 }

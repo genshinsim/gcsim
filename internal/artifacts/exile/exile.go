@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -30,8 +31,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ER] = 0.20
-		char.AddStatMod("exile-2pc", -1, attributes.ER, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("exile-2pc", -1),
+			AffectedStat: attributes.ER,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
@@ -51,6 +56,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				}
 				// 3 ticks
 				for i := 120; i <= 360; i += 120 {
+					//TODO: should this delay be affected by wearer's hitlag?
 					c.Tasks.Add(func() {
 						this.AddEnergy("exile-4pc", 2)
 					}, i)
@@ -58,7 +64,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			return false
-		}, fmt.Sprintf("exile-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("exile-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

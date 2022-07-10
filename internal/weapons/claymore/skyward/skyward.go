@@ -7,10 +7,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -34,24 +34,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.06 + float64(r)*0.02
-	char.AddStatMod("skyward pride", -1, attributes.NoStat, func() ([]float64, bool) {
-		return m, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("skyward pride", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 
+	const durKey = "skyward-pride-active"
 	counter := 0
-	dur := 0
 	dmg := 0.6 + float64(r)*0.2
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		dur = c.F + 1200
+		char.AddStatus(durKey, 1200, true)
 		counter = 0
-		c.Log.NewEvent("Skyward Pride activated", glog.LogWeaponEvent, char.Index).
-			Write("expiring ", dur)
 		return false
-	}, fmt.Sprintf("skyward-pride-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-pride-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -61,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if c.F > dur {
+		if !char.StatusIsActive(durKey) {
 			return false
 		}
 		if counter >= 8 {
@@ -82,6 +84,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		c.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 1)
 		return false
-	}, fmt.Sprintf("skyward-pride-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-pride-%v", char.Base.Key.String()))
 	return w, nil
 }

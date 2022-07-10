@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 //When the Normal, Charged, or Plunging Attacks of the character affected by Shinobu's Grass Ring of Sanctification hit opponents,
@@ -68,8 +70,12 @@ func (c *char) c6() {
 		}
 
 		//increase EM by 150 for 15s
-		c.AddStatMod("kuki-c6", 900, attributes.EM, func() ([]float64, bool) {
-			return m, true
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("kuki-c6", 900),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 
 		c.c6ICD = c.Core.F + 3600

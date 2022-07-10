@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -35,13 +36,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .15 + float64(r)*.05
 	stamReduction := .12 + float64(r)*.02
-	key := fmt.Sprintf("wineandsong-%v", char.Base.Name)
+	key := fmt.Sprintf("wineandsong-%v", char.Base.Key.String())
 	c.Events.Subscribe(event.OnDash, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		char.AddStatMod("wineandsong", 60*5, attributes.NoStat, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("wineandsong", 60*5),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 		return false
 	}, key)

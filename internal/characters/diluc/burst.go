@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -47,8 +49,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// a4: add 20% pyro damage
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = 0.2
-	c.AddStatMod("diluc-fire-weapon", 720, attributes.PyroP, func() ([]float64, bool) {
-		return m, true
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("diluc-fire-weapon", 720),
+		AffectedStat: attributes.PyroP,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 
 	// Snapshot occurs late in the animation when it is released from the claymore

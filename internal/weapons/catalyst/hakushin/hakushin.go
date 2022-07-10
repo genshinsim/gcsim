@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -52,16 +53,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 					continue
 				}
 				this := char
-				char.AddStatMod("hakushin-passive", 6*60, attributes.NoStat, func() ([]float64, bool) {
-					m[attributes.PyroP] = 0
-					m[attributes.HydroP] = 0
-					m[attributes.CryoP] = 0
-					m[attributes.ElectroP] = 0
-					m[attributes.AnemoP] = 0
-					m[attributes.GeoP] = 0
-					m[attributes.DendroP] = 0
-					m[attributes.EleToDmgP(this.Base.Element)] = dmg
-					return m, true
+				char.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("hakushin-passive", 6*60),
+					AffectedStat: attributes.NoStat,
+					Amount: func() ([]float64, bool) {
+						m[attributes.PyroP] = 0
+						m[attributes.HydroP] = 0
+						m[attributes.CryoP] = 0
+						m[attributes.ElectroP] = 0
+						m[attributes.AnemoP] = 0
+						m[attributes.GeoP] = 0
+						m[attributes.DendroP] = 0
+						m[attributes.EleToDmgP(this.Base.Element)] = dmg
+						return m, true
+					},
 				})
 			}
 			c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index).
@@ -71,11 +76,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 	}
 
-	c.Events.Subscribe(event.OnCrystallizeElectro, hrfunc(attributes.Geo, "hr-crystallize"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
-	c.Events.Subscribe(event.OnSwirlElectro, hrfunc(attributes.Anemo, "hr-swirl"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
-	c.Events.Subscribe(event.OnElectroCharged, hrfunc(attributes.Hydro, "hr-ec"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
-	c.Events.Subscribe(event.OnOverload, hrfunc(attributes.Pyro, "hr-ol"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
-	c.Events.Subscribe(event.OnSuperconduct, hrfunc(attributes.Cryo, "hr-sc"), fmt.Sprintf("hakushin-ring-%v", char.Base.Name))
+	c.Events.Subscribe(event.OnCrystallizeElectro, hrfunc(attributes.Geo, "hr-crystallize"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlElectro, hrfunc(attributes.Anemo, "hr-swirl"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnElectroCharged, hrfunc(attributes.Hydro, "hr-ec"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnOverload, hrfunc(attributes.Pyro, "hr-ol"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSuperconduct, hrfunc(attributes.Cryo, "hr-sc"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
 
 	return w, nil
 }

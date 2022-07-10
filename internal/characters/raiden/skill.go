@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 /**
@@ -45,13 +47,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		this := char
-		this.AddAttackMod("raiden-e", 1500+skillHitmark, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
-				return nil, false
-			}
+		//should be a deployable. no hitlag
+		this.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBaseWithHitlag("raiden-e", 1500+skillHitmark),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+					return nil, false
+				}
 
-			m[attributes.DmgP] = mult * this.EnergyMax
-			return m, true
+				m[attributes.DmgP] = mult * this.EnergyMax
+				return m, true
+			},
 		})
 	}
 
@@ -109,7 +115,7 @@ func (c *char) eyeOnDamage() {
 			Durability: 25,
 			Mult:       skillTick[c.TalentLvlSkill()],
 		}
-		if c.Base.Cons >= 2 && c.Core.Status.Duration("raidenburst") > 0 {
+		if c.Base.Cons >= 2 && c.StatusIsActive(burstKey) {
 			ai.IgnoreDefPercent = 0.6
 		}
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 5, 5)

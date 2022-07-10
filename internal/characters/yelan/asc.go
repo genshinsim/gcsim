@@ -3,6 +3,8 @@ package yelan
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) a1() {
@@ -18,8 +20,12 @@ func (c *char) a1() {
 		m[attributes.HPP] = 0.3
 	}
 
-	c.AddStatMod("yelan-a1", -1, attributes.HPP, func() ([]float64, bool) {
-		return m, true
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("yelan-a1", -1),
+		AffectedStat: attributes.HPP,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 }
 
@@ -28,18 +34,21 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		this := char
-		this.AddAttackMod("yelan-a4", 15*60, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			//char must be active
-			if c.Core.Player.Active() != this.Index {
-				return nil, false
-			}
-			//floor time elapsed
-			dmg := float64(int((c.Core.F-started)/60))*0.035 + 0.01
-			if dmg > 0.5 {
-				dmg = 0.5
-			}
-			m[attributes.DmgP] = dmg
-			return m, true
+		this.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("yelan-a4", 15*60),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				//char must be active
+				if c.Core.Player.Active() != this.Index {
+					return nil, false
+				}
+				//floor time elapsed
+				dmg := float64(int((c.Core.F-started)/60))*0.035 + 0.01
+				if dmg > 0.5 {
+					dmg = 0.5
+				}
+				m[attributes.DmgP] = dmg
+				return m, true
+			},
 		})
 	}
 }

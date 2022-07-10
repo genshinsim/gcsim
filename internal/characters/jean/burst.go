@@ -3,12 +3,13 @@ package jean
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -62,12 +63,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		//add debuff to all target for ??? duration
 		for _, t := range c.Core.Combat.Targets() {
-			e, ok := t.(core.Enemy)
+			e, ok := t.(*enemy.Enemy)
 			if !ok {
 				continue
 			}
 			//10 seconds + animation
-			e.AddResistMod("jeanc4", 600+burstStart, attributes.Anemo, -0.4)
+			e.AddResistMod(enemy.ResistMod{
+				Base:  modifier.NewBase("jeanc4", 600+burstStart),
+				Ele:   attributes.Anemo,
+				Value: -0.4,
+			})
 		}
 	}
 

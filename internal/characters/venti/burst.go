@@ -28,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Wind's Grand Ode",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagVentiBurstAnemo,
+		ICDTag:     combat.ICDTagElementalBurstAnemo,
 		ICDGroup:   combat.ICDGroupVenti,
 		Element:    attributes.Anemo,
 		Durability: 25,
@@ -98,13 +98,13 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 			c.aiAbsorb.Element = c.qInfuse
 			switch c.qInfuse {
 			case attributes.Pyro:
-				c.aiAbsorb.ICDTag = combat.ICDTagVentiBurstPyro
+				c.aiAbsorb.ICDTag = combat.ICDTagElementalBurstPyro
 			case attributes.Hydro:
-				c.aiAbsorb.ICDTag = combat.ICDTagVentiBurstHydro
+				c.aiAbsorb.ICDTag = combat.ICDTagElementalBurstHydro
 			case attributes.Electro:
-				c.aiAbsorb.ICDTag = combat.ICDTagVentiBurstElectro
+				c.aiAbsorb.ICDTag = combat.ICDTagElementalBurstElectro
 			case attributes.Cryo:
-				c.aiAbsorb.ICDTag = combat.ICDTagVentiBurstCryo
+				c.aiAbsorb.ICDTag = combat.ICDTagElementalBurstCryo
 			}
 			//trigger dmg ticks here
 			c.burstInfusedTicks()

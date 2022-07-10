@@ -51,28 +51,37 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	e.damageTaken += damage //TODO: do we actually need this?
 
 	//check for hitlag
-	//TODO: hit weakpoint??
-	dur := atk.Info.HitlagHaltFrames
-	if e.Core.Flags.DefHalt && atk.Info.CanBeDefenseHalted {
-		dur += 3.6
-	}
-	dur = math.Ceil(dur)
-	if dur > 0 {
-		//apply hit lag
-		e.ApplyHitlag(dur, atk.Info.HitlagFactor)
+	if e.Core.Combat.EnableHitlag {
+		willapply := true
+		if atk.Info.HitlagOnHeadshotOnly {
+			willapply = atk.Info.HitWeakPoint
+		}
+		dur := atk.Info.HitlagHaltFrames
+		if e.Core.Flags.DefHalt && atk.Info.CanBeDefenseHalted {
+			dur += 3.6
+		}
+		dur = math.Ceil(dur)
+		if willapply && dur > 0 {
+			//apply hit lag to enemy
+			e.ApplyHitlag(atk.Info.HitlagFactor, dur)
+			//also apply hitlag to reactable
+			e.Reactable.ApplyHitlag(atk.Info.HitlagFactor, dur)
+		}
 	}
 
 	//check for particle drops
 	if e.prof.ParticleDropThreshold > 0 {
 		next := int(e.damageTaken / e.prof.ParticleDropThreshold)
 		if next > e.lastParticleDrop {
+			//check the count too
+			count := next - e.lastParticleDrop
 			e.lastParticleDrop = next
 			e.Core.Log.NewEvent("particle hp threshold triggered", glog.LogEnemyEvent, atk.Info.ActorIndex)
 			e.Core.Tasks.Add(
 				func() {
 					e.Core.Player.DistributeParticle(character.Particle{
 						Source: "hp_drop",
-						Num:    e.prof.ParticleDropCount,
+						Num:    e.prof.ParticleDropCount * float64(count),
 						Ele:    e.prof.ParticleElement,
 					})
 				},

@@ -1,9 +1,10 @@
 package travelerelectro
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // C2 - Violet Vehemence
@@ -13,11 +14,15 @@ func (c *char) c2(t combat.Target) combat.AttackCBFunc {
 		if c.Base.Cons < 2 {
 			return
 		}
-		e, ok := a.Target.(core.Enemy)
+		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		e.AddResistMod("travelerelectro-c2", 480, attributes.Electro, -0.15)
+		e.AddResistMod(enemy.ResistMod{
+			Base:  modifier.NewBase("travelerelectro-c2", 480),
+			Ele:   attributes.Electro,
+			Value: -0.15,
+		})
 	}
 }
 

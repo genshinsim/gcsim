@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	cd := -1
 	isActive := false
-	key := fmt.Sprintf("thrilling-%v", char.Base.Name)
+	key := fmt.Sprintf("thrilling-%v", char.Base.Key.String())
 
 	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
 		isActive = c.Player.Active() == char.Index
@@ -55,8 +56,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 			cd = c.F + 60*20
 			active := c.Player.ActiveChar()
-			active.AddStatMod("thrilling tales", 600, attributes.NoStat, func() ([]float64, bool) {
-				return m, true
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("thrilling tales", 600),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
 			})
 
 			c.Log.NewEvent("ttds activated", glog.LogWeaponEvent, c.Player.Active()).

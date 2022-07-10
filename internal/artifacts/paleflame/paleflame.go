@@ -7,10 +7,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -20,12 +20,22 @@ func init() {
 type Set struct {
 	stacks int
 	icd    int
-	dur    int
+	buff   []float64
 	Index  int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
+
+func (s *Set) updateBuff() {
+	s.buff[attributes.PhyP] = 0
+	if s.stacks == 2 {
+		s.buff[attributes.PhyP] = 0.25
+	}
+	s.buff[attributes.ATKP] = 0.09 * float64(s.stacks)
+}
+
+const pf4key = "paleflame-4pc"
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
@@ -33,12 +43,16 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PhyP] = 0.25
-		char.AddStatMod("pf-2pc", -1, attributes.PhyP, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("pf-2pc", -1),
+			AffectedStat: attributes.PhyP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
-		m := make([]float64, attributes.EndStatType)
+		s.buff = make([]float64, attributes.EndStatType)
 
 		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
@@ -52,35 +66,26 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 			// reset stacks if expired
-			if s.dur < c.F {
+			if !char.StatModIsActive(pf4key) {
 				s.stacks = 0
 			}
 			s.stacks++
 			if s.stacks >= 2 {
 				s.stacks = 2
-				m[attributes.PhyP] = 0.25
 			}
-			m[attributes.ATKP] = 0.09 * float64(s.stacks)
+			s.updateBuff()
 
 			s.icd = c.F + 18
-			s.dur = c.F + 420
-			c.Log.NewEvent("pale flame 4pc proc", glog.LogArtifactEvent, char.Index).
-				Write("stacks", s.stacks).
-				Write("expiry", s.dur).
-				Write("icd", s.icd)
-
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("pf-4pc", 420),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					return s.buff, true
+				},
+			})
 			return false
-		}, fmt.Sprintf("pf4-%v", char.Base.Name))
+		}, fmt.Sprintf("pf4-%v", char.Base.Key.String()))
 
-		char.AddStatMod("pf-4pc", -1, attributes.NoStat, func() ([]float64, bool) {
-			if s.dur < c.F {
-				m[attributes.ATKP] = 0
-				m[attributes.PhyP] = 0
-				return nil, false
-			}
-
-			return m, true
-		})
 	}
 
 	return &s, nil

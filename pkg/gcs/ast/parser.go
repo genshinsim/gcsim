@@ -40,6 +40,7 @@ type ActionList struct {
 	Program     *BlockStmt
 	Energy      EnergySettings
 	Settings    SimulatorSettings
+	Errors      []error
 }
 
 type EnergySettings struct {
@@ -49,9 +50,10 @@ type EnergySettings struct {
 }
 
 type SimulatorSettings struct {
-	Duration   float64
-	DamageMode bool
-	DefHalt    bool // for hitlag
+	Duration     float64
+	DamageMode   bool
+	EnableHitlag bool
+	DefHalt      bool // for hitlag
 	//other stuff
 	NumberOfWorkers int // how many workers to run the simulation
 	Iterations      int // how many iterations to run
@@ -108,9 +110,22 @@ func New(input string) *Parser {
 	p.lex = lex(input)
 	p.res = &ActionList{
 		Program: newBlockStmt(0),
+		Settings: SimulatorSettings{
+			EnableHitlag:    true, // default hitlag enabled
+			DefHalt:         true, //default defhalt to true
+			NumberOfWorkers: 20,   //default 20 workers if none set
+			Iterations:      1000, //default 1000 iterations
+			Delays: player.Delays{
+				Swap: 1, //default swap timer of 1
+			},
+		},
+		PlayerPos: core.Coord{
+			R: 1, //default player radius 1
+		},
 	}
 	//expr functions
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
+	p.prefixParseFns[itemField] = p.parseField
 	p.prefixParseFns[itemNumber] = p.parseNumber
 	p.prefixParseFns[itemString] = p.parseString
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr

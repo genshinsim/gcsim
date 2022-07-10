@@ -3,7 +3,9 @@ package mona
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 //When a Normal Attack hits, there is a 20% chance that it will be automatically followed by a Charged Attack.
@@ -40,16 +42,19 @@ func (c *char) c4() {
 	m[attributes.CR] = 0.15
 
 	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod("mona-c4", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			x, ok := t.(*enemy.Enemy)
-			if !ok {
-				return nil, false
-			}
-			//ignore if omen or bubble not present
-			if x.GetTag(bubbleKey) < c.Core.F && x.GetTag(omenKey) < c.Core.F {
-				return nil, false
-			}
-			return m, true
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("mona-c4", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				x, ok := t.(*enemy.Enemy)
+				if !ok {
+					return nil, false
+				}
+				//ignore if omen or bubble not present
+				if x.GetTag(bubbleKey) < c.Core.F && x.GetTag(omenKey) < c.Core.F {
+					return nil, false
+				}
+				return m, true
+			},
 		})
 	}
 }

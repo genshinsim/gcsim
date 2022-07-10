@@ -108,7 +108,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		c.QueueAttackEvent(&atk, 10)
 		return false
-	}, fmt.Sprintf("perception-%v", char.Base.Name))
+	}, fmt.Sprintf("perception-%v", char.Base.Key.String()))
 
 	return w, nil
 }

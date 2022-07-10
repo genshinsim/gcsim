@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -26,13 +27,17 @@ func (s *Set) Init() error      { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
-	s.key = fmt.Sprintf("%v-hod-4pc", char.Base.Name)
+	s.key = fmt.Sprintf("%v-hod-4pc", char.Base.Key.String())
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.HydroP] = 0.15
-		char.AddStatMod("hod-2pc", -1, attributes.HydroP, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("hod-2pc", -1),
+			AffectedStat: attributes.HydroP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
@@ -46,11 +51,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			c.Status.Add(s.key, 15*60)
 			// add stat mod here
-			char.AddAttackMod("hod-4pc", 900, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-					return nil, false
-				}
-				return m, true
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBaseWithHitlag("hod-4pc", 900),
+				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+						return nil, false
+					}
+					return m, true
+				},
 			})
 			return false
 		}, s.key)

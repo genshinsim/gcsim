@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -35,22 +36,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .15 + .05*float64(r)
-	char.AddStatMod("acquila favonia", -1, attributes.NoStat, func() ([]float64, bool) {
-		return m, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("acquila favonia", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 
 	dmg := 1.7 + .3*float64(r)
 	heal := .85 + .15*float64(r)
-	last := -1
+	const icdKey = "aquila-icd"
 
 	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if c.F-last < 900 && last != -1 {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		last = c.F
+		char.AddStatus(icdKey, 900, true) // 15 sec
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Aquila Favonia",
@@ -74,6 +79,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Bonus:   char.Stat(attributes.Heal),
 		})
 		return false
-	}, fmt.Sprintf("aquila-%v", char.Base.Name))
+	}, fmt.Sprintf("aquila-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -17,26 +17,36 @@ func init() {
 	skillFrames[action.ActionJump] = 34
 }
 
+const (
+	orbitalKey = "xingqiu-orbital"
+)
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Guhua Sword: Fatal Rainscreen",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Hydro,
-		Durability: 25,
+		ActorIndex:         c.Index,
+		Abil:               "Guhua Sword: Fatal Rainscreen",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Hydro,
+		Durability:         25,
+		HitlagHaltFrames:   0.02 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 
 	for i, v := range rainscreen {
-		ai.Mult = v[c.TalentLvlSkill()]
+		ax := ai
+		ax.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {
 			//check if ult is up, if so increase multiplier
-			if c.Core.Status.Duration("xqburst") > 0 {
-				ai.Mult = ai.Mult * 1.5
+			if c.StatusIsActive(burstKey) {
+				ax.Mult = ax.Mult * 1.5
 			}
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillHitmarks[i], skillHitmarks[i])
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(ax, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 0)
+		}, skillHitmarks[i])
 	}
 
 	orbital, ok := p["orbital"]

@@ -17,6 +17,10 @@ func init() {
 	skillFrames = frames.InitAbilSlice(32)
 }
 
+const (
+	skillICDKey = "albedo-skill-icd"
+)
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -42,16 +46,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
 
 	// Reset ICD
-	c.icdSkill = c.Core.F - 1
+	c.DeleteStatus(skillICDKey)
 
 	//create a construct
 	// Construct is not fully formed until after the hit lands (exact timing unknown)
 	c.Core.Tasks.Add(func() {
 		c.Core.Constructs.New(c.newConstruct(1800), true)
-
 		c.lastConstruct = c.Core.F
-
-		c.Tags["elevator"] = 1
+		c.skillActive = true
 	}, skillHitmark)
 
 	c.SetCD(action.ActionSkill, 240)
@@ -68,10 +70,10 @@ func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		t := args[0].(combat.Target)
-		if c.Tags["elevator"] == 0 {
+		if !c.skillActive {
 			return false
 		}
-		if c.Core.F < c.icdSkill {
+		if c.StatusIsActive(skillICDKey) {
 			return false
 		}
 		// Can't be triggered by itself when refreshing
@@ -79,7 +81,7 @@ func (c *char) skillHook() {
 			return false
 		}
 
-		c.icdSkill = c.Core.F + 120 // every 2 seconds
+		c.AddStatus(skillICDKey, 120, true) //proc every 2 s
 
 		snap := c.skillSnapshot
 
@@ -106,13 +108,13 @@ func (c *char) skillHook() {
 
 		// c2: skill tick grant stacks, lasts 30s; each stack increase burst dmg by 30% of def, stack up to 4 times
 		if c.Base.Cons >= 2 {
-			if c.Core.Status.Duration("albedoc2") == 0 {
-				c.Tags["c2"] = 0
+			if !c.StatusIsActive(c2key) {
+				c.c2stacks = 0
 			}
-			c.Core.Status.Add("albedoc2", 1800) //lasts 30 seconds
-			c.Tags["c2"]++
-			if c.Tags["c2"] > 4 {
-				c.Tags["c2"] = 4
+			c.AddStatus(c2key, 1800, true) //lasts 30 sec
+			c.c2stacks++
+			if c.c2stacks > 4 {
+				c.c2stacks = 4
 			}
 		}
 

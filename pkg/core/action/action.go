@@ -124,6 +124,15 @@ func (a Action) String() string {
 	return astr[a]
 }
 
+func StringToAction(s string) Action {
+	for i, v := range astr {
+		if v == s {
+			return Action(i)
+		}
+	}
+	return InvalidAction
+}
+
 type AnimationState int
 
 const (

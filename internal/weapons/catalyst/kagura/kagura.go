@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 	stacks := 0
-	key := fmt.Sprintf("kaguradance-%v", char.Base.Name)
+	key := fmt.Sprintf("kaguradance-%v", char.Base.Key.String())
 	dmg := 0.12 + 0.03*float64(r-1)
 	val := make([]float64, attributes.EndStatType)
 	lastActiveUntil := -1
@@ -71,14 +72,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			val[attributes.DendroP] = 0
 		}
 		//add mod for duration, override last
-		char.AddAttackMod("kagurasverity", 960, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.ActorIndex != char.Index {
-				return nil, false
-			}
-			if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
-				val[attributes.DmgP] = dmg
-			}
-			return val, true
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("kagurasverity", 960),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.ActorIndex != char.Index {
+					return nil, false
+				}
+				if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
+					val[attributes.DmgP] = dmg
+				}
+				return val, true
+			},
 		})
 		return false
 	}, key)

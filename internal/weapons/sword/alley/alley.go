@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -18,17 +19,19 @@ func init() {
 
 //Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.
 type Weapon struct {
-	Index   int
-	lockout int
-	c       *core.Core
+	Index int
+	c     *core.Core
+	char  *character.CharWrapper
 }
+
+const lockoutKey = "alley-flash-lockout"
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 func (w *Weapon) selfDisable(lambda float64) func() {
 	return func() {
 		//disable for 5 sec
-		w.lockout = w.c.F + 300
+		w.char.AddStatus(lockoutKey, 300, true)
 		//-ln(U)/lambda` (where U~Uniform[0,1]).
 		next := int(math.Log(w.c.Rand.Float64()) / lambda)
 		w.c.Tasks.Add(w.selfDisable(lambda), next)
@@ -38,7 +41,6 @@ func (w *Weapon) selfDisable(lambda float64) func() {
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
-	w.lockout = -1
 
 	//allow user to periodically lock out this weapon (just to screw around with bennett)
 	//follows poisson distribution, user provides lambda:
@@ -52,14 +54,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 
 	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
-		w.lockout = c.F + 300
+		w.char.AddStatus(lockoutKey, 300, true)
 		return false
-	}, fmt.Sprintf("alleyflash-%v", char.Base.Name))
+	}, fmt.Sprintf("alleyflash-%v", char.Base.Key.String()))
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.09 + 0.03*float64(r)
-	char.AddStatMod("alleyflash", -1, attributes.NoStat, func() ([]float64, bool) {
-		return m, w.lockout < c.F
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("alleyflash", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, !char.StatusIsActive(lockoutKey)
+		},
 	})
 
 	return w, nil

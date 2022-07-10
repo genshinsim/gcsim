@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -35,11 +36,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.06 + float64(r)*0.02
 	m[attributes.AtkSpd] = 0.12
-	char.AddStatMod("skyward spine", -1, attributes.NoStat, func() ([]float64, bool) {
-		return m, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("skyward spine", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 
-	icd := 0
+	const icdKey = "skyward-spine-icd"
 	atk := .25 + .15*float64(r)
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
@@ -51,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		//check if cd is up
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if c.Rand.Float64() > .5 {
@@ -72,8 +77,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 
 		//trigger cd
-		icd = c.F + 120
+		char.AddStatus(icdKey, 120, true)
 		return false
-	}, fmt.Sprintf("skyward-spine-%v", char.Base.Name))
+	}, fmt.Sprintf("skyward-spine-%v", char.Base.Key.String()))
 	return w, nil
 }

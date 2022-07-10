@@ -17,6 +17,8 @@ func init() {
 	skillFrames = frames.InitAbilSlice(21)
 }
 
+const skillBuffKey = "soukaikanka"
+
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	delay := p["illusion_delay"]
 	if delay < 35 {
@@ -25,7 +27,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if delay > 6*60 {
 		delay = 360
 	}
-	hitlag := p["hitlag_extend"]
 
 	ai := combat.AttackInfo{
 		Abil:       "Kamisato Art: Kyouka",
@@ -45,9 +46,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}, delay)
 
-	c.Core.Status.Add("soukaikanka", 6*60+skillStart+hitlag) //add animation to the duration
-	c.Core.Log.NewEvent("Soukai Kanka acivated", glog.LogCharacterEvent, c.Index).
-		Write("expiry", c.Core.F+6*60+skillStart+hitlag)
+	//start skill buff after animation
+	//TODO: make sure this isn't causing bugs?
+	c.QueueCharTask(func() {
+		c.AddStatus(skillBuffKey, 6*60, true)
+	}, skillStart)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6ready = true
@@ -64,14 +67,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) generateParticles(ac combat.AttackCB) {
-	if c.Core.F > c.particleICD {
-		c.particleICD = c.Core.F + 114
-		var count float64 = 1
-		if c.Core.Rand.Float64() < 0.5 {
-			count++
-		}
-		c.Core.QueueParticle("ayato", count, attributes.Hydro, 80)
+	if c.StatusIsActive(particleICDKey) {
+		return
 	}
+	c.AddStatus(particleICDKey, 114, true)
+	var count float64 = 1
+	if c.Core.Rand.Float64() < 0.5 {
+		count++
+	}
+	c.Core.QueueParticle("ayato", count, attributes.Hydro, 80)
 }
 
 func (c *char) skillStacks(ac combat.AttackCB) {
@@ -86,7 +90,7 @@ func (c *char) skillStacks(ac combat.AttackCB) {
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		c.stacks = 0
-		c.Core.Status.Delete("soukaikanka")
+		c.DeleteStatus(skillBuffKey)
 		c.a4()
 		return false
 	}, "ayato-exit")

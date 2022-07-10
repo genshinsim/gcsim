@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -29,16 +30,22 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const (
+	icdKey = "swordofdescension-icd"
+)
+
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
-
-	icd := 0
 	m := make([]float64, attributes.EndStatType)
 
 	if char.Base.Key < keys.TravelerDelim {
-		char.AddStatMod("swordofdescension", -1, attributes.NoStat, func() ([]float64, bool) {
-			m[attributes.ATK] = 66
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("swordofdescension", -1),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				m[attributes.ATK] = 66
+				return m, true
+			},
 		})
 	}
 
@@ -56,15 +63,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		// Ignore if icd is still up
-		if c.F < icd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		// Ignore 50% of the time, 1:1 ratio
 		if c.Rand.Float64() < 0.5 {
 			return false
 		}
-
-		icd = c.F + 10*60
+		char.AddStatus(icdKey, 600, true)
 
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
@@ -80,6 +86,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 1)
 
 		return false
-	}, fmt.Sprintf("swordofdescension-%v", char.Base.Name))
+	}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))
 	return w, nil
 }

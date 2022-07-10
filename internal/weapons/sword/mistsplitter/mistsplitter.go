@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -22,6 +23,11 @@ type Weapon struct {
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
+
+const (
+	normalBuffKey = "mistsplitter-normal"
+	burstBuffKey  = "mistsplitter-burst"
+)
 
 //Gain a 12% Elemental DMG Bonus for all elements and receive the might of the
 //Mistsplitter's Emblem. At stack levels 1/2/3, the Mistsplitter's Emblem
@@ -46,8 +52,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	stack := 0.06 + float64(r)*0.02
 	max := 0.03 + float64(r)*0.01
 	bonus := attributes.EleToDmgP(char.Base.Element)
-	normal := 0
-	skill := 0
 
 	//normal dealing dmg
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -61,36 +65,40 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.Element == attributes.Physical {
 			return false
 		}
-		normal = c.F + 300 // lasts 5 seconds
+		char.AddStatus(normalBuffKey, 300, true)
 		return false
-	}, fmt.Sprintf("mistsplitter-%v", char.Base.Name))
+	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 
 	//using burst
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		skill = c.F + 600
+		char.AddStatus(burstBuffKey, 600, true)
 		return false
 
-	}, fmt.Sprintf("mistsplitter-%v", char.Base.Name))
-	char.AddStatMod("mistsplitter", -1, attributes.NoStat, func() ([]float64, bool) {
-		count := 0
-		if char.Energy < char.EnergyMax {
-			count++
-		}
-		if normal > c.F {
-			count++
-		}
-		if skill > c.F {
-			count++
-		}
-		dmg := float64(count) * stack
-		if count >= 3 {
-			dmg += max
-		}
-		m[bonus] = base + dmg
-		return m, true
+	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("mistsplitter", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			count := 0
+			if char.Energy < char.EnergyMax {
+				count++
+			}
+			if char.StatusIsActive(normalBuffKey) {
+				count++
+			}
+			if char.StatusIsActive(burstBuffKey) {
+				count++
+			}
+			dmg := float64(count) * stack
+			if count >= 3 {
+				dmg += max
+			}
+			m[bonus] = base + dmg
+			return m, true
+		},
 	})
 
 	return w, nil

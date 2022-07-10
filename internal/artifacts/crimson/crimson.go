@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -26,25 +27,30 @@ type Set struct {
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
 
+const cw4pc = "cw-4pc"
+
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	s.stacks = 0
-	s.key = fmt.Sprintf("%v-cw-4pc", char.Base.Name)
+	s.key = fmt.Sprintf("%v-cw-4pc", char.Base.Key.String())
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
-		char.AddStatMod("crimson-2pc", -1, attributes.PyroP, func() ([]float64, bool) {
-			if c.Status.Duration(s.key) == 0 {
-				s.stacks = 0
-			}
-			mult := 0.5*float64(s.stacks) + 1
-			m[attributes.PyroP] = 0.15 * mult
-			if mult > 1 {
-				c.Log.NewEvent("crimson witch 4pc", glog.LogArtifactEvent, char.Index).
-					Write("mult", mult)
-			}
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("crimson-2pc", -1),
+			AffectedStat: attributes.PyroP,
+			Amount: func() ([]float64, bool) {
+				if !char.StatusIsActive(cw4pc) {
+					s.stacks = 0
+				}
+				mult := 0.5*float64(s.stacks) + 1
+				m[attributes.PyroP] = 0.15 * mult
+				if mult > 1 {
+					c.Log.NewEvent("crimson witch 4pc", glog.LogArtifactEvent, char.Index).Write("mult", mult)
+				}
 
-			return m, true
+				return m, true
+			},
 		})
 	}
 
@@ -56,27 +62,29 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			// every exectuion, add 1 stack, to a max of 3, reset cd to 10 seconds
-			if c.Status.Duration(s.key) == 0 {
+			if !char.StatusIsActive(cw4pc) {
 				s.stacks = 0
 			}
 			if s.stacks < 3 {
 				s.stacks++
 			}
 
-			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index).
-				Write("current stacks", s.stacks)
-			c.Status.Add(s.key, 10*60)
+			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index).Write("current stacks", s.stacks)
+			char.AddStatus(cw4pc, 10*60, true)
 			return false
 		}, s.key)
 
-		char.AddReactBonusMod("crimson-4pc", -1, func(ai combat.AttackInfo) (float64, bool) {
-			if ai.AttackTag == combat.AttackTagOverloadDamage {
-				return 0.4, false
-			}
-			if ai.Amped {
-				return 0.15, false
-			}
-			return 0, false
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase("crimson-4pc", -1),
+			Amount: func(ai combat.AttackInfo) (float64, bool) {
+				if ai.AttackTag == combat.AttackTagOverloadDamage {
+					return 0.4, false
+				}
+				if ai.Amped {
+					return 0.15, false
+				}
+				return 0, false
+			},
 		})
 	}
 

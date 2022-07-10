@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -29,11 +30,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	single := make([]float64, attributes.EndStatType)
 	single[attributes.ATKP] = .18 + .06*float64(r)
-	char.AddStatMod("deathmatch", -1, attributes.NoStat, func() ([]float64, bool) {
-		if len(c.Combat.Targets()) > 2 {
-			return multiple, true
-		}
-		return single, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("deathmatch", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			if len(c.Combat.Targets()) > 2 {
+				return multiple, true
+			}
+			return single, true
+		},
 	})
 
 	return w, nil

@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // When Yan Fei's Charged Attack consumes Scarlet Seals, each Scarlet Seal consumed will increase her Pyro DMG by 5% for 6 seconds. When this effect is repeatedly triggered it will overwrite the oldest bonus first.
@@ -11,8 +13,12 @@ import (
 func (c *char) a1(stacks int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = float64(stacks) * 0.05
-	c.AddStatMod("yanfei-a1", 360, attributes.PyroP, func() ([]float64, bool) {
-		return m, true
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("yanfei-a1", 360),
+		AffectedStat: attributes.PyroP,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 }
 

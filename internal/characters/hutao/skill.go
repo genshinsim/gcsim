@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -129,12 +131,16 @@ func (c *char) bbtickfunc(src int) func() {
 
 func (c *char) ppHook() {
 	m := make([]float64, attributes.EndStatType)
-	c.AddStatMod("hutao-paramita", -1, attributes.ATK, func() ([]float64, bool) {
-		if c.Core.Status.Duration("paramita") == 0 {
-			return nil, false
-		}
-		m[attributes.ATK] = c.ppBonus
-		return m, true
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("hutao-paramita", -1),
+		AffectedStat: attributes.ATK,
+		Amount: func() ([]float64, bool) {
+			if c.Core.Status.Duration("paramita") == 0 {
+				return nil, false
+			}
+			m[attributes.ATK] = c.ppBonus
+			return m, true
+		},
 	})
 }
 

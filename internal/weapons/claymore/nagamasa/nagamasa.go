@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -36,14 +37,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	regen := 2.5 + float64(r)*0.5
 
 	m[attributes.DmgP] = base
-	char.AddAttackMod("nagamasa-skill-dmg-buff", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
-			return m, true
-		}
-		return nil, false
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("nagamasa-skill-dmg-buff", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
+				return m, true
+			}
+			return nil, false
+		},
 	})
 
-	icd := 0
+	const icdKey = "nagamasa-icd"
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -52,18 +56,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 600
+		char.AddStatus(icdKey, 600, true)
 		char.AddEnergy("nagamasa", -3)
 		for i := 120; i <= 360; i += 120 {
-			c.Tasks.Add(func() {
+			//use char queue for hitlag
+			char.QueueCharTask(func() {
 				char.AddEnergy("nagamasa", regen)
 			}, i)
 		}
 		return false
-	}, fmt.Sprintf("nagamasa-%v", char.Base.Name))
+	}, fmt.Sprintf("nagamasa-%v", char.Base.Key.String()))
 
 	return w, nil
 }

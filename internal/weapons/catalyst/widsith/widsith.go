@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -63,19 +64,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		state = c.Rand.Intn(3)
 
 		expiry := c.F + 60*10
-		char.AddStatMod("widsith", 600, attributes.NoStat, func() ([]float64, bool) {
-			//sanity check; should never happen
-			if state == -1 {
-				return nil, false
-			}
-			return buff[state], true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("widsith", 600),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				//sanity check; should never happen
+				if state == -1 {
+					return nil, false
+				}
+				return buff[state], true
+			},
 		})
 		c.Log.NewEvent("widsith proc'd", glog.LogWeaponEvent, char.Index).
 			Write("stat", stats[state]).
 			Write("expiring", expiry)
 
 		return false
-	}, fmt.Sprintf("width-%v", char.Base.Name))
+	}, fmt.Sprintf("width-%v", char.Base.Key.String()))
 
 	return w, nil
 

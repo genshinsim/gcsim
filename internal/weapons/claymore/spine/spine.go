@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -92,10 +93,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			w.updateBuff()
 		}
 		return false
-	}, fmt.Sprintf("spine-%v", char.Base.Name))
+	}, fmt.Sprintf("spine-%v", char.Base.Key.String()))
 
-	char.AddStatMod("spine", -1, attributes.NoStat, func() ([]float64, bool) {
-		return w.buff, w.stacks > 0
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("spine", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return w.buff, w.stacks > 0
+		},
 	})
 
 	return w, nil

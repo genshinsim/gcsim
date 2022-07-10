@@ -1,10 +1,12 @@
 package rosaria
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Adds event checker for C1: Unholy Revelation
@@ -26,11 +28,14 @@ func (c *char) c1() {
 			return false
 		}
 
-		c.AddAttackMod("rosaria-c1", 240, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagNormal {
-				return nil, false
-			}
-			return m, true
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("rosaria-c1", 240),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagNormal {
+					return nil, false
+				}
+				return m, true
+			},
 		})
 
 		return false
@@ -73,9 +78,13 @@ func (c *char) c6(a combat.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	e, ok := a.Target.(core.Enemy)
+	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	e.AddResistMod("rosaria-c6", 600, attributes.Physical, -0.2)
+	e.AddResistMod(enemy.ResistMod{
+		Base:  modifier.NewBase("rosaria-c6", 600),
+		Ele:   attributes.Physical,
+		Value: -0.2,
+	})
 }

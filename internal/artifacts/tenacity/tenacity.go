@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -25,28 +26,7 @@ type Set struct {
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 
-func (s *Set) Init() error {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATKP] = 0.2
-
-	for _, this := range s.core.Player.Chars() {
-		this.AddStatMod("tom-4pc", -1, attributes.ATKP, func() ([]float64, bool) {
-			if s.core.Status.Duration("tom-proc") > 0 {
-				return m, true
-			}
-			return nil, false
-		})
-	}
-
-	s.core.Player.Shields.AddShieldBonusMod("tom-4pc", -1, func() (float64, bool) {
-		if s.core.Status.Duration("tom-proc") > 0 {
-			return 0.30, false
-		}
-		return 0, false
-	})
-
-	return nil
-}
+func (s *Set) Init() error { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{
@@ -56,8 +36,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.HPP] = 0.20
-		char.AddStatMod("tom-2pc", -1, attributes.HPP, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("tom-2pc", -1),
+			AffectedStat: attributes.HPP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
@@ -78,11 +62,24 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Status.Add("tom-proc", 3*60)
 			s.icd = c.F + 30 // .5 second icd
 
-			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index).
-				Write("expiry", c.F+180).
-				Write("icd", s.icd)
+			for _, this := range s.core.Player.Chars() {
+				this.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag("tom-4pc", 180), //3s duration
+					AffectedStat: attributes.ATKP,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
+				})
+			}
+
+			//TODO: this needs to be affected by hitlag as well
+			s.core.Player.Shields.AddShieldBonusMod("tom-4pc", 180, func() (float64, bool) {
+				return 0.30, false
+			})
+
+			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index).Write("expiry", c.F+180).Write("icd", s.icd)
 			return false
-		}, fmt.Sprintf("tom4-%v", char.Base.Name))
+		}, fmt.Sprintf("tom4-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

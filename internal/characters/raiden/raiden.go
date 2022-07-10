@@ -57,7 +57,7 @@ func (c *char) Init() error {
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.Core.Status.Duration("raidenburst") > 0 {
+		if c.StatusIsActive(burstKey) {
 			return 20
 		}
 		return 25

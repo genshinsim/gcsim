@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -25,21 +26,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	mHP := make([]float64, attributes.EndStatType)
 	mHP[attributes.HPP] = 0.15 + float64(r)*0.05
-	char.AddStatMod("homa-hp", -1, attributes.NoStat, func() ([]float64, bool) {
-		return mHP, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("homa-hp", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return mHP, true
+		},
 	})
 
 	mATK := make([]float64, attributes.EndStatType)
 	atkp := 0.006 + float64(r)*0.002
 	lowhp := 0.008 + float64(r)*0.002
-	char.AddStatMod("homa-atk-buff", -1, attributes.ATK, func() ([]float64, bool) {
-		maxhp := char.MaxHP()
-		per := atkp
-		if char.HPCurrent <= 0.5*maxhp {
-			per += lowhp
-		}
-		mATK[attributes.ATK] = per * maxhp
-		return mATK, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("homa-atk-buff", -1),
+		AffectedStat: attributes.ATK,
+		Amount: func() ([]float64, bool) {
+			maxhp := char.MaxHP()
+			per := atkp
+			if char.HPCurrent <= 0.5*maxhp {
+				per += lowhp
+			}
+			mATK[attributes.ATK] = per * maxhp
+			return mATK, true
+		},
 	})
 
 	return w, nil

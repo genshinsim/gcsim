@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // activate a4 if screen is on-field and character uses dash
@@ -17,8 +19,12 @@ func (c *char) a4() {
 			return false
 		}
 		active := c.Core.Player.ActiveChar()
-		active.AddStatMod("ning-screen", 600, attributes.GeoP, func() ([]float64, bool) {
-			return m, true
+		active.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("ning-screen", 600),
+			AffectedStat: attributes.GeoP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 		return false
 	}, "ningguang-a4")

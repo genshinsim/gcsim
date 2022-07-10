@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -26,8 +27,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ER] = 0.20
-		char.AddStatMod("esr-2pc", -1, attributes.ER, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("esr-2pc", -1),
+			AffectedStat: attributes.ER,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
@@ -39,19 +44,21 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 		m[attributes.DmgP] = amt
 
-		char.AddAttackMod("esr-4pc", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
-				return nil, false
-			}
-
-			//calc er
-			er := char.Stat(attributes.ER) + 1
-			amt := 0.25 * er
-			if amt > 0.75 {
-				amt = 0.75
-			}
-			m[attributes.DmgP] = amt
-			return m, true
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("esr-4pc", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+					return nil, false
+				}
+				//calc er
+				er := char.Stat(attributes.ER) + 1
+				amt := 0.25 * er
+				if amt > 0.75 {
+					amt = 0.75
+				}
+				m[attributes.DmgP] = amt
+				return m, true
+			},
 		})
 	}
 

@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -32,14 +33,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.15 + 0.05*float64(r)
-	char.AddAttackMod("blacksword", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-			return nil, false
-		}
-		return val, true
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("blacksword", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+				return nil, false
+			}
+			return val, true
+		},
 	})
 
-	last := 0
+	const icdKey = "black-sword-icd"
 	heal := 0.5 + .1*float64(r)
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -53,7 +57,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if crit && (c.F-last >= 300 || last == 0) {
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		if crit {
 			c.Player.Heal(player.HealInfo{
 				Caller:  char.Index,
 				Target:  c.Player.Active(),
@@ -62,9 +69,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				Bonus:   char.Stat(attributes.Heal),
 			})
 			//trigger cd
-			last = c.F
+			char.AddStatus(icdKey, 300, true) //every 5s
 		}
 		return false
-	}, fmt.Sprintf("black-sword-%v", char.Base.Name))
+	}, fmt.Sprintf("black-sword-%v", char.Base.Key.String()))
 	return w, nil
 }

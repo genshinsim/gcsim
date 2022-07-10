@@ -2,17 +2,22 @@ package xingqiu
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
 
-const burstHitmark = 18
+const (
+	burstHitmark = 18
+	burstKey     = "xingqiuburst"
+	burstICDKey  = "xingqiu-burst-icd"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(40)
@@ -46,9 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		dur += 3
 	}
 	dur = dur * 60
-	c.Core.Status.Add("xqburst", dur+33) // add 33f for anim
-	c.Core.Log.NewEvent("Xingqiu burst activated", glog.LogCharacterEvent, c.Index).
-		Write("expiry", c.Core.F+dur+33)
+	c.AddStatus(burstKey, dur+33, true) // add 33f for anim
 
 	orbital, ok := p["orbital"]
 	if !ok {
@@ -101,14 +104,18 @@ func (c *char) summonSwordWave() {
 				return
 			}
 
-			e, ok := a.Target.(core.Enemy)
+			e, ok := a.Target.(*enemy.Enemy)
 			if !ok {
 				return
 			}
 
 			icd = c.Core.F + 1
 			c.Core.Tasks.Add(func() {
-				e.AddResistMod("xingqiu-c2", 4*60, attributes.Hydro, -0.15)
+				e.AddResistMod(enemy.ResistMod{
+					Base:  modifier.NewBaseWithHitlag("xingqiu-c2", 4*60),
+					Ele:   attributes.Hydro,
+					Value: -0.15,
+				})
 			}, 1)
 		}
 	}
@@ -137,13 +144,13 @@ func (c *char) summonSwordWave() {
 		c.nextRegen = false
 	}
 
-	c.burstSwordICD = c.Core.F + 60
+	c.AddStatus(burstICDKey, 60, true)
 }
 
 func (c *char) burstStateHook() {
 	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
 		//check if buff is up
-		if c.Core.Status.Duration("xqburst") <= 0 {
+		if !c.StatusIsActive(burstKey) {
 			return false
 		}
 		next := args[1].(action.AnimationState)
@@ -152,16 +159,17 @@ func (c *char) burstStateHook() {
 			return false
 		}
 		//ignore if on ICD
-		if c.burstSwordICD > c.Core.F {
+		if c.StatusIsActive(burstICDKey) {
 			return false
 		}
 		//this should start a new ticker if not on ICD and state is correct
 		c.summonSwordWave()
 		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index).
 			Write("state", next).
-			Write("icd", c.burstSwordICD)
+			Write("icd", c.StatusExpiry(burstICDKey))
 		c.burstTickSrc = c.Core.F
-		c.Core.Tasks.Add(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
+		//use the hitlag affected queue for this
+		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
 
 		return false
 	}, "xq-burst-animation-check")
@@ -170,7 +178,7 @@ func (c *char) burstStateHook() {
 func (c *char) burstTickerFunc(src int) func() {
 	return func() {
 		//check if buff is up
-		if c.Core.Status.Duration("xqburst") <= 0 {
+		if !c.StatusIsActive(burstKey) {
 			return
 		}
 		if c.burstTickSrc != src {
@@ -190,10 +198,11 @@ func (c *char) burstTickerFunc(src int) func() {
 		c.Core.Log.NewEvent("xq burst triggered from ticker", glog.LogCharacterEvent, c.Index).
 			Write("src", src).
 			Write("state", state).
-			Write("icd", c.burstSwordICD)
+			Write("icd", c.StatusExpiry(burstICDKey))
 		//we can trigger a wave here b/c we're in normal state still and src is still the same
 		c.summonSwordWave()
 		//in theory this should not hit an icd?
-		c.Core.Tasks.Add(c.burstTickerFunc(src), 60) //check every 1sec
+		//use the hitlag affected queue for this
+		c.QueueCharTask(c.burstTickerFunc(src), 60) //check every 1sec
 	}
 }

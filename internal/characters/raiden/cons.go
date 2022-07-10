@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // When the Musou Isshin state applied by Secret Art: Musou Shinsetsu expires
@@ -17,8 +19,12 @@ func (c *char) c4() {
 		if i == c.Index {
 			continue
 		}
-		char.AddStatMod("raiden-c4", 600, attributes.ATKP, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("raiden-c4", 600),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 }

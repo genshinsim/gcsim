@@ -19,10 +19,6 @@ type Simulation struct {
 	continueEval  chan bool
 	queuer        gcs.Eval
 	noMoreActions bool
-	//hurt event
-	lastHurt int
-	//energy event
-	lastEnergyDrop int
 	//result
 	stats Result
 
@@ -61,6 +57,8 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	SetupResonance(c)
 
 	err = s.C.Init()
 	if err != nil {

@@ -20,7 +20,6 @@ type char struct {
 	burstCounter  int
 	burstTickSrc  int
 	orbitalActive bool
-	burstSwordICD int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {

@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Lithic struct {
@@ -33,9 +34,13 @@ func NewLithic(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		val[attributes.CR] = (0.02 + float64(r)*0.01) * float64(stacks)
 		val[attributes.ATKP] = (0.06 + float64(r)*0.01) * float64(stacks)
 		return true
-	}, fmt.Sprintf("lithic-%v", char.Base.Name))
-	char.AddStatMod("lithic", -1, attributes.NoStat, func() ([]float64, bool) {
-		return val, true
+	}, fmt.Sprintf("lithic-%v", char.Base.Key.String()))
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("lithic", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return val, true
+		},
 	})
 
 	return l, nil

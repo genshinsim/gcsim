@@ -18,9 +18,6 @@ type Character struct {
 	cdQueue                [][]int
 	AvailableCDCharge      []int
 	additionalCDCharge     []int
-	//hitlag fields
-	hitlagUntil  int
-	hitlagFactor float64
 }
 
 func NewWithWrapper(c *core.Core, w *character.CharWrapper) *Character {
@@ -46,10 +43,6 @@ func New(c *core.Core) *Character {
 	}
 
 	return t
-}
-
-func (c *Character) Tick() {
-
 }
 
 func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {

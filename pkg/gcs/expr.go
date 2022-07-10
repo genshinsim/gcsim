@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/conditional"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -19,6 +20,8 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) Obj {
 		return e.evalBinaryExpr(v, env)
 	case *ast.CallExpr:
 		return e.evalCallExpr(v, env)
+	case *ast.Field:
+		return e.evalField(v, env)
 	default:
 		return &null{}
 	}
@@ -132,10 +135,19 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) Obj {
 		return gte(l, r)
 	case ast.OpEqual:
 		return eq(l, r)
+	case ast.OpNotEqual:
+		return neq(l, r)
 	case ast.OpLessThan:
 		return lt(l, r)
 	case ast.OpLessThanOrEqual:
 		return lte(l, r)
 	}
 	return &null{}
+}
+
+func (e *Eval) evalField(n *ast.Field, env *Env) Obj {
+	r := conditional.Eval(e.Core, n.Value)
+	return &number{
+		ival: r,
+	}
 }

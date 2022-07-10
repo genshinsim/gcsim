@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,8 +32,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	mheal := make([]float64, attributes.EndStatType)
 	mheal[attributes.Heal] = 0.075 + float64(r)*0.025
-	char.AddStatMod("moonglow-heal-bonus", -1, attributes.NoStat, func() ([]float64, bool) {
-		return mheal, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("moonglow-heal-bonus", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return mheal, true
+		},
 	})
 
 	nabuff := 0.005 + float64(r)*0.005
@@ -51,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.Log.NewEvent("moonglow add damage", glog.LogPreDamageMod, char.Index).
 			Write("damage_added", flatdmg)
 		return false
-	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Name))
+	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Key.String()))
 
 	icd, dur := -1, -1
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
@@ -60,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		dur = c.F + 720
 		return false
-	}, fmt.Sprintf("moonglow-onburst-%v", char.Base.Name))
+	}, fmt.Sprintf("moonglow-onburst-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -78,7 +83,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		icd = c.F + 6
 
 		return false
-	}, fmt.Sprintf("moonglow-energy-%v", char.Base.Name))
+	}, fmt.Sprintf("moonglow-energy-%v", char.Base.Key.String()))
 
 	return w, nil
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -23,6 +24,11 @@ type Weapon struct {
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
+
+const (
+	icdKey             = "haran-icd"
+	maxWavespikeStacks = 2
+)
 
 //Obtain 12% All Elemental DMG Bonus. When other nearby party members use
 //Elemental Skills, the character equipping this weapon will gain 1 Wavespike
@@ -44,47 +50,55 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.AnemoP] = base
 	m[attributes.GeoP] = base
 	m[attributes.DendroP] = base
-	char.AddStatMod("haran-ele-bonus", -1, attributes.NoStat, func() ([]float64, bool) {
-		return m, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("haran-ele-bonus", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 
-	wavespikeICD := 0
 	wavespikeStacks := 0
-	maxWavespikeStacks := 2
+
+	nonActiveFn := func() bool {
+		//once every 0.3s
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		//add stacks
+		wavespikeStacks++
+		if wavespikeStacks > maxWavespikeStacks {
+			wavespikeStacks = maxWavespikeStacks
+		}
+		c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index).Write("stack", wavespikeStacks)
+		char.AddStatus(icdKey, 18, true)
+		return false
+	}
+
+	val := make([]float64, attributes.EndStatType)
+	activeFn := func() bool {
+		val[attributes.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBaseWithHitlag("ripping-upheaval", 480),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagNormal {
+					return nil, false
+				}
+				return val, true
+			},
+		})
+		wavespikeStacks = 0
+		return false
+	}
+
 	//TODO: this used to be on post. make sure nothing broke here
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() == char.Index {
-			return false
+			return activeFn()
+		} else {
+			return nonActiveFn()
 		}
-		if c.F > wavespikeICD {
-			wavespikeStacks++
-			if wavespikeStacks > maxWavespikeStacks {
-				wavespikeStacks = maxWavespikeStacks
-			}
-			c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index).
-				Write("stack", wavespikeStacks)
-			wavespikeICD = c.F + 0.3*60
-		}
-		return false
-	}, fmt.Sprintf("wavespike-%v", char.Base.Name))
-
-	val := make([]float64, attributes.EndStatType)
-	//TODO: this used to be on post. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
-		}
-		val[attributes.DmgP] = (0.15 + float64(r)*0.05) * float64(wavespikeStacks)
-		char.AddAttackMod("ripping-upheaval", 480, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagNormal {
-				return nil, false
-			}
-			return val, true
-		})
-
-		wavespikeStacks = 0
-		return false
-	}, fmt.Sprintf("ripping-upheaval-%v", char.Base.Name))
+	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))
 
 	return w, nil
 }

@@ -2,11 +2,13 @@ package eula
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillPressFrames []int
@@ -118,13 +120,21 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			if done {
 				return
 			}
-			e, ok := a.Target.(core.Enemy)
+			e, ok := a.Target.(*enemy.Enemy)
 			if !ok {
 				return
 			}
 			done = true
-			e.AddResistMod("eula-icewhirl-shred-cryo", 7*v*60, attributes.Cryo, -resRed[lvl])
-			e.AddResistMod("eula-icewhirl-shred-phys", 7*v*60, attributes.Physical, -resRed[lvl])
+			e.AddResistMod(enemy.ResistMod{
+				Base:  modifier.NewBase("eula-icewhirl-shred-cryo", 7*v*60),
+				Ele:   attributes.Cryo,
+				Value: -resRed[lvl],
+			})
+			e.AddResistMod(enemy.ResistMod{
+				Base:  modifier.NewBase("eula-icewhirl-shred-phys", 7*v*60),
+				Ele:   attributes.Physical,
+				Value: -resRed[lvl],
+			})
 		}
 	}
 
@@ -170,8 +180,12 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.PhyP] = 0.3
 		//TODO: check if the duration is right
-		c.AddStatMod("eula-c1", (6*v+6)*60, attributes.PhyP, func() ([]float64, bool) {
-			return m, true
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("eula-c1", (6*v+6)*60),
+			AffectedStat: attributes.PhyP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 

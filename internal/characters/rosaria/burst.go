@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -89,8 +91,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if i == c.Index {
 			continue
 		}
-		char.AddStatMod("rosaria-a4", 600, attributes.CR, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("rosaria-a4", 600),
+			AffectedStat: attributes.CR,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index).

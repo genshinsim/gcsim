@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -40,8 +41,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//permanent atk% increase
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.12 + float64(r)*0.04
-	char.AddStatMod("pines-atk", -1, attributes.NoStat, func() ([]float64, bool) {
-		return m, true
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("pines-atk", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
 	})
 
 	//sigil buff
@@ -49,9 +54,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	val[attributes.ATKP] = 0.15 + 0.05*float64(r)
 	val[attributes.AtkSpd] = 0.09 + 0.03*float64(r)
 
-	icd := 0
+	const icdKey = "songofbrokenpines-icd"
+	const cdKey = "songofbrokenpines-cooldown"
 	stacks := 0
-	cooldown := 0
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -61,26 +66,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if cooldown > c.F {
+		if char.StatusIsActive(cdKey) {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 12
+		char.AddStatus(icdKey, 12, true)
 		stacks++
 		if stacks == 4 {
 			stacks = 0
-			c.Status.Add("pines", 720)
-			cooldown = c.F + 1200
+			char.AddStatus(cdKey, 1200, true)
 			for _, char := range c.Player.Chars() {
-				char.AddStatMod("pines-proc", 720, attributes.NoStat, func() ([]float64, bool) {
-					return val, true
+				char.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("pines-proc", 720),
+					AffectedStat: attributes.NoStat,
+					Amount: func() ([]float64, bool) {
+						return val, true
+					},
 				})
 			}
 		}
 		return false
-	}, fmt.Sprintf("pines-%v", char.Base.Name))
+	}, fmt.Sprintf("pines-%v", char.Base.Key.String()))
 
 	return w, nil
 }

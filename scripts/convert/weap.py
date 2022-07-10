@@ -17,7 +17,7 @@ replace = [
     ],
     [r"char\.CharIndex\(\)", "char.Index"],
     [r"c\.ActiveChar", "c.Player.Active()"],
-    [r"char\.Name\(\)", "char.Base.Name"],
+    [r"char\.Name\(\)", "char.Base.Key.String()"],
     [r"char\.CurrentEnergy\(\)", "char.Energy"],
     [r"char\.MaxEnergy\(\)", "char.EnergyMax"],
     [r"\.Status\.AddStatus\(", ".Status.Add("],

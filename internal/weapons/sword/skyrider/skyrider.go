@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -35,11 +36,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		char.AddStatMod("skyrider", 900, attributes.NoStat, func() ([]float64, bool) {
-			return val, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("skyrider", 900),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return val, true
+			},
 		})
 		return false
-	}, fmt.Sprintf("skyrider-sword-%v", char.Base.Name))
+	}, fmt.Sprintf("skyrider-sword-%v", char.Base.Key.String()))
 
 	return w, nil
 }

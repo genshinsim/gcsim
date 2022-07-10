@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -32,8 +33,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.EM] = 80
-		char.AddStatMod("instructor-2pc", -1, attributes.EM, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("instructor-2pc", -1),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
@@ -59,15 +64,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					continue
 				}
 
-				this.AddStatMod("instructor-4pc", 480, attributes.EM, func() ([]float64, bool) {
-					return m, true
+				this.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag("instructor-4pc", 480),
+					AffectedStat: attributes.EM,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
 				})
 			}
 			return false
 		}
 
 		for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
-			c.Events.Subscribe(i, add, fmt.Sprintf("instructor-4pc-%v", char.Base.Name))
+			c.Events.Subscribe(i, add, fmt.Sprintf("instructor-4pc-%v", char.Base.Key.String()))
 		}
 	}
 

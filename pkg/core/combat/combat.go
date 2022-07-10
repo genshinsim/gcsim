@@ -14,35 +14,33 @@ import (
 
 type CharHandler interface {
 	CombatByIndex(int) Character
+	ApplyHitlag(char int, factor, dur float64)
 }
 
 type Character interface {
 	ApplyAttackMods(a *AttackEvent, t Target) []interface{}
-	ApplyHitlag(factor float64, dur int)
 }
 
 type Handler struct {
-	log    glog.Logger
-	events event.Eventter
-	team   CharHandler
-	rand   *rand.Rand
-	debug  bool
-
+	Opt
 	targets     []Target
 	TotalDamage float64
-	DamageMode  bool
-
-	defHalt bool
 }
 
-func New(log glog.Logger, events event.Eventter, team CharHandler, rand *rand.Rand, debug bool, damageMode bool, defHalt bool) *Handler {
+type Opt struct {
+	Events       event.Eventter
+	Team         CharHandler
+	Rand         *rand.Rand
+	Debug        bool
+	Log          glog.Logger
+	DamageMode   bool
+	DefHalt      bool
+	EnableHitlag bool
+}
+
+func New(opt Opt) *Handler {
 	h := &Handler{
-		log:        log,
-		events:     events,
-		team:       team,
-		rand:       rand,
-		DamageMode: damageMode,
-		debug:      debug,
+		Opt: opt,
 	}
 	h.targets = make([]Target, 0, 5)
 
@@ -55,6 +53,9 @@ func (h *Handler) AddTarget(t Target) {
 }
 
 func (h *Handler) Target(i int) Target {
+	if i < 0 || i > len(h.targets) {
+		return nil
+	}
 	return h.targets[i]
 }
 

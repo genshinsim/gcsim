@@ -3,7 +3,6 @@ package combat
 import (
 	"fmt"
 	"log"
-	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -54,7 +53,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			// TODO: Maybe want to add a separate set of log events for this?
 			//don't log this for target 0
 			if i > 0 {
-				h.log.NewEventBuildMsg(glog.LogDebugEvent, a.Info.ActorIndex, "skipped ", a.Info.Abil, " ", reason).
+				h.Log.NewEventBuildMsg(glog.LogDebugEvent, a.Info.ActorIndex, "skipped ", a.Info.Abil, " ", reason).
 					Write("attack_tag", a.Info.AttackTag).
 					Write("applied_ele", a.Info.Element).
 					Write("dur", a.Info.Durability).
@@ -68,7 +67,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		cpy := *a
 
 		//at this point attack will land
-		h.events.Emit(event.OnAttackWillLand, t, &cpy)
+		h.Events.Emit(event.OnAttackWillLand, t, &cpy)
 
 		//check to make sure it's not cancelled for w/e reason
 		if a.Cancelled {
@@ -80,7 +79,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		var dmg float64
 		var crit bool
 
-		evt := h.log.NewEvent(cpy.Info.Abil, glog.LogDamageEvent, cpy.Info.ActorIndex).
+		evt := h.Log.NewEvent(cpy.Info.Abil, glog.LogDamageEvent, cpy.Info.ActorIndex).
 			Write("target", i).
 			Write("attack-tag", cpy.Info.AttackTag).
 			Write("ele", cpy.Info.Element.String()).
@@ -95,14 +94,14 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			if cpy.Info.ActorIndex < 0 {
 				log.Println(cpy)
 			}
-			preDmgModDebug := h.team.CombatByIndex(cpy.Info.ActorIndex).ApplyAttackMods(&cpy, t)
+			preDmgModDebug := h.Team.CombatByIndex(cpy.Info.ActorIndex).ApplyAttackMods(&cpy, t)
 			evt.Write("pre_damage_mods", preDmgModDebug)
 		}
 
 		dmg, crit = t.Attack(&cpy, evt)
 		total += dmg
 
-		h.events.Emit(event.OnDamage, t, &cpy, dmg, crit)
+		h.Events.Emit(event.OnDamage, t, &cpy, dmg, crit)
 
 		//callbacks
 		cb := AttackCB{
@@ -121,7 +120,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			log.Println("died")
 			// died = true
 			t.Kill()
-			h.events.Emit(event.OnTargetDied, t, cpy)
+			h.Events.Emit(event.OnTargetDied, t, cpy)
 			//this should be ok for stuff like guoba since they won't take damage
 			h.targets[i] = nil
 			// log.Println("target died", i, dmg)
@@ -135,17 +134,16 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		}
 
 	}
-	//add hitlag to actor
-	if landed {
+	//add hitlag to actor (but ignore if this is headshot only)
+	if h.EnableHitlag && landed && !a.Info.HitlagOnHeadshotOnly {
 		dur := a.Info.HitlagHaltFrames
-		if h.defHalt && a.Info.CanBeDefenseHalted {
+		if h.DefHalt && a.Info.CanBeDefenseHalted {
 			dur += 3.6 //0.06
 		}
-		dur = math.Ceil(dur)
 		if dur > 0 {
-			h.team.CombatByIndex(a.Info.ActorIndex).ApplyHitlag(a.Info.HitlagFactor, int(dur))
-			if h.debug {
-				h.log.NewEvent(fmt.Sprintf("%v applying hitlag: %v", a.Info.Abil, dur), glog.LogHitlagEvent, a.Info.ActorIndex).
+			h.Team.ApplyHitlag(a.Info.ActorIndex, a.Info.HitlagFactor, dur)
+			if h.Debug {
+				h.Log.NewEvent(fmt.Sprintf("%v applying hitlag: %.3f", a.Info.Abil, dur), glog.LogHitlagEvent, a.Info.ActorIndex).
 					Write("duration", dur).
 					Write("factor", a.Info.HitlagFactor)
 			}

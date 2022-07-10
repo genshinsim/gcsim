@@ -8,7 +8,7 @@ import (
 
 func (c *char) a1() {
 	//a1 last for duration of barb skill which is 900 frames
-	c.Core.Player.AddStamPercentMod("barb-a1-stam", skillDuration, func(a action.Action) (float64, bool) { // @srl does this activate for the active char?
+	c.Core.Player.AddStamPercentMod("barb-a1-stam", skillDuration, func(a action.Action) (float64, bool) {
 		return -0.12, false
 	})
 }

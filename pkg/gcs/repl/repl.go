@@ -27,9 +27,20 @@ func Eval(s string, log *log.Logger) {
 		return
 	}
 
+	if len(res.Errors) != 0 {
+		fmt.Println("Errors encountered parsing program:")
+		for _, v := range res.Errors {
+			fmt.Printf("\t%v\n", v)
+		}
+	}
+
 	fmt.Println("Program parsed:")
 	fmt.Println(res.Program.String())
 
+	if len(res.Errors) != 0 {
+		//don't run the program if there are errors
+		return
+	}
 	fmt.Println("Running program...:")
 	eval := gcs.Eval{
 		AST:  res.Program,

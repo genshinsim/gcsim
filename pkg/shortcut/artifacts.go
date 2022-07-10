@@ -41,5 +41,6 @@ var SetNameToKey = map[string]keys.Set{
 	"travelingdoctor":        keys.TravelingDoctor,
 	"vermillionhereafter":    keys.VermillionHereafter,
 	"viridescentvenerer":     keys.ViridescentVenerer,
+	"vv":                     keys.ViridescentVenerer,
 	"wandererstroupe":        keys.WanderersTroupe,
 }

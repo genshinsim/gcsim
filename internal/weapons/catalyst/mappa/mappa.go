@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -54,24 +55,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 
 	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.ReactionEventEndDelim; i++ {
-		c.Events.Subscribe(i, addStack, "mappa"+char.Base.Name)
+		c.Events.Subscribe(i, addStack, "mappa"+char.Base.Key.String())
 	}
 
 	dmg := 0.06 + float64(r)*0.02
 	m := make([]float64, attributes.EndStatType)
-	char.AddStatMod("mappa", -1, attributes.NoStat, func() ([]float64, bool) {
-		if c.F > dur {
-			return nil, false
-		}
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("mappa", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			if c.F > dur {
+				return nil, false
+			}
 
-		m[attributes.PyroP] = dmg * float64(stacks)
-		m[attributes.HydroP] = dmg * float64(stacks)
-		m[attributes.CryoP] = dmg * float64(stacks)
-		m[attributes.ElectroP] = dmg * float64(stacks)
-		m[attributes.AnemoP] = dmg * float64(stacks)
-		m[attributes.GeoP] = dmg * float64(stacks)
-		m[attributes.DendroP] = dmg * float64(stacks)
-		return m, true
+			m[attributes.PyroP] = dmg * float64(stacks)
+			m[attributes.HydroP] = dmg * float64(stacks)
+			m[attributes.CryoP] = dmg * float64(stacks)
+			m[attributes.ElectroP] = dmg * float64(stacks)
+			m[attributes.AnemoP] = dmg * float64(stacks)
+			m[attributes.GeoP] = dmg * float64(stacks)
+			m[attributes.DendroP] = dmg * float64(stacks)
+			return m, true
+		},
 	})
 
 	return w, nil

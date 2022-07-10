@@ -7,7 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -75,16 +77,19 @@ func (c *char) burstDamageBonus() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = dmgBonus[c.TalentLvlBurst()]
 	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod("mona-omen", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			x, ok := t.(*enemy.Enemy)
-			if !ok {
-				return nil, false
-			}
-			//ignore if omen or bubble not present
-			if x.GetTag(bubbleKey) < c.Core.F && x.GetTag(omenKey) < c.Core.F {
-				return nil, false
-			}
-			return m, true
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("mona-omen", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				x, ok := t.(*enemy.Enemy)
+				if !ok {
+					return nil, false
+				}
+				//ignore if omen or bubble not present
+				if x.GetTag(bubbleKey) < c.Core.F && x.GetTag(omenKey) < c.Core.F {
+					return nil, false
+				}
+				return m, true
+			},
 		})
 	}
 }

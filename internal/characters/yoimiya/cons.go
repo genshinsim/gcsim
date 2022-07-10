@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c1() {
@@ -15,8 +17,12 @@ func (c *char) c1() {
 			return false
 		}
 
-		c.AddStatMod("yoimiya-c1", 1200, attributes.ATKP, func() ([]float64, bool) {
-			return m, true
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("yoimiya-c1", 1200),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 
 		return false
@@ -34,8 +40,12 @@ func (c *char) c2() {
 			return false
 		}
 
-		c.AddStatMod("yoimiya-c2", 360, attributes.PyroP, func() ([]float64, bool) {
-			return m, true
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("yoimiya-c2", 360),
+			AffectedStat: attributes.PyroP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 
 		return false

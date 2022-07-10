@@ -43,7 +43,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Yoohoo Art: Fuuin Dash (Press)",
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagSayuSkillAnemo,
+		ICDTag:     combat.ICDTagElementalArtAnemo,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
@@ -138,7 +138,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 		ActorIndex: c.Index,
 		Abil:       "Yoohoo Art: Fuuin Dash (Hold Tick)",
 		AttackTag:  combat.AttackTagElementalArtHold,
-		ICDTag:     combat.ICDTagSayuSkillAnemo,
+		ICDTag:     combat.ICDTagElementalArtAnemo,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
@@ -164,13 +164,13 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		if c.eInfused != attributes.NoElement {
 			switch c.eInfused {
 			case attributes.Pyro:
-				c.eInfusedTag = combat.ICDTagSayuSkillPyro
+				c.eInfusedTag = combat.ICDTagElementalArtPyro
 			case attributes.Hydro:
-				c.eInfusedTag = combat.ICDTagSayuSkillHydro
+				c.eInfusedTag = combat.ICDTagElementalArtHydro
 			case attributes.Electro:
-				c.eInfusedTag = combat.ICDTagSayuSkillElectro
+				c.eInfusedTag = combat.ICDTagElementalArtElectro
 			case attributes.Cryo:
-				c.eInfusedTag = combat.ICDTagSayuSkillCryo
+				c.eInfusedTag = combat.ICDTagElementalArtCryo
 			}
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
 				"sayu infused ", c.eInfused.String(),

@@ -25,11 +25,12 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
+const icdKey = "fillet-blade-icd"
+
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
-	icd := 0
 	cd := 960 - 60*r
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -41,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if c.Rand.Float64() > 0.5 {
@@ -62,9 +63,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
 
 		// trigger cd
-		icd = c.F + cd
+		char.AddStatus(icdKey, cd, true)
 
 		return false
-	}, fmt.Sprintf("fillet-blade-%v", char.Base.Name))
+	}, fmt.Sprintf("fillet-blade-%v", char.Base.Key.String()))
 	return w, nil
 }

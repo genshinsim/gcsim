@@ -6,31 +6,47 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+//start a new orbital or extended if already active; duration is length
+//and delay is first tick starting
 func (c *char) applyOrbital(duration int, delay int) {
 	src := c.Core.F
-	c.Core.Log.NewEvent("Applying orbital", glog.LogCharacterEvent, c.Index).
-		Write("current status", c.Core.Status.Duration("xqorb"))
+	c.Core.Log.NewEvent(
+		"Applying orbital", glog.LogCharacterEvent, c.Index,
+	).Write(
+		"current status", c.StatusExpiry(orbitalKey),
+	)
 	//check if orbitals already active, if active extend duration
 	//other wise start first tick func
 	if !c.orbitalActive {
-		c.Core.Tasks.Add(c.orbitalTickTask(src), delay)
+		//use hitlag affected queue
+		c.QueueCharTask(c.orbitalTickTask(src), delay)
 		c.orbitalActive = true
-		c.Core.Log.NewEvent("orbital applied", glog.LogCharacterEvent, c.Index).
-			Write("expected end", src+900).
-			Write("next expected tick", src+40)
+		c.Core.Log.NewEvent(
+			"orbital applied", glog.LogCharacterEvent, c.Index,
+		).Write(
+			"expected end", src+900,
+		).Write(
+			"next expected tick", src+40,
+		)
 	}
-
-	c.Core.Status.Add("xqorb", duration)
-	c.Core.Log.NewEvent("orbital duration extended", glog.LogCharacterEvent, c.Index).
-		Write("new expiry", c.Core.Status.Duration("xqorb"))
+	c.AddStatus(orbitalKey, duration, true)
+	c.Core.Log.NewEvent(
+		"orbital duration extended", glog.LogCharacterEvent, c.Index,
+	).Write(
+		"new expiry", c.StatusExpiry(orbitalKey),
+	)
 }
 
 func (c *char) orbitalTickTask(src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("orbital checking tick", glog.LogCharacterEvent, c.Index).
-			Write("expiry", c.Core.Status.Duration("xqorb")).
-			Write("src", src)
-		if c.Core.Status.Duration("xqorb") == 0 {
+		c.Core.Log.NewEvent(
+			"orbital checking tick", glog.LogCharacterEvent, c.Index,
+		).Write(
+			"expiry", c.StatusExpiry(orbitalKey),
+		).Write(
+			"src", src,
+		)
+		if !c.StatusIsActive(orbitalKey) {
 			c.orbitalActive = false
 			return
 		}
@@ -44,13 +60,18 @@ func (c *char) orbitalTickTask(src int) func() {
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}
-		c.Core.Log.NewEvent("orbital ticked", glog.LogCharacterEvent, c.Index).
-			Write("next expected tick", c.Core.F+135).
-			Write("expiry", c.Core.Status.Duration("xqorb")).
-			Write("src", src)
+		c.Core.Log.NewEvent(
+			"orbital ticked", glog.LogCharacterEvent, c.Index,
+		).Write(
+			"next expected tick", c.Core.F+135,
+		).Write(
+			"expiry", c.StatusExpiry(orbitalKey),
+		).Write(
+			"src", src,
+		)
 
 		//queue up next instance
-		c.Core.Tasks.Add(c.orbitalTickTask(src), 135)
+		c.QueueCharTask(c.orbitalTickTask(src), 135)
 
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), -1, 1)
 	}

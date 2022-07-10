@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -61,8 +62,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DEFP] = 0.30
-		char.AddStatMod("husk-2pc", -1, attributes.DEFP, func() ([]float64, bool) {
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("husk-2pc", -1),
+			AffectedStat: attributes.DEFP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
 	}
 	if count >= 4 {
@@ -76,7 +81,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			s.lastSwap = c.F
 			c.Tasks.Add(s.gainStackOfffield(c.F), 3*60)
 			return false
-		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Name))
+		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Key.String()))
 
 		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
@@ -87,6 +92,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
+			//TODO: check if this icd is subject to hitlag?
 			if s.stackGainICDExpiry > c.F {
 				return false
 			}
@@ -108,12 +114,16 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Tasks.Add(s.checkStackLoss, 360)
 
 			return false
-		}, fmt.Sprintf("husk-4pc-%v", char.Base.Name))
+		}, fmt.Sprintf("husk-4pc-%v", char.Base.Key.String()))
 
-		char.AddStatMod("husk-4pc", -1, attributes.NoStat, func() ([]float64, bool) {
-			m[attributes.DEFP] = 0.06 * float64(s.stacks)
-			m[attributes.GeoP] = 0.06 * float64(s.stacks)
-			return m, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("husk-4pc", -1),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				m[attributes.DEFP] = 0.06 * float64(s.stacks)
+				m[attributes.GeoP] = 0.06 * float64(s.stacks)
+				return m, true
+			},
 		})
 	}
 

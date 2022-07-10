@@ -40,7 +40,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.guoba.pyroWindowStart = c.Core.F
 			c.guoba.pyroWindowEnd = c.Core.F + 20
 		}, delay+i*100-10) //10 frame window to swirl
-		//TODO: check guoba particle generation
 		c.Core.QueueParticle("xiangling", 1, attributes.Pyro, delay+i*100+150)
 	}
 

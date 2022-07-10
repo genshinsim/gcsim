@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -37,28 +38,34 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		switch atk.Info.AttackTag {
 		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
-			char.AddAttackMod("solar-na-buff", 6*60, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				switch atk.Info.AttackTag {
-				case combat.AttackTagNormal:
-					return val, true
-				}
-				return nil, false
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("solar-na-buff", 6*60),
+				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					switch atk.Info.AttackTag {
+					case combat.AttackTagNormal:
+						return val, true
+					}
+					return nil, false
+				},
 			})
 
 		case combat.AttackTagNormal:
-			char.AddAttackMod("solar-skill-burst-buff", 6*60, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				switch atk.Info.AttackTag {
-				case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
-					return val, true
-				}
-				return nil, false
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("solar-skill-burst-buff", 6*60),
+				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					switch atk.Info.AttackTag {
+					case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
+						return val, true
+					}
+					return nil, false
+				},
 			})
 
 		default:
 			return false
 		}
 		return false
-	}, fmt.Sprintf("solar-%v", char.Base.Name))
+	}, fmt.Sprintf("solar-%v", char.Base.Key.String()))
 
 	return w, nil
 }

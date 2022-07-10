@@ -552,6 +552,11 @@ type (
 		Value string
 	}
 
+	Field struct {
+		Pos
+		Value []string
+	}
+
 	// A CallExpr node represents an expression followed by an argument list.
 	CallExpr struct {
 		Pos
@@ -579,6 +584,7 @@ type (
 func (*NumberLit) exprNode()  {}
 func (*StringLit) exprNode()  {}
 func (*Ident) exprNode()      {}
+func (*Field) exprNode()      {}
 func (*CallExpr) exprNode()   {}
 func (*UnaryExpr) exprNode()  {}
 func (*BinaryExpr) exprNode() {}
@@ -664,6 +670,37 @@ func (b *Ident) String() string {
 
 func (b *Ident) writeTo(sb *strings.Builder) {
 	sb.WriteString(b.Value)
+}
+
+// Field.
+
+func (i *Field) CopyField() *Field {
+	if i == nil {
+		return nil
+	}
+	dst := make([]string, len(i.Value))
+	copy(dst, i.Value)
+	return &Field{Pos: i.Pos, Value: dst}
+}
+
+func (i *Field) CopyExpr() Expr {
+	return i.CopyField()
+}
+
+func (i *Field) Copy() Node {
+	return i.CopyField()
+}
+
+func (b *Field) String() string {
+	var sb strings.Builder
+	b.writeTo(&sb)
+	return sb.String()
+}
+
+func (b *Field) writeTo(sb *strings.Builder) {
+	for _, v := range b.Value {
+		sb.WriteString(v)
+	}
 }
 
 // CallExpr.

@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -31,9 +32,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	atkbuff := 0.05 + float64(r)*0.01
-	icd := 0
-	activeUntil := -1
 	w.buff = make([]float64, attributes.EndStatType)
+	const icdKey = "skyrider-icd"
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -43,11 +43,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		//if hit lands after all stack should have fallen off, reset to 0
-		if activeUntil < c.F {
+		if !char.StatModIsActive("skyrider") {
 			w.stacks = 0
 		}
 
@@ -58,17 +58,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		//extend buff timer
-		activeUntil = c.F + 360
-		icd = c.F + 30
+		char.AddStatus(icdKey, 30, true)
 
 		//every whack adds a stack while under 4 and refreshes buff
 		//lasts 6 seconds
-		char.AddStatMod("skyrider", 360, attributes.NoStat, func() ([]float64, bool) {
-			return w.buff, true
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("skyrider", 360),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return w.buff, true
+			},
 		})
 
 		return false
-	}, fmt.Sprintf("skyrider-greatsword-%v", char.Base.Name))
+	}, fmt.Sprintf("skyrider-greatsword-%v", char.Base.Key.String()))
 
 	return w, nil
 }

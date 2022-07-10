@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -27,12 +28,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = .045 + .015*float64(r)
 	m[attributes.DmgP] = .12 + 0.04*float64(r)
-	char.AddAttackMod("festering", -1, func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold:
-			return m, true
-		}
-		return nil, false
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("festering", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			switch atk.Info.AttackTag {
+			case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold:
+				return m, true
+			}
+			return nil, false
+		},
 	})
 
 	return w, nil

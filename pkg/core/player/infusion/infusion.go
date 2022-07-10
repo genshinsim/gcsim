@@ -10,7 +10,7 @@ type WeaponInfusion struct {
 	Key             string
 	Ele             attributes.Element
 	Tags            []combat.AttackTag
-	Expiry          int
+	Expiry          float64
 	CanBeOverridden bool
 }
 
@@ -31,43 +31,54 @@ func New(f *int, log glog.Logger, debug bool) InfusionHandler {
 	}
 }
 
-func (m *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...combat.AttackTag) {
-	if !m.infusion[char].CanBeOverridden && m.infusion[char].Expiry > *m.f {
+func (i *InfusionHandler) ExtendInfusion(char int, factor, dur float64) {
+	//if infusion is active, extend it
+	if i.infusion[char].Expiry < float64(*i.f) || i.infusion[char].Expiry == -1 {
+		return
+	}
+	i.infusion[char].Expiry += dur * (1 - factor)
+}
+
+func (i *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...combat.AttackTag) {
+	if !i.infusion[char].CanBeOverridden && i.infusion[char].Expiry > float64(*i.f) {
 		return
 	}
 	inf := WeaponInfusion{
 		Key:             key,
 		Ele:             ele,
-		Expiry:          *m.f + dur,
+		Expiry:          float64(*i.f + dur),
 		CanBeOverridden: canBeOverriden,
 		Tags:            tags,
 	}
-	m.infusion[char] = inf
+	if dur == -1 {
+		inf.Expiry = -1
+	}
+	i.infusion[char] = inf
 }
 
-func (m *InfusionHandler) WeaponInfuseIsActive(char int, key string) bool {
-	if m.infusion[char].Key != key {
+func (i *InfusionHandler) WeaponInfuseIsActive(char int, key string) bool {
+	if i.infusion[char].Key != key {
 		return false
 	}
 	//check expiry
-	if m.infusion[char].Expiry < *m.f && m.infusion[char].Expiry > -1 {
+	if i.infusion[char].Expiry < float64(*i.f) && i.infusion[char].Expiry > -1 {
 		return false
 	}
 	return true
 }
 
-func (h *InfusionHandler) Infused(char int, a combat.AttackTag) attributes.Element {
-	if h.infusion[char].Key != "" {
+func (i *InfusionHandler) Infused(char int, a combat.AttackTag) attributes.Element {
+	if i.infusion[char].Key != "" {
 		ok := false
-		for _, v := range h.infusion[char].Tags {
+		for _, v := range i.infusion[char].Tags {
 			if v == a {
 				ok = true
 				break
 			}
 		}
 		if ok {
-			if h.infusion[char].Expiry > *h.f || h.infusion[char].Expiry == -1 {
-				return h.infusion[char].Ele
+			if i.infusion[char].Expiry > float64(*i.f) || i.infusion[char].Expiry == -1 {
+				return i.infusion[char].Ele
 			}
 		}
 	}
