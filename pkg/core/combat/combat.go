@@ -63,8 +63,16 @@ func (h *Handler) Targets() []Target {
 	return h.targets
 }
 
-func (h *Handler) SetTargetPos(i int, x, y float64) {
+func (h *Handler) SetTargetPos(i int, x, y float64) bool {
+	if i < 0 || i > len(h.targets)-1 {
+		return false
+	}
 	h.targets[i].SetPos(x, y)
+	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
+		Write("index", i).
+		Write("x", x).
+		Write("y", y)
+	return true
 }
 
 func (h *Handler) Tick() {

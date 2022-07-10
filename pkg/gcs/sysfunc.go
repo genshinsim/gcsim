@@ -63,3 +63,88 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) Obj {
 
 	return &null{}
 }
+
+func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) Obj {
+	//set_player_pos(x, y)
+	if len(c.Args) != 2 {
+		//TODO: better error handling
+		panic("expected 2 param for set_player_pos")
+	}
+
+	t := e.evalExpr(c.Args[0], env)
+	n, ok := t.(*number)
+	if !ok {
+		//TODO: better error handling
+		panic("expecting a number for wait argument")
+	}
+	//n should be float
+	var x float64 = n.fval
+	if !n.isFloat {
+		x = float64(n.ival)
+	}
+
+	t = e.evalExpr(c.Args[1], env)
+	n, ok = t.(*number)
+	if !ok {
+		//TODO: better error handling
+		panic("expecting a number for wait argument")
+	}
+	//n should be float
+	var y float64 = n.fval
+	if !n.isFloat {
+		y = float64(n.ival)
+	}
+
+	done := e.Core.Combat.SetTargetPos(0, x, y)
+
+	return bton(done)
+}
+
+func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) Obj {
+	//set_target_pos(1,x,y)
+	if len(c.Args) != 3 {
+		//TODO: better error handling
+		panic("expected 3 param for set_target_pos")
+	}
+
+	//all 3 param should eval to numbers
+	t := e.evalExpr(c.Args[0], env)
+	n, ok := t.(*number)
+	if !ok {
+		//TODO: better error handling
+		panic("expecting a number for wait argument")
+	}
+	//n should be int
+	var idx int = int(n.ival)
+	if n.isFloat {
+		idx = int(n.fval)
+	}
+
+	t = e.evalExpr(c.Args[1], env)
+	n, ok = t.(*number)
+	if !ok {
+		//TODO: better error handling
+		panic("expecting a number for wait argument")
+	}
+	//n should be float
+	var x float64 = n.fval
+	if !n.isFloat {
+		x = float64(n.ival)
+	}
+
+	t = e.evalExpr(c.Args[2], env)
+	n, ok = t.(*number)
+	if !ok {
+		//TODO: better error handling
+		panic("expecting a number for wait argument")
+	}
+	//n should be float
+	var y float64 = n.fval
+	if !n.isFloat {
+		y = float64(n.ival)
+	}
+
+	done := e.Core.Combat.SetTargetPos(idx, x, y)
+
+	return bton(done)
+}

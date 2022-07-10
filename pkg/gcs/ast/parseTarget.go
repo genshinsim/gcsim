@@ -14,6 +14,41 @@ func parseTarget(p *Parser) (parseFn, error) {
 	r.Resist = make(map[attributes.Element]float64)
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 		switch n.Typ {
+		case itemIdentifier:
+			switch n.Val {
+			case "pos":
+				//pos=1.00,2,00
+				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+				if err != nil {
+					return nil, err
+				}
+				x, err := itemNumberToFloat64(item)
+				if err != nil {
+					return nil, err
+				}
+				item, err = p.acceptSeqReturnLast(itemComma, itemNumber)
+				if err != nil {
+					return nil, err
+				}
+				y, err := itemNumberToFloat64(item)
+				if err != nil {
+					return nil, err
+				}
+				r.Pos.X = x
+				r.Pos.Y = y
+			case "radius":
+				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+				if err != nil {
+					return nil, err
+				}
+				amt, err := itemNumberToFloat64(item)
+				if err != nil {
+					return nil, err
+				}
+				r.Pos.R = amt
+			default:
+				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
+			}
 		case keywordLvl:
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {

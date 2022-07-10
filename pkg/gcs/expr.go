@@ -65,6 +65,10 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) Obj {
 	case "wait":
 		//execute wait command
 		return e.wait(c, env)
+	case "set_target_pos":
+		return e.setTargetPos(c, env)
+	case "set_player_pos":
+		return e.setPlayerPos(c, env)
 	default:
 		//grab the function first
 		fn := env.fn(s)
