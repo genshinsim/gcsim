@@ -19,6 +19,10 @@ func (c *char) c1() {
 	val[attributes.DmgP] = 0.1
 
 	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+		// ignore if character not on field
+		if c.Core.Player.Active() != c.Index {
+			return false
+		}
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("razor-c1", 8*60),
 			AffectedStat: attributes.DmgP,
@@ -90,8 +94,8 @@ func (c *char) c6() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Lupus Fulguris",
-			AttackTag:  combat.AttackTagNormal, // or combat.AttackTagNone?
-			ICDTag:     combat.ICDTagNormalAttack,
+			AttackTag:  combat.AttackTagNone, // TODO: it has another tag?
+			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Electro,
 			Durability: 25,

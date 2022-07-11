@@ -14,7 +14,7 @@ var attackHitmarks = []int{25, 46, 38, 83}
 
 const normalHitNum = 4
 
-func (c *char) init() {
+func init() {
 	attackFrames = make([][]int, normalHitNum) // should be 4
 
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 25)
