@@ -17,6 +17,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	c2buff []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -36,6 +37,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	if c.Base.Cons >= 2 {
+		c.c2buff = make([]float64, attributes.EndStatType)
+		c.c2buff[attributes.AtkSpd] = 0.15
+	}
 	if c.Base.Cons >= 6 {
 		c.Core.Log.NewEvent("jean c6 not implemented", glog.LogCharacterEvent, c.Index)
 	}
@@ -49,14 +54,12 @@ func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount i
 		if !isActive {
 			return
 		}
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.AtkSpd] = 0.15
 		for _, active := range c.Core.Player.Chars() {
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("jean-c2", 900),
+				Base:         modifier.NewBaseWithHitlag("jean-c2", 900),
 				AffectedStat: attributes.AtkSpd,
 				Amount: func() ([]float64, bool) {
-					return m, true
+					return c.c2buff, true
 				},
 			})
 		}

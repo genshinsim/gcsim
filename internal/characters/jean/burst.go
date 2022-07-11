@@ -51,6 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//initial hit at 40f
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 40)
 
+	//TODO: make this work with movement?
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
 	//first enter is at frame 55
@@ -69,7 +70,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}
 			//10 seconds + animation
 			e.AddResistMod(enemy.ResistMod{
-				Base:  modifier.NewBase("jeanc4", 600+burstStart),
+				Base:  modifier.NewBaseWithHitlag("jeanc4", 600+burstStart),
 				Ele:   attributes.Anemo,
 				Value: -0.4,
 			})
