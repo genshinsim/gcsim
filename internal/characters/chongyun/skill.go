@@ -29,24 +29,26 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	src := c.Core.F
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Spirit Blade: Chonghua's Layered Frost",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Cryo,
-		Durability: 50,
-		Mult:       skill[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Spirit Blade: Chonghua's Layered Frost",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagElementalArt,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Cryo,
+		Durability:         50,
+		Mult:               skill[c.TalentLvlSkill()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.09 * 60,
+		CanBeDefenseHalted: true,
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 0, skillHitmark)
 
-	//TODO: energy count; lib says 3:4?
 	c.Core.QueueParticle("chongyun", 4, attributes.Cryo, 100)
 
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Spirit Blade: Chonghua's Layered Frost (Ar)",
+		Abil:       "Spirit Blade: Chonghua's Layered Frost (A4)",
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
@@ -61,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			return
 		}
 		e.AddResistMod(enemy.ResistMod{
-			Base:  modifier.NewBase("chongyun-a4", 480),
+			Base:  modifier.NewBaseWithHitlag("chongyun-a4", 480),
 			Ele:   attributes.Cryo,
 			Value: -0.10,
 		})
@@ -69,6 +71,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	//if field is overwriting last
+	//TODO: should really just make this a struct, keep a reference, and compare the reference instead
+	//of playing around with this int field
 	if src-c.fieldSrc < 600 {
 		//we're overriding previous field so trigger a4 here
 		atk := c.a4Snap
@@ -84,6 +88,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, cb)
 
 	//a4 delayed damage + cryo resist shred
+	//TODO: assuming this is NOT affected by hitlag since it should be tied to deployable?
 	c.Core.Tasks.Add(func() {
 		//if src changed then that means the field changed already
 		if src != c.fieldSrc {
