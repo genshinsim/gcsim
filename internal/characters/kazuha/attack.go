@@ -10,60 +10,65 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = [][]int{{12}, {11}, {16, 25}, {15}, {15, 23, 31}}
+var attackHitmarks = [][]int{{13}, {11}, {16, 25}, {15}, {15, 19, 27}}
+var attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {.01, .05}, {.06}, {0, 0, 0}}
+var attackHitlagFactor = [][]float64{{.01}, {.01}, {.01, .01}, {.01}, {.05, .05, .05}}
+var attackDefHalt = [][]bool{{true}, {true}, {false, true}, {true}, {true, false, true}}
 
 const normalHitNum = 5
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 16)
-	attackFrames[0][action.ActionAttack] = 15
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 21)
+	attackFrames[0][action.ActionCharge] = 21
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 25)
-	attackFrames[1][action.ActionAttack] = 20
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 20)
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 35)
-	attackFrames[2][action.ActionAttack] = 30
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 33)
+	attackFrames[2][action.ActionCharge] = 31
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 40)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 38)
 	attackFrames[3][action.ActionCharge] = 35
 
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][2], 71)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][2], 72)
 	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
+
+	for i, mult := range attack[c.NormalCounter] {
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
+			Element:            attributes.Physical,
+			Durability:         25,
+			Mult:               mult[c.TalentLvlAttack()],
+			HitlagFactor:       attackHitlagFactor[c.NormalCounter][i],
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewDefCircHit(0.3, false, combat.TargettableEnemy),
+				0,
+				0,
+			)
+		}, attackHitmarks[c.NormalCounter][i])
 	}
 
-	act := action.ActionInfo{
+	defer c.AdvanceNormalIndex()
+
+	return action.ActionInfo{
 		Frames:              frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength:     attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:       attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:               action.NormalAttackState,
 		FramePausedOnHitlag: c.FramePausedOnHitlag,
 	}
-
-	for i, mult := range attack[c.NormalCounter] {
-		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewDefCircHit(0.3, false, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
-		)
-	}
-
-	defer c.AdvanceNormalIndex()
-
-	return act
 }

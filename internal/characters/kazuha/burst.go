@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -14,11 +13,14 @@ var burstFrames []int
 
 const burstAnimation = 100
 const burstHitmark = 82
+const burstFirstTick = 140
 
 func init() {
 	burstFrames = frames.InitAbilSlice(burstAnimation)
-	burstFrames[action.ActionAttack] = 95
-	burstFrames[action.ActionSkill] = 95
+	burstFrames[action.ActionAttack] = 92
+	burstFrames[action.ActionSkill] = 92
+	burstFrames[action.ActionDash] = 92
+	burstFrames[action.ActionJump] = 92
 	burstFrames[action.ActionSwap] = 95
 }
 
@@ -26,15 +28,18 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.qInfuse = attributes.NoElement
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Kazuha Slash",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Anemo,
-		Durability: 50,
-		Mult:       burstSlash[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Kazuha Slash",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
+		Element:            attributes.Anemo,
+		Durability:         50,
+		Mult:               burstSlash[c.TalentLvlBurst()],
+		HitlagHaltFrames:   0.05 * 60,
+		HitlagFactor:       0.05,
+		CanBeDefenseHalted: false,
 	}
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 0, burstHitmark)
@@ -54,6 +59,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), 10)
 
 	//from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
+	//updated to 140 based on koli's count: https://docs.google.com/spreadsheets/d/1uEbP13O548-w_nGxFPGsf5jqj1qGD3pqFZ_AiV4w3ww/edit#gid=775340159
 	for i := 0; i < 5; i++ {
 		c.Core.Tasks.Add(func() {
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 0)
@@ -61,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				aiAbsorb.Element = c.qInfuse
 				c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 0)
 			}
-		}, 147+117*i)
+		}, burstFirstTick+117*i)
 	}
 
 	//reset skill cd
@@ -80,17 +86,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// Does it apply to Kazuha's initial hit?
 		// Not sure when it lasts from and until
 		// For consistency with how it was previously done, assume that it lasts from button press to the last tick
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.EM] = 200
 		for _, char := range c.Core.Player.Chars() {
 			this := char
+			//use non hitlag since it's from the field?
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("kazuha-c2", 147+117*5),
+				Base:         modifier.NewBase("kazuha-c2", burstFirstTick+117*5),
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					switch this.Index {
 					case c.Core.Player.Active(), c.Index:
-						return m, true
+						return c.c2buff, true
 					}
 					return nil, false
 				},
@@ -99,19 +104,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	if c.Base.Cons == 6 {
-		c.c6Active = c.Core.F + burstAnimation + 300
-		c.Core.Player.AddWeaponInfuse(
-			c.Index,
-			"kazuha-c6-infusion",
-			attributes.Anemo,
-			burstAnimation+300,
-			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-		)
+		c.c6()
 	}
 
-	c.SetCDWithDelay(action.ActionBurst, 15*60, 7)
-	c.ConsumeEnergy(7)
+	c.SetCD(action.ActionBurst, 15*60)
+	c.ConsumeEnergy(4)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -133,23 +130,5 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		}
 		//otherwise queue up
 		c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)
-	}
-}
-
-func (c *char) absorbCheckA1(src, count, max int) func() {
-	return func() {
-		if count == max {
-			return
-		}
-		c.a1Ele = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
-
-		if c.a1Ele != attributes.NoElement {
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-				"kazuha a1 infused ", c.a1Ele.String(),
-			)
-			return
-		}
-		//otherwise queue up
-		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, max), 6)
 	}
 }

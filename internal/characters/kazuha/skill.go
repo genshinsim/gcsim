@@ -10,19 +10,24 @@ import (
 var skillPressFrames []int
 var skillHoldFrames []int
 
-const skillPressHitmark = 14
-const skillHoldHitmark = 34
+const (
+	skillPressHitmark = 10
+	skillPressCDStart = 8
+	skillHoldHitmark  = 33
+	skillHoldCDStart  = 31
+)
 
 func init() {
+	//TODO: glide cancel
 	// skill (press) -> x
 	//85 frames to float down
-	skillPressFrames = frames.InitAbilSlice(85)
+	skillPressFrames = frames.InitAbilSlice(77) //averaged all abils
 	//27 frames before the start of plunge animation
-	skillPressFrames[action.ActionHighPlunge] = 27
+	skillPressFrames[action.ActionHighPlunge] = 24
 
 	// skill (hold) -> x
 	//177 frames to float down
-	skillHoldFrames = frames.InitAbilSlice(177)
+	skillHoldFrames = frames.InitAbilSlice(175) //averaged all abils
 	//58 frames before start of plunge animation
 	skillHoldFrames[action.ActionHighPlunge] = 58
 }
@@ -61,18 +66,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		cd = 324
 	}
 	if c.Base.Cons >= 6 {
-		c.c6Active = c.Core.F + skillPressHitmark + 300
-		c.Core.Player.AddWeaponInfuse(
-			c.Index,
-			"kazuha-c6-infusion",
-			attributes.Anemo,
-			skillPressHitmark+300,
-			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-		)
+		c.c6()
 	}
 
-	c.SetCD(action.ActionSkill, cd)
+	c.SetCDWithDelay(action.ActionSkill, cd, skillPressCDStart)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
@@ -105,18 +102,10 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		cd = 486
 	}
 	if c.Base.Cons >= 6 {
-		c.c6Active = c.Core.F + skillHoldHitmark + 300
-		c.Core.Player.AddWeaponInfuse(
-			c.Index,
-			"kazuha-c6-infusion",
-			attributes.Anemo,
-			skillHoldHitmark+300,
-			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-		)
+		c.c6()
 	}
 
-	c.SetCD(action.ActionSkill, cd)
+	c.SetCDWithDelay(action.ActionSkill, cd, skillHoldCDStart)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),

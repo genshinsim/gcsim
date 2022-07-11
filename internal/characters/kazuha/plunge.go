@@ -10,24 +10,25 @@ import (
 var plungePressFrames []int
 var plungeHoldFrames []int
 
+//a1 is 1 frame before this
 const plungePressHitmark = 36
 const plungeHoldHitmark = 41
 
 // TODO: missing plunge -> skill
 func init() {
 	// skill (press) -> high plunge -> x
-	plungePressFrames = frames.InitAbilSlice(55)
-	plungePressFrames[action.ActionDash] = 48
-	plungePressFrames[action.ActionJump] = 48
-	plungePressFrames[action.ActionSwap] = 49
+	plungePressFrames = frames.InitAbilSlice(55) //max
+	plungePressFrames[action.ActionDash] = 43
+	plungePressFrames[action.ActionJump] = 50
+	plungePressFrames[action.ActionSwap] = 50
 
 	// skill (hold) -> high plunge -> x
-	plungeHoldFrames = frames.InitAbilSlice(61)
-	plungeHoldFrames[action.ActionSkill] = 60 // uses burst frames
+	plungeHoldFrames = frames.InitAbilSlice(61) //max
+	plungeHoldFrames[action.ActionSkill] = 60   // uses burst frames
 	plungeHoldFrames[action.ActionBurst] = 60
 	plungeHoldFrames[action.ActionDash] = 48
-	plungeHoldFrames[action.ActionJump] = 48
-	plungeHoldFrames[action.ActionSwap] = 53
+	plungeHoldFrames[action.ActionJump] = 55
+	plungeHoldFrames[action.ActionSwap] = 54
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
