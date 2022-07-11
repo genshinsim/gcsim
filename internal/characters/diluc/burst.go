@@ -69,6 +69,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 1)
 
+		//TODO: the timing of what the ticks come out may be affected by hit lag so this needs to be
+		//rewritten
+		//TODO: also consider making this actually sort of move (like aoe wise)
 		//dot does damage every .2 seconds for 7 hits? so every 12 frames
 		//dot does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
 		//first tick did 50 dur as well?

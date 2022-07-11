@@ -29,7 +29,6 @@ const (
 
 func (c *char) c2() {
 	c.c2buff = make([]float64, attributes.EndStatType)
-	stack := 0
 	//we use OnCharacterHit here because he just has to get hit but triggers even if shielded
 	//TODO: double check if this event is even needed
 	c.Core.Events.Subscribe(event.OnCharacterHit, func(args ...interface{}) bool {
@@ -44,8 +43,8 @@ func (c *char) c2() {
 		if c.c2stack > 3 {
 			c.c2stack = 3
 		}
-		c.c2buff[attributes.ATKP] = 0.1 * float64(stack)
-		c.c2buff[attributes.AtkSpd] = 0.05 * float64(stack)
+		c.c2buff[attributes.ATKP] = 0.1 * float64(c.c2stack)
+		c.c2buff[attributes.AtkSpd] = 0.05 * float64(c.c2stack)
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c2BuffKey, 600),
 			AffectedStat: attributes.NoStat,
