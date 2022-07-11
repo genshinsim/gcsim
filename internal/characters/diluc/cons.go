@@ -22,46 +22,52 @@ func (c *char) c1() {
 	})
 }
 
+const (
+	c2ICDKey  = "diluc-c2-icd"
+	c2BuffKey = "diluc-c2"
+)
+
 func (c *char) c2() {
-	m := make([]float64, attributes.EndStatType)
+	c.c2buff = make([]float64, attributes.EndStatType)
 	stack := 0
-	last := 0
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
-		if last != 0 && c.Core.F-last < 90 {
+	//we use OnCharacterHit here because he just has to get hit but triggers even if shielded
+	//TODO: double check if this event is even needed
+	c.Core.Events.Subscribe(event.OnCharacterHit, func(args ...interface{}) bool {
+		if c.StatusIsActive(c2ICDKey) {
 			return false
 		}
-		//last time is more than 10 seconds ago, reset stacks back to 0
-		if c.Core.F-last > 600 {
-			stack = 0
+		//if buff no longer active, reset stack back to 0
+		if !c.StatModIsActive(c2BuffKey) {
+			c.c2stack = 0
 		}
-		stack++
-		if stack > 3 {
-			stack = 3
+		c.c2stack++
+		if c.c2stack > 3 {
+			c.c2stack = 3
 		}
-		m[attributes.ATKP] = 0.1 * float64(stack)
-		m[attributes.AtkSpd] = 0.05 * float64(stack)
+		c.c2buff[attributes.ATKP] = 0.1 * float64(stack)
+		c.c2buff[attributes.AtkSpd] = 0.05 * float64(stack)
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("diluc-c2", 600),
+			Base:         modifier.NewBaseWithHitlag(c2BuffKey, 600),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
-				return m, true
+				return c.c2buff, true
 			},
 		})
 		return false
 	}, "diluc-c2")
 }
 
+const c4BuffKey = "diluc-c4"
+
 func (c *char) c4() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.4
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("diluc-c4", -1),
-		AffectedStat: attributes.DmgP,
-		Amount: func() ([]float64, bool) {
-			if c.Core.Status.Duration("dilucc4") > 0 {
-				return m, true
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag(c4BuffKey, 120),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			//should only affect skill dmg
+			if atk.Info.AttackTag != combat.AttackTagElementalArt {
+				return nil, false
 			}
-			return nil, false
+			return c.c4buff, true
 		},
 	})
 }

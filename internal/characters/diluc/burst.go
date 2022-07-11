@@ -21,6 +21,8 @@ func init() {
 	burstFrames[action.ActionSwap] = 138
 }
 
+const burstBuffKey = "diluc-q"
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	dot, ok := p["dot"]
 	if !ok {
@@ -36,24 +38,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//enhance weapon for 12 seconds (with a4)
 	// Infusion starts when burst starts and ends when burst comes off CD - check any diluc video
-	c.Core.Status.Add("dilucq", 720)
-	c.Core.Player.AddWeaponInfuse(
-		c.Index,
-		"diluc-fire-weapon",
-		attributes.Pyro,
-		720,
-		false,
-		combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-	)
+	c.AddStatus(burstBuffKey, 720, true)
 
 	// a4: add 20% pyro damage
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.PyroP] = 0.2
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("diluc-fire-weapon", 720),
+		Base:         modifier.NewBaseWithHitlag(burstBuffKey, 720),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
-			return m, true
+			return c.a4buff, true
 		},
 	})
 
@@ -61,15 +53,18 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// For our purposes, snapshot upon damage proc
 	c.Core.Tasks.Add(func() {
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Dawn (Strike)",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupDiluc,
-			StrikeType: combat.StrikeTypeBlunt,
-			Element:    attributes.Pyro,
-			Durability: 50,
-			Mult:       burstInitial[c.TalentLvlBurst()],
+			ActorIndex:         c.Index,
+			Abil:               "Dawn (Strike)",
+			AttackTag:          combat.AttackTagElementalBurst,
+			ICDTag:             combat.ICDTagElementalBurst,
+			ICDGroup:           combat.ICDGroupDiluc,
+			StrikeType:         combat.StrikeTypeBlunt,
+			Element:            attributes.Pyro,
+			Durability:         50,
+			Mult:               burstInitial[c.TalentLvlBurst()],
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   0.09 * 60,
+			CanBeDefenseHalted: true,
 		}
 
 		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 1)

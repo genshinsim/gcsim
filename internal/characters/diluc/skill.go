@@ -11,6 +11,7 @@ import (
 
 var skillFrames [][]int
 var skillHitmarks = []int{24, 28, 46}
+var skillHitlagStages = []float64{.12, .12, .16}
 
 func init() {
 	skillFrames = make([][]int, 3)
@@ -53,15 +54,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	//every hit applies pyro
 	//apply attack speed
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Searing Onslaught %v", c.eCounter),
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       skill[c.eCounter][c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Searing Onslaught %v", c.eCounter),
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               skill[c.eCounter][c.TalentLvlSkill()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   skillHitlagStages[c.eCounter] * 60,
+		CanBeDefenseHalted: true,
 	}
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), hitmark, hitmark)
@@ -75,7 +79,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	//add a timer to activate c4
 	if c.Base.Cons >= 4 {
 		c.Core.Tasks.Add(func() {
-			c.Core.Status.Add("dilucc4", 120) //effect lasts 2 seconds
+			c.c4()
 		}, hitmark+120) // 2seconds after cast
 	}
 
