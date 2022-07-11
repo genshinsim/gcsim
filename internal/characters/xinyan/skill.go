@@ -41,17 +41,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	if c.Core.Player.Shields.Get(shield.ShieldXinyanSkill) == nil {
-		c.updateShield(1, defFactor)
+		c.Core.Tasks.Add(func() {
+			c.updateShield(1, defFactor)
+		}, skillHitmark)
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), skillHitmark, skillHitmark, cb, c.c4)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 6)
+	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+80)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		Post:            skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -96,5 +98,7 @@ func (c *char) updateShield(level int, defFactor float64) {
 	}
 	shd := c.newShield(shieldhp, shield.ShieldXinyanSkill, 12*60)
 	c.Core.Player.Shields.Add(shd)
-	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index, "level", c.shieldLevel, "expiry", shd.Expiry())
+	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index).
+		Write("level", c.shieldLevel).
+		Write("expiry", shd.Expiry())
 }

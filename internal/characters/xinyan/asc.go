@@ -3,7 +3,9 @@ package xinyan
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 // Characters shielded by Sweeping Fervor deal 15% increased Physical DMG.
@@ -11,10 +13,9 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PhyP] = 0.15
 	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod(
-			"xinyan-a4",
-			-1,
-			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("xinyan-a4", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if !c.Core.Player.Shields.PlayerIsShielded() {
 					return nil, false
 				}
@@ -24,6 +25,6 @@ func (c *char) a4() {
 				}
 				return m, true
 			},
-		)
+		})
 	}
 }
