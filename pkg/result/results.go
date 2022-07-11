@@ -49,8 +49,8 @@ type Summary struct {
 	Config         string `json:"config_file"`
 	Text           string `json:"text"`
 	Debug          string `json:"debug"`
-	DebugMinDPSRun string `json:"debugMinDPSRun"`
-	DebugMaxDPSRun string `json:"debugMaxDPSRun"`
+	DebugMinDPSRun string `json:"debug_min_dps_run"`
+	DebugMaxDPSRun string `json:"debug_max_dps_run"`
 }
 
 type IntResult struct {
