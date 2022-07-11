@@ -16,9 +16,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstSnapshot combat.Snapshot
-	burstAtk      *combat.AttackEvent
-	burstSrc      int
+	burstAtk *combat.AttackEvent
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
