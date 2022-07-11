@@ -51,10 +51,16 @@ func (c *char) c2() {
 	}, "gorou-c2")
 }
 
+// For 12s after using Inuzaka All-Round Defense or Juuga: Forward Unto Victory, increases the CRIT DMG of
+// all nearby party members' Geo DMG based on the buff level of the skill's field at the time of use:
+// • "Standing Firm": +10%
+// • "Impregnable": +20%
+// • "Crunch": +40%
+// This effect cannot stack and will take reference from the last instance of the effect that is triggered.
 func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(c6key, 720),
+			Base: modifier.NewBaseWithHitlag(c6key, 720),
 			Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Geo {
 					return nil, false

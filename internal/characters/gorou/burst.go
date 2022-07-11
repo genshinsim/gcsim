@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//within the skill's AoE based on the number of Geo characters in the party. Also moves together with
 	//your active character.
 	c.eFieldSrc = c.Core.F
-	c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 59) //59 so we get one last tick
+	c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 17) //17 so we get one last tick
 
 	//If a General's War Banner created by Gorou currently exists on the field when this ability is used,
 	//it will be destroyed. In addition, for the duration of General's Glory, Gorou's
@@ -60,19 +60,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//Pulls 1 elemental shard in the skill's AoE to your active character's position every 1.5s (elemental
 	//shards are created by Crystallize reactions).
 	c.qFieldSrc = c.Core.F
-	c.Core.Tasks.Add(c.gorouCrystalCollapse(c.Core.F), 90) //every 90s?
+	c.Core.Tasks.Add(c.gorouCrystalCollapse(c.Core.F), 90) //every 1.5s?
 
 	//TODO:  If Gorou falls, the effects of General's Glory will be cleared.
 
 	//A1: After using Juuga: Forward Unto Victory, all nearby party members' DEF is increased by 25% for 12s.
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DEFP] = .25
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(heedlessKey, 720),
+			Base:         modifier.NewBaseWithHitlag(heedlessKey, 720),
 			AffectedStat: attributes.DEFP,
 			Amount: func() ([]float64, bool) {
-				return m, true
+				return c.a2buff, true
 			},
 		})
 	}
@@ -115,7 +113,6 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Geo,
 			StrikeType: combat.StrikeTypeBlunt,
-			//TODO: don't know the gauge of this
 			Durability: 25,
 			Mult:       burstTick[c.TalentLvlSkill()],
 		}
@@ -126,7 +123,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewDefCircHit(5, false, combat.TargettableEnemy),
+			combat.NewDefCircHit(3.5, false, combat.TargettableEnemy),
 			//TODO: skill damage frames
 			1,
 		)
