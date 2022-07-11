@@ -52,6 +52,8 @@ func (s *Simulation) Run() (Result, error) {
 		stop = s.C.F == f
 	}
 
+	s.stats.Seed = s.C.Seed
+
 	s.stats.Damage = s.C.Combat.TotalDamage
 	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F+1)
 	s.stats.Duration = f

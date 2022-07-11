@@ -33,6 +33,7 @@ type opts struct {
 	// substatOptim bool
 	// verbose      bool
 	// options      string
+	debugMinMax bool
 }
 
 //command line tool; following options are available:
@@ -48,6 +49,7 @@ func main() {
 	flag.BoolVar(&opt.serve, "s", false, "serve file to viewer (local). default false")
 	flag.BoolVar(&opt.nobrowser, "nb", false, "disable opening default browser")
 	flag.BoolVar(&opt.keepserving, "ks", false, "keep serving same file without terminating web server")
+	flag.BoolVar(&opt.debugMinMax, "debugMinMax", false, "Output debug log for the min-DPS and max-DPS runs in addition to a random run.")
 
 	flag.Parse()
 
@@ -72,6 +74,7 @@ func main() {
 		GZIPResult:       opt.gz,
 		Version:          sha1ver,
 		BuildDate:        buildTime,
+		DebugMinMax:      opt.debugMinMax,
 	}
 
 	res, err := simulator.Run(simopt)
