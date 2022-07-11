@@ -42,7 +42,7 @@ func (c *char) c4() {
 			ActorIndex: c.Index,
 			Abil:       "C4 proc",
 			AttackTag:  core.AttackTagElementalArt,
-			ICDTag:     core.ICDTagElementalArt,
+			ICDTag:     core.ICDTagNone,
 			ICDGroup:   core.ICDGroupDefault,
 			Element:    core.Electro,
 			Durability: 25,
@@ -50,7 +50,11 @@ func (c *char) c4() {
 			FlatDmg:    c.MaxHP() * 0.097,
 		}
 
+		//Particle check is 45% for particle
 		c.Core.Combat.QueueAttack(ai, core.NewDefCircHit(2, false, core.TargettableEnemy), 5, 5)
+		if c.Core.Rand.Float64() < .45 {
+			c.QueueParticle("Kuki", 1, core.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
+		}
 		c.c4ICD = c.Core.F + 300 //5 sec icd
 		return false
 	}, "kuki-c4")
