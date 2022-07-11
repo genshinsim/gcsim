@@ -31,16 +31,18 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	weakspot, ok := p["weakspot"]
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Frost Flake Arrow",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypePierce,
-		Element:      attributes.Cryo,
-		Durability:   25,
-		Mult:         ffa[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		ActorIndex:           c.Index,
+		Abil:                 "Frost Flake Arrow",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone,
+		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypePierce,
+		Element:              attributes.Cryo,
+		Durability:           25,
+		Mult:                 ffa[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot == 1,
+		HitlagHaltFrames:     .12 * 60,
+		HitlagOnHeadshotOnly: true,
 	}
 
 	// TODO: not sure if this works as intended
