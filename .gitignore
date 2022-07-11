@@ -22,5 +22,6 @@ internal/characters/replace.txt
 ./cmd/gcsim/tests
 ./cmd/gcsim/*.gz
 ./cmd/gcsim/*.json
+cmd/gcsim/gcsim
 !release-notes.txt
 \.vscode/

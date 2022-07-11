@@ -46,9 +46,11 @@ type Summary struct {
 	MinSeed int64 `json:"-"`
 	MaxSeed int64 `json:"-"`
 	//put these last so result is kinda readable by human
-	Config string `json:"config_file"`
-	Text   string `json:"text"`
-	Debug  string `json:"debug"`
+	Config         string `json:"config_file"`
+	Text           string `json:"text"`
+	Debug          string `json:"debug"`
+	DebugMinDPSRun string `json:"debugMinDPSRun"`
+	DebugMaxDPSRun string `json:"debugMaxDPSRun"`
 }
 
 type IntResult struct {
@@ -114,7 +116,7 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 
 		//dmg
 		if v.Damage < result.Damage.Min {
-			result.DPS.Min = v.Damage
+			result.Damage.Min = v.Damage
 
 		}
 		if v.Damage > result.Damage.Max {

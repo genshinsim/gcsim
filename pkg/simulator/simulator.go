@@ -23,6 +23,7 @@ type Options struct {
 	ConfigPath       string // path to the config file to read
 	Version          string
 	BuildDate        string
+	DebugMinMax      bool // whether to additional include debug logs for min/max-DPS runs
 }
 
 var start time.Time
@@ -91,6 +92,22 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		return r, err
 	}
 	r.Debug = debugOut
+
+	// Include debug logs for min/max-DPS runs if requested.
+	if opts.DebugMinMax {
+		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, r.MinSeed)
+		if err != nil {
+			return r, err
+		}
+		r.DebugMinDPSRun = minDPSDebugOut
+
+		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, r.MaxSeed)
+		if err != nil {
+			return r, err
+		}
+		r.DebugMaxDPSRun = maxDPSDebugOut
+	}
+
 	r.Runtime = time.Since(start)
 	r.Config = cfg
 	r.Version = opts.Version
