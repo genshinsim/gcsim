@@ -29,7 +29,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Riff Revolution (DoT)",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagVentiBurstPyro,
+		ICDTag:     combat.ICDTagElementalBurstPyro,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
@@ -53,7 +53,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
-		Post:            burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }

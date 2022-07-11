@@ -1,10 +1,12 @@
 package xinyan
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c1() {
@@ -29,13 +31,12 @@ func (c *char) c1() {
 			return false
 		}
 
-		c.AddAttackMod(
-			"xinyan-c1",
-			5*60,
-			func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("xinyan-c1", 5*60),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				return m, true
 			},
-		)
+		})
 		icd = c.Core.F + 5*60
 
 		return false
@@ -47,16 +48,15 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 1
 
-	c.AddAttackMod(
-		"xinyan-c2",
-		-1,
-		func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("xinyan-c2", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 				return nil, false
 			}
 			return m, true
 		},
-	)
+	})
 }
 
 // Sweeping Fervor's swing DMG decreases opponent's Physical RES by 15% for 12s.
@@ -65,11 +65,15 @@ func (c *char) c4(a combat.AttackCB) {
 		return
 	}
 
-	e, ok := a.Target.(core.Enemy)
+	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	e.AddResistMod("xinyan-c4", 12*60, attributes.Physical, -0.15)
+	e.AddResistMod(enemy.ResistMod{
+		Base:  modifier.NewBase("xinyan-c4", 12*60),
+		Ele:   attributes.Physical,
+		Value: -0.15,
+	})
 }
 
 // Decreases the Stamina Consumption of Xinyan's Charged Attacks by 30%. Additionally, Xinyan's Charged Attacks gain an ATK Bonus equal to 50% of her DEF.

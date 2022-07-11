@@ -37,7 +37,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
-		Post:            attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 }
