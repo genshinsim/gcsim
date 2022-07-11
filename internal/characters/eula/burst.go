@@ -22,6 +22,10 @@ func init() {
 	burstFrames[action.ActionWalk] = 117
 }
 
+const (
+	burstKey = "eula-q"
+)
+
 //ult 365 to 415, 60fps = 120
 //looks like ult charges for 8 seconds
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -31,10 +35,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.burstCounter = 5
 	}
 	// lights up 9.5s from cast
-	c.Core.Status.Add("eulaq", 9*60+30)
+	//deployable; not affected by hitlag
+	c.Core.Status.Add(burstKey, 9*60+30)
 	c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index).
 		Write("stacks", c.burstCounter).
-		Write("expiry", c.Core.Status.Duration("eulaq"))
+		Write("expiry", c.Core.Status.Duration(burstKey))
 
 	//add initial damage
 	ai := combat.AttackInfo{
@@ -50,19 +55,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
-	//add 1 stack to Grimheart
-	v := c.Tags["grimheart"]
-	if v < 2 {
-		v++
+	// A4: When Glacial Illumination is cast, the CD of Icetide Vortex is reset and Eula gains 1 stack of Grimheart.
+	if c.grimheartStacks < 2 {
+		c.grimheartStacks++
 	}
-	c.Tags["grimheart"] = v
 	c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
-		Write("current count", v)
+		Write("current count", c.grimheartStacks)
+	c.ResetActionCooldown(action.ActionSkill)
+	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index)
 
 	// lightfall hitmark is 600f from cast
 	c.Core.Tasks.Add(func() {
 		//check to make sure it hasn't already exploded due to exiting field
-		if c.Core.Status.Duration("eulaq") > 0 {
+		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}
 	}, 600-lightfallHitmark)
@@ -80,9 +85,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) triggerBurst() {
-	stacks := c.burstCounter
-	if stacks > 30 {
-		stacks = 30
+	if c.burstCounter > 30 {
+		c.burstCounter = 30
 	}
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -93,27 +97,28 @@ func (c *char) triggerBurst() {
 		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Physical,
 		Durability: 50,
-		Mult:       burstExplodeBase[c.TalentLvlBurst()] + burstExplodeStack[c.TalentLvlBurst()]*float64(stacks),
+		Mult:       burstExplodeBase[c.TalentLvlBurst()] + burstExplodeStack[c.TalentLvlBurst()]*float64(c.burstCounter),
 	}
 
 	c.Core.Log.NewEvent("eula burst triggering", glog.LogCharacterEvent, c.Index).
-		Write("stacks", stacks).
+		Write("stacks", c.burstCounter).
 		Write("mult", ai.Mult)
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), lightfallHitmark, lightfallHitmark)
-	c.Core.Status.Delete("eulaq")
+	c.Core.Status.Delete(burstKey)
 	c.burstCounter = 0
 }
 
 func (c *char) burstStacks() {
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		if c.Core.Status.Duration("eulaq") == 0 {
+		if c.Core.Status.Duration(burstKey) == 0 {
 			return false
 		}
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
+		//TODO: this looks like the icd is dependent on gadget timer. need to double check
 		if c.burstCounterICD > c.Core.F {
 			return false
 		}
@@ -142,7 +147,7 @@ func (c *char) burstStacks() {
 
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.Status.Duration("eulaq") > 0 {
+		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}
 		return false
