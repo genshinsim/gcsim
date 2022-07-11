@@ -9,6 +9,7 @@ import (
 )
 
 var skillFrames []int
+var skillHitlagStages = []float64{.09, .09, .15}
 
 const skillHitmark = 23
 
@@ -28,15 +29,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.a4()
 	}
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Tidecaller (E)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Electro,
-		Durability: 50,
-		Mult:       skillbase[c.TalentLvlSkill()] + skillbonus[c.TalentLvlSkill()]*float64(counter),
+		ActorIndex:         c.Index,
+		Abil:               "Tidecaller (E)",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Electro,
+		Durability:         50,
+		Mult:               skillbase[c.TalentLvlSkill()] + skillbonus[c.TalentLvlSkill()]*float64(counter),
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   skillHitlagStages[normalHitNum] * 60,
+		CanBeDefenseHalted: true,
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 

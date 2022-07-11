@@ -14,7 +14,11 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 28
+const (
+	burstHitmark = 28
+	burstKey     = "beidouburst"
+	burstICDKey  = "beidou-burst-icd"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(58)
@@ -26,19 +30,23 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Stormbreaker (Q)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Electro,
-		Durability: 100,
-		Mult:       burstonhit[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Stormbreaker (Q)",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
+		Element:            attributes.Electro,
+		Durability:         100,
+		Mult:               burstonhit[c.TalentLvlBurst()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.1 * 60,
+		CanBeDefenseHalted: true,
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
-	c.Core.Status.Add("beidouburst", 900)
+	//TODO: this implementation will only extend her burst if she's on field; need to check if correct
+	c.AddStatus(burstKey, 900, true)
 
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -77,7 +85,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					continue
 				}
 				e.AddResistMod(enemy.ResistMod{
-					Base:  modifier.NewBase("beidouc6", 900-burstHitmark),
+					Base:  modifier.NewBaseWithHitlag("beidouc6", 900-burstHitmark),
 					Ele:   attributes.Electro,
 					Value: -0.15,
 				})
@@ -97,7 +105,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) burstProc() {
-	icd := 0
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t := args[0].(combat.Target)
@@ -108,10 +115,10 @@ func (c *char) burstProc() {
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
-		if c.Core.Status.Duration("beidouburst") == 0 {
+		if !c.StatusIsActive(burstKey) {
 			return false
 		}
-		if icd > c.Core.F {
+		if c.StatusIsActive(burstICDKey) {
 			c.Core.Log.NewEvent("beidou Q (active) on icd", glog.LogCharacterEvent, c.Index)
 			return false
 		}
@@ -130,7 +137,7 @@ func (c *char) burstProc() {
 			Write("char", ae.Info.ActorIndex).
 			Write("attack tag", ae.Info.AttackTag)
 
-		icd = c.Core.F + 60 // once per second
+		c.AddStatus(burstICDKey, 60, true)
 		return false
 	}, "beidou-burst")
 }

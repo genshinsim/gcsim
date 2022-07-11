@@ -48,6 +48,7 @@ func (s *Handler) Get(t ShieldType) Shield {
 	return nil
 }
 
+//TODO: do shields get affected by hitlag? if so.. which timer? active char?
 func (s *Handler) Add(shd Shield) {
 	//we always assume over write of the same type
 	ind := -1
