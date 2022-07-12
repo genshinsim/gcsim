@@ -53,7 +53,8 @@ func (c *char) SkillPress() action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, int(cd), skillPressHitmark)
 
 	if c.Core.Status.Duration("razorburst") == 0 {
-		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmark+80)
+		//TODO: this delay used to be 80?
+		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmark+c.Core.Flags.ParticleDelay)
 	}
 
 	return action.ActionInfo{
@@ -88,7 +89,8 @@ func (c *char) SkillHold() action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, int(cd), skillHoldHitmark)
 
 	if c.Core.Status.Duration("razorburst") == 0 {
-		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmark+80)
+		//TODO: this delay used to be 80?
+		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmark+c.Core.Flags.ParticleDelay)
 	}
 
 	return action.ActionInfo{

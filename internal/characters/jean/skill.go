@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < 2.0/3.0 {
 		count++
 	}
-	c.Core.QueueParticle("jean", count, attributes.Anemo, hitmark+100)
+	c.Core.QueueParticle("jean", count, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, hitmark-2)
 

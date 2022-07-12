@@ -55,7 +55,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	//2 particles apparently
 	//TODO: particle frames
-	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+100)
+	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	//c6 check
 	if c.Base.Cons == 6 {

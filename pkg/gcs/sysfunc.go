@@ -100,6 +100,32 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) Obj {
 	return bton(done)
 }
 
+func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) Obj {
+	//set_particle_delay(x);
+	if len(c.Args) != 1 {
+		//TODO: better error handling
+		panic("expected 1 param for set_particle_delay")
+	}
+
+	t := e.evalExpr(c.Args[0], env)
+	n, ok := t.(*number)
+	if !ok {
+		//TODO: better error handling
+		panic("expecting a number for wait argument")
+	}
+	//n should be int
+	var delay int = int(n.ival)
+	if n.isFloat {
+		delay = int(n.fval)
+	}
+	if delay < 0 {
+		delay = 0
+	}
+
+	e.Core.SetParticleDelay(delay)
+	return &null{}
+}
+
 func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) Obj {
 	//set_target_pos(1,x,y)
 	if len(c.Args) != 3 {

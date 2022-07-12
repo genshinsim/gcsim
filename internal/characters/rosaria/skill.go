@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), skillHitmark+14, skillHitmark+14)
 
 	// Particles are emitted after the second hit lands
-	c.Core.QueueParticle("rosaria", 3, attributes.Cryo, skillHitmark+14+100)
+	c.Core.QueueParticle("rosaria", 3, attributes.Cryo, skillHitmark+14+c.Core.Flags.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, 23)
 

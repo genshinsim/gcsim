@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	if bounce > 0 {
-		c.Core.QueueParticle("klee", 4, attributes.Pyro, 130)
+		c.Core.QueueParticle("klee", 4, attributes.Pyro, 30+c.Core.Flags.ParticleDelay)
 	}
 
 	minehits, ok := p["mine"]

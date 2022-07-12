@@ -71,7 +71,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(1, combat.TargettableEnemy), 0, skillPressHitmark, cb)
 
 	if c.Core.Rand.Float64() < 0.5 {
-		c.Core.QueueParticle("lisa", 1, attributes.Electro, skillPressHitmark+100)
+		c.Core.QueueParticle("lisa", 1, attributes.Electro, skillPressHitmark+c.Core.Flags.ParticleDelay)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 60, 17)
@@ -132,7 +132,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	// if c.Core.Rand.Float64() < 0.5 {
 	// 	count = 5
 	// }
-	c.Core.QueueParticle("lisa", 5, attributes.Electro, skillHoldHitmark+100)
+	c.Core.QueueParticle("lisa", 5, attributes.Electro, skillHoldHitmark+c.Core.Flags.ParticleDelay)
 
 	// c.CD[def.SkillCD] = c.Core.F + 960 //16seconds, starts after 114 frames
 	c.SetCDWithDelay(action.ActionSkill, 960, 114)

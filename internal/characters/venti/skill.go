@@ -63,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(4, false, combat.TargettableEnemy), 0, hitmark, c.c2)
-	c.Core.QueueParticle("venti", 3, attributes.Anemo, hitmark+100)
+	c.Core.QueueParticle("venti", 3, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, cd, cdstart)
 

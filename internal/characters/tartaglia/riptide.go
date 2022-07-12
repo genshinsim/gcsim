@@ -129,7 +129,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 	//queue particles
 	if c.rtParticleICD < c.Core.F {
 		c.rtParticleICD = c.Core.F + 180 //3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, 100)
+		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.Core.Flags.ParticleDelay)
 	}
 }
 
@@ -185,7 +185,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 	//queue particle if not on icd
 	if c.rtParticleICD < c.Core.F {
 		c.rtParticleICD = c.Core.F + 180 //3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, 100)
+		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.Core.Flags.ParticleDelay)
 	}
 }
 

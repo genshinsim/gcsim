@@ -91,7 +91,7 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 
 	// Particles are 0~1 (1:2) on every damage instance
 	if c.Core.Rand.Float64() < .6667 {
-		c.Core.QueueParticle("kokomi", 1, attributes.Hydro, 100)
+		c.Core.QueueParticle("kokomi", 1, attributes.Hydro, c.Core.Flags.ParticleDelay)
 	}
 
 	// C2 handling - believe this is an additional instance of flat healing

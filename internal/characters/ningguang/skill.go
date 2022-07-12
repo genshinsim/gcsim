@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			count = 4
 		}
 		c.particleICD = c.Core.F + 360
-		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+100)
+		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
 	}
 
 	return action.ActionInfo{

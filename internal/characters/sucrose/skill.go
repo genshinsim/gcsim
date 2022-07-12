@@ -38,11 +38,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		done = true
 		c.a4()
+		c.Core.QueueParticle("sucrose", 4, attributes.Anemo, c.Core.Flags.ParticleDelay)
 	}
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy, combat.TargettableObject), 0, 42, cb)
-
-	c.Core.QueueParticle("sucrose", 4, attributes.Anemo, 150)
 
 	//reduce charge by 1
 	c.SetCDWithDelay(action.ActionSkill, 900, 9)

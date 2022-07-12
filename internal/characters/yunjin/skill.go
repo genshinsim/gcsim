@@ -58,17 +58,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hitDelay := skillHitmarks[animIdx]
 	switch chargeLevel {
 	case 0:
-		c.Core.QueueParticle("yunjin", 2, attributes.Geo, 100+hitDelay)
+		c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.Core.Flags.ParticleDelay+hitDelay)
 	case 1:
 		// Currently believed to be 2-3 particles with the ratio 3:2
 		if c.Core.Rand.Float64() < .6 {
-			c.Core.QueueParticle("yunjin", 2, attributes.Geo, 100+hitDelay)
+			c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.Core.Flags.ParticleDelay+hitDelay)
 		} else {
-			c.Core.QueueParticle("yunjin", 3, attributes.Geo, 100+hitDelay)
+			c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.Core.Flags.ParticleDelay+hitDelay)
 		}
 		ai.Abil = "Opening Flourish Level 1 (E)"
 	case 2:
-		c.Core.QueueParticle("yunjin", 3, attributes.Geo, 100+hitDelay)
+		c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.Core.Flags.ParticleDelay+hitDelay)
 		ai.Durability = 100
 		ai.Abil = "Opening Flourish Level 2 (E)"
 	}

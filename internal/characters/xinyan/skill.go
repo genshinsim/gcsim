@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), skillHitmark, skillHitmark, cb, c.c4)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 6)
-	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+80)
+	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),

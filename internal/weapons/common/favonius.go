@@ -47,7 +47,8 @@ func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfi
 		}
 		c.Log.NewEvent("favonius proc'd", glog.LogWeaponEvent, char.Index)
 
-		c.QueueParticle("favonius-"+char.Base.Key.String(), 3, attributes.NoElement, 80)
+		//TODO: used to be 80
+		c.QueueParticle("favonius-"+char.Base.Key.String(), 3, attributes.NoElement, c.Flags.ParticleDelay)
 
 		//adds a modifier to track icd; this should be fine since it's per char and not global
 		char.AddStatus(icdKey, cd, true)

@@ -66,7 +66,8 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	snap = c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 28)
 
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressHitmark+73)
+	//TODO: this delay used to be 73?
+	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressHitmark+c.Core.Flags.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 6*60, 15)
 
@@ -102,7 +103,8 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		}, 18+i)
 
 		if i%180 == 0 { // 3s
-			c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+i+73)
+			//this delay used to be 73?
+			c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+i+c.Core.Flags.ParticleDelay)
 		}
 	}
 
@@ -119,7 +121,8 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 18+duration+20)
 
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillHoldHitmark+73)
+	//TODO: this delay used to be 73
+	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillHoldHitmark+c.Core.Flags.ParticleDelay)
 
 	// 18 = 15 anim start + 3 to start swirling
 	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"

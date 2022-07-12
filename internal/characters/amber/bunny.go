@@ -52,7 +52,7 @@ func (c *char) explode(src int) {
 		if v.src == src {
 			c.Core.QueueAttackEvent(&v.ae, 1)
 			//4 orbs
-			c.Core.QueueParticle("amber", 4, attributes.Pyro, 100)
+			c.Core.QueueParticle("amber", 4, attributes.Pyro, c.Core.Flags.ParticleDelay)
 		} else {
 			c.bunnies[n] = v
 			n++
@@ -71,7 +71,7 @@ func (c *char) manualExplode() {
 	if len(c.bunnies) > 0 {
 		c.bunnies[0].ae.Info.Mult += 2
 		c.Core.QueueAttackEvent(&c.bunnies[0].ae, 1)
-		c.Core.QueueParticle("amber", 4, attributes.Pyro, 100)
+		c.Core.QueueParticle("amber", 4, attributes.Pyro, c.Core.Flags.ParticleDelay)
 	}
 	c.bunnies = c.bunnies[1:]
 }
@@ -97,7 +97,7 @@ func (c *char) overloadExplode() {
 			//every bunny gets bonus multiplikers
 			v.ae.Info.Mult += 2
 			c.Core.QueueAttackEvent(&v.ae, 1)
-			c.Core.QueueParticle("amber", 4, attributes.Pyro, 100)
+			c.Core.QueueParticle("amber", 4, attributes.Pyro, c.Core.Flags.ParticleDelay)
 		}
 		c.bunnies = make([]bunny, 0, 2)
 

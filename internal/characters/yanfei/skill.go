@@ -49,7 +49,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, skillHitmark, addSeal)
 
-	c.Core.QueueParticle("yanfei", 3, attributes.Pyro, skillHitmark+100)
+	c.Core.QueueParticle("yanfei", 3, attributes.Pyro, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	c.SetCD(action.ActionSkill, 540)
 

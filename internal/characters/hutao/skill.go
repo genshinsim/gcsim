@@ -66,7 +66,8 @@ func (c *char) ppParticles(ac combat.AttackCB) {
 		if c.Core.Rand.Float64() < 0.5 {
 			count = 3
 		}
-		c.Core.QueueParticle("hutao", count, attributes.Pyro, 80)
+		//TODO: this used to be 80
+		c.Core.QueueParticle("hutao", count, attributes.Pyro, c.Core.Flags.ParticleDelay)
 	}
 }
 

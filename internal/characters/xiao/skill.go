@@ -54,7 +54,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Cannot create energy during burst uptime
 	if c.Core.Status.Duration("xiaoburst") > 0 {
 	} else {
-		c.Core.QueueParticle("xiao", 3, attributes.Anemo, skillHitmark+100)
+		c.Core.QueueParticle("xiao", 3, attributes.Anemo, skillHitmark+c.Core.Flags.ParticleDelay)
 	}
 
 	// C6 handling - can use skill ignoring CD and without draining charges
