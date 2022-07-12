@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		//bubble is applied to each target on a per target basis
 		//lasts 8 seconds if not popped normally
-		t.SetTag(bubbleKey, c.Core.F+481) //1 frame extra so we don't run into problems breaking
+		t.AddStatus(bubbleKey, 481, true) //1 frame extra so we don't run into problems breaking
 		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index).
 			Write("char", c.Index)
 	}
@@ -84,11 +84,11 @@ func (c *char) burstDamageBonus() {
 				if !ok {
 					return nil, false
 				}
-				//ignore if omen or bubble not present
-				if x.GetTag(bubbleKey) < c.Core.F && x.GetTag(omenKey) < c.Core.F {
-					return nil, false
+				//ok only if either bubble or omen is present
+				if x.StatusIsActive(bubbleKey) || x.StatusIsActive(omenKey) {
+					return m, true
 				}
-				return m, true
+				return nil, false
 			},
 		})
 	}
@@ -108,7 +108,7 @@ func (c *char) burstHook() {
 		if !ok {
 			return false
 		}
-		if t.GetTag(bubbleKey) < c.Core.F {
+		if !t.StatusIsActive(bubbleKey) {
 			return false
 		}
 		//always break if it's due to time up
@@ -130,9 +130,9 @@ func (c *char) burstHook() {
 
 func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	//remove bubble tag
-	t.RemoveTag(bubbleKey)
+	t.DeleteStatus(bubbleKey)
 	//add omen debuff
-	t.SetTag(omenKey, c.Core.F+omenDuration[c.TalentLvlBurst()])
+	t.AddStatus(omenKey, omenDuration[c.TalentLvlBurst()], true)
 	//trigger dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

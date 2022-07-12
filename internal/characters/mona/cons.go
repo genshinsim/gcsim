@@ -49,11 +49,11 @@ func (c *char) c4() {
 				if !ok {
 					return nil, false
 				}
-				//ignore if omen or bubble not present
-				if x.GetTag(bubbleKey) < c.Core.F && x.GetTag(omenKey) < c.Core.F {
-					return nil, false
+				//ok only if either bubble or omen is present
+				if x.StatusIsActive(bubbleKey) || x.StatusIsActive(omenKey) {
+					return m, true
 				}
-				return m, true
+				return nil, false
 			},
 		})
 	}
