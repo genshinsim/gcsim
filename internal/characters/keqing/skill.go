@@ -39,14 +39,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		Abil:       "Stellar Restoration",
-		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Electro,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
+		Abil:               "Stellar Restoration",
+		ActorIndex:         c.Index,
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Electro,
+		Durability:         25,
+		Mult:               skill[c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.09 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: false,
 	}
 
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)

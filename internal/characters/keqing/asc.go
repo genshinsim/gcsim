@@ -22,15 +22,11 @@ func (c *char) a1() {
 }
 
 func (c *char) a4() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.CR] = 0.15
-	m[attributes.ER] = 0.15
-
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("keqing-a4", 480),
+		Base:         modifier.NewBaseWithHitlag("keqing-a4", 480),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
-			return m, true
+			return c.a4buff, true
 		},
 	})
 }

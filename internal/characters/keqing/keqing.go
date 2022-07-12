@@ -16,7 +16,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	c2ICD int
+	a4buff []float64
+	c4buff []float64
+	c6buff []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -37,11 +39,21 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	c.a4buff = make([]float64, attributes.EndStatType)
+	c.a4buff[attributes.CR] = 0.15
+	c.a4buff[attributes.ER] = 0.15
+
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
 	if c.Base.Cons >= 4 {
+		c.c4buff = make([]float64, attributes.EndStatType)
+		c.c4buff[attributes.ATKP] = 0.25
 		c.c4()
+	}
+	if c.Base.Cons >= 6 {
+		c.c6buff = make([]float64, attributes.EndStatType)
+		c.c6buff[attributes.ElectroP] = 0.06
 	}
 	return nil
 }
