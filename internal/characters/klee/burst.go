@@ -64,6 +64,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//every 3 seconds add energy if c6
 	if c.Base.Cons >= 6 {
+		//TODO: this should eventually use hitlag affected queue and duration
+		//but is not big deal right now b/c klee cant experience hitlag without getting hit
 		for i := burstStart + 180; i < burstStart+600; i += 180 {
 			c.Core.Tasks.Add(func() {
 				//no more if burst has ended early
@@ -85,7 +87,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m[attributes.PyroP] = .1
 		for _, x := range c.Core.Player.Chars() {
 			x.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("klee-c6", 1500),
+				Base:         modifier.NewBaseWithHitlag("klee-c6", 1500),
 				AffectedStat: attributes.PyroP,
 				Amount: func() ([]float64, bool) {
 					return m, true
