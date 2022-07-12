@@ -26,11 +26,21 @@ type DefMod struct {
 }
 
 // Add.
-
-func (e *Enemy) AddStatus(mod Status) {
-	mod.SetExpiry(e.Core.F)
+func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
+	mod := Status{
+		Base: modifier.Base{
+			ModKey: key,
+			Dur:    dur,
+			Hitlag: hitlag,
+		},
+	}
+	if mod.Dur < 0 {
+		mod.ModExpiry = -1
+	} else {
+		mod.ModExpiry = e.Core.F + mod.Dur
+	}
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
+	modifier.LogAdd("status", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
 func (e *Enemy) AddResistMod(mod ResistMod) {
