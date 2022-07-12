@@ -149,6 +149,24 @@ func (c *CharWrapper) getModExpiry(key string) int {
 }
 func (c *CharWrapper) StatusExpiry(key string) int { return c.getModExpiry(key) }
 
+// Extend.
+
+//extendMod returns true if mod is active and is extended
+func (c *CharWrapper) extendMod(key string, ext int) bool {
+	m, active := modifier.FindCheckExpiry(&c.mods, key, *c.f)
+	if m == -1 {
+		return false
+	}
+	if !active {
+		return false //nothing to extend is not active
+	}
+	//other wise add to expiry
+	c.mods[m].Extend(float64(ext))
+	return true
+}
+
+func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMod(key, ext) }
+
 // Amount.
 
 func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []interface{} {
