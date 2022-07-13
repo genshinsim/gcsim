@@ -7,17 +7,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
-func (c *char) a1() {
-	icd := 0
+const a2ICDKey = "noelle-a2-icd"
+
+func (c *char) a2() {
 	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
-		if c.Core.F < icd {
+		if c.StatusIsActive(a2ICDKey) {
 			return false
 		}
 		active := c.Core.Player.ActiveChar()
 		if active.HPCurrent/active.MaxHP() >= 0.3 {
 			return false
 		}
-		icd = c.Core.F + 3600
+		c.AddStatus(a2ICDKey, 3600, true)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A1 Shield",

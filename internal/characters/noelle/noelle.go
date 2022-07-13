@@ -18,6 +18,7 @@ type char struct {
 	*tmpl.Character
 	shieldTimer int
 	a4Counter   int
+	burstBuff   []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -35,7 +36,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
-	c.a1()
+	c.burstBuff = make([]float64, attributes.EndStatType)
+	c.a2()
 	return nil
 }
 
@@ -43,7 +45,7 @@ func (c *char) Init() error {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.Core.Status.Duration("noelleq") > 0 {
+	if c.StatModIsActive(burstBuffKey) {
 		//infusion to attacks only
 		switch ai.AttackTag {
 		case combat.AttackTagNormal:
