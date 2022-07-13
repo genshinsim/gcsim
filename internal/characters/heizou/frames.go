@@ -31,6 +31,7 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 50, 50
 	case core.ActionSkill:
+		//TODO: is this accurate? should it be 44 if 4 stack??
 		return 32, 32
 	case core.ActionBurst:
 		return 68, 68
@@ -96,7 +97,6 @@ func (c *char) InitCancelFrames() {
 
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionAttack, 24-1)
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionCharge, 24-1)
-	//heizou cancel her dash with her E and Q
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionSkill, 1-1)
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionBurst, 1-1)
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionDash, 24-1)
