@@ -88,6 +88,7 @@ const (
 	YaeMiko
 	Yelan
 	Kuki
+	Heizou
 )
 
 func (c CharKey) String() string {
@@ -136,6 +137,7 @@ var CharNameToKey = map[string]CharKey{
 	"kujosara":           Sara,
 	"sara":               Sara,
 	"kuki":               Kuki,
+	"kukishinobu":        Kuki,
 	"lisa":               Lisa,
 	"mona":               Mona,
 	"ningguang":          Ningguang,
@@ -167,6 +169,8 @@ var CharNameToKey = map[string]CharKey{
 	"yae":                YaeMiko,
 	"yaemiko":            YaeMiko,
 	"yelan":              Yelan,
+	"heizou":             Heizou,
+	"shikanoinheizou":    Heizou,
 }
 
 var charNames = []string{
@@ -230,6 +234,7 @@ var charNames = []string{
 	"yaemiko",
 	"yelan",
 	"kuki",
+	"heizou",
 }
 
 var CharKeyToEle = map[CharKey]EleType{
@@ -289,4 +294,5 @@ var CharKeyToEle = map[CharKey]EleType{
 	YaeMiko:         Electro,
 	Yelan:           Hydro,
 	Kuki:            Electro,
+	Heizou:          Anemo,
 }

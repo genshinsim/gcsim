@@ -1852,6 +1852,43 @@ var WeaponBaseMap = map[string]WeaponBase{
 			},
 		},
 	},
+	"kagotsurubeisshin": {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.09000000357627869,
+		Specialized:      core.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	"kagurasverity": {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
@@ -2684,6 +2721,117 @@ var WeaponBaseMap = map[string]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      186.6999969482422,
+			},
+		},
+	},
+	"prizedisshinblade": {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.09000000357627869,
+		Specialized:      core.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	"prizedisshinbladea": {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0,
+		Specialized:      core.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	"prizedisshinbladeb": {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.04500000178813934,
+		Specialized:      core.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
 			},
 		},
 	},

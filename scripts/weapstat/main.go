@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"net/http"
 	"os"
 	"text/template"
 )
@@ -28,13 +29,15 @@ type data struct {
 }
 
 func main() {
-
-	f, err := os.ReadFile("./weapons.json")
+	//grab latest json directly from github
+	r, err := http.Get("https://raw.githubusercontent.com/theBowja/genshin-db/main/src/data/stats/weapons.json")
 	if err != nil {
 		log.Panic(err)
 	}
+	defer r.Body.Close()
+
 	var d map[string]data
-	err = json.Unmarshal(f, &d)
+	err = json.NewDecoder(r.Body).Decode(&d)
 	if err != nil {
 		log.Panic(err)
 	}
