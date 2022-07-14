@@ -12,11 +12,13 @@ func init() {
 type char struct {
 	*character.Tmpl
 	decStack            int
-	qInfused            core.EleType
 	infuseCheckLocation core.AttackPattern
 	a1icd               int
 	c1icd               int
+	c1buff              []float64
 	a4buff              []float64
+	c4count             int
+	burstTaggedCount    int
 }
 
 const (
@@ -62,6 +64,11 @@ func (c *char) Init() {
 
 	c.a4buff = make([]float64, core.EndStatType)
 	c.a4buff[core.EM] = 80
+
+	if c.Base.Cons >= 1 {
+		c.c1buff = make([]float64, core.EndStatType)
+		c.c1buff[core.AtkSpd] = .15
+	}
 
 }
 

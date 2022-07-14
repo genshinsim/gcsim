@@ -14,9 +14,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		duration = 480
 	}
 
-	c.qInfused = core.NoElement
+	c.burstTaggedCount = 0
 
-	// c.S.Status["heizouburst"] = c.Core.F + count
 	c.Core.Status.AddStatus("heizouburst", duration)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -32,27 +31,24 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//TODO: does heizou burst snapshot?
 	snap := c.Snapshot(&ai)
 
-	// cb := func(a core.AttackCB) {
-
-	// }
-	c.AddTask(func() {
-		for i, t := range c.Core.Targets {
-			// skip non-enemy targets
-			if t.Type() != core.TargettableEnemy {
-				continue
-			}
-			if c.Base.Cons >= 4 {
-				c.c4(i)
-			}
-			if i > 4 {
-				break
-			}
-
-			c.irisDmg("Windmuster Iris", t)
+	burstCB := func(a core.AttackCB) {
+		//check if enemy
+		if a.Target.Type() != core.TargettableEnemy {
+			return
 		}
-	}, "AuraCheck", f)
+		//max 4 tagged
+		if c.burstTaggedCount == 4 {
+			return
+		}
+		//check for element and queue attack
+		c.burstTaggedCount++
+		if c.Base.Cons >= 4 {
+			c.c4(c.burstTaggedCount)
+		}
+		c.irisDmg(a.Target)
+	}
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f)
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f, burstCB)
 
 	//TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(core.ActionBurst, 720)
@@ -64,7 +60,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 //these opponents will be afflicted with Windmuster Iris.
 //This Windmuster Iris will explode after a moment and dissipate,
 //dealing AoE DMG of the corresponding aforementioned elemental type.
-func (c *char) irisDmg(src string, t core.Target) {
+func (c *char) irisDmg(t core.Target) {
 
 	//TODO: does burst iris snapshot
 	aiAbs := core.AttackInfo{
@@ -78,28 +74,16 @@ func (c *char) irisDmg(src string, t core.Target) {
 		Durability: 25,
 		Mult:       burstIris[c.TalentLvlBurst()],
 	}
-	//snapAbs := c.Snapshot(&aiAbs)
-	//t.SetTag("iris", c.Core.F+20)
-	c.Core.Log.NewEvent(
-		"Iris Applied",
-		core.LogCharacterEvent,
-		c.Index,
-		"target", t.Index(),
-		"expiry", c.Core.F+20,
-	)
-	//TODO: Iris tiiming
+	//TODO: Iris timing; looks to be 0.6s after hitmark
 	x, y := t.Shape().Pos()
 
-	switch t.AuraType() {
+	switch ele := t.AuraType(); ele {
 	case core.Pyro, core.Hydro, core.Electro, core.Cryo:
-		aiAbs.Element = t.AuraType()
-		c.Core.Combat.QueueAttack(aiAbs, core.NewCircleHit(x, y, 0.5, false, core.TargettableEnemy), 1, 1)
+		aiAbs.Element = ele
 	case core.EC:
 		aiAbs.Element = core.Hydro
-		c.Core.Combat.QueueAttack(aiAbs, core.NewCircleHit(x, y, 0.5, false, core.TargettableEnemy), 1, 1)
 	case core.Frozen:
 		aiAbs.Element = core.Cryo
-		c.Core.Combat.QueueAttack(aiAbs, core.NewCircleHit(x, y, 0.5, false, core.TargettableEnemy), 1, 1)
 	default:
 		c.Core.Log.NewEvent(
 			"No valid aura detected, omiting iris",
@@ -107,6 +91,9 @@ func (c *char) irisDmg(src string, t core.Target) {
 			c.Index,
 			"aura type", t.AuraType(),
 		)
+		return
 	}
+
+	c.Core.Combat.QueueAttack(aiAbs, core.NewCircleHit(x, y, 2.5, false, core.TargettableEnemy), 1, 1)
 
 }
