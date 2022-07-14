@@ -16,6 +16,22 @@ func (c *char) skillHoldDuration(stacks int) int {
 	return 45 * diff
 }
 
+func (c *char) addDecStack() {
+	if c.decStack < 4 {
+		c.decStack++
+		c.Core.Log.NewEvent(
+			"declension stack gained",
+			core.LogCharacterEvent,
+			c.Index,
+			"stacks", c.decStack,
+		)
+	}
+}
+
+func (c *char) resetDecStack() {
+	c.decStack = 0
+}
+
 const skillChargeStart = 12
 
 func (c *char) Skill(p map[string]int) (int, int) {
@@ -26,16 +42,9 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	//queue task to increase stacks every 0.75s up to dur
 	for i := 45; i <= dur; i++ {
 		c.Core.Tasks.Add(func() {
-			c.decStack++
+			c.addDecStack()
 		}, skillChargeStart+i)
 	}
-
-	stackToBeAdded := p["hold"] //guarantee that you dont surpass more than 4 stacks with holding
-	if stackToBeAdded+c.decStack > 4 {
-		diff := 4 - c.decStack
-		stackToBeAdded = diff
-	}
-	//TODO: Verify attack frame
 
 	//queue the attack as a task that goes through at the end of the animation; check for stacks then
 	//animation should be skillChargeStart + dur + attack animation length
@@ -54,41 +63,41 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		if c.decStack == 4 {
 			ai.Mult += convicBonus[c.TalentLvlSkill()]
 		}
-		//a4 + energy
-		done := false
-		cb := func(a core.AttackCB) {
-			if done {
-				return
-			}
-			done = true
-			count := 2
-			switch c.decStack {
-			case 2, 3:
-				if c.Core.Rand.Float64() < .5 {
-					count++
-				}
-			case 4:
-				count++
-			}
-			c.QueueParticle("heizou", count, core.Anemo, 150)
-			c.AddTask(func() {
-				c.decStack = 0
-				c.Core.Log.NewEvent(
-					"stack removed",
-					core.LogCharacterEvent,
-					c.Index,
-				)
-			}, "remove stack", 1)
-			c.a4()
-		}
 		//generate snap
 		snap := c.Snapshot(&ai)
 		//check for c6, increase crit
 		if c.Base.Cons >= 6 {
 			c.c6(&snap)
 		}
-		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, cb)
+		//a4
+		done := false
+		a4cb := func(a core.AttackCB) {
+			if done {
+				return
+			}
+			done = true
+			c.a4()
+		}
+		//particle delayed 100 after dmg
+		count := 2
+		switch c.decStack {
+		case 2, 3:
+			if c.Core.Rand.Float64() < .5 {
+				count++
+			}
+		case 4:
+			count++
+		}
+		c.QueueParticle("heizou", count, core.Anemo, 100)
+		//ok to reset stacks now
+		c.Core.Log.NewEvent(
+			"stack removed",
+			core.LogCharacterEvent,
+			c.Index,
+		)
+		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, a4cb)
 	}, skillChargeStart+dur+f)
+	//TODO: Verify attack frame
 
 	c.SetCD(core.ActionSkill, eCD)
 
