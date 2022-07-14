@@ -35,7 +35,7 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 
 	e, ok := p.Params["start_energy"]
 	if !ok {
-		e = 80
+		e = 40
 	}
 	c.Energy = float64(e)
 	c.EnergyMax = 40
@@ -44,14 +44,10 @@ func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
 	c.SkillCon = 3
 	c.BurstCon = 5
 	c.InitCancelFrames()
-	c.a1icd = 0
-	c.c1icd = 0
+	c.a1icd = -1
+	c.c1icd = -1
 
 	c.infuseCheckLocation = core.NewDefCircHit(0.1, false, core.TargettableEnemy, core.TargettablePlayer, core.TargettableObject)
-
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
 
 	return &c, nil
 }
@@ -67,6 +63,7 @@ func (c *char) Init() {
 	if c.Base.Cons >= 1 {
 		c.c1buff = make([]float64, core.EndStatType)
 		c.c1buff[core.AtkSpd] = .15
+		c.c1()
 	}
 
 }

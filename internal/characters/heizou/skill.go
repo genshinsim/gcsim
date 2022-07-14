@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	for i := 45; i <= dur; i++ {
 		c.Core.Tasks.Add(func() {
 			c.addDecStack()
-		}, skillChargeStart+i)
+		}, skillChargeStart+i*45)
 	}
 
 	//queue the attack as a task that goes through at the end of the animation; check for stacks then
