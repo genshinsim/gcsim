@@ -29,23 +29,7 @@ func TestCD(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	err = testhelper.TestSkillCDSingleCharge(c, x, 15*60+9)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestC4CD(t *testing.T) {
-	c := testhelper.NewTestCore()
-	prof := testhelper.CharProfile(core.Heizou, core.Anemo, 6)
-	x, err := NewChar(c, prof)
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	//second charge shouldn't have delay because it will only start
-	//recharging after the first for the purpose for this test
-	err = testhelper.TestSkillCooldown(c, x, []int{15*60 + 9, 15 * 60})
+	err = testhelper.TestSkillCDSingleCharge(c, x, eCD)
 	if err != nil {
 		t.Error(err)
 	}

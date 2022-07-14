@@ -30,6 +30,11 @@ func (c *char) addDecStack() {
 
 func (c *char) resetDecStack() {
 	c.decStack = 0
+	c.Core.Log.NewEvent(
+		"stack removed",
+		core.LogCharacterEvent,
+		c.Index,
+	)
 }
 
 const skillChargeStart = 12
@@ -90,11 +95,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		}
 		c.QueueParticle("heizou", count, core.Anemo, 100)
 		//ok to reset stacks now
-		c.Core.Log.NewEvent(
-			"stack removed",
-			core.LogCharacterEvent,
-			c.Index,
-		)
+		c.resetDecStack()
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, a4cb)
 	}, skillChargeStart+dur+f)
 	//TODO: Verify attack frame

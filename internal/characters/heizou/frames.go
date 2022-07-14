@@ -47,7 +47,7 @@ func (c *char) InitCancelFrames() {
 
 	//normal cancels
 	c.SetNormalCancelFrames(0, core.ActionAttack, 20-2) //n1 -> next attack
-	c.SetNormalCancelFrames(0, core.ActionCharge, 2-2)  //n1 -> charge
+	c.SetNormalCancelFrames(0, core.ActionCharge, 0)    //n1 -> charge
 	c.SetNormalCancelFrames(0, core.ActionSkill, 17-2)  //only CA can be done before hitmark
 	c.SetNormalCancelFrames(0, core.ActionBurst, 17-2)
 	c.SetNormalCancelFrames(0, core.ActionDash, 17-2)
@@ -55,7 +55,7 @@ func (c *char) InitCancelFrames() {
 	c.SetNormalCancelFrames(0, core.ActionSwap, 17-2)
 
 	c.SetNormalCancelFrames(1, core.ActionAttack, 26-4) //n2 -> next attack
-	c.SetNormalCancelFrames(1, core.ActionCharge, 4-4)  //n2 -> charge
+	c.SetNormalCancelFrames(1, core.ActionCharge, 0)    //n2 -> charge
 	c.SetNormalCancelFrames(1, core.ActionSkill, 18-4)  //only CA can be done before hitmark
 	c.SetNormalCancelFrames(1, core.ActionBurst, 18-4)
 	c.SetNormalCancelFrames(1, core.ActionDash, 18-4)
@@ -63,7 +63,7 @@ func (c *char) InitCancelFrames() {
 	c.SetNormalCancelFrames(1, core.ActionSwap, 18-4)
 
 	c.SetNormalCancelFrames(2, core.ActionAttack, 33-16) //n3 -> next attack
-	c.SetNormalCancelFrames(2, core.ActionCharge, 16-16) //n3 -> charge
+	c.SetNormalCancelFrames(2, core.ActionCharge, 0)     //n3 -> charge
 	c.SetNormalCancelFrames(2, core.ActionSkill, 28-16)  //only CA can be done before hitmark
 	c.SetNormalCancelFrames(2, core.ActionBurst, 28-16)
 	c.SetNormalCancelFrames(2, core.ActionDash, 28-16)
@@ -91,14 +91,14 @@ func (c *char) InitCancelFrames() {
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionCharge, 56-11)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSkill, 56-11)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionBurst, 57-11)
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionDash, 11-11)
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionJump, 11-11)
+	c.SetAbilCancelFrames(core.ActionSkill, core.ActionDash, 0)
+	c.SetAbilCancelFrames(core.ActionSkill, core.ActionJump, 0)
 	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSwap, 56-11)
 
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionAttack, 24-1)
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionCharge, 24-1)
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionSkill, 1-1)
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionBurst, 1-1)
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionSkill, 0)
+	c.SetAbilCancelFrames(core.ActionDash, core.ActionBurst, 0)
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionDash, 24-1)
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionJump, 24-1)
 	c.SetAbilCancelFrames(core.ActionDash, core.ActionSwap, 24-1)

@@ -17,7 +17,6 @@ type char struct {
 	c1icd               int
 	c1buff              []float64
 	a4buff              []float64
-	c4count             int
 	burstTaggedCount    int
 }
 
