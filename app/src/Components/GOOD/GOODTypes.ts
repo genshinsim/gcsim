@@ -165,7 +165,8 @@ export type GOODCharacterKey =
   | "Yelan" //Yelan
   | "Zhongli" //Zhongli
   | "KukiShinobu" //Kuki
-  | "YunJin"; //Yun Jin
+  | "YunJin" //Yun Jin
+  | "ShikanoinHeizou"; //Heizou
 
 export type GOODWeaponKey =
   | "Akuoumaru" //Akuoumaru

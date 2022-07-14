@@ -1705,9 +1705,9 @@ fuzzysort@^1.1.4:
   integrity sha512-MOxCT0qLTwLqmEwc7UtU045RKef7mc8Qz8eR4r2bLNEq9dy/c3ZKMEFp6IEst69otkQdFZ4FfgH2dmZD+ddX1g==
 
 genshin-db@^4.1.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.2.0.tgz#5a050139b54a1c145426c85e90bf1188e0c58630"
-  integrity sha512-vemgCQdRsDiOHYYJpoHS9M4JO9rwZ7HIBBWp1CNJz9URiPevd4adrhNDtw+vBcDz1o2uMag+slrga/ttHqLELg==
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.2.3.tgz#ba3b61bc25254490b8d6409567874b3436b7df2e"
+  integrity sha512-Q0xEcWIeBQ1v6LCHB1HaE38Gvi0Iq4lV1i7GACoJQ4x5TvaJfCeAU+F56Vhl0R/wInoSZaWOpCY2MCB4e10LSQ==
   dependencies:
     fuzzysort "^1.1.4"
     pako "^2.0.4"
