@@ -34,3 +34,4 @@ jobs:
         with:
           files: |
             gcsim.exe
+            guisim.exe

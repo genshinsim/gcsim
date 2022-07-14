@@ -30,3 +30,4 @@ jobs:
           files: |
             LICENSE
             gcsim.exe
+            guisim.exe
