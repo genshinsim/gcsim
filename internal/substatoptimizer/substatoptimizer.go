@@ -155,6 +155,14 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		}
 	}
 
+	// Hacky solution to run init mods for characters like kokomi
+	simcfg.Settings.Iterations = 1
+	simcfg.Settings.Duration = 10
+	basisResult := runSimWithConfig(cfg, simcfg, simopt)
+	for i := range simcfg.Characters.Profile {
+		simcfg.Characters.Profile[i].Stats = basisResult.CharDetails[i].Stats
+	}
+
 	// Fix iterations at 350 for performance
 	// TODO: Seems to be a roughly good number at KQM standards
 	simcfg.Settings.Iterations = int(optionsMap["sim_iter"])
