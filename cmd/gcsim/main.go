@@ -24,17 +24,17 @@ var (
 )
 
 type opts struct {
-	config      string
-	out         string //file result name
-	gz          bool
-	prof        bool
-	serve       bool
-	nobrowser   bool
-	keepserving bool
+	config       string
+	out          string //file result name
+	gz           bool
+	prof         bool
+	serve        bool
+	nobrowser    bool
+	keepserving  bool
 	substatOptim bool
 	verbose      bool
 	options      string
-	debugMinMax bool
+	debugMinMax  bool
 }
 
 //command line tool; following options are available:
