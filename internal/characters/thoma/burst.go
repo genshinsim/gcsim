@@ -69,7 +69,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 func (c *char) burstProc() {
 	// does not deactivate on death
 	icd := 0
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t := args[0].(combat.Target)
 		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
@@ -92,7 +92,7 @@ func (c *char) burstProc() {
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Pyro,
-			Durability: 50,
+			Durability: 25,
 			Mult:       burstproc[c.TalentLvlSkill()],
 			FlatDmg:    0.022 * c.MaxHP(),
 		}
@@ -106,10 +106,8 @@ func (c *char) burstProc() {
 			shieldamt := (burstshieldpp[c.TalentLvlSkill()]*c.MaxHP() + burstshieldflat[c.TalentLvlSkill()])
 			c.genShield("Thoma Burst", shieldamt)
 		}
-		if cb != nil {
-			atk.Callbacks = append(atk.Callbacks, cb)
-		}
-		c.Core.QueueAttackEvent(&atk, 1)
+		atk.Callbacks = append(atk.Callbacks, cb)
+		c.Core.QueueAttackEvent(&atk, 0)
 
 		c.Core.Log.NewEvent("thoma Q proc'd", glog.LogCharacterEvent, c.Index).
 			Write("frame", c.Core.F).
