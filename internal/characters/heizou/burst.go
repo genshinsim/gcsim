@@ -9,14 +9,8 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//tag a4
 	//first hit at 137, then 113 frames between hits
 
-	duration := 360
-	if c.Base.Cons >= 2 {
-		duration = 480
-	}
-
 	c.burstTaggedCount = 0
 
-	c.Core.Status.AddStatus("heizouburst", duration)
 	ai := core.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fudou Style Vacuum Slugger",
