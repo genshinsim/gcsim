@@ -269,7 +269,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		var initialMean float64
 		var initialSD float64
 		sugarLog.Debugf("%v", char.Base.Key)
-		for erStack := 0; erStack <= 10; erStack += 2 {
+		for erStack := 0; erStack <= indivSubstatLiquidCap; erStack += 2 {
 			charProfilesCopy[idxChar] = char.Clone()
 			charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(erStack) * substatValues[attributes.ER]
 
@@ -322,7 +322,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		charProfilesERBaseline[i].Stats[attributes.ER] = charProfilesInitial[i].Stats[attributes.ER]
 
 		if char.Base.Key == keys.Raiden {
-			charSubstatFinal[i][attributes.ER] = 10
+			charSubstatFinal[i][attributes.ER] = indivSubstatLiquidCap
 		}
 
 		charProfilesERBaseline[i].Stats[attributes.ER] += float64(charSubstatFinal[i][attributes.ER]) * substatValues[attributes.ER]
@@ -502,10 +502,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 					// When we hit the limit on one stat, just try to fill the other up to max
 					if crLimit == 0 {
-						amtCD = 10
+						amtCD = indivSubstatLiquidCap
 					}
 					if cdLimit == 0 {
-						amtCR = 10
+						amtCR = indivSubstatLiquidCap
 					}
 
 					if currentStat == attributes.CR {
@@ -518,7 +518,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 					iteration += 1
 				}
 			} else {
-				globalLimit, _ = assignSubstats(substatToMax, 12)
+				globalLimit, _ = assignSubstats(substatToMax, indivSubstatLiquidCap + fixedSubstatCount)
 			}
 			if globalLimit == 0 {
 				break
