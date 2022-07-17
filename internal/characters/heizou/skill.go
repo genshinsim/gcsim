@@ -7,7 +7,7 @@ func (c *char) skillHoldDuration(stacks int) int {
 	//diff is the number of stacks we must charge up to reach the desired state
 	diff := stacks - c.decStack
 	if diff < 0 {
-		diff = c.decStack
+		diff = 0
 	}
 	if diff > 4 {
 		diff = 4
