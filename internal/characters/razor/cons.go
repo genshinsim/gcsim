@@ -11,12 +11,8 @@ import (
 
 // Picking up an Elemental Orb or Particle increases Razor's DMG by 10% for 8s.
 func (c *char) c1() {
-	if c.Base.Cons < 1 {
-		return
-	}
-
-	val := make([]float64, attributes.EndStatType)
-	val[attributes.DmgP] = 0.1
+	c.c1bonus = make([]float64, attributes.EndStatType)
+	c.c1bonus[attributes.DmgP] = 0.1
 
 	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
 		// ignore if character not on field
@@ -24,10 +20,10 @@ func (c *char) c1() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("razor-c1", 8*60),
+			Base:         modifier.NewBaseWithHitlag("razor-c1", 8*60),
 			AffectedStat: attributes.DmgP,
 			Amount: func() ([]float64, bool) {
-				return val, true
+				return c.c1bonus, true
 			},
 		})
 		return false
@@ -36,18 +32,14 @@ func (c *char) c1() {
 
 // Increases CRIT Rate against opponents with less than 30% HP by 10%.
 func (c *char) c2() {
-	if c.Base.Cons < 2 {
-		return
-	}
-
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.CR] = 0.1
+	c.c2bonus = make([]float64, attributes.EndStatType)
+	c.c2bonus[attributes.CR] = 0.1
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("razor-c2", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if t.HP()/t.MaxHP() < 0.3 {
-				return m, true
+				return c.c2bonus, true
 			}
 			return nil, false
 		},
@@ -56,28 +48,21 @@ func (c *char) c2() {
 
 // When casting Claw and Thunder (Press), opponents hit will have their DEF decreased by 15% for 7s.
 func (c *char) c4cb(a combat.AttackCB) {
-	if c.Base.Cons < 4 {
-		return
-	}
-
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
 	e.AddDefMod(enemy.DefMod{
-		Base:  modifier.NewBase("razor-c4", 7*60),
+		Base:  modifier.NewBaseWithHitlag("razor-c4", 7*60),
 		Value: -0.15,
 	})
 }
 
+const c6ICDKey = "razor-c6-icd"
+
 // Every 10s, Razor's sword charges up, causing the next Normal Attack to release lightning that deals 100% of Razor's ATK as Electro DMG.
 // When Razor is not using Lightning Fang, a lightning strike on an opponent will grant Razor an Electro Sigil for Claw and Thunder.
 func (c *char) c6() {
-	if c.Base.Cons < 6 {
-		return
-	}
-
-	dur := 0
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false
@@ -86,11 +71,13 @@ func (c *char) c6() {
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
-		if dur > c.Core.F {
+		//effect can only happen every 10s
+		if c.StatusIsActive(c6ICDKey) {
 			return false
 		}
 
-		dur = c.Core.F + 10*60
+		c.AddStatus(c6ICDKey, 600, true)
+
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Lupus Fulguris",
@@ -108,7 +95,8 @@ func (c *char) c6() {
 			1,
 		)
 
-		if c.Core.Status.Duration("razorburst") == 0 {
+		//add sigil only outside burst
+		if !c.StatusIsActive(burstBuffKey) {
 			c.addSigil()
 		}
 
