@@ -55,7 +55,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 //This Windmuster Iris will explode after a moment and dissipate,
 //dealing AoE DMG of the corresponding aforementioned elemental type.
 func (c *char) irisDmg(t core.Target) {
-
 	//TODO: does burst iris snapshot
 	aiAbs := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -68,9 +67,8 @@ func (c *char) irisDmg(t core.Target) {
 		Durability: 25,
 		Mult:       burstIris[c.TalentLvlBurst()],
 	}
-	//TODO: Iris timing; looks to be 0.6s after hitmark
 	x, y := t.Shape().Pos()
-
+	snap := c.Snapshot(&aiAbs)
 	switch ele := t.AuraType(); ele {
 	case core.Pyro, core.Hydro, core.Electro, core.Cryo:
 		aiAbs.Element = ele
@@ -88,6 +86,6 @@ func (c *char) irisDmg(t core.Target) {
 		return
 	}
 
-	c.Core.Combat.QueueAttack(aiAbs, core.NewCircleHit(x, y, 2.5, false, core.TargettableEnemy), 1, 1)
+	c.Core.Combat.QueueAttackWithSnap(aiAbs, snap, core.NewCircleHit(x, y, 2.5, false, core.TargettableEnemy), 40) //if any of this is wrong blame Koli
 
 }

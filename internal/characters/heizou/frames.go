@@ -10,26 +10,26 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
 		case 0:
-			f = 20
-			a = 12
+			f = 12
+			a = 20
 		case 1:
-			f = 17
-			a = 13
+			f = 13
+			a = 17
 		case 2:
-			f = 45
-			a = 21
+			f = 21
+			a = 45
 		case 3:
-			f = 36
-			a = 27
+			f = 27
+			a = 36
 		case 4:
-			f = 66
-			a = 31
+			f = 31
+			a = 66
 		}
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 
 		return f, a
 	case core.ActionCharge:
-		return 38, 24
+		return 24, 38
 	case core.ActionSkill:
 		h := p["hold"]
 
@@ -37,21 +37,21 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 			stacks := c.skillHoldStacks(h)
 			switch stacks {
 			case 1:
-				return 84, 65
+				return 65, 84
 			case 2:
-				return 128, 108
+				return 108, 128
 			case 3:
-				return 172, 152
+				return 152, 172
 			case 4:
-				return 219, 198
+				return 198, 219
 			default:
-				return 57, 37
+				return 37, 57
 			}
 
 		}
-		return 37, 21
+		return 21, 37
 	case core.ActionBurst:
-		return 71, 34
+		return 34, 71
 	case core.ActionDash:
 		return 21, 21
 	case core.ActionJump:

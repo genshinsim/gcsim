@@ -111,7 +111,7 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		//ok to reset stacks now
 		c.resetDecStack()
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, a4cb)
-	}, skillChargeStart+dur+f)
+	}, f)
 	//TODO: Verify attack frame
 
 	c.SetCD(core.ActionSkill, eCD)
