@@ -199,6 +199,26 @@ func SetupResonance(s *core.Core) {
 	}
 }
 
+func SetupMisc(c *core.Core) {
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		//dmg tag is superconduct, target is enemy
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.AttackTag != combat.AttackTagSuperconductDamage {
+			return false
+		}
+		//add shred
+		t.AddResistMod(enemy.ResistMod{
+			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
+			Value: -0.4,
+		})
+		return false
+	}, "superconduct")
+}
+
 func (s *Simulation) randEnergy() {
 	//drop energy
 	s.C.Player.DistributeParticle(character.Particle{
