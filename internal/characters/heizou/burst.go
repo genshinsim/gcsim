@@ -25,24 +25,24 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//TODO: does heizou burst snapshot?
 	snap := c.Snapshot(&ai)
 
-	burstCB := func(a core.AttackCB) {
-		//check if enemy
-		if a.Target.Type() != core.TargettableEnemy {
-			return
-		}
-		//max 4 tagged
-		if c.burstTaggedCount == 4 {
-			return
-		}
-		//check for element and queue attack
-		c.burstTaggedCount++
-		if c.Base.Cons >= 4 {
-			c.c4(c.burstTaggedCount)
-		}
-		c.irisDmg(a.Target)
-	}
+	c.AddTask(func() {
+		for i, t := range c.Core.Targets {
+			// skip non-enemy targets
+			if t.Type() != core.TargettableEnemy {
+				continue
+			}
+			if c.Base.Cons >= 4 {
+				c.c4(i)
+			}
+			if i > 4 {
+				break
+			}
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f, burstCB)
+			c.irisDmg(t)
+		}
+	}, "AuraCheck", f)
+
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f)
 
 	//TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(core.ActionBurst, 720)
