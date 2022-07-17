@@ -59,10 +59,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	dur := c.skillHoldDuration(stacks) //this should max out to 3s
 
 	//queue task to increase stacks every 0.75s up to dur
-	for i := 45; i <= dur; i++ {
+	for i := 45; i <= dur; i += 45 {
 		c.Core.Tasks.Add(func() {
 			c.addDecStack()
-		}, skillChargeStart+i*45)
+		}, skillChargeStart+i)
 	}
 
 	//queue the attack as a task that goes through at the end of the animation; check for stacks then
