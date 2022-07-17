@@ -21,7 +21,6 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	c4ICDExpiry       int
 	skillLastUsed     int
 	skillHealSnapshot combat.Snapshot // Required as both on hit procs and continuous healing need to use this
 }

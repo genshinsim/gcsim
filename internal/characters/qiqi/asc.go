@@ -13,7 +13,7 @@ import (
 // When a character under the effects of Adeptus Art: Herald of Frost triggers an Elemental Reaction, their Incoming Healing Bonus is increased by 20% for 8s.
 func (c *char) a1() {
 	a1Hook := func(args ...interface{}) bool {
-		if c.Core.Status.Duration("qiqiskill") == 0 {
+		if c.StatusIsActive(skillBuffKey) {
 			return false
 		}
 		atk := args[1].(*combat.AttackEvent)
@@ -25,7 +25,7 @@ func (c *char) a1() {
 		}
 
 		active.AddHealBonusMod(character.HealBonusMod{
-			Base: modifier.NewBase("qiqi-a1", 8*60),
+			Base: modifier.NewBaseWithHitlag("qiqi-a1", 8*60),
 			Amount: func() (float64, bool) {
 				return .2, true
 			},
@@ -38,3 +38,5 @@ func (c *char) a1() {
 		c.Core.Events.Subscribe(i, a1Hook, "qiqi-a1")
 	}
 }
+
+const a4ICDKey = "qiqi-a4-icd"
