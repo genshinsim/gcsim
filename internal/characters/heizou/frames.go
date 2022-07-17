@@ -84,5 +84,113 @@ func (c *char) InitCancelFrames() {
 }
 
 func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) int {
+	// Provide a custom override for Heizou's Hold E varieties
+	if c.Core.LastAction.Typ == core.ActionSkill {
+		//depends on how much stacks you are waiting for
+		h := c.Core.LastAction.Param["hold"]
+		if h < 1 {
+			return c.Tmpl.ActionInterruptableDelay(next, p)
+		}
+
+		stacks := c.skillHoldStacks(h) //this should max out to 3s
+		switch stacks {                //determine cancel frames based on which Hold E was used
+		case 1:
+			return SkillHoldStack1Frames(next)
+		case 2:
+			return SkillHoldStack2Frames(next)
+		case 3:
+			return SkillHoldStack3Frames(next)
+		case 4:
+			return SkillHoldStack4Frames(next)
+		default:
+			return SkillHoldStack0Frames(next)
+		}
+	}
+	//otherwise use default implementation
 	return c.Tmpl.ActionInterruptableDelay(next, p)
+}
+
+func SkillHoldStack1Frames(next core.ActionType) int { //skill hold(3->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 84 - 65
+	case core.ActionBurst:
+		return 85 - 65
+	case core.ActionDash:
+		return 78 - 65
+	case core.ActionJump:
+		return 78 - 65
+	case core.ActionSwap:
+		return 77 - 65
+	default:
+		return 65 - 65
+	}
+}
+
+func SkillHoldStack2Frames(next core.ActionType) int { //skill hold(2->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 128 - 108
+	case core.ActionBurst:
+		return 127 - 108
+	case core.ActionDash:
+		return 122 - 108
+	case core.ActionJump:
+		return 123 - 108
+	case core.ActionSwap:
+		return 120 - 108
+	default:
+		return 108 - 108
+	}
+}
+
+func SkillHoldStack3Frames(next core.ActionType) int { //skill hold(1->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 172 - 152
+	case core.ActionBurst:
+		return 172 - 152
+	case core.ActionDash:
+		return 167 - 152
+	case core.ActionJump:
+		return 167 - 152
+	case core.ActionSwap:
+		return 165 - 152
+	default:
+		return 152 - 152
+	}
+}
+
+func SkillHoldStack4Frames(next core.ActionType) int { //skill hold(0->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 219 - 198
+	case core.ActionBurst:
+		return 218 - 198
+	case core.ActionDash:
+		return 212 - 198
+	case core.ActionJump:
+		return 212 - 198
+	case core.ActionSwap:
+		return 210 - 198
+	default:
+		return 198 - 198
+	}
+}
+
+func SkillHoldStack0Frames(next core.ActionType) int { //skill hold(4->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 57 - 37
+	case core.ActionBurst:
+		return 57 - 37
+	case core.ActionDash:
+		return 53 - 37
+	case core.ActionJump:
+		return 53 - 37
+	case core.ActionSwap:
+		return 51 - 37
+	default:
+		return 37 - 37
+	}
 }

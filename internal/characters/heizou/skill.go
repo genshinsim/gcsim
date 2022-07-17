@@ -16,6 +16,20 @@ func (c *char) skillHoldDuration(stacks int) int {
 	return 45 * diff
 }
 
+func (c *char) skillHoldStacks(stacks int) int {
+	//animation duration only
+	//diff is the number of stacks we must charge up to reach the desired state
+	diff := stacks - c.decStack
+	if diff < 0 {
+		diff = 0
+	}
+	if diff > 4 {
+		diff = 4
+	}
+	//it's .75s per stack
+	return diff
+}
+
 func (c *char) addDecStack() {
 	if c.decStack < 4 {
 		c.decStack++
