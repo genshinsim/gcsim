@@ -31,7 +31,24 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 	case core.ActionCharge:
 		return 38, 24
 	case core.ActionSkill:
-		//TODO: is this accurate? should it be 44 if 4 stack??
+		h := p["hold"]
+
+		if h > 0 {
+			stacks := c.skillHoldStacks(h)
+			switch stacks {
+			case 1:
+				return 84, 65
+			case 2:
+				return 128, 108
+			case 3:
+				return 172, 152
+			case 4:
+				return 219, 198
+			default:
+				return 57, 37
+			}
+
+		}
 		return 37, 21
 	case core.ActionBurst:
 		return 71, 34
@@ -87,13 +104,15 @@ func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) 
 	// Provide a custom override for Heizou's Hold E varieties
 	if c.Core.LastAction.Typ == core.ActionSkill {
 		//depends on how much stacks you are waiting for
+
 		h := c.Core.LastAction.Param["hold"]
 		if h < 1 {
 			return c.Tmpl.ActionInterruptableDelay(next, p)
 		}
 
-		stacks := c.skillHoldStacks(h) //this should max out to 3s
-		switch stacks {                //determine cancel frames based on which Hold E was used
+		stacks := c.skillHoldStacks(h) //this should max out to 4 stacks
+
+		switch stacks { //determine cancel frames based on which Hold E was used
 		case 1:
 			return SkillHoldStack1Frames(next)
 		case 2:

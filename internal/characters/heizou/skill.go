@@ -116,5 +116,5 @@ func (c *char) Skill(p map[string]int) (int, int) {
 
 	c.SetCD(core.ActionSkill, eCD)
 
-	return skillChargeStart + dur + f, a
+	return f, a
 }
