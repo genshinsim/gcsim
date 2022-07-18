@@ -48,7 +48,9 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *ast
 	o.Details.setInitialSubstats(o.Details.fixedSubstatCount)
 	o.logger.Info("Starting ER Optimization...")
 
-	o.Details.setCharProfilesCopy(o.Details.charProfilesERBaseline)
+	for i, char := range o.Details.charProfilesERBaseline {
+		o.Details.charProfilesCopy[i] = char.Clone()
+	}
 
 	// Tolerance cutoffs for mean and SD from initial state
 	// Initial state is used rather than checking across each iteration due to noise

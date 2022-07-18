@@ -324,12 +324,6 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) setCharProfilesCopy(charsToCopy []character.CharacterProfile) {
-	for i, char := range charsToCopy {
-		stats.charProfilesCopy[i] = char.Clone()
-	}
-}
-
 func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char character.CharacterProfile, tolMean float64, tolSD float64) []string {
 	var debug []string
 	var initialMean float64
