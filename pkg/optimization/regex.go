@@ -23,7 +23,7 @@ type OptimRegex struct {
 	InsertLocation *regexp.Regexp
 }
 
-var InvalidStats = errors.New("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.\n5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
+var ErrInvalidStats = errors.New("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.\n5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
 
 func ReplaceSimOutputForChar(char, src, out string) string {
 	re := regexp.MustCompile(fmt.Sprintf(`(?m)^(%v\s+add\s+stats\b.*)$`, char))
@@ -32,7 +32,7 @@ func ReplaceSimOutputForChar(char, src, out string) string {
 
 func RemoveSubstatLines(cfg string) (string, error) {
 	if len(RegexpLineMainstat.FindAllString(cfg, -1)) != len(RegexpLineCharname.FindAllString(cfg, -1)) {
-		return "", InvalidStats
+		return "", ErrInvalidStats
 	}
 
 	clean := cfg
