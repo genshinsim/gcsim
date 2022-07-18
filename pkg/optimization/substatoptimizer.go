@@ -70,7 +70,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 
 	optimizer := NewSubstatOptimizer(optionsMap, sugarLog)
 	optimizer.Run(cfg, simopt, simcfg)
-	output := optimizer.PrettyPrint(clean, optimizer.Details)
+	output := optimizer.PrettyPrint(clean, optimizer.details)
 
 	// Sticks optimized substat string into config and output
 	if simopt.ResultSaveToPath != "" {
