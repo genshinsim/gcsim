@@ -91,7 +91,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(idxChar int, 
 func (stats *SubstatOptimizerDetails) allocateSubstatGradientsForChar(idxChar int, char character.CharacterProfile, substatGradient []float64, relevantSubstats []attributes.Stat) []string {
 	var opDebug []string
 
-	sorted := NewSlice(substatGradient...)
+	sorted := newSlice(substatGradient...)
 	sort.Sort(sort.Reverse(sorted))
 
 	printVal := ""
@@ -233,7 +233,7 @@ func (stats *SubstatOptimizerDetails) assignSubstatsForChar(idxChar int, char ch
 
 	remainingLiquidSubstats := baseLiquidSubstats - totalSubstatCount
 	// Minimum of individual limit, global limit, desired amount
-	amtToAdd := MinInt(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat], remainingLiquidSubstats, amt)
+	amtToAdd := minInt(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat], remainingLiquidSubstats, amt)
 	stats.charSubstatFinal[idxChar][substat] += amtToAdd
 
 	return remainingLiquidSubstats - amtToAdd, stats.charSubstatLimits[idxChar][substat] - stats.charSubstatFinal[idxChar][substat]

@@ -75,7 +75,7 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 	charNames := make(map[keys.Char]string)
 	o.logger.Info("Final config substat strings:")
 
-	for _, match := range RegexpLineCharname.FindAllStringSubmatch(output, -1) {
+	for _, match := range regexpLineCharname.FindAllStringSubmatch(output, -1) {
 		charKey := shortcut.CharNameToKey[match[1]]
 		charNames[charKey] = match[1]
 	}
@@ -92,7 +92,7 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 
 		fmt.Println(finalString + ";")
 
-		output = ReplaceSimOutputForChar(charNames[char.Base.Key], output, finalString)
+		output = replaceSimOutputForChar(charNames[char.Base.Key], output, finalString)
 	}
 
 	return output

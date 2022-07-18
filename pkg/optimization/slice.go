@@ -21,7 +21,7 @@ func (s Slice) Swap(i, j int) {
 	s.idx[i], s.idx[j] = s.idx[j], s.idx[i]
 }
 
-func NewSlice(n ...float64) *Slice {
+func newSlice(n ...float64) *Slice {
 	s := &Slice{
 		slice: sort.Float64Slice(n),
 		idx:   make([]int, len(n)),
@@ -33,7 +33,7 @@ func NewSlice(n ...float64) *Slice {
 }
 
 // Gets the minimum of a slice of integers
-func MinInt(vars ...int) int {
+func minInt(vars ...int) int {
 	min := vars[0]
 
 	for _, val := range vars {

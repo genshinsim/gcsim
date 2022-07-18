@@ -5,7 +5,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func NewLogger(verbose bool) *zap.SugaredLogger {
+func newLogger(verbose bool) *zap.SugaredLogger {
 	// Start logger
 	zapcfg := zap.NewDevelopmentConfig()
 	zapcfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)

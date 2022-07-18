@@ -9,28 +9,28 @@ import (
 )
 
 var (
-	RegexpLineMainstat = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\s+hp=(4780|3571)\b[^;]*;`)
-	RegexpLineSubstat  = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\b[^;]*;.*\n`)
-	RegexpLineCharname = regexp.MustCompile(`(?m)^([a-z]+)\s+char\b[^;]*;`)
-	RegexpLineOptions  = regexp.MustCompile(`([a-z_]+)=([0-9.]+)`)
+	regexpLineMainstat = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\s+hp=(4780|3571)\b[^;]*;`)
+	regexpLineSubstat  = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\b[^;]*;.*\n`)
+	regexpLineCharname = regexp.MustCompile(`(?m)^([a-z]+)\s+char\b[^;]*;`)
+	regexpLineOptions  = regexp.MustCompile(`([a-z_]+)=([0-9.]+)`)
 )
 
-var ErrInvalidStats = errors.New("unidentifiable main stats")
+var errInvalidStats = errors.New("unidentifiable main stats")
 
-func ReplaceSimOutputForChar(char, src, out string) string {
+func replaceSimOutputForChar(char, src, out string) string {
 	re := regexp.MustCompile(fmt.Sprintf(`(?m)^(%v\s+add\s+stats\b.*)$`, char))
 	return re.ReplaceAllString(src, fmt.Sprintf("$1\n%v;", out))
 }
 
-func RemoveSubstatLines(cfg string) (string, error) {
-	if len(RegexpLineMainstat.FindAllString(cfg, -1)) != len(RegexpLineCharname.FindAllString(cfg, -1)) {
-		return "", ErrInvalidStats
+func removeSubstatLines(cfg string) (string, error) {
+	if len(regexpLineMainstat.FindAllString(cfg, -1)) != len(regexpLineCharname.FindAllString(cfg, -1)) {
+		return "", errInvalidStats
 	}
 
 	clean := cfg
 	errorPrinted := false
-	for _, match := range RegexpLineSubstat.FindAllString(cfg, -1) {
-		if RegexpLineMainstat.MatchString(match) {
+	for _, match := range regexpLineSubstat.FindAllString(cfg, -1) {
+		if regexpLineMainstat.MatchString(match) {
 			continue
 		}
 
@@ -45,8 +45,8 @@ func RemoveSubstatLines(cfg string) (string, error) {
 	return clean, nil
 }
 
-func ParseOptimizerCfg(additionalOptions string, optionsMap map[string]float64) (map[string]float64, error) {
-	parsedOptions := RegexpLineOptions.FindAllStringSubmatch(additionalOptions, -1)
+func parseOptimizerCfg(additionalOptions string, optionsMap map[string]float64) (map[string]float64, error) {
+	parsedOptions := regexpLineOptions.FindAllStringSubmatch(additionalOptions, -1)
 	for _, val := range parsedOptions {
 		if _, ok := optionsMap[val[1]]; ok {
 			optionsMap[val[1]], _ = strconv.ParseFloat(val[2], 64)
