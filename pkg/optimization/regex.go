@@ -15,14 +15,6 @@ var (
 	RegexpLineOptions  = regexp.MustCompile(`([a-z_]+)=([0-9.]+)`)
 )
 
-type OptimRegex struct {
-	Mainstats      *regexp.Regexp
-	GetCharNames   *regexp.Regexp
-	Substats       *regexp.Regexp
-	Options        *regexp.Regexp
-	InsertLocation *regexp.Regexp
-}
-
 var ErrInvalidStats = errors.New("unidentifiable main stats")
 
 func ReplaceSimOutputForChar(char, src, out string) string {
