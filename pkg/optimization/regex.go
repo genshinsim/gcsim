@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	REGEXP_LINE_MAINSTAT = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\s+hp=(4780|3571)\b[^;]*;`)
-	REGEXP_LINE_SUBSTAT  = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\b[^;]*;.*\n`)
-	REGEXP_LINE_CHARNAME = regexp.MustCompile(`(?m)^([a-z]+)\s+char\b[^;]*;`)
-	REGEXP_LINE_OPTIONS  = regexp.MustCompile(`([a-z_]+)=([0-9.]+)`)
+	RegexpLineMainstat = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\s+hp=(4780|3571)\b[^;]*;`)
+	RegexpLineSubstat  = regexp.MustCompile(`(?m)^[a-z]+\s+add\s+stats\b[^;]*;.*\n`)
+	RegexpLineCharname = regexp.MustCompile(`(?m)^([a-z]+)\s+char\b[^;]*;`)
+	RegexpLineOptions  = regexp.MustCompile(`([a-z_]+)=([0-9.]+)`)
 )
 
 type OptimRegex struct {
@@ -31,14 +31,14 @@ func ReplaceSimOutputForChar(char, src, out string) string {
 }
 
 func RemoveSubstatLines(cfg string) (string, error) {
-	if len(REGEXP_LINE_MAINSTAT.FindAllString(cfg, -1)) != len(REGEXP_LINE_CHARNAME.FindAllString(cfg, -1)) {
+	if len(RegexpLineMainstat.FindAllString(cfg, -1)) != len(RegexpLineCharname.FindAllString(cfg, -1)) {
 		return "", InvalidStats
 	}
 
 	clean := cfg
 	errorPrinted := false
-	for _, match := range REGEXP_LINE_SUBSTAT.FindAllString(cfg, -1) {
-		if REGEXP_LINE_MAINSTAT.MatchString(match) {
+	for _, match := range RegexpLineSubstat.FindAllString(cfg, -1) {
+		if RegexpLineMainstat.MatchString(match) {
 			continue
 		}
 
@@ -54,7 +54,7 @@ func RemoveSubstatLines(cfg string) (string, error) {
 }
 
 func ParseOptimizerCfg(additionalOptions string, optionsMap map[string]float64) (map[string]float64, error) {
-	parsedOptions := REGEXP_LINE_OPTIONS.FindAllStringSubmatch(additionalOptions, -1)
+	parsedOptions := RegexpLineOptions.FindAllStringSubmatch(additionalOptions, -1)
 	for _, val := range parsedOptions {
 		if _, ok := optionsMap[val[1]]; ok {
 			optionsMap[val[1]], _ = strconv.ParseFloat(val[2], 64)
