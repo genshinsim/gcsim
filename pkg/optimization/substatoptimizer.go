@@ -1,4 +1,4 @@
-package substatoptimizer
+package optimization
 
 import (
 	"log"
@@ -8,7 +8,6 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
-	"github.com/genshinsim/gcsim/pkg/optimization"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
@@ -36,7 +35,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// Parse and set all special sim options
 	var sugarLog *zap.SugaredLogger
 	if additionalOptions != "" {
-		optionsMap, err := optimization.ParseOptimizerCfg(additionalOptions, optionsMap)
+		optionsMap, err := ParseOptimizerCfg(additionalOptions, optionsMap)
 		sugarLog = NewLogger(optionsMap["verbose"] == 1)
 		if err != nil {
 			sugarLog.Panic(err.Error())
@@ -52,8 +51,8 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		os.Exit(1)
 	}
 
-	clean, err := optimization.RemoveSubstatLines(cfg)
-	if err == optimization.ErrInvalidStats {
+	clean, err := RemoveSubstatLines(cfg)
+	if err == ErrInvalidStats {
 		sugarLog.Panic("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.\n5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
 		os.Exit(1)
 	}
@@ -69,7 +68,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		os.Exit(1)
 	}
 
-	optimizer := optimization.NewSubstatOptimizer(optionsMap, sugarLog)
+	optimizer := NewSubstatOptimizer(optionsMap, sugarLog)
 	optimizer.Run(cfg, simopt, simcfg)
 	output := optimizer.PrettyPrint(clean, optimizer.Details)
 

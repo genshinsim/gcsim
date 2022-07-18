@@ -1,4 +1,4 @@
-package substatoptimizer
+package optimization
 
 import (
 	"go.uber.org/zap"
