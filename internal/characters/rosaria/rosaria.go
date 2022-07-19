@@ -15,6 +15,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	c1bonus     []float64
+	c4completed bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -36,9 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 func (c *char) Init() error {
 	if c.Base.Cons >= 1 {
 		c.c1()
-	}
-	if c.Base.Cons >= 4 {
-		c.c4()
 	}
 	return nil
 }

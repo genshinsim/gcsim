@@ -34,12 +34,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 6 {
 		c.burstCounter = 5
 	}
-	// lights up 9.5s from cast
-	//deployable; not affected by hitlag
-	c.Core.Status.Add(burstKey, 9*60+30)
-	c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index).
-		Write("stacks", c.burstCounter).
-		Write("expiry", c.Core.Status.Duration(burstKey))
 
 	//add initial damage
 	ai := combat.AttackInfo{
@@ -63,6 +57,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Write("current count", c.grimheartStacks)
 	c.ResetActionCooldown(action.ActionSkill)
 	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index)
+
+	// lights up 9.5s from cast
+	//deployable; not affected by hitlag
+	c.Core.Tasks.Add(func() {
+		c.Core.Status.Add(burstKey, 9*60)
+		c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index).
+			Write("stacks", c.burstCounter).
+			Write("expiry", c.Core.Status.Duration(burstKey))
+	}, burstFrames[action.ActionWait]) // start at earliest point
 
 	// lightfall hitmark is 600f from cast
 	c.Core.Tasks.Add(func() {

@@ -27,25 +27,34 @@ func init() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// No ICD to the 2 hits
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Ravaging Confession (Hit 1)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       skill[0][c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Ravaging Confession (Hit 1)",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Cryo,
+		Durability:         25,
+		Mult:               skill[0][c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.06 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: false,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	var c4cb combat.AttackCBFunc
+	if c.Base.Cons >= 4 {
+		c.c4completed = false
+		c4cb = c.c4
+	}
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), skillHitmark, skillHitmark, c4cb)
 
 	// A1 activation
 	// When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT RATE increases by 12% for 5s.
 	// We always assume that it procs on hit 1 to simplify
+	//TODO: does this need to change if we add player position?
 	if p["nobehind"] != 1 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CR] = 0.12
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("rosaria-a1", 300+skillHitmark),
+			Base:         modifier.NewBaseWithHitlag("rosaria-a1", 300+skillHitmark),
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -58,14 +67,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Rosaria E is dynamic, so requires a second snapshot
 	//TODO: check snapshot timing here
 	ai = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Ravaging Confession (Hit 2)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       skill[1][c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Ravaging Confession (Hit 2)",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Cryo,
+		Durability:         25,
+		Mult:               skill[1][c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.09 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 	//second hit is 14 frames after the first
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), skillHitmark+14, skillHitmark+14)
