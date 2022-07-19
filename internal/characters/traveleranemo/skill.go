@@ -8,7 +8,7 @@ import (
 )
 
 var skillPressFrames []int
-var skillHoldFrames [7][]int
+var skillHoldDelayFrames []int
 
 func init() {
 	skillPressFrames = frames.InitAbilSlice(81) // default is walk frames
@@ -18,22 +18,18 @@ func init() {
 	skillPressFrames[action.ActionDash] = 28
 	skillPressFrames[action.ActionJump] = 28
 	skillPressFrames[action.ActionSwap] = 60
-	for i := 1; i <= 6; i += 1 {
-		max_dur := 31 + (i-1)*15 + 5
-		if i >= 2 {
-			max_dur += 5
-		}
-		skillHoldFrames[i] = frames.InitAbilSlice(max_dur + 103 - 55) // default is walk frames
-		skillHoldFrames[i][action.ActionAttack] = max_dur + 82 - 55
-		skillHoldFrames[i][action.ActionSkill] = max_dur + 83 - 55 // uses burst frames
-		skillHoldFrames[i][action.ActionBurst] = max_dur + 83 - 55
-		skillHoldFrames[i][action.ActionDash] = max_dur + 55 - 55
-		skillHoldFrames[i][action.ActionJump] = max_dur + 55 - 55
-		skillHoldFrames[i][action.ActionSwap] = max_dur + 82 - 55
-	}
+
+	// 2 tick duration - 2 tick last hitmark
+	skillHoldDelayFrames = frames.InitAbilSlice(103 - 55) // default is walk frames
+	skillHoldDelayFrames[action.ActionAttack] = 82 - 55
+	skillHoldDelayFrames[action.ActionSkill] = 83 - 55 // uses burst frames
+	skillHoldDelayFrames[action.ActionBurst] = 83 - 55
+	skillHoldDelayFrames[action.ActionDash] = 55 - 55
+	skillHoldDelayFrames[action.ActionJump] = 55 - 55
+	skillHoldDelayFrames[action.ActionSwap] = 82 - 55
 }
 
-func (c *char) SkillPress() {
+func (c *char) SkillPress() action.ActionInfo {
 	hitmark := 34
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -49,8 +45,16 @@ func (c *char) SkillPress() {
 
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(skillPressFrames),
+		AnimationLength: skillPressFrames[action.InvalidAction],
+		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
+		State:           action.SkillState,
+	}
 }
-func (c *char) SkillHold(holdTicks int) {
+
+func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	c.eInfuse = attributes.NoElement
 	c.eICDTag = combat.ICDTagNone
@@ -163,6 +167,12 @@ func (c *char) SkillHold(holdTicks int) {
 
 	// starts absorbing after the first tick?
 	c.Core.Tasks.Add(c.absorbCheckE(c.Core.F, 0, int((hitmark)/18)), firstTick+1)
+	return action.ActionInfo{
+		Frames:          func(next action.Action) int { return skillHoldDelayFrames[next] + hitmark },
+		AnimationLength: skillHoldDelayFrames[action.InvalidAction] + hitmark,
+		CanQueueAfter:   skillHoldDelayFrames[action.ActionDash] + hitmark, // earliest cancel
+		State:           action.SkillState,
+	}
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -178,21 +188,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	if holdTicks == 0 {
-		c.SkillPress()
-		return action.ActionInfo{
-			Frames:          frames.NewAbilFunc(skillPressFrames),
-			AnimationLength: skillPressFrames[action.InvalidAction],
-			CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
-			State:           action.SkillState,
-		}
+		return c.SkillPress()
 	} else {
-		c.SkillHold(holdTicks)
-		return action.ActionInfo{
-			Frames:          frames.NewAbilFunc(skillHoldFrames[holdTicks]),
-			AnimationLength: skillHoldFrames[holdTicks][action.InvalidAction],
-			CanQueueAfter:   skillHoldFrames[holdTicks][action.ActionDash], // earliest cancel
-			State:           action.SkillState,
-		}
+		return c.SkillHold(holdTicks)
 	}
 }
 
