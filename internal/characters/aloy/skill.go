@@ -62,14 +62,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Bomblets snapshot on cast
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Chillwater Bomblets",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       skillBomblets[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Chillwater Bomblets",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagElementalArt,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Cryo,
+		Durability:         25,
+		Mult:               skillBomblets[c.TalentLvlSkill()],
+		CanBeDefenseHalted: true,
 	}
 
 	// Queue up bomblets
