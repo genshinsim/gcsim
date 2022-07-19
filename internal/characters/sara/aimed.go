@@ -49,6 +49,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitWeakPoint:         weakspot == 1,
 		HitlagHaltFrames:     .12 * 60,
 		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 	c.Core.QueueAttack(
 		ai,
