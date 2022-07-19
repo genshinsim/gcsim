@@ -10,21 +10,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//first hit at 137, then 113 frames between hits
 
 	c.burstTaggedCount = 0
-
-	ai := core.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Fudou Style Vacuum Slugger",
-		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagNone,
-		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Anemo,
-		Durability: 25,
-		Mult:       burst[c.TalentLvlBurst()],
-	}
-	//TODO: does heizou burst snapshot?
-	snap := c.Snapshot(&ai)
-
 	burstCB := func(a core.AttackCB) {
 		//check if enemy
 		if a.Target.Type() != core.TargettableEnemy {
@@ -41,8 +26,34 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 		c.irisDmg(a.Target)
 	}
+	auraCheck := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Windmuster Iris (Aura check)",
+		AttackTag:  core.AttackTagWindmusterAuraCheck,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 0,
+		Mult:       0,
+		NoImpulse:  true,
+	}
+	c.Core.Combat.QueueAttack(auraCheck, core.NewDefCircHit(4, false, core.TargettableEnemy), f, f, burstCB)
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f, burstCB)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Fudou Style Vacuum Slugger",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	//TODO: does heizou burst snapshot?
+	snap := c.Snapshot(&ai)
+
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f)
 
 	//TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(core.ActionBurst, 720)

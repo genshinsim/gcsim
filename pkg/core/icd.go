@@ -23,6 +23,7 @@ const (
 	AttackTagSwirlCryo
 	AttackTagSwirlElectro
 	AttackTagLength
+	AttackTagWindmusterAuraCheck
 )
 
 type ICDTag int //same ICD tag shares the same counter
