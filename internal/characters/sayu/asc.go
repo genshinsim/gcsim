@@ -7,12 +7,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
+const a1ICDKey = "sayu-a1-icd"
+
 // When Sayu triggers a Swirl reaction while active, she heals all your
 // characters and nearby allies for 300 HP. She will also heal an additional 1.2
 // HP for every point of Elemental Mastery she has.  This effect can be
 // triggered once every 2s.
 func (c *char) a1() {
-	icd := -1
 	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
@@ -22,10 +23,10 @@ func (c *char) a1() {
 			if c.Core.Player.Active() != c.Index {
 				return false
 			}
-			if c.Core.F < icd {
+			if c.StatusIsActive(a1ICDKey) {
 				return false
 			}
-			icd = c.Core.F + 120 // 2s
+			c.AddStatus(a1ICDKey, 120, true) //2s
 
 			if c.Base.Cons >= 4 {
 				c.AddEnergy("sayu-c4", 1.2)

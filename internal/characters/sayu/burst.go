@@ -19,14 +19,16 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// dmg
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Yoohoo Art: Mujina Flurry",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Anemo,
-		Durability: 25,
-		Mult:       burst[c.TalentLvlBurst()],
+		ActorIndex:       c.Index,
+		Abil:             "Yoohoo Art: Mujina Flurry",
+		AttackTag:        combat.AttackTagElementalBurst,
+		ICDTag:           combat.ICDTagNone,
+		ICDGroup:         combat.ICDGroupDefault,
+		Element:          attributes.Anemo,
+		Durability:       25,
+		Mult:             burst[c.TalentLvlBurst()],
+		HitlagFactor:     0.05,
+		HitlagHaltFrames: 0.02 * 60,
 	}
 	snap := c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 16)
@@ -90,6 +92,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
+//TODO: is this helper function needed?
 func (c *char) createBurstSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

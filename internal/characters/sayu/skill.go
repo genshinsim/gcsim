@@ -54,14 +54,16 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	// Fuufuu Whirlwind Kick Press DMG
 	ai = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Yoohoo Art: Fuuin Dash (Press)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Anemo,
-		Durability: 25,
-		Mult:       skillPressEnd[c.TalentLvlSkill()],
+		ActorIndex:       c.Index,
+		Abil:             "Yoohoo Art: Fuuin Dash (Press)",
+		AttackTag:        combat.AttackTagElementalArt,
+		ICDTag:           combat.ICDTagNone,
+		ICDGroup:         combat.ICDGroupDefault,
+		Element:          attributes.Anemo,
+		Durability:       25,
+		Mult:             skillPressEnd[c.TalentLvlSkill()],
+		HitlagHaltFrames: 0.02 * 60,
+		HitlagFactor:     0.05,
 	}
 	snap = c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 28)
@@ -109,14 +111,16 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Yoohoo Art: Fuuin Dash (Hold)",
-		AttackTag:  combat.AttackTagElementalArtHold,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Anemo,
-		Durability: 25,
-		Mult:       skillHoldEnd[c.TalentLvlSkill()],
+		ActorIndex:       c.Index,
+		Abil:             "Yoohoo Art: Fuuin Dash (Hold)",
+		AttackTag:        combat.AttackTagElementalArtHold,
+		ICDTag:           combat.ICDTagNone,
+		ICDGroup:         combat.ICDGroupDefault,
+		Element:          attributes.Anemo,
+		Durability:       25,
+		Mult:             skillHoldEnd[c.TalentLvlSkill()],
+		HitlagHaltFrames: 0.02 * 60,
+		HitlagFactor:     0.05,
 	}
 	snap := c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 18+duration+20)
@@ -136,6 +140,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	}
 }
 
+//TODO: is this helper needed?
 func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
