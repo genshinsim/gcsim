@@ -39,7 +39,10 @@ func (w *Weapon) selfDisable(lambda float64) func() {
 }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	w := &Weapon{}
+	w := &Weapon{
+		c:    c,
+		char: char,
+	}
 	r := p.Refine
 
 	//allow user to periodically lock out this weapon (just to screw around with bennett)
