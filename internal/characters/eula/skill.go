@@ -151,20 +151,6 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), skillHoldHitmark, skillHoldHitmark, energyCB)
 
-	//multiple brand hits
-
-	icewhirlAI := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Icetide Vortex (Icewhirl)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       icewhirl[lvl],
-	}
-
 	v := c.currentGrimheartStacks()
 
 	//shred
@@ -194,14 +180,40 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < v; i++ {
-		//spacing it out for stacks
-		c.Core.QueueAttack(
-			icewhirlAI,
-			combat.NewDefCircHit(1.5, false, combat.TargettableEnemy),
-			icewhirlHitmarks[i],
-			icewhirlHitmarks[i],
-			shredCB,
-		)
+		//multiple brand hits
+		//TODO: need to double check if this is affected by hitlag; might be a deployable
+		icewhirlAI := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Icetide Vortex (Icewhirl)",
+			AttackTag:  combat.AttackTagElementalArt,
+			ICDTag:     combat.ICDTagElementalArt,
+			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Cryo,
+			Durability: 25,
+			Mult:       icewhirl[lvl],
+		}
+		if i == 0 {
+			//per shizuka first swirl is not affected by hitlag?
+			c.Core.QueueAttack(
+				icewhirlAI,
+				combat.NewDefCircHit(1.5, false, combat.TargettableEnemy),
+				icewhirlHitmarks[i],
+				icewhirlHitmarks[i],
+				shredCB,
+			)
+		} else {
+			c.QueueCharTask(func() {
+				//spacing it out for stacks
+				c.Core.QueueAttack(
+					icewhirlAI,
+					combat.NewDefCircHit(1.5, false, combat.TargettableEnemy),
+					0,
+					0,
+					shredCB,
+				)
+			}, icewhirlHitmarks[i])
+		}
 	}
 
 	//A1
