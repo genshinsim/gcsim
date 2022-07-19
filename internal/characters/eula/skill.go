@@ -135,7 +135,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skillHold[lvl],
-		HitlagHaltFrames:   0.09 * 60,
+		HitlagHaltFrames:   0.12 * 60,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
