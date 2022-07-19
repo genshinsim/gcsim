@@ -143,14 +143,18 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 //TODO: is this helper needed?
 func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Yoohoo Art: Fuuin Dash (Hold Tick)",
-		AttackTag:  combat.AttackTagElementalArtHold,
-		ICDTag:     combat.ICDTagElementalArtAnemo,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Anemo,
-		Durability: 25,
-		Mult:       skillPress[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Yoohoo Art: Fuuin Dash (Hold Tick)",
+		AttackTag:          combat.AttackTagElementalArtHold,
+		ICDTag:             combat.ICDTagElementalArtAnemo,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Anemo,
+		Durability:         25,
+		Mult:               skillPress[c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.01 * 60,
+		HitlagFactor:       0.05,
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 	snap := c.Snapshot(&ai)
 

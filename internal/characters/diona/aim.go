@@ -39,6 +39,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:     0.12,
 		HitlagFactor:         0.01,
 		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 
 	var a action.ActionInfo

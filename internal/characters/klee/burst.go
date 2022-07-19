@@ -20,15 +20,17 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Sparks'n'Splash",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       burst[c.TalentLvlBurst()],
-		NoImpulse:  true,
+		ActorIndex:         c.Index,
+		Abil:               "Sparks'n'Splash",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagElementalBurst,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               burst[c.TalentLvlBurst()],
+		NoImpulse:          true,
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 	//lasts 10 seconds, starts after 2.2 seconds maybe?
 	c.Core.Status.Add("kleeq", 600+132)
@@ -48,16 +50,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return
 			}
 			//wave 1 = 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 0)
 			//wave 2 = 1 + 30% chance of 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 12)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 12)
 			if c.Core.Rand.Float64() < 0.3 {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 12)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 12)
 			}
 			//wave 3 = 1 + 50% chance of 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 24)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 24)
 			if c.Core.Rand.Float64() < 0.5 {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 24)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 24)
 			}
 		}, i)
 	}
@@ -121,14 +123,16 @@ func (c *char) onExitField() {
 		if c.Base.Cons >= 4 {
 			//blow up
 			ai := combat.AttackInfo{
-				ActorIndex: c.Index,
-				Abil:       "Sparks'n'Splash C4",
-				AttackTag:  combat.AttackTagNone,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
-				Element:    attributes.Pyro,
-				Durability: 50,
-				Mult:       5.55,
+				ActorIndex:         c.Index,
+				Abil:               "Sparks'n'Splash C4",
+				AttackTag:          combat.AttackTagNone,
+				ICDTag:             combat.ICDTagNone,
+				ICDGroup:           combat.ICDGroupDefault,
+				Element:            attributes.Pyro,
+				Durability:         50,
+				Mult:               5.55,
+				CanBeDefenseHalted: true,
+				IsDeployable:       true,
 			}
 			c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 0, 0)
 		}

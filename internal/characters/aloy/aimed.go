@@ -38,6 +38,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:     0.12,
 		HitlagFactor:         0.01,
 		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
 

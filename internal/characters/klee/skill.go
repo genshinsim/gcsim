@@ -56,15 +56,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Jumpy Dumpty Mine Hit",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagKleeFireDamage,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       mine[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Jumpy Dumpty Mine Hit",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagKleeFireDamage,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               mine[c.TalentLvlSkill()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	//roughly 160 frames after mines are laid

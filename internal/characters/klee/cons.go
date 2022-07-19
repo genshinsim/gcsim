@@ -20,14 +20,16 @@ func (c *char) c1(delay int) {
 	c.c1Chance = 0.1
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Sparks'n'Splash C1",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       1.2 * burst[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Sparks'n'Splash C1",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagElementalBurst,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               1.2 * burst[c.TalentLvlBurst()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, delay)
 }

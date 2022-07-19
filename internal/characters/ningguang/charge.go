@@ -37,15 +37,17 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark+travel)
 
 	ai = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charge (Gems)",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 50,
-		Mult:       jade[c.TalentLvlAttack()],
+		ActorIndex:         c.Index,
+		Abil:               "Charge (Gems)",
+		AttackTag:          combat.AttackTagExtra,
+		ICDTag:             combat.ICDTagExtraAttack,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Geo,
+		Durability:         50,
+		Mult:               jade[c.TalentLvlAttack()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	for i := 0; i < c.Tags["jade"]; i++ {

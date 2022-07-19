@@ -23,15 +23,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Starshatter",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 50,
-		Mult:       burst[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Starshatter",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagElementalBurst,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Geo,
+		Durability:         50,
+		Mult:               burst[c.TalentLvlBurst()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	// TODO: hitmark timing

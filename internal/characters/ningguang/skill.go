@@ -17,15 +17,19 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Jade Screen",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Jade Screen",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Geo,
+		Durability:         25,
+		Mult:               skill[c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.05 * 60,
+		HitlagFactor:       0.05,
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	c.Core.Tasks.Add(func() {

@@ -75,6 +75,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		aiTick := ai
 		aiTick.Abil = "Herald of Frost: Skill Damage"
 		aiTick.Mult = skillDmgCont[c.TalentLvlSkill()]
+		aiTick.IsDeployable = true // ticks still apply hitlag but is a deployable so doesnt affect qiqi
+
 		snapTick := c.Snapshot(&aiTick)
 		tickAE := &combat.AttackEvent{
 			Info:        aiTick,
