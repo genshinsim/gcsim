@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/genshinsim/gcsim/internal/substatoptimizer"
+	"github.com/genshinsim/gcsim/pkg/optimization"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
@@ -90,7 +90,7 @@ func main() {
 	if opt.substatOptim {
 		// TODO: Eventually will want to handle verbose/options in some other way.
 		// Ideally once documentation is standardized, can move options to a config file, and verbose can also be moved into options or something
-		substatoptimizer.RunSubstatOptim(simopt, opt.verbose, opt.options)
+		optimization.RunSubstatOptim(simopt, opt.verbose, opt.options)
 		return
 	}
 
