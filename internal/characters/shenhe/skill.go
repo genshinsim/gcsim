@@ -1,8 +1,6 @@
 package shenhe
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -37,14 +35,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Spring Spirit Summoning (Press)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       skillPress[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Spring Spirit Summoning (Press)",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Cryo,
+		Durability:         25,
+		Mult:               skillPress[c.TalentLvlSkill()],
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	c.skillPressBuff()
@@ -91,56 +92,33 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	}
 }
 
-// Helper function to update tags that can be used in configs
-// Should be run whenever c.quillcount is updated
-func (c *char) updateBuffTags() {
-	for _, char := range c.Core.Player.Chars() {
-		c.Tags["quills_"+char.Base.Key.String()] = c.quillcount[char.Index]
-		c.Tags[fmt.Sprintf("quills_%v", char.Index)] = c.quillcount[char.Index]
-	}
-}
-
 func (c *char) skillPressBuff() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.15
-	for i := range c.Core.Player.Chars() {
-		c.quillcount[i] = 5
-	}
-	c.updateBuffTags()
-
-	c.Core.Status.Add(quillKey, 10*60)
-
 	for _, char := range c.Core.Player.Chars() {
+		char.AddStatus(quillKey, 600, true) //10 sec duration
+		char.SetTag(quillKey, 5)            // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("shenhe-a4-press", 10*60),
+			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 600),
 			Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if a.Info.AttackTag != combat.AttackTagElementalBurst && a.Info.AttackTag != combat.AttackTagElementalArt && a.Info.AttackTag != combat.AttackTagElementalArtHold {
 					return nil, false
 				}
-				return m, true
+				return c.skillBuff, true
 			},
 		})
 	}
 }
 
 func (c *char) skillHoldBuff() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.15
-	for i := range c.Core.Player.Chars() {
-		c.quillcount[i] = 7
-	}
-	c.updateBuffTags()
-
-	c.Core.Status.Add(quillKey, 15*60)
-
 	for _, char := range c.Core.Player.Chars() {
+		char.AddStatus(quillKey, 900, true) //15 sec duration
+		char.SetTag(quillKey, 7)            // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("shenhe-a4-hold", 15*60),
+			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
 			Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if a.Info.AttackTag != combat.AttackTagNormal && a.Info.AttackTag != combat.AttackTagExtra && a.Info.AttackTag != combat.AttackTagPlunge {
 					return nil, false
 				}
-				return m, true
+				return c.skillBuff, true
 			},
 		})
 	}
@@ -167,33 +145,41 @@ func (c *char) quillDamageMod() {
 			return false
 		}
 
-		if c.Core.Status.Duration(quillKey) == 0 {
+		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
+
+		if !char.StatusIsActive(quillKey) {
 			return false
 		}
 
-		if c.quillcount[atk.Info.ActorIndex] > 0 {
+		if char.Tags[quillKey] > 0 {
 			stats, _ := c.Stats()
 			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.Atk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK])
 			if consumeStack { //c6
-				c.quillcount[atk.Info.ActorIndex]--
-				c.updateBuffTags()
+				char.Tags[quillKey]--
 			}
-			c.Core.Log.NewEvent(
-				"Shenhe Quill proc dmg add",
-				glog.LogPreDamageMod,
-				atk.Info.ActorIndex,
-			).
-				Write("before", atk.Info.FlatDmg).
-				Write("addition", amt).
-				Write("effect_ends_at", c.Core.Status.Duration(quillKey)).
-				Write("quills left", c.quillcount[atk.Info.ActorIndex])
+
+			if c.Core.Flags.LogDebug {
+				c.Core.Log.NewEvent(
+					"Shenhe Quill proc dmg add",
+					glog.LogPreDamageMod,
+					atk.Info.ActorIndex,
+				).
+					Write("before", atk.Info.FlatDmg).
+					Write("addition", amt).
+					Write("effect_ends_at", c.Core.Status.Duration(quillKey)).
+					Write("quills left", c.Tags[quillKey])
+			}
 
 			atk.Info.FlatDmg += amt
 			if c.Base.Cons >= 4 {
+				//reset stacks to zero if all expired
+				if !c.StatusIsActive(c4BuffKey) {
+					c.c4count = 0
+				}
 				if c.c4count < 50 {
 					c.c4count++
 				}
-				c.c4expiry = c.Core.F + 60*60
+				c.AddStatus(c4BuffKey, 3600, true) // 60 s
 			}
 		}
 
