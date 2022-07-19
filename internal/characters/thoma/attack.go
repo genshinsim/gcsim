@@ -11,6 +11,8 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = [][]int{{11}, {38}, {27, 40}, {25}}
+var attackHitlagHaltFrame = [][]float64{{0.06}, {0.09}, {0, 0}, {0}}
+var attackDefHalt = [][]bool{{true}, {true}, {false, false}, {true}}
 
 const normalHitNum = 4
 
@@ -27,24 +29,29 @@ func init() {
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other characters
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Physical,
-		Durability: 25,
-	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
-		)
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			Element:            attributes.Physical,
+			Durability:         25,
+			Mult:               mult[c.TalentLvlAttack()],
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
+				0,
+				0,
+			)
+		}, attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()

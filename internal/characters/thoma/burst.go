@@ -32,8 +32,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	// damage component not final
-	x, y := c.Core.Combat.Target(0).Pos()
-	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	d := 15
 	if c.Base.Cons >= 2 {
