@@ -67,6 +67,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/sucrose"
 	_ "github.com/genshinsim/gcsim/internal/characters/tartaglia"
 	_ "github.com/genshinsim/gcsim/internal/characters/thoma"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveleranemo"
 	_ "github.com/genshinsim/gcsim/internal/characters/travelerelectro"
 	_ "github.com/genshinsim/gcsim/internal/characters/travelergeo"
 	_ "github.com/genshinsim/gcsim/internal/characters/venti"
