@@ -19,7 +19,10 @@ type char struct {
 	*tmpl.Character
 	qInfused            attributes.Element
 	infuseCheckLocation combat.AttackPattern
+	a1buff              []float64
+	a4buff              []float64
 	c4Count             int
+	c6buff              []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -44,5 +47,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 func (c *char) Init() error {
 	c.a1()
+	if c.Base.Cons >= 6 {
+		c.c6buff = make([]float64, attributes.EndStatType)
+	}
 	return nil
 }
