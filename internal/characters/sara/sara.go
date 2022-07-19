@@ -15,8 +15,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a4LastProc int
-	c1LastProc int
+	c6buff []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
@@ -36,5 +35,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	if c.Base.Cons >= 6 {
+		c.c6buff = make([]float64, attributes.EndStatType)
+		c.c6buff[attributes.CD] = 0.6
+	}
 	return nil
 }

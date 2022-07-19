@@ -37,16 +37,18 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Aim Charge Attack",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypePierce,
-		Element:      attributes.Electro,
-		Durability:   25,
-		Mult:         aimChargeFull[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		ActorIndex:           c.Index,
+		Abil:                 "Aim Charge Attack",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone,
+		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypePierce,
+		Element:              attributes.Electro,
+		Durability:           25,
+		Mult:                 aimChargeFull[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot == 1,
+		HitlagHaltFrames:     .12 * 60,
+		HitlagOnHeadshotOnly: true,
 	}
 	c.Core.QueueAttack(
 		ai,
