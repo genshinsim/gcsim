@@ -10,12 +10,12 @@ import (
 var burstFrames []int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(49)
-	burstFrames[action.ActionCharge] = 48
-	burstFrames[action.ActionSkill] = 48
-	burstFrames[action.ActionDash] = 47
-	burstFrames[action.ActionJump] = 47
-	burstFrames[action.ActionSwap] = 47
+	burstFrames = frames.InitAbilSlice(111)
+	burstFrames[action.ActionAttack] = 106
+	burstFrames[action.ActionSkill] = 104
+	burstFrames[action.ActionDash] = 91
+	burstFrames[action.ActionJump] = 91
+	burstFrames[action.ActionSwap] = 96
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {

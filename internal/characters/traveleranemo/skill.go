@@ -7,13 +7,30 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillFrames []int
-
-// isn't exactly hitmark
-const skillHitmark = 34
+var skillPressFrames []int
+var skillHoldFrames [7][]int
 
 func init() {
-	skillFrames = frames.InitAbilSlice(24)
+	skillPressFrames = frames.InitAbilSlice(81) // default is walk frames
+	skillPressFrames[action.ActionAttack] = 61
+	skillPressFrames[action.ActionSkill] = 60 // uses burst frames
+	skillPressFrames[action.ActionBurst] = 60
+	skillPressFrames[action.ActionDash] = 28
+	skillPressFrames[action.ActionJump] = 28
+	skillPressFrames[action.ActionSwap] = 60
+	for i := 1; i <= 6; i += 1 {
+		max_dur := 31 + (i-1)*15 + 5
+		if i >= 2 {
+			max_dur += 5
+		}
+		skillHoldFrames[i] = frames.InitAbilSlice(max_dur + 103 - 55) // default is walk frames
+		skillHoldFrames[i][action.ActionAttack] = max_dur + 82 - 55
+		skillHoldFrames[i][action.ActionSkill] = max_dur + 83 - 55 // uses burst frames
+		skillHoldFrames[i][action.ActionBurst] = max_dur + 83 - 55
+		skillHoldFrames[i][action.ActionDash] = max_dur + 55 - 55
+		skillHoldFrames[i][action.ActionJump] = max_dur + 55 - 55
+		skillHoldFrames[i][action.ActionSwap] = max_dur + 82 - 55
+	}
 }
 
 func (c *char) SkillPress() {
@@ -134,7 +151,7 @@ func (c *char) SkillHold(holdTicks int) {
 		c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 	}
 
-	c.Core.QueueAttack(aiCut, combat.NewDefCircHit(2, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(aiStorm, combat.NewDefCircHit(2, false, combat.TargettableEnemy), hitmark, hitmark)
 	c.Core.Tasks.Add(func() {
 		if c.eInfuse != attributes.NoElement {
 			aiStormAbs.Element = c.eInfuse
@@ -162,15 +179,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	if holdTicks == 0 {
 		c.SkillPress()
+		return action.ActionInfo{
+			Frames:          frames.NewAbilFunc(skillPressFrames),
+			AnimationLength: skillPressFrames[action.InvalidAction],
+			CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
+			State:           action.SkillState,
+		}
 	} else {
 		c.SkillHold(holdTicks)
-	}
-	// TODO: Fill these out later
-	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		State:           action.SkillState,
+		return action.ActionInfo{
+			Frames:          frames.NewAbilFunc(skillHoldFrames[holdTicks]),
+			AnimationLength: skillHoldFrames[holdTicks][action.InvalidAction],
+			CanQueueAfter:   skillHoldFrames[holdTicks][action.ActionDash], // earliest cancel
+			State:           action.SkillState,
+		}
 	}
 }
 
