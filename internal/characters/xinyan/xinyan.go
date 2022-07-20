@@ -15,6 +15,8 @@ const normalHitNum = 4
 type char struct {
 	*tmpl.Character
 	shieldLevel int
+	c1buff      []float64
+	c2buff      []float64
 }
 
 func init() {

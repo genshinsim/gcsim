@@ -15,7 +15,7 @@ func (c *char) a4() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("xinyan-a4", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if !c.Core.Player.Shields.PlayerIsShielded() {
 					return nil, false
 				}

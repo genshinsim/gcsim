@@ -15,21 +15,24 @@ const skillHitmark = 65
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Sweeping Fervor",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Sweeping Fervor",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               skill[c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.09 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 	snap := c.Snapshot(&ai)
 
 	defFactor := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 
 	hitOpponents := 0
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		hitOpponents++
 
 		// including a1
