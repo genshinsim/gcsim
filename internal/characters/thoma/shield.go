@@ -36,7 +36,7 @@ func (c *char) genShield(src string, shieldamt float64) {
 		for _, char := range c.Core.Player.Chars() {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("thoma-c6", 360),
-				Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 					switch ae.Info.AttackTag {
 					case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
 						return c.c6buff, true

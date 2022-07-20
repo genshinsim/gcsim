@@ -101,7 +101,7 @@ func (c *char) burstProc() {
 		}
 		atk.SourceFrame = c.Core.F
 		atk.Pattern = combat.NewDefSingleTarget(t.Index(), combat.TargettableEnemy)
-		cb := func(a combat.AttackCB) {
+		cb := func(_ combat.AttackCB) {
 			shieldamt := (burstshieldpp[c.TalentLvlSkill()]*c.MaxHP() + burstshieldflat[c.TalentLvlSkill()])
 			c.genShield("Thoma Burst", shieldamt)
 		}
