@@ -23,9 +23,10 @@ type char struct {
 	*tmpl.Character
 	kitsunes         []*kitsune
 	totemParticleICD int
+	c4buff           []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -45,5 +46,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 func (c *char) Init() error {
 	c.a4()
+	if c.Base.Cons >= 4 {
+		c.c4buff = make([]float64, attributes.EndStatType)
+		c.c4buff[attributes.ElectroP] = .20
+	}
 	return nil
 }

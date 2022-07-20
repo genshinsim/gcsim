@@ -124,7 +124,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		}
 
 		done := false
-		cb := func(ac combat.AttackCB) {
+		cb := func(_ combat.AttackCB) {
 			if c.Base.Cons >= 4 && !done {
 				done = true
 				c.c4()
