@@ -33,7 +33,7 @@ func (c *char) c2(a combat.AttackCB) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.3, false, combat.TargettableEnemy), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), 0, 0)
 }
 
 //When any party member attacks an opponent affected by an Omen, their CRIT Rate is increased by 15%.

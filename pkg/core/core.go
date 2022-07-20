@@ -8,6 +8,7 @@
 package core
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 
@@ -135,6 +136,18 @@ func (c *Core) Init() error {
 	err = c.Player.InitializeTeam()
 	if err != nil {
 		return err
+	}
+	//find first enemy target and set as default
+	//error otherwise
+	c.Combat.DefaultTarget = -1
+	for i, t := range c.Combat.Targets() {
+		if t.Type() == combat.TargettableEnemy {
+			c.Combat.DefaultTarget = i
+			break
+		}
+	}
+	if c.Combat.DefaultTarget == -1 {
+		return errors.New("no enemy target found")
 	}
 
 	c.Events.Emit(event.OnInitialize)

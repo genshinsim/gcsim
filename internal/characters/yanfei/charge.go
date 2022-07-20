@@ -41,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:       charge[c.sealCount][c.TalentLvlAttack()],
 	}
 	// TODO: Not sure of snapshot timing
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
 
 	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index).
 		Write("current_seals", c.sealCount)

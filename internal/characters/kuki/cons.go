@@ -44,7 +44,7 @@ func (c *char) c4() {
 			FlatDmg:    c.MaxHP() * 0.097,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 5, 5)
 		c.c4ICD = c.Core.F + 300 //5 sec icd
 		return false
 	}, "kuki-c4")

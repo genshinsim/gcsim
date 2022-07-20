@@ -71,14 +71,15 @@ func (c *char) ppParticles(ac combat.AttackCB) {
 	}
 }
 
-func (c *char) applyBB() {
+//TODO: this needs to be multi target
+func (c *char) applyBB(a combat.AttackCB) {
 	c.Core.Log.NewEvent("Applying Blood Blossom", glog.LogCharacterEvent, c.Index).
 		Write("current dur", c.Core.Status.Duration("htbb"))
 	//check if blood blossom already active, if active extend duration by 8 second
 	//other wise start first tick func
 	if !c.tickActive {
 		//TODO: does BB tick immediately on first application?
-		c.Core.Tasks.Add(c.bbtickfunc(c.Core.F), 240)
+		c.Core.Tasks.Add(c.bbtickfunc(c.Core.F, a.Target.Index()), 240)
 		c.tickActive = true
 		c.Core.Log.NewEvent("Blood Blossom applied", glog.LogCharacterEvent, c.Index).
 			Write("expected end", c.Core.F+570).
@@ -90,7 +91,7 @@ func (c *char) applyBB() {
 		Write("new expiry", c.Core.Status.Duration("htbb"))
 }
 
-func (c *char) bbtickfunc(src int) func() {
+func (c *char) bbtickfunc(src, trg int) func() {
 	return func() {
 		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index).
 			Write("cd", c.Core.Status.Duration("htbb")).
@@ -125,7 +126,7 @@ func (c *char) bbtickfunc(src int) func() {
 		// 	return
 		// }
 		//queue up next instance
-		c.Core.Tasks.Add(c.bbtickfunc(src), 240)
+		c.Core.Tasks.Add(c.bbtickfunc(src, trg), 240)
 
 	}
 }

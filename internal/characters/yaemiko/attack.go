@@ -36,7 +36,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: does it snapshot?
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(1, combat.TargettableEnemy), 0, attackHitmarks[c.NormalCounter])
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, attackHitmarks[c.NormalCounter])
 
 	defer c.AdvanceNormalIndex()
 

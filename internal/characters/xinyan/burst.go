@@ -23,7 +23,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:               burstDmg[c.TalentLvlBurst()],
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 28, 28)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 28, 28)
 
 	// 7 hits
 	ai = combat.AttackInfo{
@@ -39,7 +39,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	for i := 0; i < 7; i++ {
 		f := 63 + i*17
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), f, f)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), f, f)
 	}
 
 	if c.Base.Cons >= 2 {

@@ -88,11 +88,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(6.5, false, combat.TargettableEnemy), 24, 24)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6.5, false, combat.TargettableEnemy), 24, 24)
 
 	ai.Abil = "Sweeping Time (Skill)"
 	ai.Mult = burstskill[c.TalentLvlBurst()]
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(4.5, false, combat.TargettableEnemy), 65, 65)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4.5, false, combat.TargettableEnemy), 65, 65)
 
 	c.SetCD(action.ActionBurst, 900)
 	c.ConsumeEnergy(8)

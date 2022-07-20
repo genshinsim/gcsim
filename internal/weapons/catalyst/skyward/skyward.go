@@ -48,6 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Rand.Float64() < 0.5 {
 			return false
 		}
+		trg := args[0].(combat.Target)
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Atlas Proc",
@@ -60,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		snap := char.Snapshot(&ai)
 		for i := 0; i < 6; i++ {
-			c.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), i*150)
+			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 0.1, false, combat.TargettableEnemy), i*150)
 		}
 		icd = c.F + 1800
 		return false

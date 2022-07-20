@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.MaxHP()
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	c.Core.Status.Add("kokomiburst", 10*60)
 

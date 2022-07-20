@@ -126,6 +126,34 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) Obj {
 	return &null{}
 }
 
+func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) Obj {
+	if len(c.Args) != 1 {
+		//TODO: better error handling
+		panic("expected 1 param for set_default_target")
+	}
+	t := e.evalExpr(c.Args[0], env)
+	n, ok := t.(*number)
+	if !ok {
+		//TODO: better error handling
+		panic("expecting a number for wait argument")
+	}
+	//n should be int
+	var idx int = int(n.ival)
+	if n.isFloat {
+		idx = int(n.fval)
+	}
+
+	//check if index is in range
+	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
+		return bton(false)
+	}
+
+	e.Core.Combat.DefaultTarget = idx
+
+	return bton(true)
+
+}
+
 func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) Obj {
 	//set_target_pos(1,x,y)
 	if len(c.Args) != 3 {

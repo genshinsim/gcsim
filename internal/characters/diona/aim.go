@@ -62,7 +62,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 
 	c.Core.QueueAttack(ai,
-		combat.NewDefSingleTarget(1, combat.TargettableEnemy),
+		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 		a.AnimationLength,
 		a.AnimationLength+travel,
 	)

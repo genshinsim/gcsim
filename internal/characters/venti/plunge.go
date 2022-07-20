@@ -45,7 +45,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		Mult:           highPlunge[c.TalentLvlAttack()],
 		IgnoreInfusion: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), highPlungeHitmark, highPlungeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), highPlungeHitmark, highPlungeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),

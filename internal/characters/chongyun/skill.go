@@ -42,7 +42,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.09 * 60,
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 0, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, skillHitmark)
 
 	c.Core.QueueParticle("chongyun", 4, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
 
@@ -83,7 +83,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.a4Snap = &combat.AttackEvent{
 		Info:     ai,
 		Snapshot: snap,
-		Pattern:  combat.NewDefCircHit(3, false, combat.TargettableEnemy),
+		Pattern:  combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy),
 	}
 	c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, cb)
 

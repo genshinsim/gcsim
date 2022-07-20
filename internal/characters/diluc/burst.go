@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 1)
 
 		//TODO: the timing of what the ticks come out may be affected by hit lag so this needs to be
 		//rewritten
@@ -78,13 +78,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai.Abil = "Dawn (Tick)"
 		ai.Mult = burstDOT[c.TalentLvlBurst()]
 		for i := 1; i <= dot; i++ {
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, i+12)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, i+12)
 		}
 
 		if explode > 0 {
 			ai.Abil = "Dawn (Explode)"
 			ai.Mult = burstExplode[c.TalentLvlBurst()]
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 110)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 110)
 		}
 	}, burstHitmark)
 

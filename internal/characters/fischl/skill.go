@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai.Mult += 2
 	}
 	//hitmark is 5 frames after oz spawns
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillOzSpawn, skillOzSpawn+5)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillOzSpawn, skillOzSpawn+5)
 
 	//set on field oz to be this one
 	c.Core.Tasks.Add(func() {
@@ -80,7 +80,7 @@ func (c *char) queueOz(src string) {
 	c.ozSnapshot = combat.AttackEvent{
 		Info:        ai,
 		Snapshot:    snap,
-		Pattern:     combat.NewDefSingleTarget(1, combat.TargettableEnemy),
+		Pattern:     combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 		SourceFrame: c.Core.F,
 	}
 	c.Core.Tasks.Add(c.ozTick(c.Core.F), 60)

@@ -69,7 +69,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.3, false, combat.TargettableEnemy), hitmark, hitmark)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), hitmark, hitmark)
 	}
 
 	//aoe dmg
@@ -86,7 +86,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		IgnoreInfusion: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	// a1 if applies
 	if c.a1Ele != attributes.NoElement {
@@ -103,7 +103,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			IgnoreInfusion: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), hitmark-1, hitmark-1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), hitmark-1, hitmark-1)
 		c.a1Ele = attributes.NoElement
 	}
 

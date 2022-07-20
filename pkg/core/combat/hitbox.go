@@ -53,7 +53,7 @@ func NewDefBoxHit(w, h float64, self bool, targets ...TargettableType) AttackPat
 	}
 }
 
-func NewCircleHit(x, y, r float64, self bool, targets ...TargettableType) AttackPattern {
+func NewCircleHit(trg Positional, r float64, self bool, targets ...TargettableType) AttackPattern {
 	var arr [TargettableTypeCount]bool
 
 	for _, v := range targets {
@@ -61,6 +61,7 @@ func NewCircleHit(x, y, r float64, self bool, targets ...TargettableType) Attack
 			arr[v] = true
 		}
 	}
+	x, y := trg.Pos()
 
 	return AttackPattern{
 		Shape: &Circle{

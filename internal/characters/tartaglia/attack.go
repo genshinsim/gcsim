@@ -51,7 +51,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(1, combat.TargettableEnemy),
+		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)
@@ -98,7 +98,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefCircHit(.5, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), .5, false, combat.TargettableEnemy),
 			meleeHitmarks[c.NormalCounter][i],
 			meleeHitmarks[c.NormalCounter][i],
 			//TODO: what's the ordering on these 2 callbacks?

@@ -120,7 +120,7 @@ func New(input string) *Parser {
 			},
 		},
 		PlayerPos: core.Coord{
-			R: 1, //default player radius 1
+			R: 1, //default player radius 1, pos 0,0
 		},
 	}
 	//expr functions

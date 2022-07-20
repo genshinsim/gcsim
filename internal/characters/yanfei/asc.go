@@ -52,7 +52,7 @@ func (c *char) a4() {
 			HitlagFactor:       0.05,
 			CanBeDefenseHalted: true,
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
 
 		return false
 	}, "yanfei-a4")

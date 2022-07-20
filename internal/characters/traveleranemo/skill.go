@@ -41,7 +41,7 @@ func (c *char) SkillPress() action.ActionInfo {
 		Durability: 25,
 		Mult:       skillInitialStorm[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
@@ -85,13 +85,13 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	hitmark := firstTick
 	for i := 0; i < holdTicks; i += 1 {
 
-		c.Core.QueueAttack(aiCut, combat.NewDefCircHit(1, false, combat.TargettableEnemy), hitmark, hitmark)
+		c.Core.QueueAttack(aiCut, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
 		if i > 1 {
 			c.Core.Tasks.Add(func() {
 				if c.eInfuse != attributes.NoElement {
 					aiMaxCutAbs.Element = c.eInfuse
 					aiMaxCutAbs.ICDTag = c.eICDTag
-					c.Core.QueueAttack(aiMaxCutAbs, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 0, 0)
+					c.Core.QueueAttack(aiMaxCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, 0)
 				}
 				//check if infused
 			}, hitmark)
@@ -100,7 +100,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				if c.eInfuse != attributes.NoElement {
 					aiCutAbs.Element = c.eInfuse
 					aiCutAbs.ICDTag = c.eICDTag
-					c.Core.QueueAttack(aiCutAbs, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 0, 0)
+					c.Core.QueueAttack(aiCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, 0)
 				}
 				//check if infused
 			}, hitmark)
@@ -155,12 +155,12 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 	}
 
-	c.Core.QueueAttack(aiStorm, combat.NewDefCircHit(2, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(aiStorm, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
 	c.Core.Tasks.Add(func() {
 		if c.eInfuse != attributes.NoElement {
 			aiStormAbs.Element = c.eInfuse
 			aiStormAbs.ICDTag = c.eICDTag
-			c.Core.QueueAttack(aiStormAbs, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(aiStormAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, 0)
 		}
 		//check if infused
 	}, hitmark)

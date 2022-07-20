@@ -48,6 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		trg := args[0].(combat.Target)
 
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -73,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Durability: 100,
 			Mult:       1.25,
 		}
-		c.QueueAttack(ai, combat.NewDefCircHit(2, true, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 2, true, combat.TargettableEnemy), 0, 1)
 
 		icd = c.F + cd
 

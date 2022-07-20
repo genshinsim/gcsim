@@ -74,7 +74,7 @@ func (p *Parser) Parse() (*ActionList, error) {
 		p.res.Errors = append(p.res.Errors, fmt.Errorf("config does not contain active char"))
 	}
 
-	//set some sane defaults
+	//set some sane defaults; leave pos default to 0,0
 	for i := range p.res.Targets {
 		if p.res.Targets[i].Pos.R == 0 {
 			p.res.Targets[i].Pos.R = 1

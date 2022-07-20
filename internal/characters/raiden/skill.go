@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	//activate eye
 	c.Core.Status.Add("raidenskill", 1500+skillHitmark)
@@ -118,7 +118,7 @@ func (c *char) eyeOnDamage() {
 		if c.Base.Cons >= 2 && c.StatusIsActive(burstKey) {
 			ai.IgnoreDefPercent = 0.6
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 5, 5)
 
 		c.eyeICD = c.Core.F + 54 //0.9 sec icd
 		return false

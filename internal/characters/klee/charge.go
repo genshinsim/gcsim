@@ -45,7 +45,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Write("icd", c.sparkICD)
 	}
 
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(2, false, combat.TargettableEnemy), chargeHitmark+travel)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), chargeHitmark+travel)
 
 	c.c1(chargeHitmark + travel)
 

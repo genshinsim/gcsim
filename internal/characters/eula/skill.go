@@ -108,7 +108,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 			c.particleDone = true
 		}
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), skillPressHitmark, skillPressHitmark, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), skillPressHitmark, skillPressHitmark, cb)
 
 	c.SetCDWithDelay(action.ActionSkill, 60*4, 16)
 
@@ -149,7 +149,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			c.particleDone = true
 		}
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), skillHoldHitmark, skillHoldHitmark, energyCB)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), skillHoldHitmark, skillHoldHitmark, energyCB)
 
 	v := c.currentGrimheartStacks()
 
@@ -197,7 +197,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			//per shizuka first swirl is not affected by hitlag?
 			c.Core.QueueAttack(
 				icewhirlAI,
-				combat.NewDefCircHit(1.5, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy),
 				icewhirlHitmarks[i],
 				icewhirlHitmarks[i],
 				shredCB,
@@ -207,7 +207,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 				//spacing it out for stacks
 				c.Core.QueueAttack(
 					icewhirlAI,
-					combat.NewDefCircHit(1.5, false, combat.TargettableEnemy),
+					combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy),
 					0,
 					0,
 					shredCB,
@@ -229,7 +229,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,
 		}
-		c.Core.QueueAttack(a2ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), 108, 108)
+		c.Core.QueueAttack(a2ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 108, 108)
 	}
 
 	//c1 add debuff

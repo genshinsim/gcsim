@@ -32,7 +32,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	for i, mult := range ca {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	return action.ActionInfo{

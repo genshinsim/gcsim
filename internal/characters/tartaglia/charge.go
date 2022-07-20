@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefCircHit(1, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 			c.meleeApplyRiptide, //call back for applying riptide

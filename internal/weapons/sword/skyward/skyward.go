@@ -89,7 +89,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Durability: 100,
 			Mult:       dmgper,
 		}
-		c.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0, 1)
+		trg := args[0].(combat.Target)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 0.1, false, combat.TargettableEnemy), 0, 1)
 		return false
 
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))

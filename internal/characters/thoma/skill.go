@@ -46,10 +46,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.genShield("Thoma Skill", shieldamt)
 
 	// damage component not final
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	//TODO: self infusion timing? set at hitmark for now for 0.5s
-	player, ok := c.Core.Combat.Target(0).(*avatar.Player)
+	player, ok := c.Core.Combat.Player().(*avatar.Player)
 	if !ok {
 		panic("target 0 should be Player but is not!!")
 	}

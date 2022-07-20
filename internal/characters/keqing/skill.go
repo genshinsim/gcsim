@@ -52,7 +52,7 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	if c.Base.Cons >= 6 {
 		c.c6("skill")
@@ -87,7 +87,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillRecastHitmark, skillRecastHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillRecastHitmark, skillRecastHitmark)
 
 	//add electro infusion
 	c.a1()
@@ -110,7 +110,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		}
 		// TODO: this should be 1st hit on cast and 2nd at end
 		for i := 0; i < hits; i++ {
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), skillRecastHitmark, skillRecastHitmark)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillRecastHitmark, skillRecastHitmark)
 		}
 	}
 

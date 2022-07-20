@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			ai.Durability = 50
 		}
 
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, skillStart+30+i*40, c.a1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, skillStart+30+i*40, c.a1)
 	}
 
 	if bounce > 0 {
@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	//roughly 160 frames after mines are laid
 	for i := 0; i < minehits; i++ {
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, skillStart+160, c.c2)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, skillStart+160, c.c2)
 	}
 
 	c.c1(skillStart + 30)

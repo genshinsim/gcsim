@@ -38,7 +38,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewDefCircHit(5, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
 			//TODO: skill damage frames
 			0,
 		)
@@ -123,7 +123,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewDefCircHit(3.5, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy),
 			//TODO: skill damage frames
 			1,
 		)

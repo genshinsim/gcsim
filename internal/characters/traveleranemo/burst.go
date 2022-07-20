@@ -59,7 +59,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < 9; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 94+30*i, cb)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 94+30*i, cb)
 
 		c.Core.Tasks.Add(func() {
 			if c.qInfuse != attributes.NoElement {
@@ -68,7 +68,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				if c.Base.Cons >= 6 {
 					cbAbs = c6cb(c.qInfuse)
 				}
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 0, cbAbs)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, cbAbs)
 			}
 			//check if infused
 		}, 94+30*i)

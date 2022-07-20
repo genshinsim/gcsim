@@ -47,8 +47,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.a4Counter = 0
 
-	x, y := c.Core.Combat.Target(0).Pos()
-	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	//center on player
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	if c.Base.Cons >= 4 {
 		c.Core.Tasks.Add(func() {
@@ -83,6 +83,6 @@ func (c *char) explodeShield() {
 		Mult:       4,
 	}
 
-	x, y := c.Core.Combat.Target(0).Pos()
-	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 4, false, combat.TargettableEnemy), 0, 0)
+	//center on player
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), 0, 0)
 }

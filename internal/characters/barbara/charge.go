@@ -63,7 +63,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(ai,
-		combat.NewDefCircHit(2, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 		0,
 		chargeHitmark,
 		cb,

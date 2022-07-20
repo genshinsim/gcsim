@@ -34,7 +34,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark+travel)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark+travel)
 
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -51,7 +51,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < c.Tags["jade"]; i++ {
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark+travel)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark+travel)
 	}
 	c.Tags["jade"] = 0
 

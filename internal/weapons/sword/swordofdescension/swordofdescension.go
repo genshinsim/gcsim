@@ -82,8 +82,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Durability: 100,
 			Mult:       2.00,
 		}
-
-		c.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 1)
+		trg := args[0].(combat.Target)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 2, false, combat.TargettableEnemy), 0, 1)
 
 		return false
 	}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))

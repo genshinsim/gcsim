@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewDefCircHit(5, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
 			//TODO: skill damage frames
 			0,
 		)

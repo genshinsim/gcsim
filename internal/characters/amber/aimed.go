@@ -52,11 +52,11 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Mult:         aim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(1, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel, c.a4)
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel, c.a4)
 
 	if c.Base.Cons >= 1 {
 		ai.Mult = .2 * ai.Mult
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(1, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
 	}
 
 	return action.ActionInfo{

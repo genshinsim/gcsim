@@ -45,7 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		//on icicle collision, it'll trigger an aoe dmg with radius 2
 		//in effect, every target gets hit every time icicles rotate around
 		for j := burstStart + offset*i; j < burstStart+480; j += 120 {
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(2, false, combat.TargettableEnemy), j)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), j)
 		}
 	}
 

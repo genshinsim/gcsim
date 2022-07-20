@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.c4completed = false
 		c4cb = c.c4
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), skillHitmark, skillHitmark, c4cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), skillHitmark, skillHitmark, c4cb)
 
 	// A1 activation
 	// When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT RATE increases by 12% for 5s.
@@ -80,7 +80,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 	//second hit is 14 frames after the first
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), skillHitmark+14, skillHitmark+14)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), skillHitmark+14, skillHitmark+14)
 
 	// Particles are emitted after the second hit lands
 	c.Core.QueueParticle("rosaria", 3, attributes.Cryo, skillHitmark+14+c.Core.Flags.ParticleDelay)

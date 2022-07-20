@@ -35,7 +35,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c.NormalHitNum = normalHitNum
 	c.CharZone = character.ZoneInazuma
 
-	c.infuseCheckLocation = combat.NewDefCircHit(1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
 
 	w.Character = &c
 

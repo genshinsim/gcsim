@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				done = true
 				c.Core.QueueParticle("xiangling", 1, attributes.Pyro, c.Core.Flags.ParticleDelay)
 			}
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 10, c.c1, part)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 10, c.c1, part)
 			c.guoba.pyroWindowStart = c.Core.F
 			c.guoba.pyroWindowEnd = c.Core.F + 20
 		}, delay+i*100-10) //10 frame window to swirl

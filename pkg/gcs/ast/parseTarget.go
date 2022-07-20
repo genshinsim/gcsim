@@ -16,7 +16,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "pos":
+			case "pos": //pos will end up defaulting to 0,0 if not set
 				//pos=1.00,2,00
 				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {

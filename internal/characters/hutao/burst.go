@@ -54,8 +54,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Write("new_duration", c.Core.Status.Duration("paramita"))
 	}
 
+	var bbcb combat.AttackCBFunc
+
 	if c.Core.Status.Duration("paramita") > 0 && c.Base.Cons >= 2 {
-		c.applyBB()
+		bbcb = c.applyBB
 	}
 
 	//TODO: apparently damage is based on stats on contact, not at cast
@@ -70,7 +72,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       mult,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark, burstHitmark, bbcb)
 
 	c.ConsumeEnergy(68)
 	c.SetCDWithDelay(action.ActionBurst, 900, 62)

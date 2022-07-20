@@ -34,7 +34,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	if c.Core.Status.Duration(stilettoKey) > 0 {
@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Mult:       skillCA[c.TalentLvlSkill()],
 		}
 		for i := 0; i < 2; i++ {
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 		}
 
 		// TODO: Particle timing?

@@ -50,7 +50,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 3)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 3)
 
 	// Fuufuu Whirlwind Kick Press DMG
 	ai = combat.AttackInfo{
@@ -66,7 +66,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		HitlagFactor:     0.05,
 	}
 	snap = c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 28)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 28)
 
 	//TODO: this delay used to be 73?
 	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressHitmark+c.Core.Flags.ParticleDelay)
@@ -86,7 +86,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	c.eInfused = attributes.NoElement
 	c.eInfusedTag = combat.ICDTagNone
 	c.eDuration = c.Core.F + 18 + duration + 20
-	c.infuseCheckLocation = combat.NewDefCircHit(0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableObject)
 	c.c2Bonus = .0
 
 	// ticks
@@ -123,7 +123,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		HitlagFactor:     0.05,
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 18+duration+20)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 18+duration+20)
 
 	//TODO: this delay used to be 73
 	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillHoldHitmark+c.Core.Flags.ParticleDelay)
@@ -160,7 +160,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 
 	return (&combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewDefCircHit(0.5, false, combat.TargettableEnemy),
+		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})
@@ -221,7 +221,7 @@ func (c *char) rollAbsorb() {
 				Durability: 25,
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
 		case combat.AttackTagElementalArtHold:
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
@@ -233,7 +233,7 @@ func (c *char) rollAbsorb() {
 				Durability: 25,
 				Mult:       skillAbsorbEnd[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
 		}
 
 		return false

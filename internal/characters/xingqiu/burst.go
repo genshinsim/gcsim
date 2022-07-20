@@ -121,7 +121,7 @@ func (c *char) summonSwordWave() {
 	}
 
 	for i := 0; i < c.numSwords; i++ {
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 20, 20, c2cb, c6cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 20, 20, c2cb, c6cb)
 		c6cb = nil
 		c.burstCounter++
 	}

@@ -53,7 +53,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(1, combat.TargettableEnemy),
+		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 		aimedHitmark-skip,
 		aimedHitmark-skip+travel,
 	)
@@ -76,7 +76,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		//TODO: snapshot?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefCircHit(2, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 			aimedHitmark-skip,
 			aimedHitmark-skip+travel+90,
 			c.a4,

@@ -45,7 +45,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
+			combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 			attackHitmarks[c.NormalCounter]+i,
 			attackHitmarks[c.NormalCounter]+i+travel)
 	}

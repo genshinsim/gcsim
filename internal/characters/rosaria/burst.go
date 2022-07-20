@@ -40,10 +40,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: false,
 	}
-	x, y := c.Core.Combat.Target(0).Pos()
 	// Hit 1 comes out on frame 15
 	// 2nd hit comes after lance drop animation finishes
-	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 1, false, combat.TargettableEnemy), 15, 15, c.c6)
+	// center on player
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 15, 15, c.c6)
 
 	ai.Abil = "Rites of Termination (Hit 2)"
 	ai.Mult = burst[1][c.TalentLvlBurst()]
@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai.HitlagHaltFrames = 0
 
 	//lance lands at 60f/1s
-	c.Core.QueueAttack(ai, combat.NewCircleHit(0, 0, 2, false, combat.TargettableEnemy), 60, 60, c.c6)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 60, 60, c.c6)
 
 	//duration is 8 second (extended by c2 by 4s), + 0.5
 	//should be a deployable
@@ -75,7 +75,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		// dot every 2 second after lance lands
 		for i := 120; i < dur; i += 120 {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(0, 0, 2, false, combat.TargettableEnemy), 0, i, c.c6)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, i, c.c6)
 		}
 	}, 60)
 

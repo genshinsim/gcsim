@@ -57,7 +57,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Mult:       skillMain[c.TalentLvlSkill()],
 		}
 		c.coilStacks()
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, 0)
 	}, skillHitmark)
 
 	// Bomblets snapshot on cast
@@ -75,7 +75,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0,
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 0,
 			skillHitmark+delay+((i+1)*6))
 	}
 

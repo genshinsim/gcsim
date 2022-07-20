@@ -34,7 +34,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c.Weapon.Class = weapon.WeaponClassCatalyst
 	c.NormalHitNum = normalHitNum
 
-	c.infuseCheckLocation = combat.NewDefCircHit(0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
 
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)
