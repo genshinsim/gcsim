@@ -27,6 +27,7 @@ func (c *char) addJadeShield() {
 			if !ok {
 				continue
 			}
+			//this is based on shield duration which has nothing to do with hitlag
 			e.AddResistMod(enemy.ResistMod{
 				Base:  modifier.NewBase(key, 1200),
 				Ele:   v,
