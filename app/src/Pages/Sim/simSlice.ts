@@ -176,8 +176,8 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
         dispatch(simActions.setCfgErr(""));
         //if successful then we're going to update the team based on the parsed results
         let team: Character[] = [];
-        if (res.characters.profile) {
-          team = res.characters.profile.map((c) => {
+        if (res.characters) {
+          team = res.characters.map((c) => {
             return {
               name: c.base.key,
               level: c.base.level,
@@ -194,6 +194,14 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
         }
         console.log("updating team: ", team);
         dispatch(simActions.setTeam(team));
+        //check if there are any warning msgs
+        if (res.errors) {
+          let msg = ""
+          res.errors.forEach(err => {
+            msg += err + "\n"
+          })
+          dispatch(simActions.setCfgErr(msg))
+        }
       },
       (err) => {
         //set error state
