@@ -104,7 +104,8 @@ export default function Share(props: ShareProps) {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`https://gcsim.app/viewer/share/${url}`).then(
+    //temprorary
+    navigator.clipboard.writeText(`https://next.gcsim-app.pages.dev/viewer/share/${url}`).then(
       () => {
         AppToaster.show({
           message: t("viewer.copied_to_clipboard"),
@@ -178,7 +179,7 @@ export default function Share(props: ShareProps) {
                 <Trans>viewer.link_post</Trans>
               </span>
               <div className="p-2 rounded-md bg-green-700">
-                <pre>{`https://gcsim.app/viewer/share/${url}`}</pre>
+                <pre>{`https://next.gcsim-app.pages.dev/viewer/share/${url}`}</pre>
               </div>
               <Button
                 intent="success"
