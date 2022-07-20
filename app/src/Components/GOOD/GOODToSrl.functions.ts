@@ -203,6 +203,8 @@ export function GOODKeytoGCSIMKey(
       return "yaemiko";
     case "AratakiItto":
       return "itto";
+    case "ShikanoinHeizou":
+      return "heizou";
   }
 
   const result = goodKey

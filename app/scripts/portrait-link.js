@@ -74,6 +74,7 @@ const names = [
   "ayato",
   "yelan",
   "kuki",
+  "heizou",
 ];
 
 const travelers = [

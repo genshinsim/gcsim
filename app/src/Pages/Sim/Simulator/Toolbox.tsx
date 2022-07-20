@@ -9,6 +9,7 @@ import {
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import ImportFromEnkaDialog from "~src/Components/Enka/ImportFromEnkaDialog";
 import { ImportFromGOODDialog } from "~src/Components/GOOD";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
 import { SimWorkerOptions } from "../Components";
@@ -30,7 +31,9 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
         showBuilder: state.sim.showBuilder,
       };
     });
-  const [openImport, setOpenImport] = React.useState<boolean>(false);
+  const [openImport, setOpenGOODImport] = React.useState<boolean>(false);
+  const [openImportFromEnka, setOpenImportFromEnka] =
+    React.useState<boolean>(false);
   const [openProgress, setOpenProgress] = React.useState<boolean>(false);
   const [openWorkers, setOpenWorkers] = React.useState<boolean>(false);
 
@@ -67,7 +70,12 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
       <MenuItem
         text="Import from GO"
         icon="import"
-        onClick={() => setOpenImport(true)}
+        onClick={() => setOpenGOODImport(true)}
+      />
+      <MenuItem
+        text="Import from Enka"
+        icon="import"
+        onClick={() => setOpenImportFromEnka(true)}
       />
     </Menu>
   );
@@ -107,7 +115,11 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
       />
       <ImportFromGOODDialog
         isOpen={openImport}
-        onClose={() => setOpenImport(false)}
+        onClose={() => setOpenGOODImport(false)}
+      />
+      <ImportFromEnkaDialog
+        isOpen={openImportFromEnka}
+        onClose={() => setOpenImportFromEnka(false)}
       />
       <SimWorkerOptions
         isOpen={openWorkers}
