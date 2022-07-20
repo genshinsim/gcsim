@@ -76,6 +76,9 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		ax := ai
 		ax.Mult = mult[c.TalentLvlBurst()]
 		ax.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
+		if i < len(chargeSword) - 1 { // Only the last hit has hitlag
+			ax.HitlagHaltFrames = 0
+		}
 		if c.Base.Cons >= 2 {
 			ai.IgnoreDefPercent = .6
 		}
