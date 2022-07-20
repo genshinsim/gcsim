@@ -28,7 +28,7 @@ func Eval(s string, log *log.Logger) {
 	}
 
 	if len(res.Errors) != 0 {
-		fmt.Println("Errors encountered parsing program:")
+		fmt.Println("Errors encountered in config:")
 		for _, v := range res.Errors {
 			fmt.Printf("\t%v\n", v)
 		}

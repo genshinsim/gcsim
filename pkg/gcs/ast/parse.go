@@ -44,6 +44,7 @@ func (t Token) precedence() precedence {
 	return Lowest
 }
 
+//Parse returns the ActionList and any error that prevents the ActionList from being parsed
 func (p *Parser) Parse() (*ActionList, error) {
 	var err error
 	for state := parseRows; state != nil; {
@@ -58,8 +59,17 @@ func (p *Parser) Parse() (*ActionList, error) {
 		p.res.Errors = append(p.res.Errors, fmt.Errorf("config contains a total of %v characters; cannot exceed 4", len(p.charOrder)))
 	}
 
+	if p.res.InitialChar == keys.NoChar {
+		p.res.Errors = append(p.res.Errors, fmt.Errorf("config does not contain active char"))
+	}
+
+	initialCharFound := false
 	for _, v := range p.charOrder {
 		p.res.Characters = append(p.res.Characters, *p.chars[v])
+		//check if active is part of the team
+		if v == p.res.InitialChar {
+			initialCharFound = true
+		}
 		//check number of set
 		count := 0
 		for _, c := range p.chars[v].Sets {
@@ -70,8 +80,8 @@ func (p *Parser) Parse() (*ActionList, error) {
 		}
 	}
 
-	if p.res.InitialChar == keys.NoChar {
-		p.res.Errors = append(p.res.Errors, fmt.Errorf("config does not contain active char"))
+	if !initialCharFound {
+		p.res.Errors = append(p.res.Errors, fmt.Errorf("active char %v not found in team", p.res.InitialChar))
 	}
 
 	//set some sane defaults; leave pos default to 0,0
@@ -94,8 +104,8 @@ func parseRows(p *Parser) (parseFn, error) {
 			//set up char and set key
 			key, ok := shortcut.CharNameToKey[n.Val]
 			if !ok {
-				//TODO: better err handling
-				panic("invalid char key " + n.Val)
+				//this would never happen
+				return nil, fmt.Errorf("ln%v: unexpected error; invalid char key %v", n.line, n.Val)
 			}
 			if _, ok := p.chars[key]; !ok {
 				p.newChar(key)
@@ -106,7 +116,10 @@ func parseRows(p *Parser) (parseFn, error) {
 		p.backup()
 		//parse action item
 		// return parseProgram, nil
-		node := p.parseStatement()
+		node, err := p.parseStatement()
+		if err != nil {
+			return nil, err
+		}
 		p.res.Program.append(node)
 		return parseRows, nil
 	case keywordActive:
@@ -114,12 +127,12 @@ func parseRows(p *Parser) (parseFn, error) {
 		//next should be char then end line
 		char, err := p.consume(itemCharacterKey)
 		if err != nil {
-			panic("invalid char key after active: " + char.Val)
+			return nil, fmt.Errorf("ln%v: setting active char: invalid char %v", char.line, char.Val)
 		}
 		p.res.InitialChar = shortcut.CharNameToKey[char.Val]
 		n, err := p.consume(itemTerminateLine)
 		if err != nil {
-			panic("expecting ; after active <char> got " + n.Val)
+			return nil, fmt.Errorf("ln%v: expecting ; after active <char>, got %v", n.line, n.Val)
 		}
 		return parseRows, nil
 	case keywordTarget:
@@ -134,28 +147,37 @@ func parseRows(p *Parser) (parseFn, error) {
 	case itemEOF:
 		return nil, nil
 	default: //default should be look for gcsl
-		node := p.parseStatement()
+		node, err := p.parseStatement()
 		p.res.Program.append(node)
+		if err != nil {
+			return nil, err
+		}
 		return parseRows, nil
 	}
 }
 
-func (p *Parser) parseStatement() Node {
+func (p *Parser) parseStatement() (Node, error) {
 	//some statements end in semi, other don't
 	hasSemi := true
+	stmtType := ""
 	var node Node
+	var err error
 	switch n := p.peek(); n.Typ {
 	case keywordBreak:
 		fallthrough
 	case keywordFallthrough:
 		fallthrough
 	case keywordContinue:
+		stmtType = "continue"
 		node = p.parseCtrl()
 	case keywordLet:
-		node = p.parseLet()
+		stmtType = "let"
+		node, err = p.parseLet()
 	case itemCharacterKey:
+		stmtType = "char action"
 		node = p.parseAction()
 	case keywordReturn:
+		stmtType = "return"
 		node = p.parseReturn()
 	case keywordIf:
 		node = p.parseIf()
@@ -186,29 +208,29 @@ func (p *Parser) parseStatement() Node {
 	if hasSemi {
 		n, err := p.consume(itemTerminateLine)
 		if err != nil {
-			panic("expecting ; got " + n.String())
+			return nil, fmt.Errorf("ln %v: expecting ; at end of %v statement, got %v", n.line, stmtType, n.Val)
 		}
 	}
-	return node
+	return node, err
 }
 
-func (p *Parser) parseLet() Stmt {
+func (p *Parser) parseLet() (Stmt, error) {
 	//var ident = expr;
 	n := p.next()
 
 	ident, err := p.consume(itemIdentifier)
 	if err != nil {
-		//next token not and identifier
-		panic("expecting ident after nil, got " + ident.String())
+		//next token not an identifier
+		return nil, fmt.Errorf("ln %v: expecting identifier after let, got %v", ident.line, ident.Val)
 	}
 
 	a, err := p.consume(itemAssign)
 	if err != nil {
 		//next token not and identifier
-		panic("expecting assign after nil, got " + a.String())
+		return nil, fmt.Errorf("ln %v: expecting = after identifier in let statement, got %v", a.line, a.Val)
 	}
 
-	expr := p.parseExpr(Lowest)
+	expr, err := p.parseExpr(Lowest)
 
 	stmt := &LetStmt{
 		Pos:   n.pos,
@@ -216,7 +238,7 @@ func (p *Parser) parseLet() Stmt {
 		Val:   expr,
 	}
 
-	return stmt
+	return stmt, err
 }
 
 // expecting ident = expr
@@ -533,7 +555,7 @@ func (p *Parser) peekValidCharAction() bool {
 }
 
 //parseBlock return a node contain and BlockStmt
-func (p *Parser) parseBlock() *BlockStmt {
+func (p *Parser) parseBlock() (*BlockStmt, error) {
 	//should be surronded by {}
 	n, err := p.consume(itemLeftBrace)
 	if err != nil {
@@ -557,34 +579,43 @@ func (p *Parser) parseBlock() *BlockStmt {
 			panic("reached end of file without }")
 		}
 		//parse statement here
-		node = p.parseStatement()
+		node, err = p.parseStatement()
+		if err != nil {
+			return nil, err
+		}
 		block.append(node)
 	}
 
 }
-func (p *Parser) parseExpr(pre precedence) Expr {
+func (p *Parser) parseExpr(pre precedence) (Expr, error) {
 	t := p.next()
 	prefix := p.prefixParseFns[t.Typ]
 	if prefix == nil {
-		return nil
+		return nil, nil
 	}
 	p.backup()
-	leftExp := prefix()
+	leftExp, err := prefix()
+	if err != nil {
+		return nil, err
+	}
 
 	for n := p.peek(); n.Typ != itemTerminateLine && pre < n.precedence(); n = p.peek() {
 		infix := p.infixParseFns[n.Typ]
 		if infix == nil {
-			return leftExp
+			return leftExp, nil
 		}
 
-		leftExp = infix(leftExp)
+		leftExp, err = infix(leftExp)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	return leftExp
+	return leftExp, nil
 }
 
 //next is an identifier
-func (p *Parser) parseIdent() Expr {
+func (p *Parser) parseIdent() (Expr, error) {
 	n := p.next()
 	return &Ident{Pos: n.pos, Value: n.Val}
 }
