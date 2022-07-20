@@ -25,15 +25,18 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Depth-Clarion Dice",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Hydro,
-		Durability: 50,
-		Mult:       0,
-		FlatDmg:    burst[c.TalentLvlBurst()] * c.MaxHP(),
+		ActorIndex:       c.Index,
+		Abil:             "Depth-Clarion Dice",
+		AttackTag:        combat.AttackTagElementalBurst,
+		ICDTag:           combat.ICDTagNone,
+		ICDGroup:         combat.ICDGroupDefault,
+		Element:          attributes.Hydro,
+		Durability:       50,
+		Mult:             0,
+		FlatDmg:          burst[c.TalentLvlBurst()] * c.MaxHP(),
+		HitlagHaltFrames: 0.05 * 60,
+		HitlagFactor:     0.05,
+		IsDeployable:     true,
 	}
 	//apply hydro every 3rd hit
 	//triggered on normal attack or yelan's skill

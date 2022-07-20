@@ -31,12 +31,11 @@ func (c *char) a1() {
 
 func (c *char) a4() {
 	started := c.Core.F
-	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		this := char
 		this.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("yelan-a4", 15*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				//char must be active
 				if c.Core.Player.Active() != this.Index {
 					return nil, false
@@ -46,8 +45,8 @@ func (c *char) a4() {
 				if dmg > 0.5 {
 					dmg = 0.5
 				}
-				m[attributes.DmgP] = dmg
-				return m, true
+				c.a4buff[attributes.DmgP] = dmg
+				return c.a4buff, true
 			},
 		})
 	}
