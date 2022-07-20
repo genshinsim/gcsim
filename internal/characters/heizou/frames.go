@@ -10,33 +10,52 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 		switch c.NormalCounter {
 		//TODO: need to add atkspd mod
 		case 0:
-			f = 18
-			a = 18
+			f = 12
+			a = 20
 		case 1:
-			f = 17
+			f = 13
 			a = 17
 		case 2:
-			f = 20
-			a = 20
+			f = 21
+			a = 45
 		case 3:
-			f = 40
-			a = 40
+			f = 27
+			a = 36
 		case 4:
-			f = 62
-			a = 62
+			f = 31
+			a = 66
 		}
 		f = int(float64(f) / (1 + c.Stat(core.AtkSpd)))
 
 		return f, a
 	case core.ActionCharge:
-		return 50, 50
+		return 24, 38
 	case core.ActionSkill:
-		//TODO: is this accurate? should it be 44 if 4 stack??
-		return 32, 32
+		h := p["hold"]
+
+		if h > 0 {
+			stacks := c.skillHoldStacks(h)
+			switch stacks {
+			case 1:
+				return 65, 84
+			case 2:
+				return 108, 128
+			case 3:
+				return 152, 172
+			case 4:
+				return 198, 219
+			default:
+				return 37, 57
+			}
+
+		}
+		return 21, 37
 	case core.ActionBurst:
-		return 68, 68
+		return 34, 71
 	case core.ActionDash:
-		return 1, 24
+		return 21, 21
+	case core.ActionJump:
+		return 30, 30
 	default:
 		c.Core.Log.NewEventBuildMsg(core.LogActionEvent, c.Index, "unknown action (invalid frames): ", a.String())
 		return 0, 0
@@ -46,64 +65,151 @@ func (c *char) ActionFrames(a core.ActionType, p map[string]int) (int, int) {
 func (c *char) InitCancelFrames() {
 
 	//normal cancels
-	c.SetNormalCancelFrames(0, core.ActionAttack, 20-2) //n1 -> next attack
-	c.SetNormalCancelFrames(0, core.ActionCharge, 0)    //n1 -> charge
-	c.SetNormalCancelFrames(0, core.ActionSkill, 17-2)  //only CA can be done before hitmark
-	c.SetNormalCancelFrames(0, core.ActionBurst, 17-2)
-	c.SetNormalCancelFrames(0, core.ActionDash, 17-2)
-	c.SetNormalCancelFrames(0, core.ActionJump, 17-2)
-	c.SetNormalCancelFrames(0, core.ActionSwap, 17-2)
+	c.SetNormalCancelFrames(0, core.ActionAttack, 20-12) //n1 -> next attack
+	c.SetNormalCancelFrames(0, core.ActionCharge, 21-12) //n1 -> charge
 
-	c.SetNormalCancelFrames(1, core.ActionAttack, 26-4) //n2 -> next attack
-	c.SetNormalCancelFrames(1, core.ActionCharge, 0)    //n2 -> charge
-	c.SetNormalCancelFrames(1, core.ActionSkill, 18-4)  //only CA can be done before hitmark
-	c.SetNormalCancelFrames(1, core.ActionBurst, 18-4)
-	c.SetNormalCancelFrames(1, core.ActionDash, 18-4)
-	c.SetNormalCancelFrames(1, core.ActionJump, 18-4)
-	c.SetNormalCancelFrames(1, core.ActionSwap, 18-4)
+	c.SetNormalCancelFrames(1, core.ActionAttack, 17-13) //n2 -> next attack
+	c.SetNormalCancelFrames(1, core.ActionCharge, 21-13) //n2 -> charge
 
-	c.SetNormalCancelFrames(2, core.ActionAttack, 33-16) //n3 -> next attack
-	c.SetNormalCancelFrames(2, core.ActionCharge, 0)     //n3 -> charge
-	c.SetNormalCancelFrames(2, core.ActionSkill, 28-16)  //only CA can be done before hitmark
-	c.SetNormalCancelFrames(2, core.ActionBurst, 28-16)
-	c.SetNormalCancelFrames(2, core.ActionDash, 28-16)
-	c.SetNormalCancelFrames(2, core.ActionJump, 28-16)
-	c.SetNormalCancelFrames(2, core.ActionSwap, 28-16)
+	c.SetNormalCancelFrames(2, core.ActionAttack, 45-21) //n3 -> next attack
+	c.SetNormalCancelFrames(2, core.ActionCharge, 46-21) //n3 -> charge
 
-	c.SetNormalCancelFrames(3, core.ActionAttack, 51-28) //n4 -> n1
-	c.SetNormalCancelFrames(3, core.ActionCharge, 42-28) //n4 -> charge
+	c.SetNormalCancelFrames(3, core.ActionAttack, 36-27) //n4 -> n5
+	c.SetNormalCancelFrames(3, core.ActionCharge, 38-27) //n4 -> charge
+
+	c.SetNormalCancelFrames(4, core.ActionAttack, 66-31) //n5 -> n1
+
 	//CA is after hitmark this time, so no need for the rest
 
-	c.SetAbilCancelFrames(core.ActionCharge, core.ActionAttack, 69-53) //charge -> n1
-	c.SetAbilCancelFrames(core.ActionCharge, core.ActionCharge, 66-53) //charge -> charge
-	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSkill, 60-53)  //charge -> skill
-	c.SetAbilCancelFrames(core.ActionCharge, core.ActionBurst, 61-53)  //charge -> burst
-	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSwap, 54-53)   //charge -> swap
+	c.SetAbilCancelFrames(core.ActionCharge, core.ActionAttack, 38-24) //charge -> n1
+	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSkill, 38-24)  //charge -> skill
+	c.SetAbilCancelFrames(core.ActionCharge, core.ActionBurst, 38-24)  //charge -> burst
+	c.SetAbilCancelFrames(core.ActionCharge, core.ActionSwap, 46-24)   //charge -> swap
 
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 49-46) //burst -> n1
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionCharge, 48-46) //burst -> charge
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 48-46)  //burst -> skill
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionDash, 47-46)   //burst -> dash
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionJump, 47-46)   //burst -> jump
-	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 47-46)   //burst -> swap
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionAttack, 71-34) //burst -> n1
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSkill, 71-34)  //burst -> skill
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionDash, 72-34)   //burst -> dash
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionJump, 70-34)   //burst -> jump
+	c.SetAbilCancelFrames(core.ActionBurst, core.ActionSwap, 69-34)   //burst -> swap
 
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionAttack, 57-11)
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionCharge, 56-11)
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSkill, 56-11)
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionBurst, 57-11)
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionDash, 0)
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionJump, 0)
-	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSwap, 56-11)
+	c.SetAbilCancelFrames(core.ActionSkill, core.ActionAttack, 37-21)
+	c.SetAbilCancelFrames(core.ActionSkill, core.ActionBurst, 37-21)
+	c.SetAbilCancelFrames(core.ActionSkill, core.ActionDash, 31-21)
+	c.SetAbilCancelFrames(core.ActionSkill, core.ActionJump, 32-21)
+	c.SetAbilCancelFrames(core.ActionSkill, core.ActionSwap, 30-21)
 
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionAttack, 24-1)
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionCharge, 24-1)
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionSkill, 0)
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionBurst, 0)
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionDash, 24-1)
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionJump, 24-1)
-	c.SetAbilCancelFrames(core.ActionDash, core.ActionSwap, 24-1)
 }
 
 func (c *char) ActionInterruptableDelay(next core.ActionType, p map[string]int) int {
+	// Provide a custom override for Heizou's Hold E varieties
+	if c.Core.LastAction.Typ == core.ActionSkill {
+		//depends on how much stacks you are waiting for
+
+		h := c.Core.LastAction.Param["hold"]
+		if h < 1 {
+			return c.Tmpl.ActionInterruptableDelay(next, p)
+		}
+
+		stacks := c.skillHoldStacks(h) //this should max out to 4 stacks
+
+		switch stacks { //determine cancel frames based on which Hold E was used
+		case 1:
+			return SkillHoldStack1Frames(next)
+		case 2:
+			return SkillHoldStack2Frames(next)
+		case 3:
+			return SkillHoldStack3Frames(next)
+		case 4:
+			return SkillHoldStack4Frames(next)
+		default:
+			return SkillHoldStack0Frames(next)
+		}
+	}
+	//otherwise use default implementation
 	return c.Tmpl.ActionInterruptableDelay(next, p)
+}
+
+func SkillHoldStack1Frames(next core.ActionType) int { //skill hold(3->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 84 - 65
+	case core.ActionBurst:
+		return 85 - 65
+	case core.ActionDash:
+		return 78 - 65
+	case core.ActionJump:
+		return 78 - 65
+	case core.ActionSwap:
+		return 77 - 65
+	default:
+		return 65 - 65
+	}
+}
+
+func SkillHoldStack2Frames(next core.ActionType) int { //skill hold(2->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 128 - 108
+	case core.ActionBurst:
+		return 127 - 108
+	case core.ActionDash:
+		return 122 - 108
+	case core.ActionJump:
+		return 123 - 108
+	case core.ActionSwap:
+		return 120 - 108
+	default:
+		return 108 - 108
+	}
+}
+
+func SkillHoldStack3Frames(next core.ActionType) int { //skill hold(1->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 172 - 152
+	case core.ActionBurst:
+		return 172 - 152
+	case core.ActionDash:
+		return 167 - 152
+	case core.ActionJump:
+		return 167 - 152
+	case core.ActionSwap:
+		return 165 - 152
+	default:
+		return 152 - 152
+	}
+}
+
+func SkillHoldStack4Frames(next core.ActionType) int { //skill hold(0->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 219 - 198
+	case core.ActionBurst:
+		return 218 - 198
+	case core.ActionDash:
+		return 212 - 198
+	case core.ActionJump:
+		return 212 - 198
+	case core.ActionSwap:
+		return 210 - 198
+	default:
+		return 198 - 198
+	}
+}
+
+func SkillHoldStack0Frames(next core.ActionType) int { //skill hold(4->4 stacks)
+	switch next {
+	case core.ActionAttack:
+		return 57 - 37
+	case core.ActionBurst:
+		return 57 - 37
+	case core.ActionDash:
+		return 53 - 37
+	case core.ActionJump:
+		return 53 - 37
+	case core.ActionSwap:
+		return 51 - 37
+	default:
+		return 37 - 37
+	}
 }

@@ -9,28 +9,7 @@ func (c *char) Burst(p map[string]int) (int, int) {
 	//tag a4
 	//first hit at 137, then 113 frames between hits
 
-	duration := 360
-	if c.Base.Cons >= 2 {
-		duration = 480
-	}
-
 	c.burstTaggedCount = 0
-
-	c.Core.Status.AddStatus("heizouburst", duration)
-	ai := core.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Fudou Style Vacuum Slugger",
-		AttackTag:  core.AttackTagElementalBurst,
-		ICDTag:     core.ICDTagNone,
-		ICDGroup:   core.ICDGroupDefault,
-		StrikeType: core.StrikeTypeDefault,
-		Element:    core.Anemo,
-		Durability: 25,
-		Mult:       burst[c.TalentLvlBurst()],
-	}
-	//TODO: does heizou burst snapshot?
-	snap := c.Snapshot(&ai)
-
 	burstCB := func(a core.AttackCB) {
 		//check if enemy
 		if a.Target.Type() != core.TargettableEnemy {
@@ -47,8 +26,34 @@ func (c *char) Burst(p map[string]int) (int, int) {
 		}
 		c.irisDmg(a.Target)
 	}
+	auraCheck := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Windmuster Iris (Aura check)",
+		AttackTag:  core.AttackTagWindmusterAuraCheck,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		Element:    core.Physical,
+		Durability: 0,
+		Mult:       0,
+		NoImpulse:  true,
+	}
+	c.Core.Combat.QueueAttack(auraCheck, core.NewDefCircHit(4, false, core.TargettableEnemy), f, f, burstCB)
 
-	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f, burstCB)
+	ai := core.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Fudou Style Vacuum Slugger",
+		AttackTag:  core.AttackTagElementalBurst,
+		ICDTag:     core.ICDTagNone,
+		ICDGroup:   core.ICDGroupDefault,
+		StrikeType: core.StrikeTypeDefault,
+		Element:    core.Anemo,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	//TODO: does heizou burst snapshot?
+	snap := c.Snapshot(&ai)
+
+	c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(5, false, core.TargettableEnemy), f)
 
 	//TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(core.ActionBurst, 720)
@@ -61,7 +66,6 @@ func (c *char) Burst(p map[string]int) (int, int) {
 //This Windmuster Iris will explode after a moment and dissipate,
 //dealing AoE DMG of the corresponding aforementioned elemental type.
 func (c *char) irisDmg(t core.Target) {
-
 	//TODO: does burst iris snapshot
 	aiAbs := core.AttackInfo{
 		ActorIndex: c.Index,
@@ -74,9 +78,8 @@ func (c *char) irisDmg(t core.Target) {
 		Durability: 25,
 		Mult:       burstIris[c.TalentLvlBurst()],
 	}
-	//TODO: Iris timing; looks to be 0.6s after hitmark
 	x, y := t.Shape().Pos()
-
+	snap := c.Snapshot(&aiAbs)
 	switch ele := t.AuraType(); ele {
 	case core.Pyro, core.Hydro, core.Electro, core.Cryo:
 		aiAbs.Element = ele
@@ -94,6 +97,6 @@ func (c *char) irisDmg(t core.Target) {
 		return
 	}
 
-	c.Core.Combat.QueueAttack(aiAbs, core.NewCircleHit(x, y, 2.5, false, core.TargettableEnemy), 1, 1)
+	c.Core.Combat.QueueAttackWithSnap(aiAbs, snap, core.NewCircleHit(x, y, 2.5, false, core.TargettableEnemy), 40) //if any of this is wrong blame Koli
 
 }

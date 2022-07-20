@@ -16,6 +16,20 @@ func (c *char) skillHoldDuration(stacks int) int {
 	return 45 * diff
 }
 
+func (c *char) skillHoldStacks(stacks int) int {
+	//animation duration only
+	//diff is the number of stacks we must charge up to reach the desired state
+	diff := stacks - c.decStack
+	if diff < 0 {
+		diff = 0
+	}
+	if diff > 4 {
+		diff = 4
+	}
+	//it's .75s per stack
+	return diff
+}
+
 func (c *char) addDecStack() {
 	if c.decStack < 4 {
 		c.decStack++
@@ -45,10 +59,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	dur := c.skillHoldDuration(stacks) //this should max out to 3s
 
 	//queue task to increase stacks every 0.75s up to dur
-	for i := 45; i <= dur; i++ {
+	for i := 45; i <= dur; i += 45 {
 		c.Core.Tasks.Add(func() {
 			c.addDecStack()
-		}, skillChargeStart+i*45)
+		}, skillChargeStart+i)
 	}
 
 	//queue the attack as a task that goes through at the end of the animation; check for stacks then
@@ -97,10 +111,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		//ok to reset stacks now
 		c.resetDecStack()
 		c.Core.Combat.QueueAttackWithSnap(ai, snap, core.NewDefCircHit(3, false, core.TargettableEnemy), 0, a4cb)
-	}, skillChargeStart+dur+f)
+	}, f)
 	//TODO: Verify attack frame
 
 	c.SetCD(core.ActionSkill, eCD)
 
-	return skillChargeStart + dur + f, a
+	return f, a
 }
