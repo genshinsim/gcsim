@@ -71,7 +71,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	//and that subsequent shield generation should increase duation only
 	//TODO: need to look into maybe additional paw hits actually create "new" shields?
 	pawCB := func(done bool) combat.AttackCBFunc {
-		return func(acb combat.AttackCB) {
+		return func(_ combat.AttackCB) {
 			if done {
 				return
 			}

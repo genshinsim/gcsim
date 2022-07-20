@@ -113,7 +113,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 // clear klee burst when she leaves the field and handle c4
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		// check if burst is active
 		if c.Core.Status.Duration("kleeq") <= 0 {
 			return false

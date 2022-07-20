@@ -10,7 +10,7 @@ import (
 const a2ICDKey = "noelle-a2-icd"
 
 func (c *char) a2() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 		if c.StatusIsActive(a2ICDKey) {
 			return false
 		}

@@ -34,7 +34,7 @@ func (c *char) c1() {
 //TOOD: c2 missing
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 		if c.Core.F < c.c4icd && c.c4icd != 0 {
 			return false
 		}

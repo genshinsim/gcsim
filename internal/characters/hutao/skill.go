@@ -146,7 +146,7 @@ func (c *char) ppHook() {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		c.Core.Status.Delete("paramita")
 		return false
 	}, "hutao-exit")

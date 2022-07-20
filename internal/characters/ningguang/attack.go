@@ -40,7 +40,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		if done {
 			return
 		}

@@ -142,7 +142,7 @@ func (c *char) rushingIce() {
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", 600),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == combat.AttackTagNormal {
 				return val, true
 			}
@@ -177,7 +177,7 @@ func (c *char) coilMod() {
 	val := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("aloy-coil-stacks", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == combat.AttackTagNormal && c.coils > 0 {
 				val[attributes.DmgP] = skillCoilNABonus[c.coils-1][c.TalentLvlSkill()]
 				return val, true

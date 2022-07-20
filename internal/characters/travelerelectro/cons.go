@@ -58,7 +58,7 @@ func (c *char) c6Damage(ai *combat.AttackEvent) {
 // World-Shaker
 //  [..] and will restore an additional 1 Energy to the current character.
 func (c *char) c6Energy() combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+	return func(_ combat.AttackCB) {
 		if c.burstC6WillGiveEnergy {
 			active := c.Core.Player.ActiveChar()
 			active.AddEnergy("travelerelectro-c6", 1)

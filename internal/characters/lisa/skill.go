@@ -115,7 +115,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	count := 0
 	var c1cb func(a combat.AttackCB)
 	if c.Base.Cons > 0 {
-		c1cb = func(a combat.AttackCB) {
+		c1cb = func(_ combat.AttackCB) {
 			if count == 5 {
 				return
 			}

@@ -13,7 +13,7 @@ func (c *char) c1() {
 	m[attributes.DmgP] = 0.15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("diluc-c1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if t.HP()/t.MaxHP() > 0.5 {
 				return m, true
 			}
@@ -31,7 +31,7 @@ func (c *char) c2() {
 	c.c2buff = make([]float64, attributes.EndStatType)
 	//we use OnCharacterHit here because he just has to get hit but triggers even if shielded
 	//TODO: double check if this event is even needed
-	c.Core.Events.Subscribe(event.OnCharacterHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterHit, func(_ ...interface{}) bool {
 		if c.StatusIsActive(c2ICDKey) {
 			return false
 		}
@@ -61,7 +61,7 @@ const c4BuffKey = "diluc-c4"
 func (c *char) c4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c4BuffKey, 120),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			//should only affect skill dmg
 			if atk.Info.AttackTag != combat.AttackTagElementalArt {
 				return nil, false

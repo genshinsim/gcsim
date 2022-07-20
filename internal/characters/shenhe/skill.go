@@ -98,7 +98,7 @@ func (c *char) skillPressBuff() {
 		char.SetTag(quillKey, 5)            // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 600),
-			Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if a.Info.AttackTag != combat.AttackTagElementalBurst && a.Info.AttackTag != combat.AttackTagElementalArt && a.Info.AttackTag != combat.AttackTagElementalArtHold {
 					return nil, false
 				}
@@ -114,7 +114,7 @@ func (c *char) skillHoldBuff() {
 		char.SetTag(quillKey, 7)            // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
-			Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if a.Info.AttackTag != combat.AttackTagNormal && a.Info.AttackTag != combat.AttackTagExtra && a.Info.AttackTag != combat.AttackTagPlunge {
 					return nil, false
 				}

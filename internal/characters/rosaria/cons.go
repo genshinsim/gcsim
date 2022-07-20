@@ -31,7 +31,7 @@ func (c *char) c1() {
 
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("rosaria-c1", 240), //4s
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagNormal {
 					return nil, false
 				}

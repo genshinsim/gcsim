@@ -63,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	//particles appear to be generated if the blades lands but capped at 1
 	partCount := 0
-	particlesCB := func(atk combat.AttackCB) {
+	particlesCB := func(_ combat.AttackCB) {
 		if partCount > 0 {
 			return
 		}
@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.Core.Flags.ParticleDelay) //this way we're future proof if for whatever reason this misses
 	}
 
-	amuletCB := func(atk combat.AttackCB) {
+	amuletCB := func(_ combat.AttackCB) {
 		// generate amulet if generated amulets < limit
 		if c.abundanceAmulets >= maxAmulets {
 			return

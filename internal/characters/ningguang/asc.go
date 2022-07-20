@@ -13,7 +13,7 @@ func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.GeoP] = 0.12
 	//TODO: this used to be on PostDash; need to check if working correctly still
-	c.Core.Events.Subscribe(event.OnDash, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDash, func(_ ...interface{}) bool {
 		// check for jade screen
 		if c.Core.Constructs.CountByType(construct.GeoConstructNingSkill) <= 0 {
 			return false

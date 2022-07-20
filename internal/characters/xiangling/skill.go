@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	for i := 0; i < 4; i++ {
 		c.Core.Tasks.Add(func() {
 			done := false
-			part := func(cb combat.AttackCB) {
+			part := func(_ combat.AttackCB) {
 				if done {
 					return
 				}

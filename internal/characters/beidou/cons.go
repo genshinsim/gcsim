@@ -10,7 +10,7 @@ import (
 const c4key = "beidou-c4"
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}

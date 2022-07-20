@@ -84,7 +84,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// hold := p["hold"]
 
-	cb := func(ac combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		//TODO: this used to be 82?
 		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.Core.Flags.ParticleDelay)
 		//check for breakthrough

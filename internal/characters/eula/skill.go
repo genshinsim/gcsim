@@ -93,7 +93,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 	}
 	c.particleDone = false
 	//add 1 to grim heart if not capped by icd
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		if c.StatusIsActive(grimheartICD) {
 			return
 		}
@@ -139,7 +139,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	energyCB := func(a combat.AttackCB) {
+	energyCB := func(_ combat.AttackCB) {
 		if !c.particleDone {
 			var count float64 = 2
 			if c.Core.Rand.Float64() < .5 {

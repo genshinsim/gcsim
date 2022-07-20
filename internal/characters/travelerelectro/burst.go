@@ -124,7 +124,7 @@ func (c *char) burstProc() {
 }
 
 func (c *char) fallingThunderEnergy() combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+	return func(_ combat.AttackCB) {
 		// Regenerate 1 flat energy for the active character
 		active := c.Core.Player.ActiveChar()
 		active.AddEnergy("travelerelectro-fallingthunder", burstRegen[c.TalentLvlBurst()])

@@ -56,7 +56,7 @@ func (c *char) c4() {
 func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 150
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 		if c.Core.F < c.c6ICD {
 			return false
 		}

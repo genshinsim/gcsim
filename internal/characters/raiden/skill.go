@@ -50,7 +50,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		//should be a deployable. no hitlag
 		this.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("raiden-e", 1500+skillHitmark),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 					return nil, false
 				}

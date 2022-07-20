@@ -36,7 +36,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		if done {
 			return
 		}

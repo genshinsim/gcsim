@@ -89,7 +89,7 @@ func (c *char) skillStacks(ac combat.AttackCB) {
 
 // clear skill status on field exit
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		c.stacks = 0
 		c.DeleteStatus(skillBuffKey)
 		c.a4()

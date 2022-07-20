@@ -12,7 +12,7 @@ func (c *char) a4() {
 	mDmg[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("beidou-a4", 600),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 				return nil, false
 			}

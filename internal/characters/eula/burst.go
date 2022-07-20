@@ -149,7 +149,7 @@ func (c *char) burstStacks() {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}

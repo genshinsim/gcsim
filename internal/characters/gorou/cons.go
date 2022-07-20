@@ -38,7 +38,7 @@ func (c *char) c1() {
 //active character obtains an Elemental Shard from a Crystallize reaction.
 //This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnShielded, func(_ ...interface{}) bool {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
 			return false
 		}
@@ -61,7 +61,7 @@ func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c6key, 720),
-			Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Geo {
 					return nil, false
 				}

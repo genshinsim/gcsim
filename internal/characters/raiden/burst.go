@@ -122,7 +122,7 @@ func (c *char) onSwapClearBurst() {
 
 func (c *char) onBurstStackCount() {
 	//TODO: this used to be on PostBurst; need to check if it works correctly still
-	c.Core.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnBurst, func(_ ...interface{}) bool {
 		if c.Core.Player.Active() == c.Index {
 			return false
 		}
@@ -145,7 +145,7 @@ func (c *char) onBurstStackCount() {
 
 	//a4 stack gain
 	particleICD := 0
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
 		if particleICD > c.Core.F {
 			return false
 		}

@@ -93,7 +93,7 @@ func (c *char) summonSwordWave() {
 	//only if c.nextRegen is true and first sword
 	var c2cb, c6cb func(a combat.AttackCB)
 	if c.nextRegen {
-		c6cb = func(a combat.AttackCB) {
+		c6cb = func(_ combat.AttackCB) {
 			c.AddEnergy("xingqiu-c6", 3)
 		}
 	}

@@ -30,7 +30,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		if done {
 			return
 		}
@@ -51,7 +51,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	var c4CB combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		energyCount := 0
-		c4CB = func(a combat.AttackCB) {
+		c4CB = func(_ combat.AttackCB) {
 			//check for healing
 			if c.Core.Status.Duration(barbSkillKey) > 0 && energyCount < 5 {
 				//regen energy

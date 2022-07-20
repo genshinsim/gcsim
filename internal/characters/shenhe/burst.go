@@ -50,7 +50,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			this := char
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase("shenhe-c2", dur+2*60),
-				Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 					if ae.Info.Element != attributes.Cryo {
 						return nil, false
 					}

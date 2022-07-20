@@ -14,7 +14,7 @@ func (c *char) c1() {
 	c.c1bonus = make([]float64, attributes.EndStatType)
 	c.c1bonus[attributes.DmgP] = 0.1
 
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
 		// ignore if character not on field
 		if c.Core.Player.Active() != c.Index {
 			return false
@@ -37,7 +37,7 @@ func (c *char) c2() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("razor-c2", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if t.HP()/t.MaxHP() < 0.3 {
 				return c.c2bonus, true
 			}
