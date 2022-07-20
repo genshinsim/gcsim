@@ -20,14 +20,15 @@ func init() {
 type char struct {
 	*tmpl.Character
 	qStarted int
-	a4Expiry int
+	a4stacks int
+	a4buff   []float64
 	c6Src    int
 	c6Count  int
 }
 
 // Initializes character
 // TODO: C4 is not implemented - don't really care about def
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -51,6 +52,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	c.a4buff = make([]float64, attributes.EndStatType)
 	c.onExitField()
 	if c.Base.Cons >= 2 {
 		c.c2()
@@ -75,6 +77,9 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		if stacks > 5 {
 			stacks = 5
 		}
+		//While under the effects of Bane of All Evil, all DMG dealt by Xiao
+		//increases by 5%. DMG increases by a further 5% for every 3s the
+		//ability persists. The maximum DMG Bonus is 25%.
 		ds.Stats[attributes.DmgP] += float64(stacks) * 0.05
 		c.Core.Log.NewEvent("a1 adding dmg %", glog.LogCharacterEvent, c.Index).
 			Write("stacks", stacks).
@@ -87,6 +92,7 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		case combat.AttackTagNormal:
 		case combat.AttackTagExtra:
 			a.ICDTag = combat.ICDTagNormalAttack
+			a.HitlagHaltFrames = 0.04 * 60
 		case combat.AttackTagPlunge:
 		default:
 			return ds
