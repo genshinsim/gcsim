@@ -37,10 +37,11 @@ type ActionList struct {
 	PlayerPos   core.Coord                   `json:"player_initial_pos"`
 	Characters  []character.CharacterProfile `json:"characters"`
 	InitialChar keys.Char                    `json:"initial"`
-	Program     *BlockStmt
-	Energy      EnergySettings
-	Settings    SimulatorSettings
-	Errors      []error //These represents errors preventing ActionList from being executed
+	Program     *BlockStmt                   `json:"-"`
+	Energy      EnergySettings               `json:"energy_settings"`
+	Settings    SimulatorSettings            `json:"settings"`
+	Errors      []error                      `json:"-"` //These represents errors preventing ActionList from being executed
+	ErrorMsgs   []string                     `json:"errors"`
 }
 
 type EnergySettings struct {

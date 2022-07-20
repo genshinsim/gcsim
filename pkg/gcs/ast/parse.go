@@ -1,6 +1,7 @@
 package ast
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -60,7 +61,7 @@ func (p *Parser) Parse() (*ActionList, error) {
 	}
 
 	if p.res.InitialChar == keys.NoChar {
-		p.res.Errors = append(p.res.Errors, fmt.Errorf("config does not contain active char"))
+		p.res.Errors = append(p.res.Errors, errors.New("config does not contain active char"))
 	}
 
 	initialCharFound := false
@@ -84,11 +85,21 @@ func (p *Parser) Parse() (*ActionList, error) {
 		p.res.Errors = append(p.res.Errors, fmt.Errorf("active char %v not found in team", p.res.InitialChar))
 	}
 
+	if len(p.res.Targets) == 0 {
+		p.res.Errors = append(p.res.Errors, errors.New("config does not contain any targets"))
+	}
+
 	//set some sane defaults; leave pos default to 0,0
 	for i := range p.res.Targets {
 		if p.res.Targets[i].Pos.R == 0 {
 			p.res.Targets[i].Pos.R = 1
 		}
+	}
+
+	//build the err msgs
+	p.res.ErrorMsgs = make([]string, 0, len(p.res.Errors))
+	for _, v := range p.res.Errors {
+		p.res.ErrorMsgs = append(p.res.ErrorMsgs, v.Error())
 	}
 
 	return p.res, nil

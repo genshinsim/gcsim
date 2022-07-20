@@ -124,6 +124,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"theviridescenthunt":            keys.TheViridescentHunt,
 	"thewidsith":                    keys.TheWidsith,
 	"thrillingtalesofdragonslayers": keys.ThrillingTalesOfDragonSlayers,
+	"ttds":                          keys.ThrillingTalesOfDragonSlayers,
 	"thunderingpulse":               keys.ThunderingPulse,
 	"travelershandysword":           keys.TravelersHandySword,
 	"twinnephrite":                  keys.TwinNephrite,
