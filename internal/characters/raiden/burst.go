@@ -30,7 +30,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstCastF = c.Core.F
 	c.stacksConsumed = c.stacks
 	c.stacks = 0
-	c.Core.Status.Add("raidenburst", 420+burstHitmark) //7 seconds
 	c.restoreCount = 0
 	c.restoreICD = 0
 	c.c6Count = 0
@@ -110,7 +109,7 @@ func (c *char) onSwapClearBurst() {
 		//i prob don't need to check for who prev is here
 		prev := args[0].(int)
 		if prev == c.Index {
-			c.Core.Status.Delete("raidenburst")
+			c.DeleteStatus(burstKey)
 			if c.applyC4 {
 				c.applyC4 = false
 				c.c4()
