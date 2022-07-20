@@ -58,34 +58,31 @@ func init() {
 }
 
 func (c *char) swordCharge(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Musou Isshin (Charge Attack)",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		Element:            attributes.Electro,
-		Durability:         25,
-		HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.02s hitlag
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
-	}
-
 	for i, mult := range chargeSword {
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               "Musou Isshin (Charge Attack)",
+			AttackTag:          combat.AttackTagElementalBurst,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			Element:            attributes.Electro,
+			Durability:         25,
+			Mult:               mult[c.TalentLvlBurst()] + resolveBonus[c.TalentLvlBurst()]*c.stacksConsumed,
+			HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.02s hitlag
+			HitlagFactor:       0.01,
+			CanBeDefenseHalted: true,
+		}
 		// Sword hits are dynamic - group snapshots with damage proc
-		ax := ai
-		ax.Mult = mult[c.TalentLvlBurst()]
-		ax.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
 		if i == 0 { // Only the last hit has hitlag
-			ax.HitlagHaltFrames = 0
-			ax.CanBeDefenseHalted = false
+			ai.HitlagHaltFrames = 0
+			ai.CanBeDefenseHalted = false
 		}
 		if c.Base.Cons >= 2 {
 			ai.IgnoreDefPercent = .6
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
-				ax,
+				ai,
 				combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
 				0,
 				0,
