@@ -19,9 +19,11 @@ type char struct {
 	*tmpl.Character
 	a1stack  int
 	lastPart int
+	a1bonus  []float64
+	a4bonus  []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -39,6 +41,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	c.a1bonus = make([]float64, attributes.EndStatType)
+	c.a4bonus = make([]float64, attributes.EndStatType)
 	c.a1()
 	c.onExit()
 	c.burstHook()

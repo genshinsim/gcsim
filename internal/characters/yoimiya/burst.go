@@ -113,7 +113,7 @@ func (c *char) burstHook() {
 
 	if c.Core.Flags.DamageMode {
 		//add check for if yoimiya dies
-		c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+		c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 			if c.HPCurrent <= 0 {
 				c.Core.Status.Delete("aurous")
 			}
