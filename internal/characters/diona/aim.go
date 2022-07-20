@@ -36,7 +36,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Durability:           25,
 		Mult:                 aim[c.TalentLvlAttack()],
 		HitWeakPoint:         weakspot == 1,
-		HitlagHaltFrames:     0.12,
+		HitlagHaltFrames:     0.12 * 60,
 		HitlagFactor:         0.01,
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
