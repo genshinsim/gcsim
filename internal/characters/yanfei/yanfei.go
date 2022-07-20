@@ -19,10 +19,12 @@ type char struct {
 	*tmpl.Character
 	maxTags           int
 	sealStamReduction float64
-	sealExpiry        int
+	sealCount         int
+	burstBuff         []float64
+	a1buff            []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -50,6 +52,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	c.a1buff = make([]float64, attributes.EndStatType)
+	c.burstBuff = make([]float64, attributes.EndStatType)
+	c.burstBuff[attributes.DmgP] = burstBonus[c.TalentLvlBurst()]
 	c.a4()
 	c.onExitField()
 	if c.Base.Cons >= 2 {
@@ -61,20 +66,19 @@ func (c *char) Init() error {
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.Core.F > c.sealExpiry {
-			c.Tags["seal"] = 0
+		if !c.StatusIsActive(sealBuffKey) {
+			c.sealCount = 0
 		}
-		stacks := c.Tags["seal"]
-		return 50 * (1 - c.sealStamReduction*float64(stacks))
+		return 50 * (1 - c.sealStamReduction*float64(c.sealCount))
 	}
 	return c.Character.ActionStam(a, p)
 }
 
 // Hook that clears yanfei burst status and seals when she leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		c.Tags["seal"] = 0
-		c.sealExpiry = c.Core.F - 1
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+		c.sealCount = 0
+		c.DeleteStatus(sealBuffKey)
 		c.Core.Status.Delete("yanfeiburst")
 		return false
 	}, "yanfei-exit")

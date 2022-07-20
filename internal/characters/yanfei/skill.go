@@ -20,18 +20,17 @@ func init() {
 // Summons flames that deal AoE Pyro DMG. Opponents hit by the flames will grant Yanfei the maximum number of Scarlet Seals.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	done := false
-	addSeal := func(a combat.AttackCB) {
+	addSeal := func(_ combat.AttackCB) {
 		if done {
 			return
 		}
 		// Create max seals on hit
-		if c.Tags["seal"] < c.maxTags {
-			c.Tags["seal"] = c.maxTags
+		if c.sealCount < c.maxTags {
+			c.sealCount = c.maxTags
 		}
-		c.sealExpiry = c.Core.F + 600
+		c.AddStatus(sealBuffKey, 600, true)
 		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index).
-			Write("current_seals", c.Tags["seal"]).
-			Write("expiry", c.sealExpiry)
+			Write("current_seals", c.sealCount)
 		done = true
 	}
 

@@ -13,7 +13,10 @@ import (
 var attackFrames [][]int
 var attackHitmarks = []int{13, 28, 49}
 
-const normalHitNum = 3
+const (
+	normalHitNum = 3
+	sealBuffKey  = "yanfei-seal"
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -31,17 +34,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	addSeal := func(a combat.AttackCB) {
+	addSeal := func(_ combat.AttackCB) {
 		if done {
 			return
 		}
-		if c.Tags["seal"] < c.maxTags {
-			c.Tags["seal"]++
+		if c.sealCount < c.maxTags {
+			c.sealCount++
 		}
-		c.sealExpiry = c.Core.F + 600
+		c.AddStatus(sealBuffKey, 600, true)
 		c.Core.Log.NewEvent("yanfei gained a seal from normal attack", glog.LogCharacterEvent, c.Index).
-			Write("current_seals", c.Tags["seal"]).
-			Write("expiry", c.sealExpiry)
+			Write("current_seals", c.sealCount)
 		done = true
 	}
 
