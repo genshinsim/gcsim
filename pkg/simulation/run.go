@@ -29,11 +29,13 @@ func (s *Simulation) Run() (Result, error) {
 	//setup ast
 	s.nextAction = make(chan *ast.ActionStmt)
 	s.continueEval = make(chan bool)
+	s.evalErr = make(chan error)
 	s.queuer = gcs.Eval{
 		AST:  s.cfg.Program,
 		Next: s.continueEval,
 		Work: s.nextAction,
 		Core: s.C,
+		Err:  s.evalErr,
 	}
 	go s.queuer.Run()
 	defer close(s.continueEval)
@@ -148,7 +150,7 @@ func (s *Simulation) queueAndExec() error {
 			s.noMoreActions = true
 			return nil //do nothing, skip frame
 		default:
-			//shouldn't really happen??
+			//eval error'd out here
 			return err
 		}
 	}
@@ -159,11 +161,16 @@ var ErrNoMoreActions = errors.New("no more actions left")
 func (s *Simulation) tryQueueNext() error {
 	//tell eval to keep going
 	s.continueEval <- true
-	//wait for next action
+	//eval will either give an action (or keep executing) or error out
 	var ok bool
-	s.queue, ok = <-s.nextAction
-	if !ok {
-		return ErrNoMoreActions
+	select {
+	case s.queue, ok = <-s.nextAction:
+		//wait for next action
+		if !ok {
+			return ErrNoMoreActions
+		}
+		return nil
+	case err := <-s.evalErr:
+		return err
 	}
-	return nil
 }

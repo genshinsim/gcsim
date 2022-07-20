@@ -1,6 +1,8 @@
 package gcs
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -15,6 +17,7 @@ type Eval struct {
 	Next chan bool
 	Work chan *ast.ActionStmt
 	Log  *log.Logger
+	Err  chan error
 }
 
 type Env struct {
@@ -31,30 +34,26 @@ func NewEnv(parent *Env) *Env {
 	}
 }
 
-func (e *Env) fn(s string) *ast.FnStmt {
+func (e *Env) fn(s string) (*ast.FnStmt, error) {
 	f, ok := e.fnMap[s]
 	if ok {
-		return f
+		return f, nil
 	}
 	if e.parent != nil {
 		return e.parent.fn(s)
 	}
-	//panic here? function does not exist?
-	panic("fn " + s + " does not exist.")
-	// return nil
+	return nil, fmt.Errorf("fn %v does not exist", s)
 }
 
-func (e *Env) v(s string) *number {
+func (e *Env) v(s string) (*number, error) {
 	v, ok := e.varMap[s]
 	if ok {
-		return v
+		return v, nil
 	}
 	if e.parent != nil {
 		return e.parent.v(s)
 	}
-	//panic here? function does not exist?
-	panic("fn " + s + " does not exist.")
-	// return nil
+	return nil, fmt.Errorf("variable %v does not exist", s)
 }
 
 //Run will execute the provided AST. Any genshin specific actions will be passed
@@ -71,8 +70,20 @@ func (e *Eval) Run() Obj {
 	//start running once we get signal to go
 	<-e.Next
 	defer close(e.Work)
-	return e.evalNode(e.AST, global)
+	Obj, err := e.evalNode(e.AST, global)
+	switch err {
+	case nil:
+		return Obj
+	case ErrTerminated:
+		//do nothing here really since we're just out of work per main thread
+		return &null{}
+	default:
+		e.Err <- err
+		return &null{}
+	}
 }
+
+var ErrTerminated = errors.New("eval terminated")
 
 type Obj interface {
 	Inspect() string
@@ -87,7 +98,7 @@ const (
 	typStr
 	typRet
 	typCtr
-	typTerminate
+	// typTerminate
 )
 
 //various Obj types
@@ -110,8 +121,6 @@ type (
 	ctrl struct {
 		typ ast.CtrlTyp
 	}
-
-	terminate struct{}
 )
 
 // null.
@@ -119,8 +128,8 @@ func (n *null) Inspect() string { return "null" }
 func (n *null) Typ() ObjTyp     { return typNull }
 
 // terminate.
-func (n *terminate) Inspect() string { return "terminate" }
-func (n *terminate) Typ() ObjTyp     { return typTerminate }
+// func (n *terminate) Inspect() string { return "terminate" }
+// func (n *terminate) Typ() ObjTyp     { return typTerminate }
 
 // number.
 func (n *number) Inspect() string {
@@ -146,13 +155,13 @@ func (n *retval) Typ() ObjTyp { return typRet }
 func (b *ctrl) Inspect() string { return "break" }
 func (n *ctrl) Typ() ObjTyp     { return typCtr }
 
-func (e *Eval) evalNode(n ast.Node, env *Env) Obj {
+func (e *Eval) evalNode(n ast.Node, env *Env) (Obj, error) {
 	switch v := n.(type) {
 	case ast.Expr:
 		return e.evalExpr(v, env)
 	case ast.Stmt:
 		return e.evalStmt(v, env)
 	default:
-		return &null{}
+		return &null{}, nil
 	}
 }

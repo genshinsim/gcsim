@@ -1,6 +1,7 @@
 package gcs
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -8,37 +9,41 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-func (e *Eval) print(c *ast.CallExpr, env *Env) Obj {
+func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 	//concat all args
 	var sb strings.Builder
 	for _, arg := range c.Args {
-		val := e.evalExpr(arg, env)
+		val, err := e.evalExpr(arg, env)
+		if err != nil {
+			return nil, err
+		}
 		sb.WriteString(val.Inspect())
 	}
 	e.Core.Log.NewEvent(sb.String(), glog.LogUserEvent, -1)
-	return &number{}
+	return &number{}, nil
 }
 
-func (e *Eval) f() *number {
+func (e *Eval) f() (*number, error) {
 	return &number{
 		ival: int64(e.Core.F),
-	}
+	}, nil
 }
 
-func (e *Eval) wait(c *ast.CallExpr, env *Env) Obj {
+func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 	//wait(number goes in here)
 	if len(c.Args) != 1 {
-		//TODO: better error handling
-		panic("expect 1 param for wait")
+		return nil, fmt.Errorf("invalid number of params for wait, expected 1 got %v", len(c.Args))
 	}
 
 	//should eval to a number
-	val := e.evalExpr(c.Args[0], env)
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
 
 	n, ok := val.(*number)
 	if !ok {
-		//TODO: better error handling
-		panic("expecting a number for wait argument")
+		return nil, fmt.Errorf("wait argument should evaluate to a number, got %v", val.Inspect())
 	}
 
 	var f int = int(n.ival)
@@ -48,7 +53,7 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) Obj {
 
 	if f <= 0 {
 		//do nothing if less or equal to 0
-		return &null{}
+		return &null{}, nil
 	}
 
 	e.Work <- &ast.ActionStmt{
@@ -58,24 +63,25 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) Obj {
 	//block until sim is done with the action; unless we're done
 	_, ok = <-e.Next
 	if !ok {
-		return &terminate{} //no more work, shutting down
+		return nil, ErrTerminated // no more work, shutting down
 	}
 
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) Obj {
+func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	//set_player_pos(x, y)
 	if len(c.Args) != 2 {
-		//TODO: better error handling
-		panic("expected 2 param for set_player_pos")
+		return nil, fmt.Errorf("invalid number of params for set_player_pos, expected 2 got %v", len(c.Args))
 	}
 
-	t := e.evalExpr(c.Args[0], env)
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
 	n, ok := t.(*number)
 	if !ok {
-		//TODO: better error handling
-		panic("expecting a number for wait argument")
+		return nil, fmt.Errorf("set_player_pos argument x coord should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be float
 	var x float64 = n.fval
@@ -83,11 +89,13 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) Obj {
 		x = float64(n.ival)
 	}
 
-	t = e.evalExpr(c.Args[1], env)
+	t, err = e.evalExpr(c.Args[1], env)
+	if err != nil {
+		return nil, err
+	}
 	n, ok = t.(*number)
 	if !ok {
-		//TODO: better error handling
-		panic("expecting a number for wait argument")
+		return nil, fmt.Errorf("set_player_pos argument y coord should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be float
 	var y float64 = n.fval
@@ -97,21 +105,22 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) Obj {
 
 	done := e.Core.Combat.SetTargetPos(0, x, y)
 
-	return bton(done)
+	return bton(done), nil
 }
 
-func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) Obj {
+func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 	//set_particle_delay(x);
 	if len(c.Args) != 1 {
-		//TODO: better error handling
-		panic("expected 1 param for set_particle_delay")
+		return nil, fmt.Errorf("invalid number of params for set_particle_delay, expected 1 got %v", len(c.Args))
 	}
 
-	t := e.evalExpr(c.Args[0], env)
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
 	n, ok := t.(*number)
 	if !ok {
-		//TODO: better error handling
-		panic("expecting a number for wait argument")
+		return nil, fmt.Errorf("set_particle_delay argument should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be int
 	var delay int = int(n.ival)
@@ -123,19 +132,20 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) Obj {
 	}
 
 	e.Core.SetParticleDelay(delay)
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) Obj {
+func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	if len(c.Args) != 1 {
-		//TODO: better error handling
-		panic("expected 1 param for set_default_target")
+		return nil, fmt.Errorf("invalid number of params for set_default_target, expected 1 got %v", len(c.Args))
 	}
-	t := e.evalExpr(c.Args[0], env)
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
 	n, ok := t.(*number)
 	if !ok {
-		//TODO: better error handling
-		panic("expecting a number for wait argument")
+		return nil, fmt.Errorf("set_default_target argument should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be int
 	var idx int = int(n.ival)
@@ -145,28 +155,29 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) Obj {
 
 	//check if index is in range
 	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
-		return bton(false)
+		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.TargetsCount()-1, idx)
 	}
 
 	e.Core.Combat.DefaultTarget = idx
 
-	return bton(true)
+	return bton(true), nil
 
 }
 
-func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) Obj {
+func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	//set_target_pos(1,x,y)
 	if len(c.Args) != 3 {
-		//TODO: better error handling
-		panic("expected 3 param for set_target_pos")
+		return nil, fmt.Errorf("invalid number of params for set_target_pos, expected 3 got %v", len(c.Args))
 	}
 
 	//all 3 param should eval to numbers
-	t := e.evalExpr(c.Args[0], env)
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
 	n, ok := t.(*number)
 	if !ok {
-		//TODO: better error handling
-		panic("expecting a number for wait argument")
+		return nil, fmt.Errorf("set_target_pos argument target index should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be int
 	var idx int = int(n.ival)
@@ -174,11 +185,13 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) Obj {
 		idx = int(n.fval)
 	}
 
-	t = e.evalExpr(c.Args[1], env)
+	t, err = e.evalExpr(c.Args[1], env)
+	if err != nil {
+		return nil, err
+	}
 	n, ok = t.(*number)
 	if !ok {
-		//TODO: better error handling
-		panic("expecting a number for wait argument")
+		return nil, fmt.Errorf("set_target_pos argument x coord should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be float
 	var x float64 = n.fval
@@ -186,11 +199,13 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) Obj {
 		x = float64(n.ival)
 	}
 
-	t = e.evalExpr(c.Args[2], env)
+	t, err = e.evalExpr(c.Args[2], env)
+	if err != nil {
+		return nil, err
+	}
 	n, ok = t.(*number)
 	if !ok {
-		//TODO: better error handling
-		panic("expecting a number for wait argument")
+		return nil, fmt.Errorf("set_target_pos argument y coord should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be float
 	var y float64 = n.fval
@@ -200,5 +215,5 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) Obj {
 
 	done := e.Core.Combat.SetTargetPos(idx, x, y)
 
-	return bton(done)
+	return bton(done), nil
 }

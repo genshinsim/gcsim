@@ -50,6 +50,7 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 	respCh := make(chan simulation.Result)
 	errCh := make(chan error)
 	pool := worker.New(simcfg.Settings.NumberOfWorkers, respCh, errCh)
+	pool.StopCh = make(chan bool)
 
 	//spin off a go func that will queue jobs for as long as the total queued < iter
 	//this should block as queue gets full
@@ -78,9 +79,9 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 			count--
 		case err := <-errCh:
 			//error encountered
+			close(pool.StopCh)
 			return result.Summary{}, err
 		}
-
 	}
 
 	r := aggregateResults(results, simcfg)

@@ -169,49 +169,54 @@ func (p *Parser) parseStatement() (Node, error) {
 		fallthrough
 	case keywordContinue:
 		stmtType = "continue"
-		node = p.parseCtrl()
+		node, err = p.parseCtrl()
 	case keywordLet:
 		stmtType = "let"
 		node, err = p.parseLet()
 	case itemCharacterKey:
 		stmtType = "char action"
-		node = p.parseAction()
+		node, err = p.parseAction()
 	case keywordReturn:
 		stmtType = "return"
-		node = p.parseReturn()
+		node, err = p.parseReturn()
 	case keywordIf:
-		node = p.parseIf()
+		node, err = p.parseIf()
 		hasSemi = false
 	case keywordSwitch:
-		node = p.parseSwitch()
+		node, err = p.parseSwitch()
 		hasSemi = false
 	case keywordFn:
-		node = p.parseFn()
+		node, err = p.parseFn()
 		hasSemi = false
 	case keywordWhile:
-		node = p.parseWhile()
+		node, err = p.parseWhile()
 		hasSemi = false
 	case itemIdentifier:
 		p.next()
 		//check if = after
 		if x := p.peek(); x.Typ == itemAssign {
 			p.backup()
-			node = p.parseAssign()
+			node, err = p.parseAssign()
 			break
 		}
 		//it's an expr if no assign
 		p.backup()
 		fallthrough
 	default:
-		node = p.parseExpr(Lowest)
+		node, err = p.parseExpr(Lowest)
 	}
+	//check if any of the parse error'd
+	if err != nil {
+		return node, err
+	}
+	//check for semi
 	if hasSemi {
 		n, err := p.consume(itemTerminateLine)
 		if err != nil {
-			return nil, fmt.Errorf("ln %v: expecting ; at end of %v statement, got %v", n.line, stmtType, n.Val)
+			return nil, fmt.Errorf("ln%v: expecting ; at end of %v statement, got %v", n.line, stmtType, n.Val)
 		}
 	}
-	return node, err
+	return node, nil
 }
 
 func (p *Parser) parseLet() (Stmt, error) {
@@ -221,13 +226,13 @@ func (p *Parser) parseLet() (Stmt, error) {
 	ident, err := p.consume(itemIdentifier)
 	if err != nil {
 		//next token not an identifier
-		return nil, fmt.Errorf("ln %v: expecting identifier after let, got %v", ident.line, ident.Val)
+		return nil, fmt.Errorf("ln%v: expecting identifier after let, got %v", ident.line, ident.Val)
 	}
 
 	a, err := p.consume(itemAssign)
 	if err != nil {
 		//next token not and identifier
-		return nil, fmt.Errorf("ln %v: expecting = after identifier in let statement, got %v", a.line, a.Val)
+		return nil, fmt.Errorf("ln%v: expecting = after identifier in let statement, got %v", a.line, a.Val)
 	}
 
 	expr, err := p.parseExpr(Lowest)
@@ -242,21 +247,25 @@ func (p *Parser) parseLet() (Stmt, error) {
 }
 
 // expecting ident = expr
-func (p *Parser) parseAssign() Stmt {
+func (p *Parser) parseAssign() (Stmt, error) {
 
 	ident, err := p.consume(itemIdentifier)
 	if err != nil {
 		//next token not and identifier
-		panic("expecting ident after nil, got " + ident.String())
+		return nil, fmt.Errorf("ln%v: expecting identifier in assign statement, got %v", ident.line, ident.Val)
 	}
 
 	a, err := p.consume(itemAssign)
 	if err != nil {
 		//next token not and identifier
-		panic("expecting assign after nil, got " + a.String())
+		return nil, fmt.Errorf("ln%v: expecting = after identifier in assign statement, got %v", a.line, a.Val)
 	}
 
-	expr := p.parseExpr(Lowest)
+	expr, err := p.parseExpr(Lowest)
+
+	if err != nil {
+		return nil, err
+	}
 
 	stmt := &AssignStmt{
 		Pos:   ident.pos,
@@ -264,41 +273,49 @@ func (p *Parser) parseAssign() Stmt {
 		Val:   expr,
 	}
 
-	return stmt
+	return stmt, nil
 
 }
 
-func (p *Parser) parseIf() Stmt {
+func (p *Parser) parseIf() (Stmt, error) {
 	n := p.next()
 
 	stmt := &IfStmt{
 		Pos: n.pos,
 	}
 
-	stmt.Condition = p.parseExpr(Lowest)
+	var err error
+
+	stmt.Condition, err = p.parseExpr(Lowest)
+	if err != nil {
+		return nil, err
+	}
 
 	//expecting a { next
 	if n := p.peek(); n.Typ != itemLeftBrace {
-		return nil
+		return nil, fmt.Errorf("ln%v: expecting { after if, got %v", n.line, n.Val)
 	}
 
-	stmt.IfBlock = p.parseBlock() //parse block here
+	stmt.IfBlock, err = p.parseBlock() //parse block here
+	if err != nil {
+		return nil, err
+	}
 
 	//stop if no else
 	if n := p.peek(); n.Typ != keywordElse {
-		return stmt
+		return stmt, nil
 	}
 
 	//skip the else keyword
 	p.next()
 
 	//expecting another block
-	stmt.ElseBlock = p.parseBlock()
+	stmt.ElseBlock, err = p.parseBlock()
 
-	return stmt
+	return stmt, err
 }
 
-func (p *Parser) parseSwitch() Stmt {
+func (p *Parser) parseSwitch() (Stmt, error) {
 
 	//switch expr { }
 	n, err := p.consume(keywordSwitch)
@@ -310,91 +327,114 @@ func (p *Parser) parseSwitch() Stmt {
 		Pos: n.pos,
 	}
 
-	stmt.Condition = p.parseExpr(Lowest)
+	stmt.Condition, err = p.parseExpr(Lowest)
+	if err != nil {
+		return nil, err
+	}
 
-	if p.next().Typ != itemLeftBrace {
-		//TODO: handle switch error
-		return nil
+	if n := p.next(); n.Typ != itemLeftBrace {
+		return nil, fmt.Errorf("ln%v: expecting { after switch, got %v", n.line, n.Val)
 	}
 
 	//look for cases while not }
 	for n := p.next(); n.Typ != itemRightBrace; n = p.next() {
+		var err error
 		//expecting case expr: block
 		switch n.Typ {
 		case keywordCase:
 			cs := &CaseStmt{
 				Pos: n.pos,
 			}
-			cs.Condition = p.parseExpr(Lowest)
-			//colon, then read until we hit next case
-			if p.peek().Typ != itemColon {
-				panic("expecting : got " + p.peek().String())
+			cs.Condition, err = p.parseExpr(Lowest)
+			if err != nil {
+				return nil, err
 			}
-			cs.Body = p.parseCaseBody()
+			//colon, then read until we hit next case
+			if n := p.peek(); n.Typ != itemColon {
+				return nil, fmt.Errorf("ln%v: expecting : after case, got %v", n.line, n.Val)
+			}
+			cs.Body, err = p.parseCaseBody()
+			if err != nil {
+				return nil, err
+			}
 			stmt.Cases = append(stmt.Cases, cs)
 		case keywordDefault:
 			//colon, then read until we hit next case
 			if p.peek().Typ != itemColon {
-				panic("expecting : got " + p.peek().String())
+				return nil, fmt.Errorf("ln%v: expecting : after default, got %v", n.line, n.Val)
 			}
-			stmt.Default = p.parseCaseBody()
+			stmt.Default, err = p.parseCaseBody()
+			if err != nil {
+				return nil, err
+			}
 		default:
-			panic("expecting case or default token, got " + n.String())
+			return nil, fmt.Errorf("ln%v: expecting case or default token, got %v", n.line, n.Val)
 		}
 
 	}
 
-	return stmt
+	return stmt, nil
 }
 
-func (p *Parser) parseCaseBody() *BlockStmt {
+func (p *Parser) parseCaseBody() (*BlockStmt, error) {
 	n := p.next() //start with :
 	block := newBlockStmt(n.pos)
 	var node Node
+	var err error
 	//parse line by line until we hit }
 	for {
 		//make sure we don't get any illegal lines
 		switch n := p.peek(); n.Typ {
 		case itemCharacterKey:
 			if !p.peekValidCharAction() {
-				panic("unexpected non action statement with char in block")
+				n := p.next()
+				n = p.next()
+				return nil, fmt.Errorf("ln%v: expecting action after character token, got %v", n.line, n.Val)
 			}
 		case keywordDefault:
 			fallthrough
 		case keywordCase:
 			fallthrough
 		case itemRightBrace:
-			return block
+			return block, nil
 		case itemEOF:
-			panic("reached end of file without }")
+			return nil, fmt.Errorf("reached end of file without closing }")
 		}
 		//parse statement here
-		node = p.parseStatement()
+		node, err = p.parseStatement()
+		if err != nil {
+			return nil, err
+		}
 		block.append(node)
 	}
 }
 
 // while { }
-func (p *Parser) parseWhile() Stmt {
+func (p *Parser) parseWhile() (Stmt, error) {
 	n := p.next()
 
 	stmt := &WhileStmt{
 		Pos: n.pos,
 	}
 
-	stmt.Condition = p.parseExpr(Lowest)
+	var err error
+
+	stmt.Condition, err = p.parseExpr(Lowest)
+	if err != nil {
+		return nil, err
+	}
 
 	//expecting a { next
 	if n := p.peek(); n.Typ != itemLeftBrace {
-		return nil
+		return nil, fmt.Errorf("ln%v: expecting { after while, got %v", n.line, n.Val)
 	}
 
-	stmt.WhileBlock = p.parseBlock() //parse block here
+	stmt.WhileBlock, err = p.parseBlock() //parse block here
 
-	return stmt
+	return stmt, err
 }
 
-func (p *Parser) parseFn() Stmt {
+func (p *Parser) parseFn() (Stmt, error) {
 	//fn ident(...ident){ block }
 	//consume fn
 	n := p.next()
@@ -405,31 +445,36 @@ func (p *Parser) parseFn() Stmt {
 	//ident next
 	n, err := p.consume(itemIdentifier)
 	if err != nil {
-		panic("expecting identifier after fn, got " + n.String())
+		return nil, fmt.Errorf("ln%v: expecting identifier after fn, got %v", n.line, n.Val)
 	}
 	stmt.FunVal = n
 
 	if l := p.peek(); l.Typ != itemLeftParen {
-		//TODO: error handling here?
-		return nil
+		return nil, fmt.Errorf("ln%v: expecting { after identifier, got %v", l.line, l.Val)
 	}
 
-	stmt.Args = p.parseFnArgs()
-	stmt.Body = p.parseBlock()
+	stmt.Args, err = p.parseFnArgs()
+	if err != nil {
+		return nil, err
+	}
+	stmt.Body, err = p.parseBlock()
+	if err != nil {
+		return nil, err
+	}
 
 	//check that args are not duplicates
 	chk := make(map[string]bool)
 	for _, v := range stmt.Args {
 		if _, ok := chk[v.Value]; ok {
-			panic("fn cannot have duplicated param names")
+			return nil, fmt.Errorf("fn %v contains duplicated param name %v", stmt.FunVal.Val, v.Value)
 		}
 		chk[v.Value] = true
 	}
 
-	return stmt
+	return stmt, nil
 }
 
-func (p *Parser) parseFnArgs() []*Ident {
+func (p *Parser) parseFnArgs() ([]*Ident, error) {
 	//consume (
 	var args []*Ident
 	p.next()
@@ -437,7 +482,7 @@ func (p *Parser) parseFnArgs() []*Ident {
 		a := &Ident{}
 		//expecting ident, comma
 		if n.Typ != itemIdentifier {
-			panic("expecting ident in param list, got " + n.String())
+			return nil, fmt.Errorf("ln%v: expecting identifier in param list, got %v", n.line, n.Val)
 		}
 		a.Pos = n.pos
 		a.Value = n.Val
@@ -449,23 +494,24 @@ func (p *Parser) parseFnArgs() []*Ident {
 		if l := p.peek(); l.Typ == itemComma {
 			p.next() //consume the comma
 			if l = p.peek(); l.Typ != itemIdentifier {
-				panic("expecting another identifier after comma, got " + l.String())
+				return nil, fmt.Errorf("ln%v: expecting another identifier after comma in param list, got %v", n.line, n.Val)
 			}
 		}
 	}
-	return args
+	return args, nil
 }
 
-func (p *Parser) parseReturn() Stmt {
+func (p *Parser) parseReturn() (Stmt, error) {
 	n := p.next() //return
 	stmt := &ReturnStmt{
 		Pos: n.pos,
 	}
-	stmt.Val = p.parseExpr(Lowest)
-	return stmt
+	var err error
+	stmt.Val, err = p.parseExpr(Lowest)
+	return stmt, err
 }
 
-func (p *Parser) parseCtrl() Stmt {
+func (p *Parser) parseCtrl() (Stmt, error) {
 	n := p.next()
 	stmt := &CtrlStmt{
 		Pos: n.pos,
@@ -478,12 +524,12 @@ func (p *Parser) parseCtrl() Stmt {
 	case keywordFallthrough:
 		stmt.Typ = CtrlFallthrough
 	default:
-		panic("invalid token, expecting a ctrl token, got " + n.String())
+		return nil, fmt.Errorf("ln%v: expecting ctrl token, got %v", n.line, n.Val)
 	}
-	return stmt
+	return stmt, nil
 }
 
-func (p *Parser) parseCall(fun Expr) Expr {
+func (p *Parser) parseCall(fun Expr) (Expr, error) {
 	// ident has aready been consumed
 	// switch fun.(type) {
 	// case *Ident:
@@ -496,49 +542,55 @@ func (p *Parser) parseCall(fun Expr) Expr {
 	//anything other than a number; therefore call must start with
 	//a ident
 	if _, ok := fun.(*Ident); !ok {
-		//TODO: better error handling
-		panic("expecting function calls to start with ident")
+		return nil, fmt.Errorf("expecting function calls to start with ident, got %v", fun.String())
 	}
 
 	//expecting (params)
 	n, err := p.consume(itemLeftParen)
 	if err != nil {
-		panic("expecting call to start with (")
+		return nil, fmt.Errorf("expecting ( after ident, got %v", fun.String())
 	}
 	expr := &CallExpr{
 		Pos: n.pos,
 		Fun: fun,
 	}
-	expr.Args = p.parseCallArgs()
+	expr.Args, err = p.parseCallArgs()
 
-	return expr
+	return expr, err
 
 }
 
-func (p *Parser) parseCallArgs() []Expr {
+func (p *Parser) parseCallArgs() ([]Expr, error) {
 	var args []Expr
 
 	if p.peek().Typ == itemRightParen {
 		//consume the right paren
 		p.next()
-		return args
+		return args, nil
 	}
 
 	//next should be an expression
-	args = append(args, p.parseExpr(Lowest))
+	exp, err := p.parseExpr(Lowest)
+	if err != nil {
+		return args, err
+	}
+	args = append(args, exp)
 
 	for p.peek().Typ == itemComma {
 		p.next() //skip the comma
-		args = append(args, p.parseExpr(Lowest))
+		exp, err = p.parseExpr(Lowest)
+		if err != nil {
+			return args, err
+		}
+		args = append(args, exp)
 	}
 
-	if p.next().Typ != itemRightParen {
+	if n := p.next(); n.Typ != itemRightParen {
 		p.backup()
-		//TODO: handle error here
-		return nil
+		return nil, fmt.Errorf("ln%v: expecting ) at end of function call, got: %v", n.line, n.pos)
 	}
 
-	return args
+	return args, nil
 }
 
 //check if it's a valid character action, assuming current token is "character"
@@ -559,8 +611,7 @@ func (p *Parser) parseBlock() (*BlockStmt, error) {
 	//should be surronded by {}
 	n, err := p.consume(itemLeftBrace)
 	if err != nil {
-		//TODO: better parser error handling
-		panic("expecting block to start with {")
+		return nil, fmt.Errorf("ln%v: expecting {, got %v", n.line, n.Val)
 	}
 	block := newBlockStmt(n.pos)
 	var node Node
@@ -570,11 +621,13 @@ func (p *Parser) parseBlock() (*BlockStmt, error) {
 		switch n := p.peek(); n.Typ {
 		case itemCharacterKey:
 			if !p.peekValidCharAction() {
-				panic("unexpected non action statement with char in block")
+				n := p.next()
+				n = p.next()
+				return nil, fmt.Errorf("ln%v: expecting action after character token, got %v", n.line, n.Val)
 			}
 		case itemRightBrace:
 			p.next() //consume the braces
-			return block
+			return block, nil
 		case itemEOF:
 			panic("reached end of file without }")
 		}
@@ -617,10 +670,10 @@ func (p *Parser) parseExpr(pre precedence) (Expr, error) {
 //next is an identifier
 func (p *Parser) parseIdent() (Expr, error) {
 	n := p.next()
-	return &Ident{Pos: n.pos, Value: n.Val}
+	return &Ident{Pos: n.pos, Value: n.Val}, nil
 }
 
-func (p *Parser) parseField() Expr {
+func (p *Parser) parseField() (Expr, error) {
 	//next is field, keep parsing as long as it is still fields
 	//then concat them all together
 	n := p.next()
@@ -630,15 +683,15 @@ func (p *Parser) parseField() Expr {
 	}
 	//we would have consumed one too many here
 	p.backup()
-	return &Field{Pos: n.pos, Value: fields}
+	return &Field{Pos: n.pos, Value: fields}, nil
 }
 
-func (p *Parser) parseString() Expr {
+func (p *Parser) parseString() (Expr, error) {
 	n := p.next()
-	return &StringLit{Pos: n.pos, Value: n.Val}
+	return &StringLit{Pos: n.pos, Value: n.Val}, nil
 }
 
-func (p *Parser) parseNumber() Expr {
+func (p *Parser) parseNumber() (Expr, error) {
 	//string, int, float, or bool
 	n := p.next()
 	num := &NumberLit{Pos: n.pos}
@@ -650,31 +703,32 @@ func (p *Parser) parseNumber() Expr {
 	} else {
 		fv, err := strconv.ParseFloat(n.Val, 64)
 		if err != nil {
-			panic("invalid number")
+			return nil, fmt.Errorf("ln%v: cannot parse %v to number", n.line, n.Val)
 		}
 		num.IsFloat = true
 		num.FloatVal = fv
 	}
-	return num
+	return num, nil
 }
 
-func (p *Parser) parseUnaryExpr() Expr {
+func (p *Parser) parseUnaryExpr() (Expr, error) {
 	n := p.next()
 	switch n.Typ {
 	case LogicNot:
 	case ItemMinus:
 	default:
-		panic("unrecognized unary operator")
+		return nil, fmt.Errorf("ln%v: unrecognized unary operator %v", n.line, n.Val)
 	}
+	var err error
 	expr := &UnaryExpr{
 		Pos: n.pos,
 		Op:  n,
 	}
-	expr.Right = p.parseExpr(Prefix)
-	return expr
+	expr.Right, err = p.parseExpr(Prefix)
+	return expr, err
 }
 
-func (p *Parser) parseBinaryExpr(left Expr) Expr {
+func (p *Parser) parseBinaryExpr(left Expr) (Expr, error) {
 	n := p.next()
 	expr := &BinaryExpr{
 		Pos:  n.pos,
@@ -682,20 +736,24 @@ func (p *Parser) parseBinaryExpr(left Expr) Expr {
 		Left: left,
 	}
 	pr := n.precedence()
-	expr.Right = p.parseExpr(pr)
-	return expr
+	var err error
+	expr.Right, err = p.parseExpr(pr)
+	return expr, err
 }
 
-func (p *Parser) parseParen() Expr {
+func (p *Parser) parseParen() (Expr, error) {
 	//skip the paren
 	p.next()
 
-	exp := p.parseExpr(Lowest)
+	exp, err := p.parseExpr(Lowest)
+	if err != nil {
+		return nil, err
+	}
 
 	if n := p.peek(); n.Typ != itemRightParen {
-		return nil
+		return nil, nil
 	}
 	p.next() // consume the right paren
 
-	return exp
+	return exp, nil
 }

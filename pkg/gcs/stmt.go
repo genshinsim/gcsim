@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-func (e *Eval) evalStmt(s ast.Stmt, env *Env) Obj {
+func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {
 	switch v := s.(type) {
 	case *ast.BlockStmt:
 		return e.evalBlock(v, env)
@@ -31,92 +31,105 @@ func (e *Eval) evalStmt(s ast.Stmt, env *Env) Obj {
 	case *ast.SwitchStmt:
 		return e.evalSwitchStmt(v, env)
 	default:
-		return &null{}
+		return &null{}, nil
 	}
 }
 
-func (e *Eval) evalBlock(b *ast.BlockStmt, env *Env) Obj {
+func (e *Eval) evalBlock(b *ast.BlockStmt, env *Env) (Obj, error) {
 	//blocks are effectively a list of statements, so we just need to loop through
 	//and evalNode
 	//blocks should create a new environment
 	scope := NewEnv(env)
 	for _, n := range b.List {
-		v := e.evalNode(n, scope)
+		v, err := e.evalNode(n, scope)
+		if err != nil {
+			return nil, err
+		}
 		switch v.(type) {
 		case *retval:
 			// these object should stop execution of current block
-			return v
+			return v, nil
 		case *ctrl:
 			// TODO: how do we check for invalid continue or break here
 			// prob need to add some sort of context to env
-			return v
-		case *terminate:
-			return v //program needs to exit now
+			return v, nil
 		}
 	}
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) evalLet(l *ast.LetStmt, env *Env) Obj {
+func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 	//variable assignment, expr should evaluate to a number
-	res := e.evalExpr(l.Val, env)
+	res, err := e.evalExpr(l.Val, env)
+	if err != nil {
+		return nil, err
+	}
 	//res should be a number
 	v, ok := res.(*number)
 	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
 	if !ok {
-		panic("let expr does not eval to a number")
+		return nil, fmt.Errorf("let expression for %v does evaluate to a number, got %v", l.Ident, res.Inspect())
 	}
 	_, exist := env.varMap[l.Ident.Val]
 	if exist {
-		panic(fmt.Sprintf("variable %v already exists; cannot redeclare", l.Ident.Val))
+		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	env.varMap[l.Ident.Val] = v
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) Obj {
+func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
 	_, exist := env.fnMap[l.FunVal.Val]
 	if exist {
-		panic(fmt.Sprintf("function %v already exists; cannot redeclare", l.FunVal.Val))
+		return nil, fmt.Errorf("function %v already exists; cannot redeclare", l.FunVal.Val)
 	}
 	env.fnMap[l.FunVal.Val] = l
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) Obj {
-	res := e.evalExpr(a.Val, env)
+func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) (Obj, error) {
+	res, err := e.evalExpr(a.Val, env)
+	if err != nil {
+		return nil, err
+	}
 	v, ok := res.(*number)
 	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
 	if !ok {
-		panic("let expr does not eval to a number")
+		return nil, fmt.Errorf("value assigned to variable %v does evaluate to a number, got %v", a.Ident, res.Inspect())
 	}
-	n := env.v(a.Ident.Val)
+	n, err := env.v(a.Ident.Val)
+	if err != nil {
+		return nil, err
+	}
 	n.fval = v.fval
 	n.ival = v.ival
 	n.isFloat = v.isFloat
 
-	return n
+	return n, nil
 }
 
-func (e *Eval) execSwap(char keys.Char) Obj {
+func (e *Eval) execSwap(char keys.Char) (Obj, error) {
 	e.Work <- &ast.ActionStmt{
 		Char:   char,
 		Action: action.ActionSwap,
 	}
 	_, ok := <-e.Next
 	if !ok {
-		return &terminate{} //no more work, shutting down
+		return nil, ErrTerminated //no more work, shutting down
 	}
 
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) Obj {
+func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) (Obj, error) {
 	//check if character is active, if not then issue a swap action first
 	if !e.Core.Player.CharIsActive(a.Char) {
-		res := e.execSwap(a.Char)
+		res, err := e.execSwap(a.Char)
+		if err != nil {
+			return nil, err
+		}
 		if res.Typ() != typNull {
-			return res
+			return res, nil
 		}
 	}
 
@@ -125,91 +138,105 @@ func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) Obj {
 	//block until sim is done with the action; unless we're done
 	_, ok := <-e.Next
 	if !ok {
-		return &terminate{} //no more work, shutting down
+		return nil, ErrTerminated //no more work, shutting down
 	}
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) Obj {
-	res := e.evalExpr(r.Val, env)
+func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {
+	res, err := e.evalExpr(r.Val, env)
+	if err != nil {
+		return nil, err
+	}
 	// e.Log.Printf("return res: %v, type: %T\n", res, res)
 	//res should be a number
 	if _, ok := res.(*number); !ok {
-		panic("return does not eval to a number")
+		return nil, fmt.Errorf("return expression does not evaluate to a number, got %v", res.Inspect())
 	}
 	return &retval{
 		res: res,
-	}
+	}, nil
 }
 
-func (e *Eval) evalCtrlStmt(r *ast.CtrlStmt, env *Env) Obj {
+func (e *Eval) evalCtrlStmt(r *ast.CtrlStmt, env *Env) (Obj, error) {
 	return &ctrl{
 		typ: r.Typ,
-	}
+	}, nil
 }
 
-func (e *Eval) evalIfStmt(i *ast.IfStmt, env *Env) Obj {
-	cond := e.evalExpr(i.Condition, env)
+func (e *Eval) evalIfStmt(i *ast.IfStmt, env *Env) (Obj, error) {
+	cond, err := e.evalExpr(i.Condition, env)
+	if err != nil {
+		return nil, err
+	}
 	if otob(cond) {
 		return e.evalBlock(i.IfBlock, env)
 
 	} else if i.ElseBlock != nil {
 		return e.evalBlock(i.ElseBlock, env)
 	}
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) evalWhileStmt(w *ast.WhileStmt, env *Env) Obj {
+func (e *Eval) evalWhileStmt(w *ast.WhileStmt, env *Env) (Obj, error) {
 	for {
 		//if condition is false, break
-		cond := e.evalExpr(w.Condition, env)
+		cond, err := e.evalExpr(w.Condition, env)
+		if err != nil {
+			return nil, err
+		}
 		if !otob(cond) {
 			break
 		}
 
 		//execute block
-		res := e.evalBlock(w.WhileBlock, env)
+		res, err := e.evalBlock(w.WhileBlock, env)
+		if err != nil {
+			return nil, err
+		}
 
 		//if result is a break stmt, stop loo
 		if t, ok := res.(*ctrl); ok && t.typ == ast.CtrlBreak {
 			break
 		}
-
-		//if terminate then end
-		if res.Typ() == typTerminate {
-			return res
-		}
 	}
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) Obj {
-	cond := e.evalExpr(swt.Condition, env)
+func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
+	cond, err := e.evalExpr(swt.Condition, env)
+	if err != nil {
+		return nil, err
+	}
+
 	//condition should be a number
 	//res should be a number
 	v, ok := cond.(*number)
 	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
 	if !ok {
-		panic("switch cond does not eval to a number")
+		return nil, fmt.Errorf("switch condition does not evaluate to a number, got %v", cond.Inspect())
 	}
 	ft := false
 	found := false
 	//loop through the cases, executing first one that evals true
 	for i := range swt.Cases {
 		//each case expr needs to evaluate to a number
-		cc := e.evalExpr(swt.Cases[i].Condition, env)
+		cc, err := e.evalExpr(swt.Cases[i].Condition, env)
+		if err != nil {
+			return nil, err
+		}
 		c, ok := cc.(*number)
 		if !ok {
-			panic("case expr not a number")
+			return nil, fmt.Errorf("switch case condition does not evaluate to a number, got %v", cc.Inspect())
 		}
 		if ntob(eq(c, v)) || ft {
 			found = true
-			res := e.evalBlock(swt.Cases[i].Body, env)
+			res, err := e.evalBlock(swt.Cases[i].Body, env)
+			if err != nil {
+				return nil, err
+			}
 			e.Log.Printf("res from case block: %v typ %T\n", res, res)
 			switch t := res.(type) {
-			case *terminate:
-				// terminate if we're done execution
-				return t
 			case *ctrl:
 				// check if fallthrough
 				if t.typ == ast.CtrlFallthrough {
@@ -217,12 +244,12 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) Obj {
 				}
 			default:
 				//switch is done
-				return res
+				return res, nil
 			}
 		}
 	}
 	if !found || ft {
 		return e.evalBlock(swt.Default, env)
 	}
-	return &null{}
+	return &null{}, nil
 }

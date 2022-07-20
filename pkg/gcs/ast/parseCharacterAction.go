@@ -23,7 +23,7 @@ type actionAPLOpt struct {
 
 //parseAction returns a node contain a character action, or a block of node containing
 //a list of character actions
-func (p *Parser) parseAction() Stmt {
+func (p *Parser) parseAction() (Stmt, error) {
 	//actions can be
 	//apl options:
 	//	+if
@@ -37,15 +37,15 @@ func (p *Parser) parseAction() Stmt {
 	//	+try
 	char, err := p.consume(itemCharacterKey)
 	if err != nil {
-		panic("parse char action expects character key, got " + char.String())
+		//this really shouldn't happen since we already checked
+		return nil, fmt.Errorf("ln%v: expecting character key, got %v", char.line, char.Val)
 	}
 	charKey := shortcut.CharNameToKey[char.Val]
 
 	//should be multiple action keys next
 	var actions []*ActionStmt
-	if p.peek().Typ != itemActionKey {
-		//TODO: fix error logging
-		return nil
+	if n := p.peek(); n.Typ != itemActionKey {
+		return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.line, char.Val, n.Val)
 	}
 
 	//all actions needs to come before any + flags
@@ -64,14 +64,12 @@ Loop:
 			//check for param -> then repeat
 			a.Param, err = p.acceptOptionalParamReturnMap()
 			if err != nil {
-				//TODO: fix error logging
-				return nil
+				return nil, err
 			}
 			//optional : and a number
 			count, err := p.acceptOptionalRepeaterReturnCount()
 			if err != nil {
-				//TODO: fix error logging
-				return nil
+				return nil, err
 			}
 			//add to array
 			for i := 0; i < count; i++ {
@@ -87,7 +85,7 @@ Loop:
 			}
 		default:
 			//TODO: fix invalid key error
-			return nil
+			return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.line, char.Val, n.Val)
 		}
 	}
 	//check for optional flags
@@ -95,13 +93,13 @@ Loop:
 	//build stmt
 
 	if len(actions) == 1 {
-		return actions[0]
+		return actions[0], nil
 	} else {
 		b := newBlockStmt(char.pos)
 		for _, v := range actions {
 			b.append(v)
 		}
-		return b
+		return b, nil
 	}
 }
 

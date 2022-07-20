@@ -17,6 +17,7 @@ type Simulation struct {
 	queue         *ast.ActionStmt
 	nextAction    chan *ast.ActionStmt
 	continueEval  chan bool
+	evalErr       chan error
 	queuer        gcs.Eval
 	noMoreActions bool
 	//result
