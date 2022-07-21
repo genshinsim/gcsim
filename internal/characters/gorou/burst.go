@@ -29,7 +29,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			StrikeType: combat.StrikeTypeBlunt,
 			//TODO: don't know the gauge of this
 			Durability: 25,
-			Mult:       burst[c.TalentLvlSkill()],
+			Mult:       burst[c.TalentLvlBurst()],
 		}
 		//Juuga: Forward Unto Victory: Skill DMG and Crystal Collapse DMG increased by 15.6% of DEF
 		snap := c.Snapshot(&ai)
@@ -114,7 +114,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			Element:    attributes.Geo,
 			StrikeType: combat.StrikeTypeBlunt,
 			Durability: 25,
-			Mult:       burstTick[c.TalentLvlSkill()],
+			Mult:       burstTick[c.TalentLvlBurst()],
 		}
 		//Juuga: Forward Unto Victory: Skill DMG and Crystal Collapse DMG increased by 15.6% of DEF
 		snap := c.Snapshot(&ai)
