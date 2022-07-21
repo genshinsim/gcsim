@@ -33,10 +33,11 @@ func init() {
 	skillPressFrames[action.ActionSwap] = 29
 
 	// skill (hold) -> x
-	skillHoldFrames = frames.InitAbilSlice(77)
+	skillHoldFrames = frames.InitAbilSlice(100)
+	skillHoldFrames[action.ActionAttack] = 77
+	skillHoldFrames[action.ActionBurst] = 77
 	skillHoldFrames[action.ActionDash] = 75
 	skillHoldFrames[action.ActionJump] = 75
-	skillHoldFrames[action.ActionSwap] = 100
 	skillHoldFrames[action.ActionWalk] = 75
 }
 
