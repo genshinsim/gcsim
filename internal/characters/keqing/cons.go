@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -14,7 +15,14 @@ const c2ICDKey = "keqing-c2-icd"
 func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		e, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
 		if atk.Info.ActorIndex != c.Index {
+			return false
+		}
+		if !e.AuraContains(attributes.Electro) {
 			return false
 		}
 		if c.StatusIsActive(c2ICDKey) {
