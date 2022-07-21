@@ -29,7 +29,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	d := c.createSkillSnapshot()
 
 	// You get 1 tick immediately, then 1 tick every 2 seconds for a total of 7 ticks
+	c.swapEarlyF = -1
 	c.skillLastUsed = c.Core.F
+	c.skillFlatDmg = c.burstDmgBonus(d.Info.AttackTag)
+
 	c.Core.Tasks.Add(func() { c.skillTick(d) }, skillHitmark)
 	c.Core.Tasks.Add(c.skillTickTask(d, c.Core.F), skillHitmark+126)
 
@@ -71,8 +74,8 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 func (c *char) skillTick(d *combat.AttackEvent) {
 
 	// check if skill has burst bonus snapshot
-	// max swap frame should be 40 frame before 2nd tick
-	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < (c.skillLastUsed+120-40) {
+	// snapshot is between 1st and 2nd tick
+	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < c.skillLastUsed+100 {
 		d.Info.FlatDmg = c.skillFlatDmg
 	} else {
 		d.Info.FlatDmg = c.burstDmgBonus(d.Info.AttackTag)
