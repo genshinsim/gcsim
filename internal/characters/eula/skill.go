@@ -15,10 +15,10 @@ var skillPressFrames []int
 var skillHoldFrames []int
 var icewhirlHitmarks = []int{79, 92}
 
-const skillPressHitmark = 20
-const skillHoldHitmark = 49
-
 const (
+	skillPressHitmark = 20
+	skillHoldHitmark  = 49
+	a1Hitmark         = 108
 	grimheartICD      = "eula-grimheart-icd"
 	grimheartDuration = "eula-grimheart-duration"
 )
@@ -219,7 +219,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 
 	//A1
 	if v == 2 {
-		a2ai := combat.AttackInfo{
+		aiA1 := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Icetide (Lightfall)",
 			AttackTag:  combat.AttackTagElementalBurst,
@@ -230,7 +230,9 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,
 		}
-		c.Core.QueueAttack(a2ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 108, 108)
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(aiA1, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, 0)
+		}, a1Hitmark)
 	}
 
 	//c1 add debuff
