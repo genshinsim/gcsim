@@ -50,7 +50,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			c.Status.Add("exile", 6*60)
 
-			for _, this := range c.Player.Chars() {
+			for _, x := range c.Player.Chars() {
+				this := x
 				if char.Index == this.Index {
 					continue
 				}
