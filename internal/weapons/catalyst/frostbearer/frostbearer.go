@@ -36,7 +36,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		t := args[0].(*enemy.Enemy)
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
