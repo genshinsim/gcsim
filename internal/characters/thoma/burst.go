@@ -28,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 50,
-		Mult:       burst[c.TalentLvlSkill()],
+		Mult:       burst[c.TalentLvlBurst()],
 	}
 
 	// damage component not final
@@ -92,7 +92,7 @@ func (c *char) burstProc() {
 			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Pyro,
 			Durability: 25,
-			Mult:       burstproc[c.TalentLvlSkill()],
+			Mult:       burstproc[c.TalentLvlBurst()],
 			FlatDmg:    0.022 * c.MaxHP(),
 		}
 		//trigger a chain of attacks starting at the first target
@@ -102,7 +102,7 @@ func (c *char) burstProc() {
 		atk.SourceFrame = c.Core.F
 		atk.Pattern = combat.NewDefSingleTarget(t.Index(), combat.TargettableEnemy)
 		cb := func(_ combat.AttackCB) {
-			shieldamt := (burstshieldpp[c.TalentLvlSkill()]*c.MaxHP() + burstshieldflat[c.TalentLvlSkill()])
+			shieldamt := (burstshieldpp[c.TalentLvlBurst()]*c.MaxHP() + burstshieldflat[c.TalentLvlBurst()])
 			c.genShield("Thoma Burst", shieldamt)
 		}
 		atk.Callbacks = append(atk.Callbacks, cb)

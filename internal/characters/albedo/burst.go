@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,
-		Mult:       burst[c.TalentLvlSkill()],
+		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
 
@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// Blooms are generated on a slight delay from initial hit
 	// TODO: No precise frame data, guessing correct delay
 	ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
-	ai.Mult = burstPerBloom[c.TalentLvlSkill()]
+	ai.Mult = burstPerBloom[c.TalentLvlBurst()]
 	for i := 0; i < hits; i++ {
 		c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), burstHitmark+30+i*5)
 	}

@@ -244,17 +244,10 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 		//if not expired
 		if m.Expiry() == -1 || m.Expiry() > *c.f {
 			amt := m.Amount(a)
-			c.log.NewEvent(
-				"applying cooldown modifier",
-				glog.LogActionEvent,
-				c.Index,
-			).Write(
-				"key", m.Key,
-			).Write(
-				"modifier", amt,
-			).Write(
-				"expiry", m.Expiry,
-			)
+			c.log.NewEvent("applying cooldown modifier", glog.LogActionEvent, c.Index).
+				Write("key", m.Key()).
+				Write("modifier", amt).
+				Write("expiry", m.Expiry())
 			cd += amt
 			c.mods[n] = v
 			n++
