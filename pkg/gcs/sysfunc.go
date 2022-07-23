@@ -19,7 +19,11 @@ func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 		}
 		sb.WriteString(val.Inspect())
 	}
-	e.Core.Log.NewEvent(sb.String(), glog.LogUserEvent, -1)
+	if e.Core != nil {
+		e.Core.Log.NewEvent(sb.String(), glog.LogUserEvent, -1)
+	} else {
+		fmt.Println(sb.String())
+	}
 	return &number{}, nil
 }
 
@@ -53,7 +57,7 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	if f <= 0 {
 		//do nothing if less or equal to 0
-		return &null{}, nil
+		return &number{}, nil
 	}
 
 	e.Work <- &ast.ActionStmt{
@@ -66,7 +70,7 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, ErrTerminated // no more work, shutting down
 	}
 
-	return &null{}, nil
+	return &number{}, nil
 }
 
 func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -132,7 +136,7 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.SetParticleDelay(delay)
-	return &null{}, nil
+	return &number{}, nil
 }
 
 func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -160,7 +164,7 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	e.Core.Combat.DefaultTarget = idx
 
-	return bton(true), nil
+	return &number{}, nil
 
 }
 
@@ -213,7 +217,12 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		y = float64(n.ival)
 	}
 
-	done := e.Core.Combat.SetTargetPos(idx, x, y)
+	//check if index is in range
+	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
+		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.TargetsCount()-1, idx)
+	}
 
-	return bton(done), nil
+	e.Core.Combat.SetTargetPos(idx, x, y)
+
+	return &number{}, nil
 }
