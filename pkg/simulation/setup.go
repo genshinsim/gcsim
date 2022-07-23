@@ -228,7 +228,7 @@ func (s *Simulation) randEnergy() {
 	})
 
 	//calculate next
-	next := int(s.C.Rand.Float64()*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
+	next := int((s.C.Rand.Float64()-0.5)*2*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
 	// next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
 	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy queued - ", fmt.Sprintf("next %v", s.C.F+next)).
 		Write("settings", s.cfg.Energy).
@@ -248,7 +248,7 @@ func (s *Simulation) SetupRandEnergyDrop() {
 
 	//convert every to per frame; right now every is in seconds
 	s.cfg.Energy.Mean = s.cfg.Energy.Every * 60
-	next := int(s.C.Rand.Float64()*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
+	next := int((s.C.Rand.Float64()-0.5)*2*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
 	// next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
 	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy started - ", fmt.Sprintf("next %v", s.C.F+next)).
 		Write("settings", s.cfg.Energy).
