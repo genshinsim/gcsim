@@ -46,3 +46,17 @@ func (c *char) Init() error {
 	}
 	return nil
 }
+
+func (c *char) Condition(k string) int64 {
+	switch k {
+	case "oz":
+		if c.ozActiveUntil <= c.Core.F {
+			return 0
+		}
+		return int64(c.ozActiveUntil - c.Core.F)
+	case "oz-source":
+		return int64(c.ozSource)
+	default:
+		return 0
+	}
+}
