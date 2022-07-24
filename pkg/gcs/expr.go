@@ -59,6 +59,10 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	switch s := ident.Value; s {
 	case "f":
 		return e.f()
+	case "rand":
+		return e.rand()
+	case "randnorm":
+		return e.randnorm()
 	case "print":
 		//print outputs
 		return e.print(c, env)

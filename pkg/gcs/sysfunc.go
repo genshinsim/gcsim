@@ -33,6 +33,22 @@ func (e *Eval) f() (*number, error) {
 	}, nil
 }
 
+func (e *Eval) rand() (*number, error) {
+	x := e.Core.Rand.Float64()
+	return &number{
+		fval:    x,
+		isFloat: true,
+	}, nil
+}
+
+func (e *Eval) randnorm() (*number, error) {
+	x := e.Core.Rand.NormFloat64()
+	return &number{
+		fval:    x,
+		isFloat: true,
+	}, nil
+}
+
 func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 	//wait(number goes in here)
 	if len(c.Args) != 1 {
