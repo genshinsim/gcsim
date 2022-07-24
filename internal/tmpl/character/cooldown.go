@@ -66,6 +66,10 @@ func (c *Tmpl) Charges(a core.ActionType) int {
 //TODO: energy calc mode currently not working. we need to reset action or else we might get
 //charges < 0 while trying to SetCD
 func (c *Tmpl) ActionReady(a core.ActionType, p map[string]int) bool {
+	//cannot execute actions if character is dead
+	if c.HPCurrent <= 0 {
+		return false
+	}
 	//up if energy is ready && stack > 0
 	if a == core.ActionBurst && (c.Energy != c.EnergyMax) {
 		return false
