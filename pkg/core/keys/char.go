@@ -33,6 +33,10 @@ func (c Char) String() string {
 	return charNames[c]
 }
 
+func (c Char) Pretty() string {
+	return charPrettyName[c]
+}
+
 const ChildePassive = "childe-talent-passive"
 
 const (
@@ -96,6 +100,7 @@ const (
 	YaeMiko
 	Yelan
 	Kuki
+	EndCharKeys
 )
 
 var charNames = []string{
@@ -159,6 +164,69 @@ var charNames = []string{
 	"yaemiko",
 	"yelan",
 	"kuki",
+}
+
+var charPrettyName = []string{
+	"Invalid",
+	"Traveler Electro",
+	"Traveler Anemo",
+	"Traveler Geo",
+	"Traveler Hydro",
+	"Traveler Cryo",
+	"Traveler Pyro",
+	"Traveler Dendro",
+	"Aether",
+	"Lumine",
+	"Invalid",
+	"Albedo",
+	"Aloy",
+	"Amber",
+	"Barbara",
+	"Beidou",
+	"Bennett",
+	"Chongyun",
+	"Diluc",
+	"Diona",
+	"Eula",
+	"Fischl",
+	"Ganyu",
+	"Hutao",
+	"Jean",
+	"Kazuha",
+	"Kaeya",
+	"Ayaka",
+	"Ayato",
+	"Keqing",
+	"Klee",
+	"Sara",
+	"Lisa",
+	"Mona",
+	"Ningguang",
+	"Noelle",
+	"Qiqi",
+	"Raiden",
+	"Razor",
+	"Rosaria",
+	"Kokomi",
+	"Sayu",
+	"Sucrose",
+	"Tartaglia",
+	"Thoma",
+	"Venti",
+	"Xiangling",
+	"Xiao",
+	"Xingqiu",
+	"Xinyan",
+	"Yanfei",
+	"Yoimiya",
+	"Zhongli",
+	"Gorou",
+	"Itto",
+	"Shenhe",
+	"Yunjin",
+	"Yae Miko",
+	"Yelan",
+	"Kuki",
 }
 
 var CharKeyToEle = map[Char]attributes.Element{
