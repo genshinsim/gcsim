@@ -18,7 +18,7 @@ The project is still currently under heavy development. Not every character/weap
 
 ## Contributing
 
-If you are looking to contribute, the following are some key areas that you can help out with. If you're interested, please don't hesistate to reach out on the sim's [discord](https://discord.gg/m7jvjdxx7q)
+If you are looking to contribute, the following are some key areas that you can help out with. If you're interested, please don't hesitate to reach out on the sim's [discord](https://discord.gg/m7jvjdxx7q)
 
 - Comprehensive frame counts of every character's abilities, including but not limited to:
   - Hit mark frame (not just animation frame, which is currently in the KQM library)
