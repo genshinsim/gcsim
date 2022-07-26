@@ -14,6 +14,8 @@ type precedence int
 const (
 	_ precedence = iota
 	Lowest
+	LogicalOr
+	LogicalAnd // TODO: or make one for && and ||?
 	Equals
 	LessOrGreater
 	Sum
@@ -23,14 +25,14 @@ const (
 )
 
 var precedences = map[TokenType]precedence{
+	LogicOr:              LogicalOr,
+	LogicAnd:             LogicalAnd,
 	OpEqual:              Equals,
 	OpNotEqual:           Equals,
 	OpLessThan:           LessOrGreater,
 	OpGreaterThan:        LessOrGreater,
 	OpLessThanOrEqual:    LessOrGreater,
 	OpGreaterThanOrEqual: LessOrGreater,
-	LogicAnd:             LessOrGreater,
-	LogicOr:              LessOrGreater,
 	ItemPlus:             Sum,
 	ItemMinus:            Sum,
 	ItemForwardSlash:     Product,
