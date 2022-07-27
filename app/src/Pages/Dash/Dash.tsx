@@ -49,6 +49,21 @@ export function Dash() {
         <Trans>dash.is_a_team</Trans>
       </span>
       <span>
+        <Callout intent="danger" className="max-w-[600px] mt-4">
+          We are at the final stages of finishing up the core rewrite. Please
+          note that once the rewrite goes live, there will be many breaking
+          syntax changes. Meaning old configs will not work as is. Update
+          documentation can be found{" "}
+          <a
+            href="https://docs.gcsim.app/next/config"
+            target="_blank"
+            rel="noreferrer"
+          >
+            here
+          </a>
+        </Callout>
+      </span>
+      <span>
         <Callout intent="warning" className=" max-w-[600px] mt-4">
           Please note that gcsim is currently on a feature freeze for now as we
           work on rewriting the calculation core to properly simulate hitlag. As
