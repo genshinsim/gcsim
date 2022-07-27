@@ -45,15 +45,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.skillAttackInfo = ai
 	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
 
-	// Reset ICD
-	c.DeleteStatus(skillICDKey)
-
 	//create a construct
 	// Construct is not fully formed until after the hit lands (exact timing unknown)
 	c.Core.Tasks.Add(func() {
 		c.Core.Constructs.New(c.newConstruct(1800), true)
 		c.lastConstruct = c.Core.F
 		c.skillActive = true
+		// Reset ICD after construct is created
+		c.DeleteStatus(skillICDKey)
 	}, skillHitmark)
 
 	c.SetCD(action.ActionSkill, 240)
