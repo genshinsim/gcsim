@@ -25,6 +25,12 @@ import (
 	exports "github.com/rocketlaunchr/dataframe-go/exports"
 )
 
+//Add parameters neccesary to the simopt (configpath) to be able to distinguish build date, git hash and build time
+var (
+	sha1ver   string // sha1 revision used to build the program
+	buildTime string // when the executable was built
+)
+
 type dpsPerChar struct {
 	Char string
 	Dps  float64
@@ -180,6 +186,10 @@ func OptnRunFunc(optimize bool, replace bool, gz bool) {
 
 	for _, filepath := range filepaths {
 		var configpath simulator.Options
+		//Add parameters neccesary to the simopt (configpath) to be able to distinguish build date, git hash and build time
+		configpath.Version = sha1ver
+		configpath.BuildDate = buildTime
+
 		configpath.ConfigPath = filepath
 		if gz {
 			configpath.GZIPResult = true //saves .gz
