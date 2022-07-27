@@ -227,5 +227,6 @@ func OptnRunFunc(optimize bool, replace bool, gz bool) {
 		fmt.Printf("Saved to Results.xlsx!\n")
 
 	}
+	writer.Close()
 
 }
