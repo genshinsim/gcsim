@@ -454,6 +454,19 @@ export function DB() {
 
   return (
     <main className="flex flex-col h-full m-2 w-full xs:w-full sm:w-[640px] hd:w-full wide:w-[1160px] ml-auto mr-auto ">
+      <span className="ml-auto mr-auto mb-4">
+        <Callout intent="danger" className="max-w-[600px] mt-4">
+          The database viewer links are currently down due to lack of
+          maintainer. In light of the fact that the rewrite should be live soon
+          (targetted before patch 3.0), we have elected to leave the links
+          offline as they will soon no longer work with the new core (and will
+          need to be updated accordingly).
+          <br />
+          <br />
+          However, for now you can still use load in simulator button to rerun
+          the simulations yourself.
+        </Callout>
+      </span>
       <div className="flex flex-row items-center">
         <div className="flex flex-row items-center">
           <Icon icon="filter-list" /> <Trans>db.filters</Trans>{" "}
