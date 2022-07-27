@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"sort"
 	"strings"
 
 	"regexp"
@@ -48,6 +49,7 @@ var bowusers = []string{
 	"ganyu", "gorou",
 	"sara", "tartaglia",
 	"venti", "yoimiya",
+	"yelan",
 }
 
 var catalystusers = []string{
@@ -60,6 +62,7 @@ var catalystusers = []string{
 	"sucrose",
 	"yae",
 	"yanfei",
+	"heizou",
 }
 
 var claymoreusers = []string{
@@ -94,6 +97,7 @@ var swordsusers = []string{
 	"keqing",
 	"qiqi",
 	"xingqiu",
+	"kuki",
 }
 
 var weapon_types = []string{"Bows", "Catalysts", "Claymores", "Polearms", "Swords"}
@@ -203,10 +207,17 @@ func getCharNames(filename string) []string {
 }
 
 func main() {
+	//sort weapon slices asc
+	sort.Strings(bows)
+	sort.Strings(catalysts)
+	sort.Strings(claymores)
+	sort.Strings(polearms)
+	sort.Strings(swords)
+
 	// New app
 	a := app.New()
 	// New Window & title
-	w := a.NewWindow("Multi-File Simulator and Optimizer")
+	w := a.NewWindow("GUISIM: Multi-File Writer, Simulator and Optimizer")
 	//Resize main/parent window
 	w.Resize(fyne.NewSize(800, 400))
 	//selects
