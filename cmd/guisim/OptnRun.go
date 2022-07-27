@@ -14,12 +14,6 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/simulator"
 	"github.com/genshinsim/gcsim/internal/substatoptimizer"
-	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/parse"
-	"github.com/genshinsim/gcsim/pkg/result"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	dataframe "github.com/rocketlaunchr/dataframe-go"
 	exports "github.com/rocketlaunchr/dataframe-go/exports"
@@ -46,43 +40,12 @@ func contains(s []string, e string) bool {
 }
 
 func parseConfig(simopt simulator.Options) (float64, float64, []string, []float64) {
-	// Parse config
-	zapcfg := zap.NewDevelopmentConfig()
-	zapcfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
-	zapcfg.EncoderConfig.CallerKey = ""
-	zapcfg.EncoderConfig.StacktraceKey = ""
-	zapcfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
-	// if verbose {
-	// 	zapcfg.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
-	// }
-	logger, _ := zapcfg.Build()
-	defer logger.Sync()
-	sugarLog := logger.Sugar()
-	cfg, err := simulator.ReadConfig(simopt.ConfigPath)
-	if err != nil {
-		sugarLog.Error(err)
-		//os.Exit(1)
-	}
-
-	//get the characters names to store them later in array
-	// var reGetCharNames = regexp.MustCompile(`(?m)^([a-z]+)\s+char\b[^;]*;`)
-	// for _, match := range reGetCharNames.FindAllStringSubmatch(cfg, -1) {
-	// 	char := string(match[1])
-	// 	fmt.Printf("%q\n", char)
-
-	// }
-	// if err != nil {
-	// 	log.Println(err)
-	// 	os.Exit(1)
-	// }
-	parser := parse.New("single", string(cfg))
-	simcfg, err := parser.Parse()
+	result, err := simulator.Run(simopt) // Just runs the sim with specified settings
 	if err != nil {
 		log.Println(err)
 		//os.Exit(1)
 	}
-	result := runSimWithConfig(cfg, simcfg, simopt)
 	//fmt.Printf("DPS: %v     STD DEV: %v \n", result.DPS.Mean, result.DPS.SD)
 	total := make([]float64, len(result.CharNames), len(result.CharNames))
 
@@ -102,16 +65,6 @@ func parseConfig(simopt simulator.Options) (float64, float64, []string, []float6
 	}
 
 	return result.DPS.Mean, result.DPS.SD, result.CharNames, total
-}
-
-// Just runs the sim with specified settings
-func runSimWithConfig(cfg string, simcfg core.SimulationConfig, simopt simulator.Options) result.Summary {
-	result, err := simulator.RunWithConfig(cfg, simcfg, simopt)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-	return result
 }
 
 func selectFiles() []string {
