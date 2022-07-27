@@ -190,9 +190,6 @@ func (c *char) Skill(p map[string]int) (int, int) {
 	c.skillAttackInfo = ai
 	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
 
-	// Reset ICD
-	c.icdSkill = c.Core.F - 1
-
 	//create a construct
 	// Construct is not fully formed until after the hit lands (exact timing unknown)
 	c.AddTask(func() {
@@ -201,6 +198,10 @@ func (c *char) Skill(p map[string]int) (int, int) {
 		c.lastConstruct = c.Core.F
 
 		c.Tags["elevator"] = 1
+
+		// Reset ICD after construct is created
+		c.icdSkill = c.Core.F - 1
+
 	}, "albedo-create-construct", f)
 
 	c.SetCD(core.ActionSkill, 240)
