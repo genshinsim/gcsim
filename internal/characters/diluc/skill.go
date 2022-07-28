@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	var orb float64 = 1
-	if c.Core.Rand.Float64() < 0.25 {
+	if c.Core.Rand.Float64() < 0.33 {
 		orb = 2
 	}
 	c.Core.QueueParticle("diluc", orb, attributes.Pyro, hitmark+c.Core.Flags.ParticleDelay)
