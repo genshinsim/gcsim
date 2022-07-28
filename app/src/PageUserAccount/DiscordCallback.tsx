@@ -23,6 +23,7 @@ export function DiscordCallback() {
       })
       .catch((error) => {
         setError(JSON.stringify(error));
+        setLocation("/auth/discord");
       });
   }, [params]);
 
