@@ -96,6 +96,15 @@ func (p *Parser) Parse() (*ActionList, error) {
 		}
 	}
 
+	//check all targets have hp if damage mode
+	if p.res.Settings.DamageMode {
+		for i, v := range p.res.Targets {
+			if v.HP == 0 {
+				p.res.Errors = append(p.res.Errors, fmt.Errorf("damage mode is activated; target #%v does not have hp set", i+1))
+			}
+		}
+	}
+
 	//build the err msgs
 	p.res.ErrorMsgs = make([]string, 0, len(p.res.Errors))
 	for _, v := range p.res.Errors {

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -23,7 +24,6 @@ func (s *Simulation) Run() (Result, error) {
 	stop := false
 	var err error
 
-	//TODO: enable hp mode?
 	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
 
 	//setup ast
@@ -50,15 +50,25 @@ func (s *Simulation) Run() (Result, error) {
 			return s.stats, err
 		}
 
-		//TODO: hp mode
-		stop = s.C.F == f
+		if s.C.Combat.DamageMode {
+			//stop if all targets are reporting dead
+			stop = true
+			for _, t := range s.C.Combat.Targets() {
+				if t.Type() == combat.TargettableEnemy && t.IsAlive() {
+					stop = false
+					break
+				}
+			}
+		} else {
+			stop = s.C.F == f
+		}
 	}
 
 	s.stats.Seed = s.C.Seed
 
 	s.stats.Damage = s.C.Combat.TotalDamage
 	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F+1)
-	s.stats.Duration = f
+	s.stats.Duration = s.C.F
 
 	//we're done yay
 	return s.stats, nil

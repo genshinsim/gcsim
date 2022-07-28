@@ -63,7 +63,19 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
 	e.mods = make([]modifier.Mod, 0, 10)
+	if core.Combat.DamageMode {
+		e.Target.HPCurrent = p.HP
+		e.Target.HPMax = p.HP
+	}
 	return e
 }
 
 func (e *Enemy) Type() combat.TargettableType { return combat.TargettableEnemy }
+
+func (e *Enemy) Tick() {
+	//dead enemy don't tick
+	if !e.Target.Alive {
+		return
+	}
+	e.Reactable.Tick()
+}
