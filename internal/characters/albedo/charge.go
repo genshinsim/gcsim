@@ -31,7 +31,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
-	//TODO: damage frame
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
