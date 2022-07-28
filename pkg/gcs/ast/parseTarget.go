@@ -62,6 +62,9 @@ func parseTarget(p *Parser) (parseFn, error) {
 			n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
 				r.HP, err = itemNumberToFloat64(n)
+				if err != nil {
+					return nil, err
+				}
 				p.res.Settings.DamageMode = true
 			}
 		case keywordResist:

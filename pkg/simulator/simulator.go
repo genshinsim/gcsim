@@ -3,6 +3,8 @@ package simulator
 import (
 	"crypto/rand"
 	"encoding/binary"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"path"
@@ -40,6 +42,14 @@ func Run(opts Options) (result.Summary, error) {
 	simcfg, err := parser.Parse()
 	if err != nil {
 		return result.Summary{}, err
+	}
+	//check other errors as well
+	if len(simcfg.Errors) != 0 {
+		fmt.Println("The config has the following errors: ")
+		for _, v := range simcfg.Errors {
+			fmt.Printf("\t%v\n", v)
+		}
+		return result.Summary{}, errors.New("sim has errors")
 	}
 	return RunWithConfig(cfg, simcfg, opts)
 }

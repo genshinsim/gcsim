@@ -97,6 +97,7 @@ func main() {
 	res, err := simulator.Run(simopt)
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	fmt.Println(res.PrettyPrint())
 
