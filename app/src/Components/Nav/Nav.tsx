@@ -1,8 +1,10 @@
 import {
   Alignment,
   AnchorButton,
+  Button,
   Classes,
   HTMLSelect,
+  Icon,
   Navbar,
   NavbarDivider,
   NavbarGroup,
@@ -10,10 +12,17 @@ import {
 } from "@blueprintjs/core";
 import { Link, useLocation } from "wouter";
 import { Trans, useTranslation } from "react-i18next";
+import { RootState, useAppSelector } from "~src/store";
 
 export default function Nav() {
   let { t, i18n } = useTranslation();
   let language = i18n.language;
+
+  const { user } = useAppSelector((state: RootState) => {
+    return {
+      user: state.user,
+    };
+  });
 
   const [location, _] = useLocation();
   return (
@@ -61,10 +70,14 @@ export default function Nav() {
             </Link>
           </>
         ) : null}
-        <div className="flex flex-row items-center ml-auto">
-          <span className="hidden lg:block">
-            <Trans>nav.language</Trans>
-          </span>
+        <div className="ml-auto">
+          <Link href="/account">
+            <AnchorButton className={Classes.MINIMAL} icon="user">
+              {user.user_name}
+            </AnchorButton>
+          </Link>
+        </div>
+        <div className="flex flex-row items-center ml-2">
           <HTMLSelect
             className="ml-2"
             value={language}

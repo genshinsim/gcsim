@@ -1,3 +1,4 @@
+import React from "react";
 import { Redirect, Route, Switch } from "wouter";
 import Footer from "/src/Components/Footer/Footer";
 import Nav from "/src/Components/Nav/Nav";
@@ -8,6 +9,8 @@ import { ViewerDash } from "./Pages/ViewerDashboard";
 import { DB } from "./Pages/DB";
 import "./i18n";
 import { Trans, useTranslation } from "react-i18next";
+import UserAccount from "./PageUserAccount";
+import { DiscordCallback } from "./PageUserAccount/DiscordCallback";
 
 export default function App() {
   useTranslation();
@@ -39,6 +42,12 @@ export default function App() {
         </Route>
         <Route path="/db">
           <DB />
+        </Route>
+        <Route path="/account">
+          <UserAccount />
+        </Route>
+        <Route path="/auth/discord">
+          <DiscordCallback />
         </Route>
         <Route>
           <div className="m-2 text-center">

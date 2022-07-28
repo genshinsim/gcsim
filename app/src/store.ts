@@ -3,6 +3,7 @@ import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { defaultRunStat, simSlice } from "/src/Pages/Sim/simSlice";
 import { viewerSlice } from "./Pages/ViewerDashboard/viewerSlice";
 import { userDataSlice } from "./Pages/Sim/userDataSlice";
+import { userSlice } from "./UserData/userSlice";
 
 export type RootState = ReturnType<typeof store.getState>;
 
@@ -41,6 +42,7 @@ const store = configureStore({
     [simSlice.name]: simSlice.reducer,
     [viewerSlice.name]: viewerSlice.reducer,
     [userDataSlice.name]: userDataSlice.reducer,
+    [userSlice.name]: userSlice.reducer,
   },
   preloadedState: persistedState,
 });
