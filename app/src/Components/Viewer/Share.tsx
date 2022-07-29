@@ -41,6 +41,7 @@ export interface uploadData {
     dps_by_target: { [key: number]: SummaryStats };
     iter: number;
     runtime: number;
+    num_targets: number;
     char_details: Character[];
   };
   path?: string; //for organization purposes
@@ -79,6 +80,7 @@ export default function Share(props: ShareProps) {
         iter: props.data.iter,
         runtime: props.data.runtime,
         char_details: props.data.char_details,
+        num_targets: props.data.num_targets,
       },
       perm,
     };
