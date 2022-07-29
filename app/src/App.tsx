@@ -34,6 +34,9 @@ export default function App() {
         <Route path="/viewer/share/:id">
           {(params) => <ViewerDash path={params.id} />}
         </Route>
+        <Route path="/v3/viewer/share/:id">
+          {(params) => <ViewerDash path={params.id} next={true} />}
+        </Route>
         <Route path="/viewer/local">
           <ViewerDash path="local" />
         </Route>

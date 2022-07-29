@@ -10,12 +10,13 @@ import {
   SpinnerSize,
   Toaster,
 } from "@blueprintjs/core";
-import axios, { AxiosRequestHeaders } from "axios";
+import axios from "axios";
 import pako from "pako";
 import React from "react";
 import { bytesToBase64 } from "./base64";
 import { SimResults } from "./DataType";
 import { Trans, useTranslation } from "react-i18next";
+import { Character, SummaryStats } from "~src/types";
 
 export interface ShareProps {
   // isOpen: boolean;
@@ -30,6 +31,21 @@ const ak = "api-key";
 export const AppToaster = Toaster.create({
   position: Position.BOTTOM_RIGHT,
 });
+
+export interface uploadData {
+  data: string;
+  meta: {
+    char_names: string[];
+    dps: SummaryStats;
+    sim_duration: SummaryStats;
+    dps_by_target: { [key: number]: SummaryStats };
+    iter: number;
+    runtime: number;
+    char_details: Character[];
+  };
+  path?: string; //for organization purposes
+  perm?: boolean;
+}
 
 export default function Share(props: ShareProps) {
   let { t } = useTranslation();
@@ -53,40 +69,35 @@ export default function Share(props: ShareProps) {
     //encode data
     let compressed = pako.deflate(JSON.stringify(props.data));
 
-    // const restored = JSON.parse(pako.inflate(compressed, { to: "string" }));
-
-    // console.log(restored);
-
-    let s = bytesToBase64(compressed);
-
+    let data: uploadData = {
+      data: bytesToBase64(compressed),
+      meta: {
+        char_names: props.data.char_names,
+        dps: props.data.dps,
+        sim_duration: props.data.sim_duration,
+        dps_by_target: props.data.dps_by_target,
+        iter: props.data.iter,
+        runtime: props.data.runtime,
+        char_details: props.data.char_details,
+      },
+      perm,
+    };
     // console.log(s);
     //"{\"author\":\"anon\",\"description\":\"none\",\"data\":\"stuff\"}"
     setIsLoading(true);
     setIsPerm(false);
     setURL("");
-    let h: AxiosRequestHeaders = {
-      "Access-Control-Allow-Origin": "*",
-    };
-
-    if (perm) {
-      h[ak] = apiKey;
-    }
 
     axios({
       method: "post",
-      url: "https://viewer.gcsim.workers.dev/upload",
-      headers: h,
-      data: {
-        author: "anon",
-        description: "none",
-        data: s,
-      },
+      url: "https://next.gcsim.app/api/share",
+      data: data,
     })
       .then((response) => {
         console.log(response);
-        if (response.data.id) {
+        if (response.data.key) {
           setErrMsg("");
-          setURL(response.data.id);
+          setURL(response.data.key);
           setIsPerm(response.data.perm);
           setIsLoading(false);
         } else {
@@ -105,20 +116,22 @@ export default function Share(props: ShareProps) {
 
   const handleCopy = () => {
     //temprorary
-    navigator.clipboard.writeText(`https://next.gcsim-app.pages.dev/viewer/share/${url}`).then(
-      () => {
-        AppToaster.show({
-          message: t("viewer.copied_to_clipboard"),
-          intent: "success",
-        });
-      },
-      () => {
-        AppToaster.show({
-          message: t("viewer.error_copying_not"),
-          intent: "danger",
-        });
-      }
-    );
+    navigator.clipboard
+      .writeText(`https://next.gcsim.app/v3/viewer/share/${url}`)
+      .then(
+        () => {
+          AppToaster.show({
+            message: t("viewer.copied_to_clipboard"),
+            intent: "success",
+          });
+        },
+        () => {
+          AppToaster.show({
+            message: t("viewer.error_copying_not"),
+            intent: "danger",
+          });
+        }
+      );
   };
 
   return (
@@ -179,7 +192,7 @@ export default function Share(props: ShareProps) {
                 <Trans>viewer.link_post</Trans>
               </span>
               <div className="p-2 rounded-md bg-green-700">
-                <pre>{`https://next.gcsim-app.pages.dev/viewer/share/${url}`}</pre>
+                <pre>{`https://next.gcsim.app/v3/viewer/share/${url}`}</pre>
               </div>
               <Button
                 intent="success"

@@ -16,10 +16,16 @@ axios.defaults.headers.get["Access-Control-Allow-Origin"] = "*";
 type Props = {
   path: string;
   version?: string;
+  next?: boolean;
   handleClose: () => void;
 };
 
-export default function Shared({ path, version = "v2", handleClose }: Props) {
+export default function Shared({
+  path,
+  version = "v2",
+  handleClose,
+  next = false,
+}: Props) {
   let { t } = useTranslation();
 
   const dispatch = useAppDispatch();
@@ -30,6 +36,7 @@ export default function Shared({ path, version = "v2", handleClose }: Props) {
     //load path
     console.log("loading version: " + version);
     let url = "https://viewer.gcsim.workers.dev/" + path;
+    if (next) url = "https://next.gcsim.app/api/view" + path;
     if (path == "local") {
       url = "http://127.0.0.1:8381/data";
     }

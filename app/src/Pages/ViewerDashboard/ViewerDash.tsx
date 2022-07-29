@@ -5,14 +5,15 @@ import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import Dropzone from "./Dropzone";
 import Shared from "./Shared";
 import { viewerActions } from "./viewerSlice";
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from "react-i18next";
 
 type Props = {
   path: string;
+  next?: boolean;
 };
 
-export function ViewerDash({ path }: Props) {
-  useTranslation()
+export function ViewerDash({ path, next = false }: Props) {
+  useTranslation();
 
   const [_, setLocation] = useLocation();
   const { data, selected } = useAppSelector((state: RootState) => {
@@ -28,6 +29,7 @@ export function ViewerDash({ path }: Props) {
     //need a check here to make sure this doesn't already exists
     return (
       <Shared
+        next={next}
         path={path}
         handleClose={() => {
           dispatch(viewerActions.setSelected(""));
@@ -70,7 +72,9 @@ export function ViewerDash({ path }: Props) {
   //show dash board otherwise
   return (
     <Viewport className="flex flex-col p-1">
-      <div className="font-bold"><Trans>viewerdashboard.upload_a_file</Trans></div>
+      <div className="font-bold">
+        <Trans>viewerdashboard.upload_a_file</Trans>
+      </div>
       <Dropzone />
       <div className="font-bold mb-2">
         <Trans>viewerdashboard.or_select_from</Trans>
