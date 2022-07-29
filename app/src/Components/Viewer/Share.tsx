@@ -90,7 +90,7 @@ export default function Share(props: ShareProps) {
 
     axios({
       method: "post",
-      url: "https://next.gcsim.app/api/share",
+      url: "/api/share",
       data: data,
     })
       .then((response) => {
@@ -117,7 +117,7 @@ export default function Share(props: ShareProps) {
   const handleCopy = () => {
     //temprorary
     navigator.clipboard
-      .writeText(`https://next.gcsim.app/v3/viewer/share/${url}`)
+      .writeText(`${window.location.origin}/v3/viewer/share/${url}`)
       .then(
         () => {
           AppToaster.show({
@@ -192,7 +192,7 @@ export default function Share(props: ShareProps) {
                 <Trans>viewer.link_post</Trans>
               </span>
               <div className="p-2 rounded-md bg-green-700">
-                <pre>{`https://next.gcsim.app/v3/viewer/share/${url}`}</pre>
+                <pre>{`${window.location.origin}/v3/viewer/share/${url}`}</pre>
               </div>
               <Button
                 intent="success"

@@ -36,7 +36,7 @@ export default function Shared({
     //load path
     console.log("loading version: " + version);
     let url = "https://viewer.gcsim.workers.dev/" + path;
-    if (next) url = "https://next.gcsim.app/api/view" + path;
+    if (next) url = "/api/view/" + path;
     if (path == "local") {
       url = "http://127.0.0.1:8381/data";
     }
@@ -57,7 +57,8 @@ export default function Shared({
         // }
 
         //decode base64
-        const binaryStr = Uint8ArrayFromBase64(data.data);
+
+        let binaryStr: Uint8Array = Uint8ArrayFromBase64(data.data);
 
         let jsonData = extractJSONStringFromBinary(binaryStr);
 
