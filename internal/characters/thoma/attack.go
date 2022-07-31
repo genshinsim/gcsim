@@ -12,7 +12,7 @@ import (
 var attackFrames [][]int
 var attackHitmarks = [][]int{{11}, {38}, {27, 40}, {25}}
 var attackHitlagHaltFrame = [][]float64{{0.06}, {0.09}, {0, 0}, {0}}
-var attackDefHalt = [][]bool{{true}, {true}, {false, false}, {true}}
+var attackDefHalt = [][]bool{{true}, {true}, {false, false}, {false}}
 
 const normalHitNum = 4
 
