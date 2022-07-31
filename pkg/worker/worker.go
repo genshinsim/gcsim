@@ -57,8 +57,11 @@ func (p *Pool) worker() {
 			}
 			p.respCh <- res
 
-		case <-p.StopCh:
-			return
+		case _, ok := <-p.StopCh:
+			if !ok {
+				//stopping
+				return
+			}
 		}
 
 	}

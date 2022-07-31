@@ -38,7 +38,7 @@ func (c *char) c1() {
 //active character obtains an Elemental Shard from a Crystallize reaction.
 //This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnShielded, func(_ ...interface{}) bool {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
 			return false
 		}
@@ -51,11 +51,17 @@ func (c *char) c2() {
 	}, "gorou-c2")
 }
 
+// For 12s after using Inuzaka All-Round Defense or Juuga: Forward Unto Victory, increases the CRIT DMG of
+// all nearby party members' Geo DMG based on the buff level of the skill's field at the time of use:
+// • "Standing Firm": +10%
+// • "Impregnable": +20%
+// • "Crunch": +40%
+// This effect cannot stack and will take reference from the last instance of the effect that is triggered.
 func (c *char) c6() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(c6key, 720),
-			Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Base: modifier.NewBaseWithHitlag(c6key, 720),
+			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if ae.Info.Element != attributes.Geo {
 					return nil, false
 				}

@@ -15,12 +15,12 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	maxShield float64
-	a1Stack   int
-	a1icd     int
+	a1Stack int
+	a1icd   int
+	c6buff  []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -41,9 +41,14 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
-
-	c.maxShield = shieldppmax[c.TalentLvlSkill()]*c.MaxHP() + shieldflatmax[c.TalentLvlSkill()]
 	c.a1()
-
+	if c.Base.Cons >= 6 {
+		c.c6buff = make([]float64, attributes.EndStatType)
+		c.c6buff[attributes.DmgP] = .15
+	}
 	return nil
+}
+
+func (c *char) maxShieldHP() float64 {
+	return shieldppmax[c.TalentLvlSkill()]*c.MaxHP() + shieldflatmax[c.TalentLvlSkill()]
 }

@@ -39,17 +39,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		Abil:       "Stellar Restoration",
-		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Electro,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
+		Abil:               "Stellar Restoration",
+		ActorIndex:         c.Index,
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Electro,
+		Durability:         25,
+		Mult:               skill[c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.09 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: false,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	if c.Base.Cons >= 6 {
 		c.c6("skill")
@@ -84,7 +87,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillRecastHitmark, skillRecastHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillRecastHitmark, skillRecastHitmark)
 
 	//add electro infusion
 	c.a1()
@@ -107,16 +110,16 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		}
 		// TODO: this should be 1st hit on cast and 2nd at end
 		for i := 0; i < hits; i++ {
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), skillRecastHitmark, skillRecastHitmark)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillRecastHitmark, skillRecastHitmark)
 		}
 	}
 
 	// TODO: Particle timing?
+	count := 2.0
 	if c.Core.Rand.Float64() < .5 {
-		c.Core.QueueParticle("keqing", 2, attributes.Electro, 100)
-	} else {
-		c.Core.QueueParticle("keqing", 3, attributes.Electro, 100)
+		count = 3
 	}
+	c.Core.QueueParticle("keqing", count, attributes.Electro, skillRecastHitmark+c.Core.Flags.ParticleDelay)
 
 	// despawn stiletto
 	c.Core.Status.Delete(stilettoKey)

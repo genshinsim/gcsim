@@ -40,7 +40,7 @@ func (c *char) a4() {
 
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("kazuha-a4-"+key, 60*8),
+					Base:         modifier.NewBaseWithHitlag("kazuha-a4-"+key, 60*8),
 					AffectedStat: attributes.NoStat,
 					Amount: func() ([]float64, bool) {
 						m[attributes.CryoP] = 0
@@ -64,4 +64,22 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.ElectroP, "electro"), "kazuha-a4-electro")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.HydroP, "hydro"), "kazuha-a4-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.PyroP, "pyro"), "kazuha-a4-pyro")
+}
+
+func (c *char) absorbCheckA1(src, count, max int) func() {
+	return func() {
+		if count == max {
+			return
+		}
+		c.a1Ele = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+
+		if c.a1Ele != attributes.NoElement {
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+				"kazuha a1 infused ", c.a1Ele.String(),
+			)
+			return
+		}
+		//otherwise queue up
+		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, max), 6)
+	}
 }

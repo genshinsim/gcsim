@@ -28,12 +28,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 50,
-		Mult:       burst[c.TalentLvlSkill()],
+		Mult:       burst[c.TalentLvlBurst()],
 	}
 
 	// damage component not final
-	x, y := c.Core.Combat.Target(0).Pos()
-	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	d := 15
 	if c.Base.Cons >= 2 {
@@ -69,7 +68,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 func (c *char) burstProc() {
 	// does not deactivate on death
 	icd := 0
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t := args[0].(combat.Target)
 		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
@@ -92,8 +91,8 @@ func (c *char) burstProc() {
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Pyro,
-			Durability: 50,
-			Mult:       burstproc[c.TalentLvlSkill()],
+			Durability: 25,
+			Mult:       burstproc[c.TalentLvlBurst()],
 			FlatDmg:    0.022 * c.MaxHP(),
 		}
 		//trigger a chain of attacks starting at the first target
@@ -102,14 +101,12 @@ func (c *char) burstProc() {
 		}
 		atk.SourceFrame = c.Core.F
 		atk.Pattern = combat.NewDefSingleTarget(t.Index(), combat.TargettableEnemy)
-		cb := func(a combat.AttackCB) {
-			shieldamt := (burstshieldpp[c.TalentLvlSkill()]*c.MaxHP() + burstshieldflat[c.TalentLvlSkill()])
+		cb := func(_ combat.AttackCB) {
+			shieldamt := (burstshieldpp[c.TalentLvlBurst()]*c.MaxHP() + burstshieldflat[c.TalentLvlBurst()])
 			c.genShield("Thoma Burst", shieldamt)
 		}
-		if cb != nil {
-			atk.Callbacks = append(atk.Callbacks, cb)
-		}
-		c.Core.QueueAttackEvent(&atk, 1)
+		atk.Callbacks = append(atk.Callbacks, cb)
+		c.Core.QueueAttackEvent(&atk, 0)
 
 		c.Core.Log.NewEvent("thoma Q proc'd", glog.LogCharacterEvent, c.Index).
 			Write("frame", c.Core.F).

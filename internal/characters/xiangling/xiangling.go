@@ -18,7 +18,7 @@ type char struct {
 	guoba *panda
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 

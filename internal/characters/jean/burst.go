@@ -49,13 +49,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	//initial hit at 40f
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 40)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 40)
 
+	//TODO: make this work with movement?
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
 	//first enter is at frame 55
 	for i := 0; i < enter; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 55+i*delay)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 55+i*delay)
 	}
 
 	c.Core.Status.Add("jeanq", 600+burstStart)
@@ -69,7 +70,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}
 			//10 seconds + animation
 			e.AddResistMod(enemy.ResistMod{
-				Base:  modifier.NewBase("jeanc4", 600+burstStart),
+				Base:  modifier.NewBaseWithHitlag("jeanc4", 600+burstStart),
 				Ele:   attributes.Anemo,
 				Value: -0.4,
 			})
@@ -92,7 +93,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		})
 	}, burstStart)
 
-	self, ok := c.Core.Combat.Target(0).(*avatar.Player)
+	self, ok := c.Core.Combat.Player().(*avatar.Player)
 	if !ok {
 		panic("target 0 should be Player but is not!!")
 	}

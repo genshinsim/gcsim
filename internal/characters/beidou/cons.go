@@ -7,8 +7,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+const c4key = "beidou-c4"
+
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
@@ -27,7 +29,7 @@ func (c *char) c4() {
 		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if c.Core.Status.Duration("beidouc4") == 0 {
+		if !c.StatusIsActive(c4key) {
 			return false
 		}
 

@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			if t.AuraType() == attributes.Cryo || t.AuraType() == attributes.Frozen {
 				ai.Mult = mc
 			}
-			c.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHit(t, 1, false, combat.TargettableEnemy), 0, 1)
 
 		}
 		return false

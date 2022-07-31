@@ -15,11 +15,14 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	sigils         int
-	sigilsDuration int
+	sigils          int
+	skillSigilBonus []float64
+	a4bonus         []float64
+	c1bonus         []float64
+	c2bonus         []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -38,6 +41,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 func (c *char) Init() error {
 	// skill
+	c.skillSigilBonus = make([]float64, attributes.EndStatType)
 	c.energySigil()
 
 	// burst
@@ -47,9 +51,15 @@ func (c *char) Init() error {
 
 	c.a4()
 
-	c.c1()
-	c.c2()
-	c.c6()
+	if c.Base.Cons >= 1 {
+		c.c1()
+	}
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
+	if c.Base.Cons >= 6 {
+		c.c6()
+	}
 
 	return nil
 }

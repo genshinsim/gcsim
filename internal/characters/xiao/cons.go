@@ -27,6 +27,8 @@ func (c *char) c2() {
 	})
 }
 
+const c6BuffKey = "xiao-c6"
+
 // Implements Xiao C6:
 // While under the effect of Bane of All Evil, hitting at least 2 opponents with Xiao's Plunge Attack will immediately grant him 1 charge of Lemniscatic Wind Cycling, and for the next 1s, he may use Lemniscatic Wind Cycling while ignoring its CD.
 // Adds an OnDamage event checker - if we record two or more instances of plunge damage, then activate C6
@@ -39,12 +41,13 @@ func (c *char) c6() {
 		if !((atk.Info.Abil == "High Plunge") || (atk.Info.Abil == "Low Plunge")) {
 			return false
 		}
-		if c.Core.Status.Duration("xiaoburst") == 0 {
+		if !c.StatusIsActive(burstBuffKey) {
 			return false
 		}
 		// Stops after reaching 2 hits on a single plunge.
 		// Plunge frames are greater than duration of C6 so this will always refresh properly.
-		if c.Core.Status.Duration("xiaoc6") > 0 {
+		if c.StatusIsActive(c6BuffKey) {
+			//do nothing if buff still on
 			return false
 		}
 		if c.c6Src != atk.SourceFrame {
@@ -59,7 +62,7 @@ func (c *char) c6() {
 		if c.c6Count == 2 {
 			c.ResetActionCooldown(action.ActionSkill)
 
-			c.Core.Status.Add("xiaoc6", 60)
+			c.AddStatus(c6BuffKey, 60, true)
 			c.Core.Log.NewEvent("Xiao C6 activated", glog.LogCharacterEvent, c.Index).
 				Write("new E charges", c.Tags["eCharge"]).
 				Write("expiry", c.Core.F+60)

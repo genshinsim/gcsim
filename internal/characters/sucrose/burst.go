@@ -57,7 +57,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snapAbs := c.Snapshot(&aiAbs)
 
 	lockout := 0
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		//lockout for 1 frame to prevent triggering multiple times on one attack
 		if lockout > c.Core.F {
 			return
@@ -67,12 +67,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 137; i <= duration+5; i += 113 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(5, false, combat.TargettableEnemy), i, cb)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), i, cb)
 
 		c.Core.Tasks.Add(func() {
 			if c.qInfused != attributes.NoElement {
 				aiAbs.Element = c.qInfused
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 0)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
 			}
 			//check if infused
 		}, i)

@@ -11,6 +11,7 @@ import (
 type Target interface {
 	Index() int         //should correspond to index
 	SetIndex(index int) //update the current index
+	IsAlive() bool
 	MaxHP() float64
 	HP() float64
 

@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewDefCircHit(5, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
 			//TODO: skill damage frames
 			0,
 		)
@@ -55,7 +55,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	//2 particles apparently
 	//TODO: particle frames
-	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+100)
+	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	//c6 check
 	if c.Base.Cons == 6 {
@@ -68,7 +68,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 		//TODO: when does ticks start?
 		c.eFieldSrc = c.Core.F
-		c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 59) //59 so we get one last tick
+		c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 17) //17 so we get one last tick
 
 		//add a status for general's banner, 10 seconds
 		c.Core.Status.Add(generalWarBannerKey, 600)
@@ -79,8 +79,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			// 	Abil:      "Inuzaka All-Round Defense C4",
 			// 	AttackTag: combat.AttackTagNone,
 			// }
-			stats, _ := c.Stats()
-			c.Core.Tasks.Add(c.gorouSkillHealField(c.Core.F, stats[:]), 90)
+			c.healFieldStats, _ = c.Stats()
+			c.Core.Tasks.Add(c.gorouSkillHealField(c.Core.F), 90)
 		}
 	}
 
@@ -111,19 +111,19 @@ func (c *char) gorouSkillBuffField(src int) func() {
 		//ok to overwrite existing mod
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(defenseBuffKey, 126),
+			Base:         modifier.NewBaseWithHitlag(defenseBuffKey, 120), // looks like it lasts 2 seconds
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return c.gorouBuff, true
 			},
 		})
 
-		//tick again every second
-		c.Core.Tasks.Add(c.gorouSkillBuffField(src), 60)
+		//looks like tick every 0.3s
+		c.Core.Tasks.Add(c.gorouSkillBuffField(src), 18)
 	}
 }
 
-func (c *char) gorouSkillHealField(src int, stats []float64) func() {
+func (c *char) gorouSkillHealField(src int) func() {
 	return func() {
 		//do nothing if this has been overwritten
 		if c.eFieldHealSrc != src {
@@ -135,7 +135,7 @@ func (c *char) gorouSkillHealField(src int, stats []float64) func() {
 		}
 		//When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
 		//within its AoE by 50% of Gorou's own DEF every 1.5s.
-		amt := c.Base.Def*(1+stats[attributes.DEFP]) + stats[attributes.DEF]
+		amt := c.Base.Def*(1+c.healFieldStats[attributes.DEFP]) + c.healFieldStats[attributes.DEF]
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
@@ -145,6 +145,6 @@ func (c *char) gorouSkillHealField(src int, stats []float64) func() {
 		})
 
 		//tick every 1.5s
-		c.Core.Tasks.Add(c.gorouSkillBuffField(src), 90)
+		c.Core.Tasks.Add(c.gorouSkillHealField(src), 90)
 	}
 }

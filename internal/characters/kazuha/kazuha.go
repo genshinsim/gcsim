@@ -19,11 +19,11 @@ type char struct {
 	*tmpl.Character
 	a1Ele               attributes.Element
 	qInfuse             attributes.Element
-	c6Active            int
 	infuseCheckLocation combat.AttackPattern
+	c2buff              []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -35,15 +35,21 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.NormalHitNum = normalHitNum
 	c.CharZone = character.ZoneInazuma
 
-	c.infuseCheckLocation = combat.NewDefCircHit(1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
 
 	w.Character = &c
 
 	return nil
 }
 
+const c6BuffKey = "kazuha-c6"
+
 func (c *char) Init() error {
 	c.a4()
+	if c.Base.Cons >= 2 {
+		c.c2buff = make([]float64, attributes.EndStatType)
+		c.c2buff[attributes.EM] = 200
+	}
 	return nil
 }
 
@@ -53,8 +59,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	if c.Base.Cons < 6 {
 		return ds
 	}
-
-	if c.c6Active <= c.Core.F {
+	if !c.StatusIsActive(c6BuffKey) {
 		return ds
 	}
 

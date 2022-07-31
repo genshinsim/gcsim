@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	//activate eye
 	c.Core.Status.Add("raidenskill", 1500+skillHitmark)
@@ -50,7 +50,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		//should be a deployable. no hitlag
 		this.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("raiden-e", 1500+skillHitmark),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 					return nil, false
 				}
@@ -100,7 +100,7 @@ func (c *char) eyeOnDamage() {
 			return false
 		}
 		if c.Core.Rand.Float64() < 0.5 {
-			c.Core.QueueParticle("raiden", 1, attributes.Electro, 100)
+			c.Core.QueueParticle("raiden", 1, attributes.Electro, c.Core.Flags.ParticleDelay)
 		}
 
 		//hit mark 857, eye land 862
@@ -118,7 +118,7 @@ func (c *char) eyeOnDamage() {
 		if c.Base.Cons >= 2 && c.StatusIsActive(burstKey) {
 			ai.IgnoreDefPercent = 0.6
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 5, 5)
 
 		c.eyeICD = c.Core.F + 54 //0.9 sec icd
 		return false

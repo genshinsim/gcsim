@@ -53,7 +53,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	src := c.eCast
 	c.Core.Tasks.Add(func() {
@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 // Hook to end Tartaglia's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
 			//TODO: need to verify if this is correct
 			//but if childe is currently in melee stance and skill is on CD that means that

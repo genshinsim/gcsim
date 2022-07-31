@@ -22,17 +22,21 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charge",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupPole,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
-		FlatDmg:    0.0139 * c.MaxHP(),
+		ActorIndex:         c.Index,
+		Abil:               "Charge",
+		AttackTag:          combat.AttackTagExtra,
+		ICDTag:             combat.ICDTagExtraAttack,
+		ICDGroup:           combat.ICDGroupPole,
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               charge[c.TalentLvlAttack()],
+		FlatDmg:            0.0139 * c.MaxHP(),
+		HitlagHaltFrames:   0.06 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

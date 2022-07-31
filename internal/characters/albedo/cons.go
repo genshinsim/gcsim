@@ -23,7 +23,7 @@ func (c *char) c4() {
 		this := char
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("albedo-c4", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if c.Core.Player.Active() != this.Index {
 					return nil, false
 				}

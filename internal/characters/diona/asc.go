@@ -6,7 +6,7 @@ import (
 )
 
 func (c *char) a1() {
-	c.Core.Player.AddStamPercentMod("diona-a1", -1, func(a action.Action) (float64, bool) {
+	c.Core.Player.AddStamPercentMod("diona-a1", -1, func(_ action.Action) (float64, bool) {
 		if c.Core.Player.Shields.Get(shield.ShieldDionaSkill) != nil {
 			return -0.1, false
 		}

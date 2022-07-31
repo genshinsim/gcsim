@@ -40,7 +40,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		if done {
 			return
 		}
@@ -63,8 +63,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 1 {
 		r = 2
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(r, false, combat.TargettableEnemy), attackHitmarks[0], attackHitmarks[0]+travel, cb)
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(r, false, combat.TargettableEnemy), attackHitmarks[0], attackHitmarks[0]+travel, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy), attackHitmarks[0], attackHitmarks[0]+travel, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy), attackHitmarks[0], attackHitmarks[0]+travel, cb)
 
 	//defer c.AdvanceNormalIndex()
 

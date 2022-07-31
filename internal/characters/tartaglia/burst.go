@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, hitmark+9)
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), hitmark, hitmark, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark, hitmark, cb)
 
 	if c.Core.Status.Duration("tartagliamelee") > 0 {
 		c.ConsumeEnergy(75)

@@ -84,14 +84,14 @@ func (c *char) skillPress() action.ActionInfo {
 		Mult:               skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), skillPressHitmark, skillPressHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), skillPressHitmark, skillPressHitmark)
 
 	//25 % chance of 3 orbs
 	var count float64 = 2
 	if c.Core.Rand.Float64() < .25 {
 		count++
 	}
-	c.Core.QueueParticle("bennett", count, attributes.Pyro, 120)
+	c.Core.QueueParticle("bennett", count, attributes.Pyro, skillPressHitmark+c.Core.Flags.ParticleDelay)
 
 	// a4 reduce cd by 50%
 	if c.StatModIsActive(burstFieldKey) {
@@ -131,7 +131,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ax,
-				combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
 				0,
 				0,
 			)
@@ -140,7 +140,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	if level == 2 {
 		ai.Mult = explosion[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = 0
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 166, 166)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 166, 166)
 	}
 
 	//user-specified c4 variant adds an additional attack that deals 135% of the second hit
@@ -148,13 +148,15 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ai.Mult = skillHold[level-1][1][c.TalentLvlSkill()] * 1.35
 		ai.Abil = "Passion Overload (C4)"
 		ai.HitlagHaltFrames = 0.12 * 60
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 94, 94)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 94, 94)
 
 	}
 
 	// TODO: particle timing??
 	//Bennett Hold E is guaranteed 3 orbs
-	c.Core.QueueParticle("bennett", 3, attributes.Pyro, 298)
+	c.Core.QueueParticle("bennett", 3, attributes.Pyro,
+		skillHoldHitmarks[level-1][len(skillHoldHitmarks[level-1])-1]+c.Core.Flags.ParticleDelay,
+	)
 
 	applyA4 := c.StatModIsActive(burstFieldKey)
 

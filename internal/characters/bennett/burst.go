@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	//TODO: review bennett AOE size
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 37, 37)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 37, 37)
 
 	//apply right away
 	stats, _ := c.Stats()
@@ -88,7 +88,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 		c.Core.Log.NewEvent("bennett field ticking", glog.LogCharacterEvent, -1)
 
 		//self infuse
-		p, ok := c.Core.Combat.Target(0).(*avatar.Player)
+		p, ok := c.Core.Combat.Player().(*avatar.Player)
 		if !ok {
 			panic("target 0 should be Player but is not!!")
 		}

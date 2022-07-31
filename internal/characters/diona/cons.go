@@ -28,7 +28,7 @@ func (c *char) c6() {
 			active := c.Core.Player.ActiveChar()
 			if active.HPCurrent/active.MaxHP() > 0.5 {
 				active.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("diona-c6", 120),
+					Base:         modifier.NewBaseWithHitlag("diona-c6", 120),
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
 						return c.c6buff, true
@@ -38,7 +38,7 @@ func (c *char) c6() {
 				//add healing bonus if hp <= 0.5
 				//bonus only lasts for 120 frames
 				active.AddHealBonusMod(character.HealBonusMod{
-					Base: modifier.NewBase("diona-c6-healbonus", 120),
+					Base: modifier.NewBaseWithHitlag("diona-c6-healbonus", 120),
 					Amount: func() (float64, bool) {
 						// is this log even needed?
 						c.Core.Log.NewEvent("diona c6 incomming heal bonus activated", glog.LogCharacterEvent, c.Index)

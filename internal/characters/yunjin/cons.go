@@ -15,7 +15,7 @@ func (c *char) c2() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("yunjin-c2", 12*60),
-			Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if ae.Info.AttackTag == combat.AttackTagNormal {
 					return m, true
 				}
@@ -27,8 +27,8 @@ func (c *char) c2() {
 
 // When Yun Jin triggers the Crystallize Reaction, her DEF is increased by 20% for 12s.
 func (c *char) c4() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DEFP] = .2
+	c.c4bonus = make([]float64, attributes.EndStatType)
+	c.c4bonus[attributes.DEFP] = .2
 	charModFunc := func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != c.Index {
@@ -36,10 +36,10 @@ func (c *char) c4() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("yunjin-c4", 12*60),
+			Base:         modifier.NewBaseWithHitlag("yunjin-c4", 12*60),
 			AffectedStat: attributes.DEFP,
 			Amount: func() ([]float64, bool) {
-				return m, true
+				return c.c4bonus, true
 			},
 		})
 
@@ -53,14 +53,17 @@ func (c *char) c4() {
 
 // Characters under the effects of the Flying Cloud Flag Formation have their Normal ATK SPD increased by 12%.
 func (c *char) c6() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.AtkSpd] = .12
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("yunjin-c6", 12*60),
+		this := char
+		this.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("yunjin-c6", 12*60),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
-				return m, true
+				//TODO: i assume this buff should go away if stacks are gone?
+				if this.Tags[burstBuffKey] == 0 {
+					return nil, false
+				}
+				return c.c6bonus, true
 			},
 		})
 	}

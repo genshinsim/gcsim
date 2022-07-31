@@ -32,17 +32,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		if done {
 			return
 		}
 		done = true
 		c.a4()
+		c.Core.QueueParticle("sucrose", 4, attributes.Anemo, c.Core.Flags.ParticleDelay)
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy, combat.TargettableObject), 0, 42, cb)
-
-	c.Core.QueueParticle("sucrose", 4, attributes.Anemo, 150)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableObject), 0, 42, cb)
 
 	//reduce charge by 1
 	c.SetCDWithDelay(action.ActionSkill, 900, 9)

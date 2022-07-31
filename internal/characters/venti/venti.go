@@ -21,9 +21,10 @@ type char struct {
 	infuseCheckLocation combat.AttackPattern
 	aiAbsorb            combat.AttackInfo
 	snapAbsorb          combat.Snapshot
+	c4bonus             []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -34,7 +35,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.infuseCheckLocation = combat.NewDefCircHit(0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
 
 	w.Character = &c
 
@@ -42,6 +43,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	if c.Base.Cons >= 4 {
+		c.c4bonus = make([]float64, attributes.EndStatType)
+		c.c4bonus[attributes.AnemoP] = 0.25
+	}
 	return nil
 }
 
@@ -52,13 +57,11 @@ func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount i
 		if !isActive {
 			return
 		}
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.AnemoP] = 0.25
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("venti-c4", 600),
+			Base:         modifier.NewBaseWithHitlag("venti-c4", 600),
 			AffectedStat: attributes.AnemoP,
 			Amount: func() ([]float64, bool) {
-				return m, true
+				return c.c4bonus, true
 			},
 		})
 	}

@@ -13,7 +13,10 @@ import (
 var burstFrames []int
 
 // TODO: not sure about this
-const burstStart = 80
+const (
+	burstStart   = 80
+	burstBuffKey = "noelle-burst"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(121)
@@ -38,43 +41,41 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		mult += 0.5
 	}
 	// Add mod for def to attack burst conversion
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATK] = mult * burstDefSnapshot
+	c.burstBuff[attributes.ATK] = mult * burstDefSnapshot
 
+	dur := 900 + burstStart //default duration
+	if c.Base.Cons >= 6 {
+		// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
+		//check extension
+		ext, ok := p["extend"]
+		if ok {
+			if ext < 0 {
+				ext = 0
+			}
+			if ext > 10 {
+				ext = 10
+			}
+		} else {
+			ext = 10 //to maintain prev default behaviour of full extension
+		}
+
+		dur += ext * 60
+		c.Core.Log.NewEvent("noelle c6 extension applied", glog.LogCharacterEvent, c.Index).
+			Write("total_dur", dur).
+			Write("ext", ext)
+	}
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("noelle-burst", 900+burstStart),
+		Base:         modifier.NewBaseWithHitlag("noelle-burst", dur),
 		AffectedStat: attributes.ATK,
 		Amount: func() ([]float64, bool) {
-			return m, true
+			return c.burstBuff, true
 		},
 	})
 	c.Core.Log.NewEvent("noelle burst", glog.LogSnapshotEvent, c.Index).
 		Write("total def", burstDefSnapshot).
-		Write("atk added", m[attributes.ATK]).
+		Write("atk added", c.burstBuff[attributes.ATK]).
 		Write("mult", mult)
-
-	c.Core.Status.Add("noelleq", 900+burstStart)
-	// Queue up task for Noelle burst extension
-	// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
-	if c.Base.Cons >= 6 {
-		c.Core.Tasks.Add(func() {
-			if c.Core.Player.Active() == c.Index {
-				return
-			}
-			// Adding the mod again with the same key replaces it
-			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("noelle-burst", 600),
-				AffectedStat: attributes.ATK,
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-			})
-			c.Core.Log.NewEvent("noelle max burst extension activated", glog.LogCharacterEvent, c.Index).
-				Write("new_expiry", c.Core.F+600)
-			c.Core.Status.Add("noelleq", 600)
-		}, 900+burstStart)
-	}
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -87,11 +88,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(6.5, false, combat.TargettableEnemy), 24, 24)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6.5, false, combat.TargettableEnemy), 24, 24)
 
 	ai.Abil = "Sweeping Time (Skill)"
 	ai.Mult = burstskill[c.TalentLvlBurst()]
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(4.5, false, combat.TargettableEnemy), 65, 65)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4.5, false, combat.TargettableEnemy), 65, 65)
 
 	c.SetCD(action.ActionBurst, 900)
 	c.ConsumeEnergy(8)

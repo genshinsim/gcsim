@@ -25,21 +25,24 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Depth-Clarion Dice",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Hydro,
-		Durability: 50,
-		Mult:       0,
-		FlatDmg:    burst[c.TalentLvlBurst()] * c.MaxHP(),
+		ActorIndex:       c.Index,
+		Abil:             "Depth-Clarion Dice",
+		AttackTag:        combat.AttackTagElementalBurst,
+		ICDTag:           combat.ICDTagNone,
+		ICDGroup:         combat.ICDGroupDefault,
+		Element:          attributes.Hydro,
+		Durability:       50,
+		Mult:             0,
+		FlatDmg:          burst[c.TalentLvlBurst()] * c.MaxHP(),
+		HitlagHaltFrames: 0.05 * 60,
+		HitlagFactor:     0.05,
+		IsDeployable:     true,
 	}
 	//apply hydro every 3rd hit
 	//triggered on normal attack or yelan's skill
 
 	//Initial hit
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	//TODO: check if we need to add f to this
 	c.Core.Tasks.Add(func() {
@@ -79,7 +82,7 @@ func (c *char) exquisiteThrowSkillProc() {
 	}
 	for i := 0; i < 3; i++ {
 		//TODO: probably snapshots before hitmark
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), burstDiceHitmarks[i], burstDiceHitmarks[i])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), burstDiceHitmarks[i], burstDiceHitmarks[i])
 	}
 }
 
@@ -97,14 +100,14 @@ func (c *char) summonExquisiteThrow() {
 	}
 	for i := 0; i < 3; i++ {
 		//TODO: probably snapshots before hitmark
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), burstDiceHitmarks[i], burstDiceHitmarks[i])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), burstDiceHitmarks[i], burstDiceHitmarks[i])
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
 		ai.Abil = "Yelan C2 Proc"
 		ai.FlatDmg = 14.0 / 100 * c.MaxHP()
 		c.c2icd = c.Core.F + 1.8*60
 		//TODO: frames timing on this?
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), burstDiceHitmarks[3], burstDiceHitmarks[3])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), burstDiceHitmarks[3], burstDiceHitmarks[3])
 	}
 
 	c.burstDiceICD = c.Core.F + 60

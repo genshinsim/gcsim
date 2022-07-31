@@ -35,11 +35,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Durability:           25,
 		Mult:                 aim[c.TalentLvlAttack()],
 		HitWeakPoint:         weakspot == 1,
-		HitlagHaltFrames:     0.12,
+		HitlagHaltFrames:     0.12 * 60,
 		HitlagFactor:         0.01,
 		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(aimedFrames),

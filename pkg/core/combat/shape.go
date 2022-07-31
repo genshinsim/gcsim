@@ -6,10 +6,14 @@ import (
 )
 
 type Shape interface {
+	Positional
 	IntersectCircle(c Circle) bool
 	IntersectRectangle(r Rectangle) bool
-	Pos() (x, y float64)
 	String() string
+}
+
+type Positional interface {
+	Pos() (x, y float64)
 }
 
 func NewCircle(x, y, r float64) *Circle {

@@ -8,12 +8,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-func (e *Eval) evalExpr(ex ast.Expr, env *Env) Obj {
+func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 	switch v := ex.(type) {
 	case *ast.NumberLit:
-		return e.evalNumberLit(v, env)
+		return e.evalNumberLit(v, env), nil
 	case *ast.StringLit:
-		return e.evalStringLit(v, env)
+		return e.evalStringLit(v, env), nil
 	case *ast.Ident:
 		return e.evalIdent(v, env)
 	case *ast.BinaryExpr:
@@ -23,7 +23,7 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) Obj {
 	case *ast.Field:
 		return e.evalField(v, env)
 	default:
-		return &null{}
+		return &null{}, nil
 	}
 }
 
@@ -42,16 +42,16 @@ func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
 	}
 }
 
-func (e *Eval) evalIdent(n *ast.Ident, env *Env) Obj {
+func (e *Eval) evalIdent(n *ast.Ident, env *Env) (Obj, error) {
 	//TODO: this should be a variable
 	return env.v(n.Value)
 }
 
-func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) Obj {
+func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	//c.Fun should be an Ident; otherwise panic here
 	ident, ok := c.Fun.(*ast.Ident)
 	if !ok {
-		panic("invalid function call " + c.Fun.String())
+		return nil, fmt.Errorf("invalid function call %v", c.Fun.String())
 	}
 
 	//check if it's a system function
@@ -59,95 +59,114 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) Obj {
 	switch s := ident.Value; s {
 	case "f":
 		return e.f()
+	case "rand":
+		return e.rand()
+	case "randnorm":
+		return e.randnorm()
 	case "print":
 		//print outputs
 		return e.print(c, env)
 	case "wait":
 		//execute wait command
 		return e.wait(c, env)
+	case "set_target_pos":
+		return e.setTargetPos(c, env)
+	case "set_player_pos":
+		return e.setPlayerPos(c, env)
+	case "set_default_target":
+		return e.setDefaultTarget(c, env)
+	case "set_particle_delay":
+		return e.setParticleDelay(c, env)
 	default:
 		//grab the function first
-		fn := env.fn(s)
-		if !ok {
-			//TODO: better error handling
-			panic("undeclared function " + s)
+		fn, err := env.fn(s)
+		if err != nil {
+			return nil, err
 		}
 		//check number of param matches
 		if len(c.Args) != len(fn.Args) {
-			//TODO: better error handling
-			panic("unmatched number of params for fn" + s)
+			return nil, fmt.Errorf("unmatched number of params for fn %v", s)
 		}
 		//params are just variables assigned to a local env
 		local := NewEnv(env)
 		for i, v := range fn.Args {
-			param := e.evalExpr(c.Args[i], env)
+			param, err := e.evalExpr(c.Args[i], env)
+			if err != nil {
+				return nil, err
+			}
 			n, ok := param.(*number)
 			if !ok {
-				//TODO: better error handling
-				panic("fn param must evaluate to a number")
+				return nil, fmt.Errorf("fn %v param %v does not evaluate to a number, got %v", s, v.Value, param.Inspect())
 			}
 			local.varMap[v.Value] = n
 		}
-		res := e.evalNode(fn.Body, local)
+		res, err := e.evalNode(fn.Body, local)
+		if err != nil {
+			return nil, err
+		}
 		switch v := res.(type) {
 		case *retval:
-			return v.res
+			return v.res, nil
 		case *null:
-			return &number{}
-		case *terminate:
-			return v
+			return &number{}, nil
 		default:
-			panic("invalid return type from function call")
+			return nil, fmt.Errorf("fn %v returned an invalid type; expecting a number got %v", s, res.Inspect())
 		}
 	}
 }
 
-func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) Obj {
+func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 	//eval left, right, operator
-	left := e.evalExpr(b.Left, env)
-	right := e.evalExpr(b.Right, env)
+	left, err := e.evalExpr(b.Left, env)
+	if err != nil {
+		return nil, err
+	}
+	right, err := e.evalExpr(b.Right, env)
+	if err != nil {
+		return nil, err
+	}
 	//binary expressions should only result in number results
 	//otherwise panic for now?
 	l, ok := left.(*number)
 	if !ok {
-		panic(fmt.Sprintf("expr does not evaluate to a number: %v\n", b.Left.String()))
+		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", left.Inspect())
 	}
 	r, ok := right.(*number)
 	if !ok {
-		panic(fmt.Sprintf("expr does not evaluate to a number: %v\n", b.Right.String()))
+		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", right.Inspect())
 	}
 	switch b.Op.Typ {
 	case ast.LogicAnd:
-		return and(l, r)
+		return and(l, r), nil
 	case ast.LogicOr:
-		return or(l, r)
+		return or(l, r), nil
 	case ast.ItemPlus:
-		return add(l, r)
+		return add(l, r), nil
 	case ast.ItemMinus:
-		return sub(l, r)
+		return sub(l, r), nil
 	case ast.ItemAsterisk:
-		return mul(l, r)
+		return mul(l, r), nil
 	case ast.ItemForwardSlash:
-		return div(l, r)
+		return div(l, r), nil
 	case ast.OpGreaterThan:
-		return gt(l, r)
+		return gt(l, r), nil
 	case ast.OpGreaterThanOrEqual:
-		return gte(l, r)
+		return gte(l, r), nil
 	case ast.OpEqual:
-		return eq(l, r)
+		return eq(l, r), nil
 	case ast.OpNotEqual:
-		return neq(l, r)
+		return neq(l, r), nil
 	case ast.OpLessThan:
-		return lt(l, r)
+		return lt(l, r), nil
 	case ast.OpLessThanOrEqual:
-		return lte(l, r)
+		return lte(l, r), nil
 	}
-	return &null{}
+	return &null{}, nil
 }
 
-func (e *Eval) evalField(n *ast.Field, env *Env) Obj {
+func (e *Eval) evalField(n *ast.Field, env *Env) (Obj, error) {
 	r := conditional.Eval(e.Core, n.Value)
 	return &number{
 		ival: r,
-	}
+	}, nil
 }

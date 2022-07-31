@@ -41,9 +41,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.MaxHP()
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	c.Core.Status.Add("kokomiburst", 10*60)
+
+	// update jellyfish flat damage
+	c.skillFlatDmg = c.burstDmgBonus(combat.AttackTagElementalArt)
 
 	// Ascension 1 - reset duration of E Skill and also resnapshots it
 	// Should not activate HoD consistent with in game since it is not a skill usage
@@ -139,7 +142,7 @@ func (c *char) burstActiveHook() {
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
-		// snapshot burst damage bonus
+		// update jellyfish flat damage. regardless if burst is active or not
 		if prev == c.Index {
 			c.swapEarlyF = c.Core.F
 			c.skillFlatDmg = c.burstDmgBonus(combat.AttackTagElementalArt)

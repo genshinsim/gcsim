@@ -41,16 +41,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Opening Flourish Press (E)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 50,
-		Mult:       skillDmg[chargeLevel][c.TalentLvlSkill()],
-		UseDef:     true,
+		ActorIndex:         c.Index,
+		Abil:               "Opening Flourish Press (E)",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Geo,
+		Durability:         50,
+		Mult:               skillDmg[chargeLevel][c.TalentLvlSkill()],
+		UseDef:             true,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 
 	// TODO: Fix hit frames when known
@@ -58,22 +60,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hitDelay := skillHitmarks[animIdx]
 	switch chargeLevel {
 	case 0:
-		c.Core.QueueParticle("yunjin", 2, attributes.Geo, 100+hitDelay)
+		ai.HitlagHaltFrames = 0.06 * 60
+		c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.Core.Flags.ParticleDelay+hitDelay)
 	case 1:
 		// Currently believed to be 2-3 particles with the ratio 3:2
 		if c.Core.Rand.Float64() < .6 {
-			c.Core.QueueParticle("yunjin", 2, attributes.Geo, 100+hitDelay)
+			c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.Core.Flags.ParticleDelay+hitDelay)
 		} else {
-			c.Core.QueueParticle("yunjin", 3, attributes.Geo, 100+hitDelay)
+			c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.Core.Flags.ParticleDelay+hitDelay)
 		}
 		ai.Abil = "Opening Flourish Level 1 (E)"
+		ai.HitlagHaltFrames = 0.09 * 60
 	case 2:
-		c.Core.QueueParticle("yunjin", 3, attributes.Geo, 100+hitDelay)
+		c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.Core.Flags.ParticleDelay+hitDelay)
 		ai.Durability = 100
 		ai.Abil = "Opening Flourish Level 2 (E)"
+		ai.HitlagHaltFrames = 0.12 * 60
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), hitDelay, hitDelay)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitDelay, hitDelay)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{

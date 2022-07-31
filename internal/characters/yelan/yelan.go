@@ -22,6 +22,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	a4buff       []float64
 	c2icd        int
 	burstDiceICD int
 	burstTickSrc int
@@ -59,6 +60,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a1()
 	c.burstStateHook()
 	return nil

@@ -34,7 +34,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i := 0; i < 3; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefCircHit(2, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 			c.c1,

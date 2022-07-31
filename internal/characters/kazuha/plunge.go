@@ -10,24 +10,25 @@ import (
 var plungePressFrames []int
 var plungeHoldFrames []int
 
+//a1 is 1 frame before this
 const plungePressHitmark = 36
 const plungeHoldHitmark = 41
 
 // TODO: missing plunge -> skill
 func init() {
 	// skill (press) -> high plunge -> x
-	plungePressFrames = frames.InitAbilSlice(55)
-	plungePressFrames[action.ActionDash] = 48
-	plungePressFrames[action.ActionJump] = 48
-	plungePressFrames[action.ActionSwap] = 49
+	plungePressFrames = frames.InitAbilSlice(55) //max
+	plungePressFrames[action.ActionDash] = 43
+	plungePressFrames[action.ActionJump] = 50
+	plungePressFrames[action.ActionSwap] = 50
 
 	// skill (hold) -> high plunge -> x
-	plungeHoldFrames = frames.InitAbilSlice(61)
-	plungeHoldFrames[action.ActionSkill] = 60 // uses burst frames
+	plungeHoldFrames = frames.InitAbilSlice(61) //max
+	plungeHoldFrames[action.ActionSkill] = 60   // uses burst frames
 	plungeHoldFrames[action.ActionBurst] = 60
 	plungeHoldFrames[action.ActionDash] = 48
-	plungeHoldFrames[action.ActionJump] = 48
-	plungeHoldFrames[action.ActionSwap] = 53
+	plungeHoldFrames[action.ActionJump] = 55
+	plungeHoldFrames[action.ActionSwap] = 54
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
@@ -68,7 +69,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.3, false, combat.TargettableEnemy), hitmark, hitmark)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), hitmark, hitmark)
 	}
 
 	//aoe dmg
@@ -85,7 +86,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		IgnoreInfusion: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	// a1 if applies
 	if c.a1Ele != attributes.NoElement {
@@ -102,7 +103,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			IgnoreInfusion: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(1.5, false, combat.TargettableEnemy), hitmark-1, hitmark-1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), hitmark-1, hitmark-1)
 		c.a1Ele = attributes.NoElement
 	}
 

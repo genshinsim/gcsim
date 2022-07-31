@@ -42,8 +42,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	//TODO: review barbara AOE size?
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 5, 5)
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 5, 35) // need to confirm timing of this
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 5, 5)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 5, 35) // need to confirm timing of this
 
 	stats, _ := c.Stats()
 	hpplus := stats[attributes.Heal]
@@ -110,7 +110,7 @@ func (c *char) barbaraWet(ai combat.AttackInfo, skillInitF int) func() {
 		}
 		c.Core.Log.NewEvent("barbara wet ticking", glog.LogCharacterEvent, c.Index)
 
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), -1, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), -1, 5)
 
 		// tick per 5 seconds
 		c.Core.Tasks.Add(c.barbaraWet(ai, skillInitF), 5*60)

@@ -15,6 +15,8 @@ const normalHitNum = 4
 type char struct {
 	*tmpl.Character
 	shieldLevel int
+	c1buff      []float64
+	c2buff      []float64
 }
 
 func init() {
@@ -22,7 +24,7 @@ func init() {
 	core.RegisterCharFunc(keys.Xinyan, NewChar)
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	t := tmpl.New(s)
 	t.CharWrapper = w
@@ -30,11 +32,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 	c.Base.Element = attributes.Pyro
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 60
-	}
-	c.Energy = float64(e)
 	c.EnergyMax = 60
 	c.Weapon.Class = weapon.WeaponClassClaymore
 	c.BurstCon = 5

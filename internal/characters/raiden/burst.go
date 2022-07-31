@@ -30,7 +30,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstCastF = c.Core.F
 	c.stacksConsumed = c.stacks
 	c.stacks = 0
-	c.Core.Status.Add("raidenburst", 420+burstHitmark) //7 seconds
 	c.restoreCount = 0
 	c.restoreICD = 0
 	c.c6Count = 0
@@ -72,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 2 {
 		ai.IgnoreDefPercent = 0.6
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(8)
@@ -110,7 +109,7 @@ func (c *char) onSwapClearBurst() {
 		//i prob don't need to check for who prev is here
 		prev := args[0].(int)
 		if prev == c.Index {
-			c.Core.Status.Delete("raidenburst")
+			c.DeleteStatus(burstKey)
 			if c.applyC4 {
 				c.applyC4 = false
 				c.c4()
@@ -122,7 +121,7 @@ func (c *char) onSwapClearBurst() {
 
 func (c *char) onBurstStackCount() {
 	//TODO: this used to be on PostBurst; need to check if it works correctly still
-	c.Core.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnBurst, func(_ ...interface{}) bool {
 		if c.Core.Player.Active() == c.Index {
 			return false
 		}
@@ -145,7 +144,7 @@ func (c *char) onBurstStackCount() {
 
 	//a4 stack gain
 	particleICD := 0
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
 		if particleICD > c.Core.F {
 			return false
 		}

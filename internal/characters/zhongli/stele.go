@@ -21,7 +21,7 @@ func (c *char) newStele(dur int, max int) {
 		Mult:       skill[c.TalentLvlSkill()],
 		FlatDmg:    0.019 * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
 
 	//create a construct
 	con := &stoneStele{
@@ -63,7 +63,7 @@ func (c *char) newStele(dur int, max int) {
 	c.steleSnapshot = combat.AttackEvent{
 		Info:        aiSnap,
 		Snapshot:    snap,
-		Pattern:     combat.NewDefCircHit(1, false, combat.TargettableEnemy),
+		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
 		SourceFrame: c.Core.F,
 	}
 
@@ -100,7 +100,7 @@ func (c *char) resonance(src, max int) func() {
 		}
 		if orb {
 			c.energyICD = c.Core.F + 90
-			c.Core.QueueParticle("zhongli", 1, attributes.Geo, 120)
+			c.Core.QueueParticle("zhongli", 1, attributes.Geo, 20+c.Core.Flags.ParticleDelay)
 		}
 		c.Core.Tasks.Add(c.resonance(src, max), 120)
 	}

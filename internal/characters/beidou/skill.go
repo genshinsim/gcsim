@@ -9,6 +9,7 @@ import (
 )
 
 var skillFrames []int
+var skillHitlagStages = []float64{.09, .09, .15}
 
 const skillHitmark = 23
 
@@ -28,20 +29,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.a4()
 	}
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Tidecaller (E)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Electro,
-		Durability: 50,
-		Mult:       skillbase[c.TalentLvlSkill()] + skillbonus[c.TalentLvlSkill()]*float64(counter),
+		ActorIndex:         c.Index,
+		Abil:               "Tidecaller (E)",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Electro,
+		Durability:         50,
+		Mult:               skillbase[c.TalentLvlSkill()] + skillbonus[c.TalentLvlSkill()]*float64(counter),
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   skillHitlagStages[counter] * 60,
+		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	//2 if no hit, 3 if 1 hit, 4 if perfect
-	c.Core.QueueParticle("beidou", 2+float64(counter), attributes.Electro, 100)
+	c.Core.QueueParticle("beidou", 2+float64(counter), attributes.Electro, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	if counter > 0 {
 		//add shield

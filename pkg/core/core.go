@@ -8,6 +8,7 @@
 package core
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 
@@ -38,11 +39,12 @@ type Core struct {
 }
 
 type Flags struct {
-	LogDebug     bool // Used to determine logging level
-	DamageMode   bool //for hp mode
-	DefHalt      bool //for hitlag
-	EnableHitlag bool //hitlag enabled
-	Custom       map[string]int
+	LogDebug      bool // Used to determine logging level
+	DamageMode    bool //for hp mode
+	DefHalt       bool //for hitlag
+	EnableHitlag  bool //hitlag enabled
+	ParticleDelay int  //delayed used for particles
+	Custom        map[string]int
 }
 type Coord struct {
 	X float64 `json:"x"`
@@ -92,6 +94,7 @@ func New(opt CoreOpt) (*Core, error) {
 	c.Flags.DamageMode = opt.DamageMode
 	c.Flags.DefHalt = opt.DefHalt
 	c.Flags.EnableHitlag = opt.EnableHitlag
+	c.Flags.ParticleDelay = 100 //default to 100
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)
@@ -133,6 +136,18 @@ func (c *Core) Init() error {
 	err = c.Player.InitializeTeam()
 	if err != nil {
 		return err
+	}
+	//find first enemy target and set as default
+	//error otherwise
+	c.Combat.DefaultTarget = -1
+	for i, t := range c.Combat.Targets() {
+		if t.Type() == combat.TargettableEnemy {
+			c.Combat.DefaultTarget = i
+			break
+		}
+	}
+	if c.Combat.DefaultTarget == -1 {
+		return errors.New("no enemy target found")
 	}
 
 	c.Events.Emit(event.OnInitialize)

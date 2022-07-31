@@ -15,21 +15,24 @@ const skillHitmark = 65
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Sweeping Fervor",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Sweeping Fervor",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               skill[c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.09 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 	snap := c.Snapshot(&ai)
 
 	defFactor := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 
 	hitOpponents := 0
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		hitOpponents++
 
 		// including a1
@@ -41,17 +44,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	if c.Core.Player.Shields.Get(shield.ShieldXinyanSkill) == nil {
-		c.updateShield(1, defFactor)
+		c.Core.Tasks.Add(func() {
+			c.updateShield(1, defFactor)
+		}, skillHitmark)
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), skillHitmark, skillHitmark, cb, c.c4)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), skillHitmark, skillHitmark, cb, c.c4)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 6)
+	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
-		Post:            skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -75,7 +80,7 @@ func (c *char) shieldDot() func() {
 			Durability: 25,
 			Mult:       skillDot[c.TalentLvlSkill()],
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 1, 1)
 
 		c.Core.Tasks.Add(c.shieldDot(), 2*60)
 	}
@@ -96,5 +101,7 @@ func (c *char) updateShield(level int, defFactor float64) {
 	}
 	shd := c.newShield(shieldhp, shield.ShieldXinyanSkill, 12*60)
 	c.Core.Player.Shields.Add(shd)
-	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index, "level", c.shieldLevel, "expiry", shd.Expiry())
+	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index).
+		Write("level", c.shieldLevel).
+		Write("expiry", shd.Expiry())
 }

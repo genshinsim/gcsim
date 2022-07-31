@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Mult:       0.3 * skill[c.TalentLvlSkill()],
 		}
 		// TODO: not sure of snapshot? timing
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 50, skillHitmark, c.a4)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 50, skillHitmark, c.a4)
 		c.attackBuff(skillHitmark)
 	}
 
@@ -57,6 +57,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+const attackBuffKey = "sarabuff"
+
 // Handles attack boost from Sara's skills
 // Checks for the onfield character at the delay frame, then applies buff to that character
 func (c *char) attackBuff(delay int) {
@@ -64,7 +66,8 @@ func (c *char) attackBuff(delay int) {
 		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
 
 		active := c.Core.Player.ActiveChar()
-		active.SetTag("sarabuff", c.Core.F+360)
+		//TODO: i think this is only there to make conditionals work? prob not needed
+		active.AddStatus(attackBuffKey, 360, true)
 		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index).
 			Write("char", active.Index).
 			Write("buff", buff).
@@ -73,7 +76,7 @@ func (c *char) attackBuff(delay int) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATK] = buff
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("sara-attack-buff", 360),
+			Base:         modifier.NewBaseWithHitlag("sara-attack-buff", 360),
 			AffectedStat: attributes.ATK,
 			Amount: func() ([]float64, bool) {
 				return m, true

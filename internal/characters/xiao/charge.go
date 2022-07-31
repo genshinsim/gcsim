@@ -26,17 +26,20 @@ func init() {
 // TODO: No information available on whether regular CAs follow a similar pattern
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charge",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
+		ActorIndex:         c.Index,
+		Abil:               "Charge",
+		AttackTag:          combat.AttackTagExtra,
+		ICDTag:             combat.ICDTagExtraAttack,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               charge[c.TalentLvlAttack()],
+		HitlagHaltFrames:   0.02 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

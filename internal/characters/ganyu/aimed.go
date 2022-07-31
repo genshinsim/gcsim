@@ -31,16 +31,19 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	weakspot, ok := p["weakspot"]
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Frost Flake Arrow",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypePierce,
-		Element:      attributes.Cryo,
-		Durability:   25,
-		Mult:         ffa[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		ActorIndex:           c.Index,
+		Abil:                 "Frost Flake Arrow",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone,
+		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypePierce,
+		Element:              attributes.Cryo,
+		Durability:           25,
+		Mult:                 ffa[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot == 1,
+		HitlagHaltFrames:     .12 * 60,
+		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 
 	// TODO: not sure if this works as intended
@@ -66,12 +69,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				Write("expiry", c.a1Expiry)
 		}
 
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefSingleTarget(1, combat.TargettableEnemy), travel)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), travel)
 
 		ai.Abil = "Frost Flake Bloom"
 		ai.Mult = ffb[c.TalentLvlAttack()]
 		ai.HitWeakPoint = false
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(2, false, combat.TargettableEnemy), travel+bloom)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), travel+bloom)
 
 		// first shot/bloom do not benefit from a1
 		c.a1Expiry = c.Core.F + 60*5

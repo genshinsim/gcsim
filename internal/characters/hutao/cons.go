@@ -8,7 +8,7 @@ import (
 )
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 		c.checkc6()
 		return false
 	}, "hutao-c6")

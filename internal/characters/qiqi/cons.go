@@ -15,7 +15,7 @@ func (c *char) c1(a combat.AttackCB) {
 		return
 	}
 
-	if e.GetTag(talismanKey) < c.Core.F {
+	if !e.StatusIsActive(talismanKey) {
 		return
 	}
 

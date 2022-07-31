@@ -43,11 +43,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		//bubble is applied to each target on a per target basis
 		//lasts 8 seconds if not popped normally
-		t.SetTag(bubbleKey, c.Core.F+481) //1 frame extra so we don't run into problems breaking
+		t.AddStatus(bubbleKey, 481, true) //1 frame extra so we don't run into problems breaking
 		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index).
 			Write("char", c.Index)
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(4, false, combat.TargettableEnemy), -1, burstHitmark, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), -1, burstHitmark, cb)
 
 	//queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
 	aiBreak := combat.AttackInfo{
@@ -60,7 +60,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 0,
 		Mult:       0,
 	}
-	c.Core.QueueAttack(aiBreak, combat.NewDefCircHit(4, false, combat.TargettableEnemy), -1, burstHitmark+480)
+	c.Core.QueueAttack(aiBreak, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), -1, burstHitmark+480)
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 13)
 	c.ConsumeEnergy(13)
@@ -79,16 +79,16 @@ func (c *char) burstDamageBonus() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("mona-omen", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
 				}
-				//ignore if omen or bubble not present
-				if x.GetTag(bubbleKey) < c.Core.F && x.GetTag(omenKey) < c.Core.F {
-					return nil, false
+				//ok only if either bubble or omen is present
+				if x.StatusIsActive(bubbleKey) || x.StatusIsActive(omenKey) {
+					return m, true
 				}
-				return m, true
+				return nil, false
 			},
 		})
 	}
@@ -108,7 +108,7 @@ func (c *char) burstHook() {
 		if !ok {
 			return false
 		}
-		if t.GetTag(bubbleKey) < c.Core.F {
+		if !t.StatusIsActive(bubbleKey) {
 			return false
 		}
 		//always break if it's due to time up
@@ -130,9 +130,9 @@ func (c *char) burstHook() {
 
 func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	//remove bubble tag
-	t.RemoveTag(bubbleKey)
+	t.DeleteStatus(bubbleKey)
 	//add omen debuff
-	t.SetTag(omenKey, c.Core.F+omenDuration[c.TalentLvlBurst()])
+	t.AddStatus(omenKey, omenDuration[c.TalentLvlBurst()], true)
 	//trigger dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

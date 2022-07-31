@@ -51,18 +51,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		if e.AuraContains(attributes.Frozen) {
 			a4count++
-			c.Core.QueueParticle("kaeya", 1, attributes.Cryo, 100)
+			c.Core.QueueParticle("kaeya", 1, attributes.Cryo, c.Core.Flags.ParticleDelay)
 			c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)
 		}
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, skillHitmark, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, skillHitmark, cb)
 
 	//2 or 3 1:1 ratio
 	var count float64 = 2
 	if c.Core.Rand.Float64() < 0.67 {
 		count = 3
 	}
-	c.Core.QueueParticle("kaeya", count, attributes.Cryo, skillHitmark+100)
+	c.Core.QueueParticle("kaeya", count, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	c.SetCD(action.ActionSkill, 360+28) //+28 since cd starts 28 frames in
 

@@ -20,16 +20,18 @@ func (c *char) c1(delay int) {
 	c.c1Chance = 0.1
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Sparks'n'Splash C1",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       1.2 * burst[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Sparks'n'Splash C1",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagElementalBurst,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               1.2 * burst[c.TalentLvlBurst()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, delay)
 }
 
 func (c *char) c2(a combat.AttackCB) {
@@ -41,7 +43,7 @@ func (c *char) c2(a combat.AttackCB) {
 		return
 	}
 	e.AddDefMod(enemy.DefMod{
-		Base:  modifier.NewBase("kleec2", 10*60),
+		Base:  modifier.NewBaseWithHitlag("kleec2", 10*60),
 		Value: -0.233,
 	})
 }

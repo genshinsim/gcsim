@@ -15,13 +15,14 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	grimheartReset  int
 	burstCounter    int
 	burstCounterICD int
-	grimheartICD    int
+	grimheartStacks int
+	c1buff          []float64
+	particleDone    bool
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -38,19 +39,14 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
-	c.a4()
+	if c.Base.Cons >= 1 {
+		c.c1buff = make([]float64, attributes.EndStatType)
+		c.c1buff[attributes.PhyP] = 0.3
+	}
 	c.burstStacks()
 	c.onExitField()
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
 	return nil
-}
-
-func (c *char) Tick() {
-	c.Character.Tick()
-	c.grimheartReset--
-	if c.grimheartReset == 0 {
-		c.Tags["grimheart"] = 0
-	}
 }

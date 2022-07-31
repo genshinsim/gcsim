@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 0, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, burstHitmark)
 
 	//1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
 	c.ConsumeEnergy(42)
@@ -100,8 +100,7 @@ func (c *char) burstProc() {
 		atk := *c.burstAtk
 		atk.SourceFrame = c.Core.F
 		//attack is 2 (or 2.5 for enhanced) aoe centered on target
-		x, y := t.Shape().Pos()
-		atk.Pattern = combat.NewCircleHit(x, y, 2, false, combat.TargettableEnemy)
+		atk.Pattern = combat.NewCircleHit(t, 2, false, combat.TargettableEnemy)
 
 		// C2 - Violet Vehemence
 		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
@@ -124,7 +123,7 @@ func (c *char) burstProc() {
 }
 
 func (c *char) fallingThunderEnergy() combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
+	return func(_ combat.AttackCB) {
 		// Regenerate 1 flat energy for the active character
 		active := c.Core.Player.ActiveChar()
 		active.AddEnergy("travelerelectro-fallingthunder", burstRegen[c.TalentLvlBurst()])

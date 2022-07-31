@@ -38,7 +38,7 @@ func (c *Core) QueueAttack(
 	dmgDelay int,
 	callbacks ...combat.AttackCBFunc,
 ) {
-	//panic if dmgDelay > snapshotDelay; this should not happen. if it happens then there's something wrong with the
+	//panic if dmgDelay < snapshotDelay; this should not happen. if it happens then there's something wrong with the
 	//character's code
 	if dmgDelay < snapshotDelay {
 		panic("dmgDelay cannot be less than snapshotDelay")

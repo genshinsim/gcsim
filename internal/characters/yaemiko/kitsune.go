@@ -124,7 +124,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		}
 
 		done := false
-		cb := func(ac combat.AttackCB) {
+		cb := func(_ combat.AttackCB) {
 			if c.Base.Cons >= 4 && !done {
 				done = true
 				c.c4()
@@ -137,7 +137,8 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 				return
 			}
 			c.totemParticleICD = c.Core.F + 176
-			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, 30)
+			//TODO: this used to be 30?
+			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, c.Core.Flags.ParticleDelay)
 		}
 
 		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.RandomEnemyTarget(), combat.TargettableEnemy), 1, 1, cb)

@@ -28,14 +28,15 @@ type Handler struct {
 }
 
 type Opt struct {
-	Events       event.Eventter
-	Team         CharHandler
-	Rand         *rand.Rand
-	Debug        bool
-	Log          glog.Logger
-	DamageMode   bool
-	DefHalt      bool
-	EnableHitlag bool
+	Events        event.Eventter
+	Team          CharHandler
+	Rand          *rand.Rand
+	Debug         bool
+	Log           glog.Logger
+	DamageMode    bool
+	DefHalt       bool
+	EnableHitlag  bool
+	DefaultTarget int //index for default target
 }
 
 func New(opt Opt) *Handler {
@@ -63,8 +64,28 @@ func (h *Handler) Targets() []Target {
 	return h.targets
 }
 
-func (h *Handler) SetTargetPos(i int, x, y float64) {
+func (h *Handler) TargetsCount() int {
+	return len(h.targets)
+}
+
+func (h *Handler) PrimaryTarget() Target {
+	return h.targets[h.DefaultTarget]
+}
+
+func (h *Handler) Player() Target {
+	return h.targets[0] //assuming player is always position 0
+}
+
+func (h *Handler) SetTargetPos(i int, x, y float64) bool {
+	if i < 0 || i > len(h.targets)-1 {
+		return false
+	}
 	h.targets[i].SetPos(x, y)
+	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
+		Write("index", i).
+		Write("x", x).
+		Write("y", y)
+	return true
 }
 
 func (h *Handler) Tick() {

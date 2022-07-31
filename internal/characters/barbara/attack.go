@@ -36,7 +36,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	done := false
-	cb := func(a combat.AttackCB) {
+	cb := func(_ combat.AttackCB) {
 		if done {
 			return
 		}
@@ -54,7 +54,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	}
 	c.Core.QueueAttack(ai,
-		combat.NewDefCircHit(0.1, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
 		0,
 		attackHitmarks[c.NormalCounter],
 		cb,

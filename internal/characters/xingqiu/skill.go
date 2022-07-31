@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			}
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, 0)
 		}, skillHitmarks[i])
 	}
 
@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.applyOrbital(15*60, 43) //takes 1 frame to apply it
 	}
 
-	c.Core.QueueParticle("xingqiu", 5, attributes.Hydro, 100)
+	c.Core.QueueParticle("xingqiu", 5, attributes.Hydro, c.Core.Flags.ParticleDelay)
 
 	//should last 15s, cd 21s
 	c.SetCDWithDelay(action.ActionSkill, 21*60, 10)

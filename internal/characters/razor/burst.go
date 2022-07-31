@@ -12,15 +12,20 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 62
+const (
+	burstHitmark = 62
+	burstBuffKey = "razorburst"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(62)
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	c.SetCD(action.ActionSkill, 0) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
-	c.Core.Status.Add("razorburst", 15*60+burstHitmark)
+	c.Core.Tasks.Add(func() {
+		c.ResetActionCooldown(action.ActionSkill) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
+	}, burstHitmark)
+	c.AddStatus(burstBuffKey, 15*60+burstHitmark, true)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -35,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefCircHit(2, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -59,7 +64,7 @@ func (c *char) speedBurst() {
 		Base:         modifier.NewBase("speed-burst", -1),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Status.Duration("razorburst") == 0 {
+			if !c.StatusIsActive(burstBuffKey) {
 				return nil, false
 			}
 			return val, true
@@ -72,7 +77,7 @@ func (c *char) wolfBurst() {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
-		if c.Core.Status.Duration("razorburst") == 0 {
+		if !c.StatusIsActive(burstBuffKey) {
 			return false
 		}
 
@@ -94,7 +99,7 @@ func (c *char) wolfBurst() {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefCircHit(0.5, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
 			1,
 			1,
 		)
@@ -105,13 +110,13 @@ func (c *char) wolfBurst() {
 
 func (c *char) onSwapClearBurst() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.Core.Status.Duration("razorburst") == 0 {
+		if !c.StatusIsActive(burstBuffKey) {
 			return false
 		}
 		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
 		if prev == c.Index {
-			c.Core.Status.Delete("razorburst")
+			c.DeleteStatus(burstBuffKey)
 		}
 		return false
 	}, "razor-burst-clear")

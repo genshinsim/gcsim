@@ -15,8 +15,9 @@ func (c *char) genShield(src string, shieldamt float64) {
 		c.Core.Status.Add("thoma-a1", 6*60)
 	}
 	if c.Core.Player.Shields.Get(shield.ShieldThomaSkill) != nil {
-		if c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()+shieldamt > c.maxShield {
-			shieldamt = c.maxShield - c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()
+		maxHP := c.maxShieldHP()
+		if c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()+shieldamt > maxHP {
+			shieldamt = maxHP - c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()
 		}
 	}
 	//add shield
@@ -32,15 +33,13 @@ func (c *char) genShield(src string, shieldamt float64) {
 	}, 1)
 
 	if c.Base.Cons >= 6 {
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.DmgP] = .15
 		for _, char := range c.Core.Player.Chars() {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("thoma-c6", 6*60),
-				Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Base: modifier.NewBaseWithHitlag("thoma-c6", 360),
+				Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 					switch ae.Info.AttackTag {
 					case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
-						return m, true
+						return c.c6buff, true
 					}
 					return nil, false
 				},

@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < count*interval; i += interval {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(r, false, combat.TargettableEnemy), i)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy), i)
 	}
 
 	c.ConsumeEnergy(55) //TODO: Check if she can be pre-funneled

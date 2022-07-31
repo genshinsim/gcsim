@@ -57,24 +57,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Mult:       skillMain[c.TalentLvlSkill()],
 		}
 		c.coilStacks()
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, 0)
 	}, skillHitmark)
 
 	// Bomblets snapshot on cast
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Chillwater Bomblets",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       skillBomblets[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Chillwater Bomblets",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagElementalArt,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Cryo,
+		Durability:         25,
+		Mult:               skillBomblets[c.TalentLvlSkill()],
+		CanBeDefenseHalted: true,
 	}
 
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), 0,
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 0,
 			skillHitmark+delay+((i+1)*6))
 	}
 
@@ -85,7 +86,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, skillHitmark+delay+((i+1)*6))
 	}
 
-	c.Core.QueueParticle("aloy", 5, attributes.Cryo, skillHitmark+100)
+	c.Core.QueueParticle("aloy", 5, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
 	c.SetCD(action.ActionSkill, 20*60)
 
 	return action.ActionInfo{
@@ -141,7 +142,7 @@ func (c *char) rushingIce() {
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", 600),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == combat.AttackTagNormal {
 				return val, true
 			}
@@ -176,7 +177,7 @@ func (c *char) coilMod() {
 	val := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("aloy-coil-stacks", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == combat.AttackTagNormal && c.coils > 0 {
 				val[attributes.DmgP] = skillCoilNABonus[c.coils-1][c.TalentLvlSkill()]
 				return val, true

@@ -40,6 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
+		trg := args[0].(combat.Target)
 
 		//only proc on normal and charge attack
 		switch atk.Info.AttackTag {
@@ -69,7 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		for i := 0; i <= 240; i += 30 {
-			c.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 0, i+1)
+			c.QueueAttack(ai, combat.NewCircleHit(trg, 3, false, combat.TargettableEnemy), 0, i+1)
 		}
 
 		icd = c.F + cd

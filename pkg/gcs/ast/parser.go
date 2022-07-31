@@ -29,18 +29,19 @@ type Parser struct {
 	pos   int
 
 	//parseFn
-	prefixParseFns map[TokenType]func() Expr
-	infixParseFns  map[TokenType]func(Expr) Expr
+	prefixParseFns map[TokenType]func() (Expr, error)
+	infixParseFns  map[TokenType]func(Expr) (Expr, error)
 }
 type ActionList struct {
 	Targets     []enemy.EnemyProfile         `json:"targets"`
 	PlayerPos   core.Coord                   `json:"player_initial_pos"`
 	Characters  []character.CharacterProfile `json:"characters"`
 	InitialChar keys.Char                    `json:"initial"`
-	Program     *BlockStmt
-	Energy      EnergySettings
-	Settings    SimulatorSettings
-	Errors      []error
+	Program     *BlockStmt                   `json:"-"`
+	Energy      EnergySettings               `json:"energy_settings"`
+	Settings    SimulatorSettings            `json:"settings"`
+	Errors      []error                      `json:"-"` //These represents errors preventing ActionList from being executed
+	ErrorMsgs   []string                     `json:"errors"`
 }
 
 type EnergySettings struct {
@@ -102,8 +103,8 @@ type parseFn func(*Parser) (parseFn, error)
 func New(input string) *Parser {
 	p := &Parser{
 		chars:          make(map[keys.Char]*character.CharacterProfile),
-		prefixParseFns: make(map[TokenType]func() Expr),
-		infixParseFns:  make(map[TokenType]func(Expr) Expr),
+		prefixParseFns: make(map[TokenType]func() (Expr, error)),
+		infixParseFns:  make(map[TokenType]func(Expr) (Expr, error)),
 		token:          make([]Token, 0, 20),
 		pos:            -1,
 	}
@@ -120,7 +121,7 @@ func New(input string) *Parser {
 			},
 		},
 		PlayerPos: core.Coord{
-			R: 1, //default player radius 1
+			R: 1, //default player radius 1, pos 0,0
 		},
 	}
 	//expr functions

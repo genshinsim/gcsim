@@ -71,7 +71,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	//and that subsequent shield generation should increase duation only
 	//TODO: need to look into maybe additional paw hits actually create "new" shields?
 	pawCB := func(done bool) combat.AttackCBFunc {
-		return func(acb combat.AttackCB) {
+		return func(_ combat.AttackCB) {
 			if done {
 				return
 			}
@@ -80,7 +80,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 
 			//trigger particles if prob < 0.8
 			if c.Core.Rand.Float64() < 0.8 {
-				c.Core.QueueParticle("diona", 1, attributes.Cryo, 90) //90s travel time
+				c.Core.QueueParticle("diona", 1, attributes.Cryo, c.Core.Flags.ParticleDelay) //90s travel time
 			}
 
 			//check if shield already exists, if so then just update duration
@@ -120,6 +120,6 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	for i := 0; i < pawCount; i++ {
 		done := false
 		cb := pawCB(done)
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(1, combat.TargettableEnemy), 0, travel+f-5+i, cb)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, travel+f-5+i, cb)
 	}
 }

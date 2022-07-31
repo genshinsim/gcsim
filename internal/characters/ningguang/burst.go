@@ -23,28 +23,30 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Starshatter",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 50,
-		Mult:       burst[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Starshatter",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagElementalBurst,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Geo,
+		Durability:         50,
+		Mult:               burst[c.TalentLvlBurst()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	// TODO: hitmark timing
 	// fires 6 normally
 	// geo applied 1 4 7 10, +3 pattern; or 0 3 6 9
 	for i := 0; i < 6; i++ {
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), burstHitmark, burstHitmark+travel)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), burstHitmark, burstHitmark+travel)
 	}
 	// if jade screen is active add 6 jades
 	if c.Core.Constructs.Destroy(c.lastScreen) {
 		ai.Abil = "Starshatter (Jade Screen Gems)"
 		for i := 6; i < 12; i++ {
-			c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewDefCircHit(0.1, false, combat.TargettableEnemy), burstHitmark+travel)
+			c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), burstHitmark+travel)
 		}
 		// do we need to log this?
 		c.Core.Log.NewEvent("extra 6 gems from jade screen", glog.LogCharacterEvent, c.Index)

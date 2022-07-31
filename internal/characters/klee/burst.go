@@ -20,15 +20,17 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Sparks'n'Splash",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       burst[c.TalentLvlBurst()],
-		NoImpulse:  true,
+		ActorIndex:         c.Index,
+		Abil:               "Sparks'n'Splash",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagElementalBurst,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               burst[c.TalentLvlBurst()],
+		NoImpulse:          true,
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 	//lasts 10 seconds, starts after 2.2 seconds maybe?
 	c.Core.Status.Add("kleeq", 600+132)
@@ -48,22 +50,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return
 			}
 			//wave 1 = 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 0)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0)
 			//wave 2 = 1 + 30% chance of 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 12)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 12)
 			if c.Core.Rand.Float64() < 0.3 {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 12)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 12)
 			}
 			//wave 3 = 1 + 50% chance of 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 24)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 24)
 			if c.Core.Rand.Float64() < 0.5 {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(1, false, combat.TargettableEnemy), 24)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 24)
 			}
 		}, i)
 	}
 
 	//every 3 seconds add energy if c6
 	if c.Base.Cons >= 6 {
+		//TODO: this should eventually use hitlag affected queue and duration
+		//but is not big deal right now b/c klee cant experience hitlag without getting hit
 		for i := burstStart + 180; i < burstStart+600; i += 180 {
 			c.Core.Tasks.Add(func() {
 				//no more if burst has ended early
@@ -85,7 +89,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		m[attributes.PyroP] = .1
 		for _, x := range c.Core.Player.Chars() {
 			x.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("klee-c6", 1500),
+				Base:         modifier.NewBaseWithHitlag("klee-c6", 1500),
 				AffectedStat: attributes.PyroP,
 				Amount: func() ([]float64, bool) {
 					return m, true
@@ -109,7 +113,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 // clear klee burst when she leaves the field and handle c4
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		// check if burst is active
 		if c.Core.Status.Duration("kleeq") <= 0 {
 			return false
@@ -119,16 +123,18 @@ func (c *char) onExitField() {
 		if c.Base.Cons >= 4 {
 			//blow up
 			ai := combat.AttackInfo{
-				ActorIndex: c.Index,
-				Abil:       "Sparks'n'Splash C4",
-				AttackTag:  combat.AttackTagNone,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
-				Element:    attributes.Pyro,
-				Durability: 50,
-				Mult:       5.55,
+				ActorIndex:         c.Index,
+				Abil:               "Sparks'n'Splash C4",
+				AttackTag:          combat.AttackTagNone,
+				ICDTag:             combat.ICDTagNone,
+				ICDGroup:           combat.ICDGroupDefault,
+				Element:            attributes.Pyro,
+				Durability:         50,
+				Mult:               5.55,
+				CanBeDefenseHalted: true,
+				IsDeployable:       true,
 			}
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, 0)
 		}
 
 		return false

@@ -10,8 +10,8 @@ import (
 )
 
 func (c *char) a1() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.EM] = 50
+	c.a1buff = make([]float64, attributes.EndStatType)
+	c.a1buff[attributes.EM] = 50
 
 	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
 		icd := -1
@@ -21,29 +21,29 @@ func (c *char) a1() {
 				return false
 			}
 			// do not overwrite mod if same frame
+			//TODO: this probably isn't needed?
 			if c.Core.F < icd {
 				return false
 			}
 			icd = c.Core.F + 1
 
-			dur := 60 * 8
 			for _, char := range c.Core.Player.Chars() {
 				this := char
 				if this.Base.Element != ele {
 					continue
 				}
 				this.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("sucrose-a1", dur),
+					Base:         modifier.NewBaseWithHitlag("sucrose-a1", 480), //8s
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
-						return m, true
+						return c.a1buff, true
 					},
 				})
 			}
 
 			c.Core.Log.NewEvent("sucrose a1 triggered", glog.LogCharacterEvent, c.Index).
 				Write("reaction", "swirl-"+ele.String()).
-				Write("expiry", c.Core.F+dur)
+				Write("expiry", c.Core.F+480)
 			return false
 		}
 	}
@@ -55,25 +55,23 @@ func (c *char) a1() {
 }
 
 func (c *char) a4() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.EM] = c.Stat(attributes.EM) * .20
+	c.a4buff = make([]float64, attributes.EndStatType)
+	c.a4buff[attributes.EM] = c.Stat(attributes.EM) * .20
 
-	dur := 60 * 8
-	c.Core.Status.Add("sucrosea4", dur)
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
 			continue //nothing for sucrose
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("sucrose-a4", dur),
+			Base:         modifier.NewBaseWithHitlag("sucrose-a4", 480), //8 s
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
-				return m, true
+				return c.a4buff, true
 			},
 		})
 	}
 
 	c.Core.Log.NewEvent("sucrose a4 triggered", glog.LogCharacterEvent, c.Index).
-		Write("em snapshot", m[attributes.EM]).
-		Write("expiry", c.Core.F+dur)
+		Write("em snapshot", c.a4buff[attributes.EM]).
+		Write("expiry", c.Core.F+480)
 }

@@ -25,16 +25,18 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	eFieldSrc     int
-	eFieldHealSrc int
-	qFieldSrc     int
-	gorouBuff     []float64
-	geoCharCount  int
-	c2Extension   int
-	c6buff        []float64
+	eFieldSrc      int
+	eFieldHealSrc  int
+	qFieldSrc      int
+	gorouBuff      []float64
+	geoCharCount   int
+	c2Extension    int
+	c6buff         []float64
+	a2buff         []float64
+	healFieldStats [attributes.EndStatType]float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -55,6 +57,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	c.a2buff = make([]float64, attributes.EndStatType)
+	c.a2buff[attributes.DEFP] = .25
+
 	for _, char := range c.Core.Player.Chars() {
 		if char.Base.Element == attributes.Geo {
 			c.geoCharCount++

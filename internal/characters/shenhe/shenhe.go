@@ -16,12 +16,12 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	quillcount []int
-	c4count    int
-	c4expiry   int
+	skillBuff []float64
+	c4bonus   []float64
+	c4count   int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 	c.EnergyMax = 80
@@ -33,7 +33,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.Base.Element = attributes.Cryo
 
 	c.c4count = 0
-	c.c4expiry = 0
 
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)
@@ -45,9 +44,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 }
 
 func (c *char) Init() error {
-	c.quillcount = make([]int, len(c.Core.Player.Chars()))
+	c.skillBuff = make([]float64, attributes.EndStatType)
+	c.skillBuff[attributes.DmgP] = 0.15
 	c.quillDamageMod()
 	if c.Base.Cons >= 4 {
+		c.c4bonus = make([]float64, attributes.EndStatType)
 		c.c4()
 	}
 	return nil

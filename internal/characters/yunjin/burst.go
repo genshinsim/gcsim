@@ -1,8 +1,6 @@
 package yunjin
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -13,7 +11,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 53
+const (
+	burstBuffKey = "yunjin-burst"
+	burstHitmark = 53
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(53)
@@ -33,14 +34,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
-
-	c.Core.Status.Add("yunjinburst", 12*60)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	// Reset number of burst triggers to 30
-	for i := range c.burstTriggers {
-		c.burstTriggers[i] = 30
-		c.updateBuffTags()
+	for _, char := range c.Core.Player.Chars() {
+		char.SetTag(burstBuffKey, 30)
+		char.AddStatus(burstBuffKey, 720, true)
 	}
 
 	// TODO: Need to obtain exact timing of c2/c6. Currently assume that it starts when burst is used
@@ -70,7 +69,12 @@ func (c *char) burstProc() {
 		if ae.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
-		if c.Core.Status.Duration("yunjinburst") == 0 || c.burstTriggers[ae.Info.ActorIndex] == 0 {
+		char := c.Core.Player.ByIndex(ae.Info.ActorIndex)
+		//do nothing if buff gone or burst count gone
+		if char.Tags[burstBuffKey] == 0 {
+			return false
+		}
+		if !char.StatusIsActive(burstBuffKey) {
 			return false
 		}
 
@@ -85,23 +89,13 @@ func (c *char) burstProc() {
 		dmgAdded := (c.Base.Def*(1+stats[attributes.DEFP]) + stats[attributes.DEF]) * finalBurstBuff
 		ae.Info.FlatDmg += dmgAdded
 
-		c.burstTriggers[ae.Info.ActorIndex]--
-		c.updateBuffTags()
+		char.Tags[burstBuffKey] -= 1
 
 		c.Core.Log.NewEvent("yunjin burst adding damage", glog.LogPreDamageMod, ae.Info.ActorIndex).
 			Write("damage_added", dmgAdded).
-			Write("stacks_remaining_for_char", c.burstTriggers[ae.Info.ActorIndex]).
+			Write("stacks_remaining_for_char", char.Tags[burstBuffKey]).
 			Write("burst_def_pct", finalBurstBuff)
 
 		return false
 	}, "yunjin-burst")
-}
-
-// Helper function to update tags that can be used in configs
-// Should be run whenever c.burstTriggers is updated
-func (c *char) updateBuffTags() {
-	for _, char := range c.Core.Player.Chars() {
-		c.Tags["burststacks_"+char.Base.Key.String()] = c.burstTriggers[char.Index]
-		c.Tags[fmt.Sprintf("burststacks_%v", char.Index)] = c.burstTriggers[char.Index]
-	}
 }

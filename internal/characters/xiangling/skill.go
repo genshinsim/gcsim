@@ -36,11 +36,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 	for i := 0; i < 4; i++ {
 		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), 10, c.c1)
+			done := false
+			part := func(_ combat.AttackCB) {
+				if done {
+					return
+				}
+				done = true
+				c.Core.QueueParticle("xiangling", 1, attributes.Pyro, c.Core.Flags.ParticleDelay)
+			}
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 10, c.c1, part)
 			c.guoba.pyroWindowStart = c.Core.F
 			c.guoba.pyroWindowEnd = c.Core.F + 20
 		}, delay+i*100-10) //10 frame window to swirl
-		c.Core.QueueParticle("xiangling", 1, attributes.Pyro, delay+i*100+150)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)

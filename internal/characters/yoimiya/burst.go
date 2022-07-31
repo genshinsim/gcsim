@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), 0, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, burstHitmark)
 
 	//marker an opponent after first hit
 	//ignore the bouncing around for now (just assume it's always target 0)
@@ -97,7 +97,7 @@ func (c *char) burstHook() {
 			Durability: 25,
 			Mult:       burstExplode[c.TalentLvlBurst()],
 		}
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, 1)
 
 		c.Core.Status.Add("aurousicd", 120) //2 sec icd
 
@@ -113,7 +113,7 @@ func (c *char) burstHook() {
 
 	if c.Core.Flags.DamageMode {
 		//add check for if yoimiya dies
-		c.Core.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+		c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 			if c.HPCurrent <= 0 {
 				c.Core.Status.Delete("aurous")
 			}

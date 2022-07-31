@@ -76,7 +76,7 @@ func (c *char) c6AddBuff() {
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("ayaka-c6", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagExtra {
 				return nil, false
 			}

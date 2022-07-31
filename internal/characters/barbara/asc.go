@@ -17,7 +17,7 @@ func (c *char) a4() {
 	//When your active character gains an Elemental Orb/Particle, the duration
 	//of the Melody Loop of Let the Show Begin♪ is extended by 1s. The maximum
 	//extension is 5s.
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
 		//TODO: assuming this works no matter who's on field since it just says
 		//active char?
 		if c.Core.Status.Duration(barbSkillKey) == 0 {

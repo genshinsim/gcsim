@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       0.1,
 	}
 	//based on discussion with nosi; turns out this does not apply def shred
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(7, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 7, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	//duration is 15 seconds, tick every .5 sec
 	//30 zaps once every 30 frame, starting at 119

@@ -8,7 +8,7 @@ import (
 )
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		if c.Core.F < c.c6icd && c.c6icd != 0 {
 			return false
 		}
@@ -36,7 +36,7 @@ func (c *char) c6() {
 			}
 			// TODO: No idea what the exact radius of this is
 			//per Nosi's notes: Furthermore, the Radius of Lisa's C6 is 5m, both when in combat or not.
-			c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), -1, 0, cb)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), -1, 0, cb)
 
 			c.c6icd = c.Core.F + 300
 		}

@@ -30,13 +30,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	// TODO: check snapshot timing
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 24, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 24, skillHitmark)
 
 	var count float64 = 3
 	if c.Core.Rand.Float64() < 0.33 {
 		count = 4
 	}
-	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, skillHitmark+100)
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	c.Core.Tasks.Add(func() {
 		dur := 30 * 60
@@ -83,7 +83,7 @@ func (s *stone) OnDestruct() {
 			Durability: 50,
 			Mult:       skill[s.char.TalentLvlSkill()],
 		}
-		s.char.Core.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 0)
+		s.char.Core.QueueAttack(ai, combat.NewCircleHit(s.char.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
 	}
 }
 

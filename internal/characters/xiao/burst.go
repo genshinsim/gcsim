@@ -9,7 +9,10 @@ import (
 
 var burstFrames []int
 
-const burstStart = 57
+const (
+	burstStart   = 57
+	burstBuffKey = "xiaoburst"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(82)
@@ -25,14 +28,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// Per previous code, believe that the burst duration starts ticking down from after the animation is done
 	// TODO: No indication of that in library though
-	c.Core.Status.Add("xiaoburst", 900+burstStart)
+	c.AddStatus(burstBuffKey, 900+burstStart, true)
 	c.qStarted = c.Core.F
 
 	// HP Drain - removes HP every 1 second tick after burst is activated
 	// Per gameplay video, HP ticks start after animation is finished
 	for i := burstStart + 60; i < 900+burstStart; i++ {
 		c.Core.Tasks.Add(func() {
-			if c.Core.Status.Duration("xiaoburst") > 0 && c.Core.F >= HPicd {
+			if c.StatusIsActive(burstBuffKey) && c.Core.F >= HPicd {
+				//TODO: not sure if this is affected by hitlag
 				HPicd = c.Core.F + 60
 				c.Core.Player.Drain(player.DrainInfo{
 					ActorIndex: c.Index,
@@ -56,8 +60,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 // Hook to end Xiao's burst prematurely if he leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		c.Core.Status.Delete("xiaoburst")
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+		c.DeleteStatus(burstBuffKey)
 		return false
 	}, "xiao-exit")
 }

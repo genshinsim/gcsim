@@ -73,7 +73,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				Durability: 100,
 				Mult:       0.75 + 0.25*float64(r),
 			}
-			c.QueueAttack(ai, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0, 1)
+			trg := args[0].(combat.Target)
+			c.QueueAttack(ai, combat.NewCircleHit(trg, 2, false, combat.TargettableEnemy), 0, 1)
 
 		}
 		return false

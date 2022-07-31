@@ -62,12 +62,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	var c1cb combat.AttackCBFunc
 	if c.Base.Cons >= 1 {
-		c1cb = func(a combat.AttackCB) { c.c1() }
+		c1cb = func(_ combat.AttackCB) { c.c1() }
 	}
 
 	if waveClusterHits%10 == 1 {
 		// Actual hit procs after the full cast duration, or 50 frames
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), burstStart, 50, c1cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, 50, c1cb)
 	}
 	if waveAttackProcs%10 == 1 {
 		c.attackBuff(50)
@@ -86,7 +86,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
 		if waveHits > 0 {
 			for j := 0; j < waveHits; j++ {
-				c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), burstStart, 100+18*waveN, c1cb)
+				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, 100+18*waveN, c1cb)
 			}
 		}
 		if waveAttackProc == 1 {

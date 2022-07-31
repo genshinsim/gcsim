@@ -149,6 +149,24 @@ func (c *CharWrapper) getModExpiry(key string) int {
 }
 func (c *CharWrapper) StatusExpiry(key string) int { return c.getModExpiry(key) }
 
+// Extend.
+
+//extendMod returns true if mod is active and is extended
+func (c *CharWrapper) extendMod(key string, ext int) bool {
+	m, active := modifier.FindCheckExpiry(&c.mods, key, *c.f)
+	if m == -1 {
+		return false
+	}
+	if !active {
+		return false //nothing to extend is not active
+	}
+	//other wise add to expiry
+	c.mods[m].Extend(float64(ext))
+	return true
+}
+
+func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMod(key, ext) }
+
 // Amount.
 
 func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []interface{} {
@@ -226,17 +244,10 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 		//if not expired
 		if m.Expiry() == -1 || m.Expiry() > *c.f {
 			amt := m.Amount(a)
-			c.log.NewEvent(
-				"applying cooldown modifier",
-				glog.LogActionEvent,
-				c.Index,
-			).Write(
-				"key", m.Key,
-			).Write(
-				"modifier", amt,
-			).Write(
-				"expiry", m.Expiry,
-			)
+			c.log.NewEvent("applying cooldown modifier", glog.LogActionEvent, c.Index).
+				Write("key", m.Key()).
+				Write("modifier", amt).
+				Write("expiry", m.Expiry())
 			cd += amt
 			c.mods[n] = v
 			n++

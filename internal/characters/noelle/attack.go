@@ -38,7 +38,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	r := 0.3
-	if c.Core.Status.Duration("noelleq") > 0 {
+	if c.StatModIsActive(burstBuffKey) {
 		r = 2
 	}
 	done := false
@@ -49,7 +49,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		//check for healing
 		if c.Core.Player.Shields.Get(shield.ShieldNoelleSkill) != nil {
 			var prob float64
-			if c.Base.Cons >= 1 && c.Core.Status.Duration("noelleq") > 0 {
+			if c.Base.Cons >= 1 && c.StatModIsActive(burstBuffKey) {
 				prob = 1
 			} else {
 				prob = healChance[c.TalentLvlSkill()]
@@ -73,7 +73,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefCircHit(r, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 		cb,

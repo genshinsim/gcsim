@@ -13,9 +13,9 @@ import (
 // When Rosaria deals a CRIT Hit, her ATK Speed increase by 10% and her Normal Attack DMG increases by 10% for 4s (can trigger vs shielded enemies)
 // TODO: Description is unclear whether attack speed affects NA + CA - assume that it only affects NA for now
 func (c *char) c1() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.AtkSpd] = 0.1
-	m[attributes.DmgP] = 0.1
+	c.c1bonus = make([]float64, attributes.EndStatType)
+	c.c1bonus[attributes.AtkSpd] = 0.1
+	c.c1bonus[attributes.DmgP] = 0.1
 	// Add hook that monitors for crit hits. Mirrors existing favonius code
 	// No log value saved as stat mod already shows up in debug view
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -27,14 +27,15 @@ func (c *char) c1() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
+		//TODO: does this work off field?
 
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("rosaria-c1", 240),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Base: modifier.NewBaseWithHitlag("rosaria-c1", 240), //4s
+			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagNormal {
 					return nil, false
 				}
-				return m, true
+				return c.c1bonus, true
 			},
 		})
 
@@ -49,26 +50,17 @@ func (c *char) c1() {
 // Then it can return true, which kills the callback
 // However, would also need a timeout function as well since her E can not crit
 // Requires additional work and references - will leave implementation for later
-func (c *char) c4() {
-	icd := 0
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		crit := args[3].(bool)
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if !(crit && (atk.Info.AttackTag == combat.AttackTagElementalArt)) {
-			return false
-		}
-		// Use an icd to make it only once per skill cast. Use 30 frames as two hits occur 20 frames apart
-		if c.Core.F < icd {
-			return false
-		}
-		icd = c.Core.F + 30
-
-		c.AddEnergy("rosaria-c4", 5)
-		return false
-	}, "rosaria-c4")
+// TODO: conver this into a callback on first skill?
+func (c *char) c4(a combat.AttackCB) {
+	if c.c4completed {
+		return
+	}
+	//check for crit
+	if !a.IsCrit {
+		return
+	}
+	c.AddEnergy("rosaria-c4", 5)
+	c.c4completed = true
 }
 
 // Applies C6 effect to enemies hit by it
@@ -83,7 +75,7 @@ func (c *char) c6(a combat.AttackCB) {
 		return
 	}
 	e.AddResistMod(enemy.ResistMod{
-		Base:  modifier.NewBase("rosaria-c6", 600),
+		Base:  modifier.NewBaseWithHitlag("rosaria-c6", 600),
 		Ele:   attributes.Physical,
 		Value: -0.2,
 	})

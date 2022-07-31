@@ -61,7 +61,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//1.1 sec duration, tick every .25
 	for i := 0; i < hits; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(5, false, combat.TargettableEnemy), (i+1)*15, c4cb)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), (i+1)*15, c4cb)
 	}
 
 	c.Core.Tasks.Add(func() {

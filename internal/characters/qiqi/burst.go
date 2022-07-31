@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burstDmg[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	c.ConsumeEnergy(10)
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 10)
@@ -55,7 +55,7 @@ func (c *char) talismanHealHook() {
 		}
 
 		//do nothing if talisman expired
-		if e.GetTag(talismanKey) < c.Core.F {
+		if !e.StatusIsActive(talismanKey) {
 			return false
 		}
 		//do nothing if talisman still on icd
@@ -91,39 +91,41 @@ func (c *char) onNACAHitHook() {
 		}
 
 		// Talisman is applied before the damage is dealt
+		// TODO: i remember there's a reason for this but not sure why we check for string here
 		if atk.Info.Abil == "Fortune-Preserving Talisman" {
 			// c.talismanExpiry[t.Index()] = c.Core.F + 15*60
-			e.SetTag(talismanKey, c.Core.F+15*60)
+			e.AddStatus(talismanKey, 15*60, true)
 		}
 
 		// All of the below only occur on Qiqi NA/CA hits
-		if atk.Info.AttackTag != combat.AttackTagNormal || atk.Info.AttackTag != combat.AttackTagExtra {
+		switch atk.Info.AttackTag {
+		case combat.AttackTagNormal:
+		case combat.AttackTagExtra:
+		default:
 			return false
 		}
 
 		// A4
 		// When Qiqi hits opponents with her Normal and Charged Attacks, she has a 50% chance to apply a Fortune-Preserving Talisman to them for 6s. This effect can only occur once every 30s.
-		if (c.c4ICDExpiry <= c.Core.F) && (c.Core.Rand.Float64() < 0.5) {
+		if !c.StatusIsActive(a4ICDKey) && (c.Core.Rand.Float64() < 0.5) {
 			// Don't want to overwrite a longer burst duration talisman with a shorter duration one
 			// TODO: Unclear how the interaction works if there is already a talisman on enemy
 			// TODO: Being generous for now and not putting it on CD if there is a conflict
-			if e.GetTag(talismanKey) < c.Core.F+360 {
-				e.SetTag(talismanKey, c.Core.F+360)
-				c.c4ICDExpiry = c.Core.F + 30*60
+			if e.StatusExpiry(talismanKey) < c.Core.F+360 {
+				e.AddStatus(talismanKey, 360, true)
+				c.AddStatus(a4ICDKey, 1800, true) // 30s icd
 				c.Core.Log.NewEvent(
 					"Qiqi A4 Adding Talisman",
 					glog.LogCharacterEvent,
 					c.Index,
 				).
 					Write("target", e.Index()).
-					Write("talisman_expiry", e.GetTag(talismanKey)).
-					Write("c4_icd_expiry", c.c4ICDExpiry)
-
+					Write("talisman_expiry", e.StatusExpiry(talismanKey))
 			}
 		}
 
 		// Qiqi NA/CA healing proc in skill duration
-		if c.Core.Status.Duration("qiqiskill") > 0 {
+		if c.StatusIsActive(skillBuffKey) {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,

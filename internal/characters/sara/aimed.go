@@ -37,20 +37,23 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Aim Charge Attack",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypePierce,
-		Element:      attributes.Electro,
-		Durability:   25,
-		Mult:         aimChargeFull[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		ActorIndex:           c.Index,
+		Abil:                 "Aim Charge Attack",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone,
+		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypePierce,
+		Element:              attributes.Electro,
+		Durability:           25,
+		Mult:                 aimChargeFull[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot == 1,
+		HitlagHaltFrames:     .12 * 60,
+		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(1, combat.TargettableEnemy),
+		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 		aimedHitmark-skip,
 		aimedHitmark-skip+travel,
 	)
@@ -73,7 +76,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		//TODO: snapshot?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefCircHit(2, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 			aimedHitmark-skip,
 			aimedHitmark-skip+travel+90,
 			c.a4,
@@ -81,7 +84,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		c.attackBuff(aimedHitmark - skip + travel + 90)
 
 		// Particles are emitted after the ambush thing hits
-		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmark-skip+travel+90+100)
+		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmark-skip+travel+90+c.Core.Flags.ParticleDelay)
 
 		c.Core.Status.Delete("saracover")
 	}

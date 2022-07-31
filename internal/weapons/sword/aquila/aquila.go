@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:       dmg,
 		}
 		snap := char.Snapshot(&ai)
-		c.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 1)
+		c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Combat.Player(), 2, false, combat.TargettableEnemy), 1)
 
 		atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
 

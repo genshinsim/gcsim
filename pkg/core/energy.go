@@ -9,6 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
+func (c *Core) SetParticleDelay(delay int) {
+	c.Flags.ParticleDelay = delay
+}
+
 func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, delay int) {
 	p := character.Particle{
 		Source: src,

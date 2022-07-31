@@ -31,8 +31,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	// assumes player is target 0
-	x, y := c.Core.Combat.Target(0).Pos()
 
 	//duration is 12 second (extended by c2 by 6s)
 	dur := 12 * 60
@@ -50,7 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			this := char
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase("shenhe-c2", dur+2*60),
-				Amount: func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 					if ae.Info.Element != attributes.Cryo {
 						return nil, false
 					}
@@ -81,7 +79,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Value: -burstrespp[c.TalentLvlBurst()],
 		})
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(x, y, 2, false, combat.TargettableEnemy), 0, 15, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 15, cb)
 
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -114,8 +112,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		//TODO: check this accuracy? Siri's sheet has 137 per
 		// dot every 2 second, double tick shortly after another
 		for i := 0; i < count; i++ {
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(0, 0, 5, false, combat.TargettableEnemy), i*120+50)
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(0, 0, 5, false, combat.TargettableEnemy), i*120+80)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), i*120+50)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), i*120+80)
 		}
 	}, burstHitmark+2)
 

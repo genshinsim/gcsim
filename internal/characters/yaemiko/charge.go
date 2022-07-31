@@ -31,7 +31,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: check snapshot delay
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.3, false, combat.TargettableEnemy), 0, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), 0, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

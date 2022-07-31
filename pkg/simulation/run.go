@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -23,17 +24,18 @@ func (s *Simulation) Run() (Result, error) {
 	stop := false
 	var err error
 
-	//TODO: enable hp mode?
 	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
 
 	//setup ast
 	s.nextAction = make(chan *ast.ActionStmt)
 	s.continueEval = make(chan bool)
+	s.evalErr = make(chan error)
 	s.queuer = gcs.Eval{
 		AST:  s.cfg.Program,
 		Next: s.continueEval,
 		Work: s.nextAction,
 		Core: s.C,
+		Err:  s.evalErr,
 	}
 	go s.queuer.Run()
 	defer close(s.continueEval)
@@ -48,15 +50,25 @@ func (s *Simulation) Run() (Result, error) {
 			return s.stats, err
 		}
 
-		//TODO: hp mode
-		stop = s.C.F == f
+		if s.C.Combat.DamageMode {
+			//stop if all targets are reporting dead
+			stop = true
+			for _, t := range s.C.Combat.Targets() {
+				if t.Type() == combat.TargettableEnemy && t.IsAlive() {
+					stop = false
+					break
+				}
+			}
+		} else {
+			stop = s.C.F == f
+		}
 	}
 
 	s.stats.Seed = s.C.Seed
 
 	s.stats.Damage = s.C.Combat.TotalDamage
 	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F+1)
-	s.stats.Duration = f
+	s.stats.Duration = s.C.F
 
 	//we're done yay
 	return s.stats, nil
@@ -148,7 +160,7 @@ func (s *Simulation) queueAndExec() error {
 			s.noMoreActions = true
 			return nil //do nothing, skip frame
 		default:
-			//shouldn't really happen??
+			//eval error'd out here
 			return err
 		}
 	}
@@ -159,11 +171,16 @@ var ErrNoMoreActions = errors.New("no more actions left")
 func (s *Simulation) tryQueueNext() error {
 	//tell eval to keep going
 	s.continueEval <- true
-	//wait for next action
+	//eval will either give an action (or keep executing) or error out
 	var ok bool
-	s.queue, ok = <-s.nextAction
-	if !ok {
-		return ErrNoMoreActions
+	select {
+	case s.queue, ok = <-s.nextAction:
+		//wait for next action
+		if !ok {
+			return ErrNoMoreActions
+		}
+		return nil
+	case err := <-s.evalErr:
+		return err
 	}
-	return nil
 }

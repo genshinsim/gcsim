@@ -28,16 +28,16 @@ func (c *char) c4() {
 }
 
 func (c *char) c6() {
-	m := make([]float64, attributes.EndStatType)
 	stat := attributes.EleToDmgP(c.qInfused)
-	m[stat] = .20
+	c.c6buff[stat] = .20
 
+	//TODO: assuming this here is on a deployable therefore not affected by hitlag?
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("sucrose-c6", 60*10),
 			AffectedStat: stat,
 			Amount: func() ([]float64, bool) {
-				return m, true
+				return c.c6buff, true
 			},
 		})
 	}

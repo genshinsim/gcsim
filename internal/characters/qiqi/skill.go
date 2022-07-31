@@ -10,7 +10,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 57
+const (
+	skillHitmark = 57
+	skillBuffKey = "qiqiskill"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(57)
@@ -18,7 +21,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// +1 to avoid end duration issues
-	c.Core.Status.Add("qiqiskill", 15*60+1)
+	c.AddStatus(skillBuffKey, 15*60+1, true)
 	c.skillLastUsed = c.Core.F
 	src := c.Core.F
 
@@ -26,15 +29,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Both healing and damage are snapshot
 	c.Core.Tasks.Add(func() {
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Herald of Frost: Initial Damage",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Cryo,
-			Durability: 25,
-			Mult:       skillInitialDmg[c.TalentLvlSkill()],
+			ActorIndex:         c.Index,
+			Abil:               "Herald of Frost: Initial Damage",
+			AttackTag:          combat.AttackTagElementalArt,
+			ICDTag:             combat.ICDTagElementalArt,
+			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeDefault,
+			Element:            attributes.Cryo,
+			Durability:         25,
+			Mult:               skillInitialDmg[c.TalentLvlSkill()],
+			HitlagFactor:       0.05,
+			HitlagHaltFrames:   0.05 * 60,
+			CanBeDefenseHalted: true,
 		}
 		snap := c.Snapshot(&ai)
 
@@ -69,18 +75,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		aiTick := ai
 		aiTick.Abil = "Herald of Frost: Skill Damage"
 		aiTick.Mult = skillDmgCont[c.TalentLvlSkill()]
+		aiTick.IsDeployable = true // ticks still apply hitlag but is a deployable so doesnt affect qiqi
+
 		snapTick := c.Snapshot(&aiTick)
 		tickAE := &combat.AttackEvent{
 			Info:        aiTick,
 			Snapshot:    snapTick,
-			Pattern:     combat.NewDefCircHit(2, false, combat.TargettableEnemy),
+			Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 			SourceFrame: c.Core.F,
 		}
 
 		c.Core.Tasks.Add(c.skillDmgTickTask(src, tickAE, 60), 30)
 
 		// Apply damage needs to take place after above takes place to ensure stats are handled correctly
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefCircHit(2, false, combat.TargettableEnemy), 0)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0)
 	}, skillHitmark)
 
 	c.SetCD(action.ActionSkill, 30*60)
@@ -98,7 +106,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 // When the Herald of Frost hits an opponent marked by a Fortune-Preserving Talisman, Qiqi regenerates 2 Energy.
 func (c *char) skillDmgTickTask(src int, ae *combat.AttackEvent, lastTickDuration int) func() {
 	return func() {
-		if c.Core.Status.Duration("qiqiskill") == 0 {
+		if !c.StatusIsActive(skillBuffKey) {
 			return
 		}
 
@@ -127,7 +135,7 @@ func (c *char) skillDmgTickTask(src int, ae *combat.AttackEvent, lastTickDuratio
 // Handles skill auto healing ticks
 func (c *char) skillHealTickTask(src int) func() {
 	return func() {
-		if c.Core.Status.Duration("qiqiskill") == 0 {
+		if !c.StatusIsActive(skillBuffKey) {
 			return
 		}
 

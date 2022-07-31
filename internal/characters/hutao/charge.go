@@ -34,6 +34,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	var hitmark int
 	var act action.ActionInfo
+	var bbcb combat.AttackCBFunc
 
 	if c.Core.Status.Duration("paramita") > 0 {
 		//[3:56 PM] Isu: My theory is that since E changes attack animations, it was coded
@@ -45,8 +46,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			c.Core.Status.Add("paramita", paramitaChargeHitmark)
 			// c.S.Status["paramita"] = c.Core.F + f //extend this to barely cover the burst
 		}
-
-		c.applyBB()
+		bbcb = c.applyBB
 		//charge land 182, tick 432, charge 632, tick 675
 		//charge land 250, tick 501, charge 712, tick 748
 
@@ -82,7 +82,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(0.5, false, combat.TargettableEnemy), hitmark, hitmark, c.ppParticles)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), hitmark, hitmark, c.ppParticles, bbcb)
 
 	return act
 }

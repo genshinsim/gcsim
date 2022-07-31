@@ -7,7 +7,7 @@ import (
 
 func (c *char) a1() {
 	//TODO: this used to be PostSkill; check if working correctly still
-	c.Core.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnSkill, func(_ ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}

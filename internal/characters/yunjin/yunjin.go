@@ -16,11 +16,12 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstTriggers       [4]int
 	partyElementalTypes int
+	c4bonus             []float64
+	c6bonus             []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -33,9 +34,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.CharZone = character.ZoneLiyue
 
 	c.partyElementalTypes = 0
-	for i := range c.burstTriggers {
-		c.burstTriggers[i] = 30
-	}
 
 	w.Character = &c
 
@@ -49,6 +47,11 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
+	if c.Base.Cons >= 6 {
+		c.c6bonus = make([]float64, attributes.EndStatType)
+		c.c6bonus[attributes.AtkSpd] = .12
+	}
+
 	return nil
 }
 

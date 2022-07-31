@@ -10,13 +10,15 @@ import (
 )
 
 var chargeFrames []int
-var chargeHitmarks = []int{20, 21}
+var chargeHitmarks = []int{20, 20}
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(55)
-	chargeFrames[action.ActionSkill] = 34
-	chargeFrames[action.ActionBurst] = 33
-	chargeFrames[action.ActionSwap] = 32
+	chargeFrames[action.ActionSkill] = 30
+	chargeFrames[action.ActionBurst] = 30
+	chargeFrames[action.ActionDash] = 20
+	chargeFrames[action.ActionJump] = 20
+	chargeFrames[action.ActionSwap] = 28
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -33,7 +35,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	return action.ActionInfo{

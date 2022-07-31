@@ -28,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
 	c.SetCDWithDelay(action.ActionBurst, 12*60, 8)
 	c.ConsumeEnergy(8)

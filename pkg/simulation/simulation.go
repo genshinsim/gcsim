@@ -17,6 +17,7 @@ type Simulation struct {
 	queue         *ast.ActionStmt
 	nextAction    chan *ast.ActionStmt
 	continueEval  chan bool
+	evalErr       chan error
 	queuer        gcs.Eval
 	noMoreActions bool
 	//result
@@ -59,6 +60,8 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 	}
 
 	SetupResonance(c)
+
+	SetupMisc(c)
 
 	err = s.C.Init()
 	if err != nil {

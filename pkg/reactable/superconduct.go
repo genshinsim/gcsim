@@ -81,16 +81,5 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	}
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	atk.FlatDmg = 0.5 * r.calcReactionDmg(atk, em)
-	r.core.QueueAttack(atk, combat.NewDefCircHit(3, true, combat.TargettableEnemy), -1, 1, superconductPhysShred)
-}
-
-type Resistable interface {
-	AddResistMod(key string, dur int, ele attributes.Element, val float64)
-}
-
-func superconductPhysShred(a combat.AttackCB) {
-	t, ok := a.Target.(Resistable)
-	if ok {
-		t.AddResistMod("superconductphysshred", 12*60, attributes.Physical, -0.4)
-	}
+	r.core.QueueAttack(atk, combat.NewCircleHit(r.self, 3, true, combat.TargettableEnemy), -1, 1)
 }

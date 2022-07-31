@@ -13,31 +13,33 @@ const burstHitmark = 98
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Riff Revolution",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Physical,
-		Durability: 100,
-		Mult:       burstDmg[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Riff Revolution",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Physical,
+		Durability:         100,
+		Mult:               burstDmg[c.TalentLvlBurst()],
+		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), 28, 28)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 28, 28)
 
 	// 7 hits
 	ai = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Riff Revolution (DoT)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagVentiBurstPyro,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       burstDot[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Riff Revolution (DoT)",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagElementalBurstPyro,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               burstDot[c.TalentLvlBurst()],
+		CanBeDefenseHalted: true,
 	}
 	for i := 0; i < 7; i++ {
 		f := 63 + i*17
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(3, false, combat.TargettableEnemy), f, f)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), f, f)
 	}
 
 	if c.Base.Cons >= 2 {
@@ -53,7 +55,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
-		Post:            burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }

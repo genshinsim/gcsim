@@ -19,10 +19,13 @@ type char struct {
 	*tmpl.Character
 	qInfused            attributes.Element
 	infuseCheckLocation combat.AttackPattern
+	a1buff              []float64
+	a4buff              []float64
 	c4Count             int
+	c6buff              []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -31,7 +34,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c.Weapon.Class = weapon.WeaponClassCatalyst
 	c.NormalHitNum = normalHitNum
 
-	c.infuseCheckLocation = combat.NewDefCircHit(0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
 
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)
@@ -44,5 +47,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 
 func (c *char) Init() error {
 	c.a1()
+	if c.Base.Cons >= 6 {
+		c.c6buff = make([]float64, attributes.EndStatType)
+	}
 	return nil
 }

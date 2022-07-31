@@ -3,6 +3,8 @@ package simulator
 import (
 	"crypto/rand"
 	"encoding/binary"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"path"
@@ -41,6 +43,14 @@ func Run(opts Options) (result.Summary, error) {
 	if err != nil {
 		return result.Summary{}, err
 	}
+	//check other errors as well
+	if len(simcfg.Errors) != 0 {
+		fmt.Println("The config has the following errors: ")
+		for _, v := range simcfg.Errors {
+			fmt.Printf("\t%v\n", v)
+		}
+		return result.Summary{}, errors.New("sim has errors")
+	}
 	return RunWithConfig(cfg, simcfg, opts)
 }
 
@@ -50,6 +60,7 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 	respCh := make(chan simulation.Result)
 	errCh := make(chan error)
 	pool := worker.New(simcfg.Settings.NumberOfWorkers, respCh, errCh)
+	pool.StopCh = make(chan bool)
 
 	//spin off a go func that will queue jobs for as long as the total queued < iter
 	//this should block as queue gets full
@@ -78,9 +89,9 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 			count--
 		case err := <-errCh:
 			//error encountered
+			close(pool.StopCh)
 			return result.Summary{}, err
 		}
-
 	}
 
 	r := aggregateResults(results, simcfg)

@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	c.Core.Tasks.Add(func() {
-		c.Core.QueueAttack(ai, combat.NewDefCircHit(3.5, false, combat.TargettableEnemy), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy), 0, 0)
 		//add a namisen stack
 		if c.stacks < c.stacksMax {
 			c.stacks++
@@ -75,7 +75,8 @@ func (c *char) generateParticles(ac combat.AttackCB) {
 	if c.Core.Rand.Float64() < 0.5 {
 		count++
 	}
-	c.Core.QueueParticle("ayato", count, attributes.Hydro, 80)
+	//TODO: this used to be 80 for particle delay
+	c.Core.QueueParticle("ayato", count, attributes.Hydro, c.Core.Flags.ParticleDelay)
 }
 
 func (c *char) skillStacks(ac combat.AttackCB) {
@@ -88,7 +89,7 @@ func (c *char) skillStacks(ac combat.AttackCB) {
 
 // clear skill status on field exit
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		c.stacks = 0
 		c.DeleteStatus(skillBuffKey)
 		c.a4()

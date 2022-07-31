@@ -11,6 +11,7 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = []int{13, 26, 30, 55, 47}
+var attackHitlagHaltFrame = []float64{.03, .03, .06, .06, 0.1}
 
 const normalHitNum = 5
 
@@ -27,19 +28,22 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
+		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:          combat.AttackTagNormal,
+		ICDTag:             combat.ICDTagNormalAttack,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               auto[c.NormalCounter][c.TalentLvlAttack()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
+		CanBeDefenseHalted: true,
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefCircHit(.3, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), .3, false, combat.TargettableEnemy),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)

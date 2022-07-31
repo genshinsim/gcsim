@@ -11,7 +11,7 @@ import (
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(_ ...interface{}) bool {
 		//we assume target is affected if it's active
 		if c.Core.Status.Duration("aurous") <= 0 {
 			return false

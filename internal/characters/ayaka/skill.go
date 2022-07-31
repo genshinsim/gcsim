@@ -43,14 +43,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		},
 	})
 
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(4, false, combat.TargettableEnemy), 0, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), 0, skillHitmark)
 
 	//2 or 3 1:1 ratio
 	var count float64 = 4
 	if c.Core.Rand.Float64() < 0.5 {
 		count = 5
 	}
-	c.Core.QueueParticle("ayaka", count, attributes.Cryo, skillHitmark+100)
+	c.Core.QueueParticle("ayaka", count, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
 
 	c.SetCD(action.ActionSkill, 600)
 

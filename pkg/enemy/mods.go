@@ -10,6 +10,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+type Status struct {
+	modifier.Base
+}
 type ResistMod struct {
 	Ele   attributes.Element
 	Value float64
@@ -23,6 +26,22 @@ type DefMod struct {
 }
 
 // Add.
+func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
+	mod := Status{
+		Base: modifier.Base{
+			ModKey: key,
+			Dur:    dur,
+			Hitlag: hitlag,
+		},
+	}
+	if mod.Dur < 0 {
+		mod.ModExpiry = -1
+	} else {
+		mod.ModExpiry = e.Core.F + mod.Dur
+	}
+	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
+	modifier.LogAdd("status", -1, &mod, e.Core.Log, overwrote, oldEvt)
+}
 
 func (e *Enemy) AddResistMod(mod ResistMod) {
 	mod.SetExpiry(e.Core.F)
@@ -45,6 +64,7 @@ func (e *Enemy) deleteMod(key string) {
 	}
 }
 
+func (e *Enemy) DeleteStatus(key string)    { e.deleteMod(key) }
 func (e *Enemy) DeleteResistMod(key string) { e.deleteMod(key) }
 func (e *Enemy) DeleteDefMod(key string)    { e.deleteMod(key) }
 
@@ -53,8 +73,21 @@ func (e *Enemy) modIsActive(key string) bool {
 	_, ok := modifier.FindCheckExpiry(&e.mods, key, e.Core.F)
 	return ok
 }
+func (e *Enemy) StatusIsActive(key string) bool    { return e.modIsActive(key) }
 func (e *Enemy) ResistModIsActive(key string) bool { return e.modIsActive(key) }
 func (e *Enemy) DefModIsActive(key string) bool    { return e.modIsActive(key) }
+
+//Expiry
+
+func (e *Enemy) getModExpiry(key string) int {
+	m := modifier.Find(&e.mods, key)
+	if m != -1 {
+		return e.mods[m].Expiry()
+	}
+	//must be 0 if doesn't exist. avoid using -1 b/c that's infinite
+	return 0
+}
+func (e *Enemy) StatusExpiry(key string) int { return e.getModExpiry(key) }
 
 // Amount.
 

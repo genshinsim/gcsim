@@ -10,7 +10,7 @@ func (c *char) c6() {
 	//this is on attack animation state, not attack landed
 	//TODO: this used to be on PostAttack, changed to OnAttack
 	//i think this might be more accurate to be OnAttackWillLand? or on animation state change?
-	c.Core.Events.Subscribe(event.OnAttack, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnAttack, func(_ ...interface{}) bool {
 		//do nothing if oz not on field
 		if c.ozActiveUntil < c.Core.F {
 			return false
@@ -30,7 +30,7 @@ func (c *char) c6() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// C4 uses Oz Snapshot
-		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(1, combat.TargettableEnemy), 0)
+		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0)
 		return false
 	}, "fischl-c6")
 }

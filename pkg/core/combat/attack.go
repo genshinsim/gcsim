@@ -46,6 +46,11 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			continue
 		}
 
+		if !t.IsAlive() {
+			//this should always evaluate to true if DamageMode is not set since we check for DamageMode before killing
+			continue
+		}
+
 		willHit, reason := willAttackLand(a, t, i)
 		if !willHit {
 			// Move target logs into the "Sim" event log to avoid cluttering main display for stuff like Guoba
@@ -117,13 +122,9 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		//check if target is dead; skip this for i = 0 since we don't want to
 		//delete the player by accident
 		if h.DamageMode && t.HP() <= 0 {
-			log.Println("died")
-			// died = true
 			t.Kill()
 			h.Events.Emit(event.OnTargetDied, t, cpy)
-			//this should be ok for stuff like guoba since they won't take damage
-			h.targets[i] = nil
-			// log.Println("target died", i, dmg)
+			// h.targets[i] = nil
 		}
 
 		// this works because string in golang is a slice underneath, so the &amp points to the slice info
@@ -134,8 +135,8 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		}
 
 	}
-	//add hitlag to actor (but ignore if this is headshot only)
-	if h.EnableHitlag && landed && !a.Info.HitlagOnHeadshotOnly {
+	//add hitlag to actor but ignore if this is deployable
+	if h.EnableHitlag && landed && !a.Info.IsDeployable {
 		dur := a.Info.HitlagHaltFrames
 		if h.DefHalt && a.Info.CanBeDefenseHalted {
 			dur += 3.6 //0.06
