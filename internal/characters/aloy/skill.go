@@ -71,6 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability:         25,
 		Mult:               skillBomblets[c.TalentLvlSkill()],
 		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	// Queue up bomblets
