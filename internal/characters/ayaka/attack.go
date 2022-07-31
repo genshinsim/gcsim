@@ -12,6 +12,8 @@ import (
 var attackFrames [][]int
 var attackHitmarks = [][]int{{8}, {10}, {16}, {8, 15, 22}, {27}}
 var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.03}, {0}}
+var attackHitlagFactor = [][]float64{{0.01}, {0.01}, {0.01}, {0, 0, 0.05}, {0.01}}
+var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false, true}, {false}}
 
 const normalHitNum = 5
 
@@ -44,9 +46,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ICDGroup:           combat.ICDGroupDefault,
 			Element:            attributes.Physical,
 			Durability:         25,
-			HitlagFactor:       0.01,
+			HitlagFactor:       attackHitlagFactor[c.NormalCounter][i],
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
-			CanBeDefenseHalted: true,
+			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 			Mult:               mult[c.TalentLvlAttack()],
 		}
 		c.QueueCharTask(func() {
