@@ -26,7 +26,7 @@ const (
 	generalGloryKey          = "generalglory"
 	generalWarBannerDuration = 600    //10s
 	generalGloryDuration     = 9 * 60 //9 s
-	heedlessKey              = "headlessbuff"
+	heedlessKey              = "heedlessbuff"
 	c6key                    = "gorou-c6"
 )
 
