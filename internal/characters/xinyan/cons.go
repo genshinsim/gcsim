@@ -33,7 +33,7 @@ func (c *char) c1() {
 		}
 
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("xinyan-c1", 5*60),
+			Base: modifier.NewBaseWithHitlag("xinyan-c1", 5*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				return c.c1buff, true
 			},
