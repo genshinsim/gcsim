@@ -70,7 +70,7 @@ func (c *char) Init() error {
 func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(a)
 
-	if c.Core.Status.Duration("xiaoburst") > 0 {
+	if c.StatusIsActive("xiaoburst") {
 		// Calculate and add A1 damage bonus - applies to all damage
 		// Fraction dropped in int conversion in go - acts like floor
 		stacks := 1 + int((c.Core.F-c.qStarted)/180)
@@ -91,6 +91,7 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		switch a.AttackTag {
 		case combat.AttackTagNormal:
 		case combat.AttackTagExtra:
+			// Q-CA has different hitlag from CA
 			a.ICDTag = combat.ICDTagNormalAttack
 			a.HitlagHaltFrames = 0.04 * 60
 		case combat.AttackTagPlunge:
