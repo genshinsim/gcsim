@@ -174,7 +174,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = 0.08
 	active.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("chongyun-field", 126),
+		Base:         modifier.NewBaseWithHitlag("chongyun-field", 126),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true
