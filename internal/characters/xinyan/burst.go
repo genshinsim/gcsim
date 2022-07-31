@@ -40,6 +40,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := 0; i < 7; i++ {
 		f := 63 + i*17
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), f, f)
+		if i == 0 {
+			ai.CanBeDefenseHalted = false // only the first DoT has hitlag
+		}
 	}
 
 	if c.Base.Cons >= 2 {
