@@ -32,7 +32,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	atkc := 1.6 + float64(r)*0.4
 	prob := 0.5 + float64(r)*0.1
 
-	icd := 0
+	const icdKey = "dragonspine-spear-icd"
+	icd := 600 // 10s *60
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
@@ -43,15 +44,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if c.F > icd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < prob {
-			icd = c.F + 600
-			//TODO: not sure if this proc triggers hitlag
+			char.AddStatus(icdKey, icd, true)
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Dragonspine Proc",
