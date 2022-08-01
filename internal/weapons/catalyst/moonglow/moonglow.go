@@ -58,12 +58,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("moonglow-nabuff-%v", char.Base.Key.String()))
 
-	icd, dur := -1, -1
+	const buffKey = "moonglow-postburst"
+	buffDuration := 720 // 12s * 60
+	const icdKey = "moonglow-energy-icd"
+	icd := 6 // 0.1s * 60
+
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		dur = c.F + 720
+		char.AddStatus(buffKey, buffDuration, true)
 		return false
 	}, fmt.Sprintf("moonglow-onburst-%v", char.Base.Key.String()))
 
@@ -75,12 +79,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
-		if dur < c.F || icd > c.F {
+		if !char.StatusIsActive(buffKey) || char.StatusIsActive(icdKey) {
 			return false
 		}
 
 		char.AddEnergy("moonglow", 0.6)
-		icd = c.F + 6
+		char.AddStatus(icdKey, icd, true)
 
 		return false
 	}, fmt.Sprintf("moonglow-energy-%v", char.Base.Key.String()))
