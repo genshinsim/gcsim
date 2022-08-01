@@ -52,7 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		if atk.Info.AttackTag == combat.AttackTagNormal {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("mitternachtswaltz-ele", 300),
+				Base: modifier.NewBaseWithHitlag("mitternachtswaltz-ele", 300),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
 						m[attributes.DmgP] = buffAmount
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("mitternachtswaltz-na", 300),
+				Base: modifier.NewBaseWithHitlag("mitternachtswaltz-na", 300),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					if atk.Info.AttackTag == combat.AttackTagNormal {
 						m[attributes.DmgP] = buffAmount
