@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("wineandsong", 60*5),
+			Base:         modifier.NewBaseWithHitlag("wineandsong", 60*5),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return m, true
