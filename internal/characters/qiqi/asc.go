@@ -27,7 +27,7 @@ func (c *char) a1() {
 		active.AddHealBonusMod(character.HealBonusMod{
 			Base: modifier.NewBaseWithHitlag("qiqi-a1", 8*60),
 			Amount: func() (float64, bool) {
-				return .2, true
+				return .2, false
 			},
 		})
 
