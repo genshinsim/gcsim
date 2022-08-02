@@ -30,21 +30,18 @@ func (c *CharWrapper) Tick() {
 	c.timePassed += left
 
 	//check char queue for any executable actions
-	n := -1
+	n := 0
 	for i := range c.queue {
 		if c.queue[i].delay <= c.timePassed {
 			c.queue[i].f()
 		} else {
-			n = i
-			break
+			// keep the actions that can't be executed yet
+			c.queue[n] = c.queue[i]
+			n++
 		}
 	}
-	if n == -1 {
-		c.queue = nil
-	} else {
-		c.queue = c.queue[n:]
-	}
-
+	// set char queue len to the remaining elements
+	c.queue = c.queue[:n]
 }
 
 func (c *CharWrapper) FramePausedOnHitlag() bool {
