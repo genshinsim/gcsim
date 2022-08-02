@@ -68,7 +68,7 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	}
 
 	for i, v := range c.mods {
-		if v.AffectedByHitlag() && v.Expiry() != -1 {
+		if v.AffectedByHitlag() && v.Expiry() != -1 && v.Expiry() > *c.f {
 			c.mods[i].Extend(ext)
 			if c.debug {
 				logs = append(logs, fmt.Sprintf("%v: %v", v.Key(), v.Expiry()))
