@@ -19,10 +19,13 @@ func init() {
 }
 
 type Set struct {
-	stacks             int
-	stackGainICDExpiry int
+	stacks int
+	// Required to check for stack gain icd
+	stackGainICDKey string
+	stackGainICD    int
 	// Required to check for stack loss
-	lastStackGain int
+	stackLossTimer int
+	lastStackGain  int
 	// Source initializes at -1
 	lastSwap int
 	core     *core.Core
@@ -59,6 +62,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.stacks = 4
 	}
 
+	s.stackGainICDKey = "husk-4pc-stack-gain-icd"
+	s.stackGainICD = 18 // 0.3s * 60
+	s.lastStackGain = -1
+	s.stackLossTimer = 360 // 6s * 60
+
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DEFP] = 0.30
@@ -92,8 +100,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
-			//TODO: check if this icd is subject to hitlag?
-			if s.stackGainICDExpiry > c.F {
+
+			if char.StatusIsActive(s.stackGainICDKey) {
 				return false
 			}
 			if atk.Info.Element != attributes.Geo {
@@ -109,9 +117,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Write("last_swap", s.lastSwap).
 				Write("last_stack_change", s.lastStackGain)
 
+			char.AddStatus(s.stackGainICDKey, s.stackGainICD, true)
+
 			s.lastStackGain = c.F
-			s.stackGainICDExpiry = c.F + 18 // 0.3 sec
-			c.Tasks.Add(s.checkStackLoss, 360)
+			char.QueueCharTask(s.checkStackLoss(c.F), s.stackLossTimer)
 
 			return false
 		}, fmt.Sprintf("husk-4pc-%v", char.Base.Key.String()))
@@ -132,19 +141,24 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 // Helper function to check for stack loss
 // called after every stack gain
-func (s *Set) checkStackLoss() {
-	if (s.lastStackGain + 360) > s.core.F {
-		return
-	}
-	s.stacks--
-	s.core.Log.NewEvent("Husk lost stack", glog.LogArtifactEvent, s.char.Index).
-		Write("stacks", s.stacks).
-		Write("last_swap", s.lastSwap).
-		Write("last_stack_change", s.lastStackGain)
+func (s *Set) checkStackLoss(src int) func() {
+	return func() {
+		if s.lastStackGain != src {
+			s.core.Log.NewEvent("husk stack loss check ignored, src diff", glog.LogCharacterEvent, s.char.Index).
+				Write("src", src).
+				Write("new src", s.lastStackGain)
+			return
+		}
+		s.stacks--
+		s.core.Log.NewEvent("Husk lost stack", glog.LogArtifactEvent, s.char.Index).
+			Write("stacks", s.stacks).
+			Write("last_swap", s.lastSwap).
+			Write("last_stack_change", s.lastStackGain)
 
-	// queue up again if we still have stacks
-	if s.stacks > 0 {
-		s.core.Tasks.Add(s.checkStackLoss, 6*60)
+		// queue up again if we still have stacks
+		if s.stacks > 0 {
+			s.char.QueueCharTask(s.checkStackLoss(src), s.stackLossTimer)
+		}
 	}
 }
 
@@ -173,9 +187,9 @@ func (s *Set) gainStackOfffield(src int) func() {
 			Write("last_swap", s.lastSwap).
 			Write("last_stack_change", s.lastStackGain)
 
-		s.lastStackGain = s.core.F
-
 		s.core.Tasks.Add(s.gainStackOfffield(src), 180)
-		s.core.Tasks.Add(s.checkStackLoss, 360)
+
+		s.lastStackGain = s.core.F
+		s.char.QueueCharTask(s.checkStackLoss(s.core.F), s.stackLossTimer)
 	}
 }
