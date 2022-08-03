@@ -24,25 +24,7 @@ type Set struct {
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATKP] = 0.2
-
-	for _, this := range s.core.Player.Chars() {
-		this.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("nob-4pc", -1),
-			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				if s.core.Status.Duration("nob-4pc") > 0 {
-					return m, true
-				}
-				return nil, false
-			},
-		})
-	}
-
-	return nil
-}
+func (s *Set) Init() error      { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{
@@ -63,6 +45,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
+		const buffKey = "nob-4pc"
+		buffDuration := 720 // 12s * 60
+
 		//TODO: this used to be post. need to check
 		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
@@ -70,15 +55,30 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			nob, ok := c.Flags.Custom["nob-4pc"]
-			//only activate if none existing
-			if c.Status.Duration("nob-4pc") == 0 || (nob == char.Index && ok) {
-				c.Status.Add("nob-4pc", 12*60)
-				c.Flags.Custom["nob-4pc"] = char.Index
+			for _, this := range s.core.Player.Chars() {
+				m := make([]float64, attributes.EndStatType)
+				m[attributes.ATKP] = 0.2
+				smod := character.StatMod{
+					Base:         modifier.NewBaseWithHitlag(buffKey, buffDuration),
+					AffectedStat: attributes.ATKP,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
+				}
+				// special case to fix this mess:
+				// https://library.keqingmains.com/evidence/general-mechanics/bugs#noblesse-oblige-4pc-bonus-not-applying-to-some-bursts
+				// TODO: Does Ganyu snapshot 4 Noblesse if 4 Noblesse is already up and she is refreshing the duration? (rn she would snapshot it)
+				if char.Base.Key == keys.Ganyu && this.Base.Key == keys.Ganyu {
+					this.QueueCharTask(func() {
+						this.AddStatMod(smod)
+					}, 1)
+				} else {
+					this.AddStatMod(smod)
+				}
 			}
 
 			c.Log.NewEvent("noblesse 4pc proc", glog.LogArtifactEvent, char.Index).
-				Write("expiry", c.Status.Duration("nob-4pc"))
+				Write("expiry (without hitlag)", c.F+buffDuration)
 			return false
 		}, fmt.Sprintf("nob-4pc-%v", char.Base.Key.String()))
 	}
