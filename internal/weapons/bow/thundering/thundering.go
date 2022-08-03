@@ -33,8 +33,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	stack := 0.09 + float64(r)*0.03
 	max := 0.3 + float64(r)*0.1
 
-	normal := 0
-	skill := 0
+	const normalKey = "thundering-pulse-normal"
+	normalDuration := 300 // 5s * 60
+	const skillKey = "thundering-pulse-skill"
+	skillDuration := 600 // 10s * 60
 
 	key := fmt.Sprintf("thundering-pulse-%v", char.Base.Key.String())
 
@@ -46,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
-		normal = c.F + 300
+		char.AddStatus(normalKey, normalDuration, true)
 		return false
 	}, key)
 
@@ -54,12 +56,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		skill = c.F + 600
+		char.AddStatus(skillKey, skillDuration, true)
 		return false
 	}, key)
 
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("thundering", -1),
+		Base: modifier.NewBase("thundering-pulse", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			m[attributes.DmgP] = 0
 			if atk.Info.AttackTag != combat.AttackTagNormal {
@@ -69,10 +71,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			if char.Energy < char.EnergyMax {
 				count++
 			}
-			if normal > c.F {
+			if char.StatusIsActive(normalKey) {
 				count++
 			}
-			if skill > c.F {
+			if char.StatusIsActive(skillKey) {
 				count++
 			}
 			dmg := float64(count) * stack

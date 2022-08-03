@@ -71,19 +71,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 
-	dmg := 2.1 * float64(r) * 0.3
+	const icdKey = "perception-icd"
 	cd := (13 - r) * 60
-	icd := 0
+	dmg := 2.1 * float64(r) * 0.3
 
 	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + cd
+		char.AddStatus(icdKey, cd, true)
 
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,

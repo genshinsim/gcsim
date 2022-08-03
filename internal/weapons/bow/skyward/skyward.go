@@ -42,9 +42,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	})
 
 	//procs
-	cd := 270 - 30*r
 	prob := 0.5 + 0.1*float64(r)
-	icd := 0
+	const icdKey = "skyward-harp-icd"
+	cd := 270 - 30*r
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if c.Rand.Float64() > prob {
@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		c.QueueAttack(ai, combat.NewCircleHit(trg, 2, true, combat.TargettableEnemy), 0, 1)
 
-		icd = c.F + cd
+		char.AddStatus(icdKey, cd, true)
 
 		return false
 	}, fmt.Sprintf("skyward-harp-%v", char.Base.Key.String()))

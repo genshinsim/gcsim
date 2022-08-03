@@ -30,9 +30,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 
-	cd := -1
+	const icdKey = "ttds-icd"
+	icd := 1200 // 20s * 60
 	isActive := false
-	key := fmt.Sprintf("thrilling-%v", char.Base.Key.String())
+	key := fmt.Sprintf("ttds-%v", char.Base.Key.String())
 
 	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
 		isActive = c.Player.Active() == char.Index
@@ -50,14 +51,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		if isActive && c.Player.Active() != char.Index {
 			isActive = false
-			if c.F < cd {
+			if char.StatusIsActive(icdKey) {
 				return false
 			}
-
-			cd = c.F + 60*20
+			char.AddStatus(icdKey, icd, true)
 			active := c.Player.ActiveChar()
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("thrilling tales", 600),
+				Base:         modifier.NewBaseWithHitlag("ttds", 600),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return m, true
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			})
 
 			c.Log.NewEvent("ttds activated", glog.LogWeaponEvent, c.Player.Active()).
-				Write("expiry", c.F+600)
+				Write("expiry (without hitlag)", c.F+600)
 		}
 
 		return false

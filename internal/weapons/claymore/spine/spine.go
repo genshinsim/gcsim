@@ -37,7 +37,7 @@ func (w *Weapon) stackCheck() func() {
 				w.updateBuff()
 			}
 		}
-		w.c.Tasks.Add(w.stackCheck(), 240) //check again in 4s
+		w.char.QueueCharTask(w.stackCheck(), 240) //check again in 4s
 	}
 }
 func (w *Weapon) updateBuff() {
@@ -75,19 +75,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w.updateBuff()
 
 	//start ticker to check for stack increase
-	c.Tasks.Add(w.stackCheck(), 240)
+	char.QueueCharTask(w.stackCheck(), 240)
 
 	//add event hook to check for dmg, subject to 1s icd
 	//TODO: taking 3% more damage not implemented
-	icd := -1
+	const icdKey = "spine-dmgtaken-icd"
+	icd := 60
 	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 60
+		char.AddStatus(icdKey, icd, true)
 		if w.stacks > 0 {
 			w.stacks--
 			w.updateBuff()

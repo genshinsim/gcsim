@@ -44,7 +44,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	mDmg[attributes.GeoP] = dmg
 	mDmg[attributes.DendroP] = dmg
 
-	icd := -1
+	const icdKey = "widsith-icd"
+	icd := 1800 // 30s * 60
 	state := -1
 	stats := []string{"em", "dmg%", "atk%"}
 	buff := [][]float64{mEM, mDmg, mATK}
@@ -56,16 +57,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
-		if c.F < icd {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 60*30
+		char.AddStatus(icdKey, icd, true)
 
 		state = c.Rand.Intn(3)
 
 		expiry := c.F + 60*10
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("widsith", 600),
+			Base:         modifier.NewBaseWithHitlag("widsith", 600),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				//sanity check; should never happen
@@ -77,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		})
 		c.Log.NewEvent("widsith proc'd", glog.LogWeaponEvent, char.Index).
 			Write("stat", stats[state]).
-			Write("expiring", expiry)
+			Write("expiring (without hitlag)", expiry)
 
 		return false
 	}, fmt.Sprintf("width-%v", char.Base.Key.String()))

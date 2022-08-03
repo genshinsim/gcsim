@@ -35,18 +35,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	key := fmt.Sprintf("kaguradance-%v", char.Base.Key.String())
 	dmg := 0.12 + 0.03*float64(r-1)
 	val := make([]float64, attributes.EndStatType)
-	lastActiveUntil := -1
+	const stackKey = "kaguras-verity-stacks"
+	stackDuration := 960 // 16s * 60
 
 	//TODO: this used to be on postskill. make sure nothing broke here
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if c.F > lastActiveUntil {
+		if !char.StatusIsActive(stackKey) {
 			//reset stacks back to 0
 			stacks = 0
 		}
-		lastActiveUntil = c.F + 960 //16 * 60
+		char.AddStatus(stackKey, stackDuration, true)
 		if stacks < 3 {
 			stacks++
 		}
@@ -73,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		//add mod for duration, override last
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("kagurasverity", 960),
+			Base: modifier.NewBaseWithHitlag("kaguras-verity", stackDuration),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.ActorIndex != char.Index {
 					return nil, false

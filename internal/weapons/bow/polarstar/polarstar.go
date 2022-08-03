@@ -37,27 +37,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	stack := .075 + float64(r)*.025
 	max := .06 + float64(r)*.02
 
-	normal := 0
-	charged := 0
-	skill := 0
-	burst := 0
+	const normalKey = "polar-star-normal"
+	const chargedKey = "polar-star-charged"
+	const skillKey = "polar-star-skill"
+	const burstKey = "polar-star-burst"
+	stackDuration := 720 // 12s * 60
 
 	mATK := make([]float64, attributes.EndStatType)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("polar-star", -1),
+		Base:         modifier.NewBase("polar-star-atk", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			count := 0
-			if normal > c.F {
+			if char.StatusIsActive(normalKey) {
 				count++
 			}
-			if charged > c.F {
+			if char.StatusIsActive(chargedKey) {
 				count++
 			}
-			if skill > c.F {
+			if char.StatusIsActive(skillKey) {
 				count++
 			}
-			if burst > c.F {
+			if char.StatusIsActive(burstKey) {
 				count++
 			}
 
@@ -80,16 +81,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
-		cd := c.F + 60*12
 		switch atk.Info.AttackTag {
 		case combat.AttackTagNormal:
-			normal = cd
+			char.AddStatus(normalKey, stackDuration, true)
 		case combat.AttackTagExtra:
-			charged = cd
+			char.AddStatus(chargedKey, stackDuration, true)
 		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold:
-			skill = cd
+			char.AddStatus(skillKey, stackDuration, true)
 		case combat.AttackTagElementalBurst:
-			burst = cd
+			char.AddStatus(burstKey, stackDuration, true)
 		}
 
 		return false
@@ -98,7 +98,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	mDmg := make([]float64, attributes.EndStatType)
 	mDmg[attributes.DmgP] = dmg
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("polar-star", -1),
+		Base: modifier.NewBase("polar-star-dmg", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:

@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		//regen energy after 2 seconds
-		c.Tasks.Add(func() {
+		char.QueueCharTask(func() {
 			char.AddEnergy("amenoma", refund*float64(count))
 		}, 120+60) //added 1 extra sec for burst animation but who knows if this is true
 

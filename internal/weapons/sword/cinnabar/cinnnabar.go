@@ -54,9 +54,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if !char.StatusIsActive(durationKey) {
 			//TODO: we're assuming icd starts after the effect
 			char.QueueCharTask(func() {
-				char.AddStatus(icdKey, 90, true) //icd lasts for 1.5s
+				char.AddStatus(icdKey, 90, false) //icd lasts for 1.5s
 			}, 6) //icd starts 6 frames after
-			char.AddStatus(durationKey, 6, true)
+			char.AddStatus(durationKey, 6, false)
 		}
 		damageAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * defPer
 		atk.Info.FlatDmg += damageAdd

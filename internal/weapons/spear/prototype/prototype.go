@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			w.buff[attributes.ATKP] = atkbonus * float64(w.stacks)
 		}
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(buffKey, 720),
+			Base: modifier.NewBaseWithHitlag(buffKey, 720),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 					return nil, false

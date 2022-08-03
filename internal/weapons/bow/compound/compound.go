@@ -39,11 +39,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	stacks := 0
 	maxStacks := 4
-	stackExpiry := 0
+	const stackKey = "compoundbow-stacks"
 	stackDuration := 360 // frames = 6s * 60 fps
+	const icdKey = "compoundbow-icd"
 
 	cd := 18 // frames = 0.3s * 60fps
-	icd := 0
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -64,12 +64,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		// Check if cd is up
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 
 		// Reset stacks if they've expired
-		if c.F > stackExpiry {
+		if !char.StatusIsActive(stackKey) {
 			stacks = 0
 		}
 
@@ -80,12 +80,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		// trigger cd
-		icd = c.F + cd
-		stackExpiry = c.F + stackDuration
+		char.AddStatus(icdKey, cd, true)
+		char.AddStatus(stackKey, stackDuration, true)
 
 		//buff lasts 6 * 60 = 360 frames
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("compoundbow", stackDuration),
+			Base:         modifier.NewBaseWithHitlag("compoundbow", stackDuration),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				m[attributes.ATKP] = incAtk * float64(stacks)

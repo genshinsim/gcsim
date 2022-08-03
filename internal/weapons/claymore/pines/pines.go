@@ -79,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			char.AddStatus(cdKey, 1200, true)
 			for _, char := range c.Player.Chars() {
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("pines-proc", 720),
+					Base:         modifier.NewBaseWithHitlag("pines-proc", 720),
 					AffectedStat: attributes.NoStat,
 					Amount: func() ([]float64, bool) {
 						return val, true

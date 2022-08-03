@@ -51,22 +51,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	icd := 0
+	const icdKey = "twilight-icd"
+	icd := 420
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 420
+		char.AddStatus(icdKey, icd, true)
 		cycle++
 		cycle = cycle % 3
 		c.Log.NewEvent("fading twillight cycle changed", glog.LogWeaponEvent, char.Index).
 			Write("cycle", cycle).
-			Write("next cycle", icd)
+			Write("next cycle (without hitlag)", c.F+icd)
 
 		return false
 	}, fmt.Sprintf("fadingtwilight-%v", char.Base.Key.String()))

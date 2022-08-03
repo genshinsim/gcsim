@@ -32,7 +32,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmg := 0.09 + float64(r)*0.03
 	atk := 1.2 + float64(r)*0.4
 
-	icd := 0
+	const icdKey = "skyward-atlas-icd"
+	icd := 1800 // 30s * 60
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
@@ -42,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if ae.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if c.Rand.Float64() < 0.5 {
@@ -63,9 +64,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		for i := 0; i < 6; i++ {
 			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 0.1, false, combat.TargettableEnemy), i*150)
 		}
-		icd = c.F + 1800
+		char.AddStatus(icdKey, icd, true)
 		return false
-	}, fmt.Sprintf("skyward-atlast-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("skyward-atlas-%v", char.Base.Key.String()))
 
 	//permanent stat buff
 	m := make([]float64, attributes.EndStatType)
@@ -77,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.GeoP] = dmg
 	m[attributes.DendroP] = dmg
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("skyward-atlast", -1),
+		Base:         modifier.NewBase("skyward-atlas", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true
