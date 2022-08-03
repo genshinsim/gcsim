@@ -45,6 +45,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
+		const icdKey = "tom-4pc-icd"
+		icd := 30 // 0.5s * 60
+
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.2
 
@@ -56,11 +59,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 				return false
 			}
-			if s.icd > c.F {
+			if char.StatusIsActive(icdKey) {
 				return false
 			}
-			c.Status.Add("tom-proc", 3*60)
-			s.icd = c.F + 30 // .5 second icd
+			char.AddStatus(icdKey, icd, true)
 
 			for _, this := range s.core.Player.Chars() {
 				this.AddStatMod(character.StatMod{
@@ -77,7 +79,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return 0.30, false
 			})
 
-			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index).Write("expiry", c.F+180).Write("icd", s.icd)
+			c.Log.NewEvent("tom 4pc proc", glog.LogArtifactEvent, char.Index).Write("expiry (without hitlag)", c.F+180).Write("icd (without hitlag)", c.F+s.icd)
 			return false
 		}, fmt.Sprintf("tom4-%v", char.Base.Key.String()))
 	}
