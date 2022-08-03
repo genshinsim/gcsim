@@ -90,6 +90,11 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		// Also handle burst CA ICD change to share with Normal
 		switch a.AttackTag {
 		case combat.AttackTagNormal:
+			// QN1-1 has different hitlag from N1-1
+			if a.Abil == "Normal 0" {
+				//this also overwrites N1-2 HitlagHaltFrames but they have the same value so it's fine
+				a.HitlagHaltFrames = 0.01 * 60
+			}
 		case combat.AttackTagExtra:
 			// Q-CA has different hitlag from CA
 			a.ICDTag = combat.ICDTagNormalAttack
