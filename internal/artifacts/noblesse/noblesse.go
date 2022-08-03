@@ -48,6 +48,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		const buffKey = "nob-4pc"
 		buffDuration := 720 // 12s * 60
 
+		charsToCheck := [6]keys.Char{keys.TravelerAnemo, keys.Ningguang, keys.Beidou, keys.Sayu, keys.Aloy, keys.Ganyu}
+
 		//TODO: this used to be post. need to check
 		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
@@ -65,24 +67,22 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 						return m, true
 					},
 				}
-				// special case to fix this mess:
-				// https://library.keqingmains.com/evidence/general-mechanics/bugs#noblesse-oblige-4pc-bonus-not-applying-to-some-bursts
-				// https://docs.google.com/spreadsheets/d/1jhIP3C6B16nL1unX9DL_-LhSNaOy_wwhdr29pzikpcg/edit?usp=sharing
-				// TODO: Does the char snapshot 4 Noblesse if 4 Noblesse is already up and they're refreshing the duration? (rn they would snapshot it)
-				if (char.Base.Key == keys.TravelerAnemo && this.Base.Key == keys.TravelerAnemo) ||
-					(char.Base.Key == keys.Ningguang && this.Base.Key == keys.Ningguang) ||
-					(char.Base.Key == keys.Beidou && this.Base.Key == keys.Beidou) ||
-					(char.Base.Key == keys.Sayu && this.Base.Key == keys.Sayu) ||
-					(char.Base.Key == keys.Aloy && this.Base.Key == keys.Aloy) ||
-					(char.Base.Key == keys.Ganyu && this.Base.Key == keys.Ganyu) {
-					this.QueueCharTask(func() {
-						this.AddStatMod(smod)
-					}, 1)
-				} else {
+				if this.Base.Key != char.Base.Key {
 					this.AddStatMod(smod)
+				} else {
+					// special case if applying 4 Noblesse to holder to fix this mess:
+					// https://library.keqingmains.com/evidence/general-mechanics/bugs#noblesse-oblige-4pc-bonus-not-applying-to-some-bursts
+					// https://docs.google.com/spreadsheets/d/1jhIP3C6B16nL1unX9DL_-LhSNaOy_wwhdr29pzikpcg/edit?usp=sharing
+					// TODO: Does the char snapshot 4 Noblesse if 4 Noblesse is already up and they're refreshing the duration? (rn they would snapshot it)
+					for i := range charsToCheck {
+						if this.Base.Key == charsToCheck[i] {
+							this.QueueCharTask(func() {
+								this.AddStatMod(smod)
+							}, 1)
+						}
+					}
 				}
 			}
-
 			c.Log.NewEvent("noblesse 4pc proc", glog.LogArtifactEvent, char.Index).
 				Write("expiry (without hitlag)", c.F+buffDuration)
 			return false
