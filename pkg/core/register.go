@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
@@ -16,7 +17,7 @@ var (
 	weaponMap = make(map[keys.Weapon]NewWeaponFunc)
 )
 
-type NewCharacterFunc func(core *Core, char *character.CharWrapper, p character.CharacterProfile) error
+type NewCharacterFunc func(core *Core, char *character.CharWrapper, p profile.CharacterProfile) error
 type NewSetFunc func(core *Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error)
 type NewWeaponFunc func(core *Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error)
 
