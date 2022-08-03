@@ -7,6 +7,11 @@ import (
 )
 
 func (c *char) a1() {
+	if !c.applyA1 {
+		return
+	}
+	c.applyA1 = false
+
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.12
 	for i, char := range c.Core.Player.Chars() {

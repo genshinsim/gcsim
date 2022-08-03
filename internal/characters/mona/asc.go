@@ -13,7 +13,7 @@ func (c *char) a4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("mona-a4", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			m[attributes.HydroP] = .2 * atk.Snapshot.Stats[attributes.ER]
+			m[attributes.HydroP] = .2 * (1 + atk.Snapshot.Stats[attributes.ER])
 			return m, true
 		},
 	})
