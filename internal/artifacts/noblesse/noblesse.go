@@ -67,8 +67,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				}
 				// special case to fix this mess:
 				// https://library.keqingmains.com/evidence/general-mechanics/bugs#noblesse-oblige-4pc-bonus-not-applying-to-some-bursts
-				// TODO: Does Ganyu snapshot 4 Noblesse if 4 Noblesse is already up and she is refreshing the duration? (rn she would snapshot it)
-				if char.Base.Key == keys.Ganyu && this.Base.Key == keys.Ganyu {
+				// https://docs.google.com/spreadsheets/d/1jhIP3C6B16nL1unX9DL_-LhSNaOy_wwhdr29pzikpcg/edit?usp=sharing
+				// TODO: Does the char snapshot 4 Noblesse if 4 Noblesse is already up and they're refreshing the duration? (rn they would snapshot it)
+				if (char.Base.Key == keys.TravelerAnemo && this.Base.Key == keys.TravelerAnemo) ||
+					(char.Base.Key == keys.Ningguang && this.Base.Key == keys.Ningguang) ||
+					(char.Base.Key == keys.Beidou && this.Base.Key == keys.Beidou) ||
+					(char.Base.Key == keys.Sayu && this.Base.Key == keys.Sayu) ||
+					(char.Base.Key == keys.Aloy && this.Base.Key == keys.Aloy) ||
+					(char.Base.Key == keys.Ganyu && this.Base.Key == keys.Ganyu) {
 					this.QueueCharTask(func() {
 						this.AddStatMod(smod)
 					}, 1)
