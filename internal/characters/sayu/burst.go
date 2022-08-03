@@ -55,31 +55,36 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		heal += math.Min(d.Snapshot.Stats[attributes.EM]*3, 6000)
 	}
 
-	for i := 150; i < 150+540; i += 90 {
-		c.Core.Tasks.Add(func() {
-			active := c.Core.Player.ActiveChar()
-			//this is going to be a bit slow..
-			enemies := c.Core.Combat.EnemyByDistance(0, 0, 7) //TODO: no idea what the range of this check is
-			needHeal := len(enemies) == 0 || active.HPCurrent/active.MaxHP() <= .7
-			needAttack := !needHeal
-			if c.Base.Cons >= 1 {
-				needHeal = true
-				needAttack = true
-			}
-			if needHeal {
-				c.Core.Player.Heal(player.HealInfo{
-					Caller:  c.Index,
-					Target:  c.Core.Player.Active(),
-					Message: "Muji-Muji Daruma",
-					Src:     heal,
-					Bonus:   d.Snapshot.Stats[attributes.Heal],
-				})
-			}
-			if needAttack {
-				c.Core.QueueAttackEvent(d, 0)
-			}
-		}, i)
-	}
+	// make sure that this task gets executed:
+	// - after q initial hit hitlag happened
+	// - before sayu can get affected by any more hitlag
+	c.QueueCharTask(func() {
+		for i := 150 - 20; i < 150+540-20; i += 90 {
+			c.Core.Tasks.Add(func() {
+				active := c.Core.Player.ActiveChar()
+				//this is going to be a bit slow..
+				enemies := c.Core.Combat.EnemyByDistance(0, 0, 7) //TODO: no idea what the range of this check is
+				needHeal := len(enemies) == 0 || active.HPCurrent/active.MaxHP() <= .7
+				needAttack := !needHeal
+				if c.Base.Cons >= 1 {
+					needHeal = true
+					needAttack = true
+				}
+				if needHeal {
+					c.Core.Player.Heal(player.HealInfo{
+						Caller:  c.Index,
+						Target:  c.Core.Player.Active(),
+						Message: "Muji-Muji Daruma",
+						Src:     heal,
+						Bonus:   d.Snapshot.Stats[attributes.Heal],
+					})
+				}
+				if needAttack {
+					c.Core.QueueAttackEvent(d, 0)
+				}
+			}, i)
+		}
+	}, 20)
 
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 11)
 	c.ConsumeEnergy(11)
