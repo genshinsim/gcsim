@@ -27,13 +27,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Geo
 	c.EnergyMax = 40
-	c.Weapon.Class = weapon.WeaponClassSpear
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
-	c.CharZone = character.ZoneLiyue
 
 	c.maxStele = 1
 	if c.Base.Cons >= 1 {

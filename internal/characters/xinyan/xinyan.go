@@ -30,14 +30,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	t.CharWrapper = w
 	c.Character = t
 
-	c.Base.Element = attributes.Pyro
-
 	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassClaymore
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
-	c.CharZone = character.ZoneLiyue
 
 	w.Character = &c
 
