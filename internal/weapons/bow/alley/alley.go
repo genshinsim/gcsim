@@ -91,7 +91,7 @@ func (w *Weapon) decStack(c *character.CharWrapper, src int) func() {
 			if w.stacks < 0 {
 				w.stacks = 0
 			}
-			w.core.Log.NewEvent("Alley lost stack", glog.LogArtifactEvent, w.char.Index).
+			w.core.Log.NewEvent("Alley lost stack", glog.LogWeaponEvent, w.char.Index).
 				Write("stacks:", w.stacks).
 				Write("last_swap", w.lastActiveChange).
 				Write("source", src)
@@ -104,7 +104,7 @@ func (w *Weapon) incStack(c *character.CharWrapper, src int) func() {
 	return func() {
 		if !w.active && w.stacks < 10 && src == w.lastActiveChange {
 			w.stacks++
-			w.core.Log.NewEvent("Alley gained stack", glog.LogArtifactEvent, w.char.Index).
+			w.core.Log.NewEvent("Alley gained stack", glog.LogWeaponEvent, w.char.Index).
 				Write("stacks:", w.stacks).
 				Write("last_swap", w.lastActiveChange).
 				Write("source", src)

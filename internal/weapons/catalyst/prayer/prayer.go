@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -19,6 +20,8 @@ func init() {
 type Weapon struct {
 	Index  int
 	stacks int
+	char   *character.CharWrapper
+	c      *core.Core
 	buff   []float64
 	dmg    float64
 }
@@ -31,6 +34,8 @@ func (w *Weapon) stackCheck(char *character.CharWrapper, c *core.Core) func() {
 			if w.stacks < 4 {
 				w.stacks++
 				w.updateBuff()
+				w.c.Log.NewEvent("lostprayer gained stack", glog.LogWeaponEvent, w.char.Index).
+					Write("stacks", w.stacks)
 			}
 		}
 		char.QueueCharTask(w.stackCheck(char, c), 240)
@@ -51,7 +56,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//Increases Movement SPD by 10%. When in battle, gain an 8% Elemental DMG
 	//Bonus every 4s. Max 4 stacks. Lasts until the character falls or leaves
 	//combat.
-	w := &Weapon{}
+	w := &Weapon{
+		char: char,
+		c:    c,
+	}
 	r := p.Refine
 	w.dmg = 0.04 + float64(r)*0.02
 	w.buff = make([]float64, attributes.EndStatType)
