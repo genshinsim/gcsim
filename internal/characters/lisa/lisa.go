@@ -22,13 +22,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Electro
 	c.EnergyMax = 80
-	c.Weapon.Class = weapon.WeaponClassCatalyst
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.CharZone = character.ZoneMondstadt
 
 	w.Character = &c
 

@@ -23,7 +23,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 
 	c.Base.Element = attributes.Geo
 	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassSword
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum

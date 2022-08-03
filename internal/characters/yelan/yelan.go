@@ -34,13 +34,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, p character.CharacterProfil
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Hydro
 	c.EnergyMax = 70
-	c.Weapon.Class = weapon.WeaponClassBow
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
-	c.CharZone = character.ZoneLiyue
 
 	c.c2icd = 0
 	c.c6count = 0

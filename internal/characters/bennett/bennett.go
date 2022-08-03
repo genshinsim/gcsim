@@ -22,9 +22,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c.Character = tmpl.NewWithWrapper(s, w)
 
 	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassSword
 	c.NormalHitNum = normalHitNum
-	c.Base.Element = attributes.Pyro
 
 	w.Character = &c
 

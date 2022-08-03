@@ -40,13 +40,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Geo
 	c.EnergyMax = 80
-	c.Weapon.Class = weapon.WeaponClassBow
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.CharZone = character.ZoneInazuma
 
 	c.c6buff = make([]float64, attributes.EndStatType)
 	c.gorouBuff = make([]float64, attributes.EndStatType)
