@@ -20,6 +20,7 @@ type char struct {
 	paraParticleICD int
 	ppBonus         float64
 	tickActive      bool
+	applyA1         bool
 	c6icd           int
 }
 
