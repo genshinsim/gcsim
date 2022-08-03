@@ -40,7 +40,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:               skill[c.TalentLvlSkill()],
 		HitlagFactor:       0.01,
 		HitlagHaltFrames:   0.09 * 60,
-		CanBeDefenseHalted: true,
+		CanBeDefenseHalted: false,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, skillHitmark)
 
@@ -174,7 +174,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = 0.08
 	active.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("chongyun-field", 126),
+		Base:         modifier.NewBaseWithHitlag("chongyun-field", 126),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true

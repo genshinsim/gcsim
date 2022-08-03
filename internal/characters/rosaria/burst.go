@@ -50,36 +50,39 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//no more hitlag after first hit
 	ai.HitlagHaltFrames = 0
 
-	//lance lands at 60f/1s
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 60, 60, c.c6)
-
-	//duration is 8 second (extended by c2 by 4s), + 0.5
+	//duration is 8 seconds (extended by c2 by 4s), + 0.5
 	//should be a deployable
 	dur := 510
 	if c.Base.Cons >= 2 {
 		dur += 240
 	}
 
-	// Burst is snapshot when the lance lands (when the 2nd damage proc hits)
-	ai = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Rites of Termination (DoT)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Cryo,
-		Durability: 25,
-		Mult:       burstDot[c.TalentLvlBurst()],
-	}
+	// Handle Hit 2 and DoT
+	// lance lands at 56f if we exclude hitlag (60f was with hitlag)
+	c.QueueCharTask(func() {
+		// Hit 2
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0, c.c6)
 
-	c.Core.Tasks.Add(func() {
-		// dot every 2 second after lance lands
+		// Burst status
+		c.Core.Status.Add("rosariaburst", dur)
+
+		// Burst is snapshot when the lance lands (when the 2nd damage proc hits)
+		ai = combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Rites of Termination (DoT)",
+			AttackTag:  combat.AttackTagElementalBurst,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Cryo,
+			Durability: 25,
+			Mult:       burstDot[c.TalentLvlBurst()],
+		}
+
+		// DoT every 2 seconds after lance lands
 		for i := 120; i < dur; i += 120 {
 			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, i, c.c6)
 		}
-	}, 60)
-
-	c.Core.Status.Add("rosariaburst", dur)
+	}, 56)
 
 	// Handle A4
 	// Casting Rites of Termination increases CRIT RATE of all nearby party members, excluding Rosaria herself, by 15% of Rosaria's CRIT RATE for 10s. CRIT RATE bonus gained this way cannot exceed 15%.

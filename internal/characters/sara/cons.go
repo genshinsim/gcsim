@@ -26,7 +26,7 @@ func (c *char) c1() {
 // The Electro DMG of characters who have had their ATK increased by Tengu Juurai has its Crit DMG increased by 60%.
 func (c *char) c6(char *character.CharWrapper) {
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("sara-c6", 360),
+		Base: modifier.NewBaseWithHitlag("sara-c6", 360),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.Element != attributes.Electro {
 				return nil, false

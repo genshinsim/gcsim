@@ -23,6 +23,23 @@ func init() {
 
 const burstBuffKey = "diluc-q"
 
+func (c *char) phoenixDMG(ai combat.AttackInfo, dot int, explode int) func() {
+	return func() {
+		// DoT does damage every .2 seconds for 7 hits? so every 12 frames
+		// DoT does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
+		// DoT
+		for i := 0; i < dot; i++ {
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, i*12)
+		}
+		// Explosion
+		if explode > 0 {
+			ai.Abil = "Dawn (Explode)"
+			ai.Mult = burstExplode[c.TalentLvlBurst()]
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 98)
+		}
+	}
+}
+
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	dot, ok := p["dot"]
 	if !ok {
@@ -69,23 +86,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 1)
 
-		//TODO: the timing of what the ticks come out may be affected by hit lag so this needs to be
-		//rewritten
-		//TODO: also consider making this actually sort of move (like aoe wise)
-		//dot does damage every .2 seconds for 7 hits? so every 12 frames
-		//dot does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
-		//first tick did 50 dur as well?
+		// both initial hit, DoT and explosion all have 50 durability
 		ai.Abil = "Dawn (Tick)"
 		ai.Mult = burstDOT[c.TalentLvlBurst()]
-		for i := 1; i <= dot; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, i+12)
-		}
 
-		if explode > 0 {
-			ai.Abil = "Dawn (Explode)"
-			ai.Mult = burstExplode[c.TalentLvlBurst()]
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 110)
-		}
+		// only initial hit has hitlag
+		ai.HitlagHaltFrames = 0
+		ai.CanBeDefenseHalted = false
+
+		// TODO: also consider making this actually sort of move (like aoe wise)
+		// queue DoT and Explosion DMG
+		c.QueueCharTask(c.phoenixDMG(ai, dot, explode), 12)
 	}, burstHitmark)
 
 	c.ConsumeEnergy(21)

@@ -50,10 +50,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	if c.Core.Status.Duration("yelanc4") == 0 {
+	if !c.StatusIsActive("yelanc4") {
 		c.c4count = 0
 		c.Core.Log.NewEvent("c4 stacks set to 0", glog.LogCharacterEvent, c.Index)
-
 	}
 
 	//add a task to loop through targets and mark them
@@ -77,7 +76,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			marked--
 			c.c4count++
 			if c.Base.Cons >= 4 {
-				c.Core.Status.Add("yelanc4", 25*60)
+				c.AddStatus("yelanc4", 25*60, true)
 			}
 		}
 	}, skillHitmark) //TODO: frames for hold e
@@ -132,7 +131,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				Write("enemies count", c.c4count)
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("yelan-c4", 25*60),
+					Base:         modifier.NewBaseWithHitlag("yelan-c4", 25*60),
 					AffectedStat: attributes.HPP,
 					Amount: func() ([]float64, bool) {
 						return m, true

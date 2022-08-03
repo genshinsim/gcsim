@@ -9,7 +9,7 @@ func (c *char) a1() {
 		if c.Tags["shielded"] == 0 {
 			return 0, false
 		}
-		if c.Core.Status.Duration("thoma-a1") <= 0 {
+		if !c.StatusIsActive("thoma-a1") {
 			return 0, false
 		}
 		return float64(c.a1Stack) * 0.05, true
