@@ -51,7 +51,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if c.Player.Active() != char.Index {
 				return false
 			}
-			c.Status.Add(s.key, buffDuration, true)
 			// add stat mod here
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("hod-4pc", buffDuration),
