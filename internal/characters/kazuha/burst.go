@@ -62,6 +62,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
 	//updated to 140 based on koli's count: https://docs.google.com/spreadsheets/d/1uEbP13O548-w_nGxFPGsf5jqj1qGD3pqFZ_AiV4w3ww/edit#gid=775340159
+
+	// make sure that this task gets executed:
+	// - after q initial hit hitlag happened
+	// - before kazuha can get affected by any more hitlag
 	c.QueueCharTask(func() {
 		for i := 0; i < 5; i++ {
 			c.Core.Tasks.Add(func() {
@@ -70,7 +74,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					aiAbsorb.Element = c.qInfuse
 					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
 				}
-			}, 117*i)
+			}, (burstFirstTick-(burstHitmark+5))+117*i)
 		}
 
 		//add em to kazuha even if off-field
@@ -88,7 +92,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				this := char
 				//use non hitlag since it's from the field?
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("kazuha-c2", 117*5),
+					Base:         modifier.NewBase("kazuha-c2", (burstFirstTick-(burstHitmark+5))+117*5),
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
 						switch this.Index {
@@ -100,7 +104,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				})
 			}
 		}
-	}, burstFirstTick)
+	}, burstHitmark+5)
 
 	//reset skill cd
 	if c.Base.Cons > 0 {
