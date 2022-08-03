@@ -57,13 +57,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			// Add 120 EM to all characters except the one with instructor
-			for i, this := range c.Player.Chars() {
-				// Skip the one with instructor
-				if i == char.Index {
-					continue
-				}
-
+			// Add 120 EM to all characters
+			for _, this := range c.Player.Chars() {
 				this.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("instructor-4pc", 480),
 					AffectedStat: attributes.EM,

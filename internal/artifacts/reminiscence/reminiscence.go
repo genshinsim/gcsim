@@ -45,6 +45,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	//skill (not on hit). Turn out it work with childe :Childejoy:
 	//The finding is now in #energy-drain-effects-have-a-delay if you want to take a closer look
 	if count >= 4 {
+		const icdKey = "shim-4pc-icd"
+		icd := 600 // 10s * 60
+
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.50
 		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
@@ -54,10 +57,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if char.Energy < 15 {
 				return false
 			}
-			if c.F < s.cd {
+			if char.StatusIsActive(icdKey) {
 				return false
 			}
-			s.cd = c.F + 60*10
+			char.AddStatus(icdKey, icd, true)
 
 			// consume 15 energy, increased normal/charge/plunge dmg by 50%
 			c.Tasks.Add(func() {
