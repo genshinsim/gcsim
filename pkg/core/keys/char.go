@@ -100,6 +100,7 @@ const (
 	YaeMiko
 	Yelan
 	Kuki
+	Heizou
 	EndCharKeys
 )
 
@@ -227,6 +228,7 @@ var charPrettyName = []string{
 	"Yae Miko",
 	"Yelan",
 	"Kuki",
+	"Heizou",
 }
 
 var CharKeyToEle = map[Char]attributes.Element{
@@ -286,4 +288,5 @@ var CharKeyToEle = map[Char]attributes.Element{
 	YaeMiko:         attributes.Electro,
 	Yelan:           attributes.Hydro,
 	Kuki:            attributes.Electro,
+	Heizou:          attributes.Anemo,
 }
