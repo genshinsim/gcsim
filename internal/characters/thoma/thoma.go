@@ -16,7 +16,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	a1Stack int
-	a1icd   int
 	c6buff  []float64
 }
 
@@ -33,7 +32,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c.CharZone = character.ZoneInazuma
 
 	c.a1Stack = 0
-	c.a1icd = 0
 
 	w.Character = &c
 

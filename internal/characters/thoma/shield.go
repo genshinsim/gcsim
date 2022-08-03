@@ -9,10 +9,10 @@ import (
 )
 
 func (c *char) genShield(src string, shieldamt float64) {
-	if c.Core.F > c.a1icd && c.a1Stack < 5 {
+	if !c.StatusIsActive("thoma-a1-icd") && c.a1Stack < 5 {
 		c.a1Stack++
-		c.a1icd = c.Core.F + 0.3*60
-		c.Core.Status.Add("thoma-a1", 6*60)
+		c.AddStatus("thoma-a1-icd", 18, true) // 0.3s * 60
+		c.AddStatus("thoma-a1", 360, true)    // 6s * 60
 	}
 	if c.Core.Player.Shields.Get(shield.ShieldThomaSkill) != nil {
 		maxHP := c.maxShieldHP()
