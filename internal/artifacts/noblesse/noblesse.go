@@ -74,12 +74,18 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					// https://library.keqingmains.com/evidence/general-mechanics/bugs#noblesse-oblige-4pc-bonus-not-applying-to-some-bursts
 					// https://docs.google.com/spreadsheets/d/1jhIP3C6B16nL1unX9DL_-LhSNaOy_wwhdr29pzikpcg/edit?usp=sharing
 					// TODO: Does the char snapshot 4 Noblesse if 4 Noblesse is already up and they're refreshing the duration? (rn they would snapshot it)
+					found := false
 					for i := range charsToCheck {
 						if this.Base.Key == charsToCheck[i] {
 							this.QueueCharTask(func() {
 								this.AddStatMod(smod)
 							}, 1)
+							found = true
+							break
 						}
+					}
+					if !found {
+						this.AddStatMod(smod)
 					}
 				}
 			}
