@@ -30,6 +30,7 @@ func (c *CharWrapper) Tick() {
 	c.timePassed += left
 
 	//check char queue for any executable actions
+	check := len(c.queue)
 	n := 0
 	for i := range c.queue {
 		if c.queue[i].delay <= c.timePassed {
@@ -39,6 +40,13 @@ func (c *CharWrapper) Tick() {
 			c.queue[n] = c.queue[i]
 			n++
 		}
+	}
+	// check if any task inserted another task into the queue
+	// new tasks inserted shouldn't have a delay of 0 so this is fine
+	for i := check; i < len(c.queue); i++ {
+		// keep the actions that can't be executed yet
+		c.queue[n] = c.queue[i]
+		n++
 	}
 	// set char queue len to the remaining elements
 	c.queue = c.queue[:n]
