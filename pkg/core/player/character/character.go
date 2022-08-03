@@ -63,6 +63,7 @@ type CharWrapper struct {
 	Weapon   weapon.WeaponProfile
 	Talents  profile.TalentProfile
 	CharZone profile.ZoneType
+	CharBody profile.BodyType
 	SkillCon int
 	BurstCon int
 

@@ -2,8 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
+	"strings"
 	"text/template"
 )
 
@@ -28,6 +32,7 @@ type promo struct {
 }
 
 type data struct {
+	profile
 	Key           string
 	Base          base    `json:"base"`
 	Curve         curve   `json:"curve"`
@@ -35,50 +40,112 @@ type data struct {
 	PromotionData []promo `json:"promotion"`
 }
 
+type profile struct {
+	Body       string
+	Element    string
+	Rarity     string
+	Region     string
+	WeaponType string
+}
+
 func main() {
 
-	f, err := os.ReadFile("./characters.json")
+	b, err := fetch("src/data/stats/characters.json")
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
+
 	var d map[string]data
-	err = json.Unmarshal(f, &d)
-	if err != nil {
-		log.Panic(err)
+	if err := json.Unmarshal([]byte(b), &d); err != nil {
+		log.Fatal(err)
 	}
+
 	//fix the specialized key
 	for k, v := range d {
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		v.Key = CharNameToKey[k]
+
+		if v.Key == "" {
+			log.Printf("skipping '%v' no valid key\n", k)
+			continue
+		}
+
+		// fetch char profile
+		b, err := fetch(fmt.Sprintf("src/data/English/characters/%s.json", k))
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := json.Unmarshal([]byte(b), &v.profile); err != nil {
+			log.Fatal(err)
+		}
+
+		v.Body = strings.Title(strings.ToLower(v.Body))
+		// special case for traveler and aloy
+		if v.Region == "" {
+			v.Region = "Unknown"
+		}
+		// special case for traveler
+		if v.Element == "None" {
+			v.Element = "NoElement"
+		}
+		if v.WeaponType == "Polearm" {
+			v.WeaponType = "Spear"
+		}
+
 		d[k] = v
-		// fmt.Println(k)
+		log.Println(v.Key)
 	}
+
 	// fmt.Println(d)
+	of, err := os.Create("./_output.go")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer of.Close()
+
 	t, err := template.New("out").Parse(tmpl)
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
-	os.Remove("./char.txt")
-	of, err := os.Create("./char.txt")
+	if err := t.Execute(of, d); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func fetch(path string) (string, error) {
+	resp, err := http.Get("https://raw.githubusercontent.com/theBowja/genshin-db/main/" + path)
 	if err != nil {
-		log.Panic(err)
+		return "", err
 	}
-	err = t.Execute(of, d)
-	if err != nil {
-		log.Panic(err)
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return "", fmt.Errorf("%v: %v", resp.Status, path)
 	}
+
+	out, err := io.ReadAll(resp.Body)
+	return string(out), err
 }
 
 var tmpl = `package curves
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 
 var CharBaseMap = map[keys.Char]CharBase{
 	{{- range $key, $value := . }}
+	{{- if $value.Key }}
 	keys.{{$value.Key}}: {
+		Rarity: {{$value.Rarity}},
+		Body: profile.Body {{- $value.Body}},
+		Element: attributes. {{- $value.Element}},
+		Region: profile.Zone {{- $value.Region}},
+		WeaponType: weapon.WeaponClass {{- $value.WeaponType}},
 		HPCurve: {{$value.Curve.HP}},
 		AtkCurve: {{$value.Curve.Atk}},
 		DefCurve: {{$value.Curve.Def}},
@@ -98,6 +165,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			{{- end }}
 		},
 	},
+	{{- end }}
 	{{- end }}
 }
 
