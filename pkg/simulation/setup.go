@@ -13,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -41,7 +42,7 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 	return nil
 }
 
-func SetupCharactersInCore(core *core.Core, chars []character.CharacterProfile, initial keys.Char) error {
+func SetupCharactersInCore(core *core.Core, chars []profile.CharacterProfile, initial keys.Char) error {
 	if len(chars) > 4 {
 		return errors.New("cannot have more than 4 characters per team")
 	}

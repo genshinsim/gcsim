@@ -16,22 +16,15 @@ type char struct {
 	sCACount    int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, _ core.CharacterProfile) (core.Character, error) {
 	c := char{}
 	t, err := character.NewTemplateChar(s, p)
 	if err != nil {
 		return nil, err
 	}
 	c.Tmpl = t
-	c.Base.Element = core.Geo
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 70
-	}
-	c.Energy = float64(e)
 	c.EnergyMax = 70
-	c.Weapon.Class = core.WeaponClassClaymore
 	c.NormalHitNum = 4
 	c.SkillCon = 3
 	c.BurstCon = 5

@@ -4,10 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const normalHitNum = 4
@@ -24,20 +23,16 @@ func init() {
 	core.RegisterCharFunc(keys.Xinyan, NewChar)
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	t := tmpl.New(s)
 	t.CharWrapper = w
 	c.Character = t
 
-	c.Base.Element = attributes.Pyro
-
 	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassClaymore
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
-	c.CharZone = character.ZoneLiyue
 
 	w.Character = &c
 

@@ -19,6 +19,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/status"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
@@ -171,7 +172,7 @@ func (c *Core) Tick() {
 	c.Tasks.Run()
 }
 
-func (c *Core) AddChar(p character.CharacterProfile) (int, error) {
+func (c *Core) AddChar(p profile.CharacterProfile) (int, error) {
 	var err error
 
 	// initialize character
