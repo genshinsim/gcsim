@@ -33,7 +33,7 @@ func (w *Weapon) stackCheck(char *character.CharWrapper, c *core.Core) func() {
 				w.updateBuff()
 			}
 		}
-		c.Tasks.Add(w.stackCheck(char, c), 240)
+		char.QueueCharTask(w.stackCheck(char, c), 240)
 	}
 }
 func (w *Weapon) updateBuff() {
@@ -62,7 +62,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 	w.updateBuff()
 
-	c.Tasks.Add(w.stackCheck(char, c), 240)
+	char.QueueCharTask(w.stackCheck(char, c), 240)
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
