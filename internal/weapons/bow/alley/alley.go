@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -27,9 +28,13 @@ type Weapon struct {
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
-func (w *Weapon) Init() error {
 
+// Initiate off-field stacking if off-field at start of the sim
+func (w *Weapon) Init() error {
 	w.active = w.core.Player.Active() == w.char.Index
+	if !w.active {
+		w.core.Tasks.Add(w.incStack(w.char, w.core.F), 1)
+	}
 	w.lastActiveChange = w.core.F
 	return nil
 }
@@ -68,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		w.lastActiveChange = c.F
 		if next == char.Index {
 			w.active = true
-			c.Tasks.Add(w.decStack(char, c.F), 240) // on field for more than 4s, start decreasing stacks
+			w.char.QueueCharTask(w.decStack(char, c.F), 240) // on field for more than 4s, start decreasing stacks
 		} else if prev == char.Index {
 			w.active = false
 			c.Tasks.Add(w.incStack(char, c.F), 60)
@@ -86,7 +91,11 @@ func (w *Weapon) decStack(c *character.CharWrapper, src int) func() {
 			if w.stacks < 0 {
 				w.stacks = 0
 			}
-			w.core.Tasks.Add(w.decStack(c, src), 60)
+			w.core.Log.NewEvent("Alley lost stack", glog.LogArtifactEvent, w.char.Index).
+				Write("stacks:", w.stacks).
+				Write("last_swap", w.lastActiveChange).
+				Write("source", src)
+			w.char.QueueCharTask(w.decStack(c, src), 60)
 		}
 	}
 }
@@ -95,6 +104,10 @@ func (w *Weapon) incStack(c *character.CharWrapper, src int) func() {
 	return func() {
 		if !w.active && w.stacks < 10 && src == w.lastActiveChange {
 			w.stacks++
+			w.core.Log.NewEvent("Alley gained stack", glog.LogArtifactEvent, w.char.Index).
+				Write("stacks:", w.stacks).
+				Write("last_swap", w.lastActiveChange).
+				Write("source", src)
 			w.core.Tasks.Add(w.incStack(c, src), 60)
 		}
 	}
