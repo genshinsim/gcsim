@@ -1,4 +1,4 @@
-package character
+package profile
 
 import (
 	"strconv"
@@ -57,6 +57,7 @@ func (c *CharacterProfile) Clone() CharacterProfile {
 
 type CharacterBase struct {
 	Key      keys.Char          `json:"key"`
+	Rarity   int                `json:"rarity"`
 	Element  attributes.Element `json:"element"`
 	Level    int                `json:"level"`
 	MaxLevel int                `json:"max_level"`
@@ -73,10 +74,22 @@ type TalentProfile struct {
 	Burst  int `json:"burst"`
 }
 
+type BodyType int
+
+const (
+	BodyBoy BodyType = iota
+	BodyGirl
+	BodyMale
+	BodyLady
+	BodyLoli
+)
+
 type ZoneType int
 
 const (
-	ZoneMondstadt ZoneType = iota
+	ZoneUnknown ZoneType = iota
+	ZoneMondstadt
 	ZoneLiyue
 	ZoneInazuma
+	ZoneSnezhnaya
 )

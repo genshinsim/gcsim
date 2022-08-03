@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const (
@@ -27,7 +27,7 @@ type char struct {
 
 // TODO: Not implemented - C6 (revival mechanic, not suitable for sim)
 // C4 - Enemy Atk reduction, not useful in this sim version
-func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 

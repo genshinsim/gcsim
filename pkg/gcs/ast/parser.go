@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -20,7 +20,7 @@ type Parser struct {
 	res *ActionList
 
 	//other information tracked as we parse
-	chars          map[keys.Char]*character.CharacterProfile
+	chars          map[keys.Char]*profile.CharacterProfile
 	charOrder      []keys.Char
 	currentCharKey keys.Char
 
@@ -33,15 +33,15 @@ type Parser struct {
 	infixParseFns  map[TokenType]func(Expr) (Expr, error)
 }
 type ActionList struct {
-	Targets     []enemy.EnemyProfile         `json:"targets"`
-	PlayerPos   core.Coord                   `json:"player_initial_pos"`
-	Characters  []character.CharacterProfile `json:"characters"`
-	InitialChar keys.Char                    `json:"initial"`
-	Program     *BlockStmt                   `json:"-"`
-	Energy      EnergySettings               `json:"energy_settings"`
-	Settings    SimulatorSettings            `json:"settings"`
-	Errors      []error                      `json:"-"` //These represents errors preventing ActionList from being executed
-	ErrorMsgs   []string                     `json:"errors"`
+	Targets     []enemy.EnemyProfile       `json:"targets"`
+	PlayerPos   core.Coord                 `json:"player_initial_pos"`
+	Characters  []profile.CharacterProfile `json:"characters"`
+	InitialChar keys.Char                  `json:"initial"`
+	Program     *BlockStmt                 `json:"-"`
+	Energy      EnergySettings             `json:"energy_settings"`
+	Settings    SimulatorSettings          `json:"settings"`
+	Errors      []error                    `json:"-"` //These represents errors preventing ActionList from being executed
+	ErrorMsgs   []string                   `json:"errors"`
 }
 
 type EnergySettings struct {
@@ -81,7 +81,7 @@ func (c *ActionList) Copy() *ActionList {
 		r.Targets[i] = v.Clone()
 	}
 
-	r.Characters = make([]character.CharacterProfile, len(c.Characters))
+	r.Characters = make([]profile.CharacterProfile, len(c.Characters))
 	for i, v := range c.Characters {
 		r.Characters[i] = v.Clone()
 	}
@@ -102,7 +102,7 @@ type parseFn func(*Parser) (parseFn, error)
 
 func New(input string) *Parser {
 	p := &Parser{
-		chars:          make(map[keys.Char]*character.CharacterProfile),
+		chars:          make(map[keys.Char]*profile.CharacterProfile),
 		prefixParseFns: make(map[TokenType]func() (Expr, error)),
 		infixParseFns:  make(map[TokenType]func(Expr) (Expr, error)),
 		token:          make([]Token, 0, 20),
