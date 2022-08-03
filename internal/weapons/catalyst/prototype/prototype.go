@@ -34,20 +34,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
+		// task for self energy gain
 		for i := 120; i <= 360; i += 120 {
-			c.Tasks.Add(func() {
+			char.QueueCharTask(func() {
 				char.AddEnergy("prototype-amber", e)
-				c.Player.Heal(player.HealInfo{
-					Caller:  char.Index,
-					Target:  -1,
-					Type:    player.HealTypePercent,
-					Message: "Prototype Amber",
-					Src:     e / 100.0,
-					Bonus:   char.Stat(attributes.Heal),
-				})
 			}, i)
 		}
-
+		// task for party heal
+		for _, x := range c.Player.Chars() {
+			this := x
+			for i := 120; i <= 360; i += 120 {
+				this.QueueCharTask(func() {
+					c.Player.Heal(player.HealInfo{
+						Caller:  char.Index,
+						Target:  this.Index,
+						Type:    player.HealTypePercent,
+						Message: "Prototype Amber",
+						Src:     e / 100.0,
+						Bonus:   char.Stat(attributes.Heal),
+					})
+				}, i)
+			}
+		}
 		return false
 	}, fmt.Sprintf("prototype-amber-%v", char.Base.Key.String()))
 
