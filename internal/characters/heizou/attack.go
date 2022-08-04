@@ -11,6 +11,8 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = [][]int{{12}, {13}, {21}, {13, 19, 27}, {31}}
+
+// assuming it's 0.02s. Please verify
 var attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0, 0.02}, {0.02}}
 var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false, true}, {true}}
 

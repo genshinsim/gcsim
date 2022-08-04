@@ -24,6 +24,9 @@ const skillCDStart = 18
 // if you hold while at 4 stacks it takes 17 extra seconds to release
 const holdAtFullStacksPenalty = 17
 
+// assuming its 0.02s, please verify
+const skillHitlagHaltFrame = 0.02
+
 func (c *char) skillHoldDuration(stacks int) int {
 	//animation duration only
 	//diff is the number of stacks we must charge up to reach the desired state
@@ -51,15 +54,18 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 	c.QueueCharTask(func() {
 		hitDelay := skillHitmark - skillCDStart
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Heartstopper Strike",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Anemo,
-			Durability: 50,
-			Mult:       skill[c.TalentLvlAttack()] + float64(c.decStack)*decBonus[c.TalentLvlAttack()],
+			ActorIndex:         c.Index,
+			Abil:               "Heartstopper Strike",
+			AttackTag:          combat.AttackTagElementalArt,
+			ICDTag:             combat.ICDTagNone,
+			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeDefault,
+			Element:            attributes.Anemo,
+			Durability:         50,
+			Mult:               skill[c.TalentLvlAttack()] + float64(c.decStack)*decBonus[c.TalentLvlAttack()],
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   skillHitlagHaltFrame * 60,
+			CanBeDefenseHalted: true,
 		}
 		AoE := 0.3
 		if c.decStack == 4 {
