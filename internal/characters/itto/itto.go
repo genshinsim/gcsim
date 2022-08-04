@@ -58,7 +58,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 
 	// used for burst stuff
 	c.burstBuffKey = burstBuffKey
-	c.burstBuffDuration = 660 + 90
+	c.burstBuffDuration = 660 + 90 + 45 // barely cover basic combo
 
 	w.Character = &c
 
@@ -106,7 +106,10 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		c.DeleteStatMod(c.burstBuffKey)
+		if c.StatModIsActive(c.burstBuffKey) {
+			c.DeleteStatMod(c.burstBuffKey)
+			c.DeleteStatMod(c.burstBuffKey + "-atkspd")
+		}
 		c.a1Stacks = -1
 		c.savedNormalCounter = 0
 		c.chargedCount = -1
