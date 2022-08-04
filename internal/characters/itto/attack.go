@@ -52,16 +52,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.NormalCounter = 0
 	}
 
-	// handle NX -> CA0/CA1/CAF frames
-	attackFrames := make([][]int, action.EndActionType)
-	if c.Tags[c.stackKey] == 0 {
-		// 0 stacks: use NX -> CA0 frames
-		copy(attackFrames, attackFrames0Stack)
-	} else {
-		// 1+ stacks: use NX -> CA1/CAF frames (they are the same here)
-		copy(attackFrames, attackFrames1PlusStack)
-	}
-
 	// Attack
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -115,6 +105,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	if amount > 0 {
 		c.changeStacks(amount)
+	}
+
+	// handle NX -> CA0/CA1/CAF frames
+	attackFrames := make([][]int, action.EndActionType)
+	if c.Tags[c.stackKey] == 0 {
+		// 0 stacks: use NX -> CA0 frames
+		copy(attackFrames, attackFrames0Stack)
+	} else {
+		// 1+ stacks: use NX -> CA1/CAF frames (they are the same here)
+		copy(attackFrames, attackFrames1PlusStack)
 	}
 
 	defer c.AdvanceNormalIndex()
