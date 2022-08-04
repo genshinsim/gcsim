@@ -11,7 +11,7 @@ const c4BuffKey = "shenhe-c4"
 
 func (c *char) c4() {
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("shenhe-c4", -1),
+		Base: modifier.NewBase("shenhe-c4-dmg", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 				return nil, false
