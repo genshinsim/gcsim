@@ -11,7 +11,7 @@ func (c *char) a4() {
 	mDmg := make([]float64, attributes.EndStatType)
 	mDmg[attributes.DmgP] = .15
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("beidou-a4", 600),
+		Base: modifier.NewBaseWithHitlag("beidou-a4-dmg", 600),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 				return nil, false
@@ -23,7 +23,7 @@ func (c *char) a4() {
 	mAtkSpd := make([]float64, attributes.EndStatType)
 	mAtkSpd[attributes.AtkSpd] = .15
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("beidou-a4", 600),
+		Base:         modifier.NewBaseWithHitlag("beidou-a4-atkspd", 600),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
 			return mAtkSpd, true
