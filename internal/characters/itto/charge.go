@@ -112,7 +112,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.chargedCount = 3 // CAF was used
 	} else {
 		// CA1/CA2 -> X
-		if c.chargedCount == 0 || c.chargedCount == 2 || c.chargedCount == 3 {
+		if c.chargedCount == -1 || c.chargedCount == 2 || c.chargedCount == 3 {
 			if c.Tags[c.stackKey] == 2 {
 				// CA1 -> CAF
 				if (lastWasItto && lastAction == action.ActionCharge) && c.chargedCount == 2 {
