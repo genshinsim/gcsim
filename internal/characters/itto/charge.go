@@ -9,107 +9,145 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var chargeFrames []int
-var chargeLongestCancel int
-var chargeHitmark int
+// 0 stacks
+var chargeFramesDefaultCA0 []int
+var chargeFramesN1CA0 []int
+var chargeFramesN2CA0 []int
+
+// 1 stack
+var chargeFramesDefaultCAF []int
+var chargeFramesCACAF []int
+var chargeFramesECAF []int
+
+// 2 stacks
+var chargeFramesDefaultCA1CAF []int
+var chargeFramesCA2CA1CAF []int
+var chargeFramesECA1CAF []int
+
+var chargeFramesDefaultCA2CAF []int
+
+// 3+ stacks
+var chargeFramesDefaultCA1CA2 []int
+var chargeFramesCA2CA1CA2 []int
+var chargeFramesECA1CA2 []int
+
+var chargeFramesDefaultCA2CA1 []int
 
 func init() {
+	// 0 stacks
+	chargeFramesDefaultCA0 = frames.InitNormalCancelSlice(89, 131)
+	chargeFramesN1CA0 = frames.InitNormalCancelSlice(89-14, 131-14)
+	chargeFramesN2CA0 = frames.InitNormalCancelSlice(89-21, 131-21)
+
+	// 1 stack
+	chargeFramesDefaultCAF = frames.InitNormalCancelSlice(71, 110)
+	chargeFramesDefaultCAF[action.ActionSkill] = 76
+	chargeFramesDefaultCAF[action.ActionBurst] = 76
+	chargeFramesDefaultCAF[action.ActionSwap] = 76
+
+	chargeFramesCACAF = frames.InitNormalCancelSlice(71-25, 110-25)
+	chargeFramesCACAF[action.ActionSkill] = 76 - 25
+	chargeFramesCACAF[action.ActionBurst] = 76 - 25
+	chargeFramesCACAF[action.ActionSwap] = 76 - 25
+
+	chargeFramesECAF = frames.InitNormalCancelSlice(71-17, 110-17)
+	chargeFramesECAF[action.ActionSkill] = 76 - 17
+	chargeFramesECAF[action.ActionBurst] = 76 - 17
+	chargeFramesECAF[action.ActionSwap] = 76 - 17
+
+	// 2 stacks
+	chargeFramesDefaultCA1CAF = frames.InitNormalCancelSlice(51, 104)
+	chargeFramesDefaultCA1CAF[action.ActionCharge] = 60
+	chargeFramesCA2CA1CAF = frames.InitNormalCancelSlice(51-28, 104-28)
+	chargeFramesCA2CA1CAF[action.ActionCharge] = 60 - 28
+	chargeFramesECA1CAF = frames.InitNormalCancelSlice(51-17, 104-17)
+	chargeFramesECA1CAF[action.ActionCharge] = 60 - 17
+
+	chargeFramesDefaultCA2CAF = frames.InitNormalCancelSlice(24, 77)
+	chargeFramesDefaultCA2CAF[action.ActionCharge] = 32
+
+	// 3+ stacks
+	chargeFramesDefaultCA1CA2 = frames.InitNormalCancelSlice(51, 104)
+	chargeFramesDefaultCA1CA2[action.ActionCharge] = 57
+	chargeFramesCA2CA1CA2 = frames.InitNormalCancelSlice(51-28, 104-28)
+	chargeFramesCA2CA1CA2[action.ActionCharge] = 57 - 28
+	chargeFramesECA1CA2 = frames.InitNormalCancelSlice(51-17, 104-17)
+	chargeFramesECA1CA2[action.ActionCharge] = 57 - 17
+
+	chargeFramesDefaultCA2CA1 = frames.InitNormalCancelSlice(24, 77)
+	chargeFramesDefaultCA2CA1[action.ActionCharge] = 29
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	lastWasItto := c.Core.Player.LastAction.Char == c.Index
 	lastAction := c.Core.Player.LastAction.Type
 
+	chargeFrames := make([]int, action.EndActionType)
 	if c.Tags[c.stackKey] == 0 {
-		// CA0 -> X
-
-		// CA0 from idle or after burst (c.NormalCounter == 0)
-		chargeLongestCancel = 131
-		chargeHitmark = 89
-
-		// CA0 is 14 frames shorter if prior action was N1/CAF/E
 		if c.NormalCounter == 1 ||
 			(lastWasItto && lastAction == action.ActionCharge && c.chargedCount == 3) ||
 			(lastWasItto && lastAction == action.ActionSkill) {
-			chargeLongestCancel -= 14
-			chargeHitmark -= 14
+			// CA0 is 14 frames shorter if prior action was N1/CAF/E
+			copy(chargeFrames, chargeFramesN1CA0)
+		} else if c.NormalCounter == 3 || c.NormalCounter == 4 {
+			// CA0 is 21 frames shorter if prior action was N2/N3
+			copy(chargeFrames, chargeFramesN2CA0)
+		} else {
+			// default
+			copy(chargeFrames, chargeFramesDefaultCA0)
 		}
-
-		// CA0 is 21 frames shorter if prior action was N2/N3
-		if c.NormalCounter == 3 || c.NormalCounter == 4 {
-			chargeLongestCancel -= 21
-			chargeHitmark -= 21
-		}
-
-		chargeFrames = frames.InitAbilSlice(chargeLongestCancel) // CA0 -> N1/E/Q
-		chargeFrames[action.ActionCharge] = 500                  // CA0 -> CA1/CAF, TODO: this action is illegal; need better way to handle it
-		chargeFrames[action.ActionDash] = chargeHitmark          // CA0 -> D
-		chargeFrames[action.ActionJump] = chargeHitmark          // CA0 -> J
-
 		c.chargedCount = 0 // CA0 was used
 	} else if c.Tags[c.stackKey] == 1 {
 		// CAF -> X
-		chargeLongestCancel = 110
-		chargeHitmark = 71
-
 		// CAF is 25 frames shorter if CA1/CA2 -> CAF
 		if (lastWasItto && lastAction == action.ActionCharge) && (c.chargedCount == 1 || c.chargedCount == 2) {
-			chargeLongestCancel -= 25
-			chargeHitmark -= 25
+			copy(chargeFrames, chargeFramesCACAF)
+		} else if lastAction == action.ActionSkill {
+			// CAF is 17 frames shorter if E -> CAF
+			copy(chargeFrames, chargeFramesECAF)
+		} else {
+			// default
+			copy(chargeFrames, chargeFramesDefaultCAF)
 		}
-		// CAF is 17 frames shorter if E -> CAF
-		if lastAction == action.ActionSkill {
-			chargeLongestCancel -= 17
-			chargeHitmark -= 17
-		}
-
-		chargeFrames = frames.InitAbilSlice(chargeLongestCancel)    // CAF -> N1/CA0 (potentially CA1 as well?)
-		chargeFrames[action.ActionSkill] = chargeLongestCancel - 34 // CAF -> E (listed 76 = 110 - 34)
-		chargeFrames[action.ActionBurst] = chargeLongestCancel - 34 // CAF -> Q (listed 76 = 110 - 34)
-		chargeFrames[action.ActionDash] = chargeHitmark             // CAF -> D
-		chargeFrames[action.ActionJump] = chargeHitmark             // CAF -> J
-		chargeFrames[action.ActionSwap] = chargeLongestCancel - 34  // CAF -> Swap (listed 76 = 110 - 34)
-
 		c.chargedCount = 3 // CAF was used
 	} else {
 		// CA1/CA2 -> X
 		if c.chargedCount == 0 || c.chargedCount == 2 || c.chargedCount == 3 {
-			// CA1 -> X
-			chargeLongestCancel = 104
-			chargeHitmark = 51
-
-			// CA1 is 28 frames shorter if CA2 -> CA1
-			if (lastWasItto && lastAction == action.ActionCharge) && c.chargedCount == 2 {
-				chargeLongestCancel -= 28
-				chargeHitmark -= 28
-			}
-			// CA1 is 17 frames shorter if E -> CA1
-			if lastAction == action.ActionSkill {
-				chargeLongestCancel -= 17
-				chargeHitmark -= 17
-			}
-
-			chargeFrames = frames.InitNormalCancelSlice(chargeHitmark, chargeLongestCancel)
 			if c.Tags[c.stackKey] == 2 {
-				chargeFrames[action.ActionCharge] = chargeLongestCancel - 44 // CA1 -> CAF (listed 60 = 104 - 44)
+				// CA1 -> CAF
+				if (lastWasItto && lastAction == action.ActionCharge) && c.chargedCount == 2 {
+					// CA1 is 28 frames shorter if CA2 -> CA1
+					copy(chargeFrames, chargeFramesCA2CA1CAF)
+				} else if lastAction == action.ActionSkill {
+					// CA1 is 17 frames shorter if E -> CA1
+					copy(chargeFrames, chargeFramesECA1CAF)
+				} else {
+					// default
+					copy(chargeFrames, chargeFramesDefaultCA1CAF)
+				}
 			} else {
-				// next CA has to be CA1
-				chargeFrames[action.ActionCharge] = chargeLongestCancel - 47 // CA1 -> CA2 (listed 57 = 104 - 47)
+				// CA1 -> CA2
+				if (lastWasItto && lastAction == action.ActionCharge) && c.chargedCount == 2 {
+					// CA1 is 28 frames shorter if CA2 -> CA1
+					copy(chargeFrames, chargeFramesCA2CA1CA2)
+				} else if lastAction == action.ActionSkill {
+					// CA1 is 17 frames shorter if E -> CA1
+					copy(chargeFrames, chargeFramesECA1CA2)
+				} else {
+					// default
+					copy(chargeFrames, chargeFramesDefaultCA1CA2)
+				}
 			}
 			c.chargedCount = 1 // CA1 was used
 		} else {
 			// CA2 -> X
-			chargeLongestCancel = 77
-			chargeHitmark = 24
-			chargeFrames = frames.InitNormalCancelSlice(chargeHitmark, chargeLongestCancel)
 			if c.Tags[c.stackKey] == 2 {
-				// next CA has to be CAF
-				chargeFrames[action.ActionCharge] = 32 // CA2 -> CAF
+				// CA2 -> CAF
+				copy(chargeFrames, chargeFramesDefaultCA2CAF)
 			} else {
-				// next CA has to be CA1
-				chargeFrames[action.ActionCharge] = 29 // CA2 -> CA1
+				// CA2 -> CA1
+				copy(chargeFrames, chargeFramesDefaultCA2CA1)
 			}
-
 			c.chargedCount = 2 // CA2 was used
 		}
 	}
@@ -175,7 +213,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: Does Itto CA snapshot at the start of CA?
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(r, false, combat.TargettableEnemy), 0, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(r, false, combat.TargettableEnemy), 0, chargeFrames[action.ActionDash])
 
 	// handle A1
 	c.a1Update()
@@ -190,7 +228,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		CanQueueAfter:   chargeFrames[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}
 }

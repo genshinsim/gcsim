@@ -46,6 +46,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/ganyu"
 	_ "github.com/genshinsim/gcsim/internal/characters/gorou"
 	_ "github.com/genshinsim/gcsim/internal/characters/hutao"
+	_ "github.com/genshinsim/gcsim/internal/characters/itto"
 	_ "github.com/genshinsim/gcsim/internal/characters/jean"
 	_ "github.com/genshinsim/gcsim/internal/characters/kaeya"
 	_ "github.com/genshinsim/gcsim/internal/characters/kazuha"

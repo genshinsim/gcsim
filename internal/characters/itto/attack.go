@@ -9,19 +9,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
+var attackFrames0Stack [][]int
+var attackFrames1PlusStack [][]int
 var attackHitmarks = []int{23, 25, 16, 48}
 var attackHitlagHaltFrame = []float64{0.08, 0.08, 0.10, 0.10}
 
 const normalHitNum = 4
 
 func init() {
-	attackFrames = make([][]int, normalHitNum)
-	// NX -> CA frames get set in the Attack function, because what CA is used depends on stack count
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 36) // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N4
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
+	attackFrames0Stack = make([][]int, normalHitNum)
+	attackFrames0Stack[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2
+	attackFrames0Stack[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 36) // N2 -> N3
+	attackFrames0Stack[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N4
+	attackFrames0Stack[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
+
+	attackFrames0Stack[0][action.ActionCharge] = 41  // N1 -> CA0
+	attackFrames0Stack[1][action.ActionCharge] = 51  // N2 -> CA0
+	attackFrames0Stack[2][action.ActionCharge] = 57  // N3 -> CA0
+	attackFrames0Stack[3][action.ActionCharge] = 500 // N4 -> CA0, TODO: this action is illegal; need better way to handle it
+
+	attackFrames1PlusStack = make([][]int, normalHitNum)
+	attackFrames1PlusStack[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2
+	attackFrames1PlusStack[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 36) // N2 -> N3
+	attackFrames1PlusStack[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N4
+	attackFrames1PlusStack[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
+
+	attackFrames1PlusStack[0][action.ActionCharge] = 23 // N1 -> CA1/CAF
+	attackFrames1PlusStack[1][action.ActionCharge] = 27 // N2 -> CA1/CAF
+	attackFrames1PlusStack[2][action.ActionCharge] = 21 // N3 -> CA1/CAF
+	attackFrames1PlusStack[3][action.ActionCharge] = 52 // N4 -> CA1/CAF
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
@@ -37,18 +53,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	// handle NX -> CA0/CA1/CAF frames
+	attackFrames := make([][]int, action.EndActionType)
 	if c.Tags[c.stackKey] == 0 {
 		// 0 stacks: use NX -> CA0 frames
-		attackFrames[0][action.ActionCharge] = 41  // N1 -> CA0
-		attackFrames[1][action.ActionCharge] = 51  // N2 -> CA0
-		attackFrames[2][action.ActionCharge] = 57  // N3 -> CA0
-		attackFrames[3][action.ActionCharge] = 500 // N4 -> CA0, TODO: this action is illegal; need better way to handle it
+		copy(attackFrames, attackFrames0Stack)
 	} else {
 		// 1+ stacks: use NX -> CA1/CAF frames (they are the same here)
-		attackFrames[0][action.ActionCharge] = 23 // N1 -> CA1/CAF
-		attackFrames[1][action.ActionCharge] = 27 // N2 -> CA1/CAF
-		attackFrames[2][action.ActionCharge] = 21 // N3 -> CA1/CAF
-		attackFrames[3][action.ActionCharge] = 52 // N4 -> CA1/CAF
+		copy(attackFrames, attackFrames1PlusStack)
 	}
 
 	// Attack
