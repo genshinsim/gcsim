@@ -10,12 +10,12 @@ import (
 //increase the DMG dealt by Kaedehara Kazuha's Normal, Charged, and Plunging
 //Attacks by 0.2%.
 func (c *char) c6() {
-	c.AddStatus(c6BuffKey, burstAnimation+300, true)
+	c.AddStatus(c6BuffKey, 60*5, true)
 	c.Core.Player.AddWeaponInfuse(
 		c.Index,
 		"kazuha-c6-infusion",
 		attributes.Anemo,
-		burstAnimation+300,
+		60*5,
 		true,
 		combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
 	)
