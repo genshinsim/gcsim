@@ -236,7 +236,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 					return 32
 				}
 			}
-			return chargeFrames[c.slashState][next] - windup
+			return frames.AtkSpdAdjust(chargeFrames[c.slashState][next]-windup, c.Stat(attributes.AtkSpd))
 		},
 		AnimationLength: chargeFrames[c.slashState][action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmarks[c.slashState] - windup,
