@@ -39,15 +39,21 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	mult := defconv[c.TalentLvlBurst()]
 
 	// TODO: Confirm exact timing of buff - for now matched to status duration previously set, which is 900 + animation frames
-	// Buff lasts 11.55s after anim, padded to cover basic combo
+	// padded to cover basic combo
+	burstDur := burstAnimation + 840 // ~15.5s.
+
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATK] = mult * burstDefSnapshot
 	m[attributes.AtkSpd] = .10
-	burstDur := burstAnimation + 11*60
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstBuffKey, burstDur),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
+			if c.Core.Player.CurrentState() == action.NormalAttackState {
+				m[attributes.AtkSpd] = .10
+				return m, true
+			}
+			m[attributes.AtkSpd] = 0
 			return m, true
 		},
 	})

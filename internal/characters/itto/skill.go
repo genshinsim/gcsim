@@ -29,15 +29,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	//deal damage when created
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Ushi Throw",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
+		ActorIndex:       c.Index,
+		Abil:             "Masatsu Zetsugi: Akaushi Burst!",
+		AttackTag:        combat.AttackTagElementalArt,
+		ICDTag:           combat.ICDTagElementalArt,
+		ICDGroup:         combat.ICDGroupDefault,
+		StrikeType:       combat.StrikeTypeBlunt,
+		Element:          attributes.Geo,
+		Durability:       25,
+		HitlagHaltFrames: 0.02 * 60,
+		HitlagFactor:     0.01,
+		IsDeployable:     true,
+		Mult:             skill[c.TalentLvlSkill()],
 	}
 
 	// assume ushi spawn on hitmark not including travel
@@ -52,9 +55,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		done = true
 
-		// Assume that Ushi always hits for a stack
-		c.addStrStack(1)
-
 		var count float64 = 3
 		if c.Core.Rand.Float64() < 0.33 {
 			count = 4
@@ -63,6 +63,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	// TODO: snapshot timing
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark+travel, hitcb)
+
+	// Assume that Ushi always hits for a stack
+	c.addStrStack(1)
 
 	c.SetCDWithDelay(action.ActionSkill, 10*60, 14)
 

@@ -67,8 +67,8 @@ const (
 
 var slashName = []string{
 	"Saichimonji Slash",
-	"Arataki Kesagiri Left Slash",
-	"Arataki Kesagiri Right Slash",
+	"Arataki Kesagiri Combo Slash Left",
+	"Arataki Kesagiri Combo Slash Right",
 	"Arataki Kesagiri Final Slash",
 }
 
@@ -213,7 +213,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
-		chargeHitmarks[c.slashState]-windup,
+		0,
 		chargeHitmarks[c.slashState]-windup,
 	)
 
