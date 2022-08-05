@@ -56,6 +56,10 @@ func (c *char) c2() func() {
 // 	all nearby party members gain 20% DEF and 20% ATK for 10s.
 func (c *char) c4() func() {
 	return func() {
+		if c.c4Applied {
+			return
+		}
+		c.c4Applied = true
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DEFP] = 0.2
 		m[attributes.ATKP] = 0.2

@@ -99,6 +99,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	if c.Base.Cons >= 4 {
+		c.c4Applied = false
 		c.QueueCharTask(c.c4(), c.burstBuffDuration)
 	}
 

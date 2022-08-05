@@ -26,6 +26,7 @@ type char struct {
 	a1Stacks           int
 	stacksConsumed     int
 	c1GeoMemberCount   int
+	c4Applied          bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
@@ -62,6 +63,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	// used for burst stuff
 	c.burstBuffKey = burstBuffKey
 	c.burstBuffDuration = 660 + 90 + 45 // barely cover basic combo
+
+	// constellation stuff
+	c.c1GeoMemberCount = 0
+	c.c4Applied = false
 
 	w.Character = &c
 
@@ -125,10 +130,11 @@ func (c *char) onExitField() {
 			c.DeleteStatMod(c.burstBuffKey)
 			c.DeleteStatMod(c.burstBuffKey + "-atkspd")
 		}
-		c.a1Stacks = 0
 		c.savedNormalCounter = 0
 		c.chargedCount = -1
 		c.stacksConsumed = 1
+		c.a1Stacks = 0
+		c.c4()
 		return false
 	}, "itto-exit")
 }
