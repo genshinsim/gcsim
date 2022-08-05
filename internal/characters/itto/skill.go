@@ -63,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Assume that Ushi always hits for a stack
 	c.Core.Tasks.Add(func() {
 		c.changeStacks(1)
-		c.Core.Log.NewEvent("itto ushi stack gained", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("itto ushi stack gained on hit", glog.LogCharacterEvent, c.Index).
 			Write("stacks", c.Tags[c.stackKey])
 	}, hitmark)
 

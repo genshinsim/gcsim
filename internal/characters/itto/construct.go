@@ -2,6 +2,7 @@ package itto
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 type ushi struct {
@@ -11,10 +12,9 @@ type ushi struct {
 }
 
 func (u *ushi) OnDestruct() {
-	u.char.Tags[u.char.stackKey] += 1
-	if u.char.Tags[u.char.stackKey] > 5 {
-		u.char.Tags[u.char.stackKey] = 5
-	}
+	u.char.changeStacks(1)
+	u.char.Core.Log.NewEvent("itto ushi stack gained on exit", glog.LogCharacterEvent, u.char.Index).
+		Write("stacks", u.char.Tags[u.char.stackKey])
 }
 
 func (u *ushi) Key() int                         { return u.src }
