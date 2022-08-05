@@ -24,6 +24,7 @@ type char struct {
 	burstBuffDuration  int
 	stackKey           string
 	a1Stacks           int
+	stacksConsumed     int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
@@ -43,7 +44,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c.savedNormalCounter = c.NormalCounter
 
 	// needed to determine A1 buff
-	c.a1Stacks = -1
+	c.a1Stacks = 0
 
 	// needed to keep track of Superlative Strength stacks for CAs
 	c.stackKey = "strStack"
@@ -55,6 +56,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	// 2 = "Arataki Kesagiri Combo Slash Right"
 	// 3 = "Arataki Kesagiri Final Slash"
 	c.chargedCount = -1
+	c.stacksConsumed = 1
 
 	// used for burst stuff
 	c.burstBuffKey = burstBuffKey
@@ -110,9 +112,10 @@ func (c *char) onExitField() {
 			c.DeleteStatMod(c.burstBuffKey)
 			c.DeleteStatMod(c.burstBuffKey + "-atkspd")
 		}
-		c.a1Stacks = -1
+		c.a1Stacks = 0
 		c.savedNormalCounter = 0
 		c.chargedCount = -1
+		c.stacksConsumed = 1
 		return false
 	}, "itto-exit")
 }
