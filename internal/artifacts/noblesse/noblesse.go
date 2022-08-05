@@ -61,7 +61,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		const buffKey = "nob-4pc"
 		buffDuration := 720 // 12s * 60
-		s.nob2buff = make([]float64, attributes.EndStatType)
+		s.nob4buff = make([]float64, attributes.EndStatType)
 		s.nob4buff[attributes.ATKP] = 0.2
 		s.charIsSpecialCase = specialChars[char.Base.Key]
 
