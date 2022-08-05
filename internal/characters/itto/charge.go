@@ -209,9 +209,9 @@ func (c *char) chargeState(lastWasItto bool, lastAction action.Action) IttoCharg
 	return state
 }
 
-func (c *char) checkStacksConsumedReset(lastWasItto bool, lastAction action.Action) {
+func (c *char) checkReset(lastWasItto bool, lastAction action.Action) {
 	if !(lastWasItto && lastAction == action.ActionCharge) {
-		// reset stacks consumed if previous action wasn't a CA
+		// reset stacks consumed and a1 stacks if previous action wasn't a CA
 		c.stacksConsumed = 1
 		c.a1Stacks = 0
 		c.Core.Log.NewEvent("itto-a1 atk spd stacks reset from Charge", glog.LogCharacterEvent, c.Index).
@@ -223,8 +223,10 @@ func (c *char) checkStacksConsumedReset(lastWasItto bool, lastAction action.Acti
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	lastWasItto := c.Core.Player.LastAction.Char == c.Index
 	lastAction := c.Core.Player.LastAction.Type
-	// handle CA hitlag based on stacks used
-	c.checkStacksConsumedReset(lastWasItto, lastAction)
+
+	// handle stacks used reset and a1 stack reset
+	c.checkReset(lastWasItto, lastAction)
+
 	// handle different CA frames
 	state := c.chargeState(lastWasItto, lastAction)
 
@@ -277,6 +279,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.a4(&ai)
 	} else {
 		// Arataki Kesagiri Combo Slash
+		// handle CA hitlag based on amount of stacks consumed
 		if c.stacksConsumed == 1 {
 			ai.HitlagHaltFrames = 0.07 * 60
 		} else if c.stacksConsumed == 2 {
@@ -299,9 +302,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.c6StackHandler()
 	} else {
 		c.changeStacks(-1)
+		// only update if a stack was actually consumed
+		c.stacksConsumed++
 	}
-
-	c.stacksConsumed++
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
