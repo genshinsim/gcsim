@@ -116,8 +116,8 @@ func (c *char) determineChargeForCA0(lastWasItto bool, lastAction action.Action)
 
 func (c *char) determineChargeForCAF(lastWasItto bool, lastAction action.Action) IttoChargeState {
 	// CAF -> X
-	// CAF is 25 frames shorter if CA1/CA2 -> CAF
 	if (lastWasItto && lastAction == action.ActionCharge) && (c.chargedCount == 1 || c.chargedCount == 2) {
+		// CAF is 25 frames shorter if CA1/CA2 -> CAF
 		return CA1CA2ToCAF
 	}
 	if lastWasItto && lastAction == action.ActionSkill {
@@ -186,6 +186,7 @@ func (c *char) chargeState() IttoChargeState {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+	// handle different CA frames
 	state := c.chargeState()
 
 	// check burst status for radius
