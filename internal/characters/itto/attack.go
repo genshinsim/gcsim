@@ -14,7 +14,18 @@ var attackFrames1PlusStack [][]int
 var attackHitmarks = []int{23, 25, 16, 48}
 var attackHitlagHaltFrame = []float64{0.08, 0.08, 0.10, 0.10}
 
+var attackFrames [][][]int
+
 const normalHitNum = 4
+
+type IttoAttackState int
+
+const (
+	InvalidAttackState IttoAttackState = iota - 1
+	attack0Stacks
+	attack1PlusStacks
+	attackEndState
+)
 
 func init() {
 	attackFrames0Stack = make([][]int, normalHitNum)
@@ -38,6 +49,22 @@ func init() {
 	attackFrames1PlusStack[1][action.ActionCharge] = 27 // N2 -> CA1/CAF
 	attackFrames1PlusStack[2][action.ActionCharge] = 21 // N3 -> CA1/CAF
 	attackFrames1PlusStack[3][action.ActionCharge] = 52 // N4 -> CA1/CAF
+
+	attackFrames = make([][][]int, attackEndState)
+	attackFrames[attack0Stacks] = attackFrames0Stack
+	attackFrames[attack1PlusStacks] = attackFrames1PlusStack
+}
+
+func (c *char) attackState() IttoAttackState {
+	state := InvalidAttackState
+	if c.Tags[c.stackKey] == 0 {
+		// 0 stacks: use NX -> CA0 frames
+		state = attack0Stacks
+	} else {
+		// 1+ stacks: use NX -> CA1/CAF frames (they are the same here)
+		state = attack1PlusStacks
+	}
+	return state
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
@@ -108,14 +135,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	// handle NX -> CA0/CA1/CAF frames
-	attackFrames := make([][]int, action.EndActionType)
-	if c.Tags[c.stackKey] == 0 {
-		// 0 stacks: use NX -> CA0 frames
-		copy(attackFrames, attackFrames0Stack)
-	} else {
-		// 1+ stacks: use NX -> CA1/CAF frames (they are the same here)
-		copy(attackFrames, attackFrames1PlusStack)
-	}
+	state := c.attackState()
 
 	defer c.AdvanceNormalIndex()
 
@@ -126,8 +146,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	return action.ActionInfo{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames[state]),
+		AnimationLength: attackFrames[state][c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}

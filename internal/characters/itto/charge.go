@@ -38,7 +38,7 @@ var chargeFrames [][]int
 type IttoChargeState int
 
 const (
-	InvalidState IttoChargeState = iota - 1
+	InvalidChargeState IttoChargeState = iota - 1
 	defaultToCA0
 	n1CAFeToCA0
 	n2n3ToCA0
@@ -48,7 +48,7 @@ const (
 	eToCAF
 
 	defaultToCA1ToCAF
-	ca2ToCA1ToCAF
+	CA2ToCA1ToCAF
 	eToCA1ToCAF
 
 	defaultToCA2ToCAF
@@ -59,7 +59,7 @@ const (
 
 	defaultToCA2ToCA1
 
-	endState
+	chargeEndState
 )
 
 func init() {
@@ -108,7 +108,7 @@ func init() {
 	chargeFramesDefaultCA2CA1 = frames.InitNormalCancelSlice(24, 77)
 	chargeFramesDefaultCA2CA1[action.ActionCharge] = 29
 
-	chargeFrames = make([][]int, endState)
+	chargeFrames = make([][]int, chargeEndState)
 	chargeFrames[defaultToCA0] = chargeFramesDefaultCA0
 	chargeFrames[n1CAFeToCA0] = chargeFramesN1CA0
 	chargeFrames[n2n3ToCA0] = chargeFramesN2CA0
@@ -118,7 +118,7 @@ func init() {
 	chargeFrames[eToCAF] = chargeFramesECAF
 
 	chargeFrames[defaultToCA1ToCAF] = chargeFramesDefaultCA1CAF
-	chargeFrames[ca2ToCA1ToCAF] = chargeFramesCA2CA1CAF
+	chargeFrames[CA2ToCA1ToCAF] = chargeFramesCA2CA1CAF
 	chargeFrames[eToCA1ToCAF] = chargeFramesECA1CAF
 
 	chargeFrames[defaultToCA2ToCAF] = chargeFramesDefaultCA2CAF
@@ -130,24 +130,8 @@ func init() {
 	chargeFrames[defaultToCA2ToCA1] = chargeFramesDefaultCA2CA1
 }
 
-func (c *char) chargeState() IttoChargeState {
-	lastWasItto := c.Core.Player.LastAction.Char == c.Index
-	lastAction := c.Core.Player.LastAction.Type
-	if c.Tags[c.stackKey] == 0 {
-		return c.determineChargeForCA0(lastWasItto, lastAction)
-	} else if c.Tags[c.stackKey] == 1 {
-		return c.determineChargeForCAF(lastWasItto, lastAction)
-	} else {
-		if c.chargedCount == -1 || c.chargedCount == 2 || c.chargedCount == 3 {
-			return c.determineChargeForCA1(lastWasItto, lastAction)
-		} else {
-			return c.determineChargeForCA2(lastWasItto, lastAction)
-		}
-	}
-}
-
 func (c *char) determineChargeForCA0(lastWasItto bool, lastAction action.Action) IttoChargeState {
-	state := InvalidState
+	state := InvalidChargeState
 	if c.NormalCounter == 1 ||
 		(lastWasItto && lastAction == action.ActionCharge && c.chargedCount == 3) ||
 		(lastWasItto && lastAction == action.ActionSkill) {
@@ -165,7 +149,7 @@ func (c *char) determineChargeForCA0(lastWasItto bool, lastAction action.Action)
 }
 
 func (c *char) determineChargeForCAF(lastWasItto bool, lastAction action.Action) IttoChargeState {
-	state := InvalidState
+	state := InvalidChargeState
 	// CAF -> X
 	// CAF is 25 frames shorter if CA1/CA2 -> CAF
 	if (lastWasItto && lastAction == action.ActionCharge) && (c.chargedCount == 1 || c.chargedCount == 2) {
@@ -182,12 +166,12 @@ func (c *char) determineChargeForCAF(lastWasItto bool, lastAction action.Action)
 }
 
 func (c *char) determineChargeForCA1(lastWasItto bool, lastAction action.Action) IttoChargeState {
-	state := InvalidState
+	state := InvalidChargeState
 	if c.Tags[c.stackKey] == 2 {
 		// CA1 -> CAF
 		if (lastWasItto && lastAction == action.ActionCharge) && c.chargedCount == 2 {
 			// CA1 is 28 frames shorter if CA2 -> CA1
-			state = ca2ToCA1ToCAF
+			state = CA2ToCA1ToCAF
 		} else if lastAction == action.ActionSkill {
 			// CA1 is 17 frames shorter if E -> CA1
 			state = eToCA1ToCAF
@@ -212,8 +196,24 @@ func (c *char) determineChargeForCA1(lastWasItto bool, lastAction action.Action)
 	return state
 }
 
+func (c *char) chargeState() IttoChargeState {
+	lastWasItto := c.Core.Player.LastAction.Char == c.Index
+	lastAction := c.Core.Player.LastAction.Type
+	if c.Tags[c.stackKey] == 0 {
+		return c.determineChargeForCA0(lastWasItto, lastAction)
+	} else if c.Tags[c.stackKey] == 1 {
+		return c.determineChargeForCAF(lastWasItto, lastAction)
+	} else {
+		if c.chargedCount == -1 || c.chargedCount == 2 || c.chargedCount == 3 {
+			return c.determineChargeForCA1(lastWasItto, lastAction)
+		} else {
+			return c.determineChargeForCA2(lastWasItto, lastAction)
+		}
+	}
+}
+
 func (c *char) determineChargeForCA2(lastWasItto bool, lastAction action.Action) IttoChargeState {
-	state := InvalidState
+	state := InvalidChargeState
 	// CA2 -> X
 	if c.Tags[c.stackKey] == 2 {
 		// CA2 -> CAF
