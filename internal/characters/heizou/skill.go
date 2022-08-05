@@ -71,7 +71,6 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 		if c.decStack == 4 {
 			ai.Mult += convicBonus[c.TalentLvlAttack()]
 			AoE = 1
-			c.Core.QueueParticle("heizou", 4, attributes.Cryo, 15+c.Core.Flags.ParticleDelay)
 		}
 
 		skillCB := func(a combat.AttackCB) {
@@ -91,14 +90,14 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 		case 4:
 			count++
 		}
-		c.Core.QueueParticle("heizou", count, attributes.Anemo, hitDelay+100)
+		c.Core.QueueParticle("heizou", count, attributes.Anemo, hitDelay+c.Core.Flags.ParticleDelay)
 
 	}, skillCDStart+delay)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return delay + skillEndFrames[next] + skillHitmark },
 		AnimationLength: delay + skillEndFrames[action.InvalidAction] + skillHitmark,
-		CanQueueAfter:   delay + skillEndFrames[action.ActionDash] + skillHitmark, // earliest cancel
+		CanQueueAfter:   delay + skillEndFrames[action.ActionSwap] + skillHitmark, // earliest cancel
 		State:           action.SkillState,
 	}
 }

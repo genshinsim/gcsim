@@ -19,6 +19,9 @@ func (c *char) a1() {
 			if atk.Info.ActorIndex != c.Index {
 				return false
 			}
+			if c.Core.Player.Active() != c.Index {
+				return false
+			}
 			switch atk.Info.AttackTag {
 			case combat.AttackTagSwirlPyro:
 			case combat.AttackTagSwirlHydro:
@@ -40,7 +43,6 @@ func (c *char) a1() {
 func (c *char) a4() {
 
 	dur := 60 * 10
-	c.AddStatus("heizoua4", dur, true)
 
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
