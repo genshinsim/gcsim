@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var chargeFrames [][]int
@@ -200,7 +201,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// A4: Arataki Kesagiri DMG is increased by 35% of Arataki Itto's DEF.
 	if c.slashState != SaichiSlash {
-		ai.FlatDmg = 0.35*c.Base.Def*(1+c.Stat(attributes.DEFP)) + c.Stat(attributes.DEF)
+		ai.FlatDmg = (c.Base.Def*(1+c.Stat(attributes.DEFP)) + c.Stat(attributes.DEF)) * 0.35
+		c.Core.Log.NewEvent("itto-a4 applied", glog.LogCharacterEvent, c.Index)
 	}
 
 	// Unsure of range, it's huge though
@@ -219,6 +221,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	if c.Base.Cons < 6 || c.Core.Rand.Float64() < 0.5 {
 		c.addStrStack(-1)
 	}
+
+	// increase atkspd
+	c.a1Update(c.slashState)
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {

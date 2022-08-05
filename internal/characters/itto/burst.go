@@ -56,14 +56,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Write("atk added", m[attributes.ATK]).
 		Write("mult", mult)
 
-	// After using Royal Descent: Behold, Itto the Evil!, Arataki Itto gains 2 stacks of Superlative Superstrength.
-	// After 1s, Itto will gain 1 stack of Superlative Superstrength every 0.5s for 1.5s.
 	if c.Base.Cons >= 1 {
-		c.addStrStack(2)
-		// TODO: why is this 140?
-		for i := 140; i <= 200; i += 30 {
-			c.Core.Tasks.Add(func() { c.addStrStack(1) }, i)
-		}
+		// TODO: add link to itto-c1-mechanics tcl entry later
+		// this is before Q animation is done, so no need for char queue
+		// 75 is a rough count for when Itto gains the 2 stacks from C1
+		c.Core.Tasks.Add(c.c1, 75)
 	}
 
 	// apply when burst ends

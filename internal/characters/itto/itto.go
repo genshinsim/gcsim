@@ -30,6 +30,7 @@ type char struct {
 	slashState     SlashType
 	applyC4        bool
 	burstCastF     int
+	a1Stacks       int
 	stacksConsumed int
 }
 
@@ -54,6 +55,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	c.a1()
 	c.onExitField()
 	c.resetChargeState()
 	if c.Base.Cons >= 2 {
@@ -130,6 +132,7 @@ func (c *char) resetChargeState() {
 
 		if act != action.ActionCharge {
 			c.slashState = InvalidSlash
+			c.a1Stacks = 0
 			c.stacksConsumed = 0
 		}
 

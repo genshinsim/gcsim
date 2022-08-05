@@ -7,6 +7,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+// C1:
+// After using Royal Descent: Behold, Itto the Evil!, Arataki Itto gains 2 stacks of Superlative Superstrength.
+// After 1s, Itto will gain 1 stack of Superlative Superstrength every 0.5s for 1.5s.
+// TODO: add link to itto-c1-mechanics tcl entry later
+func (c *char) c1() {
+	// gain 2 initial stacks around 75f after pressing Q
+	c.addStrStack(2)
+	// "After 1s" refers to 1s after gaining the initial 2 stacks, so queue up the stacks properly
+	for i := 60; i <= 120; i += 30 {
+		c.QueueCharTask(func() { c.addStrStack(1) }, i)
+	}
+}
+
 // copied from raiden c4
 // When the Raging Oni King state caused by Royal Descent: Behold, Itto the Evil! ends,
 // all nearby party members gain 20% DEF and 20% ATK for 10s.
