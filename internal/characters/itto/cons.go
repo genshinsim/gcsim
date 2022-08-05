@@ -95,6 +95,8 @@ func (c *char) c6ChargedCritDMG() {
 func (c *char) c6StackHandler() {
 	if c.Core.Rand.Float64() < 0.5 {
 		c.changeStacks(-1)
+		// only update if a stack was actually consumed
+		c.stacksConsumed++
 	} else {
 		c.Core.Log.NewEvent("itto-c6 proc'd", glog.LogCharacterEvent, c.Index).
 			Write("stacks", c.Tags[c.stackKey])
