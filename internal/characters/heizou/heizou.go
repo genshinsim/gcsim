@@ -1,4 +1,4 @@
-package hutao
+package heizou
 
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
@@ -12,27 +12,35 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Hutao, NewChar)
+	core.RegisterCharFunc(keys.Heizou, NewChar)
 }
 
 type char struct {
 	*tmpl.Character
-	paraParticleICD int
-	ppBonus         float64
-	tickActive      bool
-	applyA1         bool
-	c6icd           int
+	decStack            int
+	infuseCheckLocation combat.AttackPattern
+	a1icd               int
+	c1icd               int
+	c1buff              []float64
+	a4buff              []float64
+	burstTaggedCount    int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Pyro
-	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassSpear
+	c.Base.Element = attributes.Anemo
+
+	c.EnergyMax = 40
+	c.Weapon.Class = weapon.WeaponClassCatalyst
 	c.NormalHitNum = normalHitNum
-	c.CharZone = character.ZoneLiyue
+	c.SkillCon = 3
+	c.BurstCon = 5
+	c.a1icd = -1
+	c.c1icd = -1
+
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy)
 
 	w.Character = &c
 
@@ -40,9 +48,18 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 }
 
 func (c *char) Init() error {
-	c.ppHook()
-	c.onExitField()
-	c.a4()
+
+	c.a1()
+
+	c.a4buff = make([]float64, attributes.EndStatType)
+	c.a4buff[attributes.EM] = 80
+
+	if c.Base.Cons >= 1 {
+		c.c1buff = make([]float64, attributes.EndStatType)
+		c.c1buff[attributes.AtkSpd] = .15
+		c.c1()
+	}
+
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
@@ -52,25 +69,7 @@ func (c *char) Init() error {
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.Core.Status.Duration("paramita") > 0 && c.Base.Cons >= 1 {
-			return 0
-		}
 		return 25
 	}
 	return c.Character.ActionStam(a, p)
-}
-
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
-	ds := c.Character.Snapshot(ai)
-
-	if c.Core.Status.Duration("paramita") > 0 {
-		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
-		default:
-			return ds
-		}
-		ai.Element = attributes.Pyro
-	}
-	return ds
 }

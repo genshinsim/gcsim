@@ -66,6 +66,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		cd = 324
 	}
 	if c.Base.Cons >= 6 {
+		// TODO: when does the infusion kick in?
 		c.c6()
 	}
 

@@ -19,7 +19,6 @@ func init() {
 
 type Set struct {
 	stacks int
-	HPicd  int
 	core   *core.Core
 	char   *character.CharWrapper
 	buff   []float64
@@ -61,6 +60,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	//character leaves the field. If an Elemental Burst is used again during the
 	//duration of Nascent Light, the original Nascent Light will be dispelled.
 	if count >= 4 {
+		const icdKey = "verm-4pc-icd"
+		icd := 48
+
 		s.buff = make([]float64, attributes.EndStatType)
 
 		//TODO: this used to be post. need to check
@@ -88,14 +90,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if !char.StatModIsActive(verm4pckey) {
 				return false
 			}
-			if s.HPicd > c.F {
+			if char.StatusIsActive(icdKey) {
 				return false
 			}
 			if s.stacks == 4 {
 				return false
 			}
 			s.stacks++
-			s.HPicd = c.F + 48 //0.8s lockout
+			char.AddStatus(icdKey, icd, true)
 			s.updateBuff()
 			c.Log.NewEvent("Vermillion stack gained", glog.LogArtifactEvent, char.Index).Write("stacks", s.stacks)
 

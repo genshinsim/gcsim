@@ -28,7 +28,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	stacks := 0
-	dur := 0
+	const stackKey = "mappa-mare-stacks"
+	stackDuration := 600 // 10s * 60
 
 	addStack := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -39,17 +40,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
-		if c.F > dur {
+		if !char.StatusIsActive(stackKey) {
 			stacks = 1
-			dur = c.F + 600
+			char.AddStatus(stackKey, stackDuration, true)
 			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index).
 				Write("stacks", stacks).
-				Write("expiry", dur)
+				Write("expiry (without hitlag)", c.F+stackDuration)
 		} else if stacks < 2 {
 			stacks++
+			char.AddStatus(stackKey, stackDuration, true)
 			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index).
 				Write("stacks", stacks).
-				Write("expiry", dur)
+				Write("expiry (without hitlag)", c.F+stackDuration)
 		}
 		return false
 	}
@@ -64,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Base:         modifier.NewBase("mappa", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
-			if c.F > dur {
+			if !char.StatusIsActive(stackKey) {
 				return nil, false
 			}
 

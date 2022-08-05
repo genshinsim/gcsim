@@ -11,17 +11,15 @@ import (
 
 var burstFrames []int
 
-const burstAnimation = 100
-const burstHitmark = 82
-const burstFirstTick = 140
+const (
+	burstHitmark   = 82
+	burstAnimation = 92
+	burstFirstTick = 140
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(burstAnimation)
-	burstFrames[action.ActionAttack] = 92
-	burstFrames[action.ActionSkill] = 92
-	burstFrames[action.ActionDash] = 92
-	burstFrames[action.ActionJump] = 92
-	burstFrames[action.ActionSwap] = 95
+	burstFrames[action.ActionSwap] = 91
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -107,11 +105,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}, burstHitmark+5)
 
 	//reset skill cd
-	if c.Base.Cons > 0 {
+	if c.Base.Cons >= 1 {
 		c.ResetActionCooldown(action.ActionSkill)
 	}
 
-	if c.Base.Cons == 6 {
+	if c.Base.Cons >= 6 {
+		// TODO: when does the infusion kick in?
 		c.c6()
 	}
 
@@ -121,7 +120,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstAnimation,
-		CanQueueAfter:   burstFrames[action.InvalidAction],
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

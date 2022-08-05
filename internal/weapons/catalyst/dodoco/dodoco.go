@@ -44,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		switch atk.Info.AttackTag {
 		case combat.AttackTagNormal:
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("dodoco-ca", 360),
+				Base: modifier.NewBaseWithHitlag("dodoco-ca", 360),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != combat.AttackTagExtra {
 						return nil, false
@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			})
 		case combat.AttackTagExtra:
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("dodoco atk", 360),
+				Base:         modifier.NewBaseWithHitlag("dodoco-atk", 360),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return n, true

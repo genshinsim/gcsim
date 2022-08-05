@@ -11,6 +11,7 @@ func InitNormalCancelSlice(hitmark, animation int) []int {
 	for i := range t {
 		t[i] = animation
 	}
+	t[action.ActionAim] = hitmark
 	t[action.ActionSkill] = hitmark
 	t[action.ActionBurst] = hitmark
 	t[action.ActionDash] = hitmark

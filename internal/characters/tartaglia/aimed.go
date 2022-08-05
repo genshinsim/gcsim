@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var aimedFrames []int
@@ -19,6 +20,17 @@ func init() {
 
 //Once fully charged, deal Hydro DMG and apply the Riptide status.
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
+	if c.Core.Status.Duration("tartagliamelee") > 0 {
+		c.Core.Log.NewEvent("aim called when not in ranged stance", glog.LogActionEvent, c.Index).
+			Write("action", action.ActionAim)
+		return action.ActionInfo{
+			Frames:          func(action.Action) int { return 1200 },
+			AnimationLength: 1200,
+			CanQueueAfter:   1200,
+			State:           action.Idle,
+		}
+	}
+
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10

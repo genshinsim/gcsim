@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -119,6 +120,7 @@ func (s *Simulation) queueAndExec() error {
 				case player.ErrActionNotReady:
 					//action not ready yet, skipping frame
 					//TODO: log something here
+					s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", s.queue.Action), glog.LogSimEvent, s.C.Player.Active())
 					return nil
 				case player.ErrPlayerNotReady:
 					//player still in animation, skipping frame
@@ -141,7 +143,7 @@ func (s *Simulation) queueAndExec() error {
 		if s.noMoreActions {
 			//TODO: log here?
 			// fmt.Println("no more action")
-			s.C.Log.NewEvent("no more actions", glog.LogActionEvent, -1)
+			s.C.Log.NewEvent("no more actions", glog.LogSimEvent, -1)
 			return nil
 		}
 		//check if ready to queue first

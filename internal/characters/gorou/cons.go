@@ -46,7 +46,7 @@ func (c *char) c2() {
 			return false
 		}
 		c.c2Extension++
-		c.Core.Status.Add(generalGloryKey, 60)
+		c.Core.Status.Extend(generalGloryKey, 60)
 		return false
 	}, "gorou-c2")
 }

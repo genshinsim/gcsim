@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		//refresh mod
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("ironsting", 360),
+			Base:         modifier.NewBaseWithHitlag("ironsting", 360),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return w.buff, true

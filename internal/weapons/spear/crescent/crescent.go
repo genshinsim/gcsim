@@ -29,15 +29,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	atk := .15 + float64(r)*.05
-	active := 0
+	const buffKey = "crescent-pike-buff"
+	buffDuration := 300 // 5s * 60
 
 	c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
 		c.Log.NewEvent("crescent pike active", glog.LogWeaponEvent, char.Index).
-			Write("expiry", c.F+300)
-		active = c.F + 300
+			Write("expiry (without hitlag)", c.F+300)
+		char.AddStatus(buffKey, buffDuration, true)
 
 		return false
 	}, fmt.Sprintf("cp-%v", char.Base.Key.String()))
@@ -50,8 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if c.F < active {
-			//TODO: does this proc trigger any hitlag? probably not?
+		if char.StatusIsActive(buffKey) {
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Crescent Pike Proc",

@@ -25,12 +25,14 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	//increase based on hp at cast time
-	//drains hp
-	c.Core.Status.Add("paramita", 540+skillStart) //to account for animation
+
+	c.applyA1 = true
 	c.Core.Tasks.Add(c.a1, 540+skillStart)
+	c.Core.Status.Add("paramita", 540+skillStart) //to account for animation
 	c.Core.Log.NewEvent("paramita activated", glog.LogCharacterEvent, c.Index).
 		Write("expiry", c.Core.F+540+skillStart)
+
+	//increase based on hp at cast time.
 	//figure out atk buff
 	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.MaxHP()
 	max := (c.Base.Atk + c.Weapon.Atk) * 4
@@ -148,6 +150,9 @@ func (c *char) ppHook() {
 
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+		if c.Core.Status.Duration("paramita") > 0 {
+			c.a1()
+		}
 		c.Core.Status.Delete("paramita")
 		return false
 	}, "hutao-exit")
