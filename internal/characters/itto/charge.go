@@ -15,6 +15,9 @@ var chargeHitmarks = []int{89, 51, 24, 71}
 func init() {
 	chargeFrames = make([][]int, EndSlashType)
 
+	// ActionCharge frames are different per each slash
+	// the frames for CA1/CA2 -> CAF are handled in ActionInfo.Frames
+
 	// CA0 -> x
 	chargeFrames[SaichiSlash] = frames.InitAbilSlice(131)
 	attackFrames[SaichiSlash][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
@@ -41,7 +44,7 @@ func init() {
 	chargeFrames[LeftSlash][action.ActionSwap] = chargeHitmarks[LeftSlash]
 
 	// CAF -> x
-	chargeFrames[FinalSlash] = frames.InitAbilSlice(110)
+	chargeFrames[FinalSlash] = frames.InitAbilSlice(110) // CA0 frames
 	chargeFrames[FinalSlash][action.ActionAttack] = 109
 	chargeFrames[FinalSlash][action.ActionSkill] = 76
 	chargeFrames[FinalSlash][action.ActionBurst] = 76
@@ -224,7 +227,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 				switch c.slashState {
 				case RightSlash: // CA1 -> CAF
 					return 59
-				case LeftSlash: // CA1 -> CAF
+				case LeftSlash: // CA2 -> CAF
 					return 32
 				}
 			}
