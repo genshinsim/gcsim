@@ -35,7 +35,7 @@ func (c *char) a1Update(curSlash SlashType) {
 		c.Core.Log.NewEvent("itto-a1 reset atkspd stacks", glog.LogCharacterEvent, c.Index).
 			Write("a1Stacks", c.a1Stacks).
 			Write("slash", curSlash.String())
-	case RightSlash, LeftSlash:
+	case LeftSlash, RightSlash:
 		// increment a1 stacks if we are doing CA1/CA2
 		c.a1Stacks++
 		if c.a1Stacks > 3 {

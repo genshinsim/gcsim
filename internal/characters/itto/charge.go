@@ -27,22 +27,22 @@ func init() {
 	chargeFrames[SaichiSlash][action.ActionSwap] = 130
 
 	// CA1 -> x
-	chargeFrames[RightSlash] = frames.InitAbilSlice(104) // NA frames
-	chargeFrames[RightSlash][action.ActionCharge] = 57   // CA2 frames
-	chargeFrames[RightSlash][action.ActionSkill] = chargeHitmarks[RightSlash]
-	chargeFrames[RightSlash][action.ActionBurst] = chargeHitmarks[RightSlash]
-	chargeFrames[RightSlash][action.ActionDash] = chargeHitmarks[RightSlash]
-	chargeFrames[RightSlash][action.ActionJump] = chargeHitmarks[RightSlash]
-	chargeFrames[RightSlash][action.ActionSwap] = chargeHitmarks[RightSlash]
-
-	// CA2 -> x
-	chargeFrames[LeftSlash] = frames.InitAbilSlice(77) // NA frames
-	chargeFrames[LeftSlash][action.ActionCharge] = 29  // CA1 frames
+	chargeFrames[LeftSlash] = frames.InitAbilSlice(104) // NA frames
+	chargeFrames[LeftSlash][action.ActionCharge] = 57   // CA2 frames
 	chargeFrames[LeftSlash][action.ActionSkill] = chargeHitmarks[LeftSlash]
 	chargeFrames[LeftSlash][action.ActionBurst] = chargeHitmarks[LeftSlash]
 	chargeFrames[LeftSlash][action.ActionDash] = chargeHitmarks[LeftSlash]
 	chargeFrames[LeftSlash][action.ActionJump] = chargeHitmarks[LeftSlash]
 	chargeFrames[LeftSlash][action.ActionSwap] = chargeHitmarks[LeftSlash]
+
+	// CA2 -> x
+	chargeFrames[RightSlash] = frames.InitAbilSlice(77) // NA frames
+	chargeFrames[RightSlash][action.ActionCharge] = 29  // CA1 frames
+	chargeFrames[RightSlash][action.ActionSkill] = chargeHitmarks[RightSlash]
+	chargeFrames[RightSlash][action.ActionBurst] = chargeHitmarks[RightSlash]
+	chargeFrames[RightSlash][action.ActionDash] = chargeHitmarks[RightSlash]
+	chargeFrames[RightSlash][action.ActionJump] = chargeHitmarks[RightSlash]
+	chargeFrames[RightSlash][action.ActionSwap] = chargeHitmarks[RightSlash]
 
 	// CAF -> x
 	chargeFrames[FinalSlash] = frames.InitAbilSlice(110) // CA0 frames
@@ -59,16 +59,16 @@ type SlashType int
 const (
 	InvalidSlash SlashType = iota - 1
 	SaichiSlash            // CA0
-	RightSlash             // CA1
-	LeftSlash              // CA2
+	LeftSlash              // CA1
+	RightSlash             // CA2
 	FinalSlash             // CAF
 	EndSlashType
 )
 
 var slashName = []string{
 	"Saichimonji Slash",
-	"Arataki Kesagiri Right Slash",
 	"Arataki Kesagiri Left Slash",
+	"Arataki Kesagiri Right Slash",
 	"Arataki Kesagiri Final Slash",
 }
 
@@ -83,21 +83,21 @@ func (s SlashType) Next(stacks int) SlashType {
 		if stacks == 1 {
 			return FinalSlash
 		} else if stacks > 1 {
-			return RightSlash
+			return LeftSlash
 		}
 		return SaichiSlash
 
 	// loops CA1/CA2 until stacks=1
-	case RightSlash:
-		if stacks == 1 {
-			return FinalSlash
-		}
-		return LeftSlash
 	case LeftSlash:
 		if stacks == 1 {
 			return FinalSlash
 		}
 		return RightSlash
+	case RightSlash:
+		if stacks == 1 {
+			return FinalSlash
+		}
+		return LeftSlash
 
 	// CA0/CAF -> x
 	case SaichiSlash, FinalSlash:
@@ -121,7 +121,7 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 				return 21
 			}
 		// NA -> CA1/CAF
-		case RightSlash, FinalSlash:
+		case LeftSlash, FinalSlash:
 			return 10
 		}
 
@@ -134,13 +134,13 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 				return 14
 			}
 		// CA2 -> CA1
-		case RightSlash:
-			if prevSlash == LeftSlash {
+		case LeftSlash:
+			if prevSlash == RightSlash {
 				return 28
 			}
 		// CA1/CA2 -> CAF
 		case FinalSlash:
-			if prevSlash == RightSlash || prevSlash == LeftSlash {
+			if prevSlash == LeftSlash || prevSlash == RightSlash {
 				return 25
 			}
 		}
@@ -152,7 +152,7 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 		case SaichiSlash:
 			return 14
 		// E->CA1/CAF
-		case RightSlash, FinalSlash:
+		case LeftSlash, FinalSlash:
 			return 17
 		}
 	}
@@ -185,7 +185,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	switch c.slashState {
 	case SaichiSlash:
 		ai.Mult = saichiSlash[c.TalentLvlAttack()]
-	case RightSlash, LeftSlash:
+	case LeftSlash, RightSlash:
 		ai.Mult = akCombo[c.TalentLvlAttack()]
 		haltFrames := 0.03 // consumed stacks >= 3
 		switch c.stacksConsumed {
@@ -230,9 +230,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			// handle CA1/CA2 -> CAF frames
 			if next == action.ActionCharge && c.slashState.Next(c.Tags[strStackKey]) == FinalSlash {
 				switch c.slashState {
-				case RightSlash: // CA1 -> CAF
+				case LeftSlash: // CA1 -> CAF
 					return 59
-				case LeftSlash: // CA2 -> CAF
+				case RightSlash: // CA2 -> CAF
 					return 32
 				}
 			}
