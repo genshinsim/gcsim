@@ -18,6 +18,8 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
+	// ActionCharge is CA1/CAF frames, while InvalidAction is CA0 expect for the last NA
+
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 41) // CA0 frames
 	attackFrames[0][action.ActionAttack] = 33
 	attackFrames[0][action.ActionCharge] = 23
@@ -103,9 +105,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			// check if next is CA0. NA4->CA0 doesn't exist
-			if next == action.ActionCharge && c.Tags[strStackKey] == 0 && n != 3 {
+			if next == action.ActionCharge && c.slashState.Next(c.Tags[strStackKey]) == SaichiSlash {
 				// assume InvalidAction is CA0 frames
 				next = action.InvalidAction
+				// CA0 after the last NA is illegal. so return 500
+				if n == normalHitNum-1 {
+					return 500
+				}
 			}
 			return frames.AtkSpdAdjust(attackFrames[n][next], c.Stat(attributes.AtkSpd))
 		},
