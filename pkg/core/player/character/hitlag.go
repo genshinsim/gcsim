@@ -30,26 +30,21 @@ func (c *CharWrapper) Tick() {
 	c.timePassed += left
 
 	//check char queue for any executable actions
-	check := len(c.queue)
-	n := 0
+	n := -1
 	for i := range c.queue {
 		if c.queue[i].delay <= c.timePassed {
 			c.queue[i].f()
 		} else {
-			// keep the actions that can't be executed yet
-			c.queue[n] = c.queue[i]
-			n++
+			n = i
+			break
 		}
 	}
-	// check if any task inserted another task into the queue
-	// new tasks inserted shouldn't have a delay of 0 so this is fine
-	for i := check; i < len(c.queue); i++ {
-		// keep the actions that can't be executed yet
-		c.queue[n] = c.queue[i]
-		n++
+	if n == -1 {
+		c.queue = nil
+	} else {
+		c.queue = c.queue[n:]
 	}
-	// set char queue len to the remaining elements
-	c.queue = c.queue[:n]
+
 }
 
 func (c *CharWrapper) FramePausedOnHitlag() bool {
@@ -76,7 +71,7 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	}
 
 	for i, v := range c.mods {
-		if v.AffectedByHitlag() && v.Expiry() != -1 && v.Expiry() > *c.f {
+		if v.AffectedByHitlag() && v.Expiry() != -1 {
 			c.mods[i].Extend(ext)
 			if c.debug {
 				logs = append(logs, fmt.Sprintf("%v: %v", v.Key(), v.Expiry()))
