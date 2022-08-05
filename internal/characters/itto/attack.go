@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var attackHitmarks = []int{23, 25, 16, 48}
@@ -124,6 +125,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	if amount > 0 {
 		c.changeStacks(amount)
+		c.Core.Log.NewEvent("itto attack stack added", glog.LogCharacterEvent, c.Index).
+			Write("stacks", c.Tags[c.stackKey])
 	}
 
 	// handle NX -> CA0/CA1/CAF frames
