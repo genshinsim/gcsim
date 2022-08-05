@@ -128,8 +128,8 @@ func (c *char) determineChargeForCAF(lastWasItto bool, lastAction action.Action)
 }
 
 func (c *char) determineChargeForCA1(lastWasItto bool, lastAction action.Action) IttoChargeState {
+	// CA1 -> CAF
 	if c.Tags[c.stackKey] == 2 {
-		// CA1 -> CAF
 		if lastWasItto && lastAction == action.ActionCharge && c.chargedCount == 2 {
 			// CA1 is 28 frames shorter if CA2 -> CA1
 			return CA2ToCA1ToCAF
@@ -139,18 +139,17 @@ func (c *char) determineChargeForCA1(lastWasItto bool, lastAction action.Action)
 			return eToCA1ToCAF
 		}
 		return defaultToCA1ToCAF // default
-	} else {
-		// CA1 -> CA2
-		if lastWasItto && lastAction == action.ActionCharge && c.chargedCount == 2 {
-			// CA1 is 28 frames shorter if CA2 -> CA1
-			return CA2ToCA1ToCA2
-		}
-		if lastWasItto && lastAction == action.ActionSkill {
-			// CA1 is 17 frames shorter if E -> CA1
-			return eToCA1ToCA2
-		}
-		return defaultToCA1ToCA2 // default
 	}
+	// CA1 -> CA2
+	if lastWasItto && lastAction == action.ActionCharge && c.chargedCount == 2 {
+		// CA1 is 28 frames shorter if CA2 -> CA1
+		return CA2ToCA1ToCA2
+	}
+	if lastWasItto && lastAction == action.ActionSkill {
+		// CA1 is 17 frames shorter if E -> CA1
+		return eToCA1ToCA2
+	}
+	return defaultToCA1ToCA2 // default
 }
 
 func (c *char) determineChargeForCA2(lastWasItto bool, lastAction action.Action) IttoChargeState {
