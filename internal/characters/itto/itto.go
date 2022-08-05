@@ -25,6 +25,7 @@ type char struct {
 	stackKey           string
 	a1Stacks           int
 	stacksConsumed     int
+	c1GeoMemberCount   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
@@ -68,11 +69,23 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 }
 
 func (c *char) Init() error {
+	// A1 setup
 	c.a1()
-	c.onExitField()
+	// C1 setup
+	c.c1GeoMemberCount = 0
+	for _, char := range c.Core.Player.Chars() {
+		if char.Base.Element == attributes.Geo {
+			c.c1GeoMemberCount++
+		}
+	}
+	if c.c1GeoMemberCount > 3 {
+		c.c1GeoMemberCount = 3
+	}
+	// add part of C6
 	if c.Base.Cons >= 6 {
 		c.c6ChargedCritDMG()
 	}
+	c.onExitField()
 	return nil
 }
 

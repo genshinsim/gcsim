@@ -39,18 +39,8 @@ func (c *char) c1() func() {
 // Max 18 Energy can be restored in this manner.
 func (c *char) c2() func() {
 	return func() {
-		count := 0
-		for _, char := range c.Core.Player.Chars() {
-			if char.Base.Element == attributes.Geo {
-				count++
-			}
-		}
-		if count > 3 {
-			count = 3
-		}
-
-		energyGain := float64(count) * 6
-		cdDecrease := count * (1.5 * 60)
+		energyGain := float64(c.c1GeoMemberCount) * 6
+		cdDecrease := c.c1GeoMemberCount * (1.5 * 60)
 		c.AddEnergy("itto-c2", energyGain)
 		c.ReduceActionCooldown(action.ActionBurst, cdDecrease)
 
