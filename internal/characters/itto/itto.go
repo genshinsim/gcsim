@@ -134,7 +134,9 @@ func (c *char) onExitField() {
 		c.chargedCount = -1
 		c.stacksConsumed = 1
 		c.a1Stacks = 0
-		c.c4()
+		if c.Base.Cons >= 4 {
+			c.c4()
+		}
 		return false
 	}, "itto-exit")
 }
