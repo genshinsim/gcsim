@@ -649,7 +649,7 @@ func (p *Parser) parseBlock() (*BlockStmt, error) {
 			p.next() //consume the braces
 			return block, nil
 		case itemEOF:
-			panic("reached end of file without }")
+			return nil, fmt.Errorf("reached end of file without closing }")
 		}
 		//parse statement here
 		node, err = p.parseStatement()
