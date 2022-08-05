@@ -66,7 +66,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 
 	// constellation stuff
 	c.c1GeoMemberCount = 0
-	c.c4Applied = false
 
 	w.Character = &c
 
@@ -86,6 +85,8 @@ func (c *char) Init() error {
 	if c.c1GeoMemberCount > 3 {
 		c.c1GeoMemberCount = 3
 	}
+	// C4 setup
+	c.c4Applied = false
 	// add part of C6
 	if c.Base.Cons >= 6 {
 		c.c6ChargedCritDMG()
@@ -129,14 +130,14 @@ func (c *char) onExitField() {
 		if c.StatModIsActive(c.burstBuffKey) {
 			c.DeleteStatMod(c.burstBuffKey)
 			c.DeleteStatMod(c.burstBuffKey + "-atkspd")
+			if c.Base.Cons >= 4 {
+				c.c4()()
+			}
 		}
 		c.savedNormalCounter = 0
 		c.chargedCount = -1
 		c.stacksConsumed = 1
 		c.a1Stacks = 0
-		if c.Base.Cons >= 4 {
-			c.c4()
-		}
 		return false
 	}, "itto-exit")
 }
