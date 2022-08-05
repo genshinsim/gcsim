@@ -12,10 +12,12 @@ var chargeFrames []int
 const chargeHitmark = 24
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(38)
+	chargeFrames = frames.InitAbilSlice(46)
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 46
+	chargeFrames[action.ActionAttack] = 38
+	chargeFrames[action.ActionSkill] = 38
+	chargeFrames[action.ActionBurst] = 38
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {

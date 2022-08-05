@@ -11,17 +11,17 @@ import (
 var skillEndFrames []int
 
 func init() {
-	skillEndFrames = frames.InitAbilSlice(10)
-	skillEndFrames[action.ActionAttack] = 19
-	skillEndFrames[action.ActionBurst] = 19
-	skillEndFrames[action.ActionCharge] = 19
+	skillEndFrames = frames.InitAbilSlice(19)
+	skillEndFrames[action.ActionDash] = 10
+	skillEndFrames[action.ActionJump] = 10
+	skillEndFrames[action.ActionSwap] = 10
 
 }
 
 const skillHitmark = 20
 const skillCDStart = 18
 
-// if you hold while at 4 stacks it takes 17 extra seconds to release
+// if you hold while at 4 stacks it takes 17 extra frames to release
 const holdAtFullStacksPenalty = 17
 
 // assuming its 0.02s, please verify

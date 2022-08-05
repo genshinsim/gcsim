@@ -63,6 +63,8 @@ func (c *char) c6() {
 			val[attributes.CR] = 0.04 * float64(c.decStack)
 			if c.decStack == 4 {
 				val[attributes.CD] = 0.32
+			} else {
+				val[attributes.CD] = 0
 			}
 			return val, true
 		},

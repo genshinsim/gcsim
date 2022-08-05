@@ -26,10 +26,6 @@ type char struct {
 	burstTaggedCount    int
 }
 
-const (
-	eCD = 600
-)
-
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
@@ -38,7 +34,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 
 	c.EnergyMax = 40
 	c.Weapon.Class = weapon.WeaponClassCatalyst
-	c.NormalHitNum = 5
+	c.NormalHitNum = normalHitNum
 	c.SkillCon = 3
 	c.BurstCon = 5
 	c.a1icd = -1
