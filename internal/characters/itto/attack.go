@@ -64,25 +64,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatModIsActive(burstBuffKey) {
 		r = 2
 	}
-
-	done := false
-	particlecb := func(a combat.AttackCB) {
-		if done {
-			return
-		}
-		var count float64 = 3
-		if c.Core.Rand.Float64() < 0.33 {
-			count = 4
-		}
-		c.Core.QueueParticle("itto", count, attributes.Geo, c.Core.Flags.ParticleDelay)
-		done = true
-	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
-		particlecb,
 	)
 
 	// TODO: assume NAs always hit. since it is not possible to know if the next CA is CA0 or CA1/CAF when deciding what CA frames to return.
