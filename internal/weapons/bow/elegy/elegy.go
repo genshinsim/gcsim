@@ -42,9 +42,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	val[attributes.ATKP] = .15 + float64(r)*0.05
 	val[attributes.EM] = 75 + float64(r)*25
 
-	icd := 0
 	stacks := 0
-	cooldown := 0
+	buffDuration := 720 // 12s * 60
+	const icdKey = "elegy-sigil-icd"
+	icd := 12 // 0.2s * 60
+	const cooldownKey = "elegy-cd"
+	cd := 1200 // 20s * 60
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -58,22 +61,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		default:
 			return false
 		}
-		if cooldown > c.F {
+
+		if char.StatusIsActive(cooldownKey) {
 			return false
 		}
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		icd = c.F + 12
+
+		char.AddStatus(icdKey, icd, true)
 		stacks++
 		if stacks == 4 {
 			stacks = 0
-			c.Status.Add("elegy", 720)
-
-			cooldown = c.F + 1200
+			char.AddStatus(cooldownKey, cd, true)
 			for _, char := range c.Player.Chars() {
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("elegy-proc", 720),
+					Base:         modifier.NewBaseWithHitlag("elegy-proc", buffDuration),
 					AffectedStat: attributes.NoStat,
 					Amount: func() ([]float64, bool) {
 						return val, true

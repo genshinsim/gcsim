@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	if char.Base.Key == keys.Aloy {
 		mATK[attributes.ATK] = 66
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("predator", -1),
+			Base:         modifier.NewBase("predator-atk", -1),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return mATK, true
@@ -43,8 +43,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	buffDmgP := .10
 
 	stacks := 0
-	stackExpiry := 0
 	maxStacks := 2
+	const stackKey = "predator-stacks"
 	stackDuration := 360
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -62,7 +62,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
-		if c.F > stackExpiry {
+		if !char.StatusIsActive(stackKey) {
 			stacks = 0
 		}
 
@@ -70,15 +70,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			stacks++
 		}
 
-		stackExpiry = c.F + stackDuration
+		char.AddStatus(stackKey, stackDuration, true)
 
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("predator", stackDuration),
+			Base: modifier.NewBaseWithHitlag("predator-dmg", stackDuration),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				//TODO: not sure if this check is needed here
-				if c.F > stackExpiry {
-					stacks = 0
-				}
 				if (atk.Info.AttackTag == combat.AttackTagNormal) || (atk.Info.AttackTag == combat.AttackTagExtra) {
 					mDMG[attributes.DmgP] = buffDmgP * float64(stacks)
 					return mDMG, true

@@ -31,8 +31,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 
+	const icdKey = "viridescent-hunt-icd"
 	cd := 900 - r*60
-	icd := 0
 	mult := 0.3 + float64(r)*0.1
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
-		if icd > c.F {
+		if char.StatusIsActive(icdKey) {
 			return false
 		}
 
@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			c.QueueAttack(ai, combat.NewCircleHit(trg, 3, false, combat.TargettableEnemy), 0, i+1)
 		}
 
-		icd = c.F + cd
+		char.AddStatus(icdKey, cd, true)
 
 		return false
 	}, fmt.Sprintf("veridescent-%v", char.Base.Key.String()))
