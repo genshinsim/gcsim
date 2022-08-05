@@ -210,6 +210,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	if c.StatModIsActive(burstBuffKey) {
 		r = 3
 	}
+	// TODO: hitmark is not getting adjusted for atk speed
+	// TODO: Does Itto CA snapshot at the start of CA? (rn assuming he does)
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),

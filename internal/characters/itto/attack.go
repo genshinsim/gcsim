@@ -64,6 +64,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatModIsActive(burstBuffKey) {
 		r = 2
 	}
+	// TODO: hitmark is not getting adjusted for atk speed
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),

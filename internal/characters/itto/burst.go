@@ -29,6 +29,12 @@ func init() {
 
 // Adapted from Noelle
 func (c *char) Burst(p map[string]int) action.ActionInfo {
+	// N1 pre-stack tech. If Itto did N1 -> Q, then add a stack before Q def to atk conversion
+	// https://library.keqingmains.com/evidence/characters/geo/itto#itto-n1-burst-cancel-ss-stack
+	if c.Core.Player.CurrentState() == action.NormalAttackState && c.NormalCounter == 1 {
+		c.addStrStack(1)
+	}
+
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
 	aiSnapshot := combat.AttackInfo{
 		ActorIndex: c.Index,
