@@ -8,6 +8,10 @@ import (
 )
 
 func (c *CharWrapper) QueueCharTask(f func(), delay int) {
+	if delay == 0 {
+		f()
+		return
+	}
 	c.queue = append(c.queue, charTask{
 		f:     f,
 		delay: c.timePassed + float64(delay),
