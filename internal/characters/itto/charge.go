@@ -227,16 +227,17 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
+			f := chargeFrames[c.slashState][next]
 			// handle CA1/CA2 -> CAF frames
 			if next == action.ActionCharge && c.slashState.Next(c.Tags[strStackKey]) == FinalSlash {
 				switch c.slashState {
 				case LeftSlash: // CA1 -> CAF
-					return 59
+					f = 59
 				case RightSlash: // CA2 -> CAF
-					return 32
+					f = 32
 				}
 			}
-			return frames.AtkSpdAdjust(chargeFrames[c.slashState][next]-windup, c.Stat(attributes.AtkSpd))
+			return frames.AtkSpdAdjust(f-windup, c.Stat(attributes.AtkSpd))
 		},
 		AnimationLength: chargeFrames[c.slashState][action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmarks[c.slashState] - windup,
