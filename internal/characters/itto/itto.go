@@ -1,6 +1,8 @@
 package itto
 
 import (
+	"fmt"
+
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -23,11 +25,12 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	dasshuCount  int
-	geoCharCount int
-	slashState   SlashType
-	applyC4      bool
-	burstCastF   int
+	dasshuCount    int
+	geoCharCount   int
+	slashState     SlashType
+	applyC4        bool
+	burstCastF     int
+	stacksConsumed int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
@@ -106,8 +109,16 @@ func (c *char) addStrStack(inc int) {
 		v = 5
 	}
 	c.Tags[strStackKey] = v
+
 	if v != old {
-		c.Core.Log.NewEvent("itto gained/lost Superlative Superstrength stacks", glog.LogCharacterEvent, c.Index).
+		var s string
+		if v > old {
+			s = "gained"
+		} else if v < old {
+			s = "lost"
+			c.stacksConsumed++
+		}
+		c.Core.Log.NewEvent(fmt.Sprintf("itto %v Superlative Superstrength stacks", s), glog.LogCharacterEvent, c.Index).
 			Write("old_stacks", old).
 			Write("cur_stacks", v)
 	}
@@ -119,6 +130,7 @@ func (c *char) resetChargeState() {
 
 		if act != action.ActionCharge {
 			c.slashState = InvalidSlash
+			c.stacksConsumed = 0
 		}
 
 		return false

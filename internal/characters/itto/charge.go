@@ -186,12 +186,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ai.Mult = saichiSlash[c.TalentLvlAttack()]
 	case RightSlash, LeftSlash:
 		ai.Mult = akCombo[c.TalentLvlAttack()]
-		haltFrames := 0.03 // stacks >= 4
-		switch stacks {
-		case 2:
+		haltFrames := 0.03 // consumed stacks >= 3
+		switch c.stacksConsumed {
+		case 0:
 			haltFrames = 0.07
-		case 3:
-			haltFrames = 0.03
+		case 1:
+			haltFrames = 0.05
 		}
 		ai.HitlagHaltFrames = haltFrames * 60
 	case FinalSlash:
