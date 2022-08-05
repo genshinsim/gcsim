@@ -18,6 +18,15 @@ func init() {
 	skillFrames[action.ActionSwap] = 41    // E -> Swap
 }
 
+// Skill:
+// Hurls Ushi, the young akaushi bull and auxiliary member of the Arataki Gang, dealing Geo DMG to opponents on hit.
+// When Ushi hits opponents, Arataki Itto gains 1 stack of Superlative Superstrength.
+// Ushi will remain on the field and provide support in the following ways:
+// - Taunts surrounding opponents and draws their attacks.
+// - Inherits HP based on a percentage of Arataki Itto's Max HP.
+// - When Ushi takes DMG, Arataki Itto gains 1 stack of Superlative Superstrength. Only 1 stack can be gained in this way every 2s.
+// - Ushi will flee when its HP reaches 0 or its duration ends. It will grant Arataki Itto 1 stack of Superlative Superstrength when it leaves.
+// Ushi is considered a Geo Construct. Arataki Itto can only deploy 1 Ushi on the field at any one time.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Added "travel" parameter for future, since Ushi is thrown and takes 12 frames to hit the ground from a press E
 	travel, ok := p["travel"]

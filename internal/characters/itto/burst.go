@@ -22,6 +22,14 @@ func init() {
 const burstBuffKey = "itto-q"
 
 // Adapted from Noelle
+// Burst:
+// Time to show 'em the might of the Arataki Gang! For a time, Itto lets out his inner Raging Oni King, wielding his Oni King's Kanabou in battle.
+// This state has the following special properties:
+// - Converts Itto's Normal, Charged, and Plunging Attacks to Geo DMG. This cannot be overridden.
+// - Increases Itto's Normal Attack SPD. Also increases his ATK based on his DEF.
+// - On hit, the 1st and 3rd strikes of his attack combo will each grant Arataki Itto 1 stack of Superlative Superstrength.
+// - Decreases Itto's Elemental and Physical RES by 20%.
+// The Raging Oni King state will be cleared when Itto leaves the field.
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// N1 pre-stack tech
 	lastWasItto := c.Core.Player.LastAction.Char == c.Index

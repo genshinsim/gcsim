@@ -220,6 +220,11 @@ func (c *char) checkReset(lastWasItto bool, lastAction action.Action) {
 	}
 }
 
+// Charged Attack:
+// When holding to perform a Charged Attack, Itto unleashes a series of Arataki Kesagiri slashes without consuming Stamina.
+// Instead, each Arataki Kesagiri slash consumes 1 stack of Superlative Superstrength.
+// When the final stack is consumed, Itto delivers a powerful final slash.
+// If no stacks of Superlative Superstrength are available, Itto will perform a single Saichimonji Slash.
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	lastWasItto := c.Core.Player.LastAction.Char == c.Index
 	lastAction := c.Core.Player.LastAction.Type

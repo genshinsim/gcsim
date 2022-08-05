@@ -60,6 +60,11 @@ func (c *char) attackState() IttoAttackState {
 	return attack1PlusStacks
 }
 
+// Normal Attack:
+// Perform up to 4 consecutive strikes.
+// When the 2nd and 4th strikes hit opponents, Itto will gain 1 and 2 stacks of Superlative Superstrength, respectively.
+// Max 5 stacks. Triggering this effect will refresh the current duration of any existing stacks.
+// Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill, "Masatsu Zetsugi: Akaushi Burst!"
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	// handle Dasshu
 	lastWasItto := c.Core.Player.LastAction.Char == c.Index
