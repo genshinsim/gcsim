@@ -9,8 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames0Stack [][]int
-var attackFrames1PlusStack [][]int
 var attackHitmarks = []int{23, 25, 16, 48}
 var attackHitlagHaltFrame = []float64{0.08, 0.08, 0.10, 0.10}
 
@@ -28,43 +26,37 @@ const (
 )
 
 func init() {
-	attackFrames0Stack = make([][]int, normalHitNum)
-	attackFrames0Stack[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2
-	attackFrames0Stack[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 36) // N2 -> N3
-	attackFrames0Stack[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N4
-	attackFrames0Stack[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
-
-	attackFrames0Stack[0][action.ActionCharge] = 41  // N1 -> CA0
-	attackFrames0Stack[1][action.ActionCharge] = 51  // N2 -> CA0
-	attackFrames0Stack[2][action.ActionCharge] = 57  // N3 -> CA0
-	attackFrames0Stack[3][action.ActionCharge] = 500 // N4 -> CA0, TODO: this action is illegal; need better way to handle it
-
-	attackFrames1PlusStack = make([][]int, normalHitNum)
-	attackFrames1PlusStack[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2
-	attackFrames1PlusStack[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 36) // N2 -> N3
-	attackFrames1PlusStack[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N4
-	attackFrames1PlusStack[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
-
-	attackFrames1PlusStack[0][action.ActionCharge] = 23 // N1 -> CA1/CAF
-	attackFrames1PlusStack[1][action.ActionCharge] = 27 // N2 -> CA1/CAF
-	attackFrames1PlusStack[2][action.ActionCharge] = 21 // N3 -> CA1/CAF
-	attackFrames1PlusStack[3][action.ActionCharge] = 52 // N4 -> CA1/CAF
-
 	attackFrames = make([][][]int, attackEndState)
-	attackFrames[attack0Stacks] = attackFrames0Stack
-	attackFrames[attack1PlusStacks] = attackFrames1PlusStack
+	attackFrames[attack0Stacks] = make([][]int, normalHitNum)
+	attackFrames[attack0Stacks][0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2
+	attackFrames[attack0Stacks][1] = frames.InitNormalCancelSlice(attackHitmarks[1], 36) // N2 -> N3
+	attackFrames[attack0Stacks][2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N4
+	attackFrames[attack0Stacks][3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
+
+	attackFrames[attack0Stacks][0][action.ActionCharge] = 41  // N1 -> CA0
+	attackFrames[attack0Stacks][1][action.ActionCharge] = 51  // N2 -> CA0
+	attackFrames[attack0Stacks][2][action.ActionCharge] = 57  // N3 -> CA0
+	attackFrames[attack0Stacks][3][action.ActionCharge] = 500 // N4 -> CA0, TODO: this action is illegal; need better way to handle it
+
+	attackFrames[attack1PlusStacks] = make([][]int, normalHitNum)
+	attackFrames[attack1PlusStacks][0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2
+	attackFrames[attack1PlusStacks][1] = frames.InitNormalCancelSlice(attackHitmarks[1], 36) // N2 -> N3
+	attackFrames[attack1PlusStacks][2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N4
+	attackFrames[attack1PlusStacks][3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
+
+	attackFrames[attack1PlusStacks][0][action.ActionCharge] = 23 // N1 -> CA1/CAF
+	attackFrames[attack1PlusStacks][1][action.ActionCharge] = 27 // N2 -> CA1/CAF
+	attackFrames[attack1PlusStacks][2][action.ActionCharge] = 21 // N3 -> CA1/CAF
+	attackFrames[attack1PlusStacks][3][action.ActionCharge] = 52 // N4 -> CA1/CAF
 }
 
 func (c *char) attackState() IttoAttackState {
-	state := InvalidAttackState
 	if c.Tags[c.stackKey] == 0 {
 		// 0 stacks: use NX -> CA0 frames
-		state = attack0Stacks
-	} else {
-		// 1+ stacks: use NX -> CA1/CAF frames (they are the same here)
-		state = attack1PlusStacks
+		return attack0Stacks
 	}
-	return state
+	// 1+ stacks: use NX -> CA1/CAF frames (they are the same here)
+	return attack1PlusStacks
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
