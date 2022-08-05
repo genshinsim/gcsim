@@ -291,7 +291,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.a4(&ai)
 	}
 
-	// TODO: Does Itto CA snapshot at the start of CA?
+	// TODO: hitmark is not getting adjusted for atk speed
+	// TODO: Does Itto CA snapshot at the start of CA? (rn assuming he does)
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(r, false, combat.TargettableEnemy), 0, chargeFrames[state][action.ActionDash])
 
 	// handle A1

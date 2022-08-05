@@ -95,6 +95,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		radius = 2
 	}
 
+	// TODO: hitmark is not getting adjusted for atk speed
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), radius, false, combat.TargettableEnemy),

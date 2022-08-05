@@ -23,6 +23,16 @@ const burstBuffKey = "itto-q"
 
 // Adapted from Noelle
 func (c *char) Burst(p map[string]int) action.ActionInfo {
+	// N1 pre-stack tech
+	lastWasItto := c.Core.Player.LastAction.Char == c.Index
+	lastAction := c.Core.Player.LastAction.Type
+	if lastWasItto && lastAction == action.ActionAttack && c.NormalCounter == 1 {
+		// If Itto did N1 -> Q, then add a stack before Q def to atk conversion
+		c.changeStacks(1)
+		c.Core.Log.NewEvent("itto n1 pre-stack added", glog.LogCharacterEvent, c.Index).
+			Write("stacks", c.Tags[c.stackKey])
+	}
+
 	// Add mod for def to attack burst conversion
 	val := make([]float64, attributes.EndStatType)
 
