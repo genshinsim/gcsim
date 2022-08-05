@@ -190,6 +190,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/haran"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/harbinger"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/ironsting"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/kagotsurubeisshin"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/lion"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/lithic"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/mistsplitter"
