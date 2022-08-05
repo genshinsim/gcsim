@@ -1,43 +1,26 @@
 package itto
 
-import "github.com/genshinsim/gcsim/pkg/core"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/construct"
+)
 
-func (c *char) newUshi(dur int) core.Construct {
-	return &construct{
+type ushi struct {
+	src    int
+	expiry int
+	char   *char
+}
+
+func (c *char) newUshi(dur int) construct.Construct {
+	return &ushi{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
 		char:   c,
 	}
 }
 
-type construct struct {
-	src    int
-	expiry int
-	char   *char
-}
-
-func (c *construct) Key() int {
-	return c.src
-}
-
-func (c *construct) Type() core.GeoConstructType {
-	return core.GeoConstructIttoSkill
-}
-
-func (c *construct) OnDestruct() {
-	c.char.Tags["strStack"] += 1
-	if c.char.Tags["strStack"] > 5 {
-		c.char.Tags["strStack"] = 5
-	}
-}
-func (c *construct) Expiry() int {
-	return c.expiry
-}
-
-func (c *construct) IsLimited() bool {
-	return true
-}
-
-func (c *construct) Count() int {
-	return 1
-}
+func (u *ushi) OnDestruct()                      { u.char.addStrStack(1) }
+func (u *ushi) Key() int                         { return u.src }
+func (u *ushi) Type() construct.GeoConstructType { return construct.GeoConstructIttoSkill }
+func (u *ushi) Expiry() int                      { return u.expiry }
+func (u *ushi) IsLimited() bool                  { return true }
+func (u *ushi) Count() int                       { return 1 }

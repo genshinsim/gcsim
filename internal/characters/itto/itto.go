@@ -1,105 +1,126 @@
 package itto
 
 import (
-	"github.com/genshinsim/gcsim/internal/tmpl/character"
+	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+)
+
+const (
+	strStackKey = "strStack"
 )
 
 func init() {
-	core.RegisterCharFunc(core.Itto, NewChar)
+	core.RegisterCharFunc(keys.Itto, NewChar)
 }
 
 type char struct {
-	*character.Tmpl
-	dasshuUsed  bool
-	dasshuCount int
-	sCACount    int
+	*tmpl.Character
+	dasshuCount  int
+	geoCharCount int
+	slashState   SlashType
+	applyC4      bool
+	burstCastF   int
 }
 
-func NewChar(s *core.Core, p core.CharacterProfile) (core.Character, error) {
+func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
 	c := char{}
-	t, err := character.NewTemplateChar(s, p)
-	if err != nil {
-		return nil, err
-	}
-	c.Tmpl = t
-	c.Base.Element = core.Geo
+	c.Character = tmpl.NewWithWrapper(s, w)
 
-	e, ok := p.Params["start_energy"]
-	if !ok {
-		e = 70
-	}
-	c.Energy = float64(e)
+	c.Base.Element = attributes.Geo
 	c.EnergyMax = 70
-	c.Weapon.Class = core.WeaponClassClaymore
-	c.NormalHitNum = 4
+	c.Weapon.Class = weapon.WeaponClassClaymore
+	c.NormalHitNum = normalHitNum
 	c.SkillCon = 3
 	c.BurstCon = 5
+	c.CharZone = character.ZoneInazuma
 
-	c.dasshuUsed = false
-	c.dasshuCount = 0
-	c.Tags["strStack"] = 0
-	c.sCACount = 0
+	c.burstCastF = -1
+	c.slashState = InvalidSlash
 
-	return &c, nil
+	w.Character = &c
+
+	return nil
 }
 
-func (c *char) Init() {
-	c.Tmpl.Init()
-
+func (c *char) Init() error {
 	c.onExitField()
-
-	if c.Base.Cons == 6 {
+	c.resetChargeState()
+	if c.Base.Cons >= 2 {
+		for _, char := range c.Core.Player.Chars() {
+			if char.Base.Element == attributes.Geo {
+				c.geoCharCount++
+			}
+		}
+		if c.geoCharCount > 3 {
+			c.geoCharCount = 3
+		}
+	}
+	if c.Base.Cons >= 6 {
 		c.c6()
 	}
+	return nil
 }
 
-func (c *char) ActionStam(a core.ActionType, p map[string]int) float64 {
+func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
-	case core.ActionDash:
-		return 18
-	case core.ActionCharge:
-		if c.Tags["strStack"] > 0 {
+	case action.ActionCharge:
+		if c.Tags[strStackKey] > 0 {
 			return 0
 		}
 		return 20
-	default:
-		c.Core.Log.NewEvent("ActionStam not implemented", core.LogActionEvent, c.Index).
-			Write("action", a.String())
-		return 0
 	}
-
+	return c.Character.ActionStam(a, p)
 }
 
 // Itto Geo infusion can't be overridden, so it must be a snapshot modification rather than a weapon infuse
-func (c *char) Snapshot(ai *core.AttackInfo) core.Snapshot {
-	ds := c.Tmpl.Snapshot(ai)
-
-	if c.Core.Status.Duration("ittoq") > 0 {
+func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
+	ds := c.Character.Snapshot(ai)
+	if c.StatModIsActive(burstBuffKey) {
 		//infusion to attacks only
 		switch ai.AttackTag {
-		case core.AttackTagNormal:
-		case core.AttackTagPlunge:
-		case core.AttackTagExtra:
+		case combat.AttackTagNormal:
+		case combat.AttackTagPlunge:
+		case combat.AttackTagExtra:
 		default:
 			return ds
 		}
-		ai.Element = core.Geo
+		ai.Element = attributes.Geo
 	}
 	return ds
 }
 
-func (c *char) c6() {
-	val := make([]float64, core.EndStatType)
-	val[core.CD] = 0.7
-	c.AddPreDamageMod(core.PreDamageMod{
-		Key:    "itto-c6",
-		Expiry: -1,
-		Amount: func(a *core.AttackEvent, t core.Target) ([]float64, bool) {
-			if a.Info.AttackTag != core.AttackTagExtra {
-				return nil, false
-			}
-			return val, true
-		},
-	})
+func (c *char) addStrStack(inc int) {
+	old := c.Tags[strStackKey]
+	v := old + inc
+	if v > 5 {
+		v = 5
+	} else if v < 0 {
+		v = 5
+	}
+	c.Tags[strStackKey] = v
+	if v != old {
+		c.Core.Log.NewEvent("itto gained/lost Superlative Superstrength stacks", glog.LogCharacterEvent, c.Index).
+			Write("old_stacks", old).
+			Write("cur_stacks", v)
+	}
+}
+
+func (c *char) resetChargeState() {
+	c.Core.Events.Subscribe(event.OnActionExec, func(args ...interface{}) bool {
+		act := args[1].(action.Action)
+
+		if act != action.ActionCharge {
+			c.slashState = InvalidSlash
+		}
+
+		return false
+	}, "itto-na-ca-counter-rest")
 }
