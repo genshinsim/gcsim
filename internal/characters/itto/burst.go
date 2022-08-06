@@ -103,7 +103,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(c.c4(), c.burstBuffDuration)
 	}
 
-	c.SetCD(action.ActionBurst, 660) // 11s * 60
+	c.SetCD(action.ActionBurst, 1080) // 18s * 60
 	c.ConsumeEnergy(1)
 
 	return action.ActionInfo{
