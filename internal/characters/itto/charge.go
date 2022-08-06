@@ -43,6 +43,31 @@ const (
 	chargeEndState
 )
 
+var constLookup = map[IttoChargeState]string{
+	defaultToCA0: "defaultToCA0",
+	n1CAFeToCA0:  "n1CAFeToCA0",
+	n2n3ToCA0:    "n2n3ToCA0",
+
+	defaultToCAF: "defaultToCAF",
+	naToCAF:      "naToCAF",
+	CA1CA2ToCAF:  "CA1CA2ToCAF",
+	eToCAF:       "eToCAF",
+
+	defaultToCA1ToCAF: "defaultToCA1ToCAF",
+	naToCA1ToCAF:      "naToCA1ToCAF",
+	CA2ToCA1ToCAF:     "CA2ToCA1ToCAF",
+	eToCA1ToCAF:       "eToCA1ToCAF",
+
+	defaultToCA2ToCAF: "defaultToCA2ToCAF",
+
+	defaultToCA1ToCA2: "defaultToCA1ToCA2",
+	naToCA1ToCA2:      "naToCA1ToCA2",
+	CA2ToCA1ToCA2:     "CA2ToCA1ToCA2",
+	eToCA1ToCA2:       "eToCA1ToCA2",
+
+	defaultToCA2ToCA1: "defaultToCA2ToCA1",
+}
+
 func init() {
 	chargeFrames = make([][]int, chargeEndState)
 
@@ -234,6 +259,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// handle different CA frames
 	state := c.chargeState(lastWasItto, lastAction)
+	c.Core.Log.NewEvent("current itto ca frame state", glog.LogDebugEvent, c.Index).
+		Write("state", constLookup[state])
 
 	// check burst status for radius
 	// TODO: proper hitbox
