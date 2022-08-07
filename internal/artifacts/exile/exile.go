@@ -39,26 +39,36 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 	}
+
+	const buffKey = "exile-4pc"
+	buffDuration := 360 // 6s * 60
+
 	if count >= 4 {
-		// TODO: does multiple exile holders extend the duration?
 		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 			if c.Player.Active() != char.Index {
 				return false
 			}
-			if c.Status.Duration("exile") > 0 {
-				return false
+
+			// TODO: does multiple exile holders extend the duration?
+			// for now: if exile is still ticking on at least one char then reject new exile buff
+			for _, x := range c.Player.Chars() {
+				this := x
+				if this.StatusIsActive(buffKey) {
+					return false
+				}
 			}
-			c.Status.Add("exile", 6*60)
 
 			for _, x := range c.Player.Chars() {
 				this := x
 				if char.Index == this.Index {
 					continue
 				}
+				// add exile status to all party members except holder
+				this.AddStatus(buffKey, buffDuration, true)
 				// 3 ticks
 				for i := 120; i <= 360; i += 120 {
-					//TODO: should this delay be affected by wearer's hitlag?
-					c.Tasks.Add(func() {
+					// exile ticks are affected by hitlag
+					this.QueueCharTask(func() {
 						this.AddEnergy("exile-4pc", 2)
 					}, i)
 				}

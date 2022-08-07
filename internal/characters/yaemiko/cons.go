@@ -11,7 +11,7 @@ func (c *char) c4() {
 	// TODO: does this trigger for yaemiko too? assuming it does
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("yaemiko-c4", 5*60),
+			Base:         modifier.NewBaseWithHitlag("yaemiko-c4", 5*60),
 			AffectedStat: attributes.ElectroP,
 			Amount: func() ([]float64, bool) {
 				return c.c4buff, true

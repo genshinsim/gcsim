@@ -12,6 +12,7 @@ import (
 var attackFrames [][]int
 var attackHitmarks = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
 var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0}, {0.08}}
+var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
 var shunsuikenFrames []int
 
 const normalHitNum = 5
@@ -52,7 +53,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Mult:               mult[c.TalentLvlAttack()],
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
-			CanBeDefenseHalted: true,
+			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
@@ -88,7 +89,7 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 		Mult:               shunsuiken[c.NormalCounter][c.TalentLvlSkill()],
 		HitlagFactor:       0.01,
 		HitlagHaltFrames:   0.03 * 60,
-		CanBeDefenseHalted: true,
+		CanBeDefenseHalted: false,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
 

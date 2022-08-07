@@ -52,6 +52,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
+		const icdKey = "pf-4pc-icd"
+		icd := 18 // 0.3s * 60
 		s.buff = make([]float64, attributes.EndStatType)
 
 		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -62,7 +64,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 				return false
 			}
-			if s.icd > c.F {
+			if char.StatusIsActive(icdKey) {
 				return false
 			}
 			// reset stacks if expired
@@ -75,7 +77,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			s.updateBuff()
 
-			s.icd = c.F + 18
+			char.AddStatus(icdKey, icd, true)
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("pf-4pc", 420),
 				AffectedStat: attributes.NoStat,

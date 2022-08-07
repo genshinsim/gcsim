@@ -28,6 +28,7 @@ func (s *Set) Init() error      { return nil }
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	s.key = fmt.Sprintf("%v-hod-4pc", char.Base.Key.String())
+	buffDuration := 900 // 15s * 60
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -40,6 +41,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 	}
+
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.30
@@ -49,10 +51,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if c.Player.Active() != char.Index {
 				return false
 			}
-			c.Status.Add(s.key, 15*60)
 			// add stat mod here
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag("hod-4pc", 900),
+				Base: modifier.NewBaseWithHitlag("hod-4pc", buffDuration),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 						return nil, false

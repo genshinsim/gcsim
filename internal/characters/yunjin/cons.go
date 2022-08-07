@@ -14,7 +14,7 @@ func (c *char) c2() {
 	m[attributes.DmgP] = .15
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("yunjin-c2", 12*60),
+			Base: modifier.NewBaseWithHitlag("yunjin-c2", 12*60),
 			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if ae.Info.AttackTag == combat.AttackTagNormal {
 					return m, true

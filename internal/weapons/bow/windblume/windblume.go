@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("windblume", 360),
+			Base:         modifier.NewBaseWithHitlag("windblume", 360),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return m, true

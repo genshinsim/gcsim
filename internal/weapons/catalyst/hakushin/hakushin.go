@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				}
 				this := char
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("hakushin-passive", 6*60),
+					Base:         modifier.NewBaseWithHitlag("hakushin-passive", 6*60),
 					AffectedStat: attributes.NoStat,
 					Amount: func() ([]float64, bool) {
 						m[attributes.PyroP] = 0
@@ -71,7 +71,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			}
 			c.Log.NewEvent("hakushin proc'd", glog.LogWeaponEvent, char.Index).
 				Write("trigger", key).
-				Write("expiring", c.F+6*60)
+				Write("expiring (without hitlag)", c.F+6*60)
 			return false
 		}
 	}

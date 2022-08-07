@@ -14,6 +14,10 @@ const normalHitNum = 5
 var attackFrames [][]int
 var attackHitmarks = [][]int{{14}, {9}, {14}, {14, 27}, {34}}
 
+// same between polearm and burst attacks so just use these arrays for both
+var attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0.02}}
+var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
+
 func init() {
 	// NA cancels (polearm)
 	attackFrames = make([][]int, normalHitNum)
@@ -39,20 +43,19 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		return c.swordAttack(p)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:          combat.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		Element:            attributes.Physical,
-		Durability:         25,
-		HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.02s hitlag
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
-	}
-
 	for i, mult := range attack[c.NormalCounter] {
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			Element:            attributes.Physical,
+			Durability:         25,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			HitlagFactor:       0.01,
+			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
+		}
 		ax := ai
 		ax.Mult = mult[c.TalentLvlAttack()]
 		c.QueueCharTask(func() {
@@ -95,20 +98,19 @@ func init() {
 }
 
 func (c *char) swordAttack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		Element:            attributes.Electro,
-		Durability:         25,
-		HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.2s hitlag
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
-	}
-
 	for i, mult := range attackB[c.NormalCounter] {
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
+			AttackTag:          combat.AttackTagElementalBurst,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			Element:            attributes.Electro,
+			Durability:         25,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			HitlagFactor:       0.01,
+			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
+		}
 		// Sword hits are dynamic - group snapshots with damage proc
 		ax := ai
 		ax.Mult = mult[c.TalentLvlBurst()]

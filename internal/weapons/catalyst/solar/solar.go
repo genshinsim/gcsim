@@ -39,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		switch atk.Info.AttackTag {
 		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("solar-na-buff", 6*60),
+				Base: modifier.NewBaseWithHitlag("solar-na-buff", 6*60),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
 					case combat.AttackTagNormal:
@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		case combat.AttackTagNormal:
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("solar-skill-burst-buff", 6*60),
+				Base: modifier.NewBaseWithHitlag("solar-skill-burst-buff", 6*60),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
 					case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:

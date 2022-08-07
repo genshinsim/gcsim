@@ -42,6 +42,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
+		const icdKey = "tf-4pc-icd"
+		icd = 48 // 0.8s * 60
 
 		// add +0.4 reaction damage
 		char.AddReactBonusMod(character.ReactBonusMod{
@@ -67,10 +69,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if c.Player.Active() != char.Index {
 				return false
 			}
-			if icd > c.F {
+			if char.StatusIsActive(icdKey) {
 				return false
 			}
-			icd = c.F + 48
+			char.AddStatus(icdKey, icd, true)
 			char.ReduceActionCooldown(action.ActionSkill, 60)
 			c.Log.NewEvent("thunderfury 4pc proc", glog.LogArtifactEvent, char.Index).
 				Write("reaction", atk.Info.Abil).

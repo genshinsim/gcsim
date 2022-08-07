@@ -39,7 +39,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		d = 18
 	}
 
-	c.Core.Status.Add("thomaburst", d*60)
+	c.AddStatus("thoma-q", d*60, true)
 
 	c.burstProc()
 
@@ -67,21 +67,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 func (c *char) burstProc() {
 	// does not deactivate on death
-	icd := 0
+	const icdKey = "thoma-q-icd"
+	icd := 60 // 1s * 60
 	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t := args[0].(combat.Target)
 		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
-		if c.Core.Status.Duration("thomaburst") == 0 {
+
+		if !c.StatusIsActive("thoma-q") {
 			return false
 		}
-		if icd > c.Core.F {
+		if c.StatusIsActive(icdKey) {
 			c.Core.Log.NewEvent("thoma Q (active) on icd", glog.LogCharacterEvent, c.Index).
 				Write("frame", c.Core.F)
 			return false
 		}
+		c.AddStatus(icdKey, icd, true)
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -113,7 +116,6 @@ func (c *char) burstProc() {
 			Write("char", ae.Info.ActorIndex).
 			Write("attack tag", ae.Info.AttackTag)
 
-		icd = c.Core.F + 60 // once per second
 		return false
 	}, "thoma-burst")
 }
