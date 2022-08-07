@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/queue"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
@@ -31,6 +32,11 @@ func (e *EnemyProfile) Clone() EnemyProfile {
 	return r
 }
 
+type task struct {
+	f     func()
+	delay float64
+}
+
 type Enemy struct {
 	*target.Target
 	*reactable.Reactable
@@ -44,6 +50,11 @@ type Enemy struct {
 
 	//mods
 	mods []modifier.Mod
+
+	//hitlag stuff
+	timePassed   float64
+	frozenFrames float64
+	queue        []queue.Task
 
 	//icd related
 	icdTagOnTimer       [MaxTeamSize][combat.ICDTagLength]bool
@@ -71,11 +82,3 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 }
 
 func (e *Enemy) Type() combat.TargettableType { return combat.TargettableEnemy }
-
-func (e *Enemy) Tick() {
-	//dead enemy don't tick
-	if !e.Target.Alive {
-		return
-	}
-	e.Reactable.Tick()
-}
