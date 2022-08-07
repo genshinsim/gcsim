@@ -32,11 +32,6 @@ func (e *EnemyProfile) Clone() EnemyProfile {
 	return r
 }
 
-type task struct {
-	f     func()
-	delay float64
-}
-
 type Enemy struct {
 	*target.Target
 	*reactable.Reactable
