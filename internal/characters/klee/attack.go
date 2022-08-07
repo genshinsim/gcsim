@@ -10,7 +10,7 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = []int{11, 33, 66}
+var attackHitmarks = []int{16, 23, 37}
 
 const normalHitNum = 3
 
