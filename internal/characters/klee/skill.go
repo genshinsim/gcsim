@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var skillFrames []int
@@ -29,35 +31,28 @@ func init() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	release, ok := p["release"]
 	if !ok {
-		release = 0
+		release = 1
 	}
 
-	if release != 0 {
-		c.throwBomb(p)
-		c.SetCDWithDelay(action.ActionSkill, 1200, 33)
-	}
+	earlyCancel := false
+	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+		next := args[1].(action.AnimationState)
+		if release == 0 && next == action.BurstState {
+			earlyCancel = true
+		}
+		return false
+	}, "klee-skill-cancel")
 
-	adjustedFrames := skillFrames
-	if release == 0 {
-		adjustedFrames := make([]int, len(skillFrames))
-		copy(adjustedFrames, skillFrames)
-		adjustedFrames[action.ActionBurst] = 5
+	type attackData struct {
+		ai   combat.AttackInfo
+		snap combat.Snapshot
 	}
-
-	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(adjustedFrames),
-		AnimationLength: adjustedFrames[action.InvalidAction],
-		CanQueueAfter:   0,
-		State:           action.SkillState,
-	}
-}
-
-func (c *char) throwBomb(p map[string]int) {
 	bounce, ok := p["bounce"]
 	if !ok {
 		bounce = 1
 	}
-	for i := 0; i < bounce; i++ {
+	bounceAttacks := make([]attackData, bounce)
+	for i := range bounceAttacks {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Jumpy Dumpty",
@@ -69,31 +64,21 @@ func (c *char) throwBomb(p map[string]int) {
 			Durability: 25,
 			Mult:       jumpy[c.TalentLvlSkill()],
 		}
-
 		// 3rd bounce is 2B
 		if i == 2 {
 			ai.Durability = 50
 		}
-
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-			0,
-			bounceHitmarks[i],
-			c.a1,
-		)
+		bounceAttacks[i] = attackData{
+			ai:   ai,
+			snap: c.Snapshot(&ai),
+		}
 	}
-
-	if bounce > 0 {
-		c.Core.QueueParticle("klee", 4, attributes.Pyro, 30+c.Core.Flags.ParticleDelay)
-	}
-
 	minehits, ok := p["mine"]
 	if !ok {
 		minehits = 2
 	}
-
-	ai := combat.AttackInfo{
+	mineAttacks := make([]attackData, minehits)
+	mineAi := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Jumpy Dumpty Mine Hit",
 		AttackTag:          combat.AttackTagElementalArt,
@@ -106,16 +91,54 @@ func (c *char) throwBomb(p map[string]int) {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-
-	for i := 0; i < minehits; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
-			0,
-			mineHitmark,
-			c.c2,
-		)
+	for i := range mineAttacks {
+		mineAttacks[i] = attackData{
+			ai:   mineAi,
+			snap: c.Snapshot(&mineAi),
+		}
 	}
 
-	c.c1(bounceHitmarks[0])
+	cooldownDelay := 33
+	c.Core.Tasks.Add(func() {
+		c.Core.Events.Unsubscribe(event.OnStateChange, "klee-skill-cancel")
+		if earlyCancel {
+			return
+		}
+		if release == 0 {
+			c.Core.Log.NewEvent("attempted klee skill cancel without burst", glog.LogWarnings, -1)
+		}
+		for i, data := range bounceAttacks {
+			c.Core.QueueAttackWithSnap(data.ai, data.snap,
+				combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+				bounceHitmarks[i]-cooldownDelay,
+				c.a1,
+			)
+		}
+		for _, data := range mineAttacks {
+			c.Core.QueueAttackWithSnap(data.ai, data.snap,
+				combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+				mineHitmark-cooldownDelay,
+				c.c2,
+			)
+		}
+		c.c1(bounceHitmarks[0] - cooldownDelay)
+		if bounce > 0 {
+			c.Core.QueueParticle("klee", 4, attributes.Pyro, (bounceHitmarks[0]-cooldownDelay)+c.Core.Flags.ParticleDelay)
+		}
+	}, cooldownDelay)
+	c.SetCD(action.ActionSkill, 1233)
+
+	adjustedFrames := skillFrames
+	if release == 0 {
+		adjustedFrames = make([]int, len(skillFrames))
+		copy(adjustedFrames, skillFrames)
+		adjustedFrames[action.ActionBurst] = 5
+	}
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(adjustedFrames),
+		AnimationLength: adjustedFrames[action.InvalidAction],
+		CanQueueAfter:   0,
+		State:           action.SkillState,
+	}
 }
