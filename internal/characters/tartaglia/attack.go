@@ -74,8 +74,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 }
 
 var (
-	meleeFrames   [][]int
-	meleeHitmarks = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 16}}
+	meleeFrames           [][]int
+	meleeHitmarks         = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 16}}
+	meleeHitlagHaltFrames = [][]float64{{0.03}, {0.03}, {0.06}, {0.06}, {0.06}, {0.03, 0.12}}
 )
 
 func init() {
@@ -104,30 +105,32 @@ func init() {
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
 func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
-		Element:    attributes.Hydro,
-		Durability: 25,
-	}
-
 	runningFrames := 0
 	for i, mult := range eAttack[c.NormalCounter] {
-		ai.Mult = mult[c.TalentLvlSkill()]
+		ai := combat.AttackInfo{
+			ActorIndex:       c.Index,
+			Abil:             fmt.Sprintf("Normal %v", c.NormalCounter),
+			AttackTag:        combat.AttackTagNormal,
+			ICDTag:           combat.ICDTagNormalAttack,
+			ICDGroup:         combat.ICDGroupDefault,
+			StrikeType:       combat.StrikeTypeSlash,
+			Element:          attributes.Hydro,
+			Durability:       25,
+			HitlagFactor:     0.01,
+			HitlagHaltFrames: meleeHitlagHaltFrames[c.NormalCounter][i] * 60,
+			Mult:             mult[c.TalentLvlSkill()],
+		}
 		hitmark := runningFrames + meleeHitmarks[c.NormalCounter][i]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), .5, false, combat.TargettableEnemy),
-			hitmark,
-			hitmark,
-			// TODO: what's the ordering on these 2 callbacks?
-			c.meleeApplyRiptide, // call back for applying riptide
-			c.rtSlashCallback,   // call back for triggering slash
-		)
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHit(c.Core.Combat.Player(), .5, false, combat.TargettableEnemy),
+				0,
+				0,
+				c.meleeApplyRiptide, // riptide can trigger on the same hit that applies
+				c.rtSlashCallback,
+			)
+		}, hitmark)
 		runningFrames = hitmark
 	}
 
