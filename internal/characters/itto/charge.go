@@ -227,12 +227,15 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// increase atkspd
 	c.a1Update(c.slashState)
 
+	// required for the frames func
+	curSlash := c.slashState
+
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			f := chargeFrames[c.slashState][next]
+			f := chargeFrames[curSlash][next]
 			// handle CA1/CA2 -> CAF frames
-			if next == action.ActionCharge && c.slashState.Next(c.Tags[strStackKey]) == FinalSlash {
-				switch c.slashState {
+			if next == action.ActionCharge && curSlash.Next(c.Tags[strStackKey]) == FinalSlash {
+				switch curSlash {
 				case LeftSlash: // CA1 -> CAF
 					f = 59
 				case RightSlash: // CA2 -> CAF
@@ -241,8 +244,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			}
 			return frames.AtkSpdAdjust(f-windup, c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: chargeFrames[c.slashState][action.InvalidAction] - windup,
-		CanQueueAfter:   chargeHitmarks[c.slashState] - windup,
+		AnimationLength: chargeFrames[curSlash][action.InvalidAction] - windup,
+		CanQueueAfter:   chargeHitmarks[curSlash] - windup,
 		State:           action.ChargeAttackState,
 	}
 }

@@ -71,9 +71,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			// if next is CA1/CA2
-			if next == action.ActionCharge && c.Tags[strStackKey] > 0 {
-				return 28
+			// if next is CA1/CAF
+			if next == action.ActionCharge {
+				switch InvalidSlash.Next(c.Tags[strStackKey]) {
+				case LeftSlash, FinalSlash:
+					return 28
+				}
 			}
 			return skillFrames[next]
 		},

@@ -92,11 +92,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			// check if next is CA0. NA4->CA0 doesn't exist
-			if next == action.ActionCharge && c.slashState.Next(c.Tags[strStackKey]) == SaichiSlash {
+			if next == action.ActionCharge && InvalidSlash.Next(c.Tags[strStackKey]) == SaichiSlash {
 				// assume InvalidAction is CA0 frames
 				next = action.InvalidAction
 				// CA0 after the last NA is illegal. so return 500
-				if n == normalHitNum-1 {
+				if n == c.NormalHitNum-1 {
 					return 500
 				}
 			}
