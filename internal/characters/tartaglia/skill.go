@@ -12,14 +12,23 @@ import (
 var skillMeleeFrames []int
 var skillRangedFrames []int
 
-const skillHitmark = 28
+const skillHitmark = 16
 
 func init() {
 	// skill (melee) -> x
-	skillMeleeFrames = frames.InitAbilSlice(20)
+	skillMeleeFrames = frames.InitAbilSlice(18)
+	skillMeleeFrames[action.ActionAttack] = 17
+	skillMeleeFrames[action.ActionBurst] = 18
+	skillMeleeFrames[action.ActionDash] = 17
+	skillMeleeFrames[action.ActionJump] = 17
+	skillMeleeFrames[action.ActionSwap] = 16
 
 	// skill (ranged) -> x
-	skillRangedFrames = frames.InitAbilSlice(28)
+	skillRangedFrames = frames.InitAbilSlice(39)
+	skillRangedFrames[action.ActionAttack] = 19
+	skillRangedFrames[action.ActionBurst] = 19
+	skillRangedFrames[action.ActionDash] = 19
+	skillRangedFrames[action.ActionJump] = 21
 }
 
 //Cast: AoE strong hydro damage
@@ -62,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.ResetNormalCounter()
 		}
 	}, 30*60)
-	c.SetCD(action.ActionSkill, 60)
+	c.SetCDWithDelay(action.ActionSkill, 60, 14)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillRangedFrames),
