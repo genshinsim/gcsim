@@ -77,7 +77,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.c1(bounceHitmarks[0])
 
-	c.SetCD(action.ActionSkill, 1200)
+	c.SetCDWithDelay(action.ActionSkill, 1200, 33)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
