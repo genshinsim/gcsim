@@ -5,8 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var chargeFrames []int
@@ -80,63 +78,5 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		AnimationLength: paramitaChargeFrames[action.InvalidAction],
 		CanQueueAfter:   paramitaChargeHitmark,
 		State:           action.ChargeAttackState,
-	}
-}
-
-func (c *char) applyBB(a combat.AttackCB) {
-	if !c.StatModIsActive(paramitaBuff) {
-		return
-	}
-	trg, ok := a.Target.(*enemy.Enemy)
-	if !ok {
-		return
-	}
-	if !trg.StatusIsActive(bbDebuff) {
-		//start ticks
-		trg.QueueEnemyTask(c.bbtickfunc(c.Core.F, trg), 240)
-		trg.SetTag(bbDebuff, c.Core.F) //to track current bb source
-	}
-
-	trg.AddStatus(bbDebuff, 570, true) //lasts 8s + 1.5s
-}
-
-func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
-	return func() {
-		//do nothing if source changed
-		if trg.Tags[bbDebuff] != src {
-			return
-		}
-		if !trg.StatusIsActive(bbDebuff) {
-			return
-		}
-		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index).
-			Write("src", src)
-
-		//queue up one damage instance
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Blood Blossom",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Pyro,
-			Durability: 25,
-			Mult:       bb[c.TalentLvlSkill()],
-		}
-		//if cons 2, add flat dmg
-		if c.Base.Cons >= 2 {
-			ai.FlatDmg += c.MaxHP() * 0.1
-		}
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(trg.Index(), combat.TargettableEnemy), 0, 0)
-
-		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).
-				Write("next expected tick", c.Core.F+240).
-				Write("dur", trg.StatusExpiry(bbDebuff)).
-				Write("src", src)
-		}
-		//queue up next instance
-		c.Core.Tasks.Add(c.bbtickfunc(src, trg), 240)
 	}
 }

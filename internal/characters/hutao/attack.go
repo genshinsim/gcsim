@@ -37,6 +37,10 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
+	if c.StatModIsActive(paramitaBuff) {
+		return c.ppAttack(p)
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -70,7 +74,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) ppAttackFrames(next action.Action) int {
-
+	//TODO: figure out how hitlag works here
+	return 0
 }
 
 func (c *char) ppAttack(p map[string]int) action.ActionInfo {

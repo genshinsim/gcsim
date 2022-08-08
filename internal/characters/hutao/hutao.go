@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
@@ -21,8 +22,12 @@ type char struct {
 	a1buff  []float64
 	a4buff  []float64
 	ppbuff  []float64
+	c4buff  []float64
 	c6icd   int
 	applyA1 bool
+
+	burstHealCount  int
+	burstHealAmount player.HealInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
@@ -50,6 +55,10 @@ func (c *char) Init() error {
 
 	c.a4()
 
+	if c.Base.Cons > 4 {
+		c.c4()
+	}
+
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
@@ -69,7 +78,7 @@ func (c *char) onExitField() {
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.Core.Status.Duration("paramita") > 0 && c.Base.Cons >= 1 {
+		if c.StatModIsActive(paramitaBuff) && c.Base.Cons >= 1 {
 			return 0
 		}
 		return 25
