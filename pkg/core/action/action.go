@@ -49,19 +49,15 @@ func (a *ActionInfo) Tick() bool {
 	//execute all action such that timePassed > delay, and then remove from
 	//slice
 	n := -1
-	for i := range a.queued {
+	for i := 0; i < len(a.queued); i++ {
 		if a.queued[i].delay <= a.TimePassed {
 			a.queued[i].f()
 		} else {
-			n = i
-			break
+			a.queued[n] = a.queued[i]
+			n++
 		}
 	}
-	if n == -1 {
-		a.queued = nil
-	} else {
-		a.queued = a.queued[n:]
-	}
+	a.queued = a.queued[:n]
 
 	//check if animation is over
 	if a.TimePassed > float64(a.AnimationLength) {
