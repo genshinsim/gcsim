@@ -11,8 +11,9 @@ import (
 )
 
 var (
-	attackFrames   [][]int
-	attackHitmarks = []int{16, 23, 37}
+	attackFrames    [][]int
+	attackHitmarks  = []int{16, 23, 37}
+	attackCancelKey = "klee-attack-cancel"
 )
 
 const normalHitNum = 3
@@ -70,6 +71,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	earlyTrigger := false
 	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+		if earlyTrigger {
+			return false
+		}
 		switch args[1].(action.AnimationState) {
 		case action.SkillState,
 			action.BurstState,
@@ -79,26 +83,26 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			earlyTrigger = true
 		}
 		return false
-	}, "klee-na-cancel")
+	}, attackCancelKey)
 	animationLag := func() int {
 		lastAction := &c.Core.Player.LastAction
-		if (lastAction.Char == c.Index) {
-			switch (lastAction.Type) { // if Klee does either of these, N1 will take 9f longer
-				case action.ActionDash,
-					action.ActionSkill,
-					action.ActionBurst:
-						return 9
+		if lastAction.Char == c.Index {
+			switch lastAction.Type { // if Klee does either of these, N1 will take 9f longer
+			case action.ActionDash,
+				action.ActionSkill,
+				action.ActionBurst:
+				return 9
 			}
 		}
 		return 0
 	}()
 	c.Core.Tasks.Add(func() {
-		c.Core.Events.Unsubscribe(event.OnStateChange, "klee-na-cancel")
+		c.Core.Events.Unsubscribe(event.OnStateChange, attackCancelKey)
 		if earlyTrigger {
 			return
 		}
 		doDamage()
-	}, attackHitmarks[c.NormalCounter] + animationLag)
+	}, attackHitmarks[c.NormalCounter]+animationLag)
 
 	defer c.AdvanceNormalIndex()
 
@@ -110,13 +114,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			copy(adjustedFrames[i], attackFrames[i])
 		}
 		for i := range attackFrames[0] {
-			switch (action.Action(i)) {
-				case action.ActionBurst,
+			switch action.Action(i) {
+			case action.ActionBurst,
 				action.ActionDash,
 				action.ActionJump,
 				action.ActionSkill:
-				default:
-					adjustedFrames[0][i] += animationLag
+			default:
+				adjustedFrames[0][i] += animationLag
 			}
 		}
 	}
