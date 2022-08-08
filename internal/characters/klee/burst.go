@@ -11,10 +11,15 @@ import (
 )
 
 var burstFrames []int
+var waveHitmarks []int
 
-const burstStart = 101
+const burstStart = 146
 
 func init() {
+	waveHitmarks = make([]int, 6)
+	for i, f := range []int{0, 108, 215, 317, 424, 532} {
+		waveHitmarks[i] = 186 + f
+	}
 	burstFrames = frames.InitAbilSlice(139)
 	burstFrames[action.ActionDash] = 102
 	burstFrames[action.ActionJump] = 102
@@ -37,7 +42,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 	//lasts 10 seconds, starts after 2.2 seconds maybe?
-	c.Core.Status.Add("kleeq", 600+132)
+	c.Core.Status.Add("kleeq", 600+burstStart)
 
 	//every 1.8 second +on added shoots between 3 to 5, ignore the queue thing.. space it out .2 between each wave i guess
 
@@ -47,7 +52,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		snap = c.Snapshot(&ai)
 	}, 100)
 
-	for i := 132; i < 732; i += 108 {
+	for _, start := range waveHitmarks {
 		c.Core.Tasks.Add(func() {
 			//no more if burst has ended early
 			if c.Core.Status.Duration("kleeq") <= 0 {
@@ -65,7 +70,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if c.Core.Rand.Float64() < 0.5 {
 				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 24)
 			}
-		}, i)
+		}, start)
 	}
 
 	//every 3 seconds add energy if c6
