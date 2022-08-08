@@ -11,11 +11,14 @@ import (
 
 var skillMeleeFrames []int
 var skillMeleeWalkFrames []int
+var skillMeleeDashFrames []int
 var skillRangedFrames []int
 var skillRangedWalkFrames []int
+var skillRangedDashFrames []int
 
 const skillHitmark = 16
 const skillWalkHitmark = 3
+const skillDashHitmark = 3
 
 func init() {
 	// skill (melee) -> x
@@ -30,6 +33,11 @@ func init() {
 	skillMeleeWalkFrames[action.ActionBurst] = 5
 	skillMeleeWalkFrames[action.ActionDash] = 6
 	skillMeleeWalkFrames[action.ActionJump] = skillWalkHitmark
+	skillMeleeDashFrames = frames.InitAbilSlice(23)
+	skillMeleeDashFrames[action.ActionAttack] = 13
+	skillMeleeDashFrames[action.ActionBurst] = 16
+	skillMeleeDashFrames[action.ActionDash] = 22
+	skillMeleeDashFrames[action.ActionJump] = skillDashHitmark
 	// skill (ranged) -> x
 	skillRangedFrames = frames.InitAbilSlice(39)
 	skillRangedFrames[action.ActionAttack] = 19
@@ -41,6 +49,11 @@ func init() {
 	skillRangedWalkFrames[action.ActionBurst] = 4
 	skillRangedWalkFrames[action.ActionDash] = 5
 	skillRangedWalkFrames[action.ActionJump] = 4
+	skillRangedDashFrames = frames.InitAbilSlice(24)
+	skillRangedDashFrames[action.ActionAttack] = 17
+	skillRangedDashFrames[action.ActionBurst] = 17
+	skillRangedDashFrames[action.ActionDash] = 22
+	skillRangedDashFrames[action.ActionJump] = 3
 }
 
 //Cast: AoE strong hydro damage
@@ -51,8 +64,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.ResetNormalCounter()
 		adjustedFrames := skillMeleeFrames
 		lastAction := &c.Core.Player.LastAction
-		if (lastAction.Char == c.Index && lastAction.Type == action.ActionWalk) {
-			adjustedFrames = skillMeleeWalkFrames
+		if (lastAction.Char == c.Index) {
+			switch lastAction.Type {
+			case action.ActionWalk:
+				adjustedFrames = skillMeleeWalkFrames
+			case action.ActionDash:
+				adjustedFrames = skillMeleeDashFrames
+			}
 		}
 		return action.ActionInfo{
 			Frames:          frames.NewAbilFunc(adjustedFrames),
@@ -82,7 +100,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hitmark := skillHitmark
 	lastAction := &c.Core.Player.LastAction
 	if (lastAction.Char == c.Index && lastAction.Type == action.ActionWalk) {
-		hitmark = skillWalkHitmark
+		switch lastAction.Type {
+		case action.ActionWalk:
+			hitmark = skillWalkHitmark
+		case action.ActionDash:
+			hitmark = skillDashHitmark
+		}
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
 
@@ -96,8 +119,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, 60, 14)
 
 	adjustedFrames := skillRangedFrames
-	if (lastAction.Char == c.Index && lastAction.Type == action.ActionWalk) {
-		adjustedFrames = skillRangedWalkFrames
+	if (lastAction.Char == c.Index) {
+		switch lastAction.Type {
+			case action.ActionWalk:
+				adjustedFrames = skillRangedWalkFrames
+			case action.ActionDash:
+				adjustedFrames = skillRangedDashFrames
+		}
 	}
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(adjustedFrames),
