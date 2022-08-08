@@ -10,15 +10,15 @@ import (
 
 var aimedFrames []int
 
-const aimedHitmark = 84
+const aimedHitmark = 86
 
 func init() {
-	aimedFrames = frames.InitAbilSlice(84)
+	aimedFrames = frames.InitAbilSlice(94)
 	aimedFrames[action.ActionDash] = aimedHitmark
 	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
-//Once fully charged, deal Hydro DMG and apply the Riptide status.
+// Once fully charged, deal Hydro DMG and apply the Riptide status.
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if c.Core.Status.Duration("tartagliamelee") > 0 {
 		c.Core.Log.NewEvent("aim called when not in ranged stance", glog.LogActionEvent, c.Index).
@@ -55,9 +55,9 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 		aimedHitmark,
 		aimedHitmark+travel,
-		//TODO: what's the ordering on these 2 callbacks?
-		c.rtFlashCallback,   //call back for triggering slash
-		c.aimedApplyRiptide, //call back for applying riptide
+		// TODO: what's the ordering on these 2 callbacks?
+		c.rtFlashCallback,   // call back for triggering slash
+		c.aimedApplyRiptide, // call back for applying riptide
 	)
 
 	return action.ActionInfo{
