@@ -64,10 +64,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	adjustedFrames := windupFrames
 	lastAction := &c.Core.Player.LastAction
 	if lastAction.Char == c.Index {
-		switch lastAction.Type {
-		case action.ActionAttack,
-			action.ActionCharge,
-			action.ActionSkill:
+		if (lastAction.Type == action.ActionAttack && c.NormalCounter < 2) || lastAction.Type == action.ActionSkill {
 			adjustedHitmark = chargeHitmark
 			adjustedFrames = chargeFrames
 		}
