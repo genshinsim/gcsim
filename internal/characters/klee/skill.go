@@ -1,6 +1,8 @@
 package klee
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -125,8 +127,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if bounce > 0 {
 			c.Core.QueueParticle("klee", 4, attributes.Pyro, (bounceHitmarks[0]-cooldownDelay)+c.Core.Flags.ParticleDelay)
 		}
+		c.SetCD(action.ActionSkill, 1200)
 	}, cooldownDelay)
-	c.SetCD(action.ActionSkill, 1233)
 
 	adjustedFrames := skillFrames
 	if release == 0 {
@@ -135,10 +137,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		adjustedFrames[action.ActionBurst] = 5
 	}
 
+	canQueueAfter := math.MaxInt32
+	for _, f := range adjustedFrames {
+		if f < canQueueAfter {
+			canQueueAfter = f
+		}
+	}
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(adjustedFrames),
 		AnimationLength: adjustedFrames[action.InvalidAction],
-		CanQueueAfter:   0,
+		CanQueueAfter:   canQueueAfter,
 		State:           action.SkillState,
 	}
 }
