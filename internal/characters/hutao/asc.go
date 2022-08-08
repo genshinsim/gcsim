@@ -6,41 +6,42 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	a1BuffKey = "hutao-a1"
+)
+
 func (c *char) a1() {
 	if !c.applyA1 {
 		return
 	}
 	c.applyA1 = false
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.CR] = 0.12
 	for i, char := range c.Core.Player.Chars() {
 		//does not affect hutao
 		if c.Index == i {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("hutao-a1", 480),
+			Base:         modifier.NewBaseWithHitlag(a1BuffKey, 480),
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
-				return m, true
+				return c.a1buff, true
 			},
 		})
 	}
 }
 
 func (c *char) a4() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.PyroP] = 0.33
+	//TODO: in game this is actually a check every 0.3s. if hp is < 50% then buff is active until
+	//the next time check takes places
+	c.a4buff = make([]float64, attributes.EndStatType)
+	c.a4buff[attributes.PyroP] = 0.33
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("hutao-a4", -1),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Status.Duration("paramita") == 0 {
-				return nil, false
-			}
 			if c.HPCurrent/c.MaxHP() <= 0.5 {
-				return m, true
+				return c.a4buff, true
 			}
 			return nil, false
 		},

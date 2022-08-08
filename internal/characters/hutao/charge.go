@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var chargeFrames []int
@@ -32,42 +34,8 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
-	var hitmark int
-	var act action.ActionInfo
-	var bbcb combat.AttackCBFunc
-
-	if c.Core.Status.Duration("paramita") > 0 {
-		//[3:56 PM] Isu: My theory is that since E changes attack animations, it was coded
-		//to not expire during any attack animation to simply avoid the case of potentially
-		//trying to change animations mid-attack, but not sure how to fully test that
-		//[4:41 PM] jstern25| ₼WHO_SUPREMACY: this mostly checks out
-		//her e can't expire during q as well
-		if paramitaChargeHitmark > c.Core.Status.Duration("paramita") {
-			c.Core.Status.Add("paramita", paramitaChargeHitmark)
-			// c.S.Status["paramita"] = c.Core.F + f //extend this to barely cover the burst
-		}
-		bbcb = c.applyBB
-		//charge land 182, tick 432, charge 632, tick 675
-		//charge land 250, tick 501, charge 712, tick 748
-
-		//e cast at 123, animation ended 136 should end at 664 if from cast or 676 if from animation end, tick at 748 still buffed?
-
-		// adjust frames in paramita state
-		hitmark = chargeHitmark
-		act = action.ActionInfo{
-			Frames:          frames.NewAbilFunc(paramitaChargeFrames),
-			AnimationLength: paramitaChargeFrames[action.InvalidAction],
-			CanQueueAfter:   hitmark,
-			State:           action.ChargeAttackState,
-		}
-	} else {
-		hitmark = paramitaChargeHitmark
-		act = action.ActionInfo{
-			Frames:          frames.NewAbilFunc(chargeFrames),
-			AnimationLength: chargeFrames[action.InvalidAction],
-			CanQueueAfter:   hitmark,
-			State:           action.ChargeAttackState,
-		}
+	if c.StatModIsActive(paramitaBuff) {
+		return c.ppChargeAttack(p)
 	}
 
 	//check for particles
@@ -82,7 +50,93 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), hitmark, hitmark, c.ppParticles, bbcb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, chargeHitmark, c.ppParticles, c.applyBB)
 
-	return act
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(chargeFrames),
+		AnimationLength: chargeFrames[action.InvalidAction],
+		CanQueueAfter:   chargeHitmark,
+		State:           action.ChargeAttackState,
+	}
+}
+
+func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
+	//TODO: currently assuming snapshot is on cast since it's a bullet and nothing implemented re "pp slide"
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge Attack",
+		AttackTag:  combat.AttackTagExtra,
+		ICDTag:     combat.ICDTagExtraAttack,
+		ICDGroup:   combat.ICDGroupPole,
+		StrikeType: combat.StrikeTypeSlash,
+		Element:    attributes.Physical,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+	}
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, paramitaChargeHitmark, c.ppParticles, c.applyBB)
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(paramitaChargeFrames),
+		AnimationLength: paramitaChargeFrames[action.InvalidAction],
+		CanQueueAfter:   paramitaChargeHitmark,
+		State:           action.ChargeAttackState,
+	}
+}
+
+func (c *char) applyBB(a combat.AttackCB) {
+	if !c.StatModIsActive(paramitaBuff) {
+		return
+	}
+	trg, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
+	if !trg.StatusIsActive(bbDebuff) {
+		//start ticks
+		trg.QueueEnemyTask(c.bbtickfunc(c.Core.F, trg), 240)
+		trg.SetTag(bbDebuff, c.Core.F) //to track current bb source
+	}
+
+	trg.AddStatus(bbDebuff, 570, true) //lasts 8s + 1.5s
+}
+
+func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
+	return func() {
+		//do nothing if source changed
+		if trg.Tags[bbDebuff] != src {
+			return
+		}
+		if !trg.StatusIsActive(bbDebuff) {
+			return
+		}
+		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index).
+			Write("src", src)
+
+		//queue up one damage instance
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Blood Blossom",
+			AttackTag:  combat.AttackTagElementalArt,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Pyro,
+			Durability: 25,
+			Mult:       bb[c.TalentLvlSkill()],
+		}
+		//if cons 2, add flat dmg
+		if c.Base.Cons >= 2 {
+			ai.FlatDmg += c.MaxHP() * 0.1
+		}
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(trg.Index(), combat.TargettableEnemy), 0, 0)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).
+				Write("next expected tick", c.Core.F+240).
+				Write("dur", trg.StatusExpiry(bbDebuff)).
+				Write("src", src)
+		}
+		//queue up next instance
+		c.Core.Tasks.Add(c.bbtickfunc(src, trg), 240)
+	}
 }
