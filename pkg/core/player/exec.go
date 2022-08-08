@@ -114,7 +114,6 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			State:           action.SwapState,
 		}
 		x.QueueAction(p.swap(k), p.Delays.Swap)
-		x.CacheFrames()
 		p.SetActionUsed(p.active, t, &x)
 		p.LastAction.Type = t
 		p.LastAction.Param = param
@@ -153,7 +152,6 @@ func (p *Handler) useAbility(
 		p.Events.Emit(state)
 	}
 	info := f(param)
-	info.CacheFrames()
 	p.SetActionUsed(p.active, t, &info)
 	if info.FramePausedOnHitlag == nil {
 		info.FramePausedOnHitlag = p.ActiveChar().FramePausedOnHitlag

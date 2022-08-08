@@ -10,8 +10,7 @@ type ActionInfo struct {
 	FramePausedOnHitlag func() bool `json:"-"`
 	OnRemoved           func()      `json:"-"`
 	//following are exposed only so we can log it properly
-	CachedFrames [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
-	TimePassed   float64
+	TimePassed float64
 	//hidden stuff
 	queued []queuedAction
 }
@@ -19,12 +18,6 @@ type ActionInfo struct {
 type queuedAction struct {
 	f     func()
 	delay float64
-}
-
-func (a *ActionInfo) CacheFrames() {
-	for i := range a.CachedFrames {
-		a.CachedFrames[i] = a.Frames(Action(i))
-	}
 }
 
 func (a *ActionInfo) QueueAction(f func(), delay int) {
@@ -40,7 +33,7 @@ func (a *ActionInfo) CanUse(next Action) bool {
 	if a.FramePausedOnHitlag != nil && a.FramePausedOnHitlag() {
 		return false
 	}
-	return a.TimePassed >= float64(a.CachedFrames[next])
+	return a.TimePassed >= float64(a.Frames(next))
 }
 
 func (a *ActionInfo) AnimationState() AnimationState {
@@ -101,7 +94,7 @@ const (
 	ActionWait // character should stand around and wait
 	EndActionType
 	//these are only used for frames purposes and that's why it's after end
-	ActionSkillHoldFramesOnly
+	// ActionSkillHoldFramesOnly
 )
 
 var astr = []string{
