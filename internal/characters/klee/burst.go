@@ -15,7 +15,11 @@ var burstFrames []int
 const burstStart = 101
 
 func init() {
-	burstFrames = frames.InitAbilSlice(101)
+	burstFrames = frames.InitAbilSlice(139)
+	burstFrames[action.ActionDash] = 102
+	burstFrames[action.ActionJump] = 102
+	burstFrames[action.ActionWalk] = 102
+	burstFrames[action.ActionSwap] = 100
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
