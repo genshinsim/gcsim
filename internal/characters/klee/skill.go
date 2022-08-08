@@ -9,7 +9,8 @@ import (
 
 var skillFrames []int
 
-const skillStart = 67
+var bounceHitmarks = []int{71, 111, 140}
+const mineHitmark = 240
 
 func init() {
 	skillFrames = frames.InitAbilSlice(67)
@@ -43,7 +44,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			ai.Durability = 50
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, skillStart+30+i*40, c.a1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, bounceHitmarks[i], c.a1)
 	}
 
 	if bounce > 0 {
@@ -71,17 +72,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	//roughly 160 frames after mines are laid
 	for i := 0; i < minehits; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, skillStart+160, c.c2)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, mineHitmark, c.c2)
 	}
 
-	c.c1(skillStart + 30)
+	c.c1(bounceHitmarks[0])
 
 	c.SetCD(action.ActionSkill, 1200)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillStart,
+		CanQueueAfter:   bounceHitmarks[0],
 		State:           action.SkillState,
 	}
 }
