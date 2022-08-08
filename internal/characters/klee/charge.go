@@ -8,19 +8,29 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var chargeFrames []int
+var (
+	chargeFrames []int
+	windupFrames []int
+)
 
-const chargeHitmark = 76
+const (
+	chargeHitmark = 76
+	windupHitmark = chargeHitmark - 14
+)
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(113)
-	chargeFrames[action.ActionAttack] = 59
-	chargeFrames[action.ActionCharge] = 59
-	chargeFrames[action.ActionSkill] = 59
-	chargeFrames[action.ActionBurst] = 59
-	chargeFrames[action.ActionDash] = 31
-	chargeFrames[action.ActionJump] = 30
-	chargeFrames[action.ActionSwap] = 104
+	windupFrames = frames.InitAbilSlice(113)
+	windupFrames[action.ActionAttack] = 59
+	windupFrames[action.ActionCharge] = 59
+	windupFrames[action.ActionSkill] = 59
+	windupFrames[action.ActionBurst] = 59
+	windupFrames[action.ActionDash] = 31
+	windupFrames[action.ActionJump] = 30
+	windupFrames[action.ActionSwap] = 104
+	chargeFrames = make([]int, len(windupFrames))
+	for i := range windupFrames {
+		chargeFrames[i] = windupFrames[i] - 14
+	}
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -40,8 +50,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	//stam is calculated before this func is called so it's safe to
-	//set spark to 0 here
+	// stam is calculated before this func is called so it's safe to
+	// set spark to 0 here
 	snap := c.Snapshot(&ai)
 	if c.Core.Status.Duration("kleespark") > 0 {
 		snap.Stats[attributes.DmgP] += .50
@@ -50,14 +60,31 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Write("icd", c.sparkICD)
 	}
 
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), chargeHitmark+travel)
+	adjustedHitmark := windupHitmark
+	adjustedFrames := windupFrames
+	lastAction := &c.Core.Player.LastAction
+	if lastAction.Char == c.Index {
+		switch lastAction.Type {
+		case action.ActionAttack,
+			action.ActionCharge,
+			action.ActionSkill:
+			adjustedHitmark = chargeHitmark
+			adjustedFrames = chargeFrames
+		}
+	}
+	c.Core.QueueAttackWithSnap(
+		ai,
+		snap,
+		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+		adjustedHitmark+travel,
+	)
 
-	c.c1(chargeHitmark + travel)
+	c.c1(adjustedHitmark + travel)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		Frames:          frames.NewAbilFunc(adjustedFrames),
+		AnimationLength: adjustedFrames[action.InvalidAction],
+		CanQueueAfter:   0,
 		State:           action.ChargeAttackState,
 	}
 }
