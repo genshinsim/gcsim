@@ -9,12 +9,15 @@ import (
 )
 
 var chargeFrames []int
-var chargeHitmarks = []int{71, 73}
+var chargeHitmarks = []int{14, 13}
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(73)
-	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames = frames.InitAbilSlice(55)
+	chargeFrames[action.ActionSkill] = 29
+	chargeFrames[action.ActionBurst] = 29
+	chargeFrames[action.ActionDash] = 14
+	chargeFrames[action.ActionJump] = 15
+	chargeFrames[action.ActionSwap] = 52
 }
 
 // since E is aoe, so this should be considered aoe too
@@ -49,16 +52,19 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		HitWeakPoint: hitWeakPoint != 0,
 	}
 
+	runningFrames := 0
 	for i, mult := range eCharge {
+		hitmark := runningFrames + chargeHitmarks[i]
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
-			chargeHitmarks[i],
-			chargeHitmarks[i],
+			hitmark,
+			hitmark,
 			c.meleeApplyRiptide, //call back for applying riptide
 			c.rtSlashCallback,   //call back for triggering slash
 		)
+		runningFrames = hitmark
 	}
 
 	return action.ActionInfo{
