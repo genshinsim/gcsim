@@ -8,29 +8,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var (
-	chargeFrames []int
-	windupFrames []int
-)
+var chargeFrames []int
 
 const (
-	windupHitmark = 76
-	chargeHitmark = windupHitmark - 14
+	chargeHitmark = 76
 )
 
 func init() {
-	windupFrames = frames.InitAbilSlice(113)
-	windupFrames[action.ActionAttack] = 59
-	windupFrames[action.ActionCharge] = 59
-	windupFrames[action.ActionSkill] = 59
-	windupFrames[action.ActionBurst] = 59
-	windupFrames[action.ActionDash] = 31
-	windupFrames[action.ActionJump] = 30
-	windupFrames[action.ActionSwap] = 104
-	chargeFrames = make([]int, len(windupFrames))
-	for i := range windupFrames {
-		chargeFrames[i] = windupFrames[i] - 14
-	}
+	chargeFrames = frames.InitAbilSlice(113)
+	chargeFrames[action.ActionAttack] = 59
+	chargeFrames[action.ActionCharge] = 59
+	chargeFrames[action.ActionSkill] = 59
+	chargeFrames[action.ActionBurst] = 59
+	chargeFrames[action.ActionDash] = 31
+	chargeFrames[action.ActionJump] = 30
+	chargeFrames[action.ActionSwap] = 104
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -60,14 +52,18 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Write("icd", c.sparkICD)
 	}
 
-	adjustedHitmark := windupHitmark
-	adjustedFrames := windupFrames
+	adjustedHitmark := chargeHitmark
+	adjustedFrames := chargeFrames
 	lastAction := &c.Core.Player.LastAction
 	if lastAction.Char == c.Index {
 		if (lastAction.Type == action.ActionAttack && (c.NormalCounter == 1 || c.NormalCounter == 2)) ||
-			lastAction.Type == action.ActionSkill {
-			adjustedHitmark = chargeHitmark
-			adjustedFrames = chargeFrames
+			lastAction.Type == action.ActionSkill { // if Klee uses any of these, the windup is removed
+			adjustedHitmark -= 14
+			adjustedFrames = make([]int, len(chargeFrames))
+			copy(adjustedFrames, chargeFrames)
+			for i := range adjustedFrames {
+				adjustedFrames[i] -= 14
+			}
 		}
 	}
 	c.Core.QueueAttackWithSnap(
