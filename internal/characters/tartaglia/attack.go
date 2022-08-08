@@ -66,19 +66,32 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-var meleeFrames [][]int
-var meleeHitmarks = [][]int{{7}, {13}, {28}, {32}, {36}, {48, 49}}
+var (
+	meleeFrames   [][]int
+	meleeHitmarks = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 16}}
+)
 
 func init() {
 	// attack (melee) -> x
 	meleeFrames = make([][]int, normalHitNum)
 
-	meleeFrames[0] = frames.InitNormalCancelSlice(meleeHitmarks[0][0], 7)
-	meleeFrames[1] = frames.InitNormalCancelSlice(meleeHitmarks[1][0], 13)
-	meleeFrames[2] = frames.InitNormalCancelSlice(meleeHitmarks[2][0], 28)
-	meleeFrames[3] = frames.InitNormalCancelSlice(meleeHitmarks[3][0], 32)
-	meleeFrames[4] = frames.InitNormalCancelSlice(meleeHitmarks[4][0], 36)
-	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][1], 49)
+	meleeFrames[0] = frames.InitNormalCancelSlice(meleeHitmarks[0][0], 23)
+	meleeFrames[0][action.ActionAttack] = 10
+	meleeFrames[0][action.ActionCharge] = 23
+	meleeFrames[1] = frames.InitNormalCancelSlice(meleeHitmarks[1][0], 23)
+	meleeFrames[1][action.ActionAttack] = 11
+	meleeFrames[1][action.ActionCharge] = 23
+	meleeFrames[2] = frames.InitNormalCancelSlice(meleeHitmarks[2][0], 37)
+	meleeFrames[2][action.ActionAttack] = 32
+	meleeFrames[2][action.ActionCharge] = 37
+	meleeFrames[3] = frames.InitNormalCancelSlice(meleeHitmarks[3][0], 37)
+	meleeFrames[3][action.ActionAttack] = 33
+	meleeFrames[3][action.ActionCharge] = 37
+	meleeFrames[4] = frames.InitNormalCancelSlice(meleeHitmarks[4][0], 23)
+	meleeFrames[4][action.ActionAttack] = 22
+	meleeFrames[4][action.ActionCharge] = 23
+	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][0]+meleeHitmarks[5][1], 65)
+	meleeFrames[5][action.ActionAttack] = 65
 }
 
 // Melee stance attack.
@@ -94,17 +107,21 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 		Element:    attributes.Hydro,
 		Durability: 25,
 	}
+
+	runningFrames := 0
 	for i, mult := range eAttack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlSkill()]
+		hitmark := runningFrames + meleeHitmarks[c.NormalCounter][i]
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), .5, false, combat.TargettableEnemy),
-			meleeHitmarks[c.NormalCounter][i],
-			meleeHitmarks[c.NormalCounter][i],
-			//TODO: what's the ordering on these 2 callbacks?
-			c.meleeApplyRiptide, //call back for applying riptide
-			c.rtSlashCallback,   //call back for triggering slash
+			hitmark,
+			hitmark,
+			// TODO: what's the ordering on these 2 callbacks?
+			c.meleeApplyRiptide, // call back for applying riptide
+			c.rtSlashCallback,   // call back for triggering slash
 		)
+		runningFrames = hitmark
 	}
 
 	defer c.AdvanceNormalIndex()
