@@ -14,8 +14,8 @@ var (
 )
 
 const (
-	chargeHitmark = 76
-	windupHitmark = chargeHitmark - 14
+	windupHitmark = 76
+	chargeHitmark = windupHitmark - 14
 )
 
 func init() {
