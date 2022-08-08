@@ -107,7 +107,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	c.c1(132)
+	c.c1(waveHitmarks[0])
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 9)
 	c.ConsumeEnergy(12)
