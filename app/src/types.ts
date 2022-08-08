@@ -114,9 +114,13 @@ export interface DBCharInfo {
 }
 
 export interface ParsedResult {
-  characters: ParsedCharacterProfile[];
+  characters: ParsedCharacters;
   errors: string[];
   player_initial_pos: { x: number, y: number, r: number};
+}
+export interface ParsedCharacters {
+  initial: number,
+  profile: ParsedCharacterProfile[]
 }
 export interface ParsedCharacterProfile {
   base: Base;
