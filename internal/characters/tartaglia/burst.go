@@ -72,10 +72,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark, hitmark, cb)
 
 	if c.Core.Status.Duration("tartagliamelee") > 0 {
-		c.ConsumeEnergy(75)
+		c.ConsumeEnergy(71)
 		c.SetCDWithDelay(action.ActionBurst, 900, 75)
 	} else {
-		c.ConsumeEnergy(8)
+		c.ConsumeEnergy(3)
 		c.SetCDWithDelay(action.ActionBurst, 900, 8)
 	}
 
