@@ -66,7 +66,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	} else {
 		c.Core.Tasks.Add(func() {
 			c.AddEnergy("tartaglia-ranged-burst-refund", 20)
-		}, hitmark+9)
+		}, 4)
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark, hitmark, cb)
