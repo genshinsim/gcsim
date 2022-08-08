@@ -10,9 +10,12 @@ import (
 )
 
 var skillMeleeFrames []int
+var skillMeleeWalkFrames []int
 var skillRangedFrames []int
+var skillRangedWalkFrames []int
 
 const skillHitmark = 16
+const skillWalkHitmark = 3
 
 func init() {
 	// skill (melee) -> x
@@ -22,13 +25,22 @@ func init() {
 	skillMeleeFrames[action.ActionDash] = 17
 	skillMeleeFrames[action.ActionJump] = 17
 	skillMeleeFrames[action.ActionSwap] = 16
-
+	skillMeleeWalkFrames = frames.InitAbilSlice(24)
+	skillMeleeWalkFrames[action.ActionAttack] = 5
+	skillMeleeWalkFrames[action.ActionBurst] = 5
+	skillMeleeWalkFrames[action.ActionDash] = 6
+	skillMeleeWalkFrames[action.ActionJump] = skillWalkHitmark
 	// skill (ranged) -> x
 	skillRangedFrames = frames.InitAbilSlice(39)
 	skillRangedFrames[action.ActionAttack] = 19
 	skillRangedFrames[action.ActionBurst] = 19
 	skillRangedFrames[action.ActionDash] = 19
 	skillRangedFrames[action.ActionJump] = 21
+	skillRangedWalkFrames = frames.InitAbilSlice(24)
+	skillRangedWalkFrames[action.ActionAttack] = 5
+	skillRangedWalkFrames[action.ActionBurst] = 4
+	skillRangedWalkFrames[action.ActionDash] = 5
+	skillRangedWalkFrames[action.ActionJump] = 4
 }
 
 //Cast: AoE strong hydro damage
@@ -37,10 +49,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Status.Duration("tartagliamelee") > 0 {
 		c.onExitMeleeStance()
 		c.ResetNormalCounter()
+		adjustedFrames := skillMeleeFrames
+		lastAction := &c.Core.Player.LastAction
+		if (lastAction.Char == c.Index && lastAction.Type == action.ActionWalk) {
+			adjustedFrames = skillMeleeWalkFrames
+		}
 		return action.ActionInfo{
-			Frames:          frames.NewAbilFunc(skillMeleeFrames),
-			AnimationLength: skillMeleeFrames[action.InvalidAction],
-			CanQueueAfter:   skillMeleeFrames[action.ActionDash], // earliest cancel
+			Frames:          frames.NewAbilFunc(adjustedFrames),
+			AnimationLength: adjustedFrames[action.InvalidAction],
+			CanQueueAfter:   adjustedFrames[action.ActionDash], // earliest cancel
 			State:           action.SkillState,
 		}
 	}
@@ -62,7 +79,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	hitmark := skillHitmark
+	lastAction := &c.Core.Player.LastAction
+	if (lastAction.Char == c.Index && lastAction.Type == action.ActionWalk) {
+		hitmark = skillWalkHitmark
+	}
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	src := c.eCast
 	c.Core.Tasks.Add(func() {
@@ -73,10 +95,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, 30*60)
 	c.SetCDWithDelay(action.ActionSkill, 60, 14)
 
+	adjustedFrames := skillRangedFrames
+	if (lastAction.Char == c.Index && lastAction.Type == action.ActionWalk) {
+		adjustedFrames = skillRangedWalkFrames
+	}
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillRangedFrames),
-		AnimationLength: skillRangedFrames[action.InvalidAction],
-		CanQueueAfter:   skillRangedFrames[action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(adjustedFrames),
+		AnimationLength: adjustedFrames[action.InvalidAction],
+		CanQueueAfter:   adjustedFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
