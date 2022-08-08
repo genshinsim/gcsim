@@ -105,7 +105,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.c1(132)
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 9)
-	c.ConsumeEnergy(15)
+	c.ConsumeEnergy(12)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
