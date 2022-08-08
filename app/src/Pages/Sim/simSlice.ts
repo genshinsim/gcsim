@@ -177,7 +177,7 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
         //if successful then we're going to update the team based on the parsed results
         let team: Character[] = [];
         if (res.characters) {
-          team = res.characters.profile.map((c) => {
+          team = res.characters.map((c) => {
             return {
               name: c.base.key,
               level: c.base.level,
