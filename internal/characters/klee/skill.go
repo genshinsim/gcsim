@@ -13,7 +13,14 @@ var bounceHitmarks = []int{71, 111, 140}
 const mineHitmark = 240
 
 func init() {
-	skillFrames = frames.InitAbilSlice(67)
+	skillFrames = frames.InitAbilSlice(75)
+	skillFrames[action.ActionAttack] = 66
+	skillFrames[action.ActionCharge] = 69
+	skillFrames[action.ActionSkill] = 68
+	skillFrames[action.ActionBurst] = 34 // TODO: program early cancel for skill trigger
+	skillFrames[action.ActionDash] = 37
+	skillFrames[action.ActionJump] = 35
+	skillFrames[action.ActionSwap] = 74
 }
 
 // Has two parameters, "bounce" determines the number of bounces that hit
@@ -25,7 +32,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	//mine lives for 5 seconds
-	//3 bounces, roughly 30, 70, 110 hits
 	for i := 0; i < bounce; i++ {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -70,7 +76,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
-	//roughly 160 frames after mines are laid
 	for i := 0; i < minehits; i++ {
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, mineHitmark, c.c2)
 	}
