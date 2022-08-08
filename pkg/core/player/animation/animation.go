@@ -93,9 +93,8 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 		l.Write("AnimationLength", evt.AnimationLength).
 			Write("CanQueueAfter", evt.CanQueueAfter).
 			Write("State", evt.State.String())
-		for i := 0; i < int(action.EndActionType); i++ {
-			a := action.Action(i)
-			l.Write(a.String(), evt.Frames(a))
+		for i, v := range evt.CachedFrames {
+			l.Write(action.Action(i).String(), v)
 		}
 	}
 }
