@@ -80,19 +80,50 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		return false
 	}, "klee-na-cancel")
+	animationLag := func() int {
+		lastAction := &c.Core.Player.LastAction
+		if (lastAction.Char == c.Index) {
+			switch (lastAction.Type) { // if Klee does either of these, N1 will take 9f longer
+				case action.ActionDash,
+					action.ActionSkill,
+					action.ActionBurst:
+						return 9
+			}
+		}
+		return 0
+	}()
 	c.Core.Tasks.Add(func() {
 		c.Core.Events.Unsubscribe(event.OnStateChange, "klee-na-cancel")
 		if earlyTrigger {
 			return
 		}
 		doDamage()
-	}, attackHitmarks[c.NormalCounter])
+	}, attackHitmarks[c.NormalCounter] + animationLag)
 
 	defer c.AdvanceNormalIndex()
 
+	adjustedFrames := attackFrames
+	if animationLag > 0 {
+		adjustedFrames = make([][]int, len(attackFrames))
+		for i := range attackFrames {
+			adjustedFrames[i] = make([]int, len(attackFrames[i]))
+			copy(adjustedFrames[i], attackFrames[i])
+		}
+		for i := range attackFrames[0] {
+			switch (action.Action(i)) {
+				case action.ActionBurst,
+				action.ActionDash,
+				action.ActionJump,
+				action.ActionSkill:
+				default:
+					adjustedFrames[0][i] += animationLag
+			}
+		}
+	}
+
 	return action.ActionInfo{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
+		Frames:          frames.NewAttackFunc(c.Character, adjustedFrames),
+		AnimationLength: adjustedFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   0,
 		State:           action.NormalAttackState,
 	}
