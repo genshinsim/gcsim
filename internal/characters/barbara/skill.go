@@ -13,7 +13,10 @@ import (
 const skillDuration = 15*60 + 1
 const barbSkillKey = "barbskill"
 
-var skillFrames []int
+var (
+	skillHitmarks = []int{42, 78}
+	skillFrames   []int
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(57)
@@ -27,16 +30,15 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
 	c.Core.Status.Add(barbSkillKey, skillDuration)
 
-	//activate a1
+	// activate a1
 	c.a1()
 
-	//restart a4 counter
+	// restart a4 counter
 	c.a4extendCount = 0
 
-	//hook for buffs; active right away after cast
+	// hook for buffs; active right away after cast
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -48,17 +50,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	//TODO: review barbara AOE size?
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 5, 42)
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 5, 78) // need to confirm snapshot timing
+	// TODO: review barbara AOE size?
+	for _, hitmark := range skillHitmarks {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+			5,
+			hitmark,
+		) // need to confirm snapshot timing
+	}
 
 	stats, _ := c.Stats()
 	hpplus := stats[attributes.Heal]
 	heal := skillhp[c.TalentLvlSkill()] + skillhpp[c.TalentLvlSkill()]*c.MaxHP()
-	//apply right away
+	// apply right away
 
 	c.skillInitF = c.Core.F
-	//add 1 tick each 5s
+	// add 1 tick each 5s
 	c.barbaraHealTick(heal, hpplus, c.Core.F+6)()
 	ai.Abil = "Let the Show Begin♪ Wet Tick"
 	ai.AttackTag = combat.AttackTagNone
@@ -67,7 +75,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	cdDelay := 3
 	if c.Base.Cons >= 2 {
-		c.c2() //c2 hydro buff
+		c.c2() // c2 hydro buff
 		c.SetCDWithDelay(action.ActionSkill, 32*60*0.85, cdDelay)
 	} else {
 		c.SetCDWithDelay(action.ActionSkill, 32*60, cdDelay)
@@ -83,11 +91,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) barbaraHealTick(healAmt float64, hpplus float64, skillInitF int) func() {
 	return func() {
-		//make sure it's not overwritten
+		// make sure it's not overwritten
 		if c.skillInitF != skillInitF {
 			return
 		}
-		//do nothing if buff expired
+		// do nothing if buff expired
 		if c.Core.Status.Duration(barbSkillKey) == 0 {
 			return
 		}
@@ -107,11 +115,11 @@ func (c *char) barbaraHealTick(healAmt float64, hpplus float64, skillInitF int) 
 
 func (c *char) barbaraWet(ai combat.AttackInfo, skillInitF int) func() {
 	return func() {
-		//make sure it's not overwritten
+		// make sure it's not overwritten
 		if c.skillInitF != skillInitF {
 			return
 		}
-		//do nothing if buff expired
+		// do nothing if buff expired
 		if c.Core.Status.Duration(barbSkillKey) == 0 {
 			return
 		}
