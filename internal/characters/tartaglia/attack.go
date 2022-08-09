@@ -21,28 +21,22 @@ func init() {
 	attackFrames = make([][]int, normalHitNum)
 
 	// N1 -> x
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], attackHitmarks[0])
-	attackFrames[0][action.ActionAttack] = 26
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 26)
 
 	// N2 -> x
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], attackHitmarks[1])
-	attackFrames[1][action.ActionAttack] = 27
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 27)
 
 	// N3 -> x
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], attackHitmarks[2])
-	attackFrames[2][action.ActionAttack] = 33
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 33)
 
 	// N4 -> x
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], attackHitmarks[3])
-	attackFrames[3][action.ActionAttack] = 32
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 32)
 
 	// N5 -> x
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], attackHitmarks[4])
-	attackFrames[4][action.ActionAttack] = 33
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 33)
 
 	// N6 -> x
-	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5], attackHitmarks[5])
-	attackFrames[5][action.ActionAttack] = 66
+	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5], 66)
 }
 
 // Normal attack
