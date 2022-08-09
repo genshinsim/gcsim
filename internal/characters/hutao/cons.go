@@ -16,6 +16,9 @@ func (c *char) c6() {
 }
 
 func (c *char) checkc6() {
+	if c.Base.Cons < 6 {
+		return
+	}
 	if c.Core.F < c.c6icd && c.c6icd != 0 {
 		return
 	}
