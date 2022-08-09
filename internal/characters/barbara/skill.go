@@ -66,13 +66,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	currFrame := c.Core.F
 	c.skillInitF = currFrame
-	c.QueueCharTask(func() {
+	c.Core.Tasks.Add(func() {
 		c.barbaraHealTick(heal, hpplus, currFrame)()
 	}, 6)
 	ai.Abil = "Let the Show Begin♪ Wet Tick"
 	ai.AttackTag = combat.AttackTagNone
 	ai.Mult = 0
-	c.QueueCharTask(func() {
+	c.Core.Tasks.Add(func() {
 		c.barbaraWet(ai, currFrame)()
 	}, 3)
 
