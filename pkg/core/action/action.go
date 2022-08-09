@@ -62,7 +62,7 @@ func (a *ActionInfo) Tick() bool {
 	//execute all action such that timePassed > delay, and then remove from
 	//slice
 	if a.queued != nil {
-		n := -1
+		n := 0
 		for i := 0; i < len(a.queued); i++ {
 			if a.queued[i].delay <= a.TimePassed {
 				a.queued[i].f()
