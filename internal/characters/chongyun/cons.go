@@ -11,7 +11,7 @@ import (
 )
 
 func (c *char) c4() {
-	icd := 0
+	const icdKey = "chongyun-c4-icd"
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		t, ok := args[0].(core.Reactable)
@@ -21,7 +21,7 @@ func (c *char) c4() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.Core.F < icd {
+		if c.StatusIsActive(icdKey) {
 			return false
 		}
 		if !t.AuraContains(attributes.Cryo) {
@@ -32,7 +32,7 @@ func (c *char) c4() {
 
 		c.Core.Log.NewEvent("chongyun c4 recovering 2 energy", glog.LogCharacterEvent, c.Index).
 			Write("final energy", c.Energy)
-		icd = c.Core.F + 120
+		c.AddStatus(icdKey, 120, true)
 
 		return false
 	}, "chongyun-c4")
