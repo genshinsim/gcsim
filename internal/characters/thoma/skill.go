@@ -56,7 +56,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if !ok {
 		panic("target 0 should be Player but is not!!")
 	}
-	player.ApplySelfInfusion(attributes.Pyro, 25, 30)
+	c.QueueCharTask(func() {
+		player.ApplySelfInfusion(attributes.Pyro, 25, 30)
+	}, skillHitmark)
 
 	cd := 15
 	if c.Base.Cons >= 1 {
