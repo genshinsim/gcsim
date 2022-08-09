@@ -32,27 +32,36 @@ func init() {
 	skillMeleeFrames[action.ActionDash] = 17
 	skillMeleeFrames[action.ActionJump] = 17
 	skillMeleeFrames[action.ActionSwap] = 16
+
+	// skill (melee, walk) -> x
 	skillMeleeWalkFrames = frames.InitAbilSlice(24)
 	skillMeleeWalkFrames[action.ActionAttack] = 5
 	skillMeleeWalkFrames[action.ActionBurst] = 5
 	skillMeleeWalkFrames[action.ActionDash] = 6
 	skillMeleeWalkFrames[action.ActionJump] = skillWalkHitmark
+
+	// skill (melee, dash) -> x
 	skillMeleeDashFrames = frames.InitAbilSlice(23)
 	skillMeleeDashFrames[action.ActionAttack] = 13
 	skillMeleeDashFrames[action.ActionBurst] = 16
 	skillMeleeDashFrames[action.ActionDash] = 22
 	skillMeleeDashFrames[action.ActionJump] = skillDashHitmark
+
 	// skill (ranged) -> x
 	skillRangedFrames = frames.InitAbilSlice(39)
 	skillRangedFrames[action.ActionAttack] = 19
 	skillRangedFrames[action.ActionBurst] = 19
 	skillRangedFrames[action.ActionDash] = 19
 	skillRangedFrames[action.ActionJump] = 21
+
+	// skill (ranged, walk) -> x
 	skillRangedWalkFrames = frames.InitAbilSlice(24)
 	skillRangedWalkFrames[action.ActionAttack] = 5
 	skillRangedWalkFrames[action.ActionBurst] = 4
 	skillRangedWalkFrames[action.ActionDash] = 5
 	skillRangedWalkFrames[action.ActionJump] = 4
+
+	// skill (ranged, dash) -> x
 	skillRangedDashFrames = frames.InitAbilSlice(24)
 	skillRangedDashFrames[action.ActionAttack] = 17
 	skillRangedDashFrames[action.ActionBurst] = 17
@@ -73,7 +82,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.onExitMeleeStance(cdDelay)
 		c.ResetNormalCounter()
 		adjustedFrames := skillMeleeFrames
-		switch (c.Core.Player.CurrentState()) {
+		switch c.Core.Player.CurrentState() {
 		case action.WalkState:
 			adjustedFrames = skillMeleeWalkFrames
 		case action.DashState:
