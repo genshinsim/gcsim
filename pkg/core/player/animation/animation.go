@@ -74,7 +74,7 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 		}
 		if h.debug {
 			h.log.NewEvent(
-				fmt.Sprintf("%v from %v ended, time passed: %v", h.lastAct, h.started, h.aniEvt.TimePassed),
+				fmt.Sprintf("%v from %v ended, time passed: %v (actual: %v)", h.lastAct, h.started, h.aniEvt.TimePassed, h.aniEvt.NormalizedTimePassed),
 				glog.LogHitlagEvent,
 				h.char,
 			)
