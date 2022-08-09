@@ -10,14 +10,20 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 90
+const chargeHitmark = 55
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(90)
+	chargeFrames = frames.InitAbilSlice(89)
+	chargeFrames[action.ActionDash] = 56
+	chargeFrames[action.ActionJump] = 56
+	chargeFrames[action.ActionSwap] = 57
+	chargeFrames[action.ActionSkill] = 88
+	chargeFrames[action.ActionBurst] = 87
+	chargeFrames[action.ActionAttack] = 89
+	chargeFrames[action.ActionCharge] = 88
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
@@ -34,9 +40,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		if done {
 			return
 		}
-		//check for healing
+		// check for healing
 		if c.Core.Status.Duration(barbSkillKey) > 0 {
-			//heal target
+			// heal target
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
 				Target:  -1,
@@ -46,31 +52,37 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			})
 			done = true
 		}
-
 	}
 	var c4CB combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		energyCount := 0
 		c4CB = func(_ combat.AttackCB) {
-			//check for healing
+			// check for healing
 			if c.Core.Status.Duration(barbSkillKey) > 0 && energyCount < 5 {
-				//regen energy
+				// regen energy
 				c.AddEnergy("barbara-c4", 1)
 				energyCount++
 			}
 		}
 	}
 
+	// skip CA windup if we're in NA/CA animation
+	windup := 0
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState, action.ChargeAttackState:
+		windup = 14
+	}
+
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-		0,
-		chargeHitmark,
+		chargeHitmark-windup,
+		chargeHitmark-windup,
 		cb,
 		c4CB)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(chargeFrames),
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
