@@ -38,17 +38,19 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	//check for particles
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupPole,
-		StrikeType: combat.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
+		ActorIndex:       c.Index,
+		Abil:             "Charge Attack",
+		AttackTag:        combat.AttackTagExtra,
+		ICDTag:           combat.ICDTagExtraAttack,
+		ICDGroup:         combat.ICDGroupPole,
+		StrikeType:       combat.StrikeTypeSlash,
+		Element:          attributes.Physical,
+		Durability:       25,
+		Mult:             charge[c.TalentLvlAttack()],
+		HitlagFactor:     0.01,
+		HitlagHaltFrames: 0.01 * 60,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, chargeHitmark, c.ppParticles, c.applyBB)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

@@ -11,6 +11,8 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = [][]int{{12}, {9}, {17}, {23}, {16, 26}, {27}}
+var attackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
+var attackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
 
 const normalHitNum = 6
 
@@ -41,26 +43,29 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		return c.ppAttack(p)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
-	}
-
 	for i, mult := range attack[c.NormalCounter] {
-		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
-			c.ppParticles, //check for particles
-		)
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			Mult:               mult[c.TalentLvlAttack()],
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
+			Element:            attributes.Physical,
+			Durability:         25,
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				0,
+				0,
+			)
+		}, attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
@@ -73,40 +78,51 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) ppAttackFrames(next action.Action) int {
-	//TODO: figure out how hitlag works here
-	return 0
-}
+var ppAttackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
+var ppAttackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
 
 func (c *char) ppAttack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
-	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
-			c.ppParticles, //check for particles
-		)
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			Mult:               mult[c.TalentLvlAttack()],
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
+			Element:            attributes.Physical,
+			Durability:         25,
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   ppAttackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: ppAttackDefHalt[c.NormalCounter][i],
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				0,
+				0,
+				c.ppParticles,
+			)
+		}, attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
-		Frames:          c.ppAttackFrames,
+	act := action.ActionInfo{
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
+
+	if c.NormalCounter == 1 {
+		act.UseNormalizedTime = func(next action.Action) bool {
+			return next == action.ActionCharge
+		}
+	}
+
+	return act
 }
