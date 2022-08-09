@@ -43,25 +43,25 @@ func (c *char) meleeApplyRiptide(a combat.AttackCB) {
 }
 
 func (c *char) applyRiptide(src string, t *enemy.Enemy) {
-	if c.Base.Cons >= 4 && t.GetTag(riptideKey) < c.Core.F {
+	if c.Base.Cons >= 4 && t.StatusIsActive(riptideKey) {
 		c.Core.Tasks.Add(func() { c.rtC4Tick(t) }, 60*4)
 	}
 
-	t.SetTag(riptideKey, c.Core.F+riptideDuration)
+	t.AddStatus(riptideKey, riptideDuration, true)
 	c.Core.Log.NewEvent(
 		fmt.Sprintf("riptide applied (%v)", src),
 		glog.LogCharacterEvent,
 		c.Index,
 	).
 		Write("target", t.Index()).
-		Write("expiry", c.Core.F+riptideDuration)
+		Write("expiry", t.StatusExpiry(riptideKey))
 
 }
 
 // if tartaglia is in melee stance, triggers Riptide Slash against opponents on the field affected by Riptide every 4s, otherwise, triggers Riptide Flash.
 // this constellation effect is not subject to ICD.
 func (c *char) rtC4Tick(t *enemy.Enemy) {
-	if t.GetTag(riptideKey) < c.Core.F {
+	if !t.StatusIsActive(riptideKey) {
 		return
 	}
 
@@ -83,15 +83,15 @@ func (c *char) rtFlashCallback(a combat.AttackCB) {
 		return
 	}
 	//do nothing if no riptide on target
-	if t.GetTag(riptideKey) < c.Core.F {
+	if !t.StatusIsActive(riptideKey) {
 		return
 	}
 	//do nothing if flash still on icd
-	if t.GetTag(riptideFlashICDKey) > c.Core.F {
+	if t.StatusIsActive(riptideFlashICDKey) {
 		return
 	}
 	//add 0.7s icd
-	t.SetTag(riptideFlashICDKey, c.Core.F+42)
+	t.AddStatus(riptideFlashICDKey, 42, true)
 
 	c.rtFlashTick(t)
 }
@@ -122,8 +122,8 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 	).
 		Write("dur", c.Core.Status.Duration("tartagliamelee")).
 		Write("target", t.Index()).
-		Write("riptide_flash_icd", t.GetTag(riptideFlashICDKey)).
-		Write("riptide_expiry", t.GetTag(riptideKey))
+		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
+		Write("riptide_expiry", t.StatusExpiry(riptideKey))
 
 	//queue particles
 	if c.rtParticleICD < c.Core.F {
@@ -141,15 +141,15 @@ func (c *char) rtSlashCallback(a combat.AttackCB) {
 		return
 	}
 	//do nothing if no riptide on target
-	if t.GetTag(riptideKey) < c.Core.F {
+	if !t.StatusIsActive(riptideKey) {
 		return
 	}
 	//do nothing if slash still on icd
-	if t.GetTag(riptideSlashICDKey) > c.Core.F {
+	if t.StatusIsActive(riptideSlashICDKey) {
 		return
 	}
 	//add 1.5s icd
-	t.SetTag(riptideSlashICDKey, c.Core.F+90)
+	t.AddStatus(riptideSlashICDKey, 90, true)
 
 	c.rtSlashTick(t)
 }
@@ -177,8 +177,8 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 	).
 		Write("dur", c.Core.Status.Duration("tartagliamelee")).
 		Write("target", t.Index()).
-		Write("riptide_slash_icd", t.GetTag(riptideSlashICDKey)).
-		Write("riptide_expiry", t.GetTag(riptideKey))
+		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
+		Write("riptide_expiry", t.StatusExpiry(riptideKey))
 
 	//queue particle if not on icd
 	if c.rtParticleICD < c.Core.F {
@@ -196,11 +196,11 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		return
 	}
 	//only triggers if target affected by riptide
-	if t.GetTag(riptideKey) < c.Core.F {
+	if !t.StatusIsActive(riptideKey) {
 		return
 	}
 	//TODO: this shares icd with slash???
-	if t.GetTag(riptideSlashICDKey) > c.Core.F {
+	if t.StatusIsActive(riptideSlashICDKey) {
 		return
 	}
 	//queue damage
@@ -225,10 +225,10 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 	).
 		Write("dur", c.Core.Status.Duration("tartagliamelee")).
 		Write("target", t.Index()).
-		Write("rtExpiry", t.GetTag(riptideKey))
+		Write("rtExpiry", t.StatusExpiry(riptideKey))
 
 	//clear riptide status
-	t.RemoveTag(riptideKey)
+	t.DeleteStatus(riptideKey)
 }
 
 //Riptide Burst: Defeating an opponent affected by Riptide creates a Hydro burst
@@ -242,7 +242,7 @@ func (c *char) onDefeatTargets() {
 			return false
 		}
 		//do nothing if no riptide on target
-		if t.GetTag(riptideKey) < c.Core.F {
+		if !t.StatusIsActive(riptideKey) {
 			return false
 		}
 		c.Core.Tasks.Add(func() {
