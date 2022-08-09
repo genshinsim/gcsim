@@ -43,19 +43,15 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex:           c.Index,
-		Abil:                 "Charged Attack",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagExtraAttack,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypeSlash,
-		Element:              attributes.Hydro,
-		Durability:           25,
-		HitWeakPoint:         hitWeakPoint != 0,
-		HitlagHaltFrames:     0.12 * 60, // deployable hitlag, but only on weakspot
-		HitlagFactor:         0.01,
-		HitlagOnHeadshotOnly: true,
-		IsDeployable:         true,
+		ActorIndex:   c.Index,
+		Abil:         "Charged Attack",
+		AttackTag:    combat.AttackTagExtra,
+		ICDTag:       combat.ICDTagExtraAttack,
+		ICDGroup:     combat.ICDGroupDefault,
+		StrikeType:   combat.StrikeTypeSlash,
+		Element:      attributes.Hydro,
+		Durability:   25,
+		HitWeakPoint: hitWeakPoint != 0,
 	}
 
 	lastMultiHit := 0
