@@ -19,16 +19,28 @@ var (
 func init() {
 	// attack (ranged) -> x
 	attackFrames = make([][]int, normalHitNum)
+
+	// N1 -> x
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], attackHitmarks[0])
 	attackFrames[0][action.ActionAttack] = 26
+
+	// N2 -> x
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], attackHitmarks[1])
 	attackFrames[1][action.ActionAttack] = 27
+
+	// N3 -> x
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], attackHitmarks[2])
 	attackFrames[2][action.ActionAttack] = 33
+
+	// N4 -> x
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], attackHitmarks[3])
 	attackFrames[3][action.ActionAttack] = 32
+
+	// N5 -> x
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], attackHitmarks[4])
 	attackFrames[4][action.ActionAttack] = 33
+
+	// N6 -> x
 	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5], attackHitmarks[5])
 	attackFrames[5][action.ActionAttack] = 66
 }
@@ -83,21 +95,32 @@ func init() {
 	// attack (melee) -> x
 	meleeFrames = make([][]int, normalHitNum)
 
+	// N1 -> x
 	meleeFrames[0] = frames.InitNormalCancelSlice(meleeHitmarks[0][0], 23)
 	meleeFrames[0][action.ActionAttack] = 10
 	meleeFrames[0][action.ActionCharge] = 23
+
+	// N2 -> x
 	meleeFrames[1] = frames.InitNormalCancelSlice(meleeHitmarks[1][0], 23)
 	meleeFrames[1][action.ActionAttack] = 11
 	meleeFrames[1][action.ActionCharge] = 23
+
+	// N3 -> x
 	meleeFrames[2] = frames.InitNormalCancelSlice(meleeHitmarks[2][0], 37)
 	meleeFrames[2][action.ActionAttack] = 32
 	meleeFrames[2][action.ActionCharge] = 37
+
+	// N4 -> x
 	meleeFrames[3] = frames.InitNormalCancelSlice(meleeHitmarks[3][0], 37)
 	meleeFrames[3][action.ActionAttack] = 33
 	meleeFrames[3][action.ActionCharge] = 37
+
+	// N5 -> x
 	meleeFrames[4] = frames.InitNormalCancelSlice(meleeHitmarks[4][0], 23)
 	meleeFrames[4][action.ActionAttack] = 22
 	meleeFrames[4][action.ActionCharge] = 23
+
+	// N6 -> x
 	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][0]+meleeHitmarks[5][1], 65)
 	meleeFrames[5][action.ActionAttack] = 65
 }
