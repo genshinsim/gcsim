@@ -105,7 +105,7 @@ func init() {
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
 func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
-	runningFrames := 0
+	lastMultiHit := 0
 	for i, mult := range eAttack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:       c.Index,
@@ -120,7 +120,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames: meleeHitlagHaltFrames[c.NormalCounter][i] * 60,
 			Mult:             mult[c.TalentLvlSkill()],
 		}
-		hitmark := runningFrames + meleeHitmarks[c.NormalCounter][i]
+		hitmark := lastMultiHit + meleeHitmarks[c.NormalCounter][i]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
@@ -131,7 +131,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 				c.rtSlashCallback,
 			)
 		}, hitmark)
-		runningFrames = hitmark
+		lastMultiHit = hitmark
 	}
 
 	defer c.AdvanceNormalIndex()

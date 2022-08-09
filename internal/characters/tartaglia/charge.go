@@ -58,9 +58,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	runningFrames := 0
+	lastMultiHit := 0
 	for i, mult := range eCharge {
-		hitmark := runningFrames + chargeHitmarks[i]
+		hitmark := lastMultiHit + chargeHitmarks[i]
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.Core.QueueAttack(
 			ai,
@@ -70,7 +70,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			c.meleeApplyRiptide, // call back for applying riptide
 			c.rtSlashCallback,   // call back for triggering slash
 		)
-		runningFrames = hitmark
+		lastMultiHit = hitmark
 	}
 
 	return action.ActionInfo{
