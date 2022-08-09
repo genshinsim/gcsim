@@ -10,12 +10,17 @@ import (
 var aimedFrames []int
 var aimedC4Frames []int
 
-const aimAnimationDuration = 84
-const aimC4AnimationDuration = 34
+const aimedHitmark = 86
+const aimedC4Hitmark = 50
 
 func init() {
-	aimedFrames = frames.InitAbilSlice(aimAnimationDuration)
-	aimedC4Frames = frames.InitAbilSlice(aimC4AnimationDuration)
+	aimedFrames = frames.InitAbilSlice(94)
+	aimedFrames[action.ActionDash] = aimedHitmark
+	aimedFrames[action.ActionJump] = aimedHitmark
+
+	aimedC4Frames = frames.InitAbilSlice(58)
+	aimedC4Frames[action.ActionDash] = aimedC4Hitmark
+	aimedC4Frames[action.ActionJump] = aimedC4Hitmark
 }
 
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
@@ -44,18 +49,19 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	var a action.ActionInfo
 
-	if c.Base.Cons >= 4 && c.Core.Status.Duration("dionaburst") > 0 {
+	// TODO: assumes that Diona is always inside Q radius
+	if c.Base.Cons >= 4 && c.Core.Status.Duration("diona-q") > 0 {
 		a = action.ActionInfo{
 			Frames:          frames.NewAbilFunc(aimedC4Frames),
-			AnimationLength: aimC4AnimationDuration,
-			CanQueueAfter:   aimC4AnimationDuration,
+			AnimationLength: aimedC4Frames[action.InvalidAction],
+			CanQueueAfter:   aimedC4Hitmark,
 			State:           action.AimState,
 		}
 	} else {
 		a = action.ActionInfo{
 			Frames:          frames.NewAbilFunc(aimedFrames),
-			AnimationLength: aimAnimationDuration,
-			CanQueueAfter:   aimAnimationDuration,
+			AnimationLength: aimedFrames[action.InvalidAction],
+			CanQueueAfter:   aimedHitmark,
 			State:           action.AimState,
 		}
 
@@ -63,8 +69,8 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai,
 		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
-		a.AnimationLength,
-		a.AnimationLength+travel,
+		a.CanQueueAfter,
+		a.CanQueueAfter+travel,
 	)
 
 	return a
