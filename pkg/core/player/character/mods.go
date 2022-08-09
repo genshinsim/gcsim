@@ -114,7 +114,7 @@ func (c *CharWrapper) AddStatMod(mod StatMod) {
 func (c *CharWrapper) deleteMod(key string) {
 	m := modifier.Delete(&c.mods, key)
 	if m != nil {
-		modifier.LogDelete("enemy", -1, m, c.log, *c.f)
+		m.Event().SetEnded(*c.f)
 	}
 }
 func (c *CharWrapper) DeleteStatus(key string)             { c.deleteMod(key) }
