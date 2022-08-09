@@ -80,8 +80,6 @@ func (t *Handler) Delete(key string) {
 	a, ok := t.status[key]
 	if ok && a.expiry > *t.f {
 		a.evt.SetEnded(*t.f)
-		t.log.NewEvent("status deleted", glog.LogStatusEvent, -1).
-			Write("key", key)
 	}
 	delete(t.status, key)
 }

@@ -60,7 +60,7 @@ func (e *Enemy) AddDefMod(mod DefMod) {
 func (e *Enemy) deleteMod(key string) {
 	m := modifier.Delete(&e.mods, key)
 	if m != nil {
-		modifier.LogDelete("enemy", -1, m, e.Core.Log, e.Core.F)
+		m.Event().SetEnded(e.Core.F)
 	}
 }
 

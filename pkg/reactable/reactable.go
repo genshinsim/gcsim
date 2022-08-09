@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 type Reactable struct {
@@ -20,7 +19,7 @@ type Reactable struct {
 	ecSnapshot combat.AttackInfo //index of owner of next ec ticks
 	ecTickSrc  int
 	//hitlag
-	animationFreeze float64
+	// animationFreeze float64
 }
 
 const frzDelta combat.Durability = 2.5 / (60 * 60) // 2 * 1.25
@@ -221,26 +220,26 @@ func (r *Reactable) addDurability(e attributes.Element, dur combat.Durability) {
 	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, e, dur)
 }
 
-func (r *Reactable) ApplyHitlag(factor, dur float64) {
-	//freeze for dur * (1-factor)
-	r.animationFreeze += dur * (1 - factor)
-}
+// func (r *Reactable) ApplyHitlag(factor, dur float64) {
+// 	//freeze for dur * (1-factor)
+// 	r.animationFreeze += dur * (1 - factor)
+// }
 
 func (r *Reactable) Tick() {
 	//TODO: further testing/in game check this would be nice
-	if r.animationFreeze > 0 {
-		r.animationFreeze -= 1
-		//reset back to 0 if it was fractional
-		if r.animationFreeze < 0 {
-			r.animationFreeze = 0
-		}
-		//skip this tick (aka no decay)
-		r.core.Log.NewEvent("reactable skipping tick", glog.LogHitlagEvent, -1).
-			Write("animationFreeze", r.animationFreeze)
-		//in reality this is not quite accurate. the ticks aren't frozen but instead
-		//the decay still happens but at 0.01x instead of the normal speed
-		return
-	}
+	// if r.animationFreeze > 0 {
+	// 	r.animationFreeze -= 1
+	// 	//reset back to 0 if it was fractional
+	// 	if r.animationFreeze < 0 {
+	// 		r.animationFreeze = 0
+	// 	}
+	// 	//skip this tick (aka no decay)
+	// 	r.core.Log.NewEvent("reactable skipping tick", glog.LogHitlagEvent, -1).
+	// 		Write("animationFreeze", r.animationFreeze)
+	// 	//in reality this is not quite accurate. the ticks aren't frozen but instead
+	// 	//the decay still happens but at 0.01x instead of the normal speed
+	// 	return
+	// }
 
 	//duability is reduced by decay * (1 + purge)
 	//where purge is 0 for anything that's not freeze

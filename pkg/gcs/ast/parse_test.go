@@ -8,8 +8,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
-//this test won't pass because there's no active char....
-func testOrderPrecedence(t *testing.T) {
+func TestOrderPrecedence(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected string
@@ -45,6 +44,14 @@ func testOrderPrecedence(t *testing.T) {
 		{
 			"(1+2)*3;",
 			"((1 + 2) * 3)",
+		},
+		{
+			"1==2 && 3!=4;",
+			"((1 == 2) && (3 != 4))",
+		},
+		{
+			"1 && 0 || 1+2 == 3;",
+			"((1 && 0) || ((1 + 2) == 3))",
 		},
 	}
 

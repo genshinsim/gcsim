@@ -6,7 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
@@ -17,11 +19,15 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	paraParticleICD int
-	ppBonus         float64
-	tickActive      bool
-	applyA1         bool
-	c6icd           int
+	a1buff  []float64
+	a4buff  []float64
+	ppbuff  []float64
+	c4buff  []float64
+	c6icd   int
+	applyA1 bool
+
+	burstHealCount  int
+	burstHealAmount player.HealInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
@@ -40,19 +46,39 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 }
 
 func (c *char) Init() error {
-	c.ppHook()
 	c.onExitField()
+
+	c.a1buff = make([]float64, attributes.EndStatType)
+	c.a1buff[attributes.CR] = 0.12
+
+	c.ppbuff = make([]float64, attributes.EndStatType)
+
 	c.a4()
+
+	if c.Base.Cons > 4 {
+		c.c4()
+	}
+
 	if c.Base.Cons >= 6 {
 		c.c6()
 	}
 	return nil
 }
 
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+		if c.StatModIsActive(paramitaBuff) {
+			c.a1()
+			c.DeleteStatMod(paramitaBuff)
+		}
+		return false
+	}, "hutao-exit")
+}
+
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.Core.Status.Duration("paramita") > 0 && c.Base.Cons >= 1 {
+		if c.StatModIsActive(paramitaBuff) && c.Base.Cons >= 1 {
 			return 0
 		}
 		return 25
@@ -63,7 +89,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.Core.Status.Duration("paramita") > 0 {
+	if c.StatModIsActive(paramitaBuff) {
 		switch ai.AttackTag {
 		case combat.AttackTagNormal:
 		case combat.AttackTagExtra:

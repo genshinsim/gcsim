@@ -5,17 +5,11 @@ import (
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/queue"
 )
 
 func (c *CharWrapper) QueueCharTask(f func(), delay int) {
-	if delay == 0 {
-		f()
-		return
-	}
-	c.queue = append(c.queue, charTask{
-		f:     f,
-		delay: c.timePassed + float64(delay),
-	})
+	queue.Add(&c.queue, f, c.timePassed+float64(delay))
 }
 
 func (c *CharWrapper) Tick() {
@@ -34,18 +28,7 @@ func (c *CharWrapper) Tick() {
 	c.timePassed += left
 
 	//check char queue for any executable actions
-	n := 0
-	for i := 0; i < len(c.queue); i++ {
-		if c.queue[i].delay <= c.timePassed {
-			c.queue[i].f()
-		} else {
-			// keep the actions that can't be executed yet
-			c.queue[n] = c.queue[i]
-			n++
-		}
-	}
-	// set char queue len to the remaining elements
-	c.queue = c.queue[:n]
+	queue.Run(&c.queue, c.timePassed)
 }
 
 func (c *CharWrapper) FramePausedOnHitlag() bool {
