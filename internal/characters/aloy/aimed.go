@@ -9,12 +9,12 @@ import (
 
 var aimedFrames []int
 
-const aimedHitmark = 84
+const aimedHitmark = 86
 
 func init() {
-	//TODO: this frames needs to be checked
-	//kqm doesn't have frames lol
-	aimedFrames = frames.InitAbilSlice(84)
+	aimedFrames = frames.InitAbilSlice(96)
+	aimedFrames[action.ActionDash] = aimedHitmark
+	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
 // Standard aimed attack
