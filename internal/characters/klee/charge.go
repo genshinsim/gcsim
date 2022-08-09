@@ -52,32 +52,23 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Write("icd", c.sparkICD)
 	}
 
-	adjustedHitmark := chargeHitmark
-	adjustedFrames := chargeFrames
-	lastAction := &c.Core.Player.LastAction
-	if lastAction.Char == c.Index {
-		if (lastAction.Type == action.ActionAttack && (c.NormalCounter == 1 || c.NormalCounter == 2)) ||
-			lastAction.Type == action.ActionSkill { // if Klee uses any of these, the windup is removed
-			adjustedHitmark -= 14
-			adjustedFrames = make([]int, len(chargeFrames))
-			copy(adjustedFrames, chargeFrames)
-			for i := range adjustedFrames {
-				adjustedFrames[i] -= 14
-			}
-		}
+	windup := 0
+	if (c.Core.Player.CurrentState() == action.NormalAttackState && (c.NormalCounter == 1 || c.NormalCounter == 2)) ||
+		c.Core.Player.CurrentState() == action.SkillState {
+		windup = 14
 	}
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-		adjustedHitmark+travel,
+		chargeHitmark-windup+travel,
 	)
 
-	c.c1(adjustedHitmark + travel)
+	c.c1(chargeHitmark - windup + travel)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(adjustedFrames),
-		AnimationLength: adjustedFrames[action.InvalidAction],
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
 		CanQueueAfter:   0,
 		State:           action.ChargeAttackState,
 	}
