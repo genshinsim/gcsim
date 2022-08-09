@@ -65,13 +65,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	heal := skillhp[c.TalentLvlSkill()] + skillhpp[c.TalentLvlSkill()]*c.MaxHP()
 	// apply right away
 
-	c.skillInitF = c.Core.F
+	currFrame := c.Core.F
+	c.skillInitF = currFrame
 	// add 1 tick each 5s
-	c.barbaraHealTick(heal, hpplus, c.Core.F+6)()
+	c.QueueCharTask(func() {
+		c.barbaraHealTick(heal, hpplus, currFrame)()
+	}, 6)
 	ai.Abil = "Let the Show Begin♪ Wet Tick"
 	ai.AttackTag = combat.AttackTagNone
 	ai.Mult = 0
-	c.barbaraWet(ai, c.Core.F+3)()
+	c.QueueCharTask(func() {
+		c.barbaraWet(ai, currFrame)()
+	}, 3)
 
 	cdDelay := 3
 	if c.Base.Cons >= 2 {
