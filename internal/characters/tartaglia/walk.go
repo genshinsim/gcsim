@@ -17,6 +17,10 @@ func (c *char) Walk(p map[string]int) action.ActionInfo {
 	if !ok {
 		f = 1
 	}
+	animLength := walkFrames[action.ActionSkill]
+	if animLength < f {
+		animLength = f
+	}
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			if f < walkFrames[next] {
@@ -24,7 +28,7 @@ func (c *char) Walk(p map[string]int) action.ActionInfo {
 			}
 			return f
 		},
-		AnimationLength: walkFrames[action.ActionSkill],
+		AnimationLength: animLength,
 		CanQueueAfter:   f,
 		State:           action.WalkState,
 	}
