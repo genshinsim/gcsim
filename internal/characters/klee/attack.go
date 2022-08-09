@@ -7,18 +7,24 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
 var (
-	attackFrames    [][]int
-	attackHitmarks  = []int{16, 23, 37}
-	attackCancelKey = "klee-attack-cancel"
+	attackFrames          [][]int
+	attackFramesWithLag   [][]int
+	attackHitmarks        = []int{16, 23, 37}
+	attackHitmarksWithLag []int
+	attackCancelKey       = "klee-attack-cancel"
 )
 
 const normalHitNum = 3
 
 func init() {
+	attackHitmarksWithLag = make([]int, len(attackHitmarks))
+	copy(attackHitmarksWithLag, attackHitmarks)
+	for i := range attackHitmarksWithLag {
+		attackHitmarksWithLag[i] += 9
+	}
 	attackFrames = make([][]int, normalHitNum)
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 34)
 	attackFrames[0][action.ActionAttack] = 31
@@ -39,6 +45,26 @@ func init() {
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 77)
 	attackFrames[2][action.ActionCharge] = 49
 	attackFrames[2][action.ActionWalk] = 72
+	attackFramesWithLag = make([][]int, len(attackFrames))
+	for i := range attackFrames {
+		attackFramesWithLag[i] = make([]int, len(attackFrames[i]))
+		copy(attackFramesWithLag[i], attackFrames[i])
+	}
+	add9FrameLag(attackFramesWithLag[0])
+}
+
+// klee has 9f lag on normals when using after skill/dash/burst
+func add9FrameLag(frames []int) {
+	for i := range frames {
+		switch action.Action(i) {
+		case action.ActionBurst,
+			action.ActionDash,
+			action.ActionJump,
+			action.ActionSkill:
+		default:
+			frames[i] += 9
+		}
+	}
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
@@ -59,7 +85,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	doDamage := func() {
+	performAttack := func() {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
@@ -69,66 +95,34 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		)
 		c.c1(travel)
 	}
-	earlyTrigger := false
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
-		if earlyTrigger {
-			return false
-		}
-		switch args[1].(action.AnimationState) {
-		case action.SkillState,
-			action.BurstState,
-			action.DashState,
-			action.JumpState:
-			doDamage()
-			earlyTrigger = true
-		}
-		return false
-	}, attackCancelKey)
-	animationLag := func() int {
-		lastAction := &c.Core.Player.LastAction
-		if lastAction.Char == c.Index {
-			switch lastAction.Type { // if Klee does either of these, N1 will take 9f longer
-			case action.ActionDash,
-				action.ActionSkill,
-				action.ActionBurst:
-				return 9
-			}
-		}
-		return 0
-	}()
-	c.Core.Tasks.Add(func() {
-		c.Core.Events.Unsubscribe(event.OnStateChange, attackCancelKey)
-		if earlyTrigger {
-			return
-		}
-		doDamage()
-	}, attackHitmarks[c.NormalCounter]+animationLag)
 
 	defer c.AdvanceNormalIndex()
 
 	adjustedFrames := attackFrames
-	if animationLag > 0 {
-		adjustedFrames = make([][]int, len(attackFrames))
-		for i := range attackFrames {
-			adjustedFrames[i] = make([]int, len(attackFrames[i]))
-			copy(adjustedFrames[i], attackFrames[i])
-		}
-		for i := range attackFrames[0] {
-			switch action.Action(i) {
-			case action.ActionBurst,
-				action.ActionDash,
-				action.ActionJump,
-				action.ActionSkill:
-			default:
-				adjustedFrames[0][i] += animationLag
-			}
-		}
+	adjustedHitmarks := attackHitmarks
+	switch c.Core.Player.CurrentState() {
+	case action.DashState,
+		action.SkillState,
+		action.BurstState:
+		adjustedFrames = attackFramesWithLag
+		adjustedHitmarks = attackHitmarksWithLag
 	}
 
-	return action.ActionInfo{
+	actionInfo := action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, adjustedFrames),
 		AnimationLength: adjustedFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   0,
 		State:           action.NormalAttackState,
+		OnRemoved: func(next action.AnimationState) {
+			switch next {
+			case action.SkillState,
+				action.BurstState,
+				action.DashState,
+				action.JumpState:
+				performAttack()
+			}
+		},
 	}
+	actionInfo.QueueAction(performAttack, adjustedHitmarks[c.NormalCounter])
+	return actionInfo
 }
