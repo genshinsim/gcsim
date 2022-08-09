@@ -63,11 +63,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	stats, _ := c.Stats()
 	hpplus := stats[attributes.Heal]
 	heal := skillhp[c.TalentLvlSkill()] + skillhpp[c.TalentLvlSkill()]*c.MaxHP()
-	// apply right away
 
 	currFrame := c.Core.F
 	c.skillInitF = currFrame
-	// add 1 tick each 5s
 	c.QueueCharTask(func() {
 		c.barbaraHealTick(heal, hpplus, currFrame)()
 	}, 6)
