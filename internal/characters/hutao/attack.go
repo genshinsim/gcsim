@@ -10,9 +10,14 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = [][]int{{12}, {9}, {17}, {23}, {16, 26}, {27}}
+var attackHitmarks = [][]int{{12}, {9}, {17}, {22}, {16, 26}, {23}}
 var attackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
 var attackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
+
+var ppAttackFrames [][]int
+var ppAttackHitmarks = [][]int{{12}, {9}, {17}, {22}, {15, 26}, {27}}
+var ppAttackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
+var ppAttackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
 
 const normalHitNum = 6
 
@@ -22,7 +27,7 @@ func init() {
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 20)
 	attackFrames[0][action.ActionAttack] = 14
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 17)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 16)
 	attackFrames[1][action.ActionAttack] = 12
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 26)
@@ -32,10 +37,30 @@ func init() {
 	attackFrames[3][action.ActionAttack] = 29
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 48)
-	attackFrames[4][action.ActionAttack] = 36
+	attackFrames[4][action.ActionAttack] = 37
 
 	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 72)
 	attackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+
+	ppAttackFrames = make([][]int, normalHitNum)
+
+	ppAttackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 20)
+	ppAttackFrames[0][action.ActionAttack] = 14
+
+	ppAttackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 17)
+	ppAttackFrames[1][action.ActionAttack] = 12
+
+	ppAttackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 26)
+	ppAttackFrames[2][action.ActionCharge] = 23
+
+	ppAttackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 31)
+	ppAttackFrames[3][action.ActionAttack] = 29
+
+	ppAttackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 48)
+	ppAttackFrames[4][action.ActionAttack] = 36
+
+	ppAttackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 72)
+	ppAttackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
@@ -78,9 +103,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-var ppAttackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
-var ppAttackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
-
 func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -106,15 +128,15 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 				0,
 				c.ppParticles,
 			)
-		}, attackHitmarks[c.NormalCounter][i])
+		}, ppAttackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
 
 	act := action.ActionInfo{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		Frames:          frames.NewAttackFunc(c.Character, ppAttackFrames),
+		AnimationLength: ppAttackFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   ppAttackHitmarks[c.NormalCounter][len(ppAttackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 
