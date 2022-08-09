@@ -64,10 +64,18 @@ func init() {
 // Melee Stance: infuse NA/CA to hydro damage
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Status.Duration("tartagliamelee") > 0 {
-		c.onExitMeleeStance()
+		cdDelay := 11
+		lastAction := &c.Core.Player.LastAction
+		if lastAction.Char == c.Index {
+			switch lastAction.Type {
+			case action.ActionWalk,
+				action.ActionDash:
+				cdDelay = 0
+			}
+		}
+		c.onExitMeleeStance(cdDelay)
 		c.ResetNormalCounter()
 		adjustedFrames := skillMeleeFrames
-		lastAction := &c.Core.Player.LastAction
 		if lastAction.Char == c.Index {
 			switch lastAction.Type {
 			case action.ActionWalk:
@@ -124,7 +132,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	src := c.eCast
 	c.Core.Tasks.Add(func() {
 		if src == c.eCast && c.Core.Status.Duration("tartagliamelee") > 0 {
-			c.onExitMeleeStance()
+			c.onExitMeleeStance(0)
 			c.ResetNormalCounter()
 		}
 	}, 30*60)
@@ -156,13 +164,13 @@ func (c *char) onExitField() {
 			// the button has lit up yet from original skill press
 			// in which case we need to reset the cooldown first
 			c.ResetActionCooldown(action.ActionSkill)
-			c.onExitMeleeStance()
+			c.onExitMeleeStance(0)
 		}
 		return false
 	}, "tartaglia-exit")
 }
 
-func (c *char) onExitMeleeStance() {
+func (c *char) onExitMeleeStance(delay int) {
 	// Precise skill CD from Risuke:
 	// Aligns with separate table on wiki except the 4 second duration one
 	// https://discord.com/channels/763583452762734592/851428030094114847/899416824117084210
@@ -193,7 +201,7 @@ func (c *char) onExitMeleeStance() {
 		c.ResetActionCooldown(action.ActionSkill)
 		c.mlBurstUsed = false
 	} else {
-		c.SetCD(action.ActionSkill, skillCD)
+		c.SetCDWithDelay(action.ActionSkill, skillCD, delay)
 	}
 	c.Core.Status.Delete("tartagliamelee")
 }
