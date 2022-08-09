@@ -5,16 +5,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
 
-const skillStart = 14
+const (
+	skillStart        = 14
+	paramitaBuff      = "paramita"
+	paramitaEnergyICD = "paramita-ball-icd"
+	bbDebuff          = "blood-blossom"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52)
@@ -26,19 +31,22 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 
-	c.applyA1 = true
-	c.Core.Tasks.Add(c.a1, 540+skillStart)
-	c.Core.Status.Add("paramita", 540+skillStart) //to account for animation
-	c.Core.Log.NewEvent("paramita activated", glog.LogCharacterEvent, c.Index).
-		Write("expiry", c.Core.F+540+skillStart)
-
-	//increase based on hp at cast time.
-	//figure out atk buff
-	c.ppBonus = ppatk[c.TalentLvlSkill()] * c.MaxHP()
+	bonus := ppatk[c.TalentLvlSkill()] * c.MaxHP()
 	max := (c.Base.Atk + c.Weapon.Atk) * 4
-	if c.ppBonus > max {
-		c.ppBonus = max
+	if bonus > max {
+		bonus = max
 	}
+	c.ppbuff[attributes.ATK] = bonus
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(paramitaBuff, 540+skillStart),
+		AffectedStat: attributes.ATK,
+		Amount: func() ([]float64, bool) {
+			return c.ppbuff, true
+		},
+	})
+	//TODO; this applies a1 at the end of paramita without checking for "pp extend" (if that's real)
+	c.applyA1 = true
+	c.QueueCharTask(c.a1, 540+skillStart)
 
 	//remove some hp
 	c.Core.Player.Drain(player.DrainInfo{
@@ -46,7 +54,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:       "Paramita Papilio",
 		Amount:     .30 * c.HPCurrent,
 	})
-	c.checkc6()
+	if c.Base.Cons >= 6 {
+		c.checkc6()
+	}
+
+	//trigger 0 damage attack; matters because this breaks freeze
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Paramita (0 dmg)",
+		AttackTag:  combat.AttackTagNone,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		Element:    attributes.Physical,
+	}
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), skillStart, skillStart)
 
 	c.SetCDWithDelay(action.ActionSkill, 960, 14)
 
@@ -59,49 +80,47 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) ppParticles(ac combat.AttackCB) {
-	if c.Core.Status.Duration("paramita") <= 0 {
+	if !c.StatModIsActive(paramitaBuff) {
 		return
 	}
-	if c.paraParticleICD < c.Core.F {
-		c.paraParticleICD = c.Core.F + 300 //5 seconds
-		var count float64 = 2
-		if c.Core.Rand.Float64() < 0.5 {
-			count = 3
-		}
-		//TODO: this used to be 80
-		c.Core.QueueParticle("hutao", count, attributes.Pyro, c.Core.Flags.ParticleDelay)
+	if c.StatusIsActive(paramitaEnergyICD) {
+		return
 	}
+	c.AddStatus(paramitaEnergyICD, 300, true)
+	var count float64 = 2
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 3
+	}
+	//TODO: this used to be 80
+	c.Core.QueueParticle("hutao", count, attributes.Pyro, c.Core.Flags.ParticleDelay)
 }
 
-//TODO: this needs to be multi target
 func (c *char) applyBB(a combat.AttackCB) {
-	c.Core.Log.NewEvent("Applying Blood Blossom", glog.LogCharacterEvent, c.Index).
-		Write("current dur", c.Core.Status.Duration("htbb"))
-	//check if blood blossom already active, if active extend duration by 8 second
-	//other wise start first tick func
-	if !c.tickActive {
-		//TODO: does BB tick immediately on first application?
-		c.Core.Tasks.Add(c.bbtickfunc(c.Core.F, a.Target.Index()), 240)
-		c.tickActive = true
-		c.Core.Log.NewEvent("Blood Blossom applied", glog.LogCharacterEvent, c.Index).
-			Write("expected end", c.Core.F+570).
-			Write("next expected tick", c.Core.F+240)
+	trg, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
 	}
-	// c.CD["bb"] = c.Core.F + 570 //TODO: no idea how accurate this is, does this screw up the ticks?
-	c.Core.Status.Add("htbb", 570)
-	c.Core.Log.NewEvent("Blood Blossom duration extended", glog.LogCharacterEvent, c.Index).
-		Write("new expiry", c.Core.Status.Duration("htbb"))
+	if !trg.StatusIsActive(bbDebuff) {
+		//start ticks
+		trg.QueueEnemyTask(c.bbtickfunc(c.Core.F, trg), 240)
+		trg.SetTag(bbDebuff, c.Core.F) //to track current bb source
+	}
+
+	trg.AddStatus(bbDebuff, 570, true) //lasts 8s + 1.5s
 }
 
-func (c *char) bbtickfunc(src, trg int) func() {
+func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 	return func() {
-		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index).
-			Write("cd", c.Core.Status.Duration("htbb")).
-			Write("src", src)
-		if c.Core.Status.Duration("htbb") == 0 {
-			c.tickActive = false
+		//do nothing if source changed
+		if trg.Tags[bbDebuff] != src {
 			return
 		}
+		if !trg.StatusIsActive(bbDebuff) {
+			return
+		}
+		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index).
+			Write("src", src)
+
 		//queue up one damage instance
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -118,42 +137,15 @@ func (c *char) bbtickfunc(src, trg int) func() {
 		if c.Base.Cons >= 2 {
 			ai.FlatDmg += c.MaxHP() * 0.1
 		}
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(1, combat.TargettableEnemy), 0, 0)
-		c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).
-			Write("next expected tick", c.Core.F+240).
-			Write("dur", c.Core.Status.Duration("htbb")).
-			Write("src", src)
-		//only queue if next tick buff will be active still
-		// if c.Core.F+240 > c.CD["bb"] {
-		// 	return
-		// }
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(trg.Index(), combat.TargettableEnemy), 0, 0)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).
+				Write("next expected tick", c.Core.F+240).
+				Write("dur", trg.StatusExpiry(bbDebuff)).
+				Write("src", src)
+		}
 		//queue up next instance
 		c.Core.Tasks.Add(c.bbtickfunc(src, trg), 240)
-
 	}
-}
-
-func (c *char) ppHook() {
-	m := make([]float64, attributes.EndStatType)
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("hutao-paramita", -1),
-		AffectedStat: attributes.ATK,
-		Amount: func() ([]float64, bool) {
-			if c.Core.Status.Duration("paramita") == 0 {
-				return nil, false
-			}
-			m[attributes.ATK] = c.ppBonus
-			return m, true
-		},
-	})
-}
-
-func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
-		if c.Core.Status.Duration("paramita") > 0 {
-			c.a1()
-		}
-		c.Core.Status.Delete("paramita")
-		return false
-	}, "hutao-exit")
 }

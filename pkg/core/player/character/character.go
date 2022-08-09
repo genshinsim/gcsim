@@ -13,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/queue"
 )
 
 type Character interface {
@@ -88,7 +89,7 @@ type CharWrapper struct {
 	//hitlag stuff
 	timePassed   float64 //how many frames have passed since start of sim
 	frozenFrames float64 //how many frames are we still frozen for
-	queue        []charTask
+	queue        []queue.Task
 }
 
 type charTask struct {

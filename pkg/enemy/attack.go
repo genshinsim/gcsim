@@ -65,7 +65,7 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 			//apply hit lag to enemy
 			e.ApplyHitlag(atk.Info.HitlagFactor, dur)
 			//also apply hitlag to reactable
-			e.Reactable.ApplyHitlag(atk.Info.HitlagFactor, dur)
+			// e.Reactable.ApplyHitlag(atk.Info.HitlagFactor, dur)
 		}
 	}
 
