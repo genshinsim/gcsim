@@ -16,8 +16,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	bellActiveUntil int
-	c4ICD           int
-	c6ICD           int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
@@ -31,9 +29,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.CharZone = character.ZoneInazuma
-
-	c.c4ICD = -1
-	c.c6ICD = -1
 
 	w.Character = &c
 
