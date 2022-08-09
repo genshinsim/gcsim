@@ -11,12 +11,15 @@ import (
 var skillFrames []int
 
 const (
-	skillHitmark = 57
-	skillBuffKey = "qiqiskill"
+	skillHitmark = 32
+	skillBuffKey = "qiqi-e"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(57)
+	skillFrames = frames.InitAbilSlice(57) // E -> N1/Swap
+	skillFrames[action.ActionBurst] = 58   // E -> Q
+	skillFrames[action.ActionDash] = 6     // E -> D
+	skillFrames[action.ActionJump] = 5     // E -> J
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -85,18 +88,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			SourceFrame: c.Core.F,
 		}
 
-		c.Core.Tasks.Add(c.skillDmgTickTask(src, tickAE, 60), 30)
+		// assumes ruin guard hitlag as extra delay (E Tick 1 gets delayed by E Initial hitlag)
+		// can't use char queue for this because hitlag from other sources shouldn't count
+		c.Core.Tasks.Add(c.skillDmgTickTask(src, tickAE, 60), 57+7)
 
 		// Apply damage needs to take place after above takes place to ensure stats are handled correctly
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0)
 	}, skillHitmark)
 
-	c.SetCD(action.ActionSkill, 30*60)
+	c.SetCDWithDelay(action.ActionSkill, 1800, 3) // 30s * 60
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
 	}
 }
