@@ -9,7 +9,7 @@ import (
 
 var aimedFrames []int
 
-const aimedHitmark = 94
+const aimedHitmark = 86
 
 func init() {
 	aimedFrames = frames.InitAbilSlice(94)

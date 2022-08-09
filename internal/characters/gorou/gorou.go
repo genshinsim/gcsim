@@ -10,12 +10,12 @@ import (
 )
 
 const (
-	defenseBuffKey           = "goroubuff"
-	generalWarBannerKey      = "generalwarbanner"
-	generalGloryKey          = "generalglory"
-	generalWarBannerDuration = 600    //10s
-	generalGloryDuration     = 9 * 60 //9 s
-	heedlessKey              = "heedlessbuff"
+	defenseBuffKey           = "gorou-e-defbuff"
+	generalWarBannerKey      = "gorou-e-warbanner"
+	generalGloryKey          = "gorou-q-glory"
+	generalWarBannerDuration = 600    // 10s
+	generalGloryDuration     = 9 * 60 // 9s, dm says 9.1s but that would mean you get an extra Crystal Collapse tick so it's staying at 9s
+	a1Key                    = "gorou-a1"
 	c6key                    = "gorou-c6"
 )
 
@@ -31,8 +31,8 @@ type char struct {
 	gorouBuff      []float64
 	geoCharCount   int
 	c2Extension    int
-	c6buff         []float64
-	a2buff         []float64
+	c6Buff         []float64
+	a1Buff         []float64
 	healFieldStats [attributes.EndStatType]float64
 }
 
@@ -48,7 +48,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 	c.SkillCon = 3
 	c.CharZone = character.ZoneInazuma
 
-	c.c6buff = make([]float64, attributes.EndStatType)
+	c.c6Buff = make([]float64, attributes.EndStatType)
 	c.gorouBuff = make([]float64, attributes.EndStatType)
 
 	w.Character = &c
@@ -57,8 +57,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 }
 
 func (c *char) Init() error {
-	c.a2buff = make([]float64, attributes.EndStatType)
-	c.a2buff[attributes.DEFP] = .25
+	c.a1Buff = make([]float64, attributes.EndStatType)
+	c.a1Buff[attributes.DEFP] = .25
 
 	for _, char := range c.Core.Player.Chars() {
 		if char.Base.Element == attributes.Geo {
@@ -86,12 +86,12 @@ func (c *char) Init() error {
 	**/
 	switch c.geoCharCount {
 	case 1:
-		c.c6buff[attributes.CD] = 0.1
+		c.c6Buff[attributes.CD] = 0.1
 	case 2:
-		c.c6buff[attributes.CD] = 0.2
+		c.c6Buff[attributes.CD] = 0.2
 	default:
 		//can't be less than 1 so this is 3 or 4
-		c.c6buff[attributes.CD] = 0.4
+		c.c6Buff[attributes.CD] = 0.4
 	}
 
 	if c.Base.Cons > 0 {
