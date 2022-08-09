@@ -16,7 +16,14 @@ const barbSkillKey = "barbskill"
 var skillFrames []int
 
 func init() {
-	skillFrames = frames.InitAbilSlice(52)
+	skillFrames = frames.InitAbilSlice(57)
+	skillFrames[action.ActionWalk] = 54
+	skillFrames[action.ActionDash] = 4
+	skillFrames[action.ActionJump] = 5
+	skillFrames[action.ActionSkill] = 54
+	skillFrames[action.ActionBurst] = 55
+	skillFrames[action.ActionAttack] = 54
+	skillFrames[action.ActionCharge] = 54
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -42,8 +49,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	//TODO: review barbara AOE size?
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 5, 5)
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 5, 35) // need to confirm timing of this
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 5, 42)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 5, 78) // need to confirm snapshot timing
 
 	stats, _ := c.Stats()
 	hpplus := stats[attributes.Heal]
@@ -52,24 +59,24 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.skillInitF = c.Core.F
 	//add 1 tick each 5s
-	//first tick starts at 0
-	c.barbaraHealTick(heal, hpplus, c.Core.F)()
+	c.barbaraHealTick(heal, hpplus, c.Core.F+6)()
 	ai.Abil = "Let the Show Begin♪ Wet Tick"
 	ai.AttackTag = combat.AttackTagNone
 	ai.Mult = 0
-	c.barbaraWet(ai, c.Core.F)()
+	c.barbaraWet(ai, c.Core.F+3)()
 
+	cdDelay := 3
 	if c.Base.Cons >= 2 {
 		c.c2() //c2 hydro buff
-		c.SetCD(action.ActionSkill, 32*60*0.85)
+		c.SetCDWithDelay(action.ActionSkill, 32*60*0.85, cdDelay)
 	} else {
-		c.SetCD(action.ActionSkill, 32*60)
+		c.SetCDWithDelay(action.ActionSkill, 32*60, cdDelay)
 	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
 }
