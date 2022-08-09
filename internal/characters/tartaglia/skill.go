@@ -76,13 +76,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.onExitMeleeStance(cdDelay)
 		c.ResetNormalCounter()
 		adjustedFrames := skillMeleeFrames
-		if lastAction.Char == c.Index {
-			switch lastAction.Type {
-			case action.ActionWalk:
-				adjustedFrames = skillMeleeWalkFrames
-			case action.ActionDash:
-				adjustedFrames = skillMeleeDashFrames
-			}
+		switch (c.Core.Player.CurrentState()) {
+		case action.WalkState:
+			adjustedFrames = skillMeleeWalkFrames
+		case action.DashState:
+			adjustedFrames = skillMeleeDashFrames
 		}
 		return action.ActionInfo{
 			Frames:          frames.NewAbilFunc(adjustedFrames),
@@ -110,24 +108,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	hitmark := skillHitmark
-	lastAction := &c.Core.Player.LastAction
-	if lastAction.Char == c.Index {
-		switch lastAction.Type {
-		case action.ActionWalk:
-			hitmark = skillWalkHitmark
-		case action.ActionDash:
-			hitmark = skillDashHitmark
-		}
+	switch c.Core.Player.CurrentState() {
+	case action.WalkState:
+		hitmark = skillWalkHitmark
+	case action.DashState:
+		hitmark = skillDashHitmark
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	cdDelay := 14
-	if lastAction.Char == c.Index {
-		switch lastAction.Type {
-		case action.ActionWalk,
-			action.ActionDash:
-			cdDelay = 0
-		}
+	switch c.Core.Player.CurrentState() {
+	case action.WalkState,
+		action.DashState:
+		cdDelay = 0
 	}
 	src := c.eCast
 	c.Core.Tasks.Add(func() {
@@ -139,13 +132,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, 60, cdDelay)
 
 	adjustedFrames := skillRangedFrames
-	if lastAction.Char == c.Index {
-		switch lastAction.Type {
-		case action.ActionWalk:
-			adjustedFrames = skillRangedWalkFrames
-		case action.ActionDash:
-			adjustedFrames = skillRangedDashFrames
-		}
+	switch c.Core.Player.CurrentState() {
+	case action.WalkState:
+		adjustedFrames = skillRangedWalkFrames
+	case action.DashState:
+		adjustedFrames = skillRangedDashFrames
 	}
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(adjustedFrames),
