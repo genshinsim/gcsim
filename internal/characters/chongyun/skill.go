@@ -15,10 +15,14 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 56
+const skillHitmark = 36
 
 func init() {
-	skillFrames = frames.InitAbilSlice(57)
+	skillFrames = frames.InitAbilSlice(52) // E -> N1
+	skillFrames[action.ActionBurst] = 51   // E -> Q
+	skillFrames[action.ActionDash] = 35    // E -> D
+	skillFrames[action.ActionJump] = 35    // E -> J
+	skillFrames[action.ActionSwap] = 49    // E -> J
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -96,7 +100,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		//TODO: this needs to be fixed still for sac gs
 		c.Core.QueueAttackEvent(c.a4Snap, 0)
-	}, skillHitmark+600)
+	}, 665)
 
 	c.Core.Status.Add("chongyunfield", 600)
 
@@ -111,7 +115,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, i)
 	}
 
-	c.SetCD(action.ActionSkill, 900)
+	c.SetCDWithDelay(action.ActionSkill, 900, 34)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
