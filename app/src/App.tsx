@@ -6,7 +6,7 @@ import { Dash } from "/src/Pages/Dash";
 import { Simple } from "/src/Pages/Sim";
 import { SimWrapper } from "./Pages/Sim/SimWrapper";
 import { ViewerDash } from "./Pages/ViewerDashboard";
-import { DB } from "./Pages/DB";
+import { DB, DbChar } from "./Pages/DB";
 import "./i18n";
 import { Trans, useTranslation } from "react-i18next";
 import UserAccount from "./PageUserAccount";
@@ -46,6 +46,7 @@ export default function App() {
         <Route path="/db">
           <DB />
         </Route>
+        <Route path="/db/:char">{({ char }) => <DbChar char={char} />}</Route>
         <Route path="/account">
           <UserAccount />
         </Route>
