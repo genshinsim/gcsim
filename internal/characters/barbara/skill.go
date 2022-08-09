@@ -35,10 +35,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Let the Show Begin♪",
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Hydro,
-		Durability: 25, //TODO: what is 1A GU?
+		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	//TODO: review barbara AOE size?
