@@ -23,7 +23,7 @@ type char struct {
 	a4buff  []float64
 	ppbuff  []float64
 	c4buff  []float64
-	c6icd   int
+	c6buff  []float64
 	applyA1 bool
 
 	burstHealCount  int

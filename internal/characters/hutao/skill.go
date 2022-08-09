@@ -54,7 +54,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:       "Paramita Papilio",
 		Amount:     .30 * c.HPCurrent,
 	})
-	c.checkc6()
+	if c.Base.Cons >= 6 {
+		c.checkc6()
+	}
 
 	//trigger 0 damage attack; matters because this breaks freeze
 	ai := combat.AttackInfo{
