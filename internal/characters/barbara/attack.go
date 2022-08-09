@@ -38,13 +38,12 @@ func init() {
 	attackFrames[2][action.ActionAttack] = 22
 	attackFrames[2][action.ActionCharge] = 28
 
-	// N3 -> x
+	// N4 -> x
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 60)
 	attackFrames[3][action.ActionWalk] = 57
 	attackFrames[3][action.ActionDash] = 2
 	attackFrames[3][action.ActionJump] = 3
 	attackFrames[3][action.ActionSwap] = 5
-	attackFrames[3][action.ActionAttack] = 60
 
 	// N1 -> x (Dash/N4 -> N1 8f lag)
 	attackFramesWithLag = make([][]int, len(attackFrames))

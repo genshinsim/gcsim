@@ -19,7 +19,6 @@ func init() {
 	chargeFrames[action.ActionSwap] = 57
 	chargeFrames[action.ActionSkill] = 88
 	chargeFrames[action.ActionBurst] = 87
-	chargeFrames[action.ActionAttack] = 89
 	chargeFrames[action.ActionCharge] = 88
 }
 
