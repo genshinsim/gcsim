@@ -10,8 +10,10 @@ type ActionInfo struct {
 	FramePausedOnHitlag func() bool `json:"-"`
 	OnRemoved           func()      `json:"-"`
 	//following are exposed only so we can log it properly
-	CachedFrames [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
-	TimePassed   float64
+	CachedFrames         [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
+	TimePassed           float64
+	NormalizedTimePassed float64
+	UseNormalizedTime    func(next Action) bool
 	//hidden stuff
 	queued []queuedAction
 }
@@ -36,8 +38,11 @@ func (a *ActionInfo) CanQueueNext() bool {
 }
 
 func (a *ActionInfo) CanUse(next Action) bool {
+	if a.UseNormalizedTime != nil && a.UseNormalizedTime(next) {
+		return a.NormalizedTimePassed >= float64(a.CachedFrames[next])
+	}
 	//can't use anything if we're frozen
-	if a.FramePausedOnHitlag != nil && a.FramePausedOnHitlag() {
+	if a.FramePausedOnHitlag() {
 		return false
 	}
 	return a.TimePassed >= float64(a.CachedFrames[next])
@@ -48,23 +53,26 @@ func (a *ActionInfo) AnimationState() AnimationState {
 }
 
 func (a *ActionInfo) Tick() bool {
+	a.NormalizedTimePassed++ //this always increments
 	//time only goes on if either not hitlag function, or not paused
-	if a.FramePausedOnHitlag == nil || !a.FramePausedOnHitlag() {
+	if !a.FramePausedOnHitlag() {
 		a.TimePassed++
 	}
 
 	//execute all action such that timePassed > delay, and then remove from
 	//slice
-	n := -1
-	for i := 0; i < len(a.queued); i++ {
-		if a.queued[i].delay <= a.TimePassed {
-			a.queued[i].f()
-		} else {
-			a.queued[n] = a.queued[i]
-			n++
+	if a.queued != nil {
+		n := -1
+		for i := 0; i < len(a.queued); i++ {
+			if a.queued[i].delay <= a.TimePassed {
+				a.queued[i].f()
+			} else {
+				a.queued[n] = a.queued[i]
+				n++
+			}
 		}
+		a.queued = a.queued[:n]
 	}
-	a.queued = a.queued[:n]
 
 	//check if animation is over
 	if a.TimePassed > float64(a.AnimationLength) {
