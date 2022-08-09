@@ -8,8 +8,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{14, 13}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{14, 13}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(55)
@@ -41,15 +43,19 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Charged Attack",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagExtraAttack,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypeSlash,
-		Element:      attributes.Hydro,
-		Durability:   25,
-		HitWeakPoint: hitWeakPoint != 0,
+		ActorIndex:           c.Index,
+		Abil:                 "Charged Attack",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagExtraAttack,
+		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypeSlash,
+		Element:              attributes.Hydro,
+		Durability:           25,
+		HitWeakPoint:         hitWeakPoint != 0,
+		HitlagHaltFrames:     0.12 * 60, // deployable hitlag, but only on weakspot
+		HitlagFactor:         0.01,
+		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 
 	runningFrames := 0
@@ -61,8 +67,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
 			hitmark,
 			hitmark,
-			c.meleeApplyRiptide, //call back for applying riptide
-			c.rtSlashCallback,   //call back for triggering slash
+			c.meleeApplyRiptide, // call back for applying riptide
+			c.rtSlashCallback,   // call back for triggering slash
 		)
 		runningFrames = hitmark
 	}
