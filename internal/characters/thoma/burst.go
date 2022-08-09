@@ -11,10 +11,14 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 56
+const burstHitmark = 40
 
 func init() {
-	burstFrames = frames.InitAbilSlice(56)
+	burstFrames = frames.InitAbilSlice(58)
+	burstFrames[action.ActionAttack] = 57
+	burstFrames[action.ActionSkill] = 56
+	burstFrames[action.ActionDash] = 57
+	burstFrames[action.ActionSwap] = 56
 }
 
 // Burst attack damage queue generator
@@ -47,20 +51,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		c.Core.Tasks.Add(func() {
 			c.AddEnergy("thoma-c4", 15)
-		}, 15)
+		}, 8)
 	}
 
 	cd := 20
 	if c.Base.Cons >= 1 {
 		cd = 17 //the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 17 for sim purposes.
 	}
-	c.SetCDWithDelay(action.ActionBurst, cd*60, 11)
-	c.ConsumeEnergy(11)
+	c.SetCD(action.ActionBurst, cd*60)
+	c.ConsumeEnergy(7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.InvalidAction],
+		CanQueueAfter:   burstFrames[action.ActionSkill],
 		State:           action.BurstState,
 	}
 }
@@ -109,7 +113,7 @@ func (c *char) burstProc() {
 			c.genShield("Thoma Burst", shieldamt)
 		}
 		atk.Callbacks = append(atk.Callbacks, cb)
-		c.Core.QueueAttackEvent(&atk, 0)
+		c.Core.QueueAttackEvent(&atk, 11)
 
 		c.Core.Log.NewEvent("thoma Q proc'd", glog.LogCharacterEvent, c.Index).
 			Write("frame", c.Core.F).
