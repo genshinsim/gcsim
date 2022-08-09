@@ -10,10 +10,13 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 44
+const skillHitmark = 11
 
 func init() {
-	skillFrames = frames.InitAbilSlice(44)
+	skillFrames = frames.InitAbilSlice(46)
+	skillFrames[action.ActionDash] = 32
+	skillFrames[action.ActionJump] = 32
+	skillFrames[action.ActionSwap] = 44
 }
 
 // Skill attack damage queue generator
@@ -59,12 +62,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 1 {
 		cd = 12 //the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 12 for sim purposes.
 	}
-	c.SetCD(action.ActionSkill, cd*60)
+	c.SetCDWithDelay(action.ActionSkill, cd*60, 9)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
 }
