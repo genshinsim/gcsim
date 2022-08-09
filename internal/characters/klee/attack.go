@@ -26,6 +26,8 @@ func init() {
 		attackHitmarksWithLag[i] += 9
 	}
 	attackFrames = make([][]int, normalHitNum)
+
+	// N1 -> x
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 34)
 	attackFrames[0][action.ActionAttack] = 31
 	attackFrames[0][action.ActionCharge] = 23
@@ -34,6 +36,8 @@ func init() {
 	attackFrames[0][action.ActionDash] = 6
 	attackFrames[0][action.ActionJump] = 6
 	attackFrames[0][action.ActionWalk] = 34
+
+	// N2 -> x
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 41)
 	attackFrames[1][action.ActionAttack] = 38
 	attackFrames[1][action.ActionCharge] = 32
@@ -42,9 +46,13 @@ func init() {
 	attackFrames[1][action.ActionDash] = 2
 	attackFrames[1][action.ActionJump] = 2
 	attackFrames[1][action.ActionWalk] = 41
+
+	// N3 -> x
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 77)
 	attackFrames[2][action.ActionCharge] = 49
 	attackFrames[2][action.ActionWalk] = 72
+
+	// N1 -> x (9f lag)
 	attackFramesWithLag = make([][]int, len(attackFrames))
 	for i := range attackFrames {
 		attackFramesWithLag[i] = make([]int, len(attackFrames[i]))
