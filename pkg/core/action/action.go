@@ -42,7 +42,7 @@ func (a *ActionInfo) CanUse(next Action) bool {
 		return a.NormalizedTimePassed >= float64(a.CachedFrames[next])
 	}
 	//can't use anything if we're frozen
-	if a.FramePausedOnHitlag() {
+	if a.FramePausedOnHitlag != nil && a.FramePausedOnHitlag() {
 		return false
 	}
 	return a.TimePassed >= float64(a.CachedFrames[next])
@@ -55,14 +55,14 @@ func (a *ActionInfo) AnimationState() AnimationState {
 func (a *ActionInfo) Tick() bool {
 	a.NormalizedTimePassed++ //this always increments
 	//time only goes on if either not hitlag function, or not paused
-	if !a.FramePausedOnHitlag() {
+	if a.FramePausedOnHitlag == nil || !a.FramePausedOnHitlag() {
 		a.TimePassed++
 	}
 
 	//execute all action such that timePassed > delay, and then remove from
 	//slice
 	if a.queued != nil {
-		n := -1
+		n := 0
 		for i := 0; i < len(a.queued); i++ {
 			if a.queued[i].delay <= a.TimePassed {
 				a.queued[i].f()
