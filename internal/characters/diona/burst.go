@@ -10,15 +10,18 @@ import (
 
 var burstFrames []int
 
-const burstStart = 49
+const burstStart = 58 // Initial Hit
 
 func init() {
-	burstFrames = frames.InitAbilSlice(burstStart)
+	burstFrames = frames.InitAbilSlice(64) // Q -> N1/E
+	burstFrames[action.ActionDash] = 43    // Q -> D
+	burstFrames[action.ActionJump] = 44    // Q -> J
+	burstFrames[action.ActionSwap] = 41    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
-	//initial hit
+	// Initial Hit
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Signature Mix (Initial)",
@@ -30,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, burstStart-10)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, burstStart)
 
 	ai.Abil = "Signature Mix (Tick)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
@@ -39,25 +42,32 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	maxhp := c.MaxHP()
 	heal := burstHealPer[c.TalentLvlBurst()]*maxhp + burstHealFlat[c.TalentLvlBurst()]
 
-	//ticks every 2s, first tick at t=1s, then t=3,5,7,9,11, lasts for 12.5
-	for i := 0; i < 6; i++ {
-		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
-			// c.Core.Log.NewEvent("diona healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
-			c.Core.Player.Heal(player.HealInfo{
-				Caller:  c.Index,
-				Target:  c.Core.Player.Active(),
-				Message: "Drunken Mist",
-				Src:     heal,
-				Bonus:   hpplus,
-			})
-		}, 60+i*120)
-	}
+	// apparently lasts for 12.5
+	// TODO: assumes that field starts when it lands (which is dynamic ingame)
+	c.Core.Tasks.Add(func() {
+		// add burst status for C4 check
+		c.Core.Status.Add("diona-q", 750)
+		//ticks every 2s, first tick at t=2s (relative to field start), then t=4,6,8,10,12; lasts for 12.5s from field start
+		for i := 0; i < 6; i++ {
+			c.Core.Tasks.Add(func() {
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
+				// c.Core.Log.NewEvent("diona healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
+				c.Core.Player.Heal(player.HealInfo{
+					Caller:  c.Index,
+					Target:  c.Core.Player.Active(),
+					Message: "Drunken Mist",
+					Src:     heal,
+					Bonus:   hpplus,
+				})
+			}, 120+i*120)
+		}
+		// C6
+		if c.Base.Cons >= 6 {
+			c.c6()
+		}
+	}, burstStart)
 
-	//apparently lasts for 12.5
-	c.Core.Status.Add("dionaburst", burstStart+750) //TODO not sure when field starts, is it at animation end? prob when it lands...
-
-	//c1
+	// C1
 	if c.Base.Cons >= 1 {
 		//15 energy after ends, flat not affected by ER
 		c.Core.Tasks.Add(func() {
@@ -65,12 +75,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, burstStart+750)
 	}
 
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
-
-	c.SetCDWithDelay(action.ActionBurst, 1200, burstStart)
-	c.ConsumeEnergy(burstStart)
+	c.SetCDWithDelay(action.ActionBurst, 1200, 41)
+	c.ConsumeEnergy(43)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
