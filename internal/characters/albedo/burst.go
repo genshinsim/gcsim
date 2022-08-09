@@ -11,10 +11,14 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 96
+const burstHitmark = 75         // Initial Hit
+const fatalBlossomHitmark = 145 // Fatal Blossom
 
 func init() {
-	burstFrames = frames.InitAbilSlice(96)
+	burstFrames = frames.InitAbilSlice(95) // Q -> E/J
+	burstFrames[action.ActionAttack] = 94  // Q -> N1
+	burstFrames[action.ActionDash] = 94    // Q -> D
+	burstFrames[action.ActionSwap] = 93    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -45,12 +49,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//TODO: damage frame
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), burstHitmark)
 
-	// Blooms are generated on a slight delay from initial hit
-	// TODO: No precise frame data, guessing correct delay
+	// Blossoms are generated on a slight delay from initial hit
+	// TODO: no precise frame data for time between Blossoms
 	ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
 	ai.Mult = burstPerBloom[c.TalentLvlBurst()]
 	for i := 0; i < hits; i++ {
-		c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), burstHitmark+30+i*5)
+		c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), fatalBlossomHitmark+i*5)
 	}
 
 	//Party wide EM buff
@@ -67,8 +71,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		})
 	}
 
-	c.SetCDWithDelay(action.ActionBurst, 720, 80)
-	c.ConsumeEnergy(80)
+	c.SetCDWithDelay(action.ActionBurst, 720, 74)
+	// TODO: this is adjusted by 2 frames to be before CanQueueAfter (should actually be 77), otherwise there'll be issues
+	c.ConsumeEnergy(75)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),

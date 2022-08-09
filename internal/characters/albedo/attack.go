@@ -10,7 +10,7 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = []int{12, 18, 29, 39, 54}
+var attackHitmarks = []int{12, 11, 17, 17, 27}
 var attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06, 0.09, 0.12}
 
 const normalHitNum = 5
@@ -18,11 +18,16 @@ const normalHitNum = 5
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 12)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 18)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 29)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 39)
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[3], 54)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 14) // N1 -> N2
+	attackFrames[0][action.ActionCharge] = 23                             // N1 -> CA
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 22) // N2 -> N3
+	attackFrames[1][action.ActionCharge] = 21                             // N2 -> CA
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 32) // N3 -> N4
+	attackFrames[2][action.ActionCharge] = 41                             // N3 -> CA
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 34) // N4 -> N5
+	attackFrames[3][action.ActionCharge] = 36                             // N4 -> CA
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[3], 62) // N5 -> N1
+	attackFrames[4][action.ActionCharge] = 500                            //TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {

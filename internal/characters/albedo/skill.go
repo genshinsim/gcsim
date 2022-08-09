@@ -11,10 +11,14 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 32
+const skillHitmark = 25
 
 func init() {
-	skillFrames = frames.InitAbilSlice(32)
+	skillFrames = frames.InitAbilSlice(33) // E -> Q
+	skillFrames[action.ActionAttack] = 32  // E -> N1
+	skillFrames[action.ActionDash] = 29    // E -> D
+	skillFrames[action.ActionJump] = 28    // E -> J
+	skillFrames[action.ActionSwap] = 31    // E -> Swap
 }
 
 const (
@@ -55,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.DeleteStatus(skillICDKey)
 	}, skillHitmark)
 
-	c.SetCD(action.ActionSkill, 240)
+	c.SetCDWithDelay(action.ActionSkill, 240, 23)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
