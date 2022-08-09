@@ -43,8 +43,8 @@ func (c *char) meleeApplyRiptide(a combat.AttackCB) {
 }
 
 func (c *char) applyRiptide(src string, t *enemy.Enemy) {
-	if c.Base.Cons >= 4 && t.StatusIsActive(riptideKey) {
-		c.Core.Tasks.Add(func() { c.rtC4Tick(t) }, 60*4)
+	if c.Base.Cons >= 4 && !t.StatusIsActive(riptideKey) {
+		t.QueueEnemyTask(func() { c.rtC4Tick(t) }, 60*4)
 	}
 
 	t.AddStatus(riptideKey, riptideDuration, true)
@@ -71,7 +71,13 @@ func (c *char) rtC4Tick(t *enemy.Enemy) {
 		c.rtFlashTick(t)
 	}
 
-	c.Core.Tasks.Add(func() { c.rtC4Tick(t) }, 60*4)
+	t.QueueEnemyTask(func() { c.rtC4Tick(t) }, 60*4)
+	c.Core.Log.NewEvent(
+		fmt.Sprintf("c4 applied"),
+		glog.LogCharacterEvent,
+		c.Index,
+	).
+		Write("target", t.Index())
 }
 
 // Riptide Flash: A fully-charged Aimed Shot that hits an opponent affected
