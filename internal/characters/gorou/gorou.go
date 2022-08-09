@@ -26,7 +26,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	eFieldSrc      int
-	eFieldHealSrc  int
+	qFieldHealSrc  int
 	qFieldSrc      int
 	gorouBuff      []float64
 	geoCharCount   int
