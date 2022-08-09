@@ -31,6 +31,8 @@ func Eval(c *core.Core, fields []string) int64 {
 		return evalConstruct(c, fields)
 	case ".normal":
 		return evalNormalCounter(c, fields)
+	case ".onfield":
+		return evalOnField(c, fields)
 	default:
 		//check if it's a char name; if so check char custom eval func
 		if key, ok := shortcut.CharNameToKey[fields[0]]; ok {
