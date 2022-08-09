@@ -15,9 +15,9 @@ func (c *char) genShield(src string, shieldamt float64) {
 		c.AddStatus("thoma-a1", 360, true)    // 6s * 60
 	}
 	if c.Core.Player.Shields.Get(shield.ShieldThomaSkill) != nil {
-		maxHP := c.maxShieldHP()
-		if c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()+shieldamt > maxHP {
-			shieldamt = maxHP - c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()
+		shieldamt += c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()
+		if shieldamt > c.maxShieldHP() {
+			shieldamt = c.maxShieldHP()
 		}
 	}
 	//add shield
