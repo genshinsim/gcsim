@@ -45,8 +45,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueParticle("thoma", count, attributes.Pyro, skillHitmark+c.Core.Flags.ParticleDelay)
 
-	shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
-	c.genShield("Thoma Skill", shieldamt)
+	c.QueueCharTask(func() {
+		shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
+		c.genShield("Thoma Skill", shieldamt)
+	}, 9)
 
 	// damage component not final
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
