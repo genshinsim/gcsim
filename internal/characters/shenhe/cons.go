@@ -9,6 +9,18 @@ import (
 
 const c4BuffKey = "shenhe-c4"
 
+func (c *char) c2(active *character.CharWrapper, dur int) {
+	active.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag("shenhe-c2", dur),
+		Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			if ae.Info.Element != attributes.Cryo {
+				return nil, false
+			}
+			return c.c2buff, true
+		},
+	})
+}
+
 func (c *char) c4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("shenhe-c4-dmg", -1),
