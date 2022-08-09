@@ -21,7 +21,7 @@ func init() {
 
 	// CA0 -> x
 	chargeFrames[SaichiSlash] = frames.InitAbilSlice(131)
-	attackFrames[SaichiSlash][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	chargeFrames[SaichiSlash][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 	chargeFrames[SaichiSlash][action.ActionDash] = chargeHitmarks[SaichiSlash]
 	chargeFrames[SaichiSlash][action.ActionJump] = chargeHitmarks[SaichiSlash]
 	chargeFrames[SaichiSlash][action.ActionSwap] = 130
