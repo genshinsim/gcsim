@@ -118,7 +118,7 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          ff,
 		AnimationLength: ppChargeFrames[action.InvalidAction],
-		CanQueueAfter:   ppChargeHitmark,
+		CanQueueAfter:   1,
 		State:           action.ChargeAttackState,
 	}
 }
