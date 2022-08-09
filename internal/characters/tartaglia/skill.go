@@ -65,13 +65,10 @@ func init() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Status.Duration("tartagliamelee") > 0 {
 		cdDelay := 11
-		lastAction := &c.Core.Player.LastAction
-		if lastAction.Char == c.Index {
-			switch lastAction.Type {
-			case action.ActionWalk,
-				action.ActionDash:
-				cdDelay = 0
-			}
+		switch c.Core.Player.CurrentState() {
+		case action.WalkState,
+			action.DashState:
+			cdDelay = 0
 		}
 		c.onExitMeleeStance(cdDelay)
 		c.ResetNormalCounter()
