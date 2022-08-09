@@ -1,0 +1,505 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "*": {
+      "type": "object",
+      "properties": {
+        "is_damage_mode": {
+          "type": "boolean"
+        },
+        "active_char": {
+          "type": "string"
+        },
+        "char_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "damage_by_char": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "mean": {
+                  "type": "number"
+                },
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                },
+                "sd": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "mean",
+                "min",
+                "max"
+              ]
+            }
+          }
+        },
+        "damage_instances_by_char": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "mean": {
+                  "type": "number"
+                },
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                },
+                "sd": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "mean",
+                "min",
+                "max"
+              ]
+            }
+          }
+        },
+        "damage_by_char_by_targets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "mean": {
+                  "type": "number"
+                },
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                },
+                "sd": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "mean",
+                "min",
+                "max"
+              ]
+            }
+          }
+        },
+        "char_active_time": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mean": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "sd": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "mean",
+              "min",
+              "max"
+            ]
+          }
+        },
+        "abil_usage_count_by_char": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "mean": {
+                  "type": "number"
+                },
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                },
+                "sd": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "mean",
+                "min",
+                "max"
+              ]
+            }
+          }
+        },
+        "particle_count": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "mean": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "sd": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "mean",
+              "min",
+              "max"
+            ]
+          }
+        },
+        "reactions_triggered": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "mean": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "sd": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "mean",
+              "min",
+              "max"
+            ]
+          }
+        },
+        "sim_duration": {
+          "type": "object",
+          "properties": {
+            "mean": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "sd": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "mean",
+            "min",
+            "max"
+          ]
+        },
+        "ele_uptime": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "mean": {
+                  "type": "number"
+                },
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                },
+                "sd": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "mean",
+                "min",
+                "max"
+              ]
+            }
+          }
+        },
+        "required_er": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "damage": {
+          "type": "object",
+          "properties": {
+            "mean": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "sd": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "mean",
+            "min",
+            "max"
+          ]
+        },
+        "dps": {
+          "type": "object",
+          "properties": {
+            "mean": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "sd": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "mean",
+            "min",
+            "max"
+          ]
+        },
+        "dps_by_target": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "mean": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "sd": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "mean",
+              "min",
+              "max"
+            ]
+          }
+        },
+        "damage_over_time": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "mean": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "sd": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "mean",
+              "min",
+              "max"
+            ]
+          }
+        },
+        "iter": {
+          "type": "number"
+        },
+        "text": {
+          "type": "string"
+        },
+        "debug": {
+          "type": "string"
+        },
+        "runtime": {
+          "type": "number"
+        },
+        "config_file": {
+          "type": "string"
+        },
+        "num_targets": {
+          "type": "number"
+        },
+        "char_details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "level": {
+                "type": "number"
+              },
+              "element": {
+                "type": "string"
+              },
+              "max_level": {
+                "type": "number"
+              },
+              "cons": {
+                "type": "number"
+              },
+              "weapon": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "refine": {
+                    "type": "number"
+                  },
+                  "level": {
+                    "type": "number"
+                  },
+                  "max_level": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name",
+                  "refine",
+                  "level",
+                  "max_level"
+                ]
+              },
+              "talents": {
+                "type": "object",
+                "properties": {
+                  "attack": {
+                    "type": "number"
+                  },
+                  "skill": {
+                    "type": "number"
+                  },
+                  "burst": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "attack",
+                  "skill",
+                  "burst"
+                ]
+              },
+              "stats": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "snapshot": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "sets": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": [
+              "name",
+              "level",
+              "element",
+              "max_level",
+              "cons",
+              "weapon",
+              "talents",
+              "stats",
+              "snapshot",
+              "sets"
+            ]
+          }
+        }
+      },
+      "required": [
+        "is_damage_mode",
+        "active_char",
+        "char_names",
+        "damage_by_char",
+        "damage_instances_by_char",
+        "damage_by_char_by_targets",
+        "char_active_time",
+        "abil_usage_count_by_char",
+        "particle_count",
+        "reactions_triggered",
+        "sim_duration",
+        "ele_uptime",
+        "required_er",
+        "damage",
+        "dps",
+        "dps_by_target",
+        "damage_over_time",
+        "iter",
+        "text",
+        "debug",
+        "runtime",
+        "config_file",
+        "num_targets",
+        "char_details"
+      ]
+    }
+  }
+}
