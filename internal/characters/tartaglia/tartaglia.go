@@ -15,7 +15,8 @@ const (
 	riptideFlashICDKey = "riptide-flash-icd"
 	riptideKey         = "riptide"
 	riptideSlashICDKey = "riptide-slash-icd"
-	riptideC4Key			 = "riptide-c4"
+	riptideC4Key       = "riptide-c4"
+	energyICDKey       = "riptide-energy-icd"
 )
 
 func init() {

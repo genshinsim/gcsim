@@ -131,8 +131,8 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
 
 	// queue particles
-	if c.rtParticleICD < c.Core.F {
-		c.rtParticleICD = c.Core.F + 180 // 3 sec
+	if !c.StatusIsActive(energyICDKey) {
+		c.AddStatus(energyICDKey, 180, true) // 3 sec
 		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.Core.Flags.ParticleDelay)
 	}
 }
@@ -186,8 +186,8 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
 
 	// queue particle if not on icd
-	if c.rtParticleICD < c.Core.F {
-		c.rtParticleICD = c.Core.F + 180 // 3 sec
+	if !c.StatusIsActive(energyICDKey) {
+		c.AddStatus(energyICDKey, 180, true) // 3 sec
 		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.Core.Flags.ParticleDelay)
 	}
 }
