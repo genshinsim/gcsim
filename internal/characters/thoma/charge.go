@@ -9,12 +9,13 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 70
+const chargeHitmark = 27
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(70)
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames = frames.InitAbilSlice(64)
+	chargeFrames[action.ActionDash] = 34
+	chargeFrames[action.ActionJump] = 34
+	chargeFrames[action.ActionSwap] = 63
 }
 
 // Charge attack damage queue generator
