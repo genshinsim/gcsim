@@ -72,13 +72,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	c.SetCDWithDelay(action.ActionBurst, 720, 74)
-	// TODO: this is adjusted by 2 frames to be before CanQueueAfter (should actually be 77), otherwise there'll be issues
-	c.ConsumeEnergy(75)
+	c.ConsumeEnergy(77)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
 	}
 }
