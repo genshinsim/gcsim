@@ -9,16 +9,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var skillMeleeFrames []int
-var skillMeleeWalkFrames []int
-var skillMeleeDashFrames []int
-var skillRangedFrames []int
-var skillRangedWalkFrames []int
-var skillRangedDashFrames []int
+var (
+	skillMeleeFrames      []int
+	skillMeleeWalkFrames  []int
+	skillMeleeDashFrames  []int
+	skillRangedFrames     []int
+	skillRangedWalkFrames []int
+	skillRangedDashFrames []int
+)
 
-const skillHitmark = 16
-const skillWalkHitmark = 3
-const skillDashHitmark = 3
+const (
+	skillHitmark     = 16
+	skillWalkHitmark = 3
+	skillDashHitmark = 3
+)
 
 func init() {
 	// skill (melee) -> x
@@ -56,15 +60,15 @@ func init() {
 	skillRangedDashFrames[action.ActionJump] = 3
 }
 
-//Cast: AoE strong hydro damage
-//Melee Stance: infuse NA/CA to hydro damage
+// Cast: AoE strong hydro damage
+// Melee Stance: infuse NA/CA to hydro damage
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Status.Duration("tartagliamelee") > 0 {
 		c.onExitMeleeStance()
 		c.ResetNormalCounter()
 		adjustedFrames := skillMeleeFrames
 		lastAction := &c.Core.Player.LastAction
-		if (lastAction.Char == c.Index) {
+		if lastAction.Char == c.Index {
 			switch lastAction.Type {
 			case action.ActionWalk:
 				adjustedFrames = skillMeleeWalkFrames
@@ -99,7 +103,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	hitmark := skillHitmark
 	lastAction := &c.Core.Player.LastAction
-	if (lastAction.Char == c.Index && lastAction.Type == action.ActionWalk) {
+	if lastAction.Char == c.Index {
 		switch lastAction.Type {
 		case action.ActionWalk:
 			hitmark = skillWalkHitmark
@@ -109,6 +113,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
 
+	cdDelay := 14
+	if lastAction.Char == c.Index {
+		switch lastAction.Type {
+		case action.ActionWalk,
+			action.ActionDash:
+			cdDelay = 0
+		}
+	}
 	src := c.eCast
 	c.Core.Tasks.Add(func() {
 		if src == c.eCast && c.Core.Status.Duration("tartagliamelee") > 0 {
@@ -116,15 +128,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.ResetNormalCounter()
 		}
 	}, 30*60)
-	c.SetCDWithDelay(action.ActionSkill, 60, 14)
+	c.SetCDWithDelay(action.ActionSkill, 60, cdDelay)
 
 	adjustedFrames := skillRangedFrames
-	if (lastAction.Char == c.Index) {
+	if lastAction.Char == c.Index {
 		switch lastAction.Type {
-			case action.ActionWalk:
-				adjustedFrames = skillRangedWalkFrames
-			case action.ActionDash:
-				adjustedFrames = skillRangedDashFrames
+		case action.ActionWalk:
+			adjustedFrames = skillRangedWalkFrames
+		case action.ActionDash:
+			adjustedFrames = skillRangedDashFrames
 		}
 	}
 	return action.ActionInfo{
@@ -139,10 +151,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		if c.Core.Status.Duration("tartagliamelee") > 0 {
-			//TODO: need to verify if this is correct
-			//but if childe is currently in melee stance and skill is on CD that means that
-			//the button has lit up yet from original skill press
-			//in which case we need to reset the cooldown first
+			// TODO: need to verify if this is correct
+			// but if childe is currently in melee stance and skill is on CD that means that
+			// the button has lit up yet from original skill press
+			// in which case we need to reset the cooldown first
 			c.ResetActionCooldown(action.ActionSkill)
 			c.onExitMeleeStance()
 		}
