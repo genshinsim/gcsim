@@ -11,75 +11,44 @@ import (
 )
 
 var burstFrames []int
+var burstTickOffset = []int{0, 2, 4, 0, 2, 4, 0, 2, 4}
 
-const burstHitmark = 99
+const (
+	burstStart   = 47
+	burstHitmark = 78
+	burstKey     = "shenheburst"
+)
 
 func init() {
-	burstFrames = frames.InitAbilSlice(99)
+	burstFrames = frames.InitAbilSlice(100)
+	burstFrames[action.ActionDash] = 76
+	burstFrames[action.ActionJump] = 76
+	burstFrames[action.ActionSwap] = 97
 }
 
 // Burst attack damage queue generator
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	// TODO: Not 100% sure if this shares ICD with the DoT, currently coded that it does
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Divine Maiden's Deliverance (Initial)",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
-	//duration is 12 second (extended by c2 by 6s)
-	dur := 12 * 60
+	// duration is 12 second (extended by c2 by 6s)
 	count := 6
+	burstDuration := 12 * 60
 	if c.Base.Cons >= 2 {
-		dur += 6 * 60
 		count += 3
-
-		// Active characters within the skill's field deals 15% increased Cryo CRIT DMG.
-		// TODO: Exact mechanics of how this works is unknown. Not sure if it works like Gorou E/Bennett Q
-		// For now, assume that it operates like Kazuha C2, and extends for 2s after burst ends like the res shred
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.CD] = 0.15
-		for _, char := range c.Core.Player.Chars() {
-			this := char
-			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("shenhe-c2", dur+2*60),
-				Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-					if ae.Info.Element != attributes.Cryo {
-						return nil, false
-					}
-
-					switch this.Index {
-					case c.Core.Player.Active(), c.Index:
-						return m, true
-					}
-					return nil, false
-				},
-			})
-		}
+		burstDuration += 6 * 60
 	}
-	// Res shred persists for 2 seconds after burst ends
-	cb := func(a combat.AttackCB) {
-		e, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		e.AddResistMod(enemy.ResistMod{
-			Base:  modifier.NewBase("shenhe-burst-shred-cryo", dur+2*60),
-			Ele:   attributes.Cryo,
-			Value: -burstrespp[c.TalentLvlBurst()],
-		})
-		e.AddResistMod(enemy.ResistMod{
-			Base:  modifier.NewBase("shenhe-burst-shred-phys", dur+2*60),
-			Ele:   attributes.Physical,
-			Value: -burstrespp[c.TalentLvlBurst()],
-		})
-	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 15, cb)
+	c.AddStatus(burstKey, burstDuration, false)
 
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -91,39 +60,60 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstdot[c.TalentLvlBurst()],
 	}
-
-	mA1 := make([]float64, attributes.EndStatType)
-	mA1[attributes.CryoP] = 0.15
+	// DoT snapshot before A1
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
-		c.Core.Status.Add("shenheburst", dur)
-		// inspired from barbara c2
-		// TODO: this isn't right.. it should only apply for active char
-		// TODO: technically always assumes you are inside shenhe burst
-		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("shenhe-a1", dur),
+		for i := 0; i < count; i++ {
+			hitmark := 82 + i*117
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark+30+burstTickOffset[i])
+		}
+	}, burstStart)
+
+	// assumes player/target is inside shenhe burst
+	for i := burstStart; i < burstStart+burstDuration; i += 18 {
+		c.Core.Tasks.Add(func() {
+			buffDuration := 38
+			active := c.Core.Player.ActiveChar()
+
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("shenhe-a1", buffDuration),
 				AffectedStat: attributes.CryoP,
 				Amount: func() ([]float64, bool) {
-					return mA1, true
+					return c.burstBuff, true
 				},
 			})
-		}
-		//TODO: check this accuracy? Siri's sheet has 137 per
-		// dot every 2 second, double tick shortly after another
-		for i := 0; i < count; i++ {
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), i*120+50)
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), i*120+80)
-		}
-	}, burstHitmark+2)
+			if c.Base.Cons >= 2 {
+				c.c2(active, buffDuration)
+			}
 
-	c.SetCDWithDelay(action.ActionBurst, 20*60, 11)
-	c.ConsumeEnergy(11)
+			for _, t := range c.Core.Combat.Targets() {
+				// skip non-enemy targets
+				e, ok := t.(*enemy.Enemy)
+				if !ok {
+					continue
+				}
+				e.AddResistMod(enemy.ResistMod{
+					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-cryo", buffDuration),
+					Ele:   attributes.Cryo,
+					Value: -burstrespp[c.TalentLvlBurst()],
+				})
+				e.AddResistMod(enemy.ResistMod{
+					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-phys", buffDuration),
+					Ele:   attributes.Physical,
+					Value: -burstrespp[c.TalentLvlBurst()],
+				})
+			}
+
+		}, i)
+	}
+	c.SetCD(action.ActionBurst, 20*60)
+	c.ConsumeEnergy(4)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }
