@@ -21,7 +21,26 @@ type char struct {
 	*tmpl.Character
 	c2reset       int
 	lastScreen    int
+	prevAttack		attackType
 	skillSnapshot combat.Snapshot
+}
+
+type attackType int
+const (
+	attackTypeLeft attackType = iota
+	attackTypeRight
+	attackTypeTwirl
+	endAttackType
+)
+
+var attackTypeNames = map[attackType]string{
+	attackTypeLeft: "Left",
+	attackTypeRight: "Right",
+	attackTypeTwirl: "Twirl",
+}
+
+func (t attackType) String() string {
+	return attackTypeNames[t]
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
@@ -38,6 +57,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 
 	// Initialize at some very low value so these happen correctly at start of sim
 	c.c2reset = -9999
+	c.prevAttack = attackTypeLeft
 
 	w.Character = &c
 
