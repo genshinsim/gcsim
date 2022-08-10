@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.SetCD(action.ActionBurst, 1200) // 20s * 60
 	c.ConsumeEnergy(6)
-	c.clearSigil()
+	c.Core.Tasks.Add(c.clearSigil, 7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
