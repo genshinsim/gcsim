@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   # environment:
+  #   command: "tunnel --no-autoupdate run --token $CF_TUNNEL_TOKEN"
+  #   volumes:
+  #     - ../cloudflared:/etc/cloudflared
+  #   links:
+  #     - postgrest:postgrest
+  #   environment:
+  #     - TUNNEL_URL=http://postgrest:3000
+  #     - CF_TUNNEL_TOKEN
+  #   depends_on:
+  #     - postgrest
+
+  postgrest:
+    image: postgrest/postgrest
+    # Expose post 3000 and access postgrest locally by uncommenting
+    # the `ports` directive below
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://user:password@postgres:5432/db
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: user
+    links:
+      - postgres:postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/scripts:/scripts
+
+volumes:
+  postgres-data: {}
