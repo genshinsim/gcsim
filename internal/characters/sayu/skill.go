@@ -10,20 +10,46 @@ import (
 )
 
 var skillPressFrames []int
+var skillShortHoldFrames []int
 var skillHoldFrames []int
 
-const skillPressHitmark = 41
-const skillHoldHitmark = 79
+const skillPressDoTHitmark = 7 // 1 DoT tick
+const skillPressCDStart = 14
+const skillPressKickHitmark = 25
+
+const skillShortHoldCDStart = 30
+const skillShortHoldKickHitmark = 48
+
+const skillHoldCDStart = 648
+const skillHoldKickHitmark = 667
 
 func init() {
-	// skill (press) -> x
-	skillPressFrames = frames.InitAbilSlice(skillPressHitmark)
+	// Tap E
+	skillPressFrames = frames.InitAbilSlice(44) // Tap E -> N1/D
+	skillPressFrames[action.ActionBurst] = 43   // Tap E -> Q
+	skillPressFrames[action.ActionJump] = 45    // Tap E -> J
+	skillPressFrames[action.ActionSwap] = 42    // Tap E -> Swap
 
-	// skill (hold) -> x
-	skillHoldFrames = frames.InitAbilSlice(skillHoldHitmark)
+	// Short Hold E
+	skillShortHoldFrames = frames.InitAbilSlice(89) // Short Hold E -> N1/Q/D/J
+	skillShortHoldFrames[action.ActionSwap] = 87
+
+	// Hold E
+	skillHoldFrames = frames.InitAbilSlice(709) // Hold E -> N1/Q
+	skillHoldFrames[action.ActionDash] = 708    // Hold E -> J
+	skillHoldFrames[action.ActionJump] = 708    // Hold E -> J
+	skillHoldFrames[action.ActionSwap] = 706    // Hold E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
+	short_hold := p["short_hold"]
+	if p["short_hold"] != 0 {
+		short_hold = 1
+	}
+	if short_hold == 1 {
+		return c.skillShortHold(p)
+	}
+
 	hold := p["hold"]
 	if hold > 0 {
 		if hold > 600 { // 10s
@@ -41,7 +67,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	// Fuufuu Windwheel DMG
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Yoohoo Art: Fuuin Dash (Press)",
+		Abil:       "Fuufuu Windwheel (DoT Press)",
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArtAnemo,
 		ICDGroup:   combat.ICDGroupDefault,
@@ -50,12 +76,12 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 3)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), skillPressDoTHitmark)
 
 	// Fuufuu Whirlwind Kick Press DMG
 	ai = combat.AttackInfo{
 		ActorIndex:       c.Index,
-		Abil:             "Yoohoo Art: Fuuin Dash (Press)",
+		Abil:             "Fuufuu Whirlwind (Kick Press)",
 		AttackTag:        combat.AttackTagElementalArt,
 		ICDTag:           combat.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
@@ -66,17 +92,67 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		HitlagFactor:     0.05,
 	}
 	snap = c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 28)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), skillPressKickHitmark)
 
-	//TODO: this delay used to be 73?
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressKickHitmark+c.Core.Flags.ParticleDelay)
 
-	c.SetCDWithDelay(action.ActionSkill, 6*60, 15)
+	c.SetCDWithDelay(action.ActionSkill, 6*60, skillPressCDStart)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.InvalidAction],
+		CanQueueAfter:   skillPressFrames[action.ActionSwap], // earliest cancel
+		State:           action.SkillState,
+	}
+}
+
+func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
+	c.eInfused = attributes.NoElement
+	c.eInfusedTag = combat.ICDTagNone
+	c.eDuration = c.Core.F + skillShortHoldKickHitmark
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableObject)
+	c.c2Bonus = .0
+
+	// 1 DoT Tick
+	d := c.createSkillHoldSnapshot()
+	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, 1), 18)
+
+	c.Core.Tasks.Add(func() {
+		c.Core.QueueAttackEvent(d, 0)
+
+		if c.Base.Cons >= 2 && c.c2Bonus < 0.66 {
+			c.c2Bonus += 0.033
+			c.Core.Log.NewEvent("sayu c2 adding 3.3% dmg", glog.LogCharacterEvent, c.Index).
+				Write("dmg bonus%", c.c2Bonus)
+		}
+	}, 18)
+	c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+c.Core.Flags.ParticleDelay)
+
+	// Fuufuu Whirlwind Kick Hold DMG
+	ai := combat.AttackInfo{
+		ActorIndex:       c.Index,
+		Abil:             "Fuufuu Whirlwind (Kick Hold)",
+		AttackTag:        combat.AttackTagElementalArtHold,
+		ICDTag:           combat.ICDTagNone,
+		ICDGroup:         combat.ICDGroupDefault,
+		Element:          attributes.Anemo,
+		Durability:       25,
+		Mult:             skillHoldEnd[c.TalentLvlSkill()],
+		HitlagHaltFrames: 0.02 * 60,
+		HitlagFactor:     0.05,
+	}
+	snap := c.Snapshot(&ai)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), skillShortHoldKickHitmark)
+
+	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillShortHoldKickHitmark+c.Core.Flags.ParticleDelay)
+
+	// 6.2s cooldown
+	c.SetCDWithDelay(action.ActionSkill, 372, 30)
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(skillShortHoldFrames),
+		AnimationLength: skillShortHoldFrames[action.InvalidAction],
+		CanQueueAfter:   skillShortHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -85,7 +161,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 
 	c.eInfused = attributes.NoElement
 	c.eInfusedTag = combat.ICDTagNone
-	c.eDuration = c.Core.F + 18 + duration + 20
+	c.eDuration = c.Core.F + (skillHoldKickHitmark - 600) + duration
 	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableObject)
 	c.c2Bonus = .0
 
@@ -105,14 +181,14 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		}, 18+i)
 
 		if i%180 == 0 { // 3s
-			//this delay used to be 73?
 			c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+i+c.Core.Flags.ParticleDelay)
 		}
 	}
 
+	// Fuufuu Whirlwind Kick Hold DMG
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
-		Abil:             "Yoohoo Art: Fuuin Dash (Hold)",
+		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        combat.AttackTagElementalArtHold,
 		ICDTag:           combat.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
@@ -123,19 +199,17 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		HitlagFactor:     0.05,
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 18+duration+20)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), (skillHoldKickHitmark-600)+duration)
 
-	//TODO: this delay used to be 73
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillHoldHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, (skillHoldKickHitmark-600)+duration+c.Core.Flags.ParticleDelay)
 
-	// 18 = 15 anim start + 3 to start swirling
 	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
-	c.SetCDWithDelay(action.ActionSkill, int(6*60+float64(duration)*0.5), 18+duration+2)
+	c.SetCDWithDelay(action.ActionSkill, int(6*60+float64(duration)*0.5), (skillHoldCDStart-600)+duration+2)
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return skillHoldFrames[next] + duration },
-		AnimationLength: skillHoldFrames[action.InvalidAction] + duration,
-		CanQueueAfter:   skillHoldFrames[action.InvalidAction] + duration,
+		Frames:          func(next action.Action) int { return skillHoldFrames[next] - 600 + duration },
+		AnimationLength: skillHoldFrames[action.InvalidAction] - 600 + duration,
+		CanQueueAfter:   skillHoldFrames[action.ActionSwap] - 600 + duration, // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -144,8 +218,8 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
-		Abil:             "Yoohoo Art: Fuuin Dash (Hold Tick)",
-		AttackTag:        combat.AttackTagElementalArtHold,
+		Abil:             "Fuufuu Windwheel (DoT Hold)",
+		AttackTag:        combat.AttackTagElementalArt,
 		ICDTag:           combat.ICDTagElementalArtAnemo,
 		ICDGroup:         combat.ICDGroupDefault,
 		Element:          attributes.Anemo,
@@ -210,9 +284,10 @@ func (c *char) rollAbsorb() {
 
 		switch atk.Info.AttackTag {
 		case combat.AttackTagElementalArt:
+			// DoT Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
-				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
+				Abil:       "Fuufuu Windwheel Elemental (Elemental DoT Hold)",
 				AttackTag:  combat.AttackTagElementalArtHold,
 				ICDTag:     c.eInfusedTag,
 				ICDGroup:   combat.ICDGroupDefault,
@@ -222,9 +297,10 @@ func (c *char) rollAbsorb() {
 			}
 			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
 		case combat.AttackTagElementalArtHold:
+			// Kick Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
-				Abil:       "Yoohoo Art: Fuuin Dash (Elemental DMG)",
+				Abil:       "Fuufuu Whirlwind Elemental (Elemental Kick Hold)",
 				AttackTag:  combat.AttackTagElementalArt,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
