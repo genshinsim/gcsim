@@ -49,18 +49,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.lastScreen = c.Core.F
 
-	//check if particles on icd
-
-	c.Core.Status.Add("ningguangskillparticleICD", 360)
-
-	if c.Core.F > c.particleICD {
+	if !c.StatusIsActive(skillParticleICDKey) {
 		//3 balls, 33% chance of a fourth
 		var count float64 = 3
 		if c.Core.Rand.Float64() < .33 {
 			count = 4
 		}
-		c.particleICD = c.Core.F + 360
 		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
+		c.AddStatus(skillParticleICDKey, 360, true)
 	}
 
 	return action.ActionInfo{

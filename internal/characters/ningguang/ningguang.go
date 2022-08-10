@@ -11,6 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
+const skillParticleICDKey = "ningguang-skill-particle-ICD"
+
 func init() {
 	core.RegisterCharFunc(keys.Ningguang, NewChar)
 }
@@ -19,7 +21,6 @@ type char struct {
 	*tmpl.Character
 	c2reset       int
 	lastScreen    int
-	particleICD   int
 	skillSnapshot combat.Snapshot
 }
 
@@ -37,7 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 
 	// Initialize at some very low value so these happen correctly at start of sim
 	c.c2reset = -9999
-	c.particleICD = -9999
 
 	w.Character = &c
 
