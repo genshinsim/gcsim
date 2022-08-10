@@ -19,7 +19,7 @@ func (c *char) makeKitsune() {
 	k.src = c.Core.F
 	k.deleted = false
 	//start ticking
-	c.Core.Tasks.Add(c.kitsuneTick(k), 45+50)
+	c.Core.Tasks.Add(c.kitsuneTick(k), 120-skillStart)
 	//add task to delete this one if times out (and not deleted by anything else)
 	c.Core.Tasks.Add(func() {
 		//i think we can just check for .deleted here
@@ -28,10 +28,10 @@ func (c *char) makeKitsune() {
 		}
 		//ok now we can delete this
 		c.popOldestKitsune()
-	}, 866) // e ani + duration
+	}, 900-skillStart) // e ani + duration
 
 	if len(c.kitsunes) == 0 {
-		c.Core.Status.Add(yaeTotemStatus, 866)
+		c.Core.Status.Add(yaeTotemStatus, 900-skillStart)
 	}
 	//pop oldest first
 	if len(c.kitsunes) == 3 {
@@ -62,7 +62,7 @@ func (c *char) popOldestKitsune() {
 
 	//here check for status
 	if len(c.kitsunes) > 0 {
-		dur := c.Core.F - c.kitsunes[0].src + 866
+		dur := c.Core.F - c.kitsunes[0].src + (900 - skillStart)
 		if dur < 0 {
 			log.Panicf("oldest totem should have expired already? dur: %v totem: %v", dur, *c.kitsunes[0])
 		}
@@ -76,16 +76,16 @@ func (c *char) popOldestKitsune() {
 
 func (c *char) kitsuneBurst(ai combat.AttackInfo, pattern combat.AttackPattern) {
 	for i := 0; i < c.sakuraLevelCheck(); i++ {
-		c.Core.QueueAttack(ai, pattern, 94+54+i*24, 94+54+i*24) // starts 54 after burst hit and 24 frames consecutively after
+		c.Core.QueueAttack(ai, pattern, burstThunderbolt1Hitmark+i*24, burstThunderbolt1Hitmark+i*24)
 		if c.Base.Cons >= 1 {
 			c.Core.Tasks.Add(func() {
 				c.AddEnergy("yae-c1", 8)
-			}, 94+54+i*24)
+			}, burstThunderbolt1Hitmark+i*24)
 		}
 		c.ResetActionCooldown(action.ActionSkill)
 		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index).
 			Write("src", c.kitsunes[i].src).
-			Write("delay", 94+54+i*24)
+			Write("delay", burstThunderbolt1Hitmark+i*24)
 	}
 	c.popAllKitsune()
 }

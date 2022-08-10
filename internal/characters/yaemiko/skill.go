@@ -11,13 +11,18 @@ var skillFrames []int
 const skillStart = 34
 
 func init() {
-	skillFrames = frames.InitAbilSlice(34)
+	skillFrames = frames.InitAbilSlice(37) // E -> N1/E
+	skillFrames[action.ActionCharge] = 36  // E -> CA
+	skillFrames[action.ActionBurst] = 36   // E -> Q
+	skillFrames[action.ActionDash] = 20    // E -> D
+	skillFrames[action.ActionJump] = 20    // E -> J
+	skillFrames[action.ActionSwap] = 20    // E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(func() { c.makeKitsune() }, skillStart)
-	c.SetCD(action.ActionSkill, 4*60)
+	c.SetCDWithDelay(action.ActionSkill, 4*60, 16)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
