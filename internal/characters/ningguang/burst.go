@@ -10,16 +10,23 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 97
+var (
+	burstHitmarks       = []int{62, 97, 106, 110, 116, 124}
+	burstScreenHitmarks []int
+)
 
 func init() {
-	burstFrames = frames.InitAbilSlice(97)
+	burstFrames = frames.InitAbilSlice(127)
+	burstFrames[action.ActionDash] = 99
+	burstFrames[action.ActionJump] = 100
+	burstFrames[action.ActionWalk] = 99
+	burstFrames[action.ActionSwap] = 98
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 10
+		travel = 0
 	}
 
 	ai := combat.AttackInfo{
@@ -36,20 +43,26 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
-	// TODO: hitmark timing
 	// fires 6 normally
-	// geo applied 1 4 7 10, +3 pattern; or 0 3 6 9
-	for i := 0; i < 6; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), burstHitmark, burstHitmark+travel)
+	for _, hitmark := range burstHitmarks {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			hitmark,
+			hitmark+travel,
+		)
 	}
 	// if jade screen is active add 6 jades
 	if c.Core.Constructs.Destroy(c.lastScreen) {
 		ai.Abil = "Starshatter (Jade Screen Gems)"
 		for i := 6; i < 12; i++ {
-			c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), burstHitmark+travel)
+			c.Core.QueueAttackWithSnap(
+				ai,
+				c.skillSnapshot,
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				burstHitmarks[len(burstHitmarks)-1]+30+travel,
+			) // TODO: figure out jade screen hitmarks
 		}
-		// do we need to log this?
-		c.Core.Log.NewEvent("extra 6 gems from jade screen", glog.LogCharacterEvent, c.Index)
 	}
 
 	if c.Base.Cons >= 6 {
@@ -58,13 +71,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Write("count", c.Tags["jade"])
 	}
 
-	c.ConsumeEnergy(8)
-	c.SetCDWithDelay(action.ActionBurst, 720, 8)
+	c.ConsumeEnergy(3)
+	c.SetCD(action.ActionBurst, 720)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
 	}
 }
