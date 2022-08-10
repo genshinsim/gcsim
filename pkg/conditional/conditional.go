@@ -35,6 +35,10 @@ func Eval(c *core.Core, fields []string) int64 {
 		return evalNormalCounter(c, fields)
 	case ".onfield":
 		return evalOnField(c, fields)
+	case ".weapon":
+		return evalWeapon(c, fields)
+	case ".keys":
+		return evalKeys(c, fields)
 	default:
 		//check if it's a char name; if so check char custom eval func
 		name := strings.TrimPrefix(fields[0], ".")
