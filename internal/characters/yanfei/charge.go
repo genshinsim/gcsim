@@ -10,12 +10,16 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 66
+const chargeHitmark = 63
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(66)
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames = frames.InitAbilSlice(79)          // CA -> N1
+	chargeFrames[action.ActionCharge] = 78           // CA -> CA
+	chargeFrames[action.ActionSkill] = chargeHitmark // CA -> E
+	chargeFrames[action.ActionBurst] = chargeHitmark // CA -> Q
+	chargeFrames[action.ActionDash] = 51             // CA -> D
+	chargeFrames[action.ActionJump] = 49             // CA -> J
+	chargeFrames[action.ActionSwap] = 59             // CA -> Swap
 }
 
 // Charge attack function - handles seal use
@@ -40,8 +44,15 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       charge[c.sealCount][c.TalentLvlAttack()],
 	}
+
+	// add windup if we're in idle or swap only
+	windup := 16
+	if c.Core.Player.CurrentState() == action.Idle || c.Core.Player.CurrentState() == action.SwapState {
+		windup = 0
+	}
+
 	// TODO: Not sure of snapshot timing
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), chargeHitmark-windup, chargeHitmark-windup)
 
 	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index).
 		Write("current_seals", c.sealCount)
@@ -53,9 +64,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}, 1)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
+		CanQueueAfter:   chargeFrames[action.ActionJump] - windup, // earliest cancel is before hitmark
 		State:           action.ChargeAttackState,
 	}
 }

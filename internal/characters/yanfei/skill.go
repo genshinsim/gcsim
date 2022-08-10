@@ -10,10 +10,15 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 46
+const skillHitmark = 32
 
 func init() {
-	skillFrames = frames.InitAbilSlice(46)
+	skillFrames = frames.InitAbilSlice(46) // E -> N1
+	skillFrames[action.ActionCharge] = 35  // E -> CA
+	skillFrames[action.ActionBurst] = 43   // E -> Q
+	skillFrames[action.ActionDash] = 29    // E -> D
+	skillFrames[action.ActionJump] = 34    // E -> J
+	skillFrames[action.ActionSwap] = 44    // E -> Swap
 }
 
 // Yanfei skill - Straightforward as it has little interactions with the rest of her kit
@@ -50,12 +55,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueParticle("yanfei", 3, attributes.Pyro, skillHitmark+c.Core.Flags.ParticleDelay)
 
-	c.SetCD(action.ActionSkill, 540)
+	c.SetCDWithDelay(action.ActionSkill, 540, 28)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
 	}
 }
