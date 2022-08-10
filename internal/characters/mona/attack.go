@@ -10,17 +10,24 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = []int{18, 23, 33, 39}
+var attackHitmarks = []int{11, 14, 25, 27}
 
 const normalHitNum = 4
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 18)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 23)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 33)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 39)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 29) // N1 -> CA
+	attackFrames[0][action.ActionAttack] = 18                             // N1 -> N2
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 30) // N2 -> CA
+	attackFrames[1][action.ActionAttack] = 23                             // N2 -> N3
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 54) // N3 -> CA
+	attackFrames[2][action.ActionAttack] = 39                             // N3 -> N4
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 67) // N4 -> N1
+	attackFrames[3][action.ActionCharge] = 500                            // N4 -> CA, TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
