@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
@@ -40,14 +41,19 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 	}
 }
 
-var defaultDash = action.ActionInfo{
-	Frames:          func(action.Action) int { return 20 },
-	AnimationLength: 20,
-	CanQueueAfter:   20,
-	State:           action.DashState,
-}
-
 func (c *Character) Dash(p map[string]int) action.ActionInfo {
+	var f int = 20
+	switch c.CharBody {
+	case profile.BodyBoy, profile.BodyLoli:
+		f = 21
+	case profile.BodyGirl:
+		f = 20
+	case profile.BodyMale:
+		f = 19
+	case profile.BodyLady:
+		f = 22
+	}
+
 	//consume stam at the end
 	c.Core.Tasks.Add(func() {
 		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
@@ -58,19 +64,34 @@ func (c *Character) Dash(p map[string]int) action.ActionInfo {
 		}
 		c.Core.Player.LastStamUse = c.Core.F
 		c.Core.Events.Emit(event.OnStamUse, action.DashState)
-	}, 19)
-	return defaultDash
-}
+	}, f-1)
 
-var defaultJump = action.ActionInfo{
-	Frames:          func(action.Action) int { return 30 },
-	AnimationLength: 30,
-	CanQueueAfter:   30,
-	State:           action.JumpState,
+	return action.ActionInfo{
+		Frames:          func(action.Action) int { return f },
+		AnimationLength: f,
+		CanQueueAfter:   f,
+		State:           action.DashState,
+	}
 }
 
 func (c *Character) Jump(p map[string]int) action.ActionInfo {
-	return defaultJump
+	var f int = 30
+	switch c.CharBody {
+	case profile.BodyBoy, profile.BodyGirl:
+		f = 31
+	case profile.BodyMale:
+		f = 28
+	case profile.BodyLady:
+		f = 32
+	case profile.BodyLoli:
+		f = 29
+	}
+	return action.ActionInfo{
+		Frames:          func(action.Action) int { return f },
+		AnimationLength: f,
+		CanQueueAfter:   f,
+		State:           action.JumpState,
+	}
 }
 
 func (c *Character) Walk(p map[string]int) action.ActionInfo {
