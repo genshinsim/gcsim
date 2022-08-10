@@ -110,10 +110,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	jadeHitmarks := chargeJadeHitmarks
-	if c.Tags["jade"] == 7 {
+	if c.jadeCount == 7 {
 		jadeHitmarks = chargeC6Hitmarks
 	}
-	for i := 0; i < c.Tags["jade"]; i++ {
+	for i := 0; i < c.jadeCount; i++ {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
@@ -121,7 +121,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			jadeHitmarks[c.prevAttack]-windup+travel,
 		)
 	}
-	c.Tags["jade"] = 0
+	c.jadeCount = 0
 
 	canQueueAfter := math.MaxInt32
 	for _, f := range chargeFrames[c.prevAttack] {

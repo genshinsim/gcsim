@@ -20,12 +20,14 @@ func init() {
 type char struct {
 	*tmpl.Character
 	c2reset       int
+	jadeCount     int
 	lastScreen    int
-	prevAttack		attackType
+	prevAttack    attackType
 	skillSnapshot combat.Snapshot
 }
 
 type attackType int
+
 const (
 	attackTypeLeft attackType = iota
 	attackTypeRight
@@ -34,7 +36,7 @@ const (
 )
 
 var attackTypeNames = map[attackType]string{
-	attackTypeLeft: "Left",
+	attackTypeLeft:  "Left",
 	attackTypeRight: "Right",
 	attackTypeTwirl: "Twirl",
 }
@@ -57,6 +59,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfil
 
 	// Initialize at some very low value so these happen correctly at start of sim
 	c.c2reset = -9999
+	c.jadeCount = 0
 	c.prevAttack = attackTypeLeft
 
 	w.Character = &c
@@ -72,7 +75,7 @@ func (c *char) Init() error {
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.Tags["jade"] > 0 {
+		if c.jadeCount > 0 {
 			return 0
 		}
 		return 50

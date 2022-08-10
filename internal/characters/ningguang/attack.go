@@ -60,7 +60,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if done {
 			return
 		}
-		count := c.Tags["jade"]
+		count := c.jadeCount
 		// if we're at 7 dont increase but also dont reset back to 3
 		if count != 7 {
 			count++
@@ -70,7 +70,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				c.Core.Log.NewEvent("adding star jade", glog.LogCharacterEvent, c.Index).
 					Write("count", count)
 			}
-			c.Tags["jade"] = count
+			c.jadeCount = count
 		}
 		done = true
 	}

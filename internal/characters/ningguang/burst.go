@@ -66,9 +66,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	if c.Base.Cons >= 6 {
-		c.Tags["jade"] = 7
+		c.jadeCount = 7
 		c.Core.Log.NewEvent("c6 - adding star jade", glog.LogCharacterEvent, c.Index).
-			Write("count", c.Tags["jade"])
+			Write("count", c.jadeCount)
 	}
 
 	c.ConsumeEnergy(3)
