@@ -12,12 +12,15 @@ import (
 var burstFrames []int
 
 const (
-	burstBuffKey = "yunjin-burst"
-	burstHitmark = 53
+	burstHitmark = 35
+	burstBuffKey = "yunjin-q"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(53)
+	burstFrames = frames.InitAbilSlice(57) // Q -> N1/E
+	burstFrames[action.ActionDash] = 42    // Q -> D
+	burstFrames[action.ActionJump] = 41    // Q -> J
+	burstFrames[action.ActionSwap] = 55    // Q -> Swap
 }
 
 // Burst - The main buff effects are handled in a separate function
@@ -50,13 +53,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.c6()
 	}
 
-	c.ConsumeEnergy(8)
-	c.SetCDWithDelay(action.ActionBurst, 15*60, 8)
+	c.ConsumeEnergy(4)
+	c.SetCD(action.ActionBurst, 15*60)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
 	}
 }
