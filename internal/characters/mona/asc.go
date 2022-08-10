@@ -40,7 +40,7 @@ func (c *char) a1() func() {
 			c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
 		}, 120)
 		// queue up next A1 check because Mona's still dashing
-		// different Phantoms coexist and don't overwrite each
+		// different Phantoms coexist and don't overwrite each other
 		c.Core.Tasks.Add(c.a1(), 120) // check again in 2s
 	}
 }
