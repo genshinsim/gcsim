@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.QueueCharTask(func() {
 		shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
-		c.genShield("Thoma Skill", shieldamt)
+		c.genShield("Thoma Skill", shieldamt, false)
 	}, 9)
 
 	// damage component not final

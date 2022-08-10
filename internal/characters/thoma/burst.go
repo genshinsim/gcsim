@@ -114,8 +114,8 @@ func (c *char) burstTickFunc(src int) func() {
 		state := c.Core.Player.CurrentState()
 		if state != action.NormalAttackState {
 			c.Core.Log.NewEvent("thoma burst tick stopped, not normal state", glog.LogCharacterEvent, c.Index).
-			Write("src", src).
-			Write("state", state)
+				Write("src", src).
+				Write("state", state)
 			return
 		}
 		c.Core.Log.NewEvent("thoma burst triggered from tick", glog.LogCharacterEvent, c.Index).
@@ -143,7 +143,7 @@ func (c *char) summonFieryCollapse() {
 	// trigger a chain of attacks starting at the first target
 	shieldCb := func(_ combat.AttackCB) {
 		shieldamt := (burstshieldpp[c.TalentLvlBurst()]*c.MaxHP() + burstshieldflat[c.TalentLvlBurst()])
-		c.genShield("Thoma Burst", shieldamt)
+		c.genShield("Thoma Burst", shieldamt, true)
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, 11, shieldCb)
 	c.AddStatus(burstICDKey, 60, true)
