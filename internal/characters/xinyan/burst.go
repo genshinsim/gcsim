@@ -9,7 +9,15 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 98
+const burstInitialHitmark = 22
+const burstShieldStart = 43
+const burstDoT1Hitmark = 57
+
+func init() {
+	burstFrames = frames.InitAbilSlice(87) // Q -> E/D/J
+	burstFrames[action.ActionAttack] = 86  // Q -> N1
+	burstFrames[action.ActionSwap] = 86    // Q -> Swap
+}
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
@@ -23,7 +31,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:               burstDmg[c.TalentLvlBurst()],
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 28, 28)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), burstInitialHitmark, burstInitialHitmark)
 
 	// 7 hits
 	ai = combat.AttackInfo{
@@ -47,21 +55,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), i*17, i*17)
 			}
 		}, 17)
-	}, 63)
+	}, burstDoT1Hitmark)
 
 	if c.Base.Cons >= 2 {
+		// TODO: snapshot timing?
 		stats, _ := c.Stats()
 		defFactor := c.Base.Def*(1+stats[attributes.DEFP]) + stats[attributes.DEF]
-		c.updateShield(3, defFactor)
+		c.QueueCharTask(func() {
+			c.updateShield(3, defFactor)
+		}, burstShieldStart)
 	}
 
-	c.ConsumeEnergy(11)
-	c.SetCDWithDelay(action.ActionBurst, 15*60, 3)
+	c.ConsumeEnergy(5)
+	c.SetCDWithDelay(action.ActionBurst, 15*60, 1)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
 	}
 }
