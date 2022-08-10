@@ -9,12 +9,14 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 113
+const chargeHitmark = 90
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(114)
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames = frames.InitAbilSlice(96) // CA -> N1/E/Q
+	chargeFrames[action.ActionCharge] = 95  // CA -> CA
+	chargeFrames[action.ActionDash] = 46    // CA -> D
+	chargeFrames[action.ActionJump] = 47    // CA -> J
+	chargeFrames[action.ActionSwap] = 94    // CA -> Swap
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -30,13 +32,19 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
+	// skip CA windup if we're in NA animation
+	windup := 0
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
+		windup = 14
+	}
+
 	// TODO: check snapshot delay
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), 0, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), 0, chargeHitmark-windup)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
+		CanQueueAfter:   chargeFrames[action.ActionDash] - windup, // earliest cancel is before hitmark
 		State:           action.ChargeAttackState,
 	}
 }
