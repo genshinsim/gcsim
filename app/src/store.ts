@@ -13,21 +13,18 @@ const userDataKey = "redux-user-data-v0.0.1";
 let persistedState = {};
 
 if (localStorage.getItem(simStateKey)) {
-  let s = JSON.parse(localStorage.getItem(simStateKey)!);
-  //reset some defaults
-  s.edit_index = -1;
-  s.ready = 0;
-  s.run = defaultRunStat;
-  if (!s.adv_cfg_err) {
-    s.adv_cfg_err = "";
-  }
-  if (!s.cfg_err) {
-    s.cfg_err = "";
-  }
-  if (!s.GOChars) {
-    s.GOChars = [];
-  }
-  persistedState = Object.assign(persistedState, { sim: s });
+  const { team, cfg, advanced_cfg, showBuilder, showTips } = JSON.parse(
+    localStorage.getItem(simStateKey)!
+  );
+  const sim = {
+    ...simSlice.getInitialState(),
+    team,
+    cfg,
+    advanced_cfg,
+    showBuilder,
+    showTips,
+  };
+  persistedState = Object.assign(persistedState, { sim });
   // localStorage.clear();
   console.log("loaded sim store from localStorage: ", persistedState);
 }

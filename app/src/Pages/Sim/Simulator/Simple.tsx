@@ -1,5 +1,5 @@
 import { Callout, useHotkeys } from "@blueprintjs/core";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { SectionDivider } from "~src/Components/SectionDivider";
 import { Viewport } from "~src/Components/Viewport";
@@ -23,6 +23,8 @@ export function Simple() {
     };
   });
   const dispatch = useAppDispatch();
+
+  useEffect(() => dispatch(updateCfg(cfg)), []);
 
   const [open, setOpen] = React.useState<boolean>(false);
 
