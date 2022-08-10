@@ -9,10 +9,14 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 60
+const skillHitmark = 17
 
 func init() {
-	skillFrames = frames.InitAbilSlice(60)
+	skillFrames = frames.InitAbilSlice(62)
+	skillFrames[action.ActionDash] = 28
+	skillFrames[action.ActionJump] = 29
+	skillFrames[action.ActionWalk] = 53
+	skillFrames[action.ActionSwap] = 60
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -62,7 +66,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
 }
