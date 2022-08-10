@@ -1,0 +1,34 @@
+{
+  "name": "handlerone-worker",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.14.1",
+    "@types/service-worker-mock": "^2.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-config-typescript": "^3.0.0",
+    "prettier": "^2.3.0",
+    "service-worker-mock": "^2.0.5",
+    "ts-loader": "^9.2.2",
+    "typescript": "^4.7.4",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0",
+    "wrangler": "2.0.22"
+  },
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "format": "prettier --write  '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
+    "lint": "eslint --max-warnings=0 src && prettier --check '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
+    "test": "jest --config jestconfig.json --verbose"
+  },
+  "dependencies": {
+    "@cfworker/json-schema": "^1.12.3",
+    "@cfworker/uuid": "^1.12.2",
+    "@supabase/postgrest-js": "^0.37.4",
+    "@tsndr/cloudflare-worker-jwt": "^2.0.1",
+    "itty-router": "^2.6.1"
+  }
+}
