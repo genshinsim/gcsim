@@ -22,6 +22,7 @@ type char struct {
 	sealCount         int
 	burstBuff         []float64
 	a1Buff            []float64
+	a4HitlagApplied   bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {

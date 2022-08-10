@@ -63,6 +63,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.DeleteStatus(sealBuffKey)
 	}, 1)
 
+	// needed for a4 hitlag handling
+	c.a4HitlagApplied = false
+
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,

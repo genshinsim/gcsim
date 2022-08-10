@@ -39,6 +39,9 @@ func (c *char) a4() {
 		if atk.Info.AttackTag != combat.AttackTagExtra && !crit {
 			return false
 		}
+		// make it so a4 only applies hitlag once per A4 proc and not everytime an enemy gets hit
+		defhalt := !c.a4HitlagApplied
+		c.a4HitlagApplied = true
 
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -50,7 +53,7 @@ func (c *char) a4() {
 			Durability:         25,
 			Mult:               0.8,
 			HitlagFactor:       0.05,
-			CanBeDefenseHalted: true,
+			CanBeDefenseHalted: defhalt,
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 10, 10)
 
