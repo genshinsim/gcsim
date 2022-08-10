@@ -32,7 +32,7 @@ func init() {
 
 	// Short Hold E
 	skillShortHoldFrames = frames.InitAbilSlice(89) // Short Hold E -> N1/Q/D/J
-	skillShortHoldFrames[action.ActionSwap] = 87
+	skillShortHoldFrames[action.ActionSwap] = 87    // Short Hold E -> Swap
 
 	// Hold E
 	skillHoldFrames = frames.InitAbilSlice(709) // Hold E -> N1/Q
