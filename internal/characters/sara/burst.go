@@ -77,7 +77,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, burstInitialHitmark, c1cb)
 	}
 	if waveAttackProcs%10 == 1 {
-		c.attackBuff(burstClusterHitmark)
+		c.attackBuff(burstInitialHitmark)
 	}
 
 	//stormcluster
