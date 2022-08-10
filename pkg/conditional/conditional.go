@@ -1,6 +1,8 @@
 package conditional
 
 import (
+	"strings"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
@@ -35,7 +37,8 @@ func Eval(c *core.Core, fields []string) int64 {
 		return evalOnField(c, fields)
 	default:
 		//check if it's a char name; if so check char custom eval func
-		if key, ok := shortcut.CharNameToKey[fields[0]]; ok {
+		name := strings.TrimPrefix(fields[0], ".")
+		if key, ok := shortcut.CharNameToKey[name]; ok {
 			return evalCharCustom(c, key, fields)
 		}
 		return 0
