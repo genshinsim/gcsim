@@ -14,10 +14,15 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 102
+const burstHitmark = 107
 
 func init() {
-	burstFrames = frames.InitAbilSlice(127)
+	burstFrames = frames.InitAbilSlice(127) // Q -> Swap
+	burstFrames[action.ActionAttack] = 121  // Q -> N1
+	burstFrames[action.ActionCharge] = 116  // Q -> CA
+	burstFrames[action.ActionSkill] = 115   // Q -> E
+	burstFrames[action.ActionDash] = 115    // Q -> D
+	burstFrames[action.ActionJump] = 104    // Q -> J
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -62,13 +67,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(aiBreak, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), -1, burstHitmark+480)
 
-	c.SetCDWithDelay(action.ActionBurst, 15*60, 13)
-	c.ConsumeEnergy(13)
+	c.SetCD(action.ActionBurst, 15*60)
+	c.ConsumeEnergy(5)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel is before burstHitmark
 		State:           action.BurstState,
 	}
 }
