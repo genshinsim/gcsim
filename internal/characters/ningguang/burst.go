@@ -44,18 +44,26 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	// fires 6 normally
-	for _, hitmark := range burstHitmarks {
+	jade, ok := p["jade"]
+	if !ok {
+		jade = 6
+	}
+	for i := 0; i < jade; i++ {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			hitmark,
-			hitmark+travel,
+			burstHitmarks[i],
+			burstHitmarks[i]+travel,
 		)
 	}
 	// if jade screen is active add 6 jades
 	if c.Core.Constructs.Destroy(c.lastScreen) {
+		screen, ok := p["screen"]
+		if !ok {
+			screen = 6
+		}
 		ai.Abil = "Starshatter (Jade Screen Gems)"
-		for i := 6; i < 12; i++ {
+		for i := 0; i < screen; i++ {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				c.skillSnapshot,
