@@ -17,10 +17,11 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1stack  int
-	lastPart int
-	a1bonus  []float64
-	a4bonus  []float64
+	a1stack   int
+	lastPart  int
+	a1bonus   []float64
+	a4bonus   []float64
+	abApplied bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
