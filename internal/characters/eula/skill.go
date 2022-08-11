@@ -140,6 +140,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
+	c.particleDone = false
 	energyCB := func(_ combat.AttackCB) {
 		if !c.particleDone {
 			var count float64 = 2
