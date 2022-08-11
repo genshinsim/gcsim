@@ -35,7 +35,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.burstBuff = make([]float64, attributes.EndStatType)
-	c.a2()
+	c.a1()
 	return nil
 }
 
@@ -47,6 +47,10 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		//infusion to attacks only
 		switch ai.AttackTag {
 		case combat.AttackTagNormal:
+			// Q-N3 has different hitlag from N3
+			if ai.Abil == "Normal 2" {
+				ai.HitlagHaltFrames = 0.10 * 60
+			}
 		case combat.AttackTagPlunge:
 		case combat.AttackTagExtra:
 		default:
