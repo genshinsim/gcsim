@@ -19,7 +19,7 @@ func init() {
 
 type Weapon struct {
 	Index int
-	atk   *combat.AttackEvent
+	ai    combat.AttackInfo
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -56,14 +56,8 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 			return
 		}
 
-		atk := *w.atk
-		atk.SourceFrame = c.F
-		atk.Pattern = combat.NewDefSingleTarget(next, combat.TargettableEnemy)
 		cb := w.chain(count+1, c, char)
-		if cb != nil {
-			atk.Callbacks = append(atk.Callbacks, cb)
-		}
-		c.QueueAttackEvent(&atk, 10)
+		c.QueueAttack(w.ai, combat.NewDefSingleTarget(next, combat.TargettableEnemy), 0, 10, cb)
 	}
 }
 
@@ -75,9 +69,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	cd := (13 - r) * 60
 	dmg := 2.1 * float64(r) * 0.3
 
-	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	w.ai = combat.AttackInfo{
+		ActorIndex: char.Index,
+		Abil:       "Eye of Preception Proc",
+		AttackTag:  combat.AttackTagWeaponSkill,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		Element:    attributes.Physical,
+		Durability: 100,
+		Mult:       dmg,
+	}
+
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
+			return false
+		}
+		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -85,28 +93,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		char.AddStatus(icdKey, cd, true)
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
-			Abil:       "Eye of Preception Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			Element:    attributes.Physical,
-			Durability: 100,
-			Mult:       dmg,
-		}
-		w.atk = &combat.AttackEvent{
-			Info:     ai,
-			Snapshot: char.Snapshot(&ai),
-		}
-		atk := *w.atk
-		atk.SourceFrame = c.F
-		atk.Pattern = combat.NewDefSingleTarget(0, combat.TargettableEnemy)
 		cb := w.chain(0, c, char)
-		if cb != nil {
-			atk.Callbacks = append(atk.Callbacks, cb)
-		}
-		c.QueueAttackEvent(&atk, 10)
+		c.QueueAttack(w.ai, combat.NewDefSingleTarget(c.Combat.DefaultTarget, combat.TargettableEnemy), 0, 10, cb)
+
 		return false
 	}, fmt.Sprintf("perception-%v", char.Base.Key.String()))
 
