@@ -47,10 +47,6 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		//infusion to attacks only
 		switch ai.AttackTag {
 		case combat.AttackTagNormal:
-			// Q-N3 has different hitlag from N3
-			if ai.Abil == "Normal 2" {
-				ai.HitlagHaltFrames = 0.10 * 60
-			}
 		case combat.AttackTagPlunge:
 		case combat.AttackTagExtra:
 		default:
