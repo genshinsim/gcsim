@@ -1,7 +1,7 @@
 package result
 
 import (
-	"compress/gzip"
+	"compress/zlib"
 	"encoding/json"
 	"os"
 )
@@ -20,7 +20,7 @@ func (s *Summary) Save(fpath string, gz bool) error {
 			return err
 		}
 		defer f.Close()
-		zw := gzip.NewWriter(f)
+		zw := zlib.NewWriter(f)
 		zw.Write(data)
 		err = zw.Close()
 		return err
