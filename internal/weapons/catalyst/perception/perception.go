@@ -58,7 +58,7 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 		}
 
 		cb := w.chain(count+1, c, char)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.DefaultTarget, combat.TargettableEnemy), 10, cb)
+		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(next, combat.TargettableEnemy), 10, cb)
 	}
 }
 
