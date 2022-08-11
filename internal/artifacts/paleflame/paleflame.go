@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -19,7 +20,6 @@ func init() {
 
 type Set struct {
 	stacks int
-	icd    int
 	buff   []float64
 	Index  int
 }
@@ -35,7 +35,7 @@ func (s *Set) updateBuff() {
 	s.buff[attributes.ATKP] = 0.09 * float64(s.stacks)
 }
 
-const pf4key = "paleflame-4pc"
+const pf4key = "pf-4pc"
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
@@ -77,9 +77,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			s.updateBuff()
 
+			c.Log.NewEvent("paleflame gained stack", glog.LogArtifactEvent, char.Index).
+				Write("stacks", s.stacks)
+
 			char.AddStatus(icdKey, icd, true)
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("pf-4pc", 420),
+				Base:         modifier.NewBaseWithHitlag(pf4key, 420),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return s.buff, true
