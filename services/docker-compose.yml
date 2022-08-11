@@ -1,22 +1,9 @@
 version: "3.8"
 
 services:
-  # cloudflared:
-  #   image: cloudflare/cloudflared:latest
-  #   # environment:
-  #   command: "tunnel --no-autoupdate run --token $CF_TUNNEL_TOKEN"
-  #   volumes:
-  #     - ../cloudflared:/etc/cloudflared
-  #   links:
-  #     - postgrest:postgrest
-  #   environment:
-  #     - TUNNEL_URL=http://postgrest:3000
-  #     - CF_TUNNEL_TOKEN
-  #   depends_on:
-  #     - postgrest
-
   postgrest:
     image: postgrest/postgrest
+    restart: unless-stopped
     # Expose post 3000 and access postgrest locally by uncommenting
     # the `ports` directive below
     ports:
@@ -32,7 +19,7 @@ services:
 
   postgres:
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_DB: db
       POSTGRES_USER: user
@@ -40,6 +27,31 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./database/scripts:/scripts
+
+  dbmanage:
+    container_name: dbmanage
+    build:
+      context: .
+      dockerfile: ./dbmanage/Dockerfile
+    volumes:
+      - .:/app
+      - ./dbmanage/data:/data
+    command: bash -c "/app/dbmanage/dbmanage"
+    environment:
+      - DBMANAGE_DISCORD_TOKEN
+      - DBMANAGE_ADMIN_CHAN=1006934337612173413
+      - DBMANAGE_DB_PATH=/data
+      - DBMANAGE_PG_PORT=3000
+    restart: unless-stopped
+
+  embed:
+    container_name: embed
+    build:
+      context: ./embed
+    volumes:
+      - .:/app
+    command: bash -c "go build /app/embed && /app/embed/embed"
+    restart: unless-stopped
 
 volumes:
   postgres-data: {}
