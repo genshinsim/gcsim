@@ -146,6 +146,6 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 				Write("src", src)
 		}
 		//queue up next instance
-		c.Core.Tasks.Add(c.bbtickfunc(src, trg), 240)
+		trg.QueueEnemyTask(c.bbtickfunc(src, trg), 240)
 	}
 }
