@@ -72,7 +72,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			for _, this := range s.core.Player.Chars() {
+			for _, x := range s.core.Player.Chars() {
+				this := x
 				// special case if applying 4 Noblesse to holder to fix this mess:
 				// https://library.keqingmains.com/evidence/general-mechanics/bugs#noblesse-oblige-4pc-bonus-not-applying-to-some-bursts
 				// https://docs.google.com/spreadsheets/d/1jhIP3C6B16nL1unX9DL_-LhSNaOy_wwhdr29pzikpcg/edit?usp=sharing
