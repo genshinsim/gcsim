@@ -10,20 +10,19 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = [][]int{{23}, {47}, {38, 39}, {78}}
+var attackHitmarks = [][]int{{23}, {29}, {14, 26}, {35}}
 var attackHitlagHaltFrame = [][]float64{{0.1}, {0.1}, {0, 0.08}, {0.08}}
 var attackDefHalt = [][]bool{{true}, {true}, {false, true}, {true}}
 
 const normalHitNum = 4
 
-//TODO: need frame count
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 23)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 47)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 39)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 78)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 36) // N1 -> N2
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 48) // N2 -> N3
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 52) // N3 -> N4
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 71) // N4 -> N1
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
