@@ -44,6 +44,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	r := 0.3
 	if c.StatModIsActive(burstBuffKey) {
 		r = 2
+		if c.NormalCounter == 2 {
+			//q-n3 has different hit lag
+			ai.HitlagHaltFrames = 0.1 * 60
+		}
 	}
 	done := false
 	cb := func(a combat.AttackCB) {
