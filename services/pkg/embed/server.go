@@ -1,4 +1,4 @@
-package server
+package embed
 
 import (
 	"bytes"
@@ -177,6 +177,8 @@ func (s *Server) handleRetrieveEmbed() http.HandlerFunc {
 		filepath := fmt.Sprintf("./images/%v.png", key)
 		if stat, err := os.Stat(filepath); err != nil || stat.IsDir() {
 			//it's possible file exist but we can't read it
+			//we should try to regenerate it
+			s.work <- key
 			//in which case we return 404 anyways
 			w.WriteHeader(http.StatusNotFound)
 			return
