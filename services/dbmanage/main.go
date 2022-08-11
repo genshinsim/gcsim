@@ -5,22 +5,20 @@ import (
 	"os"
 
 	"github.com/genshinsim/gcsim/services/pkg/bot"
+	"github.com/genshinsim/gcsim/services/pkg/store"
 )
 
 func main() {
-	token := os.Getenv("DBMANAGE_DISCORD_TOKEN")
-	path := os.Getenv("DBMANAGE_DB_PATH")
-	adminChan := os.Getenv("DBMANAGE_ADMIN_CHAN")
-	port := os.Getenv("DBMANAGE_PG_PORT")
 
 	cfg := bot.Config{
-		Token:          token,
-		DBPath:         path,
-		AdminChannelID: adminChan,
-		PostgRESTPort:  port,
+		Token:          os.Getenv("DBMANAGE_DISCORD_TOKEN"),
+		DBPath:         os.Getenv("DATA_PATH"),
+		AdminChannelID: os.Getenv("DBMANAGE_ADMIN_CHAN"),
 	}
 
-	err := bot.Run(cfg)
+	err := bot.Run(cfg, &store.PostgRESTStore{
+		URL: os.Getenv("POSTGREST_URL"),
+	})
 
 	if err != nil {
 		log.Fatal(err)

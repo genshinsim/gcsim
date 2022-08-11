@@ -3,8 +3,6 @@ package bot
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"os/signal"
 	"regexp"
@@ -13,7 +11,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	badger "github.com/dgraph-io/badger/v3"
-	"github.com/genshinsim/gcsim/pkg/result"
+	"github.com/genshinsim/gcsim/services/pkg/store"
 	"go.uber.org/zap"
 )
 
@@ -21,23 +19,27 @@ type Config struct {
 	Token          string
 	AdminChannelID string //id for the admin channel
 	DBPath         string
-	PostgRESTPort  string
 }
 
 type Bot struct {
-	cfg Config
-	db  *badger.DB
-	Log *zap.SugaredLogger
+	cfg   Config
+	db    *badger.DB
+	Log   *zap.SugaredLogger
+	Store store.SimStore
 }
 
 type Submission struct {
 	Key         string `json:"key"`
 	Description string `json:"description"`
 	Author      string `json:"author"`
+	Config      string `json:"config"` //this is to be pulled out of the database
 }
 
-func Run(cfg Config) error {
+func Run(cfg Config, s store.SimStore) error {
 	b := &Bot{}
+	b.cfg = cfg
+	b.Store = s
+
 	logger, err := zap.NewDevelopment()
 	if err != nil {
 		return err
@@ -47,7 +49,6 @@ func Run(cfg Config) error {
 
 	b.Log = sugar
 
-	b.cfg = cfg
 	db, err := badger.Open(badger.DefaultOptions(cfg.DBPath))
 	if err != nil {
 		return err
@@ -261,41 +262,4 @@ func (b *Bot) Approve(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	//try grabbing the link from postgrest
 	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v approved", match[1]))
-}
-
-type simulation struct {
-	ViewerFile string `json:"viewer_file"`
-}
-
-func (b *Bot) fetch(key string) (*result.Summary, error) {
-	url := fmt.Sprintf(`http://localhost:%v/simulations?simulation_key=eq.%v`, b.cfg.PostgRESTPort, key)
-	r, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer r.Body.Close()
-
-	if r.StatusCode != 200 {
-		msg, err := io.ReadAll(r.Body)
-		if err != nil {
-			return nil, err
-		} else {
-			return nil, fmt.Errorf("bad status code %v msg %v", r.StatusCode, string(msg))
-		}
-	}
-
-	var result []simulation
-
-	err = json.NewDecoder(r.Body).Decode(&result)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(result) == 0 {
-		return nil, fmt.Errorf("unexpected result length is 0")
-	}
-
-	//ViewerFile should be zlib compressed string in base64
-
-	return nil, nil
 }
