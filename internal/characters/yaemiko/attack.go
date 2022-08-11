@@ -28,6 +28,11 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 10
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -41,7 +46,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: does it snapshot?
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, attackHitmarks[c.NormalCounter])
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, attackHitmarks[c.NormalCounter]+travel)
 
 	defer c.AdvanceNormalIndex()
 
