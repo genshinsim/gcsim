@@ -5,6 +5,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN ls
 RUN go mod download
+COPY pkg pkg
 COPY embed embed 
 RUN ls
 RUN ls embed/

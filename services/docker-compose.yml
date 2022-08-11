@@ -47,7 +47,8 @@ services:
   embed:
     container_name: embed
     build:
-      context: ./embed
+      context: .
+      dockerfile: ./embed/Dockerfile
     volumes:
       - .:/app
     command: bash -c "go build /app/embed && /app/embed/embed"
