@@ -58,13 +58,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ResetActionCooldown(action.ActionSkill)
 	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index)
 
-	// lights up 9.5s from cast
+	// lights up ~9.5s from cast, make it basically last until lightfall hitmark + 1
 	//deployable; not affected by hitlag
 	c.Core.Tasks.Add(func() {
-		c.Core.Status.Add(burstKey, 9*60)
+		c.Core.Status.Add(burstKey, 600-lightfallHitmark-burstFrames[action.ActionWait]+1)
 		c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index).
 			Write("stacks", c.burstCounter).
-			Write("expiry", c.Core.Status.Duration(burstKey))
+			Write("expiry", c.Core.F+600-lightfallHitmark-burstFrames[action.ActionWait]+1)
 	}, burstFrames[action.ActionWait]) // start at earliest point
 
 	// lightfall hitmark is 600f from cast
