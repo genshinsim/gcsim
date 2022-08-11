@@ -101,7 +101,6 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 		for i := 1; i <= kindling; i++ {
 			ai.Abil = fmt.Sprintf("Kindling Arrow %v", i)
-			// ai.HitWeakPoint = kindling_weakspot >= i
 			// add a bit of extra delay for kindling arrows
 			c.Core.QueueAttack(
 				ai,
