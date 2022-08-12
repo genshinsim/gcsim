@@ -11,9 +11,10 @@ import (
 //For 5s after Shikanoin Heizou takes the field, his Normal Attack SPD is increased by 15%.
 //He also gains 1 Declension stack for Heartstopper Strike. This effect can be triggered once every 10s.
 func (c *char) c1() {
+	const c1Icd = "heizou-c1-icd"
 	// No log value saved as stat mod already shows up in debug view
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.c1icd > c.Core.F {
+		if c.StatusIsActive(c1Icd) {
 			return false
 		}
 		next := args[1].(int)
@@ -28,7 +29,7 @@ func (c *char) c1() {
 			},
 		})
 		c.addDecStack()
-		c.c1icd = c.Core.F + 600
+		c.AddStatus(c1Icd, 600, true)
 		return false
 	}, "heizou enter")
 
