@@ -19,8 +19,6 @@ type char struct {
 	*tmpl.Character
 	decStack            int
 	infuseCheckLocation combat.AttackPattern
-	a1icd               int
-	c1icd               int
 	c1buff              []float64
 	a4buff              []float64
 	burstTaggedCount    int
@@ -34,9 +32,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 	c.SkillCon = 3
 	c.BurstCon = 5
-
-	c.a1icd = -1
-	c.c1icd = -1
 
 	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy)
 
