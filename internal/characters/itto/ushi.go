@@ -2,7 +2,6 @@ package itto
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 type ushi struct {
@@ -11,14 +10,17 @@ type ushi struct {
 	char   *char
 }
 
-func (u *ushi) OnDestruct() {
-	u.char.changeStacks(1)
-	u.char.Core.Log.NewEvent("itto ushi stack gained on exit", glog.LogCharacterEvent, u.char.Index).
-		Write("stacks", u.char.Tags[u.char.stackKey])
+func (c *char) newUshi(dur int) construct.Construct {
+	return &ushi{
+		src:    c.Core.F,
+		expiry: c.Core.F + dur,
+		char:   c,
+	}
 }
 
+func (u *ushi) OnDestruct()                      { u.char.addStrStack("ushi-exit", 1) }
 func (u *ushi) Key() int                         { return u.src }
 func (u *ushi) Type() construct.GeoConstructType { return construct.GeoConstructIttoSkill }
 func (u *ushi) Expiry() int                      { return u.expiry }
 func (u *ushi) IsLimited() bool                  { return true }
-func (c *ushi) Count() int                       { return 1 }
+func (u *ushi) Count() int                       { return 1 }

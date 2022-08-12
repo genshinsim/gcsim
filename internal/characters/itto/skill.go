@@ -1,14 +1,15 @@
-﻿package itto
+package itto
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var skillFrames []int
+
+const skillRelease = 14
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42) // E -> N1/Q
@@ -34,9 +35,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		travel = 4
 	}
 
-	release := 14
-	hitmark := release + travel
-
 	//deal damage when created
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
@@ -60,34 +58,24 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if done {
 			return
 		}
-		con := &ushi{
-			src:    c.Core.F,
-			expiry: c.Core.F + 360, // 6 seconds from hit/land
-			char:   c,
-		}
-		c.Core.Constructs.New(con, true)
 		done = true
+		// spawn ushi. on-field for 6s
+		c.Core.Constructs.New(c.newUshi(6*60), true)
+
+		// Energy. 33% chance of 3 particles
+		var count float64 = 3
+		if c.Core.Rand.Float64() < 0.33 {
+			count++
+		}
+		c.Core.QueueParticle("itto", count, attributes.Geo, c.ParticleDelay)
 	}
 
 	// Assume that Ushi always hits for a stack
-	c.Core.Tasks.Add(func() {
-		c.changeStacks(1)
-		c.Core.Log.NewEvent("itto ushi stack gained on hit", glog.LogCharacterEvent, c.Index).
-			Write("stacks", c.Tags[c.stackKey])
-	}, hitmark)
-
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), release, hitmark, cb)
-
-	// Energy
-	// 33% chance of 3 particles
-	var count float64 = 3
-	if c.Core.Rand.Float64() < 0.33 {
-		count++
-	}
-	c.Core.QueueParticle("itto", count, attributes.Geo, hitmark+c.ParticleDelay)
+	c.Core.Tasks.Add(func() { c.addStrStack("ushi-hit", 1) }, skillRelease+travel)
+	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillRelease, skillRelease+travel, cb)
 
 	// Cooldown
-	c.SetCDWithDelay(action.ActionSkill, 600, release) // cd starts on release
+	c.SetCDWithDelay(action.ActionSkill, 600, skillRelease) // cd starts on release
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),

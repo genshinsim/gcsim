@@ -1,10 +1,11 @@
-﻿package itto
+package itto
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -12,14 +13,18 @@ import (
 
 var burstFrames []int
 
+const (
+	burstDuration  = 660 + 90 + 45 // barely cover basic combo
+	burstBuffKey   = "itto-q"
+	burstAtkSpdKey = "itto-q-atkspd"
+)
+
 func init() {
 	burstFrames = frames.InitAbilSlice(92) // Q -> N1/CA0/CA1/CAF
 	burstFrames[action.ActionDash] = 86    // Q -> D
 	burstFrames[action.ActionJump] = 84    // Q -> J
 	burstFrames[action.ActionSwap] = 90    // Q -> Swap
 }
-
-const burstBuffKey = "itto-q"
 
 // Adapted from Noelle
 // Burst:
@@ -31,18 +36,11 @@ const burstBuffKey = "itto-q"
 // - Decreases Itto's Elemental and Physical RES by 20%.
 // The Raging Oni King state will be cleared when Itto leaves the field.
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	// N1 pre-stack tech
-	lastWasItto := c.Core.Player.LastAction.Char == c.Index
-	lastAction := c.Core.Player.LastAction.Type
-	if lastWasItto && lastAction == action.ActionAttack && c.NormalCounter == 1 {
-		// If Itto did N1 -> Q, then add a stack before Q def to atk conversion
-		c.changeStacks(1)
-		c.Core.Log.NewEvent("itto n1 pre-stack added", glog.LogCharacterEvent, c.Index).
-			Write("stacks", c.Tags[c.stackKey])
+	// N1 pre-stack tech. If Itto did N1 -> Q, then add a stack before Q def to atk conversion
+	// https://library.keqingmains.com/evidence/characters/geo/itto#itto-n1-burst-cancel-ss-stack
+	if c.Core.Player.CurrentState() == action.NormalAttackState && c.NormalCounter == 1 {
+		c.addStrStack("n1-burst-cancel", 1)
 	}
-
-	// Add mod for def to attack burst conversion
-	val := make([]float64, attributes.EndStatType)
 
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
 	aiSnapshot := combat.AttackInfo{
@@ -52,16 +50,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snapshot := c.Snapshot(&aiSnapshot)
 	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[attributes.DEFP]) + snapshot.Stats[attributes.DEF]
 	mult := defconv[c.TalentLvlBurst()]
-	fa := mult * burstDefSnapshot
-	val[attributes.ATK] = fa
 
 	// TODO: Confirm exact timing of buff
 	// Q def to atk conversion
+	mATK := make([]float64, attributes.EndStatType)
+	mATK[attributes.ATK] = mult * burstDefSnapshot
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(c.burstBuffKey, c.burstBuffDuration),
+		Base:         modifier.NewBaseWithHitlag(burstBuffKey, burstDuration),
 		AffectedStat: attributes.ATK,
 		Amount: func() ([]float64, bool) {
-			return val, true
+			return mATK, true
 		},
 	})
 
@@ -69,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	mAtkSpd := make([]float64, attributes.EndStatType)
 	mAtkSpd[attributes.AtkSpd] = 0.10
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(c.burstBuffKey+"-atkspd", c.burstBuffDuration),
+		Base:         modifier.NewBaseWithHitlag(burstAtkSpdKey, burstDuration),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
 			if c.Core.Player.CurrentState() != action.NormalAttackState {
@@ -80,27 +78,34 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	})
 
 	c.Core.Log.NewEvent("itto burst", glog.LogSnapshotEvent, c.Index).
-		Write("frame", c.Core.F).
 		Write("total def", burstDefSnapshot).
-		Write("atk added", fa).
+		Write("atk added", mATK[attributes.ATK]).
 		Write("mult", mult)
 
 	if c.Base.Cons >= 1 {
 		// TODO: add link to itto-c1-mechanics tcl entry later
 		// this is before Q animation is done, so no need for char queue
 		// 75 is a rough count for when Itto gains the 2 stacks from C1
-		c.Core.Tasks.Add(c.c1(), 75)
+		c.Core.Tasks.Add(c.c1, 75)
 	}
 
 	if c.Base.Cons >= 2 {
 		// TODO: check C2 delay, but it doesn't really matter
+		// should apply after cd/energy delay
 		// this is before Q animation is done, so no need for char queue
-		c.Core.Tasks.Add(c.c2(), 9)
+		c.Core.Tasks.Add(c.c2, 9)
 	}
 
+	// apply when burst ends
+	c.burstCastF = c.Core.F
 	if c.Base.Cons >= 4 {
-		c.c4Applied = false
-		c.QueueCharTask(c.c4(), c.burstBuffDuration)
+		c.applyC4 = true
+		src := c.burstCastF
+		c.QueueCharTask(func() {
+			if src == c.burstCastF {
+				c.c4()
+			}
+		}, burstDuration)
 	}
 
 	c.SetCD(action.ActionBurst, 1080) // 18s * 60
@@ -112,4 +117,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
 	}
+}
+
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		prev := args[0].(int)
+		if prev == c.Index && c.StatModIsActive(burstBuffKey) {
+			c.DeleteStatMod(burstBuffKey)
+			c.DeleteStatMod(burstAtkSpdKey)
+			c.c4()
+		}
+		return false
+	}, "itto-exit")
 }
