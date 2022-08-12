@@ -34,10 +34,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Physical,
 		Durability: 25,
+	}
+
+	if c.StatusIsActive("yoimiyaskill") {
+		ai.ICDTag = combat.ICDTagNormalAttack
 	}
 
 	particleCB := func(combat.AttackCB) {
