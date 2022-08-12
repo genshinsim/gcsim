@@ -24,8 +24,8 @@ const skillCDStart = 18
 // if you hold while at 4 stacks it takes 17 extra frames to release
 const holdAtFullStacksPenalty = 17
 
-// assuming its 0.02s, please verify
-const skillHitlagHaltFrame = 0.02
+const skillHitlagHaltFrame = 0.09
+const skillHitlagMaxStackHaltFrame = 0.12
 
 func (c *char) skillHoldDuration(stacks int) int {
 	//animation duration only
@@ -65,11 +65,13 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			Mult:               skill[c.TalentLvlAttack()] + float64(c.decStack)*decBonus[c.TalentLvlAttack()],
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   skillHitlagHaltFrame * 60,
-			CanBeDefenseHalted: true,
+			CanBeDefenseHalted: false,
 		}
 		AoE := 0.3
 		if c.decStack == 4 {
+			ai.Abil = "Heartstopper Strike (Max Stacks)"
 			ai.Mult += convicBonus[c.TalentLvlAttack()]
+			ai.HitlagHaltFrames = skillHitlagMaxStackHaltFrame * 60
 			AoE = 1
 		}
 

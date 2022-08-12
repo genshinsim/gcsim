@@ -11,9 +11,7 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = [][]int{{12}, {13}, {21}, {13, 19, 27}, {31}}
-
-// assuming it's 0.02s. Please verify
-var attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0, 0.02}, {0.02}}
+var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.09}, {0.12}}
 var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false, true}, {true}}
 
 const normalHitNum = 5
@@ -57,7 +55,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-
+		// multihit on N4 only has hitlag on last hit so no need for char queue here
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),

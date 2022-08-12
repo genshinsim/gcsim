@@ -10,9 +10,10 @@ import (
 )
 
 func (c *char) a1() {
+	const a1IcdKey = "heizou-a1-icd"
 	swirlCB := func() func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
-			if c.a1icd > c.Core.F {
+			if c.StatusIsActive(a1IcdKey) {
 				return false
 			}
 			atk := args[1].(*combat.AttackEvent)
@@ -31,7 +32,7 @@ func (c *char) a1() {
 				return false
 			}
 			//icd is triggered regardless if stacks are maxed or not
-			c.a1icd = c.Core.F + 6
+			c.AddStatus(a1IcdKey, 6, true)
 			c.addDecStack()
 			return false
 		}
