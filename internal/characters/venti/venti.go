@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func init() {
@@ -41,26 +40,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	// C4:
+	// When Venti picks up an Elemental Orb or Particle, he receives a 25% Anemo DMG Bonus for 10s.
 	if c.Base.Cons >= 4 {
-		c.c4bonus = make([]float64, attributes.EndStatType)
-		c.c4bonus[attributes.AnemoP] = 0.25
+		c.c4()
 	}
 	return nil
-}
-
-func (c *char) ReceiveParticle(p character.Particle, isActive bool, partyCount int) {
-	c.Character.ReceiveParticle(p, isActive, partyCount)
-	if c.Base.Cons >= 4 {
-		//only pop this if active
-		if !isActive {
-			return
-		}
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("venti-c4", 600),
-			AffectedStat: attributes.AnemoP,
-			Amount: func() ([]float64, bool) {
-				return c.c4bonus, true
-			},
-		})
-	}
 }
