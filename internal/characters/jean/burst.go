@@ -8,8 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -62,19 +60,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Status.Add("jeanq", 600+burstStart)
 
 	if c.Base.Cons >= 4 {
-		//add debuff to all target for ??? duration
-		for _, t := range c.Core.Combat.Targets() {
-			e, ok := t.(*enemy.Enemy)
-			if !ok {
-				continue
-			}
-			//10 seconds + animation
-			e.AddResistMod(enemy.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("jeanc4", 600+burstStart),
-				Ele:   attributes.Anemo,
-				Value: -0.4,
-			})
-		}
+		c.c4()
 	}
 
 	//heal on cast

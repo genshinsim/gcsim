@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var skillFrames []int
@@ -40,10 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 	if c.Base.Cons >= 1 && p["hold"] >= 60 {
-		//add 40% dmg
-		snap.Stats[attributes.DmgP] += .4
-		c.Core.Log.NewEvent("jean c1 adding 40% dmg", glog.LogCharacterEvent, c.Index).
-			Write("final dmg%", snap.Stats[attributes.DmgP])
+		c.c1(&snap)
 	}
 
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark)
