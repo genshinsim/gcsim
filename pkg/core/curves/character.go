@@ -2,9 +2,17 @@ package curves
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type CharBase struct {
+	Rarity     int
+	Body       profile.BodyType
+	Element    attributes.Element
+	Region     profile.ZoneType
+	WeaponType weapon.WeaponClass
+
 	HPCurve        CharStatCurve
 	AtkCurve       CharStatCurve
 	DefCurve       CharStatCurve

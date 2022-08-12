@@ -13,12 +13,12 @@ import (
 // repeatedly triggered it will overwrite the oldest bonus first. The Pyro DMG
 // bonus from Proviso is applied before charged attack damage is calculated.
 func (c *char) a1(stacks int) {
-	c.a1buff[attributes.PyroP] = float64(stacks) * 0.05
+	c.a1Buff[attributes.PyroP] = float64(stacks) * 0.05
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("yanfei-a1", 360),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
-			return c.a1buff, true
+			return c.a1Buff, true
 		},
 	})
 }
@@ -39,6 +39,9 @@ func (c *char) a4() {
 		if atk.Info.AttackTag != combat.AttackTagExtra && !crit {
 			return false
 		}
+		// make it so a4 only applies hitlag once per A4 proc and not everytime an enemy gets hit
+		defhalt := !c.a4HitlagApplied
+		c.a4HitlagApplied = true
 
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -50,9 +53,9 @@ func (c *char) a4() {
 			Durability:         25,
 			Mult:               0.8,
 			HitlagFactor:       0.05,
-			CanBeDefenseHalted: true,
+			CanBeDefenseHalted: defhalt,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 10, 10)
 
 		return false
 	}, "yanfei-a4")

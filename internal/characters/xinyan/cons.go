@@ -12,8 +12,8 @@ import (
 const c1ICDKey = "xinyan-c1-icd"
 
 func (c *char) c1() {
-	c.c1buff = make([]float64, attributes.EndStatType)
-	c.c1buff[attributes.AtkSpd] = 0.12
+	c.c1Buff = make([]float64, attributes.EndStatType)
+	c.c1Buff[attributes.AtkSpd] = 0.12
 
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -21,7 +21,8 @@ func (c *char) c1() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		// TODO: it works off field?
+		// doesn't work off-field
+		// https://youtu.be/ybE8g0A7hBk
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
@@ -35,7 +36,7 @@ func (c *char) c1() {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("xinyan-c1", 5*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				return c.c1buff, true
+				return c.c1Buff, true
 			},
 		})
 		c.AddStatus(c1ICDKey, 300, true)
@@ -46,8 +47,8 @@ func (c *char) c1() {
 
 // Riff Revolution's Physical DMG has its CRIT Rate increased by 100%, and will form a shield at Shield Level 3: Rave when cast.
 func (c *char) c2() {
-	c.c2buff = make([]float64, attributes.EndStatType)
-	c.c2buff[attributes.CR] = 1
+	c.c2Buff = make([]float64, attributes.EndStatType)
+	c.c2Buff[attributes.CR] = 1
 
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("xinyan-c2", -1),
@@ -55,7 +56,7 @@ func (c *char) c2() {
 			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 				return nil, false
 			}
-			return c.c2buff, true
+			return c.c2Buff, true
 		},
 	})
 }

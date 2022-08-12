@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -17,23 +17,21 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1stack  int
-	lastPart int
-	a1bonus  []float64
-	a4bonus  []float64
+	a1stack   int
+	lastPart  int
+	a1bonus   []float64
+	a4bonus   []float64
+	abApplied bool
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Pyro
 	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassBow
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.CharZone = character.ZoneInazuma
 
 	w.Character = &c
 

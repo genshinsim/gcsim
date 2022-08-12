@@ -9,28 +9,67 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var skillPressCDStarts = []int{30, 31}
+var skillHoldCDStarts = []int{52, 52}
+
+var skillPressHitmarks = []int{32, 33}
+var skillHoldHitmarks = []int{55, 55}
+
+var skillPressFrames [][]int
+var skillHoldFrames [][]int
 
 const (
-	skillPressHitmark     = 74
-	skillHoldHitmark      = 92
 	skillSigilDurationKey = "razor-sigil-duration"
 )
 
 func init() {
-	skillPressFrames = frames.InitAbilSlice(74)
-	skillHoldFrames = frames.InitAbilSlice(92)
+	// Tap E
+	skillPressFrames = make([][]int, 2)
+
+	// outside of Q
+	skillPressFrames[0] = frames.InitAbilSlice(74) // Tap E -> Swap
+	skillPressFrames[0][action.ActionAttack] = 70  // Tap E -> N1
+	skillPressFrames[0][action.ActionBurst] = 69   // Tap E -> Q
+	skillPressFrames[0][action.ActionDash] = 31    // Tap E -> D
+	skillPressFrames[0][action.ActionJump] = 31    // Tap E -> J
+
+	// inside of Q
+	skillPressFrames[1] = frames.InitAbilSlice(76) // Tap E -> Swap
+	skillPressFrames[1][action.ActionSwap] = 75    // Tap E -> N1
+	skillPressFrames[1][action.ActionDash] = 32    // Tap E -> D
+	skillPressFrames[1][action.ActionJump] = 32    // Tap E -> J
+
+	// Hold E
+	skillHoldFrames = make([][]int, 2)
+
+	// outside of Q
+	skillHoldFrames[0] = frames.InitAbilSlice(103) // Hold E -> Q
+	skillHoldFrames[0][action.ActionAttack] = 102  // Hold E -> N1
+	skillHoldFrames[0][action.ActionDash] = 52     // Hold E -> D
+	skillHoldFrames[0][action.ActionJump] = 52     // Hold E -> J
+	skillHoldFrames[0][action.ActionSwap] = 91     // Hold E -> Swap
+
+	// inside of Q
+	skillHoldFrames[1] = frames.InitAbilSlice(96) // Hold E -> N1
+	skillHoldFrames[1][action.ActionDash] = 53    // Hold E -> D
+	skillHoldFrames[1][action.ActionJump] = 52    // Hold E -> J
+	skillHoldFrames[1][action.ActionSwap] = 88    // Hold E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	if p["hold"] > 0 {
-		return c.SkillHold()
+	// check if Q is up for different E frames
+	burstActive := 0
+	if c.StatusIsActive(burstBuffKey) {
+		burstActive = 1
 	}
-	return c.SkillPress()
+
+	if p["hold"] > 0 {
+		return c.SkillHold(burstActive)
+	}
+	return c.SkillPress(burstActive)
 }
 
-func (c *char) SkillPress() action.ActionInfo {
+func (c *char) SkillPress(burstActive int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Claw and Thunder (Press)",
@@ -53,30 +92,30 @@ func (c *char) SkillPress() action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-		skillPressHitmark,
-		skillPressHitmark,
+		skillPressHitmarks[burstActive],
+		skillPressHitmarks[burstActive],
 		c4cb,
 	)
 
-	c.Core.Tasks.Add(c.addSigil, skillPressHitmark)
+	c.Core.Tasks.Add(c.addSigil, skillPressHitmarks[burstActive])
 
 	cd := 6 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
-	c.SetCDWithDelay(action.ActionSkill, int(cd), skillPressHitmark)
+	c.SetCDWithDelay(action.ActionSkill, int(cd), skillPressCDStarts[burstActive])
 
 	if !c.StatusIsActive(burstBuffKey) {
 		//TODO: this delay used to be 80?
-		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmark+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmarks[burstActive]+c.Core.Flags.ParticleDelay)
 	}
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillPressFrames),
-		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressHitmark,
+		Frames:          frames.NewAbilFunc(skillPressFrames[burstActive]),
+		AnimationLength: skillPressFrames[burstActive][action.InvalidAction],
+		CanQueueAfter:   skillPressFrames[burstActive][action.ActionDash], // earliest cancel is 1f before skillPressHitmark
 		State:           action.SkillState,
 	}
 }
 
-func (c *char) SkillHold() action.ActionInfo {
+func (c *char) SkillHold(burstActive int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Claw and Thunder (Hold)",
@@ -90,24 +129,24 @@ func (c *char) SkillHold() action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
-		skillHoldHitmark,
-		skillHoldHitmark,
+		skillHoldHitmarks[burstActive],
+		skillHoldHitmarks[burstActive],
 	)
 
-	c.Core.Tasks.Add(c.clearSigil, skillHoldHitmark)
+	c.Core.Tasks.Add(c.clearSigil, skillHoldHitmarks[burstActive])
 
 	cd := 10 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
-	c.SetCDWithDelay(action.ActionSkill, int(cd), skillHoldHitmark)
+	c.SetCDWithDelay(action.ActionSkill, int(cd), skillHoldCDStarts[burstActive])
 
 	if !c.StatusIsActive(burstBuffKey) {
 		//TODO: this delay used to be 80?
-		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmark+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmarks[burstActive]+c.Core.Flags.ParticleDelay)
 	}
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillHoldFrames),
-		AnimationLength: skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldHitmark,
+		Frames:          frames.NewAbilFunc(skillHoldFrames[burstActive]),
+		AnimationLength: skillHoldFrames[burstActive][action.InvalidAction],
+		CanQueueAfter:   skillHoldFrames[burstActive][action.ActionJump], // earliest cancel is 3f before skillHoldHitmark
 		State:           action.SkillState,
 	}
 }

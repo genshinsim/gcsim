@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -58,10 +59,11 @@ type CharWrapper struct {
 	tasks  task.Tasker
 
 	//base characteristics
-	Base     CharacterBase
+	Base     profile.CharacterBase
 	Weapon   weapon.WeaponProfile
-	Talents  TalentProfile
-	CharZone ZoneType
+	Talents  profile.TalentProfile
+	CharZone profile.ZoneType
+	CharBody profile.BodyType
 	SkillCon int
 	BurstCon int
 
@@ -98,7 +100,7 @@ type charTask struct {
 }
 
 func New(
-	p CharacterProfile,
+	p profile.CharacterProfile,
 	f *int, //current frame
 	debug bool, //are we running in debug mode
 	log glog.Logger, //logging, can be nil

@@ -83,6 +83,13 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		c.Weapon.Atk += bw.PromotionBonus[ind].Atk //atk
 	}
 
+	//misc data
+	c.Base.Rarity = b.Rarity
+	c.Base.Element = b.Element
+	c.Weapon.Class = b.WeaponType
+	c.CharZone = b.Region
+	c.CharBody = b.Body
+
 	//log stats
 	c.log.NewEvent(
 		"stat calc done for "+c.Base.Key.String(),

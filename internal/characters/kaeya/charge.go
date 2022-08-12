@@ -10,12 +10,15 @@ import (
 )
 
 var chargeFrames []int
-var chargeHitmarks = []int{72, 82}
+var chargeHitmarks = []int{16, 16} // CA-1 and CA-2 hit at the same time
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(87)
-	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames = frames.InitAbilSlice(55) // CA -> N1
+	chargeFrames[action.ActionSkill] = 37   // CA -> E
+	chargeFrames[action.ActionBurst] = 36   // CA -> Q
+	chargeFrames[action.ActionDash] = 25    // CA -> D
+	chargeFrames[action.ActionJump] = 24    // CA -> J
+	chargeFrames[action.ActionSwap] = 34    // CA -> Swap
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -38,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
+		CanQueueAfter:   chargeFrames[action.ActionJump], // earliest cancel
 		State:           action.ChargeAttackState,
 	}
 }

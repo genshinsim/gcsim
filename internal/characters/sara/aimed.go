@@ -7,12 +7,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var aimedFrames []int
+var aimedFrames [][]int
 
-const aimedHitmark = 103
+var aimedHitmarks = []int{86, 50}
 
 func init() {
-	aimedFrames = frames.InitAbilSlice(78)
+	aimedFrames = make([][]int, 2)
+
+	// outside of E status
+	aimedFrames[0] = frames.InitAbilSlice(96)
+	aimedFrames[0][action.ActionDash] = aimedHitmarks[0]
+	aimedFrames[0][action.ActionJump] = aimedHitmarks[0]
+
+	// inside of E status
+	aimedFrames[1] = frames.InitAbilSlice(60)
+	aimedFrames[1][action.ActionBurst] = 62
+	aimedFrames[1][action.ActionDash] = 52
+	aimedFrames[1][action.ActionJump] = 52
 }
 
 // Aimed charge attack damage queue generator
@@ -27,13 +38,11 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	weakspot, ok := p["weakspot"]
 
-	// A1: While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
-	// TODO: Maybe not exactly right since some component of this is not the charge time
-	// Nothing better in library yet though
-	skip := 0
-	if c.Core.Status.Duration("saracover") > 0 {
-		reduce := aimedHitmark - (aimedHitmark * 0.6)
-		skip = int(reduce)
+	// A1:
+	// While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
+	skillActive := 0
+	if c.Core.Status.Duration(coverKey) > 0 {
+		skillActive = 1
 	}
 
 	ai := combat.AttackInfo{
@@ -54,12 +63,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
-		aimedHitmark-skip,
-		aimedHitmark-skip+travel,
+		aimedHitmarks[skillActive],
+		aimedHitmarks[skillActive]+travel,
 	)
 
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
-	if c.Core.Status.Duration("saracover") > 0 {
+	if c.Core.Status.Duration(coverKey) > 0 {
 		// Not sure what kind of strike type this is
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -77,22 +86,22 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-			aimedHitmark-skip,
-			aimedHitmark-skip+travel+90,
+			aimedHitmarks[skillActive],
+			aimedHitmarks[skillActive]+travel+90,
 			c.a4,
 		)
-		c.attackBuff(aimedHitmark - skip + travel + 90)
+		c.attackBuff(aimedHitmarks[skillActive] + travel + 90)
 
 		// Particles are emitted after the ambush thing hits
-		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmark-skip+travel+90+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmarks[skillActive]+travel+90+c.Core.Flags.ParticleDelay)
 
-		c.Core.Status.Delete("saracover")
+		c.Core.Status.Delete(coverKey)
 	}
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return aimedFrames[next] - skip },
-		AnimationLength: aimedFrames[action.InvalidAction] - skip,
-		CanQueueAfter:   aimedHitmark - skip,
+		Frames:          func(next action.Action) int { return aimedFrames[skillActive][next] },
+		AnimationLength: aimedFrames[skillActive][action.InvalidAction],
+		CanQueueAfter:   aimedHitmarks[skillActive],
 		State:           action.AimState,
 	}
 }

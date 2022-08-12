@@ -1,0 +1,38 @@
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.17.7" # The Go version to download (if necessary) and use.
+      - name: check files
+        run: ls
+      - run: |
+          # make file runnable, might not be necessary
+          chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
+          # run the script
+          "${GITHUB_WORKSPACE}/scripts/build.sh"
+      - name: Set up Node.js ⚙️
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+      - name: Install dependencies 📦
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+        working-directory: ./app
+      - name: check files again
+        run: ls
+        working-directory: ./app/build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@1
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          projectName: gcsimtest
+          directory: ./app/build
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

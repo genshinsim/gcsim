@@ -12,11 +12,14 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 67
+const skillHitmark = 20 // release frame for the Bomb, travel comes on top, bomb_delay comes on top afterwards
 
 func init() {
-	//TODO: no cancelled frames yet
-	skillFrames = frames.InitAbilSlice(67)
+	skillFrames = frames.InitAbilSlice(49) // E -> Dash
+	skillFrames[action.ActionAttack] = 47  // E -> N1
+	skillFrames[action.ActionBurst] = 48   // E -> Q
+	skillFrames[action.ActionJump] = 47    // E -> J
+	skillFrames[action.ActionSwap] = 66    // E -> Swap
 }
 
 const (
@@ -29,6 +32,10 @@ const (
 // "delay" - Delay in frames before bomblets go off and coil stacks get added
 // Too many potential bomblet hit variations to keep syntax short, so we simplify how they can be handled here
 func (c *char) Skill(p map[string]int) action.ActionInfo {
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 5
+	}
 
 	bomblets, ok := p["bomblets"]
 	if !ok {
@@ -57,7 +64,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Mult:       skillMain[c.TalentLvlSkill()],
 		}
 		c.coilStacks()
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, 0)
+		// TODO: accurate snapshot timing, assumes snapshot on release and not on hit/bomb creation
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, travel)
 	}, skillHitmark)
 
 	// Bomblets snapshot on cast
@@ -77,23 +85,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 0,
-			skillHitmark+delay+((i+1)*6))
+			skillHitmark+travel+delay+((i+1)*6))
 	}
 
 	// Queue up bomblet coil stacks
 	for i := 0; i < bombletCoilStacks; i++ {
 		c.Core.Tasks.Add(func() {
 			c.coilStacks()
-		}, skillHitmark+delay+((i+1)*6))
+		}, skillHitmark+travel+delay+((i+1)*6))
 	}
 
-	c.Core.QueueParticle("aloy", 5, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
-	c.SetCD(action.ActionSkill, 20*60)
+	c.Core.QueueParticle("aloy", 5, attributes.Cryo, skillHitmark+travel+c.Core.Flags.ParticleDelay)
+	c.SetCDWithDelay(action.ActionSkill, 20*60, 19)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillHitmark,
 		State:           action.SkillState,
 	}
 }

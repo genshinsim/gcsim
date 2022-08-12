@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# notice how we avoid spaces in $now to avoid quotation hell in go build command
-# now=$(date --utc +%FT%T%Z)
-# GOOS=windows GOARCH=amd64 go build -o gcsim.exe -ldflags "-X main.sha1ver=`git rev-parse HEAD` -X main.buildTime=$now" ./cmd/gcsim/ 
-GOOS=windows GOARCH=amd64 go build -o gcsim.exe 
-
-# ls
+cd "./cmd/wasm"
+now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+GOOS=js GOARCH=wasm go build -o ../../app/static/main.wasm -ldflags "-X main.sha1ver=`git rev-parse HEAD` -X main.buildTime=$now"

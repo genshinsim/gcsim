@@ -9,19 +9,31 @@ import (
 )
 
 var skillFrames [][]int
-var skillHitmarks = []int{31, 81, 121}
+var skillHitmarks = []int{13, 50, 93}
+var skillCDStarts = []int{11, 48, 90}
 
 func init() {
 	skillFrames = make([][]int, 3)
 
-	// skill (press) -> x
-	skillFrames[0] = frames.InitAbilSlice(31)
+	// Tap E
+	skillFrames[0] = frames.InitAbilSlice(62) // Tap E -> N1/Q
+	skillFrames[0][action.ActionDash] = 49    // Tap E -> D
+	skillFrames[0][action.ActionJump] = 48    // Tap E -> J
+	skillFrames[0][action.ActionSwap] = 59    // Tap E -> Swap
 
-	// skill (level=1) -> x
-	skillFrames[1] = frames.InitAbilSlice(81)
+	// Hold E Lv. 1
+	skillFrames[1] = frames.InitAbilSlice(97) // Hold E Lv. 1 -> Q
+	skillFrames[1][action.ActionAttack] = 96  // Hold E Lv. 1 -> N1
+	skillFrames[1][action.ActionDash] = 85    // Hold E Lv. 1 -> D
+	skillFrames[1][action.ActionJump] = 85    // Hold E Lv. 1 -> J
+	skillFrames[1][action.ActionSwap] = 95    // Hold E Lv. 1 -> Swap
 
-	// skill (level=2) -> x
-	skillFrames[2] = frames.InitAbilSlice(121)
+	// Hold E Lv. 2
+	skillFrames[2] = frames.InitAbilSlice(141) // Hold E Lv. 2 -> Q
+	skillFrames[2][action.ActionAttack] = 140  // Hold E Lv. 2 -> N1
+	skillFrames[2][action.ActionDash] = 129    // Hold E Lv. 2 -> D
+	skillFrames[2][action.ActionJump] = 129    // Hold E Lv. 2 -> J
+	skillFrames[2][action.ActionSwap] = 138    // Hold E Lv. 2 -> Swap
 }
 
 // Skill - modelled after Beidou E
@@ -55,7 +67,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	// TODO: Fix hit frames when known
 	// Particle should spawn after hit
 	hitDelay := skillHitmarks[animIdx]
 	switch chargeLevel {
@@ -91,15 +102,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	if c.Base.Cons >= 1 {
 		// 18% doesn't result in a whole number - 442.8 frames. We round up
-		c.SetCD(action.ActionSkill, 443)
+		c.SetCDWithDelay(action.ActionSkill, 443, skillCDStarts[animIdx])
 	} else {
-		c.SetCD(action.ActionSkill, 9*60)
+		c.SetCDWithDelay(action.ActionSkill, 9*60, skillCDStarts[animIdx])
 	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[animIdx]),
 		AnimationLength: skillFrames[animIdx][action.InvalidAction],
-		CanQueueAfter:   skillHitmarks[animIdx],
+		CanQueueAfter:   skillFrames[animIdx][action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
 }

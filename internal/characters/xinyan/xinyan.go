@@ -1,43 +1,35 @@
 package xinyan
 
 import (
-	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
-
-const normalHitNum = 4
 
 type char struct {
 	*tmpl.Character
-	shieldLevel int
-	c1buff      []float64
-	c2buff      []float64
+	shieldLevel   int
+	c1Buff        []float64
+	c2Buff        []float64
+	shieldTickSrc int
 }
 
 func init() {
-	initCancelFrames()
 	core.RegisterCharFunc(keys.Xinyan, NewChar)
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	t := tmpl.New(s)
 	t.CharWrapper = w
 	c.Character = t
 
-	c.Base.Element = attributes.Pyro
-
 	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassClaymore
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
-	c.CharZone = character.ZoneLiyue
 
 	w.Character = &c
 
@@ -57,17 +49,4 @@ func (c *char) Init() error {
 	}
 
 	return nil
-}
-
-// need to update frames
-func initCancelFrames() {
-	// NA cancels
-	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 25)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 44)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 70)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 65)
-
-	skillFrames = frames.InitAbilSlice(65)
-	burstFrames = frames.InitAbilSlice(98)
 }

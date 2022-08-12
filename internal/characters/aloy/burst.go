@@ -9,15 +9,21 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 118
+const burstHitmark = 100
 
 func init() {
-	burstFrames = frames.InitAbilSlice(118)
+	burstFrames = frames.InitAbilSlice(117) // Q -> Swap
+	burstFrames[action.ActionAttack] = 102  // Q -> N1
+	burstFrames[action.ActionAim] = 102     // Q -> Aim, assumed because it's most likely not 117
+	burstFrames[action.ActionSkill] = 102   // Q -> E
+	burstFrames[action.ActionDash] = 101    // Q -> D
+	burstFrames[action.ActionJump] = 101    // Q -> J
 }
 
 // Burst - doesn't do much other than damage, so fairly straightforward
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	// TODO: Assuming dynamic
+	// snapshots before or during Burst Animation
+	// https://library.keqingmains.com/evidence/characters/cryo/aloy#burst-mechanics
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Prophecies of Dawn",
@@ -28,15 +34,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	snap := c.Snapshot(&ai)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), burstHitmark)
 
-	c.SetCDWithDelay(action.ActionBurst, 12*60, 8)
-	c.ConsumeEnergy(8)
+	c.SetCD(action.ActionBurst, 12*60)
+	c.ConsumeEnergy(2)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.InvalidAction],
+		CanQueueAfter:   burstHitmark,
 		State:           action.BurstState,
 	}
 }

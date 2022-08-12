@@ -11,15 +11,23 @@ import (
 var skillPressFrames []int
 var skillHoldFrames []int
 
-const skillPressAnimation = 15
-const skillHoldAnimation = 24
+const skillPressHitmark = 5 // release
+const skillHoldHitmark = 29 // release
 
 func init() {
-	// skill (press) -> x
-	skillPressFrames = frames.InitAbilSlice(skillPressAnimation)
+	skillPressFrames = frames.InitAbilSlice(34) // Tap E -> E
+	skillPressFrames[action.ActionAttack] = 33  // Tap E -> N1
+	skillPressFrames[action.ActionBurst] = 33   // Tap E -> Q
+	skillPressFrames[action.ActionDash] = 11    // Tap E -> D
+	skillPressFrames[action.ActionJump] = 11    // Tap E -> J
+	skillPressFrames[action.ActionSwap] = 16    // Tap E -> Swap
 
-	// skill (hold) -> x
-	skillHoldFrames = frames.InitAbilSlice(skillHoldAnimation)
+	skillHoldFrames = frames.InitAbilSlice(49) // Hold E -> E
+	skillHoldFrames[action.ActionAttack] = 36  // Hold E -> N1
+	skillHoldFrames[action.ActionBurst] = 37   // Hold E -> Q
+	skillHoldFrames[action.ActionDash] = 31    // Hold E -> D
+	skillHoldFrames[action.ActionJump] = 31    // Hold E -> J
+	skillHoldFrames[action.ActionSwap] = 23    // Hold E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -34,25 +42,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillPress(travel int) action.ActionInfo {
-	c.pawsPewPew(skillPressAnimation, travel, 2)
-	c.SetCD(action.ActionSkill, 360+skillPressAnimation)
+	c.pawsPewPew(skillPressHitmark, travel, 2)
+	c.SetCDWithDelay(action.ActionSkill, 360, skillPressHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
-		AnimationLength: skillPressAnimation,
-		CanQueueAfter:   skillPressAnimation,
+		AnimationLength: skillPressFrames[action.InvalidAction],
+		CanQueueAfter:   skillPressFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
 }
 
 func (c *char) skillHold(travel int) action.ActionInfo {
-	c.pawsPewPew(skillHoldAnimation, travel, 5)
-	c.SetCD(action.ActionSkill, 900+skillHoldAnimation)
+	c.pawsPewPew(skillHoldHitmark, travel, 5)
+	c.SetCDWithDelay(action.ActionSkill, 900, skillHoldHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
-		AnimationLength: skillHoldAnimation,
-		CanQueueAfter:   skillHoldAnimation,
+		AnimationLength: skillHoldFrames[action.InvalidAction],
+		CanQueueAfter:   skillHoldFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
 }
