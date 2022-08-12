@@ -8,15 +8,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-//When the Normal, Charged, or Plunging Attacks of the character affected by Shinobu's Grass Ring of Sanctification hit opponents,
-// a Thundergrass Mark will land on the opponent's position and deal AoE Electro DMG based on 9.7% of Shinobu's Max HP.
-//This effect can occur once every 5s.
+// C4:
+// When the Normal, Charged, or Plunging Attacks of the character affected by Shinobu's Grass Ring of Sanctification hit opponents,
+//  a Thundergrass Mark will land on the opponent's position and deal AoE Electro DMG based on 9.7% of Shinobu's Max HP.
+// This effect can occur once every 5s.
 func (c *char) c4() {
 	//TODO: idk if the damage is instant or not
+	const c4IcdKey = "kuki-c4-icd"
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		//ignore if C4 on icd
-		if c.c4ICD > c.Core.F {
+		if c.StatusIsActive(c4IcdKey) {
 			return false
 		}
 		//On normal,charge and plunge attack
@@ -27,14 +29,15 @@ func (c *char) c4() {
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
-		if c.Core.Status.Duration("kukibell") == 0 {
+		if c.Core.Status.Duration("kuki-e") == 0 {
 			return false
 		}
+		c.AddStatus(c4IcdKey, 300, true) // 5s * 60
 
 		//TODO:frames for this and ICD tag
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "C4 proc",
+			Abil:       "Thundergrass Mark",
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
@@ -49,19 +52,20 @@ func (c *char) c4() {
 		if c.Core.Rand.Float64() < .45 {
 			c.Core.QueueParticle("kuki", 1, attributes.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
 		}
-		c.c4ICD = c.Core.F + 300 //5 sec icd
 		return false
 	}, "kuki-c4")
 }
 
-//When Kuki Shinobu takes lethal DMG, this instance of DMG will not take her down.
-//This effect will automatically trigger when her HP reaches 1 and will trigger once every 60s.
-//When Shinobu's HP drops below 25%, she will gain 150 Elemental Mastery for 15s. This effect will trigger once every 60s.
+// C6:
+// When Kuki Shinobu takes lethal DMG, this instance of DMG will not take her down.
+// This effect will automatically trigger when her HP reaches 1 and will trigger once every 60s.
+// When Shinobu's HP drops below 25%, she will gain 150 Elemental Mastery for 15s. This effect will trigger once every 60s.
 func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 150
+	const c6IcdKey = "kuki-c6-icd"
 	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
-		if c.Core.F < c.c6ICD {
+		if c.StatusIsActive(c6IcdKey) {
 			return false
 		}
 		//check if hp less than 25%
@@ -72,17 +76,16 @@ func (c *char) c6() {
 		if c.HPCurrent <= -1 {
 			c.HPCurrent = 1
 		}
+		c.AddStatus(c6IcdKey, 3600, true) // 60s * 60
 
 		//increase EM by 150 for 15s
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("kuki-c6", 900),
+			Base:         modifier.NewBaseWithHitlag("kuki-c6", 900),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 		})
-
-		c.c6ICD = c.Core.F + 3600
 
 		return false
 	}, "kuki-c6")
