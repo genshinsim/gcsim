@@ -220,6 +220,8 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 
 	//A1
 	if v == 2 {
+		// make sure this gets executed after hold e hitlag starts but before hold e is over
+		// this makes it so it doesn't get affected by hitlag after Hold E is over
 		aiA1 := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Icetide (Lightfall)",
@@ -232,8 +234,8 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(aiA1, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, 0)
-		}, a1Hitmark)
+			c.Core.QueueAttack(aiA1, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), a1Hitmark-(skillHoldHitmark+1), a1Hitmark-(skillHoldHitmark+1))
+		}, skillHoldHitmark+1)
 	}
 
 	//c1 add debuff
