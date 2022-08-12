@@ -51,7 +51,7 @@ func (c *char) addDecStack() {
 
 func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 
-	c.QueueCharTask(func() {
+	c.Core.Tasks.Add(func() {
 		hitDelay := skillHitmark - skillCDStart
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -109,7 +109,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		return c.skillRelease(p, holdAtFullStacksPenalty)
 	} else {
 		for i := c.decStack + 1; i <= 4; i++ {
-			c.QueueCharTask(c.addDecStack, c.skillHoldDuration(i))
+			c.Core.Tasks.Add(c.addDecStack, c.skillHoldDuration(i))
 		}
 		return c.skillRelease(p, c.skillHoldDuration(4))
 	}
