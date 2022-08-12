@@ -25,7 +25,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//p is the number of times enemy enters or exits the field
+	// p is the number of times enemy enters or exits the field
 	enter := p["enter"]
 	if enter < 1 {
 		enter = 1
@@ -48,18 +48,23 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	//initial hit at 40f
+	// initial hit at 40f
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 40)
 
-	//TODO: make this work with movement?
+	// field status
+	c.Core.Status.Add("jean-q", 600+burstStart)
+
+	// handle user specified amount of In/Out damage
+	// TODO: make this work with movement?
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
-	//first enter is at frame 55
+	// first enter is at frame 55
 	for i := 0; i < enter; i++ {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 55+i*delay)
 	}
 
-	c.Core.Status.Add("jeanq", 600+burstStart)
+	// handle In/Out damage on field expiry
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 600+burstStart)
 
 	if c.Base.Cons >= 4 {
 		//add debuff to all target for ??? duration
@@ -106,8 +111,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	//duration is 10.5s, first tick start at frame 100, + 60 each
-	for i := 100; i < 100+630; i += 60 {
+	//duration is ~10.6s, first tick start at frame 100, + 60 each
+	for i := 100; i <= 600+burstStart; i += 60 {
 		c.Core.Tasks.Add(func() {
 			// c.Core.Log.NewEvent("jean q healing", glog.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
 			c.Core.Player.Heal(player.HealInfo{
