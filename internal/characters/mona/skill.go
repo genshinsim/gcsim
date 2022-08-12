@@ -7,15 +7,38 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillFrames []int
+var skillFrames [][]int
 
-const skillHitmark = 42
+var skillHitmarks = []int{86, 101}
 
 func init() {
-	skillFrames = frames.InitAbilSlice(42)
+	skillFrames = make([][]int, 2)
+	// Tap E
+	skillFrames[0] = frames.InitAbilSlice(50) // Tap E -> N1
+	skillFrames[0][action.ActionCharge] = 46  // Tap E -> CA
+	skillFrames[0][action.ActionBurst] = 28   // Tap E -> Q
+	skillFrames[0][action.ActionDash] = 36    // Tap E -> D
+	skillFrames[0][action.ActionJump] = 28    // Tap E -> J
+	skillFrames[0][action.ActionSwap] = 43    // Tap E -> Swap
+
+	// Hold E
+	skillFrames[1] = frames.InitAbilSlice(80) // Hold E -> N1
+	skillFrames[1][action.ActionCharge] = 76  // Hold E -> CA
+	skillFrames[1][action.ActionBurst] = 58   // Hold E -> Q
+	skillFrames[1][action.ActionDash] = 66    // Hold E -> D
+	skillFrames[1][action.ActionJump] = 59    // Hold E -> J
+	skillFrames[1][action.ActionSwap] = 73    // Hold E -> Swap
+
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
+	hold := 0
+	if p["hold"] != 0 {
+		hold = 1
+	}
+
+	// DoT
+	// ticks 4 times
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Mirror Reflection of Doom (Tick)",
@@ -28,12 +51,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	//5.22 seconds duration after cast
-	//tick every 1 sec
-	for i := 60; i < 313; i += 60 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark+i)
+	// tick every 1s
+	for i := 60; i < 300; i += 60 {
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmarks[hold]+i)
 	}
 
+	// Explosion
 	aiExplode := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Mirror Reflection of Doom (Explode)",
@@ -45,20 +68,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, skillHitmark+313)
+	c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, skillHitmarks[hold]+313)
 
 	var count float64 = 3
 	if c.Core.Rand.Float64() < .33 {
 		count = 4
 	}
-	c.Core.QueueParticle("mona", count, attributes.Hydro, skillHitmark+313+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("mona", count, attributes.Hydro, skillHitmarks[hold]+313+c.Core.Flags.ParticleDelay)
 
-	c.SetCD(action.ActionSkill, 12*60)
+	c.SetCDWithDelay(action.ActionSkill, 12*60, 24)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		Frames:          frames.NewAbilFunc(skillFrames[hold]),
+		AnimationLength: skillFrames[hold][action.InvalidAction],
+		CanQueueAfter:   skillFrames[hold][action.ActionBurst], // earliest cancel
 		State:           action.SkillState,
 	}
 }

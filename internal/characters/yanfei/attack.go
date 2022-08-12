@@ -11,7 +11,7 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = []int{13, 28, 49}
+var attackHitmarks = []int{12, 16, 37}
 
 const (
 	normalHitNum = 3
@@ -21,9 +21,15 @@ const (
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 13)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 28)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 49)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 26) // N1 -> N2
+	attackFrames[0][action.ActionCharge] = 21                             // N1 -> CA
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 28) // N2 -> N3
+	attackFrames[1][action.ActionCharge] = 16                             // N2 -> CA
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 73) // N3 -> N1
+	attackFrames[2][action.ActionCharge] = 42                             // N3 -> CA
+
 }
 
 // Standard attack function with seal handling

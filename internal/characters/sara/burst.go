@@ -9,10 +9,17 @@ import (
 
 var burstFrames []int
 
-const burstStart = 47
+const burstStart = 47           // lines up with cd start
+const burstInitialHitmark = 51  // Initial Hit
+const burstClusterHitmark = 100 // First Cluster Hit
 
 func init() {
-	burstFrames = frames.InitAbilSlice(60)
+	burstFrames = frames.InitAbilSlice(80) // Q -> CA
+	burstFrames[action.ActionAttack] = 78  // Q -> N1
+	burstFrames[action.ActionSkill] = 57   // Q -> E
+	burstFrames[action.ActionDash] = 58    // Q -> D
+	burstFrames[action.ActionJump] = 58    // Q -> J
+	burstFrames[action.ActionSwap] = 56    // Q -> Swap
 }
 
 // Implements burst handling.
@@ -67,10 +74,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	if waveClusterHits%10 == 1 {
 		// Actual hit procs after the full cast duration, or 50 frames
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, 50, c1cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, burstInitialHitmark, c1cb)
 	}
 	if waveAttackProcs%10 == 1 {
-		c.attackBuff(50)
+		c.attackBuff(burstInitialHitmark)
 	}
 
 	//stormcluster
@@ -86,21 +93,21 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
 		if waveHits > 0 {
 			for j := 0; j < waveHits; j++ {
-				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, 100+18*waveN, c1cb)
+				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, burstClusterHitmark+18*waveN, c1cb)
 			}
 		}
 		if waveAttackProc == 1 {
-			c.attackBuff(100 + 18*waveN)
+			c.attackBuff(burstClusterHitmark + 18*waveN)
 		}
 	}
 
-	c.SetCDWithDelay(action.ActionBurst, 20*60, 47)
-	c.ConsumeEnergy(54)
+	c.SetCDWithDelay(action.ActionBurst, 20*60, burstStart)
+	c.ConsumeEnergy(50)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

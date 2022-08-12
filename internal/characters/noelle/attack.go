@@ -13,6 +13,7 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = []int{28, 25, 20, 42}
+var attackHitlagHaltFrame = []float64{0.10, 0.10, 0.09, 0.15}
 
 const normalHitNum = 4
 
@@ -27,19 +28,26 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
+		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:          combat.AttackTagNormal,
+		ICDTag:             combat.ICDTagNormalAttack,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
+		CanBeDefenseHalted: true,
 	}
 	r := 0.3
 	if c.StatModIsActive(burstBuffKey) {
 		r = 2
+		if c.NormalCounter == 2 {
+			//q-n3 has different hit lag
+			ai.HitlagHaltFrames = 0.1 * 60
+		}
 	}
 	done := false
 	cb := func(a combat.AttackCB) {
@@ -70,14 +78,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 
 	}
-
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
-		cb,
-	)
+	// need char queue because of potential hitlag from C4
+	c.QueueCharTask(func() {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
+			0,
+			0,
+			cb,
+		)
+	}, attackHitmarks[c.NormalCounter])
 
 	defer c.AdvanceNormalIndex()
 

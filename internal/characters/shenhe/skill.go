@@ -14,16 +14,33 @@ import (
 var skillPressFrames []int
 var skillHoldFrames []int
 
-const skillPressHitmark = 31
-const skillHoldHitmark = 44
-const quillKey = "shenhequill"
+const (
+	skillPressCDStart = 2
+	skillPressHitmark = 4
+	skillHoldCDStart  = 31
+	skillHoldHitmark  = 33
+	quillKey          = "shenhe-quill"
+)
 
 func init() {
 	// skill (press) -> x
-	skillPressFrames = frames.InitAbilSlice(31)
+	skillPressFrames = frames.InitAbilSlice(38) // walk
+	skillPressFrames[action.ActionAttack] = 27
+	skillPressFrames[action.ActionSkill] = 27
+	skillPressFrames[action.ActionBurst] = 27
+	skillPressFrames[action.ActionDash] = 21
+	skillPressFrames[action.ActionJump] = 21
+	skillPressFrames[action.ActionSwap] = 27
 
 	// skill (hold) -> x
-	skillHoldFrames = frames.InitAbilSlice(44)
+	// TODO: skill (hold) -> skill (hold) is 52 frames.
+	skillHoldFrames = frames.InitAbilSlice(78) // walk
+	skillHoldFrames[action.ActionAttack] = 45
+	skillHoldFrames[action.ActionSkill] = 45 // assume skill (press)
+	skillHoldFrames[action.ActionBurst] = 45
+	skillHoldFrames[action.ActionDash] = 38
+	skillHoldFrames[action.ActionJump] = 39
+	skillHoldFrames[action.ActionSwap] = 44
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -48,18 +65,18 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
-	c.skillPressBuff()
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), skillPressHitmark, skillPressHitmark)
 
 	// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
-	c.Core.QueueParticle("shenhe", 3, attributes.Cryo, c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("shenhe", 3, attributes.Cryo, skillPressHitmark+c.Core.Flags.ParticleDelay)
 
-	c.SetCD(action.ActionSkill, 10*60)
+	c.Core.Tasks.Add(func() { c.skillPressBuff() }, skillPressCDStart+1)
+	c.SetCDWithDelay(action.ActionSkill, 10*60, skillPressCDStart)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressHitmark,
+		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -76,30 +93,34 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	c.skillHoldBuff()
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), skillHoldHitmark, skillHoldHitmark)
 
 	// Particle spawn timing is a bit later than press E
-	c.Core.QueueParticle("shenhe", 4, attributes.Cryo, 15+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("shenhe", 4, attributes.Cryo, skillHoldHitmark+c.Core.Flags.ParticleDelay)
 
-	c.SetCD(action.ActionSkill, 15*60)
+	c.Core.Tasks.Add(func() { c.skillHoldBuff() }, skillHoldCDStart+1)
+	c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldHitmark,
+		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
 
 func (c *char) skillPressBuff() {
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatus(quillKey, 600, true) //10 sec duration
-		char.SetTag(quillKey, 5)            // 5 quill on press
+		char.AddStatus(quillKey, 10*60, true) //10 sec duration
+		char.SetTag(quillKey, 5)              // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 600),
+			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 10*60),
 			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				if a.Info.AttackTag != combat.AttackTagElementalBurst && a.Info.AttackTag != combat.AttackTagElementalArt && a.Info.AttackTag != combat.AttackTagElementalArtHold {
+				switch a.Info.AttackTag {
+				case combat.AttackTagElementalArt:
+				case combat.AttackTagElementalArtHold:
+				case combat.AttackTagElementalBurst:
+				default:
 					return nil, false
 				}
 				return c.skillBuff, true
@@ -110,12 +131,16 @@ func (c *char) skillPressBuff() {
 
 func (c *char) skillHoldBuff() {
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatus(quillKey, 900, true) //15 sec duration
-		char.SetTag(quillKey, 7)            // 5 quill on press
+		char.AddStatus(quillKey, 15*60, true) //15 sec duration
+		char.SetTag(quillKey, 7)              // 5 quill on hold
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
 			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				if a.Info.AttackTag != combat.AttackTagNormal && a.Info.AttackTag != combat.AttackTagExtra && a.Info.AttackTag != combat.AttackTagPlunge {
+				switch a.Info.AttackTag {
+				case combat.AttackTagNormal:
+				case combat.AttackTagExtra:
+				case combat.AttackTagPlunge:
+				default:
 					return nil, false
 				}
 				return c.skillBuff, true
@@ -159,15 +184,11 @@ func (c *char) quillDamageMod() {
 			}
 
 			if c.Core.Flags.LogDebug {
-				c.Core.Log.NewEvent(
-					"Shenhe Quill proc dmg add",
-					glog.LogPreDamageMod,
-					atk.Info.ActorIndex,
-				).
+				c.Core.Log.NewEvent("Shenhe Quill proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 					Write("before", atk.Info.FlatDmg).
 					Write("addition", amt).
-					Write("effect_ends_at", c.Core.Status.Duration(quillKey)).
-					Write("quills left", c.Tags[quillKey])
+					Write("effect_ends_at", c.StatusExpiry(quillKey)).
+					Write("quill_left", c.Tags[quillKey])
 			}
 
 			atk.Info.FlatDmg += amt
@@ -184,5 +205,5 @@ func (c *char) quillDamageMod() {
 		}
 
 		return false
-	}, "shenhe-quill")
+	}, "shenhe-quill-hook")
 }

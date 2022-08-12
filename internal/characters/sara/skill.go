@@ -13,10 +13,17 @@ import (
 var skillFrames []int
 
 // c2 hitmark
-const skillHitmark = 90
+const c2Hitmark = 103
+
+const coverKey = "sara-e-cover"
 
 func init() {
-	skillFrames = frames.InitAbilSlice(50)
+	skillFrames = frames.InitAbilSlice(52) // E -> D
+	skillFrames[action.ActionAttack] = 29  // E -> N1
+	skillFrames[action.ActionAim] = 30     // E -> CA
+	skillFrames[action.ActionBurst] = 32   // E -> Q
+	skillFrames[action.ActionJump] = 51    // E -> J
+	skillFrames[action.ActionSwap] = 50    // E -> Swap
 }
 
 // Implements skill handling. Fairly barebones since most of the actual stuff happens elsewhere
@@ -27,7 +34,7 @@ func init() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Snapshot for all of the crowfeathers are taken upon cast
-	c.Core.Status.Add("saracover", 18*60)
+	c.Core.Status.Add(coverKey, 18*60)
 
 	// C2 handling
 	if c.Base.Cons >= 2 {
@@ -43,16 +50,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Mult:       0.3 * skill[c.TalentLvlSkill()],
 		}
 		// TODO: not sure of snapshot? timing
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 50, skillHitmark, c.a4)
-		c.attackBuff(skillHitmark)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 50, c2Hitmark, c.a4)
+		c.attackBuff(c2Hitmark)
 	}
 
-	c.SetCD(action.ActionSkill, 600)
+	c.SetCDWithDelay(action.ActionSkill, 600, 7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
 	}
 }

@@ -18,7 +18,7 @@ func (c *char) Jump(p map[string]int) action.ActionInfo {
 		return action.ActionInfo{
 			Frames:          frames.NewAbilFunc(burstJumpFrames),
 			AnimationLength: burstJumpFrames[action.InvalidAction],
-			CanQueueAfter:   burstJumpFrames[action.InvalidAction],
+			CanQueueAfter:   burstJumpFrames[action.ActionLowPlunge], // earliest cancel
 			State:           action.JumpState,
 		}
 	}

@@ -58,22 +58,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ResetActionCooldown(action.ActionSkill)
 	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index)
 
-	// lights up 9.5s from cast
-	//deployable; not affected by hitlag
+	// handle Eula Q status start
+	// lightfall sword lights up ~9.5s from cast
+	// deployable; not affected by hitlag
 	c.Core.Tasks.Add(func() {
-		c.Core.Status.Add(burstKey, 9*60)
+		c.Core.Status.Add(burstKey, 600-lightfallHitmark-burstFrames[action.ActionWalk]+1)
 		c.Core.Log.NewEvent("eula burst started", glog.LogCharacterEvent, c.Index).
 			Write("stacks", c.burstCounter).
-			Write("expiry", c.Core.Status.Duration(burstKey))
-	}, burstFrames[action.ActionWait]) // start at earliest point
+			Write("expiry", c.Core.F+600-lightfallHitmark-burstFrames[action.ActionWalk]+1)
+	}, burstFrames[action.ActionWalk]) // start Q status at earliest point
 
+	// handle Eula Q damage
 	// lightfall hitmark is 600f from cast
 	c.Core.Tasks.Add(func() {
 		//check to make sure it hasn't already exploded due to exiting field
 		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}
-	}, 600-lightfallHitmark)
+	}, 600-lightfallHitmark) // check if we can trigger Q damage right before Q status would normally expire
 
 	//energy does not deplete until after animation
 	c.ConsumeEnergy(107)

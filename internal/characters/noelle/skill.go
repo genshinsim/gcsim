@@ -24,16 +24,17 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Breastplate",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 50,
-		Mult:       shieldDmg[c.TalentLvlSkill()],
-		UseDef:     true,
+		ActorIndex:         c.Index,
+		Abil:               "Breastplate",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagElementalArt,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Geo,
+		Durability:         50,
+		Mult:               shieldDmg[c.TalentLvlSkill()],
+		UseDef:             true,
+		CanBeDefenseHalted: true,
 	}
 	snap := c.Snapshot(&ai)
 
@@ -47,9 +48,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.a4Counter = 0
 
-	//center on player
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	// center on player
+	// use char queue for this just to be safe in case of C4
+	c.QueueCharTask(func() {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+			0,
+			0,
+		)
+	}, skillHitmark)
 
+	// handle C4
 	if c.Base.Cons >= 4 {
 		c.Core.Tasks.Add(func() {
 			if c.shieldTimer == c.Core.F {
@@ -69,18 +79,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+// C4:
+// When Breastplate's duration expires or it is destroyed by DMG, it will deal 400% ATK of Geo DMG to surrounding opponents.
 func (c *char) explodeShield() {
 	c.shieldTimer = 0
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Breastplate",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 50,
-		Mult:       4,
+		ActorIndex:         c.Index,
+		Abil:               "Breastplate",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagElementalArt,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Geo,
+		Durability:         50,
+		Mult:               4,
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.15 * 60,
+		CanBeDefenseHalted: true,
 	}
 
 	//center on player

@@ -13,19 +13,23 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark = 62
-	burstBuffKey = "razorburst"
+	burstHitmark = 32
+	burstBuffKey = "razor-q"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(62)
+	burstFrames = frames.InitAbilSlice(74) // Q -> E
+	burstFrames[action.ActionAttack] = 73  // Q -> N1
+	burstFrames[action.ActionDash] = 58    // Q -> D
+	burstFrames[action.ActionJump] = 57    // Q -> J
+	burstFrames[action.ActionSwap] = 63    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		c.ResetActionCooldown(action.ActionSkill) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
+		c.AddStatus(burstBuffKey, 15*60, true)
 	}, burstHitmark)
-	c.AddStatus(burstBuffKey, 15*60+burstHitmark, true)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -45,9 +49,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		burstHitmark,
 	)
 
-	c.SetCDWithDelay(action.ActionBurst, 20*60, 11)
-	c.ConsumeEnergy(11)
-	c.Core.Tasks.Add(c.clearSigil, 11)
+	c.SetCD(action.ActionBurst, 1200) // 20s * 60
+	c.ConsumeEnergy(6)
+	c.Core.Tasks.Add(c.clearSigil, 7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
