@@ -14,7 +14,13 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	ck := c.Base.Key
 	//TODO: do something about traveler :(
 	if ck < keys.TravelerDelim {
-		ck = keys.TravelerMale
+		// male keys are odd, female keys are even
+		// this breaks on unimplemented traveler elements
+		if ck%2 == 1 {
+			ck = keys.TravelerMale
+		} else {
+			ck = keys.TravelerFemale
+		}
 	}
 	b, ok := curves.CharBaseMap[ck]
 	if !ok {
