@@ -83,16 +83,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if c.Base.Cons >= 2 {
 			c.Core.Tasks.Add(c.c2, 30) // start checking in 0.5s
 		}
+		// C6:
+		// TODO: when does the infusion kick in?
+		// -> For now, assume that it starts on Initial Hit hitlag end.
+		if c.Base.Cons >= 6 {
+			c.c6()
+		}
 	}, burstHitmark+1)
 
 	//reset skill cd
 	if c.Base.Cons >= 1 {
 		c.ResetActionCooldown(action.ActionSkill)
-	}
-
-	if c.Base.Cons >= 6 {
-		// TODO: when does the infusion kick in?
-		c.c6()
 	}
 
 	c.SetCD(action.ActionBurst, 15*60)

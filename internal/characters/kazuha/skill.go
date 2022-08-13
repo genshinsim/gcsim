@@ -67,7 +67,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 	if c.Base.Cons >= 6 {
 		// TODO: when does the infusion kick in?
-		c.c6()
+		// -> For now, assume that it starts on hitmark.
+		c.Core.Tasks.Add(func() {
+			c.c6()
+		}, skillPressHitmark)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, cd, skillPressCDStart)
@@ -103,7 +106,11 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		cd = 486
 	}
 	if c.Base.Cons >= 6 {
-		c.c6()
+		// TODO: when does the infusion kick in?
+		// -> For now, assume that it starts on hitmark.
+		c.Core.Tasks.Add(func() {
+			c.c6()
+		}, skillHoldHitmark)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, cd, skillHoldCDStart)
