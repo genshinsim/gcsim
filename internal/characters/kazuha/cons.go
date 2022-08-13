@@ -66,10 +66,6 @@ func (c *char) c6() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("kazuha-c6-dmgup", 60*5), // 5s
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			// skip if not active
-			if c.Core.Player.Active() != c.Index {
-				return nil, false
-			}
 			// skip if not normal/charged/plunge
 			if atk.Info.AttackTag != combat.AttackTagNormal &&
 				atk.Info.AttackTag != combat.AttackTagExtra &&
