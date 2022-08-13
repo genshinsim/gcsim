@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -39,8 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	return nil
 }
 
-const c6BuffKey = "kazuha-c6"
-
 func (c *char) Init() error {
 	c.a4()
 	if c.Base.Cons >= 2 {
@@ -48,22 +45,4 @@ func (c *char) Init() error {
 		c.c2buff[attributes.EM] = 200
 	}
 	return nil
-}
-
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
-	ds := c.Character.Snapshot(ai)
-
-	if c.Base.Cons < 6 {
-		return ds
-	}
-	if !c.StatusIsActive(c6BuffKey) {
-		return ds
-	}
-
-	//add 0.2% dmg for every EM
-	ds.Stats[attributes.DmgP] += 0.002 * ds.Stats[attributes.EM]
-	c.Core.Log.NewEvent("c6 adding dmg", glog.LogCharacterEvent, c.Index).
-		Write("em", ds.Stats[attributes.EM]).
-		Write("final", ds.Stats[attributes.DmgP])
-	return ds
 }

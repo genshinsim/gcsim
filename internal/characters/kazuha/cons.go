@@ -52,7 +52,7 @@ func (c *char) c2() {
 // increase the DMG dealt by Kaedehara Kazuha's Normal, Charged, and Plunging
 // Attacks by 0.2%.
 func (c *char) c6() {
-	c.AddStatus(c6BuffKey, 60*5, true)
+	// add anemo infusion
 	c.Core.Player.AddWeaponInfuse(
 		c.Index,
 		"kazuha-c6-infusion",
@@ -61,4 +61,24 @@ func (c *char) c6() {
 		true,
 		combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
 	)
+	// add em based buff
+	m := make([]float64, attributes.EndStatType)
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag("kazuha-c6-dmgup", 60*5), // 5s
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			// skip if not active
+			if c.Core.Player.Active() != c.Index {
+				return nil, false
+			}
+			// skip if not normal/charged/plunge
+			if atk.Info.AttackTag != combat.AttackTagNormal &&
+				atk.Info.AttackTag != combat.AttackTagExtra &&
+				atk.Info.AttackTag != combat.AttackTagPlunge {
+				return nil, false
+			}
+			// apply buff
+			m[attributes.DmgP] = 0.002 * c.Stat(attributes.EM)
+			return m, true
+		},
+	})
 }
