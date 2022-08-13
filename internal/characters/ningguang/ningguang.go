@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
-const skillParticleICDKey = "ningguang-skill-particle-ICD"
+const skillParticleICDKey = "ningguang-particle-icd"
 
 func init() {
 	core.RegisterCharFunc(keys.Ningguang, NewChar)
@@ -81,9 +81,9 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 
 func (c *char) Condition(field string) int64 {
 	switch field {
-	case ".jadeCount":
+	case "jadeCount":
 		return int64(c.jadeCount)
-	case ".prevAttack":
+	case "prevAttack":
 		return int64(c.prevAttack)
 	default:
 		return 0

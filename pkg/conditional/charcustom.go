@@ -1,6 +1,8 @@
 package conditional
 
 import (
+	"strings"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -16,5 +18,5 @@ func evalCharCustom(c *core.Core, key keys.Char, fields []string) int64 {
 	if !ok {
 		return 0
 	}
-	return char.Condition(fields[1])
+	return char.Condition(strings.TrimPrefix(fields[1], "."))
 }
