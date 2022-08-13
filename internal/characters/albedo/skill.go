@@ -84,7 +84,8 @@ func (c *char) skillHook() {
 			return false
 		}
 
-		c.AddStatus(skillICDKey, 120, true) //proc every 2 s
+		// this ICD is most likely tied to the construct, so it's not hitlag extendable
+		c.AddStatus(skillICDKey, 120, false) // proc every 2s
 
 		snap := c.skillSnapshot
 
