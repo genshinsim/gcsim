@@ -77,9 +77,17 @@ type (
 	// IfStmt represents an if block
 	IfStmt struct {
 		Pos
-		Condition Expr       //TODO: this should be an expr?
-		IfBlock   *BlockStmt // What to execute if true
-		ElseBlock *BlockStmt // What to execute if false
+		Condition  Expr       //TODO: this should be an expr?
+		IfBlock    *BlockStmt // What to execute if true
+		ElIfBlocks []*ElIfStmt
+		ElseBlock  *BlockStmt // What to execute if false
+	}
+
+	// ElIfStmt represents an else if block
+	ElIfStmt struct {
+		Pos
+		Condition Expr
+		Body      *BlockStmt
 	}
 
 	// SwitchStmt represent a switch block
@@ -355,6 +363,9 @@ func (i *IfStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString(" {\n")
 	i.IfBlock.writeTo(sb)
 	sb.WriteString("}")
+	for _, v := range i.ElIfBlocks {
+		v.writeTo(sb)
+	}
 	if i.ElseBlock != nil {
 		sb.WriteString("else {\n")
 		sb.WriteString(i.ElseBlock.String())
@@ -366,11 +377,43 @@ func (i *IfStmt) Copy() Node {
 	if i == nil {
 		return nil
 	}
-	return &IfStmt{
-		Pos:       i.Pos,
-		Condition: i.Condition.CopyExpr(),
-		IfBlock:   i.IfBlock.CopyBlock(),
-		ElseBlock: i.ElseBlock.CopyBlock(),
+	n := &IfStmt{
+		Pos:        i.Pos,
+		Condition:  i.Condition.CopyExpr(),
+		IfBlock:    i.IfBlock.CopyBlock(),
+		ElIfBlocks: make([]*ElIfStmt, 0, len(i.ElIfBlocks)),
+		ElseBlock:  i.ElseBlock.CopyBlock(),
+	}
+	for j := range i.ElIfBlocks {
+		n.ElIfBlocks = append(n.ElIfBlocks, i.ElIfBlocks[j].Copy())
+	}
+	return n
+}
+
+// ElIfStmt.
+
+func (e *ElIfStmt) String() string {
+	var sb strings.Builder
+	e.writeTo(&sb)
+	return sb.String()
+}
+
+func (e *ElIfStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString("else if ")
+	e.Condition.writeTo(sb)
+	sb.WriteString(" {\n")
+	e.Body.writeTo(sb)
+	sb.WriteString("}")
+}
+
+func (e *ElIfStmt) Copy() *ElIfStmt {
+	if e == nil {
+		return nil
+	}
+	return &ElIfStmt{
+		Pos:       e.Pos,
+		Condition: e.Condition.CopyExpr(),
+		Body:      e.Body.CopyBlock(),
 	}
 }
 

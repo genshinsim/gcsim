@@ -323,14 +323,41 @@ func (p *Parser) parseIf() (Stmt, error) {
 		return nil, err
 	}
 
-	//stop if no else
-	if n := p.peek(); n.Typ != keywordElse {
-		return stmt, nil
+	for {
+		//stop if no else
+		if n := p.peek(); n.Typ != keywordElse {
+			return stmt, nil
+		}
+		//skip the else keyword
+		p.next()
+
+		//stop if no else if
+		if n := p.peek(); n.Typ != keywordIf {
+			break
+		}
+		//skip the if keyword
+		p.next()
+
+		eis := &ElIfStmt{
+			Pos: n.pos,
+		}
+
+		eis.Condition, err = p.parseExpr(Lowest)
+		if err != nil {
+			return nil, err
+		}
+
+		//expecting a { next
+		if n := p.peek(); n.Typ != itemLeftBrace {
+			return nil, fmt.Errorf("ln%v: expecting { after if, got %v", n.line, n.Val)
+		}
+
+		eis.Body, err = p.parseBlock() //parse block here
+		if err != nil {
+			return nil, err
+		}
+		stmt.ElIfBlocks = append(stmt.ElIfBlocks, eis)
 	}
-
-	//skip the else keyword
-	p.next()
-
 	//expecting another block
 	stmt.ElseBlock, err = p.parseBlock()
 

@@ -105,6 +105,8 @@ const cfg = `
 		xingqiu attack:4;
 		if x > 0 {
 			continue;
+		} else if x == 0 {
+			xingqiu attack;
 		} else {
 			break;
 		}

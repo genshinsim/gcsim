@@ -171,8 +171,17 @@ func (e *Eval) evalIfStmt(i *ast.IfStmt, env *Env) (Obj, error) {
 	}
 	if otob(cond) {
 		return e.evalBlock(i.IfBlock, env)
-
-	} else if i.ElseBlock != nil {
+	}
+	for _, v := range i.ElIfBlocks {
+		cond, err = e.evalExpr(v.Condition, env)
+		if err != nil {
+			return nil, err
+		}
+		if otob(cond) {
+			return e.evalBlock(v.Body, env)
+		}
+	}
+	if i.ElseBlock != nil {
 		return e.evalBlock(i.ElseBlock, env)
 	}
 	return &null{}, nil
