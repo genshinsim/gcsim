@@ -69,9 +69,20 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		travel = 10
 	}
 
+	chargeType := attackType(c.Core.Rand.Intn(int(endAttackType)))
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
+		switch c.prevAttack {
+		case attackTypeLeft,
+			attackTypeTwirl:
+			chargeType = attackTypeLeft
+		case attackTypeRight:
+			chargeType = attackTypeRight
+		}
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Charge (%s)", c.prevAttack),
+		Abil:       fmt.Sprintf("Charge (%s)", chargeType),
 		AttackTag:  combat.AttackTagExtra,
 		ICDTag:     combat.ICDTagExtraAttack,
 		ICDGroup:   combat.ICDGroupDefault,
@@ -91,13 +102,13 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-		chargeHitmarks[c.prevAttack]-windup,
-		chargeHitmarks[c.prevAttack]-windup+travel,
+		chargeHitmarks[chargeType]-windup,
+		chargeHitmarks[chargeType]-windup+travel,
 	)
 
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
-		Abil:               fmt.Sprintf("Charge Gem (%s)", c.prevAttack),
+		Abil:               fmt.Sprintf("Charge Gem (%s)", chargeType),
 		AttackTag:          combat.AttackTagExtra,
 		ICDTag:             combat.ICDTagExtraAttack,
 		ICDGroup:           combat.ICDGroupDefault,
@@ -117,26 +128,24 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			jadeHitmarks[c.prevAttack]-windup,
-			jadeHitmarks[c.prevAttack]-windup+travel,
+			jadeHitmarks[chargeType]-windup,
+			jadeHitmarks[chargeType]-windup+travel,
 		)
 	}
 	c.jadeCount = 0
 
 	canQueueAfter := math.MaxInt32
-	for _, f := range chargeFrames[c.prevAttack] {
+	for _, f := range chargeFrames[chargeType] {
 		if f < canQueueAfter {
 			canQueueAfter = f
 		}
 	}
 
-	storedAttack := c.prevAttack
-
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			return chargeFrames[storedAttack][next] - windup
+			return chargeFrames[chargeType][next] - windup
 		},
-		AnimationLength: chargeFrames[c.prevAttack][action.InvalidAction] - windup,
+		AnimationLength: chargeFrames[chargeType][action.InvalidAction] - windup,
 		CanQueueAfter:   canQueueAfter - windup,
 		State:           action.ChargeAttackState,
 	}
