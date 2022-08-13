@@ -9,12 +9,26 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var burstFrames []int
+var burstFrames [][]int
 
-const burstStart = 38
+const burstStart = 35   // lines up with cooldown start
+const burstHitmark = 51 // Initial Shockwave 1
 
 func init() {
-	burstFrames = frames.InitAbilSlice(38)
+	burstFrames = make([][]int, 2)
+
+	// Male
+	burstFrames[0] = frames.InitAbilSlice(67) // Q -> N1/E
+	burstFrames[0][action.ActionDash] = 42    // Q -> D
+	burstFrames[0][action.ActionJump] = 42    // Q -> J
+	burstFrames[0][action.ActionSwap] = 51    // Q -> Swap
+
+	// Female
+	burstFrames[1] = frames.InitAbilSlice(64) // Q -> E
+	burstFrames[1][action.ActionAttack] = 62  // Q -> N1
+	burstFrames[1][action.ActionDash] = 42    // Q -> D
+	burstFrames[1][action.ActionJump] = 42    // Q -> J
+	burstFrames[1][action.ActionSwap] = 49    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -61,7 +75,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//1.1 sec duration, tick every .25
 	for i := 0; i < hits; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), (i+1)*15, c4cb)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark+(i+1)*15, c4cb)
+	}
+
+	// C1
+	if c.Base.Cons >= 1 {
+		c.Core.Tasks.Add(c.c1(1), 60) // start checking in 1s
 	}
 
 	c.Core.Tasks.Add(func() {
@@ -75,13 +94,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, burstStart)
 
-	c.ConsumeEnergy(43)
-	c.SetCDWithDelay(action.ActionBurst, 900, 43)
+	c.SetCDWithDelay(action.ActionBurst, 900, burstStart)
+	c.ConsumeEnergy(37)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(burstFrames),
-		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstStart,
+		Frames:          frames.NewAbilFunc(burstFrames[c.female]),
+		AnimationLength: burstFrames[c.female][action.InvalidAction],
+		CanQueueAfter:   burstFrames[c.female][action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }
