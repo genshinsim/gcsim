@@ -78,11 +78,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark+(i+1)*15, c4cb)
 	}
 
-	// C1
-	if c.Base.Cons >= 1 {
-		c.Core.Tasks.Add(c.c1(1), 60) // start checking in 1s
-	}
-
 	c.Core.Tasks.Add(func() {
 		dur := 15 * 60
 		if c.Base.Cons == 6 {
@@ -91,6 +86,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Constructs.NewNoLimitCons(c.newBarrier(dur, maxConstructCount), true)
 		if c.Base.Cons >= 1 {
 			c.Tags["wall"] = 1
+		}
+		// C1
+		if c.Base.Cons >= 1 {
+			c.Core.Tasks.Add(c.c1(1), 60) // start checking in 1s
 		}
 	}, burstStart)
 
