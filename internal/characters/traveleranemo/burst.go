@@ -7,22 +7,32 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var burstFrames []int
+var burstHitmarks = []int{96, 94}
+var burstFrames [][]int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(111)
-	burstFrames[action.ActionAttack] = 106
-	burstFrames[action.ActionSkill] = 104
-	burstFrames[action.ActionDash] = 91
-	burstFrames[action.ActionJump] = 91
-	burstFrames[action.ActionSwap] = 96
+	burstFrames = make([][]int, 2)
+
+	// Male
+	burstFrames[0] = frames.InitAbilSlice(110) // Q -> N1
+	burstFrames[0][action.ActionSkill] = 109   // Q -> E
+	burstFrames[0][action.ActionDash] = 96     // Q -> D
+	burstFrames[0][action.ActionJump] = 96     // Q -> J
+	burstFrames[0][action.ActionSwap] = 100    // Q -> Swap
+
+	// Female
+	burstFrames[1] = frames.InitAbilSlice(105) // Q -> N1
+	burstFrames[1][action.ActionSkill] = 104   // Q -> E
+	burstFrames[1][action.ActionDash] = 90     // Q -> D
+	burstFrames[1][action.ActionJump] = 90     // Q -> J
+	burstFrames[1][action.ActionSwap] = 95     // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//first hit at 94, then 30 frames between hits. 9 anemo hits total
 	//yes the game description scams you on the duration
-	duration := 94 + 30*8
+	duration := burstHitmarks[c.female] + 30*8
 
 	c.Core.Status.Add("amcburst", duration)
 
@@ -76,14 +86,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(duration/18)), 39)
 
-	c.SetCDWithDelay(action.ActionBurst, 15*60, 2)
-	c.ConsumeEnergy(8)
+	c.SetCD(action.ActionBurst, 15*60)
+	c.ConsumeEnergy(3)
 
 	// TODO: Fill these out later
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(burstFrames),
-		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(burstFrames[c.female]),
+		AnimationLength: burstFrames[c.female][action.InvalidAction],
+		CanQueueAfter:   burstFrames[c.female][action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }
