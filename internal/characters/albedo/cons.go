@@ -15,45 +15,66 @@ const (
 	c2key = "albedo-c2"
 )
 
-// c4: active member +30% plunge attack in skill field
-func (c *char) c4() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.3
-	for _, char := range c.Core.Player.Chars() {
-		this := char
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("albedo-c4", -1),
+// C4:
+// Active party members within the Solar Isotoma field have their Plunging Attack DMG increased by 30%.
+func (c *char) c4(lastConstruct int) func() {
+	return func() {
+		// don't apply / check again if skill was recast
+		if c.lastConstruct != lastConstruct {
+			return
+		}
+		// don't apply / check again if skill isn't active anymore
+		if !c.skillActive {
+			return
+		}
+
+		// apply C4 buff to active char for 1s
+		active := c.Core.Player.ActiveChar()
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DmgP] = 0.3
+		active.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("albedo-c4", 60), // 1s
 			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				if c.Core.Player.Active() != this.Index {
-					return nil, false
-				}
 				if atk.Info.AttackTag != combat.AttackTagPlunge {
-					return nil, false
-				}
-				if !c.skillActive {
 					return nil, false
 				}
 				return m, true
 			},
 		})
+
+		// check again in 0.3s
+		c.Core.Tasks.Add(c.c4(lastConstruct), 18)
 	}
 }
 
-// c6: active protected by crystallize +17% dmg
-func (c *char) c6() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.17
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("albedo-c6", -1),
-		AffectedStat: attributes.DmgP,
-		Amount: func() ([]float64, bool) {
-			if !c.skillActive {
-				return nil, false
-			}
-			if c.Core.Player.Shields.Get(shield.ShieldCrystallize) == nil {
-				return nil, false
-			}
-			return m, true
-		},
-	})
+// C6:
+// Active party members within the Solar Isotoma field who are protected by a shield created by Crystallize have their DMG increased by 17%.
+func (c *char) c6(lastConstruct int) func() {
+	return func() {
+		// don't apply / check again if skill was recast
+		if c.lastConstruct != lastConstruct {
+			return
+		}
+		// don't apply / check again if skill isn't active anymore
+		if !c.skillActive {
+			return
+		}
+
+		// apply C6 buff to active char for 1s if they are protected by crystallize
+		if c.Core.Player.Shields.Get(shield.ShieldCrystallize) != nil {
+			active := c.Core.Player.ActiveChar()
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.DmgP] = 0.17
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("albedo-c6", 60), // 1s
+				AffectedStat: attributes.DmgP,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
+		}
+
+		// check again in 0.3s
+		c.Core.Tasks.Add(c.c6(lastConstruct), 18)
+	}
 }
