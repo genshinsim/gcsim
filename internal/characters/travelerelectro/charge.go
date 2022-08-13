@@ -41,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	for i, mult := range charge {
+	for i, mult := range charge[c.female] {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
 		c.Core.QueueAttack(
