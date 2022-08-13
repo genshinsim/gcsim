@@ -7,26 +7,43 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillPressFrames []int
-var skillHoldDelayFrames []int
+var skillPressFrames [][]int
+var skillHoldDelayFrames [][]int
 
 func init() {
-	skillPressFrames = frames.InitAbilSlice(81) // default is walk frames
-	skillPressFrames[action.ActionAttack] = 61
-	skillPressFrames[action.ActionSkill] = 60 // uses burst frames
-	skillPressFrames[action.ActionBurst] = 60
-	skillPressFrames[action.ActionDash] = 28
-	skillPressFrames[action.ActionJump] = 28
-	skillPressFrames[action.ActionSwap] = 60
+	// Tap E
+	skillPressFrames = make([][]int, 2)
 
-	// 2 tick duration - 2 tick last hitmark
-	skillHoldDelayFrames = frames.InitAbilSlice(103 - 55) // default is walk frames
-	skillHoldDelayFrames[action.ActionAttack] = 82 - 55
-	skillHoldDelayFrames[action.ActionSkill] = 83 - 55 // uses burst frames
-	skillHoldDelayFrames[action.ActionBurst] = 83 - 55
-	skillHoldDelayFrames[action.ActionDash] = 55 - 55
-	skillHoldDelayFrames[action.ActionJump] = 55 - 55
-	skillHoldDelayFrames[action.ActionSwap] = 82 - 55
+	// Male
+	skillPressFrames[0] = frames.InitAbilSlice(74) // Tap E -> N1
+	skillPressFrames[0][action.ActionBurst] = 76   // Tap E -> Q
+	skillPressFrames[0][action.ActionDash] = 30    // Tap E -> D
+	skillPressFrames[0][action.ActionJump] = 31    // Tap E -> J
+	skillPressFrames[0][action.ActionSwap] = 66    // Tap E -> Swap
+
+	// Female
+	skillPressFrames[1] = frames.InitAbilSlice(62) // Tap E -> Q
+	skillPressFrames[1][action.ActionAttack] = 61  // Tap E -> N1
+	skillPressFrames[1][action.ActionDash] = 31    // Tap E -> D
+	skillPressFrames[1][action.ActionJump] = 31    // Tap E -> J
+	skillPressFrames[1][action.ActionSwap] = 60    // Tap E -> Swap
+
+	// Short Hold E as base for Hold E frames
+	// "2 tick duration - 2 tick last hitmark"
+	skillHoldDelayFrames = make([][]int, 2)
+
+	// Male
+	skillHoldDelayFrames[0] = frames.InitAbilSlice(98 - 54) // Short Hold E -> N1/Q - Short Hold E -> D
+	skillHoldDelayFrames[0][action.ActionDash] = 0          // Short Hold E -> D - Short Hold E -> D
+	skillHoldDelayFrames[0][action.ActionJump] = 0          // Short Hold E -> J - Short Hold E -> D
+	skillHoldDelayFrames[0][action.ActionSwap] = 89 - 54    // Short Hold E -> Swap - Short Hold E -> D
+
+	// Female
+	skillHoldDelayFrames[1] = frames.InitAbilSlice(84 - 54) // Short Hold E -> Q - Short Hold E -> D
+	skillHoldDelayFrames[1][action.ActionAttack] = 83 - 54  // Short Hold E -> N1 - Short Hold E -> D
+	skillHoldDelayFrames[1][action.ActionDash] = 0          // Short Hold E -> D - Short Hold E -> D
+	skillHoldDelayFrames[1][action.ActionJump] = 0          // Short Hold E -> J - Short Hold E -> D
+	skillHoldDelayFrames[1][action.ActionSwap] = 83 - 54    // Short Hold E -> Swap - Short Hold E -> D
 }
 
 func (c *char) SkillPress() action.ActionInfo {
@@ -47,9 +64,9 @@ func (c *char) SkillPress() action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillPressFrames),
-		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillPressFrames[c.female]),
+		AnimationLength: skillPressFrames[c.female][action.InvalidAction],
+		CanQueueAfter:   skillPressFrames[c.female][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -148,10 +165,10 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		if c.Core.Rand.Float64() < 0.33 {
 			count = 4
 		}
-		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, hitmark+90)
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
 		c.SetCDWithDelay(action.ActionSkill, 8*60, hitmark-5)
 	} else {
-		c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+90)
+		c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
 		c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 	}
 
@@ -168,9 +185,9 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	// starts absorbing after the first tick?
 	c.Core.Tasks.Add(c.absorbCheckE(c.Core.F, 0, int((hitmark)/18)), firstTick+1)
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return skillHoldDelayFrames[next] + hitmark },
-		AnimationLength: skillHoldDelayFrames[action.InvalidAction] + hitmark,
-		CanQueueAfter:   skillHoldDelayFrames[action.ActionDash] + hitmark, // earliest cancel
+		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.female][next] + hitmark },
+		AnimationLength: skillHoldDelayFrames[c.female][action.InvalidAction] + hitmark,
+		CanQueueAfter:   skillHoldDelayFrames[c.female][action.ActionDash] + hitmark, // earliest cancel
 		State:           action.SkillState,
 	}
 }
