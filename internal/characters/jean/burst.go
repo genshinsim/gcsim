@@ -64,10 +64,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// handle In/Out damage on field expiry
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 600+burstStart)
 
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
-
 	//heal on cast
 	hpplus := snap.Stats[attributes.Heal]
 	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
@@ -97,9 +93,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	//duration is ~10.6s, first tick start at frame 100, + 60 each
+	// duration is ~10.6s, first tick starts at frame 100, + 60 each
 	for i := 100; i <= 600+burstStart; i += 60 {
 		c.Core.Tasks.Add(func() {
+			// heal
 			// c.Core.Log.NewEvent("jean q healing", glog.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
@@ -109,6 +106,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				Bonus:   hpplus,
 			})
 
+			// self swirl
 			ae := combat.AttackEvent{
 				Info:        selfSwirl,
 				Pattern:     combat.NewDefSingleTarget(0, combat.TargettablePlayer),
@@ -116,6 +114,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}
 			c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index)
 			self.ReactWithSelf(&ae)
+
+			// C4
+			if c.Base.Cons >= 4 {
+				c.c4()
+			}
 		}, i)
 	}
 
