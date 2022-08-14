@@ -24,7 +24,8 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// +1 to avoid end duration issues
-	c.AddStatus(skillBuffKey, 15*60+1, true)
+	// Qiqi E is a deployable after Initial Hit, so it shouldn't be hitlag extendable
+	c.AddStatus(skillBuffKey, 15*60+1, false)
 	c.skillLastUsed = c.Core.F
 	src := c.Core.F
 
