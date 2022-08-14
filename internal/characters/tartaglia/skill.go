@@ -1,6 +1,8 @@
 package tartaglia
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -88,10 +90,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		case action.DashState:
 			adjustedFrames = skillMeleeDashFrames
 		}
+		canQueueAfter := math.MaxInt
+		for _, f := range adjustedFrames {
+			if f < canQueueAfter {
+				canQueueAfter = f
+			}
+		}
 		return action.ActionInfo{
 			Frames:          frames.NewAbilFunc(adjustedFrames),
 			AnimationLength: adjustedFrames[action.InvalidAction],
-			CanQueueAfter:   adjustedFrames[action.ActionDash], // earliest cancel
+			CanQueueAfter:   canQueueAfter,
 			State:           action.SkillState,
 		}
 	}
@@ -144,10 +152,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	case action.DashState:
 		adjustedFrames = skillRangedDashFrames
 	}
+	canQueueAfter := math.MaxInt
+	for _, f := range adjustedFrames {
+		if f < canQueueAfter {
+			canQueueAfter = f
+		}
+	}
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(adjustedFrames),
 		AnimationLength: adjustedFrames[action.InvalidAction],
-		CanQueueAfter:   adjustedFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   canQueueAfter,
 		State:           action.SkillState,
 	}
 }
