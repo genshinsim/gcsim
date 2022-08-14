@@ -57,6 +57,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.skillActive = true
 		// Reset ICD after construct is created
 		c.DeleteStatus(skillICDKey)
+		// add C4 and C6 checks
+		c.Core.Tasks.Add(c.c4(c.Core.F), 18) // start checking in 0.3s
+		c.Core.Tasks.Add(c.c6(c.Core.F), 18) // start checking in 0.3s
 	}, skillHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 240, 23)
@@ -84,7 +87,8 @@ func (c *char) skillHook() {
 			return false
 		}
 
-		c.AddStatus(skillICDKey, 120, true) //proc every 2 s
+		// this ICD is most likely tied to the construct, so it's not hitlag extendable
+		c.AddStatus(skillICDKey, 120, false) // proc every 2s
 
 		snap := c.skillSnapshot
 
