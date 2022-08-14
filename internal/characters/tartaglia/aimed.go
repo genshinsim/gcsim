@@ -20,7 +20,7 @@ func init() {
 
 // Once fully charged, deal Hydro DMG and apply the Riptide status.
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.StatusIsActive(meleeKey) {
 		c.Core.Log.NewEvent("aim called when not in ranged stance", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionAim)
 		return action.ActionInfo{

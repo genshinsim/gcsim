@@ -54,7 +54,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	hitmark := burstRangedHitmark
 	cb := c.rangedBurstApplyRiptide
 
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.StatusIsActive(meleeKey) {
 		ai.Abil = "Melee Stance: Light of Obliteration"
 		ai.Mult = meleeBurst[c.TalentLvlBurst()]
 		cancels = burstMeleeFrames
@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark, hitmark, cb)
 
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.StatusIsActive(meleeKey) {
 		c.ConsumeEnergy(71)
 		c.SetCDWithDelay(action.ActionBurst, 900, 66)
 	} else {

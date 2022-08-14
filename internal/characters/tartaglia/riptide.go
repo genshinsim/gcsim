@@ -64,7 +64,7 @@ func (c *char) rtC4Tick(t *enemy.Enemy) {
 		return
 	}
 
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.StatusIsActive(meleeKey) {
 		c.rtSlashTick(t)
 	} else {
 		c.rtFlashTick(t)
@@ -121,7 +121,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.Core.Status.Duration("tartagliamelee")).
+		Write("dur", c.StatusExpiry(meleeKey) - c.Core.F).
 		Write("target", t.Index()).
 		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
@@ -176,7 +176,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.Core.Status.Duration("tartagliamelee")).
+		Write("dur", c.StatusExpiry(meleeKey) - c.Core.F).
 		Write("target", t.Index()).
 		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
@@ -224,7 +224,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.Core.Status.Duration("tartagliamelee")).
+		Write("dur", c.StatusExpiry(meleeKey) - c.Core.F).
 		Write("target", t.Index()).
 		Write("rtExpiry", t.StatusExpiry(riptideKey))
 
