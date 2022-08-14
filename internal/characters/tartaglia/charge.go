@@ -10,7 +10,7 @@ import (
 
 var (
 	chargeFrames   []int
-	chargeHitmarks = []int{14, 13}
+	chargeHitmarks = []int{14, 27}
 )
 
 func init() {
@@ -54,19 +54,16 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		HitWeakPoint: hitWeakPoint != 0,
 	}
 
-	lastMultiHit := 0
 	for i, mult := range eCharge {
-		hitmark := lastMultiHit + chargeHitmarks[i]
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
-			hitmark,
-			hitmark,
+			chargeHitmarks[i],
+			chargeHitmarks[i],
 			c.meleeApplyRiptide, // call back for applying riptide
 			c.rtSlashCallback,   // call back for triggering slash
 		)
-		lastMultiHit = hitmark
 	}
 
 	return action.ActionInfo{
