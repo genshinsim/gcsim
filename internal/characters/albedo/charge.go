@@ -10,25 +10,25 @@ import (
 )
 
 var chargeFrames []int
-var chargeHitmarks = []int{39, 49}
+var chargeHitmarks = []int{20, 20} // CA-1 and CA-2 hit at the same time
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(54)
-	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames = frames.InitAbilSlice(56)                                 // CA -> N1
+	chargeFrames[action.ActionSkill] = 34                                   // CA -> E
+	chargeFrames[action.ActionBurst] = 34                                   // CA -> Q
+	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1] // CA -> D
+	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1] // CA -> J
+	chargeFrames[action.ActionSwap] = 33                                    // CA -> Swap
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		Element:            attributes.Physical,
-		Durability:         25,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: true,
-		IsDeployable:       true,
+		ActorIndex: c.Index,
+		AttackTag:  combat.AttackTagNormal,
+		ICDTag:     combat.ICDTagNormalAttack,
+		ICDGroup:   combat.ICDGroupDefault,
+		Element:    attributes.Physical,
+		Durability: 25,
 	}
 
 	for i, mult := range charge {

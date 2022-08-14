@@ -11,10 +11,14 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 32
+const skillHitmark = 25
 
 func init() {
-	skillFrames = frames.InitAbilSlice(32)
+	skillFrames = frames.InitAbilSlice(33) // E -> Q
+	skillFrames[action.ActionAttack] = 32  // E -> N1
+	skillFrames[action.ActionDash] = 29    // E -> D
+	skillFrames[action.ActionJump] = 28    // E -> J
+	skillFrames[action.ActionSwap] = 31    // E -> Swap
 }
 
 const (
@@ -53,9 +57,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.skillActive = true
 		// Reset ICD after construct is created
 		c.DeleteStatus(skillICDKey)
+		// add C4 and C6 checks
+		c.Core.Tasks.Add(c.c4(c.Core.F), 18) // start checking in 0.3s
+		c.Core.Tasks.Add(c.c6(c.Core.F), 18) // start checking in 0.3s
 	}, skillHitmark)
 
-	c.SetCD(action.ActionSkill, 240)
+	c.SetCDWithDelay(action.ActionSkill, 240, 23)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -80,7 +87,8 @@ func (c *char) skillHook() {
 			return false
 		}
 
-		c.AddStatus(skillICDKey, 120, true) //proc every 2 s
+		// this ICD is most likely tied to the construct, so it's not hitlag extendable
+		c.AddStatus(skillICDKey, 120, false) // proc every 2s
 
 		snap := c.skillSnapshot
 

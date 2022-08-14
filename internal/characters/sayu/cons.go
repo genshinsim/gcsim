@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+// C2:
 // Yoohoo Art: Fuuin Dash gains the following effects:
 // DMG of Fuufuu Whirlwind Kick in Press Mode increased by 3.3%.
 // Every 0.5s in the Fuufuu Windwheel state will increase the DMG of this Fuufuu

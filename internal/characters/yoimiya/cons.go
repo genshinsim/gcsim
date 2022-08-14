@@ -5,15 +5,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.2
-	c.Core.Events.Subscribe(event.OnTargetDied, func(_ ...interface{}) bool {
-		//we assume target is affected if it's active
-		if c.Core.Status.Duration("aurous") <= 0 {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+		trg, ok := args[0].(*enemy.Enemy)
+		// ignore if not an enemy
+		if !ok {
+			return false
+		}
+		// ignore if debuff not on enemy
+		if !trg.StatusIsActive(abDebuff) {
 			return false
 		}
 

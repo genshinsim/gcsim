@@ -9,6 +9,7 @@ import (
 
 const a1ICDKey = "sayu-a1-icd"
 
+// A1:
 // When Sayu triggers a Swirl reaction while active, she heals all your
 // characters and nearby allies for 300 HP. She will also heal an additional 1.2
 // HP for every point of Elemental Mastery she has.  This effect can be

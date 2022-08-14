@@ -9,10 +9,13 @@ import (
 
 var burstFrames []int
 
-const burstStart = 78
+const burstStart = 50
 
 func init() {
-	burstFrames = frames.InitAbilSlice(78)
+	burstFrames = frames.InitAbilSlice(63) // Q -> D/J
+	burstFrames[action.ActionAttack] = 62  // Q -> N1
+	burstFrames[action.ActionSkill] = 62   // Q -> E
+	burstFrames[action.ActionSwap] = 62    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -42,17 +45,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		r = 3.5
 	}
 
-	for i := 0; i < count*interval; i += interval {
+	for i := burstStart; i < count*interval+burstStart; i += interval {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy), i)
 	}
 
-	c.ConsumeEnergy(55) //TODO: Check if she can be pre-funneled
-	c.SetCDWithDelay(action.ActionBurst, 900, 55)
+	c.ConsumeEnergy(4)
+	c.SetCD(action.ActionBurst, 900) // 15s * 60
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.InvalidAction],
+		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
 	}
 }

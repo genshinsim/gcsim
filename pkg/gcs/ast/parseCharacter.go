@@ -6,7 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -26,7 +26,7 @@ func parseCharacter(p *Parser) (parseFn, error) {
 }
 
 func (p *Parser) newChar(key keys.Char) {
-	r := character.CharacterProfile{}
+	r := profile.CharacterProfile{}
 	r.Base.Key = key
 	r.Stats = make([]float64, attributes.EndStatType)
 	r.StatsByLabel = make(map[string][]float64)

@@ -9,19 +9,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-//TODO: not sure where these are from; no idea how accurate
-var attackHitmarks = []int{30, 18, 37, 43}
+var attackHitmarks = [][]int{{11, 24}, {16}, {23}, {30}}
 var attackFrames [][]int
 
 const normalHitNum = 4
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	//TODO: no cancelled frames here; this is machine gunning
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], attackHitmarks[0])
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], attackHitmarks[1])
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], attackHitmarks[2])
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], attackHitmarks[3])
+
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][1], 31) // N1 -> N2
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 28) // N2 -> N3
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 38) // N3 -> N4
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 61) // N4 -> N1
+
 }
 
 // Standard attack - infusion mechanics are handled as part of the skill
@@ -46,8 +46,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter]+i,
-			attackHitmarks[c.NormalCounter]+i+travel)
+			attackHitmarks[c.NormalCounter][i],
+			attackHitmarks[c.NormalCounter][i]+travel)
 	}
 
 	defer c.AdvanceNormalIndex()
@@ -56,7 +56,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 }

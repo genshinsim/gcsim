@@ -9,10 +9,11 @@ import (
 
 var aimedFrames []int
 
-const aimedHitmark = 94
+const aimedHitmark = 86
+const c1Hitmark = 95 // C1 arrow comes out 9f after the normal one, still comes out even if you cancel at aimedHitmark
 
 func init() {
-	aimedFrames = frames.InitAbilSlice(94)
+	aimedFrames = frames.InitAbilSlice(96)
 	aimedFrames[action.ActionDash] = aimedHitmark
 	aimedFrames[action.ActionJump] = aimedHitmark
 }
@@ -56,7 +57,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	if c.Base.Cons >= 1 {
 		ai.Mult = .2 * ai.Mult
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), c1Hitmark, c1Hitmark+travel)
 	}
 
 	return action.ActionInfo{

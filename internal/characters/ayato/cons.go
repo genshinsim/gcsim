@@ -1,8 +1,6 @@
 package ayato
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -53,14 +51,18 @@ func (c *char) c6() {
 			return false
 		}
 		ai := combat.AttackInfo{
-			Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-			ActorIndex: c.Index,
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNormalAttack,
-			ICDGroup:   combat.ICDGroupDefault,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			Mult:       4.5,
+			Abil:               "Ayato C6",
+			ActorIndex:         c.Index,
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			Element:            attributes.Hydro,
+			Durability:         25,
+			Mult:               4.5,
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   0.03 * 60,
+			CanBeDefenseHalted: false,
+			IsDeployable:       true,
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 20, 20)
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 22, 22)

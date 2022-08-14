@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+// A1:
+// When Shinobu's HP is not higher than 50%, her Healing Bonus is increased by 15%.
 func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.Heal] = .15

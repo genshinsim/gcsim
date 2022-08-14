@@ -78,21 +78,39 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Write("mult", mult)
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Sweeping Time (Burst)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 25,
-		Mult:       burst[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Sweeping Time (Burst)",
+		AttackTag:          combat.AttackTagElementalBurst,
+		ICDTag:             combat.ICDTagElementalBurst,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
+		Element:            attributes.Geo,
+		Durability:         25,
+		Mult:               burst[c.TalentLvlBurst()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.15 * 60,
+		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6.5, false, combat.TargettableEnemy), 24, 24)
+	c.QueueCharTask(func() {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 6.5, false, combat.TargettableEnemy),
+			0,
+			0,
+		)
+	}, 24)
 
-	ai.Abil = "Sweeping Time (Skill)"
-	ai.Mult = burstskill[c.TalentLvlBurst()]
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4.5, false, combat.TargettableEnemy), 65, 65)
+	// Burst and Skill part of Q have the same hitlag values
+	c.QueueCharTask(func() {
+		ai.Abil = "Sweeping Time (Skill)"
+		ai.Mult = burstskill[c.TalentLvlBurst()]
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 4.5, false, combat.TargettableEnemy),
+			0,
+			0,
+		)
+	}, 65)
 
 	c.SetCD(action.ActionBurst, 900)
 	c.ConsumeEnergy(8)

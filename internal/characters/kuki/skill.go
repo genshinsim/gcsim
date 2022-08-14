@@ -11,10 +11,14 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 58
+const skillHitmark = 11 // Initial Hit
 
 func init() {
-	skillFrames = frames.InitAbilSlice(58)
+	skillFrames = frames.InitAbilSlice(52) // E -> Q
+	skillFrames[action.ActionAttack] = 50  // E -> N1
+	skillFrames[action.ActionDash] = 12    // E -> D
+	skillFrames[action.ActionJump] = 11    // E -> J
+	skillFrames[action.ActionSwap] = 50    // E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -24,7 +28,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	} else if (c.HPCurrent / c.MaxHP()) > 0.2 { //check if below 20%
 		c.HPCurrent = 0.2 * c.MaxHP()
 	}
-	//TODO: damage frame
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -46,19 +49,24 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skilldur = 900 //12+3s
 	}
 
-	c.SetCD(action.ActionSkill, skillHitmark+15*60) // what's the diff between f and a again? Nice question Yakult
-	c.Core.Tasks.Add(c.bellTick(), 90)              //Assuming this executes every 90 frames-1.5s
-	c.bellActiveUntil = c.Core.F + skilldur
-	c.Core.Log.NewEvent("Bell activated", glog.LogCharacterEvent, c.Index).
-		Write("expected end", c.bellActiveUntil).
-		Write("next expected tick", c.Core.F+90)
+	// this gets executed before kuki can expierence hitlag so no need for char queue
+	// ring duration starts after hitmark
+	c.Core.Tasks.Add(func() {
+		// E duration and ticks are not affected by hitlag
+		c.Core.Status.Add("kuki-e", skilldur)
+		c.Core.Tasks.Add(c.bellTick(), 90) // Assuming this executes every 90 frames = 1.5s
+		c.bellActiveUntil = c.Core.F + skilldur
+		c.Core.Log.NewEvent("Bell activated", glog.LogCharacterEvent, c.Index).
+			Write("expected end", c.bellActiveUntil).
+			Write("next expected tick", c.Core.F+90)
+	}, 23)
 
-	c.Core.Status.Add("kukibell", skilldur)
+	c.SetCDWithDelay(action.ActionSkill, 90, 7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
 }

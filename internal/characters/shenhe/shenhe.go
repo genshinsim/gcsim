@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -17,20 +17,20 @@ func init() {
 type char struct {
 	*tmpl.Character
 	skillBuff []float64
+	burstBuff []float64
+	c2buff    []float64
 	c4bonus   []float64
 	c4count   int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
+
 	c.EnergyMax = 80
-	c.Weapon.Class = weapon.WeaponClassSpear
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.CharZone = character.ZoneLiyue
-	c.Base.Element = attributes.Cryo
 
 	c.c4count = 0
 
@@ -47,6 +47,15 @@ func (c *char) Init() error {
 	c.skillBuff = make([]float64, attributes.EndStatType)
 	c.skillBuff[attributes.DmgP] = 0.15
 	c.quillDamageMod()
+
+	c.burstBuff = make([]float64, attributes.EndStatType)
+	c.burstBuff[attributes.CryoP] = 0.15
+
+	if c.Base.Cons >= 2 {
+		c.c2buff = make([]float64, attributes.EndStatType)
+		c.c2buff[attributes.CD] = 0.15
+	}
+
 	if c.Base.Cons >= 4 {
 		c.c4bonus = make([]float64, attributes.EndStatType)
 		c.c4()

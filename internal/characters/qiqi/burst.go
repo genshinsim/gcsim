@@ -13,10 +13,12 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 112
+const burstHitmark = 82
 
 func init() {
-	burstFrames = frames.InitAbilSlice(112)
+	burstFrames = frames.InitAbilSlice(112) // Q -> E/D/J
+	burstFrames[action.ActionAttack] = 111  // Q -> N1
+	burstFrames[action.ActionSwap] = 110    // Q -> Swap
 }
 
 // Only applies burst damage. Main Talisman functions are handled in qiqi.go
@@ -35,13 +37,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
 
-	c.ConsumeEnergy(10)
-	c.SetCDWithDelay(action.ActionBurst, 20*60, 10)
+	c.SetCD(action.ActionBurst, 20*60)
+	c.ConsumeEnergy(8)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

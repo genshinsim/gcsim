@@ -20,7 +20,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(dashFrames),
 		AnimationLength: dashFrames[action.InvalidAction],
-		CanQueueAfter:   dashFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   dashFrames[action.ActionSkill], // earliest cancel
 		State:           action.DashState,
 	}
 }

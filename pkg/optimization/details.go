@@ -8,7 +8,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
@@ -21,10 +21,10 @@ type SubstatOptimizerDetails struct {
 	charSubstatFinal       [][]int
 	charSubstatLimits      [][]int
 	charSubstatRarityMod   []float64
-	charProfilesInitial    []character.CharacterProfile
+	charProfilesInitial    []profile.CharacterProfile
 	charWithFavonius       []bool
-	charProfilesERBaseline []character.CharacterProfile
-	charProfilesCopy       []character.CharacterProfile
+	charProfilesERBaseline []profile.CharacterProfile
+	charProfilesCopy       []profile.CharacterProfile
 	simcfg                 *ast.ActionList
 	simopt                 simulator.Options
 	cfg                    string
@@ -63,7 +63,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(idxChar int, char character.CharacterProfile, initialMean float64) []string {
+func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(idxChar int, char profile.CharacterProfile, initialMean float64) []string {
 	var opDebug []string
 	opDebug = append(opDebug, fmt.Sprintf("%v", char.Base.Key))
 
@@ -88,7 +88,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(idxChar int, 
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) allocateSubstatGradientsForChar(idxChar int, char character.CharacterProfile, substatGradient []float64, relevantSubstats []attributes.Stat) []string {
+func (stats *SubstatOptimizerDetails) allocateSubstatGradientsForChar(idxChar int, char profile.CharacterProfile, substatGradient []float64, relevantSubstats []attributes.Stat) []string {
 	var opDebug []string
 
 	sorted := newSlice(substatGradient...)
@@ -118,7 +118,7 @@ func (stats *SubstatOptimizerDetails) resetFavoniusCritRateForChar(idxChar int) 
 	}
 }
 
-func (stats *SubstatOptimizerDetails) allocateSubstatGradientForChar(idxChar int, char character.CharacterProfile, sorted *Slice, idxGrad int, idxSubstat int, relevantSubstats []attributes.Stat) []string {
+func (stats *SubstatOptimizerDetails) allocateSubstatGradientForChar(idxChar int, char profile.CharacterProfile, sorted *Slice, idxGrad int, idxSubstat int, relevantSubstats []attributes.Stat) []string {
 	var opDebug []string
 
 	substatToMax := relevantSubstats[idxSubstat]
@@ -216,7 +216,7 @@ func (stats *SubstatOptimizerDetails) allocateSubstatGradientForChar(idxChar int
 }
 
 // Assigns substats and returns the remaining global limit and individual substat limit
-func (stats *SubstatOptimizerDetails) assignSubstatsForChar(idxChar int, char character.CharacterProfile, substat attributes.Stat, amt int) (int, int) {
+func (stats *SubstatOptimizerDetails) assignSubstatsForChar(idxChar int, char profile.CharacterProfile, substat attributes.Stat, amt int) (int, int) {
 	totalSubstatCount := 0
 	for _, val := range stats.charSubstatFinal[idxChar] {
 		totalSubstatCount += val
@@ -265,7 +265,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(idxChar i
 }
 
 // TODO: Seems like this should be configurable
-func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char character.CharacterProfile) []attributes.Stat {
+func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char profile.CharacterProfile) []attributes.Stat {
 	// Get relevant substats, and add additional ones for special characters if needed
 	relevantSubstats := []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD, attributes.EM}
 	// RIP crystallize...
@@ -324,7 +324,7 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char character.CharacterProfile, tolMean float64, tolSD float64) []string {
+func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char profile.CharacterProfile, tolMean float64, tolSD float64) []string {
 	var debug []string
 	var initialMean float64
 	var initialSD float64
@@ -488,13 +488,13 @@ func NewSubstatOptimizerDetails(cfg string, simopt simulator.Options, simcfg *as
 
 	s.charSubstatLimits = make([][]int, len(simcfg.Characters))
 	s.charSubstatRarityMod = make([]float64, len(simcfg.Characters))
-	s.charProfilesInitial = make([]character.CharacterProfile, len(simcfg.Characters))
+	s.charProfilesInitial = make([]profile.CharacterProfile, len(simcfg.Characters))
 
 	// Need to make an exception in energy calcs for these characters for optimization purposes
 	s.charWithFavonius = make([]bool, len(simcfg.Characters))
 	// Give all characters max ER to set initial state
-	s.charProfilesERBaseline = make([]character.CharacterProfile, len(simcfg.Characters))
-	s.charProfilesCopy = make([]character.CharacterProfile, len(simcfg.Characters))
+	s.charProfilesERBaseline = make([]profile.CharacterProfile, len(simcfg.Characters))
+	s.charProfilesCopy = make([]profile.CharacterProfile, len(simcfg.Characters))
 
 	return &s
 }

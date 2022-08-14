@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const (
@@ -36,17 +36,14 @@ type char struct {
 	healFieldStats [attributes.EndStatType]float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Geo
 	c.EnergyMax = 80
-	c.Weapon.Class = weapon.WeaponClassBow
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.CharZone = character.ZoneInazuma
 
 	c.c6buff = make([]float64, attributes.EndStatType)
 	c.gorouBuff = make([]float64, attributes.EndStatType)

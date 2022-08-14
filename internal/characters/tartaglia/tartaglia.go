@@ -4,10 +4,9 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const (
@@ -15,6 +14,8 @@ const (
 	riptideFlashICDKey = "riptide-flash-icd"
 	riptideKey         = "riptide"
 	riptideSlashICDKey = "riptide-slash-icd"
+	energyICDKey       = "riptide-energy-icd"
+	meleeKey           = "tartagliamelee"
 )
 
 func init() {
@@ -25,24 +26,20 @@ func init() {
 type char struct {
 	*tmpl.Character
 	eCast         int // the frame tartaglia casts E to enter melee stance
-	rtParticleICD int
 	mlBurstUsed   bool // used for c6
 }
 
 // Initializes character
-func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Hydro
 	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassBow
 	c.SkillCon = 3
 	c.BurstCon = 5
 	c.NormalHitNum = normalHitNum
 
 	c.eCast = 0
-	c.rtParticleICD = 0
 	c.mlBurstUsed = false
 
 	w.Character = &c

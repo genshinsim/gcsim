@@ -13,12 +13,17 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark = 65
-	burstBuffKey = "yanfei-burst"
+	burstHitmark = 24
+	burstBuffKey = "yanfei-q"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(65)
+	burstFrames = frames.InitAbilSlice(58) // Q -> N1
+	burstFrames[action.ActionCharge] = 47  // Q -> CA
+	burstFrames[action.ActionSkill] = 55   // Q -> E
+	burstFrames[action.ActionDash] = 33    // Q -> D
+	burstFrames[action.ActionJump] = 32    // Q -> J
+	burstFrames[action.ActionSwap] = 46    // Q -> Swap
 }
 
 // Burst - Deals burst damage and adds status for charge attack bonus
@@ -72,13 +77,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.c4()
 
-	c.SetCDWithDelay(action.ActionBurst, 20*60, 8)
-	c.ConsumeEnergy(8)
+	c.SetCD(action.ActionBurst, 20*60)
+	c.ConsumeEnergy(5)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
 	}
 }

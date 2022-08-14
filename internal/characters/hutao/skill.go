@@ -54,7 +54,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:       "Paramita Papilio",
 		Amount:     .30 * c.HPCurrent,
 	})
-	c.checkc6()
+	if c.Base.Cons >= 6 {
+		c.checkc6()
+	}
 
 	//trigger 0 damage attack; matters because this breaks freeze
 	ai := combat.AttackInfo{
@@ -144,6 +146,6 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 				Write("src", src)
 		}
 		//queue up next instance
-		c.Core.Tasks.Add(c.bbtickfunc(src, trg), 240)
+		trg.QueueEnemyTask(c.bbtickfunc(src, trg), 240)
 	}
 }

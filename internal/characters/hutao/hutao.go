@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -23,22 +23,19 @@ type char struct {
 	a4buff  []float64
 	ppbuff  []float64
 	c4buff  []float64
-	c6icd   int
+	c6buff  []float64
 	applyA1 bool
 
 	burstHealCount  int
 	burstHealAmount player.HealInfo
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Pyro
 	c.EnergyMax = 60
-	c.Weapon.Class = weapon.WeaponClassSpear
 	c.NormalHitNum = normalHitNum
-	c.CharZone = character.ZoneLiyue
 
 	w.Character = &c
 

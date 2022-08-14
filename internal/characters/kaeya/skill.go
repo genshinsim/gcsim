@@ -15,7 +15,11 @@ var skillFrames []int
 const skillHitmark = 28
 
 func init() {
-	skillFrames = frames.InitAbilSlice(58)
+	skillFrames = frames.InitAbilSlice(53) // E -> N1
+	skillFrames[action.ActionBurst] = 52   // E -> Q
+	skillFrames[action.ActionDash] = 25    // E -> D
+	skillFrames[action.ActionJump] = 26    // E -> J
+	skillFrames[action.ActionSwap] = 49    // E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -64,12 +68,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueParticle("kaeya", count, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
 
-	c.SetCD(action.ActionSkill, 360+28) //+28 since cd starts 28 frames in
+	c.SetCDWithDelay(action.ActionSkill, 360, 25)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
 	}
 }

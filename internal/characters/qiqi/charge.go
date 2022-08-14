@@ -10,13 +10,15 @@ import (
 )
 
 var chargeFrames []int
-var chargeHitmarks = []int{88, 89}
+var chargeHitmarks = []int{15, 29}
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(89)
-	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames = frames.InitAbilSlice(76) // CA -> N1
+	chargeFrames[action.ActionSkill] = 67   // CA -> E
+	chargeFrames[action.ActionBurst] = 67   // CA -> Q
+	chargeFrames[action.ActionDash] = 32    // CA -> D
+	chargeFrames[action.ActionJump] = 30    // CA -> J
+	chargeFrames[action.ActionSwap] = 29    // CA -> Swap
 }
 
 // Standard charge attack

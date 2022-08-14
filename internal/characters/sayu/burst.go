@@ -12,8 +12,13 @@ import (
 
 var burstFrames []int
 
+const burstHitmark = 12
+const tickTaskDelay = 20
+
 func init() {
-	burstFrames = frames.InitAbilSlice(65)
+	burstFrames = frames.InitAbilSlice(65) // Q -> N1/E/J
+	burstFrames[action.ActionDash] = 64    // Q -> D
+	burstFrames[action.ActionSwap] = 64    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -31,7 +36,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames: 0.02 * 60,
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 16)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark)
 
 	// heal
 	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
@@ -59,7 +64,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// - after q initial hit hitlag happened
 	// - before sayu can get affected by any more hitlag
 	c.QueueCharTask(func() {
-		for i := 150 - 20; i < 150+540-20; i += 90 {
+		// first tick is at 145
+		for i := 145 - tickTaskDelay; i < 145+540-tickTaskDelay; i += 90 {
 			c.Core.Tasks.Add(func() {
 				active := c.Core.Player.ActiveChar()
 				//this is going to be a bit slow..
@@ -84,15 +90,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				}
 			}, i)
 		}
-	}, 20)
+	}, tickTaskDelay)
 
-	c.SetCDWithDelay(action.ActionBurst, 20*60, 11)
-	c.ConsumeEnergy(11)
+	c.SetCD(action.ActionBurst, 20*60)
+	c.ConsumeEnergy(7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.InvalidAction],
+		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }

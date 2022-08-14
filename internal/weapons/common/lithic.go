@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -27,7 +28,7 @@ func NewLithic(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
 		for _, char := range c.Player.Chars() {
-			if char.CharZone == character.ZoneLiyue {
+			if char.CharZone == profile.ZoneLiyue {
 				stacks++
 			}
 		}

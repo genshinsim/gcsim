@@ -22,15 +22,18 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Anemo,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
+		ActorIndex:         c.Index,
+		Abil:               "Charge Attack",
+		AttackTag:          combat.AttackTagExtra,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
+		Element:            attributes.Anemo,
+		Durability:         25,
+		Mult:               charge[c.TalentLvlAttack()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.09 * 60,
+		CanBeDefenseHalted: false,
 	}
 
 	// TODO: check snapshot delay

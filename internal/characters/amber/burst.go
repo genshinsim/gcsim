@@ -11,10 +11,14 @@ import (
 
 var burstFrames []int
 
-const burstStart = 74
+const burstStart = 72 // hitmark of the first tick
 
 func init() {
-	burstFrames = frames.InitAbilSlice(74)
+	burstFrames = frames.InitAbilSlice(111) // Q -> N1/E
+	burstFrames[action.ActionDash] = 57     // Q -> D
+	burstFrames[action.ActionJump] = 58     // Q -> J
+	burstFrames[action.ActionWalk] = 62     // Q -> Walk
+	burstFrames[action.ActionSwap] = 60     // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -59,13 +63,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	c.ConsumeEnergy(64)
-	c.SetCDWithDelay(action.ActionBurst, 720, 64)
+	c.SetCDWithDelay(action.ActionBurst, 720, 56)
+	c.ConsumeEnergy(59)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstStart,
+		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }

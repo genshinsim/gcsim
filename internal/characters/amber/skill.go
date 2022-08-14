@@ -7,10 +7,16 @@ import (
 
 var skillFrames []int
 
-const skillStart = 35
+const skillStart = 5 // cd start and bunny release frame on tap e
+const bunnyLand = 45 // bunny land/spawn on tap e
 
 func init() {
-	skillFrames = frames.InitAbilSlice(35)
+	skillFrames = frames.InitAbilSlice(33) // E -> E (C1 only)
+	skillFrames[action.ActionAttack] = 32  // E -> N1
+	skillFrames[action.ActionBurst] = 32   // E -> Q
+	skillFrames[action.ActionDash] = 8     // E -> D
+	skillFrames[action.ActionJump] = 8     // E -> J
+	skillFrames[action.ActionSwap] = 23    // E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -18,12 +24,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(func() {
 		c.makeBunny()
-	}, skillStart+hold)
+	}, bunnyLand+hold)
 
 	if c.Base.Cons >= 4 {
-		c.SetCD(action.ActionSkill, 720)
+		c.SetCDWithDelay(action.ActionSkill, 720, skillStart+hold)
 	} else {
-		c.SetCD(action.ActionSkill, 900)
+		c.SetCDWithDelay(action.ActionSkill, 900, skillStart+hold)
 	}
 
 	return action.ActionInfo{

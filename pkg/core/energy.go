@@ -34,12 +34,18 @@ func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, de
 func (c *Core) SetupOnNormalHitEnergy() {
 	var current [MaxTeamSize][weapon.EndWeaponClass]float64
 
+	// https://genshin-impact.fandom.com/wiki/Energy#Energy_Generated_by_Normal_Attacks
+	// Base Probability
+	for i := range current {
+		current[i][weapon.WeaponClassSword] = 0.10 // WeaponClassSword
+	}
+	// Probability Increase Per Fail
 	inc := []float64{
-		0.05, //WeaponClassSword
-		0.05, //WeaponClassClaymore
-		0.04, //WeaponClassSpear
-		0.01, //WeaponClassBow
-		0.01, //WeaponClassCatalyst
+		0.05, // WeaponClassSword
+		0.10, // WeaponClassClaymore
+		0.04, // WeaponClassSpear
+		0.05, // WeaponClassBow
+		0.10, // WeaponClassCatalyst
 	}
 
 	//TODO: not sure if there's like a 0.2s icd on this. for now let's add it in to be safe
@@ -71,6 +77,9 @@ func (c *Core) SetupOnNormalHitEnergy() {
 		//set icd
 		icd = c.F + 12
 		current[atk.Info.ActorIndex][char.Weapon.Class] = 0
+		if char.Weapon.Class == weapon.WeaponClassSword {
+			current[atk.Info.ActorIndex][char.Weapon.Class] = 0.10
+		}
 		return false
 	}, "random-energy-restore-on-hit")
 
@@ -80,6 +89,7 @@ func (c *Core) SetupOnNormalHitEnergy() {
 			for j := range current[i] {
 				current[i][j] = 0
 			}
+			current[i][weapon.WeaponClassSword] = 0.10
 		}
 		return false
 	}, "random-energy-restore-on-hit-swap")
