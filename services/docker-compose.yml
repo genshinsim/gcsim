@@ -40,7 +40,7 @@ services:
     links:
       - postgrest:postgrest
     environment:
-      - DBMANAGE_DISCORD_TOKEN
+      - DBMANAGE_DISCORD_TOKEN: ${DBMANAGE_DISCORD_TOEKN}
       - DBMANAGE_ADMIN_CHAN: 1006934337612173413
       - DATA_PATH: /data
       - POSTGREST_URL: http://postgrest:3000
