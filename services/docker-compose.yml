@@ -1,6 +1,22 @@
 version: "3.8"
 
 services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    # environment:
+    command: "tunnel --no-autoupdate run --token $CF_TUNNEL_TOKEN"
+    volumes:
+      - ../cloudflared:/etc/cloudflared
+    links:
+      - postgrest:services
+      - embed:services
+    environment:
+      # - TUNNEL_URL=http://postgrest:3000
+      - CF_TUNNEL_TOKEN
+    depends_on:
+      - postgrest
+      - embed
+
   postgrest:
     image: postgrest/postgrest
     restart: unless-stopped
