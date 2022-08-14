@@ -34,7 +34,8 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	hits, ok := p["hits"]
 	if !ok {
-		hits = 2
+		// assume all 4 instances of shockwave dmg hit the enemy
+		hits = 4
 	}
 	maxConstructCount, ok := p["construct_limit"]
 	if !ok {
