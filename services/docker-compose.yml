@@ -40,10 +40,10 @@ services:
     links:
       - postgrest:postgrest
     environment:
-      - DBMANAGE_DISCORD_TOKEN: ${DBMANAGE_DISCORD_TOEKN}
-      - DBMANAGE_ADMIN_CHAN: 1006934337612173413
-      - DATA_PATH: /data
-      - POSTGREST_URL: http://postgrest:3000
+      - DBMANAGE_DISCORD_TOKEN=${DBMANAGE_DISCORD_TOKEN}
+      - DBMANAGE_ADMIN_CHAN=1006934337612173413
+      - DATA_PATH=/data
+      - POSTGREST_URL=http://postgrest:3000
     restart: unless-stopped
 
   embed:
@@ -56,9 +56,9 @@ services:
       - ./embed/data:/data
       - ../assets:/assets
     environment:
-      - ASSETS_PATH: /assets
-      - DATA_PATH: /data
-      - POSTGREST_URL: http://postgrest:3000
+      - ASSETS_PATH=/assets
+      - DATA_PATH=/data
+      - POSTGREST_URL=http://postgrest:3000
     # expose port to access embed server
     links:
       - postgrest:postgrest

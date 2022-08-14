@@ -7,3 +7,8 @@ RUN ls
 RUN go mod download
 COPY pkg pkg
 COPY embed embed 
+
+FROM python:3
+WORKDIR /app/embed/scripts
+
+RUN pip install -r requirements.txt
