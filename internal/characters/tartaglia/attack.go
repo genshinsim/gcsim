@@ -81,7 +81,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 var (
 	meleeFrames           [][]int
-	meleeHitmarks         = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 16}}
+	meleeHitmarks         = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 20}}
 	meleeHitlagHaltFrames = [][]float64{{0.03}, {0.03}, {0.06}, {0.06}, {0.06}, {0.03, 0.12}}
 )
 
@@ -135,11 +135,9 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	lastMultiHit := 0
 	for i, mult := range eAttack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = meleeHitlagHaltFrames[c.NormalCounter][i] * 60
-		hitmark := lastMultiHit + meleeHitmarks[c.NormalCounter][i]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
@@ -149,8 +147,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 				c.meleeApplyRiptide, // riptide can trigger on the same hit that applies
 				c.rtSlashCallback,
 			)
-		}, hitmark)
-		lastMultiHit = hitmark
+		}, meleeHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
