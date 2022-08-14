@@ -1,16 +1,10 @@
 package embed
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"io/fs"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
-	"os/exec"
-	"strings"
 	"time"
 
 	badger "github.com/dgraph-io/badger/v3"
@@ -22,17 +16,21 @@ import (
 
 //Server contains an authentication server
 type Server struct {
-	Router *chi.Mux
-	db     *badger.DB
-	Log    *zap.SugaredLogger
-	Store  store.SimStore
-	cfg    Config
-	work   chan string //key to generate embed for
+	Router    *chi.Mux
+	db        *badger.DB
+	Log       *zap.SugaredLogger
+	Store     store.SimStore
+	Generator ImageGenerator
+	cfg       Config
+	work      chan string //key to generate embed for
 }
 
 type Config struct {
-	AssetFolder string
-	DataFolder  string
+	DataFolder string
+}
+
+type ImageGenerator interface {
+	Generate(sim store.Simulation, outpath string) error
 }
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
@@ -99,58 +97,43 @@ func (s *Server) pool() {
 	}
 }
 
-type simulation struct {
-	Metadata string `json:"metadata"`
-}
-
 func (s *Server) worker(key string, done chan bool) {
-	//grab simulation meta data from postgrest server
-	//http://localhost:3000/simulations\?simulation_key\=eq.57baa25d-27e6-4ffd-a152-71dd86272acf
 	res, err := s.Store.Fetch(key)
 	if err != nil {
 		s.Log.Warnw("error getting simulation", "err", err)
 		done <- true
 		return
 	}
-	meta := res.Metadata
-	meta = strings.TrimPrefix(meta, `"`)
-	meta = strings.TrimSuffix(meta, `"`)
 
-	//pass metadata off to python script
 	filepath := fmt.Sprintf("./%v.png", key)
 	os.Remove(filepath)
-	ioutil.WriteFile("test.json", []byte(meta), fs.ModePerm)
-	cmd := exec.Command("./embed.py", filepath)
-	var stdBuffer bytes.Buffer
-	mw := io.MultiWriter(os.Stdout, &stdBuffer)
 
-	cmd.Stdout = mw
-	cmd.Stderr = mw
-
-	// cmd.Stdin = strings.NewReader(result[0].Metadata)
-	// out, err := cmd.Output()
-	err = cmd.Run()
+	err = s.Generator.Generate(res, filepath)
 	if err != nil {
-		// s.Log.Warnw("error generating image", "err", err, "out", string(out))
-		s.Log.Warnw("error generating image", "err", err)
+		s.Log.Warnw("error generating image", "key", key, "path", filepath, "err", err)
+		done <- true
+		return
 	}
-	log.Println(stdBuffer.String())
 
 	//try reading file and storing in db
 	b, err := ioutil.ReadFile(filepath)
 	if err != nil {
-		s.Log.Warn("error loading image", "key", key, "path", filepath, "err", err)
+		s.Log.Warnw("error loading image", "key", key, "path", filepath, "err", err)
 		done <- true
 		return
 	}
+
 	err = s.db.Update(func(txn *badger.Txn) error {
 		e := badger.NewEntry([]byte(key), b).WithTTL(time.Hour * 24 * 60)
 		err := txn.SetEntry(e)
 		return err
 	})
+
 	if err != nil {
-		s.Log.Warn("error saving image to db", "key", key, "path", filepath, "err", err)
+		s.Log.Warnw("error saving image to db", "key", key, "path", filepath, "err", err)
 	}
+
+	s.Log.Infow("generating embed ok", "key", key)
 
 	//clean up after ourselves
 	os.Remove(filepath)
@@ -181,7 +164,7 @@ func (s *Server) handleRetrieveEmbed() http.HandlerFunc {
 		var data []byte
 
 		err := s.db.View(func(txn *badger.Txn) error {
-			item, err := txn.Get([]byte("answer"))
+			item, err := txn.Get([]byte(key))
 			if err != nil {
 				return err
 			}
@@ -194,6 +177,7 @@ func (s *Server) handleRetrieveEmbed() http.HandlerFunc {
 
 		if err != nil {
 			if err == badger.ErrKeyNotFound {
+				s.Log.Warnw("error getting image - not found", "key", key)
 				//we should try to regenerate it
 				s.work <- key
 				//in which case we return 404 anyways
