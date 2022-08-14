@@ -121,21 +121,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
+	cdDelay := 14
 	hitmark := skillHitmark
 	switch c.Core.Player.CurrentState() {
 	case action.WalkState:
 		hitmark = skillWalkHitmark
+		cdDelay = 0
 	case action.DashState:
 		hitmark = skillDashHitmark
+		cdDelay = 0
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
 
-	cdDelay := 14
-	switch c.Core.Player.CurrentState() {
-	case action.WalkState,
-		action.DashState:
-		cdDelay = 0
-	}
 	src := c.eCast
 	c.Core.Tasks.Add(func() {
 		if src == c.eCast && c.Core.Status.Duration("tartagliamelee") > 0 {
