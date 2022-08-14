@@ -181,7 +181,6 @@ func (c *CharWrapper) ModifyHP(amt float64) {
 }
 
 func (c *CharWrapper) TalentLvlAttack() int {
-	//TODO: make sure childe on init sets this tag
 	if c.Tags[keys.ChildePassive] > 0 {
 		return c.Talents.Attack
 	}

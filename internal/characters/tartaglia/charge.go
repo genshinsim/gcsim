@@ -8,20 +8,25 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{71, 73}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{14, 27}
+)
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(73)
-	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames = frames.InitAbilSlice(55)
+	chargeFrames[action.ActionSkill] = 29
+	chargeFrames[action.ActionBurst] = 29
+	chargeFrames[action.ActionDash] = 14
+	chargeFrames[action.ActionJump] = 15
+	chargeFrames[action.ActionSwap] = 52
 }
 
 // since E is aoe, so this should be considered aoe too
 // hitWeakPoint: tartaglia can proc Prototype Cresent's Passive on Geovishap's weakspots.
 // Evidence: https://youtu.be/oOfeu5pW0oE
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if c.Core.Status.Duration("tartagliamelee") == 0 {
+	if !c.StatusIsActive(meleeKey) {
 		c.Core.Log.NewEvent("charge called when not in melee stance", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionCharge)
 		return action.ActionInfo{
@@ -56,8 +61,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
-			c.meleeApplyRiptide, //call back for applying riptide
-			c.rtSlashCallback,   //call back for triggering slash
+			c.meleeApplyRiptide, // call back for applying riptide
+			c.rtSlashCallback,   // call back for triggering slash
 		)
 	}
 

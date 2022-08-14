@@ -1,6 +1,8 @@
 package tartaglia
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -9,35 +11,101 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var skillMeleeFrames []int
-var skillRangedFrames []int
+var (
+	skillMeleeFrames      []int
+	skillMeleeWalkFrames  []int
+	skillMeleeDashFrames  []int
+	skillRangedFrames     []int
+	skillRangedWalkFrames []int
+	skillRangedDashFrames []int
+)
 
-const skillHitmark = 28
+const (
+	skillHitmark     = 16
+	skillWalkHitmark = 3
+	skillDashHitmark = 3
+)
 
 func init() {
 	// skill (melee) -> x
-	skillMeleeFrames = frames.InitAbilSlice(20)
+	skillMeleeFrames = frames.InitAbilSlice(18)
+	skillMeleeFrames[action.ActionAttack] = 17
+	skillMeleeFrames[action.ActionBurst] = 18
+	skillMeleeFrames[action.ActionDash] = 17
+	skillMeleeFrames[action.ActionJump] = 17
+	skillMeleeFrames[action.ActionSwap] = 16
+
+	// skill (melee, walk) -> x
+	skillMeleeWalkFrames = frames.InitAbilSlice(24)
+	skillMeleeWalkFrames[action.ActionAttack] = 5
+	skillMeleeWalkFrames[action.ActionBurst] = 5
+	skillMeleeWalkFrames[action.ActionDash] = 6
+	skillMeleeWalkFrames[action.ActionJump] = skillWalkHitmark
+
+	// skill (melee, dash) -> x
+	skillMeleeDashFrames = frames.InitAbilSlice(23)
+	skillMeleeDashFrames[action.ActionAttack] = 13
+	skillMeleeDashFrames[action.ActionBurst] = 16
+	skillMeleeDashFrames[action.ActionDash] = 22
+	skillMeleeDashFrames[action.ActionJump] = skillDashHitmark
 
 	// skill (ranged) -> x
-	skillRangedFrames = frames.InitAbilSlice(28)
+	skillRangedFrames = frames.InitAbilSlice(39)
+	skillRangedFrames[action.ActionAttack] = 19
+	skillRangedFrames[action.ActionBurst] = 19
+	skillRangedFrames[action.ActionDash] = 19
+	skillRangedFrames[action.ActionJump] = 21
+
+	// skill (ranged, walk) -> x
+	skillRangedWalkFrames = frames.InitAbilSlice(24)
+	skillRangedWalkFrames[action.ActionAttack] = 5
+	skillRangedWalkFrames[action.ActionBurst] = 4
+	skillRangedWalkFrames[action.ActionDash] = 5
+	skillRangedWalkFrames[action.ActionJump] = 4
+
+	// skill (ranged, dash) -> x
+	skillRangedDashFrames = frames.InitAbilSlice(24)
+	skillRangedDashFrames[action.ActionAttack] = 17
+	skillRangedDashFrames[action.ActionBurst] = 17
+	skillRangedDashFrames[action.ActionDash] = 22
+	skillRangedDashFrames[action.ActionJump] = 3
 }
 
-//Cast: AoE strong hydro damage
-//Melee Stance: infuse NA/CA to hydro damage
+// Cast: AoE strong hydro damage
+// Melee Stance: infuse NA/CA to hydro damage
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
-		c.onExitMeleeStance()
+	if c.StatusIsActive(meleeKey) {
+		cdDelay := 11
+		switch c.Core.Player.CurrentState() {
+		case action.WalkState,
+			action.DashState:
+			cdDelay = 0
+		}
+		c.onExitMeleeStance(cdDelay)
 		c.ResetNormalCounter()
+		adjustedFrames := skillMeleeFrames
+		switch c.Core.Player.CurrentState() {
+		case action.WalkState:
+			adjustedFrames = skillMeleeWalkFrames
+		case action.DashState:
+			adjustedFrames = skillMeleeDashFrames
+		}
+		canQueueAfter := math.MaxInt
+		for _, f := range adjustedFrames {
+			if f < canQueueAfter {
+				canQueueAfter = f
+			}
+		}
 		return action.ActionInfo{
-			Frames:          frames.NewAbilFunc(skillMeleeFrames),
-			AnimationLength: skillMeleeFrames[action.InvalidAction],
-			CanQueueAfter:   skillMeleeFrames[action.ActionDash], // earliest cancel
+			Frames:          frames.NewAbilFunc(adjustedFrames),
+			AnimationLength: adjustedFrames[action.InvalidAction],
+			CanQueueAfter:   canQueueAfter,
 			State:           action.SkillState,
 		}
 	}
 
 	c.eCast = c.Core.F
-	c.Core.Status.Add("tartagliamelee", 30*60)
+	c.AddStatus(meleeKey, 30*60, true)
 	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index).
 		Write("rtexpiry", c.Core.F+30*60)
 
@@ -45,7 +113,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Foul Legacy: Raging Tide",
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNormalAttack,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
@@ -53,21 +121,44 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	cdDelay := 14
+	hitmark := skillHitmark
+	switch c.Core.Player.CurrentState() {
+	case action.WalkState:
+		hitmark = skillWalkHitmark
+		cdDelay = 0
+	case action.DashState:
+		hitmark = skillDashHitmark
+		cdDelay = 0
+	}
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	src := c.eCast
-	c.Core.Tasks.Add(func() {
-		if src == c.eCast && c.Core.Status.Duration("tartagliamelee") > 0 {
-			c.onExitMeleeStance()
+	c.QueueCharTask(func() {
+		if src == c.eCast && c.StatusIsActive(meleeKey) {
+			c.onExitMeleeStance(0)
 			c.ResetNormalCounter()
 		}
 	}, 30*60)
-	c.SetCD(action.ActionSkill, 60)
+	c.SetCDWithDelay(action.ActionSkill, 60, cdDelay)
 
+	adjustedFrames := skillRangedFrames
+	switch c.Core.Player.CurrentState() {
+	case action.WalkState:
+		adjustedFrames = skillRangedWalkFrames
+	case action.DashState:
+		adjustedFrames = skillRangedDashFrames
+	}
+	canQueueAfter := math.MaxInt
+	for _, f := range adjustedFrames {
+		if f < canQueueAfter {
+			canQueueAfter = f
+		}
+	}
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillRangedFrames),
-		AnimationLength: skillRangedFrames[action.InvalidAction],
-		CanQueueAfter:   skillRangedFrames[action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(adjustedFrames),
+		AnimationLength: adjustedFrames[action.InvalidAction],
+		CanQueueAfter:   canQueueAfter,
 		State:           action.SkillState,
 	}
 }
@@ -75,19 +166,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 // Hook to end Tartaglia's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
-		if c.Core.Status.Duration("tartagliamelee") > 0 {
-			//TODO: need to verify if this is correct
-			//but if childe is currently in melee stance and skill is on CD that means that
-			//the button has lit up yet from original skill press
-			//in which case we need to reset the cooldown first
+		if c.StatusIsActive(meleeKey) {
+			// TODO: need to verify if this is correct
+			// but if childe is currently in melee stance and skill is on CD that means that
+			// the button has lit up yet from original skill press
+			// in which case we need to reset the cooldown first
 			c.ResetActionCooldown(action.ActionSkill)
-			c.onExitMeleeStance()
+			c.onExitMeleeStance(0)
 		}
 		return false
 	}, "tartaglia-exit")
 }
 
-func (c *char) onExitMeleeStance() {
+func (c *char) onExitMeleeStance(delay int) {
 	// Precise skill CD from Risuke:
 	// Aligns with separate table on wiki except the 4 second duration one
 	// https://discord.com/channels/763583452762734592/851428030094114847/899416824117084210
@@ -118,7 +209,7 @@ func (c *char) onExitMeleeStance() {
 		c.ResetActionCooldown(action.ActionSkill)
 		c.mlBurstUsed = false
 	} else {
-		c.SetCD(action.ActionSkill, skillCD)
+		c.SetCDWithDelay(action.ActionSkill, skillCD, delay)
 	}
-	c.Core.Status.Delete("tartagliamelee")
+	c.DeleteStatus(meleeKey)
 }

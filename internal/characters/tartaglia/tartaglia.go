@@ -14,6 +14,8 @@ const (
 	riptideFlashICDKey = "riptide-flash-icd"
 	riptideKey         = "riptide"
 	riptideSlashICDKey = "riptide-slash-icd"
+	energyICDKey       = "riptide-energy-icd"
+	meleeKey           = "tartagliamelee"
 )
 
 func init() {
@@ -24,7 +26,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	eCast         int // the frame tartaglia casts E to enter melee stance
-	rtParticleICD int
 	mlBurstUsed   bool // used for c6
 }
 
@@ -39,7 +40,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 
 	c.eCast = 0
-	c.rtParticleICD = 0
 	c.mlBurstUsed = false
 
 	w.Character = &c
