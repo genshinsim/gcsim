@@ -2,6 +2,7 @@ package klee
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -116,10 +117,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		adjustedHitmarks = attackHitmarksWithLag
 	}
 
+	canQueueAfter := math.MaxInt
+	for _, f := range adjustedFrames[c.NormalCounter] {
+		if f < canQueueAfter {
+			canQueueAfter = f
+		}
+	}
 	actionInfo := action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, adjustedFrames),
 		AnimationLength: adjustedFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   0,
+		CanQueueAfter:   canQueueAfter,
 		State:           action.NormalAttackState,
 		OnRemoved: func(next action.AnimationState) {
 			switch next {

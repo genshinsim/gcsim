@@ -69,7 +69,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
-		CanQueueAfter:   0,
+		CanQueueAfter:   chargeFrames[action.ActionJump] - windup, // earliest cancel
 		State:           action.ChargeAttackState,
 	}
 }
