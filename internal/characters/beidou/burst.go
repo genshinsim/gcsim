@@ -137,7 +137,8 @@ func (c *char) burstProc() {
 			Write("char", ae.Info.ActorIndex).
 			Write("attack tag", ae.Info.AttackTag)
 
-		c.AddStatus(burstICDKey, 60, true)
+		// this ICD is most likely tied to the deployable, so it's not hitlag extendable
+		c.AddStatus(burstICDKey, 60, false)
 		return false
 	}, "beidou-burst")
 }
