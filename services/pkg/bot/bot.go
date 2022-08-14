@@ -127,12 +127,15 @@ func (b *Bot) Submit(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Invalid !submit command")
 		return
 	}
+	key := match[1]
+	//make sure sim is exist. we want to save just the config for rerunning later
+
 	author := m.Author.Username + "#" + m.Author.Discriminator
 
 	b.Log.Infow("submission received", "author", author, "key", match[1], "description", match[2])
 
 	sub := Submission{
-		Key:         match[1],
+		Key:         key,
 		Description: match[2],
 		Author:      author,
 	}

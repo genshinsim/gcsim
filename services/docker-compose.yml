@@ -22,8 +22,8 @@ services:
     restart: unless-stopped
     # Expose post 3000 and access postgrest locally by uncommenting
     # the `ports` directive below
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
     environment:
       PGRST_DB_URI: postgres://user:password@postgres:5432/db
       PGRST_DB_SCHEMA: public
@@ -78,9 +78,9 @@ services:
     # expose port to access embed server
     links:
       - postgrest:postgrest
-    ports:
-      - "3001:3001"
-    command: bash -c "cd /app/embed && ./embed"
+    #ports:
+    #  - "3001:3001"
+    #command: bash -c "cd /app/embed && ./embed"
     restart: unless-stopped
 
 volumes:

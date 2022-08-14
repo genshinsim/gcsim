@@ -1,1 +1,1 @@
-docker-compose exec postgres psql -U user -d db -f /scripts/test-data.sql
+docker compose exec postgres psql -U user -d db -f /scripts/test-data.sql
