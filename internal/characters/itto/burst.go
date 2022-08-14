@@ -38,7 +38,7 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// N1 pre-stack tech. If Itto did N1 -> Q, then add a stack before Q def to atk conversion
 	// https://library.keqingmains.com/evidence/characters/geo/itto#itto-n1-burst-cancel-ss-stack
-	if c.Core.Player.CurrentState() == action.NormalAttackState && c.NormalCounter == 1 {
+	if p["prestack"] != 0 && c.Core.Player.CurrentState() == action.NormalAttackState && c.NormalCounter == 1 {
 		c.addStrStack("n1-burst-cancel", 1)
 	}
 
