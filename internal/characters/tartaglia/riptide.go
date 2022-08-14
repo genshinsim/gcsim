@@ -71,11 +71,7 @@ func (c *char) rtC4Tick(t *enemy.Enemy) {
 	}
 
 	t.QueueEnemyTask(func() { c.rtC4Tick(t) }, 60*4)
-	c.Core.Log.NewEvent(
-		fmt.Sprintf("c4 applied"),
-		glog.LogCharacterEvent,
-		c.Index,
-	).
+	c.Core.Log.NewEvent(fmt.Sprintf("c4 applied"), glog.LogCharacterEvent, c.Index).
 		Write("target", t.Index())
 }
 
