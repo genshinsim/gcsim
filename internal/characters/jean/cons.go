@@ -46,15 +46,15 @@ func (c *char) c2() {
 // C4:
 // Within the Field created by Dandelion Breeze, all opponents have their Anemo RES decreased by 40%.
 func (c *char) c4() {
-	//add debuff to all target for ??? duration
+	// gets called at the same time as heal ticks (every 1s)
+	// add debuff to all targets for 1.2 s
 	for _, t := range c.Core.Combat.Targets() {
 		e, ok := t.(*enemy.Enemy)
 		if !ok {
 			continue
 		}
-		//10 seconds + animation
 		e.AddResistMod(enemy.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("jean-c4", 600+burstStart),
+			Base:  modifier.NewBaseWithHitlag("jean-c4", 72), // 1.2s
 			Ele:   attributes.Anemo,
 			Value: -0.4,
 		})
