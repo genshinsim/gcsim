@@ -117,6 +117,7 @@ func init() {
 	// N6 -> x
 	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][0]+meleeHitmarks[5][1], 65)
 	meleeFrames[5][action.ActionAttack] = 65
+	meleeFrames[5][action.ActionCharge] = 500 // illegal action
 }
 
 // Melee stance attack.
