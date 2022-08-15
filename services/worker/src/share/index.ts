@@ -65,6 +65,24 @@ export async function handleShare(request: Request): Promise<Response> {
   //data is expected to be the key
   const key = data;
 
+  //TODO: avatar and embed we don't actually care about the return value
+  //and if they error'd or not
+
+  //upload avatar information
+  for (const char of content.meta.char_names) {
+    const { error } = await dbClient.rpc('link_avatar_to_sim', {
+      avatar: char,
+      key: key,
+    });
+    if (error !== null) {
+      console.log(error);
+      return new Response(null, {
+        status: 500,
+        statusText: 'Internal Server Error',
+      });
+    }
+  }
+
   //send request to generate embed
   await fetch(new Request(PREVIEW_ENDPOINT + '/embed/' + key), {
     method: 'POST',

@@ -43,6 +43,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./database/create_db.sql:/scripts/create_db.sql
+      - ./database/initialize.sql:/scripts/initialize.sql
 
   dbmanage:
     container_name: dbmanage

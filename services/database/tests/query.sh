@@ -108,3 +108,25 @@ curl "http://localhost:3000/rpc/replace_db_sim" \
 echo "\n\n check author changed"
 
 curl "http://localhost:3000/db_entry_authors"
+
+echo "\n\n link chars"
+
+curl "http://localhost:3000/rpc/link_avatar_to_sim" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{ "avatar": "ayaka", "key": "'"$shareKey"'"}'
+
+curl "http://localhost:3000/rpc/link_avatar_to_sim" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{ "avatar": "ayato", "key": "'"$shareKey"'"}'
+
+curl "http://localhost:3000/rpc/link_avatar_to_sim" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{ "avatar": "ningguang", "key": "'"$shareKey"'"}'
+
+echo "\n\n check link"
+
+curl "http://localhost:3000/active_user_sims_by_avatar"
+
+echo "\n"
+
+curl "http://localhost:3000/db_sims_by_avatar?avatar_name=eq.ayato"

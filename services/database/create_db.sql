@@ -1,6 +1,6 @@
 create table avatars (
     avatar_id serial primary key
-    , avatar_name text not NULL
+    , avatar_name text not NULL unique
 );
 create table users (
     user_id bigint not null unique primary key-- discord id (twitter snowflake uint64)
@@ -66,7 +66,6 @@ create or replace view active_user_simulations as
     select 
         s.simulation_key
         , s.metadata
-        , s.viewer_file
         , s.is_permanent
         , u.user_id
         , case when u.user_name is null then 'anon' else u.user_name end as user_name 
@@ -88,6 +87,43 @@ create or replace view user_simulation_count as
     where
         s.is_permanent
     group by us.user_id
+;
+
+create or replace view active_user_sims_by_avatar as
+    select 
+        s.simulation_key
+        , s.metadata
+        , s.is_permanent
+        , s.create_time
+        , a.avatar_id
+        , a.avatar_name
+    from avatarsimulations x
+    join user_simulations u
+        on x.simulation_key = u.simulation_key
+    left outer join avatars a
+        on a.avatar_id = x.avatar_id
+    left outer join simulations s
+        on x.simulation_key = s.simulation_key
+    where create_time > current_timestamp - interval '30 days' or s.is_permanent
+;
+
+create or replace view db_sims_by_avatar as
+    select 
+        s.simulation_key
+        , s.metadata
+        , s.is_permanent
+        , s.create_time
+        , d.git_hash
+        , d.sim_description
+        , a.avatar_id
+        , a.avatar_name
+    from avatarsimulations x
+    join db_simulations d
+        on x.simulation_key = d.simulation_key
+    left outer join simulations s
+        on d.simulation_key = s.simulation_key
+    left outer join avatars a
+        on a.avatar_id = x.avatar_id
 ;
 
 -- functions for commonly used queries
@@ -120,6 +156,26 @@ begin
     );
 
     return key;
+end;
+$$;
+
+create or replace function public.link_avatar_to_sim(
+    avatar text
+    , key uuid
+)
+returns int
+language plpgsql
+as
+$$
+declare
+    id int;
+begin
+    if exists(select 1 from avatars where avatar_name = avatar) then
+        select avatar_id into id from avatars where avatar_name = avatar;
+        insert into avatarsimulations (avatar_id, simulation_key) values (id, key);
+        return id;
+    end if;
+    return -1;
 end;
 $$;
 
