@@ -45,8 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	//TODO: review bennett AOE size
-	radius := 5.0
+	radius := 6.0
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius, false, combat.TargettableEnemy), 37, 37)
 
 	//apply right away
