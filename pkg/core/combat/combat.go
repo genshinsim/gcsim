@@ -36,6 +36,7 @@ type Opt struct {
 	DamageMode    bool
 	DefHalt       bool
 	EnableHitlag  bool
+	closestTarget int
 }
 
 func New(opt Opt) *Handler {
@@ -43,6 +44,7 @@ func New(opt Opt) *Handler {
 		Opt: opt,
 	}
 	h.targets = make([]Target, 0, 5)
+	h.closestTarget = 1 // first enemy target
 
 	return h
 }
@@ -50,6 +52,7 @@ func New(opt Opt) *Handler {
 func (h *Handler) AddTarget(t Target) {
 	h.targets = append(h.targets, t)
 	t.SetIndex(len(h.targets) - 1)
+	h.cachePrimaryTarget()
 }
 
 func (h *Handler) Target(i int) Target {
@@ -59,18 +62,20 @@ func (h *Handler) Target(i int) Target {
 	return h.targets[i]
 }
 
+func (h *Handler) cachePrimaryTarget() {
+	for i, t := range h.targets {
+		if t.Type() == TargettableEnemy && Distance(h.Player(), t) < Distance(h.Player(), h.targets[h.closestTarget]) {
+			h.closestTarget = i
+		}
+	}
+}
+
 func (h *Handler) Targets() []Target {
 	return h.targets
 }
 
 func (h *Handler) PrimaryTargetIndex() int {
-	result := 1 // first enemy target
-	for i, t := range h.targets {
-		if t.Type() == TargettableEnemy && Distance(h.Player(), t) < Distance(h.Player(), h.targets[result]) {
-			result = i
-		}
-	}
-	return result
+	return h.closestTarget
 }
 
 func (h *Handler) TargetsCount() int {
@@ -94,6 +99,7 @@ func (h *Handler) SetTargetPos(i int, x, y float64) bool {
 		Write("index", i).
 		Write("x", x).
 		Write("y", y)
+	h.cachePrimaryTarget()
 	return true
 }
 
