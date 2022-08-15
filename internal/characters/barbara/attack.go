@@ -2,7 +2,6 @@ package barbara
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -38,10 +37,8 @@ func init() {
 
 	// N4 -> x
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 60)
+	attackFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 	attackFrames[3][action.ActionWalk] = 57
-	attackFrames[3][action.ActionDash] = 2
-	attackFrames[3][action.ActionJump] = 3
-	attackFrames[3][action.ActionSwap] = 2
 }
 
 // Standard attack function with seal handling
@@ -83,17 +80,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	canQueueAfter := math.MaxInt32
-	for _, f := range attackFrames[c.NormalCounter] {
-		if f < canQueueAfter {
-			canQueueAfter = f
-		}
-	}
-	// return animation cd
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   canQueueAfter,
+		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 }
