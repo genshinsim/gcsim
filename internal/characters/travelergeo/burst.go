@@ -60,6 +60,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	src := c.Core.F
 	var c4cb combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
+		energyCount := 0
 		c4cb = func(a combat.AttackCB) {
 			t, ok := a.Target.(*enemy.Enemy)
 			if !ok {
@@ -69,8 +70,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if t.GetTag("traveler-c4-src") == src && src > 0 {
 				return
 			}
+			if energyCount >= 5 {
+				return
+			}
 			t.SetTag("traveler-c4-src", src)
 			c.AddEnergy("geo-traveler-c4", 5)
+			energyCount++
 		}
 	}
 
