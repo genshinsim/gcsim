@@ -281,7 +281,7 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 	)
 
 	for idxChar, char := range stats.charProfilesERBaseline {
-		charDebug = stats.findOptimalERforChar(idxChar, char, tolMean, tolSD)
+		stats.findOptimalERforChar(idxChar, char, tolMean, tolSD)
 		opDebug = append(opDebug, charDebug...)
 	}
 
@@ -302,7 +302,7 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 			continue
 		}
 		opDebug = append(opDebug, "Raiden found in team comp - running secondary optimization routine...")
-		charDebug = stats.findOptimalERforChar(i, char, tolMean, tolSD)
+		stats.findOptimalERforChar(i, char, tolMean, tolSD)
 		opDebug = append(opDebug, charDebug...)
 	}
 
@@ -317,7 +317,7 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char profile.CharacterProfile, tolMean float64, tolSD float64) []string {
+func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char profile.CharacterProfile, tolMean float64, tolSD float64) {
 	var initialMean float64
 	var initialSD float64
 
@@ -358,8 +358,6 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char pro
 			break
 		}
 	}
-
-	return []string{}
 }
 
 func (stats *SubstatOptimizerDetails) setInitialSubstats(fixedSubstatCount int) {
