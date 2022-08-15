@@ -115,7 +115,7 @@ func init() {
 	meleeFrames[4][action.ActionCharge] = 23
 
 	// N6 -> x
-	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][0]+meleeHitmarks[5][1], 65)
+	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][1], 65)
 	meleeFrames[5][action.ActionAttack] = 65
 	meleeFrames[5][action.ActionCharge] = 500 // illegal action
 }
@@ -135,8 +135,8 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 			Durability:         25,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: true,
-			Mult: mult[c.TalentLvlSkill()],
-			HitlagHaltFrames: meleeHitlagHaltFrames[c.NormalCounter][i] * 60,
+			Mult:               mult[c.TalentLvlSkill()],
+			HitlagHaltFrames:   meleeHitlagHaltFrames[c.NormalCounter][i] * 60,
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
