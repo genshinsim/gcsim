@@ -5,17 +5,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
 
-const skillHitmark = 35
+const skillHitmark = 34
 
 func init() {
-	skillFrames = frames.InitAbilSlice(35)
+	skillFrames = frames.InitAbilSlice(47) // E -> N1/Q
+	skillFrames[action.ActionDash] = 33    // E -> D
+	skillFrames[action.ActionJump] = 33    // E -> J
+	skillFrames[action.ActionSwap] = 46    // E -> Swap
 }
 
 /**
@@ -40,7 +42,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       skill[c.TalentLvlSkill()],
 		}
-		//Inuzaka All-Round Defense: Skill DMG increased by 156% of DEF
+
+		// A1 Part 1
+		// Inuzaka All-Round Defense: Skill DMG increased by 156% of DEF
 		snap := c.Snapshot(&ai)
 		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 1.56
 
@@ -48,49 +52,38 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			ai,
 			snap,
 			combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
-			//TODO: skill damage frames
 			0,
 		)
-	}, skillHitmark+10)
 
-	//2 particles apparently
-	//TODO: particle frames
+		// E
+		// so it looks like gorou fields works much the same was as bennett field
+		// however e field cant be placed if q field still active
+		if c.Core.Status.Duration(generalGloryKey) == 0 {
+
+			c.eFieldSrc = c.Core.F
+			c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 17) // 17 so we get one last tick
+
+			// add a status for general's banner, 10 seconds
+			c.Core.Status.Add(generalWarBannerKey, 600)
+		}
+
+		// C6
+		if c.Base.Cons == 6 {
+			c.c6()
+		}
+	}, skillHitmark)
+
+	// 2 particles apparently
+	// TODO: particle frames
 	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
 
-	//c6 check
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
-
-	//so it looks like gorou fields works much the same was as bennett field
-	//however e field cant be placed if q field still active
-	if c.Core.Status.Duration(generalGloryKey) == 0 {
-
-		//TODO: when does ticks start?
-		c.eFieldSrc = c.Core.F
-		c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 17) //17 so we get one last tick
-
-		//add a status for general's banner, 10 seconds
-		c.Core.Status.Add(generalWarBannerKey, 600)
-
-		if c.Base.Cons >= 4 && c.geoCharCount > 1 {
-			//TODO: not sure if this actually snapshots stats
-			// ai := combat.AttackInfo{
-			// 	Abil:      "Inuzaka All-Round Defense C4",
-			// 	AttackTag: combat.AttackTagNone,
-			// }
-			c.healFieldStats, _ = c.Stats()
-			c.Core.Tasks.Add(c.gorouSkillHealField(c.Core.F), 90)
-		}
-	}
-
-	//10s coold down
-	c.SetCD(action.ActionSkill, 600)
+	// 10s cooldown
+	c.SetCDWithDelay(action.ActionSkill, 600, 32)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -120,31 +113,5 @@ func (c *char) gorouSkillBuffField(src int) func() {
 
 		//looks like tick every 0.3s
 		c.Core.Tasks.Add(c.gorouSkillBuffField(src), 18)
-	}
-}
-
-func (c *char) gorouSkillHealField(src int) func() {
-	return func() {
-		//do nothing if this has been overwritten
-		if c.eFieldHealSrc != src {
-			return
-		}
-		//do nothing if field expired
-		if c.Core.Status.Duration(generalWarBannerKey) == 0 {
-			return
-		}
-		//When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
-		//within its AoE by 50% of Gorou's own DEF every 1.5s.
-		amt := c.Base.Def*(1+c.healFieldStats[attributes.DEFP]) + c.healFieldStats[attributes.DEF]
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Core.Player.Active(),
-			Message: "Lapping Hound: Warm as Water",
-			Src:     0.5 * amt,
-			Bonus:   c.Stat(attributes.Heal),
-		})
-
-		//tick every 1.5s
-		c.Core.Tasks.Add(c.gorouSkillHealField(src), 90)
 	}
 }

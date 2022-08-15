@@ -9,9 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-//When characters (other than Gorou) within the AoE of Gorou's General's War Banner
-//or General's Glory deal Geo DMG to opponents, the CD of Gorou's Inuzaka All-Round Defense
-//is decreased by 2s. This effect can occur once every 10s.
+// C1:
+// When characters (other than Gorou) within the AoE of Gorou's General's War Banner
+// or General's Glory deal Geo DMG to opponents, the CD of Gorou's Inuzaka All-Round Defense
+// is decreased by 2s. This effect can occur once every 10s.
 func (c *char) c1() {
 	icd := -1
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -34,9 +35,10 @@ func (c *char) c1() {
 	}, "gorou-c1")
 }
 
-//While General's Glory is in effect, its duration is extended by 1s when a nearby
-//active character obtains an Elemental Shard from a Crystallize reaction.
-//This effect can occur once every 0.1s. Max extension is 3s.
+// C2:
+// While General's Glory is in effect, its duration is extended by 1s when a nearby
+// active character obtains an Elemental Shard from a Crystallize reaction.
+// This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnShielded, func(_ ...interface{}) bool {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
@@ -51,6 +53,7 @@ func (c *char) c2() {
 	}, "gorou-c2")
 }
 
+// C6:
 // For 12s after using Inuzaka All-Round Defense or Juuga: Forward Unto Victory, increases the CRIT DMG of
 // all nearby party members' Geo DMG based on the buff level of the skill's field at the time of use:
 // • "Standing Firm": +10%
@@ -65,7 +68,7 @@ func (c *char) c6() {
 				if ae.Info.Element != attributes.Geo {
 					return nil, false
 				}
-				return c.c6buff, true
+				return c.c6Buff, true
 			},
 		})
 	}
