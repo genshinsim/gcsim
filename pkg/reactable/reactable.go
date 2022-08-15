@@ -105,6 +105,9 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 		if r.Durability[v] > ZeroDur {
 			return true
 		}
+		if v == attributes.Cryo && r.Durability[attributes.Frozen] > ZeroDur {
+			return true
+		}
 	}
 	return false
 }
