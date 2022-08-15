@@ -82,8 +82,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
+		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
 	}
 }
