@@ -2,6 +2,7 @@ package barbara
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -11,7 +12,8 @@ import (
 
 // barbara skill - copied from bennett burst
 const skillDuration = 15*60 + 1
-const barbSkillKey = "barbskill"
+const barbSkillKey = "barbara-e"
+const skillCDStart = 3
 
 var (
 	skillHitmarks = []int{42, 78}
@@ -30,19 +32,14 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	c.Core.Status.Add(barbSkillKey, skillDuration)
-
 	// activate a1
 	c.a1()
-
 	// restart a4 counter
 	c.a4extendCount = 0
 
-	// hook for buffs; active right away after cast
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Let the Show Begin♪",
+		Abil:       "Let the Show Begin♪ (Droplet)",
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
@@ -50,6 +47,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
+
+	// 2 Droplets
 	// TODO: review barbara AOE size?
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
@@ -60,28 +59,34 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		) // need to confirm snapshot timing
 	}
 
+	c.skillInitF = c.Core.F // needed for ticks
+
+	// setup heal and wet ticks (first tick at skillCDStart, once every 5s)
 	stats, _ := c.Stats()
 	hpplus := stats[attributes.Heal]
 	heal := skillhp[c.TalentLvlSkill()] + skillhpp[c.TalentLvlSkill()]*c.MaxHP()
 
-	currFrame := c.Core.F
-	c.skillInitF = currFrame
-	c.Core.Tasks.Add(func() {
-		c.barbaraHealTick(heal, hpplus, currFrame)()
-	}, 6)
-	ai.Abil = "Let the Show Begin♪ Wet Tick"
+	// setup Melody Loop ticks (first tick at skillCDStart, once every 1.5s)
+	ai.Abil = "Let the Show Begin♪ (Melody Loop)"
 	ai.AttackTag = combat.AttackTagNone
 	ai.Mult = 0
-	c.Core.Tasks.Add(func() {
-		c.barbaraWet(ai, currFrame)()
-	}, 3)
+	ai.HitlagFactor = 0.05
+	ai.HitlagHaltFrames = 0.05 * 60
+	ai.CanBeDefenseHalted = true
+	ai.IsDeployable = true
 
-	cdDelay := 3
+	// add skill status and queue up ticks
+	c.Core.Tasks.Add(func() {
+		c.Core.Status.Add(barbSkillKey, skillDuration)
+		c.barbaraSelfTick(heal, hpplus, c.skillInitF)()
+		c.barbaraMelodyTick(ai, c.skillInitF)()
+	}, skillCDStart)
+
 	if c.Base.Cons >= 2 {
 		c.c2() // c2 hydro buff
-		c.SetCDWithDelay(action.ActionSkill, 32*60*0.85, cdDelay)
+		c.SetCDWithDelay(action.ActionSkill, 32*60*0.85, skillCDStart)
 	} else {
-		c.SetCDWithDelay(action.ActionSkill, 32*60, cdDelay)
+		c.SetCDWithDelay(action.ActionSkill, 32*60, skillCDStart)
 	}
 
 	return action.ActionInfo{
@@ -92,7 +97,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) barbaraHealTick(healAmt float64, hpplus float64, skillInitF int) func() {
+func (c *char) barbaraSelfTick(healAmt float64, hpplus float64, skillInitF int) func() {
 	return func() {
 		// make sure it's not overwritten
 		if c.skillInitF != skillInitF {
@@ -102,7 +107,10 @@ func (c *char) barbaraHealTick(healAmt float64, hpplus float64, skillInitF int) 
 		if c.Core.Status.Duration(barbSkillKey) == 0 {
 			return
 		}
-		// c.Core.Log.NewEvent("barbara heal ticking", core.LogCharacterEvent, c.Index)
+
+		c.Core.Log.NewEvent("barbara heal and wet ticking", glog.LogCharacterEvent, c.Index)
+
+		// heal
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
@@ -111,12 +119,19 @@ func (c *char) barbaraHealTick(healAmt float64, hpplus float64, skillInitF int) 
 			Bonus:   hpplus,
 		})
 
-		// tick per 5 seconds
-		c.Core.Tasks.Add(c.barbaraHealTick(healAmt, hpplus, skillInitF), 5*60)
+		// wet: apply self infusion for 0.3s
+		p, ok := c.Core.Combat.Player().(*avatar.Player)
+		if !ok {
+			panic("target 0 should be Player but is not!!")
+		}
+		p.ApplySelfInfusion(attributes.Hydro, 25, 0.3*60)
+
+		// tick every 5s
+		c.Core.Tasks.Add(c.barbaraSelfTick(healAmt, hpplus, skillInitF), 5*60)
 	}
 }
 
-func (c *char) barbaraWet(ai combat.AttackInfo, skillInitF int) func() {
+func (c *char) barbaraMelodyTick(ai combat.AttackInfo, skillInitF int) func() {
 	return func() {
 		// make sure it's not overwritten
 		if c.skillInitF != skillInitF {
@@ -126,11 +141,13 @@ func (c *char) barbaraWet(ai combat.AttackInfo, skillInitF int) func() {
 		if c.Core.Status.Duration(barbSkillKey) == 0 {
 			return
 		}
-		c.Core.Log.NewEvent("barbara wet ticking", glog.LogCharacterEvent, c.Index)
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), -1, 5)
+		c.Core.Log.NewEvent("barbara melody loop ticking", glog.LogCharacterEvent, c.Index)
 
-		// tick per 5 seconds
-		c.Core.Tasks.Add(c.barbaraWet(ai, skillInitF), 5*60)
+		// 0 DMG attack that causes hitlag on enemy only
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), -1, 0)
+
+		// tick every 1.5s
+		c.Core.Tasks.Add(c.barbaraMelodyTick(ai, skillInitF), 1.5*60)
 	}
 }
