@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var skillFrames []int
@@ -31,8 +32,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// guoba spawns at cd frame
 	c.Core.Status.Add("xianglingguoba", 500+13)
 
-	//lasts 7.3 seconds, shoots every 100 frames
-	delay := 126 //first tick at 126
+	// lasts 7.3 seconds, shoots every 100 frames
+	delay := 126 // first tick at 126
 	snap := c.Snapshot(&ai)
 	for i := 0; i < 4; i++ {
 		c.Core.Tasks.Add(func() {
@@ -44,12 +45,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				done = true
 				c.Core.QueueParticle("xiangling", 1, attributes.Pyro, c.Core.Flags.ParticleDelay)
 			}
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 10, c.c1, part)
+			c.Core.QueueAttackWithSnap(
+				ai,
+				snap,
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
+				10,
+				c.c1,
+				part,
+			)
+			c.Core.Log.NewEventBuildMsg(glog.LogElementEvent, c.Index, "guoba self infusion applied").
+				Write("expiry", c.Core.F+21)
 			c.guoba.Durability[attributes.Pyro] = 25
 			c.Core.Tasks.Add(func() {
 				c.guoba.Durability[attributes.Pyro] = 0
-			}, 21) // +1 since 20f inclusive window
-		}, delay+i*100-10) //10 frame window to swirl
+			}, 21) // +1 since 20f window is inclusive
+		}, delay+i*100-10) // 10 frame window to swirl
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
