@@ -8,11 +8,10 @@ import (
 var dashFrames []int
 
 func init() {
-	dashFrames = frames.InitAbilSlice(23)
-	dashFrames[action.ActionSwap] = 25
+	dashFrames = frames.InitAbilSlice(21)
+	dashFrames[action.ActionSwap] = 20
 	dashFrames[action.ActionSkill] = 2
 	dashFrames[action.ActionBurst] = 1
-	dashFrames[action.ActionAttack] = 21
 	dashFrames[action.ActionCharge] = 20
 }
 

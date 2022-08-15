@@ -19,12 +19,12 @@ var (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(59)
+	skillFrames = frames.InitAbilSlice(55)
 	skillFrames[action.ActionWalk] = 54
 	skillFrames[action.ActionDash] = 4
 	skillFrames[action.ActionJump] = 5
+	skillFrames[action.ActionSwap] = 53
 	skillFrames[action.ActionSkill] = 54
-	skillFrames[action.ActionBurst] = 55
 	skillFrames[action.ActionAttack] = 54
 	skillFrames[action.ActionCharge] = 54
 }

@@ -12,7 +12,7 @@ import (
 var burstFrames []int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(200)
+	burstFrames = frames.InitAbilSlice(195)
 	burstFrames[action.ActionDash] = 161
 	burstFrames[action.ActionJump] = 162
 	burstFrames[action.ActionSkill] = 140
