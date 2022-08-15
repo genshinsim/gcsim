@@ -126,6 +126,19 @@ create or replace view db_sims_by_avatar as
         on a.avatar_id = x.avatar_id
 ;
 
+create or replace view db_sims as
+    select 
+        s.simulation_key
+        , s.metadata
+        , s.is_permanent
+        , s.create_time
+        , d.git_hash
+        , d.sim_description
+    from db_simulations d
+    left outer join simulations s
+        on d.simulation_key = s.simulation_key
+;
+
 -- functions for commonly used queries
 create or replace function public.share_sim(
     metadata JSONB
