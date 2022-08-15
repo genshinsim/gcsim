@@ -119,6 +119,10 @@ func (b *PostgRESTStore) uploadDBSim(jsonStr []byte, url string) (int64, error) 
 func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 	url := fmt.Sprintf(`%v/rpc/add_db_sim`, b.URL)
 	entry.AuthorString = ""
+	err := entry.ConvertConfig()
+	if err != nil {
+		return 0, err
+	}
 	jsonStr, err := json.Marshal(entry)
 	if err != nil {
 		return 0, err
@@ -129,6 +133,10 @@ func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 func (b *PostgRESTStore) Replace(key string, entry DBEntry) (int64, error) {
 	url := fmt.Sprintf(`%v/rpc/replace_db_sim`, b.URL)
 	entry.AuthorString = ""
+	err := entry.ConvertConfig()
+	if err != nil {
+		return 0, err
+	}
 	var data = struct {
 		DBEntry
 		OldKey string `json:"old_key"`
