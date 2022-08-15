@@ -10,17 +10,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{7, 18, 20, 47}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{6, 11, 12, 32}
+)
 
 const normalHitNum = 4
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], attackHitmarks[0])
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], attackHitmarks[1])
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], attackHitmarks[2])
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], attackHitmarks[3])
+
+	// N1 -> x
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 23)
+	attackFrames[0][action.ActionAttack] = 15
+	attackFrames[0][action.ActionCharge] = 18
+
+	// N2 -> x
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 28)
+	attackFrames[1][action.ActionAttack] = 21
+	attackFrames[1][action.ActionCharge] = 24
+
+	// N3 -> x
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 30)
+	attackFrames[2][action.ActionAttack] = 22
+	attackFrames[2][action.ActionCharge] = 28
+
+	// N4 -> x
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 60)
+	attackFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[3][action.ActionWalk] = 57
 }
 
 // Standard attack function with seal handling
@@ -40,7 +58,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if done {
 			return
 		}
-		//check for healing
+		// check for healing
 		if c.Core.Status.Duration(barbSkillKey) > 0 {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
@@ -51,18 +69,17 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			})
 			done = true
 		}
-
 	}
+
 	c.Core.QueueAttack(ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-		0,
+		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 		cb,
 	)
 
 	defer c.AdvanceNormalIndex()
 
-	// return animation cd
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
