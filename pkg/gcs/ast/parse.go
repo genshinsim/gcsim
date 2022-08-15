@@ -308,22 +308,27 @@ func (p *Parser) parseIf() (Stmt, error) {
 
 	var err error
 
-	stmt.Condition, err = p.parseExpr(Lowest)
-	if err != nil {
-		return nil, err
-	}
-
-	//expecting a { next
-	if n := p.peek(); n.Typ != itemLeftBrace {
-		return nil, fmt.Errorf("ln%v: expecting { after if, got %v", n.line, n.Val)
-	}
-
-	stmt.IfBlock, err = p.parseBlock() //parse block here
-	if err != nil {
-		return nil, err
-	}
-
 	for {
+		ibs := &IfBlockStmt{
+			Pos: n.pos,
+		}
+
+		ibs.Condition, err = p.parseExpr(Lowest)
+		if err != nil {
+			return nil, err
+		}
+
+		//expecting a { next
+		if n := p.peek(); n.Typ != itemLeftBrace {
+			return nil, fmt.Errorf("ln%v: expecting { after if, got %v", n.line, n.Val)
+		}
+
+		ibs.Body, err = p.parseBlock() //parse block here
+		if err != nil {
+			return nil, err
+		}
+		stmt.IfBlocks = append(stmt.IfBlocks, ibs)
+
 		//stop if no else
 		if n := p.peek(); n.Typ != keywordElse {
 			return stmt, nil
@@ -337,27 +342,8 @@ func (p *Parser) parseIf() (Stmt, error) {
 		}
 		//skip the if keyword
 		p.next()
-
-		eis := &ElIfStmt{
-			Pos: n.pos,
-		}
-
-		eis.Condition, err = p.parseExpr(Lowest)
-		if err != nil {
-			return nil, err
-		}
-
-		//expecting a { next
-		if n := p.peek(); n.Typ != itemLeftBrace {
-			return nil, fmt.Errorf("ln%v: expecting { after if, got %v", n.line, n.Val)
-		}
-
-		eis.Body, err = p.parseBlock() //parse block here
-		if err != nil {
-			return nil, err
-		}
-		stmt.ElIfBlocks = append(stmt.ElIfBlocks, eis)
 	}
+
 	//expecting another block
 	stmt.ElseBlock, err = p.parseBlock()
 

@@ -74,17 +74,15 @@ type (
 		Typ CtrlTyp
 	}
 
-	// IfStmt represents an if block
+	// IfStmt represents an if/else if/else blocks
 	IfStmt struct {
 		Pos
-		Condition  Expr       //TODO: this should be an expr?
-		IfBlock    *BlockStmt // What to execute if true
-		ElIfBlocks []*ElIfStmt
-		ElseBlock  *BlockStmt // What to execute if false
+		IfBlocks  []*IfBlockStmt // What to execute if true
+		ElseBlock *BlockStmt     // What to execute if false
 	}
 
-	// ElIfStmt represents an else if block
-	ElIfStmt struct {
+	// IfBlockStmt represents an if block
+	IfBlockStmt struct {
 		Pos
 		Condition Expr
 		Body      *BlockStmt
@@ -358,13 +356,11 @@ func (i *IfStmt) String() string {
 }
 
 func (i *IfStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString("if ")
-	i.Condition.writeTo(sb)
-	sb.WriteString(" {\n")
-	i.IfBlock.writeTo(sb)
-	sb.WriteString("}")
-	for _, v := range i.ElIfBlocks {
+	for j, v := range i.IfBlocks {
 		v.writeTo(sb)
+		if j != len(i.IfBlocks)-1 {
+			sb.WriteString("else ")
+		}
 	}
 	if i.ElseBlock != nil {
 		sb.WriteString("else {\n")
@@ -378,39 +374,37 @@ func (i *IfStmt) Copy() Node {
 		return nil
 	}
 	n := &IfStmt{
-		Pos:        i.Pos,
-		Condition:  i.Condition.CopyExpr(),
-		IfBlock:    i.IfBlock.CopyBlock(),
-		ElIfBlocks: make([]*ElIfStmt, 0, len(i.ElIfBlocks)),
-		ElseBlock:  i.ElseBlock.CopyBlock(),
+		Pos:       i.Pos,
+		IfBlocks:  make([]*IfBlockStmt, 0, len(i.IfBlocks)),
+		ElseBlock: i.ElseBlock.CopyBlock(),
 	}
-	for j := range i.ElIfBlocks {
-		n.ElIfBlocks = append(n.ElIfBlocks, i.ElIfBlocks[j].Copy())
+	for j := range i.IfBlocks {
+		n.IfBlocks = append(n.IfBlocks, i.IfBlocks[j].Copy())
 	}
 	return n
 }
 
-// ElIfStmt.
+// IfBlockStmt.
 
-func (e *ElIfStmt) String() string {
+func (e *IfBlockStmt) String() string {
 	var sb strings.Builder
 	e.writeTo(&sb)
 	return sb.String()
 }
 
-func (e *ElIfStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString("else if ")
+func (e *IfBlockStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString("if ")
 	e.Condition.writeTo(sb)
 	sb.WriteString(" {\n")
 	e.Body.writeTo(sb)
 	sb.WriteString("}")
 }
 
-func (e *ElIfStmt) Copy() *ElIfStmt {
+func (e *IfBlockStmt) Copy() *IfBlockStmt {
 	if e == nil {
 		return nil
 	}
-	return &ElIfStmt{
+	return &IfBlockStmt{
 		Pos:       e.Pos,
 		Condition: e.Condition.CopyExpr(),
 		Body:      e.Body.CopyBlock(),

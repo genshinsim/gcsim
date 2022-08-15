@@ -165,15 +165,8 @@ func (e *Eval) evalCtrlStmt(r *ast.CtrlStmt, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalIfStmt(i *ast.IfStmt, env *Env) (Obj, error) {
-	cond, err := e.evalExpr(i.Condition, env)
-	if err != nil {
-		return nil, err
-	}
-	if otob(cond) {
-		return e.evalBlock(i.IfBlock, env)
-	}
-	for _, v := range i.ElIfBlocks {
-		cond, err = e.evalExpr(v.Condition, env)
+	for _, v := range i.IfBlocks {
+		cond, err := e.evalExpr(v.Condition, env)
 		if err != nil {
 			return nil, err
 		}
