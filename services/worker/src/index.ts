@@ -8,52 +8,57 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { PostgrestClient } from "@supabase/postgrest-js";
-import { Router } from "itty-router";
-import { handleAuth } from "./auth";
-import { handleOptions } from "./options";
-import { handlePreview } from "./preview";
-import { handleShare } from "./share";
-import { handleView } from "./view";
+import { PostgrestClient } from '@supabase/postgrest-js';
+import { Router } from 'itty-router';
+import { handleAuth } from './auth';
+import { handleListDBChars, handleListDBSims } from './db';
+import { handleOptions } from './options';
+import { handlePreview } from './preview';
+import { handleShare } from './share';
+import { handleView } from './view';
 
 export const dbClient = new PostgrestClient(POSTGREST_ENDPOINT); //secrets?
 const router = Router();
 
-router.options("*", handleOptions);
+router.options('*', handleOptions);
 
-router.get("/api/auth", handleAuth);
+router.get('/api/auth', handleAuth);
 
-router.post("/api/share", handleShare);
+router.post('/api/share', handleShare);
 
-router.get("/api/view/:key", handleView);
+router.get('/api/view/:key', handleView);
 
-router.get("/api/preview/:key", handlePreview);
+router.get('/api/preview/:key', handlePreview);
 
-router.get("/api/avatars", async () => {
-  const { data, error } = await dbClient.from("avatars").select();
+router.get('/api/db/avatars', handleListDBChars);
+
+router.get('/api/db/sims/:key', handleListDBSims);
+
+router.get('/api/avatars', async () => {
+  const { data, error } = await dbClient.from('avatars').select();
 
   if (error) {
-    console.log("error getting avatars: ", error);
+    console.log('error getting avatars: ', error);
     return new Response(JSON.stringify({ error: error }), {
       status: 500,
-      statusText: "Error getting avatars",
+      statusText: 'Error getting avatars',
       headers: {
-        "content-type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Max-Age": "86400",
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Max-Age': '86400',
       },
     });
   }
 
   return new Response(JSON.stringify({ users: data }), {
     headers: {
-      "content-type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Max-Age": "86400",
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Max-Age': '86400',
     },
   });
 });
 
-addEventListener("fetch", (event) => {
+addEventListener('fetch', (event) => {
   event.respondWith(router.handle(event.request));
 });

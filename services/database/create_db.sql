@@ -131,8 +131,10 @@ create or replace view avatars_with_db_sims as
         a.avatar_name
         , count(*) as sim_count
     from avatars a
-    left outer join avatarsimulations x
+    join avatarsimulations x
         on x.avatar_id = a.avatar_id
+    join db_simulations d
+        on d.simulation_key = x.simulation_key
     group by a.avatar_name
 ;
 
