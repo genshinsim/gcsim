@@ -52,7 +52,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	// TODO: Assume that this is not dynamic (snapshot on projectile release)
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		combat.NewDefSingleTarget(c.Core.Combat.PrimaryTargetIndex(), combat.TargettableEnemy),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)

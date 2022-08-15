@@ -128,6 +128,6 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	for i := 0; i < pawCount; i++ {
 		done := false
 		cb := pawCB(done)
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, travel+f-5+i, cb)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.PrimaryTargetIndex(), combat.TargettableEnemy), 0, travel+f-5+i, cb)
 	}
 }

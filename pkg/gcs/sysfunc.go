@@ -155,35 +155,6 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{}, nil
 }
 
-func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for set_default_target, expected 1 got %v", len(c.Args))
-	}
-	t, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	n, ok := t.(*number)
-	if !ok {
-		return nil, fmt.Errorf("set_default_target argument should evaluate to a number, got %v", t.Inspect())
-	}
-	//n should be int
-	var idx int = int(n.ival)
-	if n.isFloat {
-		idx = int(n.fval)
-	}
-
-	//check if index is in range
-	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
-		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.TargetsCount()-1, idx)
-	}
-
-	e.Core.Combat.DefaultTarget = idx
-
-	return &number{}, nil
-
-}
-
 func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	//set_target_pos(1,x,y)
 	if len(c.Args) != 3 {

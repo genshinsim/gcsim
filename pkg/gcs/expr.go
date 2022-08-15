@@ -73,8 +73,6 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		return e.setTargetPos(c, env)
 	case "set_player_pos":
 		return e.setPlayerPos(c, env)
-	case "set_default_target":
-		return e.setDefaultTarget(c, env)
 	case "set_particle_delay":
 		return e.setParticleDelay(c, env)
 	default:

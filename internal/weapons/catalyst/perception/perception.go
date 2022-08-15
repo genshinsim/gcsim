@@ -96,7 +96,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		cb := w.chain(0, c, char)
 		w.snap = char.Snapshot(&w.ai)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.DefaultTarget, combat.TargettableEnemy), 10, cb)
+		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.PrimaryTargetIndex(), combat.TargettableEnemy), 10, cb)
 
 		return false
 	}, fmt.Sprintf("perception-%v", char.Base.Key.String()))

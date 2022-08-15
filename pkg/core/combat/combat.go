@@ -36,7 +36,6 @@ type Opt struct {
 	DamageMode    bool
 	DefHalt       bool
 	EnableHitlag  bool
-	DefaultTarget int //index for default target
 }
 
 func New(opt Opt) *Handler {
@@ -64,16 +63,26 @@ func (h *Handler) Targets() []Target {
 	return h.targets
 }
 
+func (h *Handler) PrimaryTargetIndex() int {
+	result := 1 // first enemy target
+	for i, t := range h.targets {
+		if t.Type() == TargettableEnemy && Distance(h.Player(), t) < Distance(h.Player(), h.targets[result]) {
+			result = i
+		}
+	}
+	return result
+}
+
 func (h *Handler) TargetsCount() int {
 	return len(h.targets)
 }
 
 func (h *Handler) PrimaryTarget() Target {
-	return h.targets[h.DefaultTarget]
+	return h.targets[h.PrimaryTargetIndex()]
 }
 
 func (h *Handler) Player() Target {
-	return h.targets[0] //assuming player is always position 0
+	return h.targets[0] // assuming player is always position 0
 }
 
 func (h *Handler) SetTargetPos(i int, x, y float64) bool {

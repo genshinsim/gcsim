@@ -80,7 +80,7 @@ func (c *char) queueOz(src string) {
 	c.ozSnapshot = combat.AttackEvent{
 		Info:        ai,
 		Snapshot:    snap,
-		Pattern:     combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		Pattern:     combat.NewDefSingleTarget(c.Core.Combat.PrimaryTargetIndex(), combat.TargettableEnemy),
 		SourceFrame: c.Core.F,
 	}
 	c.Core.Tasks.Add(c.ozTick(c.Core.F), 60)

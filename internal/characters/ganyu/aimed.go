@@ -69,7 +69,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				Write("expiry", c.a1Expiry)
 		}
 
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), travel)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefSingleTarget(c.Core.Combat.PrimaryTargetIndex(), combat.TargettableEnemy), travel)
 
 		ai.Abil = "Frost Flake Bloom"
 		ai.Mult = ffb[c.TalentLvlAttack()]

@@ -68,7 +68,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Mult:         aimed[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.PrimaryTargetIndex(), combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(aimedFrames),
