@@ -70,6 +70,7 @@ export async function handleShare(request: Request): Promise<Response> {
 
   //upload avatar information
   for (const char of content.meta.char_names) {
+    console.log('linking character: ', char);
     const { error } = await dbClient.rpc('link_avatar_to_sim', {
       avatar: char,
       key: key,
