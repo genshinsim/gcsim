@@ -89,7 +89,6 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 			count--
 		case err := <-errCh:
 			//error encountered
-			close(pool.StopCh)
 			return result.Summary{}, err
 		}
 	}
