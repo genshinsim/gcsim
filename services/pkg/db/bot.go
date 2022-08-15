@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"regexp"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -126,10 +127,17 @@ func (b *Bot) Submit(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Invalid !submit command")
 		return
 	}
+	discordID, err := strconv.ParseInt(m.Author.ID, 10, 64)
+	if err != nil {
+		b.Log.Warnw("submit - err decoding user id to int64", "err", err)
+		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
+		return
+	}
 	sub := store.DBEntry{
-		Key:         match[1],
-		Description: match[2],
-		Author:      m.Author.Username + "#" + m.Author.Discriminator,
+		Key:          match[1],
+		Description:  match[2],
+		AuthorString: m.Author.Username + "#" + m.Author.Discriminator,
+		Author:       discordID,
 	}
 	b.Log.Infow("submission received", "author", sub.Author, "key", sub.Key, "description", sub.Description)
 

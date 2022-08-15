@@ -50,7 +50,8 @@ type DBEntry struct {
 	Key          string `json:"simulation_key"`
 	GitHash      string `json:"git_hash"`
 	HashedConfig string `json:"config_hash"`
-	Author       string `json:"author"`
+	Author       int64  `json:"author"`
+	AuthorString string `json:"author_string,omitempty"`
 	Description  string `json:"sim_description"`
 }
 
@@ -117,6 +118,7 @@ func (b *PostgRESTStore) uploadDBSim(jsonStr []byte, url string) (int64, error) 
 }
 func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 	url := fmt.Sprintf(`%v/rpc/add_db_sim`, b.URL)
+	entry.AuthorString = ""
 	jsonStr, err := json.Marshal(entry)
 	if err != nil {
 		return 0, err
@@ -126,6 +128,7 @@ func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 
 func (b *PostgRESTStore) Replace(key string, entry DBEntry) (int64, error) {
 	url := fmt.Sprintf(`%v/rpc/replace_db_sim`, b.URL)
+	entry.AuthorString = ""
 	var data = struct {
 		DBEntry
 		OldKey string `json:"old_key"`
