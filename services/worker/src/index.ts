@@ -30,9 +30,9 @@ router.get('/api/view/:key', handleView);
 
 router.get('/api/preview/:key', handlePreview);
 
-router.get('/api/db/avatars', handleListDBChars);
+router.get('/api/db', handleListDBChars);
 
-router.get('/api/db/sims/:key', handleListDBSims);
+router.get('/api/db/:key', handleListDBSims);
 
 router.get('/api/avatars', async () => {
   const { data, error } = await dbClient.from('avatars').select();
