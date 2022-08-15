@@ -53,7 +53,6 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	initialMean := initialResult.DPS.Mean
 
 	opDebug = append(opDebug, "Calculating optimal substat distribution...")
-	opDebug = append(opDebug, fmt.Sprintf("%v", initialMean))
 
 	for idxChar, char := range stats.charProfilesCopy {
 		charDebug = stats.optimizeNonErSubstatsForChar(idxChar, char, initialMean)
@@ -93,12 +92,6 @@ func (stats *SubstatOptimizerDetails) allocateSubstatGradientsForChar(idxChar in
 
 	sorted := newSlice(substatGradient...)
 	sort.Sort(sort.Reverse(sorted))
-
-	printVal := ""
-	for i, idxSorted := range sorted.idx {
-		printVal += fmt.Sprintf("%v: %5.5g, ", relevantSubstats[idxSorted], sorted.slice[i])
-	}
-	opDebug = append(opDebug, printVal)
 
 	for idxGrad, idxSubstat := range sorted.idx {
 		allocDebug := stats.allocateSubstatGradientForChar(idxChar, char, sorted, idxGrad, idxSubstat, relevantSubstats)
@@ -325,11 +318,8 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 }
 
 func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char profile.CharacterProfile, tolMean float64, tolSD float64) []string {
-	var debug []string
 	var initialMean float64
 	var initialSD float64
-
-	debug = append(debug, fmt.Sprintf("%v", char.Base.Key))
 
 	for erStack := 0; erStack <= stats.indivSubstatLiquidCap; erStack += 2 {
 		stats.charProfilesCopy[idxChar] = char.Clone()
@@ -338,7 +328,6 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char pro
 		stats.simcfg.Characters = stats.charProfilesCopy
 
 		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt)
-		debug = append(debug, fmt.Sprintf("%v: %v (%v)", stats.charSubstatFinal[idxChar][attributes.ER]-erStack, result.DPS.Mean, result.DPS.SD))
 
 		if erStack == 0 {
 			initialMean = result.DPS.Mean
@@ -370,7 +359,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char pro
 		}
 	}
 
-	return debug
+	return []string{}
 }
 
 func (stats *SubstatOptimizerDetails) setInitialSubstats(fixedSubstatCount int) {
