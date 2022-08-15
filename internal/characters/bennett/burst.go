@@ -46,17 +46,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	//TODO: review bennett AOE size
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 37, 37)
+	radius := 5.0
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius, false, combat.TargettableEnemy), 37, 37)
 
 	//apply right away
 	stats, _ := c.Stats()
 	c.applyBennettField(stats)()
 
+	field := combat.NewCircleHit(c.Core.Combat.Player(), radius, false, combat.TargettablePlayer)
+
 	//add 12 ticks starting at t = 1 to t= 12
 	// Buff appears to start ticking right before hit
 	// https://discord.com/channels/845087716541595668/869210750596554772/936507730779308032
 	for i := burstStartFrame; i <= 720+burstStartFrame; i += 60 {
-		c.Core.Tasks.Add(c.applyBennettField(stats), i)
+		c.Core.Tasks.Add(func() {
+			if combat.WillCollide(field, c.Core.Combat.Player(), 0) {
+				c.applyBennettField(stats)()
+			}
+		}, i)
 	}
 
 	c.ConsumeEnergy(36)
