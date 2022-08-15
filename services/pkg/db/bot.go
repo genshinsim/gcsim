@@ -1,4 +1,4 @@
-package bot
+package db
 
 import (
 	"encoding/json"
@@ -21,21 +21,19 @@ type Config struct {
 	DBPath         string
 }
 
+type SimStoreWithDB interface {
+	store.SimStore
+	store.SimDBStore
+}
+
 type Bot struct {
 	cfg   Config
 	db    *badger.DB
 	Log   *zap.SugaredLogger
-	Store store.SimStore
+	Store SimStoreWithDB
 }
 
-type Submission struct {
-	Key         string `json:"key"`
-	Description string `json:"description"`
-	Author      string `json:"author"`
-	Config      string `json:"config"` //this is to be pulled out of the database
-}
-
-func Run(cfg Config, s store.SimStore) error {
+func Run(cfg Config, s SimStoreWithDB) error {
 	b := &Bot{}
 	b.cfg = cfg
 	b.Store = s
@@ -89,6 +87,7 @@ func Run(cfg Config, s store.SimStore) error {
 var reSubmit = regexp.MustCompile(`\!submit.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}) (.+)`)
 var reApprove = regexp.MustCompile(`\!ok.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
 var reReject = regexp.MustCompile(`\!reject.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}) (.+)`)
+var reReplace = regexp.MustCompile(`(?m)\!replace.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}).+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
 
 func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
@@ -127,18 +126,30 @@ func (b *Bot) Submit(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Invalid !submit command")
 		return
 	}
-	key := match[1]
-	//make sure sim is exist. we want to save just the config for rerunning later
-
-	author := m.Author.Username + "#" + m.Author.Discriminator
-
-	b.Log.Infow("submission received", "author", author, "key", match[1], "description", match[2])
-
-	sub := Submission{
-		Key:         key,
+	sub := store.DBEntry{
+		Key:         match[1],
 		Description: match[2],
-		Author:      author,
+		Author:      m.Author.Username + "#" + m.Author.Discriminator,
 	}
+	b.Log.Infow("submission received", "author", sub.Author, "key", sub.Key, "description", sub.Description)
+
+	//make sure sim is exist. we want to save just the config for rerunning later
+	sim, err := b.Store.Fetch(sub.Key)
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Error retrieving submitted sim: %v", sub.Key))
+		b.Log.Infow("error retrieiving submitted sim", "key", sub.Key, "err", err)
+		return
+	}
+
+	res, err := sim.DecodeViewer()
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Internal server error decoding submitted sim: %v", sub.Key))
+		b.Log.Infow("error decoding submitted sim", "key", sub.Key, "err", err)
+		return
+	}
+
+	sub.HashedConfig = res.Config
+
 	data, err := json.Marshal(sub)
 	if err != nil {
 		b.Log.Warnw("submit - err marshalling json", "err", err)
@@ -156,11 +167,11 @@ func (b *Bot) Submit(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
 		return
 	}
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission recorded! Thanks %v", author))
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission recorded! Thanks %v", sub.Author))
 }
 
 func (b *Bot) List(s *discordgo.Session, m *discordgo.MessageCreate) {
-	var subs []Submission
+	var subs []store.DBEntry
 	err := b.db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
 		it := txn.NewIterator(opts)
@@ -168,7 +179,7 @@ func (b *Bot) List(s *discordgo.Session, m *discordgo.MessageCreate) {
 		for it.Rewind(); it.Valid(); it.Next() {
 			item := it.Item()
 			err := item.Value(func(v []byte) error {
-				var x Submission
+				var x store.DBEntry
 				err := json.Unmarshal(v, &x)
 				if err != nil {
 					return err
@@ -252,7 +263,23 @@ func (b *Bot) Reject(s *discordgo.Session, m *discordgo.MessageCreate) {
 		b.Log.Warnw("reject - err deleting key", "err", err)
 		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
 	}
+}
 
+func (b *Bot) retrieveSubmission(key string) (store.DBEntry, error) {
+	var data store.DBEntry
+
+	err := b.db.View(func(txn *badger.Txn) error {
+		item, err := txn.Get([]byte(key))
+		if err != nil {
+			return err
+		}
+		err = item.Value(func(val []byte) error {
+			return json.Unmarshal(val, &data)
+		})
+		return err
+	})
+
+	return data, err
 }
 
 func (b *Bot) Approve(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -263,6 +290,59 @@ func (b *Bot) Approve(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Invalid !ok command")
 		return
 	}
-	//try grabbing the link from postgrest
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v approved", match[1]))
+	sub, err := b.retrieveSubmission(match[1])
+	if err != nil {
+		if err == badger.ErrKeyNotFound {
+			s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v not found", match[1]))
+			return
+		}
+		b.Log.Warnw("approve - err retrieving key", "err", err)
+		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
+		return
+	}
+
+	id, err := b.Store.Add(sub)
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v approval failed with error: %v", match[1], err))
+		return
+	}
+
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v sucessfully added to db with id %v", match[1], id))
+}
+
+func (b *Bot) Replace(s *discordgo.Session, m *discordgo.MessageCreate) {
+	//!replace <new> <old>
+	//replace existing submission with new
+	match := reReplace.FindStringSubmatch(m.Content)
+	if len(match) == 0 {
+		s.ChannelMessageSend(m.ChannelID, "Invalid !ok command")
+		return
+	}
+	sub, err := b.retrieveSubmission(match[1])
+	if err != nil {
+		if err == badger.ErrKeyNotFound {
+			s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v not found", match[1]))
+			return
+		}
+		b.Log.Warnw("approve - err retrieving key", "err", err)
+		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
+		return
+	}
+
+	id, err := b.Store.Replace(match[2], sub)
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v replacement for %v failed with error: %v", match[1], match[2], err))
+		return
+	}
+
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v sucessfully replaced %v in db with id %v", match[1], match[2], id))
+}
+
+func (b *Bot) ShowConfig(s *discordgo.Session, m *discordgo.MessageCreate) {
+	//!showconfig <key>
+	//replace existing submission with new
+}
+
+func (b *Bot) Help(s *discordgo.Session, m *discordgo.MessageCreate) {
+	//!dbhelp
 }

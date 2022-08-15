@@ -1,53 +1,165 @@
 package store
 
 import (
+	"bytes"
+	"compress/zlib"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/result"
 )
 
 type Simulation struct {
-	Metadata   string `json:"metadata"`
-	ViewerFile string `json:"viewer_file"`
+	Metadata    string `json:"metadata"`
+	ViewerFile  string `json:"viewer_file"`
+	IsPermanent bool   `json:"is_permanent"`
 }
 
 func (s *Simulation) DecodeViewer() (*result.Summary, error) {
 	//base64 zlib encoded string
+	z, err := base64.StdEncoding.DecodeString(s.ViewerFile)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	//decompress
+	reader, err := zlib.NewReader(bytes.NewReader(z))
+	if err != nil {
+		return nil, err
+	}
+	b, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	var target *result.Summary
+	err = json.Unmarshal(b, target)
+	return target, err
 }
 
 type SimStore interface {
 	Fetch(url string) (Simulation, error)
 }
 
-type PostgRESTStore struct {
-	URL string
+type DBEntry struct {
+	Key          string `json:"simulation_key"`
+	GitHash      string `json:"git_hash"`
+	HashedConfig string `json:"config_hash"`
+	Author       string `json:"author"`
+	Description  string `json:"sim_description"`
 }
 
-func (b *PostgRESTStore) Fetch(key string) (Simulation, error) {
-	url := fmt.Sprintf(`%v/simulations?simulation_key=eq.%v`, b.URL, key)
-	r, err := http.Get(url)
+func (d *DBEntry) ConvertConfig() error {
+	var b bytes.Buffer
+	zw := zlib.NewWriter(&b)
+	if _, err := zw.Write([]byte(d.HashedConfig)); err != nil {
+		return err
+	}
+	if err := zw.Close(); err != nil {
+		return err
+	}
+
+	d.HashedConfig = base64.StdEncoding.EncodeToString(b.Bytes())
+
+	return nil
+}
+
+type SimDBStore interface {
+	Add(entry DBEntry) (int64, error)
+	Replace(key string, entry DBEntry) (int64, error)
+}
+
+type PostgRESTStore struct {
+	URL    string
+	client *http.Client
+}
+
+func NewPostgRESTStore(url string) *PostgRESTStore {
+	return &PostgRESTStore{
+		URL:    url,
+		client: &http.Client{},
+	}
+}
+
+func (b *PostgRESTStore) uploadDBSim(jsonStr []byte, url string) (int64, error) {
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
-		return Simulation{}, err
+		return 0, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	r, err := b.client.Do(req)
+	if err != nil {
+		return 0, err
 	}
 	defer r.Body.Close()
 
+	msg, err := io.ReadAll(r.Body)
+	if err != nil {
+		return 0, fmt.Errorf("error reading body: %v", err)
+	}
+
 	if r.StatusCode != 200 {
-		msg, err := io.ReadAll(r.Body)
+		return 0, fmt.Errorf("bad status code %v msg %v", r.StatusCode, string(msg))
+	}
+
+	//body should be db key
+	id, err := strconv.ParseInt(string(msg), 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("error parsing result id: %v", err)
+	}
+
+	return id, nil
+}
+func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
+	url := fmt.Sprintf(`%v/add_db_sim`, b.URL)
+	jsonStr, err := json.Marshal(entry)
+	if err != nil {
+		return 0, err
+	}
+	return b.uploadDBSim(jsonStr, url)
+}
+
+func (b *PostgRESTStore) Replace(key string, entry DBEntry) (int64, error) {
+	url := fmt.Sprintf(`%v/replace_db_sim`, b.URL)
+	var data = struct {
+		DBEntry
+		OldKey string `json:"old_key"`
+	}{
+		DBEntry: entry,
+		OldKey:  key,
+	}
+	jsonStr, err := json.Marshal(data)
+	if err != nil {
+		return 0, err
+	}
+	return b.uploadDBSim(jsonStr, url)
+}
+
+func (b *PostgRESTStore) Fetch(key string) (Simulation, error) {
+	url := fmt.Sprintf(`%v/active_sim?simulation_key=eq.%v`, b.URL, key)
+	resp, err := http.Get(url)
+	if err != nil {
+		return Simulation{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		msg, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return Simulation{}, err
 		} else {
-			return Simulation{}, fmt.Errorf("bad status code %v msg %v", r.StatusCode, string(msg))
+			return Simulation{}, fmt.Errorf("bad status code %v msg %v", resp.StatusCode, string(msg))
 		}
 	}
 
 	var result []Simulation
 
-	err = json.NewDecoder(r.Body).Decode(&result)
+	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return Simulation{}, err
 	}

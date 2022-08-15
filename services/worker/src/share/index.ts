@@ -1,8 +1,8 @@
-import { uuid } from "@cfworker/uuid";
-import jwt from "@tsndr/cloudflare-worker-jwt";
-import { dbClient } from "..";
-import { getUserInfo, userData, userLimits } from "./user";
-import { uploadData, validator } from "./validation";
+import { uuid } from '@cfworker/uuid';
+import jwt from '@tsndr/cloudflare-worker-jwt';
+import { dbClient } from '..';
+import { getUserInfo, userData, userLimits } from './user';
+import { uploadData, validator } from './validation';
 
 /**
  * handles viewer share request
@@ -17,7 +17,7 @@ export async function handleShare(request: Request): Promise<Response> {
   } catch {
     return new Response(null, {
       status: 400,
-      statusText: "Bad Request (Invalid JSON)",
+      statusText: 'Bad Request (Invalid JSON)',
     });
   }
 
@@ -26,18 +26,18 @@ export async function handleShare(request: Request): Promise<Response> {
 
   if (!valid.valid) {
     console.log(valid.errors);
-    return new Response(null, { status: 400, statusText: "Bad Request" });
+    return new Response(null, { status: 400, statusText: 'Bad Request' });
   }
 
   //key is uuid but no -
-  let key = uuid();
-  console.log(key);
+  // let key = uuid();
+  // console.log(key);
   let perm = false;
 
   //check if this is a logged in user; if not then it can't be perm
   let user: userData | null = null;
 
-  let id = await verifyToken(request.headers.get("X-AUTH-TOKEN"));
+  let id = await verifyToken(request.headers.get('X-AUTH-TOKEN'));
   if (id !== null) {
     user = await getUserInfo(id);
   }
@@ -47,32 +47,42 @@ export async function handleShare(request: Request): Promise<Response> {
   }
 
   //store it
-  const { error } = await dbClient.from("simulations").insert({
-    simulation_key: key,
+  const { data, error } = await dbClient.rpc('share_sim', {
     metadata: JSON.stringify(content.meta),
     viewer_file: content.data,
-    fk_user_id: user ? user.user_id : null,
+    user_id: user ? user.user_id : null,
     is_permanent: perm,
+    is_public: false,
   });
+  if (error !== null) {
+    console.log(error);
+    return new Response(null, {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
+  }
+
+  //data is expected to be the key
+  const key = data;
 
   //send request to generate embed
-  await fetch(new Request(PREVIEW_ENDPOINT + "/embed/" + key), {
-    method: "POST",
+  await fetch(new Request(PREVIEW_ENDPOINT + '/embed/' + key), {
+    method: 'POST',
   });
-
-  //cache it in kv for 30 days
 
   if (error !== null) {
     console.log(error);
     return new Response(null, {
       status: 500,
-      statusText: "Internal Server Error",
+      statusText: 'Internal Server Error',
     });
   }
 
+  //TODO: cache in kv for 30 days
+
   return new Response(JSON.stringify({ key: key, perm: perm }), {
     headers: {
-      "content-type": "application/json",
+      'content-type': 'application/json',
     },
   });
 }
@@ -88,8 +98,8 @@ async function verifyToken(token: string | null): Promise<string | null> {
       const ok = await jwt.verify(token, JWT_SECRET);
       if (ok) {
         const decoded = jwt.decode(token);
-        if ("id" in decoded.payload) {
-          return decoded.payload["id"];
+        if ('id' in decoded.payload) {
+          return decoded.payload['id'];
         }
       }
     } catch (e) {
