@@ -12,10 +12,8 @@ import (
 )
 
 var (
-	attackFrames          [][]int
-	attackFramesWithLag   [][]int
-	attackHitmarks        = []int{6, 11, 12, 32}
-	attackHitmarksWithLag []int
+	attackFrames   [][]int
+	attackHitmarks = []int{6, 11, 12, 32}
 )
 
 const normalHitNum = 4
@@ -44,22 +42,6 @@ func init() {
 	attackFrames[3][action.ActionDash] = 2
 	attackFrames[3][action.ActionJump] = 3
 	attackFrames[3][action.ActionSwap] = 2
-
-	// N1 -> x (Dash/N4 -> N1 8f lag)
-	attackFramesWithLag = make([][]int, len(attackFrames))
-	for i := range attackFrames {
-		attackFramesWithLag[i] = make([]int, len(attackFrames[i]))
-		copy(attackFramesWithLag[i], attackFrames[i])
-	}
-	for i := range attackFramesWithLag[0] {
-		attackFramesWithLag[0][i] += 8
-	}
-
-	// Hitmarks (Dash/N4 -> N1 8f lag)
-	attackHitmarksWithLag = make([]int, len(attackHitmarks))
-	for i := range attackHitmarks {
-		attackHitmarksWithLag[i] = attackHitmarks[i] + 8
-	}
 }
 
 // Standard attack function with seal handling
@@ -92,32 +74,25 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	adjustedFrames := attackFrames
-	adjustedHitmarks := attackHitmarks
-	currState := c.Core.Player.CurrentState()
-	if currState == action.DashState || (currState == action.NormalAttackState && c.NormalCounter == 0) {
-		adjustedFrames = attackFramesWithLag
-		adjustedHitmarks = attackHitmarksWithLag
-	}
 	c.Core.QueueAttack(ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-		adjustedHitmarks[c.NormalCounter],
-		adjustedHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter],
 		cb,
 	)
 
 	defer c.AdvanceNormalIndex()
 
 	canQueueAfter := math.MaxInt32
-	for _, f := range adjustedFrames[c.NormalCounter] {
+	for _, f := range attackFrames[c.NormalCounter] {
 		if f < canQueueAfter {
 			canQueueAfter = f
 		}
 	}
 	// return animation cd
 	return action.ActionInfo{
-		Frames:          frames.NewAttackFunc(c.Character, adjustedFrames),
-		AnimationLength: adjustedFrames[c.NormalCounter][action.InvalidAction],
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   canQueueAfter,
 		State:           action.NormalAttackState,
 	}
