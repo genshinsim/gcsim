@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./database/scripts:/scripts
+      - ./database/create_db.sql:/scripts/create_db.sql
 
   dbmanage:
     container_name: dbmanage
