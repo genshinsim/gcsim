@@ -111,6 +111,10 @@ func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	case strings.HasPrefix(m.Content, "!submit"):
 		b.Submit(s, m)
+	case strings.HasPrefix(m.Content, "!replace"):
+		if b.adminChanCheck(m) {
+			b.Replace(s, m)
+		}
 	}
 
 }
