@@ -96,7 +96,7 @@ func (c *char) irisDmg(t combat.Target) {
 		Durability: 25,
 		Mult:       burstIris[c.TalentLvlBurst()],
 	}
-	auraPriority := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo, attributes.Frozen}
+	auraPriority := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
 	for _, ele := range auraPriority {
 		if t.AuraContains(ele) {
 			aiAbs.Element = ele
