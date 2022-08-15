@@ -37,9 +37,9 @@ func (s *Simulation) DecodeViewer() (*result.Summary, error) {
 		return nil, err
 	}
 
-	var target *result.Summary
-	err = json.Unmarshal(b, target)
-	return target, err
+	var target result.Summary
+	err = json.Unmarshal(b, &target)
+	return &target, err
 }
 
 type SimStore interface {
@@ -116,7 +116,7 @@ func (b *PostgRESTStore) uploadDBSim(jsonStr []byte, url string) (int64, error) 
 	return id, nil
 }
 func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
-	url := fmt.Sprintf(`%v/add_db_sim`, b.URL)
+	url := fmt.Sprintf(`%v/rpc/add_db_sim`, b.URL)
 	jsonStr, err := json.Marshal(entry)
 	if err != nil {
 		return 0, err
@@ -125,7 +125,7 @@ func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 }
 
 func (b *PostgRESTStore) Replace(key string, entry DBEntry) (int64, error) {
-	url := fmt.Sprintf(`%v/replace_db_sim`, b.URL)
+	url := fmt.Sprintf(`%v/rpc/replace_db_sim`, b.URL)
 	var data = struct {
 		DBEntry
 		OldKey string `json:"old_key"`
