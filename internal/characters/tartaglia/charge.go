@@ -69,7 +69,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
+		CanQueueAfter:   chargeFrames[action.ActionDash], // earliest cancel
 		State:           action.ChargeAttackState,
 	}
 }
