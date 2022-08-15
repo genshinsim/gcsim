@@ -307,6 +307,21 @@ func (b *Bot) Approve(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	err = b.db.Update(func(txn *badger.Txn) error {
+		err := txn.Delete([]byte(match[1]))
+		return err
+	})
+
+	if err != nil {
+		if err == badger.ErrKeyNotFound {
+			s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Deleting submission %v after approval, not found", match[1]))
+			return
+		}
+		b.Log.Warnw("approve - err deleting key", "err", err)
+		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
+		return
+	}
+
 	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v sucessfully added to db with id %v", match[1], id))
 }
 
@@ -332,6 +347,21 @@ func (b *Bot) Replace(s *discordgo.Session, m *discordgo.MessageCreate) {
 	id, err := b.Store.Replace(match[2], sub)
 	if err != nil {
 		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v replacement for %v failed with error: %v", match[1], match[2], err))
+		return
+	}
+
+	err = b.db.Update(func(txn *badger.Txn) error {
+		err := txn.Delete([]byte(match[1]))
+		return err
+	})
+
+	if err != nil {
+		if err == badger.ErrKeyNotFound {
+			s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Deleting submission %v after approval, not found", match[1]))
+			return
+		}
+		b.Log.Warnw("approve - err deleting key", "err", err)
+		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
 		return
 	}
 
