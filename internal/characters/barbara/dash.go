@@ -9,7 +9,7 @@ var dashFrames []int
 
 func init() {
 	dashFrames = frames.InitAbilSlice(23)
-	dashFrames[action.ActionSwap] = 23
+	dashFrames[action.ActionSwap] = 25
 	dashFrames[action.ActionSkill] = 2
 	dashFrames[action.ActionBurst] = 1
 	dashFrames[action.ActionAttack] = 21

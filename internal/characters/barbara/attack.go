@@ -43,7 +43,7 @@ func init() {
 	attackFrames[3][action.ActionWalk] = 57
 	attackFrames[3][action.ActionDash] = 2
 	attackFrames[3][action.ActionJump] = 3
-	attackFrames[3][action.ActionSwap] = 5
+	attackFrames[3][action.ActionSwap] = 7
 
 	// N1 -> x (Dash/N4 -> N1 8f lag)
 	attackFramesWithLag = make([][]int, len(attackFrames))
