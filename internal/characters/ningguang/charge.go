@@ -15,6 +15,11 @@ var (
 	chargeHitmarks     []int
 	chargeJadeHitmarks []int
 	chargeC6Hitmarks   []int
+	chargeOptions  = map[attackType][]attackType{
+		attackTypeLeft:  {attackTypeRight, attackTypeTwirl},
+		attackTypeRight: {attackTypeLeft, attackTypeTwirl},
+		attackTypeTwirl: {attackTypeLeft, attackTypeRight},
+	}
 )
 
 func init() {
@@ -69,7 +74,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		travel = 10
 	}
 
-	chargeType := attackType(c.Core.Rand.Intn(int(endAttackType)))
+	chargeType := chargeOptions[c.prevAttack][c.Core.Rand.Intn(2)]
 	if c.Core.Player.CurrentState() == action.NormalAttackState {
 		switch c.prevAttack {
 		case attackTypeLeft,
