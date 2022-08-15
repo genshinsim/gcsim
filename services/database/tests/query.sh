@@ -4,9 +4,9 @@ curl "http://localhost:3000/rpc/get_or_insert_user" \
   -X POST -H "Content-Type: application/json" \
   -d '{ "id": 156096226721398786, "name": "srl#2712" }'
 
-curl "http://localhost:3000/rpc/get_or_insert_user" \
-  -X POST -H "Content-Type: application/json" \
-  -d '{ "id": 320893091450191872, "name": "imring#3781" }'
+# curl "http://localhost:3000/rpc/get_or_insert_user" \
+#   -X POST -H "Content-Type: application/json" \
+#   -d '{ "id": 320893091450191872, "name": "imring#3781" }'
 
 echo "\n\n new sim"
 

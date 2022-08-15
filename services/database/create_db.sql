@@ -147,11 +147,13 @@ begin
 
     -- add to authors list
 
-    insert into db_entry_authors as d (db_id, user_id)
-    values (
-        key
-        , add_db_sim.author
-    ) on conflict do nothing;
+    if exists(select 1 from users as u where u.user_id = add_db_sim.author) then
+        insert into db_entry_authors as d (db_id, user_id)
+        values (
+            key
+            , add_db_sim.author
+        ) on conflict do nothing;
+    end if;
 
     -- delete from user sims
 
@@ -188,11 +190,13 @@ begin
 
     -- add to authors list
 
-    insert into db_entry_authors as d (db_id, user_id)
-    values (
-        key
-        , replace_db_sim.author
-    ) on conflict do nothing;
+    if exists(select 1 from users as u where u.user_id = replace_db_sim.author) then
+        insert into db_entry_authors as d (db_id, user_id)
+        values (
+            key
+            , replace_db_sim.author
+        ) on conflict do nothing;
+    end if;
 
     -- delete from user sims
 
