@@ -1,4 +1,4 @@
-package seal
+package emblem
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
