@@ -54,7 +54,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	weakspot := p["weakspot"]
 
-	if c.Tag(breakthroughStatus) > 0 {
+	if c.Tag(breakthroughStatus) > 0 && hold == 2 {
 		c.RemoveTag(breakthroughStatus)
 		c.Core.Log.NewEvent("breakthrough state deleted", glog.LogCharacterEvent, c.Index)
 
