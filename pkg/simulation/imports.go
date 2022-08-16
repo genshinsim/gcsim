@@ -175,6 +175,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dragonspine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/engulfing"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/favonius"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/halberd"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/homa"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/ironpoint"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/kitain"
