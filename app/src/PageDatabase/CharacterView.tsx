@@ -2,34 +2,12 @@ import { H3 } from '@blueprintjs/core';
 import React from 'react';
 import { useLocation } from 'wouter';
 import { useAppDispatch, useAppSelector } from '~src/store';
-import { DBAvatarSimDetails } from '~src/Types/database';
 import { CharacterCard } from './CharacterCard';
 import { loadCharacter } from './dbSlice';
-import { TeamsList } from './TeamList';
 
 type CharacterViewProps = {
   char: string;
 };
-
-type Teams = {
-  [key in string]: DBAvatarSimDetails[];
-};
-
-function reduceTeams(sims: DBAvatarSimDetails[]): Teams {
-  let next: Teams = {};
-  sims.forEach((s) => {
-    const key = s.metadata.char_names
-      .map((x) => x)
-      .sort()
-      .join('-');
-    if (!(key in next)) {
-      next[key] = [];
-    }
-    next[key].push(s);
-  });
-
-  return next;
-}
 
 export function CharacterView({ char }: CharacterViewProps) {
   const charSims = useAppSelector((state) => state.db.charSims);
