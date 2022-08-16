@@ -17,6 +17,7 @@ import { bytesToBase64 } from './base64';
 import { SimResults } from './DataType';
 import { Trans, useTranslation } from 'react-i18next';
 import { Metadata } from '~src/Types/stats';
+import { useAppSelector } from '~src/store';
 
 export interface ShareProps {
   // isOpen: boolean;
@@ -41,6 +42,8 @@ export interface uploadData {
 
 export default function Share(props: ShareProps) {
   let { t } = useTranslation();
+
+  const user = useAppSelector((state) => state.user);
 
   const [loading, setIsLoading] = React.useState<boolean>(false);
   const [errMsg, setErrMsg] = React.useState<string>('');
@@ -85,6 +88,9 @@ export default function Share(props: ShareProps) {
       method: 'post',
       url: '/api/share',
       data: data,
+      headers: {
+        'X-AUTH-TOKEN': user.token ? user.token : '',
+      },
     })
       .then((response) => {
         console.log(response);
