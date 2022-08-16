@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -43,6 +44,11 @@ func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponPro
 	}
 
 	c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		// don't proc if someone else defeated the enemy
+		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
 		//add status to char given index
 		char.AddStatus(stackKey[index], 1800, true)
 		//update buff
