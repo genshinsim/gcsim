@@ -1,18 +1,14 @@
 package embed
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
-	"io/fs"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
-	"os/exec"
-	"strings"
+	"time"
 
+	badger "github.com/dgraph-io/badger/v3"
+	"github.com/genshinsim/gcsim/services/pkg/store"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"go.uber.org/zap"
@@ -20,14 +16,21 @@ import (
 
 //Server contains an authentication server
 type Server struct {
-	Router *chi.Mux
-	Log    *zap.SugaredLogger
-	cfg    Config
-	work   chan string //key to generate embed for
+	Router    *chi.Mux
+	db        *badger.DB
+	Log       *zap.SugaredLogger
+	Store     store.SimStore
+	Generator ImageGenerator
+	cfg       Config
+	work      chan string //key to generate embed for
 }
 
 type Config struct {
-	PostgRESTPort int
+	DataFolder string
+}
+
+type ImageGenerator interface {
+	Generate(sim store.Simulation, outpath string) error
 }
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
@@ -54,6 +57,13 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 		s.Log = sugar
 	}
+
+	db, err := badger.Open(badger.DefaultOptions(cfg.DataFolder))
+	if err != nil {
+		return nil, err
+	}
+	s.db = db
+
 	s.Router = chi.NewRouter()
 	s.routes()
 
@@ -87,68 +97,46 @@ func (s *Server) pool() {
 	}
 }
 
-type simulation struct {
-	Metadata string `json:"metadata"`
-}
-
 func (s *Server) worker(key string, done chan bool) {
-	//grab simulation meta data from postgrest server
-	//http://localhost:3000/simulations\?simulation_key\=eq.57baa25d-27e6-4ffd-a152-71dd86272acf
-	url := fmt.Sprintf(`http://localhost:%v/simulations?simulation_key=eq.%v`, s.cfg.PostgRESTPort, key)
-	r, err := http.Get(url)
+	res, err := s.Store.Fetch(key)
 	if err != nil {
 		s.Log.Warnw("error getting simulation", "err", err)
 		done <- true
 		return
 	}
-	defer r.Body.Close()
 
-	if r.StatusCode != 200 {
-		msg, err := io.ReadAll(r.Body)
-		if err != nil {
-			s.Log.Warnw("error getting simulation", "status", r.StatusCode, "err_reading_body", err, "url", url)
-		} else {
-			s.Log.Warnw("error getting simulation", "status", r.StatusCode, "msg", string(msg), "url", url)
-		}
-		done <- true
-		return
-	}
+	filepath := fmt.Sprintf("./%v.png", key)
+	os.Remove(filepath)
 
-	var result []simulation
-
-	err = json.NewDecoder(r.Body).Decode(&result)
+	err = s.Generator.Generate(res, filepath)
 	if err != nil {
-		s.Log.Warnw("error parsing simulation", "err", err)
+		s.Log.Warnw("error generating image", "key", key, "path", filepath, "err", err)
 		done <- true
 		return
 	}
 
-	if len(result) == 0 {
-		s.Log.Warn("unexpected result length is 0")
-		done <- true
-		return
-	}
-
-	//pass metadata off to python script
-	data := result[0].Metadata
-	data = strings.TrimPrefix(data, `"`)
-	data = strings.TrimSuffix(data, `"`)
-	ioutil.WriteFile("test.json", []byte(data), fs.ModePerm)
-	cmd := exec.Command("./embed.py", fmt.Sprintf("./images/%v.png", key))
-	var stdBuffer bytes.Buffer
-	mw := io.MultiWriter(os.Stdout, &stdBuffer)
-
-	cmd.Stdout = mw
-	cmd.Stderr = mw
-
-	// cmd.Stdin = strings.NewReader(result[0].Metadata)
-	// out, err := cmd.Output()
-	err = cmd.Run()
+	//try reading file and storing in db
+	b, err := ioutil.ReadFile(filepath)
 	if err != nil {
-		// s.Log.Warnw("error generating image", "err", err, "out", string(out))
-		s.Log.Warnw("error generating image", "err", err)
+		s.Log.Warnw("error loading image", "key", key, "path", filepath, "err", err)
+		done <- true
+		return
 	}
-	log.Println(stdBuffer.String())
+
+	err = s.db.Update(func(txn *badger.Txn) error {
+		e := badger.NewEntry([]byte(key), b).WithTTL(time.Hour * 24 * 60)
+		err := txn.SetEntry(e)
+		return err
+	})
+
+	if err != nil {
+		s.Log.Warnw("error saving image to db", "key", key, "path", filepath, "err", err)
+	}
+
+	s.Log.Infow("generating embed ok", "key", key)
+
+	//clean up after ourselves
+	os.Remove(filepath)
 
 	done <- true
 }
@@ -173,26 +161,36 @@ func (s *Server) handleGenerateEmbed() http.HandlerFunc {
 func (s *Server) handleRetrieveEmbed() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := chi.URLParam(r, "key")
-		//if key not found return 404
-		filepath := fmt.Sprintf("./images/%v.png", key)
-		if stat, err := os.Stat(filepath); err != nil || stat.IsDir() {
-			//it's possible file exist but we can't read it
-			//we should try to regenerate it
-			s.work <- key
-			//in which case we return 404 anyways
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
+		var data []byte
 
-		b, err := ioutil.ReadFile(filepath)
+		err := s.db.View(func(txn *badger.Txn) error {
+			item, err := txn.Get([]byte(key))
+			if err != nil {
+				return err
+			}
+			err = item.Value(func(val []byte) error {
+				data = append([]byte{}, val...)
+				return nil
+			})
+			return err
+		})
+
 		if err != nil {
-			s.Log.Warn("error loading image", "key", key, "path", filepath, "err", err)
+			if err == badger.ErrKeyNotFound {
+				s.Log.Warnw("error getting image - not found", "key", key)
+				//we should try to regenerate it
+				s.work <- key
+				//in which case we return 404 anyways
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+			s.Log.Warnw("unexpected error reading image", "err", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
 		w.Header().Set("Content-Type", "image/png")
 		w.WriteHeader(http.StatusOK)
-		w.Write(b)
+		w.Write(data)
 	}
 }

@@ -7,9 +7,3 @@ RUN ls
 RUN go mod download
 COPY pkg pkg
 COPY dbmanage dbmanage 
-RUN ls
-RUN ls dbmanage/
-
-WORKDIR /app/dbmanage
-
-RUN go build .

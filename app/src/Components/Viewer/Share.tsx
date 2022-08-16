@@ -9,14 +9,14 @@ import {
   Spinner,
   SpinnerSize,
   Toaster,
-} from "@blueprintjs/core";
-import axios from "axios";
-import pako from "pako";
-import React from "react";
-import { bytesToBase64 } from "./base64";
-import { SimResults } from "./DataType";
-import { Trans, useTranslation } from "react-i18next";
-import { Character, SummaryStats } from "~src/types";
+} from '@blueprintjs/core';
+import axios from 'axios';
+import pako from 'pako';
+import React from 'react';
+import { bytesToBase64 } from './base64';
+import { SimResults } from './DataType';
+import { Trans, useTranslation } from 'react-i18next';
+import { Metadata } from '~src/Types/stats';
 
 export interface ShareProps {
   // isOpen: boolean;
@@ -26,7 +26,7 @@ export interface ShareProps {
 
 const disabled = false;
 
-const ak = "api-key";
+const ak = 'api-key';
 
 export const AppToaster = Toaster.create({
   position: Position.BOTTOM_RIGHT,
@@ -34,16 +34,7 @@ export const AppToaster = Toaster.create({
 
 export interface uploadData {
   data: string;
-  meta: {
-    char_names: string[];
-    dps: SummaryStats;
-    sim_duration: SummaryStats;
-    dps_by_target: { [key: number]: SummaryStats };
-    iter: number;
-    runtime: number;
-    num_targets: number;
-    char_details: Character[];
-  };
+  meta: Metadata;
   path?: string; //for organization purposes
   perm?: boolean;
 }
@@ -52,16 +43,16 @@ export default function Share(props: ShareProps) {
   let { t } = useTranslation();
 
   const [loading, setIsLoading] = React.useState<boolean>(false);
-  const [errMsg, setErrMsg] = React.useState<string>("");
-  const [url, setURL] = React.useState<string>("");
+  const [errMsg, setErrMsg] = React.useState<string>('');
+  const [url, setURL] = React.useState<string>('');
   const [isPerm, setIsPerm] = React.useState<boolean>(false);
   const [perm, setPerm] = React.useState<boolean>(false);
-  const [apiKey, setAPIKey] = React.useState<string>("");
+  const [apiKey, setAPIKey] = React.useState<string>('');
   const [viewPass, setViewPass] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     let key = localStorage.getItem(ak);
-    if (key !== null && key !== "") {
+    if (key !== null && key !== '') {
       setAPIKey(key);
     }
   }, []);
@@ -78,7 +69,7 @@ export default function Share(props: ShareProps) {
         sim_duration: props.data.sim_duration,
         dps_by_target: props.data.dps_by_target,
         iter: props.data.iter,
-        runtime: props.data.runtime,
+        runtime: Math.floor(props.data.runtime),
         char_details: props.data.char_details,
         num_targets: props.data.num_targets,
       },
@@ -88,30 +79,30 @@ export default function Share(props: ShareProps) {
     //"{\"author\":\"anon\",\"description\":\"none\",\"data\":\"stuff\"}"
     setIsLoading(true);
     setIsPerm(false);
-    setURL("");
+    setURL('');
 
     axios({
-      method: "post",
-      url: "/api/share",
+      method: 'post',
+      url: '/api/share',
       data: data,
     })
       .then((response) => {
         console.log(response);
         if (response.data.key) {
-          setErrMsg("");
+          setErrMsg('');
           setURL(response.data.key);
           setIsPerm(response.data.perm);
           setIsLoading(false);
         } else {
-          setErrMsg(t("viewer.upload_failed"));
-          setURL("");
+          setErrMsg(t('viewer.upload_failed'));
+          setURL('');
           setIsLoading(false);
         }
       })
       .catch((error) => {
         console.log(error);
-        setErrMsg(t("viewer.error_encountered") + error);
-        setURL("");
+        setErrMsg(t('viewer.error_encountered') + error);
+        setURL('');
         setIsLoading(false);
       });
   };
@@ -123,14 +114,14 @@ export default function Share(props: ShareProps) {
       .then(
         () => {
           AppToaster.show({
-            message: t("viewer.copied_to_clipboard"),
-            intent: "success",
+            message: t('viewer.copied_to_clipboard'),
+            intent: 'success',
           });
         },
         () => {
           AppToaster.show({
-            message: t("viewer.error_copying_not"),
-            intent: "danger",
+            message: t('viewer.error_copying_not'),
+            intent: 'danger',
           });
         }
       );
@@ -147,12 +138,12 @@ export default function Share(props: ShareProps) {
         </div>
       </div>
       <div className="flex flex-col place-items-center">
-        <FormGroup label={t("viewer.make_link_permanent")} inline>
+        <FormGroup label={t('viewer.make_link_permanent')} inline>
           <Checkbox checked={perm} onClick={() => setPerm(!perm)} />
         </FormGroup>
-        <FormGroup label={t("viewer.api_key_supporters")} inline>
+        <FormGroup label={t('viewer.api_key_supporters')} inline>
           <InputGroup
-            type={viewPass ? "text" : "password"}
+            type={viewPass ? 'text' : 'password'}
             value={apiKey}
             onChange={(v) => {
               const val = v.target.value;
@@ -161,7 +152,7 @@ export default function Share(props: ShareProps) {
             }}
             rightElement={
               <Button
-                icon={viewPass ? "unlock" : "lock"}
+                icon={viewPass ? 'unlock' : 'lock'}
                 intent="warning"
                 onClick={() => setViewPass(!viewPass)}
               />
@@ -182,15 +173,15 @@ export default function Share(props: ShareProps) {
         </Button>
       </ButtonGroup>
       {loading ? <Spinner size={SpinnerSize.LARGE} /> : null}
-      {errMsg === "" ? (
-        url !== "" ? (
+      {errMsg === '' ? (
+        url !== '' ? (
           <Callout intent="success">
             <div className="flex flex-col gap-2 place-items-center">
               <span className="text-lg">
                 <Trans>viewer.link_pre</Trans>
                 {isPerm
-                  ? t("viewer.link_is_permanent")
-                  : t("viewer.link_will_expire")}
+                  ? t('viewer.link_is_permanent')
+                  : t('viewer.link_will_expire')}
                 <Trans>viewer.link_post</Trans>
               </span>
               <div className="p-2 rounded-md bg-green-700">
@@ -199,7 +190,7 @@ export default function Share(props: ShareProps) {
               <Button
                 intent="success"
                 onClick={handleCopy}
-                disabled={url === ""}
+                disabled={url === ''}
               >
                 <Trans>viewer.copy_link</Trans>
               </Button>

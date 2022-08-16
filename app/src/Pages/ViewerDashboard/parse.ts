@@ -1,8 +1,8 @@
-import pako from "pako";
-import { ResultsSummary } from "~src/types";
-import Ajv from "ajv";
+import pako from 'pako';
+import Ajv from 'ajv';
 
-import schema from "./DataType.schema.json";
+import schema from './DataType.schema.json';
+import { ResultsSummary } from '~src/Types/stats';
 
 const ajv = new Ajv();
 
@@ -15,22 +15,22 @@ export function extractJSONStringFromBinary(binaryStr: Uint8Array): {
   data: string;
 } {
   try {
-    const restored = pako.inflate(binaryStr, { to: "string" });
+    const restored = pako.inflate(binaryStr, { to: 'string' });
     return {
-      err: "",
+      err: '',
       data: restored,
     };
   } catch {
     return {
-      err: "Not a valid gzipped JSON file",
-      data: "",
+      err: 'Not a valid gzipped JSON file',
+      data: '',
     };
   }
 }
 
 export function parseAndValidate(jsonStr: string): ResultsSummary | string {
   let data: ResultsSummary = JSON.parse(jsonStr);
-  const validate = ajv.compile(schema.definitions["*"]);
+  const validate = ajv.compile(schema.definitions['*']);
   const valid = validate(data);
 
   if (valid) {
