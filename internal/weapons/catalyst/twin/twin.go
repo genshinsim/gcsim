@@ -38,6 +38,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
+		// don't proc if off-field
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		// add buff
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("twinnephrite", 900), // 15s

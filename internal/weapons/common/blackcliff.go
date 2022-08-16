@@ -49,6 +49,10 @@ func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponPro
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
+		// don't proc if off-field
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		//add status to char given index
 		char.AddStatus(stackKey[index], 1800, true)
 		//update buff
