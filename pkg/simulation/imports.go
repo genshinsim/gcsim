@@ -94,6 +94,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/hamayumi"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/huntersbow"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/messenger"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/mitternachtswaltz"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/mouunsmoon"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/polarstar"
