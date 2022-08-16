@@ -3,6 +3,7 @@ package simulation
 import (
 	//artifacts
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/berserker"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/blizzard"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/bloodstained"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/bolide"
