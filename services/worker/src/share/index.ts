@@ -29,21 +29,21 @@ export async function handleShare(request: Request): Promise<Response> {
     return new Response(null, { status: 400, statusText: 'Bad Request' });
   }
 
-  //key is uuid but no -
-  // let key = uuid();
-  // console.log(key);
   let perm = false;
 
   //check if this is a logged in user; if not then it can't be perm
   let user: userData | null = null;
 
   let id = await verifyToken(request.headers.get('X-AUTH-TOKEN'));
+  console.log('user id: ', id);
   if (id !== null) {
     user = await getUserInfo(id);
+    console.log('got user info: ', user);
   }
 
   if (content.perm && user !== null) {
     perm = user.count < userLimits(user.user_role);
+    console.log('user perm check: ', perm, user);
   }
 
   //store it

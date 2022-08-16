@@ -1,5 +1,5 @@
-import axios from "axios";
-import { UserInfo } from "~src/Types/user";
+import axios from 'axios';
+import { UserInfo } from '~src/Types/user';
 
 export interface AuthProvider {
   login(): void;
@@ -12,16 +12,15 @@ export class MockProvider implements AuthProvider {
 
   login(): void {
     //fake navigating back to the site from discord
-    window.location.href = "/auth/discord?code=fake";
+    window.location.href = '/auth/discord?code=fake';
   }
 
   async auth(_: string): Promise<UserInfo> {
-    console.log("hello im logging in");
+    console.log('hello im logging in');
     return {
-      user_id: 0,
-      user_key: "123145",
-      user_name: "FakeUser#1234",
-      token: "thisisafaketoken",
+      user_id: 156096226721398786,
+      user_name: 'FakeUser#1234',
+      token: 'thisisafaketoken',
     };
   }
 
@@ -33,7 +32,7 @@ export class MockProvider implements AuthProvider {
 }
 
 const discordURL =
-  "https://discord.com/api/oauth2/authorize?client_id=999720972875739226&redirect_uri=https%3A%2F%2Fnext.gcsim.app%2Fauth%2Fdiscord&response_type=code&scope=identify&prompt=none";
+  'https://discord.com/api/oauth2/authorize?client_id=999720972875739226&redirect_uri=https%3A%2F%2Fnext.gcsim.app%2Fauth%2Fdiscord&response_type=code&scope=identify&prompt=none';
 
 export class DiscordProvider implements AuthProvider {
   constructor() {}
@@ -44,9 +43,9 @@ export class DiscordProvider implements AuthProvider {
 
   async auth(code: string): Promise<UserInfo> {
     const response = await axios({
-      method: "get",
-      url: "/api/auth",
-      headers: { "X-DISCORD-CODE": code },
+      method: 'get',
+      url: '/api/auth',
+      headers: { 'X-DISCORD-CODE': code },
     });
     console.log(response);
     if (response.data.token && response.data.user) {
@@ -56,7 +55,7 @@ export class DiscordProvider implements AuthProvider {
         token: response.data.token,
       };
     }
-    throw "Unexpected error";
+    throw 'Unexpected error';
   }
 
   async logout(): Promise<void> {}

@@ -1,4 +1,5 @@
-import { dbClient } from "..";
+import { dbClient } from '..';
+import { postgRESTFetch } from '../util';
 
 /**
  * Returns the maximum number of perm share an user can have given the user's
@@ -25,7 +26,7 @@ export function userLimits(role: number): number {
 }
 
 export type userData = {
-  user_id: number;
+  user_id: BigInt;
   user_key: string;
   user_name: string;
   user_role: number;
@@ -34,24 +35,20 @@ export type userData = {
 
 export async function getUserInfo(id: string): Promise<userData> {
   try {
-    const res = await dbClient
-      .from("user_simulation_count")
-      .select()
-      .eq("user_id", id);
+    const data = await postgRESTFetch(
+      `/user_simulation_count?user_id=eq.${id}`
+    );
 
-    if (res.error === null) {
-      const rows: userData[] = res.data;
-      if (rows.length > 0) {
-        return rows[0];
-      }
-    } else {
-      console.log(res.error);
-      throw res.error;
+    if (data === null) {
+      throw 'Unexpected no data returned';
     }
+
+    if (data.length < 1) {
+      throw 'Unexpected no result rows';
+    }
+
+    return data[0];
   } catch (error) {
     throw error;
   }
-
-  //unreachable
-  throw "unreachable code";
 }
