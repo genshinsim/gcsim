@@ -10,6 +10,11 @@ import (
 
 var skillFrames []int
 
+const (
+	infuseWindow     = 30
+	infuseDurability = 20
+)
+
 func init() {
 	skillFrames = frames.InitAbilSlice(39)
 	skillFrames[action.ActionDash] = 14
@@ -54,11 +59,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				part,
 			)
 			c.Core.Log.NewEventBuildMsg(glog.LogElementEvent, c.Index, "guoba self infusion applied").
-				Write("expiry", c.Core.F+21)
-			c.guoba.Durability[attributes.Pyro] = 25
+				Write("expiry", c.Core.F+infuseWindow+1)
+			c.guoba.Durability[attributes.Pyro] = infuseDurability
 			c.Core.Tasks.Add(func() {
 				c.guoba.Durability[attributes.Pyro] = 0
-			}, 21) // +1 since 20f window is inclusive
+			}, infuseWindow+1) // +1 since infuse window is inclusive
 		}, delay+i*100-10) // 10 frame window to swirl
 	}
 

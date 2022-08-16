@@ -44,7 +44,7 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 
 	//cheat a bit, set the durability just enough to match incoming sucrose E gauge
 	oldDur := p.Durability[attributes.Pyro]
-	p.Durability[attributes.Pyro] = 25
+	p.Durability[attributes.Pyro] = infuseDurability
 	p.React(atk)
 	// restore the durability after
 	p.Durability[attributes.Pyro] = oldDur
