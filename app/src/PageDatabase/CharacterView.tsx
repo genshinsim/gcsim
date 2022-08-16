@@ -1,24 +1,69 @@
-import { H3 } from '@blueprintjs/core';
+import { H3, Spinner } from '@blueprintjs/core';
 import React from 'react';
 import { useLocation } from 'wouter';
 import { useAppDispatch, useAppSelector } from '~src/store';
 import { CharacterCard } from './CharacterCard';
-import { loadCharacter } from './dbSlice';
+import { dbActions, loadCharacter } from './dbSlice';
+import axios from 'axios';
+import pako from 'pako';
+import { DBAvatarSimDetails } from '~src/Types/database';
 
 type CharacterViewProps = {
   char: string;
 };
 
+type statusType = 'idle' | 'loading' | 'done' | 'error';
+
 export function CharacterView({ char }: CharacterViewProps) {
+  const [status, setStatus] = React.useState<statusType>('idle');
+  const [errMsg, setErrMsg] = React.useState<string>('');
   const charSims = useAppSelector((state) => state.db.charSims);
   const dispatch = useAppDispatch();
   const [_, setLocation] = useLocation();
 
   React.useEffect(() => {
-    if (!(char in charSims)) {
-      dispatch(loadCharacter(char));
+    if (status === 'idle') {
+      axios
+        .get(`/api/db/${char}`)
+        .then((resp) => {
+          console.log(resp.data);
+          let next: DBAvatarSimDetails[] = [];
+          resp.data.forEach((e: any) => {
+            const binaryStr = Uint8Array.from(window.atob(e.config_hash), (v) =>
+              v.charCodeAt(0)
+            );
+            const restored = pako.inflate(binaryStr, { to: 'string' });
+            next.push({
+              ...e,
+              metadata: JSON.parse(e.metadata),
+              create_time: Math.floor(new Date(e.create_time).getTime() / 1000),
+              config: restored,
+            });
+          });
+          console.log(next);
+          dispatch(dbActions.setCharSimList({ char: char, data: next }));
+          setStatus('done');
+        })
+        .catch((err) => {
+          setStatus('error');
+          setErrMsg(`Error encountered loading sims for ${char}: ${err}`);
+        });
     }
-  }, [charSims, dispatch]);
+  }, [status, dispatch]);
+
+  switch (status) {
+    case 'loading':
+    case 'idle':
+      return (
+        <div className="flex flex-row place-content-center mt-2">
+          <Spinner />
+        </div>
+      );
+    case 'error':
+      return (
+        <div className="flex flex-row place-content-center mt-2">{errMsg}</div>
+      );
+  }
 
   if (!(char in charSims) || charSims[char].length === 0) {
     return (
