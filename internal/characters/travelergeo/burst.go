@@ -39,7 +39,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	maxConstructCount, ok := p["construct_limit"]
 	if !ok {
-		maxConstructCount = 1
+		// assume 2 barriers for zhongli pillar tick purposes (leads to 3 resonance ticks)
+		// zhongli resonance limit is separate param on his skill (res_count)
+		maxConstructCount = 2
 	}
 
 	ai := combat.AttackInfo{
