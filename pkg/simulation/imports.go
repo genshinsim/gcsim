@@ -143,6 +143,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bell"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bloodtainted"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/debateclub"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/nagamasa"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/pines"
