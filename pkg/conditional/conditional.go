@@ -39,6 +39,8 @@ func Eval(c *core.Core, fields []string) int64 {
 		return evalWeapon(c, fields)
 	case ".keys":
 		return evalKeys(c, fields)
+	case ".cons":
+		return evalConstellation(c, fields)
 	default:
 		//check if it's a char name; if so check char custom eval func
 		name := strings.TrimPrefix(fields[0], ".")
