@@ -164,6 +164,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/whiteblind"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/whiteiron"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/wolf"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/beginners"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/blacktassel"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/calamity"
