@@ -126,7 +126,7 @@ func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
 	//otherwise panic for now?
 	r, ok := right.(*number)
 	if !ok {
-		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", right.Inspect())
+		return nil, fmt.Errorf("unary expression does not evaluate to a number, got %v ", right.Inspect())
 	}
 	switch b.Op.Typ {
 	case ast.LogicNot:
