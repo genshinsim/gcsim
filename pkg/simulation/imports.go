@@ -126,6 +126,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/memory"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/moonglow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/oathsworneye"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/otherworldly"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/perception"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/prayer"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/prototype"
