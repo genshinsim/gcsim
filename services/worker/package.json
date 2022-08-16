@@ -35,6 +35,8 @@
     "@cfworker/uuid": "^1.12.2",
     "@supabase/postgrest-js": "^0.37.4",
     "@tsndr/cloudflare-worker-jwt": "^2.0.1",
-    "itty-router": "^2.6.1"
+    "@types/json-bigint": "^1.0.1",
+    "itty-router": "^2.6.1",
+    "json-bigint": "^1.0.0"
   }
 }

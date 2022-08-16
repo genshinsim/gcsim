@@ -99,8 +99,9 @@ export async function handleAuth(request: Request): Promise<Response> {
 
   //get user info
   try {
+    const id = BigInt(discordIdentity.id)
     const userData = await createOrGetUser(
-      discordIdentity.id,
+      id,
       `${discordIdentity.username}#${discordIdentity.discriminator}`
     );
     return respFactory(
