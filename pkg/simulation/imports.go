@@ -128,6 +128,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/oathsworneye"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/otherworldly"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/perception"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/pocket"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/prayer"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/royal"
