@@ -48,9 +48,9 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	// TODO: not sure if this works as intended
 	skip := 0
-	if c.Core.Status.Duration("ganyuc6") > 0 {
-		c.Core.Status.Delete("ganyuc6")
-		c.Core.Log.NewEvent("ganyu c6 proc used", glog.LogCharacterEvent, c.Index).
+	if c.Core.Status.Duration(c6Key) > 0 {
+		c.Core.Status.Delete(c6Key)
+		c.Core.Log.NewEvent(c6Key+" proc used", glog.LogCharacterEvent, c.Index).
 			Write("char", c.Index)
 		// skip aimed charge time
 		skip = 83
