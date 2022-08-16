@@ -9,17 +9,19 @@ import (
 )
 
 func (c *char) c1() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.15
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("diluc-c1", -1),
-		Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if t.HP()/t.MaxHP() > 0.5 {
-				return m, true
-			}
-			return nil, false
-		},
-	})
+	if c.Core.Combat.DamageMode {
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DmgP] = 0.15
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("diluc-c1", -1),
+			Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if t.HP()/t.MaxHP() > 0.5 {
+					return m, true
+				}
+				return nil, false
+			},
+		})
+	}
 }
 
 const (

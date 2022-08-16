@@ -32,18 +32,20 @@ func (c *char) c1() {
 
 // Increases CRIT Rate against opponents with less than 30% HP by 10%.
 func (c *char) c2() {
-	c.c2bonus = make([]float64, attributes.EndStatType)
-	c.c2bonus[attributes.CR] = 0.1
+	if c.Core.Combat.DamageMode {
+		c.c2bonus = make([]float64, attributes.EndStatType)
+		c.c2bonus[attributes.CR] = 0.1
 
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("razor-c2", -1),
-		Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if t.HP()/t.MaxHP() < 0.3 {
-				return c.c2bonus, true
-			}
-			return nil, false
-		},
-	})
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("razor-c2", -1),
+			Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if t.HP()/t.MaxHP() < 0.3 {
+					return c.c2bonus, true
+				}
+				return nil, false
+			},
+		})
+	}
 }
 
 // When casting Claw and Thunder (Press), opponents hit will have their DEF decreased by 15% for 7s.
