@@ -1,6 +1,6 @@
-import { Callout, Card, Elevation, Icon } from "@blueprintjs/core";
-import { Link } from "wouter";
-import { Trans, useTranslation } from "react-i18next";
+import { Callout, Card, Elevation, Icon } from '@blueprintjs/core';
+import { Link } from 'wouter';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface DashCardProps {
   children: React.ReactNode;
@@ -45,7 +45,7 @@ export function Dash() {
       <span className="font-bold text-md mt-4 p-1">
         <a href="https://github.com/genshinsim/gcsim" target="_blank">
           gcsim
-        </a>{" "}
+        </a>{' '}
         <Trans>dash.is_a_team</Trans>
       </span>
       <span>
@@ -53,7 +53,7 @@ export function Dash() {
           We are at the final stages of finishing up the core rewrite. Please
           note that once the rewrite goes live, there will be many breaking
           syntax changes. Meaning old configs will not work as is. Update
-          documentation can be found{" "}
+          documentation can be found{' '}
           <a
             href="https://docs.gcsim.app/next/config"
             target="_blank"
@@ -87,6 +87,13 @@ export function Dash() {
         </DashCard>
 
         <DashCard href="/db">
+          <span className="font-bold text-xl">
+            <Icon icon="database" className="mr-2" size={25} />
+            Character DB
+          </span>
+        </DashCard>
+
+        <DashCard href="/db2">
           <span className="font-bold text-xl">
             <Icon icon="database" className="mr-2" size={25} />
             <Trans>dash.teams_db</Trans>

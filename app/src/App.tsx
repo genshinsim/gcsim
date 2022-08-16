@@ -1,16 +1,17 @@
-import React from "react";
-import { Redirect, Route, Switch } from "wouter";
-import Footer from "/src/Components/Footer/Footer";
-import Nav from "/src/Components/Nav/Nav";
-import { Dash } from "/src/Pages/Dash";
-import { Simple } from "/src/Pages/Sim";
-import { SimWrapper } from "./Pages/Sim/SimWrapper";
-import { ViewerDash } from "./Pages/ViewerDashboard";
-import { DB, DbChar } from "./Pages/DB";
-import "./i18n";
-import { Trans, useTranslation } from "react-i18next";
-import UserAccount from "./PageUserAccount";
-import { DiscordCallback } from "./PageUserAccount/DiscordCallback";
+import React from 'react';
+import { Redirect, Route, Switch } from 'wouter';
+import Footer from '/src/Components/Footer/Footer';
+import Nav from '/src/Components/Nav/Nav';
+import { Dash } from '/src/Pages/Dash';
+import { Simple } from '/src/Pages/Sim';
+import { SimWrapper } from './Pages/Sim/SimWrapper';
+import { ViewerDash } from './Pages/ViewerDashboard';
+import { DB, DbChar } from './Pages/DB';
+import './i18n';
+import { Trans, useTranslation } from 'react-i18next';
+import UserAccount from './PageUserAccount';
+import { DiscordCallback } from './PageUserAccount/DiscordCallback';
+import { CharacterView, Database } from '~src/PageDatabase';
 
 export default function App() {
   useTranslation();
@@ -44,6 +45,12 @@ export default function App() {
           <ViewerDash path="/" />
         </Route>
         <Route path="/db">
+          <Database />
+        </Route>
+        <Route path="/db/:avatar">
+          {(params) => <CharacterView char={params.avatar} />}
+        </Route>
+        <Route path="/db2">
           <DB />
         </Route>
         <Route path="/db/:char">{({ char }) => <DbChar char={char} />}</Route>
