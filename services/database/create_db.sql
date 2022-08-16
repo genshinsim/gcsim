@@ -115,6 +115,7 @@ create or replace view db_sims_by_avatar as
         , s.create_time
         , d.git_hash
         , d.sim_description
+        , d.config_hash
         , a.avatar_id
         , a.avatar_name
     from avatarsimulations x
@@ -146,6 +147,7 @@ create or replace view db_sims as
         , s.create_time
         , d.git_hash
         , d.sim_description
+        , d.config_hash
     from db_simulations d
     left outer join simulations s
         on d.simulation_key = s.simulation_key

@@ -9,7 +9,8 @@ export interface DBAvatarSimDetails {
   simulation_key: string;
   metadata: Metadata;
   is_permanent: boolean;
-  create_time: Date;
+  create_time: number;
   git_hash: string;
   sim_description: string;
+  config: string;
 }

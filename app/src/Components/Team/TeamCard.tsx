@@ -6,6 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 type TeamCardProps = {
   meta: Metadata;
+  onCharacterClick?: (char: string) => void;
   summary?: React.ReactNode;
   actions?: React.ReactNode;
 };
@@ -14,13 +15,17 @@ export function TeamCard({
   meta,
   summary = null,
   actions = null,
+  onCharacterClick = (char: string) => {},
 }: TeamCardProps) {
   useTranslation();
   const chars = meta.char_details.map((char) => {
     return (
-      <Popover2>
+      <Popover2 key={char.name}>
         <Tooltip2 content={<CharacterTooltip char={char} />}>
-          <div className="hover:bg-gray-600 border border-gray-700 hover:border-gray-400 rounded-md relative">
+          <div
+            className="hover:bg-gray-600 border border-gray-700 hover:border-gray-400 rounded-md relative"
+            onClick={() => onCharacterClick(char.name)}
+          >
             <img
               src={'/images/avatar/' + char.name + '.png'}
               alt={char.name}

@@ -11,7 +11,7 @@ import './i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import UserAccount from './PageUserAccount';
 import { DiscordCallback } from './PageUserAccount/DiscordCallback';
-import { CharacterView, Database } from '~src/PageDatabase';
+import { CharacterView, Database, TeamsList } from '~src/PageDatabase';
 
 export default function App() {
   useTranslation();
@@ -49,6 +49,9 @@ export default function App() {
         </Route>
         <Route path="/db/:avatar">
           {(params) => <CharacterView char={params.avatar} />}
+        </Route>
+        <Route path="/db/:avatar/:team">
+          {(params) => <TeamsList char={params.avatar} team={params.team} />}
         </Route>
         <Route path="/db2">
           <DB />

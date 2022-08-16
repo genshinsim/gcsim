@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import pako from 'pako';
 import { AppThunk } from '~src/store';
 import { DBAvatarSimCount, DBAvatarSimDetails } from '~src/Types/database';
 
@@ -44,7 +45,22 @@ export function loadCharacter(char: string): AppThunk {
     axios
       .get(`/api/db/${char}`)
       .then((resp) => {
-        dispatch(dbActions.setCharSimList(resp.data));
+        console.log(resp.data);
+        let next: DBAvatarSimDetails[] = [];
+        resp.data.forEach((e: any) => {
+          const binaryStr = Uint8Array.from(window.atob(e.config_hash), (v) =>
+            v.charCodeAt(0)
+          );
+          const restored = pako.inflate(binaryStr, { to: 'string' });
+          next.push({
+            ...e,
+            metadata: JSON.parse(e.metadata),
+            create_time: Math.floor(new Date(e.create_time).getTime() / 1000),
+            config: restored,
+          });
+        });
+        console.log(next);
+        dispatch(dbActions.setCharSimList({ char: char, data: next }));
         dispatch(dbActions.setStatus('done'));
       })
       .catch((err) => {
