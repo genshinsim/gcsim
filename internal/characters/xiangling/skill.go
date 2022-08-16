@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				part,
 			)
 			c.Core.Log.NewEventBuildMsg(glog.LogElementEvent, c.Index, "guoba self infusion applied").
-				Write("expiry", c.Core.F+infuseWindow+1)
+				SetEnded(c.Core.F+infuseWindow+1)
 			c.guoba.Durability[attributes.Pyro] = infuseDurability
 			c.Core.Tasks.Add(func() {
 				c.guoba.Durability[attributes.Pyro] = 0
