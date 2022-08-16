@@ -276,13 +276,11 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char pro
 // At least this version works semi-reliably...
 func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD float64) []string {
 	var (
-		charDebug []string
 		opDebug   []string
 	)
 
 	for idxChar, char := range stats.charProfilesERBaseline {
 		stats.findOptimalERforChar(idxChar, char, tolMean, tolSD)
-		opDebug = append(opDebug, charDebug...)
 	}
 
 	// Need a separate optimization routine for strong battery characters (currently Raiden only, maybe EMC?)
@@ -303,7 +301,6 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 		}
 		opDebug = append(opDebug, "Raiden found in team comp - running secondary optimization routine...")
 		stats.findOptimalERforChar(i, char, tolMean, tolSD)
-		opDebug = append(opDebug, charDebug...)
 	}
 
 	// Fix ER at previously found values then optimize all other substats
