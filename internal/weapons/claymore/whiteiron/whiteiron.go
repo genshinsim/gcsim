@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 func init() {
@@ -29,6 +30,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+		_, ok := args[0].(*enemy.Enemy)
+		// ignore if not an enemy
+		if !ok {
+			return false
+		}
 		atk := args[1].(*combat.AttackEvent)
 		// don't proc if someone else defeated the enemy
 		if atk.Info.ActorIndex != char.Index {
