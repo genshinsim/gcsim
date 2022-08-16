@@ -147,6 +147,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/ferrousshadow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/nagamasa"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/oldmercspal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/pines"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/rainslasher"
