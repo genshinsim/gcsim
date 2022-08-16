@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ResultsSummary } from "~src/types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ResultsSummary } from '~src/Types/stats';
 
 export interface Viewer {
   data: { [key in string]: ResultsSummary };
@@ -8,11 +8,11 @@ export interface Viewer {
 
 export const viewerInitialState: Viewer = {
   data: {},
-  selected: "",
+  selected: '',
 };
 
 export const viewerSlice = createSlice({
-  name: "viewer",
+  name: 'viewer',
   initialState: viewerInitialState,
   reducers: {
     addViewerData: (
@@ -44,5 +44,5 @@ export const viewerSlice = createSlice({
 export const viewerActions = viewerSlice.actions;
 
 export type ViewerSlice = {
-  [viewerSlice.name]: ReturnType<typeof viewerSlice["reducer"]>;
+  [viewerSlice.name]: ReturnType<typeof viewerSlice['reducer']>;
 };

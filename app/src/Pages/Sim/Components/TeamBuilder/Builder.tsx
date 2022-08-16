@@ -1,6 +1,6 @@
-import { Icon } from "@blueprintjs/core";
-import { ConsolidateCharStats, CharacterCard } from "~src/Components/Character";
-import { Character } from "~src/types";
+import { Icon } from '@blueprintjs/core';
+import { ConsolidateCharStats, CharacterCard } from '~src/Components/Character';
+import { Character } from '~src/Types/sim';
 
 type Props = {
   team: Character[];
@@ -33,7 +33,10 @@ export const Builder = (props: Props) => {
 
   //add an extra card for adding new
   const blankCard = (
-    <div className="basis-full sm:basis-1/2 hd:basis-1/4 pr-2 pb-2 " key="_blank">
+    <div
+      className="basis-full sm:basis-1/2 hd:basis-1/4 pr-2 pb-2 "
+      key="_blank"
+    >
       <div
         className="bg-gray-600 shadow rounded-md hover:bg-gray-500 flex items-center justify-center min-h-[16rem] h-full"
         onClick={props.handleAdd}

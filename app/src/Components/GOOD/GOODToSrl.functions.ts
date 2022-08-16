@@ -1,4 +1,3 @@
-import { Character, Weapon } from "~src/types";
 import {
   GOODArtifact,
   GOODArtifactSetKey,
@@ -7,12 +6,13 @@ import {
   GOODStatKey,
   GOODWeapon,
   GOODWeaponKey,
-} from "./GOODTypes";
-import ArtifactMainStatsData from "~src/Components/Artifacts/artifact_main_gen.json";
-import { characterKeyToICharacter } from "~src/Components/Character";
-import { ascLvlMax, StatToIndexMap } from "~src/util";
-type rarityValue = "1" | "2" | "3" | "4" | "5";
-const convertRarity: rarityValue[] = ["1", "2", "3", "4", "5"];
+} from './GOODTypes';
+import ArtifactMainStatsData from '~src/Components/Artifacts/artifact_main_gen.json';
+import { characterKeyToICharacter } from '~src/Components/Character';
+import { ascLvlMax, StatToIndexMap } from '~src/util';
+import { Character, Weapon } from '~src/Types/sim';
+type rarityValue = '1' | '2' | '3' | '4' | '5';
+const convertRarity: rarityValue[] = ['1', '2', '3', '4', '5'];
 
 export function GOODWeapontoSrlWeapon(weapon: GOODWeapon): Weapon {
   return {
@@ -29,7 +29,7 @@ export function sumArtifactStats(artifacts: GOODArtifact[]): number[] {
   ].slice();
 
   artifacts.forEach((artifact) => {
-    if (artifact.mainStatKey !== "" && artifact.mainStatKey !== "def") {
+    if (artifact.mainStatKey !== '' && artifact.mainStatKey !== 'def') {
       const mainStatValue =
         ArtifactMainStatsData[convertRarity[artifact.rarity - 1]][
           artifact.mainStatKey
@@ -38,14 +38,14 @@ export function sumArtifactStats(artifacts: GOODArtifact[]): number[] {
       if (srlStat === undefined) return;
       totalStats[StatToIndexMap[srlStat]] += mainStatValue;
     } else {
-      console.log("pepegaW artifact");
+      console.log('pepegaW artifact');
       return;
     }
 
     artifact.substats.forEach((substat) => {
       const srlStat = GOODStattoSrlStat(substat.key);
       if (srlStat === undefined) return;
-      if (substat.key.includes("_")) {
+      if (substat.key.includes('_')) {
         totalStats[StatToIndexMap[srlStat]] += substat.value / 100;
       } else {
         totalStats[StatToIndexMap[srlStat]] += substat.value;
@@ -57,42 +57,42 @@ export function sumArtifactStats(artifacts: GOODArtifact[]): number[] {
 
 export function GOODStattoSrlStat(goodStat: GOODStatKey): string | undefined {
   switch (goodStat) {
-    case "hp":
-      return "HP";
-    case "hp_":
-      return "HPP";
-    case "atk":
-      return "ATK";
-    case "atk_":
-      return "ATKP";
-    case "def":
-      return "DEF";
-    case "def_":
-      return "DEFP";
-    case "eleMas":
-      return "EM";
-    case "enerRech_":
-      return "ER";
-    case "heal_":
-      return "Heal";
-    case "critRate_":
-      return "CR";
-    case "critDMG_":
-      return "CD";
-    case "physical_dmg_":
-      return "PhyP";
-    case "anemo_dmg_":
-      return "AnemoP";
-    case "geo_dmg_":
-      return "GeoP";
-    case "electro_dmg_":
-      return "ElectroP";
-    case "hydro_dmg_":
-      return "HydroP";
-    case "pyro_dmg_":
-      return "PyroP";
-    case "cryo_dmg_":
-      return "CryoP";
+    case 'hp':
+      return 'HP';
+    case 'hp_':
+      return 'HPP';
+    case 'atk':
+      return 'ATK';
+    case 'atk_':
+      return 'ATKP';
+    case 'def':
+      return 'DEF';
+    case 'def_':
+      return 'DEFP';
+    case 'eleMas':
+      return 'EM';
+    case 'enerRech_':
+      return 'ER';
+    case 'heal_':
+      return 'Heal';
+    case 'critRate_':
+      return 'CR';
+    case 'critDMG_':
+      return 'CD';
+    case 'physical_dmg_':
+      return 'PhyP';
+    case 'anemo_dmg_':
+      return 'AnemoP';
+    case 'geo_dmg_':
+      return 'GeoP';
+    case 'electro_dmg_':
+      return 'ElectroP';
+    case 'hydro_dmg_':
+      return 'HydroP';
+    case 'pyro_dmg_':
+      return 'PyroP';
+    case 'cryo_dmg_':
+      return 'CryoP';
   }
 }
 
@@ -110,7 +110,7 @@ export function tallyArtifactSet(artifacts: GOODArtifact[]): {
     .map((setKey) => {
       if (Object.keys(setKeyTally).includes(setKey)) {
         setKeyTally[setKey] += 1;
-      } else if (setKey != "") {
+      } else if (setKey != '') {
         setKeyTally[setKey] = 1;
       }
     }); // Tallies the set keys
@@ -163,7 +163,7 @@ export function GOODChartoSrlChar(
     element: iChar.element,
     cons: goodChar.constellation,
     weapon: weapon ?? {
-      name: "dullblade",
+      name: 'dullblade',
       refine: 1,
       level: 1,
       max_level: 20,
@@ -187,29 +187,29 @@ export function GOODKeytoGCSIMKey(
   goodKey: GOODArtifactSetKey | GOODCharacterKey | GOODWeaponKey
 ) {
   switch (goodKey) {
-    case "KaedeharaKazuha":
-      return "kazuha";
-    case "KamisatoAyaka":
-      return "ayaka";
-    case "KamisatoAyato":
-      return "ayato";
-    case "KujouSara":
-      return "sara";
-    case "RaidenShogun":
-      return "raiden";
-    case "SangonomiyaKokomi":
-      return "kokomi";
-    case "YaeMiko":
-      return "yaemiko";
-    case "AratakiItto":
-      return "itto";
-    case "ShikanoinHeizou":
-      return "heizou";
+    case 'KaedeharaKazuha':
+      return 'kazuha';
+    case 'KamisatoAyaka':
+      return 'ayaka';
+    case 'KamisatoAyato':
+      return 'ayato';
+    case 'KujouSara':
+      return 'sara';
+    case 'RaidenShogun':
+      return 'raiden';
+    case 'SangonomiyaKokomi':
+      return 'kokomi';
+    case 'YaeMiko':
+      return 'yaemiko';
+    case 'AratakiItto':
+      return 'itto';
+    case 'ShikanoinHeizou':
+      return 'heizou';
   }
 
   const result = goodKey
     .toString()
-    .replace(/[^0-9a-z]/gi, "")
+    .replace(/[^0-9a-z]/gi, '')
     .toLowerCase();
   return result;
 }

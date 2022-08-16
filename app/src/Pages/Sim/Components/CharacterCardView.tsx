@@ -1,6 +1,6 @@
-import { CharacterCard, ConsolidateCharStats } from "~src/Components/Character";
-import { Character } from "~src/types";
-import { Trans, useTranslation } from "react-i18next";
+import { CharacterCard, ConsolidateCharStats } from '~src/Components/Character';
+import { Trans, useTranslation } from 'react-i18next';
+import { Character } from '~src/Types/sim';
 
 type Props = {
   chars: Character[];
@@ -8,10 +8,14 @@ type Props = {
 };
 
 export function CharacterCardView(props: Props) {
-  useTranslation()
+  useTranslation();
 
   if (!props.chars) {
-    return <div><Trans>components.no_characters</Trans></div>;
+    return (
+      <div>
+        <Trans>components.no_characters</Trans>
+      </div>
+    );
   }
 
   const teamStats = ConsolidateCharStats(props.chars);
@@ -25,7 +29,7 @@ export function CharacterCardView(props: Props) {
         statsRows={teamStats.maxRows}
         showDelete
         showEdit
-        handleDelete={() => console.log("deleting " + c.name)}
+        handleDelete={() => console.log('deleting ' + c.name)}
         toggleEdit={props.handleEdit(index)}
         className="basis-full md:basis-1/2 wide:basis-1/4 pt-2 pr-2 pb-2"
       />
