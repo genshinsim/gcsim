@@ -30,7 +30,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m[attributes.CR] = 0.12
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("berserker-2pc", -1),
-			AffectedStat: attributes.ATKP,
+			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
