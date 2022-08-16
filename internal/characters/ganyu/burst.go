@@ -75,7 +75,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				if c.c4Stacks > 5 {
 					c.c4Stacks = 5
 				}
-				c.Core.Log.NewEvent("ganyu c4 tick", glog.LogCharacterEvent, c.Index).
+				c.Core.Log.NewEvent(c4Key+" tick", glog.LogCharacterEvent, c.Index).
 					Write("stacks", c.c4Stacks)
 			}
 
@@ -91,7 +91,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 				// C4 lingers for 3s
 				if c.Base.Cons >= 4 {
-					x.SetTag("ganuyc4", c.Core.F+60*3)
+					x.SetTag(c4Key, c.Core.F+60*3)
 				}
 
 				if lastHit[t] < c.Core.F {
