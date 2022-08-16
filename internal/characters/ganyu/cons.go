@@ -23,29 +23,29 @@ func (c *char) c1() {
 			return false
 		}
 
-		c.AddEnergy("ganyu-c1", 2)
+		c.AddEnergy(c.c1Key, 2)
 		e.AddResistMod(enemy.ResistMod{
-			Base:  modifier.NewBase("ganyu-c1", 5*60),
+			Base:  modifier.NewBase(c.c1Key, 5*60),
 			Ele:   attributes.Cryo,
 			Value: -0.15,
 		})
 
 		return false
-	}, "ganyu-c1")
+	}, c.c1Key)
 }
 
 func (c *char) c4() {
 	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("ganyu-c4", -1),
+			Base: modifier.NewBase(c.c4Key, -1),
 			Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
 					return nil, false
 				}
 				// reset stacks on expiry
-				if c.Core.F > x.GetTag("ganyuc4") {
+				if c.Core.F > x.GetTag(c.c4Key) {
 					c.c4Stacks = 0
 				}
 				m[attributes.DmgP] = float64(c.c4Stacks) * 0.05

@@ -17,6 +17,9 @@ type char struct {
 	*tmpl.Character
 	a1Expiry int
 	c4Stacks int
+	c1Key    string
+	c4Key    string
+	c6Key    string
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -34,6 +37,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	if c.Base.Cons >= 2 {
 		c.SetNumCharges(action.ActionSkill, 2)
 	}
+
+	c.c1Key = "ganyu-c1"
+	c.c4Key = "ganyu-c4"
+	c.c6Key = "ganyu-c6"
 
 	w.Character = &c
 
