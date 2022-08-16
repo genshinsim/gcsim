@@ -38,9 +38,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	// 4 Piece: Increases DMG by 30% against opponents with more than 50% HP.
 	if count >= 4 {
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.DmgP] = 0.30
 		if c.Combat.DamageMode {
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.DmgP] = 0.30
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase("braveheart-4pc", -1),
 				Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
