@@ -94,7 +94,7 @@ export function CharacterView({ char }: CharacterViewProps) {
       return (
         <div
           key={e}
-          className="flex flex-row bg-gray-700 rounded-md p-2 hover:cursor-pointer"
+          className="grid grid-cols-4 bg-gray-700 rounded-md p-2 hover:cursor-pointer border-2 border-gray-700 hover:border-white"
           onClick={() => setLocation(`/db/${char}/${e}`)}
         >
           {col}
