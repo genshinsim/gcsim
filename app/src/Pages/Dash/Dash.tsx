@@ -1,6 +1,6 @@
-import { Callout, Card, Elevation, Icon } from "@blueprintjs/core";
-import { Link } from "wouter";
-import { Trans, useTranslation } from "react-i18next";
+import { Callout, Card, Elevation, H3, Icon } from '@blueprintjs/core';
+import { Link } from 'wouter';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface DashCardProps {
   children: React.ReactNode;
@@ -42,33 +42,17 @@ export function Dash() {
   useTranslation();
   return (
     <main className="w-full flex flex-col items-center flex-grow ">
-      <span className="font-bold text-md mt-4 p-1">
-        <a href="https://github.com/genshinsim/gcsim" target="_blank">
-          gcsim
-        </a>{" "}
-        <Trans>dash.is_a_team</Trans>
-      </span>
       <span>
-        <Callout intent="danger" className="max-w-[600px] mt-4">
-          We are at the final stages of finishing up the core rewrite. Please
-          note that once the rewrite goes live, there will be many breaking
-          syntax changes. Meaning old configs will not work as is. Update
-          documentation can be found{" "}
-          <a
-            href="https://docs.gcsim.app/next/config"
-            target="_blank"
-            rel="noreferrer"
-          >
-            here
-          </a>
-        </Callout>
-      </span>
-      <span>
-        <Callout intent="warning" className=" max-w-[600px] mt-4">
-          Please note that gcsim is currently on a feature freeze for now as we
-          work on rewriting the calculation core to properly simulate hitlag. As
-          such, no new features (other than new characters and urgent bug fixes)
-          will be added for now until we are done with the rewrite.
+        <Callout intent="success" className=" max-w-[600px] mt-4">
+          Thank you for your patience. The core rewrite is now complete. Hitlag
+          has been implemented along with a ton of config syntax improvements.
+          <br />
+          <div className="mt-2 font-bold">
+            Please check out the migration guide here:{' '}
+            <a href="https://docs.gcsim.app/migration" target="_blank">
+              Migration Guide
+            </a>
+          </div>
         </Callout>
       </span>
       <div className="flex flex-row flex-initial flex-wrap w-full lg:w-[60rem] mt-4">

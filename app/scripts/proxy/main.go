@@ -7,8 +7,10 @@ import (
 	"net/url"
 )
 
+const proxyURL = "https://next.gcsim.app"
+
 func main() {
-	remote, err := url.Parse("https://next.gcsim.app")
+	remote, err := url.Parse(proxyURL)
 	if err != nil {
 		panic(err)
 	}
@@ -17,14 +19,13 @@ func main() {
 		return func(w http.ResponseWriter, r *http.Request) {
 			log.Println(r.URL)
 			r.Host = remote.Host
-			w.Header().Set("X-Ben", "Rad")
 			p.ServeHTTP(w, r)
 		}
 	}
 
 	proxy := httputil.NewSingleHostReverseProxy(remote)
 	http.HandleFunc("/", handler(proxy))
-	err = http.ListenAndServe(":3001", nil)
+	err = http.ListenAndServe(":3030", nil)
 	if err != nil {
 		panic(err)
 	}

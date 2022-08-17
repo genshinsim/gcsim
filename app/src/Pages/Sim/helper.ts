@@ -1,32 +1,32 @@
-import { Character } from "~src/types";
+import { Character } from '~src/Types/sim';
 
 const statKeys = [
-  "n/a",
-  "def%",
-  "def",
-  "hp",
-  "hp%",
-  "atk",
-  "atk%",
-  "er",
-  "em",
-  "cr",
-  "cd",
-  "heal",
-  "pyro%",
-  "hydro%",
-  "cryo%",
-  "electro%",
-  "anemo%",
-  "geo%",
-  "phys%",
-  "dendro%",
-  "atkspd%",
-  "dmg%",
+  'n/a',
+  'def%',
+  'def',
+  'hp',
+  'hp%',
+  'atk',
+  'atk%',
+  'er',
+  'em',
+  'cr',
+  'cd',
+  'heal',
+  'pyro%',
+  'hydro%',
+  'cryo%',
+  'electro%',
+  'anemo%',
+  'geo%',
+  'phys%',
+  'dendro%',
+  'atkspd%',
+  'dmg%',
 ];
 
 export function charToCfg(char: Character): string {
-  let str = "";
+  let str = '';
   // prettier-ignore
   str += `${char.name} char lvl=${char.level}/${char.max_level} cons=${char.cons} talent=${char.talents.attack},${char.talents.skill},${char.talents.burst};\n`
   // prettier-ignore

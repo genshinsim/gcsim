@@ -1,3 +1,2 @@
-export { DB } from "./DB";
-export { DbChar } from "./DbChar";
-export * from "./dbSlice";
+export { DB } from './DB';
+export * from './dbSlice';

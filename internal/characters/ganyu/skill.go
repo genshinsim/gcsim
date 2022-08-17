@@ -41,7 +41,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// c.CD[charge] = c.Core.F + 10*60
 
 	if c.Base.Cons == 6 {
-		c.Core.Status.Add("ganyuc6", 1800)
+		c.Core.Status.Add(c6Key, 1800)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 10)
