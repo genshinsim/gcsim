@@ -11,10 +11,18 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 56
+const (
+	burstKey     = "thoma-q"
+	burstICDKey  = "thoma-q-icd"
+	burstHitmark = 40
+)
 
 func init() {
-	burstFrames = frames.InitAbilSlice(56)
+	burstFrames = frames.InitAbilSlice(58)
+	burstFrames[action.ActionAttack] = 57
+	burstFrames[action.ActionSkill] = 56
+	burstFrames[action.ActionDash] = 57
+	burstFrames[action.ActionSwap] = 56
 }
 
 // Burst attack damage queue generator
@@ -32,14 +40,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	// damage component not final
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+		burstHitmark,
+		burstHitmark,
+	)
 
 	d := 15
 	if c.Base.Cons >= 2 {
 		d = 18
 	}
 
-	c.AddStatus("thoma-q", d*60, true)
+	c.AddStatus(burstKey, d*60, true)
 
 	c.burstProc()
 
@@ -47,75 +60,99 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		c.Core.Tasks.Add(func() {
 			c.AddEnergy("thoma-c4", 15)
-		}, 15)
+		}, 8)
 	}
 
 	cd := 20
 	if c.Base.Cons >= 1 {
-		cd = 17 //the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 17 for sim purposes.
+		cd = 17 // the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 17 for sim purposes.
 	}
-	c.SetCDWithDelay(action.ActionBurst, cd*60, 11)
-	c.ConsumeEnergy(11)
+	c.SetCD(action.ActionBurst, cd*60)
+	c.ConsumeEnergy(7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.InvalidAction],
+		CanQueueAfter:   burstFrames[action.ActionSkill],
 		State:           action.BurstState,
 	}
 }
 
 func (c *char) burstProc() {
 	// does not deactivate on death
-	const icdKey = "thoma-q-icd"
-	icd := 60 // 1s * 60
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		t := args[0].(combat.Target)
-		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
+	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+		if !c.StatusIsActive(burstKey) {
 			return false
 		}
-
-		if !c.StatusIsActive("thoma-q") {
+		next := args[1].(action.AnimationState)
+		if next != action.NormalAttackState {
 			return false
 		}
-		if c.StatusIsActive(icdKey) {
+		if c.StatusIsActive(burstICDKey) {
 			c.Core.Log.NewEvent("thoma Q (active) on icd", glog.LogCharacterEvent, c.Index).
 				Write("frame", c.Core.F)
 			return false
 		}
-		c.AddStatus(icdKey, icd, true)
-
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Fiery Collapse",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Pyro,
-			Durability: 25,
-			Mult:       burstproc[c.TalentLvlBurst()],
-			FlatDmg:    0.022 * c.MaxHP(),
-		}
-		//trigger a chain of attacks starting at the first target
-		atk := combat.AttackEvent{
-			Info: ai,
-		}
-		atk.SourceFrame = c.Core.F
-		atk.Pattern = combat.NewDefSingleTarget(t.Index(), combat.TargettableEnemy)
-		cb := func(_ combat.AttackCB) {
-			shieldamt := (burstshieldpp[c.TalentLvlBurst()]*c.MaxHP() + burstshieldflat[c.TalentLvlBurst()])
-			c.genShield("Thoma Burst", shieldamt)
-		}
-		atk.Callbacks = append(atk.Callbacks, cb)
-		c.Core.QueueAttackEvent(&atk, 0)
-
-		c.Core.Log.NewEvent("thoma Q proc'd", glog.LogCharacterEvent, c.Index).
+		c.summonFieryCollapse()
+		c.Core.Log.NewEvent("thoma burst on state change", glog.LogCharacterEvent, c.Index).
 			Write("frame", c.Core.F).
-			Write("char", ae.Info.ActorIndex).
-			Write("attack tag", ae.Info.AttackTag)
-
+			Write("char", c.Core.Player.Active()).
+			Write("icd", c.StatusExpiry(burstICDKey))
+		c.burstTickSrc = c.Core.F
+		c.QueueCharTask(c.burstTickFunc(c.Core.F), 60)
 		return false
-	}, "thoma-burst")
+	}, "thoma-burst-animation-check")
+}
+
+func (c *char) burstTickFunc(src int) func() {
+	return func() {
+		if !c.StatusIsActive(burstKey) {
+			return
+		}
+		if c.burstTickSrc != src {
+			c.Core.Log.NewEvent("thoma burst tick stopped, src diff", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("new src", c.burstTickSrc)
+			return
+		}
+		state := c.Core.Player.CurrentState()
+		if state != action.NormalAttackState {
+			c.Core.Log.NewEvent("thoma burst tick stopped, not normal state", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("state", state)
+			return
+		}
+		c.Core.Log.NewEvent("thoma burst triggered from tick", glog.LogCharacterEvent, c.Index).
+			Write("src", src).
+			Write("state", state).
+			Write("icd", c.StatusExpiry(burstICDKey))
+		c.summonFieryCollapse()
+		c.QueueCharTask(c.burstTickFunc(src), 60)
+	}
+}
+
+func (c *char) summonFieryCollapse() {
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Fiery Collapse",
+		AttackTag:  combat.AttackTagElementalBurst,
+		ICDTag:     combat.ICDTagElementalBurst,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Pyro,
+		Durability: 25,
+		Mult:       burstproc[c.TalentLvlBurst()],
+		FlatDmg:    0.022 * c.MaxHP(),
+	}
+	done := false
+	shieldCb := func(_ combat.AttackCB) {
+		if done {
+			return
+		}
+		shieldamt := (burstshieldpp[c.TalentLvlBurst()]*c.MaxHP() + burstshieldflat[c.TalentLvlBurst()])
+		c.genShield("Thoma Burst", shieldamt, true)
+		done = true
+	}
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, 11, shieldCb)
+	c.AddStatus(burstICDKey, 60, true)
 }

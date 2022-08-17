@@ -10,10 +10,13 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 44
+const skillHitmark = 11
 
 func init() {
-	skillFrames = frames.InitAbilSlice(44)
+	skillFrames = frames.InitAbilSlice(46)
+	skillFrames[action.ActionDash] = 32
+	skillFrames[action.ActionJump] = 32
+	skillFrames[action.ActionSwap] = 44
 }
 
 // Skill attack damage queue generator
@@ -35,36 +38,45 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// snapshot unknown
 	// snap := c.Snapshot(&ai)
 
-	//3 or 4, 3:2 ratio
+	// 3 or 4, 3:2 ratio
 	var count float64 = 3
 	if c.Core.Rand.Float64() < 0.4 {
 		count = 4
 	}
 	c.Core.QueueParticle("thoma", count, attributes.Pyro, skillHitmark+c.Core.Flags.ParticleDelay)
 
-	shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
-	c.genShield("Thoma Skill", shieldamt)
+	c.Core.Tasks.Add(func() {
+		shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
+		c.genShield("Thoma Skill", shieldamt, false)
+	}, 9)
 
 	// damage component not final
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+		skillHitmark,
+		skillHitmark,
+	)
 
-	//TODO: self infusion timing? set at hitmark for now for 0.5s
 	player, ok := c.Core.Combat.Player().(*avatar.Player)
 	if !ok {
 		panic("target 0 should be Player but is not!!")
 	}
-	player.ApplySelfInfusion(attributes.Pyro, 25, 30)
+
+	c.Core.Tasks.Add(func() {
+		player.ApplySelfInfusion(attributes.Pyro, 25, 30)
+	}, 9)
 
 	cd := 15
 	if c.Base.Cons >= 1 {
-		cd = 12 //the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 12 for sim purposes.
+		cd = 12 // the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 12 for sim purposes.
 	}
-	c.SetCD(action.ActionSkill, cd*60)
+	c.SetCDWithDelay(action.ActionSkill, cd*60, 9)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
 }

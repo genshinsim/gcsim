@@ -1,6 +1,8 @@
 package thoma
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -8,19 +10,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func (c *char) genShield(src string, shieldamt float64) {
+func (c *char) genShield(src string, shieldamt float64, shouldStack bool) {
 	if !c.StatusIsActive("thoma-a1-icd") && c.a1Stack < 5 {
 		c.a1Stack++
 		c.AddStatus("thoma-a1-icd", 18, true) // 0.3s * 60
 		c.AddStatus("thoma-a1", 360, true)    // 6s * 60
 	}
-	if c.Core.Player.Shields.Get(shield.ShieldThomaSkill) != nil {
-		maxHP := c.maxShieldHP()
-		if c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()+shieldamt > maxHP {
-			shieldamt = maxHP - c.Core.Player.Shields.Get(shield.ShieldThomaSkill).CurrentHP()
+	existingShield := c.Core.Player.Shields.Get(shield.ShieldThomaSkill)
+	if existingShield != nil {
+		if shouldStack {
+			shieldamt += existingShield.CurrentHP()
+		} else {
+			shieldamt = math.Max(shieldamt, existingShield.CurrentHP())
 		}
+		shieldamt = math.Min(shieldamt, c.maxShieldHP())
 	}
-	//add shield
+	// add shield
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Shields.Add(&shield.Tmpl{
 			Src:        c.Core.F,
@@ -28,7 +33,7 @@ func (c *char) genShield(src string, shieldamt float64) {
 			Name:       src,
 			HP:         shieldamt,
 			Ele:        attributes.Pyro,
-			Expires:    c.Core.F + 8*60, //8 sec
+			Expires:    c.Core.F + 8*60, // 8 sec
 		})
 	}, 1)
 
