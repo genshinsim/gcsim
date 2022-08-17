@@ -15,7 +15,6 @@ var (
 	attackFramesWithLag   [][]int
 	attackHitmarks        = []int{16, 23, 37}
 	attackHitmarksWithLag []int
-	attackCancelKey       = "klee-attack-cancel"
 )
 
 const normalHitNum = 3
