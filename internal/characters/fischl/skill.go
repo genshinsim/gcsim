@@ -41,6 +41,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	//hitmark is 5 frames after oz spawns
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillOzSpawn, skillOzSpawn+5)
 
+	c.Core.Tasks.Add(func() {
+		// activate status at CanQueueAfter because adding the status later than that breaks things
+		// if you do E -> D then everything's fine, but any other cancel breaks the conditional
+		// example:
+		// "fischl skill" followed by a ".status.fischloz == 0" check
+		dur := 600 + skillOzSpawn - skillFrames[action.ActionDash]
+		if c.Base.Cons == 6 {
+			dur += 120
+		}
+		c.Core.Status.Add("fischloz", dur)
+	}, skillFrames[action.ActionDash])
+
 	//set on field oz to be this one
 	c.Core.Tasks.Add(func() {
 		c.queueOz("Skill")
@@ -88,9 +100,6 @@ func (c *char) queueOz(src string) {
 		Write("source", src).
 		Write("expected end", c.ozActiveUntil).
 		Write("next expected tick", c.Core.F+60)
-
-	c.Core.Status.Add("fischloz", dur)
-
 }
 
 func (c *char) ozTick(src int) func() {
