@@ -166,11 +166,11 @@ func (h *Handler) DistributeParticle(p character.Particle) {
 func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64 {
 	// stam percent mods are negative
 	// cap it to 100% stam decrease
-	r := 1 + h.StamPercentMod(action.ActionDash)
+	r := 1 + h.StamPercentMod(a)
 	if r < 0 {
 		r = 0
 	}
-	return r * h.chars[i].ActionStam(action.ActionDash, p)
+	return r * h.chars[i].ActionStam(a, p)
 }
 func (h *Handler) RestoreStam(v float64) {
 	h.Stam += v

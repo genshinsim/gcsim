@@ -64,7 +64,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		c.Player.AddStamPercentMod(key, 300, func(a action.Action) (float64, bool) {
-			return -stamReduction, a == action.ActionDash
+			if a == action.ActionDash {
+				return -stamReduction, false
+			}
+			return 0, false
 		})
 		return false
 	}, key)

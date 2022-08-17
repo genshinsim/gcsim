@@ -77,7 +77,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			// charged attack stamina part
 			// TODO: should this be affected by hitlag? (stam percent mod)
 			c.Player.AddStamPercentMod("bloodstained-4pc-stamina", 600, func(a action.Action) (float64, bool) {
-				return -1, a == action.ActionCharge
+				if a == action.ActionCharge {
+					return -1, false
+				}
+				return 0, false
 			})
 
 			return false
