@@ -1,4 +1,4 @@
-package common
+﻿package twin
 
 import (
 	"fmt"
@@ -7,42 +7,31 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-type Blackcliff struct {
+func init() {
+	core.RegisterWeaponFunc(keys.TwinNephrite, NewWeapon)
+}
+
+type Weapon struct {
 	Index int
 }
 
-func (b *Blackcliff) SetIndex(idx int) { b.Index = idx }
-func (b *Blackcliff) Init() error      { return nil }
+func (w *Weapon) SetIndex(idx int) { w.Index = idx }
+func (w *Weapon) Init() error      { return nil }
 
-func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+// Defeating an opponent increases Movement SPD and ATK by 12/14/16/18/20% for 15s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+	w := &Weapon{}
+	r := p.Refine
 
-	b := &Blackcliff{}
-
-	atk := 0.09 + float64(p.Refine)*0.03
-	index := 0
-	stackKey := []string{
-		"blackcliff-stack-1",
-		"blackcliff-stack-2",
-		"blackcliff-stack-3",
-	}
 	m := make([]float64, attributes.EndStatType)
-
-	amtfn := func() ([]float64, bool) {
-		count := 0
-		for _, v := range stackKey {
-			if char.StatusIsActive(v) {
-				count++
-			}
-		}
-		m[attributes.ATKP] = atk * float64(count)
-		return m, true
-	}
+	m[attributes.ATKP] = 0.10 + float64(r)*0.02
 
 	c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
 		_, ok := args[0].(*enemy.Enemy)
@@ -59,20 +48,16 @@ func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponPro
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		//add status to char given index
-		char.AddStatus(stackKey[index], 1800, true)
-		//update buff
+		// add buff
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("blackcliff", 1800),
+			Base:         modifier.NewBaseWithHitlag("twinnephrite", 900), // 15s
 			AffectedStat: attributes.ATKP,
-			Amount:       amtfn,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
 		})
-		index++
-		if index == 3 {
-			index = 0
-		}
 		return false
-	}, fmt.Sprintf("blackcliff-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("twinnephrite-%v", char.Base.Key.String()))
 
-	return b, nil
+	return w, nil
 }

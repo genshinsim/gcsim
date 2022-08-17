@@ -1,4 +1,4 @@
-package hunter
+﻿package beginners
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.HuntersBow, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.BeginnersProtector, common.NewNoEffect)
 }
