@@ -11,7 +11,8 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.TravelerAnemo, NewChar)
+	core.RegisterCharFunc(keys.AetherAnemo, NewChar(0))
+	core.RegisterCharFunc(keys.LumineAnemo, NewChar(1))
 }
 
 type char struct {
@@ -21,22 +22,27 @@ type char struct {
 	eInfuse             attributes.Element
 	eICDTag             combat.ICDTag
 	infuseCheckLocation combat.AttackPattern
+	gender              int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
-	c := char{}
-	c.Character = tmpl.NewWithWrapper(s, w)
+func NewChar(gender int) core.NewCharacterFunc {
+	return func(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+		c := char{
+			gender: gender,
+		}
+		c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Anemo
-	c.EnergyMax = 60
-	c.BurstCon = 3
-	c.SkillCon = 5
-	c.NormalHitNum = normalHitNum
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+		c.Base.Element = attributes.Anemo
+		c.EnergyMax = 60
+		c.BurstCon = 3
+		c.SkillCon = 5
+		c.NormalHitNum = normalHitNum
+		c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
 
-	w.Character = &c
+		w.Character = &c
 
-	return nil
+		return nil
+	}
 }
 
 func (c *char) Init() error {

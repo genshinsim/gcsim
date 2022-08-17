@@ -8,7 +8,7 @@ import (
 )
 
 var CharBaseMap = map[keys.Char]CharBase{
-	keys.TravelerMale: {
+	keys.Aether: {
 		Rarity:      5,
 		Body:        profile.BodyBoy,
 		Element:     attributes.NoElement,
@@ -1698,7 +1698,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 			},
 		},
 	},
-	keys.TravelerFemale: {
+	keys.Lumine: {
 		Rarity:      5,
 		Body:        profile.BodyGirl,
 		Element:     attributes.NoElement,

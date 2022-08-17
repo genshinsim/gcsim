@@ -11,7 +11,8 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.TravelerElectro, NewChar)
+	core.RegisterCharFunc(keys.AetherElectro, NewChar(0))
+	core.RegisterCharFunc(keys.LumineElectro, NewChar(1))
 }
 
 type char struct {
@@ -22,21 +23,26 @@ type char struct {
 	burstSnap             combat.Snapshot
 	burstAtk              *combat.AttackEvent
 	burstSrc              int
+	female                int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
-	c := char{}
-	c.Character = tmpl.NewWithWrapper(s, w)
+func NewChar(isFemale int) core.NewCharacterFunc {
+	return func(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+		c := char{
+			female: isFemale,
+		}
+		c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Electro
-	c.EnergyMax = 80
-	c.BurstCon = 3
-	c.SkillCon = 5
-	c.NormalHitNum = normalHitNum
+		c.Base.Element = attributes.Electro
+		c.EnergyMax = 80
+		c.BurstCon = 3
+		c.SkillCon = 5
+		c.NormalHitNum = normalHitNum
 
-	w.Character = &c
+		w.Character = &c
 
-	return nil
+		return nil
+	}
 }
 
 func (c *char) Init() error {
