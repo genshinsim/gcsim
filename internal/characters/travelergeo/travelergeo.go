@@ -10,20 +10,20 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.TravelerGeoMale, NewChar(0))
-	core.RegisterCharFunc(keys.TravelerGeoFemale, NewChar(1))
+	core.RegisterCharFunc(keys.AetherGeo, NewChar(0))
+	core.RegisterCharFunc(keys.LumineGeo, NewChar(1))
 }
 
 type char struct {
 	*tmpl.Character
 	c1TickCount int
-	female      int
+	gender      int
 }
 
-func NewChar(isFemale int) core.NewCharacterFunc {
+func NewChar(gender int) core.NewCharacterFunc {
 	return func(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 		c := char{
-			female: isFemale,
+			gender: gender,
 		}
 		c.Character = tmpl.NewWithWrapper(s, w)
 

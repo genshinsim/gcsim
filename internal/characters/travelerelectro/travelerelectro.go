@@ -11,8 +11,8 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.TravelerElectroMale, NewChar(0))
-	core.RegisterCharFunc(keys.TravelerElectroFemale, NewChar(1))
+	core.RegisterCharFunc(keys.AetherElectro, NewChar(0))
+	core.RegisterCharFunc(keys.LumineElectro, NewChar(1))
 }
 
 type char struct {

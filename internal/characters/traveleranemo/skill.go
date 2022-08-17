@@ -64,9 +64,9 @@ func (c *char) SkillPress() action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillPressFrames[c.female]),
-		AnimationLength: skillPressFrames[c.female][action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[c.female][action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillPressFrames[c.gender]),
+		AnimationLength: skillPressFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   skillPressFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -185,9 +185,9 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	// starts absorbing after the first tick?
 	c.Core.Tasks.Add(c.absorbCheckE(c.Core.F, 0, int((hitmark)/18)), firstTick+1)
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.female][next] + hitmark },
-		AnimationLength: skillHoldDelayFrames[c.female][action.InvalidAction] + hitmark,
-		CanQueueAfter:   skillHoldDelayFrames[c.female][action.ActionDash] + hitmark, // earliest cancel
+		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.gender][next] + hitmark },
+		AnimationLength: skillHoldDelayFrames[c.gender][action.InvalidAction] + hitmark,
+		CanQueueAfter:   skillHoldDelayFrames[c.gender][action.ActionDash] + hitmark, // earliest cancel
 		State:           action.SkillState,
 	}
 }

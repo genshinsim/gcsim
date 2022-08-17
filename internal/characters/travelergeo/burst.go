@@ -105,9 +105,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(37)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(burstFrames[c.female]),
-		AnimationLength: burstFrames[c.female][action.InvalidAction],
-		CanQueueAfter:   burstFrames[c.female][action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),
+		AnimationLength: burstFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   burstFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}
 }

@@ -32,8 +32,8 @@ func (s *Set) Init() error      { return nil }
 var specialChars = [keys.EndCharKeys]bool{}
 
 func init() {
-	specialChars[keys.TravelerAnemoMale] = true
-	specialChars[keys.TravelerAnemoFemale] = true
+	specialChars[keys.AetherAnemo] = true
+	specialChars[keys.LumineAnemo] = true
 	specialChars[keys.Ningguang] = true
 	specialChars[keys.Beidou] = true
 	specialChars[keys.Sayu] = true
