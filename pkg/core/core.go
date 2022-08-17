@@ -95,7 +95,7 @@ func New(opt CoreOpt) (*Core, error) {
 	c.Flags.DamageMode = opt.DamageMode
 	c.Flags.DefHalt = opt.DefHalt
 	c.Flags.EnableHitlag = opt.EnableHitlag
-	c.Flags.ParticleDelay = 100 //default to 100
+	c.Flags.ParticleDelay = 80
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)
