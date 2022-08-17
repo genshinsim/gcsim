@@ -9,18 +9,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-const burstKey = "thoma-q"
-const burstICDKey = "thoma-q-icd"
-
 func init() {
 	core.RegisterCharFunc(keys.Thoma, NewChar)
 }
 
 type char struct {
 	*tmpl.Character
-	burstTickSrc  int
-	a1Stack int
-	c6buff  []float64
+	burstTickSrc int
+	a1Stack      int
+	c6buff       []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ character.CharacterProfile) error {

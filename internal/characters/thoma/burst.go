@@ -11,7 +11,11 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 40
+const (
+	burstKey     = "thoma-q"
+	burstICDKey  = "thoma-q-icd"
+	burstHitmark = 40
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(58)
