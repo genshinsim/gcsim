@@ -10,11 +10,7 @@ OVERLAP = 0.16
 assets_folder = "images"
 if os.environ["ASSETS_PATH"] != "":
     assets_folder = os.path.abspath(os.environ["ASSETS_PATH"])
-# if len(sys.argv) > 2:
-#     images_folder = os.path.abspath(sys.argv[2])
 
-# if len(sys.argv) > 3:
-#     font_folder = os.path.abspath(sys.argv[3])
 print(f"Loading images from {assets_folder}")
 
 
@@ -105,35 +101,43 @@ for arti in artifacts:
     total_sets = len(sets)
     # print(sets)
     if total_sets == 1:
-
-        imgs.append(Image.open(os.path.join(
-            assets_folder, f"artifacts/{sets[0]}_flower.png")))
-        width, height = imgs[-1].size
-        imgs[-1] = imgs[-1].resize(ARITFACT_SIZE)
-        artifact_image_shapes.append(imgs[-1].size)
+        if arti[sets[0]] == 4:
+            imgs.append(Image.open(os.path.join(
+                assets_folder, f"artifacts/{sets[0]}_flower.png")))
+            imgs[-1] = imgs[-1].resize(ARITFACT_SIZE)
+        else:
+            img0 = Image.open(os.path.join(
+                assets_folder, f"artifacts/{sets[0]}_flower.png"))
+            img0 = img0.resize(ARITFACT_SIZE)
+            img0 = img0.crop((0, 0, ARITFACT_SIZE[0]//2, ARITFACT_SIZE[1]))
+            dst = Image.new("RGBA", ARITFACT_SIZE, (0, 0, 0, 0))
+            dst.paste(img0, (0, 0))
+            dst_draw = ImageDraw.Draw(dst)
+            dst_draw.line(
+                (ARITFACT_SIZE[0]//2, 0, ARITFACT_SIZE[0]//2, ARITFACT_SIZE[1]), fill=0, width=4)
+            imgs.append(dst)
     elif total_sets == 2:
         img0 = Image.open(os.path.join(
             assets_folder, f"artifacts/{sets[0]}_flower.png"))
-        width, height = img0.size
         img0 = img0.resize(ARITFACT_SIZE)
         img0 = img0.crop((0, 0, ARITFACT_SIZE[0]//2, ARITFACT_SIZE[1]))
 
         img1 = Image.open(os.path.join(
             assets_folder, f"artifacts/{sets[1]}_flower.png"))
-        width, height = img1.size
         img1 = img1.resize(ARITFACT_SIZE)
         img1 = img1.crop(
             (ARITFACT_SIZE[0]//2, 0, ARITFACT_SIZE[0], ARITFACT_SIZE[1]))
 
-        dst = Image.new("RGBA", (img0.width + img1.width,
-                        max(img0.height, img1.height)), (0, 0, 0, 0))
+        dst = Image.new("RGBA", ARITFACT_SIZE, (0, 0, 0, 0))
         dst.paste(img0, (0, 0))
         dst.paste(img1, (img0.width, 0))
         dst_draw = ImageDraw.Draw(dst)
         dst_draw.line(
             (ARITFACT_SIZE[0]//2, 0, ARITFACT_SIZE[0]//2, ARITFACT_SIZE[1]), fill=0, width=4)
         imgs.append(dst)
-        artifact_image_shapes.append(imgs[-1].size)
+    else:
+        imgs.append(Image.new("RGBA", ARITFACT_SIZE, (0, 0, 0, 0)))
+    artifact_image_shapes.append(ARITFACT_SIZE)
 
 for i in range(len(imgs)):
     shadow = Image.new("RGBA", artifact_image_shapes[i], (255, 255, 255, 255))
