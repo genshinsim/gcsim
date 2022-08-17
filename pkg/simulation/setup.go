@@ -220,40 +220,39 @@ func SetupMisc(c *core.Core) {
 	}, "superconduct")
 }
 
-func (s *Simulation) randEnergy() {
-	//drop energy
-	s.C.Player.DistributeParticle(character.Particle{
-		Source: "drop",
-		Num:    float64(s.cfg.Energy.Amount),
-		Ele:    attributes.NoElement,
-	})
-
-	//calculate next
-	next := int((s.C.Rand.Float64()-0.5)*2*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
-	// next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
-	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy queued - ", fmt.Sprintf("next %v", s.C.F+next)).
-		Write("settings", s.cfg.Energy).
-		Write("first", next)
-	s.C.Tasks.Add(s.randEnergy, next)
-}
-
-func (s *Simulation) SetupRandEnergyDrop() {
-	//do nothing if none set
-	if s.cfg.Energy.Every == 0 {
-		return
+func (s *Simulation) handleEnergy() {
+	//energy once interval=300 amount=1 #once at frame 300
+	if s.cfg.Energy.Active && s.cfg.Energy.Once {
+		f := s.cfg.Energy.Start
+		s.cfg.Energy.Active = false
+		s.C.Tasks.Add(func() {
+			s.C.Player.DistributeParticle(character.Particle{
+				Source: "enemy",
+				Num:    float64(s.cfg.Energy.Amount),
+				Ele:    attributes.NoElement,
+			})
+		}, f)
+		s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "energy queued (once)").
+			Write("last", s.cfg.Energy.LastEnergyDrop).
+			Write("cfg", s.cfg.Energy).
+			Write("amt", s.cfg.Energy.Amount).
+			Write("energy_frame", s.C.F+f)
 	}
-	//every is given in seconds, so lambda (events per second) is 1 / every
-	// s.cfg.Energy.Mean = 1.0 / s.cfg.Energy.Every
-	//lambda is per s so we need to scale it to per frame
-	// s.cfg.Energy.Mean /= 60
-
-	//convert every to per frame; right now every is in seconds
-	s.cfg.Energy.Mean = s.cfg.Energy.Every * 60
-	next := int((s.C.Rand.Float64()-0.5)*2*s.cfg.Energy.Mean/5 + s.cfg.Energy.Mean)
-	// next := int(-math.Log(1-s.C.Rand.Float64()) / s.cfg.Energy.Lambda)
-	s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "rand energy started - ", fmt.Sprintf("next %v", s.C.F+next)).
-		Write("settings", s.cfg.Energy).
-		Write("first", next)
-	//start the first round
-	s.C.Tasks.Add(s.randEnergy, next)
+	//energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
+	if s.cfg.Energy.Active && s.C.F-s.cfg.Energy.LastEnergyDrop >= s.cfg.Energy.Start {
+		f := s.C.Rand.Intn(s.cfg.Energy.End - s.cfg.Energy.Start)
+		s.cfg.Energy.LastEnergyDrop = s.C.F + f
+		s.C.Tasks.Add(func() {
+			s.C.Player.DistributeParticle(character.Particle{
+				Source: "drop",
+				Num:    float64(s.cfg.Energy.Amount),
+				Ele:    attributes.NoElement,
+			})
+		}, f)
+		s.C.Log.NewEventBuildMsg(glog.LogEnergyEvent, -1, "energy queued").
+			Write("last", s.cfg.Energy.LastEnergyDrop).
+			Write("cfg", s.cfg.Energy).
+			Write("amt", s.cfg.Energy.Amount).
+			Write("energy_frame", s.C.F+f)
+	}
 }

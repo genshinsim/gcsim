@@ -12,7 +12,7 @@ import (
 
 const cfg = `target lvl=100 resist=0.1;
 options swap_delay=12 debug=true iteration=1000 duration=109 workers=30 mode=sl;
-energy every=8 amount=1;
+energy every interval=480,720 amount=1;
 
 #Chars Builds
 

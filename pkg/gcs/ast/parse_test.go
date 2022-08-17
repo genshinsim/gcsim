@@ -194,7 +194,7 @@ xiangling add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0
 
 active raiden;
 
-energy every=10 amount=1;
+energy every interval=480,720 amount=1;
 `
 
 func TestCharAdd(t *testing.T) {

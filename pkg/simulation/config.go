@@ -5,11 +5,12 @@ import (
 )
 
 type EnergyEvent struct {
-	Active    bool
-	Once      bool //how often
-	Start     int
-	End       int
-	Particles int
+	Active         bool
+	Once           bool //how often
+	Start          int
+	End            int
+	Particles      int
+	LastEnergyDrop int
 }
 
 type HurtEvent struct {
