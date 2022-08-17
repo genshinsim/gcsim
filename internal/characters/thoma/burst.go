@@ -144,10 +144,14 @@ func (c *char) summonFieryCollapse() {
 		Mult:       burstproc[c.TalentLvlBurst()],
 		FlatDmg:    0.022 * c.MaxHP(),
 	}
-	// trigger a chain of attacks starting at the first target
+	done := false
 	shieldCb := func(_ combat.AttackCB) {
+		if done {
+			return
+		}
 		shieldamt := (burstshieldpp[c.TalentLvlBurst()]*c.MaxHP() + burstshieldflat[c.TalentLvlBurst()])
 		c.genShield("Thoma Burst", shieldamt, true)
+		done = true
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, 11, shieldCb)
 	c.AddStatus(burstICDKey, 60, true)
