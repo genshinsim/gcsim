@@ -11,15 +11,11 @@ import (
 )
 
 var burstFrames []int
-var waveHitmarks []int
+var waveHitmarks = []int{186, 294, 401, 503, 610, 718}
 
 const burstStart = 146
 
 func init() {
-	waveHitmarks = make([]int, 6)
-	for i, f := range []int{0, 108, 215, 317, 424, 532} {
-		waveHitmarks[i] = 186 + f
-	}
 	burstFrames = frames.InitAbilSlice(139)
 	burstFrames[action.ActionDash] = 102
 	burstFrames[action.ActionJump] = 102
