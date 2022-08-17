@@ -27,16 +27,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 
-	mHP := make([]float64, attributes.EndStatType)
-	mHP[attributes.HPP] = 0.15 + float64(r)*0.05
-	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("homa-hp", -1),
-		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return mHP, true
-		},
-	})
-
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.25 + float64(r)*0.05
 	hp_check := 0.65 + float64(r)*0.05
