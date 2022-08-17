@@ -8,7 +8,7 @@ type ActionInfo struct {
 	CanQueueAfter       int
 	State               AnimationState
 	FramePausedOnHitlag func() bool `json:"-"`
-	OnRemoved           func()      `json:"-"`
+	OnRemoved           func(next AnimationState) `json:"-"`
 	//following are exposed only so we can log it properly
 	CachedFrames         [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
 	TimePassed           float64
@@ -78,7 +78,7 @@ func (a *ActionInfo) Tick() bool {
 	if a.TimePassed > float64(a.AnimationLength) {
 		//handle remove
 		if a.OnRemoved != nil {
-			a.OnRemoved()
+			a.OnRemoved(Idle)
 		}
 		return true
 	}

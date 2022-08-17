@@ -70,7 +70,7 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 	//remove previous if still active
 	if h.aniEvt != nil {
 		if h.aniEvt.OnRemoved != nil {
-			h.aniEvt.OnRemoved()
+			h.aniEvt.OnRemoved(evt.State)
 		}
 		if h.debug {
 			h.log.NewEvent(

@@ -10,12 +10,19 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 84
+const (
+	chargeHitmark = 76
+)
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(84)
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames = frames.InitAbilSlice(113)
+	chargeFrames[action.ActionAttack] = 59
+	chargeFrames[action.ActionCharge] = 59
+	chargeFrames[action.ActionSkill] = 59
+	chargeFrames[action.ActionBurst] = 59
+	chargeFrames[action.ActionDash] = 31
+	chargeFrames[action.ActionJump] = 30
+	chargeFrames[action.ActionSwap] = 104
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -35,8 +42,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-	//stam is calculated before this func is called so it's safe to
-	//set spark to 0 here
+	// stam is calculated before this func is called so it's safe to
+	// set spark to 0 here
 	snap := c.Snapshot(&ai)
 	if c.Core.Status.Duration("kleespark") > 0 {
 		snap.Stats[attributes.DmgP] += .50
@@ -45,14 +52,24 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Write("icd", c.sparkICD)
 	}
 
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), chargeHitmark+travel)
+	windup := 0
+	if (c.Core.Player.CurrentState() == action.NormalAttackState && (c.NormalCounter == 1 || c.NormalCounter == 2)) ||
+		c.Core.Player.CurrentState() == action.SkillState {
+		windup = 14
+	}
+	c.Core.QueueAttackWithSnap(
+		ai,
+		snap,
+		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+		chargeHitmark-windup+travel,
+	)
 
-	c.c1(chargeHitmark + travel)
+	c.c1(chargeHitmark - windup + travel)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
+		CanQueueAfter:   chargeFrames[action.ActionJump] - windup, // earliest cancel
 		State:           action.ChargeAttackState,
 	}
 }
