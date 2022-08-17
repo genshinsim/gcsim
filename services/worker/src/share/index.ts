@@ -11,7 +11,7 @@ import { uploadData, validator } from './validation';
 export async function handleShare(request: Request): Promise<Response> {
   // check content type
   let content: uploadData;
-
+  console.log('share request received! processing data');
   try {
     content = await request.json<uploadData>();
   } catch {
@@ -29,34 +29,44 @@ export async function handleShare(request: Request): Promise<Response> {
     return new Response(null, { status: 400, statusText: 'Bad Request' });
   }
 
-  let perm = false;
+  // console.log('share received: ', content);
+
+  //TODO: everything is perm for now
+  let perm = true;
 
   //check if this is a logged in user; if not then it can't be perm
-  let user: userData | null = null;
+  // let user: userData | null = null;
 
-  let id = await verifyToken(request.headers.get('X-AUTH-TOKEN'));
-  console.log('user id: ', id);
-  if (id !== null) {
-    user = await getUserInfo(id);
-    console.log('got user info: ', user);
-  }
+  // let id = await verifyToken(request.headers.get('X-AUTH-TOKEN'));
+  // console.log('user id: ', id);
+  // if (id !== null) {
+  //   try {
+  //     user = await getUserInfo(id);
+  //     console.log('got user info: ', user.user_id);
+  //   } catch (error) {
+  //     return new Response(JSON.stringify(error), {
+  //       status: 500,
+  //       statusText: 'Internal Server Error',
+  //     });
+  //   }
+  // }
 
-  if (content.perm && user !== null) {
-    perm = user.count < userLimits(user.user_role);
-    console.log('user perm check: ', perm, user);
-  }
+  // if (content.perm && user !== null) {
+  //   perm = user.count < userLimits(user.user_role);
+  //   console.log('user perm check: ', perm, user.user_id);
+  // }
 
   //store it
   const { data, error } = await dbClient.rpc('share_sim', {
     metadata: JSON.stringify(content.meta),
     viewer_file: content.data,
-    user_id: user ? user.user_id : null,
+    // user_id: user ? user.user_id : null,
+    user_id: null,
     is_permanent: perm,
     is_public: false,
   });
   if (error !== null) {
-    console.log(error);
-    return new Response(null, {
+    return new Response(JSON.stringify(error), {
       status: 500,
       statusText: 'Internal Server Error',
     });
@@ -76,8 +86,7 @@ export async function handleShare(request: Request): Promise<Response> {
       key: key,
     });
     if (error !== null) {
-      console.log(error);
-      return new Response(null, {
+      return new Response(JSON.stringify(error), {
         status: 500,
         statusText: 'Internal Server Error',
       });
@@ -112,7 +121,8 @@ export async function handleShare(request: Request): Promise<Response> {
  * @returns user discord id if stored and is valid; otherwise null
  */
 async function verifyToken(token: string | null): Promise<string | null> {
-  if (token !== null) {
+  console.log('verifying token ', token);
+  if (token !== null && token !== '') {
     try {
       const ok = await jwt.verify(token, JWT_SECRET);
       if (ok) {

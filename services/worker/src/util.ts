@@ -7,6 +7,9 @@ export async function postgRESTFetch(
   const resp = await fetch(POSTGREST_ENDPOINT + endpoint, requestInitr);
 
   const str = await resp.text();
+
+  console.log('postgREST response: ', str);
+
   const data = JSONbig.parse(str);
 
   if (!resp.ok) {

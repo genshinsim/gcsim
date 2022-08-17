@@ -14,3 +14,12 @@ export interface DBAvatarSimDetails {
   sim_description: string;
   config: string;
 }
+
+//TODO: need to add create_time to this
+export interface UserSimDetails {
+  simulation_key: string;
+  metadata: Metadata;
+  is_permanent: boolean;
+  user_id: BigInt;
+  user_name: string;
+}
