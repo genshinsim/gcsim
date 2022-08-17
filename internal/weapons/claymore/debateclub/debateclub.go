@@ -38,6 +38,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
+		// reset icd
+		char.DeleteStatus(icdKey)
 		// add debate club effect
 		char.AddStatus(effectKey, 900, true) // 15s
 		return false
