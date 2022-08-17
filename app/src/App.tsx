@@ -44,7 +44,7 @@ export default function App() {
         <Route path="/viewer">
           <ViewerDash path="/" />
         </Route>
-        <Route path="/db">
+        {/* <Route path="/db">
           <Database />
         </Route>
         <Route path="/db/:avatar">
@@ -52,8 +52,8 @@ export default function App() {
         </Route>
         <Route path="/db/:avatar/:team">
           {(params) => <TeamsList char={params.avatar} team={params.team} />}
-        </Route>
-        <Route path="/db2">
+        </Route> */}
+        <Route path="/db">
           <DB />
         </Route>
         <Route path="/db/:char">{({ char }) => <DbChar char={char} />}</Route>

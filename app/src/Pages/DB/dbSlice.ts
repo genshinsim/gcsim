@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-import { DBItem } from "~src/types";
-import { AppThunk } from "~src/store";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { DBItem } from '~src/types';
+import { AppThunk } from '~src/store';
 
 export interface DBState {
   data: DBItem[];
@@ -18,7 +18,7 @@ export const dbInitialState: DBState = {
 export function loadDB(): AppThunk {
   return function (dispatch, getState) {
     dispatch(dbActions.setLoading(true));
-    const url = "https://viewer.gcsim.workers.dev/gcsimdb";
+    const url = 'https://viewer.gcsim.workers.dev/gcsimdb';
     axios
       .get(url)
       .then((resp) => {
@@ -39,7 +39,7 @@ export function loadDB(): AppThunk {
 }
 
 export const dbSlice = createSlice({
-  name: "db",
+  name: 'db',
   initialState: dbInitialState,
   reducers: {
     setData: (state, action: PayloadAction<DBItem[]>) => {
@@ -60,5 +60,5 @@ export const dbSlice = createSlice({
 export const dbActions = dbSlice.actions;
 
 export type DBSlice = {
-  [dbSlice.name]: ReturnType<typeof dbSlice["reducer"]>;
+  [dbSlice.name]: ReturnType<typeof dbSlice['reducer']>;
 };
