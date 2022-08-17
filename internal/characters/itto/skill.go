@@ -84,7 +84,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < 0.33 {
 		count++
 	}
-	c.Core.QueueParticle("itto", count, attributes.Geo, hitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("itto", count, attributes.Geo, hitmark+c.ParticleDelay)
 
 	// Cooldown
 	c.SetCDWithDelay(action.ActionSkill, 600, release) // cd starts on release

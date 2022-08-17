@@ -95,7 +95,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, skillHitmark+travel+delay+((i+1)*6))
 	}
 
-	c.Core.QueueParticle("aloy", 5, attributes.Cryo, skillHitmark+travel+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("aloy", 5, attributes.Cryo, skillHitmark+travel+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 20*60, 19)
 
 	return action.ActionInfo{

@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < 0.4 {
 		count = 4
 	}
-	c.Core.QueueParticle("thoma", count, attributes.Pyro, skillHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("thoma", count, attributes.Pyro, skillHitmark+c.ParticleDelay)
 
 	c.Core.Tasks.Add(func() {
 		shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])

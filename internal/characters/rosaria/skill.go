@@ -83,7 +83,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		//second hit is 14 frames after the first (if we exclude hitlag)
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 0, 0)
 		// Particles are emitted after the second hit lands
-		c.Core.QueueParticle("rosaria", 3, attributes.Cryo, c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("rosaria", 3, attributes.Cryo, c.ParticleDelay)
 	}, skillHitmark+14)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, 23)

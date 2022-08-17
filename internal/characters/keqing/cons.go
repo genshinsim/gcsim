@@ -30,7 +30,7 @@ func (c *char) c2() {
 		}
 		if c.Core.Rand.Float64() < 0.5 {
 			c.AddStatus(c2ICDKey, 300, true)
-			c.Core.QueueParticle("keqing", 1, attributes.Electro, c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("keqing", 1, attributes.Electro, c.ParticleDelay)
 			c.Core.Log.NewEvent("keqing c2 proc'd", glog.LogCharacterEvent, c.Index)
 		}
 		return false

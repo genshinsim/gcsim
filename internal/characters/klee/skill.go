@@ -134,7 +134,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		c.c1(bounceHitmarks[0] - cooldownDelay)
 		if bounce > 0 {
-			c.Core.QueueParticle("klee", 4, attributes.Pyro, (bounceHitmarks[0]-cooldownDelay)+c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("klee", 4, attributes.Pyro, (bounceHitmarks[0]-cooldownDelay)+c.ParticleDelay)
 		}
 		c.SetCD(action.ActionSkill, 1200)
 	}, cooldownDelay)

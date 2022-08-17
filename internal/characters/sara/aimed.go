@@ -93,7 +93,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		c.attackBuff(aimedHitmarks[skillActive] + travel + 90)
 
 		// Particles are emitted after the ambush thing hits
-		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmarks[skillActive]+travel+90+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmarks[skillActive]+travel+90+c.ParticleDelay)
 
 		c.Core.Status.Delete(coverKey)
 	}

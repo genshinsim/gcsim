@@ -40,12 +40,11 @@ type Core struct {
 }
 
 type Flags struct {
-	LogDebug      bool // Used to determine logging level
-	DamageMode    bool //for hp mode
-	DefHalt       bool //for hitlag
-	EnableHitlag  bool //hitlag enabled
-	ParticleDelay int  //delayed used for particles
-	Custom        map[string]int
+	LogDebug     bool // Used to determine logging level
+	DamageMode   bool //for hp mode
+	DefHalt      bool //for hitlag
+	EnableHitlag bool //hitlag enabled
+	Custom       map[string]int
 }
 type Coord struct {
 	X float64 `json:"x"`
@@ -95,7 +94,6 @@ func New(opt CoreOpt) (*Core, error) {
 	c.Flags.DamageMode = opt.DamageMode
 	c.Flags.DefHalt = opt.DefHalt
 	c.Flags.EnableHitlag = opt.EnableHitlag
-	c.Flags.ParticleDelay = 80
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)

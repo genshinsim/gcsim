@@ -104,7 +104,7 @@ func (c *char) skillHook() {
 
 		//67% chance to generate 1 geo orb
 		if c.Core.Rand.Float64() < 0.67 {
-			c.Core.QueueParticle("albedo", 1, attributes.Geo, c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("albedo", 1, attributes.Geo, c.ParticleDelay)
 		}
 
 		// c1: skill tick regen 1.2 energy

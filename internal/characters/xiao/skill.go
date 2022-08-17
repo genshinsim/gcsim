@@ -65,7 +65,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Cannot create energy during burst uptime
 	if !c.StatusIsActive(burstBuffKey) {
-		c.Core.QueueParticle("xiao", 3, attributes.Anemo, skillHitmark+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("xiao", 3, attributes.Anemo, skillHitmark+c.ParticleDelay)
 	}
 
 	// C6 handling - can use skill ignoring CD and without draining charges

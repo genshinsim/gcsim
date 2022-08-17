@@ -60,7 +60,7 @@ func (c *char) SkillPress() action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
 
-	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 
 	return action.ActionInfo{
@@ -165,10 +165,10 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		if c.Core.Rand.Float64() < 0.33 {
 			count = 4
 		}
-		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, hitmark+c.ParticleDelay)
 		c.SetCDWithDelay(action.ActionSkill, 8*60, hitmark-5)
 	} else {
-		c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.ParticleDelay)
 		c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 	}
 

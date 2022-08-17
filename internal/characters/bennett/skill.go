@@ -91,7 +91,7 @@ func (c *char) skillPress() action.ActionInfo {
 	if c.Core.Rand.Float64() < .25 {
 		count++
 	}
-	c.Core.QueueParticle("bennett", count, attributes.Pyro, skillPressHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("bennett", count, attributes.Pyro, skillPressHitmark+c.ParticleDelay)
 
 	// a4 reduce cd by 50%
 	if c.StatModIsActive(burstFieldKey) {
@@ -155,7 +155,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	// TODO: particle timing??
 	//Bennett Hold E is guaranteed 3 orbs
 	c.Core.QueueParticle("bennett", 3, attributes.Pyro,
-		skillHoldHitmarks[level-1][len(skillHoldHitmarks[level-1])-1]+c.Core.Flags.ParticleDelay,
+		skillHoldHitmarks[level-1][len(skillHoldHitmarks[level-1])-1]+c.ParticleDelay,
 	)
 
 	applyA4 := c.StatModIsActive(burstFieldKey)

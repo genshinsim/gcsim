@@ -75,7 +75,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// 2 particles apparently
 	// TODO: particle frames
-	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+c.ParticleDelay)
 
 	// 10s cooldown
 	c.SetCDWithDelay(action.ActionSkill, 600, 32)

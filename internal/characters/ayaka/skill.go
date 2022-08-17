@@ -50,7 +50,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < 0.5 {
 		count = 5
 	}
-	c.Core.QueueParticle("ayaka", count, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("ayaka", count, attributes.Cryo, skillHitmark+c.ParticleDelay)
 
 	c.SetCD(action.ActionSkill, 600)
 
