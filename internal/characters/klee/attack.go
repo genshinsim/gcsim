@@ -94,7 +94,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	performAttack := func() {
+	done := false
+	tryPerformAttack := func() {
+		if done {
+			return
+		}
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
@@ -103,6 +107,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			c.a1,
 		)
 		c.c1(travel)
+		done = true
 	}
 
 	defer c.AdvanceNormalIndex()
@@ -134,10 +139,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				action.BurstState,
 				action.DashState,
 				action.JumpState:
-				performAttack()
+				tryPerformAttack()
 			}
 		},
 	}
-	actionInfo.QueueAction(performAttack, adjustedHitmarks[c.NormalCounter])
+	actionInfo.QueueAction(tryPerformAttack, adjustedHitmarks[c.NormalCounter])
 	return actionInfo
 }
