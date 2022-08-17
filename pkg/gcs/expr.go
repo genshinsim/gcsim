@@ -16,6 +16,8 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 		return e.evalStringLit(v, env), nil
 	case *ast.Ident:
 		return e.evalIdent(v, env)
+	case *ast.UnaryExpr:
+		return e.evalUnaryExpr(v, env)
 	case *ast.BinaryExpr:
 		return e.evalBinaryExpr(v, env)
 	case *ast.CallExpr:
@@ -113,6 +115,26 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 			return nil, fmt.Errorf("fn %v returned an invalid type; expecting a number got %v", s, res.Inspect())
 		}
 	}
+}
+
+func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
+	right, err := e.evalExpr(b.Right, env)
+	if err != nil {
+		return nil, err
+	}
+	//unary expressions should only result in number results
+	//otherwise panic for now?
+	r, ok := right.(*number)
+	if !ok {
+		return nil, fmt.Errorf("unary expression does not evaluate to a number, got %v ", right.Inspect())
+	}
+	switch b.Op.Typ {
+	case ast.LogicNot:
+		return eq(&number{}, r), nil
+	case ast.ItemMinus:
+		return sub(&number{}, r), nil
+	}
+	return &null{}, nil
 }
 
 func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
