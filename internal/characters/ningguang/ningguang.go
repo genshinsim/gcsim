@@ -10,6 +10,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
+const skillParticleICDKey = "ningguang-particle-icd"
+
 func init() {
 	core.RegisterCharFunc(keys.Ningguang, NewChar)
 }
@@ -17,9 +19,29 @@ func init() {
 type char struct {
 	*tmpl.Character
 	c2reset       int
+	jadeCount     int
 	lastScreen    int
-	particleICD   int
+	prevAttack    attackType
 	skillSnapshot combat.Snapshot
+}
+
+type attackType int
+
+const (
+	attackTypeLeft attackType = iota
+	attackTypeRight
+	attackTypeTwirl
+	endAttackType
+)
+
+var attackTypeNames = map[attackType]string{
+	attackTypeLeft:  "Left",
+	attackTypeRight: "Right",
+	attackTypeTwirl: "Twirl",
+}
+
+func (t attackType) String() string {
+	return attackTypeNames[t]
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -33,7 +55,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	// Initialize at some very low value so these happen correctly at start of sim
 	c.c2reset = -9999
-	c.particleICD = -9999
+	c.jadeCount = 0
+	c.prevAttack = attackTypeLeft
 
 	w.Character = &c
 
@@ -48,10 +71,21 @@ func (c *char) Init() error {
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.Tags["jade"] > 0 {
+		if c.jadeCount > 0 {
 			return 0
 		}
 		return 50
 	}
 	return c.Character.ActionStam(a, p)
+}
+
+func (c *char) Condition(field string) int64 {
+	switch field {
+	case "jadeCount":
+		return int64(c.jadeCount)
+	case "prevAttack":
+		return int64(c.prevAttack)
+	default:
+		return 0
+	}
 }
