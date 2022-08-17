@@ -45,9 +45,12 @@ type ActionList struct {
 }
 
 type EnergySettings struct {
-	Every  float64
-	Amount int
-	Mean   float64
+	Active         bool
+	Once           bool //how often
+	Start          int
+	End            int
+	Amount         int
+	LastEnergyDrop int
 }
 
 type SimulatorSettings struct {
