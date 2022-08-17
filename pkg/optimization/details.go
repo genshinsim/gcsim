@@ -422,8 +422,20 @@ func NewSubstatOptimizerDetails(cfg string, simopt simulator.Options, simcfg *as
 	s.totalLiquidSubstats = totalLiquidSubstats
 
 	s.artifactSets4Star = []keys.Set{
-		keys.TheExile,
+		keys.ResolutionOfSojourner,
+		keys.TinyMiracle,
+		keys.Berserker,
 		keys.Instructor,
+		keys.TheExile,
+		keys.DefendersWill,
+		keys.BraveHeart,
+		keys.MartialArtist,
+		keys.Gambler,
+		keys.Scholar,
+		keys.PrayersForWisdom,
+		keys.PrayersForDestiny,
+		keys.PrayersForIllumination,
+		keys.PrayersToSpringtime,
 	}
 
 	s.substatValues = make([]float64, attributes.EndStatType)

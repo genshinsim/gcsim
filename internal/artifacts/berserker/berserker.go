@@ -1,4 +1,4 @@
-package seal
+﻿package berserker
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	core.RegisterSetFunc(keys.EmblemOfSeveredFate, NewSet)
+	core.RegisterSetFunc(keys.Berserker, NewSet)
 }
 
 type Set struct {
@@ -24,39 +24,29 @@ func (s *Set) Init() error      { return nil }
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
+	// 2 Piece: CRIT Rate +12%
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
-		m[attributes.ER] = 0.20
+		m[attributes.CR] = 0.12
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("esr-2pc", -1),
-			AffectedStat: attributes.ER,
+			Base:         modifier.NewBase("berserker-2pc", -1),
+			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 		})
 	}
+	// 4 Piece: When HP is below 70%, CRIT Rate increases by an additional 24%.
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		er := char.Stat(attributes.ER) + 1
-		amt := 0.25 * er
-		if amt > 0.75 {
-			amt = 0.75
-		}
-		m[attributes.DmgP] = amt
-
+		m[attributes.CR] = 0.24
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("esr-4pc", -1),
+			Base: modifier.NewBase("berserker-4pc", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+				maxhp := char.MaxHP()
+				if char.HPCurrent > 0.70*maxhp {
 					return nil, false
 				}
-				//calc er
-				er := char.Stat(attributes.ER) + 1
-				amt := 0.25 * er
-				if amt > 0.75 {
-					amt = 0.75
-				}
-				m[attributes.DmgP] = amt
 				return m, true
 			},
 		})
