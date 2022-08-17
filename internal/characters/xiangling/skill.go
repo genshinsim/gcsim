@@ -42,7 +42,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 					return
 				}
 				done = true
-				c.Core.QueueParticle("xiangling", 1, attributes.Pyro, c.Core.Flags.ParticleDelay)
+				c.Core.QueueParticle("xiangling", 1, attributes.Pyro, c.ParticleDelay)
 			}
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 10, c.c1, part)
 			c.guoba.pyroWindowStart = c.Core.F

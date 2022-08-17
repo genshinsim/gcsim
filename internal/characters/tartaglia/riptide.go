@@ -121,7 +121,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey) - c.Core.F).
+		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Index()).
 		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
@@ -129,7 +129,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 	// queue particles
 	if !c.StatusIsActive(energyICDKey) {
 		c.AddStatus(energyICDKey, 180, true) // 3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.ParticleDelay)
 	}
 }
 
@@ -176,7 +176,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey) - c.Core.F).
+		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Index()).
 		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
@@ -184,7 +184,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 	// queue particle if not on icd
 	if !c.StatusIsActive(energyICDKey) {
 		c.AddStatus(energyICDKey, 180, true) // 3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.ParticleDelay)
 	}
 }
 
@@ -224,7 +224,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey) - c.Core.F).
+		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
 		Write("target", t.Index()).
 		Write("rtExpiry", t.StatusExpiry(riptideKey))
 

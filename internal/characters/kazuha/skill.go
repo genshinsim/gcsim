@@ -57,7 +57,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, skillPressHitmark)
 
-	c.Core.QueueParticle("kazuha", 3, attributes.Anemo, skillPressHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("kazuha", 3, attributes.Anemo, skillPressHitmark+c.ParticleDelay)
 
 	c.Core.Tasks.Add(c.absorbCheckA1(c.Core.F, 0, int(skillPressHitmark/6)), 1)
 
@@ -95,7 +95,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, skillHoldHitmark)
 
-	c.Core.QueueParticle("kazuha", 4, attributes.Anemo, skillHoldHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("kazuha", 4, attributes.Anemo, skillHoldHitmark+c.ParticleDelay)
 
 	c.Core.Tasks.Add(c.absorbCheckA1(c.Core.F, 0, int(skillHoldHitmark/6)), 1)
 	cd := 540

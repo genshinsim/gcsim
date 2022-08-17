@@ -57,7 +57,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if c.Core.Rand.Float64() < 0.5 {
 			count = 3
 		}
-		c.Core.QueueParticle("yoimiya", count, attributes.Pyro, c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("yoimiya", count, attributes.Pyro, c.ParticleDelay)
 	}
 
 	var totalMV float64

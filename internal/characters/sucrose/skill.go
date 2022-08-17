@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		done = true
 		c.a4()
-		c.Core.QueueParticle("sucrose", 4, attributes.Anemo, c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("sucrose", 4, attributes.Anemo, c.ParticleDelay)
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableObject), 0, 42, cb)

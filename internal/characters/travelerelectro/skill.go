@@ -81,7 +81,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			return
 		}
 		partCount++
-		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.Core.Flags.ParticleDelay) //this way we're future proof if for whatever reason this misses
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay) //this way we're future proof if for whatever reason this misses
 	}
 
 	amuletCB := func(_ combat.AttackCB) {

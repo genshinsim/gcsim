@@ -55,7 +55,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		if e.AuraContains(attributes.Frozen) {
 			a4count++
-			c.Core.QueueParticle("kaeya", 1, attributes.Cryo, c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("kaeya", 1, attributes.Cryo, c.ParticleDelay)
 			c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)
 		}
 	}
@@ -66,7 +66,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < 0.67 {
 		count = 3
 	}
-	c.Core.QueueParticle("kaeya", count, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("kaeya", count, attributes.Cryo, skillHitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, 25)
 

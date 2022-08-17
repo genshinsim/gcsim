@@ -92,7 +92,7 @@ func (c *char) ppParticles(ac combat.AttackCB) {
 		count = 3
 	}
 	//TODO: this used to be 80
-	c.Core.QueueParticle("hutao", count, attributes.Pyro, c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("hutao", count, attributes.Pyro, c.ParticleDelay)
 }
 
 func (c *char) applyBB(a combat.AttackCB) {

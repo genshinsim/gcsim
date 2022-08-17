@@ -112,7 +112,7 @@ func (c *char) ozTick(src int) func() {
 		//Particle check is 67% for particle, from datamine
 		//TODO: this delay used to be 120
 		if c.Core.Rand.Float64() < .67 {
-			c.Core.QueueParticle("fischl", 1, attributes.Electro, c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("fischl", 1, attributes.Electro, c.ParticleDelay)
 		}
 
 		//queue up next hit only if next hit oz is still active

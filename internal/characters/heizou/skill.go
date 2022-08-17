@@ -92,7 +92,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 		case 4:
 			count++
 		}
-		c.Core.QueueParticle("heizou", count, attributes.Anemo, hitDelay+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("heizou", count, attributes.Anemo, hitDelay+c.ParticleDelay)
 
 	}, skillCDStart+delay)
 

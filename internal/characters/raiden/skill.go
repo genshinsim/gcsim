@@ -100,7 +100,7 @@ func (c *char) eyeOnDamage() {
 			return false
 		}
 		if c.Core.Rand.Float64() < 0.5 {
-			c.Core.QueueParticle("raiden", 1, attributes.Electro, c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("raiden", 1, attributes.Electro, c.ParticleDelay)
 		}
 
 		//hit mark 857, eye land 862

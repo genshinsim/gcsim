@@ -85,7 +85,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	cb := func(_ combat.AttackCB) {
 		//TODO: this used to be 82?
-		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.ParticleDelay)
 		//check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
 			//TODO: does this thing even time out?

@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if c.Core.Rand.Float64() < .33 {
 			count = 4
 		}
-		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+c.ParticleDelay)
 		c.AddStatus(skillParticleICDKey, 360, true)
 	}
 
