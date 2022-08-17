@@ -9,9 +9,9 @@ import { ViewerDash } from './Pages/ViewerDashboard';
 import { DB, DbChar } from './Pages/DB';
 import './i18n';
 import { Trans, useTranslation } from 'react-i18next';
-import UserAccount from './PageUserAccount';
 import { DiscordCallback } from './PageUserAccount/DiscordCallback';
 import { CharacterView, Database, TeamsList } from '~src/PageDatabase';
+import { PageUserAccount } from './PageUserAccount';
 
 export default function App() {
   useTranslation();
@@ -44,7 +44,7 @@ export default function App() {
         <Route path="/viewer">
           <ViewerDash path="/" />
         </Route>
-        <Route path="/db">
+        {/* <Route path="/db">
           <Database />
         </Route>
         <Route path="/db/:avatar">
@@ -52,13 +52,13 @@ export default function App() {
         </Route>
         <Route path="/db/:avatar/:team">
           {(params) => <TeamsList char={params.avatar} team={params.team} />}
-        </Route>
-        <Route path="/db2">
+        </Route> */}
+        <Route path="/db">
           <DB />
         </Route>
         <Route path="/db/:char">{({ char }) => <DbChar char={char} />}</Route>
         <Route path="/account">
-          <UserAccount />
+          <PageUserAccount />
         </Route>
         <Route path="/auth/discord">
           <DiscordCallback />

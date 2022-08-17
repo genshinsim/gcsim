@@ -15,6 +15,7 @@ import { handleListDBChars, handleListDBSims } from './db';
 import { handleOptions } from './options';
 import { handlePreview } from './preview';
 import { handleShare } from './share';
+import { handleListUserSims } from './sims/listByUser';
 import { handleView } from './view';
 
 export const dbClient = new PostgrestClient(POSTGREST_ENDPOINT); //secrets?
@@ -30,9 +31,15 @@ router.get('/api/view/:key', handleView);
 
 router.get('/api/preview/:key', handlePreview);
 
+// db routes
+
 router.get('/api/db', handleListDBChars);
 
 router.get('/api/db/:key', handleListDBSims);
+
+// user sims
+
+router.get('/api/:key/sims', handleListUserSims);
 
 router.get('/api/avatars', async () => {
   const { data, error } = await dbClient.from('avatars').select();

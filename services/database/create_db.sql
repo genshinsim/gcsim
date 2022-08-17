@@ -77,18 +77,6 @@ create or replace view active_user_simulations as
     where create_time > current_timestamp - interval '30 days' or s.is_permanent
 ;
 
-create or replace view user_simulation_count as
-    select
-        us.user_id
-        , count(*) 
-    from user_simulations us
-    left outer join simulations s
-        on us.simulation_key = s.simulation_key
-    where
-        s.is_permanent
-    group by us.user_id
-;
-
 create or replace view active_user_sims_by_avatar as
     select 
         s.simulation_key

@@ -1,19 +1,19 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "~src/store";
-import { UserInfo } from "~src/Types/user";
-import { AuthProvider, DiscordProvider, MockProvider } from "./Provider";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppThunk } from '~src/store';
+import { UserInfo } from '~src/Types/user';
+import { AuthProvider, DiscordProvider, MockProvider } from './Provider';
 
-export const authProvider: AuthProvider = new DiscordProvider();
+// export const authProvider: AuthProvider = new DiscordProvider();
+export const authProvider: AuthProvider = new MockProvider();
 
 const initialState: UserInfo = {
   user_id: 0,
-  user_key: "",
-  user_name: "Guest",
-  token: "",
+  user_name: 'Guest',
+  token: '',
 };
 
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState: initialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserInfo>) => {
@@ -31,7 +31,7 @@ export function logout(): AppThunk {
       .then(() => dispatch(userActions.setUser(initialState)))
       .catch((err) => {
         //log out the user
-        console.warn("Error occured logging out: ", err);
+        console.warn('Error occured logging out: ', err);
         dispatch(userActions.setUser(initialState));
       });
   };
@@ -40,5 +40,5 @@ export function logout(): AppThunk {
 export const userActions = userSlice.actions;
 
 export type UserSlice = {
-  [userSlice.name]: ReturnType<typeof userSlice["reducer"]>;
+  [userSlice.name]: ReturnType<typeof userSlice['reducer']>;
 };

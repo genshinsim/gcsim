@@ -1,16 +1,16 @@
-import { Callout, useHotkeys } from "@blueprintjs/core";
-import React from "react";
+import { Callout, useHotkeys } from '@blueprintjs/core';
+import React from 'react';
 
-import { SectionDivider } from "~src/Components/SectionDivider";
-import { Viewport } from "~src/Components/Viewport";
-import { RootState, useAppDispatch, useAppSelector } from "~src/store";
-import { simActions } from "..";
-import { ActionList, SimProgress } from "../Components";
-import { Team } from "./Team";
-import { Trans, useTranslation } from "react-i18next";
-import { Toolbox } from "./Toolbox";
-import { ActionListTooltip, TeamBuilderTooltip } from "./Tooltips";
-import { updateCfg } from "../simSlice";
+import { SectionDivider } from '~src/Components/SectionDivider';
+import { Viewport } from '~src/Components/Viewport';
+import { RootState, useAppDispatch, useAppSelector } from '~src/store';
+import { simActions } from '..';
+import { ActionList, SimProgress } from '../Components';
+import { Team } from './Team';
+import { Trans, useTranslation } from 'react-i18next';
+import { Toolbox } from './Toolbox';
+import { ActionListTooltip, TeamBuilderTooltip } from './Tooltips';
+import { updateCfg } from '../simSlice';
 
 export function Simple() {
   let { t } = useTranslation();
@@ -29,9 +29,9 @@ export function Simple() {
   const hotkeys = React.useMemo(
     () => [
       {
-        combo: "Esc",
+        combo: 'Esc',
         global: true,
-        label: t("simple.exit_edit"),
+        label: t('simple.exit_edit'),
         onKeyDown: () => {
           dispatch(simActions.editCharacter({ index: -1 }));
         },
@@ -64,7 +64,18 @@ export function Simple() {
           <ActionList cfg={cfg} onChange={(v) => dispatch(updateCfg(v))} />
 
           <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
-            {cfg_err !== "" ? (
+            <div className="pl-2 pr-2 pt-2 mt-1 mb-1">
+              <Callout intent="warning" className="mt-4">
+                <div className="font-bold">
+                  Please be aware that there have been syntax changes with the
+                  core rewrite. Please check out the{' '}
+                  <a href="https://docs.gcsim.app/migration" target="_blank">
+                    migration guide
+                  </a>
+                </div>
+              </Callout>
+            </div>
+            {cfg_err !== '' ? (
               <div className="basis-full p-1">
                 <Callout intent="warning" title="Error parsing config">
                   <pre className=" whitespace-pre-wrap">{cfg_err}</pre>
@@ -72,7 +83,7 @@ export function Simple() {
               </div>
             ) : null}
 
-            <Toolbox canRun={cfg_err === ""} />
+            <Toolbox canRun={cfg_err === ''} />
           </div>
         </div>
       </div>
