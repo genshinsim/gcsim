@@ -11,10 +11,12 @@ import (
 
 // C1:
 // Fires 2 additional arrows per Aimed Shot, each dealing 33% of the original arrow's DMG.
-func (c *char) c1(ai combat.AttackInfo, hold int, travel int) {
+func (c *char) c1(ai combat.AttackInfo, hold int, travel int, weakspot int) {
 	ai.Abil += " (C1)"
 	ai.Mult = ai.Mult / 3.0
+	ai.HitWeakPoint = weakspot >= 2
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedHitmarks[hold], aimedHitmarks[hold]+travel)
+	ai.HitWeakPoint = weakspot == 3
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedHitmarks[hold], aimedHitmarks[hold]+travel)
 }
 

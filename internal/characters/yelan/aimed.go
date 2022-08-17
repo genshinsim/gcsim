@@ -52,21 +52,28 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		travel = 10
 	}
-	weakspot := p["weakspot"]
+	weakspot, ok := p["weakspot"]
+	if !ok || weakspot < 0 {
+		weakspot = 0
+	}
+	if weakspot > 1 {
+		weakspot = 1
+	}
 
 	if c.Tag(breakthroughStatus) > 0 && hold == 2 {
 		c.RemoveTag(breakthroughStatus)
 		c.Core.Log.NewEvent("breakthrough state deleted", glog.LogCharacterEvent, c.Index)
 
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Breakthrough Barb",
-			AttackTag:  combat.AttackTagExtra,
-			ICDTag:     combat.ICDTagYelanBreakthrough,
-			ICDGroup:   combat.ICDGroupYelanBreakthrough,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			FlatDmg:    barb[c.TalentLvlAttack()] * c.MaxHP(),
+			ActorIndex:   c.Index,
+			Abil:         "Breakthrough Barb",
+			AttackTag:    combat.AttackTagExtra,
+			ICDTag:       combat.ICDTagYelanBreakthrough,
+			ICDGroup:     combat.ICDGroupYelanBreakthrough,
+			Element:      attributes.Hydro,
+			Durability:   25,
+			FlatDmg:      barb[c.TalentLvlAttack()] * c.MaxHP(),
+			HitWeakPoint: weakspot == 1,
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), aimedBarbHitmark, aimedBarbHitmark+travel)
 

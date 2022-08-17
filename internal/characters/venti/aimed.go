@@ -43,6 +43,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
+	if !ok || weakspot < 0 {
+		weakspot = 0
+	}
+	if weakspot > 3 {
+		weakspot = 3
+	}
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
@@ -53,7 +59,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Element:              attributes.Anemo,
 		Durability:           25,
 		Mult:                 fullaim[c.TalentLvlAttack()],
-		HitWeakPoint:         weakspot == 1,
+		HitWeakPoint:         weakspot >= 1,
 		HitlagHaltFrames:     .12 * 60,
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
@@ -70,7 +76,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedHitmarks[hold], aimedHitmarks[hold]+travel)
 
 	if c.Base.Cons >= 1 {
-		c.c1(ai, hold, travel)
+		c.c1(ai, hold, travel, weakspot)
 	}
 
 	return action.ActionInfo{

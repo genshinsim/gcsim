@@ -43,7 +43,13 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		travel = 10
 	}
-	weakspot := p["weakspot"]
+	weakspot, ok := p["weakspot"]
+	if !ok || weakspot < 0 {
+		weakspot = 0
+	}
+	if weakspot > 2 {
+		weakspot = 2
+	}
 
 	b := p["bunny"]
 
@@ -71,7 +77,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Element:      attributes.Pyro,
 		Durability:   50,
 		Mult:         fullaim[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		HitWeakPoint: weakspot >= 1,
 	}
 	if hold < 2 {
 		ai.Abil = "Aimed Shot"
@@ -86,6 +92,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 1 {
 		ai.Abil += " (C1)"
 		ai.Mult = .2 * ai.Mult
+		ai.HitWeakPoint = weakspot == 2
 		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), c1Hitmarks[hold], c1Hitmarks[hold]+travel)
 	}
 

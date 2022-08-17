@@ -55,6 +55,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		travel = 10
 	}
 	weakspot, ok := p["weakspot"]
+	if !ok || weakspot < 0 {
+		weakspot = 0
+	}
+	if weakspot > 1 {
+		weakspot = 1
+	}
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,

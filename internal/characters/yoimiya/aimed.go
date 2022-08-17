@@ -60,7 +60,13 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		travel = 10
 	}
-	weakspot := p["weakspot"]
+	weakspot, ok := p["weakspot"]
+	if !ok || weakspot < 0 {
+		weakspot = 0
+	}
+	if weakspot > 4 {
+		weakspot = 4
+	}
 
 	// used to adjust how long it takes for the kindling arrows to hit starting from CA arrow release
 	// does nothing if hold < 3
@@ -79,7 +85,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Element:              attributes.Pyro,
 		Durability:           25,
 		Mult:                 fullaim[c.TalentLvlAttack()],
-		HitWeakPoint:         weakspot == 1,
+		HitWeakPoint:         weakspot >= 1,
 		HitlagHaltFrames:     0.12 * 60,
 		HitlagFactor:         0.01,
 		HitlagOnHeadshotOnly: true,
@@ -106,11 +112,6 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ai.ICDTag = combat.ICDTagExtraAttack
 		ai.Mult = aimExtra[c.TalentLvlAttack()]
 
-		// TODO:
-		// Kindling Arrows can hit weakspots to proc stuff like Prototype Crescent, but they don't always crit
-		// current assumption is that they never hit a weakspot
-		ai.HitWeakPoint = false
-
 		// no hitlag
 		ai.HitlagHaltFrames = 0
 		ai.HitlagFactor = 0.01
@@ -119,6 +120,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 		for i := 3; i <= hold; i++ {
 			ai.Abil = fmt.Sprintf("Kindling Arrow %v", i-2)
+			ai.HitWeakPoint = weakspot >= i-1
 			// add a bit of extra delay for kindling arrows
 			c.Core.QueueAttack(
 				ai,
