@@ -6,7 +6,7 @@ import { Dash } from '/src/Pages/Dash';
 import { Simple } from '/src/Pages/Sim';
 import { SimWrapper } from './Pages/Sim/SimWrapper';
 import { ViewerDash } from './Pages/ViewerDashboard';
-import { DB, DbChar } from './Pages/DB';
+import { DB } from './Pages/DB';
 import './i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import { DiscordCallback } from './PageUserAccount/DiscordCallback';
