@@ -40,7 +40,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	if c.StatusIsActive("yoimiyaskill") {
+	if c.Core.Status.Duration("yoimiyaskill") > 0 {
 		ai.ICDTag = combat.ICDTagNormalAttack
 	}
 
