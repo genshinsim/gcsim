@@ -219,7 +219,7 @@ func (b *Bot) List(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(subs) > 0 {
 		var sb strings.Builder
 		for _, v := range subs {
-			sb.WriteString(fmt.Sprintf("%v - %v: [%v](https://next.gcsim.app/v3/viewer/share/%v)\n", v.Author, v.Description, v.Key, v.Key))
+			sb.WriteString(fmt.Sprintf("%v - %v: [%v](https://gcsim.app/v3/viewer/share/%v)\n", v.Author, v.Description, v.Key, v.Key))
 		}
 		embed.Fields = append(embed.Fields,
 			&discordgo.MessageEmbedField{
