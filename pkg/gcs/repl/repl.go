@@ -58,12 +58,12 @@ func Eval(s string, log *log.Logger) {
 func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 	scanner := bufio.NewScanner(in)
 
-	simActions := make(chan *ast.ActionStmt)
-	next := make(chan bool)
-	go handleSimActions(simActions, next)
-
 	for {
-		fmt.Printf(Prompt)
+		simActions := make(chan *ast.ActionStmt)
+		next := make(chan bool)
+		go handleSimActions(simActions, next)
+
+		fmt.Print(Prompt)
 		scanned := scanner.Scan()
 		if !scanned {
 			return
@@ -99,7 +99,10 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 func handleSimActions(in chan *ast.ActionStmt, next chan bool) {
 	for {
 		next <- true
-		x := <-in
+		x, ok := <-in
+		if !ok {
+			return
+		}
 		fmt.Printf("\tExecuting: %v\n", x.String())
 	}
 }
