@@ -23,13 +23,13 @@ type char struct {
 	burstSnap             combat.Snapshot
 	burstAtk              *combat.AttackEvent
 	burstSrc              int
-	female                int
+	gender                int
 }
 
-func NewChar(isFemale int) core.NewCharacterFunc {
+func NewChar(gender int) core.NewCharacterFunc {
 	return func(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 		c := char{
-			female: isFemale,
+			gender: gender,
 		}
 		c.Character = tmpl.NewWithWrapper(s, w)
 

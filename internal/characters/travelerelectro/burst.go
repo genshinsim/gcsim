@@ -73,9 +73,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstSrc = c.Core.F
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(burstFrames[c.female]),
-		AnimationLength: burstFrames[c.female][action.InvalidAction],
-		CanQueueAfter:   burstFrames[c.female][action.ActionJump], // earliest cancel
+		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),
+		AnimationLength: burstFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   burstFrames[c.gender][action.ActionJump], // earliest cancel
 		State:           action.BurstState,
 	}
 }

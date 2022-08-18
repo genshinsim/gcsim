@@ -111,9 +111,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, 810, 20) //13.5s, starts 20 frames in
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillFrames[c.female]),
-		AnimationLength: skillFrames[c.female][action.InvalidAction],
-		CanQueueAfter:   skillFrames[c.female][action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),
+		AnimationLength: skillFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

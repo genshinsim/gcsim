@@ -41,20 +41,20 @@ const ChildePassive = "childe-talent-passive"
 
 const (
 	NoChar Char = iota
-	AetherElectro
-	LumineElectro
 	AetherAnemo
 	LumineAnemo
 	AetherGeo
 	LumineGeo
-	AetherHydro
-	LumineHydro
-	AetherCryo
-	LumineCryo
-	AetherPyro
-	LuminePyro
+	AetherElectro
+	LumineElectro
 	AetherDendro
 	LumineDendro
+	AetherHydro
+	LumineHydro
+	AetherPyro
+	LuminePyro
+	AetherCryo
+	LumineCryo
 	Aether
 	Lumine
 	TravelerDelim // delim
@@ -113,20 +113,20 @@ const (
 
 var charNames = []string{
 	"",
-	"aetherelectro",
-	"lumineelectro",
 	"aetheranemo",
 	"lumineanemo",
 	"aethergeo",
 	"luminegeo",
-	"aetherhydro",
-	"luminehydro",
-	"aethercryo",
-	"luminecryo",
-	"aetherpyro",
-	"luminepyro",
+	"aetherelectro",
+	"lumineelectro",
 	"aetherdendro",
 	"luminedendro",
+	"aetherhydro",
+	"luminehydro",
+	"aetherpyro",
+	"luminepyro",
+	"aethercryo",
+	"luminecryo",
 	"aether",
 	"lumine",
 	"", //delim for traveler
@@ -184,20 +184,20 @@ var charNames = []string{
 
 var charPrettyName = []string{
 	"Invalid",
-	"Aether (Electro)",
-	"Lumine (Electro)",
 	"Aether (Anemo)",
 	"Lumine (Anemo)",
 	"Aether (Geo)",
 	"Lumine (Geo)",
-	"Aether (Hydro)",
-	"Lumine (Hydro)",
-	"Aether (Cyro)",
-	"Lumine (Cyro)",
-	"Aether (Pyro)",
-	"Lumine (Pyro)",
+	"Aether (Electro)",
+	"Lumine (Electro)",
 	"Aether (Dendro)",
 	"Lumine (Dendro)",
+	"Aether (Hydro)",
+	"Lumine (Hydro)",
+	"Aether (Pyro)",
+	"Lumine (Pyro)",
+	"Aether (Cryo)",
+	"Lumine (Cryo)",
 	"Aether",
 	"Lumine",
 	"Invalid",
@@ -254,20 +254,20 @@ var charPrettyName = []string{
 }
 
 var CharKeyToEle = map[Char]attributes.Element{
-	AetherElectro: attributes.Electro,
-	LumineElectro: attributes.Electro,
 	AetherAnemo:   attributes.Anemo,
 	LumineAnemo:   attributes.Anemo,
 	AetherGeo:     attributes.Geo,
 	LumineGeo:     attributes.Geo,
-	AetherHydro:   attributes.Hydro,
-	LumineHydro:   attributes.Hydro,
-	AetherCryo:    attributes.Cryo,
-	LumineCryo:    attributes.Cryo,
-	AetherPyro:    attributes.Pyro,
-	LuminePyro:    attributes.Pyro,
+	AetherElectro: attributes.Electro,
+	LumineElectro: attributes.Electro,
 	AetherDendro:  attributes.Dendro,
 	LumineDendro:  attributes.Dendro,
+	AetherHydro:   attributes.Hydro,
+	LumineHydro:   attributes.Hydro,
+	AetherPyro:    attributes.Pyro,
+	LuminePyro:    attributes.Pyro,
+	AetherCryo:    attributes.Cryo,
+	LumineCryo:    attributes.Cryo,
 	Albedo:        attributes.Geo,
 	Aloy:          attributes.Cryo,
 	Amber:         attributes.Pyro,
