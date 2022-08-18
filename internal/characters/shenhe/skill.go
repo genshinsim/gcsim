@@ -193,7 +193,7 @@ func (c *char) quillDamageMod() {
 
 			atk.Info.FlatDmg += amt
 			if c.Base.Cons >= 4 {
-				atk.Callbacks = append(atk.Callbacks, c.c4cb())
+				atk.Callbacks = append(atk.Callbacks, c.c4cb)
 			}
 		}
 
