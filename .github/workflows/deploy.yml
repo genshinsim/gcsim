@@ -33,6 +33,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          projectName: gcsimtest
+          projectName: gcsim-app
           directory: ./app/build
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

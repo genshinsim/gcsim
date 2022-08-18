@@ -12,6 +12,7 @@ import { PostgrestClient } from '@supabase/postgrest-js';
 import { Router } from 'itty-router';
 import { handleAuth } from './auth';
 import { handleListDBChars, handleListDBSims } from './db';
+import { handleEnka } from './enka';
 import { handleOptions } from './options';
 import { handlePreview } from './preview';
 import { handleShare } from './share';
@@ -30,6 +31,10 @@ router.post('/api/share', handleShare);
 router.get('/api/view/:key', handleView);
 
 router.get('/api/preview/:key', handlePreview);
+
+//enka
+
+router.get('/api/enka/:key', handleEnka);
 
 // db routes
 

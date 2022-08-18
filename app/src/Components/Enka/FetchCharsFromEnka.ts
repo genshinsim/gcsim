@@ -1,7 +1,7 @@
-import EnkaToGOOD from "./EnkaToGOOD";
+import EnkaToGOOD from './EnkaToGOOD';
 
 export default async function FetchandValidateDataFromEnka(validUid: string) {
-  const enkaResponse = await fetch(`https://enka.gcsim.app/${validUid}`);
+  const enkaResponse = await fetch(`/api/enka/${validUid}`);
   if (!enkaResponse.ok) {
     throw new Error(`Failed to fetch ${validUid}`);
   }
