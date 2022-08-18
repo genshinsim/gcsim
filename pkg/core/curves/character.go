@@ -7,20 +7,20 @@ import (
 )
 
 type CharBase struct {
-	Rarity     int
-	Body       profile.BodyType
-	Element    attributes.Element
-	Region     profile.ZoneType
-	WeaponType weapon.WeaponClass
+	Rarity     int                `json:"rarity"`
+	Body       profile.BodyType   `json:"-"`
+	Element    attributes.Element `json:"element"`
+	Region     profile.ZoneType   `json:"-"`
+	WeaponType weapon.WeaponClass `json:"weapon_class"`
 
-	HPCurve        CharStatCurve
-	AtkCurve       CharStatCurve
-	DefCurve       CharStatCurve
-	BaseHP         float64
-	BaseAtk        float64
-	BaseDef        float64
-	Specialized    attributes.Stat
-	PromotionBonus []PromoData
+	HPCurve        CharStatCurve   `json:"-"`
+	AtkCurve       CharStatCurve   `json:"-"`
+	DefCurve       CharStatCurve   `json:"-"`
+	BaseHP         float64         `json:"-"`
+	BaseAtk        float64         `json:"-"`
+	BaseDef        float64         `json:"-"`
+	Specialized    attributes.Stat `json:"-"`
+	PromotionBonus []PromoData     `json:"-"`
 }
 
 type PromoData struct {

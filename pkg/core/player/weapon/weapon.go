@@ -1,6 +1,12 @@
 package weapon
 
-import "github.com/genshinsim/gcsim/pkg/core/keys"
+import (
+	"encoding/json"
+	"errors"
+	"strings"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+)
 
 type WeaponClass int
 
@@ -23,6 +29,25 @@ var weaponName = []string{
 
 func (w WeaponClass) String() string {
 	return weaponName[w]
+}
+
+func (e WeaponClass) MarshalJSON() ([]byte, error) {
+	return json.Marshal(weaponName[e])
+}
+
+func (e *WeaponClass) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	s = strings.ToLower(s)
+	for i, v := range weaponName {
+		if v == s {
+			*e = WeaponClass(i)
+			return nil
+		}
+	}
+	return errors.New("unrecognized element")
 }
 
 type WeaponProfile struct {
