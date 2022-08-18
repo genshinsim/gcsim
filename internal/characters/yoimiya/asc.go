@@ -8,6 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+
+const a1Key = "yoimiyaa1"
+
 // During Niwabi Fire-Dance, shots from Yoimiya's Normal Attack will increase
 // her Pyro DMG Bonus by 2% on hit. This effect lasts for 3s and can have a
 // maximum of 10 stacks.
@@ -17,7 +20,7 @@ func (c *char) a1() {
 		Base:         modifier.NewBase("yoimiya-a1", -1),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Status.Duration("yoimiyaa1") > 0 {
+			if c.StatusIsActive(a1Key) {
 				c.a1bonus[attributes.PyroP] = float64(c.a1stack) * 0.02
 				return c.a1bonus, true
 			}
@@ -41,8 +44,7 @@ func (c *char) a1() {
 		if c.a1stack < 10 {
 			c.a1stack++
 		}
-		c.Core.Status.Add("yoimiyaa1", 180)
-		// c.a1expiry = c.Core.F + 180 // 3 seconds
+		c.AddStatus(a1Key, 180, false)
 		return false
 	}, "yoimiya-a1")
 }
