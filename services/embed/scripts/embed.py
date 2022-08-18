@@ -101,7 +101,7 @@ for arti in artifacts:
     total_sets = len(sets)
     # print(sets)
     if total_sets == 1:
-        if arti[sets[0]] == 4:
+        if arti[sets[0]] >= 4:
             imgs.append(Image.open(os.path.join(
                 assets_folder, f"artifacts/{sets[0]}_flower.png")))
             imgs[-1] = imgs[-1].resize(ARITFACT_SIZE)
