@@ -32,7 +32,7 @@ export class MockProvider implements AuthProvider {
 }
 
 const discordURL =
-  'https://discord.com/api/oauth2/authorize?client_id=999720972875739226&redirect_uri=https%3A%2F%2Fnext.gcsim.app%2Fauth%2Fdiscord&response_type=code&scope=identify&prompt=none';
+  'https://discord.com/api/oauth2/authorize?client_id=999720972875739226&redirect_uri=https%3A%2F%2Fgcsim.app%2Fauth%2Fdiscord&response_type=code&scope=identify&prompt=none';
 
 export class DiscordProvider implements AuthProvider {
   constructor() {}

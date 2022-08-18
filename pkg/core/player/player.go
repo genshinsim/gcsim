@@ -81,6 +81,7 @@ func New(opt Opt) *Handler {
 		charPos:         make(map[keys.Char]int),
 		stamPercentMods: make([]stamPercentMod, 0, 5),
 		Opt:             opt,
+		Stam:            MaxStam,
 	}
 	h.Shields = shield.New(opt.F, opt.Log, opt.Events)
 	h.InfusionHandler = infusion.New(opt.F, opt.Log, opt.Debug)
