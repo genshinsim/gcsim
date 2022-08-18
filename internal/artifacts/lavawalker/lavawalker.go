@@ -32,7 +32,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.35
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("lavawaler-4pc", -1),
+			Base: modifier.NewBase("lavawalker-4pc", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				r, ok := t.(core.Reactable)
 				if !ok {
