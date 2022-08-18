@@ -3686,8 +3686,8 @@ prettier@^2.7.1:
   integrity sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==
 
 "prismjs@https://github.com/srliao/prism.git":
-  version "1.27.0"
-  resolved "https://github.com/srliao/prism.git#6ae9a4d1fedc5aa895ea4a308746567f08e06571"
+  version "1.28.0"
+  resolved "https://github.com/srliao/prism.git#9e6c72811c7c89e0e7f988f605d41e728e9e2fb0"
 
 process@^0.11.10:
   version "0.11.10"
