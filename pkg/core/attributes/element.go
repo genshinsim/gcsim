@@ -31,8 +31,8 @@ func (e Element) String() string {
 	return ElementString[e]
 }
 
-func (e *Element) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ElementString[*e])
+func (e Element) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ElementString[e])
 }
 
 func (e *Element) UnmarshalJSON(b []byte) error {

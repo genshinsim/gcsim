@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { defaultStats, maxStatLength, ParsedResult } from '~/src/types';
-import { isTraveler, ICharacter } from '~src/Components/Character';
+import { CharMap } from '~src/Data';
 import { AppThunk } from '~src/store';
 import { Character, Talent, Weapon } from '~src/Types/sim';
 import { ascLvlMin, maxLvlToAsc } from '~src/util';
 import { WorkerPool } from '~src/WorkerPool';
 import { charToCfg } from './helper';
+
 export let pool: WorkerPool = new WorkerPool();
 
 export type RunStats = {
@@ -249,13 +250,11 @@ export const simSlice = createSlice({
       state.adv_cfg_err = action.payload;
       return state;
     },
-    setCharacterNameAndEle: (state, action: PayloadAction<ICharacter>) => {
-      let key = action.payload.key;
-      if (isTraveler(key) && action.payload.element != 'none')
-        key = 'traveler' + action.payload.element;
+    setCharacterNameAndEle: (state, action: PayloadAction<string>) => {
+      const key = action.payload;
 
       state.team[state.edit_index].name = key;
-      state.team[state.edit_index].element = action.payload.element;
+      state.team[state.edit_index].element = CharMap[key].element;
       let cfg = updateConfig(state.team, state.cfg);
       state.cfg = cfg;
       return state;
