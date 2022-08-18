@@ -16,6 +16,15 @@ import { PageUserAccount } from './PageUserAccount';
 export default function App() {
   useTranslation();
 
+  React.useEffect(() => {
+    let loc = window.location.href;
+
+    if (loc.includes('www.gcsim.app')) {
+      loc = loc.replace('www.gcsim.app', 'gcsim.app');
+      window.location.href = loc;
+    }
+  }, [window.location.href]);
+
   return (
     <div className="bp4-dark h-screen flex flex-col">
       <Nav />
@@ -56,7 +65,7 @@ export default function App() {
         <Route path="/db">
           <DB />
         </Route>
-        <Route path="/db/:char">{({ char }) => <DbChar char={char} />}</Route>
+        {/* <Route path="/db/:char">{({ char }) => <DbChar char={char} />}</Route> */}
         <Route path="/account">
           <PageUserAccount />
         </Route>
