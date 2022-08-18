@@ -23,7 +23,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	c.AddStatus(skillKey, 600+skillStart, false) // activate for 10
+	c.AddStatus(skillKey, 600+skillStart, true) // activate for 10
 	if !c.StatusIsActive(a1Key) {
 		c.a1stack = 0
 	}

@@ -43,7 +43,7 @@ func (c *char) a1() {
 		if c.a1stack < 10 {
 			c.a1stack++
 		}
-		c.AddStatus(a1Key, 180, false)
+		c.AddStatus(a1Key, 180, true)
 		return false
 	}, "yoimiya-a1")
 }
