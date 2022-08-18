@@ -44,6 +44,9 @@ func (c *char) c4() {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
+		if atk.Info.ActorIndex != c.Index {
+			return false
+		}
 		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return false
 		}
