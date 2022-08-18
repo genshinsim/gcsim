@@ -3,6 +3,7 @@ package shenhe
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -34,8 +35,18 @@ func (c *char) c4() {
 			}
 			c.c4bonus[attributes.DmgP] += 0.05 * float64(c.c4count)
 			c.c4count = 0
-			c.DeleteStatus(c4BuffKey)
 			return c.c4bonus, true
 		},
 	})
+	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if c.Core.Player.Active() != c.Index {
+			return false
+		}
+		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+			return false
+		}
+		c.DeleteStatus(c4BuffKey)
+		return false
+	}, "shenhe-c4-reset")
 }
