@@ -21,6 +21,7 @@ import { WeaponCard } from '~src/Components/Weapon';
 import { CharStatBlock } from '/src/Components/Character';
 import { Trans, useTranslation } from 'react-i18next';
 import { Character } from '~src/Types/sim';
+import { TransformTravelerKeyToName } from '~src/Data';
 
 type Props = {
   char: Character;
@@ -196,7 +197,7 @@ export function CharacterCard({
           </div>
           <div className="character-header rounded-t-md" />
           <div className="character-name font-medium m-4 capitalize">
-            {t(`game:character_names.${char.name}`)}{' '}
+            {t(`game:character_names.${TransformTravelerKeyToName(char.name)}`)}{' '}
             <Trans>character.c_pre</Trans>
             {char.cons}
             <Trans>character.c_post</Trans>
@@ -215,8 +216,12 @@ export function CharacterCard({
           </div>
           <div className="w-1/2">
             <img
-              src={'/images/avatar/' + char.name + '.png'}
-              alt={char.name}
+              src={
+                '/images/avatar/' +
+                TransformTravelerKeyToName(char.name) +
+                '.png'
+              }
+              alt={TransformTravelerKeyToName(char.name)}
               className="ml-auto h-32 wide:h-auto "
             />
           </div>

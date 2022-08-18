@@ -18,7 +18,7 @@ export function CharacterTooltip({ char }: CharacterTooltipProps) {
       <div className="capitalize flex flex-row">
         <img
           src={'/images/weapons/' + char.weapon.name + '.png'}
-          alt={char.name}
+          alt={char.weapon.name}
           className="wide:h-8 h-auto "
         />
         <div className="mt-auto mb-auto">

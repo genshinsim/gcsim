@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Character } from "~/src/types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Character } from '~/src/Types/sim';
 
 export interface UserData {
   GOODImport: { [key: string]: Character };
@@ -10,7 +10,7 @@ const initialState: UserData = {
 };
 
 export const userDataSlice = createSlice({
-  name: "user_data",
+  name: 'user_data',
   initialState: initialState,
   reducers: {
     loadFromGOOD: (state, action: PayloadAction<{ data: Character[] }>) => {
@@ -30,5 +30,5 @@ export const userDataSlice = createSlice({
 export const userDataActions = userDataSlice.actions;
 
 export type UserDataSlice = {
-  [userDataSlice.name]: ReturnType<typeof userDataSlice["reducer"]>;
+  [userDataSlice.name]: ReturnType<typeof userDataSlice['reducer']>;
 };

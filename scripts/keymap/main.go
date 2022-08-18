@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -46,6 +46,6 @@ func main() {
 
 	//write to file
 	out, _ := json.MarshalIndent(res, "", " ")
-	ioutil.WriteFile("./character_data.json", out, 0644)
+	os.WriteFile("./character_data.json", out, 0644)
 
 }
