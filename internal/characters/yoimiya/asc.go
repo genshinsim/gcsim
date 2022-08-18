@@ -8,16 +8,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const a1Key = "yoimiyaa1"
+
 // During Niwabi Fire-Dance, shots from Yoimiya's Normal Attack will increase
 // her Pyro DMG Bonus by 2% on hit. This effect lasts for 3s and can have a
 // maximum of 10 stacks.
 func (c *char) a1() {
-	//TODO: change this to add mod on each hit instead
+	// TODO: change this to add mod on each hit instead
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("yoimiya-a1", -1),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Status.Duration("yoimiyaa1") > 0 {
+			if c.StatusIsActive(a1Key) {
 				c.a1bonus[attributes.PyroP] = float64(c.a1stack) * 0.02
 				return c.a1bonus, true
 			}
@@ -31,18 +33,17 @@ func (c *char) a1() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.Core.Status.Duration("yoimiyaskill") == 0 {
+		if !c.StatusIsActive(skillKey) {
 			return false
 		}
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
-		//here we can add stacks up to 10
+		// here we can add stacks up to 10
 		if c.a1stack < 10 {
 			c.a1stack++
 		}
-		c.Core.Status.Add("yoimiyaa1", 180)
-		// c.a1expiry = c.Core.F + 180 // 3 seconds
+		c.AddStatus(a1Key, 180, true)
 		return false
 	}, "yoimiya-a1")
 }
