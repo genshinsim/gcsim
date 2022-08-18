@@ -31,7 +31,7 @@ func (c *char) a1() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.Core.Status.Duration("yoimiyaskill") == 0 {
+		if !c.StatusIsActive(skillKey) {
 			return false
 		}
 		if atk.Info.AttackTag != combat.AttackTagNormal {

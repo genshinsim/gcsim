@@ -40,12 +40,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	if c.Core.Status.Duration("yoimiyaskill") > 0 {
+	if c.StatusIsActive("yoimiyaskill") {
 		ai.ICDTag = combat.ICDTagNormalAttack
 	}
 
 	particleCB := func(combat.AttackCB) {
-		if c.Core.Status.Duration("yoimiyaskill") <= 0 {
+		if !c.StatusIsActive(skillKey) {
 			return
 		}
 		if c.Core.F < c.lastPart {
@@ -73,7 +73,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	if c.Base.Cons >= 6 && c.Core.Status.Duration("yoimiyaskill") > 0 && c.Core.Rand.Float64() < 0.5 {
+	if c.Base.Cons >= 6 && c.StatusIsActive(skillKey) && c.Core.Rand.Float64() < 0.5 {
 		//trigger attack
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
