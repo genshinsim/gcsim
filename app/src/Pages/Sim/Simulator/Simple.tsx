@@ -64,25 +64,23 @@ export function Simple() {
           <ActionList cfg={cfg} onChange={(v) => dispatch(updateCfg(v))} />
 
           <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
-            <div className="pl-2 pr-2 pt-2 mt-1 mb-1">
-              <Callout intent="warning" className="mt-4">
-                <div className="font-bold">
-                  Please be aware that there have been syntax changes with the
-                  core rewrite. Please check out the{' '}
-                  <a href="https://docs.gcsim.app/migration" target="_blank">
-                    migration guide
-                  </a>
-                </div>
-              </Callout>
-            </div>
             {cfg_err !== '' ? (
-              <div className="basis-full p-1">
+              <div className="pl-2 pr-2 pt-2 mt-1">
                 <Callout intent="warning" title="Error parsing config">
                   <pre className=" whitespace-pre-wrap">{cfg_err}</pre>
                 </Callout>
               </div>
             ) : null}
-
+            <div className="pl-2 pr-2 pt-2 mt-1">
+              <Callout intent="warning" title="Breaking changes">
+                Please be aware that there have been syntax changes with the
+                core rewrite. Your existing configs may not work. Please check
+                out the{' '}
+                <a href="https://docs.gcsim.app/migration" target="_blank">
+                  migration guide
+                </a>
+              </Callout>
+            </div>
             <Toolbox canRun={cfg_err === ''} />
           </div>
         </div>
