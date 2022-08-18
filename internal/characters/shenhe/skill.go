@@ -193,14 +193,7 @@ func (c *char) quillDamageMod() {
 
 			atk.Info.FlatDmg += amt
 			if c.Base.Cons >= 4 {
-				//reset stacks to zero if all expired
-				if !c.StatusIsActive(c4BuffKey) {
-					c.c4count = 0
-				}
-				if c.c4count < 50 {
-					c.c4count++
-				}
-				c.AddStatus(c4BuffKey, 3600, true) // 60 s
+				atk.Callbacks = append(atk.Callbacks, c.c4cb)
 			}
 		}
 
