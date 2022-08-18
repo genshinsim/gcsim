@@ -67,22 +67,22 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Durability:         25,
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
 		HitlagFactor:       0.01,
-		HitlagHaltFrames:   attackHitlagHaltFrame[c.female][c.NormalCounter] * 60,
+		HitlagHaltFrames:   attackHitlagHaltFrame[c.gender][c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy),
-		attackHitmarks[c.female][c.NormalCounter],
-		attackHitmarks[c.female][c.NormalCounter],
+		attackHitmarks[c.gender][c.NormalCounter],
+		attackHitmarks[c.gender][c.NormalCounter],
 	)
 
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames[c.female]),
-		AnimationLength: attackFrames[c.female][c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.female][c.NormalCounter],
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames[c.gender]),
+		AnimationLength: attackFrames[c.gender][c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   attackHitmarks[c.gender][c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 }

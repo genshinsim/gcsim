@@ -41,21 +41,21 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	for i, mult := range charge[c.female] {
+	for i, mult := range charge[c.gender] {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-			chargeHitmarks[c.female][i],
-			chargeHitmarks[c.female][i],
+			chargeHitmarks[c.gender][i],
+			chargeHitmarks[c.gender][i],
 		)
 	}
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(chargeFrames[c.female]),
-		AnimationLength: chargeFrames[c.female][action.InvalidAction],
-		CanQueueAfter:   chargeHitmarks[c.female][len(chargeHitmarks[c.female])-1],
+		Frames:          frames.NewAbilFunc(chargeFrames[c.gender]),
+		AnimationLength: chargeFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   chargeHitmarks[c.gender][len(chargeHitmarks[c.gender])-1],
 		State:           action.ChargeAttackState,
 	}
 }
