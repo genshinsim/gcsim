@@ -126,7 +126,7 @@ func SetupResonance(s *core.Core) {
 				}
 				for _, c := range chars {
 					c.AddAttackMod(character.AttackMod{
-						Base:   modifier.NewBase("cyro-res", -1),
+						Base:   modifier.NewBase("cryo-res", -1),
 						Amount: f,
 					})
 				}
