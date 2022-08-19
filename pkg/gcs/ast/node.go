@@ -391,12 +391,15 @@ func (i *IfStmt) CopyIfStmt() *IfStmt {
 	if i == nil {
 		return nil
 	}
-	return &IfStmt{
+	n := &IfStmt{
 		Pos:       i.Pos,
 		Condition: i.Condition.CopyExpr(),
 		IfBlock:   i.IfBlock.CopyBlock(),
-		ElseBlock: i.ElseBlock.CopyStmt(),
 	}
+	if i.ElseBlock != nil {
+		n.ElseBlock = i.ElseBlock.CopyStmt()
+	}
+	return n
 }
 
 func (i *IfStmt) CopyStmt() Stmt {
