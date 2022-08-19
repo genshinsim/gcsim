@@ -118,7 +118,9 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		r.DebugMaxDPSRun = maxDPSDebugOut
 	}
 
-	r.Runtime = time.Since(start)
+	runtime := time.Since(start)
+	fmt.Printf("Runtime: %v\n", runtime)
+	r.Runtime = float64(runtime.Nanoseconds())
 	r.Config = cfg
 	r.Version = opts.Version
 	r.BuildDate = opts.BuildDate
