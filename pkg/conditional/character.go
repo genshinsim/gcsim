@@ -40,19 +40,22 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		// .kokomi.<cond>
 		return char.Condition(fields[1:])
 	}
-
 	val := fields[2]
+
+	// special case for ability conditions. since typ/val are swapped
+	// .kokomi.<abil>.<cond>
+	act := action.StringToAction(typ)
+	if act != action.InvalidAction {
+		return evalCharacterAbil(char, act, val)
+	}
+
 	switch typ {
-	case "cd":
-		return evalCharacterCooldown(char, val)
 	case "status", "mods":
 		return char.StatusIsActive(val), nil
 	case "infusion":
 		return c.Player.WeaponInfuseIsActive(char.Index, val), nil
 	case "tags":
 		return char.Tag(val), nil
-	case "ready":
-		return evalCharacterAbilReady(char, val)
 	case "stats":
 		return evalCharacterStats(char, val)
 	default: // .kokomi.<cond>.*
@@ -68,22 +71,14 @@ func evalCharacterStats(char *character.CharWrapper, stat string) (float64, erro
 	return char.Stat(key), nil
 }
 
-func evalCharacterAbilReady(char *character.CharWrapper, abil string) (bool, error) {
-	ak := action.StringToAction(abil)
-	if ak == action.InvalidAction {
-		return false, fmt.Errorf("invalid abil %v in ready condition", abil)
-	}
-	//TODO: nil map may cause problems here??
-	return char.ActionReady(ak, nil), nil
-}
-
-func evalCharacterCooldown(char *character.CharWrapper, abil string) (int, error) {
-	switch abil {
-	case "skill":
-		return char.Cooldown(action.ActionSkill), nil
-	case "burst":
-		return char.Cooldown(action.ActionBurst), nil
+func evalCharacterAbil(char *character.CharWrapper, act action.Action, typ string) (any, error) {
+	switch typ {
+	case "cd":
+		return char.Cooldown(act), nil
+	case "ready":
+		//TODO: nil map may cause problems here??
+		return char.ActionReady(act, nil), nil
 	default:
-		return 0, fmt.Errorf("invalid ability %v in character cooldown condition", abil)
+		return 0, fmt.Errorf("bad character ability condition: invalid type %v", typ)
 	}
 }
