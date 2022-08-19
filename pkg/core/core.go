@@ -24,6 +24,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
+type Number interface {
+	int64 | float64
+}
+
 type Core struct {
 	F     int
 	Flags Flags

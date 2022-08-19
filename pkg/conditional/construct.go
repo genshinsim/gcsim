@@ -1,47 +1,43 @@
 package conditional
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func evalConstruct(c *core.Core, fields []string) int64 {
-	if len(fields) < 3 {
-		c.Log.NewEvent("bad construct conditon: invalid num of fields", glog.LogWarnings, -1).Write("fields", fields)
-		return 0
+func evalConstruct[V core.Number](c *core.Core, fields []string) (V, error) {
+	if err := fieldsCheck(fields, 3, "construct"); err != nil {
+		return 0, err
 	}
 	switch fields[1] {
 	case ".duration":
-		return evalConstructDuration(c, fields)
+		return evalConstructDuration[V](c, fields)
 	case ".count":
-		return evalConstructCount(c, fields)
+		return evalConstructCount[V](c, fields)
 	default:
-		c.Log.NewEvent("bad construct conditon: invalid critera", glog.LogWarnings, -1).Write("fields", fields)
-		return 0
+		return 0, fmt.Errorf("bad construct condition: invalid criteria %v", fields[1])
 	}
 }
 
-func evalConstructDuration(c *core.Core, fields []string) int64 {
+func evalConstructDuration[V core.Number](c *core.Core, fields []string) (V, error) {
 	//.construct.duration.<name>
 	s := strings.TrimPrefix(fields[2], ".")
 	key, ok := construct.ConstructNameToKey[s]
 	if !ok {
-		c.Log.NewEvent("bad construct conditon: invalid construct", glog.LogWarnings, -1).Write("fields", fields)
-		return 0
+		return 0, fmt.Errorf("bad construction condition: invalid construct %v", s)
 	}
-	return int64(c.Constructs.Expiry(key))
+	return V(c.Constructs.Expiry(key)), nil
 }
 
-func evalConstructCount(c *core.Core, fields []string) int64 {
+func evalConstructCount[V core.Number](c *core.Core, fields []string) (V, error) {
 	//.construct.count.<name>
 	s := strings.TrimPrefix(fields[2], ".")
 	key, ok := construct.ConstructNameToKey[s]
 	if !ok {
-		c.Log.NewEvent("bad construct conditon: invalid construct", glog.LogWarnings, -1).Write("fields", fields)
-		return 0
+		return 0, fmt.Errorf("bad construction condition: invalid construct %v", s)
 	}
-	return int64(c.Constructs.CountByType(key))
+	return V(c.Constructs.CountByType(key)), nil
 }
