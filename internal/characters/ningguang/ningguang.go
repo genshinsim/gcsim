@@ -79,13 +79,13 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) Condition(field string) int64 {
-	switch field {
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
 	case "jadeCount":
-		return int64(c.jadeCount)
+		return c.jadeCount, nil
 	case "prevAttack":
-		return int64(c.prevAttack)
+		return c.prevAttack, nil
 	default:
-		return 0
+		return c.Character.Condition(fields)
 	}
 }

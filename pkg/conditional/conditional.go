@@ -8,28 +8,39 @@ import (
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
-func Eval[V core.Number](c *core.Core, fields []string) (V, error) {
+func fieldsCheck(fields []string, expecting int, category string) error {
+	if len(fields) < expecting {
+		return fmt.Errorf("bad %v condition; invalid num of fields; expecting at least %v; got %v", category, expecting, len(fields))
+	}
+	return nil
+}
+
+func Eval(c *core.Core, fields []string) (any, error) {
+	for i := 0; i < len(fields); i++ {
+		fields[i] = strings.Trim(fields[i], ".")
+	}
+
 	switch fields[0] {
-	case ".debuff":
-		return evalDebuff[V](c, fields)
-	case ".element":
-		return evalElement[V](c, fields)
-	case ".status":
+	case "debuff":
+		return evalDebuff(c, fields)
+	case "element":
+		return evalElement(c, fields)
+	case "status":
 		if err := fieldsCheck(fields, 2, "status"); err != nil {
 			return 0, err
 		}
-		return V(c.Status.Duration(strings.TrimPrefix(fields[1], "."))), nil
-	case ".stam":
-		return V(c.Player.Stam), nil
-	case ".construct":
-		return evalConstruct[V](c, fields)
-	case ".keys":
-		return evalKeys[V](c, fields)
+		return c.Status.Duration(fields[1]), nil
+	case "stam":
+		return c.Player.Stam, nil
+	case "construct":
+		return evalConstruct(c, fields)
+	case "keys":
+		return evalKeys(c, fields)
 	default:
 		//check if it's a char name; if so check char custom eval func
-		name := strings.TrimPrefix(fields[0], ".")
+		name := fields[0]
 		if key, ok := shortcut.CharNameToKey[name]; ok {
-			return evalCharacter[V](c, key, fields)
+			return evalCharacter(c, key, fields)
 		}
 		return 0, fmt.Errorf("invalid character %v in character condition", name)
 	}

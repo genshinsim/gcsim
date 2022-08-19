@@ -42,18 +42,15 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) Condition(k string) int64 {
-	switch k {
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
 	case "skill":
 		fallthrough
 	case "elevator":
-		if c.skillActive {
-			return 1
-		}
-		return 0
+		return c.skillActive, nil
 	case "c2stacks":
-		return int64(c.c2stacks)
+		return c.c2stacks, nil
 	default:
-		return 0
+		return c.Character.Condition(fields)
 	}
 }

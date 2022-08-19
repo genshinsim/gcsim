@@ -187,21 +187,26 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalField(n *ast.Field, env *Env) (Obj, error) {
-	//TODO: this is so hack.... someone come up with a better solution :(
-	if len(n.Value) > 1 && n.Value[1] == ".stats" {
-		switch n.Value[1] {
-		case ".stats", ".energy":
-		default:
-			break
-		}
-		r, err := conditional.Eval[float64](e.Core, n.Value)
-		return &number{
-			fval:    r,
-			isFloat: true,
-		}, err
+	r, err := conditional.Eval(e.Core, n.Value)
+	if err != nil {
+		return nil, err
 	}
-	r, err := conditional.Eval[int64](e.Core, n.Value)
-	return &number{
-		ival: r,
-	}, err
+
+	num := &number{}
+	switch v := r.(type) {
+	case bool:
+		if v {
+			num.ival = 1
+		}
+	case int:
+		num.ival = int64(v)
+	case int64:
+		num.ival = v
+	case float64:
+		num.fval = v
+		num.isFloat = true
+	default:
+		return nil, fmt.Errorf("field condition '.%v' does not evaluate to a number, got %v", strings.Join(n.Value, "."), v)
+	}
+	return num, nil
 }
