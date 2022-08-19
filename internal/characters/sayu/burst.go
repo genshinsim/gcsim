@@ -109,7 +109,7 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 		ActorIndex: c.Index,
 		Abil:       "Muji-Muji Daruma",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
