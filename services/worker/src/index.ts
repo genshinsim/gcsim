@@ -21,30 +21,23 @@ import { handleView } from './view';
 export const dbClient = new PostgrestClient(POSTGREST_ENDPOINT); //secrets?
 const router = Router();
 
-// router.options('*', handleOptions);
-
 router.get('/api/auth', handleAuth);
-
 router.post('/api/share', handleShare);
 
+//cached
 router.get('/api/view/:key', handleView);
-
 router.get('/api/preview/:key', handlePreview);
 
 //enka
-
 router.get('/api/enka/:key', handleEnka);
 
 // db routes
-
 router.get('/api/db', handleListDBChars);
-
 router.get('/api/db/:key', handleListDBSims);
 
 // user sims
-
 router.get('/api/:key/sims', handleListUserSims);
 
 addEventListener('fetch', (event) => {
-  event.respondWith(router.handle(event.request));
+  event.respondWith(router.handle(event.request, event));
 });
