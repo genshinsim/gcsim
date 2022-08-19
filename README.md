@@ -1,6 +1,6 @@
 # Overview
 
-GSim is a Monte Carlo simulation tool used to model team dps. It allows for the formation of arbitrary combination of any characters.
+gcsim is a Monte Carlo simulation tool used to model team dps. It allows for the formation of arbitrary combination of any characters.
 
 # Getting started
 
