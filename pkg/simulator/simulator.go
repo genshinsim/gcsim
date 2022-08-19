@@ -119,7 +119,6 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 	}
 
 	runtime := time.Since(start)
-	fmt.Printf("Runtime: %v\n", runtime)
 	r.Runtime = float64(runtime.Nanoseconds())
 	r.Config = cfg
 	r.Version = opts.Version
