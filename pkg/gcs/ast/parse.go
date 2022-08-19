@@ -213,6 +213,9 @@ func (p *Parser) parseStatement() (Node, error) {
 	case keywordWhile:
 		node, err = p.parseWhile()
 		hasSemi = false
+	case itemLeftBrace:
+		node, err = p.parseBlock()
+		hasSemi = false
 	case itemIdentifier:
 		p.next()
 		//check if = after
@@ -331,8 +334,16 @@ func (p *Parser) parseIf() (Stmt, error) {
 	//skip the else keyword
 	p.next()
 
-	//expecting another block
-	stmt.ElseBlock, err = p.parseBlock()
+	//expecting another stmt (should be either if or block)
+	block, err := p.parseStatement()
+	switch block.(type) {
+	case *IfStmt, *BlockStmt:
+	default:
+		stmt.ElseBlock = nil
+		return stmt, fmt.Errorf("ln%v: expecting either if or normal block after else", n.line)
+	}
+
+	stmt.ElseBlock = block.(Stmt)
 
 	return stmt, err
 }
