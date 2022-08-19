@@ -75,6 +75,8 @@ func evalCharacterAbil(char *character.CharWrapper, act action.Action, typ strin
 	switch typ {
 	case "cd":
 		return char.Cooldown(act), nil
+	case "charge":
+		return char.Charges(act), nil
 	case "ready":
 		//TODO: nil map may cause problems here??
 		return char.ActionReady(act, nil), nil

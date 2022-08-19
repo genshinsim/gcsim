@@ -41,10 +41,6 @@ func (c *Character) SetCD(a action.Action, dur int) {
 	if c.AvailableCDCharge[a] < 0 {
 		panic("unexpected charges less than 0")
 	}
-	//TODO: remove these tags; add special syntax just to check for charges instead of using tags
-	if c.Tags["skill_charge"] > 0 {
-		c.Tags["skill_charge"]--
-	}
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown triggered").
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
