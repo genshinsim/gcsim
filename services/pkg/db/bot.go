@@ -179,7 +179,7 @@ func (b *Bot) Submit(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
 		return
 	}
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission recorded! Thanks %v", sub.Author))
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission recorded! Thanks %v", sub.AuthorString))
 }
 
 func (b *Bot) List(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -215,7 +215,7 @@ func (b *Bot) List(s *discordgo.Session, m *discordgo.MessageCreate) {
 		count := 0
 		var sb strings.Builder
 		for _, v := range subs {
-			sb.WriteString(fmt.Sprintf("%v - %v: [%v](https://gcsim.app/v3/viewer/share/%v)\n", v.Author, v.Description, v.Key, v.Key))
+			sb.WriteString(fmt.Sprintf("%v - %v: <https://gcsim.app/v3/viewer/share/%v>\n", v.AuthorString, v.Description, v.Key))
 			count++
 			if count == 15 {
 				s.ChannelMessageSend(m.ChannelID, sb.String())
