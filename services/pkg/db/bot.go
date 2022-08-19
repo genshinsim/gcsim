@@ -210,42 +210,24 @@ func (b *Bot) List(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
 		return
 	}
-	//make a nice embed?
-	embed := &discordgo.MessageEmbed{
-		Color: 0x2a8fce,
-		Title: "Submitted sims waiting for approval",
-	}
-
 	if len(subs) > 0 {
+		//15 lines per msg
+		count := 0
 		var sb strings.Builder
 		for _, v := range subs {
 			sb.WriteString(fmt.Sprintf("%v - %v: [%v](https://gcsim.app/v3/viewer/share/%v)\n", v.Author, v.Description, v.Key, v.Key))
+			count++
+			if count == 15 {
+				s.ChannelMessageSend(m.ChannelID, sb.String())
+				count = 0
+				sb.Reset()
+			}
 		}
-		embed.Fields = append(embed.Fields,
-			&discordgo.MessageEmbedField{
-				Name:   "Links",
-				Value:  sb.String(),
-				Inline: true,
-			},
-		)
+		if count > 0 {
+			s.ChannelMessageSend(m.ChannelID, sb.String())
+		}
 	} else {
-		embed.Fields = append(embed.Fields,
-			&discordgo.MessageEmbedField{
-				Name:   "Links",
-				Value:  "Nothing here. Yay!",
-				Inline: true,
-			},
-		)
-	}
-
-	msg := &discordgo.MessageSend{
-		Embeds: []*discordgo.MessageEmbed{embed},
-	}
-
-	res, err := s.ChannelMessageSendComplex(m.ChannelID, msg)
-	if err != nil {
-		b.Log.Warnw("list - sending msg", "err", err, "res", res)
-		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
+		s.ChannelMessageSend(m.ChannelID, "Nothing to approve! Yay!")
 	}
 }
 
