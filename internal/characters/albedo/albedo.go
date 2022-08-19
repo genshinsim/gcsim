@@ -44,8 +44,6 @@ func (c *char) Init() error {
 
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
-	case "skill":
-		fallthrough
 	case "elevator":
 		return c.skillActive, nil
 	case "c2stacks":

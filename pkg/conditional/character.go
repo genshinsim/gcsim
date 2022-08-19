@@ -19,7 +19,17 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		return 0, fmt.Errorf("character %v not in team when evaluating condition", key)
 	}
 
+	// special case for ability conditions. since fields are swapped
+	// .kokomi.<abil>.<cond>
 	typ := fields[1]
+	act := action.StringToAction(typ)
+	if act != action.InvalidAction {
+		if err := fieldsCheck(fields, 3, "character ability"); err != nil {
+			return 0, err
+		}
+		return evalCharacterAbil(char, act, fields[2])
+	}
+
 	switch typ {
 	case "cons":
 		return char.Base.Cons, nil
@@ -33,34 +43,35 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		return c.Player.Active() == char.Index, nil
 	case "weapon":
 		return int(char.Weapon.Key), nil
-	}
-
-	// call character condition early
-	if err := fieldsCheck(fields, 3, "character "+fields[1]); err != nil {
-		// .kokomi.<cond>
-		return char.Condition(fields[1:])
-	}
-	val := fields[2]
-
-	// special case for ability conditions. since typ/val are swapped
-	// .kokomi.<abil>.<cond>
-	act := action.StringToAction(typ)
-	if act != action.InvalidAction {
-		return evalCharacterAbil(char, act, val)
-	}
-
-	switch typ {
-	case "status", "mods":
-		return char.StatusIsActive(val), nil
+	case "status":
+		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+			return 0, err
+		}
+		return char.StatusIsActive(fields[2]), nil
+	case "mods":
+		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+			return 0, err
+		}
+		return char.StatModIsActive(fields[2]), nil
 	case "infusion":
-		return c.Player.WeaponInfuseIsActive(char.Index, val), nil
+		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+			return 0, err
+		}
+		return c.Player.WeaponInfuseIsActive(char.Index, fields[2]), nil
 	case "tags":
-		return char.Tag(val), nil
+		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+			return 0, err
+		}
+		return char.Tag(fields[2]), nil
 	case "stats":
-		return evalCharacterStats(char, val)
-	default: // .kokomi.<cond>.*
+		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+			return 0, err
+		}
+		return evalCharacterStats(char, fields[2])
+	default: // .kokomi.*
 		return char.Condition(fields[1:])
 	}
+
 }
 
 func evalCharacterStats(char *character.CharWrapper, stat string) (float64, error) {
