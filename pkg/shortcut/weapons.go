@@ -6,6 +6,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"akuoumaru":                     keys.Akuoumaru,
 	"alleyhunter":                   keys.AlleyHunter,
 	"amenomakageuchi":               keys.AmenomaKageuchi,
+	"amenoma":                       keys.AmenomaKageuchi,
 	"amosbow":                       keys.AmosBow,
 	"amos":                          keys.AmosBow,
 	"apprenticesnotes":              keys.ApprenticesNotes,
