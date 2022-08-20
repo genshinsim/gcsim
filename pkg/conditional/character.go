@@ -27,7 +27,7 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		if err := fieldsCheck(fields, 3, "character ability"); err != nil {
 			return 0, err
 		}
-		return evalCharacterAbil(char, act, fields[2])
+		return evalCharacterAbil(c, char, act, fields[2])
 	}
 
 	switch typ {
@@ -82,13 +82,19 @@ func evalCharacterStats(char *character.CharWrapper, stat string) (float64, erro
 	return char.Stat(key), nil
 }
 
-func evalCharacterAbil(char *character.CharWrapper, act action.Action, typ string) (any, error) {
+func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Action, typ string) (any, error) {
 	switch typ {
 	case "cd":
+		if act == action.ActionSwap {
+			return c.Player.SwapCD, nil
+		}
 		return char.Cooldown(act), nil
 	case "charge":
 		return char.Charges(act), nil
 	case "ready":
+		if act == action.ActionSwap {
+			return c.Player.SwapCD == 0 || c.Player.Active() == char.Index, nil
+		}
 		//TODO: nil map may cause problems here??
 		return char.ActionReady(act, nil), nil
 	default:
