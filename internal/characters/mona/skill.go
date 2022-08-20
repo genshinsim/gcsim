@@ -52,8 +52,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	// tick every 1s
-	for i := 60; i < 300; i += 60 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmarks[hold]+i)
+	for i := skillHitmarks[hold]; i < 300; i += 60 {
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), i)
 	}
 
 	// Explosion
