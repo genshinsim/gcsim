@@ -35,7 +35,7 @@ const (
 	OnCharacterSwap    //prev, next
 	OnParticleReceived //particle
 	OnEnergyChange     //character_received_index, pre_energy, energy_change, src (post-energy available in character_received)
-	OnTargetDied       //target
+	OnTargetDied       //target, AttackEvent
 	OnCharacterHit     //nil <- this is for when the character is going to get hit but might be shielded from dmg
 	OnCharacterHurt    //amount
 	OnHeal             //src char, target character, amount
