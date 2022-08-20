@@ -58,8 +58,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		// Reset ICD after construct is created
 		c.DeleteStatus(skillICDKey)
 		// add C4 and C6 checks
-		c.Core.Tasks.Add(c.c4(c.Core.F), 18) // start checking in 0.3s
-		c.Core.Tasks.Add(c.c6(c.Core.F), 18) // start checking in 0.3s
+		if c.Base.Cons >= 4 {
+			c.Core.Tasks.Add(c.c4(c.Core.F), 18) // start checking in 0.3s
+		}
+		if c.Base.Cons >= 6 {
+			c.Core.Tasks.Add(c.c6(c.Core.F), 18) // start checking in 0.3s
+		}
 	}, skillHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 240, 23)
