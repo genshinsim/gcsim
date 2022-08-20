@@ -79,6 +79,8 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		return e.setDefaultTarget(c, env)
 	case "set_particle_delay":
 		return e.setParticleDelay(c, env)
+	case "kill_target":
+		return e.killTarget(c, env)
 	default:
 		//grab the function first
 		fn, err := env.fn(s)

@@ -1,6 +1,7 @@
 package gcs
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -260,6 +261,40 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Combat.SetTargetPos(idx, x, y)
+
+	return &number{}, nil
+}
+
+func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
+	//kill_target(1)
+	if !e.Core.Combat.DamageMode {
+		return nil, errors.New("damage mode is not activated")
+	}
+
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for kill_target, expected 1 got %v", len(c.Args))
+	}
+
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	n, ok := t.(*number)
+	if !ok {
+		return nil, fmt.Errorf("kill_target argument target index should evaluate to a number, got %v", t.Inspect())
+	}
+	//n should be int
+	var idx int = int(n.ival)
+	if n.isFloat {
+		idx = int(n.fval)
+	}
+
+	//check if index is in range
+	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
+		return nil, fmt.Errorf("index for kill_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.TargetsCount()-1, idx)
+	}
+
+	e.Core.Combat.KillTarget(idx)
 
 	return &number{}, nil
 }
