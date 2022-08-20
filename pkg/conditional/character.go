@@ -69,7 +69,9 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		}
 		return evalCharacterStats(char, fields[2])
 	default: // .kokomi.*
-		return char.Condition(fields[1:])
+		v := make([]string, len(fields[1:]))
+		copy(v, fields[1:])
+		return char.Condition(v)
 	}
 
 }

@@ -2,7 +2,6 @@ package conditional
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
@@ -16,10 +15,6 @@ func fieldsCheck(fields []string, expecting int, category string) error {
 }
 
 func Eval(c *core.Core, fields []string) (any, error) {
-	for i := 0; i < len(fields); i++ {
-		fields[i] = strings.Trim(fields[i], ".")
-	}
-
 	switch fields[0] {
 	case "debuff":
 		return evalDebuff(c, fields)
