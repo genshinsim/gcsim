@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
@@ -712,7 +713,7 @@ func (p *Parser) parseField() (Expr, error) {
 	n := p.next()
 	fields := make([]string, 0, 5)
 	for ; n.Typ == itemField; n = p.next() {
-		fields = append(fields, n.Val)
+		fields = append(fields, strings.Trim(n.Val, "."))
 	}
 	//we would have consumed one too many here
 	p.backup()

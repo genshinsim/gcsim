@@ -44,16 +44,16 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) Condition(k string) int64 {
-	switch k {
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
 	case "oz":
 		if c.ozActiveUntil <= c.Core.F {
-			return 0
+			return false, nil
 		}
-		return int64(c.ozActiveUntil - c.Core.F)
+		return (c.ozActiveUntil - c.Core.F), nil
 	case "oz-source":
-		return int64(c.ozSource)
+		return c.ozSource, nil
 	default:
-		return 0
+		return c.Character.Condition(fields)
 	}
 }

@@ -42,11 +42,11 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) Condition(k string) int64 {
-	switch k {
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
 	case "coil":
-		return int64(c.coils)
+		return c.coils, nil
 	default:
-		return 0
+		return c.Character.Condition(fields)
 	}
 }
