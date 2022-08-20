@@ -123,7 +123,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		//delete the player by accident
 		if h.DamageMode && t.HP() <= 0 {
 			t.Kill()
-			h.Events.Emit(event.OnTargetDied, t, cpy)
+			h.Events.Emit(event.OnTargetDied, t, &cpy)
 			// h.targets[i] = nil
 		}
 
