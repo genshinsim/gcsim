@@ -24,15 +24,16 @@ func init() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// only drain HP when above 20% HP
 	if c.HPCurrent/c.MaxHP() > 0.2 {
+		hpdrain := 0.3 * c.HPCurrent
+		// The HP consumption from using this skill can only bring her to 20% HP.
+		if 0.7*c.HPCurrent/c.MaxHP() <= 0.2 {
+			hpdrain = (c.HPCurrent/c.MaxHP() - 0.2) * c.MaxHP()
+		}
 		c.Core.Player.Drain(player.DrainInfo{
 			ActorIndex: c.Index,
 			Abil:       "Sanctifying Ring",
-			Amount:     .30 * c.HPCurrent,
+			Amount:     hpdrain,
 		})
-		// The HP consumption from using this skill can only bring her to 20% HP.
-		if c.HPCurrent/c.MaxHP() < 0.2 {
-			c.HPCurrent = 0.2 * c.MaxHP()
-		}
 	}
 
 	ai := combat.AttackInfo{
