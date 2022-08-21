@@ -22,11 +22,17 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	//remove some hp
-	if 0.7*(c.HPCurrent/c.MaxHP()) > 0.2 {
-		c.HPCurrent = 0.7 * c.HPCurrent
-	} else if (c.HPCurrent / c.MaxHP()) > 0.2 { //check if below 20%
-		c.HPCurrent = 0.2 * c.MaxHP()
+	// only drain HP when above 20% HP
+	if c.HPCurrent/c.MaxHP() > 0.2 {
+		c.Core.Player.Drain(player.DrainInfo{
+			ActorIndex: c.Index,
+			Abil:       "Sanctifying Ring",
+			Amount:     .30 * c.HPCurrent,
+		})
+		// The HP consumption from using this skill can only bring her to 20% HP.
+		if c.HPCurrent/c.MaxHP() < 0.2 {
+			c.HPCurrent = 0.2 * c.MaxHP()
+		}
 	}
 
 	ai := combat.AttackInfo{
@@ -61,7 +67,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Write("next expected tick", c.Core.F+90)
 	}, 23)
 
-	c.SetCDWithDelay(action.ActionSkill, 90, 7)
+	c.SetCDWithDelay(action.ActionSkill, 15*60, 7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),

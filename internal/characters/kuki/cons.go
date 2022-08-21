@@ -76,7 +76,7 @@ func (c *char) c6() {
 		if c.HPCurrent <= -1 {
 			c.HPCurrent = 1
 		}
-		c.AddStatus(c6IcdKey, 3600, true) // 60s * 60
+		c.AddStatus(c6IcdKey, 3600, false) // 60s * 60
 
 		//increase EM by 150 for 15s
 		c.AddStatMod(character.StatMod{
