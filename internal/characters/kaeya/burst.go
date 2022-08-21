@@ -5,12 +5,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var burstFrames []int
 
-const burstStart = 48 // lines up with cooldown start
-const burstHitmark = 53
+const (
+	burstCDStart  = 48
+	burstHitmark  = 53
+	burstDuration = 480
+	burstKey      = "kaeya-q"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(78) // Q -> E
@@ -33,26 +38,28 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-	// hits around 13 times
 
-	//each icicle takes 120frames to complete a rotation and has a internal cooldown of 0.5
+	// add burst status for icicle ticks
+	// +1 to get 13 instead of 12 ticks total (ingame you can get 14/15 procs max on a single enemy)
+	c.Core.Status.Add(burstKey, burstDuration+burstHitmark+1)
+
+	// each icicle takes 120frames to complete a rotation and has a internal cooldown of 0.5
 	count := 3
+	// C6:
+	// Glacial Waltz will generate 1 additional icicle, and will regenerate 15 Energy when cast.
 	if c.Base.Cons == 6 {
 		count++
 	}
 	offset := 120 / count
 
+	c.burstTickSrc = c.Core.F
 	for i := 0; i < count; i++ {
 		// each icicle will start at i * offset (i.e. 0, 40, 80 OR 0, 30, 60, 90)
 		// assume each icicle will last for 8 seconds
 		// assume damage dealt every 120 (since only hitting at the front)
 		// on icicle collision, it'll trigger an aoe dmg with radius 2
 		// in effect, every target gets hit every time icicles rotate around
-
-		// first Q hit happens a bit after Q start
-		for j := burstHitmark + offset*i; j < burstHitmark+480; j += 120 {
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), j)
-		}
+		c.Core.Tasks.Add(c.burstTickerFunc(ai, snap, c.Core.F), burstHitmark+offset*i)
 	}
 
 	c.ConsumeEnergy(51)
@@ -60,12 +67,35 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(func() { c.AddEnergy("kaeya-c6", 15) }, 52)
 	}
 
-	c.SetCDWithDelay(action.ActionBurst, 900, burstStart)
+	c.SetCDWithDelay(action.ActionBurst, 900, burstCDStart)
+
+	// reset c2 proc count
+	c.c2ProcCount = 0
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
+	}
+}
+
+func (c *char) burstTickerFunc(ai combat.AttackInfo, snap combat.Snapshot, src int) func() {
+	return func() {
+		// check if burst is up
+		if c.Core.Status.Duration(burstKey) == 0 {
+			return
+		}
+		// check if it's still the same burst
+		if c.burstTickSrc != src {
+			c.Core.Log.NewEvent("kaeya burst tick ignored, src diff", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("new src", c.burstTickSrc)
+			return
+		}
+		// do icicle dmg
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0)
+		// queue up icicle tick
+		c.Core.Tasks.Add(c.burstTickerFunc(ai, snap, src), 120)
 	}
 }

@@ -14,7 +14,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	c4icd int
+	burstTickSrc int
+	c2ProcCount  int
+	c4icd        int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -23,6 +25,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
+	c.c2ProcCount = 0
 
 	w.Character = &c
 
@@ -32,6 +35,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	if c.Base.Cons > 0 {
 		c.c1()
+	}
+	if c.Base.Cons >= 2 {
+		c.c2()
 	}
 	if c.Base.Cons >= 4 {
 		c.c4()
