@@ -49,7 +49,7 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	}
 
 	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
-		req := p.StamPercentMod(t) * char.ActionStam(t, param)
+		req := (1 + p.StamPercentMod(t)) * char.ActionStam(t, param)
 		return req, p.Stam >= req
 	}
 
