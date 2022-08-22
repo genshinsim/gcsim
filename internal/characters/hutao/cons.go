@@ -17,22 +17,33 @@ func (c *char) c6() {
 	c.c6buff[attributes.CR] = 1
 	// check for C6 proc on hurt
 	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
-		c.checkc6()
+		c.checkc6(false)
 		return false
 	}, "hutao-c6")
 	// check for C6 proc every 2s regardless of hurt
-	c.QueueCharTask(c.checkc6, 120)
+	c.QueueCharTask(func() {
+		c.checkc6(true)
+	}, 120)
 }
 
-func (c *char) checkc6() {
+func (c *char) checkc6(check1HP bool) {
+	// check for C6 proc every 2s regardless of hurt and c6 icd
+	c.QueueCharTask(func() {
+		c.checkc6(true)
+	}, 120)
+	// check if c6 is on icd
 	if c.StatusIsActive(c6ICDKey) {
 		return
 	}
-	//check if hp less than 25%
+	// check if hp less than 25%
 	if c.HPCurrent/c.MaxHP() > .25 {
 		return
 	}
-	//if dead, revive back to 1 hp
+	// check if hp is less than 2 for the 2s check
+	if check1HP && c.HPCurrent >= 2 {
+		return
+	}
+	// if dead, revive back to 1 hp
 	if c.HPCurrent <= -1 {
 		c.HPCurrent = 1
 	}
@@ -47,8 +58,6 @@ func (c *char) checkc6() {
 	})
 
 	c.AddStatus(c6ICDKey, 3600, false)
-	// check for C6 proc every 2s regardless of hurt
-	c.QueueCharTask(c.checkc6, 120)
 }
 
 //Upon defeating an enemy affected by a Blood Blossom that Hu Tao applied
