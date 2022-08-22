@@ -32,8 +32,6 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	// activate a1
-	c.a1()
 	// restart a4 counter
 	c.a4extendCount = 0
 
@@ -78,6 +76,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// add skill status and queue up ticks
 	c.Core.Tasks.Add(func() {
 		c.Core.Status.Add(barbSkillKey, skillDuration)
+		c.a1()
 		c.barbaraSelfTick(heal, hpplus, c.skillInitF)()
 		c.barbaraMelodyTick(ai, c.skillInitF)()
 	}, skillCDStart)
