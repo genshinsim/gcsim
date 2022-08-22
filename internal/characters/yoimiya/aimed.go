@@ -119,15 +119,23 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ai.IsDeployable = false
 
 		for i := 3; i <= hold; i++ {
-			ai.Abil = fmt.Sprintf("Kindling Arrow %v", i-2)
-			ai.HitWeakPoint = weakspot >= i-1
-			// add a bit of extra delay for kindling arrows
-			c.Core.QueueAttack(
-				ai,
-				combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
-				aimedHitmarks[hold],
-				aimedHitmarks[hold]+kindling_travel,
-			)
+			aiCpy := ai // avoid closure issues
+			aiCpy.Abil = fmt.Sprintf("Kindling Arrow %v", i-2)
+			aiCpy.HitWeakPoint = weakspot >= i-1
+			c.Core.Tasks.Add(func() {
+				// E:
+				// "During this time, Normal Attack: Firework Flare-Up will not generate Kindling Arrows at Charge Level 2.""
+				// but if her E expires at the time of the arrow release, then the Kindling Arrows should be released:
+				// https://youtu.be/XEAJ9ssLmv4
+				if !c.StatusIsActive(skillKey) {
+					c.Core.QueueAttack(
+						aiCpy,
+						combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+						0,
+						kindling_travel, // add a bit of extra delay for kindling arrows
+					)
+				}
+			}, aimedHitmarks[hold])
 		}
 	}
 
