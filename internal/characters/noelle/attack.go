@@ -48,8 +48,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 	}
 	// TODO: don't forget this when implementing her CA
-	c.healDone = false
-	cb := c.skillHealCB
+	done := false
+	cb := c.skillHealCB(done)
 	// need char queue because of potential hitlag from C4
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(

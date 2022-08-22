@@ -50,8 +50,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.a4Counter = 0
 
 	// initial E hit can proc her heal
-	c.healDone = false
-	cb := c.skillHealCB
+	done := false
+	cb := c.skillHealCB(done)
 
 	// center on player
 	// use char queue for this just to be safe in case of C4
@@ -85,30 +85,32 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHealCB(atk combat.AttackCB) {
-	if c.healDone {
-		return
-	}
-	// check for healing
-	if c.Core.Player.Shields.Get(shield.ShieldNoelleSkill) != nil {
-		var prob float64
-		if c.Base.Cons >= 1 && c.StatModIsActive(burstBuffKey) {
-			prob = 1
-		} else {
-			prob = healChance[c.TalentLvlSkill()]
+func (c *char) skillHealCB(done bool) combat.AttackCBFunc {
+	return func(atk combat.AttackCB) {
+		if done {
+			return
 		}
-		if c.Core.Rand.Float64() < prob {
-			// heal target
-			x := atk.AttackEvent.Snapshot.BaseDef*(1+atk.AttackEvent.Snapshot.Stats[attributes.DEFP]) + atk.AttackEvent.Snapshot.Stats[attributes.DEF]
-			heal := shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]
-			c.Core.Player.Heal(player.HealInfo{
-				Caller:  c.Index,
-				Target:  -1,
-				Message: "Breastplate (Attack)",
-				Src:     heal,
-				Bonus:   atk.AttackEvent.Snapshot.Stats[attributes.Heal],
-			})
-			c.healDone = true
+		// check for healing
+		if c.Core.Player.Shields.Get(shield.ShieldNoelleSkill) != nil {
+			var prob float64
+			if c.Base.Cons >= 1 && c.StatModIsActive(burstBuffKey) {
+				prob = 1
+			} else {
+				prob = healChance[c.TalentLvlSkill()]
+			}
+			if c.Core.Rand.Float64() < prob {
+				// heal target
+				x := atk.AttackEvent.Snapshot.BaseDef*(1+atk.AttackEvent.Snapshot.Stats[attributes.DEFP]) + atk.AttackEvent.Snapshot.Stats[attributes.DEF]
+				heal := shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]
+				c.Core.Player.Heal(player.HealInfo{
+					Caller:  c.Index,
+					Target:  -1,
+					Message: "Breastplate (Attack)",
+					Src:     heal,
+					Bonus:   atk.AttackEvent.Snapshot.Stats[attributes.Heal],
+				})
+				done = true
+			}
 		}
 	}
 }

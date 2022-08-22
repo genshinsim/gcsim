@@ -78,8 +78,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Write("mult", mult)
 
 	// every Q hit can proc her heal
-	c.healDone = false
-	cb := c.skillHealCB
+	done := false
+	cb := c.skillHealCB(done)
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -105,7 +105,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			cb,
 		)
 		// reset healDone so the Skill part can proc her heal
-		c.healDone = false
+		done = false
+		cb = c.skillHealCB(done)
 	}, 24)
 
 	// Skill part
