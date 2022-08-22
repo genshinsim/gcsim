@@ -75,8 +75,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if done {
 			return
 		}
-		// c.Core.Tasks.Add can't handle tasks with 0 delay, so delay by 1f
-		c.queueOz("Burst", 1)
+		c.queueOz("Burst", 0)
 		done = true
 	}
 
