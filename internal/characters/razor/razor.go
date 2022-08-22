@@ -3,6 +3,7 @@ package razor
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -48,6 +49,13 @@ func (c *char) Init() error {
 
 	c.a4()
 
+	// make sure to use the same key everywhere so that these passives don't stack
+	c.Core.Player.AddStamPercentMod("utility-dash", -1, func(a action.Action) (float64, bool) {
+		if a == action.ActionDash && c.HPCurrent > 0 {
+			return -0.2, false
+		}
+		return 0, false
+	})
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
