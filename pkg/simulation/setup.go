@@ -214,6 +214,7 @@ func SetupMisc(c *core.Core) {
 		//add shred
 		t.AddResistMod(enemy.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
+			Ele:   attributes.Physical,
 			Value: -0.4,
 		})
 		return false
