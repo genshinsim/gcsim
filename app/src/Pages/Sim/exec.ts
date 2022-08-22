@@ -32,7 +32,6 @@ export function runSim(cfg: string): AppThunk {
   return function (dispatch) {
     console.log('starting run');
     // console.log(cfg);
-    cfg = cfg + '\n';
     const startTime = window.performance.now();
     let debug: string;
     let avg = 0;
