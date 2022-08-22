@@ -294,8 +294,8 @@ func lexText(l *lexer) stateFn {
 func lexComment(l *lexer) stateFn {
 Loop:
 	for {
-		switch r := l.next(); {
-		case r == '\n':
+		switch l.next() {
+		case eof, '\n':
 			l.backup()
 			break Loop
 		default:
