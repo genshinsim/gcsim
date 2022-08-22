@@ -61,7 +61,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, skillHitmark, cb)
 
-	//2 or 3 1:1 ratio
+	// 2 or 3, 1:2 ratio
 	var count float64 = 2
 	if c.Core.Rand.Float64() < 0.67 {
 		count = 3
