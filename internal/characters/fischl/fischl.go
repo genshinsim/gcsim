@@ -52,6 +52,12 @@ func (c *char) Condition(fields []string) (any, error) {
 		return c.ozActive, nil
 	case "oz-source":
 		return c.ozSource, nil
+	case "oz-duration":
+		duration := c.ozActiveUntil - c.Core.F
+		if duration < 0 {
+			duration = 0
+		}
+		return duration, nil
 	default:
 		return c.Character.Condition(fields)
 	}
