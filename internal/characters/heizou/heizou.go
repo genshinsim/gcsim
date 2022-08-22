@@ -47,6 +47,14 @@ func (c *char) Init() error {
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a4buff[attributes.EM] = 80
 
+	// make sure to use the same key everywhere so that these passives don't stack
+	c.Core.Player.AddStamPercentMod("utility-dash", -1, func(a action.Action) (float64, bool) {
+		if a == action.ActionDash && c.HPCurrent > 0 {
+			return -0.2, false
+		}
+		return 0, false
+	})
+
 	if c.Base.Cons >= 1 {
 		c.c1buff = make([]float64, attributes.EndStatType)
 		c.c1buff[attributes.AtkSpd] = .15

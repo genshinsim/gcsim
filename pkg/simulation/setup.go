@@ -189,9 +189,13 @@ func SetupResonance(s *core.Core) {
 				}
 
 			case attributes.Anemo:
+				s.Player.AddStamPercentMod("anemo-res-stam", -1, func(a action.Action) (float64, bool) {
+					return -0.15, false
+				})
+				// TODO: movement spd increase?
 				for _, c := range chars {
 					c.AddCooldownMod(character.CooldownMod{
-						Base:   modifier.NewBase("anemo-res", -1),
+						Base:   modifier.NewBase("anemo-res-cd", -1),
 						Amount: func(a action.Action) float64 { return -0.05 },
 					})
 				}
