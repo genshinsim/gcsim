@@ -57,6 +57,8 @@ func (s *Simulation) Run() (Result, error) {
 					break
 				}
 			}
+			//TODO: this may result in unexpected behaviour? but beats infinite loop when out of actions
+			stop = stop || s.noMoreActions
 		} else {
 			stop = s.C.F == f
 		}
