@@ -20,13 +20,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//set on field oz to be this one
-	//TODO: Oz should spawn and snapshot when the burst animation is cancelled
-	//for now, the common burst->swap combo (24 frames) is used.
-	c.Core.Tasks.Add(func() {
-		c.queueOz("Burst")
-	}, 24)
-
 	//initial damage; part of the burst tag
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -73,10 +66,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(6)
 	c.SetCD(action.ActionBurst, 15*60)
 
+	// set oz to active at the start of the action
+	c.ozActive = true
+	// spawn oz at the end of animation
+	// need bool for checking that CanQueueAfter and OnRemoved don't both spawn oz
+	done := false
+	burstOzSpawn := func() {
+		if done {
+			return
+		}
+		c.queueOz("Burst", 0)
+		done = true
+	}
+
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
+		OnRemoved:       func(next action.AnimationState) { burstOzSpawn() },
 	}
 }
