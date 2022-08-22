@@ -11,7 +11,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 11 // Initial Hit
+const (
+	skillHitmark     = 11 // Initial Hit
+	hpDrainThreshold = 0.2
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52) // E -> Q
@@ -23,11 +26,11 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// only drain HP when above 20% HP
-	if c.HPCurrent/c.MaxHP() > 0.2 {
+	if c.HPCurrent/c.MaxHP() > hpDrainThreshold {
 		hpdrain := 0.3 * c.HPCurrent
 		// The HP consumption from using this skill can only bring her to 20% HP.
-		if 0.7*c.HPCurrent/c.MaxHP() <= 0.2 {
-			hpdrain = (c.HPCurrent/c.MaxHP() - 0.2) * c.MaxHP()
+		if (c.HPCurrent-hpdrain)/c.MaxHP() <= hpDrainThreshold {
+			hpdrain = c.HPCurrent - hpDrainThreshold*c.MaxHP()
 		}
 		c.Core.Player.Drain(player.DrainInfo{
 			ActorIndex: c.Index,
