@@ -1,3 +1,4 @@
+name: deployment build
 on:
   workflow_dispatch:
   push:
@@ -17,9 +18,20 @@ jobs:
         run: ls
       - run: |
           # make file runnable, might not be necessary
+          chmod +x "${GITHUB_WORKSPACE}/scripts/deploy.sh"
+          # run the script
+          "${GITHUB_WORKSPACE}/scripts/deploy.sh"
+      - run: |
+          # make file runnable, might not be necessary
           chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
           # run the script
           "${GITHUB_WORKSPACE}/scripts/build.sh"
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            gcsim.exe
       - name: Set up Node.js ⚙️
         uses: actions/setup-node@v2
         with:
