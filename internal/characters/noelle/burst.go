@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	dur := 900 + burstStart //default duration
 	if c.Base.Cons >= 6 {
 		// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
-		//check extension
+		// check extension
 		ext, ok := p["extend"]
 		if ok {
 			if ext < 0 {
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				ext = 10
 			}
 		} else {
-			ext = 10 //to maintain prev default behaviour of full extension
+			ext = 10 // to maintain prev default behaviour of full extension
 		}
 
 		dur += ext * 60
@@ -77,6 +77,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Write("atk added", c.burstBuff[attributes.ATK]).
 		Write("mult", mult)
 
+	// every Q hit can proc her heal
+	c.healDone = false
+	cb := c.skillHealCB
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sweeping Time (Burst)",
@@ -91,15 +95,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.15 * 60,
 		CanBeDefenseHalted: true,
 	}
+	// Burst part
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 6.5, false, combat.TargettableEnemy),
 			0,
 			0,
+			cb,
 		)
+		// reset healDone so the Skill part can proc her heal
+		c.healDone = false
 	}, 24)
 
+	// Skill part
 	// Burst and Skill part of Q have the same hitlag values
 	c.QueueCharTask(func() {
 		ai.Abil = "Sweeping Time (Skill)"
@@ -109,6 +118,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(c.Core.Combat.Player(), 4.5, false, combat.TargettableEnemy),
 			0,
 			0,
+			cb,
 		)
 	}, 65)
 

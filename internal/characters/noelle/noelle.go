@@ -19,6 +19,7 @@ type char struct {
 	shieldTimer int
 	a4Counter   int
 	burstBuff   []float64
+	healDone    bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

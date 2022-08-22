@@ -7,8 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
 var attackFrames [][]int
@@ -49,35 +47,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ai.HitlagHaltFrames = 0.1 * 60
 		}
 	}
-	done := false
-	cb := func(a combat.AttackCB) {
-		if done {
-			return
-		}
-		//check for healing
-		if c.Core.Player.Shields.Get(shield.ShieldNoelleSkill) != nil {
-			var prob float64
-			if c.Base.Cons >= 1 && c.StatModIsActive(burstBuffKey) {
-				prob = 1
-			} else {
-				prob = healChance[c.TalentLvlSkill()]
-			}
-			if c.Core.Rand.Float64() < prob {
-				//heal target
-				x := a.AttackEvent.Snapshot.BaseDef*(1+a.AttackEvent.Snapshot.Stats[attributes.DEFP]) + a.AttackEvent.Snapshot.Stats[attributes.DEF]
-				heal := shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]
-				c.Core.Player.Heal(player.HealInfo{
-					Caller:  c.Index,
-					Target:  -1,
-					Message: "Breastplate (Attack)",
-					Src:     heal,
-					Bonus:   a.AttackEvent.Snapshot.Stats[attributes.Heal],
-				})
-				done = true
-			}
-		}
-
-	}
+	// TODO: don't forget this when implementing her CA
+	c.healDone = false
+	cb := c.skillHealCB
 	// need char queue because of potential hitlag from C4
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
