@@ -74,8 +74,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai.HitlagHaltFrames = 0.06 * 60
 		c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.ParticleDelay+hitDelay)
 	case 1:
-		// Currently believed to be 2-3 particles with the ratio 3:2
-		if c.Core.Rand.Float64() < .6 {
+		// 2 or 3, 1:1 ratio
+		if c.Core.Rand.Float64() < 0.5 {
 			c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.ParticleDelay+hitDelay)
 		} else {
 			c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.ParticleDelay+hitDelay)

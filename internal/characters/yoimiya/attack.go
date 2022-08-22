@@ -53,13 +53,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if c.Core.F < c.lastPart {
 			return
 		}
-		c.lastPart = c.Core.F + 300 // every 5 second
-
-		var count float64 = 2
-		if c.Core.Rand.Float64() < 0.5 {
-			count = 3
-		}
-		c.Core.QueueParticle("yoimiya", count, attributes.Pyro, c.ParticleDelay)
+		c.Core.QueueParticle("yoimiya", 1, attributes.Pyro, c.ParticleDelay) // 1 particle
+		c.lastPart = c.Core.F + 120                                          // every 2s
 	}
 
 	var totalMV float64

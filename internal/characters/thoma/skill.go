@@ -38,9 +38,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// snapshot unknown
 	// snap := c.Snapshot(&ai)
 
-	// 3 or 4, 3:2 ratio
+	// 3 or 4, 1:1 ratio
 	var count float64 = 3
-	if c.Core.Rand.Float64() < 0.4 {
+	if c.Core.Rand.Float64() < 0.5 {
 		count = 4
 	}
 	c.Core.QueueParticle("thoma", count, attributes.Pyro, skillHitmark+c.ParticleDelay)
