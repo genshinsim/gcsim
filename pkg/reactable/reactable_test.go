@@ -1,81 +1,103 @@
 package reactable
 
 import (
-	"math/rand"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+	"github.com/genshinsim/gcsim/pkg/target"
+	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
 
-//make our own core because otherwise we run into problems with circular import
+func init() {
+	core.RegisterCharFunc(keys.TestCharDoNotUse, testhelper.NewChar)
+	core.RegisterWeaponFunc(keys.DullBlade, testhelper.NewFakeWeapon)
+}
+
+// make our own core because otherwise we run into problems with circular import
 func testCore() *core.Core {
-	c := core.New()
-	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	c.Tasks = task.NewCtrl(&c.F)
-	c.Events = event.NewCtrl(c)
-	c.Status = status.NewCtrl(c)
-	c.Energy = energy.NewCtrl(c)
-	c.Combat = combat.NewCtrl(c)
-	c.Constructs = construct.NewCtrl(c)
-	c.Shields = shield.NewCtrl(c)
-	c.Health = health.NewCtrl(c)
-	c.Action = action.NewCtrl(c)
-	c.Queue = queue.NewQueuer(c)
+	c, _ := core.New(core.CoreOpt{
+		Seed:  time.Now().Unix(),
+		Debug: true,
+	})
+	//add player (first target)
+	addTargetToCore(c)
+
+	//add default character
+	p := profile.CharacterProfile{}
+	p.Base.Key = keys.TestCharDoNotUse
+	p.Stats = make([]float64, attributes.EndStatType)
+	p.StatsByLabel = make(map[string][]float64)
+	p.Params = make(map[string]int)
+	p.Sets = make(map[keys.Set]int)
+	p.SetParams = make(map[keys.Set]map[string]int)
+	p.Weapon.Params = make(map[string]int)
+	p.Base.StartHP = -1
+	p.Base.Element = attributes.Geo
+	p.Weapon.Key = keys.DullBlade
+
+	p.Stats[attributes.EM] = 100
+	p.Base.Level = 90
+	p.Base.MaxLevel = 90
+	p.Talents = profile.TalentProfile{1, 1, 1}
+
+	i, err := c.AddChar(p)
+	if err != nil {
+		panic(err)
+	}
+	c.Player.SetActive(i)
+
 	return c
 }
 
 type testTarget struct {
 	*Reactable
+	*target.Target
 	src           int
+	typ           combat.TargettableType
 	onDmgCallBack func(*combat.AttackEvent) (float64, bool)
 }
 
-func (t *testTarget) Type() core.TargettableType                 { return core.TargettableEnemy }
-func (t *testTarget) Index() int                                 { return 0 }
-func (t *testTarget) SetIndex(ind int)                           {}
-func (t *testTarget) MaxHP() float64                             { return 1 }
-func (t *testTarget) HP() float64                                { return 1 }
-func (t *testTarget) Shape() core.Shape                          { return core.NewCircle(0, 0, 1) }
-func (t *testTarget) AddDefMod(key string, val float64, dur int) {}
-func (t *testTarget) AddResMod(key string, val core.ResistMod)   {}
-func (t *testTarget) RemoveResMod(key string)                    {}
-func (t *testTarget) RemoveDefMod(key string)                    {}
-func (t *testTarget) HasDefMod(key string) bool                  { return false }
-func (t *testTarget) HasResMod(key string) bool                  { return false }
-func (t *testTarget) AddReactBonusMod(mod core.ReactionBonusMod) {}
-func (t *testTarget) ReactBonus(atk combat.AttackInfo) float64   { return 0 }
-func (t *testTarget) Kill()                                      {}
-func (t *testTarget) SetTag(key string, val int)                 {}
-func (t *testTarget) GetTag(key string) int                      { return 0 }
-func (t *testTarget) RemoveTag(key string)                       {}
+func (t *testTarget) Type() combat.TargettableType {
+	return t.typ
+}
 
-func (t *testTarget) Attack(atk *combat.AttackEvent, evt core.LogEvent) (float64, bool) {
+func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	if t.onDmgCallBack != nil {
 		return t.onDmgCallBack(atk)
 	}
 	return 0, false
 }
 
-var testChar core.CharacterProfile
+func addTargetToCore(c *core.Core) *testTarget {
+	trg := &testTarget{}
+	trg.Target = target.New(c, 0, 0, 1)
+	trg.Reactable = &Reactable{}
+	trg.Reactable.Init(trg, c)
+	c.Combat.AddTarget(trg)
+	trg.SetIndex(c.Combat.TargetsCount() - 1)
+	return trg
+}
+
+func advanceCoreFrame(c *core.Core) {
+	c.F++
+	c.Tick()
+}
 
 func TestMain(m *testing.M) {
-	testChar.Stats = make([]float64, core.EndStatType)
-	testChar.Talents.Attack = 1
-	testChar.Talents.Burst = 1
-	testChar.Talents.Skill = 1
-	testChar.Base.Level = 90
-	testChar.Stats[core.EM] = 100
-
 	os.Exit(m.Run())
 }
 
 func TestReduce(t *testing.T) {
 	r := &Reactable{}
-	r.Durability = make([]combat.Durability, core.ElementDelimAttachable)
-	r.DecayRate = make([]combat.Durability, core.ElementDelimAttachable)
+	r.Durability = make([]combat.Durability, attributes.ElementDelimAttachable)
+	r.DecayRate = make([]combat.Durability, attributes.ElementDelimAttachable)
 	r.Durability[attributes.Electro] = 20
 	r.reduce(attributes.Electro, 20, 1)
 	if r.Durability[attributes.Electro] != 0 {
@@ -86,9 +108,8 @@ func TestReduce(t *testing.T) {
 func TestTick(t *testing.T) {
 	c := testCore()
 
-	trg := &testTarget{src: 1}
-	trg.Reactable = &Reactable{}
-	trg.Init(trg, c)
+	trg := addTargetToCore(c)
+	trg.src = 1
 
 	//test electro
 	trg.React(&combat.AttackEvent{

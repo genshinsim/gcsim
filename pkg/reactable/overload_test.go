@@ -11,17 +11,7 @@ import (
 func TestOverload(t *testing.T) {
 
 	c := testCore()
-
-	char, err := character.NewTemplateChar(c, testChar)
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	c.Chars = append(c.Chars, char)
-	trg := &testTarget{src: 1}
-	trg.Reactable = &Reactable{}
-	trg.Init(trg, c)
-	c.Targets = append(c.Targets, trg)
+	trg := addTargetToCore(c)
 
 	c.Init()
 
@@ -52,7 +42,7 @@ func TestOverload(t *testing.T) {
 	trg.React(next)
 	//dmg should trigger next tick
 	trg.Tick()
-	c.Tick()
+	advanceCoreFrame(c)
 	if src == nil || src.Info.Abil != "overload" {
 		t.Errorf("expecting overload, got %v", src)
 	}

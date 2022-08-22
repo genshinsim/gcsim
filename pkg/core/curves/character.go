@@ -2,6 +2,7 @@ package curves
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
@@ -29,6 +30,74 @@ type PromoData struct {
 	Atk      float64
 	Def      float64
 	Special  float64
+}
+
+func init() {
+	CharBaseMap[keys.TestCharDoNotUse] = CharBase{
+		Rarity:      5,
+		Body:        profile.BodyBoy,
+		Element:     attributes.NoElement,
+		Region:      profile.ZoneUnknown,
+		WeaponType:  weapon.WeaponClassSword,
+		HPCurve:     GROW_CURVE_HP_S4,
+		AtkCurve:    GROW_CURVE_ATTACK_S4,
+		DefCurve:    GROW_CURVE_HP_S4,
+		BaseHP:      911.791015625,
+		BaseAtk:     17.808000564575195,
+		BaseDef:     57.224998474121094,
+		Specialized: attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				HP:       0,
+				Atk:      0,
+				Def:      0,
+				Special:  0,
+			},
+			{
+				MaxLevel: 40,
+				HP:       681.154541015625,
+				Atk:      13.303799629211426,
+				Def:      42.75,
+				Special:  0,
+			},
+			{
+				MaxLevel: 50,
+				HP:       1165.1328125,
+				Atk:      22.756500244140625,
+				Def:      73.125,
+				Special:  0.05999999865889549,
+			},
+			{
+				MaxLevel: 60,
+				HP:       1810.4371337890625,
+				Atk:      35.36009979248047,
+				Def:      113.625,
+				Special:  0.11999999731779099,
+			},
+			{
+				MaxLevel: 70,
+				HP:       2294.415283203125,
+				Atk:      44.812801361083984,
+				Def:      144,
+				Special:  0.11999999731779099,
+			},
+			{
+				MaxLevel: 80,
+				HP:       2778.3935546875,
+				Atk:      54.265499114990234,
+				Def:      174.375,
+				Special:  0.18000000715255737,
+			},
+			{
+				MaxLevel: 90,
+				HP:       3262.371826171875,
+				Atk:      63.71820068359375,
+				Def:      204.75,
+				Special:  0.23999999463558197,
+			},
+		},
+	}
 }
 
 // CharStatGrowthMult provide multiplier for each lvl with 0 being lvl 1 (up to 100)
