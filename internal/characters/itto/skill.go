@@ -62,9 +62,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		// spawn ushi. on-field for 6s
 		c.Core.Constructs.New(c.newUshi(6*60), true)
 
-		// Energy. 33% chance of 3 particles
+		// Energy. 50% chance of 4 particles
 		var count float64 = 3
-		if c.Core.Rand.Float64() < 0.33 {
+		if c.Core.Rand.Float64() < 0.50 {
 			count++
 		}
 		c.Core.QueueParticle("itto", count, attributes.Geo, c.ParticleDelay)
