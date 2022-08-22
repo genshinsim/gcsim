@@ -5,12 +5,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
 var skillFrames []int
 
-const skillHitmark = 15
+const skillHitmark = 14
 
 func init() {
 	skillFrames = frames.InitAbilSlice(78)
@@ -48,6 +49,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.a4Counter = 0
 
+	// initial E hit can proc her heal
+	done := false
+	cb := c.skillHealCB(done)
+
 	// center on player
 	// use char queue for this just to be safe in case of C4
 	c.QueueCharTask(func() {
@@ -56,6 +61,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 			0,
 			0,
+			cb,
 		)
 	}, skillHitmark)
 
@@ -79,13 +85,43 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) skillHealCB(done bool) combat.AttackCBFunc {
+	return func(atk combat.AttackCB) {
+		if done {
+			return
+		}
+		// check for healing
+		if c.Core.Player.Shields.Get(shield.ShieldNoelleSkill) != nil {
+			var prob float64
+			if c.Base.Cons >= 1 && c.StatModIsActive(burstBuffKey) {
+				prob = 1
+			} else {
+				prob = healChance[c.TalentLvlSkill()]
+			}
+			if c.Core.Rand.Float64() < prob {
+				// heal target
+				x := atk.AttackEvent.Snapshot.BaseDef*(1+atk.AttackEvent.Snapshot.Stats[attributes.DEFP]) + atk.AttackEvent.Snapshot.Stats[attributes.DEF]
+				heal := shieldHeal[c.TalentLvlSkill()]*x + shieldHealFlat[c.TalentLvlSkill()]
+				c.Core.Player.Heal(player.HealInfo{
+					Caller:  c.Index,
+					Target:  -1,
+					Message: "Breastplate (Attack)",
+					Src:     heal,
+					Bonus:   atk.AttackEvent.Snapshot.Stats[attributes.Heal],
+				})
+				done = true
+			}
+		}
+	}
+}
+
 // C4:
 // When Breastplate's duration expires or it is destroyed by DMG, it will deal 400% ATK of Geo DMG to surrounding opponents.
 func (c *char) explodeShield() {
 	c.shieldTimer = 0
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
-		Abil:               "Breastplate",
+		Abil:               "Breastplate (C4)",
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagElementalArt,
 		ICDGroup:           combat.ICDGroupDefault,

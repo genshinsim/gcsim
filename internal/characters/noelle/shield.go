@@ -28,6 +28,12 @@ func (n *noelleShield) OnExpire() {
 	}
 }
 
+func (n *noelleShield) OnOverwrite() {
+	if n.c.Base.Cons >= 4 {
+		n.c.explodeShield()
+	}
+}
+
 func (n *noelleShield) OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) {
 	taken, ok := n.Tmpl.OnDamage(dmg, ele, bonus)
 	if !ok && n.c.Base.Cons >= 4 {
