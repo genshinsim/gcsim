@@ -95,7 +95,7 @@ func (h *Handler) KillTarget(i int) bool {
 	}
 	h.targets[i].Kill()
 	h.Events.Emit(event.OnTargetDied, h.targets[i], &AttackEvent{}) // TODO: it's fine?
-	h.Log.NewEvent("target is died", glog.LogSimEvent, -1).Write("index", i)
+	h.Log.NewEvent("target is dead", glog.LogSimEvent, -1).Write("index", i)
 	return true
 }
 
