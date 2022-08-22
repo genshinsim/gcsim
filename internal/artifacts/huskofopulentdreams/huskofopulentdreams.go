@@ -38,7 +38,7 @@ func (s *Set) SetIndex(idx int) { s.Index = idx }
 // Initiate off-field stacking if off-field at start of the sim
 func (s *Set) Init() error {
 	if s.core.Player.Active() != s.char.Index {
-		s.core.Tasks.Add(s.gainStackOfffield(s.core.F), 1)
+		s.core.Tasks.Add(s.gainStackOfffield(s.lastSwap), 180)
 	}
 	return nil
 }
