@@ -34,7 +34,7 @@ func (c *char) c4() {
 				c.c4count = 0
 				return nil, false
 			}
-			c.c4bonus[attributes.DmgP] += 0.05 * float64(c.c4count)
+			c.c4bonus[attributes.DmgP] = 0.05 * float64(c.c4count)
 			c.c4count = 0
 			return c.c4bonus, true
 		},
