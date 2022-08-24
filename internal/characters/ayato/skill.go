@@ -47,15 +47,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Write("stacks", c.stacks)
 	}, delay)
 
-	//start skill buff after animation
-	//TODO: make sure this isn't causing bugs?
-	c.QueueCharTask(func() {
-		c.AddStatus(skillBuffKey, 6*60, true)
-	}, skillStart)
+	//start skill buff on cast
+	c.AddStatus(skillBuffKey, 6*60, true)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6ready = true
-
 	}
 	c.SetCD(action.ActionSkill, 12*60)
 
