@@ -2,9 +2,13 @@
 package simulation
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
@@ -87,6 +91,18 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 		snap.Stats[attributes.HPP] = 0
 		snap.Stats[attributes.DEFP] = 0
 		snap.Stats[attributes.ATKP] = 0
+		if s.C.Combat.Debug {
+			evt := s.C.Log.NewEvent(
+				fmt.Sprintf("%v final stats", c.Base.Key.Pretty()),
+				glog.LogCharacterEvent,
+				i,
+			)
+			for i, v := range snap.Stats {
+				if v != 0 {
+					evt.Write(attributes.StatTypeString[i], strconv.FormatFloat(v, 'f', 3, 32))
+				}
+			}
+		}
 		s.stats.CharDetails[i].SnapshotStats = snap.Stats[:]
 		s.stats.CharDetails[i].Element = c.Base.Element.String()
 		s.stats.CharDetails[i].Weapon.Name = c.Weapon.Key.String()
