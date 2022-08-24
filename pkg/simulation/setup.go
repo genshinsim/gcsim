@@ -107,7 +107,7 @@ func SetupResonance(s *core.Core) {
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
 						Base:         modifier.NewBase("hydro-res-hpp", -1),
-						AffectedStat: attributes.NoStat,
+						AffectedStat: attributes.HPP,
 						Amount: func() ([]float64, bool) {
 							return val, true
 						},
