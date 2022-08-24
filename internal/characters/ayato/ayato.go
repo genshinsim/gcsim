@@ -24,7 +24,6 @@ type char struct {
 }
 
 const (
-	a4ICDKey       = "ayato-a4-icd"
 	particleICDKey = "ayato-particle-icd"
 )
 
