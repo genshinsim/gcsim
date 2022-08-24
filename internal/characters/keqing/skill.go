@@ -119,7 +119,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < .5 {
 		count = 3
 	}
-	c.Core.QueueParticle("keqing", count, attributes.Electro, skillRecastHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("keqing", count, attributes.Electro, skillRecastHitmark+c.ParticleDelay)
 
 	// despawn stiletto
 	c.Core.Status.Delete(stilettoKey)

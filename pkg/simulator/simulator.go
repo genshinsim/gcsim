@@ -89,7 +89,6 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 			count--
 		case err := <-errCh:
 			//error encountered
-			close(pool.StopCh)
 			return result.Summary{}, err
 		}
 	}
@@ -119,7 +118,8 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		r.DebugMaxDPSRun = maxDPSDebugOut
 	}
 
-	r.Runtime = time.Since(start)
+	runtime := time.Since(start)
+	r.Runtime = float64(runtime.Nanoseconds())
 	r.Config = cfg
 	r.Version = opts.Version
 	r.BuildDate = opts.BuildDate

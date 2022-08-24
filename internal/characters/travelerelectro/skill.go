@@ -10,12 +10,25 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillFrames []int
+var skillFrames [][]int
 
-const skillHitmark = 55
+const skillHitmark = 21
 
 func init() {
-	skillFrames = frames.InitAbilSlice(55)
+	skillFrames = make([][]int, 2)
+
+	// Male
+	skillFrames[0] = frames.InitAbilSlice(57) // E -> N1
+	skillFrames[0][action.ActionBurst] = 56   // E -> Q
+	skillFrames[0][action.ActionDash] = 42    // E -> D
+	skillFrames[0][action.ActionJump] = 42    // E -> J
+	skillFrames[0][action.ActionSwap] = 56    // E -> Swap
+
+	// Female
+	skillFrames[1] = frames.InitAbilSlice(57) // E -> N1/Q
+	skillFrames[1][action.ActionDash] = 42    // E -> D
+	skillFrames[1][action.ActionJump] = 42    // E -> J
+	skillFrames[1][action.ActionSwap] = 55    // E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -68,7 +81,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			return
 		}
 		partCount++
-		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.Core.Flags.ParticleDelay) //this way we're future proof if for whatever reason this misses
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay) //this way we're future proof if for whatever reason this misses
 	}
 
 	amuletCB := func(_ combat.AttackCB) {
@@ -95,12 +108,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.collectAmulets(active)
 	}, amuletDelay)
 
-	c.SetCDWithDelay(action.ActionSkill, 810, 21) //13.5s, starts 21 frames in
+	c.SetCDWithDelay(action.ActionSkill, 810, 20) //13.5s, starts 20 frames in
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),
+		AnimationLength: skillFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }

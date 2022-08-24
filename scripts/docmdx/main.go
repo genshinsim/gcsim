@@ -13,24 +13,35 @@ type charData struct {
 	Key  string
 }
 
+func skip(key keys.Char) bool {
+	switch key {
+	case keys.AetherAnemo: //skip aether by default
+	case keys.AetherElectro:
+	case keys.AetherGeo:
+	case keys.AetherDendro: //skip not implemented
+	case keys.LumineDendro:
+	case keys.AetherHydro:
+	case keys.LumineHydro:
+	case keys.AetherPyro:
+	case keys.LuminePyro:
+	case keys.AetherCryo:
+	case keys.LumineCryo:
+	case keys.Aether:
+	case keys.Lumine:
+	case keys.TravelerDelim:
+	default:
+		return false
+	}
+	return true
+}
+
 func main() {
 	t, err := template.New("mdx").Parse(tmplstr)
 	if err != nil {
 		panic(err)
 	}
 	for i := keys.NoChar + 1; i < keys.EndCharKeys; i++ {
-		switch i {
-		case keys.TravelerDelim:
-			continue
-		case keys.TravelerDendro:
-			continue
-		case keys.TravelerHydro:
-			continue
-		case keys.TravelerPyro:
-			continue
-		case keys.TravelerMale:
-			continue
-		case keys.TravelerFemale:
+		if skip(i) {
 			continue
 		}
 		d := charData{

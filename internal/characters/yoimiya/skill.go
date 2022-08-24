@@ -8,7 +8,10 @@ import (
 
 var skillFrames []int
 
-const skillStart = 11
+const (
+	skillKey   = "yoimiyaskill"
+	skillStart = 11
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(34)
@@ -20,9 +23,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
-	c.Core.Status.Add("yoimiyaskill", 600+skillStart) //activate for 10
-	if c.Core.Status.Duration("yoimiyaa1") == 0 {
+	c.AddStatus(skillKey, 600+skillStart, true) // activate for 10
+	if !c.StatusIsActive(a1Key) {
 		c.a1stack = 0
 	}
 
@@ -41,9 +43,7 @@ func (c *char) onExit() {
 		prev := args[0].(int)
 		next := args[1].(int)
 		if prev == c.Index && next != c.Index {
-			if c.Core.Status.Duration("yoimiyaskill") > 0 {
-				c.Core.Status.Delete("yoimiyaskill")
-			}
+			c.DeleteStatus(skillKey)
 		}
 		return false
 	}, "yoimiya-exit")

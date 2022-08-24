@@ -1,14 +1,15 @@
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import { defaultRunStat, simSlice } from "/src/Pages/Sim/simSlice";
-import { viewerSlice } from "./Pages/ViewerDashboard/viewerSlice";
-import { userDataSlice } from "./Pages/Sim/userDataSlice";
-import { userSlice } from "./UserData/userSlice";
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import { defaultRunStat, simSlice } from '/src/Pages/Sim/simSlice';
+import { viewerSlice } from './Pages/ViewerDashboard/viewerSlice';
+import { userDataSlice } from './Pages/Sim/userDataSlice';
+import { userSlice } from './UserData/userSlice';
+import { dbSlice } from './PageDatabase/dbSlice';
 
 export type RootState = ReturnType<typeof store.getState>;
 
-const simStateKey = "redux-sim-v0.0.2";
-const userDataKey = "redux-user-data-v0.0.1";
+const simStateKey = 'redux-sim-v0.0.2';
+const userDataKey = 'redux-user-data-v0.0.1';
 
 let persistedState = {};
 
@@ -19,17 +20,17 @@ if (localStorage.getItem(simStateKey)) {
   s.ready = 0;
   s.run = defaultRunStat;
   if (!s.adv_cfg_err) {
-    s.adv_cfg_err = "";
+    s.adv_cfg_err = '';
   }
   if (!s.cfg_err) {
-    s.cfg_err = "";
+    s.cfg_err = '';
   }
   if (!s.GOChars) {
     s.GOChars = [];
   }
   persistedState = Object.assign(persistedState, { sim: s });
   // localStorage.clear();
-  console.log("loaded sim store from localStorage: ", persistedState);
+  console.log('loaded sim store from localStorage: ', persistedState);
 }
 
 if (localStorage.getItem(userDataKey)) {
@@ -43,6 +44,7 @@ const store = configureStore({
     [viewerSlice.name]: viewerSlice.reducer,
     [userDataSlice.name]: userDataSlice.reducer,
     [userSlice.name]: userSlice.reducer,
+    [dbSlice.name]: dbSlice.reducer,
   },
   preloadedState: persistedState,
 });

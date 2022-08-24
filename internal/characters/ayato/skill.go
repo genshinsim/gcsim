@@ -76,7 +76,7 @@ func (c *char) generateParticles(ac combat.AttackCB) {
 		count++
 	}
 	//TODO: this used to be 80 for particle delay
-	c.Core.QueueParticle("ayato", count, attributes.Hydro, c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("ayato", count, attributes.Hydro, c.ParticleDelay)
 }
 
 func (c *char) skillStacks(ac combat.AttackCB) {

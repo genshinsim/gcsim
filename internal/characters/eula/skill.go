@@ -105,7 +105,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 			if c.Core.Rand.Float64() < .5 {
 				count = 2
 			}
-			c.Core.QueueParticle("eula", count, attributes.Cryo, c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("eula", count, attributes.Cryo, c.ParticleDelay)
 			c.particleDone = true
 		}
 	}
@@ -147,7 +147,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			if c.Core.Rand.Float64() < .5 {
 				count = 3
 			}
-			c.Core.QueueParticle("eula", count, attributes.Cryo, c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("eula", count, attributes.Cryo, c.ParticleDelay)
 			c.particleDone = true
 		}
 	}

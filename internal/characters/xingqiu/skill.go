@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.applyOrbital(15*60, 43) //takes 1 frame to apply it
 	}
 
-	c.Core.QueueParticle("xingqiu", 5, attributes.Hydro, c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("xingqiu", 5, attributes.Hydro, skillHitmarks[0]+c.ParticleDelay)
 
 	//should last 15s, cd 21s
 	c.SetCDWithDelay(action.ActionSkill, 21*60, 10)

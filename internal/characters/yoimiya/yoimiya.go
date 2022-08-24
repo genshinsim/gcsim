@@ -57,7 +57,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	//infusion to normal attack only
-	if c.Core.Status.Duration("yoimiyaskill") > 0 && ai.AttackTag == combat.AttackTagNormal {
+	if c.StatusIsActive(skillKey) && ai.AttackTag == combat.AttackTagNormal {
 		ai.Element = attributes.Pyro
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
 		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index).

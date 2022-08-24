@@ -1,5 +1,5 @@
-import { Character } from "~src/types";
-import { StatToIndexMap } from "~src/util";
+import { Character } from '~src/Types/sim';
+import { StatToIndexMap } from '~src/util';
 
 type CharViewableStats = {
   [key in string]: {
@@ -31,124 +31,124 @@ export function ConsolidateCharStats(chars: Character[]): {
 } {
   let totalStats: CharViewableStats = {
     hp: {
-      name: "hp / hp%",
-      flatIndex: StatToIndexMap["HP"],
-      percentIndex: StatToIndexMap["HPP"],
+      name: 'hp / hp%',
+      flatIndex: StatToIndexMap['HP'],
+      percentIndex: StatToIndexMap['HPP'],
       val: {},
       count: 0,
-      t: "both",
+      t: 'both',
     },
     atk: {
-      name: "atk / atk%",
-      flatIndex: StatToIndexMap["ATK"],
-      percentIndex: StatToIndexMap["ATKP"],
+      name: 'atk / atk%',
+      flatIndex: StatToIndexMap['ATK'],
+      percentIndex: StatToIndexMap['ATKP'],
       val: {},
       count: 0,
-      t: "both",
+      t: 'both',
     },
     def: {
-      name: "def / def%",
-      flatIndex: StatToIndexMap["DEF"],
-      percentIndex: StatToIndexMap["DEFP"],
+      name: 'def / def%',
+      flatIndex: StatToIndexMap['DEF'],
+      percentIndex: StatToIndexMap['DEFP'],
       val: {},
       count: 0,
-      t: "both",
+      t: 'both',
     },
     em: {
-      name: "em",
-      flatIndex: StatToIndexMap["EM"],
+      name: 'em',
+      flatIndex: StatToIndexMap['EM'],
       percentIndex: -1,
       val: {},
       count: 0,
-      t: "f",
+      t: 'f',
     },
     er: {
-      name: "er",
+      name: 'er',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["ER"],
+      percentIndex: StatToIndexMap['ER'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     cr: {
-      name: "cr",
+      name: 'cr',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["CR"],
+      percentIndex: StatToIndexMap['CR'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     cd: {
-      name: "cd",
+      name: 'cd',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["CD"],
+      percentIndex: StatToIndexMap['CD'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     electro: {
-      name: "electro%",
+      name: 'electro%',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["ElectroP"],
+      percentIndex: StatToIndexMap['ElectroP'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     pyro: {
-      name: "pyro%",
+      name: 'pyro%',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["PyroP"],
+      percentIndex: StatToIndexMap['PyroP'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     cryo: {
-      name: "cryo%",
+      name: 'cryo%',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["CryoP"],
+      percentIndex: StatToIndexMap['CryoP'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     hydro: {
-      name: "hydro%",
+      name: 'hydro%',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["HydroP"],
+      percentIndex: StatToIndexMap['HydroP'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     geo: {
-      name: "geo%",
+      name: 'geo%',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["GeoP"],
+      percentIndex: StatToIndexMap['GeoP'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     anemo: {
-      name: "anemo%",
+      name: 'anemo%',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["AnemoP"],
+      percentIndex: StatToIndexMap['AnemoP'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     phys: {
-      name: "phys%",
+      name: 'phys%',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["PhyP"],
+      percentIndex: StatToIndexMap['PhyP'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
     heal: {
-      name: "heal",
+      name: 'heal',
       flatIndex: -1,
-      percentIndex: StatToIndexMap["Heal"],
+      percentIndex: StatToIndexMap['Heal'],
       val: {},
       count: 0,
-      t: "%",
+      t: '%',
     },
   };
 
@@ -166,15 +166,15 @@ export function ConsolidateCharStats(chars: Character[]): {
         rowCount++;
       }
       switch (s.t) {
-        case "both":
+        case 'both':
           totalStats[key].val[char.name].flat = char.stats[s.flatIndex];
           totalStats[key].val[char.name].per = char.stats[s.percentIndex];
 
           break;
-        case "f":
+        case 'f':
           totalStats[key].val[char.name].flat = char.stats[s.flatIndex];
           break;
-        case "%":
+        case '%':
           totalStats[key].val[char.name].per = char.stats[s.percentIndex];
           break;
       }

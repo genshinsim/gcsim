@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < 0.33 {
 		orb = 2
 	}
-	c.Core.QueueParticle("diluc", orb, attributes.Pyro, hitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("diluc", orb, attributes.Pyro, hitmark+c.ParticleDelay)
 
 	//add a timer to activate c4
 	if c.Base.Cons >= 4 {

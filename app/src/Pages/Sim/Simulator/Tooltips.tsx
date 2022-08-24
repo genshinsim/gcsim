@@ -34,7 +34,7 @@ export const ActionListTooltip = () => {
         <p>
           <Trans>simple.documentation_pre</Trans>
           <a
-            href="https://docs.gcsim.app/guide/sequential_mode"
+            href="https://docs.gcsim.app/guides"
             target="_blank"
           >
             <Trans>simple.documentation</Trans>

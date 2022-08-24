@@ -173,7 +173,7 @@ func (e *Eval) evalIfStmt(i *ast.IfStmt, env *Env) (Obj, error) {
 		return e.evalBlock(i.IfBlock, env)
 
 	} else if i.ElseBlock != nil {
-		return e.evalBlock(i.ElseBlock, env)
+		return e.evalStmt(i.ElseBlock, env)
 	}
 	return &null{}, nil
 }

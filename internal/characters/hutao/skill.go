@@ -54,9 +54,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:       "Paramita Papilio",
 		Amount:     .30 * c.HPCurrent,
 	})
-	if c.Base.Cons >= 6 {
-		c.checkc6()
-	}
 
 	//trigger 0 damage attack; matters because this breaks freeze
 	ai := combat.AttackInfo{
@@ -92,7 +89,7 @@ func (c *char) ppParticles(ac combat.AttackCB) {
 		count = 3
 	}
 	//TODO: this used to be 80
-	c.Core.QueueParticle("hutao", count, attributes.Pyro, c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("hutao", count, attributes.Pyro, c.ParticleDelay)
 }
 
 func (c *char) applyBB(a combat.AttackCB) {

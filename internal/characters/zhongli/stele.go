@@ -100,7 +100,7 @@ func (c *char) resonance(src, max int) func() {
 		}
 		if orb {
 			c.energyICD = c.Core.F + 90
-			c.Core.QueueParticle("zhongli", 1, attributes.Geo, 20+c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("zhongli", 1, attributes.Geo, 20+c.ParticleDelay)
 		}
 		c.Core.Tasks.Add(c.resonance(src, max), 120)
 	}

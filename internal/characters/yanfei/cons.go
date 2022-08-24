@@ -11,20 +11,22 @@ import (
 // Hook for C2:
 // Increases Yan Fei's Charged Attack CRIT Rate by 20% against enemies below 50% HP.
 func (c *char) c2() {
-	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("yanfei-c2", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagExtra {
-				return nil, false
-			}
-			if t.HP()/t.MaxHP() >= .5 {
-				return nil, false
-			}
-			m[attributes.CR] = 0.20
-			return m, true
-		},
-	})
+	if c.Core.Combat.DamageMode {
+		m := make([]float64, attributes.EndStatType)
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("yanfei-c2", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagExtra {
+					return nil, false
+				}
+				if t.HP()/t.MaxHP() >= .5 {
+					return nil, false
+				}
+				m[attributes.CR] = 0.20
+				return m, true
+			},
+		})
+	}
 }
 
 // Handles C4 shield creation

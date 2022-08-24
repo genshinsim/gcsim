@@ -9,10 +9,14 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 60
+const skillHitmark = 17
 
 func init() {
-	skillFrames = frames.InitAbilSlice(60)
+	skillFrames = frames.InitAbilSlice(62)
+	skillFrames[action.ActionDash] = 28
+	skillFrames[action.ActionJump] = 29
+	skillFrames[action.ActionWalk] = 53
+	skillFrames[action.ActionSwap] = 60
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -45,24 +49,27 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.lastScreen = c.Core.F
 
-	//check if particles on icd
+	noscreen, ok := p["noscreen"]
+	if !ok && noscreen != 0 {
+		c.Core.Tasks.Add(func() {
+			c.Core.Constructs.Destroy(c.lastScreen)
+		}, 1)
+	}
 
-	c.Core.Status.Add("ningguangskillparticleICD", 360)
-
-	if c.Core.F > c.particleICD {
+	if !c.StatusIsActive(skillParticleICDKey) {
 		//3 balls, 33% chance of a fourth
 		var count float64 = 3
 		if c.Core.Rand.Float64() < .33 {
 			count = 4
 		}
-		c.particleICD = c.Core.F + 360
-		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+c.ParticleDelay)
+		c.AddStatus(skillParticleICDKey, 360, true)
 	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
 }

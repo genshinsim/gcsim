@@ -88,7 +88,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 
 			//trigger particles if prob < 0.8
 			if c.Core.Rand.Float64() < 0.8 {
-				c.Core.QueueParticle("diona", 1, attributes.Cryo, c.Core.Flags.ParticleDelay) //90s travel time
+				c.Core.QueueParticle("diona", 1, attributes.Cryo, c.ParticleDelay) //90s travel time
 			}
 
 			//check if shield already exists, if so then just update duration

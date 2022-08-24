@@ -87,6 +87,9 @@ func (h *Handler) NewNoLimitCons(c Construct, refresh bool) {
 		}
 	}
 	h.consNoLimit = append(h.consNoLimit, c)
+	h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct created: ", c.Type().String()).
+		Write("key", c.Key()).
+		Write("type", c.Type())
 }
 
 func (h *Handler) Tick() {

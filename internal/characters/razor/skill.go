@@ -104,7 +104,7 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 
 	if !c.StatusIsActive(burstBuffKey) {
 		//TODO: this delay used to be 80?
-		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmarks[burstActive]+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmarks[burstActive]+c.ParticleDelay)
 	}
 
 	return action.ActionInfo{
@@ -140,7 +140,7 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 
 	if !c.StatusIsActive(burstBuffKey) {
 		//TODO: this delay used to be 80?
-		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmarks[burstActive]+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmarks[burstActive]+c.ParticleDelay)
 	}
 
 	return action.ActionInfo{

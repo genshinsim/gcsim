@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{15, 24}, {17}, {25}, {11, 26}, {17}}
+var (
+	attackFrames   [][]int
+	attackHitmarks = [][]int{{15, 24}, {17}, {25}, {11, 26}, {17}}
+)
 
 const normalHitNum = 5
 
@@ -34,26 +36,25 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
 
+	if c.StatusIsActive("yoimiyaskill") {
+		ai.ICDTag = combat.ICDTagNormalAttack
+	}
+
 	particleCB := func(combat.AttackCB) {
-		if c.Core.Status.Duration("yoimiyaskill") <= 0 {
+		if !c.StatusIsActive(skillKey) {
 			return
 		}
 		if c.Core.F < c.lastPart {
 			return
 		}
-		c.lastPart = c.Core.F + 300 //every 5 second
-
-		var count float64 = 2
-		if c.Core.Rand.Float64() < 0.5 {
-			count = 3
-		}
-		c.Core.QueueParticle("yoimiya", count, attributes.Pyro, c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("yoimiya", 1, attributes.Pyro, c.ParticleDelay) // 1 particle
+		c.lastPart = c.Core.F + 120                                          // every 2s
 	}
 
 	var totalMV float64
@@ -69,8 +70,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	if c.Base.Cons >= 6 && c.Core.Status.Duration("yoimiyaskill") > 0 && c.Core.Rand.Float64() < 0.5 {
-		//trigger attack
+	if c.Base.Cons >= 6 && c.StatusIsActive(skillKey) && c.Core.Rand.Float64() < 0.5 {
+		// trigger attack
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter),
@@ -81,8 +82,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       totalMV * 0.6,
 		}
-		//TODO: frames?
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 0, attackHitmarks[c.NormalCounter][0]+travel+5)
+		// TODO: frames?
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			0,
+			attackHitmarks[c.NormalCounter][0]+travel+5,
+		)
 	}
 
 	defer c.AdvanceNormalIndex()

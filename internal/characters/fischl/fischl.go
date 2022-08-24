@@ -17,8 +17,9 @@ type char struct {
 	*tmpl.Character
 	//field use for calculating oz damage
 	ozSnapshot    combat.AttackEvent
-	ozSource      int //keep tracks of source of oz aka resets
-	ozActiveUntil int
+	ozSource      int  // keep tracks of source of oz aka resets
+	ozActive      bool // purely used for gscl conditional purposes
+	ozActiveUntil int  // used for oz ticks, a4, c1 and c6
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -29,6 +30,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 
 	c.ozSource = -1
+	c.ozActive = false
 	c.ozActiveUntil = -1
 
 	w.Character = &c
@@ -44,16 +46,19 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) Condition(k string) int64 {
-	switch k {
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
 	case "oz":
-		if c.ozActiveUntil <= c.Core.F {
-			return 0
-		}
-		return int64(c.ozActiveUntil - c.Core.F)
+		return c.ozActive, nil
 	case "oz-source":
-		return int64(c.ozSource)
+		return c.ozSource, nil
+	case "oz-duration":
+		duration := c.ozActiveUntil - c.Core.F
+		if duration < 0 {
+			duration = 0
+		}
+		return duration, nil
 	default:
-		return 0
+		return c.Character.Condition(fields)
 	}
 }

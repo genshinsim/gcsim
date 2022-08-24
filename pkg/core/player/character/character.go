@@ -46,7 +46,7 @@ type Character interface {
 
 	ApplyHitlag(factor, dur float64)
 
-	Condition(string) int64
+	Condition([]string) (any, error)
 }
 
 type CharWrapper struct {
@@ -73,9 +73,10 @@ type CharWrapper struct {
 	}
 
 	//current status
-	Energy    float64
-	EnergyMax float64
-	HPCurrent float64
+	ParticleDelay int // character custom particle delay
+	Energy        float64
+	EnergyMax     float64
+	HPCurrent     float64
 
 	//normal attack counter
 	NormalHitNum  int //how many hits in a normal combo
@@ -108,16 +109,17 @@ func New(
 	task task.Tasker,
 ) (*CharWrapper, error) {
 	c := &CharWrapper{
-		Base:    p.Base,
-		Weapon:  p.Weapon,
-		Talents: p.Talents,
-		log:     log,
-		events:  events,
-		tasks:   task,
-		Tags:    make(map[string]int),
-		mods:    make([]modifier.Mod, 0, 20),
-		f:       f,
-		debug:   debug,
+		Base:          p.Base,
+		Weapon:        p.Weapon,
+		Talents:       p.Talents,
+		ParticleDelay: 100, //default particle delay
+		log:           log,
+		events:        events,
+		tasks:         task,
+		Tags:          make(map[string]int),
+		mods:          make([]modifier.Mod, 0, 20),
+		f:             f,
+		debug:         debug,
 	}
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
@@ -181,7 +183,6 @@ func (c *CharWrapper) ModifyHP(amt float64) {
 }
 
 func (c *CharWrapper) TalentLvlAttack() int {
-	//TODO: make sure childe on init sets this tag
 	if c.Tags[keys.ChildePassive] > 0 {
 		return c.Talents.Attack
 	}

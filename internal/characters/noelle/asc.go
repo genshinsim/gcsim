@@ -18,7 +18,7 @@ func (c *char) a1() {
 		if active.HPCurrent/active.MaxHP() >= 0.3 {
 			return false
 		}
-		c.AddStatus(a1IcdKey, 3600, true)
+		c.AddStatus(a1IcdKey, 3600, false)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A1 Shield",

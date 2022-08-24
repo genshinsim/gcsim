@@ -1,19 +1,46 @@
-import { Button, Card, ButtonGroup, Dialog } from "@blueprintjs/core";
-import React from "react";
+import { Button, Card, Dialog } from '@blueprintjs/core';
+import React from 'react';
+import { RootState, useAppDispatch, useAppSelector } from '~src/store';
+import { simActions } from '~src/Pages/Sim/simSlice';
+import { CharacterEdit } from './CharacterEdit';
+import { Trans, useTranslation } from 'react-i18next';
+import { Builder } from '../Components/TeamBuilder/Builder';
 import {
-  characterKeyToICharacter,
-  CharacterSelect,
-  ICharacter,
-  newChar,
-} from "~src/Components/Character";
-import { RootState, useAppDispatch, useAppSelector } from "~src/store";
-import { simActions } from "~src/Pages/Sim/simSlice";
-import { CharacterEdit } from "./CharacterEdit";
-import { Trans, useTranslation } from "react-i18next";
-import { Builder } from "../Components/TeamBuilder/Builder";
+  OmniSelect,
+  Item,
+  GenerateDefaultCharacters,
+} from '~src/Components/Select';
+import { Character } from '~src/Types/sim';
+import { CharMap, TransformTravelerKeyToName, TravelerCheck } from '~src/Data';
+
+function newCharFromKey(k: string): Character {
+  return {
+    name: k,
+    level: 80,
+    max_level: 90,
+    element: CharMap[k].element,
+    cons: 0,
+    weapon: {
+      name: 'dullblade',
+      refine: 1,
+      level: 1,
+      max_level: 20,
+    },
+    talents: {
+      attack: 6,
+      skill: 6,
+      burst: 6,
+    },
+    stats: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    snapshot: [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    sets: {},
+  };
+}
 
 export function Team() {
-  useTranslation();
+  let { t } = useTranslation();
 
   const { team, edit_index, imported } = useAppSelector((state: RootState) => {
     return {
@@ -40,24 +67,29 @@ export function Team() {
     };
   };
 
-  const handleAdd = (character: ICharacter) => {
+  const handleAdd = (item: Item) => {
     setOpen(false);
     //check if this is from GOOD
-    if (character.notes) {
-      dispatch(simActions.addCharacter({ character: imported[character.key] }));
+    if (item.notes) {
+      dispatch(simActions.addCharacter({ character: imported[item.key] }));
       return;
     }
     //else it's new
-    const c = newChar(character);
+    const c = newCharFromKey(item.key);
     dispatch(simActions.addCharacter({ character: c }));
   };
 
   let disabled: string[] = team.map((c) => c.name);
 
-  const additionalChars = Object.keys(imported).map((k) => {
-    let x = Object.assign({}, characterKeyToICharacter[k]);
-    x.notes = `Imported on ${imported[k].date_added}`;
-    return x;
+  let items: Item[] = GenerateDefaultCharacters();
+
+  Object.keys(imported).forEach((k) => {
+    items.push({
+      key: imported[k].name,
+      text: t('game:character_names.' + imported[k].name),
+      label: t(`elements.${imported[k].element}`),
+      notes: `Imported on ${imported[k].date_added}`,
+    });
   });
 
   return (
@@ -74,7 +106,7 @@ export function Team() {
         onClose={() => {
           dispatch(simActions.editCharacter({ index: -1 }));
         }}
-        style={{ width: "95%" }}
+        style={{ width: '95%' }}
       >
         <Card className="m-2">
           <CharacterEdit />
@@ -91,12 +123,12 @@ export function Team() {
         </Card>
       </Dialog>
 
-      <CharacterSelect
-        disabled={disabled}
+      <OmniSelect
+        isOpen={open}
+        items={items}
         onClose={() => setOpen(false)}
         onSelect={handleAdd}
-        isOpen={open}
-        additionalOptions={additionalChars}
+        disabled={disabled}
       />
     </div>
   );

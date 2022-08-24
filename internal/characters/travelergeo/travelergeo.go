@@ -10,31 +10,40 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.TravelerGeo, NewChar)
+	core.RegisterCharFunc(keys.AetherGeo, NewChar(0))
+	core.RegisterCharFunc(keys.LumineGeo, NewChar(1))
 }
 
 type char struct {
 	*tmpl.Character
+	c1TickCount int
+	gender      int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
-	c := char{}
-	c.Character = tmpl.NewWithWrapper(s, w)
+func NewChar(gender int) core.NewCharacterFunc {
+	return func(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+		c := char{
+			gender: gender,
+		}
+		c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.Base.Element = attributes.Geo
-	c.EnergyMax = 60
-	c.BurstCon = 3
-	c.SkillCon = 5
-	c.NormalHitNum = normalHitNum
+		c.Base.Element = attributes.Geo
+		c.EnergyMax = 60
+		c.BurstCon = 3
+		c.SkillCon = 5
+		c.NormalHitNum = normalHitNum
 
-	w.Character = &c
+		w.Character = &c
 
-	return nil
+		return nil
+	}
 }
 
 func (c *char) Init() error {
-	if c.Base.Cons >= 1 {
-		c.c1()
+	// setup number of C1 ticks
+	c.c1TickCount = 15
+	if c.Base.Cons >= 6 {
+		c.c1TickCount = 20
 	}
 	return nil
 }

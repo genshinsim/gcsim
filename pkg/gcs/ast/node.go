@@ -29,6 +29,7 @@ func (p Pos) Position() Pos {
 
 type Stmt interface {
 	Node
+	CopyStmt() Stmt
 	stmtNode()
 }
 
@@ -79,7 +80,7 @@ type (
 		Pos
 		Condition Expr       //TODO: this should be an expr?
 		IfBlock   *BlockStmt // What to execute if true
-		ElseBlock *BlockStmt // What to execute if false
+		ElseBlock Stmt       // What to execute if false
 	}
 
 	// SwitchStmt represent a switch block
@@ -166,6 +167,10 @@ func (b *BlockStmt) CopyBlock() *BlockStmt {
 	return n
 }
 
+func (b *BlockStmt) CopyStmt() Stmt {
+	return b.CopyBlock()
+}
+
 func (b *BlockStmt) Copy() Node {
 	return b.CopyBlock()
 }
@@ -211,6 +216,10 @@ func (a *ActionStmt) CopyActionStmt() *ActionStmt {
 	return n
 }
 
+func (a *ActionStmt) CopyStmt() Stmt {
+	return a.CopyActionStmt()
+}
+
 func (a *ActionStmt) Copy() Node {
 	return a.CopyActionStmt()
 }
@@ -239,6 +248,10 @@ func (a *AssignStmt) CopyAssign() *AssignStmt {
 	}
 	n.Val = a.Val.CopyExpr()
 	return n
+}
+
+func (a *AssignStmt) CopyStmt() Stmt {
+	return a.CopyAssign()
 }
 
 func (a *AssignStmt) Copy() Node {
@@ -275,6 +288,10 @@ func (l *LetStmt) CopyLet() *LetStmt {
 	return n
 }
 
+func (l *LetStmt) CopyStmt() Stmt {
+	return l.CopyLet()
+}
+
 func (l *LetStmt) Copy() Node {
 	return l.CopyLet()
 }
@@ -301,6 +318,10 @@ func (r *ReturnStmt) CopyReturn() *ReturnStmt {
 	}
 	n.Val = r.Val.CopyExpr()
 	return n
+}
+
+func (r *ReturnStmt) CopyStmt() Stmt {
+	return r.CopyReturn()
 }
 
 func (r *ReturnStmt) Copy() Node {
@@ -337,6 +358,10 @@ func (c *CtrlStmt) CopyControl() *CtrlStmt {
 	return n
 }
 
+func (c *CtrlStmt) CopyStmt() Stmt {
+	return c.CopyControl()
+}
+
 func (c *CtrlStmt) Copy() Node {
 	return c.CopyControl()
 }
@@ -362,16 +387,27 @@ func (i *IfStmt) writeTo(sb *strings.Builder) {
 	}
 }
 
-func (i *IfStmt) Copy() Node {
+func (i *IfStmt) CopyIfStmt() *IfStmt {
 	if i == nil {
 		return nil
 	}
-	return &IfStmt{
+	n := &IfStmt{
 		Pos:       i.Pos,
 		Condition: i.Condition.CopyExpr(),
 		IfBlock:   i.IfBlock.CopyBlock(),
-		ElseBlock: i.ElseBlock.CopyBlock(),
 	}
+	if i.ElseBlock != nil {
+		n.ElseBlock = i.ElseBlock.CopyStmt()
+	}
+	return n
+}
+
+func (i *IfStmt) CopyStmt() Stmt {
+	return i.CopyIfStmt()
+}
+
+func (i *IfStmt) Copy() Node {
+	return i.CopyIfStmt()
 }
 
 // SwitchStmt.
@@ -413,6 +449,10 @@ func (s *SwitchStmt) CopySwitch() *SwitchStmt {
 	return n
 }
 
+func (s *SwitchStmt) CopyStmt() Stmt {
+	return s.CopySwitch()
+}
+
 func (s *SwitchStmt) Copy() Node {
 	return s.CopySwitch()
 }
@@ -442,6 +482,10 @@ func (c *CaseStmt) CopyCase() *CaseStmt {
 		Condition: c.Condition.CopyExpr(),
 		Body:      c.Body.CopyBlock(),
 	}
+}
+
+func (c *CaseStmt) CopyStmt() Stmt {
+	return c.CopyCase()
 }
 
 func (c *CaseStmt) Copy() Node {
@@ -510,7 +554,7 @@ func (w *WhileStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString("}")
 }
 
-func (w *WhileStmt) Copy() Node {
+func (w *WhileStmt) CopyWhileStmt() *WhileStmt {
 	if w == nil {
 		return nil
 	}
@@ -519,6 +563,14 @@ func (w *WhileStmt) Copy() Node {
 		Condition:  w.Condition.CopyExpr(),
 		WhileBlock: w.WhileBlock.CopyBlock(),
 	}
+}
+
+func (w *WhileStmt) CopyStmt() Stmt {
+	return w.CopyWhileStmt()
+}
+
+func (w *WhileStmt) Copy() Node {
+	return w.CopyWhileStmt()
 }
 
 // Expr.

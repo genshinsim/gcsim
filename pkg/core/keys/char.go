@@ -41,15 +41,22 @@ const ChildePassive = "childe-talent-passive"
 
 const (
 	NoChar Char = iota
-	TravelerElectro
-	TravelerAnemo
-	TravelerGeo
-	TravelerHydro
-	TravelerCryo
-	TravelerPyro
-	TravelerDendro
-	TravelerMale
-	TravelerFemale
+	AetherAnemo
+	LumineAnemo
+	AetherGeo
+	LumineGeo
+	AetherElectro
+	LumineElectro
+	AetherDendro
+	LumineDendro
+	AetherHydro
+	LumineHydro
+	AetherPyro
+	LuminePyro
+	AetherCryo
+	LumineCryo
+	Aether
+	Lumine
 	TravelerDelim // delim
 	Albedo
 	Aloy
@@ -106,13 +113,20 @@ const (
 
 var charNames = []string{
 	"",
-	"travelerelectro",
-	"traveleranemo",
-	"travelergeo",
-	"travelerhydro",
-	"travelercryo",
-	"travelerpyro",
-	"travelerdendro",
+	"aetheranemo",
+	"lumineanemo",
+	"aethergeo",
+	"luminegeo",
+	"aetherelectro",
+	"lumineelectro",
+	"aetherdendro",
+	"luminedendro",
+	"aetherhydro",
+	"luminehydro",
+	"aetherpyro",
+	"luminepyro",
+	"aethercryo",
+	"luminecryo",
 	"aether",
 	"lumine",
 	"", //delim for traveler
@@ -170,13 +184,20 @@ var charNames = []string{
 
 var charPrettyName = []string{
 	"Invalid",
-	"Traveler Electro",
-	"Traveler Anemo",
-	"Traveler Geo",
-	"Traveler Hydro",
-	"Traveler Cryo",
-	"Traveler Pyro",
-	"Traveler Dendro",
+	"Aether (Anemo)",
+	"Lumine (Anemo)",
+	"Aether (Geo)",
+	"Lumine (Geo)",
+	"Aether (Electro)",
+	"Lumine (Electro)",
+	"Aether (Dendro)",
+	"Lumine (Dendro)",
+	"Aether (Hydro)",
+	"Lumine (Hydro)",
+	"Aether (Pyro)",
+	"Lumine (Pyro)",
+	"Aether (Cryo)",
+	"Lumine (Cryo)",
 	"Aether",
 	"Lumine",
 	"Invalid",
@@ -233,61 +254,68 @@ var charPrettyName = []string{
 }
 
 var CharKeyToEle = map[Char]attributes.Element{
-	TravelerElectro: attributes.Electro,
-	TravelerAnemo:   attributes.Anemo,
-	TravelerGeo:     attributes.Geo,
-	TravelerHydro:   attributes.Hydro,
-	TravelerCryo:    attributes.Cryo,
-	TravelerPyro:    attributes.Pyro,
-	TravelerDendro:  attributes.Dendro,
-	Albedo:          attributes.Geo,
-	Aloy:            attributes.Cryo,
-	Amber:           attributes.Pyro,
-	Barbara:         attributes.Hydro,
-	Beidou:          attributes.Electro,
-	Bennett:         attributes.Pyro,
-	Chongyun:        attributes.Cryo,
-	Diluc:           attributes.Pyro,
-	Diona:           attributes.Cryo,
-	Eula:            attributes.Cryo,
-	Fischl:          attributes.Electro,
-	Ganyu:           attributes.Cryo,
-	Hutao:           attributes.Pyro,
-	Jean:            attributes.Anemo,
-	Kazuha:          attributes.Anemo,
-	Kaeya:           attributes.Cryo,
-	Ayaka:           attributes.Cryo,
-	Ayato:           attributes.Hydro,
-	Keqing:          attributes.Electro,
-	Klee:            attributes.Pyro,
-	Sara:            attributes.Electro,
-	Lisa:            attributes.Electro,
-	Mona:            attributes.Hydro,
-	Ningguang:       attributes.Geo,
-	Noelle:          attributes.Geo,
-	Qiqi:            attributes.Cryo,
-	Raiden:          attributes.Electro,
-	Razor:           attributes.Electro,
-	Rosaria:         attributes.Cryo,
-	Kokomi:          attributes.Hydro,
-	Sayu:            attributes.Anemo,
-	Sucrose:         attributes.Anemo,
-	Tartaglia:       attributes.Hydro,
-	Thoma:           attributes.Pyro,
-	Venti:           attributes.Anemo,
-	Xiangling:       attributes.Pyro,
-	Xiao:            attributes.Anemo,
-	Xingqiu:         attributes.Hydro,
-	Xinyan:          attributes.Pyro,
-	Yanfei:          attributes.Pyro,
-	Yoimiya:         attributes.Pyro,
-	Zhongli:         attributes.Geo,
-	Gorou:           attributes.Geo,
-	Itto:            attributes.Geo,
-	Shenhe:          attributes.Cryo,
-	Yunjin:          attributes.Geo,
-	YaeMiko:         attributes.Electro,
-	Yelan:           attributes.Hydro,
-	Kuki:            attributes.Electro,
-	Heizou:          attributes.Anemo,
+	AetherAnemo:   attributes.Anemo,
+	LumineAnemo:   attributes.Anemo,
+	AetherGeo:     attributes.Geo,
+	LumineGeo:     attributes.Geo,
+	AetherElectro: attributes.Electro,
+	LumineElectro: attributes.Electro,
+	AetherDendro:  attributes.Dendro,
+	LumineDendro:  attributes.Dendro,
+	AetherHydro:   attributes.Hydro,
+	LumineHydro:   attributes.Hydro,
+	AetherPyro:    attributes.Pyro,
+	LuminePyro:    attributes.Pyro,
+	AetherCryo:    attributes.Cryo,
+	LumineCryo:    attributes.Cryo,
+	Albedo:        attributes.Geo,
+	Aloy:          attributes.Cryo,
+	Amber:         attributes.Pyro,
+	Barbara:       attributes.Hydro,
+	Beidou:        attributes.Electro,
+	Bennett:       attributes.Pyro,
+	Chongyun:      attributes.Cryo,
+	Diluc:         attributes.Pyro,
+	Diona:         attributes.Cryo,
+	Eula:          attributes.Cryo,
+	Fischl:        attributes.Electro,
+	Ganyu:         attributes.Cryo,
+	Hutao:         attributes.Pyro,
+	Jean:          attributes.Anemo,
+	Kazuha:        attributes.Anemo,
+	Kaeya:         attributes.Cryo,
+	Ayaka:         attributes.Cryo,
+	Ayato:         attributes.Hydro,
+	Keqing:        attributes.Electro,
+	Klee:          attributes.Pyro,
+	Sara:          attributes.Electro,
+	Lisa:          attributes.Electro,
+	Mona:          attributes.Hydro,
+	Ningguang:     attributes.Geo,
+	Noelle:        attributes.Geo,
+	Qiqi:          attributes.Cryo,
+	Raiden:        attributes.Electro,
+	Razor:         attributes.Electro,
+	Rosaria:       attributes.Cryo,
+	Kokomi:        attributes.Hydro,
+	Sayu:          attributes.Anemo,
+	Sucrose:       attributes.Anemo,
+	Tartaglia:     attributes.Hydro,
+	Thoma:         attributes.Pyro,
+	Venti:         attributes.Anemo,
+	Xiangling:     attributes.Pyro,
+	Xiao:          attributes.Anemo,
+	Xingqiu:       attributes.Hydro,
+	Xinyan:        attributes.Pyro,
+	Yanfei:        attributes.Pyro,
+	Yoimiya:       attributes.Pyro,
+	Zhongli:       attributes.Geo,
+	Gorou:         attributes.Geo,
+	Itto:          attributes.Geo,
+	Shenhe:        attributes.Cryo,
+	Yunjin:        attributes.Geo,
+	YaeMiko:       attributes.Electro,
+	Yelan:         attributes.Hydro,
+	Kuki:          attributes.Electro,
+	Heizou:        attributes.Anemo,
 }

@@ -10,17 +10,19 @@ import (
 )
 
 func (c *char) c1() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.4
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("ayato-c1", -1),
-		Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if a.Info.AttackTag != combat.AttackTagNormal || t.HP()/t.MaxHP() > 0.5 {
-				return nil, false
-			}
-			return m, true
-		},
-	})
+	if c.Core.Combat.DamageMode {
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DmgP] = 0.4
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("ayato-c1", -1),
+			Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if a.Info.AttackTag != combat.AttackTagNormal || t.HP()/t.MaxHP() > 0.5 {
+					return nil, false
+				}
+				return m, true
+			},
+		})
+	}
 }
 
 func (c *char) c2() {

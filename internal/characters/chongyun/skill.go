@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, skillHitmark)
 
-	c.Core.QueueParticle("chongyun", 4, attributes.Cryo, skillHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("chongyun", 4, attributes.Cryo, skillHitmark+c.ParticleDelay)
 
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,

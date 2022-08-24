@@ -8,5 +8,4 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc(keys.HuntersBow, common.NewNoEffect)
-	core.RegisterWeaponFunc(keys.SeasonedHuntersBow, common.NewNoEffect)
 }

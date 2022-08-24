@@ -1,12 +1,14 @@
 package gcs
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -129,18 +131,37 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
-	//set_particle_delay(x);
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for set_particle_delay, expected 1 got %v", len(c.Args))
+	//set_particle_delay("character", x);
+	if len(c.Args) != 2 {
+		return nil, fmt.Errorf("invalid number of params for set_particle_delay, expected 2 got %v", len(c.Args))
+	}
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	name, ok := t.(*strval)
+	if !ok {
+		return nil, fmt.Errorf("set_particle_delay first argument should evaluate to a string, got %v", t.Inspect())
 	}
 
-	t, err := e.evalExpr(c.Args[0], env)
+	//check name exists on team
+	ck, ok := shortcut.CharNameToKey[name.str]
+	if !ok {
+		return nil, fmt.Errorf("set_particle_delay first argument %v is not a valid character", name.str)
+	}
+
+	char, ok := e.Core.Player.ByKey(ck)
+	if !ok {
+		return nil, fmt.Errorf("set_particle_delay: %v is not on this team", name.str)
+	}
+
+	t, err = e.evalExpr(c.Args[1], env)
 	if err != nil {
 		return nil, err
 	}
 	n, ok := t.(*number)
 	if !ok {
-		return nil, fmt.Errorf("set_particle_delay argument should evaluate to a number, got %v", t.Inspect())
+		return nil, fmt.Errorf("set_particle_delay second argument should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be int
 	var delay int = int(n.ival)
@@ -151,7 +172,8 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 		delay = 0
 	}
 
-	e.Core.SetParticleDelay(delay)
+	char.ParticleDelay = delay
+
 	return &number{}, nil
 }
 
@@ -239,6 +261,40 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Combat.SetTargetPos(idx, x, y)
+
+	return &number{}, nil
+}
+
+func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
+	//kill_target(1)
+	if !e.Core.Combat.DamageMode {
+		return nil, errors.New("damage mode is not activated")
+	}
+
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for kill_target, expected 1 got %v", len(c.Args))
+	}
+
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	n, ok := t.(*number)
+	if !ok {
+		return nil, fmt.Errorf("kill_target argument target index should evaluate to a number, got %v", t.Inspect())
+	}
+	//n should be int
+	var idx int = int(n.ival)
+	if n.isFloat {
+		idx = int(n.fval)
+	}
+
+	//check if index is in range
+	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
+		return nil, fmt.Errorf("index for kill_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.TargetsCount()-1, idx)
+	}
+
+	e.Core.Combat.KillTarget(idx)
 
 	return &number{}, nil
 }

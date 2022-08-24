@@ -61,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		if c.Core.Rand.Float64() < .5 {
 			count = 3
 		}
-		c.Core.QueueParticle("keqing", count, attributes.Electro, chargeHitmarks[1]+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("keqing", count, attributes.Electro, chargeHitmarks[1]+c.ParticleDelay)
 	}
 
 	if c.Base.Cons >= 6 {

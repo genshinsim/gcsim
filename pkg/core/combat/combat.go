@@ -88,6 +88,17 @@ func (h *Handler) SetTargetPos(i int, x, y float64) bool {
 	return true
 }
 
+func (h *Handler) KillTarget(i int) bool {
+	// don't kill yourself
+	if i < 1 || i > len(h.targets)-1 {
+		return false
+	}
+	h.targets[i].Kill()
+	h.Events.Emit(event.OnTargetDied, h.targets[i], &AttackEvent{}) // TODO: it's fine?
+	h.Log.NewEvent("target is dead", glog.LogSimEvent, -1).Write("index", i)
+	return true
+}
+
 func (h *Handler) Tick() {
 	for _, t := range h.targets {
 		t.Tick()

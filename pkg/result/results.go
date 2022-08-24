@@ -5,7 +5,6 @@ import (
 	"math"
 	"sort"
 	"strings"
-	"time"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -37,7 +36,7 @@ type Summary struct {
 	DPSByTarget    map[int]FloatResult    `json:"dps_by_target"`
 	DamageOverTime map[string]FloatResult `json:"damage_over_time"`
 	Iterations     int                    `json:"iter"`
-	Runtime        time.Duration          `json:"runtime"`
+	Runtime        float64                `json:"runtime"`
 	//other info
 	NumTargets    int                     `json:"num_targets"` //TODO: to deprecate this
 	CharDetails   []simulation.CharDetail `json:"char_details"`
@@ -515,7 +514,7 @@ func (r *Summary) PrettyPrint() string {
 
 	sb.WriteString("------------------------------------------\n")
 	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", r.Damage.Mean, r.Duration.Mean, r.DPS.Mean, r.DPS.Min, r.DPS.Max, r.DPS.SD))
-	sb.WriteString(fmt.Sprintf("Simulation completed %v iterations in %v\n", r.Iterations, r.Runtime))
+	sb.WriteString(fmt.Sprintf("Simulation completed %v iterations in %.3f seconds\n", r.Iterations, r.Runtime/1000000000))
 
 	return sb.String()
 }

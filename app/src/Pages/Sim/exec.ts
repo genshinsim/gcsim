@@ -1,7 +1,8 @@
-import { AppThunk } from "~src/store";
-import { pool, simActions } from ".";
-import { Result, ResultsSummary } from "~src/types";
-import { viewerActions } from "../ViewerDashboard/viewerSlice";
+import { AppThunk } from '~src/store';
+import { pool, simActions } from '.';
+import { Result } from '~src/types';
+import { viewerActions } from '../ViewerDashboard/viewerSlice';
+import { ResultsSummary } from '~src/Types/stats';
 
 const iterRegex = /iteration=(\d+)/;
 
@@ -14,12 +15,12 @@ function extractItersFromConfig(cfg: string): number {
     iters = parseInt(m[1]);
 
     if (isNaN(iters)) {
-      console.warn("no iteration found in settings: ", m);
+      console.warn('no iteration found in settings: ', m);
       iters = 1000;
     }
   } else {
     console.log(cfg);
-    console.warn("iter regex failed");
+    console.warn('iter regex failed');
     iters = 1000;
   }
   //   console.log("parsed iters: " + iters);
@@ -29,9 +30,8 @@ function extractItersFromConfig(cfg: string): number {
 
 export function runSim(cfg: string): AppThunk {
   return function (dispatch) {
-    console.log("starting run");
+    console.log('starting run');
     // console.log(cfg);
-    cfg = cfg + "\n";
     const startTime = window.performance.now();
     let debug: string;
     let avg = 0;
@@ -45,7 +45,7 @@ export function runSim(cfg: string): AppThunk {
     const setConfig = () => {
       const p = new Promise((resolve, reject) => {
         pool.setCfg(cfg, (val) => {
-          console.log("set config callback: " + val);
+          console.log('set config callback: ' + val);
           try {
             const res = JSON.parse(val);
             console.log(res);
@@ -64,11 +64,11 @@ export function runSim(cfg: string): AppThunk {
 
     const debugRun = () =>
       new Promise<null>((resolve, reject) => {
-        console.time("debug");
+        console.time('debug');
         const debugCB = (val: any) => {
           try {
             const res = JSON.parse(val);
-            console.timeEnd("debug");
+            console.timeEnd('debug');
             if (res.err) {
               reject(res.err);
               return;
@@ -79,15 +79,15 @@ export function runSim(cfg: string): AppThunk {
             resolve(null);
             // console.log("finish debug run: ", res);
           } catch {
-            reject("unexpected error??");
+            reject('unexpected error??');
           }
         };
-        pool.queue({ cmd: "debug", cb: debugCB });
+        pool.queue({ cmd: 'debug', cb: debugCB });
       });
 
     const sims = () =>
       new Promise<null>((resolve, reject) => {
-        console.time("sim");
+        console.time('sim');
         let queued = 0;
         let done = 0;
         let progress = 0;
@@ -101,7 +101,7 @@ export function runSim(cfg: string): AppThunk {
           }
           //stop if we hit an error
           if (res && res.err) {
-            console.timeEnd("sim");
+            console.timeEnd('sim');
             reject(res.err);
             return;
           }
@@ -112,7 +112,7 @@ export function runSim(cfg: string): AppThunk {
 
           if (done === iters) {
             //stop call back chain if done
-            console.timeEnd("sim");
+            console.timeEnd('sim');
             resolve(null);
             return;
           }
@@ -125,7 +125,7 @@ export function runSim(cfg: string): AppThunk {
                 progress: per,
                 result: -1,
                 time: -1,
-                err: "",
+                err: '',
               })
             );
             progress = per;
@@ -135,7 +135,7 @@ export function runSim(cfg: string): AppThunk {
           if (queued < iters) {
             //queue another worker
             queued++;
-            pool.queue({ cmd: "run", cb: cbFunc });
+            pool.queue({ cmd: 'run', cb: cbFunc });
           }
         };
 
@@ -145,7 +145,7 @@ export function runSim(cfg: string): AppThunk {
           count = iters;
         }
         for (; queued < count; queued++) {
-          pool.queue({ cmd: "run", cb: cbFunc });
+          pool.queue({ cmd: 'run', cb: cbFunc });
         }
       });
 
@@ -154,7 +154,7 @@ export function runSim(cfg: string): AppThunk {
         let s = JSON.stringify(results);
         console.log(new Blob([s]).size);
         pool.queue({
-          cmd: "collect",
+          cmd: 'collect',
           payload: s,
           cb: (val) => {
             //convert it back
@@ -178,7 +178,7 @@ export function runSim(cfg: string): AppThunk {
           bt = res.date;
           resolve(null);
         };
-        pool.queue({ cmd: "version", cb: versionCB });
+        pool.queue({ cmd: 'version', cb: versionCB });
       });
 
     //run the sim
@@ -187,18 +187,18 @@ export function runSim(cfg: string): AppThunk {
         progress: 0,
         result: -1,
         time: -1,
-        err: "",
+        err: '',
       })
     );
 
     setConfig()
       .then(() => {
-        console.log("configs done");
+        console.log('configs done');
         return Promise.all([debugRun(), sims(), version()]);
       })
       .then(() => {
-        console.log("all iters done, collecting results");
-        console.time("aggregate results");
+        console.log('all iters done, collecting results');
+        console.time('aggregate results');
         //aggregate the result here
         return aggregateResults();
       })
@@ -210,7 +210,7 @@ export function runSim(cfg: string): AppThunk {
             progress: -1,
             result: avg / iters,
             time: end - startTime,
-            err: "",
+            err: '',
           })
         );
         //add debug to the summary
@@ -221,11 +221,11 @@ export function runSim(cfg: string): AppThunk {
         summary.build_date = bt;
         summary.iter = iters;
 
-        console.timeEnd("aggregate results");
+        console.timeEnd('aggregate results');
         //summary can now be passed to viewer
         dispatch(
           viewerActions.addViewerData({
-            key: "Simulation run on: " + new Date().toLocaleString(),
+            key: 'Simulation run on: ' + new Date().toLocaleString(),
             data: summary,
           })
         );

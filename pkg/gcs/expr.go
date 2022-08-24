@@ -16,6 +16,8 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 		return e.evalStringLit(v, env), nil
 	case *ast.Ident:
 		return e.evalIdent(v, env)
+	case *ast.UnaryExpr:
+		return e.evalUnaryExpr(v, env)
 	case *ast.BinaryExpr:
 		return e.evalBinaryExpr(v, env)
 	case *ast.CallExpr:
@@ -77,6 +79,8 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		return e.setDefaultTarget(c, env)
 	case "set_particle_delay":
 		return e.setParticleDelay(c, env)
+	case "kill_target":
+		return e.killTarget(c, env)
 	default:
 		//grab the function first
 		fn, err := env.fn(s)
@@ -113,6 +117,26 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 			return nil, fmt.Errorf("fn %v returned an invalid type; expecting a number got %v", s, res.Inspect())
 		}
 	}
+}
+
+func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
+	right, err := e.evalExpr(b.Right, env)
+	if err != nil {
+		return nil, err
+	}
+	//unary expressions should only result in number results
+	//otherwise panic for now?
+	r, ok := right.(*number)
+	if !ok {
+		return nil, fmt.Errorf("unary expression does not evaluate to a number, got %v ", right.Inspect())
+	}
+	switch b.Op.Typ {
+	case ast.LogicNot:
+		return eq(&number{}, r), nil
+	case ast.ItemMinus:
+		return sub(&number{}, r), nil
+	}
+	return &null{}, nil
 }
 
 func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
@@ -165,8 +189,26 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalField(n *ast.Field, env *Env) (Obj, error) {
-	r := conditional.Eval(e.Core, n.Value)
-	return &number{
-		ival: r,
-	}, nil
+	r, err := conditional.Eval(e.Core, n.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	num := &number{}
+	switch v := r.(type) {
+	case bool:
+		if v {
+			num.ival = 1
+		}
+	case int:
+		num.ival = int64(v)
+	case int64:
+		num.ival = v
+	case float64:
+		num.fval = v
+		num.isFloat = true
+	default:
+		return nil, fmt.Errorf("field condition '.%v' does not evaluate to a number, got %v", strings.Join(n.Value, "."), v)
+	}
+	return num, nil
 }

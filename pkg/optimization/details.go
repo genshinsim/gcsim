@@ -53,7 +53,6 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	initialMean := initialResult.DPS.Mean
 
 	opDebug = append(opDebug, "Calculating optimal substat distribution...")
-	opDebug = append(opDebug, fmt.Sprintf("%v", initialMean))
 
 	for idxChar, char := range stats.charProfilesCopy {
 		charDebug = stats.optimizeNonErSubstatsForChar(idxChar, char, initialMean)
@@ -93,12 +92,6 @@ func (stats *SubstatOptimizerDetails) allocateSubstatGradientsForChar(idxChar in
 
 	sorted := newSlice(substatGradient...)
 	sort.Sort(sort.Reverse(sorted))
-
-	printVal := ""
-	for i, idxSorted := range sorted.idx {
-		printVal += fmt.Sprintf("%v: %5.5g, ", relevantSubstats[idxSorted], sorted.slice[i])
-	}
-	opDebug = append(opDebug, printVal)
 
 	for idxGrad, idxSubstat := range sorted.idx {
 		allocDebug := stats.allocateSubstatGradientForChar(idxChar, char, sorted, idxGrad, idxSubstat, relevantSubstats)
@@ -283,13 +276,11 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char pro
 // At least this version works semi-reliably...
 func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD float64) []string {
 	var (
-		charDebug []string
 		opDebug   []string
 	)
 
 	for idxChar, char := range stats.charProfilesERBaseline {
-		charDebug = stats.findOptimalERforChar(idxChar, char, tolMean, tolSD)
-		opDebug = append(opDebug, charDebug...)
+		stats.findOptimalERforChar(idxChar, char, tolMean, tolSD)
 	}
 
 	// Need a separate optimization routine for strong battery characters (currently Raiden only, maybe EMC?)
@@ -309,8 +300,7 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 			continue
 		}
 		opDebug = append(opDebug, "Raiden found in team comp - running secondary optimization routine...")
-		charDebug = stats.findOptimalERforChar(i, char, tolMean, tolSD)
-		opDebug = append(opDebug, charDebug...)
+		stats.findOptimalERforChar(i, char, tolMean, tolSD)
 	}
 
 	// Fix ER at previously found values then optimize all other substats
@@ -324,12 +314,9 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD 
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char profile.CharacterProfile, tolMean float64, tolSD float64) []string {
-	var debug []string
+func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char profile.CharacterProfile, tolMean float64, tolSD float64) {
 	var initialMean float64
 	var initialSD float64
-
-	debug = append(debug, fmt.Sprintf("%v", char.Base.Key))
 
 	for erStack := 0; erStack <= stats.indivSubstatLiquidCap; erStack += 2 {
 		stats.charProfilesCopy[idxChar] = char.Clone()
@@ -338,7 +325,6 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char pro
 		stats.simcfg.Characters = stats.charProfilesCopy
 
 		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt)
-		debug = append(debug, fmt.Sprintf("%v: %v (%v)", stats.charSubstatFinal[idxChar][attributes.ER]-erStack, result.DPS.Mean, result.DPS.SD))
 
 		if erStack == 0 {
 			initialMean = result.DPS.Mean
@@ -369,8 +355,6 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char pro
 			break
 		}
 	}
-
-	return debug
 }
 
 func (stats *SubstatOptimizerDetails) setInitialSubstats(fixedSubstatCount int) {
@@ -438,8 +422,20 @@ func NewSubstatOptimizerDetails(cfg string, simopt simulator.Options, simcfg *as
 	s.totalLiquidSubstats = totalLiquidSubstats
 
 	s.artifactSets4Star = []keys.Set{
-		keys.TheExile,
+		keys.ResolutionOfSojourner,
+		keys.TinyMiracle,
+		keys.Berserker,
 		keys.Instructor,
+		keys.TheExile,
+		keys.DefendersWill,
+		keys.BraveHeart,
+		keys.MartialArtist,
+		keys.Gambler,
+		keys.Scholar,
+		keys.PrayersForWisdom,
+		keys.PrayersForDestiny,
+		keys.PrayersForIllumination,
+		keys.PrayersToSpringtime,
 	}
 
 	s.substatValues = make([]float64, attributes.EndStatType)
@@ -478,6 +474,7 @@ func NewSubstatOptimizerDetails(cfg string, simopt simulator.Options, simcfg *as
 		keys.Yunjin:  {attributes.DEFP},
 		keys.Noelle:  {attributes.DEFP},
 		keys.Gorou:   {attributes.DEFP},
+		keys.Yelan:   {attributes.HPP},
 	}
 
 	// Final output array that holds [character][substat_count]

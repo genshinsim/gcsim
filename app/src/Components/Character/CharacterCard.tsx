@@ -1,5 +1,5 @@
-import { Button } from "@blueprintjs/core";
-import { Tooltip2 } from "@blueprintjs/popover2";
+import { Button } from '@blueprintjs/core';
+import { Tooltip2 } from '@blueprintjs/popover2';
 import {
   IconAnemo,
   IconAtk,
@@ -16,11 +16,12 @@ import {
   IconHydro,
   IconPhysical,
   IconPyro,
-} from "~src/Components/Icons";
-import { WeaponCard } from "~src/Components/Weapon";
-import { CharStatBlock } from "/src/Components/Character";
-import { Character } from "~src/types";
-import { Trans, useTranslation } from "react-i18next";
+} from '~src/Components/Icons';
+import { WeaponCard } from '~src/Components/Weapon';
+import { CharStatBlock } from '/src/Components/Character';
+import { Trans, useTranslation } from 'react-i18next';
+import { Character } from '~src/Types/sim';
+import { TransformTravelerKeyToName } from '~src/Data';
 
 type Props = {
   char: Character;
@@ -35,35 +36,35 @@ type Props = {
 
 function statKeyToIcon(key: string): JSX.Element {
   switch (key) {
-    case "hp":
+    case 'hp':
       return <IconHP />;
-    case "atk":
+    case 'atk':
       return <IconAtk />;
-    case "def":
+    case 'def':
       return <IconDef />;
-    case "er":
+    case 'er':
       return <IconER />;
-    case "em":
+    case 'em':
       return <IconEM />;
-    case "cr":
+    case 'cr':
       return <IconCR />;
-    case "cd":
+    case 'cd':
       return <IconCD />;
-    case "electro":
+    case 'electro':
       return <IconElectro />;
-    case "pyro":
+    case 'pyro':
       return <IconPyro />;
-    case "cryo":
+    case 'cryo':
       return <IconCryo />;
-    case "hydro":
+    case 'hydro':
       return <IconHydro />;
-    case "geo":
+    case 'geo':
       return <IconGeo />;
-    case "anemo":
+    case 'anemo':
       return <IconAnemo />;
-    case "phys":
+    case 'phys':
       return <IconPhysical />;
-    case "heal":
+    case 'heal':
       return <IconHeal />;
     default:
       return <span />;
@@ -72,20 +73,20 @@ function statKeyToIcon(key: string): JSX.Element {
 
 function charBG(element: string) {
   switch (element) {
-    case "cryo":
-      return "bg-gradient-to-r from-gray-700 to-blue-300";
-    case "hydro":
-      return "bg-gradient-to-r from-gray-700 to-blue-500";
-    case "pyro":
-      return "bg-gradient-to-r from-gray-700 to-red-400";
-    case "electro":
-      return "bg-gradient-to-r from-gray-700 to-purple-300";
-    case "anemo":
-      return "bg-gradient-to-r from-gray-700 to-green-300";
-    case "geo":
-      return "bg-gradient-to-r from-gray-700 to-yellow-400";
+    case 'cryo':
+      return 'bg-gradient-to-r from-gray-700 to-blue-300';
+    case 'hydro':
+      return 'bg-gradient-to-r from-gray-700 to-blue-500';
+    case 'pyro':
+      return 'bg-gradient-to-r from-gray-700 to-red-400';
+    case 'electro':
+      return 'bg-gradient-to-r from-gray-700 to-purple-300';
+    case 'anemo':
+      return 'bg-gradient-to-r from-gray-700 to-green-300';
+    case 'geo':
+      return 'bg-gradient-to-r from-gray-700 to-yellow-400';
   }
-  return "bg-gray-700";
+  return 'bg-gray-700';
 }
 
 export function CharacterCard({
@@ -96,7 +97,7 @@ export function CharacterCard({
   showEdit = false,
   toggleEdit,
   handleDelete,
-  className = "",
+  className = '',
 }: Props) {
   const { t } = useTranslation();
 
@@ -130,31 +131,31 @@ export function CharacterCard({
     count++;
 
     switch (s.t) {
-      case "both":
+      case 'both':
         val.push(
-          <td key={"flat-" + i} className="text-right">
+          <td key={'flat-' + i} className="text-right">
             {s.flat.toFixed(0)}
           </td>
         );
         val.push(
-          <td key={"per-" + i} className="text-right">
-            {(s.percent * 100).toFixed(2) + "%"}
+          <td key={'per-' + i} className="text-right">
+            {(s.percent * 100).toFixed(2) + '%'}
           </td>
         );
         break;
-      case "f":
+      case 'f':
         val.push(
-          <td key={"flat-" + i} className="text-right">
+          <td key={'flat-' + i} className="text-right">
             {s.flat.toFixed(0)}
           </td>
         );
-        val.push(<td key={"per-" + i}></td>);
+        val.push(<td key={'per-' + i}></td>);
         break;
-      case "%":
-        val.push(<td key={"flat-" + i}></td>);
+      case '%':
+        val.push(<td key={'flat-' + i}></td>);
         val.push(
-          <td key={"per-" + i} className="text-right">
-            {(s.percent * 100).toFixed(2) + "%"}
+          <td key={'per-' + i} className="text-right">
+            {(s.percent * 100).toFixed(2) + '%'}
           </td>
         );
     }
@@ -162,7 +163,7 @@ export function CharacterCard({
     rows.push(
       <tr key={count}>
         <td className="flex flex-row place-items-center">
-          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>{" "}
+          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>{' '}
           {s.name}
         </td>
         {val}
@@ -187,16 +188,16 @@ export function CharacterCard({
       <div className="min-h-24 bg-gray-600 shadow rounded-md text-sm flex flex-col justify-center gap-2">
         <div
           className={
-            "character-parent flex flex-row pt-4 pl-4 pr-2 -mt-2 rounded-t-md " +
+            'character-parent flex flex-row pt-4 pl-4 pr-2 -mt-2 rounded-t-md ' +
             charBG(char.element)
           }
         >
-          <div className={showDelete ? "absolute top-1 right-1" : "hidden"}>
+          <div className={showDelete ? 'absolute top-1 right-1' : 'hidden'}>
             <Button icon="cross" intent="danger" small onClick={handleDelete} />
           </div>
           <div className="character-header rounded-t-md" />
           <div className="character-name font-medium m-4 capitalize">
-            {t(`game:character_names.${char.name}`)}{" "}
+            {t(`game:character_names.${TransformTravelerKeyToName(char.name)}`)}{' '}
             <Trans>character.c_pre</Trans>
             {char.cons}
             <Trans>character.c_post</Trans>
@@ -215,8 +216,12 @@ export function CharacterCard({
           </div>
           <div className="w-1/2">
             <img
-              src={"/images/avatar/" + char.name + ".png"}
-              alt={char.name}
+              src={
+                '/images/avatar/' +
+                TransformTravelerKeyToName(char.name) +
+                '.png'
+              }
+              alt={TransformTravelerKeyToName(char.name)}
               className="ml-auto h-32 wide:h-auto "
             />
           </div>
@@ -237,7 +242,7 @@ export function CharacterCard({
 
         <div
           className={
-            showEdit ? "ml-auto pl-2 pt-2 pr-2 flex flex-row gap-4" : "hidden"
+            showEdit ? 'ml-auto pl-2 pt-2 pr-2 flex flex-row gap-4' : 'hidden'
           }
         >
           <Button icon="edit" onClick={toggleEdit} />

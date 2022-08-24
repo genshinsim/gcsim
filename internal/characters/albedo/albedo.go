@@ -39,27 +39,16 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.skillHook()
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
-	if c.Base.Cons == 6 {
-		c.c6()
-	}
 	return nil
 }
 
-func (c *char) Condition(k string) int64 {
-	switch k {
-	case "skill":
-		fallthrough
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
 	case "elevator":
-		if c.skillActive {
-			return 1
-		}
-		return 0
+		return c.skillActive, nil
 	case "c2stacks":
-		return int64(c.c2stacks)
+		return c.c2stacks, nil
 	default:
-		return 0
+		return c.Character.Condition(fields)
 	}
 }

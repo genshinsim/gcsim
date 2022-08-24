@@ -16,7 +16,7 @@ func (c *char) a4() {
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
-		//do nothing if oz not on field
+		// do nothing if oz not on field
 		if c.ozActiveUntil < c.Core.F {
 			return false
 		}

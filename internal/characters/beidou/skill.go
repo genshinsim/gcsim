@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	//2 if no hit, 3 if 1 hit, 4 if perfect
-	c.Core.QueueParticle("beidou", 2+float64(counter), attributes.Electro, skillHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("beidou", 2+float64(counter), attributes.Electro, skillHitmark+c.ParticleDelay)
 
 	if counter > 0 {
 		//add shield

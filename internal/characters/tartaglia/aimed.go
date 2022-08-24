@@ -10,17 +10,17 @@ import (
 
 var aimedFrames []int
 
-const aimedHitmark = 84
+const aimedHitmark = 86
 
 func init() {
-	aimedFrames = frames.InitAbilSlice(84)
+	aimedFrames = frames.InitAbilSlice(94)
 	aimedFrames[action.ActionDash] = aimedHitmark
 	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
-//Once fully charged, deal Hydro DMG and apply the Riptide status.
+// Once fully charged, deal Hydro DMG and apply the Riptide status.
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.StatusIsActive(meleeKey) {
 		c.Core.Log.NewEvent("aim called when not in ranged stance", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionAim)
 		return action.ActionInfo{
@@ -38,16 +38,20 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	weakspot, ok := p["weakspot"]
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Aim (Charged)",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypePierce,
-		Element:      attributes.Hydro,
-		Durability:   25,
-		Mult:         aim[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		ActorIndex:           c.Index,
+		Abil:                 "Aim (Charged)",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone,
+		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypePierce,
+		Element:              attributes.Hydro,
+		Durability:           25,
+		Mult:                 aim[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot == 1,
+		HitlagHaltFrames:     0.12 * 60, // deployable hitlag, but only on weakspot
+		HitlagFactor:         0.01,
+		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 
 	c.Core.QueueAttack(
@@ -55,9 +59,9 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 		aimedHitmark,
 		aimedHitmark+travel,
-		//TODO: what's the ordering on these 2 callbacks?
-		c.rtFlashCallback,   //call back for triggering slash
-		c.aimedApplyRiptide, //call back for applying riptide
+		// TODO: what's the ordering on these 2 callbacks?
+		c.rtFlashCallback,   // call back for triggering slash
+		c.aimedApplyRiptide, // call back for applying riptide
 	)
 
 	return action.ActionInfo{

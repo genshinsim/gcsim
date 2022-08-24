@@ -52,8 +52,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	// tick every 1s
-	for i := 60; i < 300; i += 60 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmarks[hold]+i)
+	for i := skillHitmarks[hold]; i < 300; i += 60 {
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), i)
 	}
 
 	// Explosion
@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Core.Rand.Float64() < .33 {
 		count = 4
 	}
-	c.Core.QueueParticle("mona", count, attributes.Hydro, skillHitmarks[hold]+313+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("mona", count, attributes.Hydro, skillHitmarks[hold]+313+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 24)
 

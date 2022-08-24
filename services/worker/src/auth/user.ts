@@ -1,27 +1,35 @@
-import { dbClient } from "..";
-import { userData } from "../share/user";
+import { userData } from '../share/user';
+import JSONbig from 'json-bigint';
+import { postgRESTFetch } from '../util';
 
 export async function createOrGetUser(
-  key: string,
+  id: BigInt,
   name: string
 ): Promise<userData> {
-  const { data, error } = await dbClient.rpc("get_or_insert_user", {
-    key,
-    name,
-  });
+  //make request to postgrest manually so that we're properly encoding the id
+  try {
+    const data = await postgRESTFetch('/rpc/get_or_insert_user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSONbig.stringify({
+        id,
+        name,
+      }),
+    });
 
-  if (error !== null) {
+    //body should be json array
+    if (data === null) {
+      throw 'Unexpected no data returned';
+    }
+    if (data.length < 1) {
+      throw 'Unexpected no result rows';
+    }
+
+    const rows: userData[] = data;
+    return rows[0];
+  } catch (error) {
     throw error;
   }
-
-  if (data === null) {
-    throw "Unexpected no data returned";
-  }
-
-  if (data.length < 1) {
-    throw "Unexpected no result rows";
-  }
-
-  const rows: userData[] = data;
-  return rows[0];
 }

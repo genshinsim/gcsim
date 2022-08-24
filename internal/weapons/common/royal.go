@@ -7,10 +7,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+const icdKey = "royal-icd"
 
 type Royal struct {
 	Index int
@@ -33,11 +36,14 @@ func NewRoyal(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile)
 		}
 		if crit {
 			stacks = 0
-		} else {
+		} else if !char.StatusIsActive(icdKey) {
 			stacks++
 			if stacks > 5 {
 				stacks = 5
 			}
+			char.AddStatus(icdKey, 18, true)
+			c.Log.NewEvent("royal stacked", glog.LogWeaponEvent, char.Index).
+				Write("stacks", stacks)
 		}
 		return false
 	}, fmt.Sprintf("royal-%v", char.Base.Key.String()))

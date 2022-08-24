@@ -39,18 +39,20 @@ func (c *char) c4() {
 }
 
 func (c *char) c6() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.15
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("chongyun-c6", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+	if c.Core.Combat.DamageMode {
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.DmgP] = 0.15
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("chongyun-c6", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+					return nil, false
+				}
+				if t.HP()/t.MaxHP() < c.HPCurrent/c.MaxHP() {
+					return m, true
+				}
 				return nil, false
-			}
-			if t.HP()/t.MaxHP() < c.HPCurrent/c.MaxHP() {
-				return m, true
-			}
-			return nil, false
-		},
-	})
+			},
+		})
+	}
 }

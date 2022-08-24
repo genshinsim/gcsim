@@ -1,60 +1,51 @@
 package conditional
 
 import (
-	"strings"
+	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
-func evalWeaponKey(c *core.Core, fields []string) int64 {
-	name := strings.TrimPrefix(fields[2], ".")
+func evalKeys(c *core.Core, fields []string) (int, error) {
+	// .keys.weapon.polarstar
+	if err := fieldsCheck(fields, 3, "keys"); err != nil {
+		return 0, err
+	}
+
+	name := fields[2]
+	switch typ := fields[1]; typ {
+	case "weapon":
+		return evalWeaponKey(name)
+	case "set":
+		return evalSetKey(name)
+	case "char": // is this necessary? :pepela:
+		return evalCharacterKey(name)
+	default:
+		return 0, fmt.Errorf("bad key condition: invalid type %v", typ)
+	}
+}
+
+func evalWeaponKey(name string) (int, error) {
 	key, ok := shortcut.WeaponNameToKey[name]
 	if !ok {
-		c.Log.NewEvent("bad keys conditon: invalid weapon", glog.LogWarnings, -1).Write("fields", fields)
-		return -1
+		return 0, fmt.Errorf("bad key condition: invalid weapon %v", name)
 	}
-	return int64(key)
+	return int(key), nil
 }
 
-func evalSetKey(c *core.Core, fields []string) int64 {
-	name := strings.TrimPrefix(fields[2], ".")
+func evalSetKey(name string) (int, error) {
 	key, ok := shortcut.SetNameToKey[name]
 	if !ok {
-		c.Log.NewEvent("bad keys conditon: invalid set", glog.LogWarnings, -1).Write("fields", fields)
-		return -1
+		return 0, fmt.Errorf("bad key condition: invalid artifact set %v", name)
 	}
-	return int64(key)
+	return int(key), nil
 }
 
-func evalCharacterKey(c *core.Core, fields []string) int64 {
-	name := strings.TrimPrefix(fields[2], ".")
+func evalCharacterKey(name string) (int, error) {
 	key, ok := shortcut.CharNameToKey[name]
 	if !ok {
-		c.Log.NewEvent("bad keys conditon: invalid character", glog.LogWarnings, -1).Write("fields", fields)
-		return -1
+		return 0, fmt.Errorf("bad key condition: invalid character %v", name)
 	}
-	return int64(key)
-}
-
-func evalKeys(c *core.Core, fields []string) int64 {
-	// .keys.weapon.polarstar
-	if len(fields) < 3 {
-		c.Log.NewEvent("bad keys conditon: invalid num of fields", glog.LogWarnings, -1).Write("fields", fields)
-		return -1
-	}
-
-	name := strings.TrimPrefix(fields[1], ".")
-	switch name {
-	case "weapon":
-		return evalWeaponKey(c, fields)
-	case "set":
-		return evalSetKey(c, fields)
-	case "char": // is this necessary? :pepela:
-		return evalCharacterKey(c, fields)
-	default:
-		c.Log.NewEvent("bad keys conditon: invalid type", glog.LogWarnings, -1).Write("fields", fields)
-		return -1
-	}
+	return int(key), nil
 }

@@ -15,8 +15,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1Stack int
-	c6buff  []float64
+	burstTickSrc int
+	a1Stack      int
+	c6buff       []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

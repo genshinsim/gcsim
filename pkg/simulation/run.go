@@ -41,9 +41,6 @@ func (s *Simulation) Run() (Result, error) {
 	go s.queuer.Run()
 	defer close(s.continueEval)
 
-	//queue up enery tasks
-	s.SetupRandEnergyDrop()
-
 	for !stop {
 		err = s.AdvanceFrame()
 		if err != nil {
@@ -60,6 +57,8 @@ func (s *Simulation) Run() (Result, error) {
 					break
 				}
 			}
+			//TODO: this may result in unexpected behaviour? but beats infinite loop when out of actions
+			stop = stop || s.noMoreActions
 		} else {
 			stop = s.C.F == f
 		}
@@ -78,6 +77,7 @@ func (s *Simulation) Run() (Result, error) {
 func (s *Simulation) AdvanceFrame() error {
 	s.C.F++
 	s.C.Tick()
+	s.handleEnergy()
 	s.collectStats()
 	err := s.queueAndExec()
 	if err != nil {

@@ -11,25 +11,38 @@ import (
 
 const normalHitNum = 6
 
-var attackFrames [][]int
-var attackHitmarks = []int{17, 13, 34, 37, 22, 39}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{17, 8, 15, 19, 11, 14}
+)
 
 func init() {
 	// attack (ranged) -> x
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 17)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 13)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 34)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 37)
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 22)
-	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5], 39)
+	// N1 -> x
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 26)
+
+	// N2 -> x
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 27)
+
+	// N3 -> x
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 33)
+
+	// N4 -> x
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 32)
+
+	// N5 -> x
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 33)
+
+	// N6 -> x
+	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5], 66)
 }
 
 // Normal attack
 // Perform up to 6 consecutive shots with a bow.
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	if c.Core.Status.Duration("tartagliamelee") > 0 {
+	if c.StatusIsActive(meleeKey) {
 		return c.meleeAttack(p)
 	}
 
@@ -42,7 +55,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Physical,
@@ -66,45 +79,75 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-var meleeFrames [][]int
-var meleeHitmarks = [][]int{{7}, {13}, {28}, {32}, {36}, {48, 49}}
+var (
+	meleeFrames           [][]int
+	meleeHitmarks         = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 20}}
+	meleeHitlagHaltFrames = [][]float64{{0.03}, {0.03}, {0.06}, {0.06}, {0.06}, {0.03, 0.12}}
+)
 
 func init() {
 	// attack (melee) -> x
 	meleeFrames = make([][]int, normalHitNum)
 
-	meleeFrames[0] = frames.InitNormalCancelSlice(meleeHitmarks[0][0], 7)
-	meleeFrames[1] = frames.InitNormalCancelSlice(meleeHitmarks[1][0], 13)
-	meleeFrames[2] = frames.InitNormalCancelSlice(meleeHitmarks[2][0], 28)
-	meleeFrames[3] = frames.InitNormalCancelSlice(meleeHitmarks[3][0], 32)
-	meleeFrames[4] = frames.InitNormalCancelSlice(meleeHitmarks[4][0], 36)
-	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][1], 49)
+	// N1 -> x
+	meleeFrames[0] = frames.InitNormalCancelSlice(meleeHitmarks[0][0], 23)
+	meleeFrames[0][action.ActionAttack] = 10
+	meleeFrames[0][action.ActionCharge] = 23
+
+	// N2 -> x
+	meleeFrames[1] = frames.InitNormalCancelSlice(meleeHitmarks[1][0], 23)
+	meleeFrames[1][action.ActionAttack] = 11
+	meleeFrames[1][action.ActionCharge] = 23
+
+	// N3 -> x
+	meleeFrames[2] = frames.InitNormalCancelSlice(meleeHitmarks[2][0], 37)
+	meleeFrames[2][action.ActionAttack] = 32
+	meleeFrames[2][action.ActionCharge] = 37
+
+	// N4 -> x
+	meleeFrames[3] = frames.InitNormalCancelSlice(meleeHitmarks[3][0], 37)
+	meleeFrames[3][action.ActionAttack] = 33
+	meleeFrames[3][action.ActionCharge] = 37
+
+	// N5 -> x
+	meleeFrames[4] = frames.InitNormalCancelSlice(meleeHitmarks[4][0], 23)
+	meleeFrames[4][action.ActionAttack] = 22
+	meleeFrames[4][action.ActionCharge] = 23
+
+	// N6 -> x
+	meleeFrames[5] = frames.InitNormalCancelSlice(meleeHitmarks[5][1], 65)
+	meleeFrames[5][action.ActionAttack] = 65
+	meleeFrames[5][action.ActionCharge] = 500 // illegal action
 }
 
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
 func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
-		Element:    attributes.Hydro,
-		Durability: 25,
-	}
 	for i, mult := range eAttack[c.NormalCounter] {
-		ai.Mult = mult[c.TalentLvlSkill()]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), .5, false, combat.TargettableEnemy),
-			meleeHitmarks[c.NormalCounter][i],
-			meleeHitmarks[c.NormalCounter][i],
-			//TODO: what's the ordering on these 2 callbacks?
-			c.meleeApplyRiptide, //call back for applying riptide
-			c.rtSlashCallback,   //call back for triggering slash
-		)
+		ai := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
+			Element:            attributes.Hydro,
+			Durability:         25,
+			HitlagFactor:       0.01,
+			CanBeDefenseHalted: true,
+			Mult:               mult[c.TalentLvlSkill()],
+			HitlagHaltFrames:   meleeHitlagHaltFrames[c.NormalCounter][i] * 60,
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHit(c.Core.Combat.Player(), .5, false, combat.TargettableEnemy),
+				0,
+				0,
+				c.meleeApplyRiptide, // riptide can trigger on the same hit that applies
+				c.rtSlashCallback,
+			)
+		}, meleeHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()

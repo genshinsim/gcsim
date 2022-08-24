@@ -1,17 +1,12 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  Character,
-  defaultStats,
-  maxStatLength,
-  ParsedResult,
-  Talent,
-  Weapon,
-} from "~/src/types";
-import { isTraveler, ICharacter } from "~src/Components/Character";
-import { AppThunk } from "~src/store";
-import { ascLvlMin, maxLvlToAsc } from "~src/util";
-import { WorkerPool } from "~src/WorkerPool";
-import { charToCfg } from "./helper";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { defaultStats, maxStatLength, ParsedResult } from '~/src/types';
+import { CharMap } from '~src/Data';
+import { AppThunk } from '~src/store';
+import { Character, Talent, Weapon } from '~src/Types/sim';
+import { ascLvlMin, maxLvlToAsc } from '~src/util';
+import { WorkerPool } from '~src/WorkerPool';
+import { charToCfg } from './helper';
+
 export let pool: WorkerPool = new WorkerPool();
 
 export type RunStats = {
@@ -39,7 +34,7 @@ export const defaultRunStat: RunStats = {
   progress: -1,
   result: -1,
   time: -1,
-  err: "",
+  err: '',
 };
 
 const initialState: Sim = {
@@ -47,35 +42,35 @@ const initialState: Sim = {
   edit_index: -1,
   ready: 0,
   workers: 3,
-  cfg: "",
-  cfg_err: "",
-  advanced_cfg: "",
-  adv_cfg_err: "",
+  cfg: '',
+  cfg_err: '',
+  advanced_cfg: '',
+  adv_cfg_err: '',
   showBuilder: true,
   run: defaultRunStat,
   showTips: true,
 };
 
 const defWep: { [key: string]: string } = {
-  bow: "dullblade",
-  catalyst: "dullblade",
-  claymore: "dullblade",
-  sword: "dullblade",
-  polearm: "dullblade",
+  bow: 'dullblade',
+  catalyst: 'dullblade',
+  claymore: 'dullblade',
+  sword: 'dullblade',
+  polearm: 'dullblade',
 };
 
 const updateConfig = (team: Character[], cfg: string): string => {
-  let next: string = "";
+  let next: string = '';
   //generate new
   team.forEach((c) => {
-    next += charToCfg(c) + "\n";
+    next += charToCfg(c) + '\n';
   });
 
   //purge existing characters:
-  cfg = cfg.replace(charLinesRegEx, "");
+  cfg = cfg.replace(charLinesRegEx, '');
   cfg = next + cfg;
   //stirp extra new lines
-  cfg = cfg.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
+  cfg = cfg.replace(/(\r\n|\r|\n){2,}/g, '$1\n');
 
   return cfg;
 };
@@ -107,7 +102,7 @@ export function updateAdvConfig(cfg: string): AppThunk {
               resolve(res);
             }
           } catch {
-            reject("unexpected err parsing json");
+            reject('unexpected err parsing json');
           }
         });
       });
@@ -116,7 +111,7 @@ export function updateAdvConfig(cfg: string): AppThunk {
       .then((res) => {
         console.log(res);
         // dispatch(simActions.setAdvCfg(cfg));
-        dispatch(simActions.setAdvCfgErr(""));
+        dispatch(simActions.setAdvCfgErr(''));
       })
       .catch((err) => {
         //set error state
@@ -132,26 +127,26 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
       // purge char stat from incoming
       let next = cfg;
       //purge existing characters:
-      next = next.replace(charLinesRegEx, "");
+      next = next.replace(charLinesRegEx, '');
       //pull out existing
 
-      let old = "";
-      let lastChar = "";
+      let old = '';
+      let lastChar = '';
       const matches = getState().sim.cfg.matchAll(charLinesRegEx);
       for (const match of matches) {
         let line = match[0];
         if (match[1] !== lastChar) {
-          old += "\n";
+          old += '\n';
           lastChar = match[1];
         }
         console.log(match);
         old += line;
       }
 
-      next = old + "\n" + next;
+      next = old + '\n' + next;
 
       //strip extra new lines
-      cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
+      cfg = next.replace(/(\r\n|\r|\n){2,}/g, '$1\n');
     }
     dispatch(simActions.setCfg(cfg));
     const setConfig = () =>
@@ -160,20 +155,20 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
           // console.log("done?");
           console.log(val);
           const res = JSON.parse(val);
-          console.log("config parsing done: ", res);
-          if (res.hasOwnProperty("err")) {
+          console.log('config parsing done: ', res);
+          if (res.hasOwnProperty('err')) {
             reject(res.err);
             return;
           }
           resolve(res);
         };
-        pool.queue({ cmd: "parse", payload: cfg, cb: cb });
+        pool.queue({ cmd: 'parse', payload: cfg, cb: cb });
       });
 
     setConfig().then(
       (res) => {
-        console.log("all is good");
-        dispatch(simActions.setCfgErr(""));
+        console.log('all is good');
+        dispatch(simActions.setCfgErr(''));
         //if successful then we're going to update the team based on the parsed results
         let team: Character[] = [];
         if (res.characters) {
@@ -192,15 +187,15 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
             };
           });
         }
-        console.log("updating team: ", team);
+        console.log('updating team: ', team);
         dispatch(simActions.setTeam(team));
         //check if there are any warning msgs
         if (res.errors) {
-          let msg = ""
-          res.errors.forEach(err => {
-            msg += err + "\n"
-          })
-          dispatch(simActions.setCfgErr(msg))
+          let msg = '';
+          res.errors.forEach((err) => {
+            msg += err + '\n';
+          });
+          dispatch(simActions.setCfgErr(msg));
         }
       },
       (err) => {
@@ -218,7 +213,7 @@ const charLinesRegEx =
   /^(\w+) (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
 
 export const simSlice = createSlice({
-  name: "sim",
+  name: 'sim',
   initialState: initialState,
   reducers: {
     setShowTips: (state, action: PayloadAction<boolean>) => {
@@ -255,16 +250,11 @@ export const simSlice = createSlice({
       state.adv_cfg_err = action.payload;
       return state;
     },
-    setCharacterNameAndEle: (
-      state,
-      action: PayloadAction<ICharacter>
-    ) => {
-      let key = action.payload.key;
-      if (isTraveler(key) && action.payload.element != "none")
-        key = "traveler" + action.payload.element;
+    setCharacterNameAndEle: (state, action: PayloadAction<string>) => {
+      const key = action.payload;
 
       state.team[state.edit_index].name = key;
-      state.team[state.edit_index].element = action.payload.element;
+      state.team[state.edit_index].element = CharMap[key].element;
       let cfg = updateConfig(state.team, state.cfg);
       state.cfg = cfg;
       return state;
@@ -389,5 +379,5 @@ export const simSlice = createSlice({
 export const simActions = simSlice.actions;
 
 export type SimSlice = {
-  [simSlice.name]: ReturnType<typeof simSlice["reducer"]>;
+  [simSlice.name]: ReturnType<typeof simSlice['reducer']>;
 };

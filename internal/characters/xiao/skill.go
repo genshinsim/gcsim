@@ -48,24 +48,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark)
 
-	// Text is not explicit, but assume that gaining a stack while at max still refreshes duration
-	c.a4stacks++
-	if c.a4stacks > 3 {
-		c.a4stacks = 3
-	}
-	//update the buff; this is after the snapshot so should only affect next
-	c.a4buff[attributes.DmgP] = float64(c.a4stacks) * 0.15
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(a4BuffKey, 420),
-		AffectedStat: attributes.DmgP,
-		Amount: func() ([]float64, bool) {
-			return c.a4buff, true
-		},
-	})
+	// apply A4 0.25s after cast
+	c.Core.Tasks.Add(func() {
+		// Text is not explicit, but assume that gaining a stack while at max still refreshes duration
+		c.a4stacks++
+		if c.a4stacks > 3 {
+			c.a4stacks = 3
+		}
+		c.a4buff[attributes.DmgP] = float64(c.a4stacks) * 0.15
+		c.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBaseWithHitlag(a4BuffKey, 420),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				return c.a4buff, atk.Info.AttackTag == combat.AttackTagElementalArt
+			},
+		})
+	}, 15)
 
 	// Cannot create energy during burst uptime
 	if !c.StatusIsActive(burstBuffKey) {
-		c.Core.QueueParticle("xiao", 3, attributes.Anemo, skillHitmark+c.Core.Flags.ParticleDelay)
+		c.Core.QueueParticle("xiao", 3, attributes.Anemo, skillHitmark+c.ParticleDelay)
 	}
 
 	// C6 handling - can use skill ignoring CD and without draining charges

@@ -94,7 +94,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	snap = c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), skillPressKickHitmark)
 
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressKickHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressKickHitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 6*60, skillPressCDStart)
 
@@ -126,7 +126,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 				Write("dmg bonus%", c.c2Bonus)
 		}
 	}, 18)
-	c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+c.ParticleDelay)
 
 	// Fuufuu Whirlwind Kick Hold DMG
 	ai := combat.AttackInfo{
@@ -144,7 +144,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), skillShortHoldKickHitmark)
 
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillShortHoldKickHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillShortHoldKickHitmark+c.ParticleDelay)
 
 	// 6.2s cooldown
 	c.SetCDWithDelay(action.ActionSkill, 372, 30)
@@ -181,7 +181,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		}, 18+i)
 
 		if i%180 == 0 { // 3s
-			c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+i+c.Core.Flags.ParticleDelay)
+			c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+i+c.ParticleDelay)
 		}
 	}
 
@@ -201,7 +201,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), (skillHoldKickHitmark-600)+duration)
 
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, (skillHoldKickHitmark-600)+duration+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, (skillHoldKickHitmark-600)+duration+c.ParticleDelay)
 
 	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
 	c.SetCDWithDelay(action.ActionSkill, int(6*60+float64(duration)*0.5), (skillHoldCDStart-600)+duration+2)

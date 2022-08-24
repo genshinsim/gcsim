@@ -9,12 +9,25 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var burstFrames []int
+var burstFrames [][]int
 
-const burstHitmark = 60
+const burstHitmark = 37
 
 func init() {
-	burstFrames = frames.InitAbilSlice(60)
+	burstFrames = make([][]int, 2)
+
+	// Male
+	burstFrames[0] = frames.InitAbilSlice(63) // Q -> E
+	burstFrames[0][action.ActionAttack] = 62  // Q -> N1
+	burstFrames[0][action.ActionDash] = 62    // Q -> D
+	burstFrames[0][action.ActionJump] = 61    // Q -> J
+	burstFrames[0][action.ActionSwap] = 60    // Q -> Swap
+
+	// Female
+	burstFrames[0] = frames.InitAbilSlice(62) // Q -> E/D
+	burstFrames[0][action.ActionAttack] = 61  // Q -> N1
+	burstFrames[0][action.ActionJump] = 61    // Q -> J
+	burstFrames[0][action.ActionSwap] = 61    // Q -> Swap
 }
 
 /**
@@ -36,11 +49,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, burstHitmark)
 
-	//1573 start, 1610 cd starts, 1612 energy drained, 1633 first swapable
-	c.ConsumeEnergy(42)
-	c.SetCD(action.ActionBurst, 1200+37)
+	c.SetCDWithDelay(action.ActionBurst, 1200, 35)
+	c.ConsumeEnergy(37)
 
-	c.Core.Status.Add("travelerelectroburst", 720) // 12s
+	// emc burst is not hitlag extendable
+	c.Core.Status.Add("travelerelectroburst", 720) // 12s, starts on cast
 
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -60,9 +73,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstSrc = c.Core.F
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(burstFrames),
-		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),
+		AnimationLength: burstFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   burstFrames[c.gender][action.ActionJump], // earliest cancel
 		State:           action.BurstState,
 	}
 }

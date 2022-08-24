@@ -22,7 +22,7 @@ func init() {
 }
 
 // Standard charge attack
-func (c *char) Charge(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		AttackTag:  combat.AttackTagExtra,

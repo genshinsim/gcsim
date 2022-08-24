@@ -68,7 +68,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), skillPressHitmark, skillPressHitmark)
 
 	// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
-	c.Core.QueueParticle("shenhe", 3, attributes.Cryo, skillPressHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("shenhe", 3, attributes.Cryo, skillPressHitmark+c.ParticleDelay)
 
 	c.Core.Tasks.Add(func() { c.skillPressBuff() }, skillPressCDStart+1)
 	c.SetCDWithDelay(action.ActionSkill, 10*60, skillPressCDStart)
@@ -96,7 +96,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), skillHoldHitmark, skillHoldHitmark)
 
 	// Particle spawn timing is a bit later than press E
-	c.Core.QueueParticle("shenhe", 4, attributes.Cryo, skillHoldHitmark+c.Core.Flags.ParticleDelay)
+	c.Core.QueueParticle("shenhe", 4, attributes.Cryo, skillHoldHitmark+c.ParticleDelay)
 
 	c.Core.Tasks.Add(func() { c.skillHoldBuff() }, skillHoldCDStart+1)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
@@ -193,14 +193,7 @@ func (c *char) quillDamageMod() {
 
 			atk.Info.FlatDmg += amt
 			if c.Base.Cons >= 4 {
-				//reset stacks to zero if all expired
-				if !c.StatusIsActive(c4BuffKey) {
-					c.c4count = 0
-				}
-				if c.c4count < 50 {
-					c.c4count++
-				}
-				c.AddStatus(c4BuffKey, 3600, true) // 60 s
+				atk.Callbacks = append(atk.Callbacks, c.c4cb)
 			}
 		}
 

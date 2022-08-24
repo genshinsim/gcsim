@@ -11,7 +11,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 11 // Initial Hit
+const (
+	skillHitmark     = 11 // Initial Hit
+	hpDrainThreshold = 0.2
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52) // E -> Q
@@ -22,11 +25,18 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	//remove some hp
-	if 0.7*(c.HPCurrent/c.MaxHP()) > 0.2 {
-		c.HPCurrent = 0.7 * c.HPCurrent
-	} else if (c.HPCurrent / c.MaxHP()) > 0.2 { //check if below 20%
-		c.HPCurrent = 0.2 * c.MaxHP()
+	// only drain HP when above 20% HP
+	if c.HPCurrent/c.MaxHP() > hpDrainThreshold {
+		hpdrain := 0.3 * c.HPCurrent
+		// The HP consumption from using this skill can only bring her to 20% HP.
+		if (c.HPCurrent-hpdrain)/c.MaxHP() <= hpDrainThreshold {
+			hpdrain = c.HPCurrent - hpDrainThreshold*c.MaxHP()
+		}
+		c.Core.Player.Drain(player.DrainInfo{
+			ActorIndex: c.Index,
+			Abil:       "Sanctifying Ring",
+			Amount:     hpdrain,
+		})
 	}
 
 	ai := combat.AttackInfo{
@@ -61,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Write("next expected tick", c.Core.F+90)
 	}, 23)
 
-	c.SetCDWithDelay(action.ActionSkill, 90, 7)
+	c.SetCDWithDelay(action.ActionSkill, 15*60, 7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -108,7 +118,7 @@ func (c *char) bellTick() func() {
 		//check for orb
 		//Particle check is 45% for particle
 		if c.Core.Rand.Float64() < .45 {
-			c.Core.QueueParticle("kuki", 1, attributes.Electro, c.Core.Flags.ParticleDelay) // TODO: idk the particle timing yet fml (or probability)
+			c.Core.QueueParticle("kuki", 1, attributes.Electro, c.ParticleDelay) // TODO: idk the particle timing yet fml (or probability)
 		}
 
 		//queue up next hit only if next hit bell is still active

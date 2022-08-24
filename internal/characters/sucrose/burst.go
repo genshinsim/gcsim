@@ -26,6 +26,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		duration = 480
 	}
 
+	// reset location
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
 	c.qInfused = attributes.NoElement
 
 	c.Core.Status.Add("sucroseburst", duration)
@@ -67,12 +69,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 137; i <= duration+5; i += 113 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), i, cb)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5, false, combat.TargettableEnemy), i, cb)
 
 		c.Core.Tasks.Add(func() {
 			if c.qInfused != attributes.NoElement {
 				aiAbs.Element = c.qInfused
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5, false, combat.TargettableEnemy), 0)
 			}
 			//check if infused
 		}, i)
