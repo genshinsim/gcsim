@@ -19,7 +19,7 @@ var SetNameToKey = map[string]keys.Set{
 	"cwof":                   keys.CrimsonWitchOfFlames,
 	"cw":                     keys.CrimsonWitchOfFlames,
 	"crimson":                keys.CrimsonWitchOfFlames,
-	"witch":                  keys.CrimsonWitchOfFlames
+	"witch":                  keys.CrimsonWitchOfFlames,
 	"deepwoodmemories":       keys.DeepwoodMemories,
 	"defenderswill":          keys.DefendersWill,
 	"defenders":              keys.DefendersWill,
