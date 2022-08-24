@@ -36,7 +36,7 @@ var SetNameToKey = map[string]keys.Set{
 	"glad":                   keys.GladiatorsFinale,
 	"gladiators":             keys.GladiatorsFinale,
 	"gildeddreams":           keys.GildedDreams,
-	"glided":                 keys.GildedDreams,
+	"gilded":                 keys.GildedDreams,
 	"gd":                     keys.GildedDreams,
 	"heartofdepth":           keys.HeartOfDepth,
 	"hod":                    keys.HeartOfDepth,
