@@ -3,6 +3,7 @@ package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -75,11 +76,18 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 
 	//grab a snapshot for each char
 	for i, c := range s.C.Player.Chars() {
-		stats := c.Snapshot(&combat.AttackInfo{
+		snap := c.Snapshot(&combat.AttackInfo{
 			Abil:      "stats-check",
 			AttackTag: combat.AttackTagNone,
 		})
-		s.stats.CharDetails[i].SnapshotStats = stats.Stats[:]
+		//convert all atk%, def% and hp% into flat amounts by tacking on base
+		snap.Stats[attributes.HP] += c.Base.HP * (1 + snap.Stats[attributes.HPP])
+		snap.Stats[attributes.DEF] += c.Base.Def * (1 + snap.Stats[attributes.DEFP])
+		snap.Stats[attributes.ATK] += (c.Base.Atk + c.Weapon.Atk) * (1 + snap.Stats[attributes.ATKP])
+		snap.Stats[attributes.HPP] = 0
+		snap.Stats[attributes.DEFP] = 0
+		snap.Stats[attributes.ATKP] = 0
+		s.stats.CharDetails[i].SnapshotStats = snap.Stats[:]
 		s.stats.CharDetails[i].Element = c.Base.Element.String()
 		s.stats.CharDetails[i].Weapon.Name = c.Weapon.Key.String()
 	}
