@@ -18,6 +18,13 @@ const (
 	SwirlCryo          ReactionType = "swirl-cryo"
 	ElectroCharged     ReactionType = "electrocharged"
 	Shatter            ReactionType = "shatter"
+	Burning            ReactionType = "burning"
+	Quicken            ReactionType = "quicken"
+	Aggravate          ReactionType = "aggravate"
+	Spread             ReactionType = "spread"
+	Bloom              ReactionType = "bloom"
+	Burgeon            ReactionType = "Burgeon"
+	Hyperbloom         ReactionType = "Hyperbloom"
 	NoReaction         ReactionType = ""
 	FreezeExtend       ReactionType = "FreezeExtend"
 )
