@@ -19,13 +19,42 @@ func init() {
 }
 
 type Set struct {
-	atkCount int
-	emCount  int
-	Index    int
+	buff  []float64
+	c     *core.Core
+	char  *character.CharWrapper
+	Index int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error      { return nil }
+
+func (s *Set) Init() error {
+	emCount := 0
+	atkCount := 0
+
+	for _, this := range s.c.Player.Chars() {
+		if s.char.Index == this.Index {
+			continue
+		}
+		if this.Base.Element != s.char.Base.Element {
+			emCount++
+		} else {
+			atkCount++
+		}
+	}
+
+	if emCount > 3 {
+		emCount = 3
+	}
+	if atkCount > 3 {
+		atkCount = 3
+	}
+
+	s.buff = make([]float64, attributes.EndStatType)
+	s.buff[attributes.EM] = 50 * float64(emCount)
+	s.buff[attributes.ATKP] = 0.14 * float64(atkCount)
+
+	return nil
+}
 
 // 2-Piece Bonus: Elemental Mastery +80.
 // 4-Piece Bonus: Within 8s of triggering an Elemental Reaction, the character equipping this will obtain buffs based on the Elemental
@@ -34,7 +63,10 @@ func (s *Set) Init() error      { return nil }
 // buffs will count up to 3 characters. This effect can be triggered once every 8s. The character who equips this can still trigger its
 // effects when not on the field.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
-	s := Set{}
+	s := Set{
+		c:    c,
+		char: char,
+	}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -57,40 +89,16 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			s.emCount = 0
-			s.atkCount = 0
-
-			for _, this := range c.Player.Chars() {
-				if char.Index == this.Index {
-					continue
-				}
-				if this.Base.Element != char.Base.Element {
-					s.emCount++
-				} else {
-					s.atkCount++
-				}
-			}
-
-			if s.emCount > 3 {
-				s.emCount = 3
-			}
-			if s.atkCount > 3 {
-				s.atkCount = 3
-			}
-
-			m := make([]float64, attributes.EndStatType)
-			m[attributes.EM] = 50 * float64(s.emCount)
-			m[attributes.ATKP] = 0.14 * float64(s.atkCount)
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase("gd-4pc", 8*60),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
-					return m, true
+					return s.buff, true
 				},
 			})
 			c.Log.NewEvent("gilde ddreams proc'd", glog.LogArtifactEvent, char.Index).
-				Write("em", s.emCount).
-				Write("atk", s.atkCount)
+				Write("em", s.buff[attributes.EM]).
+				Write("atk", s.buff[attributes.ATKP])
 			return false
 		}
 
