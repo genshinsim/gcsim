@@ -119,7 +119,7 @@ func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	case strings.HasPrefix(m.Content, "!deletesim"):
 		if b.adminChanCheck(m) {
-			b.Approve(s, m)
+			b.Delete(s, m)
 		}
 	}
 
