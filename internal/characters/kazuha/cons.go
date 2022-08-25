@@ -13,37 +13,46 @@ import (
 // - Increases Kaedehara Kazuha's own Elemental Mastery by 200 for its duration.
 // - Increases the Elemental Mastery of characters within the field by 200.
 // The Elemental Mastery-increasing effects of this Constellation do not stack.
-func (c *char) c2() {
-	// don't tick if Q isn't up anymore
-	if c.Core.Status.Duration(burstStatus) == 0 {
-		return
-	}
+func (c *char) c2(src int) func() {
+	return func() {
+		// don't tick if src changed
+		if c.qFieldSrc != src {
+			c.Core.Log.NewEvent("kazuha q src check ignored, src diff", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("new src", c.qFieldSrc)
+			return
+		}
+		// don't tick if Q isn't up anymore
+		if c.Core.Status.Duration(burstStatus) == 0 {
+			return
+		}
 
-	c.Core.Log.NewEvent("kazuha-c2 ticking", glog.LogCharacterEvent, -1)
+		c.Core.Log.NewEvent("kazuha-c2 ticking", glog.LogCharacterEvent, -1)
 
-	// apply C2 buff to active char for 1s
-	active := c.Core.Player.ActiveChar()
-	active.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
-		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
-			return c.c2buff, true
-		},
-	})
-
-	// apply C2 buff to Kazuha (even if off-field) for 1s
-	if active.Base.Key != c.Base.Key {
-		c.AddStatMod(character.StatMod{
+		// apply C2 buff to active char for 1s
+		active := c.Core.Player.ActiveChar()
+		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return c.c2buff, true
 			},
 		})
-	}
 
-	// check again in 0.5s
-	c.Core.Tasks.Add(c.c2, 30)
+		// apply C2 buff to Kazuha (even if off-field) for 1s
+		if active.Base.Key != c.Base.Key {
+			c.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
+				AffectedStat: attributes.EM,
+				Amount: func() ([]float64, bool) {
+					return c.c2buff, true
+				},
+			})
+		}
+
+		// check again in 0.5s
+		c.Core.Tasks.Add(c.c2(src), 30)
+	}
 }
 
 // C6

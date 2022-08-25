@@ -18,6 +18,7 @@ type char struct {
 	*tmpl.Character
 	a1Ele               attributes.Element
 	qInfuse             attributes.Element
+	qFieldSrc           int
 	infuseCheckLocation combat.AttackPattern
 	c2buff              []float64
 }

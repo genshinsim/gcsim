@@ -81,7 +81,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// -> For now, assume that it doesn't.
 		c.Core.Status.Add(burstStatus, (burstFirstTick-(burstHitmark+1))+117*4)
 		if c.Base.Cons >= 2 {
-			c.Core.Tasks.Add(c.c2, 30) // start checking in 0.5s
+			c.qFieldSrc = c.Core.F
+			c.Core.Tasks.Add(c.c2(c.Core.F), 30) // start checking in 0.5s
 		}
 		// C6:
 		// TODO: when does the infusion kick in?
