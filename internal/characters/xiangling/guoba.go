@@ -13,8 +13,6 @@ import (
 type panda struct {
 	*target.Target
 	*reactable.Reactable
-	pyroWindowStart int
-	pyroWindowEnd   int
 }
 
 func newGuoba(c *core.Core) *panda {
@@ -40,15 +38,16 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 		return 0, false
 	}
 	//check pyro window
-	if p.Core.F < p.pyroWindowStart || p.Core.F > p.pyroWindowEnd {
+	if p.Durability[attributes.Pyro] <= 0 {
 		return 0, false
 	}
 
 	//cheat a bit, set the durability just enough to match incoming sucrose E gauge
-	p.Durability[attributes.Pyro] = 25
+	oldDur := p.Durability[attributes.Pyro]
+	p.Durability[attributes.Pyro] = infuseDurability
 	p.React(atk)
-	//wipe out the durability after
-	p.Durability[attributes.Pyro] = 0
+	// restore the durability after
+	p.Durability[attributes.Pyro] = oldDur
 
 	return 0, false
 }
