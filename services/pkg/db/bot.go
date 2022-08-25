@@ -101,9 +101,7 @@ func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case strings.HasPrefix(m.Content, "!db"):
 		b.DBList(s, m)
 	case strings.HasPrefix(m.Content, "!list"):
-		if b.adminChanCheck(m) {
-			b.List(s, m)
-		}
+		b.List(s, m)
 	case strings.HasPrefix(m.Content, "!ok"):
 		if b.adminChanCheck(m) {
 			b.Approve(s, m)
@@ -145,7 +143,7 @@ func (b *Bot) DBList(s *discordgo.Session, m *discordgo.MessageCreate) {
 		count := 0
 		var sb strings.Builder
 		for _, v := range sims {
-			sb.WriteString(fmt.Sprintf("<https://gcsim.app/v3/viewer/share/%v>: %v\n", v.Description, v.Key))
+			sb.WriteString(fmt.Sprintf("<https://gcsim.app/v3/viewer/share/%v>: %v\n", v.Key, v.Description))
 			count++
 			if count == 15 {
 				s.ChannelMessageSend(m.ChannelID, sb.String())
