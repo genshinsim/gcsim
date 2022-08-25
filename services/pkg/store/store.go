@@ -79,6 +79,7 @@ type SimDBStore interface {
 	Add(entry DBEntry) (int64, error)
 	Replace(key string, entry DBEntry) (int64, error)
 	List(char string) ([]SimInfo, error)
+	Delete(key string) (int64, error)
 }
 
 type PostgRESTStore struct {
@@ -93,7 +94,7 @@ func NewPostgRESTStore(url string) *PostgRESTStore {
 	}
 }
 
-func (b *PostgRESTStore) uploadDBSim(jsonStr []byte, url string) (int64, error) {
+func (b *PostgRESTStore) postRPCRequestReturnInt(jsonStr []byte, url string) (int64, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		return 0, err
@@ -122,6 +123,7 @@ func (b *PostgRESTStore) uploadDBSim(jsonStr []byte, url string) (int64, error) 
 
 	return id, nil
 }
+
 func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 	url := fmt.Sprintf(`%v/rpc/add_db_sim`, b.URL)
 	entry.AuthorString = ""
@@ -133,7 +135,21 @@ func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	return b.uploadDBSim(jsonStr, url)
+	return b.postRPCRequestReturnInt(jsonStr, url)
+}
+
+func (b *PostgRESTStore) Delete(key string) (int64, error) {
+	url := fmt.Sprintf(`%v/rpc/delete_from_db`, b.URL)
+	var data = struct {
+		Key string `json:"simulation_key"`
+	}{
+		Key: key,
+	}
+	jsonStr, err := json.Marshal(data)
+	if err != nil {
+		return 0, err
+	}
+	return b.postRPCRequestReturnInt(jsonStr, url)
 }
 
 func (b *PostgRESTStore) Replace(key string, entry DBEntry) (int64, error) {
@@ -154,7 +170,7 @@ func (b *PostgRESTStore) Replace(key string, entry DBEntry) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	return b.uploadDBSim(jsonStr, url)
+	return b.postRPCRequestReturnInt(jsonStr, url)
 }
 
 func (b *PostgRESTStore) Fetch(key string) (Simulation, error) {

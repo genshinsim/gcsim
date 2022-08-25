@@ -90,6 +90,7 @@ var reApprove = regexp.MustCompile(`\!ok.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-
 var reReject = regexp.MustCompile(`\!reject.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}) (.+)`)
 var reReplace = regexp.MustCompile(`(?m)\!replace.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}).+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
 var reDBList = regexp.MustCompile(`(?m)!db ([a-z]+)`)
+var reDeleteSim = regexp.MustCompile(`(?m)!deletekey ([a-z]+)`)
 
 func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
@@ -115,6 +116,10 @@ func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case strings.HasPrefix(m.Content, "!replace"):
 		if b.adminChanCheck(m) {
 			b.Replace(s, m)
+		}
+	case strings.HasPrefix(m.Content, "!deletesim"):
+		if b.adminChanCheck(m) {
+			b.Approve(s, m)
 		}
 	}
 
@@ -396,6 +401,21 @@ func (b *Bot) Replace(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v sucessfully replaced %v in db with id %v", match[1], match[2], id))
+}
+
+func (b *Bot) Delete(s *discordgo.Session, m *discordgo.MessageCreate) {
+	match := reReplace.FindStringSubmatch(m.Content)
+	if len(match) == 0 {
+		s.ChannelMessageSend(m.ChannelID, "Invalid !ok command")
+		return
+	}
+	id, err := b.Store.Delete(match[1])
+	if err != nil {
+		b.Log.Warnw("err deleting key", "err", err)
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Error deleting %v: %v", match[1], err))
+		return
+	}
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%v deleted ok - db id: %v", match[1], id))
 }
 
 func (b *Bot) ShowConfig(s *discordgo.Session, m *discordgo.MessageCreate) {
