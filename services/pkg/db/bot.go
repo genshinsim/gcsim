@@ -89,6 +89,7 @@ var reSubmit = regexp.MustCompile(`\!submit.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-
 var reApprove = regexp.MustCompile(`\!ok.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
 var reReject = regexp.MustCompile(`\!reject.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}) (.+)`)
 var reReplace = regexp.MustCompile(`(?m)\!replace.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}).+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
+var reDBList = regexp.MustCompile(`(?m)!db ([a-z]+)`)
 
 func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
@@ -97,6 +98,8 @@ func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	switch {
+	case strings.HasPrefix(m.Content, "!db"):
+		b.DBList(s, m)
 	case strings.HasPrefix(m.Content, "!list"):
 		if b.adminChanCheck(m) {
 			b.List(s, m)
@@ -121,6 +124,41 @@ func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func (b *Bot) adminChanCheck(m *discordgo.MessageCreate) bool {
 	return b.cfg.AdminChannelID == m.ChannelID
+}
+
+func (b *Bot) DBList(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	match := reDBList.FindStringSubmatch(m.Content)
+	if len(match) == 0 {
+		s.ChannelMessageSend(m.ChannelID, "Invalid !db command")
+		return
+	}
+
+	sims, err := b.Store.List(match[1])
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Error retrieving sims for char  %v", match[1]))
+		b.Log.Infow("error retrieving db list", "char", match[1], "err", err)
+		return
+	}
+	if len(sims) > 0 {
+		//15 lines per msg
+		count := 0
+		var sb strings.Builder
+		for _, v := range sims {
+			sb.WriteString(fmt.Sprintf("<https://gcsim.app/v3/viewer/share/%v>: %v\n", v.Description, v.Key))
+			count++
+			if count == 15 {
+				s.ChannelMessageSend(m.ChannelID, sb.String())
+				count = 0
+				sb.Reset()
+			}
+		}
+		if count > 0 {
+			s.ChannelMessageSend(m.ChannelID, sb.String())
+		}
+	} else {
+		s.ChannelMessageSend(m.ChannelID, "Nothing found for "+match[1])
+	}
 }
 
 func (b *Bot) Submit(s *discordgo.Session, m *discordgo.MessageCreate) {
