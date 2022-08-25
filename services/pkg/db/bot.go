@@ -89,8 +89,8 @@ var reSubmit = regexp.MustCompile(`\!submit.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-
 var reApprove = regexp.MustCompile(`\!ok.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
 var reReject = regexp.MustCompile(`\!reject.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}) (.+)`)
 var reReplace = regexp.MustCompile(`(?m)\!replace.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}).+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
-var reDBList = regexp.MustCompile(`(?m)!db ([a-z]+)`)
-var reDeleteSim = regexp.MustCompile(`(?m)!deletekey ([a-z]+)`)
+var reDBList = regexp.MustCompile(`\!db ([a-z]+)`)
+var reDeleteSim = regexp.MustCompile(`\!deletesim.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
 
 func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
@@ -406,7 +406,7 @@ func (b *Bot) Replace(s *discordgo.Session, m *discordgo.MessageCreate) {
 func (b *Bot) Delete(s *discordgo.Session, m *discordgo.MessageCreate) {
 	match := reDeleteSim.FindStringSubmatch(m.Content)
 	if len(match) == 0 {
-		s.ChannelMessageSend(m.ChannelID, "Invalid !ok command")
+		s.ChannelMessageSend(m.ChannelID, "Invalid !deletesim command")
 		return
 	}
 	id, err := b.Store.Delete(match[1])
