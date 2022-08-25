@@ -404,7 +404,7 @@ func (b *Bot) Replace(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func (b *Bot) Delete(s *discordgo.Session, m *discordgo.MessageCreate) {
-	match := reReplace.FindStringSubmatch(m.Content)
+	match := reDeleteSim.FindStringSubmatch(m.Content)
 	if len(match) == 0 {
 		s.ChannelMessageSend(m.ChannelID, "Invalid !ok command")
 		return
