@@ -96,7 +96,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return s.buff, true
 				},
 			})
-			c.Log.NewEvent("gilde ddreams proc'd", glog.LogArtifactEvent, char.Index).
+			c.Log.NewEvent("gilded dreams proc'd", glog.LogArtifactEvent, char.Index).
 				Write("em", s.buff[attributes.EM]).
 				Write("atk", s.buff[attributes.ATKP])
 			return false
