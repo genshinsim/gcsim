@@ -94,7 +94,6 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		case attributes.Dendro:
 			r.trySpread(a)
 			r.tryQuicken(a)
-			r.tryRefillAttach(a)
 		default:
 			//do nothing
 			return
@@ -305,13 +304,6 @@ func (r *Reactable) Tick() {
 			r.ecTickSrc = -1
 		}
 	}
-}
-
-func (r *Reactable) tryRefillAttach(a *combat.AttackEvent) {
-	//try refill first - this will use up all durability if ok
-	r.tryRefill(a.Info.Element, &a.Info.Durability)
-	//otherwise attach
-	r.tryAttach(a.Info.Element, &a.Info.Durability)
 }
 
 var reactionLvlBase = []float64{
