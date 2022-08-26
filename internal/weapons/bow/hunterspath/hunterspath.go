@@ -44,7 +44,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	for i := attributes.PyroP; i <= attributes.DendroP; i++ {
 		val[i] = dmgBonus
 	}
-	val[attributes.PhyP] = 0
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("hunterspath-dmg-bonus", -1),
 		AffectedStat: attributes.NoStat,
