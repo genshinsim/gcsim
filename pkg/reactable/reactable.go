@@ -64,9 +64,11 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		//TODO: double check order of reactions
 		switch a.Info.Element {
 		case attributes.Electro:
+			r.tryAggravate(a)
 			r.tryOverload(a)
 			r.tryFrozenSuperconduct(a)
 			r.trySuperconduct(a)
+			r.tryQuicken(a)
 			r.tryAddEC(a)
 		case attributes.Pyro:
 			r.tryOverload(a)
@@ -90,8 +92,9 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		case attributes.Geo:
 			r.tryCrystallize(a)
 		case attributes.Dendro:
-			//nothing yet
-
+			r.trySpread(a)
+			r.tryQuicken(a)
+			r.tryRefillAttach(a)
 		default:
 			//do nothing
 			return
@@ -177,6 +180,18 @@ func (r *Reactable) calcReactionDmg(atk combat.AttackInfo, em float64) float64 {
 		lvl = 0
 	}
 	return (1 + ((16 * em) / (2000 + em)) + r.core.Player.ByIndex(atk.ActorIndex).ReactBonus(atk)) * reactionLvlBase[lvl]
+}
+
+func (r *Reactable) calcCatalyzeDmg(atk combat.AttackInfo, em float64) float64 {
+	char := r.core.Player.ByIndex(atk.ActorIndex)
+	lvl := char.Base.Level - 1
+	if lvl > 89 {
+		lvl = 89
+	}
+	if lvl < 0 {
+		lvl = 0
+	}
+	return (1 + ((5 * em) / (1200 + em)) + r.core.Player.ByIndex(atk.ActorIndex).ReactBonus(atk)) * reactionLvlBase[lvl]
 }
 
 func (r *Reactable) attach(e attributes.Element, dur combat.Durability, m combat.Durability) {
@@ -290,6 +305,13 @@ func (r *Reactable) Tick() {
 			r.ecTickSrc = -1
 		}
 	}
+}
+
+func (r *Reactable) tryRefillAttach(a *combat.AttackEvent) {
+	//try refill first - this will use up all durability if ok
+	r.tryRefill(a.Info.Element, &a.Info.Durability)
+	//otherwise attach
+	r.tryAttach(a.Info.Element, &a.Info.Durability)
 }
 
 var reactionLvlBase = []float64{

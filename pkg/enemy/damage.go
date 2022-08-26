@@ -88,7 +88,7 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	emBonus := (2.78 * em) / (1400 + em)
 	var reactBonus float64
 	//check melt/vape
-	if atk.Info.Amped {
+	if atk.Info.AmpType == combat.Melt || atk.Info.AmpType == combat.Vaporize {
 		reactBonus = t.Core.Player.ByIndex(atk.Info.ActorIndex).ReactBonus(atk.Info)
 		// t.Core.Log.Debugw("debug", "frame", t.Core.F, core.LogPreDamageMod, "char", t.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
 		damage = damage * (atk.Info.AmpMult * (1 + emBonus + reactBonus))

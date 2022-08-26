@@ -28,6 +28,9 @@ const (
 	OnCrystallizeCryo
 	OnCrystallizeElectro
 	OnCrystallizePyro
+	OnAggravate //target, AttackEvent
+	OnSpread    //target, AttackEvent
+	OnQuicken
 	ReactionEventEndDelim
 	//other stuff
 	OnStamUse          //abil

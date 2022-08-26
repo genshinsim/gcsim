@@ -15,10 +15,11 @@ const (
 	Pyro
 	Cryo
 	Hydro
+	Dendro
+	Quicken
 	Frozen
 	ElementDelimAttachable
 	Anemo
-	Dendro
 	Geo
 	NoElement
 	Physical
@@ -55,10 +56,11 @@ var ElementString = [...]string{
 	"pyro",
 	"cryo",
 	"hydro",
+	"dendro",
+	"quicken",
 	"frozen",
 	"delim",
 	"anemo",
-	"dendro",
 	"geo",
 	"",
 	"physical",

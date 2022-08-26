@@ -8,6 +8,8 @@ const (
 	Freeze             ReactionType = "freeze"
 	Melt               ReactionType = "melt"
 	Vaporize           ReactionType = "vaporize"
+	Aggravate          ReactionType = "aggravate"
+	Spread             ReactionType = "spread"
 	CrystallizeElectro ReactionType = "crystallize-electro"
 	CrystallizeHydro   ReactionType = "crystallize-hydro"
 	CrystallizePyro    ReactionType = "crystallize-pyro"
