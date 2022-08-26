@@ -10,6 +10,7 @@ const (
 	Vaporize           ReactionType = "vaporize"
 	Aggravate          ReactionType = "aggravate"
 	Spread             ReactionType = "spread"
+	Quicken            ReactionType = "quicken"
 	CrystallizeElectro ReactionType = "crystallize-electro"
 	CrystallizeHydro   ReactionType = "crystallize-hydro"
 	CrystallizePyro    ReactionType = "crystallize-pyro"

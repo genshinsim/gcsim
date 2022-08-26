@@ -101,6 +101,9 @@ func (s *Simulation) initDetailLog() {
 		event.OnCrystallizeElectro: combat.CrystallizeElectro,
 		event.OnCrystallizeHydro:   combat.CrystallizeHydro,
 		event.OnCrystallizePyro:    combat.CrystallizePyro,
+		event.OnAggravate:          combat.Aggravate,
+		event.OnSpread:             combat.Spread,
+		event.OnQuicken:            combat.Quicken,
 	}
 
 	for k, v := range reactions {
