@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -29,10 +30,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	s := Set{}
 
 	if count >= 2 {
-		char.AddHealBonusMod(character.HealBonusMod{
-			Base: modifier.NewBase("maiden-2pc", -1),
-			Amount: func() (float64, bool) {
-				return 0.15, false
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.Heal] = 0.15
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("maiden-2pc", -1),
+			AffectedStat: attributes.Heal,
+			Amount: func() ([]float64, bool) {
+				return m, true
 			},
 		})
 	}
