@@ -14,6 +14,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	buffKey = "hunterspath-tireless-hunt"
+	icdKey = "hunterspath-icd"
+)
+
 func init() {
 	core.RegisterWeaponFunc(keys.HuntersPath, NewWeapon)
 }
@@ -60,20 +65,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't
 		// have extra damage.
-		if !char.StatusIsActive("hunterspath-icd") {
-			char.AddStatus("hunterspath-tireless-hunt", 600, true)
-			char.AddStatus("hunterspath-icd", 720, true)
+		if !char.StatusIsActive(icdKey) {
+			char.AddStatus(buffKey, 600, true)
+			char.AddStatus(icdKey, 720, true)
 			procCount = 12
 			return false
 		}
-		if !char.StatusIsActive("hunterspath-tireless-hunt") {
+		if !char.StatusIsActive(buffKey) {
 			return false
 		}
 		baseDmgAdd := atk.Snapshot.Stats[attributes.EM] * caBoost
 		atk.Info.FlatDmg += baseDmgAdd
 		procCount -= 1
 		if procCount <= 0 {
-			char.DeleteStatus("hunterspath-tireless-hunt")
+			char.DeleteStatus(buffKey)
 		}
 		c.Log.NewEvent("hunterspath proc dmg add", glog.LogPreDamageMod, char.Index).
 			Write("base_added_dmg", baseDmgAdd).
