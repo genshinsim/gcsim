@@ -108,6 +108,7 @@ const (
 	Yelan
 	Kuki
 	Heizou
+	Tighnari
 	EndCharKeys
 )
 
@@ -180,6 +181,7 @@ var charNames = []string{
 	"yelan",
 	"kuki",
 	"heizou",
+	"tighnari",
 }
 
 var charPrettyName = []string{
@@ -251,6 +253,7 @@ var charPrettyName = []string{
 	"Yelan",
 	"Kuki",
 	"Heizou",
+	"Tighnari",
 }
 
 var CharKeyToEle = map[Char]attributes.Element{
@@ -318,4 +321,5 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Yelan:         attributes.Hydro,
 	Kuki:          attributes.Electro,
 	Heizou:        attributes.Anemo,
+	Tighnari:      attributes.Dendro,
 }
