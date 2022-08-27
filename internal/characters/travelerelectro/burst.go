@@ -24,10 +24,10 @@ func init() {
 	burstFrames[0][action.ActionSwap] = 60    // Q -> Swap
 
 	// Female
-	burstFrames[0] = frames.InitAbilSlice(62) // Q -> E/D
-	burstFrames[0][action.ActionAttack] = 61  // Q -> N1
-	burstFrames[0][action.ActionJump] = 61    // Q -> J
-	burstFrames[0][action.ActionSwap] = 61    // Q -> Swap
+	burstFrames[1] = frames.InitAbilSlice(62) // Q -> E/D
+	burstFrames[1][action.ActionAttack] = 61  // Q -> N1
+	burstFrames[1][action.ActionJump] = 61    // Q -> J
+	burstFrames[1][action.ActionSwap] = 61    // Q -> Swap
 }
 
 /**
