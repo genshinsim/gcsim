@@ -45,7 +45,7 @@ func (c *char) meleeApplyRiptide(a combat.AttackCB) {
 func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 	if c.Base.Cons >= 4 && !t.StatusIsActive(riptideKey) {
 		c.c4Src = c.Core.F
-		t.QueueEnemyTask(c.rtC4Tick(c.Core.F, t), 60*4)
+		t.QueueEnemyTask(c.rtC4Tick(c.Core.F, t), 60*3.9)
 	}
 
 	t.AddStatus(riptideKey, riptideDuration, true)
@@ -78,7 +78,7 @@ func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 			c.rtFlashTick(t)
 		}
 
-		t.QueueEnemyTask(c.rtC4Tick(src, t), 60*4)
+		t.QueueEnemyTask(c.rtC4Tick(src, t), 60*3.9)
 		c.Core.Log.NewEvent("tartaglia c4 applied", glog.LogCharacterEvent, c.Index).
 			Write("src", src).
 			Write("target", t.Index())
