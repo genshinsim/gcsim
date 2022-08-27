@@ -1,4 +1,4 @@
-package venti
+package tighnari
 
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
