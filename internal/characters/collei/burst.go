@@ -49,6 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(func() {
 			c.burstTicks(snap)
 		}, leapHitmark-fieldStart)
+		c.burstA4Ticks()
 	}, fieldStart)
 
 	c.c4()
@@ -87,4 +88,13 @@ func (c *char) burstTicks(snap combat.Snapshot) {
 	c.Core.Tasks.Add(func() {
 		c.burstTicks(snap)
 	}, leapTickPeriod)
+}
+
+func (c *char) burstA4Ticks() {
+	// TODO: add range check within field
+	if !c.StatusIsActive(burstKey) {
+		return
+	}
+	c.Core.Player.ActiveChar().AddStatus(a4Key, 60, true)
+	c.Core.Tasks.Add(func() { c.burstA4Ticks() }, 30)
 }

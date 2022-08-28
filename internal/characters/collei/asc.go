@@ -10,6 +10,7 @@ const (
 	sproutKey        = "collei-sprout"
 	sproutHitmark    = 86
 	sproutTickPeriod = 89
+	a4Key            = "collei-a4-modcheck"
 )
 
 func (c *char) a1Init() {
@@ -28,13 +29,14 @@ func (c *char) a1Init() {
 func (c *char) a4() {
 	for _, event := range dendroEvents {
 		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
-			if !c.StatusIsActive(burstKey) {
+			atk := args[1].(*combat.AttackEvent)
+			char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
+			if !char.StatusIsActive(a4Key) {
 				return false
 			}
 			if c.burstExtendCount >= 3 {
 				return false
 			}
-			// TODO: check for increment ICD
 			c.ExtendStatus(burstKey, 60)
 			c.burstExtendCount++
 			c.Core.Log.NewEvent("collei a4 proc", glog.LogCharacterEvent, c.Index).
