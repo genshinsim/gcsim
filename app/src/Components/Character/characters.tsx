@@ -121,7 +121,7 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
   },
   travelerdendro: {
     key: 'travelerdendro',
-    element: 'geo',
+    element: 'dendro',
     weapon_type: 'Sword',
   },
 };
