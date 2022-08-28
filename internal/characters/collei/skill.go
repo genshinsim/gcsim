@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
+const skillKey = "collei-skill"
+
 var (
 	skillHitmarks = []int{50, 100} // TODO actual hitmarks
 	skillFrames   []int
@@ -28,7 +30,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-
 	snap := c.Snapshot(&ai) // TODO: snapshot timing
 	c.Core.QueueAttackWithSnap(
 		ai,
@@ -36,6 +37,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 		skillHitmarks[0],
 	)
+	c.AddStatus(skillKey, 480, false) // TODO: find boomerang return frames
 
 	// 50% chance of 3 orbs
 	count := 2.0

@@ -1,12 +1,35 @@
 package collei
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+var dendroEvents = []event.Event{event.OnOverload} // TODO: put all dendro events here
+
+const (
+	a1Key   = "collei-a1"
+	a1Delay = 60 // TODO: find actual tick rate
+)
+
+func (c *char) a1() {
+	for _, event := range dendroEvents {
+		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
+			if !c.StatusIsActive(skillKey) {
+				return false
+			}
+			c.a1StartFrame = c.Core.F
+			c.AddStatus(a1Key, 180, true) // TODO: check if status is per-char (eg off field switch)
+			c.QueueCharTask(func() { c.a1Ticks(c.a1StartFrame, a1Delay) }, a1Delay)
+			c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index)
+			return false
+		}, "collei-a1")
+	}
+}
+
 func (c *char) a4() {
-	dendroEvents := []event.Event{event.OnOverload} // TODO: put all dendro events here
 	for _, event := range dendroEvents {
 		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
 			if !c.StatusIsActive(burstKey) {
@@ -23,4 +46,33 @@ func (c *char) a4() {
 			return false
 		}, "collei-a4")
 	}
+}
+
+func (c *char) a1Ticks(startFrame int, repeatDelay int) {
+	if !c.StatusIsActive(a1Key) {
+		return
+	}
+	if startFrame != c.a1StartFrame {
+		return
+	}
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Floral Sidewinder",
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Dendro,
+		Durability: 25,
+		Mult:       0.4,
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
+		0,
+		0,
+	)
+	c.Core.Tasks.Add(func() {
+		c.a1Ticks(startFrame, repeatDelay)
+	}, repeatDelay)
 }
