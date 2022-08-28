@@ -10,16 +10,16 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = []int{17, 12, 27, 31} // TODO: put in actual frames
+var attackHitmarks = []int{16, 14, 22, 32}
 
-const normalHitNum = 5
+const normalHitNum = 4
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 21)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 26)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 55)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 24) // N1 -> N2
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 25) // N2 -> N3
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N4
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 65) // N4 -> N1
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
