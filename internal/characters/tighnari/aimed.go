@@ -104,7 +104,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		HitWeakPoint: weakspot == 1,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedWreathHitmark-skip, aimedWreathHitmark+travel-skip)
-	c.QueueCharTask(c.a1, aimedWreathHitmark-skip+1)
+	c.Core.Tasks.Add(c.a1, aimedWreathHitmark-skip+1)
 
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
