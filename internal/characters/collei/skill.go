@@ -37,13 +37,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	snap := c.Snapshot(&ai) // TODO: snapshot timing
-	c.Core.QueueAttackWithSnap(
-		ai,
-		snap,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-		skillHitmarks[0],
-	)
+	snapDelay := skillHitmarks[0]
+	for _, hitmark := range skillHitmarks {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+			snapDelay,
+			hitmark,
+		)
+	}
+
 	c.AddStatus(skillKey, skillReturn, false)
 
 	c.a1Triggered = false
@@ -61,13 +64,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		count = 3.0
 	}
 	c.Core.QueueParticle("collei", count, attributes.Cryo, skillHitmarks[0]+c.ParticleDelay)
-
-	c.Core.QueueAttackWithSnap(
-		ai,
-		snap,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-		skillHitmarks[1],
-	)
 
 	c.SetCDWithDelay(action.ActionSkill, 720, 20)
 

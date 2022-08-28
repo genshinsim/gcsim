@@ -39,16 +39,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
-		0,
 		explosionHitmark,
-	) // TODO: snapshot timing
+		explosionHitmark,
+	)
 
-	c.AddStatus(burstKey, 360, false)
-
-	snap := c.Snapshot(&ai) // TODO: snapshot timing
 	c.Core.Tasks.Add(func() {
-		c.burstTicks(snap)
-	}, leapHitmark)
+		c.AddStatus(burstKey, 360, false)
+		snap := c.Snapshot(&ai)
+		c.Core.Tasks.Add(func() {
+			c.burstTicks(snap)
+		}, leapHitmark-fieldStart)
+	}, fieldStart)
 
 	c.c4() // TODO: figure out c4 delay
 	c.SetCD(action.ActionBurst, 900)
