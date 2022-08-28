@@ -92,8 +92,6 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		skip = aimedWreathHitmark
 	}
 
-	c.a1()
-
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Wreath Arrow",
@@ -106,6 +104,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		HitWeakPoint: weakspot == 1,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedWreathHitmark-skip, aimedWreathHitmark+travel-skip)
+	c.QueueCharTask(c.a1, aimedWreathHitmark-skip+1)
 
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -117,16 +116,18 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       clusterbloom[c.TalentLvlAttack()],
 	}
-	snap := c.Snapshot(&ai)
-	for i := 0; i < 4; i++ {
-		ai.HitWeakPoint = c.Core.Rand.Float64() < .5 // random
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			aimedWreathHitmark+travel+wreathTravel-skip,
-		)
-	}
+	c.Core.Tasks.Add(func() {
+		snap := c.Snapshot(&ai)
+		for i := 0; i < 4; i++ {
+			ai.HitWeakPoint = c.Core.Rand.Float64() < .5 // random
+			c.Core.QueueAttackWithSnap(
+				ai,
+				snap,
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				travel+wreathTravel,
+			)
+		}
+	}, aimedWreathHitmark-skip)
 
 	if c.Base.Cons >= 6 {
 		ai = combat.AttackInfo{
