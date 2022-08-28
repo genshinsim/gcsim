@@ -51,12 +51,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.AddStatus(skillKey, skillReturn, false)
 
+	c.sproutShouldExtend = false
 	c.sproutShouldProc = c.Base.Cons >= 2
 	c.Core.Tasks.Add(func() {
 		if c.sproutShouldProc {
 			c.sproutSrc = c.Core.F
 			duration := 180
-			if c.c2Extended {
+			if c.sproutShouldExtend {
 				duration += 180
 			}
 			c.AddStatus(sproutKey, duration, true)

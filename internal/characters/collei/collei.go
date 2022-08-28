@@ -17,10 +17,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstExtendCount int
-	sproutShouldProc bool
-	sproutSrc        int
-	c2Extended       bool
+	burstExtendCount   int
+	sproutShouldExtend bool
+	sproutShouldProc   bool
+	sproutSrc          int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -34,7 +34,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.burstExtendCount = 0
 	c.sproutShouldProc = false
 	c.sproutSrc = 0
-	c.c2Extended = false
+	c.sproutShouldExtend = false
 
 	w.Character = &c
 
@@ -42,10 +42,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.a1Init()
+	c.a1()
 	c.a4()
 	if c.Base.Cons >= 1 {
 		c.c1()
+	}
+	if c.Base.Cons >= 2 {
+		c.c2()
 	}
 	return nil
 }

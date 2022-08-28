@@ -2,11 +2,10 @@ package collei
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-const c4BuffKey = "collei-c4"
 
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
@@ -26,13 +25,17 @@ func (c *char) c1() {
 func (c *char) c2() {
 	for _, event := range dendroEvents {
 		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
-			if c.c2Extended {
+			if c.sproutShouldExtend {
 				return false
 			}
-			c.c2Extended = c.StatusIsActive(sproutKey) || c.StatusIsActive(skillKey)
+			if !(c.StatusIsActive(sproutKey) || c.StatusIsActive(skillKey)) {
+				return false
+			}
+			c.sproutShouldExtend = true
 			if c.StatusIsActive(sproutKey) {
 				c.ExtendStatus(sproutKey, 180)
 			}
+			c.Core.Log.NewEvent("collei c2 proc", glog.LogCharacterEvent, c.Index)
 			return false
 		}, "collei-c2")
 	}
@@ -47,7 +50,7 @@ func (c *char) c4() {
 		amts := make([]float64, attributes.EndStatType)
 		amts[attributes.EM] = 80
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c4BuffKey, 720),
+			Base:         modifier.NewBaseWithHitlag("collei-c4", 720),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return amts, true

@@ -13,9 +13,12 @@ const (
 	a4Key            = "collei-a4-modcheck"
 )
 
-func (c *char) a1Init() {
+func (c *char) a1() {
 	for _, event := range dendroEvents {
 		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
+			if c.sproutShouldProc {
+				return false
+			}
 			if !c.StatusIsActive(skillKey) {
 				return false
 			}
