@@ -19,9 +19,9 @@ const (
 
 func init() {
 	burstFrames = frames.InitAbilSlice(67)
-	skillFrames[action.ActionAttack] = 65
-	skillFrames[action.ActionAim] = 65
-	skillFrames[action.ActionSwap] = 66
+	burstFrames[action.ActionAttack] = 65
+	burstFrames[action.ActionAim] = 65
+	burstFrames[action.ActionSwap] = 66
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
