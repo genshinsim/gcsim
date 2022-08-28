@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const c4BuffKey = "collei-c4"
+
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ER] = 0.2
@@ -19,4 +21,22 @@ func (c *char) c1() {
 			return nil, false
 		},
 	})
+}
+
+func (c *char) c4() {
+	for i, char := range c.Core.Player.Chars() {
+		//does not affect collei
+		if c.Index == i {
+			continue
+		}
+		amts := make([]float64, attributes.EndStatType)
+		amts[attributes.EM] = 80
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(c4BuffKey, 720),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return amts, true
+			},
+		})
+	}
 }

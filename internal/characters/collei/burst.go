@@ -45,6 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.burstTicks(snap)
 	}, burstHitmark+burstTickRate)
 
+	c.c4() // TODO: figure out c4 delay
 	c.SetCDWithDelay(action.ActionBurst, 900, 41) // TODO: find cooldown delay
 	c.ConsumeEnergy(43)                           // TODO: find energy consumption delay
 
