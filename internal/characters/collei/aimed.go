@@ -8,13 +8,15 @@ import (
 )
 
 var aimedFrames []int
-var aimedC4Frames []int
 
 // TODO: frames
-const aimedHitmark = 0
+const aimedHitmark = 86
 
 func init() {
 	//TODO: frames
+	aimedFrames = frames.InitAbilSlice(94)
+	aimedFrames[action.ActionDash] = aimedHitmark
+	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
