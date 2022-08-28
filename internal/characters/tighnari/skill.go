@@ -40,6 +40,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.AddStatus(vijnanasuffusionStatus, 12*60, false)
 	c.SetTag(wreatharrows, 3)
 
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
+
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],

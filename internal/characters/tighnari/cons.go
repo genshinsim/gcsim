@@ -20,3 +20,16 @@ func (c *char) c1() {
 		},
 	})
 }
+
+func (c *char) c2() {
+	// crutch
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DendroP] = .2
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("tighnari-a1", 20*60), // 12+8
+		AffectedStat: attributes.DendroP,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
+}
