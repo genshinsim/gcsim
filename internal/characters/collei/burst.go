@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, leapHitmark-fieldStart)
 	}, fieldStart)
 
-	c.c4() // TODO: figure out c4 delay
+	c.c4()
 	c.SetCD(action.ActionBurst, 900)
 	c.ConsumeEnergy(7)
 
