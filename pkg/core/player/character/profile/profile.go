@@ -92,4 +92,5 @@ const (
 	ZoneLiyue
 	ZoneInazuma
 	ZoneSnezhnaya
+	ZoneSumeru
 )
