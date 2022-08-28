@@ -23,9 +23,24 @@ func (c *char) c1() {
 	})
 }
 
+func (c *char) c2() {
+	for _, event := range dendroEvents {
+		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
+			if c.c2Extended {
+				return false
+			}
+			c.c2Extended = c.StatusIsActive(sproutKey) || c.StatusIsActive(skillKey)
+			if c.StatusIsActive(sproutKey) {
+				c.ExtendStatus(sproutKey, 180)
+			}
+			return false
+		}, "collei-c2")
+	}
+}
+
 func (c *char) c4() {
 	for i, char := range c.Core.Player.Chars() {
-		//does not affect collei
+		// does not affect collei
 		if c.Index == i {
 			continue
 		}

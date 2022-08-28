@@ -3,10 +3,13 @@ package collei
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
+
+var dendroEvents = []event.Event{event.OnOverload} // TODO: put all dendro events here
 
 func init() {
 	core.RegisterCharFunc(keys.Collei, NewChar)
@@ -15,8 +18,9 @@ func init() {
 type char struct {
 	*tmpl.Character
 	burstExtendCount int
-	a1StartFrame     int
-	a1Triggered      bool
+	sproutShouldProc bool
+	sproutSrc        int
+	c2Extended       bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -28,8 +32,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.burstExtendCount = 0
-	c.a1Triggered = false
-	c.a1StartFrame = 0
+	c.sproutShouldProc = false
+	c.sproutSrc = 0
+	c.c2Extended = false
 
 	w.Character = &c
 

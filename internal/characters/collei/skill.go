@@ -7,8 +7,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-const skillKey = "collei-skill"
-const skillReturn = 157
+const (
+	skillKey    = "collei-skill"
+	skillReturn = 157
+)
 
 var (
 	skillHitmarks = []int{34, 138}
@@ -49,12 +51,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.AddStatus(skillKey, skillReturn, false)
 
-	c.a1Triggered = false
+	c.sproutShouldProc = c.Base.Cons >= 2
 	c.Core.Tasks.Add(func() {
-		if c.a1Triggered {
-			c.a1StartFrame = c.Core.F
-			c.AddStatus(a1Key, 180, true)
-			c.QueueCharTask(func() { c.a1Ticks(c.a1StartFrame) }, a1Hitmark)
+		if c.sproutShouldProc {
+			c.sproutSrc = c.Core.F
+			duration := 180
+			if c.c2Extended {
+				duration += 180
+			}
+			c.AddStatus(sproutKey, duration, true)
+			c.QueueCharTask(func() { c.a1Ticks(c.sproutSrc) }, sproutHitmark)
 		}
 	}, skillReturn)
 

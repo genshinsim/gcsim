@@ -3,16 +3,13 @@ package collei
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var dendroEvents = []event.Event{event.OnOverload} // TODO: put all dendro events here
-
 const (
-	a1Key        = "collei-sprout"
-	a1Hitmark    = 86
-	a1TickPeriod = 89
+	sproutKey        = "collei-sprout"
+	sproutHitmark    = 86
+	sproutTickPeriod = 89
 )
 
 func (c *char) a1Init() {
@@ -21,7 +18,7 @@ func (c *char) a1Init() {
 			if !c.StatusIsActive(skillKey) {
 				return false
 			}
-			c.a1Triggered = true
+			c.sproutShouldProc = true
 			c.Core.Log.NewEvent("collei a1 proc", glog.LogCharacterEvent, c.Index)
 			return false
 		}, "collei-a1")
@@ -48,10 +45,10 @@ func (c *char) a4() {
 }
 
 func (c *char) a1Ticks(startFrame int) {
-	if !c.StatusIsActive(a1Key) {
+	if !c.StatusIsActive(sproutKey) {
 		return
 	}
-	if startFrame != c.a1StartFrame {
+	if startFrame != c.sproutSrc {
 		return
 	}
 	ai := combat.AttackInfo{
@@ -73,5 +70,5 @@ func (c *char) a1Ticks(startFrame int) {
 	)
 	c.Core.Tasks.Add(func() {
 		c.a1Ticks(startFrame)
-	}, a1TickPeriod)
+	}, sproutTickPeriod)
 }
