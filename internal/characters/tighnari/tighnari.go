@@ -36,5 +36,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.a4()
+
 	return nil
 }
