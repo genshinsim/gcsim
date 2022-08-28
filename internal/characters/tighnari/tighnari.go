@@ -40,6 +40,9 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
 
 	return nil
 }

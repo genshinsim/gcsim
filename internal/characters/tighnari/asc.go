@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+// After Tighnari fires a Wreath Arrow, his Elemental Mastery is increased by 50 for 4s.
 func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 50
@@ -19,6 +20,8 @@ func (c *char) a1() {
 	})
 }
 
+// For every point of Elemental Mastery Tighnari possesses, his Charged Attack and Fashioner's Tanglevine Shaft DMG are increased by 0.06%.
+// The maximum DMG Bonus obtainable this way is 60%.
 func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
@@ -28,7 +31,11 @@ func (c *char) a4() {
 				return nil, false
 			}
 
-			m[attributes.DmgP] = c.Stat(attributes.EM) * 0.0006
+			bonus := c.Stat(attributes.EM) * 0.0006
+			if bonus > 0.6 {
+				bonus = 0.6
+			}
+			m[attributes.DmgP] = bonus
 			return m, true
 		},
 	})
