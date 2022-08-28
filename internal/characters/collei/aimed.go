@@ -9,12 +9,10 @@ import (
 
 var aimedFrames []int
 
-// TODO: frames
 const aimedHitmark = 86
 
 func init() {
-	//TODO: frames
-	aimedFrames = frames.InitAbilSlice(94)
+	aimedFrames = frames.InitAbilSlice(96) // TODO: this is copied from amber
 	aimedFrames[action.ActionDash] = aimedHitmark
 	aimedFrames[action.ActionJump] = aimedHitmark
 }
