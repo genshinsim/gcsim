@@ -85,6 +85,12 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 			c.DeleteStatus(vijnanasuffusionStatus)
 		}
 	}
+	if c.Base.Cons >= 6 {
+		skip += 0.9 * 60
+	}
+	if skip > aimedWreathHitmark {
+		skip = aimedWreathHitmark
+	}
 
 	c.a1()
 
@@ -106,7 +112,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		Abil:       "Clusterbloom Arrow",
 		AttackTag:  combat.AttackTagExtra,
 		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault, // combat.ICDGroupTighnari, but need to fix dendro application
+		ICDGroup:   combat.ICDGroupDefault, // TODO: combat.ICDGroupTighnari, but need to fix dendro application
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       clusterbloom[c.TalentLvlAttack()],
@@ -118,6 +124,25 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 			ai,
 			snap,
 			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			aimedWreathHitmark+travel+wreathTravel-skip,
+		)
+	}
+
+	if c.Base.Cons >= 6 {
+		ai = combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Karma Adjudged From the Leaden Fruit",
+			AttackTag:  combat.AttackTagExtra, // TODO: combat.AttackTagNone?
+			ICDTag:     combat.ICDTagExtraAttack,
+			ICDGroup:   combat.ICDGroupDefault, // combat.ICDGroupTighnari, but need to fix dendro application
+			Element:    attributes.Dendro,
+			Durability: 25,
+			Mult:       1.5,
+		}
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			aimedWreathHitmark-skip,
 			aimedWreathHitmark+travel+wreathTravel-skip,
 		)
 	}
