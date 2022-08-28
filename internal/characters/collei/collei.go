@@ -16,6 +16,7 @@ type char struct {
 	*tmpl.Character
 	burstExtendCount int
 	a1StartFrame     int
+	a1Triggered      bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -27,6 +28,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.burstExtendCount = 0
+	c.a1Triggered = false
 	c.a1StartFrame = 0
 
 	w.Character = &c
@@ -35,7 +37,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.a1()
+	c.a1Init()
 	c.a4()
 	if c.Base.Cons >= 1 {
 		c.c1()

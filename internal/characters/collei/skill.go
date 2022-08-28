@@ -8,6 +8,7 @@ import (
 )
 
 const skillKey = "collei-skill"
+const skillReturn = 157
 
 var (
 	skillHitmarks = []int{34, 138}
@@ -43,7 +44,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 		skillHitmarks[0],
 	)
-	c.AddStatus(skillKey, 157, false)
+	c.AddStatus(skillKey, skillReturn, false)
+
+	c.a1Triggered = false
+	c.Core.Tasks.Add(func() {
+		if c.a1Triggered {
+			c.a1StartFrame = c.Core.F
+			c.AddStatus(a1Key, 180, true)
+			c.QueueCharTask(func() { c.a1Ticks(c.a1StartFrame) }, a1Hitmark)
+		}
+	}, skillReturn)
 
 	// 50% chance of 3 orbs
 	count := 2.0
