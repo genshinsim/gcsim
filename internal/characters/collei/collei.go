@@ -16,8 +16,6 @@ type char struct {
 	*tmpl.Character
 }
 
-const normalHitNum = 4
-
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
