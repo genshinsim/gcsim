@@ -10,12 +10,18 @@ import (
 const skillKey = "collei-skill"
 
 var (
-	skillHitmarks = []int{50, 100} // TODO actual hitmarks
+	skillHitmarks = []int{34, 138}
 	skillFrames   []int
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(50) // TODO: actual frames
+	skillFrames = frames.InitAbilSlice(68)
+	skillFrames[action.ActionAttack] = 65
+	skillFrames[action.ActionAim] = 65
+	skillFrames[action.ActionSkill] = 67
+	skillFrames[action.ActionDash] = 54
+	skillFrames[action.ActionJump] = 53
+	skillFrames[action.ActionSwap] = 66
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -37,7 +43,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 		skillHitmarks[0],
 	)
-	c.AddStatus(skillKey, 480, false) // TODO: find boomerang return frames
+	c.AddStatus(skillKey, 157, false)
 
 	// 50% chance of 3 orbs
 	count := 2.0
@@ -53,12 +59,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skillHitmarks[1],
 	)
 
-	c.SetCDWithDelay(action.ActionSkill, 720, 10) // TODO: cd delay
+	c.SetCDWithDelay(action.ActionSkill, 720, 20)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.InvalidAction], // TODO: fix earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
 }
