@@ -55,13 +55,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.sproutShouldProc = c.Base.Cons >= 2
 	c.Core.Tasks.Add(func() {
 		if c.sproutShouldProc {
-			c.sproutSrc = c.Core.F
+			src := c.Core.F
+			c.sproutSrc = src
 			duration := 180
 			if c.sproutShouldExtend {
 				duration += 180
 			}
 			c.AddStatus(sproutKey, duration, true)
-			c.QueueCharTask(func() { c.a1Ticks(c.sproutSrc) }, sproutHitmark)
+			c.QueueCharTask(func() { c.a1Ticks(src) }, sproutHitmark)
 		}
 	}, skillReturn)
 
