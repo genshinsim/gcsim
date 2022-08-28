@@ -21,8 +21,7 @@ def get_data() -> dict:
 data = get_data()
 chars = data["char_details"]
 # print(chars[0])
-names = [(chars[x]["name"] if "traveler" not in chars[x]
-          ["name"] else "lumine") for x in range(len(chars))]
+names = [chars[x]["name"] for x in range(len(chars))]
 weapons = [chars[x]["weapon"] for x in range(len(chars))]
 artifacts = [chars[x]["sets"] for x in range(len(chars))]
 
