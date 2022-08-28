@@ -31,10 +31,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-		skillHitmark,
+		0,
 		skillHitmark,
 	)
-	c.Core.QueueParticle("tighnari", 3.5, attributes.Dendro, c.ParticleDelay)
+
+	var count float64 = 3
+	if c.Core.Rand.Float64() < 0.5 {
+		count++
+	}
+	c.Core.QueueParticle("tighnari", count, attributes.Dendro, skillHitmark+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
 
 	c.AddStatus(vijnanasuffusionStatus, 12*60, false)

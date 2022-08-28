@@ -50,7 +50,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ICDGroup:     combat.ICDGroupDefault,
 		Element:      attributes.Dendro,
 		Durability:   25,
-		Mult:         aim[c.TalentLvlAttack()],
+		Mult:         fullaim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
 
@@ -132,9 +132,9 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		ai = combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Karma Adjudged From the Leaden Fruit",
-			AttackTag:  combat.AttackTagExtra, // TODO: combat.AttackTagNone?
-			ICDTag:     combat.ICDTagExtraAttack,
-			ICDGroup:   combat.ICDGroupDefault, // combat.ICDGroupTighnari, but need to fix dendro application
+			AttackTag:  combat.AttackTagExtra,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       1.5,

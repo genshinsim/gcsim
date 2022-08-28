@@ -30,7 +30,7 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DendroP] = .2
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("tighnari-c2", 18*60-skillHitmark), // 12+6
+		Base:         modifier.NewBase("tighnari-c2", 14*60-skillHitmark), // 8+6
 		AffectedStat: attributes.DendroP,
 		Amount: func() ([]float64, bool) {
 			return m, true

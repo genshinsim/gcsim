@@ -42,7 +42,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	ai.Abil = "Tanglevine Shaft (Secondary wave)"
+	ai.Abil = "Secondary Tanglevine Shaft"
 	ai.Mult = burstSecond[c.TalentLvlBurst()]
 	for i := 0; i < 6; i++ {
 		c.Core.QueueAttack(
