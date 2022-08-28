@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Diona, NewChar)
+	core.RegisterCharFunc(keys.Collei, NewChar)
 }
 
 type char struct {
@@ -20,10 +20,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.EnergyMax = 80
+	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
-	c.BurstCon = 3
-	c.SkillCon = 5
+	c.BurstCon = 5
+	c.SkillCon = 3
 
 	w.Character = &c
 
