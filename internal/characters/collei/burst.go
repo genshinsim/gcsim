@@ -10,13 +10,18 @@ import (
 var burstFrames []int
 
 const (
-	burstTickRate = 27 // TODO: find tick rate
-	burstHitmark  = 58 // TODO: actual frames
-	burstKey      = "collei-burst"
+	explosionHitmark = 25
+	leapHitmark      = 68
+	leapTickPeriod   = 30
+	fieldStart       = 43
+	burstKey         = "collei-burst"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(64)
+	burstFrames = frames.InitAbilSlice(67)
+	skillFrames[action.ActionAttack] = 65
+	skillFrames[action.ActionAim] = 65
+	skillFrames[action.ActionSwap] = 66
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -35,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
 		0,
-		burstHitmark,
+		explosionHitmark,
 	) // TODO: snapshot timing
 
 	c.AddStatus(burstKey, 360, false)
@@ -43,16 +48,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai) // TODO: snapshot timing
 	c.Core.Tasks.Add(func() {
 		c.burstTicks(snap)
-	}, burstHitmark+burstTickRate)
+	}, leapHitmark)
 
 	c.c4() // TODO: figure out c4 delay
-	c.SetCDWithDelay(action.ActionBurst, 900, 41) // TODO: find cooldown delay
-	c.ConsumeEnergy(43)                           // TODO: find energy consumption delay
+	c.SetCD(action.ActionBurst, 900)
+	c.ConsumeEnergy(7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark, // TODO: correct cancel frame
+		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
 	}
 }
@@ -80,5 +85,5 @@ func (c *char) burstTicks(snap combat.Snapshot) {
 	)
 	c.Core.Tasks.Add(func() {
 		c.burstTicks(snap)
-	}, burstTickRate)
+	}, leapTickPeriod)
 }
