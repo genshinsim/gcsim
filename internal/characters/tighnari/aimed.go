@@ -111,11 +111,11 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 	for i := 0; i < 4; i++ {
-		ai.HitWeakPoint = c.Core.Rand.Intn(2) == 1 // random
+		ai.HitWeakPoint = c.Core.Rand.Float64() < .5 // random
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
 			aimedWreathHitmark+travel+wreathTravel-skip,
 		)
 	}
