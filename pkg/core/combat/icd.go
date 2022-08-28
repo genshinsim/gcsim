@@ -77,6 +77,7 @@ const (
 	ICDGroupXiaoDash
 	ICDGroupYelanBreakthrough
 	ICDGroupYelanBurst
+	ICDGroupTighnari
 	ICDGroupReactionA
 	ICDGroupReactionB
 	ICDGroupLength
@@ -92,6 +93,7 @@ var ICDGroupResetTimer = []int{
 	6,   //xiao dash
 	18,  //yelan pew pew
 	120, //yelan burst
+	150, //tighnari
 	30,  //reaction a
 	30,  //reaciton b
 }
@@ -115,6 +117,8 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1.0, 0.0, 0.0, 0.0},
 	//yelan burst
 	{1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+	//tighnari
+	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
 	//reaction a
 	{1.0, 1.0},
 	//reaction b
