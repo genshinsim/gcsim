@@ -37,6 +37,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a4()
+	if c.Base.Cons >= 1 {
+		c.c1()
+	}
 
 	return nil
 }
