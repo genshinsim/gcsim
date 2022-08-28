@@ -14,6 +14,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	burstExtendCount int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -24,6 +25,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.SkillCon = 3
+	c.burstExtendCount = 0
 
 	w.Character = &c
 
@@ -31,5 +33,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.a4()
 	return nil
 }
