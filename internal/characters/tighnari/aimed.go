@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var aimedFrames []int
@@ -98,6 +100,16 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		HitWeakPoint: weakspot == 1,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedWreathHitmark-skip, aimedWreathHitmark+travel-skip)
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.EM] = 50
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("tighnari-a1", 4*60),
+		AffectedStat: attributes.EM,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
