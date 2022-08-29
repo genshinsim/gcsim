@@ -101,14 +101,16 @@ func SetupResonance(s *core.Core) {
 					})
 				}
 			case attributes.Hydro:
-				//heal not implemented yet
-				f := func() (float64, bool) {
-					return 0.3, true
-				}
+				//TODO: reduce pyro duration not implemented; may affect bennett Q?
+				val := make([]float64, attributes.EndStatType)
+				val[attributes.HPP] = 0.25
 				for _, c := range chars {
-					c.AddHealBonusMod(character.HealBonusMod{
-						Base:   modifier.NewBase("hydro-res", -1),
-						Amount: f,
+					c.AddStatMod(character.StatMod{
+						Base:         modifier.NewBase("hydro-res-hpp", -1),
+						AffectedStat: attributes.HPP,
+						Amount: func() ([]float64, bool) {
+							return val, true
+						},
 					})
 				}
 			case attributes.Cryo:

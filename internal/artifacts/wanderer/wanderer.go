@@ -16,14 +16,46 @@ func init() {
 }
 
 type Set struct {
+	char  *character.CharWrapper
+	count int
 	Index int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error      { return nil }
+
+func (s *Set) Init() error {
+	if s.count < 4 {
+		return nil
+	}
+
+	switch s.char.Weapon.Class {
+	case weapon.WeaponClassCatalyst:
+	case weapon.WeaponClassBow:
+	default:
+		// don't add this mod if wrong weapon class
+		return nil
+	}
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.35
+	s.char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("wt-4pc", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagExtra {
+				return nil, false
+			}
+			return m, true
+		},
+	})
+
+	return nil
+}
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
-	s := Set{}
+	s := Set{
+		char:  char,
+		count: count,
+	}
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -32,26 +64,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			Base:         modifier.NewBase("wt-2pc", -1),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
-	}
-	if count >= 4 {
-		switch char.Weapon.Class {
-		case weapon.WeaponClassCatalyst:
-		case weapon.WeaponClassBow:
-		default:
-			// don't add this mod if wrong weapon class
-			return &s, nil
-		}
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.DmgP] = 0.35
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("wt-4pc", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-					return nil, false
-				}
 				return m, true
 			},
 		})

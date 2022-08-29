@@ -27,9 +27,8 @@ const (
 	ElectroP
 	AnemoP
 	GeoP
-	PhyP
-	// ElementalP
 	DendroP
+	PhyP
 	AtkSpd
 	DmgP
 	//delim
