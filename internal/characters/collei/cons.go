@@ -65,7 +65,7 @@ func (c *char) c6() {
 		ActorIndex: c.Index,
 		Abil:       "Forest of Falling Arrows (C6)",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
