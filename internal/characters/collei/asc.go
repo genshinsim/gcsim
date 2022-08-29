@@ -64,9 +64,9 @@ func (c *char) a1Ticks(startFrame int) {
 	}
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Floral Sidewinder",
+		Abil:       "Floral Sidewinder (A1)",
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone, // TODO: find ICD
+		ICDTag:     combat.ICDTagColleiSprout,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
