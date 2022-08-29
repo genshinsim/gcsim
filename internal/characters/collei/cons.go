@@ -64,7 +64,7 @@ func (c *char) c6() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Forest of Falling Arrows (C6)",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  combat.AttackTagNone, // in game has this as AttackTagColleiC6
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
