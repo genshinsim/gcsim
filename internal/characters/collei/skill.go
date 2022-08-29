@@ -29,6 +29,9 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
+	// The game has ICD as AttackTagElementalArt, ICDTagElementalArt,
+	// ICDGroupColleiBoomerangForward, and ICDGroupColleiBoomerangBack. However,
+	// we believe this is unnecessary, so just use ICDTagNone.
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Floral Brush",
