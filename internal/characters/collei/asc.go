@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	sproutKey        = "collei-sprout"
+	sproutKey        = "collei-a1"
 	sproutHitmark    = 86
 	sproutTickPeriod = 89
 	a4Key            = "collei-a4-modcheck"
