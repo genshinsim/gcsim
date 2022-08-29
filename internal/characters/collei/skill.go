@@ -40,12 +40,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
+	c6Triggered := false
+	c6Cb := func(_ combat.AttackCB) {
+		if c6Triggered {
+			return
+		}
+		c6Triggered = true
+		c.c6()
+	}
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 			skillHitmarks[0],
 			hitmark,
+			c6Cb,
 		)
 	}
 

@@ -2,6 +2,7 @@ package collei
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -57,4 +58,24 @@ func (c *char) c4() {
 			},
 		})
 	}
+}
+
+func (c *char) c6() {
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Forest of Falling Arrows (C6)",
+		AttackTag:  combat.AttackTagElementalBurst,
+		ICDTag:     combat.ICDTagElementalBurst,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Dendro,
+		Durability: 25,
+		Mult:       2,
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+		0,
+		22,
+	)
 }
