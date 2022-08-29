@@ -89,6 +89,8 @@ var reSubmit = regexp.MustCompile(`\!submit.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-
 var reApprove = regexp.MustCompile(`\!ok.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
 var reReject = regexp.MustCompile(`\!reject.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}) (.+)`)
 var reReplace = regexp.MustCompile(`(?m)\!replace.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}).+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
+var reDBList = regexp.MustCompile(`\!db ([a-z]+)`)
+var reDeleteSim = regexp.MustCompile(`\!deletesim.+([0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})`)
 
 func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
@@ -97,10 +99,10 @@ func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	switch {
+	case strings.HasPrefix(m.Content, "!db"):
+		b.DBList(s, m)
 	case strings.HasPrefix(m.Content, "!list"):
-		if b.adminChanCheck(m) {
-			b.List(s, m)
-		}
+		b.List(s, m)
 	case strings.HasPrefix(m.Content, "!ok"):
 		if b.adminChanCheck(m) {
 			b.Approve(s, m)
@@ -115,12 +117,51 @@ func (b *Bot) msgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if b.adminChanCheck(m) {
 			b.Replace(s, m)
 		}
+	case strings.HasPrefix(m.Content, "!deletesim"):
+		if b.adminChanCheck(m) {
+			b.Delete(s, m)
+		}
 	}
 
 }
 
 func (b *Bot) adminChanCheck(m *discordgo.MessageCreate) bool {
 	return b.cfg.AdminChannelID == m.ChannelID
+}
+
+func (b *Bot) DBList(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	match := reDBList.FindStringSubmatch(m.Content)
+	if len(match) == 0 {
+		s.ChannelMessageSend(m.ChannelID, "Invalid !db command")
+		return
+	}
+
+	sims, err := b.Store.List(match[1])
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Error retrieving sims for char  %v", match[1]))
+		b.Log.Infow("error retrieving db list", "char", match[1], "err", err)
+		return
+	}
+	if len(sims) > 0 {
+		//15 lines per msg
+		count := 0
+		var sb strings.Builder
+		for _, v := range sims {
+			sb.WriteString(fmt.Sprintf("<https://gcsim.app/v3/viewer/share/%v>: %v\n", v.Key, v.Description))
+			count++
+			if count == 15 {
+				s.ChannelMessageSend(m.ChannelID, sb.String())
+				count = 0
+				sb.Reset()
+			}
+		}
+		if count > 0 {
+			s.ChannelMessageSend(m.ChannelID, sb.String())
+		}
+	} else {
+		s.ChannelMessageSend(m.ChannelID, "Nothing found for "+match[1])
+	}
 }
 
 func (b *Bot) Submit(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -179,7 +220,7 @@ func (b *Bot) Submit(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
 		return
 	}
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission recorded! Thanks %v", sub.Author))
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission recorded! Thanks %v", sub.AuthorString))
 }
 
 func (b *Bot) List(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -210,42 +251,24 @@ func (b *Bot) List(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
 		return
 	}
-	//make a nice embed?
-	embed := &discordgo.MessageEmbed{
-		Color: 0x2a8fce,
-		Title: "Submitted sims waiting for approval",
-	}
-
 	if len(subs) > 0 {
+		//15 lines per msg
+		count := 0
 		var sb strings.Builder
 		for _, v := range subs {
-			sb.WriteString(fmt.Sprintf("%v - %v: [%v](https://gcsim.app/v3/viewer/share/%v)\n", v.Author, v.Description, v.Key, v.Key))
+			sb.WriteString(fmt.Sprintf("%v - %v: <https://gcsim.app/v3/viewer/share/%v>\n", v.AuthorString, v.Description, v.Key))
+			count++
+			if count == 15 {
+				s.ChannelMessageSend(m.ChannelID, sb.String())
+				count = 0
+				sb.Reset()
+			}
 		}
-		embed.Fields = append(embed.Fields,
-			&discordgo.MessageEmbedField{
-				Name:   "Links",
-				Value:  sb.String(),
-				Inline: true,
-			},
-		)
+		if count > 0 {
+			s.ChannelMessageSend(m.ChannelID, sb.String())
+		}
 	} else {
-		embed.Fields = append(embed.Fields,
-			&discordgo.MessageEmbedField{
-				Name:   "Links",
-				Value:  "Nothing here. Yay!",
-				Inline: true,
-			},
-		)
-	}
-
-	msg := &discordgo.MessageSend{
-		Embeds: []*discordgo.MessageEmbed{embed},
-	}
-
-	res, err := s.ChannelMessageSendComplex(m.ChannelID, msg)
-	if err != nil {
-		b.Log.Warnw("list - sending msg", "err", err, "res", res)
-		s.ChannelMessageSend(m.ChannelID, "Internal server error processing request")
+		s.ChannelMessageSend(m.ChannelID, "Nothing to approve! Yay!")
 	}
 }
 
@@ -378,6 +401,21 @@ func (b *Bot) Replace(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Submission %v sucessfully replaced %v in db with id %v", match[1], match[2], id))
+}
+
+func (b *Bot) Delete(s *discordgo.Session, m *discordgo.MessageCreate) {
+	match := reDeleteSim.FindStringSubmatch(m.Content)
+	if len(match) == 0 {
+		s.ChannelMessageSend(m.ChannelID, "Invalid !deletesim command")
+		return
+	}
+	id, err := b.Store.Delete(match[1])
+	if err != nil {
+		b.Log.Warnw("err deleting key", "err", err)
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Error deleting %v: %v", match[1], err))
+		return
+	}
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%v deleted ok - db id: %v", match[1], id))
 }
 
 func (b *Bot) ShowConfig(s *discordgo.Session, m *discordgo.MessageCreate) {

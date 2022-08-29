@@ -55,6 +55,11 @@ type DBEntry struct {
 	Description  string `json:"sim_description"`
 }
 
+type SimInfo struct {
+	Key         string `json:"simulation_key"`
+	Description string `json:"sim_description"`
+}
+
 func (d *DBEntry) ConvertConfig() error {
 	var b bytes.Buffer
 	zw := zlib.NewWriter(&b)
@@ -73,6 +78,8 @@ func (d *DBEntry) ConvertConfig() error {
 type SimDBStore interface {
 	Add(entry DBEntry) (int64, error)
 	Replace(key string, entry DBEntry) (int64, error)
+	List(char string) ([]SimInfo, error)
+	Delete(key string) (int64, error)
 }
 
 type PostgRESTStore struct {
@@ -87,7 +94,7 @@ func NewPostgRESTStore(url string) *PostgRESTStore {
 	}
 }
 
-func (b *PostgRESTStore) uploadDBSim(jsonStr []byte, url string) (int64, error) {
+func (b *PostgRESTStore) postRPCRequestReturnInt(jsonStr []byte, url string) (int64, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		return 0, err
@@ -116,6 +123,7 @@ func (b *PostgRESTStore) uploadDBSim(jsonStr []byte, url string) (int64, error) 
 
 	return id, nil
 }
+
 func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 	url := fmt.Sprintf(`%v/rpc/add_db_sim`, b.URL)
 	entry.AuthorString = ""
@@ -127,7 +135,21 @@ func (b *PostgRESTStore) Add(entry DBEntry) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	return b.uploadDBSim(jsonStr, url)
+	return b.postRPCRequestReturnInt(jsonStr, url)
+}
+
+func (b *PostgRESTStore) Delete(key string) (int64, error) {
+	url := fmt.Sprintf(`%v/rpc/delete_from_db`, b.URL)
+	var data = struct {
+		Key string `json:"simulation_key"`
+	}{
+		Key: key,
+	}
+	jsonStr, err := json.Marshal(data)
+	if err != nil {
+		return 0, err
+	}
+	return b.postRPCRequestReturnInt(jsonStr, url)
 }
 
 func (b *PostgRESTStore) Replace(key string, entry DBEntry) (int64, error) {
@@ -148,7 +170,7 @@ func (b *PostgRESTStore) Replace(key string, entry DBEntry) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	return b.uploadDBSim(jsonStr, url)
+	return b.postRPCRequestReturnInt(jsonStr, url)
 }
 
 func (b *PostgRESTStore) Fetch(key string) (Simulation, error) {
@@ -180,4 +202,35 @@ func (b *PostgRESTStore) Fetch(key string) (Simulation, error) {
 	}
 
 	return result[0], nil
+}
+
+func (b *PostgRESTStore) List(key string) ([]SimInfo, error) {
+	url := fmt.Sprintf(`%v/db_sims_by_avatar?avatar_name=eq.%v`, b.URL, key)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		msg, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		} else {
+			return nil, fmt.Errorf("bad status code %v msg %v", resp.StatusCode, string(msg))
+		}
+	}
+
+	var result []SimInfo
+
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(result) == 0 {
+		return nil, fmt.Errorf("unexpected result length is 0")
+	}
+
+	return result, nil
 }
