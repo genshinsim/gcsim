@@ -22,6 +22,10 @@ const (
 	AttackTagSwirlHydro
 	AttackTagSwirlCryo
 	AttackTagSwirlElectro
+	AttackTagBurningDamage
+	AttackTagBloom
+	AttackTagBurgeon
+	AttackTagHyperbloom
 	AttackTagLength
 )
 
@@ -61,10 +65,14 @@ const (
 	ICDTagSwirlHydro
 	ICDTagSwirlCryo
 	ICDTagSwirlElectro
+	ICDTagBurningDamage
+	ICDTagBloomDamage
+	ICDTagBurgeonDamage
+	ICDTagHyperbloomDamage
 	ICDTagLength
 )
 
-//group dictate both the sequence and the reset timer
+// group dictate both the sequence and the reset timer
 type ICDGroup int //same ICD group shares the same timer
 
 const (
@@ -80,6 +88,7 @@ const (
 	ICDGroupTighnari
 	ICDGroupReactionA
 	ICDGroupReactionB
+	ICDGroupBurning
 	ICDGroupLength
 )
 
@@ -96,6 +105,7 @@ var ICDGroupResetTimer = []int{
 	150, //tighnari
 	30,  //reaction a
 	30,  //reaciton b
+	120, //burning
 }
 
 var ICDGroupEleApplicationSequence = [][]int{
@@ -123,6 +133,8 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1.0, 1.0},
 	//reaction b
 	{1.0, 1.0},
+	//burning
+	{1.0, 0, 0, 0, 0, 0, 0, 0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
@@ -148,4 +160,6 @@ var ICDGroupDamageSequence = [][]float64{
 	{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//ele B
 	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	//burning
+	{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 }

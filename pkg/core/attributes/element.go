@@ -6,23 +6,25 @@ import (
 	"strings"
 )
 
-//Element is a string representing an element i.e. HYDRO/PYRO/etc...
+// Element is a string representing an element i.e. HYDRO/PYRO/etc...
 type Element int
 
-//ElementType should be pryo, Hydro, Cryo, Electro, Geo, Anemo and maybe dendro
+// ElementType should be pryo, Hydro, Cryo, Electro, Geo, Anemo and maybe dendro
 const (
 	Electro Element = iota
 	Pyro
 	Cryo
 	Hydro
 	Frozen
+	Dendro
 	ElementDelimAttachable
 	Anemo
-	Dendro
 	Geo
 	NoElement
 	Physical
 	EC
+	Quicken // or overdose
+	Burning // TODO: not truthfuly it's own aura; this is a hack solution
 	UnknownElement
 	EndEleType
 )
@@ -55,14 +57,16 @@ var ElementString = [...]string{
 	"pyro",
 	"cryo",
 	"hydro",
+	"dendro",
 	"frozen",
 	"delim",
 	"anemo",
-	"dendro",
 	"geo",
 	"",
 	"physical",
 	"ec",
+	"quicken",
+	"burning",
 	"unknown",
 }
 

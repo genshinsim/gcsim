@@ -1,10 +1,10 @@
 // Package core provides core functionality for a simulation:
-//	- combat
-//	- tasks
-//	- event handling
-//	- logging
-// 	- constructs (really should be just generic objects?)
-//	- status
+//   - combat
+//   - tasks
+//   - event handling
+//   - logging
+//   - constructs (really should be just generic objects?)
+//   - status
 package core
 
 import (
