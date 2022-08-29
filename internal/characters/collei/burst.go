@@ -13,7 +13,6 @@ const (
 	explosionHitmark = 25
 	leapHitmark      = 68
 	leapTickPeriod   = 30
-	fieldStart       = 43
 	burstKey         = "collei-burst"
 )
 
@@ -44,13 +43,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	)
 
 	c.Core.Tasks.Add(func() {
-		c.AddStatus(burstKey, 360, false)
+		c.AddStatus(burstKey, 378, false)
 		snap := c.Snapshot(&ai)
 		c.Core.Tasks.Add(func() {
 			c.burstTicks(snap)
-		}, leapHitmark-fieldStart)
+		}, leapHitmark-explosionHitmark)
 		c.burstA4Ticks()
-	}, fieldStart)
+	}, explosionHitmark)
 
 	c.c4()
 	c.SetCD(action.ActionBurst, 900)
