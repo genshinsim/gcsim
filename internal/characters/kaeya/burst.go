@@ -55,7 +55,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstTickSrc = c.Core.F
 	for i := 0; i < count; i++ {
 		// each icicle will start at i * offset (i.e. 0, 40, 80 OR 0, 30, 60, 90)
-		// assume each icicle will last for 8 seconds
 		// assume damage dealt every 120 (since only hitting at the front)
 		// on icicle collision, it'll trigger an aoe dmg with radius 2
 		// in effect, every target gets hit every time icicles rotate around
