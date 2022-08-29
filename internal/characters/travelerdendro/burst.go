@@ -122,8 +122,11 @@ func (c *char) burstTick() {
 	}
 	switch c.burstTransfig {
 	case attributes.Pyro:
+		c.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion (Q)"
 		c.burstAtk.Info.Durability = 50
 		c.burstAtk.Info.ICDTag = combat.ICDTagNone
+		c.burstAtk.Info.Mult = burstExplode[c.TalentLvlBurst()]
+
 		// change this to gadget.self instead of Player() when gadgets are implemented
 		// The timing on this explosion is also off
 		c.Core.QueueAttackWithSnap(c.burstAtk.Info, c.burstAtk.Snapshot, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
