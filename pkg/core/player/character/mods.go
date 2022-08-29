@@ -149,6 +149,20 @@ func (c *CharWrapper) getModExpiry(key string) int {
 }
 func (c *CharWrapper) StatusExpiry(key string) int { return c.getModExpiry(key) }
 
+// Duration.
+
+func (c *CharWrapper) getModDuration(key string) int {
+	m, _ := modifier.FindCheckExpiry(&c.mods, key, *c.f)
+	if m == -1 {
+		return 0
+	}
+	if c.mods[m].Expiry() > *c.f {
+		return c.mods[m].Expiry() - *c.f
+	}
+	return 0
+}
+func (c *CharWrapper) StatusDuration(key string) int { return c.getModDuration(key) }
+
 // Extend.
 
 //extendMod returns true if mod is active and is extended
