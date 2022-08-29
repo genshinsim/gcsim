@@ -48,7 +48,7 @@ func (c *char) c4() {
 			continue
 		}
 		amts := make([]float64, attributes.EndStatType)
-		amts[attributes.EM] = 80
+		amts[attributes.EM] = 60
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("collei-c4", 720),
 			AffectedStat: attributes.EM,
