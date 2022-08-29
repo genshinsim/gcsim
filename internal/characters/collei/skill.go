@@ -66,7 +66,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() { c.a1Ticks(src) }, sproutHitmark)
 	}, skillReturn)
 
-	c.Core.QueueParticle("collei", 3, attributes.Cryo, skillHitmarks[0]+c.ParticleDelay)
+	c.Core.QueueParticle("collei", 3, attributes.Dendro, skillHitmarks[0]+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 720, 20)
 
