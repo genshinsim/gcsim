@@ -71,8 +71,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := 137; i <= duration+5; i += 113 {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5, false, combat.TargettableEnemy), i, cb)
 
+		firstHit := i == 137
 		c.Core.Tasks.Add(func() {
-			if c.qInfused != attributes.NoElement {
+			if !firstHit && c.qInfused != attributes.NoElement {
 				aiAbs.Element = c.qInfused
 				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5, false, combat.TargettableEnemy), 0)
 			}
