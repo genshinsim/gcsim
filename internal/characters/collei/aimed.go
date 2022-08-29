@@ -33,7 +33,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		StrikeType:           combat.StrikeTypePierce,
 		Element:              attributes.Dendro,
 		Durability:           25,
-		Mult:                 aim[c.TalentLvlAttack()],
+		Mult:                 fullaim[c.TalentLvlAttack()],
 		HitWeakPoint:         weakspot == 1,
 		HitlagHaltFrames:     0.12 * 60,
 		HitlagFactor:         0.01,
