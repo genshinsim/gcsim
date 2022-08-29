@@ -39,12 +39,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	snapDelay := skillHitmarks[0]
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-			snapDelay,
+			skillHitmarks[0],
 			hitmark,
 		)
 	}
@@ -54,16 +53,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.sproutShouldExtend = false
 	c.sproutShouldProc = c.Base.Cons >= 2
 	c.Core.Tasks.Add(func() {
-		if c.sproutShouldProc {
-			src := c.Core.F
-			c.sproutSrc = src
-			duration := 180
-			if c.sproutShouldExtend {
-				duration += 180
-			}
-			c.AddStatus(sproutKey, duration, true)
-			c.QueueCharTask(func() { c.a1Ticks(src) }, sproutHitmark)
+		if !c.sproutShouldProc {
+			return
 		}
+		src := c.Core.F
+		c.sproutSrc = src
+		duration := 180
+		if c.sproutShouldExtend {
+			duration += 180
+		}
+		c.AddStatus(sproutKey, duration, true)
+		c.QueueCharTask(func() { c.a1Ticks(src) }, sproutHitmark)
 	}, skillReturn)
 
 	c.Core.QueueParticle("collei", 3, attributes.Cryo, skillHitmarks[0]+c.ParticleDelay)

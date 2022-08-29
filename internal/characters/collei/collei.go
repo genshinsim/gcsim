@@ -31,9 +31,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.burstExtendCount = 0
 	c.sproutShouldProc = false
-	c.sproutSrc = 0
 	c.sproutShouldExtend = false
 
 	w.Character = &c
