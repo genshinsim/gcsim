@@ -28,8 +28,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Trump-Card Kitty (Explosion)",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst, // TODO: find ICD
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDTag:     combat.ICDTagElementalBurst,
+		ICDGroup:   combat.ICDGroupColleiBurst,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
@@ -71,8 +71,8 @@ func (c *char) burstTicks(snap combat.Snapshot) {
 		ActorIndex: c.Index,
 		Abil:       "Trump-Card Kitty (Leap)",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst, // TODO: find ICD
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDTag:     combat.ICDTagElementalBurst,
+		ICDGroup:   combat.ICDGroupColleiBurst,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
