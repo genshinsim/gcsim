@@ -32,6 +32,9 @@ func (c *char) a1() {
 func (c *char) a4() {
 	for _, event := range dendroEvents {
 		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
+			if !c.StatusIsActive(burstKey) {
+				return false
+			}
 			atk := args[1].(*combat.AttackEvent)
 			char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 			if !char.StatusIsActive(a4Key) {
