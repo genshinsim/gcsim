@@ -66,12 +66,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}, skillReturn)
 
-	// 50% chance of 3 orbs
-	count := 2.0
-	if c.Core.Rand.Float64() < .50 {
-		count = 3.0
-	}
-	c.Core.QueueParticle("collei", count, attributes.Cryo, skillHitmarks[0]+c.ParticleDelay)
+	c.Core.QueueParticle("collei", 3, attributes.Cryo, skillHitmarks[0]+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 720, 20)
 
