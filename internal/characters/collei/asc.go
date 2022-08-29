@@ -54,6 +54,9 @@ func (c *char) a1Ticks(startFrame int) {
 		return
 	}
 	if startFrame != c.sproutSrc {
+		c.Core.Log.NewEvent("collei a1 tick ignored, src diff", glog.LogCharacterEvent, c.Index).
+			Write("src", startFrame).
+			Write("new src", c.sproutSrc)
 		return
 	}
 	ai := combat.AttackInfo{
