@@ -47,7 +47,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	for i := attributes.PyroP; i <= attributes.DendroP; i++ {
 		m[i] = base
 	}
-	m[attributes.PhyP] = 0
 
 	//stacking buff
 	stack := 0.06 + float64(r)*0.02
