@@ -44,7 +44,8 @@ func (c *char) meleeApplyRiptide(a combat.AttackCB) {
 
 func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 	if c.Base.Cons >= 4 && !t.StatusIsActive(riptideKey) {
-		t.QueueEnemyTask(func() { c.rtC4Tick(t) }, 60*4)
+		c.c4Src = c.Core.F
+		t.QueueEnemyTask(c.rtC4Tick(c.Core.F, t), 60*3.9)
 	}
 
 	t.AddStatus(riptideKey, riptideDuration, true)
@@ -59,20 +60,29 @@ func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 
 // if tartaglia is in melee stance, triggers Riptide Slash against opponents on the field affected by Riptide every 4s, otherwise, triggers Riptide Flash.
 // this constellation effect is not subject to ICD.
-func (c *char) rtC4Tick(t *enemy.Enemy) {
-	if !t.StatusIsActive(riptideKey) {
-		return
-	}
+func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
+	return func() {
+		if c.c4Src != src {
+			c.Core.Log.NewEvent("tartaglia c4 src check ignored, src diff", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("new src", c.c4Src)
+			return
+		}
+		if !t.StatusIsActive(riptideKey) {
+			return
+		}
 
-	if c.StatusIsActive(meleeKey) {
-		c.rtSlashTick(t)
-	} else {
-		c.rtFlashTick(t)
-	}
+		if c.StatusIsActive(meleeKey) {
+			c.rtSlashTick(t)
+		} else {
+			c.rtFlashTick(t)
+		}
 
-	t.QueueEnemyTask(func() { c.rtC4Tick(t) }, 60*4)
-	c.Core.Log.NewEvent(fmt.Sprintf("c4 applied"), glog.LogCharacterEvent, c.Index).
-		Write("target", t.Index())
+		t.QueueEnemyTask(c.rtC4Tick(src, t), 60*3.9)
+		c.Core.Log.NewEvent("tartaglia c4 applied", glog.LogCharacterEvent, c.Index).
+			Write("src", src).
+			Write("target", t.Index())
+	}
 }
 
 // Riptide Flash: A fully-charged Aimed Shot that hits an opponent affected
