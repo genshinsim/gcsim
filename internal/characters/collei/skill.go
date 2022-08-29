@@ -8,8 +8,9 @@ import (
 )
 
 const (
-	skillKey    = "collei-skill"
-	skillReturn = 157
+	skillKey     = "collei-skill"
+	skillRelease = 20
+	skillReturn  = 157
 )
 
 var (
@@ -48,7 +49,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	c.AddStatus(skillKey, skillReturn, false)
+	c.Core.Tasks.Add(func() {
+		c.AddStatus(skillKey, skillReturn-skillRelease, false)
+	}, skillRelease)
 
 	c.sproutShouldExtend = false
 	c.sproutShouldProc = c.Base.Cons >= 2
