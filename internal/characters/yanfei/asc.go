@@ -36,7 +36,7 @@ func (c *char) a4() {
 		if atk.Info.Abil == "Blazing Eye (A4)" {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagExtra && !crit {
+		if atk.Info.AttackTag != combat.AttackTagExtra || !crit {
 			return false
 		}
 		// make it so a4 only applies hitlag once per A4 proc and not everytime an enemy gets hit
