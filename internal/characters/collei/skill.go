@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-			skillHitmarks[0],
+			skillRelease,
 			hitmark,
 			c6Cb,
 		)
