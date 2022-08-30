@@ -61,6 +61,14 @@ func (s *Simulation) initDetailLog() {
 				sb.WriteString(" [amp: 2.0]")
 			}
 		}
+
+		if atk.Info.Catalyzed {
+			if atk.Info.CatalyzedType == combat.Aggravate {
+				sb.WriteString(" [aggravate]")
+			} else if atk.Info.CatalyzedType == combat.Spread {
+				sb.WriteString(" [spread]")
+			}
+		}
 		s.stats.DamageByChar[atk.Info.ActorIndex][sb.String()] += dmg
 		if dmg > 0 {
 			s.stats.DamageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
@@ -101,6 +109,9 @@ func (s *Simulation) initDetailLog() {
 		event.OnCrystallizeElectro: combat.CrystallizeElectro,
 		event.OnCrystallizeHydro:   combat.CrystallizeHydro,
 		event.OnCrystallizePyro:    combat.CrystallizePyro,
+		event.OnAggravate:          combat.Aggravate,
+		event.OnSpread:             combat.Spread,
+		event.OnQuicken:            combat.Quicken,
 	}
 
 	for k, v := range reactions {

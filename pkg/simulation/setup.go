@@ -101,14 +101,16 @@ func SetupResonance(s *core.Core) {
 					})
 				}
 			case attributes.Hydro:
-				//heal not implemented yet
-				f := func() (float64, bool) {
-					return 0.3, true
-				}
+				//TODO: reduce pyro duration not implemented; may affect bennett Q?
+				val := make([]float64, attributes.EndStatType)
+				val[attributes.HPP] = 0.25
 				for _, c := range chars {
-					c.AddHealBonusMod(character.HealBonusMod{
-						Base:   modifier.NewBase("hydro-res", -1),
-						Amount: f,
+					c.AddStatMod(character.StatMod{
+						Base:         modifier.NewBase("hydro-res-hpp", -1),
+						AffectedStat: attributes.HPP,
+						Amount: func() ([]float64, bool) {
+							return val, true
+						},
 					})
 				}
 			case attributes.Cryo:
@@ -147,7 +149,8 @@ func SetupResonance(s *core.Core) {
 				s.Events.Subscribe(event.OnOverload, recover, "electro-res")
 				s.Events.Subscribe(event.OnSuperconduct, recover, "electro-res")
 				s.Events.Subscribe(event.OnElectroCharged, recover, "electro-res")
-
+				s.Events.Subscribe(event.OnQuicken, recover, "electro-res")
+				s.Events.Subscribe(event.OnAggravate, recover, "electro-res")
 			case attributes.Geo:
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
 				//following special characteristics:

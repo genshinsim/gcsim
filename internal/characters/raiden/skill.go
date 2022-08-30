@@ -17,7 +17,10 @@ Eye of Stormy Judgment
 
 var skillFrames []int
 
-const skillHitmark = 51
+const (
+	skillHitmark = 51
+	skillKey     = "raiden-e"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(37)
@@ -39,26 +42,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
-	//activate eye
-	c.Core.Status.Add("raidenskill", 1500+skillHitmark)
-
 	// Add pre-damage mod
 	mult := skillBurstBonus[c.TalentLvlSkill()]
 	m := make([]float64, attributes.EndStatType)
 	for _, char := range c.Core.Player.Chars() {
 		this := char
-		//should be a deployable. no hitlag
-		this.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("raiden-e", 1500+skillHitmark),
-			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
-					return nil, false
-				}
+		// start eye at hitmark only, eye dmg shouldn't be able to proc before the eye spawns
+		c.Core.Tasks.Add(func() {
+			this.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
+				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+					if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+						return nil, false
+					}
 
-				m[attributes.DmgP] = mult * this.EnergyMax
-				return m, true
-			},
-		})
+					m[attributes.DmgP] = mult * this.EnergyMax
+					return m, true
+				},
+			})
+		}, skillHitmark)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 6)
@@ -83,8 +85,8 @@ func (c *char) eyeOnDamage() {
 		if c.eyeICD > c.Core.F {
 			return false
 		}
-		//ignore if eye not active
-		if c.Core.Status.Duration("raidenskill") == 0 {
+		//ignore if eye status not active on char that's doing dmg
+		if !c.Core.Player.ByIndex(ae.Info.ActorIndex).StatusIsActive(skillKey) {
 			return false
 		}
 		//ignore EC and hydro swirl damage

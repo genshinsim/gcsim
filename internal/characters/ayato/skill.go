@@ -40,21 +40,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.Tasks.Add(func() {
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy), 0, 0)
-		//add a namisen stack
-		if c.stacks < c.stacksMax {
-			c.stacks++
-		}
+		// A1:
+		// set namisen stacks to max
+		c.stacks = c.stacksMax
+		c.Core.Log.NewEvent("ayato a1 set namisen stacks to max", glog.LogCharacterEvent, c.Index).
+			Write("stacks", c.stacks)
 	}, delay)
 
-	//start skill buff after animation
-	//TODO: make sure this isn't causing bugs?
-	c.QueueCharTask(func() {
-		c.AddStatus(skillBuffKey, 6*60, true)
-	}, skillStart)
+	//start skill buff on cast
+	c.AddStatus(skillBuffKey, 6*60, true)
 	//figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6ready = true
-
 	}
 	c.SetCD(action.ActionSkill, 12*60)
 
@@ -87,12 +84,18 @@ func (c *char) skillStacks(ac combat.AttackCB) {
 	}
 }
 
-// clear skill status on field exit
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		// do nothing if previous char wasn't ayato
+		prev := args[0].(int)
+		if prev != c.Index {
+			return false
+		}
+		// clear skill status on field exit
 		c.stacks = 0
 		c.DeleteStatus(skillBuffKey)
-		c.a4()
+		// queue up a4
+		c.Core.Tasks.Add(c.a4, 60)
 		return false
 	}, "ayato-exit")
 }

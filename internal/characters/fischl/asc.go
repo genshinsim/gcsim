@@ -49,4 +49,6 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnQuicken, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnAggravate, cb, "fischl-a4")
 }

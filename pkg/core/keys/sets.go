@@ -40,11 +40,13 @@ var setNames = []string{
 	"bloodstainedchivalry",
 	"braveheart",
 	"crimsonwitchofflames",
+	"deepwoodmemories",
 	"defenderswill",
 	"echoesofanoffering",
 	"emblemofseveredfate",
 	"gambler",
 	"gladiatorsfinale",
+	"gildeddreams",
 	"heartofdepth",
 	"huskofopulentdreams",
 	"instructor",
@@ -83,11 +85,13 @@ const (
 	BloodstainedChivalry
 	BraveHeart
 	CrimsonWitchOfFlames
+	DeepwoodMemories
 	DefendersWill
 	EchoesOfAnOffering
 	EmblemOfSeveredFate
 	Gambler
 	GladiatorsFinale
+	GildedDreams
 	HeartOfDepth
 	HuskOfOpulentDreams
 	Instructor

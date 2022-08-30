@@ -182,6 +182,10 @@ export function parseLogV2(
         if (amp && amp !== "") {
           extra += amp;
         }
+        const cata = line.logs["cata"] ? line.logs["cata"] : "";
+        if (cata && cata !== "") {
+          extra += cata;
+        }
         const crit = line.logs["crit"] ? line.logs["crit"] : "";
         if (crit) {
           extra += " crit";
