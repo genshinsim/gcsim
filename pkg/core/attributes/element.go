@@ -15,15 +15,15 @@ const (
 	Pyro
 	Cryo
 	Hydro
-	Frozen
 	Dendro
+	Quicken // or overdose
+	Frozen
 	ElementDelimAttachable
 	Anemo
 	Geo
 	NoElement
 	Physical
 	EC
-	Quicken // or overdose
 	Burning // TODO: not truthfuly it's own aura; this is a hack solution
 	UnknownElement
 	EndEleType
@@ -58,6 +58,7 @@ var ElementString = [...]string{
 	"cryo",
 	"hydro",
 	"dendro",
+	"quicken",
 	"frozen",
 	"delim",
 	"anemo",
@@ -65,7 +66,6 @@ var ElementString = [...]string{
 	"",
 	"physical",
 	"ec",
-	"quicken",
 	"burning",
 	"unknown",
 }
