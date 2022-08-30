@@ -81,6 +81,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		landed = true
 
 		var amp string
+		var cata string
 		var dmg float64
 		var crit bool
 
@@ -91,6 +92,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			Write("damage", &dmg).
 			Write("crit", &crit).
 			Write("amp", &amp).
+			Write("cata", &cata).
 			Write("abil", cpy.Info.Abil).
 			Write("source_frame", cpy.SourceFrame)
 		evt.WriteBuildMsg(cpy.Snapshot.Logs...)
@@ -132,6 +134,9 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		// change since it's just pointing to the slice "header"
 		if cpy.Info.Amped {
 			amp = string(cpy.Info.AmpType)
+		}
+		if cpy.Info.Catalyzed {
+			cata = string(cpy.Info.CatalyzedType)
 		}
 
 	}

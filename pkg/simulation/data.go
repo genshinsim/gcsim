@@ -61,6 +61,14 @@ func (s *Simulation) initDetailLog() {
 				sb.WriteString(" [amp: 2.0]")
 			}
 		}
+
+		if atk.Info.Catalyzed {
+			if atk.Info.CatalyzedType == combat.Aggravate {
+				sb.WriteString(" [aggravate]")
+			} else if atk.Info.CatalyzedType == combat.Spread {
+				sb.WriteString(" [spread]")
+			}
+		}
 		s.stats.DamageByChar[atk.Info.ActorIndex][sb.String()] += dmg
 		if dmg > 0 {
 			s.stats.DamageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1

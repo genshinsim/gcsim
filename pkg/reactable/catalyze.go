@@ -11,14 +11,7 @@ func (r *Reactable) tryAggravate(a *combat.AttackEvent) {
 		return
 	}
 
-	switch a.Info.Element {
-	case attributes.Electro:
-		if r.Durability[attributes.Quicken] < ZeroDur {
-			return
-		}
-		// Aggravate doesn't consume any gauge
-	default:
-		//Trigger must be Electro. Maybe add a panic/error?
+	if r.Durability[attributes.Quicken] < ZeroDur {
 		return
 	}
 
@@ -28,8 +21,8 @@ func (r *Reactable) tryAggravate(a *combat.AttackEvent) {
 	//em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.FlatDmg += 1.15 * r.calcCatalyzeDmg(a.Info, em)
-	a.Info.Amped = true
-	a.Info.AmpType = combat.Aggravate
+	a.Info.Catalyzed = true
+	a.Info.CatalyzedType = combat.Aggravate
 }
 
 func (r *Reactable) trySpread(a *combat.AttackEvent) {
@@ -37,16 +30,10 @@ func (r *Reactable) trySpread(a *combat.AttackEvent) {
 		return
 	}
 
-	switch a.Info.Element {
-	case attributes.Dendro:
-		if r.Durability[attributes.Quicken] < ZeroDur {
-			return
-		}
-		// Spread doesn't consume any gauge
-	default:
-		//Trigger must be Dendro. Maybe add a panic/error?
+	if r.Durability[attributes.Quicken] < ZeroDur {
 		return
 	}
+	// Spread doesn't consume any gauge
 
 	//trigger event before attack is queued. this gives time for other actions to modify it
 	r.core.Events.Emit(event.OnSpread, r.self, a)
@@ -54,8 +41,8 @@ func (r *Reactable) trySpread(a *combat.AttackEvent) {
 	//em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.FlatDmg += 1.25 * r.calcCatalyzeDmg(a.Info, em)
-	a.Info.Amped = true
-	a.Info.AmpType = combat.Spread
+	a.Info.Catalyzed = true
+	a.Info.CatalyzedType = combat.Spread
 }
 
 func (r *Reactable) tryQuicken(a *combat.AttackEvent) {

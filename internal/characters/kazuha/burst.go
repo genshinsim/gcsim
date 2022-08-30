@@ -5,8 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -16,6 +14,8 @@ const (
 	burstAnimation = 92
 	burstFirstTick = 140
 )
+
+const burstStatus = "kazuha-q"
 
 func init() {
 	burstFrames = frames.InitAbilSlice(burstAnimation)
@@ -58,13 +58,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), 10)
 
-	//from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
-	//updated to 140 based on koli's count: https://docs.google.com/spreadsheets/d/1uEbP13O548-w_nGxFPGsf5jqj1qGD3pqFZ_AiV4w3ww/edit#gid=775340159
-
 	// make sure that this task gets executed:
-	// - after q initial hit hitlag happened
+	// - inside Q hitlag
 	// - before kazuha can get affected by any more hitlag
 	c.QueueCharTask(func() {
+		// queue up ticks
+		// from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
+		// updated to 140 based on koli's count: https://docs.google.com/spreadsheets/d/1uEbP13O548-w_nGxFPGsf5jqj1qGD3pqFZ_AiV4w3ww/edit#gid=775340159
 		for i := 0; i < 5; i++ {
 			c.Core.Tasks.Add(func() {
 				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
@@ -72,46 +72,29 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					aiAbsorb.Element = c.qInfuse
 					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
 				}
-			}, (burstFirstTick-(burstHitmark+5))+117*i)
+			}, (burstFirstTick-(burstHitmark+1))+117*i)
 		}
-
-		//add em to kazuha even if off-field
-		//add em to all char, but only activate if char is active
-		//The Autumn Whirlwind field created by Kazuha Slash has the following effects:
-		//• Increases Kaedehara Kazuha's own Elemental Mastery by 200 for its duration.
-		//• Increases the Elemental Mastery of characters within the field by 200.
-		//The Elemental Mastery-increasing effects of this Constellation do not stack.
+		// C2:
+		// TODO: Not sure when it lasts from and until
+		// -> For now, assume that it lasts from Initial Hit hitlag end to the last Q tick.
+		// TODO: Does it apply to Kazuha's initial hit?
+		// -> For now, assume that it doesn't.
+		c.Core.Status.Add(burstStatus, (burstFirstTick-(burstHitmark+1))+117*4)
 		if c.Base.Cons >= 2 {
-			// TODO: Lasts while Q field is on stage is ambiguous.
-			// Does it apply to Kazuha's initial hit?
-			// Not sure when it lasts from and until
-			// For consistency with how it was previously done, assume that it lasts from button press to the last tick
-			for _, char := range c.Core.Player.Chars() {
-				this := char
-				//use non hitlag since it's from the field?
-				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("kazuha-c2", (burstFirstTick-(burstHitmark+5))+117*5),
-					AffectedStat: attributes.EM,
-					Amount: func() ([]float64, bool) {
-						switch this.Index {
-						case c.Core.Player.Active(), c.Index:
-							return c.c2buff, true
-						}
-						return nil, false
-					},
-				})
-			}
+			c.qFieldSrc = c.Core.F
+			c.Core.Tasks.Add(c.c2(c.Core.F), 30) // start checking in 0.5s
 		}
-	}, burstHitmark+5)
+		// C6:
+		// TODO: when does the infusion kick in?
+		// -> For now, assume that it starts on Initial Hit hitlag end.
+		if c.Base.Cons >= 6 {
+			c.c6()
+		}
+	}, burstHitmark+1)
 
 	//reset skill cd
 	if c.Base.Cons >= 1 {
 		c.ResetActionCooldown(action.ActionSkill)
-	}
-
-	if c.Base.Cons >= 6 {
-		// TODO: when does the infusion kick in?
-		c.c6()
 	}
 
 	c.SetCD(action.ActionBurst, 15*60)

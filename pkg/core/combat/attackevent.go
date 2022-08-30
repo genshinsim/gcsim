@@ -44,6 +44,9 @@ type AttackInfo struct {
 	Amped   bool         //new flag used by new reaction system
 	AmpMult float64      //amplier
 	AmpType ReactionType //melt or vape i guess
+	// catalyze info
+	Catalyzed     bool
+	CatalyzedType ReactionType
 	//special flag for sim generated attack
 	SourceIsSim bool
 	DoNotLog    bool
