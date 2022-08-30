@@ -125,11 +125,8 @@ func (c *char) addStrStack(src string, inc int) {
 	} else if v < 0 {
 		v = 0
 	}
-	if v == old {
-		return
-	}
 
-	var s string
+	s := "current"
 	if v > old {
 		s = "gained"
 	} else if v < old {
@@ -140,5 +137,6 @@ func (c *char) addStrStack(src string, inc int) {
 
 	c.Core.Log.NewEvent(fmt.Sprintf("itto %v SSS stacks from %v", s, src), glog.LogCharacterEvent, c.Index).
 		Write("old_stacks", old).
+		Write("inc", inc).
 		Write("cur_stacks", v)
 }
