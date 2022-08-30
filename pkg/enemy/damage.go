@@ -127,6 +127,7 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("flat_hp", atk.Snapshot.Stats[attributes.HP]).
 			Write("hp_per", atk.Snapshot.Stats[attributes.HPP]).
 			Write("total_hp", totalhp).
+			Write("catalyzed", atk.Info.Catalyzed).
 			Write("flat_dmg", atk.Info.FlatDmg).
 			Write("total_atk_def", a).
 			Write("base_dmg", base).
