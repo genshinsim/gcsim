@@ -11,14 +11,7 @@ func (r *Reactable) tryAggravate(a *combat.AttackEvent) {
 		return
 	}
 
-	switch a.Info.Element {
-	case attributes.Electro:
-		if r.Durability[attributes.Quicken] < ZeroDur {
-			return
-		}
-		// Aggravate doesn't consume any gauge
-	default:
-		//Trigger must be Electro. Maybe add a panic/error?
+	if r.Durability[attributes.Quicken] < ZeroDur {
 		return
 	}
 
