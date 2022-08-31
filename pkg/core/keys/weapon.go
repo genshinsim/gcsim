@@ -62,6 +62,7 @@ var weaponNames = []string{
 	"dullblade",
 	"elegyfortheend",
 	"emeraldorb",
+	"endoftheline",
 	"engulfinglightning",
 	"everlastingmoonglow",
 	"eyeofperception",
@@ -201,6 +202,7 @@ const (
 	DullBlade
 	ElegyForTheEnd
 	EmeraldOrb
+	EndOfTheLine
 	EngulfingLightning
 	EverlastingMoonglow
 	EyeOfPerception

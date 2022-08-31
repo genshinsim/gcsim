@@ -236,6 +236,26 @@ begin
 end;
 $$;
 
+create or replace function public.delete_from_db(
+    simulation_key uuid
+)
+returns int 
+language plpgsql
+as
+$$
+declare
+    key int;
+begin
+    select db_id from db_simulations as d into key where d.simulation_key = delete_from_db.simulation_key;
+    delete from db_entry_authors as d where d.db_id = key;
+    delete from db_simulations as d where d.simulation_key = delete_from_db.simulation_key;
+    -- update perm
+    update simulations as s set is_permanent = 'false' where s.simulation_key = delete_from_db.simulation_key;
+
+    return key;
+end;
+$$;
+
 create or replace function public.replace_db_sim(
     old_key uuid
     , simulation_key uuid
