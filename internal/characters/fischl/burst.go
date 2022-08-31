@@ -38,7 +38,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Midnight Phantasmagoria",
+			Abil:       "Her Pilgrimage of Bleak (C4)",
 			AttackTag:  combat.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupFischl,
@@ -55,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
 				Target:  c.Index,
-				Message: "Her Pilgrimage of Bleak",
+				Message: "Her Pilgrimage of Bleak (C4)",
 				Src:     heal,
 				Bonus:   c.Stat(attributes.Heal),
 			})
