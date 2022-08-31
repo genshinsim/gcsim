@@ -74,13 +74,13 @@ func (s SlashType) String() string {
 	return slashName[s]
 }
 
-func (s SlashType) Next(stacks int, hasC6 bool) SlashType {
+func (s SlashType) Next(stacks int, c6Proc bool) SlashType {
 	switch s {
 	// idle -> charge (based on stacks)
 	case InvalidSlash:
-		if stacks == 1 && !hasC6 {
+		if stacks == 1 && !c6Proc {
 			return FinalSlash
-		} else if stacks == 1 && hasC6 {
+		} else if stacks == 1 && c6Proc {
 			return LeftSlash
 		} else if stacks > 1 {
 			return LeftSlash
@@ -89,12 +89,12 @@ func (s SlashType) Next(stacks int, hasC6 bool) SlashType {
 
 	// loops CA1/CA2 until stacks=1
 	case LeftSlash:
-		if stacks == 1 && !hasC6 {
+		if stacks == 1 && !c6Proc {
 			return FinalSlash
 		}
 		return RightSlash
 	case RightSlash:
-		if stacks == 1 && !hasC6 {
+		if stacks == 1 && !c6Proc {
 			return FinalSlash
 		}
 		return LeftSlash
@@ -175,8 +175,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	prevSlash := c.slashState
 	stacks := c.Tags[strStackKey]
-	hasC6 := c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5
-	c.slashState = prevSlash.Next(stacks, hasC6)
+	c6Proc := c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5
+	c.slashState = prevSlash.Next(stacks, c6Proc)
 
 	// figure out how many frames we need to skip
 	windup := c.windupFrames(prevSlash, c.slashState)
@@ -215,7 +215,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewDefCircHit(r, false, combat.TargettableEnemy), 0, chargeHitmarks[c.slashState]-windup)
 
 	// C6: has a 50% chance to not consume stacks of Superlative Superstrength.
-	if !hasC6 {
+	if !c6Proc {
 		c.addStrStack("charge", -1)
 	}
 
@@ -229,7 +229,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Frames: func(next action.Action) int {
 			f := chargeFrames[curSlash][next]
 			// handle CA1/CA2 -> CAF frames
-			if next == action.ActionCharge && curSlash.Next(c.Tags[strStackKey], hasC6) == FinalSlash {
+			if next == action.ActionCharge && curSlash.Next(c.Tags[strStackKey], c6Proc) == FinalSlash {
 				switch curSlash {
 				case LeftSlash: // CA1 -> CAF
 					f = 60
