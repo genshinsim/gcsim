@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
-          ref: eng:${{ steps.extract_branch.outputs.branch }}
+          ref: ${{ steps.extract_branch.outputs.branch }}
       - uses: actions/setup-go@v2
         with:
           go-version: "^1.17.7" # The Go version to download (if necessary) and use.
@@ -57,5 +57,5 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           projectName: gcsim
           directory: ./app/build
-          branch: eng:${{ steps.extract_branch.outputs.branch }}
+          branch: ${{ steps.extract_branch.outputs.branch }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
