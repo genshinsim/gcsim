@@ -21,6 +21,7 @@ type char struct {
 	a4bonus         []float64
 	c1bonus         []float64
 	c2bonus         []float64
+	burstSrc        int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

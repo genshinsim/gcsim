@@ -2,6 +2,7 @@ package razor
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -31,6 +32,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.AddStatus(burstBuffKey, 15*60, true)
 	}, burstHitmark)
 
+	c.burstSrc = c.Core.F
+	c.Core.Tasks.Add(c.applySelfAura(c.burstSrc), 120)
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Fang",
@@ -58,6 +62,23 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
 		State:           action.BurstState,
+	}
+}
+
+func (c *char) applySelfAura(src int) func() {
+	return func() {
+		if !c.StatusIsActive(burstBuffKey) {
+			return
+		}
+		if src != c.burstSrc {
+			return
+		}
+		p, ok := c.Core.Combat.Player().(*avatar.Player)
+		if !ok {
+			panic("target 0 should be Player but is not!!")
+		}
+		p.ApplySelfInfusion(attributes.Electro, 25, 126)
+		c.Core.Tasks.Add(c.applySelfAura(src), 120)
 	}
 }
 
