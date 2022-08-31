@@ -98,6 +98,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/compound"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/elegy"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/endoftheline"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/hamayumi"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/huntersbow"
