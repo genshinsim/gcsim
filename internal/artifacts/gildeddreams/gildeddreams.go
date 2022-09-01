@@ -80,17 +80,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
+		const icdKey = "gd-4pc-icd"
 		add := func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
-			if c.Player.Active() != char.Index {
-				return false
-			}
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
+			if char.StatusIsActive(icdKey) {
+				return false
+			}
+			char.AddStatus(icdKey, 8*60, true)
 
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("gd-4pc", 8*60),
+				Base:         modifier.NewBaseWithHitlag("gd-4pc", 8*60),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return s.buff, true

@@ -1,4 +1,4 @@
-﻿package itto
+package itto
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -29,24 +29,24 @@ func (c *char) a1() {
 	})
 }
 
-func (c *char) a1Update() {
-	if c.chargedCount == 0 {
+func (c *char) a1Update(curSlash SlashType) {
+	switch curSlash {
+	case SaichiSlash:
 		// reset a1 stacks if we are doing a CA0
 		c.a1Stacks = 0
-		c.Core.Log.NewEvent("itto-a1 atk spd stacks reset from a1Update", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("itto-a1 reset atkspd stacks", glog.LogCharacterEvent, c.Index).
 			Write("a1Stacks", c.a1Stacks).
-			Write("chargedCount", c.chargedCount)
-	}
-	if c.chargedCount == 1 || c.chargedCount == 2 {
+			Write("slash", curSlash.String())
+	case LeftSlash, RightSlash:
 		// increment a1 stacks if we are doing CA1/CA2
 		// increment stacks for A1, max is 3 stacks
 		c.a1Stacks++
 		if c.a1Stacks > 3 {
 			c.a1Stacks = 3
 		}
-		c.Core.Log.NewEvent("itto-a1 atk spd stacks increased", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("itto-a1 atkspd stacks increased", glog.LogCharacterEvent, c.Index).
 			Write("a1Stacks", c.a1Stacks).
-			Write("chargedCount", c.chargedCount)
+			Write("slash", curSlash.String())
 	}
 	// do nothing if we are doing a CAF
 }
