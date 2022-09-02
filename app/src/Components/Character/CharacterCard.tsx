@@ -83,6 +83,8 @@ function charBG(element: string) {
       return 'bg-gradient-to-r from-gray-700 to-purple-300';
     case 'anemo':
       return 'bg-gradient-to-r from-gray-700 to-green-300';
+    case 'dendro':
+      return 'bg-gradient-to-r from-gray-700 to-lime-300';
     case 'geo':
       return 'bg-gradient-to-r from-gray-700 to-yellow-400';
   }
