@@ -168,11 +168,6 @@ func collect(this js.Value, args []js.Value) interface{} {
 
 	r.Iterations = cfg.Settings.Iterations
 	r.ActiveChar = cfg.InitialChar.String()
-	if cfg.Settings.DamageMode {
-		r.Duration.Mean = float64(cfg.Settings.Duration)
-		r.Duration.Min = float64(cfg.Settings.Duration)
-		r.Duration.Max = float64(cfg.Settings.Duration)
-	}
 
 	r.NumTargets = len(cfg.Targets)
 	r.CharDetails = in[0].CharDetails
