@@ -9,6 +9,8 @@ import (
 
 var burstFrames []int
 
+const burstRelease = 77
+
 var burstHitmarks = []int{112, 117, 120, 121, 126, 128}
 var burstSecondHitmarks = []int{147, 153, 160, 161, 171, 175}
 
@@ -37,7 +39,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			0,
+			burstRelease,
 			burstHitmarks[i]+travel,
 		)
 	}

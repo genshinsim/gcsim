@@ -25,12 +25,12 @@ func (c *char) c1() {
 
 // When there are opponents within the Vijnana-Khanda Field created by Vijnana-Phala Mine, Tighnari gains 20% Dendro DMG Bonus.
 // The effect will last up to 6s if the field's duration ends or if it no longer has opponents within it.
-func (c *char) c2() {
+func (c *char) c2(travel int) {
 	// crutch
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DendroP] = .2
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("tighnari-c2", 14*60-skillHitmark), // 8+6
+		Base:         modifier.NewBase("tighnari-c2", 14*60-skillRelease-travel), // 8+6
 		AffectedStat: attributes.DendroP,
 		Amount: func() ([]float64, bool) {
 			return m, true

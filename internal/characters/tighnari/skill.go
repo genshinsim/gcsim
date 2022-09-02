@@ -10,7 +10,7 @@ import (
 var skillFrames []int
 
 const (
-	skillHitmark           = 20
+	skillRelease           = 15
 	vijnanasuffusionStatus = "vijnanasuffusion"
 	wreatharrows           = "wreatharrows"
 )
@@ -26,6 +26,11 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 5
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Vijnana-Phala Mine",
@@ -41,28 +46,28 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-		0,
-		skillHitmark,
+		skillRelease,
+		skillRelease+travel,
 	)
 
 	var count float64 = 3
 	if c.Core.Rand.Float64() < 0.5 {
 		count++
 	}
-	c.Core.QueueParticle("tighnari", count, attributes.Dendro, skillHitmark+c.ParticleDelay)
+	c.Core.QueueParticle("tighnari", count, attributes.Dendro, skillRelease+travel+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
 
-	c.AddStatus(vijnanasuffusionStatus, 12*60, false)
+	c.Core.Tasks.Add(func() { c.AddStatus(vijnanasuffusionStatus, 12*60, false) }, 13)
 	c.SetTag(wreatharrows, 3)
 
 	if c.Base.Cons >= 2 {
-		c.QueueCharTask(c.c2, skillHitmark+1)
+		c.QueueCharTask(func() { c.c2(travel) }, skillRelease+travel+1)
 	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionAim], // earliest cancel
 		State:           action.SkillState,
 	}
 }

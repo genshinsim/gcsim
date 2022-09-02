@@ -135,26 +135,26 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 				wreathTravel,
 			)
 		}
-	}, aimedWreathHitmark+travel-skip)
 
-	if c.Base.Cons >= 6 {
-		ai = combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Karma Adjudged From the Leaden Fruit",
-			AttackTag:  combat.AttackTagExtra,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			Element:    attributes.Dendro,
-			Durability: 25,
-			Mult:       1.5,
+		if c.Base.Cons >= 6 {
+			ai = combat.AttackInfo{
+				ActorIndex: c.Index,
+				Abil:       "Karma Adjudged From the Leaden Fruit",
+				AttackTag:  combat.AttackTagExtra,
+				ICDTag:     combat.ICDTagNone,
+				ICDGroup:   combat.ICDGroupDefault,
+				Element:    attributes.Dendro,
+				Durability: 25,
+				Mult:       1.5,
+			}
+			c.Core.QueueAttackWithSnap(
+				ai,
+				snap,
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				wreathTravel,
+			)
 		}
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			aimedWreathHitmark-skip,
-			aimedWreathHitmark+travel+wreathTravel-skip,
-		)
-	}
+	}, aimedWreathHitmark+travel-skip)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(aimedWreathFrames),
