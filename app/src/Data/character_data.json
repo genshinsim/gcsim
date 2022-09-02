@@ -229,6 +229,11 @@
     "element": "pyro",
     "weapon_class": "polearm"
   },
+  "tighnari": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "bow"
+  },
   "venti": {
     "rarity": 5,
     "element": "anemo",
