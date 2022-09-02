@@ -13,6 +13,12 @@ const skillHitmark = 20
 
 func init() {
 	skillFrames = frames.InitAbilSlice(15)
+	skillFrames[action.ActionAttack] = 20
+	skillFrames[action.ActionAim] = 20
+	skillFrames[action.ActionSkill] = 30
+	skillFrames[action.ActionBurst] = 22
+	skillFrames[action.ActionDash] = 23
+	skillFrames[action.ActionSwap] = 21
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {

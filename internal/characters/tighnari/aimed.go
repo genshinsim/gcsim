@@ -43,15 +43,19 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Aim (Charged)",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		Element:      attributes.Dendro,
-		Durability:   25,
-		Mult:         fullaim[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		ActorIndex:           c.Index,
+		Abil:                 "Aim (Charged)",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone,
+		ICDGroup:             combat.ICDGroupDefault,
+		Element:              attributes.Dendro,
+		Durability:           25,
+		Mult:                 fullaim[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot == 1,
+		HitlagHaltFrames:     0.12 * 60,
+		HitlagFactor:         0.01,
+		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
@@ -93,33 +97,37 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Wreath Arrow",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		Element:      attributes.Dendro,
-		Durability:   25,
-		Mult:         wreath[c.TalentLvlAttack()],
-		HitWeakPoint: weakspot == 1,
+		ActorIndex:           c.Index,
+		Abil:                 "Wreath Arrow",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone,
+		ICDGroup:             combat.ICDGroupDefault,
+		Element:              attributes.Dendro,
+		Durability:           25,
+		Mult:                 wreath[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot == 1,
+		HitlagHaltFrames:     0.12 * 60,
+		HitlagFactor:         0.01,
+		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedWreathHitmark-skip, aimedWreathHitmark+travel-skip)
 	c.Core.Tasks.Add(c.a1, aimedWreathHitmark-skip+1)
 
 	ai = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Clusterbloom Arrow",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupTighnari,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       clusterbloom[c.TalentLvlAttack()],
+		ActorIndex:   c.Index,
+		Abil:         "Clusterbloom Arrow",
+		AttackTag:    combat.AttackTagExtra,
+		ICDTag:       combat.ICDTagExtraAttack,
+		ICDGroup:     combat.ICDGroupTighnari,
+		Element:      attributes.Dendro,
+		Durability:   25,
+		Mult:         clusterbloom[c.TalentLvlAttack()],
+		HitWeakPoint: false, // TODO: tignari can hit the weak spot on some enemies (like hilichurls)
 	}
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
 		for i := 0; i < 4; i++ {
-			ai.HitWeakPoint = c.Core.Rand.Float64() < .5 // random
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,

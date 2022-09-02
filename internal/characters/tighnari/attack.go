@@ -17,10 +17,10 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 14)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 12)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 25)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 28)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 26)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 23)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 37)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 68)
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
