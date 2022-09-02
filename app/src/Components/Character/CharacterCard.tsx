@@ -66,6 +66,8 @@ function statKeyToIcon(key: string): JSX.Element {
       return <IconPhysical />;
     case 'heal':
       return <IconHeal />;
+    case 'dendro':
+      return <IconHydro />; // TODO: fix dendro icon
     default:
       return <span />;
   }
