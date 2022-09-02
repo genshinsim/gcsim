@@ -9,15 +9,19 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 20
+const (
+	skillHitmark           = 20
+	vijnanasuffusionStatus = "vijnanasuffusion"
+	wreatharrows           = "wreatharrows"
+)
 
 func init() {
-	skillFrames = frames.InitAbilSlice(15)
+	skillFrames = frames.InitAbilSlice(30)
 	skillFrames[action.ActionAttack] = 20
 	skillFrames[action.ActionAim] = 20
-	skillFrames[action.ActionSkill] = 30
 	skillFrames[action.ActionBurst] = 22
 	skillFrames[action.ActionDash] = 23
+	skillFrames[action.ActionJump] = 23
 	skillFrames[action.ActionSwap] = 21
 }
 

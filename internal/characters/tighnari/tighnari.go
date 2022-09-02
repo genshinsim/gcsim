@@ -8,11 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
-const (
-	vijnanasuffusionStatus = "vijnanasuffusion"
-	wreatharrows           = "wreatharrows"
-)
-
 func init() {
 	core.RegisterCharFunc(keys.Tighnari, NewChar)
 }
