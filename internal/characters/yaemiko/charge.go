@@ -20,15 +20,17 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+	// Supposed to be ICDTagYaeCharged and ICDGroupYaeCharged. However, it's
+	// essentially no ICD because it takes ~36f for the charge to hit again.
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Electro,
-		Durability: 50,
+		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
@@ -39,7 +41,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: check snapshot delay
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), 0, chargeHitmark-windup)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy),
+		0,
+		chargeHitmark-windup,
+	)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
