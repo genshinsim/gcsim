@@ -51,7 +51,7 @@ func (c *char) c4() {
 		m[attributes.EM] = 60
 		for _, char := range c.Core.Player.Chars() {
 			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("tighnari-c4", 8*60),
+				Base:         modifier.NewBaseWithHitlag("tighnari-c4", 8*60),
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return m, true

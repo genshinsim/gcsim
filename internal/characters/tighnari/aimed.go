@@ -111,7 +111,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		Abil:       "Clusterbloom Arrow",
 		AttackTag:  combat.AttackTagExtra,
 		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault, // TODO: combat.ICDGroupTighnari, but need to fix dendro application
+		ICDGroup:   combat.ICDGroupTighnari,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       clusterbloom[c.TalentLvlAttack()],
@@ -124,10 +124,10 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 				ai,
 				snap,
 				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-				travel+wreathTravel,
+				wreathTravel,
 			)
 		}
-	}, aimedWreathHitmark-skip)
+	}, aimedWreathHitmark+travel-skip)
 
 	if c.Base.Cons >= 6 {
 		ai = combat.AttackInfo{

@@ -46,7 +46,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetTag(wreatharrows, 3)
 
 	if c.Base.Cons >= 2 {
-		// TODO: c2 affets skill?
 		c.QueueCharTask(c.c2, skillHitmark+1)
 	}
 
