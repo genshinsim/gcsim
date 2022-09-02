@@ -52,7 +52,7 @@ func (c *char) a4() {
 	}
 }
 
-func (c *char) a1Ticks(startFrame int) {
+func (c *char) a1Ticks(startFrame int, snap *combat.Snapshot) {
 	if !c.StatusIsActive(sproutKey) {
 		return
 	}
@@ -73,13 +73,17 @@ func (c *char) a1Ticks(startFrame int) {
 		Durability: 25,
 		Mult:       0.4,
 	}
-	c.Core.QueueAttack(
+	if snap == nil {
+		temp := c.Snapshot(&ai)
+		snap = &temp
+	}
+	c.Core.QueueAttackWithSnap(
 		ai,
+		*snap,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
-		0,
 		0,
 	)
 	c.Core.Tasks.Add(func() {
-		c.a1Ticks(startFrame)
+		c.a1Ticks(startFrame, snap)
 	}, sproutTickPeriod)
 }

@@ -80,7 +80,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			duration += 180
 		}
 		c.AddStatus(sproutKey, duration, true)
-		c.QueueCharTask(func() { c.a1Ticks(src) }, sproutHitmark)
+		c.QueueCharTask(func() {
+			c.a1Ticks(src, nil)
+		}, sproutHitmark)
 	}, skillReturn)
 
 	c.Core.QueueParticle("collei", 3, attributes.Dendro, skillHitmarks[0]+c.ParticleDelay)
