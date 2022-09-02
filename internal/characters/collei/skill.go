@@ -80,8 +80,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			duration += 180
 		}
 		c.AddStatus(sproutKey, duration, true)
+		ai := c.a1AttackInfo()
+		snap := c.Snapshot(&ai)
 		c.QueueCharTask(func() {
-			c.a1Ticks(src, nil)
+			c.a1Ticks(src, snap)
 		}, sproutHitmark)
 	}, skillReturn)
 

@@ -29,6 +29,20 @@ func (c *char) a1() {
 	}
 }
 
+func (c *char) a1AttackInfo() combat.AttackInfo {
+	return combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Floral Sidewinder (A1)",
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagColleiSprout,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Dendro,
+		Durability: 25,
+		Mult:       0.4,
+	}
+}
+
 func (c *char) a4() {
 	for _, event := range dendroEvents {
 		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
@@ -52,7 +66,7 @@ func (c *char) a4() {
 	}
 }
 
-func (c *char) a1Ticks(startFrame int, snap *combat.Snapshot) {
+func (c *char) a1Ticks(startFrame int, snap combat.Snapshot) {
 	if !c.StatusIsActive(sproutKey) {
 		return
 	}
@@ -62,24 +76,9 @@ func (c *char) a1Ticks(startFrame int, snap *combat.Snapshot) {
 			Write("new src", c.sproutSrc)
 		return
 	}
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Floral Sidewinder (A1)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagColleiSprout,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       0.4,
-	}
-	if snap == nil {
-		temp := c.Snapshot(&ai)
-		snap = &temp
-	}
 	c.Core.QueueAttackWithSnap(
-		ai,
-		*snap,
+		c.a1AttackInfo(),
+		snap,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
 		0,
 	)
