@@ -104,6 +104,7 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
   yelan: { key: 'yelan', element: 'hydro', weapon_type: 'bow' },
   kuki: { key: 'kuki', element: 'electro', weapon_type: 'sword' },
   heizou: { key: 'heizou', element: 'anemo', weapon_type: 'catalyst' },
+  collei: { key: 'collei', element: 'dendro', weapon_type: 'bow' },
   travelerelectro: {
     key: 'travelerelectro',
     element: 'electro',
