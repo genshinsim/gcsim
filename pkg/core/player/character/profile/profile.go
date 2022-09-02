@@ -93,4 +93,5 @@ const (
 	ZoneInazuma
 	ZoneSumeru
 	ZoneSnezhnaya
+	ZoneSumeru
 )

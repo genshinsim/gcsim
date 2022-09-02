@@ -2409,10 +2409,10 @@ fuzzysort@^1.1.4:
   resolved "https://registry.yarnpkg.com/fuzzysort/-/fuzzysort-1.9.0.tgz#d36d27949eae22340bb6f7ba30ea6751b92a181c"
   integrity sha512-MOxCT0qLTwLqmEwc7UtU045RKef7mc8Qz8eR4r2bLNEq9dy/c3ZKMEFp6IEst69otkQdFZ4FfgH2dmZD+ddX1g==
 
-genshin-db@^4.1.0:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.2.3.tgz#ba3b61bc25254490b8d6409567874b3436b7df2e"
-  integrity sha512-Q0xEcWIeBQ1v6LCHB1HaE38Gvi0Iq4lV1i7GACoJQ4x5TvaJfCeAU+F56Vhl0R/wInoSZaWOpCY2MCB4e10LSQ==
+genshin-db@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.3.0.tgz#00b18b218f6884a01c9e9c210206eabb81c5daa2"
+  integrity sha512-VFAYbNnBO0EKR7tcxGQDSsaJPmAakLtiNaUWWiXIJpmAskRM3BX0Tj52LjPtM9+i6yteXrj7/zgf9y6jfmRe6A==
   dependencies:
     fuzzysort "^1.1.4"
     pako "^2.0.4"

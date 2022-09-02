@@ -1,4 +1,4 @@
-﻿package itto
+package itto
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var attackHitmarks = []int{23, 25, 16, 48}
@@ -52,7 +51,7 @@ func init() {
 }
 
 func (c *char) attackState() IttoAttackState {
-	if c.Tags[c.stackKey] == 0 {
+	if c.Tags[strStackKey] == 0 {
 		// 0 stacks: use NX -> CA0 frames
 		return attack0Stacks
 	}
@@ -66,15 +65,11 @@ func (c *char) attackState() IttoAttackState {
 // Max 5 stacks. Triggering this effect will refresh the current duration of any existing stacks.
 // Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill, "Masatsu Zetsugi: Akaushi Burst!"
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	// handle Dasshu
-	lastWasItto := c.Core.Player.LastAction.Char == c.Index
-	lastAction := c.Core.Player.LastAction.Type
 
-	// don't reset attack string if previous action was NA/Dash/Skill
-	if lastWasItto && (lastAction == action.ActionAttack || lastAction == action.ActionDash || lastAction == action.ActionSkill) {
+	// Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill
+	switch c.Core.Player.CurrentState() {
+	case action.DashState, action.SkillState:
 		c.NormalCounter = c.savedNormalCounter
-	} else {
-		c.NormalCounter = 0
 	}
 
 	// Attack
@@ -96,7 +91,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	// check burst status for radius
 	// TODO: proper hitbox
 	radius := 1.0
-	if c.StatModIsActive(c.burstBuffKey) {
+	if c.StatModIsActive(burstBuffKey) {
 		radius = 2
 	}
 
@@ -108,43 +103,25 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		attackHitmarks[c.NormalCounter],
 	)
 
+	// TODO: assume NAs always hit. since it is not possible to know if the next CA is CA0 or CA1/CAF when deciding what CA frames to return.
 	// Add superlative strength stacks on damage
-	amount := 0
-	switch c.NormalCounter {
-	case 0:
-		// N1
-		if c.StatModIsActive(c.burstBuffKey) {
-			amount = 1
-		}
-	case 1:
-		// N2
-		amount = 1
-	case 2:
-		// N3
-		if c.StatModIsActive(c.burstBuffKey) {
-			amount = 1
-		}
-	case 3:
-		// N4
-		amount = 2
+	n := c.NormalCounter
+	if n == 1 {
+		c.addStrStack("attack", 1)
+	} else if n == 3 {
+		c.addStrStack("attack", 2)
 	}
-
-	if amount > 0 {
-		c.changeStacks(amount)
-		c.Core.Log.NewEvent("itto attack stack added", glog.LogCharacterEvent, c.Index).
-			Write("stacks", c.Tags[c.stackKey])
+	if c.StatModIsActive(burstBuffKey) && (n == 0 || n == 2) {
+		c.addStrStack("q-attack", 1)
 	}
 
 	// handle NX -> CA0/CA1/CAF frames
 	state := c.attackState()
 
-	defer c.AdvanceNormalIndex()
-
-	// save the next NA in case of Dasshu
-	c.savedNormalCounter = c.NormalCounter + 1
-	if c.savedNormalCounter == c.NormalHitNum {
-		c.savedNormalCounter = 0
-	}
+	defer func() {
+		c.AdvanceNormalIndex()
+		c.savedNormalCounter = c.NormalCounter
+	}()
 
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames[state]),

@@ -56,6 +56,7 @@ const (
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
+	ICDTagColleiSprout
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
@@ -85,6 +86,7 @@ const (
 	ICDGroupXiaoDash
 	ICDGroupYelanBreakthrough
 	ICDGroupYelanBurst
+	ICDGroupColleiBurst
 	ICDGroupTighnari
 	ICDGroupReactionA
 	ICDGroupReactionB
@@ -102,6 +104,7 @@ var ICDGroupResetTimer = []int{
 	6,   //xiao dash
 	18,  //yelan pew pew
 	120, //yelan burst
+	180, //collei burst
 	150, //tighnari
 	30,  //reaction a
 	30,  //reaciton b
@@ -127,6 +130,8 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1.0, 0.0, 0.0, 0.0},
 	//yelan burst
 	{1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+	//collei burst
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//tighnari
 	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
 	//reaction a
@@ -156,6 +161,8 @@ var ICDGroupDamageSequence = [][]float64{
 	{1.0, 0.0, 0.0, 0.0},
 	//yelan burst
 	{1, 1, 1, 1, 1},
+	//collei burst
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//ele A
 	{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//ele B

@@ -25,8 +25,9 @@ func init() {
 // tartaglia specific character implementation
 type char struct {
 	*tmpl.Character
-	eCast         int // the frame tartaglia casts E to enter melee stance
-	mlBurstUsed   bool // used for c6
+	eCast       int  // the frame tartaglia casts E to enter melee stance
+	c4Src       int  // used for c4
+	mlBurstUsed bool // used for c6
 }
 
 // Initializes character

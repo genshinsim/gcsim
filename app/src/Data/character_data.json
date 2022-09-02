@@ -59,6 +59,11 @@
     "element": "cryo",
     "weapon_class": "claymore"
   },
+  "collei": {
+    "rarity": 4,
+    "element": "dendro",
+    "weapon_class": "bow"
+  },
   "diluc": {
     "rarity": 5,
     "element": "pyro",
