@@ -91,6 +91,7 @@ const (
 	ZoneMondstadt
 	ZoneLiyue
 	ZoneInazuma
+	ZoneSumeru
 	ZoneSnezhnaya
 	ZoneSumeru
 )

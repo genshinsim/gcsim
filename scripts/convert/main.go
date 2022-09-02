@@ -542,6 +542,7 @@ var pkgNameReplace = map[string][2]string{
 	"core.ZoneMondstadt": {"*character", "ZoneMondstadt"},
 	"core.ZoneLiyue":     {"*character", "ZoneLiyue"},
 	"core.ZoneInazuma":   {"*character", "ZoneInazuma"},
+	"core.ZoneSumeru":    {"*character", "ZoneSumeru"},
 	//player
 	"core.HealInfo":         {"player", "HealInfo"},
 	"core.HealTypeAbsolute": {"player", "HealTypeAbsolute"},
