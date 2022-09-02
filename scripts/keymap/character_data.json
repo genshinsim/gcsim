@@ -94,6 +94,11 @@
   "element": "cryo",
   "weapon_class": "bow"
  },
+ "dori": {
+  "rarity": 4,
+  "element": "electro",
+  "weapon_class": "claymore"
+ },
  "eula": {
   "rarity": 5,
   "element": "cryo",
@@ -264,10 +269,20 @@
   "element": "hydro",
   "weapon_class": "bow"
  },
+ "test_char_do_not_use": {
+  "rarity": 5,
+  "element": "",
+  "weapon_class": "sword"
+ },
  "thoma": {
   "rarity": 4,
   "element": "pyro",
   "weapon_class": "polearm"
+ },
+ "tighnari": {
+  "rarity": 5,
+  "element": "dendro",
+  "weapon_class": "bow"
  },
  "venti": {
   "rarity": 5,
