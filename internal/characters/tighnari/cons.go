@@ -61,4 +61,32 @@ func (c *char) c4() {
 
 		return false
 	}, "tighnari-c4")
+
+	f := func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
+			return false
+		}
+		if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+			return false
+		}
+
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.EM] = 120
+		for _, char := range c.Core.Player.Chars() {
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("tighnari-c4", 8*60),
+				AffectedStat: attributes.EM,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
+		}
+
+		return false
+	}
+	// c.Core.Events.Subscribe(event.OnBurning, f, "tighnari-c4-burning")
+	// c.Core.Events.Subscribe(event.OnBloom, f, "tighnari-c4-bloom")
+	c.Core.Events.Subscribe(event.OnQuicken, f, "tighnari-c4-quicken")
+	c.Core.Events.Subscribe(event.OnSpread, f, "tighnari-c4-spread")
 }
