@@ -33,15 +33,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// ICDGroupColleiBoomerangForward, and ICDGroupColleiBoomerangBack. However,
 	// we believe this is unnecessary, so just use ICDTagNone.
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Floral Brush",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Floral Brush",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
+		Element:            attributes.Dendro,
+		Durability:         25,
+		Mult:               skill[c.TalentLvlSkill()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 	c6Triggered := false
 	c6Cb := func(_ combat.AttackCB) {
