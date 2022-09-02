@@ -87,9 +87,8 @@ var StatTypeString = [...]string{
 	"electro%",
 	"anemo%",
 	"geo%",
-	"phys%",
-	// "ele%",
 	"dendro%",
+	"phys%",
 	"atkspd%",
 	"dmg%",
 }

@@ -92,6 +92,6 @@ export const StatToIndexMap: { [key in string]: number } = {
   ElectroP: 15,
   AnemoP: 16,
   GeoP: 17,
-  PhyP: 18,
-  DendroP: 19,
+  DendroP: 18,
+  PhyP: 19,
 };
