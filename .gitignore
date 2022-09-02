@@ -1,7 +1,6 @@
 *.log
 *.csv
 *.exe
-*.png
 *.pdf
 *.pprof
 .DS_Store
