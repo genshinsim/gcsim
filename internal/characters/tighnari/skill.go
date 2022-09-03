@@ -61,7 +61,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetTag(wreatharrows, 3)
 
 	if c.Base.Cons >= 2 {
-		c.QueueCharTask(func() { c.c2(travel) }, skillRelease+travel+1)
+		c.QueueCharTask(c.c2, skillRelease+travel)
 	}
 
 	return action.ActionInfo{
