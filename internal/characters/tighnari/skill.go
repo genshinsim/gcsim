@@ -57,8 +57,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.QueueParticle("tighnari", count, attributes.Dendro, skillRelease+travel+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
 
-	c.Core.Tasks.Add(func() { c.AddStatus(vijnanasuffusionStatus, 12*60, false) }, 13)
-	c.SetTag(wreatharrows, 3)
+	c.Core.Tasks.Add(func() {
+		c.AddStatus(vijnanasuffusionStatus, 12*60, false)
+		c.SetTag(wreatharrows, 3)
+	}, 13)
 
 	if c.Base.Cons >= 2 {
 		c.QueueCharTask(c.c2, skillRelease+travel)
