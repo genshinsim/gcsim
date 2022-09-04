@@ -119,4 +119,5 @@ var CharNameToKey = map[string]keys.Char{
 	"shikanoinheizou":   keys.Heizou,
 	"heizou":            keys.Heizou,
 	"collei":            keys.Collei,
+	"tighnari":          keys.Tighnari,
 }
