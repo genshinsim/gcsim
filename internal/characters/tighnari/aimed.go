@@ -18,7 +18,7 @@ func init() {
 	aimedFrames[action.ActionDash] = aimedHitmark
 	aimedFrames[action.ActionJump] = aimedHitmark
 
-	aimedWreathFrames = frames.InitAbilSlice(167)
+	aimedWreathFrames = frames.InitAbilSlice(183)
 	aimedWreathFrames[action.ActionDash] = aimedWreathHitmark
 	aimedWreathFrames[action.ActionJump] = aimedWreathHitmark
 }
@@ -75,13 +75,13 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 	}
 	wreathTravel, ok := p["wreath"]
 	if !ok {
-		wreathTravel = 40
+		wreathTravel = 35
 	}
 	weakspot := p["weakspot"]
 
 	skip := 0
 	if c.StatusIsActive(vijnanasuffusionStatus) {
-		skip = 2.4 * 60
+		skip = 142 // 2.4 * 60
 
 		arrows := c.Tag(wreatharrows) - 1
 		c.SetTag(wreatharrows, arrows)
@@ -123,7 +123,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		Element:      attributes.Dendro,
 		Durability:   25,
 		Mult:         clusterbloom[c.TalentLvlAttack()],
-		HitWeakPoint: false, // TODO: tignari can hit the weak spot on some enemies (like hilichurls)
+		HitWeakPoint: false, // TODO: tighnari can hit the weak spot on some enemies (like hilichurls)
 	}
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
@@ -157,8 +157,8 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 	}, aimedWreathHitmark+travel-skip)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(aimedWreathFrames),
-		AnimationLength: aimedWreathFrames[action.InvalidAction],
+		Frames:          func(next action.Action) int { return aimedWreathFrames[next] - skip },
+		AnimationLength: aimedWreathFrames[action.InvalidAction] - skip,
 		CanQueueAfter:   aimedWreathHitmark - skip,
 		State:           action.AimState,
 	}

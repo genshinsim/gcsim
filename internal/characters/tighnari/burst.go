@@ -15,7 +15,11 @@ var burstHitmarks = []int{112, 117, 120, 121, 126, 128}
 var burstSecondHitmarks = []int{147, 153, 160, 161, 171, 175}
 
 func init() {
-	burstFrames = frames.InitAbilSlice(77)
+	burstFrames = frames.InitAbilSlice(118)
+	burstFrames[action.ActionAttack] = 114
+	burstFrames[action.ActionSkill] = 117
+	burstFrames[action.ActionDash] = 117
+	burstFrames[action.ActionSwap] = 115
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
