@@ -202,6 +202,55 @@ func SetupResonance(s *core.Core) {
 						Amount: func(a action.Action) float64 { return -0.05 },
 					})
 				}
+			case attributes.Dendro:
+				val := make([]float64, attributes.EndStatType)
+				val[attributes.EM] = 50
+				for _, c := range chars {
+					c.AddStatMod(character.StatMod{
+						Base:         modifier.NewBase("dendro-res-50", -1),
+						AffectedStat: attributes.EM,
+						Amount: func() ([]float64, bool) {
+							return val, true
+						},
+					})
+				}
+
+				twoBuff := make([]float64, attributes.EndStatType)
+				twoBuff[attributes.EM] = 30
+				twoEl := func(args ...interface{}) bool {
+					for _, c := range chars {
+						c.AddStatMod(character.StatMod{
+							Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
+							AffectedStat: attributes.EM,
+							Amount: func() ([]float64, bool) {
+								return twoBuff, true
+							},
+						})
+					}
+					return false
+				}
+				// s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
+				// s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnQuicken, twoEl, "dendro-res")
+
+				threeBuff := make([]float64, attributes.EndStatType)
+				threeBuff[attributes.EM] = 20
+				threeEl := func(args ...interface{}) bool {
+					for _, c := range chars {
+						c.AddStatMod(character.StatMod{
+							Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
+							AffectedStat: attributes.EM,
+							Amount: func() ([]float64, bool) {
+								return threeBuff, true
+							},
+						})
+					}
+					return false
+				}
+				s.Events.Subscribe(event.OnAggravate, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnSpread, threeEl, "dendro-res")
+				// s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
+				// s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
 			}
 		}
 	}
