@@ -207,7 +207,7 @@ func SetupResonance(s *core.Core) {
 				val[attributes.EM] = 50
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
-						Base:         modifier.NewBase("dendro-res", -1),
+						Base:         modifier.NewBase("dendro-res-50", -1),
 						AffectedStat: attributes.EM,
 						Amount: func() ([]float64, bool) {
 							return val, true
@@ -220,7 +220,7 @@ func SetupResonance(s *core.Core) {
 				twoEl := func(args ...interface{}) bool {
 					for _, c := range chars {
 						c.AddStatMod(character.StatMod{
-							Base:         modifier.NewBaseWithHitlag("dendro-res-two", 6*60),
+							Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
 							AffectedStat: attributes.EM,
 							Amount: func() ([]float64, bool) {
 								return twoBuff, true
@@ -238,7 +238,7 @@ func SetupResonance(s *core.Core) {
 				threeEl := func(args ...interface{}) bool {
 					for _, c := range chars {
 						c.AddStatMod(character.StatMod{
-							Base:         modifier.NewBaseWithHitlag("dendro-res-three", 6*60),
+							Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
 							AffectedStat: attributes.EM,
 							Amount: func() ([]float64, bool) {
 								return threeBuff, true
