@@ -111,7 +111,7 @@ func (c *char) SkillB() action.ActionInfo {
 		)
 		//Apply the extra hit
 		ai.Abil = "Duststalker Bolt"
-		ai.Mult = 0.5
+		ai.Mult = 1.0
 		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 //this is the A4
 		//3 instances
 		//TODO: timing (frames) of each instance
