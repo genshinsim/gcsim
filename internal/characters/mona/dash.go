@@ -40,6 +40,15 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 
 	// A1
 	c.Core.Tasks.Add(c.a1(), 120)
+	// C6
+	if c.Base.Cons >= 6 {
+		// reset c6 stacks in case we dash again before using a CA
+		c.c6Stacks = 0
+		// need to keep track of src in case of Mona Dash Dash, where the second dash starts between two c6 ticks
+		// without a src check the second Dash would gain a stack before 1s is up and a second one at 1s
+		c.c6Src = c.Core.F
+		c.Core.Tasks.Add(c.c6(c.Core.F), 60)
+	}
 
 	// call default implementation to handle stamina
 	c.Character.Dash(p)
