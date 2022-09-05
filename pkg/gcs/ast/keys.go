@@ -31,6 +31,7 @@ var key = map[string]TokenType{
 	"cons":                keywordCons,
 	"talent":              keywordTalent,
 	"start_hp":            keywordStartHP,
+	"start_energy":        keywordStartEnergy,
 	"count":               keywordCount,
 	"params":              keywordParams,
 	"label":               keywordLabel,

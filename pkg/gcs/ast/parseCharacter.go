@@ -35,6 +35,7 @@ func (p *Parser) newChar(key keys.Char) {
 	r.SetParams = make(map[keys.Set]map[string]int)
 	r.Weapon.Params = make(map[string]int)
 	r.Base.StartHP = -1
+	r.Base.StartEnergy = 200
 	r.Base.Element = keys.CharKeyToEle[key]
 	p.chars[key] = &r
 	p.charOrder = append(p.charOrder, key)
@@ -86,6 +87,11 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
 				c.Base.StartHP, err = itemNumberToFloat64(x)
+			}
+		case keywordStartEnergy:
+			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
+			if err == nil {
+				c.Base.StartEnergy, err = itemNumberToFloat64(x)
 			}
 		case ItemPlus: //optional flags
 			n = p.next()

@@ -77,6 +77,7 @@ export interface Base {
   base_def: number;
   cons: number;
   start_hp: number;
+  start_energy: number;
 }
 export interface ParsedWeapon {
   name: string;

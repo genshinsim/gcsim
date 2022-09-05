@@ -97,6 +97,7 @@ const (
 	keywordCons              // cons
 	keywordTalent            // talent
 	keywordStartHP           // start_hp
+	keywordStartEnergy       // start_energy
 	keywordCount             // count
 	keywordParams            // params
 	keywordLabel             // label

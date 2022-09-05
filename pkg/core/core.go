@@ -190,14 +190,15 @@ func (c *Core) AddChar(p profile.CharacterProfile) (int, error) {
 	index := c.Player.AddChar(char)
 
 	// set the energy
-	char.Energy = char.EnergyMax
-	if e, ok := p.Params["start_energy"]; ok {
-		char.Energy = float64(e)
-		//some sanity check in case user decide to set energy = 10000000
-		if char.Energy > char.EnergyMax {
-			char.Energy = char.EnergyMax
-		}
+	char.Energy = float64(p.Base.StartEnergy)
+	// StartEnergy = 200 by default, so if user doesn't supply the param, then it gets set to EnergyMax anyways
+	// some sanity check in case user decide to set energy = 10000000
+	if char.Energy > char.EnergyMax {
+		char.Energy = char.EnergyMax
 	}
+	c.Log.NewEvent("starting energy set", glog.LogCharacterEvent, char.Index).
+		Write("Energy", char.Energy).
+		Write("EnergyMax", char.EnergyMax)
 
 	// initialize weapon
 	wf, ok := weaponMap[p.Weapon.Key]
