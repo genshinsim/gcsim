@@ -10,7 +10,8 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = []int{25, 16, 13, 38}
+var attackEarliestCancel = []int{14, 16, 18, 12, 41}
+var attackHitmarks = [][]int{{14}, {16}, {18}, {12, 21}, {41}}
 var attackHitlagHaltFrame = []float64{0.1, 0.1, 0.1, 0.15}
 var attackHitlagFactor = []float64{0.01, 0.01, 0.05, 0.01}
 
@@ -19,10 +20,11 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum) // should be 4
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 45)  // N1 -> N2
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 33)  // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 47)  // N3 -> N4
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 116) // N4 -> N1
+	attackFrames[0] = frames.InitNormalCancelSlice(attackEarliestCancel[0], 18) // N1 -> N2
+	attackFrames[1] = frames.InitNormalCancelSlice(attackEarliestCancel[1], 37) // N2 -> N3
+	attackFrames[2] = frames.InitNormalCancelSlice(attackEarliestCancel[2], 37) // N3 -> N4
+	attackFrames[3] = frames.InitNormalCancelSlice(attackEarliestCancel[3], 34) // N4 -> N1
+	attackFrames[4] = frames.InitNormalCancelSlice(attackEarliestCancel[4], 61) // N4 -> N1
 }
 
 // TODO: Adjust the attack frame values (this ones are source: i made them the fuck up)
@@ -31,7 +33,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		return c.attackB(p) //go to burst mode attacks
 	}
 
-	for _, mult := range attack[c.NormalCounter] {
+	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -49,8 +51,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter],
-			attackHitmarks[c.NormalCounter],
+			attackHitmarks[c.NormalCounter][i],
+			attackHitmarks[c.NormalCounter][i],
 		)
 	}
 
@@ -59,34 +61,27 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		CanQueueAfter:   attackEarliestCancel[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 }
 
 const BurstHitNum = 5 //Burst attack chains have 5
 
-var AttackBFrames [][]int
-var AttackBHitmarks = [][]int{{12}, {13}, {11}, {22, 33}, {33}}
+var attackBFrames [][]int
+var attackBEarliestCancel = []int{14, 16, 18, 12, 41}
+var attackBHitmarks = [][]int{{14}, {16}, {18}, {12, 21}, {41}}
 
 func init() {
 	// NA cancels (burst)
-	AttackBFrames = make([][]int, BurstHitNum)
+	attackBFrames = make([][]int, BurstHitNum)
 
-	AttackBFrames[0] = frames.InitNormalCancelSlice(AttackBHitmarks[0][0], 24)
-	AttackBFrames[0][action.ActionAttack] = 19
-
-	AttackBFrames[1] = frames.InitNormalCancelSlice(AttackBHitmarks[1][0], 26)
-	AttackBFrames[1][action.ActionAttack] = 16
-
-	AttackBFrames[2] = frames.InitNormalCancelSlice(AttackBHitmarks[2][0], 34)
-	AttackBFrames[2][action.ActionAttack] = 16
-
-	AttackBFrames[3] = frames.InitNormalCancelSlice(AttackBHitmarks[3][1], 67)
-	AttackBFrames[3][action.ActionAttack] = 44
-
-	AttackBFrames[4] = frames.InitNormalCancelSlice(AttackBHitmarks[4][0], 59)
-	AttackBFrames[4][action.ActionCharge] = 500 //TODO: honestly idk what i am doing at dis point pls forgive me Koli
+	attackBFrames[0] = frames.InitNormalCancelSlice(attackEarliestCancel[0], 18) // N1 -> N2
+	attackBFrames[1] = frames.InitNormalCancelSlice(attackEarliestCancel[1], 37) // N2 -> N3
+	attackBFrames[2] = frames.InitNormalCancelSlice(attackEarliestCancel[2], 37) // N3 -> N4
+	attackBFrames[3] = frames.InitNormalCancelSlice(attackEarliestCancel[3], 34) // N4 -> N1
+	attackBFrames[4] = frames.InitNormalCancelSlice(attackEarliestCancel[4], 61) // N4 -> N1
+	//TODO: honestly idk what i am doing at dis point pls forgive me Koli
 
 }
 
@@ -112,15 +107,15 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
-		}, AttackBHitmarks[c.NormalCounter][i])
+		}, attackBHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:          frames.NewAttackFunc(c.Character, AttackBFrames),
-		AnimationLength: AttackBFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   AttackBHitmarks[c.NormalCounter][len(AttackBHitmarks[c.NormalCounter])-1],
+		Frames:          frames.NewAttackFunc(c.Character, attackBFrames),
+		AnimationLength: attackBFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   attackBEarliestCancel[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
 }

@@ -11,7 +11,7 @@ var chargeFrames []int
 
 const chargeHitmark = 22
 
-// TODO: frames of all of this shit
+// TODO: frames of all of this shit (we dont haveeeeeeeeeeeeeeeeeee)
 func init() {
 	// charge -> x
 	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
