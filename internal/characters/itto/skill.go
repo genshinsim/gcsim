@@ -72,7 +72,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Assume that Ushi always hits for a stack
 	c.Core.Tasks.Add(func() { c.addStrStack("ushi-hit", 1) }, skillRelease+travel)
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(1, false, combat.TargettableEnemy), skillRelease, skillRelease+travel, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy),
+		skillRelease,
+		skillRelease+travel,
+		cb,
+	)
 
 	// Cooldown
 	c.SetCDWithDelay(action.ActionSkill, 600, skillRelease) // cd starts on release

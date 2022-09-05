@@ -32,6 +32,8 @@ type char struct {
 	burstCastF         int
 	c2GeoMemberCount   int
 	applyC4            bool
+	c6Proc             bool
+	c6CarryOver        bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
