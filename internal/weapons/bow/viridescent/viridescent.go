@@ -40,6 +40,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		trg := args[0].(combat.Target)
 
 		//only proc on normal and charge attack

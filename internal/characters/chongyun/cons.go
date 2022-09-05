@@ -21,6 +21,9 @@ func (c *char) c4() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
+		if c.Core.Player.Active() != c.Index {
+			return false
+		}
 		if c.StatusIsActive(icdKey) {
 			return false
 		}

@@ -41,6 +41,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	done := false
 	addSeal := func(_ combat.AttackCB) {
+		// doesn't gain seals off-field
+		if c.Core.Player.Active() != c.Index {
+			return
+		}
 		if done {
 			return
 		}
