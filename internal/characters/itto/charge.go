@@ -175,11 +175,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	prevSlash := c.slashState
 	stacks := c.Tags[strStackKey]
-	if !c.c6CarryOver {
-		c.c6Proc = c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5
-	} else {
-		c.c6CarryOver = false
-	}
 	c.slashState = prevSlash.Next(stacks, c.c6Proc)
 
 	// figure out how many frames we need to skip
@@ -233,14 +228,14 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// required for the frames func
 	curSlash := c.slashState
+	c.c6Proc = c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5
+	nextSlash := curSlash.Next(c.Tags[strStackKey], c.c6Proc)
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			f := chargeFrames[curSlash][next]
 			// handle CA1/CA2 -> CAF frames
-			c.c6Proc = c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5
-			c.c6CarryOver = true
-			if next == action.ActionCharge && curSlash.Next(c.Tags[strStackKey], c.c6Proc) == FinalSlash {
+			if next == action.ActionCharge && nextSlash == FinalSlash {
 				switch curSlash {
 				case LeftSlash: // CA1 -> CAF
 					f = 60
