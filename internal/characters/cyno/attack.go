@@ -11,11 +11,12 @@ import (
 
 var attackFrames [][]int
 var attackEarliestCancel = []int{14, 16, 18, 12, 41}
-var attackHitmarks = [][]int{{14}, {16}, {18}, {12, 21}, {41}}
-var attackHitlagHaltFrame = []float64{0.1, 0.1, 0.1, 0.15}
-var attackHitlagFactor = []float64{0.01, 0.01, 0.05, 0.01}
+var attackHitmarks = [][]int{{14}, {16}, {12, 21}, {41}}
+var attackHitlagHaltFrame = []float64{0.1, 0.1, 0.1, 0.15, 0.15} //TODO:verify this with DM}
+var attackHitlagFactor = []float64{0.01, 0.01, 0.05, 0.01, 0.01}
 
 const normalHitNum = 4
+const BurstHitNum = 5 //Burst attack chains have 5
 
 func init() {
 	attackFrames = make([][]int, normalHitNum) // should be 4
@@ -24,15 +25,15 @@ func init() {
 	attackFrames[1] = frames.InitNormalCancelSlice(attackEarliestCancel[1], 37) // N2 -> N3
 	attackFrames[2] = frames.InitNormalCancelSlice(attackEarliestCancel[2], 37) // N3 -> N4
 	attackFrames[3] = frames.InitNormalCancelSlice(attackEarliestCancel[3], 34) // N4 -> N1
-	attackFrames[4] = frames.InitNormalCancelSlice(attackEarliestCancel[4], 61) // N4 -> N1
 }
 
 // TODO: Adjust the attack frame values (this ones are source: i made them the fuck up)
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatusIsActive(burstKey) {
+		c.NormalHitNum = BurstHitNum
 		return c.attackB(p) //go to burst mode attacks
 	}
-
+	c.NormalHitNum = normalHitNum
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -66,21 +67,19 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-const BurstHitNum = 5 //Burst attack chains have 5
-
 var attackBFrames [][]int
 var attackBEarliestCancel = []int{14, 16, 18, 12, 41}
 var attackBHitmarks = [][]int{{14}, {16}, {18}, {12, 21}, {41}}
 
 func init() {
 	// NA cancels (burst)
-	attackBFrames = make([][]int, BurstHitNum)
+	attackBFrames = make([][]int, BurstHitNum) //Should be 5
 
 	attackBFrames[0] = frames.InitNormalCancelSlice(attackEarliestCancel[0], 18) // N1 -> N2
 	attackBFrames[1] = frames.InitNormalCancelSlice(attackEarliestCancel[1], 37) // N2 -> N3
 	attackBFrames[2] = frames.InitNormalCancelSlice(attackEarliestCancel[2], 37) // N3 -> N4
-	attackBFrames[3] = frames.InitNormalCancelSlice(attackEarliestCancel[3], 34) // N4 -> N1
-	attackBFrames[4] = frames.InitNormalCancelSlice(attackEarliestCancel[4], 61) // N4 -> N1
+	attackBFrames[3] = frames.InitNormalCancelSlice(attackEarliestCancel[3], 34) // N4 -> N5
+	attackBFrames[4] = frames.InitNormalCancelSlice(attackEarliestCancel[4], 61) // N5 -> N1
 	//TODO: honestly idk what i am doing at dis point pls forgive me Koli
 
 }
