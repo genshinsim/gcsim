@@ -175,8 +175,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	prevSlash := c.slashState
 	stacks := c.Tags[strStackKey]
-	c6Proc := c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5
-	c.slashState = prevSlash.Next(stacks, c6Proc)
+	c.slashState = prevSlash.Next(stacks, c.c6Proc)
 
 	// figure out how many frames we need to skip
 	windup := c.windupFrames(prevSlash, c.slashState)
@@ -212,10 +211,15 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 	// TODO: hitmark is not getting adjusted for atk speed
 	// TODO: Does Itto CA snapshot at the start of CA? (rn assuming he does)
-	c.Core.QueueAttack(ai, combat.NewDefCircHit(r, false, combat.TargettableEnemy), 0, chargeHitmarks[c.slashState]-windup)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
+		0,
+		chargeHitmarks[c.slashState]-windup,
+	)
 
 	// C6: has a 50% chance to not consume stacks of Superlative Superstrength.
-	if !c6Proc {
+	if !c.c6Proc {
 		c.addStrStack("charge", -1)
 	}
 
@@ -224,12 +228,14 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// required for the frames func
 	curSlash := c.slashState
+	c.c6Proc = c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5
+	nextSlash := curSlash.Next(c.Tags[strStackKey], c.c6Proc)
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			f := chargeFrames[curSlash][next]
 			// handle CA1/CA2 -> CAF frames
-			if next == action.ActionCharge && curSlash.Next(c.Tags[strStackKey], c6Proc) == FinalSlash {
+			if next == action.ActionCharge && nextSlash == FinalSlash {
 				switch curSlash {
 				case LeftSlash: // CA1 -> CAF
 					f = 60
