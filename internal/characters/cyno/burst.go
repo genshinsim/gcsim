@@ -3,6 +3,7 @@ package cyno
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
 var burstFrames []int
@@ -41,4 +42,18 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   burstFrames[action.InvalidAction],
 		State:           action.BurstState,
 	}
+}
+
+func (c *char) onSwapClearBurst() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		if !c.StatusIsActive(burstKey) {
+			return false
+		}
+		// i prob don't need to check for who prev is here
+		prev := args[0].(int)
+		if prev == c.Index {
+			c.DeleteStatus(burstKey)
+		}
+		return false
+	}, "cyno-burst-clear")
 }
