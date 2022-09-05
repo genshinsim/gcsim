@@ -19,19 +19,18 @@ const (
 
 func init() {
 	// burst (melee) -> x
-	burstMeleeFrames = frames.InitAbilSlice(102)
-	burstMeleeFrames[action.ActionAttack] = 101
-	burstMeleeFrames[action.ActionSkill] = 102
-	burstMeleeFrames[action.ActionDash] = 102
-	burstMeleeFrames[action.ActionJump] = 102
-	burstMeleeFrames[action.ActionSwap] = 100
+	burstMeleeFrames = frames.InitAbilSlice(103) // Q -> D
+	burstMeleeFrames[action.ActionAttack] = 102  // Q -> N1
+	burstMeleeFrames[action.ActionSkill] = 102   // Q -> E
+	burstMeleeFrames[action.ActionDash] = 102    // Q -> D
+	burstMeleeFrames[action.ActionSwap] = 101    // Q -> Swap
 
 	// burst (ranged) -> x
-	burstRangedFrames = frames.InitAbilSlice(55)
-	burstRangedFrames[action.ActionAttack] = 53
-	burstRangedFrames[action.ActionDash] = 54
-	burstRangedFrames[action.ActionJump] = 53
-	burstRangedFrames[action.ActionSwap] = 52
+	burstRangedFrames = frames.InitAbilSlice(55) // Q -> E
+	burstRangedFrames[action.ActionAttack] = 54  // Q -> N1
+	burstRangedFrames[action.ActionDash] = 54    // Q -> D
+	burstRangedFrames[action.ActionJump] = 54    // Q -> J
+	burstRangedFrames[action.ActionSwap] = 53    // Q -> Swap
 }
 
 // Performs a different attack depending on the stance in which it is cast.
@@ -82,7 +81,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(cancels),
 		AnimationLength: cancels[action.InvalidAction],
-		CanQueueAfter:   cancels[action.ActionDash], // earliest cancel
+		CanQueueAfter:   cancels[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

@@ -16,11 +16,11 @@ const abDebuff = "aurous-blaze"
 const abIcdKey = "aurous-blaze-icd"
 
 func init() {
-	burstFrames = frames.InitAbilSlice(114)
-	burstFrames[action.ActionSkill] = 110
-	burstFrames[action.ActionDash] = 111
-	burstFrames[action.ActionJump] = 113
-	burstFrames[action.ActionSwap] = 109
+	burstFrames = frames.InitAbilSlice(113) // Q -> N1
+	burstFrames[action.ActionSkill] = 112   // Q -> E
+	burstFrames[action.ActionDash] = 111    // Q -> D
+	burstFrames[action.ActionJump] = 112    // Q -> J
+	burstFrames[action.ActionSwap] = 109    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {

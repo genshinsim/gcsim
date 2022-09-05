@@ -16,9 +16,11 @@ var burstFrames []int
 const burstHitmark = 82
 
 func init() {
-	burstFrames = frames.InitAbilSlice(112) // Q -> E/D/J
-	burstFrames[action.ActionAttack] = 111  // Q -> N1
-	burstFrames[action.ActionSwap] = 110    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(115) // Q -> D
+	burstFrames[action.ActionAttack] = 113  // Q -> N1
+	burstFrames[action.ActionSkill] = 113   // Q -> E
+	burstFrames[action.ActionJump] = 114    // Q -> J
+	burstFrames[action.ActionSwap] = 112    // Q -> Swap
 }
 
 // Only applies burst damage. Main Talisman functions are handled in qiqi.go
