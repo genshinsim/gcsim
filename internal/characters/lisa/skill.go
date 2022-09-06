@@ -58,6 +58,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 
 	cb := func(a combat.AttackCB) {
+		// doesn't stack off-field
+		if c.Core.Player.Active() != c.Index {
+			return
+		}
 		t, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
