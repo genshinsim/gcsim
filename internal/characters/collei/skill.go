@@ -45,13 +45,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c6Triggered := false
-	c6Cb := func(_ combat.AttackCB) {
-		if c6Triggered {
-			return
+	var c6Cb func(a combat.AttackCB)
+	if c.Base.Cons >= 6 {
+		c6Triggered := false
+		c6Cb = func(_ combat.AttackCB) {
+			if c6Triggered {
+				return
+			}
+			c6Triggered = true
+			c.c6()
 		}
-		c6Triggered = true
-		c.c6()
 	}
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
