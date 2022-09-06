@@ -16,7 +16,12 @@ var burstFrames []int
 const burstHitmark = 49
 
 func init() {
-	burstFrames = frames.InitAbilSlice(77)
+	burstFrames = frames.InitAbilSlice(78) // Q -> D/J
+	burstFrames[action.ActionAttack] = 77  // Q -> N1
+	burstFrames[action.ActionCharge] = 77  // Q -> CA
+	burstFrames[action.ActionSkill] = 77   // Q -> E
+	burstFrames[action.ActionWalk] = 77    // Q -> W
+	burstFrames[action.ActionSwap] = 76    // Q -> Swap
 }
 
 // Burst - This function only handles initial damage and status setting
@@ -78,7 +83,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
 	}
 }

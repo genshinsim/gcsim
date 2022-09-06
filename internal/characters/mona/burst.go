@@ -19,7 +19,7 @@ const burstHitmark = 107
 func init() {
 	burstFrames = frames.InitAbilSlice(127) // Q -> Swap
 	burstFrames[action.ActionAttack] = 121  // Q -> N1
-	burstFrames[action.ActionCharge] = 116  // Q -> CA
+	burstFrames[action.ActionCharge] = 118  // Q -> CA
 	burstFrames[action.ActionSkill] = 115   // Q -> E
 	burstFrames[action.ActionDash] = 115    // Q -> D
 	burstFrames[action.ActionJump] = 104    // Q -> J

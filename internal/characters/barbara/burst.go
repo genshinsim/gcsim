@@ -1,8 +1,6 @@
 package barbara
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -12,12 +10,12 @@ import (
 var burstFrames []int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(195)
-	burstFrames[action.ActionDash] = 161
-	burstFrames[action.ActionJump] = 162
-	burstFrames[action.ActionSkill] = 140
-	burstFrames[action.ActionAttack] = 142
-	burstFrames[action.ActionCharge] = 139
+	burstFrames = frames.InitAbilSlice(195) // Q -> Swap
+	burstFrames[action.ActionAttack] = 141  // Q -> N1
+	burstFrames[action.ActionCharge] = 140  // Q -> CA
+	burstFrames[action.ActionSkill] = 141   // Q -> E
+	burstFrames[action.ActionDash] = 160    // Q -> D
+	burstFrames[action.ActionJump] = 160    // Q -> J
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -35,16 +33,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(6)
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 1)
 
-	canQueueAfter := math.MaxInt32
-	for _, f := range burstFrames {
-		if f < canQueueAfter {
-			canQueueAfter = f
-		}
-	}
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   canQueueAfter,
+		CanQueueAfter:   burstFrames[action.ActionCharge], // earliest cancel
 		State:           action.BurstState,
 	}
 }

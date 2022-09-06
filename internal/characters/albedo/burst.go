@@ -15,9 +15,9 @@ const burstHitmark = 75         // Initial Hit
 const fatalBlossomHitmark = 145 // Fatal Blossom
 
 func init() {
-	burstFrames = frames.InitAbilSlice(95) // Q -> E/J
-	burstFrames[action.ActionAttack] = 94  // Q -> N1
-	burstFrames[action.ActionDash] = 94    // Q -> D
+	burstFrames = frames.InitAbilSlice(96) // Q -> N1/E
+	burstFrames[action.ActionDash] = 95    // Q -> D
+	burstFrames[action.ActionJump] = 94    // Q -> J
 	burstFrames[action.ActionSwap] = 93    // Q -> Swap
 }
 

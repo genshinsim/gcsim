@@ -12,11 +12,10 @@ var burstFrames []int
 const burstHitmark = 101
 
 func init() {
-	burstFrames = frames.InitAbilSlice(139)
-	burstFrames[action.ActionAttack] = 138
-	burstFrames[action.ActionDash] = 122
-	burstFrames[action.ActionJump] = 122
-	burstFrames[action.ActionSwap] = 138
+	burstFrames = frames.InitAbilSlice(139) // Q -> N1/E
+	burstFrames[action.ActionDash] = 123    // Q -> D
+	burstFrames[action.ActionJump] = 123    // Q -> J
+	burstFrames[action.ActionSwap] = 138    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {

@@ -15,11 +15,12 @@ const burstHitmark = 100
 const lightfallHitmark = 35
 
 func init() {
-	burstFrames = frames.InitAbilSlice(122)
-	burstFrames[action.ActionDash] = 121
-	burstFrames[action.ActionJump] = 121
-	burstFrames[action.ActionSwap] = 121
-	burstFrames[action.ActionWalk] = 117
+	burstFrames = frames.InitAbilSlice(123) // Q -> E
+	burstFrames[action.ActionAttack] = 120  // Q -> N1
+	burstFrames[action.ActionDash] = 122    // Q -> D
+	burstFrames[action.ActionJump] = 121    // Q -> J
+	burstFrames[action.ActionWalk] = 117    // Q -> Walk
+	burstFrames[action.ActionSwap] = 120    // Q -> Swap
 }
 
 const (

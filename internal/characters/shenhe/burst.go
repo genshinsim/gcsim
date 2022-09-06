@@ -20,10 +20,12 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(100)
-	burstFrames[action.ActionDash] = 76
-	burstFrames[action.ActionJump] = 76
-	burstFrames[action.ActionSwap] = 97
+	burstFrames = frames.InitAbilSlice(100) // Q -> E
+	burstFrames[action.ActionAttack] = 99   // Q -> N1
+	burstFrames[action.ActionDash] = 78     // Q -> D
+	burstFrames[action.ActionJump] = 79     // Q -> J
+	burstFrames[action.ActionWalk] = 98     // Q -> Walk
+	burstFrames[action.ActionSwap] = 98     // Q -> Swap
 }
 
 // Burst attack damage queue generator
