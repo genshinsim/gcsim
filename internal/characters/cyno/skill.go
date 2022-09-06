@@ -113,6 +113,9 @@ func (c *char) SkillB() action.ActionInfo {
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
 		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 //this is the A4
+		ai.ICDTag = combat.ICDTagCynoBolt
+		ai.ICDGroup = combat.ICDGroupCynoBolt
+
 		//3 instances
 		//TODO: timing (frames) of each instance
 		for i := 0; i < 3; i++ {

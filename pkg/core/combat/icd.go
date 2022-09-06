@@ -52,6 +52,7 @@ const (
 	ICDTagYanfeiFire
 	ICDTagYelanBreakthrough
 	ICDTagYelanBurst
+	ICDTagCynoBolt
 	ICDTagMonaWaterDamage
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
@@ -88,6 +89,7 @@ const (
 	ICDGroupYelanBurst
 	ICDGroupColleiBurst
 	ICDGroupTighnari
+	ICDGroupCynoBolt
 	ICDGroupReactionA
 	ICDGroupReactionB
 	ICDGroupBurning
@@ -106,6 +108,7 @@ var ICDGroupResetTimer = []int{
 	120, //yelan burst
 	180, //collei burst
 	150, //tighnari
+	150, //cyno skill bolts TODO:verify reset timer
 	30,  //reaction a
 	30,  //reaciton b
 	120, //burning
@@ -134,6 +137,8 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//tighnari
 	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+	//cyno skill bolt
+	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//reaction a
 	{1.0, 1.0},
 	//reaction b
@@ -165,6 +170,8 @@ var ICDGroupDamageSequence = [][]float64{
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//tighnari
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//cyno skill bolt
+	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//ele A
 	{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//ele B
