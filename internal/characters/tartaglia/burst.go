@@ -22,7 +22,7 @@ func init() {
 	burstMeleeFrames = frames.InitAbilSlice(103) // Q -> D
 	burstMeleeFrames[action.ActionAttack] = 102  // Q -> N1
 	burstMeleeFrames[action.ActionSkill] = 102   // Q -> E
-	burstMeleeFrames[action.ActionDash] = 102    // Q -> D
+	burstMeleeFrames[action.ActionJump] = 102    // Q -> J
 	burstMeleeFrames[action.ActionSwap] = 101    // Q -> Swap
 
 	// burst (ranged) -> x
