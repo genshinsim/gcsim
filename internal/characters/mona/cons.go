@@ -157,8 +157,6 @@ func (c *char) c6(src int) func() {
 					return nil, false
 				}
 				m[attributes.DmgP] = 0.60 * float64(c.c6Stacks)
-				// reset stacks and remove buff on CA
-				c.c6Stacks = 0
 				return m, true
 			},
 		})
