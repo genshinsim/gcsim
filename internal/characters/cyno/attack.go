@@ -33,6 +33,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.NormalHitNum = BurstHitNum
 		return c.attackB(p) //go to burst mode attacks
 	}
+	if c.NormalHitNum >= BurstHitNum { //this should avoid the panic error
+		c.NormalHitNum = normalHitNum
+		c.ResetNormalCounter() //TODO:verify is cyno resets his attack string if burst expires
+	}
 	c.NormalHitNum = normalHitNum
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
