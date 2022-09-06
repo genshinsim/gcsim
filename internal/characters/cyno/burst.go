@@ -32,7 +32,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}, burstFrames[action.ActionAttack]+296)
 
 	//TODO: CD starts ticking before the animation?
-	c.SetCD(action.ActionBurst, 1200) // 20s * 60
+	c.SetCD(action.ActionBurst, 1200)               // 20s * 60
+	c.ReduceActionCooldown(action.ActionSkill, 270) //TODO: if this is wrong blame clre
 	//TODO: point at which cyno consumes energy
 	c.ConsumeEnergy(4)
 
