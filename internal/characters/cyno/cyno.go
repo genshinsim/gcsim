@@ -21,6 +21,8 @@ type char struct {
 	burstExtension float64
 	c1buff         []float64
 	c2counter      int
+	c4counter      int
+	c6stacks       int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -48,6 +50,14 @@ func (c *char) Init() error {
 
 	if c.Base.Cons >= 2 {
 		c.c2()
+	}
+
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+
+	if c.Base.Cons >= 6 {
+		c.c6()
 	}
 
 	// make sure to use the same key everywhere so that these passives don't stack

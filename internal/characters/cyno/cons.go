@@ -67,6 +67,31 @@ func (c *char) c2() {
 // or an Electro Crystallization reaction, he will restore 3 Elemental Energy for all nearby party members (except himself.)
 // This effect can occur 5 times within one use of Sacred Rite: Wolf's Swiftness.
 func (c *char) c4() {
+	restore := func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
+			return false
+		}
+		if c.c4counter > 4 { //counting from 0 to 4, 5 instances max
+			return false
+		}
+		c.c4counter++
+		for _, this := range c.Core.Player.Chars() {
+			// not for cyno
+			if this.Index != c.Index {
+				this.AddEnergy("cyno-c4", 3)
+			}
+		}
+
+		return false
+	}
+	c.Core.Events.Subscribe(event.OnOverload, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnElectroCharged, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnSuperconduct, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnQuicken, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnAggravate, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnCrystallizeElectro, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, restore, "cyno-c4")
 
 }
 
@@ -77,5 +102,42 @@ func (c *char) c4() {
 // A maximum of 1 Duststalker Bolt can be unleashed this way every 0.4s.
 // You must first unlock the Passive Talent "Featherfall Judgment."
 func (c *char) c6() {
+	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != c.Index {
+			return false
+		}
+		if c.c6stacks == 0 {
+			return false
+		}
+		if atk.Info.AttackTag != combat.AttackTagNormal {
+			return false
+		}
+		if !c.StatusIsActive("cyno-c6") {
+			return false
+		}
+		//Queue the attack
+		ai := combat.AttackInfo{ //TODO: idk about the ICD and attack on this one being the same as the normal dust bolt
+			ActorIndex: c.Index,
+			Abil:       "Cyno C6 proc",
+			AttackTag:  combat.AttackTagElementalArt,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			Element:    attributes.Electro,
+			Durability: 25,
+			Mult:       1.0,
+			FlatDmg:    c.Stat(attributes.EM) * 2.5, //this is the A4
+		}
+
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+			SkillBHitmarks, //TODO:Hitmark frames for this bullet
+			SkillBHitmarks,
+		)
+
+		c.c6stacks--
+		return false
+	}, "cyno-c6")
 
 }

@@ -23,6 +23,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//TODO: idk if the duration gets extended by burst animation or not
 	//idk if this gets affected by hitlag
 	c.burstExtension = 0 //resets the number of possible extensions to the burst each time
+	c.c4counter = 0      //ignore this lol, this wont affect even if c4() is inactive, but it works to reset the number of ocurrences of said cons
+	c.c6stacks = 0       //same as above
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(burstKey, 600, true)
 	}, burstFrames[action.ActionAttack])
@@ -39,6 +41,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(4)
 	if c.Base.Cons >= 1 {
 		c.c1()
+	}
+	if c.Base.Cons >= 6 { //constellation 6 giving 4 stacks on burst
+		c.c6stacks += 4
+		c.AddStatus("cyno-c6", 480, true) //8s*60
+		if c.c6stacks > 8 {
+			c.c6stacks = 8
+		}
 	}
 
 	return action.ActionInfo{

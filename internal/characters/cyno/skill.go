@@ -105,6 +105,13 @@ func (c *char) SkillB() action.ActionInfo {
 		if c.Base.Cons >= 1 && c.StatusIsActive(c1key) {
 			c.c1()
 		}
+		if c.Base.Cons >= 6 { //constellation 6 giving 4 stacks on judication
+			c.c6stacks += 4
+			c.AddStatus("cyno-c6", 480, true) //8s*60
+			if c.c6stacks > 8 {
+				c.c6stacks = 8
+			}
+		}
 
 		c.Core.QueueAttack(
 			ai,
