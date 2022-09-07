@@ -44,8 +44,7 @@ func (c *char) c2() {
 			return false
 		}
 		m := make([]float64, attributes.EndStatType)
-		m[attributes.CR] = 0.03
-		m[attributes.CD] = 0.06
+		m[attributes.ElectroP] = 0.1
 
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("cyno-c2-%v-stack", c.c2counter+1), 240), //4s
