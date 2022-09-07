@@ -35,7 +35,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Lightning Fang",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Electro,
 		Durability: 50,
@@ -98,7 +98,7 @@ func (c *char) wolfBurst() {
 			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
-			Mult:       wolfDmg[c.TalentLvlBurst()],
+			Mult:       wolfDmg[c.TalentLvlBurst()] * atk.Info.Mult,
 		}
 
 		c.Core.QueueAttack(
