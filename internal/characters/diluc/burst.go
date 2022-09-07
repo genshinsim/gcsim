@@ -14,11 +14,11 @@ var burstFrames []int
 const burstHitmark = 100
 
 func init() {
-	burstFrames = frames.InitAbilSlice(141)
-	burstFrames[action.ActionAttack] = 140
-	burstFrames[action.ActionSkill] = 139
-	burstFrames[action.ActionDash] = 139
-	burstFrames[action.ActionSwap] = 138
+	burstFrames = frames.InitAbilSlice(140) // Q -> D
+	burstFrames[action.ActionAttack] = 139  // Q -> N1
+	burstFrames[action.ActionSkill] = 139   // Q -> E
+	burstFrames[action.ActionJump] = 139    // Q -> J
+	burstFrames[action.ActionSwap] = 138    // Q -> Swap
 }
 
 const burstBuffKey = "diluc-q"
@@ -105,7 +105,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

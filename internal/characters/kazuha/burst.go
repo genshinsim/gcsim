@@ -11,15 +11,17 @@ var burstFrames []int
 
 const (
 	burstHitmark   = 82
-	burstAnimation = 92
 	burstFirstTick = 140
 )
 
 const burstStatus = "kazuha-q"
 
 func init() {
-	burstFrames = frames.InitAbilSlice(burstAnimation)
-	burstFrames[action.ActionSwap] = 91
+	burstFrames = frames.InitAbilSlice(93) // Q -> J
+	burstFrames[action.ActionAttack] = 92  // Q -> N1
+	burstFrames[action.ActionSkill] = 92   // Q -> E
+	burstFrames[action.ActionDash] = 92    // Q -> D
+	burstFrames[action.ActionSwap] = 90    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -102,7 +104,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
-		AnimationLength: burstAnimation,
+		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}

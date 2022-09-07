@@ -57,6 +57,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	done := false
 	cb := func(_ combat.AttackCB) {
+		// doesn't gain jades off-field
+		if c.Core.Player.Active() != c.Index {
+			return
+		}
 		if done {
 			return
 		}

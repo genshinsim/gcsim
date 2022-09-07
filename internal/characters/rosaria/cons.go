@@ -27,7 +27,10 @@ func (c *char) c1() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		//TODO: does this work off field?
+		// doesn't work off-field
+		if c.Core.Player.Active() != c.Index {
+			return false
+		}
 
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("rosaria-c1", 240), //4s

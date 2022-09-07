@@ -36,6 +36,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		switch atk.Info.AttackTag {
 		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
 			char.AddAttackMod(character.AttackMod{

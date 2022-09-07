@@ -13,11 +13,12 @@ const burstHitmark = 100
 const burstThunderbolt1Hitmark = 154
 
 func init() {
-	burstFrames = frames.InitAbilSlice(113) // Q -> CA/E
-	burstFrames[action.ActionAttack] = 111  // Q -> N1
-	burstFrames[action.ActionDash] = 96     // Q -> D
-	burstFrames[action.ActionJump] = 96     // Q -> J
-	burstFrames[action.ActionSwap] = 94     // Q -> Swap
+	burstFrames = frames.InitAbilSlice(114) // Q -> CA
+	burstFrames[action.ActionAttack] = 112  // Q -> N1
+	burstFrames[action.ActionSkill] = 113   // Q -> E
+	burstFrames[action.ActionDash] = 103    // Q -> D
+	burstFrames[action.ActionJump] = 104    // Q -> J
+	burstFrames[action.ActionSwap] = 101    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {

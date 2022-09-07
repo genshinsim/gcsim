@@ -38,10 +38,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	stacks := 0
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
-
 		atk := args[1].(*combat.AttackEvent)
-
 		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
+		if c.Player.Active() != char.Index {
 			return false
 		}
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {

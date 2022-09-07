@@ -115,7 +115,6 @@ export function GenerateDefaultCharacters(): Item[] {
     if (TravelerCheck(k)) {
       extra = ` (${ele})`;
     }
-    console.log(k, extra);
     return {
       key: k,
       text:

@@ -23,7 +23,7 @@ func (c *char) a1() func() {
 		if c.Core.Player.CurrentState() != action.DashState {
 			return
 		}
-		c.Core.Log.NewEvent("A1 Phantom added", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("mona-a1 phantom added", glog.LogCharacterEvent, c.Index).
 			Write("expiry:", c.Core.F+120)
 		// queue up phantom explosion
 		c.Core.Tasks.Add(func() {

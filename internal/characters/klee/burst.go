@@ -16,11 +16,11 @@ var waveHitmarks = []int{186, 294, 401, 503, 610, 718}
 const burstStart = 146
 
 func init() {
-	burstFrames = frames.InitAbilSlice(139)
-	burstFrames[action.ActionDash] = 102
-	burstFrames[action.ActionJump] = 102
-	burstFrames[action.ActionWalk] = 102
-	burstFrames[action.ActionSwap] = 100
+	burstFrames = frames.InitAbilSlice(139) // Q -> N1/CA/E
+	burstFrames[action.ActionDash] = 103    // Q -> D
+	burstFrames[action.ActionJump] = 104    // Q -> J
+	burstFrames[action.ActionWalk] = 102    // Q -> Walk
+	burstFrames[action.ActionSwap] = 101    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {

@@ -32,6 +32,7 @@ type char struct {
 	burstCastF         int
 	c2GeoMemberCount   int
 	applyC4            bool
+	c6Proc             bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -68,6 +69,7 @@ func (c *char) Init() error {
 	}
 	if c.Base.Cons >= 6 {
 		c.c6()
+		c.c6Proc = c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5 // setup c6 proc
 	}
 
 	return nil
