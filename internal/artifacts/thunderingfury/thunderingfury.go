@@ -60,6 +60,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				case combat.AttackTagOverloadDamage:
 				case combat.AttackTagECDamage:
 				case combat.AttackTagSuperconductDamage:
+				case combat.AttackTagHyperbloom:
 				default:
 					return 0, false
 				}
