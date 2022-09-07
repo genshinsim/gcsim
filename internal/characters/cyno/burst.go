@@ -22,6 +22,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//use a special modifier to track burst
 	//TODO: idk if the duration gets extended by burst animation or not
 	//idk if this gets affected by hitlag
+	c.burstExtension = 0 //resets the number of possible extensions to the burst each time
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(burstKey, 600, true)
 	}, burstFrames[action.ActionAttack])
@@ -36,6 +37,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ReduceActionCooldown(action.ActionSkill, 270) //TODO: if this is wrong blame clre
 	//TODO: point at which cyno consumes energy
 	c.ConsumeEnergy(4)
+	if c.Base.Cons >= 1 {
+		c.c1()
+	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),

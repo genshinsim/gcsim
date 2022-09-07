@@ -102,6 +102,9 @@ func (c *char) SkillB() action.ActionInfo {
 	} else {
 		//apply the extra damage on skill
 		c.judiscation()
+		if c.Base.Cons >= 1 && c.StatusIsActive(c1key) {
+			c.c1()
+		}
 
 		c.Core.QueueAttack(
 			ai,
@@ -128,8 +131,10 @@ func (c *char) SkillB() action.ActionInfo {
 		}
 
 	}
-
-	c.ExtendStatus(burstKey, 4)
+	if c.burstExtension < 2 { //burst can only be extended 2 times per burst cycle (up to 18s, 10s base and +4 each time)
+		c.ExtendStatus(burstKey, 240) //4s*60
+		c.burstExtension++
+	}
 
 	var count float64 = 1 //33% of generating 2 on furry form
 	if c.Core.Rand.Float64() < .33 {

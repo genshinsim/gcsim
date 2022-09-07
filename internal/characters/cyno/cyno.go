@@ -4,10 +4,13 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
+
+const c1key = "cyno-c1-key"
 
 func init() {
 	core.RegisterCharFunc(keys.Cyno, NewChar)
@@ -15,6 +18,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	burstExtension float64
+	c1buff         []float64
+	c2counter      int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -34,6 +40,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	c.onSwapClearBurst()
 	c.a4()
+
+	if c.Base.Cons >= 1 {
+		c.c1buff = make([]float64, attributes.EndStatType)
+		c.c1buff[attributes.AtkSpd] = .2
+	}
+
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
 
 	// make sure to use the same key everywhere so that these passives don't stack
 	c.Core.Player.AddStamPercentMod("utility-dash", -1, func(a action.Action) (float64, bool) {
