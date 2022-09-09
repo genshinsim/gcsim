@@ -39,7 +39,11 @@ func (c *char) c2() {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("razor-c2", -1),
 			Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if t.HP()/t.MaxHP() < 0.3 {
+				x, ok := t.(*enemy.Enemy)
+				if !ok {
+					return nil, false
+				}
+				if x.HP()/x.MaxHP() < 0.3 {
 					return c.c2bonus, true
 				}
 				return nil, false
