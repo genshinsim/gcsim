@@ -8,34 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func willAttackLand(a *AttackEvent, t Target, index int) (bool, string) {
-	//shape shouldn't be nil; panic here
-	if a.Pattern.Shape == nil {
-		panic("unexpected nil shape")
-	}
-	//shape can't be nil now, check if type matches
-	if !a.Pattern.Targets[t.Type()] {
-		return false, "wrong type"
-	}
-	//skip if self harm is false and dmg src == i
-	if !a.Pattern.SelfHarm && a.Info.DamageSrc == index {
-		return false, "no self harm"
-	}
-
-	//check if shape matches
-	switch v := a.Pattern.Shape.(type) {
-	case *Circle:
-		return t.Shape().IntersectCircle(*v), "intersect circle"
-	case *Rectangle:
-		return t.Shape().IntersectRectangle(*v), "intersect rectangle"
-	case *SingleTarget:
-		//only true if
-		return v.Target == index, "target"
-	default:
-		return false, "unknown shape"
-	}
-}
-
 func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 	// died := false
 	var total float64
@@ -46,12 +18,13 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			continue
 		}
 
-		if !t.IsAlive() {
-			//this should always evaluate to true if DamageMode is not set since we check for DamageMode before killing
+		//check if target type matches
+		if !a.Pattern.Targets[t.Type()] {
+			//skip if target type don't match
 			continue
 		}
 
-		willHit, reason := willAttackLand(a, t, i)
+		willHit, reason := t.AttackWillLand(a.Pattern, a.Info.DamageSrc)
 		if !willHit {
 			// Move target logs into the "Sim" event log to avoid cluttering main display for stuff like Guoba
 			// And obvious things like "Fischl A4 is single target so it didn't hit targets 2-4"
@@ -119,14 +92,6 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		}
 		for _, f := range cpy.Callbacks {
 			f(cb)
-		}
-
-		//check if target is dead; skip this for i = 0 since we don't want to
-		//delete the player by accident
-		if h.DamageMode && t.HP() <= 0 {
-			t.Kill()
-			h.Events.Emit(event.OnTargetDied, t, &cpy)
-			// h.targets[i] = nil
 		}
 
 		// this works because string in golang is a slice underneath, so the &amp points to the slice info

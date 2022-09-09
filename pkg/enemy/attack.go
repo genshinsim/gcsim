@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
@@ -88,6 +89,12 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 				100, //TODO: should be subject to global delay maybe??
 			)
 		}
+	}
+
+	//check if target is dead
+	if e.Core.Flags.DamageMode && e.HPCurrent <= 0 {
+		e.Kill()
+		e.Core.Events.Emit(event.OnTargetDied, e, atk)
 	}
 
 	return damage, isCrit

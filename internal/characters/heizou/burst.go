@@ -79,11 +79,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-//When Vacuum Slugger hits opponents affected by Hydro/Pyro/Cryo/Electro,
-//these opponents will be afflicted with Windmuster Iris.
-//This Windmuster Iris will explode after a moment and dissipate,
-//dealing AoE DMG of the corresponding aforementioned elemental type.
+// When Vacuum Slugger hits opponents affected by Hydro/Pyro/Cryo/Electro,
+// these opponents will be afflicted with Windmuster Iris.
+// This Windmuster Iris will explode after a moment and dissipate,
+// dealing AoE DMG of the corresponding aforementioned elemental type.
 func (c *char) irisDmg(t combat.Target) {
+	x, ok := t.(combat.TargetWithAura)
+	if !ok {
+		//TODO: check if this is correct? should we be doing nothing here?
+		return
+	}
 	//TODO: does burst iris snapshot
 	aiAbs := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -98,7 +103,7 @@ func (c *char) irisDmg(t combat.Target) {
 	}
 	auraPriority := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
 	for _, ele := range auraPriority {
-		if t.AuraContains(ele) {
+		if x.AuraContains(ele) {
 			aiAbs.Element = ele
 			break
 		}

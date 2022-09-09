@@ -9,27 +9,22 @@ import (
 )
 
 type Target interface {
-	Index() int         //should correspond to index
-	SetIndex(index int) //update the current index
-	IsAlive() bool
-	MaxHP() float64
-	HP() float64
-
+	Index() int              //should correspond to index
+	SetIndex(index int)      //update the current index
 	Type() TargettableType   //type of target
 	Shape() Shape            // shape of target
 	Pos() (float64, float64) // center of target
 	SetPos(x, y float64)     // move target
-
-	//apply attack to target
+	IsAlive() bool
+	AttackWillLand(a AttackPattern, src int) (bool, string)
 	Attack(*AttackEvent, glog.Event) (float64, bool)
-
-	//aura checks
-	AuraContains(e ...attributes.Element) bool
-
 	Tick() //called every tick
-
-	//getting rid of
 	Kill()
+}
+
+type TargetWithAura interface {
+	Target
+	AuraContains(e ...attributes.Element) bool
 }
 
 type TargettableType int
@@ -41,7 +36,7 @@ const (
 	TargettableTypeCount
 )
 
-//EnemyByDistance returns an array of indices of the enemies sorted by distance
+// EnemyByDistance returns an array of indices of the enemies sorted by distance
 func (c *Handler) EnemyByDistance(x, y float64, excl int) []int {
 	//we dont actually need to know the exact distance. just find the lowest
 	//of x^2 + y^2 to avoid sqrt
@@ -79,7 +74,7 @@ func (c *Handler) EnemyByDistance(x, y float64, excl int) []int {
 	return result
 }
 
-//EnemiesWithinRadius returns an array of indices of the enemies within radius r
+// EnemiesWithinRadius returns an array of indices of the enemies within radius r
 func (c *Handler) EnemiesWithinRadius(x, y, r float64) []int {
 	result := make([]int, 0, len(c.targets))
 	for i, v := range c.targets {
@@ -97,7 +92,7 @@ func (c *Handler) EnemiesWithinRadius(x, y, r float64) []int {
 	return result
 }
 
-//EnemyExcl returns array of indices of enemies, excluding self
+// EnemyExcl returns array of indices of enemies, excluding self
 func (c *Handler) EnemyExcl(self int) []int {
 	result := make([]int, 0, len(c.targets))
 

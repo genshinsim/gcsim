@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -16,7 +17,11 @@ func (c *char) c1() {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("ayato-c1", -1),
 			Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if a.Info.AttackTag != combat.AttackTagNormal || t.HP()/t.MaxHP() > 0.5 {
+				x, ok := t.(*enemy.Enemy)
+				if !ok {
+					return nil, false
+				}
+				if a.Info.AttackTag != combat.AttackTagNormal || x.HP()/x.MaxHP() > 0.5 {
 					return nil, false
 				}
 				return m, true
