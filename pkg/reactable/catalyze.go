@@ -20,9 +20,9 @@ func (r *Reactable) tryAggravate(a *combat.AttackEvent) {
 
 	//em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
-	a.Info.FlatDmg += 1.15 * r.calcCatalyzeDmg(a.Info, em)
 	a.Info.Catalyzed = true
 	a.Info.CatalyzedType = combat.Aggravate
+	a.Info.FlatDmg += 1.15 * r.calcCatalyzeDmg(a.Info, em)
 }
 
 func (r *Reactable) trySpread(a *combat.AttackEvent) {
@@ -40,9 +40,9 @@ func (r *Reactable) trySpread(a *combat.AttackEvent) {
 
 	//em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
-	a.Info.FlatDmg += 1.25 * r.calcCatalyzeDmg(a.Info, em)
 	a.Info.Catalyzed = true
 	a.Info.CatalyzedType = combat.Spread
+	a.Info.FlatDmg += 1.25 * r.calcCatalyzeDmg(a.Info, em)
 }
 
 func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
