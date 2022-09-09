@@ -39,6 +39,8 @@ type Enemy struct {
 	Level  int
 	resist map[attributes.Element]float64
 	prof   EnemyProfile
+	hp     float64
+	maxhp  float64
 
 	damageTaken      float64
 	lastParticleDrop int
@@ -70,10 +72,13 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e.Reactable.Init(e, core)
 	e.mods = make([]modifier.Mod, 0, 10)
 	if core.Combat.DamageMode {
-		e.Target.HPCurrent = p.HP
-		e.Target.HPMax = p.HP
+		e.hp = p.HP
+		e.maxhp = p.HP
 	}
 	return e
 }
 
 func (e *Enemy) Type() combat.TargettableType { return combat.TargettableEnemy }
+
+func (t *Enemy) MaxHP() float64 { return t.maxhp }
+func (t *Enemy) HP() float64    { return t.hp }

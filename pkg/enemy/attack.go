@@ -48,7 +48,7 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	damage, isCrit := e.calc(atk, evt)
 
 	//record dmg
-	e.HPCurrent -= damage
+	e.hp -= damage
 	e.damageTaken += damage //TODO: do we actually need this?
 
 	//check for hitlag
@@ -92,7 +92,7 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	}
 
 	//check if target is dead
-	if e.Core.Flags.DamageMode && e.HPCurrent <= 0 {
+	if e.Core.Flags.DamageMode && e.hp <= 0 {
 		e.Kill()
 		e.Core.Events.Emit(event.OnTargetDied, e, atk)
 	}

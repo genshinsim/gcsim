@@ -11,9 +11,7 @@ type Target struct {
 	Hitbox      combat.Circle
 	Tags        map[string]int
 
-	HPMax     float64
-	HPCurrent float64
-	Alive     bool
+	Alive bool
 }
 
 func New(core *core.Core, x, y, z float64) *Target {
@@ -29,14 +27,11 @@ func New(core *core.Core, x, y, z float64) *Target {
 
 func (t *Target) Index() int              { return t.TargetIndex }
 func (t *Target) SetIndex(ind int)        { t.TargetIndex = ind }
-func (t *Target) MaxHP() float64          { return t.HPMax }
-func (t *Target) HP() float64             { return t.HPCurrent }
 func (t *Target) Shape() combat.Shape     { return &t.Hitbox }
 func (t *Target) SetPos(x, y float64)     { t.Hitbox.SetPos(x, y) }
 func (t *Target) Pos() (float64, float64) { return t.Hitbox.Pos() }
 func (t *Target) Kill()                   { t.Alive = false }
 func (t *Target) IsAlive() bool           { return t.Alive }
-
 func (t *Target) SetTag(key string, val int) {
 	t.Tags[key] = val
 }

@@ -21,9 +21,6 @@ func newGuoba(c *core.Core) *panda {
 	p.Reactable = &reactable.Reactable{}
 	p.Reactable.Init(p, c)
 
-	p.Target.HPCurrent = 1
-	p.Target.HPMax = 1
-
 	return p
 }
 
