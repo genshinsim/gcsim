@@ -513,6 +513,7 @@ func (r *Summary) PrettyPrint() string {
 	}
 
 	sb.WriteString("------------------------------------------\n")
+	sb.WriteString(fmt.Sprintf("Average duration of %.2f seconds (min: %.2f max: %.2f std: %.2f)\n", r.Duration.Mean, r.Duration.Min, r.Duration.Max, r.Duration.SD))
 	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", r.Damage.Mean, r.Duration.Mean, r.DPS.Mean, r.DPS.Min, r.DPS.Max, r.DPS.SD))
 	sb.WriteString(fmt.Sprintf("Simulation completed %v iterations in %.3f seconds\n", r.Iterations, r.Runtime/1000000000))
 
