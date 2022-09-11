@@ -358,11 +358,12 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 			targetDamage[idxTarget] = 0
 		}
 		if mode {
-			result.Duration.SD += (float64(v.Duration) - result.Duration.Mean) * (float64(v.Duration) - result.Duration.Mean)
+			result.Duration.SD += math.Pow(float64(v.Duration) / 60 - result.Duration.Mean, 2)
 		}
 	}
 
 	result.DPS.SD = math.Sqrt(result.DPS.SD / float64(n))
+	result.Duration.SD = math.Sqrt(result.Duration.SD / float64(n))
 
 	for idxTarget := range result.DPSByTarget {
 		dpsTargetRollup := result.DPSByTarget[idxTarget]
