@@ -124,6 +124,9 @@ func (c *char) burstActiveHook() {
 			return false
 		}
 
+		if c.Base.Cons >= 2 {
+			c.c2()
+		}
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
@@ -132,9 +135,6 @@ func (c *char) burstActiveHook() {
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
-		if c.Base.Cons >= 2 {
-			c.c2()
-		}
 		if c.Base.Cons >= 4 {
 			c.c4()
 		}
