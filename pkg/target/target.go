@@ -6,10 +6,12 @@ import (
 )
 
 type Target struct {
-	Core        *core.Core
-	TargetIndex int
-	Hitbox      combat.Circle
-	Tags        map[string]int
+	Core            *core.Core
+	TargetIndex     int
+	Hitbox          combat.Circle
+	Tags            map[string]int
+	CollidableTypes [combat.TargettableTypeCount]bool
+	OnCollision     func(combat.Target)
 
 	Alive bool
 }
@@ -23,6 +25,14 @@ func New(core *core.Core, x, y, z float64) *Target {
 	t.Alive = true
 
 	return t
+}
+
+func (t *Target) Collidable() bool                             { return t.OnCollision != nil }
+func (t *Target) CollidableWith(x combat.TargettableType) bool { return t.CollidableTypes[x] }
+func (t *Target) CollidedWith(x combat.Target) {
+	if t.OnCollision != nil {
+		t.OnCollision(x)
+	}
 }
 
 func (t *Target) Index() int              { return t.TargetIndex }
@@ -42,6 +52,20 @@ func (t *Target) GetTag(key string) int {
 
 func (t *Target) RemoveTag(key string) {
 	delete(t.Tags, key)
+}
+
+func (t *Target) WillCollide(s combat.Shape) bool {
+	if !t.Alive {
+		return false
+	}
+	switch v := s.(type) {
+	case *combat.Circle:
+		return t.Shape().IntersectCircle(*v)
+	case *combat.Rectangle:
+		return t.Shape().IntersectRectangle(*v)
+	default:
+		return false
+	}
 }
 
 func (t *Target) AttackWillLand(a combat.AttackPattern, src int) (bool, string) {

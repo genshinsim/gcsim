@@ -196,11 +196,11 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	//check if index is in range
-	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
-		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.TargetsCount()-1, idx)
+	if idx < 1 || idx > len(e.Core.Combat.Enemies()) {
+		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, len(e.Core.Combat.Enemies()), idx)
 	}
 
-	e.Core.Combat.DefaultTarget = idx
+	e.Core.Combat.DefaultTarget = idx - 1
 
 	return &number{}, nil
 

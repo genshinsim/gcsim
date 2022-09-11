@@ -90,7 +90,7 @@ func (s *Simulation) AdvanceFrame() error {
 func (s *Simulation) collectStats() {
 	//add char active time
 	s.stats.CharActiveTime[s.C.Player.Active()]++
-	for i, v := range s.C.Combat.Targets() {
+	for i, v := range s.C.Combat.Enemies() {
 		if t, ok := v.(*enemy.Enemy); ok {
 			s.stats.ElementUptime[i][t.AuraType()]++
 		}

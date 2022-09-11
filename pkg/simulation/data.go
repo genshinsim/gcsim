@@ -14,7 +14,7 @@ import (
 func (s *Simulation) initDetailLog() {
 	var sb strings.Builder
 	s.stats.ReactionsTriggered = make(map[combat.ReactionType]int)
-	s.stats.ElementUptime = make([]map[attributes.Element]int, len(s.C.Combat.Targets()))
+	s.stats.ElementUptime = make([]map[attributes.Element]int, len(s.C.Combat.Enemies()))
 	for i := range s.stats.ElementUptime {
 		s.stats.ElementUptime[i] = make(map[attributes.Element]int)
 	}
@@ -27,8 +27,11 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "sim-abil-usage")
 	//add new targets
-	s.C.Events.Subscribe(event.OnTargetAdded, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnEnemyAdded, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
+		if t.Type() != combat.TargettableEnemy {
+			return false
+		}
 
 		s.C.Log.NewEvent("Target Added", glog.LogDebugEvent, -1).
 			Write("target_type", t.Type())
@@ -73,7 +76,8 @@ func (s *Simulation) initDetailLog() {
 		if dmg > 0 {
 			s.stats.DamageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
 		}
-		s.stats.DamageByCharByTargets[atk.Info.ActorIndex][t.Index()] += dmg
+		enemyIdx := s.C.Combat.EnemyIndex(t.Index()) //this should never evaluate to -1...
+		s.stats.DamageByCharByTargets[atk.Info.ActorIndex][enemyIdx] += dmg
 
 		// Want to capture information in 0.25s intervals - allows more flexibility in bucketizing
 		frameBucket := int(s.C.F/15) * 15

@@ -54,7 +54,7 @@ const (
 	//sim stuff
 	OnInitialize  //nil
 	OnStateChange //prev, next
-	OnTargetAdded //t
+	OnEnemyAdded  //t
 	EndEventTypes //elim
 )
 

@@ -20,6 +20,11 @@ type Target interface {
 	Attack(*AttackEvent, glog.Event) (float64, bool)
 	Tick() //called every tick
 	Kill()
+	//for collision check
+	Collidable() bool
+	CollidableWith(TargettableType) bool
+	CollidedWith(t Target)
+	WillCollide(Shape) bool
 }
 
 type TargetWithAura interface {
@@ -35,6 +40,83 @@ const (
 	TargettableObject
 	TargettableTypeCount
 )
+
+func (h *Handler) appendTarget(t Target) int {
+	h.targets = append(h.targets, t)
+	idx := len(h.targets) - 1
+	t.SetIndex(idx)
+	return idx
+}
+
+func (h *Handler) SetPlayer(t Target) {
+	h.player = t
+	//replace player if already exists in array
+	found := false
+	for i, v := range h.targets {
+		if v.Type() == TargettablePlayer {
+			found = true
+			t.SetIndex(i)
+			h.targets[i] = t
+			break
+		}
+	}
+	if !found {
+		h.appendTarget(t)
+	}
+
+}
+
+func (h *Handler) AddEnemy(t Target) {
+	idx := h.appendTarget(t)
+	h.enemies = append(h.enemies, t)
+	h.enemyIdxMap[idx] = len(h.enemies) - 1
+}
+
+func (h *Handler) EnemyIndex(idx int) int {
+	//return -1 if not an enemy; should make sure this doesn't happen by
+	//whoever calls this code
+	x, ok := h.enemyIdxMap[idx]
+	if !ok {
+		return -1
+	}
+	return x
+}
+
+func (h *Handler) AddGadget(t Target) {
+	h.appendTarget(t)
+	h.gadgets = append(h.gadgets, t)
+}
+
+func (h *Handler) Target(i int) Target {
+	if i < 0 || i > len(h.targets) {
+		return nil
+	}
+	return h.targets[i]
+}
+
+func (h *Handler) Enemies() []Target {
+	return h.enemies
+}
+
+func (h *Handler) Targets() []Target {
+	return h.targets
+}
+
+func (h *Handler) TargetsCount() int {
+	return len(h.targets)
+}
+
+func (h *Handler) EnemiesCount() int {
+	return len(h.enemies)
+}
+
+func (h *Handler) PrimaryTarget() Target {
+	return h.enemies[h.DefaultTarget]
+}
+
+func (h *Handler) Player() Target {
+	return h.player
+}
 
 // EnemyByDistance returns an array of indices of the enemies sorted by distance
 func (c *Handler) EnemyByDistance(x, y float64, excl int) []int {

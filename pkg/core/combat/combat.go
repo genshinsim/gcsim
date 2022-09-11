@@ -1,8 +1,8 @@
 // Package combat handles all combat related functionalities including
-//	- target tracking
-//	- target selection
-//	- hitbox collision checking
-//  - attack queueing
+//   - target tracking
+//   - target selection
+//   - hitbox collision checking
+//   - attack queueing
 package combat
 
 import (
@@ -24,6 +24,10 @@ type Character interface {
 type Handler struct {
 	Opt
 	targets     []Target
+	enemyIdxMap map[int]int
+	enemies     []Target
+	gadgets     []Target
+	player      Target
 	TotalDamage float64
 }
 
@@ -41,39 +45,12 @@ type Opt struct {
 
 func New(opt Opt) *Handler {
 	h := &Handler{
-		Opt: opt,
+		Opt:         opt,
+		enemyIdxMap: make(map[int]int),
 	}
 	h.targets = make([]Target, 0, 5)
 
 	return h
-}
-
-func (h *Handler) AddTarget(t Target) {
-	h.targets = append(h.targets, t)
-	t.SetIndex(len(h.targets) - 1)
-}
-
-func (h *Handler) Target(i int) Target {
-	if i < 0 || i > len(h.targets) {
-		return nil
-	}
-	return h.targets[i]
-}
-
-func (h *Handler) Targets() []Target {
-	return h.targets
-}
-
-func (h *Handler) TargetsCount() int {
-	return len(h.targets)
-}
-
-func (h *Handler) PrimaryTarget() Target {
-	return h.targets[h.DefaultTarget]
-}
-
-func (h *Handler) Player() Target {
-	return h.targets[0] //assuming player is always position 0
 }
 
 func (h *Handler) SetTargetPos(i int, x, y float64) bool {
@@ -100,6 +77,24 @@ func (h *Handler) KillTarget(i int) bool {
 }
 
 func (h *Handler) Tick() {
+	//collision check happens before each object ticks (as collision may remove the object)
+	for i := 0; i < len(h.targets); i++ {
+		if !h.targets[i].Collidable() {
+			continue
+		}
+		for j := 0; j < len(h.targets); j++ {
+			if i == j {
+				continue
+			}
+			if !h.targets[i].CollidableWith(h.targets[j].Type()) {
+				continue
+			}
+			//check collision here
+			if true {
+				h.targets[i].CollidedWith(h.targets[j])
+			}
+		}
+	}
 	for _, t := range h.targets {
 		t.Tick()
 	}

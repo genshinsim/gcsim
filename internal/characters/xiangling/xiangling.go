@@ -34,6 +34,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	//add in a guoba
 	c.guoba = newGuoba(c.Core)
-	c.Core.Combat.AddTarget(c.guoba)
+	c.Core.Combat.AddGadget(c.guoba)
 	return nil
 }
