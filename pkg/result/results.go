@@ -102,6 +102,7 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 
 	// var dd float64
 
+	result.Duration.Min = math.MaxFloat64
 	// Loop through each iteration to build overall statistics
 	for iteration, v := range data {
 		dd := float64(v.Duration) / 60 //sim reports in frames
@@ -109,8 +110,8 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 		if dd > result.Duration.Max {
 			result.Duration.Max = dd
 		}
-		if dd < result.Duration.Mean {
-			result.Duration.Max = dd
+		if dd < result.Duration.Min {
+			result.Duration.Min = dd
 		}
 
 		//dmg
