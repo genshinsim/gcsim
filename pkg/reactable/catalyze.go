@@ -15,10 +15,10 @@ func (r *Reactable) tryAggravate(a *combat.AttackEvent) {
 		return
 	}
 
-	//trigger event before attack is queued. this gives time for other actions to modify it
+	// trigger event before attack is queued. this gives time for other actions to modify it
 	r.core.Events.Emit(event.OnAggravate, r.self, a)
 
-	//em isn't snapshot
+	// em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
 	a.Info.CatalyzedType = combat.Aggravate
@@ -35,10 +35,10 @@ func (r *Reactable) trySpread(a *combat.AttackEvent) {
 	}
 	// Spread doesn't consume any gauge
 
-	//trigger event before attack is queued. this gives time for other actions to modify it
+	// trigger event before attack is queued. this gives time for other actions to modify it
 	r.core.Events.Emit(event.OnSpread, r.self, a)
 
-	//em isn't snapshot
+	// em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
 	a.Info.CatalyzedType = combat.Spread
@@ -52,31 +52,31 @@ func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
 
 	switch a.Info.Element {
 	case attributes.Dendro:
-		//if electro exists we'll trigger quicken regardless if quicken already coexists
+		// if electro exists we'll trigger quicken regardless if quicken already coexists
 		if r.Durability[attributes.Electro] > ZeroDur {
 			consumed := r.triggerQuicken(r.Durability[attributes.Electro], a.Info.Durability)
 			r.Durability[attributes.Electro] = max(r.Durability[attributes.Electro]-consumed, 0)
 			a.Info.Durability = max(a.Info.Durability-consumed, 0)
 			r.core.Events.Emit(event.OnQuicken, r.self, a)
 			return
-		} else {
-			//try refill first - this will use up all durability if ok
+		} else if r.Durability[attributes.Quicken] > ZeroDur { // attach dendro only if quicken exists
+			// try refill first - this will use up all durability if ok
 			r.tryRefill(a.Info.Element, &a.Info.Durability)
-			//otherwise attach
+			// otherwise attach
 			r.tryAttach(a.Info.Element, &a.Info.Durability)
 		}
 	case attributes.Electro:
-		//if electro exists we'll trigger quicken regardless if quicken already coexists
+		// if electro exists we'll trigger quicken regardless if quicken already coexists
 		if r.Durability[attributes.Dendro] > ZeroDur {
 			consumed := r.triggerQuicken(r.Durability[attributes.Dendro], a.Info.Durability)
 			r.Durability[attributes.Dendro] = max(r.Durability[attributes.Dendro]-consumed, 0)
 			a.Info.Durability = max(a.Info.Durability-consumed, 0)
 			r.core.Events.Emit(event.OnQuicken, r.self, a)
 			return
-		} else {
-			//try refill first - this will use up all durability if ok
+		} else if r.Durability[attributes.Quicken] > ZeroDur { // attach electro only if quicken exists
+			// try refill first - this will use up all durability if ok
 			r.tryRefill(a.Info.Element, &a.Info.Durability)
-			//otherwise attach
+			// otherwise attach
 			r.tryAttach(a.Info.Element, &a.Info.Durability)
 		}
 	default:
@@ -85,7 +85,7 @@ func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
 	}
 }
 
-//add to quicken durability and return amount of durability consumed
+// add to quicken durability and return amount of durability consumed
 func (r *Reactable) triggerQuicken(a, b combat.Durability) combat.Durability {
 	d := min(a, b)
 	if d > r.Durability[attributes.Quicken] {
