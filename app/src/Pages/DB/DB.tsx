@@ -32,6 +32,11 @@ import { Disclaimer } from './Disclaimer';
 import { useVirtual } from 'react-virtual';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
+interface Filter {
+  reverse: boolean;
+  key: string;
+}
+
 function CharTooltip({ char }: { char: DBCharInfo }) {
   let { t } = useTranslation();
 
@@ -229,11 +234,13 @@ export function DB() {
   const [loading, setLoading] = React.useState<boolean>(true);
   const [data, setData] = React.useState<DBItem[]>([]);
   const [openAddChar, setOpenAddChar] = React.useState<boolean>(false);
-  const [charFilter, setCharFilter] = React.useState<string[]>([]);
+  const [openRemoveChar, setOpenRemoveChar] = React.useState<boolean>(false);
+  const [charFilter, setCharFilter] = React.useState<Filter[]>([]);
   const [openAddWeap, setOpenAddWeap] = React.useState<boolean>(false);
-  const [weapFilter, setWeapFilter] = React.useState<string[]>([]);
-  const [searchString, setSearchString] = React.useState<string>('');
-  const [cfg, setCfg] = React.useState<string>('');
+  const [openRemoveWeap, setOpenRemoveWeap] = React.useState<boolean>(false);
+  const [weapFilter, setWeapFilter] = React.useState<Filter[]>([]);
+  const [searchString, setSearchString] = React.useState<string>("");
+  const [cfg, setCfg] = React.useState<string>("");
   const [keepExistingTeam, setKeepExistingTeam] = React.useState<boolean>(
     () => {
       const saved = localStorage.getItem(LOCALSTORAGE_KEY);
@@ -285,16 +292,16 @@ export function DB() {
     setShowDisclaimer(false);
   };
 
-  const updateFilterUrl = (type: string, data: Array<string>) => {
+  const updateFilterUrl = (type: string, data: Array<Filter>) => {
     const url = new URL(window.location.toString());
-    url.searchParams.set(type, data.join(','));
-    window.history.pushState({}, '', url);
+    url.searchParams.set(type, data.map(x => (x.reverse ? '-' : '+') + x.key).join(','));
+    window.history.pushState({}, "", url);
   };
 
   const parseFilterUrl = () => {
     const url = new URL(window.location.toString());
-    const chars = getSearchParamData(url, 'chars');
-    const weaps = getSearchParamData(url, 'weaps');
+    const chars = getSearchParamData(url, 'chars')?.map(x => ({ reverse: x.startsWith('-'), key: x.slice(1) })) ?? [];
+    const weaps = getSearchParamData(url, 'weaps')?.map(x => ({ reverse: x.startsWith('-'), key: x.slice(1) })) ?? [];
 
     console.log(chars);
 
@@ -311,19 +318,45 @@ export function DB() {
     setOpenAddChar(false);
     //add to array if not exist already if
     let key = char.key;
-    if (isTraveler(key) && char.element != 'none')
-      key = 'traveler' + char.element;
-    if (charFilter.includes(key)) {
+    if (isTraveler(key) && char.element != "none") {
+      key = "traveler" + char.element;
+    }
+
+    const filterObj = { reverse: false, key }
+
+    if (charFilter.includes(filterObj)) {
       return;
     }
+
     const next = [...charFilter];
-    next.push(key);
+    next.push(filterObj);
     setCharFilter(next);
 
-    updateFilterUrl('chars', next);
+    updateFilterUrl("chars", next);
   };
 
-  const removeCharFilter = (char: string) => {
+  const addReverseCharFilter = (char: ICharacter) => {
+    setOpenRemoveChar(false);
+    //add to array if not exist already if
+    let key = char.key;
+    if (isTraveler(key) && char.element != "none") {
+      key = "traveler" + char.element;
+    }
+
+    const filterObj = { reverse: true, key };
+
+    if (charFilter.includes(filterObj)) {
+      return;
+    }
+
+    const next = [...charFilter];
+    next.push(filterObj);
+    setCharFilter(next);
+
+    updateFilterUrl("chars", next);
+  };
+
+  const removeCharFilter = (char: Filter) => {
     const idx = charFilter.indexOf(char);
     if (idx === -1) {
       return;
@@ -332,23 +365,44 @@ export function DB() {
     next.splice(idx, 1);
     setCharFilter(next);
 
-    updateFilterUrl('chars', next);
+    updateFilterUrl("chars", next);
   };
 
   const addWeapFilter = (weap: IWeapon) => {
     setOpenAddWeap(false);
+
+    const filterObj = { reverse: false, key: weap };
+
     //add to array if not exist already if
-    if (weapFilter.includes(weap)) {
+    if (weapFilter.includes(filterObj)) {
       return;
     }
+
     const next = [...weapFilter];
-    next.push(weap);
+    next.push(filterObj);
     setWeapFilter(next);
 
-    updateFilterUrl('weaps', next);
+    updateFilterUrl("weaps", next);
   };
 
-  const removeWeapFilter = (weap: string) => {
+  const addReverseWeapFilter = (weap: IWeapon) => {
+    setOpenRemoveWeap(false);
+
+    const filterObj = { reverse: true, key: weap };
+
+    //add to array if not exist already if
+    if (weapFilter.includes(filterObj)) {
+      return;
+    }
+    
+    const next = [...weapFilter];
+    next.push(filterObj);
+    setWeapFilter(next);
+
+    updateFilterUrl("weaps", next);
+  };
+
+  const removeWeapFilter = (weap: Filter) => {
     const idx = weapFilter.indexOf(weap);
     if (idx === -1) {
       return;
@@ -357,7 +411,7 @@ export function DB() {
     next.splice(idx, 1);
     setWeapFilter(next);
 
-    updateFilterUrl('weaps', next);
+    updateFilterUrl("weaps", next);
   };
 
   const handleToggleSelected = () => {
@@ -388,12 +442,13 @@ export function DB() {
   const cRows = charFilter.map((e) => {
     return (
       <Tag
-        key={e}
+        key={(e.reverse ? '-' : '+') + e.key}
         interactive
         onRemove={() => removeCharFilter(e)}
-        className="ml-px mr-px"
+        className={"ml-px mr-px " + (e.reverse ? "filterNegative" : "filterPositive")}
+        color={e.reverse ? "red" : "green"}
       >
-        {t('game:character_names.' + e)}
+        {t('game:character_names.' + e.key)}
       </Tag>
     );
   });
@@ -401,12 +456,13 @@ export function DB() {
   const wRows = weapFilter.map((e) => {
     return (
       <Tag
-        key={e}
+        key={(e.reverse ? '-' : '+') + e.key}
         interactive
         onRemove={() => removeWeapFilter(e)}
-        className="ml-px mr-px"
+        className={"ml-px mr-px " + (e.reverse ? "filterNegative" : "filterPositive")}
+        color={e.reverse ? "red" : "green"}
       >
-        {t('game:weapon_names.' + e)}
+        {t('game:weapon_names.' + e.key)}
       </Tag>
     );
   });
@@ -424,7 +480,10 @@ export function DB() {
 
     //team needs to have every character in charFilter array
     if (charFilter.length > 0) {
-      const ok = charFilter.every((e) => team.includes(e));
+      const ok = charFilter.every((e) => 
+        (e.reverse && !team.includes(e.key)) ||
+        (!e.reverse && team.includes(e.key))
+      );
       if (!ok) {
         return false;
       }
@@ -432,7 +491,10 @@ export function DB() {
 
     //team needs to have every weapon in weaponFilter array
     if (weapFilter.length > 0) {
-      const ok = weapFilter.every((e) => weapons.includes(e));
+      const ok = weapFilter.every((e) => 
+        (e.reverse && !weapons.includes(e.key)) ||
+        (!e.reverse && weapons.includes(e.key))
+      );
       if (!ok) {
         return false;
       }
@@ -441,11 +503,11 @@ export function DB() {
     //check something in team matches search string
     let ss = JSON.stringify(e);
     e.team.forEach((c) => {
-      ss += ' ' + t('game:character_names.' + c.name);
-      ss += ' ' + t('game:weapon_names.' + c.weapon);
+      ss += " " + t('game:character_names.' + c.name);
+      ss += " " + t('game:weapon_names.' + c.weapon);
     });
 
-    if (searchString !== '' && !ss.includes(searchString)) {
+    if (searchString !== "" && !ss.includes(searchString)) {
       return false;
     }
 
@@ -471,11 +533,11 @@ export function DB() {
             content={
               <Menu>
                 <MenuItem
-                  text={t('db.character')}
+                  text={t("db.character")}
                   onClick={() => setOpenAddChar(true)}
                 />
                 <MenuItem
-                  text={t('db.weapon')}
+                  text={t("db.weapon")}
                   onClick={() => setOpenAddWeap(true)}
                 />
               </Menu>
@@ -486,6 +548,31 @@ export function DB() {
                 //@ts-ignore
                 elementRef={ref}
                 icon="plus"
+                className="ml-1 mr-1"
+              />
+            )}
+          />
+          <Popover2
+            interactionKind="click"
+            placement="bottom"
+            content={
+              <Menu>
+                <MenuItem
+                  text={t("db.character")}
+                  onClick={() => setOpenRemoveChar(true)}
+                />
+                <MenuItem
+                  text={t("db.weapon")}
+                  onClick={() => setOpenRemoveWeap(true)}
+                />
+              </Menu>
+            }
+            renderTarget={({ isOpen, ref, ...targetProps }) => (
+              <Button
+                {...targetProps}
+                //@ts-ignore
+                elementRef={ref}
+                icon="minus"
                 className="ml-1 mr-1"
               />
             )}
@@ -522,10 +609,20 @@ export function DB() {
         onSelect={addCharFilter}
         isOpen={openAddChar}
       />
+      <CharacterSelect
+        onClose={() => setOpenRemoveChar(false)}
+        onSelect={addReverseCharFilter}
+        isOpen={openRemoveChar}
+      />
       <WeaponSelect
         isOpen={openAddWeap}
         onClose={() => setOpenAddWeap(false)}
         onSelect={addWeapFilter}
+      />
+      <WeaponSelect
+        isOpen={openRemoveWeap}
+        onClose={() => setOpenRemoveWeap(false)}
+        onSelect={addReverseWeapFilter}
       />
       <Dialog isOpen={cfg !== ''} onClose={() => setCfg('')}>
         <div className={Classes.DIALOG_BODY}>
