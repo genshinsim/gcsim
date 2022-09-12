@@ -3,18 +3,19 @@ export async function handleAssets(
   event: FetchEvent
 ): Promise<Response> {
   const cacheUrl = new URL(request.url).pathname;
-  const cacheKey = new Request(cacheUrl, request);
-  console.log(`checking for cache key: ${cacheUrl}`);
+  const endpoint = ASSETS_ENDPOINT + cacheUrl;
+  const cacheKey = new Request(endpoint, request);
+  console.log(`checking for cache key: ${endpoint}`);
   const cache = caches.default;
 
   let response = await cache.match(cacheKey);
 
   if (!response) {
     console.log(
-      `Response for request url: ${cacheUrl} not present in cache. Fetching and caching request.`
+      `Response for request url: ${endpoint} not present in cache. Fetching and caching request.`
     );
 
-    const resp = await fetch(new Request(ASSETS_ENDPOINT + '/' + cacheUrl), {
+    const resp = await fetch(new Request(endpoint), {
       cf: {
         cacheTtl: 60 * 24 * 60 * 60,
         cacheEverything: true,
