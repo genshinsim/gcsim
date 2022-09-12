@@ -66,9 +66,14 @@ func (s *Simulation) Run() (Result, error) {
 
 	s.stats.Seed = s.C.Seed
 
+	duration := s.C.F
+	if duration < 60 {
+		duration = 60
+	}
+
 	s.stats.Damage = s.C.Combat.TotalDamage
-	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F+1)
-	s.stats.Duration = s.C.F
+	s.stats.DPS = s.stats.Damage * 60 / float64(duration)
+	s.stats.Duration = duration
 
 	//we're done yay
 	return s.stats, nil
