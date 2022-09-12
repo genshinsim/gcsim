@@ -1,5 +1,5 @@
-import TextMap from "./GenshinData/EnkaTextMapEN.json";
-import CharacterMap from "./GenshinData/EnkaCharacterMap.json";
+import TextMap from './GenshinData/EnkaTextMapEN.json';
+import CharacterMap from './GenshinData/EnkaCharacterMap.json';
 
 import {
   GOODArtifact,
@@ -12,14 +12,14 @@ import {
   GOODWeaponKey,
   IGOOD,
   ISubstat,
-} from "../GOOD/GOODTypes";
+} from '../GOOD/GOODTypes';
 import {
   EnkaData,
   FightProp,
   GenshinItemReliquary,
   GenshinItemWeapon,
   ReliquaryEquipType,
-} from "./EnkaTypes";
+} from './EnkaTypes';
 
 export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
   let characters: GOODCharacter[] = [];
@@ -30,8 +30,8 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
     ({ avatarId, propMap, talentIdList, skillLevelMap, equipList }) => {
       const character: GOODCharacter = {
         key: getGOODKeyFromAvatarId(avatarId),
-        level: parseInt(propMap["4001"].val),
-        ascension: parseInt(propMap["1002"].val),
+        level: parseInt(propMap['4001'].val),
+        ascension: parseInt(propMap['1002'].val),
         constellation: talentIdList?.length || 0,
         //Characters with 7 talents like AYAKA might be bugged (kokomi is fine?)//
         // characters with unodered talents like traveler(i htink) will not work
@@ -44,7 +44,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
       characters.push(character);
 
       equipList.forEach((equip) => {
-        if (equip.flat.itemType == "ITEM_WEAPON") {
+        if (equip.flat.itemType == 'ITEM_WEAPON') {
           const enkaWeapon = equip as GenshinItemWeapon;
 
           const weapon: GOODWeapon = {
@@ -86,9 +86,9 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
   );
 
   return {
-    format: "GOOD" as IGOOD["format"],
+    format: 'GOOD' as IGOOD['format'],
     version: 1,
-    source: "gcsimFromEnka",
+    source: 'gcsimFromEnka',
     characters,
     weapons,
     artifacts,
@@ -97,11 +97,11 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
 
 function textToGOODKey(string: string) {
   function toTitleCase(str: string) {
-    return str.replace(/-/g, " ").replace(/\w\S*/g, function (txt: string) {
+    return str.replace(/-/g, ' ').replace(/\w\S*/g, function (txt: string) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   }
-  return toTitleCase(string || "").replace(/[^A-Za-z]/g, "") as
+  return toTitleCase(string || '').replace(/[^A-Za-z]/g, '') as
     | GOODCharacterKey
     | GOODWeaponKey
     | GOODArtifactSetKey;
@@ -111,61 +111,60 @@ function reliquaryTypeToGOODKey(
 ): GOODSlotKey {
   switch (reliquaryType) {
     case ReliquaryEquipType.EQUIP_BRACER:
-      return "flower";
+      return 'flower';
     case ReliquaryEquipType.EQUIP_NECKLACE:
-      return "plume";
+      return 'plume';
     case ReliquaryEquipType.EQUIP_SHOES:
-      return "sands";
+      return 'sands';
     case ReliquaryEquipType.EQUIP_RING:
-      return "goblet";
+      return 'goblet';
     case ReliquaryEquipType.EQUIP_DRESS:
-      return "circlet";
+      return 'circlet';
   }
 }
 
 function fightPropToGOODKey(fightProp: FightProp): GOODStatKey {
   switch (fightProp) {
     case FightProp.FIGHT_PROP_HP:
-      return "hp";
+      return 'hp';
     case FightProp.FIGHT_PROP_HP_PERCENT:
-      return "hp_";
+      return 'hp_';
     case FightProp.FIGHT_PROP_ATTACK:
-      return "atk";
+      return 'atk';
     case FightProp.FIGHT_PROP_ATTACK_PERCENT:
-      return "atk_";
+      return 'atk_';
     case FightProp.FIGHT_PROP_DEFENSE:
-      return "def";
+      return 'def';
     case FightProp.FIGHT_PROP_DEFENSE_PERCENT:
-      return "def_";
+      return 'def_';
     case FightProp.FIGHT_PROP_CHARGE_EFFICIENCY:
-      return "enerRech_";
+      return 'enerRech_';
     case FightProp.FIGHT_PROP_ELEMENT_MASTERY:
-      return "eleMas";
+      return 'eleMas';
     case FightProp.FIGHT_PROP_CRITICAL:
-      return "critRate_";
+      return 'critRate_';
     case FightProp.FIGHT_PROP_CRITICAL_HURT:
-      return "critDMG_";
+      return 'critDMG_';
     case FightProp.FIGHT_PROP_HEAL_ADD:
-      return "heal_";
+      return 'heal_';
     case FightProp.FIGHT_PROP_FIRE_ADD_HURT:
-      return "pyro_dmg_";
+      return 'pyro_dmg_';
     case FightProp.FIGHT_PROP_ELEC_ADD_HURT:
-      return "electro_dmg_";
+      return 'electro_dmg_';
     case FightProp.FIGHT_PROP_ICE_ADD_HURT:
-      return "cryo_dmg_";
+      return 'cryo_dmg_';
     case FightProp.FIGHT_PROP_WATER_ADD_HURT:
-      return "hydro_dmg_";
+      return 'hydro_dmg_';
     case FightProp.FIGHT_PROP_WIND_ADD_HURT:
-      return "anemo_dmg_";
+      return 'anemo_dmg_';
     case FightProp.FIGHT_PROP_ROCK_ADD_HURT:
-      return "geo_dmg_";
-    //soon tm
-    //   case FightProp.FIGHT_PROP_GRASS_ADD_HURT:
-    //     return "dendro_dmg_";
+      return 'geo_dmg_';
+    case FightProp.FIGHT_PROP_GRASS_ADD_HURT:
+      return 'dendro_dmg_';
     case FightProp.FIGHT_PROP_PHYSICAL_ADD_HURT:
-      return "physical_dmg_";
+      return 'physical_dmg_';
     default:
-      return "";
+      return '';
   }
 }
 

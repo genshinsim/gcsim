@@ -288,5 +288,20 @@
     "rarity": 5,
     "element": "geo",
     "weapon_class": "polearm"
+  },
+  "travelerelectro": {
+    "rarity": 5,
+    "element": "electro",
+    "weapon_class": "sword"
+  },
+  "traveleranemo": {
+    "rarity": 5,
+    "element": "anemo",
+    "weapon_class": "sword"
+  },
+  "travelergeo": {
+    "rarity": 5,
+    "element": "geo",
+    "weapon_class": "sword"
   }
 }
