@@ -1,10 +1,22 @@
-import { Database } from "PageDatabase";
 import React from "react";
+import { Database } from "Pages/Database";
+import { Route, Switch } from "wouter";
+import { Teams, SimByTeam } from "Pages/Teams";
+import { Navbar } from "Components/Nav/Navbar";
 
 function App() {
   return (
     <div className="App">
-      <Database />
+      <Navbar />
+      <Switch>
+        <Route path="/" component={Database} />
+        <Route path="/db/:avatar">
+          {(params) => <Teams char={params.avatar} />}
+        </Route>
+        <Route path="/db/:avatar/:team">
+          {(params) => <SimByTeam char={params.avatar} team={params.team} />}
+        </Route>
+      </Switch>
     </div>
   );
 }
