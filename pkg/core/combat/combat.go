@@ -78,20 +78,21 @@ func (h *Handler) KillTarget(i int) bool {
 
 func (h *Handler) Tick() {
 	//collision check happens before each object ticks (as collision may remove the object)
-	for i := 0; i < len(h.targets); i++ {
-		if !h.targets[i].Collidable() {
-			continue
+	//enemy and player does not check for collision
+	//gadgets check against player and enemy
+	for i := 0; i < len(h.gadgets); i++ {
+		v := h.gadgets[i]
+		//TODO: what if gadget disappeared here??
+		if v.CollidableWith(TargettablePlayer) {
+			if v.WillCollide(h.player.Shape()) {
+				v.CollidedWith(h.player)
+			}
 		}
-		for j := 0; j < len(h.targets); j++ {
-			if i == j {
-				continue
-			}
-			if !h.targets[i].CollidableWith(h.targets[j].Type()) {
-				continue
-			}
-			//check collision here
-			if true {
-				h.targets[i].CollidedWith(h.targets[j])
+		if v.CollidableWith(TargettableEnemy) {
+			for j := 0; j < len(h.enemies); j++ {
+				if v.WillCollide(h.enemies[j].Shape()) {
+					v.CollidedWith(h.enemies[j])
+				}
 			}
 		}
 	}
