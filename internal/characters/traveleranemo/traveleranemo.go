@@ -37,7 +37,7 @@ func NewChar(gender int) core.NewCharacterFunc {
 		c.BurstCon = 3
 		c.SkillCon = 5
 		c.NormalHitNum = normalHitNum
-		c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+		c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 		w.Character = &c
 

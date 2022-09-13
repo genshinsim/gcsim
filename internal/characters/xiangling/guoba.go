@@ -1,30 +1,85 @@
 package xiangling
 
 import (
+	"log"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
-	"github.com/genshinsim/gcsim/pkg/target"
 )
 
 type panda struct {
-	*target.Target
+	*gadget.Gadget
 	*reactable.Reactable
+	c     *char
+	ai    combat.AttackInfo
+	snap  combat.Snapshot
+	timer int
 }
 
-func newGuoba(c *core.Core) *panda {
-	p := &panda{}
-	p.Target = target.New(c, 0, 0, 0.5)
+func (c *char) newGuoba(ai combat.AttackInfo) *panda {
+	p := &panda{
+		ai:   ai,
+		snap: c.Snapshot(&ai),
+		c:    c,
+	}
+	x, y := c.Core.Combat.Player().Pos()
+	//TODO: guoba placement??
+	p.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 0.2})
+	p.Gadget.Duration = 438
 	p.Reactable = &reactable.Reactable{}
-	p.Reactable.Init(p, c)
+	p.Reactable.Init(p, c.Core)
 
 	return p
 }
 
-func (p *panda) Type() combat.TargettableType { return combat.TargettableObject }
+func (p *panda) Tick() {
+	//this is needed since both reactable and gadget tick
+	p.Reactable.Tick()
+	p.Gadget.Tick()
+	p.timer++
+	//guoba pew pew every 100 frames
+	//first pew pew is at 126, but guoba spawns 13 in; so it's really 113
+	//then every 100 after that
+	//TODO: kids.. don't do this
+	switch p.timer {
+	case 103, 203, 303, 403: //swirl window
+		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index).
+			SetEnded(p.c.Core.F + infuseWindow + 1)
+		p.Durability[attributes.Pyro] = infuseDurability
+		p.Core.Tasks.Add(func() {
+			p.Durability[attributes.Pyro] = 0
+		}, infuseWindow+1) // +1 since infuse window is inclusive
+	case 113, 213, 313, 413: //pew pew window
+		log.Printf("pew at %v\n", p.timer)
+		p.breath()
+	}
+}
+
+func (p *panda) breath() {
+	done := false
+	part := func(_ combat.AttackCB) {
+		if done {
+			return
+		}
+		done = true
+		p.Core.QueueParticle("xiangling", 1, attributes.Pyro, p.c.ParticleDelay)
+	}
+	p.Core.QueueAttackWithSnap(
+		p.ai,
+		p.snap,
+		combat.NewCircleHit(p, 0.5, false, combat.TargettableEnemy),
+		0,
+		p.c.c1,
+		part,
+	)
+}
+
+func (p *panda) Type() combat.TargettableType { return combat.TargettableGadget }
 
 func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//don't take damage, trigger swirl reaction only on sucrose E
@@ -38,6 +93,8 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	if p.Durability[attributes.Pyro] <= 0 {
 		return 0, false
 	}
+
+	p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index)
 
 	//cheat a bit, set the durability just enough to match incoming sucrose E gauge
 	oldDur := p.Durability[attributes.Pyro]

@@ -43,7 +43,7 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 		trgs := c.Combat.EnemyByDistance(x, y, a.Target.Index())
 		next := -1
 		for _, v := range trgs {
-			trg, ok := c.Combat.Target(v).(*enemy.Enemy)
+			trg, ok := c.Combat.Enemy(v).(*enemy.Enemy)
 			if !ok {
 				continue
 			}

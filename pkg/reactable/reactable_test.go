@@ -85,7 +85,7 @@ func addTargetToCore(c *core.Core) *testTarget {
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
 	c.Combat.AddEnemy(trg)
-	trg.SetIndex(c.Combat.TargetsCount() - 1)
+	trg.SetIndex(c.Combat.EnemyCount() - 1)
 	return trg
 }
 

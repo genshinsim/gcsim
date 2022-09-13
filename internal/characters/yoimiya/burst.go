@@ -146,7 +146,7 @@ func (c *char) burstHook() {
 		c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 			if c.HPCurrent <= 0 {
 				// remove Aurous Blaze from target
-				for _, x := range c.Core.Combat.Targets() {
+				for _, x := range c.Core.Combat.Enemies() {
 					trg := x.(*enemy.Enemy)
 					if trg.StatusIsActive(abDebuff) {
 						trg.DeleteStatus(abDebuff)

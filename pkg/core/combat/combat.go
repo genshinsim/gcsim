@@ -23,12 +23,11 @@ type Character interface {
 
 type Handler struct {
 	Opt
-	targets     []Target
-	enemyIdxMap map[int]int
 	enemies     []Target
 	gadgets     []Target
 	player      Target
 	TotalDamage float64
+	gccount     int
 }
 
 type Opt struct {
@@ -45,35 +44,16 @@ type Opt struct {
 
 func New(opt Opt) *Handler {
 	h := &Handler{
-		Opt:         opt,
-		enemyIdxMap: make(map[int]int),
+		Opt: opt,
 	}
-	h.targets = make([]Target, 0, 5)
+	h.enemies = make([]Target, 0, 5)
+	h.gadgets = make([]Target, 0, 10)
+	//TODO: THIS IS A BANDAGE TO MAKE SELFHARM WORK. NEED TO FIX!!!
+	h.DefaultTarget = 1
+	h.enemies = append(h.enemies, nil)
+	h.gadgets = append(h.gadgets, nil)
 
 	return h
-}
-
-func (h *Handler) SetTargetPos(i int, x, y float64) bool {
-	if i < 0 || i > len(h.targets)-1 {
-		return false
-	}
-	h.targets[i].SetPos(x, y)
-	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
-		Write("index", i).
-		Write("x", x).
-		Write("y", y)
-	return true
-}
-
-func (h *Handler) KillTarget(i int) bool {
-	// don't kill yourself
-	if i < 1 || i > len(h.targets)-1 {
-		return false
-	}
-	h.targets[i].Kill()
-	h.Events.Emit(event.OnTargetDied, h.targets[i], &AttackEvent{}) // TODO: it's fine?
-	h.Log.NewEvent("target is dead", glog.LogSimEvent, -1).Write("index", i)
-	return true
 }
 
 func (h *Handler) Tick() {
@@ -81,22 +61,45 @@ func (h *Handler) Tick() {
 	//enemy and player does not check for collision
 	//gadgets check against player and enemy
 	for i := 0; i < len(h.gadgets); i++ {
-		v := h.gadgets[i]
-		//TODO: what if gadget disappeared here??
-		if v.CollidableWith(TargettablePlayer) {
-			if v.WillCollide(h.player.Shape()) {
-				v.CollidedWith(h.player)
+		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(TargettablePlayer) {
+			if h.gadgets[i].WillCollide(h.player.Shape()) {
+				h.gadgets[i].CollidedWith(h.player)
 			}
 		}
-		if v.CollidableWith(TargettableEnemy) {
-			for j := 0; j < len(h.enemies); j++ {
-				if v.WillCollide(h.enemies[j].Shape()) {
-					v.CollidedWith(h.enemies[j])
+		//sanity check in case gadget is gone
+		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(TargettableEnemy) {
+			for j := 0; j < len(h.enemies) && h.gadgets[i] != nil; j++ {
+				if h.gadgets[i].WillCollide(h.enemies[j].Shape()) {
+					h.gadgets[i].CollidedWith(h.enemies[j])
 				}
 			}
 		}
 	}
-	for _, t := range h.targets {
-		t.Tick()
+	h.player.Tick()
+	for _, v := range h.enemies {
+		if v != nil {
+			v.Tick()
+		}
+	}
+	for _, v := range h.gadgets {
+		if v != nil {
+			v.Tick()
+		}
+	}
+	//TODO: clean up every 100 tick reasonable?
+	h.gccount++
+	if h.gccount > 100 {
+		n := 1
+		for i, v := range h.gadgets {
+			if 1 == 0 {
+				continue
+			}
+			if v != nil {
+				h.gadgets[n] = h.gadgets[i]
+				n++
+			}
+		}
+		h.gadgets = h.gadgets[:n]
+		h.gccount = 0
 	}
 }

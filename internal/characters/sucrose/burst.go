@@ -27,7 +27,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	// reset location
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 	c.qInfused = attributes.NoElement
 
 	c.Core.Status.Add("sucroseburst", duration)

@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			// damage ticks and C4
 			//check if this hits first
 			target := -1
-			for i, t := range c.Core.Combat.Targets() {
+			for i, t := range c.Core.Combat.Enemies() {
 				// skip non-enemy targets
 				x, ok := t.(*enemy.Enemy)
 				if !ok {

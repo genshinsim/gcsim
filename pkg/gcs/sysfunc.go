@@ -125,9 +125,9 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		y = float64(n.ival)
 	}
 
-	done := e.Core.Combat.SetTargetPos(0, x, y)
+	e.Core.Combat.SetPlayerPos(x, y)
 
-	return bton(done), nil
+	return bton(true), nil
 }
 
 func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -200,7 +200,7 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, len(e.Core.Combat.Enemies()), idx)
 	}
 
-	e.Core.Combat.DefaultTarget = idx - 1
+	e.Core.Combat.DefaultTarget = idx
 
 	return &number{}, nil
 
@@ -256,11 +256,11 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	//check if index is in range
-	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
-		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.TargetsCount()-1, idx)
+	if idx < 1 || idx >= e.Core.Combat.EnemyCount() {
+		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount()-1, idx)
 	}
 
-	e.Core.Combat.SetTargetPos(idx, x, y)
+	e.Core.Combat.SetEnemyPos(idx, x, y)
 
 	return &number{}, nil
 }
@@ -290,11 +290,11 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	//check if index is in range
-	if idx < 1 || idx >= e.Core.Combat.TargetsCount() {
-		return nil, fmt.Errorf("index for kill_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.TargetsCount()-1, idx)
+	if idx < 1 || idx >= e.Core.Combat.EnemyCount() {
+		return nil, fmt.Errorf("index for kill_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount()-1, idx)
 	}
 
-	e.Core.Combat.KillTarget(idx)
+	e.Core.Combat.KillEnemy(idx)
 
 	return &number{}, nil
 }

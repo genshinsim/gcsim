@@ -16,43 +16,6 @@ func NewDefSingleTarget(ind int, typ TargettableType) AttackPattern {
 	}
 }
 
-func NewDefCircHit(r float64, self bool, targets ...TargettableType) AttackPattern {
-	var arr [TargettableTypeCount]bool
-
-	for _, v := range targets {
-		if v < TargettableTypeCount {
-			arr[v] = true
-		}
-	}
-
-	return AttackPattern{
-		Shape: &Circle{
-			r: r,
-		},
-		Targets:  arr,
-		SelfHarm: self,
-	}
-}
-
-func NewDefBoxHit(w, h float64, self bool, targets ...TargettableType) AttackPattern {
-	var arr [TargettableTypeCount]bool
-
-	for _, v := range targets {
-		if v < TargettableTypeCount {
-			arr[v] = true
-		}
-	}
-
-	return AttackPattern{
-		Shape: &Rectangle{
-			w: w,
-			h: h,
-		},
-		Targets:  arr,
-		SelfHarm: self,
-	}
-}
-
 func NewCircleHit(trg Positional, r float64, self bool, targets ...TargettableType) AttackPattern {
 	var arr [TargettableTypeCount]bool
 

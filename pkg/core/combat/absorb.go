@@ -33,7 +33,7 @@ func (c *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 
 	// check targets for collision first
 	for _, e := range prio {
-		for i, x := range c.targets {
+		for i, x := range c.enemies {
 			t, ok := x.(TargetWithAura)
 			if !ok {
 				continue

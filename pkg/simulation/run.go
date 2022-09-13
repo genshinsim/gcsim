@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -51,8 +50,8 @@ func (s *Simulation) Run() (Result, error) {
 		if s.C.Combat.DamageMode {
 			//stop if all targets are reporting dead
 			stop = true
-			for _, t := range s.C.Combat.Targets() {
-				if t.Type() == combat.TargettableEnemy && t.IsAlive() {
+			for _, t := range s.C.Combat.Enemies() {
+				if t.IsAlive() {
 					stop = false
 					break
 				}

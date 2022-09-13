@@ -76,8 +76,7 @@ func (s *Simulation) initDetailLog() {
 		if dmg > 0 {
 			s.stats.DamageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
 		}
-		enemyIdx := s.C.Combat.EnemyIndex(t.Index()) //this should never evaluate to -1...
-		s.stats.DamageByCharByTargets[atk.Info.ActorIndex][enemyIdx] += dmg
+		s.stats.DamageByCharByTargets[atk.Info.ActorIndex][t.Index()] += dmg
 
 		// Want to capture information in 0.25s intervals - allows more flexibility in bucketizing
 		frameBucket := int(s.C.F/15) * 15
