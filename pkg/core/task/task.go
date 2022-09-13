@@ -21,17 +21,13 @@ func New(f *int) *Handler {
 }
 
 func (c *Handler) Run() {
-	for _, x := range c.tasks[*c.f] {
-		x.f()
+	for i := 0; i < len(c.tasks[*c.f]); i++ {
+		c.tasks[*c.f][i].f()
 	}
 	delete(c.tasks, *c.f)
 }
 
 func (c *Handler) Add(f func(), delay int) {
-	if delay == 0 {
-		f()
-		return
-	}
 	c.tasks[*c.f+delay] = append(c.tasks[*c.f+delay], task{
 		f:      f,
 		source: *c.f,
