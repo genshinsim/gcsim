@@ -153,7 +153,6 @@ export function GOODChartoSrlChar(
 ): Character | undefined {
   let today = new Date();
   const name = GOODKeytoGCSIMKey(goodChar.key);
-  console.log(name);
   const iChar = characterKeyToICharacter[name];
 
   if (iChar == undefined) {
