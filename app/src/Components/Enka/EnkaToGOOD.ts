@@ -35,11 +35,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
         constellation: talentIdList?.length || 0,
         //Characters with 7 talents like AYAKA might be bugged (kokomi is fine?)//
         // characters with unodered talents like traveler(i htink) will not work
-        talent: {
-          auto: Object.entries(skillLevelMap)[0][1] as number,
-          skill: Object.entries(skillLevelMap)[1][1] as number,
-          burst: Object.entries(skillLevelMap)[2][1] as number,
-        },
+        talent: determineCharacterTalent(avatarId, skillLevelMap),
       };
       characters.push(character);
 
@@ -89,12 +85,27 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
   };
 }
 
+const characterMap: ICharacterMap = CharacterMap;
+const textMap: IENTextMap = TextMap.en;
+
 function determineWeaponRefinement(affixMap?: { [key: number]: number }) {
   return affixMap
     ? (Object.entries(affixMap)[0] != null
         ? Object.entries(affixMap)[0][1]
         : 0) + 1
     : 1;
+}
+
+function determineCharacterTalent(
+  avatarId: number,
+  skillLevelMap: { [key: number]: number }
+) {
+  const { SkillOrder } = characterMap[avatarId];
+  return {
+    auto: skillLevelMap[SkillOrder[0]],
+    skill: skillLevelMap[SkillOrder[1]],
+    burst: skillLevelMap[SkillOrder[2]],
+  };
 }
 
 function textToGOODKey(string: string) {
@@ -169,9 +180,6 @@ function fightPropToGOODKey(fightProp: FightProp): GOODStatKey {
       return '';
   }
 }
-
-const characterMap: ICharacterMap = CharacterMap;
-const textMap: IENTextMap = TextMap.en;
 
 function getGOODKeyFromAvatarId(avatarId: number): GOODCharacterKey {
   return textToGOODKey(
