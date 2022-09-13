@@ -102,6 +102,7 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 
 	// var dd float64
 
+	result.Duration.Min = math.MaxFloat64
 	// Loop through each iteration to build overall statistics
 	for iteration, v := range data {
 		dd := float64(v.Duration) / 60 //sim reports in frames
@@ -109,8 +110,8 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 		if dd > result.Duration.Max {
 			result.Duration.Max = dd
 		}
-		if dd < result.Duration.Mean {
-			result.Duration.Max = dd
+		if dd < result.Duration.Min {
+			result.Duration.Min = dd
 		}
 
 		//dmg
@@ -357,11 +358,12 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 			targetDamage[idxTarget] = 0
 		}
 		if mode {
-			result.Duration.SD += (float64(v.Duration) - result.Duration.Mean) * (float64(v.Duration) - result.Duration.Mean)
+			result.Duration.SD += math.Pow(float64(v.Duration) / 60 - result.Duration.Mean, 2)
 		}
 	}
 
 	result.DPS.SD = math.Sqrt(result.DPS.SD / float64(n))
+	result.Duration.SD = math.Sqrt(result.Duration.SD / float64(n))
 
 	for idxTarget := range result.DPSByTarget {
 		dpsTargetRollup := result.DPSByTarget[idxTarget]
@@ -513,6 +515,7 @@ func (r *Summary) PrettyPrint() string {
 	}
 
 	sb.WriteString("------------------------------------------\n")
+	sb.WriteString(fmt.Sprintf("Average duration of %.2f seconds (min: %.2f max: %.2f std: %.2f)\n", r.Duration.Mean, r.Duration.Min, r.Duration.Max, r.Duration.SD))
 	sb.WriteString(fmt.Sprintf("Average %.2f damage over %.2f seconds, resulting in %.0f dps (min: %.2f max: %.2f std: %.2f) \n", r.Damage.Mean, r.Duration.Mean, r.DPS.Mean, r.DPS.Min, r.DPS.Max, r.DPS.SD))
 	sb.WriteString(fmt.Sprintf("Simulation completed %v iterations in %.3f seconds\n", r.Iterations, r.Runtime/1000000000))
 
