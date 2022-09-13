@@ -83,7 +83,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
 	//trigger shatter attack
 	ai := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Shatter),
 		AttackTag:        combat.AttackTagShatter,
 		ICDTag:           combat.ICDTagShatter,
@@ -103,7 +103,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
 
 }
 
-//add to freeze durability and return amount of durability consumed
+// add to freeze durability and return amount of durability consumed
 func (r *Reactable) triggerFreeze(a, b combat.Durability) combat.Durability {
 	d := min(a, b)
 	//trigger freeze should only addDurability and should not touch decay rate
@@ -118,7 +118,7 @@ func (r *Reactable) checkFreeze() {
 		//trigger another attack here, purely for the purpose of breaking bubbles >.>
 		ai := combat.AttackInfo{
 			ActorIndex:  0,
-			DamageSrc:   r.self.Index(),
+			DamageSrc:   r.self.Key(),
 			Abil:        "Freeze Broken",
 			AttackTag:   combat.AttackTagNone,
 			ICDTag:      combat.ICDTagNone,

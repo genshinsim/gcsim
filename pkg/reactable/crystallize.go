@@ -35,7 +35,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	ai := combat.AttackInfo{
 		ActorIndex: a.Info.ActorIndex,
-		DamageSrc:  r.self.Index(),
+		DamageSrc:  r.self.Key(),
 		Abil:       string(rt),
 	}
 	snap := char.Snapshot(&ai)

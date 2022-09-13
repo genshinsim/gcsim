@@ -36,6 +36,7 @@ func (h *Handler) KillEnemy(i int) {
 func (h *Handler) AddEnemy(t Target) {
 	h.enemies = append(h.enemies, t)
 	t.SetIndex(len(h.enemies) - 1)
+	t.SetKey(h.nextkey())
 }
 
 func (h *Handler) Enemies() []Target {

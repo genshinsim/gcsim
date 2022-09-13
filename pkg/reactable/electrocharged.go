@@ -50,7 +50,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 	//and change ownership
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.ElectroCharged),
 		AttackTag:        combat.AttackTagECDamage,
 		ICDTag:           combat.ICDTagECDamage,

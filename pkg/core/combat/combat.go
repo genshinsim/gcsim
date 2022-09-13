@@ -28,6 +28,7 @@ type Handler struct {
 	player      Target
 	TotalDamage float64
 	gccount     int
+	keycount    int
 }
 
 type Opt struct {
@@ -44,16 +45,18 @@ type Opt struct {
 
 func New(opt Opt) *Handler {
 	h := &Handler{
-		Opt: opt,
+		Opt:      opt,
+		keycount: 1,
 	}
 	h.enemies = make([]Target, 0, 5)
 	h.gadgets = make([]Target, 0, 10)
-	//TODO: THIS IS A BANDAGE TO MAKE SELFHARM WORK. NEED TO FIX!!!
-	h.DefaultTarget = 1
-	h.enemies = append(h.enemies, nil)
-	h.gadgets = append(h.gadgets, nil)
 
 	return h
+}
+
+func (h *Handler) nextkey() int {
+	h.keycount++
+	return h.keycount - 1
 }
 
 func (h *Handler) Tick() {
@@ -77,9 +80,7 @@ func (h *Handler) Tick() {
 	}
 	h.player.Tick()
 	for _, v := range h.enemies {
-		if v != nil {
-			v.Tick()
-		}
+		v.Tick()
 	}
 	for _, v := range h.gadgets {
 		if v != nil {

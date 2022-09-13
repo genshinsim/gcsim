@@ -16,6 +16,7 @@ type (
 	testtarg struct {
 		typ         TargettableType
 		idx         int
+		key         int
 		shp         Shape
 		alive       bool
 		collideWith [TargettableTypeCount]bool
@@ -35,6 +36,8 @@ func (t *testteam) ApplyHitlag(char int, factor, dur float64) {}
 // target
 func (t *testtarg) Index() int                                      { return t.idx }
 func (t *testtarg) SetIndex(i int)                                  { t.idx = i }
+func (t *testtarg) Key() int                                        { return t.key }
+func (t *testtarg) SetKey(i int)                                    { t.key = i }
 func (t *testtarg) Type() TargettableType                           { return t.typ }
 func (t *testtarg) Shape() Shape                                    { return t.shp }
 func (t *testtarg) Pos() (float64, float64)                         { return t.shp.Pos() }
@@ -75,7 +78,7 @@ func (t *testtarg) AttackWillLand(a AttackPattern, src int) (bool, string) {
 	// 	return false, "wrong type"
 	// }
 	//skip if self harm is false and dmg src == i
-	if !a.SelfHarm && src == t.idx {
+	if !a.SelfHarm && src == t.key {
 		return false, "no self harm"
 	}
 

@@ -12,6 +12,7 @@ func (h *Handler) RemoveGadget(i int) {
 func (h *Handler) AddGadget(t Target) {
 	h.gadgets = append(h.gadgets, t)
 	t.SetIndex(len(h.gadgets) - 1)
+	t.SetKey(h.nextkey())
 }
 
 func (h *Handler) GadgetCount() int {

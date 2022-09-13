@@ -8,6 +8,8 @@ import (
 type Target interface {
 	Index() int              //should correspond to index
 	SetIndex(index int)      //update the current index
+	Key() int                //unique key for the target
+	SetKey(k int)            //update key
 	Type() TargettableType   //type of target
 	Shape() Shape            // shape of target
 	Pos() (float64, float64) // center of target

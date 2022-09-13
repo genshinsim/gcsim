@@ -1,8 +1,6 @@
 package xiangling
 
 import (
-	"log"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -55,7 +53,7 @@ func (p *panda) Tick() {
 			p.Durability[attributes.Pyro] = 0
 		}, infuseWindow+1) // +1 since infuse window is inclusive
 	case 113, 213, 313, 413: //pew pew window
-		log.Printf("pew at %v\n", p.timer)
+		// log.Printf("pew at %v\n", p.timer)
 		p.breath()
 	}
 }
