@@ -45,41 +45,35 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
 
       equipList.forEach((equip) => {
         if (equip.flat.itemType == 'ITEM_WEAPON') {
-          const enkaWeapon = equip as GenshinItemWeapon;
-
+          const { flat, weapon: enkaWeapon } = equip as GenshinItemWeapon;
           const weapon: GOODWeapon = {
-            key: getGOODKeyFromWeaponNameTextMapHash(
-              enkaWeapon.flat.nameTextMapHash
-            ),
-            level: enkaWeapon.weapon.level,
-            ascension: enkaWeapon.weapon.promoteLevel,
-            refinement:
-              (Object.entries(enkaWeapon.weapon.affixMap)[0] != null
-                ? Object.entries(enkaWeapon.weapon.affixMap)[0][1]
-                : 0) + 1,
+            key: getGOODKeyFromWeaponNameTextMapHash(flat.nameTextMapHash),
+            level: enkaWeapon.level,
+            ascension: enkaWeapon.promoteLevel ? enkaWeapon.promoteLevel : 0,
+            refinement: determineWeaponRefinement(enkaWeapon),
             location: character.key,
             lock: false,
           };
           weapons.push(weapon);
         } else {
-          const enkaReliquary = equip as GenshinItemReliquary;
-          const reliquary: GOODArtifact = {
+          const { flat, reliquary: enkaReliquary } =
+            equip as GenshinItemReliquary;
+
+          const artifact: GOODArtifact = {
             setKey: getGOODKeyFromReliquaryNameTextMapHash(
-              enkaReliquary.flat.setNameTextMapHash
+              flat.setNameTextMapHash
             ),
-            level: enkaReliquary.reliquary.level - 1,
-            slotKey: reliquaryTypeToGOODKey(enkaReliquary.flat.equipType),
-            rarity: enkaReliquary.flat.rankLevel,
+            level: enkaReliquary.level - 1,
+            slotKey: reliquaryTypeToGOODKey(flat.equipType),
+            rarity: flat.rankLevel,
             location: character.key,
             lock: false,
-            mainStatKey: fightPropToGOODKey(
-              enkaReliquary.flat.reliquaryMainstat.mainPropId
-            ),
+            mainStatKey: fightPropToGOODKey(flat.reliquaryMainstat.mainPropId),
             substats: getGOODSubstatsFromReliquarySubstats(
-              enkaReliquary.flat.reliquarySubstats
+              flat.reliquarySubstats
             ),
           };
-          artifacts.push(reliquary);
+          artifacts.push(artifact);
         }
       });
     }
@@ -87,12 +81,20 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
 
   return {
     format: 'GOOD' as IGOOD['format'],
-    version: 1,
+    version: 2,
     source: 'gcsimFromEnka',
     characters,
     weapons,
     artifacts,
   };
+}
+
+function determineWeaponRefinement(affixMap?: { [key: number]: number }) {
+  return affixMap
+    ? (Object.entries(affixMap)[0] != null
+        ? Object.entries(affixMap)[0][1]
+        : 0) + 1
+    : 1;
 }
 
 function textToGOODKey(string: string) {
