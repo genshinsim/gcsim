@@ -27,7 +27,11 @@ func testCore() *core.Core {
 		Debug: true,
 	})
 	//add player (first target)
-	addTargetToCore(c)
+	trg := &testTarget{}
+	trg.Target = target.New(c, 0, 0, 1)
+	trg.Reactable = &Reactable{}
+	trg.Reactable.Init(trg, c)
+	c.Combat.SetPlayer(trg)
 
 	//add default character
 	p := profile.CharacterProfile{}
@@ -80,8 +84,8 @@ func addTargetToCore(c *core.Core) *testTarget {
 	trg.Target = target.New(c, 0, 0, 1)
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
-	c.Combat.AddTarget(trg)
-	trg.SetIndex(c.Combat.TargetsCount() - 1)
+	c.Combat.AddEnemy(trg)
+	trg.SetIndex(c.Combat.EnemyCount() - 1)
 	return trg
 }
 

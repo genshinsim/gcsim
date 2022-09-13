@@ -27,7 +27,7 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 		return errors.New("player cannot have 0 radius")
 	}
 	player := avatar.New(core, p.X, p.Y, p.R)
-	core.Combat.AddTarget(player)
+	core.Combat.SetPlayer(player)
 
 	// add targets
 	for i, v := range targets {
@@ -35,7 +35,7 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 			return fmt.Errorf("target cannot have 0 radius (index %v): %v", i, v)
 		}
 		e := enemy.New(core, v)
-		core.Combat.AddTarget(e)
+		core.Combat.AddEnemy(e)
 		//s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
 	}
 

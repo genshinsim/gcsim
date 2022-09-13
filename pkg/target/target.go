@@ -6,10 +6,13 @@ import (
 )
 
 type Target struct {
-	Core        *core.Core
-	TargetIndex int
-	Hitbox      combat.Circle
-	Tags        map[string]int
+	Core            *core.Core
+	TargetIndex     int
+	key             int
+	Hitbox          combat.Circle
+	Tags            map[string]int
+	CollidableTypes [combat.TargettableTypeCount]bool
+	OnCollision     func(combat.Target)
 
 	Alive bool
 }
@@ -25,6 +28,16 @@ func New(core *core.Core, x, y, z float64) *Target {
 	return t
 }
 
+func (t *Target) Collidable() bool                             { return t.OnCollision != nil }
+func (t *Target) CollidableWith(x combat.TargettableType) bool { return t.CollidableTypes[x] }
+func (t *Target) CollidedWith(x combat.Target) {
+	if t.OnCollision != nil {
+		t.OnCollision(x)
+	}
+}
+
+func (t *Target) Key() int                { return t.key }
+func (t *Target) SetKey(x int)            { t.key = x }
 func (t *Target) Index() int              { return t.TargetIndex }
 func (t *Target) SetIndex(ind int)        { t.TargetIndex = ind }
 func (t *Target) Shape() combat.Shape     { return &t.Hitbox }
@@ -44,6 +57,20 @@ func (t *Target) RemoveTag(key string) {
 	delete(t.Tags, key)
 }
 
+func (t *Target) WillCollide(s combat.Shape) bool {
+	if !t.Alive {
+		return false
+	}
+	switch v := s.(type) {
+	case *combat.Circle:
+		return t.Shape().IntersectCircle(*v)
+	case *combat.Rectangle:
+		return t.Shape().IntersectRectangle(*v)
+	default:
+		return false
+	}
+}
+
 func (t *Target) AttackWillLand(a combat.AttackPattern, src int) (bool, string) {
 	//shape shouldn't be nil; panic here
 	if a.Shape == nil {
@@ -57,7 +84,7 @@ func (t *Target) AttackWillLand(a combat.AttackPattern, src int) (bool, string) 
 	// 	return false, "wrong type"
 	// }
 	//skip if self harm is false and dmg src == i
-	if !a.SelfHarm && src == t.TargetIndex {
+	if !a.SelfHarm && src == t.key {
 		return false, "no self harm"
 	}
 

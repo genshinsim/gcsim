@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(func() {
 			//check if this hits first
 			target := -1
-			for i, t := range c.Core.Combat.Targets() {
+			for i, t := range c.Core.Combat.Enemies() {
 				// skip non-enemy targets
 				if _, ok := t.(*enemy.Enemy); !ok {
 					continue

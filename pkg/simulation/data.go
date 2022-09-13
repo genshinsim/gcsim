@@ -14,7 +14,7 @@ import (
 func (s *Simulation) initDetailLog() {
 	var sb strings.Builder
 	s.stats.ReactionsTriggered = make(map[combat.ReactionType]int)
-	s.stats.ElementUptime = make([]map[attributes.Element]int, len(s.C.Combat.Targets()))
+	s.stats.ElementUptime = make([]map[attributes.Element]int, len(s.C.Combat.Enemies()))
 	for i := range s.stats.ElementUptime {
 		s.stats.ElementUptime[i] = make(map[attributes.Element]int)
 	}
@@ -27,8 +27,11 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "sim-abil-usage")
 	//add new targets
-	s.C.Events.Subscribe(event.OnTargetAdded, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnEnemyAdded, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
+		if t.Type() != combat.TargettableEnemy {
+			return false
+		}
 
 		s.C.Log.NewEvent("Target Added", glog.LogDebugEvent, -1).
 			Write("target_type", t.Type())

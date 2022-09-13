@@ -110,7 +110,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	c.eInfused = attributes.NoElement
 	c.eInfusedTag = combat.ICDTagNone
 	c.eDuration = c.Core.F + skillShortHoldKickHitmark
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableGadget)
 	c.c2Bonus = .0
 
 	// 1 DoT Tick
@@ -162,7 +162,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	c.eInfused = attributes.NoElement
 	c.eInfusedTag = combat.ICDTagNone
 	c.eDuration = c.Core.F + (skillHoldKickHitmark - 600) + duration
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableObject)
+	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableGadget)
 	c.c2Bonus = .0
 
 	// ticks
@@ -214,7 +214,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	}
 }
 
-//TODO: is this helper needed?
+// TODO: is this helper needed?
 func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,

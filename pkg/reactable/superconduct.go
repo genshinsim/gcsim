@@ -71,7 +71,7 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	//superconduct attack
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Superconduct),
 		AttackTag:        combat.AttackTagSuperconductDamage,
 		ICDTag:           combat.ICDTagSuperconductDamage,

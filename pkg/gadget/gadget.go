@@ -10,15 +10,19 @@ import (
 
 type Gadget struct {
 	*target.Target
+	core            *core.Core
 	OnRemoved       func()
 	ThinkInterval   int //should be > 0
 	OnThinkInterval func()
+	Duration        int //how long gadget should live for; use -1 for infinite
 	//internal helper
 	sinceLastThink int
 }
 
 func New(core *core.Core, pos core.Coord) *Gadget {
-	g := &Gadget{}
+	g := &Gadget{
+		core: core,
+	}
 	g.Target = target.New(core, pos.X, pos.Y, pos.R)
 	return g
 }
@@ -28,6 +32,7 @@ func (g *Gadget) Kill() {
 	if g.OnRemoved != nil {
 		g.OnRemoved()
 	}
+	g.core.Combat.RemoveGadget(g.Index())
 }
 
 func (g *Gadget) Tick() {
@@ -40,5 +45,11 @@ func (g *Gadget) Tick() {
 		}
 		g.OnThinkInterval()
 		g.sinceLastThink = 0
+	}
+	if g.Duration != -1 && g.Duration > 0 {
+		g.Duration--
+		if g.Duration == 0 {
+			g.Kill()
+		}
 	}
 }

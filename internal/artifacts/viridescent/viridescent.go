@@ -82,7 +82,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					Ele:   ele,
 					Value: -0.4,
 				})
-				c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index).Write("reaction", key).Write("char", char.Index)
+				c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Index())
 
 				return false
 			}
@@ -126,7 +126,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Ele:   ele,
 				Value: -0.4,
 			})
-			c.Log.NewEvent("vv 4pc proc", glog.LogArtifactEvent, char.Index).Write("reaction", key).Write("char", char.Index)
+			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Index())
 
 			return false
 		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Key.String()))

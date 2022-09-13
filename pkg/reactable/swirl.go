@@ -18,7 +18,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	//and one aoe with gauge
 	ai := combat.AttackInfo{
 		ActorIndex:       charIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(rt),
 		AttackTag:        tag,
 		ICDTag:           icd,

@@ -43,7 +43,7 @@ func (r *Reactable) tryOverload(a *combat.AttackEvent) {
 	//trigger an overload attack
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Overload),
 		AttackTag:        combat.AttackTagOverloadDamage,
 		ICDTag:           combat.ICDTagOverloadDamage,

@@ -25,7 +25,7 @@ type AttackCBFunc func(AttackCB)
 
 type AttackInfo struct {
 	ActorIndex       int    //character this attack belongs to
-	DamageSrc        int    //source of this attack (i.e. index of core.Targets); always 0 for player, 1+ for the rest
+	DamageSrc        int    //source of this attack; should be a unique key identifying the target
 	Abil             string //name of ability triggering the damage
 	AttackTag        AttackTag
 	ICDTag           ICDTag

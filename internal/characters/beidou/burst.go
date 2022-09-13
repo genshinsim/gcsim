@@ -79,7 +79,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// apply after hitmark
 	if c.Base.Cons >= 6 {
 		c.Core.Tasks.Add(func() {
-			for _, t := range c.Core.Combat.Targets() {
+			for _, t := range c.Core.Combat.Enemies() {
 				e, ok := t.(*enemy.Enemy)
 				if !ok {
 					continue

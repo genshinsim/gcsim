@@ -14,7 +14,6 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	guoba *panda
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -32,8 +31,5 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	//add in a guoba
-	c.guoba = newGuoba(c.Core)
-	c.Core.Combat.AddTarget(c.guoba)
 	return nil
 }
