@@ -54,9 +54,6 @@ func (p *panda) Tick() {
 		}, infuseWindow+1) // +1 since infuse window is inclusive
 		//queue this in advance because that's how it is on live
 		p.breath()
-		// case 113, 213, 313, 413: //pew pew window
-		// log.Printf("pew at %v\n", p.timer)
-		// p.breath()
 	}
 }
 

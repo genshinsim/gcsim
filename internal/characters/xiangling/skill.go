@@ -43,30 +43,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		c.Core.Combat.AddGadget(guoba)
 	}, 13)
-	// for i := 0; i < 4; i++ {
-	// 	c.Core.Tasks.Add(func() {
-	// 		done := false
-	// 		part := func(_ combat.AttackCB) {
-	// 			if done {
-	// 				return
-	// 			}
-	// 			done = true
-	// 			c.Core.QueueParticle("xiangling", 1, attributes.Pyro, c.ParticleDelay)
-	// 		}
-	// 		c.Core.QueueAttackWithSnap(
-	// 			ai,
-	// 			snap,
-	// 			combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
-	// 			10,
-	// 			c.c1,
-	// 			part,
-	// 		)
-
-	// 		c.Core.Tasks.Add(func() {
-	// 			c.guoba.Durability[attributes.Pyro] = 0
-	// 		}, infuseWindow+1) // +1 since infuse window is inclusive
-	// 	}, delay+i*100-10) // 10 frame window to swirl
-	// }
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
 
