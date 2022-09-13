@@ -121,6 +121,16 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: 'geo',
     weapon_type: 'Sword',
   },
+  collei: {
+    key: 'collei',
+    element: 'dendro',
+    weapon_type: 'bow',
+  },
+  tighnari: {
+    key: 'tighnari',
+    element: 'dendro',
+    weapon_type: 'bow',
+  },
 };
 
 export const items: ICharacter[] = Object.keys(characterKeyToICharacter).map(
