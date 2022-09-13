@@ -52,9 +52,11 @@ func (p *panda) Tick() {
 		p.Core.Tasks.Add(func() {
 			p.Durability[attributes.Pyro] = 0
 		}, infuseWindow+1) // +1 since infuse window is inclusive
-	case 113, 213, 313, 413: //pew pew window
-		// log.Printf("pew at %v\n", p.timer)
+		//queue this in advance because that's how it is on live
 		p.breath()
+		// case 113, 213, 313, 413: //pew pew window
+		// log.Printf("pew at %v\n", p.timer)
+		// p.breath()
 	}
 }
 
@@ -71,7 +73,7 @@ func (p *panda) breath() {
 		p.ai,
 		p.snap,
 		combat.NewCircleHit(p, 0.5, false, combat.TargettableEnemy),
-		0,
+		10,
 		p.c.c1,
 		part,
 	)
