@@ -84,7 +84,7 @@ func (c *char) Condition(fields []string) (any, error) {
 	case "jadeCount":
 		return c.jadeCount, nil
 	case "prevAttack":
-		return c.prevAttack, nil
+		return int(c.prevAttack), nil
 	default:
 		return c.Character.Condition(fields)
 	}
