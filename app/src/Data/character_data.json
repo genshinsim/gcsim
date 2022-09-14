@@ -74,6 +74,11 @@
     "element": "cryo",
     "weapon_class": "bow"
   },
+  "dori": {
+    "rarity": 4,
+    "element": "electro",
+    "weapon_class": "claymore"
+  },
   "eula": {
     "rarity": 5,
     "element": "cryo",

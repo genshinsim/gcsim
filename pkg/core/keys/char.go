@@ -67,6 +67,7 @@ const (
 	Chongyun
 	Diluc
 	Diona
+	Dori
 	Eula
 	Fischl
 	Ganyu
@@ -143,6 +144,7 @@ var charNames = []string{
 	"chongyun",
 	"diluc",
 	"diona",
+	"dori",
 	"eula",
 	"fischl",
 	"ganyu",
@@ -218,6 +220,7 @@ var charPrettyName = []string{
 	"Chongyun",
 	"Diluc",
 	"Diona",
+	"Dori",
 	"Eula",
 	"Fischl",
 	"Ganyu",

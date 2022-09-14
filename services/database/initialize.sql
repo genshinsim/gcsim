@@ -16,6 +16,7 @@ insert into avatars(avatar_name) values ('bennett');
 insert into avatars(avatar_name) values ('chongyun');
 insert into avatars(avatar_name) values ('diluc');
 insert into avatars(avatar_name) values ('diona');
+insert into avatars(avatar_name) values ('dori');
 insert into avatars(avatar_name) values ('eula');
 insert into avatars(avatar_name) values ('fischl');
 insert into avatars(avatar_name) values ('ganyu');
