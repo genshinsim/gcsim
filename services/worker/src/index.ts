@@ -28,7 +28,7 @@ router.post('/api/share', handleShare);
 //cached
 router.get('/api/view/:key', handleView);
 router.get('/api/preview/:key', handlePreview);
-router.get('/assets/*', handleAssets);
+router.get('/api/assets/*', handleAssets);
 
 //enka
 router.get('/api/enka/:key', handleEnka);

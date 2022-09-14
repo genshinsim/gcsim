@@ -97,7 +97,7 @@ export function CharacterEditArtifactSets() {
       >
         <img
           key="key"
-          src={`/images/artifacts/${key}_flower.png`}
+          src={`/api/assets/artifacts/${key}_flower.png`}
           className="w-12"
         />
         <span className="font-bold">

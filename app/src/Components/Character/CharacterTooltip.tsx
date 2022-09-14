@@ -17,7 +17,7 @@ export function CharacterTooltip({ char }: CharacterTooltipProps) {
       <div className="w-full border-b border-gray-500 mt-2 mb-2"></div>
       <div className="capitalize flex flex-row">
         <img
-          src={'/images/weapons/' + char.weapon.name + '.png'}
+          src={'/api/assets/weapons/' + char.weapon.name + '.png'}
           alt={char.weapon.name}
           className="wide:h-8 h-auto "
         />

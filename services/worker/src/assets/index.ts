@@ -2,7 +2,7 @@ export async function handleAssets(
   request: Request,
   event: FetchEvent
 ): Promise<Response> {
-  const cacheUrl = new URL(request.url).pathname;
+  const cacheUrl = new URL(request.url).pathname.replace("/api", "");
   const endpoint = ASSETS_ENDPOINT + cacheUrl;
   const cacheKey = new Request(endpoint, request);
   console.log(`checking for cache key: ${endpoint}`);

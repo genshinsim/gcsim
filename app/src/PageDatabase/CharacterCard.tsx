@@ -10,7 +10,7 @@ export function CharacterCard({ char, style = '' }: CharacterCardProps) {
       }
     >
       <img
-        src={'/images/avatar/' + char + '.png'}
+        src={'/api/assets/avatar/' + char + '.png'}
         alt={char}
         className="ml-auto h-32 wide:h-auto "
       />
