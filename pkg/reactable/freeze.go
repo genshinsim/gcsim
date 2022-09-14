@@ -27,14 +27,15 @@ func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
 			r.core.Events.Emit(event.OnFrozen, r.self, a)
 			return
 		}
-		//otherwise attach hydro only if frozen exists
-		if r.Durability[attributes.Frozen] < ZeroDur {
-			return
-		}
-		//try refill first - this will use up all durability if ok
-		r.tryRefill(attributes.Hydro, &a.Info.Durability)
-		//otherwise attach
-		r.tryAttach(attributes.Hydro, &a.Info.Durability)
+		//TODO: check if this is accurate?
+		// //otherwise attach hydro only if frozen exists
+		// if r.Durability[attributes.Frozen] < ZeroDur {
+		// 	return
+		// }
+		// //try refill first - this will use up all durability if ok
+		// r.tryRefill(attributes.Hydro, &a.Info.Durability)
+		// //otherwise attach
+		// r.tryAttach(attributes.Hydro, &a.Info.Durability)
 	case attributes.Cryo:
 		if r.Durability[attributes.Hydro] > ZeroDur {
 			consumed := r.triggerFreeze(r.Durability[attributes.Hydro], a.Info.Durability)
@@ -45,14 +46,15 @@ func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
 			r.core.Events.Emit(event.OnFrozen, r.self, a)
 			return
 		}
-		//otherwise attach cryo only if frozen exists
-		if r.Durability[attributes.Frozen] < ZeroDur {
-			return
-		}
-		//try refill first - this will use up all durability if ok
-		r.tryRefill(attributes.Cryo, &a.Info.Durability)
-		//otherwise attach
-		r.tryAttach(attributes.Cryo, &a.Info.Durability)
+		//TODO: check if this is accurate?
+		// //otherwise attach cryo only if frozen exists
+		// if r.Durability[attributes.Frozen] < ZeroDur {
+		// 	return
+		// }
+		// //try refill first - this will use up all durability if ok
+		// r.tryRefill(attributes.Cryo, &a.Info.Durability)
+		// //otherwise attach
+		// r.tryAttach(attributes.Cryo, &a.Info.Durability)
 	default:
 		//should be here
 		return
@@ -107,7 +109,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
 func (r *Reactable) triggerFreeze(a, b combat.Durability) combat.Durability {
 	d := min(a, b)
 	//trigger freeze should only addDurability and should not touch decay rate
-	r.addDurability(attributes.Frozen, 2*d)
+	r.addDurability(ModifierFrozen, 2*d)
 	return d
 }
 

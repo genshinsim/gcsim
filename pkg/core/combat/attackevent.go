@@ -12,6 +12,7 @@ type AttackEvent struct {
 	Snapshot    Snapshot
 	SourceFrame int            //source frame
 	Callbacks   []AttackCBFunc `json:"-"`
+	Reacted     bool           // true if a reaction already took place - for purpose of attach/refill
 }
 
 type AttackCB struct {

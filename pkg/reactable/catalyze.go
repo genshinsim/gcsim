@@ -52,40 +52,26 @@ func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
 
 	switch a.Info.Element {
 	case attributes.Dendro:
-		//if electro exists we'll trigger quicken regardless if quicken already coexists
-		if r.Durability[attributes.Electro] > ZeroDur {
-			consumed := r.triggerQuicken(r.Durability[attributes.Electro], a.Info.Durability)
-			r.Durability[attributes.Electro] = max(r.Durability[attributes.Electro]-consumed, 0)
-			a.Info.Durability = max(a.Info.Durability-consumed, 0)
-			r.core.Events.Emit(event.OnQuicken, r.self, a)
+		if r.Durability[attributes.Electro] < ZeroDur {
 			return
-		} else {
-			//try refill first - this will use up all durability if ok
-			r.tryRefill(a.Info.Element, &a.Info.Durability)
-			//otherwise attach
-			r.tryAttach(a.Info.Element, &a.Info.Durability)
 		}
+		consumed := r.triggerQuicken(r.Durability[attributes.Electro], a.Info.Durability)
+		r.Durability[attributes.Electro] = max(r.Durability[attributes.Electro]-consumed, 0)
+		a.Info.Durability = max(a.Info.Durability-consumed, 0)
+		r.core.Events.Emit(event.OnQuicken, r.self, a)
 	case attributes.Electro:
-		//if electro exists we'll trigger quicken regardless if quicken already coexists
-		if r.Durability[attributes.Dendro] > ZeroDur {
-			consumed := r.triggerQuicken(r.Durability[attributes.Dendro], a.Info.Durability)
-			r.Durability[attributes.Dendro] = max(r.Durability[attributes.Dendro]-consumed, 0)
-			a.Info.Durability = max(a.Info.Durability-consumed, 0)
-			r.core.Events.Emit(event.OnQuicken, r.self, a)
+		if r.Durability[attributes.Dendro] < ZeroDur {
 			return
-		} else {
-			//try refill first - this will use up all durability if ok
-			r.tryRefill(a.Info.Element, &a.Info.Durability)
-			//otherwise attach
-			r.tryAttach(a.Info.Element, &a.Info.Durability)
 		}
+		consumed := r.triggerQuicken(r.Durability[attributes.Dendro], a.Info.Durability)
+		r.Durability[attributes.Dendro] = max(r.Durability[attributes.Dendro]-consumed, 0)
+		a.Info.Durability = max(a.Info.Durability-consumed, 0)
+		r.core.Events.Emit(event.OnQuicken, r.self, a)
 	default:
-
-		return
 	}
 }
 
-//add to quicken durability and return amount of durability consumed
+// add to quicken durability and return amount of durability consumed
 func (r *Reactable) triggerQuicken(a, b combat.Durability) combat.Durability {
 	d := min(a, b)
 	if d > r.Durability[attributes.Quicken] {

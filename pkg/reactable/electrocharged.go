@@ -21,29 +21,20 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 		if r.Durability[attributes.Electro] < ZeroDur {
 			return
 		}
-		if r.Durability[attributes.Hydro] < ZeroDur {
-			//attach
-			r.tryAttach(attributes.Hydro, &a.Info.Durability)
-		} else {
-			r.tryRefill(attributes.Hydro, &a.Info.Durability)
-		}
 		//add to hydro durability
+		r.attachOrRefillNormalEle(ModifierHydro, a.Info.Durability)
 	case attributes.Electro:
 		//if there's no existing hydro or electro then do nothing
 		if r.Durability[attributes.Hydro] < ZeroDur {
 			return
 		}
 		//add to electro durability
-		if r.Durability[attributes.Electro] < ZeroDur {
-			//attach
-			r.tryAttach(attributes.Electro, &a.Info.Durability)
-		} else {
-			r.tryRefill(attributes.Electro, &a.Info.Durability)
-		}
+		r.attachOrRefillNormalEle(ModifierElectro, a.Info.Durability)
 	default:
 		return
 	}
 
+	a.Reacted = true
 	r.core.Events.Emit(event.OnElectroCharged, r.self, a)
 
 	//at this point ec is refereshed so we need to trigger a reaction
