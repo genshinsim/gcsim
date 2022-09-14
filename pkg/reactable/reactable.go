@@ -148,7 +148,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 // and will either create a new modifier if non exist, or update according to the rules of
 // each modifier
 func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) {
-	if a.Reacted {
+	if a.Info.Durability < ZeroDur {
 		return
 	}
 	//handle pyro, electro, hydro, cryo which doesn't have special attachment rules

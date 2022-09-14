@@ -13,18 +13,18 @@ func (r *Reactable) tryVaporize(a *combat.AttackEvent) {
 	switch a.Info.Element {
 	case attributes.Pyro:
 		//make sure there's hydro
-		if r.Durability[attributes.Hydro] < ZeroDur {
+		if r.Durability[ModifierHydro] < ZeroDur {
 			return
 		}
 		//if there's still frozen left don't try to vape
-		if r.Durability[attributes.Frozen] > ZeroDur {
+		if r.Durability[ModifierFrozen] > ZeroDur {
 			return
 		}
 		r.reduce(attributes.Hydro, a.Info.Durability, .5)
 		a.Info.AmpMult = 1.5
 	case attributes.Hydro:
 		//make sure there's pyro to vape; no coexistance with pyro (yet)
-		if r.Durability[attributes.Pyro] < ZeroDur {
+		if r.Durability[ModifierPyro] < ZeroDur && r.Durability[ModifierBurning] < ZeroDur {
 			return
 		}
 		r.reduce(attributes.Pyro, a.Info.Durability, 2)
