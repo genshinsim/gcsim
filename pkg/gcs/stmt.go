@@ -206,14 +206,15 @@ func (e *Eval) evalWhileStmt(w *ast.WhileStmt, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalForStmt(f *ast.ForStmt, env *Env) (Obj, error) {
+	scope := NewEnv(env)
 	if f.Init != nil {
-		e.evalStmt(f.Init, env)
+		e.evalStmt(f.Init, scope)
 	}
 
 	for {
 		if f.Cond != nil {
 			//if condition is false, break
-			cond, err := e.evalExpr(f.Cond, env)
+			cond, err := e.evalExpr(f.Cond, scope)
 			if err != nil {
 				return nil, err
 			}
@@ -223,7 +224,7 @@ func (e *Eval) evalForStmt(f *ast.ForStmt, env *Env) (Obj, error) {
 		}
 
 		//execute block
-		res, err := e.evalBlock(f.Body, env)
+		res, err := e.evalBlock(f.Body, scope)
 		if err != nil {
 			return nil, err
 		}
@@ -234,7 +235,7 @@ func (e *Eval) evalForStmt(f *ast.ForStmt, env *Env) (Obj, error) {
 		}
 
 		if f.Post != nil {
-			e.evalStmt(f.Post, env)
+			e.evalStmt(f.Post, scope)
 		}
 	}
 	return &null{}, nil
