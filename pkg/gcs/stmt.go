@@ -26,6 +26,8 @@ func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {
 		return e.evalIfStmt(v, env)
 	case *ast.WhileStmt:
 		return e.evalWhileStmt(v, env)
+	case *ast.ForStmt:
+		return e.evalForStmt(v, env)
 	case *ast.AssignStmt:
 		return e.evalAssignStmt(v, env)
 	case *ast.SwitchStmt:
@@ -198,6 +200,42 @@ func (e *Eval) evalWhileStmt(w *ast.WhileStmt, env *Env) (Obj, error) {
 		//if result is a break stmt, stop loo
 		if t, ok := res.(*ctrl); ok && t.typ == ast.CtrlBreak {
 			break
+		}
+	}
+	return &null{}, nil
+}
+
+func (e *Eval) evalForStmt(f *ast.ForStmt, env *Env) (Obj, error) {
+	scope := NewEnv(env)
+	if f.Init != nil {
+		e.evalStmt(f.Init, scope)
+	}
+
+	for {
+		if f.Cond != nil {
+			//if condition is false, break
+			cond, err := e.evalExpr(f.Cond, scope)
+			if err != nil {
+				return nil, err
+			}
+			if !otob(cond) {
+				break
+			}
+		}
+
+		//execute block
+		res, err := e.evalBlock(f.Body, scope)
+		if err != nil {
+			return nil, err
+		}
+
+		//if result is a break stmt, stop loo
+		if t, ok := res.(*ctrl); ok && t.typ == ast.CtrlBreak {
+			break
+		}
+
+		if f.Post != nil {
+			e.evalStmt(f.Post, scope)
 		}
 	}
 	return &null{}, nil
