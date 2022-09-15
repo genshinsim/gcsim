@@ -74,7 +74,8 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 	if exist {
 		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
-	env.varMap[l.Ident.Val] = v
+	num := *v //value copying
+	env.varMap[l.Ident.Val] = &num
 	return &null{}, nil
 }
 
