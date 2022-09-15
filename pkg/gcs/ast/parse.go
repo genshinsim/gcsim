@@ -471,7 +471,21 @@ func (p *Parser) parseWhile() (Stmt, error) {
 	return stmt, err
 }
 
-// for { }
+// for <init ;> <cond> <; post> { <body> }
+// for { <body > }
+func (p *Parser) existVarDecl() bool {
+	switch n := p.peek(); n.Typ {
+	case keywordLet:
+		return true
+	case itemIdentifier:
+		p.next()
+		b := p.peek().Typ == itemAssign
+		p.backup()
+		return b
+	}
+	return false
+}
+
 func (p *Parser) parseFor() (Stmt, error) {
 	n := p.next()
 
@@ -487,7 +501,7 @@ func (p *Parser) parseFor() (Stmt, error) {
 	}
 
 	//init
-	if n := p.peek(); n.Typ != itemTerminateLine {
+	if p.existVarDecl() {
 		if n := p.peek(); n.Typ == keywordLet {
 			stmt.Init, err = p.parseLet()
 		} else {
@@ -500,27 +514,23 @@ func (p *Parser) parseFor() (Stmt, error) {
 		if n := p.peek(); n.Typ != itemTerminateLine {
 			return nil, fmt.Errorf("ln%v: expecting ; after statement, got %v", n.line, n.Val)
 		}
+		p.next() //skip ;
 	}
-	p.next() //skip ;
 
 	//cond
-	if n := p.peek(); n.Typ != itemTerminateLine {
-		stmt.Cond, err = p.parseExpr(Lowest)
-		if err != nil {
-			return nil, err
-		}
-
-		if n := p.peek(); n.Typ != itemTerminateLine {
-			return nil, fmt.Errorf("ln%v: expecting ; after expression, got %v", n.line, n.Val)
-		}
+	stmt.Cond, err = p.parseExpr(Lowest)
+	if err != nil {
+		return nil, err
 	}
-	p.next() //skip ;
 
 	//post
-	if n := p.peek(); n.Typ != itemLeftBrace {
-		stmt.Post, err = p.parseAssign()
-		if err != nil {
-			return nil, err
+	if n := p.peek(); n.Typ == itemTerminateLine {
+		p.next() //skip ;
+		if n := p.peek(); n.Typ != itemLeftBrace {
+			stmt.Post, err = p.parseAssign()
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
