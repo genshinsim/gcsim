@@ -25,7 +25,7 @@ func TestOverload(t *testing.T) {
 	}
 
 	//electro into pyro
-	trg.React(&combat.AttackEvent{
+	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
