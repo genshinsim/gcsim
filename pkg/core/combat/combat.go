@@ -10,6 +10,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
 type CharHandler interface {
@@ -33,6 +34,7 @@ type Handler struct {
 
 type Opt struct {
 	Events        event.Eventter
+	Tasks         task.Tasker
 	Team          CharHandler
 	Rand          *rand.Rand
 	Debug         bool

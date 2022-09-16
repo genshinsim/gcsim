@@ -65,18 +65,22 @@ func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
 
 	dmg, crit = t.Attack(&cpy, evt)
 
-	h.Events.Emit(event.OnDamage, t, &cpy, dmg, crit)
-
-	//callbacks
-	cb := AttackCB{
-		Target:      t,
-		AttackEvent: &cpy,
-		Damage:      dmg,
-		IsCrit:      crit,
-	}
-	for _, f := range cpy.Callbacks {
-		f(cb)
-	}
+	//delay damage event to end of the frame
+	h.Tasks.Add(func() {
+		//apply the damage
+		t.ApplyDamage(&cpy, dmg)
+		h.Events.Emit(event.OnDamage, t, &cpy, dmg, crit)
+		//callbacks
+		cb := AttackCB{
+			Target:      t,
+			AttackEvent: &cpy,
+			Damage:      dmg,
+			IsCrit:      crit,
+		}
+		for _, f := range cpy.Callbacks {
+			f(cb)
+		}
+	}, 0)
 
 	// this works because string in golang is a slice underneath, so the &amp points to the slice info
 	// that's why when the underlying string in amp changes (has to be reallocated) the pointer doesn't

@@ -16,19 +16,26 @@ func (r *Reactable) tryCrystallize(a *combat.AttackEvent) {
 	//can't double crystallize it looks like
 	//freeze can trigger hydro first
 	//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
-	r.tryCrystallizeWithEle(a, attributes.Electro, combat.CrystallizeElectro, event.OnCrystallizeElectro)
-	r.tryCrystallizeWithEle(a, attributes.Hydro, combat.CrystallizeHydro, event.OnCrystallizeHydro)
-	r.tryCrystallizeWithEle(a, attributes.Cryo, combat.CrystallizeCryo, event.OnCrystallizeCryo)
-	r.tryCrystallizeWithEle(a, attributes.Pyro, combat.CrystallizePyro, event.OnCrystallizePyro)
-	r.tryCrystallizeWithEle(a, attributes.Frozen, combat.CrystallizeCryo, event.OnCrystallizeCryo)
+	if r.Durability[ModifierElectro] > ZeroDur {
+		r.tryCrystallizeWithEle(a, attributes.Electro, combat.CrystallizeElectro, event.OnCrystallizeElectro)
+	}
+	if r.Durability[ModifierHydro] > ZeroDur {
+		r.tryCrystallizeWithEle(a, attributes.Hydro, combat.CrystallizeHydro, event.OnCrystallizeHydro)
+	}
+	if r.Durability[ModifierCryo] > ZeroDur {
+		r.tryCrystallizeWithEle(a, attributes.Cryo, combat.CrystallizeCryo, event.OnCrystallizeCryo)
+	}
+	if r.Durability[ModifierPyro] > ZeroDur || r.Durability[ModifierBurning] > ZeroDur {
+		r.tryCrystallizeWithEle(a, attributes.Pyro, combat.CrystallizePyro, event.OnCrystallizePyro)
+	}
+	if r.Durability[ModifierFrozen] > ZeroDur {
+		r.tryCrystallizeWithEle(a, attributes.Frozen, combat.CrystallizeCryo, event.OnCrystallizeCryo)
+	}
 
 }
 
 func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt combat.ReactionType, evt event.Event) {
 	if a.Info.Durability < ZeroDur {
-		return
-	}
-	if r.Durability[ele] < ZeroDur {
 		return
 	}
 	//grab current snapshot for shield
@@ -43,16 +50,17 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	r.core.Player.Shields.Add(shd)
 	//reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
+	//TODO: confirm u can only crystallize once
 	a.Info.Durability = 0
+	a.Reacted = true
 	//event
 	r.core.Events.Emit(evt, r.self, a)
 	//check freeze + ec
 	switch {
-	case ele == attributes.Electro && r.Durability[attributes.Hydro] > ZeroDur:
+	case ele == attributes.Electro && r.Durability[ModifierHydro] > ZeroDur:
 		r.checkEC()
 	case ele == attributes.Frozen:
 		r.checkFreeze()
-
 	}
 
 }

@@ -117,6 +117,7 @@ func New(opt CoreOpt) (*Core, error) {
 		DamageMode:   c.Flags.DamageMode,
 		DefHalt:      c.Flags.DefHalt,
 		EnableHitlag: c.Flags.EnableHitlag,
+		Tasks:        c.Tasks,
 	})
 
 	return c, nil

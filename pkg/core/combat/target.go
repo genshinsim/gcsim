@@ -17,6 +17,7 @@ type Target interface {
 	IsAlive() bool
 	AttackWillLand(a AttackPattern, src int) (bool, string)
 	Attack(*AttackEvent, glog.Event) (float64, bool)
+	ApplyDamage(*AttackEvent, float64)
 	Tick() //called every tick
 	Kill()
 	//for collision check

@@ -32,7 +32,7 @@ func TestSwirl50to25(t *testing.T) {
 	}
 
 	//apply 25 pyro first
-	trg.React(&combat.AttackEvent{
+	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
@@ -41,7 +41,7 @@ func TestSwirl50to25(t *testing.T) {
 	//1 tick
 	advanceCoreFrame(c)
 	//check durability after 1 tick
-	dur := trg.Durability[attributes.Pyro]
+	dur := trg.Durability[ModifierPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	next := &combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -56,6 +56,7 @@ func TestSwirl50to25(t *testing.T) {
 	advanceCoreFrame(c)
 	if src == nil || src.Info.Abil != "swirl-pyro (aoe)" {
 		t.Errorf("expecting swirl, got %v", src)
+		t.FailNow()
 	}
 	//no durability
 	fmt.Printf("expected durability to be %v, got %v\n", expected, src.Info.Durability)
@@ -86,7 +87,7 @@ func TestSwirl25to25(t *testing.T) {
 	}
 
 	//apply 25 pyro first
-	trg.React(&combat.AttackEvent{
+	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
@@ -95,7 +96,7 @@ func TestSwirl25to25(t *testing.T) {
 	//1 tick
 	advanceCoreFrame(c)
 	//check durability after 1 tick
-	dur := trg.Durability[attributes.Pyro]
+	dur := trg.Durability[ModifierPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	next := &combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -140,7 +141,7 @@ func TestSwirl25to50(t *testing.T) {
 	}
 
 	//apply 25 pyro first
-	trg.React(&combat.AttackEvent{
+	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
@@ -149,7 +150,7 @@ func TestSwirl25to50(t *testing.T) {
 	//1 tick
 	advanceCoreFrame(c)
 	//check durability after 1 tick
-	dur := trg.Durability[attributes.Pyro]
+	dur := trg.Durability[ModifierPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	next := &combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -194,7 +195,7 @@ func TestSwirl50to50(t *testing.T) {
 	}
 
 	//apply 25 pyro first
-	trg.React(&combat.AttackEvent{
+	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
@@ -203,7 +204,7 @@ func TestSwirl50to50(t *testing.T) {
 	//1 tick
 	advanceCoreFrame(c)
 	//check durability after 1 tick
-	dur := trg.Durability[attributes.Pyro]
+	dur := trg.Durability[ModifierPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	next := &combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -250,7 +251,7 @@ func TestSwirl25to10(t *testing.T) {
 	}
 
 	//apply 25 pyro first
-	trg.React(&combat.AttackEvent{
+	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
@@ -261,7 +262,7 @@ func TestSwirl25to10(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 	//check durability after 1 tick
-	dur := trg.Durability[attributes.Pyro]
+	dur := trg.Durability[ModifierPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	next := &combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -308,7 +309,7 @@ func TestSwirl50to10(t *testing.T) {
 	}
 
 	//apply 25 pyro first
-	trg.React(&combat.AttackEvent{
+	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
@@ -319,7 +320,7 @@ func TestSwirl50to10(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 	//check durability after 1 tick
-	dur := trg.Durability[attributes.Pyro]
+	dur := trg.Durability[ModifierPyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	next := &combat.AttackEvent{
 		Info: combat.AttackInfo{
