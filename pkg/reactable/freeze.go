@@ -13,53 +13,31 @@ func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
 	//so if already frozen there are 2 cases:
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
+	var consumed combat.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		//if cryo exists we'll trigger freeze regardless if frozen already coexists
 		if r.Durability[ModifierCryo] > ZeroDur {
-			consumed := r.triggerFreeze(r.Durability[ModifierCryo], a.Info.Durability)
+			consumed = r.triggerFreeze(r.Durability[ModifierCryo], a.Info.Durability)
 			r.Durability[ModifierCryo] -= consumed
 			r.Durability[ModifierCryo] = max(r.Durability[ModifierCryo], 0)
-			//TODO: we're not setting src durability to zero here but should be ok b/c no reaction comes after freeze
-			//ec should have been taken care of already
-			a.Info.Durability -= consumed
-			a.Info.Durability = max(a.Info.Durability, 0)
-			a.Reacted = true
-			r.core.Events.Emit(event.OnFrozen, r.self, a)
 			return
 		}
-		//TODO: check if this is accurate?
-		// //otherwise attach hydro only if frozen exists
-		// if r.Durability[ModifierFrozen] < ZeroDur {
-		// 	return
-		// }
-		// //try refill first - this will use up all durability if ok
-		// r.tryRefill(attributes.Hydro, &a.Info.Durability)
-		// //otherwise attach
-		// r.tryAttach(attributes.Hydro, &a.Info.Durability)
 	case attributes.Cryo:
 		if r.Durability[ModifierHydro] > ZeroDur {
 			consumed := r.triggerFreeze(r.Durability[ModifierHydro], a.Info.Durability)
 			r.Durability[ModifierHydro] -= consumed
 			r.Durability[ModifierHydro] = max(r.Durability[ModifierHydro], 0)
-			a.Info.Durability -= consumed
-			a.Info.Durability = max(a.Info.Durability, 0)
-			r.core.Events.Emit(event.OnFrozen, r.self, a)
 			return
 		}
-		//TODO: check if this is accurate?
-		// //otherwise attach cryo only if frozen exists
-		// if r.Durability[ModifierFrozen] < ZeroDur {
-		// 	return
-		// }
-		// //try refill first - this will use up all durability if ok
-		// r.tryRefill(attributes.Cryo, &a.Info.Durability)
-		// //otherwise attach
-		// r.tryAttach(attributes.Cryo, &a.Info.Durability)
 	default:
 		//should be here
 		return
 	}
+	a.Reacted = true
+	a.Info.Durability -= consumed
+	a.Info.Durability = max(a.Info.Durability, 0)
+	r.core.Events.Emit(event.OnFrozen, r.self, a)
 }
 
 func max(a, b combat.Durability) combat.Durability {

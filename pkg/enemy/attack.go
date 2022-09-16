@@ -8,12 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//if target is frozen prior to attack landing, set impulse to 0
 	//let the break freeze attack to trigger actual impulse
-	if e.AuraType() == attributes.Frozen {
+	if e.Durability[reactable.ModifierFrozen] > reactable.ZeroDur {
 		atk.Info.NoImpulse = true
 	}
 
@@ -23,11 +24,12 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	//check tags
 	if atk.Info.Durability > 0 {
 		//check for ICD first
-		if e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex) && atk.Info.Element != attributes.Physical {
+		atk.OnICD = !e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
+		if !atk.OnICD && atk.Info.Element != attributes.Physical {
 			existing := e.Reactable.ActiveAuraString()
 			applied := atk.Info.Durability
 			e.React(atk)
-			if e.Core.Flags.LogDebug {
+			if e.Core.Flags.LogDebug && atk.Reacted {
 				e.Core.Log.NewEvent(
 					"application",
 					glog.LogElementEvent,
@@ -46,10 +48,6 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	}
 
 	damage, isCrit := e.calc(atk, evt)
-
-	//record dmg
-	e.hp -= damage
-	e.damageTaken += damage //TODO: do we actually need this?
 
 	//check for hitlag
 	if e.Core.Combat.EnableHitlag {
@@ -91,11 +89,41 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 		}
 	}
 
+	return damage, isCrit
+}
+
+func (e *Enemy) ApplyDamage(atk *combat.AttackEvent, damage float64) {
+	//record dmg
+	e.hp -= damage
+	e.damageTaken += damage //TODO: do we actually need this?
+
 	//check if target is dead
 	if e.Core.Flags.DamageMode && e.hp <= 0 {
 		e.Kill()
 		e.Core.Events.Emit(event.OnTargetDied, e, atk)
+		return
 	}
 
-	return damage, isCrit
+	//apply auras
+	if atk.Info.Durability > 0 && !atk.Reacted && !atk.OnICD && atk.Info.Element != attributes.Physical {
+		//check for ICD first
+		existing := e.Reactable.ActiveAuraString()
+		applied := atk.Info.Durability
+		e.AttachOrRefill(atk)
+		if e.Core.Flags.LogDebug {
+			e.Core.Log.NewEvent(
+				"application",
+				glog.LogElementEvent,
+				atk.Info.ActorIndex,
+			).
+				Write("attack_tag", atk.Info.AttackTag).
+				Write("applied_ele", atk.Info.Element.String()).
+				Write("dur", applied).
+				Write("abil", atk.Info.Abil).
+				Write("target", e.TargetIndex).
+				Write("existing", existing).
+				Write("after", e.Reactable.ActiveAuraString())
+
+		}
+	}
 }

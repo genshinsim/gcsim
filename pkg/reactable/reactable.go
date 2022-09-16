@@ -45,7 +45,7 @@ var modifierElement = []attributes.Element{
 	attributes.UnknownElement,
 }
 
-var modifierString = []string{
+var ModifierString = []string{
 	"",
 	"electro",
 	"pyro",
@@ -70,7 +70,7 @@ var elementToModifier = map[attributes.Element]ReactableModifier{
 }
 
 func (r ReactableModifier) Element() attributes.Element { return modifierElement[r] }
-func (r ReactableModifier) String() string              { return modifierString[r] }
+func (r ReactableModifier) String() string              { return ModifierString[r] }
 
 type Reactable struct {
 	Durability [EndReactableModifier]combat.Durability
@@ -107,57 +107,73 @@ func (r *Reactable) ActiveAuraString() []string {
 	return result
 }
 
+func (r *Reactable) AuraCount() int {
+	count := 0
+	for _, v := range r.Durability {
+		if v > ZeroDur {
+			count++
+		}
+	}
+	return count
+}
+
 func (r *Reactable) React(a *combat.AttackEvent) {
 	//TODO: double check order of reactions
 	switch a.Info.Element {
 	case attributes.Electro:
+		//hyperbloom
 		r.tryAggravate(a)
 		r.tryOverload(a)
+		r.tryAddEC(a)
 		r.tryFrozenSuperconduct(a)
 		r.trySuperconduct(a)
 		r.tryQuicken(a)
-		r.tryAddEC(a)
 	case attributes.Pyro:
+		//burgeon
 		r.tryOverload(a)
 		r.tryVaporize(a)
 		r.tryMelt(a)
+		//burning
 	case attributes.Cryo:
 		r.trySuperconduct(a)
 		r.tryMelt(a)
 		r.tryFreeze(a)
 	case attributes.Hydro:
-		r.tryAddEC(a)
 		r.tryVaporize(a)
 		r.tryFreeze(a)
+		//bloom
+		r.tryAddEC(a)
 	case attributes.Anemo:
 		r.trySwirlElectro(a)
+		r.trySwirlPyro(a)
 		r.trySwirlHydro(a)
 		r.trySwirlCryo(a)
-		r.trySwirlPyro(a)
 		r.trySwirlFrozen(a)
 	case attributes.Geo:
 		r.tryCrystallize(a)
 	case attributes.Dendro:
 		r.trySpread(a)
 		r.tryQuicken(a)
+		//burning
+		//bloom
 	}
 }
 
 // AttachOrRefill is called after the damage event if the attack has not reacted with anything
 // and will either create a new modifier if non exist, or update according to the rules of
 // each modifier
-func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) {
+func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if a.Reacted {
-		return
+		return false
 	}
 	//handle pyro, electro, hydro, cryo which doesn't have special attachment rules
 	//i.e. burning fuel
 	if mod, ok := elementToModifier[a.Info.Element]; ok {
 		r.attachOrRefillNormalEle(mod, a.Info.Durability)
-		return
+		return true
 	}
 	//dendro is a special case because we have to check for burning fuel
 	if a.Info.Element == attributes.Dendro {
@@ -167,7 +183,9 @@ func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) {
 		} else {
 			r.attachOrRefillNormalEle(ModifierDendro, a.Info.Durability)
 		}
+		return true
 	}
+	return false
 }
 
 // attachOrRefillNormalEle is used for pyro, electro, hydro, cryo, and dendro which don't have special attachment
@@ -193,6 +211,11 @@ func (r *Reactable) attachBurningFuel(dur combat.Durability) {
 		decayRate = 10.0 / 60.0
 	}
 	r.DecayRate[ModifierBurningFuel] = decayRate
+}
+
+func (r *Reactable) attachQuicken(dur combat.Durability) {
+	r.Durability[ModifierQuicken] = dur
+	r.DecayRate[ModifierQuicken] = dur / (12*dur + 360)
 }
 
 func (r *Reactable) addDurability(mod ReactableModifier, amt combat.Durability) {

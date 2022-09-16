@@ -64,7 +64,7 @@ func (c *char) queueOz(src string, ozSpawn int) {
 	if c.Base.Cons == 6 {
 		dur += 120
 	}
-	c.Core.Tasks.Add(func() {
+	spawnFn := func() {
 		// setup variables for tracking oz
 		c.ozSource = c.Core.F
 		c.ozActiveUntil = c.Core.F + dur
@@ -92,7 +92,12 @@ func (c *char) queueOz(src string, ozSpawn int) {
 			Write("source", src).
 			Write("expected end", c.ozActiveUntil).
 			Write("next expected tick", c.Core.F+60)
-	}, ozSpawn)
+	}
+	if ozSpawn > 0 {
+		c.Core.Tasks.Add(spawnFn, ozSpawn)
+	} else {
+		spawnFn()
+	}
 }
 
 func (c *char) ozTick(src int) func() {

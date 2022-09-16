@@ -49,7 +49,7 @@ func testCore() *core.Core {
 	p.Stats[attributes.EM] = 100
 	p.Base.Level = 90
 	p.Base.MaxLevel = 90
-	p.Talents = profile.TalentProfile{1, 1, 1}
+	p.Talents = profile.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
 
 	i, err := c.AddChar(p)
 	if err != nil {
@@ -77,6 +77,12 @@ func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		return t.onDmgCallBack(atk)
 	}
 	return 0, false
+}
+
+func (t *testTarget) ApplyDamage(atk *combat.AttackEvent, amt float64) {
+	if !atk.Reacted {
+		t.Reactable.AttachOrRefill(atk)
+	}
 }
 
 func addTargetToCore(c *core.Core) *testTarget {

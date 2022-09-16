@@ -14,28 +14,26 @@ func (r *Reactable) trySuperconduct(a *combat.AttackEvent) {
 	if r.Durability[ModifierFrozen] >= ZeroDur {
 		return
 	}
+	var consumed combat.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
 		if r.Durability[ModifierCryo] < ZeroDur {
 			return
 		}
-		consumed := r.reduce(attributes.Cryo, a.Info.Durability, 1)
-		a.Info.Durability -= consumed
-		a.Info.Durability = max(a.Info.Durability, 0)
-		a.Reacted = true
+		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 1)
 	case attributes.Cryo:
 		//could be ec potentially
 		if r.Durability[ModifierElectro] < ZeroDur {
 			return
 		}
-		consumed := r.reduce(attributes.Electro, a.Info.Durability, 1)
-		a.Info.Durability -= consumed
-		a.Info.Durability = max(a.Info.Durability, 0)
-		a.Reacted = true
+		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	default:
 		return
 	}
 
+	a.Info.Durability -= consumed
+	a.Info.Durability = max(a.Info.Durability, 0)
+	a.Reacted = true
 	r.queueSuperconduct(a)
 }
 
@@ -55,6 +53,7 @@ func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
 		a.Info.Durability -= r.reduce(attributes.Cryo, a.Info.Durability, 1)
 		r.reduce(attributes.Frozen, a.Info.Durability, 1)
 		a.Info.Durability = 0
+		a.Reacted = true
 	default:
 		return
 	}

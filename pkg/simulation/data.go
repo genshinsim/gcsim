@@ -4,19 +4,19 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func (s *Simulation) initDetailLog() {
 	var sb strings.Builder
 	s.stats.ReactionsTriggered = make(map[combat.ReactionType]int)
-	s.stats.ElementUptime = make([]map[attributes.Element]int, len(s.C.Combat.Enemies()))
+	s.stats.ElementUptime = make([]map[reactable.ReactableModifier]int, len(s.C.Combat.Enemies()))
 	for i := range s.stats.ElementUptime {
-		s.stats.ElementUptime[i] = make(map[attributes.Element]int)
+		s.stats.ElementUptime[i] = make(map[reactable.ReactableModifier]int)
 	}
 	//add call back to track actions executed
 	s.C.Events.Subscribe(event.OnActionExec, func(args ...interface{}) bool {
@@ -35,7 +35,7 @@ func (s *Simulation) initDetailLog() {
 
 		s.C.Log.NewEvent("Target Added", glog.LogDebugEvent, -1).
 			Write("target_type", t.Type())
-		s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[attributes.Element]int))
+		s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[reactable.ReactableModifier]int))
 
 		return false
 	}, "sim-new-target-stats")

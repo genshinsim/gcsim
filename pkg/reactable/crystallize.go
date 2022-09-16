@@ -52,6 +52,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	r.reduce(ele, a.Info.Durability, 0.5)
 	//TODO: confirm u can only crystallize once
 	a.Info.Durability = 0
+	a.Reacted = true
 	//event
 	r.core.Events.Emit(evt, r.self, a)
 	//check freeze + ec

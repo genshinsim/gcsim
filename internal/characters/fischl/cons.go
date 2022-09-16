@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 func (c *char) c6() {
@@ -15,6 +16,7 @@ func (c *char) c6() {
 		if c.ozActiveUntil < c.Core.F {
 			return false
 		}
+		c.Core.Log.NewEvent("fischl c6 triggered", glog.LogCharacterEvent, c.Index)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl C6",
