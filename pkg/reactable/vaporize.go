@@ -17,6 +17,7 @@ func (r *Reactable) tryVaporize(a *combat.AttackEvent) {
 			return
 		}
 		//if there's still frozen left don't try to vape
+		//game actively rejects vaporize reaction if frozen is present
 		if r.Durability[ModifierFrozen] > ZeroDur {
 			return
 		}

@@ -119,9 +119,8 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		r.tryAddEC(a)
 	case attributes.Pyro:
 		r.tryOverload(a)
-		r.tryMelt(a)
 		r.tryVaporize(a)
-		r.tryMeltFrozen(a)
+		r.tryMelt(a)
 	case attributes.Cryo:
 		r.trySuperconduct(a)
 		r.tryFreeze(a)
@@ -224,6 +223,11 @@ func (r *Reactable) reduce(e attributes.Element, dur combat.Durability, factor c
 
 	for i := ModifierInvalid; i < EndReactableModifier; i++ {
 		if i.Element() != e {
+			continue
+		}
+		if r.Durability[i] < ZeroDur {
+			// also skip if durability already 0
+			// this allows us to safely call reduce even if an element doesn't exist
 			continue
 		}
 		//reduce by lesser of remaining and m
