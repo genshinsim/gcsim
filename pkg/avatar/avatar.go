@@ -55,8 +55,7 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur combat.Durability
 
 func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
 	//check if have an element
-
-	if p.Reactable.AuraType() == attributes.NoElement {
+	if p.AuraCount() == 0 {
 		return
 	}
 	//otherwise react
