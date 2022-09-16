@@ -11,24 +11,24 @@ func (r *Reactable) trySuperconduct(a *combat.AttackEvent) {
 		return
 	}
 	//this is for non frozen one
-	if r.Durability[attributes.Frozen] >= ZeroDur {
+	if r.Durability[ModifierFrozen] >= ZeroDur {
 		return
 	}
 	switch a.Info.Element {
 	case attributes.Electro:
-		if r.Durability[attributes.Cryo] < ZeroDur {
+		if r.Durability[ModifierCryo] < ZeroDur {
 			return
 		}
 		r.reduce(attributes.Cryo, a.Info.Durability, 1)
 		a.Info.Durability = 0
 	case attributes.Cryo:
 		//could be ec potentially
-		if r.Durability[attributes.Electro] < ZeroDur {
+		if r.Durability[ModifierElectro] < ZeroDur {
 			return
 		}
 		rd := r.reduce(attributes.Electro, a.Info.Durability, 1)
 		//if there's hydro as well then don't consume all the durability
-		if r.Durability[attributes.Hydro] > ZeroDur {
+		if r.Durability[ModifierHydro] > ZeroDur {
 			a.Info.Durability -= rd
 		} else {
 			a.Info.Durability = 0
@@ -38,7 +38,6 @@ func (r *Reactable) trySuperconduct(a *combat.AttackEvent) {
 	}
 
 	r.queueSuperconduct(a)
-
 }
 
 func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
@@ -46,7 +45,7 @@ func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
 		return
 	}
 	//this is for frozen
-	if r.Durability[attributes.Frozen] < ZeroDur {
+	if r.Durability[ModifierFrozen] < ZeroDur {
 		return
 	}
 	switch a.Info.Element {
