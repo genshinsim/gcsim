@@ -29,6 +29,8 @@ func (p *Player) Attack(ae *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	return 0, false
 }
 
+func (p *Player) ApplyDamage(*combat.AttackEvent, float64) {}
+
 func (p *Player) ApplySelfInfusion(ele attributes.Element, dur combat.Durability, f int) {
 
 	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).
@@ -39,18 +41,31 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur combat.Durability
 	if ele == attributes.Frozen {
 		return
 	}
+	var mod reactable.ReactableModifier
+	switch ele {
+	case attributes.Electro:
+		mod = reactable.ModifierElectro
+	case attributes.Hydro:
+		mod = reactable.ModifierHydro
+	case attributes.Pyro:
+		mod = reactable.ModifierPyro
+	case attributes.Cryo:
+		mod = reactable.ModifierCryo
+	case attributes.Dendro:
+		mod = reactable.ModifierDendro
+	}
 
 	//we're assuming refill maintains the same decay rate?
-	if p.Durability[ele] > reactable.ZeroDur {
+	if p.Durability[mod] > reactable.ZeroDur {
 		//make sure we're not adding more than incoming
-		if p.Durability[ele] < dur {
-			p.Durability[ele] = dur
+		if p.Durability[mod] < dur {
+			p.Durability[mod] = dur
 		}
 		return
 	}
 	//otherwise calculate decay based on specified f (in frames)
-	p.Durability[ele] = dur
-	p.DecayRate[ele] = dur / combat.Durability(f)
+	p.Durability[mod] = dur
+	p.DecayRate[mod] = dur / combat.Durability(f)
 }
 
 func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
