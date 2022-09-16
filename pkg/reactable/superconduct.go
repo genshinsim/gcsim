@@ -19,20 +19,19 @@ func (r *Reactable) trySuperconduct(a *combat.AttackEvent) {
 		if r.Durability[ModifierCryo] < ZeroDur {
 			return
 		}
-		r.reduce(attributes.Cryo, a.Info.Durability, 1)
-		a.Info.Durability = 0
+		consumed := r.reduce(attributes.Cryo, a.Info.Durability, 1)
+		a.Info.Durability -= consumed
+		a.Info.Durability = max(a.Info.Durability, 0)
+		a.Reacted = true
 	case attributes.Cryo:
 		//could be ec potentially
 		if r.Durability[ModifierElectro] < ZeroDur {
 			return
 		}
-		rd := r.reduce(attributes.Electro, a.Info.Durability, 1)
-		//if there's hydro as well then don't consume all the durability
-		if r.Durability[ModifierHydro] > ZeroDur {
-			a.Info.Durability -= rd
-		} else {
-			a.Info.Durability = 0
-		}
+		consumed := r.reduce(attributes.Electro, a.Info.Durability, 1)
+		a.Info.Durability -= consumed
+		a.Info.Durability = max(a.Info.Durability, 0)
+		a.Reacted = true
 	default:
 		return
 	}

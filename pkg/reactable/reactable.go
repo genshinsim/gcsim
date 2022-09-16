@@ -123,8 +123,8 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		r.tryMelt(a)
 	case attributes.Cryo:
 		r.trySuperconduct(a)
-		r.tryFreeze(a)
 		r.tryMelt(a)
+		r.tryFreeze(a)
 	case attributes.Hydro:
 		r.tryAddEC(a)
 		r.tryVaporize(a)
@@ -148,6 +148,9 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 // each modifier
 func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
+		return
+	}
+	if a.Reacted {
 		return
 	}
 	//handle pyro, electro, hydro, cryo which doesn't have special attachment rules
