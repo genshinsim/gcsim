@@ -17,19 +17,19 @@ func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		//if cryo exists we'll trigger freeze regardless if frozen already coexists
-		if r.Durability[ModifierCryo] > ZeroDur {
-			consumed = r.triggerFreeze(r.Durability[ModifierCryo], a.Info.Durability)
-			r.Durability[ModifierCryo] -= consumed
-			r.Durability[ModifierCryo] = max(r.Durability[ModifierCryo], 0)
+		if r.Durability[ModifierCryo] < ZeroDur {
 			return
 		}
+		consumed = r.triggerFreeze(r.Durability[ModifierCryo], a.Info.Durability)
+		r.Durability[ModifierCryo] -= consumed
+		r.Durability[ModifierCryo] = max(r.Durability[ModifierCryo], 0)
 	case attributes.Cryo:
-		if r.Durability[ModifierHydro] > ZeroDur {
-			consumed := r.triggerFreeze(r.Durability[ModifierHydro], a.Info.Durability)
-			r.Durability[ModifierHydro] -= consumed
-			r.Durability[ModifierHydro] = max(r.Durability[ModifierHydro], 0)
+		if r.Durability[ModifierHydro] < ZeroDur {
 			return
 		}
+		consumed := r.triggerFreeze(r.Durability[ModifierHydro], a.Info.Durability)
+		r.Durability[ModifierHydro] -= consumed
+		r.Durability[ModifierHydro] = max(r.Durability[ModifierHydro], 0)
 	default:
 		//should be here
 		return
