@@ -46,9 +46,8 @@ func TestSuperconduct(t *testing.T) {
 	if src == nil || src.Info.Abil != "superconduct" {
 		t.Errorf("expecting superconduct, got %v", src)
 	}
-	//no durability
-	if next.Info.Durability > ZeroDur {
-		t.Errorf("expected durability to be 0, got %v", next.Info.Durability)
+	if !next.Reacted {
+		t.Errorf("expected reacted to be true, got %v", next.Reacted)
 	}
 }
 
@@ -97,8 +96,7 @@ func TestFrozenSuperconduct(t *testing.T) {
 	if src == nil || src.Info.Abil != "superconduct" {
 		t.Errorf("expecting superconduct, got %v", src)
 	}
-	//no durability
-	if next.Info.Durability > ZeroDur {
-		t.Errorf("expected durability to be 0, got %v", next.Info.Durability)
+	if !next.Reacted {
+		t.Errorf("expected reacted to be true, got %v", next.Reacted)
 	}
 }

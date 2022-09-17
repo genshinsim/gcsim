@@ -46,8 +46,8 @@ func TestOverload(t *testing.T) {
 	if src == nil || src.Info.Abil != "overload" {
 		t.Errorf("expecting overload, got %v", src)
 	}
-	//no durability
-	if next.Info.Durability > ZeroDur {
-		t.Errorf("expected durability to be 0, got %v", next.Info.Durability)
+	//reacted should be true
+	if !next.Reacted {
+		t.Errorf("expected reacted to be true, got %v", next.Reacted)
 	}
 }

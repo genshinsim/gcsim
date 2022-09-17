@@ -43,8 +43,8 @@ func TestCrystallizeCryo(t *testing.T) {
 		t.Errorf("expecting player to be shielded")
 	}
 
-	if !durApproxEqual(7.5, trg.Durability[ModifierPyro], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[ModifierPyro])
+	if !durApproxEqual(7.5, trg.Durability[ModifierCryo], 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[ModifierCryo])
 	}
 }
 
