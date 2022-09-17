@@ -54,7 +54,6 @@ type Coord struct {
 type Reactable interface {
 	React(a *combat.AttackEvent)
 	AuraContains(e ...attributes.Element) bool
-	AuraType() attributes.Element
 	Tick()
 }
 
