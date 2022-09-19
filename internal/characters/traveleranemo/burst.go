@@ -38,6 +38,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.qInfuse = attributes.NoElement
 	c.qICDTag = combat.ICDTagNone
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gust Surge",
@@ -103,7 +105,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		c.qInfuse = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.qInfuse {
 		case attributes.Cryo:
 			c.qICDTag = combat.ICDTagElementalBurstCryo

@@ -73,8 +73,9 @@ func (c *char) SkillPress() action.ActionInfo {
 
 func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
-	c.eInfuse = attributes.NoElement
+	c.eAbsorb = attributes.NoElement
 	c.eICDTag = combat.ICDTagNone
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 	aiCut := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -105,8 +106,8 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		c.Core.QueueAttack(aiCut, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
 		if i > 1 {
 			c.Core.Tasks.Add(func() {
-				if c.eInfuse != attributes.NoElement {
-					aiMaxCutAbs.Element = c.eInfuse
+				if c.eAbsorb != attributes.NoElement {
+					aiMaxCutAbs.Element = c.eAbsorb
 					aiMaxCutAbs.ICDTag = c.eICDTag
 					c.Core.QueueAttack(aiMaxCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 				}
@@ -114,8 +115,8 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 			}, hitmark)
 		} else {
 			c.Core.Tasks.Add(func() {
-				if c.eInfuse != attributes.NoElement {
-					aiCutAbs.Element = c.eInfuse
+				if c.eAbsorb != attributes.NoElement {
+					aiCutAbs.Element = c.eAbsorb
 					aiCutAbs.ICDTag = c.eICDTag
 					c.Core.QueueAttack(aiCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 				}
@@ -174,8 +175,8 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	c.Core.QueueAttack(aiStorm, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
 	c.Core.Tasks.Add(func() {
-		if c.eInfuse != attributes.NoElement {
-			aiStormAbs.Element = c.eInfuse
+		if c.eAbsorb != attributes.NoElement {
+			aiStormAbs.Element = c.eAbsorb
 			aiStormAbs.ICDTag = c.eICDTag
 			c.Core.QueueAttack(aiStormAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 		}
@@ -216,8 +217,8 @@ func (c *char) absorbCheckE(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.eInfuse = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
-		switch c.eInfuse {
+		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		switch c.eAbsorb {
 		case attributes.Cryo:
 			c.eICDTag = combat.ICDTagElementalArtCryo
 		case attributes.Pyro:
