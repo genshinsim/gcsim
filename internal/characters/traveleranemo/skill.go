@@ -111,7 +111,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 					aiMaxCutAbs.ICDTag = c.eICDTag
 					c.Core.QueueAttack(aiMaxCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 				}
-				//check if infused
+				//check if absorbed
 			}, hitmark)
 		} else {
 			c.Core.Tasks.Add(func() {
@@ -120,7 +120,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 					aiCutAbs.ICDTag = c.eICDTag
 					c.Core.QueueAttack(aiCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 				}
-				//check if infused
+				//check if absorbed
 			}, hitmark)
 		}
 
@@ -180,7 +180,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 			aiStormAbs.ICDTag = c.eICDTag
 			c.Core.QueueAttack(aiStormAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 		}
-		//check if infused
+		//check if absorbed
 	}, hitmark)
 
 	// starts absorbing after the first tick?

@@ -76,7 +76,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				aiAbs.Element = c.qAbsorb
 				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0)
 			}
-			//check if infused
+			//check if absorbed
 		}, i)
 	}
 

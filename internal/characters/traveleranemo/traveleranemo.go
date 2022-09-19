@@ -17,7 +17,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	qInfuse             attributes.Element
+	qAbsorb             attributes.Element
 	qICDTag             combat.ICDTag
 	eAbsorb             attributes.Element
 	eICDTag             combat.ICDTag
