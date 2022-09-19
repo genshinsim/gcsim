@@ -26,8 +26,9 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
-	c.qInfuse = attributes.NoElement
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.qAbsorb = attributes.NoElement
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Kazuha Slash",
@@ -70,8 +71,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// updated to 140 based on koli's count: https://docs.google.com/spreadsheets/d/1uEbP13O548-w_nGxFPGsf5jqj1qGD3pqFZ_AiV4w3ww/edit#gid=775340159
 		for i := 0; i < 5; i++ {
 			c.Core.Tasks.Add(func() {
-				if c.qInfuse != attributes.NoElement {
-					aiAbsorb.Element = c.qInfuse
+				if c.qAbsorb != attributes.NoElement {
+					aiAbsorb.Element = c.qAbsorb
 					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0)
 				}
 				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
@@ -116,9 +117,9 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
-		if c.qInfuse != attributes.NoElement {
+		if c.qAbsorb != attributes.NoElement {
 			return
 		}
 		//otherwise queue up

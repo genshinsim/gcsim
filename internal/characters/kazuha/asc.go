@@ -71,11 +71,11 @@ func (c *char) absorbCheckA1(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.a1Ele = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
-		if c.a1Ele != attributes.NoElement {
+		if c.a1Absorb != attributes.NoElement {
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-				"kazuha a1 infused ", c.a1Ele.String(),
+				"kazuha a1 absorbed ", c.a1Absorb.String(),
 			)
 			return
 		}

@@ -17,10 +17,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1Ele               attributes.Element
-	qInfuse             attributes.Element
+	a1Absorb            attributes.Element
+	qAbsorb             attributes.Element
 	qFieldSrc           int
-	infuseCheckLocation combat.AttackPattern
+	absorbCheckLocation combat.AttackPattern
 	c2buff              []float64
 }
 
@@ -33,7 +33,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
 
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 	w.Character = &c
 
