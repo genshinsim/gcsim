@@ -8,11 +8,10 @@ import (
 )
 
 func (c *char) a1() {
-	//account for it starting somewhere around hitmark
-	dur := 300 + skillRecastHitmark
-	c.Core.Status.Add("keqinginfuse", dur)
+	// barely cover 5N1C + N1 combo hitlagless
+	dur := 300 + skillRecastHitmark + 12
 	c.Core.Player.AddWeaponInfuse(
-		c.Index,
+		c.CharWrapper,
 		"keqing-a1",
 		attributes.Electro,
 		dur,

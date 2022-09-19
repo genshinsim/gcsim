@@ -63,7 +63,7 @@ func (c *char) c2(src int) func() {
 func (c *char) c6() {
 	// add anemo infusion
 	c.Core.Player.AddWeaponInfuse(
-		c.Index,
+		c.CharWrapper,
 		"kazuha-c6-infusion",
 		attributes.Anemo,
 		60*5,

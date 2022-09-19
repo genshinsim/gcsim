@@ -63,7 +63,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	//TODO: check weapon infuse timing; this SHOULD be ok?
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.AddWeaponInfuse(
-			c.Index,
+			c.CharWrapper,
 			"ayaka-dash",
 			attributes.Cryo,
 			300,

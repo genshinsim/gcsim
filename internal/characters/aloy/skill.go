@@ -23,7 +23,7 @@ func init() {
 }
 
 const (
-	rushingIceKey = "rushingice"
+	rushingIceKey = "aloy-rushing-ice"
 )
 
 // Skill - Handles main damage, bomblet, and coil effects
@@ -143,14 +143,21 @@ func (c *char) coilStacks() {
 
 // Handles rushing ice state
 func (c *char) rushingIce() {
-	c.AddStatus(rushingIceKey, 600, true)
-	c.Core.Player.AddWeaponInfuse(c.Index, "aloy-rushing-ice", attributes.Cryo, 600, true, combat.AttackTagNormal)
+	// rushing ice cryo infusion and status
+	c.Core.Player.AddWeaponInfuse(
+		c.CharWrapper,
+		rushingIceKey,
+		attributes.Cryo,
+		600,
+		true,
+		combat.AttackTagNormal,
+	)
 
-	// Rushing ice NA bonus
+	// rushing ice NA bonus
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", 600),
+		Base: modifier.NewBaseWithHitlag(rushingIceKey+"-na-bonus", 600),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == combat.AttackTagNormal {
 				return val, true

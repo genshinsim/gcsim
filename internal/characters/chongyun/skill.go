@@ -161,15 +161,13 @@ func (c *char) infuse(active *character.CharWrapper) {
 		fallthrough
 	case weapon.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
-			active.Index,
+			active,
 			"chongyun-ice-weapon",
 			attributes.Cryo,
 			infuseDur[c.TalentLvlSkill()],
 			true,
 			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
 		)
-		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index).
-			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
 	default:
 		return
 	}

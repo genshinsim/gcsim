@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 type WeaponInfusion struct {
@@ -39,7 +40,8 @@ func (i *InfusionHandler) ExtendInfusion(char int, factor, dur float64) {
 	i.infusion[char].Expiry += dur * (1 - factor)
 }
 
-func (i *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...combat.AttackTag) {
+func (i *InfusionHandler) AddWeaponInfuse(c *character.CharWrapper, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...combat.AttackTag) {
+	char := c.Index
 	if !i.infusion[char].CanBeOverridden && i.infusion[char].Expiry > float64(*i.f) {
 		return
 	}
@@ -50,10 +52,13 @@ func (i *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.E
 		CanBeOverridden: canBeOverriden,
 		Tags:            tags,
 	}
+	hitlag := true
 	if dur == -1 {
 		inf.Expiry = -1
+		hitlag = false
 	}
 	i.infusion[char] = inf
+	c.AddStatus(key, dur, hitlag)
 }
 
 func (i *InfusionHandler) WeaponInfuseIsActive(char int, key string) bool {

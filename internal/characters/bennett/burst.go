@@ -128,7 +128,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 					fallthrough
 				case weapon.WeaponClassSword:
 					c.Core.Player.AddWeaponInfuse(
-						active.Index,
+						active,
 						"bennett-fire-weapon",
 						attributes.Pyro,
 						burstBuffDuration,
