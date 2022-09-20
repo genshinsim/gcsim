@@ -36,7 +36,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
 
 	c.a1Absorb = attributes.NoElement
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.a1AbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 	// why is the same code written twice..
 	if hold == 0 {

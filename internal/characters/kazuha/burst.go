@@ -27,7 +27,7 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.qAbsorb = attributes.NoElement
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.qAbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -117,7 +117,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.qAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.qAbsorb != attributes.NoElement {
 			return
