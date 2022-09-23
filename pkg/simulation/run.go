@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -83,6 +84,7 @@ func (s *Simulation) AdvanceFrame() error {
 	if err != nil {
 		return err
 	}
+	s.C.Events.Emit(event.OnTick)
 	// fmt.Printf("Tick - f = %v\n", s.C.F)
 	return nil
 }

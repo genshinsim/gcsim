@@ -55,6 +55,7 @@ const (
 	OnInitialize  //nil
 	OnStateChange //prev, next
 	OnEnemyAdded  //t
+	OnTick
 	EndEventTypes //elim
 )
 
