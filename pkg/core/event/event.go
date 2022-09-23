@@ -43,6 +43,7 @@ const (
 	OnCharacterHurt    //amount
 	OnHeal             //src char, target character, amount
 	//ability use
+	OnActionFailed //ActiveCharIndex, action.Action, param, action.ActionFailure
 	OnActionExec   //ActiveCharIndex, action.Action, param
 	OnSkill        //nil
 	OnBurst        //nil

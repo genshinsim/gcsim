@@ -12,8 +12,10 @@ type Character struct {
 	*character.CharWrapper
 }
 
-func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot        { return combat.Snapshot{} }
-func (c *Character) ActionReady(a action.Action, p map[string]int) bool   { return true }
+func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot { return combat.Snapshot{} }
+func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+	return true, action.NoFailure
+}
 func (c *Character) ActionStam(a action.Action, p map[string]int) float64 { return 0 }
 func (c *Character) ReduceActionCooldown(a action.Action, v int)          {}
 func (c *Character) ResetActionCooldown(a action.Action)                  {}
