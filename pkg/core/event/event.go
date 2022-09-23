@@ -34,6 +34,7 @@ const (
 	OnBloom
 	OnHyperbloom
 	OnBurgeon
+	OnBurning //target, AttackEvent
 	ReactionEventEndDelim
 	//other stuff
 	OnStamUse          //abil

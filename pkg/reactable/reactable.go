@@ -1,6 +1,7 @@
 package reactable
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -67,6 +68,7 @@ var elementToModifier = map[attributes.Element]ReactableModifier{
 	attributes.Pyro:    ModifierPyro,
 	attributes.Cryo:    ModifierCryo,
 	attributes.Hydro:   ModifierHydro,
+	attributes.Dendro:  ModifierDendro,
 }
 
 func (r ReactableModifier) Element() attributes.Element { return modifierElement[r] }
@@ -81,7 +83,15 @@ type Reactable struct {
 	//ec specific
 	ecSnapshot combat.AttackInfo //index of owner of next ec ticks
 	ecTickSrc  int
-	//hitlag
+	//burning specific
+	burningSnapshot               combat.AttackInfo
+	burningTickSrc                int
+	burningCachedDendroDecayRate  combat.Durability
+	burningCachedQuickenDecayRate combat.Durability
+}
+
+type Enemy interface {
+	QueueEnemyTask(f func(), delay int)
 }
 
 const frzDelta combat.Durability = 2.5 / (60 * 60) // 2 * 1.25
@@ -94,6 +104,7 @@ func (r *Reactable) Init(self combat.Target, c *core.Core) *Reactable {
 	r.core = c
 	r.DecayRate[ModifierFrozen] = frzDecayCap
 	r.ecTickSrc = -1
+	r.burningTickSrc = -1
 	return r
 }
 
@@ -133,7 +144,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		r.tryOverload(a)
 		r.tryVaporize(a)
 		r.tryMelt(a)
-		//burning
+		r.tryBurning(a)
 	case attributes.Cryo:
 		r.trySuperconduct(a)
 		r.tryMelt(a)
@@ -154,7 +165,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 	case attributes.Dendro:
 		r.trySpread(a)
 		r.tryQuicken(a)
-		//burning
+		r.tryBurning(a)
 		r.tryBloom(a)
 	}
 }
@@ -169,20 +180,10 @@ func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
 	if a.Reacted {
 		return false
 	}
-	//handle pyro, electro, hydro, cryo which doesn't have special attachment rules
-	//i.e. burning fuel
+	//handle pyro, electro, hydro, cryo, dendro
+	//special attachment of dendro (burning fuel) is handled in tryBurning
 	if mod, ok := elementToModifier[a.Info.Element]; ok {
 		r.attachOrRefillNormalEle(mod, a.Info.Durability)
-		return true
-	}
-	//dendro is a special case because we have to check for burning fuel
-	if a.Info.Element == attributes.Dendro {
-		if r.Durability[ModifierBurningFuel] > ZeroDur {
-			//burningfuel is always refilled first
-			r.attachBurningFuel(a.Info.Durability)
-		} else {
-			r.attachOrRefillNormalEle(ModifierDendro, a.Info.Durability)
-		}
 		return true
 	}
 	return false
@@ -203,14 +204,19 @@ func (r *Reactable) attachOrRefillNormalEle(mod ReactableModifier, dur combat.Du
 	}
 }
 
-func (r *Reactable) attachBurningFuel(dur combat.Durability) {
+func (r *Reactable) attachBurningFuel(dur combat.Durability, mult combat.Durability) {
 	//burning fuel always overwrites
-	r.Durability[ModifierBurningFuel] = 0.8 * dur
-	decayRate := 0.8 * dur / (6*dur + 420)
+	r.Durability[ModifierBurningFuel] = mult * dur
+	decayRate := mult * dur / (6*dur + 420)
 	if decayRate < 10.0/60.0 {
 		decayRate = 10.0 / 60.0
 	}
 	r.DecayRate[ModifierBurningFuel] = decayRate
+}
+
+func (r *Reactable) attachBurning() {
+	r.Durability[ModifierBurning] = 50
+	r.DecayRate[ModifierBurning] = 0
 }
 
 func (r *Reactable) attachQuicken(dur combat.Durability) {
@@ -323,6 +329,34 @@ func (r *Reactable) Tick() {
 	if r.ecTickSrc > -1 {
 		if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 			r.ecTickSrc = -1
+		}
+	}
+	if r.burningTickSrc > -1 {
+		if r.Durability[ModifierBurningFuel] < ZeroDur {
+			// reset src when burning fuel is gone
+			r.burningTickSrc = -1
+			// remove burning
+			if r.Durability[ModifierBurning] > ZeroDur {
+				// decay rate is 0 anyways
+				r.Durability[ModifierBurning] = 0
+			}
+			// remove existing dendro and quicken
+			if r.Durability[ModifierDendro] > ZeroDur {
+				r.Durability[ModifierDendro] = 0
+				r.DecayRate[ModifierDendro] = 0
+				r.burningCachedDendroDecayRate = 0
+			}
+			if r.Durability[ModifierQuicken] > ZeroDur {
+				r.Durability[ModifierQuicken] = 0
+				r.DecayRate[ModifierQuicken] = 0
+				r.burningCachedQuickenDecayRate = 0
+			}
+			// remove react check
+			r.core.Events.Unsubscribe(event.OnVaporize, fmt.Sprintf("burning-vaporize-%v", r.self.Index()))
+			r.core.Events.Unsubscribe(event.OnOverload, fmt.Sprintf("burning-overload-%v", r.self.Index()))
+			r.core.Events.Unsubscribe(event.OnMelt, fmt.Sprintf("burning-melt-%v", r.self.Index()))
+			r.core.Events.Unsubscribe(event.OnSwirlPyro, fmt.Sprintf("burning-swirlpyro-%v", r.self.Index()))
+			r.core.Events.Unsubscribe(event.OnCrystallizePyro, fmt.Sprintf("burning-crystallizepyro-%v", r.self.Index()))
 		}
 	}
 }
