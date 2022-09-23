@@ -68,9 +68,11 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 				r.burningEventSub()
 			}
 		}
-	} else if a.Info.Element == attributes.Dendro && r.Durability[ModifierBurningFuel] > ZeroDur {
+	} else if r.Durability[ModifierBurningFuel] > ZeroDur {
 		//overwrite burning fuel and recalc burning dmg
-		r.attachBurningFuel(a.Info.Durability, 0.8)
+		if a.Info.Element == attributes.Dendro {
+			r.attachBurningFuel(a.Info.Durability, 0.8)
+		}
 		r.calcBurningDmg(a)
 	}
 }
