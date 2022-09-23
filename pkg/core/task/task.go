@@ -1,35 +1,69 @@
 package task
 
+import "container/heap"
+
+type minHeap []task
+
 type task struct {
-	source int
-	f      func()
+	executeBy int
+	f         func()
+}
+
+type Handler struct {
+	f     *int
+	tasks *minHeap
 }
 
 type Tasker interface {
 	Add(f func(), delay int)
 }
 
-type Handler struct {
-	f     *int
-	tasks map[int][]task
-}
-
 func New(f *int) *Handler {
-	c := &Handler{f: f}
-	c.tasks = make(map[int][]task)
-	return c
-}
-
-func (c *Handler) Run() {
-	for i := 0; i < len(c.tasks[*c.f]); i++ {
-		c.tasks[*c.f][i].f()
+	return &Handler{
+		f:     f,
+		tasks: &minHeap{},
 	}
-	delete(c.tasks, *c.f)
 }
 
-func (c *Handler) Add(f func(), delay int) {
-	c.tasks[*c.f+delay] = append(c.tasks[*c.f+delay], task{
-		f:      f,
-		source: *c.f,
+func (s *Handler) Run() {
+	for s.tasks.Len() > 0 && s.tasks.Peek().executeBy <= *s.f {
+		heap.Pop(s.tasks).(task).f()
+	}
+}
+
+func (s *Handler) Add(f func(), delay int) {
+	heap.Push(s.tasks, task{
+		executeBy: *s.f + delay,
+		f:         f,
 	})
+}
+
+// min heap functions
+
+func (h minHeap) Len() int {
+	return len(h)
+}
+
+func (h minHeap) Less(i, j int) bool {
+	return h[i].executeBy < h[j].executeBy
+}
+
+func (h minHeap) Swap(i, j int) {
+	h[i], h[j] = h[j], h[i]
+}
+
+func (h *minHeap) Push(x any) {
+	*h = append(*h, x.(task))
+}
+
+func (h *minHeap) Pop() any {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
+func (h minHeap) Peek() task {
+	return h[0]
 }
