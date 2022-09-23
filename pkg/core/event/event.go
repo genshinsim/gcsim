@@ -31,6 +31,9 @@ const (
 	OnAggravate //target, AttackEvent
 	OnSpread    //target, AttackEvent
 	OnQuicken
+	OnBloom
+	OnHyperbloom
+	OnBurgeon
 	ReactionEventEndDelim
 	//other stuff
 	OnStamUse          //abil
