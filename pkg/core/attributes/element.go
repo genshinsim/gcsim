@@ -57,13 +57,10 @@ var ElementString = [...]string{
 	"dendro",
 	"quicken",
 	"frozen",
-	"delim",
 	"anemo",
 	"geo",
 	"",
 	"physical",
-	"ec",
-	"burning",
 	"unknown",
 }
 
