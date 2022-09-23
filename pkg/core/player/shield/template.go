@@ -35,6 +35,17 @@ func (t *Tmpl) Type() ShieldType {
 	return t.ShieldType
 }
 
+func (t *Tmpl) ShieldStrength(ele attributes.Element, bonus float64) float64 {
+	same := 1.0
+	if ele == t.Ele {
+		same = 2.5
+	}
+	if t.Ele == attributes.Geo {
+		same = 1.5
+	}
+	return t.HP * same * (1 + bonus)
+}
+
 func (t *Tmpl) OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) {
 	same := 1.0
 	if ele == t.Ele {
