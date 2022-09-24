@@ -1,7 +1,6 @@
 package reactable
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -351,12 +350,6 @@ func (r *Reactable) Tick() {
 				r.DecayRate[ModifierQuicken] = 0
 				r.burningCachedQuickenDecayRate = 0
 			}
-			// remove react check
-			r.core.Events.Unsubscribe(event.OnVaporize, fmt.Sprintf("burning-vaporize-%v", r.self.Index()))
-			r.core.Events.Unsubscribe(event.OnOverload, fmt.Sprintf("burning-overload-%v", r.self.Index()))
-			r.core.Events.Unsubscribe(event.OnMelt, fmt.Sprintf("burning-melt-%v", r.self.Index()))
-			r.core.Events.Unsubscribe(event.OnSwirlPyro, fmt.Sprintf("burning-swirlpyro-%v", r.self.Index()))
-			r.core.Events.Unsubscribe(event.OnCrystallizePyro, fmt.Sprintf("burning-crystallizepyro-%v", r.self.Index()))
 		}
 	}
 }

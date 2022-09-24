@@ -98,11 +98,13 @@ func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
 	return func() {
 		if r.burningTickSrc != src {
 			//source changed, do nothing
+			r.burningEventUnsub()
 			return
 		}
 		//burning SHOULD be active still, since if not we would have
 		//called cleanup and set source to -1
 		if r.Durability[ModifierBurningFuel] < ZeroDur || r.Durability[ModifierBurning] < ZeroDur {
+			r.burningEventUnsub()
 			return
 		}
 		//so burning is active, which means both auras must still have value > 0, so we can do dmg
@@ -110,7 +112,7 @@ func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
 			// skip the 9th tick because hyv spaghetti
 			r.core.QueueAttack(
 				r.burningSnapshot,
-				combat.NewCircleHit(r.self, 1, true, combat.TargettableEnemy),
+				combat.NewCircleHit(r.self, 1, true, r.self.Type()),
 				-1,
 				0,
 			)
@@ -138,12 +140,6 @@ func (r *Reactable) burningEventSub() {
 				r.DecayRate[ModifierQuicken] = r.burningCachedQuickenDecayRate
 				r.burningCachedQuickenDecayRate = 0
 			}
-			// remove react check
-			r.core.Events.Unsubscribe(event.OnVaporize, fmt.Sprintf("burning-vaporize-%v", r.self.Index()))
-			r.core.Events.Unsubscribe(event.OnOverload, fmt.Sprintf("burning-overload-%v", r.self.Index()))
-			r.core.Events.Unsubscribe(event.OnMelt, fmt.Sprintf("burning-melt-%v", r.self.Index()))
-			r.core.Events.Unsubscribe(event.OnSwirlPyro, fmt.Sprintf("burning-swirlpyro-%v", r.self.Index()))
-			r.core.Events.Unsubscribe(event.OnCrystallizePyro, fmt.Sprintf("burning-crystallizepyro-%v", r.self.Index()))
 		}
 		return false
 	}
@@ -153,4 +149,13 @@ func (r *Reactable) burningEventSub() {
 	r.core.Events.Subscribe(event.OnMelt, burningReactCheck, fmt.Sprintf("burning-melt-%v", r.self.Index()))
 	r.core.Events.Subscribe(event.OnSwirlPyro, burningReactCheck, fmt.Sprintf("burning-swirlpyro-%v", r.self.Index()))
 	r.core.Events.Subscribe(event.OnCrystallizePyro, burningReactCheck, fmt.Sprintf("burning-crystallizepyro-%v", r.self.Index()))
+}
+
+func (r *Reactable) burningEventUnsub() {
+	// remove react check
+	r.core.Events.Unsubscribe(event.OnVaporize, fmt.Sprintf("burning-vaporize-%v", r.self.Index()))
+	r.core.Events.Unsubscribe(event.OnOverload, fmt.Sprintf("burning-overload-%v", r.self.Index()))
+	r.core.Events.Unsubscribe(event.OnMelt, fmt.Sprintf("burning-melt-%v", r.self.Index()))
+	r.core.Events.Unsubscribe(event.OnSwirlPyro, fmt.Sprintf("burning-swirlpyro-%v", r.self.Index()))
+	r.core.Events.Unsubscribe(event.OnCrystallizePyro, fmt.Sprintf("burning-crystallizepyro-%v", r.self.Index()))
 }
