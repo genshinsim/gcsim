@@ -87,6 +87,7 @@ type Reactable struct {
 	burningTickSrc                int
 	burningCachedDendroDecayRate  combat.Durability
 	burningCachedQuickenDecayRate combat.Durability
+	burningEventSubExists         bool
 }
 
 type Enemy interface {
