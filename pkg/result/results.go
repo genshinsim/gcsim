@@ -24,7 +24,7 @@ type Summary struct {
 
 	// TODO: Debug data should be removed from final output. Instead gen on pagload from saved seed
 	Config         string                   `json:"config_file"`
-	DebugSeed      int64                    `json:"debug_seed"`
+	DebugSeed      uint64                   `json:"debug_seed"`
 	Debug          []map[string]interface{} `json:"debug"`
 	DebugMinDPSRun []map[string]interface{} `json:"debug_min_dps_run,omitempty"`
 	DebugMaxDPSRun []map[string]interface{} `json:"debug_max_dps_run,omitempty"`

@@ -20,7 +20,7 @@ type buffer struct {
 }
 
 type run struct {
-	seed int64
+	seed uint64
 	dps  float64
 }
 

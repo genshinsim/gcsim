@@ -135,7 +135,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		Runtime:          float64(time.Since(start).Nanoseconds()),
 		Iterations:       simcfg.Settings.Iterations,
 		Config:           cfg,
-		DebugSeed:        cryptoRandSeed(),
+		DebugSeed:        uint64(cryptoRandSeed()),
 		TargetDetails:    simcfg.Targets,
 		InitialCharacter: simcfg.InitialChar.String(),
 	}

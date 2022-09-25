@@ -21,7 +21,7 @@ const (
 )
 
 type Result struct {
-	Seed        int64   `json:"seed"`
+	Seed        uint64  `json:"seed"`
 	Duration    int     `json:"duration"`
 	TotalDamage float64 `json:"total_damage"`
 	DPS         float64 `json:"dps"`

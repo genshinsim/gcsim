@@ -2,8 +2,8 @@ package agg
 
 type Result struct {
 	// metadata
-	MinSeed  int64     `json:"min_seed"`
-	MaxSeed  int64     `json:"max_seed"`
+	MinSeed  uint64    `json:"min_seed"`
+	MaxSeed  uint64    `json:"max_seed"`
 	Duration FloatStat `json:"duration"`
 
 	// overview

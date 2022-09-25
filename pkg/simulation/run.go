@@ -45,7 +45,7 @@ func (s *Simulation) Run() (stats.Result, error) {
 		err = s.AdvanceFrame()
 		if err != nil {
 			log.Println(err)
-			return stats.Result{Seed: s.C.Seed, Duration: s.C.F + 1}, err
+			return stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}, err
 		}
 
 		if s.C.Combat.DamageMode {
@@ -66,7 +66,7 @@ func (s *Simulation) Run() (stats.Result, error) {
 
 	duration := s.C.F + 1
 	result := stats.Result{
-		Seed:        s.C.Seed,
+		Seed:        uint64(s.C.Seed),
 		Duration:    duration,
 		TotalDamage: s.C.Combat.TotalDamage,
 		DPS:         s.C.Combat.TotalDamage * 60 / float64(duration),
