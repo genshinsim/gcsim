@@ -54,7 +54,7 @@ func TestHyperBloom(t *testing.T) {
 
 	// trg1 should get hyperbloom damage
 	if src == nil {
-		t.Error("should get Hyperbloom")
+		t.Error("should get one Hyperbloom")
 	}
 	if c.Combat.GadgetCount() != 0 {
 		t.Logf("gadget should be removed, got %v", c.Combat.GadgetCount())
@@ -99,7 +99,7 @@ func TestECHyperBloom(t *testing.T) {
 		return 0, false
 	}
 
-	// summon aoe electro to proc 2 hyperbloom
+	// queue an aoe electro to proc 2 hyperblooms
 	ae := &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Electro,
