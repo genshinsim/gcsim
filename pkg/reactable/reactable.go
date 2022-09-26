@@ -141,7 +141,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 	case attributes.Hydro:
 		r.tryVaporize(a)
 		r.tryFreeze(a)
-		//bloom
+		r.tryBloom(a)
 		r.tryAddEC(a)
 	case attributes.Anemo:
 		r.trySwirlElectro(a)
@@ -155,7 +155,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		r.trySpread(a)
 		r.tryQuicken(a)
 		//burning
-		//bloom
+		r.tryBloom(a)
 	}
 }
 

@@ -119,7 +119,7 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 			ai.IgnoreDefPercent = .6
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0, c.burstRestorefunc, c.c6)
+			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0, c.burstRestorefunc, c.c6)
 		}, swordHitmarks[c.NormalCounter][i])
 	}
 

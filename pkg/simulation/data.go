@@ -115,6 +115,9 @@ func (s *Simulation) initDetailLog() {
 		event.OnAggravate:          combat.Aggravate,
 		event.OnSpread:             combat.Spread,
 		event.OnQuicken:            combat.Quicken,
+		event.OnBloom:              combat.Bloom,
+		event.OnHyperbloom:         combat.Hyperbloom,
+		event.OnBurgeon:            combat.Burgeon,
 	}
 
 	for k, v := range reactions {
