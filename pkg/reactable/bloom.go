@@ -37,12 +37,6 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 			return
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, 2)
-		// case attributes.Quicken:
-		// 	//TODO: ?? how to handle this??
-		// 	if r.Durability[ModifierHydro] < ZeroDur {
-		// 		return
-		// 	}
-		// 	consumed = r.reduce(attributes.Quicken, a.Info.Durability, 2)
 	}
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
@@ -82,27 +76,20 @@ func (r *Reactable) newDendroCore(a *combat.AttackEvent) *dendroCore {
 
 	x, y := r.self.Pos()
 	// for simplicity, seeds spawn randomly within 1 radius of target
-	x = x + r.core.Rand.Float64()
-	y = y + r.core.Rand.Float64()
+	x = x + 2*r.core.Rand.Float64() - 1
+	y = y + 2*r.core.Rand.Float64() - 1
 	s.Gadget = gadget.New(r.core, core.Coord{X: x, Y: y, R: 0.2})
-	s.Gadget.Duration = 300
-	s.Gadget.OnRemoved = func() {
-		atk := combat.AttackInfo{
-			ActorIndex:       a.Info.ActorIndex,
-			DamageSrc:        r.self.Key(),
-			Abil:             string(combat.Bloom),
-			AttackTag:        combat.AttackTagBloom,
-			ICDTag:           combat.ICDTagBloomDamage,
-			ICDGroup:         combat.ICDGroupReactionA,
-			Element:          attributes.Dendro,
-			Durability:       0,
-			IgnoreDefPercent: 1,
-		}
-		em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
-		atk.FlatDmg = 2.0 * r.calcReactionDmg(atk, em)
+	s.Gadget.Duration = 300 // ??
 
-		// self harm not active for now
-		r.core.QueueAttack(atk, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
+	s.Gadget.OnRemoved = func() {
+		ai := s.AIBloomReactionDamage(2, a.Info.ActorIndex, combat.AttackTagBloom, combat.ICDTagBloomDamage, combat.ICDGroupReactionA,
+			combat.StrikeTypeDefault, string(combat.Bloom))
+		// queue dmg
+		r.core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
+
+		// queue self damage
+		ai.FlatDmg = 0.05 * ai.FlatDmg
+		r.core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 	}
 
 	return s
@@ -125,31 +112,37 @@ func (s *dendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	case attributes.Electro:
 		// trigger hyperbloom targets the nearest enemy
 		// it can also do damage to player in small aoe
-		ai := s.AIBloomReactionDamage(atk.Info.ActorIndex, combat.AttackTagHyperbloom, combat.ICDTagHyperbloomDamage,
+		ai := s.AIBloomReactionDamage(3, atk.Info.ActorIndex, combat.AttackTagHyperbloom, combat.ICDTagHyperbloomDamage,
 			combat.ICDGroupReactionA, combat.StrikeTypeDefault, string(combat.Hyperbloom))
 
 		// queue dmg nearest enemy
-		if len(s.Core.Combat.Enemies()) <= 1 {
-			s.Core.QueueAttack(ai, combat.NewDefSingleTarget(s.Core.Combat.DefaultTarget, combat.TargettableEnemy), -1, 5)
-		} else {
-			x, y := s.Pos()
-			nearest := s.Core.Combat.EnemyByDistance(x, y, s.Index())[0]
-			s.Core.QueueAttack(ai, combat.NewDefSingleTarget(nearest, combat.TargettableEnemy), -1, 5)
+		x, y := s.Gadget.Pos()
+		enemies := s.Core.Combat.EnemyByDistance(x, y, s.Gadget.Key())
+		if len(enemies) > 0 {
+			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, false, combat.TargettableEnemy), -1, 5)
+
+			// also queue self damage
+			ai.FlatDmg = 0.05 * ai.FlatDmg
+			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, true, combat.TargettablePlayer), -1, 5)
 		}
 
 		s.Core.Combat.RemoveGadget(s.Gadget.Index())
-		s.Core.Events.Emit(event.OnHyperbloom, s, atk)
+		s.Core.Events.Emit(event.OnHyperbloom, s.Gadget, atk)
 		// s.Core.Combat.Log.NewEvent("hyperbloom triggered", glog.LogElementEvent, atk.Info.ActorIndex)
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
-		ai := s.AIBloomReactionDamage(atk.Info.ActorIndex, combat.AttackTagBurgeon, combat.ICDTagBurgeonDamage,
-			combat.ICDGroupReactionA, combat.StrikeTypeBlunt, string(combat.Burgeon))
 
-		// self harm not active for now
-		s.Core.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
+		ai := s.AIBloomReactionDamage(3, atk.Info.ActorIndex, combat.AttackTagBurgeon, combat.ICDTagBurgeonDamage,
+			combat.ICDGroupReactionA, combat.StrikeTypeDefault, string(combat.Burgeon))
+		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
+
+		// queue self damage
+		ai.FlatDmg = 0.05 * ai.FlatDmg
+		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+
 		s.Core.Combat.RemoveGadget(s.Gadget.Index())
-		s.Core.Events.Emit(event.OnBurgeon, s, atk)
+		s.Core.Events.Emit(event.OnBurgeon, s.Gadget, atk)
 	default:
 		return 0, false
 	}
@@ -159,11 +152,11 @@ func (s *dendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 
 func (s *dendroCore) ApplyDamage(*combat.AttackEvent, float64) {}
 
-func (s *dendroCore) AIBloomReactionDamage(ActorIndex int, AttackTag combat.AttackTag,
+func (s *dendroCore) AIBloomReactionDamage(BaseMultiplier float64, ActorIndex int, AttackTag combat.AttackTag,
 	ICDTag combat.ICDTag, ICDGroup combat.ICDGroup, StrikeType combat.StrikeType, Abil string) combat.AttackInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       ActorIndex,
-		DamageSrc:        s.Key(),
+		DamageSrc:        s.Gadget.Key(),
 		Element:          attributes.Dendro,
 		AttackTag:        AttackTag,
 		ICDTag:           ICDTag,
@@ -173,6 +166,6 @@ func (s *dendroCore) AIBloomReactionDamage(ActorIndex int, AttackTag combat.Atta
 		IgnoreDefPercent: 1,
 	}
 	em := s.Core.Player.ByIndex(ActorIndex).Stat(attributes.EM)
-	ai.FlatDmg = 3 * s.reactable.calcReactionDmg(ai, em)
+	ai.FlatDmg = BaseMultiplier * s.reactable.calcReactionDmg(ai, em)
 	return ai
 }

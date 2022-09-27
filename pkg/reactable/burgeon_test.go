@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-// test hyperbloom interacts with a seed
-func TestHyperBloom(t *testing.T) {
+// test burgeon
+func TestBurgeon(t *testing.T) {
 	c := testCore()
 	trg2 := addTargetToCore(c)
 	trg1 := addTargetToCore(c)
@@ -18,7 +18,7 @@ func TestHyperBloom(t *testing.T) {
 
 	var src *combat.AttackEvent
 	trg1.onDmgCallBack = func(atk *combat.AttackEvent) (float64, bool) {
-		if atk.Info.Abil == "Hyperbloom" {
+		if atk.Info.Abil == "Burgeon" {
 			src = atk
 		}
 		return 0, false
@@ -41,10 +41,10 @@ func TestHyperBloom(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 
-	// summon aoe electro to proc hyperbloom nearby trg1
+	// queue aoe pyro to proc burgeon
 	ae := &combat.AttackEvent{
 		Info: combat.AttackInfo{
-			Element:    attributes.Electro,
+			Element:    attributes.Pyro,
 			Durability: 25,
 		},
 	}
@@ -53,17 +53,17 @@ func TestHyperBloom(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 
-	// trg1 should get hyperbloom damage
+	// trg1 should get Burgeon damage
 	if src == nil {
-		t.Error("should get one Hyperbloom")
+		t.Error("should get one Burgeon")
 	}
 	if c.Combat.GadgetCount() != 0 {
 		t.Logf("gadget should be removed, got %v", c.Combat.GadgetCount())
 	}
 }
 
-// hyperbloom with 2 seeds
-func TestECHyperBloom(t *testing.T) {
+// Burgeon with 2 seeds
+func TestECBurgeon(t *testing.T) {
 	c := testCore()
 	trg := addTargetToCore(c)
 	c.Init()
@@ -100,17 +100,17 @@ func TestECHyperBloom(t *testing.T) {
 
 	var count int = 0
 	trg.onDmgCallBack = func(ae *combat.AttackEvent) (float64, bool) {
-		if ae.Info.Abil == "Hyperbloom" {
+		if ae.Info.Abil == "Burgeon" {
 			count++
 		}
 		return 0, false
 	}
 
-	// queue an aoe electro to proc 2 hyperblooms
+	// queue an aoe pyro to proc 2 Burgeons
 	ae := &combat.AttackEvent{
 		Info: combat.AttackInfo{
-			Element:    attributes.Electro,
-			Durability: 50,
+			Element:    attributes.Pyro,
+			Durability: 25,
 		},
 	}
 	c.QueueAttack(ae.Info, combat.NewCircleHit(trg.self, 10, true, combat.TargettableGadget), -1, 1)
@@ -123,6 +123,6 @@ func TestECHyperBloom(t *testing.T) {
 		t.Errorf("expected blooms wiped, still got %v", c.Combat.GadgetCount())
 	}
 	if count != 2 {
-		t.Errorf("Expected 2 hyperblooms, got %v", count)
+		t.Errorf("Expected 2 Burgeons, got %v", count)
 	}
 }
