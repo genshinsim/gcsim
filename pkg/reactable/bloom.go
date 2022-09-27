@@ -37,6 +37,8 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 			return
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, 2)
+	default:
+		return
 	}
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
@@ -60,7 +62,7 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 
 type dendroCore struct {
 	*gadget.Gadget
-	reactable *Reactable
+	reactable *Reactable // for func calcReactionDmg
 }
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
