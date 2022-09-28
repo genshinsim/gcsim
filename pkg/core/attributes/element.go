@@ -61,8 +61,6 @@ var ElementString = [...]string{
 	"geo",
 	"",
 	"physical",
-	"ec",
-	"burning",
 	"unknown",
 }
 
