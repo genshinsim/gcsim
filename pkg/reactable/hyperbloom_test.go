@@ -37,7 +37,7 @@ func TestHyperBloom(t *testing.T) {
 		},
 	})
 	// wait a bit for bloom spawns
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 46; i++ {
 		advanceCoreFrame(c)
 	}
 
@@ -95,6 +95,9 @@ func TestECHyperBloom(t *testing.T) {
 			Durability: 25,
 		},
 	})
+	for i := 0; i < 46; i++ {
+		advanceCoreFrame(c)
+	}
 
 	// should create 2 blooms
 	if c.Combat.GadgetCount() != 2 {
