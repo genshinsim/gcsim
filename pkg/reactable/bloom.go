@@ -44,18 +44,22 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
 
-	// should add delay for spawning time maybe?
-	r.addBloomGadget(a)
+	// TODO: re-check the frame delay
+	r.core.Tasks.Add(func() {
+		r.addBloomGadget(a)
+	}, 45)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
 
-	// check if quicken just added, then quicken gonna self-react with hydro if there's any hydro left
+	// if quicken just added, then quicken gonna self-react with hydro if there's any hydro left
 	if r.Durability[ModifierQuicken] >= ZeroDur && r.Durability[ModifierHydro] >= ZeroDur {
 		hydroConsumed := r.reduce(attributes.Quicken, r.Durability[ModifierHydro], 0.5)
 		r.Durability[ModifierHydro] -= hydroConsumed
 		r.Durability[ModifierHydro] = max(r.Durability[ModifierHydro], 0)
 
-		// same as above
-		r.addBloomGadget(a)
+		// TODO: re-check the frame delay
+		r.core.Tasks.Add(func() {
+			r.addBloomGadget(a)
+		}, 45)
 		r.core.Events.Emit(event.OnBloom, r.self, a)
 	}
 }
