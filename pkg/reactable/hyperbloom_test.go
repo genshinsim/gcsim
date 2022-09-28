@@ -57,8 +57,11 @@ func TestHyperBloom(t *testing.T) {
 	if src == nil {
 		t.Error("should get one Hyperbloom")
 	}
+	if src.Info.FlatDmg == 0 {
+		t.Error("expected FlatDmg not to be 0")
+	}
 	if c.Combat.GadgetCount() != 0 {
-		t.Logf("gadget should be removed, got %v", c.Combat.GadgetCount())
+		t.Errorf("gadget should be removed, got %v", c.Combat.GadgetCount())
 	}
 }
 
@@ -98,10 +101,10 @@ func TestECHyperBloom(t *testing.T) {
 		t.Errorf("expected 2 blooms, got %v", c.Combat.GadgetCount())
 	}
 
-	var count int = 0
+	var count []*combat.AttackEvent = []*combat.AttackEvent{}
 	trg.onDmgCallBack = func(ae *combat.AttackEvent) (float64, bool) {
 		if ae.Info.Abil == "Hyperbloom" {
-			count++
+			count = append(count, ae)
 		}
 		return 0, false
 	}
@@ -122,7 +125,12 @@ func TestECHyperBloom(t *testing.T) {
 	if c.Combat.GadgetCount() != 0 {
 		t.Errorf("expected blooms wiped, still got %v", c.Combat.GadgetCount())
 	}
-	if count != 2 {
+	if len(count) != 2 {
 		t.Errorf("Expected 2 hyperblooms, got %v", count)
+	}
+	for _, v := range count {
+		if v.Info.FlatDmg == 0 {
+			t.Error("expected FlatDmg not to be 0")
+		}
 	}
 }

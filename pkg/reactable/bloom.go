@@ -90,6 +90,7 @@ func (r *Reactable) newDendroCore(a *combat.AttackEvent) *dendroCore {
 		r.core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
 
 		// queue self damage
+		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		r.core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 	}
@@ -124,6 +125,7 @@ func (s *dendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, false, combat.TargettableEnemy), -1, 5)
 
 			// also queue self damage
+			ai.Abil += " (self damage)"
 			ai.FlatDmg = 0.05 * ai.FlatDmg
 			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, true, combat.TargettablePlayer), -1, 5)
 		}
@@ -140,6 +142,7 @@ func (s *dendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
 
 		// queue self damage
+		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 

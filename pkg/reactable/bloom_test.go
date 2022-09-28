@@ -28,7 +28,7 @@ func TestHydroBloom(t *testing.T) {
 	// should create a seed, explodes after 5s
 	advanceCoreFrame(c)
 
-	if !(c.Combat.GadgetCount() == 1) {
+	if c.Combat.GadgetCount() != 1 {
 		t.Errorf("expected created a gadget (bloom), got %v", c.Combat.GadgetCount())
 	}
 	if !next.Reacted {
@@ -60,7 +60,7 @@ func TestDendroBloom(t *testing.T) {
 	// should create a seed, explodes after 5s
 	advanceCoreFrame(c)
 
-	if !(c.Combat.GadgetCount() == 1) {
+	if c.Combat.GadgetCount() != 1 {
 		t.Errorf("expected created a gadget (bloom), got %v", c.Combat.GadgetCount())
 	}
 	if !next.Reacted {
@@ -104,7 +104,7 @@ func TestECBloom(t *testing.T) {
 	trg.React(next)
 
 	// t.Logf("active auras %v", trg.ActiveAuraString())
-	if !(c.Combat.GadgetCount() == 2) {
+	if c.Combat.GadgetCount() != 2 {
 		t.Errorf("expected created 2 blooms, got %v", c.Combat.GadgetCount())
 	}
 }
