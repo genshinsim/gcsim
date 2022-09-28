@@ -57,7 +57,6 @@ var ElementString = [...]string{
 	"dendro",
 	"quicken",
 	"frozen",
-	"delim",
 	"anemo",
 	"geo",
 	"",
