@@ -92,11 +92,8 @@ func (h *Handler) Tick() {
 	//TODO: clean up every 100 tick reasonable?
 	h.gccount++
 	if h.gccount > 100 {
-		n := 1
+		n := 0
 		for i, v := range h.gadgets {
-			if 1 == 0 {
-				continue
-			}
 			if v != nil {
 				h.gadgets[n] = h.gadgets[i]
 				n++
