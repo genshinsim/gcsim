@@ -48,9 +48,9 @@ func (p *panda) Tick() {
 	case 103, 203, 303, 403: //swirl window
 		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index).
 			SetEnded(p.c.Core.F + infuseWindow + 1)
-		p.Durability[attributes.Pyro] = infuseDurability
+		p.Durability[reactable.ModifierPyro] = infuseDurability
 		p.Core.Tasks.Add(func() {
-			p.Durability[attributes.Pyro] = 0
+			p.Durability[reactable.ModifierPyro] = 0
 		}, infuseWindow+1) // +1 since infuse window is inclusive
 		//queue this in advance because that's how it is on live
 		p.breath()
@@ -87,18 +87,18 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 		return 0, false
 	}
 	//check pyro window
-	if p.Durability[attributes.Pyro] <= 0 {
+	if p.Durability[reactable.ModifierPyro] < reactable.ZeroDur {
 		return 0, false
 	}
 
 	p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index)
 
 	//cheat a bit, set the durability just enough to match incoming sucrose E gauge
-	oldDur := p.Durability[attributes.Pyro]
-	p.Durability[attributes.Pyro] = infuseDurability
+	oldDur := p.Durability[reactable.ModifierPyro]
+	p.Durability[reactable.ModifierPyro] = infuseDurability
 	p.React(atk)
 	// restore the durability after
-	p.Durability[attributes.Pyro] = oldDur
+	p.Durability[reactable.ModifierPyro] = oldDur
 
 	return 0, false
 }
