@@ -50,7 +50,11 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 	}, 45)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
 
-	// if quicken just added, then quicken gonna self-react with hydro if there's any hydro left
+	r.checkQuickenBloom(a)
+}
+
+// if quicken just added, then quicken gonna self-react with hydro if there's any hydro left
+func (r *Reactable) checkQuickenBloom(a *combat.AttackEvent) {
 	if r.Durability[ModifierQuicken] >= ZeroDur && r.Durability[ModifierHydro] >= ZeroDur {
 		hydroConsumed := r.reduce(attributes.Quicken, r.Durability[ModifierHydro], 0.5)
 		r.Durability[ModifierHydro] -= hydroConsumed

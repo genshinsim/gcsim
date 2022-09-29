@@ -69,4 +69,8 @@ func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
 
 	//attach quicken aura; special amount
 	r.attachQuicken(consumed)
+
+	if r.Durability[ModifierElectro] >= ZeroDur {
+		r.checkQuickenBloom(a)
+	}
 }
