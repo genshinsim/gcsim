@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.updateShield(1, defFactor)
 		}, skillShieldStart)
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), skillHitmark, skillHitmark, cb, c.c4)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget), skillHitmark, skillHitmark, cb, c.c4)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 13)
 	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+c.ParticleDelay)
@@ -94,7 +94,7 @@ func (c *char) shieldDot(src int) func() {
 			Durability: 25,
 			Mult:       skillDot[c.TalentLvlSkill()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 1, 1)
 
 		c.Core.Tasks.Add(c.shieldDot(src), 2*60)
 	}

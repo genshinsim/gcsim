@@ -83,7 +83,7 @@ func (c *char) burstInfusedTicks() {
 
 	// ticks at 24f. 15 total
 	for i := 0; i < 15; i++ {
-		c.Core.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4, false, combat.TargettableEnemy), i*24, cb)
+		c.Core.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4, false, combat.TargettableEnemy, combat.TargettableGadget), i*24, cb)
 	}
 }
 

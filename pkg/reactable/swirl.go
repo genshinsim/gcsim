@@ -50,7 +50,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHit(r.self, 5, false, combat.TargettableEnemy),
+		combat.NewCircleHit(r.self, 5, false, combat.TargettableEnemy, combat.TargettableGadget),
 		1,
 	)
 }

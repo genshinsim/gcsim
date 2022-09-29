@@ -78,7 +78,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				if c.Base.Cons >= 6 {
 					cbAbs = c6cb(c.qInfuse)
 				}
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, cbAbs)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, cbAbs)
 			}
 			//check if infused
 		}, 94+30*i)
