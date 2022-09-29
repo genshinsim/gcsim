@@ -108,7 +108,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				if c.eInfuse != attributes.NoElement {
 					aiMaxCutAbs.Element = c.eInfuse
 					aiMaxCutAbs.ICDTag = c.eICDTag
-					c.Core.QueueAttack(aiMaxCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, 0)
+					c.Core.QueueAttack(aiMaxCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 				}
 				//check if infused
 			}, hitmark)
@@ -117,7 +117,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				if c.eInfuse != attributes.NoElement {
 					aiCutAbs.Element = c.eInfuse
 					aiCutAbs.ICDTag = c.eICDTag
-					c.Core.QueueAttack(aiCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, 0)
+					c.Core.QueueAttack(aiCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 				}
 				//check if infused
 			}, hitmark)
@@ -177,7 +177,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		if c.eInfuse != attributes.NoElement {
 			aiStormAbs.Element = c.eInfuse
 			aiStormAbs.ICDTag = c.eICDTag
-			c.Core.QueueAttack(aiStormAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(aiStormAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
 		}
 		//check if infused
 	}, hitmark)

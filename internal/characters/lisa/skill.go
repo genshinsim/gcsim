@@ -35,7 +35,7 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 117
 }
 
-//p = 0 for no hold, p = 1 for hold
+// p = 0 for no hold, p = 1 for hold
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
 	if hold == 1 {
@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillPress(p)
 }
 
-//TODO: how long do stacks last?
+// TODO: how long do stacks last?
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -84,8 +84,8 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 }
 
-//After an extended casting time, calls down lightning from the heavens, dealing massive Electro DMG to all nearby opponents.
-//Deals great amounts of extra damage to opponents based on the number of Conductive stacks applied to them, and clears their Conductive status.
+// After an extended casting time, calls down lightning from the heavens, dealing massive Electro DMG to all nearby opponents.
+// Deals great amounts of extra damage to opponents based on the number of Conductive stacks applied to them, and clears their Conductive status.
 func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	//no multiplier as that's target dependent
 	ai := combat.AttackInfo{
@@ -126,7 +126,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	//[8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, skillHoldHitmark, c1cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy, combat.TargettableGadget), 0, skillHoldHitmark, c1cb)
 
 	// count := 4
 	// if c.Core.Rand.Float64() < 0.5 {

@@ -295,7 +295,7 @@ func (c *char) rollAbsorb() {
 				Durability: 25,
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 1, 1)
 		case combat.AttackTagElementalArtHold:
 			// Kick Elemental DMG
 			ai := combat.AttackInfo{
@@ -308,7 +308,7 @@ func (c *char) rollAbsorb() {
 				Durability: 25,
 				Mult:       skillAbsorbEnd[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 1, 1)
 		}
 
 		return false
