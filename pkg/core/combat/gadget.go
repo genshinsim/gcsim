@@ -15,6 +15,19 @@ func (h *Handler) AddGadget(t Target) {
 	t.SetKey(h.nextkey())
 }
 
+func (h *Handler) ReplaceGadget(key int, t Target) {
+	//do nothing if not found
+	for i, v := range h.gadgets {
+		if v.Key() == key {
+			h.gadgets[i] = t
+		}
+	}
+}
+
+func (h *Handler) Gadget(i int) Target {
+	return h.gadgets[i]
+}
+
 func (h *Handler) GadgetCount() int {
 	count := 0
 	for _, v := range h.gadgets {

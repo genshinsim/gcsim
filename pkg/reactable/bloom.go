@@ -76,8 +76,8 @@ type DendroCore struct {
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	var t combat.Target = r.newDendroCore(a)
-	r.core.Events.Emit(event.OnBloom, r.self, a, t)
 	r.core.Combat.AddGadget(t)
+	r.core.Events.Emit(event.OnDendroCore, t)
 }
 
 func (r *Reactable) newDendroCore(a *combat.AttackEvent) *DendroCore {

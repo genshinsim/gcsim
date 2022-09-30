@@ -31,10 +31,11 @@ const (
 	OnAggravate //target, AttackEvent
 	OnSpread    //target, AttackEvent
 	OnQuicken
-	OnBloom //target, AttackEvent, Gadget (combat.Target)
+	OnBloom //target, AttackEvent
 	OnHyperbloom
 	OnBurgeon
-	OnBurning //target, AttackEvent
+	OnBurning    //target, AttackEvent
+	OnDendroCore //Gadget
 	ReactionEventEndDelim
 	//other stuff
 	OnStamUse          //abil
