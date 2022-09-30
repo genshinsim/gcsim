@@ -151,6 +151,7 @@ func SetupResonance(s *core.Core) {
 				s.Events.Subscribe(event.OnElectroCharged, recover, "electro-res")
 				s.Events.Subscribe(event.OnQuicken, recover, "electro-res")
 				s.Events.Subscribe(event.OnAggravate, recover, "electro-res")
+				s.Events.Subscribe(event.OnHyperbloom, recover, "electro-res")
 			case attributes.Geo:
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
 				//following special characteristics:

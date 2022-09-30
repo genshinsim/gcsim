@@ -9,7 +9,6 @@ import (
 func (c *char) a4() {
 	last := 0
 	cb := func(args ...interface{}) bool {
-
 		t := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 
@@ -49,6 +48,7 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnHyperbloom, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnQuicken, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnAggravate, cb, "fischl-a4")
 }
