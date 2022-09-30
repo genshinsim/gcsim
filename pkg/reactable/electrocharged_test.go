@@ -5,35 +5,32 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
 func TestEC(t *testing.T) {
 
-	c := testCore()
-	trg := addTargetToCore(c)
-
-	c.Init()
-
-	count := 0
-	trg.onDmgCallBack = func(atk *combat.AttackEvent) (float64, bool) {
-		if atk.Info.Abil == "electrocharged" {
-			count++
-		}
-		return 0, false
+	c, _ := testCoreWithTrgs(1)
+	err := c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
 	}
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
-			Element:    attributes.Hydro,
-			Durability: 25,
-		},
-	})
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
-			Element:    attributes.Electro,
-			Durability: 25,
-		},
-	})
+	count := 0
+	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		if ae, ok := args[1].(*combat.AttackEvent); ok {
+			if ae.Info.Abil == "electrocharged" {
+				count++
+			}
+		}
+		return false
+
+	}, "ec-dmg")
+
+	c.QueueAttackEvent(makeAOEAttack(attributes.Hydro, 25), 0)
+	c.Tick()
+	c.QueueAttackEvent(makeAOEAttack(attributes.Electro, 25), 0)
 	//tick once every 60 second. we should get 2 ticks total
 	for i := 0; i < 121; i++ {
 		advanceCoreFrame(c)
