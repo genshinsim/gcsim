@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
-var dendroEvents = []event.Event{event.OnQuicken, event.OnAggravate, event.OnSpread} // TODO: put all dendro events here
+var dendroEvents = []event.Event{event.OnBurning, event.OnQuicken, event.OnAggravate, event.OnSpread, event.OnBloom, event.OnHyperbloom, event.OnBurgeon}
 
 func init() {
 	core.RegisterCharFunc(keys.Collei, NewChar)
