@@ -76,32 +76,32 @@ type DendroCore struct {
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
-		var t combat.Target = r.newDendroCore(a)
+		var t combat.Target = NewDendroCore(r.core, r.self, a)
 		r.core.Combat.AddGadget(t)
 		r.core.Events.Emit(event.OnDendroCore, t)
 	}, DendroCoreDelay)
 }
 
-func (r *Reactable) newDendroCore(a *combat.AttackEvent) *DendroCore {
+func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *DendroCore {
 	s := &DendroCore{}
 
-	x, y := r.self.Pos()
+	x, y := pos.Pos()
 	// for simplicity, seeds spawn randomly within 1 radius of target
-	x = x + 2*r.core.Rand.Float64() - 1
-	y = y + 2*r.core.Rand.Float64() - 1
-	s.Gadget = gadget.New(r.core, core.Coord{X: x, Y: y, R: 0.2})
+	x = x + 2*c.Rand.Float64() - 1
+	y = y + 2*c.Rand.Float64() - 1
+	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2})
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
 	s.Gadget.OnRemoved = func() {
 		ai := NewBloomAttack(char, s)
-		r.core.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		r.core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 	}
 
 	return s
