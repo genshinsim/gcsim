@@ -34,9 +34,9 @@ const (
 	OnBloom //target, AttackEvent
 	OnHyperbloom
 	OnBurgeon
-	OnBurning    //target, AttackEvent
-	OnDendroCore //Gadget
+	OnBurning //target, AttackEvent
 	ReactionEventEndDelim
+	OnDendroCore //Gadget
 	//other stuff
 	OnStamUse          //abil
 	OnShielded         //shield
