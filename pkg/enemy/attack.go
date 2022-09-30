@@ -25,6 +25,15 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	if atk.Info.Durability > 0 {
 		//check for ICD first
 		atk.OnICD = !e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
+		//special global ICD for Burning DMG
+		if atk.Info.ICDTag == combat.ICDTagBurningDamage {
+			//checks for ICD on all the other characters as well
+			for i := 0; i < len(e.Core.Player.Chars()); i++ {
+				if i != atk.Info.ActorIndex {
+					atk.OnICD = atk.OnICD || !e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i)
+				}
+			}
+		}
 		if !atk.OnICD && atk.Info.Element != attributes.Physical {
 			existing := e.Reactable.ActiveAuraString()
 			applied := atk.Info.Durability
