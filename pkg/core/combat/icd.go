@@ -58,6 +58,7 @@ const (
 	ICDTagTartagliaRiptideFlash
 	ICDTagColleiSprout
 	ICDReactionDamageDelim
+	ICDTagDoriC2
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
 	ICDTagECDamage

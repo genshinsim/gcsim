@@ -23,7 +23,18 @@ func (c *char) c2() {
 		if src != c.Index {
 			return false
 		}
-
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Special Franchise",
+			AttackTag:  combat.AttackTagNone,
+			ICDTag:     combat.ICDTagDoriC2,
+			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Electro,
+			Durability: 25,
+			Mult:       0.5,
+		}
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, 10)
 		return false
 	}, "dori-c2")
 }
@@ -32,13 +43,13 @@ func (c *char) c2() {
 // ·When their HP is lower than 50%, they gain 50% Incoming Healing Bonus.
 // ·When their Energy is less than 50%, they gain 30% Energy Recharge.
 func (c *char) c4() {
-	//c4 should last for the duration of the burst
-	//lasts 12.5 second, ticks every 0.5s; adds mod to active char for 2s
+	// c4 should last for the duration of the burst
+	// lasts 12.5 second, ticks every 0.5s; adds mod to active char for 2s
 	for i := 30; i < 750; i += 30 {
 		c.Core.Tasks.Add(func() {
 			active := c.Core.Player.ActiveChar()
-			//add healing bonus if hp <= 0.5
-			//TODO:Duration and tick rate unknown, I assumed diona's values
+			// add healing bonus if hp <= 0.5
+			// TODO:Duration and tick rate unknown, I assumed diona's values
 			if active.HPCurrent/active.MaxHP() < 0.5 {
 				active.AddHealBonusMod(character.HealBonusMod{
 					Base: modifier.NewBaseWithHitlag("dori-c4-healbonus", 120),
@@ -50,7 +61,7 @@ func (c *char) c4() {
 				})
 				c.Tags["c4bonus-"+active.Base.Key.String()] = c.Core.F + 120
 			}
-			//add energy recharge
+			// add energy recharge
 			if active.Energy/active.EnergyMax < 0.5 {
 				erMod := make([]float64, attributes.EndStatType)
 				erMod[attributes.ER] = 0.3
@@ -62,7 +73,6 @@ func (c *char) c4() {
 					},
 				})
 			}
-
 		}, i)
 	}
 }
@@ -73,7 +83,7 @@ func (c *char) c4() {
 // This type of healing can occur once every 0.1s.
 func (c *char) c6() {
 	const c6icd = "dori-c6-heal-icd"
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool { //TODO:On attack will land is ok?
+	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool { // TODO:On attack will land is ok?
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -88,8 +98,8 @@ func (c *char) c6() {
 			return false
 		}
 
-		c.AddStatus(c6icd, 6, false) //0.1s*60 icd
-		//heal party members
+		c.AddStatus(c6icd, 6, false) // 0.1s*60 icd
+		// heal party members
 
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
@@ -101,5 +111,4 @@ func (c *char) c6() {
 
 		return false
 	}, "dori-c6")
-
 }
