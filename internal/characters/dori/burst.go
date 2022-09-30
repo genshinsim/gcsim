@@ -37,8 +37,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
-		Mult:       0,
-		FlatDmg:    c.MaxHP() * burst[c.TalentLvlBurst()],
+		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
 
