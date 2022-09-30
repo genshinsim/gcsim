@@ -10,13 +10,17 @@ import (
 
 var burstFrames []int
 
-const burstStart = 55
+const (
+	burstHitmark    = 28
+	burstHealPeriod = 12 * 60 / 6
+)
 
 func init() {
-	burstFrames = frames.InitAbilSlice(63) // Q -> D/J
-	burstFrames[action.ActionAttack] = 62  // Q -> N1
-	burstFrames[action.ActionSkill] = 62   // Q -> E
-	burstFrames[action.ActionSwap] = 62    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(58) // Q
+	burstFrames[action.ActionAttack] = 57  // Q -> N1
+	burstFrames[action.ActionSkill] = 57   // Q -> E
+	burstFrames[action.ActionJump] = 57    // Q -> J
+	burstFrames[action.ActionSwap] = 56    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -32,18 +36,21 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       0,
 		FlatDmg:    c.MaxHP() * burst[c.TalentLvlBurst()],
 	}
-	snap := c.Snapshot(&ai) //TODO: does it snaps?
+	snap := c.Snapshot(&ai)
 
-	//damage ticks
-	for i := 1; i < 30; i++ { //12/0.4s=30 ticks
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefBoxHit(1, -2, false, combat.TargettableEnemy), 24*i+burstStart) //TODO: put an actual accurate hitbox that depends on both the player and lamps position....yeah it wont be me lmao
-
+	// 32 damage ticks
+	for i := 0; i < 32; i++ {
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewDefBoxHit(1, -2, false, combat.TargettableEnemy),
+			24*i+burstHitmark,
+		) // TODO: accurate hitbox
 	}
-	interval := 12 * 60 / 6 //interval between heals
 
-	for i := burstStart; i < 6*interval+burstStart; i += interval { //TODO: it does regen and heal at the same ticks?
+	for i := 0; i < 6; i++ {
 		c.Core.Tasks.Add(func() {
-			//Heals
+			// Heals
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
 				Target:  c.Core.Player.Active(),
@@ -51,21 +58,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				Src:     bursthealpp[c.TalentLvlBurst()]*c.MaxHP() + bursthealflat[c.TalentLvlBurst()],
 				Bonus:   snap.Stats[attributes.Heal],
 			})
-			//Energy regen to active char
+			// Energy regen to active char
 			active := c.Core.Player.ActiveChar()
 			active.AddEnergy("Alcazarzaray's Exactitude: Energy regen", burstenergy[c.TalentLvlBurst()])
-		}, i)
+		}, burstHealPeriod*i+11)
 	}
 	c.Core.Tasks.Add(func() {
 		// C4
 		if c.Base.Cons >= 4 {
 			c.c4()
 		}
-
-	}, burstStart)
+	}, burstHitmark)
 
 	c.ConsumeEnergy(4)
-	c.SetCD(action.ActionBurst, 1200) // 20s * 60
+	c.SetCDWithDelay(action.ActionBurst, 1200, 1) // 20s * 60
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
