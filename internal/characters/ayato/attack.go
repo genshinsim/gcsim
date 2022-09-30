@@ -22,14 +22,19 @@ func init() {
 	// NA cancels
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 24)
-	attackFrames[0][action.ActionAttack] = 15
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 21) // N1 -> CA
+	attackFrames[0][action.ActionAttack] = 15                                // N1 -> N2
 
-	// TODO: charge cancels are missing?
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 27)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 30)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 27)
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 63)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 27) // N2 -> N3/CA
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 34) // N3 -> CA
+	attackFrames[2][action.ActionAttack] = 30                                // N3 -> N4
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 29) // N4 -> CA
+	attackFrames[3][action.ActionAttack] = 27                                // N4 -> N5
+
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 63) // N5 -> N1
+	attackFrames[4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 
 	// NA (in skill) -> x
 	shunsuikenFrames = frames.InitNormalCancelSlice(shunsuikenHitmark, 23)
