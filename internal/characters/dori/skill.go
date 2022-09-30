@@ -31,7 +31,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Troubleshooter Shot",
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Electro,
