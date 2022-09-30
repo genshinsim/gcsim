@@ -48,8 +48,6 @@ func (c *char) c4() {
 	for i := 30; i < 750; i += 30 {
 		c.Core.Tasks.Add(func() {
 			active := c.Core.Player.ActiveChar()
-			// add healing bonus if hp <= 0.5
-			// TODO:Duration and tick rate unknown, I assumed diona's values
 			if active.HPCurrent/active.MaxHP() < 0.5 {
 				active.AddHealBonusMod(character.HealBonusMod{
 					Base: modifier.NewBaseWithHitlag("dori-c4-healbonus", 120),
