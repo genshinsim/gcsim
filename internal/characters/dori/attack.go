@@ -9,41 +9,38 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{12, 13, 13}
-var attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{27}, {19, 33}, {60}}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0, 0}, {0.06}}
+)
 
 const normalHitNum = 3
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 23) // N1 -> CA
-	attackFrames[0][action.ActionAttack] = 19                             // N1 -> N2
-
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 27) // N2 -> CA
-	attackFrames[1][action.ActionAttack] = 17                             // N2 -> N3
-
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 50) // N3 -> CA
-	attackFrames[2][action.ActionAttack] = 42                             // N3 -> N4
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 44)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][1], 46)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 108)
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	for _, mult := range auto[c.NormalCounter] {
+	for i, mult := range auto[c.NormalCounter] {
 		ai := combat.AttackInfo{
-			ActorIndex:       c.Index,
-			Abil:             fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:        combat.AttackTagNormal,
-			ICDTag:           combat.ICDTagNormalAttack,
-			ICDGroup:         combat.ICDGroupDefault,
-			StrikeType:       combat.StrikeTypeBlunt,
-			Element:          attributes.Physical,
-			Durability:       25,
-			Mult:             mult[c.TalentLvlAttack()],
-			HitlagFactor:     0.01,
-			HitlagHaltFrames: attackHitlagHaltFrame[c.NormalCounter] * 60,
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			AttackTag:          combat.AttackTagNormal,
+			ICDTag:             combat.ICDTagNormalAttack,
+			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeBlunt,
+			Element:            attributes.Physical,
+			Durability:         25,
+			Mult:               mult[c.TalentLvlAttack()],
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: true,
 		}
-		//c6 key check
+		// c6 key check
 		if c.StatusIsActive(c6key) {
 			ai.Element = attributes.Electro
 		}
@@ -54,7 +51,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				0,
 				0,
 			)
-		}, attackHitmarks[c.NormalCounter])
+		}, attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
@@ -62,7 +59,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 }
