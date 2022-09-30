@@ -61,7 +61,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			})
 			// Energy regen to active char
 			active := c.Core.Player.ActiveChar()
-			active.AddEnergy("Alcazarzaray's Exactitude: Energy regen", burstenergy[c.TalentLvlBurst()])
+			active.AddEnergy("Alcazarzaray's Exactitude: Energy Regen", burstenergy[c.TalentLvlBurst()])
 		}, burstHealPeriod*i+11)
 	}
 	c.Core.Tasks.Add(func() {

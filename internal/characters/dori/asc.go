@@ -37,8 +37,9 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnOverload, reduce, "dori-a1")
 	c.Core.Events.Subscribe(event.OnElectroCharged, reduce, "dori-a1")
 	c.Core.Events.Subscribe(event.OnSuperconduct, reduce, "dori-a1")
-	//c.Core.Events.Subscribe(event.OnQuicken, reduce, "dori-a1") //TODO:save this for dendro branch folks
-	//c.Core.Events.Subscribe(event.OnAggravate, reduce, "dori-a1")
+	c.Core.Events.Subscribe(event.OnQuicken, reduce, "dori-a1")
+	c.Core.Events.Subscribe(event.OnAggravate, reduce, "dori-a1")
+	c.Core.Events.Subscribe(event.OnHyperbloom, reduce, "dori-a1")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, reduce, "dori-a1")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, reduce, "dori-a1")
 }
