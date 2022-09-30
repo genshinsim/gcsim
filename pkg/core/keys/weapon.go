@@ -87,6 +87,7 @@ var weaponNames = []string{
 	"ironpoint",
 	"ironsting",
 	"kagotsurubeisshin",
+	"sapwoodblade",
 	"kagurasverity",
 	"katsuragikirinagamasa",
 	"kitaincrossspear",
@@ -227,6 +228,7 @@ const (
 	IronPoint
 	IronSting
 	KagotsurubeIsshin
+	SapwoodBlade
 	KagurasVerity
 	KatsuragikiriNagamasa
 	KitainCrossSpear
