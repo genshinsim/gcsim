@@ -111,7 +111,6 @@ const (
 	Heizou
 	Tighnari
 	Collei
-	Dori
 	TestCharDoNotUse
 	EndCharKeys
 )
