@@ -62,7 +62,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			StrikeType:         combat.StrikeTypeDefault,
 			Element:            attributes.Anemo,
 			Durability:         50,
-			Mult:               skill[c.TalentLvlAttack()] + float64(c.decStack)*decBonus[c.TalentLvlAttack()],
+			Mult:               skill[c.TalentLvlSkill()] + float64(c.decStack)*decBonus[c.TalentLvlSkill()],
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   skillHitlagHaltFrame * 60,
 			CanBeDefenseHalted: false,
@@ -70,7 +70,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 		AoE := 0.3
 		if c.decStack == 4 {
 			ai.Abil = "Heartstopper Strike (Max Stacks)"
-			ai.Mult += convicBonus[c.TalentLvlAttack()]
+			ai.Mult += convicBonus[c.TalentLvlSkill()]
 			ai.HitlagHaltFrames = skillHitlagMaxStackHaltFrame * 60
 			AoE = 1
 		}
