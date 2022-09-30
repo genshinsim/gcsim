@@ -9,6 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
+const DendroCoreDelay = 45
+
 func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 	//can be hydro bloom, dendro bloom, or quicken bloom
 	if a.Info.Durability < ZeroDur {
@@ -47,7 +49,7 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 	// TODO: re-check the frame delay
 	r.core.Tasks.Add(func() {
 		r.addBloomGadget(a)
-	}, 45)
+	}, DendroCoreDelay)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
 
 	r.checkQuickenBloom(a)
@@ -68,21 +70,18 @@ func (r *Reactable) checkQuickenBloom(a *combat.AttackEvent) {
 	}
 }
 
-type dendroCore struct {
+type DendroCore struct {
 	*gadget.Gadget
-	reactable *Reactable // for func calcReactionDmg
 }
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
-	s := r.newDendroCore(a)
-	r.core.Combat.AddGadget(s)
-	// r.core.Combat.Log.NewEvent("bloom created", glog.LogElementEvent, a.Info.ActorIndex)
+	var t combat.Target = r.newDendroCore(a)
+	r.core.Events.Emit(event.OnBloom, r.self, a, t)
+	r.core.Combat.AddGadget(t)
 }
 
-func (r *Reactable) newDendroCore(a *combat.AttackEvent) *dendroCore {
-	s := &dendroCore{
-		reactable: r,
-	}
+func (r *Reactable) newDendroCore(a *combat.AttackEvent) *DendroCore {
+	s := &DendroCore{}
 
 	x, y := r.self.Pos()
 	// for simplicity, seeds spawn randomly within 1 radius of target
@@ -106,14 +105,12 @@ func (r *Reactable) newDendroCore(a *combat.AttackEvent) *dendroCore {
 	return s
 }
 
-func (s *dendroCore) Tick() {
+func (s *DendroCore) Tick() {
 	//this is needed since gadget tick
 	s.Gadget.Tick()
 }
 
-func (s *dendroCore) Type() combat.TargettableType { return combat.TargettableGadget }
-
-func (s *dendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	if atk.Info.Durability < ZeroDur {
 		return 0, false
 	}
@@ -163,9 +160,9 @@ func (s *dendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	return 0, false
 }
 
-func (s *dendroCore) ApplyDamage(*combat.AttackEvent, float64) {}
+func (s *DendroCore) ApplyDamage(*combat.AttackEvent, float64) {}
 
-func (s *dendroCore) AIBloomReactionDamage(BaseMultiplier float64, ActorIndex int, AttackTag combat.AttackTag,
+func (s *DendroCore) AIBloomReactionDamage(BaseMultiplier float64, ActorIndex int, AttackTag combat.AttackTag,
 	ICDTag combat.ICDTag, ICDGroup combat.ICDGroup, StrikeType combat.StrikeType, Abil string) combat.AttackInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       ActorIndex,
@@ -178,7 +175,8 @@ func (s *dendroCore) AIBloomReactionDamage(BaseMultiplier float64, ActorIndex in
 		Abil:             Abil,
 		IgnoreDefPercent: 1,
 	}
-	em := s.Core.Player.ByIndex(ActorIndex).Stat(attributes.EM)
-	ai.FlatDmg = BaseMultiplier * s.reactable.calcReactionDmg(ai, em)
+	char := s.Core.Player.ByIndex(ActorIndex)
+	em := char.Stat(attributes.EM)
+	ai.FlatDmg = BaseMultiplier * calcReactionDmg(char, ai, em)
 	return ai
 }

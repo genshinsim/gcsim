@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 type ReactableModifier int
@@ -355,8 +356,7 @@ func (r *Reactable) Tick() {
 	}
 }
 
-func (r *Reactable) calcReactionDmg(atk combat.AttackInfo, em float64) float64 {
-	char := r.core.Player.ByIndex(atk.ActorIndex)
+func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em float64) float64 {
 	lvl := char.Base.Level - 1
 	if lvl > 89 {
 		lvl = 89
@@ -364,7 +364,7 @@ func (r *Reactable) calcReactionDmg(atk combat.AttackInfo, em float64) float64 {
 	if lvl < 0 {
 		lvl = 0
 	}
-	return (1 + ((16 * em) / (2000 + em)) + r.core.Player.ByIndex(atk.ActorIndex).ReactBonus(atk)) * reactionLvlBase[lvl]
+	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl]
 }
 
 func (r *Reactable) calcCatalyzeDmg(atk combat.AttackInfo, em float64) float64 {

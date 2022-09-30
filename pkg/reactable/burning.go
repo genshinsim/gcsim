@@ -92,8 +92,9 @@ func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 		Durability:       25,
 		IgnoreDefPercent: 1,
 	}
-	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
-	atk.FlatDmg = 0.25 * r.calcReactionDmg(atk, em)
+	char := r.core.Player.ByIndex(a.Info.ActorIndex)
+	em := char.Stat(attributes.EM)
+	atk.FlatDmg = 0.25 * calcReactionDmg(char, atk, em)
 	r.burningSnapshot = atk
 }
 

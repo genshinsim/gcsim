@@ -31,7 +31,7 @@ const (
 	OnAggravate //target, AttackEvent
 	OnSpread    //target, AttackEvent
 	OnQuicken
-	OnBloom
+	OnBloom //target, AttackEvent, Gadget (combat.Target)
 	OnHyperbloom
 	OnBurgeon
 	OnBurning //target, AttackEvent

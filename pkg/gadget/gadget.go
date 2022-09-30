@@ -5,6 +5,7 @@ package gadget
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
@@ -34,6 +35,8 @@ func (g *Gadget) Kill() {
 	}
 	g.core.Combat.RemoveGadget(g.Index())
 }
+
+func (g *Gadget) Type() combat.TargettableType { return combat.TargettableGadget }
 
 func (g *Gadget) Tick() {
 	if g.OnThinkInterval != nil && g.ThinkInterval > 0 {
