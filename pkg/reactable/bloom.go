@@ -170,14 +170,15 @@ const (
 func NewBloomAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
-		ActorIndex: char.Index,
-		DamageSrc:  src.Key(),
-		Element:    attributes.Dendro,
-		AttackTag:  combat.AttackTagBloom,
-		ICDTag:     combat.ICDTagBloomDamage,
-		ICDGroup:   combat.ICDGroupReactionA,
-		StrikeType: combat.StrikeTypeDefault,
-		Abil:       string(combat.Bloom),
+		ActorIndex:       char.Index,
+		DamageSrc:        src.Key(),
+		Element:          attributes.Dendro,
+		AttackTag:        combat.AttackTagBloom,
+		ICDTag:           combat.ICDTagBloomDamage,
+		ICDGroup:         combat.ICDGroupReactionA,
+		StrikeType:       combat.StrikeTypeDefault,
+		Abil:             string(combat.Bloom),
+		IgnoreDefPercent: 1,
 	}
 	ai.FlatDmg = BloomMultiplier * calcReactionDmg(char, ai, em)
 	return ai
@@ -186,14 +187,15 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) combat.Attac
 func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
-		ActorIndex: char.Index,
-		DamageSrc:  src.Key(),
-		Element:    attributes.Dendro,
-		AttackTag:  combat.AttackTagBurgeon,
-		ICDTag:     combat.ICDTagBurgeonDamage,
-		ICDGroup:   combat.ICDGroupReactionA,
-		StrikeType: combat.StrikeTypeDefault,
-		Abil:       string(combat.Burgeon),
+		ActorIndex:       char.Index,
+		DamageSrc:        src.Key(),
+		Element:          attributes.Dendro,
+		AttackTag:        combat.AttackTagBurgeon,
+		ICDTag:           combat.ICDTagBurgeonDamage,
+		ICDGroup:         combat.ICDGroupReactionA,
+		StrikeType:       combat.StrikeTypeDefault,
+		Abil:             string(combat.Burgeon),
+		IgnoreDefPercent: 1,
 	}
 	ai.FlatDmg = BurgeonMultiplier * calcReactionDmg(char, ai, em)
 	return ai
@@ -202,14 +204,15 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) combat.Att
 func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
-		ActorIndex: char.Index,
-		DamageSrc:  src.Key(),
-		Element:    attributes.Dendro,
-		AttackTag:  combat.AttackTagHyperbloom,
-		ICDTag:     combat.ICDTagHyperbloomDamage,
-		ICDGroup:   combat.ICDGroupReactionA,
-		StrikeType: combat.StrikeTypeDefault,
-		Abil:       string(combat.Hyperbloom),
+		ActorIndex:       char.Index,
+		DamageSrc:        src.Key(),
+		Element:          attributes.Dendro,
+		AttackTag:        combat.AttackTagHyperbloom,
+		ICDTag:           combat.ICDTagHyperbloomDamage,
+		ICDGroup:         combat.ICDGroupReactionA,
+		StrikeType:       combat.StrikeTypeDefault,
+		Abil:             string(combat.Hyperbloom),
+		IgnoreDefPercent: 1,
 	}
 	ai.FlatDmg = HyperbloomMultiplier * calcReactionDmg(char, ai, em)
 	return ai
