@@ -55,7 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	c.Events.Subscribe(event.OnElectroCharged, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnQuicken, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnAggravate, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
-	// c.Events.Subscribe(event.OnHyperbloom, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnHyperbloom, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlElectro, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 
 	return w, nil
