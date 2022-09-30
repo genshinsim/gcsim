@@ -1,10 +1,14 @@
 package dori
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -29,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   combat.ICDGroupDoriBurst,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
@@ -38,14 +42,29 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
+	icdSrc := []int{math.MinInt32, math.MinInt32, math.MinInt32, math.MinInt32}
 	// 32 damage ticks
 	for i := 0; i < 32; i++ {
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewDefBoxHit(1, -2, false, combat.TargettableEnemy),
-			24*i+burstHitmark,
-		) // TODO: accurate hitbox
+		c.Core.Tasks.Add(func() {
+			c.Core.QueueAttackWithSnap(
+				ai,
+				snap,
+				combat.NewDefBoxHit(1, -2, false, combat.TargettableEnemy),
+				0,
+			) // TODO: accurate hitbox
+
+			// dori self application
+			c.Core.Events.Emit(event.OnCharacterHurt, 0)
+			p, ok := c.Core.Combat.Player().(*avatar.Player)
+			if !ok {
+				panic("target 0 should be Player but is not!!")
+			}
+			idx := c.Core.Player.ActiveChar().Index
+			if c.Core.F > icdSrc[idx] + combat.ICDGroupResetTimer[combat.ICDGroupDoriBurst] {
+				p.ApplySelfInfusion(attributes.Electro, 25, 9.5*60) // TODO: find actual duration
+				icdSrc[idx] = c.Core.F
+			}
+		}, 24*i+burstHitmark)
 	}
 
 	for i := 0; i < 6; i++ {
@@ -77,7 +96,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }
