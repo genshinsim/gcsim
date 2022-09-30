@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -46,28 +47,27 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
 
-	// TODO: re-check the frame delay
-	r.core.Tasks.Add(func() {
-		r.addBloomGadget(a)
-	}, DendroCoreDelay)
+	r.addBloomGadget(a)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
-
-	r.checkQuickenBloom(a)
 }
 
-// if quicken just added, then quicken gonna self-react with hydro if there's any hydro left
-func (r *Reactable) checkQuickenBloom(a *combat.AttackEvent) {
-	if r.Durability[ModifierQuicken] >= ZeroDur && r.Durability[ModifierHydro] >= ZeroDur {
-		hydroConsumed := r.reduce(attributes.Quicken, r.Durability[ModifierHydro], 0.5)
-		r.Durability[ModifierHydro] -= hydroConsumed
-		r.Durability[ModifierHydro] = max(r.Durability[ModifierHydro], 0)
-
-		// TODO: re-check the frame delay
-		r.core.Tasks.Add(func() {
-			r.addBloomGadget(a)
-		}, 45)
-		r.core.Events.Emit(event.OnBloom, r.self, a)
+// this function should only be called after a catalyze reaction (queued to the end of current frame)
+// this reaction will check if any hydro exists and if so trigger a bloom reaction
+func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
+	if r.Durability[ModifierQuicken] < ZeroDur {
+		//this should be a sanity check; should not happen realistically unless something wipes off
+		//the quicken immediately (same frame) after catalyze
+		return
 	}
+	if r.Durability[ModifierHydro] < ZeroDur {
+		return
+	}
+	avail := r.Durability[ModifierQuicken]
+	consumed := r.reduce(attributes.Hydro, avail, 2)
+	r.Durability[ModifierQuicken] -= consumed
+
+	r.addBloomGadget(a)
+	r.core.Events.Emit(event.OnBloom, r.self, a)
 }
 
 type DendroCore struct {
@@ -75,9 +75,11 @@ type DendroCore struct {
 }
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
-	var t combat.Target = r.newDendroCore(a)
-	r.core.Combat.AddGadget(t)
-	r.core.Events.Emit(event.OnDendroCore, t)
+	r.core.Tasks.Add(func() {
+		var t combat.Target = r.newDendroCore(a)
+		r.core.Combat.AddGadget(t)
+		r.core.Events.Emit(event.OnDendroCore, t)
+	}, DendroCoreDelay)
 }
 
 func (r *Reactable) newDendroCore(a *combat.AttackEvent) *DendroCore {
@@ -90,13 +92,13 @@ func (r *Reactable) newDendroCore(a *combat.AttackEvent) *DendroCore {
 	s.Gadget = gadget.New(r.core, core.Coord{X: x, Y: y, R: 0.2})
 	s.Gadget.Duration = 300 // ??
 
-	s.Gadget.OnRemoved = func() {
-		ai := s.AIBloomReactionDamage(2, a.Info.ActorIndex, combat.AttackTagBloom, combat.ICDTagBloomDamage, combat.ICDGroupReactionA,
-			combat.StrikeTypeDefault, string(combat.Bloom))
-		// queue dmg
-		r.core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
+	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
-		// queue self damage
+	s.Gadget.OnRemoved = func() {
+		ai := NewBloomAttack(char, s)
+		r.core.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
+
+		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		r.core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
@@ -115,14 +117,13 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		return 0, false
 	}
 
+	char := s.Core.Player.ByIndex(atk.Info.ActorIndex)
 	// only contact with pyro/electro to trigger burgeon/hyperbloom accordingly
 	switch atk.Info.Element {
 	case attributes.Electro:
 		// trigger hyperbloom targets the nearest enemy
 		// it can also do damage to player in small aoe
-		ai := s.AIBloomReactionDamage(3, atk.Info.ActorIndex, combat.AttackTagHyperbloom, combat.ICDTagHyperbloomDamage,
-			combat.ICDGroupReactionA, combat.StrikeTypeDefault, string(combat.Hyperbloom))
-
+		ai := NewHyperbloomAttack(char, s)
 		// queue dmg nearest enemy
 		x, y := s.Gadget.Pos()
 		enemies := s.Core.Combat.EnemyByDistance(x, y, s.Gadget.Key())
@@ -137,13 +138,11 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 
 		s.Core.Combat.RemoveGadget(s.Gadget.Index())
 		s.Core.Events.Emit(event.OnHyperbloom, s.Gadget, atk)
-		// s.Core.Combat.Log.NewEvent("hyperbloom triggered", glog.LogElementEvent, atk.Info.ActorIndex)
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
+		ai := NewBurgeonAttack(char, s)
 
-		ai := s.AIBloomReactionDamage(3, atk.Info.ActorIndex, combat.AttackTagBurgeon, combat.ICDTagBurgeonDamage,
-			combat.ICDGroupReactionA, combat.StrikeTypeDefault, string(combat.Burgeon))
 		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
 
 		// queue self damage
@@ -162,21 +161,56 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 
 func (s *DendroCore) ApplyDamage(*combat.AttackEvent, float64) {}
 
-func (s *DendroCore) AIBloomReactionDamage(BaseMultiplier float64, ActorIndex int, AttackTag combat.AttackTag,
-	ICDTag combat.ICDTag, ICDGroup combat.ICDGroup, StrikeType combat.StrikeType, Abil string) combat.AttackInfo {
-	ai := combat.AttackInfo{
-		ActorIndex:       ActorIndex,
-		DamageSrc:        s.Gadget.Key(),
-		Element:          attributes.Dendro,
-		AttackTag:        AttackTag,
-		ICDTag:           ICDTag,
-		ICDGroup:         ICDGroup,
-		StrikeType:       StrikeType,
-		Abil:             Abil,
-		IgnoreDefPercent: 1,
-	}
-	char := s.Core.Player.ByIndex(ActorIndex)
+const (
+	BloomMultiplier      = 2
+	BurgeonMultiplier    = 3
+	HyperbloomMultiplier = 3
+)
+
+func NewBloomAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
 	em := char.Stat(attributes.EM)
-	ai.FlatDmg = BaseMultiplier * calcReactionDmg(char, ai, em)
+	ai := combat.AttackInfo{
+		ActorIndex: char.Index,
+		DamageSrc:  src.Key(),
+		Element:    attributes.Dendro,
+		AttackTag:  combat.AttackTagBloom,
+		ICDTag:     combat.ICDTagBloomDamage,
+		ICDGroup:   combat.ICDGroupReactionA,
+		StrikeType: combat.StrikeTypeDefault,
+		Abil:       string(combat.Bloom),
+	}
+	ai.FlatDmg = BloomMultiplier * calcReactionDmg(char, ai, em)
+	return ai
+}
+
+func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
+	em := char.Stat(attributes.EM)
+	ai := combat.AttackInfo{
+		ActorIndex: char.Index,
+		DamageSrc:  src.Key(),
+		Element:    attributes.Dendro,
+		AttackTag:  combat.AttackTagBurgeon,
+		ICDTag:     combat.ICDTagBurgeonDamage,
+		ICDGroup:   combat.ICDGroupReactionA,
+		StrikeType: combat.StrikeTypeDefault,
+		Abil:       string(combat.Burgeon),
+	}
+	ai.FlatDmg = BurgeonMultiplier * calcReactionDmg(char, ai, em)
+	return ai
+}
+
+func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
+	em := char.Stat(attributes.EM)
+	ai := combat.AttackInfo{
+		ActorIndex: char.Index,
+		DamageSrc:  src.Key(),
+		Element:    attributes.Dendro,
+		AttackTag:  combat.AttackTagHyperbloom,
+		ICDTag:     combat.ICDTagHyperbloomDamage,
+		ICDGroup:   combat.ICDGroupReactionA,
+		StrikeType: combat.StrikeTypeDefault,
+		Abil:       string(combat.Hyperbloom),
+	}
+	ai.FlatDmg = HyperbloomMultiplier * calcReactionDmg(char, ai, em)
 	return ai
 }

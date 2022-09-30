@@ -95,7 +95,7 @@ func TestECBloom(t *testing.T) {
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Hydro,
-			Durability: 25,
+			Durability: 50,
 		},
 		Pattern: combat.NewCircleHit(trg[0], 100, false, combat.TargettableEnemy, combat.TargettableGadget),
 	}, 0)
@@ -107,10 +107,7 @@ func TestECBloom(t *testing.T) {
 		},
 		Pattern: combat.NewCircleHit(trg[0], 100, false, combat.TargettableEnemy, combat.TargettableGadget),
 	}, 0)
-	//reduce aura a bit
-	for i := 0; i < 10; i++ {
-		advanceCoreFrame(c)
-	}
+	advanceCoreFrame(c)
 
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
