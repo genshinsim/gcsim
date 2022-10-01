@@ -40,14 +40,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		burstHitmark,
 	)
 
+	duration := 540
+	if c.Base.Cons >= 1 {
+		duration = 720
+	}
+
 	// TODO: check if this is the right implementation
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatus(burstKey, 540, true) // TODO: find correct buff timing
+		char.AddStatus(burstKey, duration, true) // TODO: find correct buff timing
 		c.Core.Player.AddWeaponInfuse(
 			c.Index,
 			"candace-infuse",
 			attributes.Hydro,
-			540,
+			duration,
 			true,
 			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
 		) // TODO: does this refresh constantly or one time?

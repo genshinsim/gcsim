@@ -5,7 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var (
@@ -63,6 +65,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitDelay, hitDelay)
 
+	if c.Base.Cons >= 2 {
+		c.QueueCharTask(c.c2, hitDelay)
+	}
+
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
 		Src:        c.Core.F,
@@ -72,7 +78,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Expires:    c.Core.F + hitDelay,
 	})
 
-	c.SetCDWithDelay(action.ActionSkill, skillCD[animIdx], skillCDStarts[animIdx])
+	cd := skillCD[animIdx]
+	if c.Base.Cons >= 4 {
+		cd = skillCD[0]
+	}
+	c.SetCDWithDelay(action.ActionSkill, cd, skillCDStarts[animIdx])
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[animIdx]),
