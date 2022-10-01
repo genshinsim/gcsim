@@ -111,6 +111,7 @@ const (
 	Tighnari
 	Collei
 	Dori
+	Candace
 	TestCharDoNotUse
 	EndCharKeys
 )
