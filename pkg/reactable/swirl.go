@@ -143,6 +143,7 @@ func (r *Reactable) trySwirlPyro(a *combat.AttackEvent) {
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	a.Reacted = true
+	r.burningCheck()
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlPyro, r.self, a)
 	r.queueSwirl(

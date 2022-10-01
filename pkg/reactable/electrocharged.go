@@ -22,6 +22,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 			return
 		}
 		//add to hydro durability
+		//TODO: this shouldn't happen here
 		r.attachOrRefillNormalEle(ModifierHydro, a.Info.Durability)
 	case attributes.Electro:
 		//if there's no existing hydro or electro then do nothing
