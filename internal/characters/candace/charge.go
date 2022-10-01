@@ -12,12 +12,7 @@ var chargeFrames []int
 const chargeHitmark = 25
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(59) // CA -> N1
-	chargeFrames[action.ActionSkill] = 58   // CA -> E
-	chargeFrames[action.ActionBurst] = 58   // CA -> Q
-	chargeFrames[action.ActionDash] = 29    // CA -> D
-	chargeFrames[action.ActionJump] = 29    // CA -> J
-	chargeFrames[action.ActionSwap] = 57    // CA -> Swap
+	chargeFrames = frames.InitAbilSlice(59) // TODO: verify correct frames
 }
 
 // Charge attack damage queue generator
