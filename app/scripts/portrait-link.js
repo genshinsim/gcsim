@@ -76,6 +76,7 @@ const names = [
   "kuki",
   "heizou",
   "collei",
+  "candace",
 ];
 
 const travelers = [
