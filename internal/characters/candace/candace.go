@@ -16,6 +16,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	waveCount           int
 	partyElementalTypes int
 	c4bonus             []float64
 	c6bonus             []float64
@@ -24,12 +25,10 @@ type char struct {
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
-
 	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
-
 	c.partyElementalTypes = 0
 
 	w.Character = &c
@@ -40,7 +39,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 // Occurs after all characters are loaded, so getPartyElementalTypeCounts works properly
 func (c *char) Init() error {
 	c.getPartyElementalTypeCounts()
-	c.burstProc()
+	c.burstSwap()
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
