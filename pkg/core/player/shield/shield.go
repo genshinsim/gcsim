@@ -20,6 +20,7 @@ const (
 	ShieldBell
 	ShieldYunjinSkill
 	ShieldThomaSkill
+	ShieldCandaceSkill
 	EndShieldType
 )
 
