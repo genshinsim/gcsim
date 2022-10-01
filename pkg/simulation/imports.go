@@ -45,6 +45,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/barbara"
 	_ "github.com/genshinsim/gcsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gcsim/internal/characters/bennett"
+	_ "github.com/genshinsim/gcsim/internal/characters/candace"
 	_ "github.com/genshinsim/gcsim/internal/characters/chongyun"
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
