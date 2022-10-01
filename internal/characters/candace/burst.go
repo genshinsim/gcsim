@@ -105,7 +105,7 @@ func (c *char) burstSwap() {
 			StrikeType: combat.StrikeTypeBlunt,
 			Element:    attributes.Hydro,
 			Durability: 25,
-			Mult:       burstWaveDmg[c.TalentLvlBurst()],
+			FlatDmg:    burstWaveDmg[c.TalentLvlBurst()] * c.MaxHP(),
 		}
 		c.Core.QueueAttack(
 			ai,
