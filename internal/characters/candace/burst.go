@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -56,7 +57,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			true,
 			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
 		) // TODO: does this refresh constantly or one time?
+		c.a4(char, duration)
 	}
+
 	c.ConsumeEnergy(4)                 // TODO: find correct energy timing
 	c.SetCD(action.ActionBurst, 15*60) // TODO: find correct CD timing
 
