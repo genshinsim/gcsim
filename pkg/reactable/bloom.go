@@ -76,6 +76,21 @@ type DendroCore struct {
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
+		first := -1
+		bloomCount := 0
+		for i := 0; i < r.core.Combat.GadgetCount(); i++ {
+			if _, ok := r.core.Combat.Gadget(i).(*DendroCore); !ok {
+				continue
+			}
+			if first == -1 {
+				first = i
+			}
+			bloomCount++
+			if bloomCount >= 5 {
+				r.core.Combat.Gadget(first).Kill()
+				break
+			}
+		}
 		var t combat.Target = NewDendroCore(r.core, r.self, a)
 		r.core.Combat.AddGadget(t)
 		r.core.Events.Emit(event.OnDendroCore, t)
