@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -58,6 +59,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatus(icdKey, 1200, false) // TODO: is this hitlag extendable?
+		c.Log.NewEvent("sapwood blade proc'd", glog.LogWeaponEvent, char.Index).
+			Write("seed expiry", c.F+600)
+		c.Log.NewEvent("seed picked up", glog.LogWeaponEvent, char.Index)
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.EM] = float64(45 + r*15)
 		char.AddStatMod(character.StatMod{
