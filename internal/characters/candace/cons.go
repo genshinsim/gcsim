@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c6ICDKey = "candace-c6"
+const c6ICDKey = "candace-c6-icd"
 
 // When Sacred Rite: Heron's Sanctum hits opponents,
 // Candace's Max HP will be increased by 20% for 15s.

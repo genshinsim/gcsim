@@ -22,7 +22,7 @@ func (c *char) a4(char *character.CharWrapper, duration int) {
 				return nil, false
 			}
 			m := make([]float64, attributes.EndStatType)
-			m[attributes.DmgP] = 0.5 * math.Floor(c.MaxHP()/1000)
+			m[attributes.DmgP] = 0.005 * math.Floor(c.MaxHP()/1000)
 			return m, true
 		},
 	})

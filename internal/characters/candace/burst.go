@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -31,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Hydro,
 		Durability: 25,
-		Mult:       burstDmg[c.TalentLvlBurst()],
+		FlatDmg:    burstDmg[c.TalentLvlBurst()] * c.MaxHP(),
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -47,7 +49,21 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// TODO: check if this is the right implementation
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatus(burstKey, duration, true) // TODO: find correct buff timing
+		// TODO: find correct buff timing
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBaseWithHitlag(burstKey, duration),
+			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+				if atk.Info.AttackTag != combat.AttackTagNormal {
+					return nil, false
+				}
+				if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
+					return nil, false
+				}
+				m := make([]float64, attributes.EndStatType)
+				m[attributes.DmgP] = 0.2
+				return m, true
+			},
+		})
 		c.Core.Player.AddWeaponInfuse(
 			c.Index,
 			"candace-infuse",
