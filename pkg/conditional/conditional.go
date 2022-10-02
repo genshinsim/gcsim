@@ -29,6 +29,8 @@ func Eval(c *core.Core, fields []string) (any, error) {
 		return c.Player.Stam, nil
 	case "construct":
 		return evalConstruct(c, fields)
+	case "gadgets":
+		return evalGadgets(c, fields)
 	case "keys":
 		return evalKeys(c, fields)
 	default:

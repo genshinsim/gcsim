@@ -1,9 +1,9 @@
 package reactable_test
 
 import (
+	"math"
 	"testing"
 
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -129,6 +129,40 @@ func TestECBloom(t *testing.T) {
 }
 
 func TestBloomSeedLimit(t *testing.T) {
+	c, trg := makeCore(10)
+	err := c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
+	}
+
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Hydro,
+			Durability: 25,
+		},
+		Pattern: combat.NewCircleHit(trg[0], 100, false, combat.TargettableEnemy, combat.TargettableGadget),
+	}, 0)
+	advanceCoreFrame(c)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Dendro,
+			Durability: 25,
+		},
+		Pattern: combat.NewCircleHit(trg[0], 100, false, combat.TargettableEnemy, combat.TargettableGadget),
+	}, 0)
+	advanceCoreFrame(c)
+
+	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
+		advanceCoreFrame(c)
+	}
+
+	if c.Combat.GadgetCount() != 5 {
+		t.Errorf("expected only 5 seeds remaining, got %v", c.Combat.GadgetCount())
+	}
+}
+
+func TestBloomOldestDeleted(t *testing.T) {
 	c, trg := makeCore(1)
 	err := c.Init()
 	if err != nil {
@@ -136,6 +170,7 @@ func TestBloomSeedLimit(t *testing.T) {
 		t.FailNow()
 	}
 
+	//oldest should be the 2nd one, which is frame 3 ?
 	for i := 0; i < 6; i++ {
 		c.QueueAttackEvent(&combat.AttackEvent{
 			Info: combat.AttackInfo{
@@ -163,20 +198,21 @@ func TestBloomSeedLimit(t *testing.T) {
 		t.Errorf("expected only 5 seeds remaining, got %v", c.Combat.GadgetCount())
 	}
 
-	dur := getOldestSeedDuration(c)
-	if dur != 290 { // oldest dendro core should have duration 290 here
-		t.Errorf("expected duration to be %v (EG: first dendro core destroyed), got %v", 290, dur)
-	}
-}
-
-func getOldestSeedDuration(c *core.Core) int {
-	// need to count gadgets for which bloom got destroyed
-	for i := 0; i < c.Combat.GadgetCount(); i++ {
-		d, ok := c.Combat.Gadget(i).(*reactable.DendroCore)
-		if !ok {
+	//find oldest
+	f := math.MaxInt64
+	oldest := -1
+	for i, v := range c.Combat.Gadgets() {
+		if v == nil || v.GadgetTyp() != combat.GadgetTypDendroCore {
 			continue
 		}
-		return d.Duration
+		if v.Src() < f {
+			f = v.Src()
+			oldest = i
+		}
 	}
-	return -1
+	og := c.Combat.Gadget(oldest)
+	if og.Src() != 3+reactable.DendroCoreDelay {
+		t.Errorf("expecting oldest gadget to be from frame %v, got %v", reactable.DendroCoreDelay+3, og.Src())
+	}
+
 }

@@ -72,44 +72,33 @@ func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
 
 type DendroCore struct {
 	*gadget.Gadget
+	srcFrame int
 }
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
-		first := -1
-		bloomCount := 0
-		for i := 0; i < r.core.Combat.GadgetCount(); i++ {
-			if _, ok := r.core.Combat.Gadget(i).(*DendroCore); !ok {
-				continue
-			}
-			if first == -1 {
-				first = i
-			}
-			bloomCount++
-			if bloomCount >= 5 {
-				r.core.Combat.Gadget(first).Kill()
-				break
-			}
-		}
-		var t combat.Target = NewDendroCore(r.core, r.self, a)
+		var t combat.Gadget = NewDendroCore(r.core, r.self, a)
 		r.core.Combat.AddGadget(t)
 		r.core.Events.Emit(event.OnDendroCore, t)
 	}, DendroCoreDelay)
 }
 
 func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *DendroCore {
-	s := &DendroCore{}
+	s := &DendroCore{
+		srcFrame: c.F,
+	}
 
 	x, y := pos.Pos()
 	// for simplicity, seeds spawn randomly within 1 radius of target
 	x = x + 2*c.Rand.Float64() - 1
 	y = y + 2*c.Rand.Float64() - 1
-	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2})
+	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
-	s.Gadget.OnRemoved = func() {
+	//TODO: should bloom do damage if it blows up due to limit reached?
+	s.Gadget.OnExpiry = func() {
 		ai := NewBloomAttack(char, s)
 		c.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
 
