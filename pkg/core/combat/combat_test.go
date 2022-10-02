@@ -15,6 +15,9 @@ type (
 	testteam struct{}
 	testtarg struct {
 		typ         TargettableType
+		gadgetTyp   GadgetTyp
+		hdlr        *Handler
+		src         int //source of gadget
 		idx         int
 		key         int
 		shp         Shape
@@ -46,8 +49,10 @@ func (t *testtarg) IsAlive() bool                                   { return t.a
 func (t *testtarg) Attack(*AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (t *testtarg) ApplyDamage(*AttackEvent, float64)               {}
 func (t *testtarg) Tick()                                           {}
-func (t *testtarg) Kill()                                           { t.alive = false }
+func (t *testtarg) Kill()                                           { t.hdlr.RemoveGadget(t.Key()) }
 func (t *testtarg) CollidableWith(x TargettableType) bool           { return t.collideWith[x] }
+func (t *testtarg) GadgetTyp() GadgetTyp                            { return t.gadgetTyp }
+func (t *testtarg) Src() int                                        { return t.src }
 func (t *testtarg) CollidedWith(x Target) {
 	if t.onCollision != nil {
 		t.onCollision(x)

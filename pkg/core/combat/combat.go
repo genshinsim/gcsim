@@ -25,7 +25,7 @@ type Character interface {
 type Handler struct {
 	Opt
 	enemies     []Target
-	gadgets     []Target
+	gadgets     []Gadget
 	player      Target
 	TotalDamage float64
 	gccount     int
@@ -51,7 +51,7 @@ func New(opt Opt) *Handler {
 		keycount: 1,
 	}
 	h.enemies = make([]Target, 0, 5)
-	h.gadgets = make([]Target, 0, 10)
+	h.gadgets = make([]Gadget, 0, 10)
 
 	return h
 }
