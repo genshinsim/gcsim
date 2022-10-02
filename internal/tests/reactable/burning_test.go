@@ -190,5 +190,249 @@ func TestBurningQuickenFuel(t *testing.T) {
 			break
 		}
 	}
+}
+
+func TestPyroDendroCoexist(t *testing.T) {
+	c, trg := makeCore(1)
+	err := c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
+	}
+	//https://www.youtube.com/watch?v=dXzQTNCYfeU&list=PL10DrkffqpyuwG8i0JOq-TgcqPES6bsja&index=16
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Dendro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 121)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Pyro,
+			Durability: 50,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 133)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Dendro,
+			Durability: 50,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 195)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Cryo,
+			Durability: 50,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 202)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Pyro,
+			Durability: 50,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 249)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Cryo,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 327)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Cryo,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 344)
+	//pyro ended 546, dendro ended 689
+
+	f := make(map[event.Event]int)
+	cb := func(evt event.Event) func(args ...interface{}) bool {
+		return func(args ...interface{}) bool {
+			f[evt] = c.F
+			return false
+		}
+	}
+	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
+	}
+	i := 0
+
+	for ; i < 1000; i++ {
+		advanceCoreFrame(c)
+		fmt.Printf("%v: %v\n", i, trg[0].ActiveAuraString())
+	}
+
+}
+
+func TestDendroDecayTry1(t *testing.T) {
+	c, trg := makeCore(1)
+	err := c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
+	}
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Dendro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 155)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Pyro,
+			Durability: 50,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 168)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Dendro,
+			Durability: 50,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 230)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Hydro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 263)
+
+	f := make(map[event.Event]int)
+	cb := func(evt event.Event) func(args ...interface{}) bool {
+		return func(args ...interface{}) bool {
+			f[evt] = c.F
+			return false
+		}
+	}
+	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
+	}
+	i := 0
+
+	for ; i < 1900; i++ {
+		if i == 263 {
+			fmt.Println("hi")
+		}
+		advanceCoreFrame(c)
+		fmt.Printf("%v: %v\n", i, trg[0].ActiveAuraString())
+	}
+
+}
+
+func TestDendroDecayTry2(t *testing.T) {
+	c, trg := makeCore(1)
+	err := c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
+	}
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Pyro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 80)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Dendro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 440)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Hydro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 453)
+
+	f := make(map[event.Event]int)
+	cb := func(evt event.Event) func(args ...interface{}) bool {
+		return func(args ...interface{}) bool {
+			f[evt] = c.F
+			return false
+		}
+	}
+	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
+	}
+	i := 0
+
+	for ; i < 1900; i++ {
+		if i == 460 {
+			fmt.Println("hi")
+		}
+		advanceCoreFrame(c)
+		fmt.Printf("%v: %v\n", i, trg[0].ActiveAuraString())
+	}
+
+}
+
+func TestQuickenBurningDecay(t *testing.T) {
+	c, trg := makeCore(1)
+	err := c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
+	}
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Electro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 61)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Dendro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 128)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Pyro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 188)
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Hydro,
+			Durability: 25,
+		},
+		Pattern: combat.NewDefSingleTarget(trg[0].Index(), combat.TargettableEnemy),
+	}, 206)
+
+	f := make(map[event.Event]int)
+	cb := func(evt event.Event) func(args ...interface{}) bool {
+		return func(args ...interface{}) bool {
+			f[evt] = c.F
+			return false
+		}
+	}
+	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
+	}
+	i := 0
+
+	for ; i < 1900; i++ {
+		if i == 460 {
+			fmt.Println("hi")
+		}
+		advanceCoreFrame(c)
+		fmt.Printf("%v: %v\n", i, trg[0].ActiveAuraString())
+	}
 
 }

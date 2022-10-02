@@ -58,6 +58,16 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 	}
 }
 
+func (r *Reactable) attachBurningFuel(dur combat.Durability, mult combat.Durability) {
+	//burning fuel always overwrites
+	r.Durability[ModifierBurningFuel] = mult * dur
+	decayRate := mult * dur / (6*dur + 420)
+	if decayRate < 10.0/60.0 {
+		decayRate = 10.0 / 60.0
+	}
+	r.DecayRate[ModifierBurningFuel] = decayRate
+}
+
 func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
