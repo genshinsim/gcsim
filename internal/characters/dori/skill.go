@@ -57,7 +57,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		// C6
 		if c.Base.Cons >= 6 {
-			c.AddStatus(c6key, 180, true) // TODO: affected by hitlag? probably
+			c.Core.Player.AddWeaponInfuse(
+				c.Index,
+				c6key,
+				attributes.Electro,
+				180,
+				true,
+				combat.AttackTagNormal,
+				combat.AttackTagExtra,
+				combat.AttackTagPlunge,
+			)
 		}
 	}, skillFrames[action.ActionAttack]) // TODO:It activates on the attack cancel frames?
 

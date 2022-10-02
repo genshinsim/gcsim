@@ -86,7 +86,7 @@ func (c *char) c6() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if !c.StatusIsActive(c6key) {
+		if !c.Core.Player.WeaponInfuseIsActive(c.Index, c6key) {
 			return false
 		}
 		if c.StatusIsActive(c6icd) {
