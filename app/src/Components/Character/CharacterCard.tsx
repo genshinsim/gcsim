@@ -113,7 +113,7 @@ export function CharacterCard({
         <Tooltip2 content={key}>
           <img
             key="key"
-            src={`/images/artifacts/${key}_flower.png`}
+            src={`/api/assets/artifacts/${key}_flower.png`}
             className="w-full h-8"
           />
         </Tooltip2>
@@ -221,7 +221,7 @@ export function CharacterCard({
           <div className="w-1/2">
             <img
               src={
-                '/images/avatar/' +
+                '/api/assets/avatar/' +
                 TransformTravelerKeyToName(char.name) +
                 '.png'
               }

@@ -67,7 +67,7 @@ export default function Character({ char }: Props) {
         >
           <img
             key="key"
-            src={`/images/artifacts/${key}_flower.png`}
+            src={`/api/assets/artifacts/${key}_flower.png`}
             alt={key}
             className="w-full h-auto "
           />
@@ -105,7 +105,7 @@ export default function Character({ char }: Props) {
         </div>
         <div className="w-1/2">
           <img
-            src={"/images/avatar/" + char.name + ".png"}
+            src={"/api/assets/avatar/" + char.name + ".png"}
             alt={char.name}
             className="w-full h-auto "
           />
@@ -116,7 +116,7 @@ export default function Character({ char }: Props) {
         <div className="flex flex-row">
           <div className="rounded-md">
             <img
-              src={`/images/weapons/${char.weapon.name}.png`}
+              src={`/api/assets/weapons/${char.weapon.name}.png`}
               alt={char.weapon.name}
               className="object-contain h-16"
             />

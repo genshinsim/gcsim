@@ -43,7 +43,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// reset counter
-	if c.Core.F >= c.eWindow {
+	if !c.StatusIsActive(eWindowKey) {
 		c.eCounter = 0
 	}
 
@@ -84,7 +84,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	// allow skill to be used again if 4s hasn't passed since last use
-	c.eWindow = c.Core.F + 60*4
+	c.AddStatus(eWindowKey, 4*60, true)
 
 	// store skill counter so we can determine which frames to return
 	idx := c.eCounter
@@ -96,7 +96,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.SetCD(action.ActionSkill, 10*60)
 	case 3:
 		// reset window since we're at 3rd use
-		c.eWindow = -1
+		c.DeleteStatus(eWindowKey)
 		c.eCounter = 0
 	}
 
