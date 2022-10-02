@@ -97,8 +97,7 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
-	//TODO: should bloom do damage if it blows up due to limit reached?
-	s.Gadget.OnExpiry = func() {
+	explode := func() {
 		ai := NewBloomAttack(char, s)
 		c.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
 
@@ -107,6 +106,9 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		c.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 	}
+	//TODO: should bloom do damage if it blows up due to limit reached?
+	s.Gadget.OnExpiry = explode
+	s.Gadget.OnKill = explode
 
 	return s
 }
