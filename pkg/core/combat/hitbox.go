@@ -36,3 +36,26 @@ func NewCircleHit(trg Positional, r float64, self bool, targets ...TargettableTy
 		SelfHarm: self,
 	}
 }
+
+func NewBoxHit(trg Positional, w, h float64, self bool, targets ...TargettableType) AttackPattern {
+	var arr [TargettableTypeCount]bool
+
+	for _, v := range targets {
+		if v < TargettableTypeCount {
+			arr[v] = true
+		}
+	}
+
+	x, y := trg.Pos()
+
+	return AttackPattern{
+		Shape: &Rectangle{
+			x: x,
+			y: y,
+			w: w,
+			h: h,
+		},
+		Targets:  arr,
+		SelfHarm: self,
+	}
+}
