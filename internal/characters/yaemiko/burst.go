@@ -9,8 +9,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 100
-const burstThunderbolt1Hitmark = 154
+const (
+	burstHitmark             = 100
+	burstThunderbolt1Hitmark = 154
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(114) // Q -> CA
@@ -33,11 +35,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), burstHitmark, burstHitmark)
+
+	hitbox := combat.NewCircleHit(
+		c.Core.Combat.Enemy(c.Core.Combat.DefaultTarget),
+		7,
+		false,
+		combat.TargettableEnemy,
+		combat.TargettableGadget,
+	)
+
+	c.Core.QueueAttack(ai, hitbox, burstHitmark, burstHitmark)
 
 	ai.Abil = "Tenko Thunderbolt"
 	ai.Mult = burst[1][c.TalentLvlBurst()]
-	c.kitsuneBurst(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget))
+	c.kitsuneBurst(ai, hitbox)
 
 	c.ConsumeEnergy(2)
 	c.SetCD(action.ActionBurst, 22*60)
