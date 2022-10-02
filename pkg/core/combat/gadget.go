@@ -26,16 +26,8 @@ type Gadget interface {
 	GadgetTyp() GadgetTyp
 }
 
-func (h *Handler) RemoveGadget(key int) bool {
-	for i, v := range h.gadgets {
-		if v != nil && v.Key() == key {
-			//set to nil for now; we should clean up every so often???
-			//TODO: how often do we clean out nil entries? if at all?
-			h.gadgets[i] = nil
-			return true
-		}
-	}
-	return false
+func (h *Handler) RemoveGadget(key int) {
+	h.ReplaceGadget(key, nil)
 }
 
 func (h *Handler) AddGadget(t Gadget) {

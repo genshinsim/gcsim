@@ -58,8 +58,10 @@ func (g *Gadget) Tick() {
 	}
 	if g.Duration != -1 && g.Duration > 0 {
 		g.Duration--
-		if g.Duration == 0 && g.OnExpiry != nil {
-			g.OnExpiry()
+		if g.Duration == 0 {
+			if g.OnExpiry != nil {
+				g.OnExpiry()
+			}
 			g.core.Combat.RemoveGadget(g.Key())
 		}
 	}
