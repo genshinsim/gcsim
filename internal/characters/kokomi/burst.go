@@ -131,9 +131,9 @@ func (c *char) burstActiveHook() {
 
 			// C2 handling - believe this is an additional instance of flat healing
 			// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
-			// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
+			// Nereid's Ascension Normal and Charged Attacks: 0.6% of Kokomi's Max HP.
 			if char.HPCurrent/char.MaxHP() <= .5 {
-				bonus := 0.045 * c.MaxHP()
+				bonus := 0.006 * c.MaxHP()
 				src += bonus
 				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, char.Index).
 					Write("bonus", bonus)
