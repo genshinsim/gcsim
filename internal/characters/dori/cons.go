@@ -17,7 +17,7 @@ func (c *char) c1() {
 
 // When you are in combat and the Jinni heals the character it is connected to,
 // it will fire a Jinni Toop from that character's position that deals 50% of Dori's ATK DMG.
-func (c *char) c2() {
+func (c *char) c2(travel int) {
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		src := args[0].(int)
 		if src != c.Index {
@@ -34,7 +34,7 @@ func (c *char) c2() {
 			Durability: 25,
 			Mult:       0.5,
 		}
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, 10)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, travel)
 		return false
 	}, "dori-c2")
 }

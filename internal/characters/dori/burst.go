@@ -66,9 +66,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, 24*i+burstHitmark)
 	}
 
+	c2Travel, ok := p["c2_travel"]
+	if !ok {
+		c2Travel = 10
+	}
+
 	for i := 0; i < 6; i++ {
 		c.Core.Tasks.Add(func() {
-			c.c2()
+			c.c2(c2Travel)
 			// Heals
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
