@@ -86,7 +86,7 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 	maxhp := d.Snapshot.BaseHP*(1+d.Snapshot.Stats[attributes.HPP]) + d.Snapshot.Stats[attributes.HP]
 	src := skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()]
 
-	// C2 handling - believe this is an additional instance of flat healing
+	// C2 handling
 	// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
 	// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
 	if c.Base.Cons >= 2 {

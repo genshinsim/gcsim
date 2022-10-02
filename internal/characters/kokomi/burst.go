@@ -129,7 +129,7 @@ func (c *char) burstActiveHook() {
 		for _, char := range c.Core.Player.Chars() {
 			src := heal
 
-			// C2 handling - believe this is an additional instance of flat healing
+			// C2 handling
 			// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
 			// Nereid's Ascension Normal and Charged Attacks: 0.6% of Kokomi's Max HP.
 			if c.Base.Cons >= 2 && char.HPCurrent/char.MaxHP() <= .5 {
