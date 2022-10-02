@@ -27,7 +27,7 @@ export function TeamCard({
             onClick={() => onCharacterClick(char.name)}
           >
             <img
-              src={'/api/assets/avatar/' + char.name + '.png'}
+              src={'https://gcsim.app/api/assets/avatar/' + char.name + '.png'}
               alt={char.name}
               className="w-16"
               key={char.name}

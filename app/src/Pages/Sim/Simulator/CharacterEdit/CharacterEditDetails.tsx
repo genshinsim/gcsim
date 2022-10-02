@@ -74,7 +74,7 @@ export function CharacterEditDetails() {
     <div className="flex flex-row gap-2 flex-wrap">
       <div className="flex flex-col place-items-center gap-1 basis-full hd:basis-36">
         <img
-          src={'/api/assets/avatar/' + char.name + '.png'}
+          src={'https://gcsim.app/api/assets/avatar/' + char.name + '.png'}
           alt={char.name}
           className="w-28"
         />

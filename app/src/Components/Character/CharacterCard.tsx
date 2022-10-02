@@ -113,7 +113,7 @@ export function CharacterCard({
         <Tooltip2 content={key}>
           <img
             key="key"
-            src={`/api/assets/artifacts/${key}_flower.png`}
+            src={`https://gcsim.app/api/assets/artifacts/${key}_flower.png`}
             className="w-full h-8"
           />
         </Tooltip2>
@@ -221,7 +221,7 @@ export function CharacterCard({
           <div className="w-1/2">
             <img
               src={
-                '/api/assets/avatar/' +
+                'https://gcsim.app/api/assets/avatar/' +
                 TransformTravelerKeyToName(char.name) +
                 '.png'
               }

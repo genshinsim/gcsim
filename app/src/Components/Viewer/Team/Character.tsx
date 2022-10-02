@@ -1,8 +1,8 @@
-import { Tooltip2 } from "@blueprintjs/popover2";
-import React from "react";
-import { CharDetail } from "../DataType";
-import weaponNames from "./weapons";
-import { Trans, useTranslation } from "react-i18next";
+import { Tooltip2 } from '@blueprintjs/popover2';
+import React from 'react';
+import { CharDetail } from '../DataType';
+import weaponNames from './weapons';
+import { Trans, useTranslation } from 'react-i18next';
 
 type weapMap = {
   [key: string]: string;
@@ -36,24 +36,24 @@ const DendroP = 19;
 
 function charBG(element: string) {
   switch (element) {
-    case "cryo":
-      return "bg-gradient-to-r from-gray-700 to-blue-300";
-    case "hydro":
-      return "bg-gradient-to-r from-gray-700 to-blue-500";
-    case "pyro":
-      return "bg-gradient-to-r from-gray-700 to-red-400";
-    case "electro":
-      return "bg-gradient-to-r from-gray-700 to-purple-300";
-    case "anemo":
-      return "bg-gradient-to-r from-gray-700 to-green-300";
-    case "geo":
-      return "bg-gradient-to-r from-gray-700 to-yellow-400";
+    case 'cryo':
+      return 'bg-gradient-to-r from-gray-700 to-blue-300';
+    case 'hydro':
+      return 'bg-gradient-to-r from-gray-700 to-blue-500';
+    case 'pyro':
+      return 'bg-gradient-to-r from-gray-700 to-red-400';
+    case 'electro':
+      return 'bg-gradient-to-r from-gray-700 to-purple-300';
+    case 'anemo':
+      return 'bg-gradient-to-r from-gray-700 to-green-300';
+    case 'geo':
+      return 'bg-gradient-to-r from-gray-700 to-yellow-400';
   }
-  return "bg-gray-700";
+  return 'bg-gray-700';
 }
 
 export default function Character({ char }: Props) {
-  useTranslation()
+  useTranslation();
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
@@ -67,7 +67,7 @@ export default function Character({ char }: Props) {
         >
           <img
             key="key"
-            src={`/api/assets/artifacts/${key}_flower.png`}
+            src={`https://gcsim.app/api/assets/artifacts/${key}_flower.png`}
             alt={key}
             className="w-full h-auto "
           />
@@ -82,7 +82,7 @@ export default function Character({ char }: Props) {
     <div className="min-h-48 bg-gray-600 shadow rounded-md text-sm m-2 flex flex-col justify-center gap-2">
       <div
         className={
-          "character-parent flex flex-row pt-4 pl-4 pr-2 -mt-2 rounded-t-md " +
+          'character-parent flex flex-row pt-4 pl-4 pr-2 -mt-2 rounded-t-md ' +
           charBG(char.element)
         }
       >
@@ -105,7 +105,7 @@ export default function Character({ char }: Props) {
         </div>
         <div className="w-1/2">
           <img
-            src={"/api/assets/avatar/" + char.name + ".png"}
+            src={'https://gcsim.app/api/assets/avatar/' + char.name + '.png'}
             alt={char.name}
             className="w-full h-auto "
           />
@@ -116,7 +116,7 @@ export default function Character({ char }: Props) {
         <div className="flex flex-row">
           <div className="rounded-md">
             <img
-              src={`/api/assets/weapons/${char.weapon.name}.png`}
+              src={`https://gcsim.app/api/assets/weapons/${char.weapon.name}.png`}
               alt={char.weapon.name}
               className="object-contain h-16"
             />
@@ -127,8 +127,12 @@ export default function Character({ char }: Props) {
             </div>
 
             <div className="ml-2 justify-center items-center rounded-md">
-              <div><Trans>viewer.level</Trans> {char.weapon.level}/90</div>
-              <div><Trans>viewer.refinement</Trans> {char.weapon.refine}</div>
+              <div>
+                <Trans>viewer.level</Trans> {char.weapon.level}/90
+              </div>
+              <div>
+                <Trans>viewer.refinement</Trans> {char.weapon.refine}
+              </div>
             </div>
           </div>
         </div>
@@ -141,7 +145,9 @@ function SubstatView({ char }: Props) {
   return (
     <div className="flex flex-col m-2 p-2">
       <div className="flex flex-row">
-        <div className="font-bold"><Trans>viewer.substats</Trans></div>
+        <div className="font-bold">
+          <Trans>viewer.substats</Trans>
+        </div>
       </div>
       <div className="flex flex-row ml-2">
         <div>
@@ -162,10 +168,12 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span><Trans>viewer.hp</Trans></span>
+          <span>
+            <Trans>viewer.hp</Trans>
+          </span>
         </div>
         <div className="flex-grow text-right">
-          {(char.stats[HPP] * 100).toFixed(2) + "%"} | {char.stats[HP]}
+          {(char.stats[HPP] * 100).toFixed(2) + '%'} | {char.stats[HP]}
         </div>
       </div>
       <div className="flex flex-row ml-2">
@@ -187,10 +195,12 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span><Trans>viewer.attack</Trans></span>
+          <span>
+            <Trans>viewer.attack</Trans>
+          </span>
         </div>
         <div className="flex-grow text-right">
-          {(char.stats[ATKP] * 100).toFixed(2) + "%"} | {char.stats[ATK]}
+          {(char.stats[ATKP] * 100).toFixed(2) + '%'} | {char.stats[ATK]}
         </div>
       </div>
       <div className="flex flex-row ml-2">
@@ -212,10 +222,12 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span><Trans>viewer.defense</Trans></span>
+          <span>
+            <Trans>viewer.defense</Trans>
+          </span>
         </div>
         <div className="flex-grow text-right">
-          {(char.stats[DEFP] * 100).toFixed(2) + "%"} | {char.stats[DEF]}
+          {(char.stats[DEFP] * 100).toFixed(2) + '%'} | {char.stats[DEF]}
         </div>
       </div>
       <div className="flex flex-row ml-2">
@@ -237,7 +249,9 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span><Trans>viewer.em</Trans></span>
+          <span>
+            <Trans>viewer.em</Trans>
+          </span>
         </div>
         <div className="flex-grow text-right">{char.stats[EM]}</div>
       </div>
@@ -260,10 +274,12 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span><Trans>viewer.er</Trans></span>
+          <span>
+            <Trans>viewer.er</Trans>
+          </span>
         </div>
         <div className="flex-grow text-right">
-          {char.stats[ER].toFixed(2) + "%"}
+          {char.stats[ER].toFixed(2) + '%'}
         </div>
       </div>
       <div className="flex flex-row ml-2">
@@ -285,10 +301,12 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span><Trans>viewer.cr</Trans></span>
+          <span>
+            <Trans>viewer.cr</Trans>
+          </span>
         </div>
         <div className="flex-grow text-right">
-          {(char.stats[CR] * 100).toFixed(2) + "%"}
+          {(char.stats[CR] * 100).toFixed(2) + '%'}
         </div>
       </div>
       <div className="flex flex-row ml-2">
@@ -310,10 +328,12 @@ function SubstatView({ char }: Props) {
               />
             </svg>
           </span>
-          <span><Trans>viewer.cd</Trans></span>
+          <span>
+            <Trans>viewer.cd</Trans>
+          </span>
         </div>
         <div className="flex-grow text-right">
-          {(char.stats[CD] * 100).toFixed(2) + "%"}
+          {(char.stats[CD] * 100).toFixed(2) + '%'}
         </div>
       </div>
     </div>
