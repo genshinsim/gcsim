@@ -142,7 +142,8 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, true, combat.TargettablePlayer), -1, 5)
 		}
 
-		s.Core.Combat.RemoveGadget(s.Gadget.Index())
+		s.Gadget.OnKill = nil
+		s.Gadget.Kill()
 		s.Core.Events.Emit(event.OnHyperbloom, s.Gadget, atk)
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
@@ -156,7 +157,8 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 
-		s.Core.Combat.RemoveGadget(s.Gadget.Index())
+		s.Gadget.OnKill = nil
+		s.Gadget.Kill()
 		s.Core.Events.Emit(event.OnBurgeon, s.Gadget, atk)
 	default:
 		return 0, false
