@@ -10,12 +10,26 @@ services:
     links:
       - postgrest:services
       - embed:services
+      - assets:services
     environment:
       # - TUNNEL_URL=http://postgrest:3000
       - CF_TUNNEL_TOKEN
     depends_on:
       - postgrest
       - embed
+      - assets
+
+  assets:
+    container_name: assets
+    build:
+      context: .
+      dockerfile: ./assets/Dockerfile
+    volumes:
+      - .:/app
+      - ../assets:/assets
+    environment:
+      - ASSETS_PATH=/assets
+    restart: unless-stopped
 
   postgrest:
     image: postgrest/postgrest

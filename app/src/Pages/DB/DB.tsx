@@ -45,7 +45,7 @@ function CharTooltip({ char }: { char: DBCharInfo }) {
       <div className="w-full border-b border-gray-500 mt-2 mb-2"></div>
       <div className="capitalize flex flex-row">
         <img
-          src={'/images/weapons/' + char.weapon + '.png'}
+          src={'/api/assets/weapons/' + char.weapon + '.png'}
           alt={char.name}
           className="wide:h-8 h-auto "
         />
@@ -66,7 +66,7 @@ function TeamCard({ row, setCfg }: { row: DBItem; setCfg: () => void }) {
         <Tooltip2 content={<CharTooltip char={char} />}>
           <div className="hover:bg-gray-600 border border-gray-700 hover:border-gray-400 rounded-md relative">
             <img
-              src={'/images/avatar/' + char.name + '.png'}
+              src={'/api/assets/avatar/' + char.name + '.png'}
               alt={char.name}
               className="w-16"
               key={char.name}

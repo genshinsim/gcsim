@@ -38,6 +38,10 @@ func TestBasicToken(t *testing.T) {
 		}
 	}
 	
+	for x = 0; x < 5; x = x + 1 {
+		let i = y(x);
+	}
+
 	-1
 	1
 	-
@@ -125,6 +129,33 @@ func TestBasicToken(t *testing.T) {
 		//end switch
 		{Typ: itemRightBrace, Val: "}"},
 		//end while
+		{Typ: itemRightBrace, Val: "}"},
+		//for loop
+		{Typ: keywordFor, Val: "for"},
+		{Typ: itemIdentifier, Val: "x"},
+		{Typ: itemAssign, Val: "="},
+		{Typ: itemNumber, Val: "0"},
+		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: itemIdentifier, Val: "x"},
+		{Typ: OpLessThan, Val: "<"},
+		{Typ: itemNumber, Val: "5"},
+		{Typ: itemTerminateLine, Val: ";"},
+		{Typ: itemIdentifier, Val: "x"},
+		{Typ: itemAssign, Val: "="},
+		{Typ: itemIdentifier, Val: "x"},
+		{Typ: ItemPlus, Val: "+"},
+		{Typ: itemNumber, Val: "1"},
+		{Typ: itemLeftBrace, Val: "{"},
+		//body
+		{Typ: keywordLet, Val: "let"},
+		{Typ: itemIdentifier, Val: "i"},
+		{Typ: itemAssign, Val: "="},
+		{Typ: itemIdentifier, Val: "y"},
+		{Typ: itemLeftParen, Val: "("},
+		{Typ: itemIdentifier, Val: "x"},
+		{Typ: itemRightParen, Val: ")"},
+		{Typ: itemTerminateLine, Val: ";"},
+		//end for
 		{Typ: itemRightBrace, Val: "}"},
 		//misc tests
 		{Typ: itemNumber, Val: "-1"},
