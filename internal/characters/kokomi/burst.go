@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -124,16 +125,27 @@ func (c *char) burstActiveHook() {
 			return false
 		}
 
-		if c.Base.Cons >= 2 {
-			c.c2()
+		heal := burstHealPct[c.TalentLvlBurst()]*c.MaxHP() + burstHealFlat[c.TalentLvlBurst()]
+		for _, char := range c.Core.Player.Chars() {
+			src := heal
+
+			// C2 handling - believe this is an additional instance of flat healing
+			// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
+			// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
+			if char.HPCurrent/char.MaxHP() <= .5 {
+				bonus := 0.045 * c.MaxHP()
+				src += bonus
+				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, char.Index).
+					Write("bonus", bonus)
+			}
+			c.Core.Player.Heal(player.HealInfo{
+				Caller:  c.Index,
+				Target:  char.Index,
+				Message: "Ceremonial Garment",
+				Src:     src,
+				Bonus:   c.Stat(attributes.Heal),
+			})
 		}
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  -1,
-			Message: "Ceremonial Garment",
-			Src:     burstHealPct[c.TalentLvlBurst()]*c.MaxHP() + burstHealFlat[c.TalentLvlBurst()],
-			Bonus:   c.Stat(attributes.Heal),
-		})
 
 		if c.Base.Cons >= 4 {
 			c.c4()

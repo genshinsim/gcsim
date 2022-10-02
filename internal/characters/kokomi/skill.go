@@ -84,19 +84,18 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 	c.Core.QueueAttackEvent(d, 0)
 
 	maxhp := d.Snapshot.BaseHP*(1+d.Snapshot.Stats[attributes.HPP]) + d.Snapshot.Stats[attributes.HP]
+	src := skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()]
+
 	// C2 handling - believe this is an additional instance of flat healing
 	// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
 	// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
 	if c.Base.Cons >= 2 {
 		active := c.Core.Player.ActiveChar()
 		if active.HPCurrent/active.MaxHP() <= .5 {
-			c.Core.Player.Heal(player.HealInfo{
-				Caller:  c.Index,
-				Target:  c.Core.Player.Active(),
-				Message: "The Clouds Like Waves Rippling",
-				Src:     0.045 * maxhp,
-				Bonus:   d.Snapshot.Stats[attributes.Heal],
-			})
+			bonus := 0.045 * maxhp
+			src += bonus
+			c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index).
+				Write("bonus", bonus)
 		}
 	}
 
@@ -104,7 +103,7 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
 		Message: "Bake-Kurage",
-		Src:     skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()],
+		Src:     src,
 		Bonus:   d.Snapshot.Stats[attributes.Heal],
 	})
 
