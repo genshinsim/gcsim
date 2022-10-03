@@ -118,7 +118,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			marked--
 			//queueing attack one frame later
 			//TODO: does hold have different attack size? don't think so?
-			c.Core.QueueAttack(ai, combat.NewDefSingleTarget(e.Index(), combat.TargettableEnemy), 1, 1, cb)
+			c.Core.QueueAttack(ai, combat.NewDefSingleTarget(e.Index(), combat.TargettableEnemy), 0, 0, cb)
 		}
 
 		//activate c4 if relevant
@@ -142,7 +142,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			}
 		}
 
-	}, skillHitmark) //TODO: frames for e dmg? possibly 5 second after attaching?
+	}, skillHitmark+1) //TODO: frames for e dmg? possibly 5 second after attaching?
 
 	c.SetCDWithDelay(action.ActionSkill, 600, skillHitmark-2)
 
