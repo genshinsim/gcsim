@@ -14,7 +14,7 @@ func TestHydroVaporize(t *testing.T) {
 	c.Init()
 
 	var next *combat.AttackEvent
-	c.Events.Subscribe(event.OnVaporize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnVaporize, func(evt event.EventPayload) bool {
 		if ae, ok := args[1].(*combat.AttackEvent); ok {
 			next = ae
 		}
@@ -56,7 +56,7 @@ func TestPyroVaporize(t *testing.T) {
 	trg := addTargetToCore(c)
 	c.Init()
 	var next *combat.AttackEvent
-	c.Events.Subscribe(event.OnVaporize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnVaporize, func(evt event.EventPayload) bool {
 		if ae, ok := args[1].(*combat.AttackEvent); ok {
 			next = ae
 		}

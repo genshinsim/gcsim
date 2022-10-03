@@ -80,7 +80,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 func (c *char) burstProc() {
 	// does not deactivate on death
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnStateChange, func(evt event.EventPayload) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}

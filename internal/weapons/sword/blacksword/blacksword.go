@@ -18,8 +18,8 @@ func init() {
 	core.RegisterWeaponFunc(keys.TheBlackSword, NewWeapon)
 }
 
-//Increases DMG dealt by Normal and Charged Attacks by 20%. Additionally,
-//regenerates 60% of ATK as HP when Normal and Charged Attacks score a CRIT Hit. This effect can occur once every 5s.
+// Increases DMG dealt by Normal and Charged Attacks by 20%. Additionally,
+// regenerates 60% of ATK as HP when Normal and Charged Attacks score a CRIT Hit. This effect can occur once every 5s.
 type Weapon struct {
 	Index int
 }
@@ -45,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	const icdKey = "black-sword-icd"
 	heal := 0.5 + .1*float64(r)
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
 		if atk.Info.ActorIndex != char.Index {

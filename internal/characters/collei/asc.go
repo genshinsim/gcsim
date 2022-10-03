@@ -15,7 +15,7 @@ const (
 
 func (c *char) a1() {
 	for _, event := range dendroEvents {
-		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
+		c.Core.Events.Subscribe(event, func(evt event.EventPayload) bool {
 			if c.sproutShouldProc {
 				return false
 			}
@@ -45,7 +45,7 @@ func (c *char) a1AttackInfo() combat.AttackInfo {
 
 func (c *char) a4() {
 	for _, event := range dendroEvents {
-		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
+		c.Core.Events.Subscribe(event, func(evt event.EventPayload) bool {
 			if !c.StatusIsActive(burstKey) {
 				return false
 			}

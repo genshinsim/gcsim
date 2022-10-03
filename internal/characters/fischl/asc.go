@@ -8,7 +8,7 @@ import (
 
 func (c *char) a4() {
 	last := 0
-	cb := func(args ...interface{}) bool {
+	cb := func(evt event.EventPayload) bool {
 		t := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 

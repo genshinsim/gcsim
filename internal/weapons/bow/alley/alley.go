@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	key := fmt.Sprintf("alley-hunter-%v", char.Base.Key.String())
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 		prev := args[0].(int)
 		next := args[1].(int)
 		w.lastActiveChange = c.F

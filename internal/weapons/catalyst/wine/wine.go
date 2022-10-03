@@ -37,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.ATKP] = .15 + float64(r)*.05
 	stamReduction := .12 + float64(r)*.02
 	key := fmt.Sprintf("wineandsong-%v", char.Base.Key.String())
-	c.Events.Subscribe(event.OnDash, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDash, func(evt event.EventPayload) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, key)
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if c.Player.Active() != char.Index {
 			return false

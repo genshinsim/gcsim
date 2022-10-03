@@ -63,7 +63,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	stacks := 0
 
-	stackFunc := func(args ...interface{}) bool {
+	stackFunc := func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 
 		if atk.Info.ActorIndex != char.Index {

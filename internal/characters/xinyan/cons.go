@@ -15,7 +15,7 @@ func (c *char) c1() {
 	c.c1Buff = make([]float64, attributes.EndStatType)
 	c.c1Buff[attributes.AtkSpd] = 0.12
 
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
 		if atk.Info.ActorIndex != c.Index {

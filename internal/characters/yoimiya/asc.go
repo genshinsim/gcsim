@@ -28,7 +28,7 @@ func (c *char) a1() {
 		},
 	})
 
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false

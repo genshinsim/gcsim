@@ -28,7 +28,7 @@ func NewRoyal(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile)
 
 	stacks := 0
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
 		if atk.Info.ActorIndex != char.Index {

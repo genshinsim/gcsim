@@ -20,7 +20,7 @@ func (c *char) c4() {
 		return false
 	}, "beidouc4")
 
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		t := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != c.Index {

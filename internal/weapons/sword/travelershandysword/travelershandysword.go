@@ -27,7 +27,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 
-	c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnParticleReceived, func(evt event.EventPayload) bool {
 		// ignore if character not on field
 		if c.Player.Active() != char.Index {
 			return false

@@ -30,12 +30,12 @@ const (
 	maxWavespikeStacks = 2
 )
 
-//Obtain 12% All Elemental DMG Bonus. When other nearby party members use
-//Elemental Skills, the character equipping this weapon will gain 1 Wavespike
-//stack. Max 2 stacks. This effect can be triggered once every 0.3s. When the
-//character equipping this weapon uses an Elemental Skill, all stacks of
-//Wavespike will be consumed to gain Rippling Upheaval: each stack of Wavespike
-//consumed will increase Normal Attack DMG by 20% for 8s.
+// Obtain 12% All Elemental DMG Bonus. When other nearby party members use
+// Elemental Skills, the character equipping this weapon will gain 1 Wavespike
+// stack. Max 2 stacks. This effect can be triggered once every 0.3s. When the
+// character equipping this weapon uses an Elemental Skill, all stacks of
+// Wavespike will be consumed to gain Rippling Upheaval: each stack of Wavespike
+// consumed will increase Normal Attack DMG by 20% for 8s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -92,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 
 	//TODO: this used to be on post. make sure nothing broke here
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(evt event.EventPayload) bool {
 		if c.Player.Active() == char.Index {
 			return activeFn()
 		} else {

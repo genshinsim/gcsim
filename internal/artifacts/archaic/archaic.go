@@ -43,7 +43,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 
-		core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+		core.Events.Subscribe(event.OnShielded, func(evt event.EventPayload) bool {
 			// Character that picks it up must be the petra set holder
 			if core.Player.Active() != char.Index {
 				return false

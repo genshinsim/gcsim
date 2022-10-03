@@ -81,7 +81,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		const icdKey = "gd-4pc-icd"
-		add := func(args ...interface{}) bool {
+		add := func(evt event.EventPayload) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
 				return false

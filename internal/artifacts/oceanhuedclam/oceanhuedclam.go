@@ -64,7 +64,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		bubbleICDExpiry := 0
 
 		// On Heal subscription to start accumulating the healing
-		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnHeal, func(evt event.EventPayload) bool {
 			src := args[0].(int)
 			healAmt := args[2].(float64)
 

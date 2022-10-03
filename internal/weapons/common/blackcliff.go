@@ -44,7 +44,7 @@ func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponPro
 		return m, true
 	}
 
-	c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnTargetDied, func(evt event.EventPayload) bool {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {

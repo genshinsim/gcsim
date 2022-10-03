@@ -81,7 +81,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//TODO: taking 3% more damage not implemented
 	const icdKey = "spine-dmgtaken-icd"
 	icd := 60
-	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterHurt, func(evt event.EventPayload) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

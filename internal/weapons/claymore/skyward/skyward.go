@@ -46,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	counter := 0
 	dmg := 0.6 + float64(r)*0.2
 
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(evt event.EventPayload) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
@@ -55,7 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("skyward-pride-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false

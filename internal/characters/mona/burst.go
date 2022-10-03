@@ -99,15 +99,15 @@ func (c *char) burstDamageBonus() {
 	}
 }
 
-//bubble bursts when hit by an attack either while not frozen, or when the attack breaks freeze
-//i.e. impulse > 0
+// bubble bursts when hit by an attack either while not frozen, or when the attack breaks freeze
+// i.e. impulse > 0
 func (c *char) burstHook() {
 	//hook on to OnDamage; leave this always active
 	//since freeze will trigger an attack, this should be ok
 	//TODO: this implementation would currently cause bubble to break immediately on the first EC tick.
 	//According to: https://docs.google.com/document/d/1pXlgCaYEpoizMIP9-QKlSkQbmRicWfrEoxb9USWD1Ro/edit#
 	//only 2nd ec tick should break
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		//ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

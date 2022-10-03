@@ -13,9 +13,9 @@ func (c *char) a1() {
 	c.a1buff = make([]float64, attributes.EndStatType)
 	c.a1buff[attributes.EM] = 50
 
-	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
+	swirlfunc := func(ele attributes.Element) func(evt event.EventPayload) bool {
 		icd := -1
-		return func(args ...interface{}) bool {
+		return func(evt event.EventPayload) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false

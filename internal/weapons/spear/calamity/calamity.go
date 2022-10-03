@@ -92,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//double bonus if not on field
 	atkbonus := .024 + float64(r)*.008
 	skillPressBonus := make([]float64, attributes.EndStatType)
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(evt event.EventPayload) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

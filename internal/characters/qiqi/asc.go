@@ -12,7 +12,7 @@ import (
 // TODO: Likely more efficient to not maintain event subscription always, but grouping the two for clarity currently
 // When a character under the effects of Adeptus Art: Herald of Frost triggers an Elemental Reaction, their Incoming Healing Bonus is increased by 20% for 8s.
 func (c *char) a1() {
-	a1Hook := func(args ...interface{}) bool {
+	a1Hook := func(evt event.EventPayload) bool {
 		if c.StatusIsActive(skillBuffKey) {
 			return false
 		}

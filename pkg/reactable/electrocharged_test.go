@@ -18,7 +18,7 @@ func TestEC(t *testing.T) {
 	}
 
 	count := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		if ae, ok := args[1].(*combat.AttackEvent); ok {
 			if ae.Info.Abil == "electrocharged" {
 				count++

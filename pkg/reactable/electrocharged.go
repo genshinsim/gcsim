@@ -73,7 +73,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 
 		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
 		//subscribe to wane ticks
-		r.core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		r.core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 			//target should be first, then snapshot
 			n := args[0].(combat.Target)
 			a := args[1].(*combat.AttackEvent)

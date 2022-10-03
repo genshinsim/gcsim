@@ -19,7 +19,7 @@ func (s *Simulation) initDetailLog() {
 		s.stats.ElementUptime[i] = make(map[reactable.ReactableModifier]int)
 	}
 	//add call back to track actions executed
-	s.C.Events.Subscribe(event.OnActionExec, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnActionExec, func(evt event.EventPayload) bool {
 
 		active := args[0].(int)
 		action := args[1].(action.Action)
@@ -27,7 +27,7 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "sim-abil-usage")
 	//add new targets
-	s.C.Events.Subscribe(event.OnEnemyAdded, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnEnemyAdded, func(evt event.EventPayload) bool {
 		t := args[0].(combat.Target)
 		if t.Type() != combat.TargettableEnemy {
 			return false
@@ -40,7 +40,7 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "sim-new-target-stats")
 	//add call backs to track details
-	s.C.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		t := args[0].(combat.Target)
 
 		// No need to pull damage stats for non-enemies
@@ -90,8 +90,8 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "dmg-log")
 
-	eventSubFunc := func(t combat.ReactionType) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	eventSubFunc := func(t combat.ReactionType) func(evt event.EventPayload) bool {
+		return func(evt event.EventPayload) bool {
 			s.stats.ReactionsTriggered[t]++
 			return false
 		}
@@ -125,13 +125,13 @@ func (s *Simulation) initDetailLog() {
 		s.C.Events.Subscribe(k, eventSubFunc(v), "reaction-log")
 	}
 
-	s.C.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnParticleReceived, func(evt event.EventPayload) bool {
 		p := args[0].(character.Particle)
 		s.stats.ParticleCount[p.Source] += p.Num
 		return false
 	}, "particles-log")
 
-	s.C.Events.Subscribe(event.OnEnergyChange, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnEnergyChange, func(evt event.EventPayload) bool {
 		char := args[0].(*character.CharWrapper)
 		preEnergy := args[1].(float64)
 		amt := args[2].(float64)
@@ -154,7 +154,7 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "energy-change-log")
 
-	s.C.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnBurst, func(evt event.EventPayload) bool {
 		activeChar := s.C.Player.ActiveChar()
 		s.stats.EnergyWhenBurst[activeChar.Index] = append(s.stats.EnergyWhenBurst[activeChar.Index], activeChar.Energy)
 		return false

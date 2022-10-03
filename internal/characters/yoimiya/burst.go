@@ -88,7 +88,7 @@ func (c *char) applyAB(a combat.AttackCB) {
 func (c *char) burstHook() {
 	//check on attack landed for target 0
 	//if aurous active then trigger dmg if not on cd
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		ae := args[1].(*combat.AttackEvent)
 		trg, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy

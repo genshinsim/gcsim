@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const stackKey = "mappa-mare-stacks"
 	stackDuration := 600 // 10s * 60
 
-	addStack := func(args ...interface{}) bool {
+	addStack := func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false

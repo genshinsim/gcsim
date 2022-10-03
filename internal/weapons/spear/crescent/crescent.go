@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const buffKey = "crescent-pike-buff"
 	buffDuration := 300 // 5s * 60
 
-	c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnParticleReceived, func(evt event.EventPayload) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
@@ -43,7 +43,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("cp-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false

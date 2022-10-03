@@ -46,7 +46,7 @@ func (c *Core) SetupOnNormalHitEnergy() {
 
 	//TODO: not sure if there's like a 0.2s icd on this. for now let's add it in to be safe
 	icd := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
 			return false
@@ -80,7 +80,7 @@ func (c *Core) SetupOnNormalHitEnergy() {
 	}, "random-energy-restore-on-hit")
 
 	//TODO: assuming we clear the probability on swap
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 		for i := range current {
 			for j := range current[i] {
 				current[i][j] = 0

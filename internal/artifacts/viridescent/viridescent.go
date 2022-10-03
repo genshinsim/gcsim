@@ -61,8 +61,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 
-		vvfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
-			return func(args ...interface{}) bool {
+		vvfunc := func(ele attributes.Element, key string) func(evt event.EventPayload) bool {
+			return func(evt event.EventPayload) bool {
 				atk := args[1].(*combat.AttackEvent)
 				t, ok := args[0].(*enemy.Enemy)
 				if !ok {
@@ -95,7 +95,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		// Additional event for on damage proc on secondary targets
 		// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
 		// Possibly closure related? Not sure
-		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 			atk := args[1].(*combat.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {

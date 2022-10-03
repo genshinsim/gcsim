@@ -29,7 +29,7 @@ func NewWavebreaker(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 
 	var amt float64
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnInitialize, func(evt event.EventPayload) bool {
 		var energy float64
 
 		for _, x := range c.Player.Chars() {

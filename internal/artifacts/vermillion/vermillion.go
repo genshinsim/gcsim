@@ -66,7 +66,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.buff = make([]float64, attributes.EndStatType)
 
 		//TODO: this used to be post. need to check
-		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnBurst, func(evt event.EventPayload) bool {
 			if c.Player.Active() != char.Index {
 				return false
 			}
@@ -86,7 +86,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		}, fmt.Sprintf("verm-4pc-%v", char.Base.Key.String()))
 
-		c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnCharacterHurt, func(evt event.EventPayload) bool {
 			if !char.StatModIsActive(verm4pckey) {
 				return false
 			}
@@ -104,7 +104,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}, "Stack-on-hurt")
 
-		c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 			char.DeleteStatMod(verm4pckey)
 			s.stacks = 0 // resets stacks to 0 when the character swaps
 			return false

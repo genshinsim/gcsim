@@ -17,7 +17,7 @@ func init() {
 	core.RegisterWeaponFunc(keys.TheAlleyFlash, NewWeapon)
 }
 
-//Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.
+// Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.
 type Weapon struct {
 	Index int
 	c     *core.Core
@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.Tasks.Add(w.selfDisable(l), next)
 	}
 
-	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterHurt, func(evt event.EventPayload) bool {
 		w.char.AddStatus(lockoutKey, 300, true)
 		return false
 	}, fmt.Sprintf("alleyflash-%v", char.Base.Key.String()))

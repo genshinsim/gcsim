@@ -37,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	defPer := .3 + float64(r)*.1
-	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnAttackWillLand, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false

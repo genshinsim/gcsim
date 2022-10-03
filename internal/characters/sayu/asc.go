@@ -15,8 +15,8 @@ const a1ICDKey = "sayu-a1-icd"
 // HP for every point of Elemental Mastery she has.  This effect can be
 // triggered once every 2s.
 func (c *char) a1() {
-	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	swirlfunc := func(ele attributes.Element) func(evt event.EventPayload) bool {
+		return func(evt event.EventPayload) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false

@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	})
 
 	nacaBoost := .3 + .1*float64(r)
-	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnAttackWillLand, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false

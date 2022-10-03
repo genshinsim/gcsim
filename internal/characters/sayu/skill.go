@@ -267,7 +267,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 }
 
 func (c *char) rollAbsorb() {
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnAttackWillLand, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false

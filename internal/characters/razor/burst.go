@@ -77,7 +77,7 @@ func (c *char) speedBurst() {
 }
 
 func (c *char) wolfBurst() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
@@ -113,7 +113,7 @@ func (c *char) wolfBurst() {
 }
 
 func (c *char) onSwapClearBurst() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 		if !c.StatusIsActive(burstBuffKey) {
 			return false
 		}

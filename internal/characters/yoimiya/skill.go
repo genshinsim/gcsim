@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) onExit() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 		prev := args[0].(int)
 		next := args[1].(int)
 		if prev == c.Index && next != c.Index {

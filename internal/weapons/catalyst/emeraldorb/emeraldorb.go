@@ -22,7 +22,7 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-//Upon causing a Vaporize, Electro-Charged, Frozen, or a Hydro-infused Swirl reaction, increases ATK by 20/25/30/35/40% for 12s.
+// Upon causing a Vaporize, Electro-Charged, Frozen, or a Hydro-infused Swirl reaction, increases ATK by 20/25/30/35/40% for 12s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -30,7 +30,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.15 + float64(r)*0.05
 
-	addBuff := func(args ...interface{}) bool {
+	addBuff := func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		// don't proc if dmg not from weapon holder
 		if atk.Info.ActorIndex != char.Index {

@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	stats := []string{"em", "dmg%", "atk%"}
 	buff := [][]float64{mEM, mDmg, mATK}
 
-	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 		next := args[1].(int)
 
 		if next != char.Index {

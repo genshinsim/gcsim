@@ -154,7 +154,7 @@ func (c *char) summonSwordWave() {
 }
 
 func (c *char) burstStateHook() {
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnStateChange, func(evt event.EventPayload) bool {
 		//check if buff is up
 		if !c.StatusIsActive(burstKey) {
 			return false

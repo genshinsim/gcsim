@@ -27,7 +27,7 @@ func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfi
 	prob := 0.50 + float64(p.Refine)*0.1
 	cd := 810 - p.Refine*90
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
 		if !crit {

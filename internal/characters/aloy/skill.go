@@ -199,7 +199,7 @@ func (c *char) coilMod() {
 
 // Exit Field Hook to start timer to clear coil stacks
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 		prev := args[0].(int)
 		if prev != c.Index {
 			return false

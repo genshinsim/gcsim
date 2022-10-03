@@ -36,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = 0.09 + float64(r)*0.03
 
-	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnCharacterHurt, func(evt event.EventPayload) bool {
 		if char.StatusIsActive(icdKey) {
 			return false
 		}

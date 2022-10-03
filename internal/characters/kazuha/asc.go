@@ -9,22 +9,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-//Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
-//Elemental DMG Bonus to the element absorbed by Swirl for every point of Elemental Mastery
-//he has for 8s. Bonuses for different elements obtained through this method can co-exist.
+// Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
+// Elemental DMG Bonus to the element absorbed by Swirl for every point of Elemental Mastery
+// he has for 8s. Bonuses for different elements obtained through this method can co-exist.
 //
-//this ignores any EM he gets from Sucrose A4, which is: When Astable Anemohypostasis Creation
-//- 6308 or Forbidden Creation - Isomer 75 / Type II hits an opponent, increases all party
-//members' (excluding Sucrose) Elemental Mastery by an amount equal to 20% of Sucrose's
-//Elemental Mastery for 8s.
+// this ignores any EM he gets from Sucrose A4, which is: When Astable Anemohypostasis Creation
+// - 6308 or Forbidden Creation - Isomer 75 / Type II hits an opponent, increases all party
+// members' (excluding Sucrose) Elemental Mastery by an amount equal to 20% of Sucrose's
+// Elemental Mastery for 8s.
 //
-//he still benefits from sucrose em but just cannot share it
+// he still benefits from sucrose em but just cannot share it
 func (c *char) a4() {
 	m := make([]float64, attributes.EndStatType)
 
-	swirlfunc := func(ele attributes.Stat, key string) func(args ...interface{}) bool {
+	swirlfunc := func(ele attributes.Stat, key string) func(evt event.EventPayload) bool {
 		icd := -1
-		return func(args ...interface{}) bool {
+		return func(evt event.EventPayload) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false

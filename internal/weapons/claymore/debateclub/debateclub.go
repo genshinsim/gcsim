@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const icdKey = "debate-club-icd"
 	dmg := 0.45 + float64(r)*0.15
 
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnSkill, func(evt event.EventPayload) bool {
 		// don't activate if skill not from weapon holder
 		if c.Player.Active() != char.Index {
 			return false
@@ -45,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("debate-club-activation-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		trg := args[0].(combat.Target)
 		// don't proc if dmg not from weapon holder

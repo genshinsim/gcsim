@@ -67,7 +67,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		s.charIsSpecialCase = specialChars[char.Base.Key]
 
 		//TODO: this used to be post. need to check
-		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnBurst, func(evt event.EventPayload) bool {
 			// s.s.Log.Debugw("\t\tNoblesse 2 pc","frame",s.F, "name", ds.CharName, "abil", ds.AbilType)
 			if c.Player.Active() != char.Index {
 				return false

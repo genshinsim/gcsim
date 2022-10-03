@@ -27,8 +27,8 @@ const (
 	burstKey = "eula-q"
 )
 
-//ult 365 to 415, 60fps = 120
-//looks like ult charges for 8 seconds
+// ult 365 to 415, 60fps = 120
+// looks like ult charges for 8 seconds
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.burstCounter = 0
@@ -116,7 +116,7 @@ func (c *char) triggerBurst() {
 }
 
 func (c *char) burstStacks() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if c.Core.Status.Duration(burstKey) == 0 {
 			return false

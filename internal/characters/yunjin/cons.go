@@ -29,7 +29,7 @@ func (c *char) c2() {
 func (c *char) c4() {
 	c.c4bonus = make([]float64, attributes.EndStatType)
 	c.c4bonus[attributes.DEFP] = .2
-	charModFunc := func(args ...interface{}) bool {
+	charModFunc := func(evt event.EventPayload) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != c.Index {
 			return false

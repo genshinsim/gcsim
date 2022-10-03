@@ -26,7 +26,7 @@ func NewLithic(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	stacks := 0
 	val := make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnInitialize, func(evt event.EventPayload) bool {
 		for _, char := range c.Player.Chars() {
 			if char.CharZone == profile.ZoneLiyue {
 				stacks++

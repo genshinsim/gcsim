@@ -32,9 +32,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	dmg := .075 + float64(r)*.025
 
-	hrfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
+	hrfunc := func(ele attributes.Element, key string) func(evt event.EventPayload) bool {
 		icd := -1
-		return func(args ...interface{}) bool {
+		return func(evt event.EventPayload) bool {
 			ae := args[1].(*combat.AttackEvent)
 
 			if c.Player.Active() != char.Index {

@@ -134,7 +134,7 @@ func SetupResonance(s *core.Core) {
 				}
 			case attributes.Electro:
 				last := 0
-				recover := func(args ...interface{}) bool {
+				recover := func(evt event.EventPayload) bool {
 					if s.F-last < 300 && last != 0 { // every 5 seconds
 						return false
 					}
@@ -161,7 +161,7 @@ func SetupResonance(s *core.Core) {
 				s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 				//shred geo res of target
-				s.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+				s.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 					t, ok := args[0].(*enemy.Enemy)
 					if !ok {
 						return false
@@ -218,7 +218,7 @@ func SetupResonance(s *core.Core) {
 
 				twoBuff := make([]float64, attributes.EndStatType)
 				twoBuff[attributes.EM] = 30
-				twoEl := func(args ...interface{}) bool {
+				twoEl := func(evt event.EventPayload) bool {
 					for _, c := range chars {
 						c.AddStatMod(character.StatMod{
 							Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
@@ -236,7 +236,7 @@ func SetupResonance(s *core.Core) {
 
 				threeBuff := make([]float64, attributes.EndStatType)
 				threeBuff[attributes.EM] = 20
-				threeEl := func(args ...interface{}) bool {
+				threeEl := func(evt event.EventPayload) bool {
 					for _, c := range chars {
 						c.AddStatMod(character.StatMod{
 							Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
@@ -258,7 +258,7 @@ func SetupResonance(s *core.Core) {
 }
 
 func SetupMisc(c *core.Core) {
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		//dmg tag is superconduct, target is enemy
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

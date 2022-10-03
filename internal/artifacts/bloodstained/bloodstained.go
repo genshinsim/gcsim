@@ -47,13 +47,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.50
-		c.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
-			_, ok := args[0].(*enemy.Enemy)
+		c.Events.Subscribe(event.OnTargetDied, func(evt event.EventPayload) bool {
+			payload, ok := evt.(*combat.AttackEventPayload)
+			if !ok {
+				return false
+			}
+			_, ok = payload.Target.(*enemy.Enemy)
 			// ignore if not an enemy
 			if !ok {
 				return false
 			}
-			atk := args[1].(*combat.AttackEvent)
+			atk := payload.AttackEvent
 			// don't proc if someone else defeated the enemy
 			if atk.Info.ActorIndex != char.Index {
 				return false

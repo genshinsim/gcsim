@@ -11,8 +11,8 @@ import (
 
 func (c *char) a1() {
 	const a1IcdKey = "heizou-a1-icd"
-	swirlCB := func() func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
+	swirlCB := func() func(evt event.EventPayload) bool {
+		return func(evt event.EventPayload) bool {
 			if c.StatusIsActive(a1IcdKey) {
 				return false
 			}

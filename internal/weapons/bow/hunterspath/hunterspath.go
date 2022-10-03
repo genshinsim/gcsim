@@ -16,7 +16,7 @@ import (
 
 const (
 	buffKey = "hunterspath-tireless-hunt"
-	icdKey = "hunterspath-icd"
+	icdKey  = "hunterspath-icd"
 )
 
 func init() {
@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	caBoost := 1.2 + 0.4*float64(r)
 	procCount := 0
-	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnAttackWillLand, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false

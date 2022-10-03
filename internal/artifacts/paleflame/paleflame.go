@@ -56,7 +56,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		icd := 18 // 0.3s * 60
 		s.buff = make([]float64, attributes.EndStatType)
 
-		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
 				return false

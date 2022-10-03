@@ -48,7 +48,7 @@ func (c *char) c2(a combat.AttackCB) {
 func (c *char) c4() {
 	c.c4bonus = make([]float64, attributes.EndStatType)
 	c.c4bonus[attributes.AnemoP] = 0.25
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnParticleReceived, func(evt event.EventPayload) bool {
 		// only trigger if Venti catches the particle
 		if c.Core.Player.Active() != c.Index {
 			return false

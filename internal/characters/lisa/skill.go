@@ -146,7 +146,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillHoldMult() {
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnAttackWillLand, func(evt event.EventPayload) bool {
 		atk := args[1].(*combat.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

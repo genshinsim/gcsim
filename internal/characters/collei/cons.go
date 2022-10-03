@@ -25,7 +25,7 @@ func (c *char) c1() {
 
 func (c *char) c2() {
 	for _, event := range dendroEvents {
-		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
+		c.Core.Events.Subscribe(event, func(evt event.EventPayload) bool {
 			if c.sproutShouldExtend {
 				return false
 			}

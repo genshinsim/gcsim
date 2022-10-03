@@ -29,7 +29,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	e := 3.5 + float64(r)*0.5
 
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(evt event.EventPayload) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

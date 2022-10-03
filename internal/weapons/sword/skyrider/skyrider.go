@@ -23,7 +23,7 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-//Using an Elemental Burst grants a 12% increase in ATK and Movement SPD for 15s.
+// Using an Elemental Burst grants a 12% increase in ATK and Movement SPD for 15s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	val[attributes.ATKP] = 0.09 + 0.03*float64(r)
 
 	//TODO: this used to be on post. make sure nothing broke here
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnBurst, func(evt event.EventPayload) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}

@@ -17,7 +17,7 @@ import (
 func (c *char) c4() {
 	//TODO: idk if the damage is instant or not
 	const c4IcdKey = "kuki-c4-icd"
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 		ae := args[1].(*combat.AttackEvent)
 		//ignore if C4 on icd
 		if c.StatusIsActive(c4IcdKey) {

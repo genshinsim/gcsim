@@ -246,7 +246,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 // that inflicts the Riptide status on nearby opponents hit.
 // Handles Childe riptide burst and C2 on death effects
 func (c *char) onDefeatTargets() {
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(evt event.EventPayload) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		// do nothing if not an enemy
 		if !ok {

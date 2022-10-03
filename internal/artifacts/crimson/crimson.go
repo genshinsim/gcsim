@@ -56,7 +56,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		// post snap shot to increase stacks
-		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnSkill, func(evt event.EventPayload) bool {
 			if c.Player.Active() != char.Index {
 				return false
 			}
@@ -80,8 +80,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
 				case combat.AttackTagOverloadDamage,
-				combat.AttackTagBurningDamage,
-				combat.AttackTagBurgeon:
+					combat.AttackTagBurningDamage,
+					combat.AttackTagBurgeon:
 					return 0.4, false
 				}
 				if ai.Amped {

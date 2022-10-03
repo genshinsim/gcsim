@@ -85,7 +85,7 @@ func (c *char) skillStacks(ac combat.AttackCB) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 		// do nothing if previous char wasn't ayato
 		prev := args[0].(int)
 		if prev != c.Index {

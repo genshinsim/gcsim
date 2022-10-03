@@ -102,7 +102,7 @@ func (c *char) burstRestorefunc(a combat.AttackCB) {
 }
 
 func (c *char) onSwapClearBurst() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(evt event.EventPayload) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}

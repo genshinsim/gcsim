@@ -78,7 +78,7 @@ func (c *char) manualExplode() {
 
 // explode all bunnies on overload
 func (c *char) overloadExplode() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(evt event.EventPayload) bool {
 
 		atk := args[1].(*combat.AttackEvent)
 		if len(c.bunnies) == 0 {

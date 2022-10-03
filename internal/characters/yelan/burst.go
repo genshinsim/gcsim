@@ -113,7 +113,7 @@ func (c *char) summonExquisiteThrow() {
 }
 
 func (c *char) burstStateHook() {
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnStateChange, func(evt event.EventPayload) bool {
 		//check if buff is up
 		if c.Core.Status.Duration(burstStatus) <= 0 {
 			return false
