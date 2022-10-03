@@ -230,8 +230,8 @@ func SetupResonance(s *core.Core) {
 					}
 					return false
 				}
-				// s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
-				// s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
 				s.Events.Subscribe(event.OnQuicken, twoEl, "dendro-res")
 
 				threeBuff := make([]float64, attributes.EndStatType)
