@@ -6,8 +6,7 @@ type Tasker interface {
 
 func New(f *int) *SliceHandler {
 	return &SliceHandler{
-		f:     f,
-		tasks: make([]sliceTask, 100),
+		f: f,
 	}
 }
 
