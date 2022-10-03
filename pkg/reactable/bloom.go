@@ -79,7 +79,7 @@ func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
 		var t combat.Gadget = NewDendroCore(r.core, r.self, a)
 		r.core.Combat.AddGadget(t)
-		r.core.Events.Emit(event.OnDendroCore, t)
+		r.core.Events.Emit(event.OnDendroCore, t, a)
 	}, DendroCoreDelay)
 }
 
