@@ -16,7 +16,7 @@ var burstFrames []int
 
 const (
 	burstHitmark    = 28
-	burstHealPeriod = 12 * 60 / 6
+	burstHealPeriod = 120
 )
 
 func init() {
