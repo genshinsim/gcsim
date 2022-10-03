@@ -67,6 +67,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				p.ApplySelfInfusion(attributes.Electro, dur, 9.5*60) // TODO: find actual duration
 				icdSrc[idx] = c.Core.F
 			}
+
+			if c.Base.Cons >= 4 {
+				c.c4()
+			}
 		}, 24*i+burstHitmark)
 	}
 
