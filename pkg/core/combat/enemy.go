@@ -33,22 +33,16 @@ func (h *Handler) KillEnemy(i int) {
 	h.Log.NewEvent("enemy dead", glog.LogSimEvent, -1).Write("index", i)
 	//try setting default target to a diff one if same as dead enemy
 	if h.enemies[i].Key() == h.DefaultTarget {
-		ok := false
 		for j, v := range h.enemies {
 			if j == i {
 				continue
 			}
 			if v.IsAlive() {
 				h.DefaultTarget = v.Key()
-				ok = true
 				h.Log.NewEvent("default target changed on enemy death", glog.LogWarnings, -1)
 				break
 			}
 		}
-		if !ok {
-			h.Log.NewEvent("no more default target", glog.LogWarnings, -1)
-		}
-
 	}
 }
 
@@ -69,6 +63,9 @@ func (h *Handler) EnemyCount() int {
 func (h *Handler) PrimaryTarget() Target {
 	for _, v := range h.enemies {
 		if v.Key() == h.DefaultTarget {
+			if !v.IsAlive() {
+				h.Log.NewEvent("default target is dead", glog.LogWarnings, -1)
+			}
 			return v
 		}
 	}
