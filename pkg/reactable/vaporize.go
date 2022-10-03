@@ -42,5 +42,8 @@ func (r *Reactable) tryVaporize(a *combat.AttackEvent) {
 	a.Reacted = true
 	a.Info.Amped = true
 	a.Info.AmpType = combat.Vaporize
-	r.core.Events.Emit(event.OnVaporize, r.self, a)
+	r.core.Events.Emit(event.OnVaporize, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 }

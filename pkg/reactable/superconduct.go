@@ -63,7 +63,10 @@ func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
 }
 
 func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
-	r.core.Events.Emit(event.OnSuperconduct, r.self, a)
+	r.core.Events.Emit(event.OnSuperconduct, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 
 	//superconduct attack
 	atk := combat.AttackInfo{

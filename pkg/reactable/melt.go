@@ -38,5 +38,8 @@ func (r *Reactable) tryMelt(a *combat.AttackEvent) {
 	a.Reacted = true
 	a.Info.Amped = true
 	a.Info.AmpType = combat.Melt
-	r.core.Events.Emit(event.OnMelt, r.self, a)
+	r.core.Events.Emit(event.OnMelt, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 }

@@ -1,6 +1,6 @@
-//package animation provides a simple way of tracking the current
-//animation state at any given frame, as well as if the current frame
-//is in animation lock or not
+// package animation provides a simple way of tracking the current
+// animation state at any given frame, as well as if the current frame
+// is in animation lock or not
 package animation
 
 import (
@@ -40,8 +40,8 @@ func New(f *int, debug bool, log glog.Logger, events event.Eventter, tasks task.
 	return h
 }
 
-//IsAnimationLocked returns true if the next action can be executed on the
-//current frame; false otherwise
+// IsAnimationLocked returns true if the next action can be executed on the
+// current frame; false otherwise
 func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	if h.aniEvt == nil {
 		return false
@@ -57,8 +57,8 @@ func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	return !h.aniEvt.CanUse(next)
 }
 
-//CanQueue returns true if we can start looking for the next action to queue
-//on the current frame, false otherwise
+// CanQueue returns true if we can start looking for the next action to queue
+// on the current frame, false otherwise
 func (h *AnimationHandler) CanQueueNextAction() bool {
 	if h.aniEvt == nil {
 		return true
@@ -84,7 +84,10 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 	h.char = char
 	h.started = *h.f
 	h.aniEvt = evt
-	h.events.Emit(event.OnStateChange, h.state, evt.State)
+	h.events.Emit(event.OnStateChange, &action.AnimationEventPayload{
+		Prev: h.state,
+		Next: evt.State,
+	})
 	h.state = evt.State
 	h.stateExpiry = *h.f + evt.AnimationLength
 	h.lastAct = act
@@ -108,7 +111,10 @@ func (h *AnimationHandler) CurrentState() action.AnimationState {
 
 func (h *AnimationHandler) Tick() {
 	if h.aniEvt != nil && h.aniEvt.Tick() {
-		h.events.Emit(event.OnStateChange, h.state, action.Idle)
+		h.events.Emit(event.OnStateChange, &action.AnimationEventPayload{
+			Prev: h.state,
+			Next: action.Idle,
+		})
 		h.state = action.Idle
 		h.aniEvt = nil
 	}

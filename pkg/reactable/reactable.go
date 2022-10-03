@@ -74,9 +74,18 @@ var elementToModifier = map[attributes.Element]ReactableModifier{
 func (r ReactableModifier) Element() attributes.Element { return modifierElement[r] }
 func (r ReactableModifier) String() string              { return ModifierString[r] }
 
+type DurabilityEventPayload struct {
+	Target   combat.Target
+	Prev     combat.Durability
+	Next     combat.Durability
+	Modifier ReactableModifier
+}
+
+func (a *DurabilityEventPayload) IsEventPayload() {}
+
 type Reactable struct {
-	Durability [EndReactableModifier]combat.Durability
-	DecayRate  [EndReactableModifier]combat.Durability
+	Durability [reactable.EndReactableModifier]combat.Durability
+	DecayRate  [reactable.EndReactableModifier]combat.Durability
 	// Source     []int //source frame of the aura
 	self combat.Target
 	core *core.Core
@@ -225,8 +234,14 @@ func (r *Reactable) attachBurning() {
 }
 
 func (r *Reactable) addDurability(mod ReactableModifier, amt combat.Durability) {
+	prev := r.Durability[mod]
 	r.Durability[mod] += amt
-	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
+	r.core.Events.Emit(event.OnAuraDurabilityAdded, &DurabilityEventPayload{
+		Target:   r.self,
+		Prev:     prev,
+		Next:     r.Durability[mod],
+		Modifier: mod,
+	})
 }
 
 // AuraCountains returns true if any element e is active on the target
@@ -283,9 +298,14 @@ func (r *Reactable) reduce(e attributes.Element, dur combat.Durability, factor c
 
 func (r *Reactable) deplete(m ReactableModifier) {
 	if r.Durability[m] <= ZeroDur {
+		prev := r.Durability[m]
 		r.Durability[m] = 0
 		r.DecayRate[m] = 0
-		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
+		r.core.Events.Emit(event.OnAuraDurabilityDepleted, &DurabilityEventPayload{
+			Target:   r.self,
+			Prev:     prev,
+			Modifier: m,
+		})
 	}
 }
 

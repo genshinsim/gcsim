@@ -36,7 +36,10 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 	}
 
 	a.Reacted = true
-	r.core.Events.Emit(event.OnElectroCharged, r.self, a)
+	r.core.Events.Emit(event.OnElectroCharged, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 
 	//at this point ec is refereshed so we need to trigger a reaction
 	//and change ownership

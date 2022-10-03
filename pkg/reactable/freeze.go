@@ -37,7 +37,10 @@ func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
 	a.Reacted = true
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
-	r.core.Events.Emit(event.OnFrozen, r.self, a)
+	r.core.Events.Emit(event.OnFrozen, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 }
 
 func max(a, b combat.Durability) combat.Durability {
@@ -95,8 +98,13 @@ func (r *Reactable) triggerFreeze(a, b combat.Durability) combat.Durability {
 
 func (r *Reactable) checkFreeze() {
 	if r.Durability[ModifierFrozen] <= ZeroDur {
+		prev := r.Durability[ModifierFrozen]
 		r.Durability[ModifierFrozen] = 0
-		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
+		r.core.Events.Emit(event.OnAuraDurabilityDepleted, &DurabilityEventPayload{
+			Target:   r.self,
+			Prev:     prev,
+			Modifier: ModifierFrozen,
+		})
 		//trigger another attack here, purely for the purpose of breaking bubbles >.>
 		ai := combat.AttackInfo{
 			ActorIndex:  0,

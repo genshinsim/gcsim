@@ -1,4 +1,4 @@
-//Package player contains player related tracking and functionalities:
+// Package player contains player related tracking and functionalities:
 // - tracking characters on the team
 // - handling animations state
 // - handling normal attack state
@@ -98,7 +98,10 @@ func (h *Handler) swap(to keys.Char) func() {
 			Write("target", to.String())
 		h.SwapCD = SwapCDFrames
 		h.ResetAllNormalCounter()
-		h.Events.Emit(event.OnCharacterSwap, prev, h.active)
+		h.Events.Emit(event.OnCharacterSwap, &action.SwapPayload{
+			Prev: prev,
+			Next: h.active,
+		})
 	}
 }
 
@@ -161,7 +164,9 @@ func (h *Handler) DistributeParticle(p character.Particle) {
 	for i, char := range h.chars {
 		char.ReceiveParticle(p, h.active == i, len(h.chars))
 	}
-	h.Events.Emit(event.OnParticleReceived, p)
+	h.Events.Emit(event.OnParticleReceived, &character.ParticlePayload{
+		Particle: p,
+	})
 }
 
 func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64 {
@@ -191,8 +196,8 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	h.ExtendInfusion(char, factor, dur)
 }
 
-//InitializeTeam will set up resonance event hooks and calculate
-//all character base stats
+// InitializeTeam will set up resonance event hooks and calculate
+// all character base stats
 func (h *Handler) InitializeTeam() error {
 	var err error
 	for _, c := range h.chars {

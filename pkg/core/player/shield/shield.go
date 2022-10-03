@@ -1,5 +1,5 @@
-//Package shield provide a handler to keep track of shields and
-//add shields etc...
+// Package shield provide a handler to keep track of shields and
+// add shields etc...
 package shield
 
 import "github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -34,3 +34,9 @@ type Shield interface {
 	Element() attributes.Element
 	Desc() string
 }
+
+type ShieldEventPayload struct {
+	Shield Shield
+}
+
+func (s *ShieldEventPayload) IsEventPayload() {}

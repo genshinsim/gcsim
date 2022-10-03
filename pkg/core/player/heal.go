@@ -53,7 +53,11 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 		Write("current", c.HPCurrent).
 		Write("max_hp", c.MaxHP())
 
-	h.Events.Emit(event.OnHeal, info.Caller, index, heal)
+	h.Events.Emit(event.OnHeal, &HealEventPayload{
+		Caller:      info.Caller,
+		TargetIndex: index,
+		Amount:      heal,
+	})
 }
 
 type DrainInfo struct {
@@ -74,5 +78,16 @@ func (h *Handler) Drain(di DrainInfo) {
 		Write("current", c.HPCurrent).
 		Write("max_hp", c.MaxHP())
 
-	h.Events.Emit(event.OnCharacterHurt, di.Amount)
+	h.Events.Emit(event.OnCharacterHurt, &HealEventPayload{
+		TargetIndex: di.ActorIndex,
+		Amount:      -di.Amount,
+	})
 }
+
+type HealEventPayload struct {
+	Caller      int
+	TargetIndex int
+	Amount      float64
+}
+
+func (h *HealEventPayload) IsEventPayload() {}

@@ -29,7 +29,10 @@ func (h *Handler) SetEnemyPos(i int, x, y float64) bool {
 
 func (h *Handler) KillEnemy(i int) {
 	h.enemies[i].Kill()
-	h.Events.Emit(event.OnTargetDied, h.enemies[i], &AttackEvent{}) // TODO: it's fine?
+	h.Events.Emit(event.OnTargetDied, &AttackEventPayload{
+		Target:      h.enemies[i],
+		AttackEvent: &AttackEvent{},
+	}) // TODO: it's fine?
 	h.Log.NewEvent("enemy dead", glog.LogSimEvent, -1).Write("index", i)
 }
 

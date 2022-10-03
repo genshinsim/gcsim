@@ -1,13 +1,13 @@
-//Package action describes the valid actions that any character may take
+// Package action describes the valid actions that any character may take
 package action
 
-//TODO: add a sync.Pool here to save some memory allocs
+// TODO: add a sync.Pool here to save some memory allocs
 type ActionInfo struct {
 	Frames              func(next Action) int `json:"-"`
 	AnimationLength     int
 	CanQueueAfter       int
 	State               AnimationState
-	FramePausedOnHitlag func() bool `json:"-"`
+	FramePausedOnHitlag func() bool               `json:"-"`
 	OnRemoved           func(next AnimationState) `json:"-"`
 	//following are exposed only so we can log it properly
 	CachedFrames         [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
@@ -136,6 +136,34 @@ func StringToAction(s string) Action {
 	}
 	return InvalidAction
 }
+
+type AnimationEventPayload struct {
+	Prev AnimationState
+	Next AnimationState
+}
+
+func (a *AnimationEventPayload) IsEventPayload() {}
+
+type StamEventPayload struct {
+	ConsumingAction Action
+}
+
+func (s *StamEventPayload) IsEventPayload() {}
+
+type ActionExecPayload struct {
+	ActiveChar int
+	Action     Action
+	Param      map[string]int
+}
+
+func (s *ActionExecPayload) IsEventPayload() {}
+
+type SwapPayload struct {
+	Prev int
+	Next int
+}
+
+func (s *SwapPayload) IsEventPayload() {}
 
 type AnimationState int
 

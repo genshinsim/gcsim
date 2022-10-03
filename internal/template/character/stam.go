@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-//ActionStam provides default implementation for stam cost for charge and dash
-//character should override this though
+// ActionStam provides default implementation for stam cost for charge and dash
+// character should override this though
 func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
@@ -63,7 +63,9 @@ func (c *Character) Dash(p map[string]int) action.ActionInfo {
 			c.Core.Player.Stam = 0
 		}
 		c.Core.Player.LastStamUse = c.Core.F
-		c.Core.Events.Emit(event.OnStamUse, action.DashState)
+		c.Core.Events.Emit(event.OnStamUse, &action.StamEventPayload{
+			ConsumingAction: action.ActionDash,
+		})
 	}, f-1)
 
 	return action.ActionInfo{

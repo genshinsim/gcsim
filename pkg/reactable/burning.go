@@ -39,7 +39,10 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 		r.attachBurningFuel(max(dendroDur, r.Durability[ModifierQuicken]), 1)
 		r.attachBurning()
 
-		r.core.Events.Emit(event.OnBurning, r.self, a)
+		r.core.Events.Emit(event.OnBurning, &combat.AttackEventPayload{
+			Target:      r.self,
+			AttackEvent: a,
+		})
 		r.calcBurningDmg(a)
 
 		if r.burningTickSrc == -1 {

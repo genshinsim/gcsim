@@ -35,7 +35,10 @@ func (r *Reactable) tryOverload(a *combat.AttackEvent) {
 	a.Reacted = true
 
 	//trigger event before attack is queued. this gives time for other actions to modify it
-	r.core.Events.Emit(event.OnOverload, r.self, a)
+	r.core.Events.Emit(event.OnOverload, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 
 	//trigger an overload attack
 	atk := combat.AttackInfo{

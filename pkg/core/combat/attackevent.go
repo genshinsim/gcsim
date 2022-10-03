@@ -60,6 +60,22 @@ type AttackInfo struct {
 	HitlagOnHeadshotOnly bool    //if this is true, will only apply if HitWeakpoint is also true
 }
 
+type AttackEventPayload struct {
+	Target      Target
+	AttackEvent *AttackEvent
+}
+
+func (a *AttackEventPayload) IsEventPayload() {}
+
+type DamageEventPayload struct {
+	Target      Target
+	AttackEvent *AttackEvent
+	Damage      float64
+	IsCrit      bool
+}
+
+func (a *DamageEventPayload) IsEventPayload() {}
+
 type StrikeType int
 
 const (

@@ -109,7 +109,10 @@ func (e *Enemy) ApplyDamage(atk *combat.AttackEvent, damage float64) {
 	//check if target is dead
 	if e.Core.Flags.DamageMode && e.hp <= 0 {
 		e.Kill()
-		e.Core.Events.Emit(event.OnTargetDied, e, atk)
+		e.Core.Events.Emit(event.OnTargetDied, &combat.AttackEventPayload{
+			Target:      e,
+			AttackEvent: atk,
+		})
 		return
 	}
 

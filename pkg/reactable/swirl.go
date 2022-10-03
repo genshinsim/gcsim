@@ -67,7 +67,10 @@ func (r *Reactable) trySwirlElectro(a *combat.AttackEvent) {
 	a.Info.Durability -= rd
 	a.Reacted = true
 	//queue an attack first
-	r.core.Events.Emit(event.OnSwirlElectro, r.self, a)
+	r.core.Events.Emit(event.OnSwirlElectro, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 	r.queueSwirl(
 		combat.SwirlElectro,
 		attributes.Electro,
@@ -98,7 +101,10 @@ func (r *Reactable) trySwirlHydro(a *combat.AttackEvent) {
 	a.Info.Durability -= rd
 	a.Reacted = true
 	//queue an attack first
-	r.core.Events.Emit(event.OnSwirlHydro, r.self, a)
+	r.core.Events.Emit(event.OnSwirlHydro, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 	r.queueSwirl(
 		combat.SwirlHydro,
 		attributes.Hydro,
@@ -121,7 +127,10 @@ func (r *Reactable) trySwirlCryo(a *combat.AttackEvent) {
 	a.Info.Durability -= rd
 	a.Reacted = true
 	//queue an attack first
-	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
+	r.core.Events.Emit(event.OnSwirlCryo, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 	r.queueSwirl(
 		combat.SwirlCryo,
 		attributes.Cryo,
@@ -145,7 +154,10 @@ func (r *Reactable) trySwirlPyro(a *combat.AttackEvent) {
 	a.Reacted = true
 	r.burningCheck()
 	//queue an attack first
-	r.core.Events.Emit(event.OnSwirlPyro, r.self, a)
+	r.core.Events.Emit(event.OnSwirlPyro, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 	r.queueSwirl(
 		combat.SwirlPyro,
 		attributes.Pyro,
@@ -168,7 +180,10 @@ func (r *Reactable) trySwirlFrozen(a *combat.AttackEvent) {
 	a.Info.Durability -= rd
 	a.Reacted = true
 	//queue an attack first
-	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
+	r.core.Events.Emit(event.OnSwirlCryo, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 	r.queueSwirl(
 		combat.SwirlCryo,
 		attributes.Cryo,

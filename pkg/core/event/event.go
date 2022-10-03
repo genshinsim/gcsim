@@ -12,7 +12,7 @@ const (
 
 	OnAuraDurabilityAdded    //target, ele, durability
 	OnAuraDurabilityDepleted //target, ele
-	// OnReaction               //target, AttackEvent, ReactionType
+	// OnReaction
 	ReactionEventStartDelim
 	OnOverload       //target, AttackEvent
 	OnSuperconduct   //target, AttackEvent
@@ -67,12 +67,20 @@ type Handler struct {
 	events [][]ehook
 }
 
-type EventHook func(args ...interface{}) bool
+type EventPayload interface {
+	IsEventPayload() //really just to force compliance
+}
+
+type NilEventPayload struct{}
+
+func (n *NilEventPayload) IsEventPayload() {}
+
+type EventHook func(EventPayload) bool
 
 type Eventter interface {
 	Subscribe(e Event, f EventHook, key string)
 	Unsubscribe(e Event, key string)
-	Emit(e Event, args ...interface{})
+	Emit(e Event, payload EventPayload)
 }
 
 type ehook struct {
@@ -126,10 +134,10 @@ func (h *Handler) Unsubscribe(e Event, key string) {
 	h.events[e] = h.events[e][:n]
 }
 
-func (h *Handler) Emit(e Event, args ...interface{}) {
+func (h *Handler) Emit(e Event, payload EventPayload) {
 	n := 0
 	for _, v := range h.events[e] {
-		if !v.f(args...) {
+		if !v.f(payload) {
 			h.events[e][n] = v
 			n++
 		}

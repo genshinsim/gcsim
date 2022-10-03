@@ -6,6 +6,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+type EnergyEventPayload struct {
+	Receiver     *CharWrapper
+	PreEnergy    float64
+	Change       float64
+	EnergySource string
+}
+
+func (e *EnergyEventPayload) IsEventPayload() {}
+
+type ParticlePayload struct {
+	Particle Particle
+}
+
+func (p *ParticlePayload) IsEventPayload() {}
+
 func (c *CharWrapper) ConsumeEnergy(delay int) {
 	if delay == 0 {
 		c.Energy = 0
@@ -25,8 +40,12 @@ func (c *CharWrapper) AddEnergy(src string, e float64) {
 	if c.Energy < 0 {
 		c.Energy = 0
 	}
-
-	c.events.Emit(event.OnEnergyChange, c, preEnergy, e, src)
+	c.events.Emit(event.OnEnergyChange, &EnergyEventPayload{
+		Receiver:     c,
+		PreEnergy:    preEnergy,
+		Change:       e,
+		EnergySource: src,
+	})
 	c.log.NewEvent("adding energy", glog.LogEnergyEvent, c.Index).
 		Write("rec'd", e).
 		Write("pre_recovery", preEnergy).
@@ -66,7 +85,12 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 		c.Energy = c.EnergyMax
 	}
 
-	c.events.Emit(event.OnEnergyChange, c, pre, amt, p.Source)
+	c.events.Emit(event.OnEnergyChange, &EnergyEventPayload{
+		Receiver:     c,
+		PreEnergy:    pre,
+		Change:       amt,
+		EnergySource: p.Source,
+	})
 	c.log.NewEvent(
 		"particle",
 		glog.LogEnergyEvent,

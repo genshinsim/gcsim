@@ -48,7 +48,10 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 	a.Reacted = true
 
 	r.addBloomGadget(a)
-	r.core.Events.Emit(event.OnBloom, r.self, a)
+	r.core.Events.Emit(event.OnBloom, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 }
 
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
@@ -67,7 +70,10 @@ func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
 	r.Durability[ModifierQuicken] -= consumed
 
 	r.addBloomGadget(a)
-	r.core.Events.Emit(event.OnBloom, r.self, a)
+	r.core.Events.Emit(event.OnBloom, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 }
 
 type DendroCore struct {
@@ -79,7 +85,10 @@ func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
 		var t combat.Gadget = NewDendroCore(r.core, r.self, a)
 		r.core.Combat.AddGadget(t)
-		r.core.Events.Emit(event.OnDendroCore, t, a)
+		r.core.Events.Emit(event.OnDendroCore, &combat.AttackEventPayload{
+			Target:      t,
+			AttackEvent: a,
+		})
 	}, DendroCoreDelay)
 }
 
@@ -144,7 +153,10 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
-		s.Core.Events.Emit(event.OnHyperbloom, s, atk)
+		s.Core.Events.Emit(event.OnHyperbloom, &combat.AttackEventPayload{
+			Target:      s,
+			AttackEvent: atk,
+		})
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
@@ -159,7 +171,10 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
-		s.Core.Events.Emit(event.OnBurgeon, s, atk)
+		s.Core.Events.Emit(event.OnBurgeon, &combat.AttackEventPayload{
+			Target:      s,
+			AttackEvent: atk,
+		})
 	default:
 		return 0, false
 	}

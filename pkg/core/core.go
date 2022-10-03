@@ -135,7 +135,7 @@ func (c *Core) Init() error {
 	if err != nil {
 		return err
 	}
-	c.Events.Emit(event.OnInitialize)
+	c.Events.Emit(event.OnInitialize, &event.NilEventPayload{})
 	return nil
 }
 

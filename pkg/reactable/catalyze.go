@@ -15,7 +15,10 @@ func (r *Reactable) tryAggravate(a *combat.AttackEvent) {
 		return
 	}
 
-	r.core.Events.Emit(event.OnAggravate, r.self, a)
+	r.core.Events.Emit(event.OnAggravate, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 
 	//em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
@@ -33,7 +36,10 @@ func (r *Reactable) trySpread(a *combat.AttackEvent) {
 		return
 	}
 
-	r.core.Events.Emit(event.OnSpread, r.self, a)
+	r.core.Events.Emit(event.OnSpread, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 
 	//em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
@@ -65,7 +71,10 @@ func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
 
-	r.core.Events.Emit(event.OnQuicken, r.self, a)
+	r.core.Events.Emit(event.OnQuicken, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 
 	//attach quicken aura; special amount
 	r.attachQuicken(consumed)

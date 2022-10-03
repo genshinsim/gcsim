@@ -31,7 +31,7 @@ func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
 	cpy := *a
 
 	//at this point attack will land
-	h.Events.Emit(event.OnAttackWillLand, t, &cpy)
+	h.Events.Emit(event.OnAttackWillLand, &AttackEventPayload{Target: t, AttackEvent: &cpy})
 
 	//check to make sure it's not cancelled for w/e reason
 	if a.Cancelled {
@@ -69,7 +69,12 @@ func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
 	h.Tasks.Add(func() {
 		//apply the damage
 		t.ApplyDamage(&cpy, dmg)
-		h.Events.Emit(event.OnDamage, t, &cpy, dmg, crit)
+		h.Events.Emit(event.OnDamage, &DamageEventPayload{
+			Target:      t,
+			AttackEvent: &cpy,
+			Damage:      dmg,
+			IsCrit:      crit,
+		})
 		//callbacks
 		cb := AttackCB{
 			Target:      t,

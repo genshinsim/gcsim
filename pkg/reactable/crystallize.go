@@ -55,7 +55,10 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	a.Info.Durability = 0
 	a.Reacted = true
 	//event
-	r.core.Events.Emit(evt, r.self, a)
+	r.core.Events.Emit(evt, &combat.AttackEventPayload{
+		Target:      r.self,
+		AttackEvent: a,
+	})
 	//check freeze + ec
 	switch {
 	case ele == attributes.Electro && r.Durability[ModifierHydro] > ZeroDur:
