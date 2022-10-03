@@ -92,7 +92,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, burstHealPeriod*i+11)
 	}
 	c.Core.Tasks.Add(func() {
-		// C4
 		if c.Base.Cons >= 4 {
 			c.c4()
 		}
