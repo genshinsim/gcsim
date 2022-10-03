@@ -60,21 +60,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		done = true
 	}
 
-	c.Core.Tasks.Add(func() {
-		// C6
-		if c.Base.Cons >= 6 {
-			c.Core.Player.AddWeaponInfuse(
-				c.Index,
-				c6key,
-				attributes.Electro,
-				180,
-				true,
-				combat.AttackTagNormal,
-				combat.AttackTagExtra,
-				combat.AttackTagPlunge,
-			)
-		}
-	}, skillFrames[action.ActionAttack]) // TODO:It activates on the attack cancel frames?
+	if c.Base.Cons >= 6 {
+		c.Core.Player.AddWeaponInfuse(
+			c.Index,
+			c6key,
+			attributes.Electro,
+			228, // 3s + 0.8s according to dm
+			true,
+			combat.AttackTagNormal,
+			combat.AttackTagExtra,
+			combat.AttackTagPlunge,
+		)
+	}
 
 	c.Core.QueueAttack(
 		ai,
