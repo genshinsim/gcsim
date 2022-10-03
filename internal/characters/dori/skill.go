@@ -10,8 +10,7 @@ import (
 var skillFrames []int
 
 const (
-	skillDefaultTravel = 10
-	skillHitmark       = 26 // Initial Hit, includes 10f travel time
+	skillRelease = 16
 )
 
 var skillSalesHitmarks = []int{46, 59, 59} // counted starting from skill hitmark
@@ -25,7 +24,7 @@ func init() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = skillDefaultTravel
+		travel = 10
 	}
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -74,13 +73,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 		0,
-		travel+skillHitmark-skillDefaultTravel,
+		skillRelease+travel,
 		afterSalesCB,
 		a4CB,
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 9*60, 16)
-	c.Core.QueueParticle("dori", 2, attributes.Electro, skillHitmark+c.ParticleDelay)
+	c.Core.QueueParticle("dori", 2, attributes.Electro, skillRelease+travel+c.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -108,7 +107,7 @@ func (c *char) afterSales(travel int) func() {
 				ae,
 				combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
 				0,
-				skillSalesHitmarks[i]+travel-skillDefaultTravel,
+				skillSalesHitmarks[i],
 			)
 		}
 	}
