@@ -36,16 +36,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	atkBuff := 0.39 + 0.13*float64(r)
 	atkSkillBuff := 0.21 + 0.07*float64(r)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("scarletsands-atk-buff", -1),
+		Base:         modifier.NewBase("scarletsands", -1),
 		AffectedStat: attributes.ATK,
 		Amount: func() ([]float64, bool) {
-			// reset stacks if expired
-			if !char.StatusIsActive(skillBuff) {
-				w.stacks = 0
-			}
-
 			em := char.Stat(attributes.EM)
-			mATK[attributes.ATK] = atkBuff*em + atkSkillBuff*em*float64(w.stacks)
+			mATK[attributes.ATK] = atkBuff * em
 			return mATK, true
 		},
 	})
@@ -64,14 +59,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		// TODO: is there icd?
 
 		// reset stacks if expired
-		if !char.StatusIsActive(skillBuff) {
+		if !char.StatModIsActive(skillBuff) {
 			w.stacks = 0
 		}
 		if w.stacks < 3 {
 			w.stacks++
 		}
 
-		char.AddStatus(skillBuff, 10*60, true)
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(skillBuff, -1),
+			AffectedStat: attributes.ATK,
+			Amount: func() ([]float64, bool) {
+				em := char.Stat(attributes.EM)
+				mATK[attributes.ATK] = atkSkillBuff * em * float64(w.stacks)
+				return mATK, true
+			},
+		})
+
 		c.Log.NewEvent("scarletsands adding stack", glog.LogWeaponEvent, char.Index).Write("stacks", w.stacks)
 		return false
 	}, fmt.Sprintf("scarletsands-%v", char.Base.Key.String()))
