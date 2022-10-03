@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(skillBuff, -1),
+			Base:         modifier.NewBaseWithHitlag(skillBuff, 10*60),
 			AffectedStat: attributes.ATK,
 			Amount: func() ([]float64, bool) {
 				em := char.Stat(attributes.EM)
