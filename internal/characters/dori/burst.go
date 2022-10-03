@@ -77,7 +77,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	for i := 0; i < 6; i++ {
 		c.Core.Tasks.Add(func() {
-			c.c2(c2Travel)
+			if c.Base.Cons >= 2 {
+				c.c2(c2Travel)
+			}
 			// Heals
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
