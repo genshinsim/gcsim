@@ -13,10 +13,12 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 35
-const skillTargetCountTag = "marked"
-const skillHoldDuration = "hold_length" //not yet implemented
-const skillMarkedTag = "yelan-skill-marked"
+const (
+	skillHitmark        = 35
+	skillTargetCountTag = "marked"
+	skillHoldDuration   = "hold_length" // not yet implemented
+	skillMarkedTag      = "yelan-skill-marked"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42)
@@ -45,7 +47,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		FlatDmg:    skill[c.TalentLvlSkill()] * c.MaxHP(),
 	}
 
-	//clear all existing tags
+	// clear all existing tags
 	for _, t := range c.Core.Combat.Enemies() {
 		if e, ok := t.(*enemy.Enemy); ok {
 			e.SetTag(skillMarkedTag, 0)
@@ -57,9 +59,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.Log.NewEvent("c4 stacks set to 0", glog.LogCharacterEvent, c.Index)
 	}
 
-	//add a task to loop through targets and mark them
+	// add a task to loop through targets and mark them
 	marked, ok := p[skillTargetCountTag]
-	//default 1
+	// default 1
 	if !ok {
 		marked = 1
 	}
@@ -81,20 +83,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				c.AddStatus("yelanc4", 25*60, true)
 			}
 		}
-	}, skillHitmark) //TODO: frames for hold e
+	}, skillHitmark) // TODO: frames for hold e
 
 	// hold := p["hold"]
 
 	cb := func(_ combat.AttackCB) {
-		//TODO: this used to be 82?
+		// TODO: this used to be 82?
 		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.ParticleDelay)
-		//check for breakthrough
+		// check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
-			//TODO: does this thing even time out?
+			// TODO: does this thing even time out?
 			c.SetTag(breakthroughStatus, 1)
 			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index)
 		}
-		//TODO: icd on this??
+		// TODO: icd on this??
 		if c.Core.Status.Duration(burstStatus) > 0 {
 			c.exquisiteThrowSkillProc()
 			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index).
@@ -102,7 +104,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	//add a task to loop through targets and deal damage if marked
+	// add a task to loop through targets and deal damage if marked
 	c.Core.Tasks.Add(func() {
 		for _, t := range c.Core.Combat.Enemies() {
 			e, ok := t.(*enemy.Enemy)
@@ -116,13 +118,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.Core.Log.NewEvent("damaging marked target", glog.LogCharacterEvent, c.Index).
 				Write("target", e.Index())
 			marked--
-			//queueing attack one frame later
-			//TODO: does hold have different attack size? don't think so?
+			// queueing attack one frame later
+			// TODO: does hold have different attack size? don't think so?
 			c.Core.QueueAttack(ai, combat.NewDefSingleTarget(e.Index(), combat.TargettableEnemy), 0, 0, cb)
 		}
 
-		//activate c4 if relevant
-		//TODO: check if this is accurate
+		// activate c4 if relevant
+		// TODO: check if this is accurate
 		if c.Base.Cons >= 4 && c.c4count > 0 {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.HPP] = float64(c.c4count) * 0.1
@@ -141,8 +143,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				})
 			}
 		}
-
-	}, skillHitmark+1) //TODO: frames for e dmg? possibly 5 second after attaching?
+	}, skillHitmark+1) // TODO: frames for e dmg? possibly 5 second after attaching?
 
 	c.SetCDWithDelay(action.ActionSkill, 600, skillHitmark-2)
 
