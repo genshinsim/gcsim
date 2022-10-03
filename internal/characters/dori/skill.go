@@ -46,11 +46,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if done {
 			return
 		}
-		c.a4energy = a.AttackEvent.Snapshot.Stats[attributes.ER] * 5
-		if c.a4energy > 15 {
-			c.a4energy = 15
+		a4energy := a.AttackEvent.Snapshot.Stats[attributes.ER] * 5
+		if a4energy > 15 {
+			a4energy = 15
 		}
-		c.AddEnergy("dori-a4", c.a4energy)
+		c.AddEnergy("dori-a4", a4energy)
 		done = true
 	}
 	c.Core.Tasks.Add(func() {

@@ -15,7 +15,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	afterCount int
-	a4energy   float64
 }
 
 const c6key = "dori-c6"
