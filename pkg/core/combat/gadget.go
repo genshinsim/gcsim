@@ -26,7 +26,7 @@ type Gadget interface {
 	GadgetTyp() GadgetTyp
 }
 
-func (h *Handler) RemoveGadget(key int) {
+func (h *Handler) RemoveGadget(key TargetKey) {
 	h.ReplaceGadget(key, nil)
 }
 
@@ -56,7 +56,7 @@ func (h *Handler) AddGadget(t Gadget) {
 	t.SetKey(h.nextkey())
 }
 
-func (h *Handler) ReplaceGadget(key int, t Gadget) {
+func (h *Handler) ReplaceGadget(key TargetKey, t Gadget) {
 	//do nothing if not found
 	for i, v := range h.gadgets {
 		if v != nil && v.Key() == key {

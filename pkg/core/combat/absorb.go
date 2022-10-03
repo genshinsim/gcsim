@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func WillCollide(p AttackPattern, t Target, index int) bool {
+func WillCollide(p AttackPattern, t Target, key TargetKey) bool {
 	//shape shouldn't be nil; panic here
 	if p.Shape == nil {
 		panic("unexpected nil shape")
@@ -23,7 +23,7 @@ func WillCollide(p AttackPattern, t Target, index int) bool {
 		return t.Shape().IntersectRectangle(*v)
 	case *SingleTarget:
 		//only true if
-		return v.Target == index
+		return v.Target == key
 	default:
 		return false
 	}

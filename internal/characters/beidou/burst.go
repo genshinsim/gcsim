@@ -126,7 +126,7 @@ func (c *char) burstProc() {
 		//trigger a chain of attacks starting at the first target
 		atk := *c.burstAtk
 		atk.SourceFrame = c.Core.F
-		atk.Pattern = combat.NewDefSingleTarget(t.Index(), combat.TargettableEnemy)
+		atk.Pattern = combat.NewDefSingleTarget(t.Key(), combat.TargettableEnemy)
 		cb := c.chain(c.Core.F, 1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
@@ -162,7 +162,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		//queue an attack vs next target
 		atk := *c.burstAtk
 		atk.SourceFrame = src
-		atk.Pattern = combat.NewDefSingleTarget(trgs[next], combat.TargettableEnemy)
+		atk.Pattern = combat.NewDefSingleTarget(c.Core.Combat.Enemy(next).Key(), combat.TargettableEnemy)
 		cb := c.chain(src, count+1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)

@@ -39,7 +39,7 @@ func (c *char) a4() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// A4 uses Oz Snapshot
-		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(t.Index(), combat.TargettableEnemy), 3)
+		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(t.Key(), combat.TargettableEnemy), 3)
 
 		return false
 	}

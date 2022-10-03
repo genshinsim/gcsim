@@ -132,7 +132,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		ai := NewHyperbloomAttack(char, s)
 		// queue dmg nearest enemy
 		x, y := s.Gadget.Pos()
-		enemies := s.Core.Combat.EnemyByDistance(x, y, s.Gadget.Key())
+		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
 		if len(enemies) > 0 {
 			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, false, combat.TargettableEnemy), -1, 5)
 

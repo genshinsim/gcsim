@@ -26,9 +26,9 @@ type AttackCB struct {
 type AttackCBFunc func(AttackCB)
 
 type AttackInfo struct {
-	ActorIndex       int    //character this attack belongs to
-	DamageSrc        int    //source of this attack; should be a unique key identifying the target
-	Abil             string //name of ability triggering the damage
+	ActorIndex       int       //character this attack belongs to
+	DamageSrc        TargetKey //source of this attack; should be a unique key identifying the target
+	Abil             string    //name of ability triggering the damage
 	AttackTag        AttackTag
 	ICDTag           ICDTag
 	ICDGroup         ICDGroup

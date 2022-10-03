@@ -78,7 +78,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
 	//shatter is a self attack
 	r.core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(r.self.Index(), r.self.Type()),
+		combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
 		-1,
 		1,
 	)
@@ -110,6 +110,6 @@ func (r *Reactable) checkFreeze() {
 			DoNotLog:    true,
 		}
 		//TODO: delay attack by 1 frame ok?
-		r.core.QueueAttack(ai, combat.NewDefSingleTarget(r.self.Index(), r.self.Type()), -1, 1)
+		r.core.QueueAttack(ai, combat.NewDefSingleTarget(r.self.Key(), r.self.Type()), -1, 1)
 	}
 }

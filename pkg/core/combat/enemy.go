@@ -31,6 +31,25 @@ func (h *Handler) KillEnemy(i int) {
 	h.enemies[i].Kill()
 	h.Events.Emit(event.OnTargetDied, h.enemies[i], &AttackEvent{}) // TODO: it's fine?
 	h.Log.NewEvent("enemy dead", glog.LogSimEvent, -1).Write("index", i)
+	//try setting default target to a diff one if same as dead enemy
+	if h.enemies[i].Key() == h.DefaultTarget {
+		ok := false
+		for j, v := range h.enemies {
+			if j == i {
+				continue
+			}
+			if v.IsAlive() {
+				h.DefaultTarget = v.Key()
+				ok = true
+				h.Log.NewEvent("default target changed on enemy death", glog.LogWarnings, -1)
+				break
+			}
+		}
+		if !ok {
+			h.Log.NewEvent("no more default target", glog.LogWarnings, -1)
+		}
+
+	}
 }
 
 func (h *Handler) AddEnemy(t Target) {
@@ -48,11 +67,16 @@ func (h *Handler) EnemyCount() int {
 }
 
 func (h *Handler) PrimaryTarget() Target {
-	return h.enemies[h.DefaultTarget]
+	for _, v := range h.enemies {
+		if v.Key() == h.DefaultTarget {
+			return v
+		}
+	}
+	panic("default target does not exist?!")
 }
 
 // EnemyByDistance returns an array of indices of the enemies sorted by distance
-func (c *Handler) EnemyByDistance(x, y float64, excl int) []int {
+func (c *Handler) EnemyByDistance(x, y float64, excl TargetKey) []int {
 	//we dont actually need to know the exact distance. just find the lowest
 	//of x^2 + y^2 to avoid sqrt
 
@@ -62,7 +86,7 @@ func (c *Handler) EnemyByDistance(x, y float64, excl int) []int {
 	}
 
 	for i, v := range c.enemies {
-		if i == excl {
+		if v.Key() == excl {
 			continue
 		}
 		vx, vy := v.Shape().Pos()
