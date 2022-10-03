@@ -59,8 +59,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				panic("target 0 should be Player but is not!!")
 			}
 			idx := c.Core.Player.ActiveChar().Index
-			if c.Core.F > icdSrc[idx] + combat.ICDGroupResetTimer[combat.ICDGroupDoriBurst] {
-				p.ApplySelfInfusion(attributes.Electro, 25, 9.5*60) // TODO: find actual duration
+			if c.Core.F > icdSrc[idx]+combat.ICDGroupResetTimer[combat.ICDGroupDoriBurst] {
+				dur := combat.Durability(25)
+				if p.AuraCount() > 0 {
+					dur = 20
+				}
+				p.ApplySelfInfusion(attributes.Electro, dur, 9.5*60) // TODO: find actual duration
 				icdSrc[idx] = c.Core.F
 			}
 		}, 24*i+burstHitmark)
