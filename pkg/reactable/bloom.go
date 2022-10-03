@@ -144,7 +144,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
-		s.Core.Events.Emit(event.OnHyperbloom, s.Gadget, atk)
+		s.Core.Events.Emit(event.OnHyperbloom, s, atk)
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
@@ -159,7 +159,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
-		s.Core.Events.Emit(event.OnBurgeon, s.Gadget, atk)
+		s.Core.Events.Emit(event.OnBurgeon, s, atk)
 	default:
 		return 0, false
 	}
