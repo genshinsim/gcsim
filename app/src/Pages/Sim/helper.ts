@@ -19,8 +19,8 @@ const statKeys = [
   'electro%',
   'anemo%',
   'geo%',
-  'phys%',
   'dendro%',
+  'phys%',
   'atkspd%',
   'dmg%',
 ];

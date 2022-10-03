@@ -13,11 +13,12 @@ const burstHitmark = 100
 const burstThunderbolt1Hitmark = 154
 
 func init() {
-	burstFrames = frames.InitAbilSlice(113) // Q -> CA/E
-	burstFrames[action.ActionAttack] = 111  // Q -> N1
-	burstFrames[action.ActionDash] = 96     // Q -> D
-	burstFrames[action.ActionJump] = 96     // Q -> J
-	burstFrames[action.ActionSwap] = 94     // Q -> Swap
+	burstFrames = frames.InitAbilSlice(114) // Q -> CA
+	burstFrames[action.ActionAttack] = 112  // Q -> N1
+	burstFrames[action.ActionSkill] = 113   // Q -> E
+	burstFrames[action.ActionDash] = 103    // Q -> D
+	burstFrames[action.ActionJump] = 104    // Q -> J
+	burstFrames[action.ActionSwap] = 101    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -32,11 +33,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableObject), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), burstHitmark, burstHitmark)
 
 	ai.Abil = "Tenko Thunderbolt"
 	ai.Mult = burst[1][c.TalentLvlBurst()]
-	c.kitsuneBurst(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy))
+	c.kitsuneBurst(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget))
 
 	c.ConsumeEnergy(2)
 	c.SetCD(action.ActionBurst, 22*60)

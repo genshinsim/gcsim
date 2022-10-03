@@ -43,6 +43,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
@@ -62,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				Durability: 100,
 				Mult:       m,
 			}
-			if t.AuraType() == attributes.Cryo || t.AuraType() == attributes.Frozen {
+			if t.AuraContains(attributes.Cryo, attributes.Frozen) {
 				ai.Mult = mc
 			}
 			c.QueueAttack(ai, combat.NewCircleHit(t, 1, false, combat.TargettableEnemy), 0, 1)

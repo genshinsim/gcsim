@@ -13,7 +13,7 @@ var skillHitmarks = []int{12, 31}
 func init() {
 	skillFrames = frames.InitAbilSlice(67)
 	skillFrames[action.ActionSkill] = 65
-	skillFrames[action.ActionDash] = 30
+	skillFrames[action.ActionDash] = 31
 	skillFrames[action.ActionJump] = 34
 }
 

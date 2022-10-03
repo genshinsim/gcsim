@@ -17,11 +17,11 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	qInfuse             attributes.Element
+	qAbsorb             attributes.Element
 	qICDTag             combat.ICDTag
-	eInfuse             attributes.Element
+	eAbsorb             attributes.Element
 	eICDTag             combat.ICDTag
-	infuseCheckLocation combat.AttackPattern
+	absorbCheckLocation combat.AttackPattern
 	gender              int
 }
 
@@ -37,7 +37,7 @@ func NewChar(gender int) core.NewCharacterFunc {
 		c.BurstCon = 3
 		c.SkillCon = 5
 		c.NormalHitNum = normalHitNum
-		c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+		c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 		w.Character = &c
 

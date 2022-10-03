@@ -93,8 +93,13 @@ func (c *char) summonSwordWave() {
 	//only if c.nextRegen is true and first sword
 	var c2cb, c6cb func(a combat.AttackCB)
 	if c.nextRegen {
+		done := false
 		c6cb = func(_ combat.AttackCB) {
+			if done {
+				return
+			}
 			c.AddEnergy("xingqiu-c6", 3)
+			done = true
 		}
 	}
 	if c.Base.Cons >= 2 {
@@ -133,7 +138,7 @@ func (c *char) summonSwordWave() {
 		c.numSwords = 3
 		c.nextRegen = false
 	case 3:
-		if c.Base.Cons == 6 {
+		if c.Base.Cons >= 6 {
 			c.numSwords = 5
 			c.nextRegen = true
 		} else {

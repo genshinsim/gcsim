@@ -22,6 +22,9 @@ func (c *char) c2() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
+		if c.Core.Player.Active() != c.Index {
+			return false
+		}
 		if !e.AuraContains(attributes.Electro) {
 			return false
 		}
@@ -61,6 +64,7 @@ func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnQuicken, cb, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnAggravate, cb, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnHyperbloom, cb, "keqing-c4")
 }
 
 func (c *char) c6(src string) {

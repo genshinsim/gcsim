@@ -18,39 +18,30 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		//if there's no existing hydro or electro then do nothing
-		if r.Durability[attributes.Electro] < ZeroDur {
+		if r.Durability[ModifierElectro] < ZeroDur {
 			return
 		}
-		if r.Durability[attributes.Hydro] < ZeroDur {
-			//attach
-			r.tryAttach(attributes.Hydro, &a.Info.Durability)
-		} else {
-			r.tryRefill(attributes.Hydro, &a.Info.Durability)
-		}
 		//add to hydro durability
+		r.attachOrRefillNormalEle(ModifierHydro, a.Info.Durability)
 	case attributes.Electro:
 		//if there's no existing hydro or electro then do nothing
-		if r.Durability[attributes.Hydro] < ZeroDur {
+		if r.Durability[ModifierHydro] < ZeroDur {
 			return
 		}
 		//add to electro durability
-		if r.Durability[attributes.Electro] < ZeroDur {
-			//attach
-			r.tryAttach(attributes.Electro, &a.Info.Durability)
-		} else {
-			r.tryRefill(attributes.Electro, &a.Info.Durability)
-		}
+		r.attachOrRefillNormalEle(ModifierElectro, a.Info.Durability)
 	default:
 		return
 	}
 
+	a.Reacted = true
 	r.core.Events.Emit(event.OnElectroCharged, r.self, a)
 
 	//at this point ec is refereshed so we need to trigger a reaction
 	//and change ownership
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.ElectroCharged),
 		AttackTag:        combat.AttackTagECDamage,
 		ICDTag:           combat.ICDTagECDamage,
@@ -58,8 +49,9 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 		Element:          attributes.Electro,
 		IgnoreDefPercent: 1,
 	}
-	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
-	atk.FlatDmg = 1.2 * r.calcReactionDmg(atk, em)
+	char := r.core.Player.ByIndex(a.Info.ActorIndex)
+	em := char.Stat(attributes.EM)
+	atk.FlatDmg = 1.2 * calcReactionDmg(char, atk, em)
 	r.ecSnapshot = atk
 
 	//if this is a new ec then trigger tick immediately and queue up ticks
@@ -94,7 +86,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 				return false
 			}
 			//ignore if we no longer have both electro and hydro
-			if r.Durability[attributes.Electro] < ZeroDur || r.Durability[attributes.Hydro] < ZeroDur {
+			if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 				return true
 			}
 
@@ -111,25 +103,25 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 }
 
 func (r *Reactable) waneEC() {
-	r.Durability[attributes.Electro] -= 10
-	r.Durability[attributes.Electro] = max(0, r.Durability[attributes.Electro])
-	r.Durability[attributes.Hydro] -= 10
-	r.Durability[attributes.Hydro] = max(0, r.Durability[attributes.Hydro])
+	r.Durability[ModifierElectro] -= 10
+	r.Durability[ModifierElectro] = max(0, r.Durability[ModifierElectro])
+	r.Durability[ModifierHydro] -= 10
+	r.Durability[ModifierHydro] = max(0, r.Durability[ModifierHydro])
 	r.core.Log.NewEvent("ec wane",
 		glog.LogElementEvent,
 		-1,
 	).
 		Write("aura", "ec").
 		Write("target", r.self.Index()).
-		Write("hydro", r.Durability[attributes.Hydro]).
-		Write("electro", r.Durability[attributes.Electro])
+		Write("hydro", r.Durability[ModifierHydro]).
+		Write("electro", r.Durability[ModifierElectro])
 
 	//ec is gone
 	r.checkEC()
 }
 
 func (r *Reactable) checkEC() {
-	if r.Durability[attributes.Electro] < ZeroDur || r.Durability[attributes.Hydro] < ZeroDur {
+	if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 		r.ecTickSrc = -1
 		r.core.Events.Unsubscribe(event.OnDamage, fmt.Sprintf("ec-%v", r.self.Index()))
 		r.core.Log.NewEvent("ec expired",
@@ -138,8 +130,8 @@ func (r *Reactable) checkEC() {
 		).
 			Write("aura", "ec").
 			Write("target", r.self.Index()).
-			Write("hydro", r.Durability[attributes.Hydro]).
-			Write("electro", r.Durability[attributes.Electro])
+			Write("hydro", r.Durability[ModifierHydro]).
+			Write("electro", r.Durability[ModifierElectro])
 
 	}
 }
@@ -152,7 +144,7 @@ func (r *Reactable) nextTick(src int) func() {
 		}
 		//ec SHOULD be active still, since if not we would have
 		//called cleanup and set source to -1
-		if r.Durability[attributes.Electro] < ZeroDur || r.Durability[attributes.Hydro] < ZeroDur {
+		if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 			return
 		}
 

@@ -18,13 +18,10 @@ const (
 	Dendro
 	Quicken // or overdose
 	Frozen
-	ElementDelimAttachable
 	Anemo
 	Geo
 	NoElement
 	Physical
-	EC
-	Burning // TODO: not truthfuly it's own aura; this is a hack solution
 	UnknownElement
 	EndEleType
 )
@@ -60,13 +57,10 @@ var ElementString = [...]string{
 	"dendro",
 	"quicken",
 	"frozen",
-	"delim",
 	"anemo",
 	"geo",
 	"",
 	"physical",
-	"ec",
-	"burning",
 	"unknown",
 }
 

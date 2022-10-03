@@ -85,7 +85,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		//TODO: snapshot?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget),
 			aimedHitmarks[skillActive],
 			aimedHitmarks[skillActive]+travel+90,
 			c.a4,

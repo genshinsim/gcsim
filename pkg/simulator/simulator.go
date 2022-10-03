@@ -153,11 +153,6 @@ func aggregateResults(in []simulation.Result, cfg *ast.ActionList) result.Summar
 
 	r.Iterations = cfg.Settings.Iterations
 	r.ActiveChar = cfg.InitialChar.String()
-	// if cfg.DamageMode {
-	// 	r.Duration.Mean = float64(cfg.Settings.Duration)
-	// 	r.Duration.Min = float64(cfg.Settings.Duration)
-	// 	r.Duration.Max = float64(cfg.Settings.Duration)
-	// }
 
 	r.NumTargets = len(cfg.Targets)
 	r.CharDetails = in[0].CharDetails

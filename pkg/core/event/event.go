@@ -31,7 +31,12 @@ const (
 	OnAggravate //target, AttackEvent
 	OnSpread    //target, AttackEvent
 	OnQuicken
+	OnBloom //target, AttackEvent
+	OnHyperbloom
+	OnBurgeon
+	OnBurning //target, AttackEvent
 	ReactionEventEndDelim
+	OnDendroCore //Gadget
 	//other stuff
 	OnStamUse          //abil
 	OnShielded         //shield
@@ -54,7 +59,7 @@ const (
 	//sim stuff
 	OnInitialize  //nil
 	OnStateChange //prev, next
-	OnTargetAdded //t
+	OnEnemyAdded  //t
 	EndEventTypes //elim
 )
 

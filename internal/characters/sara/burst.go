@@ -28,7 +28,7 @@ func init() {
 // Has parameters: "wave_cluster_hits", which controls how many of the mini-clusters in each wave hit an opponent.
 // Also has "waveAttackProcs", used to determine which waves proc the attack buff.
 // Format for both is a digit of length 5 - rightmost value is the starting proc (titanbreaker hit), and it moves from right to left
-// For example, if you want waves 3 and 4 only to proc the attack buff, set attack_procs=11000
+// For example, if you want waves 3 and 4 only to proc the attack buff, set waveAttackProcs=11000
 // For "wave_cluster_hits", use numbers in each slot to control the # of hits. So for center hit, then 3 hits from each wave, set wave_cluster_hits=33331
 // Default for both is for the main titanbreaker and 1 wave to hit and also proc the buff
 // Also implements C4
@@ -74,7 +74,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	if waveClusterHits%10 == 1 {
 		// Actual hit procs after the full cast duration, or 50 frames
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, burstInitialHitmark, c1cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), burstStart, burstInitialHitmark, c1cb)
 	}
 	if waveAttackProcs%10 == 1 {
 		c.attackBuff(burstInitialHitmark)
@@ -93,7 +93,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
 		if waveHits > 0 {
 			for j := 0; j < waveHits; j++ {
-				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstStart, burstClusterHitmark+18*waveN, c1cb)
+				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), burstStart, burstClusterHitmark+18*waveN, c1cb)
 			}
 		}
 		if waveAttackProc == 1 {

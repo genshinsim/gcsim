@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var skillFrames []int
@@ -79,7 +80,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		t := args[0].(combat.Target)
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
 		if !c.skillActive {
 			return false
 		}

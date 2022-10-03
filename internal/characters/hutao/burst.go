@@ -13,11 +13,10 @@ var burstFrames []int
 const burstHitmark = 66
 
 func init() {
-	burstFrames = frames.InitAbilSlice(100)
-	burstFrames[action.ActionAttack] = 98
-	burstFrames[action.ActionSkill] = 97
-	burstFrames[action.ActionDash] = 98
-	burstFrames[action.ActionSwap] = 95
+	burstFrames = frames.InitAbilSlice(98) // Q -> D/J
+	burstFrames[action.ActionAttack] = 97  // Q -> N1
+	burstFrames[action.ActionSkill] = 97   // Q -> E
+	burstFrames[action.ActionSwap] = 95    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -62,7 +61,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       mult,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, burstHitmark, bbcb, c.burstHealCB)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, burstHitmark, bbcb, c.burstHealCB)
 
 	c.ConsumeEnergy(68)
 	c.SetCDWithDelay(action.ActionBurst, 900, 62)

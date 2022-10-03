@@ -28,7 +28,7 @@ func (c *char) c4() {
 }
 
 func (c *char) c6() {
-	stat := attributes.EleToDmgP(c.qInfused)
+	stat := attributes.EleToDmgP(c.qAbsorb)
 	c.c6buff[stat] = .20
 
 	for _, char := range c.Core.Player.Chars() {

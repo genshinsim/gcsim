@@ -40,6 +40,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		if ae.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}

@@ -16,11 +16,10 @@ var burstDiceHitmarks = []int{25, 30, 36, 41} //c2 hitmark not framecounted
 const burstHitmark = 76
 
 func init() {
-	burstFrames = frames.InitAbilSlice(93)
-	burstFrames[action.ActionAttack] = 92
-	burstFrames[action.ActionAim] = 92
-	burstFrames[action.ActionJump] = 92
-	burstFrames[action.ActionSwap] = 91
+	burstFrames = frames.InitAbilSlice(93) // Q -> N1/CA/D
+	burstFrames[action.ActionSkill] = 92   // Q -> E
+	burstFrames[action.ActionJump] = 91    // Q -> J
+	burstFrames[action.ActionSwap] = 90    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {

@@ -11,34 +11,30 @@ func (r *Reactable) trySuperconduct(a *combat.AttackEvent) {
 		return
 	}
 	//this is for non frozen one
-	if r.Durability[attributes.Frozen] >= ZeroDur {
+	if r.Durability[ModifierFrozen] >= ZeroDur {
 		return
 	}
+	var consumed combat.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
-		if r.Durability[attributes.Cryo] < ZeroDur {
+		if r.Durability[ModifierCryo] < ZeroDur {
 			return
 		}
-		r.reduce(attributes.Cryo, a.Info.Durability, 1)
-		a.Info.Durability = 0
+		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 1)
 	case attributes.Cryo:
 		//could be ec potentially
-		if r.Durability[attributes.Electro] < ZeroDur {
+		if r.Durability[ModifierElectro] < ZeroDur {
 			return
 		}
-		rd := r.reduce(attributes.Electro, a.Info.Durability, 1)
-		//if there's hydro as well then don't consume all the durability
-		if r.Durability[attributes.Hydro] > ZeroDur {
-			a.Info.Durability -= rd
-		} else {
-			a.Info.Durability = 0
-		}
+		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	default:
 		return
 	}
 
+	a.Info.Durability -= consumed
+	a.Info.Durability = max(a.Info.Durability, 0)
+	a.Reacted = true
 	r.queueSuperconduct(a)
-
 }
 
 func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
@@ -46,7 +42,7 @@ func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
 		return
 	}
 	//this is for frozen
-	if r.Durability[attributes.Frozen] < ZeroDur {
+	if r.Durability[ModifierFrozen] < ZeroDur {
 		return
 	}
 	switch a.Info.Element {
@@ -57,6 +53,7 @@ func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
 		a.Info.Durability -= r.reduce(attributes.Cryo, a.Info.Durability, 1)
 		r.reduce(attributes.Frozen, a.Info.Durability, 1)
 		a.Info.Durability = 0
+		a.Reacted = true
 	default:
 		return
 	}
@@ -71,7 +68,7 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	//superconduct attack
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Superconduct),
 		AttackTag:        combat.AttackTagSuperconductDamage,
 		ICDTag:           combat.ICDTagSuperconductDamage,
@@ -79,7 +76,8 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 		Element:          attributes.Cryo,
 		IgnoreDefPercent: 1,
 	}
-	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
-	atk.FlatDmg = 0.5 * r.calcReactionDmg(atk, em)
+	char := r.core.Player.ByIndex(a.Info.ActorIndex)
+	em := char.Stat(attributes.EM)
+	atk.FlatDmg = 0.5 * calcReactionDmg(char, atk, em)
 	r.core.QueueAttack(atk, combat.NewCircleHit(r.self, 3, true, combat.TargettableEnemy), -1, 1)
 }

@@ -12,7 +12,7 @@ type bunny struct {
 	src int
 }
 
-//TODO: forbidden bunny cryo swirl tech
+// TODO: forbidden bunny cryo swirl tech
 func (c *char) makeBunny() {
 	b := bunny{}
 	b.src = c.Core.F
@@ -30,7 +30,7 @@ func (c *char) makeBunny() {
 	snap := c.Snapshot(&ai)
 	b.ae = combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	}
@@ -76,7 +76,7 @@ func (c *char) manualExplode() {
 	c.bunnies = c.bunnies[1:]
 }
 
-//explode all bunnies on overload
+// explode all bunnies on overload
 func (c *char) overloadExplode() {
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 

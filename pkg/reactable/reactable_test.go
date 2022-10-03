@@ -27,7 +27,11 @@ func testCore() *core.Core {
 		Debug: true,
 	})
 	//add player (first target)
-	addTargetToCore(c)
+	trg := &testTarget{}
+	trg.Target = target.New(c, 0, 0, 1)
+	trg.Reactable = &Reactable{}
+	trg.Reactable.Init(trg, c)
+	c.Combat.SetPlayer(trg)
 
 	//add default character
 	p := profile.CharacterProfile{}
@@ -45,7 +49,7 @@ func testCore() *core.Core {
 	p.Stats[attributes.EM] = 100
 	p.Base.Level = 90
 	p.Base.MaxLevel = 90
-	p.Talents = profile.TalentProfile{1, 1, 1}
+	p.Talents = profile.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
 
 	i, err := c.AddChar(p)
 	if err != nil {
@@ -56,23 +60,61 @@ func testCore() *core.Core {
 	return c
 }
 
+func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
+	c := testCore()
+	var r []*testTarget
+	for i := 0; i < count; i++ {
+		r = append(r, addTargetToCore(c))
+	}
+	return c, r
+}
+
+func makeAOEAttack(ele attributes.Element, dur combat.Durability) *combat.AttackEvent {
+	return &combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    ele,
+			Durability: dur,
+		},
+		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100, false, combat.TargettableEnemy),
+	}
+}
+
+func makeSTAttack(ele attributes.Element, dur combat.Durability, trg int) *combat.AttackEvent {
+	return &combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    ele,
+			Durability: dur,
+		},
+		Pattern: combat.NewDefSingleTarget(trg, combat.TargettableEnemy),
+	}
+
+}
+
 type testTarget struct {
 	*Reactable
 	*target.Target
-	src           int
-	typ           combat.TargettableType
-	onDmgCallBack func(*combat.AttackEvent) (float64, bool)
+	src  int
+	typ  combat.TargettableType
+	last combat.AttackEvent
 }
 
-func (t *testTarget) Type() combat.TargettableType {
-	return t.typ
-}
+func (t *testTarget) Type() combat.TargettableType                                  { return t.typ }
+func (t *testTarget) AttackWillLand(a combat.AttackPattern, src int) (bool, string) { return true, "" }
 
 func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	if t.onDmgCallBack != nil {
-		return t.onDmgCallBack(atk)
+	t.last = *atk
+	t.ShatterCheck(atk)
+	if atk.Info.Durability > 0 {
+		//don't care about icd
+		t.React(atk)
 	}
 	return 0, false
+}
+
+func (t *testTarget) ApplyDamage(atk *combat.AttackEvent, amt float64) {
+	if !atk.Reacted {
+		t.Reactable.AttachOrRefill(atk)
+	}
 }
 
 func addTargetToCore(c *core.Core) *testTarget {
@@ -80,8 +122,8 @@ func addTargetToCore(c *core.Core) *testTarget {
 	trg.Target = target.New(c, 0, 0, 1)
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
-	c.Combat.AddTarget(trg)
-	trg.SetIndex(c.Combat.TargetsCount() - 1)
+	c.Combat.AddEnemy(trg)
+	trg.SetIndex(c.Combat.EnemyCount() - 1)
 	return trg
 }
 
@@ -96,12 +138,37 @@ func TestMain(m *testing.M) {
 
 func TestReduce(t *testing.T) {
 	r := &Reactable{}
-	r.Durability = make([]combat.Durability, attributes.ElementDelimAttachable)
-	r.DecayRate = make([]combat.Durability, attributes.ElementDelimAttachable)
-	r.Durability[attributes.Electro] = 20
+	r.Durability[ModifierElectro] = 20
 	r.reduce(attributes.Electro, 20, 1)
-	if r.Durability[attributes.Electro] != 0 {
-		t.Errorf("expecting nil electro balance, got %v", r.Durability[attributes.Electro])
+	if r.Durability[ModifierElectro] != 0 {
+		t.Errorf("expecting nil electro balance, got %v", r.Durability[ModifierElectro])
+	}
+
+	//straight up consumption
+	r.Durability[ModifierPyro] = 20
+	r.Durability[ModifierBurning] = 50
+	consumed := r.reduce(attributes.Pyro, 30, 1)
+	if consumed != 30 {
+		t.Errorf("expecting consumed to be 30, got %v", consumed)
+	}
+
+	//2x multiplier, i.e. 1 incoming reduces 2
+	r.Durability[ModifierPyro] = 50
+	consumed = r.reduce(attributes.Pyro, 20, 2)
+	if consumed != 20 {
+		t.Errorf("expecting consumed to be 20, got %v", consumed)
+	}
+	if r.Durability[ModifierPyro] != 10 {
+		t.Errorf("expecting 10 remaining ModifierPyro, got %v", 10)
+	}
+
+	r.Durability[ModifierPyro] = 50
+	consumed = r.reduce(attributes.Pyro, 50, 0.5)
+	if consumed != 50 {
+		t.Errorf("expecting consumed to be 50, got %v", consumed)
+	}
+	if r.Durability[ModifierPyro] != 25 {
+		t.Errorf("expecting 25 remaining ModifierPyro, got %v", 25)
 	}
 }
 
@@ -112,18 +179,18 @@ func TestTick(t *testing.T) {
 	trg.src = 1
 
 	//test electro
-	trg.React(&combat.AttackEvent{
+	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
 	})
 
-	if trg.Durability[attributes.Electro] != 0.8*25 {
-		t.Errorf("expecting 20 electro, got %v", trg.Durability[attributes.Electro])
+	if trg.Durability[ModifierElectro] != 0.8*25 {
+		t.Errorf("expecting 20 electro, got %v", trg.Durability[ModifierElectro])
 	}
-	if trg.DecayRate[attributes.Electro] != 20.0/(6*25+420) {
-		t.Errorf("expecting %v decay rate, got %v", 1.0/(6*25+420), trg.DecayRate[attributes.Electro])
+	if trg.DecayRate[ModifierElectro] != 20.0/(6*25+420) {
+		t.Errorf("expecting %v decay rate, got %v", 1.0/(6*25+420), trg.DecayRate[ModifierElectro])
 	}
 
 	//should deplete fully in 570 ticks
@@ -138,10 +205,32 @@ func TestTick(t *testing.T) {
 	}
 
 	//test multiple aura
-	trg.attach(attributes.Electro, 50, 0.8)
-	trg.attach(attributes.Hydro, 50, 0.8)
-	trg.attach(attributes.Cryo, 50, 0.8)
-	trg.attach(attributes.Pyro, 50, 0.8)
+	trg.Durability[ModifierElectro] = 0 //reset from previous test
+	trg.DecayRate[ModifierElectro] = 0
+	trg.AttachOrRefill(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Electro,
+			Durability: 50,
+		},
+	})
+	trg.AttachOrRefill(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Hydro,
+			Durability: 50,
+		},
+	})
+	trg.AttachOrRefill(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Cryo,
+			Durability: 50,
+		},
+	})
+	trg.AttachOrRefill(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Pyro,
+			Durability: 50,
+		},
+	})
 	for i := 0; i < 6*50+420; i++ {
 		trg.Tick()
 	}
@@ -176,8 +265,8 @@ func TestTick(t *testing.T) {
 		trg.Tick()
 	}
 	//make sure > 0
-	if trg.Durability[attributes.Electro] < 0 {
-		t.Errorf("expecting electro not to be 0 yet, got %v", trg.Durability[attributes.Electro])
+	if trg.Durability[ModifierElectro] < 0 {
+		t.Errorf("expecting electro not to be 0 yet, got %v", trg.Durability[ModifierElectro])
 	}
 	//1 more tick and should be gone
 	trg.Tick()
@@ -188,7 +277,7 @@ func TestTick(t *testing.T) {
 
 	//test frozen
 	//50 frozen should last just over 208 frames (i.e. 0 by 209)
-	trg.Durability[attributes.Frozen] = 50
+	trg.Durability[ModifierFrozen] = 50
 	for i := 0; i < 208; i++ {
 		trg.Tick()
 		// log.Println(trg.Durability)
@@ -196,13 +285,13 @@ func TestTick(t *testing.T) {
 		// log.Println("------------------------")
 	}
 	//should be > 0 still
-	if trg.Durability[attributes.Frozen] < 0 {
-		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[attributes.Frozen])
+	if trg.Durability[ModifierFrozen] < 0 {
+		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[ModifierFrozen])
 	}
 	//1 more tick and should be gone
 	trg.Tick()
-	if trg.Durability[attributes.Frozen] > 0 {
-		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[attributes.Frozen])
+	if trg.Durability[ModifierFrozen] > 0 {
+		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[ModifierFrozen])
 	}
 	//105 more frames to full recover
 	for i := 0; i < 104; i++ {
@@ -212,13 +301,13 @@ func TestTick(t *testing.T) {
 		// log.Println("------------------------")
 	}
 	//decay should be > 0 still
-	if trg.DecayRate[attributes.Frozen] < frzDecayCap {
-		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[attributes.Frozen])
+	if trg.DecayRate[ModifierFrozen] < frzDecayCap {
+		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[ModifierFrozen])
 	}
 	//1 more tick to reset decay
 	trg.Tick()
-	if trg.DecayRate[attributes.Frozen] > frzDecayCap {
-		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[attributes.Frozen])
+	if trg.DecayRate[ModifierFrozen] > frzDecayCap {
+		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[ModifierFrozen])
 	}
 
 }
@@ -226,7 +315,7 @@ func TestTick(t *testing.T) {
 func (target *testTarget) allNil(t *testing.T) bool {
 	ok := true
 	for i, v := range target.Durability {
-		ele := attributes.Element(i)
+		ele := ReactableModifier(i).Element()
 		if !durApproxEqual(0, v, 0.00001) {
 			t.Errorf("ele %v expected 0 durability got %v", ele, v)
 			ok = false
@@ -248,10 +337,3 @@ func durApproxEqual(expect, result, tol combat.Durability) bool {
 	}
 	return result-expect < tol
 }
-
-// func floatApproxEqual(expect, result, tol float64) bool {
-// 	if expect > result {
-// 		return expect-result < tol
-// 	}
-// 	return result-expect < tol
-// }

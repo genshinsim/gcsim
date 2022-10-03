@@ -12,6 +12,8 @@ type AttackEvent struct {
 	Snapshot    Snapshot
 	SourceFrame int            //source frame
 	Callbacks   []AttackCBFunc `json:"-"`
+	Reacted     bool           // true if a reaction already took place - for purpose of attach/refill
+	OnICD       bool           // set this to true if on ICD so we don't accidentally increment counter twice; icd check only happens once
 }
 
 type AttackCB struct {
@@ -25,7 +27,7 @@ type AttackCBFunc func(AttackCB)
 
 type AttackInfo struct {
 	ActorIndex       int    //character this attack belongs to
-	DamageSrc        int    //source of this attack (i.e. index of core.Targets); always 0 for player, 1+ for the rest
+	DamageSrc        int    //source of this attack; should be a unique key identifying the target
 	Abil             string //name of ability triggering the damage
 	AttackTag        AttackTag
 	ICDTag           ICDTag

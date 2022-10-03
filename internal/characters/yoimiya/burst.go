@@ -16,11 +16,11 @@ const abDebuff = "aurous-blaze"
 const abIcdKey = "aurous-blaze-icd"
 
 func init() {
-	burstFrames = frames.InitAbilSlice(114)
-	burstFrames[action.ActionSkill] = 110
-	burstFrames[action.ActionDash] = 111
-	burstFrames[action.ActionJump] = 113
-	burstFrames[action.ActionSwap] = 109
+	burstFrames = frames.InitAbilSlice(113) // Q -> N1
+	burstFrames[action.ActionSkill] = 112   // Q -> E
+	burstFrames[action.ActionDash] = 111    // Q -> D
+	burstFrames[action.ActionJump] = 112    // Q -> J
+	burstFrames[action.ActionSwap] = 109    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -40,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget),
 		0,
 		burstHitmark,
 		c.applyAB, // callback to apply Aurous Blaze
@@ -128,7 +128,7 @@ func (c *char) burstHook() {
 			Durability: 25,
 			Mult:       burstExplode[c.TalentLvlBurst()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 1)
 
 		trg.AddStatus(abIcdKey, 120, true) // trigger Aurous Blaze ICD
 
@@ -146,7 +146,7 @@ func (c *char) burstHook() {
 		c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
 			if c.HPCurrent <= 0 {
 				// remove Aurous Blaze from target
-				for _, x := range c.Core.Combat.Targets() {
+				for _, x := range c.Core.Combat.Enemies() {
 					trg := x.(*enemy.Enemy)
 					if trg.StatusIsActive(abDebuff) {
 						trg.DeleteStatus(abDebuff)

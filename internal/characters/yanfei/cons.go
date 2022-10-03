@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -19,7 +20,11 @@ func (c *char) c2() {
 				if atk.Info.AttackTag != combat.AttackTagExtra {
 					return nil, false
 				}
-				if t.HP()/t.MaxHP() >= .5 {
+				x, ok := t.(*enemy.Enemy)
+				if !ok {
+					return nil, false
+				}
+				if x.HP()/x.MaxHP() >= .5 {
 					return nil, false
 				}
 				m[attributes.CR] = 0.20

@@ -15,8 +15,11 @@ var burstFrames []int
 const burstStart = 101
 
 func init() {
-	burstFrames = frames.InitAbilSlice(102)
-	burstFrames[action.ActionSwap] = 101
+	burstFrames = frames.InitAbilSlice(123) // Q -> N1
+	burstFrames[action.ActionSkill] = 122   // Q -> E
+	burstFrames[action.ActionDash] = 122    // Q -> D
+	burstFrames[action.ActionJump] = 122    // Q -> J
+	burstFrames[action.ActionSwap] = 120    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -53,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(func() {
 			//check if this hits first
 			target := -1
-			for i, t := range c.Core.Combat.Targets() {
+			for i, t := range c.Core.Combat.Enemies() {
 				// skip non-enemy targets
 				if _, ok := t.(*enemy.Enemy); !ok {
 					continue

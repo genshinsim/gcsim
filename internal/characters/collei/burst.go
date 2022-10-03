@@ -51,7 +51,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.burstA4Ticks()
 	}, explosionHitmark)
 
-	c.c4()
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+
 	c.SetCD(action.ActionBurst, 900)
 	c.ConsumeEnergy(7)
 

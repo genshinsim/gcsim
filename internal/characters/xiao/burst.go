@@ -15,10 +15,10 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(82)
-	burstFrames[action.ActionDash] = 57
-	burstFrames[action.ActionJump] = 58
-	burstFrames[action.ActionSwap] = 67
+	burstFrames = frames.InitAbilSlice(82) // Q -> N1/E
+	burstFrames[action.ActionDash] = 59    // Q -> D
+	burstFrames[action.ActionJump] = 60    // Q -> J
+	burstFrames[action.ActionSwap] = 66    // Q -> Swap
 }
 
 // Sets Xiao's burst damage state

@@ -17,7 +17,15 @@ print(f"Loading images from {assets_folder}")
 def get_data() -> dict:
     return json.load(sys.stdin)
 
-
+def open_image(fp):
+    try:
+        return Image.open(fp)
+    except Exception:
+        try:
+            return Image.open(os.path.join(os.path.dirname(fp), "default.png"))
+        except Exception as e:
+            print(e)
+            return Image.new("RGBA", (256, 256))
 data = get_data()
 chars = data["char_details"]
 # print(chars[0])
@@ -30,7 +38,7 @@ imgs = []
 new_image_width = 900
 new_image_height = 422
 for name in names:
-    imgs.append(Image.open(os.path.join(assets_folder, f"avatar/{name}.png")))
+    imgs.append(open_image(os.path.join(assets_folder, f"avatar/{name}.png")))
     char_image_shapes.append((256, 256))
 
 base_img = Image.new("RGBA", (new_image_width, new_image_height))
@@ -60,7 +68,7 @@ imgs: list[Image.Image] = []
 weapon_image_shapes = []
 for weapon in weapons:
 
-    imgs.append(Image.open(os.path.join(
+    imgs.append(open_image(os.path.join(
         assets_folder, f"weapons/{weapon['name']}.png")))
     width, height = imgs[-1].size
     imgs[-1] = imgs[-1].resize(weapon_size)
@@ -101,11 +109,11 @@ for arti in artifacts:
     # print(sets)
     if total_sets == 1:
         if arti[sets[0]] >= 4:
-            imgs.append(Image.open(os.path.join(
+            imgs.append(open_image(os.path.join(
                 assets_folder, f"artifacts/{sets[0]}_flower.png")))
             imgs[-1] = imgs[-1].resize(ARITFACT_SIZE)
         else:
-            img0 = Image.open(os.path.join(
+            img0 = open_image(os.path.join(
                 assets_folder, f"artifacts/{sets[0]}_flower.png"))
             img0 = img0.resize(ARITFACT_SIZE)
             img0 = img0.crop((0, 0, ARITFACT_SIZE[0]//2, ARITFACT_SIZE[1]))
@@ -116,12 +124,12 @@ for arti in artifacts:
                 (ARITFACT_SIZE[0]//2, 0, ARITFACT_SIZE[0]//2, ARITFACT_SIZE[1]), fill=0, width=4)
             imgs.append(dst)
     elif total_sets == 2:
-        img0 = Image.open(os.path.join(
+        img0 = open_image(os.path.join(
             assets_folder, f"artifacts/{sets[0]}_flower.png"))
         img0 = img0.resize(ARITFACT_SIZE)
         img0 = img0.crop((0, 0, ARITFACT_SIZE[0]//2, ARITFACT_SIZE[1]))
 
-        img1 = Image.open(os.path.join(
+        img1 = open_image(os.path.join(
             assets_folder, f"artifacts/{sets[1]}_flower.png"))
         img1 = img1.resize(ARITFACT_SIZE)
         img1 = img1.crop(

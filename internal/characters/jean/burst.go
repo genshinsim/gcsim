@@ -15,11 +15,10 @@ var burstFrames []int
 const burstStart = 40
 
 func init() {
-	burstFrames = frames.InitAbilSlice(84)
-	burstFrames[action.ActionAttack] = 83
-	burstFrames[action.ActionSkill] = 83
-	burstFrames[action.ActionDash] = 70
-	burstFrames[action.ActionJump] = 70
+	burstFrames = frames.InitAbilSlice(90) // Q -> D/J
+	burstFrames[action.ActionAttack] = 88  // Q -> N1
+	burstFrames[action.ActionSkill] = 89   // Q -> E
+	burstFrames[action.ActionSwap] = 88    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -131,7 +130,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

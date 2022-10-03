@@ -11,20 +11,24 @@ var burstFrames []int
 
 const (
 	burstHitmark   = 82
-	burstAnimation = 92
 	burstFirstTick = 140
 )
 
 const burstStatus = "kazuha-q"
 
 func init() {
-	burstFrames = frames.InitAbilSlice(burstAnimation)
-	burstFrames[action.ActionSwap] = 91
+	burstFrames = frames.InitAbilSlice(93) // Q -> J
+	burstFrames[action.ActionAttack] = 92  // Q -> N1
+	burstFrames[action.ActionSkill] = 92   // Q -> E
+	burstFrames[action.ActionDash] = 92    // Q -> D
+	burstFrames[action.ActionSwap] = 90    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
-	c.qInfuse = attributes.NoElement
+	c.qAbsorb = attributes.NoElement
+	c.qAbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Kazuha Slash",
@@ -67,11 +71,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// updated to 140 based on koli's count: https://docs.google.com/spreadsheets/d/1uEbP13O548-w_nGxFPGsf5jqj1qGD3pqFZ_AiV4w3ww/edit#gid=775340159
 		for i := 0; i < 5; i++ {
 			c.Core.Tasks.Add(func() {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
-				if c.qInfuse != attributes.NoElement {
-					aiAbsorb.Element = c.qInfuse
-					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
+				if c.qAbsorb != attributes.NoElement {
+					aiAbsorb.Element = c.qAbsorb
+					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0)
 				}
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
 			}, (burstFirstTick-(burstHitmark+1))+117*i)
 		}
 		// C2:
@@ -102,7 +106,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
-		AnimationLength: burstAnimation,
+		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
@@ -113,9 +117,9 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.qAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
-		if c.qInfuse != attributes.NoElement {
+		if c.qAbsorb != attributes.NoElement {
 			return
 		}
 		//otherwise queue up

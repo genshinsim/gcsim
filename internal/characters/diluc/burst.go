@@ -14,11 +14,11 @@ var burstFrames []int
 const burstHitmark = 100
 
 func init() {
-	burstFrames = frames.InitAbilSlice(141)
-	burstFrames[action.ActionAttack] = 140
-	burstFrames[action.ActionSkill] = 139
-	burstFrames[action.ActionDash] = 139
-	burstFrames[action.ActionSwap] = 138
+	burstFrames = frames.InitAbilSlice(140) // Q -> D
+	burstFrames[action.ActionAttack] = 139  // Q -> N1
+	burstFrames[action.ActionSkill] = 139   // Q -> E
+	burstFrames[action.ActionJump] = 139    // Q -> J
+	burstFrames[action.ActionSwap] = 138    // Q -> Swap
 }
 
 const burstBuffKey = "diluc-q"
@@ -29,13 +29,13 @@ func (c *char) phoenixDMG(ai combat.AttackInfo, dot int, explode int) func() {
 		// DoT does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
 		// DoT
 		for i := 0; i < dot; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, i*12)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, i*12)
 		}
 		// Explosion
 		if explode > 0 {
 			ai.Abil = "Dawn (Explode)"
 			ai.Mult = burstExplode[c.TalentLvlBurst()]
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 98)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 98)
 		}
 	}
 }
@@ -84,7 +84,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 1)
 
 		// both initial hit, DoT and explosion all have 50 durability
 		ai.Abil = "Dawn (Tick)"
@@ -105,7 +105,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

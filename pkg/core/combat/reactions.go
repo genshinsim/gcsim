@@ -23,10 +23,10 @@ const (
 	Aggravate          ReactionType = "aggravate"
 	Spread             ReactionType = "spread"
 	Bloom              ReactionType = "bloom"
-	Burgeon            ReactionType = "Burgeon"
-	Hyperbloom         ReactionType = "Hyperbloom"
+	Burgeon            ReactionType = "burgeon"
+	Hyperbloom         ReactionType = "hyperbloom"
 	NoReaction         ReactionType = ""
-	FreezeExtend       ReactionType = "FreezeExtend"
+	FreezeExtend       ReactionType = "freeze-extend"
 )
 
 type Durability float64

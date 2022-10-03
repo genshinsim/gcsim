@@ -187,6 +187,7 @@ var SpecKeyToStat = map[string]string{
 	"FIGHT_PROP_DEFENSE_PERCENT":   "attributes.DEFP",
 	"FIGHT_PROP_ICE_ADD_HURT":      "attributes.CryoP",
 	"FIGHT_PROP_WIND_ADD_HURT":     "attributes.AnemoP",
+	"FIGHT_PROP_GRASS_ADD_HURT":    "attributes.DendroP",
 }
 
 var CharNameToKey = map[string]string{
@@ -247,4 +248,5 @@ var CharNameToKey = map[string]string{
 	"yelan":             "Yelan",
 	"kukishinobu":       "Kuki",
 	"shikanoinheizou":   "Heizou",
+	"tighnari":          "Tighnari",
 }

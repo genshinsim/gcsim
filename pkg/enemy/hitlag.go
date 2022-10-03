@@ -66,6 +66,6 @@ func (e *Enemy) Tick() {
 	}
 	e.timePassed += left
 
-	e.Reactable.Tick()
 	queue.Run(&e.queue, e.timePassed)
+	e.Reactable.Tick()
 }

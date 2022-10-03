@@ -17,11 +17,12 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1Ele               attributes.Element
-	qInfuse             attributes.Element
-	qFieldSrc           int
-	infuseCheckLocation combat.AttackPattern
-	c2buff              []float64
+	a1Absorb              attributes.Element
+	a1AbsorbCheckLocation combat.AttackPattern
+	qAbsorb               attributes.Element
+	qFieldSrc             int
+	qAbsorbCheckLocation  combat.AttackPattern
+	c2buff                []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -33,7 +34,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
 
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+	c.a1AbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.qAbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 	w.Character = &c
 

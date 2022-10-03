@@ -17,12 +17,12 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(112)
-	burstFrames[action.ActionAttack] = 111
-	burstFrames[action.ActionCharge] = 500 //TODO: this action is illegal
-	burstFrames[action.ActionSkill] = 111
-	burstFrames[action.ActionDash] = 110
-	burstFrames[action.ActionSwap] = 110
+	burstFrames = frames.InitAbilSlice(112) // Q -> J
+	burstFrames[action.ActionAttack] = 111  // Q -> N1
+	burstFrames[action.ActionCharge] = 500  //TODO: this action is illegal
+	burstFrames[action.ActionSkill] = 111   // Q -> E
+	burstFrames[action.ActionDash] = 111    // Q -> D
+	burstFrames[action.ActionSwap] = 110    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 2 {
 		ai.IgnoreDefPercent = 0.6
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), burstHitmark, burstHitmark)
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(8)
@@ -79,7 +79,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstHitmark,
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

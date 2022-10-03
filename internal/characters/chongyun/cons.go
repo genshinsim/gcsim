@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -19,6 +20,9 @@ func (c *char) c4() {
 			return false
 		}
 		if atk.Info.ActorIndex != c.Index {
+			return false
+		}
+		if c.Core.Player.Active() != c.Index {
 			return false
 		}
 		if c.StatusIsActive(icdKey) {
@@ -48,7 +52,11 @@ func (c *char) c6() {
 				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
 					return nil, false
 				}
-				if t.HP()/t.MaxHP() < c.HPCurrent/c.MaxHP() {
+				x, ok := t.(*enemy.Enemy)
+				if !ok {
+					return nil, false
+				}
+				if x.HP()/x.MaxHP() < c.HPCurrent/c.MaxHP() {
 					return m, true
 				}
 				return nil, false

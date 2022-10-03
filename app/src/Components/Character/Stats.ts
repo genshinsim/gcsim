@@ -142,6 +142,14 @@ export function ConsolidateCharStats(chars: Character[]): {
       count: 0,
       t: '%',
     },
+    dendro: {
+      name: 'dendro%',
+      flatIndex: -1,
+      percentIndex: StatToIndexMap['DendroP'],
+      val: {},
+      count: 0,
+      t: '%',
+    },
     heal: {
       name: 'heal',
       flatIndex: -1,

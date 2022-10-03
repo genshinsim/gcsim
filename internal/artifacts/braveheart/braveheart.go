@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -44,7 +45,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase("braveheart-4pc", -1),
 				Amount: func(_ *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					if t.HP()/t.MaxHP() > 0.5 {
+					x, ok := t.(*enemy.Enemy)
+					if !ok {
+						return nil, false
+					}
+					if x.HP()/x.MaxHP() > 0.5 {
 						return m, true
 					}
 					return nil, false
