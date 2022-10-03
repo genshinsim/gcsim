@@ -78,7 +78,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
 		0,
 		skillRelease+travel,
 		afterSalesCB,
