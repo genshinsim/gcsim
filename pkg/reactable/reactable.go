@@ -333,6 +333,9 @@ func (r *Reactable) Tick() {
 		rate := r.DecayRate[i]
 		if r.Durability[ModifierBurningFuel] > ZeroDur {
 			rate = r.DecayRate[ModifierBurningFuel]
+			if i == ModifierDendro {
+				rate = max(rate, r.DecayRate[i]*2)
+			}
 		}
 		r.Durability[i] -= rate
 		r.deplete(i)
