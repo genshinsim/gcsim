@@ -47,7 +47,7 @@ func init() {
 	ppAttackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 20)
 	ppAttackFrames[0][action.ActionAttack] = 14
 
-	ppAttackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 17)
+	ppAttackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 16)
 	ppAttackFrames[1][action.ActionAttack] = 12
 
 	ppAttackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 26)

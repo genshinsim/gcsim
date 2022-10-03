@@ -84,6 +84,7 @@ const (
 	keywordContinue    // continue
 	keywordFallthrough // fallthrough
 	keywordReturn      // return
+	keywordFor         // for
 	// Keywords after this are specific to Genshin (i.e. not generic scripting keywords)
 	// These are special char related keywords
 	keywordOptions           // options

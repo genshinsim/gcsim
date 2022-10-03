@@ -79,7 +79,7 @@ func makeAOEAttack(ele attributes.Element, dur combat.Durability) *combat.Attack
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur combat.Durability, trg int) *combat.AttackEvent {
+func makeSTAttack(ele attributes.Element, dur combat.Durability, trg combat.TargetKey) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
@@ -98,8 +98,10 @@ type testTarget struct {
 	last combat.AttackEvent
 }
 
-func (t *testTarget) Type() combat.TargettableType                                  { return t.typ }
-func (t *testTarget) AttackWillLand(a combat.AttackPattern, src int) (bool, string) { return true, "" }
+func (t *testTarget) Type() combat.TargettableType { return t.typ }
+func (t *testTarget) AttackWillLand(a combat.AttackPattern, src combat.TargetKey) (bool, string) {
+	return true, ""
+}
 
 func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	t.last = *atk

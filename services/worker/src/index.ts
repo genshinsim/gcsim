@@ -10,6 +10,7 @@
 
 import { PostgrestClient } from '@supabase/postgrest-js';
 import { Router } from 'itty-router';
+import { handleAssets } from './assets';
 import { handleAuth } from './auth';
 import { handleListDBChars, handleListDBSims } from './db';
 import { handleEnka } from './enka';
@@ -27,6 +28,7 @@ router.post('/api/share', handleShare);
 //cached
 router.get('/api/view/:key', handleView);
 router.get('/api/preview/:key', handlePreview);
+router.get('/api/assets/*', handleAssets);
 
 //enka
 router.get('/api/enka/:key', handleEnka);

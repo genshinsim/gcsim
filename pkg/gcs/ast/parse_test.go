@@ -109,6 +109,9 @@ const cfg = `
 			break;
 		}
 	}
+	for x = 0; x < 5; x = x + 1 {
+		let i = y(x);
+	}
 `
 
 func TestCfg(t *testing.T) {

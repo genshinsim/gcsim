@@ -72,29 +72,32 @@ func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
 
 type DendroCore struct {
 	*gadget.Gadget
+	srcFrame int
 }
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
-		var t combat.Target = NewDendroCore(r.core, r.self, a)
+		var t combat.Gadget = NewDendroCore(r.core, r.self, a)
 		r.core.Combat.AddGadget(t)
-		r.core.Events.Emit(event.OnDendroCore, t)
+		r.core.Events.Emit(event.OnDendroCore, t, a)
 	}, DendroCoreDelay)
 }
 
 func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *DendroCore {
-	s := &DendroCore{}
+	s := &DendroCore{
+		srcFrame: c.F,
+	}
 
 	x, y := pos.Pos()
 	// for simplicity, seeds spawn randomly within 1 radius of target
 	x = x + 2*c.Rand.Float64() - 1
 	y = y + 2*c.Rand.Float64() - 1
-	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2})
+	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
-	s.Gadget.OnRemoved = func() {
+	explode := func() {
 		ai := NewBloomAttack(char, s)
 		c.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
 
@@ -103,6 +106,9 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		c.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 	}
+	//TODO: should bloom do damage if it blows up due to limit reached?
+	s.Gadget.OnExpiry = explode
+	s.Gadget.OnKill = explode
 
 	return s
 }
@@ -126,7 +132,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		ai := NewHyperbloomAttack(char, s)
 		// queue dmg nearest enemy
 		x, y := s.Gadget.Pos()
-		enemies := s.Core.Combat.EnemyByDistance(x, y, s.Gadget.Key())
+		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
 		if len(enemies) > 0 {
 			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, false, combat.TargettableEnemy), -1, 5)
 
@@ -136,8 +142,9 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, true, combat.TargettablePlayer), -1, 5)
 		}
 
-		s.Core.Combat.RemoveGadget(s.Gadget.Index())
-		s.Core.Events.Emit(event.OnHyperbloom, s.Gadget, atk)
+		s.Gadget.OnKill = nil
+		s.Gadget.Kill()
+		s.Core.Events.Emit(event.OnHyperbloom, s, atk)
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
@@ -150,8 +157,9 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 
-		s.Core.Combat.RemoveGadget(s.Gadget.Index())
-		s.Core.Events.Emit(event.OnBurgeon, s.Gadget, atk)
+		s.Gadget.OnKill = nil
+		s.Gadget.Kill()
+		s.Core.Events.Emit(event.OnBurgeon, s, atk)
 	default:
 		return 0, false
 	}

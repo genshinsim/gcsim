@@ -39,7 +39,7 @@ func (c *char) a4() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// A4 uses Oz Snapshot
-		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(t.Index(), combat.TargettableEnemy), 3)
+		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(t.Key(), combat.TargettableEnemy), 3)
 
 		return false
 	}
@@ -48,7 +48,7 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnHyperbloom, cb, "fischl-a4")
+	// c.Core.Events.Subscribe(event.OnHyperbloom, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnQuicken, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnAggravate, cb, "fischl-a4")
 }

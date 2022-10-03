@@ -10,7 +10,7 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
       <div className="flex flex-row">
         <div className="w-12 ">
           <img
-            src={`/images/weapons/${weapon.name}.png`}
+            src={`https://gcsim.app/api/assets/weapons/${weapon.name}.png`}
             alt={weapon.name}
             className="object-contain h-auto w-full"
           />

@@ -19,6 +19,7 @@ var key = map[string]TokenType{
 	"continue":    keywordContinue,
 	"fallthrough": keywordFallthrough,
 	"return":      keywordReturn,
+	"for":         keywordFor,
 	//genshin specific keywords
 	"options":             keywordOptions,
 	"add":                 keywordAdd,
