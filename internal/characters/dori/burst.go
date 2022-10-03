@@ -60,7 +60,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			idx := c.Core.Player.ActiveChar().Index
 			if c.Core.F > icdSrc[idx]+combat.ICDGroupResetTimer[combat.ICDGroupDoriBurst] {
 				dur := combat.Durability(25)
-				if p.AuraCount() > 0 {
+				if p.AuraCount() == 0 {
 					dur = 20
 				}
 				p.ApplySelfInfusion(attributes.Electro, dur, 9.5*60) // TODO: find actual duration
