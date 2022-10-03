@@ -15,8 +15,7 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark    = 28
-	burstHealPeriod = 120
+	burstHitmark = 28
 )
 
 func init() {
@@ -95,7 +94,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			// Energy regen to active char
 			active := c.Core.Player.ActiveChar()
 			active.AddEnergy("Alcazarzaray's Exactitude: Energy Regen", burstenergy[c.TalentLvlBurst()])
-		}, burstHealPeriod*i+11)
+		}, 120*i+11)
 	}
 	c.Core.Tasks.Add(func() {
 		if c.Base.Cons >= 4 {
