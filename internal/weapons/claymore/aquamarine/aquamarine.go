@@ -16,10 +16,10 @@ func init() {
 }
 
 type Weapon struct {
-	atkBuuff float64
-	core     *core.Core
-	char     *character.CharWrapper
-	Index    int
+	atkBuff float64
+	core    *core.Core
+	char    *character.CharWrapper
+	Index   int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -40,15 +40,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 	r := p.Refine
 
-	w.atkBuuff = 0.18 + float64(r)*0.06
+	w.atkBuff = 0.18 + float64(r)*0.06
 	return w, nil
 }
 
 func (w *Weapon) updateStats() {
 	val := make([]float64, attributes.EndStatType)
-	val[attributes.ATK] = w.atkBuuff * w.char.Stat(attributes.EM)
+	val[attributes.ATK] = w.atkBuff * w.char.Stat(attributes.EM)
 	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("aquamarine", 12*60),
+		Base:         modifier.NewBaseWithHitlag("aquamarine", 12*60),
 		AffectedStat: attributes.ATK,
 		Amount: func() ([]float64, bool) {
 			return val, true
@@ -63,7 +63,7 @@ func (w *Weapon) updateStats() {
 		}
 
 		this.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(fmt.Sprintf("aquamarine-%v", w.char.Base.Key.String()), 12*60),
+			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("aquamarine-%v", w.char.Base.Key.String()), 12*60),
 			AffectedStat: attributes.ATK,
 			Amount: func() ([]float64, bool) {
 				return valTeam, true
@@ -71,5 +71,5 @@ func (w *Weapon) updateStats() {
 		})
 	}
 
-	w.core.Tasks.Add(w.updateStats, 10*60)
+	w.char.QueueCharTask(w.updateStats, 10*60)
 }
