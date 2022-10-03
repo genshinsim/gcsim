@@ -40,10 +40,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: true,
 		}
-		// c6 key check
-		if c.StatusIsActive(c6key) {
-			ai.Element = attributes.Electro
-		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,

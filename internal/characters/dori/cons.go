@@ -91,7 +91,7 @@ func (c *char) c6() {
 			return false
 		}
 
-		c.AddStatus(c6icd, 6, false) // 0.1s*60 icd
+		c.AddStatus(c6icd, 6, true) // 0.1s*60 icd
 		// heal party members
 
 		c.Core.Player.Heal(player.HealInfo{
