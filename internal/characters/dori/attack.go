@@ -13,7 +13,7 @@ var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{27}, {19, 33}, {60}}
 	attackHitlagHaltFrame = [][]float64{{0.1}, {0, 0}, {0.08}}
-	attackHitlagDefHalt = [][]bool{{true}, {false, false}, {true}}
+	attackHitlagDefHalt   = [][]bool{{true}, {false, false}, {true}}
 )
 
 const normalHitNum = 3

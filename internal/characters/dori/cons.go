@@ -34,7 +34,12 @@ func (c *char) c2(travel int) {
 			Durability: 25,
 			Mult:       0.5,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy, combat.TargettableGadget), 0, travel)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
+			0,
+			travel,
+		)
 		return false
 	}, "dori-c2")
 }
