@@ -41,6 +41,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.afterSales(travel)
 	}
 
+	// When the Troubleshooter Shots or After-Sales Service Rounds from
+	// Spirit-Warding Lamp: Troubleshooter Cannon hit opponents, Dori will
+	// restore 5 Elemental Energy for every 100% Energy Recharge possessed. Per
+	// Spirit-Warding Lamp: Troubleshooter Cannon, only one instance of Energy
+	// restoration can be triggered and a maximum of 15 Energy can be restored
+	// this way.
 	done := false
 	a4CB := func(a combat.AttackCB) {
 		if done {
@@ -53,6 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.AddEnergy("dori-a4", a4energy)
 		done = true
 	}
+
 	c.Core.Tasks.Add(func() {
 		// C6
 		if c.Base.Cons >= 6 {

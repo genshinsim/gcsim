@@ -20,7 +20,7 @@ func (c *char) a1() {
 	reduce := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 
-		if c.Core.Player.Active() != atk.Info.ActorIndex { //only for on field character
+		if c.Core.Player.Active() != atk.Info.ActorIndex { // only for on field character
 			return false
 		}
 		if c.StatusIsActive(icdKey) {
@@ -42,13 +42,4 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnHyperbloom, reduce, "dori-a1")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, reduce, "dori-a1")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, reduce, "dori-a1")
-}
-
-// When the Troubleshooter Shots or After-Sales Service Rounds from Spirit-Warding Lamp: Troubleshooter Cannon hit opponents,
-// Dori will restore 5 Elemental Energy for every 100% Energy Recharge possessed.
-// Per Spirit-Warding Lamp: Troubleshooter Cannon, only one instance of Energy restoration can be triggered and a maximum of 15 Energy
-//  can be restored this way.
-
-func (c *char) a4() {
-	//check a4CB on skill.go
 }
