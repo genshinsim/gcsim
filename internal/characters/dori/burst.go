@@ -96,11 +96,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			active.AddEnergy("Alcazarzaray's Exactitude: Energy Regen", burstenergy[c.TalentLvlBurst()])
 		}, 120*i+11)
 	}
-	c.Core.Tasks.Add(func() {
-		if c.Base.Cons >= 4 {
-			c.c4()
-		}
-	}, burstHitmark)
 
 	c.ConsumeEnergy(4)
 	c.SetCDWithDelay(action.ActionBurst, 1200, 1) // 20s * 60
