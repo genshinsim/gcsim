@@ -250,8 +250,8 @@ func SetupResonance(s *core.Core) {
 				}
 				s.Events.Subscribe(event.OnAggravate, threeEl, "dendro-res")
 				s.Events.Subscribe(event.OnSpread, threeEl, "dendro-res")
-				// s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
-				// s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
 			}
 		}
 	}
