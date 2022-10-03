@@ -48,7 +48,7 @@ func (c *char) c2() {
 func (c *char) c4() {
 	// gets called at the same time as heal ticks (every 1s)
 	// add debuff to all targets for 1.2 s
-	for _, t := range c.Core.Combat.Targets() {
+	for _, t := range c.Core.Combat.Enemies() {
 		e, ok := t.(*enemy.Enemy)
 		if !ok {
 			continue

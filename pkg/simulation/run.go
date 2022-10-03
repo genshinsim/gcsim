@@ -6,12 +6,12 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func (s *Simulation) Run() (Result, error) {
@@ -51,8 +51,8 @@ func (s *Simulation) Run() (Result, error) {
 		if s.C.Combat.DamageMode {
 			//stop if all targets are reporting dead
 			stop = true
-			for _, t := range s.C.Combat.Targets() {
-				if t.Type() == combat.TargettableEnemy && t.IsAlive() {
+			for _, t := range s.C.Combat.Enemies() {
+				if t.IsAlive() {
 					stop = false
 					break
 				}
@@ -90,9 +90,13 @@ func (s *Simulation) AdvanceFrame() error {
 func (s *Simulation) collectStats() {
 	//add char active time
 	s.stats.CharActiveTime[s.C.Player.Active()]++
-	for i, v := range s.C.Combat.Targets() {
-		if t, ok := v.(*enemy.Enemy); ok {
-			s.stats.ElementUptime[i][t.AuraType()]++
+	for i, e := range s.C.Combat.Enemies() {
+		if t, ok := e.(*enemy.Enemy); ok {
+			for r, v := range t.Durability {
+				if v > reactable.ZeroDur {
+					s.stats.ElementUptime[i][reactable.ReactableModifier(r)]++
+				}
+			}
 		}
 	}
 }

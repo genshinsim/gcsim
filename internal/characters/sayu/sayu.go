@@ -16,10 +16,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	eInfused            attributes.Element
-	eInfusedTag         combat.ICDTag
 	eDuration           int
-	infuseCheckLocation combat.AttackPattern
+	eAbsorb             attributes.Element
+	eAbsorbTag          combat.ICDTag
+	absorbCheckLocation combat.AttackPattern
 	c2Bonus             float64
 }
 
@@ -32,8 +32,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.eInfused = attributes.NoElement
 	c.eDuration = -1
+	c.eAbsorb = attributes.NoElement
 	c.c2Bonus = .0
 
 	w.Character = &c

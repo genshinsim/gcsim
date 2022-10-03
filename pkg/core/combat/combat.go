@@ -1,8 +1,8 @@
 // Package combat handles all combat related functionalities including
-//	- target tracking
-//	- target selection
-//	- hitbox collision checking
-//  - attack queueing
+//   - target tracking
+//   - target selection
+//   - hitbox collision checking
+//   - attack queueing
 package combat
 
 import (
@@ -10,6 +10,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
 type CharHandler interface {
@@ -23,12 +24,17 @@ type Character interface {
 
 type Handler struct {
 	Opt
-	targets     []Target
+	enemies     []Target
+	gadgets     []Gadget
+	player      Target
 	TotalDamage float64
+	gccount     int
+	keycount    TargetKey
 }
 
 type Opt struct {
 	Events        event.Eventter
+	Tasks         task.Tasker
 	Team          CharHandler
 	Rand          *rand.Rand
 	Debug         bool
@@ -36,71 +42,64 @@ type Opt struct {
 	DamageMode    bool
 	DefHalt       bool
 	EnableHitlag  bool
-	DefaultTarget int //index for default target
+	DefaultTarget TargetKey //index for default target
 }
 
 func New(opt Opt) *Handler {
 	h := &Handler{
-		Opt: opt,
+		Opt:      opt,
+		keycount: 1,
 	}
-	h.targets = make([]Target, 0, 5)
+	h.enemies = make([]Target, 0, 5)
+	h.gadgets = make([]Gadget, 0, 10)
 
 	return h
 }
 
-func (h *Handler) AddTarget(t Target) {
-	h.targets = append(h.targets, t)
-	t.SetIndex(len(h.targets) - 1)
-}
-
-func (h *Handler) Target(i int) Target {
-	if i < 0 || i > len(h.targets) {
-		return nil
-	}
-	return h.targets[i]
-}
-
-func (h *Handler) Targets() []Target {
-	return h.targets
-}
-
-func (h *Handler) TargetsCount() int {
-	return len(h.targets)
-}
-
-func (h *Handler) PrimaryTarget() Target {
-	return h.targets[h.DefaultTarget]
-}
-
-func (h *Handler) Player() Target {
-	return h.targets[0] //assuming player is always position 0
-}
-
-func (h *Handler) SetTargetPos(i int, x, y float64) bool {
-	if i < 0 || i > len(h.targets)-1 {
-		return false
-	}
-	h.targets[i].SetPos(x, y)
-	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
-		Write("index", i).
-		Write("x", x).
-		Write("y", y)
-	return true
-}
-
-func (h *Handler) KillTarget(i int) bool {
-	// don't kill yourself
-	if i < 1 || i > len(h.targets)-1 {
-		return false
-	}
-	h.targets[i].Kill()
-	h.Events.Emit(event.OnTargetDied, h.targets[i], &AttackEvent{}) // TODO: it's fine?
-	h.Log.NewEvent("target is dead", glog.LogSimEvent, -1).Write("index", i)
-	return true
+func (h *Handler) nextkey() TargetKey {
+	h.keycount++
+	return h.keycount - 1
 }
 
 func (h *Handler) Tick() {
-	for _, t := range h.targets {
-		t.Tick()
+	//collision check happens before each object ticks (as collision may remove the object)
+	//enemy and player does not check for collision
+	//gadgets check against player and enemy
+	for i := 0; i < len(h.gadgets); i++ {
+		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(TargettablePlayer) {
+			if h.gadgets[i].WillCollide(h.player.Shape()) {
+				h.gadgets[i].CollidedWith(h.player)
+			}
+		}
+		//sanity check in case gadget is gone
+		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(TargettableEnemy) {
+			for j := 0; j < len(h.enemies) && h.gadgets[i] != nil; j++ {
+				if h.gadgets[i].WillCollide(h.enemies[j].Shape()) {
+					h.gadgets[i].CollidedWith(h.enemies[j])
+				}
+			}
+		}
+	}
+	h.player.Tick()
+	for _, v := range h.enemies {
+		v.Tick()
+	}
+	for _, v := range h.gadgets {
+		if v != nil {
+			v.Tick()
+		}
+	}
+	//TODO: clean up every 100 tick reasonable?
+	h.gccount++
+	if h.gccount > 100 {
+		n := 0
+		for i, v := range h.gadgets {
+			if v != nil {
+				h.gadgets[n] = h.gadgets[i]
+				n++
+			}
+		}
+		h.gadgets = h.gadgets[:n]
+		h.gccount = 0
 	}
 }

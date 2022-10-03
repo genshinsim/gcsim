@@ -9,10 +9,10 @@ import {
   NavbarDivider,
   NavbarGroup,
   NavbarHeading,
-} from "@blueprintjs/core";
-import { Link, useLocation } from "wouter";
-import { Trans, useTranslation } from "react-i18next";
-import { RootState, useAppSelector } from "~src/store";
+} from '@blueprintjs/core';
+import { Link, useLocation } from 'wouter';
+import { Trans, useTranslation } from 'react-i18next';
+import { RootState, useAppSelector } from '~src/store';
 
 export default function Nav() {
   let { t, i18n } = useTranslation();
@@ -29,7 +29,7 @@ export default function Nav() {
     <Navbar>
       <NavbarGroup align={Alignment.LEFT} className="w-full">
         <img
-          src="/api/assets/logo.png"
+          src="images/logo.png"
           className=" object-contain max-h-[75%] mt-auto mb-auto mr-1"
         />
         <Link href="/">
@@ -37,7 +37,7 @@ export default function Nav() {
             <a>gcsim web (beta)</a>
           </NavbarHeading>
         </Link>
-        {location !== "/" ? (
+        {location !== '/' ? (
           <>
             <NavbarDivider />
             <Link href="/simulator">
@@ -86,12 +86,12 @@ export default function Nav() {
               i18n.changeLanguage(e.target.value);
             }}
           >
-            <option value="English">{t("nav.english")}</option>
-            <option value="Chinese">{t("nav.chinese")}</option>
-            <option value="German">{t("nav.german")}</option>
-            <option value="Japanese">{t("nav.japanese")}</option>
-            <option value="Spanish">{t("nav.spanish")}</option>
-            <option value="Russian">{t("nav.russian")}</option>
+            <option value="English">{t('nav.english')}</option>
+            <option value="Chinese">{t('nav.chinese')}</option>
+            <option value="German">{t('nav.german')}</option>
+            <option value="Japanese">{t('nav.japanese')}</option>
+            <option value="Spanish">{t('nav.spanish')}</option>
+            <option value="Russian">{t('nav.russian')}</option>
           </HTMLSelect>
         </div>
       </NavbarGroup>

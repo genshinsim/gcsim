@@ -69,7 +69,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.stacks++
 			}
 
-			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index).Write("current stacks", s.stacks)
+			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index).
+				Write("current stacks", s.stacks)
 			char.AddStatus(cw4pc, 10*60, true)
 			return false
 		}, s.key)
@@ -77,7 +78,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("crimson-4pc", -1),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				if ai.AttackTag == combat.AttackTagOverloadDamage {
+				switch ai.AttackTag {
+				case combat.AttackTagOverloadDamage,
+				combat.AttackTagBurningDamage,
+				combat.AttackTagBurgeon:
 					return 0.4, false
 				}
 				if ai.Amped {

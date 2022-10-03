@@ -1,39 +1,44 @@
 package task
 
-type task struct {
-	source int
-	f      func()
-}
-
 type Tasker interface {
 	Add(f func(), delay int)
 }
 
-type Handler struct {
+func New(f *int) *SliceHandler {
+	return &SliceHandler{
+		f: f,
+	}
+}
+
+type SliceHandler struct {
 	f     *int
-	tasks map[int][]task
+	tasks []sliceTask
 }
 
-func New(f *int) *Handler {
-	c := &Handler{f: f}
-	c.tasks = make(map[int][]task)
-	return c
+type sliceTask struct {
+	source    int
+	executeBy int
+	f         func()
 }
 
-func (c *Handler) Run() {
-	for _, x := range c.tasks[*c.f] {
-		x.f()
+func (s *SliceHandler) Run() {
+	//execute all tasks with executedBy <= f
+	n := 0
+	for i := 0; i < len(s.tasks); i++ {
+		if s.tasks[i].executeBy <= *s.f {
+			s.tasks[i].f()
+		} else {
+			s.tasks[n] = s.tasks[i]
+			n++
+		}
 	}
-	delete(c.tasks, *c.f)
+	s.tasks = s.tasks[:n]
 }
 
-func (c *Handler) Add(f func(), delay int) {
-	if delay == 0 {
-		f()
-		return
-	}
-	c.tasks[*c.f+delay] = append(c.tasks[*c.f+delay], task{
-		f:      f,
-		source: *c.f,
+func (s *SliceHandler) Add(f func(), delay int) {
+	s.tasks = append(s.tasks, sliceTask{
+		source:    *s.f,
+		executeBy: *s.f + delay,
+		f:         f,
 	})
 }

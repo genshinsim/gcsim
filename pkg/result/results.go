@@ -6,30 +6,30 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 )
 
 type Summary struct {
 	//version stuff
-	V2                    bool                               `json:"v2"`
-	Version               string                             `json:"version"`
-	BuildDate             string                             `json:"build_date"`
-	IsDamageMode          bool                               `json:"is_damage_mode"`
-	ActiveChar            string                             `json:"active_char"`
-	CharNames             []string                           `json:"char_names"`
-	DamageByChar          []map[string]FloatResult           `json:"damage_by_char"`
-	DamageInstancesByChar []map[string]IntResult             `json:"damage_instances_by_char"`
-	DamageByCharByTargets []map[int]FloatResult              `json:"damage_by_char_by_targets"`
-	CharActiveTime        []IntResult                        `json:"char_active_time"`
-	AbilUsageCountByChar  []map[string]IntResult             `json:"abil_usage_count_by_char"`
-	ParticleCount         map[string]FloatResult             `json:"particle_count"`
-	ReactionsTriggered    map[combat.ReactionType]IntResult  `json:"reactions_triggered"`
-	Duration              FloatResult                        `json:"sim_duration"`
-	ElementUptime         []map[attributes.Element]IntResult `json:"ele_uptime"`
-	RequiredER            []float64                          `json:"required_er"`
+	V2                    bool                                        `json:"v2"`
+	Version               string                                      `json:"version"`
+	BuildDate             string                                      `json:"build_date"`
+	IsDamageMode          bool                                        `json:"is_damage_mode"`
+	ActiveChar            string                                      `json:"active_char"`
+	CharNames             []string                                    `json:"char_names"`
+	DamageByChar          []map[string]FloatResult                    `json:"damage_by_char"`
+	DamageInstancesByChar []map[string]IntResult                      `json:"damage_instances_by_char"`
+	DamageByCharByTargets []map[int]FloatResult                       `json:"damage_by_char_by_targets"`
+	CharActiveTime        []IntResult                                 `json:"char_active_time"`
+	AbilUsageCountByChar  []map[string]IntResult                      `json:"abil_usage_count_by_char"`
+	ParticleCount         map[string]FloatResult                      `json:"particle_count"`
+	ReactionsTriggered    map[combat.ReactionType]IntResult           `json:"reactions_triggered"`
+	Duration              FloatResult                                 `json:"sim_duration"`
+	ElementUptime         []map[reactable.ReactableModifier]IntResult `json:"ele_uptime"`
+	RequiredER            []float64                                   `json:"required_er"`
 	//final result
 	Damage         FloatResult            `json:"damage"`
 	DPS            FloatResult            `json:"dps"`
@@ -283,7 +283,7 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 		//ele up time
 		for t, m := range v.ElementUptime {
 			if len(result.ElementUptime) == t {
-				result.ElementUptime = append(result.ElementUptime, make(map[attributes.Element]IntResult))
+				result.ElementUptime = append(result.ElementUptime, make(map[reactable.ReactableModifier]IntResult))
 			}
 			//go through m and add to our results
 			for ele, amt := range m {
@@ -358,7 +358,7 @@ func CollectResult(data []simulation.Result, mode bool, chars []string, detailed
 			targetDamage[idxTarget] = 0
 		}
 		if mode {
-			result.Duration.SD += math.Pow(float64(v.Duration) / 60 - result.Duration.Mean, 2)
+			result.Duration.SD += math.Pow(float64(v.Duration)/60-result.Duration.Mean, 2)
 		}
 	}
 
@@ -453,8 +453,8 @@ func (r *Summary) PrettyPrint() string {
 			sb.WriteString("Element up time:\n")
 		}
 		sb.WriteString(fmt.Sprintf("\tTarget #%v\n", i+1))
-		for j, ele := range attributes.ElementString {
-			v, ok := m[attributes.Element(j)]
+		for j, ele := range reactable.ModifierString {
+			v, ok := m[reactable.ReactableModifier(j)]
 			if ok {
 				if ele == "" {
 					ele = "none"

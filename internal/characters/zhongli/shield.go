@@ -18,11 +18,11 @@ func (c *char) addJadeShield() {
 	c.Tags["shielded"] = 1
 
 	//add resist mod whenever we get a shield
-	res := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro, attributes.Geo, attributes.Anemo, attributes.Physical}
+	res := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro, attributes.Geo, attributes.Anemo, attributes.Physical, attributes.Dendro}
 
 	for _, v := range res {
 		key := fmt.Sprintf("zhongli-%v", v.String())
-		for _, t := range c.Core.Combat.Targets() {
+		for _, t := range c.Core.Combat.Enemies() {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
 				continue
@@ -46,10 +46,10 @@ func (c *char) removeJadeShield() {
 	c.Tags["a1"] = 0
 	//deactivate resist mods
 	//add resist mod whenever we get a shield
-	res := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro, attributes.Geo, attributes.Anemo, attributes.Physical}
+	res := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro, attributes.Geo, attributes.Anemo, attributes.Physical, attributes.Dendro}
 	for _, v := range res {
 		key := fmt.Sprintf("zhongli-%v", v.String())
-		for _, t := range c.Core.Combat.Targets() {
+		for _, t := range c.Core.Combat.Enemies() {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
 				continue

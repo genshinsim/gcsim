@@ -7,19 +7,90 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
+type ReactableModifier int
+
+const (
+	ModifierInvalid ReactableModifier = iota
+	ModifierElectro
+	ModifierPyro
+	ModifierCryo
+	ModifierHydro
+	ModifierBurningFuel
+	ModifierSpecialDecayDelim
+	ModifierDendro
+	ModifierQuicken
+	ModifierFrozen
+	ModifierAnemo
+	ModifierGeo
+	ModifierBurning
+	EndReactableModifier
+)
+
+var modifierElement = []attributes.Element{
+	attributes.UnknownElement,
+	attributes.Electro,
+	attributes.Pyro,
+	attributes.Cryo,
+	attributes.Hydro,
+	attributes.Dendro,
+	attributes.UnknownElement,
+	attributes.Dendro,
+	attributes.Quicken,
+	attributes.Frozen,
+	attributes.Anemo,
+	attributes.Geo,
+	attributes.Pyro,
+	attributes.UnknownElement,
+}
+
+var ModifierString = []string{
+	"",
+	"electro",
+	"pyro",
+	"cryo",
+	"hydro",
+	"dendro (fuel)",
+	"",
+	"dendro",
+	"quicken",
+	"frozen",
+	"anemo",
+	"geo",
+	"burning",
+	"",
+}
+
+var elementToModifier = map[attributes.Element]ReactableModifier{
+	attributes.Electro: ModifierElectro,
+	attributes.Pyro:    ModifierPyro,
+	attributes.Cryo:    ModifierCryo,
+	attributes.Hydro:   ModifierHydro,
+	attributes.Dendro:  ModifierDendro,
+}
+
+func (r ReactableModifier) Element() attributes.Element { return modifierElement[r] }
+func (r ReactableModifier) String() string              { return ModifierString[r] }
+
 type Reactable struct {
-	Durability []combat.Durability
-	DecayRate  []combat.Durability
+	Durability [EndReactableModifier]combat.Durability
+	DecayRate  [EndReactableModifier]combat.Durability
 	// Source     []int //source frame of the aura
 	self combat.Target
 	core *core.Core
 	//ec specific
 	ecSnapshot combat.AttackInfo //index of owner of next ec ticks
 	ecTickSrc  int
-	//hitlag
-	// animationFreeze float64
+	//burning specific
+	burningSnapshot       combat.AttackInfo
+	burningTickSrc        int
+	burningEventSubExists bool
+}
+
+type Enemy interface {
+	QueueEnemyTask(f func(), delay int)
 }
 
 const frzDelta combat.Durability = 2.5 / (60 * 60) // 2 * 1.25
@@ -30,10 +101,9 @@ const ZeroDur combat.Durability = 0.00000000001
 func (r *Reactable) Init(self combat.Target, c *core.Core) *Reactable {
 	r.self = self
 	r.core = c
-	r.Durability = make([]combat.Durability, attributes.ElementDelimAttachable)
-	r.DecayRate = make([]combat.Durability, attributes.ElementDelimAttachable)
-	r.DecayRate[attributes.Frozen] = frzDecayCap
+	r.DecayRate[ModifierFrozen] = frzDecayCap
 	r.ecTickSrc = -1
+	r.burningTickSrc = -1
 	return r
 }
 
@@ -41,95 +111,13 @@ func (r *Reactable) ActiveAuraString() []string {
 	var result []string
 	for i, v := range r.Durability {
 		if v > ZeroDur {
-			result = append(result, attributes.ElementString[i]+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
+			result = append(result, ReactableModifier(i).String()+": "+strconv.FormatFloat(float64(v), 'f', 3, 64))
 		}
 	}
-
 	return result
 }
 
-func (r *Reactable) React(a *combat.AttackEvent) {
-	//before all else, check for shatter first
-	switch count := r.auraCount(); count {
-	case 0:
-		r.tryAttach(a.Info.Element, &a.Info.Durability)
-	case 1:
-		r.tryRefill(a.Info.Element, &a.Info.Durability)
-		//check if refilled ok; return if so
-		if a.Info.Durability < ZeroDur {
-			return
-		}
-		fallthrough
-	default:
-		//TODO: double check order of reactions
-		switch a.Info.Element {
-		case attributes.Electro:
-			r.tryOverload(a)
-			r.tryFrozenSuperconduct(a)
-			r.trySuperconduct(a)
-			r.tryAddEC(a)
-		case attributes.Pyro:
-			r.tryOverload(a)
-			r.tryMelt(a)
-			r.tryVaporize(a)
-			r.tryMeltFrozen(a)
-		case attributes.Cryo:
-			r.trySuperconduct(a)
-			r.tryFreeze(a)
-			r.tryMelt(a)
-		case attributes.Hydro:
-			r.tryAddEC(a)
-			r.tryVaporize(a)
-			r.tryFreeze(a)
-		case attributes.Anemo:
-			r.trySwirlElectro(a)
-			r.trySwirlHydro(a)
-			r.trySwirlCryo(a)
-			r.trySwirlPyro(a)
-			r.trySwirlFrozen(a)
-		case attributes.Geo:
-			r.tryCrystallize(a)
-		case attributes.Dendro:
-			//nothing yet
-
-		default:
-			//do nothing
-			return
-		}
-	}
-
-}
-
-func (r *Reactable) AuraContains(e ...attributes.Element) bool {
-	for _, v := range e {
-		if r.Durability[v] > ZeroDur {
-			return true
-		}
-		if v == attributes.Cryo && r.Durability[attributes.Frozen] > ZeroDur {
-			return true
-		}
-	}
-	return false
-}
-
-func (r *Reactable) AuraType() attributes.Element {
-	if r.Durability[attributes.Frozen] > ZeroDur {
-		return attributes.Frozen
-	}
-	if r.Durability[attributes.Electro] > ZeroDur && r.Durability[attributes.Hydro] > ZeroDur {
-		return attributes.EC
-	}
-
-	for i, v := range r.Durability {
-		if v > 0 {
-			return attributes.Element(i)
-		}
-	}
-
-	return attributes.NoElement
-}
-
-func (r *Reactable) auraCount() int {
+func (r *Reactable) AuraCount() int {
 	count := 0
 	for _, v := range r.Durability {
 		if v > ZeroDur {
@@ -139,110 +127,169 @@ func (r *Reactable) auraCount() int {
 	return count
 }
 
-func (r *Reactable) tryAttach(ele attributes.Element, dur *combat.Durability) {
-	//can't attach >= frozen
-	if ele >= attributes.Frozen {
+func (r *Reactable) React(a *combat.AttackEvent) {
+	//TODO: double check order of reactions
+	switch a.Info.Element {
+	case attributes.Electro:
+		//hyperbloom
+		r.tryAggravate(a)
+		r.tryOverload(a)
+		r.tryAddEC(a)
+		r.tryFrozenSuperconduct(a)
+		r.trySuperconduct(a)
+		r.tryQuicken(a)
+	case attributes.Pyro:
+		//burgeon
+		r.tryOverload(a)
+		r.tryVaporize(a)
+		r.tryMelt(a)
+		r.tryBurning(a)
+	case attributes.Cryo:
+		r.trySuperconduct(a)
+		r.tryMelt(a)
+		r.tryFreeze(a)
+	case attributes.Hydro:
+		r.tryVaporize(a)
+		r.tryFreeze(a)
+		r.tryBloom(a)
+		r.tryAddEC(a)
+	case attributes.Anemo:
+		r.trySwirlElectro(a)
+		r.trySwirlPyro(a)
+		r.trySwirlHydro(a)
+		r.trySwirlCryo(a)
+		r.trySwirlFrozen(a)
+	case attributes.Geo:
+		r.tryCrystallize(a)
+	case attributes.Dendro:
+		r.trySpread(a)
+		r.tryQuicken(a)
+		r.tryBurning(a)
+		r.tryBloom(a)
+	}
+}
+
+// AttachOrRefill is called after the damage event if the attack has not reacted with anything
+// and will either create a new modifier if non exist, or update according to the rules of
+// each modifier
+func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
+	if a.Info.Durability < ZeroDur {
+		return false
+	}
+	if a.Reacted {
+		return false
+	}
+	//handle pyro, electro, hydro, cryo, dendro
+	//special attachment of dendro (burning fuel) is handled in tryBurning
+	if mod, ok := elementToModifier[a.Info.Element]; ok {
+		r.attachOrRefillNormalEle(mod, a.Info.Durability)
+		return true
+	}
+	return false
+}
+
+// attachOrRefillNormalEle is used for pyro, electro, hydro, cryo, and dendro which don't have special attachment
+// rules
+func (r *Reactable) attachOrRefillNormalEle(mod ReactableModifier, dur combat.Durability) {
+	amt := 0.8 * dur
+	if mod == ModifierPyro {
+		r.attachOverlapRefreshDuration(ModifierPyro, amt, 6*dur+420)
+	} else {
+		r.attachOverlap(mod, amt, 6*dur+420)
+	}
+}
+
+func (r *Reactable) attachOverlap(mod ReactableModifier, amt combat.Durability, length combat.Durability) {
+	if r.Durability[mod] > ZeroDur {
+		add := max(amt-r.Durability[mod], 0)
+		if add > 0 {
+			r.addDurability(mod, add)
+		}
+	} else {
+		r.Durability[mod] = amt
+		r.DecayRate[mod] = amt / length
+	}
+}
+
+func (r *Reactable) attachOverlapRefreshDuration(mod ReactableModifier, amt combat.Durability, length combat.Durability) {
+	if amt < r.Durability[mod] {
 		return
 	}
-	if *dur < ZeroDur {
-		return
-	}
-	r.attach(ele, *dur, 0.8)
-	*dur = 0
+	r.Durability[mod] = amt
+	r.DecayRate[mod] = amt / length
 }
 
-func (r *Reactable) tryRefill(ele attributes.Element, dur *combat.Durability) {
-	//shouldn't be >= frozen
-	if ele >= attributes.Frozen {
-		return
-	}
-	if *dur < ZeroDur {
-		return
-	}
-	//must already have existing element
-	if r.Durability[ele] < ZeroDur {
-		return
-	}
-	r.refill(ele, *dur, 0.8)
-	*dur = 0
+func (r *Reactable) attachBurning() {
+	r.Durability[ModifierBurning] = 50
+	r.DecayRate[ModifierBurning] = 0
 }
 
-func (r *Reactable) calcReactionDmg(atk combat.AttackInfo, em float64) float64 {
-	char := r.core.Player.ByIndex(atk.ActorIndex)
-	lvl := char.Base.Level - 1
-	if lvl > 89 {
-		lvl = 89
-	}
-	if lvl < 0 {
-		lvl = 0
-	}
-	return (1 + ((16 * em) / (2000 + em)) + r.core.Player.ByIndex(atk.ActorIndex).ReactBonus(atk)) * reactionLvlBase[lvl]
+func (r *Reactable) addDurability(mod ReactableModifier, amt combat.Durability) {
+	r.Durability[mod] += amt
+	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
 
-func (r *Reactable) attach(e attributes.Element, dur combat.Durability, m combat.Durability) {
-	//calculate duration based on dur
-	r.DecayRate[e] = m * dur / (6*dur + 420)
-	r.addDurability(e, m*dur)
+// AuraCountains returns true if any element e is active on the target
+func (r *Reactable) AuraContains(e ...attributes.Element) bool {
+	for _, v := range e {
+		for i := ModifierInvalid; i < EndReactableModifier; i++ {
+			if i.Element() == v && r.Durability[i] > ZeroDur {
+				return true
+			}
+		}
+		//TODO: not sure if this is best way to go about it? perhaps supplying frozen element is better?
+		if v == attributes.Cryo && r.Durability[ModifierFrozen] > ZeroDur {
+			return true
+		}
+	}
+	return false
 }
 
-func (r *Reactable) refill(e attributes.Element, dur combat.Durability, m combat.Durability) {
-	add := max(dur*m-r.Durability[e], 0)
-	if add > 0 {
-		r.addDurability(e, add)
+// reduce the requested element by dur * factor, return the amount of dur consumed
+// if multiple modifier with same element are present, all of them are reduced
+// the max on reduced is used for consumption purpose
+func (r *Reactable) reduce(e attributes.Element, dur combat.Durability, factor combat.Durability) combat.Durability {
+
+	m := dur * factor //maximum amount reduceable
+	var reduced combat.Durability
+
+	for i := ModifierInvalid; i < EndReactableModifier; i++ {
+		if i.Element() != e {
+			continue
+		}
+		if r.Durability[i] < ZeroDur {
+			// also skip if durability already 0
+			// this allows us to safely call reduce even if an element doesn't exist
+			continue
+		}
+		//reduce by lesser of remaining and m
+
+		red := m
+
+		if red > r.Durability[i] {
+			red = r.Durability[i]
+			//reset decay rate to 0
+		}
+
+		r.Durability[i] -= red
+
+		if red > reduced {
+			reduced = red
+		}
+	}
+
+	return reduced / factor
+}
+
+func (r *Reactable) deplete(m ReactableModifier) {
+	if r.Durability[m] <= ZeroDur {
+		r.Durability[m] = 0
+		r.DecayRate[m] = 0
+		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
 	}
 }
-
-//reduce the requested element by dur * factor, return the amount of dur consumed
-func (r *Reactable) reduce(e attributes.Element, dur combat.Durability, factor combat.Durability) (consumed combat.Durability) {
-	t := dur * factor
-	if t > r.Durability[e] {
-		t = r.Durability[e]
-	}
-	r.Durability[e] -= t
-	consumed = t / factor
-
-	return
-
-	//if dur * factor > amount of existing element, then set amont of existing element to
-	//0; and consumed is equal to dur / facotr
-	if dur*factor >= r.Durability[e] {
-		consumed = r.Durability[e] / factor
-		//aura is depleted
-		r.Durability[e] = 0
-		return
-	}
-	//otherwise consumed = dur
-	//TODO: this is wrong. should be just = dur
-	consumed = dur / factor
-	r.Durability[e] -= dur * factor
-	return
-}
-
-func (r *Reactable) addDurability(e attributes.Element, dur combat.Durability) {
-	r.Durability[e] += dur
-	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, e, dur)
-}
-
-// func (r *Reactable) ApplyHitlag(factor, dur float64) {
-// 	//freeze for dur * (1-factor)
-// 	r.animationFreeze += dur * (1 - factor)
-// }
 
 func (r *Reactable) Tick() {
-	//TODO: further testing/in game check this would be nice
-	// if r.animationFreeze > 0 {
-	// 	r.animationFreeze -= 1
-	// 	//reset back to 0 if it was fractional
-	// 	if r.animationFreeze < 0 {
-	// 		r.animationFreeze = 0
-	// 	}
-	// 	//skip this tick (aka no decay)
-	// 	r.core.Log.NewEvent("reactable skipping tick", glog.LogHitlagEvent, -1).
-	// 		Write("animationFreeze", r.animationFreeze)
-	// 	//in reality this is not quite accurate. the ticks aren't frozen but instead
-	// 	//the decay still happens but at 0.01x instead of the normal speed
-	// 	return
-	// }
 
 	//duability is reduced by decay * (1 + purge)
 	//where purge is 0 for anything that's not freeze
@@ -252,44 +299,94 @@ func (r *Reactable) Tick() {
 	//
 	//per frame then we have decay * (1 + 0.25 * (x/60))
 
-	for i := attributes.Element(0); i < attributes.Frozen; i += 1 {
+	//anything after the delim is special decay so we ignore
+	for i := ModifierInvalid; i < ModifierSpecialDecayDelim; i++ {
+		//skip zero decay rates i.e. modifiers that don't decay (i.e. burning)
+		if r.DecayRate[i] == 0 {
+			continue
+		}
 		if r.Durability[i] > ZeroDur {
 			r.Durability[i] -= r.DecayRate[i]
-			if r.Durability[i] <= ZeroDur {
-				r.Durability[i] = 0
-				r.DecayRate[i] = 0
-				// log.Println(r.self)
-				// log.Println("ele", attributes.Element(i).String())
-				// log.Println("core", r.core)
-				// log.Println("frame", r.core.F)
-				r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(i))
+			r.deplete(i)
+		}
+	}
+
+	// check burning first since that affects dendro/quicken decay
+	if r.burningTickSrc > -1 && r.Durability[ModifierBurningFuel] < ZeroDur {
+		// reset src when burning fuel is gone
+		r.burningTickSrc = -1
+		// remove burning
+		r.Durability[ModifierBurning] = 0
+		// remove existing dendro and quicken
+		r.Durability[ModifierDendro] = 0
+		r.DecayRate[ModifierDendro] = 0
+		r.Durability[ModifierQuicken] = 0
+		r.DecayRate[ModifierQuicken] = 0
+	}
+
+	//if burning fuel is present, dendro and quicken uses burning fuel decay rate
+	//otherwise it uses it's own
+	for i := ModifierDendro; i <= ModifierQuicken; i++ {
+		if r.Durability[i] < ZeroDur {
+			continue
+		}
+		rate := r.DecayRate[i]
+		if r.Durability[ModifierBurningFuel] > ZeroDur {
+			rate = r.DecayRate[ModifierBurningFuel]
+			if i == ModifierDendro {
+				rate = max(rate, r.DecayRate[i]*2)
 			}
 		}
+		r.Durability[i] -= rate
+		r.deplete(i)
 	}
 
 	//for freeze, durability can be calculated as:
 	//d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
-	if r.Durability[attributes.Frozen] > ZeroDur {
+	if r.Durability[ModifierFrozen] > ZeroDur {
 		//ramp up decay rate first
-		r.DecayRate[attributes.Frozen] += frzDelta
-		r.Durability[attributes.Frozen] -= r.DecayRate[attributes.Frozen]
+		r.DecayRate[ModifierFrozen] += frzDelta
+		r.Durability[ModifierFrozen] -= r.DecayRate[ModifierFrozen]
 
 		r.checkFreeze()
-	} else if r.DecayRate[attributes.Frozen] > frzDecayCap { //otherwise ramp down decay rate
-		r.DecayRate[attributes.Frozen] -= frzDelta * 2
+	} else if r.DecayRate[ModifierFrozen] > frzDecayCap { //otherwise ramp down decay rate
+		r.DecayRate[ModifierFrozen] -= frzDelta * 2
 
 		//cap decay
-		if r.DecayRate[attributes.Frozen] < frzDecayCap {
-			r.DecayRate[attributes.Frozen] = frzDecayCap
+		if r.DecayRate[ModifierFrozen] < frzDecayCap {
+			r.DecayRate[ModifierFrozen] = frzDecayCap
 		}
 	}
 
 	//for ec we need to reset src if ec is gone
 	if r.ecTickSrc > -1 {
-		if r.Durability[attributes.Electro] < ZeroDur || r.Durability[attributes.Hydro] < ZeroDur {
+		if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 			r.ecTickSrc = -1
 		}
 	}
+}
+
+func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em float64) float64 {
+	lvl := char.Base.Level - 1
+	if lvl > 89 {
+		lvl = 89
+	}
+	if lvl < 0 {
+		lvl = 0
+	}
+	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl]
+}
+
+func (r *Reactable) calcCatalyzeDmg(atk combat.AttackInfo, em float64) float64 {
+	char := r.core.Player.ByIndex(atk.ActorIndex)
+	lvl := char.Base.Level - 1
+	if lvl > 89 {
+		lvl = 89
+	}
+	if lvl < 0 {
+		lvl = 0
+	}
+	return (1 + ((5 * em) / (1200 + em)) + r.core.Player.ByIndex(atk.ActorIndex).ReactBonus(atk)) * reactionLvlBase[lvl]
 }
 
 var reactionLvlBase = []float64{

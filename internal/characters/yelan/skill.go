@@ -26,10 +26,12 @@ func init() {
 	skillFrames[action.ActionSwap] = 40
 }
 
-/**
+/*
+*
 Fires off a Lifeline that tractors her in rapidly, entangling and marking opponents along its path.
 When her rapid movement ends, the Lifeline will explode, dealing Hydro DMG to the marked opponents based on Yelan's Max HP.
-**/
+*
+*/
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -44,7 +46,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	//clear all existing tags
-	for _, t := range c.Core.Combat.Targets() {
+	for _, t := range c.Core.Combat.Enemies() {
 		if e, ok := t.(*enemy.Enemy); ok {
 			e.SetTag(skillMarkedTag, 0)
 		}
@@ -62,7 +64,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		marked = 1
 	}
 	c.Core.Tasks.Add(func() {
-		for _, t := range c.Core.Combat.Targets() {
+		for _, t := range c.Core.Combat.Enemies() {
 			if marked == 0 {
 				break
 			}
@@ -102,7 +104,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	//add a task to loop through targets and deal damage if marked
 	c.Core.Tasks.Add(func() {
-		for _, t := range c.Core.Combat.Targets() {
+		for _, t := range c.Core.Combat.Enemies() {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
 				continue
@@ -116,7 +118,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			marked--
 			//queueing attack one frame later
 			//TODO: does hold have different attack size? don't think so?
-			c.Core.QueueAttack(ai, combat.NewDefSingleTarget(e.Index(), combat.TargettableEnemy), 1, 1, cb)
+			c.Core.QueueAttack(ai, combat.NewDefSingleTarget(e.Key(), combat.TargettableEnemy), 1, 1, cb)
 		}
 
 		//activate c4 if relevant

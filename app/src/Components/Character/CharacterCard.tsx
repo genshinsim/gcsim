@@ -85,6 +85,8 @@ function charBG(element: string) {
       return 'bg-gradient-to-r from-gray-700 to-purple-300';
     case 'anemo':
       return 'bg-gradient-to-r from-gray-700 to-green-300';
+    case 'dendro':
+      return 'bg-gradient-to-r from-gray-700 to-lime-300';
     case 'geo':
       return 'bg-gradient-to-r from-gray-700 to-yellow-400';
   }
@@ -111,7 +113,7 @@ export function CharacterCard({
         <Tooltip2 content={key}>
           <img
             key="key"
-            src={`/api/assets/artifacts/${key}_flower.png`}
+            src={`https://gcsim.app/api/assets/artifacts/${key}_flower.png`}
             className="w-full h-8"
           />
         </Tooltip2>
@@ -219,7 +221,7 @@ export function CharacterCard({
           <div className="w-1/2">
             <img
               src={
-                '/api/assets/avatar/' +
+                'https://gcsim.app/api/assets/avatar/' +
                 TransformTravelerKeyToName(char.name) +
                 '.png'
               }

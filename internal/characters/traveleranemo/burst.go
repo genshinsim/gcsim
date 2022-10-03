@@ -36,8 +36,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Status.Add("amcburst", duration)
 
-	c.qInfuse = attributes.NoElement
+	c.qAbsorb = attributes.NoElement
 	c.qICDTag = combat.ICDTagNone
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gust Surge",
@@ -72,13 +74,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 94+30*i, cb)
 
 		c.Core.Tasks.Add(func() {
-			if c.qInfuse != attributes.NoElement {
-				aiAbs.Element = c.qInfuse
+			if c.qAbsorb != attributes.NoElement {
+				aiAbs.Element = c.qAbsorb
 				var cbAbs combat.AttackCBFunc
 				if c.Base.Cons >= 6 {
-					cbAbs = c6cb(c.qInfuse)
+					cbAbs = c6cb(c.qAbsorb)
 				}
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, cbAbs)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, cbAbs)
 			}
 			//check if infused
 		}, 94+30*i)
@@ -103,8 +105,8 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
-		switch c.qInfuse {
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		switch c.qAbsorb {
 		case attributes.Cryo:
 			c.qICDTag = combat.ICDTagElementalBurstCryo
 		case attributes.Pyro:

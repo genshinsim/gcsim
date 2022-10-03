@@ -26,6 +26,10 @@ type Set struct {
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
 
+// 2pc - Electro DMG Bonus +15%
+// 4pc - Increases DMG caused by Overloaded, Electro-Charged, Superconduct, and Hyperbloom by 40%,
+// and the DMG Bonus conferred by Aggravate is increased by 20%. When Quicken or the aforementioned
+// Elemental Reactions are triggered, Elemental Skill CD is decreased by 1s. Can only occur once every 0.8s.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	icd := 0
@@ -45,19 +49,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		const icdKey = "tf-4pc-icd"
 		icd = 48 // 0.8s * 60
 
-		// add +0.4 reaction damage
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("tf-4pc", -1),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				// overload dmg can't melt or vape so it's fine
-				switch ai.AttackTag {
-				case combat.AttackTagOverloadDamage:
-				case combat.AttackTagECDamage:
-				case combat.AttackTagSuperconductDamage:
-				default:
-					return 0, false
+				if ai.Catalyzed && ai.CatalyzedType == combat.Aggravate {
+					return 0.2, false
 				}
-				return 0.4, false
+				switch ai.AttackTag {
+				case combat.AttackTagOverloadDamage,
+					combat.AttackTagECDamage,
+					combat.AttackTagSuperconductDamage,
+					combat.AttackTagHyperbloom:
+					return 0.4, false
+				}
+				return 0, false
 			},
 		})
 
@@ -83,6 +88,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		c.Events.Subscribe(event.OnOverload, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnElectroCharged, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnSuperconduct, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnHyperbloom, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnQuicken, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnAggravate, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

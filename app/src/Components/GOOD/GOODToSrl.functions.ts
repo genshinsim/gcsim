@@ -38,7 +38,7 @@ export function sumArtifactStats(artifacts: GOODArtifact[]): number[] {
       if (srlStat === undefined) return;
       totalStats[StatToIndexMap[srlStat]] += mainStatValue;
     } else {
-      console.log('pepegaW artifact');
+      console.log('pepegaW artifact', artifact);
       return;
     }
 
@@ -93,6 +93,8 @@ export function GOODStattoSrlStat(goodStat: GOODStatKey): string | undefined {
       return 'PyroP';
     case 'cryo_dmg_':
       return 'CryoP';
+    case 'dendro_dmg_':
+      return 'DendroP';
   }
 }
 
@@ -152,6 +154,7 @@ export function GOODChartoSrlChar(
   let today = new Date();
   const name = GOODKeytoGCSIMKey(goodChar.key);
   const iChar = characterKeyToICharacter[name];
+
   if (iChar == undefined) {
     return undefined;
   }

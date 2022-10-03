@@ -27,7 +27,7 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 		return errors.New("player cannot have 0 radius")
 	}
 	player := avatar.New(core, p.X, p.Y, p.R)
-	core.Combat.AddTarget(player)
+	core.Combat.SetPlayer(player)
 
 	// add targets
 	for i, v := range targets {
@@ -35,9 +35,13 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 			return fmt.Errorf("target cannot have 0 radius (index %v): %v", i, v)
 		}
 		e := enemy.New(core, v)
-		core.Combat.AddTarget(e)
+		core.Combat.AddEnemy(e)
 		//s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
 	}
+
+	//default target is closest to player?
+	trgs := core.Combat.EnemyByDistance(p.X, p.Y, combat.InvalidTargetKey)
+	core.Combat.DefaultTarget = core.Combat.Enemy(trgs[0]).Key()
 
 	return nil
 }
@@ -149,7 +153,9 @@ func SetupResonance(s *core.Core) {
 				s.Events.Subscribe(event.OnOverload, recover, "electro-res")
 				s.Events.Subscribe(event.OnSuperconduct, recover, "electro-res")
 				s.Events.Subscribe(event.OnElectroCharged, recover, "electro-res")
-
+				s.Events.Subscribe(event.OnQuicken, recover, "electro-res")
+				s.Events.Subscribe(event.OnAggravate, recover, "electro-res")
+				s.Events.Subscribe(event.OnHyperbloom, recover, "electro-res")
 			case attributes.Geo:
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
 				//following special characteristics:
@@ -201,6 +207,55 @@ func SetupResonance(s *core.Core) {
 						Amount: func(a action.Action) float64 { return -0.05 },
 					})
 				}
+			case attributes.Dendro:
+				val := make([]float64, attributes.EndStatType)
+				val[attributes.EM] = 50
+				for _, c := range chars {
+					c.AddStatMod(character.StatMod{
+						Base:         modifier.NewBase("dendro-res-50", -1),
+						AffectedStat: attributes.EM,
+						Amount: func() ([]float64, bool) {
+							return val, true
+						},
+					})
+				}
+
+				twoBuff := make([]float64, attributes.EndStatType)
+				twoBuff[attributes.EM] = 30
+				twoEl := func(args ...interface{}) bool {
+					for _, c := range chars {
+						c.AddStatMod(character.StatMod{
+							Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
+							AffectedStat: attributes.EM,
+							Amount: func() ([]float64, bool) {
+								return twoBuff, true
+							},
+						})
+					}
+					return false
+				}
+				s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnQuicken, twoEl, "dendro-res")
+
+				threeBuff := make([]float64, attributes.EndStatType)
+				threeBuff[attributes.EM] = 20
+				threeEl := func(args ...interface{}) bool {
+					for _, c := range chars {
+						c.AddStatMod(character.StatMod{
+							Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
+							AffectedStat: attributes.EM,
+							Amount: func() ([]float64, bool) {
+								return threeBuff, true
+							},
+						})
+					}
+					return false
+				}
+				s.Events.Subscribe(event.OnAggravate, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnSpread, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
 			}
 		}
 	}

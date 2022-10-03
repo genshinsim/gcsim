@@ -4,19 +4,19 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func (s *Simulation) initDetailLog() {
 	var sb strings.Builder
 	s.stats.ReactionsTriggered = make(map[combat.ReactionType]int)
-	s.stats.ElementUptime = make([]map[attributes.Element]int, len(s.C.Combat.Targets()))
+	s.stats.ElementUptime = make([]map[reactable.ReactableModifier]int, len(s.C.Combat.Enemies()))
 	for i := range s.stats.ElementUptime {
-		s.stats.ElementUptime[i] = make(map[attributes.Element]int)
+		s.stats.ElementUptime[i] = make(map[reactable.ReactableModifier]int)
 	}
 	//add call back to track actions executed
 	s.C.Events.Subscribe(event.OnActionExec, func(args ...interface{}) bool {
@@ -27,12 +27,15 @@ func (s *Simulation) initDetailLog() {
 		return false
 	}, "sim-abil-usage")
 	//add new targets
-	s.C.Events.Subscribe(event.OnTargetAdded, func(args ...interface{}) bool {
+	s.C.Events.Subscribe(event.OnEnemyAdded, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
+		if t.Type() != combat.TargettableEnemy {
+			return false
+		}
 
 		s.C.Log.NewEvent("Target Added", glog.LogDebugEvent, -1).
 			Write("target_type", t.Type())
-		s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[attributes.Element]int))
+		s.stats.ElementUptime = append(s.stats.ElementUptime, make(map[reactable.ReactableModifier]int))
 
 		return false
 	}, "sim-new-target-stats")
@@ -59,6 +62,14 @@ func (s *Simulation) initDetailLog() {
 				sb.WriteString(" [amp: 1.5]")
 			} else if atk.Info.AmpMult == 2 {
 				sb.WriteString(" [amp: 2.0]")
+			}
+		}
+
+		if atk.Info.Catalyzed {
+			if atk.Info.CatalyzedType == combat.Aggravate {
+				sb.WriteString(" [aggravate]")
+			} else if atk.Info.CatalyzedType == combat.Spread {
+				sb.WriteString(" [spread]")
 			}
 		}
 		s.stats.DamageByChar[atk.Info.ActorIndex][sb.String()] += dmg
@@ -101,6 +112,13 @@ func (s *Simulation) initDetailLog() {
 		event.OnCrystallizeElectro: combat.CrystallizeElectro,
 		event.OnCrystallizeHydro:   combat.CrystallizeHydro,
 		event.OnCrystallizePyro:    combat.CrystallizePyro,
+		event.OnAggravate:          combat.Aggravate,
+		event.OnSpread:             combat.Spread,
+		event.OnQuicken:            combat.Quicken,
+		event.OnBloom:              combat.Bloom,
+		event.OnHyperbloom:         combat.Hyperbloom,
+		event.OnBurgeon:            combat.Burgeon,
+		event.OnBurning:            combat.Burning,
 	}
 
 	for k, v := range reactions {

@@ -89,7 +89,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				c.c2(active, buffDuration)
 			}
 
-			for _, t := range c.Core.Combat.Targets() {
+			for _, t := range c.Core.Combat.Enemies() {
 				// skip non-enemy targets
 				e, ok := t.(*enemy.Enemy)
 				if !ok {

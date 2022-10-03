@@ -22,6 +22,10 @@ const (
 	AttackTagSwirlHydro
 	AttackTagSwirlCryo
 	AttackTagSwirlElectro
+	AttackTagBurningDamage
+	AttackTagBloom
+	AttackTagBurgeon
+	AttackTagHyperbloom
 	AttackTagLength
 )
 
@@ -52,6 +56,7 @@ const (
 	ICDTagTravelerWakeOfEarth
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
+	ICDTagColleiSprout
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
@@ -61,10 +66,14 @@ const (
 	ICDTagSwirlHydro
 	ICDTagSwirlCryo
 	ICDTagSwirlElectro
+	ICDTagBurningDamage
+	ICDTagBloomDamage
+	ICDTagBurgeonDamage
+	ICDTagHyperbloomDamage
 	ICDTagLength
 )
 
-//group dictate both the sequence and the reset timer
+// group dictate both the sequence and the reset timer
 type ICDGroup int //same ICD group shares the same timer
 
 const (
@@ -77,8 +86,11 @@ const (
 	ICDGroupXiaoDash
 	ICDGroupYelanBreakthrough
 	ICDGroupYelanBurst
+	ICDGroupColleiBurst
+	ICDGroupTighnari
 	ICDGroupReactionA
 	ICDGroupReactionB
+	ICDGroupBurning
 	ICDGroupLength
 )
 
@@ -92,8 +104,11 @@ var ICDGroupResetTimer = []int{
 	6,   //xiao dash
 	18,  //yelan pew pew
 	120, //yelan burst
+	180, //collei burst
+	150, //tighnari
 	30,  //reaction a
 	30,  //reaciton b
+	120, //burning
 }
 
 var ICDGroupEleApplicationSequence = [][]int{
@@ -115,10 +130,16 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1.0, 0.0, 0.0, 0.0},
 	//yelan burst
 	{1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+	//collei burst
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	//tighnari
+	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
 	//reaction a
 	{1.0, 1.0},
 	//reaction b
 	{1.0, 1.0},
+	//burning
+	{1.0, 0, 0, 0, 0, 0, 0, 0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
@@ -140,8 +161,16 @@ var ICDGroupDamageSequence = [][]float64{
 	{1.0, 0.0, 0.0, 0.0},
 	//yelan burst
 	{1, 1, 1, 1, 1},
+	//collei burst
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//tighnari
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//ele A
 	{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//ele B
 	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	//burning
+	//actual data: {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+	//however there seems to be no limit to the amount of burning dmg a target can take
+	{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 }

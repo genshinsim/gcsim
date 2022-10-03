@@ -61,7 +61,7 @@ func parseTarget(c *core.Core, trg string) (*enemy.Enemy, error) {
 		return nil, fmt.Errorf("invalid target %v", trg)
 	}
 
-	t := c.Combat.Target(int(tid))
+	t := c.Combat.Enemy(int(tid))
 	if t == nil {
 		return nil, fmt.Errorf("invalid target %v", tid)
 	}

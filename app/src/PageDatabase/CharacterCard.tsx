@@ -10,7 +10,7 @@ export function CharacterCard({ char, style = '' }: CharacterCardProps) {
       }
     >
       <img
-        src={'/api/assets/avatar/' + char + '.png'}
+        src={'https://gcsim.app/api/assets/avatar/' + char + '.png'}
         alt={char}
         className="ml-auto h-32 wide:h-auto "
       />

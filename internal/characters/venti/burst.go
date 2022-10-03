@@ -19,8 +19,8 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// reset location
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
-	c.qInfuse = attributes.NoElement
+	c.qAbsorb = attributes.NoElement
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 	//8 second duration, tick every .4 second
 	ai := combat.AttackInfo{
@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
 	c.aiAbsorb = ai
-	c.aiAbsorb.Abil = "Wind's Grand Ode (Infused)"
+	c.aiAbsorb.Abil = "Wind's Grand Ode (Absorbed)"
 	c.aiAbsorb.Mult = burstAbsorbDot[c.TalentLvlBurst()]
 	c.aiAbsorb.Element = attributes.NoElement
 
@@ -75,15 +75,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) burstInfusedTicks() {
+func (c *char) burstAbsorbedTicks() {
 	var cb combat.AttackCBFunc
 	if c.Base.Cons >= 6 {
-		cb = c.c6(c.qInfuse)
+		cb = c.c6(c.qAbsorb)
 	}
 
 	// ticks at 24f. 15 total
 	for i := 0; i < 15; i++ {
-		c.Core.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4, false, combat.TargettableEnemy), i*24, cb)
+		c.Core.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4, false, combat.TargettableEnemy, combat.TargettableGadget), i*24, cb)
 	}
 }
 
@@ -92,10 +92,10 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qInfuse = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
-		if c.qInfuse != attributes.NoElement {
-			c.aiAbsorb.Element = c.qInfuse
-			switch c.qInfuse {
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		if c.qAbsorb != attributes.NoElement {
+			c.aiAbsorb.Element = c.qAbsorb
+			switch c.qAbsorb {
 			case attributes.Pyro:
 				c.aiAbsorb.ICDTag = combat.ICDTagElementalBurstPyro
 			case attributes.Hydro:
@@ -106,7 +106,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 				c.aiAbsorb.ICDTag = combat.ICDTagElementalBurstCryo
 			}
 			//trigger dmg ticks here
-			c.burstInfusedTicks()
+			c.burstAbsorbedTicks()
 			return
 		}
 		//otherwise queue up

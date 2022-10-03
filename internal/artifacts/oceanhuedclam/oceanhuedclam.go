@@ -40,9 +40,10 @@ func (s *Set) Init() error {
 
 // (This DMG is calculated similarly to Reactions such as Electro-Charged, and Superconduct, but it is not affected by
 // Elemental Mastery, Character Levels, or Reaction DMG Bonuses).
-// 	Only one Sea-Dyed Foam can be produced every 3.5 seconds. Each Sea-Dyed Foam can accumulate up to 30,000 HP (including
-//  overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
-// 	This effect can still be triggered even when the character who is using this artifact set is not on the field.
+//
+//		Only one Sea-Dyed Foam can be produced every 3.5 seconds. Each Sea-Dyed Foam can accumulate up to 30,000 HP (including
+//	 overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
+//		This effect can still be triggered even when the character who is using this artifact set is not on the field.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{
 		core: c,
@@ -108,7 +109,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 					atk := combat.AttackInfo{
 						ActorIndex:       char.Index,
-						DamageSrc:        0, // from player
+						DamageSrc:        c.Combat.Player().Key(), // from player
 						Abil:             "OHC Damage",
 						AttackTag:        combat.AttackTagNoneStat,
 						ICDTag:           combat.ICDTagNone,

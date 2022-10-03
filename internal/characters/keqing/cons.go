@@ -62,6 +62,9 @@ func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnQuicken, cb, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnAggravate, cb, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnHyperbloom, cb, "keqing-c4")
 }
 
 func (c *char) c6(src string) {

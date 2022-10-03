@@ -91,7 +91,7 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget),
 		skillPressHitmarks[burstActive],
 		skillPressHitmarks[burstActive],
 		c4cb,
@@ -128,7 +128,7 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget),
 		skillHoldHitmarks[burstActive],
 		skillHoldHitmarks[burstActive],
 	)

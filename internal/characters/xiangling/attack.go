@@ -72,7 +72,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Mult:       .75,
 		}
 		//TODO: explosion frames
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 120, 120)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 120, 120)
 	}
 
 	defer c.AdvanceNormalIndex()

@@ -16,8 +16,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	qInfuse             attributes.Element
-	infuseCheckLocation combat.AttackPattern
+	qAbsorb             attributes.Element
+	absorbCheckLocation combat.AttackPattern
 	aiAbsorb            combat.AttackInfo
 	snapAbsorb          combat.Snapshot
 	c4bonus             []float64
@@ -32,7 +32,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableObject)
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 	w.Character = &c
 

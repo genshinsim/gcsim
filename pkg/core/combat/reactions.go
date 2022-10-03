@@ -18,8 +18,15 @@ const (
 	SwirlCryo          ReactionType = "swirl-cryo"
 	ElectroCharged     ReactionType = "electrocharged"
 	Shatter            ReactionType = "shatter"
+	Burning            ReactionType = "burning"
+	Quicken            ReactionType = "quicken"
+	Aggravate          ReactionType = "aggravate"
+	Spread             ReactionType = "spread"
+	Bloom              ReactionType = "bloom"
+	Burgeon            ReactionType = "burgeon"
+	Hyperbloom         ReactionType = "hyperbloom"
 	NoReaction         ReactionType = ""
-	FreezeExtend       ReactionType = "FreezeExtend"
+	FreezeExtend       ReactionType = "freeze-extend"
 )
 
 type Durability float64

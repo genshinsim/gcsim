@@ -40,10 +40,10 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 		}
 		t.SetTag(bounceKey, c.F+36)
 		x, y := a.Target.Shape().Pos()
-		trgs := c.Combat.EnemyByDistance(x, y, a.Target.Index())
+		trgs := c.Combat.EnemyByDistance(x, y, a.Target.Key())
 		next := -1
 		for _, v := range trgs {
-			trg, ok := c.Combat.Target(v).(*enemy.Enemy)
+			trg, ok := c.Combat.Enemy(v).(*enemy.Enemy)
 			if !ok {
 				continue
 			}
@@ -58,7 +58,7 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 		}
 
 		cb := w.chain(count+1, c, char)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(next, combat.TargettableEnemy), 10, cb)
+		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.Enemy(next).Key(), combat.TargettableEnemy), 10, cb)
 	}
 }
 

@@ -1,14 +1,13 @@
 // Package core provides core functionality for a simulation:
-//	- combat
-//	- tasks
-//	- event handling
-//	- logging
-// 	- constructs (really should be just generic objects?)
-//	- status
+//   - combat
+//   - tasks
+//   - event handling
+//   - logging
+//   - constructs (really should be just generic objects?)
+//   - status
 package core
 
 import (
-	"errors"
 	"fmt"
 	"math/rand"
 
@@ -33,7 +32,7 @@ type Core struct {
 	Log        glog.Logger    //we use an interface here so that we can pass in a nil logger for all except 1 run
 	Events     *event.Handler //track events: subscribe/unsubscribe/emit
 	Status     *status.Handler
-	Tasks      *task.Handler
+	Tasks      *task.SliceHandler
 	Combat     *combat.Handler
 	Constructs *construct.Handler
 	Player     *player.Handler
@@ -55,7 +54,6 @@ type Coord struct {
 type Reactable interface {
 	React(a *combat.AttackEvent)
 	AuraContains(e ...attributes.Element) bool
-	AuraType() attributes.Element
 	Tick()
 }
 
@@ -118,6 +116,7 @@ func New(opt CoreOpt) (*Core, error) {
 		DamageMode:   c.Flags.DamageMode,
 		DefHalt:      c.Flags.DefHalt,
 		EnableHitlag: c.Flags.EnableHitlag,
+		Tasks:        c.Tasks,
 	})
 
 	return c, nil
@@ -136,19 +135,6 @@ func (c *Core) Init() error {
 	if err != nil {
 		return err
 	}
-	//find first enemy target and set as default
-	//error otherwise
-	c.Combat.DefaultTarget = -1
-	for i, t := range c.Combat.Targets() {
-		if t.Type() == combat.TargettableEnemy {
-			c.Combat.DefaultTarget = i
-			break
-		}
-	}
-	if c.Combat.DefaultTarget == -1 {
-		return errors.New("no enemy target found")
-	}
-
 	c.Events.Emit(event.OnInitialize)
 	return nil
 }

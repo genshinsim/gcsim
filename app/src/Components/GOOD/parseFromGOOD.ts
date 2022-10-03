@@ -1,4 +1,4 @@
-import { Character, Weapon } from "~/src/types";
+import { Character, Weapon } from '../../Types/sim';
 
 import {
   GOODArtifact,
@@ -6,12 +6,12 @@ import {
   GOODCharacterKey,
   GOODWeapon,
   IGOOD,
-} from "./GOODTypes";
+} from './GOODTypes';
 import {
   equipArtifacts,
   GOODChartoSrlChar,
   GOODWeapontoSrlWeapon,
-} from "./GOODToSrl.functions";
+} from './GOODToSrl.functions';
 
 export interface IGOODImport {
   err: string;
@@ -31,12 +31,12 @@ export function parseFromGOOD(val: string): IGOODImport {
     err: string;
     characters: Character[];
   } = {
-    err: "",
+    err: '',
     characters: [],
   };
 
-  if (val === "") {
-    result.err = "Please paste JSON in GOOD format to continue";
+  if (val === '') {
+    result.err = 'Please paste JSON in GOOD format to continue';
     return result;
   }
 
@@ -45,18 +45,18 @@ export function parseFromGOOD(val: string): IGOODImport {
   try {
     data = JSON.parse(val);
   } catch (e) {
-    result.err = "Invalid JSON";
+    result.err = 'Invalid JSON';
     return result;
   }
   if (!data.characters) {
     return {
-      err: "No Characters Found",
+      err: 'No Characters Found',
       characters: [],
     };
   }
   if (!data.weapons) {
     return {
-      err: "No Weapons Found",
+      err: 'No Weapons Found',
       characters: [],
     };
   }
@@ -81,7 +81,7 @@ const extractWeapons = (weapons: GOODWeapon[]): WeaponBank => {
   const result: WeaponBank = {};
   weapons.forEach((goodWeapon) => {
     let GOODCharKey = goodWeapon.location;
-    if (GOODCharKey !== "") {
+    if (GOODCharKey !== '') {
       result[GOODCharKey] = GOODWeapontoSrlWeapon(goodWeapon);
     }
   });
@@ -92,7 +92,7 @@ const extractArtifacts = (artifacts: GOODArtifact[]): GOODArtifactBank => {
   const result: GOODArtifactBank = {};
   artifacts.forEach((goodArtifact) => {
     let GOODCharKey = goodArtifact.location;
-    if (GOODCharKey === "") {
+    if (GOODCharKey === '') {
       return;
     } else {
       if (result[GOODCharKey] === undefined) {
@@ -113,6 +113,7 @@ function buildCharactersFromGOOD(
   const result: Character[] = [];
   goodChars.forEach((goodChar) => {
     let char = GOODChartoSrlChar(goodChar, weaponBank[goodChar.key]);
+
     if (char === undefined) {
       //skip char
       return;

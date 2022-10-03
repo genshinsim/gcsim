@@ -37,7 +37,7 @@ type opts struct {
 	debugMinMax  bool
 }
 
-//command line tool; following options are available:
+// command line tool; following options are available:
 func main() {
 
 	var opt opts

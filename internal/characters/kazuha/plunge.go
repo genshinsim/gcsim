@@ -10,7 +10,7 @@ import (
 var plungePressFrames []int
 var plungeHoldFrames []int
 
-//a1 is 1 frame before this
+// a1 is 1 frame before this
 const plungePressHitmark = 36
 const plungeHoldHitmark = 41
 
@@ -89,7 +89,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), hitmark, hitmark)
 
 	// a1 if applies
-	if c.a1Ele != attributes.NoElement {
+	if c.a1Absorb != attributes.NoElement {
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Kazuha A1",
@@ -97,14 +97,14 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			ICDTag:         combat.ICDTagNone,
 			ICDGroup:       combat.ICDGroupDefault,
 			StrikeType:     combat.StrikeTypeDefault,
-			Element:        c.a1Ele,
+			Element:        c.a1Absorb,
 			Durability:     25,
 			Mult:           2,
 			IgnoreInfusion: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), hitmark-1, hitmark-1)
-		c.a1Ele = attributes.NoElement
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), hitmark-1, hitmark-1)
+		c.a1Absorb = attributes.NoElement
 	}
 
 	return act
