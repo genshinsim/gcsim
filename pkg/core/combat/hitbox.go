@@ -6,7 +6,7 @@ type AttackPattern struct {
 	SelfHarm bool
 }
 
-func NewDefSingleTarget(ind int, typ TargettableType) AttackPattern {
+func NewDefSingleTarget(ind TargetKey, typ TargettableType) AttackPattern {
 	var arr [TargettableTypeCount]bool
 	arr[typ] = true
 	return AttackPattern{

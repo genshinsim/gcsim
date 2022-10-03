@@ -200,7 +200,7 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
-	e.Core.Combat.DefaultTarget = idx - 1
+	e.Core.Combat.DefaultTarget = e.Core.Combat.Enemy(idx - 1).Key()
 
 	return &number{}, nil
 

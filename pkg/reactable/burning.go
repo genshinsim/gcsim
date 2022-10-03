@@ -71,7 +71,7 @@ func (r *Reactable) attachBurningFuel(dur combat.Durability, mult combat.Durabil
 func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Burning),
 		AttackTag:        combat.AttackTagBurningDamage,
 		ICDTag:           combat.ICDTagBurningDamage,

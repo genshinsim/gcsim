@@ -19,7 +19,7 @@ type (
 		hdlr        *Handler
 		src         int //source of gadget
 		idx         int
-		key         int
+		key         TargetKey
 		shp         Shape
 		alive       bool
 		collideWith [TargettableTypeCount]bool
@@ -39,8 +39,8 @@ func (t *testteam) ApplyHitlag(char int, factor, dur float64) {}
 // target
 func (t *testtarg) Index() int                                      { return t.idx }
 func (t *testtarg) SetIndex(i int)                                  { t.idx = i }
-func (t *testtarg) Key() int                                        { return t.key }
-func (t *testtarg) SetKey(i int)                                    { t.key = i }
+func (t *testtarg) Key() TargetKey                                  { return t.key }
+func (t *testtarg) SetKey(i TargetKey)                              { t.key = i }
 func (t *testtarg) Type() TargettableType                           { return t.typ }
 func (t *testtarg) Shape() Shape                                    { return t.shp }
 func (t *testtarg) Pos() (float64, float64)                         { return t.shp.Pos() }
@@ -71,7 +71,7 @@ func (t *testtarg) WillCollide(s Shape) bool {
 		return false
 	}
 }
-func (t *testtarg) AttackWillLand(a AttackPattern, src int) (bool, string) {
+func (t *testtarg) AttackWillLand(a AttackPattern, src TargetKey) (bool, string) {
 	//shape shouldn't be nil; panic here
 	if a.Shape == nil {
 		panic("unexpected nil shape")
@@ -96,7 +96,7 @@ func (t *testtarg) AttackWillLand(a AttackPattern, src int) (bool, string) {
 		return t.Shape().IntersectRectangle(*v), "intersect rectangle"
 	case *SingleTarget:
 		//only true if
-		return v.Target == t.idx, "target"
+		return v.Target == t.key, "target"
 	default:
 		return false, "unknown shape"
 	}

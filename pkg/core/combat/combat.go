@@ -29,7 +29,7 @@ type Handler struct {
 	player      Target
 	TotalDamage float64
 	gccount     int
-	keycount    int
+	keycount    TargetKey
 }
 
 type Opt struct {
@@ -42,7 +42,7 @@ type Opt struct {
 	DamageMode    bool
 	DefHalt       bool
 	EnableHitlag  bool
-	DefaultTarget int //index for default target
+	DefaultTarget TargetKey //index for default target
 }
 
 func New(opt Opt) *Handler {
@@ -56,7 +56,7 @@ func New(opt Opt) *Handler {
 	return h
 }
 
-func (h *Handler) nextkey() int {
+func (h *Handler) nextkey() TargetKey {
 	h.keycount++
 	return h.keycount - 1
 }

@@ -25,7 +25,7 @@ func NewCircle(x, y, r float64) *Circle {
 }
 
 type SingleTarget struct {
-	Target int
+	Target TargetKey
 }
 
 func (s *SingleTarget) IntersectCircle(in Circle) bool       { return false }
@@ -33,7 +33,7 @@ func (s *SingleTarget) IntersectRectangle(in Rectangle) bool { return false }
 func (s *SingleTarget) Pos() (float64, float64)              { return 0, 0 }
 func (s *SingleTarget) String() string                       { return fmt.Sprintf("single target: %v", s.Target) }
 
-//this is for attack that only hits self
+// this is for attack that only hits self
 type SelfDamage struct{}
 
 func (c *SelfDamage) IntersectCircle(in Circle) bool       { return false }
