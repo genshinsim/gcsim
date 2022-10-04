@@ -109,7 +109,7 @@ func (c *char) afterSales(travel int) func() {
 		for i := 0; i < c.afterCount; i++ {
 			c.Core.QueueAttack(
 				ae,
-				combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
 				0,
 				skillSalesHitmarks[i],
 			)
