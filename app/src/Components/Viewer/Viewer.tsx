@@ -313,7 +313,7 @@ export function Viewer(props: ViewerProps) {
     parsed = parseLog(
       props.data.active_char,
       props.data.char_names,
-      props.data.debug,
+      props.data.debug as string,
       selected
     );
   }

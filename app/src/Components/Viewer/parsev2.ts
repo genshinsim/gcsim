@@ -17,7 +17,7 @@ type endedStatus = {
 export function parseLogV2(
   active: string,
   team: string[],
-  log: string,
+  log: string | [any],
   selected: string[]
 ) {
   let activeIndex = team.findIndex((e) => e === active);
@@ -40,12 +40,16 @@ export function parseLogV2(
    */
 
   let lines: LogDetails[] = [];
-  try {
-    lines = JSON.parse(log);
-  } catch (e) {
-    console.warn("error parsing debug log (v2)");
-    console.warn(e);
-    return [];
+  if (typeof log == "string" || log instanceof String) {
+    try {
+      lines = JSON.parse(log as string);
+    } catch (e) {
+      console.warn("error parsing debug log (v2)");
+      console.warn(e);
+      return [];
+    }
+  } else {
+    lines = log;
   }
 
   // let rowKey = 0;
