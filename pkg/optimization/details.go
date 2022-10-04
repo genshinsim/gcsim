@@ -50,7 +50,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 
 	// Get initial DPS value
 	initialResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt)
-	initialMean := initialResult.Statistics.DPS.Mean
+	initialMean := initialResult.DPS.Mean
 
 	opDebug = append(opDebug, "Calculating optimal substat distribution...")
 
@@ -244,7 +244,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(idxChar i
 		substatEvalResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt)
 		// opDebug = append(opDebug, fmt.Sprintf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD))
 
-		substatGradients[idxSubstat] = substatEvalResult.Statistics.DPS.Mean - initialMean
+		substatGradients[idxSubstat] = substatEvalResult.DPS.Mean - initialMean
 
 		// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
 		// might give them "too much" cr (= max out liquid cr subs) but that's probably not a big deal
@@ -327,15 +327,15 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(idxChar int, char pro
 		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt)
 
 		if erStack == 0 {
-			initialMean = result.Statistics.DPS.Mean
-			initialSD = result.Statistics.DPS.SD
+			initialMean = result.DPS.Mean
+			initialSD = result.DPS.SD
 		}
 
-		condition := result.Statistics.DPS.Mean/initialMean-1 < -tolMean || result.Statistics.DPS.SD/initialSD-1 > tolSD
+		condition := result.DPS.Mean/initialMean-1 < -tolMean || result.DPS.SD/initialSD-1 > tolSD
 		// For Raiden, we can't use DPS directly as a measure since she scales off of her own ER
 		// Instead we ONLY use the SD tolerance as big jumps indicate the rotation is becoming more unstable
 		if char.Base.Key == keys.Raiden {
-			condition = result.Statistics.DPS.SD/initialSD-1 > tolSD
+			condition = result.DPS.SD/initialSD-1 > tolSD
 		}
 
 		// If differences exceed tolerances, then immediately break

@@ -39,7 +39,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 			Frame:   attack.SourceFrame,
 			Source:  attack.Info.Abil,
 			Target:  target.Index(),
-			Element: attack.Info.Element,
+			Element: attack.Info.Element.String(),
 			Crit:    crit,
 			Damage:  damage,
 		}

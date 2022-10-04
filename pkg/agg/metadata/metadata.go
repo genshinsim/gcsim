@@ -16,7 +16,7 @@ func init() {
 type buffer struct {
 	minRun   run
 	maxRun   run
-	duration util.FloatBuffer
+	duration *util.FloatBuffer
 }
 
 type run struct {

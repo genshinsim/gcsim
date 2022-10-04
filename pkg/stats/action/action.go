@@ -27,7 +27,7 @@ func (b buffer) addFailure(core *core.Core, char int, active activeFailure) {
 	interval := stats.ActionFailInterval{
 		Start:  active.start,
 		End:    core.F,
-		Reason: active.reason,
+		Reason: active.reason.String(),
 	}
 
 	// TODO: limit intervals to be at least length x (5?)
@@ -57,7 +57,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		// TODO: ActionId population
 		event := stats.ActionEvent{
 			Frame:  core.F,
-			Action: e,
+			Action: e.String(),
 		}
 		out.actionEvents[char] = append(out.actionEvents[char], event)
 

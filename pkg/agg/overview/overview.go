@@ -12,8 +12,8 @@ func init() {
 }
 
 type buffer struct {
-	dps         util.FloatBuffer
-	totalDamage util.FloatBuffer
+	dps         *util.FloatBuffer
+	totalDamage *util.FloatBuffer
 }
 
 func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {

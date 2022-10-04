@@ -128,7 +128,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 						interval := stats.ReactionStatusInterval{
 							Start: start,
 							End:   core.F,
-							Type:  k,
+							Type:  k.String(),
 						}
 						out.enemyReactions[i] = append(out.enemyReactions[i], interval)
 					}
@@ -175,7 +175,7 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 			interval := stats.ReactionStatusInterval{
 				Start: start,
 				End:   core.F,
-				Type:  k,
+				Type:  k.String(),
 			}
 			b.enemyReactions[e] = append(b.enemyReactions[e], interval)
 		}

@@ -105,16 +105,15 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 	}
 
 	// generate final agg results
-	stats := agg.Result{}
+	stats := &agg.Result{}
 	for _, a := range aggregators {
-		a.Flush(&stats)
+		a.Flush(stats)
 	}
 
-	result, err := GenerateResult(cfg, simcfg, opts)
+	result, err := GenerateResult(cfg, simcfg, stats, opts)
 	if err != nil {
 		return result, err
 	}
-	result.Statistics = stats
 
 	//TODO: clean up this code
 	if opts.ResultSaveToPath != "" {
@@ -127,24 +126,27 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 	return result, nil
 }
 
-func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
+func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts Options) (result.Summary, error) {
 	result := result.Summary{
-		SchemaVersion:    "3.0", // hardcoded, change as result schema evolves
-		SimVersion:       opts.Version,
-		BuildDate:        opts.BuildDate,
-		Runtime:          float64(time.Since(start).Nanoseconds()),
-		Iterations:       simcfg.Settings.Iterations,
-		Config:           cfg,
-		DebugSeed:        uint64(cryptoRandSeed()),
-		TargetDetails:    simcfg.Targets,
-		InitialCharacter: simcfg.InitialChar.String(),
+		V2:            true,
+		Version:       opts.Version,
+		BuildDate:     opts.BuildDate,
+		IsDamageMode:  simcfg.Settings.DamageMode,
+		ActiveChar:    simcfg.InitialChar.String(),
+		Iterations:    simcfg.Settings.Iterations,
+		Runtime:       float64(time.Since(start).Nanoseconds()),
+		NumTargets:    len(simcfg.Targets),
+		TargetDetails: simcfg.Targets,
+		Config:        cfg,
 	}
+	result.Map(simcfg, stats)
+	result.Text = result.PrettyPrint()
 
 	charDetails, err := GenerateCharacterDetails(simcfg)
 	if err != nil {
 		return result, err
 	}
-	result.CharacterDetails = charDetails
+	result.CharDetails = charDetails
 
 	//run one debug
 	//debug call will clone before running
@@ -156,13 +158,13 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 
 	// Include debug logs for min/max-DPS runs if requested.
 	if opts.DebugMinMax {
-		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.Statistics.MinSeed))
+		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.MinSeed))
 		if err != nil {
 			return result, err
 		}
 		result.DebugMinDPSRun = minDPSDebugOut
 
-		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.Statistics.MaxSeed))
+		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.MaxSeed))
 		if err != nil {
 			return result, err
 		}

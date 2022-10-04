@@ -49,7 +49,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 				Frame:    attack.SourceFrame,
 				Source:   attack.Info.Abil,
 				Target:   target.Index(),
-				Reaction: reaction,
+				Reaction: string(reaction),
 			}
 			out.events[attack.Info.ActorIndex] = append(out.events[attack.Info.ActorIndex], event)
 			return false
