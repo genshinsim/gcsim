@@ -110,7 +110,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					atk := combat.AttackInfo{
 						ActorIndex:       char.Index,
 						DamageSrc:        c.Combat.Player().Key(), // from player
-						Abil:             "OHC Damage",
+						Abil:             "Sea-Dyed Foam",
 						AttackTag:        combat.AttackTagNoneStat,
 						ICDTag:           combat.ICDTagNone,
 						ICDGroup:         combat.ICDGroupDefault,
