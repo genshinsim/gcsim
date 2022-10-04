@@ -118,7 +118,7 @@ func (b *buffer) Add(result stats.Result, itr int) {
 
 	for k, v := range damagePerTarget {
 		if _, ok := b.dpsByTarget[k]; !ok {
-			b.dpsByTarget[k] = util.NewFloatBufferNoSD(b.iterations)
+			b.dpsByTarget[k] = util.NewFloatBuffer(b.iterations)
 		}
 		b.dpsByTarget[k].Add(v/dd, itr)
 	}
