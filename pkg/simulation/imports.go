@@ -49,6 +49,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
+	_ "github.com/genshinsim/gcsim/internal/characters/dori"
 	_ "github.com/genshinsim/gcsim/internal/characters/eula"
 	_ "github.com/genshinsim/gcsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gcsim/internal/characters/ganyu"
