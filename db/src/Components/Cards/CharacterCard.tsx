@@ -58,6 +58,7 @@ const rareCharNames = [
   "barbara",
   "beidou",
   "bennett",
+  "candace",
   "chongyun",
   "collei",
   "diona",
