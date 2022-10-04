@@ -116,5 +116,5 @@ func (c *char) irisDmg(t combat.Target) {
 		).Write("target", t.Index())
 	}
 
-	c.Core.QueueAttack(aiAbs, combat.NewCircleHit(t, 2.5, false, combat.TargettableEnemy), 0, 40) //if any of this is wrong blame Koli
+	c.Core.QueueAttack(aiAbs, combat.NewCircleHit(t, 2.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 40) //if any of this is wrong blame Koli
 }

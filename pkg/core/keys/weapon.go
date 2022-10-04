@@ -75,8 +75,10 @@ var weaponNames = []string{
 	"ferrousshadow",
 	"festeringdesire",
 	"filletblade",
+	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
+	"fruitoffulfillment",
 	"hakushinring",
 	"halberd",
 	"hamayumi",
@@ -89,6 +91,8 @@ var weaponNames = []string{
 	"kagotsurubeisshin",
 	"kagurasverity",
 	"katsuragikirinagamasa",
+	"keyofkhajnisut",
+	"kingssquire",
 	"kitaincrossspear",
 	"lionsroar",
 	"lithicblade",
@@ -96,11 +100,14 @@ var weaponNames = []string{
 	"lostprayertothesacredwinds",
 	"luxurioussealord",
 	"magicguide",
+	"makhairaaquamarine",
 	"mappamare",
 	"memoryofdust",
 	"messenger",
+	"missivewindspear",
 	"mistsplitterreforged",
 	"mitternachtswaltz",
+	"moonpiercer",
 	"mouunsmoon",
 	"oathsworneye",
 	"oldmercspal",
@@ -129,6 +136,7 @@ var weaponNames = []string{
 	"sacrificialfragments",
 	"sacrificialgreatsword",
 	"sacrificialsword",
+	"sapwoodblade",
 	"seasonedhuntersbow",
 	"serpentspine",
 	"sharpshootersoath",
@@ -145,6 +153,7 @@ var weaponNames = []string{
 	"solarpearl",
 	"songofbrokenpines",
 	"staffofhoma",
+	"staffofthescarletsands",
 	"summitshaper",
 	"swordofdescension",
 	"thealleyflash",
@@ -161,6 +170,7 @@ var weaponNames = []string{
 	"travelershandysword",
 	"twinnephrite",
 	"vortexvanquisher",
+	"wanderingevenstar",
 	"wastergreatsword",
 	"wavebreakersfin",
 	"whiteblind",
@@ -169,6 +179,7 @@ var weaponNames = []string{
 	"windblumeode",
 	"wineandsong",
 	"wolfsgravestone",
+	"xiphosmoonlight",
 }
 
 const (
@@ -215,8 +226,10 @@ const (
 	FerrousShadow
 	FesteringDesire
 	FilletBlade
+	ForestRegalia
 	FreedomSworn
 	Frostbearer
+	FruitOfFulfillment
 	HakushinRing
 	Halberd
 	Hamayumi
@@ -229,6 +242,8 @@ const (
 	KagotsurubeIsshin
 	KagurasVerity
 	KatsuragikiriNagamasa
+	KeyOfKhajNisut
+	KingsSquire
 	KitainCrossSpear
 	LionsRoar
 	LithicBlade
@@ -236,11 +251,14 @@ const (
 	LostPrayerToTheSacredWinds
 	LuxuriousSeaLord
 	MagicGuide
+	MakhairaAquamarine
 	MappaMare
 	MemoryOfDust
 	Messenger
+	MissiveWindspear
 	MistsplitterReforged
 	MitternachtsWaltz
+	Moonpiercer
 	MouunsMoon
 	OathswornEye
 	OldMercsPal
@@ -269,6 +287,7 @@ const (
 	SacrificialFragments
 	SacrificialGreatsword
 	SacrificialSword
+	SapwoodBlade
 	SeasonedHuntersBow
 	SerpentSpine
 	SharpshootersOath
@@ -285,6 +304,7 @@ const (
 	SolarPearl
 	SongOfBrokenPines
 	StaffOfHoma
+	StaffOfTheScarletSands
 	SummitShaper
 	SwordOfDescension
 	TheAlleyFlash
@@ -301,6 +321,7 @@ const (
 	TravelersHandySword
 	TwinNephrite
 	VortexVanquisher
+	WanderingEvenstar
 	WasterGreatsword
 	WavebreakersFin
 	Whiteblind
@@ -309,4 +330,5 @@ const (
 	WindblumeOde
 	WineAndSong
 	WolfsGravestone
+	XiphosMoonlight
 )

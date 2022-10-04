@@ -1,4 +1,4 @@
-package reactable
+﻿package reactable
 
 import (
 	"testing"
@@ -7,13 +7,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-func TestQuicken(t *testing.T) {
+func TestBurning(t *testing.T) {
 
 	c := testCore()
 	trg := addTargetToCore(c)
 
 	c.Init()
 
+	//TODO: write tests for burning (this is copypasted from quicken for now)
 	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Dendro,

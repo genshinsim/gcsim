@@ -10,7 +10,9 @@ import (
 
 // C4:
 // When the Normal, Charged, or Plunging Attacks of the character affected by Shinobu's Grass Ring of Sanctification hit opponents,
-//  a Thundergrass Mark will land on the opponent's position and deal AoE Electro DMG based on 9.7% of Shinobu's Max HP.
+//
+//	a Thundergrass Mark will land on the opponent's position and deal AoE Electro DMG based on 9.7% of Shinobu's Max HP.
+//
 // This effect can occur once every 5s.
 func (c *char) c4() {
 	//TODO: idk if the damage is instant or not
@@ -48,7 +50,7 @@ func (c *char) c4() {
 		}
 
 		//Particle check is 45% for particle
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 5, 5)
 		if c.Core.Rand.Float64() < .45 {
 			c.Core.QueueParticle("kuki", 1, attributes.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
 		}

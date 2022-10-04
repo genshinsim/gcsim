@@ -30,10 +30,12 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 61    // Q -> Swap
 }
 
-/**
+/*
+*
 [12:01 PM] pai: never tried to measure it but emc burst looks like it has roughly 1~1.5 abyss tile of range, skill goes a bit further i think
 [12:01 PM] pai: the 3 hits from the skill also like split out and kind of auto target if that's useful information
-**/
+*
+*/
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -47,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, burstHitmark)
 
 	c.SetCDWithDelay(action.ActionBurst, 1200, 35)
 	c.ConsumeEnergy(37)
@@ -113,7 +115,7 @@ func (c *char) burstProc() {
 		atk := *c.burstAtk
 		atk.SourceFrame = c.Core.F
 		//attack is 2 (or 2.5 for enhanced) aoe centered on target
-		atk.Pattern = combat.NewCircleHit(t, 2, false, combat.TargettableEnemy)
+		atk.Pattern = combat.NewCircleHit(t, 2, false, combat.TargettableEnemy, combat.TargettableGadget)
 
 		// C2 - Violet Vehemence
 		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.

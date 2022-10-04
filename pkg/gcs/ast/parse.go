@@ -48,7 +48,7 @@ func (t Token) precedence() precedence {
 	return Lowest
 }
 
-//Parse returns the ActionList and any error that prevents the ActionList from being parsed
+// Parse returns the ActionList and any error that prevents the ActionList from being parsed
 func (p *Parser) Parse() (*ActionList, error) {
 	var err error
 	for state := parseRows; state != nil; {
@@ -214,6 +214,9 @@ func (p *Parser) parseStatement() (Node, error) {
 	case keywordWhile:
 		node, err = p.parseWhile()
 		hasSemi = false
+	case keywordFor:
+		node, err = p.parseFor()
+		hasSemi = false
 	case itemLeftBrace:
 		node, err = p.parseBlock()
 		hasSemi = false
@@ -361,9 +364,17 @@ func (p *Parser) parseSwitch() (Stmt, error) {
 		Pos: n.pos,
 	}
 
-	stmt.Condition, err = p.parseExpr(Lowest)
-	if err != nil {
-		return nil, err
+	//condition can be optional; if next item is itemLeftBrace then simply set condition to 1
+	if n := p.peek(); n.Typ != itemLeftBrace {
+		stmt.Condition, err = p.parseExpr(Lowest)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		stmt.Condition = &NumberLit{
+			Pos:    n.pos,
+			IntVal: 1,
+		}
 	}
 
 	if n := p.next(); n.Typ != itemLeftBrace {
@@ -464,6 +475,79 @@ func (p *Parser) parseWhile() (Stmt, error) {
 	}
 
 	stmt.WhileBlock, err = p.parseBlock() //parse block here
+
+	return stmt, err
+}
+
+// for <init ;> <cond> <; post> { <body> }
+// for { <body > }
+func (p *Parser) existVarDecl() bool {
+	switch n := p.peek(); n.Typ {
+	case keywordLet:
+		return true
+	case itemIdentifier:
+		p.next()
+		b := p.peek().Typ == itemAssign
+		p.backup()
+		return b
+	}
+	return false
+}
+
+func (p *Parser) parseFor() (Stmt, error) {
+	n := p.next()
+
+	stmt := &ForStmt{
+		Pos: n.pos,
+	}
+
+	var err error
+
+	if n := p.peek(); n.Typ == itemLeftBrace {
+		stmt.Body, err = p.parseBlock() //parse block here
+		return stmt, err
+	}
+
+	//init
+	if p.existVarDecl() {
+		if n := p.peek(); n.Typ == keywordLet {
+			stmt.Init, err = p.parseLet()
+		} else {
+			stmt.Init, err = p.parseAssign()
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		if n := p.peek(); n.Typ != itemTerminateLine {
+			return nil, fmt.Errorf("ln%v: expecting ; after statement, got %v", n.line, n.Val)
+		}
+		p.next() //skip ;
+	}
+
+	//cond
+	stmt.Cond, err = p.parseExpr(Lowest)
+	if err != nil {
+		return nil, err
+	}
+
+	//post
+	if n := p.peek(); n.Typ == itemTerminateLine {
+		p.next() //skip ;
+		if n := p.peek(); n.Typ != itemLeftBrace {
+			stmt.Post, err = p.parseAssign()
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	//expecting a { next
+	if n := p.peek(); n.Typ != itemLeftBrace {
+		return nil, fmt.Errorf("ln%v: expecting { after for, got %v", n.line, n.Val)
+	}
+
+	stmt.Body, err = p.parseBlock() //parse block here
 
 	return stmt, err
 }
@@ -627,7 +711,7 @@ func (p *Parser) parseCallArgs() ([]Expr, error) {
 	return args, nil
 }
 
-//check if it's a valid character action, assuming current token is "character"
+// check if it's a valid character action, assuming current token is "character"
 func (p *Parser) peekValidCharAction() bool {
 	p.next()
 	//check if this is character stats etc or an action
@@ -640,7 +724,7 @@ func (p *Parser) peekValidCharAction() bool {
 	return true
 }
 
-//parseBlock return a node contain and BlockStmt
+// parseBlock return a node contain and BlockStmt
 func (p *Parser) parseBlock() (*BlockStmt, error) {
 	//should be surronded by {}
 	n, err := p.consume(itemLeftBrace)
@@ -701,7 +785,7 @@ func (p *Parser) parseExpr(pre precedence) (Expr, error) {
 	return leftExp, nil
 }
 
-//next is an identifier
+// next is an identifier
 func (p *Parser) parseIdent() (Expr, error) {
 	n := p.next()
 	return &Ident{Pos: n.pos, Value: n.Val}, nil

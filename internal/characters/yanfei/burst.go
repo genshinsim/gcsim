@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, burstHitmark, addSeal)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, burstHitmark, addSeal)
 
 	c.Core.Tasks.Add(c.burstAddSealHook(), 60)
 

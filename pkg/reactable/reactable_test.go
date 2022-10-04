@@ -60,21 +60,55 @@ func testCore() *core.Core {
 	return c
 }
 
+func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
+	c := testCore()
+	var r []*testTarget
+	for i := 0; i < count; i++ {
+		r = append(r, addTargetToCore(c))
+	}
+	return c, r
+}
+
+func makeAOEAttack(ele attributes.Element, dur combat.Durability) *combat.AttackEvent {
+	return &combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    ele,
+			Durability: dur,
+		},
+		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100, false, combat.TargettableEnemy),
+	}
+}
+
+func makeSTAttack(ele attributes.Element, dur combat.Durability, trg combat.TargetKey) *combat.AttackEvent {
+	return &combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    ele,
+			Durability: dur,
+		},
+		Pattern: combat.NewDefSingleTarget(trg, combat.TargettableEnemy),
+	}
+
+}
+
 type testTarget struct {
 	*Reactable
 	*target.Target
-	src           int
-	typ           combat.TargettableType
-	onDmgCallBack func(*combat.AttackEvent) (float64, bool)
+	src  int
+	typ  combat.TargettableType
+	last combat.AttackEvent
 }
 
-func (t *testTarget) Type() combat.TargettableType {
-	return t.typ
+func (t *testTarget) Type() combat.TargettableType { return t.typ }
+func (t *testTarget) AttackWillLand(a combat.AttackPattern, src combat.TargetKey) (bool, string) {
+	return true, ""
 }
 
 func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	if t.onDmgCallBack != nil {
-		return t.onDmgCallBack(atk)
+	t.last = *atk
+	t.ShatterCheck(atk)
+	if atk.Info.Durability > 0 {
+		//don't care about icd
+		t.React(atk)
 	}
 	return 0, false
 }

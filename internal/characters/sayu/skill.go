@@ -61,7 +61,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
-
 	c.c2Bonus = 0.033
 
 	// Fuufuu Windwheel DMG
@@ -107,11 +106,12 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
-	c.eInfused = attributes.NoElement
-	c.eInfusedTag = combat.ICDTagNone
 	c.eDuration = c.Core.F + skillShortHoldKickHitmark
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableGadget)
 	c.c2Bonus = .0
+
+	c.eAbsorb = attributes.NoElement
+	c.eAbsorbTag = combat.ICDTagNone
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableGadget)
 
 	// 1 DoT Tick
 	d := c.createSkillHoldSnapshot()
@@ -147,7 +147,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillShortHoldKickHitmark+c.ParticleDelay)
 
 	// 6.2s cooldown
-	c.SetCDWithDelay(action.ActionSkill, 372, 30)
+	c.SetCDWithDelay(action.ActionSkill, 372, skillShortHoldCDStart)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillShortHoldFrames),
@@ -158,12 +158,12 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
-
-	c.eInfused = attributes.NoElement
-	c.eInfusedTag = combat.ICDTagNone
 	c.eDuration = c.Core.F + (skillHoldKickHitmark - 600) + duration
-	c.infuseCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableGadget)
 	c.c2Bonus = .0
+
+	c.eAbsorb = attributes.NoElement
+	c.eAbsorbTag = combat.ICDTagNone
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, true, combat.TargettablePlayer, combat.TargettableEnemy, combat.TargettableGadget)
 
 	// ticks
 	d := c.createSkillHoldSnapshot()
@@ -245,20 +245,20 @@ func (c *char) absorbCheck(src, count, max int) func() {
 			return
 		}
 
-		c.eInfused = c.Core.Combat.AbsorbCheck(c.infuseCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
-		if c.eInfused != attributes.NoElement {
-			switch c.eInfused {
+		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		if c.eAbsorb != attributes.NoElement {
+			switch c.eAbsorb {
 			case attributes.Pyro:
-				c.eInfusedTag = combat.ICDTagElementalArtPyro
+				c.eAbsorbTag = combat.ICDTagElementalArtPyro
 			case attributes.Hydro:
-				c.eInfusedTag = combat.ICDTagElementalArtHydro
+				c.eAbsorbTag = combat.ICDTagElementalArtHydro
 			case attributes.Electro:
-				c.eInfusedTag = combat.ICDTagElementalArtElectro
+				c.eAbsorbTag = combat.ICDTagElementalArtElectro
 			case attributes.Cryo:
-				c.eInfusedTag = combat.ICDTagElementalArtCryo
+				c.eAbsorbTag = combat.ICDTagElementalArtCryo
 			}
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-				"sayu infused ", c.eInfused.String(),
+				"sayu absorbed ", c.eAbsorb.String(),
 			)
 			return
 		}
@@ -275,7 +275,7 @@ func (c *char) rollAbsorb() {
 		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 			return false
 		}
-		if atk.Info.Element != attributes.Anemo || c.eInfused == attributes.NoElement {
+		if atk.Info.Element != attributes.Anemo || c.eAbsorb == attributes.NoElement {
 			return false
 		}
 		if c.Core.F > c.eDuration {
@@ -289,13 +289,13 @@ func (c *char) rollAbsorb() {
 				ActorIndex: c.Index,
 				Abil:       "Fuufuu Windwheel Elemental (Elemental DoT Hold)",
 				AttackTag:  combat.AttackTagElementalArtHold,
-				ICDTag:     c.eInfusedTag,
+				ICDTag:     c.eAbsorbTag,
 				ICDGroup:   combat.ICDGroupDefault,
-				Element:    c.eInfused,
+				Element:    c.eAbsorb,
 				Durability: 25,
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 1, 1)
 		case combat.AttackTagElementalArtHold:
 			// Kick Elemental DMG
 			ai := combat.AttackInfo{
@@ -304,11 +304,11 @@ func (c *char) rollAbsorb() {
 				AttackTag:  combat.AttackTagElementalArt,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
-				Element:    c.eInfused,
+				Element:    c.eAbsorb,
 				Durability: 25,
 				Mult:       skillAbsorbEnd[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 1, 1)
 		}
 
 		return false

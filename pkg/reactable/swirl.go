@@ -28,7 +28,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	}
 	char := r.core.Player.ByIndex(charIndex)
 	em := char.Stat(attributes.EM)
-	ai.FlatDmg = 0.6 * r.calcReactionDmg(ai, em)
+	ai.FlatDmg = 0.6 * calcReactionDmg(char, ai, em)
 	snap := combat.Snapshot{
 		CharLvl:  char.Base.Level,
 		ActorEle: char.Base.Element,
@@ -38,7 +38,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewDefSingleTarget(r.self.Index(), r.self.Type()),
+		combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
 		1,
 	)
 	//next is aoe - hydro swirls never do AoE damage, as they only spread the element
@@ -50,7 +50,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHit(r.self, 5, false, combat.TargettableEnemy),
+		combat.NewCircleHit(r.self, 5, false, combat.TargettableEnemy, combat.TargettableGadget),
 		1,
 	)
 }
@@ -143,6 +143,7 @@ func (r *Reactable) trySwirlPyro(a *combat.AttackEvent) {
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	a.Reacted = true
+	r.burningCheck()
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlPyro, r.self, a)
 	r.queueSwirl(

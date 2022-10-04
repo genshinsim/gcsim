@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
@@ -80,7 +80,7 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, ppChargeHitmark, c.ppParticles, c.applyBB)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, ppChargeHitmark, c.ppParticles, c.applyBB)
 
 	//frames changes if previous action is normal
 	prevState := -1
@@ -100,15 +100,23 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 			return ppChargeFrames[next]
 		}
 		switch prevState {
-		case 0: //n1
+		case 0: // N1
+			if next == action.ActionDash {
+				return 1 // N1D
+			} else {
+				return 2 // N1J
+			}
+		case 1: // N2
+			if next == action.ActionDash {
+				return 4 // N2D
+			} else {
+				return 5 // N2J
+			}
+		case 2: // N3
 			return 2
-		case 1:
-			return 5
-		case 2:
-			return 2
-		case 3:
+		case 3: // N4
 			return 3
-		case 4:
+		case 4: // N5
 			return 3
 		default:
 			return 500 //TODO: this action is illegal; need better way to handle it

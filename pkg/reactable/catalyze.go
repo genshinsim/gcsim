@@ -69,4 +69,14 @@ func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
 
 	//attach quicken aura; special amount
 	r.attachQuicken(consumed)
+
+	if r.Durability[ModifierHydro] >= ZeroDur {
+		r.core.Tasks.Add(func() {
+			r.tryQuickenBloom(a)
+		}, 0)
+	}
+}
+
+func (r *Reactable) attachQuicken(dur combat.Durability) {
+	r.attachOverlapRefreshDuration(ModifierQuicken, dur, 12*dur+360)
 }

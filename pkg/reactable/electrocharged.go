@@ -22,6 +22,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 			return
 		}
 		//add to hydro durability
+		//TODO: this shouldn't happen here
 		r.attachOrRefillNormalEle(ModifierHydro, a.Info.Durability)
 	case attributes.Electro:
 		//if there's no existing hydro or electro then do nothing
@@ -49,8 +50,9 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 		Element:          attributes.Electro,
 		IgnoreDefPercent: 1,
 	}
-	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
-	atk.FlatDmg = 1.2 * r.calcReactionDmg(atk, em)
+	char := r.core.Player.ByIndex(a.Info.ActorIndex)
+	em := char.Stat(attributes.EM)
+	atk.FlatDmg = 1.2 * calcReactionDmg(char, atk, em)
 	r.ecSnapshot = atk
 
 	//if this is a new ec then trigger tick immediately and queue up ticks
@@ -61,7 +63,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 
 		r.core.QueueAttack(
 			r.ecSnapshot,
-			combat.NewDefSingleTarget(r.self.Index(), r.self.Type()),
+			combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
 			-1,
 			10,
 		)
@@ -150,7 +152,7 @@ func (r *Reactable) nextTick(src int) func() {
 		//so ec is active, which means both aura must still have value > 0; so we can do dmg
 		r.core.QueueAttack(
 			r.ecSnapshot,
-			combat.NewDefSingleTarget(r.self.Index(), r.self.Type()),
+			combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
 			-1,
 			0,
 		)

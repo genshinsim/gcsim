@@ -57,6 +57,8 @@ const (
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
 	ICDTagColleiSprout
+	ICDTagDoriC2
+	ICDTagDoriChargingStation
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
@@ -88,6 +90,7 @@ const (
 	ICDGroupYelanBurst
 	ICDGroupColleiBurst
 	ICDGroupTighnari
+	ICDGroupDoriBurst
 	ICDGroupReactionA
 	ICDGroupReactionB
 	ICDGroupBurning
@@ -106,6 +109,7 @@ var ICDGroupResetTimer = []int{
 	120, //yelan burst
 	180, //collei burst
 	150, //tighnari
+	180, //dori burst
 	30,  //reaction a
 	30,  //reaciton b
 	120, //burning
@@ -134,6 +138,8 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//tighnari
 	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+	//dori burst
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//reaction a
 	{1.0, 1.0},
 	//reaction b
@@ -165,10 +171,14 @@ var ICDGroupDamageSequence = [][]float64{
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//tighnari
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//dori burst
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//ele A
 	{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//ele B
 	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//burning
-	{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	//actual data: {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+	//however there seems to be no limit to the amount of burning dmg a target can take
+	{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 }

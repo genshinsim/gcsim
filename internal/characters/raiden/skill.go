@@ -40,7 +40,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), skillHitmark, skillHitmark)
 
 	// Add pre-damage mod
 	mult := skillBurstBonus[c.TalentLvlSkill()]
@@ -73,10 +73,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-/**
+/*
+*
 When characters with this buff attack and hit opponents, the Eye will unleash a coordinated attack, dealing AoE Electro DMG at the opponent's position.
 The Eye can initiate one coordinated attack every 0.9s per party.
-**/
+*
+*/
 func (c *char) eyeOnDamage() {
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
@@ -120,7 +122,7 @@ func (c *char) eyeOnDamage() {
 		if c.Base.Cons >= 2 && c.StatusIsActive(burstKey) {
 			ai.IgnoreDefPercent = 0.6
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 5, 5)
 
 		c.eyeICD = c.Core.F + 54 //0.9 sec icd
 		return false

@@ -72,12 +72,13 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
 		Element:          attributes.Physical,
 		IgnoreDefPercent: 1,
 	}
-	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
-	ai.FlatDmg = 1.5 * r.calcReactionDmg(ai, em)
+	char := r.core.Player.ByIndex(a.Info.ActorIndex)
+	em := char.Stat(attributes.EM)
+	ai.FlatDmg = 1.5 * calcReactionDmg(char, ai, em)
 	//shatter is a self attack
 	r.core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(r.self.Index(), r.self.Type()),
+		combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
 		-1,
 		1,
 	)
@@ -109,6 +110,6 @@ func (r *Reactable) checkFreeze() {
 			DoNotLog:    true,
 		}
 		//TODO: delay attack by 1 frame ok?
-		r.core.QueueAttack(ai, combat.NewDefSingleTarget(r.self.Index(), r.self.Type()), -1, 1)
+		r.core.QueueAttack(ai, combat.NewDefSingleTarget(r.self.Key(), r.self.Type()), -1, 1)
 	}
 }

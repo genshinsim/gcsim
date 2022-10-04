@@ -37,7 +37,7 @@ type opts struct {
 	debugMinMax  bool
 }
 
-//command line tool; following options are available:
+// command line tool; following options are available:
 func main() {
 
 	var opt opts
@@ -107,7 +107,7 @@ func main() {
 		serverDone := &sync.WaitGroup{}
 		serverDone.Add(1)
 		serveLocal(serverDone, "./serve_data.json.gz", opt.keepserving)
-		url := "https://dendro.gcsim.app/viewer/local"
+		url := "https://gcsim.app/viewer/local"
 		if !opt.nobrowser {
 			err = open(url)
 			if err != nil {

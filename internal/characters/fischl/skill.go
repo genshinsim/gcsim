@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai.Mult += 2
 	}
 	// hitmark is 5 frames after oz spawns
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillOzSpawn, skillOzSpawn+5)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget), skillOzSpawn, skillOzSpawn+5)
 
 	// CD Delay is 18 frames, but things break if Delay > CanQueueAfter
 	// so we add 18 to the duration instead. this probably mess up CDR stuff
