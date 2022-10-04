@@ -17,13 +17,13 @@ export async function handleAssets(
 
     const resp = await fetch(new Request(endpoint), {
       cf: {
-        cacheTtl: 60 * 24 * 60 * 60,
+        cacheTtl: 60 * 60 * 24,
         cacheEverything: true,
       },
     });
 
     response = new Response(resp.body, resp);
-    response.headers.set('Cache-Control', 'max-age=5184000');
+    response.headers.set('Cache-Control', 'max-age=86400');
 
     event.waitUntil(cache.put(cacheKey, response.clone()));
   }
