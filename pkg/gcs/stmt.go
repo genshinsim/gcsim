@@ -288,6 +288,9 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 		}
 	}
 	if !found || ft {
+		if swt.Default == nil {
+			return &null{}, nil
+		}
 		return e.evalBlock(swt.Default, env)
 	}
 	return &null{}, nil
