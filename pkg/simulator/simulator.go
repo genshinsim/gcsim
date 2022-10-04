@@ -81,7 +81,7 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		for wip < simcfg.Settings.Iterations {
 			pool.QueueCh <- worker.Job{
 				Cfg:  simcfg.Copy(),
-				Seed: cryptoRandSeed(),
+				Seed: CryptoRandSeed(),
 			}
 			wip++
 		}
@@ -150,7 +150,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts 
 
 	//run one debug
 	//debug call will clone before running
-	debugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.DebugSeed))
+	debugOut, err := GenerateDebugLogWithSeed(simcfg, CryptoRandSeed())
 	if err != nil {
 		return result, err
 	}
@@ -174,7 +174,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts 
 }
 
 // cryptoRandSeed generates a random seed using crypo rand
-func cryptoRandSeed() int64 {
+func CryptoRandSeed() int64 {
 	var b [8]byte
 	_, err := rand.Read(b[:])
 	if err != nil {

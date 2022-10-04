@@ -8,7 +8,7 @@ import (
 func GenerateCharacterDetails(cfg *ast.ActionList) ([]simulation.CharacterDetail, error) {
 	cpy := cfg.Copy()
 
-	c, err := simulation.NewCore(cryptoRandSeed(), false, cpy)
+	c, err := simulation.NewCore(CryptoRandSeed(), false, cpy)
 	if err != nil {
 		return nil, err
 	}

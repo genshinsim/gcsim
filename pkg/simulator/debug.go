@@ -42,5 +42,5 @@ func GenerateDebugLogWithSeed(cfg *ast.ActionList, seed int64) ([]map[string]int
 
 // GenerateDebugLog will run one simulation with debug enabled using a random seed
 func GenerateDebugLog(cfg *ast.ActionList) ([]map[string]interface{}, error) {
-	return GenerateDebugLogWithSeed(cfg, cryptoRandSeed())
+	return GenerateDebugLogWithSeed(cfg, CryptoRandSeed())
 }
