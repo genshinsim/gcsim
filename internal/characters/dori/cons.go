@@ -97,7 +97,7 @@ func (c *char) c6() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
-			Message: "Dori-c6-onNormal",
+			Message: "dori-c6-heal",
 			Src:     0.04 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
