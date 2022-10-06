@@ -4,7 +4,6 @@ import { Weapon } from '~src/Types/sim';
 export function WeaponCard({ weapon }: { weapon: Weapon }) {
   let { t } = useTranslation();
 
-  console.log(weapon.name);
   return (
     <div className="weapon-parent ml-2 mr-2 p-2 bg-gray-800 rounded-md">
       <div className="flex flex-row">
