@@ -1,6 +1,7 @@
 package damage
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -43,7 +44,7 @@ func init() {
 }
 
 type buffer struct {
-	damageOverTime        map[int]float64
+	damageOverTime        map[string]float64
 	damageByChar          []map[string]float64
 	damageByCharByTargets []map[string]float64
 	damageInstancesByChar []map[string]int
@@ -56,7 +57,7 @@ type buffer struct {
 
 func NewStat(core *core.Core) (stats.StatsCollector, error) {
 	out := buffer{
-		damageOverTime:        make(map[int]float64),
+		damageOverTime:        make(map[string]float64),
 		damageByChar:          make([]map[string]float64, len(core.Player.Chars())),
 		damageByCharByTargets: make([]map[string]float64, len(core.Player.Chars())),
 		damageInstancesByChar: make([]map[string]int, len(core.Player.Chars())),
@@ -155,7 +156,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 			out.damageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
 		}
 
-		frameBucket := int(core.F/15) * 15
+		frameBucket := fmt.Sprintf("%.2f", float64(int(core.F/15)*15)/60.0)
 		out.damageOverTime[frameBucket] += dmg
 
 		return false

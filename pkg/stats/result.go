@@ -37,7 +37,7 @@ type Result struct {
 }
 
 type LegacyResult struct {
-	DamageOverTime        map[int]float64      `msg:"damage_over_time"`
+	DamageOverTime        map[string]float64   `msg:"damage_over_time"`
 	DamageByChar          []map[string]float64 `msg:"damage_by_char"`
 	DamageByCharByTargets []map[string]float64 `msg:"damage_by_char_by_targets"`
 	DamageInstancesByChar []map[string]int     `msg:"damage_instances_by_char"`

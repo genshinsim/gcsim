@@ -1,7 +1,6 @@
 package legacy
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
@@ -72,11 +71,10 @@ func (b *buffer) Add(result stats.Result, itr int) {
 	dd := float64(result.Duration) / 60
 
 	for k, v := range result.Legacy.DamageOverTime {
-		secBucket := fmt.Sprintf("%.2f", float64(k)/60.0)
-		if _, ok := b.damageOverTime[secBucket]; !ok {
-			b.damageOverTime[secBucket] = util.NewFloatBuffer(b.iterations)
+		if _, ok := b.damageOverTime[k]; !ok {
+			b.damageOverTime[k] = util.NewFloatBuffer(b.iterations)
 		}
-		b.damageOverTime[secBucket].Add(v, itr)
+		b.damageOverTime[k].Add(v, itr)
 	}
 
 	// loop over all chars
