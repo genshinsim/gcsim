@@ -86,38 +86,8 @@ export function setTotalWorkers(count: number): AppThunk {
   };
 }
 
-export function updateAdvConfig(cfg: string): AppThunk {
-  return function (dispatch) {
-    dispatch(simActions.setAdvCfg(cfg));
-    const setConfig = () =>
-      new Promise((resolve, reject) => {
-        pool.setCfg(cfg, (val) => {
-          // console.log("set config callback: " + val);
-          try {
-            const res = JSON.parse(val);
-            console.log(res);
-            if (res.err) {
-              reject(res.err);
-            } else {
-              resolve(res);
-            }
-          } catch {
-            reject('unexpected err parsing json');
-          }
-        });
-      });
-
-    setConfig()
-      .then((res) => {
-        console.log(res);
-        // dispatch(simActions.setAdvCfg(cfg));
-        dispatch(simActions.setAdvCfgErr(''));
-      })
-      .catch((err) => {
-        //set error state
-        dispatch(simActions.setAdvCfgErr(err));
-      });
-  };
+export function ready(): boolean {
+  return pool.ready();
 }
 
 export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
@@ -149,23 +119,7 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
       cfg = next.replace(/(\r\n|\r|\n){2,}/g, '$1\n');
     }
     dispatch(simActions.setCfg(cfg));
-    const setConfig = () =>
-      new Promise<ParsedResult>((resolve, reject) => {
-        const cb = (val: any) => {
-          // console.log("done?");
-          console.log(val);
-          const res = JSON.parse(val);
-          console.log('config parsing done: ', res);
-          if (res.hasOwnProperty('err')) {
-            reject(res.err);
-            return;
-          }
-          resolve(res);
-        };
-        pool.queue({ cmd: 'parse', payload: cfg, cb: cb });
-      });
-
-    setConfig().then(
+    pool.validate(cfg).then(
       (res) => {
         console.log('all is good');
         dispatch(simActions.setCfgErr(''));

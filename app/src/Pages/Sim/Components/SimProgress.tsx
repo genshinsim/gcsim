@@ -39,7 +39,7 @@ export function SimProgress(props: Props) {
           {!done ? (
             <div className="flex flex-col gap-1">
               <div><Trans>components.workers_pre</Trans>{workers}<Trans>components.workers_post</Trans></div>
-              <ProgressBar animate intent="primary" value={run.progress / 20} />
+              <ProgressBar animate intent="primary" value={run.progress} />
             </div>
           ) : (
             <div className="flex flex-col gap-1">
