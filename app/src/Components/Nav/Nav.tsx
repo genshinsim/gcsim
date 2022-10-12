@@ -29,7 +29,7 @@ export default function Nav() {
     <Navbar>
       <NavbarGroup align={Alignment.LEFT} className="w-full">
         <img
-          src="images/logo.png"
+          src="/images/logo.png"
           className=" object-contain max-h-[75%] mt-auto mb-auto mr-1"
         />
         <Link href="/">
