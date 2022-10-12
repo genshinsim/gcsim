@@ -10,8 +10,10 @@ import (
 )
 
 var (
-	attackFrames   [][]int
-	attackHitmarks = [][]int{{11}, {16}, {16, 23}, {43}}
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{11}, {16}, {16, 23}, {43}}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0}, {0.04}}
+	attackHitlagDefHalt   = [][]bool{{true}, {true}, {true, false}, {true}}
 )
 
 const normalHitNum = 4
@@ -42,8 +44,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
 			HitlagFactor:       0.01,
-			HitlagHaltFrames:   0.03 * 60, // TODO: verify hitlag frames
-			CanBeDefenseHalted: true,      // TODO: verify defense halt
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: attackHitlagDefHalt[c.NormalCounter][i],
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
