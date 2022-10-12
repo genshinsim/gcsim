@@ -57,24 +57,22 @@ export function Database() {
     : charsEntries;
 
   return (
-    <div className="flex flex-row justify-center">
-      <Viewport>
-        <div className=" flex flex-row gap-x-1 justify-end">
-          <div>
-            <div className="relative mt-1 rounded-md">
-              <input
-                type="text"
-                className="block w-full rounded-md pl-4 pr-4 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-white bg-slate-700 h-8"
-                placeholder="filter by character"
-                value={searchString}
-                onChange={(e) => setSearchString(e.currentTarget.value)}
-              />
-            </div>
+    <div className="flex flex-col justify-center mt-2">
+      <div className=" flex flex-row gap-x-1 justify-end">
+        <div>
+          <div className="relative mt-1 rounded-md">
+            <input
+              type="text"
+              className="block w-full rounded-md pl-4 pr-4 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-white bg-slate-700 h-8"
+              placeholder="filter by character"
+              value={searchString}
+              onChange={(e) => setSearchString(e.currentTarget.value)}
+            />
           </div>
         </div>
-        <div className="border-b-2 mt-2 border-gray-300" />
-        <CharsGrid characters={filteredChars} />
-      </Viewport>
+      </div>
+      <div className="border-b-2 mt-2 border-gray-300" />
+      <CharsGrid characters={filteredChars} />
     </div>
   );
 }

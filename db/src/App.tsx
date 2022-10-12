@@ -8,15 +8,24 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <Switch>
-        <Route path="/" component={Database} />
-        <Route path="/db/:avatar">
-          {(params) => <Teams char={params.avatar} />}
-        </Route>
-        <Route path="/db/:avatar/:team">
-          {(params) => <SimByTeam char={params.avatar} team={params.team} />}
-        </Route>
-      </Switch>
+      <main className="flex flex-col h-full m-2 w-full xs:w-full sm:w-[640px] hd:w-full wide:w-[1160px] ml-auto mr-auto ">
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative">
+          <strong className="font-bold">Experimental:</strong>
+          <span className="block sm:inline">
+            This database is currently a work in progress and experimental.
+            Expect things to be broken.
+          </span>
+        </div>
+        <Switch>
+          <Route path="/" component={Database} />
+          <Route path="/db/:avatar">
+            {(params) => <Teams char={params.avatar} />}
+          </Route>
+          <Route path="/db/:avatar/:team">
+            {(params) => <SimByTeam char={params.avatar} team={params.team} />}
+          </Route>
+        </Switch>
+      </main>
     </div>
   );
 }

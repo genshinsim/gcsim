@@ -104,11 +104,11 @@ export function Teams({ char }: CharacterViewProps) {
     });
 
   return (
-    <main className="flex flex-col h-full m-2 w-full xs:w-full sm:w-[640px] hd:w-full wide:w-[1160px] ml-auto mr-auto ">
+    <div className="flex flex-col">
       <div className="text-white font-bold mb-2 text-xl">
         <span style={{ textTransform: "capitalize" }}>{char}</span> Teams
       </div>
       <div className="grid grid-cols-2 gap-3">{rows}</div>
-    </main>
+    </div>
   );
 }
