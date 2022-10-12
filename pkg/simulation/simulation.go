@@ -2,15 +2,10 @@
 package simulation
 
 import (
-	"fmt"
-	"strconv"
-
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 type Simulation struct {
@@ -25,8 +20,7 @@ type Simulation struct {
 	evalErr       chan error
 	queuer        gcs.Eval
 	noMoreActions bool
-	//result
-	stats Result
+	collectors    []stats.StatsCollector
 
 	//track previous action, when it was used at, and the earliest
 	//useable frame for all other chained actions
@@ -73,39 +67,17 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 		return nil, err
 	}
 
-	//TODO: this stat collection  module needs to be rewritten. See https://github.com/genshinsim/gcsim/issues/561
-	s.initDetailLog()
-	s.initTeamStats()
-	s.stats.IsDamageMode = cfg.Settings.DamageMode
-
-	//grab a snapshot for each char
-	for i, c := range s.C.Player.Chars() {
-		snap := c.Snapshot(&combat.AttackInfo{
-			Abil:      "stats-check",
-			AttackTag: combat.AttackTagNone,
-		})
-		//convert all atk%, def% and hp% into flat amounts by tacking on base
-		snap.Stats[attributes.HP] += c.Base.HP * (1 + snap.Stats[attributes.HPP])
-		snap.Stats[attributes.DEF] += c.Base.Def * (1 + snap.Stats[attributes.DEFP])
-		snap.Stats[attributes.ATK] += (c.Base.Atk + c.Weapon.Atk) * (1 + snap.Stats[attributes.ATKP])
-		snap.Stats[attributes.HPP] = 0
-		snap.Stats[attributes.DEFP] = 0
-		snap.Stats[attributes.ATKP] = 0
-		if s.C.Combat.Debug {
-			evt := s.C.Log.NewEvent(
-				fmt.Sprintf("%v final stats", c.Base.Key.Pretty()),
-				glog.LogCharacterEvent,
-				i,
-			)
-			for i, v := range snap.Stats {
-				if v != 0 {
-					evt.Write(attributes.StatTypeString[i], strconv.FormatFloat(v, 'f', 3, 32))
-				}
-			}
+	for _, collector := range stats.Collectors() {
+		stat, err := collector(s.C)
+		if err != nil {
+			return nil, err
 		}
-		s.stats.CharDetails[i].SnapshotStats = snap.Stats[:]
-		s.stats.CharDetails[i].Element = c.Base.Element.String()
-		s.stats.CharDetails[i].Weapon.Name = c.Weapon.Key.String()
+		s.collectors = append(s.collectors, stat)
+	}
+
+	// calling just for the debug logging
+	if s.C.Combat.Debug {
+		s.CharacterDetails()
 	}
 
 	return s, nil

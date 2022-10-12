@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-const proxyURL = "https://next.gcsim.app"
+const proxyURL = "https://gcsim.app"
 
 func main() {
 	remote, err := url.Parse(proxyURL)

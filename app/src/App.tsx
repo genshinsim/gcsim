@@ -12,6 +12,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { DiscordCallback } from './PageUserAccount/DiscordCallback';
 import { CharacterView, Database, TeamsList } from '~src/PageDatabase';
 import { PageUserAccount } from './PageUserAccount';
+import { RedirectDB } from './Pages/DB/RedirectDB';
 
 export default function App() {
   useTranslation();
@@ -63,6 +64,9 @@ export default function App() {
           {(params) => <TeamsList char={params.avatar} team={params.team} />}
         </Route> */}
         <Route path="/db">
+          <RedirectDB />
+        </Route>
+        <Route path="/old-db">
           <DB />
         </Route>
         {/* <Route path="/db/:char">{({ char }) => <DbChar char={char} />}</Route> */}

@@ -10,7 +10,7 @@ import { Team } from './Team';
 import { Trans, useTranslation } from 'react-i18next';
 import { Toolbox } from './Toolbox';
 import { ActionListTooltip, TeamBuilderTooltip } from './Tooltips';
-import { updateCfg } from '../simSlice';
+import { updateCfg, ready } from '../simSlice';
 
 export function Simple() {
   let { t } = useTranslation();
@@ -81,7 +81,7 @@ export function Simple() {
                 </a>
               </Callout>
             </div>
-            <Toolbox canRun={cfg_err === ''} />
+            <Toolbox canRun={cfg_err === '' && ready()} />
           </div>
         </div>
       </div>

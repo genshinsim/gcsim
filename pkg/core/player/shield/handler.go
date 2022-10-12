@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-//Handler keeps track of all the active shields
-//Note that there's no need to distinguish between characters here since the shields are shared
-//However we do care which is active since only active is shielded
+// Handler keeps track of all the active shields
+// Note that there's no need to distinguish between characters here since the shields are shared
+// However we do care which is active since only active is shielded
 type Handler struct {
 	shields []Shield
 	log     glog.Logger
@@ -48,7 +48,7 @@ func (s *Handler) Get(t ShieldType) Shield {
 	return nil
 }
 
-//TODO: do shields get affected by hitlag? if so.. which timer? active char?
+// TODO: do shields get affected by hitlag? if so.. which timer? active char?
 func (s *Handler) Add(shd Shield) {
 	//we always assume over write of the same type
 	ind := -1
@@ -76,6 +76,15 @@ func (s *Handler) Add(shd Shield) {
 			Write("expiry", shd.Expiry())
 	}
 	s.events.Emit(event.OnShielded, shd)
+}
+
+func (s *Handler) ShieldStrength(ele attributes.Element) float64 {
+	bonus := s.ShieldBonus()
+	var out float64 = 0
+	for _, v := range s.shields {
+		out += v.ShieldStrength(ele, bonus)
+	}
+	return out
 }
 
 func (s *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float64 {

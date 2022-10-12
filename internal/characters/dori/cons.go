@@ -64,7 +64,7 @@ func (c *char) c4() {
 			Base:         modifier.NewBase("dori-c4-er-bonus", 48),
 			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
-				return erMod, false
+				return erMod, true
 			},
 		})
 	}
