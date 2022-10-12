@@ -40,28 +40,30 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		c.Combat.AddEnemy(e)
 	}
 
-	p := profile.CharacterProfile{}
-	p.Base.Key = keys.TestCharDoNotUse
-	p.Stats = make([]float64, attributes.EndStatType)
-	p.StatsByLabel = make(map[string][]float64)
-	p.Params = make(map[string]int)
-	p.Sets = make(map[keys.Set]int)
-	p.SetParams = make(map[keys.Set]map[string]int)
-	p.Weapon.Params = make(map[string]int)
-	p.Base.StartHP = -1
-	p.Base.Element = attributes.Geo
-	p.Weapon.Key = keys.DullBlade
+	for i := 0; i < 4; i++ {
+		p := profile.CharacterProfile{}
+		p.Base.Key = keys.TestCharDoNotUse
+		p.Stats = make([]float64, attributes.EndStatType)
+		p.StatsByLabel = make(map[string][]float64)
+		p.Params = make(map[string]int)
+		p.Sets = make(map[keys.Set]int)
+		p.SetParams = make(map[keys.Set]map[string]int)
+		p.Weapon.Params = make(map[string]int)
+		p.Base.StartHP = -1
+		p.Base.Element = attributes.Geo
+		p.Weapon.Key = keys.DullBlade
 
-	p.Stats[attributes.EM] = 100
-	p.Base.Level = 90
-	p.Base.MaxLevel = 90
-	p.Talents = profile.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
+		p.Stats[attributes.EM] = 100
+		p.Base.Level = 90
+		p.Base.MaxLevel = 90
+		p.Talents = profile.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
 
-	i, err := c.AddChar(p)
-	if err != nil {
-		panic(err)
+		_, err := c.AddChar(p)
+		if err != nil {
+			panic(err)
+		}
 	}
-	c.Player.SetActive(i)
+	c.Player.SetActive(0)
 
 	return c, trgs
 }

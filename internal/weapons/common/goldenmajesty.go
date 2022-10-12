@@ -23,6 +23,7 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 	w := &GoldenMajesty{}
 	r := p.Refine
 
+	const buffKey = "golden-majesty"
 	const icdKey = "golden-majesty-icd"
 
 	shd := .15 + float64(r)*.05
@@ -31,7 +32,6 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 	c.Player.Shields.AddShieldBonusMod(key, -1, func() (float64, bool) { return shd, false })
 
 	stacks := 0
-	expiry := 0
 	m := make([]float64, attributes.EndStatType)
 
 	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
@@ -48,7 +48,7 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 		}
 		char.AddStatus(icdKey, 18, true)
 
-		if c.F > expiry {
+		if !char.StatModIsActive(buffKey) {
 			stacks = 0
 		}
 
@@ -58,7 +58,7 @@ func NewGoldenMajesty(c *core.Core, char *character.CharWrapper, p weapon.Weapon
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("golden-majesty", 60*8),
+			Base:         modifier.NewBaseWithHitlag(buffKey, 60*8),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				m[attributes.ATKP] = atkbuff * float64(stacks)

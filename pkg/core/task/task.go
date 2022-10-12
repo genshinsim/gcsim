@@ -7,11 +7,13 @@ type minHeap []task
 type task struct {
 	executeBy int
 	f         func()
+	id        int
 }
 
 type Handler struct {
-	f     *int
-	tasks *minHeap
+	f       *int
+	tasks   *minHeap
+	counter int
 }
 
 type Tasker interface {
@@ -35,7 +37,9 @@ func (s *Handler) Add(f func(), delay int) {
 	heap.Push(s.tasks, task{
 		executeBy: *s.f + delay,
 		f:         f,
+		id:        s.counter,
 	})
+	s.counter += 1
 }
 
 // min heap functions
@@ -45,7 +49,7 @@ func (h minHeap) Len() int {
 }
 
 func (h minHeap) Less(i, j int) bool {
-	return h[i].executeBy < h[j].executeBy
+	return h[i].executeBy < h[j].executeBy || (h[i].executeBy == h[j].executeBy && h[i].id < h[j].id)
 }
 
 func (h minHeap) Swap(i, j int) {

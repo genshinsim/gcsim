@@ -27,6 +27,7 @@ func (r *Reactable) tryCrystallize(a *combat.AttackEvent) {
 	}
 	if r.Durability[ModifierPyro] > ZeroDur || r.Durability[ModifierBurning] > ZeroDur {
 		r.tryCrystallizeWithEle(a, attributes.Pyro, combat.CrystallizePyro, event.OnCrystallizePyro)
+		r.burningCheck()
 	}
 	if r.Durability[ModifierFrozen] > ZeroDur {
 		r.tryCrystallizeWithEle(a, attributes.Frozen, combat.CrystallizeCryo, event.OnCrystallizeCryo)

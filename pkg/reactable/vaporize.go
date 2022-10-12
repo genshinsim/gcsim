@@ -31,6 +31,7 @@ func (r *Reactable) tryVaporize(a *combat.AttackEvent) {
 		}
 		consumed = r.reduce(attributes.Pyro, a.Info.Durability, 2)
 		a.Info.AmpMult = 2
+		r.burningCheck()
 	default:
 		//should be here
 		return
