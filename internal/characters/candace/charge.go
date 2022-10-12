@@ -12,7 +12,12 @@ var chargeFrames []int
 const chargeHitmark = 25
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(59) // TODO: verify correct frames
+	chargeFrames = frames.InitAbilSlice(53)
+	chargeFrames[action.ActionSkill] = 52
+	chargeFrames[action.ActionBurst] = 52
+	chargeFrames[action.ActionDash] = 29
+	chargeFrames[action.ActionJump] = 28
+	chargeFrames[action.ActionSwap] = 51
 }
 
 // Charge attack damage queue generator
@@ -31,12 +36,17 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+		chargeHitmark,
+		chargeHitmark,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   chargeFrames[action.ActionJump], // earliest cancel
 		State:           action.ChargeAttackState,
 	}
 }
