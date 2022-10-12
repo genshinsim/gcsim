@@ -43,20 +43,19 @@ export function parseLogV2(
         logs: (3) [{…}, {…}, {…}]
         msg: "hook added"
    */
-
   let lines: LogDetails[] = [];
-  if (typeof log == 'string' || log instanceof String) {
-    try {
-      lines = JSON.parse(log as string);
-      console.log(lines);
-    } catch (e) {
-      console.warn('error parsing debug log (v2)');
-      console.warn(e);
-      return [];
-    }
-  } else {
-    lines = log;
+  if (!(typeof log == 'string' || log instanceof String)) {
+    log = JSON.stringify(log);
   }
+
+  try {
+    lines = JSON.parse(log as string);
+  } catch (e) {
+    console.warn('error parsing debug log (v2)');
+    console.warn(e);
+    return [];
+  }
+  console.log(lines);
 
   // let rowKey = 0;
   //bool to check if there are elements added
