@@ -1,4 +1,4 @@
-import { DebugRow, DebugItem, eventColor, strFrameWithSec } from "./parse";
+import { DebugRow, DebugItem, eventColor, strFrameWithSec } from './parse';
 
 type LogDetails = {
   char_index: number;
@@ -12,6 +12,11 @@ type LogDetails = {
 
 type endedStatus = {
   [key: number]: DebugItem[][];
+};
+
+const replacer = (k: string, v: any) => {
+  if (k == 'ordering') return undefined;
+  return v;
 };
 
 export function parseLogV2(
@@ -40,11 +45,12 @@ export function parseLogV2(
    */
 
   let lines: LogDetails[] = [];
-  if (typeof log == "string" || log instanceof String) {
+  if (typeof log == 'string' || log instanceof String) {
     try {
       lines = JSON.parse(log as string);
+      console.log(lines);
     } catch (e) {
-      console.warn("error parsing debug log (v2)");
+      console.warn('error parsing debug log (v2)');
       console.warn(e);
       return [];
     }
@@ -59,10 +65,10 @@ export function parseLogV2(
   //map out all ended
   lines.forEach((line) => {
     if (line.ended > line.frame) {
-      if (line.event !== "status") {
+      if (line.event !== 'status') {
         return;
       }
-      if (!line.msg.includes("added")) {
+      if (!line.msg.includes('added')) {
         return;
       }
       if (!(line.ended in ended)) {
@@ -72,21 +78,21 @@ export function parseLogV2(
         }
         ended[line.ended] = slots;
       }
-      const key = line.logs["key"];
-      if (key === null || key === "") {
+      const key = line.logs['key'];
+      if (key === null || key === '') {
         return;
       }
       const index = line.char_index + 1;
       let e: DebugItem = {
         frame: line.frame,
-        msg: key + " expired" + strFrameWithSec(line.frame),
+        msg: key + ' expired' + strFrameWithSec(line.frame),
         raw: JSON.stringify(line, null, 2),
         event: line.event,
         char: index,
         color: eventColor(line.event),
-        icon: "iso",
+        icon: 'iso',
         amount: 0,
-        target: "",
+        target: '',
         added: line.frame,
         ended: line.ended,
       };
@@ -133,8 +139,6 @@ export function parseLogV2(
         let bo = line.ordering![b.key] || 0;
         return ao - bo;
       });
-      //get rid of ordering
-      delete line.ordering;
     }
     //store it back
     line.logs = {};
@@ -145,27 +149,27 @@ export function parseLogV2(
     let e: DebugItem = {
       frame: line.frame,
       msg: line.msg,
-      raw: JSON.stringify(line, null, 2),
+      raw: JSON.stringify(line, replacer, 2),
       event: line.event,
       char: index,
       color: eventColor(line.event),
-      icon: "circle",
+      icon: 'circle',
       amount: 0,
-      target: "",
+      target: '',
       added: line.frame,
       ended: line.ended,
     };
 
-    if (e.color === "") {
-      e.color = "#6B7280";
+    if (e.color === '') {
+      e.color = '#6B7280';
     }
 
     const d = line.logs;
     //hightlight active char
     if (
-      e.event === "action" &&
-      line.msg.includes("executed") &&
-      d.action === "swap"
+      e.event === 'action' &&
+      line.msg.includes('executed') &&
+      d.action === 'swap'
     ) {
       activeIndex = e.char;
     }
@@ -175,180 +179,180 @@ export function parseLogV2(
     }
     //set icon/color etc... based on event
     switch (e.event) {
-      case "damage":
+      case 'damage':
         //grab dmg amount
-        const dmg = Math.round(line.logs["damage"])
+        const dmg = Math.round(line.logs['damage'])
           .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         e.msg += ` [${dmg}]`;
-        let extra = "";
-        const amp = line.logs["amp"] ? line.logs["amp"] : "";
-        if (amp && amp !== "") {
+        let extra = '';
+        const amp = line.logs['amp'] ? line.logs['amp'] : '';
+        if (amp && amp !== '') {
           extra += amp;
         }
-        const cata = line.logs["cata"] ? line.logs["cata"] : "";
-        if (cata && cata !== "") {
+        const cata = line.logs['cata'] ? line.logs['cata'] : '';
+        if (cata && cata !== '') {
           extra += cata;
         }
-        const crit = line.logs["crit"] ? line.logs["crit"] : "";
+        const crit = line.logs['crit'] ? line.logs['crit'] : '';
         if (crit) {
-          extra += " crit";
+          extra += ' crit';
         }
-        if (extra !== "") {
-          e.msg += " (" + extra.trim() + ")";
+        if (extra !== '') {
+          e.msg += ' (' + extra.trim() + ')';
         }
 
-        e.icon = "local_fire_department";
+        e.icon = 'local_fire_department';
         e.amount = line.logs[d.damage];
         e.target = d.target;
         break;
-      case "queue":
-        let msg = "";
+      case 'queue':
+        let msg = '';
         if (d.failed) {
           msg = `(${d.reason}): ${d.exec}`;
           if (msg.length > 40) {
-            msg = msg.slice(0, 40) + "...";
+            msg = msg.slice(0, 40) + '...';
           }
         }
         e.msg += msg;
 
-        e.icon = "queue";
+        e.icon = 'queue';
         break;
-      case "action":
-        if (line.msg.includes("executed") && d.action === "swap") {
-          e.msg += " to " + d.target;
+      case 'action':
+        if (line.msg.includes('executed') && d.action === 'swap') {
+          e.msg += ' to ' + d.target;
         }
 
-        if (line.msg.includes("cooldown")) {
+        if (line.msg.includes('cooldown')) {
           // Add expiry frame to the end if exists
           switch (d.expiry) {
             case undefined:
               break;
             default:
               e.msg += strFrameWithSec(d.expiry);
-              e.msg = d.type + " " + e.msg;
+              e.msg = d.type + ' ' + e.msg;
           }
         }
         //trim "executed "
-        e.msg = e.msg.replace("executed ", "");
-        e.icon = "play_arrow";
+        e.msg = e.msg.replace('executed ', '');
+        e.icon = 'play_arrow';
         break;
-      case "hitlag":
-        e.icon = "sports_martial_arts";
+      case 'hitlag':
+        e.icon = 'sports_martial_arts';
         break;
-      case "enemy":
-        e.icon = "mood_bad";
+      case 'enemy':
+        e.icon = 'mood_bad';
         break;
-      case "user":
-        e.icon = "comment";
+      case 'user':
+        e.icon = 'comment';
         break;
-      case "element":
+      case 'element':
         switch (line.msg) {
-          case "expired":
-            e.msg = d.old_ele + " expired";
+          case 'expired':
+            e.msg = d.old_ele + ' expired';
             break;
-          case "application":
+          case 'application':
             // console.log(d.existing);
-            e.msg = d.applied_ele + " applied";
+            e.msg = d.applied_ele + ' applied';
             if (d.existing) {
-              e.msg += " to [";
+              e.msg += ' to [';
               let before = d.existing.map((x: string) =>
-                x.replace(/: (.+)/, " ($1)")
+                x.replace(/: (.+)/, ' ($1)')
               );
               if (before.length > 0) {
-                e.msg += before.join(" ");
+                e.msg += before.join(' ');
               }
-              e.msg += "]";
+              e.msg += ']';
             } else {
-              e.msg += " [no aura]";
+              e.msg += ' [no aura]';
             }
             if (d.after) {
-              e.msg += " ➜ [";
+              e.msg += ' ➜ [';
               let after = d.after.map((x: string) =>
-                x.replace(/: (.+)/, " ($1)")
+                x.replace(/: (.+)/, ' ($1)')
               );
               if (after.length > 0) {
-                e.msg += after.join(" ");
+                e.msg += after.join(' ');
               }
-              e.msg += "]";
+              e.msg += ']';
             } else {
-              e.msg += " ➜ [no aura]";
+              e.msg += ' ➜ [no aura]';
             }
             break;
-          case "refreshed":
-            e.msg = d.ele + " refreshed";
+          case 'refreshed':
+            e.msg = d.ele + ' refreshed';
             break;
           default:
             e.msg = line.msg;
         }
 
-        e.icon = "bolt";
+        e.icon = 'bolt';
         e.target = d.target;
         break;
-      case "energy":
-        if (e.msg.includes("particle")) {
+      case 'energy':
+        if (e.msg.includes('particle')) {
           e.msg =
             line.msg +
-            " from " +
+            ' from ' +
             d.source +
-            ", next: " +
-            Math.floor(d["post_recovery"]);
+            ', next: ' +
+            Math.floor(d['post_recovery']);
         }
-        if (e.msg.includes("adding energy")) {
+        if (e.msg.includes('adding energy')) {
           let amt = d["rec'd"];
-          if (typeof amt === "number") {
+          if (typeof amt === 'number') {
             amt = amt.toFixed(2);
           }
           e.msg =
-            "adding " +
+            'adding ' +
             amt +
-            " energy from " +
+            ' energy from ' +
             d.source +
-            ", next: " +
-            Math.floor(d["post_recovery"]);
+            ', next: ' +
+            Math.floor(d['post_recovery']);
         }
-        if (d["post_recovery"] == d["max_energy"] && d["max_energy"]) {
-          e.msg += " (max)";
+        if (d['post_recovery'] == d['max_energy'] && d['max_energy']) {
+          e.msg += ' (max)';
         }
-        e.icon = "local_cafe";
+        e.icon = 'local_cafe';
         break;
-      case "calc":
-        e.icon = "calculate";
+      case 'calc':
+        e.icon = 'calculate';
         e.target = d.target;
 
         break;
-      case "character":
-        e.icon = "person";
+      case 'character':
+        e.icon = 'person';
         break;
-      case "snapshot":
-        e.icon = "photo_camera";
+      case 'snapshot':
+        e.icon = 'photo_camera';
         break;
-      case "snapshot_mods":
-        e.icon = "build";
+      case 'snapshot_mods':
+        e.icon = 'build';
         break;
-      case "pre_damage_mods":
-        e.icon = "dynamic_form";
+      case 'pre_damage_mods':
+        e.icon = 'dynamic_form';
         break;
-      case "heal":
-        e.icon = "healing";
+      case 'heal':
+        e.icon = 'healing';
         break;
-      case "hurt":
-        e.icon = "coronavirus";
+      case 'hurt':
+        e.icon = 'coronavirus';
         break;
-      case "shield":
-        e.icon = "shield";
+      case 'shield':
+        e.icon = 'shield';
         break;
-      case "hook":
-        e.icon = "attachment";
+      case 'hook':
+        e.icon = 'attachment';
         break;
-      case "icd":
-        e.icon = "timer";
+      case 'icd':
+        e.icon = 'timer';
         break;
-      case "construct":
-        e.icon = "apartment";
+      case 'construct':
+        e.icon = 'apartment';
         break;
-      case "status":
-        e.icon = "iso";
+      case 'status':
+        e.icon = 'iso';
 
         // Add expiry frame to the end if exists
         switch (d.expiry) {
@@ -356,14 +360,14 @@ export function parseLogV2(
             break;
           default:
             e.msg += strFrameWithSec(d.expiry);
-            e.msg = d.key + " " + e.msg;
+            e.msg = d.key + ' ' + e.msg;
         }
 
         // this hacky but i don't care
-        if (e.ended === e.frame && line.msg.includes("refreshed")) {
+        if (e.ended === e.frame && line.msg.includes('refreshed')) {
           let idx = lines.findIndex((a) => {
             return (
-              a.event === "status" &&
+              a.event === 'status' &&
               line.char_index === a.char_index &&
               !a.logs.overwrite &&
               a.logs.key === line.logs.key &&
@@ -382,7 +386,7 @@ export function parseLogV2(
         }
         break;
       default:
-        e.msg = e.event + ": " + e.msg;
+        e.msg = e.event + ': ' + e.msg;
     }
 
     slots[index].push(e);
@@ -400,7 +404,7 @@ export function parseLogV2(
   //append in ended status
   console.log(ended);
 
-  if (selected.indexOf("status") != -1) {
+  if (selected.indexOf('status') != -1) {
     for (let f = -1; f <= finalFrame; f++) {
       if (!(f in ended)) {
         continue;
