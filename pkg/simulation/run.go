@@ -6,15 +6,15 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
-	"github.com/genshinsim/gcsim/pkg/reactable"
+	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
-func (s *Simulation) Run() (Result, error) {
+func (s *Simulation) Run() (stats.Result, error) {
 	//run sim for 90s if no duration set
 	if s.cfg.Settings.Duration == 0 {
 		// fmt.Println("no duration set, running for 90s")
@@ -45,7 +45,7 @@ func (s *Simulation) Run() (Result, error) {
 		err = s.AdvanceFrame()
 		if err != nil {
 			log.Println(err)
-			return s.stats, err
+			return stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}, err
 		}
 
 		if s.C.Combat.DamageMode {
@@ -64,41 +64,37 @@ func (s *Simulation) Run() (Result, error) {
 		}
 	}
 
-	s.stats.Seed = s.C.Seed
+	duration := s.C.F + 1
+	result := stats.Result{
+		Seed:        uint64(s.C.Seed),
+		Duration:    duration,
+		TotalDamage: s.C.Combat.TotalDamage,
+		DPS:         s.C.Combat.TotalDamage * 60 / float64(duration),
+		Characters:  make([]stats.CharacterResult, len(s.C.Player.Chars())),
+		Enemies:     make([]stats.EnemyResult, s.C.Combat.EnemyCount()),
+	}
 
-	s.stats.Damage = s.C.Combat.TotalDamage
-	s.stats.DPS = s.stats.Damage * 60 / float64(s.C.F+1)
-	s.stats.Duration = s.C.F
+	for i, v := range s.cfg.Characters {
+		result.Characters[i].Name = v.Base.Key.String()
+	}
 
-	//we're done yay
-	return s.stats, nil
+	for _, collector := range s.collectors {
+		collector.Flush(s.C, &result)
+	}
+	return result, nil
 }
 
 func (s *Simulation) AdvanceFrame() error {
 	s.C.F++
 	s.C.Tick()
 	s.handleEnergy()
-	s.collectStats()
 	err := s.queueAndExec()
 	if err != nil {
 		return err
 	}
+	s.C.Events.Emit(event.OnTick)
 	// fmt.Printf("Tick - f = %v\n", s.C.F)
 	return nil
-}
-
-func (s *Simulation) collectStats() {
-	//add char active time
-	s.stats.CharActiveTime[s.C.Player.Active()]++
-	for i, e := range s.C.Combat.Enemies() {
-		if t, ok := e.(*enemy.Enemy); ok {
-			for r, v := range t.Durability {
-				if v > reactable.ZeroDur {
-					s.stats.ElementUptime[i][reactable.ReactableModifier(r)]++
-				}
-			}
-		}
-	}
 }
 
 func (s *Simulation) queueAndExec() error {

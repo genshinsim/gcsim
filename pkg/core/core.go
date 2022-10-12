@@ -32,7 +32,7 @@ type Core struct {
 	Log        glog.Logger    //we use an interface here so that we can pass in a nil logger for all except 1 run
 	Events     *event.Handler //track events: subscribe/unsubscribe/emit
 	Status     *status.Handler
-	Tasks      *task.SliceHandler
+	Tasks      *task.Handler
 	Combat     *combat.Handler
 	Constructs *construct.Handler
 	Player     *player.Handler
