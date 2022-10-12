@@ -67,7 +67,6 @@ const (
 	Chongyun
 	Diluc
 	Diona
-	Dori
 	Eula
 	Fischl
 	Ganyu
@@ -111,6 +110,7 @@ const (
 	Heizou
 	Tighnari
 	Collei
+	Dori
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -133,7 +133,7 @@ var charNames = []string{
 	"luminecryo",
 	"aether",
 	"lumine",
-	"", //delim for traveler
+	"", // delim for traveler
 	"albedo",
 	"aloy",
 	"amber",
@@ -143,7 +143,6 @@ var charNames = []string{
 	"chongyun",
 	"diluc",
 	"diona",
-	"dori",
 	"eula",
 	"fischl",
 	"ganyu",
@@ -219,7 +218,6 @@ var charPrettyName = []string{
 	"Chongyun",
 	"Diluc",
 	"Diona",
-	"Dori",
 	"Eula",
 	"Fischl",
 	"Ganyu",
