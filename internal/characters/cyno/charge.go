@@ -32,9 +32,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Physical,
 		Durability:         25,
-		HitlagHaltFrames:   0.02 * 60,
+		HitlagHaltFrames:   0,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 		Mult:               charge[c.TalentLvlAttack()],
 	}
 
@@ -77,9 +78,10 @@ func (c *char) chargeB(p map[string]int) action.ActionInfo {
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               chargeB[c.TalentLvlBurst()],
-		HitlagHaltFrames:   0.02 * 60,
+		HitlagHaltFrames:   0,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	c.QueueCharTask(func() {
