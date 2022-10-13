@@ -26,7 +26,7 @@ export default function Nav() {
 
   const [location, _] = useLocation();
   return (
-    <Navbar>
+    <Navbar className='overflow-x-clip'>
       <NavbarGroup align={Alignment.LEFT} className="w-full">
         <img
           src="/images/logo.png"
@@ -34,7 +34,7 @@ export default function Nav() {
         />
         <Link href="/">
           <NavbarHeading>
-            <a>gcsim web (beta)</a>
+            <a>gcsim (beta)</a>
           </NavbarHeading>
         </Link>
         {location !== '/' ? (
