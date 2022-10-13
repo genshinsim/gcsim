@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/tinylib/msgp v1.1.6 // indirect

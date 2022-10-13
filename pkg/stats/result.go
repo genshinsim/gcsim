@@ -25,27 +25,12 @@ type Result struct {
 	TotalDamage float64 `msg:"total_damage"`
 	DPS         float64 `msg:"dps"`
 
-	// TODO: Remove. just here for backwards compatibility
-	Legacy LegacyResult `msg:"legacy"`
-
 	ActiveCharacters []ActiveCharacterInterval `msg:"active_characters"`
 	Shields          []ShieldInterval          `msg:"shields"`
 	DamageMitigation []float64                 `msg:"damage_mitigation"`
 
 	Characters []CharacterResult `msg:"characters"`
 	Enemies    []EnemyResult     `msg:"enemies"`
-}
-
-type LegacyResult struct {
-	DamageOverTime        map[string]float64   `msg:"damage_over_time"`
-	DamageByChar          []map[string]float64 `msg:"damage_by_char"`
-	DamageByCharByTargets []map[string]float64 `msg:"damage_by_char_by_targets"`
-	DamageInstancesByChar []map[string]int     `msg:"damage_instances_by_char"`
-	AbilUsageCountByChar  []map[string]int     `msg:"abil_usage_count_by_char"`
-	CharActiveTime        []int                `msg:"char_active_time"`
-	ElementUptime         []map[string]int     `msg:"element_uptime"`
-	ParticleCount         map[string]float64   `msg:"particle_count"`
-	ReactionsTriggered    map[string]int       `msg:"reactions_triggered"`
 }
 
 type CharacterResult struct {

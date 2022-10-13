@@ -128,25 +128,23 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 
 func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts Options) (result.Summary, error) {
 	result := result.Summary{
-		V2:            true,
-		Version:       opts.Version,
-		BuildDate:     opts.BuildDate,
-		IsDamageMode:  simcfg.Settings.DamageMode,
-		ActiveChar:    simcfg.InitialChar.String(),
-		Iterations:    simcfg.Settings.Iterations,
-		Runtime:       float64(time.Since(start).Nanoseconds()),
-		NumTargets:    len(simcfg.Targets),
-		TargetDetails: simcfg.Targets,
-		Config:        cfg,
+		SchemaVersion:    result.Version{Major: 4, Minor: 0}, // hardcoded, change as result schema evolves
+		SimVersion:       opts.Version,
+		BuildDate:        opts.BuildDate,
+		Runtime:          float64(time.Since(start).Nanoseconds()),
+		Iterations:       simcfg.Settings.Iterations,
+		Config:           cfg,
+		DebugSeed:        CryptoRandSeed(),
+		TargetDetails:    simcfg.Targets,
+		InitialCharacter: simcfg.InitialChar.String(),
 	}
-	result.Map(simcfg, stats)
-	result.Text = result.PrettyPrint()
+	result.Statistics = *stats
 
 	charDetails, err := GenerateCharacterDetails(simcfg)
 	if err != nil {
 		return result, err
 	}
-	result.CharDetails = charDetails
+	result.CharacterDetails = charDetails
 
 	//run one debug
 	//debug call will clone before running
@@ -158,13 +156,13 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts 
 
 	// Include debug logs for min/max-DPS runs if requested.
 	if opts.DebugMinMax {
-		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.MinSeed))
+		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.Statistics.MinSeed))
 		if err != nil {
 			return result, err
 		}
 		result.DebugMinDPSRun = minDPSDebugOut
 
-		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.MaxSeed))
+		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.Statistics.MaxSeed))
 		if err != nil {
 			return result, err
 		}
