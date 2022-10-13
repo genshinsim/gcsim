@@ -1,13 +1,19 @@
-//Package action describes the valid actions that any character may take
+// Package action describes the valid actions that any character may take
 package action
 
-//TODO: add a sync.Pool here to save some memory allocs
+import (
+	"encoding/json"
+	"errors"
+	"strings"
+)
+
+// TODO: add a sync.Pool here to save some memory allocs
 type ActionInfo struct {
 	Frames              func(next Action) int `json:"-"`
 	AnimationLength     int
 	CanQueueAfter       int
 	State               AnimationState
-	FramePausedOnHitlag func() bool `json:"-"`
+	FramePausedOnHitlag func() bool               `json:"-"`
 	OnRemoved           func(next AnimationState) `json:"-"`
 	//following are exposed only so we can log it properly
 	CachedFrames         [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
@@ -126,6 +132,25 @@ var astr = []string{
 
 func (a Action) String() string {
 	return astr[a]
+}
+
+func (a Action) MarshalJSON() ([]byte, error) {
+	return json.Marshal(astr[a])
+}
+
+func (a *Action) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	s = strings.ToLower(s)
+	for i, v := range astr {
+		if v == s {
+			*a = Action(i)
+			return nil
+		}
+	}
+	return errors.New("unrecognized action")
 }
 
 func StringToAction(s string) Action {

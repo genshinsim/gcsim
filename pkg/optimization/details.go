@@ -276,7 +276,7 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char pro
 // At least this version works semi-reliably...
 func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean float64, tolSD float64) []string {
 	var (
-		opDebug   []string
+		opDebug []string
 	)
 
 	for idxChar, char := range stats.charProfilesERBaseline {

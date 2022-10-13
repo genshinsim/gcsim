@@ -1,84 +1,71 @@
 package main
 
 import (
-	"crypto/rand"
-	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"syscall/js"
+	"time"
 
+	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
-	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/simulation"
+	"github.com/genshinsim/gcsim/pkg/simulator"
+	"github.com/genshinsim/gcsim/pkg/stats"
 )
+
+const DefaultBufferLength = 1024 * 10
 
 var (
 	sha1ver   string // sha1 revision used to build the program
 	buildTime string // when the executable was built
 )
 
+// shared variables
+var cfg string
+var simcfg *ast.ActionList
+var buffer []byte
+
+// Aggregator variables
+var aggregators []agg.Aggregator
+var start time.Time
+
 func main() {
 	//GOOS=js GOARCH=wasm go build -o main.wasm
-	done := make(chan struct{}, 0)
+	ch := make(chan struct{}, 0)
 
-	global := js.Global()
+	// Helper Functions (stateless, no init call needed)
+	js.Global().Set("validateConfig", js.FuncOf(validateConfig))
+	js.Global().Set("buildInfo", js.FuncOf(buildInfo))
 
-	setConfigFunc := js.FuncOf(setConfig)
-	defer setConfigFunc.Release()
+	// Worker Functions
+	js.Global().Set("initializeWorker", js.FuncOf(initializeWorker))
+	js.Global().Set("simulate", js.FuncOf(simulate))
 
-	checkConfigFunc := js.FuncOf(checkConfig)
-	defer checkConfigFunc.Release()
+	// Aggregator Functions
+	js.Global().Set("initializeAggregator", js.FuncOf(initializeAggregator))
+	js.Global().Set("aggregate", js.FuncOf(aggregate))
+	js.Global().Set("flush", js.FuncOf(flush))
 
-	runSimFunc := js.FuncOf(run)
-	defer runSimFunc.Release()
-
-	debugFunc := js.FuncOf(debug)
-	defer debugFunc.Release()
-
-	collectFunc := js.FuncOf(collect)
-	defer collectFunc.Release()
-
-	versionFunc := js.FuncOf(version)
-	defer versionFunc.Release()
-
-	global.Set("sim", runSimFunc)
-	global.Set("setcfg", setConfigFunc)
-	global.Set("checkcfg", checkConfigFunc)
-	global.Set("debug", debugFunc)
-	global.Set("collect", collectFunc)
-	global.Set("version", versionFunc)
-
-	<-done
+	<-ch
 }
 
-var cfg *ast.ActionList
-var cfgStr string
+// static helper functions (stateless)
 
-func setConfig(this js.Value, args []js.Value) interface{} {
-	in := args[0].String()
-	var err error
-	parser := ast.New(in)
-	cfg, err = parser.Parse()
-	if err != nil {
-		return marshalErr(err)
-	}
-	cfgStr = in
-
-	data, err := json.Marshal(cfg)
-	if err != nil {
-		return marshalErr(err)
-	}
-	return string(data)
+// buildInfo() -> string
+func buildInfo(this js.Value, args []js.Value) interface{} {
+	return fmt.Sprintf(`{"hash":"%v","date":"%v"}`, sha1ver, buildTime)
 }
 
-func checkConfig(this js.Value, args []js.Value) interface{} {
+// validateConfig(cfg: string) -> string
+func validateConfig(this js.Value, args []js.Value) interface{} {
 	in := args[0].String()
-	var err error
+
 	parser := ast.New(in)
-	cfg, err = parser.Parse()
+	cfg, err := parser.Parse()
 	if err != nil {
-		return marshalErr(err)
+		return marshal(err)
 	}
 
 	for i, v := range cfg.Characters {
@@ -87,119 +74,157 @@ func checkConfig(this js.Value, args []js.Value) interface{} {
 
 	data, err := json.Marshal(cfg)
 	if err != nil {
-		return marshalErr(err)
+		return marshal(err)
 	}
 	return string(data)
 }
 
-func version(this js.Value, args []js.Value) interface{} {
-	return fmt.Sprintf(`{"hash":"%v","date":"%v"}`, sha1ver, buildTime)
+// worker functions
+
+// initializeWorker(cfg: string)
+func initializeWorker(this js.Value, args []js.Value) interface{} {
+	in := args[0].String()
+	if err := initialize(in); err != nil {
+		return marshal(err)
+	}
+	return nil
 }
 
-//run simulation once
-func run(this js.Value, args []js.Value) interface{} {
-	//seed this with now
-	t := cfg.Copy()
-	c, err := simulation.NewCore(cryptoRandSeed(), false, t)
+// simulate() -> js Uint8Array
+func simulate(this js.Value, args []js.Value) interface{} {
+	cpycfg := simcfg.Copy()
+	core, err := simulation.NewCore(simulator.CryptoRandSeed(), false, cpycfg)
 	if err != nil {
-		return marshalErr(err)
+		return marshal(err)
 	}
-	s, err := simulation.New(t, c)
+
+	sim, err := simulation.New(cpycfg, core)
 	if err != nil {
-		return marshalErr(err)
+		return marshal(err)
 	}
-	res, err := s.Run()
+
+	result, err := sim.Run()
 	if err != nil {
-		return marshalErr(err)
+		return marshal(err)
 	}
-	// log.Println(res.DPS)
-	b, err := json.Marshal(res)
+
+	buffer, err = result.MarshalMsg(buffer[:0])
 	if err != nil {
-		log.Println(err)
+		return marshal(err)
 	}
-	return string(b)
+
+	dst := js.Global().Get("Uint8Array").New(len(buffer))
+	copyLen := js.CopyBytesToJS(dst, buffer)
+	if copyLen != len(buffer) {
+		marshal(errors.New("BytesToJS: copied array was the incorrect size!"))
+	}
+	return dst
 }
 
-//debug generates the debug log (does not track dps value)
-func debug(this js.Value, args []js.Value) interface{} {
-	t := cfg.Copy()
-	c, err := simulation.NewCore(cryptoRandSeed(), true, t)
-	if err != nil {
-		return marshalErr(err)
+// aggregator functions
+
+// initializeAggregator(cfg: string)
+func initializeAggregator(this js.Value, args []js.Value) interface{} {
+	in := args[0].String()
+	if err := initialize(in); err != nil {
+		return marshal(err)
 	}
-	c.Flags.LogDebug = true
-	//create a new simulation and run
-	s, err := simulation.New(t, c)
-	if err != nil {
-		return marshalErr(err)
+
+	start = time.Now()
+
+	aggregators = aggregators[:0]
+	for _, aggregator := range agg.Aggregators() {
+		a, err := aggregator(simcfg)
+		if err != nil {
+			return marshal(err)
+		}
+		aggregators = append(aggregators, a)
 	}
-	_, err = s.Run()
-	if err != nil {
-		return marshalErr(err)
+	return nil
+}
+
+// aggregate(src: Uint8Array, itr: int)
+func aggregate(this js.Value, args []js.Value) interface{} {
+	src := args[0]
+	itr := args[1].Int()
+	var err error
+
+	// golang wasm copy requires src and destination length to have enough capacity to copy
+	// should be enforced by capacity and not length but whatev....
+	// have to waste cycles here to make sure buffer has the right length
+	length := src.Get("length").Int()
+	if length > cap(buffer) {
+		buffer = make([]byte, length)
+	} else {
+		buffer = buffer[:length]
 	}
-	//capture the log
-	out, err := c.Log.Dump()
+
+	copyLen := js.CopyBytesToGo(buffer, src)
+	if copyLen != len(buffer) {
+		marshal(errors.New("BytesToGo: copied array was the incorrect size!"))
+	}
+
+	result := stats.Result{}
+	buffer, err = result.UnmarshalMsg(buffer)
 	if err != nil {
-		return marshalErr(err)
+		return marshal(err)
+	}
+
+	for _, a := range aggregators {
+		a.Add(result, itr)
+	}
+	return nil
+}
+
+// flush() -> string
+func flush(this js.Value, args []js.Value) interface{} {
+	stats := &agg.Result{}
+	for _, a := range aggregators {
+		a.Flush(stats)
+	}
+
+	opts := simulator.Options{
+		Version:          sha1ver,
+		BuildDate:        buildTime,
+		DebugMinMax:      false,
+		GZIPResult:       false,
+		ResultSaveToPath: "",
+		ConfigPath:       "",
+	}
+	result, err := simulator.GenerateResult(cfg, simcfg, stats, opts)
+	if err != nil {
+		return marshal(err)
+	}
+	result.Runtime = float64(time.Since(start).Nanoseconds())
+
+	out, err := json.Marshal(result)
+	if err != nil {
+		return marshal(err)
 	}
 	return string(out)
 }
 
-func collect(this js.Value, args []js.Value) interface{} {
-	var in []simulation.Result
-	s := args[0].String()
-	err := json.Unmarshal([]byte(s), &in)
+// internal helper functions
+
+func initialize(raw string) error {
+	parser := ast.New(raw)
+	out, err := parser.Parse()
 	if err != nil {
-		log.Println(err)
-		return marshalErr(err)
+		return err
 	}
 
-	chars := make([]string, len(cfg.Characters))
-	for i, v := range cfg.Characters {
-		chars[i] = v.Base.Key.String()
+	if cap(buffer) < DefaultBufferLength {
+		buffer = make([]byte, 0, DefaultBufferLength)
 	}
 
-	r := result.CollectResult(
-		in,
-		cfg.Settings.DamageMode,
-		chars,
-		true,
-	)
-
-	r.Iterations = cfg.Settings.Iterations
-	r.ActiveChar = cfg.InitialChar.String()
-
-	r.NumTargets = len(cfg.Targets)
-	r.CharDetails = in[0].CharDetails
-	for i := range r.CharDetails {
-		r.CharDetails[i].Stats = cfg.Characters[i].Stats
-	}
-	r.TargetDetails = cfg.Targets
-	r.Text = r.PrettyPrint()
-	r.Config = cfgStr
-
-	out, err := json.Marshal(r)
-	if err != nil {
-		return marshalErr(err)
-	}
-
-	return string(out)
+	cfg = raw
+	simcfg = out
+	return nil
 }
 
-//results aggregates all the results
-
-func cryptoRandSeed() int64 {
-	var b [8]byte
-	_, err := rand.Read(b[:])
-	if err != nil {
-		log.Panic("cannot seed math/rand package with cryptographically secure random number generator")
-	}
-	return int64(binary.LittleEndian.Uint64(b[:]))
-}
-
-func marshalErr(err error) string {
+func marshal(err error) string {
 	d := struct {
-		Err string `json:"err"`
+		Err string `json:"error"`
 	}{
 		Err: err.Error(),
 	}

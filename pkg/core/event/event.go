@@ -48,6 +48,7 @@ const (
 	OnCharacterHurt    //amount
 	OnHeal             //src char, target character, amount
 	//ability use
+	OnActionFailed //ActiveCharIndex, action.Action, param, action.ActionFailure
 	OnActionExec   //ActiveCharIndex, action.Action, param
 	OnSkill        //nil
 	OnBurst        //nil
@@ -60,6 +61,7 @@ const (
 	OnInitialize  //nil
 	OnStateChange //prev, next
 	OnEnemyAdded  //t
+	OnTick
 	EndEventTypes //elim
 )
 

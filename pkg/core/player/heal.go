@@ -53,7 +53,7 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 		Write("current", c.HPCurrent).
 		Write("max_hp", c.MaxHP())
 
-	h.Events.Emit(event.OnHeal, info.Caller, index, heal)
+	h.Events.Emit(event.OnHeal, info, index, heal)
 }
 
 type DrainInfo struct {

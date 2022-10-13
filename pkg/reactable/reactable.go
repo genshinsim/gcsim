@@ -1,7 +1,10 @@
 package reactable
 
 import (
+	"encoding/json"
+	"errors"
 	"strconv"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -18,10 +21,10 @@ const (
 	ModifierPyro
 	ModifierCryo
 	ModifierHydro
-	ModifierDendro
-	ModifierQuicken
 	ModifierBurningFuel
 	ModifierSpecialDecayDelim
+	ModifierDendro
+	ModifierQuicken
 	ModifierFrozen
 	ModifierAnemo
 	ModifierGeo
@@ -36,9 +39,9 @@ var modifierElement = []attributes.Element{
 	attributes.Cryo,
 	attributes.Hydro,
 	attributes.Dendro,
-	attributes.Quicken,
-	attributes.Dendro,
 	attributes.UnknownElement,
+	attributes.Dendro,
+	attributes.Quicken,
 	attributes.Frozen,
 	attributes.Anemo,
 	attributes.Geo,
@@ -52,10 +55,10 @@ var ModifierString = []string{
 	"pyro",
 	"cryo",
 	"hydro",
-	"dendro",
-	"quicken",
 	"dendro (fuel)",
 	"",
+	"dendro",
+	"quicken",
 	"frozen",
 	"anemo",
 	"geo",
@@ -74,6 +77,25 @@ var elementToModifier = map[attributes.Element]ReactableModifier{
 func (r ReactableModifier) Element() attributes.Element { return modifierElement[r] }
 func (r ReactableModifier) String() string              { return ModifierString[r] }
 
+func (r ReactableModifier) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ModifierString[r])
+}
+
+func (r *ReactableModifier) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	s = strings.ToLower(s)
+	for i, v := range ModifierString {
+		if v == s {
+			*r = ReactableModifier(i)
+			return nil
+		}
+	}
+	return errors.New("unrecognized ReactableModifier")
+}
+
 type Reactable struct {
 	Durability [EndReactableModifier]combat.Durability
 	DecayRate  [EndReactableModifier]combat.Durability
@@ -84,11 +106,9 @@ type Reactable struct {
 	ecSnapshot combat.AttackInfo //index of owner of next ec ticks
 	ecTickSrc  int
 	//burning specific
-	burningSnapshot               combat.AttackInfo
-	burningTickSrc                int
-	burningCachedDendroDecayRate  combat.Durability
-	burningCachedQuickenDecayRate combat.Durability
-	burningEventSubExists         bool
+	burningSnapshot       combat.AttackInfo
+	burningTickSrc        int
+	burningEventSubExists bool
 }
 
 type Enemy interface {
@@ -194,6 +214,14 @@ func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
 // rules
 func (r *Reactable) attachOrRefillNormalEle(mod ReactableModifier, dur combat.Durability) {
 	amt := 0.8 * dur
+	if mod == ModifierPyro {
+		r.attachOverlapRefreshDuration(ModifierPyro, amt, 6*dur+420)
+	} else {
+		r.attachOverlap(mod, amt, 6*dur+420)
+	}
+}
+
+func (r *Reactable) attachOverlap(mod ReactableModifier, amt combat.Durability, length combat.Durability) {
 	if r.Durability[mod] > ZeroDur {
 		add := max(amt-r.Durability[mod], 0)
 		if add > 0 {
@@ -201,28 +229,21 @@ func (r *Reactable) attachOrRefillNormalEle(mod ReactableModifier, dur combat.Du
 		}
 	} else {
 		r.Durability[mod] = amt
-		r.DecayRate[mod] = amt / (6*dur + 420)
+		r.DecayRate[mod] = amt / length
 	}
 }
 
-func (r *Reactable) attachBurningFuel(dur combat.Durability, mult combat.Durability) {
-	//burning fuel always overwrites
-	r.Durability[ModifierBurningFuel] = mult * dur
-	decayRate := mult * dur / (6*dur + 420)
-	if decayRate < 10.0/60.0 {
-		decayRate = 10.0 / 60.0
+func (r *Reactable) attachOverlapRefreshDuration(mod ReactableModifier, amt combat.Durability, length combat.Durability) {
+	if amt < r.Durability[mod] {
+		return
 	}
-	r.DecayRate[ModifierBurningFuel] = decayRate
+	r.Durability[mod] = amt
+	r.DecayRate[mod] = amt / length
 }
 
 func (r *Reactable) attachBurning() {
 	r.Durability[ModifierBurning] = 50
 	r.DecayRate[ModifierBurning] = 0
-}
-
-func (r *Reactable) attachQuicken(dur combat.Durability) {
-	r.Durability[ModifierQuicken] = dur
-	r.DecayRate[ModifierQuicken] = dur / (12*dur + 360)
 }
 
 func (r *Reactable) addDurability(mod ReactableModifier, amt combat.Durability) {
@@ -282,6 +303,14 @@ func (r *Reactable) reduce(e attributes.Element, dur combat.Durability, factor c
 	return reduced / factor
 }
 
+func (r *Reactable) deplete(m ReactableModifier) {
+	if r.Durability[m] <= ZeroDur {
+		r.Durability[m] = 0
+		r.DecayRate[m] = 0
+		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
+	}
+}
+
 func (r *Reactable) Tick() {
 
 	//duability is reduced by decay * (1 + purge)
@@ -300,13 +329,38 @@ func (r *Reactable) Tick() {
 		}
 		if r.Durability[i] > ZeroDur {
 			r.Durability[i] -= r.DecayRate[i]
-			if r.Durability[i] <= ZeroDur {
-				r.Durability[i] = 0
-				r.DecayRate[i] = 0
-				r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(i))
+			r.deplete(i)
+		}
+	}
+
+	// check burning first since that affects dendro/quicken decay
+	if r.burningTickSrc > -1 && r.Durability[ModifierBurningFuel] < ZeroDur {
+		// reset src when burning fuel is gone
+		r.burningTickSrc = -1
+		// remove burning
+		r.Durability[ModifierBurning] = 0
+		// remove existing dendro and quicken
+		r.Durability[ModifierDendro] = 0
+		r.DecayRate[ModifierDendro] = 0
+		r.Durability[ModifierQuicken] = 0
+		r.DecayRate[ModifierQuicken] = 0
+	}
+
+	//if burning fuel is present, dendro and quicken uses burning fuel decay rate
+	//otherwise it uses it's own
+	for i := ModifierDendro; i <= ModifierQuicken; i++ {
+		if r.Durability[i] < ZeroDur {
+			continue
+		}
+		rate := r.DecayRate[i]
+		if r.Durability[ModifierBurningFuel] > ZeroDur {
+			rate = r.DecayRate[ModifierBurningFuel]
+			if i == ModifierDendro {
+				rate = max(rate, r.DecayRate[i]*2)
 			}
 		}
-
+		r.Durability[i] -= rate
+		r.deplete(i)
 	}
 
 	//for freeze, durability can be calculated as:
@@ -330,28 +384,6 @@ func (r *Reactable) Tick() {
 	if r.ecTickSrc > -1 {
 		if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 			r.ecTickSrc = -1
-		}
-	}
-	if r.burningTickSrc > -1 {
-		if r.Durability[ModifierBurningFuel] < ZeroDur {
-			// reset src when burning fuel is gone
-			r.burningTickSrc = -1
-			// remove burning
-			if r.Durability[ModifierBurning] > ZeroDur {
-				// decay rate is 0 anyways
-				r.Durability[ModifierBurning] = 0
-			}
-			// remove existing dendro and quicken
-			if r.Durability[ModifierDendro] > ZeroDur {
-				r.Durability[ModifierDendro] = 0
-				r.DecayRate[ModifierDendro] = 0
-				r.burningCachedDendroDecayRate = 0
-			}
-			if r.Durability[ModifierQuicken] > ZeroDur {
-				r.Durability[ModifierQuicken] = 0
-				r.DecayRate[ModifierQuicken] = 0
-				r.burningCachedQuickenDecayRate = 0
-			}
 		}
 	}
 }

@@ -47,6 +47,11 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
   },
   diluc: { key: 'diluc', element: 'pyro', weapon_type: 'claymore' },
   diona: { key: 'diona', element: 'cryo', weapon_type: 'bow' },
+  dori: {
+    key: 'dori',
+    element: 'electro',
+    weapon_type: 'claymore',
+  },
   eula: { key: 'eula', element: 'cryo', weapon_type: 'claymore' },
   fischl: { key: 'fischl', element: 'electro', weapon_type: 'bow' },
   ganyu: { key: 'ganyu', element: 'cryo', weapon_type: 'bow' },

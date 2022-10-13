@@ -25,11 +25,11 @@ type Character interface {
 type Handler struct {
 	Opt
 	enemies     []Target
-	gadgets     []Target
+	gadgets     []Gadget
 	player      Target
 	TotalDamage float64
 	gccount     int
-	keycount    int
+	keycount    TargetKey
 }
 
 type Opt struct {
@@ -42,7 +42,7 @@ type Opt struct {
 	DamageMode    bool
 	DefHalt       bool
 	EnableHitlag  bool
-	DefaultTarget int //index for default target
+	DefaultTarget TargetKey //index for default target
 }
 
 func New(opt Opt) *Handler {
@@ -51,12 +51,12 @@ func New(opt Opt) *Handler {
 		keycount: 1,
 	}
 	h.enemies = make([]Target, 0, 5)
-	h.gadgets = make([]Target, 0, 10)
+	h.gadgets = make([]Gadget, 0, 10)
 
 	return h
 }
 
-func (h *Handler) nextkey() int {
+func (h *Handler) nextkey() TargetKey {
 	h.keycount++
 	return h.keycount - 1
 }

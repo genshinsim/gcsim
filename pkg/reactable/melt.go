@@ -28,6 +28,7 @@ func (r *Reactable) tryMelt(a *combat.AttackEvent) {
 		}
 		r.reduce(attributes.Pyro, a.Info.Durability, 0.5)
 		a.Info.AmpMult = 1.5
+		r.burningCheck()
 	default:
 		//should be here
 		return

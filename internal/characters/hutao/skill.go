@@ -134,7 +134,7 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 		if c.Base.Cons >= 2 {
 			ai.FlatDmg += c.MaxHP() * 0.1
 		}
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(trg.Index(), combat.TargettableEnemy), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key(), combat.TargettableEnemy), 0, 0)
 
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).

@@ -39,6 +39,10 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 		//s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
 	}
 
+	//default target is closest to player?
+	trgs := core.Combat.EnemyByDistance(p.X, p.Y, combat.InvalidTargetKey)
+	core.Combat.DefaultTarget = core.Combat.Enemy(trgs[0]).Key()
+
 	return nil
 }
 
@@ -230,8 +234,8 @@ func SetupResonance(s *core.Core) {
 					}
 					return false
 				}
-				// s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
-				// s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
 				s.Events.Subscribe(event.OnQuicken, twoEl, "dendro-res")
 
 				threeBuff := make([]float64, attributes.EndStatType)
@@ -250,8 +254,8 @@ func SetupResonance(s *core.Core) {
 				}
 				s.Events.Subscribe(event.OnAggravate, threeEl, "dendro-res")
 				s.Events.Subscribe(event.OnSpread, threeEl, "dendro-res")
-				// s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
-				// s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
 			}
 		}
 	}
