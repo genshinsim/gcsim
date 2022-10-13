@@ -160,7 +160,7 @@ func (c *char) skillB() action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(f),
 		AnimationLength: skillBFrames[action.InvalidAction],
-		CanQueueAfter:   skillBFrames[action.ActionJump], // earliest cancel is 3f before SkillBHitmark
+		CanQueueAfter:   skillBFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
