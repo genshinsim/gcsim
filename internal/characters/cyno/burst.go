@@ -29,17 +29,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstExtension = 0 // resets the number of possible extensions to the burst each time
 	c.c4counter = 0      // ignore this lol, this wont affect even if c4() is inactive, but it works to reset the number of ocurrences of said cons
 	c.c6stacks = 0       // same as above
-	c.Core.Tasks.Add(func() {
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(burstKey, 600),
-			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				m := make([]float64, attributes.EndStatType)
-				m[attributes.EM] = 100
-				return m, true
-			},
-		})
-	}, 112)
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
+		AffectedStat: attributes.EM,
+		Amount: func() ([]float64, bool) {
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.EM] = 100
+			return m, true
+		},
+	})
 
 	// First endseer starts at  around 296 frames after animation (source I made it the fuck up)
 	c.Core.Tasks.Add(func() {
