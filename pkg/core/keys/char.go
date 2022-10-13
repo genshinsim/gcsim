@@ -142,7 +142,7 @@ var charNames = []string{
 	"beidou",
 	"bennett",
 	"chongyun",
-	"Cyno",
+	"cyno",
 	"diluc",
 	"diona",
 	"eula",
