@@ -50,6 +50,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability:         25,
 		FlatDmg:            skillDmg[chargeLevel][c.TalentLvlSkill()] * c.MaxHP(),
 		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.05 * 60,
 		CanBeDefenseHalted: true,
 	}
 
@@ -61,12 +62,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	switch chargeLevel {
 	case 0:
-		ai.HitlagHaltFrames = 0.06 * 60 // TODO: check hitlag frames
 		c.Core.QueueParticle("candace", 2, attributes.Hydro, c.ParticleDelay+hitDelay)
 	case 1:
 		c.Core.QueueParticle("candace", 3, attributes.Hydro, c.ParticleDelay+hitDelay)
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
-		ai.HitlagHaltFrames = 0.09 * 60 // TODO: check hitlag frames
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitDelay, hitDelay)
