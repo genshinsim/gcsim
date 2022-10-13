@@ -158,6 +158,9 @@
         "this_page_is": "This page is not implemented yet. Stay tuned!"
     },
     "viewer": {
+        "results": "Results",
+        "analyze": "Analyze",
+        
         "ability_usage_count": "Ability Usage Count (Average)",
         "api_key_supporters": "API Key (Supporters only)",
         "attack": "Attack",

@@ -1,3 +1,5 @@
+const { Colors } = require("@blueprintjs/core");
+
 module.exports = {
   mode: "jit",
   future: {
@@ -34,6 +36,30 @@ module.exports = {
         "bp-header-color": "#394b59",
         "bp-card-color": "#30404d",
         "bp-bg": "#293742",
+
+        // https://blueprintjs.com/docs/#core/colors
+        "bp4-black": Colors.BLACK,
+        "bp4-dark-gray": {
+          100: Colors.DARK_GRAY1,
+          200: Colors.DARK_GRAY2,
+          300: Colors.DARK_GRAY3,
+          400: Colors.DARK_GRAY4,
+          500: Colors.DARK_GRAY5,
+        },
+        "bp4-gray": {
+          100: Colors.GRAY1,
+          200: Colors.GRAY2,
+          300: Colors.GRAY3,
+          400: Colors.GRAY4,
+          500: Colors.GRAY5,
+        },
+        "bp4-light-gray": {
+          100: Colors.LIGHT_GRAY1,
+          200: Colors.LIGHT_GRAY2,
+          300: Colors.LIGHT_GRAY3,
+          400: Colors.LIGHT_GRAY4,
+          500: Colors.LIGHT_GRAY5,
+        }
       },
     },
   },
