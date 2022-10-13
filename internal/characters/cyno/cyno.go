@@ -10,8 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
-const c1key = "cyno-c1-key"
-
 func init() {
 	core.RegisterCharFunc(keys.Cyno, NewChar)
 }

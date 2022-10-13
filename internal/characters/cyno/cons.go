@@ -10,6 +10,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const c1key = "cyno-c1"
+
 // After using Sacred Rite: Wolf's Swiftness, Cyno's Normal Attack SPD will be increased by 20% for 10s.
 // If the Judication effect of his Passive Talent Featherfall Judgment is triggered during Secret Rite: Chasmic Soulfarer,
 // the duration of this increase will be refreshed.
@@ -17,14 +19,13 @@ import (
 // You need to unlock the Passive Talent "Featherfall Judgment."
 func (c *char) c1() {
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("cyno-c1", 300), //5s
+		Base:         modifier.NewBaseWithHitlag("cyno-c1", 300), // 5s
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
 			return c.c1buff, true
 		},
 	})
 	c.AddStatus(c1key, 600, true)
-
 }
 
 // When Cyno's Normal Attacks hit opponents, his Normal Attack CRIT Rate and CRIT DMG will be increased by 3% and 6% respectively for 4s.
@@ -47,18 +48,16 @@ func (c *char) c2() {
 		m[attributes.ElectroP] = 0.1
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("cyno-c2-%v-stack", c.c2counter+1), 240), //4s
+			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("cyno-c2-%v-stack", c.c2counter+1), 240), // 4s
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
-
 				return m, true
 			},
 		})
-		c.AddStatus(c2Icd, 6, true)         //0.1s icd
-		c.c2counter = (c.c2counter + 1) % 5 //stacks are independent from each other, this will cycle them
+		c.AddStatus(c2Icd, 6, true)         // 0.1s icd
+		c.c2counter = (c.c2counter + 1) % 5 // stacks are independent from each other, this will cycle them
 		return false
 	}, "cyno-c2")
-
 }
 
 // When Cyno is in the Pactsworn Pathclearer state triggered by Sacred Rite: Wolf's Swiftness,
@@ -71,7 +70,7 @@ func (c *char) c4() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.c4counter > 4 { //counting from 0 to 4, 5 instances max
+		if c.c4counter > 4 { // counting from 0 to 4, 5 instances max
 			return false
 		}
 		c.c4counter++
@@ -91,7 +90,6 @@ func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnAggravate, restore, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, restore, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, restore, "cyno-c4")
-
 }
 
 // After using Sacred Rite: Wolf's Swiftness or triggering the Judication effect of the Passive Talent "Featherfall Judgment,"
@@ -115,8 +113,8 @@ func (c *char) c6() {
 		if !c.StatusIsActive("cyno-c6") {
 			return false
 		}
-		//Queue the attack
-		ai := combat.AttackInfo{ //TODO: idk about the ICD and attack on this one being the same as the normal dust bolt
+		// Queue the attack
+		ai := combat.AttackInfo{ // TODO: idk about the ICD and attack on this one being the same as the normal dust bolt
 			ActorIndex: c.Index,
 			Abil:       "Cyno C6 proc",
 			AttackTag:  combat.AttackTagElementalArt,
@@ -125,18 +123,17 @@ func (c *char) c6() {
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       1.0,
-			FlatDmg:    c.Stat(attributes.EM) * 2.5, //this is the A4
+			FlatDmg:    c.Stat(attributes.EM) * 2.5, // this is the A4
 		}
 
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
-			skillBHitmark, //TODO:Hitmark frames for this bullet
+			skillBHitmark, // TODO:Hitmark frames for this bullet
 			skillBHitmark,
 		)
 
 		c.c6stacks--
 		return false
 	}, "cyno-c6")
-
 }

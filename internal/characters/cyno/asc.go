@@ -1,5 +1,7 @@
 package cyno
 
+const a1Key = "cyno-a1"
+
 // When Cyno is in the Pactsworn Pathclearer state activated by Sacred Rite: Wolf's Swiftness,
 // Cyno will enter the Endseer stance at intervals. If he activates Secret Rite: Chasmic Soulfarer whle affected by this stance,
 // he will activate the Judication effect, increasing the DMG of this Secret Rite: Chasmic Soulfarer by 35%,

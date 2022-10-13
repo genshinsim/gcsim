@@ -8,10 +8,7 @@ import (
 
 var burstFrames []int
 
-const (
-	burstKey = "cynoburst"
-	a1Key    = "endseer"
-)
+const burstKey = "cyno-burst"
 
 func init() {
 	burstFrames = frames.InitAbilSlice(86) // Q -> E
