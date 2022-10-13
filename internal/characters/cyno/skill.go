@@ -39,9 +39,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	// check if Q is up for different E
 	if c.StatusIsActive(burstKey) {
-		return c.skillB() // SkillB is Mortuary Rite (skill during burst)
+		return c.skillB()
 	}
 
 	ai := combat.AttackInfo{
