@@ -115,22 +115,23 @@ func (c *char) c6() {
 		}
 		// Queue the attack
 		ai := combat.AttackInfo{ // TODO: idk about the ICD and attack on this one being the same as the normal dust bolt
-			ActorIndex: c.Index,
-			Abil:       "Cyno C6 proc",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			Element:    attributes.Electro,
-			Durability: 25,
-			Mult:       1.0,
-			FlatDmg:    c.Stat(attributes.EM) * 2.5, // this is the A4
+			ActorIndex:   c.Index,
+			Abil:         "Raiment: Just Scales (C6)",
+			AttackTag:    combat.AttackTagElementalArt,
+			ICDTag:       combat.ICDTagNone,
+			ICDGroup:     combat.ICDGroupDefault,
+			Element:      attributes.Electro,
+			Durability:   25,
+			IsDeployable: true,
+			Mult:         1.0,
+			FlatDmg:      c.Stat(attributes.EM) * 2.5, // this is the A4
 		}
 
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
-			skillBHitmark, // TODO:Hitmark frames for this bullet
-			skillBHitmark,
+			0,
+			0,
 		)
 
 		c.c6stacks--
