@@ -62,10 +62,12 @@ func (c *char) c2() {
 	}, "cyno-c2")
 }
 
-// When Cyno is in the Pactsworn Pathclearer state triggered by Sacred Rite: Wolf's Swiftness,
-// after he triggers Electro-Charged, Superconduct, Overloaded, Quicken, Aggravate, Hyperbloom, an Electro Swirl
-// or an Electro Crystallization reaction, he will restore 3 Elemental Energy for all nearby party members (except himself.)
-// This effect can occur 5 times within one use of Sacred Rite: Wolf's Swiftness.
+// When Cyno is in the Pactsworn Pathclearer state triggered by Sacred Rite:
+// Wolf's Swiftness, after he triggers Electro-Charged, Superconduct,
+// Overloaded, Quicken, Aggravate, Hyperbloom, or an Electro Swirl reaction, he
+// will restore 3 Elemental Energy for all nearby party members (except
+// himself.)
+// This effect can occur 5 times within one use of Sacred Rite: Wolf’s Swiftness.
 func (c *char) c4() {
 	restore := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
