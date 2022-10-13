@@ -56,14 +56,6 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
-		return 25
-	}
-	return c.Character.ActionStam(a, p)
-}
-
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "endseer":
