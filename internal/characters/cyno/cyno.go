@@ -21,6 +21,7 @@ type char struct {
 	c2counter      int
 	c4counter      int
 	c6stacks       int
+	a1Extended     bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -39,6 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.onSwapClearBurst()
+	c.a1Extension()
 	c.a4()
 
 	if c.Base.Cons >= 1 {
