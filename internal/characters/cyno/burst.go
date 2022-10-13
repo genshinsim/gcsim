@@ -25,7 +25,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	// idk if this gets affected by hitlag
 	c.burstExtension = 0 // resets the number of possible extensions to the burst each time
 	c.c4counter = 0      // ignore this lol, this wont affect even if c4() is inactive, but it works to reset the number of ocurrences of said cons
 	c.c6stacks = 0       // same as above

@@ -40,7 +40,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	if c.NormalHitNum >= burstHitNum { // this should avoid the panic error
 		c.NormalHitNum = normalHitNum
-		c.ResetNormalCounter() // TODO:verify is cyno resets his attack string if burst expires
+		c.ResetNormalCounter()
 	}
 	c.NormalHitNum = normalHitNum
 	for i, mult := range attack[c.NormalCounter] {
@@ -76,7 +76,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-const burstHitNum = 5 // Burst attack chains have 5
+const burstHitNum = 5
 
 var (
 	attackBFrames          [][]int
