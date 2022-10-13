@@ -105,6 +105,8 @@ func init() {
 }
 
 func (c *char) attackB(p map[string]int) action.ActionInfo {
+	c.tryBurstPPSlide(attackBHitmarks[c.NormalCounter][len(attackBHitmarks[c.NormalCounter])-1])
+
 	for i, mult := range attackB[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,

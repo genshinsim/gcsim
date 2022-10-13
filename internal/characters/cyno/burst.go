@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -67,6 +68,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
+	}
+}
+
+func (c *char) tryBurstPPSlide(hitmark int) {
+	duration := c.StatusDuration(burstKey)
+	if 0 < duration && duration < hitmark {
+		c.ExtendStatus(burstKey, hitmark-c.StatusDuration(burstKey)+1)
+		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index).
+			Write("expiry", c.StatusExpiry(burstKey))
 	}
 }
 

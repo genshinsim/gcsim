@@ -55,8 +55,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 }
 
 var (
-	chargeBFrames   []int
-	chargeBHitmarks = 27
+	chargeBFrames  []int
+	chargeBHitmark = 27
 )
 
 func init() {
@@ -69,6 +69,8 @@ func init() {
 }
 
 func (c *char) chargeB(p map[string]int) action.ActionInfo {
+	c.tryBurstPPSlide(chargeBHitmark)
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Pactsworn Pathclearer Charge",
@@ -91,12 +93,12 @@ func (c *char) chargeB(p map[string]int) action.ActionInfo {
 			0,
 			0,
 		)
-	}, chargeBHitmarks)
+	}, chargeBHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeBFrames),
 		AnimationLength: chargeBFrames[action.InvalidAction],
-		CanQueueAfter:   chargeBHitmarks,
+		CanQueueAfter:   chargeBHitmark,
 		State:           action.ChargeAttackState,
 	}
 }

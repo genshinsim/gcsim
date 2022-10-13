@@ -78,6 +78,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillB() action.ActionInfo {
+	c.tryBurstPPSlide(skillBHitmark)
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Mortuary Rite",
