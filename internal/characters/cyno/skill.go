@@ -103,7 +103,7 @@ func (c *char) skillB() action.ActionInfo {
 	} else {
 		// apply the extra damage on skill
 		c.judiscation()
-		if c.Base.Cons >= 1 && c.StatusIsActive(c1key) {
+		if c.Base.Cons >= 1 && c.StatusIsActive(c1Key) {
 			c.c1()
 		}
 		if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on judication
