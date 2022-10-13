@@ -128,7 +128,7 @@ func (c *char) burstSwap() {
 			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
 			waveHitmark,
 			waveHitmark,
-		) // TODO: find correct timing
+		)
 		c.waveCount++
 		return false
 	}, "candace-burst-swap")
