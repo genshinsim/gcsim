@@ -13,13 +13,17 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark = 102 // TODO: find correct hitmark
+	burstHitmark = 33
 	burstKey     = "candace-burst"
-	waveHitmark  = 16 // TODO: find correct hitmark
+	waveHitmark  = 1
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(102)
+	burstFrames = frames.InitAbilSlice(51)
+	burstFrames[action.ActionAttack] = 50
+	burstFrames[action.ActionDash] = 50
+	burstFrames[action.ActionJump] = 50
+	burstFrames[action.ActionSwap] = 49
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -47,41 +51,42 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		duration = 720
 	}
 
-	// TODO: check if this is the right implementation
-	for _, char := range c.Core.Player.Chars() {
-		// TODO: find correct buff timing
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(burstKey, duration),
-			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagNormal {
-					return nil, false
-				}
-				if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
-					return nil, false
-				}
-				m := make([]float64, attributes.EndStatType)
-				m[attributes.DmgP] = 0.2
-				return m, true
-			},
-		})
-		c.Core.Player.AddWeaponInfuse(
-			c.Index,
-			"candace-infuse",
-			attributes.Hydro,
-			duration,
-			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-		) // TODO: does this refresh constantly or one time?
-		c.a4(char, duration)
-	}
+	// timer starts at hitmark
+	c.QueueCharTask(func() {
+		for _, char := range c.Core.Player.Chars() {
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBaseWithHitlag(burstKey, duration),
+				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+					if atk.Info.AttackTag != combat.AttackTagNormal {
+						return nil, false
+					}
+					if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
+						return nil, false
+					}
+					m := make([]float64, attributes.EndStatType)
+					m[attributes.DmgP] = 0.2
+					return m, true
+				},
+			})
+			c.Core.Player.AddWeaponInfuse(
+				c.Index,
+				"candace-infuse",
+				attributes.Hydro,
+				duration,
+				true,
+				combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+			) // TODO: does this refresh constantly or one time?
+			c.a4(char, duration)
+		}
+	}, burstHitmark)
 
-	c.ConsumeEnergy(4)                 // TODO: find correct energy timing
-	c.SetCD(action.ActionBurst, 15*60) // TODO: find correct CD timing
+	c.ConsumeEnergy(4)
+	c.SetCD(action.ActionBurst, 15*60)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }
