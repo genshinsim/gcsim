@@ -35,10 +35,10 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatusIsActive(burstKey) {
-		c.NormalHitNum = BurstHitNum
+		c.NormalHitNum = burstHitNum
 		return c.attackB(p) // go to burst mode attacks
 	}
-	if c.NormalHitNum >= BurstHitNum { // this should avoid the panic error
+	if c.NormalHitNum >= burstHitNum { // this should avoid the panic error
 		c.NormalHitNum = normalHitNum
 		c.ResetNormalCounter() // TODO:verify is cyno resets his attack string if burst expires
 	}
@@ -76,27 +76,32 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-const BurstHitNum = 5 // Burst attack chains have 5
+const burstHitNum = 5 // Burst attack chains have 5
 
 var (
-	attackBFrames         [][]int
-	attackBEarliestCancel = []int{14, 16, 18, 12, 41}
-	attackBHitmarks       = [][]int{{14}, {16}, {18}, {12, 21}, {41}}
+	attackBFrames   [][]int
+	attackBHitmarks = [][]int{{12}, {14}, {18}, {5, 14}, {40}}
 )
 
 func init() {
 	// NA cancels (burst)
-	attackBFrames = make([][]int, BurstHitNum) // Should be 5
+	attackBFrames = make([][]int, burstHitNum)
+	attackBFrames[0] = frames.InitNormalCancelSlice(attackBHitmarks[0][0], 28) // N1 -> N2
+	attackBFrames[0][action.ActionAttack] = 16
 
-	attackBFrames[0] = frames.InitNormalCancelSlice(attackBEarliestCancel[0], 18) // N1 -> N2
-	attackBFrames[1] = frames.InitNormalCancelSlice(attackBEarliestCancel[1], 37) // N2 -> N3
-	attackBFrames[2] = frames.InitNormalCancelSlice(attackBEarliestCancel[2], 37) // N3 -> N4
-	attackBFrames[3] = frames.InitNormalCancelSlice(attackBEarliestCancel[3], 34) // N4 -> N5
-	attackBFrames[4] = frames.InitNormalCancelSlice(attackBEarliestCancel[4], 61) // N5 -> N1
-	// TODO: honestly idk what i am doing at dis point pls forgive me Koli
+	attackBFrames[1] = frames.InitNormalCancelSlice(attackBHitmarks[1][0], 35) // N2 -> N3
+	attackBFrames[1][action.ActionAttack] = 31
+
+	attackBFrames[2] = frames.InitNormalCancelSlice(attackBHitmarks[2][0], 41) // N3 -> N4
+	attackBFrames[2][action.ActionCharge] = 39
+
+	attackBFrames[3] = frames.InitNormalCancelSlice(attackBHitmarks[3][0], 36) // N4 -> N5
+	attackBFrames[3][action.ActionAttack] = 27
+
+	attackBFrames[4] = frames.InitNormalCancelSlice(attackBHitmarks[4][0], 62) // N5 -> N1
+	attackBFrames[4][action.ActionCharge] = 500                                // illegal action
 }
 
-// TODO: Adjust the attack frame values (this ones are source: i made them the fuck up)
 func (c *char) attackB(p map[string]int) action.ActionInfo {
 	for i, mult := range attackB[c.NormalCounter] {
 		ai := combat.AttackInfo{
@@ -107,8 +112,8 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			ICDGroup:           combat.ICDGroupDefault,
 			Element:            attributes.Electro,
 			Durability:         25,
-			HitlagFactor:       attackHitlagFactor[c.NormalCounter],
-			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter],
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   0,
 			CanBeDefenseHalted: true,
 		}
 		// i just copy pasted raiden code, why do we use ax:=ai i will never know
@@ -126,7 +131,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackBFrames),
 		AnimationLength: attackBFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackBEarliestCancel[c.NormalCounter],
+		CanQueueAfter:   attackBHitmarks[c.NormalCounter][len(attackBHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 }
