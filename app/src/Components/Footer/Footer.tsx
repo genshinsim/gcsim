@@ -40,7 +40,7 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      <div className="mr-auto text-xs basis-full  md:basis-auto p-1">
+      <div className="mr-auto text-xs basis-full md:basis-auto p-1 self-center">
         <Trans>footer.gcsim_is_not</Trans>
       </div>
     </div>
