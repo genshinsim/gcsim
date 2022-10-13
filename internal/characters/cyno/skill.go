@@ -9,16 +9,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var SkillBCDStarts = 32
-
 var (
-	skillHitmark   = 21
-	SkillBHitmarks = 32
+	skillHitmark  = 21
+	skillBHitmark = 28
 )
 
 var (
 	skillFrames  []int
-	SkillBFrames []int
+	skillBFrames []int
 )
 
 func init() {
@@ -27,13 +25,11 @@ func init() {
 	skillFrames[action.ActionJump] = 32
 	skillFrames[action.ActionSwap] = 42
 
-	// outside of Q
-
-	// Furry E
-	SkillBFrames = make([]int, 2)
-
-	// inside of Q
-	SkillBFrames = frames.InitAbilSlice(37) // Hold E -> N1
+	// mortuary rite frames
+	skillBFrames = frames.InitAbilSlice(34)
+	skillBFrames[action.ActionDash] = 30
+	skillBFrames[action.ActionJump] = 31
+	skillBFrames[action.ActionSwap] = 33
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -91,8 +87,8 @@ func (c *char) SkillB() action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy),
-			SkillBHitmarks,
-			SkillBHitmarks,
+			skillBHitmark,
+			skillBHitmark,
 		)
 	} else {
 		// apply the extra damage on skill
@@ -111,8 +107,8 @@ func (c *char) SkillB() action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy),
-			SkillBHitmarks,
-			SkillBHitmarks,
+			skillBHitmark,
+			skillBHitmark,
 		)
 		// Apply the extra hit
 		ai.Abil = "Duststalker Bolt"
@@ -127,8 +123,8 @@ func (c *char) SkillB() action.ActionInfo {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
-				SkillBHitmarks,
-				SkillBHitmarks,
+				skillBHitmark,
+				skillBHitmark,
 			)
 		}
 
@@ -142,15 +138,14 @@ func (c *char) SkillB() action.ActionInfo {
 	if c.Core.Rand.Float64() < .33 {
 		count++
 	}
-	c.Core.QueueParticle("cyno", count, attributes.Electro, SkillBHitmarks+c.ParticleDelay)
+	c.Core.QueueParticle("cyno", count, attributes.Electro, skillBHitmark+c.ParticleDelay)
 
-	cd := 3 * 60
-	c.SetCDWithDelay(action.ActionSkill, int(cd), SkillBCDStarts)
+	c.SetCDWithDelay(action.ActionSkill, 180, 26)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(SkillBFrames),
-		AnimationLength: SkillBFrames[action.InvalidAction],
-		CanQueueAfter:   SkillBFrames[action.ActionJump], // earliest cancel is 3f before SkillBHitmark
+		Frames:          frames.NewAbilFunc(skillBFrames),
+		AnimationLength: skillBFrames[action.InvalidAction],
+		CanQueueAfter:   skillBFrames[action.ActionJump], // earliest cancel is 3f before SkillBHitmark
 		State:           action.SkillState,
 	}
 }
