@@ -9,12 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const skillBName = "Mortuary Rite"
+
 var (
 	skillHitmark  = 21
 	skillBHitmark = 28
-)
-
-var (
 	skillFrames   []int
 	skillBFrames  []int
 	skillA1Frames []int
@@ -82,7 +81,7 @@ func (c *char) skillB() action.ActionInfo {
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
-		Abil:               "Mortuary Rite",
+		Abil:               skillBName,
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
@@ -171,9 +170,10 @@ func (c *char) judiscation() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.35
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("cyno-a1", 60), // 1 second should be enough to be applied... TODO: this is scuff af
+		Base: modifier.NewBase("cyno-a1-dmg", 60), // 1 second should be enough to be applied... TODO: this is scuff af
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+			// cyno's a1 only buffs the skill dmg, not bolts. ugly hack, but gets the job done
+			if atk.Info.Abil != skillBName {
 				return nil, false
 			}
 			return m, true
