@@ -125,6 +125,7 @@ func (c *char) skillB() action.ActionInfo {
 		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 // this is the A4
 		ai.ICDTag = combat.ICDTagCynoBolt
 		ai.ICDGroup = combat.ICDGroupCynoBolt
+		ai.IsDeployable = true
 
 		// 3 instances
 		// TODO: timing (frames) of each instance
