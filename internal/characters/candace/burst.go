@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -68,14 +69,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					return m, true
 				},
 			})
-			c.Core.Player.AddWeaponInfuse(
-				c.Index,
-				"candace-infuse",
-				attributes.Hydro,
-				duration,
-				true,
-				combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-			) // TODO: does this refresh constantly or one time?
+			switch char.Weapon.Class {
+			case weapon.WeaponClassClaymore,
+				weapon.WeaponClassSpear,
+				weapon.WeaponClassSword:
+				c.Core.Player.AddWeaponInfuse(
+					c.Index,
+					"candace-infuse",
+					attributes.Hydro,
+					duration,
+					true,
+					combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+				) // TODO: does this refresh constantly or one time?
+			}
 			c.a4(char, duration)
 		}
 	}, burstHitmark)
