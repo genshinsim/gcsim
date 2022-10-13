@@ -9,43 +9,39 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var SkillACDStarts = 32
 var SkillBCDStarts = 32
 
-var SkillAHitmarks = 32
-var SkillBHitmarks = 32
+var (
+	skillHitmark   = 21
+	SkillBHitmarks = 32
+)
 
-var SkillAFrames []int
-var SkillBFrames []int
-
-const ()
+var (
+	skillFrames  []int
+	SkillBFrames []int
+)
 
 func init() {
-	// Tap E
-	SkillAFrames = make([]int, 2)
+	skillFrames = frames.InitAbilSlice(43)
+	skillFrames[action.ActionDash] = 31
+	skillFrames[action.ActionJump] = 32
+	skillFrames[action.ActionSwap] = 42
 
 	// outside of Q
-	SkillAFrames = frames.InitAbilSlice(37)
 
 	// Furry E
 	SkillBFrames = make([]int, 2)
 
 	// inside of Q
 	SkillBFrames = frames.InitAbilSlice(37) // Hold E -> N1
-
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// check if Q is up for different E
 	if c.StatusIsActive(burstKey) {
-		return c.SkillB() //SkillB is Mortuary Rite (skill during burst)
+		return c.SkillB() // SkillB is Mortuary Rite (skill during burst)
 	}
 
-	return c.SkillA() //SkillA is normal, non burst boosted skill
-}
-
-func (c *char) SkillA() action.ActionInfo {
-	//TODO: Adjust the attack frame values (this ones are source: i made them the fuck up)
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Secret Rite: Chasmic Soulfarer",
@@ -54,7 +50,7 @@ func (c *char) SkillA() action.ActionInfo {
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Electro,
 		Durability:         25,
-		Mult:               skillA[c.TalentLvlSkill()],
+		Mult:               skill[c.TalentLvlSkill()],
 		HitlagHaltFrames:   0.1 * 60,
 		HitlagFactor:       0.03,
 		CanBeDefenseHalted: true,
@@ -63,24 +59,23 @@ func (c *char) SkillA() action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
-		SkillAHitmarks,
-		SkillAHitmarks,
+		skillHitmark,
+		skillHitmark,
 	)
 
-	c.Core.QueueParticle("cyno", 3, attributes.Electro, SkillAHitmarks+c.ParticleDelay)
-	cd := 7.5 * 60
-	c.SetCDWithDelay(action.ActionSkill, int(cd), SkillACDStarts)
+	c.Core.QueueParticle("cyno", 3, attributes.Electro, skillHitmark+c.ParticleDelay)
+	c.SetCDWithDelay(action.ActionSkill, 450, 17)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(SkillAFrames),
-		AnimationLength: SkillAFrames[action.InvalidAction],
-		CanQueueAfter:   SkillAFrames[action.ActionDash], // earliest cancel is 1f before SkillAHitmark
+		Frames:          frames.NewAbilFunc(skillFrames),
+		AnimationLength: skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
 
 func (c *char) SkillB() action.ActionInfo {
-	//TODO: Adjust the attack frame values (this ones are source: i made them the fuck up)
+	// TODO: Adjust the attack frame values (this ones are source: i made them the fuck up)
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Mortuary Rite",
@@ -92,7 +87,7 @@ func (c *char) SkillB() action.ActionInfo {
 		Mult:       skillB[c.TalentLvlSkill()],
 	}
 
-	if !c.StatusIsActive(a4key) { //check for endseer buff
+	if !c.StatusIsActive(a4key) { // check for endseer buff
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy),
@@ -100,14 +95,14 @@ func (c *char) SkillB() action.ActionInfo {
 			SkillBHitmarks,
 		)
 	} else {
-		//apply the extra damage on skill
+		// apply the extra damage on skill
 		c.judiscation()
 		if c.Base.Cons >= 1 && c.StatusIsActive(c1key) {
 			c.c1()
 		}
-		if c.Base.Cons >= 6 { //constellation 6 giving 4 stacks on judication
+		if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on judication
 			c.c6stacks += 4
-			c.AddStatus("cyno-c6", 480, true) //8s*60
+			c.AddStatus("cyno-c6", 480, true) // 8s*60
 			if c.c6stacks > 8 {
 				c.c6stacks = 8
 			}
@@ -119,15 +114,15 @@ func (c *char) SkillB() action.ActionInfo {
 			SkillBHitmarks,
 			SkillBHitmarks,
 		)
-		//Apply the extra hit
+		// Apply the extra hit
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
-		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 //this is the A4
+		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 // this is the A4
 		ai.ICDTag = combat.ICDTagCynoBolt
 		ai.ICDGroup = combat.ICDGroupCynoBolt
 
-		//3 instances
-		//TODO: timing (frames) of each instance
+		// 3 instances
+		// TODO: timing (frames) of each instance
 		for i := 0; i < 3; i++ {
 			c.Core.QueueAttack(
 				ai,
@@ -138,12 +133,12 @@ func (c *char) SkillB() action.ActionInfo {
 		}
 
 	}
-	if c.burstExtension < 2 { //burst can only be extended 2 times per burst cycle (up to 18s, 10s base and +4 each time)
-		c.ExtendStatus(burstKey, 240) //4s*60
+	if c.burstExtension < 2 { // burst can only be extended 2 times per burst cycle (up to 18s, 10s base and +4 each time)
+		c.ExtendStatus(burstKey, 240) // 4s*60
 		c.burstExtension++
 	}
 
-	var count float64 = 1 //33% of generating 2 on furry form
+	var count float64 = 1 // 33% of generating 2 on furry form
 	if c.Core.Rand.Float64() < .33 {
 		count++
 	}
@@ -165,7 +160,7 @@ func (c *char) judiscation() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.35
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("cyno-a1", 60), //1 second should be enough to be applied... TODO: this is scuff af
+		Base: modifier.NewBase("cyno-a1", 60), // 1 second should be enough to be applied... TODO: this is scuff af
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
 				return nil, false
@@ -173,5 +168,4 @@ func (c *char) judiscation() {
 			return m, true
 		},
 	})
-
 }
