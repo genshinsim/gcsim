@@ -14,37 +14,39 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(84) // Q -> E
-
+	burstFrames = frames.InitAbilSlice(86) // Q -> E
+	burstFrames[action.ActionAttack] = 84
+	burstFrames[action.ActionSkill] = 84
+	burstFrames[action.ActionDash] = 84
+	burstFrames[action.ActionSwap] = 83
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//use a special modifier to track burst
-	//TODO: idk if the duration gets extended by burst animation or not
-	//idk if this gets affected by hitlag
-	c.burstExtension = 0 //resets the number of possible extensions to the burst each time
-	c.c4counter = 0      //ignore this lol, this wont affect even if c4() is inactive, but it works to reset the number of ocurrences of said cons
-	c.c6stacks = 0       //same as above
+	// use a special modifier to track burst
+	// TODO: idk if the duration gets extended by burst animation or not
+	// idk if this gets affected by hitlag
+	c.burstExtension = 0 // resets the number of possible extensions to the burst each time
+	c.c4counter = 0      // ignore this lol, this wont affect even if c4() is inactive, but it works to reset the number of ocurrences of said cons
+	c.c6stacks = 0       // same as above
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(burstKey, 600, true)
-	}, burstFrames[action.ActionAttack])
+	}, 112)
 
-	//First endseer starts at  around 296 frames after animation (source I made it the fuck up)
+	// First endseer starts at  around 296 frames after animation (source I made it the fuck up)
 	c.Core.Tasks.Add(func() {
 		c.a1()
 	}, burstFrames[action.ActionAttack]+296)
 
-	//TODO: CD starts ticking before the animation?
-	c.SetCD(action.ActionBurst, 1200)               // 20s * 60
-	c.ReduceActionCooldown(action.ActionSkill, 270) //TODO: if this is wrong blame clre
-	//TODO: point at which cyno consumes energy
-	c.ConsumeEnergy(4)
+	c.SetCD(action.ActionBurst, 1200)
+	c.ReduceActionCooldown(action.ActionSkill, 270) // TODO: if this is wrong blame clre
+	c.ConsumeEnergy(3)
+
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
-	if c.Base.Cons >= 6 { //constellation 6 giving 4 stacks on burst
+	if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on burst
 		c.c6stacks += 4
-		c.AddStatus("cyno-c6", 480, true) //8s*60
+		c.AddStatus("cyno-c6", 480, true) // 8s*60
 		if c.c6stacks > 8 {
 			c.c6stacks = 8
 		}
@@ -53,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.InvalidAction],
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }
