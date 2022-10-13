@@ -35,7 +35,7 @@ func init() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// check if Q is up for different E
 	if c.StatusIsActive(burstKey) {
-		return c.SkillB() // SkillB is Mortuary Rite (skill during burst)
+		return c.skillB() // SkillB is Mortuary Rite (skill during burst)
 	}
 
 	ai := combat.AttackInfo{
@@ -70,17 +70,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) SkillB() action.ActionInfo {
-	// TODO: Adjust the attack frame values (this ones are source: i made them the fuck up)
+func (c *char) skillB() action.ActionInfo {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Mortuary Rite",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Electro,
-		Durability: 25,
-		Mult:       skillB[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Mortuary Rite",
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Electro,
+		Durability:         25,
+		Mult:               skillB[c.TalentLvlSkill()],
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.03 * 60,
+		CanBeDefenseHalted: false,
 	}
 
 	if !c.StatusIsActive(a4key) { // check for endseer buff
