@@ -131,7 +131,7 @@ export function Debugger({
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-x-auto">
       <FormGroup label="Search" inline>
         <InputGroup
           type="text"

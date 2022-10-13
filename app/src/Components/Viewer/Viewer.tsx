@@ -158,7 +158,7 @@ function ViewOnly(props: ViewProps) {
             className="focus:outline-none"
           />
           <Tabs.Expander />
-          <ButtonGroup>
+          <ButtonGroup className="invisible sm:visible">
             <Button onClick={copyToClipboard} icon="clipboard">
               <Trans>viewer.copy</Trans>
             </Button>
