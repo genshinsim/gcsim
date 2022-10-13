@@ -55,12 +55,3 @@ func (c *char) Init() error {
 
 	return nil
 }
-
-func (c *char) Condition(fields []string) (any, error) {
-	switch fields[0] {
-	case "endseer":
-		return c.StatusIsActive(a1Key), nil
-	default:
-		return c.Character.Condition(fields)
-	}
-}
