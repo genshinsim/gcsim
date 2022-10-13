@@ -39,11 +39,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		},
 	})
 
-	// First endseer starts at  around 296 frames after animation (source I made it the fuck up)
-	c.Core.Tasks.Add(func() {
-		c.a1()
-	}, burstFrames[action.ActionAttack]+296)
-
+	c.QueueCharTask(c.a1, 328)
 	c.SetCD(action.ActionBurst, 1200)
 	c.ReduceActionCooldown(action.ActionSkill, 270) // TODO: if this is wrong blame clre
 	c.ConsumeEnergy(3)
