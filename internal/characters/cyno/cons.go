@@ -28,9 +28,9 @@ func (c *char) c1() {
 	c.AddStatus(c1key, 600, true)
 }
 
-// When Cyno's Normal Attacks hit opponents, his Normal Attack CRIT Rate and CRIT DMG will be increased by 3% and 6% respectively for 4s.
-// This effect can be triggered once every 0.1s.
-// Max 5 stacks. Each stack's duration is counted independently.
+// When Cyno's Normal Attacks hit opponents, his Electro DMG Bonus will
+// increase by 10% for 4s. This effect can be triggered once every 0.1s. Max 5
+// stacks.
 func (c *char) c2() {
 	const c2Icd = "cyno-c2-icd"
 	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
@@ -88,7 +88,7 @@ func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnSuperconduct, restore, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnQuicken, restore, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnAggravate, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnCrystallizeElectro, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnHyperbloom, restore, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, restore, "cyno-c4")
 }
 
