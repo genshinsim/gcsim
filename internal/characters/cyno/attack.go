@@ -119,14 +119,11 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackBHitlagHaltFrame[c.NormalCounter][i],
 			CanBeDefenseHalted: attackBDefHalt[c.NormalCounter][i],
+			Mult:               mult[c.TalentLvlBurst()],
+			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
 		}
-		// i just copy pasted raiden code, why do we use ax:=ai i will never know
-		ax := ai
-		ax.Mult = mult[c.TalentLvlBurst()]
-		ax.FlatDmg = c.Stat(attributes.EM) * 1.5 // this is A4
-
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
 		}, attackBHitmarks[c.NormalCounter][i])
 	}
 

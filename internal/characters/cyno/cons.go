@@ -19,13 +19,14 @@ const c1key = "cyno-c1"
 // You need to unlock the Passive Talent "Featherfall Judgment."
 func (c *char) c1() {
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("cyno-c1", 300), // 5s
+		Base:         modifier.NewBaseWithHitlag(c1key, 600), // 10s
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() ([]float64, bool) {
-			return c.c1buff, true
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.AtkSpd] = 0.2
+			return m, true
 		},
 	})
-	c.AddStatus(c1key, 600, true)
 }
 
 // When Cyno's Normal Attacks hit opponents, his Electro DMG Bonus will

@@ -39,10 +39,3 @@ func (c *char) a1Extension() {
 		return false
 	}, "cyno-a1-dash")
 }
-
-// Cyno's DMG values will be increased based on his Elemental Mastery as follows:
-// Pactsworn Pathclearer's Normal Attack DMG is increased by 100% of his Elemental Mastery.
-// Duststalker Bolt DMG from his Ascension Talent Featherfall Judgment is increased by 250% of his Elemental Mastery.
-func (c *char) a4() {
-	// I just added this at flat damage on the attack frames lol
-}

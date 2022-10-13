@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -41,12 +40,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	c.onSwapClearBurst()
 	c.a1Extension()
-	c.a4()
-
-	if c.Base.Cons >= 1 {
-		c.c1buff = make([]float64, attributes.EndStatType)
-		c.c1buff[attributes.AtkSpd] = .2
-	}
 
 	if c.Base.Cons >= 2 {
 		c.c2()
