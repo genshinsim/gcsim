@@ -12,14 +12,14 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{14}, {17}, {13, 22}, {27}}
-	attackHitlagHaltFrame = []float64{0.1, 0.1, 0.1, 0.15, 0.15} // TODO:verify this with DM}
-	attackHitlagFactor    = []float64{0.01, 0.01, 0.05, 0.01, 0.01}
+	attackHitlagHaltFrame = [][]float64{{0.01}, {0.06}, {0, 0.02}, {0.04}}
+	attackDefHalt         = [][]bool{{false}, {true}, {false, true}, {true}}
 )
 
 const normalHitNum = 4
 
 func init() {
-	attackFrames = make([][]int, normalHitNum)                               // should be 4
+	attackFrames = make([][]int, normalHitNum)
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 28) // N1 -> N2
 	attackFrames[0][action.ActionAttack] = 15
 
@@ -53,9 +53,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ICDGroup:           combat.ICDGroupDefault,
 			Element:            attributes.Physical,
 			Durability:         25,
-			HitlagFactor:       attackHitlagFactor[c.NormalCounter],
-			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter],
-			CanBeDefenseHalted: true,
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i],
+			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 
 		c.Core.QueueAttack(
