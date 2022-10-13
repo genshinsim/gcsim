@@ -10,7 +10,7 @@ var burstFrames []int
 
 const (
 	burstKey = "cynoburst"
-	a4key    = "endseer"
+	a1Key    = "endseer"
 )
 
 func init() {

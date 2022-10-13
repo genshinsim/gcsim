@@ -92,7 +92,7 @@ func (c *char) skillB() action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 
-	if !c.StatusIsActive(a4key) { // check for endseer buff
+	if !c.StatusIsActive(a1Key) { // check for endseer buff
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy),
@@ -152,7 +152,7 @@ func (c *char) skillB() action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, 180, 26)
 
 	f := skillBFrames
-	if c.StatusIsActive(a4key) {
+	if c.StatusIsActive(a1Key) {
 		f = skillA1Frames
 	}
 	return action.ActionInfo{

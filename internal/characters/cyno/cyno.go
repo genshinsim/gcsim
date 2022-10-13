@@ -82,7 +82,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "endseer":
-		return c.StatusIsActive(a4key), nil
+		return c.StatusIsActive(a1Key), nil
 	default:
 		return c.Character.Condition(fields)
 	}
