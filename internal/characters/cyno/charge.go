@@ -55,14 +55,16 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 var (
 	chargeBFrames   []int
-	chargeBHitmarks = 24
+	chargeBHitmarks = 27
 )
 
 func init() {
 	// charge (burst) -> x
-	chargeBFrames = frames.InitAbilSlice(56)
-	chargeBFrames[action.ActionDash] = chargeBHitmarks
-	chargeBFrames[action.ActionJump] = chargeBHitmarks
+	chargeBFrames = frames.InitAbilSlice(65)
+	chargeBFrames[action.ActionSkill] = 63
+	chargeBFrames[action.ActionDash] = 26
+	chargeBFrames[action.ActionJump] = 26
+	chargeBFrames[action.ActionSwap] = 63
 }
 
 func (c *char) chargeB(p map[string]int) action.ActionInfo {
