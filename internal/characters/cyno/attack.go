@@ -79,8 +79,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 const burstHitNum = 5 // Burst attack chains have 5
 
 var (
-	attackBFrames   [][]int
-	attackBHitmarks = [][]int{{12}, {14}, {18}, {5, 14}, {40}}
+	attackBFrames          [][]int
+	attackBHitmarks        = [][]int{{12}, {14}, {18}, {5, 14}, {40}}
+	attackBHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.03}, {0.01, 0.03}, {0.05}}
+	attackBDefHalt         = [][]bool{{false}, {false}, {false}, {false, false}, {true}}
 )
 
 func init() {
@@ -113,8 +115,8 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			Element:            attributes.Electro,
 			Durability:         25,
 			HitlagFactor:       0.01,
-			HitlagHaltFrames:   0,
-			CanBeDefenseHalted: true,
+			HitlagHaltFrames:   attackBHitlagHaltFrame[c.NormalCounter][i],
+			CanBeDefenseHalted: attackBDefHalt[c.NormalCounter][i],
 		}
 		// i just copy pasted raiden code, why do we use ax:=ai i will never know
 		ax := ai
