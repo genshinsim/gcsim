@@ -9,15 +9,14 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 22
+const chargeHitmark = 24
 
-// TODO: frames of all of this shit (we dont haveeeeeeeeeeeeeeeeeee)
 func init() {
-	// charge -> x
-	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 36
+	chargeFrames = frames.InitAbilSlice(63)
+	chargeFrames[action.ActionBurst] = 62
+	chargeFrames[action.ActionDash] = 24
+	chargeFrames[action.ActionJump] = 24
+	chargeFrames[action.ActionSwap] = 61
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -39,7 +38,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:               charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
+		chargeHitmark,
+		chargeHitmark,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
@@ -49,8 +53,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 }
 
-var chargeBFrames []int
-var chargeBHitmarks = 24
+var (
+	chargeBFrames   []int
+	chargeBHitmarks = 24
+)
 
 func init() {
 	// charge (burst) -> x
