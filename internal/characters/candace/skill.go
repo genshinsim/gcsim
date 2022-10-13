@@ -10,28 +10,32 @@ import (
 
 var (
 	skillFrames   [][]int
-	skillHitmarks = []int{26, 88} // TODO: find correct hitmarks
-	skillCDStarts = []int{13, 40} // TODO: find correct CD starts
+	skillHitmarks = []int{26, 91}
+	skillCDStarts = []int{14, 89}
 	skillCD       = []int{360, 540}
 )
 
 func init() {
-	skillFrames = make([][]int, 2) // TODO: find correct frames
+	skillFrames = make([][]int, 2)
 	// Tap E
 	skillFrames[0] = frames.InitAbilSlice(26)
+	skillFrames[0][action.ActionBurst] = 25
+	skillFrames[0][action.ActionSwap] = 25
 	// Hold E
-	skillFrames[1] = frames.InitAbilSlice(88)
+	skillFrames[1] = frames.InitAbilSlice(113)
+	skillFrames[0][action.ActionAttack] = 112
+	skillFrames[0][action.ActionBurst] = 112
+	skillFrames[0][action.ActionJump] = 111
+	skillFrames[0][action.ActionSwap] = 110
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	// Hold parameter gets used in action frames to get earliest possible release frame
 	chargeLevel := p["hold"]
 	if chargeLevel > 1 {
 		chargeLevel = 1
 	}
-	animIdx := chargeLevel
-	if p["perfect"] == 1 {
-		animIdx = 0
+	perfect := p["perfect"] != 0
+	if perfect {
 		chargeLevel = 1
 	}
 
@@ -50,7 +54,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	// Particle should spawn after hit
-	hitDelay := skillHitmarks[animIdx]
+	hitDelay := skillHitmarks[chargeLevel]
+	if perfect {
+		hitDelay -= 55
+	}
+
 	switch chargeLevel {
 	case 0:
 		ai.HitlagHaltFrames = 0.06 * 60 // TODO: check hitlag frames
@@ -76,16 +84,22 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Expires:    c.Core.F + hitDelay,
 	})
 
-	cd := skillCD[animIdx]
+	cd := skillCD[chargeLevel]
 	if c.Base.Cons >= 4 {
 		cd = skillCD[0]
 	}
-	c.SetCDWithDelay(action.ActionSkill, cd, skillCDStarts[animIdx])
+	c.SetCDWithDelay(action.ActionSkill, cd, skillCDStarts[chargeLevel])
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillFrames[animIdx]),
-		AnimationLength: skillFrames[animIdx][action.InvalidAction],
-		CanQueueAfter:   skillFrames[animIdx][action.ActionJump], // earliest cancel
+		Frames: func(next action.Action) int {
+			f := skillFrames[chargeLevel][next]
+			if perfect {
+				f -= 55
+			}
+			return f
+		},
+		AnimationLength: skillFrames[chargeLevel][action.InvalidAction],
+		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
 }
