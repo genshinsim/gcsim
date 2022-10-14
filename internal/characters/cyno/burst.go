@@ -76,7 +76,6 @@ func (c *char) onExitField() {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
-		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
 		if prev == c.Index {
 			c.DeleteStatus(burstKey)
