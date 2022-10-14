@@ -43,9 +43,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
-		HitlagFactor:       0.01,
-		HitlagHaltFrames:   0,
-		CanBeDefenseHalted: false,
 	}
 
 	c.Core.QueueAttack(
