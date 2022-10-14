@@ -149,7 +149,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ai, c.attackBPattern(c.NormalCounter), 0, 0)
 		}, attackBHitmarks[c.NormalCounter][i])
 	}
 
@@ -161,4 +161,32 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackBHitmarks[c.NormalCounter][len(attackBHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
+}
+
+func (c *char) attackBPattern(attackIndex int) combat.AttackPattern {
+	switch attackIndex {
+	case 0:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget)
+	case 1:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget)
+	case 2:
+		return combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			3.0,
+			false,
+			combat.TargettableEnemy,
+			combat.TargettableGadget,
+		) // supposed to be box x=2.5,z=6.0
+	case 3: // both hits are 2.5m radius circles
+		return combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			2.5,
+			false,
+			combat.TargettableEnemy,
+			combat.TargettableGadget,
+		)
+	case 4:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy, combat.TargettableGadget)
+	}
+	panic("unreachable code")
 }
