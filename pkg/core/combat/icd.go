@@ -111,7 +111,7 @@ var ICDGroupResetTimer = []int{
 	120, //yelan burst
 	180, //collei burst
 	150, //tighnari
-	150, //cyno skill bolts TODO:verify reset timer
+	150, //cyno skill bolts
 	180, //dori burst
 	30,  //reaction a
 	30,  //reaciton b
