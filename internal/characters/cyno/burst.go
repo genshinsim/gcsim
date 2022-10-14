@@ -71,7 +71,7 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 	}
 }
 
-func (c *char) onSwapClearBurst() {
+func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		if !c.StatusIsActive(burstKey) {
 			return false

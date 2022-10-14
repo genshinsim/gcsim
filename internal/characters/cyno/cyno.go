@@ -37,7 +37,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.onSwapClearBurst()
+	c.onExitField()
 	c.a1Extension()
 
 	if c.Base.Cons >= 2 {
