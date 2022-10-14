@@ -117,11 +117,10 @@ func (c *char) skillB() action.ActionInfo {
 		ai.IsDeployable = true
 
 		// 3 instances
-		// TODO: timing (frames) of each instance
 		for i := 0; i < 3; i++ {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.3, false, combat.TargettableEnemy),
 				skillBHitmark,
 				skillBHitmark,
 			)
