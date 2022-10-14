@@ -5,8 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const skillBName = "Mortuary Rite"
@@ -101,7 +99,7 @@ func (c *char) skillB() action.ActionInfo {
 		)
 	} else {
 		// apply the extra damage on skill
-		c.judiscation()
+		c.a1Buff()
 		if c.Base.Cons >= 1 && c.StatusIsActive(c1Key) {
 			c.c1()
 		}
@@ -162,20 +160,4 @@ func (c *char) skillB() action.ActionInfo {
 		CanQueueAfter:   skillBFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
-}
-
-// TODO:I am applying the skill dmg bonus this way to ensure that the skill gets the dmg bonus even if endseer expires mid cast (this may not be neccesary)
-func (c *char) judiscation() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.35
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("cyno-a1-dmg", 60), // 1 second should be enough to be applied... TODO: this is scuff af
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			// cyno's a1 only buffs the skill dmg, not bolts. ugly hack, but gets the job done
-			if atk.Info.Abil != skillBName {
-				return nil, false
-			}
-			return m, true
-		},
-	})
 }

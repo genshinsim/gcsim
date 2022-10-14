@@ -1,8 +1,12 @@
 package cyno
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const a1Key = "cyno-a1"
@@ -19,6 +23,23 @@ func (c *char) a1() {
 	c.a1Extended = false
 	c.AddStatus(a1Key, 84, true)
 	c.QueueCharTask(c.a1, 234)
+}
+
+func (c *char) a1Buff() {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.35
+	// game also implements dmg buff with 1s modifier
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("cyno-a1-dmg", 60),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			// actual game uses AttackTagElementalArtExtra for a1, this is a decent
+			// workaround
+			if atk.Info.Abil != skillBName {
+				return nil, false
+			}
+			return m, true
+		},
+	})
 }
 
 // If cyno dashes with the a1 modifier, he will increase the modifier's
