@@ -792,7 +792,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 		Rarity:      4,
 		Body:        profile.BodyGirl,
 		Element:     attributes.Electro,
-		Region:      profile.ZoneMondstadt, //TODO:I think Sumeru zone is on dendro branch so i wont bother for now
+		Region:      profile.ZoneSumeru,
 		WeaponType:  weapon.WeaponClassClaymore,
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
