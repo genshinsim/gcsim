@@ -56,10 +56,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-		ax := ai
-		ax.Mult = mult[c.TalentLvlAttack()]
+		ai.Mult = mult[c.TalentLvlAttack()]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
@@ -112,14 +111,13 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		// Sword hits are dynamic - group snapshots with damage proc
-		ax := ai
-		ax.Mult = mult[c.TalentLvlBurst()]
-		ax.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
+		ai.Mult = mult[c.TalentLvlBurst()]
+		ai.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
 		if c.Base.Cons >= 2 {
 			ai.IgnoreDefPercent = .6
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0, c.burstRestorefunc, c.c6)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0, c.burstRestorefunc, c.c6)
 		}, swordHitmarks[c.NormalCounter][i])
 	}
 
