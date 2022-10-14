@@ -77,7 +77,6 @@ func (c *char) skillB() action.ActionInfo {
 		Mult:               skillB[c.TalentLvlSkill()],
 		HitlagFactor:       0.01,
 		HitlagHaltFrames:   0.03 * 60,
-		CanBeDefenseHalted: false,
 	}
 
 	if !c.StatusIsActive(a1Key) { // check for endseer buff
@@ -113,6 +112,8 @@ func (c *char) skillB() action.ActionInfo {
 		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 // this is the A4
 		ai.ICDTag = combat.ICDTagCynoBolt
 		ai.ICDGroup = combat.ICDGroupCynoBolt
+		ai.HitlagFactor = 0
+		ai.HitlagHaltFrames = 0
 		ai.IsDeployable = true
 
 		// 3 instances
