@@ -14,7 +14,6 @@ var (
 	skillBHitmark = 28
 	skillFrames   []int
 	skillBFrames  []int
-	skillA1Frames []int
 )
 
 func init() {
@@ -28,12 +27,6 @@ func init() {
 	skillBFrames[action.ActionDash] = 30
 	skillBFrames[action.ActionJump] = 31
 	skillBFrames[action.ActionSwap] = 33
-
-	// skill has different frame data with endseers
-	skillA1Frames = frames.InitAbilSlice(35)
-	skillA1Frames[action.ActionDash] = 30
-	skillA1Frames[action.ActionJump] = 31
-	skillA1Frames[action.ActionSwap] = 33
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -150,12 +143,8 @@ func (c *char) skillB() action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 180, 26)
 
-	f := skillBFrames
-	if c.StatusIsActive(a1Key) {
-		f = skillA1Frames
-	}
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(f),
+		Frames:          frames.NewAbilFunc(skillBFrames),
 		AnimationLength: skillBFrames[action.InvalidAction],
 		CanQueueAfter:   skillBFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
