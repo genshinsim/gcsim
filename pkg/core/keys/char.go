@@ -111,6 +111,7 @@ const (
 	Tighnari
 	Collei
 	Dori
+	Nilou
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -133,7 +134,7 @@ var charNames = []string{
 	"luminecryo",
 	"aether",
 	"lumine",
-	"", //delim for traveler
+	"", // delim for traveler
 	"albedo",
 	"aloy",
 	"amber",
@@ -187,6 +188,7 @@ var charNames = []string{
 	"tighnari",
 	"collei",
 	"dori",
+	"nilou",
 	"test_char_do_not_use",
 }
 
@@ -262,6 +264,7 @@ var charPrettyName = []string{
 	"Tighnari",
 	"Collei",
 	"Dori",
+	"Nilou",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -333,5 +336,6 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Tighnari:         attributes.Dendro,
 	Collei:           attributes.Dendro,
 	Dori:             attributes.Electro,
+	Nilou:            attributes.Hydro,
 	TestCharDoNotUse: attributes.Geo,
 }

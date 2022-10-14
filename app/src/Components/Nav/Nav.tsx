@@ -29,7 +29,7 @@ export default function Nav() {
     <Navbar>
       <NavbarGroup align={Alignment.LEFT} className="w-full">
         <img
-          src="images/logo.png"
+          src="/images/logo.png"
           className=" object-contain max-h-[75%] mt-auto mb-auto mr-1"
         />
         <Link href="/">
@@ -54,13 +54,13 @@ export default function Nav() {
                 </span>
               </AnchorButton>
             </Link>
-            <Link href="/db">
+            <a href="https://db.gcsim.app" target="_blank">
               <AnchorButton className={Classes.MINIMAL} icon="database">
                 <span className="hidden md:block">
                   <Trans>nav.teams_db</Trans>
                 </span>
               </AnchorButton>
-            </Link>
+            </a>
             <Link href="/about">
               <AnchorButton className={Classes.MINIMAL} icon="info-sign">
                 <span className="hidden md:block">

@@ -1,6 +1,18 @@
 package simulation
 
 import (
+	// stats collectors
+	_ "github.com/genshinsim/gcsim/pkg/stats/legacy"
+	// TODO: re-enable as part of full stats refactor
+	// _ "github.com/genshinsim/gcsim/pkg/stats/action"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/damage"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/energy"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/heal"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/reaction"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/shield"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/status"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/swap"
+
 	//artifacts
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/berserker"
@@ -49,6 +61,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
+	_ "github.com/genshinsim/gcsim/internal/characters/dori"
 	_ "github.com/genshinsim/gcsim/internal/characters/eula"
 	_ "github.com/genshinsim/gcsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gcsim/internal/characters/ganyu"
@@ -65,6 +78,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/kuki"
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
 	_ "github.com/genshinsim/gcsim/internal/characters/mona"
+	_ "github.com/genshinsim/gcsim/internal/characters/nilou"
 	_ "github.com/genshinsim/gcsim/internal/characters/ningguang"
 	_ "github.com/genshinsim/gcsim/internal/characters/noelle"
 	_ "github.com/genshinsim/gcsim/internal/characters/qiqi"
@@ -221,6 +235,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/harbinger"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/ironsting"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/kagotsurubeisshin"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/keyofkhajnisut"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/lion"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/mistsplitter"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/primordial"

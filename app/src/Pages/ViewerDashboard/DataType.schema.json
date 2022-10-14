@@ -367,7 +367,7 @@
           "type": "string"
         },
         "debug": {
-          "type": "string"
+          "type": ["string", "array"]
         },
         "runtime": {
           "type": "number"

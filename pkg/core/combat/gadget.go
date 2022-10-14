@@ -8,6 +8,7 @@ const (
 	GadgetTypUnknown GadgetTyp = iota
 	GadgetTypDendroCore
 	GadgetTypGuoba
+	GadgetTypBountifulCore
 	GadgetTypTest
 	EndGadgetTyp
 )
@@ -17,6 +18,7 @@ var gadgetLimits []int
 func init() {
 	gadgetLimits = make([]int, EndGadgetTyp)
 	gadgetLimits[GadgetTypDendroCore] = 5
+	gadgetLimits[GadgetTypBountifulCore] = 5
 	gadgetLimits[GadgetTypTest] = 2
 }
 

@@ -123,11 +123,11 @@ func (c *Handler) EnemiesWithinRadius(x, y, r float64) []int {
 }
 
 // EnemyExcl returns array of indices of enemies, excluding self
-func (c *Handler) EnemyExcl(self int) []int {
+func (c *Handler) EnemyExcl(self TargetKey) []int {
 	result := make([]int, 0, len(c.enemies))
 
-	for i := range c.enemies {
-		if i == self {
+	for i, e := range c.enemies {
+		if e.Key() == self {
 			continue
 		}
 		result = append(result, i)

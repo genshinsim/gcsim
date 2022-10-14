@@ -57,6 +57,9 @@ const (
 	ICDTagKleeFireDamage
 	ICDTagTartagliaRiptideFlash
 	ICDTagColleiSprout
+	ICDTagDoriC2
+	ICDTagDoriChargingStation
+	ICDTagNilouTranquilityAura
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
@@ -88,6 +91,8 @@ const (
 	ICDGroupYelanBurst
 	ICDGroupColleiBurst
 	ICDGroupTighnari
+	ICDGroupDoriBurst
+	ICDGroupNilou
 	ICDGroupReactionA
 	ICDGroupReactionB
 	ICDGroupBurning
@@ -106,6 +111,8 @@ var ICDGroupResetTimer = []int{
 	120, //yelan burst
 	180, //collei burst
 	150, //tighnari
+	180, //dori burst
+	114, //nilou
 	30,  //reaction a
 	30,  //reaciton b
 	120, //burning
@@ -134,6 +141,10 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//tighnari
 	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+	//dori burst
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	//nilou
+	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
 	//reaction a
 	{1.0, 1.0},
 	//reaction b
@@ -164,6 +175,10 @@ var ICDGroupDamageSequence = [][]float64{
 	//collei burst
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//tighnari
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//dori burst
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//nilou
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//ele A
 	{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},

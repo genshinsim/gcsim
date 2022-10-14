@@ -96,7 +96,8 @@ func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Act
 			return c.Player.SwapCD == 0 || c.Player.Active() == char.Index, nil
 		}
 		//TODO: nil map may cause problems here??
-		return char.ActionReady(act, nil), nil
+		ok, _ := char.ActionReady(act, nil)
+		return ok, nil
 	default:
 		return 0, fmt.Errorf("bad character ability condition: invalid type %v", typ)
 	}

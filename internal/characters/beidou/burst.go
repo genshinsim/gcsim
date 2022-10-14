@@ -152,7 +152,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 	}
 	return func(a combat.AttackCB) {
 		//on hit figure out the next target
-		trgs := c.Core.Combat.EnemyExcl(a.Target.Index())
+		trgs := c.Core.Combat.EnemyExcl(a.Target.Key())
 		if len(trgs) == 0 {
 			//do nothing if no other target other than this one
 			return
@@ -162,7 +162,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		//queue an attack vs next target
 		atk := *c.burstAtk
 		atk.SourceFrame = src
-		atk.Pattern = combat.NewDefSingleTarget(c.Core.Combat.Enemy(next).Key(), combat.TargettableEnemy)
+		atk.Pattern = combat.NewDefSingleTarget(c.Core.Combat.Enemy(trgs[next]).Key(), combat.TargettableEnemy)
 		cb := c.chain(src, count+1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
