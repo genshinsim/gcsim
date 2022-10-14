@@ -215,7 +215,7 @@ func (c *char) TranquilityAura() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Tranquility Aura",
-		AttackTag:  combat.AttackTagElementalArt, // TODO: or AttackTagNone?
+		AttackTag:  combat.AttackTagNone,
 		ICDTag:     combat.ICDTagNilouTranquilityAura,
 		ICDGroup:   combat.ICDGroupNilou,
 		Element:    attributes.Hydro,
