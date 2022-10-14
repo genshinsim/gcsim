@@ -20,10 +20,10 @@ const normalHitNum = 4
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 28) // N1 -> N2
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 28) // N1 -> CA
 	attackFrames[0][action.ActionAttack] = 15
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 23) // N2 -> N3
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 23) // N2 -> CA
 	attackFrames[1][action.ActionAttack] = 22
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 27) // N3 -> N4
@@ -88,16 +88,16 @@ var (
 func init() {
 	// NA cancels (burst)
 	attackBFrames = make([][]int, burstHitNum)
-	attackBFrames[0] = frames.InitNormalCancelSlice(attackBHitmarks[0][0], 28) // N1 -> N2
+	attackBFrames[0] = frames.InitNormalCancelSlice(attackBHitmarks[0][0], 28) // N1 -> CA
 	attackBFrames[0][action.ActionAttack] = 16
 
-	attackBFrames[1] = frames.InitNormalCancelSlice(attackBHitmarks[1][0], 35) // N2 -> N3
+	attackBFrames[1] = frames.InitNormalCancelSlice(attackBHitmarks[1][0], 35) // N2 -> CA
 	attackBFrames[1][action.ActionAttack] = 31
 
 	attackBFrames[2] = frames.InitNormalCancelSlice(attackBHitmarks[2][0], 41) // N3 -> N4
 	attackBFrames[2][action.ActionCharge] = 39
 
-	attackBFrames[3] = frames.InitNormalCancelSlice(attackBHitmarks[3][0], 36) // N4 -> N5
+	attackBFrames[3] = frames.InitNormalCancelSlice(attackBHitmarks[3][0], 36) // N4 -> CA
 	attackBFrames[3][action.ActionAttack] = 27
 
 	attackBFrames[4] = frames.InitNormalCancelSlice(attackBHitmarks[4][0], 62) // N5 -> N1
