@@ -26,8 +26,8 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstExtension = 0 // resets the number of possible extensions to the burst each time
-	c.c4counter = 0      // ignore this lol, this wont affect even if c4() is inactive, but it works to reset the number of ocurrences of said cons
-	c.c6stacks = 0       // same as above
+	c.c4Counter = 0      // ignore this lol, this wont affect even if c4() is inactive, but it works to reset the number of ocurrences of said cons
+	c.c6Stacks = 0       // same as above
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
 		AffectedStat: attributes.EM,
@@ -47,10 +47,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.c1()
 	}
 	if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on burst
-		c.c6stacks += 4
+		c.c6Stacks += 4
 		c.AddStatus("cyno-c6", 480, true) // 8s*60
-		if c.c6stacks > 8 {
-			c.c6stacks = 8
+		if c.c6Stacks > 8 {
+			c.c6Stacks = 8
 		}
 	}
 

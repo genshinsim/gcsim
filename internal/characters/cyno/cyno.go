@@ -15,10 +15,10 @@ func init() {
 type char struct {
 	*tmpl.Character
 	burstExtension float64
-	c1buff         []float64
-	c2counter      int
-	c4counter      int
-	c6stacks       int
+	c1Buff         []float64
+	c2Counter      int
+	c4Counter      int
+	c6Stacks       int
 	a1Extended     bool
 }
 

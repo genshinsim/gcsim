@@ -50,14 +50,14 @@ func (c *char) c2() {
 		m[attributes.ElectroP] = 0.1
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("cyno-c2-%v-stack", c.c2counter+1), 240), // 4s
+			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("cyno-c2-%v-stack", c.c2Counter+1), 240), // 4s
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 		})
 		c.AddStatus(c2Icd, 6, true)         // 0.1s icd
-		c.c2counter = (c.c2counter + 1) % 5 // stacks are independent from each other, this will cycle them
+		c.c2Counter = (c.c2Counter + 1) % 5 // stacks are independent from each other, this will cycle them
 		return false
 	}, "cyno-c2")
 }
@@ -74,10 +74,10 @@ func (c *char) c4() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.c4counter > 4 { // counting from 0 to 4, 5 instances max
+		if c.c4Counter > 4 { // counting from 0 to 4, 5 instances max
 			return false
 		}
-		c.c4counter++
+		c.c4Counter++
 		for _, this := range c.Core.Player.Chars() {
 			// not for cyno
 			if this.Index != c.Index {
@@ -108,7 +108,7 @@ func (c *char) c6() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if c.c6stacks == 0 {
+		if c.c6Stacks == 0 {
 			return false
 		}
 		if atk.Info.AttackTag != combat.AttackTagNormal {
@@ -138,7 +138,7 @@ func (c *char) c6() {
 			0,
 		)
 
-		c.c6stacks--
+		c.c6Stacks--
 		return false
 	}, "cyno-c6")
 }
