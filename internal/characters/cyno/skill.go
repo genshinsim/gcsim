@@ -94,7 +94,7 @@ func (c *char) skillB() action.ActionInfo {
 		}
 		if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on judication
 			c.c6Stacks += 4
-			c.AddStatus("cyno-c6", 480, true) // 8s*60
+			c.AddStatus(c6Key, 480, true) // 8s*60
 			if c.c6Stacks > 8 {
 				c.c6Stacks = 8
 			}
