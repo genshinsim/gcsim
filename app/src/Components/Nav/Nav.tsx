@@ -86,12 +86,12 @@ export default function Nav() {
               i18n.changeLanguage(e.target.value);
             }}
           >
-            <option value="English">{t('nav.english')}</option>
-            <option value="Chinese">{t('nav.chinese')}</option>
-            <option value="German">{t('nav.german')}</option>
-            <option value="Japanese">{t('nav.japanese')}</option>
-            <option value="Spanish">{t('nav.spanish')}</option>
-            <option value="Russian">{t('nav.russian')}</option>
+            <option value="en">{t('nav.english')}</option>
+            <option value="zh">{t('nav.chinese')}</option>
+            <option value="de">{t('nav.german')}</option>
+            <option value="ja">{t('nav.japanese')}</option>
+            <option value="es">{t('nav.spanish')}</option>
+            <option value="ru">{t('nav.russian')}</option>
           </HTMLSelect>
         </div>
       </NavbarGroup>

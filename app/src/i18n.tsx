@@ -10,27 +10,27 @@ import IngameNames from "../public/locales/IngameNames.json";
 import { initReactI18next } from "react-i18next";
 
 const resources = {
-  English: {
+  en: {
     translation: English,
     game: IngameNames.English,
   },
-  Chinese: {
+  zh: {
     translation: Chinese,
     game: IngameNames.Chinese,
   },
-  German: {
+  de: {
     translation: German,
     game: IngameNames.German,
   },
-  Japanese: {
+  ja: {
     translation: Japanese,
     game: IngameNames.Japanese,
   },
-  Spanish: {
+  es: {
     translation: Spanish,
     game: IngameNames.Spanish,
   },
-  Russian: {
+  ru: {
     translation: Russian,
     game: IngameNames.Russian,
   },
@@ -42,8 +42,8 @@ i18n
   .init({
     resources,
     defaultNS: "translation",
-    lng: "English",
-    fallbackLng: "English",
+    lng: "en",
+    fallbackLng: "en",
     debug: false,
     interpolation: {
       escapeValue: false,
