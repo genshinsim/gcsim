@@ -15,7 +15,7 @@ var burstFrames []int
 
 const (
 	burstHitmark = 33
-	burstKey     = "candace-burst"
+	burstKey     = "candace-q"
 	waveHitmark  = 1
 )
 
