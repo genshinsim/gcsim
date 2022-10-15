@@ -42,7 +42,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy),
-		chargeHitmark,
+		0,
 		chargeHitmark,
 	)
 
@@ -86,14 +86,12 @@ func (c *char) chargeB(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
-	c.QueueCharTask(func() {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
-			0,
-			0,
-		)
-	}, chargeBHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
+		0,
+		chargeBHitmark,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeBFrames),
