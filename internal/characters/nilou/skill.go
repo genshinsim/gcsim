@@ -114,7 +114,7 @@ func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.Action
 				dur += 6 * 60
 			}
 			c.AddStatus(tranquilityAuraStatus, dur, true)
-			c.QueueCharTask(c.TranquilityAura, 15) // every 0.25 sec
+			c.QueueCharTask(c.TranquilityAura, 30) // every 0.25 sec
 		}
 	}
 
@@ -223,7 +223,7 @@ func (c *char) TranquilityAura() {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), -1, 1)
 
-	c.QueueCharTask(c.TranquilityAura, 15)
+	c.QueueCharTask(c.TranquilityAura, 30)
 }
 
 // Clears Nilou skill when she leaves the field
