@@ -128,7 +128,7 @@ func (c *char) c6() {
 		if !c.StatusIsActive(c6Key) {
 			return false
 		}
-		// Queue the attack
+		// technically should use ICDGroupCynoC6, but it's just reskinned standard ICD
 		ai := combat.AttackInfo{
 			ActorIndex:   c.Index,
 			Abil:         "Raiment: Just Scales (C6)",
