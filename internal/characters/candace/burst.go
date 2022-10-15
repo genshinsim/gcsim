@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -121,7 +120,7 @@ func (c *char) burstSwap() {
 			Durability:         25,
 			FlatDmg:            burstWaveDmg[c.TalentLvlBurst()] * c.MaxHP(),
 			HitlagFactor:       0.01,
-			CanBeDefenseHalted: char.Base.Key == keys.Candace,
+			CanBeDefenseHalted: true,
 		}
 		c.Core.QueueAttack(
 			ai,
