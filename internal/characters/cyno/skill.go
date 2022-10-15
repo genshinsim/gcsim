@@ -35,14 +35,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Secret Rite: Chasmic Soulfarer",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		Element:            attributes.Electro,
-		Durability:         25,
-		Mult:               skill[c.TalentLvlSkill()],
+		ActorIndex: c.Index,
+		Abil:       "Secret Rite: Chasmic Soulfarer",
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
+		Element:    attributes.Electro,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
 	}
 
 	c.Core.QueueAttack(
@@ -67,16 +68,17 @@ func (c *char) skillB() action.ActionInfo {
 	c.tryBurstPPSlide(skillBHitmark)
 
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               skillBName,
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		Element:            attributes.Electro,
-		Durability:         25,
-		Mult:               skillB[c.TalentLvlSkill()],
-		HitlagFactor:       0.01,
-		HitlagHaltFrames:   0.03 * 60,
+		ActorIndex:       c.Index,
+		Abil:             skillBName,
+		AttackTag:        combat.AttackTagElementalArt,
+		ICDTag:           combat.ICDTagNone,
+		ICDGroup:         combat.ICDGroupDefault,
+		StrikeType:       combat.StrikeTypeBlunt,
+		Element:          attributes.Electro,
+		Durability:       25,
+		Mult:             skillB[c.TalentLvlSkill()],
+		HitlagFactor:     0.01,
+		HitlagHaltFrames: 0.03 * 60,
 	}
 
 	if !c.StatusIsActive(a1Key) { // check for endseer buff
@@ -112,6 +114,7 @@ func (c *char) skillB() action.ActionInfo {
 		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 // this is the A4
 		ai.ICDTag = combat.ICDTagCynoBolt
 		ai.ICDGroup = combat.ICDGroupCynoBolt
+		ai.StrikeType = combat.StrikeTypeSlash
 		ai.HitlagFactor = 0
 		ai.HitlagHaltFrames = 0
 		ai.IsDeployable = true
