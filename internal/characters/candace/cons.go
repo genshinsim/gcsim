@@ -57,7 +57,7 @@ func (c *char) c6() {
 			AttackTag:  combat.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeBlunt,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 			FlatDmg:    0.15 * c.MaxHP(),
