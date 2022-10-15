@@ -20,6 +20,7 @@ type char struct {
 	c4Counter      int
 	c6Stacks       int
 	a1Extended     bool
+	normalBCounter int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -53,4 +54,30 @@ func (c *char) Init() error {
 	}
 
 	return nil
+}
+
+func (c *char) AdvanceNormalIndex() {
+	if c.StatusIsActive(burstKey) {
+		c.normalBCounter++
+		if c.normalBCounter == burstHitNum {
+			c.normalBCounter = 0
+		}
+		return
+	}
+	c.NormalCounter++
+	if c.NormalCounter == c.NormalHitNum {
+		c.NormalCounter = 0
+	}
+}
+
+func (c *char) ResetNormalCounter() {
+	c.normalBCounter = 0
+	c.NormalCounter = 0
+}
+
+func (c *char) NextNormalCounter() int {
+	if c.StatusIsActive(burstKey) {
+		return c.normalBCounter + 1
+	}
+	return c.NormalCounter + 1
 }

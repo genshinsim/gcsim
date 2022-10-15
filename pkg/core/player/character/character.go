@@ -47,6 +47,9 @@ type Character interface {
 	ApplyHitlag(factor, dur float64)
 
 	Condition([]string) (any, error)
+
+	ResetNormalCounter()
+	NextNormalCounter() int
 }
 
 type CharWrapper struct {

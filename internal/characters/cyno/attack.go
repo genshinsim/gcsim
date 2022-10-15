@@ -35,14 +35,8 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatusIsActive(burstKey) {
-		c.NormalHitNum = burstHitNum
 		return c.attackB(p) // go to burst mode attacks
 	}
-	if c.NormalHitNum >= burstHitNum { // this should avoid the panic error
-		c.NormalHitNum = normalHitNum
-		c.ResetNormalCounter()
-	}
-	c.NormalHitNum = normalHitNum
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -131,34 +125,40 @@ func init() {
 }
 
 func (c *char) attackB(p map[string]int) action.ActionInfo {
-	c.tryBurstPPSlide(attackBHitmarks[c.NormalCounter][len(attackBHitmarks[c.NormalCounter])-1])
+	c.tryBurstPPSlide(attackBHitmarks[c.normalBCounter][len(attackBHitmarks[c.normalBCounter])-1])
 
-	for i, mult := range attackB[c.NormalCounter] {
+	for i, mult := range attackB[c.normalBCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
-			Abil:               fmt.Sprintf("Pactsworn Pathclearer %v", c.NormalCounter),
+			Abil:               fmt.Sprintf("Pactsworn Pathclearer %v", c.normalBCounter),
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
 			Element:            attributes.Electro,
 			Durability:         25,
 			HitlagFactor:       0.01,
-			HitlagHaltFrames:   attackBHitlagHaltFrame[c.NormalCounter][i],
-			CanBeDefenseHalted: attackBDefHalt[c.NormalCounter][i],
+			HitlagHaltFrames:   attackBHitlagHaltFrame[c.normalBCounter][i],
+			CanBeDefenseHalted: attackBDefHalt[c.normalBCounter][i],
 			Mult:               mult[c.TalentLvlBurst()],
 			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, c.attackBPattern(c.NormalCounter), 0, 0)
-		}, attackBHitmarks[c.NormalCounter][i])
+			c.Core.QueueAttack(ai, c.attackBPattern(c.normalBCounter), 0, 0)
+		}, attackBHitmarks[c.normalBCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:          frames.NewAttackFunc(c.Character, attackBFrames),
-		AnimationLength: attackBFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackBHitmarks[c.NormalCounter][len(attackBHitmarks[c.NormalCounter])-1],
+		Frames: func(next action.Action) int {
+			n := c.normalBCounter - 1
+			if n < 0 {
+				n = burstHitNum - 1
+			}
+			return frames.AtkSpdAdjust(attackBFrames[n][next], c.Stat(attributes.AtkSpd))
+		},
+		AnimationLength: attackBFrames[c.normalBCounter][action.InvalidAction],
+		CanQueueAfter:   attackBHitmarks[c.normalBCounter][len(attackBHitmarks[c.normalBCounter])-1],
 		State:           action.NormalAttackState,
 	}
 }
