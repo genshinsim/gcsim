@@ -32,12 +32,12 @@ type FloatStat struct {
 	Min  float64 `json:"min"`
 	Max  float64 `json:"max"`
 	Mean float64 `json:"mean"`
-	SD   float64 `json:"sd,omitempty"`
+	SD   float64 `json:"sd"`
 }
 
 type IntStat struct {
 	Min  int     `json:"min"`
 	Max  int     `json:"max"`
 	Mean float64 `json:"mean"`
-	SD   float64 `json:"sd,omitempty"`
+	SD   float64 `json:"sd"`
 }
