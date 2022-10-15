@@ -84,7 +84,7 @@ func (c *char) skillB() action.ActionInfo {
 	if !c.StatusIsActive(a1Key) { // check for endseer buff
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 6, false, combat.TargettableEnemy),
 			skillBHitmark,
 			skillBHitmark,
 		)
@@ -104,7 +104,7 @@ func (c *char) skillB() action.ActionInfo {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 6, false, combat.TargettableEnemy),
 			skillBHitmark,
 			skillBHitmark,
 		)
