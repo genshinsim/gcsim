@@ -129,11 +129,11 @@ func (c *char) c6() {
 			return false
 		}
 		// Queue the attack
-		ai := combat.AttackInfo{ // TODO: idk about the ICD and attack on this one being the same as the normal dust bolt
+		ai := combat.AttackInfo{
 			ActorIndex:   c.Index,
 			Abil:         "Raiment: Just Scales (C6)",
 			AttackTag:    combat.AttackTagElementalArt,
-			ICDTag:       combat.ICDTagNone,
+			ICDTag:       combat.ICDTagElementalArt,
 			ICDGroup:     combat.ICDGroupDefault,
 			Element:      attributes.Electro,
 			Durability:   25,
