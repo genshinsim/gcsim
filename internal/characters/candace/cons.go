@@ -69,5 +69,5 @@ func (c *char) c6() {
 			waveHitmark,
 		)
 		return false
-	}, "yunjin-burst")
+	}, "candace-c6")
 }
