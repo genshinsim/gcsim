@@ -117,7 +117,6 @@ func (c *char) skillB() action.ActionInfo {
 		ai.StrikeType = combat.StrikeTypeSlash
 		ai.HitlagFactor = 0
 		ai.HitlagHaltFrames = 0
-		ai.IsDeployable = true
 
 		// 3 instances
 		for i := 0; i < 3; i++ {
