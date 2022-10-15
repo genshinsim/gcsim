@@ -17,7 +17,7 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(86) // Q -> E
+	burstFrames = frames.InitAbilSlice(86) // Q -> J
 	burstFrames[action.ActionAttack] = 84
 	burstFrames[action.ActionSkill] = 84
 	burstFrames[action.ActionDash] = 84
@@ -28,12 +28,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstExtension = 0 // resets the number of possible extensions to the burst each time
 	c.c4Counter = 0      // reset c4 stacks
 	c.c6Stacks = 0       // same as above
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.EM] = 100
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
-			m := make([]float64, attributes.EndStatType)
-			m[attributes.EM] = 100
 			return m, true
 		},
 	})
@@ -47,7 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.c1()
 	}
 	if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on burst
-		c.c6Stacks = 4 
+		c.c6Stacks = 4
 		c.AddStatus(c6Key, 480, true) // 8s*60
 	}
 
@@ -62,7 +63,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 func (c *char) tryBurstPPSlide(hitmark int) {
 	duration := c.StatusDuration(burstKey)
 	if 0 < duration && duration < hitmark {
-		c.ExtendStatus(burstKey, hitmark-c.StatusDuration(burstKey)+1)
+		c.ExtendStatus(burstKey, hitmark-duration+1)
 		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index).
 			Write("expiry", c.StatusExpiry(burstKey))
 	}
