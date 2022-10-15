@@ -14,6 +14,12 @@ var (
 	attackHitmarks        = [][]int{{11}, {16}, {16, 39}, {43}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0, 0.03}, {0.04}}
 	attackHitlagDefHalt   = [][]bool{{true}, {true}, {true, false}, {true}}
+	attackStrikeTypes     = [][]combat.StrikeType{
+		{combat.StrikeTypeSlash},
+		{combat.StrikeTypeBlunt},
+		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
+		{combat.StrikeTypeSpear},
+	}
 )
 
 const normalHitNum = 4
@@ -40,6 +46,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupPole,
+			StrikeType:         attackStrikeTypes[c.NormalCounter][i],
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
