@@ -102,7 +102,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 func (c *char) burstSwap() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.waveCount > 3 {
+		if c.waveCount > 2 {
 			return false
 		}
 		next := args[1].(int)
