@@ -34,9 +34,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if chargeLevel > 1 {
 		chargeLevel = 1
 	}
-	perfect := p["perfect"] != 0
-	if perfect {
+	windup := 0
+	if p["perfect"] != 0 {
 		chargeLevel = 1
+		windup = -55
 	}
 
 	ai := combat.AttackInfo{
@@ -54,25 +55,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	// Particle should spawn after hit
-	hitDelay := skillHitmarks[chargeLevel]
-	if perfect {
-		hitDelay -= 55
-	}
-
+	hitmark := skillHitmarks[chargeLevel] + windup
 	switch chargeLevel {
 	case 0:
-		c.Core.QueueParticle("candace", 2, attributes.Hydro, c.ParticleDelay+hitDelay)
+		c.Core.QueueParticle("candace", 2, attributes.Hydro, c.ParticleDelay+hitmark)
 	case 1:
-		c.Core.QueueParticle("candace", 3, attributes.Hydro, c.ParticleDelay+hitDelay)
+		c.Core.QueueParticle("candace", 3, attributes.Hydro, c.ParticleDelay+hitmark)
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
 	}
 
 	c.Core.QueueAttack(
 		ai,
 		c.skillPattern(chargeLevel),
-		hitDelay,
-		hitDelay,
+		hitmark,
+		hitmark,
 		func(_ combat.AttackCB) {
 			if c.Base.Cons >= 2 {
 				c.c2()
@@ -86,7 +82,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ShieldType: shield.ShieldCandaceSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Hydro,
-		Expires:    c.Core.F + hitDelay,
+		Expires:    c.Core.F + hitmark,
 	})
 
 	cd := skillCD[chargeLevel]
@@ -96,13 +92,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, cd, skillCDStarts[chargeLevel])
 
 	return action.ActionInfo{
-		Frames: func(next action.Action) int {
-			f := skillFrames[chargeLevel][next]
-			if perfect {
-				f -= 55
-			}
-			return f
-		},
+		Frames:          func(next action.Action) int { return skillFrames[chargeLevel][next] + windup },
 		AnimationLength: skillFrames[chargeLevel][action.InvalidAction],
 		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
