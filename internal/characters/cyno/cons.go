@@ -39,7 +39,7 @@ func (c *char) c1() {
 // stacks.
 func (c *char) c2() {
 	const c2Icd = "cyno-c2-icd"
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
