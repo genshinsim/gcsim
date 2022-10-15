@@ -68,11 +68,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitDelay, hitDelay)
-
-	if c.Base.Cons >= 2 {
-		c.QueueCharTask(c.c2, hitDelay)
-	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+		hitDelay,
+		hitDelay,
+		func(_ combat.AttackCB) {
+			if c.Base.Cons >= 2 {
+				c.c2()
+			}
+		},
+	)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
