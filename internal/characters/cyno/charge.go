@@ -63,8 +63,8 @@ func init() {
 	// charge (burst) -> x
 	chargeBFrames = frames.InitAbilSlice(65)
 	chargeBFrames[action.ActionSkill] = 63
-	chargeBFrames[action.ActionDash] = 26
-	chargeBFrames[action.ActionJump] = 26
+	chargeBFrames[action.ActionDash] = 27
+	chargeBFrames[action.ActionJump] = 27
 	chargeBFrames[action.ActionSwap] = 63
 }
 
