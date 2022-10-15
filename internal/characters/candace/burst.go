@@ -55,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	// timer starts at hitmark
-	c.QueueCharTask(func() {
+	c.Core.Tasks.Add(func() {
 		for _, char := range c.Core.Player.Chars() {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(burstKey, duration),
