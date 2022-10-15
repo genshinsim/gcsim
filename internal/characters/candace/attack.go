@@ -12,7 +12,7 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{11}, {16}, {16, 39}, {43}}
-	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0}, {0.04}}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0, 0.03}, {0.04}}
 	attackHitlagDefHalt   = [][]bool{{true}, {true}, {true, false}, {true}}
 )
 
