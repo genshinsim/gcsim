@@ -32,11 +32,11 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Physical,
 		Durability:         25,
+		Mult:               charge[c.TalentLvlAttack()],
 		HitlagHaltFrames:   0,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
-		Mult:               charge[c.TalentLvlAttack()],
 	}
 
 	c.Core.QueueAttack(
