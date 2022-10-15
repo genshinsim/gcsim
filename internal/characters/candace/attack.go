@@ -49,7 +49,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			c.attackPattern(c.NormalCounter),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i],
 		)
@@ -63,4 +63,18 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
+}
+
+func (c *char) attackPattern(normalIndex int) combat.AttackPattern {
+	switch normalIndex {
+	case 0:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy, combat.TargettableGadget)
+	case 1: // supposed to be box x=2.2,z=3.0
+		return combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget)
+	case 2: // supposed to be fan angle 270 for both hits
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy, combat.TargettableGadget)
+	case 3: // supposed to be box x=2.2,z=7.0
+		return combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy, combat.TargettableGadget)
+	}
+	panic("unreachable code")
 }
