@@ -54,6 +54,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		duration = 720
 	}
 
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.2
 	// timer starts at hitmark
 	c.Core.Tasks.Add(func() {
 		for _, char := range c.Core.Player.Chars() {
@@ -66,8 +68,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
 						return nil, false
 					}
-					m := make([]float64, attributes.EndStatType)
-					m[attributes.DmgP] = 0.2
 					return m, true
 				},
 			})
