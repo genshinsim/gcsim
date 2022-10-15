@@ -40,7 +40,6 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
       equipList.forEach((equip) => {
         if (equip.flat.itemType == 'ITEM_WEAPON') {
           const { flat, weapon: enkaWeapon } = equip as GenshinItemWeapon;
-          console.log(determineWeaponRefinement(enkaWeapon.affixMap));
           const weapon: GOODWeapon = {
             key: getGOODKeyFromWeaponNameTextMapHash(flat.nameTextMapHash),
             level: enkaWeapon.level,
