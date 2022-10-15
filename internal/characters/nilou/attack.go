@@ -14,6 +14,9 @@ const normalHitNum = 3
 var attackFrames [][]int
 var attackHitmarks = []int{7, 6, 10}
 
+var attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
+var attackDefHalt = []bool{true, true, true}
+
 // TODO: cancel frames & hitlags
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -32,15 +35,18 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       auto[c.NormalCounter][c.TalentLvlAttack()],
+		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+		AttackTag:          combat.AttackTagNormal,
+		ICDTag:             combat.ICDTagNormalAttack,
+		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
+		Element:            attributes.Physical,
+		Durability:         25,
+		Mult:               auto[c.NormalCounter][c.TalentLvlAttack()],
+		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: attackDefHalt[c.NormalCounter],
 	}
 	// no multihits so no need for char queue here
 	c.Core.QueueAttack(
