@@ -52,12 +52,12 @@ func (c *char) c2() {
 			return false
 		}
 
-		if !c.StatusIsActive(c2Key) {
+		if !c.StatModIsActive(c2Key) {
 			stacks = 0
 		}
 		stacks++
-		if stacks > 4 {
-			stacks = 4
+		if stacks > 5 {
+			stacks = 5
 		}
 
 		c.AddStatMod(character.StatMod{
