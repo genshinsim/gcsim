@@ -10,8 +10,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c1Key = "cyno-c1"
-const c6Key = "cyno-c6"
+const (
+	c1Key = "cyno-c1"
+	c6Key = "cyno-c6"
+)
 
 // After using Sacred Rite: Wolf's Swiftness, Cyno's Normal Attack SPD will be increased by 20% for 10s.
 // If the Judication effect of his Passive Talent Featherfall Judgment is triggered during Secret Rite: Chasmic Soulfarer,
@@ -19,12 +21,14 @@ const c6Key = "cyno-c6"
 //
 // You need to unlock the Passive Talent "Featherfall Judgment."
 func (c *char) c1() {
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(c1Key, 600), // 10s
-		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
-			m := make([]float64, attributes.EndStatType)
-			m[attributes.AtkSpd] = 0.2
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.AtkSpd] = 0.2
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag(c1Key, 600), // 10s
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagNormal {
+				return nil, false
+			}
 			return m, true
 		},
 	})
