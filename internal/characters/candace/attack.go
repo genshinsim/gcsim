@@ -23,12 +23,12 @@ func init() {
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 32) // N1 -> CA
 	attackFrames[0][action.ActionAttack] = 20
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 33) // N2 -> CA
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 33) // N2 -> N3/CA
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 48) // N3 -> CA
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 48) // N3 -> N4
 	attackFrames[2][action.ActionCharge] = 43
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 69) // N4 -> CA
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 69) // N4 -> N1
 	attackFrames[3][action.ActionCharge] = 500                               // TODO: this action is illegal; need better way to handle it
 }
 
@@ -47,14 +47,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackHitlagDefHalt[c.NormalCounter][i],
 		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-				0,
-				0,
-			)
-		}, attackHitmarks[c.NormalCounter][i])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			attackHitmarks[c.NormalCounter][i],
+			attackHitmarks[c.NormalCounter][i],
+		)
 	}
 
 	defer c.AdvanceNormalIndex()
