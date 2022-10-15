@@ -142,7 +142,7 @@ var ICDGroupEleApplicationSequence = [][]int{
 	//tighnari
 	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
 	//cyno skill bolt
-	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	//dori burst
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//reaction a
@@ -177,7 +177,7 @@ var ICDGroupDamageSequence = [][]float64{
 	//tighnari
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//cyno skill bolt
-	{1, 1, 1, 1, 1},
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//dori burst
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//ele A
