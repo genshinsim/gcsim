@@ -12,7 +12,7 @@ import (
 const a4Key = "candace-a4"
 
 func (c *char) a4(char *character.CharWrapper, duration int) {
-	char.AddAttackMod(character.AttackMod{ // TODO: is this right implementation?
+	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(a4Key, duration),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagNormal {
