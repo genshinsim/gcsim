@@ -26,7 +26,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstExtension = 0 // resets the number of possible extensions to the burst each time
-	c.c4Counter = 0      // ignore this lol, this wont affect even if c4() is inactive, but it works to reset the number of ocurrences of said cons
+	c.c4Counter = 0      // reset c4 stacks
 	c.c6Stacks = 0       // same as above
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
