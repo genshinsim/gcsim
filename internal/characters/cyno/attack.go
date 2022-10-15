@@ -156,6 +156,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackBDefHalt[c.normalBCounter][i],
 			Mult:               mult[c.TalentLvlBurst()],
 			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
+			IgnoreInfusion:     true,
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ai, c.attackBPattern(c.normalBCounter), 0, 0)
