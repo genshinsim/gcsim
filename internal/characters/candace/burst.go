@@ -58,6 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	m[attributes.DmgP] = 0.2
 	// timer starts at hitmark
 	c.Core.Tasks.Add(func() {
+		c.infuseSrc = c.Core.F
 		for _, char := range c.Core.Player.Chars() {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(burstKey, duration),
@@ -71,20 +72,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					return m, true
 				},
 			})
-			switch char.Weapon.Class {
-			case weapon.WeaponClassClaymore,
-				weapon.WeaponClassSpear,
-				weapon.WeaponClassSword:
-				c.Core.Player.AddWeaponInfuse(
-					c.Index,
-					"candace-infuse",
-					attributes.Hydro,
-					duration,
-					true,
-					combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
-				) // TODO: does this refresh constantly or one time?
-			}
 			c.a4(char, duration)
+			c.burstInfuseFn(char, c.infuseSrc)
 		}
 	}, burstHitmark)
 
@@ -97,6 +86,29 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
+}
+
+func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
+	if src != c.infuseSrc {
+		return
+	}
+	if !char.StatusIsActive(burstKey) {
+		return
+	}
+	switch char.Weapon.Class {
+	case weapon.WeaponClassClaymore,
+		weapon.WeaponClassSpear,
+		weapon.WeaponClassSword:
+		c.Core.Player.AddWeaponInfuse(
+			char.Index,
+			"candace-infuse",
+			attributes.Hydro,
+			60,
+			true,
+			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+		)
+	}
+	c.Core.Tasks.Add(func() { c.burstInfuseFn(char, src) }, 30)
 }
 
 func (c *char) burstSwap() {

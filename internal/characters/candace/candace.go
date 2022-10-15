@@ -15,6 +15,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	waveCount int
+	infuseSrc int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -24,6 +25,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
+	c.infuseSrc = -1
 
 	w.Character = &c
 
