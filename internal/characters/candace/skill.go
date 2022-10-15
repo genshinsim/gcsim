@@ -10,7 +10,7 @@ import (
 
 var (
 	skillFrames   [][]int
-	skillHitmarks = []int{26, 91}
+	skillHitmarks = []int{16, 91}
 	skillCDStarts = []int{14, 89}
 	skillCD       = []int{360, 540}
 )
@@ -23,10 +23,10 @@ func init() {
 	skillFrames[0][action.ActionSwap] = 25
 	// Hold E
 	skillFrames[1] = frames.InitAbilSlice(113)
-	skillFrames[0][action.ActionAttack] = 112
-	skillFrames[0][action.ActionBurst] = 112
-	skillFrames[0][action.ActionJump] = 111
-	skillFrames[0][action.ActionSwap] = 110
+	skillFrames[1][action.ActionAttack] = 112
+	skillFrames[1][action.ActionBurst] = 112
+	skillFrames[1][action.ActionJump] = 111
+	skillFrames[1][action.ActionSwap] = 110
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
