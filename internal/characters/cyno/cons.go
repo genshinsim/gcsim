@@ -135,6 +135,7 @@ func (c *char) c6() {
 			AttackTag:    combat.AttackTagElementalArt,
 			ICDTag:       combat.ICDTagElementalArt,
 			ICDGroup:     combat.ICDGroupDefault,
+			StrikeType:   combat.StrikeTypeSlash,
 			Element:      attributes.Electro,
 			Durability:   25,
 			IsDeployable: true,
