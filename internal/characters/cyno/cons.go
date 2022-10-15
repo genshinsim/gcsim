@@ -1,8 +1,6 @@
 package cyno
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -38,7 +36,10 @@ func (c *char) c1() {
 // increase by 10% for 4s. This effect can be triggered once every 0.1s. Max 5
 // stacks.
 func (c *char) c2() {
+	const c2Key = "cyno-c2"
 	const c2Icd = "cyno-c2-icd"
+	stacks := 0
+	m := make([]float64, attributes.EndStatType)
 	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
@@ -50,18 +51,24 @@ func (c *char) c2() {
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.ElectroP] = 0.1
+
+		if !c.StatusIsActive(c2Key) {
+			stacks = 0
+		}
+		stacks++
+		if stacks > 4 {
+			stacks = 4
+		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("cyno-c2-%v-stack", c.c2Counter+1), 240), // 4s
-			AffectedStat: attributes.CR,
+			Base:         modifier.NewBaseWithHitlag(c2Key, 240), // 4s
+			AffectedStat: attributes.ElectroP,
 			Amount: func() ([]float64, bool) {
+				m[attributes.ElectroP] = 0.1 * float64(stacks)
 				return m, true
 			},
 		})
-		c.AddStatus(c2Icd, 6, true)         // 0.1s icd
-		c.c2Counter = (c.c2Counter + 1) % 5 // stacks are independent from each other, this will cycle them
+		c.AddStatus(c2Icd, 6, true) // 0.1s icd
 		return false
 	}, "cyno-c2")
 }

@@ -16,7 +16,6 @@ type char struct {
 	*tmpl.Character
 	burstExtension float64
 	c1Buff         []float64
-	c2Counter      int
 	c4Counter      int
 	c6Stacks       int
 	a1Extended     bool
