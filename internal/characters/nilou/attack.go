@@ -17,7 +17,7 @@ var attackHitmarks = []int{7, 6, 10}
 var attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
 var attackDefHalt = []bool{true, true, true}
 
-// TODO: cancel frames & hitlags
+// TODO: cancel frames
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 

@@ -36,7 +36,7 @@ const (
 	skillHitmark = 12 // init
 )
 
-// TODO: icd, cancel frames & hitlags
+// TODO: cancel frames
 func init() {
 	skillFrames = frames.InitAbilSlice(12)
 

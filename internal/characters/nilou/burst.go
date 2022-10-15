@@ -17,7 +17,7 @@ const (
 	burstAeonHitmark = 3 * 60
 )
 
-// TODO: cancel frames & hitlags
+// TODO: cancel frames
 func init() {
 	burstFrames = frames.InitAbilSlice(70)
 }
