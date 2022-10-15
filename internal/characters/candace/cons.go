@@ -50,7 +50,7 @@ func (c *char) c6() {
 		if c.StatusIsActive(c6ICDKey) {
 			return false
 		}
-		c.AddStatus(c6ICDKey, 138, false) // TODO: is c6 hitlag affected?
+		c.AddStatus(c6ICDKey, 138, true)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "The Overflow (C6)",
