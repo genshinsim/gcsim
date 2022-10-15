@@ -74,8 +74,8 @@ func (c *char) chargeB(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Pactsworn Pathclearer Charge",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNormalAttack,
+		AttackTag:          combat.AttackTagExtra,
+		ICDTag:             combat.ICDTagExtraAttack,
 		ICDGroup:           combat.ICDGroupDefault,
 		Element:            attributes.Electro,
 		Durability:         25,
