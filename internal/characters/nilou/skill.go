@@ -164,7 +164,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 		Frames:          frames.NewAbilFunc(skillDanceFrames[s]), // TODO: atkspd can it affect?
 		AnimationLength: skillDanceFrames[s][action.InvalidAction],
 		CanQueueAfter:   skillDanceFrames[s][action.ActionJump], // earliest cancel
-		State:           action.SkillState,
+		State:           action.NormalAttackState,
 	}
 }
 
