@@ -70,7 +70,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+		c.skillPattern(chargeLevel),
 		hitDelay,
 		hitDelay,
 		func(_ combat.AttackCB) {
@@ -107,4 +107,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) skillPattern(chargeLevel int) combat.AttackPattern {
+	switch chargeLevel {
+	case 0:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy)
+	case 1:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2.25, false, combat.TargettableEnemy)
+	}
+	panic("unreachable code")
 }
