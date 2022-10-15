@@ -1,8 +1,6 @@
 package candace
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -22,7 +20,7 @@ func (c *char) a4(char *character.CharWrapper, duration int) {
 				return nil, false
 			}
 			m := make([]float64, attributes.EndStatType)
-			m[attributes.DmgP] = 0.005 * math.Floor(c.MaxHP()/1000)
+			m[attributes.DmgP] = 0.005 * c.MaxHP() / 1000
 			return m, true
 		},
 	})
