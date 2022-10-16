@@ -95,7 +95,7 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		select {
 		case result := <-respCh:
 			for _, a := range aggregators {
-				a.Add(result, count)
+				a.Add(result)
 			}
 			count += 1
 		case err := <-errCh:
@@ -104,16 +104,18 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		}
 	}
 
-	// generate final agg results
-	stats := &agg.Result{}
-	for _, a := range aggregators {
-		a.Flush(stats)
-	}
-
-	result, err := GenerateResult(cfg, simcfg, stats, opts)
+	result, err := GenerateResult(cfg, simcfg, opts)
 	if err != nil {
 		return result, err
 	}
+
+	// generate final agg results
+	stats := agg.Result{}
+	for _, a := range aggregators {
+		a.Flush(&stats)
+	}
+	result.Statistics = stats
+	result.Statistics.Runtime = float64(time.Since(start).Nanoseconds())
 
 	//TODO: clean up this code
 	if opts.ResultSaveToPath != "" {
@@ -126,19 +128,18 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 	return result, nil
 }
 
-func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts Options) (result.Summary, error) {
+// Note: this generation should be deterministic and only depend on the given cfg
+func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
 	result := result.Summary{
 		SchemaVersion:    result.Version{Major: 4, Minor: 0}, // hardcoded, change as result schema evolves
 		SimVersion:       opts.Version,
 		BuildDate:        opts.BuildDate,
-		Runtime:          float64(time.Since(start).Nanoseconds()),
-		Iterations:       simcfg.Settings.Iterations,
+		MaxIterations:    simcfg.Settings.Iterations,
 		Config:           cfg,
 		DebugSeed:        CryptoRandSeed(),
 		TargetDetails:    simcfg.Targets,
 		InitialCharacter: simcfg.InitialChar.String(),
 	}
-	result.Statistics = *stats
 
 	charDetails, err := GenerateCharacterDetails(simcfg)
 	if err != nil {
@@ -148,26 +149,11 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts 
 
 	//run one debug
 	//debug call will clone before running
-	debugOut, err := GenerateDebugLogWithSeed(simcfg, CryptoRandSeed())
+	debugOut, err := GenerateDebugLogWithSeed(simcfg, result.DebugSeed)
 	if err != nil {
 		return result, err
 	}
 	result.Debug = debugOut
-
-	// Include debug logs for min/max-DPS runs if requested.
-	if opts.DebugMinMax {
-		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.Statistics.MinSeed))
-		if err != nil {
-			return result, err
-		}
-		result.DebugMinDPSRun = minDPSDebugOut
-
-		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.Statistics.MaxSeed))
-		if err != nil {
-			return result, err
-		}
-		result.DebugMaxDPSRun = maxDPSDebugOut
-	}
 	return result, nil
 }
 

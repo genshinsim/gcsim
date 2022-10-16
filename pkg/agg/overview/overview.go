@@ -23,7 +23,7 @@ type buffer struct {
 
 func newSample(itr int) calc.Sample {
 	return calc.Sample{
-		Xs:     make([]float64, itr),
+		Xs:     make([]float64, 0, itr),
 		Sorted: false,
 	}
 }
@@ -33,8 +33,8 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 		duration:    newSample(cfg.Settings.Iterations),
 		dps:         newSample(cfg.Settings.Iterations),
 		rps:         newSample(cfg.Settings.Iterations),
-		eps:         newSample(cfg.Settings.Iterations),
 		hps:         newSample(cfg.Settings.Iterations),
+		eps:         newSample(cfg.Settings.Iterations),
 		sps:         newSample(cfg.Settings.Iterations),
 		totalDamage: calc.StreamStats{},
 	}
@@ -42,10 +42,16 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 }
 
 // TODO: push looping/summation to StatsCollector for peformance boost
-func (b *buffer) Add(result stats.Result, i int) {
-	b.duration.Xs[i] = float64(result.Duration) / 60
-	b.dps.Xs[i] = result.DPS
+func (b *buffer) Add(result stats.Result) {
 	b.totalDamage.Add(result.TotalDamage)
+
+	b.duration.Xs = append(b.duration.Xs, float64(result.Duration)/60)
+	b.dps.Xs = append(b.dps.Xs, result.DPS)
+	b.rps.Xs = append(b.rps.Xs, 0)
+	b.hps.Xs = append(b.hps.Xs, 0)
+	b.eps.Xs = append(b.eps.Xs, 0)
+	b.sps.Xs = append(b.sps.Xs, 0)
+	i := len(b.sps.Xs) - 1
 
 	for _, s := range result.Shields {
 		b.sps.Xs[i] += s.Absorption * float64(s.End-s.Start) / 60
@@ -84,6 +90,7 @@ func (b *buffer) Flush(result *agg.Result) {
 }
 
 func convert(input calc.Sample) agg.FloatStat {
+	input.Sorted = false
 	input.Sort()
 
 	out := agg.FloatStat{

@@ -29,7 +29,6 @@ var buffer []byte
 
 // Aggregator variables
 var aggregators []agg.Aggregator
-var start time.Time
 
 func main() {
 	//GOOS=js GOARCH=wasm go build -o main.wasm
@@ -123,14 +122,12 @@ func simulate(this js.Value, args []js.Value) interface{} {
 
 // aggregator functions
 
-// initializeAggregator(cfg: string)
+// initializeAggregator(cfg: string) -> string
 func initializeAggregator(this js.Value, args []js.Value) interface{} {
 	in := args[0].String()
 	if err := initialize(in); err != nil {
 		return marshal(err)
 	}
-
-	start = time.Now()
 
 	aggregators = aggregators[:0]
 	for _, aggregator := range agg.Aggregators() {
@@ -140,13 +137,30 @@ func initializeAggregator(this js.Value, args []js.Value) interface{} {
 		}
 		aggregators = append(aggregators, a)
 	}
-	return nil
+
+	opts := simulator.Options{
+		Version:          sha1ver,
+		BuildDate:        buildTime,
+		DebugMinMax:      false,
+		GZIPResult:       false,
+		ResultSaveToPath: "",
+		ConfigPath:       "",
+	}
+	result, err := simulator.GenerateResult(cfg, simcfg, opts)
+	if err != nil {
+		return marshal(err)
+	}
+
+	out, err := json.Marshal(result)
+	if err != nil {
+		return marshal(err)
+	}
+	return string(out)
 }
 
-// aggregate(src: Uint8Array, itr: int)
+// aggregate(src: Uint8Array)
 func aggregate(this js.Value, args []js.Value) interface{} {
 	src := args[0]
-	itr := args[1].Int()
 	var err error
 
 	// golang wasm copy requires src and destination length to have enough capacity to copy
@@ -171,33 +185,22 @@ func aggregate(this js.Value, args []js.Value) interface{} {
 	}
 
 	for _, a := range aggregators {
-		a.Add(result, itr)
+		a.Add(result)
 	}
 	return nil
 }
 
-// flush() -> string
+// flush(startTime: int) -> string
 func flush(this js.Value, args []js.Value) interface{} {
-	stats := &agg.Result{}
+	startTime := args[0].Int()
+
+	stats := agg.Result{}
 	for _, a := range aggregators {
-		a.Flush(stats)
+		a.Flush(&stats)
 	}
+	stats.Runtime = float64(time.Now().Nanosecond() - startTime)
 
-	opts := simulator.Options{
-		Version:          sha1ver,
-		BuildDate:        buildTime,
-		DebugMinMax:      false,
-		GZIPResult:       false,
-		ResultSaveToPath: "",
-		ConfigPath:       "",
-	}
-	result, err := simulator.GenerateResult(cfg, simcfg, stats, opts)
-	if err != nil {
-		return marshal(err)
-	}
-	result.Runtime = float64(time.Since(start).Nanoseconds())
-
-	out, err := json.Marshal(result)
+	out, err := json.Marshal(stats)
 	if err != nil {
 		return marshal(err)
 	}

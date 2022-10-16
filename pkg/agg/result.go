@@ -2,8 +2,10 @@ package agg
 
 type Result struct {
 	// metadata
-	MinSeed uint64 `json:"min_seed"`
-	MaxSeed uint64 `json:"max_seed"`
+	MinSeed    uint64  `json:"min_seed"`
+	MaxSeed    uint64  `json:"max_seed"`
+	Runtime    float64 `json:"runtime"`
+	Iterations int     `json:"iterations"`
 
 	// global overview (global/no group by)
 	Duration    FloatStat `json:"duration"`

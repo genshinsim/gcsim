@@ -15,6 +15,7 @@ func init() {
 type buffer struct {
 	minRun run
 	maxRun run
+	count  int
 }
 
 type run struct {
@@ -31,16 +32,18 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 	return &out, nil
 }
 
-func (b *buffer) Add(result stats.Result, i int) {
+func (b *buffer) Add(result stats.Result) {
 	if result.DPS < b.minRun.dps {
 		b.minRun = run{seed: result.Seed, dps: result.DPS}
 	}
 	if result.DPS > b.maxRun.dps {
 		b.maxRun = run{seed: result.Seed, dps: result.DPS}
 	}
+	b.count += 1
 }
 
-func (b *buffer) Flush(result *agg.Result) {
+func (b buffer) Flush(result *agg.Result) {
 	result.MinSeed = b.minRun.seed
 	result.MaxSeed = b.maxRun.seed
+	result.Iterations = b.count
 }

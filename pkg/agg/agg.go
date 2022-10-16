@@ -8,7 +8,7 @@ import (
 )
 
 type Aggregator interface {
-	Add(result stats.Result, iteration int)
+	Add(result stats.Result)
 	// TODO: Merge(other Aggregator) Aggregator for multi-threaded aggregations (optional optimization)
 	Flush(result *Result)
 }
