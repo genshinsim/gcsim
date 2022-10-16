@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": [
+      "webworker",
+      "ES5",
+      "ScriptHost"
+    ],
+  }
+}

@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
-const DendroCoreDelay = 45
+const DendroCoreDelay = 20
 
 func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 	//can be hydro bloom, dendro bloom, or quicken bloom

@@ -70,7 +70,7 @@ export function Dash() {
           </span>
         </DashCard>
 
-        <DashCard href="/db">
+        <DashCard href="https://db.gcsim.app" target="_blank">
           <span className="font-bold text-xl">
             <Icon icon="database" className="mr-2" size={25} />
             <Trans>dash.teams_db</Trans>

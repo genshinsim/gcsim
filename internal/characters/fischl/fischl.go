@@ -66,10 +66,10 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) bool {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
 	// check if it is possible to recast oz
 	if a == action.ActionSkill && p["recast"] != 0 && c.ozActive {
-		return !c.StatusIsActive(skillRecastCDKey)
+		return !c.StatusIsActive(skillRecastCDKey), action.SkillCD
 	}
 	return c.Character.ActionReady(a, p)
 }

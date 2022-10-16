@@ -21,7 +21,7 @@ export interface SimResults {
   damage_over_time: { [key: string]: SummaryStats };
   iter: number;
   text: string;
-  debug: string;
+  debug: string | [any];
   runtime: number;
   config_file: string;
   num_targets: number;
