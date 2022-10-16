@@ -1,4 +1,5 @@
 export interface SimResults {
+  config_file?: string
   statistics?: Statistics
 }
 
