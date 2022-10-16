@@ -13,13 +13,17 @@ var burstFrames []int
 const (
 	lingeringAeonStatus = "lingering_aeon"
 
-	burstHitmark     = 48
-	burstAeonHitmark = 3 * 60
+	burstHitmark     = 91
+	burstAeonHitmark = 121
 )
 
 // TODO: cancel frames
 func init() {
-	burstFrames = frames.InitAbilSlice(70)
+	burstFrames = frames.InitAbilSlice(110) // Q -> Dash
+	burstFrames[action.ActionAttack] = 108
+	burstFrames[action.ActionSkill] = 108
+	burstFrames[action.ActionJump] = 109
+	burstFrames[action.ActionSwap] = 107
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {

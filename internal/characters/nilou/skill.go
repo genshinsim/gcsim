@@ -13,10 +13,10 @@ import (
 var skillFrames []int
 
 var skillDanceFrames [][]int
-var skillDanceHitMarks = []int{8, 8, 20}
+var skillDanceHitMarks = []int{14, 12, 35}
 
 var whirlingStepsFrames [][]int
-var whirlingStepsHitMarks = []int{11, 14, 26}
+var whirlingStepsHitMarks = []int{21, 29, 43}
 
 type NilouSkillType int
 
@@ -33,22 +33,60 @@ const (
 	lunarPrayerStatus     = "lunarprayer"
 	tranquilityAuraStatus = "tranquilityaura"
 
-	skillHitmark = 12 // init
+	skillHitmark = 16 // init
+
+	delayDance = 40 // Lunar Prayer (8s) / Tranquility (12/18s) / A1 (30s) timers all start here
+	delaySteps = 30
 )
 
 // TODO: cancel frames
 func init() {
-	skillFrames = frames.InitAbilSlice(12)
+	skillFrames = frames.InitAbilSlice(22) // E -> Q
+	skillFrames[action.ActionAttack] = 19
+	skillFrames[action.ActionSkill] = 19
+	skillFrames[action.ActionDash] = 17
+	skillFrames[action.ActionJump] = 17
+	skillFrames[action.ActionSwap] = 21
 
 	skillDanceFrames = make([][]int, normalHitNum)
-	skillDanceFrames[0] = frames.InitNormalCancelSlice(skillDanceHitMarks[0], 10)
-	skillDanceFrames[1] = frames.InitNormalCancelSlice(skillDanceHitMarks[1], 12)
-	skillDanceFrames[2] = frames.InitNormalCancelSlice(skillDanceHitMarks[2], 24)
+	skillDanceFrames[0] = frames.InitNormalCancelSlice(skillDanceHitMarks[0], 20) // N1 -> E
+	skillDanceFrames[0][action.ActionAttack] = 18
+	skillDanceFrames[0][action.ActionBurst] = skillDanceHitMarks[0]
+	skillDanceFrames[0][action.ActionDash] = skillDanceHitMarks[0]
+	skillDanceFrames[0][action.ActionJump] = skillDanceHitMarks[0]
+	skillDanceFrames[0][action.ActionSwap] = skillDanceHitMarks[0]
+
+	skillDanceFrames[1] = frames.InitNormalCancelSlice(skillDanceHitMarks[1], 23) // N2 -> N3/E
+	skillDanceFrames[1][action.ActionBurst] = skillDanceHitMarks[1]
+	skillDanceFrames[1][action.ActionDash] = skillDanceHitMarks[1]
+	skillDanceFrames[1][action.ActionJump] = skillDanceHitMarks[1]
+	skillDanceFrames[1][action.ActionSwap] = skillDanceHitMarks[1]
+
+	skillDanceFrames[2] = frames.InitNormalCancelSlice(skillDanceHitMarks[2], 60) // N3 -> E/Q
+	skillDanceFrames[2][action.ActionAttack] = 55
+	skillDanceFrames[2][action.ActionDash] = skillDanceHitMarks[2]
+	skillDanceFrames[2][action.ActionJump] = skillDanceHitMarks[2]
+	skillDanceFrames[2][action.ActionSwap] = skillDanceHitMarks[2]
 
 	whirlingStepsFrames = make([][]int, normalHitNum)
-	whirlingStepsFrames[0] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[0], 22)
-	whirlingStepsFrames[1] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[1], 26)
-	whirlingStepsFrames[2] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[2], 26)
+	whirlingStepsFrames[0] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[0], 33) // E1 -> Q
+	whirlingStepsFrames[0][action.ActionAttack] = 27
+	whirlingStepsFrames[0][action.ActionSkill] = 27
+	whirlingStepsFrames[0][action.ActionDash] = 26
+	whirlingStepsFrames[0][action.ActionJump] = 27
+	whirlingStepsFrames[0][action.ActionSwap] = 31
+
+	whirlingStepsFrames[1] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[1], 62) // E2 -> Swap
+	whirlingStepsFrames[1][action.ActionAttack] = 40
+	whirlingStepsFrames[1][action.ActionSkill] = 32
+	whirlingStepsFrames[1][action.ActionBurst] = 40
+	whirlingStepsFrames[1][action.ActionDash] = 36
+	whirlingStepsFrames[1][action.ActionJump] = 37
+
+	whirlingStepsFrames[2] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[2], 63) // E3 -> N1/E/Q
+	whirlingStepsFrames[2][action.ActionDash] = 57
+	whirlingStepsFrames[2][action.ActionJump] = 57
+	whirlingStepsFrames[0][action.ActionSwap] = 61
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -69,12 +107,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
-	c.QueueCharTask(func() {
-		c.SetTag(skillStep, 0)
-		// c.SetTag(skillTypeTag, int(NilouSkillTypeNone))
-		c.AddStatus(pirouetteStatus, 10*60, true)
-		c.SetCD(action.ActionSkill, 18*60)
-	}, skillHitmark)
+	c.SetTag(skillStep, 0)
+	// c.SetTag(skillTypeTag, int(NilouSkillTypeNone))
+	c.AddStatus(pirouetteStatus, 10*60, true)
+	c.SetCD(action.ActionSkill, 18*60)
 
 	var orb float64 = 1
 	if c.Core.Rand.Float64() < 0.5 {
@@ -94,28 +130,33 @@ func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.Action
 	// c.SetTag(skillTypeTag, int(srcType))
 
 	ai := action.ActionInfo{}
+	delay := 0
 	switch srcType {
 	case NilouSkillTypeDance:
 		ai = c.SwordDance(p)
+		delay = delayDance
 	case NilouSkillTypeSteps:
 		ai = c.WhirlingSteps(p)
+		delay = delaySteps
 	}
 
 	if c.Tag(skillStep) == 0 {
-		c.a1()
-		c.DeleteStatus(pirouetteStatus)
+		c.QueueCharTask(func() {
+			c.a1()
+			c.DeleteStatus(pirouetteStatus)
 
-		switch srcType {
-		case NilouSkillTypeDance:
-			c.AddStatus(lunarPrayerStatus, 8*60, true)
-		case NilouSkillTypeSteps:
-			dur := 12 * 60
-			if c.Base.Cons >= 1 {
-				dur += 6 * 60
+			switch srcType {
+			case NilouSkillTypeDance:
+				c.AddStatus(lunarPrayerStatus, 8*60, true)
+			case NilouSkillTypeSteps:
+				dur := 12 * 60
+				if c.Base.Cons >= 1 {
+					dur += 6 * 60
+				}
+				c.AddStatus(tranquilityAuraStatus, dur, true)
+				c.QueueCharTask(c.TranquilityAura, 30) // every 0.25 sec
 			}
-			c.AddStatus(tranquilityAuraStatus, dur, true)
-			c.QueueCharTask(c.TranquilityAura, 30) // every 0.25 sec
-		}
+		}, delay)
 	}
 
 	return ai
@@ -131,6 +172,7 @@ func (c *char) AdvanceSkillIndex() {
 
 func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	s := c.Tag(skillStep)
+	travel := 0
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -145,17 +187,21 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	}
 	if s == 2 {
 		ai.Abil = "Luminous Illusion"
+
+		if t, ok := p["travel"]; ok {
+			travel = t
+		}
 	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
-		skillDanceHitMarks[s],
-		skillDanceHitMarks[s],
+		skillDanceHitMarks[s]+travel,
+		skillDanceHitMarks[s]+travel,
 		c.c4cb(),
 	)
 
 	if c.StatusIsActive(pirouetteStatus) {
-		c.Core.QueueParticle("nilou", 1, attributes.Hydro, skillDanceHitMarks[s]+c.ParticleDelay)
+		c.Core.QueueParticle("nilou", 1, attributes.Hydro, skillDanceHitMarks[s]+travel+c.ParticleDelay)
 	}
 
 	defer c.AdvanceSkillIndex()

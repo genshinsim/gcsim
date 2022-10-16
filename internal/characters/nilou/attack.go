@@ -12,18 +12,21 @@ import (
 const normalHitNum = 3
 
 var attackFrames [][]int
-var attackHitmarks = []int{7, 6, 10}
+var attackHitmarks = []int{12, 9, 17}
 
 var attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
 var attackDefHalt = []bool{true, true, true}
 
-// TODO: cancel frames
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 12)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 12)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 16)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 24) // N1 -> CA
+	attackFrames[0][action.ActionAttack] = 20                             // N1 -> N2
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 21) // N2 -> CA
+	attackFrames[1][action.ActionAttack] = 27                             // N2 -> N3
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 58) // N3 -> N1
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {

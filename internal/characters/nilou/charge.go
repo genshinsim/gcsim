@@ -11,11 +11,14 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 14
+var chargeHitmarks = []int{26, 27}
 
-// TODO: cancel frames & hitlags
 func init() {
-	chargeFrames = frames.InitAbilSlice(14)
+	chargeFrames = frames.InitAbilSlice(43)
+	chargeFrames[action.ActionAttack] = 42
+	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -31,14 +34,13 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
 		}
-		// only the last multihit has hitlag so no need for char queue here
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
 		State:           action.ChargeAttackState,
 	}
 }
