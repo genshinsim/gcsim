@@ -33,7 +33,7 @@ type Character interface {
 
 	ActionStam(a action.Action, p map[string]int) float64
 
-	ActionReady(a action.Action, p map[string]int) bool
+	ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure)
 	SetCD(a action.Action, dur int)
 	Cooldown(a action.Action) int
 	ResetActionCooldown(a action.Action)
@@ -128,13 +128,13 @@ func New(
 	c.SkillCon = 3
 	c.BurstCon = 5
 	//check talents
-	if c.Talents.Attack < 1 || c.Talents.Attack > 15 {
+	if c.Talents.Attack < 1 || c.Talents.Attack > 10 {
 		return nil, fmt.Errorf("invalid talent lvl: attack - %v", c.Talents.Attack)
 	}
-	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
+	if c.Talents.Skill < 1 || c.Talents.Skill > 10 {
 		return nil, fmt.Errorf("invalid talent lvl: skill - %v", c.Talents.Skill)
 	}
-	if c.Talents.Attack < 1 || c.Talents.Attack > 12 {
+	if c.Talents.Burst < 1 || c.Talents.Burst > 10 {
 		return nil, fmt.Errorf("invalid talent lvl: burst - %v", c.Talents.Burst)
 	}
 	//setup base hp

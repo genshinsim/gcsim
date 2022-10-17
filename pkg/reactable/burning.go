@@ -1,8 +1,6 @@
 ﻿package reactable
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -13,6 +11,8 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 		return
 	}
 
+	dendroDur := r.Durability[ModifierDendro]
+
 	//adding pyro or dendro just adds to durability
 	switch a.Info.Element {
 	case attributes.Pyro:
@@ -21,39 +21,22 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 			return
 		}
 		//add to pyro durability
-		r.attachOrRefillNormalEle(ModifierPyro, a.Info.Durability)
+		// r.attachOrRefillNormalEle(ModifierPyro, a.Info.Durability)
 	case attributes.Dendro:
 		//if there's no existing pyro/burning or dendro/quicken then do nothing
 		if r.Durability[ModifierPyro] < ZeroDur && r.Durability[ModifierBurning] < ZeroDur {
 			return
 		}
+		dendroDur = max(dendroDur, a.Info.Durability*0.8)
 		//add to dendro durability
-		r.attachOrRefillNormalEle(ModifierDendro, a.Info.Durability)
+		// r.attachOrRefillNormalEle(ModifierDendro, a.Info.Durability)
 	default:
 		return
 	}
-	a.Reacted = true
+	// a.Reacted = true
 
 	if r.Durability[ModifierBurningFuel] < ZeroDur {
-		//trigger burning
-		//save dendro and quicken decay rate
-		if r.Durability[ModifierDendro] > ZeroDur {
-			r.burningCachedDendroDecayRate = r.DecayRate[ModifierDendro]
-		}
-		if r.Durability[ModifierQuicken] > ZeroDur {
-			r.burningCachedQuickenDecayRate = r.DecayRate[ModifierQuicken]
-		}
-		r.attachBurningFuel(max(r.Durability[ModifierDendro], r.Durability[ModifierQuicken]), 1)
-
-		//update dendro and quicken decay rate to decay rate of burning fuel
-		//TODO: does this also update if burning fuel gets overwritten?
-		//if yes, move this to attachBurningFuel (impossible to test unless we get access to 200 durability dendro)
-		if r.Durability[ModifierDendro] > ZeroDur {
-			r.DecayRate[ModifierDendro] = r.DecayRate[ModifierBurningFuel]
-		}
-		if r.Durability[ModifierQuicken] > ZeroDur {
-			r.DecayRate[ModifierDendro] = r.DecayRate[ModifierBurningFuel]
-		}
+		r.attachBurningFuel(max(dendroDur, r.Durability[ModifierQuicken]), 1)
 		r.attachBurning()
 
 		r.core.Events.Emit(event.OnBurning, r.self, a)
@@ -64,11 +47,6 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 			if t, ok := r.self.(Enemy); ok {
 				//queue up burning ticks
 				t.QueueEnemyTask(r.nextBurningTick(r.core.F, 1, t), 15)
-				//need to reset src and restore decay rate when burning is reacted off
-				if !r.burningEventSubExists {
-					r.burningEventSub()
-					r.burningEventSubExists = true
-				}
 			}
 		}
 	} else {
@@ -80,10 +58,20 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 	}
 }
 
+func (r *Reactable) attachBurningFuel(dur combat.Durability, mult combat.Durability) {
+	//burning fuel always overwrites
+	r.Durability[ModifierBurningFuel] = mult * dur
+	decayRate := mult * dur / (6*dur + 420)
+	if decayRate < 10.0/60.0 {
+		decayRate = 10.0 / 60.0
+	}
+	r.DecayRate[ModifierBurningFuel] = decayRate
+}
+
 func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Index(),
+		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Burning),
 		AttackTag:        combat.AttackTagBurningDamage,
 		ICDTag:           combat.ICDTagBurningDamage,
@@ -125,30 +113,13 @@ func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
 	}
 }
 
-func (r *Reactable) burningEventSub() {
-	burningReactCheck := func(args ...interface{}) bool {
-		if r.Durability[ModifierBurning] < ZeroDur && r.Durability[ModifierBurningFuel] > ZeroDur {
-			//no more burning ticks
-			r.burningTickSrc = -1
-			//remove burning fuel
-			r.Durability[ModifierBurningFuel] = 0
-			r.DecayRate[ModifierBurningFuel] = 0
-			//restore dendro and quicken decay rate
-			if r.Durability[ModifierDendro] > ZeroDur {
-				r.DecayRate[ModifierDendro] = r.burningCachedDendroDecayRate
-				r.burningCachedDendroDecayRate = 0
-			}
-			if r.Durability[ModifierQuicken] > ZeroDur {
-				r.DecayRate[ModifierQuicken] = r.burningCachedQuickenDecayRate
-				r.burningCachedQuickenDecayRate = 0
-			}
-		}
-		return false
+// burningCheck purges modifiers if burning no longer active
+func (r *Reactable) burningCheck() {
+	if r.Durability[ModifierBurning] < ZeroDur && r.Durability[ModifierBurningFuel] > ZeroDur {
+		//no more burning ticks
+		r.burningTickSrc = -1
+		//remove burning fuel
+		r.Durability[ModifierBurningFuel] = 0
+		r.DecayRate[ModifierBurningFuel] = 0
 	}
-	// add react check
-	r.core.Events.Subscribe(event.OnVaporize, burningReactCheck, fmt.Sprintf("burning-vaporize-%v", r.self.Index()))
-	r.core.Events.Subscribe(event.OnOverload, burningReactCheck, fmt.Sprintf("burning-overload-%v", r.self.Index()))
-	r.core.Events.Subscribe(event.OnMelt, burningReactCheck, fmt.Sprintf("burning-melt-%v", r.self.Index()))
-	r.core.Events.Subscribe(event.OnSwirlPyro, burningReactCheck, fmt.Sprintf("burning-swirlpyro-%v", r.self.Index()))
-	r.core.Events.Subscribe(event.OnCrystallizePyro, burningReactCheck, fmt.Sprintf("burning-crystallizepyro-%v", r.self.Index()))
 }

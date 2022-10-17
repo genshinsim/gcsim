@@ -133,7 +133,7 @@ var charNames = []string{
 	"luminecryo",
 	"aether",
 	"lumine",
-	"", //delim for traveler
+	"", // delim for traveler
 	"albedo",
 	"aloy",
 	"amber",

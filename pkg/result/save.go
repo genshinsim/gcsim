@@ -7,8 +7,6 @@ import (
 )
 
 func (s *Summary) Save(fpath string, gz bool) error {
-	s.Text = s.PrettyPrint()
-	s.V2 = true //force v2
 	data, err := json.Marshal(s)
 	if err != nil {
 		return err

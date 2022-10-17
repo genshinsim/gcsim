@@ -55,10 +55,10 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) bool {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
 	// check if stiletto is on-field
 	if a == action.ActionSkill && c.Core.Status.Duration(stilettoKey) > 0 {
-		return true
+		return true, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
 }

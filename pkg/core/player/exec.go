@@ -9,31 +9,31 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
-//ErrActionNotReady is returned if the requested action is not ready; this could be
-//due to any of the following:
-//	- Insufficient energy (burst only)
-//	- Ability on cooldown
-//	- Player currently in animation
+// ErrActionNotReady is returned if the requested action is not ready; this could be
+// due to any of the following:
+//   - Insufficient energy (burst only)
+//   - Ability on cooldown
+//   - Player currently in animation
 var ErrActionNotReady = errors.New("action is not ready yet; cannot be executed")
 var ErrPlayerNotReady = errors.New("player still in animation; cannot execute action")
 var ErrActionNoOp = errors.New("action is a noop")
 
-//Exec mirrors the idea of the in game buttons where you can press the button but
-//it may be greyed out. If grey'd out it will return ErrActionNotReady. Otherwise
-//if action was executed successfully then it will return nil
+// Exec mirrors the idea of the in game buttons where you can press the button but
+// it may be greyed out. If grey'd out it will return ErrActionNotReady. Otherwise
+// if action was executed successfully then it will return nil
 //
-//The function takes 2 params:
-//	- ActionType
-//	- Param
+// The function takes 2 params:
+//   - ActionType
+//   - Param
 //
-//Just like in game this will always try and execute on the currently active character
+// # Just like in game this will always try and execute on the currently active character
 //
-//This function can be called as many times per frame as desired. However, it will only
-//execute if the animation state allows for it
+// This function can be called as many times per frame as desired. However, it will only
+// execute if the animation state allows for it
 //
-//Note that although wait is not strictly a button in game, it is still a valid action.
-//When wait is executed, it will simply put the player in a lock animation state for
-//the requested number of frames
+// Note that although wait is not strictly a button in game, it is still a valid action.
+// When wait is executed, it will simply put the player in a lock animation state for
+// the requested number of frames
 func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error {
 	//check animation state
 	if p.IsAnimationLocked(t) {
@@ -44,7 +44,8 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	//check for energy, cd, etc..
 	//TODO: make sure there is a default check for charge attack/dash stams in char implementation
 	//this should deal with Ayaka/Mona's drain vs straight up consumption
-	if !char.ActionReady(t, param) {
+	if ok, reason := char.ActionReady(t, param); !ok {
+		p.Events.Emit(event.OnActionFailed, p.active, t, param, reason)
 		return ErrActionNotReady
 	}
 
@@ -60,6 +61,7 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			p.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
 				Write("have", p.Stam).
 				Write("cost", amt)
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
 			return ErrActionNotReady
 		}
 		//use stam
@@ -74,6 +76,7 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			p.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
 				Write("have", p.Stam).
 				Write("cost", amt)
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
 			return ErrActionNotReady
 		}
 		p.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
@@ -99,6 +102,7 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			return ErrActionNoOp
 		}
 		if p.SwapCD > 0 {
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.SwapCD)
 			return ErrActionNotReady
 		}
 		//otherwise swap at the end of timer

@@ -111,6 +111,15 @@ type (
 		Condition  Expr       //TODO: this should be an expr?
 		WhileBlock *BlockStmt // What to execute if true
 	}
+
+	// ForStmt represents a for block
+	ForStmt struct {
+		Pos
+		Init Stmt // initialization statement; or nil
+		Cond Expr // condition; or nil
+		Post Stmt // post iteration statement; or nil
+		Body *BlockStmt
+	}
 )
 
 type CtrlTyp int
@@ -134,6 +143,7 @@ func (*SwitchStmt) stmtNode() {}
 func (*CaseStmt) stmtNode()   {}
 func (*FnStmt) stmtNode()     {}
 func (*WhileStmt) stmtNode()  {}
+func (*ForStmt) stmtNode()    {}
 
 // BlockStmt.
 func newBlockStmt(pos Pos) *BlockStmt {
@@ -571,6 +581,60 @@ func (w *WhileStmt) CopyStmt() Stmt {
 
 func (w *WhileStmt) Copy() Node {
 	return w.CopyWhileStmt()
+}
+
+// ForStmt.
+
+func (f *ForStmt) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *ForStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString("for ")
+	if f.Init != nil {
+		f.Init.writeTo(sb)
+	}
+	sb.WriteString("; ")
+	if f.Cond != nil {
+		f.Cond.writeTo(sb)
+	}
+	sb.WriteString("; ")
+	if f.Post != nil {
+		f.Post.writeTo(sb)
+	}
+	sb.WriteString(" {\n")
+	f.Body.writeTo(sb)
+	sb.WriteString("}")
+}
+
+func (f *ForStmt) CopyForStmt() *ForStmt {
+	if f == nil {
+		return nil
+	}
+	n := &ForStmt{
+		Pos:  f.Pos,
+		Body: f.Body.CopyBlock(),
+	}
+	if f.Init != nil {
+		n.Init = f.Init.CopyStmt()
+	}
+	if f.Cond != nil {
+		n.Cond = f.Cond.CopyExpr()
+	}
+	if f.Post != nil {
+		n.Post = f.Post.CopyStmt()
+	}
+	return n
+}
+
+func (f *ForStmt) CopyStmt() Stmt {
+	return f.CopyForStmt()
+}
+
+func (f *ForStmt) Copy() Node {
+	return f.CopyForStmt()
 }
 
 // Expr.

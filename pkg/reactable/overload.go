@@ -19,6 +19,7 @@ func (r *Reactable) tryOverload(a *combat.AttackEvent) {
 		}
 		//reduce; either gone or left; don't care how much actually reacted
 		consumed = r.reduce(attributes.Pyro, a.Info.Durability, 1)
+		r.burningCheck()
 	case attributes.Pyro:
 		//must have electro; gotta be careful with ec?
 		if r.Durability[ModifierElectro] < ZeroDur {

@@ -76,3 +76,7 @@ func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
 		}, 0)
 	}
 }
+
+func (r *Reactable) attachQuicken(dur combat.Durability) {
+	r.attachOverlapRefreshDuration(ModifierQuicken, dur, 12*dur+360)
+}

@@ -27,7 +27,7 @@ func (c *char) newGuoba(ai combat.AttackInfo) *panda {
 	}
 	x, y := c.Core.Combat.Player().Pos()
 	//TODO: guoba placement??
-	p.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 0.2})
+	p.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypGuoba)
 	p.Gadget.Duration = 438
 	p.Reactable = &reactable.Reactable{}
 	p.Reactable.Init(p, c.Core)

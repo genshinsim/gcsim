@@ -3,10 +3,11 @@ package worker
 import (
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/simulation"
+	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 type Pool struct {
-	respCh  chan simulation.Result
+	respCh  chan stats.Result
 	errCh   chan error
 	QueueCh chan Job
 	StopCh  chan bool
@@ -17,10 +18,10 @@ type Job struct {
 	Seed int64
 }
 
-//New creates a new Pool. Jobs can be sent to new pool by sending to p.QueueCh
-//Closing p.StopCh will cause the pool to stop executing any queued jobs and currently working
-//workers will no longer send back responses
-func New(maxWorker int, respCh chan simulation.Result, errCh chan error) *Pool {
+// New creates a new Pool. Jobs can be sent to new pool by sending to p.QueueCh
+// Closing p.StopCh will cause the pool to stop executing any queued jobs and currently working
+// workers will no longer send back responses
+func New(maxWorker int, respCh chan stats.Result, errCh chan error) *Pool {
 
 	p := &Pool{
 		respCh:  respCh,

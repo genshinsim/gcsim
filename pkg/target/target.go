@@ -8,7 +8,7 @@ import (
 type Target struct {
 	Core            *core.Core
 	TargetIndex     int
-	key             int
+	key             combat.TargetKey
 	Hitbox          combat.Circle
 	Tags            map[string]int
 	CollidableTypes [combat.TargettableTypeCount]bool
@@ -36,15 +36,15 @@ func (t *Target) CollidedWith(x combat.Target) {
 	}
 }
 
-func (t *Target) Key() int                { return t.key }
-func (t *Target) SetKey(x int)            { t.key = x }
-func (t *Target) Index() int              { return t.TargetIndex }
-func (t *Target) SetIndex(ind int)        { t.TargetIndex = ind }
-func (t *Target) Shape() combat.Shape     { return &t.Hitbox }
-func (t *Target) SetPos(x, y float64)     { t.Hitbox.SetPos(x, y) }
-func (t *Target) Pos() (float64, float64) { return t.Hitbox.Pos() }
-func (t *Target) Kill()                   { t.Alive = false }
-func (t *Target) IsAlive() bool           { return t.Alive }
+func (t *Target) Key() combat.TargetKey     { return t.key }
+func (t *Target) SetKey(x combat.TargetKey) { t.key = x }
+func (t *Target) Index() int                { return t.TargetIndex }
+func (t *Target) SetIndex(ind int)          { t.TargetIndex = ind }
+func (t *Target) Shape() combat.Shape       { return &t.Hitbox }
+func (t *Target) SetPos(x, y float64)       { t.Hitbox.SetPos(x, y) }
+func (t *Target) Pos() (float64, float64)   { return t.Hitbox.Pos() }
+func (t *Target) Kill()                     { t.Alive = false }
+func (t *Target) IsAlive() bool             { return t.Alive }
 func (t *Target) SetTag(key string, val int) {
 	t.Tags[key] = val
 }
@@ -71,7 +71,7 @@ func (t *Target) WillCollide(s combat.Shape) bool {
 	}
 }
 
-func (t *Target) AttackWillLand(a combat.AttackPattern, src int) (bool, string) {
+func (t *Target) AttackWillLand(a combat.AttackPattern, src combat.TargetKey) (bool, string) {
 	//shape shouldn't be nil; panic here
 	if a.Shape == nil {
 		panic("unexpected nil shape")
@@ -96,7 +96,7 @@ func (t *Target) AttackWillLand(a combat.AttackPattern, src int) (bool, string) 
 		return t.Shape().IntersectRectangle(*v), "intersect rectangle"
 	case *combat.SingleTarget:
 		//only true if
-		return v.Target == t.TargetIndex, "target"
+		return v.Target == t.key, "target"
 	default:
 		return false, "unknown shape"
 	}

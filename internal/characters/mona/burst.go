@@ -99,8 +99,8 @@ func (c *char) burstDamageBonus() {
 	}
 }
 
-//bubble bursts when hit by an attack either while not frozen, or when the attack breaks freeze
-//i.e. impulse > 0
+// bubble bursts when hit by an attack either while not frozen, or when the attack breaks freeze
+// i.e. impulse > 0
 func (c *char) burstHook() {
 	//hook on to OnDamage; leave this always active
 	//since freeze will trigger an attack, this should be ok
@@ -149,5 +149,5 @@ func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 		Durability: 50,
 		Mult:       explosion[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(t.Index(), t.Type()), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(t.Key(), t.Type()), 1, 1)
 }

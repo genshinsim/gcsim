@@ -1,6 +1,18 @@
 package simulation
 
 import (
+	// stats collectors
+	_ "github.com/genshinsim/gcsim/pkg/stats/legacy"
+	// TODO: re-enable as part of full stats refactor
+	// _ "github.com/genshinsim/gcsim/pkg/stats/action"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/damage"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/energy"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/heal"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/reaction"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/shield"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/status"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/swap"
+
 	//artifacts
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/berserker"
@@ -49,6 +61,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
+	_ "github.com/genshinsim/gcsim/internal/characters/dori"
 	_ "github.com/genshinsim/gcsim/internal/characters/eula"
 	_ "github.com/genshinsim/gcsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gcsim/internal/characters/ganyu"
@@ -153,6 +166,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/widsith"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/akuoumaru"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/aquamarine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bell"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bloodtainted"
@@ -194,9 +208,11 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/ironpoint"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/kitain"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/lithic"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/missive"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/primordial"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/royal"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/scarletsands"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/skyward"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/vortex"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/wavebreaker"

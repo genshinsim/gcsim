@@ -24,3 +24,4 @@ internal/characters/replace.txt
 cmd/gcsim/gcsim
 !release-notes.txt
 \.vscode/
+**/node_modules

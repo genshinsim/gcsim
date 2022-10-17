@@ -83,7 +83,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				c.Core.QueueAttackWithSnap(
 					ai,
 					snap,
-					combat.NewDefSingleTarget(ind, combat.TargettableEnemy),
+					combat.NewDefSingleTarget(c.Core.Combat.Enemy(ind).Key(), combat.TargettableEnemy),
 					0,
 					c.a4,
 				)

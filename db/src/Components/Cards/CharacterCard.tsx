@@ -20,18 +20,18 @@ export function CharacterCard({
   return (
     <div className={cls} onClick={onClick ? onClick : () => {}}>
       <img
-        src={"/assets/avatar/" + char + ".png"}
+        src={"https://gcsim.app/api/assets/avatar/" + char + ".png"}
         alt={char}
         className="margin-auto"
       />
       {longName !== "" ? (
         <div>
           {tooLongNames.includes(char) ? (
-            <div className="text-xs flex items-center justify-center text-center h-8 bg-slate-600 ">
+            <div className="text-xs flex items-center justify-center text-center h-8 bg-slate-600 text-white">
               {longName}
             </div>
           ) : (
-            <div className="text-xs flex items-center justify-center text-center h-8 bg-slate-600 ">
+            <div className="text-xs flex items-center justify-center text-center h-8 bg-slate-600 text-white">
               {longName}
             </div>
           )}
@@ -58,12 +58,14 @@ const rareCharNames = [
   "barbara",
   "beidou",
   "bennett",
+  "candace",
   "chongyun",
+  "collei",
   "diona",
+  "dori",
   "fischl",
   "gorou",
   "kaeya",
-  "kujousara",
   "lisa",
   "kuki",
   "ningguang",
@@ -71,6 +73,7 @@ const rareCharNames = [
   "razor",
   "heizou",
   "rosaria",
+  "sara",
   "sucrose",
   "sayu",
   "thoma",
