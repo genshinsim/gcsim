@@ -49,6 +49,9 @@ const store = configureStore({
     [dbSlice.name]: dbSlice.reducer,
   },
   preloadedState: persistedState,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+  }),
 });
 
 store.subscribe(() => {
