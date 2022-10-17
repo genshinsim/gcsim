@@ -13,6 +13,7 @@ var (
 	skillHitmarks = []int{16, 91}
 	skillCDStarts = []int{14, 89}
 	skillCD       = []int{360, 540}
+	skillRadius   = []float64{4, 2.25}
 )
 
 func init() {
@@ -66,7 +67,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		c.skillPattern(chargeLevel),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			skillRadius[chargeLevel],
+			false,
+			combat.TargettableEnemy,
+			combat.TargettableGadget,
+		),
 		hitmark,
 		hitmark,
 		func(_ combat.AttackCB) {
@@ -97,14 +104,4 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
-}
-
-func (c *char) skillPattern(chargeLevel int) combat.AttackPattern {
-	switch chargeLevel {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy)
-	case 1:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.25, false, combat.TargettableEnemy)
-	}
-	panic("unreachable code")
 }
