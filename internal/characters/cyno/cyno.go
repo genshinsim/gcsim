@@ -14,7 +14,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstExtension float64
+	burstExtension int
+	burstSrc       int
+	lastSkillCast  int
 	c1Buff         []float64
 	c4Counter      int
 	c6Stacks       int

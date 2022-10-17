@@ -10,6 +10,7 @@ import (
 const skillBName = "Mortuary Rite"
 
 var (
+	skillCD       = 450
 	skillHitmark  = 21
 	skillBHitmark = 28
 	skillFrames   []int
@@ -54,7 +55,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	)
 
 	c.Core.QueueParticle("cyno", 3, attributes.Electro, skillHitmark+c.ParticleDelay)
-	c.SetCDWithDelay(action.ActionSkill, 450, 17)
+	c.lastSkillCast = c.Core.F + 17
+	c.SetCDWithDelay(action.ActionSkill, skillCD, 17)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -65,8 +67,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillB() action.ActionInfo {
-	c.tryBurstPPSlide(skillBHitmark)
-
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             skillBName,
@@ -134,12 +134,15 @@ func (c *char) skillB() action.ActionInfo {
 		c.burstExtension++
 	}
 
+	c.tryBurstPPSlide(skillBHitmark)
+
 	var count float64 = 1 // 33% of generating 2 on furry form
 	if c.Core.Rand.Float64() < .33 {
 		count++
 	}
 	c.Core.QueueParticle("cyno", count, attributes.Electro, skillBHitmark+c.ParticleDelay)
 
+	c.lastSkillCast = c.Core.F + 26
 	c.SetCDWithDelay(action.ActionSkill, 180, 26)
 
 	return action.ActionInfo{
