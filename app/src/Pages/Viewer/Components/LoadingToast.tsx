@@ -1,12 +1,18 @@
-import { Button, Classes, Intent, ProgressBar, Toaster } from "@blueprintjs/core";
+import { Button, Classes, Intent, Position, ProgressBar, Toaster } from "@blueprintjs/core";
 import classNames from "classnames";
-import React, { useRef } from "react";
+import React, { RefObject, useRef } from "react";
 import { ViewTypes } from "..";
 
+type Props = {
+  type: ViewTypes;
+  error: string | null;
+  current?: number;
+  total?: number;
+  cancel?: () => void;
+};
+
 // TODO: Add translations + number format
-export default function useLoadingToast(
-    type: ViewTypes, error: string | null, cancel?: () => void,
-    current?: number, total?: number) {
+export default ({ type, error, current, total, cancel }: Props) => {
   const loadingToast = useRef<Toaster>(null);
   const key = useRef<string | undefined>(undefined);
 
@@ -38,30 +44,40 @@ export default function useLoadingToast(
       return;
     }
 
-    const val = current / total;
-    const content = (
-      <div className="flex flex-row items-center justify-between gap-2">
-        <div className="min-w-fit">Running ({current}/{total})</div>
-        <ProgressBar
-            className={classNames("basis-1/2 flex-auto sm:min-w-", {
-              [Classes.PROGRESS_NO_STRIPES]: val >= 1,
-            })}
-            intent={val < 1 ? Intent.PRIMARY : Intent.SUCCESS}
-            value={val}/>
-        {action(val, loadingToast, cancel)}
-      </div>
-    );
-
     key.current = loadingToast.current?.show({
-      message: content,
+      message: (
+          <ProgressToast
+              current={current}
+              total={total}
+              loadingToast={loadingToast}
+              cancel={cancel} />
+      ),
       className: "w-full !max-w-2xl",
       intent: Intent.NONE,
-      isCloseButtonShown: val >= 1,
-      timeout: val < 1 ? 0 : 2000
+      isCloseButtonShown: current >= total,
+      timeout: current < total ? 0 : 2000
     }, key.current);
   }, [current, total, type, cancel, error]);
-  return loadingToast;
-}
+
+  return <Toaster ref={loadingToast} position={Position.TOP} />;
+};
+
+const ProgressToast = ({ current, total, loadingToast, cancel }:
+    {current: number, total: number, loadingToast: RefObject<Toaster>, cancel?: () => void}) => {
+  const val = current / total;
+  return (
+    <div className="flex flex-row items-center justify-between gap-2">
+      <div className="min-w-fit">Running ({current}/{total})</div>
+      <ProgressBar
+          className={classNames("basis-1/2 flex-auto sm:min-w-", {
+            [Classes.PROGRESS_NO_STRIPES]: val >= 1,
+          })}
+          intent={val < 1 ? Intent.PRIMARY : Intent.SUCCESS}
+          value={val}/>
+      {action(val, loadingToast, cancel)}
+    </div>
+  );
+};
 
 function action(val: number, loadingToast: React.RefObject<Toaster>, cancel?: () => void) {
   if (val >= 1 || cancel == null) {

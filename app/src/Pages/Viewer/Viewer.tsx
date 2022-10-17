@@ -1,12 +1,12 @@
-import { Alert, Intent, Position, Toaster } from "@blueprintjs/core";
-import { useState, useRef, useEffect } from "react";
+import { Alert, Intent } from "@blueprintjs/core";
+import { useState, useEffect } from "react";
 import Config from "./Config";
-import useLoadingToast from "./Components/LoadingToast";
 import Results from "./Results";
 import ViewerNav from "./Components/ViewerNav";
 import { useLocation } from "wouter";
 import { SimResults } from "./SimResults";
 import { ViewTypes } from ".";
+import LoadingToast from "./Components/LoadingToast";
 
 type ViewerProps = {
   data: SimResults | null;
@@ -19,10 +19,6 @@ type ViewerProps = {
 
 export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => {
   const [tabId, setTabId] = useState("results");
-  const loadingToast = useLoadingToast(
-      type, error, cancel, data?.statistics?.iterations, data?.max_iterations);
-  const copyToast = useRef<Toaster>(null);
-
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} />,
     config: <Config cfg={data?.config_file} />,
@@ -42,13 +38,17 @@ export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => 
   return (
     <div className="w-full bg-bp4-dark-gray-100">
       <div className="px-2 py-4 w-full 2xl:mx-auto 2xl:container">
-        <ViewerNav tabState={[tabId, setTabId]} config={data?.config_file} copyToast={copyToast} />
+        <ViewerNav tabState={[tabId, setTabId]} config={data?.config_file} />
       </div>
       <div className="pt-0 mt-0">
         {tabs[tabId]}
       </div>
-      <Toaster ref={loadingToast} position={Position.TOP} />
-      <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
+      <LoadingToast
+          type={type}
+          error={error}
+          current={data?.statistics?.iterations}
+          total={data?.max_iterations}
+          cancel={cancel} />
       <ErrorAlert msg={error} redirect={redirect} retry={retry} />
     </div>
   );
