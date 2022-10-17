@@ -35,7 +35,7 @@ function run(req: { itr: number }) {
   if (typeof(resp) == "string" || resp instanceof String) {
     return { type: WorkerResponse.Failed, reason: JSON.parse(resp as string).error };
   }
-  return { type: WorkerResponse.Done, result: resp, itr: req.itr }
+  return { type: WorkerResponse.Done, result: resp, itr: req.itr };
 }
 
 // @ts-ignore

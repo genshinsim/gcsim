@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export namespace Aggregator {
   export enum Request {
     Initialize = "initialize",
@@ -45,20 +46,20 @@ export namespace Aggregator {
 
   export interface InitializeResponse {
     type: Response.Initialized;
+    result: any;
   }
 
-  export function InitializeResponse(): InitializeResponse {
-    return { type: Response.Initialized };
+  export function InitializeResponse(result: any): InitializeResponse {
+    return { type: Response.Initialized, result: result };
   }
 
   export interface AddRequest {
     type: Request.Add;
     result: Uint8Array;
-    itr: number;
   }
 
-  export function AddRequest(result: Uint8Array, itr: number): AddRequest {
-    return { type: Request.Add, result: result, itr: itr };
+  export function AddRequest(result: Uint8Array): AddRequest {
+    return { type: Request.Add, result: result };
   }
 
   export interface AddResponse {
@@ -71,10 +72,11 @@ export namespace Aggregator {
 
   export interface FlushRequest {
     type: Request.Flush;
+    startTime: number;
   }
 
-  export function FlushRequest(): FlushRequest {
-    return { type: Request.Flush };
+  export function FlushRequest(startTime: number): FlushRequest {
+    return { type: Request.Flush, startTime: startTime };
   }
 
   export interface ResultResponse {

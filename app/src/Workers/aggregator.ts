@@ -24,25 +24,30 @@ WebAssembly.instantiateStreaming(fetch('/main.wasm'), go.importObject)
 
 // @ts-ignore
 function initialize(req: { cfg: string }) {
-  const resp = initializeAggregator(req.cfg);
-  if (resp != null) {
-    return { type: AggResponse.Failed, reason: JSON.parse(resp).error };
+  try {
+    const resp = JSON.parse(initializeAggregator(req.cfg));
+    if (resp.error) {
+      return { type: AggResponse.Failed, reason: resp.error };
+    }
+    return { type: AggResponse.Initialized, result: resp };
+  } catch (error) {
+    let message = "Unkown failure when calling initialize";
+    if (error instanceof Error) message = error.message;
+    return { type: AggResponse.Failed, reason: message };
   }
-  // TODO: return deserialized typed parsed config?
-  return { type: AggResponse.Initialized };
 }
 
-function add(req: { result: Uint8Array, itr: number }) {
-  const resp = aggregate(req.result, req.itr);
+function add(req: { result: Uint8Array }) {
+  const resp = aggregate(req.result);
   if (resp != null) {
     return { type: AggResponse.Failed, reason: JSON.parse(resp).error };
   }
   return { type: AggResponse.Done };
 }
 
-function doFlush(req: {}) {
+function doFlush(req: { startTime: number }) {
   // TODO: have a specific result response type to enforce (protos?)
-  const resp = JSON.parse(flush());
+  const resp = JSON.parse(flush(req.startTime));
   if (resp.error) {
     return { type: AggResponse.Failed, reason: resp.error };
   }

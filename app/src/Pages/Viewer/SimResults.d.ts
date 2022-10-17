@@ -1,9 +1,14 @@
 export interface SimResults {
+  max_iterations?: number
+
   config_file?: string
+
   statistics?: Statistics
 }
 
 export interface Statistics {
+  iterations?: number
+
   duration?: FloatStat
   dps?: FloatStat
   rps?: FloatStat

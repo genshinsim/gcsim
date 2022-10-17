@@ -1,7 +1,8 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { defaultRunStat, simSlice } from '/src/Pages/Sim/simSlice';
-import { viewerSlice } from './Pages/ViewerDashboard/viewerSlice';
+import { viewerSlice } from './Pages/Viewer/viewerSlice';
+import { viewerSlice as legacyViewerSlice } from './Pages/ViewerDashboard/viewerSlice';
 import { userDataSlice } from './Pages/Sim/userDataSlice';
 import { userSlice } from './UserData/userSlice';
 import { dbSlice } from './PageDatabase/dbSlice';
@@ -42,6 +43,7 @@ const store = configureStore({
   reducer: {
     [simSlice.name]: simSlice.reducer,
     [viewerSlice.name]: viewerSlice.reducer,
+    [legacyViewerSlice.name]: legacyViewerSlice.reducer,
     [userDataSlice.name]: userDataSlice.reducer,
     [userSlice.name]: userSlice.reducer,
     [dbSlice.name]: dbSlice.reducer,

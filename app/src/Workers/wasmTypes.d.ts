@@ -16,9 +16,9 @@ declare global {
   declare function validateConfig(cfg: string): string;
 
   // Aggregator functions
-  declare function initializeAggregator(cfg: string): string | null;
-  declare function aggregate(result: Uint8Array, itr: int): string | null;
-  declare function flush(): string;
+  declare function initializeAggregator(cfg: string): string;
+  declare function aggregate(result: Uint8Array): string | null;
+  declare function flush(startTime: number): string;
 
   // Worker functions
   declare function initializeWorker(cfg: string): string | null;

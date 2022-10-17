@@ -9,6 +9,7 @@ import {
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
 import ImportFromEnkaDialog from "~src/Components/Enka/ImportFromEnkaDialog";
 import { ImportFromGOODDialog } from "~src/Components/GOOD";
 import { useAppSelector, RootState, useAppDispatch } from "~src/store";
@@ -18,7 +19,8 @@ import { runSim } from "../exec";
 import { simActions } from "../simSlice";
 
 export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
-  let { t } = useTranslation();
+  const { t } = useTranslation();
+  const [, setLocation] = useLocation();
 
   const { ready, workers, cfg, run_stats, showTips, showBuilder } =
     useAppSelector((state: RootState) => {
@@ -41,7 +43,7 @@ export const Toolbox = ({ canRun = true }: { canRun?: boolean }) => {
 
   const run = () => {
     dispatch(runSim(cfg));
-    setOpenProgress(true);
+    setLocation("/viewer/web");
   };
 
   const toggleTips = () => {
