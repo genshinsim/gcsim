@@ -20,10 +20,10 @@ const replacer = (k: string, v: any) => {
 };
 
 export function parseLogV2(
-  active: string,
-  team: string[],
-  log: string | [any],
-  selected: string[]
+  active?: string,
+  team?: string[],
+  log?: string | [any],
+  selected?: string[]
 ) {
   let activeIndex = team.findIndex((e) => e === active);
   activeIndex++; // +1 since we set the first field to be sim slot
@@ -55,7 +55,6 @@ export function parseLogV2(
     console.warn(e);
     return [];
   }
-  console.log(lines);
 
   // let rowKey = 0;
   //bool to check if there are elements added
@@ -399,9 +398,6 @@ export function parseLogV2(
       active: activeIndex,
     });
   }
-
-  //append in ended status
-  console.log(ended);
 
   if (selected.indexOf('status') != -1) {
     for (let f = -1; f <= finalFrame; f++) {

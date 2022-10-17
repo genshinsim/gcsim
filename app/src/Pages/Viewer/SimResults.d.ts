@@ -1,9 +1,17 @@
 export interface SimResults {
   max_iterations?: number
 
+  initial_character?: string
+  character_details?: CharacterDetail[]
+
   config_file?: string
+  debug?: [unknown]
 
   statistics?: Statistics
+}
+
+export interface CharacterDetail {
+  name: string
 }
 
 export interface Statistics {

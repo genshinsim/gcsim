@@ -7,6 +7,7 @@ import { useLocation } from "wouter";
 import { SimResults } from "./SimResults";
 import { ViewTypes } from ".";
 import LoadingToast from "./Components/LoadingToast";
+import Debug, { useDebugParser, useDebugSettings } from "./Debug";
 
 type ViewerProps = {
   data: SimResults | null;
@@ -18,12 +19,15 @@ type ViewerProps = {
 };
 
 export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => {
+  const [debugSettings, setDebugSettings] = useDebugSettings();
+  const parsedDebug = useDebugParser(data, debugSettings);
+
   const [tabId, setTabId] = useState("results");
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} />,
     config: <Config cfg={data?.config_file} />,
     analyze: <div></div>,
-    debug: <div></div>,
+    debug: <Debug data={data} parsed={parsedDebug} settingsState={[debugSettings, setDebugSettings]} />,
   };
 
   // If we navigate away from the page, stop the execution
@@ -36,11 +40,11 @@ export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => 
   // - minor version mismatch (warning w/ option to resim or load page anyway)
 
   return (
-    <div className="w-full bg-bp4-dark-gray-100">
+    <div className="flex flex-col w-full h-full bg-bp4-dark-gray-100">
       <div className="px-2 py-4 w-full 2xl:mx-auto 2xl:container">
         <ViewerNav tabState={[tabId, setTabId]} config={data?.config_file} />
       </div>
-      <div className="pt-0 mt-0">
+      <div className="basis-full pt-0 mt-0">
         {tabs[tabId]}
       </div>
       <LoadingToast
@@ -54,7 +58,6 @@ export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => 
   );
 };
 
-// TODO: Retry or Close buttons. Retry runs a callback?
 const ErrorAlert = ({ msg, redirect, retry }: {
     msg: string | null,
     redirect: string,
