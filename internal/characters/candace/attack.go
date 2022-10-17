@@ -20,6 +20,8 @@ var (
 		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
 		{combat.StrikeTypeSpear},
 	}
+	// {{radius 2.5 circle}, {x=2.2 z=3.0 box}, {radius 2.5 fanAngle 270 circle, radius 2.5 fanAngle 270 circle}, {x=2.2 z=7.0 box}}
+	attackRadius = []float64{2.5, 1.5, 2.5, 3.5}
 )
 
 const normalHitNum = 4
@@ -56,7 +58,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		c.Core.QueueAttack(
 			ai,
-			c.attackPattern(c.NormalCounter),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				attackRadius[c.NormalCounter],
+				false,
+				combat.TargettableEnemy,
+				combat.TargettableGadget,
+			),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i],
 		)
@@ -70,18 +78,4 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
-}
-
-func (c *char) attackPattern(normalIndex int) combat.AttackPattern {
-	switch normalIndex {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy, combat.TargettableGadget)
-	case 1: // supposed to be box x=2.2,z=3.0
-		return combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget)
-	case 2: // supposed to be fan angle 270 for both hits
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy, combat.TargettableGadget)
-	case 3: // supposed to be box x=2.2,z=7.0
-		return combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy, combat.TargettableGadget)
-	}
-	panic("unreachable code")
 }
