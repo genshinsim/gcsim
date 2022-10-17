@@ -13,7 +13,7 @@ import (
 var burstFrames []int
 
 const (
-	burstKey = "cyno-burst"
+	burstKey = "cyno-q"
 )
 
 func init() {
