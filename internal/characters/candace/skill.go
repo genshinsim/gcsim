@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	windup := 0
 	if p["perfect"] != 0 {
 		chargeLevel = 1
-		windup = -55
+		windup = 55
 	}
 
 	ai := combat.AttackInfo{
@@ -56,7 +56,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	hitmark := skillHitmarks[chargeLevel] + windup
+	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
 	case 0:
 		c.Core.QueueParticle("candace", 2, attributes.Hydro, c.ParticleDelay+hitmark)
@@ -99,7 +99,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionSkill, cd, skillCDStarts[chargeLevel])
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return skillFrames[chargeLevel][next] + windup },
+		Frames:          func(next action.Action) int { return skillFrames[chargeLevel][next] - windup },
 		AnimationLength: skillFrames[chargeLevel][action.InvalidAction],
 		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
