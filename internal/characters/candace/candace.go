@@ -15,7 +15,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	waveCount int
-	infuseSrc int
+	burstSrc  int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -31,8 +31,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	return nil
 }
 
-// Occurs after all characters are loaded, so getPartyElementalTypeCounts works properly
 func (c *char) Init() error {
+	for _, char := range c.Core.Player.Chars() {
+		c.burstInit(char)
+		c.a4(char)
+	}
 	c.burstSwap()
 	if c.Base.Cons >= 6 {
 		c.c6()

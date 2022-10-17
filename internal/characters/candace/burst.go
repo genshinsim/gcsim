@@ -16,6 +16,7 @@ var burstFrames []int
 const (
 	burstHitmark = 33
 	burstKey     = "candace-q"
+	burstDmgKey  = "candace-q-dmg"
 	waveHitmark  = 1
 )
 
@@ -54,27 +55,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		duration = 720
 	}
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.2
+	c.burstSrc = c.Core.F
 	// timer starts at hitmark
 	c.Core.Tasks.Add(func() {
-		c.infuseSrc = c.Core.F
-		for _, char := range c.Core.Player.Chars() {
-			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag(burstKey, duration),
-				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-					if atk.Info.AttackTag != combat.AttackTagNormal {
-						return nil, false
-					}
-					if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
-						return nil, false
-					}
-					return m, true
-				},
-			})
-			c.a4(char, duration)
-			c.burstInfuseFn(char, c.infuseSrc)
-		}
+		c.AddStatus(burstKey, duration, true)
+		c.burstInfuseFn(c.CharWrapper, c.burstSrc)
 	}, burstHitmark)
 
 	c.ConsumeEnergy(4)
@@ -89,10 +74,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
-	if src != c.infuseSrc {
+	if src != c.burstSrc {
 		return
 	}
-	if !char.StatusIsActive(burstKey) {
+	if c.Core.Player.Active() != char.Index {
+		return
+	}
+	if !c.StatusIsActive(burstKey) {
 		return
 	}
 	switch char.Weapon.Class {
@@ -101,24 +89,25 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 		weapon.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
 			char.Index,
-			"candace-infuse",
+			"candace-q-infuse",
 			attributes.Hydro,
 			60,
 			true,
 			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
 		)
 	}
-	c.Core.Tasks.Add(func() { c.burstInfuseFn(char, src) }, 30)
+	c.QueueCharTask(func() { c.burstInfuseFn(char, src) }, 30)
 }
 
 func (c *char) burstSwap() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if c.waveCount > 2 {
+		if !c.StatusIsActive(burstKey) {
 			return false
 		}
 		next := args[1].(int)
 		char := c.Core.Player.Chars()[next]
-		if !char.StatusIsActive(burstKey) {
+		c.burstInfuseFn(char, c.burstSrc)
+		if c.waveCount > 2 {
 			return false
 		}
 		ai := combat.AttackInfo{
@@ -142,5 +131,25 @@ func (c *char) burstSwap() {
 		)
 		c.waveCount++
 		return false
-	}, "candace-burst-swap")
+	}, "candace-q-swap")
+}
+
+func (c *char) burstInit(char *character.CharWrapper) {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.2
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase(burstDmgKey, -1),
+		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			if !c.StatusIsActive(burstKey) {
+				return nil, false
+			}
+			if atk.Info.AttackTag != combat.AttackTagNormal {
+				return nil, false
+			}
+			if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
+				return nil, false
+			}
+			return m, true
+		},
+	})
 }
