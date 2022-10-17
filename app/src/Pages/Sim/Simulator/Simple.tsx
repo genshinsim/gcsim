@@ -1,5 +1,5 @@
 import { Callout, useHotkeys } from '@blueprintjs/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { SectionDivider } from '~src/Components/SectionDivider';
 import { Viewport } from '~src/Components/Viewport';
@@ -41,6 +41,15 @@ export function Simple() {
   );
   useHotkeys(hotkeys);
 
+  // check worker ready state every 250ms so run button becomes available when workers do
+  const [isReady, setReady] = useState(false);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setReady(ready());
+    }, 250);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Viewport className="flex flex-col gap-2">
       <div className="flex flex-col gap-2">
@@ -81,7 +90,7 @@ export function Simple() {
                 </a>
               </Callout>
             </div>
-            <Toolbox canRun={cfg_err === '' && ready()} />
+            <Toolbox canRun={cfg_err === '' && isReady} />
           </div>
         </div>
       </div>

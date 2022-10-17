@@ -12,7 +12,6 @@ export function runSim(cfg: string): AppThunk {
     }).catch((err) => {
       console.warn(err);
       dispatch(viewerActions.setError({ error: err }));
-      pool.reset();
     });
   };
 }

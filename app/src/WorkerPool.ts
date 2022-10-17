@@ -210,14 +210,4 @@ export class WorkerPool {
     this.aggregator.terminate();
     this.aggregator = this.createAggregator();
   }
-
-  public reset() {
-    console.log("restarting all workers");
-    const cnt = this.workers.length;
-    this.setWorkerCount(0, () => {});
-    this.setWorkerCount(cnt, () => {});
-
-    this.aggregator.terminate();
-    this.aggregator = this.createAggregator();
-  }
 }
