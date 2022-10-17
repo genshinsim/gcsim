@@ -24,7 +24,7 @@ func (c *char) c4() {
 	if c.burstOverflowingLotuslight > 10 {
 		c.burstOverflowingLotuslight = 10
 	}
-	c.Core.Log.NewEvent("dmc-c4", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("dmc-c4-triggered", glog.LogCharacterEvent, c.Index)
 }
 
 // Gets removed on swap - from Kolbiri
@@ -41,11 +41,19 @@ func (c *char) c6Buff(delay int) {
 	m := make([]float64, attributes.EndStatType)
 	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolbiri
 	c.Core.Tasks.Add(func() {
-		if c.Core.F <= c.burstExpire { //burst isn't expired
+		if c.burstAlive { //burst isn't expired
 			active := c.Core.Player.ActiveChar()
 			m[attributes.DendroP] = 0.12
 			if c.burstTransfig != attributes.NoElement {
-				m[c.burstTransfig] = 0.12
+				switch c.burstTransfig {
+				case attributes.Hydro:
+					m[attributes.HydroP] = 0.12
+				case attributes.Electro:
+					m[attributes.ElectroP] = 0.12
+				case attributes.Pyro:
+					m[attributes.PyroP] = 0.12
+				}
+
 			}
 			active.AddStatMod(character.StatMod{
 				Base: modifier.NewBase("dmc-c6", 60),

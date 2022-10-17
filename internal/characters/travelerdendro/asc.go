@@ -22,7 +22,7 @@ func (c *char) a1Buff(delay int) {
 	m := make([]float64, attributes.EndStatType)
 	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolbiri
 	c.Core.Tasks.Add(func() {
-		if c.Core.F <= c.burstExpire { //burst isn't expired
+		if c.burstAlive { //burst isn't expired
 			active := c.Core.Player.ActiveChar()
 			m[attributes.EM] = float64(6 * c.burstOverflowingLotuslight)
 			active.AddStatMod(character.StatMod{
@@ -38,7 +38,7 @@ func (c *char) a1Buff(delay int) {
 
 func (c *char) a1Stack(delay int) {
 	c.Core.Tasks.Add(func() {
-		if c.Core.F <= c.burstExpire && c.burstOverflowingLotuslight < 10 { //burst isn't expired, and stacks aren't capped
+		if c.burstAlive && c.burstOverflowingLotuslight < 10 { //burst isn't expired, and stacks aren't capped
 			c.burstOverflowingLotuslight += 1
 		}
 	}, delay)
