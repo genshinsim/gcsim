@@ -15,9 +15,11 @@ import (
 type LeaLotus struct {
 	*gadget.Gadget
 	*reactable.Reactable
-	burstAtk *combat.AttackEvent
-	char     *char
-	r        reactable.Reactable
+	burstAtk        *combat.AttackEvent
+	char            *char
+	targetingRadius float64
+	hitboxRadius    float64
+	r               reactable.Reactable
 }
 
 func (s *LeaLotus) transfigInit() {
@@ -73,6 +75,9 @@ func (c *char) newLeaLotusLamp(duration int) *LeaLotus {
 	s.char = c
 	s.char.burstTransfig = attributes.NoElement
 
+	s.targetingRadius = 8
+	s.hitboxRadius = 3
+
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lea Lotus Lamp (Q)",
@@ -98,8 +103,10 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	s.char.burstTransfig = ele
 	switch ele {
 	case attributes.Hydro:
+		s.targetingRadius = 12
+		s.hitboxRadius = 5
 		for t := 15; t <= s.Duration; t += 90 {
-			s.Core.QueueAttackWithSnap(s.burstAtk.Info, s.burstAtk.Snapshot, combat.NewCircleHit(s.Core.Combat.PrimaryTarget(), 5, false, combat.TargettableEnemy), t)
+			s.QueueAttack(t)
 		}
 		s.Core.Tasks.Add(func() {
 			s.char.burstAlive = false
@@ -107,7 +114,7 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 
 	case attributes.Electro:
 		for t := 15; t <= s.Duration; t += 54 {
-			s.Core.QueueAttackWithSnap(s.burstAtk.Info, s.burstAtk.Snapshot, combat.NewCircleHit(s.Core.Combat.PrimaryTarget(), 3, false, combat.TargettableEnemy), t)
+			s.QueueAttack(t)
 		}
 		s.Core.Tasks.Add(func() {
 			s.char.burstAlive = false
@@ -142,20 +149,27 @@ func (s *LeaLotus) Tick() {
 }
 
 func (s *LeaLotus) OnThinkInterval() {
-	s.Core.QueueAttackWithSnap(s.burstAtk.Info, s.burstAtk.Snapshot, combat.NewCircleHit(s.Core.Combat.PrimaryTarget(), 3, false, combat.TargettableEnemy), 0)
+	s.QueueAttack(0)
 }
 
 func (s *LeaLotus) ApplyDamage(*combat.AttackEvent, float64) {}
 
 func (s *LeaLotus) OnExpiry(*combat.AttackEvent, float64) {
 	s.char.burstAlive = false
-	// s.Core.Events.Unsubscribe(event.OnQuicken, "lealotus-electro")
-	// s.Core.Events.Unsubscribe(event.OnBloom, "lealotus-hydro")
-	// s.Core.Events.Unsubscribe(event.OnBurning, "lealotus-pyro")
 }
 
-func (s *LeaLotus) OnKill(*combat.AttackEvent, float64) {
-	// s.Core.Events.Unsubscribe(event.OnQuicken, "lealotus-electro")
-	// s.Core.Events.Unsubscribe(event.OnBloom, "lealotus-hydro")
-	// s.Core.Events.Unsubscribe(event.OnBurning, "lealotus-pyro")
+func (l *LeaLotus) QueueAttack(delay int) {
+	x, y := l.Gadget.Pos()
+	enemies := l.Core.Combat.EnemiesWithinRadius(x, y, l.targetingRadius)
+	if len(enemies) > 0 {
+		idx := l.Core.Rand.Intn(len(enemies))
+
+		l.Core.QueueAttackWithSnap(
+			l.burstAtk.Info,
+			l.burstAtk.Snapshot,
+			combat.NewCircleHit(l.Core.Combat.Enemy(enemies[idx]), l.hitboxRadius, false, combat.TargettableEnemy),
+			delay,
+		)
+	}
+
 }
