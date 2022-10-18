@@ -157,8 +157,8 @@ func (s *LeaLotus) ApplyDamage(atk *combat.AttackEvent, damage float64) {
 	if atk.Info.Durability > 0 && !atk.Reacted && !atk.OnICD && atk.Info.Element != attributes.Physical {
 		if !atk.Reacted {
 			s.AttachOrRefill(atk)
-			s.Core.Log.NewEvent(fmt.Sprintf("DMC lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
 		}
+		s.Core.Log.NewEvent(fmt.Sprintf("DMC lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
 	}
 
 }
