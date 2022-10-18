@@ -29,8 +29,8 @@ func (w *Weapon) Init() error {
 	return nil
 }
 
-// The following effect will trigger every 10s: The equipping character will gain 24%/30%/36%/42%/48% of
-// their Elemental Mastery as bonus ATK for 12s, with nearby party members gaining 30% of this buff for
+// The following effect will trigger every 10s: The equipping character will gain 0.036%/0.045%/0.054%/0.063%/0.072% of
+// their Elemental Mastery as bonus Energy Recharge for 12s, with nearby party members gaining 30% of this buff for
 // the same duration. Multiple instances of this weapon can allow this buff to stack. This effect will
 // still trigger even if the character is not on the field.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
