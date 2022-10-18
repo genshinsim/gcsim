@@ -43,9 +43,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		},
 	})
 	c.burstSrc = c.Core.F
+	src := c.Core.F
 	// if cyno extends his burst, we need to set skill CD properly
-	c.QueueCharTask(func() { c.onBurstExpiry(c.burstSrc) }, 713+240)
-	c.QueueCharTask(func() { c.onBurstExpiry(c.burstSrc) }, 713+480)
+	c.QueueCharTask(func() { c.onBurstExpiry(src) }, 713+240)
+	c.QueueCharTask(func() { c.onBurstExpiry(src) }, 713+480)
 
 	c.QueueCharTask(c.a1, 328)
 	c.SetCD(action.ActionBurst, 1200)
@@ -73,8 +74,9 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 		c.ExtendStatus(burstKey, hitmark-duration+1)
 		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index).
 			Write("expiry", c.StatusExpiry(burstKey))
+		src := c.burstSrc
 		c.QueueCharTask(func() {
-			c.onBurstExpiry(c.burstSrc)
+			c.onBurstExpiry(src)
 		}, hitmark-duration+3) // 3f because burst expires on 2f
 	}
 }
@@ -105,4 +107,5 @@ func (c *char) onBurstExpiry(burstSrc int) {
 		c.ResetActionCooldown(action.ActionSkill)
 		c.SetCD(action.ActionSkill, cd)
 	}
+	c.burstSrc = -1 // make sure we don't call other burst fns
 }
