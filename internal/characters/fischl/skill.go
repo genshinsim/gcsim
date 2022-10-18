@@ -35,11 +35,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       birdSum[c.TalentLvlSkill()],
 	}
 
+	var radius float64 = 2
 	if c.Base.Cons >= 2 {
 		ai.Mult += 2
+		radius = 3
 	}
 	// hitmark is 5 frames after oz spawns
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget), skillOzSpawn, skillOzSpawn+5)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius, false, combat.TargettableEnemy, combat.TargettableGadget), skillOzSpawn, skillOzSpawn+5)
 
 	// CD Delay is 18 frames, but things break if Delay > CanQueueAfter
 	// so we add 18 to the duration instead. this probably mess up CDR stuff
