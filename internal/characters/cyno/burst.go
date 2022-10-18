@@ -44,9 +44,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	})
 	c.burstSrc = c.Core.F
 	// if cyno extends his burst, we need to set skill CD properly
-	for i := 1; i < 3; i++ {
-		c.QueueCharTask(func() { c.onBurstExpiry(c.burstSrc) }, 713+i*240)
-	}
+	c.QueueCharTask(func() { c.onBurstExpiry(c.burstSrc) }, 713+240)
+	c.QueueCharTask(func() { c.onBurstExpiry(c.burstSrc) }, 713+480)
 
 	c.QueueCharTask(c.a1, 328)
 	c.SetCD(action.ActionBurst, 1200)
@@ -101,7 +100,7 @@ func (c *char) onBurstExpiry(burstSrc int) {
 	if c.StatusIsActive(burstKey) {
 		return
 	}
-	cd := (c.lastSkillCast + skillCD) - c.Core.F
+	cd := skillCD - (c.Core.F - c.lastSkillCast)
 	if cd > 0 {
 		c.ResetActionCooldown(action.ActionSkill)
 		c.SetCD(action.ActionSkill, cd)
