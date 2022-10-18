@@ -11,13 +11,12 @@ import (
 var burstFrames []int
 
 const (
-	lingeringAeonStatus = "lingering_aeon"
+	lingeringAeonStatus = "lingeringaeon"
 
 	burstHitmark     = 91
 	burstAeonHitmark = 121
 )
 
-// TODO: cancel frames
 func init() {
 	burstFrames = frames.InitAbilSlice(110) // Q -> Dash
 	burstFrames[action.ActionAttack] = 108
@@ -33,7 +32,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    c.MaxHP() * burst[c.TalentLvlBurst()],
@@ -41,19 +40,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy),
 		burstHitmark,
 		burstHitmark,
 		c.LingeringAeon,
 	)
 
 	c.ConsumeEnergy(4)
-	c.SetCD(action.ActionBurst, 900) // 15s * 60
+	c.SetCD(action.ActionBurst, 18*60)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }
@@ -65,22 +64,23 @@ func (c *char) LingeringAeon(a combat.AttackCB) {
 	}
 	t.AddStatus(lingeringAeonStatus, burstAeonHitmark, false)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Lingering Aeon",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Hydro,
-		Durability: 25,
-		Mult:       0,
-		FlatDmg:    c.MaxHP() * burstAeon[c.TalentLvlBurst()],
-	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-		burstAeonHitmark,
-		burstAeonHitmark,
-	)
+	c.QueueCharTask(func() {
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Lingering Aeon",
+			AttackTag:  combat.AttackTagElementalBurst,
+			ICDTag:     combat.ICDTagNone,
+			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Hydro,
+			Durability: 25,
+			FlatDmg:    c.MaxHP() * burstAeon[c.TalentLvlBurst()],
+		}
+		c.Core.QueueAttack(
+			ai,
+			combat.NewDefSingleTarget(t.Key(), combat.TargettableEnemy),
+			0,
+			0,
+		)
+	}, burstAeonHitmark)
 }

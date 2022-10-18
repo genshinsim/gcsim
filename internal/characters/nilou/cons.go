@@ -67,7 +67,7 @@ func (c *char) c4() {
 	c.AddEnergy("nilou-c4", 15)
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.5 // TODO: or is it scaling up? like xq c4
+	m[attributes.DmgP] = 0.5
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("nilou-c4", 8*60),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
@@ -106,7 +106,7 @@ func (c *char) c6() {
 		Base:         modifier.NewBase("nilou-c6-cr", -1),
 		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
-			cr := float64(int(c.MaxHP())/1000) * 0.006
+			cr := c.MaxHP() * 0.001 * 0.006
 			if cr > 0.3 {
 				cr = 0.3
 			}
@@ -120,7 +120,7 @@ func (c *char) c6() {
 		Base:         modifier.NewBase("nilou-c6-cd", -1),
 		AffectedStat: attributes.CD,
 		Amount: func() ([]float64, bool) {
-			cd := float64(int(c.MaxHP())/1000) * 0.012
+			cd := c.MaxHP() * 0.001 * 0.012
 			if cd > 0.6 {
 				cd = 0.6
 			}

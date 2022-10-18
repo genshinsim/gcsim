@@ -13,25 +13,23 @@ type BountifulCore struct {
 	*gadget.Gadget
 }
 
-// TODO: "and they have larger AoEs"
 func newBountifulCore(c *core.Core, x float64, y float64, a *combat.AttackEvent) *BountifulCore {
 	b := &BountifulCore{
 		srcFrame: c.F,
 	}
 
-	b.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypBountifulCore)
-	b.Gadget.Duration = 0.2 * 60
+	b.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypDendroCore)
+	b.Gadget.Duration = 0.4 * 60
 
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
-		// c.Combat.Log.NewEvent("bountiful core boom", glog.LogCharacterEvent, char.Index)
 		ai := reactable.NewBloomAttack(char, b)
-		c.QueueAttack(ai, combat.NewCircleHit(b, 5, false, combat.TargettableEnemy), -1, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(b, 6.5, false, combat.TargettableEnemy), -1, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		c.QueueAttack(ai, combat.NewCircleHit(b.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(b.Gadget, 6.5, true, combat.TargettablePlayer), -1, 1)
 	}
 	//TODO: should bloom do damage if it blows up due to limit reached?
 	b.Gadget.OnExpiry = explode

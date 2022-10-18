@@ -144,7 +144,7 @@ var ICDGroupEleApplicationSequence = [][]int{
 	//dori burst
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//nilou
-	{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
+	{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0},
 	//reaction a
 	{1.0, 1.0},
 	//reaction b

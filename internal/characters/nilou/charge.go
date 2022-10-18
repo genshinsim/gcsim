@@ -27,14 +27,14 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Charge %v", i),
 			AttackTag:  combat.AttackTagExtra,
-			ICDTag:     combat.ICDTagExtraAttack,
+			ICDTag:     combat.ICDTagNormalAttack,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeSlash,
 			Element:    attributes.Physical,
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.3, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	return action.ActionInfo{

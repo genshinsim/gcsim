@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	a1Status = "golden-chalice" // TODO: or "nilou-a1"?
+	a1Status = "nilou-a1"
+	a4Mod    = "nilou-a4"
 )
 
 // When all characters in the party are all Dendro or Hydro, and there are at least one Dendro character and one Hydro character:
@@ -24,51 +25,14 @@ const (
 // is considered DMG dealt by Dendro Cores produced by Bloom.
 // Should the party not meet the conditions for this Passive Talent, any existing Golden Chalice’s Bounty effects will be canceled.
 func (c *char) a1() {
-	chars := c.Core.Player.Chars()
-	//count number of ele first
-	count := make(map[attributes.Element]int)
-	for _, this := range chars {
-		count[this.Base.Element]++
-	}
-	if count[attributes.Hydro] == 0 || count[attributes.Dendro] == 0 || count[attributes.Hydro]+count[attributes.Dendro] != len(chars) {
+	if !c.onlyBloomTeam {
 		return
 	}
 
-	for _, this := range chars {
+	for _, this := range c.Core.Player.Chars() {
 		this.AddStatus(a1Status, 30*60, true)
-
-		// Every 1,000 points of Nilou’s Max HP above 30,000 will cause the DMG dealt by Bountiful Cores created by characters affected
-		// by Golden Chalice’s Bounty to increase by 9%.
-		// The maximum increase in Bountiful Core DMG that can be achieved this way is 400%.
-		this.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBaseWithHitlag("nilou-a4", 30*60),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				if ai.AttackTag != combat.AttackTagBloom {
-					return 0, false
-				}
-
-				// check is bountiful core?
-				var t combat.Gadget
-				for _, v := range c.Core.Combat.Gadgets() {
-					if v != nil && v.Key() == ai.DamageSrc {
-						t = v
-					}
-				}
-				if _, ok := t.(*BountifulCore); !ok {
-					return 0, false
-				}
-
-				a4Bonus := float64(int(c.MaxHP()-30000)/1000) * 0.09
-				if a4Bonus < 0 {
-					a4Bonus = 0
-				} else if a4Bonus > 4 {
-					a4Bonus = 4
-				}
-				c.Core.Combat.Log.NewEvent("adding a4 bonus", glog.LogCharacterEvent, c.Index).Write("bonus", a4Bonus)
-				return a4Bonus, false
-			},
-		})
 	}
+	c.a4()
 
 	// Bountiful Cores
 	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
@@ -109,9 +73,9 @@ func (c *char) a1() {
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.EM] = 100
-		for _, this := range chars {
+		for _, this := range c.Core.Player.Chars() {
 			this.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("nilou-a1", 10*60),
+				Base:         modifier.NewBaseWithHitlag("nilou-a1-em", 10*60),
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return m, true
@@ -121,4 +85,56 @@ func (c *char) a1() {
 
 		return false
 	}, "nilou-a1")
+}
+
+// Every 1,000 points of Nilou’s Max HP above 30,000 will cause the DMG dealt by Bountiful Cores created by characters affected
+// by Golden Chalice’s Bounty to increase by 9%.
+// The maximum increase in Bountiful Core DMG that can be achieved this way is 400%.
+func (c *char) a4() {
+	for _, this := range c.Core.Player.Chars() {
+		this.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
+			Amount: func(ai combat.AttackInfo) (float64, bool) {
+				if ai.AttackTag != combat.AttackTagBloom {
+					return 0, false
+				}
+
+				// check is bountiful core?
+				var t combat.Gadget
+				for _, v := range c.Core.Combat.Gadgets() {
+					if v != nil && v.Key() == ai.DamageSrc {
+						t = v
+					}
+				}
+				if _, ok := t.(*BountifulCore); !ok {
+					return 0, false
+				}
+
+				c.Core.Combat.Log.NewEvent("adding nilou a4 bonus", glog.LogCharacterEvent, c.Index).Write("bonus", c.a4Bonus)
+				return c.a4Bonus, false
+			},
+		})
+	}
+	c.a4Src = c.Core.F
+	c.QueueCharTask(c.updateA4Bonus(c.a4Src), 0.5*60)
+}
+
+func (c *char) updateA4Bonus(src int) func() {
+	return func() {
+		if c.a4Src != src {
+			return
+		}
+		if !c.ReactBonusModIsActive(a4Mod) {
+			return
+		}
+
+		c.a4Bonus = (c.MaxHP() - 30000) * 0.001 * 0.09
+		if c.a4Bonus < 0 {
+			c.a4Bonus = 0
+		} else if c.a4Bonus > 4 {
+			c.a4Bonus = 4
+		}
+
+		c.QueueCharTask(c.updateA4Bonus(src), 0.5*60)
+	}
 }

@@ -12,8 +12,8 @@ import (
 
 var skillFrames []int
 
-var skillDanceFrames [][]int
-var skillDanceHitMarks = []int{14, 12, 35}
+var swordDanceFrames [][]int
+var swordDanceHitMarks = []int{14, 12, 35}
 
 var whirlingStepsFrames [][]int
 var whirlingStepsHitMarks = []int{21, 29, 43}
@@ -27,19 +27,17 @@ const (
 )
 
 const (
-	pirouetteStatus = "pirouette"
-	// skillTypeTag          = "skill_type"
-	skillStep             = "skill_step"
+	pirouetteStatus       = "pirouette"
+	skillStep             = "dancestep"
 	lunarPrayerStatus     = "lunarprayer"
 	tranquilityAuraStatus = "tranquilityaura"
 
 	skillHitmark = 16 // init
 
-	delayDance = 40 // Lunar Prayer (8s) / Tranquility (12/18s) / A1 (30s) timers all start here
-	delaySteps = 30
+	delayDance = 30 // Lunar Prayer (8s) / Tranquility (12/18s) / A1 (30s) timers all start here
+	delaySteps = 40
 )
 
-// TODO: cancel frames
 func init() {
 	skillFrames = frames.InitAbilSlice(22) // E -> Q
 	skillFrames[action.ActionAttack] = 19
@@ -48,45 +46,34 @@ func init() {
 	skillFrames[action.ActionJump] = 17
 	skillFrames[action.ActionSwap] = 21
 
-	skillDanceFrames = make([][]int, normalHitNum)
-	skillDanceFrames[0] = frames.InitNormalCancelSlice(skillDanceHitMarks[0], 20) // N1 -> E
-	skillDanceFrames[0][action.ActionAttack] = 18
-	skillDanceFrames[0][action.ActionBurst] = skillDanceHitMarks[0]
-	skillDanceFrames[0][action.ActionDash] = skillDanceHitMarks[0]
-	skillDanceFrames[0][action.ActionJump] = skillDanceHitMarks[0]
-	skillDanceFrames[0][action.ActionSwap] = skillDanceHitMarks[0]
+	swordDanceFrames = make([][]int, normalHitNum)
+	swordDanceFrames[0] = frames.InitNormalCancelSlice(swordDanceHitMarks[0], 20) // N1 -> E
+	swordDanceFrames[0][action.ActionAttack] = 18
 
-	skillDanceFrames[1] = frames.InitNormalCancelSlice(skillDanceHitMarks[1], 23) // N2 -> N3/E
-	skillDanceFrames[1][action.ActionBurst] = skillDanceHitMarks[1]
-	skillDanceFrames[1][action.ActionDash] = skillDanceHitMarks[1]
-	skillDanceFrames[1][action.ActionJump] = skillDanceHitMarks[1]
-	skillDanceFrames[1][action.ActionSwap] = skillDanceHitMarks[1]
+	swordDanceFrames[1] = frames.InitNormalCancelSlice(swordDanceHitMarks[1], 23) // N2 -> N3/E
 
-	skillDanceFrames[2] = frames.InitNormalCancelSlice(skillDanceHitMarks[2], 60) // N3 -> E/Q
-	skillDanceFrames[2][action.ActionAttack] = 55
-	skillDanceFrames[2][action.ActionDash] = skillDanceHitMarks[2]
-	skillDanceFrames[2][action.ActionJump] = skillDanceHitMarks[2]
-	skillDanceFrames[2][action.ActionSwap] = skillDanceHitMarks[2]
+	swordDanceFrames[2] = frames.InitNormalCancelSlice(swordDanceHitMarks[2], 60) // N3 -> E/Q
+	swordDanceFrames[2][action.ActionAttack] = 55
 
 	whirlingStepsFrames = make([][]int, normalHitNum)
-	whirlingStepsFrames[0] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[0], 33) // E1 -> Q
+	whirlingStepsFrames[0] = frames.InitAbilSlice(33) // E1 -> Q
 	whirlingStepsFrames[0][action.ActionAttack] = 27
 	whirlingStepsFrames[0][action.ActionSkill] = 27
 	whirlingStepsFrames[0][action.ActionDash] = 26
 	whirlingStepsFrames[0][action.ActionJump] = 27
 	whirlingStepsFrames[0][action.ActionSwap] = 31
 
-	whirlingStepsFrames[1] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[1], 62) // E2 -> Swap
+	whirlingStepsFrames[1] = frames.InitAbilSlice(62) // E2 -> Swap
 	whirlingStepsFrames[1][action.ActionAttack] = 40
 	whirlingStepsFrames[1][action.ActionSkill] = 32
 	whirlingStepsFrames[1][action.ActionBurst] = 40
 	whirlingStepsFrames[1][action.ActionDash] = 36
 	whirlingStepsFrames[1][action.ActionJump] = 37
 
-	whirlingStepsFrames[2] = frames.InitNormalCancelSlice(whirlingStepsHitMarks[2], 63) // E3 -> N1/E/Q
+	whirlingStepsFrames[2] = frames.InitAbilSlice(63) // E3 -> N1/E/Q
 	whirlingStepsFrames[2][action.ActionDash] = 57
 	whirlingStepsFrames[2][action.ActionJump] = 57
-	whirlingStepsFrames[0][action.ActionSwap] = 61
+	whirlingStepsFrames[2][action.ActionSwap] = 61
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -100,23 +87,22 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    skill[c.TalentLvlSkill()] * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
 
 	c.SetTag(skillStep, 0)
-	// c.SetTag(skillTypeTag, int(NilouSkillTypeNone))
 	c.AddStatus(pirouetteStatus, 10*60, true)
 	c.SetCD(action.ActionSkill, 18*60)
 
-	var orb float64 = 1
+	var count float64 = 1
 	if c.Core.Rand.Float64() < 0.5 {
-		orb = 2
+		count = 2
 	}
-	c.Core.QueueParticle("nilou", orb, attributes.Hydro, skillHitmark+c.ParticleDelay)
+	c.Core.QueueParticle("nilou", count, attributes.Hydro, skillHitmark+c.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -127,8 +113,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.ActionInfo {
-	// c.SetTag(skillTypeTag, int(srcType))
-
 	ai := action.ActionInfo{}
 	delay := 0
 	switch srcType {
@@ -180,13 +164,14 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    swordDance[s][c.TalentLvlSkill()] * c.MaxHP(),
 	}
 	if s == 2 {
 		ai.Abil = "Luminous Illusion"
+		ai.StrikeType = combat.StrikeTypePierce
 
 		if t, ok := p["travel"]; ok {
 			travel = t
@@ -195,21 +180,23 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
-		skillDanceHitMarks[s]+travel,
-		skillDanceHitMarks[s]+travel,
+		swordDanceHitMarks[s]+travel,
+		swordDanceHitMarks[s]+travel,
 		c.c4cb(),
 	)
 
 	if c.StatusIsActive(pirouetteStatus) {
-		c.Core.QueueParticle("nilou", 1, attributes.Hydro, skillDanceHitMarks[s]+travel+c.ParticleDelay)
+		c.Core.QueueParticle("nilou", 1, attributes.Hydro, swordDanceHitMarks[s]+travel+c.ParticleDelay)
 	}
 
 	defer c.AdvanceSkillIndex()
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillDanceFrames[s]), // TODO: atkspd can it affect?
-		AnimationLength: skillDanceFrames[s][action.InvalidAction],
-		CanQueueAfter:   skillDanceFrames[s][action.ActionJump], // earliest cancel
+		Frames: func(next action.Action) int {
+			return frames.AtkSpdAdjust(swordDanceFrames[s][next], c.Stat(attributes.AtkSpd))
+		},
+		AnimationLength: swordDanceFrames[s][action.InvalidAction],
+		CanQueueAfter:   swordDanceFrames[s][action.ActionJump], // earliest cancel
 		State:           action.NormalAttackState,
 	}
 }
@@ -223,7 +210,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    whirlingSteps[s][c.TalentLvlSkill()] * c.MaxHP(),
@@ -246,7 +233,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 	defer c.AdvanceSkillIndex()
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(whirlingStepsFrames[s]), // TODO: atkspd can it affect?
+		Frames:          frames.NewAbilFunc(whirlingStepsFrames[s]),
 		AnimationLength: whirlingStepsFrames[s][action.InvalidAction],
 		CanQueueAfter:   whirlingStepsFrames[s][action.ActionJump], // earliest cancel
 		State:           action.SkillState,
@@ -264,10 +251,11 @@ func (c *char) TranquilityAura() {
 		AttackTag:  combat.AttackTagNone,
 		ICDTag:     combat.ICDTagNilouTranquilityAura,
 		ICDGroup:   combat.ICDGroupNilou,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), -1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy), -1, 1)
 
 	c.QueueCharTask(c.TranquilityAura, 30)
 }
