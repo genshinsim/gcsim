@@ -85,7 +85,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Abil:       "Slitting Wind (A1)",
 			AttackTag:  combat.AttackTagNormal,
 			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   combat.ICDGroupPoleExtraAttack,
 			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
