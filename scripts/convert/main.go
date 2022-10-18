@@ -480,7 +480,7 @@ var pkgNameReplace = map[string][2]string{
 	"core.ICDGroupVenti":               {"combat", "ICDGroupVenti"},
 	"core.ICDGroupFischl":              {"combat", "ICDGroupFischl"},
 	"core.ICDGroupDiluc":               {"combat", "ICDGroupDiluc"},
-	"core.ICDGroupPole":                {"combat", "ICDGroupPole"},
+	"core.ICDGroupPoleExtraAttack":     {"combat", "ICDGroupPoleExtraAttack"},
 	"core.ICDGroupXiaoDash":            {"combat", "ICDGroupXiaoDash"},
 	"core.ICDGroupReactionA":           {"combat", "ICDGroupReactionA"},
 	"core.ICDGroupReactionB":           {"combat", "ICDGroupReactionB"},

@@ -27,11 +27,11 @@ export function CharacterCard({
       {longName !== "" ? (
         <div>
           {tooLongNames.includes(char) ? (
-            <div className="text-xs flex items-center justify-center text-center h-8 bg-slate-600 ">
+            <div className="text-xs flex items-center justify-center text-center h-8 bg-slate-600 text-white">
               {longName}
             </div>
           ) : (
-            <div className="text-xs flex items-center justify-center text-center h-8 bg-slate-600 ">
+            <div className="text-xs flex items-center justify-center text-center h-8 bg-slate-600 text-white">
               {longName}
             </div>
           )}
