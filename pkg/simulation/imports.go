@@ -248,5 +248,4 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/summit"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofdescension"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/travelershandysword"
-	_ "github.com/genshinsim/gcsim/internal/weapons/sword/xiphos"
 )

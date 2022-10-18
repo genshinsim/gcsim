@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 	r := p.Refine
 
-	w.erBuff = 0.027/100 + float64(r)*0.009/199
+	w.erBuff = 0.00027 + float64(r)*0.00009
 	return w, nil
 }
 
