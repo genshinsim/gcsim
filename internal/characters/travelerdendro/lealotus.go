@@ -138,6 +138,7 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 }
 
 func (s *LeaLotus) Attack(a *combat.AttackEvent, evt glog.Event) (float64, bool) {
+	s.Core.Log.NewEvent(fmt.Sprintf("DMC lamp hit by %s", a.Info.Abil), glog.LogCharacterEvent, s.char.Index)
 	s.React(a)
 	return 0, false
 }
@@ -152,7 +153,15 @@ func (s *LeaLotus) OnThinkInterval() {
 	s.QueueAttack(0)
 }
 
-func (s *LeaLotus) ApplyDamage(*combat.AttackEvent, float64) {}
+func (s *LeaLotus) ApplyDamage(atk *combat.AttackEvent, damage float64) {
+	if atk.Info.Durability > 0 && !atk.Reacted && !atk.OnICD && atk.Info.Element != attributes.Physical {
+		if !atk.Reacted {
+			s.AttachOrRefill(atk)
+			s.Core.Log.NewEvent(fmt.Sprintf("DMC lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
+		}
+	}
+
+}
 
 func (s *LeaLotus) OnExpiry(*combat.AttackEvent, float64) {
 	s.char.burstAlive = false
