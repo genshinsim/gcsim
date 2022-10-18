@@ -1,8 +1,9 @@
-import { Card, Colors, Divider, Elevation, Icon } from "@blueprintjs/core";
-import Header from "./Components/Results/Header";
+import { Card } from "@blueprintjs/core";
+import Header from "../Components/Results/Header";
+import { SimResults } from "../SimResults";
 
 type Props = {
-  data: any | null;
+  data: SimResults | null;
 };
 
 export default ({ data }: Props) => {

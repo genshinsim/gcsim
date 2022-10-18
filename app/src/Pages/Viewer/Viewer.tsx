@@ -1,13 +1,13 @@
 import { Alert, Intent } from "@blueprintjs/core";
 import { useState, useEffect } from "react";
-import Config from "./Config";
-import Results from "./Results";
+import Config from "./Tabs/Config";
+import Results from "./Tabs/Results";
 import ViewerNav from "./Components/ViewerNav";
 import { useLocation } from "wouter";
 import { SimResults } from "./SimResults";
 import { ViewTypes } from ".";
 import LoadingToast from "./Components/LoadingToast";
-import Debug, { useDebugParser, useDebugSettings } from "./Debug";
+import Debug, { useDebugParser, useDebugSettings } from "./Tabs/Debug";
 
 type ViewerProps = {
   data: SimResults | null;
@@ -31,6 +31,7 @@ export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => 
   };
 
   // If we navigate away from the page, stop the execution
+  // TODO: push up to index?
   useEffect(() => {
     return () => { cancel != null && cancel(); };
   }, [cancel]);

@@ -6,7 +6,7 @@ import { Debugger } from "~src/Components/Viewer/DebugView";
 import { Options } from "~src/Components/Viewer/Options";
 import { DebugRow } from "~src/Components/Viewer/parse";
 import { parseLogV2 } from "~src/Components/Viewer/parsev2";
-import { SimResults } from "./SimResults";
+import { SimResults } from "../SimResults";
 
 const SAVED_DEBUG_KEY = "gcsim-debug-settings";
 
