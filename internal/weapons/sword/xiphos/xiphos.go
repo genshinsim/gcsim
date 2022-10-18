@@ -17,9 +17,9 @@ func init() {
 
 type Weapon struct {
 	erBuff float64
-	core    *core.Core
-	char    *character.CharWrapper
-	Index   int
+	core   *core.Core
+	char   *character.CharWrapper
+	Index  int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -40,15 +40,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 	r := p.Refine
 
-	w.atkBuff = 0.18 + float64(r)*0.06
+	w.erBuff = 0.027/100 + float64(r)*0.009/199
 	return w, nil
 }
 
 func (w *Weapon) updateStats() {
 	val := make([]float64, attributes.EndStatType)
-	val[attributes.ATK] = w.atkBuff * w.char.Stat(attributes.EM)
+	val[attributes.ER] = w.erBuff * w.char.Stat(attributes.EM)
 	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("aquamarine", 12*60),
+		Base:         modifier.NewBaseWithHitlag("xiphos", 12*60),
 		AffectedStat: attributes.ATK,
 		Amount: func() ([]float64, bool) {
 			return val, true
@@ -56,15 +56,15 @@ func (w *Weapon) updateStats() {
 	})
 
 	valTeam := make([]float64, attributes.EndStatType)
-	valTeam[attributes.ATK] = val[attributes.ATK] * 0.3
+	valTeam[attributes.ER] = val[attributes.ER] * 0.3
 	for _, this := range w.core.Player.Chars() {
 		if this.Index == w.char.Index {
 			continue
 		}
 
 		this.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("aquamarine-%v", w.char.Base.Key.String()), 12*60),
-			AffectedStat: attributes.ATK,
+			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("xiphos-%v", w.char.Base.Key.String()), 12*60),
+			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
 				return valTeam, true
 			},
