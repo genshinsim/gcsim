@@ -49,7 +49,7 @@ func (w *Weapon) updateStats() {
 	val[attributes.ER] = w.erBuff * w.char.Stat(attributes.EM)
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("xiphos", 12*60),
-		AffectedStat: attributes.ATK,
+		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
