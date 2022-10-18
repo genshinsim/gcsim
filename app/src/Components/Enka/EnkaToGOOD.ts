@@ -33,8 +33,6 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
         level: parseInt(propMap['4001'].val),
         ascension: parseInt(propMap['1002'].val),
         constellation: talentIdList?.length || 0,
-        //Characters with 7 talents like AYAKA might be bugged (kokomi is fine?)//
-        // characters with unodered talents like traveler(i htink) will not work
         talent: determineCharacterTalent(avatarId, skillLevelMap),
       };
       characters.push(character);
@@ -46,7 +44,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
             key: getGOODKeyFromWeaponNameTextMapHash(flat.nameTextMapHash),
             level: enkaWeapon.level,
             ascension: enkaWeapon.promoteLevel ? enkaWeapon.promoteLevel : 0,
-            refinement: determineWeaponRefinement(enkaWeapon),
+            refinement: determineWeaponRefinement(enkaWeapon.affixMap),
             location: character.key,
             lock: false,
           };

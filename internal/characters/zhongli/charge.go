@@ -26,7 +26,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Abil:               "Charge",
 		AttackTag:          combat.AttackTagExtra,
 		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupPole,
+		ICDGroup:           combat.ICDGroupPoleExtraAttack,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
