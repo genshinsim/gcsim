@@ -35,7 +35,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       birdSum[c.TalentLvlSkill()],
 	}
 
-	var radius float64 = 2
+	radius := 2.0
 	if c.Base.Cons >= 2 {
 		ai.Mult += 2
 		radius = 3
