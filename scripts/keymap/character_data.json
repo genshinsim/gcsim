@@ -74,6 +74,11 @@
   "element": "pyro",
   "weapon_class": "sword"
  },
+ "candace": {
+  "rarity": 4,
+  "element": "hydro",
+  "weapon_class": "polearm"
+ },
  "chongyun": {
   "rarity": 4,
   "element": "cryo",
@@ -83,6 +88,11 @@
   "rarity": 4,
   "element": "dendro",
   "weapon_class": "bow"
+ },
+ "cyno": {
+  "rarity": 5,
+  "element": "electro",
+  "weapon_class": "polearm"
  },
  "diluc": {
   "rarity": 5,
@@ -213,6 +223,11 @@
   "rarity": 5,
   "element": "hydro",
   "weapon_class": "catalyst"
+ },
+ "nilou": {
+  "rarity": 5,
+  "element": "hydro",
+  "weapon_class": "sword"
  },
  "ningguang": {
   "rarity": 4,
