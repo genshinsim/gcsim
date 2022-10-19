@@ -20,7 +20,16 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// reset location
 	c.qAbsorb = attributes.NoElement
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	self_absorb, ok := p["self"]
+	if !ok {
+		self_absorb = 0
+	}
+	if self_absorb == 0 {
+		c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget)
+	} else {
+		c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	}
+	
 
 	//8 second duration, tick every .4 second
 	ai := combat.AttackInfo{
