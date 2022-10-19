@@ -8,6 +8,9 @@ import (
 
 const a1Key = "xiao-a1"
 
+// While under the effects of Bane of All Evil, all DMG dealt by Xiao increases
+// by 5%. DMG increases by a further 5% for every 3s the ability persists. The
+// maximum DMG Bonus is 25%.
 func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddStatMod(character.StatMod{
