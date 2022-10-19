@@ -165,6 +165,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/solar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/thrilling"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/twin"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wanderingevenstar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/widsith"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/akuoumaru"
