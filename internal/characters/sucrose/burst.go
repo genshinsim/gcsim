@@ -28,7 +28,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// reset location
 	c.qAbsorb = attributes.NoElement
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	self_absorb, ok := p["self_absorb"]
+	if !ok {
+		self_absorb = 1
+	}
+	if self_absorb == 0 {
+		c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget)
+	} else {
+		c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	}
 
 	c.Core.Status.Add("sucroseburst", duration)
 	ai := combat.AttackInfo{
