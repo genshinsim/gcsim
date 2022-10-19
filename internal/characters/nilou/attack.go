@@ -11,11 +11,14 @@ import (
 
 const normalHitNum = 3
 
-var attackFrames [][]int
-var attackHitmarks = []int{12, 9, 17}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{12, 9, 17}
+	attackRadius   = []float64{1.1, 1.5, 2.1}
 
-var attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
-var attackDefHalt = []bool{true, true, true}
+	attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
+	attackDefHalt         = []bool{true, true, true}
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -55,7 +58,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	// no multihits so no need for char queue here
 	c.Core.QueueAttack(
 		ai,
-		c.attackPattern(c.NormalCounter),
+		combat.NewCircleHit(c.Core.Combat.Player(), attackRadius[c.NormalCounter], false, combat.TargettableEnemy),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)
@@ -68,16 +71,4 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
-}
-
-func (c *char) attackPattern(attackIndex int) combat.AttackPattern {
-	switch attackIndex {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 1.1, false, combat.TargettableEnemy) // supposed to be box x=1.5,z=2.2
-	case 1:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy) // supposed to be offset z=0.5
-	case 2:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.1, false, combat.TargettableEnemy) // supposed to be offset z=0.5
-	}
-	panic("unreachable code")
 }

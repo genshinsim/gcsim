@@ -10,13 +10,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-var skillFrames []int
+var (
+	skillFrames []int
 
-var swordDanceFrames [][]int
-var swordDanceHitMarks = []int{14, 12, 35}
+	swordDanceFrames   [][]int
+	swordDanceHitMarks = []int{14, 12, 35}
+	swordDanceRadius   = []float64{1.1, 1.8, 2}
 
-var whirlingStepsFrames [][]int
-var whirlingStepsHitMarks = []int{21, 29, 43}
+	whirlingStepsFrames   [][]int
+	whirlingStepsHitMarks = []int{21, 29, 43}
+)
 
 type NilouSkillType int
 
@@ -179,7 +182,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		c.swordDancePattern(s),
+		combat.NewCircleHit(c.Core.Combat.Player(), swordDanceRadius[s], false, combat.TargettableEnemy),
 		swordDanceHitMarks[s]+travel,
 		swordDanceHitMarks[s]+travel,
 		c.c4cb(),
@@ -220,7 +223,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		c.whirlingStepsPattern(s),
+		combat.NewCircleHit(c.Core.Combat.Player(), 2.7, false, combat.TargettableEnemy),
 		whirlingStepsHitMarks[s],
 		whirlingStepsHitMarks[s],
 		c.c4cb(),
@@ -268,28 +271,4 @@ func (c *char) onExitField() {
 		c.SetTag(skillStep, 0)
 		return false
 	}, "nilou-exit")
-}
-
-func (c *char) swordDancePattern(attackIndex int) combat.AttackPattern {
-	switch attackIndex {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 1.1, false, combat.TargettableEnemy) // supposed to be box x=1.75,z=2.2
-	case 1:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 1.8, false, combat.TargettableEnemy) // supposed to be offset z=0.5
-	case 2:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy) // TODO: it's an attack that travels, not hits on the radius
-	}
-	panic("unreachable code")
-}
-
-func (c *char) whirlingStepsPattern(attackIndex int) combat.AttackPattern {
-	switch attackIndex {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.7, false, combat.TargettableEnemy) // supposed to be offset z=0.3
-	case 1:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.7, false, combat.TargettableEnemy) // supposed to be offset z=0.6
-	case 2:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.7, false, combat.TargettableEnemy) // supposed to be box x=2.7,z=5.2 & offset x=0.2,z=-2.0
-	}
-	panic("unreachable code")
 }
