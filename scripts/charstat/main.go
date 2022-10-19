@@ -249,4 +249,5 @@ var CharNameToKey = map[string]string{
 	"shikanoinheizou":   "Heizou",
 	"tighnari":          "Tighnari",
 	"candace":           "Candace",
+	"nilou":             "Nilou",
 }

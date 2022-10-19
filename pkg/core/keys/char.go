@@ -113,6 +113,7 @@ const (
 	Collei
 	Dori
 	Candace
+	Nilou
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -191,6 +192,7 @@ var charNames = []string{
 	"collei",
 	"dori",
 	"candace",
+	"nilou",
 	"test_char_do_not_use",
 }
 
@@ -268,6 +270,7 @@ var charPrettyName = []string{
 	"Collei",
 	"Dori",
 	"Candace",
+	"Nilou",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -340,6 +343,7 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Tighnari:         attributes.Dendro,
 	Collei:           attributes.Dendro,
 	Dori:             attributes.Electro,
-	Candace:		      attributes.Hydro,
+	Candace:          attributes.Hydro,
+	Nilou:            attributes.Hydro,
 	TestCharDoNotUse: attributes.Geo,
 }
