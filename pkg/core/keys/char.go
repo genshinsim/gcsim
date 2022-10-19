@@ -65,6 +65,7 @@ const (
 	Beidou
 	Bennett
 	Chongyun
+	Cyno
 	Diluc
 	Diona
 	Eula
@@ -111,6 +112,7 @@ const (
 	Tighnari
 	Collei
 	Dori
+	Candace
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -141,6 +143,7 @@ var charNames = []string{
 	"beidou",
 	"bennett",
 	"chongyun",
+	"cyno",
 	"diluc",
 	"diona",
 	"eula",
@@ -187,6 +190,7 @@ var charNames = []string{
 	"tighnari",
 	"collei",
 	"dori",
+	"candace",
 	"test_char_do_not_use",
 }
 
@@ -216,6 +220,7 @@ var charPrettyName = []string{
 	"Beidou",
 	"Bennett",
 	"Chongyun",
+	"Cyno",
 	"Diluc",
 	"Diona",
 	"Eula",
@@ -262,6 +267,7 @@ var charPrettyName = []string{
 	"Tighnari",
 	"Collei",
 	"Dori",
+	"Candace",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -287,6 +293,7 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Beidou:           attributes.Electro,
 	Bennett:          attributes.Pyro,
 	Chongyun:         attributes.Cryo,
+	Cyno:             attributes.Electro,
 	Diluc:            attributes.Pyro,
 	Diona:            attributes.Cryo,
 	Eula:             attributes.Cryo,
@@ -333,5 +340,6 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Tighnari:         attributes.Dendro,
 	Collei:           attributes.Dendro,
 	Dori:             attributes.Electro,
+	Candace:		      attributes.Hydro,
 	TestCharDoNotUse: attributes.Geo,
 }

@@ -18,8 +18,8 @@ func (c *char) c1() {
 // it will fire a Jinni Toop from that character's position that deals 50% of Dori's ATK DMG.
 func (c *char) c2(travel int) {
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		src := args[0].(int)
-		if src != c.Index {
+		src := args[0].(*player.HealInfo)
+		if src.Caller != c.Index {
 			return false
 		}
 		ai := combat.AttackInfo{
