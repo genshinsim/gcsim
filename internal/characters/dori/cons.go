@@ -17,30 +17,23 @@ func (c *char) c1() {
 // When you are in combat and the Jinni heals the character it is connected to,
 // it will fire a Jinni Toop from that character's position that deals 50% of Dori's ATK DMG.
 func (c *char) c2(travel int) {
-	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		src := args[0].(*player.HealInfo)
-		if src.Caller != c.Index {
-			return false
-		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Special Franchise",
-			AttackTag:  combat.AttackTagNone,
-			ICDTag:     combat.ICDTagDoriC2,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Electro,
-			Durability: 25,
-			Mult:       0.5,
-		}
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
-			0,
-			travel,
-		)
-		return false
-	}, "dori-c2")
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Special Franchise",
+		AttackTag:  combat.AttackTagNone,
+		ICDTag:     combat.ICDTagDoriC2,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Electro,
+		Durability: 25,
+		Mult:       0.5,
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
+		0,
+		travel,
+	)
 }
 
 // The character connected to the Jinni will obtain the following buffs based on their current HP and Energy:
