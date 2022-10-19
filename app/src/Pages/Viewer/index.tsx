@@ -53,8 +53,7 @@ function Base64ToJson(base64: string) {
   return JSON.parse(Pako.inflate(bytes, { to: 'string' }));
 }
 
-const FromUrl = ({ url, redirect, id }:
-    { url: string, redirect: string, id?: string }) => {
+const FromUrl = ({ url, redirect, id }: { url: string, redirect: string, id?: string }) => {
   const [data, setData] = useState<SimResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);

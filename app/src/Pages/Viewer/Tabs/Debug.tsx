@@ -39,10 +39,10 @@ export function useDebugParser(data: SimResults | null, selected: string[]): Deb
     }
 
     return parseLogV2(
-      data.initial_character,
-      data?.character_details?.map(c => c.name),
-      data.debug,
-      selected);
+        data.initial_character,
+        data?.character_details?.map(c => c.name),
+        data.debug,
+        selected);
   }, [data?.debug, data?.initial_character, data?.character_details, selected]);
 }
 

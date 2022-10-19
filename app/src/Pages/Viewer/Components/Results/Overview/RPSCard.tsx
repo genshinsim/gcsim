@@ -2,8 +2,9 @@ import { useTranslation } from "react-i18next";
 import { SimResults } from "~src/Pages/Viewer/SimResults";
 import SummaryCard from "../SummaryCard";
 
-export default ({ data, color }: { data?: SimResults, color: string }) => {
+export default ({ data, color }: { data: SimResults | null, color: string }) => {
   const { i18n } = useTranslation();
+  const fmt = (val?: number) => val?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
   const rps = data?.statistics?.rps;
 
   return (
@@ -11,14 +12,14 @@ export default ({ data, color }: { data?: SimResults, color: string }) => {
         key="rps"
         color={color}
         title="Reactions Per Second (RPS)"
-        value={rps?.mean?.toLocaleString(i18n.language, { maximumFractionDigits: 2 })}
+        value={fmt(rps?.mean)}
         auxStats={[
-          { title: "min", value: rps?.min?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "max", value: rps?.max?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "std", value: rps?.sd?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "p25", value: rps?.q1?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "p50", value: rps?.q2?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "p75", value: rps?.q3?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
+          { title: "min", value: fmt(rps?.min) },
+          { title: "max", value: fmt(rps?.max) },
+          { title: "std", value: fmt(rps?.sd) },
+          { title: "p25", value: fmt(rps?.q1) },
+          { title: "p50", value: fmt(rps?.q2) },
+          { title: "p75", value: fmt(rps?.q3) },
         ]}
         tooltip="help"
         drawerTitle="Reaction Statistics">

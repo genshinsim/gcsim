@@ -2,8 +2,9 @@ import { useTranslation } from "react-i18next";
 import { SimResults } from "~src/Pages/Viewer/SimResults";
 import SummaryCard from "../SummaryCard";
 
-export default ({ data, color }: { data?: SimResults, color: string }) => {
+export default ({ data, color }: { data: SimResults | null, color: string }) => {
   const { i18n } = useTranslation();
+  const fmt = (val?: number) => val?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
   const eps = data?.statistics?.eps;
 
   return (
@@ -11,14 +12,14 @@ export default ({ data, color }: { data?: SimResults, color: string }) => {
         key="eps"
         color={color}
         title="Energy Per Second (EPS)"
-        value={eps?.mean?.toLocaleString(i18n.language, { maximumFractionDigits: 2 })}
+        value={fmt(eps?.mean)}
         auxStats={[
-          { title: "min", value: eps?.min?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "max", value: eps?.max?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "std", value: eps?.sd?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "p25", value: eps?.q1?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "p50", value: eps?.q2?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
-          { title: "p75", value: eps?.q3?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) },
+          { title: "min", value: fmt(eps?.min) },
+          { title: "max", value: fmt(eps?.max) },
+          { title: "std", value: fmt(eps?.sd) },
+          { title: "p25", value: fmt(eps?.q1) },
+          { title: "p50", value: fmt(eps?.q2) },
+          { title: "p75", value: fmt(eps?.q3) },
         ]}
         tooltip="help"
         drawerTitle="Energy Statistics">

@@ -1,3 +1,4 @@
+import { SimResults } from "../../SimResults";
 import DPSCard from "./Overview/DPSCard";
 import EPSCard from "./Overview/EPSCard";
 import HPSCard from "./Overview/HPSCard";
@@ -20,7 +21,7 @@ const colors = [
 ];
 
 type Props = {
-  data: any | null;
+  data: SimResults | null;
 };
 
 export default ({ data }: Props) => {

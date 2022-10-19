@@ -1,4 +1,4 @@
-import { Card, Colors, Dialog, Drawer, DrawerSize, Icon, Position, Classes } from "@blueprintjs/core";
+import { Card, Colors, Dialog, Icon, Classes } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import classNames from "classnames";
 import React from "react";
@@ -39,7 +39,9 @@ export default ({
         </div>
         <CardChevron interactable={interactable} />
       </Card>
-      <CardDrawer title={drawerTitle} children={children} openState={[isOpen, setOpen]} />
+      <CardDrawer title={drawerTitle} openState={[isOpen, setOpen]}>
+        {children}
+      </CardDrawer>
     </div>
   );
 };
@@ -61,7 +63,7 @@ const CardTitle = ({ title, tooltip }: { title: string, tooltip?: string | JSX.E
     );
   }
   return out;
-}
+};
 
 const CardValue = ({ value, label }: { value?: number | string | null, label?: string }) => {
   const { i18n } = useTranslation();
@@ -85,7 +87,7 @@ const CardValue = ({ value, label }: { value?: number | string | null, label?: s
       {lbl}
     </div>
   );
-}
+};
 
 const CardChevron = ({ interactable }: { interactable: boolean }) => {
   if (!interactable) {
@@ -96,7 +98,7 @@ const CardChevron = ({ interactable }: { interactable: boolean }) => {
       <Icon icon="chevron-right" size={36} color={Colors.GRAY1} className="self-center" />
     </div>
   );
-}
+};
 
 const CardAux = ({ aux }: { aux?: Array<AuxStat> }) => {
   if (aux === undefined) {
@@ -158,4 +160,4 @@ const CardDrawer = ({ title, children, openState }: {
       </div>
     </Dialog>
   );
-}
+};
