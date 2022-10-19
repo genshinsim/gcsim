@@ -1,4 +1,5 @@
 export interface SimResults {
+  schema_version?: Version
   max_iterations?: number
 
   initial_character?: string
@@ -8,6 +9,11 @@ export interface SimResults {
   debug?: [unknown]
 
   statistics?: Statistics
+}
+
+export interface Version {
+  major: number
+  minor: number
 }
 
 export interface CharacterDetail {

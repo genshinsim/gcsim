@@ -24,7 +24,7 @@ export default function App() {
       loc = loc.replace('www.gcsim.app', 'gcsim.app');
       window.location.href = loc;
     }
-  }, [window.location.href]);
+  }, []);
 
   return (
     <div className="bp4-dark h-screen flex flex-col">
@@ -59,9 +59,6 @@ export default function App() {
           </Route>
           <Route path="/viewer/share/:id">
             {(params) => <ViewerLoader type={ViewTypes.Share} id={params.id} />}
-          </Route>
-          <Route path="/viewer/empty">
-            <ViewerLoader type={ViewTypes.Empty} />
           </Route>
 
           {/* reroute v3 -> new viewer */}

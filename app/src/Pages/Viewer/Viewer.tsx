@@ -1,24 +1,23 @@
 import { Alert, Intent } from "@blueprintjs/core";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Config from "./Tabs/Config";
 import Results from "./Tabs/Results";
 import ViewerNav from "./Components/ViewerNav";
 import { useLocation } from "wouter";
 import { SimResults } from "./SimResults";
-import { ViewTypes } from ".";
+import { ResultSource } from ".";
 import LoadingToast from "./Components/LoadingToast";
 import Debug, { useDebugParser, useDebugSettings } from "./Tabs/Debug";
 
 type ViewerProps = {
   data: SimResults | null;
   error: string | null;
-  type: ViewTypes;
+  src: ResultSource;
   redirect: string;
-  cancel?: () => void;
   retry?: () => void;
 };
 
-export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => {
+export default ({ data, error, src, redirect, retry }: ViewerProps) => {
   const [debugSettings, setDebugSettings] = useDebugSettings();
   const parsedDebug = useDebugParser(data, debugSettings);
 
@@ -27,18 +26,10 @@ export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => 
     results: <Results data={data} />,
     config: <Config cfg={data?.config_file} />,
     analyze: <div></div>,
-    debug: <Debug data={data} parsed={parsedDebug} settingsState={[debugSettings, setDebugSettings]} />,
+    debug: (
+      <Debug data={data} parsed={parsedDebug} settingsState={[debugSettings, setDebugSettings]} />
+    ),
   };
-
-  // If we navigate away from the page, stop the execution
-  // TODO: push up to index?
-  useEffect(() => {
-    return () => { cancel != null && cancel(); };
-  }, [cancel]);
-
-  // TODO: handle cases where schema is not compatible
-  // - major version mismatch (dialog to rerun sim or reroute to legacy for V3)
-  // - minor version mismatch (warning w/ option to resim or load page anyway)
 
   return (
     <div className="flex flex-col w-full h-full bg-bp4-dark-gray-100">
@@ -49,11 +40,10 @@ export default ({ data, error, type, redirect, cancel, retry }: ViewerProps) => 
         {tabs[tabId]}
       </div>
       <LoadingToast
-          type={type}
+          src={src}
           error={error}
           current={data?.statistics?.iterations}
-          total={data?.max_iterations}
-          cancel={cancel} />
+          total={data?.max_iterations} />
       <ErrorAlert msg={error} redirect={redirect} retry={retry} />
     </div>
   );

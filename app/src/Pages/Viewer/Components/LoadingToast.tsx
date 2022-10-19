@@ -1,18 +1,18 @@
 import { Button, Classes, Intent, Position, ProgressBar, Toaster } from "@blueprintjs/core";
 import classNames from "classnames";
-import React, { RefObject, useRef } from "react";
-import { ViewTypes } from "..";
+import React, { RefObject, useCallback, useEffect, useRef } from "react";
+import { pool } from "~src/Pages/Sim";
+import { ResultSource } from "..";
 
 type Props = {
-  type: ViewTypes;
+  src: ResultSource;
   error: string | null;
   current?: number;
   total?: number;
-  cancel?: () => void;
 };
 
 // TODO: Add translations + number format
-export default ({ type, error, current, total, cancel }: Props) => {
+export default ({ src, error, current, total }: Props) => {
   const loadingToast = useRef<Toaster>(null);
   const key = useRef<string | undefined>(undefined);
 
@@ -33,7 +33,7 @@ export default ({ type, error, current, total, cancel }: Props) => {
       return;
     }
 
-    if (current == total && type != ViewTypes.Web) {
+    if (current >= total && src == ResultSource.Loaded) {
       key.current = loadingToast.current?.show({
         message: "Loaded " + current + " iterations!",
         icon: "tick",
@@ -49,21 +49,26 @@ export default ({ type, error, current, total, cancel }: Props) => {
           <ProgressToast
               current={current}
               total={total}
-              loadingToast={loadingToast}
-              cancel={cancel} />
+              loadingToast={loadingToast} />
       ),
       className: "w-full !max-w-2xl",
       intent: Intent.NONE,
       isCloseButtonShown: current >= total,
       timeout: current < total ? 0 : 2000
     }, key.current);
-  }, [current, total, type, cancel, error]);
+  }, [current, total, src, error]);
 
   return <Toaster ref={loadingToast} position={Position.TOP} />;
 };
 
-const ProgressToast = ({ current, total, loadingToast, cancel }:
-    {current: number, total: number, loadingToast: RefObject<Toaster>, cancel?: () => void}) => {
+const ProgressToast = ({ current, total, loadingToast }:
+    {current: number, total: number, loadingToast: RefObject<Toaster> }) => {
+  
+  const cancel = useCallback(() => pool.cancel(), []);
+  useEffect(() => {
+    return () => cancel();
+  }, [cancel]);
+
   const val = current / total;
   return (
     <div className="flex flex-row items-center justify-between gap-2">
@@ -79,20 +84,18 @@ const ProgressToast = ({ current, total, loadingToast, cancel }:
   );
 };
 
-function action(val: number, loadingToast: React.RefObject<Toaster>, cancel?: () => void) {
-  if (val >= 1 || cancel == null) {
+function action(val: number, loadingToast: React.RefObject<Toaster>, cancel: () => void) {
+  if (val >= 1) {
     return null;
   }
-
   return (
     <Button
         className="!min-w-fit"
+        text="Cancel"
         intent={Intent.DANGER}
         onClick={() => {
           cancel();
           loadingToast.current?.clear();
-        }}>
-      Cancel
-    </Button>
+        }} />
   );
 }

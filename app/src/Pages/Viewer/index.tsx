@@ -1,12 +1,21 @@
 import axios from "axios";
+import { throttle } from "lodash";
 import Pako from "pako";
-import React, { useCallback } from "react";
-import { RootState, useAppSelector } from "~src/store";
-import { pool } from "../Sim";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { RootState, useAppDispatch, useAppSelector } from "~src/store";
 import { SimResults } from "./SimResults";
+import UpgradeDialog from "./UpgradeDialog";
 import Viewer from "./Viewer";
+import { viewerActions } from "./viewerSlice";
 
 axios.defaults.headers.get['Access-Control-Allow-Origin'] = '*';
+
+export const VIEWER_THROTTLE = 100;
+
+export enum ResultSource {
+  Loaded,
+  Generated,
+}
 
 export enum ViewTypes {
   Landing,
@@ -14,7 +23,6 @@ export enum ViewTypes {
   Web,
   Local,
   Share,
-  Empty, // for testing
 }
 
 type LoaderProps = {
@@ -31,14 +39,12 @@ export const ViewerLoader = ({ type, id }: LoaderProps) => {
       // TODO: show upload tsx (dropzone)
       return <div></div>;
     case ViewTypes.Web:
-      return <FromState type={type} redirect="/simulator" />;
+      return <FromState redirect="/simulator" />;
     case ViewTypes.Local:
-      return <FromUrl url='http://127.0.0.1:8381/data' type={type} redirect="/viewer" />;
+      return <FromUrl url='http://127.0.0.1:8381/data' redirect="/viewer" />;
     case ViewTypes.Share:
       // TODO: process url function + more request props for supporting more endpoints (hastebin)
-      return <FromUrl url={'/api/view/' + id} type={type} redirect="/viewer" />;
-    case ViewTypes.Empty:
-      return <Viewer data={{}} error={null} type={type} redirect="/viewer/empty" />;
+      return <FromUrl url={'/api/view/' + id} redirect="/viewer" id={id} />;
   }
 };
 
@@ -47,9 +53,11 @@ function Base64ToJson(base64: string) {
   return JSON.parse(Pako.inflate(bytes, { to: 'string' }));
 }
 
-const FromUrl = ({ url, type, redirect }: { url: string, type: ViewTypes, redirect: string }) => {
-  const [data, setData] = React.useState<SimResults | null>(null);
-  const [error, setError] = React.useState<string | null>(null);
+const FromUrl = ({ url, redirect, id }:
+    { url: string, redirect: string, id?: string }) => {
+  const [data, setData] = useState<SimResults | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
 
   const request = useCallback(() => {
     setError(null);
@@ -61,18 +69,28 @@ const FromUrl = ({ url, type, redirect }: { url: string, type: ViewTypes, redire
       setError(e.message);
     });
   }, [url]);
+  useEffect(() => request(), [request]);
 
-  React.useEffect(() => {
-    request();
-  }, [request]);
+  const updateResult = useRef(throttle((res: SimResults | null) => {
+    setData(res);
+    setSrc(ResultSource.Generated);
+  }, VIEWER_THROTTLE, { leading: true, trailing: true }));
 
   return (
-    <Viewer
-        data={data}
-        error={error}
-        type={type}
-        redirect={redirect}
-        retry={request} />
+    <>
+      <Viewer
+          data={data}
+          error={error}
+          src={src}
+          redirect={redirect}
+          retry={request} />
+      <UpgradeDialog
+          data={data}
+          redirect={redirect}
+          setResult={updateResult.current}
+          setError={setError}
+          id={id} />
+    </>
   );
 };
 
@@ -80,21 +98,44 @@ const FromUrl = ({ url, type, redirect }: { url: string, type: ViewTypes, redire
 //  - determine if this is the right behavior we want. If I load the /viewer/web, should it:
 //    * alert saying "no sim loaded" and confirm button redirects to /simulator (current)
 //    * start running sim stored in local store, alert if not valid (proposed)
-const FromState = ({ type, redirect }: { type: ViewTypes, redirect: string }) => {
+//  - This would also consolidate run logic into one place (here)
+const FromState = ({ redirect }: { redirect: string }) => {
+  const dispatch = useAppDispatch();
   const { data, error } = useAppSelector((state: RootState) => {
     return {
       data: state.viewer_new.data,
       error: state.viewer_new.error,
     };
   });
-  const cancel = useCallback(() => pool.cancel(), []);
+
+  const setResult = (result: SimResults | null) => {
+    if (result == null) {
+      return;
+    }
+    dispatch(viewerActions.setResult({ data: result }));
+  };
+  const updateResult = useRef(
+      throttle(setResult, VIEWER_THROTTLE, { leading: true, trailing: true }));
+
+  const setError = (error: string | null) => {
+    if (error == null) {
+      return;
+    }
+    dispatch(viewerActions.setError({ error: error }));
+  };
 
   return (
-    <Viewer
-        data={data}
-        error={error}
-        type={type}
-        redirect={redirect}
-        cancel={cancel} />
+    <>
+      <Viewer
+          data={data}
+          src={ResultSource.Generated}
+          error={error}
+          redirect={redirect} />
+      <UpgradeDialog
+          data={data}
+          redirect={redirect}
+          setResult={updateResult.current}
+          setError={setError} />
+    </>
   );
 };

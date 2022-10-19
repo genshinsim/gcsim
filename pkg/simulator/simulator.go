@@ -128,10 +128,18 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 	return result, nil
 }
 
-// Note: this generation should be deterministic and only depend on the given cfg
+// Note: this generation should be iteration independent (iterations do not change output)
 func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
 	result := result.Summary{
-		SchemaVersion:    result.Version{Major: 4, Minor: 0}, // hardcoded, change as result schema evolves
+		// THIS MUST ALWAYS BE IN SYNC WITH THE VIEWER UPGRADE DIALOG IN UI
+		// ONLY CHANGE SCHEMA WHEN THE RESULTS SCHEMA CHANGES. THIS INCLUDES AGG RESULTS CHANGES
+		// SemVer spec
+		//    Major: increase & reset minor to zero if new schema is backwards incompatible
+		//        Ex - changed the location of a critical column (the config file), major refactor
+		//    Minor: increase if new schema is backwards compatible with previous
+		//        Ex - added new data for new graph on UI. UI still functional if this data is missing
+		// Increasing the version will result in the UI flagging all old sims as outdated
+		SchemaVersion:    result.Version{Major: 4, Minor: 0}, // MAKE SURE UI VERSION IS IN SYNC
 		SimVersion:       opts.Version,
 		BuildDate:        opts.BuildDate,
 		MaxIterations:    simcfg.Settings.Iterations,

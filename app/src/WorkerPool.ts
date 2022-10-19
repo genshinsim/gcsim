@@ -8,12 +8,19 @@ export class WorkerPool {
   private aggregatorReady: boolean;
   private workers: Worker[];
   private workersReady: boolean[];
+  private isRunning: boolean;
+
+  private helper: Worker;
 
   constructor() {
     this.aggregatorReady = false;
     this.aggregator = this.createAggregator();
     this.workers = [];
     this.workersReady = [];
+    this.isRunning = false;
+
+    // TODO: make a new helper worker script with only stateless functions
+    this.helper = new Worker(new URL("./Workers/aggregator.ts", import.meta.url));
   }
 
   public count(): number {
@@ -21,7 +28,7 @@ export class WorkerPool {
   }
 
   public ready(): boolean {
-    return this.aggregatorReady && this.count() > 0;
+    return this.aggregatorReady && this.count() >= this.workers.length && !this.isRunning;
   }
 
   private loaded(): Worker[] {
@@ -87,7 +94,7 @@ export class WorkerPool {
 
   public validate(cfg: string): Promise<ParsedResult> {
     return new Promise((resolve, reject) => {
-      this.aggregator.onmessage = (ev) => {
+      this.helper.onmessage = (ev) => {
         switch (ev.data.type as Aggregator.Response) {
           case Aggregator.Response.Validate:
             resolve((ev.data as Aggregator.ValidateResponse).cfg);
@@ -99,7 +106,7 @@ export class WorkerPool {
             reject("unknown validate response: " + ev.data);
         }
       };
-      this.aggregator.postMessage(Aggregator.ValidateRequest(cfg));
+      this.helper.postMessage(Aggregator.ValidateRequest(cfg));
     });
   }
 
@@ -149,6 +156,7 @@ export class WorkerPool {
 
     // 3. after all initializes complete, start execution
     return Promise.all(initPromises).then(() => {
+      this.isRunning = true;
       let completed = 0;
       let requested = 0;
       this.aggregator.onmessage = (ev) => {
@@ -158,12 +166,14 @@ export class WorkerPool {
             out.statistics = (ev.data as Aggregator.ResultResponse).result;
             setResult(out);
             if (completed >= maxIterations) {
+              this.isRunning = false;
               Promise.resolve(true);
             }
             return;
           case Aggregator.Response.Done:
             completed += 1;
-            if (completed == 1 || completed % 10 == 0 || completed >= maxIterations) {
+            // TODO: make this flush rate configurable?
+            if (completed == 1 || completed % 3 == 0 || completed >= maxIterations) {
               this.aggregator.postMessage(Aggregator.FlushRequest(startTime));
             }
             return;
@@ -195,6 +205,11 @@ export class WorkerPool {
   }
 
   public cancel() {
+    if (!this.isRunning) {
+      return;
+    }
+
+    this.isRunning = false;
     console.log("execution canceled");
     this.workers.forEach((worker) => {
       worker.onmessage = null;
