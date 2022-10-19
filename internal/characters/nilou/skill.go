@@ -113,14 +113,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.ActionInfo {
-	ai := action.ActionInfo{}
+	actionInfo := action.ActionInfo{}
 	delay := 0
 	switch srcType {
 	case NilouSkillTypeDance:
-		ai = c.SwordDance(p)
+		actionInfo = c.SwordDance(p)
 		delay = delayDance
 	case NilouSkillTypeSteps:
-		ai = c.WhirlingSteps(p)
+		actionInfo = c.WhirlingSteps(p)
 		delay = delaySteps
 	}
 
@@ -138,12 +138,12 @@ func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.Action
 					dur += 6 * 60
 				}
 				c.AddStatus(tranquilityAuraStatus, dur, true)
-				c.QueueCharTask(c.TranquilityAura, 30) // every 0.25 sec
+				c.QueueCharTask(c.TranquilityAura, 30) // every 0.5 sec
 			}
 		}, delay)
 	}
 
-	return ai
+	return actionInfo
 }
 
 func (c *char) AdvanceSkillIndex() {
@@ -179,7 +179,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+		c.swordDancePattern(s),
 		swordDanceHitMarks[s]+travel,
 		swordDanceHitMarks[s]+travel,
 		c.c4cb(),
@@ -220,7 +220,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+		c.whirlingStepsPattern(s),
 		whirlingStepsHitMarks[s],
 		whirlingStepsHitMarks[s],
 		c.c4cb(),
@@ -268,4 +268,28 @@ func (c *char) onExitField() {
 		c.SetTag(skillStep, 0)
 		return false
 	}, "nilou-exit")
+}
+
+func (c *char) swordDancePattern(attackIndex int) combat.AttackPattern {
+	switch attackIndex {
+	case 0:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 1.1, false, combat.TargettableEnemy) // supposed to be box x=1.75,z=2.2
+	case 1:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 1.8, false, combat.TargettableEnemy) // supposed to be offset z=0.5
+	case 2:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy) // TODO: it's an attack that travels, not hits on the radius
+	}
+	panic("unreachable code")
+}
+
+func (c *char) whirlingStepsPattern(attackIndex int) combat.AttackPattern {
+	switch attackIndex {
+	case 0:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2.7, false, combat.TargettableEnemy) // supposed to be offset z=0.3
+	case 1:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2.7, false, combat.TargettableEnemy) // supposed to be offset z=0.6
+	case 2:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2.7, false, combat.TargettableEnemy) // supposed to be box x=2.7,z=5.2 & offset x=0.2,z=-2.0
+	}
+	panic("unreachable code")
 }

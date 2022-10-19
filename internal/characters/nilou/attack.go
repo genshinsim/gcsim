@@ -55,7 +55,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	// no multihits so no need for char queue here
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), .3, false, combat.TargettableEnemy),
+		c.attackPattern(c.NormalCounter),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)
@@ -68,4 +68,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
+}
+
+func (c *char) attackPattern(attackIndex int) combat.AttackPattern {
+	switch attackIndex {
+	case 0:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 1.1, false, combat.TargettableEnemy) // supposed to be box x=1.5,z=2.2
+	case 1:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy) // supposed to be offset z=0.5
+	case 2:
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2.1, false, combat.TargettableEnemy) // supposed to be offset z=0.5
+	}
+	panic("unreachable code")
 }

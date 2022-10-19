@@ -64,7 +64,7 @@ func (c *char) LingeringAeon(a combat.AttackCB) {
 	}
 	t.AddStatus(lingeringAeonStatus, burstAeonHitmark, false)
 
-	c.QueueCharTask(func() {
+	t.QueueEnemyTask(func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Lingering Aeon",

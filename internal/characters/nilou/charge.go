@@ -34,7 +34,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.3, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.3, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i]) // supposed to be offset z=0.5
 	}
 
 	return action.ActionInfo{
