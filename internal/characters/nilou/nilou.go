@@ -18,6 +18,7 @@ type char struct {
 	*tmpl.Character
 
 	onlyBloomTeam bool
+	auraSrc       int
 	a4Src         int
 	a4Bonus       float64
 }
