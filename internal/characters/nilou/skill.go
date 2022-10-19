@@ -141,7 +141,8 @@ func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.Action
 					dur += 6 * 60
 				}
 				c.AddStatus(tranquilityAuraStatus, dur, true)
-				c.QueueCharTask(c.TranquilityAura, 30) // every 0.5 sec
+				c.auraSrc = c.Core.F
+				c.QueueCharTask(c.TranquilityAura(c.auraSrc), 30) // every 0.5 sec
 			}
 		}, delay)
 	}
@@ -243,24 +244,29 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) TranquilityAura() {
-	if !c.StatusIsActive(tranquilityAuraStatus) {
-		return
-	}
+func (c *char) TranquilityAura(src int) func() {
+	return func() {
+		if c.auraSrc != src {
+			return
+		}
+		if !c.StatusIsActive(tranquilityAuraStatus) {
+			return
+		}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Tranquility Aura",
-		AttackTag:  combat.AttackTagNone,
-		ICDTag:     combat.ICDTagNilouTranquilityAura,
-		ICDGroup:   combat.ICDGroupNilou,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Hydro,
-		Durability: 25,
-	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy), -1, 1)
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Tranquility Aura",
+			AttackTag:  combat.AttackTagNone,
+			ICDTag:     combat.ICDTagNilouTranquilityAura,
+			ICDGroup:   combat.ICDGroupNilou,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Hydro,
+			Durability: 25,
+		}
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy), -1, 1)
 
-	c.QueueCharTask(c.TranquilityAura, 30)
+		c.QueueCharTask(c.TranquilityAura(src), 30)
+	}
 }
 
 // Clears Nilou skill when she leaves the field
