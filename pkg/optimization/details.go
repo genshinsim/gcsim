@@ -475,6 +475,8 @@ func NewSubstatOptimizerDetails(cfg string, simopt simulator.Options, simcfg *as
 		keys.Noelle:  {attributes.DEFP},
 		keys.Gorou:   {attributes.DEFP},
 		keys.Yelan:   {attributes.HPP},
+		keys.Candace: {attributes.HPP},
+		keys.Nilou:   {attributes.HPP},
 	}
 
 	// Final output array that holds [character][substat_count]
