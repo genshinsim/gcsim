@@ -20,7 +20,7 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// reset location
 	c.qAbsorb = attributes.NoElement
-	self_absorb, ok := p["self"]
+	self_absorb, ok := p["self_absorb"]
 	if !ok {
 		self_absorb = 0
 	}

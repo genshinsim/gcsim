@@ -38,7 +38,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.qAbsorb = attributes.NoElement
 	c.qICDTag = combat.ICDTagNone
-	self_absorb, ok := p["self"]
+	self_absorb, ok := p["self_absorb"]
 	if !ok {
 		self_absorb = 0
 	}
